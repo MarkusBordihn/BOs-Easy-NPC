@@ -1,0 +1,34 @@
+{
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.rulers": [100],
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "cSpell.words": ["Bordihn", "easynpc", "Markus", "markusbordihn"],
+  "cSpell.ignorePaths": [
+    "*.yml",
+    ".git",
+    ".gradle",
+    ".vscode",
+    "build",
+    "models",
+    "run"
+  ],
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.format.settings.url": "./java-google-style.xml",
+  "java.format.settings.profile": "GoogleStyle",
+  "java.dependency.showMembers": true,
+  "java.dependency.packagePresentation": "flat",
+  "editor.detectIndentation": false,
+  "java.compile.nullAnalysis.nullable": [
+    "org.springframework.lang.Nullable",
+    "javax.annotation.Nullable",
+    "org.eclipse.jdt.annotation.Nullable"
+  ],
+  "java.compile.nullAnalysis.nonnull": [
+    "org.springframework.lang.NonNull",
+    "javax.annotation.Nonnull",
+    "org.eclipse.jdt.annotation.NonNull"
+  ]
+}
