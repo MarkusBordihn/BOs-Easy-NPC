@@ -17,59 +17,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+package de.markusbordihn.easynpc.entity.npc;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.npc.AbstractVillager;
-import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
 import de.markusbordihn.easynpc.Constants;
 
-public class EasyNPCEntityData extends AbstractVillager {
+public class JayJasonBo extends HumanoidSlim {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  // Texture
+  private static final ResourceLocation TEXTURE_LOCATION =
+      new ResourceLocation(Constants.MOD_ID, "textures/entity/jayjasonbo.png");
 
-  // Default values
-  private boolean hasTextureLocation = false;
-  private ResourceLocation textureLocation;
+  // General Information
+  public static final String ID = "jayjasonbo";
+  public static final String NAME = "JayJasonBo";
 
-  public EasyNPCEntityData(EntityType<? extends AbstractVillager> entityType, Level level) {
+  public JayJasonBo(EntityType<? extends AbstractVillager> entityType, Level level) {
     super(entityType, level);
-  }
-
-  public boolean hasTextureLocation() {
-    return this.hasTextureLocation;
-  }
-
-  public ResourceLocation getTextureLocation() {
-    return this.textureLocation;
-  }
-
-  public void setTextureLocation(ResourceLocation textureLocation) {
-    this.textureLocation = textureLocation;
-    this.hasTextureLocation = this.textureLocation != null;
+    setTextureLocation(TEXTURE_LOCATION);
   }
 
   @Override
-  protected void rewardTradeXp(MerchantOffer merchantOffer) {
-    // Unused
-  }
+  public void finalizeSpawn() {
+    super.finalizeSpawn();
 
-  @Override
-  protected void updateTrades() {
-    // Unused
-  }
-
-  @Override
-  public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-    return null;
+    // Give default item, if hand is empty.
+    ItemStack itemStack = this.getItemBySlot(EquipmentSlot.MAINHAND);
+    if (itemStack != null && itemStack.isEmpty()) {
+      this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.DIAMOND));
+    }
   }
 
 }

@@ -45,6 +45,9 @@ public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, PlayerModel<Eas
   }
 
   public ResourceLocation getTextureLocation(EasyNPCEntity entity) {
+    if (entity.hasTextureLocation()) {
+      return entity.getTextureLocation();
+    }
     return DEFAULT_LOCATION;
   }
 }

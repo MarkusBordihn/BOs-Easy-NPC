@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Markus Bordihn
+ * Copyright 2022 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,38 +17,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.renderer;
+package de.markusbordihn.easynpc.menu.slots;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.renderer.entity.HumanoidRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.HumanoidSlimRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.VillagerRenderer;
-import de.markusbordihn.easynpc.entity.npc.ModEntityType;
+import de.markusbordihn.easynpc.menu.ConfigurationMenu;
 
-@OnlyIn(Dist.CLIENT)
-public class ClientRenderer {
+
+public class InventorySlot extends Slot {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  protected ClientRenderer() {}
+  private ConfigurationMenu menu;
 
-  public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-    log.info("{} Entity Renders ...", Constants.LOG_REGISTER_PREFIX);
-
-    // Default NPC Entity
-    event.registerEntityRenderer(ModEntityType.HUMANOID.get(), HumanoidRenderer::new);
-    event.registerEntityRenderer(ModEntityType.HUMANOID_SLIM.get(), HumanoidSlimRenderer::new);
-    event.registerEntityRenderer(ModEntityType.VILLAGER.get(), VillagerRenderer::new);
-
-    // Custom NPC Entity
-    event.registerEntityRenderer(ModEntityType.KAWORRU.get(), HumanoidSlimRenderer::new);
-    event.registerEntityRenderer(ModEntityType.JAYJASONBO.get(), HumanoidRenderer::new);
+  public InventorySlot(ConfigurationMenu menu, Container container, int index, int x, int y) {
+    super(container, index, x, y);
+    this.menu = menu;
   }
+
+  @Override
+  public void set(ItemStack itemStack) {
+    super.set(itemStack);
+  }
+
+  @Override
+  public boolean mayPlace(ItemStack itemStack) {
+    return itemStack != null && !itemStack.isEmpty();
+  }
+
 }

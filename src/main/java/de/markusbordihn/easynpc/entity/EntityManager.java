@@ -19,57 +19,53 @@
 
 package de.markusbordihn.easynpc.entity;
 
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.npc.AbstractVillager;
-import net.minecraft.world.item.trading.MerchantOffer;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.Entity;
+
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 import de.markusbordihn.easynpc.Constants;
 
-public class EasyNPCEntityData extends AbstractVillager {
+@EventBusSubscriber
+public class EntityManager {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  // Default values
-  private boolean hasTextureLocation = false;
-  private ResourceLocation textureLocation;
+  private static ConcurrentHashMap<UUID, Entity> entityMap = new ConcurrentHashMap<>();
 
-  public EasyNPCEntityData(EntityType<? extends AbstractVillager> entityType, Level level) {
-    super(entityType, level);
+  @SubscribeEvent(priority = EventPriority.HIGH)
+  public static void handleEntityJoinWorldEvent(EntityJoinWorldEvent event) {
+
+    // Ignore if event is canceled.
+    if (event.isCanceled()) {
+      return;
+    }
+
+    // Only take care of Easy NPC entities.
+    Entity entity = event.getEntity();
+    if (entity instanceof EasyNPCEntity easyNPCEntity) {
+      log.info("Found EASY NPC entity {}: {}", entity.getUUID(), easyNPCEntity);
+      entityMap.put(entity.getUUID(), entity);
+    }
   }
 
-  public boolean hasTextureLocation() {
-    return this.hasTextureLocation;
+  public static Entity getEntityByUUID(UUID uuid) {
+    return entityMap.getOrDefault(uuid, null);
   }
 
-  public ResourceLocation getTextureLocation() {
-    return this.textureLocation;
-  }
-
-  public void setTextureLocation(ResourceLocation textureLocation) {
-    this.textureLocation = textureLocation;
-    this.hasTextureLocation = this.textureLocation != null;
-  }
-
-  @Override
-  protected void rewardTradeXp(MerchantOffer merchantOffer) {
-    // Unused
-  }
-
-  @Override
-  protected void updateTrades() {
-    // Unused
-  }
-
-  @Override
-  public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
+  public static EasyNPCEntity getEasyNPCEntityByUUID(UUID uuid) {
+    Entity entity = entityMap.getOrDefault(uuid, null);
+    if (entity instanceof EasyNPCEntity easyNPCEntity) {
+      return easyNPCEntity;
+    }
     return null;
   }
-
 }

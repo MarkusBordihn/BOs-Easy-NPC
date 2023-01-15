@@ -29,8 +29,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
+import de.markusbordihn.easynpc.client.screen.ClientScreens;
 import de.markusbordihn.easynpc.entity.npc.ModEntityType;
 import de.markusbordihn.easynpc.item.ModItems;
+import de.markusbordihn.easynpc.menu.ModMenuTypes;
+import de.markusbordihn.easynpc.network.NetworkHandler;
 
 @Mod(Constants.MOD_ID)
 public class EasyNPC {
@@ -40,14 +43,20 @@ public class EasyNPC {
   public EasyNPC() {
     final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
+    modEventBus.addListener(NetworkHandler::registerNetworkHandler);
+
     log.info("{} Entities ...", Constants.LOG_REGISTER_PREFIX);
     ModEntityType.ENTITIES.register(modEventBus);
 
     log.info("Register Items ...");
     ModItems.ITEMS.register(modEventBus);
 
+    log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
+    ModMenuTypes.MENU_TYPES.register(modEventBus);
+
     DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
       modEventBus.addListener(ClientRenderer::registerEntityRenderers);
+      modEventBus.addListener(ClientScreens::registerScreens);
     });
   }
 }

@@ -42,19 +42,38 @@ public class ModEntityType {
   public static final DeferredRegister<EntityType<?>> ENTITIES =
       DeferredRegister.create(ForgeRegistries.ENTITIES, Constants.MOD_ID);
 
-  // NPC Entity
+  // Default NPC Entity
   public static final RegistryObject<EntityType<Humanoid>> HUMANOID = ENTITIES.register(Humanoid.ID,
-      () -> EntityType.Builder.<Humanoid>of(Humanoid::new, EasyNPCEntity.CATEGORY).sized(1.0F, 1.2F)
+      () -> EntityType.Builder.<Humanoid>of(Humanoid::new, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F)
           .clientTrackingRange(8).build(Humanoid.ID));
 
+  public static final RegistryObject<EntityType<HumanoidSlim>> HUMANOID_SLIM = ENTITIES.register(HumanoidSlim.ID,
+      () -> EntityType.Builder.<HumanoidSlim>of(HumanoidSlim::new, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F)
+          .clientTrackingRange(8).build(HumanoidSlim.ID));
+
   public static final RegistryObject<EntityType<Villager>> VILLAGER = ENTITIES.register(Villager.ID,
-      () -> EntityType.Builder.<Villager>of(Villager::new, EasyNPCEntity.CATEGORY).sized(1.0F, 1.2F)
+      () -> EntityType.Builder.<Villager>of(Villager::new, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F)
           .clientTrackingRange(8).build(Villager.ID));
+
+  // Custom NPC Entity
+  public static final RegistryObject<EntityType<JayJasonBo>> JAYJASONBO = ENTITIES.register(JayJasonBo.ID,
+      () -> EntityType.Builder.<JayJasonBo>of(
+          JayJasonBo::new, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F)
+          .clientTrackingRange(8).build(JayJasonBo.ID));
+  public static final RegistryObject<EntityType<Kaworru>> KAWORRU =
+      ENTITIES.register(Kaworru.ID,
+          () -> EntityType.Builder.<Kaworru>of(Kaworru::new, EasyNPCEntity.CATEGORY)
+              .sized(1.0F, 2.0F).clientTrackingRange(8).build(Kaworru.ID));
 
   @SubscribeEvent
   public static final void entityAttributeCreation(EntityAttributeCreationEvent event) {
-    // Create Attributes for Entities
+    // Create Attributes for Default NPC Entities
     event.put(HUMANOID.get(), Humanoid.createAttributes().build());
+    event.put(HUMANOID_SLIM.get(), HumanoidSlim.createAttributes().build());
     event.put(VILLAGER.get(), Villager.createAttributes().build());
+
+    // Create Attributes for Custom NPC Entities
+    event.put(JAYJASONBO.get(), HumanoidSlim.createAttributes().build());
+    event.put(KAWORRU.get(), HumanoidSlim.createAttributes().build());
   }
 }

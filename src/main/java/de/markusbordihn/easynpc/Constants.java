@@ -19,18 +19,32 @@
 
 package de.markusbordihn.easynpc;
 
+import net.minecraft.resources.ResourceLocation;
+
 public final class Constants {
 
-  protected Constants() {
-  }
+  protected Constants() {}
 
   // General Mod definitions
   public static final String LOG_NAME = "Easy NPC";
   public static final String LOG_ICON = "🧙";
   public static final String LOG_ICON_NAME = LOG_ICON + " " + LOG_NAME;
+  public static final String LOG_REGISTER_PREFIX = LOG_ICON + " Register Easy NPC";
   public static final String MOD_COMMAND = "easy_npc";
   public static final String MOD_ID = "easy_npc";
   public static final String MOD_NAME = "Easy NPC";
-  public static final String LOG_REGISTER_PREFIX = LOG_ICON + " Register Easy NPC";
 
+  // Prefixes
+  public static final String MINECRAFT_PREFIX = "minecraft";
+  public static final String TEXT_PREFIX = "text.easy_npc.";
+
+  // Textures
+  public static final ResourceLocation TEXTURE_DEMO_BACKGROUND =
+      new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/demo_background.png");
+  public static final ResourceLocation TEXTURE_DIALOG =
+      new ResourceLocation(Constants.MOD_ID, "textures/gui/dialog.png");
+  public static final ResourceLocation TEXTURE_GENERIC_54 =
+      new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/container/generic_54.png");
+  public static final ResourceLocation TEXTURE_ICONS =
+      new ResourceLocation(Constants.MOD_ID, "textures/container/icons.png");
 }

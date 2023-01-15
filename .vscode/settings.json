@@ -5,7 +5,19 @@
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
-  "cSpell.words": ["Bordihn", "easynpc", "Markus", "markusbordihn"],
+  "cSpell.words": [
+    "Ageable",
+    "Bordihn",
+    "chestplate",
+    "easynpc",
+    "hotbar",
+    "jayjasonbo",
+    "Kaworru",
+    "MAINHAND",
+    "Markus",
+    "markusbordihn",
+    "Pushable"
+  ],
   "cSpell.ignorePaths": [
     "*.yml",
     ".git",

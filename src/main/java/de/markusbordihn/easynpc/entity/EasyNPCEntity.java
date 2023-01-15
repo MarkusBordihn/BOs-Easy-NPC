@@ -19,13 +19,23 @@
 
 package de.markusbordihn.easynpc.entity;
 
+import javax.annotation.Nullable;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 
 public class EasyNPCEntity extends EasyNPCEntityData {
 
@@ -34,11 +44,57 @@ public class EasyNPCEntity extends EasyNPCEntityData {
 
   public EasyNPCEntity(EntityType<? extends AbstractVillager> entityType, Level level) {
     super(entityType, level);
+    this.setInvulnerable(true);
+  }
+
+  public void finalizeSpawn() {
+    // Do stuff like default names.
+  }
+
+  @Override
+  public boolean isPushable() {
+    return false;
+  }
+
+  @Override
+  public boolean removeWhenFarAway(double distance) {
+    return false;
+  }
+
+  @Override
+  protected void registerGoals() {
+    super.registerGoals();
+    this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
+    this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 15.0F));
+  }
+
+  @Override
+  @Nullable
+  public SpawnGroupData finalizeSpawn(ServerLevelAccessor serverLevelAccessor,
+      DifficultyInstance difficulty, MobSpawnType mobSpawnType,
+      @Nullable SpawnGroupData spawnGroupData, @Nullable CompoundTag compoundTag) {
+    spawnGroupData = super.finalizeSpawn(serverLevelAccessor, difficulty, mobSpawnType,
+        spawnGroupData, compoundTag);
+
+    finalizeSpawn();
+    return spawnGroupData;
   }
 
   @Override
   public InteractionResult mobInteract(Player player, InteractionHand hand) {
-    log.info("mobInteract: {} {}", player, hand);
+    boolean isClientSide = this.level.isClientSide;
+    log.info("mobInteract: {} {} {} {}", this.getUUID(), player, hand, isClientSide);
+
+    if (player instanceof ServerPlayer serverPlayer) {
+      if (player.isCreative()) {
+        if (!this.hasCustomName() || player.isCrouching()) {
+          EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, this);
+        }
+      } else {
+        EasyNPCEntityMenu.openDialogMenu(serverPlayer, this);
+      }
+    }
+
     return InteractionResult.PASS;
   }
 

@@ -17,59 +17,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity;
+package de.markusbordihn.easynpc.client.screen;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.npc.AbstractVillager;
-import net.minecraft.world.item.trading.MerchantOffer;
-import net.minecraft.world.level.Level;
+import net.minecraft.client.gui.screens.MenuScreens;
+
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.configuration.MainConfigurationScreen;
+import de.markusbordihn.easynpc.menu.ModMenuTypes;
 
-public class EasyNPCEntityData extends AbstractVillager {
+public class ClientScreens {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  // Default values
-  private boolean hasTextureLocation = false;
-  private ResourceLocation textureLocation;
+  protected ClientScreens() {}
 
-  public EasyNPCEntityData(EntityType<? extends AbstractVillager> entityType, Level level) {
-    super(entityType, level);
+  public static void registerScreens(final FMLClientSetupEvent event) {
+    log.info("{} Client Screens ...", Constants.LOG_REGISTER_PREFIX);
+
+    event.enqueueWork(() -> {
+      MenuScreens.register(ModMenuTypes.CONFIGURATION_MENU.get(), ConfigurationScreen::new);
+      MenuScreens.register(ModMenuTypes.DIALOG_MENU.get(), DialogScreen::new);
+      MenuScreens.register(ModMenuTypes.MAIN_CONFIGURATION_MENU.get(),
+          MainConfigurationScreen::new);
+    });
   }
-
-  public boolean hasTextureLocation() {
-    return this.hasTextureLocation;
-  }
-
-  public ResourceLocation getTextureLocation() {
-    return this.textureLocation;
-  }
-
-  public void setTextureLocation(ResourceLocation textureLocation) {
-    this.textureLocation = textureLocation;
-    this.hasTextureLocation = this.textureLocation != null;
-  }
-
-  @Override
-  protected void rewardTradeXp(MerchantOffer merchantOffer) {
-    // Unused
-  }
-
-  @Override
-  protected void updateTrades() {
-    // Unused
-  }
-
-  @Override
-  public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-    return null;
-  }
-
 }

@@ -31,6 +31,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 import de.markusbordihn.easynpc.Annotations.TemplateEntryPoint;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.npc.Humanoid;
+import de.markusbordihn.easynpc.entity.npc.HumanoidSlim;
+import de.markusbordihn.easynpc.entity.npc.JayJasonBo;
+import de.markusbordihn.easynpc.entity.npc.Kaworru;
 import de.markusbordihn.easynpc.entity.npc.ModEntityType;
 import de.markusbordihn.easynpc.entity.npc.Villager;
 import de.markusbordihn.easynpc.tabs.EasyNPCTab;
@@ -50,10 +53,17 @@ public class ModItems {
 
   @TemplateEntryPoint("Register Spawn Eggs")
 
+  // Default NPC Entity Spawn Eggs
   public static final RegistryObject<Item> HUMANOID_NPC_SPAWN_EGG =
       ITEMS.register(Humanoid.ID + "_spawn_egg",
           () -> new ForgeSpawnEggItem(ModEntityType.HUMANOID::get, MaterialColor.COLOR_RED.col,
               MaterialColor.COLOR_GREEN.col,
+              new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
+
+  public static final RegistryObject<Item> HUMANOID_SLIM_NPC_SPAWN_EGG =
+      ITEMS.register(HumanoidSlim.ID + "_spawn_egg",
+          () -> new ForgeSpawnEggItem(ModEntityType.HUMANOID_SLIM::get, MaterialColor.COLOR_RED.col,
+              MaterialColor.COLOR_PINK.col,
               new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
 
   public static final RegistryObject<Item> VILLAGER_NPC_SPAWN_EGG =
@@ -62,4 +72,15 @@ public class ModItems {
               MaterialColor.COLOR_YELLOW.col,
               new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
 
+  // Custom NPC Entity Spawn Eggs
+  public static final RegistryObject<Item> JAYJASONBO_NPC_SPAWN_EGG =
+      ITEMS.register(JayJasonBo.ID + "_spawn_egg",
+          () -> new ForgeSpawnEggItem(ModEntityType.JAYJASONBO::get, MaterialColor.COLOR_ORANGE.col,
+              MaterialColor.COLOR_BLACK.col,
+              new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
+  public static final RegistryObject<Item> KAWORRU_NPC_SPAWN_EGG =
+      ITEMS.register(Kaworru.ID + "_spawn_egg",
+          () -> new ForgeSpawnEggItem(ModEntityType.KAWORRU::get, MaterialColor.COLOR_RED.col,
+              MaterialColor.COLOR_BLACK.col,
+              new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
 }

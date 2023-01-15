@@ -17,59 +17,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity;
+package de.markusbordihn.easynpc.entity.npc;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.npc.AbstractVillager;
-import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.Level;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 
-public class EasyNPCEntityData extends AbstractVillager {
+public class HumanoidSlim extends EasyNPCEntity {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  // Default values
-  private boolean hasTextureLocation = false;
-  private ResourceLocation textureLocation;
+  // General Information
+  public static final String ID = "humanoid_slim";
+  public static final String NAME = "Humanoid Slim";
 
-  public EasyNPCEntityData(EntityType<? extends AbstractVillager> entityType, Level level) {
+  public HumanoidSlim(EntityType<? extends AbstractVillager> entityType, Level level) {
     super(entityType, level);
   }
 
-  public boolean hasTextureLocation() {
-    return this.hasTextureLocation;
-  }
-
-  public ResourceLocation getTextureLocation() {
-    return this.textureLocation;
-  }
-
-  public void setTextureLocation(ResourceLocation textureLocation) {
-    this.textureLocation = textureLocation;
-    this.hasTextureLocation = this.textureLocation != null;
-  }
-
-  @Override
-  protected void rewardTradeXp(MerchantOffer merchantOffer) {
-    // Unused
-  }
-
-  @Override
-  protected void updateTrades() {
-    // Unused
-  }
-
-  @Override
-  public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-    return null;
+  public static AttributeSupplier.Builder createAttributes() {
+    return Mob.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0.5F)
+        .add(Attributes.MAX_HEALTH, 16.0D).add(Attributes.ATTACK_DAMAGE, 0.0D);
   }
 
 }
