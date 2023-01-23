@@ -27,7 +27,10 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.menu.configuration.BasicDialogConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.DialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.MainConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.YesNoDialogConfigurationMenu;
 
 public class ModMenuTypes {
 
@@ -38,14 +41,24 @@ public class ModMenuTypes {
   public static final DeferredRegister<MenuType<?>> MENU_TYPES =
       DeferredRegister.create(ForgeRegistries.CONTAINERS, Constants.MOD_ID);
 
+  // Dialog
   public static final RegistryObject<MenuType<DialogMenu>> DIALOG_MENU =
       MENU_TYPES.register("dialog_menu", () -> IForgeMenuType.create(DialogMenu::new));
 
+  // Configuration
+  public static final RegistryObject<MenuType<DialogConfigurationMenu>> DIALOG_CONFIGURATION_MENU =
+      MENU_TYPES.register("dialog_configuration_menu",
+          () -> IForgeMenuType.create(DialogConfigurationMenu::new));
+  public static final RegistryObject<MenuType<BasicDialogConfigurationMenu>> BASIC_DIALOG_CONFIGURATION_MENU =
+      MENU_TYPES.register("basic_dialog_configuration_menu",
+          () -> IForgeMenuType.create(BasicDialogConfigurationMenu::new));
+  public static final RegistryObject<MenuType<YesNoDialogConfigurationMenu>> YES_NO_DIALOG_CONFIGURATION_MENU =
+      MENU_TYPES.register("yes_no_dialog_configuration_menu",
+          () -> IForgeMenuType.create(YesNoDialogConfigurationMenu::new));
   public static final RegistryObject<MenuType<MainConfigurationMenu>> MAIN_CONFIGURATION_MENU =
       MENU_TYPES.register("main_configuration_menu",
           () -> IForgeMenuType.create(MainConfigurationMenu::new));
 
   public static final RegistryObject<MenuType<ConfigurationMenu>> CONFIGURATION_MENU = MENU_TYPES
       .register("configuration_menu", () -> IForgeMenuType.create(ConfigurationMenu::new));
-
 }

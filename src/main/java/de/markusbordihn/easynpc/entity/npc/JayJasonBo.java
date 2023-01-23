@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.entity.npc;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.npc.AbstractVillager;
@@ -27,13 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
-import de.markusbordihn.easynpc.Constants;
-
-public class JayJasonBo extends HumanoidSlim {
-
-  // Texture
-  private static final ResourceLocation TEXTURE_LOCATION =
-      new ResourceLocation(Constants.MOD_ID, "textures/entity/jayjasonbo.png");
+public class JayJasonBo extends Humanoid {
 
   // General Information
   public static final String ID = "jayjasonbo";
@@ -41,7 +34,7 @@ public class JayJasonBo extends HumanoidSlim {
 
   public JayJasonBo(EntityType<? extends AbstractVillager> entityType, Level level) {
     super(entityType, level);
-    setTextureLocation(TEXTURE_LOCATION);
+    setVariant(Variant.JAYJASONBO);
   }
 
   @Override

@@ -27,9 +27,13 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.ConfigurationMenu;
 
+@OnlyIn(Dist.CLIENT)
 public class ConfigurationScreen extends AbstractContainerScreen<ConfigurationMenu> {
 
   public ConfigurationScreen(ConfigurationMenu menu, Inventory inventory, Component component) {

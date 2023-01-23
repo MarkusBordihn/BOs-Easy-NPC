@@ -17,19 +17,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen;
+package de.markusbordihn.easynpc.client.screen.configuration;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.UUID;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -37,81 +41,71 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.menu.DialogMenu;
+import de.markusbordihn.easynpc.menu.configuration.DialogConfigurationMenu;
+import de.markusbordihn.easynpc.network.NetworkHandler;
 
 @OnlyIn(Dist.CLIENT)
-public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
+public class DialogConfigurationScreen<T extends DialogConfigurationMenu>
+    extends AbstractContainerScreen<T> {
+
+  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   protected final EasyNPCEntity entity;
+  protected final UUID uuid;
 
-  private float xMouse;
-  private float yMouse;
+  protected Button basicDialogButton = null;
+  protected Button yesNoDialogButton = null;
 
-  private List<FormattedCharSequence> cachedDialogComponents = Collections.emptyList();
-
-  public DialogScreen(DialogMenu menu, Inventory inventory, Component component) {
+  public DialogConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
     this.entity = menu.getEntity();
-  }
-
-  protected void renderAvatar(PoseStack poseStack, int x, int y) {
-    int positionTop = 75;
-    if (this.entity != null) {
-      int left = this.leftPos + 40;
-      int top = this.topPos + 60 + positionTop;
-      ScreenHelper.renderEntityAvatar(left, top,
-          Math.round(left - 90 - (this.xMouse * 0.25)),
-          Math.round(top - 120 - (this.yMouse * 0.5)), this.entity);
-    }
-  }
-
-  protected void renderDialog(PoseStack poseStack, int x, int y) {
-    RenderSystem.setShader(GameRenderer::getPositionTexShader);
-    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-    RenderSystem.setShaderTexture(0, Constants.TEXTURE_DIALOG);
-
-    // Dialog text.
-    TextComponent dialogComponent = this.entity.getDialogComponent();
-    this.cachedDialogComponents = this.font.split(dialogComponent, 176);
-    int numberOfLines = Math.min(128 / font.lineHeight, this.cachedDialogComponents.size());
-
-    // Dialog background according numbers of lines.
-    int minNumberOfLines = Math.max(2, numberOfLines);
-    int backgroundShift = minNumberOfLines * (font.lineHeight + 2);
-    this.blit(poseStack, leftPos + 70, topPos + 25 + 30, 0,130 - backgroundShift,
-        200, Math.min(120, backgroundShift));
-    this.blit(poseStack, leftPos + 70, topPos + 25, 0, 0, 200, 30);
-
-    // Distribute text for the across the lines.
-    for (int line = 0; line < numberOfLines; ++line) {
-      FormattedCharSequence formattedCharSequence = this.cachedDialogComponents.get(line);
-      this.font.draw(poseStack, formattedCharSequence, leftPos + 87f,
-          topPos + 32 + (line * (font.lineHeight + 2)), 0);
-    }
+    this.uuid = this.entity.getUUID();
   }
 
   @Override
   public void init() {
     super.init();
 
+    Minecraft minecraft = this.getMinecraft();
+    if (minecraft != null) {
+      minecraft.keyboardHandler.setSendRepeatsToGui(true);
+    }
+
     // Default stats
-    this.imageHeight = 170;
+    this.imageHeight = 220;
     this.imageWidth = 275;
 
     // Basic Position
-    this.titleLabelX = 8;
+    this.titleLabelX = 6;
     this.titleLabelY = 6;
     this.topPos = (this.height - this.imageHeight) / 2;
     this.leftPos = (this.width - this.imageWidth) / 2;
+
+    // Dialog Types
+    this.basicDialogButton = this.addRenderableWidget(new Button(this.leftPos + 7, this.topPos + 30,
+        80, 20, new TranslatableComponent("Basic Dialog"), onPress -> {
+          log.info("Basic dialog ...");
+          NetworkHandler.openDialog(uuid, "BasicDialogConfiguration");
+        }));
+    this.yesNoDialogButton =
+        this.addRenderableWidget(new Button(this.leftPos + 7 + this.basicDialogButton.getWidth(),
+            this.topPos + 30, 80, 20, new TranslatableComponent("Yes/No Dialog"), onPress -> {
+              log.info("Yes/No dialog ...");
+              NetworkHandler.openDialog(uuid, "YesNoDialogConfiguration");
+            }));
+
+    // Default button stats
+    this.basicDialogButton.active = true;
+    this.yesNoDialogButton.active = true;
   }
 
   @Override
   public void render(PoseStack poseStack, int x, int y, float partialTicks) {
     super.render(poseStack, x, y, partialTicks);
-    this.xMouse = x;
-    this.yMouse = y;
-    renderAvatar(poseStack, x, y);
-    renderDialog(poseStack, x, y);
+
+    // Name
+    this.font.draw(poseStack, new TextComponent("Dialog Type"), this.leftPos + 7f,
+        this.topPos + 20f, 4210752);
   }
 
   @Override
@@ -125,9 +119,13 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     RenderSystem.setShaderTexture(0, Constants.TEXTURE_DEMO_BACKGROUND);
 
-    // Main screen
+    // Main screen (+50px in height)
     this.blit(poseStack, leftPos, topPos, 0, 0, 250, 170);
     this.blit(poseStack, leftPos + 243, topPos, 215, 0, 35, 170);
+
+    int expandedHeight = 50;
+    this.blit(poseStack, leftPos, topPos + expandedHeight + 5, 0, 5, 250, 170);
+    this.blit(poseStack, leftPos + 243, topPos + expandedHeight + 5, 215, 5, 35, 170);
   }
 
 }

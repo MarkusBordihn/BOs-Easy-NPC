@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.menu;
+package de.markusbordihn.easynpc.menu.configuration;
 
 import java.util.UUID;
 
@@ -33,8 +33,9 @@ import net.minecraft.world.inventory.MenuType;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.menu.ModMenuTypes;
 
-public class DialogMenu extends AbstractContainerMenu {
+public class DialogConfigurationMenu extends AbstractContainerMenu {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -42,22 +43,22 @@ public class DialogMenu extends AbstractContainerMenu {
   protected EasyNPCEntity entity;
   protected UUID uuid;
 
-  public DialogMenu(int windowId, Inventory playerInventory, UUID uuid) {
-    this(ModMenuTypes.DIALOG_MENU.get(), windowId, playerInventory, uuid);
+  public DialogConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
+    this(ModMenuTypes.DIALOG_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
   }
 
-  public DialogMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
+  public DialogConfigurationMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
     this(windowId, playerInventory, data.readUUID());
   }
 
-  public DialogMenu(final MenuType<?> menuType, final int windowId, final Inventory playerInventory,
-      UUID uuid) {
+  public DialogConfigurationMenu(final MenuType<?> menuType, final int windowId,
+      final Inventory playerInventory, UUID uuid) {
     super(menuType, windowId);
 
     this.uuid = uuid;
     this.entity = EntityManager.getEasyNPCEntityByUUID(uuid);
 
-    log.debug("Open Dialog menu for {}: {}", this.uuid, this.entity);
+    log.debug("Open dialog configuration menu for {}: {}", this.uuid, this.entity);
   }
 
   public EasyNPCEntity getEntity() {
@@ -68,4 +69,5 @@ public class DialogMenu extends AbstractContainerMenu {
   public boolean stillValid(Player player) {
     return player != null && player.isAlive() && entity != null && entity.isAlive();
   }
+
 }

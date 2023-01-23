@@ -17,38 +17,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.menu.slots;
+package de.markusbordihn.easynpc.client.screen.configuration;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Inventory;
 
-import net.minecraft.world.Container;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.menu.ConfigurationMenu;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+import de.markusbordihn.easynpc.menu.configuration.YesNoDialogConfigurationMenu;
 
-public class InventorySlot extends Slot {
+@OnlyIn(Dist.CLIENT)
+public class YesNoDialogConfigurationScreen
+    extends DialogConfigurationScreen<YesNoDialogConfigurationMenu> {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  private ConfigurationMenu menu;
-
-  public InventorySlot(ConfigurationMenu menu, Container container, int index, int x, int y) {
-    super(container, index, x, y);
-    this.menu = menu;
+  public YesNoDialogConfigurationScreen(YesNoDialogConfigurationMenu menu, Inventory inventory,
+      Component component) {
+    super(menu, inventory, component);
   }
 
   @Override
-  public void set(ItemStack itemStack) {
-    super.set(itemStack);
+  public void init() {
+    super.init();
+
+    // Default button stats
+    this.basicDialogButton.active = true;
+    this.yesNoDialogButton.active = false;
   }
 
   @Override
-  public boolean mayPlace(ItemStack itemStack) {
-    return itemStack != null && !itemStack.isEmpty();
+  public void render(PoseStack poseStack, int x, int y, float partialTicks) {
+    super.render(poseStack, x, y, partialTicks);
+    this.font.draw(poseStack, new TextComponent("Yes/No Dialog"), this.leftPos + 7f,
+        this.topPos + 55f, 4210752);
   }
 
 }

@@ -42,6 +42,10 @@ public class EasyNPCEntity extends EasyNPCEntityData {
   // Shared constants
   public static final MobCategory CATEGORY = MobCategory.MISC;
 
+  // Additional ticker
+  private static final int TEXTURE_CACHE_TICK = 50;
+  private int textureCacheTicker = 0;
+
   public EasyNPCEntity(EntityType<? extends AbstractVillager> entityType, Level level) {
     super(entityType, level);
     this.setInvulnerable(true);
@@ -49,6 +53,11 @@ public class EasyNPCEntity extends EasyNPCEntityData {
 
   public void finalizeSpawn() {
     // Do stuff like default names.
+  }
+
+  @Override
+  public boolean isAttackable() {
+    return false;
   }
 
   @Override
@@ -89,6 +98,8 @@ public class EasyNPCEntity extends EasyNPCEntityData {
       if (player.isCreative()) {
         if (!this.hasCustomName() || player.isCrouching()) {
           EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, this);
+        } else {
+          EasyNPCEntityMenu.openDialogMenu(serverPlayer, this);
         }
       } else {
         EasyNPCEntityMenu.openDialogMenu(serverPlayer, this);
@@ -96,6 +107,21 @@ public class EasyNPCEntity extends EasyNPCEntityData {
     }
 
     return InteractionResult.PASS;
+  }
+
+  @Override
+  public void tick() {
+    // Perform tick for AI and other important steps.
+    super.tick();
+
+    // ClientSide: Re-validated Texture cache if needed.
+    if (this.level.isClientSide && this.hasChangedVariant()
+        && textureCacheTicker++ >= TEXTURE_CACHE_TICK) {
+      Enum<?> variant = this.getVariant();
+      log.debug("Re-validated texture cache for variant {} and {}", variant, this);
+      this.setVariant(variant);
+      textureCacheTicker = 0;
+    }
   }
 
 }

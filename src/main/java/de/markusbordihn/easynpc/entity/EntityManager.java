@@ -24,7 +24,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -61,11 +62,49 @@ public class EntityManager {
     return entityMap.getOrDefault(uuid, null);
   }
 
+  public static EasyNPCEntity getEasyNPCEntityByUUID(UUID uuid, ServerPlayer serverPlayer) {
+    ServerLevel serverLevel = serverPlayer.getLevel();
+    Entity entity = serverLevel.getEntity(uuid);
+    if (entity instanceof EasyNPCEntity easyNPCEntity) {
+      return easyNPCEntity;
+    }
+    return getEasyNPCEntityByUUID(uuid);
+  }
+
   public static EasyNPCEntity getEasyNPCEntityByUUID(UUID uuid) {
     Entity entity = entityMap.getOrDefault(uuid, null);
     if (entity instanceof EasyNPCEntity easyNPCEntity) {
       return easyNPCEntity;
     }
     return null;
+  }
+
+  public static boolean hasAccess(UUID uuid, ServerPlayer serverPlayer) {
+    if (uuid == null || serverPlayer == null) {
+      return false;
+    }
+    return hasAccess(serverPlayer.getLevel().getEntity(uuid), serverPlayer);
+  }
+
+  public static boolean hasAccess(Entity entity, ServerPlayer serverPlayer) {
+    if (entity instanceof EasyNPCEntity easyNPCEntity) {
+      return hasAccess(easyNPCEntity, serverPlayer);
+    }
+    return false;
+  }
+
+  public static boolean hasAccess(EasyNPCEntity entity, ServerPlayer serverPlayer) {
+    // Allow admins and creative mode
+    if (serverPlayer.isCreative()) {
+      return true;
+    }
+
+    // Perform more specific checks
+    if (entity.hasOwner()) {
+      UUID uuid = entity.getOwnerUUID();
+      return uuid != null && uuid.equals(serverPlayer.getUUID());
+    }
+
+    return false;
   }
 }

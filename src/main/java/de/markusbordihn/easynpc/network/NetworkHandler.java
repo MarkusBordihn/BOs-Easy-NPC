@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Markus Bordihn
+ * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -32,7 +32,11 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.dialog.DialogType;
 import de.markusbordihn.easynpc.network.message.MessageNameChange;
+import de.markusbordihn.easynpc.network.message.MessageOpenDialog;
+import de.markusbordihn.easynpc.network.message.MessageSaveDialog;
+import de.markusbordihn.easynpc.network.message.MessageVariantChange;
 
 @EventBusSubscriber
 public class NetworkHandler {
@@ -53,13 +57,34 @@ public class NetworkHandler {
 
     event.enqueueWork(() -> {
 
-      // Send Name Change: Client -> Server
+      // Name Change: Client -> Server
       INSTANCE.registerMessage(id++, MessageNameChange.class, (message, buffer) -> {
         buffer.writeUtf(message.getUUID());
         buffer.writeUtf(message.getName());
       }, buffer -> new MessageNameChange(buffer.readUtf(), buffer.readUtf()),
           MessageNameChange::handle);
 
+      // Open Dialog Request: Client -> Server
+      INSTANCE.registerMessage(id++, MessageOpenDialog.class, (message, buffer) -> {
+        buffer.writeUtf(message.getUUID());
+        buffer.writeUtf(message.getDialogName());
+      }, buffer -> new MessageOpenDialog(buffer.readUtf(), buffer.readUtf()),
+          MessageOpenDialog::handle);
+
+      // Save Dialog Request: Client -> Server
+      INSTANCE.registerMessage(id++, MessageSaveDialog.class, (message, buffer) -> {
+        buffer.writeUtf(message.getUUID());
+        buffer.writeUtf(message.getDialogType().name());
+        buffer.writeUtf(message.getDialog());
+      }, buffer -> new MessageSaveDialog(buffer.readUtf(), buffer.readUtf(), buffer.readUtf()),
+          MessageSaveDialog::handle);
+
+      // Variant Change: Client -> Server
+      INSTANCE.registerMessage(id++, MessageVariantChange.class, (message, buffer) -> {
+        buffer.writeUtf(message.getUUID());
+        buffer.writeUtf(message.getVariant());
+      }, buffer -> new MessageVariantChange(buffer.readUtf(), buffer.readUtf()),
+          MessageVariantChange::handle);
     });
   }
 
@@ -67,6 +92,27 @@ public class NetworkHandler {
   public static void nameChange(UUID uuid, String name) {
     if (uuid != null && name != null && !name.isEmpty()) {
       INSTANCE.sendToServer(new MessageNameChange(uuid.toString(), name));
+    }
+  }
+
+  /** Open dialog request. */
+  public static void openDialog(UUID uuid, String dialogName) {
+    if (uuid != null && dialogName != null && !dialogName.isEmpty()) {
+      INSTANCE.sendToServer(new MessageOpenDialog(uuid.toString(), dialogName));
+    }
+  }
+
+  /** Save dialog. */
+  public static void saveDialog(UUID uuid, DialogType dialogType, String dialog) {
+    if (uuid != null && dialogType != null && dialog != null) {
+      INSTANCE.sendToServer(new MessageSaveDialog(uuid.toString(), dialogType.name(), dialog));
+    }
+  }
+
+  /** Send variant change. */
+  public static void variantChange(UUID uuid, Enum<?> variant) {
+    if (uuid != null && variant != null) {
+      INSTANCE.sendToServer(new MessageVariantChange(uuid.toString(), variant.name()));
     }
   }
 }

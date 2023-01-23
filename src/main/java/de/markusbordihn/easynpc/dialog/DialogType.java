@@ -17,38 +17,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.menu.slots;
+package de.markusbordihn.easynpc.dialog;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import net.minecraft.world.Container;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.menu.ConfigurationMenu;
-
-
-public class InventorySlot extends Slot {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  private ConfigurationMenu menu;
-
-  public InventorySlot(ConfigurationMenu menu, Container container, int index, int x, int y) {
-    super(container, index, x, y);
-    this.menu = menu;
-  }
-
-  @Override
-  public void set(ItemStack itemStack) {
-    super.set(itemStack);
-  }
-
-  @Override
-  public boolean mayPlace(ItemStack itemStack) {
-    return itemStack != null && !itemStack.isEmpty();
-  }
-
+public enum DialogType {
+  BASIC, YES_NO, NONE;
 }

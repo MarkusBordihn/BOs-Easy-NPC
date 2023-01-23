@@ -19,7 +19,10 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,13 +35,20 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.ScreenHelper;
+import de.markusbordihn.easynpc.dialog.DialogType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.menu.configuration.MainConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 
+@OnlyIn(Dist.CLIENT)
 public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigurationMenu> {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
@@ -46,10 +56,17 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
   protected final EasyNPCEntity entity;
   protected final UUID uuid;
 
-  private Button editDialogButton = null;
+  // Internal
+  private Button editDialogButton;
+  private Button saveNameButton = null;
+  private List<Button> skinButtons = new ArrayList<>();
   private EditBox nameBox;
   private float xMouse;
   private float yMouse;
+
+  // Cache
+  private Enum<?>[] variants;
+  private int numOfVariants = 0;
 
   public MainConfigurationScreen(MainConfigurationMenu menu, Inventory inventory,
       Component component) {
@@ -61,13 +78,52 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
   private void saveName() {
     String value = this.nameBox.getValue();
     if (value != null && !value.isBlank()) {
+      log.debug("Saving name {} for {}", value, this.entity);
       NetworkHandler.nameChange(this.uuid, value);
+    }
+  }
+
+  private void renderSkins(PoseStack poseStack, int x, int y, float partialTicks) {
+    int positionTop = 100;
+    int startIndex = 0;
+    int maxSkinsPerPage = 5;
+
+    if (this.entity != null) {
+      int skinPosition = 0;
+      skinButtons = new ArrayList<>();
+      for (int i = startIndex; i < this.numOfVariants && i < startIndex + maxSkinsPerPage; i++) {
+        Enum<?> variant = this.variants[i];
+        ResourceLocation resourceLocation = this.entity.getTextureLocation(variant);
+        int left = this.leftPos + 40 + (skinPosition * 45);
+        int top = this.topPos + 60 + positionTop;
+        ScreenHelper.renderEntitySkin(left,
+            top, left - this.xMouse,
+            top - 40 - this.yMouse, this.entity, resourceLocation);
+
+        // Create dynamically button for each skin variant.
+        Button skinButton = new Button(left - 20, top + 5,
+        40, 20, new TranslatableComponent("Select"), button -> {
+          NetworkHandler.variantChange(this.uuid, variant);
+        });
+        if (this.entity.getVariant().equals(variant)) {
+          skinButton.active = false;
+        }
+        skinButton.render(poseStack, x, y, partialTicks);
+        skinButtons.add(skinButton);
+        skinPosition++;
+      }
     }
   }
 
   @Override
   public void init() {
     super.init();
+
+    // Cache
+    if (this.entity != null) {
+      this.variants = this.entity.getVariants();
+      this.numOfVariants = this.variants.length;
+    }
 
     // Default stats
     this.imageHeight = 220;
@@ -80,17 +136,33 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
     this.leftPos = (this.width - this.imageWidth) / 2;
 
     // Name
-    this.nameBox = new EditBox(this.font, this.leftPos + 7, this.topPos + 32, 261, 16,
+    this.nameBox = new EditBox(this.font, this.leftPos + 7, this.topPos + 31, 180, 18,
         new TranslatableComponent("Name"));
     this.nameBox.setMaxLength(32);
     this.nameBox.setValue(
         this.entity.hasCustomName() ? this.entity.getCustomName().getString() : "My Easy NPC");
     this.addRenderableWidget(this.nameBox);
 
+    this.saveNameButton = this.addRenderableWidget(new Button(this.leftPos + 190, this.topPos + 30,
+        80, 20, new TranslatableComponent("Save"), onPress -> {
+          this.saveName();
+        }));
+
     // Dialog
-    this.editDialogButton = this.addRenderableWidget(new Button(this.leftPos + 60, this.topPos + 67,
+    this.editDialogButton = this.addRenderableWidget(new Button(this.leftPos + 10, this.topPos + 54,
         80, 20, new TranslatableComponent("Edit Dialog"), onPress -> {
           log.info("Edit dialog ...");
+          DialogType dialogType = this.entity.getDialogType();
+          switch (dialogType) {
+            case BASIC:
+              NetworkHandler.openDialog(uuid, "BasicDialogConfiguration");
+              break;
+            case YES_NO:
+              NetworkHandler.openDialog(uuid, "YesNoDialogConfiguration");
+              break;
+            default:
+              NetworkHandler.openDialog(uuid, "DialogConfiguration");
+          }
         }));
 
     // Skins
@@ -108,17 +180,13 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
     this.font.draw(poseStack, new TextComponent("Name"), this.leftPos + 7f, this.topPos + 20f,
         4210752);
 
-    // Dialog
-    this.font.draw(poseStack, new TextComponent("Dialog"), this.leftPos + 7f, this.topPos + 55f,
-        4210752);
-
-
     // Skins
-    this.font.draw(poseStack, new TextComponent("Skins"), this.leftPos + 7f, this.topPos + 90f,
+    this.font.draw(poseStack, new TextComponent("Skins"), this.leftPos + 7f, this.topPos + 80f,
         4210752);
+    this.renderSkins(poseStack, x, y, partialTicks);
 
     // Actions
-    this.font.draw(poseStack, new TextComponent("Actions"), this.leftPos + 7f, this.topPos + 180f,
+    this.font.draw(poseStack, new TextComponent("Actions"), this.leftPos + 7f, this.topPos + 190f,
         4210752);
   }
 
@@ -147,12 +215,21 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
     if (keyCode != 257 && keyCode != 335 && keyCode != 69) {
       return super.keyPressed(keyCode, unused1, unused2);
     } else if (keyCode == 257 || keyCode == 335) {
-      // Save name on enter or return.
-      this.saveName();
       return true;
     } else {
       return true;
     }
+  }
+
+  @Override
+  public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    // Make sure we pass the mouse click to the dynamically added buttons, if any.
+    if (!skinButtons.isEmpty()) {
+      for (Button skinButton: skinButtons) {
+        skinButton.mouseClicked(mouseX, mouseY, button);
+      }
+    }
+    return super.mouseClicked(mouseX, mouseY, button);
   }
 
 }

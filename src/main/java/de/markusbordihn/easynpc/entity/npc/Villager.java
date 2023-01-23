@@ -19,9 +19,14 @@
 
 package de.markusbordihn.easynpc.entity.npc;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.Util;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -40,6 +45,16 @@ public class Villager extends EasyNPCEntity {
   public static final String ID = "villager";
   public static final String NAME = "Villager";
 
+  // Skin Details
+  public enum Variant {
+    DEFAULT
+  }
+
+  protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
+      Util.make(new EnumMap<>(Variant.class), map -> {
+        map.put(Variant.DEFAULT, new ResourceLocation("textures/entity/villager/villager.png"));
+      });
+
   public Villager(EntityType<? extends AbstractVillager> entityType, Level level) {
     super(entityType, level);
   }
@@ -47,6 +62,26 @@ public class Villager extends EasyNPCEntity {
   public static AttributeSupplier.Builder createAttributes() {
     return Mob.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0.5F)
         .add(Attributes.MAX_HEALTH, 16.0D).add(Attributes.ATTACK_DAMAGE, 0.0D);
+  }
+
+  @Override
+  public Enum<?>[] getVariants() {
+    return Variant.values();
+  }
+
+  @Override
+  public Enum<?> getDefaultVariant() {
+    return Variant.DEFAULT;
+  }
+
+  @Override
+  public Enum<?> getVariant(String name) {
+    return Variant.valueOf(name);
+  }
+
+  @Override
+  public ResourceLocation getTextureLocation(Enum<?> variant) {
+    return TEXTURE_BY_VARIANT.get(variant);
   }
 
 }

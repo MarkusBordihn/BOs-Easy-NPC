@@ -25,43 +25,49 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraftforge.network.NetworkEvent;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.dialog.DialogType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 
-public class MessageNameChange {
+public class MessageSaveDialog {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   protected final String uuid;
-  protected final String name;
+  protected final DialogType dialogType;
+  protected final String dialog;
 
-  public MessageNameChange(String uuid, String name) {
+  public MessageSaveDialog(String uuid, String dialogType, String dialog) {
     this.uuid = uuid;
-    this.name = name;
+    this.dialogType = DialogType.valueOf(dialogType);
+    this.dialog = dialog;
   }
 
-  public String getName() {
-    return this.name;
+  public DialogType getDialogType() {
+    return this.dialogType != null ? this.dialogType : DialogType.NONE;
+  }
+
+  public String getDialog() {
+    return this.dialog;
   }
 
   public String getUUID() {
     return this.uuid;
   }
 
-  public static void handle(MessageNameChange message,
+  public static void handle(MessageSaveDialog message,
       Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessageNameChange message, NetworkEvent.Context context) {
+  public static void handlePacket(MessageSaveDialog message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     if (serverPlayer == null) {
       log.error("Unable to get server player for message {} from {}", message, context);
@@ -75,10 +81,18 @@ public class MessageNameChange {
       return;
     }
 
-    // Validate name.
-    String name = message.getName();
-    if (name == null || name.isEmpty()) {
-      log.error("Invalid name {} for {} from {}", name, message, serverPlayer);
+    // Validate dialog type.
+    DialogType dialogType = message.getDialogType();
+    if (dialogType == null) {
+      log.error("Invalid dialog type {} for {} from {}", dialogType, message, serverPlayer);
+      return;
+    }
+
+    // Validate dialog.
+    String dialog = message.getDialog();
+    if (dialog == null) {
+      log.error("Invalid dialog {} for type {} and {} from {}", dialog, dialogType, message,
+          serverPlayer);
       return;
     }
 
@@ -90,8 +104,10 @@ public class MessageNameChange {
     }
 
     // Perform action.
-    log.debug("Change name {} for {} from {}", name, easyNPCEntity, serverPlayer);
-    easyNPCEntity.setCustomName(new TextComponent(name));
+    log.debug("Saving dialog {}: {} for {} from {}", dialogType, dialog, easyNPCEntity,
+        serverPlayer);
+    easyNPCEntity.setDialogType(dialogType);
+    easyNPCEntity.setDialog(dialog);
   }
 
 }

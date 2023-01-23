@@ -25,7 +25,6 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraftforge.network.NetworkEvent;
@@ -34,34 +33,34 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 
-public class MessageNameChange {
+public class MessageVariantChange {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   protected final String uuid;
-  protected final String name;
+  protected final String variant;
 
-  public MessageNameChange(String uuid, String name) {
+  public MessageVariantChange(String uuid, String variant) {
     this.uuid = uuid;
-    this.name = name;
+    this.variant = variant;
   }
 
-  public String getName() {
-    return this.name;
+  public String getVariant() {
+    return this.variant;
   }
 
   public String getUUID() {
     return this.uuid;
   }
 
-  public static void handle(MessageNameChange message,
+  public static void handle(MessageVariantChange message,
       Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessageNameChange message, NetworkEvent.Context context) {
+  public static void handlePacket(MessageVariantChange message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     if (serverPlayer == null) {
       log.error("Unable to get server player for message {} from {}", message, context);
@@ -76,9 +75,9 @@ public class MessageNameChange {
     }
 
     // Validate name.
-    String name = message.getName();
-    if (name == null || name.isEmpty()) {
-      log.error("Invalid name {} for {} from {}", name, message, serverPlayer);
+    String variant = message.getVariant();
+    if (variant == null || variant.isEmpty()) {
+      log.error("Invalid variant {} for {} from {}", variant, message, serverPlayer);
       return;
     }
 
@@ -90,8 +89,8 @@ public class MessageNameChange {
     }
 
     // Perform action.
-    log.debug("Change name {} for {} from {}", name, easyNPCEntity, serverPlayer);
-    easyNPCEntity.setCustomName(new TextComponent(name));
+    log.debug("Change variant {} for {} from {}", variant, easyNPCEntity, serverPlayer);
+    easyNPCEntity.setVariant(variant);
   }
 
 }
