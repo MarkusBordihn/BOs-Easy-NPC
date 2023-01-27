@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextComponent;
@@ -50,10 +51,20 @@ public class EasyNPCEntityData extends AbstractVillager {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   // Default values
-  private boolean hasTextureLocation = false;
+  private ResourceLocation baseTextureLocation;
+  private ResourceLocation professionTextureLocation;
   private ResourceLocation textureLocation;
+  private boolean hasBaseTextureLocation = false;
+  private boolean hasProfessionTextureLocation = false;
+  private boolean hasTextureLocation = false;
 
-  // Skin Details
+  // Default Professions
+  private static final Map<Profession, ResourceLocation> TEXTURE_BY_PROFESSION =
+      Util.make(new EnumMap<>(Profession.class), map -> {
+        map.put(Profession.NONE, new ResourceLocation(Constants.MOD_ID, "textures/entity/blank.png"));
+      });
+
+  // Default Variants
   private enum Variant {
     STEVE
   }
@@ -70,6 +81,8 @@ public class EasyNPCEntityData extends AbstractVillager {
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
   protected static final EntityDataAccessor<Optional<UUID>> DATA_OWNER_UUID_ID =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.OPTIONAL_UUID);
+  private static final EntityDataAccessor<String> DATA_PROFESSION =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
   private static final EntityDataAccessor<String> DATA_VARIANT =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
 
@@ -77,13 +90,28 @@ public class EasyNPCEntityData extends AbstractVillager {
   private static final String DATA_OWNER_TAG = "Owner";
   private static final String DATA_DIALOG_TYPE_TAG = "DialogType";
   private static final String DATA_DIALOG_TAG = "Dialog";
+  private static final String DATA_PROFESSION_TAG = "Profession";
   private static final String DATA_VARIANT_TAG = "Variant";
 
   // Temporary stats
+  private Enum<?> lastProfession = Profession.NONE;
   private Enum<?> lastVariant = Variant.STEVE;
 
   public EasyNPCEntityData(EntityType<? extends AbstractVillager> entityType, Level level) {
     super(entityType, level);
+  }
+
+  public boolean hasBaseTextureLocation() {
+    return this.hasBaseTextureLocation;
+  }
+
+  public ResourceLocation getBaseTextureLocation() {
+    return this.baseTextureLocation;
+  }
+
+  public void setBaseTextureLocation(ResourceLocation textureLocation) {
+    this.baseTextureLocation = textureLocation;
+    this.hasBaseTextureLocation = this.baseTextureLocation != null;
   }
 
   public boolean hasTextureLocation() {
@@ -100,7 +128,7 @@ public class EasyNPCEntityData extends AbstractVillager {
 
   public void setTextureLocation(ResourceLocation textureLocation) {
     this.textureLocation = textureLocation;
-    this.hasTextureLocation = this.textureLocation != null;
+    this.hasTextureLocation = textureLocation != null;
   }
 
   public void setTextureLocation(Enum<?> variant) {
@@ -109,6 +137,32 @@ public class EasyNPCEntityData extends AbstractVillager {
       setTextureLocation(resourceLocation);
     } else {
       log.error("Unknown texture {} for variant {} and {}", resourceLocation, variant, this);
+    }
+  }
+
+  public boolean hasProfessionTextureLocation() {
+    return this.hasProfessionTextureLocation;
+  }
+
+  public ResourceLocation getProfessionTextureLocation() {
+    return this.professionTextureLocation;
+  }
+
+  public ResourceLocation getProfessionTextureLocation(Enum<?> profession) {
+    return TEXTURE_BY_PROFESSION.get(profession);
+  }
+
+  public void setProfessionTextureLocation(ResourceLocation textureLocation) {
+    this.professionTextureLocation = textureLocation;
+    this.hasProfessionTextureLocation = textureLocation != null;
+  }
+
+  public void setProfessionTextureLocation(Enum<?> profession) {
+    ResourceLocation resourceLocation = getProfessionTextureLocation(profession);
+    if (resourceLocation != null) {
+      setProfessionTextureLocation(resourceLocation);
+    } else {
+      log.error("Unknown texture {} for profession {} and {}", resourceLocation, profession, this);
     }
   }
 
@@ -130,6 +184,52 @@ public class EasyNPCEntityData extends AbstractVillager {
 
   public void setDialog(String dialog) {
     this.entityData.set(DATA_DIALOG, dialog);
+  }
+
+  public Enum<?> getDefaultProfession() {
+    return Profession.NONE;
+  }
+
+  public Enum<?> getProfession() {
+    return getProfession(this.entityData.get(DATA_PROFESSION));
+  }
+
+  public Enum<?> getProfession(String name) {
+    return Profession.valueOf(name);
+  }
+
+  public void setProfession(Enum<?> profession) {
+    if (!this.lastProfession.equals(profession)) {
+      this.entityData.set(DATA_PROFESSION, profession.name());
+      this.setProfessionTextureLocation(profession);
+      this.lastProfession = profession;
+    }
+  }
+
+  public void setProfession(String name) {
+    Enum<?> profession = getProfession(name);
+    if (profession != null) {
+      setProfession(profession);
+    } else {
+      log.error("Unknown profession {} for {}", name, this);
+    }
+  }
+
+  public boolean hasProfessions() {
+    return false;
+  }
+
+  public Enum<?>[] getProfessions() {
+    return Profession.values();
+  }
+
+  public boolean hasProfession() {
+    return false;
+  }
+
+  public boolean hasChangedProfession() {
+    return this.lastProfession != null
+        && !this.lastProfession.name().equals(getProfession().name());
   }
 
   public Enum<?> getDefaultVariant() {
@@ -188,6 +288,7 @@ public class EasyNPCEntityData extends AbstractVillager {
     this.entityData.define(DATA_DIALOG_TYPE, DialogType.NONE.name());
     this.entityData.define(DATA_DIALOG, "");
     this.entityData.define(DATA_OWNER_UUID_ID, Optional.empty());
+    this.entityData.define(DATA_PROFESSION, this.getDefaultProfession().name());
     this.entityData.define(DATA_VARIANT, this.getDefaultVariant().name());
   }
 
@@ -202,6 +303,9 @@ public class EasyNPCEntityData extends AbstractVillager {
     }
     if (this.getOwnerUUID() != null) {
       compoundTag.putUUID(DATA_OWNER_TAG, this.getOwnerUUID());
+    }
+    if (this.getProfession() != null) {
+      compoundTag.putString(DATA_PROFESSION_TAG, this.getProfession().name());
     }
     if (this.getVariant() != null) {
       compoundTag.putString(DATA_VARIANT_TAG, this.getVariant().name());
@@ -228,6 +332,12 @@ public class EasyNPCEntityData extends AbstractVillager {
       UUID uuid = compoundTag.getUUID(DATA_OWNER_TAG);
       if (uuid != null) {
         this.setOwnerUUID(uuid);
+      }
+    }
+    if (compoundTag.contains(DATA_PROFESSION_TAG)) {
+      String profession = compoundTag.getString(DATA_PROFESSION_TAG);
+      if (profession != null && !profession.isEmpty()) {
+        this.setProfession(this.getProfession(profession));
       }
     }
     if (compoundTag.contains(DATA_VARIANT_TAG)) {

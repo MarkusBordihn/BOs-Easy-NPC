@@ -135,8 +135,8 @@ public class ScreenHelper {
     Lighting.setupFor3DItems();
   }
 
-  public static void renderEntitySkin(int x, int y, float yRot, float xRot,
-      EasyNPCEntity entity, ResourceLocation textureLocation) {
+  public static void renderEntitySkin(int x, int y, float yRot, float xRot, EasyNPCEntity entity,
+      ResourceLocation variantTextureLocation, ResourceLocation professionTextureLocation) {
     float f = (float) Math.atan(yRot / 40.0F);
     float f1 = (float) Math.atan(xRot / 40.0F);
     int scale = 30;
@@ -160,13 +160,18 @@ public class ScreenHelper {
     float entityYHeadRotO = entity.yHeadRotO;
     float entityYHeadRot = entity.yHeadRot;
     ResourceLocation entityTextureLocation = entity.getTextureLocation();
+    ResourceLocation entityProfessionTextureLocation =
+        professionTextureLocation != null ? entity.getProfessionTextureLocation() : null;
 
     // Adjust entity information for rendering
     entity.yBodyRot = 180.0F + f * 20.0F;
     entity.setYRot(180.0F + f * 40.0F);
     entity.setXRot(-f1 * 20.0F);
     entity.yHeadRot = entity.getYRot();
-    entity.setTextureLocation(textureLocation);
+    entity.setTextureLocation(variantTextureLocation);
+    if (professionTextureLocation != null) {
+      entity.setProfessionTextureLocation(professionTextureLocation);
+    }
     Component customName = entity.getCustomName();
     entity.setCustomName(null);
     Lighting.setupForEntityInInventory();
@@ -190,6 +195,9 @@ public class ScreenHelper {
     entity.yHeadRotO = entityYHeadRotO;
     entity.setCustomName(customName);
     entity.setTextureLocation(entityTextureLocation);
+    if (entityProfessionTextureLocation != null) {
+      entity.setProfessionTextureLocation(entityProfessionTextureLocation);
+    }
     poseStack.popPose();
     RenderSystem.applyModelViewMatrix();
     Lighting.setupFor3DItems();

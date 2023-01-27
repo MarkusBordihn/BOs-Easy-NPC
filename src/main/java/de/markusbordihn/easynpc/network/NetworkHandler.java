@@ -35,6 +35,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.dialog.DialogType;
 import de.markusbordihn.easynpc.network.message.MessageNameChange;
 import de.markusbordihn.easynpc.network.message.MessageOpenDialog;
+import de.markusbordihn.easynpc.network.message.MessageProfessionChange;
 import de.markusbordihn.easynpc.network.message.MessageSaveDialog;
 import de.markusbordihn.easynpc.network.message.MessageVariantChange;
 
@@ -79,6 +80,13 @@ public class NetworkHandler {
       }, buffer -> new MessageSaveDialog(buffer.readUtf(), buffer.readUtf(), buffer.readUtf()),
           MessageSaveDialog::handle);
 
+      // Profession Change: Client -> Server
+      INSTANCE.registerMessage(id++, MessageProfessionChange.class, (message, buffer) -> {
+        buffer.writeUtf(message.getUUID());
+        buffer.writeUtf(message.getProfession());
+      }, buffer -> new MessageProfessionChange(buffer.readUtf(), buffer.readUtf()),
+          MessageProfessionChange::handle);
+
       // Variant Change: Client -> Server
       INSTANCE.registerMessage(id++, MessageVariantChange.class, (message, buffer) -> {
         buffer.writeUtf(message.getUUID());
@@ -106,6 +114,13 @@ public class NetworkHandler {
   public static void saveDialog(UUID uuid, DialogType dialogType, String dialog) {
     if (uuid != null && dialogType != null && dialog != null) {
       INSTANCE.sendToServer(new MessageSaveDialog(uuid.toString(), dialogType.name(), dialog));
+    }
+  }
+
+  /** Send profession change. */
+  public static void professionChange(UUID uuid, Enum<?> profession) {
+    if (uuid != null && profession != null) {
+      INSTANCE.sendToServer(new MessageProfessionChange(uuid.toString(), profession.name()));
     }
   }
 

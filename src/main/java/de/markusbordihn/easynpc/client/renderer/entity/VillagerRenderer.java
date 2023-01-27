@@ -25,12 +25,15 @@ import net.minecraft.client.model.VillagerModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.layers.CrossedArmsItemLayer;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import de.markusbordihn.easynpc.client.renderer.entity.layers.ProfessionLayer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.VariantLayer;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 
 @OnlyIn(Dist.CLIENT)
@@ -41,12 +44,15 @@ public class VillagerRenderer extends MobRenderer<EasyNPCEntity, VillagerModel<E
 
   public VillagerRenderer(EntityRendererProvider.Context context) {
     super(context, new VillagerModel<>(context.bakeLayer(ModelLayers.VILLAGER)), 0.5F);
+    this.addLayer(new VariantLayer<>(this, context.getModelSet()));
     this.addLayer(new CustomHeadLayer<>(this, context.getModelSet()));
+    this.addLayer(new ProfessionLayer<>(this, context.getModelSet()));
+    this.addLayer(new CrossedArmsItemLayer<>(this));
   }
 
   public ResourceLocation getTextureLocation(EasyNPCEntity entity) {
-    if (entity.hasTextureLocation()) {
-      return entity.getTextureLocation();
+    if (entity.hasBaseTextureLocation()) {
+      return entity.getBaseTextureLocation();
     }
     return DEFAULT_LOCATION;
   }

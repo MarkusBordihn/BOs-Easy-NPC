@@ -28,6 +28,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -59,13 +60,24 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
   // Internal
   private Button editDialogButton;
   private Button saveNameButton = null;
+  private Button skinPreviousButton = null;
+  private Button skinNextButton = null;
+  private Button skinPreviousPageButton = null;
+  private Button skinNextPageButton = null;
   private List<Button> skinButtons = new ArrayList<>();
   private EditBox nameBox;
   private float xMouse;
   private float yMouse;
 
+  // Skin Preview
+  private int skinStartIndex = 0;
+  private int maxSkinsPerPage = 5;
+
   // Cache
+  private Enum<?>[] professions;
   private Enum<?>[] variants;
+  private int numOfProfessions = 0;
+  private int numOfSkins = 0;
   private int numOfVariants = 0;
 
   public MainConfigurationScreen(MainConfigurationMenu menu, Inventory inventory,
@@ -85,34 +97,57 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
 
   private void renderSkins(PoseStack poseStack, int x, int y, float partialTicks) {
     int positionTop = 100;
-    int startIndex = 0;
-    int maxSkinsPerPage = 5;
 
     if (this.entity != null) {
       int skinPosition = 0;
       skinButtons = new ArrayList<>();
-      for (int i = startIndex; i < this.numOfVariants && i < startIndex + maxSkinsPerPage; i++) {
-        Enum<?> variant = this.variants[i];
-        ResourceLocation resourceLocation = this.entity.getTextureLocation(variant);
-        int left = this.leftPos + 40 + (skinPosition * 45);
+      for (int i = skinStartIndex; i < this.numOfSkins
+          && i < skinStartIndex + maxSkinsPerPage; i++) {
+        int variantIndex = this.numOfProfessions > 0 ? i / this.numOfProfessions : i;
+        Enum<?> variant = this.variants[variantIndex];
+        int left = this.leftPos + 40 + (skinPosition * 48);
         int top = this.topPos + 60 + positionTop;
-        ScreenHelper.renderEntitySkin(left,
-            top, left - this.xMouse,
-            top - 40 - this.yMouse, this.entity, resourceLocation);
 
-        // Create dynamically button for each skin variant.
-        Button skinButton = new Button(left - 20, top + 5,
-        40, 20, new TranslatableComponent("Select"), button -> {
-          NetworkHandler.variantChange(this.uuid, variant);
-        });
-        if (this.entity.getVariant().equals(variant)) {
-          skinButton.active = false;
+        // Render skin position
+        this.font.draw(poseStack, new TextComponent(i + ""), left - 6, top - 70, 4210752);
+
+        // Render additional Professions, if any.
+        if (this.numOfProfessions > 0) {
+          Enum<?> profession = this.professions[i - (variantIndex * this.numOfProfessions)];
+          this.renderSkinEntity(poseStack, left, top, partialTicks, variant, profession);
+        } else {
+          this.renderSkinEntity(poseStack, left, top, partialTicks, variant, null);
         }
-        skinButton.render(poseStack, x, y, partialTicks);
-        skinButtons.add(skinButton);
         skinPosition++;
       }
     }
+  }
+
+  private void renderSkinEntity(PoseStack poseStack, int x, int y, float partialTicks,
+      Enum<?> variant, Enum<?> profession) {
+    // Get relevant texture for the preview
+    ResourceLocation variantResourceLocation = this.entity.getTextureLocation(variant);
+    ResourceLocation professionResourceLocation =
+        profession != null ? this.entity.getProfessionTextureLocation(profession) : null;
+
+    // Render skin entity with variant and profession.
+    ScreenHelper.renderEntitySkin(x, y, x - this.xMouse, y - 40 - this.yMouse, this.entity,
+        variantResourceLocation, professionResourceLocation);
+
+    // Create dynamically button for each skin variant and profession.
+    Button skinButton =
+        new Button(x - 20, y + 5, 40, 20, new TranslatableComponent("Select"), button -> {
+          NetworkHandler.variantChange(this.uuid, variant);
+          if (profession != null) {
+            NetworkHandler.professionChange(this.uuid, profession);
+          }
+        });
+    if (this.entity.getVariant().equals(variant)
+        && this.entity.getProfession().equals(profession)) {
+      skinButton.active = false;
+    }
+    skinButton.render(poseStack, x, y, partialTicks);
+    skinButtons.add(skinButton);
   }
 
   @Override
@@ -121,8 +156,12 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
 
     // Cache
     if (this.entity != null) {
+      this.professions = this.entity.getProfessions();
       this.variants = this.entity.getVariants();
+      this.numOfProfessions = this.entity.hasProfessions() ? this.professions.length : 0;
       this.numOfVariants = this.variants.length;
+      this.numOfSkins =
+          numOfProfessions > 0 ? this.numOfVariants * this.numOfProfessions : this.numOfVariants;
     }
 
     // Default stats
@@ -166,6 +205,42 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
         }));
 
     // Skins
+    this.skinPreviousButton = this.addRenderableWidget(new Button(this.leftPos + 7,
+        this.topPos + 90, 15, 20, new TranslatableComponent("<"), onPress -> {
+          log.info("Previous");
+          if (this.skinStartIndex > 0) {
+            skinStartIndex--;
+          }
+        }));
+    this.skinPreviousPageButton = this.addRenderableWidget(new Button(this.leftPos + 7,
+        this.topPos + 110, 15, 20, new TranslatableComponent("<<"), onPress -> {
+          log.info("Previous Page");
+          if (this.skinStartIndex - maxSkinsPerPage > 0) {
+            skinStartIndex = skinStartIndex - maxSkinsPerPage;
+          } else {
+            skinStartIndex = 0;
+          }
+        }));
+    this.skinNextButton = this.addRenderableWidget(new Button(this.leftPos + 260, this.topPos + 90,
+        15, 20, new TranslatableComponent(">"), onPress -> {
+          log.info("Next {} {}", this.numOfSkins, this.skinStartIndex);
+          if (this.skinStartIndex >= 0
+              && this.skinStartIndex < this.numOfSkins - this.maxSkinsPerPage) {
+            skinStartIndex++;
+          }
+        }));
+    this.skinNextPageButton = this.addRenderableWidget(new Button(this.leftPos + 260,
+        this.topPos + 110, 15, 20, new TranslatableComponent(">>"), onPress -> {
+          log.info("Next {} {}", this.numOfSkins, this.skinStartIndex);
+          if (this.skinStartIndex >= 0
+              && this.skinStartIndex + this.maxSkinsPerPage < this.numOfSkins) {
+            skinStartIndex = skinStartIndex + this.maxSkinsPerPage;
+          } else if (this.numOfSkins > this.maxSkinsPerPage) {
+            skinStartIndex = this.numOfSkins - this.maxSkinsPerPage;
+          } else {
+            skinStartIndex = this.numOfSkins;
+          }
+        }));
 
     // Actions
   }
@@ -225,7 +300,7 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
   public boolean mouseClicked(double mouseX, double mouseY, int button) {
     // Make sure we pass the mouse click to the dynamically added buttons, if any.
     if (!skinButtons.isEmpty()) {
-      for (Button skinButton: skinButtons) {
+      for (Button skinButton : skinButtons) {
         skinButton.mouseClicked(mouseX, mouseY, button);
       }
     }

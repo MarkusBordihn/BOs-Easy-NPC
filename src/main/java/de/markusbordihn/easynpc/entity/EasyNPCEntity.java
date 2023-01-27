@@ -32,10 +32,12 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.phys.Vec3;
 
 public class EasyNPCEntity extends EasyNPCEntityData {
 
@@ -78,6 +80,12 @@ public class EasyNPCEntity extends EasyNPCEntityData {
   }
 
   @Override
+  public void travel(Vec3 vec3) {
+    // Make sure we only calculate animations for be as much as possible server-friendly.
+    this.calculateEntityAnimation(this, this instanceof FlyingAnimal);
+  }
+
+  @Override
   @Nullable
   public SpawnGroupData finalizeSpawn(ServerLevelAccessor serverLevelAccessor,
       DifficultyInstance difficulty, MobSpawnType mobSpawnType,
@@ -114,12 +122,18 @@ public class EasyNPCEntity extends EasyNPCEntityData {
     // Perform tick for AI and other important steps.
     super.tick();
 
-    // ClientSide: Re-validated Texture cache if needed.
-    if (this.level.isClientSide && this.hasChangedVariant()
-        && textureCacheTicker++ >= TEXTURE_CACHE_TICK) {
-      Enum<?> variant = this.getVariant();
-      log.debug("Re-validated texture cache for variant {} and {}", variant, this);
-      this.setVariant(variant);
+    // Client Side only: Re-validated Texture cache if needed.
+    if (this.level.isClientSide && textureCacheTicker++ >= TEXTURE_CACHE_TICK) {
+      if (this.hasChangedProfession()) {
+        Enum<?> profession = this.getProfession();
+        log.debug("Re-validated texture cache for profession {} and {}", profession, this);
+        this.setProfession(profession);
+      }
+      if (this.hasChangedVariant()) {
+        Enum<?> variant = this.getVariant();
+        log.debug("Re-validated texture cache for variant {} and {}", variant, this);
+        this.setVariant(variant);
+      }
       textureCacheTicker = 0;
     }
   }

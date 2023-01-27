@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -46,14 +47,18 @@ public class Humanoid extends EasyNPCEntity {
 
   // Skin Details
   public enum Variant {
-    STEVE, JAYJASONBO
+    JAYJASONBO, PROFESSOR_01, SECURITY_01, STEVE
   }
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(new EnumMap<>(Variant.class), map -> {
-        map.put(Variant.STEVE, new ResourceLocation("textures/entity/steve.png"));
         map.put(Variant.JAYJASONBO,
             new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/jayjasonbo.png"));
+        map.put(Variant.PROFESSOR_01,
+            new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/professor_01.png"));
+        map.put(Variant.SECURITY_01,
+            new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/security_01.png"));
+        map.put(Variant.STEVE, new ResourceLocation("textures/entity/steve.png"));
       });
 
   public Humanoid(EntityType<? extends AbstractVillager> entityType, Level level) {

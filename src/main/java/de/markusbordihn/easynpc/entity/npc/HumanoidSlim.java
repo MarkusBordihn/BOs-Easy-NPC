@@ -21,8 +21,10 @@ package de.markusbordihn.easynpc.entity.npc;
 
 import java.util.EnumMap;
 import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -45,7 +47,7 @@ public class HumanoidSlim extends EasyNPCEntity {
 
   // Skin Details
   public enum Variant {
-    ALEX, KAWORRU, THE_FAITHY
+    ALEX, KAWORRU, THE_FAITHY;
   }
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
