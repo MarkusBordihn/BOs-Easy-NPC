@@ -43,6 +43,10 @@ public class ModEntityType {
       DeferredRegister.create(ForgeRegistries.ENTITIES, Constants.MOD_ID);
 
   // Default NPC Entity
+  public static final RegistryObject<EntityType<Fairy>> FAIRY = ENTITIES.register(Fairy.ID,
+      () -> EntityType.Builder.<Fairy>of(Fairy::new, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F)
+          .clientTrackingRange(8).build(Fairy.ID));
+
   public static final RegistryObject<EntityType<Humanoid>> HUMANOID = ENTITIES.register(Humanoid.ID,
       () -> EntityType.Builder.<Humanoid>of(Humanoid::new, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F)
           .clientTrackingRange(8).build(Humanoid.ID));
@@ -67,12 +71,13 @@ public class ModEntityType {
 
   @SubscribeEvent
   public static final void entityAttributeCreation(EntityAttributeCreationEvent event) {
-    // Create Attributes for Default NPC Entities
+    // Default NPC Entities
+    event.put(FAIRY.get(), Fairy.createAttributes().build());
     event.put(HUMANOID.get(), Humanoid.createAttributes().build());
     event.put(HUMANOID_SLIM.get(), HumanoidSlim.createAttributes().build());
     event.put(VILLAGER.get(), Villager.createAttributes().build());
 
-    // Create Attributes for Custom NPC Entities
+    // Custom NPC Entities
     event.put(JAYJASONBO.get(), HumanoidSlim.createAttributes().build());
     event.put(KAWORRU.get(), HumanoidSlim.createAttributes().build());
   }

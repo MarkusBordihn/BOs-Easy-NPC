@@ -31,7 +31,6 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -61,7 +60,8 @@ public class EasyNPCEntityData extends AbstractVillager {
   // Default Professions
   private static final Map<Profession, ResourceLocation> TEXTURE_BY_PROFESSION =
       Util.make(new EnumMap<>(Profession.class), map -> {
-        map.put(Profession.NONE, new ResourceLocation(Constants.MOD_ID, "textures/entity/blank.png"));
+        map.put(Profession.NONE,
+            new ResourceLocation(Constants.MOD_ID, "textures/entity/blank.png"));
       });
 
   // Default Variants
@@ -79,6 +79,14 @@ public class EasyNPCEntityData extends AbstractVillager {
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
   private static final EntityDataAccessor<String> DATA_DIALOG =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
+  private static final EntityDataAccessor<String> DATA_YES_DIALOG_BUTTON =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
+  private static final EntityDataAccessor<String> DATA_YES_DIALOG =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
+  private static final EntityDataAccessor<String> DATA_NO_DIALOG_BUTTON =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
+  private static final EntityDataAccessor<String> DATA_NO_DIALOG =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
   protected static final EntityDataAccessor<Optional<UUID>> DATA_OWNER_UUID_ID =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.OPTIONAL_UUID);
   private static final EntityDataAccessor<String> DATA_PROFESSION =
@@ -90,6 +98,10 @@ public class EasyNPCEntityData extends AbstractVillager {
   private static final String DATA_OWNER_TAG = "Owner";
   private static final String DATA_DIALOG_TYPE_TAG = "DialogType";
   private static final String DATA_DIALOG_TAG = "Dialog";
+  private static final String DATA_NO_DIALOG_BUTTON_TAG = "NoDialogButton";
+  private static final String DATA_NO_DIALOG_TAG = "NoDialog";
+  private static final String DATA_YES_DIALOG_BUTTON_TAG = "YesDialogButton";
+  private static final String DATA_YES_DIALOG_TAG = "YesDialog";
   private static final String DATA_PROFESSION_TAG = "Profession";
   private static final String DATA_VARIANT_TAG = "Variant";
 
@@ -178,12 +190,40 @@ public class EasyNPCEntityData extends AbstractVillager {
     return this.entityData.get(DATA_DIALOG);
   }
 
-  public TextComponent getDialogComponent() {
-    return new TextComponent(this.entityData.get(DATA_DIALOG));
-  }
-
   public void setDialog(String dialog) {
     this.entityData.set(DATA_DIALOG, dialog);
+  }
+
+  public String getNoDialog() {
+    return this.entityData.get(DATA_NO_DIALOG);
+  }
+
+  public void setNoDialog(String dialog) {
+    this.entityData.set(DATA_NO_DIALOG, dialog);
+  }
+
+  public String getNoDialogButton() {
+    return this.entityData.get(DATA_NO_DIALOG_BUTTON);
+  }
+
+  public void setNoDialogButton(String dialogButton) {
+    this.entityData.set(DATA_NO_DIALOG_BUTTON, dialogButton);
+  }
+
+  public String getYesDialog() {
+    return this.entityData.get(DATA_YES_DIALOG);
+  }
+
+  public void setYesDialog(String dialog) {
+    this.entityData.set(DATA_YES_DIALOG, dialog);
+  }
+
+  public String getYesDialogButton() {
+    return this.entityData.get(DATA_YES_DIALOG_BUTTON);
+  }
+
+  public void setYesDialogButton(String dialogButton) {
+    this.entityData.set(DATA_YES_DIALOG_BUTTON, dialogButton);
   }
 
   public Enum<?> getDefaultProfession() {
@@ -287,6 +327,10 @@ public class EasyNPCEntityData extends AbstractVillager {
     super.defineSynchedData();
     this.entityData.define(DATA_DIALOG_TYPE, DialogType.NONE.name());
     this.entityData.define(DATA_DIALOG, "");
+    this.entityData.define(DATA_NO_DIALOG, "");
+    this.entityData.define(DATA_NO_DIALOG_BUTTON, "No");
+    this.entityData.define(DATA_YES_DIALOG, "");
+    this.entityData.define(DATA_YES_DIALOG_BUTTON, "Yes");
     this.entityData.define(DATA_OWNER_UUID_ID, Optional.empty());
     this.entityData.define(DATA_PROFESSION, this.getDefaultProfession().name());
     this.entityData.define(DATA_VARIANT, this.getDefaultVariant().name());
@@ -300,6 +344,18 @@ public class EasyNPCEntityData extends AbstractVillager {
     }
     if (this.getDialog() != null) {
       compoundTag.putString(DATA_DIALOG_TAG, this.getDialog());
+    }
+    if (this.getNoDialog() != null) {
+      compoundTag.putString(DATA_NO_DIALOG_TAG, this.getNoDialog());
+    }
+    if (this.getNoDialogButton() != null) {
+      compoundTag.putString(DATA_NO_DIALOG_BUTTON_TAG, this.getNoDialogButton());
+    }
+    if (this.getYesDialog() != null) {
+      compoundTag.putString(DATA_YES_DIALOG_TAG, this.getYesDialog());
+    }
+    if (this.getYesDialogButton() != null) {
+      compoundTag.putString(DATA_YES_DIALOG_BUTTON_TAG, this.getYesDialogButton());
     }
     if (this.getOwnerUUID() != null) {
       compoundTag.putUUID(DATA_OWNER_TAG, this.getOwnerUUID());
@@ -326,6 +382,30 @@ public class EasyNPCEntityData extends AbstractVillager {
       String dialog = compoundTag.getString(DATA_DIALOG_TAG);
       if (dialog != null) {
         this.setDialog(dialog);
+      }
+    }
+    if (compoundTag.contains(DATA_NO_DIALOG_TAG)) {
+      String dialog = compoundTag.getString(DATA_NO_DIALOG_TAG);
+      if (dialog != null) {
+        this.setNoDialog(dialog);
+      }
+    }
+    if (compoundTag.contains(DATA_NO_DIALOG_BUTTON_TAG)) {
+      String dialogButton = compoundTag.getString(DATA_NO_DIALOG_BUTTON_TAG);
+      if (dialogButton != null) {
+        this.setNoDialogButton(dialogButton);
+      }
+    }
+    if (compoundTag.contains(DATA_YES_DIALOG_TAG)) {
+      String dialog = compoundTag.getString(DATA_YES_DIALOG_TAG);
+      if (dialog != null) {
+        this.setYesDialog(dialog);
+      }
+    }
+    if (compoundTag.contains(DATA_YES_DIALOG_BUTTON_TAG)) {
+      String dialogButton = compoundTag.getString(DATA_YES_DIALOG_BUTTON_TAG);
+      if (dialogButton != null) {
+        this.setYesDialogButton(dialogButton);
       }
     }
     if (compoundTag.hasUUID(DATA_OWNER_TAG)) {
@@ -362,6 +442,26 @@ public class EasyNPCEntityData extends AbstractVillager {
   @Override
   public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
     return null;
+  }
+
+  @SuppressWarnings("java:S3400")
+  public int getEntityGuiScaling() {
+    return 30;
+  }
+
+  @SuppressWarnings("java:S3400")
+  public int getEntityGuiTop() {
+    return 0;
+  }
+
+  @SuppressWarnings("java:S3400")
+  public int getEntityDialogTop() {
+    return 0;
+  }
+
+  @SuppressWarnings("java:S3400")
+  public int getEntityDialogScaling() {
+    return 50;
   }
 
 }

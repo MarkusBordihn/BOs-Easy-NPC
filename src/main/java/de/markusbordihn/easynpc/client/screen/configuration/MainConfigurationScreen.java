@@ -58,8 +58,8 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
   protected final UUID uuid;
 
   // Internal
-  private Button editDialogButton;
-  private Button saveNameButton = null;
+  protected Button editDialogButton;
+  protected Button saveNameButton = null;
   private Button skinPreviousButton = null;
   private Button skinNextButton = null;
   private Button skinPreviousPageButton = null;
@@ -76,9 +76,9 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
   // Cache
   private Enum<?>[] professions;
   private Enum<?>[] variants;
-  private int numOfProfessions = 0;
-  private int numOfSkins = 0;
-  private int numOfVariants = 0;
+  protected int numOfProfessions = 0;
+  protected int numOfSkins = 0;
+  protected int numOfVariants = 0;
 
   public MainConfigurationScreen(MainConfigurationMenu menu, Inventory inventory,
       Component component) {
@@ -95,31 +95,33 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
     }
   }
 
-  private void renderSkins(PoseStack poseStack, int x, int y, float partialTicks) {
+  private void renderSkins(PoseStack poseStack, float partialTicks) {
+    if (this.entity == null) {
+      return;
+    }
+
     int positionTop = 100;
+    int skinPosition = 0;
+    skinButtons = new ArrayList<>();
+    for (int i = skinStartIndex; i < this.numOfSkins && i < skinStartIndex + maxSkinsPerPage; i++) {
+      int variantIndex = this.numOfProfessions > 0 ? i / this.numOfProfessions : i;
+      Enum<?> variant = this.variants[variantIndex];
+      int left = this.leftPos + 40 + (skinPosition * 48);
+      int top = this.topPos + 60 + positionTop;
 
-    if (this.entity != null) {
-      int skinPosition = 0;
-      skinButtons = new ArrayList<>();
-      for (int i = skinStartIndex; i < this.numOfSkins
-          && i < skinStartIndex + maxSkinsPerPage; i++) {
-        int variantIndex = this.numOfProfessions > 0 ? i / this.numOfProfessions : i;
-        Enum<?> variant = this.variants[variantIndex];
-        int left = this.leftPos + 40 + (skinPosition * 48);
-        int top = this.topPos + 60 + positionTop;
-
+      if (Constants.IS_MOD_DEV) {
         // Render skin position
-        this.font.draw(poseStack, new TextComponent(i + ""), left - 6, top - 70, 4210752);
-
-        // Render additional Professions, if any.
-        if (this.numOfProfessions > 0) {
-          Enum<?> profession = this.professions[i - (variantIndex * this.numOfProfessions)];
-          this.renderSkinEntity(poseStack, left, top, partialTicks, variant, profession);
-        } else {
-          this.renderSkinEntity(poseStack, left, top, partialTicks, variant, null);
-        }
-        skinPosition++;
+        this.font.draw(poseStack, new TextComponent(i + ""), left - 6f, top - 70f, 4210752);
       }
+
+      // Render additional Professions, if any.
+      if (this.numOfProfessions > 0) {
+        Enum<?> profession = this.professions[i - (variantIndex * this.numOfProfessions)];
+        this.renderSkinEntity(poseStack, left, top, partialTicks, variant, profession);
+      } else {
+        this.renderSkinEntity(poseStack, left, top, partialTicks, variant, null);
+      }
+      skinPosition++;
     }
   }
 
@@ -150,6 +152,22 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
     skinButtons.add(skinButton);
   }
 
+  private void checkSkinButtonState() {
+    // Check the visible for the buttons.
+    boolean skinButtonShouldBeVisible = this.numOfSkins > this.maxSkinsPerPage;
+    this.skinPreviousButton.visible = skinButtonShouldBeVisible;
+    this.skinNextButton.visible = skinButtonShouldBeVisible;
+    this.skinPreviousPageButton.visible = skinButtonShouldBeVisible;
+    this.skinNextPageButton.visible = skinButtonShouldBeVisible;
+
+    // Enable / disable buttons depending on the current skin index.
+    this.skinPreviousButton.active = this.skinStartIndex > 0;
+    this.skinNextButton.active = this.skinStartIndex + this.maxSkinsPerPage < this.numOfSkins;
+    this.skinPreviousPageButton.active = this.skinStartIndex - this.maxSkinsPerPage > 0;
+    this.skinNextPageButton.active =
+        this.skinStartIndex + 1 + this.maxSkinsPerPage < this.numOfSkins;
+  }
+
   @Override
   public void init() {
     super.init();
@@ -162,6 +180,8 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
       this.numOfVariants = this.variants.length;
       this.numOfSkins =
           numOfProfessions > 0 ? this.numOfVariants * this.numOfProfessions : this.numOfVariants;
+      log.debug("Found about {} skins with {} variants and {} professions.", this.numOfSkins,
+          this.numOfVariants, this.numOfProfessions);
     }
 
     // Default stats
@@ -200,53 +220,58 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
               NetworkHandler.openDialog(uuid, "YesNoDialogConfiguration");
               break;
             default:
-              NetworkHandler.openDialog(uuid, "DialogConfiguration");
+              NetworkHandler.openDialog(uuid, "BasicDialogConfiguration");
           }
         }));
 
     // Skins
-    this.skinPreviousButton = this.addRenderableWidget(new Button(this.leftPos + 7,
-        this.topPos + 90, 15, 20, new TranslatableComponent("<"), onPress -> {
-          log.info("Previous");
+    int skinButtonTop = this.topPos + 110;
+    int skinButtonLeft = this.leftPos + 7;
+    int skinButtonRight = this.leftPos + 255;
+    this.skinPreviousButton = this.addRenderableWidget(new Button(skinButtonLeft, skinButtonTop, 15,
+        20, new TranslatableComponent("<"), onPress -> {
           if (this.skinStartIndex > 0) {
             skinStartIndex--;
           }
+          checkSkinButtonState();
         }));
-    this.skinPreviousPageButton = this.addRenderableWidget(new Button(this.leftPos + 7,
-        this.topPos + 110, 15, 20, new TranslatableComponent("<<"), onPress -> {
-          log.info("Previous Page");
+    this.skinPreviousPageButton = this.addRenderableWidget(new Button(skinButtonLeft,
+        skinButtonTop + 20, 15, 20, new TranslatableComponent("<<"), onPress -> {
           if (this.skinStartIndex - maxSkinsPerPage > 0) {
             skinStartIndex = skinStartIndex - maxSkinsPerPage;
           } else {
             skinStartIndex = 0;
           }
+          checkSkinButtonState();
         }));
-    this.skinNextButton = this.addRenderableWidget(new Button(this.leftPos + 260, this.topPos + 90,
-        15, 20, new TranslatableComponent(">"), onPress -> {
-          log.info("Next {} {}", this.numOfSkins, this.skinStartIndex);
+    this.skinNextButton = this.addRenderableWidget(new Button(skinButtonRight, skinButtonTop, 15,
+        20, new TranslatableComponent(">"), onPress -> {
           if (this.skinStartIndex >= 0
               && this.skinStartIndex < this.numOfSkins - this.maxSkinsPerPage) {
             skinStartIndex++;
           }
+          checkSkinButtonState();
         }));
-    this.skinNextPageButton = this.addRenderableWidget(new Button(this.leftPos + 260,
-        this.topPos + 110, 15, 20, new TranslatableComponent(">>"), onPress -> {
-          log.info("Next {} {}", this.numOfSkins, this.skinStartIndex);
+    this.skinNextPageButton = this.addRenderableWidget(new Button(skinButtonRight,
+        skinButtonTop + 20, 15, 20, new TranslatableComponent(">>"), onPress -> {
           if (this.skinStartIndex >= 0
               && this.skinStartIndex + this.maxSkinsPerPage < this.numOfSkins) {
-            skinStartIndex = skinStartIndex + this.maxSkinsPerPage;
+            this.skinStartIndex = this.skinStartIndex + this.maxSkinsPerPage;
           } else if (this.numOfSkins > this.maxSkinsPerPage) {
-            skinStartIndex = this.numOfSkins - this.maxSkinsPerPage;
+            this.skinStartIndex = this.numOfSkins - this.maxSkinsPerPage;
           } else {
-            skinStartIndex = this.numOfSkins;
+            this.skinStartIndex = this.numOfSkins;
           }
+          checkSkinButtonState();
         }));
+    checkSkinButtonState();
 
     // Actions
   }
 
   @Override
   public void render(PoseStack poseStack, int x, int y, float partialTicks) {
+    this.renderBackground(poseStack);
     super.render(poseStack, x, y, partialTicks);
     this.xMouse = x;
     this.yMouse = y;
@@ -258,11 +283,7 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
     // Skins
     this.font.draw(poseStack, new TextComponent("Skins"), this.leftPos + 7f, this.topPos + 80f,
         4210752);
-    this.renderSkins(poseStack, x, y, partialTicks);
-
-    // Actions
-    this.font.draw(poseStack, new TextComponent("Actions"), this.leftPos + 7f, this.topPos + 190f,
-        4210752);
+    this.renderSkins(poseStack, partialTicks);
   }
 
   @Override
@@ -283,6 +304,12 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
     int expandedHeight = 50;
     this.blit(poseStack, leftPos, topPos + expandedHeight + 5, 0, 5, 250, 170);
     this.blit(poseStack, leftPos + 243, topPos + expandedHeight + 5, 215, 5, 35, 170);
+
+    // Skin Selection
+    fill(poseStack, this.leftPos + 7, this.topPos + 90, this.leftPos + 269, this.topPos + 180,
+        0xff000000);
+    fill(poseStack, this.leftPos + 8, this.topPos + 91, this.leftPos + 268, this.topPos + 179,
+        0xffaaaaaa);
   }
 
   @Override

@@ -31,7 +31,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import de.markusbordihn.easynpc.dialog.DialogType;
 import de.markusbordihn.easynpc.menu.configuration.BasicDialogConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 
@@ -39,8 +38,9 @@ import de.markusbordihn.easynpc.network.NetworkHandler;
 public class BasicDialogConfigurationScreen
     extends DialogConfigurationScreen<BasicDialogConfigurationMenu> {
 
-  private EditBox dialogBox;
-  private Button saveDialogButton = null;
+  protected EditBox dialogBox;
+  protected Button saveDialogButton = null;
+  protected Button cancelButton = null;
 
   public BasicDialogConfigurationScreen(BasicDialogConfigurationMenu menu, Inventory inventory,
       Component component) {
@@ -56,35 +56,31 @@ public class BasicDialogConfigurationScreen
     this.yesNoDialogButton.active = true;
 
     // Dialog
-    this.dialogBox = new EditBox(this.font, this.leftPos + 7, this.topPos + 70, 261, 20,
+    this.dialogBox = new EditBox(this.font, this.leftPos + 7, this.topPos + 60, 261, 20,
         new TranslatableComponent("Dialog"));
     this.dialogBox.setMaxLength(255);
     this.dialogBox.setValue(this.entity.getDialog());
     this.addRenderableWidget(this.dialogBox);
 
-    this.saveDialogButton = this.addRenderableWidget(new Button(this.leftPos + 6, this.topPos + 93,
-        80, 20, new TranslatableComponent("Save"), onPress -> {
+    // Save Button
+    this.saveDialogButton = this.addRenderableWidget(new Button(this.leftPos + 26,
+        this.topPos + 185, 80, 20, new TranslatableComponent("Save"), onPress -> {
           log.info("Save dialog ...");
-          NetworkHandler.saveDialog(uuid, DialogType.BASIC, this.dialogBox.getValue());
+          NetworkHandler.saveBasicDialog(uuid, this.dialogBox.getValue());
+        }));
+
+    // Chancel Button
+    this.cancelButton = this.addRenderableWidget(new Button(this.leftPos + 170, this.topPos + 185,
+        80, 20, new TranslatableComponent("Cancel"), onPress -> {
+          this.closeScreen();
         }));
   }
 
   @Override
   public void render(PoseStack poseStack, int x, int y, float partialTicks) {
     super.render(poseStack, x, y, partialTicks);
-    this.font.draw(poseStack, new TextComponent("Basic Dialog"), this.leftPos + 7f,
-        this.topPos + 55f, 4210752);
-  }
-
-  @Override
-  public boolean keyPressed(int keyCode, int unused1, int unused2) {
-    if (keyCode != 257 && keyCode != 335 && keyCode != 69) {
-      return super.keyPressed(keyCode, unused1, unused2);
-    } else if (keyCode == 257 || keyCode == 335) {
-      return true;
-    } else {
-      return true;
-    }
+    this.font.draw(poseStack, new TextComponent("Dialog Text"), this.leftPos + 7f,
+        this.topPos + 50f, 4210752);
   }
 
 }

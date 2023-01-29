@@ -17,22 +17,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.tabs;
+package de.markusbordihn.easynpc.client.model;
 
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import de.markusbordihn.easynpc.item.ModItems;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 
-public class EasyNPCTab {
+import de.markusbordihn.easynpc.Constants;
 
-  protected EasyNPCTab() {}
+@OnlyIn(Dist.CLIENT)
+public class ModModelLayers {
 
-  public static final CreativeModeTab TAB_SPAWN_EGGS =
-      new CreativeModeTab("easy_npc.spawn_eggs") {
-        public ItemStack makeIcon() {
-          return new ItemStack(ModItems.VILLAGER_NPC_SPAWN_EGG.get());
-        }
-      };
+  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
+  protected ModModelLayers() {}
+
+  // Model Layer Definitions
+  public static final ModelLayerLocation FAIRY =
+      new ModelLayerLocation(new ResourceLocation(Constants.MOD_ID, "fairy"), "main");
+
+  public static void registerEntityLayerDefinitions(
+      EntityRenderersEvent.RegisterLayerDefinitions event) {
+    log.info("{} Entity Layer Definitions ...", Constants.LOG_REGISTER_PREFIX);
+
+    event.registerLayerDefinition(FAIRY, FairyModel::createBodyLayer);
+  }
 }

@@ -37,21 +37,22 @@ import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 public class VariantLayer<T extends EasyNPCEntity, M extends EntityModel<T>>
     extends RenderLayer<T, M> {
 
+  @SuppressWarnings("java:S1172")
   public VariantLayer(RenderLayerParent<T, M> parent, EntityModelSet model) {
     super(parent);
   }
 
   @Override
-  public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int p_117351_,
-      T livingEntity, float p_117353_, float p_117354_, float p_117355_, float p_117356_,
-      float p_117357_, float p_117358_) {
+  public void render(PoseStack poseStack, MultiBufferSource buffer, int lightLevel, T livingEntity,
+      float limbSwing, float limbSwingAmount, float ageInTicks, float ageInTicks2, float netHeadYaw,
+      float headPitch) {
     if (livingEntity.isInvisible() || !livingEntity.hasTextureLocation()) {
       return;
     }
     M model = this.getParentModel();
     ResourceLocation resourceLocation = livingEntity.getTextureLocation();
-    renderColoredCutoutModel(model, resourceLocation, poseStack, multiBufferSource, p_117351_,
-        livingEntity, 1.0F, 1.0F, 1.0F);
+    renderColoredCutoutModel(model, resourceLocation, poseStack, buffer, lightLevel, livingEntity,
+        1.0F, 1.0F, 1.0F);
   }
 
 }

@@ -17,22 +17,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.tabs;
+package de.markusbordihn.easynpc.dialog;
 
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 
-import de.markusbordihn.easynpc.item.ModItems;
+public class DialogUtils {
 
-public class EasyNPCTab {
-
-  protected EasyNPCTab() {}
-
-  public static final CreativeModeTab TAB_SPAWN_EGGS =
-      new CreativeModeTab("easy_npc.spawn_eggs") {
-        public ItemStack makeIcon() {
-          return new ItemStack(ModItems.VILLAGER_NPC_SPAWN_EGG.get());
-        }
-      };
+  public static String parseDialog(String text, LivingEntity entity, Player player) {
+    String output = text;
+    if (entity != null && entity.hasCustomName()) {
+      output = output.replace("@npc", entity.hasCustomName() ? entity.getCustomName().getString()
+          : entity.getName().getString());
+    }
+    if (player != null) {
+      output = output.replace("@initiator", player.getName().getString());
+    }
+    return output;
+  }
 
 }

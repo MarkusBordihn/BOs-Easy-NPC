@@ -29,10 +29,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -62,6 +62,13 @@ public class DialogConfigurationScreen<T extends DialogConfigurationMenu>
     this.uuid = this.entity.getUUID();
   }
 
+  public void closeScreen() {
+    Minecraft minecraft = this.minecraft;
+    if (minecraft != null) {
+      minecraft.setScreen((Screen) null);
+    }
+  }
+
   @Override
   public void init() {
     super.init();
@@ -82,14 +89,14 @@ public class DialogConfigurationScreen<T extends DialogConfigurationMenu>
     this.leftPos = (this.width - this.imageWidth) / 2;
 
     // Dialog Types
-    this.basicDialogButton = this.addRenderableWidget(new Button(this.leftPos + 7, this.topPos + 30,
+    this.basicDialogButton = this.addRenderableWidget(new Button(this.leftPos + 7, this.topPos + 20,
         80, 20, new TranslatableComponent("Basic Dialog"), onPress -> {
           log.info("Basic dialog ...");
           NetworkHandler.openDialog(uuid, "BasicDialogConfiguration");
         }));
     this.yesNoDialogButton =
         this.addRenderableWidget(new Button(this.leftPos + 7 + this.basicDialogButton.getWidth(),
-            this.topPos + 30, 80, 20, new TranslatableComponent("Yes/No Dialog"), onPress -> {
+            this.topPos + 20, 80, 20, new TranslatableComponent("Yes/No Dialog"), onPress -> {
               log.info("Yes/No dialog ...");
               NetworkHandler.openDialog(uuid, "YesNoDialogConfiguration");
             }));
@@ -101,11 +108,8 @@ public class DialogConfigurationScreen<T extends DialogConfigurationMenu>
 
   @Override
   public void render(PoseStack poseStack, int x, int y, float partialTicks) {
+    this.renderBackground(poseStack);
     super.render(poseStack, x, y, partialTicks);
-
-    // Name
-    this.font.draw(poseStack, new TextComponent("Dialog Type"), this.leftPos + 7f,
-        this.topPos + 20f, 4210752);
   }
 
   @Override
@@ -126,6 +130,17 @@ public class DialogConfigurationScreen<T extends DialogConfigurationMenu>
     int expandedHeight = 50;
     this.blit(poseStack, leftPos, topPos + expandedHeight + 5, 0, 5, 250, 170);
     this.blit(poseStack, leftPos + 243, topPos + expandedHeight + 5, 215, 5, 35, 170);
+  }
+
+  @Override
+  public boolean keyPressed(int keyCode, int unused1, int unused2) {
+    if (keyCode != 257 && keyCode != 335 && keyCode != 69) {
+      return super.keyPressed(keyCode, unused1, unused2);
+    } else if (keyCode == 257 || keyCode == 335) {
+      return true;
+    } else {
+      return true;
+    }
   }
 
 }

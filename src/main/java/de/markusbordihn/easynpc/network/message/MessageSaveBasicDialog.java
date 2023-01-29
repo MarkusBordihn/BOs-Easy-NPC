@@ -34,22 +34,16 @@ import de.markusbordihn.easynpc.dialog.DialogType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 
-public class MessageSaveDialog {
+public class MessageSaveBasicDialog {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   protected final String uuid;
-  protected final DialogType dialogType;
   protected final String dialog;
 
-  public MessageSaveDialog(String uuid, String dialogType, String dialog) {
+  public MessageSaveBasicDialog(String uuid, String dialog) {
     this.uuid = uuid;
-    this.dialogType = DialogType.valueOf(dialogType);
     this.dialog = dialog;
-  }
-
-  public DialogType getDialogType() {
-    return this.dialogType != null ? this.dialogType : DialogType.NONE;
   }
 
   public String getDialog() {
@@ -60,14 +54,14 @@ public class MessageSaveDialog {
     return this.uuid;
   }
 
-  public static void handle(MessageSaveDialog message,
+  public static void handle(MessageSaveBasicDialog message,
       Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessageSaveDialog message, NetworkEvent.Context context) {
+  public static void handlePacket(MessageSaveBasicDialog message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     if (serverPlayer == null) {
       log.error("Unable to get server player for message {} from {}", message, context);
@@ -81,18 +75,10 @@ public class MessageSaveDialog {
       return;
     }
 
-    // Validate dialog type.
-    DialogType dialogType = message.getDialogType();
-    if (dialogType == null) {
-      log.error("Invalid dialog type {} for {} from {}", dialogType, message, serverPlayer);
-      return;
-    }
-
     // Validate dialog.
     String dialog = message.getDialog();
     if (dialog == null) {
-      log.error("Invalid dialog {} for type {} and {} from {}", dialog, dialogType, message,
-          serverPlayer);
+      log.error("Invalid dialog {} for basic dialog and {} from {}", dialog, message, serverPlayer);
       return;
     }
 
@@ -104,9 +90,8 @@ public class MessageSaveDialog {
     }
 
     // Perform action.
-    log.debug("Saving dialog {}: {} for {} from {}", dialogType, dialog, easyNPCEntity,
-        serverPlayer);
-    easyNPCEntity.setDialogType(dialogType);
+    log.debug("Saving basic dialog: {} for {} from {}", dialog, easyNPCEntity, serverPlayer);
+    easyNPCEntity.setDialogType(DialogType.BASIC);
     easyNPCEntity.setDialog(dialog);
   }
 

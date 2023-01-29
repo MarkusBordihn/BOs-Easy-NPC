@@ -22,9 +22,14 @@ package de.markusbordihn.easynpc.client.screen;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -36,63 +41,105 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.dialog.DialogType;
+import de.markusbordihn.easynpc.dialog.DialogUtils;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.menu.DialogMenu;
 
 @OnlyIn(Dist.CLIENT)
 public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
 
+  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
   protected final EasyNPCEntity entity;
 
-  private float xMouse;
-  private float yMouse;
-
+  // Internal
+  protected Button yesDialogButton = null;
+  protected Button noDialogButton = null;
+  protected float xMouse;
+  protected float yMouse;
   private List<FormattedCharSequence> cachedDialogComponents = Collections.emptyList();
+
+  // Dialog Options
+  protected DialogType dialogType = DialogType.BASIC;
+  protected String dialog;
+  protected TextComponent dialogComponent;
+  protected int numberOfDialogLines = 1;
 
   public DialogScreen(DialogMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
     this.entity = menu.getEntity();
   }
 
-  protected void renderAvatar(PoseStack poseStack, int x, int y) {
-    int positionTop = 75;
-    if (this.entity != null) {
-      int left = this.leftPos + 40;
-      int top = this.topPos + 60 + positionTop;
-      ScreenHelper.renderEntityAvatar(left, top,
-          Math.round(left - 90 - (this.xMouse * 0.25)),
-          Math.round(top - 120 - (this.yMouse * 0.5)), this.entity);
-    }
-  }
-
-  protected void renderDialog(PoseStack poseStack, int x, int y) {
+  protected void renderDialog(PoseStack poseStack) {
     RenderSystem.setShader(GameRenderer::getPositionTexShader);
     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     RenderSystem.setShaderTexture(0, Constants.TEXTURE_DIALOG);
 
-    // Dialog text.
-    TextComponent dialogComponent = this.entity.getDialogComponent();
-    this.cachedDialogComponents = this.font.split(dialogComponent, 176);
-    int numberOfLines = Math.min(128 / font.lineHeight, this.cachedDialogComponents.size());
-
     // Dialog background according numbers of lines.
-    int minNumberOfLines = Math.max(2, numberOfLines);
+    int minNumberOfLines = Math.max(2, this.numberOfDialogLines);
     int backgroundShift = minNumberOfLines * (font.lineHeight + 2);
-    this.blit(poseStack, leftPos + 70, topPos + 25 + 30, 0,130 - backgroundShift,
-        200, Math.min(120, backgroundShift));
-    this.blit(poseStack, leftPos + 70, topPos + 25, 0, 0, 200, 30);
+    this.blit(poseStack, leftPos + 70, topPos + 10 + 30, 0, 130 - backgroundShift, 200,
+        Math.min(120, backgroundShift));
+    this.blit(poseStack, leftPos + 70, topPos + 10, 0, 0, 200, 30);
 
     // Distribute text for the across the lines.
-    for (int line = 0; line < numberOfLines; ++line) {
-      FormattedCharSequence formattedCharSequence = this.cachedDialogComponents.get(line);
-      this.font.draw(poseStack, formattedCharSequence, leftPos + 87f,
-          topPos + 32 + (line * (font.lineHeight + 2)), 0);
+    if (!this.cachedDialogComponents.isEmpty()) {
+      for (int line = 0; line < this.numberOfDialogLines; ++line) {
+        FormattedCharSequence formattedCharSequence = this.cachedDialogComponents.get(line);
+        this.font.draw(poseStack, formattedCharSequence, leftPos + 87f,
+            topPos + 17f + (line * (font.lineHeight + 2)), 0);
+      }
     }
+  }
+
+  private void setDialog(String text) {
+    if (text == null || text.isBlank()) {
+      return;
+    }
+
+    // Parse dialog Text and replace placeholders.
+    Minecraft minecraft = this.minecraft;
+    this.dialog =
+        DialogUtils.parseDialog(text, this.entity, minecraft != null ? minecraft.player : null);
+    this.dialogComponent = new TextComponent(this.dialog);
+
+    // Split dialog text to lines.
+    this.cachedDialogComponents = this.font.split(this.dialogComponent, 176);
+    this.numberOfDialogLines = Math.min(128 / font.lineHeight, this.cachedDialogComponents.size());
   }
 
   @Override
   public void init() {
     super.init();
+
+    // Pre-Work and Pre-Cache
+    if (this.entity != null) {
+      // Dialog text.
+      this.dialogType = this.entity.getDialogType();
+      setDialog(this.entity.getDialog());
+
+      // Render additional Buttons for Yes/No Dialog.
+      if (this.dialogType == DialogType.YES_NO) {
+        int dialogButtonTop = this.topPos + 55 + (numberOfDialogLines * (font.lineHeight));
+        this.yesDialogButton =
+            this.addRenderableWidget(new Button(this.leftPos + 20, dialogButtonTop, 95, 20,
+                new TextComponent(this.entity.getYesDialogButton()), onPress -> {
+                  log.info("Yes Dialog ...");
+                  setDialog(this.entity.getYesDialog());
+                  this.yesDialogButton.visible = false;
+                  this.noDialogButton.visible = false;
+                }));
+        this.noDialogButton =
+            this.addRenderableWidget(new Button(this.leftPos + 125, dialogButtonTop, 95, 20,
+                new TextComponent(this.entity.getNoDialogButton()), onPress -> {
+                  log.info("No Dialog ...");
+                  setDialog(this.entity.getNoDialog());
+                  this.yesDialogButton.visible = false;
+                  this.noDialogButton.visible = false;
+                }));
+      }
+    }
 
     // Default stats
     this.imageHeight = 170;
@@ -110,8 +157,20 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     super.render(poseStack, x, y, partialTicks);
     this.xMouse = x;
     this.yMouse = y;
-    renderAvatar(poseStack, x, y);
-    renderDialog(poseStack, x, y);
+
+    if (this.entity == null) {
+      return;
+    }
+
+    // Render Avatar
+    int avatarPositionTop = 55 + this.entity.getEntityDialogTop();
+    int left = this.leftPos + 40;
+    int top = this.topPos + 60 + avatarPositionTop;
+    ScreenHelper.renderEntityDialog(left, top, Math.round(left - 140 - (this.xMouse * 0.25)),
+        Math.round(top - 120 - (this.yMouse * 0.5)), this.entity);
+
+    // Render Dialog
+    renderDialog(poseStack);
   }
 
   @Override

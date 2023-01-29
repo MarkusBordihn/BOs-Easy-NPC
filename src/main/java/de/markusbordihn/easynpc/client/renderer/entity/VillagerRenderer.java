@@ -27,6 +27,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.CrossedArmsItemLayer;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -68,6 +69,11 @@ public class VillagerRenderer extends MobRenderer<EasyNPCEntity, VillagerModel<E
     }
 
     poseStack.scale(f, f, f);
+  }
+
+  @Override
+  protected int getBlockLightLevel(EasyNPCEntity entity, BlockPos blockPos) {
+    return 7;
   }
 
 }

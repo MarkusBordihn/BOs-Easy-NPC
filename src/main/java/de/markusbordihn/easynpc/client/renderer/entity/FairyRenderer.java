@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Markus Bordihn
+ * Copyright 2022 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,42 +17,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.renderer.entity.layers;
+package de.markusbordihn.easynpc.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.RenderLayerParent;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.model.FairyModel;
+import de.markusbordihn.easynpc.client.model.ModModelLayers;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 
 @OnlyIn(Dist.CLIENT)
-public class ProfessionLayer<T extends EasyNPCEntity, M extends EntityModel<T>>
-    extends RenderLayer<T, M> {
+public class FairyRenderer extends HumanoidMobRenderer<EasyNPCEntity, FairyModel<EasyNPCEntity>> {
 
-  @SuppressWarnings("java:S1172")
-  public ProfessionLayer(RenderLayerParent<T, M> parent, EntityModelSet model) {
-    super(parent);
+  private static final ResourceLocation DEFAULT_LOCATION =
+      new ResourceLocation(Constants.MOD_ID, "textures/entity/fairy/fairy_green.png");
+
+  public FairyRenderer(EntityRendererProvider.Context context) {
+    super(context, new FairyModel<>(context.bakeLayer(ModModelLayers.FAIRY)), 0.3F);
   }
 
   @Override
-  public void render(PoseStack poseStack, MultiBufferSource buffer, int lightLevel, T livingEntity,
-      float limbSwing, float limbSwingAmount, float ageInTicks, float ageInTicks2, float netHeadYaw,
-      float headPitch) {
-    if (livingEntity.isInvisible() || !livingEntity.hasProfessionTextureLocation()) {
-      return;
+  protected int getBlockLightLevel(EasyNPCEntity entity, BlockPos blockPos) {
+    return 7;
+  }
+
+  @Override
+  protected void scale(EasyNPCEntity entity, PoseStack poseStack, float unused) {
+    poseStack.scale(0.4F, 0.4F, 0.4F);
+  }
+
+  @Override
+  public ResourceLocation getTextureLocation(EasyNPCEntity entity) {
+    if (entity.hasTextureLocation()) {
+      return entity.getTextureLocation();
     }
-    M model = this.getParentModel();
-    ResourceLocation resourceLocation = livingEntity.getProfessionTextureLocation();
-    renderColoredCutoutModel(model, resourceLocation, poseStack, buffer, lightLevel, livingEntity,
-        1.0F, 1.0F, 1.0F);
+    return DEFAULT_LOCATION;
   }
 
 }

@@ -1,0 +1,13 @@
+{
+  "entity.easy_npc.fairy": "Fairy NPC",
+  "entity.easy_npc.humanoid_slim": "Humanoid (slim) NPC",
+  "entity.easy_npc.humanoid": "Humanoid NPC",
+  "entity.easy_npc.villager": "Villager NPC",
+
+  "item.easy_npc.fairy_spawn_egg": "Fairy NPC Spawn Egg",
+  "item.easy_npc.humanoid_slim_spawn_egg": "Humanoid (slim) NPC Spawn Egg",
+  "item.easy_npc.humanoid_spawn_egg": "Humanoid NPC Spawn Egg",
+  "item.easy_npc.villager_spawn_egg": "Villager NPC Spawn Egg",
+
+  "itemGroup.easy_npc.spawn_eggs" : "Easy NPC (Spawn Eggs)"
+}

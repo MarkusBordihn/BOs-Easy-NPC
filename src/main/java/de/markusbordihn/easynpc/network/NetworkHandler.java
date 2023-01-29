@@ -32,11 +32,11 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.dialog.DialogType;
 import de.markusbordihn.easynpc.network.message.MessageNameChange;
 import de.markusbordihn.easynpc.network.message.MessageOpenDialog;
 import de.markusbordihn.easynpc.network.message.MessageProfessionChange;
-import de.markusbordihn.easynpc.network.message.MessageSaveDialog;
+import de.markusbordihn.easynpc.network.message.MessageSaveBasicDialog;
+import de.markusbordihn.easynpc.network.message.MessageSaveYesNoDialog;
 import de.markusbordihn.easynpc.network.message.MessageVariantChange;
 
 @EventBusSubscriber
@@ -72,13 +72,23 @@ public class NetworkHandler {
       }, buffer -> new MessageOpenDialog(buffer.readUtf(), buffer.readUtf()),
           MessageOpenDialog::handle);
 
-      // Save Dialog Request: Client -> Server
-      INSTANCE.registerMessage(id++, MessageSaveDialog.class, (message, buffer) -> {
+      // Save Basic Dialog Request: Client -> Server
+      INSTANCE.registerMessage(id++, MessageSaveBasicDialog.class, (message, buffer) -> {
         buffer.writeUtf(message.getUUID());
-        buffer.writeUtf(message.getDialogType().name());
         buffer.writeUtf(message.getDialog());
-      }, buffer -> new MessageSaveDialog(buffer.readUtf(), buffer.readUtf(), buffer.readUtf()),
-          MessageSaveDialog::handle);
+      }, buffer -> new MessageSaveBasicDialog(buffer.readUtf(), buffer.readUtf()),
+          MessageSaveBasicDialog::handle);
+
+      // Save Yes/No Dialog Request: Client -> Server
+      INSTANCE.registerMessage(id++, MessageSaveYesNoDialog.class, (message, buffer) -> {
+        buffer.writeUtf(message.getUUID());
+        buffer.writeUtf(message.getDialog());
+        buffer.writeUtf(message.getYesDialog());
+        buffer.writeUtf(message.getNoDialog());
+        buffer.writeUtf(message.getYesButtonText());
+        buffer.writeUtf(message.getNoButtonText());
+      }, buffer -> new MessageSaveYesNoDialog(buffer.readUtf(), buffer.readUtf(), buffer.readUtf(),
+          buffer.readUtf(), buffer.readUtf(), buffer.readUtf()), MessageSaveYesNoDialog::handle);
 
       // Profession Change: Client -> Server
       INSTANCE.registerMessage(id++, MessageProfessionChange.class, (message, buffer) -> {
@@ -110,10 +120,19 @@ public class NetworkHandler {
     }
   }
 
-  /** Save dialog. */
-  public static void saveDialog(UUID uuid, DialogType dialogType, String dialog) {
-    if (uuid != null && dialogType != null && dialog != null) {
-      INSTANCE.sendToServer(new MessageSaveDialog(uuid.toString(), dialogType.name(), dialog));
+  /** Save basic dialog. */
+  public static void saveBasicDialog(UUID uuid, String dialog) {
+    if (uuid != null && dialog != null) {
+      INSTANCE.sendToServer(new MessageSaveBasicDialog(uuid.toString(), dialog));
+    }
+  }
+
+  /** Save yes/no dialog. */
+  public static void saveYesNoDialog(UUID uuid, String dialog, String yesDialog, String noDialog,
+      String yesButtonText, String noButtonText) {
+    if (uuid != null && dialog != null && yesDialog != null && noDialog != null) {
+      INSTANCE.sendToServer(new MessageSaveYesNoDialog(uuid.toString(), dialog, yesDialog, noDialog,
+          yesButtonText, noButtonText));
     }
   }
 
