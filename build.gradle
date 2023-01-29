@@ -169,7 +169,7 @@ curseforge {
   apiKey = "${credentials.curseforge_api_token}"
   project {
     id = "${curseforge_project_id}"
-    changelog = '[[ --Change Log-- ]]'
+    changelog = file("CHANGELOG.md")
     releaseType = "${curseforge_release_type}"
     addGameVersion("${mc_version}")
     addGameVersion("Forge")

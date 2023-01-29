@@ -1,4 +1,4 @@
-# 🗣 Easy NPC
+# 🗣 Easy NPC (1.18.2)
 
 [![Easy NPC Downloads](http://cf.way2muchnoise.eu/full_559312_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/easy-npc)
 [![Easy NPC Versions](http://cf.way2muchnoise.eu/versions/Minecraft_559312_all.svg)](https://www.curseforge.com/minecraft/mc-mods/easy-npc)
