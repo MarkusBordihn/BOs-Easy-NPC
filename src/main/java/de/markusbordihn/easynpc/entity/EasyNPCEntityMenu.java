@@ -38,7 +38,6 @@ import net.minecraftforge.network.NetworkHooks;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.DialogMenu;
 import de.markusbordihn.easynpc.menu.configuration.BasicDialogConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.DialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.MainConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.YesNoDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.ConfigurationMenu;
@@ -67,27 +66,6 @@ public class EasyNPCEntityMenu {
     };
     NetworkHooks.openGui(player, provider, buffer -> buffer.writeUUID(uuid));
   }
-
-  public static void openDialogConfigurationMenu(ServerPlayer player, EasyNPCEntity entity) {
-    log.debug("Open Easy NPC Dialog Configuration Menu for {} ...", entity);
-    UUID uuid = entity.getUUID();
-    String entityName =
-        entity.hasCustomName() ? entity.getCustomName().getString() : entity.getUUID().toString();
-    MenuProvider provider = new MenuProvider() {
-      @Override
-      public Component getDisplayName() {
-        return new TextComponent("Edit dialog for " + entityName);
-      }
-
-      @Nullable
-      @Override
-      public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
-        return new DialogConfigurationMenu(windowId, inventory, uuid);
-      }
-    };
-    NetworkHooks.openGui(player, provider, buffer -> buffer.writeUUID(uuid));
-  }
-
 
   public static void openBasicDialogConfigurationMenu(ServerPlayer player, EasyNPCEntity entity) {
     log.debug("Open Easy NPC Basic Dialog Menu for {} ...", entity);

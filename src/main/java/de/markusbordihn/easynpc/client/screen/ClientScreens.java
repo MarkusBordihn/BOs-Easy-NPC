@@ -28,7 +28,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.configuration.BasicDialogConfigurationScreen;
-import de.markusbordihn.easynpc.client.screen.configuration.DialogConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.MainConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.YesNoDialogConfigurationScreen;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
@@ -43,21 +42,19 @@ public class ClientScreens {
     log.info("{} Client Screens ...", Constants.LOG_REGISTER_PREFIX);
 
     event.enqueueWork(() -> {
-      MenuScreens.register(ModMenuTypes.CONFIGURATION_MENU.get(), ConfigurationScreen::new);
+      // Dialog Screen
       MenuScreens.register(ModMenuTypes.DIALOG_MENU.get(), DialogScreen::new);
 
       // Configuration Screens
+      MenuScreens.register(ModMenuTypes.CONFIGURATION_MENU.get(), ConfigurationScreen::new);
       MenuScreens.register(ModMenuTypes.MAIN_CONFIGURATION_MENU.get(),
           MainConfigurationScreen::new);
 
-      MenuScreens.register(ModMenuTypes.DIALOG_CONFIGURATION_MENU.get(),
-          DialogConfigurationScreen::new);
+      // Dialog Configuration Screens
       MenuScreens.register(ModMenuTypes.BASIC_DIALOG_CONFIGURATION_MENU.get(),
           BasicDialogConfigurationScreen::new);
       MenuScreens.register(ModMenuTypes.YES_NO_DIALOG_CONFIGURATION_MENU.get(),
           YesNoDialogConfigurationScreen::new);
-
-
     });
   }
 }

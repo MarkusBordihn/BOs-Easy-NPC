@@ -91,9 +91,6 @@ public class MessageOpenDialog {
 
     // Perform action.
     switch (dialogName) {
-      case "DialogConfiguration":
-        EasyNPCEntityMenu.openDialogConfigurationMenu(serverPlayer, easyNPCEntity);
-        break;
       case "BasicDialogConfiguration":
         EasyNPCEntityMenu.openBasicDialogConfigurationMenu(serverPlayer, easyNPCEntity);
         break;
