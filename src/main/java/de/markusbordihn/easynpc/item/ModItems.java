@@ -30,6 +30,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import de.markusbordihn.easynpc.Annotations.TemplateEntryPoint;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.npc.Allay;
 import de.markusbordihn.easynpc.entity.npc.Fairy;
 import de.markusbordihn.easynpc.entity.npc.Humanoid;
 import de.markusbordihn.easynpc.entity.npc.HumanoidSlim;
@@ -56,6 +57,12 @@ public class ModItems {
 
   // Default NPC Entity Spawn Eggs
   private static final String SPAWN_EGG_PREFIX = "_spawn_egg";
+
+  public static final RegistryObject<Item> ALLAY_NPC_SPAWN_EGG =
+      ITEMS.register(Allay.ID + SPAWN_EGG_PREFIX,
+          () -> new ForgeSpawnEggItem(ModEntityType.ALLAY::get, MaterialColor.COLOR_BLUE.col,
+              MaterialColor.COLOR_CYAN.col,
+              new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
 
   public static final RegistryObject<Item> FAIRY_NPC_SPAWN_EGG =
       ITEMS.register(Fairy.ID + SPAWN_EGG_PREFIX,

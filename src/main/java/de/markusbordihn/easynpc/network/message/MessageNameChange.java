@@ -25,7 +25,7 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraftforge.network.NetworkEvent;
@@ -91,7 +91,7 @@ public class MessageNameChange {
 
     // Perform action.
     log.debug("Change name {} for {} from {}", name, easyNPCEntity, serverPlayer);
-    easyNPCEntity.setCustomName(new TextComponent(name));
+    easyNPCEntity.setCustomName(Component.literal(name));
   }
 
 }

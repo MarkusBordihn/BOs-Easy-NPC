@@ -22,8 +22,6 @@ package de.markusbordihn.easynpc.client.screen.configuration;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -57,21 +55,21 @@ public class BasicDialogConfigurationScreen
 
     // Dialog
     this.dialogBox = new EditBox(this.font, this.leftPos + 7, this.topPos + 60, 261, 20,
-        new TranslatableComponent("Dialog"));
+        Component.translatable("Dialog"));
     this.dialogBox.setMaxLength(255);
     this.dialogBox.setValue(this.entity.getDialog());
     this.addRenderableWidget(this.dialogBox);
 
     // Save Button
     this.saveDialogButton = this.addRenderableWidget(new Button(this.leftPos + 26,
-        this.topPos + 185, 80, 20, new TranslatableComponent("Save"), onPress -> {
+        this.topPos + 185, 80, 20, Component.translatable("Save"), onPress -> {
           log.info("Save dialog ...");
           NetworkHandler.saveBasicDialog(uuid, this.dialogBox.getValue());
         }));
 
     // Chancel Button
     this.cancelButton = this.addRenderableWidget(new Button(this.leftPos + 170, this.topPos + 185,
-        80, 20, new TranslatableComponent("Cancel"), onPress -> {
+        80, 20, Component.translatable("Cancel"), onPress -> {
           this.closeScreen();
         }));
   }
@@ -79,7 +77,7 @@ public class BasicDialogConfigurationScreen
   @Override
   public void render(PoseStack poseStack, int x, int y, float partialTicks) {
     super.render(poseStack, x, y, partialTicks);
-    this.font.draw(poseStack, new TextComponent("Dialog Text"), this.leftPos + 7f,
+    this.font.draw(poseStack, Component.literal("Dialog Text"), this.leftPos + 7f,
         this.topPos + 50f, 4210752);
   }
 

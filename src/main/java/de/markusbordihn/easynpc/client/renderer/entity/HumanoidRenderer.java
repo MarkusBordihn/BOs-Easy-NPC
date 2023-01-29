@@ -41,8 +41,9 @@ public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, PlayerModel<Eas
 
   public HumanoidRenderer(EntityRendererProvider.Context context) {
     super(context, new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER), false), 0.5F);
-    this.addLayer(new CustomHeadLayer<>(this, context.getModelSet()));
-    this.addLayer(new ItemInHandLayer<>(this));
+    this.addLayer(
+        new CustomHeadLayer<>(this, context.getModelSet(), context.getItemInHandRenderer()));
+    this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
   }
 
   public ResourceLocation getTextureLocation(EasyNPCEntity entity) {

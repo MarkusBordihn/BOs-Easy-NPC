@@ -26,7 +26,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -55,7 +54,7 @@ public class EasyNPCEntityMenu {
     MenuProvider provider = new MenuProvider() {
       @Override
       public Component getDisplayName() {
-        return entity.getCustomName() != null ? easyNPCName : new TextComponent(uuid.toString());
+        return entity.getCustomName() != null ? easyNPCName : Component.literal(uuid.toString());
       }
 
       @Nullable
@@ -64,7 +63,7 @@ public class EasyNPCEntityMenu {
         return new ConfigurationMenu(windowId, inventory, uuid);
       }
     };
-    NetworkHooks.openGui(player, provider, buffer -> buffer.writeUUID(uuid));
+    NetworkHooks.openScreen(player, provider, buffer -> buffer.writeUUID(uuid));
   }
 
   public static void openBasicDialogConfigurationMenu(ServerPlayer player, EasyNPCEntity entity) {
@@ -74,7 +73,7 @@ public class EasyNPCEntityMenu {
     MenuProvider provider = new MenuProvider() {
       @Override
       public Component getDisplayName() {
-        return entity.getCustomName() != null ? easyNPCName : new TextComponent(uuid.toString());
+        return entity.getCustomName() != null ? easyNPCName : Component.literal(uuid.toString());
       }
 
       @Nullable
@@ -83,7 +82,7 @@ public class EasyNPCEntityMenu {
         return new BasicDialogConfigurationMenu(windowId, inventory, uuid);
       }
     };
-    NetworkHooks.openGui(player, provider, buffer -> buffer.writeUUID(uuid));
+    NetworkHooks.openScreen(player, provider, buffer -> buffer.writeUUID(uuid));
   }
 
   public static void openYesNoDialogConfigurationMenu(ServerPlayer player, EasyNPCEntity entity) {
@@ -93,7 +92,7 @@ public class EasyNPCEntityMenu {
     MenuProvider provider = new MenuProvider() {
       @Override
       public Component getDisplayName() {
-        return entity.getCustomName() != null ? easyNPCName : new TextComponent(uuid.toString());
+        return entity.getCustomName() != null ? easyNPCName : Component.literal(uuid.toString());
       }
 
       @Nullable
@@ -102,7 +101,7 @@ public class EasyNPCEntityMenu {
         return new YesNoDialogConfigurationMenu(windowId, inventory, uuid);
       }
     };
-    NetworkHooks.openGui(player, provider, buffer -> buffer.writeUUID(uuid));
+    NetworkHooks.openScreen(player, provider, buffer -> buffer.writeUUID(uuid));
   }
 
   public static void openMainConfigurationMenu(ServerPlayer player, EasyNPCEntity entity) {
@@ -111,7 +110,7 @@ public class EasyNPCEntityMenu {
     MenuProvider provider = new MenuProvider() {
       @Override
       public Component getDisplayName() {
-        return new TextComponent("Easy NPC (Non Player Character)");
+        return Component.literal("Easy NPC (Non Player Character)");
       }
 
       @Nullable
@@ -120,7 +119,7 @@ public class EasyNPCEntityMenu {
         return new MainConfigurationMenu(windowId, inventory, uuid);
       }
     };
-    NetworkHooks.openGui(player, provider, buffer -> buffer.writeUUID(uuid));
+    NetworkHooks.openScreen(player, provider, buffer -> buffer.writeUUID(uuid));
   }
 
   public static void openDialogMenu(ServerPlayer player, EasyNPCEntity entity) {
@@ -130,7 +129,7 @@ public class EasyNPCEntityMenu {
     MenuProvider provider = new MenuProvider() {
       @Override
       public Component getDisplayName() {
-        return entity.getCustomName() != null ? easyNPCName : new TextComponent(uuid.toString());
+        return entity.getCustomName() != null ? easyNPCName : Component.literal(uuid.toString());
       }
 
       @Nullable
@@ -139,7 +138,7 @@ public class EasyNPCEntityMenu {
         return new DialogMenu(windowId, inventory, uuid);
       }
     };
-    NetworkHooks.openGui(player, provider, buffer -> buffer.writeUUID(uuid));
+    NetworkHooks.openScreen(player, provider, buffer -> buffer.writeUUID(uuid));
   }
 
 }

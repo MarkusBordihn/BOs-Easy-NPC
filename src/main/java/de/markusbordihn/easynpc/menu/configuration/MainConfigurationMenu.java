@@ -29,6 +29,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
@@ -68,6 +70,25 @@ public class MainConfigurationMenu extends AbstractContainerMenu {
   @Override
   public boolean stillValid(Player player) {
     return player != null && player.isAlive() && entity != null && entity.isAlive();
+  }
+
+  @Override
+  public ItemStack quickMoveStack(Player player, int slotIndex) {
+    Slot slot = this.slots.get(slotIndex);
+    if (!slot.hasItem()) {
+      return ItemStack.EMPTY;
+    }
+
+    ItemStack itemStack = slot.getItem();
+
+    // Store changes if itemStack is not empty.
+    if (itemStack.isEmpty()) {
+      slot.set(ItemStack.EMPTY);
+    } else {
+      slot.setChanged();
+    }
+
+    return ItemStack.EMPTY;
   }
 
 }

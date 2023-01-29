@@ -39,39 +39,44 @@ public class ModEntityType {
 
   }
 
-  public static final DeferredRegister<EntityType<?>> ENTITIES =
-      DeferredRegister.create(ForgeRegistries.ENTITIES, Constants.MOD_ID);
+  public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
+      DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Constants.MOD_ID);
 
   // Default NPC Entity
-  public static final RegistryObject<EntityType<Fairy>> FAIRY = ENTITIES.register(Fairy.ID,
+  public static final RegistryObject<EntityType<Allay>> ALLAY = ENTITY_TYPES.register(Allay.ID,
+      () -> EntityType.Builder.<Allay>of(Allay::new, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F)
+          .clientTrackingRange(8).build(Allay.ID));
+
+  public static final RegistryObject<EntityType<Fairy>> FAIRY = ENTITY_TYPES.register(Fairy.ID,
       () -> EntityType.Builder.<Fairy>of(Fairy::new, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F)
           .clientTrackingRange(8).build(Fairy.ID));
 
-  public static final RegistryObject<EntityType<Humanoid>> HUMANOID = ENTITIES.register(Humanoid.ID,
+  public static final RegistryObject<EntityType<Humanoid>> HUMANOID = ENTITY_TYPES.register(Humanoid.ID,
       () -> EntityType.Builder.<Humanoid>of(Humanoid::new, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F)
           .clientTrackingRange(8).build(Humanoid.ID));
 
-  public static final RegistryObject<EntityType<HumanoidSlim>> HUMANOID_SLIM = ENTITIES.register(HumanoidSlim.ID,
+  public static final RegistryObject<EntityType<HumanoidSlim>> HUMANOID_SLIM = ENTITY_TYPES.register(HumanoidSlim.ID,
       () -> EntityType.Builder.<HumanoidSlim>of(HumanoidSlim::new, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F)
           .clientTrackingRange(8).build(HumanoidSlim.ID));
 
-  public static final RegistryObject<EntityType<Villager>> VILLAGER = ENTITIES.register(Villager.ID,
+  public static final RegistryObject<EntityType<Villager>> VILLAGER = ENTITY_TYPES.register(Villager.ID,
       () -> EntityType.Builder.<Villager>of(Villager::new, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F)
           .clientTrackingRange(8).build(Villager.ID));
 
   // Custom NPC Entity
-  public static final RegistryObject<EntityType<JayJasonBo>> JAYJASONBO = ENTITIES.register(JayJasonBo.ID,
+  public static final RegistryObject<EntityType<JayJasonBo>> JAYJASONBO = ENTITY_TYPES.register(JayJasonBo.ID,
       () -> EntityType.Builder.<JayJasonBo>of(
           JayJasonBo::new, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F)
           .clientTrackingRange(8).build(JayJasonBo.ID));
   public static final RegistryObject<EntityType<Kaworru>> KAWORRU =
-      ENTITIES.register(Kaworru.ID,
+      ENTITY_TYPES.register(Kaworru.ID,
           () -> EntityType.Builder.<Kaworru>of(Kaworru::new, EasyNPCEntity.CATEGORY)
               .sized(1.0F, 2.0F).clientTrackingRange(8).build(Kaworru.ID));
 
   @SubscribeEvent
   public static final void entityAttributeCreation(EntityAttributeCreationEvent event) {
     // Default NPC Entities
+    event.put(ALLAY.get(), Allay.createAttributes().build());
     event.put(FAIRY.get(), Fairy.createAttributes().build());
     event.put(HUMANOID.get(), Humanoid.createAttributes().build());
     event.put(HUMANOID_SLIM.get(), HumanoidSlim.createAttributes().build());

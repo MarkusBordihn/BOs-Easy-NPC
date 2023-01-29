@@ -1,4 +1,4 @@
-# 🗣 Easy NPC (1.18.2)
+# 🗣 Easy NPC (1.19.2)
 
 [![Easy NPC Downloads](http://cf.way2muchnoise.eu/full_559312_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/easy-npc)
 [![Easy NPC Versions](http://cf.way2muchnoise.eu/versions/Minecraft_559312_all.svg)](https://www.curseforge.com/minecraft/mc-mods/easy-npc)
@@ -62,6 +62,12 @@ Humanoid NPCs are the most common one and used for characters like Steve.
 Humanoid slim NPCs are the most common one and used for slim characters like Alex.
 
 ![Humanoid Slim NPC](/examples/npcs/humanoid_slim_npc.png)
+
+### Allay NPC
+
+Allay NPCs using the Allay model with additional variants.
+
+![Allay NPC](/examples/npcs/allay_npc.png)
 
 ### Fairy NPC
 

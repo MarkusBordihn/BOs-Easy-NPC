@@ -19,62 +19,40 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraft.client.model.VillagerModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.layers.CrossedArmsItemLayer;
-import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
+import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import de.markusbordihn.easynpc.client.renderer.entity.layers.ProfessionLayer;
-import de.markusbordihn.easynpc.client.renderer.entity.layers.VariantLayer;
+import de.markusbordihn.easynpc.client.model.AllayModel;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 
 @OnlyIn(Dist.CLIENT)
-public class VillagerRenderer extends MobRenderer<EasyNPCEntity, VillagerModel<EasyNPCEntity>> {
+public class AllayRenderer extends MobRenderer<EasyNPCEntity, AllayModel<EasyNPCEntity>> {
 
   private static final ResourceLocation DEFAULT_LOCATION =
-      new ResourceLocation("textures/entity/villager/villager.png");
+      new ResourceLocation("textures/entity/allay/allay.png");
 
-  public VillagerRenderer(EntityRendererProvider.Context context) {
-    super(context, new VillagerModel<>(context.bakeLayer(ModelLayers.VILLAGER)), 0.5F);
-    this.addLayer(new VariantLayer<>(this, context.getModelSet()));
-    this.addLayer(new CustomHeadLayer<>(this, context.getModelSet(),
-        context.getItemInHandRenderer()));
-    this.addLayer(new ProfessionLayer<>(this, context.getModelSet()));
-    this.addLayer(new CrossedArmsItemLayer<>(this, context.getItemInHandRenderer()));
+  public AllayRenderer(EntityRendererProvider.Context context) {
+    super(context, new AllayModel<>(context.bakeLayer(ModelLayers.ALLAY)), 0.4F);
+    this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
   }
 
   public ResourceLocation getTextureLocation(EasyNPCEntity entity) {
-    if (entity.hasBaseTextureLocation()) {
-      return entity.getBaseTextureLocation();
+    if (entity.hasTextureLocation()) {
+      return entity.getTextureLocation();
     }
     return DEFAULT_LOCATION;
   }
 
   @Override
-  protected void scale(EasyNPCEntity entity, PoseStack poseStack, float unused) {
-    float f = 0.9375F;
-    if (entity.isBaby()) {
-      f *= 0.5F;
-      this.shadowRadius = 0.25F;
-    } else {
-      this.shadowRadius = 0.5F;
-    }
-
-    poseStack.scale(f, f, f);
-  }
-
-  @Override
   protected int getBlockLightLevel(EasyNPCEntity entity, BlockPos blockPos) {
-    return 7;
+    return 15;
   }
 
 }

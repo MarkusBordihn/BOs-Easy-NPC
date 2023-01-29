@@ -33,7 +33,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -63,7 +63,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
   // Dialog Options
   protected DialogType dialogType = DialogType.BASIC;
   protected String dialog;
-  protected TextComponent dialogComponent;
+  protected MutableComponent dialogComponent;
   protected int numberOfDialogLines = 1;
 
   public DialogScreen(DialogMenu menu, Inventory inventory, Component component) {
@@ -102,7 +102,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     Minecraft minecraft = this.minecraft;
     this.dialog =
         DialogUtils.parseDialog(text, this.entity, minecraft != null ? minecraft.player : null);
-    this.dialogComponent = new TextComponent(this.dialog);
+    this.dialogComponent = Component.literal(this.dialog);
 
     // Split dialog text to lines.
     this.cachedDialogComponents = this.font.split(this.dialogComponent, 176);
@@ -124,7 +124,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
         int dialogButtonTop = this.topPos + 55 + (numberOfDialogLines * (font.lineHeight));
         this.yesDialogButton =
             this.addRenderableWidget(new Button(this.leftPos + 20, dialogButtonTop, 95, 20,
-                new TextComponent(this.entity.getYesDialogButton()), onPress -> {
+                Component.literal(this.entity.getYesDialogButton()), onPress -> {
                   log.info("Yes Dialog ...");
                   setDialog(this.entity.getYesDialog());
                   this.yesDialogButton.visible = false;
@@ -132,7 +132,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
                 }));
         this.noDialogButton =
             this.addRenderableWidget(new Button(this.leftPos + 125, dialogButtonTop, 95, 20,
-                new TextComponent(this.entity.getNoDialogButton()), onPress -> {
+                Component.literal(this.entity.getNoDialogButton()), onPress -> {
                   log.info("No Dialog ...");
                   setDialog(this.entity.getNoDialog());
                   this.yesDialogButton.visible = false;

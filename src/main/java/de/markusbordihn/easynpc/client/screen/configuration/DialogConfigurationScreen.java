@@ -33,7 +33,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -90,13 +89,13 @@ public class DialogConfigurationScreen<T extends DialogConfigurationMenu>
 
     // Dialog Types
     this.basicDialogButton = this.addRenderableWidget(new Button(this.leftPos + 7, this.topPos + 20,
-        80, 20, new TranslatableComponent("Basic Dialog"), onPress -> {
+        80, 20, Component.translatable("Basic Dialog"), onPress -> {
           log.info("Basic dialog ...");
           NetworkHandler.openDialog(uuid, "BasicDialogConfiguration");
         }));
     this.yesNoDialogButton =
         this.addRenderableWidget(new Button(this.leftPos + 7 + this.basicDialogButton.getWidth(),
-            this.topPos + 20, 80, 20, new TranslatableComponent("Yes/No Dialog"), onPress -> {
+            this.topPos + 20, 80, 20, Component.translatable("Yes/No Dialog"), onPress -> {
               log.info("Yes/No dialog ...");
               NetworkHandler.openDialog(uuid, "YesNoDialogConfiguration");
             }));

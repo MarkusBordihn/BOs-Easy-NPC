@@ -24,11 +24,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -43,7 +44,7 @@ public class EntityManager {
   private static ConcurrentHashMap<UUID, Entity> entityMap = new ConcurrentHashMap<>();
 
   @SubscribeEvent(priority = EventPriority.HIGH)
-  public static void handleEntityJoinWorldEvent(EntityJoinWorldEvent event) {
+  public static void handleEntityJoinWorldEvent(EntityJoinLevelEvent event) {
 
     // Ignore if event is canceled.
     if (event.isCanceled()) {

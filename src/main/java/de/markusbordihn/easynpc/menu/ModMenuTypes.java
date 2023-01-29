@@ -39,7 +39,7 @@ public class ModMenuTypes {
   }
 
   public static final DeferredRegister<MenuType<?>> MENU_TYPES =
-      DeferredRegister.create(ForgeRegistries.CONTAINERS, Constants.MOD_ID);
+      DeferredRegister.create(ForgeRegistries.MENU_TYPES, Constants.MOD_ID);
 
   // Dialog
   public static final RegistryObject<MenuType<DialogMenu>> DIALOG_MENU =

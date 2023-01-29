@@ -22,8 +22,6 @@ package de.markusbordihn.easynpc.client.screen.configuration;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -61,41 +59,41 @@ public class YesNoDialogConfigurationScreen
 
     // Dialog
     this.mainDialogBox = new EditBox(this.font, this.leftPos + 7, this.topPos + 60, 261, 20,
-        new TextComponent("Main Dialog Text"));
+        Component.literal("Main Dialog Text"));
     this.mainDialogBox.setMaxLength(255);
     this.mainDialogBox.setValue(this.entity.getDialog());
     this.addRenderableWidget(this.mainDialogBox);
 
     // Dialog Buttons
     this.yesDialogButtonBox = new EditBox(this.font, this.leftPos + 7, this.topPos + 85, 120, 20,
-        new TextComponent("Yes Dialog Button"));
+        Component.literal("Yes Dialog Button"));
     this.yesDialogButtonBox.setMaxLength(64);
     this.yesDialogButtonBox.setValue(this.entity.getYesDialogButton());
     this.addRenderableWidget(this.yesDialogButtonBox);
 
     this.noDialogButtonBox = new EditBox(this.font, this.leftPos + 148, this.topPos + 85, 120, 20,
-        new TextComponent("No Dialog Button"));
+        Component.literal("No Dialog Button"));
     this.noDialogButtonBox.setMaxLength(64);
     this.noDialogButtonBox.setValue(this.entity.getNoDialogButton());
     this.addRenderableWidget(this.noDialogButtonBox);
 
     // Yes Dialog
     this.yesDialogBox = new EditBox(this.font, this.leftPos + 7, this.topPos + 125, 261, 20,
-        new TextComponent("Yes Path - Dialog Text"));
+        Component.literal("Yes Path - Dialog Text"));
     this.yesDialogBox.setMaxLength(255);
     this.yesDialogBox.setValue(this.entity.getYesDialog());
     this.addRenderableWidget(this.yesDialogBox);
 
     // No Dialog
     this.noDialogBox = new EditBox(this.font, this.leftPos + 7, this.topPos + 160, 261, 20,
-        new TextComponent("No Dialog"));
+        Component.literal("No Dialog"));
     this.noDialogBox.setMaxLength(255);
     this.noDialogBox.setValue(this.entity.getNoDialog());
     this.addRenderableWidget(this.noDialogBox);
 
     // Save Button
     this.saveDialogButton = this.addRenderableWidget(new Button(this.leftPos + 26,
-        this.topPos + 185, 80, 20, new TranslatableComponent("Save"), onPress -> {
+        this.topPos + 185, 80, 20, Component.translatable("Save"), onPress -> {
           log.info("Save yes/no dialog ...");
           NetworkHandler.saveYesNoDialog(uuid, this.mainDialogBox.getValue(),
               this.yesDialogBox.getValue(), this.noDialogBox.getValue(),
@@ -104,7 +102,7 @@ public class YesNoDialogConfigurationScreen
 
     // Chancel Button
     this.cancelButton = this.addRenderableWidget(new Button(this.leftPos + 170,
-        this.topPos + 185, 80, 20, new TranslatableComponent("Cancel"), onPress -> {
+        this.topPos + 185, 80, 20, Component.translatable("Cancel"), onPress -> {
           this.closeScreen();
         }));
   }
@@ -112,13 +110,13 @@ public class YesNoDialogConfigurationScreen
   @Override
   public void render(PoseStack poseStack, int x, int y, float partialTicks) {
     super.render(poseStack, x, y, partialTicks);
-    this.font.draw(poseStack, new TextComponent("Question"), this.leftPos + 7f, this.topPos + 50f,
+    this.font.draw(poseStack, Component.literal("Question"), this.leftPos + 7f, this.topPos + 50f,
         4210752);
 
-    this.font.draw(poseStack, new TextComponent("Yes - Answer"), this.leftPos + 7f,
+    this.font.draw(poseStack, Component.literal("Yes - Answer"), this.leftPos + 7f,
         this.topPos + 115f, 4210752);
 
-    this.font.draw(poseStack, new TextComponent("No - Answer"), this.leftPos + 7f,
+    this.font.draw(poseStack, Component.literal("No - Answer"), this.leftPos + 7f,
         this.topPos + 150f, 4210752);
   }
 

@@ -27,6 +27,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.renderer.entity.AllayRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.FairyRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.HumanoidRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.HumanoidSlimRenderer;
@@ -44,6 +45,7 @@ public class ClientRenderer {
     log.info("{} Entity Renders ...", Constants.LOG_REGISTER_PREFIX);
 
     // Default NPC Entity
+    event.registerEntityRenderer(ModEntityType.ALLAY.get(), AllayRenderer::new);
     event.registerEntityRenderer(ModEntityType.FAIRY.get(), FairyRenderer::new);
     event.registerEntityRenderer(ModEntityType.HUMANOID.get(), HumanoidRenderer::new);
     event.registerEntityRenderer(ModEntityType.HUMANOID_SLIM.get(), HumanoidSlimRenderer::new);

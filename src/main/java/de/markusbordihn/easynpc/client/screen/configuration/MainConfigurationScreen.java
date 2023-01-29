@@ -34,8 +34,6 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -111,7 +109,7 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
 
       if (Constants.IS_MOD_DEV) {
         // Render skin position
-        this.font.draw(poseStack, new TextComponent(i + ""), left - 6f, top - 70f, 4210752);
+        this.font.draw(poseStack, Component.literal(i + ""), left - 6f, top - 70f, 4210752);
       }
 
       // Render additional Professions, if any.
@@ -138,7 +136,7 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
 
     // Create dynamically button for each skin variant and profession.
     Button skinButton =
-        new Button(x - 20, y + 5, 40, 20, new TranslatableComponent("Select"), button -> {
+        new Button(x - 20, y + 5, 40, 20, Component.translatable("Select"), button -> {
           NetworkHandler.variantChange(this.uuid, variant);
           if (profession != null) {
             NetworkHandler.professionChange(this.uuid, profession);
@@ -196,20 +194,20 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
 
     // Name
     this.nameBox = new EditBox(this.font, this.leftPos + 7, this.topPos + 31, 180, 18,
-        new TranslatableComponent("Name"));
+        Component.translatable("Name"));
     this.nameBox.setMaxLength(32);
     this.nameBox.setValue(
         this.entity.hasCustomName() ? this.entity.getCustomName().getString() : "My Easy NPC");
     this.addRenderableWidget(this.nameBox);
 
     this.saveNameButton = this.addRenderableWidget(new Button(this.leftPos + 190, this.topPos + 30,
-        80, 20, new TranslatableComponent("Save"), onPress -> {
+        80, 20, Component.translatable("Save"), onPress -> {
           this.saveName();
         }));
 
     // Dialog
     this.editDialogButton = this.addRenderableWidget(new Button(this.leftPos + 10, this.topPos + 54,
-        80, 20, new TranslatableComponent("Edit Dialog"), onPress -> {
+        80, 20, Component.translatable("Edit Dialog"), onPress -> {
           log.info("Edit dialog ...");
           DialogType dialogType = this.entity.getDialogType();
           switch (dialogType) {
@@ -229,14 +227,14 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
     int skinButtonLeft = this.leftPos + 7;
     int skinButtonRight = this.leftPos + 255;
     this.skinPreviousButton = this.addRenderableWidget(new Button(skinButtonLeft, skinButtonTop, 15,
-        20, new TranslatableComponent("<"), onPress -> {
+        20, Component.translatable("<"), onPress -> {
           if (this.skinStartIndex > 0) {
             skinStartIndex--;
           }
           checkSkinButtonState();
         }));
     this.skinPreviousPageButton = this.addRenderableWidget(new Button(skinButtonLeft,
-        skinButtonTop + 20, 15, 20, new TranslatableComponent("<<"), onPress -> {
+        skinButtonTop + 20, 15, 20, Component.translatable("<<"), onPress -> {
           if (this.skinStartIndex - maxSkinsPerPage > 0) {
             skinStartIndex = skinStartIndex - maxSkinsPerPage;
           } else {
@@ -245,7 +243,7 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
           checkSkinButtonState();
         }));
     this.skinNextButton = this.addRenderableWidget(new Button(skinButtonRight, skinButtonTop, 15,
-        20, new TranslatableComponent(">"), onPress -> {
+        20, Component.translatable(">"), onPress -> {
           if (this.skinStartIndex >= 0
               && this.skinStartIndex < this.numOfSkins - this.maxSkinsPerPage) {
             skinStartIndex++;
@@ -253,7 +251,7 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
           checkSkinButtonState();
         }));
     this.skinNextPageButton = this.addRenderableWidget(new Button(skinButtonRight,
-        skinButtonTop + 20, 15, 20, new TranslatableComponent(">>"), onPress -> {
+        skinButtonTop + 20, 15, 20, Component.translatable(">>"), onPress -> {
           if (this.skinStartIndex >= 0
               && this.skinStartIndex + this.maxSkinsPerPage < this.numOfSkins) {
             this.skinStartIndex = this.skinStartIndex + this.maxSkinsPerPage;
@@ -277,11 +275,11 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
     this.yMouse = y;
 
     // Name
-    this.font.draw(poseStack, new TextComponent("Name"), this.leftPos + 7f, this.topPos + 20f,
+    this.font.draw(poseStack, Component.literal("Name"), this.leftPos + 7f, this.topPos + 20f,
         4210752);
 
     // Skins
-    this.font.draw(poseStack, new TextComponent("Skins"), this.leftPos + 7f, this.topPos + 80f,
+    this.font.draw(poseStack, Component.literal("Skins"), this.leftPos + 7f, this.topPos + 80f,
         4210752);
     this.renderSkins(poseStack, partialTicks);
   }
