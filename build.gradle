@@ -53,6 +53,10 @@ minecraft {
             source sourceSets.main
         }
       }
+
+      // Mixin Support
+      property 'mixin.env.remapRefMap', 'true'
+      property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
     }
 
     server {
@@ -73,6 +77,10 @@ minecraft {
             source sourceSets.main
         }
       }
+
+      // Mixin Support
+      property 'mixin.env.remapRefMap', 'true'
+      property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
     }
 
     data {
@@ -122,6 +130,9 @@ dependencies {
   // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
   // The userdev artifact is a special name and will get all sorts of transformations applied to it.
   minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+
+  // Compability checks
+  runtimeOnly fg.deobf("curse.maven:neat-238372:3878735")
 
   // Additional helpful Mods for development (dev depenedency)
   runtimeOnly fg.deobf("curse.maven:item-zoom-261725:3903160")

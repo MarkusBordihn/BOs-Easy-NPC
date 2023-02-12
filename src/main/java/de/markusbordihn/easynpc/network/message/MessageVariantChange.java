@@ -37,10 +37,10 @@ public class MessageVariantChange {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  protected final String uuid;
+  protected final UUID uuid;
   protected final String variant;
 
-  public MessageVariantChange(String uuid, String variant) {
+  public MessageVariantChange(UUID uuid, String variant) {
     this.uuid = uuid;
     this.variant = variant;
   }
@@ -49,7 +49,7 @@ public class MessageVariantChange {
     return this.variant;
   }
 
-  public String getUUID() {
+  public UUID getUUID() {
     return this.uuid;
   }
 
@@ -68,7 +68,7 @@ public class MessageVariantChange {
     }
 
     // Check for access.
-    UUID uuid = UUID.fromString(message.getUUID());
+    UUID uuid = message.getUUID();
     if (!EntityManager.hasAccess(uuid, serverPlayer)) {
       log.warn("User {} has no access to Easy NPC with uuid {}.", serverPlayer, uuid);
       return;

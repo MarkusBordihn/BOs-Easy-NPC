@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.configuration;
+package de.markusbordihn.easynpc.client.screen.configuration.dialog;
 
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -29,7 +29,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import de.markusbordihn.easynpc.menu.configuration.BasicDialogConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 
 @OnlyIn(Dist.CLIENT)
@@ -63,7 +63,6 @@ public class BasicDialogConfigurationScreen
     // Save Button
     this.saveDialogButton = this.addRenderableWidget(new Button(this.leftPos + 26,
         this.topPos + 185, 80, 20, Component.translatable("Save"), onPress -> {
-          log.info("Save dialog ...");
           NetworkHandler.saveBasicDialog(uuid, this.dialogBox.getValue());
         }));
 

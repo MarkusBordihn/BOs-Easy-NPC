@@ -38,10 +38,10 @@ public class MessageSaveBasicDialog {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  protected final String uuid;
+  protected final UUID uuid;
   protected final String dialog;
 
-  public MessageSaveBasicDialog(String uuid, String dialog) {
+  public MessageSaveBasicDialog(UUID uuid, String dialog) {
     this.uuid = uuid;
     this.dialog = dialog;
   }
@@ -50,7 +50,7 @@ public class MessageSaveBasicDialog {
     return this.dialog;
   }
 
-  public String getUUID() {
+  public UUID getUUID() {
     return this.uuid;
   }
 
@@ -69,7 +69,7 @@ public class MessageSaveBasicDialog {
     }
 
     // Check for access.
-    UUID uuid = UUID.fromString(message.getUUID());
+    UUID uuid = message.getUUID();
     if (!EntityManager.hasAccess(uuid, serverPlayer)) {
       log.warn("User {} has no access to Easy NPC with uuid {}.", serverPlayer, uuid);
       return;

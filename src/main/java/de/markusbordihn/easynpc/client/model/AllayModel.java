@@ -38,7 +38,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class AllayModel<T extends LivingEntity> extends HierarchicalModel<T> implements ArmedModel {
 
   private final ModelPart root;
-  private final ModelPart head;
+  protected final ModelPart head;
   private final ModelPart body;
   private final ModelPart rightArm;
   private final ModelPart leftArm;

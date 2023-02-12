@@ -33,7 +33,6 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.animal.FlyingAnimal;
-import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -44,11 +43,13 @@ public class EasyNPCEntity extends EasyNPCEntityData {
   // Shared constants
   public static final MobCategory CATEGORY = MobCategory.MISC;
 
-  // Additional ticker
-  private static final int TEXTURE_CACHE_TICK = 50;
-  private int textureCacheTicker = 0;
+  public EasyNPCEntity(EntityType<? extends EasyNPCEntity> entityType, Level level,
+      Enum<?> variant) {
+    this(entityType, level);
+    this.setVariant(variant);
+  }
 
-  public EasyNPCEntity(EntityType<? extends AbstractVillager> entityType, Level level) {
+  public EasyNPCEntity(EntityType<? extends EasyNPCEntity> entityType, Level level) {
     super(entityType, level);
     this.setInvulnerable(true);
   }
@@ -100,7 +101,7 @@ public class EasyNPCEntity extends EasyNPCEntityData {
   @Override
   public InteractionResult mobInteract(Player player, InteractionHand hand) {
     boolean isClientSide = this.level.isClientSide;
-    log.info("mobInteract: {} {} {} {}", this.getUUID(), player, hand, isClientSide);
+    log.debug("mobInteract: {} {} {} {}", this.getUUID(), player, hand, isClientSide);
 
     if (player instanceof ServerPlayer serverPlayer) {
       if (player.isCreative()) {
@@ -115,27 +116,6 @@ public class EasyNPCEntity extends EasyNPCEntityData {
     }
 
     return InteractionResult.PASS;
-  }
-
-  @Override
-  public void tick() {
-    // Perform tick for AI and other important steps.
-    super.tick();
-
-    // Client Side only: Re-validated Texture cache if needed.
-    if (this.level.isClientSide && textureCacheTicker++ >= TEXTURE_CACHE_TICK) {
-      if (this.hasChangedProfession()) {
-        Enum<?> profession = this.getProfession();
-        log.debug("Re-validated texture cache for profession {} and {}", profession, this);
-        this.setProfession(profession);
-      }
-      if (this.hasChangedVariant()) {
-        Enum<?> variant = this.getVariant();
-        log.debug("Re-validated texture cache for variant {} and {}", variant, this);
-        this.setVariant(variant);
-      }
-      textureCacheTicker = 0;
-    }
   }
 
 }

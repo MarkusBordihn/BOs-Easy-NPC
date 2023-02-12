@@ -35,16 +35,19 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.message.MessageNameChange;
 import de.markusbordihn.easynpc.network.message.MessageOpenDialog;
 import de.markusbordihn.easynpc.network.message.MessageProfessionChange;
+import de.markusbordihn.easynpc.network.message.MessageRemoveNPC;
 import de.markusbordihn.easynpc.network.message.MessageSaveBasicDialog;
 import de.markusbordihn.easynpc.network.message.MessageSaveYesNoDialog;
+import de.markusbordihn.easynpc.network.message.MessageSkinChange;
 import de.markusbordihn.easynpc.network.message.MessageVariantChange;
+import de.markusbordihn.easynpc.skin.SkinType;
 
 @EventBusSubscriber
 public class NetworkHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final String PROTOCOL_VERSION = "1";
+  private static final String PROTOCOL_VERSION = "2";
   public static final SimpleChannel INSTANCE =
       NetworkRegistry.newSimpleChannel(new ResourceLocation(Constants.MOD_ID, "network"),
           () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
@@ -60,70 +63,85 @@ public class NetworkHandler {
 
       // Name Change: Client -> Server
       INSTANCE.registerMessage(id++, MessageNameChange.class, (message, buffer) -> {
-        buffer.writeUtf(message.getUUID());
+        buffer.writeUUID(message.getUUID());
         buffer.writeUtf(message.getName());
-      }, buffer -> new MessageNameChange(buffer.readUtf(), buffer.readUtf()),
+      }, buffer -> new MessageNameChange(buffer.readUUID(), buffer.readUtf()),
           MessageNameChange::handle);
 
       // Open Dialog Request: Client -> Server
       INSTANCE.registerMessage(id++, MessageOpenDialog.class, (message, buffer) -> {
-        buffer.writeUtf(message.getUUID());
+        buffer.writeUUID(message.getUUID());
         buffer.writeUtf(message.getDialogName());
-      }, buffer -> new MessageOpenDialog(buffer.readUtf(), buffer.readUtf()),
+      }, buffer -> new MessageOpenDialog(buffer.readUUID(), buffer.readUtf()),
           MessageOpenDialog::handle);
 
       // Save Basic Dialog Request: Client -> Server
       INSTANCE.registerMessage(id++, MessageSaveBasicDialog.class, (message, buffer) -> {
-        buffer.writeUtf(message.getUUID());
+        buffer.writeUUID(message.getUUID());
         buffer.writeUtf(message.getDialog());
-      }, buffer -> new MessageSaveBasicDialog(buffer.readUtf(), buffer.readUtf()),
+      }, buffer -> new MessageSaveBasicDialog(buffer.readUUID(), buffer.readUtf()),
           MessageSaveBasicDialog::handle);
 
       // Save Yes/No Dialog Request: Client -> Server
       INSTANCE.registerMessage(id++, MessageSaveYesNoDialog.class, (message, buffer) -> {
-        buffer.writeUtf(message.getUUID());
+        buffer.writeUUID(message.getUUID());
         buffer.writeUtf(message.getDialog());
         buffer.writeUtf(message.getYesDialog());
         buffer.writeUtf(message.getNoDialog());
         buffer.writeUtf(message.getYesButtonText());
         buffer.writeUtf(message.getNoButtonText());
-      }, buffer -> new MessageSaveYesNoDialog(buffer.readUtf(), buffer.readUtf(), buffer.readUtf(),
+      }, buffer -> new MessageSaveYesNoDialog(buffer.readUUID(), buffer.readUtf(), buffer.readUtf(),
           buffer.readUtf(), buffer.readUtf(), buffer.readUtf()), MessageSaveYesNoDialog::handle);
 
       // Profession Change: Client -> Server
       INSTANCE.registerMessage(id++, MessageProfessionChange.class, (message, buffer) -> {
-        buffer.writeUtf(message.getUUID());
+        buffer.writeUUID(message.getUUID());
         buffer.writeUtf(message.getProfession());
-      }, buffer -> new MessageProfessionChange(buffer.readUtf(), buffer.readUtf()),
+      }, buffer -> new MessageProfessionChange(buffer.readUUID(), buffer.readUtf()),
           MessageProfessionChange::handle);
+
+      // Skin Change: Client -> Server
+      INSTANCE.registerMessage(id++, MessageSkinChange.class, (message, buffer) -> {
+        buffer.writeUUID(message.getUUID());
+        buffer.writeUtf(message.getSkin());
+        buffer.writeUtf(message.getSkinURL());
+        buffer.writeUUID(message.getSkinUUID());
+        buffer.writeUtf(message.getSkinType());
+      }, buffer -> new MessageSkinChange(buffer.readUUID(), buffer.readUtf(), buffer.readUtf(),
+          buffer.readUUID(), buffer.readUtf()), MessageSkinChange::handle);
 
       // Variant Change: Client -> Server
       INSTANCE.registerMessage(id++, MessageVariantChange.class, (message, buffer) -> {
-        buffer.writeUtf(message.getUUID());
+        buffer.writeUUID(message.getUUID());
         buffer.writeUtf(message.getVariant());
-      }, buffer -> new MessageVariantChange(buffer.readUtf(), buffer.readUtf()),
+      }, buffer -> new MessageVariantChange(buffer.readUUID(), buffer.readUtf()),
           MessageVariantChange::handle);
+
+      // Remove NPC: Client -> Server
+      INSTANCE.registerMessage(id++, MessageRemoveNPC.class, (message, buffer) -> {
+        buffer.writeUUID(message.getUUID());
+      }, buffer -> new MessageRemoveNPC(buffer.readUUID()), MessageRemoveNPC::handle);
     });
   }
 
   /** Send name change. */
   public static void nameChange(UUID uuid, String name) {
     if (uuid != null && name != null && !name.isEmpty()) {
-      INSTANCE.sendToServer(new MessageNameChange(uuid.toString(), name));
+      INSTANCE.sendToServer(new MessageNameChange(uuid, name));
     }
   }
 
   /** Open dialog request. */
   public static void openDialog(UUID uuid, String dialogName) {
     if (uuid != null && dialogName != null && !dialogName.isEmpty()) {
-      INSTANCE.sendToServer(new MessageOpenDialog(uuid.toString(), dialogName));
+      INSTANCE.sendToServer(new MessageOpenDialog(uuid, dialogName));
     }
   }
 
   /** Save basic dialog. */
   public static void saveBasicDialog(UUID uuid, String dialog) {
     if (uuid != null && dialog != null) {
-      INSTANCE.sendToServer(new MessageSaveBasicDialog(uuid.toString(), dialog));
+      INSTANCE.sendToServer(new MessageSaveBasicDialog(uuid, dialog));
     }
   }
 
@@ -131,7 +149,7 @@ public class NetworkHandler {
   public static void saveYesNoDialog(UUID uuid, String dialog, String yesDialog, String noDialog,
       String yesButtonText, String noButtonText) {
     if (uuid != null && dialog != null && yesDialog != null && noDialog != null) {
-      INSTANCE.sendToServer(new MessageSaveYesNoDialog(uuid.toString(), dialog, yesDialog, noDialog,
+      INSTANCE.sendToServer(new MessageSaveYesNoDialog(uuid, dialog, yesDialog, noDialog,
           yesButtonText, noButtonText));
     }
   }
@@ -139,14 +157,43 @@ public class NetworkHandler {
   /** Send profession change. */
   public static void professionChange(UUID uuid, Enum<?> profession) {
     if (uuid != null && profession != null) {
-      INSTANCE.sendToServer(new MessageProfessionChange(uuid.toString(), profession.name()));
+      INSTANCE.sendToServer(new MessageProfessionChange(uuid, profession.name()));
+    }
+  }
+
+  /** Send skin change. */
+  public static void skinChange(UUID uuid, Enum<SkinType> skinType) {
+    if (uuid != null && skinType != null) {
+      INSTANCE
+          .sendToServer(new MessageSkinChange(uuid, "", "", Constants.BLANK_UUID, skinType.name()));
+    }
+  }
+
+  public static void skinChange(UUID uuid, String skin, Enum<SkinType> skinType) {
+    if (uuid != null && skin != null && skinType != null) {
+      INSTANCE.sendToServer(
+          new MessageSkinChange(uuid, skin, "", Constants.BLANK_UUID, skinType.name()));
+    }
+  }
+
+  public static void skinChange(UUID uuid, String skin, String skinURL, UUID skinUUID,
+      Enum<SkinType> skinType) {
+    if (uuid != null && skin != null && skinType != null) {
+      INSTANCE.sendToServer(new MessageSkinChange(uuid, skin, skinURL, skinUUID, skinType.name()));
     }
   }
 
   /** Send variant change. */
   public static void variantChange(UUID uuid, Enum<?> variant) {
     if (uuid != null && variant != null) {
-      INSTANCE.sendToServer(new MessageVariantChange(uuid.toString(), variant.name()));
+      INSTANCE.sendToServer(new MessageVariantChange(uuid, variant.name()));
+    }
+  }
+
+  /** Send remove NPC. */
+  public static void removeNPC(UUID uuid) {
+    if (uuid != null) {
+      INSTANCE.sendToServer(new MessageRemoveNPC(uuid));
     }
   }
 }

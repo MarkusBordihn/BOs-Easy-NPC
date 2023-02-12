@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.configuration;
+package de.markusbordihn.easynpc.client.screen.configuration.dialog;
 
 import java.util.UUID;
 
@@ -40,7 +40,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.menu.configuration.DialogConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.dialog.DialogConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 
 @OnlyIn(Dist.CLIENT)
@@ -49,9 +49,11 @@ public class DialogConfigurationScreen<T extends DialogConfigurationMenu>
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
+  // NPC Entity
   protected final EasyNPCEntity entity;
   protected final UUID uuid;
 
+  // Buttons
   protected Button basicDialogButton = null;
   protected Button yesNoDialogButton = null;
 
@@ -72,11 +74,6 @@ public class DialogConfigurationScreen<T extends DialogConfigurationMenu>
   public void init() {
     super.init();
 
-    Minecraft minecraft = this.getMinecraft();
-    if (minecraft != null) {
-      minecraft.keyboardHandler.setSendRepeatsToGui(true);
-    }
-
     // Default stats
     this.imageHeight = 220;
     this.imageWidth = 275;
@@ -90,13 +87,11 @@ public class DialogConfigurationScreen<T extends DialogConfigurationMenu>
     // Dialog Types
     this.basicDialogButton = this.addRenderableWidget(new Button(this.leftPos + 7, this.topPos + 20,
         80, 20, Component.translatable("Basic Dialog"), onPress -> {
-          log.info("Basic dialog ...");
           NetworkHandler.openDialog(uuid, "BasicDialogConfiguration");
         }));
     this.yesNoDialogButton =
         this.addRenderableWidget(new Button(this.leftPos + 7 + this.basicDialogButton.getWidth(),
             this.topPos + 20, 80, 20, Component.translatable("Yes/No Dialog"), onPress -> {
-              log.info("Yes/No dialog ...");
               NetworkHandler.openDialog(uuid, "YesNoDialogConfiguration");
             }));
 

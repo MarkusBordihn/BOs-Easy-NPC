@@ -17,35 +17,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.npc;
+package de.markusbordihn.easynpc.menu.configuration.dialog;
 
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.npc.AbstractVillager;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
+import java.util.UUID;
 
-public class JayJasonBo extends Humanoid {
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
 
-  // General Information
-  public static final String ID = "jayjasonbo";
-  public static final String NAME = "JayJasonBo";
+import de.markusbordihn.easynpc.menu.ModMenuTypes;
 
-  public JayJasonBo(EntityType<? extends AbstractVillager> entityType, Level level) {
-    super(entityType, level);
-    setVariant(Variant.JAYJASONBO);
+public class BasicDialogConfigurationMenu extends DialogConfigurationMenu {
+
+  public BasicDialogConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
+    this(ModMenuTypes.BASIC_DIALOG_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
   }
 
-  @Override
-  public void finalizeSpawn() {
-    super.finalizeSpawn();
+  public BasicDialogConfigurationMenu(int windowId, Inventory playerInventory,
+      FriendlyByteBuf data) {
+    this(windowId, playerInventory, data.readUUID());
+  }
 
-    // Give default item, if hand is empty.
-    ItemStack itemStack = this.getItemBySlot(EquipmentSlot.MAINHAND);
-    if (itemStack != null && itemStack.isEmpty()) {
-      this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.DIAMOND));
-    }
+  public BasicDialogConfigurationMenu(final MenuType<?> menuType, final int windowId,
+      final Inventory playerInventory, UUID uuid) {
+    super(menuType, windowId, playerInventory, uuid);
+    log.debug("Open basic dialog configuration menu for {}: {}", this.uuid, this.entity);
   }
 
 }

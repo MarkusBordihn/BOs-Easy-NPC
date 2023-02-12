@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity.layers;
 
+import java.util.Map;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.model.EntityModel;
@@ -31,26 +33,32 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 
 @OnlyIn(Dist.CLIENT)
 public class VariantLayer<T extends EasyNPCEntity, M extends EntityModel<T>>
     extends RenderLayer<T, M> {
 
+  private Map<?, ResourceLocation> textures = null;
+
   @SuppressWarnings("java:S1172")
-  public VariantLayer(RenderLayerParent<T, M> parent, EntityModelSet model) {
+  public VariantLayer(RenderLayerParent<T, M> parent, EntityModelSet model,
+      Map<?, ResourceLocation> textures) {
     super(parent);
+    this.textures = textures;
   }
 
   @Override
   public void render(PoseStack poseStack, MultiBufferSource buffer, int lightLevel, T livingEntity,
       float limbSwing, float limbSwingAmount, float ageInTicks, float ageInTicks2, float netHeadYaw,
       float headPitch) {
-    if (livingEntity.isInvisible() || !livingEntity.hasTextureLocation()) {
+    if (livingEntity.isInvisible() || textures == null) {
       return;
     }
     M model = this.getParentModel();
-    ResourceLocation resourceLocation = livingEntity.getTextureLocation();
+    ResourceLocation resourceLocation =
+        textures.getOrDefault(livingEntity.getVariant(), Constants.BLANK_ENTITY_TEXTURE);
     renderColoredCutoutModel(model, resourceLocation, poseStack, buffer, lightLevel, livingEntity,
         1.0F, 1.0F, 1.0F);
   }

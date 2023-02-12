@@ -19,6 +19,10 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity;
 
+import java.util.EnumMap;
+import java.util.Map;
+
+import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -29,14 +33,24 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.AllayModel;
+import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.npc.Allay.Variant;
 
 @OnlyIn(Dist.CLIENT)
 public class AllayRenderer extends MobRenderer<EasyNPCEntity, AllayModel<EasyNPCEntity>> {
 
-  private static final ResourceLocation DEFAULT_LOCATION =
-      new ResourceLocation("textures/entity/allay/allay.png");
+
+  // Variant Textures
+  protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
+      Util.make(new EnumMap<>(Variant.class), map -> {
+        map.put(Variant.DEFAULT, new ResourceLocation("textures/entity/allay/allay.png"));
+        map.put(Variant.LAVA,
+            new ResourceLocation(Constants.MOD_ID, "textures/entity/allay/allay_lava.png"));
+      });
+  protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.DEFAULT);
 
   public AllayRenderer(EntityRendererProvider.Context context) {
     super(context, new AllayModel<>(context.bakeLayer(ModelLayers.ALLAY)), 0.4F);
@@ -44,15 +58,18 @@ public class AllayRenderer extends MobRenderer<EasyNPCEntity, AllayModel<EasyNPC
   }
 
   public ResourceLocation getTextureLocation(EasyNPCEntity entity) {
-    if (entity.hasTextureLocation()) {
-      return entity.getTextureLocation();
+    switch (entity.getSkinType()) {
+      case SECURE_REMOTE_URL:
+      case INSECURE_REMOTE_URL:
+        return PlayerTextureManager.getOrCreateTextureWithDefault(entity, DEFAULT_TEXTURE);
+      default:
+        return TEXTURE_BY_VARIANT.getOrDefault(entity.getVariant(), DEFAULT_TEXTURE);
     }
-    return DEFAULT_LOCATION;
   }
 
   @Override
   protected int getBlockLightLevel(EasyNPCEntity entity, BlockPos blockPos) {
-    return 15;
+    return 10;
   }
 
 }

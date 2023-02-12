@@ -51,27 +51,23 @@ public class ModEntityType {
       () -> EntityType.Builder.<Fairy>of(Fairy::new, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F)
           .clientTrackingRange(8).build(Fairy.ID));
 
-  public static final RegistryObject<EntityType<Humanoid>> HUMANOID = ENTITY_TYPES.register(Humanoid.ID,
-      () -> EntityType.Builder.<Humanoid>of(Humanoid::new, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F)
-          .clientTrackingRange(8).build(Humanoid.ID));
+  public static final RegistryObject<EntityType<Humanoid>> HUMANOID =
+      registerHumanoid(Humanoid.ID, Humanoid.Variant.STEVE);
 
-  public static final RegistryObject<EntityType<HumanoidSlim>> HUMANOID_SLIM = ENTITY_TYPES.register(HumanoidSlim.ID,
-      () -> EntityType.Builder.<HumanoidSlim>of(HumanoidSlim::new, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F)
-          .clientTrackingRange(8).build(HumanoidSlim.ID));
+  public static final RegistryObject<EntityType<HumanoidSlim>> HUMANOID_SLIM =
+      registerHumanoidSlim(HumanoidSlim.ID, HumanoidSlim.Variant.ALEX);
 
-  public static final RegistryObject<EntityType<Villager>> VILLAGER = ENTITY_TYPES.register(Villager.ID,
-      () -> EntityType.Builder.<Villager>of(Villager::new, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F)
-          .clientTrackingRange(8).build(Villager.ID));
+  public static final RegistryObject<EntityType<Villager>> VILLAGER = ENTITY_TYPES.register(
+      Villager.ID, () -> EntityType.Builder.<Villager>of(Villager::new, EasyNPCEntity.CATEGORY)
+          .sized(1.0F, 2.0F).clientTrackingRange(8).build(Villager.ID));
 
   // Custom NPC Entity
-  public static final RegistryObject<EntityType<JayJasonBo>> JAYJASONBO = ENTITY_TYPES.register(JayJasonBo.ID,
-      () -> EntityType.Builder.<JayJasonBo>of(
-          JayJasonBo::new, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F)
-          .clientTrackingRange(8).build(JayJasonBo.ID));
-  public static final RegistryObject<EntityType<Kaworru>> KAWORRU =
-      ENTITY_TYPES.register(Kaworru.ID,
-          () -> EntityType.Builder.<Kaworru>of(Kaworru::new, EasyNPCEntity.CATEGORY)
-              .sized(1.0F, 2.0F).clientTrackingRange(8).build(Kaworru.ID));
+  public static final RegistryObject<EntityType<Humanoid>> JAYJASONBO =
+      registerHumanoid("jayjasonbo", Humanoid.Variant.JAYJASONBO);
+  public static final RegistryObject<EntityType<HumanoidSlim>> KAWORRU =
+      registerHumanoidSlim("kaworru", HumanoidSlim.Variant.KAWORRU);
+  public static final RegistryObject<EntityType<HumanoidSlim>> THE_FAITHY =
+      registerHumanoidSlim("the_faithy", HumanoidSlim.Variant.THE_FAITHY);
 
   @SubscribeEvent
   public static final void entityAttributeCreation(EntityAttributeCreationEvent event) {
@@ -83,7 +79,23 @@ public class ModEntityType {
     event.put(VILLAGER.get(), Villager.createAttributes().build());
 
     // Custom NPC Entities
-    event.put(JAYJASONBO.get(), HumanoidSlim.createAttributes().build());
+    event.put(JAYJASONBO.get(), Humanoid.createAttributes().build());
     event.put(KAWORRU.get(), HumanoidSlim.createAttributes().build());
+    event.put(THE_FAITHY.get(), HumanoidSlim.createAttributes().build());
+  }
+
+  // Register Handler
+  public static RegistryObject<EntityType<Humanoid>> registerHumanoid(String id, Enum<?> variant) {
+    return ENTITY_TYPES.register(id, () -> EntityType.Builder.<Humanoid>of((entityType, level) -> {
+      return new Humanoid(entityType, level, variant);
+    }, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F).clientTrackingRange(8).build(id));
+  }
+
+  public static RegistryObject<EntityType<HumanoidSlim>> registerHumanoidSlim(String id,
+      Enum<?> variant) {
+    return ENTITY_TYPES.register(id,
+        () -> EntityType.Builder.<HumanoidSlim>of((entityType, level) -> {
+          return new HumanoidSlim(entityType, level, variant);
+        }, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F).clientTrackingRange(8).build(id));
   }
 }

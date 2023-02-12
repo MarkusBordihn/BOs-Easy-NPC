@@ -34,8 +34,6 @@ import de.markusbordihn.easynpc.entity.npc.Allay;
 import de.markusbordihn.easynpc.entity.npc.Fairy;
 import de.markusbordihn.easynpc.entity.npc.Humanoid;
 import de.markusbordihn.easynpc.entity.npc.HumanoidSlim;
-import de.markusbordihn.easynpc.entity.npc.JayJasonBo;
-import de.markusbordihn.easynpc.entity.npc.Kaworru;
 import de.markusbordihn.easynpc.entity.npc.ModEntityType;
 import de.markusbordihn.easynpc.entity.npc.Villager;
 import de.markusbordihn.easynpc.tabs.EasyNPCTab;
@@ -90,13 +88,18 @@ public class ModItems {
 
   // Custom NPC Entity Spawn Eggs
   public static final RegistryObject<Item> JAYJASONBO_NPC_SPAWN_EGG =
-      ITEMS.register(JayJasonBo.ID + SPAWN_EGG_PREFIX,
+      ITEMS.register("jayjasonbo" + SPAWN_EGG_PREFIX,
           () -> new ForgeSpawnEggItem(ModEntityType.JAYJASONBO::get, MaterialColor.COLOR_ORANGE.col,
               MaterialColor.COLOR_BLACK.col,
               new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
   public static final RegistryObject<Item> KAWORRU_NPC_SPAWN_EGG =
-      ITEMS.register(Kaworru.ID + SPAWN_EGG_PREFIX,
+      ITEMS.register("kaworru" + SPAWN_EGG_PREFIX,
           () -> new ForgeSpawnEggItem(ModEntityType.KAWORRU::get, MaterialColor.COLOR_RED.col,
+              MaterialColor.COLOR_BLACK.col,
+              new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
+  public static final RegistryObject<Item> THE_FAITHY_NPC_SPAWN_EGG =
+      ITEMS.register("the_faithy" + SPAWN_EGG_PREFIX,
+          () -> new ForgeSpawnEggItem(ModEntityType.THE_FAITHY::get, MaterialColor.COLOR_RED.col,
               MaterialColor.COLOR_BLACK.col,
               new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
 

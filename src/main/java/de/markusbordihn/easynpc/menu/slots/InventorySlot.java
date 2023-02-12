@@ -34,16 +34,11 @@ public class InventorySlot extends Slot {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private ConfigurationMenu menu;
+  protected ConfigurationMenu menu;
 
   public InventorySlot(ConfigurationMenu menu, Container container, int index, int x, int y) {
     super(container, index, x, y);
     this.menu = menu;
-  }
-
-  @Override
-  public void set(ItemStack itemStack) {
-    super.set(itemStack);
   }
 
   @Override

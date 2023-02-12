@@ -19,8 +19,6 @@
 
 package de.markusbordihn.easynpc.entity;
 
-import java.util.EnumMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,23 +27,28 @@ import javax.annotation.Nullable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.npc.AbstractVillager;
-import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.entity.SlotAccess;
+import net.minecraft.world.entity.npc.InventoryCarrier;
+import net.minecraft.world.entity.npc.Npc;
 import net.minecraft.world.level.Level;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.dialog.DialogType;
+import de.markusbordihn.easynpc.skin.SkinModel;
+import de.markusbordihn.easynpc.skin.SkinType;
+import de.markusbordihn.easynpc.utils.TextUtils;
 
-public class EasyNPCEntityData extends AbstractVillager {
+public class EasyNPCEntityData extends AgeableMob implements InventoryCarrier, Npc {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -57,59 +60,59 @@ public class EasyNPCEntityData extends AbstractVillager {
   private boolean hasProfessionTextureLocation = false;
   private boolean hasTextureLocation = false;
 
-  // Default Professions
-  private static final Map<Profession, ResourceLocation> TEXTURE_BY_PROFESSION =
-      Util.make(new EnumMap<>(Profession.class), map -> {
-        map.put(Profession.NONE,
-            new ResourceLocation(Constants.MOD_ID, "textures/entity/blank.png"));
-      });
-
   // Default Variants
   private enum Variant {
     STEVE
   }
 
-  private static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
-      Util.make(new EnumMap<>(Variant.class), map -> {
-        map.put(Variant.STEVE, new ResourceLocation("textures/entity/steve.png"));
-      });
-
   // Synced Data
-  private static final EntityDataAccessor<String> DATA_DIALOG_TYPE =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
+  private static final EntityDataAccessor<Optional<UUID>> DATA_OWNER_UUID_ID =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.OPTIONAL_UUID);
   private static final EntityDataAccessor<String> DATA_DIALOG =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
-  private static final EntityDataAccessor<String> DATA_YES_DIALOG_BUTTON =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
-  private static final EntityDataAccessor<String> DATA_YES_DIALOG =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
-  private static final EntityDataAccessor<String> DATA_NO_DIALOG_BUTTON =
+  private static final EntityDataAccessor<String> DATA_DIALOG_TYPE =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
   private static final EntityDataAccessor<String> DATA_NO_DIALOG =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
-  protected static final EntityDataAccessor<Optional<UUID>> DATA_OWNER_UUID_ID =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.OPTIONAL_UUID);
+  private static final EntityDataAccessor<String> DATA_NO_DIALOG_BUTTON =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
   private static final EntityDataAccessor<String> DATA_PROFESSION =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
+  private static final EntityDataAccessor<String> DATA_SKIN =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
+  private static final EntityDataAccessor<String> DATA_SKIN_URL =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
+  private static final EntityDataAccessor<Optional<UUID>> DATA_SKIN_UUID =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.OPTIONAL_UUID);
+  private static final EntityDataAccessor<String> DATA_SKIN_TYPE =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
   private static final EntityDataAccessor<String> DATA_VARIANT =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
+  private static final EntityDataAccessor<String> DATA_YES_DIALOG =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
+  private static final EntityDataAccessor<String> DATA_YES_DIALOG_BUTTON =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
 
   // Stored Entity Data Tags
-  private static final String DATA_OWNER_TAG = "Owner";
-  private static final String DATA_DIALOG_TYPE_TAG = "DialogType";
   private static final String DATA_DIALOG_TAG = "Dialog";
+  private static final String DATA_DIALOG_TYPE_TAG = "DialogType";
+  private static final String DATA_INVENTORY_TAG = "Inventory";
   private static final String DATA_NO_DIALOG_BUTTON_TAG = "NoDialogButton";
   private static final String DATA_NO_DIALOG_TAG = "NoDialog";
+  private static final String DATA_OWNER_TAG = "Owner";
+  private static final String DATA_PROFESSION_TAG = "Profession";
+  private static final String DATA_SKIN_TAG = "Skin";
+  private static final String DATA_SKIN_URL_TAG = "SkinURL";
+  private static final String DATA_SKIN_UUID_TAG = "SkinUUID";
+  private static final String DATA_SKIN_TYPE_TAG = "SkinType";
+  private static final String DATA_VARIANT_TAG = "Variant";
   private static final String DATA_YES_DIALOG_BUTTON_TAG = "YesDialogButton";
   private static final String DATA_YES_DIALOG_TAG = "YesDialog";
-  private static final String DATA_PROFESSION_TAG = "Profession";
-  private static final String DATA_VARIANT_TAG = "Variant";
 
-  // Temporary stats
-  private Enum<?> lastProfession = Profession.NONE;
-  private Enum<?> lastVariant = Variant.STEVE;
+  // Inventory
+  private final SimpleContainer inventory = new SimpleContainer(8);
 
-  public EasyNPCEntityData(EntityType<? extends AbstractVillager> entityType, Level level) {
+  public EasyNPCEntityData(EntityType<? extends EasyNPCEntity> entityType, Level level) {
     super(entityType, level);
   }
 
@@ -134,22 +137,9 @@ public class EasyNPCEntityData extends AbstractVillager {
     return this.textureLocation;
   }
 
-  public ResourceLocation getTextureLocation(Enum<?> variant) {
-    return TEXTURE_BY_VARIANT.get(variant);
-  }
-
   public void setTextureLocation(ResourceLocation textureLocation) {
     this.textureLocation = textureLocation;
     this.hasTextureLocation = textureLocation != null;
-  }
-
-  public void setTextureLocation(Enum<?> variant) {
-    ResourceLocation resourceLocation = getTextureLocation(variant);
-    if (resourceLocation != null) {
-      setTextureLocation(resourceLocation);
-    } else {
-      log.error("Unknown texture {} for variant {} and {}", resourceLocation, variant, this);
-    }
   }
 
   public boolean hasProfessionTextureLocation() {
@@ -160,30 +150,17 @@ public class EasyNPCEntityData extends AbstractVillager {
     return this.professionTextureLocation;
   }
 
-  public ResourceLocation getProfessionTextureLocation(Enum<?> profession) {
-    return TEXTURE_BY_PROFESSION.get(profession);
-  }
-
   public void setProfessionTextureLocation(ResourceLocation textureLocation) {
     this.professionTextureLocation = textureLocation;
     this.hasProfessionTextureLocation = textureLocation != null;
   }
 
-  public void setProfessionTextureLocation(Enum<?> profession) {
-    ResourceLocation resourceLocation = getProfessionTextureLocation(profession);
-    if (resourceLocation != null) {
-      setProfessionTextureLocation(resourceLocation);
-    } else {
-      log.error("Unknown texture {} for profession {} and {}", resourceLocation, profession, this);
-    }
-  }
-
   public DialogType getDialogType() {
-    return DialogType.valueOf(this.entityData.get(DATA_DIALOG_TYPE));
+    return DialogType.get(this.entityData.get(DATA_DIALOG_TYPE));
   }
 
   public void setDialogType(DialogType dialogType) {
-    this.entityData.set(DATA_DIALOG_TYPE, dialogType.name());
+    this.entityData.set(DATA_DIALOG_TYPE, dialogType != null ? dialogType.name() : "");
   }
 
   public String getDialog() {
@@ -239,11 +216,7 @@ public class EasyNPCEntityData extends AbstractVillager {
   }
 
   public void setProfession(Enum<?> profession) {
-    if (!this.lastProfession.equals(profession)) {
-      this.entityData.set(DATA_PROFESSION, profession.name());
-      this.setProfessionTextureLocation(profession);
-      this.lastProfession = profession;
-    }
+    this.entityData.set(DATA_PROFESSION, profession != null ? profession.name() : "");
   }
 
   public void setProfession(String name) {
@@ -267,9 +240,62 @@ public class EasyNPCEntityData extends AbstractVillager {
     return false;
   }
 
-  public boolean hasChangedProfession() {
-    return this.lastProfession != null
-        && !this.lastProfession.name().equals(getProfession().name());
+  public Component getProfessionName() {
+    Enum<?> profession = getProfession();
+    return profession != null ? TextUtils.normalizeName(profession.name()) : Component.literal("");
+  }
+
+  public String getSkin() {
+    return this.entityData.get(DATA_SKIN);
+  }
+
+  public void setSkin(String skin) {
+    this.entityData.set(DATA_SKIN, skin != null ? skin : "");
+  }
+
+  public String getSkinURL() {
+    return this.entityData.get(DATA_SKIN_URL);
+  }
+
+  public void setSkinURL(String skinURL) {
+    this.entityData.set(DATA_SKIN_URL, skinURL != null ? skinURL : "");
+  }
+
+  public Optional<UUID> getSkinUUID() {
+    return this.entityData.get(DATA_SKIN_UUID);
+  }
+
+  public void setSkinUUID(UUID uuid) {
+    this.entityData.set(DATA_SKIN_UUID, Optional.of(uuid));
+  }
+
+  public void setSkinUUID(Optional<UUID> uuid) {
+    this.entityData.set(DATA_SKIN_UUID, uuid);
+  }
+
+  public SkinType getSkinType() {
+    return getSkinType(this.entityData.get(DATA_SKIN_TYPE));
+  }
+
+  public SkinType getSkinType(String name) {
+    return SkinType.get(name);
+  }
+
+  public void setSkinType(SkinType skinType) {
+    this.entityData.set(DATA_SKIN_TYPE, skinType != null ? skinType.name() : "");
+  }
+
+  public void setSkinType(String name) {
+    SkinType skinType = getSkinType(name);
+    if (skinType != null) {
+      setSkinType(skinType);
+    } else {
+      log.error("Unknown skin type {} for {}", name, this);
+    }
+  }
+
+  public SkinModel getSkinModel() {
+    return SkinModel.HUMANOID;
   }
 
   public Enum<?> getDefaultVariant() {
@@ -285,11 +311,7 @@ public class EasyNPCEntityData extends AbstractVillager {
   }
 
   public void setVariant(Enum<?> variant) {
-    if (!this.lastVariant.equals(variant)) {
-      this.entityData.set(DATA_VARIANT, variant.name());
-      this.setTextureLocation(variant);
-      this.lastVariant = variant;
-    }
+    this.entityData.set(DATA_VARIANT, variant != null ? variant.name() : "");
   }
 
   public void setVariant(String name) {
@@ -305,8 +327,27 @@ public class EasyNPCEntityData extends AbstractVillager {
     return Variant.values();
   }
 
-  public boolean hasChangedVariant() {
-    return this.lastVariant != null && !this.lastVariant.name().equals(getVariant().name());
+  public SimpleContainer getInventory() {
+    return this.inventory;
+  }
+
+  public Component getVariantName() {
+    Enum<?> variant = getVariant();
+    return variant != null ? TextUtils.normalizeName(variant.name()) : this.getTypeName();
+  }
+
+  @Override
+  public Component getName() {
+    Component component = this.getCustomName();
+    return component != null ? TextUtils.removeAction(component) : this.getTypeName();
+  }
+
+  @Override
+  public SlotAccess getSlot(int slotIndex) {
+    int i = slotIndex - 300;
+    return i >= 0 && i < this.inventory.getContainerSize()
+        ? SlotAccess.forContainer(this.inventory, i)
+        : super.getSlot(slotIndex);
   }
 
   @Nullable
@@ -325,15 +366,19 @@ public class EasyNPCEntityData extends AbstractVillager {
   @Override
   protected void defineSynchedData() {
     super.defineSynchedData();
-    this.entityData.define(DATA_DIALOG_TYPE, DialogType.NONE.name());
     this.entityData.define(DATA_DIALOG, "");
+    this.entityData.define(DATA_DIALOG_TYPE, DialogType.NONE.name());
     this.entityData.define(DATA_NO_DIALOG, "");
     this.entityData.define(DATA_NO_DIALOG_BUTTON, "No");
-    this.entityData.define(DATA_YES_DIALOG, "");
-    this.entityData.define(DATA_YES_DIALOG_BUTTON, "Yes");
     this.entityData.define(DATA_OWNER_UUID_ID, Optional.empty());
     this.entityData.define(DATA_PROFESSION, this.getDefaultProfession().name());
+    this.entityData.define(DATA_SKIN, "");
+    this.entityData.define(DATA_SKIN_URL, "");
+    this.entityData.define(DATA_SKIN_UUID, Optional.empty());
+    this.entityData.define(DATA_SKIN_TYPE, SkinType.DEFAULT.name());
     this.entityData.define(DATA_VARIANT, this.getDefaultVariant().name());
+    this.entityData.define(DATA_YES_DIALOG, "");
+    this.entityData.define(DATA_YES_DIALOG_BUTTON, "Yes");
   }
 
   @Override
@@ -363,9 +408,23 @@ public class EasyNPCEntityData extends AbstractVillager {
     if (this.getProfession() != null) {
       compoundTag.putString(DATA_PROFESSION_TAG, this.getProfession().name());
     }
+    if (this.getSkin() != null) {
+      compoundTag.putString(DATA_SKIN_TAG, this.getSkin());
+    }
+    if (this.getSkinURL() != null) {
+      compoundTag.putString(DATA_SKIN_URL_TAG, this.getSkinURL());
+    }
+    Optional<UUID> skinUUID = this.getSkinUUID();
+    if (skinUUID.isPresent()) {
+      compoundTag.putUUID(DATA_SKIN_UUID_TAG, skinUUID.get());
+    }
+    if (this.getSkinType() != null) {
+      compoundTag.putString(DATA_SKIN_TYPE_TAG, this.getSkinType().name());
+    }
     if (this.getVariant() != null) {
       compoundTag.putString(DATA_VARIANT_TAG, this.getVariant().name());
     }
+    compoundTag.put(DATA_INVENTORY_TAG, this.inventory.createTag());
   }
 
   @Override
@@ -375,7 +434,7 @@ public class EasyNPCEntityData extends AbstractVillager {
     if (compoundTag.contains(DATA_DIALOG_TYPE_TAG)) {
       String dialogType = compoundTag.getString(DATA_DIALOG_TYPE_TAG);
       if (dialogType != null && !dialogType.isEmpty()) {
-        this.setDialogType(DialogType.valueOf(dialogType));
+        this.setDialogType(DialogType.get(dialogType));
       }
     }
     if (compoundTag.contains(DATA_DIALOG_TAG)) {
@@ -426,17 +485,33 @@ public class EasyNPCEntityData extends AbstractVillager {
         this.setVariant(this.getVariant(variant));
       }
     }
-
-  }
-
-  @Override
-  protected void rewardTradeXp(MerchantOffer merchantOffer) {
-    // Unused
-  }
-
-  @Override
-  protected void updateTrades() {
-    // Unused
+    if (compoundTag.contains(DATA_SKIN_TAG)) {
+      String skin = compoundTag.getString(DATA_SKIN_TAG);
+      if (skin != null && !skin.isEmpty()) {
+        this.setSkin(skin);
+      }
+    }
+    if (compoundTag.contains(DATA_SKIN_URL_TAG)) {
+      String url = compoundTag.getString(DATA_SKIN_URL_TAG);
+      if (url != null && !url.isEmpty()) {
+        this.setSkinURL(url);
+      }
+    }
+    if (compoundTag.contains(DATA_SKIN_UUID_TAG)) {
+      UUID skinUUID = compoundTag.getUUID(DATA_SKIN_UUID_TAG);
+      if (skinUUID != null) {
+        this.setSkinUUID(skinUUID);
+      }
+    }
+    if (compoundTag.contains(DATA_SKIN_TYPE_TAG)) {
+      String skinType = compoundTag.getString(DATA_SKIN_TYPE_TAG);
+      if (skinType != null && !skinType.isEmpty()) {
+        this.setSkinType(this.getSkinType(skinType));
+      }
+    }
+    if (compoundTag.contains(DATA_INVENTORY_TAG)) {
+      this.inventory.fromTag(compoundTag.getList(DATA_INVENTORY_TAG, 10));
+    }
   }
 
   @Override
