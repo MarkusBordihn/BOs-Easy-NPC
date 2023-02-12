@@ -19,6 +19,9 @@
 
 package de.markusbordihn.easynpc.client.screen;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -29,12 +32,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.skin.SkinType;
 
 public class ScreenHelper {
 
-  public static void renderEntity(int x, int y, int scale, float yRot, float xRot, EasyNPCEntity entity) {
+  public static void renderEntity(int x, int y, int scale, float yRot, float xRot,
+      EasyNPCEntity entity) {
     // Prepare Renderer
     float f = (float) Math.atan(yRot / 40.0F);
     float f1 = (float) Math.atan(xRot / 40.0F);
@@ -52,19 +57,21 @@ public class ScreenHelper {
     poseStack1.mulPose(quaternion);
 
     // Backup entity information
-    float entityYBodyRot = entity.yBodyRot;
-    float entityYRot = entity.getYRot();
+    Component entityCustomName = entity.getCustomName();
+    boolean entityShouldShowName = entity.shouldShowName();
     float entityXRot = entity.getXRot();
-    float entityYHeadRotO = entity.yHeadRotO;
+    float entityYBodyRot = entity.yBodyRot;
     float entityYHeadRot = entity.yHeadRot;
+    float entityYHeadRotO = entity.yHeadRotO;
+    float entityYRot = entity.getYRot();
 
     // Adjust entity information for rendering
     entity.yBodyRot = 180.0F + f * 20.0F;
     entity.setYRot(180.0F + f * 40.0F);
     entity.setXRot(-f1 * 20.0F);
     entity.yHeadRot = entity.getYRot();
-    Component customName = entity.getCustomName();
     entity.setCustomName(null);
+    entity.setCustomNameVisible(false);
 
     // Render Entity
     Lighting.setupForEntityInInventory();
@@ -86,7 +93,8 @@ public class ScreenHelper {
     entity.setXRot(entityXRot);
     entity.yHeadRot = entityYHeadRot;
     entity.yHeadRotO = entityYHeadRotO;
-    entity.setCustomName(customName);
+    entity.setCustomName(entityCustomName);
+    entity.setCustomNameVisible(entityShouldShowName);
 
     poseStack.popPose();
     RenderSystem.applyModelViewMatrix();
@@ -98,33 +106,55 @@ public class ScreenHelper {
     renderEntity(x, y, entity.getEntityGuiScaling(), yRot, xRot, entity);
   }
 
+  public static void renderEntityAvatar(int x, int y, int scale, float yRot, float xRot,
+      EasyNPCEntity entity) {
+    renderEntity(x, y, scale, yRot, xRot, entity);
+  }
+
   public static void renderEntityDialog(int x, int y, float yRot, float xRot,
       EasyNPCEntity entity) {
     renderEntity(x, y, entity.getEntityDialogScaling(), yRot, xRot, entity);
   }
 
-  public static void renderEntitySkin(int x, int y, float yRot, float xRot, EasyNPCEntity entity,
-      ResourceLocation variantTextureLocation, ResourceLocation professionTextureLocation) {
+  public static void renderEntityPlayerSkin(int x, int y, float yRot, float xRot, EasyNPCEntity entity,
+      UUID userUUID, SkinType skinType) {
 
     // Backup entity information
-    ResourceLocation entityTextureLocation = entity.getTextureLocation();
-    ResourceLocation entityProfessionTextureLocation =
-        professionTextureLocation != null ? entity.getProfessionTextureLocation() : null;
+    SkinType entitySkinType = entity.getSkinType();
+    Optional<UUID> entitySkinUUID = entity.getSkinUUID();
 
     // Adjust entity information for rendering
-    entity.setTextureLocation(variantTextureLocation);
-    if (professionTextureLocation != null) {
-      entity.setProfessionTextureLocation(professionTextureLocation);
-    }
+    entity.setSkinType(skinType);
+    entity.setSkinUUID(userUUID);
 
     // Render Entity
     renderEntity(x, y, entity.getEntityGuiScaling(), yRot, xRot, entity);
 
     // Restore entity information
-    entity.setTextureLocation(entityTextureLocation);
-    if (entityProfessionTextureLocation != null) {
-      entity.setProfessionTextureLocation(entityProfessionTextureLocation);
-    }
+    entity.setSkinType(entitySkinType);
+    entity.setSkinUUID(entitySkinUUID);
+  }
+
+  public static void renderEntityDefaultSkin(int x, int y, float yRot, float xRot, EasyNPCEntity entity,
+      Enum<?> variant, Enum<?> profession) {
+
+    // Backup entity information
+    SkinType entitySkinType = entity.getSkinType();
+    Enum<?> entityVariant = entity.getVariant();
+    Enum<?> entityProfession = entity.getProfession();
+
+    // Adjust entity information for rendering
+    entity.setSkinType(SkinType.DEFAULT);
+    entity.setVariant(variant);
+    entity.setProfession(profession);
+
+    // Render Entity
+    renderEntity(x, y, entity.getEntityGuiScaling(), yRot, xRot, entity);
+
+    // Restore entity information
+    entity.setSkinType(entitySkinType);
+    entity.setVariant(entityVariant);
+    entity.setProfession(entityProfession);
   }
 
 }

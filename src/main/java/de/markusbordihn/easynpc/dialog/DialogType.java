@@ -20,5 +20,20 @@
 package de.markusbordihn.easynpc.dialog;
 
 public enum DialogType {
-  BASIC, YES_NO, NONE;
+  // @formatter:off
+  BASIC,
+  YES_NO,
+  NONE;
+  // @formatter:on
+
+  public static DialogType get(String dialogType) {
+    if (dialogType == null || dialogType.isEmpty()) {
+      return DialogType.NONE;
+    }
+    try {
+      return DialogType.valueOf(dialogType);
+    } catch (IllegalArgumentException e) {
+      return DialogType.NONE;
+    }
+  }
 }

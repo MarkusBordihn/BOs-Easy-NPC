@@ -38,10 +38,10 @@ public class MessageOpenDialog {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  protected final String uuid;
+  protected final UUID uuid;
   protected final String dialogName;
 
-  public MessageOpenDialog(String uuid, String dialogName) {
+  public MessageOpenDialog(UUID uuid, String dialogName) {
     this.uuid = uuid;
     this.dialogName = dialogName;
   }
@@ -50,7 +50,7 @@ public class MessageOpenDialog {
     return this.dialogName;
   }
 
-  public String getUUID() {
+  public UUID getUUID() {
     return this.uuid;
   }
 
@@ -69,7 +69,7 @@ public class MessageOpenDialog {
     }
 
     // Check for access.
-    UUID uuid = UUID.fromString(message.getUUID());
+    UUID uuid = message.getUUID();
     if (!EntityManager.hasAccess(uuid, serverPlayer)) {
       log.warn("User {} has no access to Easy NPC with uuid {}.", serverPlayer, uuid);
       return;
@@ -96,6 +96,15 @@ public class MessageOpenDialog {
         break;
       case "YesNoDialogConfiguration":
         EasyNPCEntityMenu.openYesNoDialogConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
+      case "CustomSkinConfiguration":
+        EasyNPCEntityMenu.openCustomSkinConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
+      case "DefaultSkinConfiguration":
+        EasyNPCEntityMenu.openDefaultSkinConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
+      case "PlayerSkinConfiguration":
+        EasyNPCEntityMenu.openPlayerSkinConfigurationMenu(serverPlayer, easyNPCEntity);
         break;
       default:
         log.debug("Unknown dialog {} for {} from {}", dialogName, easyNPCEntity, serverPlayer);

@@ -9,5 +9,9 @@
   "item.easy_npc.humanoid_spawn_egg": "Humanoid NPC Spawn Egg",
   "item.easy_npc.villager_spawn_egg": "Villager NPC Spawn Egg",
 
-  "itemGroup.easy_npc.spawn_eggs" : "Easy NPC (Spawn Eggs)"
+  "text.easy_npc.removeNPC.deleteQuestion": "Are you sure you want to delete this NPC?",
+  "text.easy_npc.removeNPC.deleteWarning": "'%s' will be lost forever! (A long time!)",
+  "text.easy_npc.removeNPC.deleteButton": "Delete",
+
+  "itemGroup.easy_npc.spawn_eggs": "Easy NPC (Spawn Eggs)"
 }

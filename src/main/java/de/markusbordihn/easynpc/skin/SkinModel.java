@@ -17,35 +17,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.npc;
+package de.markusbordihn.easynpc.skin;
 
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.npc.AbstractVillager;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
+public enum SkinModel {
+  // @formatter:off
+  FAIRY,
+  HUMANOID,
+  HUMANOID_SLIM,
+  VILLAGER;
+  // @formatter:on
 
-public class Kaworru extends HumanoidSlim {
-
-  // General Information
-  public static final String ID = "kaworru";
-  public static final String NAME = "Kaworru";
-
-  public Kaworru(EntityType<? extends AbstractVillager> entityType, Level level) {
-    super(entityType, level);
-    setVariant(Variant.KAWORRU);
-  }
-
-  @Override
-  public void finalizeSpawn() {
-    super.finalizeSpawn();
-
-    // Give default item, if hand is empty.
-    ItemStack itemStack = this.getItemBySlot(EquipmentSlot.MAINHAND);
-    if (itemStack != null && itemStack.isEmpty()) {
-      this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.STONE_SWORD));
+  public static SkinModel get(String skinModel) {
+    if (skinModel == null || skinModel.isEmpty()) {
+      return SkinModel.HUMANOID;
+    }
+    try {
+      return SkinModel.valueOf(skinModel);
+    } catch (IllegalArgumentException e) {
+      return SkinModel.HUMANOID;
     }
   }
-
 }

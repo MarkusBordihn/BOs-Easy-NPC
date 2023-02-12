@@ -38,14 +38,14 @@ public class MessageSaveYesNoDialog {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  protected final String uuid;
+  protected final UUID uuid;
   protected final String dialog;
   protected final String yesDialog;
   protected final String noDialog;
   protected final String yesButtonText;
   protected final String noButtonText;
 
-  public MessageSaveYesNoDialog(String uuid, String dialog, String yesDialog, String noDialog,
+  public MessageSaveYesNoDialog(UUID uuid, String dialog, String yesDialog, String noDialog,
       String yesButtonText, String noButtonText) {
     this.uuid = uuid;
     this.dialog = dialog;
@@ -75,7 +75,7 @@ public class MessageSaveYesNoDialog {
     return this.noButtonText;
   }
 
-  public String getUUID() {
+  public UUID getUUID() {
     return this.uuid;
   }
 
@@ -94,7 +94,7 @@ public class MessageSaveYesNoDialog {
     }
 
     // Check for access.
-    UUID uuid = UUID.fromString(message.getUUID());
+    UUID uuid = message.getUUID();
     if (!EntityManager.hasAccess(uuid, serverPlayer)) {
       log.warn("User {} has no access to Easy NPC with uuid {}.", serverPlayer, uuid);
       return;

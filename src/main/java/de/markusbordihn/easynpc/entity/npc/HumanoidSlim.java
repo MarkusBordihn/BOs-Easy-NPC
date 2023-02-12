@@ -19,23 +19,18 @@
 
 package de.markusbordihn.easynpc.entity.npc;
 
-import java.util.EnumMap;
-import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.Util;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.level.Level;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.skin.SkinModel;
 
 public class HumanoidSlim extends EasyNPCEntity {
 
@@ -50,23 +45,22 @@ public class HumanoidSlim extends EasyNPCEntity {
     ALEX, KAWORRU, THE_FAITHY;
   }
 
-  protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
-      Util.make(new EnumMap<>(Variant.class), map -> {
-        map.put(Variant.ALEX, new ResourceLocation("textures/entity/alex.png"));
-        map.put(Variant.KAWORRU,
-            new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid_slim/kaworru.png"));
-        map.put(Variant.THE_FAITHY,
-            new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid_slim/thefaithy.png"));
-      });
+  public HumanoidSlim(EntityType<? extends EasyNPCEntity> entityType, Level level, Enum<?> variant) {
+    super(entityType, level, variant);
+  }
 
-
-  public HumanoidSlim(EntityType<? extends AbstractVillager> entityType, Level level) {
+  public HumanoidSlim(EntityType<? extends EasyNPCEntity> entityType, Level level) {
     super(entityType, level);
   }
 
   public static AttributeSupplier.Builder createAttributes() {
     return Mob.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0.5F)
         .add(Attributes.MAX_HEALTH, 16.0D).add(Attributes.ATTACK_DAMAGE, 0.0D);
+  }
+
+  @Override
+  public SkinModel getSkinModel() {
+    return SkinModel.HUMANOID_SLIM;
   }
 
   @Override
@@ -82,11 +76,6 @@ public class HumanoidSlim extends EasyNPCEntity {
   @Override
   public Enum<?> getVariant(String name) {
     return Variant.valueOf(name);
-  }
-
-  @Override
-  public ResourceLocation getTextureLocation(Enum<?> variant) {
-    return TEXTURE_BY_VARIANT.get(variant);
   }
 
 }

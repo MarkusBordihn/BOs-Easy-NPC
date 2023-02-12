@@ -29,14 +29,18 @@ import org.apache.logging.log4j.Logger;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.ConfirmScreen;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -48,6 +52,7 @@ import de.markusbordihn.easynpc.dialog.DialogType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.menu.configuration.MainConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.skin.SkinType;
 
 @OnlyIn(Dist.CLIENT)
 public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigurationMenu> {
@@ -58,27 +63,14 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
   protected final UUID uuid;
 
   // Internal
-  protected Button editDialogButton;
+  protected Button editSkinButton = null;
+  protected Button editDialogButton = null;
   protected Button saveNameButton = null;
-  private Button skinPreviousButton = null;
-  private Button skinNextButton = null;
-  private Button skinPreviousPageButton = null;
-  private Button skinNextPageButton = null;
+  protected Button removeEntityButton = null;
   private List<Button> skinButtons = new ArrayList<>();
   private EditBox nameBox;
-  private float xMouse;
-  private float yMouse;
-
-  // Skin Preview
-  private int skinStartIndex = 0;
-  private int maxSkinsPerPage = 5;
-
-  // Cache
-  private Enum<?>[] professions;
-  private Enum<?>[] variants;
-  protected int numOfProfessions = 0;
-  protected int numOfSkins = 0;
-  protected int numOfVariants = 0;
+  protected float xMouse;
+  protected float yMouse;
 
   public MainConfigurationScreen(MainConfigurationMenu menu, Inventory inventory,
       Component component) {
@@ -95,94 +87,31 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
     }
   }
 
-  private void renderSkins(PoseStack poseStack, float partialTicks) {
-    if (this.entity == null) {
+  public void deleteNPC() {
+    Minecraft minecraft = this.minecraft;
+    if (minecraft == null) {
       return;
     }
-
-    int positionTop = 100;
-    int skinPosition = 0;
-    skinButtons = new ArrayList<>();
-    for (int i = skinStartIndex; i < this.numOfSkins && i < skinStartIndex + maxSkinsPerPage; i++) {
-      int variantIndex = this.numOfProfessions > 0 ? i / this.numOfProfessions : i;
-      Enum<?> variant = this.variants[variantIndex];
-      int left = this.leftPos + 40 + (skinPosition * 48);
-      int top = this.topPos + 60 + positionTop;
-
-      if (Constants.IS_MOD_DEV) {
-        // Render skin position
-        this.font.draw(poseStack, new TextComponent(i + ""), left - 6f, top - 70f, 4210752);
-      }
-
-      // Render additional Professions, if any.
-      if (this.numOfProfessions > 0) {
-        Enum<?> profession = this.professions[i - (variantIndex * this.numOfProfessions)];
-        this.renderSkinEntity(poseStack, left, top, partialTicks, variant, profession);
+    minecraft.setScreen(new ConfirmScreen(confirmed -> {
+      if (confirmed && uuid != null) {
+        NetworkHandler.removeNPC(uuid);
+        minecraft.setScreen((Screen) null);
       } else {
-        this.renderSkinEntity(poseStack, left, top, partialTicks, variant, null);
+        minecraft.setScreen(this);
       }
-      skinPosition++;
-    }
-  }
-
-  private void renderSkinEntity(PoseStack poseStack, int x, int y, float partialTicks,
-      Enum<?> variant, Enum<?> profession) {
-    // Get relevant texture for the preview
-    ResourceLocation variantResourceLocation = this.entity.getTextureLocation(variant);
-    ResourceLocation professionResourceLocation =
-        profession != null ? this.entity.getProfessionTextureLocation(profession) : null;
-
-    // Render skin entity with variant and profession.
-    ScreenHelper.renderEntitySkin(x, y, x - this.xMouse, y - 40 - this.yMouse, this.entity,
-        variantResourceLocation, professionResourceLocation);
-
-    // Create dynamically button for each skin variant and profession.
-    Button skinButton =
-        new Button(x - 20, y + 5, 40, 20, new TranslatableComponent("Select"), button -> {
-          NetworkHandler.variantChange(this.uuid, variant);
-          if (profession != null) {
-            NetworkHandler.professionChange(this.uuid, profession);
-          }
-        });
-    if (this.entity.getVariant().equals(variant)
-        && this.entity.getProfession().equals(profession)) {
-      skinButton.active = false;
-    }
-    skinButton.render(poseStack, x, y, partialTicks);
-    skinButtons.add(skinButton);
-  }
-
-  private void checkSkinButtonState() {
-    // Check the visible for the buttons.
-    boolean skinButtonShouldBeVisible = this.numOfSkins > this.maxSkinsPerPage;
-    this.skinPreviousButton.visible = skinButtonShouldBeVisible;
-    this.skinNextButton.visible = skinButtonShouldBeVisible;
-    this.skinPreviousPageButton.visible = skinButtonShouldBeVisible;
-    this.skinNextPageButton.visible = skinButtonShouldBeVisible;
-
-    // Enable / disable buttons depending on the current skin index.
-    this.skinPreviousButton.active = this.skinStartIndex > 0;
-    this.skinNextButton.active = this.skinStartIndex + this.maxSkinsPerPage < this.numOfSkins;
-    this.skinPreviousPageButton.active = this.skinStartIndex - this.maxSkinsPerPage > 0;
-    this.skinNextPageButton.active =
-        this.skinStartIndex + 1 + this.maxSkinsPerPage < this.numOfSkins;
+    }, new TranslatableComponent(Constants.TEXT_PREFIX + "removeNPC.deleteQuestion"),
+        new TranslatableComponent(Constants.TEXT_PREFIX + "removeNPC.deleteWarning",
+            this.entity.getDisplayName().getString()),
+        new TranslatableComponent(Constants.TEXT_PREFIX + "removeNPC.deleteButton"),
+        CommonComponents.GUI_CANCEL));
   }
 
   @Override
   public void init() {
-    super.init();
-
-    // Cache
-    if (this.entity != null) {
-      this.professions = this.entity.getProfessions();
-      this.variants = this.entity.getVariants();
-      this.numOfProfessions = this.entity.hasProfessions() ? this.professions.length : 0;
-      this.numOfVariants = this.variants.length;
-      this.numOfSkins =
-          numOfProfessions > 0 ? this.numOfVariants * this.numOfProfessions : this.numOfVariants;
-      log.debug("Found about {} skins with {} variants and {} professions.", this.numOfSkins,
-          this.numOfVariants, this.numOfProfessions);
+    if (this.entity == null) {
+      return;
     }
+    super.init();
 
     // Default stats
     this.imageHeight = 220;
@@ -198,8 +127,7 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
     this.nameBox = new EditBox(this.font, this.leftPos + 7, this.topPos + 31, 180, 18,
         new TranslatableComponent("Name"));
     this.nameBox.setMaxLength(32);
-    this.nameBox.setValue(
-        this.entity.hasCustomName() ? this.entity.getCustomName().getString() : "My Easy NPC");
+    this.nameBox.setValue(this.entity.getName().getString());
     this.addRenderableWidget(this.nameBox);
 
     this.saveNameButton = this.addRenderableWidget(new Button(this.leftPos + 190, this.topPos + 30,
@@ -208,9 +136,8 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
         }));
 
     // Dialog
-    this.editDialogButton = this.addRenderableWidget(new Button(this.leftPos + 10, this.topPos + 54,
-        80, 20, new TranslatableComponent("Edit Dialog"), onPress -> {
-          log.info("Edit dialog ...");
+    this.editDialogButton = this.addRenderableWidget(new Button(this.leftPos + 110,
+        this.topPos + 54, 80, 20, new TranslatableComponent("Edit Dialog"), onPress -> {
           DialogType dialogType = this.entity.getDialogType();
           switch (dialogType) {
             case BASIC:
@@ -225,48 +152,29 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
         }));
 
     // Skins
-    int skinButtonTop = this.topPos + 110;
-    int skinButtonLeft = this.leftPos + 7;
-    int skinButtonRight = this.leftPos + 255;
-    this.skinPreviousButton = this.addRenderableWidget(new Button(skinButtonLeft, skinButtonTop, 15,
-        20, new TranslatableComponent("<"), onPress -> {
-          if (this.skinStartIndex > 0) {
-            skinStartIndex--;
+    this.editSkinButton = this.addRenderableWidget(new Button(this.leftPos + 7, this.topPos + 190,
+        100, 20, new TranslatableComponent("Edit Skin"), onPress -> {
+          SkinType skinType = this.entity.getSkinType();
+          switch (skinType) {
+            case PLAYER_SKIN:
+            case SECURE_REMOTE_URL:
+            case INSECURE_REMOTE_URL:
+              NetworkHandler.openDialog(uuid, "PlayerSkinConfiguration");
+              break;
+            case CUSTOM:
+              NetworkHandler.openDialog(uuid, "CustomSkinConfiguration");
+              break;
+            default:
+              NetworkHandler.openDialog(uuid, "DefaultSkinConfiguration");
           }
-          checkSkinButtonState();
         }));
-    this.skinPreviousPageButton = this.addRenderableWidget(new Button(skinButtonLeft,
-        skinButtonTop + 20, 15, 20, new TranslatableComponent("<<"), onPress -> {
-          if (this.skinStartIndex - maxSkinsPerPage > 0) {
-            skinStartIndex = skinStartIndex - maxSkinsPerPage;
-          } else {
-            skinStartIndex = 0;
-          }
-          checkSkinButtonState();
-        }));
-    this.skinNextButton = this.addRenderableWidget(new Button(skinButtonRight, skinButtonTop, 15,
-        20, new TranslatableComponent(">"), onPress -> {
-          if (this.skinStartIndex >= 0
-              && this.skinStartIndex < this.numOfSkins - this.maxSkinsPerPage) {
-            skinStartIndex++;
-          }
-          checkSkinButtonState();
-        }));
-    this.skinNextPageButton = this.addRenderableWidget(new Button(skinButtonRight,
-        skinButtonTop + 20, 15, 20, new TranslatableComponent(">>"), onPress -> {
-          if (this.skinStartIndex >= 0
-              && this.skinStartIndex + this.maxSkinsPerPage < this.numOfSkins) {
-            this.skinStartIndex = this.skinStartIndex + this.maxSkinsPerPage;
-          } else if (this.numOfSkins > this.maxSkinsPerPage) {
-            this.skinStartIndex = this.numOfSkins - this.maxSkinsPerPage;
-          } else {
-            this.skinStartIndex = this.numOfSkins;
-          }
-          checkSkinButtonState();
-        }));
-    checkSkinButtonState();
 
     // Actions
+    this.removeEntityButton =
+        this.addRenderableWidget(new Button(this.leftPos + 219, this.topPos + 190, 50, 20,
+            new TranslatableComponent("Delete").withStyle(ChatFormatting.RED), onPress -> {
+              deleteNPC();
+            }));
   }
 
   @Override
@@ -280,10 +188,9 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
     this.font.draw(poseStack, new TextComponent("Name"), this.leftPos + 7f, this.topPos + 20f,
         4210752);
 
-    // Skins
-    this.font.draw(poseStack, new TextComponent("Skins"), this.leftPos + 7f, this.topPos + 80f,
-        4210752);
-    this.renderSkins(poseStack, partialTicks);
+    // Render current Avatar
+    ScreenHelper.renderEntityAvatar(this.leftPos + 55, this.topPos + 185, 55,
+        this.leftPos + 50 - this.xMouse, this.topPos + 90 - this.yMouse, this.entity);
   }
 
   @Override
@@ -305,10 +212,10 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
     this.blit(poseStack, leftPos, topPos + expandedHeight + 5, 0, 5, 250, 170);
     this.blit(poseStack, leftPos + 243, topPos + expandedHeight + 5, 215, 5, 35, 170);
 
-    // Skin Selection
-    fill(poseStack, this.leftPos + 7, this.topPos + 90, this.leftPos + 269, this.topPos + 180,
+    // Entity
+    fill(poseStack, this.leftPos + 7, this.topPos + 54, this.leftPos + 107, this.topPos + 191,
         0xff000000);
-    fill(poseStack, this.leftPos + 8, this.topPos + 91, this.leftPos + 268, this.topPos + 179,
+    fill(poseStack, this.leftPos + 8, this.topPos + 55, this.leftPos + 106, this.topPos + 190,
         0xffaaaaaa);
   }
 

@@ -19,6 +19,13 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity;
 
+import java.util.EnumMap;
+import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import net.minecraft.Util;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -31,13 +38,28 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.npc.Humanoid.Variant;
 
 @OnlyIn(Dist.CLIENT)
 public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, PlayerModel<EasyNPCEntity>> {
 
-  private static final ResourceLocation DEFAULT_LOCATION =
-      new ResourceLocation("textures/entity/steve.png");
+  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  // Variant Textures
+  protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
+      Util.make(new EnumMap<>(Variant.class), map -> {
+        map.put(Variant.JAYJASONBO,
+            new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/jayjasonbo.png"));
+        map.put(Variant.PROFESSOR_01,
+            new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/professor_01.png"));
+        map.put(Variant.SECURITY_01,
+            new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/security_01.png"));
+        map.put(Variant.STEVE, new ResourceLocation("textures/entity/steve.png"));
+      });
+  protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.STEVE);
 
   public HumanoidRenderer(EntityRendererProvider.Context context) {
     super(context, new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER), false), 0.5F);
@@ -46,10 +68,14 @@ public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, PlayerModel<Eas
   }
 
   public ResourceLocation getTextureLocation(EasyNPCEntity entity) {
-    if (entity.hasTextureLocation()) {
-      return entity.getTextureLocation();
+    switch (entity.getSkinType()) {
+      case PLAYER_SKIN:
+      case SECURE_REMOTE_URL:
+      case INSECURE_REMOTE_URL:
+        return PlayerTextureManager.getOrCreateTextureWithDefault(entity, DEFAULT_TEXTURE);
+      default:
+        return TEXTURE_BY_VARIANT.getOrDefault(entity.getVariant(), DEFAULT_TEXTURE);
     }
-    return DEFAULT_LOCATION;
   }
 
   @Override

@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.menu.configuration;
+package de.markusbordihn.easynpc.menu.configuration.skin;
 
 import java.util.UUID;
 
@@ -35,7 +35,7 @@ import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 
-public class DialogConfigurationMenu extends AbstractContainerMenu {
+public class SkinConfigurationMenu extends AbstractContainerMenu {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -43,22 +43,22 @@ public class DialogConfigurationMenu extends AbstractContainerMenu {
   protected EasyNPCEntity entity;
   protected UUID uuid;
 
-  public DialogConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
-    this(ModMenuTypes.DIALOG_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
+  public SkinConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
+    this(ModMenuTypes.SKIN_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
   }
 
-  public DialogConfigurationMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
+  public SkinConfigurationMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
     this(windowId, playerInventory, data.readUUID());
   }
 
-  public DialogConfigurationMenu(final MenuType<?> menuType, final int windowId,
+  public SkinConfigurationMenu(final MenuType<?> menuType, final int windowId,
       final Inventory playerInventory, UUID uuid) {
     super(menuType, windowId);
 
     this.uuid = uuid;
     this.entity = EntityManager.getEasyNPCEntityByUUID(uuid);
 
-    log.debug("Open dialog configuration menu for {}: {}", this.uuid, this.entity);
+    log.debug("Open skin configuration menu for {}: {}", this.uuid, this.entity);
   }
 
   public EasyNPCEntity getEntity() {

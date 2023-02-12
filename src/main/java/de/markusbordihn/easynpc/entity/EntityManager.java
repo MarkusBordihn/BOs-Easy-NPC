@@ -29,6 +29,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -44,7 +45,6 @@ public class EntityManager {
 
   @SubscribeEvent(priority = EventPriority.HIGH)
   public static void handleEntityJoinWorldEvent(EntityJoinWorldEvent event) {
-
     // Ignore if event is canceled.
     if (event.isCanceled()) {
       return;
@@ -53,8 +53,23 @@ public class EntityManager {
     // Only take care of Easy NPC entities.
     Entity entity = event.getEntity();
     if (entity instanceof EasyNPCEntity easyNPCEntity) {
-      log.info("Found EASY NPC entity {}: {}", entity.getUUID(), easyNPCEntity);
+      log.info("[Add] EASY NPC entity {}: {}", entity.getUUID(), easyNPCEntity);
       entityMap.put(entity.getUUID(), entity);
+    }
+  }
+
+  @SubscribeEvent(priority = EventPriority.HIGH)
+  public static void handleEntityJoinWorldEvent(EntityLeaveWorldEvent event) {
+    // Ignore if event is canceled.
+    if (event.isCanceled()) {
+      return;
+    }
+
+    // Only take care of Easy NPC entities.
+    Entity entity = event.getEntity();
+    if (entity instanceof EasyNPCEntity easyNPCEntity && entityMap.containsKey(entity.getUUID())) {
+      log.info("[Remove] EASY NPC entity {}: {}", entity.getUUID(), easyNPCEntity);
+      entityMap.remove(entity.getUUID());
     }
   }
 

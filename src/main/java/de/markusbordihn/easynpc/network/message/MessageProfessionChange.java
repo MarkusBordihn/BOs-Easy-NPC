@@ -37,10 +37,10 @@ public class MessageProfessionChange {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  protected final String uuid;
+  protected final UUID uuid;
   protected final String profession;
 
-  public MessageProfessionChange(String uuid, String profession) {
+  public MessageProfessionChange(UUID uuid, String profession) {
     this.uuid = uuid;
     this.profession = profession;
   }
@@ -49,7 +49,7 @@ public class MessageProfessionChange {
     return this.profession;
   }
 
-  public String getUUID() {
+  public UUID getUUID() {
     return this.uuid;
   }
 
@@ -68,7 +68,7 @@ public class MessageProfessionChange {
     }
 
     // Check for access.
-    UUID uuid = UUID.fromString(message.getUUID());
+    UUID uuid = message.getUUID();
     if (!EntityManager.hasAccess(uuid, serverPlayer)) {
       log.warn("User {} has no access to Easy NPC with uuid {}.", serverPlayer, uuid);
       return;

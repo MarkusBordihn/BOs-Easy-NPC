@@ -37,9 +37,12 @@ import net.minecraftforge.network.NetworkHooks;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.DialogMenu;
-import de.markusbordihn.easynpc.menu.configuration.BasicDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.MainConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.YesNoDialogConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.skin.PlayerSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.ConfigurationMenu;
 
 public class EasyNPCEntityMenu {
@@ -50,12 +53,11 @@ public class EasyNPCEntityMenu {
 
   public static void openConfigurationMenu(ServerPlayer player, EasyNPCEntity entity) {
     log.debug("Open Easy NPC Configuration Menu for {} ...", entity);
-    Component easyNPCName = entity.getCustomName();
     UUID uuid = entity.getUUID();
     MenuProvider provider = new MenuProvider() {
       @Override
       public Component getDisplayName() {
-        return entity.getCustomName() != null ? easyNPCName : new TextComponent(uuid.toString());
+        return entity.getName();
       }
 
       @Nullable
@@ -69,12 +71,11 @@ public class EasyNPCEntityMenu {
 
   public static void openBasicDialogConfigurationMenu(ServerPlayer player, EasyNPCEntity entity) {
     log.debug("Open Easy NPC Basic Dialog Menu for {} ...", entity);
-    Component easyNPCName = entity.getCustomName();
     UUID uuid = entity.getUUID();
     MenuProvider provider = new MenuProvider() {
       @Override
       public Component getDisplayName() {
-        return entity.getCustomName() != null ? easyNPCName : new TextComponent(uuid.toString());
+        return entity.getName();
       }
 
       @Nullable
@@ -88,12 +89,11 @@ public class EasyNPCEntityMenu {
 
   public static void openYesNoDialogConfigurationMenu(ServerPlayer player, EasyNPCEntity entity) {
     log.debug("Open Easy NPC Yes/No Dialog Menu for {} ...", entity);
-    Component easyNPCName = entity.getCustomName();
     UUID uuid = entity.getUUID();
     MenuProvider provider = new MenuProvider() {
       @Override
       public Component getDisplayName() {
-        return entity.getCustomName() != null ? easyNPCName : new TextComponent(uuid.toString());
+        return entity.getName();
       }
 
       @Nullable
@@ -123,14 +123,67 @@ public class EasyNPCEntityMenu {
     NetworkHooks.openGui(player, provider, buffer -> buffer.writeUUID(uuid));
   }
 
-  public static void openDialogMenu(ServerPlayer player, EasyNPCEntity entity) {
-    log.debug("Open Easy NPC Dialog Menu for {} ...", entity);
-    Component easyNPCName = entity.getCustomName();
+  public static void openCustomSkinConfigurationMenu(ServerPlayer player, EasyNPCEntity entity) {
+    log.debug("Open Easy NPC default Skin Configuration Menu for {} ...", entity);
     UUID uuid = entity.getUUID();
     MenuProvider provider = new MenuProvider() {
       @Override
       public Component getDisplayName() {
-        return entity.getCustomName() != null ? easyNPCName : new TextComponent(uuid.toString());
+        return new TextComponent("Custom Skin for " + entity.getName().getString());
+      }
+
+      @Nullable
+      @Override
+      public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
+        return new CustomSkinConfigurationMenu(windowId, inventory, uuid);
+      }
+    };
+    NetworkHooks.openGui(player, provider, buffer -> buffer.writeUUID(uuid));
+  }
+
+  public static void openDefaultSkinConfigurationMenu(ServerPlayer player, EasyNPCEntity entity) {
+    log.debug("Open Easy NPC default Skin Configuration Menu for {} ...", entity);
+    UUID uuid = entity.getUUID();
+    MenuProvider provider = new MenuProvider() {
+      @Override
+      public Component getDisplayName() {
+        return new TextComponent("Default Skin for " + entity.getName().getString());
+      }
+
+      @Nullable
+      @Override
+      public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
+        return new DefaultSkinConfigurationMenu(windowId, inventory, uuid);
+      }
+    };
+    NetworkHooks.openGui(player, provider, buffer -> buffer.writeUUID(uuid));
+  }
+
+  public static void openPlayerSkinConfigurationMenu(ServerPlayer player, EasyNPCEntity entity) {
+    log.debug("Open Easy NPC player Skin Configuration Menu for {} ...", entity);
+    UUID uuid = entity.getUUID();
+    MenuProvider provider = new MenuProvider() {
+      @Override
+      public Component getDisplayName() {
+        return new TextComponent("Player Skin for " + entity.getName().getString());
+      }
+
+      @Nullable
+      @Override
+      public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
+        return new PlayerSkinConfigurationMenu(windowId, inventory, uuid);
+      }
+    };
+    NetworkHooks.openGui(player, provider, buffer -> buffer.writeUUID(uuid));
+  }
+
+  public static void openDialogMenu(ServerPlayer player, EasyNPCEntity entity) {
+    log.debug("Open Easy NPC Dialog Menu for {} ...", entity);
+    UUID uuid = entity.getUUID();
+    MenuProvider provider = new MenuProvider() {
+      @Override
+      public Component getDisplayName() {
+        return entity.getName();
       }
 
       @Nullable

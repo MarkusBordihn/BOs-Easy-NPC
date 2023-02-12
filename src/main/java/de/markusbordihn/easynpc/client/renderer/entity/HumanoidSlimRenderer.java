@@ -19,6 +19,10 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity;
 
+import java.util.EnumMap;
+import java.util.Map;
+
+import net.minecraft.Util;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -31,13 +35,24 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.npc.HumanoidSlim.Variant;
 
 @OnlyIn(Dist.CLIENT)
 public class HumanoidSlimRenderer extends MobRenderer<EasyNPCEntity, PlayerModel<EasyNPCEntity>> {
 
-  private static final ResourceLocation DEFAULT_LOCATION =
-      new ResourceLocation("textures/entity/alex.png");
+  // Variant Textures
+  protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
+      Util.make(new EnumMap<>(Variant.class), map -> {
+        map.put(Variant.ALEX, new ResourceLocation("textures/entity/alex.png"));
+        map.put(Variant.KAWORRU,
+            new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid_slim/kaworru.png"));
+        map.put(Variant.THE_FAITHY,
+            new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid_slim/thefaithy.png"));
+      });
+  protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.ALEX);
 
   public HumanoidSlimRenderer(EntityRendererProvider.Context context) {
     super(context, new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM), true), 0.5F);
@@ -46,10 +61,14 @@ public class HumanoidSlimRenderer extends MobRenderer<EasyNPCEntity, PlayerModel
   }
 
   public ResourceLocation getTextureLocation(EasyNPCEntity entity) {
-    if (entity.hasTextureLocation()) {
-      return entity.getTextureLocation();
+    switch (entity.getSkinType()) {
+      case PLAYER_SKIN:
+      case SECURE_REMOTE_URL:
+      case INSECURE_REMOTE_URL:
+        return PlayerTextureManager.getOrCreateTextureWithDefault(entity, DEFAULT_TEXTURE);
+      default:
+        return TEXTURE_BY_VARIANT.getOrDefault(entity.getVariant(), DEFAULT_TEXTURE);
     }
-    return DEFAULT_LOCATION;
   }
 
   @Override

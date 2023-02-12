@@ -27,9 +27,12 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.screen.configuration.BasicDialogConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.MainConfigurationScreen;
-import de.markusbordihn.easynpc.client.screen.configuration.YesNoDialogConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.dialog.BasicDialogConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.dialog.YesNoDialogConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.skin.DefaultSkinConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.skin.PlayerSkinConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.skin.CustomSkinConfigurationScreen;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 
 public class ClientScreens {
@@ -49,6 +52,15 @@ public class ClientScreens {
       MenuScreens.register(ModMenuTypes.CONFIGURATION_MENU.get(), ConfigurationScreen::new);
       MenuScreens.register(ModMenuTypes.MAIN_CONFIGURATION_MENU.get(),
           MainConfigurationScreen::new);
+
+      // Skin Configuration Screens
+      MenuScreens.register(ModMenuTypes.CUSTOM_SKIN_CONFIGURATION_MENU.get(),
+          CustomSkinConfigurationScreen::new);
+      MenuScreens.register(ModMenuTypes.DEFAULT_SKIN_CONFIGURATION_MENU.get(),
+          DefaultSkinConfigurationScreen::new);
+      MenuScreens.register(ModMenuTypes.PLAYER_SKIN_CONFIGURATION_MENU.get(),
+          PlayerSkinConfigurationScreen::new);
+
 
       // Dialog Configuration Screens
       MenuScreens.register(ModMenuTypes.BASIC_DIALOG_CONFIGURATION_MENU.get(),

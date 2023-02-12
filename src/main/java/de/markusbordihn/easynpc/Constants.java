@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc;
 
 import java.util.Optional;
+import java.util.UUID;
 import cpw.mods.modlauncher.Launcher;
 import cpw.mods.modlauncher.api.IEnvironment;
 import net.minecraft.resources.ResourceLocation;
@@ -54,12 +55,17 @@ public final class Constants {
   public static final int FONT_COLOR_YELLOW = 16777045;
 
   // Textures
+  public static final UUID BLANK_UUID = new UUID(0L, 0L);
+  public static final ResourceLocation BLANK_ENTITY_TEXTURE =
+      new ResourceLocation(Constants.MOD_ID, "textures/entity/blank.png");
   public static final ResourceLocation TEXTURE_DEMO_BACKGROUND =
       new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/demo_background.png");
   public static final ResourceLocation TEXTURE_DIALOG =
       new ResourceLocation(Constants.MOD_ID, "textures/gui/dialog.png");
   public static final ResourceLocation TEXTURE_GENERIC_54 =
       new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/container/generic_54.png");
+  public static final ResourceLocation TEXTURE_CONFIGURATION =
+      new ResourceLocation(Constants.MOD_ID, "textures/gui/configuration.png");
   public static final ResourceLocation TEXTURE_ICONS =
       new ResourceLocation(Constants.MOD_ID, "textures/container/icons.png");
 

@@ -26,9 +26,8 @@ public class DialogUtils {
 
   public static String parseDialog(String text, LivingEntity entity, Player player) {
     String output = text;
-    if (entity != null && entity.hasCustomName()) {
-      output = output.replace("@npc", entity.hasCustomName() ? entity.getCustomName().getString()
-          : entity.getName().getString());
+    if (entity != null) {
+      output = output.replace("@npc", entity.getName().getString());
     }
     if (player != null) {
       output = output.replace("@initiator", player.getName().getString());

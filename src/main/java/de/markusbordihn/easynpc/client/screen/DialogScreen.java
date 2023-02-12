@@ -111,34 +111,30 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
 
   @Override
   public void init() {
+    if (this.entity == null) {
+      return;
+    }
     super.init();
 
-    // Pre-Work and Pre-Cache
-    if (this.entity != null) {
-      // Dialog text.
-      this.dialogType = this.entity.getDialogType();
-      setDialog(this.entity.getDialog());
+    // Dialog text.
+    this.dialogType = this.entity.getDialogType();
+    setDialog(this.entity.getDialog());
 
-      // Render additional Buttons for Yes/No Dialog.
-      if (this.dialogType == DialogType.YES_NO) {
-        int dialogButtonTop = this.topPos + 55 + (numberOfDialogLines * (font.lineHeight));
-        this.yesDialogButton =
-            this.addRenderableWidget(new Button(this.leftPos + 20, dialogButtonTop, 95, 20,
-                new TextComponent(this.entity.getYesDialogButton()), onPress -> {
-                  log.info("Yes Dialog ...");
-                  setDialog(this.entity.getYesDialog());
-                  this.yesDialogButton.visible = false;
-                  this.noDialogButton.visible = false;
-                }));
-        this.noDialogButton =
-            this.addRenderableWidget(new Button(this.leftPos + 125, dialogButtonTop, 95, 20,
-                new TextComponent(this.entity.getNoDialogButton()), onPress -> {
-                  log.info("No Dialog ...");
-                  setDialog(this.entity.getNoDialog());
-                  this.yesDialogButton.visible = false;
-                  this.noDialogButton.visible = false;
-                }));
-      }
+    // Render additional Buttons for Yes/No Dialog.
+    if (this.dialogType == DialogType.YES_NO) {
+      int dialogButtonTop = this.topPos + 55 + (numberOfDialogLines * (font.lineHeight));
+      this.yesDialogButton = this.addRenderableWidget(new Button(this.leftPos + 20, dialogButtonTop,
+          95, 20, new TextComponent(this.entity.getYesDialogButton()), onPress -> {
+            setDialog(this.entity.getYesDialog());
+            this.yesDialogButton.visible = false;
+            this.noDialogButton.visible = false;
+          }));
+      this.noDialogButton = this.addRenderableWidget(new Button(this.leftPos + 125, dialogButtonTop,
+          95, 20, new TextComponent(this.entity.getNoDialogButton()), onPress -> {
+            setDialog(this.entity.getNoDialog());
+            this.yesDialogButton.visible = false;
+            this.noDialogButton.visible = false;
+          }));
     }
 
     // Default stats
@@ -154,13 +150,13 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
 
   @Override
   public void render(PoseStack poseStack, int x, int y, float partialTicks) {
-    super.render(poseStack, x, y, partialTicks);
-    this.xMouse = x;
-    this.yMouse = y;
-
     if (this.entity == null) {
       return;
     }
+
+    super.render(poseStack, x, y, partialTicks);
+    this.xMouse = x;
+    this.yMouse = y;
 
     // Render Avatar
     int avatarPositionTop = 55 + this.entity.getEntityDialogTop();

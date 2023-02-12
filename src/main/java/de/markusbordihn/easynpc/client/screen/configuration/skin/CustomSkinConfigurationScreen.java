@@ -17,35 +17,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.npc;
+package de.markusbordihn.easynpc.client.screen.configuration.skin;
 
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.npc.AbstractVillager;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Inventory;
 
-public class JayJasonBo extends Humanoid {
+import com.mojang.blaze3d.vertex.PoseStack;
 
-  // General Information
-  public static final String ID = "jayjasonbo";
-  public static final String NAME = "JayJasonBo";
+import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
 
-  public JayJasonBo(EntityType<? extends AbstractVillager> entityType, Level level) {
-    super(entityType, level);
-    setVariant(Variant.JAYJASONBO);
+public class CustomSkinConfigurationScreen
+    extends SkinConfigurationScreen<CustomSkinConfigurationMenu> {
+
+  public CustomSkinConfigurationScreen(CustomSkinConfigurationMenu menu, Inventory inventory,
+      Component component) {
+    super(menu, inventory, component);
   }
 
   @Override
-  public void finalizeSpawn() {
-    super.finalizeSpawn();
+  public void init() {
+    super.init();
 
-    // Give default item, if hand is empty.
-    ItemStack itemStack = this.getItemBySlot(EquipmentSlot.MAINHAND);
-    if (itemStack != null && itemStack.isEmpty()) {
-      this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.DIAMOND));
-    }
+    // Default button stats
+    this.customSkinButton.active = false;
+    this.defaultSkinButton.active = true;
+    this.playerSkinButton.active = true;
+  }
+
+  @Override
+  public void render(PoseStack poseStack, int x, int y, float partialTicks) {
+    super.render(poseStack, x, y, partialTicks);
+
+    this.font.draw(poseStack, new TextComponent("Working in Progress"), this.leftPos + 80f,
+        this.topPos + 100f, 4210752);
+
   }
 
 }
