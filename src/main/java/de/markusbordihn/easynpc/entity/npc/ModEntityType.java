@@ -62,8 +62,6 @@ public class ModEntityType {
       registerHumanoid("jayjasonbo", Humanoid.Variant.JAYJASONBO);
   public static final RegistryObject<EntityType<HumanoidSlim>> KAWORRU =
       registerHumanoidSlim("kaworru", HumanoidSlim.Variant.KAWORRU);
-  public static final RegistryObject<EntityType<HumanoidSlim>> THE_FAITHY =
-      registerHumanoidSlim("the_faithy", HumanoidSlim.Variant.THE_FAITHY);
 
   @SubscribeEvent
   public static final void entityAttributeCreation(EntityAttributeCreationEvent event) {
@@ -76,7 +74,6 @@ public class ModEntityType {
     // Custom NPC Entities
     event.put(JAYJASONBO.get(), Humanoid.createAttributes().build());
     event.put(KAWORRU.get(), HumanoidSlim.createAttributes().build());
-    event.put(THE_FAITHY.get(), HumanoidSlim.createAttributes().build());
   }
 
   // Register Handler

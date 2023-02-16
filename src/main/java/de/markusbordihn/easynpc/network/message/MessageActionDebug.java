@@ -25,43 +25,43 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraftforge.network.NetworkEvent;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EasyNPCEntityMenu;
 import de.markusbordihn.easynpc.entity.EntityManager;
 
-public class MessageOpenDialog {
+public class MessageActionDebug {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   protected final UUID uuid;
-  protected final String dialogName;
+  protected final boolean debug;
 
-  public MessageOpenDialog(UUID uuid, String dialogName) {
+  public MessageActionDebug(UUID uuid, boolean debug) {
     this.uuid = uuid;
-    this.dialogName = dialogName;
+    this.debug = debug;
   }
 
-  public String getDialogName() {
-    return this.dialogName;
+  public boolean getDebug() {
+    return this.debug;
   }
 
   public UUID getUUID() {
     return this.uuid;
   }
 
-  public static void handle(MessageOpenDialog message,
+  public static void handle(MessageActionDebug message,
       Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessageOpenDialog message, NetworkEvent.Context context) {
+  public static void handlePacket(MessageActionDebug message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     if (serverPlayer == null) {
       log.error("Unable to get server player for message {} from {}", message, context);
@@ -75,13 +75,6 @@ public class MessageOpenDialog {
       return;
     }
 
-    // Validate dialog name.
-    String dialogName = message.getDialogName();
-    if (dialogName == null || dialogName.isEmpty()) {
-      log.error("Invalid dialog name {} for {} from {}", dialogName, message, serverPlayer);
-      return;
-    }
-
     // Validate entity.
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     if (easyNPCEntity == null) {
@@ -89,29 +82,25 @@ public class MessageOpenDialog {
       return;
     }
 
-    // Perform action.
-    switch (dialogName) {
-      case "BasicActionConfiguration":
-        EasyNPCEntityMenu.openBasicActionConfigurationMenu(serverPlayer, easyNPCEntity);
-      break;
-      case "BasicDialogConfiguration":
-        EasyNPCEntityMenu.openBasicDialogConfigurationMenu(serverPlayer, easyNPCEntity);
-        break;
-      case "YesNoDialogConfiguration":
-        EasyNPCEntityMenu.openYesNoDialogConfigurationMenu(serverPlayer, easyNPCEntity);
-        break;
-      case "CustomSkinConfiguration":
-        EasyNPCEntityMenu.openCustomSkinConfigurationMenu(serverPlayer, easyNPCEntity);
-        break;
-      case "DefaultSkinConfiguration":
-        EasyNPCEntityMenu.openDefaultSkinConfigurationMenu(serverPlayer, easyNPCEntity);
-        break;
-      case "PlayerSkinConfiguration":
-        EasyNPCEntityMenu.openPlayerSkinConfigurationMenu(serverPlayer, easyNPCEntity);
-        break;
-      default:
-        log.debug("Unknown dialog {} for {} from {}", dialogName, easyNPCEntity, serverPlayer);
+    // Get Permission level for corresponding action.
+    int permissionLevel = 0;
+    MinecraftServer minecraftServer = serverPlayer.getServer();
+    if (minecraftServer != null) {
+      permissionLevel = minecraftServer.getProfilePermissions(serverPlayer.getGameProfile());
+      easyNPCEntity.setActionPermissionLevel(permissionLevel);
     }
+
+    // Validate Permission level for enabling debugging.
+    if (permissionLevel < 1) {
+      log.error("Unable to change action debug with permission level {} with UUID {} for {}",
+          permissionLevel, uuid, serverPlayer);
+      return;
+    }
+
+    // Perform action.
+    boolean actionDebug = message.getDebug();
+    log.debug("Set action debug {} for {} from {}", actionDebug, easyNPCEntity, serverPlayer);
+    easyNPCEntity.setActionDebug(actionDebug);
   }
 
 }

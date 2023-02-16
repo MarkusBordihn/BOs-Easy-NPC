@@ -5,6 +5,12 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### 2023.02.16
+
+- Added Action configuration with permission level support.
+- Added Action Debug possibility for permission level 1 and above.
+- Improved npc rendering and general UI layout.
+
 ### 2023.02.12
 
 - Refactored dialogs and UI based code for better performance.

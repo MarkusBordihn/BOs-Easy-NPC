@@ -32,6 +32,9 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.action.ActionType;
+import de.markusbordihn.easynpc.network.message.MessageActionChange;
+import de.markusbordihn.easynpc.network.message.MessageActionDebug;
 import de.markusbordihn.easynpc.network.message.MessageNameChange;
 import de.markusbordihn.easynpc.network.message.MessageOpenDialog;
 import de.markusbordihn.easynpc.network.message.MessageProfessionChange;
@@ -39,6 +42,7 @@ import de.markusbordihn.easynpc.network.message.MessageRemoveNPC;
 import de.markusbordihn.easynpc.network.message.MessageSaveBasicDialog;
 import de.markusbordihn.easynpc.network.message.MessageSaveYesNoDialog;
 import de.markusbordihn.easynpc.network.message.MessageSkinChange;
+import de.markusbordihn.easynpc.network.message.MessageTriggerAction;
 import de.markusbordihn.easynpc.network.message.MessageVariantChange;
 import de.markusbordihn.easynpc.skin.SkinType;
 
@@ -47,7 +51,7 @@ public class NetworkHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final String PROTOCOL_VERSION = "2";
+  private static final String PROTOCOL_VERSION = "3";
   public static final SimpleChannel INSTANCE =
       NetworkRegistry.newSimpleChannel(new ResourceLocation(Constants.MOD_ID, "network"),
           () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
@@ -60,6 +64,28 @@ public class NetworkHandler {
         INSTANCE, PROTOCOL_VERSION);
 
     event.enqueueWork(() -> {
+
+      // Action Change: Client -> Server
+      INSTANCE.registerMessage(id++, MessageActionChange.class, (message, buffer) -> {
+        buffer.writeUUID(message.getUUID());
+        buffer.writeUtf(message.getActionType());
+        buffer.writeUtf(message.getAction());
+      }, buffer -> new MessageActionChange(buffer.readUUID(), buffer.readUtf(), buffer.readUtf()),
+          MessageActionChange::handle);
+
+      // Action Debug: Client -> Server
+      INSTANCE.registerMessage(id++, MessageActionDebug.class, (message, buffer) -> {
+        buffer.writeUUID(message.getUUID());
+        buffer.writeBoolean(message.getDebug());
+      }, buffer -> new MessageActionDebug(buffer.readUUID(), buffer.readBoolean()),
+          MessageActionDebug::handle);
+
+      // Action Trigger: Client -> Server
+      INSTANCE.registerMessage(id++, MessageTriggerAction.class, (message, buffer) -> {
+        buffer.writeUUID(message.getUUID());
+        buffer.writeUtf(message.getActionType());
+      }, buffer -> new MessageTriggerAction(buffer.readUUID(), buffer.readUtf()),
+          MessageTriggerAction::handle);
 
       // Name Change: Client -> Server
       INSTANCE.registerMessage(id++, MessageNameChange.class, (message, buffer) -> {
@@ -124,6 +150,20 @@ public class NetworkHandler {
     });
   }
 
+  /** Send action change. */
+  public static void actionChange(UUID uuid, ActionType actionType, String action) {
+    if (uuid != null && actionType != null && actionType != ActionType.NONE) {
+      INSTANCE.sendToServer(new MessageActionChange(uuid, actionType.name(), action));
+    }
+  }
+
+  /** Send action debug change. */
+  public static void actionDebugChange(UUID uuid, boolean debug) {
+    if (uuid != null) {
+      INSTANCE.sendToServer(new MessageActionDebug(uuid, debug));
+    }
+  }
+
   /** Send name change. */
   public static void nameChange(UUID uuid, String name) {
     if (uuid != null && name != null && !name.isEmpty()) {
@@ -135,6 +175,20 @@ public class NetworkHandler {
   public static void openDialog(UUID uuid, String dialogName) {
     if (uuid != null && dialogName != null && !dialogName.isEmpty()) {
       INSTANCE.sendToServer(new MessageOpenDialog(uuid, dialogName));
+    }
+  }
+
+  /** Send profession change. */
+  public static void professionChange(UUID uuid, Enum<?> profession) {
+    if (uuid != null && profession != null) {
+      INSTANCE.sendToServer(new MessageProfessionChange(uuid, profession.name()));
+    }
+  }
+
+  /** Send remove NPC. */
+  public static void removeNPC(UUID uuid) {
+    if (uuid != null) {
+      INSTANCE.sendToServer(new MessageRemoveNPC(uuid));
     }
   }
 
@@ -151,13 +205,6 @@ public class NetworkHandler {
     if (uuid != null && dialog != null && yesDialog != null && noDialog != null) {
       INSTANCE.sendToServer(new MessageSaveYesNoDialog(uuid, dialog, yesDialog, noDialog,
           yesButtonText, noButtonText));
-    }
-  }
-
-  /** Send profession change. */
-  public static void professionChange(UUID uuid, Enum<?> profession) {
-    if (uuid != null && profession != null) {
-      INSTANCE.sendToServer(new MessageProfessionChange(uuid, profession.name()));
     }
   }
 
@@ -183,6 +230,13 @@ public class NetworkHandler {
     }
   }
 
+  /** Send trigger action. */
+  public static void triggerAction(UUID uuid, ActionType actionType) {
+    if (uuid != null && actionType != null && actionType != ActionType.NONE) {
+      INSTANCE.sendToServer(new MessageTriggerAction(uuid, actionType.name()));
+    }
+  }
+
   /** Send variant change. */
   public static void variantChange(UUID uuid, Enum<?> variant) {
     if (uuid != null && variant != null) {
@@ -190,10 +244,4 @@ public class NetworkHandler {
     }
   }
 
-  /** Send remove NPC. */
-  public static void removeNPC(UUID uuid) {
-    if (uuid != null) {
-      INSTANCE.sendToServer(new MessageRemoveNPC(uuid));
-    }
-  }
 }

@@ -52,7 +52,6 @@ public class ClientRenderer {
     // Custom NPC Entity
     event.registerEntityRenderer(ModEntityType.JAYJASONBO.get(), HumanoidRenderer::new);
     event.registerEntityRenderer(ModEntityType.KAWORRU.get(), HumanoidSlimRenderer::new);
-    event.registerEntityRenderer(ModEntityType.THE_FAITHY.get(), HumanoidSlimRenderer::new);
   }
 
 }

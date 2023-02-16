@@ -10,6 +10,8 @@ Easy NPCs allows a simplified setup for custom NPCs with dialogs for map maker a
 ## ✨ Features
 
 - Providing easy NPCs with basic dialogs and a easy setup.
+- Easy Action configuration with debug option.
+- Skin configuration with player name and URL support.
 - Server and client friendly.
 - API support / integration for other mods (WIP).
 
@@ -48,6 +50,32 @@ The yes / no dialog allows to display a simple text with max. 255 characters, bu
 ### Advanced Dialog
 
 WIP
+
+## Actions
+
+Actions allows you create more interactive parts with your NPC even outside of this mod.
+Some basic examples:
+
+- `/say Hello, ...`
+- `/give @p stone`
+- `/scoreboard players add @p close 5`
+- `/tp @p -28 63 399`
+
+The action are locked with the user permission level.
+Which mean that a standard user will not be able to use /give /tp and other related commands for higher permission levels.
+
+By enabling the debug action all executed commands will produce a corresponding feedback in the log like script errors and others.
+
+### Basic Actions
+
+The basic action screen allows to define actions for the basic dialog screen and the yes/no dialog screen like:
+
+- Player opens dialog screen
+- Player close the dialog screen
+- Player select "Yes" from the "yes/no" dialog screen
+- Player select "No" from the "yes/no" dialog screen
+
+![Basic Action Setup screen](/examples/actions/basic_actions.png)
 
 ## NPC Types
 

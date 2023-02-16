@@ -135,6 +135,7 @@ dependencies {
   runtimeOnly fg.deobf("curse.maven:neat-238372:3593906")
 
   // Additional helpful Mods for development (dev depenedency)
+  runtimeOnly fg.deobf("curse.maven:connectivity-470193:3833738")
   runtimeOnly fg.deobf("curse.maven:item-zoom-261725:3749454")
   runtimeOnly fg.deobf("curse.maven:jade-324717:3865918")
   runtimeOnly fg.deobf("curse.maven:jei-238222:3847103")

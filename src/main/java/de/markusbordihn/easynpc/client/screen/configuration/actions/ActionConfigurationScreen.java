@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.configuration.skin;
+package de.markusbordihn.easynpc.client.screen.configuration.actions;
 
 import java.util.UUID;
 
@@ -42,12 +42,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.menu.configuration.skin.SkinConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.action.ActionConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkHandler;
-import de.markusbordihn.easynpc.skin.SkinModel;
 
 @OnlyIn(Dist.CLIENT)
-public class SkinConfigurationScreen<T extends SkinConfigurationMenu>
+public class ActionConfigurationScreen<T extends ActionConfigurationMenu>
     extends AbstractContainerScreen<T> {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
@@ -55,26 +54,19 @@ public class SkinConfigurationScreen<T extends SkinConfigurationMenu>
   // NPC Entity
   protected final EasyNPCEntity entity;
   protected final UUID uuid;
-  protected final SkinModel skinModel;
-  protected final boolean isPlayerSkinModel;
 
   // Buttons
   protected Button closeButton = null;
-  protected Button customSkinButton = null;
-  protected Button defaultSkinButton = null;
-  protected Button playerSkinButton = null;
+  protected Button basicActionButton = null;
 
   // Internal
   protected float xMouse;
   protected float yMouse;
 
-  public SkinConfigurationScreen(T menu, Inventory inventory, Component component) {
+  public ActionConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
     this.entity = menu.getEntity();
     this.uuid = this.entity.getUUID();
-    this.skinModel = this.entity.getSkinModel();
-    this.isPlayerSkinModel =
-        SkinModel.HUMANOID.equals(this.skinModel) || SkinModel.HUMANOID_SLIM.equals(this.skinModel);
   }
 
   public void closeScreen() {
@@ -98,33 +90,21 @@ public class SkinConfigurationScreen<T extends SkinConfigurationMenu>
     this.topPos = (this.height - this.imageHeight) / 2;
     this.leftPos = (this.width - this.imageWidth) / 2;
 
-    // Skin Types
+    // Action Types
     int buttonsTopPos = this.topPos + 15;
-    this.defaultSkinButton = this.addRenderableWidget(new Button(this.leftPos + 7, buttonsTopPos,
-        80, 20, new TranslatableComponent("Default Skin"), onPress -> {
-          NetworkHandler.openDialog(uuid, "DefaultSkinConfiguration");
-        }));
-    this.playerSkinButton =
-        this.addRenderableWidget(new Button(this.leftPos + 7 + this.defaultSkinButton.getWidth(),
-            buttonsTopPos, 80, 20, new TranslatableComponent("Player Skin"), onPress -> {
-              NetworkHandler.openDialog(uuid, "PlayerSkinConfiguration");
-            }));
-    this.customSkinButton = this.addRenderableWidget(new Button(
-        this.leftPos + 7 + this.defaultSkinButton.getWidth() + this.playerSkinButton.getWidth(),
-        buttonsTopPos, 80, 20, new TranslatableComponent("Custom Skin"), onPress -> {
-          NetworkHandler.openDialog(uuid, "CustomSkinConfiguration");
+    this.basicActionButton = this.addRenderableWidget(new Button(this.leftPos + 7, buttonsTopPos,
+        80, 20, new TranslatableComponent("Basic Actions"), onPress -> {
+          NetworkHandler.openDialog(uuid, "BasicActionConfiguration");
         }));
 
     // Close Button
-    this.closeButton = this.addRenderableWidget(new ImageButton(this.leftPos + 254, this.topPos + 7,
+    this.closeButton = this.addRenderableWidget(new ImageButton(this.leftPos + 262, this.topPos + 7,
         16, 16, 60, 38, Constants.TEXTURE_CONFIGURATION, onPress -> {
           closeScreen();
         }));
 
     // Default button stats
-    this.customSkinButton.active = true;
-    this.defaultSkinButton.active = true;
-    this.playerSkinButton.active = true;
+    this.basicActionButton.active = true;
   }
 
   @Override
@@ -148,11 +128,11 @@ public class SkinConfigurationScreen<T extends SkinConfigurationMenu>
 
     // Main screen (+50px in height)
     this.blit(poseStack, leftPos, topPos, 0, 0, 250, 170);
-    this.blit(poseStack, leftPos + 243, topPos, 215, 0, 35, 170);
+    this.blit(poseStack, leftPos + 243, topPos, 205, 0, 45, 170);
 
     int expandedHeight = 70;
     this.blit(poseStack, leftPos, topPos + expandedHeight + 5, 0, 5, 250, 170);
-    this.blit(poseStack, leftPos + 243, topPos + expandedHeight + 5, 215, 5, 35, 170);
+    this.blit(poseStack, leftPos + 243, topPos + expandedHeight + 5, 205, 5, 45, 170);
   }
 
   @Override

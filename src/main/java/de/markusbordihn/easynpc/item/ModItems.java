@@ -90,10 +90,5 @@ public class ModItems {
           () -> new ForgeSpawnEggItem(ModEntityType.KAWORRU::get, MaterialColor.COLOR_RED.col,
               MaterialColor.COLOR_BLACK.col,
               new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
-  public static final RegistryObject<Item> THE_FAITHY_NPC_SPAWN_EGG =
-      ITEMS.register("the_faithy" + SPAWN_EGG_PREFIX,
-          () -> new ForgeSpawnEggItem(ModEntityType.THE_FAITHY::get, MaterialColor.COLOR_RED.col,
-              MaterialColor.COLOR_BLACK.col,
-              new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
 
 }

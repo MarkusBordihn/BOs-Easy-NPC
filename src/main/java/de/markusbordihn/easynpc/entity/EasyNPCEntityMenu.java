@@ -38,6 +38,7 @@ import net.minecraftforge.network.NetworkHooks;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.DialogMenu;
 import de.markusbordihn.easynpc.menu.configuration.MainConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
@@ -64,6 +65,24 @@ public class EasyNPCEntityMenu {
       @Override
       public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
         return new ConfigurationMenu(windowId, inventory, uuid);
+      }
+    };
+    NetworkHooks.openGui(player, provider, buffer -> buffer.writeUUID(uuid));
+  }
+
+  public static void openBasicActionConfigurationMenu(ServerPlayer player, EasyNPCEntity entity) {
+    log.debug("Open Easy NPC Basic Action Menu for {} ...", entity);
+    UUID uuid = entity.getUUID();
+    MenuProvider provider = new MenuProvider() {
+      @Override
+      public Component getDisplayName() {
+        return entity.getName();
+      }
+
+      @Nullable
+      @Override
+      public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
+        return new BasicActionConfigurationMenu(windowId, inventory, uuid);
       }
     };
     NetworkHooks.openGui(player, provider, buffer -> buffer.writeUUID(uuid));
@@ -124,7 +143,7 @@ public class EasyNPCEntityMenu {
   }
 
   public static void openCustomSkinConfigurationMenu(ServerPlayer player, EasyNPCEntity entity) {
-    log.debug("Open Easy NPC default Skin Configuration Menu for {} ...", entity);
+    log.debug("Open Easy NPC custom Skin Configuration Menu for {} ...", entity);
     UUID uuid = entity.getUUID();
     MenuProvider provider = new MenuProvider() {
       @Override

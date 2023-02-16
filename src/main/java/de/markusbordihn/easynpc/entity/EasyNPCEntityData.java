@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -44,6 +45,8 @@ import net.minecraft.world.entity.npc.Npc;
 import net.minecraft.world.level.Level;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.action.ActionDataHelper;
+import de.markusbordihn.easynpc.action.ActionType;
 import de.markusbordihn.easynpc.dialog.DialogType;
 import de.markusbordihn.easynpc.skin.SkinModel;
 import de.markusbordihn.easynpc.skin.SkinType;
@@ -66,7 +69,14 @@ public class EasyNPCEntityData extends AgeableMob implements InventoryCarrier, N
     STEVE
   }
 
+  // Cache
+  private int actionPermissionLevel = 0;
+
   // Synced Data
+  private static final EntityDataAccessor<CompoundTag> DATA_ACTION_DATA =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.COMPOUND_TAG);
+  private static final EntityDataAccessor<Boolean> DATA_ACTION_DEBUG =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.BOOLEAN);
   private static final EntityDataAccessor<Optional<UUID>> DATA_OWNER_UUID_ID =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.OPTIONAL_UUID);
   private static final EntityDataAccessor<String> DATA_DIALOG =
@@ -95,6 +105,9 @@ public class EasyNPCEntityData extends AgeableMob implements InventoryCarrier, N
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
 
   // Stored Entity Data Tags
+  private static final String DATA_ACTION_DATA_TAG = "ActionData";
+  private static final String DATA_ACTION_DEBUG_TAG = "ActionDebug";
+  private static final String DATA_ACTION_PERMISSION_LEVEL_TAG = "ActionPermissionLevel";
   private static final String DATA_DIALOG_TAG = "Dialog";
   private static final String DATA_DIALOG_TYPE_TAG = "DialogType";
   private static final String DATA_INVENTORY_TAG = "Inventory";
@@ -154,6 +167,48 @@ public class EasyNPCEntityData extends AgeableMob implements InventoryCarrier, N
   public void setProfessionTextureLocation(ResourceLocation textureLocation) {
     this.professionTextureLocation = textureLocation;
     this.hasProfessionTextureLocation = textureLocation != null;
+  }
+
+  public void setAction(ActionType actionType, String action) {
+    CompoundTag compoundTag =
+        ActionDataHelper.setAction(this.entityData.get(DATA_ACTION_DATA), actionType, action);
+    this.entityData.set(DATA_ACTION_DATA, compoundTag);
+  }
+
+  public String getAction(ActionType actionType) {
+    return ActionDataHelper.getAction(this.entityData.get(DATA_ACTION_DATA), actionType);
+  }
+
+  public boolean hasAction(ActionType actionType) {
+    return ActionDataHelper.hasAction(this.entityData.get(DATA_ACTION_DATA), actionType);
+  }
+
+  public Map<ActionType, String> getActions() {
+    return ActionDataHelper.readActionData(this.entityData.get(DATA_ACTION_DATA));
+  }
+
+  public CompoundTag getActionData() {
+    return this.entityData.get(DATA_ACTION_DATA);
+  }
+
+  public void setActionData(CompoundTag compoundTag) {
+    this.entityData.set(DATA_ACTION_DATA, compoundTag);
+  }
+
+  public boolean getActionDebug() {
+    return this.entityData.get(DATA_ACTION_DEBUG);
+  }
+
+  public void setActionDebug(boolean enableDebug) {
+    this.entityData.set(DATA_ACTION_DEBUG, enableDebug);
+  }
+
+  public int getActionPermissionLevel() {
+    return this.actionPermissionLevel;
+  }
+
+  public void setActionPermissionLevel(int actionPermissionLevel) {
+    this.actionPermissionLevel = actionPermissionLevel;
   }
 
   public DialogType getDialogType() {
@@ -367,6 +422,8 @@ public class EasyNPCEntityData extends AgeableMob implements InventoryCarrier, N
   @Override
   protected void defineSynchedData() {
     super.defineSynchedData();
+    this.entityData.define(DATA_ACTION_DATA, new CompoundTag());
+    this.entityData.define(DATA_ACTION_DEBUG, false);
     this.entityData.define(DATA_DIALOG, "");
     this.entityData.define(DATA_DIALOG_TYPE, DialogType.NONE.name());
     this.entityData.define(DATA_NO_DIALOG, "");
@@ -385,6 +442,11 @@ public class EasyNPCEntityData extends AgeableMob implements InventoryCarrier, N
   @Override
   public void addAdditionalSaveData(CompoundTag compoundTag) {
     super.addAdditionalSaveData(compoundTag);
+    if (ActionDataHelper.hasActionData(getActionData())) {
+      compoundTag.put(DATA_ACTION_DATA_TAG, getActionData());
+    }
+    compoundTag.putInt(DATA_ACTION_PERMISSION_LEVEL_TAG, this.getActionPermissionLevel());
+    compoundTag.putBoolean(DATA_ACTION_DEBUG_TAG, this.getActionDebug());
     if (this.getDialogType() != null) {
       compoundTag.putString(DATA_DIALOG_TYPE_TAG, this.getDialogType().name());
     }
@@ -431,7 +493,15 @@ public class EasyNPCEntityData extends AgeableMob implements InventoryCarrier, N
   @Override
   public void readAdditionalSaveData(CompoundTag compoundTag) {
     super.readAdditionalSaveData(compoundTag);
-
+    if (compoundTag.contains(DATA_ACTION_DATA_TAG)) {
+      this.setActionData(compoundTag.getCompound(DATA_ACTION_DATA_TAG));
+    }
+    if (compoundTag.contains(DATA_ACTION_DEBUG_TAG)) {
+      this.setActionDebug(compoundTag.getBoolean(DATA_ACTION_DEBUG_TAG));
+    }
+    if (compoundTag.contains(DATA_ACTION_PERMISSION_LEVEL_TAG)) {
+      this.setActionPermissionLevel(compoundTag.getInt(DATA_ACTION_PERMISSION_LEVEL_TAG));
+    }
     if (compoundTag.contains(DATA_DIALOG_TYPE_TAG)) {
       String dialogType = compoundTag.getString(DATA_DIALOG_TYPE_TAG);
       if (dialogType != null && !dialogType.isEmpty()) {
