@@ -30,38 +30,39 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.action.ActionType;
+import de.markusbordihn.easynpc.commands.CommandManager;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EasyNPCEntityMenu;
 import de.markusbordihn.easynpc.entity.EntityManager;
 
-public class MessageOpenDialog {
+public class MessageTriggerAction {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
+  protected final String actionType;
   protected final UUID uuid;
-  protected final String dialogName;
 
-  public MessageOpenDialog(UUID uuid, String dialogName) {
+  public MessageTriggerAction(UUID uuid, String actionType) {
     this.uuid = uuid;
-    this.dialogName = dialogName;
+    this.actionType = actionType;
   }
 
-  public String getDialogName() {
-    return this.dialogName;
+  public String getActionType() {
+    return this.actionType;
   }
 
   public UUID getUUID() {
     return this.uuid;
   }
 
-  public static void handle(MessageOpenDialog message,
+  public static void handle(MessageTriggerAction message,
       Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessageOpenDialog message, NetworkEvent.Context context) {
+  public static void handlePacket(MessageTriggerAction message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     if (serverPlayer == null) {
       log.error("Unable to get server player for message {} from {}", message, context);
@@ -70,15 +71,11 @@ public class MessageOpenDialog {
 
     // Check for access.
     UUID uuid = message.getUUID();
-    if (!EntityManager.hasAccess(uuid, serverPlayer)) {
-      log.warn("User {} has no access to Easy NPC with uuid {}.", serverPlayer, uuid);
-      return;
-    }
 
-    // Validate dialog name.
-    String dialogName = message.getDialogName();
-    if (dialogName == null || dialogName.isEmpty()) {
-      log.error("Invalid dialog name {} for {} from {}", dialogName, message, serverPlayer);
+    // Validate action type.
+    ActionType actionType = ActionType.get(message.getActionType());
+    if (actionType == null || actionType == ActionType.NONE) {
+      log.error("Invalid action type {} for {} from {}", actionType, message, serverPlayer);
       return;
     }
 
@@ -89,29 +86,20 @@ public class MessageOpenDialog {
       return;
     }
 
-    // Perform action.
-    switch (dialogName) {
-      case "BasicActionConfiguration":
-        EasyNPCEntityMenu.openBasicActionConfigurationMenu(serverPlayer, easyNPCEntity);
-      break;
-      case "BasicDialogConfiguration":
-        EasyNPCEntityMenu.openBasicDialogConfigurationMenu(serverPlayer, easyNPCEntity);
-        break;
-      case "YesNoDialogConfiguration":
-        EasyNPCEntityMenu.openYesNoDialogConfigurationMenu(serverPlayer, easyNPCEntity);
-        break;
-      case "CustomSkinConfiguration":
-        EasyNPCEntityMenu.openCustomSkinConfigurationMenu(serverPlayer, easyNPCEntity);
-        break;
-      case "DefaultSkinConfiguration":
-        EasyNPCEntityMenu.openDefaultSkinConfigurationMenu(serverPlayer, easyNPCEntity);
-        break;
-      case "PlayerSkinConfiguration":
-        EasyNPCEntityMenu.openPlayerSkinConfigurationMenu(serverPlayer, easyNPCEntity);
-        break;
-      default:
-        log.debug("Unknown dialog {} for {} from {}", dialogName, easyNPCEntity, serverPlayer);
+    // Validate action.
+    if (!easyNPCEntity.hasAction(actionType)) {
+      log.error("Unknown trigger action {} request for UUID {} from {}", actionType, uuid,
+          serverPlayer);
+      return;
     }
+
+    // Perform action.
+    String action = easyNPCEntity.getAction(actionType);
+    int permissionLevel = easyNPCEntity.getActionPermissionLevel();
+    log.debug("Trigger action {}:{} for {} from {} with permission level {} ...", actionType,
+        action, easyNPCEntity, serverPlayer, permissionLevel);
+    CommandManager.executeEntityCommand(action, easyNPCEntity, permissionLevel,
+        easyNPCEntity.getActionDebug());
   }
 
 }

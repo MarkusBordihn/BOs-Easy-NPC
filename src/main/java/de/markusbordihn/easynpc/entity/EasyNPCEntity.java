@@ -103,7 +103,7 @@ public class EasyNPCEntity extends EasyNPCEntityData {
     boolean isClientSide = this.level.isClientSide;
     log.debug("mobInteract: {} {} {} {}", this.getUUID(), player, hand, isClientSide);
 
-    if (player instanceof ServerPlayer serverPlayer) {
+    if (player instanceof ServerPlayer serverPlayer && hand == InteractionHand.MAIN_HAND) {
       if (player.isCreative()) {
         if (!this.hasCustomName() || player.isCrouching()) {
           EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, this);

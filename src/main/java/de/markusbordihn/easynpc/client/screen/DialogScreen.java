@@ -21,6 +21,8 @@ package de.markusbordihn.easynpc.client.screen;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,17 +43,22 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.action.ActionType;
 import de.markusbordihn.easynpc.dialog.DialogType;
 import de.markusbordihn.easynpc.dialog.DialogUtils;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.menu.DialogMenu;
+import de.markusbordihn.easynpc.network.NetworkHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
+  // Data access
   protected final EasyNPCEntity entity;
+  protected final Map<ActionType, String> actions;
+  protected final UUID uuid;
 
   // Internal
   protected Button yesDialogButton = null;
@@ -69,6 +76,8 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
   public DialogScreen(DialogMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
     this.entity = menu.getEntity();
+    this.actions = this.entity.getActions();
+    this.uuid = this.entity.getUUID();
   }
 
   protected void renderDialog(PoseStack poseStack) {
@@ -120,22 +129,35 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     this.dialogType = this.entity.getDialogType();
     setDialog(this.entity.getDialog());
 
+    // Action for open dialog.
+    if (this.actions.containsKey(ActionType.ON_OPEN_DIALOG)) {
+      NetworkHandler.triggerAction(this.uuid, ActionType.ON_OPEN_DIALOG);
+    }
+
     // Render additional Buttons for Yes/No Dialog.
     if (this.dialogType == DialogType.YES_NO) {
       int dialogButtonTop = this.topPos + 55 + (numberOfDialogLines * (font.lineHeight));
       this.yesDialogButton = this.addRenderableWidget(new Button(this.leftPos + 20, dialogButtonTop,
           95, 20, Component.literal(this.entity.getYesDialogButton()), onPress -> {
-            log.info("Yes Dialog ...");
             setDialog(this.entity.getYesDialog());
             this.yesDialogButton.visible = false;
             this.noDialogButton.visible = false;
+
+            // Action for close dialog.
+            if (this.actions.containsKey(ActionType.ON_YES_SELECTION)) {
+              NetworkHandler.triggerAction(this.uuid, ActionType.ON_YES_SELECTION);
+            }
           }));
       this.noDialogButton = this.addRenderableWidget(new Button(this.leftPos + 125, dialogButtonTop,
           95, 20, Component.literal(this.entity.getNoDialogButton()), onPress -> {
-            log.info("No Dialog ...");
             setDialog(this.entity.getNoDialog());
             this.yesDialogButton.visible = false;
             this.noDialogButton.visible = false;
+
+            // Action for close dialog.
+            if (this.actions.containsKey(ActionType.ON_NO_SELECTION)) {
+              NetworkHandler.triggerAction(this.uuid, ActionType.ON_NO_SELECTION);
+            }
           }));
     }
 
@@ -185,6 +207,15 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     // Main screen
     this.blit(poseStack, leftPos, topPos, 0, 0, 250, 170);
     this.blit(poseStack, leftPos + 243, topPos, 215, 0, 35, 170);
+  }
+
+  @Override
+  public void onClose() {
+    // Action for close dialog.
+    if (this.actions.containsKey(ActionType.ON_CLOSE_DIALOG)) {
+      NetworkHandler.triggerAction(this.uuid, ActionType.ON_CLOSE_DIALOG);
+    }
+    super.onClose();
   }
 
 }

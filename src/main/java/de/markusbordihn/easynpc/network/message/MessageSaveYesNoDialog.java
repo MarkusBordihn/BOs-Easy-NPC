@@ -135,8 +135,8 @@ public class MessageSaveYesNoDialog {
     String yesButtonText = message.getYesButtonText();
     String noButtonText = message.getNoButtonText();
 
-    log.debug("Saving yes/no dialog {} [{}] -> {} [{}] -> {}: {} for {} from {}", dialog,
-        yesButtonText, yesDialog, noButtonText, noDialog, easyNPCEntity, serverPlayer);
+    log.debug("Saving yes/no dialog {} [{}] -> {} [{}] -> {} for {} from {}", dialog, yesButtonText,
+        yesDialog, noButtonText, noDialog, easyNPCEntity, serverPlayer);
     easyNPCEntity.setDialogType(DialogType.YES_NO);
     easyNPCEntity.setDialog(dialog);
     easyNPCEntity.setYesDialog(yesDialog);

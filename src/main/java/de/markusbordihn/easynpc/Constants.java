@@ -21,8 +21,10 @@ package de.markusbordihn.easynpc;
 
 import java.util.Optional;
 import java.util.UUID;
+
 import cpw.mods.modlauncher.Launcher;
 import cpw.mods.modlauncher.api.IEnvironment;
+
 import net.minecraft.resources.ResourceLocation;
 
 public final class Constants {
@@ -37,8 +39,7 @@ public final class Constants {
   public static final String MOD_COMMAND = "easy_npc";
   public static final String MOD_ID = "easy_npc";
   public static final String MOD_NAME = "Easy NPC";
-  public static final String MOD_URL =
-      "https://www.curseforge.com/minecraft/mc-mods/easy-npc";
+  public static final String MOD_URL = "https://www.curseforge.com/minecraft/mc-mods/easy-npc";
 
   // Prefixes
   public static final String MINECRAFT_PREFIX = "minecraft";
@@ -68,6 +69,8 @@ public final class Constants {
       new ResourceLocation(Constants.MOD_ID, "textures/gui/configuration.png");
   public static final ResourceLocation TEXTURE_ICONS =
       new ResourceLocation(Constants.MOD_ID, "textures/container/icons.png");
+  public static final ResourceLocation TEXTURE_CHECKBOX =
+      new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/checkbox.png");
 
   // Animation Math
   public static final float MATH_27DEG_TO_RAD = 0.47123894F;

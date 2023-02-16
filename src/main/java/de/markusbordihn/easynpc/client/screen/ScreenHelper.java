@@ -41,6 +41,7 @@ public class ScreenHelper {
   public static void renderEntity(int x, int y, int scale, float yRot, float xRot,
       EasyNPCEntity entity) {
     // Prepare Renderer
+    Minecraft minecraft = Minecraft.getInstance();
     float f = (float) Math.atan(yRot / 40.0F);
     float f1 = (float) Math.atan(xRot / 40.0F);
     PoseStack poseStack = RenderSystem.getModelViewStack();
@@ -55,7 +56,6 @@ public class ScreenHelper {
     Quaternion quaternion1 = Vector3f.XP.rotationDegrees(f1 * 20.0F);
     quaternion.mul(quaternion1);
     poseStack1.mulPose(quaternion);
-    Minecraft minecraft = Minecraft.getInstance();
 
     // Backup entity information
     Component entityCustomName = entity.getCustomName();
@@ -71,14 +71,15 @@ public class ScreenHelper {
     entity.setYRot(180.0F + f * 40.0F);
     entity.setXRot(-f1 * 20.0F);
     entity.yHeadRot = entity.getYRot();
-    entity.setCustomName(null);
-    entity.setCustomNameVisible(false);
 
     // Hide gui elements
     boolean minecraftHideGui = false;
     if (minecraft != null) {
       minecraftHideGui = minecraft.options.hideGui;
       minecraft.options.hideGui = true;
+    } else {
+      entity.setCustomName(null);
+      entity.setCustomNameVisible(false);
     }
 
     // Render Entity
@@ -106,8 +107,14 @@ public class ScreenHelper {
     entity.setXRot(entityXRot);
     entity.yHeadRot = entityYHeadRot;
     entity.yHeadRotO = entityYHeadRotO;
-    entity.setCustomName(entityCustomName);
-    entity.setCustomNameVisible(entityShouldShowName);
+
+    // Restore gui elements or custom name
+    if (minecraft != null) {
+      minecraft.options.hideGui = minecraftHideGui;
+    } else {
+      entity.setCustomName(entityCustomName);
+      entity.setCustomNameVisible(entityShouldShowName);
+    }
 
     poseStack.popPose();
     RenderSystem.applyModelViewMatrix();

@@ -49,8 +49,6 @@ public class HumanoidSlimRenderer extends MobRenderer<EasyNPCEntity, PlayerModel
         map.put(Variant.ALEX, new ResourceLocation("textures/entity/alex.png"));
         map.put(Variant.KAWORRU,
             new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid_slim/kaworru.png"));
-        map.put(Variant.THE_FAITHY,
-            new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid_slim/thefaithy.png"));
       });
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.ALEX);
 

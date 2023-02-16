@@ -28,6 +28,8 @@ import net.minecraftforge.registries.RegistryObject;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.configuration.MainConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.action.ActionConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.DialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenu;
@@ -53,6 +55,14 @@ public class ModMenuTypes {
   public static final RegistryObject<MenuType<MainConfigurationMenu>> MAIN_CONFIGURATION_MENU =
       MENU_TYPES.register("main_configuration_menu",
           () -> IForgeMenuType.create(MainConfigurationMenu::new));
+
+  // Action Configuration
+  public static final RegistryObject<MenuType<ActionConfigurationMenu>> ACTION_CONFIGURATION_MENU =
+      MENU_TYPES.register("action_configuration_menu",
+          () -> IForgeMenuType.create(ActionConfigurationMenu::new));
+  public static final RegistryObject<MenuType<BasicActionConfigurationMenu>> BASIC_ACTION_CONFIGURATION_MENU =
+      MENU_TYPES.register("basic_action_configuration_menu",
+          () -> IForgeMenuType.create(BasicActionConfigurationMenu::new));
 
   // Dialog Configuration
   public static final RegistryObject<MenuType<DialogConfigurationMenu>> DIALOG_CONFIGURATION_MENU =

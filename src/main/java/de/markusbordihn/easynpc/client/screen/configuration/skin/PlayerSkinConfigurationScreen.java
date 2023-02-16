@@ -331,7 +331,7 @@ public class PlayerSkinConfigurationScreen
       RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
       RenderSystem.setShaderTexture(0, Constants.TEXTURE_CONFIGURATION);
       poseStack.translate(0, 0, 100);
-      this.blit(poseStack, this.leftPos + 175, this.topPos + 65, 248, 1, 8, 10);
+      this.blit(poseStack, this.leftPos + 175, this.topPos + 65, 82, 1, 8, 10);
 
       // Show processing text.
       this.font.draw(poseStack, Component.literal("Processing skin, please wait ..."), this.leftPos + 55f,

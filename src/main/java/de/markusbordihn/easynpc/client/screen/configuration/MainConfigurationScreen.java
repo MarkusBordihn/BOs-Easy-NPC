@@ -61,10 +61,11 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
   protected final UUID uuid;
 
   // Internal
-  protected Button editSkinButton = null;
+  protected Button editActionButton = null;
   protected Button editDialogButton = null;
-  protected Button saveNameButton = null;
+  protected Button editSkinButton = null;
   protected Button removeEntityButton = null;
+  protected Button saveNameButton = null;
   private List<Button> skinButtons = new ArrayList<>();
   private EditBox nameBox;
   protected float xMouse;
@@ -113,7 +114,7 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
 
     // Default stats
     this.imageHeight = 220;
-    this.imageWidth = 275;
+    this.imageWidth = 285;
 
     // Basic Position
     this.titleLabelX = 60;
@@ -122,20 +123,20 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
     this.leftPos = (this.width - this.imageWidth) / 2;
 
     // Name
-    this.nameBox = new EditBox(this.font, this.leftPos + 7, this.topPos + 31, 180, 18,
+    this.nameBox = new EditBox(this.font, this.leftPos + 7, this.topPos + 31, 190, 18,
         Component.translatable("Name"));
     this.nameBox.setMaxLength(32);
     this.nameBox.setValue(this.entity.getName().getString());
     this.addRenderableWidget(this.nameBox);
 
-    this.saveNameButton = this.addRenderableWidget(new Button(this.leftPos + 190, this.topPos + 30,
+    this.saveNameButton = this.addRenderableWidget(new Button(this.leftPos + 199, this.topPos + 30,
         80, 20, Component.translatable("Save"), onPress -> {
           this.saveName();
         }));
 
     // Dialog
     this.editDialogButton = this.addRenderableWidget(new Button(this.leftPos + 110,
-        this.topPos + 54, 80, 20, Component.translatable("Edit Dialog"), onPress -> {
+        this.topPos + 54, 83, 20, Component.translatable("Dialog"), onPress -> {
           DialogType dialogType = this.entity.getDialogType();
           switch (dialogType) {
             case BASIC:
@@ -151,7 +152,7 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
 
     // Skins
     this.editSkinButton = this.addRenderableWidget(new Button(this.leftPos + 7, this.topPos + 190,
-        100, 20, Component.translatable("Edit Skin"), onPress -> {
+        100, 20, Component.translatable("Skin"), onPress -> {
           SkinType skinType = this.entity.getSkinType();
           switch (skinType) {
             case PLAYER_SKIN:
@@ -168,8 +169,14 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
         }));
 
     // Actions
+    this.editActionButton = this.addRenderableWidget(new Button(this.leftPos + 197,
+        this.topPos + 54, 83, 20, Component.translatable("Actions"), onPress -> {
+          NetworkHandler.openDialog(uuid, "BasicActionConfiguration");
+        }));
+
+    // Delete
     this.removeEntityButton =
-        this.addRenderableWidget(new Button(this.leftPos + 219, this.topPos + 190, 50, 20,
+        this.addRenderableWidget(new Button(this.leftPos + 229, this.topPos + 190, 50, 20,
             Component.translatable("Delete").withStyle(ChatFormatting.RED), onPress -> {
               deleteNPC();
             }));
@@ -204,11 +211,11 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
 
     // Main screen (+50px in height)
     this.blit(poseStack, leftPos, topPos, 0, 0, 250, 170);
-    this.blit(poseStack, leftPos + 243, topPos, 215, 0, 35, 170);
+    this.blit(poseStack, leftPos + 243, topPos, 205, 0, 45, 170);
 
     int expandedHeight = 50;
     this.blit(poseStack, leftPos, topPos + expandedHeight + 5, 0, 5, 250, 170);
-    this.blit(poseStack, leftPos + 243, topPos + expandedHeight + 5, 215, 5, 35, 170);
+    this.blit(poseStack, leftPos + 243, topPos + expandedHeight + 5, 205, 5, 45, 170);
 
     // Entity
     fill(poseStack, this.leftPos + 7, this.topPos + 54, this.leftPos + 107, this.topPos + 191,
