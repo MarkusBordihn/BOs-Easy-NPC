@@ -24,6 +24,7 @@ public enum SkinModel {
   FAIRY,
   HUMANOID,
   HUMANOID_SLIM,
+  SKELETON,
   VILLAGER;
   // @formatter:on
 

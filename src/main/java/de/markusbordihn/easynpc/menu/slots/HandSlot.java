@@ -35,7 +35,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.menu.ConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentMenu;
 
 public class HandSlot extends Slot {
 
@@ -51,9 +51,9 @@ public class HandSlot extends Slot {
       new EquipmentSlot[] {EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND};
 
   final EquipmentSlot equipmentSlot;
-  final ConfigurationMenu menu;
+  final EquipmentMenu menu;
 
-  public HandSlot(ConfigurationMenu menu, Container container, int index, int x, int y) {
+  public HandSlot(EquipmentMenu menu, Container container, int index, int x, int y) {
     super(container, index, x, y);
     this.menu = menu;
     this.equipmentSlot = SLOT_IDS[index];

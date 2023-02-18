@@ -23,25 +23,19 @@ import java.util.UUID;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.MenuType;
 
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 
-public class BasicActionConfigurationMenu extends ActionConfigurationMenu {
+public class BasicActionConfigurationMenu extends ConfigurationMenu {
 
   public BasicActionConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
-    this(ModMenuTypes.BASIC_ACTION_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
+    super(ModMenuTypes.BASIC_ACTION_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
   }
 
   public BasicActionConfigurationMenu(int windowId, Inventory playerInventory,
       FriendlyByteBuf data) {
     this(windowId, playerInventory, data.readUUID());
-  }
-
-  public BasicActionConfigurationMenu(final MenuType<?> menuType, final int windowId,
-      final Inventory playerInventory, UUID uuid) {
-    super(menuType, windowId, playerInventory, uuid);
-    log.debug("Open basic action configuration menu for {}: {}", this.uuid, this.entity);
   }
 
 }

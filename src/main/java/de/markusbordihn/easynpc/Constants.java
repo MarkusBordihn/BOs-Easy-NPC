@@ -42,6 +42,7 @@ public final class Constants {
   // Prefixes
   public static final String MINECRAFT_PREFIX = "minecraft";
   public static final String TEXT_PREFIX = "text.easy_npc.";
+  public static final String TEXT_CONFIG_PREFIX =  TEXT_PREFIX + "config.";
 
   // Colors
   public static final int FONT_COLOR_BLACK = 0;

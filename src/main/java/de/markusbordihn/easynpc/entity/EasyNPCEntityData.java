@@ -219,6 +219,10 @@ public class EasyNPCEntityData extends AgeableMob implements InventoryCarrier, N
     this.entityData.set(DATA_DIALOG_TYPE, dialogType != null ? dialogType.name() : "");
   }
 
+  public boolean hasDialog() {
+    return !this.entityData.get(DATA_DIALOG).isEmpty();
+  }
+
   public String getDialog() {
     return this.entityData.get(DATA_DIALOG);
   }

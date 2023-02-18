@@ -88,19 +88,11 @@ public class MessageSaveYesNoDialog {
 
   public static void handlePacket(MessageSaveYesNoDialog message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
-    if (serverPlayer == null) {
-      log.error("Unable to get server player for message {} from {}", message, context);
-      return;
-    }
-
-    // Check for access.
     UUID uuid = message.getUUID();
-    if (!EntityManager.hasAccess(uuid, serverPlayer)) {
-      log.warn("User {} has no access to Easy NPC with uuid {}.", serverPlayer, uuid);
+    if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
       return;
     }
 
-    // Validate dialog.
     String dialog = message.getDialog();
     if (dialog == null) {
       log.error("Invalid dialog {} for yes/no dialog and {} from {}", dialog, message,
@@ -124,16 +116,10 @@ public class MessageSaveYesNoDialog {
       return;
     }
 
-    // Validate entity.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPCEntity == null) {
-      log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
-      return;
-    }
-
     // Perform action.
-    String yesButtonText = message.getYesButtonText();
+    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     String noButtonText = message.getNoButtonText();
+    String yesButtonText = message.getYesButtonText();
 
     log.debug("Saving yes/no dialog {} [{}] -> {} [{}] -> {} for {} from {}", dialog, yesButtonText,
         yesDialog, noButtonText, noDialog, easyNPCEntity, serverPlayer);

@@ -23,26 +23,19 @@ import java.util.UUID;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.MenuType;
 
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 
-public class YesNoDialogConfigurationMenu extends DialogConfigurationMenu {
+public class YesNoDialogConfigurationMenu extends ConfigurationMenu {
 
   public YesNoDialogConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
-    this(ModMenuTypes.YES_NO_DIALOG_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
+    super(ModMenuTypes.YES_NO_DIALOG_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
   }
 
   public YesNoDialogConfigurationMenu(int windowId, Inventory playerInventory,
       FriendlyByteBuf data) {
     this(windowId, playerInventory, data.readUUID());
-  }
-
-  public YesNoDialogConfigurationMenu(final MenuType<?> menuType, final int windowId,
-      final Inventory playerInventory, UUID uuid) {
-    super(menuType, windowId, playerInventory, uuid);
-
-    log.debug("Open yes/no dialog configuration menu for {}: {}", this.uuid, this.entity);
   }
 
 }

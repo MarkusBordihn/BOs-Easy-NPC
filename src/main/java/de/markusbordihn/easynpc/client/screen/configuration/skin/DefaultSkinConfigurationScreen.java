@@ -76,7 +76,6 @@ public class DefaultSkinConfigurationScreen
       return;
     }
 
-    int positionTop = 55;
     int skinPosition = 0;
     skinButtons = new ArrayList<>();
     for (int i = skinStartIndex; i < this.numOfSkins && i < skinStartIndex + maxSkinsPerPage; i++) {
@@ -85,8 +84,9 @@ public class DefaultSkinConfigurationScreen
           this.numOfProfessions > 0 ? this.professions[i - (variantIndex * this.numOfProfessions)]
               : null;
       Enum<?> variant = this.variants[variantIndex];
-      int left = this.leftPos + (skinPosition > 4 ? -228 : 32) + (skinPosition * 52);
-      int top = this.topPos + 65 + positionTop + (skinPosition > 4 ? 84 : 0);
+      int left = this.leftPos + (skinPosition > 4 ? -(skinPreviewWidth * 4) - 24 : 32)
+          + (skinPosition * (skinPreviewWidth));
+      int top = this.contentTopPos + 82 + (skinPosition > 4 ? 84 : 0);
 
       // Render skin with additional variant and professions.
       this.renderSkinEntity(poseStack, left, top, variant, profession);
@@ -97,11 +97,11 @@ public class DefaultSkinConfigurationScreen
       poseStack.pushPose();
       poseStack.translate(0, 0, 100);
       poseStack.scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING, SKIN_NAME_SCALING);
-      String variantName = TextUtils.normalizeString(variant.name(), 10);
+      String variantName = TextUtils.normalizeString(variant.name(), 12);
       this.font.draw(poseStack, new TextComponent(variantName), leftNamePos, topNamePos,
           Constants.FONT_COLOR_DARK_GREEN);
       if (profession != null) {
-        String professionName = TextUtils.normalizeString(profession.name(), 10);
+        String professionName = TextUtils.normalizeString(profession.name(), 11);
         this.font.draw(poseStack, new TextComponent(professionName), leftNamePos, topNamePos + 10f,
             Constants.FONT_COLOR_BLACK);
       }
@@ -117,9 +117,8 @@ public class DefaultSkinConfigurationScreen
     // Create dynamically button for each skin variant and profession.
     int skinButtonLeft = x - 24;
     int skinButtonTop = y - 81;
-    int skinButtonWidth = 52;
     int skinButtonHeight = 84;
-    ImageButton skinButton = new ImageButton(skinButtonLeft, skinButtonTop, skinButtonWidth,
+    ImageButton skinButton = new ImageButton(skinButtonLeft, skinButtonTop, skinPreviewWidth,
         skinButtonHeight, 0, -84, 84, Constants.TEXTURE_CONFIGURATION, button -> {
           NetworkHandler.variantChange(this.uuid, variant);
           if (profession != null) {
@@ -135,14 +134,14 @@ public class DefaultSkinConfigurationScreen
       RenderSystem.setShader(GameRenderer::getPositionTexShader);
       RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
       RenderSystem.setShaderTexture(0, Constants.TEXTURE_CONFIGURATION);
-      this.blit(poseStack, skinButtonLeft, skinButtonTop, 0, skinButtonHeight, skinButtonWidth,
+      this.blit(poseStack, skinButtonLeft, skinButtonTop, 0, skinButtonHeight, skinPreviewWidth,
           skinButtonHeight);
       poseStack.popPose();
     }
 
     // Render skin entity with variant and profession.
-    ScreenHelper.renderEntityDefaultSkin(x, y, x - this.xMouse, y - 40 - this.yMouse, this.entity, variant,
-        profession);
+    ScreenHelper.renderEntityDefaultSkin(x, y, x - this.xMouse, y - 40 - this.yMouse, this.entity,
+        variant, profession);
 
     skinButtons.add(skinButton);
   }
@@ -183,9 +182,9 @@ public class DefaultSkinConfigurationScreen
         this.numOfVariants, this.numOfProfessions);
 
     // Skin Navigation Buttons
-    int skinButtonTop = this.topPos + 210;
-    int skinButtonLeft = this.leftPos + 7;
-    int skinButtonRight = this.leftPos + 249;
+    int skinButtonTop = this.topPos + 212;
+    int skinButtonLeft = this.contentLeftPos;
+    int skinButtonRight = this.leftPos + 269;
     this.skinPreviousPageButton = this.addRenderableWidget(new Button(skinButtonLeft, skinButtonTop,
         20, 20, new TranslatableComponent("<<"), onPress -> {
           if (this.skinStartIndex - maxSkinsPerPage > 0) {
@@ -245,10 +244,10 @@ public class DefaultSkinConfigurationScreen
     super.renderBg(poseStack, partialTicks, mouseX, mouseY);
 
     // Skin Selection
-    fill(poseStack, this.leftPos + 7, this.topPos + 38, this.leftPos + 269, this.topPos + 208,
-        0xff000000);
-    fill(poseStack, this.leftPos + 8, this.topPos + 39, this.leftPos + 268, this.topPos + 207,
-        0xffaaaaaa);
+    fill(poseStack, this.contentLeftPos, this.contentTopPos, this.contentLeftPos + 282,
+        this.contentTopPos + 170, 0xff000000);
+    fill(poseStack, this.contentLeftPos + 1, this.contentTopPos + 1, this.contentLeftPos + 281,
+        this.contentTopPos + 169, 0xffaaaaaa);
   }
 
   @Override

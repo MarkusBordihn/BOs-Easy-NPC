@@ -17,57 +17,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.menu.configuration.action;
+package de.markusbordihn.easynpc.network.message;
 
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.MenuType;
+import net.minecraft.server.level.ServerPlayer;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
-import de.markusbordihn.easynpc.menu.ModMenuTypes;
 
-public class ActionConfigurationMenu extends AbstractContainerMenu {
+public class MessageHelper {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  // Cache
-  protected EasyNPCEntity entity;
-  protected UUID uuid;
+  public static boolean checkAccess(UUID uuid, ServerPlayer serverPlayer) {
+    // Validate entity.
+    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    if (easyNPCEntity == null) {
+      log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
+      return false;
+    }
 
-  public ActionConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
-    this(ModMenuTypes.DIALOG_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
-  }
+    // Validate access.
+    if (!EntityManager.hasAccess(uuid, serverPlayer)) {
+      log.error("User {} has no access to Easy NPC with uuid {}.", serverPlayer, uuid);
+      return false;
+    }
 
-  public ActionConfigurationMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
-    this(windowId, playerInventory, data.readUUID());
-  }
-
-  public ActionConfigurationMenu(final MenuType<?> menuType, final int windowId,
-      final Inventory playerInventory, UUID uuid) {
-    super(menuType, windowId);
-
-    this.uuid = uuid;
-    this.entity = EntityManager.getEasyNPCEntityByUUID(uuid);
-
-    log.debug("Open action configuration menu for {}: {}", this.uuid, this.entity);
-  }
-
-  public EasyNPCEntity getEntity() {
-    return this.entity;
-  }
-
-  @Override
-  public boolean stillValid(Player player) {
-    return player != null && player.isAlive() && entity != null && entity.isAlive();
+    return true;
   }
 
 }

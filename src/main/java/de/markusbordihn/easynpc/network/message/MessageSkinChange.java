@@ -82,15 +82,8 @@ public class MessageSkinChange {
 
   public static void handlePacket(MessageSkinChange message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
-    if (serverPlayer == null) {
-      log.error("Unable to get server player for message {} from {}", message, context);
-      return;
-    }
-
-    // Check for access.
     UUID uuid = message.getUUID();
-    if (!EntityManager.hasAccess(uuid, serverPlayer)) {
-      log.warn("User {} has no access to Easy NPC with uuid {}.", serverPlayer, uuid);
+    if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
       return;
     }
 
@@ -109,25 +102,18 @@ public class MessageSkinChange {
     }
     SkinType skinType = SkinType.get(skinTypeName);
 
-    // Validate entity.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPCEntity == null) {
-      log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
-      return;
-    }
-
     // Perform action.
+    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     String skinURL = message.getSkinURL();
     UUID skinUUID = message.getSkinUUID();
 
-    easyNPCEntity.setSkinType(skinType);
-
     // Pre-process skin information, if needed.
-    log.debug("Processing skin:{} uuid:{} url:{} type:{} for {} from {}", skin, skinUUID, skinURL,
-        skinType, easyNPCEntity, serverPlayer);
+    log.debug("Processing skin:{} uuid:{} url:{} type:{} model:{} for {} from {}", skin, skinUUID, skinURL,
+        skinType, easyNPCEntity.getSkinModel(), easyNPCEntity, serverPlayer);
 
     switch (skinType) {
       case PLAYER_SKIN:
+        easyNPCEntity.setSkinType(skinType);
         easyNPCEntity.setSkin("");
         easyNPCEntity.setSkinURL(skinURL != null && !skinURL.isBlank() ? skinURL : "");
         if (skinUUID != null && !Constants.BLANK_UUID.equals(skinUUID)) {
@@ -142,6 +128,7 @@ public class MessageSkinChange {
         break;
       case INSECURE_REMOTE_URL:
       case SECURE_REMOTE_URL:
+        easyNPCEntity.setSkinType(skinType);
         easyNPCEntity.setSkin("");
         easyNPCEntity.setSkinURL(skinURL != null && !skinURL.isBlank() ? skinURL : skin);
         easyNPCEntity
@@ -151,6 +138,7 @@ public class MessageSkinChange {
       default:
         log.error("Failed processing skin:{} uuid:{} url:{} type:{} for {} from {}", skin, skinUUID,
             skinURL, skinType, easyNPCEntity, serverPlayer);
+        easyNPCEntity.setSkinType(skinType);
         easyNPCEntity.setSkin(skin);
     }
   }

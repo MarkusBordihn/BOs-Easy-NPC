@@ -17,14 +17,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.menu.configuration.skin;
+package de.markusbordihn.easynpc.menu.configuration;
 
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -33,9 +32,8 @@ import net.minecraft.world.inventory.MenuType;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
-import de.markusbordihn.easynpc.menu.ModMenuTypes;
 
-public class SkinConfigurationMenu extends AbstractContainerMenu {
+public class ConfigurationMenu extends AbstractContainerMenu {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -43,22 +41,15 @@ public class SkinConfigurationMenu extends AbstractContainerMenu {
   protected EasyNPCEntity entity;
   protected UUID uuid;
 
-  public SkinConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
-    this(ModMenuTypes.SKIN_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
-  }
-
-  public SkinConfigurationMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
-    this(windowId, playerInventory, data.readUUID());
-  }
-
-  public SkinConfigurationMenu(final MenuType<?> menuType, final int windowId,
+  public ConfigurationMenu(final MenuType<?> menuType, final int windowId,
       final Inventory playerInventory, UUID uuid) {
     super(menuType, windowId);
 
     this.uuid = uuid;
     this.entity = EntityManager.getEasyNPCEntityByUUID(uuid);
 
-    log.debug("Open skin configuration menu for {}: {}", this.uuid, this.entity);
+    log.debug("Open configuration menu for {}: {} with player inventory {}", this.uuid, this.entity,
+        playerInventory);
   }
 
   public EasyNPCEntity getEntity() {
@@ -69,5 +60,4 @@ public class SkinConfigurationMenu extends AbstractContainerMenu {
   public boolean stillValid(Player player) {
     return player != null && player.isAlive() && entity != null && entity.isAlive();
   }
-
 }

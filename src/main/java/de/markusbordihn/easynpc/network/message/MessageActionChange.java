@@ -70,15 +70,8 @@ public class MessageActionChange {
 
   public static void handlePacket(MessageActionChange message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
-    if (serverPlayer == null) {
-      log.error("Unable to get server player for message {} from {}", message, context);
-      return;
-    }
-
-    // Check for access.
     UUID uuid = message.getUUID();
-    if (!EntityManager.hasAccess(uuid, serverPlayer)) {
-      log.warn("User {} has no access to Easy NPC with uuid {}.", serverPlayer, uuid);
+    if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
       return;
     }
 
@@ -89,16 +82,10 @@ public class MessageActionChange {
       return;
     }
 
-    // Validate entity.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPCEntity == null) {
-      log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
-      return;
-    }
-
     // Get Permission level for corresponding action.
     int permissionLevel = 0;
     MinecraftServer minecraftServer = serverPlayer.getServer();
+    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     if (minecraftServer != null) {
       permissionLevel = minecraftServer.getProfilePermissions(serverPlayer.getGameProfile());
       easyNPCEntity.setActionPermissionLevel(permissionLevel);

@@ -38,6 +38,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
 
+import de.markusbordihn.easynpc.action.ActionType;
+import de.markusbordihn.easynpc.commands.CommandManager;
+
 public class EasyNPCEntity extends EasyNPCEntityData {
 
   // Shared constants
@@ -56,6 +59,18 @@ public class EasyNPCEntity extends EasyNPCEntityData {
 
   public void finalizeSpawn() {
     // Do stuff like default names.
+  }
+
+  public void executeAction(ActionType actionType) {
+    if (!this.hasAction(actionType)) {
+      return;
+    }
+    String action = this.getAction(actionType);
+    boolean debug = this.getActionDebug();
+    int permissionLevel = this.getActionPermissionLevel();
+    log.debug("Execute action {}:{} for {} with permission level {} ...", actionType, action, this,
+        permissionLevel);
+    CommandManager.executeEntityCommand(action, this, permissionLevel, debug);
   }
 
   @Override
@@ -104,13 +119,18 @@ public class EasyNPCEntity extends EasyNPCEntityData {
     log.debug("mobInteract: {} {} {} {}", this.getUUID(), player, hand, isClientSide);
 
     if (player instanceof ServerPlayer serverPlayer && hand == InteractionHand.MAIN_HAND) {
-      if (player.isCreative()) {
-        if (!this.hasCustomName() || player.isCrouching()) {
-          EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, this);
-        } else {
-          EasyNPCEntityMenu.openDialogMenu(serverPlayer, this);
-        }
-      } else {
+      boolean hasInteractionAction = this.hasAction(ActionType.ON_INTERACTION);
+      if (player.isCreative()
+          && ((!this.hasDialog() && !hasInteractionAction) || player.isCrouching())) {
+        EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, this);
+        return InteractionResult.PASS;
+      }
+
+      if (hasInteractionAction) {
+        this.executeAction(ActionType.ON_INTERACTION);
+      }
+
+      if (this.hasDialog()) {
         EasyNPCEntityMenu.openDialogMenu(serverPlayer, this);
       }
     }

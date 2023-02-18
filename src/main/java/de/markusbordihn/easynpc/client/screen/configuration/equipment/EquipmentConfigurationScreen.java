@@ -17,26 +17,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen;
+package de.markusbordihn.easynpc.client.screen.configuration.equipment;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.menu.ConfigurationMenu;
+import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
+import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentMenu;
 
 @OnlyIn(Dist.CLIENT)
-public class ConfigurationScreen extends AbstractContainerScreen<ConfigurationMenu> {
+public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentMenu> {
 
-  public ConfigurationScreen(ConfigurationMenu menu, Inventory inventory, Component component) {
+  public EquipmentConfigurationScreen(EquipmentMenu menu, Inventory inventory,
+      Component component) {
     super(menu, inventory, component);
   }
 
@@ -44,27 +40,9 @@ public class ConfigurationScreen extends AbstractContainerScreen<ConfigurationMe
   public void init() {
     super.init();
 
-    // Default stats
-    this.imageHeight = 242;
-
     // Basic Position
-    this.titleLabelX = 8;
-    this.titleLabelY = 6;
-    this.topPos = (this.height - this.imageHeight) / 2;
     this.inventoryLabelX = 8;
     this.inventoryLabelY = this.imageHeight - 92;
-  }
-
-  @Override
-  protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
-    RenderSystem.setShader(GameRenderer::getPositionTexShader);
-    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-    RenderSystem.setShaderTexture(0, Constants.TEXTURE_GENERIC_54);
-
-    // Main screen
-    this.blit(poseStack, leftPos, topPos + 20, 0, 0, 176, 222);
-    this.blit(poseStack, leftPos, topPos, 0, 0, 176, 139);
-    blit(poseStack, leftPos + 5, topPos + 15, 3, 64, 165, 130, 255, 4096);
   }
 
 }

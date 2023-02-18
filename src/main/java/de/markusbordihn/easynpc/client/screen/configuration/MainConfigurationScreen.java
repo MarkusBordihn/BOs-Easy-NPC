@@ -19,14 +19,6 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.ChatFormatting;
@@ -35,11 +27,8 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -49,18 +38,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.dialog.DialogType;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.menu.configuration.MainConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 import de.markusbordihn.easynpc.skin.SkinType;
 
 @OnlyIn(Dist.CLIENT)
-public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigurationMenu> {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  protected final EasyNPCEntity entity;
-  protected final UUID uuid;
+public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurationMenu> {
 
   // Internal
   protected Button editActionButton = null;
@@ -68,16 +51,14 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
   protected Button editSkinButton = null;
   protected Button removeEntityButton = null;
   protected Button saveNameButton = null;
-  private List<Button> skinButtons = new ArrayList<>();
   private EditBox nameBox;
-  protected float xMouse;
-  protected float yMouse;
+
+  // Cache
+  private String formerName = "";
 
   public MainConfigurationScreen(MainConfigurationMenu menu, Inventory inventory,
       Component component) {
     super(menu, inventory, component);
-    this.entity = menu.getEntity();
-    this.uuid = this.entity.getUUID();
   }
 
   private void saveName() {
@@ -85,6 +66,8 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
     if (value != null && !value.isBlank()) {
       log.debug("Saving name {} for {}", value, this.entity);
       NetworkHandler.nameChange(this.uuid, value);
+      this.formerName = value;
+      this.saveNameButton.active = false;
     }
   }
 
@@ -107,6 +90,11 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
         CommonComponents.GUI_CANCEL));
   }
 
+  private void validateName() {
+    String nameValue = this.nameBox.getValue();
+    this.saveNameButton.active = nameValue != null && !this.formerName.equals(nameValue);
+  }
+
   @Override
   public void init() {
     if (this.entity == null) {
@@ -114,72 +102,76 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
     }
     super.init();
 
-    // Default stats
-    this.imageHeight = 220;
-    this.imageWidth = 285;
+    // Button positions
+    int buttonWidth = 88;
+    int buttonSpace = 4;
 
-    // Basic Position
-    this.titleLabelX = 60;
-    this.titleLabelY = 6;
-    this.topPos = (this.height - this.imageHeight) / 2;
-    this.leftPos = (this.width - this.imageWidth) / 2;
-
-    // Name
-    this.nameBox = new EditBox(this.font, this.leftPos + 7, this.topPos + 31, 190, 18,
+    // Name Edit Box and Save Button
+    this.formerName = this.entity.getName().getString();
+    this.nameBox = new EditBox(this.font, this.contentLeftPos + 1, this.topPos + 31, 190, 18,
         new TranslatableComponent("Name"));
     this.nameBox.setMaxLength(32);
-    this.nameBox.setValue(this.entity.getName().getString());
+    this.nameBox.setValue(this.formerName);
+    this.nameBox.setResponder(consumer -> this.validateName());
     this.addRenderableWidget(this.nameBox);
 
-    this.saveNameButton = this.addRenderableWidget(new Button(this.leftPos + 199, this.topPos + 30,
-        80, 20, new TranslatableComponent("Save"), onPress -> {
-          this.saveName();
-        }));
+    this.saveNameButton =
+        this.addRenderableWidget(new Button(this.leftPos + 202, this.topPos + 30, buttonWidth, 20,
+            new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "save_name"), onPress -> {
+              this.saveName();
+            }));
+    this.saveNameButton.active = false;
 
-    // Dialog
-    this.editDialogButton = this.addRenderableWidget(new Button(this.leftPos + 110,
-        this.topPos + 54, 83, 20, new TranslatableComponent("Dialog"), onPress -> {
-          DialogType dialogType = this.entity.getDialogType();
-          switch (dialogType) {
-            case BASIC:
-              NetworkHandler.openDialog(uuid, "BasicDialogConfiguration");
-              break;
-            case YES_NO:
-              NetworkHandler.openDialog(uuid, "YesNoDialogConfiguration");
-              break;
-            default:
-              NetworkHandler.openDialog(uuid, "BasicDialogConfiguration");
-          }
-        }));
+    // Skins Button
+    this.editSkinButton =
+        this.addRenderableWidget(new Button(this.contentLeftPos, this.topPos + 205, 100, 20,
+            new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "skin"), onPress -> {
+              SkinType skinType = this.entity.getSkinType();
+              switch (skinType) {
+                case PLAYER_SKIN:
+                case SECURE_REMOTE_URL:
+                case INSECURE_REMOTE_URL:
+                  NetworkHandler.openDialog(uuid, "PlayerSkinConfiguration");
+                  break;
+                case CUSTOM:
+                  NetworkHandler.openDialog(uuid, "CustomSkinConfiguration");
+                  break;
+                default:
+                  NetworkHandler.openDialog(uuid, "DefaultSkinConfiguration");
+              }
+            }));
 
-    // Skins
-    this.editSkinButton = this.addRenderableWidget(new Button(this.leftPos + 7, this.topPos + 190,
-        100, 20, new TranslatableComponent("Skin"), onPress -> {
-          SkinType skinType = this.entity.getSkinType();
-          switch (skinType) {
-            case PLAYER_SKIN:
-            case SECURE_REMOTE_URL:
-            case INSECURE_REMOTE_URL:
-              NetworkHandler.openDialog(uuid, "PlayerSkinConfiguration");
-              break;
-            case CUSTOM:
-              NetworkHandler.openDialog(uuid, "CustomSkinConfiguration");
-              break;
-            default:
-              NetworkHandler.openDialog(uuid, "DefaultSkinConfiguration");
-          }
-        }));
+    // Dialog Button
+    this.editDialogButton =
+        this.addRenderableWidget(new Button(this.leftPos + 110, this.topPos + 54, buttonWidth, 20,
+            new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "dialog"), onPress -> {
+              DialogType dialogType = this.entity.getDialogType();
+              switch (dialogType) {
+                case BASIC:
+                  NetworkHandler.openDialog(uuid, "BasicDialogConfiguration");
+                  break;
+                case YES_NO:
+                  NetworkHandler.openDialog(uuid, "YesNoDialogConfiguration");
+                  break;
+                default:
+                  NetworkHandler.openDialog(uuid, "BasicDialogConfiguration");
+              }
+            }));
 
-    // Actions
-    this.editActionButton = this.addRenderableWidget(new Button(this.leftPos + 197,
-        this.topPos + 54, 83, 20, new TranslatableComponent("Actions"), onPress -> {
-          NetworkHandler.openDialog(uuid, "BasicActionConfiguration");
-        }));
+    // Actions Button
+    this.editActionButton = this.addRenderableWidget(
+        new Button(this.editDialogButton.x + this.editDialogButton.getWidth() + buttonSpace,
+            this.topPos + 54, buttonWidth, 20,
+            new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "actions"), onPress -> {
+              NetworkHandler.openDialog(uuid, "BasicActionConfiguration");
+            }));
 
-    // Delete
+    // Delete Button
     this.removeEntityButton =
-        this.addRenderableWidget(new Button(this.leftPos + 229, this.topPos + 190, 50, 20,
-            new TranslatableComponent("Delete").withStyle(ChatFormatting.RED), onPress -> {
+        this.addRenderableWidget(new Button(this.rightPos - 60, this.bottomPos - 30, 50, 20,
+            new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "delete")
+                .withStyle(ChatFormatting.RED),
+            onPress -> {
               deleteNPC();
             }));
   }
@@ -191,13 +183,13 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
     this.xMouse = x;
     this.yMouse = y;
 
-    // Name
-    this.font.draw(poseStack, new TextComponent("Name"), this.leftPos + 7f, this.topPos + 20f,
-        4210752);
-
-    // Render current Avatar
-    ScreenHelper.renderEntityAvatar(this.leftPos + 55, this.topPos + 185, 55,
+    // Avatar
+    ScreenHelper.renderEntityAvatar(this.leftPos + 55, this.topPos + 195, 55,
         this.leftPos + 50 - this.xMouse, this.topPos + 90 - this.yMouse, this.entity);
+
+    // Entity Type
+    this.font.draw(poseStack, entity.getType().getDescription(), this.contentLeftPos + 2f,
+        this.topPos + 58f, 4210752);
   }
 
   @Override
@@ -207,45 +199,19 @@ public class MainConfigurationScreen extends AbstractContainerScreen<MainConfigu
 
   @Override
   protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
-    RenderSystem.setShader(GameRenderer::getPositionTexShader);
-    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-    RenderSystem.setShaderTexture(0, Constants.TEXTURE_DEMO_BACKGROUND);
+    super.renderBg(poseStack, partialTicks, mouseX, mouseY);
 
-    // Main screen (+50px in height)
-    this.blit(poseStack, leftPos, topPos, 0, 0, 250, 170);
-    this.blit(poseStack, leftPos + 243, topPos, 205, 0, 45, 170);
-
-    int expandedHeight = 50;
-    this.blit(poseStack, leftPos, topPos + expandedHeight + 5, 0, 5, 250, 170);
-    this.blit(poseStack, leftPos + 243, topPos + expandedHeight + 5, 205, 5, 45, 170);
-
-    // Entity
-    fill(poseStack, this.leftPos + 7, this.topPos + 54, this.leftPos + 107, this.topPos + 191,
+    // Entity Type
+    fill(poseStack, this.contentLeftPos, this.topPos + 54, this.leftPos + 107, this.topPos + 191,
         0xff000000);
     fill(poseStack, this.leftPos + 8, this.topPos + 55, this.leftPos + 106, this.topPos + 190,
+        0xffffffff);
+
+    // Entity
+    fill(poseStack, this.contentLeftPos, this.topPos + 69, this.leftPos + 107, this.topPos + 206,
+        0xff000000);
+    fill(poseStack, this.leftPos + 8, this.topPos + 70, this.leftPos + 106, this.topPos + 205,
         0xffaaaaaa);
-  }
-
-  @Override
-  public boolean keyPressed(int keyCode, int unused1, int unused2) {
-    if (keyCode != 257 && keyCode != 335 && keyCode != 69) {
-      return super.keyPressed(keyCode, unused1, unused2);
-    } else if (keyCode == 257 || keyCode == 335) {
-      return true;
-    } else {
-      return true;
-    }
-  }
-
-  @Override
-  public boolean mouseClicked(double mouseX, double mouseY, int button) {
-    // Make sure we pass the mouse click to the dynamically added buttons, if any.
-    if (!skinButtons.isEmpty()) {
-      for (Button skinButton : skinButtons) {
-        skinButton.mouseClicked(mouseX, mouseY, button);
-      }
-    }
-    return super.mouseClicked(mouseX, mouseY, button);
   }
 
 }

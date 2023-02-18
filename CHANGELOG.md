@@ -5,6 +5,16 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### 2023.02.19
+
+- Added Interaction action which could be triggered without any dialog.
+- Added Skeleton model and remote skins support.
+- Unified configuration UIs and added translation keys.
+- Improved yes/no dialog buttons to allow longer texts.
+- Improved value validation and status updates.
+- Improved texture manager for custom models.
+- Remove test NPC spawn eggs.
+
 ### 2023.02.16
 
 - Added Action configuration with permission level support.

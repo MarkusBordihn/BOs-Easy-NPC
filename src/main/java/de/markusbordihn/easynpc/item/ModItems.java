@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.entity.npc.Fairy;
 import de.markusbordihn.easynpc.entity.npc.Humanoid;
 import de.markusbordihn.easynpc.entity.npc.HumanoidSlim;
 import de.markusbordihn.easynpc.entity.npc.ModEntityType;
+import de.markusbordihn.easynpc.entity.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.npc.Villager;
 import de.markusbordihn.easynpc.tabs.EasyNPCTab;
 
@@ -73,22 +74,16 @@ public class ModItems {
               MaterialColor.COLOR_PINK.col,
               new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
 
+  public static final RegistryObject<Item> SKELETON_NPC_SPAWN_EGG =
+      ITEMS.register(Skeleton.ID + SPAWN_EGG_PREFIX,
+          () -> new ForgeSpawnEggItem(ModEntityType.SKELETON::get, MaterialColor.COLOR_BLACK.col,
+              MaterialColor.COLOR_GRAY.col,
+              new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
+
   public static final RegistryObject<Item> VILLAGER_NPC_SPAWN_EGG =
       ITEMS.register(Villager.ID + SPAWN_EGG_PREFIX,
           () -> new ForgeSpawnEggItem(ModEntityType.VILLAGER::get, MaterialColor.COLOR_RED.col,
               MaterialColor.COLOR_YELLOW.col,
-              new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
-
-  // Custom NPC Entity Spawn Eggs
-  public static final RegistryObject<Item> JAYJASONBO_NPC_SPAWN_EGG =
-      ITEMS.register("jayjasonbo" + SPAWN_EGG_PREFIX,
-          () -> new ForgeSpawnEggItem(ModEntityType.JAYJASONBO::get, MaterialColor.COLOR_ORANGE.col,
-              MaterialColor.COLOR_BLACK.col,
-              new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
-  public static final RegistryObject<Item> KAWORRU_NPC_SPAWN_EGG =
-      ITEMS.register("kaworru" + SPAWN_EGG_PREFIX,
-          () -> new ForgeSpawnEggItem(ModEntityType.KAWORRU::get, MaterialColor.COLOR_RED.col,
-              MaterialColor.COLOR_BLACK.col,
               new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
 
 }

@@ -22,10 +22,11 @@ package de.markusbordihn.easynpc.action;
 public enum ActionType {
   // @formatter:off
   NONE,
-  ON_OPEN_DIALOG,
   ON_CLOSE_DIALOG,
-  ON_YES_SELECTION,
-  ON_NO_SELECTION;
+  ON_INTERACTION,
+  ON_NO_SELECTION,
+  ON_OPEN_DIALOG,
+  ON_YES_SELECTION;
   // @formatter:on
 
   public static ActionType get(String actionType) {

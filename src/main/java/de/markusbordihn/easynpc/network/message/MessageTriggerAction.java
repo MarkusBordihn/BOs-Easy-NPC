@@ -31,7 +31,6 @@ import net.minecraftforge.network.NetworkEvent;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.action.ActionType;
-import de.markusbordihn.easynpc.commands.CommandManager;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 
@@ -64,13 +63,11 @@ public class MessageTriggerAction {
 
   public static void handlePacket(MessageTriggerAction message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
-    if (serverPlayer == null) {
-      log.error("Unable to get server player for message {} from {}", message, context);
+    UUID uuid = message.getUUID();
+    if (serverPlayer == null || uuid == null) {
+      log.error("Unable to trigger action with message {} from {}", message, context);
       return;
     }
-
-    // Check for access.
-    UUID uuid = message.getUUID();
 
     // Validate action type.
     ActionType actionType = ActionType.get(message.getActionType());
@@ -98,8 +95,7 @@ public class MessageTriggerAction {
     int permissionLevel = easyNPCEntity.getActionPermissionLevel();
     log.debug("Trigger action {}:{} for {} from {} with permission level {} ...", actionType,
         action, easyNPCEntity, serverPlayer, permissionLevel);
-    CommandManager.executeEntityCommand(action, easyNPCEntity, permissionLevel,
-        easyNPCEntity.getActionDebug());
+    easyNPCEntity.executeAction(actionType);
   }
 
 }

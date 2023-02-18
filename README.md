@@ -70,6 +70,7 @@ By enabling the debug action all executed commands will produce a corresponding 
 
 The basic action screen allows to define actions for the basic dialog screen and the yes/no dialog screen like:
 
+- Player interacts with the NPC (without/with dialog)
 - Player opens dialog screen
 - Player close the dialog screen
 - Player select "Yes" from the "yes/no" dialog screen
@@ -96,6 +97,10 @@ Humanoid slim NPCs are the most common one and used for slim characters like Ale
 Fairy NPCs using a custom model and support three kinds of fairy's to far.
 
 ![Fairy NPC](/examples/npcs/fairy_npc.png)
+
+### Skeleton NPC
+
+Skeleton NPCs using the default Skeleton model.
 
 ### Villager NPC
 

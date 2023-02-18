@@ -49,6 +49,7 @@ import de.markusbordihn.easynpc.dialog.DialogUtils;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.menu.DialogMenu;
 import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.utils.TextUtils;
 
 @OnlyIn(Dist.CLIENT)
 public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
@@ -85,19 +86,28 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     RenderSystem.setShaderTexture(0, Constants.TEXTURE_DIALOG);
 
-    // Dialog background according numbers of lines.
+    // Calculate numbers of lines and background shift.
     int minNumberOfLines = Math.max(2, this.numberOfDialogLines);
-    int backgroundShift = minNumberOfLines * (font.lineHeight + 2);
-    this.blit(poseStack, leftPos + 70, topPos + 10 + 30, 0, 130 - backgroundShift, 200,
-        Math.min(120, backgroundShift));
-    this.blit(poseStack, leftPos + 70, topPos + 10, 0, 0, 200, 30);
+
+    // Dialog background according numbers of lines.
+    int backgroundHeight = minNumberOfLines * (font.lineHeight + 2);
+    int backgroundLeftPos = leftPos + 70;
+    int backgroundTopPos = topPos + 15;
+    int backgroundTopHeight = Math.min(Math.max(30, backgroundHeight), 105);
+    int backgroundBottomHeight = Math.max(backgroundHeight - backgroundTopHeight, 15);
+    int backgroundBottomPos = Math.max(116 - backgroundBottomHeight, 15);
+
+    // Render Dialog in two parts to allow smaller and larger dialogs.
+    this.blit(poseStack, backgroundLeftPos, backgroundTopPos, 0, 0, 200, backgroundTopHeight);
+    this.blit(poseStack, backgroundLeftPos, backgroundTopPos + backgroundTopHeight, 0,
+        backgroundBottomPos, 200, backgroundBottomHeight);
 
     // Distribute text for the across the lines.
     if (!this.cachedDialogComponents.isEmpty()) {
       for (int line = 0; line < this.numberOfDialogLines; ++line) {
         FormattedCharSequence formattedCharSequence = this.cachedDialogComponents.get(line);
         this.font.draw(poseStack, formattedCharSequence, leftPos + 87f,
-            topPos + 17f + (line * (font.lineHeight + 2)), 0);
+            topPos + 22f + (line * (font.lineHeight + 2)), 0);
       }
     }
   }
@@ -125,6 +135,16 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     }
     super.init();
 
+    // Default stats
+    this.imageHeight = 200;
+    this.imageWidth = 275;
+
+    // Basic Position
+    this.titleLabelX = 8;
+    this.titleLabelY = 6;
+    this.topPos = (this.height - this.imageHeight) / 2;
+    this.leftPos = (this.width - this.imageWidth) / 2;
+
     // Dialog text.
     this.dialogType = this.entity.getDialogType();
     setDialog(this.entity.getDialog());
@@ -137,22 +157,37 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     // Render additional Buttons for Yes/No Dialog.
     if (this.dialogType == DialogType.YES_NO) {
       int dialogButtonTop = this.topPos + 55 + (numberOfDialogLines * (font.lineHeight));
-      this.yesDialogButton = this.addRenderableWidget(new Button(this.leftPos + 20, dialogButtonTop,
-          95, 20, new TextComponent(this.entity.getYesDialogButton()), onPress -> {
-            setDialog(this.entity.getYesDialog());
-            this.yesDialogButton.visible = false;
-            this.noDialogButton.visible = false;
+      String yesDialogButtonText = TextUtils.limitString(this.entity.getYesDialogButton(), 32);
+      String noDialogButtonText = TextUtils.limitString(this.entity.getNoDialogButton(), 32);
+      boolean smallButtonLayout =
+          yesDialogButtonText.length() < 16 && noDialogButtonText.length() < 16;
+
+      this.yesDialogButton = this.addRenderableWidget(new Button(this.leftPos + 70, dialogButtonTop,
+          smallButtonLayout ? 95 : 198, 20, new TextComponent(yesDialogButtonText), onPress -> {
+            String yesDialogText = this.entity.getYesDialog();
+            if (!yesDialogText.isBlank()) {
+              setDialog(yesDialogText);
+              this.yesDialogButton.visible = false;
+              this.noDialogButton.visible = false;
+            }
 
             // Action for close dialog.
             if (this.actions.containsKey(ActionType.ON_YES_SELECTION)) {
               NetworkHandler.triggerAction(this.uuid, ActionType.ON_YES_SELECTION);
             }
           }));
-      this.noDialogButton = this.addRenderableWidget(new Button(this.leftPos + 125, dialogButtonTop,
-          95, 20, new TextComponent(this.entity.getNoDialogButton()), onPress -> {
-            setDialog(this.entity.getNoDialog());
-            this.yesDialogButton.visible = false;
-            this.noDialogButton.visible = false;
+
+      this.noDialogButton = this.addRenderableWidget(new Button(
+          smallButtonLayout ? this.yesDialogButton.x + this.yesDialogButton.getWidth() + 10
+              : this.yesDialogButton.x,
+          smallButtonLayout ? dialogButtonTop : dialogButtonTop + 25, smallButtonLayout ? 95 : 198,
+          20, new TextComponent(noDialogButtonText), onPress -> {
+            String noDialogText = this.entity.getNoDialog();
+            if (!noDialogText.isBlank()) {
+              setDialog(noDialogText);
+              this.yesDialogButton.visible = false;
+              this.noDialogButton.visible = false;
+            }
 
             // Action for close dialog.
             if (this.actions.containsKey(ActionType.ON_NO_SELECTION)) {
@@ -161,15 +196,6 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
           }));
     }
 
-    // Default stats
-    this.imageHeight = 170;
-    this.imageWidth = 275;
-
-    // Basic Position
-    this.titleLabelX = 8;
-    this.titleLabelY = 6;
-    this.topPos = (this.height - this.imageHeight) / 2;
-    this.leftPos = (this.width - this.imageWidth) / 2;
   }
 
   @Override
@@ -185,7 +211,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     // Render Avatar
     int avatarPositionTop = 55 + this.entity.getEntityDialogTop();
     int left = this.leftPos + 40;
-    int top = this.topPos + 60 + avatarPositionTop;
+    int top = this.topPos + 70 + avatarPositionTop;
     ScreenHelper.renderEntityDialog(left, top, Math.round(left - 140 - (this.xMouse * 0.25)),
         Math.round(top - 120 - (this.yMouse * 0.5)), this.entity);
 
@@ -207,6 +233,9 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     // Main screen
     this.blit(poseStack, leftPos, topPos, 0, 0, 250, 170);
     this.blit(poseStack, leftPos + 243, topPos, 215, 0, 35, 170);
+
+    this.blit(poseStack, leftPos, topPos + 60, 0, 30, 250, 140);
+    this.blit(poseStack, leftPos + 243, topPos + 60, 215, 30, 35, 140);
   }
 
   @Override
