@@ -22,7 +22,7 @@ If you need to adjust the existing dialog, just click with your empty hand and c
 
 ## Dialogs
 
-### Placeholders
+### Dialog Placeholders
 
 The dialog text supports additional placeholders to allow more personalization for the text.
 
@@ -57,14 +57,23 @@ Actions allows you create more interactive parts with your NPC even outside of t
 Some basic examples:
 
 - `/say Hello, ...`
-- `/give @p stone`
-- `/scoreboard players add @p close 5`
-- `/tp @p -28 63 399`
+- `/give @initiator stone`
+- `/scoreboard players add @initiator close 5`
+- `/tp @initiator -28 63 399`
 
 The action are locked with the user permission level.
 Which mean that a standard user will not be able to use /give /tp and other related commands for higher permission levels.
 
 By enabling the debug action all executed commands will produce a corresponding feedback in the log like script errors and others.
+
+### Action Placeholders
+
+The action text supports additional placeholders to allow more personalization for the action.
+
+| Placeholder | Description                         |
+| ----------- | ----------------------------------- |
+| @npc        | Name of the NPC                     |
+| @initiator  | Name of the initiator of the dialog |
 
 ### Basic Actions
 
