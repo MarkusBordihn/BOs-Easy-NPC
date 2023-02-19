@@ -85,21 +85,21 @@ public class BasicActionConfigurationScreen
   public void validateCloseAction() {
     String action = this.onCloseActionBox.getValue();
     this.saveOnCloseActionButton.active =
-        action == null || (action.isEmpty() && !this.lastOpenAction.isEmpty())
+        action == null || (action.isEmpty() && !this.lastCloseAction.isEmpty())
             || !action.equals(this.lastCloseAction);
   }
 
   public void validateYesAction() {
     String action = this.onYesActionBox.getValue();
     this.saveOnYesActionButton.active =
-        action == null || (action.isEmpty() && !this.lastOpenAction.isEmpty())
+        action == null || (action.isEmpty() && !this.lastYesAction.isEmpty())
             || !action.equals(this.lastYesAction);
   }
 
   public void validateNoAction() {
     String action = this.onNoActionBox.getValue();
     this.saveOnNoActionButton.active =
-        action == null || (action.isEmpty() && !this.lastOpenAction.isEmpty())
+        action == null || (action.isEmpty() && !this.lastNoAction.isEmpty())
             || !action.equals(this.lastNoAction);
   }
 
