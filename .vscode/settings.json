@@ -33,7 +33,8 @@
     ".vscode",
     "build",
     "models",
-    "run"
+    "run",
+    "src/main/resources/assets/easy_npc/lang"
   ],
   "java.configuration.updateBuildConfiguration": "automatic",
   "java.format.settings.url": "./java-google-style.xml",

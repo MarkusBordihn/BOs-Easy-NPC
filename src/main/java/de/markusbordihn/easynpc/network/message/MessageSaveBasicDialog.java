@@ -63,33 +63,15 @@ public class MessageSaveBasicDialog {
 
   public static void handlePacket(MessageSaveBasicDialog message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
-    if (serverPlayer == null) {
-      log.error("Unable to get server player for message {} from {}", message, context);
-      return;
-    }
-
-    // Check for access.
     UUID uuid = message.getUUID();
-    if (!EntityManager.hasAccess(uuid, serverPlayer)) {
-      log.warn("User {} has no access to Easy NPC with uuid {}.", serverPlayer, uuid);
-      return;
-    }
-
-    // Validate dialog.
     String dialog = message.getDialog();
-    if (dialog == null) {
-      log.error("Invalid dialog {} for basic dialog and {} from {}", dialog, message, serverPlayer);
-      return;
-    }
-
-    // Validate entity.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPCEntity == null) {
-      log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
+    if (serverPlayer == null || dialog == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
+      log.error("Unable to save basic dialog with message {} from {}", message, context);
       return;
     }
 
     // Perform action.
+    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     log.debug("Saving basic dialog: {} for {} from {}", dialog, easyNPCEntity, serverPlayer);
     easyNPCEntity.setDialogType(DialogType.BASIC);
     easyNPCEntity.setDialog(dialog);

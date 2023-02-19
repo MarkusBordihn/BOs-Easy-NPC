@@ -31,6 +31,7 @@ import de.markusbordihn.easynpc.client.screen.configuration.MainConfigurationScr
 import de.markusbordihn.easynpc.client.screen.configuration.actions.BasicActionConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.BasicDialogConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.YesNoDialogConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.equipment.EquipmentConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.DefaultSkinConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.PlayerSkinConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.CustomSkinConfigurationScreen;
@@ -49,8 +50,7 @@ public class ClientScreens {
       // Dialog Screen
       MenuScreens.register(ModMenuTypes.DIALOG_MENU.get(), DialogScreen::new);
 
-      // Configuration Screens
-      MenuScreens.register(ModMenuTypes.CONFIGURATION_MENU.get(), ConfigurationScreen::new);
+      // Configuration Screen
       MenuScreens.register(ModMenuTypes.MAIN_CONFIGURATION_MENU.get(),
           MainConfigurationScreen::new);
 
@@ -66,12 +66,15 @@ public class ClientScreens {
       MenuScreens.register(ModMenuTypes.PLAYER_SKIN_CONFIGURATION_MENU.get(),
           PlayerSkinConfigurationScreen::new);
 
-
       // Dialog Configuration Screens
       MenuScreens.register(ModMenuTypes.BASIC_DIALOG_CONFIGURATION_MENU.get(),
           BasicDialogConfigurationScreen::new);
       MenuScreens.register(ModMenuTypes.YES_NO_DIALOG_CONFIGURATION_MENU.get(),
           YesNoDialogConfigurationScreen::new);
+
+      // Equipment Configuration Screen
+      MenuScreens.register(ModMenuTypes.EQUIPMENT_CONFIGURATION_MENU.get(),
+          EquipmentConfigurationScreen::new);
     });
   }
 }

@@ -59,7 +59,8 @@ public class DialogMenu extends AbstractContainerMenu {
     this.uuid = uuid;
     this.entity = EntityManager.getEasyNPCEntityByUUID(uuid);
 
-    log.debug("Open Dialog menu for {}: {}", this.uuid, this.entity);
+    log.debug("Open Dialog menu for {}: {} with player inventory {}", this.uuid, this.entity,
+        playerInventory);
   }
 
   public EasyNPCEntity getEntity() {

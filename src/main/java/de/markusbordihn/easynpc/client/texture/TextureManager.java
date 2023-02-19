@@ -46,6 +46,7 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.loading.FileUtils;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.skin.SkinModel;
 import de.markusbordihn.easynpc.utils.PlayersUtils;
 
 @OnlyIn(Dist.CLIENT)
@@ -67,7 +68,9 @@ public class TextureManager {
         client.getTextureManager();
 
     // Creative native image from file.
-    NativeImage nativeImage = getNativeImage(file);
+    NativeImage nativeImage = textureModelKey.getSkinModel() == SkinModel.HUMANOID
+        || textureModelKey.getSkinModel() == SkinModel.HUMANOID_SLIM ? getNativePlayerImage(file)
+            : getNativeImage(file);
     if (nativeImage == null) {
       log.error("{} Unable to create native image for file {}.", LOG_PREFIX, file);
       return null;
@@ -177,6 +180,14 @@ public class TextureManager {
   }
 
   public static NativeImage getNativeImage(File file) {
+    return getNativeImage(file, false);
+  }
+
+  public static NativeImage getNativePlayerImage(File file) {
+    return getNativeImage(file, true);
+  }
+
+  public static NativeImage getNativeImage(File file, boolean legacySupport) {
     NativeImage nativeImage;
     try {
       InputStream inputStream = new FileInputStream(file);
@@ -188,7 +199,7 @@ public class TextureManager {
       return null;
     }
 
-    if (nativeImage.getWidth() == 64 && nativeImage.getHeight() == 32) {
+    if (legacySupport && nativeImage.getWidth() == 64 && nativeImage.getHeight() == 32) {
       log.info("{} Processing legacy image {} from 64x32 to 64x64 ...", LOG_PREFIX, nativeImage);
       nativeImage = getNativeImageFromLegacyImage(nativeImage);
     }

@@ -17,25 +17,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.menu.configuration.action;
+package de.markusbordihn.easynpc.network.message;
 
 import java.util.UUID;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Inventory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import de.markusbordihn.easynpc.menu.ModMenuTypes;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
+import net.minecraft.server.level.ServerPlayer;
 
-public class BasicActionConfigurationMenu extends ConfigurationMenu {
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.EntityManager;
 
-  public BasicActionConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
-    super(ModMenuTypes.BASIC_ACTION_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
-  }
+public class MessageHelper {
 
-  public BasicActionConfigurationMenu(int windowId, Inventory playerInventory,
-      FriendlyByteBuf data) {
-    this(windowId, playerInventory, data.readUUID());
+  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  public static boolean checkAccess(UUID uuid, ServerPlayer serverPlayer) {
+    // Validate entity.
+    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    if (easyNPCEntity == null) {
+      log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
+      return false;
+    }
+
+    // Validate access.
+    if (!EntityManager.hasAccess(uuid, serverPlayer)) {
+      log.error("User {} has no access to Easy NPC with uuid {}.", serverPlayer, uuid);
+      return false;
+    }
+
+    return true;
   }
 
 }

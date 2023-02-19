@@ -97,7 +97,7 @@ public class PlayerSkinConfigurationScreen
     }
 
     for (int i = skinStartIndex; i < this.numOfSkins && i < skinStartIndex + maxSkinsPerPage; i++) {
-      int left = this.leftPos + 32 + (skinPosition * 52);
+      int left = this.leftPos + 32 + (skinPosition * skinPreviewWidth);
       int top = this.topPos + 65 + positionTop;
 
       // Render Skins
@@ -110,7 +110,7 @@ public class PlayerSkinConfigurationScreen
       poseStack.pushPose();
       poseStack.translate(0, 0, 100);
       poseStack.scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING, SKIN_NAME_SCALING);
-      String variantName = TextUtils.normalizeString(textureKey.toString(), 10);
+      String variantName = TextUtils.normalizeString(textureKey.toString(), 11);
       this.font.draw(poseStack, Component.literal(variantName), leftNamePos, topNamePos,
           Constants.FONT_COLOR_DARK_GREEN);
       poseStack.popPose();
@@ -128,9 +128,8 @@ public class PlayerSkinConfigurationScreen
     // Create dynamically button for each skin variant and profession.
     int skinButtonLeft = x - 24;
     int skinButtonTop = y - 81;
-    int skinButtonWidth = 52;
     int skinButtonHeight = 84;
-    ImageButton skinButton = new ImageButton(skinButtonLeft, skinButtonTop, skinButtonWidth,
+    ImageButton skinButton = new ImageButton(skinButtonLeft, skinButtonTop, skinPreviewWidth,
         skinButtonHeight, 0, -84, 84, Constants.TEXTURE_CONFIGURATION, button -> {
           String skinURL = PlayerTextureManager.getPlayerTextureSkinURL(textureModelKey);
           NetworkHandler.skinChange(this.uuid, "", skinURL, textureUUID, skinType);
@@ -143,7 +142,7 @@ public class PlayerSkinConfigurationScreen
       RenderSystem.setShader(GameRenderer::getPositionTexShader);
       RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
       RenderSystem.setShaderTexture(0, Constants.TEXTURE_CONFIGURATION);
-      this.blit(poseStack, skinButtonLeft, skinButtonTop, 0, skinButtonHeight, skinButtonWidth,
+      this.blit(poseStack, skinButtonLeft, skinButtonTop, 0, skinButtonHeight, skinPreviewWidth,
           skinButtonHeight);
       poseStack.popPose();
     }
@@ -246,7 +245,7 @@ public class PlayerSkinConfigurationScreen
     this.numOfSkins = PlayerTextureManager.getPlayerTextureCacheKeys(skinModel).size();
 
     // Texture Skin Location
-    this.textureSkinLocationBox = new EditBox(this.font, this.leftPos + 7, this.topPos + 60, 180,
+    this.textureSkinLocationBox = new EditBox(this.font, this.contentLeftPos, this.topPos + 60, 160,
         20, Component.translatable("Skin Location"));
     this.textureSkinLocationBox.setMaxLength(255);
     this.textureSkinLocationBox.setValue("");
@@ -254,24 +253,28 @@ public class PlayerSkinConfigurationScreen
     this.addRenderableWidget(this.textureSkinLocationBox);
 
     // Add Button
-    this.addTextureSettingsButton = this.addRenderableWidget(new Button(this.leftPos + 189,
-        this.topPos + 60, 40, 20, Component.translatable("Add"), onPress -> {
-          this.addTextureSkinLocation();
-        }));
+    this.addTextureSettingsButton = this.addRenderableWidget(
+        new Button(this.textureSkinLocationBox.x + this.textureSkinLocationBox.getWidth() + 2,
+            this.topPos + 60, 65, 20,
+            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "add"), onPress -> {
+              this.addTextureSkinLocation();
+            }));
     this.addTextureSettingsButton.active = false;
 
     // Clear Texture Buttons
-    this.clearTextureSettingsButton = this.addRenderableWidget(new Button(this.leftPos + 230,
-        this.topPos + 60, 40, 20, Component.translatable("Clear"), onPress -> {
-          this.clearTextureSkinLocation();
-        }));
+    this.clearTextureSettingsButton = this.addRenderableWidget(
+        new Button(this.addTextureSettingsButton.x + this.addTextureSettingsButton.getWidth() + 1,
+            this.topPos + 60, 55, 20,
+            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "clear"), onPress -> {
+              this.clearTextureSkinLocation();
+            }));
 
     // Skin Navigation Buttons
     int skinButtonTop = this.topPos + 187;
-    int skinButtonLeft = this.leftPos + 7;
-    int skinButtonRight = this.leftPos + 249;
-    this.skinPreviousPageButton = this.addRenderableWidget(new Button(skinButtonLeft, skinButtonTop,
-        20, 20, Component.translatable("<<"), onPress -> {
+    int skinButtonLeft = this.contentLeftPos;
+    int skinButtonRight = this.rightPos - 31;
+    this.skinPreviousPageButton = this.addRenderableWidget(
+        new Button(skinButtonLeft, skinButtonTop, 20, 20, Component.literal("<<"), onPress -> {
           if (this.skinStartIndex - maxSkinsPerPage > 0) {
             skinStartIndex = skinStartIndex - maxSkinsPerPage;
           } else {
@@ -279,15 +282,15 @@ public class PlayerSkinConfigurationScreen
           }
           checkSkinButtonState();
         }));
-    this.skinPreviousButton = this.addRenderableWidget(new Button(skinButtonLeft + 20,
-        skinButtonTop, 20, 20, Component.translatable("<"), onPress -> {
+    this.skinPreviousButton = this.addRenderableWidget(
+        new Button(skinButtonLeft + 20, skinButtonTop, 20, 20, Component.literal("<"), onPress -> {
           if (this.skinStartIndex > 0) {
             skinStartIndex--;
           }
           checkSkinButtonState();
         }));
-    this.skinNextPageButton = this.addRenderableWidget(new Button(skinButtonRight, skinButtonTop,
-        20, 20, Component.translatable(">>"), onPress -> {
+    this.skinNextPageButton = this.addRenderableWidget(
+        new Button(skinButtonRight, skinButtonTop, 20, 20, Component.literal(">>"), onPress -> {
           if (this.skinStartIndex >= 0
               && this.skinStartIndex + this.maxSkinsPerPage < this.numOfSkins) {
             this.skinStartIndex = this.skinStartIndex + this.maxSkinsPerPage;
@@ -298,8 +301,8 @@ public class PlayerSkinConfigurationScreen
           }
           checkSkinButtonState();
         }));
-    this.skinNextButton = this.addRenderableWidget(new Button(skinButtonRight - 20, skinButtonTop,
-        20, 20, Component.translatable(">"), onPress -> {
+    this.skinNextButton = this.addRenderableWidget(
+        new Button(skinButtonRight - 20, skinButtonTop, 20, 20, Component.literal(">"), onPress -> {
           if (this.skinStartIndex >= 0
               && this.skinStartIndex < this.numOfSkins - this.maxSkinsPerPage) {
             skinStartIndex++;
@@ -314,11 +317,13 @@ public class PlayerSkinConfigurationScreen
     super.render(poseStack, x, y, partialTicks);
 
     if (this.isPlayerSkinModel) {
-      this.font.draw(poseStack, Component.literal("Use a Player Name / Skin URL"),
-          this.leftPos + 7f, this.topPos + 50f, 4210752);
+      this.font.draw(poseStack,
+          Component.translatable(Constants.TEXT_CONFIG_PREFIX + "use_a_player_name"),
+          this.contentLeftPos, this.topPos + 50f, 4210752);
     } else {
-      this.font.draw(poseStack, Component.literal("Use a Skin URL"), this.leftPos + 7f,
-          this.topPos + 50f, 4210752);
+      this.font.draw(poseStack,
+          Component.translatable(Constants.TEXT_CONFIG_PREFIX + "use_a_skin_url"),
+          this.contentLeftPos, this.topPos + 50f, 4210752);
     }
 
     // Reload protection
@@ -331,11 +336,12 @@ public class PlayerSkinConfigurationScreen
       RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
       RenderSystem.setShaderTexture(0, Constants.TEXTURE_CONFIGURATION);
       poseStack.translate(0, 0, 100);
-      this.blit(poseStack, this.leftPos + 175, this.topPos + 65, 82, 1, 8, 10);
+      this.blit(poseStack, this.leftPos + 155, this.topPos + 65, 82, 1, 8, 10);
 
       // Show processing text.
-      this.font.draw(poseStack, Component.literal("Processing skin, please wait ..."), this.leftPos + 55f,
-          this.topPos + 88f, 4210752);
+      this.font.draw(poseStack,
+          Component.translatable(Constants.TEXT_CONFIG_PREFIX + "processing_skin"),
+          this.leftPos + 55f, this.topPos + 88f, 4210752);
     }
 
     // Skins
@@ -354,10 +360,10 @@ public class PlayerSkinConfigurationScreen
     super.renderBg(poseStack, partialTicks, mouseX, mouseY);
 
     // Skin Selection
-    fill(poseStack, this.leftPos + 7, this.topPos + 102, this.leftPos + 269, this.topPos + 188,
-        0xff000000);
-    fill(poseStack, this.leftPos + 8, this.topPos + 103, this.leftPos + 268, this.topPos + 187,
-        0xffaaaaaa);
+    fill(poseStack, this.contentLeftPos, this.topPos + 102, this.contentLeftPos + 282,
+        this.topPos + 188, 0xff000000);
+    fill(poseStack, this.contentLeftPos + 1, this.topPos + 103, this.contentLeftPos + 281,
+        this.topPos + 187, 0xffaaaaaa);
   }
 
   @Override

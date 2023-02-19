@@ -35,7 +35,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.menu.ConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentMenu;
 
 public class ArmorSlot extends Slot {
 
@@ -58,9 +58,9 @@ public class ArmorSlot extends Slot {
       EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD};
 
   final EquipmentSlot equipmentSlot;
-  final ConfigurationMenu menu;
+  final EquipmentMenu menu;
 
-  public ArmorSlot(ConfigurationMenu menu, Container container, int index, int x, int y) {
+  public ArmorSlot(EquipmentMenu menu, Container container, int index, int x, int y) {
     super(container, index, x, y);
     this.menu = menu;
     this.equipmentSlot = SLOT_IDS[index];

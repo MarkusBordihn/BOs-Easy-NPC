@@ -36,7 +36,7 @@ import de.markusbordihn.easynpc.action.ActionType;
 import de.markusbordihn.easynpc.network.message.MessageActionChange;
 import de.markusbordihn.easynpc.network.message.MessageActionDebug;
 import de.markusbordihn.easynpc.network.message.MessageNameChange;
-import de.markusbordihn.easynpc.network.message.MessageOpenDialog;
+import de.markusbordihn.easynpc.network.message.MessageOpenConfigurationDialog;
 import de.markusbordihn.easynpc.network.message.MessageProfessionChange;
 import de.markusbordihn.easynpc.network.message.MessageRemoveNPC;
 import de.markusbordihn.easynpc.network.message.MessageSaveBasicDialog;
@@ -51,7 +51,7 @@ public class NetworkHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final String PROTOCOL_VERSION = "3";
+  private static final String PROTOCOL_VERSION = "4";
   public static final SimpleChannel INSTANCE =
       NetworkRegistry.newSimpleChannel(new ResourceLocation(Constants.MOD_ID, "network"),
           () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
@@ -95,11 +95,11 @@ public class NetworkHandler {
           MessageNameChange::handle);
 
       // Open Dialog Request: Client -> Server
-      INSTANCE.registerMessage(id++, MessageOpenDialog.class, (message, buffer) -> {
+      INSTANCE.registerMessage(id++, MessageOpenConfigurationDialog.class, (message, buffer) -> {
         buffer.writeUUID(message.getUUID());
         buffer.writeUtf(message.getDialogName());
-      }, buffer -> new MessageOpenDialog(buffer.readUUID(), buffer.readUtf()),
-          MessageOpenDialog::handle);
+      }, buffer -> new MessageOpenConfigurationDialog(buffer.readUUID(), buffer.readUtf()),
+          MessageOpenConfigurationDialog::handle);
 
       // Save Basic Dialog Request: Client -> Server
       INSTANCE.registerMessage(id++, MessageSaveBasicDialog.class, (message, buffer) -> {
@@ -174,7 +174,7 @@ public class NetworkHandler {
   /** Open dialog request. */
   public static void openDialog(UUID uuid, String dialogName) {
     if (uuid != null && dialogName != null && !dialogName.isEmpty()) {
-      INSTANCE.sendToServer(new MessageOpenDialog(uuid, dialogName));
+      INSTANCE.sendToServer(new MessageOpenConfigurationDialog(uuid, dialogName));
     }
   }
 

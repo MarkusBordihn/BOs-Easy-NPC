@@ -50,7 +50,7 @@ public class PlayersUtils {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final String USER_REGEX = "\\w.*";
+  private static final String USER_REGEX = "^\\w{2,16}$";
   private static final String TEXTURES_STRING = "textures";
 
   // Internal Cache

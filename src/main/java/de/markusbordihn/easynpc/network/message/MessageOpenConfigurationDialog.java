@@ -34,14 +34,14 @@ import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityMenu;
 import de.markusbordihn.easynpc.entity.EntityManager;
 
-public class MessageOpenDialog {
+public class MessageOpenConfigurationDialog {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   protected final UUID uuid;
   protected final String dialogName;
 
-  public MessageOpenDialog(UUID uuid, String dialogName) {
+  public MessageOpenConfigurationDialog(UUID uuid, String dialogName) {
     this.uuid = uuid;
     this.dialogName = dialogName;
   }
@@ -54,24 +54,18 @@ public class MessageOpenDialog {
     return this.uuid;
   }
 
-  public static void handle(MessageOpenDialog message,
+  public static void handle(MessageOpenConfigurationDialog message,
       Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessageOpenDialog message, NetworkEvent.Context context) {
+  public static void handlePacket(MessageOpenConfigurationDialog message,
+      NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
-    if (serverPlayer == null) {
-      log.error("Unable to get server player for message {} from {}", message, context);
-      return;
-    }
-
-    // Check for access.
     UUID uuid = message.getUUID();
-    if (!EntityManager.hasAccess(uuid, serverPlayer)) {
-      log.warn("User {} has no access to Easy NPC with uuid {}.", serverPlayer, uuid);
+    if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
       return;
     }
 
@@ -82,18 +76,12 @@ public class MessageOpenDialog {
       return;
     }
 
-    // Validate entity.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPCEntity == null) {
-      log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
-      return;
-    }
-
     // Perform action.
+    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     switch (dialogName) {
       case "BasicActionConfiguration":
         EasyNPCEntityMenu.openBasicActionConfigurationMenu(serverPlayer, easyNPCEntity);
-      break;
+        break;
       case "BasicDialogConfiguration":
         EasyNPCEntityMenu.openBasicDialogConfigurationMenu(serverPlayer, easyNPCEntity);
         break;

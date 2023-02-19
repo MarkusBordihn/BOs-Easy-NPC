@@ -56,26 +56,13 @@ public class MessageRemoveNPC {
 
   public static void handlePacket(MessageRemoveNPC message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
-    if (serverPlayer == null) {
-      log.error("Unable to get server player for message {} from {}", message, context);
-      return;
-    }
-
-    // Check for access.
     UUID uuid = message.getUUID();
-    if (!EntityManager.hasAccess(uuid, serverPlayer)) {
-      log.warn("User {} has no access to Easy NPC with uuid {}.", serverPlayer, uuid);
-      return;
-    }
-
-    // Validate entity.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPCEntity == null) {
-      log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
+    if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
       return;
     }
 
     // Perform action.
+    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     log.info("Removing Easy NPC {} requested by {}", easyNPCEntity, serverPlayer);
     easyNPCEntity.remove(RemovalReason.DISCARDED);
   }

@@ -57,15 +57,13 @@ public class ModEntityType {
   public static final RegistryObject<EntityType<HumanoidSlim>> HUMANOID_SLIM =
       registerHumanoidSlim(HumanoidSlim.ID, HumanoidSlim.Variant.ALEX);
 
+  public static final RegistryObject<EntityType<Skeleton>> SKELETON = ENTITY_TYPES.register(
+      Skeleton.ID, () -> EntityType.Builder.<Skeleton>of(Skeleton::new, EasyNPCEntity.CATEGORY)
+          .sized(1.0F, 2.0F).clientTrackingRange(8).build(Skeleton.ID));
+
   public static final RegistryObject<EntityType<Villager>> VILLAGER = ENTITY_TYPES.register(
       Villager.ID, () -> EntityType.Builder.<Villager>of(Villager::new, EasyNPCEntity.CATEGORY)
           .sized(1.0F, 2.0F).clientTrackingRange(8).build(Villager.ID));
-
-  // Custom NPC Entity
-  public static final RegistryObject<EntityType<Humanoid>> JAYJASONBO =
-      registerHumanoid("jayjasonbo", Humanoid.Variant.JAYJASONBO);
-  public static final RegistryObject<EntityType<HumanoidSlim>> KAWORRU =
-      registerHumanoidSlim("kaworru", HumanoidSlim.Variant.KAWORRU);
 
   @SubscribeEvent
   public static final void entityAttributeCreation(EntityAttributeCreationEvent event) {
@@ -74,11 +72,8 @@ public class ModEntityType {
     event.put(FAIRY.get(), Fairy.createAttributes().build());
     event.put(HUMANOID.get(), Humanoid.createAttributes().build());
     event.put(HUMANOID_SLIM.get(), HumanoidSlim.createAttributes().build());
+    event.put(SKELETON.get(), Skeleton.createAttributes().build());
     event.put(VILLAGER.get(), Villager.createAttributes().build());
-
-    // Custom NPC Entities
-    event.put(JAYJASONBO.get(), Humanoid.createAttributes().build());
-    event.put(KAWORRU.get(), HumanoidSlim.createAttributes().build());
   }
 
   // Register Handler

@@ -23,26 +23,19 @@ import java.util.UUID;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.MenuType;
 
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 
-public class CustomSkinConfigurationMenu extends SkinConfigurationMenu {
+public class CustomSkinConfigurationMenu extends ConfigurationMenu {
 
   public CustomSkinConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
-    this(ModMenuTypes.CUSTOM_SKIN_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
+    super(ModMenuTypes.CUSTOM_SKIN_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
   }
 
   public CustomSkinConfigurationMenu(int windowId, Inventory playerInventory,
       FriendlyByteBuf data) {
     this(windowId, playerInventory, data.readUUID());
-  }
-
-  public CustomSkinConfigurationMenu(final MenuType<?> menuType, final int windowId,
-      final Inventory playerInventory, UUID uuid) {
-    super(menuType, windowId, playerInventory, uuid);
-
-    log.debug("Open custom skin configuration menu for {}: {}", this.uuid, this.entity);
   }
 
 }

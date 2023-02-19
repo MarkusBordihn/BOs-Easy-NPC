@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.menu;
+package de.markusbordihn.easynpc.menu.configuration.equipment;
 
 import java.util.UUID;
 
@@ -30,20 +30,19 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.menu.ModMenuTypes;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.slots.ArmorSlot;
 import de.markusbordihn.easynpc.menu.slots.DummySlot;
 import de.markusbordihn.easynpc.menu.slots.HandSlot;
 
-public class ConfigurationMenu extends AbstractContainerMenu {
+public class EquipmentMenu extends ConfigurationMenu {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -61,31 +60,29 @@ public class ConfigurationMenu extends AbstractContainerMenu {
   protected final Container inventoryContainer;
 
   // Cache
-  protected EasyNPCEntity entity;
-  protected UUID uuid;
   protected final Level level;
   protected final Player player;
 
-  public ConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
-    this(ModMenuTypes.CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
+  public EquipmentMenu(int windowId, Inventory playerInventory, UUID uuid) {
+    this(ModMenuTypes.EQUIPMENT_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
   }
 
-  public ConfigurationMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
+  public EquipmentMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
     this(windowId, playerInventory, data.readUUID());
   }
 
-  public ConfigurationMenu(final MenuType<?> menuType, int windowId, Inventory inventory,
+  public EquipmentMenu(final MenuType<?> menuType, int windowId, Inventory inventory,
       UUID uuid) {
     this(menuType, windowId, inventory, new SimpleContainer(armorContainerSize),
         new SimpleContainer(equipmentContainerSize), new SimpleContainer(handContainerSize),
         new SimpleContainer(inventoryContainerSize), uuid);
   }
 
-  public ConfigurationMenu(final MenuType<?> menuType, final int windowId,
+  public EquipmentMenu(final MenuType<?> menuType, final int windowId,
       final Inventory playerInventory, final Container armorContainer,
       final Container equipmentContainer, final Container handContainer,
       final Container inventoryContainer, UUID uuid) {
-    super(menuType, windowId);
+    super(menuType, windowId, playerInventory, uuid);
 
     // Make sure the passed container matched the expected sizes
     checkContainerSize(armorContainer, armorContainerSize);
@@ -100,8 +97,6 @@ public class ConfigurationMenu extends AbstractContainerMenu {
     this.inventoryContainer = inventoryContainer;
 
     // Other
-    this.uuid = uuid;
-    this.entity = EntityManager.getEasyNPCEntityByUUID(uuid);
     this.player = playerInventory.player;
     this.level = this.player.getLevel();
 
@@ -174,11 +169,6 @@ public class ConfigurationMenu extends AbstractContainerMenu {
     }
 
     return ItemStack.EMPTY;
-  }
-
-  @Override
-  public boolean stillValid(Player player) {
-    return this.inventoryContainer.stillValid(player);
   }
 
 }

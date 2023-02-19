@@ -62,15 +62,8 @@ public class MessageProfessionChange {
 
   public static void handlePacket(MessageProfessionChange message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
-    if (serverPlayer == null) {
-      log.error("Unable to get server player for message {} from {}", message, context);
-      return;
-    }
-
-    // Check for access.
     UUID uuid = message.getUUID();
-    if (!EntityManager.hasAccess(uuid, serverPlayer)) {
-      log.warn("User {} has no access to Easy NPC with uuid {}.", serverPlayer, uuid);
+    if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
       return;
     }
 
@@ -81,14 +74,8 @@ public class MessageProfessionChange {
       return;
     }
 
-    // Validate entity.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPCEntity == null) {
-      log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
-      return;
-    }
-
     // Perform action.
+    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     log.debug("Change profession {} for {} from {}", profession, easyNPCEntity, serverPlayer);
     easyNPCEntity.setProfession(profession);
   }

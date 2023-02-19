@@ -27,16 +27,16 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.menu.ConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentMenu;
 
 
 public class InventorySlot extends Slot {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  protected ConfigurationMenu menu;
+  protected EquipmentMenu menu;
 
-  public InventorySlot(ConfigurationMenu menu, Container container, int index, int x, int y) {
+  public InventorySlot(EquipmentMenu menu, Container container, int index, int x, int y) {
     super(container, index, x, y);
     this.menu = menu;
   }

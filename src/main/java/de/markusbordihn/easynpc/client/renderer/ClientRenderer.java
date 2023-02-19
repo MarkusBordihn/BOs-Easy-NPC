@@ -31,6 +31,7 @@ import de.markusbordihn.easynpc.client.renderer.entity.AllayRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.FairyRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.HumanoidRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.HumanoidSlimRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.SkeletonRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.VillagerRenderer;
 import de.markusbordihn.easynpc.entity.npc.ModEntityType;
 
@@ -49,11 +50,8 @@ public class ClientRenderer {
     event.registerEntityRenderer(ModEntityType.FAIRY.get(), FairyRenderer::new);
     event.registerEntityRenderer(ModEntityType.HUMANOID.get(), HumanoidRenderer::new);
     event.registerEntityRenderer(ModEntityType.HUMANOID_SLIM.get(), HumanoidSlimRenderer::new);
+    event.registerEntityRenderer(ModEntityType.SKELETON.get(), SkeletonRenderer::new);
     event.registerEntityRenderer(ModEntityType.VILLAGER.get(), VillagerRenderer::new);
-
-    // Custom NPC Entity
-    event.registerEntityRenderer(ModEntityType.JAYJASONBO.get(), HumanoidRenderer::new);
-    event.registerEntityRenderer(ModEntityType.KAWORRU.get(), HumanoidSlimRenderer::new);
   }
 
 }

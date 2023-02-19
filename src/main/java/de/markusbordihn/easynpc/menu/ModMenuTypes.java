@@ -28,15 +28,13 @@ import net.minecraftforge.registries.RegistryObject;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.configuration.MainConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.action.ActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.dialog.DialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.PlayerSkinConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.skin.SkinConfigurationMenu;
 
 public class ModMenuTypes {
 
@@ -57,17 +55,11 @@ public class ModMenuTypes {
           () -> IForgeMenuType.create(MainConfigurationMenu::new));
 
   // Action Configuration
-  public static final RegistryObject<MenuType<ActionConfigurationMenu>> ACTION_CONFIGURATION_MENU =
-      MENU_TYPES.register("action_configuration_menu",
-          () -> IForgeMenuType.create(ActionConfigurationMenu::new));
   public static final RegistryObject<MenuType<BasicActionConfigurationMenu>> BASIC_ACTION_CONFIGURATION_MENU =
       MENU_TYPES.register("basic_action_configuration_menu",
           () -> IForgeMenuType.create(BasicActionConfigurationMenu::new));
 
   // Dialog Configuration
-  public static final RegistryObject<MenuType<DialogConfigurationMenu>> DIALOG_CONFIGURATION_MENU =
-      MENU_TYPES.register("dialog_configuration_menu",
-          () -> IForgeMenuType.create(DialogConfigurationMenu::new));
   public static final RegistryObject<MenuType<BasicDialogConfigurationMenu>> BASIC_DIALOG_CONFIGURATION_MENU =
       MENU_TYPES.register("basic_dialog_configuration_menu",
           () -> IForgeMenuType.create(BasicDialogConfigurationMenu::new));
@@ -76,9 +68,6 @@ public class ModMenuTypes {
           () -> IForgeMenuType.create(YesNoDialogConfigurationMenu::new));
 
   // Skin Configuration
-  public static final RegistryObject<MenuType<SkinConfigurationMenu>> SKIN_CONFIGURATION_MENU =
-      MENU_TYPES.register("skin_configuration_menu",
-          () -> IForgeMenuType.create(SkinConfigurationMenu::new));
   public static final RegistryObject<MenuType<CustomSkinConfigurationMenu>> CUSTOM_SKIN_CONFIGURATION_MENU =
       MENU_TYPES.register("custom_skin_configuration_menu",
           () -> IForgeMenuType.create(CustomSkinConfigurationMenu::new));
@@ -89,7 +78,7 @@ public class ModMenuTypes {
       MENU_TYPES.register("player_skin_configuration_menu",
           () -> IForgeMenuType.create(PlayerSkinConfigurationMenu::new));
 
-  // Inventory
-  public static final RegistryObject<MenuType<ConfigurationMenu>> CONFIGURATION_MENU = MENU_TYPES
-      .register("configuration_menu", () -> IForgeMenuType.create(ConfigurationMenu::new));
+  // Equipment
+  public static final RegistryObject<MenuType<EquipmentMenu>> EQUIPMENT_CONFIGURATION_MENU = MENU_TYPES
+      .register("equipment_configuration_menu", () -> IForgeMenuType.create(EquipmentMenu::new));
 }

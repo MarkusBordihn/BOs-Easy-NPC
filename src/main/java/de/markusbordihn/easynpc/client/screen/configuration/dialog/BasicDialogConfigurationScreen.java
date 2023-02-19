@@ -29,6 +29,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 
@@ -54,30 +55,33 @@ public class BasicDialogConfigurationScreen
     this.yesNoDialogButton.active = true;
 
     // Dialog
-    this.dialogBox = new EditBox(this.font, this.leftPos + 7, this.topPos + 60, 261, 20,
+    this.dialogBox = new EditBox(this.font, this.contentLeftPos, this.topPos + 60, 281, 20,
         Component.translatable("Dialog"));
     this.dialogBox.setMaxLength(255);
     this.dialogBox.setValue(this.entity.getDialog());
     this.addRenderableWidget(this.dialogBox);
 
     // Save Button
-    this.saveDialogButton = this.addRenderableWidget(new Button(this.leftPos + 26,
-        this.topPos + 185, 80, 20, Component.translatable("Save"), onPress -> {
-          NetworkHandler.saveBasicDialog(uuid, this.dialogBox.getValue());
-        }));
+    this.saveDialogButton =
+        this.addRenderableWidget(new Button(this.contentLeftPos + 26, this.bottomPos - 40, 80, 20,
+            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "save"), onPress -> {
+              NetworkHandler.saveBasicDialog(uuid, this.dialogBox.getValue());
+            }));
 
     // Chancel Button
-    this.cancelButton = this.addRenderableWidget(new Button(this.leftPos + 170, this.topPos + 185,
-        80, 20, Component.translatable("Cancel"), onPress -> {
-          this.closeScreen();
-        }));
+    this.cancelButton =
+        this.addRenderableWidget(new Button(this.rightPos - 120, this.bottomPos - 40, 80, 20,
+            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "cancel"), onPress -> {
+              this.closeScreen();
+            }));
   }
 
   @Override
   public void render(PoseStack poseStack, int x, int y, float partialTicks) {
     super.render(poseStack, x, y, partialTicks);
-    this.font.draw(poseStack, Component.literal("Dialog Text"), this.leftPos + 7f,
-        this.topPos + 50f, 4210752);
+    this.font.draw(poseStack,
+        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "dialog_text"),
+        this.contentLeftPos, this.topPos + 50f, 4210752);
   }
 
 }
