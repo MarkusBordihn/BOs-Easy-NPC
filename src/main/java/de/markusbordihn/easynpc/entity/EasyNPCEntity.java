@@ -39,6 +39,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
 
 import de.markusbordihn.easynpc.action.ActionType;
+import de.markusbordihn.easynpc.action.ActionUtils;
 import de.markusbordihn.easynpc.commands.CommandManager;
 
 public class EasyNPCEntity extends EasyNPCEntityData {
@@ -61,11 +62,11 @@ public class EasyNPCEntity extends EasyNPCEntityData {
     // Do stuff like default names.
   }
 
-  public void executeAction(ActionType actionType) {
+  public void executeAction(ActionType actionType, ServerPlayer serverPlayer) {
     if (!this.hasAction(actionType)) {
       return;
     }
-    String action = this.getAction(actionType);
+    String action = ActionUtils.parseAction(this.getAction(actionType), this, serverPlayer);
     boolean debug = this.getActionDebug();
     int permissionLevel = this.getActionPermissionLevel();
     log.debug("Execute action {}:{} for {} with permission level {} ...", actionType, action, this,
@@ -127,7 +128,7 @@ public class EasyNPCEntity extends EasyNPCEntityData {
       }
 
       if (hasInteractionAction) {
-        this.executeAction(ActionType.ON_INTERACTION);
+        this.executeAction(ActionType.ON_INTERACTION, serverPlayer);
       }
 
       if (this.hasDialog()) {

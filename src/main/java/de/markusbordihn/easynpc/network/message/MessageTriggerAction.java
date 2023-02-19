@@ -95,7 +95,7 @@ public class MessageTriggerAction {
     int permissionLevel = easyNPCEntity.getActionPermissionLevel();
     log.debug("Trigger action {}:{} for {} from {} with permission level {} ...", actionType,
         action, easyNPCEntity, serverPlayer, permissionLevel);
-    easyNPCEntity.executeAction(actionType);
+    easyNPCEntity.executeAction(actionType, serverPlayer);
   }
 
 }
