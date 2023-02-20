@@ -23,11 +23,14 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import net.minecraft.Util;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
+import net.minecraft.client.renderer.entity.layers.ElytraLayer;
+import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -54,8 +57,12 @@ public class HumanoidSlimRenderer extends MobRenderer<EasyNPCEntity, PlayerModel
 
   public HumanoidSlimRenderer(EntityRendererProvider.Context context) {
     super(context, new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM), true), 0.5F);
+    this.addLayer(new HumanoidArmorLayer<>(this,
+        new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM_INNER_ARMOR)),
+        new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM_OUTER_ARMOR))));
     this.addLayer(new CustomHeadLayer<>(this, context.getModelSet()));
     this.addLayer(new ItemInHandLayer<>(this));
+    this.addLayer(new ElytraLayer<>(this, context.getModelSet()));
   }
 
   public ResourceLocation getTextureLocation(EasyNPCEntity entity) {

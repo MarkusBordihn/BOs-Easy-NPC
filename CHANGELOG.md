@@ -5,6 +5,10 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### 2023.02.20
+
+- Added equipment configuration and corresponding render support.
+
 ### 2023.02.19
 
 - Added Interaction action which could be triggered without any dialog.

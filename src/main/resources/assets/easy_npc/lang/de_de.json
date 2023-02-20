@@ -23,6 +23,7 @@
   "text.easy_npc.config.delete": "Löschen",
   "text.easy_npc.config.dialog": "Dialog",
   "text.easy_npc.config.dialog_text": "Dialogtext",
+  "text.easy_npc.config.equipment": "Ausrüstung",
   "text.easy_npc.config.no": "Nein",
   "text.easy_npc.config.no_answer": "Nein - Antwort",
   "text.easy_npc.config.on_close_dialog": "Beim schließen des Dialog",

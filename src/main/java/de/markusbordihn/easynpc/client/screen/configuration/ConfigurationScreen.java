@@ -42,6 +42,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
+import de.markusbordihn.easynpc.skin.SkinModel;
 
 @OnlyIn(Dist.CLIENT)
 public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractContainerScreen<T> {
@@ -50,6 +51,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
 
   // NPC Entity
   protected final EasyNPCEntity entity;
+  protected final SkinModel skinModel;
   protected final UUID uuid;
 
   // Buttons
@@ -68,6 +70,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
   public ConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
     this.entity = menu.getEntity();
+    this.skinModel = this.entity.getSkinModel();
     this.uuid = this.entity.getUUID();
   }
 
