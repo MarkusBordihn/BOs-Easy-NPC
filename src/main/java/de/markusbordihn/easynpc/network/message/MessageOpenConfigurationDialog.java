@@ -85,6 +85,9 @@ public class MessageOpenConfigurationDialog {
       case "BasicDialogConfiguration":
         EasyNPCEntityMenu.openBasicDialogConfigurationMenu(serverPlayer, easyNPCEntity);
         break;
+      case "EquipmentConfiguration":
+        EasyNPCEntityMenu.openEquipmentConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
       case "YesNoDialogConfiguration":
         EasyNPCEntityMenu.openYesNoDialogConfigurationMenu(serverPlayer, easyNPCEntity);
         break;

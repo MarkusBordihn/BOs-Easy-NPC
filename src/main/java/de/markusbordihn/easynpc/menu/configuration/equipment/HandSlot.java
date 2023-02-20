@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.menu.slots;
+package de.markusbordihn.easynpc.menu.configuration.equipment;
 
 import com.mojang.datafixers.util.Pair;
 
@@ -26,6 +26,7 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -35,16 +36,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentMenu;
 
 public class HandSlot extends Slot {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public static final ResourceLocation EMPTY_ARMOR_SLOT_WEAPON =
-      new ResourceLocation(Constants.MOD_ID, "item/empty_armor_slot_weapon");
+      new ResourceLocation(Constants.MOD_ID, "item/empty_armor/empty_armor_slot_weapon");
   public static final ResourceLocation EMPTY_ARMOR_SLOT_SHIELD =
-      new ResourceLocation(Constants.MOD_ID, "item/empty_armor_slot_shield");
+      new ResourceLocation(Constants.MOD_ID, "item/empty_armor/empty_armor_slot_shield");
   static final ResourceLocation[] TEXTURE_EMPTY_SLOTS =
       new ResourceLocation[] {EMPTY_ARMOR_SLOT_WEAPON, EMPTY_ARMOR_SLOT_SHIELD};
   private static final EquipmentSlot[] SLOT_IDS =
@@ -66,6 +66,9 @@ public class HandSlot extends Slot {
   @Override
   public void set(ItemStack itemStack) {
     super.set(itemStack);
+
+    this.menu.setHandChanged(
+        this.getSlotIndex() == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND, itemStack);
   }
 
   @Override

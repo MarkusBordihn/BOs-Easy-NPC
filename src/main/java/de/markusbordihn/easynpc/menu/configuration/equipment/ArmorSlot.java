@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.menu.slots;
+package de.markusbordihn.easynpc.menu.configuration.equipment;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,7 +35,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentMenu;
 
 public class ArmorSlot extends Slot {
 
@@ -44,13 +43,13 @@ public class ArmorSlot extends Slot {
   public static final ResourceLocation BLOCK_ATLAS =
       new ResourceLocation(Constants.MOD_ID, "textures/atlas/blocks.png");
   public static final ResourceLocation EMPTY_ARMOR_SLOT_HELMET =
-      new ResourceLocation(Constants.MOD_ID, "item/empty_armor_slot_helmet");
+      new ResourceLocation(Constants.MOD_ID, "item/empty_armor/empty_armor_slot_helmet");
   public static final ResourceLocation EMPTY_ARMOR_SLOT_CHESTPLATE =
-      new ResourceLocation(Constants.MOD_ID, "item/empty_armor_slot_chestplate");
+      new ResourceLocation(Constants.MOD_ID, "item/empty_armor/empty_armor_slot_chestplate");
   public static final ResourceLocation EMPTY_ARMOR_SLOT_LEGGINGS =
-      new ResourceLocation(Constants.MOD_ID, "item/empty_armor_slot_leggings");
+      new ResourceLocation(Constants.MOD_ID, "item/empty_armor/empty_armor_slot_leggings");
   public static final ResourceLocation EMPTY_ARMOR_SLOT_BOOTS =
-      new ResourceLocation(Constants.MOD_ID, "item/empty_armor_slot_boots");
+      new ResourceLocation(Constants.MOD_ID, "item/empty_armor/empty_armor_slot_boots");
   static final ResourceLocation[] TEXTURE_EMPTY_SLOTS =
       new ResourceLocation[] {EMPTY_ARMOR_SLOT_BOOTS, EMPTY_ARMOR_SLOT_LEGGINGS,
           EMPTY_ARMOR_SLOT_CHESTPLATE, EMPTY_ARMOR_SLOT_HELMET};
@@ -73,6 +72,8 @@ public class ArmorSlot extends Slot {
   @Override
   public void set(ItemStack itemStack) {
     super.set(itemStack);
+
+    this.menu.setArmorChanged(this.equipmentSlot, this.getSlotIndex(), itemStack);
   }
 
   @Override

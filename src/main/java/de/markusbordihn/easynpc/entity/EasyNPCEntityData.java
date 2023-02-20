@@ -35,11 +35,8 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.SlotAccess;
-import net.minecraft.world.entity.npc.InventoryCarrier;
 import net.minecraft.world.entity.npc.Npc;
 import net.minecraft.world.level.Level;
 
@@ -51,7 +48,7 @@ import de.markusbordihn.easynpc.skin.SkinModel;
 import de.markusbordihn.easynpc.skin.SkinType;
 import de.markusbordihn.easynpc.utils.TextUtils;
 
-public class EasyNPCEntityData extends AgeableMob implements InventoryCarrier, Npc {
+public class EasyNPCEntityData extends AgeableMob implements Npc {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -109,7 +106,6 @@ public class EasyNPCEntityData extends AgeableMob implements InventoryCarrier, N
   private static final String DATA_ACTION_PERMISSION_LEVEL_TAG = "ActionPermissionLevel";
   private static final String DATA_DIALOG_TAG = "Dialog";
   private static final String DATA_DIALOG_TYPE_TAG = "DialogType";
-  private static final String DATA_INVENTORY_TAG = "Inventory";
   private static final String DATA_NO_DIALOG_BUTTON_TAG = "NoDialogButton";
   private static final String DATA_NO_DIALOG_TAG = "NoDialog";
   private static final String DATA_OWNER_TAG = "Owner";
@@ -121,9 +117,6 @@ public class EasyNPCEntityData extends AgeableMob implements InventoryCarrier, N
   private static final String DATA_VARIANT_TAG = "Variant";
   private static final String DATA_YES_DIALOG_BUTTON_TAG = "YesDialogButton";
   private static final String DATA_YES_DIALOG_TAG = "YesDialog";
-
-  // Inventory
-  private final SimpleContainer inventory = new SimpleContainer(8);
 
   public EasyNPCEntityData(EntityType<? extends EasyNPCEntity> entityType, Level level) {
     super(entityType, level);
@@ -386,10 +379,6 @@ public class EasyNPCEntityData extends AgeableMob implements InventoryCarrier, N
     return Variant.values();
   }
 
-  public SimpleContainer getInventory() {
-    return this.inventory;
-  }
-
   public Component getVariantName() {
     Enum<?> variant = getVariant();
     return variant != null ? TextUtils.normalizeName(variant.name()) : this.getTypeName();
@@ -399,14 +388,6 @@ public class EasyNPCEntityData extends AgeableMob implements InventoryCarrier, N
   public Component getName() {
     Component component = this.getCustomName();
     return component != null ? TextUtils.removeAction(component) : this.getTypeName();
-  }
-
-  @Override
-  public SlotAccess getSlot(int slotIndex) {
-    int i = slotIndex - 300;
-    return i >= 0 && i < this.inventory.getContainerSize()
-        ? SlotAccess.forContainer(this.inventory, i)
-        : super.getSlot(slotIndex);
   }
 
   @Nullable
@@ -490,7 +471,6 @@ public class EasyNPCEntityData extends AgeableMob implements InventoryCarrier, N
     if (this.getVariant() != null) {
       compoundTag.putString(DATA_VARIANT_TAG, this.getVariant().name());
     }
-    compoundTag.put(DATA_INVENTORY_TAG, this.inventory.createTag());
   }
 
   @Override
@@ -582,9 +562,6 @@ public class EasyNPCEntityData extends AgeableMob implements InventoryCarrier, N
       if (skinType != null && !skinType.isEmpty()) {
         this.setSkinType(this.getSkinType(skinType));
       }
-    }
-    if (compoundTag.contains(DATA_INVENTORY_TAG)) {
-      this.inventory.fromTag(compoundTag.getList(DATA_INVENTORY_TAG, 10));
     }
   }
 

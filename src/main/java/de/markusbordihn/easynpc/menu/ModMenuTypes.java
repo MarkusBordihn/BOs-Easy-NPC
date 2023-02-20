@@ -27,11 +27,11 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.menu.configuration.MainConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentMenu;
+import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.PlayerSkinConfigurationMenu;
@@ -79,6 +79,7 @@ public class ModMenuTypes {
           () -> IForgeMenuType.create(PlayerSkinConfigurationMenu::new));
 
   // Equipment
-  public static final RegistryObject<MenuType<EquipmentMenu>> EQUIPMENT_CONFIGURATION_MENU = MENU_TYPES
-      .register("equipment_configuration_menu", () -> IForgeMenuType.create(EquipmentMenu::new));
+  public static final RegistryObject<MenuType<EquipmentMenu>> EQUIPMENT_CONFIGURATION_MENU =
+      MENU_TYPES.register("equipment_configuration_menu",
+          () -> IForgeMenuType.create(EquipmentMenu::new));
 }

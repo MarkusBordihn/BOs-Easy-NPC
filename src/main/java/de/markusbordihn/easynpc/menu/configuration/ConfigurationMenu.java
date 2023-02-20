@@ -24,31 +24,41 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.skin.SkinModel;
 
 public class ConfigurationMenu extends AbstractContainerMenu {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   // Cache
-  protected EasyNPCEntity entity;
-  protected UUID uuid;
+  protected final EasyNPCEntity entity;
+  protected final Level level;
+  protected final Player player;
+  protected final SkinModel skinModel;
+  protected final UUID uuid;
 
   public ConfigurationMenu(final MenuType<?> menuType, final int windowId,
       final Inventory playerInventory, UUID uuid) {
     super(menuType, windowId);
 
     this.uuid = uuid;
-    this.entity = EntityManager.getEasyNPCEntityByUUID(uuid);
+    this.player = playerInventory.player;
+    this.level = player.getLevel();
+    this.entity = this.level.isClientSide ? EntityManager.getEasyNPCEntityByUUID(uuid)
+        : EntityManager.getEasyNPCEntityByUUID(uuid, (ServerPlayer) player);
+    this.skinModel = this.entity.getSkinModel();
 
     log.debug("Open configuration menu for {}: {} with player inventory {}", this.uuid, this.entity,
         playerInventory);

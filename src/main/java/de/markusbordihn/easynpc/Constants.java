@@ -44,7 +44,7 @@ public final class Constants {
   // Prefixes
   public static final String MINECRAFT_PREFIX = "minecraft";
   public static final String TEXT_PREFIX = "text.easy_npc.";
-  public static final String TEXT_CONFIG_PREFIX =  TEXT_PREFIX + "config.";
+  public static final String TEXT_CONFIG_PREFIX = TEXT_PREFIX + "config.";
 
   // Colors
   public static final int FONT_COLOR_BLACK = 0;
@@ -70,6 +70,8 @@ public final class Constants {
       new ResourceLocation(Constants.MOD_ID, "textures/gui/configuration.png");
   public static final ResourceLocation TEXTURE_ICONS =
       new ResourceLocation(Constants.MOD_ID, "textures/container/icons.png");
+  public static final ResourceLocation TEXTURE_INVENTORY =
+      new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/container/inventory.png");
   public static final ResourceLocation TEXTURE_CHECKBOX =
       new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/checkbox.png");
 

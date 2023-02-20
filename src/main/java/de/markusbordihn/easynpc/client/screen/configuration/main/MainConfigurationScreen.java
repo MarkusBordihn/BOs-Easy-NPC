@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.configuration;
+package de.markusbordihn.easynpc.client.screen.configuration.main;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -36,17 +36,19 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
+import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.dialog.DialogType;
-import de.markusbordihn.easynpc.menu.configuration.MainConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 import de.markusbordihn.easynpc.skin.SkinType;
 
 @OnlyIn(Dist.CLIENT)
 public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurationMenu> {
 
-  // Internal
+  // Buttons and boxes
   protected Button editActionButton = null;
   protected Button editDialogButton = null;
+  protected Button editEquipment = null;
   protected Button editSkinButton = null;
   protected Button removeEntityButton = null;
   protected Button saveNameButton = null;
@@ -102,8 +104,11 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     super.init();
 
     // Button positions
-    int buttonWidth = 88;
+    int buttonLeftPosition = this.leftPos + 110;
     int buttonSpace = 4;
+    int buttonTopPosition = this.topPos + 54;
+    int buttonWidth = 88;
+    int buttonHeight = 20;
 
     // Name Edit Box and Save Button
     this.formerName = this.entity.getName().getString();
@@ -114,35 +119,33 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     this.nameBox.setResponder(consumer -> this.validateName());
     this.addRenderableWidget(this.nameBox);
 
-    this.saveNameButton =
-        this.addRenderableWidget(new Button(this.leftPos + 202, this.topPos + 30, buttonWidth, 20,
-            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "save_name"), onPress -> {
-              this.saveName();
-            }));
+    this.saveNameButton = this.addRenderableWidget(new Button(this.leftPos + 202, this.topPos + 30, buttonWidth, 20,
+        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "save_name"), onPress -> {
+          this.saveName();
+        }));
     this.saveNameButton.active = false;
 
     // Skins Button
-    this.editSkinButton =
-        this.addRenderableWidget(new Button(this.contentLeftPos, this.topPos + 205, 100, 20,
-            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "skin"), onPress -> {
-              SkinType skinType = this.entity.getSkinType();
-              switch (skinType) {
-                case PLAYER_SKIN:
-                case SECURE_REMOTE_URL:
-                case INSECURE_REMOTE_URL:
-                  NetworkHandler.openDialog(uuid, "PlayerSkinConfiguration");
-                  break;
-                case CUSTOM:
-                  NetworkHandler.openDialog(uuid, "CustomSkinConfiguration");
-                  break;
-                default:
-                  NetworkHandler.openDialog(uuid, "DefaultSkinConfiguration");
-              }
-            }));
+    this.editSkinButton = this.addRenderableWidget(new Button(this.contentLeftPos, this.topPos + 205, 100, 20,
+        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "skin"), onPress -> {
+          SkinType skinType = this.entity.getSkinType();
+          switch (skinType) {
+            case PLAYER_SKIN:
+            case SECURE_REMOTE_URL:
+            case INSECURE_REMOTE_URL:
+              NetworkHandler.openDialog(uuid, "PlayerSkinConfiguration");
+              break;
+            case CUSTOM:
+              NetworkHandler.openDialog(uuid, "CustomSkinConfiguration");
+              break;
+            default:
+              NetworkHandler.openDialog(uuid, "DefaultSkinConfiguration");
+          }
+        }));
 
     // Dialog Button
-    this.editDialogButton =
-        this.addRenderableWidget(new Button(this.leftPos + 110, this.topPos + 54, buttonWidth, 20,
+    this.editDialogButton = this.addRenderableWidget(
+        new Button(buttonLeftPosition, buttonTopPosition, buttonWidth, buttonHeight,
             Component.translatable(Constants.TEXT_CONFIG_PREFIX + "dialog"), onPress -> {
               DialogType dialogType = this.entity.getDialogType();
               switch (dialogType) {
@@ -160,19 +163,27 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     // Actions Button
     this.editActionButton = this.addRenderableWidget(
         new Button(this.editDialogButton.x + this.editDialogButton.getWidth() + buttonSpace,
-            this.topPos + 54, buttonWidth, 20,
+            buttonTopPosition, buttonWidth, buttonHeight,
             Component.translatable(Constants.TEXT_CONFIG_PREFIX + "actions"), onPress -> {
               NetworkHandler.openDialog(uuid, "BasicActionConfiguration");
             }));
 
-    // Delete Button
-    this.removeEntityButton =
-        this.addRenderableWidget(new Button(this.rightPos - 60, this.bottomPos - 30, 50, 20,
-            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "delete")
-                .withStyle(ChatFormatting.RED),
-            onPress -> {
-              deleteNPC();
+    buttonTopPosition = buttonTopPosition + buttonHeight + buttonSpace;
+
+    // Equipment Button
+    this.editEquipment = this.addRenderableWidget(
+        new Button(buttonLeftPosition, buttonTopPosition, buttonWidth, buttonHeight,
+            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "equipment"), onPress -> {
+              NetworkHandler.openDialog(uuid, "EquipmentConfiguration");
             }));
+
+    // Delete Button
+    this.removeEntityButton = this.addRenderableWidget(new Button(this.rightPos - 60, this.bottomPos - 30, 50, 20,
+        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "delete")
+            .withStyle(ChatFormatting.RED),
+        onPress -> {
+          deleteNPC();
+        }));
   }
 
   @Override

@@ -17,27 +17,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.menu.slots;
+package de.markusbordihn.easynpc.menu.configuration.main;
 
-import net.minecraft.world.Container;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
+import java.util.UUID;
 
-public class DummySlot extends Slot {
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
 
-  public DummySlot(Container container, int index, int x, int y) {
-    super(container, index, x, y);
+import de.markusbordihn.easynpc.menu.ModMenuTypes;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
+
+public class MainConfigurationMenu extends ConfigurationMenu {
+
+  public MainConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
+    super(ModMenuTypes.MAIN_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
   }
 
-  @Override
-  public boolean mayPlace(ItemStack stack) {
-    return false;
-  }
-
-  @Override
-  public boolean mayPickup(Player player) {
-    return true;
+  public MainConfigurationMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
+    this(windowId, playerInventory, data.readUUID());
   }
 
 }
