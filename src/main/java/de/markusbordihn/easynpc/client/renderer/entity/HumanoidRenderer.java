@@ -25,6 +25,8 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
@@ -75,6 +77,7 @@ public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, PlayerModel<Eas
     this.addLayer(new ElytraLayer<>(this, context.getModelSet()));
   }
 
+  @Override
   public ResourceLocation getTextureLocation(EasyNPCEntity entity) {
     switch (entity.getSkinType()) {
       case PLAYER_SKIN:
@@ -83,6 +86,16 @@ public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, PlayerModel<Eas
         return PlayerTextureManager.getOrCreateTextureWithDefault(entity, DEFAULT_TEXTURE);
       default:
         return TEXTURE_BY_VARIANT.getOrDefault(entity.getVariant(), DEFAULT_TEXTURE);
+    }
+  }
+
+  @Override
+  protected void scale(EasyNPCEntity entity, PoseStack poseStack, float unused) {
+    if (entity.isBaby()) {
+      poseStack.scale(entity.getScaleX() * 0.5f, entity.getScaleY() * 0.5f,
+          entity.getScaleZ() * 0.5f);
+    } else {
+      poseStack.scale(entity.getScaleX(), entity.getScaleY(), entity.getScaleZ());
     }
   }
 

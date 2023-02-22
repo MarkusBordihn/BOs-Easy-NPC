@@ -113,6 +113,15 @@ public class VillagerRenderer extends MobRenderer<EasyNPCEntity, VillagerModel<E
     this.addLayer(new CrossedArmsItemLayer<>(this, context.getItemInHandRenderer()));
   }
 
+  public ResourceLocation getProfessionTextureLocation(Enum<?> profession) {
+    return TEXTURE_BY_PROFESSION.get(profession);
+  }
+
+  public ResourceLocation getVariantTextureLocation(Enum<?> variant) {
+    return TEXTURE_BY_VARIANT.get(variant);
+  }
+
+  @Override
   public ResourceLocation getTextureLocation(EasyNPCEntity entity) {
     switch (entity.getSkinType()) {
       case SECURE_REMOTE_URL:
@@ -123,24 +132,16 @@ public class VillagerRenderer extends MobRenderer<EasyNPCEntity, VillagerModel<E
     }
   }
 
-  public ResourceLocation getProfessionTextureLocation(Enum<?> profession) {
-    return TEXTURE_BY_PROFESSION.get(profession);
-  }
-
-  public ResourceLocation getVariantTextureLocation(Enum<?> variant) {
-    return TEXTURE_BY_VARIANT.get(variant);
-  }
-
   @Override
   protected void scale(EasyNPCEntity entity, PoseStack poseStack, float unused) {
-    float f = 0.9375F;
     if (entity.isBaby()) {
-      f *= 0.5F;
+      poseStack.scale(entity.getScaleX() * 0.5f, entity.getScaleY() * 0.5f,
+          entity.getScaleZ() * 0.5f);
       this.shadowRadius = 0.25F;
     } else {
+      poseStack.scale(entity.getScaleX(), entity.getScaleY(), entity.getScaleZ());
       this.shadowRadius = 0.5F;
     }
-    poseStack.scale(f, f, f);
   }
 
   @Override

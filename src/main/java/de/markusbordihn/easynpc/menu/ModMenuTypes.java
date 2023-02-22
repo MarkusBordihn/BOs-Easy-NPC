@@ -30,8 +30,9 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentMenu;
+import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.scaling.ScalingConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.PlayerSkinConfigurationMenu;
@@ -67,6 +68,11 @@ public class ModMenuTypes {
       MENU_TYPES.register("yes_no_dialog_configuration_menu",
           () -> IForgeMenuType.create(YesNoDialogConfigurationMenu::new));
 
+  // Equipment Configuration
+  public static final RegistryObject<MenuType<EquipmentConfigurationMenu>> EQUIPMENT_CONFIGURATION_MENU =
+      MENU_TYPES.register("equipment_configuration_menu",
+          () -> IForgeMenuType.create(EquipmentConfigurationMenu::new));
+
   // Skin Configuration
   public static final RegistryObject<MenuType<CustomSkinConfigurationMenu>> CUSTOM_SKIN_CONFIGURATION_MENU =
       MENU_TYPES.register("custom_skin_configuration_menu",
@@ -78,8 +84,8 @@ public class ModMenuTypes {
       MENU_TYPES.register("player_skin_configuration_menu",
           () -> IForgeMenuType.create(PlayerSkinConfigurationMenu::new));
 
-  // Equipment
-  public static final RegistryObject<MenuType<EquipmentMenu>> EQUIPMENT_CONFIGURATION_MENU =
-      MENU_TYPES.register("equipment_configuration_menu",
-          () -> IForgeMenuType.create(EquipmentMenu::new));
+  // Scaling Configuration
+  public static final RegistryObject<MenuType<ScalingConfigurationMenu>> SCALING_CONFIGURATION_MENU =
+      MENU_TYPES.register("scaling_configuration_menu",
+          () -> IForgeMenuType.create(ScalingConfigurationMenu::new));
 }

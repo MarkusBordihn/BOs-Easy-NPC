@@ -38,6 +38,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.dialog.DialogType;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 import de.markusbordihn.easynpc.skin.SkinType;
@@ -48,10 +49,11 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
   // Buttons and boxes
   protected Button editActionButton = null;
   protected Button editDialogButton = null;
-  protected Button editEquipment = null;
+  protected Button editEquipmentButton = null;
   protected Button editSkinButton = null;
   protected Button removeEntityButton = null;
   protected Button saveNameButton = null;
+  protected Button scalingButton = null;
   private EditBox nameBox;
 
   // Cache
@@ -110,6 +112,9 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     int buttonWidth = 88;
     int buttonHeight = 20;
 
+    // Hide home button
+    this.homeButton.visible = false;
+
     // Name Edit Box and Save Button
     this.formerName = this.entity.getName().getString();
     this.nameBox = new EditBox(this.font, this.contentLeftPos + 1, this.topPos + 31, 190, 18,
@@ -119,29 +124,31 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     this.nameBox.setResponder(consumer -> this.validateName());
     this.addRenderableWidget(this.nameBox);
 
-    this.saveNameButton = this.addRenderableWidget(new Button(this.leftPos + 202, this.topPos + 30, buttonWidth, 20,
-        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "save_name"), onPress -> {
-          this.saveName();
-        }));
+    this.saveNameButton =
+        this.addRenderableWidget(new Button(this.leftPos + 202, this.topPos + 30, buttonWidth, 20,
+            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "save_name"), onPress -> {
+              this.saveName();
+            }));
     this.saveNameButton.active = false;
 
     // Skins Button
-    this.editSkinButton = this.addRenderableWidget(new Button(this.contentLeftPos, this.topPos + 205, 100, 20,
-        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "skin"), onPress -> {
-          SkinType skinType = this.entity.getSkinType();
-          switch (skinType) {
-            case PLAYER_SKIN:
-            case SECURE_REMOTE_URL:
-            case INSECURE_REMOTE_URL:
-              NetworkHandler.openDialog(uuid, "PlayerSkinConfiguration");
-              break;
-            case CUSTOM:
-              NetworkHandler.openDialog(uuid, "CustomSkinConfiguration");
-              break;
-            default:
-              NetworkHandler.openDialog(uuid, "DefaultSkinConfiguration");
-          }
-        }));
+    this.editSkinButton =
+        this.addRenderableWidget(new Button(this.contentLeftPos, this.topPos + 205, 100, 20,
+            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "skin"), onPress -> {
+              SkinType skinType = this.entity.getSkinType();
+              switch (skinType) {
+                case PLAYER_SKIN:
+                case SECURE_REMOTE_URL:
+                case INSECURE_REMOTE_URL:
+                  NetworkHandler.openConfiguration(uuid, ConfigurationType.PLAYER_SKIN);
+                  break;
+                case CUSTOM:
+                  NetworkHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_SKIN);
+                  break;
+                default:
+                  NetworkHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_SKIN);
+              }
+            }));
 
     // Dialog Button
     this.editDialogButton = this.addRenderableWidget(
@@ -150,13 +157,13 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
               DialogType dialogType = this.entity.getDialogType();
               switch (dialogType) {
                 case BASIC:
-                  NetworkHandler.openDialog(uuid, "BasicDialogConfiguration");
+                  NetworkHandler.openConfiguration(uuid, ConfigurationType.BASIC_DIALOG);
                   break;
                 case YES_NO:
-                  NetworkHandler.openDialog(uuid, "YesNoDialogConfiguration");
+                  NetworkHandler.openConfiguration(uuid, ConfigurationType.YES_NO_DIALOG);
                   break;
                 default:
-                  NetworkHandler.openDialog(uuid, "BasicDialogConfiguration");
+                  NetworkHandler.openConfiguration(uuid, ConfigurationType.BASIC_DIALOG);
               }
             }));
 
@@ -165,22 +172,30 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
         new Button(this.editDialogButton.x + this.editDialogButton.getWidth() + buttonSpace,
             buttonTopPosition, buttonWidth, buttonHeight,
             Component.translatable(Constants.TEXT_CONFIG_PREFIX + "actions"), onPress -> {
-              NetworkHandler.openDialog(uuid, "BasicActionConfiguration");
+              NetworkHandler.openConfiguration(uuid, ConfigurationType.BASIC_ACTION);
             }));
 
     buttonTopPosition = buttonTopPosition + buttonHeight + buttonSpace;
 
     // Equipment Button
-    this.editEquipment = this.addRenderableWidget(
+    this.editEquipmentButton = this.addRenderableWidget(
         new Button(buttonLeftPosition, buttonTopPosition, buttonWidth, buttonHeight,
             Component.translatable(Constants.TEXT_CONFIG_PREFIX + "equipment"), onPress -> {
-              NetworkHandler.openDialog(uuid, "EquipmentConfiguration");
+              NetworkHandler.openConfiguration(uuid, ConfigurationType.EQUIPMENT);
+            }));
+
+    // Scaling Button
+    this.scalingButton = this.addRenderableWidget(
+        new Button(this.editEquipmentButton.x + this.editEquipmentButton.getWidth() + buttonSpace,
+            buttonTopPosition, buttonWidth, buttonHeight,
+            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "scaling"), onPress -> {
+              NetworkHandler.openConfiguration(uuid, ConfigurationType.SCALING);
             }));
 
     // Delete Button
-    this.removeEntityButton = this.addRenderableWidget(new Button(this.rightPos - 60, this.bottomPos - 30, 50, 20,
-        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "delete")
-            .withStyle(ChatFormatting.RED),
+    this.removeEntityButton = this.addRenderableWidget(new Button(
+        this.rightPos - 60, this.bottomPos - 30, 50, 20, Component
+            .translatable(Constants.TEXT_CONFIG_PREFIX + "delete").withStyle(ChatFormatting.RED),
         onPress -> {
           deleteNPC();
         }));
@@ -194,7 +209,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     this.yMouse = y;
 
     // Avatar
-    ScreenHelper.renderEntityAvatar(this.leftPos + 55, this.topPos + 195, 55,
+    ScreenHelper.renderScaledEntityAvatar(this.leftPos + 55, this.topPos + 195, 55,
         this.leftPos + 50 - this.xMouse, this.topPos + 90 - this.yMouse, this.entity);
 
     // Entity Type

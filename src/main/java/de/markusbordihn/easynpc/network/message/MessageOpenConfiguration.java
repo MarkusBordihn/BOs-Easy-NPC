@@ -33,15 +33,16 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityMenu;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 
-public class MessageOpenConfigurationDialog {
+public class MessageOpenConfiguration {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   protected final UUID uuid;
   protected final String dialogName;
 
-  public MessageOpenConfigurationDialog(UUID uuid, String dialogName) {
+  public MessageOpenConfiguration(UUID uuid, String dialogName) {
     this.uuid = uuid;
     this.dialogName = dialogName;
   }
@@ -54,15 +55,14 @@ public class MessageOpenConfigurationDialog {
     return this.uuid;
   }
 
-  public static void handle(MessageOpenConfigurationDialog message,
+  public static void handle(MessageOpenConfiguration message,
       Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessageOpenConfigurationDialog message,
-      NetworkEvent.Context context) {
+  public static void handlePacket(MessageOpenConfiguration message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
     if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
@@ -75,30 +75,37 @@ public class MessageOpenConfigurationDialog {
       log.error("Invalid dialog name {} for {} from {}", dialogName, message, serverPlayer);
       return;
     }
+    ConfigurationType configurationType = ConfigurationType.valueOf(dialogName);
 
     // Perform action.
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    switch (dialogName) {
-      case "BasicActionConfiguration":
+    switch (configurationType) {
+      case BASIC_ACTION:
         EasyNPCEntityMenu.openBasicActionConfigurationMenu(serverPlayer, easyNPCEntity);
         break;
-      case "BasicDialogConfiguration":
+      case BASIC_DIALOG:
         EasyNPCEntityMenu.openBasicDialogConfigurationMenu(serverPlayer, easyNPCEntity);
         break;
-      case "EquipmentConfiguration":
-        EasyNPCEntityMenu.openEquipmentConfigurationMenu(serverPlayer, easyNPCEntity);
-        break;
-      case "YesNoDialogConfiguration":
-        EasyNPCEntityMenu.openYesNoDialogConfigurationMenu(serverPlayer, easyNPCEntity);
-        break;
-      case "CustomSkinConfiguration":
+      case CUSTOM_SKIN:
         EasyNPCEntityMenu.openCustomSkinConfigurationMenu(serverPlayer, easyNPCEntity);
         break;
-      case "DefaultSkinConfiguration":
+      case DEFAULT_SKIN:
         EasyNPCEntityMenu.openDefaultSkinConfigurationMenu(serverPlayer, easyNPCEntity);
         break;
-      case "PlayerSkinConfiguration":
+      case EQUIPMENT:
+        EasyNPCEntityMenu.openEquipmentConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
+      case MAIN:
+        EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
+      case PLAYER_SKIN:
         EasyNPCEntityMenu.openPlayerSkinConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
+      case SCALING:
+        EasyNPCEntityMenu.openScalingConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
+      case YES_NO_DIALOG:
+        EasyNPCEntityMenu.openYesNoDialogConfigurationMenu(serverPlayer, easyNPCEntity);
         break;
       default:
         log.debug("Unknown dialog {} for {} from {}", dialogName, easyNPCEntity, serverPlayer);

@@ -29,6 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 import de.markusbordihn.easynpc.skin.SkinModel;
 
@@ -36,7 +37,6 @@ import de.markusbordihn.easynpc.skin.SkinModel;
 public class SkinConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
 
   // NPC Entity
-  protected final SkinModel skinModel;
   protected final boolean isPlayerSkinModel;
 
   // Buttons
@@ -49,7 +49,6 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
 
   public SkinConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
-    this.skinModel = this.entity.getSkinModel();
     this.isPlayerSkinModel =
         SkinModel.HUMANOID.equals(this.skinModel) || SkinModel.HUMANOID_SLIM.equals(this.skinModel);
   }
@@ -59,25 +58,25 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
     super.init();
 
     // Skin Types
-    int skinButtonWidth = 94;
-    this.defaultSkinButton =
-        this.addRenderableWidget(new Button(this.contentLeftPos, this.buttonTopPos, skinButtonWidth,
+    int skinButtonWidth = 92;
+    this.defaultSkinButton = this
+        .addRenderableWidget(new Button(this.buttonLeftPos, this.buttonTopPos, skinButtonWidth - 2,
             20, Component.translatable(Constants.TEXT_CONFIG_PREFIX + "default_skin"), onPress -> {
-              NetworkHandler.openDialog(uuid, "DefaultSkinConfiguration");
+              NetworkHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_SKIN);
             }));
     this.playerSkinButton =
-        this.addRenderableWidget(new Button(this.contentLeftPos + this.defaultSkinButton.getWidth(),
+        this.addRenderableWidget(new Button(this.buttonLeftPos + this.defaultSkinButton.getWidth(),
             this.buttonTopPos, skinButtonWidth, 20,
             Component.translatable(Constants.TEXT_CONFIG_PREFIX + "player_skin"), onPress -> {
-              NetworkHandler.openDialog(uuid, "PlayerSkinConfiguration");
+              NetworkHandler.openConfiguration(uuid, ConfigurationType.PLAYER_SKIN);
             }));
     this.customSkinButton =
         this.addRenderableWidget(new Button(
-            this.contentLeftPos + this.defaultSkinButton.getWidth()
+            this.buttonLeftPos + this.defaultSkinButton.getWidth()
                 + this.playerSkinButton.getWidth(),
             this.buttonTopPos, skinButtonWidth, 20,
             Component.translatable(Constants.TEXT_CONFIG_PREFIX + "custom_skin"), onPress -> {
-              NetworkHandler.openDialog(uuid, "CustomSkinConfiguration");
+              NetworkHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_SKIN);
             }));
 
     // Default button stats

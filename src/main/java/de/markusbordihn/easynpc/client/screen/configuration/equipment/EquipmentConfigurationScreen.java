@@ -32,12 +32,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
-import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentMenu;
+import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenu;
 
 @OnlyIn(Dist.CLIENT)
-public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentMenu> {
+public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentConfigurationMenu> {
 
-  public EquipmentConfigurationScreen(EquipmentMenu menu, Inventory inventory,
+  public EquipmentConfigurationScreen(EquipmentConfigurationMenu menu, Inventory inventory,
       Component component) {
     super(menu, inventory, component);
   }
@@ -56,7 +56,7 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentM
     super.render(poseStack, x, y, partialTicks);
 
     // Avatar
-    ScreenHelper.renderEntityAvatar(this.contentLeftPos + 138, this.contentTopPos + 82, 35,
+    ScreenHelper.renderScaledEntityAvatar(this.contentLeftPos + 138, this.contentTopPos + 82, 35,
         this.contentLeftPos + 140 - this.xMouse, this.contentTopPos + 30 - this.yMouse,
         this.entity);
   }

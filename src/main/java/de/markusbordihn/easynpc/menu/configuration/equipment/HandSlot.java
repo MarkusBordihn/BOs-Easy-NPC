@@ -51,9 +51,9 @@ public class HandSlot extends Slot {
       new EquipmentSlot[] {EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND};
 
   final EquipmentSlot equipmentSlot;
-  final EquipmentMenu menu;
+  final EquipmentConfigurationMenu menu;
 
-  public HandSlot(EquipmentMenu menu, Container container, int index, int x, int y) {
+  public HandSlot(EquipmentConfigurationMenu menu, Container container, int index, int x, int y) {
     super(container, index, x, y);
     this.menu = menu;
     this.equipmentSlot = SLOT_IDS[index];

@@ -57,9 +57,9 @@ public class ArmorSlot extends Slot {
       EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD};
 
   final EquipmentSlot equipmentSlot;
-  final EquipmentMenu menu;
+  final EquipmentConfigurationMenu menu;
 
-  public ArmorSlot(EquipmentMenu menu, Container container, int index, int x, int y) {
+  public ArmorSlot(EquipmentConfigurationMenu menu, Container container, int index, int x, int y) {
     super(container, index, x, y);
     this.menu = menu;
     this.equipmentSlot = SLOT_IDS[index];

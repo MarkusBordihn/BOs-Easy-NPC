@@ -32,6 +32,7 @@ import de.markusbordihn.easynpc.client.screen.configuration.dialog.BasicDialogCo
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.YesNoDialogConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.equipment.EquipmentConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.main.MainConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.scaling.ScalingConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.DefaultSkinConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.PlayerSkinConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.CustomSkinConfigurationScreen;
@@ -58,14 +59,6 @@ public class ClientScreens {
       MenuScreens.register(ModMenuTypes.BASIC_ACTION_CONFIGURATION_MENU.get(),
           BasicActionConfigurationScreen::new);
 
-      // Skin Configuration Screens
-      MenuScreens.register(ModMenuTypes.CUSTOM_SKIN_CONFIGURATION_MENU.get(),
-          CustomSkinConfigurationScreen::new);
-      MenuScreens.register(ModMenuTypes.DEFAULT_SKIN_CONFIGURATION_MENU.get(),
-          DefaultSkinConfigurationScreen::new);
-      MenuScreens.register(ModMenuTypes.PLAYER_SKIN_CONFIGURATION_MENU.get(),
-          PlayerSkinConfigurationScreen::new);
-
       // Dialog Configuration Screens
       MenuScreens.register(ModMenuTypes.BASIC_DIALOG_CONFIGURATION_MENU.get(),
           BasicDialogConfigurationScreen::new);
@@ -75,6 +68,18 @@ public class ClientScreens {
       // Equipment Configuration Screen
       MenuScreens.register(ModMenuTypes.EQUIPMENT_CONFIGURATION_MENU.get(),
           EquipmentConfigurationScreen::new);
+
+      // Skin Configuration Screens
+      MenuScreens.register(ModMenuTypes.CUSTOM_SKIN_CONFIGURATION_MENU.get(),
+          CustomSkinConfigurationScreen::new);
+      MenuScreens.register(ModMenuTypes.DEFAULT_SKIN_CONFIGURATION_MENU.get(),
+          DefaultSkinConfigurationScreen::new);
+      MenuScreens.register(ModMenuTypes.PLAYER_SKIN_CONFIGURATION_MENU.get(),
+          PlayerSkinConfigurationScreen::new);
+
+      // Scaling Configuration Screen
+      MenuScreens.register(ModMenuTypes.SCALING_CONFIGURATION_MENU.get(),
+          ScalingConfigurationScreen::new);
     });
   }
 }

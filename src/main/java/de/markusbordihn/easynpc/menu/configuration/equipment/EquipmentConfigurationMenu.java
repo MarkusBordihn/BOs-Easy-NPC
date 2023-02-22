@@ -39,7 +39,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 
-public class EquipmentMenu extends ConfigurationMenu {
+public class EquipmentConfigurationMenu extends ConfigurationMenu {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -52,20 +52,21 @@ public class EquipmentMenu extends ConfigurationMenu {
   protected final Container armorContainer;
   protected final Container handContainer;
 
-  public EquipmentMenu(int windowId, Inventory playerInventory, UUID uuid) {
+  public EquipmentConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
     this(ModMenuTypes.EQUIPMENT_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
   }
 
-  public EquipmentMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
+  public EquipmentConfigurationMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
     this(windowId, playerInventory, data.readUUID());
   }
 
-  public EquipmentMenu(final MenuType<?> menuType, int windowId, Inventory inventory, UUID uuid) {
+  public EquipmentConfigurationMenu(final MenuType<?> menuType, int windowId, Inventory inventory,
+      UUID uuid) {
     this(menuType, windowId, inventory, new SimpleContainer(armorContainerSize),
         new SimpleContainer(handContainerSize), uuid);
   }
 
-  public EquipmentMenu(final MenuType<?> menuType, final int windowId,
+  public EquipmentConfigurationMenu(final MenuType<?> menuType, final int windowId,
       final Inventory playerInventory, final Container armorContainer,
       final Container handContainer, UUID uuid) {
     super(menuType, windowId, playerInventory, uuid);
