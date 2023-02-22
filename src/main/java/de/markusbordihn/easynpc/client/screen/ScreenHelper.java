@@ -116,6 +116,27 @@ public class ScreenHelper {
     Lighting.setupFor3DItems();
   }
 
+  public static void renderScaledEntityAvatar(int x, int y, int scale, float yRot, float xRot,
+      EasyNPCEntity entity) {
+    // Backup entity information
+    float entityScaleX = entity.getScaleX();
+    float entityScaleY = entity.getScaleY();
+    float entityScaleZ = entity.getScaleZ();
+
+    // Adjust entity information for rendering
+    entity.setScaleX(entity.getDefaultScaleX());
+    entity.setScaleY(entity.getDefaultScaleY());
+    entity.setScaleZ(entity.getDefaultScaleZ());
+
+    // Render Entity
+    renderEntity(x, y, scale, yRot, xRot, entity);
+
+    // Restore entity information
+    entity.setScaleX(entityScaleX);
+    entity.setScaleY(entityScaleY);
+    entity.setScaleZ(entityScaleZ);
+  }
+
   public static void renderEntityAvatar(int x, int y, float yRot, float xRot,
       EasyNPCEntity entity) {
     renderEntity(x, y, entity.getEntityGuiScaling(), yRot, xRot, entity);
@@ -128,11 +149,11 @@ public class ScreenHelper {
 
   public static void renderEntityDialog(int x, int y, float yRot, float xRot,
       EasyNPCEntity entity) {
-    renderEntity(x, y, entity.getEntityDialogScaling(), yRot, xRot, entity);
+    renderScaledEntityAvatar(x, y, entity.getEntityDialogScaling(), yRot, xRot, entity);
   }
 
-  public static void renderEntityPlayerSkin(int x, int y, float yRot, float xRot, EasyNPCEntity entity,
-      UUID userUUID, SkinType skinType) {
+  public static void renderEntityPlayerSkin(int x, int y, float yRot, float xRot,
+      EasyNPCEntity entity, UUID userUUID, SkinType skinType) {
 
     // Backup entity information
     SkinType entitySkinType = entity.getSkinType();
@@ -150,8 +171,8 @@ public class ScreenHelper {
     entity.setSkinUUID(entitySkinUUID);
   }
 
-  public static void renderEntityDefaultSkin(int x, int y, float yRot, float xRot, EasyNPCEntity entity,
-      Enum<?> variant, Enum<?> profession) {
+  public static void renderEntityDefaultSkin(int x, int y, float yRot, float xRot,
+      EasyNPCEntity entity, Enum<?> variant, Enum<?> profession) {
 
     // Backup entity information
     SkinType entitySkinType = entity.getSkinType();

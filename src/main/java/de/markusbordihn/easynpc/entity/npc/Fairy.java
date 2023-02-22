@@ -37,6 +37,11 @@ public class Fairy extends EasyNPCEntity {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
+  // Constants values
+  private static final float DEFAULT_SCALE_X = 0.4f;
+  private static final float DEFAULT_SCALE_Y = 0.4f;
+  private static final float DEFAULT_SCALE_Z = 0.4f;
+
   // General Information
   public static final String ID = "fairy";
   public static final String NAME = "Fairy";
@@ -54,6 +59,21 @@ public class Fairy extends EasyNPCEntity {
   public static AttributeSupplier.Builder createAttributes() {
     return Mob.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0.5F)
         .add(Attributes.MAX_HEALTH, 16.0D).add(Attributes.ATTACK_DAMAGE, 0.0D);
+  }
+
+  @Override
+  public Float getDefaultScaleX() {
+    return Fairy.DEFAULT_SCALE_X;
+  }
+
+  @Override
+  public Float getDefaultScaleY() {
+    return Fairy.DEFAULT_SCALE_Y;
+  }
+
+  @Override
+  public Float getDefaultScaleZ() {
+    return Fairy.DEFAULT_SCALE_Z;
   }
 
   @Override

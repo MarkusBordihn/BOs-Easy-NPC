@@ -71,13 +71,18 @@ public class FairyRenderer extends HumanoidMobRenderer<EasyNPCEntity, FairyModel
   }
 
   @Override
-  protected int getBlockLightLevel(EasyNPCEntity entity, BlockPos blockPos) {
-    return 10;
+  protected void scale(EasyNPCEntity entity, PoseStack poseStack, float unused) {
+    if (entity.isBaby()) {
+      poseStack.scale(entity.getScaleX() * 0.5f, entity.getScaleY() * 0.5f,
+          entity.getScaleZ() * 0.5f);
+    } else {
+      poseStack.scale(entity.getScaleX(), entity.getScaleY(), entity.getScaleZ());
+    }
   }
 
   @Override
-  protected void scale(EasyNPCEntity entity, PoseStack poseStack, float unused) {
-    poseStack.scale(0.4F, 0.4F, 0.4F);
+  protected int getBlockLightLevel(EasyNPCEntity entity, BlockPos blockPos) {
+    return 10;
   }
 
 }

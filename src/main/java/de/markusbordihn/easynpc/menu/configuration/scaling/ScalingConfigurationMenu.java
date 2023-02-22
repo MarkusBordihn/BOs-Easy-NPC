@@ -17,35 +17,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.model;
+package de.markusbordihn.easynpc.menu.configuration.scaling;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.UUID;
 
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
+import de.markusbordihn.easynpc.menu.ModMenuTypes;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 
-import de.markusbordihn.easynpc.Constants;
+public class ScalingConfigurationMenu extends ConfigurationMenu {
 
-@OnlyIn(Dist.CLIENT)
-public class ModModelLayers {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  protected ModModelLayers() {}
-
-  // Model Layer Definitions
-  public static final ModelLayerLocation FAIRY =
-      new ModelLayerLocation(new ResourceLocation(Constants.MOD_ID, "fairy"), "main");
-
-  public static void registerEntityLayerDefinitions(
-      EntityRenderersEvent.RegisterLayerDefinitions event) {
-    log.info("{} Entity Layer Definitions ...", Constants.LOG_REGISTER_PREFIX);
-
-    event.registerLayerDefinition(FAIRY, FairyModel::createBodyLayer);
+  public ScalingConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
+    super(ModMenuTypes.SCALING_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
   }
+
+  public ScalingConfigurationMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
+    this(windowId, playerInventory, data.readUUID());
+  }
+
 }

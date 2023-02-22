@@ -34,6 +34,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Inventory;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -42,6 +43,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.network.NetworkHandler;
 import de.markusbordihn.easynpc.skin.SkinModel;
 
 @OnlyIn(Dist.CLIENT)
@@ -56,6 +59,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
 
   // Buttons
   protected Button closeButton = null;
+  protected Button homeButton = null;
 
   // Internal
   protected float xMouse;
@@ -96,7 +100,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     this.leftPos = (this.width - this.imageWidth) / 2;
     this.rightPos = this.leftPos + this.imageWidth;
     this.bottomPos = this.topPos + this.imageHeight;
-    this.buttonLeftPos = this.leftPos + 7;
+    this.buttonLeftPos = this.leftPos + 17;
     this.buttonTopPos = this.topPos + 17;
     this.contentLeftPos = this.leftPos + 7;
     this.contentTopPos = this.topPos + 43;
@@ -105,6 +109,12 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     this.closeButton = this.addRenderableWidget(new ImageButton(this.rightPos - 22, this.topPos + 6,
         10, 10, 60, 38, Constants.TEXTURE_CONFIGURATION, onPress -> {
           closeScreen();
+        }));
+
+    // Home Button
+    this.homeButton = this.addRenderableWidget(
+        new Button(this.leftPos + 7, this.buttonTopPos, 10, 20, new TextComponent("<"), onPress -> {
+          NetworkHandler.openConfiguration(uuid, ConfigurationType.MAIN);
         }));
   }
 

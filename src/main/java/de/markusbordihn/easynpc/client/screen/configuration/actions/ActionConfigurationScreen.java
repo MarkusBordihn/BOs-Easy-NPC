@@ -30,6 +30,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 
 @OnlyIn(Dist.CLIENT)
@@ -48,9 +49,9 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
 
     // Action Types
     this.basicActionButton =
-        this.addRenderableWidget(new Button(this.contentLeftPos, this.buttonTopPos, 80, 20,
+        this.addRenderableWidget(new Button(this.buttonLeftPos, this.buttonTopPos, 80, 20,
             new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "basic_actions"), onPress -> {
-              NetworkHandler.openDialog(uuid, "BasicActionConfiguration");
+              NetworkHandler.openConfiguration(uuid, ConfigurationType.BASIC_ACTION);
             }));
 
     // Default button stats

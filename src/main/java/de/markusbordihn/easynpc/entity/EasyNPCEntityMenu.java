@@ -40,8 +40,9 @@ import de.markusbordihn.easynpc.menu.DialogMenu;
 import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentMenu;
+import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.scaling.ScalingConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.PlayerSkinConfigurationMenu;
@@ -65,7 +66,7 @@ public class EasyNPCEntityMenu {
       @Override
       public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
           Player serverPlayer) {
-        return new EquipmentMenu(windowId, inventory, uuid);
+        return new EquipmentConfigurationMenu(windowId, inventory, uuid);
       }
     };
     NetworkHooks.openGui(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));
@@ -198,6 +199,24 @@ public class EasyNPCEntityMenu {
       public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
           Player serverPlayer) {
         return new PlayerSkinConfigurationMenu(windowId, inventory, uuid);
+      }
+    };
+    NetworkHooks.openGui(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));
+  }
+
+  public static void openScalingConfigurationMenu(ServerPlayer serverPlayer, EasyNPCEntity entity) {
+    UUID uuid = entity.getUUID();
+    MenuProvider provider = new MenuProvider() {
+      @Override
+      public Component getDisplayName() {
+        return new TextComponent("Scaling for " + entity.getName().getString());
+      }
+
+      @Nullable
+      @Override
+      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
+          Player serverPlayer) {
+        return new ScalingConfigurationMenu(windowId, inventory, uuid);
       }
     };
     NetworkHooks.openGui(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));

@@ -33,14 +33,16 @@ import net.minecraftforge.network.simple.SimpleChannel;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.action.ActionType;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.message.MessageActionChange;
 import de.markusbordihn.easynpc.network.message.MessageActionDebug;
 import de.markusbordihn.easynpc.network.message.MessageNameChange;
-import de.markusbordihn.easynpc.network.message.MessageOpenConfigurationDialog;
+import de.markusbordihn.easynpc.network.message.MessageOpenConfiguration;
 import de.markusbordihn.easynpc.network.message.MessageProfessionChange;
 import de.markusbordihn.easynpc.network.message.MessageRemoveNPC;
 import de.markusbordihn.easynpc.network.message.MessageSaveBasicDialog;
 import de.markusbordihn.easynpc.network.message.MessageSaveYesNoDialog;
+import de.markusbordihn.easynpc.network.message.MessageScaleChange;
 import de.markusbordihn.easynpc.network.message.MessageSkinChange;
 import de.markusbordihn.easynpc.network.message.MessageTriggerAction;
 import de.markusbordihn.easynpc.network.message.MessageVariantChange;
@@ -95,11 +97,11 @@ public class NetworkHandler {
           MessageNameChange::handle);
 
       // Open Dialog Request: Client -> Server
-      INSTANCE.registerMessage(id++, MessageOpenConfigurationDialog.class, (message, buffer) -> {
+      INSTANCE.registerMessage(id++, MessageOpenConfiguration.class, (message, buffer) -> {
         buffer.writeUUID(message.getUUID());
         buffer.writeUtf(message.getDialogName());
-      }, buffer -> new MessageOpenConfigurationDialog(buffer.readUUID(), buffer.readUtf()),
-          MessageOpenConfigurationDialog::handle);
+      }, buffer -> new MessageOpenConfiguration(buffer.readUUID(), buffer.readUtf()),
+          MessageOpenConfiguration::handle);
 
       // Save Basic Dialog Request: Client -> Server
       INSTANCE.registerMessage(id++, MessageSaveBasicDialog.class, (message, buffer) -> {
@@ -125,6 +127,14 @@ public class NetworkHandler {
         buffer.writeUtf(message.getProfession());
       }, buffer -> new MessageProfessionChange(buffer.readUUID(), buffer.readUtf()),
           MessageProfessionChange::handle);
+
+      // Scale Change: Client -> Server
+      INSTANCE.registerMessage(id++, MessageScaleChange.class, (message, buffer) -> {
+        buffer.writeUUID(message.getUUID());
+        buffer.writeUtf(message.getScaleAxis());
+        buffer.writeFloat(message.getScale());
+      }, buffer -> new MessageScaleChange(buffer.readUUID(), buffer.readUtf(), buffer.readFloat()),
+          MessageScaleChange::handle);
 
       // Skin Change: Client -> Server
       INSTANCE.registerMessage(id++, MessageSkinChange.class, (message, buffer) -> {
@@ -171,10 +181,10 @@ public class NetworkHandler {
     }
   }
 
-  /** Open dialog request. */
-  public static void openDialog(UUID uuid, String dialogName) {
-    if (uuid != null && dialogName != null && !dialogName.isEmpty()) {
-      INSTANCE.sendToServer(new MessageOpenConfigurationDialog(uuid, dialogName));
+  /** Open configuration request. */
+  public static void openConfiguration(UUID uuid, Enum<ConfigurationType> configurationType) {
+    if (uuid != null && configurationType != null) {
+      INSTANCE.sendToServer(new MessageOpenConfiguration(uuid, configurationType.name()));
     }
   }
 
@@ -205,6 +215,13 @@ public class NetworkHandler {
     if (uuid != null && dialog != null && yesDialog != null && noDialog != null) {
       INSTANCE.sendToServer(new MessageSaveYesNoDialog(uuid, dialog, yesDialog, noDialog,
           yesButtonText, noButtonText));
+    }
+  }
+
+  /** Send scale change. */
+  public static void scaleChange(UUID uuid, String scaleAxis, float scale) {
+    if (uuid != null && scaleAxis != null) {
+      INSTANCE.sendToServer(new MessageScaleChange(uuid, scaleAxis, scale));
     }
   }
 

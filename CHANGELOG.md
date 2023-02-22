@@ -5,6 +5,11 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### 2023.02.22
+
+- Added scaling configuration.
+- Replaced some free text options with enums.
+
 ### 2023.02.20
 
 - Added equipment configuration and corresponding render support.

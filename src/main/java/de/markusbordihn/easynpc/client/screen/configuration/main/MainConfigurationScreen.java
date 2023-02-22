@@ -39,6 +39,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.dialog.DialogType;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 import de.markusbordihn.easynpc.skin.SkinType;
@@ -49,10 +50,11 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
   // Buttons and boxes
   protected Button editActionButton = null;
   protected Button editDialogButton = null;
-  protected Button editEquipment = null;
+  protected Button editEquipmentButton = null;
   protected Button editSkinButton = null;
   protected Button removeEntityButton = null;
   protected Button saveNameButton = null;
+  protected Button scalingButton = null;
   private EditBox nameBox;
 
   // Cache
@@ -111,6 +113,9 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     int buttonWidth = 88;
     int buttonHeight = 20;
 
+    // Hide home button
+    this.homeButton.visible = false;
+
     // Name Edit Box and Save Button
     this.formerName = this.entity.getName().getString();
     this.nameBox = new EditBox(this.font, this.contentLeftPos + 1, this.topPos + 31, 190, 18,
@@ -136,13 +141,13 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 case PLAYER_SKIN:
                 case SECURE_REMOTE_URL:
                 case INSECURE_REMOTE_URL:
-                  NetworkHandler.openDialog(uuid, "PlayerSkinConfiguration");
+                  NetworkHandler.openConfiguration(uuid, ConfigurationType.PLAYER_SKIN);
                   break;
                 case CUSTOM:
-                  NetworkHandler.openDialog(uuid, "CustomSkinConfiguration");
+                  NetworkHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_SKIN);
                   break;
                 default:
-                  NetworkHandler.openDialog(uuid, "DefaultSkinConfiguration");
+                  NetworkHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_SKIN);
               }
             }));
 
@@ -153,30 +158,39 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
               DialogType dialogType = this.entity.getDialogType();
               switch (dialogType) {
                 case BASIC:
-                  NetworkHandler.openDialog(uuid, "BasicDialogConfiguration");
+                  NetworkHandler.openConfiguration(uuid, ConfigurationType.BASIC_DIALOG);
                   break;
                 case YES_NO:
-                  NetworkHandler.openDialog(uuid, "YesNoDialogConfiguration");
+                  NetworkHandler.openConfiguration(uuid, ConfigurationType.YES_NO_DIALOG);
                   break;
                 default:
-                  NetworkHandler.openDialog(uuid, "BasicDialogConfiguration");
+                  NetworkHandler.openConfiguration(uuid, ConfigurationType.BASIC_DIALOG);
               }
             }));
+
     // Actions Button
     this.editActionButton = this.addRenderableWidget(
         new Button(this.editDialogButton.x + this.editDialogButton.getWidth() + buttonSpace,
             buttonTopPosition, buttonWidth, buttonHeight,
             new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "actions"), onPress -> {
-              NetworkHandler.openDialog(uuid, "BasicActionConfiguration");
+              NetworkHandler.openConfiguration(uuid, ConfigurationType.BASIC_ACTION);
             }));
 
     buttonTopPosition = buttonTopPosition + buttonHeight + buttonSpace;
 
     // Equipment Button
-    this.editEquipment = this.addRenderableWidget(
+    this.editEquipmentButton = this.addRenderableWidget(
         new Button(buttonLeftPosition, buttonTopPosition, buttonWidth, buttonHeight,
             new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "equipment"), onPress -> {
-              NetworkHandler.openDialog(uuid, "EquipmentConfiguration");
+              NetworkHandler.openConfiguration(uuid, ConfigurationType.EQUIPMENT);
+            }));
+
+    // Scaling Button
+    this.scalingButton = this.addRenderableWidget(
+        new Button(this.editEquipmentButton.x + this.editEquipmentButton.getWidth() + buttonSpace,
+            buttonTopPosition, buttonWidth, buttonHeight,
+            new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "scaling"), onPress -> {
+              NetworkHandler.openConfiguration(uuid, ConfigurationType.SCALING);
             }));
 
     // Delete Button
@@ -197,7 +211,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     this.yMouse = y;
 
     // Avatar
-    ScreenHelper.renderEntityAvatar(this.leftPos + 55, this.topPos + 195, 55,
+    ScreenHelper.renderScaledEntityAvatar(this.leftPos + 55, this.topPos + 195, 55,
         this.leftPos + 50 - this.xMouse, this.topPos + 90 - this.yMouse, this.entity);
 
     // Entity Type

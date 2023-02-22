@@ -53,6 +53,11 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
+  // Constants values
+  private static final float DEFAULT_SCALE_X = 1.0f;
+  private static final float DEFAULT_SCALE_Y = 1.0f;
+  private static final float DEFAULT_SCALE_Z = 1.0f;
+
   // Default values
   private ResourceLocation baseTextureLocation;
   private ResourceLocation professionTextureLocation;
@@ -86,6 +91,12 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
   private static final EntityDataAccessor<String> DATA_PROFESSION =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
+  private static final EntityDataAccessor<Float> DATA_SCALE_X =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.FLOAT);
+  private static final EntityDataAccessor<Float> DATA_SCALE_Y =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.FLOAT);
+  private static final EntityDataAccessor<Float> DATA_SCALE_Z =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.FLOAT);
   private static final EntityDataAccessor<String> DATA_SKIN =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
   private static final EntityDataAccessor<String> DATA_SKIN_URL =
@@ -111,6 +122,9 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
   private static final String DATA_NO_DIALOG_TAG = "NoDialog";
   private static final String DATA_OWNER_TAG = "Owner";
   private static final String DATA_PROFESSION_TAG = "Profession";
+  private static final String DATA_SCALE_X_TAG = "ScaleX";
+  private static final String DATA_SCALE_Y_TAG = "ScaleY";
+  private static final String DATA_SCALE_Z_TAG = "ScaleZ";
   private static final String DATA_SKIN_TAG = "Skin";
   private static final String DATA_SKIN_URL_TAG = "SkinURL";
   private static final String DATA_SKIN_UUID_TAG = "SkinUUID";
@@ -298,6 +312,42 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
     return profession != null ? TextUtils.normalizeName(profession.name()) : new TextComponent("");
   }
 
+  public Float getDefaultScaleX() {
+    return EasyNPCEntityData.DEFAULT_SCALE_X;
+  }
+
+  public Float getDefaultScaleY() {
+    return EasyNPCEntityData.DEFAULT_SCALE_Y;
+  }
+
+  public Float getDefaultScaleZ() {
+    return EasyNPCEntityData.DEFAULT_SCALE_Z;
+  }
+
+  public Float getScaleX() {
+    return this.entityData.get(DATA_SCALE_X);
+  }
+
+  public void setScaleX(Float scale) {
+    this.entityData.set(DATA_SCALE_X, scale);
+  }
+
+  public Float getScaleY() {
+    return this.entityData.get(DATA_SCALE_Y);
+  }
+
+  public void setScaleY(Float scale) {
+    this.entityData.set(DATA_SCALE_Y, scale);
+  }
+
+  public Float getScaleZ() {
+    return this.entityData.get(DATA_SCALE_Z);
+  }
+
+  public void setScaleZ(Float scale) {
+    this.entityData.set(DATA_SCALE_Z, scale);
+  }
+
   public String getSkin() {
     return this.entityData.get(DATA_SKIN);
   }
@@ -415,6 +465,9 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
     this.entityData.define(DATA_NO_DIALOG_BUTTON, "No");
     this.entityData.define(DATA_OWNER_UUID_ID, Optional.empty());
     this.entityData.define(DATA_PROFESSION, this.getDefaultProfession().name());
+    this.entityData.define(DATA_SCALE_X, this.getDefaultScaleX());
+    this.entityData.define(DATA_SCALE_Y, this.getDefaultScaleY());
+    this.entityData.define(DATA_SCALE_Z, this.getDefaultScaleZ());
     this.entityData.define(DATA_SKIN, "");
     this.entityData.define(DATA_SKIN_URL, "");
     this.entityData.define(DATA_SKIN_UUID, Optional.empty());
@@ -455,6 +508,15 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
     }
     if (this.getProfession() != null) {
       compoundTag.putString(DATA_PROFESSION_TAG, this.getProfession().name());
+    }
+    if (this.getScaleX() != null && this.getScaleX() > 0.0f) {
+      compoundTag.putFloat(DATA_SCALE_X_TAG, this.getScaleX());
+    }
+    if (this.getScaleY() != null && this.getScaleY() > 0.0f) {
+      compoundTag.putFloat(DATA_SCALE_Y_TAG, this.getScaleY());
+    }
+    if (this.getScaleZ() != null && this.getScaleZ() > 0.0f) {
+      compoundTag.putFloat(DATA_SCALE_Z_TAG, this.getScaleZ());
     }
     if (this.getSkin() != null) {
       compoundTag.putString(DATA_SKIN_TAG, this.getSkin());
@@ -538,6 +600,24 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
       String variant = compoundTag.getString(DATA_VARIANT_TAG);
       if (variant != null && !variant.isEmpty()) {
         this.setVariant(this.getVariant(variant));
+      }
+    }
+    if (compoundTag.contains(DATA_SCALE_X_TAG)) {
+      Float scale = compoundTag.getFloat(DATA_SCALE_X_TAG);
+      if (scale != null && scale > 0.0f) {
+        this.setScaleX(scale);
+      }
+    }
+    if (compoundTag.contains(DATA_SCALE_Y_TAG)) {
+      Float scale = compoundTag.getFloat(DATA_SCALE_Y_TAG);
+      if (scale != null && scale > 0.0f) {
+        this.setScaleY(scale);
+      }
+    }
+    if (compoundTag.contains(DATA_SCALE_Z_TAG)) {
+      Float scale = compoundTag.getFloat(DATA_SCALE_Z_TAG);
+      if (scale != null && scale > 0.0f) {
+        this.setScaleZ(scale);
       }
     }
     if (compoundTag.contains(DATA_SKIN_TAG)) {
