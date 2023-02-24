@@ -133,6 +133,7 @@ dependencies {
 
   // Compability checks
   runtimeOnly fg.deobf("curse.maven:neat-238372:3593906")
+  runtimeOnly fg.deobf("curse.maven:carry-on-274259:3674344")
 
   // Additional helpful Mods for development (dev depenedency)
   runtimeOnly fg.deobf("curse.maven:connectivity-470193:3833738")

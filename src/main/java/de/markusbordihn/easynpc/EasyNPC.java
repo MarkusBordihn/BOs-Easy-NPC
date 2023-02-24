@@ -59,6 +59,7 @@ public class EasyNPC {
     ModMenuTypes.MENU_TYPES.register(modEventBus);
 
     DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+      log.info("{} Client events ...", Constants.LOG_REGISTER_PREFIX);
       modEventBus.addListener(ModModelLayers::registerEntityLayerDefinitions);
       modEventBus.addListener(ClientRenderer::registerEntityRenderers);
       modEventBus.addListener(ClientScreens::registerScreens);
