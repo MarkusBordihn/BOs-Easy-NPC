@@ -5,6 +5,12 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### 2023.02.24
+
+- Added basic CarryOn support to block unwanted pickup of NPCs.
+- Fixed Allay scale rendering.
+- Improved documentation and added more examples.
+
 ### 2023.02.22
 
 - Added scaling configuration.

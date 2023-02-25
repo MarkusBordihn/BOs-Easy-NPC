@@ -22,6 +22,8 @@ package de.markusbordihn.easynpc.client.renderer.entity;
 import java.util.EnumMap;
 import java.util.Map;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -64,6 +66,16 @@ public class AllayRenderer extends MobRenderer<EasyNPCEntity, AllayModel<EasyNPC
         return PlayerTextureManager.getOrCreateTextureWithDefault(entity, DEFAULT_TEXTURE);
       default:
         return TEXTURE_BY_VARIANT.getOrDefault(entity.getVariant(), DEFAULT_TEXTURE);
+    }
+  }
+
+  @Override
+  protected void scale(EasyNPCEntity entity, PoseStack poseStack, float unused) {
+    if (entity.isBaby()) {
+      poseStack.scale(entity.getScaleX() * 0.5f, entity.getScaleY() * 0.5f,
+          entity.getScaleZ() * 0.5f);
+    } else {
+      poseStack.scale(entity.getScaleX(), entity.getScaleY(), entity.getScaleZ());
     }
   }
 
