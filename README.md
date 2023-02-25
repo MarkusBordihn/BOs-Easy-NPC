@@ -13,6 +13,7 @@ Easy NPCs allows a simplified setup for custom NPCs with dialogs for map maker a
 - Easy Action configuration with debug option.
 - Skin configuration with player name and URL support.
 - Server and client friendly.
+- No additional dependencies.
 - API support / integration for other mods (WIP).
 
 ## Usage
