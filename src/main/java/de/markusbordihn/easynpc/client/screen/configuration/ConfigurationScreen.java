@@ -19,14 +19,15 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration;
 
-import java.util.UUID;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.configuration.skin.EasyNPCButton;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.skin.SkinModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
@@ -35,16 +36,12 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.network.NetworkHandler;
-import de.markusbordihn.easynpc.skin.SkinModel;
+import java.util.UUID;
 
 @OnlyIn(Dist.CLIENT)
 public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractContainerScreen<T> {
@@ -112,7 +109,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
 
     // Home Button
     this.homeButton = this.addRenderableWidget(
-        new Button(this.leftPos + 7, this.buttonTopPos, 10, 20, Component.literal("<"), onPress -> {
+        new EasyNPCButton(this.leftPos + 7, this.buttonTopPos, 10, 20, Component.literal("<"), onPress -> {
           NetworkHandler.openConfiguration(uuid, ConfigurationType.MAIN);
         }));
   }
