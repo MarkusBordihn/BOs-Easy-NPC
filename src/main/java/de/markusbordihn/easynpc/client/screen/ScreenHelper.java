@@ -19,22 +19,19 @@
 
 package de.markusbordihn.easynpc.client.screen;
 
-import java.util.Optional;
-import java.util.UUID;
-
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
-
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.skin.SkinType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.network.chat.Component;
+import org.joml.Quaternionf;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.skin.SkinType;
+import java.util.Optional;
+import java.util.UUID;
 
 public class ScreenHelper {
 
@@ -52,8 +49,8 @@ public class ScreenHelper {
     PoseStack poseStack1 = new PoseStack();
     poseStack1.translate(0.0D, 0.0D, 1000.0D);
     poseStack1.scale(scale, scale, scale);
-    Quaternion quaternion = Vector3f.ZP.rotationDegrees(180.0F);
-    Quaternion quaternion1 = Vector3f.XP.rotationDegrees(f1 * 20.0F);
+    Quaternionf quaternion = new Quaternionf(0, 0, 1,0).rotateZ(180.0F);
+    Quaternionf quaternion1 = new Quaternionf(1, 0, 0,0).rotateX(f1 * 20.0F);
     quaternion.mul(quaternion1);
     poseStack1.mulPose(quaternion);
 
@@ -86,7 +83,7 @@ public class ScreenHelper {
     Lighting.setupForEntityInInventory();
     EntityRenderDispatcher entityRenderDispatcher =
         Minecraft.getInstance().getEntityRenderDispatcher();
-    quaternion1.conj();
+    quaternion1.conjugate();
     entityRenderDispatcher.overrideCameraOrientation(quaternion1);
     entityRenderDispatcher.setRenderShadow(false);
     MultiBufferSource.BufferSource multiBuffer =

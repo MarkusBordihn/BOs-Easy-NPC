@@ -19,20 +19,25 @@
 
 package de.markusbordihn.easynpc.tabs;
 
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.item.ModItems;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.event.CreativeModeTabEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
-import de.markusbordihn.easynpc.item.ModItems;
-
+@Mod.EventBusSubscriber(modid = Constants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class EasyNPCTab {
+  public static CreativeModeTab TAB_SPAWN_EGGS;
 
-  protected EasyNPCTab() {}
-
-  public static final CreativeModeTab TAB_SPAWN_EGGS =
-      new CreativeModeTab("easy_npc.spawn_eggs") {
-        public ItemStack makeIcon() {
-          return new ItemStack(ModItems.VILLAGER_NPC_SPAWN_EGG.get());
-        }
-      };
-
+  @SubscribeEvent
+  public static void registerCreativeModeTabs(CreativeModeTabEvent.Register event) {
+    TAB_SPAWN_EGGS = event.registerCreativeModeTab(new ResourceLocation(Constants.MOD_ID, "easy_npc"),
+            builder -> {
+              builder.icon(() -> new ItemStack(ModItems.VILLAGER_NPC_SPAWN_EGG.get())).title(Component.translatable("easy_npc.spawn_eggs"));
+            });
+  }
 }

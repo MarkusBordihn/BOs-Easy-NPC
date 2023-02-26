@@ -19,18 +19,16 @@
 
 package de.markusbordihn.easynpc.utils;
 
-import java.net.URISyntaxException;
-import java.util.Optional;
-import java.util.regex.Pattern;
-
+import cpw.mods.modlauncher.Launcher;
+import cpw.mods.modlauncher.api.IEnvironment;
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.EasyNPC;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import cpw.mods.modlauncher.Launcher;
-import cpw.mods.modlauncher.api.IEnvironment;
-
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.EasyNPC;
+import java.net.URISyntaxException;
+import java.util.Optional;
+import java.util.regex.Pattern;
 
 public class StopModReposts {
 
@@ -44,7 +42,7 @@ public class StopModReposts {
   private static boolean isDevEnvironment =
       version.isPresent() && version.get() != null && "MOD_DEV".equals(version.get());
 
-  private static String modFileFormatRegEx = Constants.MOD_ID + "_1.19.2-\\d+.\\d+.\\d+.jar";
+  private static String modFileFormatRegEx = Constants.MOD_ID + "_1.19.3-\\d+.\\d+.\\d+.jar";
 
   private static Pattern expectedFilePattern = Pattern.compile(modFileFormatRegEx);
 

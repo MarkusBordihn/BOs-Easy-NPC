@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.actions;
 
+import de.markusbordihn.easynpc.client.screen.configuration.skin.EasyNPCButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -48,7 +49,7 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
 
     // Action Types
     this.basicActionButton =
-        this.addRenderableWidget(new Button(this.contentLeftPos, this.buttonTopPos, 80, 20,
+        this.addRenderableWidget(new EasyNPCButton(this.contentLeftPos, this.buttonTopPos, 80, 20,
             Component.translatable(Constants.TEXT_CONFIG_PREFIX + "basic_actions"), onPress -> {
               NetworkHandler.openConfiguration(uuid, ConfigurationType.BASIC_ACTION);
             }));

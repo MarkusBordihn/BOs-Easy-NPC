@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.dialog;
 
+import de.markusbordihn.easynpc.client.screen.configuration.skin.EasyNPCButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
@@ -94,7 +95,7 @@ public class YesNoDialogConfigurationScreen
 
     // Save Button
     this.saveDialogButton =
-        this.addRenderableWidget(new Button(this.contentLeftPos + 26, this.bottomPos - 40, 80, 20,
+        this.addRenderableWidget(new EasyNPCButton(this.contentLeftPos + 26, this.bottomPos - 40, 80, 20,
             Component.translatable(Constants.TEXT_CONFIG_PREFIX + "save"), onPress -> {
               NetworkHandler.saveYesNoDialog(uuid, this.mainDialogBox.getValue(),
                   this.yesDialogBox.getValue(), this.noDialogBox.getValue(),
@@ -103,7 +104,7 @@ public class YesNoDialogConfigurationScreen
 
     // Chancel Button
     this.cancelButton =
-        this.addRenderableWidget(new Button(this.rightPos - 120, this.bottomPos - 40, 80, 20,
+        this.addRenderableWidget(new EasyNPCButton(this.rightPos - 120, this.bottomPos - 40, 80, 20,
             Component.translatable(Constants.TEXT_CONFIG_PREFIX + "cancel"), onPress -> {
               this.closeScreen();
             }));
@@ -116,10 +117,10 @@ public class YesNoDialogConfigurationScreen
         this.contentLeftPos, this.topPos + 50f, 4210752);
 
     this.font.draw(poseStack, Component.translatable(Constants.TEXT_CONFIG_PREFIX + "yes_answer"),
-        this.contentLeftPos, this.yesDialogBox.y - 12f, 4210752);
+        this.contentLeftPos, this.yesDialogBox.getY() - 12f, 4210752);
 
     this.font.draw(poseStack, Component.translatable(Constants.TEXT_CONFIG_PREFIX + "no_answer"),
-        this.contentLeftPos, this.noDialogBox.y - 12f, 4210752);
+        this.contentLeftPos, this.noDialogBox.getY() - 12f, 4210752);
   }
 
 }

@@ -52,5 +52,5 @@
   "text.easy_npc.removeNPC.deleteQuestion": "Sind Sie sicher, dass Sie diesen NPC löschen möchten?",
   "text.easy_npc.removeNPC.deleteWarning": "'%s' wird für immer verloren sein! (Das ist eine sehr lange Zeit!)",
 
-  "itemGroup.easy_npc.spawn_eggs": "Einfache NPC (Spawn-Eier)"
+  "easy_npc.spawn_eggs": "Einfache NPC (Spawn-Eier)"
 }

@@ -21,8 +21,6 @@ package de.markusbordihn.easynpc.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
-
 import net.minecraft.client.model.ArmedModel;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -30,9 +28,10 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 @OnlyIn(Dist.CLIENT)
 public class AllayModel<T extends LivingEntity> extends HierarchicalModel<T> implements ArmedModel {
@@ -101,7 +100,7 @@ public class AllayModel<T extends LivingEntity> extends HierarchicalModel<T> imp
     this.root.translateAndRotate(poseStack);
     this.body.translateAndRotate(poseStack);
     poseStack.translate(0.0D, -0.09375D, 0.09375D);
-    poseStack.mulPose(Vector3f.XP.rotation(this.rightArm.xRot + 0.43633232F));
+    poseStack.mulPose(new Quaternionf(1, 0, 0, 0).rotateX(this.rightArm.xRot + 0.43633232F));
     poseStack.scale(0.7F, 0.7F, 0.7F);
     poseStack.translate(0.0625D, 0.0D, 0.0D);
   }

@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.scaling;
 
+import de.markusbordihn.easynpc.client.screen.configuration.skin.EasyNPCButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -73,7 +74,7 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
               }
               this.defaultScaleXButton.active = scale != entity.getDefaultScaleX();
             }));
-    this.defaultScaleXButton = this.addRenderableWidget(new Button(scalePositionLeft,
+    this.defaultScaleXButton = this.addRenderableWidget(new EasyNPCButton(scalePositionLeft,
         scalePositionTop + this.scaleXSliderButton.getHeight(), scaleWidth, 20,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + "reset"), button -> {
           this.scaleXSliderButton.setDefaultValue(entity.getDefaultScaleX());
@@ -91,7 +92,7 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
               }
               this.defaultScaleYButton.active = scale != entity.getDefaultScaleY();
             }));
-    this.defaultScaleYButton = this.addRenderableWidget(new Button(scalePositionLeft,
+    this.defaultScaleYButton = this.addRenderableWidget(new EasyNPCButton(scalePositionLeft,
         scalePositionTop + this.scaleYSliderButton.getHeight() + scalePositionSpace, scaleWidth, 20,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + "reset"), button -> {
           this.scaleYSliderButton.setDefaultValue(entity.getDefaultScaleY());
@@ -109,7 +110,7 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
               }
               this.defaultScaleZButton.active = scale != entity.getDefaultScaleZ();
             }));
-    this.defaultScaleZButton = this.addRenderableWidget(new Button(scalePositionLeft,
+    this.defaultScaleZButton = this.addRenderableWidget(new EasyNPCButton(scalePositionLeft,
         scalePositionTop + this.scaleZSliderButton.getHeight() + scalePositionSpace * 2, scaleWidth,
         20, Component.translatable(Constants.TEXT_CONFIG_PREFIX + "reset"), button -> {
           this.scaleZSliderButton.setDefaultValue(entity.getDefaultScaleZ());
@@ -129,15 +130,15 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
 
     // Label for Scale X
     this.font.draw(poseStack, Component.translatable(Constants.TEXT_CONFIG_PREFIX + "scale_x"),
-        this.scaleXSliderButton.x, this.scaleXSliderButton.y - 10f, 4210752);
+        this.scaleXSliderButton.getX(), this.scaleXSliderButton.getY() - 10f, 4210752);
 
     // Label for Scale Y
     this.font.draw(poseStack, Component.translatable(Constants.TEXT_CONFIG_PREFIX + "scale_y"),
-        this.scaleYSliderButton.x, this.scaleYSliderButton.y - 10f, 4210752);
+        this.scaleYSliderButton.getX(), this.scaleYSliderButton.getY() - 10f, 4210752);
 
     // Label for Scale Z
     this.font.draw(poseStack, Component.translatable(Constants.TEXT_CONFIG_PREFIX + "scale_z"),
-        this.scaleZSliderButton.x, this.scaleZSliderButton.y - 10f, 4210752);
+        this.scaleZSliderButton.getX(), this.scaleZSliderButton.getY() - 10f, 4210752);
   }
 
   @Override
