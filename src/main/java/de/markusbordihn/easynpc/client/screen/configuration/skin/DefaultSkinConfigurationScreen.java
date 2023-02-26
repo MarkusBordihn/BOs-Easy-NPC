@@ -19,27 +19,24 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.skin;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 import de.markusbordihn.easynpc.skin.SkinType;
 import de.markusbordihn.easynpc.utils.TextUtils;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class DefaultSkinConfigurationScreen
@@ -183,7 +180,7 @@ public class DefaultSkinConfigurationScreen
     int skinButtonTop = this.topPos + 212;
     int skinButtonLeft = this.contentLeftPos;
     int skinButtonRight = this.leftPos + 269;
-    this.skinPreviousPageButton = this.addRenderableWidget(new Button(skinButtonLeft, skinButtonTop,
+    this.skinPreviousPageButton = this.addRenderableWidget(new EasyNPCButton(skinButtonLeft, skinButtonTop,
         20, 20, Component.translatable("<<"), onPress -> {
           if (this.skinStartIndex - maxSkinsPerPage > 0) {
             skinStartIndex = skinStartIndex - maxSkinsPerPage;
@@ -192,14 +189,14 @@ public class DefaultSkinConfigurationScreen
           }
           checkSkinButtonState();
         }));
-    this.skinPreviousButton = this.addRenderableWidget(new Button(skinButtonLeft + 20,
+    this.skinPreviousButton = this.addRenderableWidget(new EasyNPCButton(skinButtonLeft + 20,
         skinButtonTop, 20, 20, Component.translatable("<"), onPress -> {
           if (this.skinStartIndex > 0) {
             skinStartIndex--;
           }
           checkSkinButtonState();
         }));
-    this.skinNextPageButton = this.addRenderableWidget(new Button(skinButtonRight, skinButtonTop,
+    this.skinNextPageButton = this.addRenderableWidget(new EasyNPCButton(skinButtonRight, skinButtonTop,
         20, 20, Component.translatable(">>"), onPress -> {
           if (this.skinStartIndex >= 0
               && this.skinStartIndex + this.maxSkinsPerPage < this.numOfSkins) {
@@ -211,7 +208,7 @@ public class DefaultSkinConfigurationScreen
           }
           checkSkinButtonState();
         }));
-    this.skinNextButton = this.addRenderableWidget(new Button(skinButtonRight - 20, skinButtonTop,
+    this.skinNextButton = this.addRenderableWidget(new EasyNPCButton(skinButtonRight - 20, skinButtonTop,
         20, 20, Component.translatable(">"), onPress -> {
           if (this.skinStartIndex >= 0
               && this.skinStartIndex < this.numOfSkins - this.maxSkinsPerPage) {

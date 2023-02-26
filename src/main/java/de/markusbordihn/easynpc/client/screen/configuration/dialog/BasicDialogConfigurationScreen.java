@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.dialog;
 
+import de.markusbordihn.easynpc.client.screen.configuration.skin.EasyNPCButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
@@ -63,14 +64,14 @@ public class BasicDialogConfigurationScreen
 
     // Save Button
     this.saveDialogButton =
-        this.addRenderableWidget(new Button(this.contentLeftPos + 26, this.bottomPos - 40, 80, 20,
+        this.addRenderableWidget(new EasyNPCButton(this.contentLeftPos + 26, this.bottomPos - 40, 80, 20,
             Component.translatable(Constants.TEXT_CONFIG_PREFIX + "save"), onPress -> {
               NetworkHandler.saveBasicDialog(uuid, this.dialogBox.getValue());
             }));
 
     // Chancel Button
     this.cancelButton =
-        this.addRenderableWidget(new Button(this.rightPos - 120, this.bottomPos - 40, 80, 20,
+        this.addRenderableWidget(new EasyNPCButton(this.rightPos - 120, this.bottomPos - 40, 80, 20,
             Component.translatable(Constants.TEXT_CONFIG_PREFIX + "cancel"), onPress -> {
               this.closeScreen();
             }));

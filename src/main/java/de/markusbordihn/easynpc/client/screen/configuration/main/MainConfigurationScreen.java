@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.client.screen.configuration.main;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.markusbordihn.easynpc.client.screen.configuration.skin.EasyNPCButton;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -125,7 +126,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     this.addRenderableWidget(this.nameBox);
 
     this.saveNameButton =
-        this.addRenderableWidget(new Button(this.leftPos + 202, this.topPos + 30, buttonWidth, 20,
+        this.addRenderableWidget(new EasyNPCButton(this.leftPos + 202, this.topPos + 30, buttonWidth, 20,
             Component.translatable(Constants.TEXT_CONFIG_PREFIX + "save_name"), onPress -> {
               this.saveName();
             }));
@@ -133,7 +134,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
 
     // Skins Button
     this.editSkinButton =
-        this.addRenderableWidget(new Button(this.contentLeftPos, this.topPos + 205, 100, 20,
+        this.addRenderableWidget(new EasyNPCButton(this.contentLeftPos, this.topPos + 205, 100, 20,
             Component.translatable(Constants.TEXT_CONFIG_PREFIX + "skin"), onPress -> {
               SkinType skinType = this.entity.getSkinType();
               switch (skinType) {
@@ -152,7 +153,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
 
     // Dialog Button
     this.editDialogButton = this.addRenderableWidget(
-        new Button(buttonLeftPosition, buttonTopPosition, buttonWidth, buttonHeight,
+        new EasyNPCButton(buttonLeftPosition, buttonTopPosition, buttonWidth, buttonHeight,
             Component.translatable(Constants.TEXT_CONFIG_PREFIX + "dialog"), onPress -> {
               DialogType dialogType = this.entity.getDialogType();
               switch (dialogType) {
@@ -169,7 +170,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
 
     // Actions Button
     this.editActionButton = this.addRenderableWidget(
-        new Button(this.editDialogButton.x + this.editDialogButton.getWidth() + buttonSpace,
+        new EasyNPCButton(this.editDialogButton.getX() + this.editDialogButton.getWidth() + buttonSpace,
             buttonTopPosition, buttonWidth, buttonHeight,
             Component.translatable(Constants.TEXT_CONFIG_PREFIX + "actions"), onPress -> {
               NetworkHandler.openConfiguration(uuid, ConfigurationType.BASIC_ACTION);
@@ -179,21 +180,21 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
 
     // Equipment Button
     this.editEquipmentButton = this.addRenderableWidget(
-        new Button(buttonLeftPosition, buttonTopPosition, buttonWidth, buttonHeight,
+        new EasyNPCButton(buttonLeftPosition, buttonTopPosition, buttonWidth, buttonHeight,
             Component.translatable(Constants.TEXT_CONFIG_PREFIX + "equipment"), onPress -> {
               NetworkHandler.openConfiguration(uuid, ConfigurationType.EQUIPMENT);
             }));
 
     // Scaling Button
     this.scalingButton = this.addRenderableWidget(
-        new Button(this.editEquipmentButton.x + this.editEquipmentButton.getWidth() + buttonSpace,
+        new EasyNPCButton(this.editEquipmentButton.getX() + this.editEquipmentButton.getWidth() + buttonSpace,
             buttonTopPosition, buttonWidth, buttonHeight,
             Component.translatable(Constants.TEXT_CONFIG_PREFIX + "scaling"), onPress -> {
               NetworkHandler.openConfiguration(uuid, ConfigurationType.SCALING);
             }));
 
     // Delete Button
-    this.removeEntityButton = this.addRenderableWidget(new Button(
+    this.removeEntityButton = this.addRenderableWidget(new EasyNPCButton(
         this.rightPos - 60, this.bottomPos - 30, 50, 20, Component
             .translatable(Constants.TEXT_CONFIG_PREFIX + "delete").withStyle(ChatFormatting.RED),
         onPress -> {

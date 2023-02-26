@@ -132,15 +132,15 @@ dependencies {
   minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
   // Compability checks
-  runtimeOnly fg.deobf("curse.maven:neat-238372:3878735")
-  runtimeOnly fg.deobf("curse.maven:carry-on-274259:4375891")
+  runtimeOnly fg.deobf("curse.maven:neat-238372:4365517")
+  runtimeOnly fg.deobf("curse.maven:carry-on-274259:4375894")
 
   // Additional helpful Mods for development (dev depenedency)
   runtimeOnly fg.deobf("curse.maven:item-zoom-261725:3903160")
-  runtimeOnly fg.deobf("curse.maven:jade-324717:4318618")
-  runtimeOnly fg.deobf("curse.maven:jei-238222:4354615")
-  runtimeOnly fg.deobf("curse.maven:spark-361579:4057111")
-  runtimeOnly fg.deobf("curse.maven:xaeros_minimap-263420:4338623")
+  runtimeOnly fg.deobf("curse.maven:jade-324717:4330163")
+  runtimeOnly fg.deobf("curse.maven:jei-238222:4405393")
+  runtimeOnly fg.deobf("curse.maven:spark-361579:4381167")
+  runtimeOnly fg.deobf("curse.maven:xaeros_minimap-263420:4381127")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

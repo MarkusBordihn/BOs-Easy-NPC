@@ -19,17 +19,17 @@
 
 package de.markusbordihn.easynpc.client.screen;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.action.ActionType;
+import de.markusbordihn.easynpc.client.screen.configuration.skin.EasyNPCButton;
+import de.markusbordihn.easynpc.dialog.DialogType;
+import de.markusbordihn.easynpc.dialog.DialogUtils;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.menu.DialogMenu;
+import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.utils.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -38,18 +38,15 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.action.ActionType;
-import de.markusbordihn.easynpc.dialog.DialogType;
-import de.markusbordihn.easynpc.dialog.DialogUtils;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.menu.DialogMenu;
-import de.markusbordihn.easynpc.network.NetworkHandler;
-import de.markusbordihn.easynpc.utils.TextUtils;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @OnlyIn(Dist.CLIENT)
 public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
@@ -162,7 +159,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
       boolean smallButtonLayout =
           yesDialogButtonText.length() < 16 && noDialogButtonText.length() < 16;
 
-      this.yesDialogButton = this.addRenderableWidget(new Button(this.leftPos + 70, dialogButtonTop,
+      this.yesDialogButton = this.addRenderableWidget(new EasyNPCButton(this.leftPos + 70, dialogButtonTop,
           smallButtonLayout ? 95 : 198, 20, Component.literal(yesDialogButtonText), onPress -> {
             String yesDialogText = this.entity.getYesDialog();
             if (!yesDialogText.isBlank()) {
@@ -177,9 +174,9 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
             }
           }));
 
-      this.noDialogButton = this.addRenderableWidget(new Button(
-          smallButtonLayout ? this.yesDialogButton.x + this.yesDialogButton.getWidth() + 10
-              : this.yesDialogButton.x,
+      this.noDialogButton = this.addRenderableWidget(new EasyNPCButton(
+          smallButtonLayout ? this.yesDialogButton.getX() + this.yesDialogButton.getWidth() + 10
+              : this.yesDialogButton.getX(),
           smallButtonLayout ? dialogButtonTop : dialogButtonTop + 25, smallButtonLayout ? 95 : 198,
           20, Component.literal(noDialogButtonText), onPress -> {
             String noDialogText = this.entity.getNoDialog();

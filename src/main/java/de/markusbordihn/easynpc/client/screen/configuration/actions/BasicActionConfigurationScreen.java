@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.client.screen.configuration.actions;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.markusbordihn.easynpc.client.screen.configuration.skin.EasyNPCButton;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
@@ -114,7 +115,7 @@ public class BasicActionConfigurationScreen
     this.onInteractionActionBox.setValue(this.lastInteractionAction);
     this.onInteractionActionBox.setResponder(consumer -> this.validateInteractionAction());
     this.addRenderableWidget(this.onInteractionActionBox);
-    this.saveOnInteractionActionButton = this.addRenderableWidget(new Button(this.leftPos + 265,
+    this.saveOnInteractionActionButton = this.addRenderableWidget(new EasyNPCButton(this.leftPos + 265,
         interactionActionTop, 25, 20, Component.literal(""), onPress -> {
           String action = this.onInteractionActionBox.getValue();
           NetworkHandler.actionChange(uuid, ActionType.ON_INTERACTION, action);
@@ -133,7 +134,7 @@ public class BasicActionConfigurationScreen
     this.onOpenActionBox.setResponder(consumer -> this.validateOpenAction());
     this.addRenderableWidget(this.onOpenActionBox);
     this.saveOnOpenActionButton = this.addRenderableWidget(
-        new Button(this.leftPos + 265, openActionTop, 25, 20, Component.literal(""), onPress -> {
+        new EasyNPCButton(this.leftPos + 265, openActionTop, 25, 20, Component.literal(""), onPress -> {
           String action = this.onOpenActionBox.getValue();
           NetworkHandler.actionChange(uuid, ActionType.ON_OPEN_DIALOG, action);
           this.lastOpenAction = action;
@@ -151,7 +152,7 @@ public class BasicActionConfigurationScreen
     this.onCloseActionBox.setResponder(consumer -> this.validateCloseAction());
     this.addRenderableWidget(this.onCloseActionBox);
     this.saveOnCloseActionButton = this.addRenderableWidget(
-        new Button(this.leftPos + 265, closeActionTop, 25, 20, Component.literal(""), onPress -> {
+        new EasyNPCButton(this.leftPos + 265, closeActionTop, 25, 20, Component.literal(""), onPress -> {
           String action = this.onCloseActionBox.getValue();
           NetworkHandler.actionChange(uuid, ActionType.ON_CLOSE_DIALOG, action);
           this.lastCloseAction = action;
@@ -169,7 +170,7 @@ public class BasicActionConfigurationScreen
     this.onYesActionBox.setResponder(consumer -> this.validateYesAction());
     this.addRenderableWidget(this.onYesActionBox);
     this.saveOnYesActionButton = this.addRenderableWidget(
-        new Button(this.leftPos + 265, yesActionTop, 25, 20, Component.literal(""), onPress -> {
+        new EasyNPCButton(this.leftPos + 265, yesActionTop, 25, 20, Component.literal(""), onPress -> {
           String action = this.onYesActionBox.getValue();
           NetworkHandler.actionChange(uuid, ActionType.ON_YES_SELECTION, action);
           this.lastYesAction = action;
@@ -187,7 +188,7 @@ public class BasicActionConfigurationScreen
     this.onNoActionBox.setResponder(consumer -> this.validateNoAction());
     this.addRenderableWidget(this.onNoActionBox);
     this.saveOnNoActionButton = this.addRenderableWidget(
-        new Button(this.leftPos + 265, noActionTop, 25, 20, Component.literal(""), onPress -> {
+        new EasyNPCButton(this.leftPos + 265, noActionTop, 25, 20, Component.literal(""), onPress -> {
           String action = this.onNoActionBox.getValue();
           NetworkHandler.actionChange(uuid, ActionType.ON_NO_SELECTION, action);
           this.lastNoAction = action;
@@ -220,34 +221,34 @@ public class BasicActionConfigurationScreen
     RenderSystem.setShaderTexture(0, Constants.TEXTURE_CONFIGURATION);
 
     // Button Icons
-    this.blit(poseStack, this.saveOnInteractionActionButton.x + 5,
-        this.saveOnInteractionActionButton.y + 3, 60,
+    this.blit(poseStack, this.saveOnInteractionActionButton.getX() + 5,
+        this.saveOnInteractionActionButton.getY() + 3, 60,
         this.saveOnInteractionActionButton.active ? 0 : 16, 16, 16);
-    this.blit(poseStack, this.saveOnOpenActionButton.x + 5, this.saveOnOpenActionButton.y + 3, 60,
+    this.blit(poseStack, this.saveOnOpenActionButton.getX() + 5, this.saveOnOpenActionButton.getY() + 3, 60,
         this.saveOnOpenActionButton.active ? 0 : 16, 16, 16);
-    this.blit(poseStack, this.saveOnCloseActionButton.x + 5, this.saveOnCloseActionButton.y + 3, 60,
+    this.blit(poseStack, this.saveOnCloseActionButton.getX() + 5, this.saveOnCloseActionButton.getY() + 3, 60,
         this.saveOnCloseActionButton.active ? 0 : 16, 16, 16);
-    this.blit(poseStack, this.saveOnYesActionButton.x + 5, this.saveOnYesActionButton.y + 3, 60,
+    this.blit(poseStack, this.saveOnYesActionButton.getX() + 5, this.saveOnYesActionButton.getY() + 3, 60,
         this.saveOnYesActionButton.active ? 0 : 16, 16, 16);
-    this.blit(poseStack, this.saveOnNoActionButton.x + 5, this.saveOnNoActionButton.y + 3, 60,
+    this.blit(poseStack, this.saveOnNoActionButton.getX() + 5, this.saveOnNoActionButton.getY() + 3, 60,
         this.saveOnNoActionButton.active ? 0 : 16, 16, 16);
 
     // Description Texts
     this.font.draw(poseStack,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + "on_interaction"),
-        this.contentLeftPos, this.saveOnInteractionActionButton.y - 9f, Constants.FONT_COLOR_BLACK);
+        this.contentLeftPos, this.saveOnInteractionActionButton.getY() - 9f, Constants.FONT_COLOR_BLACK);
     this.font.draw(poseStack,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + "on_open_dialog"),
-        this.contentLeftPos, this.saveOnOpenActionButton.y - 9f, Constants.FONT_COLOR_BLACK);
+        this.contentLeftPos, this.saveOnOpenActionButton.getY() - 9f, Constants.FONT_COLOR_BLACK);
     this.font.draw(poseStack,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + "on_close_dialog"),
-        this.contentLeftPos, this.saveOnCloseActionButton.y - 9f, Constants.FONT_COLOR_BLACK);
+        this.contentLeftPos, this.saveOnCloseActionButton.getY() - 9f, Constants.FONT_COLOR_BLACK);
     this.font.draw(poseStack,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + "on_yes_selection"),
-        this.contentLeftPos, this.saveOnYesActionButton.y - 9f, Constants.FONT_COLOR_BLACK);
+        this.contentLeftPos, this.saveOnYesActionButton.getY() - 9f, Constants.FONT_COLOR_BLACK);
     this.font.draw(poseStack,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + "on_no_selection"),
-        this.contentLeftPos, this.saveOnNoActionButton.y - 9f, Constants.FONT_COLOR_BLACK);
+        this.contentLeftPos, this.saveOnNoActionButton.getY() - 9f, Constants.FONT_COLOR_BLACK);
   }
 
 }
