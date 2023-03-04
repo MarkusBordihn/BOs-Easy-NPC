@@ -53,7 +53,10 @@ public class HumanoidSlimRenderer extends MobRenderer<EasyNPCEntity, PlayerModel
   // Variant Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(new EnumMap<>(Variant.class), map -> {
+        // Build-in Variants
         map.put(Variant.ALEX, new ResourceLocation("textures/entity/alex.png"));
+
+        // Custom Variants
         map.put(Variant.KAWORRU,
             new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid_slim/kaworru.png"));
       });

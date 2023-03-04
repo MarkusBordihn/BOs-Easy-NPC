@@ -254,18 +254,16 @@ public class PlayerSkinConfigurationScreen
 
     // Add Button
     this.addTextureSettingsButton = this.addRenderableWidget(
-        new Button(this.textureSkinLocationBox.x + this.textureSkinLocationBox.getWidth() + 2,
-            this.topPos + 60, 65, 20,
-            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "add"), onPress -> {
+        menuButton(this.textureSkinLocationBox.x + this.textureSkinLocationBox.getWidth() + 2,
+            this.topPos + 60, 65, "add", onPress -> {
               this.addTextureSkinLocation();
             }));
     this.addTextureSettingsButton.active = false;
 
     // Clear Texture Buttons
     this.clearTextureSettingsButton = this.addRenderableWidget(
-        new Button(this.addTextureSettingsButton.x + this.addTextureSettingsButton.getWidth() + 1,
-            this.topPos + 60, 55, 20,
-            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "clear"), onPress -> {
+        menuButton(this.addTextureSettingsButton.x + this.addTextureSettingsButton.getWidth() + 1,
+            this.topPos + 60, 55, "clear", onPress -> {
               this.clearTextureSkinLocation();
             }));
 
@@ -274,7 +272,7 @@ public class PlayerSkinConfigurationScreen
     int skinButtonLeft = this.contentLeftPos;
     int skinButtonRight = this.rightPos - 31;
     this.skinPreviousPageButton = this.addRenderableWidget(
-        new Button(skinButtonLeft, skinButtonTop, 20, 20, Component.literal("<<"), onPress -> {
+        menuButton(skinButtonLeft, skinButtonTop, 20, Component.literal("<<"), onPress -> {
           if (this.skinStartIndex - maxSkinsPerPage > 0) {
             skinStartIndex = skinStartIndex - maxSkinsPerPage;
           } else {
@@ -283,14 +281,14 @@ public class PlayerSkinConfigurationScreen
           checkSkinButtonState();
         }));
     this.skinPreviousButton = this.addRenderableWidget(
-        new Button(skinButtonLeft + 20, skinButtonTop, 20, 20, Component.literal("<"), onPress -> {
+        menuButton(skinButtonLeft + 20, skinButtonTop, 20, Component.literal("<"), onPress -> {
           if (this.skinStartIndex > 0) {
             skinStartIndex--;
           }
           checkSkinButtonState();
         }));
     this.skinNextPageButton = this.addRenderableWidget(
-        new Button(skinButtonRight, skinButtonTop, 20, 20, Component.literal(">>"), onPress -> {
+        menuButton(skinButtonRight, skinButtonTop, 20, Component.literal(">>"), onPress -> {
           if (this.skinStartIndex >= 0
               && this.skinStartIndex + this.maxSkinsPerPage < this.numOfSkins) {
             this.skinStartIndex = this.skinStartIndex + this.maxSkinsPerPage;
@@ -302,7 +300,7 @@ public class PlayerSkinConfigurationScreen
           checkSkinButtonState();
         }));
     this.skinNextButton = this.addRenderableWidget(
-        new Button(skinButtonRight - 20, skinButtonTop, 20, 20, Component.literal(">"), onPress -> {
+        menuButton(skinButtonRight - 20, skinButtonTop, 20, Component.literal(">"), onPress -> {
           if (this.skinStartIndex >= 0
               && this.skinStartIndex < this.numOfSkins - this.maxSkinsPerPage) {
             skinStartIndex++;

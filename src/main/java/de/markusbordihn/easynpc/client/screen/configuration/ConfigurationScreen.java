@@ -84,6 +84,17 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     }
   }
 
+  protected static Button menuButton(int left, int top, int width, String label,
+      Button.OnPress onPress) {
+    return menuButton(left, top, width,
+        Component.translatable(Constants.TEXT_CONFIG_PREFIX + label), onPress);
+  }
+
+  protected static Button menuButton(int left, int top, int width, Component label,
+      Button.OnPress onPress) {
+    return new Button(left, top, width, 20, label, onPress);
+  }
+
   @Override
   public void init() {
     super.init();

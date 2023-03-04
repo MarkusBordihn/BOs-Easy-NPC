@@ -26,7 +26,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
@@ -47,11 +46,10 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
     super.init();
 
     // Action Types
-    this.basicActionButton =
-        this.addRenderableWidget(new Button(this.contentLeftPos, this.buttonTopPos, 80, 20,
-            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "basic_actions"), onPress -> {
-              NetworkHandler.openConfiguration(uuid, ConfigurationType.BASIC_ACTION);
-            }));
+    this.basicActionButton = this.addRenderableWidget(
+        menuButton(this.contentLeftPos + 10, this.buttonTopPos, 80, "basic_actions", onPress -> {
+          NetworkHandler.openConfiguration(uuid, ConfigurationType.BASIC_ACTION);
+        }));
 
     // Default button stats
     this.basicActionButton.active = true;

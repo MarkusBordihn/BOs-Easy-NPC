@@ -58,13 +58,17 @@ public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, PlayerModel<Eas
   // Variant Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(new EnumMap<>(Variant.class), map -> {
+        // Build-in Variants
+        map.put(Variant.STEVE, new ResourceLocation("textures/entity/steve.png"));
+
+        // Custom Variants
         map.put(Variant.JAYJASONBO,
             new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/jayjasonbo.png"));
         map.put(Variant.PROFESSOR_01,
             new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/professor_01.png"));
         map.put(Variant.SECURITY_01,
             new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/security_01.png"));
-        map.put(Variant.STEVE, new ResourceLocation("textures/entity/steve.png"));
+
       });
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.STEVE);
 

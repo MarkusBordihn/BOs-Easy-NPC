@@ -30,7 +30,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkHandler;
@@ -55,8 +54,7 @@ public class DefaultPoseConfigurationScreen
   }
 
   private Button menuButton(int left, int top, String label, Button.OnPress onPress) {
-    return new Button(left, top, 100, 20,
-        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "pose." + label), onPress);
+    return menuButton(left, top, 100, "pose." + label, onPress);
   }
 
   private void checkPoseButtonState(Pose pose) {
