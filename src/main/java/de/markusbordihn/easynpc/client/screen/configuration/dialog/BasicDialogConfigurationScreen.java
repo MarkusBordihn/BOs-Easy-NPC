@@ -63,18 +63,16 @@ public class BasicDialogConfigurationScreen
     this.addRenderableWidget(this.dialogBox);
 
     // Save Button
-    this.saveDialogButton =
-        this.addRenderableWidget(new Button(this.contentLeftPos + 26, this.bottomPos - 40, 80, 20,
-            new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "save"), onPress -> {
-              NetworkHandler.saveBasicDialog(uuid, this.dialogBox.getValue());
-            }));
+    this.saveDialogButton = this.addRenderableWidget(
+        menuButton(this.contentLeftPos + 26, this.bottomPos - 40, 80, "save", onPress -> {
+          NetworkHandler.saveBasicDialog(uuid, this.dialogBox.getValue());
+        }));
 
     // Chancel Button
-    this.cancelButton =
-        this.addRenderableWidget(new Button(this.rightPos - 120, this.bottomPos - 40, 80, 20,
-            new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "cancel"), onPress -> {
-              this.closeScreen();
-            }));
+    this.cancelButton = this.addRenderableWidget(
+        menuButton(this.rightPos - 120, this.bottomPos - 40, 80, "cancel", onPress -> {
+          this.closeScreen();
+        }));
   }
 
   @Override

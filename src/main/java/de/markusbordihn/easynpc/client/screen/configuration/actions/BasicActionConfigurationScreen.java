@@ -98,9 +98,8 @@ public class BasicActionConfigurationScreen
 
   public void validateNoAction() {
     String action = this.onNoActionBox.getValue();
-    this.saveOnNoActionButton.active =
-        action == null || (action.isEmpty() && !this.lastNoAction.isEmpty())
-            || !action.equals(this.lastNoAction);
+    this.saveOnNoActionButton.active = action == null
+        || (action.isEmpty() && !this.lastNoAction.isEmpty()) || !action.equals(this.lastNoAction);
   }
 
   @Override
@@ -116,8 +115,8 @@ public class BasicActionConfigurationScreen
     this.onInteractionActionBox.setValue(this.lastInteractionAction);
     this.onInteractionActionBox.setResponder(consumer -> this.validateInteractionAction());
     this.addRenderableWidget(this.onInteractionActionBox);
-    this.saveOnInteractionActionButton = this.addRenderableWidget(new Button(this.leftPos + 265,
-        interactionActionTop, 25, 20, new TextComponent(""), onPress -> {
+    this.saveOnInteractionActionButton = this.addRenderableWidget(
+        menuButton(this.leftPos + 265, interactionActionTop, 25, new TextComponent(""), onPress -> {
           String action = this.onInteractionActionBox.getValue();
           NetworkHandler.actionChange(uuid, ActionType.ON_INTERACTION, action);
           this.lastInteractionAction = action;
@@ -135,7 +134,7 @@ public class BasicActionConfigurationScreen
     this.onOpenActionBox.setResponder(consumer -> this.validateOpenAction());
     this.addRenderableWidget(this.onOpenActionBox);
     this.saveOnOpenActionButton = this.addRenderableWidget(
-        new Button(this.leftPos + 265, openActionTop, 25, 20, new TextComponent(""), onPress -> {
+        menuButton(this.leftPos + 265, openActionTop, 25, new TextComponent(""), onPress -> {
           String action = this.onOpenActionBox.getValue();
           NetworkHandler.actionChange(uuid, ActionType.ON_OPEN_DIALOG, action);
           this.lastOpenAction = action;
@@ -153,7 +152,7 @@ public class BasicActionConfigurationScreen
     this.onCloseActionBox.setResponder(consumer -> this.validateCloseAction());
     this.addRenderableWidget(this.onCloseActionBox);
     this.saveOnCloseActionButton = this.addRenderableWidget(
-        new Button(this.leftPos + 265, closeActionTop, 25, 20, new TextComponent(""), onPress -> {
+        menuButton(this.leftPos + 265, closeActionTop, 25, new TextComponent(""), onPress -> {
           String action = this.onCloseActionBox.getValue();
           NetworkHandler.actionChange(uuid, ActionType.ON_CLOSE_DIALOG, action);
           this.lastCloseAction = action;
@@ -171,7 +170,7 @@ public class BasicActionConfigurationScreen
     this.onYesActionBox.setResponder(consumer -> this.validateYesAction());
     this.addRenderableWidget(this.onYesActionBox);
     this.saveOnYesActionButton = this.addRenderableWidget(
-        new Button(this.leftPos + 265, yesActionTop, 25, 20, new TextComponent(""), onPress -> {
+        menuButton(this.leftPos + 265, yesActionTop, 25, new TextComponent(""), onPress -> {
           String action = this.onYesActionBox.getValue();
           NetworkHandler.actionChange(uuid, ActionType.ON_YES_SELECTION, action);
           this.lastYesAction = action;
@@ -189,7 +188,7 @@ public class BasicActionConfigurationScreen
     this.onNoActionBox.setResponder(consumer -> this.validateNoAction());
     this.addRenderableWidget(this.onNoActionBox);
     this.saveOnNoActionButton = this.addRenderableWidget(
-        new Button(this.leftPos + 265, noActionTop, 25, 20, new TextComponent(""), onPress -> {
+        menuButton(this.leftPos + 265, noActionTop, 25, new TextComponent(""), onPress -> {
           String action = this.onNoActionBox.getValue();
           NetworkHandler.actionChange(uuid, ActionType.ON_NO_SELECTION, action);
           this.lastNoAction = action;

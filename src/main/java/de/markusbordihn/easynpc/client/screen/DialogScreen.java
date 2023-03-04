@@ -36,6 +36,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -128,6 +129,17 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     this.numberOfDialogLines = Math.min(128 / font.lineHeight, this.cachedDialogComponents.size());
   }
 
+  protected static Button menuButton(int left, int top, int width, String label,
+      Button.OnPress onPress) {
+    return menuButton(left, top, width,
+        new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + label), onPress);
+  }
+
+  protected static Button menuButton(int left, int top, int width, Component label,
+      Button.OnPress onPress) {
+    return new Button(left, top, width, 20, label, onPress);
+  }
+
   @Override
   public void init() {
     if (this.entity == null) {
@@ -162,8 +174,8 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
       boolean smallButtonLayout =
           yesDialogButtonText.length() < 16 && noDialogButtonText.length() < 16;
 
-      this.yesDialogButton = this.addRenderableWidget(new Button(this.leftPos + 70, dialogButtonTop,
-          smallButtonLayout ? 95 : 198, 20, new TextComponent(yesDialogButtonText), onPress -> {
+      this.yesDialogButton = this.addRenderableWidget(menuButton(this.leftPos + 70, dialogButtonTop,
+          smallButtonLayout ? 95 : 198, new TextComponent(yesDialogButtonText), onPress -> {
             String yesDialogText = this.entity.getYesDialog();
             if (!yesDialogText.isBlank()) {
               setDialog(yesDialogText);
@@ -177,11 +189,11 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
             }
           }));
 
-      this.noDialogButton = this.addRenderableWidget(new Button(
+      this.noDialogButton = this.addRenderableWidget(menuButton(
           smallButtonLayout ? this.yesDialogButton.x + this.yesDialogButton.getWidth() + 10
               : this.yesDialogButton.x,
           smallButtonLayout ? dialogButtonTop : dialogButtonTop + 25, smallButtonLayout ? 95 : 198,
-          20, new TextComponent(noDialogButtonText), onPress -> {
+          new TextComponent(noDialogButtonText), onPress -> {
             String noDialogText = this.entity.getNoDialog();
             if (!noDialogText.isBlank()) {
               setDialog(noDialogText);

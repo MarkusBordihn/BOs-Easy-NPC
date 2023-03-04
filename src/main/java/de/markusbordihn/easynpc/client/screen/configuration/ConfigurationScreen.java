@@ -35,6 +35,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -83,6 +84,17 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     if (minecraft != null) {
       minecraft.setScreen((Screen) null);
     }
+  }
+
+  protected static Button menuButton(int left, int top, int width, String label,
+      Button.OnPress onPress) {
+    return menuButton(left, top, width,
+        new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + label), onPress);
+  }
+
+  protected static Button menuButton(int left, int top, int width, Component label,
+      Button.OnPress onPress) {
+    return new Button(left, top, width, 20, label, onPress);
   }
 
   @Override

@@ -21,12 +21,11 @@ package de.markusbordihn.easynpc.client.screen.configuration.pose;
 
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
+
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
@@ -49,16 +48,14 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
 
     // Pose Types
     int poseButtonWidth = 80;
-    this.defaultPoseButton = this
-        .addRenderableWidget(new Button(this.buttonLeftPos, this.buttonTopPos, poseButtonWidth, 20,
-            new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "default_pose"), button -> {
-              NetworkHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_POSE);
-            }));
+    this.defaultPoseButton = this.addRenderableWidget(menuButton(this.buttonLeftPos,
+        this.buttonTopPos, poseButtonWidth, "default_pose", button -> {
+          NetworkHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_POSE);
+        }));
 
     this.customPoseButton =
-        this.addRenderableWidget(new Button(this.buttonLeftPos + this.defaultPoseButton.getWidth(),
-            this.buttonTopPos, poseButtonWidth, 20,
-            new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "custom_pose"), button -> {
+        this.addRenderableWidget(menuButton(this.buttonLeftPos + this.defaultPoseButton.getWidth(),
+            this.buttonTopPos, poseButtonWidth, "custom_pose", button -> {
               NetworkHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_POSE);
             }));
 

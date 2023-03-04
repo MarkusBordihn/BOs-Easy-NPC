@@ -104,11 +104,6 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     return menuButton(left, top, 88, label, onPress);
   }
 
-  private Button menuButton(int left, int top, int width, String label, Button.OnPress onPress) {
-    return new Button(left, top, width, 20,
-        new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + label), onPress);
-  }
-
   @Override
   public void init() {
     if (this.entity == null) {
@@ -199,8 +194,8 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     buttonTopPosition = buttonTopPosition + 20 + buttonSpace;
 
     // Pose Button
-    this.poseButton = this.addRenderableWidget(
-        menuButton(buttonLeftPosition, buttonTopPosition, "pose", onPress -> {
+    this.poseButton = this
+        .addRenderableWidget(menuButton(buttonLeftPosition, buttonTopPosition, "pose", onPress -> {
           ModelPose modelPose = entity.getModelPose();
           switch (modelPose) {
             case CUSTOM:
