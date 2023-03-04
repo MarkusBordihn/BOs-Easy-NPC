@@ -42,7 +42,7 @@ public class Humanoid extends EasyNPCEntity {
 
   // Skin Details
   public enum Variant {
-    JAYJASONBO, PROFESSOR_01, SECURITY_01, STEVE
+    ALEX, ARI, EFE, KAI, MAKENA, NOOR, STEVE, SUNNY, ZURI, JAYJASONBO, PROFESSOR_01, SECURITY_01
   }
 
   public Humanoid(EntityType<? extends EasyNPCEntity> entityType, Level level, Enum<?> variant) {

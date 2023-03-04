@@ -19,19 +19,23 @@
 
 package de.markusbordihn.easynpc.client.screen;
 
+import java.util.Optional;
+import java.util.UUID;
+
+import org.joml.Quaternionf;
+
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.skin.SkinType;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.network.chat.Component;
-import org.joml.Quaternionf;
 
-import java.util.Optional;
-import java.util.UUID;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.Profession;
+import de.markusbordihn.easynpc.skin.SkinType;
 
 public class ScreenHelper {
 
@@ -49,10 +53,10 @@ public class ScreenHelper {
     PoseStack poseStack1 = new PoseStack();
     poseStack1.translate(0.0D, 0.0D, 1000.0D);
     poseStack1.scale(scale, scale, scale);
-    Quaternionf quaternion = new Quaternionf(0, 0, 1,0).rotateZ(180.0F);
-    Quaternionf quaternion1 = new Quaternionf(1, 0, 0,0).rotateX(f1 * 20.0F);
-    quaternion.mul(quaternion1);
-    poseStack1.mulPose(quaternion);
+    Quaternionf quaternionf = (new Quaternionf()).rotateZ((float) Math.PI);
+    Quaternionf quaternionf1 = (new Quaternionf()).rotateX(f1 * 20.0F * ((float) Math.PI / 180F));
+    quaternionf.mul(quaternionf1);
+    poseStack1.mulPose(quaternionf);
 
     // Backup entity information
     Component entityCustomName = entity.getCustomName();
@@ -83,8 +87,8 @@ public class ScreenHelper {
     Lighting.setupForEntityInInventory();
     EntityRenderDispatcher entityRenderDispatcher =
         Minecraft.getInstance().getEntityRenderDispatcher();
-    quaternion1.conjugate();
-    entityRenderDispatcher.overrideCameraOrientation(quaternion1);
+    quaternionf1.conjugate();
+    entityRenderDispatcher.overrideCameraOrientation(quaternionf1);
     entityRenderDispatcher.setRenderShadow(false);
     MultiBufferSource.BufferSource multiBuffer =
         Minecraft.getInstance().renderBuffers().bufferSource();
@@ -174,12 +178,12 @@ public class ScreenHelper {
   }
 
   public static void renderEntityDefaultSkin(int x, int y, float yRot, float xRot,
-      EasyNPCEntity entity, Enum<?> variant, Enum<?> profession) {
+      EasyNPCEntity entity, Enum<?> variant, Profession profession) {
 
     // Backup entity information
     SkinType entitySkinType = entity.getSkinType();
     Enum<?> entityVariant = entity.getVariant();
-    Enum<?> entityProfession = entity.getProfession();
+    Profession entityProfession = entity.getProfession();
 
     // Adjust entity information for rendering
     entity.setSkinType(SkinType.DEFAULT);

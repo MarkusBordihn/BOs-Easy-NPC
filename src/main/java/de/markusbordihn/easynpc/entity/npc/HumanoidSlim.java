@@ -42,7 +42,7 @@ public class HumanoidSlim extends EasyNPCEntity {
 
   // Skin Details
   public enum Variant {
-    ALEX, KAWORRU;
+    ALEX, ARI, EFE, KAI, MAKENA, NOOR, STEVE, SUNNY, ZURI, KAWORRU;
   }
 
   public HumanoidSlim(EntityType<? extends EasyNPCEntity> entityType, Level level, Enum<?> variant) {

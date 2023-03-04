@@ -19,8 +19,22 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.skin;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
@@ -31,14 +45,6 @@ import de.markusbordihn.easynpc.skin.SkinModel;
 import de.markusbordihn.easynpc.skin.SkinType;
 import de.markusbordihn.easynpc.utils.PlayersUtils;
 import de.markusbordihn.easynpc.utils.TextUtils;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-
-import java.util.*;
 
 public class PlayerSkinConfigurationScreen
     extends SkinConfigurationScreen<PlayerSkinConfigurationMenu> {
@@ -248,27 +254,25 @@ public class PlayerSkinConfigurationScreen
 
     // Add Button
     this.addTextureSettingsButton = this.addRenderableWidget(
-        new EasyNPCButton(this.textureSkinLocationBox.getX() + this.textureSkinLocationBox.getWidth() + 2,
-            this.topPos + 60, 65, 20,
-            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "add"), onPress -> {
+        menuButton(this.textureSkinLocationBox.getX() + this.textureSkinLocationBox.getWidth() + 2,
+            this.topPos + 60, 65, "add", onPress -> {
               this.addTextureSkinLocation();
             }));
     this.addTextureSettingsButton.active = false;
 
     // Clear Texture Buttons
-    this.clearTextureSettingsButton = this.addRenderableWidget(
-        new EasyNPCButton(this.addTextureSettingsButton.getX() + this.addTextureSettingsButton.getWidth() + 1,
-            this.topPos + 60, 55, 20,
-            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "clear"), onPress -> {
-              this.clearTextureSkinLocation();
-            }));
+    this.clearTextureSettingsButton = this.addRenderableWidget(menuButton(
+        this.addTextureSettingsButton.getX() + this.addTextureSettingsButton.getWidth() + 1,
+        this.topPos + 60, 55, "clear", onPress -> {
+          this.clearTextureSkinLocation();
+        }));
 
     // Skin Navigation Buttons
     int skinButtonTop = this.topPos + 187;
     int skinButtonLeft = this.contentLeftPos;
     int skinButtonRight = this.rightPos - 31;
     this.skinPreviousPageButton = this.addRenderableWidget(
-        new EasyNPCButton(skinButtonLeft, skinButtonTop, 20, 20, Component.literal("<<"), onPress -> {
+        menuButton(skinButtonLeft, skinButtonTop, 20, Component.literal("<<"), onPress -> {
           if (this.skinStartIndex - maxSkinsPerPage > 0) {
             skinStartIndex = skinStartIndex - maxSkinsPerPage;
           } else {
@@ -277,14 +281,14 @@ public class PlayerSkinConfigurationScreen
           checkSkinButtonState();
         }));
     this.skinPreviousButton = this.addRenderableWidget(
-        new EasyNPCButton(skinButtonLeft + 20, skinButtonTop, 20, 20, Component.literal("<"), onPress -> {
+        menuButton(skinButtonLeft + 20, skinButtonTop, 20, Component.literal("<"), onPress -> {
           if (this.skinStartIndex > 0) {
             skinStartIndex--;
           }
           checkSkinButtonState();
         }));
     this.skinNextPageButton = this.addRenderableWidget(
-        new EasyNPCButton(skinButtonRight, skinButtonTop, 20, 20, Component.literal(">>"), onPress -> {
+        menuButton(skinButtonRight, skinButtonTop, 20, Component.literal(">>"), onPress -> {
           if (this.skinStartIndex >= 0
               && this.skinStartIndex + this.maxSkinsPerPage < this.numOfSkins) {
             this.skinStartIndex = this.skinStartIndex + this.maxSkinsPerPage;
@@ -296,7 +300,7 @@ public class PlayerSkinConfigurationScreen
           checkSkinButtonState();
         }));
     this.skinNextButton = this.addRenderableWidget(
-        new EasyNPCButton(skinButtonRight - 20, skinButtonTop, 20, 20, Component.literal(">"), onPress -> {
+        menuButton(skinButtonRight - 20, skinButtonTop, 20, Component.literal(">"), onPress -> {
           if (this.skinStartIndex >= 0
               && this.skinStartIndex < this.numOfSkins - this.maxSkinsPerPage) {
             skinStartIndex++;

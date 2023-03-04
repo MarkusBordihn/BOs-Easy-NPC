@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.dialog;
 
-import de.markusbordihn.easynpc.client.screen.configuration.skin.EasyNPCButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
@@ -63,25 +62,22 @@ public class BasicDialogConfigurationScreen
     this.addRenderableWidget(this.dialogBox);
 
     // Save Button
-    this.saveDialogButton =
-        this.addRenderableWidget(new EasyNPCButton(this.contentLeftPos + 26, this.bottomPos - 40, 80, 20,
-            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "save"), onPress -> {
-              NetworkHandler.saveBasicDialog(uuid, this.dialogBox.getValue());
-            }));
+    this.saveDialogButton = this.addRenderableWidget(
+        menuButton(this.contentLeftPos + 26, this.bottomPos - 40, 80, "save", onPress -> {
+          NetworkHandler.saveBasicDialog(uuid, this.dialogBox.getValue());
+        }));
 
     // Chancel Button
-    this.cancelButton =
-        this.addRenderableWidget(new EasyNPCButton(this.rightPos - 120, this.bottomPos - 40, 80, 20,
-            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "cancel"), onPress -> {
-              this.closeScreen();
-            }));
+    this.cancelButton = this.addRenderableWidget(
+        menuButton(this.rightPos - 120, this.bottomPos - 40, 80, "cancel", onPress -> {
+          this.closeScreen();
+        }));
   }
 
   @Override
   public void render(PoseStack poseStack, int x, int y, float partialTicks) {
     super.render(poseStack, x, y, partialTicks);
-    this.font.draw(poseStack,
-        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "dialog_text"),
+    this.font.draw(poseStack, Component.translatable(Constants.TEXT_CONFIG_PREFIX + "dialog_text"),
         this.contentLeftPos, this.topPos + 50f, 4210752);
   }
 

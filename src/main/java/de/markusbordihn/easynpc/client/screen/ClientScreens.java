@@ -32,6 +32,8 @@ import de.markusbordihn.easynpc.client.screen.configuration.dialog.BasicDialogCo
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.YesNoDialogConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.equipment.EquipmentConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.main.MainConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.pose.CustomPoseConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.pose.DefaultPoseConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.scaling.ScalingConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.DefaultSkinConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.PlayerSkinConfigurationScreen;
@@ -68,6 +70,12 @@ public class ClientScreens {
       // Equipment Configuration Screen
       MenuScreens.register(ModMenuTypes.EQUIPMENT_CONFIGURATION_MENU.get(),
           EquipmentConfigurationScreen::new);
+
+      // Pose Configuration Screen
+      MenuScreens.register(ModMenuTypes.DEFAULT_POSE_CONFIGURATION_MENU.get(),
+          DefaultPoseConfigurationScreen::new);
+      MenuScreens.register(ModMenuTypes.CUSTOM_POSE_CONFIGURATION_MENU.get(),
+          CustomPoseConfigurationScreen::new);
 
       // Skin Configuration Screens
       MenuScreens.register(ModMenuTypes.CUSTOM_SKIN_CONFIGURATION_MENU.get(),

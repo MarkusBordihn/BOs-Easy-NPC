@@ -21,6 +21,8 @@ package de.markusbordihn.easynpc.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
+
 import net.minecraft.client.model.ArmedModel;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -28,10 +30,9 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 
 @OnlyIn(Dist.CLIENT)
 public class AllayModel<T extends LivingEntity> extends HierarchicalModel<T> implements ArmedModel {
@@ -56,6 +57,10 @@ public class AllayModel<T extends LivingEntity> extends HierarchicalModel<T> imp
 
   public ModelPart root() {
     return this.root;
+  }
+
+  public ModelPart getHead() {
+    return this.head;
   }
 
   public static LayerDefinition createBodyLayer() {
@@ -99,8 +104,8 @@ public class AllayModel<T extends LivingEntity> extends HierarchicalModel<T> imp
   public void translateToHand(HumanoidArm humanoidArm, PoseStack poseStack) {
     this.root.translateAndRotate(poseStack);
     this.body.translateAndRotate(poseStack);
-    poseStack.translate(0.0D, -0.09375D, 0.09375D);
-    poseStack.mulPose(new Quaternionf(1, 0, 0, 0).rotateX(this.rightArm.xRot + 0.43633232F));
+    poseStack.translate(0.0F, 0.0625F, 0.1875F);
+    poseStack.mulPose(Axis.XP.rotation(this.rightArm.xRot));
     poseStack.scale(0.7F, 0.7F, 0.7F);
     poseStack.translate(0.0625D, 0.0D, 0.0D);
   }

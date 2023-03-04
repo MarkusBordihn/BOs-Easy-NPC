@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.dialog;
 
-import de.markusbordihn.easynpc.client.screen.configuration.skin.EasyNPCButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
@@ -94,20 +93,18 @@ public class YesNoDialogConfigurationScreen
     this.addRenderableWidget(this.noDialogBox);
 
     // Save Button
-    this.saveDialogButton =
-        this.addRenderableWidget(new EasyNPCButton(this.contentLeftPos + 26, this.bottomPos - 40, 80, 20,
-            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "save"), onPress -> {
-              NetworkHandler.saveYesNoDialog(uuid, this.mainDialogBox.getValue(),
-                  this.yesDialogBox.getValue(), this.noDialogBox.getValue(),
-                  this.yesDialogButtonBox.getValue(), this.noDialogButtonBox.getValue());
-            }));
+    this.saveDialogButton = this.addRenderableWidget(
+        menuButton(this.contentLeftPos + 26, this.bottomPos - 40, 80, "save", onPress -> {
+          NetworkHandler.saveYesNoDialog(uuid, this.mainDialogBox.getValue(),
+              this.yesDialogBox.getValue(), this.noDialogBox.getValue(),
+              this.yesDialogButtonBox.getValue(), this.noDialogButtonBox.getValue());
+        }));
 
     // Chancel Button
-    this.cancelButton =
-        this.addRenderableWidget(new EasyNPCButton(this.rightPos - 120, this.bottomPos - 40, 80, 20,
-            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "cancel"), onPress -> {
-              this.closeScreen();
-            }));
+    this.cancelButton = this.addRenderableWidget(
+        menuButton(this.rightPos - 120, this.bottomPos - 40, 80, "cancel", onPress -> {
+          this.closeScreen();
+        }));
   }
 
   @Override

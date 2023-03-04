@@ -19,8 +19,6 @@
 
 package de.markusbordihn.easynpc;
 
-import de.markusbordihn.easynpc.tabs.EasyNPCTab;
-import net.minecraftforge.event.CreativeModeTabEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,6 +35,7 @@ import de.markusbordihn.easynpc.entity.npc.ModEntityType;
 import de.markusbordihn.easynpc.item.ModItems;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.tabs.EasyNPCTab;
 import de.markusbordihn.easynpc.utils.StopModReposts;
 
 @Mod(Constants.MOD_ID)
@@ -50,7 +49,6 @@ public class EasyNPC {
     StopModReposts.checkStopModReposts();
 
     modEventBus.addListener(NetworkHandler::registerNetworkHandler);
-    modEventBus.addListener(this::addCreative);
 
     log.info("{} Entity Types ...", Constants.LOG_REGISTER_PREFIX);
     ModEntityType.ENTITY_TYPES.register(modEventBus);
@@ -66,17 +64,7 @@ public class EasyNPC {
       modEventBus.addListener(ModModelLayers::registerEntityLayerDefinitions);
       modEventBus.addListener(ClientRenderer::registerEntityRenderers);
       modEventBus.addListener(ClientScreens::registerScreens);
+      modEventBus.addListener(EasyNPCTab::handleCreativeModeTabRegister);
     });
-  }
-
-  private void addCreative(CreativeModeTabEvent.BuildContents event) {
-    if(event.getTab() == EasyNPCTab.TAB_SPAWN_EGGS) {
-      event.accept(ModItems.SKELETON_NPC_SPAWN_EGG);
-      event.accept(ModItems.ALLAY_NPC_SPAWN_EGG);
-      event.accept(ModItems.FAIRY_NPC_SPAWN_EGG);
-      event.accept(ModItems.VILLAGER_NPC_SPAWN_EGG);
-      event.accept(ModItems.HUMANOID_NPC_SPAWN_EGG);
-      event.accept(ModItems.HUMANOID_SLIM_NPC_SPAWN_EGG);
-    }
   }
 }

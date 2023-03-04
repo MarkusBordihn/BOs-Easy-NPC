@@ -19,15 +19,14 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration;
 
+import java.util.UUID;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.screen.configuration.skin.EasyNPCButton;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.network.NetworkHandler;
-import de.markusbordihn.easynpc.skin.SkinModel;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
@@ -36,12 +35,16 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.util.UUID;
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.skin.SkinModel;
 
 @OnlyIn(Dist.CLIENT)
 public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractContainerScreen<T> {
@@ -81,6 +84,15 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     }
   }
 
+  protected static Button menuButton(int left, int top, int width, String label, Button.OnPress onPress) {
+    return menuButton(left, top, width, Component.translatable(Constants.TEXT_CONFIG_PREFIX + label), onPress);
+  }
+
+  protected static Button menuButton(int left, int top, int width, Component label,
+      Button.OnPress onPress) {
+    return Button.builder(label, onPress).bounds(left, top, width, 20).build();
+  }
+
   @Override
   public void init() {
     super.init();
@@ -109,7 +121,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
 
     // Home Button
     this.homeButton = this.addRenderableWidget(
-        new EasyNPCButton(this.leftPos + 7, this.buttonTopPos, 10, 20, Component.literal("<"), onPress -> {
+        menuButton(this.leftPos + 7, this.buttonTopPos, 10, Component.literal("<"), onPress -> {
           NetworkHandler.openConfiguration(uuid, ConfigurationType.MAIN);
         }));
   }

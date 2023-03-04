@@ -26,6 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
@@ -46,6 +47,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.ModelPose;
 import de.markusbordihn.easynpc.entity.npc.Humanoid.Variant;
 
 @OnlyIn(Dist.CLIENT)
@@ -56,13 +58,24 @@ public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, PlayerModel<Eas
   // Variant Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(new EnumMap<>(Variant.class), map -> {
+        // Build in skins
+        map.put(Variant.ALEX, new ResourceLocation("textures/entity/player/wide/alex.png"));
+        map.put(Variant.ARI, new ResourceLocation("textures/entity/player/wide/ari.png"));
+        map.put(Variant.EFE, new ResourceLocation("textures/entity/player/wide/efe.png"));
+        map.put(Variant.KAI, new ResourceLocation("textures/entity/player/wide/kai.png"));
+        map.put(Variant.MAKENA, new ResourceLocation("textures/entity/player/wide/makena.png"));
+        map.put(Variant.NOOR, new ResourceLocation("textures/entity/player/wide/noor.png"));
+        map.put(Variant.STEVE, new ResourceLocation("textures/entity/player/wide/steve.png"));
+        map.put(Variant.SUNNY, new ResourceLocation("textures/entity/player/wide/sunny.png"));
+        map.put(Variant.ZURI, new ResourceLocation("textures/entity/player/wide/zuri.png"));
+
+        // Custom skins
         map.put(Variant.JAYJASONBO,
             new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/jayjasonbo.png"));
         map.put(Variant.PROFESSOR_01,
             new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/professor_01.png"));
         map.put(Variant.SECURITY_01,
             new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/security_01.png"));
-        map.put(Variant.STEVE, new ResourceLocation("textures/entity/steve.png"));
       });
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.STEVE);
 
@@ -97,6 +110,52 @@ public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, PlayerModel<Eas
     } else {
       poseStack.scale(entity.getScaleX(), entity.getScaleY(), entity.getScaleZ());
     }
+  }
+
+  @Override
+  public void render(EasyNPCEntity entity, float entityYaw, float partialTicks, PoseStack poseStack,
+      net.minecraft.client.renderer.MultiBufferSource buffer, int light) {
+    PlayerModel<EasyNPCEntity> playerModel = this.getModel();
+
+    // Render additional poses
+    if (entity.getModelPose() == ModelPose.DEFAULT) {
+
+      // Crouching
+      playerModel.crouching = entity.isCrouching();
+
+      switch (entity.getPose()) {
+        case DYING:
+          poseStack.translate(-1.0D, 0.0D, 0.0D);
+          poseStack.mulPose(Axis.YP.rotationDegrees(180f));
+          poseStack.mulPose(Axis.ZP.rotationDegrees(this.getFlipDegrees(entity)));
+          poseStack.mulPose(Axis.YP.rotationDegrees(270.0F));
+          playerModel.getHead().xRot = -0.7853982F;
+          playerModel.getHead().yRot = -0.7853982F;
+          playerModel.getHead().zRot = -0.7853982F;
+          break;
+        case LONG_JUMPING:
+          playerModel.leftArmPose = HumanoidModel.ArmPose.CROSSBOW_HOLD;
+          playerModel.rightArmPose = HumanoidModel.ArmPose.SPYGLASS;
+          break;
+        case SLEEPING:
+          poseStack.translate(1.0D, 0.0D, 0.0D);
+          break;
+        case SPIN_ATTACK:
+          playerModel.leftArmPose = HumanoidModel.ArmPose.BLOCK;
+          playerModel.rightArmPose = HumanoidModel.ArmPose.THROW_SPEAR;
+          poseStack.mulPose(Axis.YP.rotationDegrees(-35f));
+          break;
+        default:
+          playerModel.leftArmPose = HumanoidModel.ArmPose.EMPTY;
+          playerModel.rightArmPose = HumanoidModel.ArmPose.EMPTY;
+          playerModel.getHead().xRot = 0F;
+          playerModel.getHead().yRot = 0F;
+          playerModel.getHead().zRot = 0F;
+          break;
+      }
+    }
+
+    super.render(entity, entityYaw, partialTicks, poseStack, buffer, light);
   }
 
   @Override

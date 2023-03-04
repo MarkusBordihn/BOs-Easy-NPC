@@ -19,25 +19,47 @@
 
 package de.markusbordihn.easynpc.tabs;
 
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.item.ModItems;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.CreativeModeTab.Output;
 import net.minecraftforge.event.CreativeModeTabEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = Constants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.item.ModItems;
+
 public class EasyNPCTab {
+
+  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  protected EasyNPCTab() {}
+
   public static CreativeModeTab TAB_SPAWN_EGGS;
 
-  @SubscribeEvent
-  public static void registerCreativeModeTabs(CreativeModeTabEvent.Register event) {
-    TAB_SPAWN_EGGS = event.registerCreativeModeTab(new ResourceLocation(Constants.MOD_ID, "easy_npc"),
-            builder -> {
-              builder.icon(() -> new ItemStack(ModItems.VILLAGER_NPC_SPAWN_EGG.get())).title(Component.translatable("easy_npc.spawn_eggs"));
-            });
+  public static void handleCreativeModeTabRegister(CreativeModeTabEvent.Register event) {
+
+    log.info("{} creative mod tabs ...", Constants.LOG_REGISTER_PREFIX);
+
+    TAB_SPAWN_EGGS = event
+        .registerCreativeModeTab(new ResourceLocation(Constants.MOD_ID, "spawn_eggs"), builder -> {
+          builder.icon(() -> new ItemStack(ModItems.VILLAGER_NPC_SPAWN_EGG.get()))
+              .displayItems(EasyNPCTab::addSpawnEggsTabItems)
+              .title(Component.translatable("itemGroup.easy_npc.spawn_eggs")).build();
+        });
+  }
+
+  private static void addSpawnEggsTabItems(FeatureFlagSet featureFlagSet, Output outputTab,
+      boolean hasPermissions) {
+    outputTab.accept(ModItems.ALLAY_NPC_SPAWN_EGG.get());
+    outputTab.accept(ModItems.FAIRY_NPC_SPAWN_EGG.get());
+    outputTab.accept(ModItems.HUMANOID_NPC_SPAWN_EGG.get());
+    outputTab.accept(ModItems.HUMANOID_SLIM_NPC_SPAWN_EGG.get());
+    outputTab.accept(ModItems.SKELETON_NPC_SPAWN_EGG.get());
+    outputTab.accept(ModItems.VILLAGER_NPC_SPAWN_EGG.get());
   }
 }

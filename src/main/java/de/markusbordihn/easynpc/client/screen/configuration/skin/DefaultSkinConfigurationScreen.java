@@ -19,24 +19,28 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.skin;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.screen.ScreenHelper;
-import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkHandler;
-import de.markusbordihn.easynpc.skin.SkinType;
-import de.markusbordihn.easynpc.utils.TextUtils;
+
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.ArrayList;
-import java.util.List;
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.ScreenHelper;
+import de.markusbordihn.easynpc.entity.Profession;
+import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenu;
+import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.skin.SkinType;
+import de.markusbordihn.easynpc.utils.TextUtils;
 
 @OnlyIn(Dist.CLIENT)
 public class DefaultSkinConfigurationScreen
@@ -55,7 +59,7 @@ public class DefaultSkinConfigurationScreen
   private int maxSkinsPerPage = 10;
 
   // Cache
-  private Enum<?>[] professions;
+  private Profession[] professions;
   private Enum<?>[] variants;
   protected int numOfProfessions = 0;
   protected int numOfSkins = 0;
@@ -75,7 +79,7 @@ public class DefaultSkinConfigurationScreen
     skinButtons = new ArrayList<>();
     for (int i = skinStartIndex; i < this.numOfSkins && i < skinStartIndex + maxSkinsPerPage; i++) {
       int variantIndex = this.numOfProfessions > 0 ? i / this.numOfProfessions : i;
-      Enum<?> profession =
+      Profession profession =
           this.numOfProfessions > 0 ? this.professions[i - (variantIndex * this.numOfProfessions)]
               : null;
       Enum<?> variant = this.variants[variantIndex];
@@ -107,7 +111,7 @@ public class DefaultSkinConfigurationScreen
   }
 
   private void renderSkinEntity(PoseStack poseStack, int x, int y, Enum<?> variant,
-      Enum<?> profession) {
+      Profession profession) {
 
     // Create dynamically button for each skin variant and profession.
     int skinButtonLeft = x - 24;
@@ -180,8 +184,8 @@ public class DefaultSkinConfigurationScreen
     int skinButtonTop = this.topPos + 212;
     int skinButtonLeft = this.contentLeftPos;
     int skinButtonRight = this.leftPos + 269;
-    this.skinPreviousPageButton = this.addRenderableWidget(new EasyNPCButton(skinButtonLeft, skinButtonTop,
-        20, 20, Component.translatable("<<"), onPress -> {
+    this.skinPreviousPageButton = this.addRenderableWidget(
+        menuButton(skinButtonLeft, skinButtonTop, 20, Component.translatable("<<"), onPress -> {
           if (this.skinStartIndex - maxSkinsPerPage > 0) {
             skinStartIndex = skinStartIndex - maxSkinsPerPage;
           } else {
@@ -189,15 +193,15 @@ public class DefaultSkinConfigurationScreen
           }
           checkSkinButtonState();
         }));
-    this.skinPreviousButton = this.addRenderableWidget(new EasyNPCButton(skinButtonLeft + 20,
-        skinButtonTop, 20, 20, Component.translatable("<"), onPress -> {
+    this.skinPreviousButton = this.addRenderableWidget(
+        menuButton(skinButtonLeft + 20, skinButtonTop, 20, Component.translatable("<"), onPress -> {
           if (this.skinStartIndex > 0) {
             skinStartIndex--;
           }
           checkSkinButtonState();
         }));
-    this.skinNextPageButton = this.addRenderableWidget(new EasyNPCButton(skinButtonRight, skinButtonTop,
-        20, 20, Component.translatable(">>"), onPress -> {
+    this.skinNextPageButton = this.addRenderableWidget(
+        menuButton(skinButtonRight, skinButtonTop, 20, Component.translatable(">>"), onPress -> {
           if (this.skinStartIndex >= 0
               && this.skinStartIndex + this.maxSkinsPerPage < this.numOfSkins) {
             this.skinStartIndex = this.skinStartIndex + this.maxSkinsPerPage;
@@ -208,8 +212,8 @@ public class DefaultSkinConfigurationScreen
           }
           checkSkinButtonState();
         }));
-    this.skinNextButton = this.addRenderableWidget(new EasyNPCButton(skinButtonRight - 20, skinButtonTop,
-        20, 20, Component.translatable(">"), onPress -> {
+    this.skinNextButton = this.addRenderableWidget(menuButton(skinButtonRight - 20, skinButtonTop,
+        20, Component.translatable(">"), onPress -> {
           if (this.skinStartIndex >= 0
               && this.skinStartIndex < this.numOfSkins - this.maxSkinsPerPage) {
             skinStartIndex++;

@@ -19,16 +19,18 @@
 
 package de.markusbordihn.easynpc.utils;
 
-import cpw.mods.modlauncher.Launcher;
-import cpw.mods.modlauncher.api.IEnvironment;
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.EasyNPC;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.regex.Pattern;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import cpw.mods.modlauncher.Launcher;
+import cpw.mods.modlauncher.api.IEnvironment;
+
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.EasyNPC;
 
 public class StopModReposts {
 

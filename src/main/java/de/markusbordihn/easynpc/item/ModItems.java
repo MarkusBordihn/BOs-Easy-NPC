@@ -19,16 +19,23 @@
 
 package de.markusbordihn.easynpc.item;
 
-import de.markusbordihn.easynpc.Annotations.TemplateEntryPoint;
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.npc.*;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.material.MaterialColor;
+
+import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.npc.Allay;
+import de.markusbordihn.easynpc.entity.npc.Fairy;
+import de.markusbordihn.easynpc.entity.npc.Humanoid;
+import de.markusbordihn.easynpc.entity.npc.HumanoidSlim;
+import de.markusbordihn.easynpc.entity.npc.ModEntityType;
+import de.markusbordihn.easynpc.entity.npc.Skeleton;
+import de.markusbordihn.easynpc.entity.npc.Villager;
 
 public class ModItems {
 
@@ -39,11 +46,8 @@ public class ModItems {
   public static final DeferredRegister<Item> ITEMS =
       DeferredRegister.create(ForgeRegistries.ITEMS, Constants.MOD_ID);
 
-  @TemplateEntryPoint("Register Items")
+  // Default NPC Items
 
-  @TemplateEntryPoint("Register Block Items")
-
-  @TemplateEntryPoint("Register Spawn Eggs")
 
   // Default NPC Entity Spawn Eggs
   private static final String SPAWN_EGG_PREFIX = "_spawn_egg";
@@ -51,37 +55,31 @@ public class ModItems {
   public static final RegistryObject<Item> ALLAY_NPC_SPAWN_EGG =
       ITEMS.register(Allay.ID + SPAWN_EGG_PREFIX,
           () -> new ForgeSpawnEggItem(ModEntityType.ALLAY::get, MaterialColor.COLOR_BLUE.col,
-              MaterialColor.COLOR_CYAN.col,
-              new Item.Properties().rarity(Rarity.EPIC)));
+              MaterialColor.COLOR_CYAN.col, new Item.Properties().rarity(Rarity.EPIC)));
 
   public static final RegistryObject<Item> FAIRY_NPC_SPAWN_EGG =
       ITEMS.register(Fairy.ID + SPAWN_EGG_PREFIX,
           () -> new ForgeSpawnEggItem(ModEntityType.FAIRY::get, MaterialColor.COLOR_RED.col,
-              MaterialColor.COLOR_GREEN.col,
-              new Item.Properties().rarity(Rarity.EPIC)));
+              MaterialColor.COLOR_GREEN.col, new Item.Properties().rarity(Rarity.EPIC)));
 
   public static final RegistryObject<Item> HUMANOID_NPC_SPAWN_EGG =
       ITEMS.register(Humanoid.ID + SPAWN_EGG_PREFIX,
           () -> new ForgeSpawnEggItem(ModEntityType.HUMANOID::get, MaterialColor.COLOR_RED.col,
-              MaterialColor.COLOR_GREEN.col,
-              new Item.Properties().rarity(Rarity.EPIC)));
+              MaterialColor.COLOR_GREEN.col, new Item.Properties().rarity(Rarity.EPIC)));
 
   public static final RegistryObject<Item> HUMANOID_SLIM_NPC_SPAWN_EGG =
       ITEMS.register(HumanoidSlim.ID + SPAWN_EGG_PREFIX,
           () -> new ForgeSpawnEggItem(ModEntityType.HUMANOID_SLIM::get, MaterialColor.COLOR_RED.col,
-              MaterialColor.COLOR_PINK.col,
-              new Item.Properties().rarity(Rarity.EPIC)));
+              MaterialColor.COLOR_PINK.col, new Item.Properties().rarity(Rarity.EPIC)));
 
   public static final RegistryObject<Item> SKELETON_NPC_SPAWN_EGG =
       ITEMS.register(Skeleton.ID + SPAWN_EGG_PREFIX,
           () -> new ForgeSpawnEggItem(ModEntityType.SKELETON::get, MaterialColor.COLOR_BLACK.col,
-              MaterialColor.COLOR_GRAY.col,
-              new Item.Properties().rarity(Rarity.EPIC)));
+              MaterialColor.COLOR_GRAY.col, new Item.Properties().rarity(Rarity.EPIC)));
 
   public static final RegistryObject<Item> VILLAGER_NPC_SPAWN_EGG =
-     ITEMS.register(Villager.ID + SPAWN_EGG_PREFIX,
+      ITEMS.register(Villager.ID + SPAWN_EGG_PREFIX,
           () -> new ForgeSpawnEggItem(ModEntityType.VILLAGER::get, MaterialColor.COLOR_RED.col,
-              MaterialColor.COLOR_YELLOW.col,
-              new Item.Properties().rarity(Rarity.EPIC)));
+              MaterialColor.COLOR_YELLOW.col, new Item.Properties().rarity(Rarity.EPIC)));
 
 }

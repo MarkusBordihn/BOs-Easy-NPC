@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.scaling;
 
-import de.markusbordihn.easynpc.client.screen.configuration.skin.EasyNPCButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -74,9 +73,8 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
               }
               this.defaultScaleXButton.active = scale != entity.getDefaultScaleX();
             }));
-    this.defaultScaleXButton = this.addRenderableWidget(new EasyNPCButton(scalePositionLeft,
-        scalePositionTop + this.scaleXSliderButton.getHeight(), scaleWidth, 20,
-        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "reset"), button -> {
+    this.defaultScaleXButton = this.addRenderableWidget(menuButton(scalePositionLeft,
+        scalePositionTop + this.scaleXSliderButton.getHeight(), scaleWidth, "reset", button -> {
           this.scaleXSliderButton.setDefaultValue(entity.getDefaultScaleX());
         }));
     this.defaultScaleXButton.active =
@@ -92,9 +90,8 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
               }
               this.defaultScaleYButton.active = scale != entity.getDefaultScaleY();
             }));
-    this.defaultScaleYButton = this.addRenderableWidget(new EasyNPCButton(scalePositionLeft,
-        scalePositionTop + this.scaleYSliderButton.getHeight() + scalePositionSpace, scaleWidth, 20,
-        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "reset"), button -> {
+    this.defaultScaleYButton = this.addRenderableWidget(menuButton(scalePositionLeft,
+        scalePositionTop + this.scaleYSliderButton.getHeight() + scalePositionSpace, scaleWidth, "reset", button -> {
           this.scaleYSliderButton.setDefaultValue(entity.getDefaultScaleY());
         }));
     this.defaultScaleYButton.active =
@@ -110,9 +107,9 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
               }
               this.defaultScaleZButton.active = scale != entity.getDefaultScaleZ();
             }));
-    this.defaultScaleZButton = this.addRenderableWidget(new EasyNPCButton(scalePositionLeft,
+    this.defaultScaleZButton = this.addRenderableWidget(menuButton(scalePositionLeft,
         scalePositionTop + this.scaleZSliderButton.getHeight() + scalePositionSpace * 2, scaleWidth,
-        20, Component.translatable(Constants.TEXT_CONFIG_PREFIX + "reset"), button -> {
+        "reset", button -> {
           this.scaleZSliderButton.setDefaultValue(entity.getDefaultScaleZ());
         }));
     this.defaultScaleZButton.active =

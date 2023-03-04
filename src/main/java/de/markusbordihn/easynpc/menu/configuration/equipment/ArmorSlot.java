@@ -40,8 +40,6 @@ public class ArmorSlot extends Slot {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  public static final ResourceLocation BLOCK_ATLAS =
-      new ResourceLocation(Constants.MOD_ID, "textures/atlas/blocks.png");
   public static final ResourceLocation EMPTY_ARMOR_SLOT_HELMET =
       new ResourceLocation(Constants.MOD_ID, "item/empty_armor/empty_armor_slot_helmet");
   public static final ResourceLocation EMPTY_ARMOR_SLOT_CHESTPLATE =

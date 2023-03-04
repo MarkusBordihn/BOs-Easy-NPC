@@ -41,6 +41,8 @@ import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurati
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.pose.CustomPoseConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.scaling.ScalingConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenu;
@@ -141,6 +143,45 @@ public class EasyNPCEntityMenu {
       public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
           Player serverPlayer) {
         return new MainConfigurationMenu(windowId, inventory, uuid);
+      }
+    };
+    NetworkHooks.openScreen(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));
+  }
+
+  public static void openCustomPoseConfigurationMenu(ServerPlayer serverPlayer,
+      EasyNPCEntity entity) {
+    UUID uuid = entity.getUUID();
+    MenuProvider provider = new MenuProvider() {
+      @Override
+      public Component getDisplayName() {
+        return Component.literal("Custom Pose for " + entity.getName().getString());
+      }
+
+      @Nullable
+      @Override
+      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
+          Player serverPlayer) {
+        return new CustomPoseConfigurationMenu(windowId, inventory, uuid);
+      }
+    };
+    NetworkHooks.openScreen(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));
+  }
+
+
+  public static void openDefaultPoseConfigurationMenu(ServerPlayer serverPlayer,
+      EasyNPCEntity entity) {
+    UUID uuid = entity.getUUID();
+    MenuProvider provider = new MenuProvider() {
+      @Override
+      public Component getDisplayName() {
+        return Component.literal("Pose for " + entity.getName().getString());
+      }
+
+      @Nullable
+      @Override
+      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
+          Player serverPlayer) {
+        return new DefaultPoseConfigurationMenu(windowId, inventory, uuid);
       }
     };
     NetworkHooks.openScreen(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));

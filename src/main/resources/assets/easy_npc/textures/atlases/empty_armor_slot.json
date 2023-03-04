@@ -1,0 +1,9 @@
+{
+  "sources": [
+    {
+      "type": "directory",
+      "source": "item/empty_armor",
+      "prefix": "item/empty_armor/"
+    }
+  ]
+}

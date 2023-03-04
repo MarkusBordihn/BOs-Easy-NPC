@@ -17,12 +17,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.configuration.dialog;
+package de.markusbordihn.easynpc.client.screen.configuration.pose;
 
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -32,13 +31,13 @@ import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 
 @OnlyIn(Dist.CLIENT)
-public class DialogConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
+public class PoseConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
 
   // Buttons
-  protected Button basicDialogButton = null;
-  protected Button yesNoDialogButton = null;
+  protected Button defaultPoseButton;
+  protected Button customPoseButton;
 
-  public DialogConfigurationScreen(T menu, Inventory inventory, Component component) {
+  public PoseConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 
@@ -46,20 +45,22 @@ public class DialogConfigurationScreen<T extends ConfigurationMenu> extends Conf
   public void init() {
     super.init();
 
-    // Dialog Types
-    this.basicDialogButton = this.addRenderableWidget(
-        menuButton(this.contentLeftPos, this.buttonTopPos, 80, "basic_dialog", onPress -> {
-          NetworkHandler.openConfiguration(uuid, ConfigurationType.BASIC_DIALOG);
+    // Pose Types
+    int poseButtonWidth = 80;
+    this.defaultPoseButton = this.addRenderableWidget(menuButton(this.buttonLeftPos,
+        this.buttonTopPos, poseButtonWidth, "default_pose", button -> {
+          NetworkHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_POSE);
         }));
-    this.yesNoDialogButton =
-        this.addRenderableWidget(menuButton(this.contentLeftPos + this.basicDialogButton.getWidth(),
-            this.buttonTopPos, 80, "yes_no_dialog", onPress -> {
-              NetworkHandler.openConfiguration(uuid, ConfigurationType.YES_NO_DIALOG);
+
+    this.customPoseButton =
+        this.addRenderableWidget(menuButton(this.buttonLeftPos + this.defaultPoseButton.getWidth(),
+            this.buttonTopPos, poseButtonWidth, "custom_pose", button -> {
+              NetworkHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_POSE);
             }));
 
     // Default button stats
-    this.basicDialogButton.active = true;
-    this.yesNoDialogButton.active = true;
+    this.defaultPoseButton.active = false;
+    this.customPoseButton.active = false;
   }
 
 }

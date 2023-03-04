@@ -37,6 +37,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.npc.Npc;
 import net.minecraft.world.level.Level;
 
@@ -82,14 +83,16 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.OPTIONAL_UUID);
   private static final EntityDataAccessor<String> DATA_DIALOG =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
-  private static final EntityDataAccessor<String> DATA_DIALOG_TYPE =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
+  private static final EntityDataAccessor<DialogType> DATA_DIALOG_TYPE =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, DataSerializers.DIALOG_TYPE);
+  private static final EntityDataAccessor<ModelPose> DATA_MODEL_POSE =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, DataSerializers.MODEL_POSE);
   private static final EntityDataAccessor<String> DATA_NO_DIALOG =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
   private static final EntityDataAccessor<String> DATA_NO_DIALOG_BUTTON =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
-  private static final EntityDataAccessor<String> DATA_PROFESSION =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
+  private static final EntityDataAccessor<Profession> DATA_PROFESSION =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, DataSerializers.PROFESSION);
   private static final EntityDataAccessor<Float> DATA_SCALE_X =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.FLOAT);
   private static final EntityDataAccessor<Float> DATA_SCALE_Y =
@@ -102,8 +105,8 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
   private static final EntityDataAccessor<Optional<UUID>> DATA_SKIN_UUID =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.OPTIONAL_UUID);
-  private static final EntityDataAccessor<String> DATA_SKIN_TYPE =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
+  private static final EntityDataAccessor<SkinType> DATA_SKIN_TYPE =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, DataSerializers.SKIN_TYPE);
   private static final EntityDataAccessor<String> DATA_VARIANT =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
   private static final EntityDataAccessor<String> DATA_YES_DIALOG =
@@ -117,17 +120,19 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
   private static final String DATA_ACTION_PERMISSION_LEVEL_TAG = "ActionPermissionLevel";
   private static final String DATA_DIALOG_TAG = "Dialog";
   private static final String DATA_DIALOG_TYPE_TAG = "DialogType";
+  private static final String DATA_MODEL_POSE_TAG = "ModelPose";
   private static final String DATA_NO_DIALOG_BUTTON_TAG = "NoDialogButton";
   private static final String DATA_NO_DIALOG_TAG = "NoDialog";
   private static final String DATA_OWNER_TAG = "Owner";
+  private static final String DATA_POSE_TAG = "Pose";
   private static final String DATA_PROFESSION_TAG = "Profession";
   private static final String DATA_SCALE_X_TAG = "ScaleX";
   private static final String DATA_SCALE_Y_TAG = "ScaleY";
   private static final String DATA_SCALE_Z_TAG = "ScaleZ";
   private static final String DATA_SKIN_TAG = "Skin";
+  private static final String DATA_SKIN_TYPE_TAG = "SkinType";
   private static final String DATA_SKIN_URL_TAG = "SkinURL";
   private static final String DATA_SKIN_UUID_TAG = "SkinUUID";
-  private static final String DATA_SKIN_TYPE_TAG = "SkinType";
   private static final String DATA_VARIANT_TAG = "Variant";
   private static final String DATA_YES_DIALOG_BUTTON_TAG = "YesDialogButton";
   private static final String DATA_YES_DIALOG_TAG = "YesDialog";
@@ -218,11 +223,19 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
   }
 
   public DialogType getDialogType() {
-    return DialogType.get(this.entityData.get(DATA_DIALOG_TYPE));
+    return this.entityData.get(DATA_DIALOG_TYPE);
   }
 
   public void setDialogType(DialogType dialogType) {
-    this.entityData.set(DATA_DIALOG_TYPE, dialogType != null ? dialogType.name() : "");
+    this.entityData.set(DATA_DIALOG_TYPE, dialogType);
+  }
+
+  public ModelPose getModelPose() {
+    return this.entityData.get(DATA_MODEL_POSE);
+  }
+
+  public void setModelPose(ModelPose modelPose) {
+    this.entityData.set(DATA_MODEL_POSE, modelPose);
   }
 
   public boolean hasDialog() {
@@ -269,24 +282,28 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
     this.entityData.set(DATA_YES_DIALOG_BUTTON, dialogButton);
   }
 
-  public Enum<?> getDefaultProfession() {
+  public Pose getPose(String pose) {
+    return Pose.valueOf(pose);
+  }
+
+  public Profession getDefaultProfession() {
     return Profession.NONE;
   }
 
-  public Enum<?> getProfession() {
-    return getProfession(this.entityData.get(DATA_PROFESSION));
+  public Profession getProfession() {
+    return this.entityData.get(DATA_PROFESSION);
   }
 
-  public Enum<?> getProfession(String name) {
+  public Profession getProfession(String name) {
     return Profession.valueOf(name);
   }
 
-  public void setProfession(Enum<?> profession) {
-    this.entityData.set(DATA_PROFESSION, profession != null ? profession.name() : "");
+  public void setProfession(Profession profession) {
+    this.entityData.set(DATA_PROFESSION, profession);
   }
 
   public void setProfession(String name) {
-    Enum<?> profession = getProfession(name);
+    Profession profession = getProfession(name);
     if (profession != null) {
       setProfession(profession);
     } else {
@@ -298,7 +315,7 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
     return false;
   }
 
-  public Enum<?>[] getProfessions() {
+  public Profession[] getProfessions() {
     return Profession.values();
   }
 
@@ -376,7 +393,7 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
   }
 
   public SkinType getSkinType() {
-    return getSkinType(this.entityData.get(DATA_SKIN_TYPE));
+    return this.entityData.get(DATA_SKIN_TYPE);
   }
 
   public SkinType getSkinType(String name) {
@@ -384,7 +401,7 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
   }
 
   public void setSkinType(SkinType skinType) {
-    this.entityData.set(DATA_SKIN_TYPE, skinType != null ? skinType.name() : "");
+    this.entityData.set(DATA_SKIN_TYPE, skinType);
   }
 
   public void setSkinType(String name) {
@@ -459,18 +476,19 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
     this.entityData.define(DATA_ACTION_DATA, new CompoundTag());
     this.entityData.define(DATA_ACTION_DEBUG, false);
     this.entityData.define(DATA_DIALOG, "");
-    this.entityData.define(DATA_DIALOG_TYPE, DialogType.NONE.name());
+    this.entityData.define(DATA_DIALOG_TYPE, DialogType.NONE);
+    this.entityData.define(DATA_MODEL_POSE, ModelPose.DEFAULT);
     this.entityData.define(DATA_NO_DIALOG, "");
     this.entityData.define(DATA_NO_DIALOG_BUTTON, "No");
     this.entityData.define(DATA_OWNER_UUID_ID, Optional.empty());
-    this.entityData.define(DATA_PROFESSION, this.getDefaultProfession().name());
+    this.entityData.define(DATA_PROFESSION, this.getDefaultProfession());
     this.entityData.define(DATA_SCALE_X, this.getDefaultScaleX());
     this.entityData.define(DATA_SCALE_Y, this.getDefaultScaleY());
     this.entityData.define(DATA_SCALE_Z, this.getDefaultScaleZ());
     this.entityData.define(DATA_SKIN, "");
     this.entityData.define(DATA_SKIN_URL, "");
     this.entityData.define(DATA_SKIN_UUID, Optional.empty());
-    this.entityData.define(DATA_SKIN_TYPE, SkinType.DEFAULT.name());
+    this.entityData.define(DATA_SKIN_TYPE, SkinType.DEFAULT);
     this.entityData.define(DATA_VARIANT, this.getDefaultVariant().name());
     this.entityData.define(DATA_YES_DIALOG, "");
     this.entityData.define(DATA_YES_DIALOG_BUTTON, "Yes");
@@ -484,11 +502,14 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
     }
     compoundTag.putInt(DATA_ACTION_PERMISSION_LEVEL_TAG, this.getActionPermissionLevel());
     compoundTag.putBoolean(DATA_ACTION_DEBUG_TAG, this.getActionDebug());
+    if (this.getDialog() != null) {
+      compoundTag.putString(DATA_DIALOG_TAG, this.getDialog());
+    }
     if (this.getDialogType() != null) {
       compoundTag.putString(DATA_DIALOG_TYPE_TAG, this.getDialogType().name());
     }
-    if (this.getDialog() != null) {
-      compoundTag.putString(DATA_DIALOG_TAG, this.getDialog());
+    if (this.getModelPose() != null) {
+      compoundTag.putString(DATA_MODEL_POSE_TAG, this.getModelPose().name());
     }
     if (this.getNoDialog() != null) {
       compoundTag.putString(DATA_NO_DIALOG_TAG, this.getNoDialog());
@@ -504,6 +525,9 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
     }
     if (this.getOwnerUUID() != null) {
       compoundTag.putUUID(DATA_OWNER_TAG, this.getOwnerUUID());
+    }
+    if (this.getPose() != null) {
+      compoundTag.putString(DATA_POSE_TAG, this.getPose().name());
     }
     if (this.getProfession() != null) {
       compoundTag.putString(DATA_PROFESSION_TAG, this.getProfession().name());
@@ -547,16 +571,22 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
     if (compoundTag.contains(DATA_ACTION_PERMISSION_LEVEL_TAG)) {
       this.setActionPermissionLevel(compoundTag.getInt(DATA_ACTION_PERMISSION_LEVEL_TAG));
     }
+    if (compoundTag.contains(DATA_DIALOG_TAG)) {
+      String dialog = compoundTag.getString(DATA_DIALOG_TAG);
+      if (dialog != null) {
+        this.setDialog(dialog);
+      }
+    }
     if (compoundTag.contains(DATA_DIALOG_TYPE_TAG)) {
       String dialogType = compoundTag.getString(DATA_DIALOG_TYPE_TAG);
       if (dialogType != null && !dialogType.isEmpty()) {
         this.setDialogType(DialogType.get(dialogType));
       }
     }
-    if (compoundTag.contains(DATA_DIALOG_TAG)) {
-      String dialog = compoundTag.getString(DATA_DIALOG_TAG);
-      if (dialog != null) {
-        this.setDialog(dialog);
+    if (compoundTag.contains(DATA_MODEL_POSE_TAG)) {
+      String modelPose = compoundTag.getString(DATA_MODEL_POSE_TAG);
+      if (modelPose != null && !modelPose.isEmpty()) {
+        this.setModelPose(ModelPose.get(modelPose));
       }
     }
     if (compoundTag.contains(DATA_NO_DIALOG_TAG)) {
@@ -587,6 +617,12 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
       UUID uuid = compoundTag.getUUID(DATA_OWNER_TAG);
       if (uuid != null) {
         this.setOwnerUUID(uuid);
+      }
+    }
+    if (compoundTag.contains(DATA_POSE_TAG)) {
+      String pose = compoundTag.getString(DATA_POSE_TAG);
+      if (pose != null && !pose.isEmpty()) {
+        this.setPose(this.getPose(pose));
       }
     }
     if (compoundTag.contains(DATA_PROFESSION_TAG)) {

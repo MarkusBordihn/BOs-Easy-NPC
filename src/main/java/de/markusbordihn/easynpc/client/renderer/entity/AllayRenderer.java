@@ -23,6 +23,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 
 import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -39,6 +40,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.AllayModel;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.ModelPose;
 import de.markusbordihn.easynpc.entity.npc.Allay.Variant;
 
 @OnlyIn(Dist.CLIENT)
@@ -77,6 +79,41 @@ public class AllayRenderer extends MobRenderer<EasyNPCEntity, AllayModel<EasyNPC
     } else {
       poseStack.scale(entity.getScaleX(), entity.getScaleY(), entity.getScaleZ());
     }
+  }
+
+  @Override
+  public void render(EasyNPCEntity entity, float entityYaw, float partialTicks, PoseStack poseStack,
+      net.minecraft.client.renderer.MultiBufferSource buffer, int light) {
+    AllayModel<EasyNPCEntity> playerModel = this.getModel();
+
+    // Render additional poses
+    if (entity.getModelPose() == ModelPose.DEFAULT) {
+
+      switch (entity.getPose()) {
+        case DYING:
+          poseStack.translate(-0.25D, 0.0D, 0.0D);
+          poseStack.mulPose(Axis.YP.rotationDegrees(180f));
+          poseStack.mulPose(Axis.ZP.rotationDegrees(this.getFlipDegrees(entity)));
+          poseStack.mulPose(Axis.YP.rotationDegrees(270.0F));
+          playerModel.getHead().xRot = -0.7853982F;
+          playerModel.getHead().yRot = -0.7853982F;
+          playerModel.getHead().zRot = -0.7853982F;
+          break;
+        case SLEEPING:
+          poseStack.translate(0.25D, 0.0D, 0.0D);
+          break;
+        case SPIN_ATTACK:
+          poseStack.mulPose(Axis.YP.rotationDegrees(-35f));
+          break;
+        default:
+          playerModel.getHead().xRot = 0F;
+          playerModel.getHead().yRot = 0F;
+          playerModel.getHead().zRot = 0F;
+          break;
+      }
+    }
+
+    super.render(entity, entityYaw, partialTicks, poseStack, buffer, light);
   }
 
   @Override
