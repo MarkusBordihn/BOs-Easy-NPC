@@ -34,6 +34,7 @@ import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.network.chat.Component;
 
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.Profession;
 import de.markusbordihn.easynpc.skin.SkinType;
 
 public class ScreenHelper {
@@ -172,12 +173,12 @@ public class ScreenHelper {
   }
 
   public static void renderEntityDefaultSkin(int x, int y, float yRot, float xRot,
-      EasyNPCEntity entity, Enum<?> variant, Enum<?> profession) {
+      EasyNPCEntity entity, Enum<?> variant, Profession profession) {
 
     // Backup entity information
     SkinType entitySkinType = entity.getSkinType();
     Enum<?> entityVariant = entity.getVariant();
-    Enum<?> entityProfession = entity.getProfession();
+    Profession entityProfession = entity.getProfession();
 
     // Adjust entity information for rendering
     entity.setSkinType(SkinType.DEFAULT);

@@ -38,6 +38,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
+import de.markusbordihn.easynpc.entity.Profession;
 import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 import de.markusbordihn.easynpc.skin.SkinType;
@@ -60,7 +61,7 @@ public class DefaultSkinConfigurationScreen
   private int maxSkinsPerPage = 10;
 
   // Cache
-  private Enum<?>[] professions;
+  private Profession[] professions;
   private Enum<?>[] variants;
   protected int numOfProfessions = 0;
   protected int numOfSkins = 0;
@@ -80,7 +81,7 @@ public class DefaultSkinConfigurationScreen
     skinButtons = new ArrayList<>();
     for (int i = skinStartIndex; i < this.numOfSkins && i < skinStartIndex + maxSkinsPerPage; i++) {
       int variantIndex = this.numOfProfessions > 0 ? i / this.numOfProfessions : i;
-      Enum<?> profession =
+      Profession profession =
           this.numOfProfessions > 0 ? this.professions[i - (variantIndex * this.numOfProfessions)]
               : null;
       Enum<?> variant = this.variants[variantIndex];
@@ -112,7 +113,7 @@ public class DefaultSkinConfigurationScreen
   }
 
   private void renderSkinEntity(PoseStack poseStack, int x, int y, Enum<?> variant,
-      Enum<?> profession) {
+      Profession profession) {
 
     // Create dynamically button for each skin variant and profession.
     int skinButtonLeft = x - 24;

@@ -32,7 +32,6 @@ import net.minecraft.world.level.Level;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.Profession;
 import de.markusbordihn.easynpc.skin.SkinModel;
 import de.markusbordihn.easynpc.utils.TextUtils;
 
@@ -77,21 +76,6 @@ public class Villager extends EasyNPCEntity {
   @Override
   public boolean hasProfessions() {
     return true;
-  }
-
-  @Override
-  public Enum<?>[] getProfessions() {
-    return Profession.values();
-  }
-
-  @Override
-  public Enum<?> getDefaultProfession() {
-    return Profession.NONE;
-  }
-
-  @Override
-  public Enum<?> getProfession(String name) {
-    return Profession.valueOf(name);
   }
 
   @Override

@@ -17,58 +17,70 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.menu.configuration;
+package de.markusbordihn.easynpc.network.message;
 
 import java.util.UUID;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.Pose;
+
+import net.minecraftforge.network.NetworkEvent;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
-import de.markusbordihn.easynpc.skin.SkinModel;
+import de.markusbordihn.easynpc.entity.ModelPose;
 
-public class ConfigurationMenu extends AbstractContainerMenu {
+public class MessagePoseChange {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  // Cache
-  protected final EasyNPCEntity entity;
-  protected final Level level;
-  protected final Player player;
-  protected final SkinModel skinModel;
   protected final UUID uuid;
+  protected final Pose pose;
 
-  public ConfigurationMenu(final MenuType<?> menuType, final int windowId,
-      final Inventory playerInventory, UUID uuid) {
-    super(menuType, windowId);
-
+  public MessagePoseChange(UUID uuid, Pose pose) {
     this.uuid = uuid;
-    this.player = playerInventory.player;
-    this.level = player.getLevel();
-    this.entity = this.level.isClientSide ? EntityManager.getEasyNPCEntityByUUID(uuid)
-        : EntityManager.getEasyNPCEntityByUUID(uuid, (ServerPlayer) player);
-    this.skinModel = this.entity.getSkinModel();
-
-    log.debug("Open configuration menu for {}: {} with player inventory {}", this.uuid, this.entity,
-        playerInventory);
+    this.pose = pose;
   }
 
-  public EasyNPCEntity getEntity() {
-    return this.entity;
+  public Pose getPose() {
+    return this.pose;
   }
 
-  @Override
-  public boolean stillValid(Player player) {
-    return player != null && player.isAlive() && entity != null && entity.isAlive();
+  public UUID getUUID() {
+    return this.uuid;
+  }
+
+  public static void handle(MessagePoseChange message,
+      Supplier<NetworkEvent.Context> contextSupplier) {
+    NetworkEvent.Context context = contextSupplier.get();
+    context.enqueueWork(() -> handlePacket(message, context));
+    context.setPacketHandled(true);
+  }
+
+  public static void handlePacket(MessagePoseChange message, NetworkEvent.Context context) {
+    ServerPlayer serverPlayer = context.getSender();
+    UUID uuid = message.getUUID();
+    if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
+      return;
+    }
+
+    // Validate name.
+    Pose pose = message.getPose();
+    if (pose == null) {
+      log.error("Invalid pose {} for {} from {}", pose, message, serverPlayer);
+      return;
+    }
+
+    // Perform action.
+    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    log.debug("Change pose {} for {} from {}", pose, easyNPCEntity, serverPlayer);
+    easyNPCEntity.setModelPose(ModelPose.DEFAULT);
+    easyNPCEntity.setPose(pose);
   }
 
 }

@@ -28,7 +28,6 @@ import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import de.markusbordihn.easynpc.Annotations.TemplateEntryPoint;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.npc.Fairy;
 import de.markusbordihn.easynpc.entity.npc.Humanoid;
@@ -47,11 +46,8 @@ public class ModItems {
   public static final DeferredRegister<Item> ITEMS =
       DeferredRegister.create(ForgeRegistries.ITEMS, Constants.MOD_ID);
 
-  @TemplateEntryPoint("Register Items")
+  // Default NPC Items
 
-  @TemplateEntryPoint("Register Block Items")
-
-  @TemplateEntryPoint("Register Spawn Eggs")
 
   // Default NPC Entity Spawn Eggs
   private static final String SPAWN_EGG_PREFIX = "_spawn_egg";

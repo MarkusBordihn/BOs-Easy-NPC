@@ -25,7 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.resources.ResourceLocation;
-
+import net.minecraft.world.entity.Pose;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkRegistry;
@@ -33,11 +33,15 @@ import net.minecraftforge.network.simple.SimpleChannel;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.action.ActionType;
+import de.markusbordihn.easynpc.entity.ModelPose;
+import de.markusbordihn.easynpc.entity.Profession;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.message.MessageActionChange;
 import de.markusbordihn.easynpc.network.message.MessageActionDebug;
+import de.markusbordihn.easynpc.network.message.MessageModelPoseChange;
 import de.markusbordihn.easynpc.network.message.MessageNameChange;
 import de.markusbordihn.easynpc.network.message.MessageOpenConfiguration;
+import de.markusbordihn.easynpc.network.message.MessagePoseChange;
 import de.markusbordihn.easynpc.network.message.MessageProfessionChange;
 import de.markusbordihn.easynpc.network.message.MessageRemoveNPC;
 import de.markusbordihn.easynpc.network.message.MessageSaveBasicDialog;
@@ -53,7 +57,7 @@ public class NetworkHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final String PROTOCOL_VERSION = "4";
+  private static final String PROTOCOL_VERSION = "5";
   public static final SimpleChannel INSTANCE =
       NetworkRegistry.newSimpleChannel(new ResourceLocation(Constants.MOD_ID, "network"),
           () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
@@ -96,21 +100,21 @@ public class NetworkHandler {
       }, buffer -> new MessageNameChange(buffer.readUUID(), buffer.readUtf()),
           MessageNameChange::handle);
 
-      // Open Dialog Request: Client -> Server
+      // Open Configuration Screen: Client -> Server
       INSTANCE.registerMessage(id++, MessageOpenConfiguration.class, (message, buffer) -> {
         buffer.writeUUID(message.getUUID());
         buffer.writeUtf(message.getDialogName());
       }, buffer -> new MessageOpenConfiguration(buffer.readUUID(), buffer.readUtf()),
           MessageOpenConfiguration::handle);
 
-      // Save Basic Dialog Request: Client -> Server
+      // Save Basic Dialog: Client -> Server
       INSTANCE.registerMessage(id++, MessageSaveBasicDialog.class, (message, buffer) -> {
         buffer.writeUUID(message.getUUID());
         buffer.writeUtf(message.getDialog());
       }, buffer -> new MessageSaveBasicDialog(buffer.readUUID(), buffer.readUtf()),
           MessageSaveBasicDialog::handle);
 
-      // Save Yes/No Dialog Request: Client -> Server
+      // Save Yes/No Dialog: Client -> Server
       INSTANCE.registerMessage(id++, MessageSaveYesNoDialog.class, (message, buffer) -> {
         buffer.writeUUID(message.getUUID());
         buffer.writeUtf(message.getDialog());
@@ -121,12 +125,26 @@ public class NetworkHandler {
       }, buffer -> new MessageSaveYesNoDialog(buffer.readUUID(), buffer.readUtf(), buffer.readUtf(),
           buffer.readUtf(), buffer.readUtf(), buffer.readUtf()), MessageSaveYesNoDialog::handle);
 
+      // Model Pose Change: Client -> Server
+      INSTANCE.registerMessage(id++, MessageModelPoseChange.class, (message, buffer) -> {
+        buffer.writeUUID(message.getUUID());
+        buffer.writeEnum(message.getModelPose());
+      }, buffer -> new MessageModelPoseChange(buffer.readUUID(), buffer.readEnum(ModelPose.class)),
+          MessageModelPoseChange::handle);
+
+      // Pose Change: Client -> Server
+      INSTANCE.registerMessage(id++, MessagePoseChange.class, (message, buffer) -> {
+        buffer.writeUUID(message.getUUID());
+        buffer.writeEnum(message.getPose());
+      }, buffer -> new MessagePoseChange(buffer.readUUID(), buffer.readEnum(Pose.class)),
+          MessagePoseChange::handle);
+
       // Profession Change: Client -> Server
       INSTANCE.registerMessage(id++, MessageProfessionChange.class, (message, buffer) -> {
         buffer.writeUUID(message.getUUID());
-        buffer.writeUtf(message.getProfession());
-      }, buffer -> new MessageProfessionChange(buffer.readUUID(), buffer.readUtf()),
-          MessageProfessionChange::handle);
+        buffer.writeEnum(message.getProfession());
+      }, buffer -> new MessageProfessionChange(buffer.readUUID(),
+          buffer.readEnum(Profession.class)), MessageProfessionChange::handle);
 
       // Scale Change: Client -> Server
       INSTANCE.registerMessage(id++, MessageScaleChange.class, (message, buffer) -> {
@@ -188,10 +206,24 @@ public class NetworkHandler {
     }
   }
 
+  /** Send model pose change. */
+  public static void modelPoseChange(UUID uuid, ModelPose modelPose) {
+    if (uuid != null && modelPose != null) {
+      INSTANCE.sendToServer(new MessageModelPoseChange(uuid, modelPose));
+    }
+  }
+
+  /** Send pose change. */
+  public static void poseChange(UUID uuid, Pose pose) {
+    if (uuid != null && pose != null) {
+      INSTANCE.sendToServer(new MessagePoseChange(uuid, pose));
+    }
+  }
+
   /** Send profession change. */
-  public static void professionChange(UUID uuid, Enum<?> profession) {
+  public static void professionChange(UUID uuid, Profession profession) {
     if (uuid != null && profession != null) {
-      INSTANCE.sendToServer(new MessageProfessionChange(uuid, profession.name()));
+      INSTANCE.sendToServer(new MessageProfessionChange(uuid, profession));
     }
   }
 
