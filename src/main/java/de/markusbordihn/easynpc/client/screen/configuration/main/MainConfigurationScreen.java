@@ -100,7 +100,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     this.saveNameButton.active = nameValue != null && !this.formerName.equals(nameValue);
   }
 
-  private Button menuButton(int left, int top, String label, Button.OnPress onPress) {
+  private static Button menuButton(int left, int top, String label, Button.OnPress onPress) {
     return menuButton(left, top, 88, label, onPress);
   }
 
