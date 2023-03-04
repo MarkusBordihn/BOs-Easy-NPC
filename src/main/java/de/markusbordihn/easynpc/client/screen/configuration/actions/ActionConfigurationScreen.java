@@ -47,7 +47,7 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
 
     // Action Types
     this.basicActionButton = this.addRenderableWidget(
-        menuButton(this.contentLeftPos, this.buttonTopPos, 80, "basic_actions", onPress -> {
+        menuButton(this.buttonLeftPos, this.buttonTopPos, 80, "basic_actions", onPress -> {
           NetworkHandler.openConfiguration(uuid, ConfigurationType.BASIC_ACTION);
         }));
 

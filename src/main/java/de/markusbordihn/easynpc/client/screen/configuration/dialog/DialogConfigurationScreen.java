@@ -48,11 +48,11 @@ public class DialogConfigurationScreen<T extends ConfigurationMenu> extends Conf
 
     // Dialog Types
     this.basicDialogButton = this.addRenderableWidget(
-        menuButton(this.contentLeftPos, this.buttonTopPos, 80, "basic_dialog", onPress -> {
+        menuButton(this.buttonLeftPos, this.buttonTopPos, 80, "basic_dialog", onPress -> {
           NetworkHandler.openConfiguration(uuid, ConfigurationType.BASIC_DIALOG);
         }));
     this.yesNoDialogButton =
-        this.addRenderableWidget(menuButton(this.contentLeftPos + this.basicDialogButton.getWidth(),
+        this.addRenderableWidget(menuButton(this.buttonLeftPos + this.basicDialogButton.getWidth(),
             this.buttonTopPos, 80, "yes_no_dialog", onPress -> {
               NetworkHandler.openConfiguration(uuid, ConfigurationType.YES_NO_DIALOG);
             }));
