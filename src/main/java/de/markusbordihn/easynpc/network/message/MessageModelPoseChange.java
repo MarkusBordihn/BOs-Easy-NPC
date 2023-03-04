@@ -26,42 +26,43 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Pose;
 
 import net.minecraftforge.network.NetworkEvent;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
-import de.markusbordihn.easynpc.entity.Profession;
+import de.markusbordihn.easynpc.entity.ModelPose;
 
-public class MessageProfessionChange {
+public class MessageModelPoseChange {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   protected final UUID uuid;
-  protected final Profession profession;
+  protected final ModelPose modelPose;
 
-  public MessageProfessionChange(UUID uuid, Profession profession) {
+  public MessageModelPoseChange(UUID uuid, ModelPose modelPose) {
     this.uuid = uuid;
-    this.profession = profession;
+    this.modelPose = modelPose;
   }
 
-  public Profession getProfession() {
-    return this.profession;
+  public ModelPose getModelPose() {
+    return this.modelPose;
   }
 
   public UUID getUUID() {
     return this.uuid;
   }
 
-  public static void handle(MessageProfessionChange message,
+  public static void handle(MessageModelPoseChange message,
       Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessageProfessionChange message, NetworkEvent.Context context) {
+  public static void handlePacket(MessageModelPoseChange message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
     if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
@@ -69,16 +70,17 @@ public class MessageProfessionChange {
     }
 
     // Validate name.
-    Profession profession = message.getProfession();
-    if (profession == null) {
-      log.error("Invalid profession {} for {} from {}", profession, message, serverPlayer);
+    ModelPose modelPose = message.getModelPose();
+    if (modelPose == null) {
+      log.error("Invalid modelPose {} for {} from {}", modelPose, message, serverPlayer);
       return;
     }
 
     // Perform action.
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    log.debug("Change profession {} for {} from {}", profession, easyNPCEntity, serverPlayer);
-    easyNPCEntity.setProfession(profession);
+    log.debug("Change modelPose {} for {} from {}", modelPose, easyNPCEntity, serverPlayer);
+    easyNPCEntity.setModelPose(modelPose);
+    easyNPCEntity.setPose(Pose.STANDING);
   }
 
 }

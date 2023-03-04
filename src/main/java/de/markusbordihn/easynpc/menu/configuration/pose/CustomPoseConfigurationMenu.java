@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Markus Bordihn
+ * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,23 +17,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc;
+package de.markusbordihn.easynpc.menu.configuration.pose;
 
-import java.lang.annotation.Repeatable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import java.util.UUID;
 
-public class Annotations {
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
 
-  @Retention(RetentionPolicy.SOURCE)
-  @Repeatable(TemplateEntryPointContainer.class)
-  public @interface TemplateEntryPoint {
-    String value() default "";
+import de.markusbordihn.easynpc.menu.ModMenuTypes;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
+
+public class CustomPoseConfigurationMenu extends ConfigurationMenu {
+
+  public CustomPoseConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
+    super(ModMenuTypes.CUSTOM_POSE_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
   }
 
-  @Retention(RetentionPolicy.SOURCE)
-  public @interface TemplateEntryPointContainer {
-    public TemplateEntryPoint[] value();
+  public CustomPoseConfigurationMenu(int windowId, Inventory playerInventory,
+      FriendlyByteBuf data) {
+    this(windowId, playerInventory, data.readUUID());
   }
 
 }

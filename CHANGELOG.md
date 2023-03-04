@@ -5,6 +5,12 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### 2023.03.04
+
+- **Breaking Change: Added custom data serialization to support more complex data types. Backup first before install!**
+- Improved performance of server and client processing by using custom data serialization.
+- Added basic pose support for Easy NPC entities.
+
 ### 2023.02.24
 
 - Added basic CarryOn support to block unwanted pickup of NPCs.

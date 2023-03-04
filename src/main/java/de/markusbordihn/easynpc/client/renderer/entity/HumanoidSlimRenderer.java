@@ -23,6 +23,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
@@ -43,6 +44,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.ModelPose;
 import de.markusbordihn.easynpc.entity.npc.HumanoidSlim.Variant;
 
 @OnlyIn(Dist.CLIENT)
@@ -88,6 +90,52 @@ public class HumanoidSlimRenderer extends MobRenderer<EasyNPCEntity, PlayerModel
     } else {
       poseStack.scale(entity.getScaleX(), entity.getScaleY(), entity.getScaleZ());
     }
+  }
+
+  @Override
+  public void render(EasyNPCEntity entity, float entityYaw, float partialTicks, PoseStack poseStack,
+      net.minecraft.client.renderer.MultiBufferSource buffer, int light) {
+    PlayerModel<EasyNPCEntity> playerModel = this.getModel();
+
+    // Render additional poses
+    if (entity.getModelPose() == ModelPose.DEFAULT) {
+
+      // Crouching
+      playerModel.crouching = entity.isCrouching();
+
+      switch (entity.getPose()) {
+        case DYING:
+          poseStack.translate(-1.0D, 0.0D, 0.0D);
+          poseStack.mulPose(Vector3f.YP.rotationDegrees(180f));
+          poseStack.mulPose(Vector3f.ZP.rotationDegrees(this.getFlipDegrees(entity)));
+          poseStack.mulPose(Vector3f.YP.rotationDegrees(270.0F));
+          playerModel.getHead().xRot = -0.7853982F;
+          playerModel.getHead().yRot = -0.7853982F;
+          playerModel.getHead().zRot = -0.7853982F;
+          break;
+        case LONG_JUMPING:
+          playerModel.leftArmPose = HumanoidModel.ArmPose.CROSSBOW_HOLD;
+          playerModel.rightArmPose = HumanoidModel.ArmPose.SPYGLASS;
+          break;
+        case SLEEPING:
+          poseStack.translate(1.0D, 0.0D, 0.0D);
+          break;
+        case SPIN_ATTACK:
+          playerModel.leftArmPose = HumanoidModel.ArmPose.BLOCK;
+          playerModel.rightArmPose = HumanoidModel.ArmPose.THROW_SPEAR;
+          poseStack.mulPose(Vector3f.YP.rotationDegrees(-35f));
+          break;
+        default:
+          playerModel.leftArmPose = HumanoidModel.ArmPose.EMPTY;
+          playerModel.rightArmPose = HumanoidModel.ArmPose.EMPTY;
+          playerModel.getHead().xRot = 0F;
+          playerModel.getHead().yRot = 0F;
+          playerModel.getHead().zRot = 0F;
+          break;
+      }
+    }
+
+    super.render(entity, entityYaw, partialTicks, poseStack, buffer, light);
   }
 
   @Override
