@@ -5,6 +5,11 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### 2023.03.05
+
+- Added Easy NPC wand to select and configure NPCs without directly targeting them.
+- Added position screen for easier positioning of NPCs.
+
 ### 2023.03.04
 
 - **Breaking Change: Added custom data serialization to support more complex data types. Backup first before install!**

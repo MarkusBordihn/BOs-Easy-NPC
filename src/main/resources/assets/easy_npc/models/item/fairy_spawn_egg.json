@@ -1,3 +1,7 @@
 {
-  "parent": "easy_npc:item/template/spawn_egg"
+  "parent": "easy_npc:item/template/spawn_egg",
+  "textures": {
+    "layer0": "easy_npc:item/spawn_egg/fairy",
+    "layer1": "easy_npc:item/spawn_egg/overlay"
+  }
 }

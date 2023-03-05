@@ -7,6 +7,7 @@ public enum ConfigurationType {
   CUSTOM_POSE,
   CUSTOM_SKIN,
   DEFAULT_POSE,
+  DEFAULT_POSITION,
   DEFAULT_SKIN,
   EQUIPMENT,
   MAIN,

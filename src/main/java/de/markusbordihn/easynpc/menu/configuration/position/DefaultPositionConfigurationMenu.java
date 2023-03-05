@@ -17,28 +17,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.tabs;
+package de.markusbordihn.easynpc.menu.configuration.position;
 
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
+import java.util.UUID;
 
-import de.markusbordihn.easynpc.item.ModItems;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
 
-public class EasyNPCTab {
+import de.markusbordihn.easynpc.menu.ModMenuTypes;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 
-  protected EasyNPCTab() {}
+public class DefaultPositionConfigurationMenu extends ConfigurationMenu {
 
-  public static final CreativeModeTab TAB_SPAWN_EGGS = new CreativeModeTab("easy_npc.spawn_eggs") {
-    public ItemStack makeIcon() {
-      return new ItemStack(ModItems.FAIRY_NPC_SPAWN_EGG.get());
-    }
-  };
+  public DefaultPositionConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
+    super(ModMenuTypes.DEFAULT_POSITION_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
+  }
 
-  public static final CreativeModeTab TAB_CONFIG_ITEMS =
-      new CreativeModeTab("easy_npc.config_items") {
-        public ItemStack makeIcon() {
-          return new ItemStack(ModItems.EASY_NPC_WAND.get());
-        }
-      };
+  public DefaultPositionConfigurationMenu(int windowId, Inventory playerInventory,
+      FriendlyByteBuf data) {
+    this(windowId, playerInventory, data.readUUID());
+  }
 
 }

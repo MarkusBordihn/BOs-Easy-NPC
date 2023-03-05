@@ -5,6 +5,8 @@
   "entity.easy_npc.skeleton": "Skelett",
   "entity.easy_npc.villager": "Dorfbewohner",
 
+  "item.easy_npc.easy_npc_wand": "EasyNPC Stab",
+
   "item.easy_npc.fairy_spawn_egg": "Elfen NPC Spawn-Ei",
   "item.easy_npc.humanoid_slim_spawn_egg": "Humanoides (schl.) NPC-Spawn-Ei",
   "item.easy_npc.humanoid_spawn_egg": "Humanoides NPC-Spawn-Ei",
@@ -21,6 +23,7 @@
   "text.easy_npc.config.custom_skin": "Benutzerdefiniert",
   "text.easy_npc.config.debug": "Debuggen",
   "text.easy_npc.config.default_pose": "Standard",
+  "text.easy_npc.config.default_position": "Standard",
   "text.easy_npc.config.default_skin": "Standard",
   "text.easy_npc.config.delete": "Löschen",
   "text.easy_npc.config.dialog": "Dialog",
@@ -43,6 +46,7 @@
   "text.easy_npc.config.pose.spin_attack": "Drehender Angriff",
   "text.easy_npc.config.pose.standing": "Stehen",
   "text.easy_npc.config.pose.swimming": "Schwimmen",
+  "text.easy_npc.config.position": "Position",
   "text.easy_npc.config.processing_skin": "Skin wird verarbeitet, bitte warten ...",
   "text.easy_npc.config.question": "Frage",
   "text.easy_npc.config.reset": "Zurücksetzen",
@@ -59,9 +63,12 @@
   "text.easy_npc.config.yes_answer": "Ja - Antwort",
   "text.easy_npc.config.yes_no_dialog": "Ja/Nein",
 
+  "text.easy_npc.item.easy_npc_wand": "Der Easy NPC-Zauberstab ist ein Konfigurationswerkzeug für Easy NPCs, das eine einfachere Auswahl und Konfiguration von NPCs ermöglicht, ohne dass sie direkt ausgewählt werden müssen.",
+
   "text.easy_npc.removeNPC.deleteButton": "Löschen",
   "text.easy_npc.removeNPC.deleteQuestion": "Sind Sie sicher, dass Sie diesen NPC löschen möchten?",
   "text.easy_npc.removeNPC.deleteWarning": "'%s' wird für immer verloren sein! (Das ist eine sehr lange Zeit!)",
 
-  "itemGroup.easy_npc.spawn_eggs": "Einfache NPC (Spawn-Eier)"
+  "itemGroup.easy_npc.config_items": "EasyNPC - Konfigurationswerkzeuge",
+  "itemGroup.easy_npc.spawn_eggs": "EasyNPC - Spawn-Eier"
 }

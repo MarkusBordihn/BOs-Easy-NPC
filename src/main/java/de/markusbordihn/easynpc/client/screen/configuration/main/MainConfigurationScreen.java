@@ -50,11 +50,12 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
   protected Button editActionButton = null;
   protected Button editDialogButton = null;
   protected Button editEquipmentButton = null;
+  protected Button editPoseButton = null;
+  protected Button editPositionButton = null;
+  protected Button editScalingButton = null;
   protected Button editSkinButton = null;
-  protected Button poseButton = null;
   protected Button removeEntityButton = null;
   protected Button saveNameButton = null;
-  protected Button scalingButton = null;
   private EditBox nameBox;
 
   // Cache
@@ -184,7 +185,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
         }));
 
     // Scaling Button
-    this.scalingButton = this.addRenderableWidget(
+    this.editScalingButton = this.addRenderableWidget(
         menuButton(this.editEquipmentButton.x + this.editEquipmentButton.getWidth() + buttonSpace,
             buttonTopPosition, "scaling", onPress -> {
               NetworkHandler.openConfiguration(uuid, ConfigurationType.SCALING);
@@ -194,7 +195,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     buttonTopPosition = buttonTopPosition + 20 + buttonSpace;
 
     // Pose Button
-    this.poseButton = this
+    this.editPoseButton = this
         .addRenderableWidget(menuButton(buttonLeftPosition, buttonTopPosition, "pose", onPress -> {
           ModelPose modelPose = entity.getModelPose();
           switch (modelPose) {
@@ -209,6 +210,17 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
           }
         }));
 
+    // Position Button
+    this.editPositionButton = this.addRenderableWidget(
+        menuButton(this.editPoseButton.x + this.editPoseButton.getWidth() + buttonSpace,
+            buttonTopPosition, "position", onPress -> {
+              NetworkHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_POSITION);
+              this.closeScreen();
+            }));
+
+    // Move button position down
+    buttonTopPosition = buttonTopPosition + 20 + buttonSpace;
+
     // Delete Button
     this.removeEntityButton = this.addRenderableWidget(
         menuButton(this.rightPos - 60, this.bottomPos - 30, 50, "delete", onPress -> {
@@ -219,7 +231,6 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
 
   @Override
   public void render(PoseStack poseStack, int x, int y, float partialTicks) {
-    this.renderBackground(poseStack);
     super.render(poseStack, x, y, partialTicks);
     this.xMouse = x;
     this.yMouse = y;

@@ -43,6 +43,7 @@ import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurat
 import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.pose.CustomPoseConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.position.DefaultPositionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.scaling.ScalingConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenu;
@@ -182,6 +183,25 @@ public class EasyNPCEntityMenu {
       public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
           Player serverPlayer) {
         return new DefaultPoseConfigurationMenu(windowId, inventory, uuid);
+      }
+    };
+    NetworkHooks.openScreen(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));
+  }
+
+  public static void openDefaultPositionConfigurationMenu(ServerPlayer serverPlayer,
+      EasyNPCEntity entity) {
+    UUID uuid = entity.getUUID();
+    MenuProvider provider = new MenuProvider() {
+      @Override
+      public Component getDisplayName() {
+        return Component.literal("Position for " + entity.getName().getString());
+      }
+
+      @Nullable
+      @Override
+      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
+          Player serverPlayer) {
+        return new DefaultPositionConfigurationMenu(windowId, inventory, uuid);
       }
     };
     NetworkHooks.openScreen(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));
