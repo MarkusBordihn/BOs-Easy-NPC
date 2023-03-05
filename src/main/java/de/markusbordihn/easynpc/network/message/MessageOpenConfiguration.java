@@ -104,6 +104,9 @@ public class MessageOpenConfiguration {
       case CUSTOM_POSE:
         EasyNPCEntityMenu.openCustomPoseConfigurationMenu(serverPlayer, easyNPCEntity);
         break;
+      case DEFAULT_POSITION:
+        EasyNPCEntityMenu.openDefaultPositionConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
       case PLAYER_SKIN:
         EasyNPCEntityMenu.openPlayerSkinConfigurationMenu(serverPlayer, easyNPCEntity);
         break;

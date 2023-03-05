@@ -39,11 +39,19 @@ public class EasyNPCTab {
 
   protected EasyNPCTab() {}
 
+  public static CreativeModeTab TAB_CONFIG_ITEMS;
   public static CreativeModeTab TAB_SPAWN_EGGS;
 
   public static void handleCreativeModeTabRegister(CreativeModeTabEvent.Register event) {
 
     log.info("{} creative mod tabs ...", Constants.LOG_REGISTER_PREFIX);
+
+    TAB_CONFIG_ITEMS = event.registerCreativeModeTab(
+        new ResourceLocation(Constants.MOD_ID, "config_items"), builder -> {
+          builder.icon(() -> new ItemStack(ModItems.EASY_NPC_WAND.get()))
+              .displayItems(EasyNPCTab::addConfigItemsTabItems)
+              .title(Component.translatable("itemGroup.easy_npc.config_items")).build();
+        });
 
     TAB_SPAWN_EGGS = event
         .registerCreativeModeTab(new ResourceLocation(Constants.MOD_ID, "spawn_eggs"), builder -> {
@@ -51,6 +59,13 @@ public class EasyNPCTab {
               .displayItems(EasyNPCTab::addSpawnEggsTabItems)
               .title(Component.translatable("itemGroup.easy_npc.spawn_eggs")).build();
         });
+
+
+  }
+
+  private static void addConfigItemsTabItems(FeatureFlagSet featureFlagSet, Output outputTab,
+      boolean hasPermissions) {
+    outputTab.accept(ModItems.EASY_NPC_WAND.get());
   }
 
   private static void addSpawnEggsTabItems(FeatureFlagSet featureFlagSet, Output outputTab,

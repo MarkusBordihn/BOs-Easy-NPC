@@ -29,6 +29,7 @@ import net.minecraftforge.registries.RegistryObject;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.configuration.pose.CustomPoseConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.position.DefaultPositionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenu;
@@ -82,6 +83,11 @@ public class ModMenuTypes {
   public static final RegistryObject<MenuType<CustomPoseConfigurationMenu>> CUSTOM_POSE_CONFIGURATION_MENU =
       MENU_TYPES.register("custom_pose_configuration_menu",
           () -> IForgeMenuType.create(CustomPoseConfigurationMenu::new));
+
+  // Position Configuration
+  public static final RegistryObject<MenuType<DefaultPositionConfigurationMenu>> DEFAULT_POSITION_CONFIGURATION_MENU =
+      MENU_TYPES.register("position_configuration_menu",
+          () -> IForgeMenuType.create(DefaultPositionConfigurationMenu::new));
 
   // Skin Configuration
   public static final RegistryObject<MenuType<CustomSkinConfigurationMenu>> CUSTOM_SKIN_CONFIGURATION_MENU =

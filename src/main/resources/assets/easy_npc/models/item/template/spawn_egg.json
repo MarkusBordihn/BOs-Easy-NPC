@@ -1,7 +1,67 @@
 {
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "easy_npc:item/spawn_egg",
-    "layer1": "easy_npc:item/spawn_egg_overlay"
-  }
+	"credit": "Made with Blockbench by Markus Bordihn",
+	"textures": {
+		"particle": "easy_npc:item/spawn_egg/fairy",
+		"layer0": "easy_npc:item/spawn_egg/fairy",
+		"layer1": "easy_npc:item/spawn_egg/overlay"
+	},
+	"elements": [
+		{
+			"name": "layer0",
+			"from": [0, 0, 8],
+			"to": [16, 16, 8],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#layer0"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#layer0"}
+			}
+		},
+		{
+			"name": "layer1",
+			"from": [4, 7.75, 8.1],
+			"to": [12, 15.75, 8.1],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#layer1"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#layer1"}
+			}
+		}
+	],
+	"gui_light": "front",
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [0, 180, 0],
+			"translation": [0, 2.25, -0.5],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [0, 180, 0],
+			"translation": [0, 2.25, -0.5],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"firstperson_righthand": {
+			"translation": [0, 2, 0],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"firstperson_lefthand": {
+			"translation": [0, 2, 0],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"ground": {
+			"translation": [0, 1.5, 0],
+			"scale": [0.7, 0.7, 0.7]
+		},
+		"gui": {
+			"translation": [0, -0.5, 0],
+			"scale": [1.1, 1.1, 1.1]
+		},
+		"head": {
+			"rotation": [180, 0, 180],
+			"translation": [0, 0, -7.25],
+			"scale": [1.6, 1.6, 1.6]
+		},
+		"fixed": {
+			"rotation": [180, 0, 180]
+		}
+	}
 }

@@ -26,6 +26,8 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.phys.Vec3;
+
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkRegistry;
@@ -42,6 +44,7 @@ import de.markusbordihn.easynpc.network.message.MessageModelPoseChange;
 import de.markusbordihn.easynpc.network.message.MessageNameChange;
 import de.markusbordihn.easynpc.network.message.MessageOpenConfiguration;
 import de.markusbordihn.easynpc.network.message.MessagePoseChange;
+import de.markusbordihn.easynpc.network.message.MessagePositionChange;
 import de.markusbordihn.easynpc.network.message.MessageProfessionChange;
 import de.markusbordihn.easynpc.network.message.MessageRemoveNPC;
 import de.markusbordihn.easynpc.network.message.MessageSaveBasicDialog;
@@ -57,7 +60,7 @@ public class NetworkHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final String PROTOCOL_VERSION = "5";
+  private static final String PROTOCOL_VERSION = "6";
   public static final SimpleChannel INSTANCE =
       NetworkRegistry.newSimpleChannel(new ResourceLocation(Constants.MOD_ID, "network"),
           () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
@@ -139,6 +142,15 @@ public class NetworkHandler {
       }, buffer -> new MessagePoseChange(buffer.readUUID(), buffer.readEnum(Pose.class)),
           MessagePoseChange::handle);
 
+      // Position Change: Client -> Server
+      INSTANCE.registerMessage(id++, MessagePositionChange.class, (message, buffer) -> {
+        buffer.writeUUID(message.getUUID());
+        buffer.writeFloat(message.getX());
+        buffer.writeFloat(message.getY());
+        buffer.writeFloat(message.getZ());
+      }, buffer -> new MessagePositionChange(buffer.readUUID(), buffer.readFloat(),
+          buffer.readFloat(), buffer.readFloat()), MessagePositionChange::handle);
+
       // Profession Change: Client -> Server
       INSTANCE.registerMessage(id++, MessageProfessionChange.class, (message, buffer) -> {
         buffer.writeUUID(message.getUUID());
@@ -217,6 +229,13 @@ public class NetworkHandler {
   public static void poseChange(UUID uuid, Pose pose) {
     if (uuid != null && pose != null) {
       INSTANCE.sendToServer(new MessagePoseChange(uuid, pose));
+    }
+  }
+
+  /** Send position change. */
+  public static void positionChange(UUID uuid, Vec3 pos) {
+    if (uuid != null && pos != null) {
+      INSTANCE.sendToServer(new MessagePositionChange(uuid, pos));
     }
   }
 

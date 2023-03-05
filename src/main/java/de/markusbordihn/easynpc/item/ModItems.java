@@ -36,6 +36,7 @@ import de.markusbordihn.easynpc.entity.npc.HumanoidSlim;
 import de.markusbordihn.easynpc.entity.npc.ModEntityType;
 import de.markusbordihn.easynpc.entity.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.npc.Villager;
+import de.markusbordihn.easynpc.item.configuration.EasyNPCWandItem;
 
 public class ModItems {
 
@@ -46,8 +47,9 @@ public class ModItems {
   public static final DeferredRegister<Item> ITEMS =
       DeferredRegister.create(ForgeRegistries.ITEMS, Constants.MOD_ID);
 
-  // Default NPC Items
-
+  // Config Items
+  public static final RegistryObject<Item> EASY_NPC_WAND = ITEMS.register(EasyNPCWandItem.ID,
+      () -> new EasyNPCWandItem(new Item.Properties().rarity(Rarity.EPIC)));
 
   // Default NPC Entity Spawn Eggs
   private static final String SPAWN_EGG_PREFIX = "_spawn_egg";
