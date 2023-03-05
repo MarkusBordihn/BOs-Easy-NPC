@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.client.screen.configuration.equipment.EquipmentC
 import de.markusbordihn.easynpc.client.screen.configuration.main.MainConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.pose.CustomPoseConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.pose.DefaultPoseConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.position.DefaultPositionConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.scaling.ScalingConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.DefaultSkinConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.PlayerSkinConfigurationScreen;
@@ -76,6 +77,10 @@ public class ClientScreens {
           DefaultPoseConfigurationScreen::new);
       MenuScreens.register(ModMenuTypes.CUSTOM_POSE_CONFIGURATION_MENU.get(),
           CustomPoseConfigurationScreen::new);
+
+      // Position Configuration Screen
+      MenuScreens.register(ModMenuTypes.DEFAULT_POSITION_CONFIGURATION_MENU.get(),
+          DefaultPositionConfigurationScreen::new);
 
       // Skin Configuration Screens
       MenuScreens.register(ModMenuTypes.CUSTOM_SKIN_CONFIGURATION_MENU.get(),

@@ -48,8 +48,6 @@ public class EasyNPCEntityEvents {
     }
 
     if (event.getTarget() instanceof EasyNPCEntity easyNPCEntity) {
-      log.debug("HIGHEST Entity {} was right clicked by {}", easyNPCEntity, event.getPlayer());
-
       // Change invulnerable time to 1 tick, if not already greater than 0 and store the
       // easyNPCEntity into changeInvulnerableTimeSet.
       if (easyNPCEntity.invulnerableTime == 0) {
@@ -66,8 +64,6 @@ public class EasyNPCEntityEvents {
     }
 
     if (event.getTarget() instanceof EasyNPCEntity easyNPCEntity) {
-      log.debug("LOWEST Entity {} was right clicked by {}", easyNPCEntity, event.getPlayer());
-
       // Change invulnerable time back to 0, if it was changed before and remove the easyNPCEntity
       // from changeInvulnerableTimeSet.
       if (changeInvulnerableTimeSet.contains(easyNPCEntity)) {

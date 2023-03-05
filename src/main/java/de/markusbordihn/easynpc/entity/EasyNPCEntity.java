@@ -34,6 +34,7 @@ import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
@@ -41,6 +42,7 @@ import net.minecraft.world.phys.Vec3;
 import de.markusbordihn.easynpc.action.ActionType;
 import de.markusbordihn.easynpc.action.ActionUtils;
 import de.markusbordihn.easynpc.commands.CommandManager;
+import de.markusbordihn.easynpc.item.ModItems;
 
 public class EasyNPCEntity extends EasyNPCEntityData {
 
@@ -116,10 +118,17 @@ public class EasyNPCEntity extends EasyNPCEntityData {
 
   @Override
   public InteractionResult mobInteract(Player player, InteractionHand hand) {
-    boolean isClientSide = this.level.isClientSide;
-    log.debug("mobInteract: {} {} {} {}", this.getUUID(), player, hand, isClientSide);
-
     if (player instanceof ServerPlayer serverPlayer && hand == InteractionHand.MAIN_HAND) {
+
+      // Open configuration menu for EasyNPC wand item in hand.
+      ItemStack handItem = player.getItemInHand(hand);
+      if (!handItem.isEmpty() && handItem.getItem() == ModItems.EASY_NPC_WAND.get()) {
+        EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, this);
+        return InteractionResult.PASS;
+      }
+
+      // Open configuration menu for creative mode and if no dialog or
+      // interaction action is set or the player is crouching.
       boolean hasInteractionAction = this.hasAction(ActionType.ON_INTERACTION);
       if (player.isCreative()
           && ((!this.hasDialog() && !hasInteractionAction) || player.isCrouching())) {

@@ -21,6 +21,14 @@ Easy NPCs allows a simplified setup for custom NPCs with dialogs for map maker a
 Just spawn a NPC with the corresponding spawn egg and click with your empty hand on the spawned NPC.
 If you need to adjust the existing dialog, just click with your empty hand and crouching on the NPC.
 
+## Configuration Items
+
+### Easy NPC Wand
+
+With this tool, players can adjust the settings for EasyNPCs and select the desired NPCs without having to directly target them.
+
+Normally, players have to aim directly at an NPC to select and configure it. With this tool, this process is simplified as it has a larger range and players can simply point at the ground or in the air to select an NPC.
+
 ## Dialogs
 
 ### Dialog Placeholders
@@ -149,6 +157,18 @@ The scaling screen allows to scale the NPC model in the X, Y and Z direction.
 
 ![Scaling](/examples/misc/scaling.png)
 
+## Pose
+
+The pose screen allows to change the pose of the NPC, it's supports the basic poses, but not all models support all poses.
+
+![Pose](/examples/pose/default_pose.png)
+
+## Position
+
+The position screen allows to change the position of the NPC, this is useful if you want to move the NPC to a different position.
+
+![Position](/examples/misc/position.png)
+
 ## NPC Types
 
 ### Humanoid NPC
@@ -193,6 +213,11 @@ If this is not working, please use the CarryOn config `carryon-server.toml` to a
   forbiddenEntities = [..., "easy_npc:*"]
   ...
 ```
+
+### Simple Quests
+
+You can use the [Simple Quests](https://www.curseforge.com/minecraft/mc-mods/simple-quests) mod to create quests for the Easy NPCs.
+The quests could be triggered over the action configuration screen of the Easy NPC.
 
 ## License
 
