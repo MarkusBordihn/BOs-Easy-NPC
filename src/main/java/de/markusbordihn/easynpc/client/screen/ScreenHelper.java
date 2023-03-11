@@ -32,9 +32,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.network.chat.Component;
-
+import net.minecraft.world.entity.Pose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.Profession;
+import de.markusbordihn.easynpc.model.ModelPose;
 import de.markusbordihn.easynpc.skin.SkinType;
 
 public class ScreenHelper {
@@ -137,6 +138,25 @@ public class ScreenHelper {
     entity.setScaleY(entityScaleY);
     entity.setScaleZ(entityScaleZ);
   }
+
+  public static void renderCustomPoseEntityAvatar(int x, int y, int scale, float yRot, float xRot,
+      EasyNPCEntity entity) {
+    // Backup entity information
+    ModelPose entityModelPose = entity.getModelPose();
+    Pose entityPose = entity.getPose();
+
+    // Adjust entity information for rendering
+    entity.setModelPose(ModelPose.CUSTOM);
+    entity.setPose(Pose.STANDING);
+
+    // Render Entity
+    renderScaledEntityAvatar(x, y, scale, yRot, xRot, entity);
+
+    // Restore entity information
+    entity.setModelPose(entityModelPose);
+    entity.setPose(entityPose);
+  }
+
 
   public static void renderEntityAvatar(int x, int y, float yRot, float xRot,
       EasyNPCEntity entity) {

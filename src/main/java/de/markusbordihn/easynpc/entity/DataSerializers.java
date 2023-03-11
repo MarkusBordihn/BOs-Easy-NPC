@@ -24,6 +24,7 @@ import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 
 import de.markusbordihn.easynpc.dialog.DialogType;
+import de.markusbordihn.easynpc.model.ModelPose;
 import de.markusbordihn.easynpc.skin.SkinType;
 
 public class DataSerializers {

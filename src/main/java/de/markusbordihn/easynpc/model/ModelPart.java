@@ -17,22 +17,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity;
+package de.markusbordihn.easynpc.model;
 
-public enum ModelPose {
+public enum ModelPart {
   // @formatter:off
-  DEFAULT,
-  CUSTOM;
+  HEAD,
+  BODY,
+  LEFT_ARM,
+  RIGHT_ARM,
+  LEFT_LEG,
+  RIGHT_LEG,
+  UNKNOWN;
   // @formatter:on
 
-  public static ModelPose get(String modelPose) {
-    if (modelPose == null || modelPose.isEmpty()) {
-      return ModelPose.DEFAULT;
+  public static ModelPart get(String modelPart) {
+    if (modelPart == null || modelPart.isEmpty()) {
+      return ModelPart.UNKNOWN;
     }
     try {
-      return ModelPose.valueOf(modelPose);
+      return ModelPart.valueOf(modelPart);
     } catch (IllegalArgumentException e) {
-      return ModelPose.DEFAULT;
+      return ModelPart.UNKNOWN;
     }
   }
 }

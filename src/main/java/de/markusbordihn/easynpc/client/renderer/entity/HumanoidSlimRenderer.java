@@ -27,7 +27,6 @@ import com.mojang.math.Vector3f;
 
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -42,13 +41,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.model.CustomPlayerModel;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.ModelPose;
 import de.markusbordihn.easynpc.entity.npc.HumanoidSlim.Variant;
+import de.markusbordihn.easynpc.model.ModelPose;
 
 @OnlyIn(Dist.CLIENT)
-public class HumanoidSlimRenderer extends MobRenderer<EasyNPCEntity, PlayerModel<EasyNPCEntity>> {
+public class HumanoidSlimRenderer extends MobRenderer<EasyNPCEntity, CustomPlayerModel<EasyNPCEntity>> {
 
   // Variant Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
@@ -63,7 +63,7 @@ public class HumanoidSlimRenderer extends MobRenderer<EasyNPCEntity, PlayerModel
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.ALEX);
 
   public HumanoidSlimRenderer(EntityRendererProvider.Context context) {
-    super(context, new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM), true), 0.5F);
+    super(context, new CustomPlayerModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM), true), 0.5F);
     this.addLayer(new HumanoidArmorLayer<>(this,
         new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM_INNER_ARMOR)),
         new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM_OUTER_ARMOR))));
@@ -97,7 +97,7 @@ public class HumanoidSlimRenderer extends MobRenderer<EasyNPCEntity, PlayerModel
   @Override
   public void render(EasyNPCEntity entity, float entityYaw, float partialTicks, PoseStack poseStack,
       net.minecraft.client.renderer.MultiBufferSource buffer, int light) {
-    PlayerModel<EasyNPCEntity> playerModel = this.getModel();
+    CustomPlayerModel<EasyNPCEntity> playerModel = this.getModel();
 
     // Render additional poses
     if (entity.getModelPose() == ModelPose.DEFAULT) {

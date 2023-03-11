@@ -23,7 +23,7 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+import net.minecraft.core.Rotations;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.phys.Vec3;
@@ -35,9 +35,10 @@ import net.minecraftforge.network.simple.SimpleChannel;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.action.ActionType;
-import de.markusbordihn.easynpc.entity.ModelPose;
 import de.markusbordihn.easynpc.entity.Profession;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.model.ModelPart;
+import de.markusbordihn.easynpc.model.ModelPose;
 import de.markusbordihn.easynpc.network.message.MessageActionChange;
 import de.markusbordihn.easynpc.network.message.MessageActionDebug;
 import de.markusbordihn.easynpc.network.message.MessageModelPoseChange;
@@ -47,6 +48,7 @@ import de.markusbordihn.easynpc.network.message.MessagePoseChange;
 import de.markusbordihn.easynpc.network.message.MessagePositionChange;
 import de.markusbordihn.easynpc.network.message.MessageProfessionChange;
 import de.markusbordihn.easynpc.network.message.MessageRemoveNPC;
+import de.markusbordihn.easynpc.network.message.MessageRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageSaveBasicDialog;
 import de.markusbordihn.easynpc.network.message.MessageSaveYesNoDialog;
 import de.markusbordihn.easynpc.network.message.MessageScaleChange;
@@ -60,7 +62,7 @@ public class NetworkHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final String PROTOCOL_VERSION = "6";
+  private static final String PROTOCOL_VERSION = "7";
   public static final SimpleChannel INSTANCE =
       NetworkRegistry.newSimpleChannel(new ResourceLocation(Constants.MOD_ID, "network"),
           () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
@@ -158,6 +160,17 @@ public class NetworkHandler {
       }, buffer -> new MessageProfessionChange(buffer.readUUID(),
           buffer.readEnum(Profession.class)), MessageProfessionChange::handle);
 
+      // Rotation Change: Client -> Server
+      INSTANCE.registerMessage(id++, MessageRotationChange.class, (message, buffer) -> {
+        buffer.writeUUID(message.getUUID());
+        buffer.writeEnum(message.getModelPart());
+        buffer.writeFloat(message.getX());
+        buffer.writeFloat(message.getY());
+        buffer.writeFloat(message.getZ());
+      }, buffer -> new MessageRotationChange(buffer.readUUID(), buffer.readEnum(ModelPart.class),
+          buffer.readFloat(), buffer.readFloat(), buffer.readFloat()),
+          MessageRotationChange::handle);
+
       // Scale Change: Client -> Server
       INSTANCE.registerMessage(id++, MessageScaleChange.class, (message, buffer) -> {
         buffer.writeUUID(message.getUUID());
@@ -250,6 +263,13 @@ public class NetworkHandler {
   public static void removeNPC(UUID uuid) {
     if (uuid != null) {
       INSTANCE.sendToServer(new MessageRemoveNPC(uuid));
+    }
+  }
+
+  /** Send rotation change. */
+  public static void rotationChange(UUID uuid, ModelPart modelPart, Rotations rotations) {
+    if (uuid != null && modelPart != null && rotations != null) {
+      INSTANCE.sendToServer(new MessageRotationChange(uuid, modelPart, rotations));
     }
   }
 

@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -46,6 +47,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.action.ActionDataHelper;
 import de.markusbordihn.easynpc.action.ActionType;
 import de.markusbordihn.easynpc.dialog.DialogType;
+import de.markusbordihn.easynpc.model.ModelPose;
 import de.markusbordihn.easynpc.skin.SkinModel;
 import de.markusbordihn.easynpc.skin.SkinType;
 import de.markusbordihn.easynpc.utils.TextUtils;
@@ -88,6 +90,18 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
       SynchedEntityData.defineId(EasyNPCEntityData.class, DataSerializers.DIALOG_TYPE);
   private static final EntityDataAccessor<ModelPose> DATA_MODEL_POSE =
       SynchedEntityData.defineId(EasyNPCEntityData.class, DataSerializers.MODEL_POSE);
+  private static final EntityDataAccessor<Rotations> DATA_MODEL_HEAD_ROTATION =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.ROTATIONS);
+  private static final EntityDataAccessor<Rotations> DATA_MODEL_BODY_ROTATION =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.ROTATIONS);
+  private static final EntityDataAccessor<Rotations> DATA_MODEL_LEFT_ARM_ROTATION =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.ROTATIONS);
+  private static final EntityDataAccessor<Rotations> DATA_MODEL_RIGHT_ARM_ROTATION =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.ROTATIONS);
+  private static final EntityDataAccessor<Rotations> DATA_MODEL_LEFT_LEG_ROTATION =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.ROTATIONS);
+  private static final EntityDataAccessor<Rotations> DATA_MODEL_RIGHT_LEG_ROTATION =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.ROTATIONS);
   private static final EntityDataAccessor<String> DATA_NO_DIALOG =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
   private static final EntityDataAccessor<String> DATA_NO_DIALOG_BUTTON =
@@ -122,6 +136,12 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
   private static final String DATA_DIALOG_TAG = "Dialog";
   private static final String DATA_DIALOG_TYPE_TAG = "DialogType";
   private static final String DATA_MODEL_POSE_TAG = "ModelPose";
+  private static final String DATA_MODEL_HEAD_ROTATION_TAG = "ModelHeadRotation";
+  private static final String DATA_MODEL_BODY_ROTATION_TAG = "ModelBodyRotation";
+  private static final String DATA_MODEL_LEFT_ARM_ROTATION_TAG = "ModelLeftArmRotation";
+  private static final String DATA_MODEL_RIGHT_ARM_ROTATION_TAG = "ModelRightArmRotation";
+  private static final String DATA_MODEL_LEFT_LEG_ROTATION_TAG = "ModelLeftLegRotation";
+  private static final String DATA_MODEL_RIGHT_LEG_ROTATION_TAG = "ModelRightLegRotation";
   private static final String DATA_NO_DIALOG_BUTTON_TAG = "NoDialogButton";
   private static final String DATA_NO_DIALOG_TAG = "NoDialog";
   private static final String DATA_OWNER_TAG = "Owner";
@@ -237,6 +257,54 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
 
   public void setModelPose(ModelPose modelPose) {
     this.entityData.set(DATA_MODEL_POSE, modelPose);
+  }
+
+  public Rotations getModelHeadRotation() {
+    return this.entityData.get(DATA_MODEL_HEAD_ROTATION);
+  }
+
+  public void setModelHeadRotation(Rotations modelHeadRotation) {
+    this.entityData.set(DATA_MODEL_HEAD_ROTATION, modelHeadRotation);
+  }
+
+  public Rotations getModelBodyRotation() {
+    return this.entityData.get(DATA_MODEL_BODY_ROTATION);
+  }
+
+  public void setModelBodyRotation(Rotations modelBodyRotation) {
+    this.entityData.set(DATA_MODEL_BODY_ROTATION, modelBodyRotation);
+  }
+
+  public Rotations getModelLeftArmRotation() {
+    return this.entityData.get(DATA_MODEL_LEFT_ARM_ROTATION);
+  }
+
+  public void setModelLeftArmRotation(Rotations modelLeftArmRotation) {
+    this.entityData.set(DATA_MODEL_LEFT_ARM_ROTATION, modelLeftArmRotation);
+  }
+
+  public Rotations getModelRightArmRotation() {
+    return this.entityData.get(DATA_MODEL_RIGHT_ARM_ROTATION);
+  }
+
+  public void setModelRightArmRotation(Rotations modelRightArmRotation) {
+    this.entityData.set(DATA_MODEL_RIGHT_ARM_ROTATION, modelRightArmRotation);
+  }
+
+  public Rotations getModelLeftLegRotation() {
+    return this.entityData.get(DATA_MODEL_LEFT_LEG_ROTATION);
+  }
+
+  public void setModelLeftLegRotation(Rotations modelLeftLegRotation) {
+    this.entityData.set(DATA_MODEL_LEFT_LEG_ROTATION, modelLeftLegRotation);
+  }
+
+  public Rotations getModelRightLegRotation() {
+    return this.entityData.get(DATA_MODEL_RIGHT_LEG_ROTATION);
+  }
+
+  public void setModelRightLegRotation(Rotations modelRightLegRotation) {
+    this.entityData.set(DATA_MODEL_RIGHT_LEG_ROTATION, modelRightLegRotation);
   }
 
   public boolean hasDialog() {
@@ -479,6 +547,12 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
     this.entityData.define(DATA_DIALOG, "");
     this.entityData.define(DATA_DIALOG_TYPE, DialogType.NONE);
     this.entityData.define(DATA_MODEL_POSE, ModelPose.DEFAULT);
+    this.entityData.define(DATA_MODEL_HEAD_ROTATION, new Rotations(0, 0, 0));
+    this.entityData.define(DATA_MODEL_BODY_ROTATION, new Rotations(0, 0, 0));
+    this.entityData.define(DATA_MODEL_LEFT_ARM_ROTATION, new Rotations(0, 0, 0));
+    this.entityData.define(DATA_MODEL_RIGHT_ARM_ROTATION, new Rotations(0, 0, 0));
+    this.entityData.define(DATA_MODEL_LEFT_LEG_ROTATION, new Rotations(0, 0, 0));
+    this.entityData.define(DATA_MODEL_RIGHT_LEG_ROTATION, new Rotations(0, 0, 0));
     this.entityData.define(DATA_NO_DIALOG, "");
     this.entityData.define(DATA_NO_DIALOG_BUTTON, "No");
     this.entityData.define(DATA_OWNER_UUID_ID, Optional.empty());
@@ -511,6 +585,24 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
     }
     if (this.getModelPose() != null) {
       compoundTag.putString(DATA_MODEL_POSE_TAG, this.getModelPose().name());
+    }
+    if (this.getModelHeadRotation() != null) {
+      compoundTag.put(DATA_MODEL_HEAD_ROTATION_TAG, this.getModelHeadRotation().save());
+    }
+    if (this.getModelBodyRotation() != null) {
+      compoundTag.put(DATA_MODEL_BODY_ROTATION_TAG, this.getModelBodyRotation().save());
+    }
+    if (this.getModelLeftArmRotation() != null) {
+      compoundTag.put(DATA_MODEL_LEFT_ARM_ROTATION_TAG, this.getModelLeftArmRotation().save());
+    }
+    if (this.getModelRightArmRotation() != null) {
+      compoundTag.put(DATA_MODEL_RIGHT_ARM_ROTATION_TAG, this.getModelRightArmRotation().save());
+    }
+    if (this.getModelLeftLegRotation() != null) {
+      compoundTag.put(DATA_MODEL_LEFT_LEG_ROTATION_TAG, this.getModelLeftLegRotation().save());
+    }
+    if (this.getModelRightLegRotation() != null) {
+      compoundTag.put(DATA_MODEL_RIGHT_LEG_ROTATION_TAG, this.getModelRightLegRotation().save());
     }
     if (this.getNoDialog() != null) {
       compoundTag.putString(DATA_NO_DIALOG_TAG, this.getNoDialog());
@@ -589,6 +681,30 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
       if (modelPose != null && !modelPose.isEmpty()) {
         this.setModelPose(ModelPose.get(modelPose));
       }
+    }
+    if (compoundTag.contains(DATA_MODEL_HEAD_ROTATION_TAG)) {
+      this.setModelHeadRotation(
+          new Rotations(compoundTag.getList(DATA_MODEL_HEAD_ROTATION_TAG, 5)));
+    }
+    if (compoundTag.contains(DATA_MODEL_BODY_ROTATION_TAG)) {
+      this.setModelBodyRotation(
+          new Rotations(compoundTag.getList(DATA_MODEL_BODY_ROTATION_TAG, 5)));
+    }
+    if (compoundTag.contains(DATA_MODEL_LEFT_ARM_ROTATION_TAG)) {
+      this.setModelLeftArmRotation(
+          new Rotations(compoundTag.getList(DATA_MODEL_LEFT_ARM_ROTATION_TAG, 5)));
+    }
+    if (compoundTag.contains(DATA_MODEL_RIGHT_ARM_ROTATION_TAG)) {
+      this.setModelRightArmRotation(
+          new Rotations(compoundTag.getList(DATA_MODEL_RIGHT_ARM_ROTATION_TAG, 5)));
+    }
+    if (compoundTag.contains(DATA_MODEL_LEFT_LEG_ROTATION_TAG)) {
+      this.setModelLeftLegRotation(
+          new Rotations(compoundTag.getList(DATA_MODEL_LEFT_LEG_ROTATION_TAG, 5)));
+    }
+    if (compoundTag.contains(DATA_MODEL_RIGHT_LEG_ROTATION_TAG)) {
+      this.setModelRightLegRotation(
+          new Rotations(compoundTag.getList(DATA_MODEL_RIGHT_LEG_ROTATION_TAG, 5)));
     }
     if (compoundTag.contains(DATA_NO_DIALOG_TAG)) {
       String dialog = compoundTag.getString(DATA_NO_DIALOG_TAG);
