@@ -29,7 +29,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
 import net.minecraft.Util;
-import net.minecraft.client.model.VillagerModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -42,16 +41,18 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.model.CustomVillagerModel;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.ProfessionLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.VariantLayer;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.ModelPose;
 import de.markusbordihn.easynpc.entity.Profession;
 import de.markusbordihn.easynpc.entity.npc.Villager.Variant;
+import de.markusbordihn.easynpc.model.ModelPose;
 
 @OnlyIn(Dist.CLIENT)
-public class VillagerRenderer extends MobRenderer<EasyNPCEntity, VillagerModel<EasyNPCEntity>> {
+public class VillagerRenderer
+    extends MobRenderer<EasyNPCEntity, CustomVillagerModel<EasyNPCEntity>> {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -107,7 +108,7 @@ public class VillagerRenderer extends MobRenderer<EasyNPCEntity, VillagerModel<E
       });
 
   public VillagerRenderer(EntityRendererProvider.Context context) {
-    super(context, new VillagerModel<>(context.bakeLayer(ModelLayers.VILLAGER)), 0.5F);
+    super(context, new CustomVillagerModel<>(context.bakeLayer(ModelLayers.VILLAGER)), 0.5F);
     this.addLayer(new VariantLayer<>(this, context.getModelSet(), TEXTURE_BY_VARIANT));
     this.addLayer(
         new CustomHeadLayer<>(this, context.getModelSet(), context.getItemInHandRenderer()));
@@ -149,7 +150,7 @@ public class VillagerRenderer extends MobRenderer<EasyNPCEntity, VillagerModel<E
   @Override
   public void render(EasyNPCEntity entity, float entityYaw, float partialTicks, PoseStack poseStack,
       net.minecraft.client.renderer.MultiBufferSource buffer, int light) {
-    VillagerModel<EasyNPCEntity> playerModel = this.getModel();
+    CustomVillagerModel<EasyNPCEntity> playerModel = this.getModel();
 
     // Render additional poses
     if (entity.getModelPose() == ModelPose.DEFAULT) {

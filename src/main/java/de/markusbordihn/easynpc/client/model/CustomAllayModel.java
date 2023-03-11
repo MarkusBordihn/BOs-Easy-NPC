@@ -27,6 +27,7 @@ import net.minecraft.client.model.ArmedModel;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.core.Rotations;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -34,8 +35,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.model.ModelPose;
+
 @OnlyIn(Dist.CLIENT)
-public class AllayModel<T extends LivingEntity> extends HierarchicalModel<T> implements ArmedModel {
+public class CustomAllayModel<T extends LivingEntity> extends HierarchicalModel<T>
+    implements ArmedModel {
 
   private final ModelPart root;
   protected final ModelPart head;
@@ -45,7 +50,7 @@ public class AllayModel<T extends LivingEntity> extends HierarchicalModel<T> imp
   private final ModelPart rightWing;
   private final ModelPart leftWing;
 
-  public AllayModel(ModelPart modelPart) {
+  public CustomAllayModel(ModelPart modelPart) {
     this.root = modelPart.getChild("root");
     this.head = this.root.getChild("head");
     this.body = this.root.getChild("body");
@@ -69,8 +74,60 @@ public class AllayModel<T extends LivingEntity> extends HierarchicalModel<T> imp
 
   public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks,
       float netHeadYaw, float headPitch) {
-    // Reset Pose
-    this.root().getAllParts().forEach(ModelPart::resetPose);
+
+    if (entity instanceof EasyNPCEntity easyNPCEntity
+        && easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
+
+      Rotations headRotations = easyNPCEntity.getModelHeadRotation();
+      if (headRotations != null) {
+        this.head.xRot = headRotations.getX();
+        this.head.yRot = headRotations.getY();
+        this.head.zRot = headRotations.getZ();
+      }
+
+      Rotations bodyRotations = easyNPCEntity.getModelBodyRotation();
+      if (bodyRotations != null) {
+        this.body.xRot = bodyRotations.getX();
+        this.body.yRot = bodyRotations.getY();
+        this.body.zRot = bodyRotations.getZ();
+      }
+
+      Rotations rightArmRotations = easyNPCEntity.getModelRightArmRotation();
+      if (rightArmRotations != null) {
+        this.rightArm.xRot = rightArmRotations.getX();
+        this.rightArm.yRot = rightArmRotations.getY();
+        this.rightArm.zRot = rightArmRotations.getZ();
+      }
+
+      Rotations leftArmRotations = easyNPCEntity.getModelLeftArmRotation();
+      if (leftArmRotations != null) {
+        this.leftArm.xRot = leftArmRotations.getX();
+        this.leftArm.yRot = leftArmRotations.getY();
+        this.leftArm.zRot = leftArmRotations.getZ();
+      }
+    } else {
+      // Reset all positions to avoid any issues with other mods.
+      this.root().getAllParts().forEach(ModelPart::resetPose);
+
+      // Body animations
+      float ageAmount = ageInTicks * 9.0F * ((float) Math.PI / 180F);
+      float limbSwingRotation = Math.min(limbSwingAmount / 0.3F, 1.0F);
+      float bodyRotationAmount = limbSwingRotation * 0.6981317F;
+      this.body.xRot = bodyRotationAmount;
+      this.root.y += (float) Math.cos(ageAmount) * 0.25F * 1.0F - limbSwingRotation;
+
+      // Arm animations
+      float armRotationAmount = 0.43633232F
+          - Mth.cos(ageAmount + ((float) Math.PI * 1.5F)) * (float) Math.PI * 0.075F * 1.0F
+          - limbSwingRotation;
+      this.rightArm.xRot = Mth.lerp(1f, bodyRotationAmount,
+          Mth.lerp(limbSwingRotation, (-(float) Math.PI / 3F), (-(float) Math.PI / 4F)));
+      this.leftArm.xRot = this.rightArm.xRot;
+      this.leftArm.zRot = -armRotationAmount;
+      this.rightArm.zRot = armRotationAmount;
+      this.rightArm.yRot = 0.27925268F;
+      this.leftArm.yRot = -0.27925268F;
+    }
 
     // Wing animations
     float wingRotationAmount =
@@ -80,25 +137,6 @@ public class AllayModel<T extends LivingEntity> extends HierarchicalModel<T> imp
     this.rightWing.yRot = -0.61086524F + wingRotationAmount;
     this.leftWing.xRot = 0.43633232F;
     this.leftWing.yRot = 0.61086524F - wingRotationAmount;
-
-    // Body animations
-    float ageAmount = ageInTicks * 9.0F * ((float) Math.PI / 180F);
-    float limbSwingRotation = Math.min(limbSwingAmount / 0.3F, 1.0F);
-    float bodyRotationAmount = limbSwingRotation * 0.6981317F;
-    this.body.xRot = bodyRotationAmount;
-    this.root.y += (float) Math.cos(ageAmount) * 0.25F * 1.0F - limbSwingRotation;
-
-    // Arm animations
-    float armRotationAmount = 0.43633232F
-        - Mth.cos(ageAmount + ((float) Math.PI * 1.5F)) * (float) Math.PI * 0.075F * 1.0F
-        - limbSwingRotation;
-    this.rightArm.xRot = Mth.lerp(1f, bodyRotationAmount,
-        Mth.lerp(limbSwingRotation, (-(float) Math.PI / 3F), (-(float) Math.PI / 4F)));
-    this.leftArm.xRot = this.rightArm.xRot;
-    this.leftArm.zRot = -armRotationAmount;
-    this.rightArm.zRot = armRotationAmount;
-    this.rightArm.yRot = 0.27925268F;
-    this.leftArm.yRot = -0.27925268F;
   }
 
   public void translateToHand(HumanoidArm humanoidArm, PoseStack poseStack) {

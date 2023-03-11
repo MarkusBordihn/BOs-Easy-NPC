@@ -37,9 +37,9 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.dialog.DialogType;
-import de.markusbordihn.easynpc.entity.ModelPose;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
+import de.markusbordihn.easynpc.model.ModelPose;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 import de.markusbordihn.easynpc.skin.SkinType;
 

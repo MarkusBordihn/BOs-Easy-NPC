@@ -30,7 +30,6 @@ import com.mojang.math.Axis;
 
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -45,13 +44,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.model.CustomPlayerModel;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.ModelPose;
 import de.markusbordihn.easynpc.entity.npc.Humanoid.Variant;
+import de.markusbordihn.easynpc.model.ModelPose;
 
 @OnlyIn(Dist.CLIENT)
-public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, PlayerModel<EasyNPCEntity>> {
+public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, CustomPlayerModel<EasyNPCEntity>> {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -80,7 +80,7 @@ public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, PlayerModel<Eas
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.STEVE);
 
   public HumanoidRenderer(EntityRendererProvider.Context context) {
-    super(context, new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER), false), 0.5F);
+    super(context, new CustomPlayerModel<>(context.bakeLayer(ModelLayers.PLAYER), false), 0.5F);
     this.addLayer(new HumanoidArmorLayer<>(this,
         new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)),
         new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR))));
@@ -115,7 +115,7 @@ public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, PlayerModel<Eas
   @Override
   public void render(EasyNPCEntity entity, float entityYaw, float partialTicks, PoseStack poseStack,
       net.minecraft.client.renderer.MultiBufferSource buffer, int light) {
-    PlayerModel<EasyNPCEntity> playerModel = this.getModel();
+    CustomPlayerModel<EasyNPCEntity> playerModel = this.getModel();
 
     // Render additional poses
     if (entity.getModelPose() == ModelPose.DEFAULT) {

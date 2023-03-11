@@ -41,8 +41,7 @@ public class MessagePositionChange {
   protected final Vec3 pos;
 
   public MessagePositionChange(UUID uuid, float x, float y, float z) {
-    this.uuid = uuid;
-    this.pos = new Vec3(x, y, z);
+    this(uuid, new Vec3(x, y, z));
   }
 
   public MessagePositionChange(UUID uuid, Vec3 pos) {
@@ -84,7 +83,7 @@ public class MessagePositionChange {
       return;
     }
 
-    // Validate name.
+    // Validate position.
     Vec3 pos = message.getPos();
     if (pos == null) {
       log.error("Invalid pos {} for {} from {}", pos, message, serverPlayer);

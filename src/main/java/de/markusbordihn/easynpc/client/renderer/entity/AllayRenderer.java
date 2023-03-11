@@ -37,14 +37,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.model.AllayModel;
+import de.markusbordihn.easynpc.client.model.CustomAllayModel;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.ModelPose;
 import de.markusbordihn.easynpc.entity.npc.Allay.Variant;
+import de.markusbordihn.easynpc.model.ModelPose;
 
 @OnlyIn(Dist.CLIENT)
-public class AllayRenderer extends MobRenderer<EasyNPCEntity, AllayModel<EasyNPCEntity>> {
+public class AllayRenderer extends MobRenderer<EasyNPCEntity, CustomAllayModel<EasyNPCEntity>> {
 
 
   // Variant Textures
@@ -57,7 +57,7 @@ public class AllayRenderer extends MobRenderer<EasyNPCEntity, AllayModel<EasyNPC
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.DEFAULT);
 
   public AllayRenderer(EntityRendererProvider.Context context) {
-    super(context, new AllayModel<>(context.bakeLayer(ModelLayers.ALLAY)), 0.4F);
+    super(context, new CustomAllayModel<>(context.bakeLayer(ModelLayers.ALLAY)), 0.4F);
     this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
   }
 
@@ -84,7 +84,7 @@ public class AllayRenderer extends MobRenderer<EasyNPCEntity, AllayModel<EasyNPC
   @Override
   public void render(EasyNPCEntity entity, float entityYaw, float partialTicks, PoseStack poseStack,
       net.minecraft.client.renderer.MultiBufferSource buffer, int light) {
-    AllayModel<EasyNPCEntity> playerModel = this.getModel();
+    CustomAllayModel<EasyNPCEntity> playerModel = this.getModel();
 
     // Render additional poses
     if (entity.getModelPose() == ModelPose.DEFAULT) {
