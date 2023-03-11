@@ -5,6 +5,10 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### 2023.03.11
+
+- Added support for custom poses which allows to rotate the head, body, arms and legs.
+
 ### 2023.03.05
 
 - Added Easy NPC wand to select and configure NPCs without directly targeting them.

@@ -32,6 +32,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenu;
+import de.markusbordihn.easynpc.model.ModelPose;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 
 @OnlyIn(Dist.CLIENT)
@@ -53,20 +54,22 @@ public class DefaultPoseConfigurationScreen
     super(menu, inventory, component);
   }
 
-  private Button menuButton(int left, int top, String label, Button.OnPress onPress) {
+  private static Button menuButton(int left, int top, String label, Button.OnPress onPress) {
     return menuButton(left, top, 100, "pose." + label, onPress);
   }
 
-  private void checkPoseButtonState(Pose pose) {
+  private void checkPoseButtonState(Pose pose, ModelPose modelPose) {
     Pose currentPose = pose != null ? pose : this.entity.getPose();
-    this.standingPoseButton.active = currentPose != Pose.STANDING;
-    this.crouchingPoseButton.active = currentPose != Pose.CROUCHING;
-    this.dyingPoseButton.active = currentPose != Pose.DYING;
-    this.fallFlyingPoseButton.active = currentPose != Pose.FALL_FLYING;
-    this.longJumpPoseButton.active = currentPose != Pose.LONG_JUMPING;
-    this.sleepingPoseButton.active = currentPose != Pose.SLEEPING;
-    this.spinAttackPoseButton.active = currentPose != Pose.SPIN_ATTACK;
-    this.swimmingPoseButton.active = currentPose != Pose.SWIMMING;
+    boolean isCustomModelPose =
+        (modelPose != null ? modelPose : this.entity.getModelPose()) == ModelPose.CUSTOM;
+    this.standingPoseButton.active = isCustomModelPose || currentPose != Pose.STANDING;
+    this.crouchingPoseButton.active = isCustomModelPose || currentPose != Pose.CROUCHING;
+    this.dyingPoseButton.active = isCustomModelPose || currentPose != Pose.DYING;
+    this.fallFlyingPoseButton.active = isCustomModelPose || currentPose != Pose.FALL_FLYING;
+    this.longJumpPoseButton.active = isCustomModelPose || currentPose != Pose.LONG_JUMPING;
+    this.sleepingPoseButton.active = isCustomModelPose || currentPose != Pose.SLEEPING;
+    this.spinAttackPoseButton.active = isCustomModelPose || currentPose != Pose.SPIN_ATTACK;
+    this.swimmingPoseButton.active = isCustomModelPose || currentPose != Pose.SWIMMING;
   }
 
   @Override
@@ -79,48 +82,48 @@ public class DefaultPoseConfigurationScreen
 
     // Pose Buttons
     int poseButtonLeft = this.contentLeftPos + 175;
-    this.standingPoseButton = this.addRenderableWidget(
-        this.menuButton(poseButtonLeft, this.contentTopPos, "standing", button -> {
+    this.standingPoseButton = this
+        .addRenderableWidget(menuButton(poseButtonLeft, this.contentTopPos, "standing", button -> {
           NetworkHandler.poseChange(uuid, Pose.STANDING);
-          this.checkPoseButtonState(Pose.STANDING);
+          this.checkPoseButtonState(Pose.STANDING, ModelPose.DEFAULT);
         }));
     this.crouchingPoseButton = this.addRenderableWidget(
-        this.menuButton(poseButtonLeft, this.contentTopPos + 24, "crouching", button -> {
+        menuButton(poseButtonLeft, this.contentTopPos + 24, "crouching", button -> {
           NetworkHandler.poseChange(uuid, Pose.CROUCHING);
-          this.checkPoseButtonState(Pose.CROUCHING);
+          this.checkPoseButtonState(Pose.CROUCHING, ModelPose.DEFAULT);
         }));
     this.dyingPoseButton = this.addRenderableWidget(
-        this.menuButton(poseButtonLeft, this.contentTopPos + 48, "dying", button -> {
+        menuButton(poseButtonLeft, this.contentTopPos + 48, "dying", button -> {
           NetworkHandler.poseChange(uuid, Pose.DYING);
-          this.checkPoseButtonState(Pose.DYING);
+          this.checkPoseButtonState(Pose.DYING, ModelPose.DEFAULT);
         }));
     this.fallFlyingPoseButton = this.addRenderableWidget(
-        this.menuButton(poseButtonLeft, this.contentTopPos + 72, "fall_flying", button -> {
+        menuButton(poseButtonLeft, this.contentTopPos + 72, "fall_flying", button -> {
           NetworkHandler.poseChange(uuid, Pose.FALL_FLYING);
-          this.checkPoseButtonState(Pose.FALL_FLYING);
+          this.checkPoseButtonState(Pose.FALL_FLYING, ModelPose.DEFAULT);
         }));
     this.longJumpPoseButton = this.addRenderableWidget(
-        this.menuButton(poseButtonLeft, this.contentTopPos + 96, "long_jumping", button -> {
+        menuButton(poseButtonLeft, this.contentTopPos + 96, "long_jumping", button -> {
           NetworkHandler.poseChange(uuid, Pose.LONG_JUMPING);
-          this.checkPoseButtonState(Pose.LONG_JUMPING);
+          this.checkPoseButtonState(Pose.LONG_JUMPING, ModelPose.DEFAULT);
         }));
     this.sleepingPoseButton = this.addRenderableWidget(
-        this.menuButton(poseButtonLeft, this.contentTopPos + 120, "sleeping", button -> {
+        menuButton(poseButtonLeft, this.contentTopPos + 120, "sleeping", button -> {
           NetworkHandler.poseChange(uuid, Pose.SLEEPING);
-          this.checkPoseButtonState(Pose.SLEEPING);
+          this.checkPoseButtonState(Pose.SLEEPING, ModelPose.DEFAULT);
         }));
     this.spinAttackPoseButton = this.addRenderableWidget(
-        this.menuButton(poseButtonLeft, this.contentTopPos + 144, "spin_attack", button -> {
+        menuButton(poseButtonLeft, this.contentTopPos + 144, "spin_attack", button -> {
           NetworkHandler.poseChange(uuid, Pose.SPIN_ATTACK);
-          this.checkPoseButtonState(Pose.SPIN_ATTACK);
+          this.checkPoseButtonState(Pose.SPIN_ATTACK, ModelPose.DEFAULT);
         }));
     this.swimmingPoseButton = this.addRenderableWidget(
-        this.menuButton(poseButtonLeft, this.contentTopPos + 168, "swimming", button -> {
+        menuButton(poseButtonLeft, this.contentTopPos + 168, "swimming", button -> {
           NetworkHandler.poseChange(uuid, Pose.SWIMMING);
-          this.checkPoseButtonState(Pose.SWIMMING);
+          this.checkPoseButtonState(Pose.SWIMMING, ModelPose.DEFAULT);
         }));
 
-    this.checkPoseButtonState(entity.getPose());
+    this.checkPoseButtonState(entity.getPose(), entity.getModelPose());
   }
 
   @Override

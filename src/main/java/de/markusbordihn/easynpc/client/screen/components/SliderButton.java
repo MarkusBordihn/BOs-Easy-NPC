@@ -41,6 +41,12 @@ public class SliderButton extends AbstractSliderButton {
   protected float maxValue;
   private float valueFraction;
   private float targetValue;
+  private float roundFactor = 100.0f;
+
+  public SliderButton(int x, int y, int width, int height, String name, float initValue,
+      float minValue, float maxValue, SliderButton.OnChange onChange) {
+    this(x, y, width, height, Component.literal(name), initValue, minValue, maxValue, onChange);
+  }
 
   public SliderButton(int x, int y, int width, int height, Component name, float initValue,
       float minValue, float maxValue, SliderButton.OnChange onChange) {
@@ -50,6 +56,10 @@ public class SliderButton extends AbstractSliderButton {
     this.maxValue = maxValue;
     this.valueFraction = maxValue - minValue;
     this.value = (this.initValue - minValue) / this.valueFraction;
+    if ((this.minValue == 0 && this.maxValue == 360)
+        || (this.minValue == -180 && this.maxValue == 180)) {
+      this.roundFactor = 1.0f;
+    }
     this.onChange = onChange;
     this.updateTargetValue();
     this.updateMessage();
@@ -62,13 +72,17 @@ public class SliderButton extends AbstractSliderButton {
     this.updateMessage();
   }
 
+  public void reset() {
+    this.setDefaultValue(this.initValue);
+  }
+
   public float getTargetValue() {
     return this.targetValue;
   }
 
   private void updateTargetValue() {
     this.targetValue =
-        (float) (Math.round((this.minValue + (this.valueFraction * this.value)) * 100.0) / 100.0);
+        Math.round((this.minValue + (this.valueFraction * this.value)) * roundFactor) / roundFactor;
   }
 
   @OnlyIn(Dist.CLIENT)

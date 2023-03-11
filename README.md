@@ -159,9 +159,15 @@ The scaling screen allows to scale the NPC model in the X, Y and Z direction.
 
 ## Pose
 
-The pose screen allows to change the pose of the NPC, it's supports the basic poses, but not all models support all poses.
+The pose screen allows to change the default pose of the NPC like standing, sleeping, sneaking, swimming, etc.
 
 ![Pose](/examples/pose/default_pose.png)
+
+Furthermore it's possible to change the individual pose of the NPC head, body, arms and legs to allow more customization.
+
+![Custom Pose](/examples/pose/custom_pose.png)
+
+Note: Not all models support all poses or individual pose changes.
 
 ## Position
 

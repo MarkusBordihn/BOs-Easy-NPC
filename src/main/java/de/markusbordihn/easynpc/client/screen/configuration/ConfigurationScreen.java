@@ -84,6 +84,11 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     }
   }
 
+  protected int fontDraw(PoseStack poseStack, String text, float x, float y) {
+    return this.font.draw(poseStack, Component.translatable(Constants.TEXT_CONFIG_PREFIX + text), x,
+        y, 4210752);
+  }
+
   protected static Button menuButton(int left, int top, int width, String label,
       Button.OnPress onPress) {
     return menuButton(left, top, width,

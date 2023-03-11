@@ -30,7 +30,6 @@ import com.mojang.math.Vector3f;
 
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.SkeletonModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
@@ -44,13 +43,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.model.CustomSkeletonModel;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
-import de.markusbordihn.easynpc.entity.ModelPose;
-import de.markusbordihn.easynpc.entity.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.npc.Skeleton.Variant;
+import de.markusbordihn.easynpc.model.ModelPose;
+import de.markusbordihn.easynpc.entity.npc.Skeleton;
 
 @OnlyIn(Dist.CLIENT)
-public class SkeletonRenderer extends HumanoidMobRenderer<Skeleton, SkeletonModel<Skeleton>> {
+public class SkeletonRenderer extends HumanoidMobRenderer<Skeleton, CustomSkeletonModel<Skeleton>> {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -66,10 +66,10 @@ public class SkeletonRenderer extends HumanoidMobRenderer<Skeleton, SkeletonMode
       TEXTURE_BY_VARIANT.get(Variant.SKELETON);
 
   public SkeletonRenderer(EntityRendererProvider.Context context) {
-    super(context, new SkeletonModel<>(context.bakeLayer(ModelLayers.SKELETON)), 0.5F);
+    super(context, new CustomSkeletonModel<>(context.bakeLayer(ModelLayers.SKELETON)), 0.5F);
     this.addLayer(new HumanoidArmorLayer<>(this,
-        new SkeletonModel<>(context.bakeLayer(ModelLayers.SKELETON_INNER_ARMOR)),
-        new SkeletonModel<>(context.bakeLayer(ModelLayers.SKELETON_OUTER_ARMOR))));
+        new CustomSkeletonModel<>(context.bakeLayer(ModelLayers.SKELETON_INNER_ARMOR)),
+        new CustomSkeletonModel<>(context.bakeLayer(ModelLayers.SKELETON_OUTER_ARMOR))));
     this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
     this.addLayer(new ElytraLayer<>(this, context.getModelSet()));
   }
@@ -98,7 +98,7 @@ public class SkeletonRenderer extends HumanoidMobRenderer<Skeleton, SkeletonMode
   @Override
   public void render(Skeleton entity, float entityYaw, float partialTicks, PoseStack poseStack,
       net.minecraft.client.renderer.MultiBufferSource buffer, int light) {
-    SkeletonModel<Skeleton> playerModel = this.getModel();
+    CustomSkeletonModel<Skeleton> playerModel = this.getModel();
 
     // Render additional poses
     if (entity.getModelPose() == ModelPose.DEFAULT) {

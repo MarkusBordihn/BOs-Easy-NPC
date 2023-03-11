@@ -33,7 +33,7 @@ import net.minecraftforge.network.NetworkEvent;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
-import de.markusbordihn.easynpc.entity.ModelPose;
+import de.markusbordihn.easynpc.model.ModelPose;
 
 public class MessageModelPoseChange {
 
