@@ -1,4 +1,4 @@
-# Changelog for Easy NPC (1.19.2)
+# Changelog for Easy NPC (1.19)
 
 ## Note
 
@@ -8,6 +8,7 @@ For the full changelog, please go to the [Git Hub History][history] instead.
 ### 2023.03.11
 
 - Added support for custom poses which allows to rotate the head, body, arms and legs.
+- Refactored Code for 1.19-41.1.0.
 
 ### 2023.03.05
 

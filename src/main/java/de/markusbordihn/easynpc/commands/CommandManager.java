@@ -23,7 +23,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.ParseResults;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -69,10 +68,8 @@ public class CommandManager {
     Commands commands = minecraftServer.getCommands();
     CommandSourceStack commandSourceStack = minecraftServer.createCommandSourceStack()
         .withEntity(entity).withPermission(permissionLevel);
-    CommandDispatcher<CommandSourceStack> commandDispatcher = commands.getDispatcher();
-    ParseResults<CommandSourceStack> parseResults = commandDispatcher.parse(command,
-        debug ? commandSourceStack : commandSourceStack.withSuppressedOutput());
-    commands.performCommand(parseResults, command);
+    commands.performCommand(debug ? commandSourceStack : commandSourceStack.withSuppressedOutput(),
+        command);
   }
 
   public static void executeServerCommand(String command) {
@@ -87,10 +84,7 @@ public class CommandManager {
     Commands commands = minecraftServer.getCommands();
     CommandSourceStack commandSourceStack =
         minecraftServer.createCommandSourceStack().withSuppressedOutput();
-    CommandDispatcher<CommandSourceStack> commandDispatcher = commands.getDispatcher();
-    ParseResults<CommandSourceStack> parseResults =
-        commandDispatcher.parse(command, commandSourceStack);
-    commands.performCommand(parseResults, command);
+    commands.performCommand(commandSourceStack, command);
   }
 
   public static void executeUserCommand(String command) {
@@ -104,9 +98,6 @@ public class CommandManager {
     log.debug("Execute User Command: {}", command);
     Commands commands = minecraftServer.getCommands();
     CommandSourceStack commandSourceStack = minecraftServer.createCommandSourceStack();
-    CommandDispatcher<CommandSourceStack> commandDispatcher = commands.getDispatcher();
-    ParseResults<CommandSourceStack> parseResults =
-        commandDispatcher.parse(command, commandSourceStack);
-    commands.performCommand(parseResults, command);
+    commands.performCommand(commandSourceStack, command);
   }
 }
