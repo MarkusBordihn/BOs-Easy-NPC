@@ -23,13 +23,14 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-
+import com.mojang.math.Vector3f;
 import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Rotations;
 import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -40,6 +41,7 @@ import de.markusbordihn.easynpc.client.model.CustomAllayModel;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.npc.Allay.Variant;
+import de.markusbordihn.easynpc.model.ModelPose;
 
 @OnlyIn(Dist.CLIENT)
 public class AllayRenderer extends MobRenderer<EasyNPCEntity, CustomAllayModel<EasyNPCEntity>> {
@@ -77,6 +79,48 @@ public class AllayRenderer extends MobRenderer<EasyNPCEntity, CustomAllayModel<E
     } else {
       poseStack.scale(entity.getScaleX(), entity.getScaleY(), entity.getScaleZ());
     }
+  }
+
+  @Override
+  public void render(EasyNPCEntity entity, float entityYaw, float partialTicks, PoseStack poseStack,
+      net.minecraft.client.renderer.MultiBufferSource buffer, int light) {
+    CustomAllayModel<EasyNPCEntity> playerModel = this.getModel();
+
+    // Model Rotation
+    Rotations rootRotation = entity.getModelRootRotation();
+    if (rootRotation != null) {
+      poseStack.translate(0, 0.5, 0);
+      poseStack.mulPose(Vector3f.XP.rotation(rootRotation.getX()));
+      poseStack.mulPose(Vector3f.YP.rotation(rootRotation.getY()));
+      poseStack.mulPose(Vector3f.ZP.rotation(rootRotation.getZ()));
+      poseStack.translate(0, -0.5, 0);
+    }
+
+    // Render additional poses
+    if (entity.getModelPose() == ModelPose.DEFAULT) {
+
+      switch (entity.getPose()) {
+        case DYING:
+          poseStack.translate(-0.5D, 0.0D, 0.0D);
+          poseStack.mulPose(Vector3f.YP.rotationDegrees(180f));
+          poseStack.mulPose(Vector3f.ZP.rotationDegrees(this.getFlipDegrees(entity)));
+          poseStack.mulPose(Vector3f.YP.rotationDegrees(270.0F));
+          playerModel.getHead().xRot = -0.7853982F;
+          playerModel.getHead().yRot = -0.7853982F;
+          playerModel.getHead().zRot = -0.7853982F;
+          break;
+        case SLEEPING:
+          poseStack.translate(0.5D, 0.0D, 0.0D);
+          break;
+        default:
+          playerModel.getHead().xRot = 0F;
+          playerModel.getHead().yRot = 0F;
+          playerModel.getHead().zRot = 0F;
+          break;
+      }
+    }
+
+    super.render(entity, entityYaw, partialTicks, poseStack, buffer, light);
   }
 
   @Override

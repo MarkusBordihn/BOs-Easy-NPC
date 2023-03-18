@@ -38,6 +38,7 @@ import net.minecraft.client.renderer.entity.layers.ElytraLayer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Rotations;
 import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -110,6 +111,16 @@ public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, CustomPlayerMod
       net.minecraft.client.renderer.MultiBufferSource buffer, int light) {
     CustomPlayerModel<EasyNPCEntity> playerModel = this.getModel();
 
+    // Model Rotation
+    Rotations rootRotation = entity.getModelRootRotation();
+    if (rootRotation != null) {
+      poseStack.translate(0, 1, 0);
+      poseStack.mulPose(Vector3f.XP.rotation(rootRotation.getX()));
+      poseStack.mulPose(Vector3f.YP.rotation(rootRotation.getY()));
+      poseStack.mulPose(Vector3f.ZP.rotation(rootRotation.getZ()));
+      poseStack.translate(0, -1, 0);
+    }
+
     // Render additional poses
     if (entity.getModelPose() == ModelPose.DEFAULT) {
 
@@ -121,7 +132,7 @@ public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, CustomPlayerMod
           poseStack.translate(-1.0D, 0.0D, 0.0D);
           poseStack.mulPose(Vector3f.YP.rotationDegrees(180f));
           poseStack.mulPose(Vector3f.ZP.rotationDegrees(this.getFlipDegrees(entity)));
-          poseStack.mulPose(Vector3f.YP.rotationDegrees(270.0F));
+          poseStack.mulPose(Vector3f.YP.rotationDegrees(270.0f));
           playerModel.getHead().xRot = -0.7853982F;
           playerModel.getHead().yRot = -0.7853982F;
           playerModel.getHead().zRot = -0.7853982F;

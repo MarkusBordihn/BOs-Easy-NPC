@@ -17,7 +17,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 package de.markusbordihn.easynpc.client.screen.configuration.pose;
 
 import net.minecraft.client.gui.components.Button;
@@ -33,7 +32,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenu;
 import de.markusbordihn.easynpc.model.ModelPose;
-import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
 @OnlyIn(Dist.CLIENT)
 public class DefaultPoseConfigurationScreen
@@ -84,42 +83,42 @@ public class DefaultPoseConfigurationScreen
     int poseButtonLeft = this.contentLeftPos + 175;
     this.standingPoseButton = this
         .addRenderableWidget(menuButton(poseButtonLeft, this.contentTopPos, "standing", button -> {
-          NetworkHandler.poseChange(uuid, Pose.STANDING);
+          NetworkMessage.poseChange(uuid, Pose.STANDING);
           this.checkPoseButtonState(Pose.STANDING, ModelPose.DEFAULT);
         }));
     this.crouchingPoseButton = this.addRenderableWidget(
         menuButton(poseButtonLeft, this.contentTopPos + 24, "crouching", button -> {
-          NetworkHandler.poseChange(uuid, Pose.CROUCHING);
+          NetworkMessage.poseChange(uuid, Pose.CROUCHING);
           this.checkPoseButtonState(Pose.CROUCHING, ModelPose.DEFAULT);
         }));
     this.dyingPoseButton = this.addRenderableWidget(
         menuButton(poseButtonLeft, this.contentTopPos + 48, "dying", button -> {
-          NetworkHandler.poseChange(uuid, Pose.DYING);
+          NetworkMessage.poseChange(uuid, Pose.DYING);
           this.checkPoseButtonState(Pose.DYING, ModelPose.DEFAULT);
         }));
     this.fallFlyingPoseButton = this.addRenderableWidget(
         menuButton(poseButtonLeft, this.contentTopPos + 72, "fall_flying", button -> {
-          NetworkHandler.poseChange(uuid, Pose.FALL_FLYING);
+          NetworkMessage.poseChange(uuid, Pose.FALL_FLYING);
           this.checkPoseButtonState(Pose.FALL_FLYING, ModelPose.DEFAULT);
         }));
     this.longJumpPoseButton = this.addRenderableWidget(
         menuButton(poseButtonLeft, this.contentTopPos + 96, "long_jumping", button -> {
-          NetworkHandler.poseChange(uuid, Pose.LONG_JUMPING);
+          NetworkMessage.poseChange(uuid, Pose.LONG_JUMPING);
           this.checkPoseButtonState(Pose.LONG_JUMPING, ModelPose.DEFAULT);
         }));
     this.sleepingPoseButton = this.addRenderableWidget(
         menuButton(poseButtonLeft, this.contentTopPos + 120, "sleeping", button -> {
-          NetworkHandler.poseChange(uuid, Pose.SLEEPING);
+          NetworkMessage.poseChange(uuid, Pose.SLEEPING);
           this.checkPoseButtonState(Pose.SLEEPING, ModelPose.DEFAULT);
         }));
     this.spinAttackPoseButton = this.addRenderableWidget(
         menuButton(poseButtonLeft, this.contentTopPos + 144, "spin_attack", button -> {
-          NetworkHandler.poseChange(uuid, Pose.SPIN_ATTACK);
+          NetworkMessage.poseChange(uuid, Pose.SPIN_ATTACK);
           this.checkPoseButtonState(Pose.SPIN_ATTACK, ModelPose.DEFAULT);
         }));
     this.swimmingPoseButton = this.addRenderableWidget(
         menuButton(poseButtonLeft, this.contentTopPos + 168, "swimming", button -> {
-          NetworkHandler.poseChange(uuid, Pose.SWIMMING);
+          NetworkMessage.poseChange(uuid, Pose.SWIMMING);
           this.checkPoseButtonState(Pose.SWIMMING, ModelPose.DEFAULT);
         }));
 

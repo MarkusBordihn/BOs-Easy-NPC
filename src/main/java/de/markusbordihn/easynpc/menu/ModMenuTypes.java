@@ -30,8 +30,10 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.configuration.pose.CustomPoseConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.position.DefaultPositionConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.rotation.DefaultRotationConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
@@ -64,6 +66,9 @@ public class ModMenuTypes {
           () -> IForgeMenuType.create(BasicActionConfigurationMenu::new));
 
   // Dialog Configuration
+  public static final RegistryObject<MenuType<NoneDialogConfigurationMenu>> NONE_DIALOG_CONFIGURATION_MENU =
+      MENU_TYPES.register("none_dialog_configuration_menu",
+          () -> IForgeMenuType.create(NoneDialogConfigurationMenu::new));
   public static final RegistryObject<MenuType<BasicDialogConfigurationMenu>> BASIC_DIALOG_CONFIGURATION_MENU =
       MENU_TYPES.register("basic_dialog_configuration_menu",
           () -> IForgeMenuType.create(BasicDialogConfigurationMenu::new));
@@ -86,8 +91,13 @@ public class ModMenuTypes {
 
   // Position Configuration
   public static final RegistryObject<MenuType<DefaultPositionConfigurationMenu>> DEFAULT_POSITION_CONFIGURATION_MENU =
-      MENU_TYPES.register("position_configuration_menu",
+      MENU_TYPES.register("default_position_configuration_menu",
           () -> IForgeMenuType.create(DefaultPositionConfigurationMenu::new));
+
+  // Rotation Configuration
+  public static final RegistryObject<MenuType<DefaultRotationConfigurationMenu>> DEFAULT_ROTATION_CONFIGURATION_MENU =
+      MENU_TYPES.register("default_rotation_configuration_menu",
+          () -> IForgeMenuType.create(DefaultRotationConfigurationMenu::new));
 
   // Skin Configuration
   public static final RegistryObject<MenuType<CustomSkinConfigurationMenu>> CUSTOM_SKIN_CONFIGURATION_MENU =

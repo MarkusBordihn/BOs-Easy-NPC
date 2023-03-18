@@ -60,6 +60,16 @@ public class Allay extends EasyNPCEntity {
   }
 
   @Override
+  public boolean hasLeftLegModelPart() {
+    return false;
+  }
+
+  @Override
+  public boolean hasRightLegModelPart() {
+    return false;
+  }
+
+  @Override
   public Enum<?>[] getVariants() {
     return Variant.values();
   }

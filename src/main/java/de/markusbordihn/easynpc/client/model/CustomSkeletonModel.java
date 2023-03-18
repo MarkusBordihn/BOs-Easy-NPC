@@ -41,72 +41,74 @@ public class CustomSkeletonModel<T extends Mob & RangedAttackMob> extends Skelet
   @Override
   public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks,
       float netHeadYaw, float headPitch) {
-    if (entity instanceof EasyNPCEntity easyNPCEntity
-        && easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
+    if (entity instanceof EasyNPCEntity easyNPCEntity) {
+      // Individual Part Rotations
+      if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
 
-      Rotations headRotations = easyNPCEntity.getModelHeadRotation();
-      if (headRotations != null) {
-        this.head.xRot = headRotations.getX();
-        this.head.yRot = headRotations.getY();
-        this.head.zRot = headRotations.getZ();
+        Rotations headRotations = easyNPCEntity.getModelHeadRotation();
+        if (headRotations != null) {
+          this.head.xRot = headRotations.getX();
+          this.head.yRot = headRotations.getY();
+          this.head.zRot = headRotations.getZ();
+        }
+
+        Rotations bodyRotations = easyNPCEntity.getModelBodyRotation();
+        if (bodyRotations != null) {
+          this.body.xRot = bodyRotations.getX();
+          this.body.yRot = bodyRotations.getY();
+          this.body.zRot = bodyRotations.getZ();
+        }
+
+        Rotations rightArmRotations = easyNPCEntity.getModelRightArmRotation();
+        if (rightArmRotations != null) {
+          this.rightArm.xRot = rightArmRotations.getX();
+          this.rightArm.yRot = rightArmRotations.getY();
+          this.rightArm.zRot = rightArmRotations.getZ();
+        }
+
+        Rotations leftArmRotations = easyNPCEntity.getModelLeftArmRotation();
+        if (leftArmRotations != null) {
+          this.leftArm.xRot = leftArmRotations.getX();
+          this.leftArm.yRot = leftArmRotations.getY();
+          this.leftArm.zRot = leftArmRotations.getZ();
+        }
+
+        Rotations rightLegRotations = easyNPCEntity.getModelRightLegRotation();
+        if (rightLegRotations != null) {
+          this.rightLeg.xRot = rightLegRotations.getX();
+          this.rightLeg.yRot = rightLegRotations.getY();
+          this.rightLeg.zRot = rightLegRotations.getZ();
+        }
+
+        Rotations leftLegRotations = easyNPCEntity.getModelLeftLegRotation();
+        if (leftLegRotations != null) {
+          this.leftLeg.xRot = leftLegRotations.getX();
+          this.leftLeg.yRot = leftLegRotations.getY();
+          this.leftLeg.zRot = leftLegRotations.getZ();
+        }
+      } else {
+        // Reset all rotations to avoid any issues with other mods.
+        this.head.xRot = 0.0F;
+        this.head.yRot = 0.0F;
+        this.head.zRot = 0.0F;
+        this.body.xRot = 0.0F;
+        this.body.yRot = 0.0F;
+        this.body.zRot = 0.0F;
+        this.rightArm.xRot = 0.0F;
+        this.rightArm.yRot = 0.0F;
+        this.rightArm.zRot = 0.0F;
+        this.leftArm.xRot = 0.0F;
+        this.leftArm.yRot = 0.0F;
+        this.leftArm.zRot = 0.0F;
+        this.rightLeg.xRot = 0.0F;
+        this.rightLeg.yRot = 0.0F;
+        this.rightLeg.zRot = 0.0F;
+        this.leftLeg.xRot = 0.0F;
+        this.leftLeg.yRot = 0.0F;
+        this.leftLeg.zRot = 0.0F;
+
+        super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
       }
-
-      Rotations bodyRotations = easyNPCEntity.getModelBodyRotation();
-      if (bodyRotations != null) {
-        this.body.xRot = bodyRotations.getX();
-        this.body.yRot = bodyRotations.getY();
-        this.body.zRot = bodyRotations.getZ();
-      }
-
-      Rotations rightArmRotations = easyNPCEntity.getModelRightArmRotation();
-      if (rightArmRotations != null) {
-        this.rightArm.xRot = rightArmRotations.getX();
-        this.rightArm.yRot = rightArmRotations.getY();
-        this.rightArm.zRot = rightArmRotations.getZ();
-      }
-
-      Rotations leftArmRotations = easyNPCEntity.getModelLeftArmRotation();
-      if (leftArmRotations != null) {
-        this.leftArm.xRot = leftArmRotations.getX();
-        this.leftArm.yRot = leftArmRotations.getY();
-        this.leftArm.zRot = leftArmRotations.getZ();
-      }
-
-      Rotations rightLegRotations = easyNPCEntity.getModelRightLegRotation();
-      if (rightLegRotations != null) {
-        this.rightLeg.xRot = rightLegRotations.getX();
-        this.rightLeg.yRot = rightLegRotations.getY();
-        this.rightLeg.zRot = rightLegRotations.getZ();
-      }
-
-      Rotations leftLegRotations = easyNPCEntity.getModelLeftLegRotation();
-      if (leftLegRotations != null) {
-        this.leftLeg.xRot = leftLegRotations.getX();
-        this.leftLeg.yRot = leftLegRotations.getY();
-        this.leftLeg.zRot = leftLegRotations.getZ();
-      }
-    } else {
-      // Reset all rotations to avoid any issues with other mods.
-      this.head.xRot = 0.0F;
-      this.head.yRot = 0.0F;
-      this.head.zRot = 0.0F;
-      this.body.xRot = 0.0F;
-      this.body.yRot = 0.0F;
-      this.body.zRot = 0.0F;
-      this.rightArm.xRot = 0.0F;
-      this.rightArm.yRot = 0.0F;
-      this.rightArm.zRot = 0.0F;
-      this.leftArm.xRot = 0.0F;
-      this.leftArm.yRot = 0.0F;
-      this.leftArm.zRot = 0.0F;
-      this.rightLeg.xRot = 0.0F;
-      this.rightLeg.yRot = 0.0F;
-      this.rightLeg.zRot = 0.0F;
-      this.leftLeg.xRot = 0.0F;
-      this.leftLeg.yRot = 0.0F;
-      this.leftLeg.zRot = 0.0F;
-
-      super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
     }
   }
 

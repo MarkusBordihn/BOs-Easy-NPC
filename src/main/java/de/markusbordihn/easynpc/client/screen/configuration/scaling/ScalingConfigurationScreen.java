@@ -33,7 +33,7 @@ import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.screen.components.SliderButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.menu.configuration.scaling.ScalingConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
 @OnlyIn(Dist.CLIENT)
 public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfigurationMenu> {
@@ -69,7 +69,7 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
             20, Component.literal("Scale X"), this.entity.getScaleX(), 0.1f, 10f, button -> {
               float scale = button.getTargetValue();
               if (entity.getScaleX() != scale) {
-                NetworkHandler.scaleChange(uuid, "x", button.getTargetValue());
+                NetworkMessage.scaleChange(uuid, "x", button.getTargetValue());
               }
               this.defaultScaleXButton.active = scale != entity.getDefaultScaleX();
             }));
@@ -86,7 +86,7 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
             Component.literal("Scale Y"), this.entity.getScaleY(), 0.1f, 10f, button -> {
               float scale = button.getTargetValue();
               if (entity.getScaleY() != scale) {
-                NetworkHandler.scaleChange(uuid, "y", button.getTargetValue());
+                NetworkMessage.scaleChange(uuid, "y", button.getTargetValue());
               }
               this.defaultScaleYButton.active = scale != entity.getDefaultScaleY();
             }));
@@ -104,7 +104,7 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
             20, Component.literal("Scale Z"), this.entity.getScaleZ(), 0.1f, 10f, button -> {
               float scale = button.getTargetValue();
               if (entity.getScaleZ() != scale) {
-                NetworkHandler.scaleChange(uuid, "z", button.getTargetValue());
+                NetworkMessage.scaleChange(uuid, "z", button.getTargetValue());
               }
               this.defaultScaleZButton.active = scale != entity.getDefaultScaleZ();
             }));
@@ -122,8 +122,8 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
     super.render(poseStack, x, y, partialTicks);
 
     // Avatar
-    ScreenHelper.renderEntityAvatar(this.contentLeftPos + 70, this.contentTopPos + 175, 30,
-        this.contentLeftPos + 140 - this.xMouse, this.contentTopPos + 30 - this.yMouse,
+    ScreenHelper.renderEntityAvatarForScaling(this.contentLeftPos + 70, this.contentTopPos + 175,
+        30, this.contentLeftPos + 140 - this.xMouse, this.contentTopPos + 30 - this.yMouse,
         this.entity);
 
     // Label for Scale X

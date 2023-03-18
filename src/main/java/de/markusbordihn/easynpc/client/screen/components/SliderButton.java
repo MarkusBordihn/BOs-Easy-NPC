@@ -73,6 +73,10 @@ public class SliderButton extends AbstractSliderButton {
   }
 
   public void reset() {
+    this.setDefaultValue(0);
+  }
+
+  public void resetToDefault() {
     this.setDefaultValue(this.initValue);
   }
 

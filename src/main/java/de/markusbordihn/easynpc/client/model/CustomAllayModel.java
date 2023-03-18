@@ -64,6 +64,10 @@ public class CustomAllayModel<T extends LivingEntity> extends HierarchicalModel<
     return this.root;
   }
 
+  public ModelPart getHead() {
+    return this.head;
+  }
+
   public static LayerDefinition createBodyLayer() {
     return net.minecraft.client.model.AllayModel.createBodyLayer();
   }
