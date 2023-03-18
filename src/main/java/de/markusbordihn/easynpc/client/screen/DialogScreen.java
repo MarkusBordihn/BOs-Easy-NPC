@@ -48,7 +48,7 @@ import de.markusbordihn.easynpc.dialog.DialogType;
 import de.markusbordihn.easynpc.dialog.DialogUtils;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.menu.DialogMenu;
-import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 import de.markusbordihn.easynpc.utils.TextUtils;
 
 @OnlyIn(Dist.CLIENT)
@@ -162,7 +162,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
 
     // Action for open dialog.
     if (this.actions.containsKey(ActionType.ON_OPEN_DIALOG)) {
-      NetworkHandler.triggerAction(this.uuid, ActionType.ON_OPEN_DIALOG);
+      NetworkMessage.triggerAction(this.uuid, ActionType.ON_OPEN_DIALOG);
     }
 
     // Render additional Buttons for Yes/No Dialog.
@@ -184,7 +184,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
 
             // Action for close dialog.
             if (this.actions.containsKey(ActionType.ON_YES_SELECTION)) {
-              NetworkHandler.triggerAction(this.uuid, ActionType.ON_YES_SELECTION);
+              NetworkMessage.triggerAction(this.uuid, ActionType.ON_YES_SELECTION);
             }
           }));
 
@@ -202,7 +202,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
 
             // Action for close dialog.
             if (this.actions.containsKey(ActionType.ON_NO_SELECTION)) {
-              NetworkHandler.triggerAction(this.uuid, ActionType.ON_NO_SELECTION);
+              NetworkMessage.triggerAction(this.uuid, ActionType.ON_NO_SELECTION);
             }
           }));
     }
@@ -253,7 +253,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
   public void onClose() {
     // Action for close dialog.
     if (this.actions.containsKey(ActionType.ON_CLOSE_DIALOG)) {
-      NetworkHandler.triggerAction(this.uuid, ActionType.ON_CLOSE_DIALOG);
+      NetworkMessage.triggerAction(this.uuid, ActionType.ON_CLOSE_DIALOG);
     }
     super.onClose();
   }

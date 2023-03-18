@@ -43,7 +43,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 import de.markusbordihn.easynpc.skin.SkinModel;
 
 @OnlyIn(Dist.CLIENT)
@@ -89,8 +89,10 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
         y, 4210752);
   }
 
-  protected static Button menuButton(int left, int top, int width, String label, Button.OnPress onPress) {
-    return menuButton(left, top, width, Component.translatable(Constants.TEXT_CONFIG_PREFIX + label), onPress);
+  protected static Button menuButton(int left, int top, int width, String label,
+      Button.OnPress onPress) {
+    return menuButton(left, top, width,
+        Component.translatable(Constants.TEXT_CONFIG_PREFIX + label), onPress);
   }
 
   protected static Button menuButton(int left, int top, int width, Component label,
@@ -127,7 +129,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     // Home Button
     this.homeButton = this.addRenderableWidget(
         menuButton(this.leftPos + 7, this.buttonTopPos, 10, Component.literal("<"), onPress -> {
-          NetworkHandler.openConfiguration(uuid, ConfigurationType.MAIN);
+          NetworkMessage.openConfiguration(uuid, ConfigurationType.MAIN);
         }));
   }
 

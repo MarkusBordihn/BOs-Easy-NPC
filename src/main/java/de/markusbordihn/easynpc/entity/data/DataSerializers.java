@@ -17,13 +17,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity;
+package de.markusbordihn.easynpc.entity.data;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 
 import de.markusbordihn.easynpc.dialog.DialogType;
+import de.markusbordihn.easynpc.entity.Profession;
 import de.markusbordihn.easynpc.model.ModelPose;
 import de.markusbordihn.easynpc.skin.SkinType;
 

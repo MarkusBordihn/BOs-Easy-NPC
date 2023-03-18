@@ -30,6 +30,7 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Rotations;
 import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -87,6 +88,16 @@ public class FairyRenderer extends HumanoidMobRenderer<EasyNPCEntity, FairyModel
   public void render(EasyNPCEntity entity, float entityYaw, float partialTicks, PoseStack poseStack,
       net.minecraft.client.renderer.MultiBufferSource buffer, int light) {
     FairyModel<EasyNPCEntity> playerModel = this.getModel();
+
+    // Model Rotation
+    Rotations rootRotation = entity.getModelRootRotation();
+    if (rootRotation != null) {
+      poseStack.translate(0, 0.5, 0);
+      poseStack.mulPose(Axis.XP.rotation(rootRotation.getX()));
+      poseStack.mulPose(Axis.YP.rotation(rootRotation.getY()));
+      poseStack.mulPose(Axis.ZP.rotation(rootRotation.getZ()));
+      poseStack.translate(0, -0.5, 0);
+    }
 
     // Render additional poses
     if (entity.getModelPose() == ModelPose.DEFAULT) {

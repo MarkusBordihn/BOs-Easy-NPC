@@ -29,7 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 import de.markusbordihn.easynpc.skin.SkinModel;
 
 @OnlyIn(Dist.CLIENT)
@@ -60,17 +60,17 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
     int skinButtonWidth = 92;
     this.defaultSkinButton = this.addRenderableWidget(menuButton(this.buttonLeftPos,
         this.buttonTopPos, skinButtonWidth - 2, "default_skin", onPress -> {
-          NetworkHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_SKIN);
+          NetworkMessage.openConfiguration(uuid, ConfigurationType.DEFAULT_SKIN);
         }));
     this.playerSkinButton =
         this.addRenderableWidget(menuButton(this.buttonLeftPos + this.defaultSkinButton.getWidth(),
             this.buttonTopPos, skinButtonWidth, "player_skin", onPress -> {
-              NetworkHandler.openConfiguration(uuid, ConfigurationType.PLAYER_SKIN);
+              NetworkMessage.openConfiguration(uuid, ConfigurationType.PLAYER_SKIN);
             }));
     this.customSkinButton = this.addRenderableWidget(menuButton(
         this.buttonLeftPos + this.defaultSkinButton.getWidth() + this.playerSkinButton.getWidth(),
         this.buttonTopPos, skinButtonWidth, "custom_skin", onPress -> {
-          NetworkHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_SKIN);
+          NetworkMessage.openConfiguration(uuid, ConfigurationType.CUSTOM_SKIN);
         }));
 
     // Default button stats

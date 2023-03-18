@@ -36,7 +36,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.action.ActionType;
 import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
 @OnlyIn(Dist.CLIENT)
 public class BasicActionConfigurationScreen
@@ -117,7 +117,7 @@ public class BasicActionConfigurationScreen
     this.saveOnInteractionActionButton = this.addRenderableWidget(
         menuButton(this.leftPos + 265, interactionActionTop, 25, Component.literal(""), onPress -> {
           String action = this.onInteractionActionBox.getValue();
-          NetworkHandler.actionChange(uuid, ActionType.ON_INTERACTION, action);
+          NetworkMessage.actionChange(uuid, ActionType.ON_INTERACTION, action);
           this.lastInteractionAction = action;
           this.saveOnInteractionActionButton.active = false;
         }));
@@ -135,7 +135,7 @@ public class BasicActionConfigurationScreen
     this.saveOnOpenActionButton = this.addRenderableWidget(
         menuButton(this.leftPos + 265, openActionTop, 25, Component.literal(""), onPress -> {
           String action = this.onOpenActionBox.getValue();
-          NetworkHandler.actionChange(uuid, ActionType.ON_OPEN_DIALOG, action);
+          NetworkMessage.actionChange(uuid, ActionType.ON_OPEN_DIALOG, action);
           this.lastOpenAction = action;
           this.saveOnOpenActionButton.active = false;
         }));
@@ -153,7 +153,7 @@ public class BasicActionConfigurationScreen
     this.saveOnCloseActionButton = this.addRenderableWidget(
         menuButton(this.leftPos + 265, closeActionTop, 25, Component.literal(""), onPress -> {
           String action = this.onCloseActionBox.getValue();
-          NetworkHandler.actionChange(uuid, ActionType.ON_CLOSE_DIALOG, action);
+          NetworkMessage.actionChange(uuid, ActionType.ON_CLOSE_DIALOG, action);
           this.lastCloseAction = action;
           this.saveOnCloseActionButton.active = false;
         }));
@@ -171,7 +171,7 @@ public class BasicActionConfigurationScreen
     this.saveOnYesActionButton = this.addRenderableWidget(
         menuButton(this.leftPos + 265, yesActionTop, 25, Component.literal(""), onPress -> {
           String action = this.onYesActionBox.getValue();
-          NetworkHandler.actionChange(uuid, ActionType.ON_YES_SELECTION, action);
+          NetworkMessage.actionChange(uuid, ActionType.ON_YES_SELECTION, action);
           this.lastYesAction = action;
           this.saveOnYesActionButton.active = false;
         }));
@@ -189,7 +189,7 @@ public class BasicActionConfigurationScreen
     this.saveOnNoActionButton = this.addRenderableWidget(
         menuButton(this.leftPos + 265, noActionTop, 25, Component.literal(""), onPress -> {
           String action = this.onNoActionBox.getValue();
-          NetworkHandler.actionChange(uuid, ActionType.ON_NO_SELECTION, action);
+          NetworkMessage.actionChange(uuid, ActionType.ON_NO_SELECTION, action);
           this.lastNoAction = action;
           this.saveOnNoActionButton.active = false;
         }));
@@ -202,7 +202,7 @@ public class BasicActionConfigurationScreen
         this.entity.getActionDebug()) {
       @Override
       public void onPress() {
-        NetworkHandler.actionDebugChange(uuid, !entity.getActionDebug());
+        NetworkMessage.actionDebugChange(uuid, !entity.getActionDebug());
         super.onPress();
       }
     });

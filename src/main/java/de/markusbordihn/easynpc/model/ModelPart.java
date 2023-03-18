@@ -27,6 +27,7 @@ public enum ModelPart {
   RIGHT_ARM,
   LEFT_LEG,
   RIGHT_LEG,
+  ROOT,
   UNKNOWN;
   // @formatter:on
 

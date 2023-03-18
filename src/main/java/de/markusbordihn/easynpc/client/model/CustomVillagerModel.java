@@ -33,64 +33,58 @@ import de.markusbordihn.easynpc.model.ModelPose;
 @OnlyIn(Dist.CLIENT)
 public class CustomVillagerModel<T extends Entity> extends VillagerModel<T> {
 
+  private final ModelPart head;
+  private final ModelPart rightLeg;
+  private final ModelPart leftLeg;
+
   public CustomVillagerModel(ModelPart modelPart) {
     super(modelPart);
+    this.head = modelPart.getChild("head");
+    this.rightLeg = modelPart.getChild("right_leg");
+    this.leftLeg = modelPart.getChild("left_leg");
   }
 
   @Override
   public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks,
       float netHeadYaw, float headPitch) {
-    ModelPart root = root();
-    ModelPart head = root.getChild("head");
-    ModelPart rightLeg = root.getChild("right_leg");
-    ModelPart leftLeg = root.getChild("left_leg");
+    if (entity instanceof EasyNPCEntity easyNPCEntity) {
+      // Individual Part Rotations
+      if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
 
-    if (entity instanceof EasyNPCEntity easyNPCEntity
-        && easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
+        Rotations headRotations = easyNPCEntity.getModelHeadRotation();
+        if (headRotations != null) {
+          this.head.xRot = headRotations.getX();
+          this.head.yRot = headRotations.getY();
+          this.head.zRot = headRotations.getZ();
+        }
 
-      Rotations headRotations = easyNPCEntity.getModelHeadRotation();
-      if (headRotations != null) {
-        head.xRot = headRotations.getX();
-        head.yRot = headRotations.getY();
-        head.zRot = headRotations.getZ();
+        Rotations rightLegRotations = easyNPCEntity.getModelRightLegRotation();
+        if (rightLegRotations != null) {
+          this.rightLeg.xRot = rightLegRotations.getX();
+          this.rightLeg.yRot = rightLegRotations.getY();
+          this.rightLeg.zRot = rightLegRotations.getZ();
+        }
+
+        Rotations leftLegRotations = easyNPCEntity.getModelLeftLegRotation();
+        if (leftLegRotations != null) {
+          this.leftLeg.xRot = leftLegRotations.getX();
+          this.leftLeg.yRot = leftLegRotations.getY();
+          this.leftLeg.zRot = leftLegRotations.getZ();
+        }
+      } else {
+        // Reset all rotations to avoid any issues with other mods.
+        this.head.xRot = 0.0F;
+        this.head.yRot = 0.0F;
+        this.head.zRot = 0.0F;
+        this.rightLeg.xRot = 0.0F;
+        this.rightLeg.yRot = 0.0F;
+        this.rightLeg.zRot = 0.0F;
+        this.leftLeg.xRot = 0.0F;
+        this.leftLeg.yRot = 0.0F;
+        this.leftLeg.zRot = 0.0F;
+
+        super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
       }
-
-      Rotations bodyRotations = easyNPCEntity.getModelBodyRotation();
-      if (bodyRotations != null) {
-        root.xRot = bodyRotations.getX();
-        root.yRot = bodyRotations.getY();
-        root.zRot = bodyRotations.getZ();
-      }
-
-      Rotations rightLegRotations = easyNPCEntity.getModelRightLegRotation();
-      if (rightLegRotations != null) {
-        rightLeg.xRot = rightLegRotations.getX();
-        rightLeg.yRot = rightLegRotations.getY();
-        rightLeg.zRot = rightLegRotations.getZ();
-      }
-
-      Rotations leftLegRotations = easyNPCEntity.getModelLeftLegRotation();
-      if (leftLegRotations != null) {
-        leftLeg.xRot = leftLegRotations.getX();
-        leftLeg.yRot = leftLegRotations.getY();
-        leftLeg.zRot = leftLegRotations.getZ();
-      }
-    } else {
-      // Reset all rotations to avoid any issues with other mods.
-      head.xRot = 0.0F;
-      head.yRot = 0.0F;
-      head.zRot = 0.0F;
-      root.xRot = 0.0F;
-      root.yRot = 0.0F;
-      root.zRot = 0.0F;
-      rightLeg.xRot = 0.0F;
-      rightLeg.yRot = 0.0F;
-      rightLeg.zRot = 0.0F;
-      leftLeg.xRot = 0.0F;
-      leftLeg.yRot = 0.0F;
-      leftLeg.zRot = 0.0F;
-
-      super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
     }
   }
 

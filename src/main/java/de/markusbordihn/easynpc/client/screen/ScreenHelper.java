@@ -31,6 +31,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Pose;
 
@@ -130,11 +131,13 @@ public class ScreenHelper {
     float entityScaleX = entity.getScaleX();
     float entityScaleY = entity.getScaleY();
     float entityScaleZ = entity.getScaleZ();
+    Rotations entityModelRootRotation = entity.getModelRootRotation();
 
     // Adjust entity information for rendering
     entity.setScaleX(entity.getDefaultScaleX());
     entity.setScaleY(entity.getDefaultScaleY());
     entity.setScaleZ(entity.getDefaultScaleZ());
+    entity.setModelRootRotation(new Rotations(0.0F, 0.0F, 0.0F));
 
     // Render Entity
     renderEntity(x, y, scale, yRot, xRot, entity);
@@ -143,6 +146,7 @@ public class ScreenHelper {
     entity.setScaleX(entityScaleX);
     entity.setScaleY(entityScaleY);
     entity.setScaleZ(entityScaleZ);
+    entity.setModelRootRotation(entityModelRootRotation);
   }
 
   public static void renderCustomPoseEntityAvatar(int x, int y, int scale, float yRot, float xRot,
@@ -172,6 +176,21 @@ public class ScreenHelper {
   public static void renderEntityAvatar(int x, int y, int scale, float yRot, float xRot,
       EasyNPCEntity entity) {
     renderEntity(x, y, scale, yRot, xRot, entity);
+  }
+
+  public static void renderEntityAvatarForScaling(int x, int y, int scale, float yRot, float xRot,
+      EasyNPCEntity entity) {
+    // Backup entity information
+    Rotations entityModelRootRotation = entity.getModelRootRotation();
+
+    // Adjust entity information for rendering
+    entity.setModelRootRotation(new Rotations(0.0F, 0.0F, 0.0F));
+
+    // Render Entity
+    renderEntity(x, y, scale, yRot, xRot, entity);
+
+    // Restore entity information
+    entity.setModelRootRotation(entityModelRootRotation);
   }
 
   public static void renderEntityDialog(int x, int y, float yRot, float xRot,

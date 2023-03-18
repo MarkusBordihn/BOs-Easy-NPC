@@ -83,11 +83,33 @@ public class EasyNPCWandItem extends Item {
     Player player = userContext.getPlayer();
     if (player instanceof ServerPlayer serverPlayer) {
       BlockPos blockPos = userContext.getClickedPos();
-      AABB aabb = new AABB(blockPos.getX(), blockPos.getY(), blockPos.getZ(), blockPos.getX() + 1d,
-          blockPos.getY() + 1d, blockPos.getZ() + 1d);
-      // Check which entity is on the block position.
+
+      // 1. Search all nearby EasyNPC entities above and below the block position.
+      AABB aabbAbove =
+          new AABB(blockPos.getX() - 0.25d, blockPos.getY() - 2d, blockPos.getZ() - 0.25d,
+              blockPos.getX() + 0.25d, blockPos.getY() + 2d, blockPos.getZ() + 0.25d);
       for (EasyNPCEntity easyNPCEntity : level.getEntitiesOfClass(EasyNPCEntity.class,
-          aabb.inflate(0.5), Entity::isAlive)) {
+          aabbAbove.inflate(0.5), Entity::isAlive)) {
+        if (easyNPCEntity != null) {
+          EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, easyNPCEntity);
+          return InteractionResult.SUCCESS;
+        }
+      }
+
+      // 2. Search all nearby EasyNPC entities around the block position.
+      AABB aabbAround = new AABB(blockPos.getX() - 0.5d, blockPos.getY() - 0.5d,
+          blockPos.getZ() - 0.5d, blockPos.getX() + 1d, blockPos.getY() + 1d, blockPos.getZ() + 1d);
+      for (EasyNPCEntity easyNPCEntity : level.getEntitiesOfClass(EasyNPCEntity.class,
+          aabbAround.inflate(0.5), Entity::isAlive)) {
+        if (easyNPCEntity != null) {
+          EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, easyNPCEntity);
+          return InteractionResult.SUCCESS;
+        }
+      }
+
+      // 3. Expand the search area by 2.5x to find all nearby EasyNPC entities.
+      for (EasyNPCEntity easyNPCEntity : level.getEntitiesOfClass(EasyNPCEntity.class,
+          aabbAround.inflate(2.5), Entity::isAlive)) {
         if (easyNPCEntity != null) {
           EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, easyNPCEntity);
           return InteractionResult.SUCCESS;
