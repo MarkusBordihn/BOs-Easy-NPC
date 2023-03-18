@@ -70,7 +70,8 @@ public class SkeletonRenderer extends HumanoidMobRenderer<Skeleton, CustomSkelet
     super(context, new CustomSkeletonModel<>(context.bakeLayer(ModelLayers.SKELETON)), 0.5F);
     this.addLayer(new HumanoidArmorLayer<>(this,
         new CustomSkeletonModel<>(context.bakeLayer(ModelLayers.SKELETON_INNER_ARMOR)),
-        new CustomSkeletonModel<>(context.bakeLayer(ModelLayers.SKELETON_OUTER_ARMOR))));
+        new CustomSkeletonModel<>(context.bakeLayer(ModelLayers.SKELETON_OUTER_ARMOR)),
+        context.getModelManager()));
     this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
     this.addLayer(new ElytraLayer<>(this, context.getModelSet()));
   }

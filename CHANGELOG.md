@@ -1,4 +1,4 @@
-# Changelog for Easy NPC (1.19.3)
+# Changelog for Easy NPC (1.19.4)
 
 ## Note
 
@@ -7,6 +7,7 @@ For the full changelog, please go to the [Git Hub History][history] instead.
 
 ### 2023.03.18
 
+- Refactored code for 1.19.4-45.0.9.
 - Added support for custom model rotations and to lock rotations.
 - Added support to disable dialog.
 - Improved network protocol to support more complex data types.

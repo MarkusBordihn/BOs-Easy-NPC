@@ -74,31 +74,31 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
       case HUMANOID:
       case HUMANOID_SLIM:
       case SKELETON:
-        this.blit(poseStack, this.contentLeftPos + 90, this.contentTopPos, 7, 7, 18, 72);
+        blit(poseStack, this.contentLeftPos + 90, this.contentTopPos, 7, 7, 18, 72);
         break;
       default:
         break;
     }
 
     // Main Hand Slot Left
-    this.blit(poseStack, this.contentLeftPos + 90, this.contentTopPos + 75, 7, 7, 18, 18);
+    blit(poseStack, this.contentLeftPos + 90, this.contentTopPos + 75, 7, 7, 18, 18);
 
     // Off Hand Slot Right
     switch (this.skinModel) {
       case HUMANOID:
       case HUMANOID_SLIM:
       case SKELETON:
-        this.blit(poseStack, this.contentLeftPos + 170, this.contentTopPos + 75, 7, 7, 18, 18);
+        blit(poseStack, this.contentLeftPos + 170, this.contentTopPos + 75, 7, 7, 18, 18);
         break;
       default:
         break;
     }
 
     // Player Inventory Slots
-    this.blit(poseStack, this.contentLeftPos + 58, this.contentTopPos + 105, 7, 83, 162, 54);
+    blit(poseStack, this.contentLeftPos + 58, this.contentTopPos + 105, 7, 83, 162, 54);
 
     // Player Hotbar Slots
-    this.blit(poseStack, this.contentLeftPos + 58, this.contentTopPos + 165, 7, 141, 162, 18);
+    blit(poseStack, this.contentLeftPos + 58, this.contentTopPos + 165, 7, 141, 162, 18);
 
     // Entity
     fill(poseStack, this.contentLeftPos + 109, this.contentTopPos - 8, this.contentLeftPos + 169,

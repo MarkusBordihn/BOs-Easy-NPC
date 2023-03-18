@@ -24,10 +24,9 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.CreativeModeTab.Output;
+
 import net.minecraftforge.event.CreativeModeTabEvent;
 
 import de.markusbordihn.easynpc.Constants;
@@ -49,32 +48,16 @@ public class EasyNPCTab {
     TAB_CONFIG_ITEMS = event.registerCreativeModeTab(
         new ResourceLocation(Constants.MOD_ID, "config_items"), builder -> {
           builder.icon(() -> new ItemStack(ModItems.EASY_NPC_WAND.get()))
-              .displayItems(EasyNPCTab::addConfigItemsTabItems)
+              .displayItems(new ConfigItems())
               .title(Component.translatable("itemGroup.easy_npc.config_items")).build();
         });
 
     TAB_SPAWN_EGGS = event
         .registerCreativeModeTab(new ResourceLocation(Constants.MOD_ID, "spawn_eggs"), builder -> {
           builder.icon(() -> new ItemStack(ModItems.VILLAGER_NPC_SPAWN_EGG.get()))
-              .displayItems(EasyNPCTab::addSpawnEggsTabItems)
+              .displayItems(new SpawnEggs())
               .title(Component.translatable("itemGroup.easy_npc.spawn_eggs")).build();
         });
 
-
-  }
-
-  private static void addConfigItemsTabItems(FeatureFlagSet featureFlagSet, Output outputTab,
-      boolean hasPermissions) {
-    outputTab.accept(ModItems.EASY_NPC_WAND.get());
-  }
-
-  private static void addSpawnEggsTabItems(FeatureFlagSet featureFlagSet, Output outputTab,
-      boolean hasPermissions) {
-    outputTab.accept(ModItems.ALLAY_NPC_SPAWN_EGG.get());
-    outputTab.accept(ModItems.FAIRY_NPC_SPAWN_EGG.get());
-    outputTab.accept(ModItems.HUMANOID_NPC_SPAWN_EGG.get());
-    outputTab.accept(ModItems.HUMANOID_SLIM_NPC_SPAWN_EGG.get());
-    outputTab.accept(ModItems.SKELETON_NPC_SPAWN_EGG.get());
-    outputTab.accept(ModItems.VILLAGER_NPC_SPAWN_EGG.get());
   }
 }

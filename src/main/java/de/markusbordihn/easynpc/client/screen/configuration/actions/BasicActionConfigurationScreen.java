@@ -220,19 +220,19 @@ public class BasicActionConfigurationScreen
     RenderSystem.setShaderTexture(0, Constants.TEXTURE_CONFIGURATION);
 
     // Button Icons
-    this.blit(poseStack, this.saveOnInteractionActionButton.getX() + 5,
+    blit(poseStack, this.saveOnInteractionActionButton.getX() + 5,
         this.saveOnInteractionActionButton.getY() + 3, 60,
         this.saveOnInteractionActionButton.active ? 0 : 16, 16, 16);
-    this.blit(poseStack, this.saveOnOpenActionButton.getX() + 5,
+    blit(poseStack, this.saveOnOpenActionButton.getX() + 5,
         this.saveOnOpenActionButton.getY() + 3, 60, this.saveOnOpenActionButton.active ? 0 : 16, 16,
         16);
-    this.blit(poseStack, this.saveOnCloseActionButton.getX() + 5,
+    blit(poseStack, this.saveOnCloseActionButton.getX() + 5,
         this.saveOnCloseActionButton.getY() + 3, 60, this.saveOnCloseActionButton.active ? 0 : 16,
         16, 16);
-    this.blit(poseStack, this.saveOnYesActionButton.getX() + 5,
+    blit(poseStack, this.saveOnYesActionButton.getX() + 5,
         this.saveOnYesActionButton.getY() + 3, 60, this.saveOnYesActionButton.active ? 0 : 16, 16,
         16);
-    this.blit(poseStack, this.saveOnNoActionButton.getX() + 5, this.saveOnNoActionButton.getY() + 3,
+    blit(poseStack, this.saveOnNoActionButton.getX() + 5, this.saveOnNoActionButton.getY() + 3,
         60, this.saveOnNoActionButton.active ? 0 : 16, 16, 16);
 
     // Description Texts

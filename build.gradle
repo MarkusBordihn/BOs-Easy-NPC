@@ -137,10 +137,10 @@ dependencies {
 
   // Additional helpful Mods for development (dev depenedency)
   // runtimeOnly fg.deobf("curse.maven:item-zoom-261725:3903160")
-  runtimeOnly fg.deobf("curse.maven:jade-324717:4330163")
-  runtimeOnly fg.deobf("curse.maven:jei-238222:4405393")
-  runtimeOnly fg.deobf("curse.maven:spark-361579:4381167")
-  runtimeOnly fg.deobf("curse.maven:xaeros_minimap-263420:4381127")
+  // runtimeOnly fg.deobf("curse.maven:jade-324717:4330163")
+  // runtimeOnly fg.deobf("curse.maven:jei-238222:4405393")
+  // runtimeOnly fg.deobf("curse.maven:spark-361579:4381167")
+  // runtimeOnly fg.deobf("curse.maven:xaeros_minimap-263420:4381127")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

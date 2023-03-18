@@ -153,16 +153,16 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     RenderSystem.setShaderTexture(0, Constants.TEXTURE_DEMO_BACKGROUND);
 
     // Main screen: top left
-    this.blit(poseStack, leftPos, topPos, 0, 0, 250, 170);
+    blit(poseStack, leftPos, topPos, 0, 0, 250, 170);
 
     // Main screen: top right
-    this.blit(poseStack, leftPos + 243, topPos, 195, 0, 57, 170);
+    blit(poseStack, leftPos + 243, topPos, 195, 0, 57, 170);
 
     // Main screen: bottom left
-    this.blit(poseStack, leftPos, topPos + 77, 0, 5, 250, 170);
+    blit(poseStack, leftPos, topPos + 77, 0, 5, 250, 170);
 
     // Main screen: bottom right
-    this.blit(poseStack, leftPos + 243, topPos + 77, 195, 5, 57, 170);
+    blit(poseStack, leftPos + 243, topPos + 77, 195, 5, 57, 170);
   }
 
   @Override

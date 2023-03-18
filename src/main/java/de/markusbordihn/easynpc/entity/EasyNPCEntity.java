@@ -101,7 +101,7 @@ public class EasyNPCEntity extends EasyNPCEntityData {
   @Override
   public void travel(Vec3 vec3) {
     // Make sure we only calculate animations for be as much as possible server-friendly.
-    this.calculateEntityAnimation(this, this instanceof FlyingAnimal);
+    this.calculateEntityAnimation(this instanceof FlyingAnimal);
   }
 
   @Override

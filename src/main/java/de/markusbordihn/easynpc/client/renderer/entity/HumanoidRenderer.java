@@ -29,6 +29,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
 import net.minecraft.Util;
+import net.minecraft.client.model.HumanoidArmorModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -83,8 +84,9 @@ public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, CustomPlayerMod
   public HumanoidRenderer(EntityRendererProvider.Context context) {
     super(context, new CustomPlayerModel<>(context.bakeLayer(ModelLayers.PLAYER), false), 0.5F);
     this.addLayer(new HumanoidArmorLayer<>(this,
-        new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)),
-        new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR))));
+        new HumanoidArmorModel<>(context.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)),
+        new HumanoidArmorModel<>(context.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR)),
+        context.getModelManager()));
     this.addLayer(
         new CustomHeadLayer<>(this, context.getModelSet(), context.getItemInHandRenderer()));
     this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));

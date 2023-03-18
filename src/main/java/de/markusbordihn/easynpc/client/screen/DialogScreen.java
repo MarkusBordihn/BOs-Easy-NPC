@@ -98,8 +98,8 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     int backgroundBottomPos = Math.max(116 - backgroundBottomHeight, 15);
 
     // Render Dialog in two parts to allow smaller and larger dialogs.
-    this.blit(poseStack, backgroundLeftPos, backgroundTopPos, 0, 0, 200, backgroundTopHeight);
-    this.blit(poseStack, backgroundLeftPos, backgroundTopPos + backgroundTopHeight, 0,
+    blit(poseStack, backgroundLeftPos, backgroundTopPos, 0, 0, 200, backgroundTopHeight);
+    blit(poseStack, backgroundLeftPos, backgroundTopPos + backgroundTopHeight, 0,
         backgroundBottomPos, 200, backgroundBottomHeight);
 
     // Distribute text for the across the lines.
@@ -242,11 +242,11 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     RenderSystem.setShaderTexture(0, Constants.TEXTURE_DEMO_BACKGROUND);
 
     // Main screen
-    this.blit(poseStack, leftPos, topPos, 0, 0, 250, 170);
-    this.blit(poseStack, leftPos + 243, topPos, 215, 0, 35, 170);
+    blit(poseStack, leftPos, topPos, 0, 0, 250, 170);
+    blit(poseStack, leftPos + 243, topPos, 215, 0, 35, 170);
 
-    this.blit(poseStack, leftPos, topPos + 60, 0, 30, 250, 140);
-    this.blit(poseStack, leftPos + 243, topPos + 60, 215, 30, 35, 140);
+    blit(poseStack, leftPos, topPos + 60, 0, 30, 250, 140);
+    blit(poseStack, leftPos + 243, topPos + 60, 215, 30, 35, 140);
   }
 
   @Override

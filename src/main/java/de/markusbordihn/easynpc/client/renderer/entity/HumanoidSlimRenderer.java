@@ -29,6 +29,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
 import net.minecraft.Util;
+import net.minecraft.client.model.HumanoidArmorModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -52,7 +53,8 @@ import de.markusbordihn.easynpc.entity.npc.HumanoidSlim.Variant;
 import de.markusbordihn.easynpc.model.ModelPose;
 
 @OnlyIn(Dist.CLIENT)
-public class HumanoidSlimRenderer extends MobRenderer<EasyNPCEntity, CustomPlayerModel<EasyNPCEntity>> {
+public class HumanoidSlimRenderer
+    extends MobRenderer<EasyNPCEntity, CustomPlayerModel<EasyNPCEntity>> {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -79,8 +81,9 @@ public class HumanoidSlimRenderer extends MobRenderer<EasyNPCEntity, CustomPlaye
   public HumanoidSlimRenderer(EntityRendererProvider.Context context) {
     super(context, new CustomPlayerModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM), true), 0.5F);
     this.addLayer(new HumanoidArmorLayer<>(this,
-        new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM_INNER_ARMOR)),
-        new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM_OUTER_ARMOR))));
+        new HumanoidArmorModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM_INNER_ARMOR)),
+        new HumanoidArmorModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM_OUTER_ARMOR)),
+        context.getModelManager()));
     this.addLayer(
         new CustomHeadLayer<>(this, context.getModelSet(), context.getItemInHandRenderer()));
     this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));

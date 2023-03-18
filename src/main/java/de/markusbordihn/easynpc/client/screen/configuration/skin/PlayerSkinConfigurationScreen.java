@@ -142,7 +142,7 @@ public class PlayerSkinConfigurationScreen
       RenderSystem.setShader(GameRenderer::getPositionTexShader);
       RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
       RenderSystem.setShaderTexture(0, Constants.TEXTURE_CONFIGURATION);
-      this.blit(poseStack, skinButtonLeft, skinButtonTop, 0, skinButtonHeight, skinPreviewWidth,
+      blit(poseStack, skinButtonLeft, skinButtonTop, 0, skinButtonHeight, skinPreviewWidth,
           skinButtonHeight);
       poseStack.popPose();
     }
@@ -334,7 +334,7 @@ public class PlayerSkinConfigurationScreen
       RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
       RenderSystem.setShaderTexture(0, Constants.TEXTURE_CONFIGURATION);
       poseStack.translate(0, 0, 100);
-      this.blit(poseStack, this.leftPos + 155, this.topPos + 65, 82, 1, 8, 10);
+      blit(poseStack, this.leftPos + 155, this.topPos + 65, 82, 1, 8, 10);
 
       // Show processing text.
       this.font.draw(poseStack,
