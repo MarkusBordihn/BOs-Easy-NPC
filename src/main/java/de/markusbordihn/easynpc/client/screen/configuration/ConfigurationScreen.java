@@ -45,7 +45,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 import de.markusbordihn.easynpc.skin.SkinModel;
 
 @OnlyIn(Dist.CLIENT)
@@ -131,7 +131,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     // Home Button
     this.homeButton = this.addRenderableWidget(
         new Button(this.leftPos + 7, this.buttonTopPos, 10, 20, new TextComponent("<"), onPress -> {
-          NetworkHandler.openConfiguration(uuid, ConfigurationType.MAIN);
+          NetworkMessage.openConfiguration(uuid, ConfigurationType.MAIN);
         }));
   }
 

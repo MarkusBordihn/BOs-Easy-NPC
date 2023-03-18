@@ -17,28 +17,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.model;
+package de.markusbordihn.easynpc.entity.data;
 
-public enum ModelPart {
-  // @formatter:off
-  HEAD,
-  BODY,
-  LEFT_ARM,
-  RIGHT_ARM,
-  LEFT_LEG,
-  RIGHT_LEG,
-  ROOT,
-  UNKNOWN;
-  // @formatter:on
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-  public static ModelPart get(String modelPart) {
-    if (modelPart == null || modelPart.isEmpty()) {
-      return ModelPart.UNKNOWN;
-    }
-    try {
-      return ModelPart.valueOf(modelPart);
-    } catch (IllegalArgumentException e) {
-      return ModelPart.UNKNOWN;
-    }
-  }
+import net.minecraft.network.syncher.EntityDataAccessor;
+
+import de.markusbordihn.easynpc.Constants;
+
+public interface DataInterface {
+
+ public static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  <T> void setEntityData(EntityDataAccessor<T> entityDataAccessor, T entityData);
+
+  <T> T getEntityData(EntityDataAccessor<T> entityDataAccessor);
+
+  <T> void defineEntityData(EntityDataAccessor<T> entityDataAccessor, T entityData);
+
 }

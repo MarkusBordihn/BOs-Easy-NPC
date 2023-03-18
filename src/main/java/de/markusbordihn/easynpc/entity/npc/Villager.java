@@ -63,6 +63,21 @@ public class Villager extends EasyNPCEntity {
   }
 
   @Override
+  public boolean hasBodyModelPart() {
+    return false;
+  }
+
+  @Override
+  public boolean hasLeftArmModelPart() {
+    return false;
+  }
+
+  @Override
+  public boolean hasRightArmModelPart() {
+    return false;
+  }
+
+  @Override
   public Component getName() {
     Component component = this.getCustomName();
     if (component != null) {

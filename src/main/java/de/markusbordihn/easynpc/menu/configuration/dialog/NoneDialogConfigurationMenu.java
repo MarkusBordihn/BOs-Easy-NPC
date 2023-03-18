@@ -17,28 +17,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.model;
+package de.markusbordihn.easynpc.menu.configuration.dialog;
 
-public enum ModelPart {
-  // @formatter:off
-  HEAD,
-  BODY,
-  LEFT_ARM,
-  RIGHT_ARM,
-  LEFT_LEG,
-  RIGHT_LEG,
-  ROOT,
-  UNKNOWN;
-  // @formatter:on
+import java.util.UUID;
 
-  public static ModelPart get(String modelPart) {
-    if (modelPart == null || modelPart.isEmpty()) {
-      return ModelPart.UNKNOWN;
-    }
-    try {
-      return ModelPart.valueOf(modelPart);
-    } catch (IllegalArgumentException e) {
-      return ModelPart.UNKNOWN;
-    }
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
+
+import de.markusbordihn.easynpc.menu.ModMenuTypes;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
+
+public class NoneDialogConfigurationMenu extends ConfigurationMenu {
+
+  public NoneDialogConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
+    super(ModMenuTypes.NONE_DIALOG_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
   }
+
+  public NoneDialogConfigurationMenu(int windowId, Inventory playerInventory,
+      FriendlyByteBuf data) {
+    this(windowId, playerInventory, data.readUUID());
+  }
+
+
 }

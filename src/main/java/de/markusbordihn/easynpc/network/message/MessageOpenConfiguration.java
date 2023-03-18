@@ -107,6 +107,12 @@ public class MessageOpenConfiguration {
       case DEFAULT_POSITION:
         EasyNPCEntityMenu.openDefaultPositionConfigurationMenu(serverPlayer, easyNPCEntity);
         break;
+      case DEFAULT_ROTATION:
+        EasyNPCEntityMenu.openDefaultRotationConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
+      case NONE_DIALOG:
+        EasyNPCEntityMenu.openNoneDialogConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
       case PLAYER_SKIN:
         EasyNPCEntityMenu.openPlayerSkinConfigurationMenu(serverPlayer, easyNPCEntity);
         break;

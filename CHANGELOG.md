@@ -5,6 +5,15 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### 2023.03.18
+
+- Added support for custom model rotations and to lock rotations.
+- Added support to disable dialog.
+- Improved network protocol to support more complex data types.
+- Improved NPC wand to easier select rotated and scaled NPCs.
+- Refactored entity data for easier maintenance.
+- Moved documentation to separate Wiki.
+
 ### 2023.03.11
 
 - Added support for custom poses which allows to rotate the head, body, arms and legs.

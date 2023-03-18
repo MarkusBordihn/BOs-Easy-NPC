@@ -17,7 +17,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 package de.markusbordihn.easynpc.client.screen.configuration.pose;
 
 import net.minecraft.client.gui.components.Button;
@@ -34,8 +33,7 @@ import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.screen.components.SliderButton;
 import de.markusbordihn.easynpc.menu.configuration.pose.CustomPoseConfigurationMenu;
 import de.markusbordihn.easynpc.model.ModelPart;
-import de.markusbordihn.easynpc.network.NetworkHandler;
-import de.markusbordihn.easynpc.skin.SkinModel;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
 @OnlyIn(Dist.CLIENT)
 public class CustomPoseConfigurationScreen
@@ -106,94 +104,99 @@ public class CustomPoseConfigurationScreen
 
     // Position and size
     int scaleWidth = 30;
-
-    // Head rotations
     int sliderTopPos = this.contentTopPos + 13;
     int sliderLeftPos = this.contentLeftPos;
-    Rotations headRotations = this.entity.getModelHeadRotation();
-    this.headRotationXSliderButton =
-        this.addRenderableWidget(new SliderButton(sliderLeftPos, sliderTopPos, scaleWidth, 20,
-            " headRotationX", (float) Math.toDegrees(headRotations.getX()), -180f, 180f, slider -> {
-              this.headRotationX = (float) Math.toRadians(slider.getTargetValue());
-              NetworkHandler.rotationChange(uuid, ModelPart.HEAD,
-                  new Rotations(this.headRotationX, this.headRotationY, this.headRotationZ));
-            }));
-    this.headRotationYSliderButton = this.addRenderableWidget(new SliderButton(
-        this.headRotationXSliderButton.x + this.headRotationXSliderButton.getWidth(), sliderTopPos,
-        scaleWidth, 20, " headRotationY", (float) Math.toDegrees(headRotations.getY()), -180f, 180f,
-        slider -> {
-          this.headRotationY = (float) Math.toRadians(slider.getTargetValue());
-          NetworkHandler.rotationChange(uuid, ModelPart.HEAD,
-              new Rotations(this.headRotationX, this.headRotationY, this.headRotationZ));
-        }));
-    this.headRotationZSliderButton = this.addRenderableWidget(new SliderButton(
-        this.headRotationYSliderButton.x + this.headRotationYSliderButton.getWidth(), sliderTopPos,
-        scaleWidth, 20, " headRotationZ", (float) Math.toDegrees(headRotations.getZ()), -180f, 180f,
-        slider -> {
-          this.headRotationZ = (float) Math.toRadians(slider.getTargetValue());
-          NetworkHandler.rotationChange(uuid, ModelPart.HEAD,
-              new Rotations(this.headRotationX, this.headRotationY, this.headRotationZ));
-        }));
-    this.resetHeadRotationButton = this.addRenderableWidget(
-        menuButton(this.headRotationXSliderButton.x, sliderTopPos + 20, "reset", button -> {
-          this.headRotationXSliderButton.reset();
-          this.headRotationYSliderButton.reset();
-          this.headRotationZSliderButton.reset();
-          this.headRotationX = 0f;
-          this.headRotationY = 0f;
-          this.headRotationZ = 0f;
-          NetworkHandler.rotationChange(uuid, ModelPart.HEAD,
-              new Rotations(this.headRotationX, this.headRotationY, this.headRotationZ));
-        }));
+
+    // Head rotations
+    if (this.entity.hasHeadModelPart()) {
+      Rotations headRotations = this.entity.getModelHeadRotation();
+      this.headRotationXSliderButton = this.addRenderableWidget(
+          new SliderButton(sliderLeftPos, sliderTopPos, scaleWidth, 20, " headRotationX",
+              (float) Math.toDegrees(headRotations.getX()), -180f, 180f, slider -> {
+                this.headRotationX = (float) Math.toRadians(slider.getTargetValue());
+                NetworkMessage.rotationChange(uuid, ModelPart.HEAD,
+                    new Rotations(this.headRotationX, this.headRotationY, this.headRotationZ));
+              }));
+      this.headRotationYSliderButton = this.addRenderableWidget(new SliderButton(
+          this.headRotationXSliderButton.x + this.headRotationXSliderButton.getWidth(),
+          sliderTopPos, scaleWidth, 20, " headRotationY",
+          (float) Math.toDegrees(headRotations.getY()), -180f, 180f, slider -> {
+            this.headRotationY = (float) Math.toRadians(slider.getTargetValue());
+            NetworkMessage.rotationChange(uuid, ModelPart.HEAD,
+                new Rotations(this.headRotationX, this.headRotationY, this.headRotationZ));
+          }));
+      this.headRotationZSliderButton = this.addRenderableWidget(new SliderButton(
+          this.headRotationYSliderButton.x + this.headRotationYSliderButton.getWidth(),
+          sliderTopPos, scaleWidth, 20, " headRotationZ",
+          (float) Math.toDegrees(headRotations.getZ()), -180f, 180f, slider -> {
+            this.headRotationZ = (float) Math.toRadians(slider.getTargetValue());
+            NetworkMessage.rotationChange(uuid, ModelPart.HEAD,
+                new Rotations(this.headRotationX, this.headRotationY, this.headRotationZ));
+          }));
+      this.resetHeadRotationButton = this.addRenderableWidget(
+          menuButton(this.headRotationXSliderButton.x, sliderTopPos + 20, "reset", button -> {
+            this.headRotationXSliderButton.reset();
+            this.headRotationYSliderButton.reset();
+            this.headRotationZSliderButton.reset();
+            this.headRotationX = 0f;
+            this.headRotationY = 0f;
+            this.headRotationZ = 0f;
+            NetworkMessage.rotationChange(uuid, ModelPart.HEAD,
+                new Rotations(this.headRotationX, this.headRotationY, this.headRotationZ));
+          }));
+    }
 
     // Body rotations
-    sliderLeftPos += 191;
-    Rotations bodyRotations = this.entity.getModelBodyRotation();
-    this.bodyRotationXSliderButton =
-        this.addRenderableWidget(new SliderButton(sliderLeftPos, sliderTopPos, scaleWidth, 20,
-            " bodyRotationX", (float) Math.toDegrees(bodyRotations.getX()), -180f, 180f, slider -> {
-              this.bodyRotationX = (float) Math.toRadians(slider.getTargetValue());
-              NetworkHandler.rotationChange(uuid, ModelPart.BODY,
-                  new Rotations(this.bodyRotationX, this.bodyRotationY, this.bodyRotationZ));
-            }));
-    this.bodyRotationYSliderButton = this.addRenderableWidget(new SliderButton(
-        this.bodyRotationXSliderButton.x + this.bodyRotationXSliderButton.getWidth(), sliderTopPos,
-        scaleWidth, 20, " bodyRotationY", (float) Math.toDegrees(bodyRotations.getY()), -180f, 180f,
-        slider -> {
-          this.bodyRotationY = (float) Math.toRadians(slider.getTargetValue());
-          NetworkHandler.rotationChange(uuid, ModelPart.BODY,
-              new Rotations(this.bodyRotationX, this.bodyRotationY, this.bodyRotationZ));
-        }));
-    this.bodyRotationZSliderButton = this.addRenderableWidget(new SliderButton(
-        this.bodyRotationYSliderButton.x + this.bodyRotationYSliderButton.getWidth(), sliderTopPos,
-        scaleWidth, 20, " bodyRotationZ", (float) Math.toDegrees(bodyRotations.getZ()), -180f, 180f,
-        slider -> {
-          this.bodyRotationZ = (float) Math.toRadians(slider.getTargetValue());
-          NetworkHandler.rotationChange(uuid, ModelPart.BODY,
-              new Rotations(this.bodyRotationX, this.bodyRotationY, this.bodyRotationZ));
-        }));
-    this.resetBodyRotationButton = this.addRenderableWidget(
-        menuButton(this.bodyRotationXSliderButton.x, sliderTopPos + 20, "reset", button -> {
-          this.bodyRotationXSliderButton.reset();
-          this.bodyRotationYSliderButton.reset();
-          this.bodyRotationZSliderButton.reset();
-          this.bodyRotationX = 0f;
-          this.bodyRotationY = 0f;
-          this.bodyRotationZ = 0f;
-          NetworkHandler.rotationChange(uuid, ModelPart.BODY,
-              new Rotations(this.bodyRotationX, this.bodyRotationY, this.bodyRotationZ));
-        }));
+    if (this.entity.hasBodyModelPart()) {
+      sliderLeftPos += 191;
+      Rotations bodyRotations = this.entity.getModelBodyRotation();
+      this.bodyRotationXSliderButton = this.addRenderableWidget(
+          new SliderButton(sliderLeftPos, sliderTopPos, scaleWidth, 20, " bodyRotationX",
+              (float) Math.toDegrees(bodyRotations.getX()), -180f, 180f, slider -> {
+                this.bodyRotationX = (float) Math.toRadians(slider.getTargetValue());
+                NetworkMessage.rotationChange(uuid, ModelPart.BODY,
+                    new Rotations(this.bodyRotationX, this.bodyRotationY, this.bodyRotationZ));
+              }));
+      this.bodyRotationYSliderButton = this.addRenderableWidget(new SliderButton(
+          this.bodyRotationXSliderButton.x + this.bodyRotationXSliderButton.getWidth(),
+          sliderTopPos, scaleWidth, 20, " bodyRotationY",
+          (float) Math.toDegrees(bodyRotations.getY()), -180f, 180f, slider -> {
+            this.bodyRotationY = (float) Math.toRadians(slider.getTargetValue());
+            NetworkMessage.rotationChange(uuid, ModelPart.BODY,
+                new Rotations(this.bodyRotationX, this.bodyRotationY, this.bodyRotationZ));
+          }));
+      this.bodyRotationZSliderButton = this.addRenderableWidget(new SliderButton(
+          this.bodyRotationYSliderButton.x + this.bodyRotationYSliderButton.getWidth(),
+          sliderTopPos, scaleWidth, 20, " bodyRotationZ",
+          (float) Math.toDegrees(bodyRotations.getZ()), -180f, 180f, slider -> {
+            this.bodyRotationZ = (float) Math.toRadians(slider.getTargetValue());
+            NetworkMessage.rotationChange(uuid, ModelPart.BODY,
+                new Rotations(this.bodyRotationX, this.bodyRotationY, this.bodyRotationZ));
+          }));
+      this.resetBodyRotationButton = this.addRenderableWidget(
+          menuButton(this.bodyRotationXSliderButton.x, sliderTopPos + 20, "reset", button -> {
+            this.bodyRotationXSliderButton.reset();
+            this.bodyRotationYSliderButton.reset();
+            this.bodyRotationZSliderButton.reset();
+            this.bodyRotationX = 0f;
+            this.bodyRotationY = 0f;
+            this.bodyRotationZ = 0f;
+            NetworkMessage.rotationChange(uuid, ModelPart.BODY,
+                new Rotations(this.bodyRotationX, this.bodyRotationY, this.bodyRotationZ));
+          }));
+    }
 
     sliderTopPos += 60;
-    if (this.skinModel != SkinModel.VILLAGER) {
-      // Right arm rotations
+
+    // Right arm rotations
+    if (this.entity.hasRightArmModelPart()) {
       sliderLeftPos = this.contentLeftPos;
       Rotations rightArmRotations = this.entity.getModelRightArmRotation();
       this.rightArmRotationXSliderButton = this.addRenderableWidget(
           new SliderButton(sliderLeftPos, sliderTopPos, scaleWidth, 20, " rightArmRotationX",
               (float) Math.toDegrees(rightArmRotations.getX()), -180f, 180f, slider -> {
                 this.rightArmRotationX = (float) Math.toRadians(slider.getTargetValue());
-                NetworkHandler.rotationChange(uuid, ModelPart.RIGHT_ARM, new Rotations(
+                NetworkMessage.rotationChange(uuid, ModelPart.RIGHT_ARM, new Rotations(
                     this.rightArmRotationX, this.rightArmRotationY, this.rightArmRotationZ));
               }));
       this.rightArmRotationYSliderButton = this.addRenderableWidget(new SliderButton(
@@ -201,7 +204,7 @@ public class CustomPoseConfigurationScreen
           sliderTopPos, scaleWidth, 20, " rightArmRotationY",
           (float) Math.toDegrees(rightArmRotations.getY()), -180f, 180f, slider -> {
             this.rightArmRotationY = (float) Math.toRadians(slider.getTargetValue());
-            NetworkHandler.rotationChange(uuid, ModelPart.RIGHT_ARM, new Rotations(
+            NetworkMessage.rotationChange(uuid, ModelPart.RIGHT_ARM, new Rotations(
                 this.rightArmRotationX, this.rightArmRotationY, this.rightArmRotationZ));
           }));
       this.rightArmRotationZSliderButton = this.addRenderableWidget(new SliderButton(
@@ -209,7 +212,7 @@ public class CustomPoseConfigurationScreen
           sliderTopPos, scaleWidth, 20, " rightArmRotationZ",
           (float) Math.toDegrees(rightArmRotations.getZ()), -180f, 180f, slider -> {
             this.rightArmRotationZ = (float) Math.toRadians(slider.getTargetValue());
-            NetworkHandler.rotationChange(uuid, ModelPart.RIGHT_ARM, new Rotations(
+            NetworkMessage.rotationChange(uuid, ModelPart.RIGHT_ARM, new Rotations(
                 this.rightArmRotationX, this.rightArmRotationY, this.rightArmRotationZ));
           }));
       this.resetRightArmRotationButton = this.addRenderableWidget(
@@ -220,18 +223,20 @@ public class CustomPoseConfigurationScreen
             this.rightArmRotationX = 0f;
             this.rightArmRotationY = 0f;
             this.rightArmRotationZ = 0f;
-            NetworkHandler.rotationChange(uuid, ModelPart.RIGHT_ARM, new Rotations(
+            NetworkMessage.rotationChange(uuid, ModelPart.RIGHT_ARM, new Rotations(
                 this.rightArmRotationX, this.rightArmRotationY, this.rightArmRotationZ));
           }));
+    }
 
-      // Left arm rotations
+    // Left arm rotations
+    if (this.entity.hasLeftArmModelPart()) {
       sliderLeftPos += 191;
       Rotations leftArmRotations = this.entity.getModelLeftArmRotation();
       this.leftArmRotationXSliderButton = this.addRenderableWidget(
           new SliderButton(sliderLeftPos, sliderTopPos, scaleWidth, 20, " leftArmRotationX",
               (float) Math.toDegrees(leftArmRotations.getX()), -180f, 180f, slider -> {
                 this.leftArmRotationX = (float) Math.toRadians(slider.getTargetValue());
-                NetworkHandler.rotationChange(uuid, ModelPart.LEFT_ARM, new Rotations(
+                NetworkMessage.rotationChange(uuid, ModelPart.LEFT_ARM, new Rotations(
                     this.leftArmRotationX, this.leftArmRotationY, this.leftArmRotationZ));
               }));
       this.leftArmRotationYSliderButton = this.addRenderableWidget(new SliderButton(
@@ -239,7 +244,7 @@ public class CustomPoseConfigurationScreen
           sliderTopPos, scaleWidth, 20, " leftArmRotationY",
           (float) Math.toDegrees(leftArmRotations.getY()), -180f, 180f, slider -> {
             this.leftArmRotationY = (float) Math.toRadians(slider.getTargetValue());
-            NetworkHandler.rotationChange(uuid, ModelPart.LEFT_ARM,
+            NetworkMessage.rotationChange(uuid, ModelPart.LEFT_ARM,
                 new Rotations(this.leftArmRotationX, this.leftArmRotationY, this.leftArmRotationZ));
           }));
       this.leftArmRotationZSliderButton = this.addRenderableWidget(new SliderButton(
@@ -247,7 +252,7 @@ public class CustomPoseConfigurationScreen
           sliderTopPos, scaleWidth, 20, " leftArmRotationZ",
           (float) Math.toDegrees(leftArmRotations.getZ()), -180f, 180f, slider -> {
             this.leftArmRotationZ = (float) Math.toRadians(slider.getTargetValue());
-            NetworkHandler.rotationChange(uuid, ModelPart.LEFT_ARM,
+            NetworkMessage.rotationChange(uuid, ModelPart.LEFT_ARM,
                 new Rotations(this.leftArmRotationX, this.leftArmRotationY, this.leftArmRotationZ));
           }));
       this.resetLeftArmRotationButton = this.addRenderableWidget(
@@ -258,59 +263,62 @@ public class CustomPoseConfigurationScreen
             this.leftArmRotationX = 0f;
             this.leftArmRotationY = 0f;
             this.leftArmRotationZ = 0f;
-            NetworkHandler.rotationChange(uuid, ModelPart.LEFT_ARM,
+            NetworkMessage.rotationChange(uuid, ModelPart.LEFT_ARM,
                 new Rotations(this.leftArmRotationX, this.leftArmRotationY, this.leftArmRotationZ));
           }));
     }
 
-    // Right leg rotations
     sliderTopPos += 60;
     sliderLeftPos = this.contentLeftPos;
-    Rotations rightLegRotations = this.entity.getModelRightLegRotation();
-    this.rightLegRotationXSliderButton = this.addRenderableWidget(
-        new SliderButton(sliderLeftPos, sliderTopPos, scaleWidth, 20, " rightLegRotationX",
-            (float) Math.toDegrees(rightLegRotations.getX()), -180f, 180f, slider -> {
-              this.rightLegRotationX = (float) Math.toRadians(slider.getTargetValue());
-              NetworkHandler.rotationChange(uuid, ModelPart.RIGHT_LEG, new Rotations(
-                  this.rightLegRotationX, this.rightLegRotationY, this.rightLegRotationZ));
-            }));
-    this.rightLegRotationYSliderButton = this.addRenderableWidget(new SliderButton(
-        this.rightLegRotationXSliderButton.x + this.rightLegRotationXSliderButton.getWidth(),
-        sliderTopPos, scaleWidth, 20, " rightLegRotationY",
-        (float) Math.toDegrees(rightLegRotations.getY()), -180f, 180f, slider -> {
-          this.rightLegRotationY = (float) Math.toRadians(slider.getTargetValue());
-          NetworkHandler.rotationChange(uuid, ModelPart.RIGHT_LEG, new Rotations(
-              this.rightLegRotationX, this.rightLegRotationY, this.rightLegRotationZ));
-        }));
-    this.rightLegRotationZSliderButton = this.addRenderableWidget(new SliderButton(
-        this.rightLegRotationYSliderButton.x + this.rightLegRotationYSliderButton.getWidth(),
-        sliderTopPos, scaleWidth, 20, " rightLegRotationZ",
-        (float) Math.toDegrees(rightLegRotations.getZ()), -180f, 180f, slider -> {
-          this.rightLegRotationZ = (float) Math.toRadians(slider.getTargetValue());
-          NetworkHandler.rotationChange(uuid, ModelPart.RIGHT_LEG, new Rotations(
-              this.rightLegRotationX, this.rightLegRotationY, this.rightLegRotationZ));
-        }));
-    this.resetRightLegRotationButton = this.addRenderableWidget(
-        menuButton(this.rightLegRotationXSliderButton.x, sliderTopPos + 20, "reset", button -> {
-          this.rightLegRotationXSliderButton.reset();
-          this.rightLegRotationYSliderButton.reset();
-          this.rightLegRotationZSliderButton.reset();
-          this.rightLegRotationX = 0f;
-          this.rightLegRotationY = 0f;
-          this.rightLegRotationZ = 0f;
-          NetworkHandler.rotationChange(uuid, ModelPart.RIGHT_LEG, new Rotations(
-              this.rightLegRotationX, this.rightLegRotationY, this.rightLegRotationZ));
-        }));
 
-    if (this.skinModel != SkinModel.FAIRY) {
-      // Left leg rotations
+    // Right leg rotations
+    if (this.entity.hasRightLegModelPart()) {
+      Rotations rightLegRotations = this.entity.getModelRightLegRotation();
+      this.rightLegRotationXSliderButton = this.addRenderableWidget(
+          new SliderButton(sliderLeftPos, sliderTopPos, scaleWidth, 20, " rightLegRotationX",
+              (float) Math.toDegrees(rightLegRotations.getX()), -180f, 180f, slider -> {
+                this.rightLegRotationX = (float) Math.toRadians(slider.getTargetValue());
+                NetworkMessage.rotationChange(uuid, ModelPart.RIGHT_LEG, new Rotations(
+                    this.rightLegRotationX, this.rightLegRotationY, this.rightLegRotationZ));
+              }));
+      this.rightLegRotationYSliderButton = this.addRenderableWidget(new SliderButton(
+          this.rightLegRotationXSliderButton.x + this.rightLegRotationXSliderButton.getWidth(),
+          sliderTopPos, scaleWidth, 20, " rightLegRotationY",
+          (float) Math.toDegrees(rightLegRotations.getY()), -180f, 180f, slider -> {
+            this.rightLegRotationY = (float) Math.toRadians(slider.getTargetValue());
+            NetworkMessage.rotationChange(uuid, ModelPart.RIGHT_LEG, new Rotations(
+                this.rightLegRotationX, this.rightLegRotationY, this.rightLegRotationZ));
+          }));
+      this.rightLegRotationZSliderButton = this.addRenderableWidget(new SliderButton(
+          this.rightLegRotationYSliderButton.x + this.rightLegRotationYSliderButton.getWidth(),
+          sliderTopPos, scaleWidth, 20, " rightLegRotationZ",
+          (float) Math.toDegrees(rightLegRotations.getZ()), -180f, 180f, slider -> {
+            this.rightLegRotationZ = (float) Math.toRadians(slider.getTargetValue());
+            NetworkMessage.rotationChange(uuid, ModelPart.RIGHT_LEG, new Rotations(
+                this.rightLegRotationX, this.rightLegRotationY, this.rightLegRotationZ));
+          }));
+      this.resetRightLegRotationButton = this.addRenderableWidget(
+          menuButton(this.rightLegRotationXSliderButton.x, sliderTopPos + 20, "reset", button -> {
+            this.rightLegRotationXSliderButton.reset();
+            this.rightLegRotationYSliderButton.reset();
+            this.rightLegRotationZSliderButton.reset();
+            this.rightLegRotationX = 0f;
+            this.rightLegRotationY = 0f;
+            this.rightLegRotationZ = 0f;
+            NetworkMessage.rotationChange(uuid, ModelPart.RIGHT_LEG, new Rotations(
+                this.rightLegRotationX, this.rightLegRotationY, this.rightLegRotationZ));
+          }));
+    }
+
+    // Left leg rotations
+    if (this.entity.hasLeftLegModelPart()) {
       sliderLeftPos += 191;
       Rotations leftLegRotations = this.entity.getModelLeftLegRotation();
       this.leftLegRotationXSliderButton = this.addRenderableWidget(
           new SliderButton(sliderLeftPos, sliderTopPos, scaleWidth, 20, " leftLegRotationX",
               (float) Math.toDegrees(leftLegRotations.getX()), -180f, 180f, slider -> {
                 this.leftLegRotationX = (float) Math.toRadians(slider.getTargetValue());
-                NetworkHandler.rotationChange(uuid, ModelPart.LEFT_LEG, new Rotations(
+                NetworkMessage.rotationChange(uuid, ModelPart.LEFT_LEG, new Rotations(
                     this.leftLegRotationX, this.leftLegRotationY, this.leftLegRotationZ));
               }));
       this.leftLegRotationYSliderButton = this.addRenderableWidget(new SliderButton(
@@ -318,7 +326,7 @@ public class CustomPoseConfigurationScreen
           sliderTopPos, scaleWidth, 20, " leftLegRotationY",
           (float) Math.toDegrees(leftLegRotations.getY()), -180f, 180f, slider -> {
             this.leftLegRotationY = (float) Math.toRadians(slider.getTargetValue());
-            NetworkHandler.rotationChange(uuid, ModelPart.LEFT_LEG,
+            NetworkMessage.rotationChange(uuid, ModelPart.LEFT_LEG,
                 new Rotations(this.leftLegRotationX, this.leftLegRotationY, this.leftLegRotationZ));
           }));
       this.leftLegRotationZSliderButton = this.addRenderableWidget(new SliderButton(
@@ -326,7 +334,7 @@ public class CustomPoseConfigurationScreen
           sliderTopPos, scaleWidth, 20, " leftLegRotationZ",
           (float) Math.toDegrees(leftLegRotations.getZ()), -180f, 180f, slider -> {
             this.leftLegRotationZ = (float) Math.toRadians(slider.getTargetValue());
-            NetworkHandler.rotationChange(uuid, ModelPart.LEFT_LEG,
+            NetworkMessage.rotationChange(uuid, ModelPart.LEFT_LEG,
                 new Rotations(this.leftLegRotationX, this.leftLegRotationY, this.leftLegRotationZ));
           }));
       this.resetLeftLegRotationButton = this.addRenderableWidget(
@@ -337,7 +345,7 @@ public class CustomPoseConfigurationScreen
             this.leftLegRotationX = 0f;
             this.leftLegRotationY = 0f;
             this.leftLegRotationZ = 0f;
-            NetworkHandler.rotationChange(uuid, ModelPart.LEFT_LEG,
+            NetworkMessage.rotationChange(uuid, ModelPart.LEFT_LEG,
                 new Rotations(this.leftLegRotationX, this.leftLegRotationY, this.leftLegRotationZ));
           }));
     }
@@ -353,22 +361,30 @@ public class CustomPoseConfigurationScreen
         this.entity);
 
     // Rotations texts
-    this.fontDraw(poseStack, "pose.head", this.headRotationXSliderButton.x + 5f,
-        this.headRotationXSliderButton.y - 12f);
-    this.fontDraw(poseStack, "pose.body", this.bodyRotationXSliderButton.x + 5f,
-        this.bodyRotationXSliderButton.y - 12f);
-    if (this.skinModel != SkinModel.VILLAGER) {
+    if (entity.hasHeadModelPart()) {
+      this.fontDraw(poseStack, "pose.head", this.headRotationXSliderButton.x + 5f,
+          this.headRotationXSliderButton.y - 12f);
+    }
+    if (entity.hasBodyModelPart()) {
+      this.fontDraw(poseStack, "pose.body", this.bodyRotationXSliderButton.x + 5f,
+          this.bodyRotationXSliderButton.y - 12f);
+    }
+    if (entity.hasLeftArmModelPart()) {
       this.fontDraw(poseStack, "pose.left_arm", this.leftArmRotationXSliderButton.x + 5f,
           this.leftArmRotationXSliderButton.y - 12f);
+    }
+    if (entity.hasRightArmModelPart()) {
       this.fontDraw(poseStack, "pose.right_arm", this.rightArmRotationXSliderButton.x + 5f,
           this.rightArmRotationXSliderButton.y - 12f);
     }
-    if (this.skinModel != SkinModel.FAIRY) {
+    if (entity.hasLeftLegModelPart()) {
       this.fontDraw(poseStack, "pose.left_leg", this.leftLegRotationXSliderButton.x + 5f,
           this.leftLegRotationXSliderButton.y - 12f);
     }
-    this.fontDraw(poseStack, "pose.right_leg", this.rightLegRotationXSliderButton.x + 5f,
-        this.rightLegRotationXSliderButton.y - 12f);
+    if (entity.hasRightLegModelPart()) {
+      this.fontDraw(poseStack, "pose.right_leg", this.rightLegRotationXSliderButton.x + 5f,
+          this.rightLegRotationXSliderButton.y - 12f);
+    }
   }
 
   @Override

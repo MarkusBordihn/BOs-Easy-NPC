@@ -33,7 +33,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
 @OnlyIn(Dist.CLIENT)
 public class YesNoDialogConfigurationScreen
@@ -97,7 +97,7 @@ public class YesNoDialogConfigurationScreen
     // Save Button
     this.saveDialogButton = this.addRenderableWidget(
         menuButton(this.contentLeftPos + 26, this.bottomPos - 40, 80, "save", onPress -> {
-          NetworkHandler.saveYesNoDialog(uuid, this.mainDialogBox.getValue(),
+          NetworkMessage.saveYesNoDialog(uuid, this.mainDialogBox.getValue(),
               this.yesDialogBox.getValue(), this.noDialogBox.getValue(),
               this.yesDialogButtonBox.getValue(), this.noDialogButtonBox.getValue());
         }));

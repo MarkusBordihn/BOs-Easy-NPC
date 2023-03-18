@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.configuration.dialog;
+package de.markusbordihn.easynpc.client.screen.configuration.rotation;
 
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -32,14 +32,13 @@ import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 
 @OnlyIn(Dist.CLIENT)
-public class DialogConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
+public class RotationConfigurationScreen<T extends ConfigurationMenu>
+    extends ConfigurationScreen<T> {
 
   // Buttons
-  protected Button noneDialogButton = null;
-  protected Button basicDialogButton = null;
-  protected Button yesNoDialogButton = null;
+  protected Button defaultRotationButton;
 
-  public DialogConfigurationScreen(T menu, Inventory inventory, Component component) {
+  public RotationConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 
@@ -47,26 +46,15 @@ public class DialogConfigurationScreen<T extends ConfigurationMenu> extends Conf
   public void init() {
     super.init();
 
-    // Dialog Types
-    this.noneDialogButton = this.addRenderableWidget(
-        menuButton(this.buttonLeftPos, this.buttonTopPos, 70, "disable_dialog", onPress -> {
-          NetworkMessage.openConfiguration(uuid, ConfigurationType.NONE_DIALOG);
-        }));
-    this.basicDialogButton =
-        this.addRenderableWidget(menuButton(this.buttonLeftPos + this.noneDialogButton.getWidth(),
-            this.buttonTopPos, 70, "basic_dialog", onPress -> {
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.BASIC_DIALOG);
-            }));
-    this.yesNoDialogButton = this.addRenderableWidget(menuButton(
-        this.buttonLeftPos + this.noneDialogButton.getWidth() + this.basicDialogButton.getWidth(),
-        this.buttonTopPos, 70, "yes_no_dialog", onPress -> {
-          NetworkMessage.openConfiguration(uuid, ConfigurationType.YES_NO_DIALOG);
+    // Rotation Types
+    int rotationButtonWidth = 80;
+    this.defaultRotationButton = this.addRenderableWidget(menuButton(this.buttonLeftPos,
+        this.buttonTopPos, rotationButtonWidth, "default_rotation", button -> {
+          NetworkMessage.openConfiguration(uuid, ConfigurationType.DEFAULT_ROTATION);
         }));
 
     // Default button stats
-    this.noneDialogButton.active = true;
-    this.basicDialogButton.active = true;
-    this.yesNoDialogButton.active = true;
+    this.defaultRotationButton.active = false;
   }
 
 }

@@ -134,6 +134,9 @@ public class MessageRotationChange {
         easyNPCEntity.setModelPose(ModelPose.CUSTOM);
         easyNPCEntity.setModelRightLegRotation(rotations);
         break;
+      case ROOT:
+        easyNPCEntity.setModelRootRotation(rotations);
+        break;
       default:
         log.error("Invalid modelPart {} for {} from {}", modelPart, message, serverPlayer);
         break;

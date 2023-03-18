@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.entity;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,14 +27,12 @@ import javax.annotation.Nullable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
@@ -44,311 +41,43 @@ import net.minecraft.world.entity.npc.Npc;
 import net.minecraft.world.level.Level;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.action.ActionDataHelper;
-import de.markusbordihn.easynpc.action.ActionType;
-import de.markusbordihn.easynpc.dialog.DialogType;
-import de.markusbordihn.easynpc.model.ModelPose;
-import de.markusbordihn.easynpc.skin.SkinModel;
-import de.markusbordihn.easynpc.skin.SkinType;
+import de.markusbordihn.easynpc.entity.data.ActionData;
+import de.markusbordihn.easynpc.entity.data.DataSerializers;
+import de.markusbordihn.easynpc.entity.data.DialogData;
+import de.markusbordihn.easynpc.entity.data.ModelData;
+import de.markusbordihn.easynpc.entity.data.ScaleData;
+import de.markusbordihn.easynpc.entity.data.SkinData;
 import de.markusbordihn.easynpc.utils.TextUtils;
 
-public class EasyNPCEntityData extends AgeableMob implements Npc {
+public class EasyNPCEntityData extends AgeableMob
+    implements Npc, ActionData, DialogData, ModelData, ScaleData, SkinData {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  // Constants values
-  private static final float DEFAULT_SCALE_X = 1.0f;
-  private static final float DEFAULT_SCALE_Y = 1.0f;
-  private static final float DEFAULT_SCALE_Z = 1.0f;
 
-  // Default values
-  private ResourceLocation baseTextureLocation;
-  private ResourceLocation professionTextureLocation;
-  private ResourceLocation textureLocation;
-  private boolean hasBaseTextureLocation = false;
-  private boolean hasProfessionTextureLocation = false;
-  private boolean hasTextureLocation = false;
 
   // Default Variants
   private enum Variant {
     STEVE
   }
 
-  // Cache
-  private int actionPermissionLevel = 0;
-
   // Synced Data
-  private static final EntityDataAccessor<CompoundTag> DATA_ACTION_DATA =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.COMPOUND_TAG);
-  private static final EntityDataAccessor<Boolean> DATA_ACTION_DEBUG =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.BOOLEAN);
   private static final EntityDataAccessor<Optional<UUID>> DATA_OWNER_UUID_ID =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.OPTIONAL_UUID);
-  private static final EntityDataAccessor<String> DATA_DIALOG =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
-  private static final EntityDataAccessor<DialogType> DATA_DIALOG_TYPE =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, DataSerializers.DIALOG_TYPE);
-  private static final EntityDataAccessor<ModelPose> DATA_MODEL_POSE =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, DataSerializers.MODEL_POSE);
-  private static final EntityDataAccessor<Rotations> DATA_MODEL_HEAD_ROTATION =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.ROTATIONS);
-  private static final EntityDataAccessor<Rotations> DATA_MODEL_BODY_ROTATION =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.ROTATIONS);
-  private static final EntityDataAccessor<Rotations> DATA_MODEL_LEFT_ARM_ROTATION =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.ROTATIONS);
-  private static final EntityDataAccessor<Rotations> DATA_MODEL_RIGHT_ARM_ROTATION =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.ROTATIONS);
-  private static final EntityDataAccessor<Rotations> DATA_MODEL_LEFT_LEG_ROTATION =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.ROTATIONS);
-  private static final EntityDataAccessor<Rotations> DATA_MODEL_RIGHT_LEG_ROTATION =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.ROTATIONS);
-  private static final EntityDataAccessor<String> DATA_NO_DIALOG =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
-  private static final EntityDataAccessor<String> DATA_NO_DIALOG_BUTTON =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
   private static final EntityDataAccessor<Profession> DATA_PROFESSION =
       SynchedEntityData.defineId(EasyNPCEntityData.class, DataSerializers.PROFESSION);
-  private static final EntityDataAccessor<Float> DATA_SCALE_X =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.FLOAT);
-  private static final EntityDataAccessor<Float> DATA_SCALE_Y =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.FLOAT);
-  private static final EntityDataAccessor<Float> DATA_SCALE_Z =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.FLOAT);
-  private static final EntityDataAccessor<String> DATA_SKIN =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
-  private static final EntityDataAccessor<String> DATA_SKIN_URL =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
-  private static final EntityDataAccessor<Optional<UUID>> DATA_SKIN_UUID =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.OPTIONAL_UUID);
-  private static final EntityDataAccessor<SkinType> DATA_SKIN_TYPE =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, DataSerializers.SKIN_TYPE);
+
   private static final EntityDataAccessor<String> DATA_VARIANT =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
-  private static final EntityDataAccessor<String> DATA_YES_DIALOG =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
-  private static final EntityDataAccessor<String> DATA_YES_DIALOG_BUTTON =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
 
   // Stored Entity Data Tags
-  private static final String DATA_ACTION_DATA_TAG = "ActionData";
-  private static final String DATA_ACTION_DEBUG_TAG = "ActionDebug";
-  private static final String DATA_ACTION_PERMISSION_LEVEL_TAG = "ActionPermissionLevel";
-  private static final String DATA_DIALOG_TAG = "Dialog";
-  private static final String DATA_DIALOG_TYPE_TAG = "DialogType";
-  private static final String DATA_MODEL_POSE_TAG = "ModelPose";
-  private static final String DATA_MODEL_HEAD_ROTATION_TAG = "ModelHeadRotation";
-  private static final String DATA_MODEL_BODY_ROTATION_TAG = "ModelBodyRotation";
-  private static final String DATA_MODEL_LEFT_ARM_ROTATION_TAG = "ModelLeftArmRotation";
-  private static final String DATA_MODEL_RIGHT_ARM_ROTATION_TAG = "ModelRightArmRotation";
-  private static final String DATA_MODEL_LEFT_LEG_ROTATION_TAG = "ModelLeftLegRotation";
-  private static final String DATA_MODEL_RIGHT_LEG_ROTATION_TAG = "ModelRightLegRotation";
-  private static final String DATA_NO_DIALOG_BUTTON_TAG = "NoDialogButton";
-  private static final String DATA_NO_DIALOG_TAG = "NoDialog";
   private static final String DATA_OWNER_TAG = "Owner";
   private static final String DATA_POSE_TAG = "Pose";
   private static final String DATA_PROFESSION_TAG = "Profession";
-  private static final String DATA_SCALE_X_TAG = "ScaleX";
-  private static final String DATA_SCALE_Y_TAG = "ScaleY";
-  private static final String DATA_SCALE_Z_TAG = "ScaleZ";
-  private static final String DATA_SKIN_TAG = "Skin";
-  private static final String DATA_SKIN_TYPE_TAG = "SkinType";
-  private static final String DATA_SKIN_URL_TAG = "SkinURL";
-  private static final String DATA_SKIN_UUID_TAG = "SkinUUID";
   private static final String DATA_VARIANT_TAG = "Variant";
-  private static final String DATA_YES_DIALOG_BUTTON_TAG = "YesDialogButton";
-  private static final String DATA_YES_DIALOG_TAG = "YesDialog";
 
   public EasyNPCEntityData(EntityType<? extends EasyNPCEntity> entityType, Level level) {
     super(entityType, level);
-  }
-
-  public boolean hasBaseTextureLocation() {
-    return this.hasBaseTextureLocation;
-  }
-
-  public ResourceLocation getBaseTextureLocation() {
-    return this.baseTextureLocation;
-  }
-
-  public void setBaseTextureLocation(ResourceLocation textureLocation) {
-    this.baseTextureLocation = textureLocation;
-    this.hasBaseTextureLocation = this.baseTextureLocation != null;
-  }
-
-  public boolean hasTextureLocation() {
-    return this.hasTextureLocation;
-  }
-
-  public ResourceLocation getTextureLocation() {
-    return this.textureLocation;
-  }
-
-  public void setTextureLocation(ResourceLocation textureLocation) {
-    this.textureLocation = textureLocation;
-    this.hasTextureLocation = textureLocation != null;
-  }
-
-  public boolean hasProfessionTextureLocation() {
-    return this.hasProfessionTextureLocation;
-  }
-
-  public ResourceLocation getProfessionTextureLocation() {
-    return this.professionTextureLocation;
-  }
-
-  public void setProfessionTextureLocation(ResourceLocation textureLocation) {
-    this.professionTextureLocation = textureLocation;
-    this.hasProfessionTextureLocation = textureLocation != null;
-  }
-
-  public void setAction(ActionType actionType, String action) {
-    CompoundTag compoundTag =
-        ActionDataHelper.setAction(this.entityData.get(DATA_ACTION_DATA), actionType, action);
-    this.entityData.set(DATA_ACTION_DATA, compoundTag);
-  }
-
-  public String getAction(ActionType actionType) {
-    return ActionDataHelper.getAction(this.entityData.get(DATA_ACTION_DATA), actionType);
-  }
-
-  public boolean hasAction(ActionType actionType) {
-    return ActionDataHelper.hasAction(this.entityData.get(DATA_ACTION_DATA), actionType);
-  }
-
-  public Map<ActionType, String> getActions() {
-    return ActionDataHelper.readActionData(this.entityData.get(DATA_ACTION_DATA));
-  }
-
-  public CompoundTag getActionData() {
-    return this.entityData.get(DATA_ACTION_DATA);
-  }
-
-  public void setActionData(CompoundTag compoundTag) {
-    this.entityData.set(DATA_ACTION_DATA, compoundTag);
-  }
-
-  public boolean getActionDebug() {
-    return this.entityData.get(DATA_ACTION_DEBUG);
-  }
-
-  public void setActionDebug(boolean enableDebug) {
-    this.entityData.set(DATA_ACTION_DEBUG, enableDebug);
-  }
-
-  public int getActionPermissionLevel() {
-    return this.actionPermissionLevel;
-  }
-
-  public void setActionPermissionLevel(int actionPermissionLevel) {
-    this.actionPermissionLevel = actionPermissionLevel;
-  }
-
-  public DialogType getDialogType() {
-    return this.entityData.get(DATA_DIALOG_TYPE);
-  }
-
-  public void setDialogType(DialogType dialogType) {
-    this.entityData.set(DATA_DIALOG_TYPE, dialogType);
-  }
-
-  public ModelPose getModelPose() {
-    return this.entityData.get(DATA_MODEL_POSE);
-  }
-
-  public void setModelPose(ModelPose modelPose) {
-    this.entityData.set(DATA_MODEL_POSE, modelPose);
-  }
-
-  public Rotations getModelHeadRotation() {
-    return this.entityData.get(DATA_MODEL_HEAD_ROTATION);
-  }
-
-  public void setModelHeadRotation(Rotations modelHeadRotation) {
-    this.entityData.set(DATA_MODEL_HEAD_ROTATION, modelHeadRotation);
-  }
-
-  public Rotations getModelBodyRotation() {
-    return this.entityData.get(DATA_MODEL_BODY_ROTATION);
-  }
-
-  public void setModelBodyRotation(Rotations modelBodyRotation) {
-    this.entityData.set(DATA_MODEL_BODY_ROTATION, modelBodyRotation);
-  }
-
-  public Rotations getModelLeftArmRotation() {
-    return this.entityData.get(DATA_MODEL_LEFT_ARM_ROTATION);
-  }
-
-  public void setModelLeftArmRotation(Rotations modelLeftArmRotation) {
-    this.entityData.set(DATA_MODEL_LEFT_ARM_ROTATION, modelLeftArmRotation);
-  }
-
-  public Rotations getModelRightArmRotation() {
-    return this.entityData.get(DATA_MODEL_RIGHT_ARM_ROTATION);
-  }
-
-  public void setModelRightArmRotation(Rotations modelRightArmRotation) {
-    this.entityData.set(DATA_MODEL_RIGHT_ARM_ROTATION, modelRightArmRotation);
-  }
-
-  public Rotations getModelLeftLegRotation() {
-    return this.entityData.get(DATA_MODEL_LEFT_LEG_ROTATION);
-  }
-
-  public void setModelLeftLegRotation(Rotations modelLeftLegRotation) {
-    this.entityData.set(DATA_MODEL_LEFT_LEG_ROTATION, modelLeftLegRotation);
-  }
-
-  public Rotations getModelRightLegRotation() {
-    return this.entityData.get(DATA_MODEL_RIGHT_LEG_ROTATION);
-  }
-
-  public void setModelRightLegRotation(Rotations modelRightLegRotation) {
-    this.entityData.set(DATA_MODEL_RIGHT_LEG_ROTATION, modelRightLegRotation);
-  }
-
-  public boolean hasDialog() {
-    return !this.entityData.get(DATA_DIALOG).isEmpty();
-  }
-
-  public String getDialog() {
-    return this.entityData.get(DATA_DIALOG);
-  }
-
-  public void setDialog(String dialog) {
-    this.entityData.set(DATA_DIALOG, dialog);
-  }
-
-  public String getNoDialog() {
-    return this.entityData.get(DATA_NO_DIALOG);
-  }
-
-  public void setNoDialog(String dialog) {
-    this.entityData.set(DATA_NO_DIALOG, dialog);
-  }
-
-  public String getNoDialogButton() {
-    return this.entityData.get(DATA_NO_DIALOG_BUTTON);
-  }
-
-  public void setNoDialogButton(String dialogButton) {
-    this.entityData.set(DATA_NO_DIALOG_BUTTON, dialogButton);
-  }
-
-  public String getYesDialog() {
-    return this.entityData.get(DATA_YES_DIALOG);
-  }
-
-  public void setYesDialog(String dialog) {
-    this.entityData.set(DATA_YES_DIALOG, dialog);
-  }
-
-  public String getYesDialogButton() {
-    return this.entityData.get(DATA_YES_DIALOG_BUTTON);
-  }
-
-  public void setYesDialogButton(String dialogButton) {
-    this.entityData.set(DATA_YES_DIALOG_BUTTON, dialogButton);
   }
 
   public Pose getPose(String pose) {
@@ -395,95 +124,6 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
   public Component getProfessionName() {
     Enum<?> profession = getProfession();
     return profession != null ? TextUtils.normalizeName(profession.name()) : new TextComponent("");
-  }
-
-  public Float getDefaultScaleX() {
-    return EasyNPCEntityData.DEFAULT_SCALE_X;
-  }
-
-  public Float getDefaultScaleY() {
-    return EasyNPCEntityData.DEFAULT_SCALE_Y;
-  }
-
-  public Float getDefaultScaleZ() {
-    return EasyNPCEntityData.DEFAULT_SCALE_Z;
-  }
-
-  public Float getScaleX() {
-    return this.entityData.get(DATA_SCALE_X);
-  }
-
-  public void setScaleX(Float scale) {
-    this.entityData.set(DATA_SCALE_X, scale);
-  }
-
-  public Float getScaleY() {
-    return this.entityData.get(DATA_SCALE_Y);
-  }
-
-  public void setScaleY(Float scale) {
-    this.entityData.set(DATA_SCALE_Y, scale);
-  }
-
-  public Float getScaleZ() {
-    return this.entityData.get(DATA_SCALE_Z);
-  }
-
-  public void setScaleZ(Float scale) {
-    this.entityData.set(DATA_SCALE_Z, scale);
-  }
-
-  public String getSkin() {
-    return this.entityData.get(DATA_SKIN);
-  }
-
-  public void setSkin(String skin) {
-    this.entityData.set(DATA_SKIN, skin != null ? skin : "");
-  }
-
-  public String getSkinURL() {
-    return this.entityData.get(DATA_SKIN_URL);
-  }
-
-  public void setSkinURL(String skinURL) {
-    this.entityData.set(DATA_SKIN_URL, skinURL != null ? skinURL : "");
-  }
-
-  public Optional<UUID> getSkinUUID() {
-    return this.entityData.get(DATA_SKIN_UUID);
-  }
-
-  public void setSkinUUID(UUID uuid) {
-    this.entityData.set(DATA_SKIN_UUID, Optional.of(uuid));
-  }
-
-  public void setSkinUUID(Optional<UUID> uuid) {
-    this.entityData.set(DATA_SKIN_UUID, uuid);
-  }
-
-  public SkinType getSkinType() {
-    return this.entityData.get(DATA_SKIN_TYPE);
-  }
-
-  public SkinType getSkinType(String name) {
-    return SkinType.get(name);
-  }
-
-  public void setSkinType(SkinType skinType) {
-    this.entityData.set(DATA_SKIN_TYPE, skinType);
-  }
-
-  public void setSkinType(String name) {
-    SkinType skinType = getSkinType(name);
-    if (skinType != null) {
-      setSkinType(skinType);
-    } else {
-      log.error("Unknown skin type {} for {}", name, this);
-    }
-  }
-
-  public SkinModel getSkinModel() {
-    return SkinModel.HUMANOID;
   }
 
   public Enum<?> getDefaultVariant() {
@@ -540,82 +180,41 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
   }
 
   @Override
+  public <T> void setEntityData(EntityDataAccessor<T> entityDataAccessor, T entityData) {
+    this.entityData.set(entityDataAccessor, entityData);
+  }
+
+  @Override
+  public <T> T getEntityData(EntityDataAccessor<T> entityDataAccessor) {
+    return this.entityData.get(entityDataAccessor);
+  }
+
+  @Override
+  public <T> void defineEntityData(EntityDataAccessor<T> entityDataAccessor, T entityData) {
+    this.entityData.define(entityDataAccessor, entityData);
+  }
+
+  @Override
   protected void defineSynchedData() {
     super.defineSynchedData();
-    this.entityData.define(DATA_ACTION_DATA, new CompoundTag());
-    this.entityData.define(DATA_ACTION_DEBUG, false);
-    this.entityData.define(DATA_DIALOG, "");
-    this.entityData.define(DATA_DIALOG_TYPE, DialogType.NONE);
-    this.entityData.define(DATA_MODEL_POSE, ModelPose.DEFAULT);
-    this.entityData.define(DATA_MODEL_HEAD_ROTATION, new Rotations(0, 0, 0));
-    this.entityData.define(DATA_MODEL_BODY_ROTATION, new Rotations(0, 0, 0));
-    this.entityData.define(DATA_MODEL_LEFT_ARM_ROTATION, new Rotations(0, 0, 0));
-    this.entityData.define(DATA_MODEL_RIGHT_ARM_ROTATION, new Rotations(0, 0, 0));
-    this.entityData.define(DATA_MODEL_LEFT_LEG_ROTATION, new Rotations(0, 0, 0));
-    this.entityData.define(DATA_MODEL_RIGHT_LEG_ROTATION, new Rotations(0, 0, 0));
-    this.entityData.define(DATA_NO_DIALOG, "");
-    this.entityData.define(DATA_NO_DIALOG_BUTTON, "No");
+    this.defineSynchedActionData();
+    this.defineSynchedDialogData();
+    this.defineSynchedModelData();
+    this.defineSynchedScaleData();
+    this.defineSynchedSkinData();
     this.entityData.define(DATA_OWNER_UUID_ID, Optional.empty());
     this.entityData.define(DATA_PROFESSION, this.getDefaultProfession());
-    this.entityData.define(DATA_SCALE_X, this.getDefaultScaleX());
-    this.entityData.define(DATA_SCALE_Y, this.getDefaultScaleY());
-    this.entityData.define(DATA_SCALE_Z, this.getDefaultScaleZ());
-    this.entityData.define(DATA_SKIN, "");
-    this.entityData.define(DATA_SKIN_URL, "");
-    this.entityData.define(DATA_SKIN_UUID, Optional.empty());
-    this.entityData.define(DATA_SKIN_TYPE, SkinType.DEFAULT);
     this.entityData.define(DATA_VARIANT, this.getDefaultVariant().name());
-    this.entityData.define(DATA_YES_DIALOG, "");
-    this.entityData.define(DATA_YES_DIALOG_BUTTON, "Yes");
   }
 
   @Override
   public void addAdditionalSaveData(CompoundTag compoundTag) {
     super.addAdditionalSaveData(compoundTag);
-    if (ActionDataHelper.hasActionData(getActionData())) {
-      compoundTag.put(DATA_ACTION_DATA_TAG, getActionData());
-    }
-    compoundTag.putInt(DATA_ACTION_PERMISSION_LEVEL_TAG, this.getActionPermissionLevel());
-    compoundTag.putBoolean(DATA_ACTION_DEBUG_TAG, this.getActionDebug());
-    if (this.getDialog() != null) {
-      compoundTag.putString(DATA_DIALOG_TAG, this.getDialog());
-    }
-    if (this.getDialogType() != null) {
-      compoundTag.putString(DATA_DIALOG_TYPE_TAG, this.getDialogType().name());
-    }
-    if (this.getModelPose() != null) {
-      compoundTag.putString(DATA_MODEL_POSE_TAG, this.getModelPose().name());
-    }
-    if (this.getModelHeadRotation() != null) {
-      compoundTag.put(DATA_MODEL_HEAD_ROTATION_TAG, this.getModelHeadRotation().save());
-    }
-    if (this.getModelBodyRotation() != null) {
-      compoundTag.put(DATA_MODEL_BODY_ROTATION_TAG, this.getModelBodyRotation().save());
-    }
-    if (this.getModelLeftArmRotation() != null) {
-      compoundTag.put(DATA_MODEL_LEFT_ARM_ROTATION_TAG, this.getModelLeftArmRotation().save());
-    }
-    if (this.getModelRightArmRotation() != null) {
-      compoundTag.put(DATA_MODEL_RIGHT_ARM_ROTATION_TAG, this.getModelRightArmRotation().save());
-    }
-    if (this.getModelLeftLegRotation() != null) {
-      compoundTag.put(DATA_MODEL_LEFT_LEG_ROTATION_TAG, this.getModelLeftLegRotation().save());
-    }
-    if (this.getModelRightLegRotation() != null) {
-      compoundTag.put(DATA_MODEL_RIGHT_LEG_ROTATION_TAG, this.getModelRightLegRotation().save());
-    }
-    if (this.getNoDialog() != null) {
-      compoundTag.putString(DATA_NO_DIALOG_TAG, this.getNoDialog());
-    }
-    if (this.getNoDialogButton() != null) {
-      compoundTag.putString(DATA_NO_DIALOG_BUTTON_TAG, this.getNoDialogButton());
-    }
-    if (this.getYesDialog() != null) {
-      compoundTag.putString(DATA_YES_DIALOG_TAG, this.getYesDialog());
-    }
-    if (this.getYesDialogButton() != null) {
-      compoundTag.putString(DATA_YES_DIALOG_BUTTON_TAG, this.getYesDialogButton());
-    }
+    this.addAdditionalActionData(compoundTag);
+    this.addAdditionalDialogData(compoundTag);
+    this.addAdditionalModelData(compoundTag);
+    this.addAdditionalScaleData(compoundTag);
+    this.addAdditionalSkinData(compoundTag);
     if (this.getOwnerUUID() != null) {
       compoundTag.putUUID(DATA_OWNER_TAG, this.getOwnerUUID());
     }
@@ -625,28 +224,6 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
     if (this.getProfession() != null) {
       compoundTag.putString(DATA_PROFESSION_TAG, this.getProfession().name());
     }
-    if (this.getScaleX() != null && this.getScaleX() > 0.0f) {
-      compoundTag.putFloat(DATA_SCALE_X_TAG, this.getScaleX());
-    }
-    if (this.getScaleY() != null && this.getScaleY() > 0.0f) {
-      compoundTag.putFloat(DATA_SCALE_Y_TAG, this.getScaleY());
-    }
-    if (this.getScaleZ() != null && this.getScaleZ() > 0.0f) {
-      compoundTag.putFloat(DATA_SCALE_Z_TAG, this.getScaleZ());
-    }
-    if (this.getSkin() != null) {
-      compoundTag.putString(DATA_SKIN_TAG, this.getSkin());
-    }
-    if (this.getSkinURL() != null) {
-      compoundTag.putString(DATA_SKIN_URL_TAG, this.getSkinURL());
-    }
-    Optional<UUID> skinUUID = this.getSkinUUID();
-    if (skinUUID.isPresent()) {
-      compoundTag.putUUID(DATA_SKIN_UUID_TAG, skinUUID.get());
-    }
-    if (this.getSkinType() != null) {
-      compoundTag.putString(DATA_SKIN_TYPE_TAG, this.getSkinType().name());
-    }
     if (this.getVariant() != null) {
       compoundTag.putString(DATA_VARIANT_TAG, this.getVariant().name());
     }
@@ -655,81 +232,11 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
   @Override
   public void readAdditionalSaveData(CompoundTag compoundTag) {
     super.readAdditionalSaveData(compoundTag);
-    if (compoundTag.contains(DATA_ACTION_DATA_TAG)) {
-      this.setActionData(compoundTag.getCompound(DATA_ACTION_DATA_TAG));
-    }
-    if (compoundTag.contains(DATA_ACTION_DEBUG_TAG)) {
-      this.setActionDebug(compoundTag.getBoolean(DATA_ACTION_DEBUG_TAG));
-    }
-    if (compoundTag.contains(DATA_ACTION_PERMISSION_LEVEL_TAG)) {
-      this.setActionPermissionLevel(compoundTag.getInt(DATA_ACTION_PERMISSION_LEVEL_TAG));
-    }
-    if (compoundTag.contains(DATA_DIALOG_TAG)) {
-      String dialog = compoundTag.getString(DATA_DIALOG_TAG);
-      if (dialog != null) {
-        this.setDialog(dialog);
-      }
-    }
-    if (compoundTag.contains(DATA_DIALOG_TYPE_TAG)) {
-      String dialogType = compoundTag.getString(DATA_DIALOG_TYPE_TAG);
-      if (dialogType != null && !dialogType.isEmpty()) {
-        this.setDialogType(DialogType.get(dialogType));
-      }
-    }
-    if (compoundTag.contains(DATA_MODEL_POSE_TAG)) {
-      String modelPose = compoundTag.getString(DATA_MODEL_POSE_TAG);
-      if (modelPose != null && !modelPose.isEmpty()) {
-        this.setModelPose(ModelPose.get(modelPose));
-      }
-    }
-    if (compoundTag.contains(DATA_MODEL_HEAD_ROTATION_TAG)) {
-      this.setModelHeadRotation(
-          new Rotations(compoundTag.getList(DATA_MODEL_HEAD_ROTATION_TAG, 5)));
-    }
-    if (compoundTag.contains(DATA_MODEL_BODY_ROTATION_TAG)) {
-      this.setModelBodyRotation(
-          new Rotations(compoundTag.getList(DATA_MODEL_BODY_ROTATION_TAG, 5)));
-    }
-    if (compoundTag.contains(DATA_MODEL_LEFT_ARM_ROTATION_TAG)) {
-      this.setModelLeftArmRotation(
-          new Rotations(compoundTag.getList(DATA_MODEL_LEFT_ARM_ROTATION_TAG, 5)));
-    }
-    if (compoundTag.contains(DATA_MODEL_RIGHT_ARM_ROTATION_TAG)) {
-      this.setModelRightArmRotation(
-          new Rotations(compoundTag.getList(DATA_MODEL_RIGHT_ARM_ROTATION_TAG, 5)));
-    }
-    if (compoundTag.contains(DATA_MODEL_LEFT_LEG_ROTATION_TAG)) {
-      this.setModelLeftLegRotation(
-          new Rotations(compoundTag.getList(DATA_MODEL_LEFT_LEG_ROTATION_TAG, 5)));
-    }
-    if (compoundTag.contains(DATA_MODEL_RIGHT_LEG_ROTATION_TAG)) {
-      this.setModelRightLegRotation(
-          new Rotations(compoundTag.getList(DATA_MODEL_RIGHT_LEG_ROTATION_TAG, 5)));
-    }
-    if (compoundTag.contains(DATA_NO_DIALOG_TAG)) {
-      String dialog = compoundTag.getString(DATA_NO_DIALOG_TAG);
-      if (dialog != null) {
-        this.setNoDialog(dialog);
-      }
-    }
-    if (compoundTag.contains(DATA_NO_DIALOG_BUTTON_TAG)) {
-      String dialogButton = compoundTag.getString(DATA_NO_DIALOG_BUTTON_TAG);
-      if (dialogButton != null) {
-        this.setNoDialogButton(dialogButton);
-      }
-    }
-    if (compoundTag.contains(DATA_YES_DIALOG_TAG)) {
-      String dialog = compoundTag.getString(DATA_YES_DIALOG_TAG);
-      if (dialog != null) {
-        this.setYesDialog(dialog);
-      }
-    }
-    if (compoundTag.contains(DATA_YES_DIALOG_BUTTON_TAG)) {
-      String dialogButton = compoundTag.getString(DATA_YES_DIALOG_BUTTON_TAG);
-      if (dialogButton != null) {
-        this.setYesDialogButton(dialogButton);
-      }
-    }
+    this.readAdditionalActionData(compoundTag);
+    this.readAdditionalDialogData(compoundTag);
+    this.readAdditionalModelData(compoundTag);
+    this.readAdditionalScaleData(compoundTag);
+    this.readAdditionalSkinData(compoundTag);
     if (compoundTag.hasUUID(DATA_OWNER_TAG)) {
       UUID uuid = compoundTag.getUUID(DATA_OWNER_TAG);
       if (uuid != null) {
@@ -752,48 +259,6 @@ public class EasyNPCEntityData extends AgeableMob implements Npc {
       String variant = compoundTag.getString(DATA_VARIANT_TAG);
       if (variant != null && !variant.isEmpty()) {
         this.setVariant(this.getVariant(variant));
-      }
-    }
-    if (compoundTag.contains(DATA_SCALE_X_TAG)) {
-      Float scale = compoundTag.getFloat(DATA_SCALE_X_TAG);
-      if (scale != null && scale > 0.0f) {
-        this.setScaleX(scale);
-      }
-    }
-    if (compoundTag.contains(DATA_SCALE_Y_TAG)) {
-      Float scale = compoundTag.getFloat(DATA_SCALE_Y_TAG);
-      if (scale != null && scale > 0.0f) {
-        this.setScaleY(scale);
-      }
-    }
-    if (compoundTag.contains(DATA_SCALE_Z_TAG)) {
-      Float scale = compoundTag.getFloat(DATA_SCALE_Z_TAG);
-      if (scale != null && scale > 0.0f) {
-        this.setScaleZ(scale);
-      }
-    }
-    if (compoundTag.contains(DATA_SKIN_TAG)) {
-      String skin = compoundTag.getString(DATA_SKIN_TAG);
-      if (skin != null && !skin.isEmpty()) {
-        this.setSkin(skin);
-      }
-    }
-    if (compoundTag.contains(DATA_SKIN_URL_TAG)) {
-      String url = compoundTag.getString(DATA_SKIN_URL_TAG);
-      if (url != null && !url.isEmpty()) {
-        this.setSkinURL(url);
-      }
-    }
-    if (compoundTag.contains(DATA_SKIN_UUID_TAG)) {
-      UUID skinUUID = compoundTag.getUUID(DATA_SKIN_UUID_TAG);
-      if (skinUUID != null) {
-        this.setSkinUUID(skinUUID);
-      }
-    }
-    if (compoundTag.contains(DATA_SKIN_TYPE_TAG)) {
-      String skinType = compoundTag.getString(DATA_SKIN_TYPE_TAG);
-      if (skinType != null && !skinType.isEmpty()) {
-        this.setSkinType(this.getSkinType(skinType));
       }
     }
   }

@@ -38,7 +38,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.configuration.position.DefaultPositionConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
 @OnlyIn(Dist.CLIENT)
 public class DefaultPositionConfigurationScreen
@@ -94,7 +94,7 @@ public class DefaultPositionConfigurationScreen
     this.positionXBox.setValue(String.valueOf(this.positionX));
     this.positionXBox.setResponder(consumer -> {
       this.positionX = Double.parseDouble(this.positionXBox.getValue());
-      NetworkHandler.positionChange(this.uuid,
+      NetworkMessage.positionChange(this.uuid,
           new Vec3(this.positionX, this.positionY, this.positionZ));
     });
     this.positionXMinusButton = this.addRenderableWidget(menuButton(this.positionXBox.x - 15,
@@ -116,7 +116,7 @@ public class DefaultPositionConfigurationScreen
     this.positionYBox.setValue(String.valueOf(this.positionY));
     this.positionYBox.setResponder(consumer -> {
       this.positionY = Double.parseDouble(this.positionYBox.getValue());
-      NetworkHandler.positionChange(this.uuid,
+      NetworkMessage.positionChange(this.uuid,
           new Vec3(this.positionX, this.positionY, this.positionZ));
     });
     this.positionYMinusButton = this.addRenderableWidget(menuButton(this.positionYBox.x - 15,
@@ -138,7 +138,7 @@ public class DefaultPositionConfigurationScreen
     this.positionZBox.setValue(String.valueOf(this.positionZ));
     this.positionZBox.setResponder(consumer -> {
       this.positionZ = Double.parseDouble(this.positionZBox.getValue());
-      NetworkHandler.positionChange(this.uuid,
+      NetworkMessage.positionChange(this.uuid,
           new Vec3(this.positionX, this.positionY, this.positionZ));
     });
     this.positionZMinusButton = this.addRenderableWidget(menuButton(this.positionZBox.x - 15,

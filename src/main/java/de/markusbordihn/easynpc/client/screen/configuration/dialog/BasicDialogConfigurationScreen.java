@@ -32,7 +32,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
 @OnlyIn(Dist.CLIENT)
 public class BasicDialogConfigurationScreen
@@ -65,7 +65,7 @@ public class BasicDialogConfigurationScreen
     // Save Button
     this.saveDialogButton = this.addRenderableWidget(
         menuButton(this.contentLeftPos + 26, this.bottomPos - 40, 80, "save", onPress -> {
-          NetworkHandler.saveBasicDialog(uuid, this.dialogBox.getValue());
+          NetworkMessage.saveBasicDialog(uuid, this.dialogBox.getValue());
         }));
 
     // Chancel Button

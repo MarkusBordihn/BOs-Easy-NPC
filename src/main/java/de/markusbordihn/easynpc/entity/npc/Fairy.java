@@ -82,6 +82,11 @@ public class Fairy extends EasyNPCEntity {
   }
 
   @Override
+  public boolean hasLeftLegModelPart() {
+    return false;
+  }
+
+  @Override
   public Enum<?>[] getVariants() {
     return Variant.values();
   }
