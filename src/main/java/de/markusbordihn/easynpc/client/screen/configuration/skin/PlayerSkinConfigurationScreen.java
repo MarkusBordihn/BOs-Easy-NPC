@@ -40,7 +40,7 @@ import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.client.texture.TextureModelKey;
 import de.markusbordihn.easynpc.menu.configuration.skin.PlayerSkinConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 import de.markusbordihn.easynpc.skin.SkinModel;
 import de.markusbordihn.easynpc.skin.SkinType;
 import de.markusbordihn.easynpc.utils.PlayersUtils;
@@ -132,7 +132,7 @@ public class PlayerSkinConfigurationScreen
     ImageButton skinButton = new ImageButton(skinButtonLeft, skinButtonTop, skinPreviewWidth,
         skinButtonHeight, 0, -84, 84, Constants.TEXTURE_CONFIGURATION, button -> {
           String skinURL = PlayerTextureManager.getPlayerTextureSkinURL(textureModelKey);
-          NetworkHandler.skinChange(this.uuid, "", skinURL, textureUUID, skinType);
+          NetworkMessage.skinChange(this.uuid, "", skinURL, textureUUID, skinType);
         });
 
     // Render active skin in different style.
@@ -170,10 +170,10 @@ public class PlayerSkinConfigurationScreen
 
       if (PlayersUtils.isValidPlayerName(textureSkinLocationValue)) {
         log.debug("Settings player user texture to {}", textureSkinLocationValue);
-        NetworkHandler.skinChange(this.uuid, textureSkinLocationValue, SkinType.PLAYER_SKIN);
+        NetworkMessage.skinChange(this.uuid, textureSkinLocationValue, SkinType.PLAYER_SKIN);
       } else if (PlayersUtils.isValidUrl(textureSkinLocationValue)) {
         log.debug("Setting remote user texture to {}", textureSkinLocationValue);
-        NetworkHandler.skinChange(this.uuid, textureSkinLocationValue,
+        NetworkMessage.skinChange(this.uuid, textureSkinLocationValue,
             SkinType.INSECURE_REMOTE_URL);
       }
 

@@ -19,15 +19,11 @@
 
 package de.markusbordihn.easynpc.network;
 
-import java.util.UUID;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.core.Rotations;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.phys.Vec3;
 
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -35,13 +31,14 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.action.ActionType;
+import de.markusbordihn.easynpc.dialog.DialogType;
 import de.markusbordihn.easynpc.entity.Profession;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.model.ModelPart;
 import de.markusbordihn.easynpc.model.ModelPose;
 import de.markusbordihn.easynpc.network.message.MessageActionChange;
 import de.markusbordihn.easynpc.network.message.MessageActionDebug;
+import de.markusbordihn.easynpc.network.message.MessageDialogTypeChange;
+import de.markusbordihn.easynpc.network.message.MessageModelLockRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPoseChange;
 import de.markusbordihn.easynpc.network.message.MessageNameChange;
 import de.markusbordihn.easynpc.network.message.MessageOpenConfiguration;
@@ -56,7 +53,6 @@ import de.markusbordihn.easynpc.network.message.MessageScaleChange;
 import de.markusbordihn.easynpc.network.message.MessageSkinChange;
 import de.markusbordihn.easynpc.network.message.MessageTriggerAction;
 import de.markusbordihn.easynpc.network.message.MessageVariantChange;
-import de.markusbordihn.easynpc.skin.SkinType;
 
 @EventBusSubscriber
 public class NetworkHandler {
@@ -113,6 +109,13 @@ public class NetworkHandler {
       }, buffer -> new MessageOpenConfiguration(buffer.readUUID(), buffer.readUtf()),
           MessageOpenConfiguration::handle);
 
+      // Dialog Type: Client -> Server
+      INSTANCE.registerMessage(id++, MessageDialogTypeChange.class, (message, buffer) -> {
+        buffer.writeUUID(message.getUUID());
+        buffer.writeEnum(message.getDialogType());
+      }, buffer -> new MessageDialogTypeChange(buffer.readUUID(),
+          buffer.readEnum(DialogType.class)), MessageDialogTypeChange::handle);
+
       // Save Basic Dialog: Client -> Server
       INSTANCE.registerMessage(id++, MessageSaveBasicDialog.class, (message, buffer) -> {
         buffer.writeUUID(message.getUUID());
@@ -130,6 +133,13 @@ public class NetworkHandler {
         buffer.writeUtf(message.getNoButtonText());
       }, buffer -> new MessageSaveYesNoDialog(buffer.readUUID(), buffer.readUtf(), buffer.readUtf(),
           buffer.readUtf(), buffer.readUtf(), buffer.readUtf()), MessageSaveYesNoDialog::handle);
+
+      // Model Local Rotation Change: Client -> Server
+      INSTANCE.registerMessage(id++, MessageModelLockRotationChange.class, (message, buffer) -> {
+        buffer.writeUUID(message.getUUID());
+        buffer.writeBoolean(message.getLockRotation());
+      }, buffer -> new MessageModelLockRotationChange(buffer.readUUID(), buffer.readBoolean()),
+          MessageModelLockRotationChange::handle);
 
       // Model Pose Change: Client -> Server
       INSTANCE.registerMessage(id++, MessageModelPoseChange.class, (message, buffer) -> {
@@ -204,133 +214,8 @@ public class NetworkHandler {
     });
   }
 
-  /** Send action change. */
-  public static void actionChange(UUID uuid, ActionType actionType, String action) {
-    if (uuid != null && actionType != null && actionType != ActionType.NONE) {
-      INSTANCE.sendToServer(new MessageActionChange(uuid, actionType.name(), action));
-    }
-  }
-
-  /** Send action debug change. */
-  public static void actionDebugChange(UUID uuid, boolean debug) {
-    if (uuid != null) {
-      INSTANCE.sendToServer(new MessageActionDebug(uuid, debug));
-    }
-  }
-
-  /** Send name change. */
-  public static void nameChange(UUID uuid, String name) {
-    if (uuid != null && name != null && !name.isEmpty()) {
-      INSTANCE.sendToServer(new MessageNameChange(uuid, name));
-    }
-  }
-
-  /** Open configuration request. */
-  public static void openConfiguration(UUID uuid, Enum<ConfigurationType> configurationType) {
-    if (uuid != null && configurationType != null) {
-      INSTANCE.sendToServer(new MessageOpenConfiguration(uuid, configurationType.name()));
-    }
-  }
-
-  /** Send model pose change. */
-  public static void modelPoseChange(UUID uuid, ModelPose modelPose) {
-    if (uuid != null && modelPose != null) {
-      INSTANCE.sendToServer(new MessageModelPoseChange(uuid, modelPose));
-    }
-  }
-
-  /** Send pose change. */
-  public static void poseChange(UUID uuid, Pose pose) {
-    if (uuid != null && pose != null) {
-      INSTANCE.sendToServer(new MessagePoseChange(uuid, pose));
-    }
-  }
-
-  /** Send position change. */
-  public static void positionChange(UUID uuid, Vec3 pos) {
-    if (uuid != null && pos != null) {
-      INSTANCE.sendToServer(new MessagePositionChange(uuid, pos));
-    }
-  }
-
-  /** Send profession change. */
-  public static void professionChange(UUID uuid, Profession profession) {
-    if (uuid != null && profession != null) {
-      INSTANCE.sendToServer(new MessageProfessionChange(uuid, profession));
-    }
-  }
-
-  /** Send remove NPC. */
-  public static void removeNPC(UUID uuid) {
-    if (uuid != null) {
-      INSTANCE.sendToServer(new MessageRemoveNPC(uuid));
-    }
-  }
-
-  /** Send rotation change. */
-  public static void rotationChange(UUID uuid, ModelPart modelPart, Rotations rotations) {
-    if (uuid != null && modelPart != null && rotations != null) {
-      INSTANCE.sendToServer(new MessageRotationChange(uuid, modelPart, rotations));
-    }
-  }
-
-  /** Save basic dialog. */
-  public static void saveBasicDialog(UUID uuid, String dialog) {
-    if (uuid != null && dialog != null) {
-      INSTANCE.sendToServer(new MessageSaveBasicDialog(uuid, dialog));
-    }
-  }
-
-  /** Save yes/no dialog. */
-  public static void saveYesNoDialog(UUID uuid, String dialog, String yesDialog, String noDialog,
-      String yesButtonText, String noButtonText) {
-    if (uuid != null && dialog != null && yesDialog != null && noDialog != null) {
-      INSTANCE.sendToServer(new MessageSaveYesNoDialog(uuid, dialog, yesDialog, noDialog,
-          yesButtonText, noButtonText));
-    }
-  }
-
-  /** Send scale change. */
-  public static void scaleChange(UUID uuid, String scaleAxis, float scale) {
-    if (uuid != null && scaleAxis != null) {
-      INSTANCE.sendToServer(new MessageScaleChange(uuid, scaleAxis, scale));
-    }
-  }
-
-  /** Send skin change. */
-  public static void skinChange(UUID uuid, Enum<SkinType> skinType) {
-    if (uuid != null && skinType != null) {
-      INSTANCE
-          .sendToServer(new MessageSkinChange(uuid, "", "", Constants.BLANK_UUID, skinType.name()));
-    }
-  }
-
-  public static void skinChange(UUID uuid, String skin, Enum<SkinType> skinType) {
-    if (uuid != null && skin != null && skinType != null) {
-      INSTANCE.sendToServer(
-          new MessageSkinChange(uuid, skin, "", Constants.BLANK_UUID, skinType.name()));
-    }
-  }
-
-  public static void skinChange(UUID uuid, String skin, String skinURL, UUID skinUUID,
-      Enum<SkinType> skinType) {
-    if (uuid != null && skin != null && skinType != null) {
-      INSTANCE.sendToServer(new MessageSkinChange(uuid, skin, skinURL, skinUUID, skinType.name()));
-    }
-  }
-
-  /** Send trigger action. */
-  public static void triggerAction(UUID uuid, ActionType actionType) {
-    if (uuid != null && actionType != null && actionType != ActionType.NONE) {
-      INSTANCE.sendToServer(new MessageTriggerAction(uuid, actionType.name()));
-    }
-  }
-
-  /** Send variant change. */
-  public static void variantChange(UUID uuid, Enum<?> variant) {
-    if (uuid != null && variant != null) {
-      INSTANCE.sendToServer(new MessageVariantChange(uuid, variant.name()));
-    }
+  public static <M> void sendToServer(M message) {
+    INSTANCE.sendToServer(message);
   }
 
 }

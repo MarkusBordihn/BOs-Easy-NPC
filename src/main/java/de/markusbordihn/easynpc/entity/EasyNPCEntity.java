@@ -31,7 +31,6 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -42,6 +41,7 @@ import net.minecraft.world.phys.Vec3;
 import de.markusbordihn.easynpc.action.ActionType;
 import de.markusbordihn.easynpc.action.ActionUtils;
 import de.markusbordihn.easynpc.commands.CommandManager;
+import de.markusbordihn.easynpc.entity.ai.goal.CustomLookAtPlayerGoal;
 import de.markusbordihn.easynpc.item.ModItems;
 
 public class EasyNPCEntity extends EasyNPCEntityData {
@@ -94,8 +94,8 @@ public class EasyNPCEntity extends EasyNPCEntityData {
   @Override
   protected void registerGoals() {
     super.registerGoals();
-    this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
-    this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 15.0F));
+    this.goalSelector.addGoal(9, new CustomLookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
+    this.goalSelector.addGoal(10, new CustomLookAtPlayerGoal(this, Mob.class, 15.0F));
   }
 
   @Override

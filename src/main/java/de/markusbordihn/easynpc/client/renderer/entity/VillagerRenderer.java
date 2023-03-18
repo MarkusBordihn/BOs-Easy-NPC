@@ -35,6 +35,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.CrossedArmsItemLayer;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Rotations;
 import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -151,6 +152,16 @@ public class VillagerRenderer
   public void render(EasyNPCEntity entity, float entityYaw, float partialTicks, PoseStack poseStack,
       net.minecraft.client.renderer.MultiBufferSource buffer, int light) {
     CustomVillagerModel<EasyNPCEntity> playerModel = this.getModel();
+
+    // Model Rotation
+    Rotations rootRotation = entity.getModelRootRotation();
+    if (rootRotation != null) {
+      poseStack.translate(0, 1, 0);
+      poseStack.mulPose(Vector3f.XP.rotation(rootRotation.getX()));
+      poseStack.mulPose(Vector3f.YP.rotation(rootRotation.getY()));
+      poseStack.mulPose(Vector3f.ZP.rotation(rootRotation.getZ()));
+      poseStack.translate(0, -1, 0);
+    }
 
     // Render additional poses
     if (entity.getModelPose() == ModelPose.DEFAULT) {
