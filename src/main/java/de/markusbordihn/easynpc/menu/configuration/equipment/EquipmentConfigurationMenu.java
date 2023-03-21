@@ -83,41 +83,32 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
     this.loadHand();
 
     // Player Companion Amor Slots (left / slot: 3 - 0)
-    switch (this.skinModel) {
-      case HUMANOID:
-      case HUMANOID_SLIM:
-      case SKELETON:
-        this.loadArmor();
-        int playerCompanionEquipmentLeftStartPositionY = 44;
-        int playerCompanionEquipmentLeftStartPositionX = 98;
-        for (int armorSlot = 3; armorSlot >= 0; armorSlot--) {
-          this.addSlot(new ArmorSlot(this, this.armorContainer, 3 - armorSlot,
-              playerCompanionEquipmentLeftStartPositionX,
-              playerCompanionEquipmentLeftStartPositionY + armorSlot * slotSize));
-        }
-        break;
-      default:
-        break;
+    if (this.entity.canUseArmor()) {
+      this.loadArmor();
+      int playerCompanionEquipmentLeftStartPositionY = 44;
+      int playerCompanionEquipmentLeftStartPositionX = 98;
+      for (int armorSlot = 3; armorSlot >= 0; armorSlot--) {
+        this.addSlot(new ArmorSlot(this, this.armorContainer, 3 - armorSlot,
+            playerCompanionEquipmentLeftStartPositionX,
+            playerCompanionEquipmentLeftStartPositionY + armorSlot * slotSize));
+      }
+
     }
 
     // Player Companion Main Hand Slot (left / bottom: 0)
-    int playerCompanionMainHandStartPositionY = 119;
-    int playerCompanionMainHandStartPositionX = 98;
-    this.addSlot(new HandSlot(this, this.handContainer, EquipmentSlot.MAINHAND.getIndex(),
-        playerCompanionMainHandStartPositionX, playerCompanionMainHandStartPositionY));
+    if (this.entity.canUseMainHand()) {
+      int playerCompanionMainHandStartPositionY = 119;
+      int playerCompanionMainHandStartPositionX = 98;
+      this.addSlot(new HandSlot(this, this.handContainer, EquipmentSlot.MAINHAND.getIndex(),
+          playerCompanionMainHandStartPositionX, playerCompanionMainHandStartPositionY));
+    }
 
     // Player Companion Off Hand Slot (right / bottom: 1)
-    switch (this.skinModel) {
-      case HUMANOID:
-      case HUMANOID_SLIM:
-      case SKELETON:
-        int playerCompanionOffHandStartPositionY = 119;
-        int playerCompanionOffHandStartPositionX = 178;
-        this.addSlot(new HandSlot(this, this.handContainer, EquipmentSlot.OFFHAND.getIndex(),
-            playerCompanionOffHandStartPositionX, playerCompanionOffHandStartPositionY));
-        break;
-      default:
-        break;
+    if (this.entity.canUseOffHand()) {
+      int playerCompanionOffHandStartPositionY = 119;
+      int playerCompanionOffHandStartPositionX = 178;
+      this.addSlot(new HandSlot(this, this.handContainer, EquipmentSlot.OFFHAND.getIndex(),
+          playerCompanionOffHandStartPositionX, playerCompanionOffHandStartPositionY));
     }
 
     // Player Inventory Slots

@@ -28,6 +28,7 @@ import com.mojang.brigadier.ParseResults;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -69,6 +70,27 @@ public class CommandManager {
     Commands commands = minecraftServer.getCommands();
     CommandSourceStack commandSourceStack = minecraftServer.createCommandSourceStack()
         .withEntity(entity).withPermission(permissionLevel);
+    CommandDispatcher<CommandSourceStack> commandDispatcher = commands.getDispatcher();
+    ParseResults<CommandSourceStack> parseResults = commandDispatcher.parse(command,
+        debug ? commandSourceStack : commandSourceStack.withSuppressedOutput());
+    commands.performCommand(parseResults, command);
+  }
+
+  public static void executePlayerCommand(String command,
+      ServerPlayer serverPlayer, int permissionLevel,
+      boolean debug) {
+    MinecraftServer minecraftServer = ServerLifecycleHooks.getCurrentServer();
+    if (minecraftServer == null) {
+      return;
+    }
+    if (command.startsWith("/")) {
+      command = command.substring(1);
+    }
+    log.debug("Execute Player {} Command: \"{}\" with permission level {}", serverPlayer, command,
+        permissionLevel);
+    Commands commands = minecraftServer.getCommands();
+    CommandSourceStack commandSourceStack = minecraftServer.createCommandSourceStack()
+        .withEntity(serverPlayer).withPermission(permissionLevel).withLevel(serverPlayer.getLevel());
     CommandDispatcher<CommandSourceStack> commandDispatcher = commands.getDispatcher();
     ParseResults<CommandSourceStack> parseResults = commandDispatcher.parse(command,
         debug ? commandSourceStack : commandSourceStack.withSuppressedOutput());

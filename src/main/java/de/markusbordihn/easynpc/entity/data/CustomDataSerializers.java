@@ -28,7 +28,7 @@ import de.markusbordihn.easynpc.entity.Profession;
 import de.markusbordihn.easynpc.model.ModelPose;
 import de.markusbordihn.easynpc.skin.SkinType;
 
-public class DataSerializers {
+public class CustomDataSerializers {
 
   public static final EntityDataSerializer<DialogType> DIALOG_TYPE =
       new EntityDataSerializer<DialogType>() {

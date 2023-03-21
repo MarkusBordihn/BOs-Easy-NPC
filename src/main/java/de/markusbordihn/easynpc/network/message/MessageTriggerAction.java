@@ -30,6 +30,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.action.ActionData;
 import de.markusbordihn.easynpc.action.ActionType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
@@ -84,18 +85,17 @@ public class MessageTriggerAction {
     }
 
     // Validate action.
-    if (!easyNPCEntity.hasAction(actionType)) {
+    ActionData actionData = easyNPCEntity.getActionData(actionType);
+    if (actionData == null) {
       log.error("Unknown trigger action {} request for UUID {} from {}", actionType, uuid,
           serverPlayer);
       return;
     }
 
     // Perform action.
-    String action = easyNPCEntity.getAction(actionType);
     int permissionLevel = easyNPCEntity.getActionPermissionLevel();
-    log.debug("Trigger action {}:{} for {} from {} with permission level {} ...", actionType,
-        action, easyNPCEntity, serverPlayer, permissionLevel);
-    easyNPCEntity.executeAction(actionType, serverPlayer);
+    log.debug("Trigger action {} for {} from {} with permission level {} ...", actionData, easyNPCEntity, serverPlayer, permissionLevel);
+    easyNPCEntity.executeAction(actionData, serverPlayer);
   }
 
 }

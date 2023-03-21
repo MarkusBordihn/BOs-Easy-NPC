@@ -25,8 +25,12 @@ public enum SkinModel {
   FAIRY,
   HUMANOID,
   HUMANOID_SLIM,
+  ILLAGER,
+  IRON_GOLEM,
   SKELETON,
-  VILLAGER;
+  VILLAGER,
+  ZOMBIE,
+  ZOMBIE_VILLAGER;
   // @formatter:on
 
   public static SkinModel get(String skinModel) {

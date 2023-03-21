@@ -88,6 +88,37 @@ public class TextureManager {
     return resourceLocation;
   }
 
+  public static ResourceLocation addCustomTexture(TextureModelKey textureModelKey, File file) {
+    // Verify file to make sure its not a directory, not null, exists and readable.
+    if (file == null || !file.exists() || !file.canRead() || file.isDirectory()) {
+      log.error("{} Texture file {} is invalid!", LOG_PREFIX, file);
+      return null;
+    }
+
+    // Try to load the image from file.
+    BufferedImage image;
+    try {
+      image = ImageIO.read(file);
+    } catch (IllegalArgumentException | IOException exception) {
+      log.error("{} Unable to load Texture file {} because of:", LOG_PREFIX, file, exception);
+      return null;
+    }
+
+    // Verify the image data to make sure we got a valid image!
+    if (image == null) {
+      log.error("{} Unable to get any valid texture from file {}!", LOG_PREFIX, file);
+      return null;
+    } else if (image.getWidth() < 32 || image.getHeight() < 32 || image.getWidth() % 32 != 0
+        || image.getHeight() % 32 != 0) {
+      log.error("{} Unable to get any valid texture from file {}, got {}x{}!", LOG_PREFIX, file,
+          image.getWidth(), image.getHeight());
+      return null;
+    }
+
+    // Adding file to texture manager.
+    return TextureManager.registerTexture(textureModelKey, file);
+  }
+
   public static ResourceLocation addRemoteTexture(TextureModelKey textureModelKey, String remoteUrl,
       String targetDirectory) {
     if (!PlayersUtils.isValidUrl(remoteUrl)) {
