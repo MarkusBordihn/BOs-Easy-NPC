@@ -5,6 +5,16 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### 2023.03.19
+
+- Added new Zombie and Zombie Villager models.
+- Added custom texture support for individual texture skins for map makers.
+- Added possibility to execute commands as player.
+- Fixed locked rotation for custom models by resetting rotations.
+- Fixed crash when using invalid numbers for position.
+- Fixed issue with invisible NPCs.
+- Improved documentation and added more examples.
+
 ### 2023.03.18
 
 - Refactored code for 1.19.4-45.0.9.

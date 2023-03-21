@@ -38,10 +38,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
 
+import de.markusbordihn.easynpc.action.ActionData;
 import de.markusbordihn.easynpc.action.ActionType;
-import de.markusbordihn.easynpc.action.ActionUtils;
 import de.markusbordihn.easynpc.commands.CommandManager;
 import de.markusbordihn.easynpc.entity.ai.goal.CustomLookAtPlayerGoal;
+import de.markusbordihn.easynpc.entity.ai.goal.ResetLookAtPlayerGoal;
 import de.markusbordihn.easynpc.item.ModItems;
 
 public class EasyNPCEntity extends EasyNPCEntityData {
@@ -64,16 +65,22 @@ public class EasyNPCEntity extends EasyNPCEntityData {
     // Do stuff like default names.
   }
 
-  public void executeAction(ActionType actionType, ServerPlayer serverPlayer) {
-    if (!this.hasAction(actionType)) {
+  public void executeAction(ActionData actionData, ServerPlayer serverPlayer) {
+    if (actionData == null || !actionData.isValid()) {
       return;
     }
-    String action = ActionUtils.parseAction(this.getAction(actionType), this, serverPlayer);
-    boolean debug = this.getActionDebug();
     int permissionLevel = this.getActionPermissionLevel();
-    log.debug("Execute action {}:{} for {} with permission level {} ...", actionType, action, this,
+    log.debug("Execute action {} for {} with permission level {} ...", actionData, this,
         permissionLevel);
-    CommandManager.executeEntityCommand(action, this, permissionLevel, debug);
+    if (actionData.shouldExecuteAsUser()) {
+      // Execute action as user with define permission level (default 0).
+      CommandManager.executePlayerCommand(actionData.getAction(this, serverPlayer), serverPlayer,
+          actionData.getPermissionLevel(), actionData.isDebugEnabled());
+    } else {
+      // Execute action as NPC entity with owner permission level.
+      CommandManager.executeEntityCommand(actionData.getAction(this, serverPlayer), this,
+          permissionLevel, actionData.isDebugEnabled());
+    }
   }
 
   @Override
@@ -94,6 +101,7 @@ public class EasyNPCEntity extends EasyNPCEntityData {
   @Override
   protected void registerGoals() {
     super.registerGoals();
+    this.goalSelector.addGoal(9, new ResetLookAtPlayerGoal(this));
     this.goalSelector.addGoal(9, new CustomLookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
     this.goalSelector.addGoal(10, new CustomLookAtPlayerGoal(this, Mob.class, 15.0F));
   }
@@ -137,7 +145,8 @@ public class EasyNPCEntity extends EasyNPCEntityData {
       }
 
       if (hasInteractionAction) {
-        this.executeAction(ActionType.ON_INTERACTION, serverPlayer);
+        ActionData actionData = this.getActionData(ActionType.ON_INTERACTION);
+        this.executeAction(actionData, serverPlayer);
       }
 
       if (this.hasDialog()) {

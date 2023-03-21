@@ -28,6 +28,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.configuration.actions.BasicActionConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.actions.DialogActionConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.BasicDialogConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.NoneDialogConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.YesNoDialogConfigurationScreen;
@@ -63,6 +64,8 @@ public class ClientScreens {
       // Action Configuration Screens
       MenuScreens.register(ModMenuTypes.BASIC_ACTION_CONFIGURATION_MENU.get(),
           BasicActionConfigurationScreen::new);
+      MenuScreens.register(ModMenuTypes.DIALOG_ACTION_CONFIGURATION_MENU.get(),
+          DialogActionConfigurationScreen::new);
 
       // Dialog Configuration Screens
       MenuScreens.register(ModMenuTypes.NONE_DIALOG_CONFIGURATION_MENU.get(),

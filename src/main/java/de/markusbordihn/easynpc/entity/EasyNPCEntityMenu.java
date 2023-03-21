@@ -37,6 +37,7 @@ import net.minecraftforge.network.NetworkHooks;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.DialogMenu;
 import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.action.DialogActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenu;
@@ -90,6 +91,25 @@ public class EasyNPCEntityMenu {
       public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
           Player serverPlayer) {
         return new BasicActionConfigurationMenu(windowId, inventory, uuid);
+      }
+    };
+    NetworkHooks.openScreen(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));
+  }
+
+  public static void openDialogActionConfigurationMenu(ServerPlayer serverPlayer,
+      EasyNPCEntity entity) {
+    UUID uuid = entity.getUUID();
+    MenuProvider provider = new MenuProvider() {
+      @Override
+      public Component getDisplayName() {
+        return Component.literal("Dialog Actions for " + entity.getName().getString());
+      }
+
+      @Nullable
+      @Override
+      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
+          Player serverPlayer) {
+        return new DialogActionConfigurationMenu(windowId, inventory, uuid);
       }
     };
     NetworkHooks.openScreen(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));

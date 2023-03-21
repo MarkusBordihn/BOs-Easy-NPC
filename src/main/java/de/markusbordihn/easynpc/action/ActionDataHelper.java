@@ -32,57 +32,67 @@ public class ActionDataHelper {
   public static final String DATA_ACTIONS_TAG = "Actions";
   public static final String DATA_ACTION_TAG = "Action";
   public static final String DATA_ACTION_TYPE_TAG = "ActionType";
+  public static final String DATA_ACTION_EXECUTE_AS_USER_TAG = "ActionExecuteAsUser";
+  public static final String DATA_ACTION_ENABLE_DEBUG_TAG = "ActionEnableDebug";
+  public static final String DATA_ACTION_PERMISSION_LEVEL_TAG = "ActionPermissionLevel";
 
   public static CompoundTag setAction(CompoundTag compoundTag, ActionType actionType,
-      String action) {
+      ActionData actionData) {
     if (actionType != ActionType.NONE) {
-      Map<ActionType, String> actions = readActionData(compoundTag);
-      actions.put(actionType, action);
+      Map<ActionType, ActionData> actions = readActionData(compoundTag);
+      actions.put(actionType, actionData);
       return saveActionData(actions);
     }
     return compoundTag;
   }
 
   public static String getAction(CompoundTag compoundTag, ActionType actionType) {
-    if (actionType != ActionType.NONE) {
-      Map<ActionType, String> actions = readActionData(compoundTag);
-      return actions.getOrDefault(actionType, "");
+    ActionData actionData = getActionData(compoundTag, actionType);
+    if (actionData != null) {
+      return actionData.getAction();
     }
     return "";
   }
 
-  public static boolean hasAction(CompoundTag compoundTag, ActionType actionType) {
+  public static ActionData getActionData(CompoundTag compoundTag, ActionType actionType) {
     if (actionType != ActionType.NONE) {
-      Map<ActionType, String> actions = readActionData(compoundTag);
-      if (!actions.containsKey(actionType)) {
-        return false;
-      }
-      String action = actions.get(actionType);
-      if (action != null && !actions.isEmpty()) {
-        return true;
-      }
+      Map<ActionType, ActionData> actions = readActionData(compoundTag);
+      return actions.get(actionType);
+    }
+    return null;
+  }
+
+  public static boolean hasAction(CompoundTag compoundTag, ActionType actionType) {
+    ActionData actionData = getActionData(compoundTag, actionType);
+    if (actionData != null) {
+      return actionData.hasAction();
     }
     return false;
   }
 
-  public static CompoundTag saveActionData(Map<ActionType, String> actions) {
+  public static CompoundTag saveActionData(Map<ActionType, ActionData> actions) {
     CompoundTag compoundTag = new CompoundTag();
     saveActionData(compoundTag, actions);
     return compoundTag;
   }
 
   public static CompoundTag saveActionData(CompoundTag compoundTag,
-      Map<ActionType, String> actions) {
+      Map<ActionType, ActionData> actions) {
     if (actions != null && !actions.isEmpty()) {
       ListTag listTag = new ListTag();
-      for (Entry<ActionType, String> actionEntry : actions.entrySet()) {
+      for (Entry<ActionType, ActionData> actionEntry : actions.entrySet()) {
         ActionType actionType = actionEntry.getKey();
         if (actionType != ActionType.NONE) {
-          String action = actionEntry.getValue();
-          if (action != null && !action.isEmpty()) {
+          ActionData actionData = actionEntry.getValue();
+          if (actionData != null && actionData.hasAction()) {
             CompoundTag compoundTagAction = new CompoundTag();
-            compoundTagAction.putString(DATA_ACTION_TYPE_TAG, actionType.name());
-            compoundTagAction.putString(DATA_ACTION_TAG, action);
+            compoundTagAction.putBoolean(DATA_ACTION_ENABLE_DEBUG_TAG, actionData.isDebugEnabled());
+            compoundTagAction.putBoolean(DATA_ACTION_EXECUTE_AS_USER_TAG,
+                actionData.shouldExecuteAsUser());
+            compoundTagAction.putInt(DATA_ACTION_PERMISSION_LEVEL_TAG,
+                actionData.getPermissionLevel());
+            compoundTagAction.putString(DATA_ACTION_TAG, actionData.getAction());
+            compoundTagAction.putString(DATA_ACTION_TYPE_TAG, actionData.getActionTypeName());
             listTag.add(compoundTagAction);
           }
         }
@@ -94,8 +104,8 @@ public class ActionDataHelper {
     return compoundTag;
   }
 
-  public static Map<ActionType, String> readActionData(CompoundTag compoundTag) {
-    EnumMap<ActionType, String> actions = new EnumMap<>(ActionType.class);
+  public static Map<ActionType, ActionData> readActionData(CompoundTag compoundTag) {
+    EnumMap<ActionType, ActionData> actions = new EnumMap<>(ActionType.class);
     if (compoundTag.contains(DATA_ACTIONS_TAG)) {
       ListTag listTag = compoundTag.getList(DATA_ACTIONS_TAG, 10);
       for (int i = 0; i < listTag.size(); ++i) {
@@ -103,8 +113,15 @@ public class ActionDataHelper {
         ActionType actionType = ActionType.get(compoundTagAction.getString(DATA_ACTION_TYPE_TAG));
         if (actionType != ActionType.NONE) {
           String action = compoundTagAction.getString(DATA_ACTION_TAG);
+          int permissionLevel = compoundTagAction.getInt(DATA_ACTION_PERMISSION_LEVEL_TAG);
+          boolean executeAsUser = compoundTagAction.getBoolean(DATA_ACTION_EXECUTE_AS_USER_TAG);
+          boolean enableDebug = compoundTagAction.getBoolean(DATA_ACTION_ENABLE_DEBUG_TAG);
           if (action != null && !action.isEmpty()) {
-            actions.put(actionType, action);
+            ActionData actionData = new ActionData(actionType, action);
+            actionData.setEnableDebug(enableDebug);
+            actionData.setExecuteAsUser(executeAsUser);
+            actionData.setPermissionLevel(permissionLevel);
+            actions.put(actionType, actionData);
           }
         }
       }

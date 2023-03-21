@@ -37,6 +37,8 @@ public class SpawnEggs implements DisplayItemsGenerator {
     output.accept(ModItems.HUMANOID_SLIM_NPC_SPAWN_EGG.get());
     output.accept(ModItems.SKELETON_NPC_SPAWN_EGG.get());
     output.accept(ModItems.VILLAGER_NPC_SPAWN_EGG.get());
+    output.accept(ModItems.ZOMBIE_NPC_SPAWN_EGG.get());
+    output.accept(ModItems.ZOMBIE_VILLAGER_NPC_SPAWN_EGG.get());
   }
 
 }

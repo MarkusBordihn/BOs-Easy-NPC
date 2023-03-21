@@ -39,6 +39,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.CustomAllayModel;
+import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.npc.Allay.Variant;
@@ -64,6 +65,8 @@ public class AllayRenderer extends MobRenderer<EasyNPCEntity, CustomAllayModel<E
 
   public ResourceLocation getTextureLocation(EasyNPCEntity entity) {
     switch (entity.getSkinType()) {
+      case CUSTOM:
+        return CustomTextureManager.getOrCreateTextureWithDefault(entity, DEFAULT_TEXTURE);
       case SECURE_REMOTE_URL:
       case INSECURE_REMOTE_URL:
         return PlayerTextureManager.getOrCreateTextureWithDefault(entity, DEFAULT_TEXTURE);
