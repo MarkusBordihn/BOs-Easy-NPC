@@ -31,7 +31,7 @@ import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
 import de.markusbordihn.easynpc.skin.SkinModel;
 import de.markusbordihn.easynpc.skin.SkinType;
 
-public interface SkinData extends DataInterface {
+public interface EntitySkinData extends EntityDataInterface {
 
   // Synced entity data
   public static final EntityDataAccessor<String> DATA_SKIN =
@@ -41,7 +41,7 @@ public interface SkinData extends DataInterface {
   public static final EntityDataAccessor<Optional<UUID>> DATA_SKIN_UUID =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.OPTIONAL_UUID);
   public static final EntityDataAccessor<SkinType> DATA_SKIN_TYPE =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, DataSerializers.SKIN_TYPE);
+      SynchedEntityData.defineId(EasyNPCEntityData.class, CustomDataSerializers.SKIN_TYPE);
 
   // CompoundTags
   public static final String DATA_SKIN_TAG = "Skin";

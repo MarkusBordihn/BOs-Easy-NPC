@@ -30,12 +30,14 @@ import com.mojang.math.Vector3f;
 
 import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.CrossedArmsItemLayer;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -45,6 +47,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.CustomVillagerModel;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.ProfessionLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.VariantLayer;
+import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.Profession;
@@ -126,6 +129,8 @@ public class VillagerRenderer extends MobRenderer<EasyNPCEntity, CustomVillagerM
   @Override
   public ResourceLocation getTextureLocation(EasyNPCEntity entity) {
     switch (entity.getSkinType()) {
+      case CUSTOM:
+        return CustomTextureManager.getOrCreateTextureWithDefault(entity, BASE_TEXTURE);
       case SECURE_REMOTE_URL:
       case INSECURE_REMOTE_URL:
         return PlayerTextureManager.getOrCreateTextureWithDefault(entity, BASE_TEXTURE);
@@ -186,6 +191,23 @@ public class VillagerRenderer extends MobRenderer<EasyNPCEntity, CustomVillagerM
     }
 
     super.render(entity, entityYaw, partialTicks, poseStack, buffer, light);
+  }
+
+  @Override
+  protected void renderNameTag(EasyNPCEntity entity, Component component, PoseStack poseStack,
+      MultiBufferSource multiBufferSource, int color) {
+
+    // Model Rotation
+    Rotations rootRotation = entity.getModelRootRotation();
+    if (rootRotation != null) {
+      poseStack.translate(0, 1, 0);
+      poseStack.mulPose(Vector3f.XP.rotation(-rootRotation.getX()));
+      poseStack.mulPose(Vector3f.YP.rotation(-rootRotation.getY()));
+      poseStack.mulPose(Vector3f.ZP.rotation(-rootRotation.getZ()));
+      poseStack.translate(0, -1, 0);
+    }
+
+    super.renderNameTag(entity, component, poseStack, multiBufferSource, color);
   }
 
   @Override

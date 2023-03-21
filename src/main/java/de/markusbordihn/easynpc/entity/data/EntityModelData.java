@@ -28,11 +28,11 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
 import de.markusbordihn.easynpc.model.ModelPose;
 
-public interface ModelData extends DataInterface {
+public interface EntityModelData extends EntityDataInterface {
 
   // Synced entity data
   public static final EntityDataAccessor<ModelPose> DATA_MODEL_POSE =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, DataSerializers.MODEL_POSE);
+      SynchedEntityData.defineId(EasyNPCEntityData.class, CustomDataSerializers.MODEL_POSE);
   public static final EntityDataAccessor<Boolean> DATA_MODEL_LOCK_ROTATION =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.BOOLEAN);
   public static final EntityDataAccessor<Rotations> DATA_MODEL_HEAD_ROTATION =
@@ -154,6 +154,18 @@ public interface ModelData extends DataInterface {
   }
 
   default boolean hasRightLegModelPart() {
+    return true;
+  }
+
+  default boolean canUseArmor() {
+    return true;
+  }
+
+  default boolean canUseMainHand() {
+    return true;
+  }
+
+  default boolean canUseOffHand() {
     return true;
   }
 

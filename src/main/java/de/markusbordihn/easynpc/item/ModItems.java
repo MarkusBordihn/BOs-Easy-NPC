@@ -35,6 +35,8 @@ import de.markusbordihn.easynpc.entity.npc.HumanoidSlim;
 import de.markusbordihn.easynpc.entity.npc.ModEntityType;
 import de.markusbordihn.easynpc.entity.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.npc.Villager;
+import de.markusbordihn.easynpc.entity.npc.Zombie;
+import de.markusbordihn.easynpc.entity.npc.ZombieVillager;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCWandItem;
 import de.markusbordihn.easynpc.tabs.EasyNPCTab;
 
@@ -81,6 +83,18 @@ public class ModItems {
   public static final RegistryObject<Item> VILLAGER_NPC_SPAWN_EGG =
       ITEMS.register(Villager.ID + SPAWN_EGG_PREFIX,
           () -> new ForgeSpawnEggItem(ModEntityType.VILLAGER::get, MaterialColor.COLOR_RED.col,
+              MaterialColor.COLOR_YELLOW.col,
+              new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
+
+  public static final RegistryObject<Item> ZOMBIE_NPC_SPAWN_EGG =
+      ITEMS.register(Zombie.ID + SPAWN_EGG_PREFIX,
+          () -> new ForgeSpawnEggItem(ModEntityType.ZOMBIE::get, MaterialColor.COLOR_RED.col,
+              MaterialColor.COLOR_YELLOW.col,
+              new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
+
+  public static final RegistryObject<Item> ZOMBIE_VILLAGER_NPC_SPAWN_EGG =
+      ITEMS.register(ZombieVillager.ID + SPAWN_EGG_PREFIX,
+          () -> new ForgeSpawnEggItem(ModEntityType.ZOMBIE_VILLAGER::get, MaterialColor.COLOR_RED.col,
               MaterialColor.COLOR_YELLOW.col,
               new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
 

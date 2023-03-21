@@ -70,28 +70,18 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
     RenderSystem.setShaderTexture(0, Constants.TEXTURE_INVENTORY);
 
     // Armors Slots Left
-    switch (this.skinModel) {
-      case HUMANOID:
-      case HUMANOID_SLIM:
-      case SKELETON:
-        this.blit(poseStack, this.contentLeftPos + 90, this.contentTopPos, 7, 7, 18, 72);
-        break;
-      default:
-        break;
+    if (this.entity.canUseArmor()) {
+      this.blit(poseStack, this.contentLeftPos + 90, this.contentTopPos, 7, 7, 18, 72);
     }
 
     // Main Hand Slot Left
-    this.blit(poseStack, this.contentLeftPos + 90, this.contentTopPos + 75, 7, 7, 18, 18);
+    if (this.entity.canUseMainHand()) {
+      this.blit(poseStack, this.contentLeftPos + 90, this.contentTopPos + 75, 7, 7, 18, 18);
+    }
 
     // Off Hand Slot Right
-    switch (this.skinModel) {
-      case HUMANOID:
-      case HUMANOID_SLIM:
-      case SKELETON:
-        this.blit(poseStack, this.contentLeftPos + 170, this.contentTopPos + 75, 7, 7, 18, 18);
-        break;
-      default:
-        break;
+    if (this.entity.canUseOffHand()) {
+      this.blit(poseStack, this.contentLeftPos + 170, this.contentTopPos + 75, 7, 7, 18, 18);
     }
 
     // Player Inventory Slots

@@ -20,12 +20,15 @@
 package de.markusbordihn.easynpc.client.screen.configuration.actions;
 
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Inventory;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import de.markusbordihn.easynpc.action.ActionData;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
@@ -36,9 +39,18 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
 
   // Buttons
   protected Button basicActionButton = null;
+  protected Button dialogActionButton = null;
+  protected Button yesNoActionButton = null;
 
   public ActionConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
+  }
+
+  public EditBox actionEditBox(int left, int top, ActionData actionData) {
+    EditBox editBox = new EditBox(this.font, left, top, 256, 16, new TextComponent(""));
+    editBox.setMaxLength(255);
+    editBox.setValue(actionData != null ? actionData.getAction() : "");
+    return editBox;
   }
 
   @Override
@@ -50,9 +62,15 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
         menuButton(this.buttonLeftPos, this.buttonTopPos, 80, "basic_actions", onPress -> {
           NetworkMessage.openConfiguration(uuid, ConfigurationType.BASIC_ACTION);
         }));
+    this.dialogActionButton = this.addRenderableWidget(
+        menuButton(this.basicActionButton.x + this.basicActionButton.getWidth(), this.buttonTopPos,
+            80, "dialog_actions", onPress -> {
+              NetworkMessage.openConfiguration(uuid, ConfigurationType.DIALOG_ACTION);
+            }));
 
     // Default button stats
     this.basicActionButton.active = true;
+    this.dialogActionButton.active = true;
   }
 
 }

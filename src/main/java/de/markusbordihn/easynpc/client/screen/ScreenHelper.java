@@ -127,12 +127,14 @@ public class ScreenHelper {
     float entityScaleY = entity.getScaleY();
     float entityScaleZ = entity.getScaleZ();
     Rotations entityModelRootRotation = entity.getModelRootRotation();
+    boolean entityInvisible = entity.isInvisible();
 
     // Adjust entity information for rendering
     entity.setScaleX(entity.getDefaultScaleX());
     entity.setScaleY(entity.getDefaultScaleY());
     entity.setScaleZ(entity.getDefaultScaleZ());
     entity.setModelRootRotation(new Rotations(0.0F, 0.0F, 0.0F));
+    entity.setInvisible(false);
 
     // Render Entity
     renderEntity(x, y, scale, yRot, xRot, entity);
@@ -142,6 +144,7 @@ public class ScreenHelper {
     entity.setScaleY(entityScaleY);
     entity.setScaleZ(entityScaleZ);
     entity.setModelRootRotation(entityModelRootRotation);
+    entity.setInvisible(entityInvisible);
   }
 
   public static void renderCustomPoseEntityAvatar(int x, int y, int scale, float yRot, float xRot,
@@ -177,15 +180,18 @@ public class ScreenHelper {
       EasyNPCEntity entity) {
     // Backup entity information
     Rotations entityModelRootRotation = entity.getModelRootRotation();
+    boolean entityInvisible = entity.isInvisible();
 
     // Adjust entity information for rendering
     entity.setModelRootRotation(new Rotations(0.0F, 0.0F, 0.0F));
+    entity.setInvisible(false);
 
     // Render Entity
     renderEntity(x, y, scale, yRot, xRot, entity);
 
     // Restore entity information
     entity.setModelRootRotation(entityModelRootRotation);
+    entity.setInvisible(entityInvisible);
   }
 
   public static void renderEntityDialog(int x, int y, float yRot, float xRot,
@@ -199,17 +205,20 @@ public class ScreenHelper {
     // Backup entity information
     SkinType entitySkinType = entity.getSkinType();
     Optional<UUID> entitySkinUUID = entity.getSkinUUID();
+    boolean entityPreview = entity.isPreview();
 
     // Adjust entity information for rendering
     entity.setSkinType(skinType);
     entity.setSkinUUID(userUUID);
+    entity.setPreview(true);
 
     // Render Entity
-    renderEntity(x, y, entity.getEntityGuiScaling(), yRot, xRot, entity);
+    renderScaledEntityAvatar(x, y, entity.getEntityGuiScaling(), yRot, xRot, entity);
 
     // Restore entity information
     entity.setSkinType(entitySkinType);
     entity.setSkinUUID(entitySkinUUID);
+    entity.setPreview(entityPreview);
   }
 
   public static void renderEntityDefaultSkin(int x, int y, float yRot, float xRot,
@@ -226,7 +235,7 @@ public class ScreenHelper {
     entity.setProfession(profession);
 
     // Render Entity
-    renderEntity(x, y, entity.getEntityGuiScaling(), yRot, xRot, entity);
+    renderScaledEntityAvatar(x, y, entity.getEntityGuiScaling(), yRot, xRot, entity);
 
     // Restore entity information
     entity.setSkinType(entitySkinType);

@@ -31,6 +31,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.action.ActionData;
 import de.markusbordihn.easynpc.action.ActionType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
@@ -39,22 +40,21 @@ public class MessageActionChange {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  protected final String action;
-  protected final String actionType;
+  protected final ActionData actionData;
   protected final UUID uuid;
 
-  public MessageActionChange(UUID uuid, String actionType, String action) {
+  public MessageActionChange(UUID uuid, ActionData actionData) {
+    this.actionData = actionData;
     this.uuid = uuid;
-    this.actionType = actionType;
-    this.action = action;
   }
 
-  public String getActionType() {
-    return this.actionType;
+  public MessageActionChange(UUID uuid, ActionType actionType, String action) {
+    this.actionData = new ActionData(actionType, action);
+    this.uuid = uuid;
   }
 
-  public String getAction() {
-    return this.action;
+  public ActionData getActionData() {
+    return this.actionData;
   }
 
   public UUID getUUID() {
@@ -75,10 +75,10 @@ public class MessageActionChange {
       return;
     }
 
-    // Validate action type.
-    ActionType actionType = ActionType.get(message.getActionType());
-    if (actionType == null || actionType == ActionType.NONE) {
-      log.error("Invalid action type {} for {} from {}", actionType, message, serverPlayer);
+    // Validate action data.
+    ActionData actionData = message.getActionData();
+    if (actionData == null || !actionData.isValid()) {
+      log.error("Invalid action data {} for {} from {}", actionData, message, serverPlayer);
       return;
     }
 
@@ -92,10 +92,10 @@ public class MessageActionChange {
     }
 
     // Perform action.
-    String action = message.getAction();
-    log.debug("Set action {}:{} for {} from {} with permission level {}.", actionType, action,
+    ActionType actionType = actionData.getActionType();
+    log.debug("Set action {}:{} for {} from {} with permission level {}.", actionType, actionData,
         easyNPCEntity, serverPlayer, permissionLevel);
-    easyNPCEntity.setAction(actionType, action);
+    easyNPCEntity.setAction(actionType, actionData);
   }
 
 }

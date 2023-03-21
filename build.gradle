@@ -135,6 +135,10 @@ dependencies {
   runtimeOnly fg.deobf("curse.maven:neat-238372:3593906")
   // runtimeOnly fg.deobf("curse.maven:carry-on-274259:3674344")
 
+  // Integration Tests
+  runtimeOnly fg.deobf("curse.maven:daily-rewards-628798:4413022")
+  runtimeOnly fg.deobf("curse.maven:simple-quests-forge-580854:4374554")
+
   // Additional helpful Mods for development (dev depenedency)
   runtimeOnly fg.deobf("curse.maven:connectivity-470193:3833738")
   runtimeOnly fg.deobf("curse.maven:item-zoom-261725:3749454")

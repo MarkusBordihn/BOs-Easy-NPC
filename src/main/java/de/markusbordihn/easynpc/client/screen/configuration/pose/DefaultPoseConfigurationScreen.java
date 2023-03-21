@@ -129,9 +129,18 @@ public class DefaultPoseConfigurationScreen
   public void render(PoseStack poseStack, int x, int y, float partialTicks) {
     super.render(poseStack, x, y, partialTicks);
 
-    // Avatar
-    ScreenHelper.renderEntityAvatar(this.contentLeftPos + 80, this.contentTopPos + 125, 36,
+    // Backup entity information
+    boolean entityInvisible = entity.isInvisible();
+
+    // Adjust entity information for rendering
+    entity.setInvisible(false);
+
+    // Render Entity
+    ScreenHelper.renderScaledEntityAvatar(this.contentLeftPos + 80, this.contentTopPos + 125, 36,
         this.contentLeftPos + 80 - this.xMouse, this.contentTopPos + 65 - this.yMouse, this.entity);
+
+    // Restore entity information
+    entity.setInvisible(entityInvisible);
   }
 
   @Override

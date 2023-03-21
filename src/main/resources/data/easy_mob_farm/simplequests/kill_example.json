@@ -1,0 +1,23 @@
+{
+  "task": "Example for a kill quest",
+  "parent_id": [],
+  "redo_parent": false,
+  "need_unlock": false,
+  "loot_table": "minecraft:chests/abandoned_mineshaft",
+  "command": "",
+  "icon": "minecraft:purpur_block",
+  "repeat_delay": "3d:5h",
+  "repeat_daily": 0,
+  "sorting_id": 0,
+  "daily_quest": false,
+  "submission_trigger": "",
+  "entries": {
+    "cows": {
+      "predicate": {
+        "type": "minecraft:cow"
+      },
+      "amount": 15,
+      "id": "simplequests:entity"
+    }
+  }
+}

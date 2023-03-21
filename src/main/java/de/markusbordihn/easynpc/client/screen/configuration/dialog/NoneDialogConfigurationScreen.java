@@ -108,7 +108,7 @@ public class NoneDialogConfigurationScreen
       for (int line = 0; line < this.numberOfTextLines; ++line) {
         FormattedCharSequence formattedCharSequence = this.textComponents.get(line);
         this.font.draw(poseStack, formattedCharSequence, leftPos + 15f,
-            topPos + 60f + (line * (font.lineHeight + 2)), 4210752);
+            topPos + 60f + (line * (font.lineHeight + 2)), Constants.FONT_COLOR_DEFAULT);
       }
     }
   }

@@ -32,6 +32,8 @@ import de.markusbordihn.easynpc.client.renderer.entity.HumanoidRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.HumanoidSlimRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.SkeletonRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.VillagerRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.ZombieRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.ZombieVillagerRenderer;
 import de.markusbordihn.easynpc.entity.npc.ModEntityType;
 
 @OnlyIn(Dist.CLIENT)
@@ -50,6 +52,8 @@ public class ClientRenderer {
     event.registerEntityRenderer(ModEntityType.HUMANOID_SLIM.get(), HumanoidSlimRenderer::new);
     event.registerEntityRenderer(ModEntityType.SKELETON.get(), SkeletonRenderer::new);
     event.registerEntityRenderer(ModEntityType.VILLAGER.get(), VillagerRenderer::new);
+    event.registerEntityRenderer(ModEntityType.ZOMBIE.get(), ZombieRenderer::new);
+    event.registerEntityRenderer(ModEntityType.ZOMBIE_VILLAGER.get(), ZombieVillagerRenderer::new);
   }
 
 }

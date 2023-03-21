@@ -32,6 +32,7 @@ import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfiguration
 import de.markusbordihn.easynpc.menu.configuration.position.DefaultPositionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.rotation.DefaultRotationConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.action.DialogActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenu;
@@ -64,6 +65,9 @@ public class ModMenuTypes {
   public static final RegistryObject<MenuType<BasicActionConfigurationMenu>> BASIC_ACTION_CONFIGURATION_MENU =
       MENU_TYPES.register("basic_action_configuration_menu",
           () -> IForgeMenuType.create(BasicActionConfigurationMenu::new));
+  public static final RegistryObject<MenuType<DialogActionConfigurationMenu>> DIALOG_ACTION_CONFIGURATION_MENU =
+      MENU_TYPES.register("dialog_action_configuration_menu",
+          () -> IForgeMenuType.create(DialogActionConfigurationMenu::new));
 
   // Dialog Configuration
   public static final RegistryObject<MenuType<NoneDialogConfigurationMenu>> NONE_DIALOG_CONFIGURATION_MENU =

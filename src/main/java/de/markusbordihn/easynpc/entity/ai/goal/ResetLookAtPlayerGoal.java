@@ -17,23 +17,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.data;
+package de.markusbordihn.easynpc.entity.ai.goal;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.minecraft.world.entity.ai.goal.Goal;
 
-import net.minecraft.network.syncher.EntityDataAccessor;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 
-import de.markusbordihn.easynpc.Constants;
+public class ResetLookAtPlayerGoal extends Goal {
 
-public interface DataInterface {
+  EasyNPCEntity easyNPCEntity;
+  private int resetLookTime = 40;
 
- public static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  public ResetLookAtPlayerGoal(EasyNPCEntity easyNPCEntity) {
+    super();
+    this.easyNPCEntity = easyNPCEntity;
+  }
 
-  <T> void setEntityData(EntityDataAccessor<T> entityDataAccessor, T entityData);
+  @Override
+  public void start() {
+    this.resetLookTime = 40;
+  }
 
-  <T> T getEntityData(EntityDataAccessor<T> entityDataAccessor);
+  @Override
+  public void stop() {
+    this.resetLookTime = 0;
+  }
 
-  <T> void defineEntityData(EntityDataAccessor<T> entityDataAccessor, T entityData);
+  @Override
+  public boolean canUse() {
+    return this.easyNPCEntity.getModelLockRotation();
+  }
+
+  @Override
+  public boolean canContinueToUse() {
+    return this.easyNPCEntity.getModelLockRotation() && this.resetLookTime > 0;
+  }
+
+  @Override
+  public void tick() {
+    if (this.resetLookTime > 0) {
+      this.easyNPCEntity.getLookControl().setLookAt(0, 0, 0);
+      this.resetLookTime--;
+    }
+  }
 
 }

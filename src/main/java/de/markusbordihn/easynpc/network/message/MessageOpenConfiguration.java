@@ -83,6 +83,9 @@ public class MessageOpenConfiguration {
       case BASIC_ACTION:
         EasyNPCEntityMenu.openBasicActionConfigurationMenu(serverPlayer, easyNPCEntity);
         break;
+      case DIALOG_ACTION:
+        EasyNPCEntityMenu.openDialogActionConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
       case BASIC_DIALOG:
         EasyNPCEntityMenu.openBasicDialogConfigurationMenu(serverPlayer, easyNPCEntity);
         break;

@@ -71,8 +71,8 @@ public class MessageModelLockRotationChange {
     // Perform action.
     boolean lockRotation = message.getLockRotation();
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    log.debug("Lock rotation {} for {} from {}", lockRotation, easyNPCEntity, serverPlayer);
+    log.debug("Reset and lock rotation {} for {} from {}", lockRotation, easyNPCEntity,
+        serverPlayer);
     easyNPCEntity.setModelLockRotation(lockRotation);
   }
-
 }

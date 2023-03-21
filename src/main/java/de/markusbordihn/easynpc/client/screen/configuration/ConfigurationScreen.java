@@ -102,6 +102,24 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     return new Button(left, top, width, 20, label, onPress);
   }
 
+  protected static Button menuButtonSmall(int left, int top, int width, Component label,
+      Button.OnPress onPress) {
+    return new Button(left, top, width, 16, label, onPress);
+  }
+
+  protected static Double getDoubleValue(String value) {
+    if (value != null && !value.isEmpty()) {
+      try {
+        return Double.parseDouble(value);
+      } catch (NumberFormatException e) {
+        log.error("Failed to parse double value: {}", value);
+      }
+    }
+    return null;
+  }
+
+
+
   @Override
   public void init() {
     super.init();

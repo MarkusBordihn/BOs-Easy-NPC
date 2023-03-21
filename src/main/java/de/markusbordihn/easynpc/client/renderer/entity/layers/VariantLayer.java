@@ -33,7 +33,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 
 @OnlyIn(Dist.CLIENT)
@@ -56,11 +55,12 @@ public class VariantLayer<T extends EasyNPCEntity, M extends EntityModel<T>>
     if (livingEntity.isInvisible() || textures == null) {
       return;
     }
-    M model = this.getParentModel();
-    ResourceLocation resourceLocation =
-        textures.getOrDefault(livingEntity.getVariant(), Constants.BLANK_ENTITY_TEXTURE);
-    renderColoredCutoutModel(model, resourceLocation, poseStack, buffer, lightLevel, livingEntity,
-        1.0F, 1.0F, 1.0F);
+    ResourceLocation resourceLocation = textures.get(livingEntity.getVariant());
+    if (resourceLocation != null) {
+      M model = this.getParentModel();
+      renderColoredCutoutModel(model, resourceLocation, poseStack, buffer, lightLevel, livingEntity,
+          1.0F, 1.0F, 1.0F);
+    }
   }
 
 }
