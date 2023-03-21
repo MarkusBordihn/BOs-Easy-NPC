@@ -26,11 +26,12 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 
+import de.markusbordihn.easynpc.action.ActionData;
 import de.markusbordihn.easynpc.action.ActionDataHelper;
 import de.markusbordihn.easynpc.action.ActionType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
 
-public interface ActionData extends DataInterface {
+public interface EntityActionData extends EntityDataInterface {
 
   // Synced entity data
   public static final EntityDataAccessor<CompoundTag> DATA_ACTION_DATA =
@@ -45,9 +46,9 @@ public interface ActionData extends DataInterface {
   public static final String DATA_ACTION_DEBUG_TAG = "ActionDebug";
   public static final String DATA_ACTION_PERMISSION_LEVEL_TAG = "ActionPermissionLevel";
 
-  default void setAction(ActionType actionType, String action) {
+  default void setAction(ActionType actionType, ActionData actionData) {
     CompoundTag compoundTag =
-        ActionDataHelper.setAction(getEntityData(DATA_ACTION_DATA), actionType, action);
+        ActionDataHelper.setAction(getEntityData(DATA_ACTION_DATA), actionType, actionData);
     setEntityData(DATA_ACTION_DATA, compoundTag);
   }
 
@@ -55,11 +56,16 @@ public interface ActionData extends DataInterface {
     return ActionDataHelper.getAction(getEntityData(DATA_ACTION_DATA), actionType);
   }
 
+  default ActionData getActionData(ActionType actionType) {
+    return ActionDataHelper.getActionData(getEntityData(DATA_ACTION_DATA), actionType);
+  }
+
+
   default boolean hasAction(ActionType actionType) {
     return ActionDataHelper.hasAction(getEntityData(DATA_ACTION_DATA), actionType);
   }
 
-  default Map<ActionType, String> getActions() {
+  default Map<ActionType, de.markusbordihn.easynpc.action.ActionData> getActions() {
     return ActionDataHelper.readActionData(getEntityData(DATA_ACTION_DATA));
   }
 

@@ -32,6 +32,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -43,6 +44,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.action.ActionData;
 import de.markusbordihn.easynpc.action.ActionType;
 import de.markusbordihn.easynpc.dialog.DialogType;
 import de.markusbordihn.easynpc.dialog.DialogUtils;
@@ -58,7 +60,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
 
   // Data access
   protected final EasyNPCEntity entity;
-  protected final Map<ActionType, String> actions;
+  protected final Map<ActionType, ActionData> actions;
   protected final UUID uuid;
 
   // Internal
@@ -139,6 +141,13 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     return new Button(left, top, width, 20, label, onPress);
   }
 
+  public void closeScreen() {
+    Minecraft minecraft = this.minecraft;
+    if (minecraft != null) {
+      minecraft.setScreen((Screen) null);
+    }
+  }
+
   @Override
   public void init() {
     if (this.entity == null) {
@@ -180,9 +189,11 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
               setDialog(yesDialogText);
               this.yesDialogButton.visible = false;
               this.noDialogButton.visible = false;
+            } else {
+              this.closeScreen();
             }
 
-            // Action for close dialog.
+            // Action for yes selection.
             if (this.actions.containsKey(ActionType.ON_YES_SELECTION)) {
               NetworkMessage.triggerAction(this.uuid, ActionType.ON_YES_SELECTION);
             }
@@ -198,9 +209,11 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
               setDialog(noDialogText);
               this.yesDialogButton.visible = false;
               this.noDialogButton.visible = false;
+            } else {
+              this.closeScreen();
             }
 
-            // Action for close dialog.
+            // Action for no selection.
             if (this.actions.containsKey(ActionType.ON_NO_SELECTION)) {
               NetworkMessage.triggerAction(this.uuid, ActionType.ON_NO_SELECTION);
             }

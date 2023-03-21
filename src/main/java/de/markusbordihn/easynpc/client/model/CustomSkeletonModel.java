@@ -86,6 +86,9 @@ public class CustomSkeletonModel<T extends Mob & RangedAttackMob> extends Skelet
           this.leftLeg.yRot = leftLegRotations.getY();
           this.leftLeg.zRot = leftLegRotations.getZ();
         }
+
+        // Copy all outer model parts to the correct model parts.
+        this.hat.copyFrom(this.head);
       } else {
         // Reset all rotations to avoid any issues with other mods.
         this.head.xRot = 0.0F;

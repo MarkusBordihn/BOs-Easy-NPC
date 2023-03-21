@@ -31,6 +31,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import de.markusbordihn.easynpc.client.model.ModModelLayers;
 import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
 import de.markusbordihn.easynpc.client.screen.ClientScreens;
+import de.markusbordihn.easynpc.data.CustomDataHandler;
+import de.markusbordihn.easynpc.data.CustomSkinData;
 import de.markusbordihn.easynpc.entity.npc.ModEntityType;
 import de.markusbordihn.easynpc.item.ModItems;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
@@ -58,11 +60,14 @@ public class EasyNPC {
     log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
     ModMenuTypes.MENU_TYPES.register(modEventBus);
 
+    CustomDataHandler.prepare();
+
     DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
       log.info("{} Client events ...", Constants.LOG_REGISTER_PREFIX);
       modEventBus.addListener(ModModelLayers::registerEntityLayerDefinitions);
       modEventBus.addListener(ClientRenderer::registerEntityRenderers);
       modEventBus.addListener(ClientScreens::registerScreens);
+      modEventBus.addListener(CustomSkinData::registerCustomSkinData);
     });
   }
 }

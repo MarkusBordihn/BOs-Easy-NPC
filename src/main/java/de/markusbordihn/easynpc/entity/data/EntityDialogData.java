@@ -27,11 +27,11 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import de.markusbordihn.easynpc.dialog.DialogType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
 
-public interface DialogData extends DataInterface {
+public interface EntityDialogData extends EntityDataInterface {
 
   // Synced entity data
   public static final EntityDataAccessor<DialogType> DATA_DIALOG_TYPE =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, DataSerializers.DIALOG_TYPE);
+      SynchedEntityData.defineId(EasyNPCEntityData.class, CustomDataSerializers.DIALOG_TYPE);
   public static final EntityDataAccessor<String> DATA_DIALOG =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
   public static final EntityDataAccessor<String> DATA_DIALOG_NO =
@@ -126,7 +126,7 @@ public interface DialogData extends DataInterface {
       compoundTag.putString(DATA_DIALOG_NO_BUTTON_TAG, this.getNoDialogButton());
     }
     if (this.getYesDialog() != null) {
-      compoundTag.putString(DATA_DIALOG_NO_TAG, this.getYesDialog());
+      compoundTag.putString(DATA_DIALOG_YES_TAG, this.getYesDialog());
     }
     if (this.getYesDialogButton() != null) {
       compoundTag.putString(DATA_DIALOG_YES_BUTTON_TAG, this.getYesDialogButton());

@@ -26,6 +26,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.phys.Vec3;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.action.ActionData;
 import de.markusbordihn.easynpc.action.ActionType;
 import de.markusbordihn.easynpc.dialog.DialogType;
 import de.markusbordihn.easynpc.entity.Profession;
@@ -56,11 +57,10 @@ public class NetworkMessage {
 
   protected NetworkMessage() {}
 
-
   /** Send action change. */
-  public static void actionChange(UUID uuid, ActionType actionType, String action) {
-    if (uuid != null && actionType != null && actionType != ActionType.NONE) {
-      NetworkHandler.sendToServer(new MessageActionChange(uuid, actionType.name(), action));
+  public static void actionChange(UUID uuid, ActionData actionData) {
+    if (uuid != null && actionData != null && actionData.isValid()) {
+      NetworkHandler.sendToServer(new MessageActionChange(uuid, actionData));
     }
   }
 

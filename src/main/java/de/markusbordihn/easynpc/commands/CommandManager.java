@@ -27,6 +27,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -68,6 +69,25 @@ public class CommandManager {
     Commands commands = minecraftServer.getCommands();
     CommandSourceStack commandSourceStack = minecraftServer.createCommandSourceStack()
         .withEntity(entity).withPermission(permissionLevel);
+    commands.performCommand(debug ? commandSourceStack : commandSourceStack.withSuppressedOutput(),
+        command);
+  }
+
+  public static void executePlayerCommand(String command, ServerPlayer serverPlayer,
+      int permissionLevel, boolean debug) {
+    MinecraftServer minecraftServer = ServerLifecycleHooks.getCurrentServer();
+    if (minecraftServer == null) {
+      return;
+    }
+    if (command.startsWith("/")) {
+      command = command.substring(1);
+    }
+    log.debug("Execute Player {} Command: \"{}\" with permission level {}", serverPlayer, command,
+        permissionLevel);
+    Commands commands = minecraftServer.getCommands();
+    CommandSourceStack commandSourceStack =
+        minecraftServer.createCommandSourceStack().withEntity(serverPlayer)
+            .withPermission(permissionLevel).withLevel(serverPlayer.getLevel());
     commands.performCommand(debug ? commandSourceStack : commandSourceStack.withSuppressedOutput(),
         command);
   }

@@ -65,6 +65,15 @@ public class ModEntityType {
       Villager.ID, () -> EntityType.Builder.<Villager>of(Villager::new, EasyNPCEntity.CATEGORY)
           .sized(1.0F, 2.0F).clientTrackingRange(8).build(Villager.ID));
 
+  public static final RegistryObject<EntityType<Zombie>> ZOMBIE = ENTITY_TYPES.register(Zombie.ID,
+      () -> EntityType.Builder.<Zombie>of(Zombie::new, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F)
+          .clientTrackingRange(8).build(Zombie.ID));
+
+  public static final RegistryObject<EntityType<ZombieVillager>> ZOMBIE_VILLAGER =
+      ENTITY_TYPES.register(ZombieVillager.ID,
+          () -> EntityType.Builder.<ZombieVillager>of(ZombieVillager::new, EasyNPCEntity.CATEGORY)
+              .sized(1.0F, 2.0F).clientTrackingRange(8).build(ZombieVillager.ID));
+
   @SubscribeEvent
   public static final void entityAttributeCreation(EntityAttributeCreationEvent event) {
     // Default NPC Entities
@@ -74,6 +83,8 @@ public class ModEntityType {
     event.put(HUMANOID_SLIM.get(), HumanoidSlim.createAttributes().build());
     event.put(SKELETON.get(), Skeleton.createAttributes().build());
     event.put(VILLAGER.get(), Villager.createAttributes().build());
+    event.put(ZOMBIE.get(), Zombie.createAttributes().build());
+    event.put(ZOMBIE_VILLAGER.get(), ZombieVillager.createAttributes().build());
   }
 
   // Register Handler

@@ -47,9 +47,18 @@ public class CustomLookAtPlayerGoal extends LookAtPlayerGoal {
 
   @Override
   public boolean canUse() {
-    if (this.easyNPCEntity.getModelLockRotation()) {
-      return false;
+    return !this.easyNPCEntity.getModelLockRotation() && super.canUse();
+  }
+
+  @Override
+  public boolean canContinueToUse() {
+    return !this.easyNPCEntity.getModelLockRotation() && super.canContinueToUse();
+  }
+
+  @Override
+  public void tick() {
+    if (!this.easyNPCEntity.getModelLockRotation()) {
+      super.tick();
     }
-    return super.canUse();
   }
 }
