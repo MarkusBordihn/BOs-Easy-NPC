@@ -27,10 +27,12 @@ import com.mojang.math.Axis;
 
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -39,6 +41,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.FairyModel;
 import de.markusbordihn.easynpc.client.model.ModModelLayers;
+import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.npc.Fairy.Variant;
@@ -66,6 +69,8 @@ public class FairyRenderer extends HumanoidMobRenderer<EasyNPCEntity, FairyModel
   @Override
   public ResourceLocation getTextureLocation(EasyNPCEntity entity) {
     switch (entity.getSkinType()) {
+      case CUSTOM:
+        return CustomTextureManager.getOrCreateTextureWithDefault(entity, DEFAULT_TEXTURE);
       case SECURE_REMOTE_URL:
       case INSECURE_REMOTE_URL:
         return PlayerTextureManager.getOrCreateTextureWithDefault(entity, DEFAULT_TEXTURE);
@@ -138,6 +143,23 @@ public class FairyRenderer extends HumanoidMobRenderer<EasyNPCEntity, FairyModel
     }
 
     super.render(entity, entityYaw, partialTicks, poseStack, buffer, light);
+  }
+
+  @Override
+  protected void renderNameTag(EasyNPCEntity entity, Component component, PoseStack poseStack,
+      MultiBufferSource multiBufferSource, int color) {
+
+    // Model Rotation
+    Rotations rootRotation = entity.getModelRootRotation();
+    if (rootRotation != null) {
+      poseStack.translate(0, 1, 0);
+      poseStack.mulPose(Axis.XP.rotation(-rootRotation.getX()));
+      poseStack.mulPose(Axis.YP.rotation(-rootRotation.getY()));
+      poseStack.mulPose(Axis.ZP.rotation(-rootRotation.getZ()));
+      poseStack.translate(0, -1, 0);
+    }
+
+    super.renderNameTag(entity, component, poseStack, multiBufferSource, color);
   }
 
   @Override

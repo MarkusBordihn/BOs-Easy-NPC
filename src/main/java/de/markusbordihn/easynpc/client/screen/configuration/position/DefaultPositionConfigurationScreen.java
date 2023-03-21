@@ -91,9 +91,12 @@ public class DefaultPositionConfigurationScreen
     this.positionXBox.setMaxLength(8);
     this.positionXBox.setValue(String.valueOf(this.positionX));
     this.positionXBox.setResponder(consumer -> {
-      this.positionX = Double.parseDouble(this.positionXBox.getValue());
-      NetworkMessage.positionChange(this.uuid,
-          new Vec3(this.positionX, this.positionY, this.positionZ));
+      Double newPositionX = getDoubleValue(this.positionXBox.getValue());
+      if (newPositionX != null) {
+        this.positionX = newPositionX;
+        NetworkMessage.positionChange(this.uuid,
+            new Vec3(this.positionX, this.positionY, this.positionZ));
+      }
     });
     this.positionXMinusButton = this.addRenderableWidget(menuButton(this.positionXBox.getX() - 15,
         this.positionXBox.getY(), 15, Component.literal("-"), button -> {
@@ -113,9 +116,12 @@ public class DefaultPositionConfigurationScreen
     this.positionYBox.setMaxLength(8);
     this.positionYBox.setValue(String.valueOf(this.positionY));
     this.positionYBox.setResponder(consumer -> {
-      this.positionY = Double.parseDouble(this.positionYBox.getValue());
-      NetworkMessage.positionChange(this.uuid,
-          new Vec3(this.positionX, this.positionY, this.positionZ));
+      Double newPositionY = getDoubleValue(this.positionYBox.getValue());
+      if (newPositionY != null) {
+        this.positionY = newPositionY;
+        NetworkMessage.positionChange(this.uuid,
+            new Vec3(this.positionX, this.positionY, this.positionZ));
+      }
     });
     this.positionYMinusButton = this.addRenderableWidget(menuButton(this.positionYBox.getX() - 15,
         this.positionYBox.getY(), 15, Component.literal("-"), button -> {
@@ -135,9 +141,12 @@ public class DefaultPositionConfigurationScreen
     this.positionZBox.setMaxLength(8);
     this.positionZBox.setValue(String.valueOf(this.positionZ));
     this.positionZBox.setResponder(consumer -> {
-      this.positionZ = Double.parseDouble(this.positionZBox.getValue());
-      NetworkMessage.positionChange(this.uuid,
-          new Vec3(this.positionX, this.positionY, this.positionZ));
+      Double newPositionZ = getDoubleValue(this.positionZBox.getValue());
+      if (newPositionZ != null) {
+        this.positionZ = newPositionZ;
+        NetworkMessage.positionChange(this.uuid,
+            new Vec3(this.positionX, this.positionY, this.positionZ));
+      }
     });
     this.positionZMinusButton = this.addRenderableWidget(menuButton(this.positionZBox.getX() - 15,
         this.positionZBox.getY(), 15, Component.literal("-"), button -> {

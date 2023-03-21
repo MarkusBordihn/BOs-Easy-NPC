@@ -60,7 +60,6 @@ public class EasyNPCTab {
               .title(Component.translatable("itemGroup.easy_npc.spawn_eggs")).build();
         });
 
-
   }
 
   private static void addConfigItemsTabItems(FeatureFlagSet featureFlagSet, Output outputTab,
@@ -76,5 +75,7 @@ public class EasyNPCTab {
     outputTab.accept(ModItems.HUMANOID_SLIM_NPC_SPAWN_EGG.get());
     outputTab.accept(ModItems.SKELETON_NPC_SPAWN_EGG.get());
     outputTab.accept(ModItems.VILLAGER_NPC_SPAWN_EGG.get());
+    outputTab.accept(ModItems.ZOMBIE_NPC_SPAWN_EGG.get());
+    outputTab.accept(ModItems.ZOMBIE_VILLAGER_NPC_SPAWN_EGG.get());
   }
 }

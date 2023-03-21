@@ -19,14 +19,10 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.actions;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -34,7 +30,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.action.ActionData;
 import de.markusbordihn.easynpc.action.ActionType;
+import de.markusbordihn.easynpc.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 
@@ -42,25 +41,14 @@ import de.markusbordihn.easynpc.network.NetworkMessage;
 public class BasicActionConfigurationScreen
     extends ActionConfigurationScreen<BasicActionConfigurationMenu> {
 
+  // On Interaction Action
   protected EditBox onInteractionActionBox;
-  protected EditBox onOpenActionBox;
-  protected EditBox onCloseActionBox;
-  protected EditBox onYesActionBox;
-  protected EditBox onNoActionBox;
-  protected Button saveOnInteractionActionButton;
-  protected Button saveOnOpenActionButton;
-  protected Button saveOnCloseActionButton;
-  protected Button saveOnYesActionButton;
-  protected Button saveOnNoActionButton;
-  protected Checkbox debugActionCheckbox;
+  protected Checkbox onInteractionActionExecuteAsUserCheckbox;
+  protected Checkbox onInteractionActionDebugCheckbox;
+  protected Button onInteractionActionSaveButton;
 
   // Cache
-  private String lastInteractionAction = "";
-  private String lastOpenAction = "";
-  private String lastCloseAction = "";
-  private String lastYesAction = "";
-  private String lastNoAction = "";
-
+  private ActionData lastInteractionActionData;
 
   public BasicActionConfigurationScreen(BasicActionConfigurationMenu menu, Inventory inventory,
       Component component) {
@@ -68,37 +56,11 @@ public class BasicActionConfigurationScreen
   }
 
   public void validateInteractionAction() {
-    String action = this.onInteractionActionBox.getValue();
-    this.saveOnInteractionActionButton.active =
-        action == null || (action.isEmpty() && !this.lastInteractionAction.isEmpty())
-            || !action.equals(this.lastInteractionAction);
-  }
-
-  public void validateOpenAction() {
-    String action = this.onOpenActionBox.getValue();
-    this.saveOnOpenActionButton.active =
-        action == null || (action.isEmpty() && !this.lastOpenAction.isEmpty())
-            || !action.equals(this.lastOpenAction);
-  }
-
-  public void validateCloseAction() {
-    String action = this.onCloseActionBox.getValue();
-    this.saveOnCloseActionButton.active =
-        action == null || (action.isEmpty() && !this.lastCloseAction.isEmpty())
-            || !action.equals(this.lastCloseAction);
-  }
-
-  public void validateYesAction() {
-    String action = this.onYesActionBox.getValue();
-    this.saveOnYesActionButton.active =
-        action == null || (action.isEmpty() && !this.lastYesAction.isEmpty())
-            || !action.equals(this.lastYesAction);
-  }
-
-  public void validateNoAction() {
-    String action = this.onNoActionBox.getValue();
-    this.saveOnNoActionButton.active = action == null
-        || (action.isEmpty() && !this.lastNoAction.isEmpty()) || !action.equals(this.lastNoAction);
+    ActionData actionData =
+        new ActionData(ActionType.ON_INTERACTION, this.onInteractionActionBox.getValue(),
+            this.onInteractionActionExecuteAsUserCheckbox.selected(),
+            this.onInteractionActionDebugCheckbox.selected());
+    this.onInteractionActionSaveButton.active = !actionData.equals(this.lastInteractionActionData);
   }
 
   @Override
@@ -107,151 +69,46 @@ public class BasicActionConfigurationScreen
 
     // On Interaction Action
     int interactionActionTop = this.topPos + 50;
-    this.lastInteractionAction = this.entity.getAction(ActionType.ON_INTERACTION);
-    this.onInteractionActionBox = new EditBox(this.font, this.contentLeftPos, interactionActionTop,
-        256, 20, Component.literal("On Interaction Action"));
-    this.onInteractionActionBox.setMaxLength(255);
-    this.onInteractionActionBox.setValue(this.lastInteractionAction);
+    ActionData interactionActionData = this.entity.getActionData(ActionType.ON_INTERACTION);
+    this.lastInteractionActionData = interactionActionData;
+    this.onInteractionActionBox = this.addRenderableWidget(
+        actionEditBox(this.contentLeftPos, interactionActionTop, interactionActionData));
     this.onInteractionActionBox.setResponder(consumer -> this.validateInteractionAction());
-    this.addRenderableWidget(this.onInteractionActionBox);
-    this.saveOnInteractionActionButton = this.addRenderableWidget(
-        menuButton(this.leftPos + 265, interactionActionTop, 25, Component.literal(""), onPress -> {
-          String action = this.onInteractionActionBox.getValue();
-          NetworkMessage.actionChange(uuid, ActionType.ON_INTERACTION, action);
-          this.lastInteractionAction = action;
-          this.saveOnInteractionActionButton.active = false;
+    this.onInteractionActionExecuteAsUserCheckbox = this.addRenderableWidget(
+        new Checkbox(this.contentLeftPos + 80, interactionActionTop + 18, "execute_as_player",
+            interactionActionData != null && interactionActionData.shouldExecuteAsUser(),
+            checkbox -> this.validateInteractionAction()));
+    this.onInteractionActionDebugCheckbox =
+        this.addRenderableWidget(new Checkbox(this.contentLeftPos + 215, interactionActionTop + 18,
+            "debug", interactionActionData != null && interactionActionData.isDebugEnabled(),
+            checkbox -> this.validateInteractionAction()));
+    this.onInteractionActionSaveButton = this.addRenderableWidget(
+        new SaveButton(this.leftPos + 267, interactionActionTop - 2, onPress -> {
+          ActionData actionData =
+              new ActionData(ActionType.ON_INTERACTION, this.onInteractionActionBox.getValue(),
+                  this.onInteractionActionExecuteAsUserCheckbox.selected(),
+                  this.onInteractionActionDebugCheckbox.selected());
+          NetworkMessage.actionChange(uuid, actionData);
+          this.lastInteractionActionData = actionData;
+          this.onInteractionActionSaveButton.active = false;
         }));
-    this.saveOnInteractionActionButton.active = false;
-
-    // On Open Dialog Action
-    int openActionTop = this.topPos + 84;
-    this.lastOpenAction = this.entity.getAction(ActionType.ON_OPEN_DIALOG);
-    this.onOpenActionBox = new EditBox(this.font, this.contentLeftPos, openActionTop, 256, 20,
-        Component.literal("On Open Action"));
-    this.onOpenActionBox.setMaxLength(255);
-    this.onOpenActionBox.setValue(this.lastOpenAction);
-    this.onOpenActionBox.setResponder(consumer -> this.validateOpenAction());
-    this.addRenderableWidget(this.onOpenActionBox);
-    this.saveOnOpenActionButton = this.addRenderableWidget(
-        menuButton(this.leftPos + 265, openActionTop, 25, Component.literal(""), onPress -> {
-          String action = this.onOpenActionBox.getValue();
-          NetworkMessage.actionChange(uuid, ActionType.ON_OPEN_DIALOG, action);
-          this.lastOpenAction = action;
-          this.saveOnOpenActionButton.active = false;
-        }));
-    this.saveOnOpenActionButton.active = false;
-
-    // On Close Dialog Action
-    int closeActionTop = this.topPos + 118;
-    this.lastCloseAction = this.entity.getAction(ActionType.ON_CLOSE_DIALOG);
-    this.onCloseActionBox = new EditBox(this.font, this.contentLeftPos, closeActionTop, 256, 20,
-        Component.literal("On Close Action"));
-    this.onCloseActionBox.setMaxLength(255);
-    this.onCloseActionBox.setValue(this.lastCloseAction);
-    this.onCloseActionBox.setResponder(consumer -> this.validateCloseAction());
-    this.addRenderableWidget(this.onCloseActionBox);
-    this.saveOnCloseActionButton = this.addRenderableWidget(
-        menuButton(this.leftPos + 265, closeActionTop, 25, Component.literal(""), onPress -> {
-          String action = this.onCloseActionBox.getValue();
-          NetworkMessage.actionChange(uuid, ActionType.ON_CLOSE_DIALOG, action);
-          this.lastCloseAction = action;
-          this.saveOnCloseActionButton.active = false;
-        }));
-    this.saveOnCloseActionButton.active = false;
-
-    // On Yes Selection Action
-    int yesActionTop = this.topPos + 152;
-    this.lastYesAction = this.entity.getAction(ActionType.ON_YES_SELECTION);
-    this.onYesActionBox = new EditBox(this.font, this.contentLeftPos, yesActionTop, 256, 20,
-        Component.literal("On Yes Action"));
-    this.onYesActionBox.setMaxLength(255);
-    this.onYesActionBox.setValue(this.lastYesAction);
-    this.onYesActionBox.setResponder(consumer -> this.validateYesAction());
-    this.addRenderableWidget(this.onYesActionBox);
-    this.saveOnYesActionButton = this.addRenderableWidget(
-        menuButton(this.leftPos + 265, yesActionTop, 25, Component.literal(""), onPress -> {
-          String action = this.onYesActionBox.getValue();
-          NetworkMessage.actionChange(uuid, ActionType.ON_YES_SELECTION, action);
-          this.lastYesAction = action;
-          this.saveOnYesActionButton.active = false;
-        }));
-    this.saveOnYesActionButton.active = false;
-
-    // On No Selection Action
-    int noActionTop = this.topPos + 186;
-    this.lastNoAction = this.entity.getAction(ActionType.ON_NO_SELECTION);
-    this.onNoActionBox = new EditBox(this.font, this.contentLeftPos, noActionTop, 256, 20,
-        Component.literal("On No Action"));
-    this.onNoActionBox.setMaxLength(255);
-    this.onNoActionBox.setValue(this.lastNoAction);
-    this.onNoActionBox.setResponder(consumer -> this.validateNoAction());
-    this.addRenderableWidget(this.onNoActionBox);
-    this.saveOnNoActionButton = this.addRenderableWidget(
-        menuButton(this.leftPos + 265, noActionTop, 25, Component.literal(""), onPress -> {
-          String action = this.onNoActionBox.getValue();
-          NetworkMessage.actionChange(uuid, ActionType.ON_NO_SELECTION, action);
-          this.lastNoAction = action;
-          this.saveOnNoActionButton.active = false;
-        }));
-    this.saveOnNoActionButton.active = false;
-
-    // Debug Action Option
-    this.debugActionCheckbox = this.addRenderableWidget(new Checkbox(
-        this.contentLeftPos, this.topPos + 211, 20, 20, Component
-            .translatable(Constants.TEXT_CONFIG_PREFIX + "debug").withStyle(ChatFormatting.WHITE),
-        this.entity.getActionDebug()) {
-      @Override
-      public void onPress() {
-        NetworkMessage.actionDebugChange(uuid, !entity.getActionDebug());
-        super.onPress();
-      }
-    });
+    this.onInteractionActionSaveButton.active = false;
 
     // Default button stats
-    this.basicActionButton.active = true;
+    this.basicActionButton.active = false;
+    this.dialogActionButton.active = true;
   }
 
   @Override
   public void render(PoseStack poseStack, int x, int y, float partialTicks) {
     super.render(poseStack, x, y, partialTicks);
 
-    RenderSystem.setShader(GameRenderer::getPositionTexShader);
-    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-    RenderSystem.setShaderTexture(0, Constants.TEXTURE_CONFIGURATION);
-
-    // Button Icons
-    this.blit(poseStack, this.saveOnInteractionActionButton.getX() + 5,
-        this.saveOnInteractionActionButton.getY() + 3, 60,
-        this.saveOnInteractionActionButton.active ? 0 : 16, 16, 16);
-    this.blit(poseStack, this.saveOnOpenActionButton.getX() + 5,
-        this.saveOnOpenActionButton.getY() + 3, 60, this.saveOnOpenActionButton.active ? 0 : 16, 16,
-        16);
-    this.blit(poseStack, this.saveOnCloseActionButton.getX() + 5,
-        this.saveOnCloseActionButton.getY() + 3, 60, this.saveOnCloseActionButton.active ? 0 : 16,
-        16, 16);
-    this.blit(poseStack, this.saveOnYesActionButton.getX() + 5,
-        this.saveOnYesActionButton.getY() + 3, 60, this.saveOnYesActionButton.active ? 0 : 16, 16,
-        16);
-    this.blit(poseStack, this.saveOnNoActionButton.getX() + 5, this.saveOnNoActionButton.getY() + 3,
-        60, this.saveOnNoActionButton.active ? 0 : 16, 16, 16);
-
     // Description Texts
     this.font.draw(poseStack,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + "on_interaction"),
-        this.contentLeftPos, this.saveOnInteractionActionButton.getY() - 9f,
+        this.contentLeftPos, this.onInteractionActionSaveButton.getY() - 8f,
         Constants.FONT_COLOR_BLACK);
-    this.font.draw(poseStack,
-        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "on_open_dialog"),
-        this.contentLeftPos, this.saveOnOpenActionButton.getY() - 9f, Constants.FONT_COLOR_BLACK);
-    this.font.draw(poseStack,
-        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "on_close_dialog"),
-        this.contentLeftPos, this.saveOnCloseActionButton.getY() - 9f, Constants.FONT_COLOR_BLACK);
-    this.font.draw(poseStack,
-        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "on_yes_selection"),
-        this.contentLeftPos, this.saveOnYesActionButton.getY() - 9f, Constants.FONT_COLOR_BLACK);
-    this.font.draw(poseStack,
-        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "on_no_selection"),
-        this.contentLeftPos, this.saveOnNoActionButton.getY() - 9f, Constants.FONT_COLOR_BLACK);
+
   }
 
 }

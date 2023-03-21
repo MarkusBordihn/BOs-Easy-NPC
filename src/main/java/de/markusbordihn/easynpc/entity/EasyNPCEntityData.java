@@ -40,16 +40,18 @@ import net.minecraft.world.entity.npc.Npc;
 import net.minecraft.world.level.Level;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.data.ActionData;
-import de.markusbordihn.easynpc.entity.data.DataSerializers;
-import de.markusbordihn.easynpc.entity.data.DialogData;
-import de.markusbordihn.easynpc.entity.data.ModelData;
-import de.markusbordihn.easynpc.entity.data.ScaleData;
-import de.markusbordihn.easynpc.entity.data.SkinData;
+import de.markusbordihn.easynpc.entity.data.EntityActionData;
+import de.markusbordihn.easynpc.entity.data.EntityAttackData;
+import de.markusbordihn.easynpc.entity.data.CustomDataSerializers;
+import de.markusbordihn.easynpc.entity.data.EntityDialogData;
+import de.markusbordihn.easynpc.entity.data.EntityModelData;
+import de.markusbordihn.easynpc.entity.data.EntityScaleData;
+import de.markusbordihn.easynpc.entity.data.EntitySkinData;
 import de.markusbordihn.easynpc.utils.TextUtils;
 
 public class EasyNPCEntityData extends AgeableMob
-    implements Npc, ActionData, DialogData, ModelData, ScaleData, SkinData {
+    implements Npc, EntityActionData, EntityAttackData, EntityDialogData, EntityModelData,
+    EntityScaleData, EntitySkinData {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -62,8 +64,7 @@ public class EasyNPCEntityData extends AgeableMob
   private static final EntityDataAccessor<Optional<UUID>> DATA_OWNER_UUID_ID =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.OPTIONAL_UUID);
   private static final EntityDataAccessor<Profession> DATA_PROFESSION =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, DataSerializers.PROFESSION);
-
+      SynchedEntityData.defineId(EasyNPCEntityData.class, CustomDataSerializers.PROFESSION);
   private static final EntityDataAccessor<String> DATA_VARIANT =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
 
@@ -72,6 +73,9 @@ public class EasyNPCEntityData extends AgeableMob
   private static final String DATA_POSE_TAG = "Pose";
   private static final String DATA_PROFESSION_TAG = "Profession";
   private static final String DATA_VARIANT_TAG = "Variant";
+
+  // Cache
+  private boolean isPreview = false;
 
   public EasyNPCEntityData(EntityType<? extends EasyNPCEntity> entityType, Level level) {
     super(entityType, level);
@@ -157,6 +161,14 @@ public class EasyNPCEntityData extends AgeableMob
     return variant != null ? TextUtils.normalizeName(variant.name()) : this.getTypeName();
   }
 
+  public boolean isPreview() {
+    return this.isPreview;
+  }
+
+  public void setPreview(boolean isPreview) {
+    this.isPreview = isPreview;
+  }
+
   @Override
   public Component getName() {
     Component component = this.getCustomName();
@@ -195,6 +207,7 @@ public class EasyNPCEntityData extends AgeableMob
   protected void defineSynchedData() {
     super.defineSynchedData();
     this.defineSynchedActionData();
+    this.defineSynchedAttackData();
     this.defineSynchedDialogData();
     this.defineSynchedModelData();
     this.defineSynchedScaleData();
@@ -208,6 +221,7 @@ public class EasyNPCEntityData extends AgeableMob
   public void addAdditionalSaveData(CompoundTag compoundTag) {
     super.addAdditionalSaveData(compoundTag);
     this.addAdditionalActionData(compoundTag);
+    this.addAdditionalAttackData(compoundTag);
     this.addAdditionalDialogData(compoundTag);
     this.addAdditionalModelData(compoundTag);
     this.addAdditionalScaleData(compoundTag);
@@ -230,6 +244,7 @@ public class EasyNPCEntityData extends AgeableMob
   public void readAdditionalSaveData(CompoundTag compoundTag) {
     super.readAdditionalSaveData(compoundTag);
     this.readAdditionalActionData(compoundTag);
+    this.readAdditionalAttackData(compoundTag);
     this.readAdditionalDialogData(compoundTag);
     this.readAdditionalModelData(compoundTag);
     this.readAdditionalScaleData(compoundTag);

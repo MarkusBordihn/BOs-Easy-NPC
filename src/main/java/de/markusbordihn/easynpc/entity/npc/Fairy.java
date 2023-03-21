@@ -87,6 +87,16 @@ public class Fairy extends EasyNPCEntity {
   }
 
   @Override
+  public boolean canUseArmor() {
+    return false;
+  }
+
+  @Override
+  public boolean canUseOffHand() {
+    return false;
+  }
+
+  @Override
   public Enum<?>[] getVariants() {
     return Variant.values();
   }

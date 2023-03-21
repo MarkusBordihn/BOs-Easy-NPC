@@ -100,6 +100,17 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     return Button.builder(label, onPress).bounds(left, top, width, 20).build();
   }
 
+  protected static Double getDoubleValue(String value) {
+    if (value != null && !value.isEmpty()) {
+      try {
+        return Double.parseDouble(value);
+      } catch (NumberFormatException e) {
+        log.error("Failed to parse double value: {}", value);
+      }
+    }
+    return null;
+  }
+
   @Override
   public void init() {
     super.init();

@@ -26,7 +26,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 
 import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
 
-public interface ScaleData extends DataInterface {
+public interface EntityScaleData extends EntityDataInterface {
 
   // Constants values
   public static final float DEFAULT_SCALE_X = 1.0f;

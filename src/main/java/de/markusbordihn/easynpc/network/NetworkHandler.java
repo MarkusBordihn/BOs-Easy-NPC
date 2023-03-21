@@ -31,6 +31,7 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.action.ActionData;
 import de.markusbordihn.easynpc.dialog.DialogType;
 import de.markusbordihn.easynpc.entity.Profession;
 import de.markusbordihn.easynpc.model.ModelPart;
@@ -59,7 +60,7 @@ public class NetworkHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final String PROTOCOL_VERSION = "7";
+  private static final String PROTOCOL_VERSION = "8";
   public static final SimpleChannel INSTANCE =
       NetworkRegistry.newSimpleChannel(new ResourceLocation(Constants.MOD_ID, "network"),
           () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
@@ -76,9 +77,8 @@ public class NetworkHandler {
       // Action Change: Client -> Server
       INSTANCE.registerMessage(id++, MessageActionChange.class, (message, buffer) -> {
         buffer.writeUUID(message.getUUID());
-        buffer.writeUtf(message.getActionType());
-        buffer.writeUtf(message.getAction());
-      }, buffer -> new MessageActionChange(buffer.readUUID(), buffer.readUtf(), buffer.readUtf()),
+        ActionData.encode(message, buffer);
+      }, buffer -> new MessageActionChange(buffer.readUUID(), ActionData.decode(buffer)),
           MessageActionChange::handle);
 
       // Action Debug: Client -> Server

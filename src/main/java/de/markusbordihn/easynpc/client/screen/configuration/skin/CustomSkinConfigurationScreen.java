@@ -19,19 +19,154 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.skin;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.entity.player.Inventory;
+
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.ScreenHelper;
+import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
+import de.markusbordihn.easynpc.client.texture.TextureModelKey;
+import de.markusbordihn.easynpc.data.CustomSkinData;
 import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
+import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.skin.SkinModel;
+import de.markusbordihn.easynpc.skin.SkinType;
+import de.markusbordihn.easynpc.utils.TextUtils;
 
 public class CustomSkinConfigurationScreen
     extends SkinConfigurationScreen<CustomSkinConfigurationMenu> {
 
+  // Internal
+  private Button skinNextButton = null;
+  private Button skinNextPageButton = null;
+  private Button skinPreviousButton = null;
+  private Button skinPreviousPageButton = null;
+  protected Button skinReloadButton = null;
+  private List<Button> skinButtons = new ArrayList<>();
+
+  // Skin Preview
+  private static final float SKIN_NAME_SCALING = 0.7f;
+  private int skinStartIndex = 0;
+  private int maxSkinsPerPage = 5;
+
+  // Text
+  private List<FormattedCharSequence> textComponents = Collections.emptyList();
+  protected int numberOfTextLines = 1;
+
+  // Cache
+  protected int numOfSkins = 0;
+  protected int lastNumOfSkins = 0;
+
   public CustomSkinConfigurationScreen(CustomSkinConfigurationMenu menu, Inventory inventory,
       Component component) {
     super(menu, inventory, component);
+  }
+
+  private void renderSkins(PoseStack poseStack) {
+    if (this.entity == null) {
+      return;
+    }
+
+    int positionTop = 119;
+    int skinPosition = 0;
+    skinButtons = new ArrayList<>();
+
+    Set<UUID> textures = CustomTextureManager.getCustomTextureCacheKeys(skinModel);
+    this.numOfSkins = textures.size();
+
+    Object[] textureKeys = textures.toArray();
+
+    // Check Skin buttons state, if number of skins changed.
+    if (this.lastNumOfSkins != this.numOfSkins) {
+      checkSkinButtonState();
+      this.lastNumOfSkins = this.numOfSkins;
+    }
+
+    for (int i = skinStartIndex; i < this.numOfSkins && i < skinStartIndex + maxSkinsPerPage; i++) {
+      int left = this.leftPos + 32 + (skinPosition * skinPreviewWidth);
+      int top = this.topPos + 65 + positionTop;
+
+      // Render Skins
+      UUID textureKey = (UUID) textureKeys[i];
+      this.renderSkinEntity(poseStack, left, top, skinModel, textureKey);
+
+      // Render skin name
+      float topNamePos = (top - 76f) / SKIN_NAME_SCALING;
+      float leftNamePos = (left - 21f) / SKIN_NAME_SCALING;
+      poseStack.pushPose();
+      poseStack.translate(0, 0, 100);
+      poseStack.scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING, SKIN_NAME_SCALING);
+      String variantName = TextUtils.normalizeString(textureKey.toString(), 11);
+      this.font.draw(poseStack, Component.literal(variantName), leftNamePos, topNamePos,
+          Constants.FONT_COLOR_DARK_GREEN);
+      poseStack.popPose();
+
+      skinPosition++;
+    }
+  }
+
+  private void renderSkinEntity(PoseStack poseStack, int x, int y, SkinModel skinModel,
+      UUID textureUUID) {
+    // Skin details
+    TextureModelKey textureModelKey = new TextureModelKey(textureUUID, skinModel);
+
+    // Create dynamically button for each skin variant and profession.
+    int skinButtonLeft = x - 24;
+    int skinButtonTop = y - 81;
+    int skinButtonHeight = 84;
+    ImageButton skinButton = new ImageButton(skinButtonLeft, skinButtonTop, skinPreviewWidth,
+        skinButtonHeight, 0, -84, 84, Constants.TEXTURE_CONFIGURATION, button -> {
+          log.info("Change custom skin ... {} {}", textureModelKey);
+          NetworkMessage.skinChange(this.uuid, "", "", textureUUID, SkinType.CUSTOM);
+        });
+
+    // Render active skin in different style.
+    Optional<UUID> skinUUID = this.entity.getSkinUUID();
+    if (skinUUID.isPresent() && skinUUID.get().equals(textureUUID)) {
+      poseStack.pushPose();
+      RenderSystem.setShader(GameRenderer::getPositionTexShader);
+      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+      RenderSystem.setShaderTexture(0, Constants.TEXTURE_CONFIGURATION);
+      this.blit(poseStack, skinButtonLeft, skinButtonTop, 0, skinButtonHeight, skinPreviewWidth,
+          skinButtonHeight);
+      poseStack.popPose();
+    }
+
+    // Render skin entity with variant and profession.
+    ScreenHelper.renderEntityPlayerSkin(x, y, x - this.xMouse, y - 40 - this.yMouse, this.entity,
+        textureUUID, SkinType.CUSTOM);
+
+    skinButtons.add(skinButton);
+  }
+
+  private void checkSkinButtonState() {
+    // Check the visible for the buttons.
+    boolean skinButtonShouldBeVisible = this.numOfSkins > this.maxSkinsPerPage;
+    this.skinPreviousButton.visible = skinButtonShouldBeVisible;
+    this.skinNextButton.visible = skinButtonShouldBeVisible;
+    this.skinPreviousPageButton.visible = skinButtonShouldBeVisible;
+    this.skinNextPageButton.visible = skinButtonShouldBeVisible;
+
+    // Enable / disable buttons depending on the current skin index.
+    this.skinPreviousButton.active = this.skinStartIndex > 0;
+    this.skinNextButton.active = this.skinStartIndex + this.maxSkinsPerPage < this.numOfSkins;
+    this.skinPreviousPageButton.active = this.skinStartIndex - this.maxSkinsPerPage > 0;
+    this.skinNextPageButton.active =
+        this.skinStartIndex + 1 + this.maxSkinsPerPage < this.numOfSkins;
   }
 
   @Override
@@ -42,15 +177,109 @@ public class CustomSkinConfigurationScreen
     this.customSkinButton.active = false;
     this.defaultSkinButton.active = true;
     this.playerSkinButton.active = true;
+
+    // Entity specific information.
+    this.numOfSkins = CustomTextureManager.getCustomTextureCacheKeys(skinModel).size();
+
+    // Skin Navigation Buttons
+    int skinButtonTop = this.topPos + 187;
+    int skinButtonLeft = this.contentLeftPos;
+    int skinButtonRight = this.rightPos - 31;
+    this.skinPreviousPageButton = this.addRenderableWidget(
+        menuButton(skinButtonLeft, skinButtonTop, 20, Component.literal("<<"), onPress -> {
+          if (this.skinStartIndex - maxSkinsPerPage > 0) {
+            skinStartIndex = skinStartIndex - maxSkinsPerPage;
+          } else {
+            skinStartIndex = 0;
+          }
+          checkSkinButtonState();
+        }));
+    this.skinPreviousButton = this.addRenderableWidget(
+        menuButton(skinButtonLeft + 20, skinButtonTop, 20, Component.literal("<"), onPress -> {
+          if (this.skinStartIndex > 0) {
+            skinStartIndex--;
+          }
+          checkSkinButtonState();
+        }));
+    this.skinNextPageButton = this.addRenderableWidget(
+        menuButton(skinButtonRight, skinButtonTop, 20, Component.literal(">>"), onPress -> {
+          if (this.skinStartIndex >= 0
+              && this.skinStartIndex + this.maxSkinsPerPage < this.numOfSkins) {
+            this.skinStartIndex = this.skinStartIndex + this.maxSkinsPerPage;
+          } else if (this.numOfSkins > this.maxSkinsPerPage) {
+            this.skinStartIndex = this.numOfSkins - this.maxSkinsPerPage;
+          } else {
+            this.skinStartIndex = this.numOfSkins;
+          }
+          checkSkinButtonState();
+        }));
+    this.skinNextButton = this.addRenderableWidget(
+        menuButton(skinButtonRight - 20, skinButtonTop, 20, Component.literal(">"), onPress -> {
+          if (this.skinStartIndex >= 0
+              && this.skinStartIndex < this.numOfSkins - this.maxSkinsPerPage) {
+            skinStartIndex++;
+          }
+          checkSkinButtonState();
+        }));
+    checkSkinButtonState();
+
+    // Skin Reload Button
+    this.skinReloadButton = this.addRenderableWidget(menuButton(this.contentLeftPos + 60,
+        skinButtonTop, 160, Component.literal("Reload Custom Textures"), onPress -> {
+          CustomSkinData.refreshRegisterTextureFiles();
+        }));
+
+    // Pre-format text
+    this.textComponents = this.font.split(
+        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "custom_skin_text"),
+        this.imageWidth - 20);
+    this.numberOfTextLines = this.textComponents.size();
   }
 
   @Override
   public void render(PoseStack poseStack, int x, int y, float partialTicks) {
     super.render(poseStack, x, y, partialTicks);
 
-    this.font.draw(poseStack, Component.literal("Working in Progress"), this.leftPos + 80f,
-        this.topPos + 100f, 4210752);
+    // Information text
+    if (!this.textComponents.isEmpty()) {
+      for (int line = 0; line < this.numberOfTextLines; ++line) {
+        FormattedCharSequence formattedCharSequence = this.textComponents.get(line);
+        this.font.draw(poseStack, formattedCharSequence, leftPos + 10f,
+            topPos + 45f + (line * (font.lineHeight + 2)), Constants.FONT_COLOR_DEFAULT);
+      }
+    }
 
+    // Skins
+    this.renderSkins(poseStack);
+
+    // Make sure we pass the mouse movements to the dynamically added buttons, if any.
+    if (!skinButtons.isEmpty()) {
+      for (Button skinButton : skinButtons) {
+        skinButton.render(poseStack, x, y, partialTicks);
+      }
+    }
+  }
+
+  @Override
+  protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
+    super.renderBg(poseStack, partialTicks, mouseX, mouseY);
+
+    // Skin Selection
+    fill(poseStack, this.contentLeftPos, this.topPos + 102, this.contentLeftPos + 282,
+        this.topPos + 188, 0xff000000);
+    fill(poseStack, this.contentLeftPos + 1, this.topPos + 103, this.contentLeftPos + 281,
+        this.topPos + 187, 0xffaaaaaa);
+  }
+
+  @Override
+  public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    // Make sure we pass the mouse click to the dynamically added buttons, if any.
+    if (!skinButtons.isEmpty()) {
+      for (Button skinButton : skinButtons) {
+        skinButton.mouseClicked(mouseX, mouseY, button);
+      }
+    }
+    return super.mouseClicked(mouseX, mouseY, button);
   }
 
 }
