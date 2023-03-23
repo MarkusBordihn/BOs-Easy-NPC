@@ -20,17 +20,23 @@
 package de.markusbordihn.easynpc.menu.configuration.equipment;
 
 import java.util.UUID;
+import javax.annotation.Nullable;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -129,6 +135,22 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
       this.addSlot(new Slot(playerInventory, playerInventorySlot,
           hotbarStartPositionX + playerInventorySlot * slotSize, hotbarStartPositionY));
     }
+  }
+
+  public static MenuProvider getMenuProvider(UUID uuid, Entity entity) {
+    return new MenuProvider() {
+      @Override
+      public Component getDisplayName() {
+        return new TextComponent("Equipment for " + entity.getName().getString());
+      }
+
+      @Nullable
+      @Override
+      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
+          Player serverPlayer) {
+        return new EquipmentConfigurationMenu(windowId, inventory, uuid);
+      }
+    };
   }
 
   public void loadHand() {

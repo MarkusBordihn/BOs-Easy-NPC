@@ -68,6 +68,9 @@ public class BasicActionConfigurationScreen
   public void init() {
     super.init();
 
+    // Default button stats
+    this.basicActionButton.active = false;
+
     // On Interaction Action
     int interactionActionTop = this.topPos + 50;
     ActionData interactionActionData = this.entity.getActionData(ActionType.ON_INTERACTION);
@@ -94,10 +97,6 @@ public class BasicActionConfigurationScreen
           this.onInteractionActionSaveButton.active = false;
         }));
     this.onInteractionActionSaveButton.active = false;
-
-    // Default button stats
-    this.basicActionButton.active = false;
-    this.dialogActionButton.active = true;
   }
 
   @Override

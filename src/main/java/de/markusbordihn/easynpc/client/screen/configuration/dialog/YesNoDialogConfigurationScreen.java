@@ -57,7 +57,6 @@ public class YesNoDialogConfigurationScreen
     super.init();
 
     // Default button stats
-    this.basicDialogButton.active = true;
     this.yesNoDialogButton.active = false;
 
     // Dialog

@@ -177,8 +177,6 @@ public class CustomSkinConfigurationScreen
 
     // Default button stats
     this.customSkinButton.active = false;
-    this.defaultSkinButton.active = true;
-    this.playerSkinButton.active = true;
 
     // Entity specific information.
     this.numOfSkins = CustomTextureManager.getCustomTextureCacheKeys(skinModel).size();

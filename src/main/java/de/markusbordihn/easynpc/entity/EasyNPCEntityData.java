@@ -19,11 +19,6 @@
 
 package de.markusbordihn.easynpc.entity;
 
-import java.util.Optional;
-import java.util.UUID;
-
-import javax.annotation.Nullable;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,12 +41,14 @@ import de.markusbordihn.easynpc.entity.data.EntityAttackData;
 import de.markusbordihn.easynpc.entity.data.CustomDataSerializers;
 import de.markusbordihn.easynpc.entity.data.EntityDialogData;
 import de.markusbordihn.easynpc.entity.data.EntityModelData;
+import de.markusbordihn.easynpc.entity.data.EntityOwnerData;
 import de.markusbordihn.easynpc.entity.data.EntityScaleData;
 import de.markusbordihn.easynpc.entity.data.EntitySkinData;
 import de.markusbordihn.easynpc.utils.TextUtils;
 
 public class EasyNPCEntityData extends AgeableMob
-    implements Npc, EntityActionData, EntityAttackData, EntityDialogData, EntityModelData, EntityScaleData, EntitySkinData {
+    implements Npc, EntityActionData, EntityAttackData, EntityDialogData, EntityModelData,
+    EntityOwnerData, EntityScaleData, EntitySkinData {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -61,15 +58,12 @@ public class EasyNPCEntityData extends AgeableMob
   }
 
   // Synced Data
-  private static final EntityDataAccessor<Optional<UUID>> DATA_OWNER_UUID_ID =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.OPTIONAL_UUID);
   private static final EntityDataAccessor<Profession> DATA_PROFESSION =
       SynchedEntityData.defineId(EasyNPCEntityData.class, CustomDataSerializers.PROFESSION);
   private static final EntityDataAccessor<String> DATA_VARIANT =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
 
   // Stored Entity Data Tags
-  private static final String DATA_OWNER_TAG = "Owner";
   private static final String DATA_POSE_TAG = "Pose";
   private static final String DATA_PROFESSION_TAG = "Profession";
   private static final String DATA_VARIANT_TAG = "Variant";
@@ -175,17 +169,9 @@ public class EasyNPCEntityData extends AgeableMob
     return component != null ? TextUtils.removeAction(component) : this.getTypeName();
   }
 
-  @Nullable
-  public UUID getOwnerUUID() {
-    return this.entityData.get(DATA_OWNER_UUID_ID).orElse((UUID) null);
-  }
-
-  public void setOwnerUUID(@Nullable UUID uuid) {
-    this.entityData.set(DATA_OWNER_UUID_ID, Optional.ofNullable(uuid));
-  }
-
-  public boolean hasOwner() {
-    return this.getOwnerUUID() != null;
+  @Override
+  public Level getEntityLevel() {
+    return this.level;
   }
 
   @Override
@@ -210,9 +196,9 @@ public class EasyNPCEntityData extends AgeableMob
     this.defineSynchedAttackData();
     this.defineSynchedDialogData();
     this.defineSynchedModelData();
+    this.defineSynchedOwnerData();
     this.defineSynchedScaleData();
     this.defineSynchedSkinData();
-    this.entityData.define(DATA_OWNER_UUID_ID, Optional.empty());
     this.entityData.define(DATA_PROFESSION, this.getDefaultProfession());
     this.entityData.define(DATA_VARIANT, this.getDefaultVariant().name());
   }
@@ -224,11 +210,9 @@ public class EasyNPCEntityData extends AgeableMob
     this.addAdditionalAttackData(compoundTag);
     this.addAdditionalDialogData(compoundTag);
     this.addAdditionalModelData(compoundTag);
+    this.addAdditionalOwnerData(compoundTag);
     this.addAdditionalScaleData(compoundTag);
     this.addAdditionalSkinData(compoundTag);
-    if (this.getOwnerUUID() != null) {
-      compoundTag.putUUID(DATA_OWNER_TAG, this.getOwnerUUID());
-    }
     if (this.getPose() != null) {
       compoundTag.putString(DATA_POSE_TAG, this.getPose().name());
     }
@@ -247,14 +231,9 @@ public class EasyNPCEntityData extends AgeableMob
     this.readAdditionalAttackData(compoundTag);
     this.readAdditionalDialogData(compoundTag);
     this.readAdditionalModelData(compoundTag);
+    this.readAdditionalOwnerData(compoundTag);
     this.readAdditionalScaleData(compoundTag);
     this.readAdditionalSkinData(compoundTag);
-    if (compoundTag.hasUUID(DATA_OWNER_TAG)) {
-      UUID uuid = compoundTag.getUUID(DATA_OWNER_TAG);
-      if (uuid != null) {
-        this.setOwnerUUID(uuid);
-      }
-    }
     if (compoundTag.contains(DATA_POSE_TAG)) {
       String pose = compoundTag.getString(DATA_POSE_TAG);
       if (pose != null && !pose.isEmpty()) {

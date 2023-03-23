@@ -23,12 +23,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.network.syncher.EntityDataAccessor;
-
+import net.minecraft.world.level.Level;
 import de.markusbordihn.easynpc.Constants;
 
 public interface EntityDataInterface {
 
- public static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  public static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  Level getEntityLevel();
 
   <T> void setEntityData(EntityDataAccessor<T> entityDataAccessor, T entityData);
 

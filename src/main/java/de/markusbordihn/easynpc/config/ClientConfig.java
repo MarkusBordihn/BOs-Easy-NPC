@@ -27,7 +27,8 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.config.ModConfig;
-
+import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fml.loading.FileUtils;
 import de.markusbordihn.easynpc.Constants;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
@@ -45,8 +46,14 @@ public class ClientConfig {
         new ForgeConfigSpec.Builder().configure(Config::new);
     clientSpec = specPair.getRight();
     CLIENT = specPair.getLeft();
-    log.info("{} Client config ...", Constants.LOG_REGISTER_PREFIX);
-    ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, clientSpec);
+    log.info("Registering {} client config ...", Constants.MOD_NAME);
+    try {
+      FileUtils.getOrCreateDirectory(FMLPaths.CONFIGDIR.get(), Constants.MOD_ID);
+    } catch (Exception exception) {
+      log.error("There was an error, creating the directory:", exception);
+    }
+    ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, clientSpec,
+        Constants.MOD_ID + "/" + Constants.MOD_ID + "-client.toml");
   }
 
   public static class Config {

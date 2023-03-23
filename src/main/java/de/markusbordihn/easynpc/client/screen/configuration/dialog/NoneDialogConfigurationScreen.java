@@ -68,15 +68,13 @@ public class NoneDialogConfigurationScreen
 
     // Default button stats
     this.noneDialogButton.active = false;
-    this.basicDialogButton.active = true;
-    this.yesNoDialogButton.active = true;
 
     // Cache former dialog Type
     setFormerDialogType(this.entity.getDialogType());
 
     // None Dialog Checkbox
     this.noneDialogCheckbox =
-        this.addRenderableWidget(new Checkbox(this.contentLeftPos + 20, this.topPos + 150, 20, 20,
+        this.addRenderableWidget(new Checkbox(this.contentLeftPos + 75, this.topPos + 170, 20, 20,
             new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "disable_dialog_checkbox")
                 .withStyle(ChatFormatting.WHITE),
             entity.getDialogType() == DialogType.NONE) {

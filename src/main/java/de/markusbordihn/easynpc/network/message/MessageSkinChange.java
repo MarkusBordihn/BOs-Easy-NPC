@@ -116,7 +116,13 @@ public class MessageSkinChange {
         easyNPCEntity.setSkinType(skinType);
         easyNPCEntity.setSkin(skin);
         easyNPCEntity.setSkinURL("");
-        easyNPCEntity.setSkinUUID(skinUUID);
+        easyNPCEntity.setSkinUUID(Constants.BLANK_UUID);
+        break;
+      case DEFAULT:
+        easyNPCEntity.setSkinType(skinType);
+        easyNPCEntity.setSkin("");
+        easyNPCEntity.setSkinURL("");
+        easyNPCEntity.setSkinUUID(Constants.BLANK_UUID);
         break;
       case PLAYER_SKIN:
         easyNPCEntity.setSkinType(skinType);
