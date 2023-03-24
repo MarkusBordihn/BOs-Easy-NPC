@@ -237,8 +237,6 @@ public class PlayerSkinConfigurationScreen
     super.init();
 
     // Default button stats
-    this.customSkinButton.active = true;
-    this.defaultSkinButton.active = true;
     this.playerSkinButton.active = false;
 
     // Entity specific information.

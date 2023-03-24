@@ -36,6 +36,7 @@
   "text.easy_npc.config.dialog": "Dialog",
   "text.easy_npc.config.dialog_actions": "Dialog",
   "text.easy_npc.config.dialog_text": "Dialog Text",
+  "text.easy_npc.config.dialog_placeholder": "The dialog supports the following placeholders:\n@npc - Name of the NPC\n@initiator - Name of the initiator of the dialog",
   "text.easy_npc.config.disable_dialog": "None",
   "text.easy_npc.config.disable_dialog_checkbox": "Disable Dialog",
   "text.easy_npc.config.disable_dialog_text": "The checkbox will disable the dialog, which means that the dialog will not be displayed or activated when the checkbox is selected or checked.\n\nThis can be useful when the dialog is not necessary or may be intrusive to the user experience",

@@ -34,6 +34,7 @@
   "text.easy_npc.config.dialog": "Dialog",
   "text.easy_npc.config.dialog_actions": "Dialog",
   "text.easy_npc.config.dialog_text": "Dialogtext",
+  "text.easy_npc.config.dialog_placeholder": "Der Dialog unterstützt die folgenden Platzhalter:\n@npc - Name des NPC\n@initiator - Name des Initiators des Dialogs",
   "text.easy_npc.config.disable_dialog": "Keinen",
   "text.easy_npc.config.disable_dialog_checkbox": "Deaktiviere Dialog",
   "text.easy_npc.config.disable_dialog_text": "Das Kontrollkästchen deaktiviert den Dialog, was bedeutet, dass der Dialog nicht angezeigt oder aktiviert wird, wenn das Kontrollkästchen ausgewählt oder markiert wird.\n\nDies kann nützlich sein, wenn der Dialog nicht erforderlich ist oder die Benutzererfahrung beeinträchtigen kann.",

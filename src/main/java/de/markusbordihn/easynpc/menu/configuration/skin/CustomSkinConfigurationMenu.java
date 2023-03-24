@@ -20,9 +20,15 @@
 package de.markusbordihn.easynpc.menu.configuration.skin;
 
 import java.util.UUID;
+import javax.annotation.Nullable;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
@@ -36,6 +42,22 @@ public class CustomSkinConfigurationMenu extends ConfigurationMenu {
   public CustomSkinConfigurationMenu(int windowId, Inventory playerInventory,
       FriendlyByteBuf data) {
     this(windowId, playerInventory, data.readUUID());
+  }
+
+  public static MenuProvider getMenuProvider(UUID uuid, Entity entity) {
+    return new MenuProvider() {
+      @Override
+      public Component getDisplayName() {
+        return Component.literal("Custom Skin for " + entity.getName().getString());
+      }
+
+      @Nullable
+      @Override
+      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
+          Player serverPlayer) {
+        return new CustomSkinConfigurationMenu(windowId, inventory, uuid);
+      }
+    };
   }
 
 }

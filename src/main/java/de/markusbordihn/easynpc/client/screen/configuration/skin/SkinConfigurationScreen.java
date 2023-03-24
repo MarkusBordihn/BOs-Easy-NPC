@@ -74,9 +74,16 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
         }));
 
     // Default button stats
-    this.customSkinButton.active = true;
-    this.defaultSkinButton.active = true;
-    this.playerSkinButton.active = true;
+    this.customSkinButton.active = this.hasPermissions(COMMON.customSkinConfigurationEnabled.get(),
+        COMMON.customSkinConfigurationAllowInCreative.get(),
+        COMMON.customSkinConfigurationPermissionLevel.get());
+    this.defaultSkinButton.active =
+        this.hasPermissions(COMMON.defaultSkinConfigurationEnabled.get(),
+            COMMON.defaultSkinConfigurationAllowInCreative.get(),
+            COMMON.defaultSkinConfigurationPermissionLevel.get());
+    this.playerSkinButton.active = this.hasPermissions(COMMON.playerSkinConfigurationEnabled.get(),
+        COMMON.playerSkinConfigurationAllowInCreative.get(),
+        COMMON.playerSkinConfigurationPermissionLevel.get());
   }
 
 }

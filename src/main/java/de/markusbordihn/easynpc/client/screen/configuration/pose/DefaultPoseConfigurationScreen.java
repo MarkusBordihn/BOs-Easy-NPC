@@ -80,7 +80,6 @@ public class DefaultPoseConfigurationScreen
 
     // Default button stats
     this.defaultPoseButton.active = false;
-    this.customPoseButton.active = true;
 
     // Pose Buttons
     int poseButtonLeft = this.contentLeftPos + 175;
