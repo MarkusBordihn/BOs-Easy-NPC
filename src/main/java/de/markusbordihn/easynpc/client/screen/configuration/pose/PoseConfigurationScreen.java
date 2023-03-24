@@ -59,8 +59,13 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
             }));
 
     // Default button stats
-    this.defaultPoseButton.active = false;
-    this.customPoseButton.active = false;
+    this.defaultPoseButton.active =
+        this.hasPermissions(COMMON.defaultPoseConfigurationEnabled.get(),
+            COMMON.defaultPoseConfigurationAllowInCreative.get(),
+            COMMON.defaultPoseConfigurationPermissionLevel.get());
+    this.customPoseButton.active = this.hasPermissions(COMMON.customPoseConfigurationEnabled.get(),
+        COMMON.customPoseConfigurationAllowInCreative.get(),
+        COMMON.customPoseConfigurationPermissionLevel.get());
   }
 
 }

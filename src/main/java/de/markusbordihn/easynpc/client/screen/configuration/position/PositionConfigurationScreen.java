@@ -54,7 +54,10 @@ public class PositionConfigurationScreen<T extends ConfigurationMenu>
         }));
 
     // Default button stats
-    this.defaultPositionButton.active = false;
+    this.defaultPositionButton.active =
+        this.hasPermissions(COMMON.defaultPositionConfigurationEnabled.get(),
+            COMMON.defaultPositionConfigurationAllowInCreative.get(),
+            COMMON.defaultPositionConfigurationPermissionLevel.get());
   }
 
 }

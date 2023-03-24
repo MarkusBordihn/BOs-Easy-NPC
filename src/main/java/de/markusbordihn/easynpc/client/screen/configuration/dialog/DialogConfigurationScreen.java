@@ -64,9 +64,17 @@ public class DialogConfigurationScreen<T extends ConfigurationMenu> extends Conf
         }));
 
     // Default button stats
-    this.noneDialogButton.active = true;
-    this.basicDialogButton.active = true;
-    this.yesNoDialogButton.active = true;
+    this.noneDialogButton.active = this.hasPermissions(COMMON.noneDialogConfigurationEnabled.get(),
+        COMMON.noneDialogConfigurationAllowInCreative.get(),
+        COMMON.noneDialogConfigurationPermissionLevel.get());
+    this.basicDialogButton.active =
+        this.hasPermissions(COMMON.basicDialogConfigurationEnabled.get(),
+            COMMON.basicDialogConfigurationAllowInCreative.get(),
+            COMMON.basicDialogConfigurationPermissionLevel.get());
+    this.yesNoDialogButton.active =
+        this.hasPermissions(COMMON.yesNoDialogConfigurationEnabled.get(),
+            COMMON.yesNoDialogConfigurationAllowInCreative.get(),
+            COMMON.yesNoDialogConfigurationPermissionLevel.get());
   }
 
 }

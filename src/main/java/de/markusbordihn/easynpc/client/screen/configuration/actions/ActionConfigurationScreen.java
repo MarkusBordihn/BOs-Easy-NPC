@@ -68,8 +68,14 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
             }));
 
     // Default button stats
-    this.basicActionButton.active = true;
-    this.dialogActionButton.active = true;
+    this.basicActionButton.active =
+        this.hasPermissions(COMMON.basicActionConfigurationEnabled.get(),
+            COMMON.basicActionConfigurationAllowInCreative.get(),
+            COMMON.basicActionConfigurationPermissionLevel.get());
+    this.dialogActionButton.active =
+        this.hasPermissions(COMMON.dialogActionConfigurationEnabled.get(),
+            COMMON.dialogActionConfigurationAllowInCreative.get(),
+            COMMON.dialogActionConfigurationPermissionLevel.get());
   }
 
 }

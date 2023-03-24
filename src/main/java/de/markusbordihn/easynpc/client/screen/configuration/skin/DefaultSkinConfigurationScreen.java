@@ -166,9 +166,7 @@ public class DefaultSkinConfigurationScreen
     super.init();
 
     // Default button stats
-    this.customSkinButton.active = true;
     this.defaultSkinButton.active = false;
-    this.playerSkinButton.active = true;
 
     // Entity specific information.
     this.professions = this.entity.getProfessions();

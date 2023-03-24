@@ -20,21 +20,16 @@
 package de.markusbordihn.easynpc.entity;
 
 import java.util.UUID;
-import javax.annotation.Nullable;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import net.minecraftforge.network.NetworkHooks;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.config.CommonConfig;
 import de.markusbordihn.easynpc.menu.DialogMenu;
 import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.action.DialogActionConfigurationMenu;
@@ -56,308 +51,205 @@ public class EasyNPCEntityMenu {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
+  // Config values
+  protected static final CommonConfig.Config COMMON = CommonConfig.COMMON;
+
   protected EasyNPCEntityMenu() {}
+
+  public static void openDialogMenu(ServerPlayer serverPlayer, EasyNPCEntity entity) {
+    UUID uuid = entity.getUUID();
+    NetworkHooks.openScreen(serverPlayer, DialogMenu.getMenuProvider(uuid, entity),
+        buffer -> buffer.writeUUID(uuid));
+  }
 
   public static void openEquipmentConfigurationMenu(ServerPlayer serverPlayer,
       EasyNPCEntity entity) {
-    UUID uuid = entity.getUUID();
-    MenuProvider provider = new MenuProvider() {
-      @Override
-      public Component getDisplayName() {
-        return Component.literal("Equipment for " + entity.getName().getString());
-      }
-
-      @Nullable
-      @Override
-      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
-          Player serverPlayer) {
-        return new EquipmentConfigurationMenu(windowId, inventory, uuid);
-      }
-    };
-    NetworkHooks.openScreen(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));
+    if (hasPermissions(serverPlayer, entity, COMMON.equipmentConfigurationEnabled.get(),
+        COMMON.equipmentConfigurationAllowInCreative.get(),
+        COMMON.equipmentConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      NetworkHooks.openScreen(serverPlayer,
+          EquipmentConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
+    }
   }
 
   public static void openBasicActionConfigurationMenu(ServerPlayer serverPlayer,
       EasyNPCEntity entity) {
-    UUID uuid = entity.getUUID();
-    MenuProvider provider = new MenuProvider() {
-      @Override
-      public Component getDisplayName() {
-        return Component.literal("Basic Actions for " + entity.getName().getString());
-      }
-
-      @Nullable
-      @Override
-      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
-          Player serverPlayer) {
-        return new BasicActionConfigurationMenu(windowId, inventory, uuid);
-      }
-    };
-    NetworkHooks.openScreen(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));
+    if (hasPermissions(serverPlayer, entity, COMMON.basicActionConfigurationEnabled.get(),
+        COMMON.basicActionConfigurationAllowInCreative.get(),
+        COMMON.basicActionConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      NetworkHooks.openScreen(serverPlayer,
+          BasicActionConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
+    }
   }
 
   public static void openDialogActionConfigurationMenu(ServerPlayer serverPlayer,
       EasyNPCEntity entity) {
-    UUID uuid = entity.getUUID();
-    MenuProvider provider = new MenuProvider() {
-      @Override
-      public Component getDisplayName() {
-        return Component.literal("Dialog Actions for " + entity.getName().getString());
-      }
-
-      @Nullable
-      @Override
-      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
-          Player serverPlayer) {
-        return new DialogActionConfigurationMenu(windowId, inventory, uuid);
-      }
-    };
-    NetworkHooks.openScreen(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));
-  }
-
-  public static void openNoneDialogConfigurationMenu(ServerPlayer serverPlayer,
-      EasyNPCEntity entity) {
-    UUID uuid = entity.getUUID();
-    MenuProvider provider = new MenuProvider() {
-      @Override
-      public Component getDisplayName() {
-        return Component.literal("None Dialog for " + entity.getName().getString());
-      }
-
-      @Nullable
-      @Override
-      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
-          Player serverPlayer) {
-        return new NoneDialogConfigurationMenu(windowId, inventory, uuid);
-      }
-    };
-    NetworkHooks.openScreen(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));
+    if (hasPermissions(serverPlayer, entity, COMMON.dialogActionConfigurationEnabled.get(),
+        COMMON.dialogActionConfigurationAllowInCreative.get(),
+        COMMON.dialogActionConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      NetworkHooks.openScreen(serverPlayer,
+          DialogActionConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
+    }
   }
 
   public static void openBasicDialogConfigurationMenu(ServerPlayer serverPlayer,
       EasyNPCEntity entity) {
-    UUID uuid = entity.getUUID();
-    MenuProvider provider = new MenuProvider() {
-      @Override
-      public Component getDisplayName() {
-        return Component.literal("Basic Dialog for " + entity.getName().getString());
-      }
-
-      @Nullable
-      @Override
-      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
-          Player serverPlayer) {
-        return new BasicDialogConfigurationMenu(windowId, inventory, uuid);
-      }
-    };
-    NetworkHooks.openScreen(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));
+    if (hasPermissions(serverPlayer, entity, COMMON.basicDialogConfigurationEnabled.get(),
+        COMMON.basicDialogConfigurationAllowInCreative.get(),
+        COMMON.basicDialogConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      NetworkHooks.openScreen(serverPlayer,
+          BasicDialogConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
+    }
   }
 
   public static void openYesNoDialogConfigurationMenu(ServerPlayer serverPlayer,
       EasyNPCEntity entity) {
-    UUID uuid = entity.getUUID();
-    MenuProvider provider = new MenuProvider() {
-      @Override
-      public Component getDisplayName() {
-        return Component.literal("Yes/No Dialog for " + entity.getName().getString());
-      }
-
-      @Nullable
-      @Override
-      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
-          Player serverPlayer) {
-        return new YesNoDialogConfigurationMenu(windowId, inventory, uuid);
-      }
-    };
-    NetworkHooks.openScreen(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));
+    if (hasPermissions(serverPlayer, entity, COMMON.yesNoDialogConfigurationEnabled.get(),
+        COMMON.yesNoDialogConfigurationAllowInCreative.get(),
+        COMMON.yesNoDialogConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      NetworkHooks.openScreen(serverPlayer,
+          YesNoDialogConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
+    }
   }
 
   public static void openMainConfigurationMenu(ServerPlayer serverPlayer, EasyNPCEntity entity) {
-    UUID uuid = entity.getUUID();
-    MenuProvider provider = new MenuProvider() {
-      @Override
-      public Component getDisplayName() {
-        return Component.literal("Easy NPC (Non Player Character)");
-      }
-
-      @Nullable
-      @Override
-      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
-          Player serverPlayer) {
-        return new MainConfigurationMenu(windowId, inventory, uuid);
-      }
-    };
-    NetworkHooks.openScreen(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));
+    if (hasPermissions(serverPlayer, entity, COMMON.mainConfigurationEnabled.get(),
+        COMMON.mainConfigurationAllowInCreative.get(),
+        COMMON.mainConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      NetworkHooks.openScreen(serverPlayer, MainConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
+    }
   }
 
   public static void openCustomPoseConfigurationMenu(ServerPlayer serverPlayer,
       EasyNPCEntity entity) {
-    UUID uuid = entity.getUUID();
-    MenuProvider provider = new MenuProvider() {
-      @Override
-      public Component getDisplayName() {
-        return Component.literal("Custom Pose for " + entity.getName().getString());
-      }
-
-      @Nullable
-      @Override
-      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
-          Player serverPlayer) {
-        return new CustomPoseConfigurationMenu(windowId, inventory, uuid);
-      }
-    };
-    NetworkHooks.openScreen(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));
+    if (hasPermissions(serverPlayer, entity, COMMON.customPoseConfigurationEnabled.get(),
+        COMMON.customPoseConfigurationAllowInCreative.get(),
+        COMMON.customPoseConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      NetworkHooks.openScreen(serverPlayer,
+          CustomPoseConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
+    }
   }
-
 
   public static void openDefaultPoseConfigurationMenu(ServerPlayer serverPlayer,
       EasyNPCEntity entity) {
-    UUID uuid = entity.getUUID();
-    MenuProvider provider = new MenuProvider() {
-      @Override
-      public Component getDisplayName() {
-        return Component.literal("Pose for " + entity.getName().getString());
-      }
-
-      @Nullable
-      @Override
-      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
-          Player serverPlayer) {
-        return new DefaultPoseConfigurationMenu(windowId, inventory, uuid);
-      }
-    };
-    NetworkHooks.openScreen(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));
+    if (hasPermissions(serverPlayer, entity, COMMON.defaultPoseConfigurationEnabled.get(),
+        COMMON.defaultPoseConfigurationAllowInCreative.get(),
+        COMMON.defaultPoseConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      NetworkHooks.openScreen(serverPlayer,
+          DefaultPoseConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
+    }
   }
 
   public static void openDefaultPositionConfigurationMenu(ServerPlayer serverPlayer,
       EasyNPCEntity entity) {
-    UUID uuid = entity.getUUID();
-    MenuProvider provider = new MenuProvider() {
-      @Override
-      public Component getDisplayName() {
-        return Component.literal("Position for " + entity.getName().getString());
-      }
-
-      @Nullable
-      @Override
-      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
-          Player serverPlayer) {
-        return new DefaultPositionConfigurationMenu(windowId, inventory, uuid);
-      }
-    };
-    NetworkHooks.openScreen(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));
+    if (hasPermissions(serverPlayer, entity, COMMON.defaultPositionConfigurationEnabled.get(),
+        COMMON.defaultPositionConfigurationAllowInCreative.get(),
+        COMMON.defaultPositionConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      NetworkHooks.openScreen(serverPlayer,
+          DefaultPositionConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
+    }
   }
 
   public static void openDefaultRotationConfigurationMenu(ServerPlayer serverPlayer,
       EasyNPCEntity entity) {
-    UUID uuid = entity.getUUID();
-    MenuProvider provider = new MenuProvider() {
-      @Override
-      public Component getDisplayName() {
-        return Component.literal("Rotation for " + entity.getName().getString());
-      }
-
-      @Nullable
-      @Override
-      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
-          Player serverPlayer) {
-        return new DefaultRotationConfigurationMenu(windowId, inventory, uuid);
-      }
-    };
-    NetworkHooks.openScreen(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));
+    if (hasPermissions(serverPlayer, entity, COMMON.defaultRotationConfigurationEnabled.get(),
+        COMMON.defaultRotationConfigurationAllowInCreative.get(),
+        COMMON.defaultRotationConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      NetworkHooks.openScreen(serverPlayer,
+          DefaultRotationConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
+    }
   }
 
   public static void openCustomSkinConfigurationMenu(ServerPlayer serverPlayer,
       EasyNPCEntity entity) {
-    UUID uuid = entity.getUUID();
-    MenuProvider provider = new MenuProvider() {
-      @Override
-      public Component getDisplayName() {
-        return Component.literal("Custom Skin for " + entity.getName().getString());
-      }
-
-      @Nullable
-      @Override
-      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
-          Player serverPlayer) {
-        return new CustomSkinConfigurationMenu(windowId, inventory, uuid);
-      }
-    };
-    NetworkHooks.openScreen(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));
+    if (hasPermissions(serverPlayer, entity, COMMON.customSkinConfigurationEnabled.get(),
+        COMMON.customSkinConfigurationAllowInCreative.get(),
+        COMMON.customSkinConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      NetworkHooks.openScreen(serverPlayer,
+          CustomSkinConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
+    }
   }
 
   public static void openDefaultSkinConfigurationMenu(ServerPlayer serverPlayer,
       EasyNPCEntity entity) {
-    UUID uuid = entity.getUUID();
-    MenuProvider provider = new MenuProvider() {
-      @Override
-      public Component getDisplayName() {
-        return Component.literal("Default Skin for " + entity.getName().getString());
-      }
+    if (hasPermissions(serverPlayer, entity, COMMON.defaultSkinConfigurationEnabled.get(),
+        COMMON.defaultSkinConfigurationAllowInCreative.get(),
+        COMMON.defaultSkinConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      NetworkHooks.openScreen(serverPlayer,
+          DefaultSkinConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
+    }
+  }
 
-      @Nullable
-      @Override
-      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
-          Player serverPlayer) {
-        return new DefaultSkinConfigurationMenu(windowId, inventory, uuid);
-      }
-    };
-    NetworkHooks.openScreen(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));
+  public static void openNoneDialogConfigurationMenu(ServerPlayer serverPlayer,
+      EasyNPCEntity entity) {
+    if (hasPermissions(serverPlayer, entity, COMMON.noneDialogConfigurationEnabled.get(),
+        COMMON.noneDialogConfigurationAllowInCreative.get(),
+        COMMON.noneDialogConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      NetworkHooks.openScreen(serverPlayer,
+          NoneDialogConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
+    }
   }
 
   public static void openPlayerSkinConfigurationMenu(ServerPlayer serverPlayer,
       EasyNPCEntity entity) {
-    UUID uuid = entity.getUUID();
-    MenuProvider provider = new MenuProvider() {
-      @Override
-      public Component getDisplayName() {
-        return Component.literal("Player Skin for " + entity.getName().getString());
-      }
-
-      @Nullable
-      @Override
-      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
-          Player serverPlayer) {
-        return new PlayerSkinConfigurationMenu(windowId, inventory, uuid);
-      }
-    };
-    NetworkHooks.openScreen(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));
+    if (hasPermissions(serverPlayer, entity, COMMON.playerSkinConfigurationEnabled.get(),
+        COMMON.playerSkinConfigurationAllowInCreative.get(),
+        COMMON.playerSkinConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      NetworkHooks.openScreen(serverPlayer,
+          PlayerSkinConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
+    }
   }
 
   public static void openScalingConfigurationMenu(ServerPlayer serverPlayer, EasyNPCEntity entity) {
-    UUID uuid = entity.getUUID();
-    MenuProvider provider = new MenuProvider() {
-      @Override
-      public Component getDisplayName() {
-        return Component.literal("Scaling for " + entity.getName().getString());
-      }
-
-      @Nullable
-      @Override
-      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
-          Player serverPlayer) {
-        return new ScalingConfigurationMenu(windowId, inventory, uuid);
-      }
-    };
-    NetworkHooks.openScreen(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));
+    if (hasPermissions(serverPlayer, entity, COMMON.scalingConfigurationEnabled.get(),
+        COMMON.scalingConfigurationAllowInCreative.get(),
+        COMMON.scalingConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      NetworkHooks.openScreen(serverPlayer, ScalingConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
+    }
   }
 
-  public static void openDialogMenu(ServerPlayer serverPlayer, EasyNPCEntity entity) {
-    UUID uuid = entity.getUUID();
-    MenuProvider provider = new MenuProvider() {
-      @Override
-      public Component getDisplayName() {
-        return entity.getName();
-      }
-
-      @Nullable
-      @Override
-      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
-          Player serverPlayer) {
-        return new DialogMenu(windowId, inventory, uuid);
-      }
-    };
-    NetworkHooks.openScreen(serverPlayer, provider, buffer -> buffer.writeUUID(uuid));
+  private static boolean hasPermissions(ServerPlayer serverPlayer, EasyNPCEntity entity,
+      Boolean enabled, Boolean allowInCreative, int permissionLevel) {
+    if (Boolean.FALSE.equals(enabled) || serverPlayer == null) {
+      return false;
+    } else if (Boolean.TRUE.equals(allowInCreative) && serverPlayer.isCreative()) {
+      return true;
+    } else if (!entity.hasOwner() || !entity.isOwner(serverPlayer)) {
+      return false;
+    } else if (serverPlayer.hasPermissions(permissionLevel)) {
+      return true;
+    }
+    return false;
   }
 
 }

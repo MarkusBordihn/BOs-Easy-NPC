@@ -115,6 +115,9 @@ public class DialogActionConfigurationScreen
   public void init() {
     super.init();
 
+    // Default button stats
+    this.dialogActionButton.active = false;
+
     // On Open Dialog Action
     int openDialogActionTop = this.topPos + 50;
     ActionData openDialogActionData = this.entity.getActionData(ActionType.ON_OPEN_DIALOG);
@@ -222,10 +225,6 @@ public class DialogActionConfigurationScreen
           this.onNoSelectionActionSaveButton.active = false;
         }));
     this.onNoSelectionActionSaveButton.active = false;
-
-    // Default button stats
-    this.basicActionButton.active = true;
-    this.dialogActionButton.active = false;
   }
 
   @Override

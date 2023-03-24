@@ -5,6 +5,12 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### 2023.03.24
+
+- Added config for basic permission system to control the use of specific options.
+- Added support for normal players to be able to use Easy NPCs with limited options.
+- Improved menu handling and general performance.
+
 ### 2023.03.19
 
 - Added new Zombie and Zombie Villager models.

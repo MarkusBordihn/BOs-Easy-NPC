@@ -20,11 +20,15 @@
 package de.markusbordihn.easynpc.menu;
 
 import java.util.UUID;
+import javax.annotation.Nullable;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -65,6 +69,22 @@ public class DialogMenu extends AbstractContainerMenu {
 
   public EasyNPCEntity getEntity() {
     return this.entity;
+  }
+
+  public static MenuProvider getMenuProvider(UUID uuid, Entity entity) {
+    return new MenuProvider() {
+      @Override
+      public Component getDisplayName() {
+        return entity.getName();
+      }
+
+      @Nullable
+      @Override
+      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
+          Player serverPlayer) {
+        return new DialogMenu(windowId, inventory, uuid);
+      }
+    };
   }
 
   @Override

@@ -115,14 +115,14 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     // Button positions
     int buttonLeftPosition = this.leftPos + 110;
     int buttonSpace = 4;
-    int buttonTopPosition = this.topPos + 54;
+    int buttonTopPosition = this.topPos + 43;
 
     // Hide home button
     this.homeButton.visible = false;
 
     // Name Edit Box and Save Button
     this.formerName = this.entity.getName().getString();
-    this.nameBox = new EditBox(this.font, this.contentLeftPos + 1, this.topPos + 31, 190, 18,
+    this.nameBox = new EditBox(this.font, this.contentLeftPos + 1, this.topPos + 20, 190, 18,
         Component.translatable("Name"));
     this.nameBox.setMaxLength(32);
     this.nameBox.setValue(this.formerName);
@@ -130,14 +130,14 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     this.addRenderableWidget(this.nameBox);
 
     this.saveNameButton = this.addRenderableWidget(
-        menuButton(this.leftPos + 202, this.topPos + 30, "save_name", onPress -> {
+        menuButton(this.leftPos + 202, this.topPos + 19, "save_name", onPress -> {
           this.saveName();
         }));
     this.saveNameButton.active = false;
 
     // Skins Button
     this.editSkinButton = this.addRenderableWidget(
-        menuButton(this.contentLeftPos, this.topPos + 205, 100, "skin", onPress -> {
+        menuButton(this.contentLeftPos, this.topPos + 194, 100, "skin", onPress -> {
           SkinType skinType = this.entity.getSkinType();
           switch (skinType) {
             case PLAYER_SKIN:
@@ -152,6 +152,15 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
               NetworkMessage.openConfiguration(uuid, ConfigurationType.DEFAULT_SKIN);
           }
         }));
+    this.editSkinButton.active = this.hasPermissions(COMMON.defaultSkinConfigurationEnabled.get(),
+        COMMON.defaultSkinConfigurationAllowInCreative.get(),
+        COMMON.defaultSkinConfigurationPermissionLevel.get())
+        || this.hasPermissions(COMMON.playerSkinConfigurationEnabled.get(),
+            COMMON.playerSkinConfigurationAllowInCreative.get(),
+            COMMON.playerSkinConfigurationPermissionLevel.get())
+        || this.hasPermissions(COMMON.customSkinConfigurationEnabled.get(),
+            COMMON.customSkinConfigurationAllowInCreative.get(),
+            COMMON.customSkinConfigurationPermissionLevel.get());
 
     // Dialog Button
     this.editDialogButton = this.addRenderableWidget(
@@ -171,6 +180,15 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
               NetworkMessage.openConfiguration(uuid, ConfigurationType.BASIC_DIALOG);
           }
         }));
+    this.editDialogButton.active = this.hasPermissions(COMMON.basicDialogConfigurationEnabled.get(),
+        COMMON.basicDialogConfigurationAllowInCreative.get(),
+        COMMON.basicDialogConfigurationPermissionLevel.get())
+        || this.hasPermissions(COMMON.yesNoDialogConfigurationEnabled.get(),
+            COMMON.yesNoDialogConfigurationAllowInCreative.get(),
+            COMMON.yesNoDialogConfigurationPermissionLevel.get())
+        || this.hasPermissions(COMMON.noneDialogConfigurationEnabled.get(),
+            COMMON.noneDialogConfigurationAllowInCreative.get(),
+            COMMON.noneDialogConfigurationPermissionLevel.get());
 
     // Actions Button
     this.editActionButton = this.addRenderableWidget(
@@ -178,6 +196,12 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
             buttonTopPosition, "actions", onPress -> {
               NetworkMessage.openConfiguration(uuid, ConfigurationType.BASIC_ACTION);
             }));
+    this.editActionButton.active = this.hasPermissions(COMMON.basicActionConfigurationEnabled.get(),
+        COMMON.basicActionConfigurationAllowInCreative.get(),
+        COMMON.basicActionConfigurationPermissionLevel.get())
+        || this.hasPermissions(COMMON.dialogActionConfigurationEnabled.get(),
+            COMMON.dialogActionConfigurationAllowInCreative.get(),
+            COMMON.dialogActionConfigurationPermissionLevel.get());
 
     // Move button position down
     buttonTopPosition = buttonTopPosition + 20 + buttonSpace;
@@ -187,6 +211,10 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
         menuButton(buttonLeftPosition, buttonTopPosition, "equipment", onPress -> {
           NetworkMessage.openConfiguration(uuid, ConfigurationType.EQUIPMENT);
         }));
+    this.editEquipmentButton.active =
+        this.hasPermissions(COMMON.equipmentConfigurationEnabled.get(),
+            COMMON.equipmentConfigurationAllowInCreative.get(),
+            COMMON.equipmentConfigurationPermissionLevel.get());
 
     // Scaling Button
     this.editScalingButton = this.addRenderableWidget(
@@ -194,6 +222,9 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
             buttonTopPosition, "scaling", onPress -> {
               NetworkMessage.openConfiguration(uuid, ConfigurationType.SCALING);
             }));
+    this.editScalingButton.active = this.hasPermissions(COMMON.scalingConfigurationEnabled.get(),
+        COMMON.scalingConfigurationAllowInCreative.get(),
+        COMMON.scalingConfigurationPermissionLevel.get());
 
     // Move button position down
     buttonTopPosition = buttonTopPosition + 20 + buttonSpace;
@@ -213,14 +244,23 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
               NetworkMessage.openConfiguration(uuid, ConfigurationType.DEFAULT_POSE);
           }
         }));
+    this.editPoseButton.active = this.hasPermissions(COMMON.defaultPoseConfigurationEnabled.get(),
+        COMMON.defaultPoseConfigurationAllowInCreative.get(),
+        COMMON.defaultPoseConfigurationPermissionLevel.get())
+        || this.hasPermissions(COMMON.customPoseConfigurationEnabled.get(),
+            COMMON.customPoseConfigurationAllowInCreative.get(),
+            COMMON.customPoseConfigurationPermissionLevel.get());
 
     // Position Button
     this.editPositionButton = this.addRenderableWidget(
         menuButton(this.editPoseButton.x + this.editPoseButton.getWidth() + buttonSpace,
             buttonTopPosition, "position", onPress -> {
               NetworkMessage.openConfiguration(uuid, ConfigurationType.DEFAULT_POSITION);
-              this.closeScreen();
             }));
+    this.editPositionButton.active =
+        this.hasPermissions(COMMON.defaultPositionConfigurationEnabled.get(),
+            COMMON.defaultPositionConfigurationAllowInCreative.get(),
+            COMMON.defaultPositionConfigurationPermissionLevel.get());
 
     // Move button position down
     buttonTopPosition = buttonTopPosition + 20 + buttonSpace;
@@ -229,8 +269,11 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     this.editRotationButton = this.addRenderableWidget(
         menuButton(buttonLeftPosition, buttonTopPosition, "rotation", onPress -> {
           NetworkMessage.openConfiguration(uuid, ConfigurationType.DEFAULT_ROTATION);
-          this.closeScreen();
         }));
+    this.editRotationButton.active =
+        this.hasPermissions(COMMON.defaultRotationConfigurationEnabled.get(),
+            COMMON.defaultRotationConfigurationAllowInCreative.get(),
+            COMMON.defaultRotationConfigurationPermissionLevel.get());
 
     // Delete Button
     this.removeEntityButton = this.addRenderableWidget(
@@ -247,12 +290,18 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     this.yMouse = y;
 
     // Avatar
-    ScreenHelper.renderScaledEntityAvatar(this.leftPos + 55, this.topPos + 195, 55,
+    ScreenHelper.renderScaledEntityAvatar(this.leftPos + 55, this.topPos + 185, 55,
         this.leftPos + 50 - this.xMouse, this.topPos + 90 - this.yMouse, this.entity);
 
     // Entity Type
     this.font.draw(poseStack, entity.getType().getDescription(), this.contentLeftPos + 2f,
-        this.topPos + 58f, 4210752);
+        this.topPos + 47f, 4210752);
+
+    // Owner
+    if (this.entity.hasOwner()) {
+      this.font.draw(poseStack, "Owner: " + this.entity.getOwnerName(), this.contentLeftPos + 2f,
+          this.topPos + 220f, 4210752);
+    }
   }
 
   @Override
@@ -264,16 +313,18 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
   protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
     super.renderBg(poseStack, partialTicks, mouseX, mouseY);
 
+    int avatarTopPos = this.topPos + 43;
+
     // Entity Type
-    fill(poseStack, this.contentLeftPos, this.topPos + 54, this.leftPos + 107, this.topPos + 191,
+    fill(poseStack, this.contentLeftPos, avatarTopPos, this.leftPos + 107, avatarTopPos + 137,
         0xff000000);
-    fill(poseStack, this.leftPos + 8, this.topPos + 55, this.leftPos + 106, this.topPos + 190,
+    fill(poseStack, this.leftPos + 8, avatarTopPos + 1, this.leftPos + 106, avatarTopPos + 136,
         0xffffffff);
 
     // Entity
-    fill(poseStack, this.contentLeftPos, this.topPos + 69, this.leftPos + 107, this.topPos + 206,
+    fill(poseStack, this.contentLeftPos, avatarTopPos + 15, this.leftPos + 107, avatarTopPos + 152,
         0xff000000);
-    fill(poseStack, this.leftPos + 8, this.topPos + 70, this.leftPos + 106, this.topPos + 205,
+    fill(poseStack, this.leftPos + 8, avatarTopPos + 16, this.leftPos + 106, avatarTopPos + 151,
         0xffaaaaaa);
   }
 
