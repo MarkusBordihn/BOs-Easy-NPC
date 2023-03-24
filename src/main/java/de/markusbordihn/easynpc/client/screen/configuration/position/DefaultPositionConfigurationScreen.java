@@ -177,7 +177,7 @@ public class DefaultPositionConfigurationScreen
   @Override
   public void renderBackground(PoseStack poseStack) {
     // Use a more transparent background than the default.
-    if (this.minecraft != null && this.minecraft.level != null) {
+    if (this.clientLevel != null) {
       fillGradient(poseStack, 0, 0, this.width, this.height, 0x55000000, 0x55000000);
       net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(
           new net.minecraftforge.client.event.ScreenEvent.BackgroundRendered(this, poseStack));

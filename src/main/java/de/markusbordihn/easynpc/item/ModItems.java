@@ -21,10 +21,8 @@ package de.markusbordihn.easynpc.item;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.level.material.MaterialColor;
 
 import net.minecraftforge.registries.RegistryObject;
-import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -56,45 +54,38 @@ public class ModItems {
   // Default NPC Entity Spawn Eggs
   private static final String SPAWN_EGG_PREFIX = "_spawn_egg";
 
-  public static final RegistryObject<Item> ALLAY_NPC_SPAWN_EGG =
-      ITEMS.register(Allay.ID + SPAWN_EGG_PREFIX,
-          () -> new ForgeSpawnEggItem(ModEntityType.ALLAY::get, MaterialColor.COLOR_BLUE.col,
-              MaterialColor.COLOR_CYAN.col, new Item.Properties().rarity(Rarity.EPIC)));
+  public static final RegistryObject<Item> ALLAY_NPC_SPAWN_EGG = ITEMS
+      .register(Allay.ID + SPAWN_EGG_PREFIX, () -> new EasyNPCSpawnEggItem(ModEntityType.ALLAY::get,
+          new Item.Properties().rarity(Rarity.EPIC)));
 
-  public static final RegistryObject<Item> FAIRY_NPC_SPAWN_EGG =
-      ITEMS.register(Fairy.ID + SPAWN_EGG_PREFIX,
-          () -> new ForgeSpawnEggItem(ModEntityType.FAIRY::get, MaterialColor.COLOR_RED.col,
-              MaterialColor.COLOR_GREEN.col, new Item.Properties().rarity(Rarity.EPIC)));
+  public static final RegistryObject<Item> FAIRY_NPC_SPAWN_EGG = ITEMS
+      .register(Fairy.ID + SPAWN_EGG_PREFIX, () -> new EasyNPCSpawnEggItem(ModEntityType.FAIRY::get,
+          new Item.Properties().rarity(Rarity.EPIC)));
 
-  public static final RegistryObject<Item> HUMANOID_NPC_SPAWN_EGG =
-      ITEMS.register(Humanoid.ID + SPAWN_EGG_PREFIX,
-          () -> new ForgeSpawnEggItem(ModEntityType.HUMANOID::get, MaterialColor.COLOR_RED.col,
-              MaterialColor.COLOR_GREEN.col, new Item.Properties().rarity(Rarity.EPIC)));
+  public static final RegistryObject<Item> HUMANOID_NPC_SPAWN_EGG = ITEMS.register(
+      Humanoid.ID + SPAWN_EGG_PREFIX, () -> new EasyNPCSpawnEggItem(ModEntityType.HUMANOID::get,
+          new Item.Properties().rarity(Rarity.EPIC)));
 
   public static final RegistryObject<Item> HUMANOID_SLIM_NPC_SPAWN_EGG =
       ITEMS.register(HumanoidSlim.ID + SPAWN_EGG_PREFIX,
-          () -> new ForgeSpawnEggItem(ModEntityType.HUMANOID_SLIM::get, MaterialColor.COLOR_RED.col,
-              MaterialColor.COLOR_PINK.col, new Item.Properties().rarity(Rarity.EPIC)));
+          () -> new EasyNPCSpawnEggItem(ModEntityType.HUMANOID_SLIM::get,
+              new Item.Properties().rarity(Rarity.EPIC)));
 
-  public static final RegistryObject<Item> SKELETON_NPC_SPAWN_EGG =
-      ITEMS.register(Skeleton.ID + SPAWN_EGG_PREFIX,
-          () -> new ForgeSpawnEggItem(ModEntityType.SKELETON::get, MaterialColor.COLOR_BLACK.col,
-              MaterialColor.COLOR_GRAY.col, new Item.Properties().rarity(Rarity.EPIC)));
+  public static final RegistryObject<Item> SKELETON_NPC_SPAWN_EGG = ITEMS.register(
+      Skeleton.ID + SPAWN_EGG_PREFIX, () -> new EasyNPCSpawnEggItem(ModEntityType.SKELETON::get,
+          new Item.Properties().rarity(Rarity.EPIC)));
 
-  public static final RegistryObject<Item> VILLAGER_NPC_SPAWN_EGG =
-      ITEMS.register(Villager.ID + SPAWN_EGG_PREFIX,
-          () -> new ForgeSpawnEggItem(ModEntityType.VILLAGER::get, MaterialColor.COLOR_RED.col,
-              MaterialColor.COLOR_YELLOW.col, new Item.Properties().rarity(Rarity.EPIC)));
+  public static final RegistryObject<Item> VILLAGER_NPC_SPAWN_EGG = ITEMS.register(
+      Villager.ID + SPAWN_EGG_PREFIX, () -> new EasyNPCSpawnEggItem(ModEntityType.VILLAGER::get,
+          new Item.Properties().rarity(Rarity.EPIC)));
 
-  public static final RegistryObject<Item> ZOMBIE_NPC_SPAWN_EGG =
-      ITEMS.register(Zombie.ID + SPAWN_EGG_PREFIX,
-          () -> new ForgeSpawnEggItem(ModEntityType.ZOMBIE::get, MaterialColor.COLOR_RED.col,
-              MaterialColor.COLOR_YELLOW.col, new Item.Properties().rarity(Rarity.EPIC)));
+  public static final RegistryObject<Item> ZOMBIE_NPC_SPAWN_EGG = ITEMS.register(
+      Zombie.ID + SPAWN_EGG_PREFIX, () -> new EasyNPCSpawnEggItem(ModEntityType.ZOMBIE::get,
+          new Item.Properties().rarity(Rarity.EPIC)));
 
   public static final RegistryObject<Item> ZOMBIE_VILLAGER_NPC_SPAWN_EGG =
       ITEMS.register(ZombieVillager.ID + SPAWN_EGG_PREFIX,
-          () -> new ForgeSpawnEggItem(ModEntityType.ZOMBIE_VILLAGER::get,
-              MaterialColor.COLOR_RED.col, +MaterialColor.COLOR_YELLOW.col,
+          () -> new EasyNPCSpawnEggItem(ModEntityType.ZOMBIE_VILLAGER::get,
               new Item.Properties().rarity(Rarity.EPIC)));
 
 }

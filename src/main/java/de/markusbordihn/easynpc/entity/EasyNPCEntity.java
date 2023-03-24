@@ -135,10 +135,10 @@ public class EasyNPCEntity extends EasyNPCEntityData {
         return InteractionResult.PASS;
       }
 
-      // Open configuration menu for creative mode and if no dialog or
+      // Open configuration menu for creative mode and owner if no dialog or
       // interaction action is set or the player is crouching.
       boolean hasInteractionAction = this.hasAction(ActionType.ON_INTERACTION);
-      if (player.isCreative()
+      if ((player.isCreative() || this.isOwner(serverPlayer))
           && ((!this.hasDialog() && !hasInteractionAction) || player.isCrouching())) {
         EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, this);
         return InteractionResult.PASS;

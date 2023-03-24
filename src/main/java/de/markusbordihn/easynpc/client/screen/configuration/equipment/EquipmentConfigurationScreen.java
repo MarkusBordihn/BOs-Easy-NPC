@@ -71,17 +71,17 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
 
     // Armors Slots Left
     if (this.entity.canUseArmor()) {
-      this.blit(poseStack, this.contentLeftPos + 90, this.contentTopPos, 7, 7, 18, 72);
+      blit(poseStack, this.contentLeftPos + 90, this.contentTopPos, 7, 7, 18, 72);
      }
 
     // Main Hand Slot Left
     if (this.entity.canUseMainHand()) {
-      this.blit(poseStack, this.contentLeftPos + 90, this.contentTopPos + 75, 7, 7, 18, 18);
+      blit(poseStack, this.contentLeftPos + 90, this.contentTopPos + 75, 7, 7, 18, 18);
     }
 
     // Off Hand Slot Right
     if (this.entity.canUseOffHand()) {
-      this.blit(poseStack, this.contentLeftPos + 170, this.contentTopPos + 75, 7, 7, 18, 18);
+      blit(poseStack, this.contentLeftPos + 170, this.contentTopPos + 75, 7, 7, 18, 18);
     }
 
     // Player Inventory Slots
