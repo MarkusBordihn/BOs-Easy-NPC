@@ -99,7 +99,6 @@ public class CustomPoseConfigurationScreen
     super.init();
 
     // Default button stats
-    this.defaultPoseButton.active = true;
     this.customPoseButton.active = false;
 
     // Position and size

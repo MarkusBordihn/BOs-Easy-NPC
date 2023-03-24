@@ -19,9 +19,13 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.dialog;
 
+import java.util.Collections;
+import java.util.List;
+
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -37,9 +41,14 @@ import de.markusbordihn.easynpc.network.NetworkMessage;
 public class BasicDialogConfigurationScreen
     extends DialogConfigurationScreen<BasicDialogConfigurationMenu> {
 
+  // Buttons
   protected EditBox dialogBox;
   protected Button saveDialogButton = null;
   protected Button cancelButton = null;
+
+  // Text
+  private List<FormattedCharSequence> textComponents = Collections.emptyList();
+  protected int numberOfTextLines = 1;
 
   public BasicDialogConfigurationScreen(BasicDialogConfigurationMenu menu, Inventory inventory,
       Component component) {
@@ -52,7 +61,6 @@ public class BasicDialogConfigurationScreen
 
     // Default button stats
     this.basicDialogButton.active = false;
-    this.yesNoDialogButton.active = true;
 
     // Dialog
     this.dialogBox = new EditBox(this.font, this.contentLeftPos, this.topPos + 60, 281, 20,
@@ -72,13 +80,28 @@ public class BasicDialogConfigurationScreen
         menuButton(this.rightPos - 120, this.bottomPos - 40, 80, "cancel", onPress -> {
           this.closeScreen();
         }));
+
+    // Pre-format text
+    this.textComponents =
+        this.font.split(Component.translatable(Constants.TEXT_CONFIG_PREFIX + "dialog_placeholder"),
+            this.imageWidth - 20);
+    this.numberOfTextLines = this.textComponents.size();
   }
 
   @Override
   public void render(PoseStack poseStack, int x, int y, float partialTicks) {
     super.render(poseStack, x, y, partialTicks);
+
     this.font.draw(poseStack, Component.translatable(Constants.TEXT_CONFIG_PREFIX + "dialog_text"),
         this.contentLeftPos, this.topPos + 50f, 4210752);
+
+    if (!this.textComponents.isEmpty()) {
+      for (int line = 0; line < this.numberOfTextLines; ++line) {
+        FormattedCharSequence formattedCharSequence = this.textComponents.get(line);
+        this.font.draw(poseStack, formattedCharSequence, leftPos + 15f,
+            topPos + 100f + (line * (font.lineHeight + 2)), Constants.FONT_COLOR_DEFAULT);
+      }
+    }
   }
 
 }

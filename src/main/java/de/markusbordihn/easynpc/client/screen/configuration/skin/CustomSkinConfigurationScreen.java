@@ -175,8 +175,6 @@ public class CustomSkinConfigurationScreen
 
     // Default button stats
     this.customSkinButton.active = false;
-    this.defaultSkinButton.active = true;
-    this.playerSkinButton.active = true;
 
     // Entity specific information.
     this.numOfSkins = CustomTextureManager.getCustomTextureCacheKeys(skinModel).size();
@@ -230,9 +228,9 @@ public class CustomSkinConfigurationScreen
         }));
 
     // Pre-format text
-    this.textComponents = this.font.split(
-        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "custom_skin_text"),
-        this.imageWidth - 20);
+    this.textComponents =
+        this.font.split(Component.translatable(Constants.TEXT_CONFIG_PREFIX + "custom_skin_text"),
+            this.imageWidth - 20);
     this.numberOfTextLines = this.textComponents.size();
   }
 

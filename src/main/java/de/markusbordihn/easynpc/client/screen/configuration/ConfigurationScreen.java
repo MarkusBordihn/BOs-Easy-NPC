@@ -32,6 +32,8 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -40,6 +42,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.config.CommonConfig;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
@@ -50,6 +53,14 @@ import de.markusbordihn.easynpc.skin.SkinModel;
 public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractContainerScreen<T> {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  // Config values
+  protected static final CommonConfig.Config COMMON = CommonConfig.COMMON;
+
+  // General
+  protected final ClientLevel clientLevel;
+  protected final LocalPlayer localPlayer;
+  protected final Minecraft minecraftInstance;
 
   // NPC Entity
   protected final EasyNPCEntity entity;
@@ -75,12 +86,14 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     this.entity = menu.getEntity();
     this.skinModel = this.entity.getSkinModel();
     this.uuid = this.entity.getUUID();
+    this.minecraftInstance = Minecraft.getInstance();
+    this.localPlayer = this.minecraftInstance != null ? this.minecraftInstance.player : null;
+    this.clientLevel = this.minecraftInstance != null ? this.minecraftInstance.level : null;
   }
 
   public void closeScreen() {
-    Minecraft minecraft = this.minecraft;
-    if (minecraft != null) {
-      minecraft.setScreen((Screen) null);
+    if (this.minecraftInstance != null) {
+      this.minecraftInstance.setScreen((Screen) null);
     }
   }
 
@@ -116,7 +129,17 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     return null;
   }
 
-
+  protected boolean hasPermissions(Boolean enabled, Boolean allowInCreative, int permissionLevel) {
+    if (Boolean.FALSE.equals(enabled)) {
+      return false;
+    } else if (Boolean.TRUE.equals(allowInCreative && this.localPlayer != null)
+        && this.localPlayer.isCreative()) {
+      return true;
+    } else if (this.localPlayer != null && this.localPlayer.hasPermissions(permissionLevel)) {
+      return true;
+    }
+    return false;
+  }
 
   @Override
   public void init() {
