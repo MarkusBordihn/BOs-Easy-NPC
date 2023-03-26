@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.model;
+package de.markusbordihn.easynpc.data.model;
 
 public enum ModelPart {
   // @formatter:off

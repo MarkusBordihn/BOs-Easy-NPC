@@ -17,20 +17,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.action;
+package de.markusbordihn.easynpc.data.action;
 
-import de.markusbordihn.easynpc.network.message.MessageActionChange;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 
+import de.markusbordihn.easynpc.network.message.MessageActionChange;
+
 public class ActionData {
 
+  // Action Data Tags
+  public static final String DATA_ACTION_TAG = "Action";
+  public static final String DATA_ACTION_TYPE_TAG = "ActionType";
+  public static final String DATA_ACTION_EXECUTE_AS_USER_TAG = "ActionExecuteAsUser";
+  public static final String DATA_ACTION_ENABLE_DEBUG_TAG = "ActionEnableDebug";
+  public static final String DATA_ACTION_PERMISSION_LEVEL_TAG = "ActionPermissionLevel";
+
+  // Action Data
   private ActionType actionType = ActionType.NONE;
   private String action = "";
   private boolean enableDebug = false;
   private boolean executeAsUser = false;
   private int permissionLevel = 0;
+
+  public ActionData(CompoundTag compoundTag) {
+    this.load(compoundTag);
+  }
 
   public ActionData(ActionType actionType, String action) {
     this(actionType, action, 0);
@@ -100,11 +114,32 @@ public class ActionData {
   }
 
   public boolean hasAction() {
-    return action != null && !this.action.isEmpty();
+    return this.action != null && !this.action.isEmpty();
+  }
+
+  public boolean hasActionType() {
+    return this.actionType != null && this.actionType != ActionType.NONE;
   }
 
   public boolean isValid() {
     return this.actionType != ActionType.NONE && this.hasAction();
+  }
+
+  public void load(CompoundTag compoundTag) {
+    this.actionType = ActionType.valueOf(compoundTag.getString(DATA_ACTION_TYPE_TAG));
+    this.action = compoundTag.getString(DATA_ACTION_TAG);
+    this.permissionLevel = compoundTag.getInt(DATA_ACTION_PERMISSION_LEVEL_TAG);
+    this.executeAsUser = compoundTag.getBoolean(DATA_ACTION_EXECUTE_AS_USER_TAG);
+    this.enableDebug = compoundTag.getBoolean(DATA_ACTION_ENABLE_DEBUG_TAG);
+  }
+
+  public CompoundTag save(CompoundTag compoundTag) {
+    compoundTag.putString(DATA_ACTION_TYPE_TAG, this.getActionType().name());
+    compoundTag.putString(DATA_ACTION_TAG, this.getAction());
+    compoundTag.putInt(DATA_ACTION_PERMISSION_LEVEL_TAG, this.getPermissionLevel());
+    compoundTag.putBoolean(DATA_ACTION_EXECUTE_AS_USER_TAG, this.shouldExecuteAsUser());
+    compoundTag.putBoolean(DATA_ACTION_ENABLE_DEBUG_TAG, this.isDebugEnabled());
+    return compoundTag;
   }
 
   public static void encode(MessageActionChange message, FriendlyByteBuf buffer) {

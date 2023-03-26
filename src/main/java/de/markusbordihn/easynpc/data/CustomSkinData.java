@@ -32,7 +32,7 @@ import net.minecraftforge.fml.loading.FileUtils;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
-import de.markusbordihn.easynpc.skin.SkinModel;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
 
 public class CustomSkinData {
 

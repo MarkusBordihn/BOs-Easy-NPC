@@ -22,8 +22,7 @@ package de.markusbordihn.easynpc.client.texture;
 
 import java.util.Objects;
 import java.util.UUID;
-
-import de.markusbordihn.easynpc.skin.SkinModel;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
 
 public class TextureModelKey {
 

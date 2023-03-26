@@ -32,10 +32,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.action.ActionData;
-import de.markusbordihn.easynpc.action.ActionType;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.SaveButton;
+import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.menu.configuration.action.DialogActionConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 

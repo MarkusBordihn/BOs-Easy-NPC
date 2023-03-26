@@ -35,10 +35,10 @@ import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Pose;
 
+import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.Profession;
-import de.markusbordihn.easynpc.model.ModelPose;
-import de.markusbordihn.easynpc.skin.SkinType;
 
 public class ScreenHelper {
 
