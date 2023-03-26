@@ -36,9 +36,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.loading.FileUtils;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.skin.SkinModel;
-import de.markusbordihn.easynpc.skin.SkinType;
 import de.markusbordihn.easynpc.utils.PlayersUtils;
 
 public class PlayerTextureManager {

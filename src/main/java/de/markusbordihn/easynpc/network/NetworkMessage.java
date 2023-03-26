@@ -26,13 +26,14 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.phys.Vec3;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.action.ActionData;
-import de.markusbordihn.easynpc.action.ActionType;
-import de.markusbordihn.easynpc.dialog.DialogType;
+import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.data.action.ActionType;
+import de.markusbordihn.easynpc.data.dialog.DialogType;
+import de.markusbordihn.easynpc.data.model.ModelPart;
+import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.Profession;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.model.ModelPart;
-import de.markusbordihn.easynpc.model.ModelPose;
 import de.markusbordihn.easynpc.network.message.MessageActionChange;
 import de.markusbordihn.easynpc.network.message.MessageActionDebug;
 import de.markusbordihn.easynpc.network.message.MessageDialogTypeChange;
@@ -51,7 +52,6 @@ import de.markusbordihn.easynpc.network.message.MessageScaleChange;
 import de.markusbordihn.easynpc.network.message.MessageSkinChange;
 import de.markusbordihn.easynpc.network.message.MessageTriggerAction;
 import de.markusbordihn.easynpc.network.message.MessageVariantChange;
-import de.markusbordihn.easynpc.skin.SkinType;
 
 public class NetworkMessage {
 

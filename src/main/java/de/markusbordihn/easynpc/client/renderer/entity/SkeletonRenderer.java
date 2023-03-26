@@ -49,8 +49,8 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.CustomSkeletonModel;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
+import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.npc.Skeleton.Variant;
-import de.markusbordihn.easynpc.model.ModelPose;
 import de.markusbordihn.easynpc.entity.npc.Skeleton;
 
 @OnlyIn(Dist.CLIENT)

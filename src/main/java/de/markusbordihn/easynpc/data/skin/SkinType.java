@@ -17,23 +17,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.dialog;
+package de.markusbordihn.easynpc.data.skin;
 
-public enum DialogType {
+public enum SkinType {
   // @formatter:off
-  BASIC,
-  YES_NO,
-  NONE;
+  DEFAULT,
+  CUSTOM,
+  PLAYER_SKIN,
+  INSECURE_REMOTE_URL,
+  SECURE_REMOTE_URL;
   // @formatter:on
 
-  public static DialogType get(String dialogType) {
-    if (dialogType == null || dialogType.isEmpty()) {
-      return DialogType.NONE;
+  public static SkinType get(String skinType) {
+    if (skinType == null || skinType.isEmpty()) {
+      return SkinType.DEFAULT;
     }
     try {
-      return DialogType.valueOf(dialogType);
+      return SkinType.valueOf(skinType);
     } catch (IllegalArgumentException e) {
-      return DialogType.NONE;
+      return SkinType.DEFAULT;
     }
   }
 }

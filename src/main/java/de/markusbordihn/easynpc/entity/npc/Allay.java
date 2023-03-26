@@ -29,8 +29,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.skin.SkinModel;
 
 public class Allay extends EasyNPCEntity {
 

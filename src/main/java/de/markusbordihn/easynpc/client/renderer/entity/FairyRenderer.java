@@ -43,9 +43,9 @@ import de.markusbordihn.easynpc.client.model.FairyModel;
 import de.markusbordihn.easynpc.client.model.ModModelLayers;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
+import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.npc.Fairy.Variant;
-import de.markusbordihn.easynpc.model.ModelPose;
 
 @OnlyIn(Dist.CLIENT)
 public class FairyRenderer extends HumanoidMobRenderer<EasyNPCEntity, FairyModel<EasyNPCEntity>> {

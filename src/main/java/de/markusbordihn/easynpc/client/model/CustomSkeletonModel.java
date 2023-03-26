@@ -28,8 +28,8 @@ import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.model.ModelPose;
 
 @OnlyIn(Dist.CLIENT)
 public class CustomSkeletonModel<T extends Mob & RangedAttackMob> extends SkeletonModel<T> {

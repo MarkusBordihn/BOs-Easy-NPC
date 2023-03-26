@@ -44,10 +44,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.action.ActionData;
-import de.markusbordihn.easynpc.action.ActionType;
-import de.markusbordihn.easynpc.dialog.DialogType;
-import de.markusbordihn.easynpc.dialog.DialogUtils;
+import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.data.action.ActionType;
+import de.markusbordihn.easynpc.data.dialog.DialogType;
+import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.menu.DialogMenu;
 import de.markusbordihn.easynpc.network.NetworkMessage;

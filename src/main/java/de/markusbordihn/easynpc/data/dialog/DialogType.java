@@ -17,30 +17,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.skin;
+package de.markusbordihn.easynpc.data.dialog;
 
-public enum SkinModel {
+public enum DialogType {
   // @formatter:off
-  ALLAY,
-  FAIRY,
-  HUMANOID,
-  HUMANOID_SLIM,
-  ILLAGER,
-  IRON_GOLEM,
-  SKELETON,
-  VILLAGER,
-  ZOMBIE,
-  ZOMBIE_VILLAGER;
+  BASIC,
+  YES_NO,
+  NONE;
   // @formatter:on
 
-  public static SkinModel get(String skinModel) {
-    if (skinModel == null || skinModel.isEmpty()) {
-      return SkinModel.HUMANOID;
+  public static DialogType get(String dialogType) {
+    if (dialogType == null || dialogType.isEmpty()) {
+      return DialogType.NONE;
     }
     try {
-      return SkinModel.valueOf(skinModel);
+      return DialogType.valueOf(dialogType);
     } catch (IllegalArgumentException e) {
-      return SkinModel.HUMANOID;
+      return DialogType.NONE;
     }
   }
 }

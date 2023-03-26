@@ -17,25 +17,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.skin;
+package de.markusbordihn.easynpc.data.action;
 
-public enum SkinType {
-  // @formatter:off
-  DEFAULT,
-  CUSTOM,
-  PLAYER_SKIN,
-  INSECURE_REMOTE_URL,
-  SECURE_REMOTE_URL;
-  // @formatter:on
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
 
-  public static SkinType get(String skinType) {
-    if (skinType == null || skinType.isEmpty()) {
-      return SkinType.DEFAULT;
+public class ActionUtils {
+
+  public static String parseAction(String text, LivingEntity entity, ServerPlayer player) {
+    if (text == null) {
+      return "";
     }
-    try {
-      return SkinType.valueOf(skinType);
-    } catch (IllegalArgumentException e) {
-      return SkinType.DEFAULT;
+    String output = text;
+    if (!text.startsWith("/")) {
+      text = "/" + text;
     }
+    if (entity != null) {
+      output = output.replace("@npc", entity.getName().getString());
+    }
+    if (player != null) {
+      output = output.replace("@initiator", player.getName().getString());
+    }
+    return output;
   }
+
 }
