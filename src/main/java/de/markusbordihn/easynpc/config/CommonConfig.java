@@ -134,6 +134,7 @@ public class CommonConfig {
       mainConfigurationPermissionLevel =
           builder.comment(getPermissionLevelComment("Main Configuration"))
               .defineInRange("mainConfigurationPermissionLevel", 0, 0, 4);
+      builder.pop();
 
       builder.push("Basic Action Configuration");
       basicActionConfigurationEnabled = builder.comment("Enable basic action configuration.")

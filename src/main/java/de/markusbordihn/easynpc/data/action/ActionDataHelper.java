@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.action;
+package de.markusbordihn.easynpc.data.action;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -30,11 +30,6 @@ public class ActionDataHelper {
 
   // Action Data Tags
   public static final String DATA_ACTIONS_TAG = "Actions";
-  public static final String DATA_ACTION_TAG = "Action";
-  public static final String DATA_ACTION_TYPE_TAG = "ActionType";
-  public static final String DATA_ACTION_EXECUTE_AS_USER_TAG = "ActionExecuteAsUser";
-  public static final String DATA_ACTION_ENABLE_DEBUG_TAG = "ActionEnableDebug";
-  public static final String DATA_ACTION_PERMISSION_LEVEL_TAG = "ActionPermissionLevel";
 
   public static CompoundTag setAction(CompoundTag compoundTag, ActionType actionType,
       ActionData actionData) {
@@ -85,15 +80,7 @@ public class ActionDataHelper {
         if (actionType != ActionType.NONE) {
           ActionData actionData = actionEntry.getValue();
           if (actionData != null && actionData.hasAction()) {
-            CompoundTag compoundTagAction = new CompoundTag();
-            compoundTagAction.putBoolean(DATA_ACTION_ENABLE_DEBUG_TAG, actionData.isDebugEnabled());
-            compoundTagAction.putBoolean(DATA_ACTION_EXECUTE_AS_USER_TAG,
-                actionData.shouldExecuteAsUser());
-            compoundTagAction.putInt(DATA_ACTION_PERMISSION_LEVEL_TAG,
-                actionData.getPermissionLevel());
-            compoundTagAction.putString(DATA_ACTION_TAG, actionData.getAction());
-            compoundTagAction.putString(DATA_ACTION_TYPE_TAG, actionData.getActionTypeName());
-            listTag.add(compoundTagAction);
+            listTag.add(actionData.save(new CompoundTag()));
           }
         }
       }
@@ -109,20 +96,9 @@ public class ActionDataHelper {
     if (compoundTag.contains(DATA_ACTIONS_TAG)) {
       ListTag listTag = compoundTag.getList(DATA_ACTIONS_TAG, 10);
       for (int i = 0; i < listTag.size(); ++i) {
-        CompoundTag compoundTagAction = listTag.getCompound(i);
-        ActionType actionType = ActionType.get(compoundTagAction.getString(DATA_ACTION_TYPE_TAG));
-        if (actionType != ActionType.NONE) {
-          String action = compoundTagAction.getString(DATA_ACTION_TAG);
-          int permissionLevel = compoundTagAction.getInt(DATA_ACTION_PERMISSION_LEVEL_TAG);
-          boolean executeAsUser = compoundTagAction.getBoolean(DATA_ACTION_EXECUTE_AS_USER_TAG);
-          boolean enableDebug = compoundTagAction.getBoolean(DATA_ACTION_ENABLE_DEBUG_TAG);
-          if (action != null && !action.isEmpty()) {
-            ActionData actionData = new ActionData(actionType, action);
-            actionData.setEnableDebug(enableDebug);
-            actionData.setExecuteAsUser(executeAsUser);
-            actionData.setPermissionLevel(permissionLevel);
-            actions.put(actionType, actionData);
-          }
+        ActionData actionData = new ActionData(listTag.getCompound(i));
+        if (actionData.hasActionType() && actionData.hasAction()) {
+          actions.put(actionData.getActionType(), actionData);
         }
       }
     }

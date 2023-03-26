@@ -26,9 +26,9 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 
-import de.markusbordihn.easynpc.action.ActionData;
-import de.markusbordihn.easynpc.action.ActionDataHelper;
-import de.markusbordihn.easynpc.action.ActionType;
+import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.data.action.ActionDataHelper;
+import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
 
 public interface EntityActionData extends EntityDataInterface {
@@ -65,7 +65,7 @@ public interface EntityActionData extends EntityDataInterface {
     return ActionDataHelper.hasAction(getEntityData(DATA_ACTION_DATA), actionType);
   }
 
-  default Map<ActionType, de.markusbordihn.easynpc.action.ActionData> getActions() {
+  default Map<ActionType, de.markusbordihn.easynpc.data.action.ActionData> getActions() {
     return ActionDataHelper.readActionData(getEntityData(DATA_ACTION_DATA));
   }
 
