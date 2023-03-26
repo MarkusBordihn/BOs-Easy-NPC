@@ -17,28 +17,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.action;
+package de.markusbordihn.easynpc.data.action;
 
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.LivingEntity;
+public enum ActionType {
+  // @formatter:off
+  NONE,
+  ON_CLOSE_DIALOG,
+  ON_INTERACTION,
+  ON_NO_SELECTION,
+  ON_OPEN_DIALOG,
+  ON_YES_SELECTION;
+  // @formatter:on
 
-public class ActionUtils {
-
-  public static String parseAction(String text, LivingEntity entity, ServerPlayer player) {
-    if (text == null) {
-      return "";
+  public static ActionType get(String actionType) {
+    if (actionType == null || actionType.isEmpty()) {
+      return ActionType.NONE;
     }
-    String output = text;
-    if (!text.startsWith("/")) {
-      text = "/" + text;
+    try {
+      return ActionType.valueOf(actionType);
+    } catch (IllegalArgumentException e) {
+      return ActionType.NONE;
     }
-    if (entity != null) {
-      output = output.replace("@npc", entity.getName().getString());
-    }
-    if (player != null) {
-      output = output.replace("@initiator", player.getName().getString());
-    }
-    return output;
   }
-
 }

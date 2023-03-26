@@ -31,8 +31,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
+import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenu;
-import de.markusbordihn.easynpc.model.ModelPose;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 
 @OnlyIn(Dist.CLIENT)

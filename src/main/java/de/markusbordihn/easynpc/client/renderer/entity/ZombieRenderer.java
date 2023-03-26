@@ -51,9 +51,9 @@ import de.markusbordihn.easynpc.client.model.CustomZombieModel;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.OuterLayer;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
+import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.npc.Zombie.Variant;
-import de.markusbordihn.easynpc.model.ModelPose;
 
 @OnlyIn(Dist.CLIENT)
 public class ZombieRenderer extends MobRenderer<EasyNPCEntity, CustomZombieModel<EasyNPCEntity>> {

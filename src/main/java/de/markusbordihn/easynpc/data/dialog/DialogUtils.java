@@ -17,22 +17,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.model;
+package de.markusbordihn.easynpc.data.dialog;
 
-public enum ModelPose {
-  // @formatter:off
-  DEFAULT,
-  CUSTOM;
-  // @formatter:on
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 
-  public static ModelPose get(String modelPose) {
-    if (modelPose == null || modelPose.isEmpty()) {
-      return ModelPose.DEFAULT;
+public class DialogUtils {
+
+  public static String parseDialog(String text, LivingEntity entity, Player player) {
+    String output = text;
+    if (entity != null) {
+      output = output.replace("@npc", entity.getName().getString());
     }
-    try {
-      return ModelPose.valueOf(modelPose);
-    } catch (IllegalArgumentException e) {
-      return ModelPose.DEFAULT;
+    if (player != null) {
+      output = output.replace("@initiator", player.getName().getString());
     }
+    return output;
   }
+
 }

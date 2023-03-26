@@ -37,10 +37,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
-
-import de.markusbordihn.easynpc.action.ActionData;
-import de.markusbordihn.easynpc.action.ActionType;
 import de.markusbordihn.easynpc.commands.CommandManager;
+import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.entity.ai.goal.CustomLookAtPlayerGoal;
 import de.markusbordihn.easynpc.entity.ai.goal.ResetLookAtPlayerGoal;
 import de.markusbordihn.easynpc.item.ModItems;
@@ -81,6 +80,10 @@ public class EasyNPCEntity extends EasyNPCEntityData {
       CommandManager.executeEntityCommand(actionData.getAction(this, serverPlayer), this,
           permissionLevel, actionData.isDebugEnabled());
     }
+  }
+
+  public void openMainConfigurationMenu(ServerPlayer serverPlayer) {
+    EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, this);
   }
 
   @Override
@@ -131,7 +134,7 @@ public class EasyNPCEntity extends EasyNPCEntityData {
       // Open configuration menu for EasyNPC wand item in hand.
       ItemStack handItem = player.getItemInHand(hand);
       if (!handItem.isEmpty() && handItem.getItem() == ModItems.EASY_NPC_WAND.get()) {
-        EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, this);
+        this.openMainConfigurationMenu(serverPlayer);
         return InteractionResult.PASS;
       }
 
@@ -140,7 +143,7 @@ public class EasyNPCEntity extends EasyNPCEntityData {
       boolean hasInteractionAction = this.hasAction(ActionType.ON_INTERACTION);
       if ((player.isCreative() || this.isOwner(serverPlayer))
           && ((!this.hasDialog() && !hasInteractionAction) || player.isCrouching())) {
-        EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, this);
+        this.openMainConfigurationMenu(serverPlayer);
         return InteractionResult.PASS;
       }
 

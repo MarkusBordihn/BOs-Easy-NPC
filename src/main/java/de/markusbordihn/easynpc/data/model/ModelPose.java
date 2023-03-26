@@ -17,26 +17,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.action;
+package de.markusbordihn.easynpc.data.model;
 
-public enum ActionType {
+public enum ModelPose {
   // @formatter:off
-  NONE,
-  ON_CLOSE_DIALOG,
-  ON_INTERACTION,
-  ON_NO_SELECTION,
-  ON_OPEN_DIALOG,
-  ON_YES_SELECTION;
+  DEFAULT,
+  CUSTOM;
   // @formatter:on
 
-  public static ActionType get(String actionType) {
-    if (actionType == null || actionType.isEmpty()) {
-      return ActionType.NONE;
+  public static ModelPose get(String modelPose) {
+    if (modelPose == null || modelPose.isEmpty()) {
+      return ModelPose.DEFAULT;
     }
     try {
-      return ActionType.valueOf(actionType);
+      return ModelPose.valueOf(modelPose);
     } catch (IllegalArgumentException e) {
-      return ActionType.NONE;
+      return ModelPose.DEFAULT;
     }
   }
 }

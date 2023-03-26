@@ -27,9 +27,9 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 
+import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
-import de.markusbordihn.easynpc.skin.SkinModel;
-import de.markusbordihn.easynpc.skin.SkinType;
 
 public interface EntitySkinData extends EntityDataInterface {
 
