@@ -24,7 +24,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 
-import de.markusbordihn.easynpc.dialog.DialogType;
+import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
 
 public interface EntityDialogData extends EntityDataInterface {

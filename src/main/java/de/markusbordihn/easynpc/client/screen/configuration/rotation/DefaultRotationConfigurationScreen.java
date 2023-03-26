@@ -39,8 +39,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.SliderButton;
+import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.menu.configuration.rotation.DefaultRotationConfigurationMenu;
-import de.markusbordihn.easynpc.model.ModelPart;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 
 @OnlyIn(Dist.CLIENT)

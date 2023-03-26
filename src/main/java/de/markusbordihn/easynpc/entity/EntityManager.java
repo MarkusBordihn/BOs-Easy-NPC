@@ -19,11 +19,16 @@
 
 package de.markusbordihn.easynpc.entity;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -75,6 +80,34 @@ public class EntityManager {
 
   public static Entity getEntityByUUID(UUID uuid) {
     return entityMap.getOrDefault(uuid, null);
+  }
+
+  public static ConcurrentMap<UUID, Entity> getEntityMap() {
+    return entityMap;
+  }
+
+  public static Map<UUID, Entity> getEntityMapByOwner(ServerPlayer serverPlayer) {
+    return serverPlayer != null ? getEntityMapByOwner(serverPlayer.getUUID()) : null;
+  }
+
+  public static Map<UUID, Entity> getEntityMapByOwner(UUID ownerUUID) {
+    HashMap<UUID, Entity> result = new HashMap<>();
+    for (var entry : entityMap.entrySet()) {
+      Entity entity = entry.getValue();
+      if (entity instanceof EasyNPCEntity easyNPCEntity && easyNPCEntity.isOwner(ownerUUID)) {
+        result.put(entry.getKey(), entity);
+      }
+    }
+    return result;
+  }
+
+  public static Stream<String> getUUIDStrings() {
+    return entityMap.keySet().stream().map(UUID::toString);
+  }
+
+  public static Stream<String> getUUIDStringsByOwner(ServerPlayer serverPlayer) {
+    Map<UUID, Entity> entityMapByOwner = getEntityMapByOwner(serverPlayer);
+    return entityMapByOwner != null ? entityMapByOwner.keySet().stream().map(UUID::toString) : null;
   }
 
   public static EasyNPCEntity getEasyNPCEntityByUUID(UUID uuid, ServerPlayer serverPlayer) {

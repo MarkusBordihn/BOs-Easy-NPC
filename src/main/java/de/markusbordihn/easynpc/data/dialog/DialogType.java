@@ -17,22 +17,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.dialog;
+package de.markusbordihn.easynpc.data.dialog;
 
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
+public enum DialogType {
+  // @formatter:off
+  BASIC,
+  YES_NO,
+  NONE;
+  // @formatter:on
 
-public class DialogUtils {
-
-  public static String parseDialog(String text, LivingEntity entity, Player player) {
-    String output = text;
-    if (entity != null) {
-      output = output.replace("@npc", entity.getName().getString());
+  public static DialogType get(String dialogType) {
+    if (dialogType == null || dialogType.isEmpty()) {
+      return DialogType.NONE;
     }
-    if (player != null) {
-      output = output.replace("@initiator", player.getName().getString());
+    try {
+      return DialogType.valueOf(dialogType);
+    } catch (IllegalArgumentException e) {
+      return DialogType.NONE;
     }
-    return output;
   }
-
 }

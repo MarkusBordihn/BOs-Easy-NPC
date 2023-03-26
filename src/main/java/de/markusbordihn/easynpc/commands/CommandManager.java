@@ -46,11 +46,11 @@ public class CommandManager {
 
   @SubscribeEvent
   public static void handleRegisterCommandsEvent(RegisterCommandsEvent event) {
-    log.info("Registering /easy-npc commands for {} ...", Constants.MOD_NAME);
+    log.info("Registering {} commands ...", Constants.MOD_COMMAND);
     CommandDispatcher<CommandSourceStack> commandDispatcher = event.getDispatcher();
     commandDispatcher.register(Commands.literal(Constants.MOD_COMMAND)
     // @formatter:off
-
+      .then(ConfigureCommand.register())
     // @formatter:on
     );
   }

@@ -17,29 +17,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.skin;
+package de.markusbordihn.easynpc.data.dialog;
 
-public enum SkinModel {
-  // @formatter:off
-  FAIRY,
-  HUMANOID,
-  HUMANOID_SLIM,
-  ILLAGER,
-  IRON_GOLEM,
-  SKELETON,
-  VILLAGER,
-  ZOMBIE,
-  ZOMBIE_VILLAGER;
-  // @formatter:on
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 
-  public static SkinModel get(String skinModel) {
-    if (skinModel == null || skinModel.isEmpty()) {
-      return SkinModel.HUMANOID;
+public class DialogUtils {
+
+  public static String parseDialog(String text, LivingEntity entity, Player player) {
+    String output = text;
+    if (entity != null) {
+      output = output.replace("@npc", entity.getName().getString());
     }
-    try {
-      return SkinModel.valueOf(skinModel);
-    } catch (IllegalArgumentException e) {
-      return SkinModel.HUMANOID;
+    if (player != null) {
+      output = output.replace("@initiator", player.getName().getString());
     }
+    return output;
   }
+
 }

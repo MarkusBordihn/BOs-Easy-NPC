@@ -37,12 +37,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
-import de.markusbordihn.easynpc.dialog.DialogType;
+import de.markusbordihn.easynpc.data.dialog.DialogType;
+import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
-import de.markusbordihn.easynpc.model.ModelPose;
 import de.markusbordihn.easynpc.network.NetworkMessage;
-import de.markusbordihn.easynpc.skin.SkinType;
 
 @OnlyIn(Dist.CLIENT)
 public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurationMenu> {

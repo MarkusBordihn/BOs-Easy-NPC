@@ -47,9 +47,9 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.CustomPlayerModel;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
+import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.npc.HumanoidSlim.Variant;
-import de.markusbordihn.easynpc.model.ModelPose;
 
 @OnlyIn(Dist.CLIENT)
 public class HumanoidSlimRenderer extends MobRenderer<EasyNPCEntity, CustomPlayerModel<EasyNPCEntity>> {

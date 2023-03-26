@@ -46,7 +46,7 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.loading.FileUtils;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.skin.SkinModel;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.utils.PlayersUtils;
 
 @OnlyIn(Dist.CLIENT)

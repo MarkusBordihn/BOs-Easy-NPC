@@ -75,8 +75,11 @@ public interface EntityOwnerData extends EntityDataInterface {
   }
 
   default boolean isOwner(ServerPlayer serverPlayer) {
-    return serverPlayer != null && this.hasOwner()
-        && serverPlayer.getUUID().equals(this.getOwnerUUID());
+    return serverPlayer != null ? isOwner(serverPlayer.getUUID()) : false;
+  }
+
+  default boolean isOwner(UUID uuid) {
+    return uuid != null && this.hasOwner() && uuid.equals(this.getOwnerUUID());
   }
 
   default void defineSynchedOwnerData() {

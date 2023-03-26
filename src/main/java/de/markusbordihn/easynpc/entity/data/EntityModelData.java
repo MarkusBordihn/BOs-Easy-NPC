@@ -25,8 +25,8 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 
+import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
-import de.markusbordihn.easynpc.model.ModelPose;
 
 public interface EntityModelData extends EntityDataInterface {
 

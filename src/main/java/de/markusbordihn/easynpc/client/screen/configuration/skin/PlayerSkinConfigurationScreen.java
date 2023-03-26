@@ -41,10 +41,10 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.client.texture.TextureModelKey;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.menu.configuration.skin.PlayerSkinConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessage;
-import de.markusbordihn.easynpc.skin.SkinModel;
-import de.markusbordihn.easynpc.skin.SkinType;
 import de.markusbordihn.easynpc.utils.PlayersUtils;
 import de.markusbordihn.easynpc.utils.TextUtils;
 

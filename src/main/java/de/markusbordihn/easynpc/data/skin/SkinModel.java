@@ -17,28 +17,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.model;
+package de.markusbordihn.easynpc.data.skin;
 
-public enum ModelPart {
+public enum SkinModel {
   // @formatter:off
-  HEAD,
-  BODY,
-  LEFT_ARM,
-  RIGHT_ARM,
-  LEFT_LEG,
-  RIGHT_LEG,
-  ROOT,
-  UNKNOWN;
+  FAIRY,
+  HUMANOID,
+  HUMANOID_SLIM,
+  ILLAGER,
+  IRON_GOLEM,
+  SKELETON,
+  VILLAGER,
+  ZOMBIE,
+  ZOMBIE_VILLAGER;
   // @formatter:on
 
-  public static ModelPart get(String modelPart) {
-    if (modelPart == null || modelPart.isEmpty()) {
-      return ModelPart.UNKNOWN;
+  public static SkinModel get(String skinModel) {
+    if (skinModel == null || skinModel.isEmpty()) {
+      return SkinModel.HUMANOID;
     }
     try {
-      return ModelPart.valueOf(modelPart);
+      return SkinModel.valueOf(skinModel);
     } catch (IllegalArgumentException e) {
-      return ModelPart.UNKNOWN;
+      return SkinModel.HUMANOID;
     }
   }
 }

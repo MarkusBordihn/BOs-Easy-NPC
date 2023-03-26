@@ -35,7 +35,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.dialog.DialogType;
+import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 

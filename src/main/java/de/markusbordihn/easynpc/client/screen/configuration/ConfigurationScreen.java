@@ -45,11 +45,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.config.CommonConfig;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.NetworkMessage;
-import de.markusbordihn.easynpc.skin.SkinModel;
 
 @OnlyIn(Dist.CLIENT)
 public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractContainerScreen<T> {
