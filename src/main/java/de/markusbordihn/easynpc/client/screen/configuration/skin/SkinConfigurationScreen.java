@@ -62,16 +62,16 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
         this.buttonTopPos, skinButtonWidth - 2, "default_skin", onPress -> {
           NetworkMessage.openConfiguration(uuid, ConfigurationType.DEFAULT_SKIN);
         }));
-    this.playerSkinButton =
-        this.addRenderableWidget(menuButton(this.buttonLeftPos + this.defaultSkinButton.getWidth(),
-            this.buttonTopPos, skinButtonWidth, "player_skin", onPress -> {
+    this.playerSkinButton = this.addRenderableWidget(
+        menuButton(this.defaultSkinButton.getX() + this.defaultSkinButton.getWidth(),
+            this.buttonTopPos, skinButtonWidth - 6, "player_skin", onPress -> {
               NetworkMessage.openConfiguration(uuid, ConfigurationType.PLAYER_SKIN);
             }));
-    this.customSkinButton = this.addRenderableWidget(menuButton(
-        this.buttonLeftPos + this.defaultSkinButton.getWidth() + this.playerSkinButton.getWidth(),
-        this.buttonTopPos, skinButtonWidth, "custom_skin", onPress -> {
-          NetworkMessage.openConfiguration(uuid, ConfigurationType.CUSTOM_SKIN);
-        }));
+    this.customSkinButton = this.addRenderableWidget(
+        menuButton(this.playerSkinButton.getX() + this.playerSkinButton.getWidth(),
+            this.buttonTopPos, skinButtonWidth + 5, "custom_skin", onPress -> {
+              NetworkMessage.openConfiguration(uuid, ConfigurationType.CUSTOM_SKIN);
+            }));
 
     // Default button stats
     this.customSkinButton.active = this.hasPermissions(COMMON.customSkinConfigurationEnabled.get(),

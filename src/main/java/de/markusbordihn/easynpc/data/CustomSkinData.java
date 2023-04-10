@@ -113,8 +113,7 @@ public class CustomSkinData {
             break;
           case ZOMBIE:
             CustomDataHandler.copyResourceFile(
-                new ResourceLocation(Constants.MOD_ID,
-                    "textures/entity/zombie/zombie_example.png"),
+                new ResourceLocation(Constants.MOD_ID, "textures/entity/zombie/zombie_example.png"),
                 skinModelFolder.resolve("zombie_example.png").toFile());
             break;
           case ZOMBIE_VILLAGER:

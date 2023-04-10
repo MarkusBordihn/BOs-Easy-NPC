@@ -5,6 +5,11 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### 2023.04.10
+
+- Fixed issue with custom texture skins.
+- Improved custom texture screen for better usability.
+
 ### 2023.03.24
 
 - Added config for basic permission system to control the use of specific options.

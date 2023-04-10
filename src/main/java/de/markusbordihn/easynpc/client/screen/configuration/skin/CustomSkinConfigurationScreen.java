@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.skin;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,6 +30,7 @@ import java.util.UUID;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.Util;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.renderer.GameRenderer;
@@ -55,11 +57,13 @@ public class CustomSkinConfigurationScreen
   private Button skinNextPageButton = null;
   private Button skinPreviousButton = null;
   private Button skinPreviousPageButton = null;
+  protected Button skinFolderButton = null;
   protected Button skinReloadButton = null;
   private List<Button> skinButtons = new ArrayList<>();
 
   // Skin Preview
   private static final float SKIN_NAME_SCALING = 0.7f;
+  private static final int ADD_SKIN_RELOAD_DELAY = 5;
   private int skinStartIndex = 0;
   private int maxSkinsPerPage = 5;
 
@@ -70,6 +74,7 @@ public class CustomSkinConfigurationScreen
   // Cache
   protected int numOfSkins = 0;
   protected int lastNumOfSkins = 0;
+  protected static int nextSkinReload = (int) java.time.Instant.now().getEpochSecond();
 
   public CustomSkinConfigurationScreen(CustomSkinConfigurationMenu menu, Inventory inventory,
       Component component) {
@@ -221,10 +226,21 @@ public class CustomSkinConfigurationScreen
         }));
     checkSkinButtonState();
 
+    // Open Skin Folder Button
+    Path skinModelFolder = CustomSkinData.getSkinDataFolder(skinModel);
+    if (skinModelFolder != null) {
+      this.skinFolderButton = this.addRenderableWidget(menuButton(this.contentLeftPos + 10,
+          skinButtonTop - 114, 263, "open_textures_folder", skinModel.toString(), onPress -> {
+            Util.getPlatform().openFile(skinModelFolder.toFile());
+          }));
+    }
+
     // Skin Reload Button
-    this.skinReloadButton = this.addRenderableWidget(menuButton(this.contentLeftPos + 60,
-        skinButtonTop, 160, Component.literal("Reload Custom Textures"), onPress -> {
+    this.skinReloadButton = this.addRenderableWidget(
+        menuButton(this.contentLeftPos + 60, skinButtonTop, 160, "reload_textures", onPress -> {
           CustomSkinData.refreshRegisterTextureFiles();
+          CustomSkinConfigurationScreen.nextSkinReload =
+              (int) java.time.Instant.now().getEpochSecond() + ADD_SKIN_RELOAD_DELAY;
         }));
 
     // Pre-format text
@@ -246,6 +262,16 @@ public class CustomSkinConfigurationScreen
             topPos + 45f + (line * (font.lineHeight + 2)), Constants.FONT_COLOR_DEFAULT);
       }
     }
+
+    // Throttle the skin reload button.
+    boolean canSkinReload =
+        java.time.Instant.now().getEpochSecond() >= CustomSkinConfigurationScreen.nextSkinReload;
+    if (!canSkinReload) {
+      this.font.draw(poseStack,
+          Component.translatable(Constants.TEXT_CONFIG_PREFIX + "skin_reloading"), leftPos + 55f,
+          topPos + 215f, Constants.FONT_COLOR_RED);
+    }
+    this.skinReloadButton.active = canSkinReload;
 
     // Skins
     this.renderSkins(poseStack);
