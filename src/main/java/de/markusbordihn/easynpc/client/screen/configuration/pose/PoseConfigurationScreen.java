@@ -49,13 +49,13 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
     // Pose Types
     int poseButtonWidth = 80;
     this.defaultPoseButton = this.addRenderableWidget(menuButton(this.buttonLeftPos,
-        this.buttonTopPos, poseButtonWidth, "default_pose", button -> {
+        this.buttonTopPos, poseButtonWidth - 10, "default_pose", button -> {
           NetworkMessage.openConfiguration(uuid, ConfigurationType.DEFAULT_POSE);
         }));
 
     this.customPoseButton =
         this.addRenderableWidget(menuButton(this.buttonLeftPos + this.defaultPoseButton.getWidth(),
-            this.buttonTopPos, poseButtonWidth, "custom_pose", button -> {
+            this.buttonTopPos, poseButtonWidth + 20, "custom_pose", button -> {
               NetworkMessage.openConfiguration(uuid, ConfigurationType.CUSTOM_POSE);
             }));
 

@@ -104,6 +104,12 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
         x, y, 4210752);
   }
 
+  protected static Button menuButton(int left, int top, int width, String label, String data,
+      Button.OnPress onPress) {
+    return menuButton(left, top, width,
+        new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + label, data), onPress);
+  }
+
   protected static Button menuButton(int left, int top, int width, String label,
       Button.OnPress onPress) {
     return menuButton(left, top, width,
