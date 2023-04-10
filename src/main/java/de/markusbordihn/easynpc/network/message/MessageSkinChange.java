@@ -107,24 +107,25 @@ public class MessageSkinChange {
     String skinURL = message.getSkinURL();
     UUID skinUUID = message.getSkinUUID();
 
-    // Pre-process skin information, if needed.
-    log.debug("Processing skin:{} uuid:{} url:{} type:{} model:{} for {} from {}", skin, skinUUID, skinURL,
-        skinType, easyNPCEntity.getSkinModel(), easyNPCEntity, serverPlayer);
-
     switch (skinType) {
       case CUSTOM:
+        log.debug("Setting custom skin for {} to {} from {}", easyNPCEntity, skinUUID,
+            serverPlayer);
         easyNPCEntity.setSkinType(skinType);
-        easyNPCEntity.setSkin(skin);
+        easyNPCEntity.setSkin("");
         easyNPCEntity.setSkinURL("");
-        easyNPCEntity.setSkinUUID(Constants.BLANK_UUID);
+        easyNPCEntity.setSkinUUID(skinUUID);
         break;
       case DEFAULT:
+        log.debug("Setting default skin for {} to {} from {}", easyNPCEntity, skinType,
+            serverPlayer);
         easyNPCEntity.setSkinType(skinType);
         easyNPCEntity.setSkin("");
         easyNPCEntity.setSkinURL("");
         easyNPCEntity.setSkinUUID(Constants.BLANK_UUID);
         break;
       case PLAYER_SKIN:
+        log.debug("Setting player skin for {} to {} from {}", easyNPCEntity, skinURL, serverPlayer);
         easyNPCEntity.setSkinType(skinType);
         easyNPCEntity.setSkin("");
         easyNPCEntity.setSkinURL(skinURL != null && !skinURL.isBlank() ? skinURL : "");
@@ -140,6 +141,7 @@ public class MessageSkinChange {
         break;
       case INSECURE_REMOTE_URL:
       case SECURE_REMOTE_URL:
+        log.debug("Setting remote skin for {} to {} from {}", easyNPCEntity, skinURL, serverPlayer);
         easyNPCEntity.setSkinType(skinType);
         easyNPCEntity.setSkin("");
         easyNPCEntity.setSkinURL(skinURL != null && !skinURL.isBlank() ? skinURL : skin);
