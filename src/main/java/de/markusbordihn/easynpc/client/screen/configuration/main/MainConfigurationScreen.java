@@ -279,7 +279,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     // Delete Button
     this.removeEntityButton = this.addRenderableWidget(
         menuButton(this.rightPos - 60, this.bottomPos - 30, 50, "delete", onPress -> {
-          deleteNPC();
+          this.deleteNPC();
         }));
     this.removeEntityButton.setFGColor(16733525);
   }

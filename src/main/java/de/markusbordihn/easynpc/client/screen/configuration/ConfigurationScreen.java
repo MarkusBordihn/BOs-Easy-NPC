@@ -108,6 +108,12 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + label), onPress);
   }
 
+  protected static Button menuButton(int left, int top, int width, String label, String data,
+      Button.OnPress onPress) {
+    return menuButton(left, top, width,
+        Component.translatable(Constants.TEXT_CONFIG_PREFIX + label, data), onPress);
+  }
+
   protected static Button menuButton(int left, int top, int width, Component label,
       Button.OnPress onPress) {
     return Button.builder(label, onPress).bounds(left, top, width, 20).build();
