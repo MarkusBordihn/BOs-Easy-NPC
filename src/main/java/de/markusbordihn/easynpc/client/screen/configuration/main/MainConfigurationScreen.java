@@ -56,6 +56,8 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
   protected Button editRotationButton = null;
   protected Button editScalingButton = null;
   protected Button editSkinButton = null;
+  protected Button exportButton = null;
+  protected Button importButton = null;
   protected Button removeEntityButton = null;
   protected Button saveNameButton = null;
   private EditBox nameBox;
@@ -161,6 +163,22 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
         || this.hasPermissions(COMMON.customSkinConfigurationEnabled.get(),
             COMMON.customSkinConfigurationAllowInCreative.get(),
             COMMON.customSkinConfigurationPermissionLevel.get());
+
+    // Import Button
+    this.importButton = this.addRenderableWidget(
+        menuButton(buttonLeftPosition, buttonTopPosition, "import", onPress -> {
+          NetworkMessage.openConfiguration(uuid, ConfigurationType.DEFAULT_PRESET_IMPORT);
+        }));
+
+    // Export Button
+    this.exportButton = this.addRenderableWidget(
+        menuButton(buttonLeftPosition + this.importButton.getWidth() + buttonSpace,
+            buttonTopPosition, "export", onPress -> {
+              NetworkMessage.openConfiguration(uuid, ConfigurationType.CUSTOM_PRESET_EXPORT);
+            }));
+
+    // Move button position down
+    buttonTopPosition = buttonTopPosition + 20 + buttonSpace;
 
     // Dialog Button
     this.editDialogButton = this.addRenderableWidget(
@@ -294,8 +312,13 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
         this.leftPos + 50 - this.xMouse, this.topPos + 90 - this.yMouse, this.entity);
 
     // Entity Type
-    this.font.draw(poseStack, entity.getType().getDescription(), this.contentLeftPos + 2f,
-        this.topPos + 47f, 4210752);
+    float scaleEntityTypeText = 0.8f;
+    poseStack.pushPose();
+    poseStack.scale(scaleEntityTypeText, scaleEntityTypeText, scaleEntityTypeText);
+    this.font.draw(poseStack, entity.getType().getDescription(),
+        (this.contentLeftPos + 3f) / scaleEntityTypeText, (this.topPos + 48f) / scaleEntityTypeText,
+        4210752);
+    poseStack.popPose();
 
     // Owner
     if (this.entity.hasOwner()) {

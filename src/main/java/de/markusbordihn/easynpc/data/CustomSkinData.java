@@ -37,6 +37,7 @@ import de.markusbordihn.easynpc.data.skin.SkinModel;
 public class CustomSkinData {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  protected static final String DATA_FOLDER_NAME = "skin";
 
   protected CustomSkinData() {}
 
@@ -60,7 +61,7 @@ public class CustomSkinData {
     for (SkinModel skinModel : SkinModel.values()) {
       Path skinModelFolder = getSkinDataFolder(skinModel);
       if (skinModelFolder != null) {
-        log.info("{} skin model folder {} at {} ...", Constants.LOG_CREATE_PREFIX, skinModel.name(),
+        log.info("{} skin model folder {} at {} ...", Constants.LOG_CREATE_PREFIX, skinModel,
             skinModelFolder);
 
         // Copy example skin files, if any.
@@ -150,7 +151,7 @@ public class CustomSkinData {
   }
 
   public static Path getSkinDataFolder() {
-    return CustomDataHandler.getOrCreateCustomDataFolder("skin");
+    return CustomDataHandler.getOrCreateCustomDataFolder(DATA_FOLDER_NAME);
   }
 
   public static Path getSkinDataFolder(SkinModel skinModel) {

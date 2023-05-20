@@ -36,6 +36,7 @@ import net.minecraft.world.entity.npc.Npc;
 import net.minecraft.world.level.Level;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.data.EntityActionData;
 import de.markusbordihn.easynpc.entity.data.EntityAttackData;
 import de.markusbordihn.easynpc.entity.data.CustomDataSerializers;
@@ -161,6 +162,25 @@ public class EasyNPCEntityData extends AgeableMob
 
   public void setPreview(boolean isPreview) {
     this.isPreview = isPreview;
+  }
+
+  public CompoundTag exportPreset() {
+    return this.serializeNBT();
+  }
+
+  public void importPreset(CompoundTag compoundTag) {
+    // Reset pose to default, to avoid side effects.
+    this.setPose(Pose.STANDING);
+    this.setModelPose(ModelPose.DEFAULT);
+
+    // If preset contains id and pos then we can import it directly, otherwise we
+    // need to merge it with existing data.
+    if (compoundTag.contains("id") && compoundTag.contains("pos")) {
+      this.deserializeNBT(compoundTag);
+    } else {
+      CompoundTag existingCompoundTag = this.serializeNBT();
+      this.deserializeNBT(existingCompoundTag.merge(compoundTag));
+    }
   }
 
   @Override

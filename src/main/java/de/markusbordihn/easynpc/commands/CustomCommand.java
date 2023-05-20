@@ -34,6 +34,7 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.server.level.ServerPlayer;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.WorldPresetData;
 import de.markusbordihn.easynpc.entity.EntityManager;
 
 public class CustomCommand {
@@ -45,12 +46,18 @@ public class CustomCommand {
   protected static CompletableFuture<Suggestions> suggestEasyNPCs(
       CommandContext<CommandSourceStack> context, SuggestionsBuilder build)
       throws CommandSyntaxException {
-    ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
-
     // Return all EasyNPCs for creative mode and only the EasyNPCs of the player.
+    ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
     return SharedSuggestionProvider
         .suggest(serverPlayer.isCreative() ? EntityManager.getUUIDStrings()
             : EntityManager.getUUIDStringsByOwner(serverPlayer), build);
+  }
+
+  protected static CompletableFuture<Suggestions> suggestPresets(
+      CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {
+    // Return all presets for all easy NPCs.
+    return SharedSuggestionProvider
+        .suggestResource(WorldPresetData.getPresetFilePathResourceLocations(), build);
   }
 
 }
