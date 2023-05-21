@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.equipment;
 
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -37,6 +38,9 @@ import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurat
 @OnlyIn(Dist.CLIENT)
 public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentConfigurationMenu> {
 
+  // Buttons
+  protected Button defaultEquipmentButton;
+
   public EquipmentConfigurationScreen(EquipmentConfigurationMenu menu, Inventory inventory,
       Component component) {
     super(menu, inventory, component);
@@ -45,6 +49,13 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
   @Override
   public void init() {
     super.init();
+
+    // Default button
+    int buttonWidth = 80;
+    this.defaultEquipmentButton = this.addRenderableWidget(
+        menuButton(this.buttonLeftPos, this.buttonTopPos, buttonWidth, "equipment", button -> {
+        }));
+    this.defaultEquipmentButton.active = false;
 
     // Basic Position
     this.inventoryLabelX = 8;

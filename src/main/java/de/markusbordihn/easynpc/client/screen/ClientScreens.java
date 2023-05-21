@@ -37,6 +37,11 @@ import de.markusbordihn.easynpc.client.screen.configuration.main.MainConfigurati
 import de.markusbordihn.easynpc.client.screen.configuration.pose.CustomPoseConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.pose.DefaultPoseConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.position.DefaultPositionConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.preset.ExportCustomPresetConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.preset.ExportWorldPresetConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.preset.ImportCustomPresetConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.preset.ImportDefaultPresetConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.preset.ImportWorldPresetConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.rotation.DefaultRotationConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.scaling.ScalingConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.DefaultSkinConfigurationScreen;
@@ -88,6 +93,18 @@ public class ClientScreens {
       // Position Configuration Screen
       MenuScreens.register(ModMenuTypes.DEFAULT_POSITION_CONFIGURATION_MENU.get(),
           DefaultPositionConfigurationScreen::new);
+
+      // Preset Configuration Screen
+      MenuScreens.register(ModMenuTypes.CUSTOM_EXPORT_PRESET_CONFIGURATION_MENU.get(),
+          ExportCustomPresetConfigurationScreen::new);
+      MenuScreens.register(ModMenuTypes.WORLD_EXPORT_PRESET_CONFIGURATION_MENU.get(),
+          ExportWorldPresetConfigurationScreen::new);
+      MenuScreens.register(ModMenuTypes.CUSTOM_IMPORT_PRESET_CONFIGURATION_MENU.get(),
+          ImportCustomPresetConfigurationScreen::new);
+      MenuScreens.register(ModMenuTypes.DEFAULT_IMPORT_PRESET_CONFIGURATION_MENU.get(),
+          ImportDefaultPresetConfigurationScreen::new);
+      MenuScreens.register(ModMenuTypes.WORLD_IMPORT_PRESET_CONFIGURATION_MENU.get(),
+          ImportWorldPresetConfigurationScreen::new);
 
       // Rotation Configuration Screen
       MenuScreens.register(ModMenuTypes.DEFAULT_ROTATION_CONFIGURATION_MENU.get(),

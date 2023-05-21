@@ -159,8 +159,7 @@ public class SkeletonRenderer extends HumanoidMobRenderer<Skeleton, CustomSkelet
   }
 
   @Override
-  protected void renderNameTag(
-      Skeleton entity, Component component, PoseStack poseStack,
+  protected void renderNameTag(Skeleton entity, Component component, PoseStack poseStack,
       MultiBufferSource multiBufferSource, int color) {
 
     // Model Rotation

@@ -19,17 +19,20 @@
 
 package de.markusbordihn.easynpc.entity;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraftforge.network.NetworkHooks;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.config.CommonConfig;
+import de.markusbordihn.easynpc.data.WorldPresetData;
 import de.markusbordihn.easynpc.menu.DialogMenu;
 import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.action.DialogActionConfigurationMenu;
@@ -41,6 +44,11 @@ import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.pose.CustomPoseConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.position.DefaultPositionConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.preset.CustomExportPresetConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.preset.WorldImportPresetConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.preset.CustomImportPresetConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.preset.DefaultImportPresetConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.preset.WorldExportPresetConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.rotation.DefaultRotationConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.scaling.ScalingConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
@@ -234,6 +242,79 @@ public class EasyNPCEntityMenu {
         COMMON.scalingConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
       NetworkHooks.openScreen(serverPlayer, ScalingConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
+    }
+  }
+
+  public static void openCustomPresetExportConfigurationMenu(ServerPlayer serverPlayer,
+      EasyNPCEntity easyNPCEntity) {
+    if (hasPermissions(serverPlayer, easyNPCEntity,
+        COMMON.customExportPresetConfigurationEnabled.get(),
+        COMMON.customExportPresetConfigurationAllowInCreative.get(),
+        COMMON.customExportPresetConfigurationPermissionLevel.get())) {
+      UUID uuid = easyNPCEntity.getUUID();
+      NetworkHooks.openScreen(serverPlayer,
+          CustomExportPresetConfigurationMenu.getMenuProvider(uuid, easyNPCEntity),
+          buffer -> buffer.writeUUID(uuid));
+    }
+  }
+
+  public static void openWorldPresetExportConfigurationMenu(ServerPlayer serverPlayer,
+      EasyNPCEntity easyNPCEntity) {
+    if (hasPermissions(serverPlayer, easyNPCEntity,
+        COMMON.worldExportPresetConfigurationEnabled.get(),
+        COMMON.worldExportPresetConfigurationAllowInCreative.get(),
+        COMMON.worldExportPresetConfigurationPermissionLevel.get())) {
+      UUID uuid = easyNPCEntity.getUUID();
+      NetworkHooks.openScreen(serverPlayer,
+          WorldExportPresetConfigurationMenu.getMenuProvider(uuid, easyNPCEntity),
+          buffer -> buffer.writeUUID(uuid));
+    }
+  }
+
+  public static void openDefaultPresetImportConfigurationMenu(ServerPlayer serverPlayer,
+      EasyNPCEntity easyNPCEntity) {
+    if (hasPermissions(serverPlayer, easyNPCEntity,
+        COMMON.defaultImportPresetConfigurationEnabled.get(),
+        COMMON.defaultImportPresetConfigurationAllowInCreative.get(),
+        COMMON.defaultImportPresetConfigurationPermissionLevel.get())) {
+      UUID uuid = easyNPCEntity.getUUID();
+      NetworkHooks.openScreen(serverPlayer,
+          DefaultImportPresetConfigurationMenu.getMenuProvider(uuid, easyNPCEntity),
+          buffer -> buffer.writeUUID(uuid));
+    }
+  }
+
+  public static void openServerPresetImportConfigurationMenu(ServerPlayer serverPlayer,
+      EasyNPCEntity easyNPCEntity) {
+    if (hasPermissions(serverPlayer, easyNPCEntity,
+        COMMON.worldImportPresetConfigurationEnabled.get(),
+        COMMON.worldImportPresetConfigurationAllowInCreative.get(),
+        COMMON.worldImportPresetConfigurationPermissionLevel.get())) {
+      UUID uuid = easyNPCEntity.getUUID();
+      List<ResourceLocation> worldPresets =
+          WorldPresetData.getPresetFilePathResourceLocations().toList();
+      NetworkHooks.openScreen(serverPlayer,
+          WorldImportPresetConfigurationMenu.getMenuProvider(uuid, easyNPCEntity, worldPresets),
+          buffer -> {
+            buffer.writeUUID(uuid);
+            buffer.writeVarInt(worldPresets.size());
+            for (ResourceLocation worldPreset : worldPresets) {
+              buffer.writeResourceLocation(worldPreset);
+            }
+          });
+    }
+  }
+
+  public static void openCustomPresetImportConfigurationMenu(ServerPlayer serverPlayer,
+      EasyNPCEntity easyNPCEntity) {
+    if (hasPermissions(serverPlayer, easyNPCEntity,
+        COMMON.customImportPresetConfigurationEnabled.get(),
+        COMMON.customImportPresetConfigurationAllowInCreative.get(),
+        COMMON.customImportPresetConfigurationPermissionLevel.get())) {
+      UUID uuid = easyNPCEntity.getUUID();
+      NetworkHooks.openScreen(serverPlayer,
+          CustomImportPresetConfigurationMenu.getMenuProvider(uuid, easyNPCEntity),
           buffer -> buffer.writeUUID(uuid));
     }
   }

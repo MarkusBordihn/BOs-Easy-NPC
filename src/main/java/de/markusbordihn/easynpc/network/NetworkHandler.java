@@ -23,11 +23,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Pose;
 
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 import de.markusbordihn.easynpc.Constants;
@@ -45,6 +47,11 @@ import de.markusbordihn.easynpc.network.message.MessageNameChange;
 import de.markusbordihn.easynpc.network.message.MessageOpenConfiguration;
 import de.markusbordihn.easynpc.network.message.MessagePoseChange;
 import de.markusbordihn.easynpc.network.message.MessagePositionChange;
+import de.markusbordihn.easynpc.network.message.MessagePresetExport;
+import de.markusbordihn.easynpc.network.message.MessagePresetExportClient;
+import de.markusbordihn.easynpc.network.message.MessagePresetExportWorld;
+import de.markusbordihn.easynpc.network.message.MessagePresetImport;
+import de.markusbordihn.easynpc.network.message.MessagePresetImportWorld;
 import de.markusbordihn.easynpc.network.message.MessageProfessionChange;
 import de.markusbordihn.easynpc.network.message.MessageRemoveNPC;
 import de.markusbordihn.easynpc.network.message.MessageRotationChange;
@@ -60,7 +67,7 @@ public class NetworkHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final String PROTOCOL_VERSION = "8";
+  private static final String PROTOCOL_VERSION = "9";
   public static final SimpleChannel INSTANCE =
       NetworkRegistry.newSimpleChannel(new ResourceLocation(Constants.MOD_ID, "network"),
           () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
@@ -211,11 +218,53 @@ public class NetworkHandler {
       INSTANCE.registerMessage(id++, MessageRemoveNPC.class, (message, buffer) -> {
         buffer.writeUUID(message.getUUID());
       }, buffer -> new MessageRemoveNPC(buffer.readUUID()), MessageRemoveNPC::handle);
+
+      // Export Preset: Client -> Server
+      INSTANCE.registerMessage(id++, MessagePresetExport.class, (message, buffer) -> {
+        buffer.writeUUID(message.getUUID());
+        buffer.writeUtf(message.getName());
+      }, buffer -> new MessagePresetExport(buffer.readUUID(), buffer.readUtf()),
+          MessagePresetExport::handle);
+
+      // Export Preset: Server -> Client
+      INSTANCE.registerMessage(id++, MessagePresetExportClient.class, (message, buffer) -> {
+        buffer.writeUUID(message.getUUID());
+        buffer.writeUtf(message.getName());
+        buffer.writeUtf(message.getSkinModel());
+        buffer.writeUtf(message.getFileName());
+        buffer.writeNbt(message.getData());
+      }, buffer -> new MessagePresetExportClient(buffer.readUUID(), buffer.readUtf(),
+          buffer.readUtf(), buffer.readUtf(), buffer.readNbt()), MessagePresetExportClient::handle);
+
+      // Export Preset World: Client -> Server
+      INSTANCE.registerMessage(id++, MessagePresetExportWorld.class, (message, buffer) -> {
+        buffer.writeUUID(message.getUUID());
+        buffer.writeUtf(message.getName());
+      }, buffer -> new MessagePresetExportWorld(buffer.readUUID(), buffer.readUtf()),
+          MessagePresetExportWorld::handle);
+
+      // Import Preset: Client -> Server
+      INSTANCE.registerMessage(id++, MessagePresetImport.class, (message, buffer) -> {
+        buffer.writeUUID(message.getUUID());
+        buffer.writeNbt(message.getCompoundTag());
+      }, buffer -> new MessagePresetImport(buffer.readUUID(), buffer.readNbt()),
+          MessagePresetImport::handle);
+
+      // Import Preset World: Client -> Server
+      INSTANCE.registerMessage(id++, MessagePresetImportWorld.class, (message, buffer) -> {
+        buffer.writeUUID(message.getUUID());
+        buffer.writeResourceLocation(message.getResourceLocation());
+      }, buffer -> new MessagePresetImportWorld(buffer.readUUID(), buffer.readResourceLocation()),
+          MessagePresetImportWorld::handle);
     });
   }
 
   public static <M> void sendToServer(M message) {
     INSTANCE.sendToServer(message);
+  }
+
+  public static <M> void sendToPlayer(M message, ServerPlayer serverPlayer) {
+    INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), message);
   }
 
 }
