@@ -48,6 +48,9 @@ public final class Constants {
   public static final String TEXT_CONFIG_PREFIX = TEXT_PREFIX + "config.";
   public static final String TEXT_ITEM_PREFIX = TEXT_PREFIX + "item.";
 
+  // Suffices
+  public static final String NPC_NBT_SUFFIX = ".npc.nbt";
+
   // Colors
   public static final int FONT_COLOR_BLACK = 0;
   public static final int FONT_COLOR_DARK_GREEN = 43520;

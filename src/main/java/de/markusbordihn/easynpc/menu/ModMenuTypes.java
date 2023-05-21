@@ -27,10 +27,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.menu.configuration.pose.CustomPoseConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.position.DefaultPositionConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.rotation.DefaultRotationConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.action.DialogActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenu;
@@ -38,6 +34,15 @@ import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfiguratio
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.pose.CustomPoseConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.position.DefaultPositionConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.preset.CustomExportPresetConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.preset.WorldImportPresetConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.preset.CustomImportPresetConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.preset.DefaultImportPresetConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.preset.WorldExportPresetConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.rotation.DefaultRotationConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.scaling.ScalingConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenu;
@@ -97,6 +102,23 @@ public class ModMenuTypes {
   public static final RegistryObject<MenuType<DefaultPositionConfigurationMenu>> DEFAULT_POSITION_CONFIGURATION_MENU =
       MENU_TYPES.register("default_position_configuration_menu",
           () -> IForgeMenuType.create(DefaultPositionConfigurationMenu::new));
+
+  // Preset Configuration
+  public static final RegistryObject<MenuType<CustomExportPresetConfigurationMenu>> CUSTOM_EXPORT_PRESET_CONFIGURATION_MENU =
+      MENU_TYPES.register("custom_export_preset_configuration_menu",
+          () -> IForgeMenuType.create(CustomExportPresetConfigurationMenu::new));
+  public static final RegistryObject<MenuType<WorldExportPresetConfigurationMenu>> WORLD_EXPORT_PRESET_CONFIGURATION_MENU =
+      MENU_TYPES.register("world_export_preset_configuration_menu",
+          () -> IForgeMenuType.create(WorldExportPresetConfigurationMenu::new));
+  public static final RegistryObject<MenuType<CustomImportPresetConfigurationMenu>> CUSTOM_IMPORT_PRESET_CONFIGURATION_MENU =
+      MENU_TYPES.register("custom_import_preset_configuration_menu",
+          () -> IForgeMenuType.create(CustomImportPresetConfigurationMenu::new));
+  public static final RegistryObject<MenuType<DefaultImportPresetConfigurationMenu>> DEFAULT_IMPORT_PRESET_CONFIGURATION_MENU =
+      MENU_TYPES.register("default_import_preset_configuration_menu",
+          () -> IForgeMenuType.create(DefaultImportPresetConfigurationMenu::new));
+  public static final RegistryObject<MenuType<WorldImportPresetConfigurationMenu>> WORLD_IMPORT_PRESET_CONFIGURATION_MENU =
+      MENU_TYPES.register("world_import_preset_configuration_menu",
+          () -> IForgeMenuType.create(WorldImportPresetConfigurationMenu::new));
 
   // Rotation Configuration
   public static final RegistryObject<MenuType<DefaultRotationConfigurationMenu>> DEFAULT_ROTATION_CONFIGURATION_MENU =

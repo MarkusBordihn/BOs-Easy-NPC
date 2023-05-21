@@ -38,12 +38,16 @@ import de.markusbordihn.easynpc.network.NetworkMessage;
 @OnlyIn(Dist.CLIENT)
 public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfigurationMenu> {
 
-  protected SliderButton scaleXSliderButton;
-  protected SliderButton scaleYSliderButton;
-  protected SliderButton scaleZSliderButton;
+  // Buttons
+  protected Button defaultScaleButton;
   protected Button defaultScaleXButton;
   protected Button defaultScaleYButton;
   protected Button defaultScaleZButton;
+
+  // Slider
+  protected SliderButton scaleXSliderButton;
+  protected SliderButton scaleYSliderButton;
+  protected SliderButton scaleZSliderButton;
 
   public ScalingConfigurationScreen(ScalingConfigurationMenu menu, Inventory inventory,
       Component component) {
@@ -53,6 +57,13 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
   @Override
   public void init() {
     super.init();
+
+    // Default button
+    int buttonWidth = 80;
+    this.defaultScaleButton = this.addRenderableWidget(
+        menuButton(this.buttonLeftPos, this.buttonTopPos, buttonWidth, "scaling", button -> {
+        }));
+    this.defaultScaleButton.active = false;
 
     // Basic Position
     this.inventoryLabelX = 8;

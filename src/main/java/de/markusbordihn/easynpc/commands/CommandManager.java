@@ -52,6 +52,7 @@ public class CommandManager {
     commandDispatcher.register(Commands.literal(Constants.MOD_COMMAND)
     // @formatter:off
       .then(ConfigureCommand.register())
+      .then(PresetCommand.register())
     // @formatter:on
     );
   }
@@ -76,9 +77,8 @@ public class CommandManager {
     commands.performCommand(parseResults, command);
   }
 
-  public static void executePlayerCommand(String command,
-      ServerPlayer serverPlayer, int permissionLevel,
-      boolean debug) {
+  public static void executePlayerCommand(String command, ServerPlayer serverPlayer,
+      int permissionLevel, boolean debug) {
     MinecraftServer minecraftServer = ServerLifecycleHooks.getCurrentServer();
     if (minecraftServer == null) {
       return;
@@ -89,8 +89,9 @@ public class CommandManager {
     log.debug("Execute Player {} Command: \"{}\" with permission level {}", serverPlayer, command,
         permissionLevel);
     Commands commands = minecraftServer.getCommands();
-    CommandSourceStack commandSourceStack = minecraftServer.createCommandSourceStack()
-        .withEntity(serverPlayer).withPermission(permissionLevel).withLevel(serverPlayer.getLevel());
+    CommandSourceStack commandSourceStack =
+        minecraftServer.createCommandSourceStack().withEntity(serverPlayer)
+            .withPermission(permissionLevel).withLevel(serverPlayer.getLevel());
     CommandDispatcher<CommandSourceStack> commandDispatcher = commands.getDispatcher();
     ParseResults<CommandSourceStack> parseResults = commandDispatcher.parse(command,
         debug ? commandSourceStack : commandSourceStack.withSuppressedOutput());

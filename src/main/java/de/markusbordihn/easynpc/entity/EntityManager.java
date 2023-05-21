@@ -59,13 +59,13 @@ public class EntityManager {
     // Only take care of Easy NPC entities.
     Entity entity = event.getEntity();
     if (entity instanceof EasyNPCEntity easyNPCEntity) {
-      log.info("[Add] EASY NPC entity {}: {}", entity.getUUID(), easyNPCEntity);
+      log.debug("[Add] EASY NPC entity {}: {}", entity.getUUID(), easyNPCEntity);
       entityMap.put(entity.getUUID(), entity);
     }
   }
 
   @SubscribeEvent(priority = EventPriority.HIGH)
-  public static void handleEntityJoinWorldEvent(EntityLeaveLevelEvent event) {
+  public static void handleEntityLeaveWorldEvent(EntityLeaveLevelEvent event) {
     // Ignore if event is canceled.
     if (event.isCanceled()) {
       return;
@@ -74,7 +74,7 @@ public class EntityManager {
     // Only take care of Easy NPC entities.
     Entity entity = event.getEntity();
     if (entity instanceof EasyNPCEntity easyNPCEntity && entityMap.containsKey(entity.getUUID())) {
-      log.info("[Remove] EASY NPC entity {}: {}", entity.getUUID(), easyNPCEntity);
+      log.debug("[Remove] EASY NPC entity {}: {}", entity.getUUID(), easyNPCEntity);
       entityMap.remove(entity.getUUID());
     }
   }

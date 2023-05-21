@@ -26,44 +26,58 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.server.level.ServerPlayer;
+
 import net.minecraftforge.network.NetworkEvent;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
-public class MessageRemoveNPC {
+public class MessagePresetExport {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   protected final UUID uuid;
+  protected final String name;
 
-  public MessageRemoveNPC(UUID uuid) {
+  public MessagePresetExport(UUID uuid, String name) {
     this.uuid = uuid;
+    this.name = name;
   }
 
   public UUID getUUID() {
     return this.uuid;
   }
 
-  public static void handle(MessageRemoveNPC message,
+  public String getName() {
+    return this.name;
+  }
+
+  public static void handle(MessagePresetExport message,
       Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessageRemoveNPC message, NetworkEvent.Context context) {
+  public static void handlePacket(MessagePresetExport message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
     if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
       return;
     }
 
+    // Validate name.
+    String name = message.getName();
+    if (name == null || name.isEmpty()) {
+      log.warn("Export preset name is empty for {}", uuid);
+      return;
+    }
+    if (!name.endsWith(Constants.NPC_NBT_SUFFIX)) {
+      name += Constants.NPC_NBT_SUFFIX;
+    }
+
     // Perform action.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    log.info("Removing Easy NPC {} requested by {}", easyNPCEntity, serverPlayer);
-    easyNPCEntity.discard();
+    NetworkMessage.exportPresetClient(uuid, name, serverPlayer);
   }
 
 }

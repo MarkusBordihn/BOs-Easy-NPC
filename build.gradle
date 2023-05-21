@@ -132,7 +132,7 @@ dependencies {
   minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
   // Compability checks
-  runtimeOnly fg.deobf("curse.maven:neat-238372:3878735")
+  // runtimeOnly fg.deobf("curse.maven:neat-238372:3878735")
   // runtimeOnly fg.deobf("curse.maven:carry-on-274259:4375891")
 
   // Integration Tests

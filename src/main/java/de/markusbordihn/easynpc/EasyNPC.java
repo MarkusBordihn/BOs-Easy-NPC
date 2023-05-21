@@ -32,6 +32,7 @@ import de.markusbordihn.easynpc.client.model.ModModelLayers;
 import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
 import de.markusbordihn.easynpc.client.screen.ClientScreens;
 import de.markusbordihn.easynpc.data.CustomDataHandler;
+import de.markusbordihn.easynpc.data.CustomPresetData;
 import de.markusbordihn.easynpc.data.CustomSkinData;
 import de.markusbordihn.easynpc.entity.npc.ModEntityType;
 import de.markusbordihn.easynpc.item.ModItems;
@@ -67,6 +68,7 @@ public class EasyNPC {
       modEventBus.addListener(ModModelLayers::registerEntityLayerDefinitions);
       modEventBus.addListener(ClientRenderer::registerEntityRenderers);
       modEventBus.addListener(ClientScreens::registerScreens);
+      modEventBus.addListener(CustomPresetData::registerCustomPresetData);
       modEventBus.addListener(CustomSkinData::registerCustomSkinData);
     });
   }
