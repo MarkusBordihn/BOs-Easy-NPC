@@ -1,0 +1,11 @@
+diff a/src/main/java/de/markusbordihn/easynpc/client/renderer/entity/HumanoidRenderer.java b/src/main/java/de/markusbordihn/easynpc/client/renderer/entity/HumanoidRenderer.java	(rejected hunks)
+@@ -72,7 +72,8 @@ public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, CustomPlayerMod
+             new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/professor_01.png"));
+         map.put(Variant.SECURITY_01,
+             new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/security_01.png"));
+-
++        map.put(Variant.KNIGHT_01,
++            new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/knight_01.png"));
+       });
+   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.STEVE);
+ 

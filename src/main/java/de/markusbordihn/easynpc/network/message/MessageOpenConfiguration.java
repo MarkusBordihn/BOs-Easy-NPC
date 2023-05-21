@@ -125,6 +125,21 @@ public class MessageOpenConfiguration {
       case YES_NO_DIALOG:
         EasyNPCEntityMenu.openYesNoDialogConfigurationMenu(serverPlayer, easyNPCEntity);
         break;
+      case CUSTOM_PRESET_EXPORT:
+        EasyNPCEntityMenu.openCustomPresetExportConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
+      case WORLD_PRESET_EXPORT:
+        EasyNPCEntityMenu.openWorldPresetExportConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
+      case DEFAULT_PRESET_IMPORT:
+        EasyNPCEntityMenu.openDefaultPresetImportConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
+      case WORLD_PRESET_IMPORT:
+        EasyNPCEntityMenu.openServerPresetImportConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
+      case CUSTOM_PRESET_IMPORT:
+        EasyNPCEntityMenu.openCustomPresetImportConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
       default:
         log.debug("Unknown dialog {} for {} from {}", dialogName, easyNPCEntity, serverPlayer);
     }
