@@ -21,7 +21,13 @@ package de.markusbordihn.easynpc.network;
 
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.core.Rotations;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.phys.Vec3;
 
@@ -32,17 +38,25 @@ import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.entity.Profession;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.message.MessageActionChange;
 import de.markusbordihn.easynpc.network.message.MessageActionDebug;
 import de.markusbordihn.easynpc.network.message.MessageDialogTypeChange;
+import de.markusbordihn.easynpc.network.message.MessageHelper;
 import de.markusbordihn.easynpc.network.message.MessageModelLockRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPoseChange;
 import de.markusbordihn.easynpc.network.message.MessageNameChange;
 import de.markusbordihn.easynpc.network.message.MessageOpenConfiguration;
 import de.markusbordihn.easynpc.network.message.MessagePoseChange;
 import de.markusbordihn.easynpc.network.message.MessagePositionChange;
+import de.markusbordihn.easynpc.network.message.MessagePresetExport;
+import de.markusbordihn.easynpc.network.message.MessagePresetExportClient;
+import de.markusbordihn.easynpc.network.message.MessagePresetExportWorld;
+import de.markusbordihn.easynpc.network.message.MessagePresetImport;
+import de.markusbordihn.easynpc.network.message.MessagePresetImportWorld;
 import de.markusbordihn.easynpc.network.message.MessageProfessionChange;
 import de.markusbordihn.easynpc.network.message.MessageRemoveNPC;
 import de.markusbordihn.easynpc.network.message.MessageRotationChange;
@@ -54,6 +68,8 @@ import de.markusbordihn.easynpc.network.message.MessageTriggerAction;
 import de.markusbordihn.easynpc.network.message.MessageVariantChange;
 
 public class NetworkMessage {
+
+  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   protected NetworkMessage() {}
 
@@ -198,6 +214,53 @@ public class NetworkMessage {
   public static void variantChange(UUID uuid, Enum<?> variant) {
     if (uuid != null && variant != null) {
       NetworkHandler.sendToServer(new MessageVariantChange(uuid, variant.name()));
+    }
+  }
+
+  /** Export preset to player */
+  public static void exportPreset(UUID uuid, String name) {
+    if (uuid != null && name != null && !name.isEmpty()) {
+      NetworkHandler.sendToServer(new MessagePresetExport(uuid, name));
+    }
+  }
+
+  /** Export preset to player */
+  public static void exportPresetWorld(UUID uuid, String name) {
+    if (uuid != null && name != null && !name.isEmpty()) {
+      NetworkHandler.sendToServer(new MessagePresetExportWorld(uuid, name));
+    }
+  }
+
+  /** Export preset to player */
+  public static void exportPresetClient(UUID uuid, String name, ServerPlayer serverPlayer) {
+    if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
+      return;
+    }
+    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    if (uuid != null && easyNPCEntity != null) {
+      log.info("Exporting preset for {} to {}", easyNPCEntity.getName().getString(),
+          serverPlayer.getName().getString());
+      NetworkHandler.sendToPlayer(
+          new MessagePresetExportClient(uuid, easyNPCEntity.getName().getString(),
+              easyNPCEntity.getSkinModel().name(), name, easyNPCEntity.exportPreset()),
+          serverPlayer);
+    }
+  }
+
+  public static void exportPresetClient(UUID uuid, ServerPlayer serverPlayer) {
+    exportPresetClient(uuid, uuid.toString(), serverPlayer);
+  }
+
+  /** Import preset from player */
+  public static void importWorldPreset(UUID uuid, ResourceLocation resourceLocation) {
+    if (uuid != null && resourceLocation != null) {
+      NetworkHandler.sendToServer(new MessagePresetImportWorld(uuid, resourceLocation));
+    }
+  }
+
+  public static void importPreset(UUID uuid, CompoundTag compoundTag) {
+    if (uuid != null && compoundTag != null) {
+      NetworkHandler.sendToServer(new MessagePresetImport(uuid, compoundTag));
     }
   }
 

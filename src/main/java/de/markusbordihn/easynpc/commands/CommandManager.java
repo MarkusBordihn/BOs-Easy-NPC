@@ -51,6 +51,7 @@ public class CommandManager {
     commandDispatcher.register(Commands.literal(Constants.MOD_COMMAND)
     // @formatter:off
       .then(ConfigureCommand.register())
+      .then(PresetCommand.register())
     // @formatter:on
     );
   }

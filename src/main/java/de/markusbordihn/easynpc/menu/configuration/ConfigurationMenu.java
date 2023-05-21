@@ -60,8 +60,8 @@ public class ConfigurationMenu extends AbstractContainerMenu {
         : EntityManager.getEasyNPCEntityByUUID(uuid, (ServerPlayer) player);
     this.skinModel = this.entity.getSkinModel();
 
-    log.debug("Open configuration menu for {}: {} with player inventory {}", this.uuid, this.entity,
-        playerInventory);
+    log.debug("Open configuration menu {} for {}: {} with player inventory {}", menuType, this.uuid,
+        this.entity, playerInventory);
   }
 
   public EasyNPCEntity getEntity() {

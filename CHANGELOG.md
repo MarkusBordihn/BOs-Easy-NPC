@@ -5,6 +5,16 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### 2023.05.20
+
+- Added custom export and import functionality for NPCs over local files to allow easier sharing of NPCs.
+- Added world export and import functionality for NPCs over world files to allow easier packing of NPCs.
+- Added default presets for some common NPCs.
+- Added basic knight skin.
+- Improved UI and dialogs for better usability.
+- Improved logging and error handling.
+- Improved documentation and added more examples.
+
 ### 2023.04.10
 
 - Fixed issue with custom texture skins.
