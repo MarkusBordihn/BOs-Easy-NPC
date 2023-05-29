@@ -135,7 +135,6 @@ public class CustomZombieVillagerModel<T extends LivingEntity> extends HumanoidM
 
       if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM
           || easyNPCEntity.getPose() == Pose.CROUCHING) {
-        // Copy all outer model parts to the correct model parts.
         this.hat.copyFrom(this.head);
       } else {
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);

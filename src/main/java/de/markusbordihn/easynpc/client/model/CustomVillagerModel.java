@@ -117,6 +117,7 @@ public class CustomVillagerModel<T extends Entity> extends VillagerModel<T> {
 
       if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM
           || easyNPCEntity.getPose() == Pose.CROUCHING) {
+      } else {
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
       }
     }

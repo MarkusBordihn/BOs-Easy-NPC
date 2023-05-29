@@ -76,8 +76,8 @@ public class CustomModelHelper {
       CustomPosition position, Rotations rotations, boolean visible, float netHeadYaw,
       float headPitch) {
     setPositionRotationVisibility(modelPart, position, rotations, visible);
-    if (visible && rotations != null && rotations.getX() == 0.0f && rotations.getY() == 0.0f
-        && rotations.getZ() == 0.0f) {
+    if (visible && (rotations == null
+        || (rotations.getX() == 0.0f && rotations.getY() == 0.0f && rotations.getZ() == 0.0f))) {
       modelPart.yRot = netHeadYaw * ((float) Math.PI / 180F);
       modelPart.xRot = headPitch * ((float) Math.PI / 180F);
     }
