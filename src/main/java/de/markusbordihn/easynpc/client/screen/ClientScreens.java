@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.client.screen.configuration.dialog.NoneDialogCon
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.YesNoDialogConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.equipment.EquipmentConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.main.MainConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.pose.AdvancedPoseConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.pose.CustomPoseConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.pose.DefaultPoseConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.position.DefaultPositionConfigurationScreen;
@@ -87,6 +88,8 @@ public class ClientScreens {
       // Pose Configuration Screen
       MenuScreens.register(ModMenuTypes.DEFAULT_POSE_CONFIGURATION_MENU.get(),
           DefaultPoseConfigurationScreen::new);
+      MenuScreens.register(ModMenuTypes.ADVANCED_POSE_CONFIGURATION_MENU.get(),
+          AdvancedPoseConfigurationScreen::new);
       MenuScreens.register(ModMenuTypes.CUSTOM_POSE_CONFIGURATION_MENU.get(),
           CustomPoseConfigurationScreen::new);
 

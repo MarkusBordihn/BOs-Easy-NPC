@@ -40,6 +40,7 @@ import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfiguratio
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.pose.AdvancedPoseConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.pose.CustomPoseConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.position.DefaultPositionConfigurationMenu;
@@ -135,6 +136,18 @@ public class EasyNPCEntityMenu {
         COMMON.mainConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
       NetworkHooks.openScreen(serverPlayer, MainConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
+    }
+  }
+
+  public static void openAdvancedPoseConfigurationMenu(ServerPlayer serverPlayer,
+      EasyNPCEntity entity) {
+    if (hasPermissions(serverPlayer, entity, COMMON.advancedPoseConfigurationEnabled.get(),
+        COMMON.advancedPoseConfigurationAllowInCreative.get(),
+        COMMON.advancedPoseConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      NetworkHooks.openScreen(serverPlayer,
+          AdvancedPoseConfigurationMenu.getMenuProvider(uuid, entity),
           buffer -> buffer.writeUUID(uuid));
     }
   }

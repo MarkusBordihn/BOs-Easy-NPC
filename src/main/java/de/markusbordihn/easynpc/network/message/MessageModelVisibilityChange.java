@@ -25,9 +25,9 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.core.Rotations;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Pose;
+
 import net.minecraftforge.network.NetworkEvent;
 
 import de.markusbordihn.easynpc.Constants;
@@ -36,56 +36,41 @@ import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 
-public class MessageRotationChange {
+public class MessageModelVisibilityChange {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   protected final UUID uuid;
   protected final ModelPart modelPart;
-  protected final Rotations rotations;
+  protected final boolean visible;
 
-  public MessageRotationChange(UUID uuid, ModelPart modelPart, float x, float y, float z) {
-    this(uuid, modelPart, new Rotations(x, y, z));
-  }
-
-  public MessageRotationChange(UUID uuid, ModelPart modelPart, Rotations rotations) {
+  public MessageModelVisibilityChange(UUID uuid, ModelPart modelPart, boolean visible) {
     this.uuid = uuid;
     this.modelPart = modelPart;
-    this.rotations = rotations;
+    this.visible = visible;
   }
 
   public ModelPart getModelPart() {
     return this.modelPart;
   }
 
-  public Rotations getRotations() {
-    return this.rotations;
-  }
-
-  public float getX() {
-    return this.rotations.getX();
-  }
-
-  public float getY() {
-    return this.rotations.getY();
-  }
-
-  public float getZ() {
-    return this.rotations.getZ();
+  public boolean isVisible() {
+    return this.visible;
   }
 
   public UUID getUUID() {
     return this.uuid;
   }
 
-  public static void handle(MessageRotationChange message,
+  public static void handle(MessageModelVisibilityChange message,
       Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessageRotationChange message, NetworkEvent.Context context) {
+  public static void handlePacket(MessageModelVisibilityChange message,
+      NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
     if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
@@ -99,55 +84,50 @@ public class MessageRotationChange {
       return;
     }
 
-    // Validate Rotations.
-    Rotations rotations = message.getRotations();
-    if (rotations == null) {
-      log.error("Invalid rotation {} for {} from {}", rotations, message, serverPlayer);
-      return;
-    }
+    // Validate Visibility.
+    boolean visible = message.isVisible();
 
     // Perform action.
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    log.debug("Change {} rotation to {}° for {} from {}", modelPart, rotations, easyNPCEntity,
+    log.debug("Change {} visibility to {} for {} from {}", modelPart, visible, easyNPCEntity,
         serverPlayer);
     switch (modelPart) {
       case HEAD:
         easyNPCEntity.setPose(Pose.STANDING);
         easyNPCEntity.setModelPose(ModelPose.CUSTOM);
-        easyNPCEntity.setModelHeadRotation(rotations);
+        easyNPCEntity.setModelHeadVisible(visible);
         break;
       case BODY:
         easyNPCEntity.setPose(Pose.STANDING);
         easyNPCEntity.setModelPose(ModelPose.CUSTOM);
-        easyNPCEntity.setModelBodyRotation(rotations);
+        easyNPCEntity.setModelBodyVisible(visible);
         break;
       case ARMS:
         easyNPCEntity.setPose(Pose.STANDING);
         easyNPCEntity.setModelPose(ModelPose.CUSTOM);
-        easyNPCEntity.setModelArmsRotation(rotations);
+        easyNPCEntity.setModelArmsVisible(visible);
         break;
       case LEFT_ARM:
         easyNPCEntity.setPose(Pose.STANDING);
         easyNPCEntity.setModelPose(ModelPose.CUSTOM);
-        easyNPCEntity.setModelLeftArmRotation(rotations);
+        easyNPCEntity.setModelLeftArmVisible(visible);
         break;
       case RIGHT_ARM:
         easyNPCEntity.setPose(Pose.STANDING);
         easyNPCEntity.setModelPose(ModelPose.CUSTOM);
-        easyNPCEntity.setModelRightArmRotation(rotations);
+        easyNPCEntity.setModelRightArmVisible(visible);
         break;
       case LEFT_LEG:
         easyNPCEntity.setPose(Pose.STANDING);
         easyNPCEntity.setModelPose(ModelPose.CUSTOM);
-        easyNPCEntity.setModelLeftLegRotation(rotations);
+        easyNPCEntity.setModelLeftLegVisible(visible);
         break;
       case RIGHT_LEG:
         easyNPCEntity.setPose(Pose.STANDING);
         easyNPCEntity.setModelPose(ModelPose.CUSTOM);
-        easyNPCEntity.setModelRightLegRotation(rotations);
+        easyNPCEntity.setModelRightLegVisible(visible);
         break;
       case ROOT:
-        easyNPCEntity.setModelRootRotation(rotations);
         break;
       default:
         log.error("Invalid modelPart {} for {} from {}", modelPart, message, serverPlayer);
