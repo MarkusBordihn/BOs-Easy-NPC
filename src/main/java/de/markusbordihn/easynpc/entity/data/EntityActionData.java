@@ -36,14 +36,11 @@ public interface EntityActionData extends EntityDataInterface {
   // Synced entity data
   public static final EntityDataAccessor<CompoundTag> DATA_ACTION_DATA =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.COMPOUND_TAG);
-  public static final EntityDataAccessor<Boolean> DATA_ACTION_DEBUG =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.BOOLEAN);
   public static final EntityDataAccessor<Integer> DATA_ACTION_PERMISSION_LEVEL =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.INT);
 
   // CompoundTags
   public static final String DATA_ACTION_DATA_TAG = "ActionData";
-  public static final String DATA_ACTION_DEBUG_TAG = "ActionDebug";
   public static final String DATA_ACTION_PERMISSION_LEVEL_TAG = "ActionPermissionLevel";
 
   default void setAction(ActionType actionType, ActionData actionData) {
@@ -60,6 +57,9 @@ public interface EntityActionData extends EntityDataInterface {
     return ActionDataHelper.getActionData(getEntityData(DATA_ACTION_DATA), actionType);
   }
 
+  default void clearActionData() {
+    setEntityData(DATA_ACTION_DATA, new CompoundTag());
+  }
 
   default boolean hasAction(ActionType actionType) {
     return ActionDataHelper.hasAction(getEntityData(DATA_ACTION_DATA), actionType);
@@ -77,14 +77,6 @@ public interface EntityActionData extends EntityDataInterface {
     setEntityData(DATA_ACTION_DATA, compoundTag);
   }
 
-  default boolean getActionDebug() {
-    return getEntityData(DATA_ACTION_DEBUG);
-  }
-
-  default void setActionDebug(boolean enableDebug) {
-    setEntityData(DATA_ACTION_DEBUG, enableDebug);
-  }
-
   default int getActionPermissionLevel() {
     return getEntityData(DATA_ACTION_PERMISSION_LEVEL);
   }
@@ -95,7 +87,6 @@ public interface EntityActionData extends EntityDataInterface {
 
   default void defineSynchedActionData() {
     defineEntityData(DATA_ACTION_DATA, new CompoundTag());
-    defineEntityData(DATA_ACTION_DEBUG, false);
     defineEntityData(DATA_ACTION_PERMISSION_LEVEL, 0);
   }
 
@@ -103,16 +94,12 @@ public interface EntityActionData extends EntityDataInterface {
     if (ActionDataHelper.hasActionData(getActionData())) {
       compoundTag.put(DATA_ACTION_DATA_TAG, getActionData());
     }
-    compoundTag.putBoolean(DATA_ACTION_DEBUG_TAG, this.getActionDebug());
     compoundTag.putInt(DATA_ACTION_PERMISSION_LEVEL_TAG, this.getActionPermissionLevel());
   }
 
   default void readAdditionalActionData(CompoundTag compoundTag) {
     if (compoundTag.contains(DATA_ACTION_DATA_TAG)) {
       this.setActionData(compoundTag.getCompound(DATA_ACTION_DATA_TAG));
-    }
-    if (compoundTag.contains(DATA_ACTION_DEBUG_TAG)) {
-      this.setActionDebug(compoundTag.getBoolean(DATA_ACTION_DEBUG_TAG));
     }
     if (compoundTag.contains(DATA_ACTION_PERMISSION_LEVEL_TAG)) {
       this.setActionPermissionLevel(compoundTag.getInt(DATA_ACTION_PERMISSION_LEVEL_TAG));

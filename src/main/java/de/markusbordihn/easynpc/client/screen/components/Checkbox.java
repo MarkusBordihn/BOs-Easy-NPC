@@ -49,8 +49,8 @@ public class Checkbox extends AbstractButton {
   private final Font font;
 
   public Checkbox(int left, int top, String label, boolean selected, Checkbox.OnChange onChange) {
-    this(left, top, Component.translatable(Constants.TEXT_CONFIG_PREFIX + label), selected, true,
-        onChange);
+    this(left, top, !label.isBlank() ? Component.translatable(Constants.TEXT_CONFIG_PREFIX + label)
+        : Component.literal(""), selected, true, onChange);
   }
 
   public Checkbox(int left, int top, String label, boolean selected) {

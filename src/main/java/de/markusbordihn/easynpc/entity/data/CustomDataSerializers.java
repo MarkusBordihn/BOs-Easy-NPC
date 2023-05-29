@@ -23,6 +23,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 
+import de.markusbordihn.easynpc.data.CustomPosition;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.skin.SkinType;
@@ -60,6 +61,23 @@ public class CustomDataSerializers {
         }
       };
 
+  public static final EntityDataSerializer<CustomPosition> POSITION =
+      new EntityDataSerializer<CustomPosition>() {
+        public void write(FriendlyByteBuf buffer, CustomPosition position) {
+          buffer.writeFloat(position.x());
+          buffer.writeFloat(position.y());
+          buffer.writeFloat(position.z());
+        }
+
+        public CustomPosition read(FriendlyByteBuf buffer) {
+          return new CustomPosition(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+        }
+
+        public CustomPosition copy(CustomPosition position) {
+          return position;
+        }
+      };
+
   public static final EntityDataSerializer<Profession> PROFESSION =
       new EntityDataSerializer<Profession>() {
         public void write(FriendlyByteBuf buffer, Profession value) {
@@ -93,6 +111,7 @@ public class CustomDataSerializers {
   static {
     EntityDataSerializers.registerSerializer(DIALOG_TYPE);
     EntityDataSerializers.registerSerializer(MODEL_POSE);
+    EntityDataSerializers.registerSerializer(POSITION);
     EntityDataSerializers.registerSerializer(PROFESSION);
     EntityDataSerializers.registerSerializer(SKIN_TYPE);
   }

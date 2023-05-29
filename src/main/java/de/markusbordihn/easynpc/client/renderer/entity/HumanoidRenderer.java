@@ -80,6 +80,8 @@ public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, CustomPlayerMod
             new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/professor_01.png"));
         map.put(Variant.SECURITY_01,
             new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/security_01.png"));
+        map.put(Variant.KNIGHT_01,
+            new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/knight_01.png"));
       });
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.STEVE);
 
@@ -135,10 +137,6 @@ public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, CustomPlayerMod
 
     // Render additional poses
     if (entity.getModelPose() == ModelPose.DEFAULT) {
-
-      // Crouching
-      playerModel.crouching = entity.isCrouching();
-
       switch (entity.getPose()) {
         case DYING:
           poseStack.translate(-1.0D, 0.0D, 0.0D);
