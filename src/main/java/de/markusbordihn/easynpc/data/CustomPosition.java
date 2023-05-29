@@ -17,29 +17,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.model;
+package de.markusbordihn.easynpc.data;
 
-public enum ModelPart {
-  // @formatter:off
-  ARMS,
-  BODY,
-  HEAD,
-  LEFT_ARM,
-  LEFT_LEG,
-  RIGHT_ARM,
-  RIGHT_LEG,
-  ROOT,
-  UNKNOWN;
-  // @formatter:on
+import net.minecraft.nbt.FloatTag;
+import net.minecraft.nbt.ListTag;
 
-  public static ModelPart get(String modelPart) {
-    if (modelPart == null || modelPart.isEmpty()) {
-      return ModelPart.UNKNOWN;
-    }
-    try {
-      return ModelPart.valueOf(modelPart);
-    } catch (IllegalArgumentException e) {
-      return ModelPart.UNKNOWN;
-    }
+public class CustomPosition {
+  protected final float x;
+  protected final float y;
+  protected final float z;
+
+  public CustomPosition(float x, float y, float z) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
   }
+
+  public CustomPosition(ListTag listTag) {
+    this(listTag.getFloat(0), listTag.getFloat(1), listTag.getFloat(2));
+  }
+
+  public ListTag save() {
+    ListTag listTag = new ListTag();
+    listTag.add(FloatTag.valueOf(this.x));
+    listTag.add(FloatTag.valueOf(this.y));
+    listTag.add(FloatTag.valueOf(this.z));
+    return listTag;
+  }
+
+  public float x() {
+    return this.x;
+  }
+
+  public float y() {
+    return this.y;
+  }
+
+  public float z() {
+    return this.z;
+  }
+
+  public boolean isZero() {
+    return this.x == 0 && this.y == 0 && this.z == 0;
+  }
+
 }

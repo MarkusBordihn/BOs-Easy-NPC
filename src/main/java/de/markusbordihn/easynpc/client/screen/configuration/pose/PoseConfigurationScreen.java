@@ -35,6 +35,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
 
   // Buttons
   protected Button defaultPoseButton;
+  protected Button advancedPoseButton;
   protected Button customPoseButton;
 
   public PoseConfigurationScreen(T menu, Inventory inventory, Component component) {
@@ -52,8 +53,14 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
           NetworkMessage.openConfiguration(uuid, ConfigurationType.DEFAULT_POSE);
         }));
 
-    this.customPoseButton =
+    this.advancedPoseButton =
         this.addRenderableWidget(menuButton(this.buttonLeftPos + this.defaultPoseButton.getWidth(),
+            this.buttonTopPos, poseButtonWidth + 20, "advanced_pose", button -> {
+              NetworkMessage.openConfiguration(uuid, ConfigurationType.ADVANCED_POSE);
+            }));
+
+    this.customPoseButton =
+        this.addRenderableWidget(menuButton(advancedPoseButton.x + advancedPoseButton.getWidth(),
             this.buttonTopPos, poseButtonWidth + 20, "custom_pose", button -> {
               NetworkMessage.openConfiguration(uuid, ConfigurationType.CUSTOM_POSE);
             }));
@@ -63,6 +70,10 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
         this.hasPermissions(COMMON.defaultPoseConfigurationEnabled.get(),
             COMMON.defaultPoseConfigurationAllowInCreative.get(),
             COMMON.defaultPoseConfigurationPermissionLevel.get());
+    this.advancedPoseButton.active =
+        this.hasPermissions(COMMON.advancedPoseConfigurationEnabled.get(),
+            COMMON.advancedPoseConfigurationAllowInCreative.get(),
+            COMMON.advancedPoseConfigurationPermissionLevel.get());
     this.customPoseButton.active = this.hasPermissions(COMMON.customPoseConfigurationEnabled.get(),
         COMMON.customPoseConfigurationAllowInCreative.get(),
         COMMON.customPoseConfigurationPermissionLevel.get());

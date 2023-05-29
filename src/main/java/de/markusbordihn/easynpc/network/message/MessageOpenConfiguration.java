@@ -80,6 +80,9 @@ public class MessageOpenConfiguration {
     // Perform action.
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     switch (configurationType) {
+      case ADVANCED_POSE:
+        EasyNPCEntityMenu.openAdvancedPoseConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
       case BASIC_ACTION:
         EasyNPCEntityMenu.openBasicActionConfigurationMenu(serverPlayer, easyNPCEntity);
         break;

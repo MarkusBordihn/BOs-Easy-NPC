@@ -5,6 +5,16 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### 2023.05.29
+
+- Added custom pose editor which supports rotation, position and visibility of the model parts.
+- Added better model animation support for custom poses.
+- Added better NBT format for easier editing and more complex data types.
+- Added crouch pose for models which not support this by default.
+- Improved import and export functionality for NPCs.
+- Improved documentation and added more examples.
+- Cleanup death code for better performance.
+
 ### 2023.05.20
 
 - Added custom export and import functionality for NPCs over local files to allow easier sharing of NPCs.

@@ -163,9 +163,6 @@ public class ActionData {
 
   @Override
   public boolean equals(Object object) {
-    if (this == object) {
-      return true;
-    }
     if (object instanceof ActionData) {
       ActionData actionData = (ActionData) object;
       return this.getActionType() == actionData.getActionType()
@@ -173,6 +170,8 @@ public class ActionData {
           && this.getPermissionLevel() == actionData.getPermissionLevel()
           && this.shouldExecuteAsUser() == actionData.shouldExecuteAsUser()
           && this.isDebugEnabled() == actionData.isDebugEnabled();
+    } else if (this == object) {
+      return true;
     }
     return false;
   }

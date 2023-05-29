@@ -203,6 +203,8 @@ public class ZombieVillagerRenderer
           playerModel.getHead().zRot = 0F;
           break;
       }
+    } else {
+      playerModel.crouching = false;
     }
 
     super.render(entity, entityYaw, partialTicks, poseStack, buffer, light);

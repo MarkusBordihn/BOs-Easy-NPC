@@ -49,13 +49,12 @@ public class Checkbox extends AbstractButton {
   private final Font font;
 
   public Checkbox(int left, int top, String label, boolean selected, Checkbox.OnChange onChange) {
-    this(left, top, Component.translatable(Constants.TEXT_CONFIG_PREFIX + label), selected, true,
-        onChange);
+    this(left, top, !label.isBlank() ? Component.translatable(Constants.TEXT_CONFIG_PREFIX + label)
+        : Component.literal(""), selected, true, onChange);
   }
 
   public Checkbox(int left, int top, String label, boolean selected) {
-    this(left, top, Component.translatable(Constants.TEXT_CONFIG_PREFIX + label), selected,
-        true);
+    this(left, top, Component.translatable(Constants.TEXT_CONFIG_PREFIX + label), selected, true);
   }
 
   public Checkbox(int left, int top, Component component, boolean selected, boolean showLabel) {
@@ -100,7 +99,7 @@ public class Checkbox extends AbstractButton {
   }
 
   @Override
-  public void renderButton(PoseStack poseStack, int p_93844_, int p_93845_, float p_93846_) {
+  public void renderButton(PoseStack poseStack, int unused1, int unused2, float unused3) {
     RenderSystem.setShaderTexture(0, TEXTURE);
     RenderSystem.enableDepthTest();
     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);

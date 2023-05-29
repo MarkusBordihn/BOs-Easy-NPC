@@ -26,6 +26,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.data.action.ActionData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;

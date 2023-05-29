@@ -39,10 +39,11 @@ import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.Profession;
 import de.markusbordihn.easynpc.network.message.MessageActionChange;
-import de.markusbordihn.easynpc.network.message.MessageActionDebug;
 import de.markusbordihn.easynpc.network.message.MessageDialogTypeChange;
 import de.markusbordihn.easynpc.network.message.MessageModelLockRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPoseChange;
+import de.markusbordihn.easynpc.network.message.MessageModelPositionChange;
+import de.markusbordihn.easynpc.network.message.MessageModelVisibilityChange;
 import de.markusbordihn.easynpc.network.message.MessageNameChange;
 import de.markusbordihn.easynpc.network.message.MessageOpenConfiguration;
 import de.markusbordihn.easynpc.network.message.MessagePoseChange;
@@ -67,7 +68,7 @@ public class NetworkHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final String PROTOCOL_VERSION = "9";
+  private static final String PROTOCOL_VERSION = "10";
   public static final SimpleChannel INSTANCE =
       NetworkRegistry.newSimpleChannel(new ResourceLocation(Constants.MOD_ID, "network"),
           () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
@@ -87,13 +88,6 @@ public class NetworkHandler {
         ActionData.encode(message, buffer);
       }, buffer -> new MessageActionChange(buffer.readUUID(), ActionData.decode(buffer)),
           MessageActionChange::handle);
-
-      // Action Debug: Client -> Server
-      INSTANCE.registerMessage(id++, MessageActionDebug.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        buffer.writeBoolean(message.getDebug());
-      }, buffer -> new MessageActionDebug(buffer.readUUID(), buffer.readBoolean()),
-          MessageActionDebug::handle);
 
       // Action Trigger: Client -> Server
       INSTANCE.registerMessage(id++, MessageTriggerAction.class, (message, buffer) -> {
@@ -154,6 +148,26 @@ public class NetworkHandler {
         buffer.writeEnum(message.getModelPose());
       }, buffer -> new MessageModelPoseChange(buffer.readUUID(), buffer.readEnum(ModelPose.class)),
           MessageModelPoseChange::handle);
+
+      // Model Position Change: Client -> Server
+      INSTANCE.registerMessage(id++, MessageModelPositionChange.class, (message, buffer) -> {
+        buffer.writeUUID(message.getUUID());
+        buffer.writeEnum(message.getModelPart());
+        buffer.writeFloat(message.getX());
+        buffer.writeFloat(message.getY());
+        buffer.writeFloat(message.getZ());
+      }, buffer -> new MessageModelPositionChange(buffer.readUUID(),
+          buffer.readEnum(ModelPart.class), buffer.readFloat(), buffer.readFloat(),
+          buffer.readFloat()), MessageModelPositionChange::handle);
+
+      // Model Visibility Change: Client -> Server
+      INSTANCE.registerMessage(id++, MessageModelVisibilityChange.class, (message, buffer) -> {
+        buffer.writeUUID(message.getUUID());
+        buffer.writeEnum(message.getModelPart());
+        buffer.writeBoolean(message.isVisible());
+      }, buffer -> new MessageModelVisibilityChange(buffer.readUUID(),
+          buffer.readEnum(ModelPart.class), buffer.readBoolean()),
+          MessageModelVisibilityChange::handle);
 
       // Pose Change: Client -> Server
       INSTANCE.registerMessage(id++, MessagePoseChange.class, (message, buffer) -> {
@@ -260,11 +274,20 @@ public class NetworkHandler {
   }
 
   public static <M> void sendToServer(M message) {
-    INSTANCE.sendToServer(message);
+    try {
+      INSTANCE.sendToServer(message);
+    } catch (Exception e) {
+      log.error("Failed to send {} to server, got error: {}", message, e.getMessage());
+    }
   }
 
   public static <M> void sendToPlayer(M message, ServerPlayer serverPlayer) {
-    INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), message);
+    try {
+      INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), message);
+    } catch (Exception e) {
+      log.error("Failed to send {} to player {}, got error: {}", message,
+          serverPlayer.getName().getString(), e.getMessage());
+    }
   }
 
 }

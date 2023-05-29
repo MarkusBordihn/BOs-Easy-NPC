@@ -109,6 +109,11 @@ public class CommonConfig {
     public final ForgeConfigSpec.BooleanValue defaultPoseConfigurationAllowInCreative;
     public final ForgeConfigSpec.IntValue defaultPoseConfigurationPermissionLevel;
 
+    private static final String ADVANCED_POSE_CONFIGURATION = "advanced pose";
+    public final ForgeConfigSpec.BooleanValue advancedPoseConfigurationEnabled;
+    public final ForgeConfigSpec.BooleanValue advancedPoseConfigurationAllowInCreative;
+    public final ForgeConfigSpec.IntValue advancedPoseConfigurationPermissionLevel;
+
     public static final String CUSTOM_POSE_CONFIGURATION = "custom pose";
     public final ForgeConfigSpec.BooleanValue customPoseConfigurationEnabled;
     public final ForgeConfigSpec.BooleanValue customPoseConfigurationAllowInCreative;
@@ -280,6 +285,17 @@ public class CommonConfig {
           builder.comment(getPermissionLevelComment(DEFAULT_POSE_CONFIGURATION))
               .defineInRange("defaultPoseConfigurationPermissionLevel", 0, 0, 4);
       builder.pop();
+
+      builder.push("Advanced Pose Configuration");
+      advancedPoseConfigurationEnabled =
+          builder.comment(getEnableComment(ADVANCED_POSE_CONFIGURATION))
+              .define("advancedPoseConfigurationEnabled", true);
+      advancedPoseConfigurationAllowInCreative =
+          builder.comment(getAllowInCreativeComment(ADVANCED_POSE_CONFIGURATION))
+              .define("advancedPoseConfigurationAllowInCreative", true);
+      advancedPoseConfigurationPermissionLevel =
+          builder.comment(getPermissionLevelComment(ADVANCED_POSE_CONFIGURATION))
+              .defineInRange("advancedPoseConfigurationPermissionLevel", 0, 0, 4);
 
       builder.push("Custom Pose Configuration");
       customPoseConfigurationEnabled = builder.comment(getEnableComment(CUSTOM_POSE_CONFIGURATION))
