@@ -33,7 +33,7 @@ public class ActionDataHelper {
 
   public static CompoundTag setAction(CompoundTag compoundTag, ActionType actionType,
       ActionData actionData) {
-    if (actionType != ActionType.NONE) {
+    if (actionType != null && actionType != ActionType.NONE) {
       Map<ActionType, ActionData> actions = readActionData(compoundTag);
       actions.put(actionType, actionData);
       return saveActionData(actions);

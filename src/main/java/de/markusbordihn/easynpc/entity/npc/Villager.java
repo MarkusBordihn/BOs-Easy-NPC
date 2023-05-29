@@ -63,7 +63,12 @@ public class Villager extends EasyNPCEntity {
 
   @Override
   public boolean hasBodyModelPart() {
-    return false;
+    return true;
+  }
+
+  @Override
+  public boolean hasArmsModelPart() {
+    return true;
   }
 
   @Override

@@ -21,6 +21,7 @@
 
   "text.easy_npc.config.actions": "Actions",
   "text.easy_npc.config.add": "Add",
+  "text.easy_npc.config.advanced_pose": "Advanced",
   "text.easy_npc.config.basic_actions": "Basic",
   "text.easy_npc.config.basic_dialog": "Basic",
   "text.easy_npc.config.cancel": "Cancel",
@@ -65,6 +66,7 @@
   "text.easy_npc.config.open_textures_folder": "Open %s Textures Folder",
   "text.easy_npc.config.player_skin": "Player",
   "text.easy_npc.config.pose": "Pose",
+  "text.easy_npc.config.pose.arms": "Arms",
   "text.easy_npc.config.pose.body": "Body",
   "text.easy_npc.config.pose.crouching": "Crouching",
   "text.easy_npc.config.pose.dying": "Dying",
