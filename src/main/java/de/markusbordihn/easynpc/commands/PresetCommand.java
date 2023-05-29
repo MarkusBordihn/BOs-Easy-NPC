@@ -133,13 +133,22 @@ public class PresetCommand extends CustomCommand {
     // Verify compound tag.
     log.info("Importing preset {} {} {} ...", preset, compoundTag, entityType);
 
-    // Spawn entity and overwrite preset values.
+    // Get UUID from compound tag and check if entity with this UUID already exists.
+    UUID uuid = compoundTag.contains("UUID") ? compoundTag.getUUID("UUID") : null;
+    boolean existingUUID = uuid != null && EntityManager.getEasyNPCEntityByUUID(uuid) != null;
+
+    // Spawn entity new and overwrite preset values.
     Entity entity = entityType.create(context.getLevel());
     if (entity instanceof EasyNPCEntity easyNPCEntity) {
       easyNPCEntity.importPreset(compoundTag);
       context.getLevel().addFreshEntity(entity);
-      context.sendSuccess(new TextComponent("Imported preset " + preset + " to " + easyNPCEntity),
-          false);
+      if (existingUUID) {
+        context.sendSuccess(new TextComponent("Updated preset " + preset + " to " + easyNPCEntity),
+            false);
+      } else {
+        context.sendSuccess(new TextComponent("Imported preset " + preset + " to " + easyNPCEntity),
+            false);
+      }
       return Command.SINGLE_SUCCESS;
     } else {
       context.sendFailure(new TextComponent("Preset " + preset + " is not valid!"));

@@ -25,67 +25,69 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.core.Rotations;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Pose;
+
 import net.minecraftforge.network.NetworkEvent;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.CustomPosition;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 
-public class MessageRotationChange {
+public class MessageModelPositionChange {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   protected final UUID uuid;
   protected final ModelPart modelPart;
-  protected final Rotations rotations;
+  protected final CustomPosition position;
 
-  public MessageRotationChange(UUID uuid, ModelPart modelPart, float x, float y, float z) {
-    this(uuid, modelPart, new Rotations(x, y, z));
+  public MessageModelPositionChange(UUID uuid, ModelPart modelPart, float x, float y, float z) {
+    this(uuid, modelPart, new CustomPosition(x, y, z));
   }
 
-  public MessageRotationChange(UUID uuid, ModelPart modelPart, Rotations rotations) {
+  public MessageModelPositionChange(UUID uuid, ModelPart modelPart, CustomPosition position) {
     this.uuid = uuid;
     this.modelPart = modelPart;
-    this.rotations = rotations;
+    this.position = position;
   }
 
   public ModelPart getModelPart() {
     return this.modelPart;
   }
 
-  public Rotations getRotations() {
-    return this.rotations;
+  public CustomPosition getPosition() {
+    return this.position;
   }
 
   public float getX() {
-    return this.rotations.getX();
+    return this.position.x();
   }
 
   public float getY() {
-    return this.rotations.getY();
+    return this.position.y();
   }
 
   public float getZ() {
-    return this.rotations.getZ();
+    return this.position.z();
   }
 
   public UUID getUUID() {
     return this.uuid;
   }
 
-  public static void handle(MessageRotationChange message,
+  public static void handle(MessageModelPositionChange message,
       Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessageRotationChange message, NetworkEvent.Context context) {
+  public static void handlePacket(MessageModelPositionChange message,
+      NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
     if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
@@ -99,55 +101,54 @@ public class MessageRotationChange {
       return;
     }
 
-    // Validate Rotations.
-    Rotations rotations = message.getRotations();
-    if (rotations == null) {
-      log.error("Invalid rotation {} for {} from {}", rotations, message, serverPlayer);
+    // Validate Positions.
+    CustomPosition position = message.getPosition();
+    if (position == null) {
+      log.error("Invalid position {} for {} from {}", position, message, serverPlayer);
       return;
     }
 
     // Perform action.
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    log.debug("Change {} rotation to {}° for {} from {}", modelPart, rotations, easyNPCEntity,
+    log.debug("Change {} position to {}° for {} from {}", modelPart, position, easyNPCEntity,
         serverPlayer);
     switch (modelPart) {
       case HEAD:
         easyNPCEntity.setPose(Pose.STANDING);
         easyNPCEntity.setModelPose(ModelPose.CUSTOM);
-        easyNPCEntity.setModelHeadRotation(rotations);
+        easyNPCEntity.setModelHeadPosition(position);
         break;
       case BODY:
         easyNPCEntity.setPose(Pose.STANDING);
         easyNPCEntity.setModelPose(ModelPose.CUSTOM);
-        easyNPCEntity.setModelBodyRotation(rotations);
+        easyNPCEntity.setModelBodyPosition(position);
         break;
       case ARMS:
         easyNPCEntity.setPose(Pose.STANDING);
         easyNPCEntity.setModelPose(ModelPose.CUSTOM);
-        easyNPCEntity.setModelArmsRotation(rotations);
+        easyNPCEntity.setModelArmsPosition(position);
         break;
       case LEFT_ARM:
         easyNPCEntity.setPose(Pose.STANDING);
         easyNPCEntity.setModelPose(ModelPose.CUSTOM);
-        easyNPCEntity.setModelLeftArmRotation(rotations);
+        easyNPCEntity.setModelLeftArmPosition(position);
         break;
       case RIGHT_ARM:
         easyNPCEntity.setPose(Pose.STANDING);
         easyNPCEntity.setModelPose(ModelPose.CUSTOM);
-        easyNPCEntity.setModelRightArmRotation(rotations);
+        easyNPCEntity.setModelRightArmPosition(position);
         break;
       case LEFT_LEG:
         easyNPCEntity.setPose(Pose.STANDING);
         easyNPCEntity.setModelPose(ModelPose.CUSTOM);
-        easyNPCEntity.setModelLeftLegRotation(rotations);
+        easyNPCEntity.setModelLeftLegPosition(position);
         break;
       case RIGHT_LEG:
         easyNPCEntity.setPose(Pose.STANDING);
         easyNPCEntity.setModelPose(ModelPose.CUSTOM);
-        easyNPCEntity.setModelRightLegRotation(rotations);
+        easyNPCEntity.setModelRightLegPosition(position);
         break;
       case ROOT:
-        easyNPCEntity.setModelRootRotation(rotations);
         break;
       default:
         log.error("Invalid modelPart {} for {} from {}", modelPart, message, serverPlayer);

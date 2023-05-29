@@ -29,6 +29,7 @@ import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
@@ -50,8 +51,10 @@ public class Checkbox extends AbstractButton {
   private final Font font;
 
   public Checkbox(int left, int top, String label, boolean selected, Checkbox.OnChange onChange) {
-    this(left, top, new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + label), selected, true,
-        onChange);
+    this(left, top,
+        !label.isBlank() ? new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + label)
+            : new TextComponent(""),
+        selected, true, onChange);
   }
 
   public Checkbox(int left, int top, String label, boolean selected) {
@@ -101,7 +104,7 @@ public class Checkbox extends AbstractButton {
   }
 
   @Override
-  public void renderButton(PoseStack poseStack, int p_93844_, int p_93845_, float p_93846_) {
+  public void renderButton(PoseStack poseStack, int unused1, int unused2, float unused3) {
     RenderSystem.setShaderTexture(0, TEXTURE);
     RenderSystem.enableDepthTest();
     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);

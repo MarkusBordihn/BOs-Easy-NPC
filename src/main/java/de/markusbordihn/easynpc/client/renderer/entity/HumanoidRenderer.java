@@ -128,10 +128,6 @@ public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, CustomPlayerMod
 
     // Render additional poses
     if (entity.getModelPose() == ModelPose.DEFAULT) {
-
-      // Crouching
-      playerModel.crouching = entity.isCrouching();
-
       switch (entity.getPose()) {
         case DYING:
           poseStack.translate(-1.0D, 0.0D, 0.0D);

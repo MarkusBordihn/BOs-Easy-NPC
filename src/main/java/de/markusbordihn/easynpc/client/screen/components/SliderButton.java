@@ -35,22 +35,34 @@ public class SliderButton extends AbstractSliderButton {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
+  public enum Type {
+    DEGREE, POSITION, SCALE, UNKNOWN
+  }
+
   protected final SliderButton.OnChange onChange;
 
   private float initValue;
   private float minValue;
+  private Type type = Type.UNKNOWN;
   protected float maxValue;
   private float valueFraction;
   private float targetValue;
   private float roundFactor = 100.0f;
 
+  public SliderButton(int x, int y, int width, int height, String name, float initValue, Type type,
+      SliderButton.OnChange onChange) {
+    this(x, y, width, height, new TextComponent(name), initValue, getMinValue(type),
+        getMaxValue(type), onChange, type);
+  }
+
   public SliderButton(int x, int y, int width, int height, String name, float initValue,
-      float minValue, float maxValue, SliderButton.OnChange onChange) {
-    this(x, y, width, height, new TextComponent(name), initValue, minValue, maxValue, onChange);
+      float minValue, float maxValue, SliderButton.OnChange onChange, Type type) {
+    this(x, y, width, height, new TextComponent(name), initValue, minValue, maxValue, onChange,
+        type);
   }
 
   public SliderButton(int x, int y, int width, int height, Component name, float initValue,
-      float minValue, float maxValue, SliderButton.OnChange onChange) {
+      float minValue, float maxValue, SliderButton.OnChange onChange, Type type) {
     super(x, y, width, height, name, initValue);
     this.initValue = initValue;
     this.minValue = minValue;
@@ -62,6 +74,7 @@ public class SliderButton extends AbstractSliderButton {
       this.roundFactor = 1.0f;
     }
     this.onChange = onChange;
+    this.type = type;
     this.updateTargetValue();
     this.updateMessage();
   }
@@ -97,14 +110,50 @@ public class SliderButton extends AbstractSliderButton {
 
   @Override
   protected void updateMessage() {
-    // Round this.value to 2 decimal places and update the message.
-    this.setMessage(new TextComponent(this.targetValue + ""));
+    switch (this.type) {
+      case DEGREE:
+        this.setMessage(new TextComponent(this.targetValue + "°"));
+        break;
+      case SCALE:
+      case POSITION:
+        this.setMessage(new TextComponent(this.targetValue + ""));
+        break;
+      default:
+        this.setMessage(new TextComponent(this.targetValue + ""));
+    }
+
   }
 
   @Override
   protected void applyValue() {
     this.updateTargetValue();
     this.onChange.onChange(this);
+  }
+
+  public static float getMinValue(Type type) {
+    switch (type) {
+      case DEGREE:
+        return -180.0f;
+      case SCALE:
+        return 0.1f;
+      case POSITION:
+        return -16.0f;
+      default:
+        return -100;
+    }
+  }
+
+  public static float getMaxValue(Type type) {
+    switch (type) {
+      case DEGREE:
+        return 180.0f;
+      case SCALE:
+        return 10.0f;
+      case POSITION:
+        return 16.0f;
+      default:
+        return 100;
+    }
   }
 
 }

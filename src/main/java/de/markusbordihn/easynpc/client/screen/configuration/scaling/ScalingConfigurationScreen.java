@@ -79,7 +79,7 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
     // Scale Slider for X
     this.scaleXSliderButton =
         this.addRenderableWidget(new SliderButton(scalePositionLeft, scalePositionTop, scaleWidth,
-            20, new TextComponent("Scale X"), this.entity.getScaleX(), 0.1f, 10f, button -> {
+            20, "scaleX", this.entity.getScaleX(), SliderButton.Type.SCALE, button -> {
               float scale = button.getTargetValue();
               if (entity.getScaleX() != scale) {
                 NetworkMessage.scaleChange(uuid, "x", button.getTargetValue());
@@ -96,7 +96,7 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
     // Scale Slider for Y
     this.scaleYSliderButton = this.addRenderableWidget(
         new SliderButton(scalePositionLeft, scalePositionTop + scalePositionSpace, scaleWidth, 20,
-            new TextComponent("Scale Y"), this.entity.getScaleY(), 0.1f, 10f, button -> {
+            "scaleY", this.entity.getScaleY(), SliderButton.Type.SCALE, button -> {
               float scale = button.getTargetValue();
               if (entity.getScaleY() != scale) {
                 NetworkMessage.scaleChange(uuid, "y", button.getTargetValue());
@@ -114,7 +114,7 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
     // Scale Slider for Z
     this.scaleZSliderButton = this.addRenderableWidget(
         new SliderButton(scalePositionLeft, scalePositionTop + scalePositionSpace * 2, scaleWidth,
-            20, new TextComponent("Scale Z"), this.entity.getScaleZ(), 0.1f, 10f, button -> {
+            20, "scaleZ", this.entity.getScaleZ(), SliderButton.Type.SCALE, button -> {
               float scale = button.getTargetValue();
               if (entity.getScaleZ() != scale) {
                 NetworkMessage.scaleChange(uuid, "z", button.getTargetValue());

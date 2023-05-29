@@ -253,7 +253,15 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
           ModelPose modelPose = entity.getModelPose();
           switch (modelPose) {
             case CUSTOM:
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.CUSTOM_POSE);
+              if (!entity.getModelHeadPosition().isZero() || !entity.getModelBodyPosition().isZero()
+                  || !entity.getModelLeftArmPosition().isZero()
+                  || !entity.getModelRightArmPosition().isZero()
+                  || !entity.getModelLeftLegPosition().isZero()
+                  || !entity.getModelRightLegPosition().isZero()) {
+                NetworkMessage.openConfiguration(uuid, ConfigurationType.CUSTOM_POSE);
+              } else {
+                NetworkMessage.openConfiguration(uuid, ConfigurationType.ADVANCED_POSE);
+              }
               break;
             case DEFAULT:
               NetworkMessage.openConfiguration(uuid, ConfigurationType.DEFAULT_POSE);

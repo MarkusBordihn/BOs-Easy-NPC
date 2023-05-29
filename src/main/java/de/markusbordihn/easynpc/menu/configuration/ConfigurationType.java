@@ -21,6 +21,6 @@ public enum ConfigurationType {
   SCALING,
   WORLD_PRESET_EXPORT,
   WORLD_PRESET_IMPORT,
-  YES_NO_DIALOG,
+  YES_NO_DIALOG, ADVANCED_POSE,
   // @formatter:on
 }

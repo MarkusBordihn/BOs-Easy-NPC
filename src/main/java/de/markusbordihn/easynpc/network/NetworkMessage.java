@@ -32,6 +32,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.phys.Vec3;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.CustomPosition;
 import de.markusbordihn.easynpc.data.action.ActionData;
 import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
@@ -43,11 +44,13 @@ import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.entity.Profession;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.message.MessageActionChange;
-import de.markusbordihn.easynpc.network.message.MessageActionDebug;
+
 import de.markusbordihn.easynpc.network.message.MessageDialogTypeChange;
 import de.markusbordihn.easynpc.network.message.MessageHelper;
 import de.markusbordihn.easynpc.network.message.MessageModelLockRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPoseChange;
+import de.markusbordihn.easynpc.network.message.MessageModelPositionChange;
+import de.markusbordihn.easynpc.network.message.MessageModelVisibilityChange;
 import de.markusbordihn.easynpc.network.message.MessageNameChange;
 import de.markusbordihn.easynpc.network.message.MessageOpenConfiguration;
 import de.markusbordihn.easynpc.network.message.MessagePoseChange;
@@ -80,13 +83,6 @@ public class NetworkMessage {
     }
   }
 
-  /** Send action debug change. */
-  public static void actionDebugChange(UUID uuid, boolean debug) {
-    if (uuid != null) {
-      NetworkHandler.sendToServer(new MessageActionDebug(uuid, debug));
-    }
-  }
-
   /** Send name change. */
   public static void nameChange(UUID uuid, String name) {
     if (uuid != null && name != null && !name.isEmpty()) {
@@ -112,6 +108,20 @@ public class NetworkMessage {
   public static void modelPoseChange(UUID uuid, ModelPose modelPose) {
     if (uuid != null && modelPose != null) {
       NetworkHandler.sendToServer(new MessageModelPoseChange(uuid, modelPose));
+    }
+  }
+
+  /** Send position change. */
+  public static void modelPositionChange(UUID uuid, ModelPart modelPart, CustomPosition position) {
+    if (uuid != null && modelPart != null && position != null) {
+      NetworkHandler.sendToServer(new MessageModelPositionChange(uuid, modelPart, position));
+    }
+  }
+
+  /** Send visibility change. */
+  public static void modelVisibilityChange(UUID uuid, ModelPart modelPart, boolean visible) {
+    if (uuid != null && modelPart != null) {
+      NetworkHandler.sendToServer(new MessageModelVisibilityChange(uuid, modelPart, visible));
     }
   }
 

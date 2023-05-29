@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfiguratio
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.pose.AdvancedPoseConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.pose.CustomPoseConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.position.DefaultPositionConfigurationMenu;
@@ -94,6 +95,9 @@ public class ModMenuTypes {
   public static final RegistryObject<MenuType<DefaultPoseConfigurationMenu>> DEFAULT_POSE_CONFIGURATION_MENU =
       MENU_TYPES.register("default_pose_configuration_menu",
           () -> IForgeMenuType.create(DefaultPoseConfigurationMenu::new));
+  public static final RegistryObject<MenuType<AdvancedPoseConfigurationMenu>> ADVANCED_POSE_CONFIGURATION_MENU =
+      MENU_TYPES.register("advanced_pose_configuration_menu",
+          () -> IForgeMenuType.create(AdvancedPoseConfigurationMenu::new));
   public static final RegistryObject<MenuType<CustomPoseConfigurationMenu>> CUSTOM_POSE_CONFIGURATION_MENU =
       MENU_TYPES.register("custom_pose_configuration_menu",
           () -> IForgeMenuType.create(CustomPoseConfigurationMenu::new));

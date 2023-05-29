@@ -169,18 +169,24 @@ public class EasyNPCEntityData extends AgeableMob
   }
 
   public void importPreset(CompoundTag compoundTag) {
-    // Reset pose to default, to avoid side effects.
+    // Reset action data and pose to default, to avoid side effects.
     this.setPose(Pose.STANDING);
     this.setModelPose(ModelPose.DEFAULT);
+    this.clearActionData();
 
     // If preset contains id and pos then we can import it directly, otherwise we
     // need to merge it with existing data.
-    if (compoundTag.contains("id") && compoundTag.contains("pos")) {
-      this.deserializeNBT(compoundTag);
-    } else {
+    if (!compoundTag.contains("UUID") && !compoundTag.contains("pos")) {
       CompoundTag existingCompoundTag = this.serializeNBT();
-      this.deserializeNBT(existingCompoundTag.merge(compoundTag));
+
+      // Remove existing model data to allow legacy presets to be imported.
+      if (existingCompoundTag.contains(EntityModelData.DATA_MODEL_DATA_TAG)) {
+        existingCompoundTag.remove(EntityModelData.DATA_MODEL_DATA_TAG);
+      }
+      compoundTag = existingCompoundTag.merge(compoundTag);
     }
+
+    this.deserializeNBT(compoundTag);
   }
 
   @Override
@@ -219,6 +225,8 @@ public class EasyNPCEntityData extends AgeableMob
     this.defineSynchedOwnerData();
     this.defineSynchedScaleData();
     this.defineSynchedSkinData();
+
+    // Handle pose, profession and variant.
     this.entityData.define(DATA_PROFESSION, this.getDefaultProfession());
     this.entityData.define(DATA_VARIANT, this.getDefaultVariant().name());
   }
@@ -233,8 +241,12 @@ public class EasyNPCEntityData extends AgeableMob
     this.addAdditionalOwnerData(compoundTag);
     this.addAdditionalScaleData(compoundTag);
     this.addAdditionalSkinData(compoundTag);
-    if (this.getPose() != null) {
+
+    // Handle pose, profession and variant.
+    if (this.getModelPose() == ModelPose.DEFAULT && this.getPose() != null) {
       compoundTag.putString(DATA_POSE_TAG, this.getPose().name());
+    } else {
+      compoundTag.putString(DATA_POSE_TAG, Pose.STANDING.name());
     }
     if (this.getProfession() != null) {
       compoundTag.putString(DATA_PROFESSION_TAG, this.getProfession().name());
@@ -254,12 +266,15 @@ public class EasyNPCEntityData extends AgeableMob
     this.readAdditionalOwnerData(compoundTag);
     this.readAdditionalScaleData(compoundTag);
     this.readAdditionalSkinData(compoundTag);
-    if (compoundTag.contains(DATA_POSE_TAG)) {
+
+    // Handle pose, profession and variant data.
+    if (this.getModelPose() == ModelPose.DEFAULT && compoundTag.contains(DATA_POSE_TAG)) {
       String pose = compoundTag.getString(DATA_POSE_TAG);
       if (pose != null && !pose.isEmpty()) {
         this.setPose(this.getPose(pose));
       }
     }
+
     if (compoundTag.contains(DATA_PROFESSION_TAG)) {
       String profession = compoundTag.getString(DATA_PROFESSION_TAG);
       if (profession != null && !profession.isEmpty()) {

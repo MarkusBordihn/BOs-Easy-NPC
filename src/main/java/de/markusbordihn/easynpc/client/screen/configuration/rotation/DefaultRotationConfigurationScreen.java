@@ -84,9 +84,9 @@ public class DefaultRotationConfigurationScreen
     this.rootRotationZ = rootRotations.getZ();
 
     // Root Rotation X
-    this.rootRotationXSliderButton =
-        this.addRenderableWidget(new SliderButton(this.contentLeftPos, this.contentTopPos, 60, 20,
-            "rootRotationX", (float) Math.toDegrees(rootRotations.getX()), -180f, 180f, slider -> {
+    this.rootRotationXSliderButton = this.addRenderableWidget(
+        new SliderButton(this.contentLeftPos, this.contentTopPos, 60, 20, "rootRotationX",
+            (float) Math.toDegrees(rootRotations.getX()), SliderButton.Type.DEGREE, slider -> {
               this.rootRotationX = (float) Math.toRadians(slider.getTargetValue());
               NetworkMessage.rotationChange(uuid, ModelPart.ROOT,
                   new Rotations(this.rootRotationX, this.rootRotationY, this.rootRotationZ));
@@ -102,7 +102,7 @@ public class DefaultRotationConfigurationScreen
     this.rootRotationYSliderButton = this.addRenderableWidget(new SliderButton(
         this.rootRotationXResetButton.x + this.rootRotationXResetButton.getWidth() + 5,
         this.contentTopPos, 60, 20, "rootRotationY", (float) Math.toDegrees(rootRotations.getY()),
-        -180f, 180f, slider -> {
+        SliderButton.Type.DEGREE, slider -> {
           this.rootRotationY = (float) Math.toRadians(slider.getTargetValue());
           NetworkMessage.rotationChange(uuid, ModelPart.ROOT,
               new Rotations(this.rootRotationX, this.rootRotationY, this.rootRotationZ));
@@ -118,7 +118,7 @@ public class DefaultRotationConfigurationScreen
     this.rootRotationZSliderButton = this.addRenderableWidget(new SliderButton(
         this.rootRotationYResetButton.x + this.rootRotationYResetButton.getWidth() + 5,
         this.contentTopPos, 60, 20, "rootRotationZ", (float) Math.toDegrees(rootRotations.getZ()),
-        -180f, 180f, slider -> {
+        SliderButton.Type.DEGREE, slider -> {
           this.rootRotationZ = (float) Math.toRadians(slider.getTargetValue());
           NetworkMessage.rotationChange(uuid, ModelPart.ROOT,
               new Rotations(this.rootRotationX, this.rootRotationY, this.rootRotationZ));
@@ -131,18 +131,18 @@ public class DefaultRotationConfigurationScreen
             }));
 
     // Lock Root Rotation Checkbox
-    this.rootRotationCheckbox = this.addRenderableWidget(new Checkbox(
-        this.rootRotationZResetButton.x + this.rootRotationZResetButton.getWidth() + 5,
-        this.contentTopPos, 150, 20,
-        new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "lock_rotation")
-            .withStyle(ChatFormatting.WHITE),
-        this.entity.getModelLockRotation()) {
-      @Override
-      public void onPress() {
-        super.onPress();
-        NetworkMessage.modelLockRotationChange(uuid, this.selected());
-      }
-    });
+    this.rootRotationCheckbox = this.addRenderableWidget(
+        new Checkbox(this.rootRotationZResetButton.x + this.rootRotationZResetButton.getWidth() + 5,
+            this.contentTopPos, 150, 20,
+            new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "lock_rotation")
+                .withStyle(ChatFormatting.WHITE),
+            this.entity.getModelLockRotation()) {
+          @Override
+          public void onPress() {
+            super.onPress();
+            NetworkMessage.modelLockRotationChange(uuid, this.selected());
+          }
+        });
   }
 
   @Override

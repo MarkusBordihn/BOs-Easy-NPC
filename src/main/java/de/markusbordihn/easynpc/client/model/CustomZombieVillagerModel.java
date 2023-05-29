@@ -26,8 +26,8 @@ import net.minecraft.client.model.ZombieVillagerModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.core.Rotations;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -62,65 +62,82 @@ public class CustomZombieVillagerModel<T extends LivingEntity> extends HumanoidM
       // Aggressive Animation
       isAggressive = easyNPCEntity.isAggressive();
 
-      // Individual Part Rotations
+      // Reset all rotations to avoid any issues with other mods.
+      CustomModelHelper.resetRotation(this.body);
+      CustomModelHelper.resetRotation(this.head);
+      CustomModelHelper.resetRotation(this.leftArm);
+      CustomModelHelper.resetRotation(this.leftLeg);
+      CustomModelHelper.resetRotation(this.rightArm);
+      CustomModelHelper.resetRotation(this.rightLeg);
+
+      // Reset all positions to avoid any issues with other mods.
+      CustomModelHelper.resetPosition(this.body);
+      CustomModelHelper.resetPosition(this.head);
+      CustomModelHelper.setPosition(this.leftArm, 5.0F, 2.0F, 0.0F);
+      CustomModelHelper.setPosition(this.leftLeg, 1.9F, 12.0F, 0.1F);
+      CustomModelHelper.setPosition(this.rightArm, -5.0F, 2.0F, 0.0F);
+      CustomModelHelper.setPosition(this.rightLeg, -1.9F, 12.0F, 0.1F);
+
+      // Reset all visibility to avoid any issues with other mods.
+      this.body.visible = true;
+      this.head.visible = true;
+      this.leftArm.visible = true;
+      this.leftLeg.visible = true;
+      this.rightArm.visible = true;
+      this.rightLeg.visible = true;
+
+      // Individual Part Modifications
       if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
 
-        Rotations headRotations = easyNPCEntity.getModelHeadRotation();
-        if (headRotations != null) {
-          this.head.xRot = headRotations.getX();
-          this.head.yRot = headRotations.getY();
-          this.head.zRot = headRotations.getZ();
-        }
+        // Head position, rotation and visibility.
+        CustomModelHelper.setHeadPositionRotationVisibility(this.head,
+            easyNPCEntity.getModelHeadPosition(), easyNPCEntity.getModelHeadRotation(),
+            easyNPCEntity.isModelHeadVisible(), netHeadYaw, headPitch);
 
-        Rotations bodyRotations = easyNPCEntity.getModelBodyRotation();
-        if (bodyRotations != null) {
-          this.body.xRot = bodyRotations.getX();
-          this.body.yRot = bodyRotations.getY();
-          this.body.zRot = bodyRotations.getZ();
-        }
+        // Body position, rotation and visibility.
+        CustomModelHelper.setPositionRotationVisibility(this.body,
+            easyNPCEntity.getModelBodyPosition(), easyNPCEntity.getModelBodyRotation(),
+            easyNPCEntity.isModelBodyVisible());
 
-        Rotations rightArmRotations = easyNPCEntity.getModelRightArmRotation();
-        if (rightArmRotations != null) {
-          this.rightArm.xRot = rightArmRotations.getX();
-          this.rightArm.yRot = rightArmRotations.getY();
-          this.rightArm.zRot = rightArmRotations.getZ();
-        }
+        // Right Arm position, rotation and visibility.
+        CustomModelHelper.setPositionRotationVisibility(this.rightArm,
+            easyNPCEntity.getModelRightArmPosition(), easyNPCEntity.getModelRightArmRotation(),
+            easyNPCEntity.isModelRightArmVisible());
 
-        Rotations leftArmRotations = easyNPCEntity.getModelLeftArmRotation();
-        if (leftArmRotations != null) {
-          this.leftArm.xRot = leftArmRotations.getX();
-          this.leftArm.yRot = leftArmRotations.getY();
-          this.leftArm.zRot = leftArmRotations.getZ();
-        }
+        // Left Arm position, rotation and visibility.
+        CustomModelHelper.setPositionRotationVisibility(this.leftArm,
+            easyNPCEntity.getModelLeftArmPosition(), easyNPCEntity.getModelLeftArmRotation(),
+            easyNPCEntity.isModelLeftArmVisible());
 
-        Rotations rightLegRotations = easyNPCEntity.getModelRightLegRotation();
-        if (rightLegRotations != null) {
-          this.rightLeg.xRot = rightLegRotations.getX();
-          this.rightLeg.yRot = rightLegRotations.getY();
-          this.rightLeg.zRot = rightLegRotations.getZ();
-        }
+        // Right Leg position, rotation and visibility.
+        CustomModelHelper.setPositionRotationVisibility(this.rightLeg,
+            easyNPCEntity.getModelRightLegPosition(), easyNPCEntity.getModelRightLegRotation(),
+            easyNPCEntity.isModelRightLegVisible());
 
-        Rotations leftLegRotations = easyNPCEntity.getModelLeftLegRotation();
-        if (leftLegRotations != null) {
-          this.leftLeg.xRot = leftLegRotations.getX();
-          this.leftLeg.yRot = leftLegRotations.getY();
-          this.leftLeg.zRot = leftLegRotations.getZ();
-        }
+        // Left Leg position, rotation and visibility.
+        CustomModelHelper.setPositionRotationVisibility(this.leftLeg,
+            easyNPCEntity.getModelLeftLegPosition(), easyNPCEntity.getModelLeftLegRotation(),
+            easyNPCEntity.isModelLeftLegVisible());
+      } else if (easyNPCEntity.getPose() == Pose.CROUCHING) {
+        // Crouching Pose
+        this.body.xRot = 0.5F;
+        this.body.y = 3.2F;
+        this.head.y = 4.2F;
+        this.leftArm.xRot += 0.4F;
+        this.leftArm.y = 5.2F;
+        this.leftLeg.y = 12.2F;
+        this.leftLeg.z = 4.0F;
+        this.rightArm.xRot += 0.4F;
+        this.rightArm.y = 5.2F;
+        this.rightLeg.y = 12.2F;
+        this.rightLeg.z = 4.0F;
+      }
 
+      if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM
+          || easyNPCEntity.getPose() == Pose.CROUCHING) {
         // Copy all outer model parts to the correct model parts.
         this.hat.copyFrom(this.head);
       } else {
-        // Reset all rotations to avoid any issues with other mods.
-        this.head.xRot = 0.0F;
-        this.head.yRot = 0.0F;
-        this.head.zRot = 0.0F;
-        this.rightLeg.xRot = 0.0F;
-        this.rightLeg.yRot = 0.0F;
-        this.rightLeg.zRot = 0.0F;
-        this.leftLeg.xRot = 0.0F;
-        this.leftLeg.yRot = 0.0F;
-        this.leftLeg.zRot = 0.0F;
-
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         AnimationUtils.animateZombieArms(this.leftArm, this.rightArm, isAggressive, this.attackTime,
             ageInTicks);
