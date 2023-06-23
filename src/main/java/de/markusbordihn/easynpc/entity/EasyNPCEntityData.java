@@ -196,7 +196,7 @@ public class EasyNPCEntityData extends AgeableMob
 
   @Override
   public Level getEntityLevel() {
-    return this.level;
+    return this.level();
   }
 
   @Override

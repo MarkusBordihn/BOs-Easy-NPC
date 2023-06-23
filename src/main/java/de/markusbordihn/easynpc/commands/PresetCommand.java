@@ -64,8 +64,8 @@ public class PresetCommand extends CustomCommand {
   }
 
   private static int overview(CommandContext<CommandSourceStack> context) {
-    context.getSource().sendSuccess(Component.literal("Preset command is not implemented yet!"),
-        false);
+    context.getSource()
+        .sendSuccess(() -> Component.literal("Preset command is not implemented yet!"), false);
     return 0;
   }
 
@@ -144,11 +144,11 @@ public class PresetCommand extends CustomCommand {
       easyNPCEntity.importPreset(compoundTag);
       context.getLevel().addFreshEntity(entity);
       if (existingUUID) {
-        context.sendSuccess(Component.literal("Updated preset " + preset + " to " + easyNPCEntity),
-            false);
+        context.sendSuccess(
+            () -> Component.literal("Updated preset " + preset + " to " + easyNPCEntity), false);
       } else {
-        context.sendSuccess(Component.literal("Imported preset " + preset + " to " + easyNPCEntity),
-            false);
+        context.sendSuccess(
+            () -> Component.literal("Imported preset " + preset + " to " + easyNPCEntity), false);
       }
       return Command.SINGLE_SUCCESS;
     } else {

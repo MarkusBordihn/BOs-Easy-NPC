@@ -19,12 +19,11 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.dialog;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -107,16 +106,19 @@ public class YesNoDialogConfigurationScreen
   }
 
   @Override
-  public void render(PoseStack poseStack, int x, int y, float partialTicks) {
-    super.render(poseStack, x, y, partialTicks);
-    this.font.draw(poseStack, Component.translatable(Constants.TEXT_CONFIG_PREFIX + "question"),
-        this.contentLeftPos, this.topPos + 50f, 4210752);
+  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+    super.render(guiGraphics, x, y, partialTicks);
+    guiGraphics.drawString(this.font,
+        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "question"), this.contentLeftPos,
+        this.topPos + 50, 4210752);
 
-    this.font.draw(poseStack, Component.translatable(Constants.TEXT_CONFIG_PREFIX + "yes_answer"),
-        this.contentLeftPos, this.yesDialogBox.getY() - 12f, 4210752);
+    guiGraphics.drawString(this.font,
+        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "yes_answer"), this.contentLeftPos,
+        this.yesDialogBox.getY() - 12, 4210752);
 
-    this.font.draw(poseStack, Component.translatable(Constants.TEXT_CONFIG_PREFIX + "no_answer"),
-        this.contentLeftPos, this.noDialogBox.getY() - 12f, 4210752);
+    guiGraphics.drawString(this.font,
+        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "no_answer"), this.contentLeftPos,
+        this.noDialogBox.getY() - 12, 4210752);
   }
 
 }

@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.pose;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Pose;
@@ -26,8 +27,6 @@ import net.minecraft.world.entity.player.Inventory;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
@@ -128,8 +127,8 @@ public class DefaultPoseConfigurationScreen
   }
 
   @Override
-  public void render(PoseStack poseStack, int x, int y, float partialTicks) {
-    super.render(poseStack, x, y, partialTicks);
+  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+    super.render(guiGraphics, x, y, partialTicks);
 
     // Backup entity information
     boolean entityInvisible = entity.isInvisible();
@@ -146,19 +145,19 @@ public class DefaultPoseConfigurationScreen
   }
 
   @Override
-  protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
-    super.renderBg(poseStack, partialTicks, mouseX, mouseY);
+  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
 
     // Entity
-    fill(poseStack, this.contentLeftPos, this.contentTopPos, this.contentLeftPos + 169,
+    guiGraphics.fill(this.contentLeftPos, this.contentTopPos, this.contentLeftPos + 169,
         this.contentTopPos + 187, 0xff000000);
-    fill(poseStack, this.contentLeftPos + 1, this.contentTopPos + 1, this.contentLeftPos + 168,
+    guiGraphics.fill(this.contentLeftPos + 1, this.contentTopPos + 1, this.contentLeftPos + 168,
         this.contentTopPos + 186, 0xffaaaaaa);
 
     // Base
-    fill(poseStack, this.contentLeftPos + 1, this.contentTopPos + 125, this.contentLeftPos + 168,
+    guiGraphics.fill(this.contentLeftPos + 1, this.contentTopPos + 125, this.contentLeftPos + 168,
         this.contentTopPos + 186, 0xaa888888);
-    fill(poseStack, this.contentLeftPos + 1, this.contentTopPos + 125, this.contentLeftPos + 168,
+    guiGraphics.fill(this.contentLeftPos + 1, this.contentTopPos + 125, this.contentLeftPos + 168,
         this.contentTopPos + 130, 0xaa888888);
   }
 }

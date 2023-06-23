@@ -21,10 +21,10 @@ package de.markusbordihn.easynpc.client.screen.components;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -100,19 +100,18 @@ public class Checkbox extends AbstractButton {
   }
 
   @Override
-  public void renderWidget(PoseStack poseStack, int left, int top, float partialTicks) {
-    RenderSystem.setShaderTexture(0, TEXTURE);
+  public void renderWidget(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
     RenderSystem.enableDepthTest();
     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
     RenderSystem.enableBlend();
     RenderSystem.defaultBlendFunc();
     RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA,
         GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-    blit(poseStack, this.getX(), this.getY(), this.isHoveredOrFocused() ? 16.0F : 0.0F,
+    guiGraphics.blit(TEXTURE, this.getX(), this.getY(), this.isHoveredOrFocused() ? 16.0F : 0.0F,
         this.selected ? 16.0F : 0.0F, 16, 16, 32, 32);
     if (this.showLabel) {
-      this.font.draw(poseStack, this.getMessage(), this.getX() + 18f,
-          this.getY() + (this.height - 8) / 2f, Constants.FONT_COLOR_DEFAULT);
+      guiGraphics.drawString(this.font, this.getMessage(), this.getX() + 18,
+          this.getY() + (this.height - 8) / 2, Constants.FONT_COLOR_DEFAULT);
     }
 
   }

@@ -27,14 +27,11 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.FormattedCharSequence;
@@ -83,10 +80,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     this.uuid = this.entity.getUUID();
   }
 
-  protected void renderDialog(PoseStack poseStack) {
-    RenderSystem.setShader(GameRenderer::getPositionTexShader);
-    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-    RenderSystem.setShaderTexture(0, Constants.TEXTURE_DIALOG);
+  protected void renderDialog(GuiGraphics guiGraphics) {
 
     // Calculate numbers of lines and background shift.
     int minNumberOfLines = Math.max(2, this.numberOfDialogLines);
@@ -100,16 +94,18 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     int backgroundBottomPos = Math.max(116 - backgroundBottomHeight, 15);
 
     // Render Dialog in two parts to allow smaller and larger dialogs.
-    blit(poseStack, backgroundLeftPos, backgroundTopPos, 0, 0, 200, backgroundTopHeight);
-    blit(poseStack, backgroundLeftPos, backgroundTopPos + backgroundTopHeight, 0,
-        backgroundBottomPos, 200, backgroundBottomHeight);
+    guiGraphics.blit(Constants.TEXTURE_DIALOG, backgroundLeftPos, backgroundTopPos, 0, 0, 200,
+        backgroundTopHeight);
+    guiGraphics.blit(Constants.TEXTURE_DIALOG, backgroundLeftPos,
+        backgroundTopPos + backgroundTopHeight, 0, backgroundBottomPos, 200,
+        backgroundBottomHeight);
 
     // Distribute text for the across the lines.
     if (!this.cachedDialogComponents.isEmpty()) {
       for (int line = 0; line < this.numberOfDialogLines; ++line) {
         FormattedCharSequence formattedCharSequence = this.cachedDialogComponents.get(line);
-        this.font.draw(poseStack, formattedCharSequence, leftPos + 87f,
-            topPos + 22f + (line * (font.lineHeight + 2)), 0);
+        guiGraphics.drawString(this.font, formattedCharSequence, leftPos + 87,
+            topPos + 22 + (line * (font.lineHeight + 2)), 0);
       }
     }
   }
@@ -223,12 +219,12 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
   }
 
   @Override
-  public void render(PoseStack poseStack, int x, int y, float partialTicks) {
+  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     if (this.entity == null) {
       return;
     }
 
-    super.render(poseStack, x, y, partialTicks);
+    super.render(guiGraphics, x, y, partialTicks);
     this.xMouse = x;
     this.yMouse = y;
 
@@ -240,26 +236,23 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
         Math.round(top - 120 - (this.yMouse * 0.5)), this.entity);
 
     // Render Dialog
-    renderDialog(poseStack);
+    renderDialog(guiGraphics);
   }
 
   @Override
-  protected void renderLabels(PoseStack poseStack, int x, int y) {
-    this.font.draw(poseStack, this.title, this.titleLabelX, this.titleLabelY, 4210752);
+  protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
+    guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752);
   }
 
   @Override
-  protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
-    RenderSystem.setShader(GameRenderer::getPositionTexShader);
-    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-    RenderSystem.setShaderTexture(0, Constants.TEXTURE_DEMO_BACKGROUND);
-
+  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
     // Main screen
-    blit(poseStack, leftPos, topPos, 0, 0, 250, 170);
-    blit(poseStack, leftPos + 243, topPos, 215, 0, 35, 170);
+    guiGraphics.blit(Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos, 0, 0, 250, 170);
+    guiGraphics.blit(Constants.TEXTURE_DEMO_BACKGROUND, leftPos + 243, topPos, 215, 0, 35, 170);
 
-    blit(poseStack, leftPos, topPos + 60, 0, 30, 250, 140);
-    blit(poseStack, leftPos + 243, topPos + 60, 215, 30, 35, 140);
+    guiGraphics.blit(Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos + 60, 0, 30, 250, 140);
+    guiGraphics.blit(Constants.TEXTURE_DEMO_BACKGROUND, leftPos + 243, topPos + 60, 215, 30, 35,
+        140);
   }
 
   @Override

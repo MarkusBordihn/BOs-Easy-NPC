@@ -112,7 +112,7 @@ public class EntityManager {
   }
 
   public static EasyNPCEntity getEasyNPCEntityByUUID(UUID uuid, ServerPlayer serverPlayer) {
-    ServerLevel serverLevel = serverPlayer.getLevel();
+    ServerLevel serverLevel = serverPlayer.serverLevel();
     Entity entity = serverLevel.getEntity(uuid);
     if (entity instanceof EasyNPCEntity easyNPCEntity) {
       return easyNPCEntity;
@@ -132,7 +132,7 @@ public class EntityManager {
     if (uuid == null || serverPlayer == null) {
       return false;
     }
-    return hasAccess(serverPlayer.getLevel().getEntity(uuid), serverPlayer);
+    return hasAccess(serverPlayer.serverLevel().getEntity(uuid), serverPlayer);
   }
 
   public static boolean hasAccess(Entity entity, ServerPlayer serverPlayer) {

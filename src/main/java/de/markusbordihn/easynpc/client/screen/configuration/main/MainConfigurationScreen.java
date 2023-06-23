@@ -19,9 +19,8 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.main;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.ConfirmScreen;
@@ -311,8 +310,8 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
   }
 
   @Override
-  public void render(PoseStack poseStack, int x, int y, float partialTicks) {
-    super.render(poseStack, x, y, partialTicks);
+  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+    super.render(guiGraphics, x, y, partialTicks);
     this.xMouse = x;
     this.yMouse = y;
 
@@ -322,41 +321,41 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
 
     // Entity Type
     float scaleEntityTypeText = 0.8f;
-    poseStack.pushPose();
-    poseStack.scale(scaleEntityTypeText, scaleEntityTypeText, scaleEntityTypeText);
-    this.font.draw(poseStack, entity.getType().getDescription(),
-        (this.contentLeftPos + 3f) / scaleEntityTypeText, (this.topPos + 48f) / scaleEntityTypeText,
-        4210752);
-    poseStack.popPose();
+    guiGraphics.pose().pushPose();
+    guiGraphics.pose().scale(scaleEntityTypeText, scaleEntityTypeText, scaleEntityTypeText);
+    guiGraphics.drawString(this.font, entity.getType().getDescription(),
+        Math.round((this.contentLeftPos + 3f) / scaleEntityTypeText),
+        Math.round((this.topPos + 48f) / scaleEntityTypeText), 4210752);
+    guiGraphics.pose().popPose();
 
     // Owner
     if (this.entity.hasOwner()) {
-      this.font.draw(poseStack, "Owner: " + this.entity.getOwnerName(), this.contentLeftPos + 2f,
-          this.topPos + 220f, 4210752);
+      guiGraphics.drawString(this.font, "Owner: " + this.entity.getOwnerName(),
+          this.contentLeftPos + 2, this.topPos + 220, 4210752);
     }
   }
 
   @Override
-  protected void renderLabels(PoseStack poseStack, int x, int y) {
-    this.font.draw(poseStack, this.title, this.titleLabelX, this.titleLabelY, 4210752);
+  protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
+    guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752);
   }
 
   @Override
-  protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
-    super.renderBg(poseStack, partialTicks, mouseX, mouseY);
+  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
 
     int avatarTopPos = this.topPos + 43;
 
     // Entity Type
-    fill(poseStack, this.contentLeftPos, avatarTopPos, this.leftPos + 107, avatarTopPos + 137,
+    guiGraphics.fill(this.contentLeftPos, avatarTopPos, this.leftPos + 107, avatarTopPos + 137,
         0xff000000);
-    fill(poseStack, this.leftPos + 8, avatarTopPos + 1, this.leftPos + 106, avatarTopPos + 136,
+    guiGraphics.fill(this.leftPos + 8, avatarTopPos + 1, this.leftPos + 106, avatarTopPos + 136,
         0xffffffff);
 
     // Entity
-    fill(poseStack, this.contentLeftPos, avatarTopPos + 15, this.leftPos + 107, avatarTopPos + 152,
+    guiGraphics.fill(this.contentLeftPos, avatarTopPos + 15, this.leftPos + 107, avatarTopPos + 152,
         0xff000000);
-    fill(poseStack, this.leftPos + 8, avatarTopPos + 16, this.leftPos + 106, avatarTopPos + 151,
+    guiGraphics.fill(this.leftPos + 8, avatarTopPos + 16, this.leftPos + 106, avatarTopPos + 151,
         0xffaaaaaa);
   }
 

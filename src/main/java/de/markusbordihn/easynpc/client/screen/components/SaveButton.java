@@ -21,11 +21,8 @@ package de.markusbordihn.easynpc.client.screen.components;
 
 import java.util.function.Supplier;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 
 import de.markusbordihn.easynpc.Constants;
@@ -44,15 +41,12 @@ public class SaveButton extends Button {
   }
 
   @Override
-  public void renderWidget(PoseStack poseStack, int left, int top, float partialTicks) {
-    super.renderWidget(poseStack, left, top, partialTicks);
-
-    RenderSystem.setShader(GameRenderer::getPositionTexShader);
-    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-    RenderSystem.setShaderTexture(0, Constants.TEXTURE_CONFIGURATION);
+  public void renderWidget(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
+    super.renderWidget(guiGraphics, left, top, partialTicks);
 
     // Button Icons
-    blit(poseStack, this.getX() + 4, this.getY() + 3, 60, this.active ? 0 : 16, 16, 16);
+    guiGraphics.blit(Constants.TEXTURE_CONFIGURATION, this.getX() + 4, this.getY() + 3, 60,
+        this.active ? 0 : 16, 16, 16);
   }
 
 }

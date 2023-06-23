@@ -19,14 +19,13 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.scaling;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
@@ -102,7 +101,8 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
               this.defaultScaleYButton.active = scale != entity.getDefaultScaleY();
             }));
     this.defaultScaleYButton = this.addRenderableWidget(menuButton(scalePositionLeft,
-        scalePositionTop + this.scaleYSliderButton.getHeight() + scalePositionSpace, scaleWidth, "reset", button -> {
+        scalePositionTop + this.scaleYSliderButton.getHeight() + scalePositionSpace, scaleWidth,
+        "reset", button -> {
           this.scaleYSliderButton.setDefaultValue(entity.getDefaultScaleY());
         }));
     this.defaultScaleYButton.active =
@@ -128,8 +128,8 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
   }
 
   @Override
-  public void render(PoseStack poseStack, int x, int y, float partialTicks) {
-    super.render(poseStack, x, y, partialTicks);
+  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+    super.render(guiGraphics, x, y, partialTicks);
 
     // Avatar
     ScreenHelper.renderEntityAvatarForScaling(this.contentLeftPos + 70, this.contentTopPos + 175,
@@ -137,58 +137,61 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
         this.entity);
 
     // Label for Scale X
-    this.font.draw(poseStack, Component.translatable(Constants.TEXT_CONFIG_PREFIX + "scale_x"),
-        this.scaleXSliderButton.getX(), this.scaleXSliderButton.getY() - 10f, 4210752);
+    guiGraphics.drawString(this.font,
+        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "scale_x"),
+        this.scaleXSliderButton.getX(), this.scaleXSliderButton.getY() - 10, 4210752);
 
     // Label for Scale Y
-    this.font.draw(poseStack, Component.translatable(Constants.TEXT_CONFIG_PREFIX + "scale_y"),
-        this.scaleYSliderButton.getX(), this.scaleYSliderButton.getY() - 10f, 4210752);
+    guiGraphics.drawString(this.font,
+        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "scale_y"),
+        this.scaleYSliderButton.getX(), this.scaleYSliderButton.getY() - 10, 4210752);
 
     // Label for Scale Z
-    this.font.draw(poseStack, Component.translatable(Constants.TEXT_CONFIG_PREFIX + "scale_z"),
-        this.scaleZSliderButton.getX(), this.scaleZSliderButton.getY() - 10f, 4210752);
+    guiGraphics.drawString(this.font,
+        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "scale_z"),
+        this.scaleZSliderButton.getX(), this.scaleZSliderButton.getY() - 10, 4210752);
   }
 
   @Override
-  protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
-    super.renderBg(poseStack, partialTicks, mouseX, mouseY);
+  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
 
     // Entity
-    fill(poseStack, this.contentLeftPos, this.contentTopPos, this.contentLeftPos + 149,
+    guiGraphics.fill(this.contentLeftPos, this.contentTopPos, this.contentLeftPos + 149,
         this.contentTopPos + 187, 0xff000000);
-    fill(poseStack, this.contentLeftPos + 1, this.contentTopPos + 1, this.contentLeftPos + 148,
+    guiGraphics.fill(this.contentLeftPos + 1, this.contentTopPos + 1, this.contentLeftPos + 148,
         this.contentTopPos + 186, 0xffaaaaaa);
 
     // Scale lines
     int scaleLinesColor = 0xaa555555;
-    this.font.draw(poseStack, Component.literal("0"), this.contentLeftPos + 4f,
-        this.contentTopPos + 172f, scaleLinesColor);
-    fill(poseStack, this.contentLeftPos + 20, this.contentTopPos + 175, this.contentLeftPos + 148,
+    guiGraphics.drawString(this.font, Component.literal("0"), this.contentLeftPos + 4,
+        this.contentTopPos + 172, scaleLinesColor);
+    guiGraphics.fill(this.contentLeftPos + 20, this.contentTopPos + 175, this.contentLeftPos + 148,
         this.contentTopPos + 176, scaleLinesColor);
 
-    this.font.draw(poseStack, Component.literal("0.5"), this.contentLeftPos + 4f,
-        this.contentTopPos + 141f, scaleLinesColor);
-    fill(poseStack, this.contentLeftPos + 20, this.contentTopPos + 144, this.contentLeftPos + 148,
+    guiGraphics.drawString(this.font, Component.literal("0.5"), this.contentLeftPos + 4,
+        this.contentTopPos + 141, scaleLinesColor);
+    guiGraphics.fill(this.contentLeftPos + 20, this.contentTopPos + 144, this.contentLeftPos + 148,
         this.contentTopPos + 145, scaleLinesColor);
 
-    this.font.draw(poseStack, Component.literal("1.0"), this.contentLeftPos + 4f,
-        this.contentTopPos + 111f, scaleLinesColor);
-    fill(poseStack, this.contentLeftPos + 20, this.contentTopPos + 114, this.contentLeftPos + 148,
+    guiGraphics.drawString(this.font, Component.literal("1.0"), this.contentLeftPos + 4,
+        this.contentTopPos + 111, scaleLinesColor);
+    guiGraphics.fill(this.contentLeftPos + 20, this.contentTopPos + 114, this.contentLeftPos + 148,
         this.contentTopPos + 115, scaleLinesColor);
 
-    this.font.draw(poseStack, Component.literal("1.5"), this.contentLeftPos + 4f,
-        this.contentTopPos + 81f, scaleLinesColor);
-    fill(poseStack, this.contentLeftPos + 20, this.contentTopPos + 84, this.contentLeftPos + 148,
+    guiGraphics.drawString(this.font, Component.literal("1.5"), this.contentLeftPos + 4,
+        this.contentTopPos + 81, scaleLinesColor);
+    guiGraphics.fill(this.contentLeftPos + 20, this.contentTopPos + 84, this.contentLeftPos + 148,
         this.contentTopPos + 85, scaleLinesColor);
 
-    this.font.draw(poseStack, Component.literal("2.0"), this.contentLeftPos + 4f,
-        this.contentTopPos + 51f, scaleLinesColor);
-    fill(poseStack, this.contentLeftPos + 20, this.contentTopPos + 54, this.contentLeftPos + 148,
+    guiGraphics.drawString(this.font, Component.literal("2.0"), this.contentLeftPos + 4,
+        this.contentTopPos + 51, scaleLinesColor);
+    guiGraphics.fill(this.contentLeftPos + 20, this.contentTopPos + 54, this.contentLeftPos + 148,
         this.contentTopPos + 55, scaleLinesColor);
 
-    this.font.draw(poseStack, Component.literal("2.5"), this.contentLeftPos + 4f,
-        this.contentTopPos + 21f, scaleLinesColor);
-    fill(poseStack, this.contentLeftPos + 20, this.contentTopPos + 24, this.contentLeftPos + 148,
+    guiGraphics.drawString(this.font, Component.literal("2.5"), this.contentLeftPos + 4,
+        this.contentTopPos + 21, scaleLinesColor);
+    guiGraphics.fill(this.contentLeftPos + 20, this.contentTopPos + 24, this.contentLeftPos + 148,
         this.contentTopPos + 25, scaleLinesColor);
   }
 

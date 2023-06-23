@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
@@ -43,7 +44,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fml.loading.FileUtils;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
@@ -203,7 +203,13 @@ public class TextureManager {
           Paths.get(FMLPaths.GAMEDIR.get().resolve(Constants.MOD_ID).toString(), "texture_cache");
       if (!cacheDirectory.toFile().exists()) {
         log.info("{} Creating texture cache directory at {}", LOG_PREFIX, cacheDirectory);
-        FileUtils.getOrCreateDirectory(cacheDirectory, Constants.MOD_ID);
+        try {
+          Files.createDirectories(cacheDirectory);
+        } catch (IOException exception) {
+          log.error("{} Unable to create texture cache directory at {} because of:", LOG_PREFIX,
+              cacheDirectory, exception);
+          return null;
+        }
       }
       textureCachePath = cacheDirectory;
     }

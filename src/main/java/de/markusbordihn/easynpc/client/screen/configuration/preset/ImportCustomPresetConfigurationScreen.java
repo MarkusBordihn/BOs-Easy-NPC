@@ -37,7 +37,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.CustomPresetData;
@@ -138,33 +138,33 @@ public class ImportCustomPresetConfigurationScreen
   }
 
   @Override
-  public void render(PoseStack poseStack, int x, int y, float partialTicks) {
-    super.render(poseStack, x, y, partialTicks);
-    this.presetSelectionList.render(poseStack, x, y, partialTicks);
+  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+    super.render(guiGraphics, x, y, partialTicks);
+    this.presetSelectionList.render(guiGraphics, x, y, partialTicks);
     this.importPresetButton.active = ImportCustomPresetConfigurationScreen.selectedPreset != null;
   }
 
   @Override
-  protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
-    super.renderBg(poseStack, partialTicks, mouseX, mouseY);
+  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
 
     int fileListTop = this.topPos + 55;
     int fileListHeight = fileListTop + 110;
     int fileListWidth = this.leftPos + 290;
 
     // File Selection List
-    fill(poseStack, this.contentLeftPos - 1, fileListTop - 1, fileListWidth + 1, fileListHeight + 1,
-        0xff000000);
-    fill(poseStack, this.contentLeftPos, fileListTop, fileListWidth, fileListHeight, 0xffaaaaaa);
+    guiGraphics.fill(this.contentLeftPos - 1, fileListTop - 1, fileListWidth + 1,
+        fileListHeight + 1, 0xff000000);
+    guiGraphics.fill(this.contentLeftPos, fileListTop, fileListWidth, fileListHeight, 0xffaaaaaa);
 
     // File Selection List Header
-    fill(poseStack, this.contentLeftPos - 1, fileListTop - 4, fileListWidth + 1, fileListTop + 12,
+    guiGraphics.fill(this.contentLeftPos - 1, fileListTop - 4, fileListWidth + 1, fileListTop + 12,
         0xff000000);
-    fill(poseStack, this.contentLeftPos, fileListTop - 3, fileListWidth, fileListTop + 11,
+    guiGraphics.fill(this.contentLeftPos, fileListTop - 3, fileListWidth, fileListTop + 11,
         0xff888888);
-    this.font.drawShadow(poseStack,
+    guiGraphics.drawString(this.font,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + "preset_custom_for", this.skinModel),
-        this.contentLeftPos + 3f, fileListTop, 16777215);
+        this.contentLeftPos + 3, fileListTop, 16777215);
   }
 
   @OnlyIn(Dist.CLIENT)
@@ -212,17 +212,17 @@ public class ImportCustomPresetConfigurationScreen
     }
 
     @Override
-    public void render(PoseStack poseStack, int x, int y, float partialTicks) {
+    public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
       if (this.getItemCount() > 0) {
-        super.render(poseStack, x, y, partialTicks);
+        super.render(guiGraphics, x, y, partialTicks);
         return;
       }
 
       // Display "No presets found" message.
-      ImportCustomPresetConfigurationScreen.this.font.drawShadow(poseStack,
+      guiGraphics.drawString(ImportCustomPresetConfigurationScreen.this.font,
           Component.translatable(Constants.TEXT_CONFIG_PREFIX + "no_presets_found"),
-          ImportCustomPresetConfigurationScreen.this.contentLeftPos + 80f,
-          ImportCustomPresetConfigurationScreen.this.topPos + 105f, 16777215);
+          ImportCustomPresetConfigurationScreen.this.contentLeftPos + 80,
+          ImportCustomPresetConfigurationScreen.this.topPos + 105, 16777215);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -241,13 +241,13 @@ public class ImportCustomPresetConfigurationScreen
             .replace(Constants.NPC_NBT_SUFFIX, "");
       }
 
-      public void render(PoseStack poseStack, int x, int y, int unused1, int unused2, int unused3,
-          int unused4, int unused5, boolean unused6, float partialTicks) {
+      public void render(GuiGraphics guiGraphics, int x, int y, int unused1, int unused2,
+          int unused3, int unused4, int unused5, boolean unused6, float partialTicks) {
         // Display file name.
-        ImportCustomPresetConfigurationScreen.this.font.drawShadow(poseStack, fileName,
-            ImportFileSelectionList.this.width / 2f
-                - ImportCustomPresetConfigurationScreen.this.font.width(this.fileName) / 2f,
-            y + 1f, 16777215, true);
+        guiGraphics.drawString(ImportCustomPresetConfigurationScreen.this.font, fileName,
+            ImportFileSelectionList.this.width / 2
+                - ImportCustomPresetConfigurationScreen.this.font.width(this.fileName) / 2,
+            y + 1, 16777215, true);
       }
 
       @Override

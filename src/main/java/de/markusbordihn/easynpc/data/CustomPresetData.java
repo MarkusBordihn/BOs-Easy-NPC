@@ -33,7 +33,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.loading.FileUtils;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
@@ -77,8 +76,11 @@ public class CustomPresetData {
     Path skinDataFolder = getPresetDataFolder();
     String skinModelName = skinModel.name();
     if (skinDataFolder != null && skinModelName != null) {
-      return FileUtils.getOrCreateDirectory(skinDataFolder.resolve(skinModelName.toLowerCase()),
-          skinModelName.toLowerCase());
+      try {
+        return Files.createDirectories(skinDataFolder.resolve(skinModelName.toLowerCase()));
+      } catch (IOException exception) {
+        log.error("Could not create preset data folder {}!", skinDataFolder, exception);
+      }
     }
     return null;
   }

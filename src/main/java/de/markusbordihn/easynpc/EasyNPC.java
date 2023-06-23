@@ -71,7 +71,7 @@ public class EasyNPC {
       modEventBus.addListener(ClientScreens::registerScreens);
       modEventBus.addListener(CustomPresetData::registerCustomPresetData);
       modEventBus.addListener(CustomSkinData::registerCustomSkinData);
-      modEventBus.addListener(EasyNPCTab::handleCreativeModeTabRegister);
+      EasyNPCTab.CREATIVE_TABS.register(modEventBus);
     });
   }
 }

@@ -19,16 +19,13 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.equipment;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
@@ -63,8 +60,8 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
   }
 
   @Override
-  public void render(PoseStack poseStack, int x, int y, float partialTicks) {
-    super.render(poseStack, x, y, partialTicks);
+  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+    super.render(guiGraphics, x, y, partialTicks);
 
     // Avatar
     ScreenHelper.renderScaledEntityAvatar(this.contentLeftPos + 138, this.contentTopPos + 82, 35,
@@ -73,38 +70,39 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
   }
 
   @Override
-  protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
-    super.renderBg(poseStack, partialTicks, mouseX, mouseY);
-
-    RenderSystem.setShader(GameRenderer::getPositionTexShader);
-    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-    RenderSystem.setShaderTexture(0, Constants.TEXTURE_INVENTORY);
+  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
 
     // Armors Slots Left
     if (this.entity.canUseArmor()) {
-      blit(poseStack, this.contentLeftPos + 90, this.contentTopPos, 7, 7, 18, 72);
-     }
+      guiGraphics.blit(Constants.TEXTURE_INVENTORY, this.contentLeftPos + 90, this.contentTopPos, 7,
+          7, 18, 72);
+    }
 
     // Main Hand Slot Left
     if (this.entity.canUseMainHand()) {
-      blit(poseStack, this.contentLeftPos + 90, this.contentTopPos + 75, 7, 7, 18, 18);
+      guiGraphics.blit(Constants.TEXTURE_INVENTORY, this.contentLeftPos + 90,
+          this.contentTopPos + 75, 7, 7, 18, 18);
     }
 
     // Off Hand Slot Right
     if (this.entity.canUseOffHand()) {
-      blit(poseStack, this.contentLeftPos + 170, this.contentTopPos + 75, 7, 7, 18, 18);
+      guiGraphics.blit(Constants.TEXTURE_INVENTORY, this.contentLeftPos + 170,
+          this.contentTopPos + 75, 7, 7, 18, 18);
     }
 
     // Player Inventory Slots
-    blit(poseStack, this.contentLeftPos + 58, this.contentTopPos + 105, 7, 83, 162, 54);
+    guiGraphics.blit(Constants.TEXTURE_INVENTORY, this.contentLeftPos + 58,
+        this.contentTopPos + 105, 7, 83, 162, 54);
 
     // Player Hotbar Slots
-    blit(poseStack, this.contentLeftPos + 58, this.contentTopPos + 165, 7, 141, 162, 18);
+    guiGraphics.blit(Constants.TEXTURE_INVENTORY, this.contentLeftPos + 58,
+        this.contentTopPos + 165, 7, 141, 162, 18);
 
     // Entity
-    fill(poseStack, this.contentLeftPos + 109, this.contentTopPos - 8, this.contentLeftPos + 169,
+    guiGraphics.fill(this.contentLeftPos + 109, this.contentTopPos - 8, this.contentLeftPos + 169,
         this.contentTopPos + 102, 0xff000000);
-    fill(poseStack, this.contentLeftPos + 110, this.contentTopPos - 7, this.contentLeftPos + 168,
+    guiGraphics.fill(this.contentLeftPos + 110, this.contentTopPos - 7, this.contentLeftPos + 168,
         this.contentTopPos + 101, 0xffaaaaaa);
   }
 

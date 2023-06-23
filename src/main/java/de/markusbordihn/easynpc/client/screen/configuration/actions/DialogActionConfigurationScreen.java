@@ -19,12 +19,9 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.actions;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -228,29 +225,25 @@ public class DialogActionConfigurationScreen
   }
 
   @Override
-  public void render(PoseStack poseStack, int x, int y, float partialTicks) {
-    super.render(poseStack, x, y, partialTicks);
-
-    RenderSystem.setShader(GameRenderer::getPositionTexShader);
-    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-    RenderSystem.setShaderTexture(0, Constants.TEXTURE_CONFIGURATION);
+  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+    super.render(guiGraphics, x, y, partialTicks);
 
     // Description Texts
-    this.font.draw(poseStack,
+    guiGraphics.drawString(this.font,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + "on_open_dialog"),
-        this.contentLeftPos, this.onOpenDialogActionSaveButton.getY() - 8f,
+        this.contentLeftPos, this.onOpenDialogActionSaveButton.getY() - 8,
         Constants.FONT_COLOR_BLACK);
-    this.font.draw(poseStack,
+    guiGraphics.drawString(this.font,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + "on_close_dialog"),
-        this.contentLeftPos, this.onCloseDialogActionSaveButton.getY() - 8f,
+        this.contentLeftPos, this.onCloseDialogActionSaveButton.getY() - 8,
         Constants.FONT_COLOR_BLACK);
-    this.font.draw(poseStack,
+    guiGraphics.drawString(this.font,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + "on_yes_selection"),
-        this.contentLeftPos, this.onYesSelectionActionSaveButton.getY() - 8f,
+        this.contentLeftPos, this.onYesSelectionActionSaveButton.getY() - 8,
         Constants.FONT_COLOR_BLACK);
-    this.font.draw(poseStack,
+    guiGraphics.drawString(this.font,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + "on_no_selection"),
-        this.contentLeftPos, this.onNoSelectionActionSaveButton.getY() - 8f,
+        this.contentLeftPos, this.onNoSelectionActionSaveButton.getY() - 8,
         Constants.FONT_COLOR_BLACK);
   }
 

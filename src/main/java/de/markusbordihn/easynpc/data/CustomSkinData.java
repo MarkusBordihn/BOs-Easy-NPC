@@ -20,6 +20,8 @@
 package de.markusbordihn.easynpc.data;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.apache.logging.log4j.LogManager;
@@ -28,7 +30,6 @@ import org.apache.logging.log4j.Logger;
 import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.loading.FileUtils;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
@@ -163,7 +164,12 @@ public class CustomSkinData {
     Path skinDataFolder = getSkinDataFolder();
     String skinModelName = skinModel.name();
     if (skinDataFolder != null && skinModelName != null) {
-      return FileUtils.getOrCreateDirectory(skinDataFolder.resolve(skinModelName), skinModelName);
+      try {
+        return Files.createDirectories(skinDataFolder.resolve(skinModelName));
+      } catch (IOException e) {
+        log.error("Could not create skin data folder for {} at {}!", skinModelName,
+            skinDataFolder.resolve(skinModelName));
+      }
     }
     return null;
   }

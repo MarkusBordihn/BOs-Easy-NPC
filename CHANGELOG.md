@@ -5,6 +5,10 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### 2023.06.24
+
+- Refactored code to 1.20-46.0.14
+
 ### 2023.05.29
 
 - Added custom pose editor which supports rotation, position and visibility of the model parts.

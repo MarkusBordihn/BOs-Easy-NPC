@@ -19,8 +19,7 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.actions;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
@@ -99,13 +98,13 @@ public class BasicActionConfigurationScreen
   }
 
   @Override
-  public void render(PoseStack poseStack, int x, int y, float partialTicks) {
-    super.render(poseStack, x, y, partialTicks);
+  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+    super.render(guiGraphics, x, y, partialTicks);
 
     // Description Texts
-    this.font.draw(poseStack,
+    guiGraphics.drawString(this.font,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + "on_interaction"),
-        this.contentLeftPos, this.onInteractionActionSaveButton.getY() - 8f,
+        this.contentLeftPos, this.onInteractionActionSaveButton.getY() - 8,
         Constants.FONT_COLOR_BLACK);
 
   }

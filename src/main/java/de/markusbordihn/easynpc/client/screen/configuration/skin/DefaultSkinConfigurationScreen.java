@@ -22,12 +22,9 @@ package de.markusbordihn.easynpc.client.screen.configuration.skin;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -70,7 +67,7 @@ public class DefaultSkinConfigurationScreen
     super(menu, inventory, component);
   }
 
-  private void renderSkins(PoseStack poseStack) {
+  private void renderSkins(GuiGraphics guiGraphics) {
     if (this.entity == null) {
       return;
     }
@@ -88,29 +85,29 @@ public class DefaultSkinConfigurationScreen
       int top = this.contentTopPos + 82 + (skinPosition > 4 ? 84 : 0);
 
       // Render skin with additional variant and professions.
-      this.renderSkinEntity(poseStack, left, top, variant, profession);
+      this.renderSkinEntity(guiGraphics, left, top, variant, profession);
 
       // Render skin name
-      float topNamePos = (top - 76f) / SKIN_NAME_SCALING;
-      float leftNamePos = (left - 21f) / SKIN_NAME_SCALING;
-      poseStack.pushPose();
-      poseStack.translate(0, 0, 100);
-      poseStack.scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING, SKIN_NAME_SCALING);
+      int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
+      int leftNamePos = Math.round((left - 21f) / SKIN_NAME_SCALING);
+      guiGraphics.pose().pushPose();
+      guiGraphics.pose().translate(0, 0, 100);
+      guiGraphics.pose().scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING, SKIN_NAME_SCALING);
       String variantName = TextUtils.normalizeString(variant.name(), 12);
-      this.font.draw(poseStack, Component.literal(variantName), leftNamePos, topNamePos,
+      guiGraphics.drawString(this.font, Component.literal(variantName), leftNamePos, topNamePos,
           Constants.FONT_COLOR_DARK_GREEN);
       if (profession != null) {
         String professionName = TextUtils.normalizeString(profession.name(), 11);
-        this.font.draw(poseStack, Component.literal(professionName), leftNamePos, topNamePos + 10f,
-            Constants.FONT_COLOR_BLACK);
+        guiGraphics.drawString(this.font, Component.literal(professionName), leftNamePos,
+            topNamePos + 10, Constants.FONT_COLOR_BLACK);
       }
-      poseStack.popPose();
+      guiGraphics.pose().popPose();
 
       skinPosition++;
     }
   }
 
-  private void renderSkinEntity(PoseStack poseStack, int x, int y, Enum<?> variant,
+  private void renderSkinEntity(GuiGraphics guiGraphics, int x, int y, Enum<?> variant,
       Profession profession) {
 
     // Create dynamically button for each skin variant and profession.
@@ -129,13 +126,10 @@ public class DefaultSkinConfigurationScreen
     // Render active skin in different style.
     if (this.entity.getSkinType() == SkinType.DEFAULT && this.entity.getVariant().equals(variant)
         && (profession == null || this.entity.getProfession().equals(profession))) {
-      poseStack.pushPose();
-      RenderSystem.setShader(GameRenderer::getPositionTexShader);
-      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-      RenderSystem.setShaderTexture(0, Constants.TEXTURE_CONFIGURATION);
-      blit(poseStack, skinButtonLeft, skinButtonTop, 0, skinButtonHeight, skinPreviewWidth,
-          skinButtonHeight);
-      poseStack.popPose();
+      guiGraphics.pose().pushPose();
+      guiGraphics.blit(Constants.TEXTURE_CONFIGURATION, skinButtonLeft, skinButtonTop, 0,
+          skinButtonHeight, skinPreviewWidth, skinButtonHeight);
+      guiGraphics.pose().popPose();
     }
 
     // Render skin entity with variant and profession.
@@ -222,28 +216,28 @@ public class DefaultSkinConfigurationScreen
   }
 
   @Override
-  public void render(PoseStack poseStack, int x, int y, float partialTicks) {
-    super.render(poseStack, x, y, partialTicks);
+  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+    super.render(guiGraphics, x, y, partialTicks);
 
     // Skins
-    this.renderSkins(poseStack);
+    this.renderSkins(guiGraphics);
 
     // Make sure we pass the mouse movements to the dynamically added buttons, if any.
     if (!skinButtons.isEmpty()) {
       for (Button skinButton : skinButtons) {
-        skinButton.render(poseStack, x, y, partialTicks);
+        skinButton.render(guiGraphics, x, y, partialTicks);
       }
     }
   }
 
   @Override
-  protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
-    super.renderBg(poseStack, partialTicks, mouseX, mouseY);
+  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
 
     // Skin Selection
-    fill(poseStack, this.contentLeftPos, this.contentTopPos, this.contentLeftPos + 282,
+    guiGraphics.fill(this.contentLeftPos, this.contentTopPos, this.contentLeftPos + 282,
         this.contentTopPos + 170, 0xff000000);
-    fill(poseStack, this.contentLeftPos + 1, this.contentTopPos + 1, this.contentLeftPos + 281,
+    guiGraphics.fill(this.contentLeftPos + 1, this.contentTopPos + 1, this.contentLeftPos + 281,
         this.contentTopPos + 169, 0xffaaaaaa);
   }
 

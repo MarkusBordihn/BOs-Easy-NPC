@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.position;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.GameRenderer;
@@ -32,7 +33,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.configuration.position.DefaultPositionConfigurationMenu;
@@ -162,44 +162,45 @@ public class DefaultPositionConfigurationScreen
   }
 
   @Override
-  public void render(PoseStack poseStack, int x, int y, float partialTicks) {
-    super.render(poseStack, x, y, partialTicks);
+  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+    super.render(guiGraphics, x, y, partialTicks);
 
     // Position Text
-    this.font.draw(poseStack, "Position X", this.positionXBox.getX() + 5f,
-        this.positionXBox.getY() + 25f, 4210752);
-    this.font.draw(poseStack, "Position Y", this.positionYBox.getX() + 5f,
-        this.positionYBox.getY() + 25f, 4210752);
-    this.font.draw(poseStack, "Position Z", this.positionZBox.getX() + 5f,
-        this.positionZBox.getY() + 25f, 4210752);
+    guiGraphics.drawString(this.font, "Position X", this.positionXBox.getX() + 5,
+        this.positionXBox.getY() + 25, 4210752);
+    guiGraphics.drawString(this.font, "Position Y", this.positionYBox.getX() + 5,
+        this.positionYBox.getY() + 25, 4210752);
+    guiGraphics.drawString(this.font, "Position Z", this.positionZBox.getX() + 5,
+        this.positionZBox.getY() + 25, 4210752);
   }
 
   @Override
-  public void renderBackground(PoseStack poseStack) {
+  public void renderBackground(GuiGraphics guiGraphics) {
     // Use a more transparent background than the default.
     if (this.clientLevel != null) {
-      fillGradient(poseStack, 0, 0, this.width, this.height, 0x55000000, 0x55000000);
+      guiGraphics.fillGradient(0, 0, this.width, this.height, 0x55000000, 0x55000000);
       net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(
-          new net.minecraftforge.client.event.ScreenEvent.BackgroundRendered(this, poseStack));
+          new net.minecraftforge.client.event.ScreenEvent.BackgroundRendered(this, guiGraphics));
     }
   }
 
   @Override
-  protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
+  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
     RenderSystem.setShader(GameRenderer::getPositionTexShader);
     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     RenderSystem.setShaderTexture(0, Constants.TEXTURE_DEMO_BACKGROUND);
 
     // Main screen: top left
-    blit(poseStack, leftPos, topPos, 0, 0, 250, 70);
+    guiGraphics.blit(Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos, 0, 0, 250, 70);
 
     // Main screen: top right
-    blit(poseStack, leftPos + 243, topPos, 195, 0, 57, 70);
+    guiGraphics.blit(Constants.TEXTURE_DEMO_BACKGROUND, leftPos + 243, topPos, 195, 0, 57, 70);
 
     // Main screen: bottom left
-    blit(poseStack, leftPos, topPos + 22, 0, 105, 250, 70);
+    guiGraphics.blit(Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos + 22, 0, 105, 250, 70);
 
     // Main screen: bottom right
-    blit(poseStack, leftPos + 243, topPos + 22, 195, 105, 57, 70);
+    guiGraphics.blit(Constants.TEXTURE_DEMO_BACKGROUND, leftPos + 243, topPos + 22, 195, 105, 57,
+        70);
   }
 }

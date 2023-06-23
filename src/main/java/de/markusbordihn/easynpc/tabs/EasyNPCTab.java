@@ -22,12 +22,12 @@ package de.markusbordihn.easynpc.tabs;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
 
-import net.minecraftforge.event.CreativeModeTabEvent;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.item.ModItems;
@@ -38,26 +38,20 @@ public class EasyNPCTab {
 
   protected EasyNPCTab() {}
 
-  public static CreativeModeTab TAB_CONFIG_ITEMS;
-  public static CreativeModeTab TAB_SPAWN_EGGS;
+  public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS =
+      DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Constants.MOD_ID);
 
-  public static void handleCreativeModeTabRegister(CreativeModeTabEvent.Register event) {
+  public static final RegistryObject<CreativeModeTab> TAB_CONFIG_ITEMS = CREATIVE_TABS.register(
+      "config_items",
+      () -> CreativeModeTab.builder().icon(() -> ModItems.EASY_NPC_WAND.get().getDefaultInstance())
+          .displayItems(new ConfigItems())
+          .title(Component.translatable("itemGroup.easy_npc.config_items")).build());
 
-    log.info("{} creative mod tabs ...", Constants.LOG_REGISTER_PREFIX);
-
-    TAB_CONFIG_ITEMS = event.registerCreativeModeTab(
-        new ResourceLocation(Constants.MOD_ID, "config_items"), builder -> {
-          builder.icon(() -> new ItemStack(ModItems.EASY_NPC_WAND.get()))
-              .displayItems(new ConfigItems())
-              .title(Component.translatable("itemGroup.easy_npc.config_items")).build();
-        });
-
-    TAB_SPAWN_EGGS = event
-        .registerCreativeModeTab(new ResourceLocation(Constants.MOD_ID, "spawn_eggs"), builder -> {
-          builder.icon(() -> new ItemStack(ModItems.VILLAGER_NPC_SPAWN_EGG.get()))
+  public static final RegistryObject<CreativeModeTab> TAB_SPAWN_EGGS =
+      CREATIVE_TABS.register("spawn_eggs",
+          () -> CreativeModeTab.builder()
+              .icon(() -> ModItems.VILLAGER_NPC_SPAWN_EGG.get().getDefaultInstance())
               .displayItems(new SpawnEggs())
-              .title(Component.translatable("itemGroup.easy_npc.spawn_eggs")).build();
-        });
+              .title(Component.translatable("itemGroup.easy_npc.spawn_eggs")).build());
 
-  }
 }

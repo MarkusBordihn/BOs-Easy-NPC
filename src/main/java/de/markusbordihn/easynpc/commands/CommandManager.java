@@ -91,7 +91,7 @@ public class CommandManager {
     Commands commands = minecraftServer.getCommands();
     CommandSourceStack commandSourceStack =
         minecraftServer.createCommandSourceStack().withEntity(serverPlayer)
-            .withPermission(permissionLevel).withLevel(serverPlayer.getLevel());
+            .withPermission(permissionLevel).withLevel(serverPlayer.serverLevel());
     CommandDispatcher<CommandSourceStack> commandDispatcher = commands.getDispatcher();
     ParseResults<CommandSourceStack> parseResults = commandDispatcher.parse(command,
         debug ? commandSourceStack : commandSourceStack.withSuppressedOutput());

@@ -24,17 +24,14 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -97,9 +94,9 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     }
   }
 
-  protected int fontDraw(PoseStack poseStack, String text, float x, float y) {
-    return this.font.draw(poseStack, Component.translatable(Constants.TEXT_CONFIG_PREFIX + text), x,
-        y, 4210752);
+  protected int fontDraw(GuiGraphics guiGraphics, String text, int x, int y) {
+    return guiGraphics.drawString(this.font,
+        Component.translatable(Constants.TEXT_CONFIG_PREFIX + text), x, y, 4210752);
   }
 
   protected static Button menuButton(int left, int top, int width, String label,
@@ -176,35 +173,31 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
   }
 
   @Override
-  public void render(PoseStack poseStack, int x, int y, float partialTicks) {
-    this.renderBackground(poseStack);
-    super.render(poseStack, x, y, partialTicks);
+  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+    this.renderBackground(guiGraphics);
+    super.render(guiGraphics, x, y, partialTicks);
     this.xMouse = x;
     this.yMouse = y;
   }
 
   @Override
-  protected void renderLabels(PoseStack poseStack, int x, int y) {
-    this.font.draw(poseStack, this.title, this.titleLabelX, this.titleLabelY, 4210752);
+  protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
+    guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752);
   }
 
   @Override
-  protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
-    RenderSystem.setShader(GameRenderer::getPositionTexShader);
-    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-    RenderSystem.setShaderTexture(0, Constants.TEXTURE_DEMO_BACKGROUND);
-
+  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
     // Main screen: top left
-    blit(poseStack, leftPos, topPos, 0, 0, 250, 170);
+    guiGraphics.blit(Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos, 0, 0, 250, 170);
 
     // Main screen: top right
-    blit(poseStack, leftPos + 243, topPos, 195, 0, 57, 170);
+    guiGraphics.blit(Constants.TEXTURE_DEMO_BACKGROUND, leftPos + 243, topPos, 195, 0, 57, 170);
 
     // Main screen: bottom left
-    blit(poseStack, leftPos, topPos + 77, 0, 5, 250, 170);
+    guiGraphics.blit(Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos + 77, 0, 5, 250, 170);
 
     // Main screen: bottom right
-    blit(poseStack, leftPos + 243, topPos + 77, 195, 5, 57, 170);
+    guiGraphics.blit(Constants.TEXTURE_DEMO_BACKGROUND, leftPos + 243, topPos + 77, 195, 5, 57, 170);
   }
 
   @Override

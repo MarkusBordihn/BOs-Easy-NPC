@@ -55,7 +55,7 @@ public class ConfigurationMenu extends AbstractContainerMenu {
 
     this.uuid = uuid;
     this.player = playerInventory.player;
-    this.level = player.getLevel();
+    this.level = player.level();
     this.entity = this.level.isClientSide ? EntityManager.getEasyNPCEntityByUUID(uuid)
         : EntityManager.getEasyNPCEntityByUUID(uuid, (ServerPlayer) player);
     this.skinModel = this.entity.getSkinModel();

@@ -22,13 +22,12 @@ package de.markusbordihn.easynpc.client.screen.configuration.dialog;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
-
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -89,17 +88,18 @@ public class BasicDialogConfigurationScreen
   }
 
   @Override
-  public void render(PoseStack poseStack, int x, int y, float partialTicks) {
-    super.render(poseStack, x, y, partialTicks);
+  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+    super.render(guiGraphics, x, y, partialTicks);
 
-    this.font.draw(poseStack, Component.translatable(Constants.TEXT_CONFIG_PREFIX + "dialog_text"),
-        this.contentLeftPos, this.topPos + 50f, 4210752);
+    guiGraphics.drawString(this.font,
+        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "dialog_text"), this.contentLeftPos,
+        this.topPos + 50, 4210752);
 
     if (!this.textComponents.isEmpty()) {
       for (int line = 0; line < this.numberOfTextLines; ++line) {
         FormattedCharSequence formattedCharSequence = this.textComponents.get(line);
-        this.font.draw(poseStack, formattedCharSequence, leftPos + 15f,
-            topPos + 100f + (line * (font.lineHeight + 2)), Constants.FONT_COLOR_DEFAULT);
+        guiGraphics.drawString(this.font, formattedCharSequence, leftPos + 15,
+            topPos + 100 + (line * (font.lineHeight + 2)), Constants.FONT_COLOR_DEFAULT);
       }
     }
   }

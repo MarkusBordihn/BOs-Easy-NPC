@@ -67,7 +67,7 @@ public class PlayersUtils {
       return Optional.empty();
     }
     final GameProfileCache gameProfileCache = server.getProfileCache();
-    return gameProfileCache.get(username);
+    return gameProfileCache != null ? gameProfileCache.get(username) : Optional.empty();
   }
 
   public static UUID getUserUUID(MinecraftServer server, String username) {

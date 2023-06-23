@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.pose;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
@@ -26,9 +27,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import com.mojang.blaze3d.vertex.PoseStack;
-
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.SliderButton;
@@ -405,8 +404,8 @@ public class AdvancedPoseConfigurationScreen
   }
 
   @Override
-  public void render(PoseStack poseStack, int x, int y, float partialTicks) {
-    super.render(poseStack, x, y, partialTicks);
+  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+    super.render(guiGraphics, x, y, partialTicks);
 
     // Avatar
     ScreenHelper.renderCustomPoseEntityAvatar(this.contentLeftPos + 142, this.contentTopPos + 155,
@@ -415,42 +414,46 @@ public class AdvancedPoseConfigurationScreen
 
     // Body parts texts
     if (this.entity.hasHeadModelPart()) {
-      this.fontDraw(poseStack, "pose.head", this.headRotationXSliderButton.getX() + 5f,
-          this.headRotationXSliderButton.getY() - 12f);
+      guiGraphics.drawString(this.font, "pose.head", this.headRotationXSliderButton.getX() + 5,
+          this.headRotationXSliderButton.getY() - 12, Constants.FONT_COLOR_GRAY);
     }
     if (this.entity.hasBodyModelPart()) {
-      this.fontDraw(poseStack, "pose.body", this.bodyRotationXSliderButton.getX() + 5f,
-          this.bodyRotationXSliderButton.getY() - 12f);
+      guiGraphics.drawString(this.font, "pose.body", this.bodyRotationXSliderButton.getX() + 5,
+          this.bodyRotationXSliderButton.getY() - 12, Constants.FONT_COLOR_GRAY);
     }
     if (this.entity.hasLeftArmModelPart()) {
-      this.fontDraw(poseStack, "pose.left_arm", this.leftArmRotationXSliderButton.getX() + 5f,
-          this.leftArmRotationXSliderButton.getY() - 12f);
+      guiGraphics.drawString(this.font, "pose.left_arm",
+          this.leftArmRotationXSliderButton.getX() + 5,
+          this.leftArmRotationXSliderButton.getY() - 12, Constants.FONT_COLOR_GRAY);
     } else if (this.entity.hasArmsModelPart()) {
-      this.fontDraw(poseStack, "pose.arms", this.armsRotationXSliderButton.getX() + 5f,
-          this.armsRotationXSliderButton.getY() - 12f);
+      guiGraphics.drawString(this.font, "pose.arms", this.armsRotationXSliderButton.getX() + 5,
+          this.armsRotationXSliderButton.getY() - 12, Constants.FONT_COLOR_GRAY);
     }
     if (this.entity.hasRightArmModelPart()) {
-      this.fontDraw(poseStack, "pose.right_arm", this.rightArmRotationXSliderButton.getX() + 5f,
-          this.rightArmRotationXSliderButton.getY() - 12f);
+      guiGraphics.drawString(this.font, "pose.right_arm",
+          this.rightArmRotationXSliderButton.getX() + 5,
+          this.rightArmRotationXSliderButton.getY() - 12, Constants.FONT_COLOR_GRAY);
     }
     if (this.entity.hasLeftLegModelPart()) {
-      this.fontDraw(poseStack, "pose.left_leg", this.leftLegRotationXSliderButton.getX() + 5f,
-          this.leftLegRotationXSliderButton.getY() - 12f);
+      guiGraphics.drawString(this.font, "pose.left_leg",
+          this.leftLegRotationXSliderButton.getX() + 5,
+          this.leftLegRotationXSliderButton.getY() - 12, Constants.FONT_COLOR_GRAY);
     }
     if (this.entity.hasRightLegModelPart()) {
-      this.fontDraw(poseStack, "pose.right_leg", this.rightLegRotationXSliderButton.getX() + 5f,
-          this.rightLegRotationXSliderButton.getY() - 12f);
+      guiGraphics.drawString(this.font, "pose.right_leg",
+          this.rightLegRotationXSliderButton.getX() + 5,
+          this.rightLegRotationXSliderButton.getY() - 12, Constants.FONT_COLOR_GRAY);
     }
   }
 
   @Override
-  protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
-    super.renderBg(poseStack, partialTicks, mouseX, mouseY);
+  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
 
     // Entity background
-    fill(poseStack, this.contentLeftPos + 90, this.contentTopPos, this.contentLeftPos + 191,
+    guiGraphics.fill(this.contentLeftPos + 90, this.contentTopPos, this.contentLeftPos + 191,
         this.contentTopPos + 187, 0xff000000);
-    fill(poseStack, this.contentLeftPos + 91, this.contentTopPos + 1, this.contentLeftPos + 190,
+    guiGraphics.fill(this.contentLeftPos + 91, this.contentTopPos + 1, this.contentLeftPos + 190,
         this.contentTopPos + 186, 0xffaaaaaa);
   }
 }

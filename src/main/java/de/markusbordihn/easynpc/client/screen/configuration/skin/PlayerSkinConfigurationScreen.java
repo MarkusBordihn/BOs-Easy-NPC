@@ -26,8 +26,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ImageButton;
@@ -78,7 +78,7 @@ public class PlayerSkinConfigurationScreen
     super(menu, inventory, component);
   }
 
-  private void renderSkins(PoseStack poseStack) {
+  private void renderSkins(GuiGraphics guiGraphics) {
     if (this.entity == null) {
       return;
     }
@@ -102,24 +102,24 @@ public class PlayerSkinConfigurationScreen
 
       // Render Skins
       UUID textureKey = (UUID) textureKeys[i];
-      this.renderSkinEntity(poseStack, left, top, skinModel, textureKey);
+      this.renderSkinEntity(guiGraphics, left, top, skinModel, textureKey);
 
       // Render skin name
-      float topNamePos = (top - 76f) / SKIN_NAME_SCALING;
-      float leftNamePos = (left - 21f) / SKIN_NAME_SCALING;
-      poseStack.pushPose();
-      poseStack.translate(0, 0, 100);
-      poseStack.scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING, SKIN_NAME_SCALING);
+      int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
+      int leftNamePos = Math.round((left - 21f) / SKIN_NAME_SCALING);
+      guiGraphics.pose().pushPose();
+      guiGraphics.pose().translate(0, 0, 100);
+      guiGraphics.pose().scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING, SKIN_NAME_SCALING);
       String variantName = TextUtils.normalizeString(textureKey.toString(), 11);
-      this.font.draw(poseStack, Component.literal(variantName), leftNamePos, topNamePos,
+      guiGraphics.drawString(this.font, Component.literal(variantName), leftNamePos, topNamePos,
           Constants.FONT_COLOR_DARK_GREEN);
-      poseStack.popPose();
+      guiGraphics.pose().popPose();
 
       skinPosition++;
     }
   }
 
-  private void renderSkinEntity(PoseStack poseStack, int x, int y, SkinModel skinModel,
+  private void renderSkinEntity(GuiGraphics guiGraphics, int x, int y, SkinModel skinModel,
       UUID textureUUID) {
     // Skin details
     TextureModelKey textureModelKey = new TextureModelKey(textureUUID, skinModel);
@@ -138,13 +138,10 @@ public class PlayerSkinConfigurationScreen
     // Render active skin in different style.
     Optional<UUID> skinUUID = this.entity.getSkinUUID();
     if (skinUUID.isPresent() && skinUUID.get().equals(textureUUID)) {
-      poseStack.pushPose();
-      RenderSystem.setShader(GameRenderer::getPositionTexShader);
-      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-      RenderSystem.setShaderTexture(0, Constants.TEXTURE_CONFIGURATION);
-      blit(poseStack, skinButtonLeft, skinButtonTop, 0, skinButtonHeight, skinPreviewWidth,
-          skinButtonHeight);
-      poseStack.popPose();
+      guiGraphics.pose().pushPose();
+      guiGraphics.blit(Constants.TEXTURE_CONFIGURATION, skinButtonLeft, skinButtonTop, 0,
+          skinButtonHeight, skinPreviewWidth, skinButtonHeight);
+      guiGraphics.pose().popPose();
     }
 
     // Render skin entity with variant and profession.
@@ -309,17 +306,17 @@ public class PlayerSkinConfigurationScreen
   }
 
   @Override
-  public void render(PoseStack poseStack, int x, int y, float partialTicks) {
-    super.render(poseStack, x, y, partialTicks);
+  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+    super.render(guiGraphics, x, y, partialTicks);
 
     if (this.isPlayerSkinModel) {
-      this.font.draw(poseStack,
+      guiGraphics.drawString(this.font,
           Component.translatable(Constants.TEXT_CONFIG_PREFIX + "use_a_player_name"),
-          this.contentLeftPos, this.topPos + 50f, 4210752);
+          this.contentLeftPos, this.topPos + 50, 4210752);
     } else {
-      this.font.draw(poseStack,
+      guiGraphics.drawString(this.font,
           Component.translatable(Constants.TEXT_CONFIG_PREFIX + "use_a_skin_url"),
-          this.contentLeftPos, this.topPos + 50f, 4210752);
+          this.contentLeftPos, this.topPos + 50, 4210752);
     }
 
     // Reload protection
@@ -331,34 +328,35 @@ public class PlayerSkinConfigurationScreen
       RenderSystem.setShader(GameRenderer::getPositionTexShader);
       RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
       RenderSystem.setShaderTexture(0, Constants.TEXTURE_CONFIGURATION);
-      poseStack.translate(0, 0, 100);
-      blit(poseStack, this.leftPos + 155, this.topPos + 65, 82, 1, 8, 10);
+      guiGraphics.pose().translate(0, 0, 100);
+      guiGraphics.blit(Constants.TEXTURE_CONFIGURATION, this.leftPos + 155, this.topPos + 65, 82, 1,
+          8, 10);
 
       // Show processing text.
-      this.font.draw(poseStack,
+      guiGraphics.drawString(this.font,
           Component.translatable(Constants.TEXT_CONFIG_PREFIX + "processing_skin"),
-          this.leftPos + 55f, this.topPos + 88f, 4210752);
+          this.leftPos + 55, this.topPos + 88, 4210752);
     }
 
     // Skins
-    this.renderSkins(poseStack);
+    this.renderSkins(guiGraphics);
 
     // Make sure we pass the mouse movements to the dynamically added buttons, if any.
     if (!skinButtons.isEmpty()) {
       for (Button skinButton : skinButtons) {
-        skinButton.render(poseStack, x, y, partialTicks);
+        skinButton.render(guiGraphics, x, y, partialTicks);
       }
     }
   }
 
   @Override
-  protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
-    super.renderBg(poseStack, partialTicks, mouseX, mouseY);
+  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
 
     // Skin Selection
-    fill(poseStack, this.contentLeftPos, this.topPos + 102, this.contentLeftPos + 282,
+    guiGraphics.fill(this.contentLeftPos, this.topPos + 102, this.contentLeftPos + 282,
         this.topPos + 188, 0xff000000);
-    fill(poseStack, this.contentLeftPos + 1, this.topPos + 103, this.contentLeftPos + 281,
+    guiGraphics.fill(this.contentLeftPos + 1, this.topPos + 103, this.contentLeftPos + 281,
         this.topPos + 187, 0xffaaaaaa);
   }
 
