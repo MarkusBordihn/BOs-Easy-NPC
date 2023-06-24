@@ -105,7 +105,7 @@ public class BasicActionConfigurationScreen
     guiGraphics.drawString(this.font,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + "on_interaction"),
         this.contentLeftPos, this.onInteractionActionSaveButton.getY() - 8,
-        Constants.FONT_COLOR_BLACK);
+        Constants.FONT_COLOR_BLACK, false);
 
   }
 

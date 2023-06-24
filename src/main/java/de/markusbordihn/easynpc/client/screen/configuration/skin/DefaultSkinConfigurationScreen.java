@@ -95,11 +95,11 @@ public class DefaultSkinConfigurationScreen
       guiGraphics.pose().scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING, SKIN_NAME_SCALING);
       String variantName = TextUtils.normalizeString(variant.name(), 12);
       guiGraphics.drawString(this.font, Component.literal(variantName), leftNamePos, topNamePos,
-          Constants.FONT_COLOR_DARK_GREEN);
+          Constants.FONT_COLOR_DARK_GREEN, false);
       if (profession != null) {
         String professionName = TextUtils.normalizeString(profession.name(), 11);
         guiGraphics.drawString(this.font, Component.literal(professionName), leftNamePos,
-            topNamePos + 10, Constants.FONT_COLOR_BLACK);
+            topNamePos + 10, Constants.FONT_COLOR_BLACK, false);
       }
       guiGraphics.pose().popPose();
 

@@ -96,7 +96,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
 
   protected int fontDraw(GuiGraphics guiGraphics, String text, int x, int y) {
     return guiGraphics.drawString(this.font,
-        Component.translatable(Constants.TEXT_CONFIG_PREFIX + text), x, y, 4210752);
+        Component.translatable(Constants.TEXT_CONFIG_PREFIX + text), x, y, Constants.FONT_COLOR_DEFAULT);
   }
 
   protected static Button menuButton(int left, int top, int width, String label,
@@ -182,7 +182,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
 
   @Override
   protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
-    guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752);
+    guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, Constants.FONT_COLOR_DEFAULT, false);
   }
 
   @Override

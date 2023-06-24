@@ -111,7 +111,7 @@ public class Checkbox extends AbstractButton {
         this.selected ? 16.0F : 0.0F, 16, 16, 32, 32);
     if (this.showLabel) {
       guiGraphics.drawString(this.font, this.getMessage(), this.getX() + 18,
-          this.getY() + (this.height - 8) / 2, Constants.FONT_COLOR_DEFAULT);
+          this.getY() + (this.height - 8) / 2, Constants.FONT_COLOR_DEFAULT, false);
     }
 
   }

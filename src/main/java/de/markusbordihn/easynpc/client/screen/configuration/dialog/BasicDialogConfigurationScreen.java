@@ -93,13 +93,13 @@ public class BasicDialogConfigurationScreen
 
     guiGraphics.drawString(this.font,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + "dialog_text"), this.contentLeftPos,
-        this.topPos + 50, 4210752);
+        this.topPos + 50, Constants.FONT_COLOR_DEFAULT, false);
 
     if (!this.textComponents.isEmpty()) {
       for (int line = 0; line < this.numberOfTextLines; ++line) {
         FormattedCharSequence formattedCharSequence = this.textComponents.get(line);
         guiGraphics.drawString(this.font, formattedCharSequence, leftPos + 15,
-            topPos + 100 + (line * (font.lineHeight + 2)), Constants.FONT_COLOR_DEFAULT);
+            topPos + 100 + (line * (font.lineHeight + 2)), Constants.FONT_COLOR_DEFAULT, false);
       }
     }
   }

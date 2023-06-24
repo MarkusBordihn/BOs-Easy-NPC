@@ -110,15 +110,15 @@ public class YesNoDialogConfigurationScreen
     super.render(guiGraphics, x, y, partialTicks);
     guiGraphics.drawString(this.font,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + "question"), this.contentLeftPos,
-        this.topPos + 50, 4210752);
+        this.topPos + 50, Constants.FONT_COLOR_DEFAULT, false);
 
     guiGraphics.drawString(this.font,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + "yes_answer"), this.contentLeftPos,
-        this.yesDialogBox.getY() - 12, 4210752);
+        this.yesDialogBox.getY() - 12, Constants.FONT_COLOR_DEFAULT, false);
 
     guiGraphics.drawString(this.font,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + "no_answer"), this.contentLeftPos,
-        this.noDialogBox.getY() - 12, 4210752);
+        this.noDialogBox.getY() - 12, Constants.FONT_COLOR_DEFAULT, false);
   }
 
 }

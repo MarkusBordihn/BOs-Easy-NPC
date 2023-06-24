@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.ConfirmScreen;
@@ -36,8 +37,6 @@ import net.minecraft.world.entity.player.Inventory;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import net.minecraft.client.gui.GuiGraphics;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.CustomPresetData;

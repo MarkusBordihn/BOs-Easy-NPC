@@ -167,11 +167,11 @@ public class DefaultPositionConfigurationScreen
 
     // Position Text
     guiGraphics.drawString(this.font, "Position X", this.positionXBox.getX() + 5,
-        this.positionXBox.getY() + 25, 4210752);
+        this.positionXBox.getY() + 25, Constants.FONT_COLOR_DEFAULT, false);
     guiGraphics.drawString(this.font, "Position Y", this.positionYBox.getX() + 5,
-        this.positionYBox.getY() + 25, 4210752);
+        this.positionYBox.getY() + 25, Constants.FONT_COLOR_DEFAULT, false);
     guiGraphics.drawString(this.font, "Position Z", this.positionZBox.getX() + 5,
-        this.positionZBox.getY() + 25, 4210752);
+        this.positionZBox.getY() + 25, Constants.FONT_COLOR_DEFAULT, false);
   }
 
   @Override

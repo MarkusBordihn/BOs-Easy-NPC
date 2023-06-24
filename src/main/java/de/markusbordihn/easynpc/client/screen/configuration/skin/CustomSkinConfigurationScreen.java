@@ -114,7 +114,7 @@ public class CustomSkinConfigurationScreen
       guiGraphics.pose().scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING, SKIN_NAME_SCALING);
       String variantName = TextUtils.normalizeString(textureKey.toString(), 11);
       guiGraphics.drawString(this.font, Component.literal(variantName), leftNamePos, topNamePos,
-          Constants.FONT_COLOR_DARK_GREEN);
+          Constants.FONT_COLOR_DARK_GREEN, false);
       guiGraphics.pose().popPose();
 
       skinPosition++;
@@ -253,7 +253,7 @@ public class CustomSkinConfigurationScreen
       for (int line = 0; line < this.numberOfTextLines; ++line) {
         FormattedCharSequence formattedCharSequence = this.textComponents.get(line);
         guiGraphics.drawString(this.font, formattedCharSequence, leftPos + 10,
-            topPos + 45 + (line * (font.lineHeight + 2)), Constants.FONT_COLOR_DEFAULT);
+            topPos + 45 + (line * (font.lineHeight + 2)), Constants.FONT_COLOR_DEFAULT, false);
       }
     }
 
@@ -263,7 +263,7 @@ public class CustomSkinConfigurationScreen
     if (!canSkinReload) {
       guiGraphics.drawString(this.font,
           Component.translatable(Constants.TEXT_CONFIG_PREFIX + "skin_reloading"), leftPos + 55,
-          topPos + 215, Constants.FONT_COLOR_RED);
+          topPos + 215, Constants.FONT_COLOR_RED, false);
     }
     this.skinReloadButton.active = canSkinReload;
 

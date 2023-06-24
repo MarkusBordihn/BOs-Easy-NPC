@@ -104,7 +104,7 @@ public class NoneDialogConfigurationScreen
       for (int line = 0; line < this.numberOfTextLines; ++line) {
         FormattedCharSequence formattedCharSequence = this.textComponents.get(line);
         guiGraphics.drawString(this.font, formattedCharSequence, leftPos + 15,
-            topPos + 60 + (line * (font.lineHeight + 2)), Constants.FONT_COLOR_DEFAULT);
+            topPos + 60 + (line * (font.lineHeight + 2)), Constants.FONT_COLOR_DEFAULT, false);
       }
     }
   }

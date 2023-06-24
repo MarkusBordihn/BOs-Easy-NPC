@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
@@ -31,8 +32,6 @@ import net.minecraft.world.entity.player.Inventory;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import net.minecraft.client.gui.GuiGraphics;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.CustomPresetData;
@@ -104,7 +103,7 @@ public class ExportWorldPresetConfigurationScreen
       for (int line = 0; line < this.numberOfTextLines; ++line) {
         FormattedCharSequence formattedCharSequence = this.textComponents.get(line);
         guiGraphics.drawString(this.font, formattedCharSequence, leftPos + 15,
-            topPos + 80 + (line * (font.lineHeight + 2)), Constants.FONT_COLOR_DEFAULT);
+            topPos + 80 + (line * (font.lineHeight + 2)), Constants.FONT_COLOR_DEFAULT, false);
       }
     }
 

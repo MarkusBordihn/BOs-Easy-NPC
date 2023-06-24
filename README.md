@@ -28,4 +28,5 @@ See: [Configuration](https://github.com/MarkusBordihn/BOs-Easy-NPC/wiki/Configur
 
 ## License
 
-The MIT [LICENSE.md](LICENSE.md) applies only to the code in this repository. Images, models and other assets are explicitly excluded.
+The MIT [LICENSE.md](LICENSE.md) applies only to the code in this repository.
+Images, models and other assets are explicitly excluded.

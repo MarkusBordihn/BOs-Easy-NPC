@@ -105,7 +105,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
       for (int line = 0; line < this.numberOfDialogLines; ++line) {
         FormattedCharSequence formattedCharSequence = this.cachedDialogComponents.get(line);
         guiGraphics.drawString(this.font, formattedCharSequence, leftPos + 87,
-            topPos + 22 + (line * (font.lineHeight + 2)), 0);
+            topPos + 22 + (line * (font.lineHeight + 2)), 0, false);
       }
     }
   }
@@ -241,7 +241,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
 
   @Override
   protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
-    guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752);
+    guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, Constants.FONT_COLOR_DEFAULT, false);
   }
 
   @Override

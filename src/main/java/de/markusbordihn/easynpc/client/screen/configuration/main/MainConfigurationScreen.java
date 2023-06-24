@@ -325,19 +325,20 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     guiGraphics.pose().scale(scaleEntityTypeText, scaleEntityTypeText, scaleEntityTypeText);
     guiGraphics.drawString(this.font, entity.getType().getDescription(),
         Math.round((this.contentLeftPos + 3f) / scaleEntityTypeText),
-        Math.round((this.topPos + 48f) / scaleEntityTypeText), 4210752);
+        Math.round((this.topPos + 48f) / scaleEntityTypeText), Constants.FONT_COLOR_DEFAULT, false);
     guiGraphics.pose().popPose();
 
     // Owner
     if (this.entity.hasOwner()) {
       guiGraphics.drawString(this.font, "Owner: " + this.entity.getOwnerName(),
-          this.contentLeftPos + 2, this.topPos + 220, 4210752);
+          this.contentLeftPos + 2, this.topPos + 220, Constants.FONT_COLOR_DEFAULT, false);
     }
   }
 
   @Override
   protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
-    guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752);
+    guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, Constants.FONT_COLOR_DEFAULT,
+        false);
   }
 
   @Override

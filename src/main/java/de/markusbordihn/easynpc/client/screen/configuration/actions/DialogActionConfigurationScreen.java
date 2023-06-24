@@ -232,19 +232,19 @@ public class DialogActionConfigurationScreen
     guiGraphics.drawString(this.font,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + "on_open_dialog"),
         this.contentLeftPos, this.onOpenDialogActionSaveButton.getY() - 8,
-        Constants.FONT_COLOR_BLACK);
+        Constants.FONT_COLOR_BLACK, false);
     guiGraphics.drawString(this.font,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + "on_close_dialog"),
         this.contentLeftPos, this.onCloseDialogActionSaveButton.getY() - 8,
-        Constants.FONT_COLOR_BLACK);
+        Constants.FONT_COLOR_BLACK, false);
     guiGraphics.drawString(this.font,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + "on_yes_selection"),
         this.contentLeftPos, this.onYesSelectionActionSaveButton.getY() - 8,
-        Constants.FONT_COLOR_BLACK);
+        Constants.FONT_COLOR_BLACK, false);
     guiGraphics.drawString(this.font,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + "on_no_selection"),
         this.contentLeftPos, this.onNoSelectionActionSaveButton.getY() - 8,
-        Constants.FONT_COLOR_BLACK);
+        Constants.FONT_COLOR_BLACK, false);
   }
 
 }

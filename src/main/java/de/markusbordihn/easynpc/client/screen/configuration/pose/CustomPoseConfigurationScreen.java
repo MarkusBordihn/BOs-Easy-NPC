@@ -27,6 +27,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
@@ -823,35 +824,45 @@ public class CustomPoseConfigurationScreen
 
     // Body parts texts
     if (this.entity.hasHeadModelPart()) {
-      guiGraphics.drawString(this.font, "pose.head", this.headRotationXSliderButton.getX() + 20,
-          this.headRotationXSliderButton.getY() - 12, Constants.FONT_COLOR_GRAY);
+      guiGraphics.drawString(this.font,
+          Component.translatable(Constants.TEXT_CONFIG_PREFIX + "pose.head"),
+          this.headRotationXSliderButton.getX() + 20, this.headRotationXSliderButton.getY() - 12,
+          Constants.FONT_COLOR_WHITE);
     }
     if (this.entity.hasBodyModelPart()) {
-      guiGraphics.drawString(this.font, "pose.body", this.bodyRotationXSliderButton.getX() + 20,
-          this.bodyRotationXSliderButton.getY() - 12, Constants.FONT_COLOR_GRAY);
+      guiGraphics.drawString(this.font,
+          Component.translatable(Constants.TEXT_CONFIG_PREFIX + "pose.body"),
+          this.bodyRotationXSliderButton.getX() + 20, this.bodyRotationXSliderButton.getY() - 12,
+          Constants.FONT_COLOR_WHITE);
     }
     if (this.entity.hasLeftArmModelPart()) {
-      guiGraphics.drawString(this.font, "pose.left_arm",
+      guiGraphics.drawString(this.font,
+          Component.translatable(Constants.TEXT_CONFIG_PREFIX + "pose.left_arm"),
           this.leftArmRotationXSliderButton.getX() + 20,
-          this.leftArmRotationXSliderButton.getY() - 12, Constants.FONT_COLOR_GRAY);
+          this.leftArmRotationXSliderButton.getY() - 12, Constants.FONT_COLOR_WHITE);
     } else if (this.entity.hasArmsModelPart()) {
-      guiGraphics.drawString(this.font, "pose.arms", this.armsRotationXSliderButton.getX() + 20,
-          this.armsRotationXSliderButton.getY() - 12, Constants.FONT_COLOR_GRAY);
+      guiGraphics.drawString(this.font,
+          Component.translatable(Constants.TEXT_CONFIG_PREFIX + "pose.arms"),
+          this.armsRotationXSliderButton.getX() + 20, this.armsRotationXSliderButton.getY() - 12,
+          Constants.FONT_COLOR_WHITE);
     }
     if (this.entity.hasRightArmModelPart()) {
-      guiGraphics.drawString(this.font, "pose.right_arm",
+      guiGraphics.drawString(this.font,
+          Component.translatable(Constants.TEXT_CONFIG_PREFIX + "pose.right_arm"),
           this.rightArmRotationXSliderButton.getX() + 20,
-          this.rightArmRotationXSliderButton.getY() - 12, Constants.FONT_COLOR_GRAY);
+          this.rightArmRotationXSliderButton.getY() - 12, Constants.FONT_COLOR_WHITE);
     }
     if (this.entity.hasLeftLegModelPart()) {
-      guiGraphics.drawString(this.font, "pose.left_leg",
+      guiGraphics.drawString(this.font,
+          Component.translatable(Constants.TEXT_CONFIG_PREFIX + "pose.left_leg"),
           this.leftLegRotationXSliderButton.getX() + 20,
-          this.leftLegRotationXSliderButton.getY() - 12, Constants.FONT_COLOR_GRAY);
+          this.leftLegRotationXSliderButton.getY() - 12, Constants.FONT_COLOR_WHITE);
     }
     if (this.entity.hasRightLegModelPart()) {
-      guiGraphics.drawString(this.font, "pose.right_leg",
+      guiGraphics.drawString(this.font,
+          Component.translatable(Constants.TEXT_CONFIG_PREFIX + "pose.right_leg"),
           this.rightLegRotationXSliderButton.getX() + 20,
-          this.rightLegRotationXSliderButton.getY() - 12, Constants.FONT_COLOR_GRAY);
+          this.rightLegRotationXSliderButton.getY() - 12, Constants.FONT_COLOR_WHITE);
     }
   }
 

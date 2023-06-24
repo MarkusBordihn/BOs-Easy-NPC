@@ -147,11 +147,11 @@ public class DefaultRotationConfigurationScreen
 
     // Rotation Text
     guiGraphics.drawString(this.font, "Rotation X", this.rootRotationXSliderButton.getX() + 5,
-        this.rootRotationXSliderButton.getY() + 25, 4210752);
+        this.rootRotationXSliderButton.getY() + 25, Constants.FONT_COLOR_DEFAULT, false);
     guiGraphics.drawString(this.font, "Rotation Y", this.rootRotationYSliderButton.getX() + 5,
-        this.rootRotationYSliderButton.getY() + 25, 4210752);
+        this.rootRotationYSliderButton.getY() + 25, Constants.FONT_COLOR_DEFAULT, false);
     guiGraphics.drawString(this.font, "Rotation Z", this.rootRotationZSliderButton.getX() + 5,
-        this.rootRotationZSliderButton.getY() + 25, 4210752);
+        this.rootRotationZSliderButton.getY() + 25, Constants.FONT_COLOR_DEFAULT, false);
   }
 
   @Override

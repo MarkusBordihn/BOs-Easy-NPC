@@ -112,7 +112,7 @@ public class PlayerSkinConfigurationScreen
       guiGraphics.pose().scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING, SKIN_NAME_SCALING);
       String variantName = TextUtils.normalizeString(textureKey.toString(), 11);
       guiGraphics.drawString(this.font, Component.literal(variantName), leftNamePos, topNamePos,
-          Constants.FONT_COLOR_DARK_GREEN);
+          Constants.FONT_COLOR_DARK_GREEN, false);
       guiGraphics.pose().popPose();
 
       skinPosition++;
@@ -312,11 +312,11 @@ public class PlayerSkinConfigurationScreen
     if (this.isPlayerSkinModel) {
       guiGraphics.drawString(this.font,
           Component.translatable(Constants.TEXT_CONFIG_PREFIX + "use_a_player_name"),
-          this.contentLeftPos, this.topPos + 50, 4210752);
+          this.contentLeftPos, this.topPos + 50, Constants.FONT_COLOR_DEFAULT, false);
     } else {
       guiGraphics.drawString(this.font,
           Component.translatable(Constants.TEXT_CONFIG_PREFIX + "use_a_skin_url"),
-          this.contentLeftPos, this.topPos + 50, 4210752);
+          this.contentLeftPos, this.topPos + 50, Constants.FONT_COLOR_DEFAULT, false);
     }
 
     // Reload protection
@@ -335,7 +335,7 @@ public class PlayerSkinConfigurationScreen
       // Show processing text.
       guiGraphics.drawString(this.font,
           Component.translatable(Constants.TEXT_CONFIG_PREFIX + "processing_skin"),
-          this.leftPos + 55, this.topPos + 88, 4210752);
+          this.leftPos + 55, this.topPos + 88, Constants.FONT_COLOR_DEFAULT, false);
     }
 
     // Skins
