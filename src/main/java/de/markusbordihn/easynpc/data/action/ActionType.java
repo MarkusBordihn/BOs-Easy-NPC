@@ -26,7 +26,11 @@ public enum ActionType {
   ON_INTERACTION,
   ON_NO_SELECTION,
   ON_OPEN_DIALOG,
-  ON_YES_SELECTION;
+  ON_YES_SELECTION,
+  ON_DISTANCE_NEAR,
+  ON_DISTANCE_CLOSE,
+  ON_DISTANCE_VERY_CLOSE,
+  ON_DISTANCE_TOUCH;
   // @formatter:on
 
   public static ActionType get(String actionType) {
