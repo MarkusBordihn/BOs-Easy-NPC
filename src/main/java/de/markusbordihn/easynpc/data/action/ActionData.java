@@ -114,6 +114,10 @@ public class ActionData {
   }
 
   public boolean hasAction() {
+    return this.action != null;
+  }
+
+  public boolean hasActionAndNotEmpty() {
     return this.action != null && !this.action.isEmpty();
   }
 
@@ -125,8 +129,12 @@ public class ActionData {
     return this.actionType != ActionType.NONE && this.hasAction();
   }
 
+  public boolean isValidAndNotEmpty() {
+    return this.actionType != ActionType.NONE && this.hasActionAndNotEmpty();
+  }
+
   public void load(CompoundTag compoundTag) {
-    this.actionType = ActionType.valueOf(compoundTag.getString(DATA_ACTION_TYPE_TAG));
+    this.actionType = ActionType.get(compoundTag.getString(DATA_ACTION_TYPE_TAG));
     this.action = compoundTag.getString(DATA_ACTION_TAG);
     this.permissionLevel = compoundTag.getInt(DATA_ACTION_PERMISSION_LEVEL_TAG);
     this.executeAsUser = compoundTag.getBoolean(DATA_ACTION_EXECUTE_AS_USER_TAG);
@@ -157,7 +165,7 @@ public class ActionData {
     int permissionLevel = buffer.readInt();
     boolean executeAsUser = buffer.readBoolean();
     boolean enableDebug = buffer.readBoolean();
-    return new ActionData(ActionType.valueOf(actionType), action, permissionLevel, executeAsUser,
+    return new ActionData(ActionType.get(actionType), action, permissionLevel, executeAsUser,
         enableDebug);
   }
 

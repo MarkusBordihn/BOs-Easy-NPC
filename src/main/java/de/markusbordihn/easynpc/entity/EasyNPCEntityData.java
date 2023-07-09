@@ -19,6 +19,9 @@
 
 package de.markusbordihn.easynpc.entity;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,9 +32,11 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.npc.Npc;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import de.markusbordihn.easynpc.Constants;
@@ -186,6 +191,12 @@ public class EasyNPCEntityData extends AgeableMob
     }
 
     this.deserializeNBT(compoundTag);
+  }
+
+  public List<Player> getPlayersInRange(Double range) {
+    return this.level().players().stream().filter(EntitySelector.NO_SPECTATORS).filter(entity -> {
+      return this.closerThan(entity, range);
+    }).sorted().collect(Collectors.toList());
   }
 
   @Override
