@@ -29,6 +29,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.loading.FileUtils;
+
 import de.markusbordihn.easynpc.Constants;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)

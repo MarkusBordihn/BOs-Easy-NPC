@@ -29,6 +29,7 @@ import net.minecraftforge.registries.RegistryObject;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.action.DialogActionConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.action.DistanceActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenu;
@@ -74,6 +75,9 @@ public class ModMenuTypes {
   public static final RegistryObject<MenuType<DialogActionConfigurationMenu>> DIALOG_ACTION_CONFIGURATION_MENU =
       MENU_TYPES.register("dialog_action_configuration_menu",
           () -> IForgeMenuType.create(DialogActionConfigurationMenu::new));
+  public static final RegistryObject<MenuType<DistanceActionConfigurationMenu>> DISTANCE_ACTION_CONFIGURATION_MENU =
+      MENU_TYPES.register("distance_action_configuration_menu",
+          () -> IForgeMenuType.create(DistanceActionConfigurationMenu::new));
 
   // Dialog Configuration
   public static final RegistryObject<MenuType<NoneDialogConfigurationMenu>> NONE_DIALOG_CONFIGURATION_MENU =

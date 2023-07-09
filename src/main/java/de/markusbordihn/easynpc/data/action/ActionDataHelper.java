@@ -65,6 +65,14 @@ public class ActionDataHelper {
     return false;
   }
 
+  public static boolean hasActionAndNotEmpty(CompoundTag compoundTag, ActionType actionType) {
+    ActionData actionData = getActionData(compoundTag, actionType);
+    if (actionData != null) {
+      return actionData.hasActionAndNotEmpty();
+    }
+    return false;
+  }
+
   public static CompoundTag saveActionData(Map<ActionType, ActionData> actions) {
     CompoundTag compoundTag = new CompoundTag();
     saveActionData(compoundTag, actions);
@@ -79,7 +87,7 @@ public class ActionDataHelper {
         ActionType actionType = actionEntry.getKey();
         if (actionType != ActionType.NONE) {
           ActionData actionData = actionEntry.getValue();
-          if (actionData != null && actionData.hasAction()) {
+          if (actionData != null && actionData.hasActionAndNotEmpty()) {
             listTag.add(actionData.save(new CompoundTag()));
           }
         }
@@ -97,7 +105,7 @@ public class ActionDataHelper {
       ListTag listTag = compoundTag.getList(DATA_ACTIONS_TAG, 10);
       for (int i = 0; i < listTag.size(); ++i) {
         ActionData actionData = new ActionData(listTag.getCompound(i));
-        if (actionData.hasActionType() && actionData.hasAction()) {
+        if (actionData.hasActionType() && actionData.hasActionAndNotEmpty()) {
           actions.put(actionData.getActionType(), actionData);
         }
       }

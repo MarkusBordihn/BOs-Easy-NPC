@@ -35,6 +35,7 @@ import de.markusbordihn.easynpc.data.WorldPresetData;
 import de.markusbordihn.easynpc.menu.DialogMenu;
 import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.action.DialogActionConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.action.DistanceActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenu;
@@ -100,6 +101,18 @@ public class EasyNPCEntityMenu {
       UUID uuid = entity.getUUID();
       NetworkHooks.openGui(serverPlayer,
           DialogActionConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
+    }
+  }
+
+  public static void openDistanceActionConfigurationMenu(ServerPlayer serverPlayer,
+      EasyNPCEntity entity) {
+    if (hasPermissions(serverPlayer, entity, COMMON.distanceActionConfigurationEnabled.get(),
+        COMMON.distanceActionConfigurationAllowInCreative.get(),
+        COMMON.distanceActionConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      NetworkHooks.openGui(serverPlayer,
+          DistanceActionConfigurationMenu.getMenuProvider(uuid, entity),
           buffer -> buffer.writeUUID(uuid));
     }
   }

@@ -19,28 +19,23 @@
 
 package de.markusbordihn.easynpc.data.action;
 
-public enum ActionType {
+public enum ActionGroup {
   // @formatter:off
   NONE,
-  ON_CLOSE_DIALOG,
-  ON_INTERACTION,
-  ON_NO_SELECTION,
-  ON_OPEN_DIALOG,
-  ON_YES_SELECTION,
-  ON_DISTANCE_NEAR,
-  ON_DISTANCE_CLOSE,
-  ON_DISTANCE_VERY_CLOSE,
-  ON_DISTANCE_TOUCH;
+  DISTANCE_NEAR,
+  DISTANCE_CLOSE,
+  DISTANCE_VERY_CLOSE,
+  DISTANCE_TOUCH;
   // @formatter:on
 
-  public static ActionType get(String actionType) {
+  public static ActionGroup get(String actionType) {
     if (actionType == null || actionType.isEmpty()) {
-      return ActionType.NONE;
+      return ActionGroup.NONE;
     }
     try {
-      return ActionType.valueOf(actionType);
+      return ActionGroup.valueOf(actionType);
     } catch (IllegalArgumentException e) {
-      return ActionType.NONE;
+      return ActionGroup.NONE;
     }
   }
 }

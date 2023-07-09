@@ -41,6 +41,7 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
   protected Button basicActionButton = null;
   protected Button dialogActionButton = null;
   protected Button yesNoActionButton = null;
+  protected Button distanceActionButton = null;
 
   public ActionConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -67,6 +68,11 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
             80, "dialog_actions", onPress -> {
               NetworkMessage.openConfiguration(uuid, ConfigurationType.DIALOG_ACTION);
             }));
+    this.distanceActionButton = this.addRenderableWidget(
+        menuButton(this.dialogActionButton.x + this.dialogActionButton.getWidth(),
+            this.buttonTopPos, 80, "distance_actions", onPress -> {
+              NetworkMessage.openConfiguration(uuid, ConfigurationType.DISTANCE_ACTION);
+            }));
 
     // Default button stats
     this.basicActionButton.active =
@@ -77,6 +83,10 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
         this.hasPermissions(COMMON.dialogActionConfigurationEnabled.get(),
             COMMON.dialogActionConfigurationAllowInCreative.get(),
             COMMON.dialogActionConfigurationPermissionLevel.get());
+    this.distanceActionButton.active =
+        this.hasPermissions(COMMON.distanceActionConfigurationEnabled.get(),
+            COMMON.distanceActionConfigurationAllowInCreative.get(),
+            COMMON.distanceActionConfigurationPermissionLevel.get());
   }
 
 }
