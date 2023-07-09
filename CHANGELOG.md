@@ -5,6 +5,11 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### 2023.07.09
+
+- Added new distance based actions for 16, 8, 4 and 1 block distance from the NPC.
+- Fixed issue to allow empty action to reset actions.
+
 ### 2023.06.24
 
 - Refactored code to 1.20-46.0.14

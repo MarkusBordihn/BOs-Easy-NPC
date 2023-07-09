@@ -17,30 +17,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.menu.configuration;
+package de.markusbordihn.easynpc.data.action;
 
-public enum ConfigurationType {
+public enum ActionGroup {
   // @formatter:off
-  BASIC_ACTION,
-  BASIC_DIALOG,
-  CUSTOM_POSE,
-  CUSTOM_PRESET_EXPORT,
-  CUSTOM_PRESET_IMPORT,
-  CUSTOM_SKIN,
-  DEFAULT_POSE,
-  DEFAULT_POSITION,
-  DEFAULT_PRESET_IMPORT,
-  DEFAULT_ROTATION,
-  DEFAULT_SKIN,
-  DIALOG_ACTION,
-  DISTANCE_ACTION,
-  EQUIPMENT,
-  MAIN,
-  NONE_DIALOG,
-  PLAYER_SKIN,
-  SCALING,
-  WORLD_PRESET_EXPORT,
-  WORLD_PRESET_IMPORT,
-  YES_NO_DIALOG, ADVANCED_POSE,
+  NONE,
+  DISTANCE_NEAR,
+  DISTANCE_CLOSE,
+  DISTANCE_VERY_CLOSE,
+  DISTANCE_TOUCH;
   // @formatter:on
+
+  public static ActionGroup get(String actionType) {
+    if (actionType == null || actionType.isEmpty()) {
+      return ActionGroup.NONE;
+    }
+    try {
+      return ActionGroup.valueOf(actionType);
+    } catch (IllegalArgumentException e) {
+      return ActionGroup.NONE;
+    }
+  }
 }

@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity;
 
+import java.util.List;
 import javax.annotation.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
@@ -40,12 +41,18 @@ import net.minecraft.world.phys.Vec3;
 
 import de.markusbordihn.easynpc.commands.CommandManager;
 import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.data.action.ActionGroup;
+import de.markusbordihn.easynpc.data.action.ActionManager;
 import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.entity.ai.goal.CustomLookAtPlayerGoal;
 import de.markusbordihn.easynpc.entity.ai.goal.ResetLookAtPlayerGoal;
 import de.markusbordihn.easynpc.item.ModItems;
 
 public class EasyNPCEntity extends EasyNPCEntityData {
+
+  // Additional ticker
+  private static final int BASE_TICK = 15;
+  private int baseTicker = 0;
 
   // Shared constants
   public static final MobCategory CATEGORY = MobCategory.MISC;
@@ -54,6 +61,9 @@ public class EasyNPCEntity extends EasyNPCEntityData {
       Enum<?> variant) {
     this(entityType, level);
     this.setVariant(variant);
+
+    // Distribute Ticks along several entities.
+    this.baseTicker = this.random.nextInt(0, BASE_TICK / 2);
   }
 
   public EasyNPCEntity(EntityType<? extends EasyNPCEntity> entityType, Level level) {
@@ -66,7 +76,7 @@ public class EasyNPCEntity extends EasyNPCEntityData {
   }
 
   public void executeAction(ActionData actionData, ServerPlayer serverPlayer) {
-    if (actionData == null || !actionData.isValid()) {
+    if (actionData == null || !actionData.isValidAndNotEmpty()) {
       return;
     }
     int permissionLevel = this.getActionPermissionLevel();
@@ -85,6 +95,104 @@ public class EasyNPCEntity extends EasyNPCEntityData {
 
   public void openMainConfigurationMenu(ServerPlayer serverPlayer) {
     EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, this);
+  }
+
+  public void npcBaseTick() {
+    this.level().getProfiler().push("npcBaseTick");
+
+    // Check distance for additional actions.
+    checkDistanceActions();
+
+    this.level().getProfiler().pop();
+  }
+
+  public void checkDistanceActions() {
+    this.level().getProfiler().push("npcCheckDistanceActions");
+    // Check to avoid additional checks, when no player is in range.
+    boolean skipPlayerDistanceCheck = false;
+
+    // Near distance action, if set.
+    if (this.hasAction(ActionType.ON_DISTANCE_NEAR)) {
+      List<Player> listOfPlayers = this.getPlayersInRange(16.0D);
+      if (listOfPlayers == null || listOfPlayers.isEmpty()) {
+        ActionManager.removeActionGroup(this, ActionGroup.DISTANCE_NEAR);
+        skipPlayerDistanceCheck = true;
+      } else {
+        ActionData actionData = this.getActionData(ActionType.ON_DISTANCE_NEAR);
+        for (Player player : listOfPlayers) {
+          if (player instanceof ServerPlayer serverPlayer
+              && !ActionManager.containsPlayer(this, ActionGroup.DISTANCE_NEAR, serverPlayer)) {
+            this.executeAction(actionData, serverPlayer);
+            ActionManager.addPlayer(this, ActionGroup.DISTANCE_NEAR, serverPlayer);
+          }
+        }
+      }
+    }
+
+    // Close distance action, if set.
+    if (this.hasAction(ActionType.ON_DISTANCE_CLOSE)) {
+      List<Player> listOfPlayers = skipPlayerDistanceCheck ? null : this.getPlayersInRange(8.0D);
+      if (listOfPlayers == null || listOfPlayers.isEmpty()) {
+        ActionManager.removeActionGroup(this, ActionGroup.DISTANCE_CLOSE);
+        skipPlayerDistanceCheck = true;
+      } else {
+        ActionData actionData = this.getActionData(ActionType.ON_DISTANCE_CLOSE);
+        for (Player player : listOfPlayers) {
+          if (player instanceof ServerPlayer serverPlayer
+              && !ActionManager.containsPlayer(this, ActionGroup.DISTANCE_CLOSE, serverPlayer)) {
+            this.executeAction(actionData, serverPlayer);
+            ActionManager.addPlayer(this, ActionGroup.DISTANCE_CLOSE, serverPlayer);
+          }
+        }
+      }
+    }
+
+    // Very close distance action, if set.
+    if (this.hasAction(ActionType.ON_DISTANCE_VERY_CLOSE)) {
+      List<Player> listOfPlayers = skipPlayerDistanceCheck ? null : this.getPlayersInRange(4.0D);
+      if (listOfPlayers == null || listOfPlayers.isEmpty()) {
+        ActionManager.removeActionGroup(this, ActionGroup.DISTANCE_VERY_CLOSE);
+        skipPlayerDistanceCheck = true;
+      } else {
+        ActionData actionData = this.getActionData(ActionType.ON_DISTANCE_VERY_CLOSE);
+        for (Player player : listOfPlayers) {
+          if (player instanceof ServerPlayer serverPlayer && !ActionManager.containsPlayer(this,
+              ActionGroup.DISTANCE_VERY_CLOSE, serverPlayer)) {
+            this.executeAction(actionData, serverPlayer);
+            ActionManager.addPlayer(this, ActionGroup.DISTANCE_VERY_CLOSE, serverPlayer);
+          }
+        }
+      }
+    }
+
+    // Touch distance action, if set.
+    if (this.hasAction(ActionType.ON_DISTANCE_TOUCH)) {
+      List<Player> listOfPlayers = skipPlayerDistanceCheck ? null : this.getPlayersInRange(1.25D);
+      if (listOfPlayers == null || listOfPlayers.isEmpty()) {
+        ActionManager.removeActionGroup(this, ActionGroup.DISTANCE_TOUCH);
+        skipPlayerDistanceCheck = true;
+      } else {
+        ActionData actionData = this.getActionData(ActionType.ON_DISTANCE_TOUCH);
+        for (Player player : listOfPlayers) {
+          if (player instanceof ServerPlayer serverPlayer
+              && !ActionManager.containsPlayer(this, ActionGroup.DISTANCE_TOUCH, serverPlayer)) {
+            this.executeAction(actionData, serverPlayer);
+            ActionManager.addPlayer(this, ActionGroup.DISTANCE_TOUCH, serverPlayer);
+          }
+        }
+      }
+    }
+
+    this.level().getProfiler().pop();
+  }
+
+  @Override
+  public void baseTick() {
+    if (!this.level().isClientSide && this.isAlive() && this.baseTicker++ >= BASE_TICK) {
+      npcBaseTick();
+      this.baseTicker = 0;
+    }
+    super.baseTick();
   }
 
   @Override
