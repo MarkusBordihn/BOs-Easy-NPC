@@ -62,7 +62,7 @@ public interface EntityActionData extends EntityDataInterface {
   }
 
   default boolean hasAction(ActionType actionType) {
-    return ActionDataHelper.hasAction(getEntityData(DATA_ACTION_DATA), actionType);
+    return ActionDataHelper.hasActionAndNotEmpty(getEntityData(DATA_ACTION_DATA), actionType);
   }
 
   default Map<ActionType, de.markusbordihn.easynpc.data.action.ActionData> getActions() {

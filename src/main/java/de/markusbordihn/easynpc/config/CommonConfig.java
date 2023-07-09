@@ -74,6 +74,11 @@ public class CommonConfig {
     public final ForgeConfigSpec.BooleanValue dialogActionConfigurationAllowInCreative;
     public final ForgeConfigSpec.IntValue dialogActionConfigurationPermissionLevel;
 
+    public static final String DISTANCE_ACTION_CONFIGURATION = "distance action";
+    public final ForgeConfigSpec.BooleanValue distanceActionConfigurationEnabled;
+    public final ForgeConfigSpec.BooleanValue distanceActionConfigurationAllowInCreative;
+    public final ForgeConfigSpec.IntValue distanceActionConfigurationPermissionLevel;
+
     public static final String BASIC_DIALOG_CONFIGURATION = "basic dialog";
     public final ForgeConfigSpec.BooleanValue basicDialogConfigurationEnabled;
     public final ForgeConfigSpec.BooleanValue basicDialogConfigurationAllowInCreative;
@@ -203,6 +208,18 @@ public class CommonConfig {
       dialogActionConfigurationPermissionLevel =
           builder.comment(getPermissionLevelComment(DIALOG_ACTION_CONFIGURATION))
               .defineInRange("dialogActionConfigurationPermissionLevel", 1, 0, 4);
+      builder.pop();
+
+      builder.push("Distance Action Configuration");
+      distanceActionConfigurationEnabled =
+          builder.comment(getEnableComment(DISTANCE_ACTION_CONFIGURATION))
+              .define("distanceActionConfigurationEnabled", true);
+      distanceActionConfigurationAllowInCreative =
+          builder.comment(getAllowInCreativeComment(DISTANCE_ACTION_CONFIGURATION))
+              .define("distanceActionConfigurationAllowInCreative", true);
+      distanceActionConfigurationPermissionLevel =
+          builder.comment(getPermissionLevelComment(DISTANCE_ACTION_CONFIGURATION))
+              .defineInRange("distanceActionConfigurationPermissionLevel", 1, 0, 4);
       builder.pop();
 
       builder.push("Basic Dialog Configuration");
