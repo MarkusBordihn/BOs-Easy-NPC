@@ -66,7 +66,8 @@ public class CommandManager {
         permissionLevel);
     Commands commands = minecraftServer.getCommands();
     CommandSourceStack commandSourceStack = minecraftServer.createCommandSourceStack()
-        .withEntity(entity).withPermission(permissionLevel);
+        .withEntity(entity).withPosition(entity.position()).withRotation(entity.getRotationVector())
+        .withPermission(permissionLevel);
     commands.performCommand(debug ? commandSourceStack : commandSourceStack.withSuppressedOutput(),
         command);
   }
@@ -82,31 +83,10 @@ public class CommandManager {
     Commands commands = minecraftServer.getCommands();
     CommandSourceStack commandSourceStack =
         minecraftServer.createCommandSourceStack().withEntity(serverPlayer)
+            .withPosition(serverPlayer.position()).withRotation(serverPlayer.getRotationVector())
             .withPermission(permissionLevel).withLevel(serverPlayer.getLevel());
     commands.performCommand(debug ? commandSourceStack : commandSourceStack.withSuppressedOutput(),
         command);
   }
 
-  public static void executeServerCommand(String command) {
-    MinecraftServer minecraftServer = ServerLifecycleHooks.getCurrentServer();
-    if (minecraftServer == null) {
-      return;
-    }
-    log.debug("Execute Server Command: {}", command);
-    Commands commands = minecraftServer.getCommands();
-    CommandSourceStack commandSourceStack =
-        minecraftServer.createCommandSourceStack().withSuppressedOutput();
-    commands.performCommand(commandSourceStack, command);
-  }
-
-  public static void executeUserCommand(String command) {
-    MinecraftServer minecraftServer = ServerLifecycleHooks.getCurrentServer();
-    if (minecraftServer == null) {
-      return;
-    }
-    log.debug("Execute User Command: {}", command);
-    Commands commands = minecraftServer.getCommands();
-    CommandSourceStack commandSourceStack = minecraftServer.createCommandSourceStack();
-    commands.performCommand(commandSourceStack, command);
-  }
 }
