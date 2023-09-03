@@ -128,6 +128,16 @@ public class EntityManager {
     return null;
   }
 
+  public static boolean discardEasyNPCEntityByUUID(UUID uuid, ServerPlayer serverPlayer) {
+    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    if (easyNPCEntity != null) {
+      easyNPCEntity.discard();
+      entityMap.remove(uuid);
+      return true;
+    }
+    return false;
+  }
+
   public static boolean hasAccess(UUID uuid, ServerPlayer serverPlayer) {
     if (uuid == null || serverPlayer == null) {
       return false;
