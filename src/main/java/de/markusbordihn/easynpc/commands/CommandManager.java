@@ -70,7 +70,7 @@ public class CommandManager {
         permissionLevel);
     Commands commands = minecraftServer.getCommands();
     CommandSourceStack commandSourceStack = minecraftServer.createCommandSourceStack()
-        .withEntity(entity).withPermission(permissionLevel);
+        .withEntity(entity).withPosition(entity.position()).withRotation(entity.getRotationVector()).withPermission(permissionLevel);
     CommandDispatcher<CommandSourceStack> commandDispatcher = commands.getDispatcher();
     ParseResults<CommandSourceStack> parseResults = commandDispatcher.parse(command,
         debug ? commandSourceStack : commandSourceStack.withSuppressedOutput());
@@ -91,6 +91,7 @@ public class CommandManager {
     Commands commands = minecraftServer.getCommands();
     CommandSourceStack commandSourceStack =
         minecraftServer.createCommandSourceStack().withEntity(serverPlayer)
+            .withPosition(serverPlayer.position()).withRotation(serverPlayer.getRotationVector())
             .withPermission(permissionLevel).withLevel(serverPlayer.getLevel());
     CommandDispatcher<CommandSourceStack> commandDispatcher = commands.getDispatcher();
     ParseResults<CommandSourceStack> parseResults = commandDispatcher.parse(command,
@@ -98,38 +99,4 @@ public class CommandManager {
     commands.performCommand(parseResults, command);
   }
 
-  public static void executeServerCommand(String command) {
-    MinecraftServer minecraftServer = ServerLifecycleHooks.getCurrentServer();
-    if (minecraftServer == null) {
-      return;
-    }
-    if (command.startsWith("/")) {
-      command = command.substring(1);
-    }
-    log.debug("Execute Server Command: {}", command);
-    Commands commands = minecraftServer.getCommands();
-    CommandSourceStack commandSourceStack =
-        minecraftServer.createCommandSourceStack().withSuppressedOutput();
-    CommandDispatcher<CommandSourceStack> commandDispatcher = commands.getDispatcher();
-    ParseResults<CommandSourceStack> parseResults =
-        commandDispatcher.parse(command, commandSourceStack);
-    commands.performCommand(parseResults, command);
-  }
-
-  public static void executeUserCommand(String command) {
-    MinecraftServer minecraftServer = ServerLifecycleHooks.getCurrentServer();
-    if (minecraftServer == null) {
-      return;
-    }
-    if (command.startsWith("/")) {
-      command = command.substring(1);
-    }
-    log.debug("Execute User Command: {}", command);
-    Commands commands = minecraftServer.getCommands();
-    CommandSourceStack commandSourceStack = minecraftServer.createCommandSourceStack();
-    CommandDispatcher<CommandSourceStack> commandDispatcher = commands.getDispatcher();
-    ParseResults<CommandSourceStack> parseResults =
-        commandDispatcher.parse(command, commandSourceStack);
-    commands.performCommand(parseResults, command);
-  }
 }
