@@ -188,7 +188,9 @@ public class EasyNPCEntity extends EasyNPCEntityData {
 
   @Override
   public void baseTick() {
-    if (!this.level().isClientSide && this.isAlive() && this.baseTicker++ >= BASE_TICK) {
+    Level currentLevel = this.level();
+    if (currentLevel != null && !currentLevel.isClientSide && this.isAlive()
+        && this.baseTicker++ >= BASE_TICK) {
       npcBaseTick();
       this.baseTicker = 0;
     }

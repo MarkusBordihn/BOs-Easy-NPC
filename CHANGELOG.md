@@ -1,9 +1,15 @@
-# Changelog for Easy NPC (1.19.4)
+# Changelog for Easy NPC (1.20.1)
 
 ## Note
 
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
+
+### 2023.09.03
+
+- Added new `/easy_npc preset import_new <ResourceLocation> <x> <y> <z>` and `/easy_npc preset import_new <ResourceLocation> <x> <y> <z> <UUID>` command to allow the import a single preset multiple times.
+- Improved action handling by passing block position and other additional information to the action.
+- Improved preset import to allow import of NPCs on specific position e.g. `/easy_npc preset import <ResourceLocation> <x> <y> <z>`.
 
 ### 2023.07.09
 
