@@ -36,7 +36,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.CustomPresetData;
 import de.markusbordihn.easynpc.menu.configuration.preset.WorldExportPresetConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class ExportWorldPresetConfigurationScreen
@@ -90,7 +90,7 @@ public class ExportWorldPresetConfigurationScreen
     // Export button
     this.exportPresetButton = this.addRenderableWidget(
         menuButton(this.contentLeftPos + 65, this.bottomPos - 40, 150, "export", button -> {
-          NetworkMessage.exportPresetWorld(uuid, this.nameBox.getValue());
+          NetworkMessageHandler.exportPresetWorld(uuid, this.nameBox.getValue());
           exportPresetButton.active = false;
         }));
   }

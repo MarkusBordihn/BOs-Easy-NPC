@@ -22,33 +22,24 @@ package de.markusbordihn.easynpc.network.message;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraftforge.network.NetworkEvent;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
-public class MessageScaleChange {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+public class MessageScaleChange extends NetworkMessage {
 
   protected final Float scale;
   protected final String scaleAxis;
-  protected final UUID uuid;
 
   public MessageScaleChange(UUID uuid, String scaleAxis, Float scale) {
-    this.uuid = uuid;
+    super(uuid);
     this.scale = scale;
     this.scaleAxis = scaleAxis;
-  }
-
-  public UUID getUUID() {
-    return this.uuid;
   }
 
   public Float getScale() {
@@ -57,6 +48,16 @@ public class MessageScaleChange {
 
   public String getScaleAxis() {
     return this.scaleAxis;
+  }
+
+  public static MessageScaleChange decode(FriendlyByteBuf buffer) {
+    return new MessageScaleChange(buffer.readUUID(), buffer.readUtf(), buffer.readFloat());
+  }
+
+  public static void encode(MessageScaleChange message, FriendlyByteBuf buffer) {
+    buffer.writeUUID(message.uuid);
+    buffer.writeUtf(message.getScaleAxis());
+    buffer.writeFloat(message.getScale());
   }
 
   public static void handle(MessageScaleChange message,
@@ -69,7 +70,7 @@ public class MessageScaleChange {
   public static void handlePacket(MessageScaleChange message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
-    if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
+    if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
       return;
     }
 

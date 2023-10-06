@@ -30,7 +30,7 @@ import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class SkinConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
@@ -60,17 +60,17 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
     int skinButtonWidth = 92;
     this.defaultSkinButton = this.addRenderableWidget(menuButton(this.buttonLeftPos,
         this.buttonTopPos, skinButtonWidth - 2, "default_skin", onPress -> {
-          NetworkMessage.openConfiguration(uuid, ConfigurationType.DEFAULT_SKIN);
+          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_SKIN);
         }));
     this.playerSkinButton = this.addRenderableWidget(
         menuButton(this.defaultSkinButton.getX() + this.defaultSkinButton.getWidth(),
             this.buttonTopPos, skinButtonWidth - 6, "player_skin", onPress -> {
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.PLAYER_SKIN);
+              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.PLAYER_SKIN);
             }));
     this.customSkinButton = this.addRenderableWidget(
         menuButton(this.playerSkinButton.getX() + this.playerSkinButton.getWidth(),
             this.buttonTopPos, skinButtonWidth + 5, "custom_skin", onPress -> {
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.CUSTOM_SKIN);
+              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_SKIN);
             }));
 
     // Default button stats

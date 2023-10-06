@@ -34,7 +34,7 @@ import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.data.action.ActionData;
 import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.menu.configuration.action.DistanceActionConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class DistanceActionConfigurationScreen
@@ -131,7 +131,7 @@ public class DistanceActionConfigurationScreen
           ActionData actionData = new ActionData(ActionType.ON_DISTANCE_NEAR,
               this.onNearActionBox.getValue(), this.onNearActionExecuteAsUserCheckbox.selected(),
               this.onNearActionDebugCheckbox.selected());
-          NetworkMessage.actionChange(uuid, actionData);
+          NetworkMessageHandler.actionChange(uuid, actionData);
           this.lastNearActionData = actionData;
           this.onNearActionSaveButton.active = false;
         }));
@@ -157,7 +157,7 @@ public class DistanceActionConfigurationScreen
           ActionData actionData = new ActionData(ActionType.ON_DISTANCE_CLOSE,
               this.onCloseActionBox.getValue(), this.onCloseActionExecuteAsUserCheckbox.selected(),
               this.onCloseActionDebugCheckbox.selected());
-          NetworkMessage.actionChange(uuid, actionData);
+          NetworkMessageHandler.actionChange(uuid, actionData);
           this.lastCloseActionData = actionData;
           this.onCloseActionSaveButton.active = false;
         }));
@@ -184,7 +184,7 @@ public class DistanceActionConfigurationScreen
               this.onVeryCloseActionBox.getValue(),
               this.onVeryCloseActionExecuteAsUserCheckbox.selected(),
               this.onVeryCloseActionDebugCheckbox.selected());
-          NetworkMessage.actionChange(uuid, actionData);
+          NetworkMessageHandler.actionChange(uuid, actionData);
           this.lastVeryCloseActionData = actionData;
           this.onVeryCloseActionSaveButton.active = false;
         }));
@@ -210,7 +210,7 @@ public class DistanceActionConfigurationScreen
           ActionData actionData = new ActionData(ActionType.ON_DISTANCE_TOUCH,
               this.onTouchActionBox.getValue(), this.onTouchActionExecuteAsUserCheckbox.selected(),
               this.onTouchActionDebugCheckbox.selected());
-          NetworkMessage.actionChange(uuid, actionData);
+          NetworkMessageHandler.actionChange(uuid, actionData);
           this.lastTouchActionData = actionData;
           this.onTouchActionSaveButton.active = false;
         }));

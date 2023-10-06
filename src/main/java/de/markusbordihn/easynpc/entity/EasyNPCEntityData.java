@@ -47,13 +47,14 @@ import de.markusbordihn.easynpc.entity.data.CustomDataSerializers;
 import de.markusbordihn.easynpc.entity.data.EntityDialogData;
 import de.markusbordihn.easynpc.entity.data.EntityModelData;
 import de.markusbordihn.easynpc.entity.data.EntityOwnerData;
+import de.markusbordihn.easynpc.entity.data.EntityAttributeData;
 import de.markusbordihn.easynpc.entity.data.EntityScaleData;
 import de.markusbordihn.easynpc.entity.data.EntitySkinData;
 import de.markusbordihn.easynpc.utils.TextUtils;
 
 public class EasyNPCEntityData extends AgeableMob
     implements Npc, EntityActionData, EntityAttackData, EntityDialogData, EntityModelData,
-    EntityOwnerData, EntityScaleData, EntitySkinData {
+    EntityOwnerData, EntityAttributeData, EntityScaleData, EntitySkinData {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -63,6 +64,8 @@ public class EasyNPCEntityData extends AgeableMob
   }
 
   // Synced Data
+  private static final EntityDataAccessor<Boolean> DATA_TAME =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.BOOLEAN);
   private static final EntityDataAccessor<Profession> DATA_PROFESSION =
       SynchedEntityData.defineId(EasyNPCEntityData.class, CustomDataSerializers.PROFESSION);
   private static final EntityDataAccessor<String> DATA_VARIANT =
@@ -71,6 +74,7 @@ public class EasyNPCEntityData extends AgeableMob
   // Stored Entity Data Tags
   private static final String DATA_POSE_TAG = "Pose";
   private static final String DATA_PROFESSION_TAG = "Profession";
+  private static final String DATA_TAME_TAG = "Tame";
   private static final String DATA_VARIANT_TAG = "Variant";
 
   // Cache
@@ -124,6 +128,14 @@ public class EasyNPCEntityData extends AgeableMob
   public Component getProfessionName() {
     Enum<?> profession = getProfession();
     return profession != null ? TextUtils.normalizeName(profession.name()) : Component.literal("");
+  }
+
+  public boolean isTame() {
+    return this.entityData.get(DATA_TAME);
+  }
+
+  public void setTame(boolean tamed) {
+    this.entityData.set(DATA_TAME, tamed);
   }
 
   public Enum<?> getDefaultVariant() {
@@ -230,6 +242,7 @@ public class EasyNPCEntityData extends AgeableMob
     super.defineSynchedData();
     this.defineSynchedActionData();
     this.defineSynchedAttackData();
+    this.defineSynchedAttributeData();
     this.defineSynchedDialogData();
     this.defineSynchedModelData();
     this.defineSynchedOwnerData();
@@ -237,6 +250,7 @@ public class EasyNPCEntityData extends AgeableMob
     this.defineSynchedSkinData();
 
     // Handle pose, profession and variant.
+    this.entityData.define(DATA_TAME, false);
     this.entityData.define(DATA_PROFESSION, this.getDefaultProfession());
     this.entityData.define(DATA_VARIANT, this.getDefaultVariant().name());
   }
@@ -246,6 +260,7 @@ public class EasyNPCEntityData extends AgeableMob
     super.addAdditionalSaveData(compoundTag);
     this.addAdditionalActionData(compoundTag);
     this.addAdditionalAttackData(compoundTag);
+    this.addAdditionalAttributeData(compoundTag);
     this.addAdditionalDialogData(compoundTag);
     this.addAdditionalModelData(compoundTag);
     this.addAdditionalOwnerData(compoundTag);
@@ -264,6 +279,9 @@ public class EasyNPCEntityData extends AgeableMob
     if (this.getVariant() != null) {
       compoundTag.putString(DATA_VARIANT_TAG, this.getVariant().name());
     }
+
+    // Handle tame state.
+    compoundTag.putBoolean(DATA_TAME_TAG, this.isTame());
   }
 
   @Override
@@ -271,6 +289,7 @@ public class EasyNPCEntityData extends AgeableMob
     super.readAdditionalSaveData(compoundTag);
     this.readAdditionalActionData(compoundTag);
     this.readAdditionalAttackData(compoundTag);
+    this.readAdditionalAttributeData(compoundTag);
     this.readAdditionalDialogData(compoundTag);
     this.readAdditionalModelData(compoundTag);
     this.readAdditionalOwnerData(compoundTag);
@@ -296,6 +315,11 @@ public class EasyNPCEntityData extends AgeableMob
       if (variant != null && !variant.isEmpty()) {
         this.setVariant(this.getVariant(variant));
       }
+    }
+
+    // Handle tame state.
+    if (compoundTag.contains(DATA_TAME_TAG)) {
+      this.setTame(compoundTag.getBoolean(DATA_TAME_TAG));
     }
   }
 

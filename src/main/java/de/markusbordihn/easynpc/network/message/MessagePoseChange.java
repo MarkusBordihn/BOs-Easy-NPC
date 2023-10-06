@@ -22,28 +22,23 @@ package de.markusbordihn.easynpc.network.message;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Pose;
 
 import net.minecraftforge.network.NetworkEvent;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
-public class MessagePoseChange {
+public class MessagePoseChange extends NetworkMessage {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  protected final UUID uuid;
   protected final Pose pose;
 
   public MessagePoseChange(UUID uuid, Pose pose) {
-    this.uuid = uuid;
+    super(uuid);
     this.pose = pose;
   }
 
@@ -51,8 +46,13 @@ public class MessagePoseChange {
     return this.pose;
   }
 
-  public UUID getUUID() {
-    return this.uuid;
+  public static MessagePoseChange decode(final FriendlyByteBuf buffer) {
+    return new MessagePoseChange(buffer.readUUID(), buffer.readEnum(Pose.class));
+  }
+
+  public static void encode(final MessagePoseChange message, final FriendlyByteBuf buffer) {
+    buffer.writeUUID(message.uuid);
+    buffer.writeEnum(message.getPose());
   }
 
   public static void handle(MessagePoseChange message,
@@ -65,7 +65,7 @@ public class MessagePoseChange {
   public static void handlePacket(MessagePoseChange message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
-    if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
+    if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
       return;
     }
 

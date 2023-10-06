@@ -42,6 +42,12 @@ public class CustomModelHelper {
     modelPart.zRot = z;
   }
 
+  public static final void setRotation(ModelPart modelPart, Rotations rotations) {
+    modelPart.xRot = rotations.getX();
+    modelPart.yRot = rotations.getY();
+    modelPart.zRot = rotations.getZ();
+  }
+
   public static final void resetPosition(ModelPart modelPart) {
     modelPart.x = 0.0F;
     modelPart.y = 0.0F;
@@ -54,6 +60,12 @@ public class CustomModelHelper {
     modelPart.z = z;
   }
 
+  public static final void setPosition(ModelPart modelPart, CustomPosition position) {
+    modelPart.x = position.x();
+    modelPart.y = position.y();
+    modelPart.z = position.z();
+  }
+
   public static final void setPositionRotationVisibility(ModelPart modelPart,
       CustomPosition position, Rotations rotations, boolean visible) {
     if (visible) {
@@ -63,9 +75,9 @@ public class CustomModelHelper {
         modelPart.z += position.z();
       }
       if (rotations != null) {
-        modelPart.xRot = rotations.getX();
-        modelPart.yRot = rotations.getY();
-        modelPart.zRot = rotations.getZ();
+        modelPart.xRot += rotations.getX();
+        modelPart.yRot += rotations.getY();
+        modelPart.zRot += rotations.getZ();
       }
     } else {
       modelPart.visible = false;

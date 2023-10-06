@@ -24,39 +24,39 @@ import java.io.IOException;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraftforge.network.NetworkEvent;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.WorldPresetData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
-public class MessagePresetExportWorld {
+public class MessagePresetExportWorld extends NetworkMessage {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  protected final UUID uuid;
   protected final String name;
 
   public MessagePresetExportWorld(UUID uuid, String name) {
-    this.uuid = uuid;
+    super(uuid);
     this.name = name;
-  }
-
-  public UUID getUUID() {
-    return this.uuid;
   }
 
   public String getName() {
     return this.name;
+  }
+
+  public static MessagePresetExportWorld decode(final FriendlyByteBuf buffer) {
+    return new MessagePresetExportWorld(buffer.readUUID(), buffer.readUtf());
+  }
+
+  public static void encode(final MessagePresetExportWorld message, final FriendlyByteBuf buffer) {
+    buffer.writeUUID(message.uuid);
+    buffer.writeUtf(message.getName());
   }
 
   public static void handle(MessagePresetExportWorld message,
@@ -69,7 +69,7 @@ public class MessagePresetExportWorld {
   public static void handlePacket(MessagePresetExportWorld message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
-    if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
+    if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
       return;
     }
 
