@@ -5,6 +5,15 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### 2023.10.06
+
+- Refactored model and render system for better performance and easier support for custom models.
+- Refactored network protocol for better performance and 1.20.2 changes.
+- Refactored data serialization (NBT) for upcoming features.
+- Added cat and chicken model.
+- Added position "freefall" option to allow NPCs to fall down and not to float in the air.
+- Fixed remote skin support with to avoid failed skin downloads.
+
 ### 2023.09.03
 
 - Added new `/easy_npc preset import_new <ResourceLocation> <x> <y> <z>` and `/easy_npc preset import_new <ResourceLocation> <x> <y> <z> <UUID>` command to allow the import a single preset multiple times.

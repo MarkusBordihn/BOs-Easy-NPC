@@ -32,6 +32,8 @@ public class SpawnEggs implements DisplayItemsGenerator {
   @Override
   public void accept(ItemDisplayParameters itemDisplayParameters, Output output) {
     output.accept(ModItems.ALLAY_NPC_SPAWN_EGG.get());
+    output.accept(ModItems.CAT_NPC_SPAWN_EGG.get());
+    output.accept(ModItems.CHICKEN_NPC_SPAWN_EGG.get());
     output.accept(ModItems.FAIRY_NPC_SPAWN_EGG.get());
     output.accept(ModItems.HUMANOID_NPC_SPAWN_EGG.get());
     output.accept(ModItems.HUMANOID_SLIM_NPC_SPAWN_EGG.get());

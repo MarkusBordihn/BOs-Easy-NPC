@@ -31,7 +31,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class YesNoDialogConfigurationScreen
@@ -61,7 +61,7 @@ public class YesNoDialogConfigurationScreen
     this.mainDialogBox = new EditBox(this.font, this.contentLeftPos, this.topPos + 60, 281, 20,
         Component.literal("Main Dialog Text"));
     this.mainDialogBox.setMaxLength(255);
-    this.mainDialogBox.setValue(this.entity.getDialog());
+    this.mainDialogBox.setValue(this.entity.getSimpleDialog());
     this.addRenderableWidget(this.mainDialogBox);
 
     // Dialog Buttons
@@ -94,7 +94,7 @@ public class YesNoDialogConfigurationScreen
     // Save Button
     this.saveDialogButton = this.addRenderableWidget(
         menuButton(this.contentLeftPos + 26, this.bottomPos - 40, 80, "save", onPress -> {
-          NetworkMessage.saveYesNoDialog(uuid, this.mainDialogBox.getValue(),
+          NetworkMessageHandler.saveYesNoDialog(uuid, this.mainDialogBox.getValue(),
               this.yesDialogBox.getValue(), this.noDialogBox.getValue(),
               this.yesDialogButtonBox.getValue(), this.noDialogButtonBox.getValue());
         }));

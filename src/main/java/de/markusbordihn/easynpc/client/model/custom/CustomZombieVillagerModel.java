@@ -17,25 +17,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.model;
+package de.markusbordihn.easynpc.client.model.custom;
 
 import net.minecraft.client.model.AnimationUtils;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.VillagerHeadModel;
+import net.minecraft.client.model.ZombieVillagerModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
+import de.markusbordihn.easynpc.client.model.CustomModelHelper;
+import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 
 @OnlyIn(Dist.CLIENT)
-public class CustomZombieModel<T extends LivingEntity> extends HumanoidModel<T> {
+public class CustomZombieVillagerModel<T extends LivingEntity> extends HumanoidModel<T>
+    implements EasyNPCModel, VillagerHeadModel {
 
-  public CustomZombieModel(ModelPart modelPart) {
+  private final ModelPart hatRim;
+
+  public CustomZombieVillagerModel(ModelPart modelPart) {
     super(modelPart);
+    this.hatRim = this.hat.getChild("hat_rim");
+  }
+
+  public static LayerDefinition createBodyLayer() {
+    return ZombieVillagerModel.createBodyLayer();
+  }
+
+  public static LayerDefinition createArmorLayer(CubeDeformation cubeDeformation) {
+    return ZombieVillagerModel.createArmorLayer(cubeDeformation);
   }
 
   @Override
@@ -46,29 +63,9 @@ public class CustomZombieModel<T extends LivingEntity> extends HumanoidModel<T> 
       // Aggressive Animation
       isAggressive = easyNPCEntity.isAggressive();
 
-      // Reset all rotations to avoid any issues with other mods.
-      CustomModelHelper.resetRotation(this.body);
-      CustomModelHelper.resetRotation(this.head);
-      CustomModelHelper.resetRotation(this.leftArm);
-      CustomModelHelper.resetRotation(this.leftLeg);
-      CustomModelHelper.resetRotation(this.rightArm);
-      CustomModelHelper.resetRotation(this.rightLeg);
-
-      // Reset all positions to avoid any issues with other mods.
-      CustomModelHelper.resetPosition(this.body);
-      CustomModelHelper.resetPosition(this.head);
-      CustomModelHelper.setPosition(this.leftArm, 5.0F, 2.0F, 0.0F);
-      CustomModelHelper.setPosition(this.leftLeg, 1.9F, 12.0F, 0.1F);
-      CustomModelHelper.setPosition(this.rightArm, -5.0F, 2.0F, 0.0F);
-      CustomModelHelper.setPosition(this.rightLeg, -1.9F, 12.0F, 0.1F);
-
-      // Reset all visibility to avoid any issues with other mods.
-      this.body.visible = true;
-      this.head.visible = true;
-      this.leftArm.visible = true;
-      this.leftLeg.visible = true;
-      this.rightArm.visible = true;
-      this.rightLeg.visible = true;
+      // Reset player model to avoid any issues with other mods.
+      resetHumanoidModel(this.head, this.body, this.rightArm, this.leftArm, this.rightLeg,
+          this.leftLeg);
 
       // Individual Part Modifications
       if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
@@ -102,9 +99,6 @@ public class CustomZombieModel<T extends LivingEntity> extends HumanoidModel<T> 
         CustomModelHelper.setPositionRotationVisibility(this.leftLeg,
             easyNPCEntity.getModelLeftLegPosition(), easyNPCEntity.getModelLeftLegRotation(),
             easyNPCEntity.isModelLeftLegVisible());
-
-        // Copy all outer model parts to the correct model parts.
-        this.hat.copyFrom(this.head);
       } else if (easyNPCEntity.getPose() == Pose.CROUCHING) {
         // Crouching Pose
         this.body.xRot = 0.5F;
@@ -122,7 +116,6 @@ public class CustomZombieModel<T extends LivingEntity> extends HumanoidModel<T> 
 
       if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM
           || easyNPCEntity.getPose() == Pose.CROUCHING) {
-        // Copy all outer model parts to the correct model parts.
         this.hat.copyFrom(this.head);
       } else {
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
@@ -130,6 +123,12 @@ public class CustomZombieModel<T extends LivingEntity> extends HumanoidModel<T> 
             ageInTicks);
       }
     }
+  }
+
+  public void hatVisible(boolean visible) {
+    this.head.visible = visible;
+    this.hat.visible = visible;
+    this.hatRim.visible = visible;
   }
 
 }

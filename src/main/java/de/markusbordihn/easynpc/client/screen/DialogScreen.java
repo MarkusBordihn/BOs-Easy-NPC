@@ -50,7 +50,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.menu.DialogMenu;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import de.markusbordihn.easynpc.utils.TextUtils;
 
 @OnlyIn(Dist.CLIENT)
@@ -167,11 +167,11 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
 
     // Dialog text.
     this.dialogType = this.entity.getDialogType();
-    setDialog(this.entity.getDialog());
+    setDialog(this.entity.getSimpleDialog());
 
     // Action for open dialog.
     if (this.actions.containsKey(ActionType.ON_OPEN_DIALOG)) {
-      NetworkMessage.triggerAction(this.uuid, ActionType.ON_OPEN_DIALOG);
+      NetworkMessageHandler.triggerAction(this.uuid, ActionType.ON_OPEN_DIALOG);
     }
 
     // Render additional Buttons for Yes/No Dialog.
@@ -195,7 +195,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
 
             // Action for yes selection.
             if (this.actions.containsKey(ActionType.ON_YES_SELECTION)) {
-              NetworkMessage.triggerAction(this.uuid, ActionType.ON_YES_SELECTION);
+              NetworkMessageHandler.triggerAction(this.uuid, ActionType.ON_YES_SELECTION);
             }
           }));
 
@@ -215,7 +215,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
 
             // Action for no selection.
             if (this.actions.containsKey(ActionType.ON_NO_SELECTION)) {
-              NetworkMessage.triggerAction(this.uuid, ActionType.ON_NO_SELECTION);
+              NetworkMessageHandler.triggerAction(this.uuid, ActionType.ON_NO_SELECTION);
             }
           }));
     }
@@ -266,7 +266,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
   public void onClose() {
     // Action for close dialog.
     if (this.actions.containsKey(ActionType.ON_CLOSE_DIALOG)) {
-      NetworkMessage.triggerAction(this.uuid, ActionType.ON_CLOSE_DIALOG);
+      NetworkMessageHandler.triggerAction(this.uuid, ActionType.ON_CLOSE_DIALOG);
     }
     super.onClose();
   }

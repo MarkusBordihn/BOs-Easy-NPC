@@ -22,26 +22,21 @@ package de.markusbordihn.easynpc.network.message;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraftforge.network.NetworkEvent;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
-public class MessageModelLockRotationChange {
+public class MessageModelLockRotationChange extends NetworkMessage {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  protected final UUID uuid;
   protected final boolean lockRotation;
 
   public MessageModelLockRotationChange(UUID uuid, boolean lockRotation) {
-    this.uuid = uuid;
+    super(uuid);
     this.lockRotation = lockRotation;
   }
 
@@ -49,8 +44,14 @@ public class MessageModelLockRotationChange {
     return this.lockRotation;
   }
 
-  public UUID getUUID() {
-    return this.uuid;
+  public static MessageModelLockRotationChange decode(final FriendlyByteBuf buffer) {
+    return new MessageModelLockRotationChange(buffer.readUUID(), buffer.readBoolean());
+  }
+
+  public static void encode(final MessageModelLockRotationChange message,
+      final FriendlyByteBuf buffer) {
+    buffer.writeUUID(message.uuid);
+    buffer.writeBoolean(message.getLockRotation());
   }
 
   public static void handle(MessageModelLockRotationChange message,
@@ -64,7 +65,7 @@ public class MessageModelLockRotationChange {
       NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
-    if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
+    if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
       return;
     }
 
