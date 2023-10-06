@@ -40,7 +40,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import de.markusbordihn.easynpc.menu.configuration.preset.WorldImportPresetConfigurationMenu;
 
 @OnlyIn(Dist.CLIENT)
@@ -91,7 +91,7 @@ public class ImportWorldPresetConfigurationScreen
   }
 
   public void loadPreset(ResourceLocation resourceLocation) {
-    NetworkMessage.importWorldPreset(uuid, resourceLocation);
+    NetworkMessageHandler.importWorldPreset(uuid, resourceLocation);
   }
 
   @Override

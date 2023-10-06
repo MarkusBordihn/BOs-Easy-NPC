@@ -1,4 +1,6 @@
 {
+  "entity.easy_npc.cat": "Katze",
+  "entity.easy_npc.chicken": "Huhn",
   "entity.easy_npc.fairy": "Feen",
   "entity.easy_npc.humanoid": "Humanoider",
   "entity.easy_npc.humanoid_slim": "Humanoider (schl.)",
@@ -10,11 +12,14 @@
 
   "item.easy_npc.easy_npc_wand": "EasyNPC Stab",
 
+  "item.easy_npc.cat_spawn_egg": "Katzen NPC Spawn-Ei",
+  "item.easy_npc.chicken_spawn_egg": "Hühner NPC Spawn-Ei",
   "item.easy_npc.fairy_spawn_egg": "Elfen NPC Spawn-Ei",
   "item.easy_npc.humanoid_slim_spawn_egg": "Humanoides (schl.) NPC-Spawn-Ei",
   "item.easy_npc.humanoid_spawn_egg": "Humanoides NPC-Spawn-Ei",
   "item.easy_npc.skeleton_spawn_egg": "Skelett NPC-Spawn-Ei",
   "item.easy_npc.villager_spawn_egg": "Dorfbewohner NPC-Spawn-Ei",
+  "item.easy_npc.zombie_spawn_egg": "Zombie NPC-Spawn-Ei",
   "item.easy_npc.zombie_villager_spawn_egg": "Zombie Dorfbewohner NPC-Spawn-Ei",
 
   "text.easy_npc.config.actions": "Aktionen",
@@ -48,6 +53,7 @@
   "text.easy_npc.config.export": "▽ Exportieren",
   "text.easy_npc.config.export_preset_text": "Durch Betätigung des Export-Buttons werden die NPC-Einstellungen unter %1$s als %2$s lokal gespeichert und können mithilfe der Import-Funktion in anderen NPCs des gleichen Typs geladen werden.",
   "text.easy_npc.config.export_preset_world_text": "Durch Betätigung des Export-Buttons werden die NPC-Einstellungen in den Weltdaten gespeichert und können  mithilfe der Import-Funktion in anderen NPCs des gleichen Typs geladen werden oder als neuer NPC über den '/easy_npc preset import' Befehl.",
+  "text.easy_npc.config.freefall": "Freier Fall",
   "text.easy_npc.config.import": "△ Importieren",
   "text.easy_npc.config.import_default_preset": "Importiere Standard Vorlage",
   "text.easy_npc.config.import_custom_preset": "Importiere benutzerdefinierte Vorlage",

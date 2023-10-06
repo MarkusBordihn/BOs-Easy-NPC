@@ -38,7 +38,7 @@ import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.data.action.ActionData;
 import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.menu.configuration.action.DialogActionConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class DialogActionConfigurationScreen
@@ -140,7 +140,7 @@ public class DialogActionConfigurationScreen
               new ActionData(ActionType.ON_OPEN_DIALOG, this.onOpenDialogActionBox.getValue(),
                   this.onOpenDialogActionExecuteAsUserCheckbox.selected(),
                   this.onOpenDialogActionDebugCheckbox.selected());
-          NetworkMessage.actionChange(uuid, actionData);
+          NetworkMessageHandler.actionChange(uuid, actionData);
           this.lastOpenDialogActionData = actionData;
           this.onOpenDialogActionSaveButton.active = false;
         }));
@@ -167,7 +167,7 @@ public class DialogActionConfigurationScreen
               new ActionData(ActionType.ON_CLOSE_DIALOG, this.onCloseDialogActionBox.getValue(),
                   this.onCloseDialogActionExecuteAsUserCheckbox.selected(),
                   this.onCloseDialogActionDebugCheckbox.selected());
-          NetworkMessage.actionChange(uuid, actionData);
+          NetworkMessageHandler.actionChange(uuid, actionData);
           this.lastCloseDialogActionData = actionData;
           this.onCloseDialogActionSaveButton.active = false;
         }));
@@ -194,7 +194,7 @@ public class DialogActionConfigurationScreen
               new ActionData(ActionType.ON_YES_SELECTION, this.onYesSelectionActionBox.getValue(),
                   this.onYesSelectionActionExecuteAsUserCheckbox.selected(),
                   this.onYesSelectionActionDebugCheckbox.selected());
-          NetworkMessage.actionChange(uuid, actionData);
+          NetworkMessageHandler.actionChange(uuid, actionData);
           this.lastYesSelectionActionData = actionData;
           this.onYesSelectionActionSaveButton.active = false;
         }));
@@ -221,7 +221,7 @@ public class DialogActionConfigurationScreen
               new ActionData(ActionType.ON_NO_SELECTION, this.onNoSelectionActionBox.getValue(),
                   this.onNoSelectionActionExecuteAsUserCheckbox.selected(),
                   this.onNoSelectionActionDebugCheckbox.selected());
-          NetworkMessage.actionChange(uuid, actionData);
+          NetworkMessageHandler.actionChange(uuid, actionData);
           this.lastNoSelectionActionData = actionData;
           this.onNoSelectionActionSaveButton.active = false;
         }));

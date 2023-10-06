@@ -39,7 +39,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.CustomPresetData;
 import de.markusbordihn.easynpc.menu.configuration.preset.CustomExportPresetConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class ExportCustomPresetConfigurationScreen
@@ -113,7 +113,7 @@ public class ExportCustomPresetConfigurationScreen
     // Export button
     this.exportPresetButton = this.addRenderableWidget(
         menuButton(this.contentLeftPos + 65, this.bottomPos - 40, 150, "export", button -> {
-          NetworkMessage.exportPreset(uuid, this.nameBox.getValue());
+          NetworkMessageHandler.exportPreset(uuid, this.nameBox.getValue());
           exportPresetButton.active = false;
         }));
   }

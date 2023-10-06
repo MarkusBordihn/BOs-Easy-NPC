@@ -32,7 +32,7 @@ import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.data.action.ActionData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class ActionConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
@@ -61,17 +61,17 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
     // Action Types
     this.basicActionButton = this.addRenderableWidget(
         menuButton(this.buttonLeftPos, this.buttonTopPos, 80, "basic_actions", onPress -> {
-          NetworkMessage.openConfiguration(uuid, ConfigurationType.BASIC_ACTION);
+          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_ACTION);
         }));
     this.dialogActionButton = this.addRenderableWidget(
         menuButton(this.basicActionButton.x + this.basicActionButton.getWidth(), this.buttonTopPos,
             80, "dialog_actions", onPress -> {
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.DIALOG_ACTION);
+              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DIALOG_ACTION);
             }));
     this.distanceActionButton = this.addRenderableWidget(
         menuButton(this.dialogActionButton.x + this.dialogActionButton.getWidth(),
             this.buttonTopPos, 80, "distance_actions", onPress -> {
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.DISTANCE_ACTION);
+              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DISTANCE_ACTION);
             }));
 
     // Default button stats

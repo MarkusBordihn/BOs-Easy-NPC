@@ -22,28 +22,27 @@ package de.markusbordihn.easynpc.network.message;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+
 import net.minecraftforge.network.NetworkEvent;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
-public class MessageRemoveNPC {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  protected final UUID uuid;
+public class MessageRemoveNPC extends NetworkMessage {
 
   public MessageRemoveNPC(UUID uuid) {
-    this.uuid = uuid;
+    super(uuid);
   }
 
-  public UUID getUUID() {
-    return this.uuid;
+  public static MessageRemoveNPC decode(final FriendlyByteBuf buffer) {
+    return new MessageRemoveNPC(buffer.readUUID());
+  }
+
+  public static void encode(final MessageRemoveNPC message, final FriendlyByteBuf buffer) {
+    buffer.writeUUID(message.uuid);
   }
 
   public static void handle(MessageRemoveNPC message,
@@ -56,7 +55,7 @@ public class MessageRemoveNPC {
   public static void handlePacket(MessageRemoveNPC message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
-    if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
+    if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
       return;
     }
 

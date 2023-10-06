@@ -21,6 +21,8 @@ package de.markusbordihn.easynpc.data.skin;
 
 public enum SkinModel {
   // @formatter:off
+  CAT,
+  CHICKEN,
   FAIRY,
   HUMANOID,
   HUMANOID_SLIM,

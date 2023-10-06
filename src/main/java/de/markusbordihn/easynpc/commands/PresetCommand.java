@@ -50,7 +50,7 @@ import net.minecraft.world.phys.Vec3;
 import de.markusbordihn.easynpc.data.WorldPresetData;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 public class PresetCommand extends CustomCommand {
 
@@ -127,7 +127,7 @@ public class PresetCommand extends CustomCommand {
 
     log.info("Exporting EasyNPC {} with UUID {} and skin {}...", easyNPCEntity.getName(), uuid,
         easyNPCEntity.getSkinModel());
-    NetworkMessage.exportPresetClient(uuid, serverPlayer);
+    NetworkMessageHandler.exportPresetClient(uuid, serverPlayer);
     return Command.SINGLE_SUCCESS;
   }
 

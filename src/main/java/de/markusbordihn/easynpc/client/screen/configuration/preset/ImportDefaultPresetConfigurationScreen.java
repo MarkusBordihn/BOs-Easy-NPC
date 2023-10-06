@@ -45,7 +45,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.menu.configuration.preset.DefaultImportPresetConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 
 @OnlyIn(Dist.CLIENT)
@@ -125,7 +125,7 @@ public class ImportDefaultPresetConfigurationScreen
       compoundTag.remove("Pos");
     }
 
-    NetworkMessage.importPreset(uuid, compoundTag);
+    NetworkMessageHandler.importPreset(uuid, compoundTag);
   }
 
   @Override

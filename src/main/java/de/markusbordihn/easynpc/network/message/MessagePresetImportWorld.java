@@ -24,30 +24,25 @@ import java.nio.file.Path;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraftforge.network.NetworkEvent;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.WorldPresetData;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
-public class MessagePresetImportWorld {
+public class MessagePresetImportWorld extends NetworkMessage {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  protected final UUID uuid;
   protected final ResourceLocation resourceLocation;
 
   public MessagePresetImportWorld(UUID uuid, ResourceLocation resourceLocation) {
-    this.uuid = uuid;
+    super(uuid);
     this.resourceLocation = resourceLocation;
   }
 
@@ -55,8 +50,13 @@ public class MessagePresetImportWorld {
     return this.resourceLocation;
   }
 
-  public UUID getUUID() {
-    return this.uuid;
+  public static MessagePresetImportWorld decode(final FriendlyByteBuf buffer) {
+    return new MessagePresetImportWorld(buffer.readUUID(), buffer.readResourceLocation());
+  }
+
+  public static void encode(final MessagePresetImportWorld message, final FriendlyByteBuf buffer) {
+    buffer.writeUUID(message.uuid);
+    buffer.writeResourceLocation(message.getResourceLocation());
   }
 
   public static void handle(MessagePresetImportWorld message,
@@ -69,7 +69,7 @@ public class MessagePresetImportWorld {
   public static void handlePacket(MessagePresetImportWorld message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
-    if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
+    if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
       return;
     }
 

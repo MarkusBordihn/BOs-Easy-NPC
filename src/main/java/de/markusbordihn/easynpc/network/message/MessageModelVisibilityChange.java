@@ -21,31 +21,25 @@ package de.markusbordihn.easynpc.network.message;
 
 import java.util.UUID;
 import java.util.function.Supplier;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Pose;
 
 import net.minecraftforge.network.NetworkEvent;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
-public class MessageModelVisibilityChange {
+public class MessageModelVisibilityChange extends NetworkMessage {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  protected final UUID uuid;
   protected final ModelPart modelPart;
   protected final boolean visible;
 
   public MessageModelVisibilityChange(UUID uuid, ModelPart modelPart, boolean visible) {
-    this.uuid = uuid;
+    super(uuid);
     this.modelPart = modelPart;
     this.visible = visible;
   }
@@ -58,8 +52,16 @@ public class MessageModelVisibilityChange {
     return this.visible;
   }
 
-  public UUID getUUID() {
-    return this.uuid;
+  public static MessageModelVisibilityChange decode(final FriendlyByteBuf buffer) {
+    return new MessageModelVisibilityChange(buffer.readUUID(), buffer.readEnum(ModelPart.class),
+        buffer.readBoolean());
+  }
+
+  public static void encode(final MessageModelVisibilityChange message,
+      final FriendlyByteBuf buffer) {
+    buffer.writeUUID(message.uuid);
+    buffer.writeEnum(message.getModelPart());
+    buffer.writeBoolean(message.isVisible());
   }
 
   public static void handle(MessageModelVisibilityChange message,
@@ -73,7 +75,7 @@ public class MessageModelVisibilityChange {
       NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
-    if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
+    if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
       return;
     }
 

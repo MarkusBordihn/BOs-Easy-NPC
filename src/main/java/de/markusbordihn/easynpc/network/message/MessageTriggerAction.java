@@ -22,37 +22,37 @@ package de.markusbordihn.easynpc.network.message;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraftforge.network.NetworkEvent;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionData;
 import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
-public class MessageTriggerAction {
+public class MessageTriggerAction extends NetworkMessage {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  protected final ActionType actionType;
 
-  protected final String actionType;
-  protected final UUID uuid;
-
-  public MessageTriggerAction(UUID uuid, String actionType) {
-    this.uuid = uuid;
+  public MessageTriggerAction(UUID uuid, ActionType actionType) {
+    super(uuid);
     this.actionType = actionType;
   }
 
-  public String getActionType() {
+  public ActionType getActionType() {
     return this.actionType;
   }
 
-  public UUID getUUID() {
-    return this.uuid;
+  public static MessageTriggerAction decode(final FriendlyByteBuf buffer) {
+    return new MessageTriggerAction(buffer.readUUID(), buffer.readEnum(ActionType.class));
+  }
+
+  public static void encode(final MessageTriggerAction message, final FriendlyByteBuf buffer) {
+    buffer.writeUUID(message.uuid);
+    buffer.writeEnum(message.getActionType());
   }
 
   public static void handle(MessageTriggerAction message,
@@ -71,7 +71,7 @@ public class MessageTriggerAction {
     }
 
     // Validate action type.
-    ActionType actionType = ActionType.get(message.getActionType());
+    ActionType actionType = message.getActionType();
     if (actionType == null || actionType == ActionType.NONE) {
       log.error("Invalid action type {} for {} from {}", actionType, message, serverPlayer);
       return;
@@ -94,7 +94,8 @@ public class MessageTriggerAction {
 
     // Perform action.
     int permissionLevel = easyNPCEntity.getActionPermissionLevel();
-    log.debug("Trigger action {} for {} from {} with permission level {} ...", actionData, easyNPCEntity, serverPlayer, permissionLevel);
+    log.debug("Trigger action {} for {} from {} with permission level {} ...", actionData,
+        easyNPCEntity, serverPlayer, permissionLevel);
     easyNPCEntity.executeAction(actionData, serverPlayer);
   }
 

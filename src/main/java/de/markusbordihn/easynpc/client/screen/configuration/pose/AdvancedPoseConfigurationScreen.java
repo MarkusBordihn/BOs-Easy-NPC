@@ -34,7 +34,7 @@ import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.SliderButton;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.menu.configuration.pose.AdvancedPoseConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class AdvancedPoseConfigurationScreen
@@ -124,7 +124,7 @@ public class AdvancedPoseConfigurationScreen
           new SliderButton(sliderLeftPos, sliderTopPos, scaleWidth, 20, " headRotationX",
               (float) Math.toDegrees(headRotations.getX()), SliderButton.Type.DEGREE, slider -> {
                 this.headRotationX = (float) Math.toRadians(slider.getTargetValue());
-                NetworkMessage.rotationChange(uuid, ModelPart.HEAD,
+                NetworkMessageHandler.rotationChange(uuid, ModelPart.HEAD,
                     new Rotations(this.headRotationX, this.headRotationY, this.headRotationZ));
               }));
       this.headRotationYSliderButton = this.addRenderableWidget(new SliderButton(
@@ -132,7 +132,7 @@ public class AdvancedPoseConfigurationScreen
           sliderTopPos, scaleWidth, 20, " headRotationY",
           (float) Math.toDegrees(headRotations.getY()), SliderButton.Type.DEGREE, slider -> {
             this.headRotationY = (float) Math.toRadians(slider.getTargetValue());
-            NetworkMessage.rotationChange(uuid, ModelPart.HEAD,
+            NetworkMessageHandler.rotationChange(uuid, ModelPart.HEAD,
                 new Rotations(this.headRotationX, this.headRotationY, this.headRotationZ));
           }));
       this.headRotationZSliderButton = this.addRenderableWidget(new SliderButton(
@@ -140,7 +140,7 @@ public class AdvancedPoseConfigurationScreen
           sliderTopPos, scaleWidth, 20, " headRotationZ",
           (float) Math.toDegrees(headRotations.getZ()), SliderButton.Type.DEGREE, slider -> {
             this.headRotationZ = (float) Math.toRadians(slider.getTargetValue());
-            NetworkMessage.rotationChange(uuid, ModelPart.HEAD,
+            NetworkMessageHandler.rotationChange(uuid, ModelPart.HEAD,
                 new Rotations(this.headRotationX, this.headRotationY, this.headRotationZ));
           }));
       this.resetHeadRotationButton = this.addRenderableWidget(
@@ -151,7 +151,7 @@ public class AdvancedPoseConfigurationScreen
             this.headRotationX = 0f;
             this.headRotationY = 0f;
             this.headRotationZ = 0f;
-            NetworkMessage.rotationChange(uuid, ModelPart.HEAD,
+            NetworkMessageHandler.rotationChange(uuid, ModelPart.HEAD,
                 new Rotations(this.headRotationX, this.headRotationY, this.headRotationZ));
           }));
     }
@@ -166,7 +166,7 @@ public class AdvancedPoseConfigurationScreen
           new SliderButton(sliderLeftPos, sliderTopPos, scaleWidth, 20, " bodyRotationX",
               (float) Math.toDegrees(bodyRotations.getX()), SliderButton.Type.DEGREE, slider -> {
                 this.bodyRotationX = (float) Math.toRadians(slider.getTargetValue());
-                NetworkMessage.rotationChange(uuid, ModelPart.BODY,
+                NetworkMessageHandler.rotationChange(uuid, ModelPart.BODY,
                     new Rotations(this.bodyRotationX, this.bodyRotationY, this.bodyRotationZ));
               }));
       this.bodyRotationYSliderButton = this.addRenderableWidget(new SliderButton(
@@ -174,7 +174,7 @@ public class AdvancedPoseConfigurationScreen
           sliderTopPos, scaleWidth, 20, " bodyRotationY",
           (float) Math.toDegrees(bodyRotations.getY()), SliderButton.Type.DEGREE, slider -> {
             this.bodyRotationY = (float) Math.toRadians(slider.getTargetValue());
-            NetworkMessage.rotationChange(uuid, ModelPart.BODY,
+            NetworkMessageHandler.rotationChange(uuid, ModelPart.BODY,
                 new Rotations(this.bodyRotationX, this.bodyRotationY, this.bodyRotationZ));
           }));
       this.bodyRotationZSliderButton = this.addRenderableWidget(new SliderButton(
@@ -182,7 +182,7 @@ public class AdvancedPoseConfigurationScreen
           sliderTopPos, scaleWidth, 20, " bodyRotationZ",
           (float) Math.toDegrees(bodyRotations.getZ()), SliderButton.Type.DEGREE, slider -> {
             this.bodyRotationZ = (float) Math.toRadians(slider.getTargetValue());
-            NetworkMessage.rotationChange(uuid, ModelPart.BODY,
+            NetworkMessageHandler.rotationChange(uuid, ModelPart.BODY,
                 new Rotations(this.bodyRotationX, this.bodyRotationY, this.bodyRotationZ));
           }));
       this.resetBodyRotationButton = this.addRenderableWidget(
@@ -193,7 +193,7 @@ public class AdvancedPoseConfigurationScreen
             this.bodyRotationX = 0f;
             this.bodyRotationY = 0f;
             this.bodyRotationZ = 0f;
-            NetworkMessage.rotationChange(uuid, ModelPart.BODY,
+            NetworkMessageHandler.rotationChange(uuid, ModelPart.BODY,
                 new Rotations(this.bodyRotationX, this.bodyRotationY, this.bodyRotationZ));
           }));
     }
@@ -208,7 +208,7 @@ public class AdvancedPoseConfigurationScreen
           sliderTopPos, scaleWidth, 20, " rightArmRotationX",
           (float) Math.toDegrees(rightArmRotations.getX()), SliderButton.Type.DEGREE, slider -> {
             this.rightArmRotationX = (float) Math.toRadians(slider.getTargetValue());
-            NetworkMessage.rotationChange(uuid, ModelPart.RIGHT_ARM, new Rotations(
+            NetworkMessageHandler.rotationChange(uuid, ModelPart.RIGHT_ARM, new Rotations(
                 this.rightArmRotationX, this.rightArmRotationY, this.rightArmRotationZ));
           }));
       this.rightArmRotationYSliderButton = this.addRenderableWidget(new SliderButton(
@@ -216,7 +216,7 @@ public class AdvancedPoseConfigurationScreen
           sliderTopPos, scaleWidth, 20, " rightArmRotationY",
           (float) Math.toDegrees(rightArmRotations.getY()), SliderButton.Type.DEGREE, slider -> {
             this.rightArmRotationY = (float) Math.toRadians(slider.getTargetValue());
-            NetworkMessage.rotationChange(uuid, ModelPart.RIGHT_ARM, new Rotations(
+            NetworkMessageHandler.rotationChange(uuid, ModelPart.RIGHT_ARM, new Rotations(
                 this.rightArmRotationX, this.rightArmRotationY, this.rightArmRotationZ));
           }));
       this.rightArmRotationZSliderButton = this.addRenderableWidget(new SliderButton(
@@ -224,7 +224,7 @@ public class AdvancedPoseConfigurationScreen
           sliderTopPos, scaleWidth, 20, " rightArmRotationZ",
           (float) Math.toDegrees(rightArmRotations.getZ()), SliderButton.Type.DEGREE, slider -> {
             this.rightArmRotationZ = (float) Math.toRadians(slider.getTargetValue());
-            NetworkMessage.rotationChange(uuid, ModelPart.RIGHT_ARM, new Rotations(
+            NetworkMessageHandler.rotationChange(uuid, ModelPart.RIGHT_ARM, new Rotations(
                 this.rightArmRotationX, this.rightArmRotationY, this.rightArmRotationZ));
           }));
       this.resetRightArmRotationButton = this.addRenderableWidget(
@@ -235,7 +235,7 @@ public class AdvancedPoseConfigurationScreen
             this.rightArmRotationX = 0f;
             this.rightArmRotationY = 0f;
             this.rightArmRotationZ = 0f;
-            NetworkMessage.rotationChange(uuid, ModelPart.RIGHT_ARM, new Rotations(
+            NetworkMessageHandler.rotationChange(uuid, ModelPart.RIGHT_ARM, new Rotations(
                 this.rightArmRotationX, this.rightArmRotationY, this.rightArmRotationZ));
           }));
     }
@@ -248,7 +248,7 @@ public class AdvancedPoseConfigurationScreen
           new SliderButton(sliderLeftPos, sliderTopPos, scaleWidth, 20, " leftArmRotationX",
               (float) Math.toDegrees(leftArmRotations.getX()), SliderButton.Type.DEGREE, slider -> {
                 this.leftArmRotationX = (float) Math.toRadians(slider.getTargetValue());
-                NetworkMessage.rotationChange(uuid, ModelPart.LEFT_ARM, new Rotations(
+                NetworkMessageHandler.rotationChange(uuid, ModelPart.LEFT_ARM, new Rotations(
                     this.leftArmRotationX, this.leftArmRotationY, this.leftArmRotationZ));
               }));
       this.leftArmRotationYSliderButton = this.addRenderableWidget(new SliderButton(
@@ -256,7 +256,7 @@ public class AdvancedPoseConfigurationScreen
           sliderTopPos, scaleWidth, 20, " leftArmRotationY",
           (float) Math.toDegrees(leftArmRotations.getY()), SliderButton.Type.DEGREE, slider -> {
             this.leftArmRotationY = (float) Math.toRadians(slider.getTargetValue());
-            NetworkMessage.rotationChange(uuid, ModelPart.LEFT_ARM,
+            NetworkMessageHandler.rotationChange(uuid, ModelPart.LEFT_ARM,
                 new Rotations(this.leftArmRotationX, this.leftArmRotationY, this.leftArmRotationZ));
           }));
       this.leftArmRotationZSliderButton = this.addRenderableWidget(new SliderButton(
@@ -264,7 +264,7 @@ public class AdvancedPoseConfigurationScreen
           sliderTopPos, scaleWidth, 20, " leftArmRotationZ",
           (float) Math.toDegrees(leftArmRotations.getZ()), SliderButton.Type.DEGREE, slider -> {
             this.leftArmRotationZ = (float) Math.toRadians(slider.getTargetValue());
-            NetworkMessage.rotationChange(uuid, ModelPart.LEFT_ARM,
+            NetworkMessageHandler.rotationChange(uuid, ModelPart.LEFT_ARM,
                 new Rotations(this.leftArmRotationX, this.leftArmRotationY, this.leftArmRotationZ));
           }));
       this.resetLeftArmRotationButton = this.addRenderableWidget(
@@ -275,7 +275,7 @@ public class AdvancedPoseConfigurationScreen
             this.leftArmRotationX = 0f;
             this.leftArmRotationY = 0f;
             this.leftArmRotationZ = 0f;
-            NetworkMessage.rotationChange(uuid, ModelPart.LEFT_ARM,
+            NetworkMessageHandler.rotationChange(uuid, ModelPart.LEFT_ARM,
                 new Rotations(this.leftArmRotationX, this.leftArmRotationY, this.leftArmRotationZ));
           }));
     } else if (this.entity.hasArmsModelPart()) {
@@ -285,7 +285,7 @@ public class AdvancedPoseConfigurationScreen
           new SliderButton(sliderLeftPos, sliderTopPos, scaleWidth, 20, " armsRotationX",
               (float) Math.toDegrees(armsRotations.getX()), SliderButton.Type.DEGREE, slider -> {
                 this.armsRotationX = (float) Math.toRadians(slider.getTargetValue());
-                NetworkMessage.rotationChange(uuid, ModelPart.ARMS,
+                NetworkMessageHandler.rotationChange(uuid, ModelPart.ARMS,
                     new Rotations(this.armsRotationX, this.armsRotationY, this.armsRotationZ));
               }));
       this.armsRotationYSliderButton = this.addRenderableWidget(new SliderButton(
@@ -293,7 +293,7 @@ public class AdvancedPoseConfigurationScreen
           sliderTopPos, scaleWidth, 20, " armsRotationY",
           (float) Math.toDegrees(armsRotations.getY()), SliderButton.Type.DEGREE, slider -> {
             this.armsRotationY = (float) Math.toRadians(slider.getTargetValue());
-            NetworkMessage.rotationChange(uuid, ModelPart.ARMS,
+            NetworkMessageHandler.rotationChange(uuid, ModelPart.ARMS,
                 new Rotations(this.armsRotationX, this.armsRotationY, this.armsRotationZ));
           }));
       this.armsRotationZSliderButton = this.addRenderableWidget(new SliderButton(
@@ -301,7 +301,7 @@ public class AdvancedPoseConfigurationScreen
           sliderTopPos, scaleWidth, 20, " armsRotationZ",
           (float) Math.toDegrees(armsRotations.getZ()), SliderButton.Type.DEGREE, slider -> {
             this.armsRotationZ = (float) Math.toRadians(slider.getTargetValue());
-            NetworkMessage.rotationChange(uuid, ModelPart.ARMS,
+            NetworkMessageHandler.rotationChange(uuid, ModelPart.ARMS,
                 new Rotations(this.armsRotationX, this.armsRotationY, this.armsRotationZ));
           }));
       this.resetArmsRotationButton = this.addRenderableWidget(
@@ -312,7 +312,7 @@ public class AdvancedPoseConfigurationScreen
             this.armsRotationX = 0f;
             this.armsRotationY = 0f;
             this.armsRotationZ = 0f;
-            NetworkMessage.rotationChange(uuid, ModelPart.ARMS,
+            NetworkMessageHandler.rotationChange(uuid, ModelPart.ARMS,
                 new Rotations(this.armsRotationX, this.armsRotationY, this.armsRotationZ));
           }));
     }
@@ -327,7 +327,7 @@ public class AdvancedPoseConfigurationScreen
           sliderTopPos, scaleWidth, 20, " rightLegRotationX",
           (float) Math.toDegrees(rightLegRotations.getX()), SliderButton.Type.DEGREE, slider -> {
             this.rightLegRotationX = (float) Math.toRadians(slider.getTargetValue());
-            NetworkMessage.rotationChange(uuid, ModelPart.RIGHT_LEG, new Rotations(
+            NetworkMessageHandler.rotationChange(uuid, ModelPart.RIGHT_LEG, new Rotations(
                 this.rightLegRotationX, this.rightLegRotationY, this.rightLegRotationZ));
           }));
       this.rightLegRotationYSliderButton = this.addRenderableWidget(new SliderButton(
@@ -335,7 +335,7 @@ public class AdvancedPoseConfigurationScreen
           sliderTopPos, scaleWidth, 20, " rightLegRotationY",
           (float) Math.toDegrees(rightLegRotations.getY()), SliderButton.Type.DEGREE, slider -> {
             this.rightLegRotationY = (float) Math.toRadians(slider.getTargetValue());
-            NetworkMessage.rotationChange(uuid, ModelPart.RIGHT_LEG, new Rotations(
+            NetworkMessageHandler.rotationChange(uuid, ModelPart.RIGHT_LEG, new Rotations(
                 this.rightLegRotationX, this.rightLegRotationY, this.rightLegRotationZ));
           }));
       this.rightLegRotationZSliderButton = this.addRenderableWidget(new SliderButton(
@@ -343,7 +343,7 @@ public class AdvancedPoseConfigurationScreen
           sliderTopPos, scaleWidth, 20, " rightLegRotationZ",
           (float) Math.toDegrees(rightLegRotations.getZ()), SliderButton.Type.DEGREE, slider -> {
             this.rightLegRotationZ = (float) Math.toRadians(slider.getTargetValue());
-            NetworkMessage.rotationChange(uuid, ModelPart.RIGHT_LEG, new Rotations(
+            NetworkMessageHandler.rotationChange(uuid, ModelPart.RIGHT_LEG, new Rotations(
                 this.rightLegRotationX, this.rightLegRotationY, this.rightLegRotationZ));
           }));
       this.resetRightLegRotationButton = this.addRenderableWidget(
@@ -354,7 +354,7 @@ public class AdvancedPoseConfigurationScreen
             this.rightLegRotationX = 0f;
             this.rightLegRotationY = 0f;
             this.rightLegRotationZ = 0f;
-            NetworkMessage.rotationChange(uuid, ModelPart.RIGHT_LEG, new Rotations(
+            NetworkMessageHandler.rotationChange(uuid, ModelPart.RIGHT_LEG, new Rotations(
                 this.rightLegRotationX, this.rightLegRotationY, this.rightLegRotationZ));
           }));
     }
@@ -367,7 +367,7 @@ public class AdvancedPoseConfigurationScreen
           new SliderButton(sliderLeftPos, sliderTopPos, scaleWidth, 20, " leftLegRotationX",
               (float) Math.toDegrees(leftLegRotations.getX()), SliderButton.Type.DEGREE, slider -> {
                 this.leftLegRotationX = (float) Math.toRadians(slider.getTargetValue());
-                NetworkMessage.rotationChange(uuid, ModelPart.LEFT_LEG, new Rotations(
+                NetworkMessageHandler.rotationChange(uuid, ModelPart.LEFT_LEG, new Rotations(
                     this.leftLegRotationX, this.leftLegRotationY, this.leftLegRotationZ));
               }));
       this.leftLegRotationYSliderButton = this.addRenderableWidget(new SliderButton(
@@ -375,7 +375,7 @@ public class AdvancedPoseConfigurationScreen
           sliderTopPos, scaleWidth, 20, " leftLegRotationY",
           (float) Math.toDegrees(leftLegRotations.getY()), SliderButton.Type.DEGREE, slider -> {
             this.leftLegRotationY = (float) Math.toRadians(slider.getTargetValue());
-            NetworkMessage.rotationChange(uuid, ModelPart.LEFT_LEG,
+            NetworkMessageHandler.rotationChange(uuid, ModelPart.LEFT_LEG,
                 new Rotations(this.leftLegRotationX, this.leftLegRotationY, this.leftLegRotationZ));
           }));
       this.leftLegRotationZSliderButton = this.addRenderableWidget(new SliderButton(
@@ -383,7 +383,7 @@ public class AdvancedPoseConfigurationScreen
           sliderTopPos, scaleWidth, 20, " leftLegRotationZ",
           (float) Math.toDegrees(leftLegRotations.getZ()), SliderButton.Type.DEGREE, slider -> {
             this.leftLegRotationZ = (float) Math.toRadians(slider.getTargetValue());
-            NetworkMessage.rotationChange(uuid, ModelPart.LEFT_LEG,
+            NetworkMessageHandler.rotationChange(uuid, ModelPart.LEFT_LEG,
                 new Rotations(this.leftLegRotationX, this.leftLegRotationY, this.leftLegRotationZ));
           }));
       this.resetLeftLegRotationButton = this.addRenderableWidget(
@@ -394,7 +394,7 @@ public class AdvancedPoseConfigurationScreen
             this.leftLegRotationX = 0f;
             this.leftLegRotationY = 0f;
             this.leftLegRotationZ = 0f;
-            NetworkMessage.rotationChange(uuid, ModelPart.LEFT_LEG,
+            NetworkMessageHandler.rotationChange(uuid, ModelPart.LEFT_LEG,
                 new Rotations(this.leftLegRotationX, this.leftLegRotationY, this.leftLegRotationZ));
           }));
     }

@@ -22,37 +22,38 @@ package de.markusbordihn.easynpc.network.message;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraftforge.network.NetworkEvent;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityMenu;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
-public class MessageOpenConfiguration {
+public class MessageOpenConfiguration extends NetworkMessage {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  protected final ConfigurationType configurationType;
 
-  protected final UUID uuid;
-  protected final String dialogName;
-
-  public MessageOpenConfiguration(UUID uuid, String dialogName) {
-    this.uuid = uuid;
-    this.dialogName = dialogName;
+  public MessageOpenConfiguration(UUID uuid, ConfigurationType configurationType) {
+    super(uuid);
+    this.configurationType = configurationType;
   }
 
-  public String getDialogName() {
-    return this.dialogName;
+  public ConfigurationType getConfigurationType() {
+    return this.configurationType;
   }
 
-  public UUID getUUID() {
-    return this.uuid;
+  public static MessageOpenConfiguration decode(final FriendlyByteBuf buffer) {
+    return new MessageOpenConfiguration(buffer.readUUID(),
+        buffer.readEnum(ConfigurationType.class));
+  }
+
+  public static void encode(final MessageOpenConfiguration message, final FriendlyByteBuf buffer) {
+    buffer.writeUUID(message.uuid);
+    buffer.writeEnum(message.getConfigurationType());
   }
 
   public static void handle(MessageOpenConfiguration message,
@@ -65,17 +66,17 @@ public class MessageOpenConfiguration {
   public static void handlePacket(MessageOpenConfiguration message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
-    if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
+    if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
       return;
     }
 
     // Validate dialog name.
-    String dialogName = message.getDialogName();
-    if (dialogName == null || dialogName.isEmpty()) {
-      log.error("Invalid dialog name {} for {} from {}", dialogName, message, serverPlayer);
+    ConfigurationType configurationType = message.getConfigurationType();
+    if (configurationType == null) {
+      log.error("Invalid configuration type {} for {} from {}", configurationType, message,
+          serverPlayer);
       return;
     }
-    ConfigurationType configurationType = ConfigurationType.valueOf(dialogName);
 
     // Perform action.
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
@@ -147,7 +148,8 @@ public class MessageOpenConfiguration {
         EasyNPCEntityMenu.openCustomPresetImportConfigurationMenu(serverPlayer, easyNPCEntity);
         break;
       default:
-        log.debug("Unknown dialog {} for {} from {}", dialogName, easyNPCEntity, serverPlayer);
+        log.debug("Unknown dialog {} for {} from {}", configurationType, easyNPCEntity,
+            serverPlayer);
     }
   }
 

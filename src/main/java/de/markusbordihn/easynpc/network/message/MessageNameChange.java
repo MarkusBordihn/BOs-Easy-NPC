@@ -22,27 +22,22 @@ package de.markusbordihn.easynpc.network.message;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraftforge.network.NetworkEvent;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
-public class MessageNameChange {
+public class MessageNameChange extends NetworkMessage {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  protected final UUID uuid;
   protected final String name;
 
   public MessageNameChange(UUID uuid, String name) {
-    this.uuid = uuid;
+    super(uuid);
     this.name = name;
   }
 
@@ -50,8 +45,13 @@ public class MessageNameChange {
     return this.name;
   }
 
-  public UUID getUUID() {
-    return this.uuid;
+  public static MessageNameChange decode(final FriendlyByteBuf buffer) {
+    return new MessageNameChange(buffer.readUUID(), buffer.readUtf());
+  }
+
+  public static void encode(final MessageNameChange message, final FriendlyByteBuf buffer) {
+    buffer.writeUUID(message.uuid);
+    buffer.writeUtf(message.getName());
   }
 
   public static void handle(MessageNameChange message,
@@ -64,7 +64,7 @@ public class MessageNameChange {
   public static void handlePacket(MessageNameChange message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
-    if (serverPlayer == null ||  !MessageHelper.checkAccess(uuid, serverPlayer)) {
+    if (serverPlayer == null ||  !NetworkMessage.checkAccess(uuid, serverPlayer)) {
       return;
     }
 

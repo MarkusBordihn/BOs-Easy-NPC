@@ -22,34 +22,35 @@ package de.markusbordihn.easynpc.network.message;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraftforge.network.NetworkEvent;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
-public class MessagePresetExport {
+public class MessagePresetExport extends NetworkMessage {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  protected final UUID uuid;
   protected final String name;
 
   public MessagePresetExport(UUID uuid, String name) {
-    this.uuid = uuid;
+    super(uuid);
     this.name = name;
-  }
-
-  public UUID getUUID() {
-    return this.uuid;
   }
 
   public String getName() {
     return this.name;
+  }
+
+  public static MessagePresetExport decode(final FriendlyByteBuf buffer) {
+    return new MessagePresetExport(buffer.readUUID(), buffer.readUtf());
+  }
+
+  public static void encode(final MessagePresetExport message, final FriendlyByteBuf buffer) {
+    buffer.writeUUID(message.uuid);
+    buffer.writeUtf(message.getName());
   }
 
   public static void handle(MessagePresetExport message,
@@ -62,7 +63,7 @@ public class MessagePresetExport {
   public static void handlePacket(MessagePresetExport message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
-    if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
+    if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
       return;
     }
 
@@ -77,7 +78,7 @@ public class MessagePresetExport {
     }
 
     // Perform action.
-    NetworkMessage.exportPresetClient(uuid, name, serverPlayer);
+    NetworkMessageHandler.exportPresetClient(uuid, name, serverPlayer);
   }
 
 }

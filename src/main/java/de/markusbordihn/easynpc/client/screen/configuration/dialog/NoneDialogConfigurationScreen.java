@@ -37,7 +37,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class NoneDialogConfigurationScreen
@@ -82,9 +82,9 @@ public class NoneDialogConfigurationScreen
           public void onPress() {
             super.onPress();
             if (this.selected()) {
-              NetworkMessage.changeDialogType(uuid, DialogType.NONE);
+              NetworkMessageHandler.changeDialogType(uuid, DialogType.NONE);
             } else {
-              NetworkMessage.changeDialogType(uuid,
+              NetworkMessageHandler.changeDialogType(uuid,
                   formerDialogType != null && formerDialogType != DialogType.NONE ? formerDialogType
                       : DialogType.BASIC);
             }
