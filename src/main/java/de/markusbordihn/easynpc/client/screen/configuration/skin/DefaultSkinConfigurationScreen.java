@@ -36,7 +36,7 @@ import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.Profession;
 import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import de.markusbordihn.easynpc.utils.TextUtils;
 
 @OnlyIn(Dist.CLIENT)
@@ -116,11 +116,11 @@ public class DefaultSkinConfigurationScreen
     int skinButtonHeight = 84;
     ImageButton skinButton = new ImageButton(skinButtonLeft, skinButtonTop, skinPreviewWidth,
         skinButtonHeight, 0, -84, 84, Constants.TEXTURE_CONFIGURATION, button -> {
-          NetworkMessage.variantChange(this.uuid, variant);
+          NetworkMessageHandler.variantChange(this.uuid, variant);
           if (profession != null) {
-            NetworkMessage.professionChange(this.uuid, profession);
+            NetworkMessageHandler.professionChange(this.uuid, profession);
           }
-          NetworkMessage.skinChange(this.uuid, SkinType.DEFAULT);
+          NetworkMessageHandler.skinChange(this.uuid, SkinType.DEFAULT);
         });
 
     // Render active skin in different style.

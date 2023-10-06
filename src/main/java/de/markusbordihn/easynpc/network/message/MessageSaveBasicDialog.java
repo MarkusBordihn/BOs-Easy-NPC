@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraftforge.network.NetworkEvent;
@@ -33,16 +33,16 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
-public class MessageSaveBasicDialog {
+public class MessageSaveBasicDialog extends NetworkMessage{
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  protected final UUID uuid;
   protected final String dialog;
 
   public MessageSaveBasicDialog(UUID uuid, String dialog) {
-    this.uuid = uuid;
+    super(uuid);
     this.dialog = dialog;
   }
 
@@ -50,8 +50,13 @@ public class MessageSaveBasicDialog {
     return this.dialog;
   }
 
-  public UUID getUUID() {
-    return this.uuid;
+  public static MessageSaveBasicDialog decode(final FriendlyByteBuf buffer) {
+    return new MessageSaveBasicDialog(buffer.readUUID(), buffer.readUtf());
+  }
+
+  public static void encode(final MessageSaveBasicDialog message, final FriendlyByteBuf buffer) {
+    buffer.writeUUID(message.uuid);
+    buffer.writeUtf(message.getDialog());
   }
 
   public static void handle(MessageSaveBasicDialog message,
@@ -65,7 +70,7 @@ public class MessageSaveBasicDialog {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
     String dialog = message.getDialog();
-    if (serverPlayer == null || dialog == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
+    if (serverPlayer == null || dialog == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
       log.error("Unable to save basic dialog with message {} from {}", message, context);
       return;
     }
@@ -74,7 +79,7 @@ public class MessageSaveBasicDialog {
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     log.debug("Saving basic dialog: {} for {} from {}", dialog, easyNPCEntity, serverPlayer);
     easyNPCEntity.setDialogType(DialogType.BASIC);
-    easyNPCEntity.setDialog(dialog);
+    easyNPCEntity.setSimpleDialog(dialog);
   }
 
 }

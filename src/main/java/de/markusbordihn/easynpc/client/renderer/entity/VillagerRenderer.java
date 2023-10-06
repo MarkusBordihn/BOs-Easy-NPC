@@ -22,9 +22,6 @@ package de.markusbordihn.easynpc.client.renderer.entity;
 import java.util.EnumMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
@@ -36,7 +33,6 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.CrossedArmsItemLayer;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -44,21 +40,18 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.model.CustomVillagerModel;
+import de.markusbordihn.easynpc.client.model.custom.CustomVillagerModel;
+import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.ProfessionLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.VariantLayer;
-import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
-import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.Profession;
 import de.markusbordihn.easynpc.entity.npc.Villager.Variant;
 
 @OnlyIn(Dist.CLIENT)
-public class VillagerRenderer
-    extends MobRenderer<EasyNPCEntity, CustomVillagerModel<EasyNPCEntity>> {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+public class VillagerRenderer extends MobRenderer<EasyNPCEntity, CustomVillagerModel<EasyNPCEntity>>
+    implements EasyNPCRenderer {
 
   // Base Texture
   public static final ResourceLocation BASE_TEXTURE =
@@ -129,44 +122,32 @@ public class VillagerRenderer
   }
 
   @Override
+  public ResourceLocation getTextureByVariant(Enum<?> variant) {
+    return BASE_TEXTURE;
+  }
+
+  @Override
+  public ResourceLocation getDefaultTexture() {
+    return BASE_TEXTURE;
+  }
+
+  @Override
   public ResourceLocation getTextureLocation(EasyNPCEntity entity) {
-    switch (entity.getSkinType()) {
-      case CUSTOM:
-        return CustomTextureManager.getOrCreateTextureWithDefault(entity, BASE_TEXTURE);
-      case SECURE_REMOTE_URL:
-      case INSECURE_REMOTE_URL:
-        return PlayerTextureManager.getOrCreateTextureWithDefault(entity, BASE_TEXTURE);
-      default:
-        return BASE_TEXTURE;
-    }
+    return this.getEntityTexture(entity);
   }
 
   @Override
   protected void scale(EasyNPCEntity entity, PoseStack poseStack, float unused) {
-    if (entity.isBaby()) {
-      poseStack.scale(entity.getScaleX() * 0.5f, entity.getScaleY() * 0.5f,
-          entity.getScaleZ() * 0.5f);
-      this.shadowRadius = 0.25F;
-    } else {
-      poseStack.scale(entity.getScaleX(), entity.getScaleY(), entity.getScaleZ());
-      this.shadowRadius = 0.5F;
-    }
+    this.scaleEntity(entity, poseStack);
   }
 
   @Override
   public void render(EasyNPCEntity entity, float entityYaw, float partialTicks, PoseStack poseStack,
-      net.minecraft.client.renderer.MultiBufferSource buffer, int light) {
+      MultiBufferSource buffer, int light) {
     CustomVillagerModel<EasyNPCEntity> playerModel = this.getModel();
 
     // Model Rotation
-    Rotations rootRotation = entity.getModelRootRotation();
-    if (rootRotation != null) {
-      poseStack.translate(0, 1, 0);
-      poseStack.mulPose(Axis.XP.rotation(rootRotation.getX()));
-      poseStack.mulPose(Axis.YP.rotation(rootRotation.getY()));
-      poseStack.mulPose(Axis.ZP.rotation(rootRotation.getZ()));
-      poseStack.translate(0, -1, 0);
-    }
+    this.rotateEntity(entity, poseStack);
 
     // Render additional poses
     if (entity.getModelPose() == ModelPose.DEFAULT) {
@@ -198,23 +179,13 @@ public class VillagerRenderer
   @Override
   protected void renderNameTag(EasyNPCEntity entity, Component component, PoseStack poseStack,
       MultiBufferSource multiBufferSource, int color) {
-
-    // Model Rotation
-    Rotations rootRotation = entity.getModelRootRotation();
-    if (rootRotation != null) {
-      poseStack.translate(0, 1, 0);
-      poseStack.mulPose(Axis.XP.rotation(-rootRotation.getX()));
-      poseStack.mulPose(Axis.YP.rotation(-rootRotation.getY()));
-      poseStack.mulPose(Axis.ZP.rotation(-rootRotation.getZ()));
-      poseStack.translate(0, -1, 0);
-    }
-
+    this.renderEntityNameTag(entity, poseStack);
     super.renderNameTag(entity, component, poseStack, multiBufferSource, color);
   }
 
   @Override
   protected int getBlockLightLevel(EasyNPCEntity entity, BlockPos blockPos) {
-    return 7;
+    return getEntityLightLevel(entity);
   }
 
 }

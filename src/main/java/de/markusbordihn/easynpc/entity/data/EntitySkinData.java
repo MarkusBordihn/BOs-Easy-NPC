@@ -34,7 +34,7 @@ import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
 public interface EntitySkinData extends EntityDataInterface {
 
   // Synced entity data
-  public static final EntityDataAccessor<String> DATA_SKIN =
+  public static final EntityDataAccessor<String> DATA_SKIN_NAME =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
   public static final EntityDataAccessor<String> DATA_SKIN_URL =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
@@ -44,17 +44,19 @@ public interface EntitySkinData extends EntityDataInterface {
       SynchedEntityData.defineId(EasyNPCEntityData.class, CustomDataSerializers.SKIN_TYPE);
 
   // CompoundTags
+  public static final String DATA_SKIN_DATA_TAG = "SkinData";
+  public static final String DATA_SKIN_NAME_TAG = "SkinName";
   public static final String DATA_SKIN_TAG = "Skin";
   public static final String DATA_SKIN_TYPE_TAG = "SkinType";
   public static final String DATA_SKIN_URL_TAG = "SkinURL";
   public static final String DATA_SKIN_UUID_TAG = "SkinUUID";
 
-  default String getSkin() {
-    return getEntityData(DATA_SKIN);
+  default String getSkinName() {
+    return getEntityData(DATA_SKIN_NAME);
   }
 
-  default void setSkin(String skin) {
-    setEntityData(DATA_SKIN, skin != null ? skin : "");
+  default void setSkinName(String skin) {
+    setEntityData(DATA_SKIN_NAME, skin != null ? skin : "");
   }
 
   default String getSkinURL() {
@@ -103,52 +105,92 @@ public interface EntitySkinData extends EntityDataInterface {
   }
 
   default void defineSynchedSkinData() {
-    defineEntityData(DATA_SKIN, "");
+    defineEntityData(DATA_SKIN_NAME, "");
     defineEntityData(DATA_SKIN_URL, "");
     defineEntityData(DATA_SKIN_UUID, Optional.empty());
     defineEntityData(DATA_SKIN_TYPE, SkinType.DEFAULT);
   }
 
   default void addAdditionalSkinData(CompoundTag compoundTag) {
-    if (this.getSkin() != null) {
-      compoundTag.putString(DATA_SKIN_TAG, this.getSkin());
+    CompoundTag skinTag = new CompoundTag();
+
+    if (this.getSkinName() != null) {
+      skinTag.putString(DATA_SKIN_TAG, this.getSkinName());
     }
     if (this.getSkinURL() != null) {
-      compoundTag.putString(DATA_SKIN_URL_TAG, this.getSkinURL());
+      skinTag.putString(DATA_SKIN_URL_TAG, this.getSkinURL());
     }
     Optional<UUID> skinUUID = this.getSkinUUID();
     if (skinUUID.isPresent()) {
-      compoundTag.putUUID(DATA_SKIN_UUID_TAG, skinUUID.get());
+      skinTag.putUUID(DATA_SKIN_UUID_TAG, skinUUID.get());
     }
     if (this.getSkinType() != null) {
-      compoundTag.putString(DATA_SKIN_TYPE_TAG, this.getSkinType().name());
+      skinTag.putString(DATA_SKIN_TYPE_TAG, this.getSkinType().name());
     }
+
+    compoundTag.put(DATA_SKIN_DATA_TAG, skinTag);
   }
 
   default void readAdditionalSkinData(CompoundTag compoundTag) {
-    if (compoundTag.contains(DATA_SKIN_TAG)) {
-      String skin = compoundTag.getString(DATA_SKIN_TAG);
-      if (skin != null && !skin.isEmpty()) {
-        this.setSkin(skin);
-      }
-    }
-    if (compoundTag.contains(DATA_SKIN_URL_TAG)) {
-      String url = compoundTag.getString(DATA_SKIN_URL_TAG);
-      if (url != null && !url.isEmpty()) {
-        this.setSkinURL(url);
-      }
-    }
-    if (compoundTag.contains(DATA_SKIN_UUID_TAG)) {
-      UUID skinUUID = compoundTag.getUUID(DATA_SKIN_UUID_TAG);
-      if (skinUUID != null) {
-        this.setSkinUUID(skinUUID);
-      }
-    }
+
+    // Legacy skin data support
     if (compoundTag.contains(DATA_SKIN_TYPE_TAG)) {
+      log.info("Converting legacy skin data to new format for {}", this);
       String skinType = compoundTag.getString(DATA_SKIN_TYPE_TAG);
       if (skinType != null && !skinType.isEmpty()) {
         this.setSkinType(this.getSkinType(skinType));
       }
+      if (compoundTag.contains(DATA_SKIN_TAG)) {
+        String skinName = compoundTag.getString(DATA_SKIN_TAG);
+        if (skinName != null && !skinName.isEmpty()) {
+          this.setSkinName(skinName);
+        }
+      }
+      if (compoundTag.contains(DATA_SKIN_URL_TAG)) {
+        String url = compoundTag.getString(DATA_SKIN_URL_TAG);
+        if (url != null && !url.isEmpty()) {
+          this.setSkinURL(url);
+        }
+      }
+      if (compoundTag.contains(DATA_SKIN_UUID_TAG)) {
+        UUID skinUUID = compoundTag.getUUID(DATA_SKIN_UUID_TAG);
+        if (skinUUID != null) {
+          this.setSkinUUID(skinUUID);
+        }
+      }
     }
+
+    // Early exit if no skin data is available.
+    if (!compoundTag.contains(DATA_SKIN_DATA_TAG)) {
+      return;
+    }
+
+    // Read skin data
+    CompoundTag skinTag = compoundTag.getCompound(DATA_SKIN_DATA_TAG);
+    if (skinTag.contains(DATA_SKIN_TYPE_TAG)) {
+      String skinType = skinTag.getString(DATA_SKIN_TYPE_TAG);
+      if (skinType != null && !skinType.isEmpty()) {
+        this.setSkinType(this.getSkinType(skinType));
+      }
+    }
+    if (skinTag.contains(DATA_SKIN_NAME_TAG)) {
+      String skinName = skinTag.getString(DATA_SKIN_NAME_TAG);
+      if (skinName != null && !skinName.isEmpty()) {
+        this.setSkinName(skinName);
+      }
+    }
+    if (skinTag.contains(DATA_SKIN_URL_TAG)) {
+      String url = skinTag.getString(DATA_SKIN_URL_TAG);
+      if (url != null && !url.isEmpty()) {
+        this.setSkinURL(url);
+      }
+    }
+    if (skinTag.contains(DATA_SKIN_UUID_TAG)) {
+      UUID skinUUID = skinTag.getUUID(DATA_SKIN_UUID_TAG);
+      if (skinUUID != null) {
+        this.setSkinUUID(skinUUID);
+      }
+    }
+
   }
 }

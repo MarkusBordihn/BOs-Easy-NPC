@@ -22,27 +22,22 @@ package de.markusbordihn.easynpc.network.message;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraftforge.network.NetworkEvent;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
-public class MessageDialogTypeChange {
+public class MessageDialogTypeChange extends NetworkMessage {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  protected final UUID uuid;
   protected final DialogType dialogType;
 
   public MessageDialogTypeChange(UUID uuid, DialogType dialogType) {
-    this.uuid = uuid;
+    super(uuid);
     this.dialogType = dialogType;
   }
 
@@ -50,8 +45,13 @@ public class MessageDialogTypeChange {
     return this.dialogType;
   }
 
-  public UUID getUUID() {
-    return this.uuid;
+  public static MessageDialogTypeChange decode(FriendlyByteBuf buffer) {
+    return new MessageDialogTypeChange(buffer.readUUID(), buffer.readEnum(DialogType.class));
+  }
+
+  public static void encode(MessageDialogTypeChange message, FriendlyByteBuf buffer) {
+    buffer.writeUUID(message.uuid);
+    buffer.writeEnum(message.getDialogType());
   }
 
   public static void handle(MessageDialogTypeChange message,
@@ -66,7 +66,7 @@ public class MessageDialogTypeChange {
     DialogType dialogType = message.getDialogType();
     UUID uuid = message.getUUID();
     if (serverPlayer == null || dialogType == null
-        || !MessageHelper.checkAccess(uuid, serverPlayer)) {
+        || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
       log.error("Unable to save basic dialog with message {} from {}", message, context);
       return;
     }

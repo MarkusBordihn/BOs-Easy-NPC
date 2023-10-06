@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -134,12 +135,31 @@ public class TextureManager {
       return cachedTexture;
     }
 
+    // Verify URL and follow redirect for 301 and 302, if needed.
+    try {
+      URL remoteImageURL = new URL(remoteUrl);
+      HttpURLConnection connection = (HttpURLConnection) remoteImageURL.openConnection();
+      if (connection.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM
+          || connection.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP) {
+        String redirectUrl = connection.getHeaderField("Location");
+        log.debug("{} Following redirect from {} to {}", LOG_PREFIX, remoteUrl, redirectUrl);
+        remoteUrl = redirectUrl;
+      } else if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+        log.error("{} Unable to load texture from URL {} because of: {}", LOG_PREFIX, remoteUrl,
+            connection.getResponseMessage());
+        return null;
+      }
+    } catch (IllegalArgumentException | IOException exception) {
+      log.error("{} Unable to load texture from URL {} because of:", LOG_PREFIX, remoteUrl, exception);
+      return null;
+    }
+
     // Download URL to memory
     BufferedImage image;
     try {
       image = ImageIO.read(new URL(remoteUrl));
     } catch (IllegalArgumentException | IOException exception) {
-      log.error("{} Unable to load texture from {} because of:", LOG_PREFIX, remoteUrl, exception);
+      log.error("{} Unable to parse image from {} because of:", LOG_PREFIX, remoteUrl, exception);
       return null;
     }
 

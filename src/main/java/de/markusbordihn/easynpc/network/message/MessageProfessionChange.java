@@ -22,27 +22,22 @@ package de.markusbordihn.easynpc.network.message;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraftforge.network.NetworkEvent;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.entity.Profession;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
-public class MessageProfessionChange {
+public class MessageProfessionChange extends NetworkMessage{
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  protected final UUID uuid;
   protected final Profession profession;
 
   public MessageProfessionChange(UUID uuid, Profession profession) {
-    this.uuid = uuid;
+    super(uuid);
     this.profession = profession;
   }
 
@@ -50,8 +45,13 @@ public class MessageProfessionChange {
     return this.profession;
   }
 
-  public UUID getUUID() {
-    return this.uuid;
+  public static MessageProfessionChange decode(final FriendlyByteBuf buffer) {
+    return new MessageProfessionChange(buffer.readUUID(), buffer.readEnum(Profession.class));
+  }
+
+  public static void encode(final MessageProfessionChange message, final FriendlyByteBuf buffer) {
+    buffer.writeUUID(message.uuid);
+    buffer.writeEnum(message.getProfession());
   }
 
   public static void handle(MessageProfessionChange message,
@@ -64,7 +64,7 @@ public class MessageProfessionChange {
   public static void handlePacket(MessageProfessionChange message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
-    if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
+    if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
       return;
     }
 

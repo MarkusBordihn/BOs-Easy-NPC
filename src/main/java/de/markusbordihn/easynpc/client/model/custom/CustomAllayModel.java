@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.model;
+package de.markusbordihn.easynpc.client.model.custom;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -27,6 +27,7 @@ import net.minecraft.client.model.ArmedModel;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.core.Rotations;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -35,12 +36,15 @@ import net.minecraft.world.entity.Pose;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import de.markusbordihn.easynpc.client.model.CustomModelHelper;
+import de.markusbordihn.easynpc.client.model.EasyNPCModel;
+import de.markusbordihn.easynpc.data.CustomPosition;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 
 @OnlyIn(Dist.CLIENT)
 public class CustomAllayModel<T extends LivingEntity> extends HierarchicalModel<T>
-    implements ArmedModel {
+    implements ArmedModel, EasyNPCModel {
 
   private final ModelPart root;
   protected final ModelPart head;
@@ -72,52 +76,46 @@ public class CustomAllayModel<T extends LivingEntity> extends HierarchicalModel<
     return net.minecraft.client.model.AllayModel.createBodyLayer();
   }
 
+  @Override
+  public Rotations getDefaultModelLeftArmRotation() {
+    return ALLAY_MODEL_LEFT_ARM_ROTATION;
+  }
+
+  @Override
+  public Rotations getDefaultModelRightArmRotation() {
+    return ALLAY_MODEL_RIGHT_ARM_ROTATION;
+  }
+
+  @Override
+  public CustomPosition getDefaultModelRootPosition() {
+    return ALLAY_MODEL_ROOT_POSITION;
+  }
+
+  @Override
+  public CustomPosition getDefaultModelLeftArmPosition() {
+    return ALLAY_MODEL_LEFT_ARM_POSITION;
+  }
+
+  @Override
+  public CustomPosition getDefaultModelRightArmPosition() {
+    return ALLAY_MODEL_RIGHT_ARM_POSITION;
+  }
+
+  @Override
   public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks,
       float netHeadYaw, float headPitch) {
 
     if (entity instanceof EasyNPCEntity easyNPCEntity) {
 
-      // Reset all rotations to avoid any issues with other mods.
-      CustomModelHelper.resetRotation(this.body);
-      CustomModelHelper.resetRotation(this.head);
-      CustomModelHelper.setRotation(this.leftArm, 0, -0.27925268F, 0);
-      CustomModelHelper.setRotation(this.rightArm, 0, 0.27925268F, 0);
+      // Reset player model to avoid any issues with other mods.
+      resetArmModel(head, body, leftArm, rightArm);
 
-      // Reset all positions to avoid any issues with other mods.
+      // Change root position so that the model is floating in the air.
       CustomModelHelper.setPosition(this.root, 0, 15, 0);
-      CustomModelHelper.resetPosition(this.body);
-      CustomModelHelper.resetPosition(this.head);
-      CustomModelHelper.setPosition(this.leftArm, 2.0F, 0.0F, 0.0F);
-      CustomModelHelper.setPosition(this.rightArm, -2.0F, 0.0F, 0.0F);
-
-      // Reset all visibility to avoid any issues with other mods.
-      this.body.visible = true;
-      this.head.visible = true;
-      this.leftArm.visible = true;
-      this.rightArm.visible = true;
 
       // Individual Part Modifications
       if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
-
-        // Head position, rotation and visibility.
-        CustomModelHelper.setHeadPositionRotationVisibility(this.head,
-            easyNPCEntity.getModelHeadPosition(), easyNPCEntity.getModelHeadRotation(),
-            easyNPCEntity.isModelHeadVisible(), netHeadYaw, headPitch);
-
-        // Body position, rotation and visibility.
-        CustomModelHelper.setPositionRotationVisibility(this.body,
-            easyNPCEntity.getModelBodyPosition(), easyNPCEntity.getModelBodyRotation(),
-            easyNPCEntity.isModelBodyVisible());
-
-        // Right Arm position, rotation and visibility.
-        CustomModelHelper.setPositionRotationVisibility(this.rightArm,
-            easyNPCEntity.getModelRightArmPosition(), easyNPCEntity.getModelRightArmRotation(),
-            easyNPCEntity.isModelRightArmVisible());
-
-        // Left Arm position, rotation and visibility.
-        CustomModelHelper.setPositionRotationVisibility(this.leftArm,
-            easyNPCEntity.getModelLeftArmPosition(), easyNPCEntity.getModelLeftArmRotation(),
-            easyNPCEntity.isModelLeftArmVisible());
+        setupCustomArmModel(easyNPCEntity, head, body, leftArm, rightArm, netHeadYaw, headPitch);
       } else if (easyNPCEntity.getPose() == Pose.CROUCHING) {
         this.body.xRot = 0.5F;
         this.body.y = 3.2F;

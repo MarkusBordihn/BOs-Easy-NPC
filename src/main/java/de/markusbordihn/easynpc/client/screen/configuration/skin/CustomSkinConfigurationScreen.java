@@ -43,7 +43,7 @@ import de.markusbordihn.easynpc.data.CustomSkinData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import de.markusbordihn.easynpc.utils.TextUtils;
 
 public class CustomSkinConfigurationScreen
@@ -133,7 +133,7 @@ public class CustomSkinConfigurationScreen
     ImageButton skinButton = new ImageButton(skinButtonLeft, skinButtonTop, skinPreviewWidth,
         skinButtonHeight, 0, -84, 84, Constants.TEXTURE_CONFIGURATION, button -> {
           log.info("Change custom skin ... {} {}", textureModelKey);
-          NetworkMessage.skinChange(this.uuid, "", "", textureUUID, SkinType.CUSTOM);
+          NetworkMessageHandler.skinChange(this.uuid, "", "", textureUUID, SkinType.CUSTOM);
         });
 
     // Render active skin in different style.

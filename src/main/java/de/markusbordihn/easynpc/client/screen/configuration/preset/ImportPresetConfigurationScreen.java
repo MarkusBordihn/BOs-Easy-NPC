@@ -29,7 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
@@ -52,19 +52,19 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
     int buttonWidth = 92;
     this.defaultImportPresetButton = this.addRenderableWidget(menuButton(this.buttonLeftPos,
         this.buttonTopPos, buttonWidth - 4, "default_preset", button -> {
-          NetworkMessage.openConfiguration(uuid, ConfigurationType.DEFAULT_PRESET_IMPORT);
+          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_PRESET_IMPORT);
         }));
     this.defaultImportPresetButton.active = false;
-    this.worldImportPresetButton = this.addRenderableWidget(
-        menuButton(this.defaultImportPresetButton.getX() + this.defaultImportPresetButton.getWidth(),
-            this.buttonTopPos, buttonWidth - 6, "world_preset", button -> {
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.WORLD_PRESET_IMPORT);
-            }));
+    this.worldImportPresetButton = this.addRenderableWidget(menuButton(
+        this.defaultImportPresetButton.getX() + this.defaultImportPresetButton.getWidth(),
+        this.buttonTopPos, buttonWidth - 6, "world_preset", button -> {
+          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.WORLD_PRESET_IMPORT);
+        }));
     this.worldImportPresetButton.active = false;
     this.customImportPresetButton = this.addRenderableWidget(
         menuButton(this.worldImportPresetButton.getX() + this.worldImportPresetButton.getWidth(),
             this.buttonTopPos, buttonWidth + 5, "custom_preset", button -> {
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.CUSTOM_PRESET_IMPORT);
+              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_PRESET_IMPORT);
             }));
     this.customImportPresetButton.active = false;
 

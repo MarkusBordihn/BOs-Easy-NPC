@@ -34,7 +34,7 @@ import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.data.action.ActionData;
 import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class BasicActionConfigurationScreen
@@ -90,7 +90,7 @@ public class BasicActionConfigurationScreen
               new ActionData(ActionType.ON_INTERACTION, this.onInteractionActionBox.getValue(),
                   this.onInteractionActionExecuteAsUserCheckbox.selected(),
                   this.onInteractionActionDebugCheckbox.selected());
-          NetworkMessage.actionChange(uuid, actionData);
+          NetworkMessageHandler.actionChange(uuid, actionData);
           this.lastInteractionActionData = actionData;
           this.onInteractionActionSaveButton.active = false;
         }));
