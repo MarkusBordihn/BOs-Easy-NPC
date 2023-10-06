@@ -28,6 +28,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.npc.Allay;
+import de.markusbordihn.easynpc.entity.npc.Cat;
+import de.markusbordihn.easynpc.entity.npc.Chicken;
 import de.markusbordihn.easynpc.entity.npc.Fairy;
 import de.markusbordihn.easynpc.entity.npc.Humanoid;
 import de.markusbordihn.easynpc.entity.npc.HumanoidSlim;
@@ -57,6 +59,14 @@ public class ModItems {
 
   public static final RegistryObject<Item> ALLAY_NPC_SPAWN_EGG = ITEMS
       .register(Allay.ID + SPAWN_EGG_PREFIX, () -> new EasyNPCSpawnEggItem(ModEntityType.ALLAY::get,
+          new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
+
+  public static final RegistryObject<Item> CAT_NPC_SPAWN_EGG = ITEMS
+      .register(Cat.ID + SPAWN_EGG_PREFIX, () -> new EasyNPCSpawnEggItem(ModEntityType.CAT::get,
+          new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
+
+  public static final RegistryObject<Item> CHICKEN_NPC_SPAWN_EGG = ITEMS.register(
+      Chicken.ID + SPAWN_EGG_PREFIX, () -> new EasyNPCSpawnEggItem(ModEntityType.CHICKEN::get,
           new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
 
   public static final RegistryObject<Item> FAIRY_NPC_SPAWN_EGG = ITEMS

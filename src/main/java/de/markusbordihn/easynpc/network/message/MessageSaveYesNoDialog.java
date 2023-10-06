@@ -22,23 +22,18 @@ package de.markusbordihn.easynpc.network.message;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraftforge.network.NetworkEvent;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
-public class MessageSaveYesNoDialog {
+public class MessageSaveYesNoDialog extends NetworkMessage {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  protected final UUID uuid;
   protected final String dialog;
   protected final String yesDialog;
   protected final String noDialog;
@@ -47,7 +42,7 @@ public class MessageSaveYesNoDialog {
 
   public MessageSaveYesNoDialog(UUID uuid, String dialog, String yesDialog, String noDialog,
       String yesButtonText, String noButtonText) {
-    this.uuid = uuid;
+    super(uuid);
     this.dialog = dialog;
     this.yesDialog = yesDialog;
     this.noDialog = noDialog;
@@ -75,8 +70,18 @@ public class MessageSaveYesNoDialog {
     return this.noButtonText;
   }
 
-  public UUID getUUID() {
-    return this.uuid;
+  public static MessageSaveYesNoDialog decode(final FriendlyByteBuf buffer) {
+    return new MessageSaveYesNoDialog(buffer.readUUID(), buffer.readUtf(), buffer.readUtf(),
+        buffer.readUtf(), buffer.readUtf(), buffer.readUtf());
+  }
+
+  public static void encode(final MessageSaveYesNoDialog message, final FriendlyByteBuf buffer) {
+    buffer.writeUUID(message.uuid);
+    buffer.writeUtf(message.getDialog());
+    buffer.writeUtf(message.getYesDialog());
+    buffer.writeUtf(message.getNoDialog());
+    buffer.writeUtf(message.getYesButtonText());
+    buffer.writeUtf(message.getNoButtonText());
   }
 
   public static void handle(MessageSaveYesNoDialog message,
@@ -89,7 +94,7 @@ public class MessageSaveYesNoDialog {
   public static void handlePacket(MessageSaveYesNoDialog message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
-    if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
+    if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
       return;
     }
 
@@ -124,7 +129,7 @@ public class MessageSaveYesNoDialog {
     log.debug("Saving yes/no dialog {} [{}] -> {} [{}] -> {} for {} from {}", dialog, yesButtonText,
         yesDialog, noButtonText, noDialog, easyNPCEntity, serverPlayer);
     easyNPCEntity.setDialogType(DialogType.YES_NO);
-    easyNPCEntity.setDialog(dialog);
+    easyNPCEntity.setSimpleDialog(dialog);
     easyNPCEntity.setYesDialog(yesDialog);
     easyNPCEntity.setNoDialog(noDialog);
     if (yesButtonText != null && !yesButtonText.isBlank()) {

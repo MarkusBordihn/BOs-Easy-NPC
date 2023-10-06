@@ -22,9 +22,6 @@ package de.markusbordihn.easynpc.client.renderer.entity;
 import java.util.EnumMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 
@@ -38,25 +35,21 @@ import net.minecraft.client.renderer.entity.layers.ElytraLayer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.model.CustomSkeletonModel;
-import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
-import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
+import de.markusbordihn.easynpc.client.model.custom.CustomSkeletonModel;
+import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.npc.Skeleton.Variant;
 import de.markusbordihn.easynpc.entity.npc.Skeleton;
 
 @OnlyIn(Dist.CLIENT)
-public class SkeletonRenderer extends HumanoidMobRenderer<Skeleton, CustomSkeletonModel<Skeleton>> {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+public class SkeletonRenderer extends HumanoidMobRenderer<Skeleton, CustomSkeletonModel<Skeleton>>
+    implements EasyNPCRenderer {
 
   // Variant Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
@@ -79,26 +72,23 @@ public class SkeletonRenderer extends HumanoidMobRenderer<Skeleton, CustomSkelet
   }
 
   @Override
+  public ResourceLocation getTextureByVariant(Enum<?> variant) {
+    return TEXTURE_BY_VARIANT.getOrDefault(variant, DEFAULT_TEXTURE);
+  }
+
+  @Override
+  public ResourceLocation getDefaultTexture() {
+    return DEFAULT_TEXTURE;
+  }
+
+  @Override
   public ResourceLocation getTextureLocation(Skeleton entity) {
-    switch (entity.getSkinType()) {
-      case CUSTOM:
-        return CustomTextureManager.getOrCreateTextureWithDefault(entity, DEFAULT_TEXTURE);
-      case SECURE_REMOTE_URL:
-      case INSECURE_REMOTE_URL:
-        return PlayerTextureManager.getOrCreateTextureWithDefault(entity, DEFAULT_TEXTURE);
-      default:
-        return TEXTURE_BY_VARIANT.getOrDefault(entity.getVariant(), DEFAULT_TEXTURE);
-    }
+    return this.getEntityTexture(entity);
   }
 
   @Override
   protected void scale(Skeleton entity, PoseStack poseStack, float unused) {
-    if (entity.isBaby()) {
-      poseStack.scale(entity.getScaleX() * 0.5f, entity.getScaleY() * 0.5f,
-          entity.getScaleZ() * 0.5f);
-    } else {
-      poseStack.scale(entity.getScaleX(), entity.getScaleY(), entity.getScaleZ());
-    }
+    this.scaleEntity(entity, poseStack);
   }
 
   @Override
@@ -107,14 +97,7 @@ public class SkeletonRenderer extends HumanoidMobRenderer<Skeleton, CustomSkelet
     CustomSkeletonModel<Skeleton> playerModel = this.getModel();
 
     // Model Rotation
-    Rotations rootRotation = entity.getModelRootRotation();
-    if (rootRotation != null) {
-      poseStack.translate(0, 1, 0);
-      poseStack.mulPose(Vector3f.XP.rotation(rootRotation.getX()));
-      poseStack.mulPose(Vector3f.YP.rotation(rootRotation.getY()));
-      poseStack.mulPose(Vector3f.ZP.rotation(rootRotation.getZ()));
-      poseStack.translate(0, -1, 0);
-    }
+    this.rotateEntity(entity, poseStack);
 
     // Render additional poses
     if (entity.getModelPose() == ModelPose.DEFAULT) {
@@ -156,23 +139,13 @@ public class SkeletonRenderer extends HumanoidMobRenderer<Skeleton, CustomSkelet
   @Override
   protected void renderNameTag(Skeleton entity, Component component, PoseStack poseStack,
       MultiBufferSource multiBufferSource, int color) {
-
-    // Model Rotation
-    Rotations rootRotation = entity.getModelRootRotation();
-    if (rootRotation != null) {
-      poseStack.translate(0, 1, 0);
-      poseStack.mulPose(Vector3f.XP.rotation(-rootRotation.getX()));
-      poseStack.mulPose(Vector3f.YP.rotation(-rootRotation.getY()));
-      poseStack.mulPose(Vector3f.ZP.rotation(-rootRotation.getZ()));
-      poseStack.translate(0, -1, 0);
-    }
-
+    this.renderEntityNameTag(entity, poseStack);
     super.renderNameTag(entity, component, poseStack, multiBufferSource, color);
   }
 
   @Override
   protected int getBlockLightLevel(Skeleton entity, BlockPos blockPos) {
-    return 7;
+    return getEntityLightLevel(entity);
   }
 
 }

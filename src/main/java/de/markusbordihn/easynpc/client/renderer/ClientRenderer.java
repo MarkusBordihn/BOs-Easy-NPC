@@ -28,6 +28,8 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.entity.AllayRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.CatRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.ChickenRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.FairyRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.HumanoidRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.HumanoidSlimRenderer;
@@ -49,6 +51,8 @@ public class ClientRenderer {
 
     // Default NPC Entity
     event.registerEntityRenderer(ModEntityType.ALLAY.get(), AllayRenderer::new);
+    event.registerEntityRenderer(ModEntityType.CAT.get(), CatRenderer::new);
+    event.registerEntityRenderer(ModEntityType.CHICKEN.get(), ChickenRenderer::new);
     event.registerEntityRenderer(ModEntityType.FAIRY.get(), FairyRenderer::new);
     event.registerEntityRenderer(ModEntityType.HUMANOID.get(), HumanoidRenderer::new);
     event.registerEntityRenderer(ModEntityType.HUMANOID_SLIM.get(), HumanoidSlimRenderer::new);

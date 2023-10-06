@@ -29,7 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
@@ -51,13 +51,13 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
     int buttonWidth = 92;
     this.customExportPresetButton = this.addRenderableWidget(menuButton(this.buttonLeftPos,
         this.buttonTopPos, buttonWidth + 5, "custom_preset", button -> {
-          NetworkMessage.openConfiguration(uuid, ConfigurationType.CUSTOM_PRESET_EXPORT);
+          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_PRESET_EXPORT);
         }));
     this.customExportPresetButton.active = false;
     this.worldExportPresetButton = this.addRenderableWidget(
         menuButton(this.customExportPresetButton.x + this.customExportPresetButton.getWidth(),
             this.buttonTopPos, buttonWidth - 6, "world_preset", button -> {
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.WORLD_PRESET_EXPORT);
+              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.WORLD_PRESET_EXPORT);
             }));
     this.worldExportPresetButton.active = false;
 

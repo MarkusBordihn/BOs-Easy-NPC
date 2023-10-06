@@ -37,6 +37,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 import de.markusbordihn.easynpc.commands.CommandManager;
@@ -51,8 +53,10 @@ import de.markusbordihn.easynpc.item.ModItems;
 public class EasyNPCEntity extends EasyNPCEntityData {
 
   // Additional ticker
-  private static final int BASE_TICK = 15;
-  private int baseTicker = 0;
+  private static final int BASE_TICK = 16;
+  private static final int TRAVEL_TICK = 20;
+  private int baseTicker = random.nextInt(BASE_TICK / 2);
+  private int travelTicker = random.nextInt(TRAVEL_TICK / 2);
 
   // Shared constants
   public static final MobCategory CATEGORY = MobCategory.MISC;
@@ -220,6 +224,22 @@ public class EasyNPCEntity extends EasyNPCEntityData {
 
   @Override
   public void travel(Vec3 vec3) {
+
+    // Handle movement for NPC for specific conditions.
+    if (travelTicker++ >= TRAVEL_TICK) {
+
+      // Define if NPC is on ground or not.
+      BlockState blockState = this.level.getBlockState(this.getOnPos());
+      this.setOnGround(!blockState.is(Blocks.AIR) && !blockState.is(Blocks.GRASS)
+          && !blockState.is(Blocks.WHITE_CARPET) && !blockState.is(Blocks.RED_CARPET));
+
+      // Allow movement for NPC, if freefall is enabled.
+      if (this.getAttributeFreefall() && !this.onGround) {
+        this.setPos(this.getX(), Math.floor(this.getY() - 0.1d), this.getZ());
+      }
+      travelTicker = 0;
+    }
+
     // Make sure we only calculate animations for be as much as possible server-friendly.
     this.calculateEntityAnimation(this, this instanceof FlyingAnimal);
   }
@@ -251,7 +271,7 @@ public class EasyNPCEntity extends EasyNPCEntityData {
       // interaction action is set or the player is crouching.
       boolean hasInteractionAction = this.hasAction(ActionType.ON_INTERACTION);
       if ((player.isCreative() || this.isOwner(serverPlayer))
-          && ((!this.hasDialog() && !hasInteractionAction) || player.isCrouching())) {
+          && ((!this.hasSimpleDialog() && !hasInteractionAction) || player.isCrouching())) {
         this.openMainConfigurationMenu(serverPlayer);
         return InteractionResult.PASS;
       }
@@ -261,7 +281,7 @@ public class EasyNPCEntity extends EasyNPCEntityData {
         this.executeAction(actionData, serverPlayer);
       }
 
-      if (this.hasDialog()) {
+      if (this.hasSimpleDialog()) {
         EasyNPCEntityMenu.openDialogMenu(serverPlayer, this);
       }
     }

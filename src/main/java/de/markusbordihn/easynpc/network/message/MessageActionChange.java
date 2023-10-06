@@ -22,43 +22,43 @@ package de.markusbordihn.easynpc.network.message;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraftforge.network.NetworkEvent;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionData;
 import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
-public class MessageActionChange {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+public class MessageActionChange extends NetworkMessage {
 
   protected final ActionData actionData;
-  protected final UUID uuid;
 
   public MessageActionChange(UUID uuid, ActionData actionData) {
+    super(uuid);
     this.actionData = actionData;
-    this.uuid = uuid;
   }
 
   public MessageActionChange(UUID uuid, ActionType actionType, String action) {
+    super(uuid);
     this.actionData = new ActionData(actionType, action);
-    this.uuid = uuid;
   }
 
   public ActionData getActionData() {
     return this.actionData;
   }
 
-  public UUID getUUID() {
-    return this.uuid;
+  public static MessageActionChange decode(final FriendlyByteBuf buffer) {
+    return new MessageActionChange(buffer.readUUID(), ActionData.decode(buffer));
+  }
+
+  public static void encode(final MessageActionChange message, final FriendlyByteBuf buffer) {
+    buffer.writeUUID(message.uuid);
+    ActionData.encode(message, buffer);
   }
 
   public static void handle(MessageActionChange message,
@@ -71,7 +71,7 @@ public class MessageActionChange {
   public static void handlePacket(MessageActionChange message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
-    if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
+    if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
       return;
     }
 
