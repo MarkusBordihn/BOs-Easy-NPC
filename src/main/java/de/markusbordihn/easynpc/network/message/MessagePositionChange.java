@@ -22,22 +22,18 @@ package de.markusbordihn.easynpc.network.message;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
+
 import net.minecraftforge.network.NetworkEvent;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
-public class MessagePositionChange {
+public class MessagePositionChange extends NetworkMessage {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  protected final UUID uuid;
   protected final Vec3 pos;
 
   public MessagePositionChange(UUID uuid, float x, float y, float z) {
@@ -45,7 +41,7 @@ public class MessagePositionChange {
   }
 
   public MessagePositionChange(UUID uuid, Vec3 pos) {
-    this.uuid = uuid;
+    super(uuid);
     this.pos = pos;
   }
 
@@ -65,8 +61,16 @@ public class MessagePositionChange {
     return (float) this.pos.z;
   }
 
-  public UUID getUUID() {
-    return this.uuid;
+  public static MessagePositionChange decode(final FriendlyByteBuf buffer) {
+    return new MessagePositionChange(buffer.readUUID(), buffer.readFloat(), buffer.readFloat(),
+        buffer.readFloat());
+  }
+
+  public static void encode(final MessagePositionChange message, final FriendlyByteBuf buffer) {
+    buffer.writeUUID(message.uuid);
+    buffer.writeFloat(message.getX());
+    buffer.writeFloat(message.getY());
+    buffer.writeFloat(message.getZ());
   }
 
   public static void handle(MessagePositionChange message,
@@ -79,7 +83,7 @@ public class MessagePositionChange {
   public static void handlePacket(MessagePositionChange message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
-    if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
+    if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
       return;
     }
 

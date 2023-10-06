@@ -41,7 +41,7 @@ import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurationMenu> {
@@ -73,7 +73,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     String value = this.nameBox.getValue();
     if (value != null && !value.isBlank()) {
       log.debug("Saving name {} for {}", value, this.entity);
-      NetworkMessage.nameChange(this.uuid, value);
+      NetworkMessageHandler.nameChange(this.uuid, value);
       this.formerName = value;
       this.saveNameButton.active = false;
     }
@@ -86,7 +86,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     }
     minecraft.setScreen(new ConfirmScreen(confirmed -> {
       if (confirmed && uuid != null) {
-        NetworkMessage.removeNPC(uuid);
+        NetworkMessageHandler.removeNPC(uuid);
         minecraft.setScreen((Screen) null);
       } else {
         minecraft.setScreen(this);
@@ -145,13 +145,13 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
             case PLAYER_SKIN:
             case SECURE_REMOTE_URL:
             case INSECURE_REMOTE_URL:
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.PLAYER_SKIN);
+              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.PLAYER_SKIN);
               break;
             case CUSTOM:
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.CUSTOM_SKIN);
+              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_SKIN);
               break;
             default:
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.DEFAULT_SKIN);
+              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_SKIN);
           }
         }));
     this.editSkinButton.active = this.hasPermissions(COMMON.defaultSkinConfigurationEnabled.get(),
@@ -167,14 +167,14 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     // Import Button
     this.importButton = this.addRenderableWidget(
         menuButton(buttonLeftPosition, buttonTopPosition, "import", onPress -> {
-          NetworkMessage.openConfiguration(uuid, ConfigurationType.DEFAULT_PRESET_IMPORT);
+          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_PRESET_IMPORT);
         }));
 
     // Export Button
     this.exportButton = this.addRenderableWidget(
         menuButton(buttonLeftPosition + this.importButton.getWidth() + buttonSpace,
             buttonTopPosition, "export", onPress -> {
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.CUSTOM_PRESET_EXPORT);
+              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_PRESET_EXPORT);
             }));
 
     // Move button position down
@@ -186,16 +186,16 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
           DialogType dialogType = this.entity.getDialogType();
           switch (dialogType) {
             case NONE:
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.NONE_DIALOG);
+              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_DIALOG);
               break;
             case BASIC:
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.BASIC_DIALOG);
+              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_DIALOG);
               break;
             case YES_NO:
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.YES_NO_DIALOG);
+              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.YES_NO_DIALOG);
               break;
             default:
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.BASIC_DIALOG);
+              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_DIALOG);
           }
         }));
     this.editDialogButton.active = this.hasPermissions(COMMON.basicDialogConfigurationEnabled.get(),
@@ -212,7 +212,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     this.editActionButton = this.addRenderableWidget(
         menuButton(this.editDialogButton.x + this.editDialogButton.getWidth() + buttonSpace,
             buttonTopPosition, "actions", onPress -> {
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.BASIC_ACTION);
+              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_ACTION);
             }));
     this.editActionButton.active = this.hasPermissions(COMMON.basicActionConfigurationEnabled.get(),
         COMMON.basicActionConfigurationAllowInCreative.get(),
@@ -227,7 +227,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     // Equipment Button
     this.editEquipmentButton = this.addRenderableWidget(
         menuButton(buttonLeftPosition, buttonTopPosition, "equipment", onPress -> {
-          NetworkMessage.openConfiguration(uuid, ConfigurationType.EQUIPMENT);
+          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.EQUIPMENT);
         }));
     this.editEquipmentButton.active =
         this.hasPermissions(COMMON.equipmentConfigurationEnabled.get(),
@@ -238,7 +238,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     this.editScalingButton = this.addRenderableWidget(
         menuButton(this.editEquipmentButton.x + this.editEquipmentButton.getWidth() + buttonSpace,
             buttonTopPosition, "scaling", onPress -> {
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.SCALING);
+              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.SCALING);
             }));
     this.editScalingButton.active = this.hasPermissions(COMMON.scalingConfigurationEnabled.get(),
         COMMON.scalingConfigurationAllowInCreative.get(),
@@ -258,16 +258,16 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                   || !entity.getModelRightArmPosition().isZero()
                   || !entity.getModelLeftLegPosition().isZero()
                   || !entity.getModelRightLegPosition().isZero()) {
-                NetworkMessage.openConfiguration(uuid, ConfigurationType.CUSTOM_POSE);
+                NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_POSE);
               } else {
-                NetworkMessage.openConfiguration(uuid, ConfigurationType.ADVANCED_POSE);
+                NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.ADVANCED_POSE);
               }
               break;
             case DEFAULT:
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.DEFAULT_POSE);
+              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_POSE);
               break;
             default:
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.DEFAULT_POSE);
+              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_POSE);
           }
         }));
     this.editPoseButton.active = this.hasPermissions(COMMON.defaultPoseConfigurationEnabled.get(),
@@ -281,7 +281,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     this.editPositionButton = this.addRenderableWidget(
         menuButton(this.editPoseButton.x + this.editPoseButton.getWidth() + buttonSpace,
             buttonTopPosition, "position", onPress -> {
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.DEFAULT_POSITION);
+              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_POSITION);
             }));
     this.editPositionButton.active =
         this.hasPermissions(COMMON.defaultPositionConfigurationEnabled.get(),
@@ -294,7 +294,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     // Rotation Button
     this.editRotationButton = this.addRenderableWidget(
         menuButton(buttonLeftPosition, buttonTopPosition, "rotation", onPress -> {
-          NetworkMessage.openConfiguration(uuid, ConfigurationType.DEFAULT_ROTATION);
+          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_ROTATION);
         }));
     this.editRotationButton.active =
         this.hasPermissions(COMMON.defaultRotationConfigurationEnabled.get(),

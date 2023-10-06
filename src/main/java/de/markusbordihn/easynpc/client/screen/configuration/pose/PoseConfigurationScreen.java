@@ -28,7 +28,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class PoseConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
@@ -50,19 +50,19 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
     int poseButtonWidth = 80;
     this.defaultPoseButton = this.addRenderableWidget(menuButton(this.buttonLeftPos,
         this.buttonTopPos, poseButtonWidth - 10, "default_pose", button -> {
-          NetworkMessage.openConfiguration(uuid, ConfigurationType.DEFAULT_POSE);
+          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_POSE);
         }));
 
     this.advancedPoseButton =
         this.addRenderableWidget(menuButton(this.buttonLeftPos + this.defaultPoseButton.getWidth(),
             this.buttonTopPos, poseButtonWidth + 20, "advanced_pose", button -> {
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.ADVANCED_POSE);
+              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.ADVANCED_POSE);
             }));
 
     this.customPoseButton =
         this.addRenderableWidget(menuButton(advancedPoseButton.x + advancedPoseButton.getWidth(),
             this.buttonTopPos, poseButtonWidth + 20, "custom_pose", button -> {
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.CUSTOM_POSE);
+              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_POSE);
             }));
 
     // Default button stats

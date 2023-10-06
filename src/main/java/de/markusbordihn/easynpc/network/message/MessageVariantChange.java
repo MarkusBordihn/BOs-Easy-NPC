@@ -22,26 +22,21 @@ package de.markusbordihn.easynpc.network.message;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraftforge.network.NetworkEvent;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
-public class MessageVariantChange {
+public class MessageVariantChange extends NetworkMessage {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  protected final UUID uuid;
   protected final String variant;
 
   public MessageVariantChange(UUID uuid, String variant) {
-    this.uuid = uuid;
+    super(uuid);
     this.variant = variant;
   }
 
@@ -49,8 +44,13 @@ public class MessageVariantChange {
     return this.variant;
   }
 
-  public UUID getUUID() {
-    return this.uuid;
+  public static MessageVariantChange decode(FriendlyByteBuf buffer) {
+    return new MessageVariantChange(buffer.readUUID(), buffer.readUtf());
+  }
+
+  public static void encode(MessageVariantChange message, FriendlyByteBuf buffer) {
+    buffer.writeUUID(message.uuid);
+    buffer.writeUtf(message.getVariant());
   }
 
   public static void handle(MessageVariantChange message,
@@ -63,7 +63,7 @@ public class MessageVariantChange {
   public static void handlePacket(MessageVariantChange message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
-    if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
+    if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
       return;
     }
 

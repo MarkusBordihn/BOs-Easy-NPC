@@ -29,7 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class PositionConfigurationScreen<T extends ConfigurationMenu>
@@ -50,7 +50,7 @@ public class PositionConfigurationScreen<T extends ConfigurationMenu>
     int positionButtonWidth = 80;
     this.defaultPositionButton = this.addRenderableWidget(menuButton(this.buttonLeftPos,
         this.buttonTopPos, positionButtonWidth, "default_position", button -> {
-          NetworkMessage.openConfiguration(uuid, ConfigurationType.DEFAULT_POSITION);
+          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_POSITION);
         }));
 
     // Default button stats

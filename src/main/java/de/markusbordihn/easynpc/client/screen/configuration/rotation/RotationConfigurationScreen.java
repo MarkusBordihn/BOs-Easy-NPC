@@ -29,7 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class RotationConfigurationScreen<T extends ConfigurationMenu>
@@ -50,7 +50,7 @@ public class RotationConfigurationScreen<T extends ConfigurationMenu>
     int rotationButtonWidth = 80;
     this.defaultRotationButton = this.addRenderableWidget(menuButton(this.buttonLeftPos,
         this.buttonTopPos, rotationButtonWidth, "default_rotation", button -> {
-          NetworkMessage.openConfiguration(uuid, ConfigurationType.DEFAULT_ROTATION);
+          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_ROTATION);
         }));
 
     // Default button stats

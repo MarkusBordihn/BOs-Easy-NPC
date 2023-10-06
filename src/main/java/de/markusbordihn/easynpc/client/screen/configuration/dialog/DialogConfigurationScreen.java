@@ -29,7 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class DialogConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
@@ -50,17 +50,17 @@ public class DialogConfigurationScreen<T extends ConfigurationMenu> extends Conf
     // Dialog Types
     this.noneDialogButton = this.addRenderableWidget(
         menuButton(this.buttonLeftPos, this.buttonTopPos, 70, "disable_dialog", onPress -> {
-          NetworkMessage.openConfiguration(uuid, ConfigurationType.NONE_DIALOG);
+          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_DIALOG);
         }));
     this.basicDialogButton =
         this.addRenderableWidget(menuButton(this.buttonLeftPos + this.noneDialogButton.getWidth(),
             this.buttonTopPos, 70, "basic_dialog", onPress -> {
-              NetworkMessage.openConfiguration(uuid, ConfigurationType.BASIC_DIALOG);
+              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_DIALOG);
             }));
     this.yesNoDialogButton = this.addRenderableWidget(menuButton(
         this.buttonLeftPos + this.noneDialogButton.getWidth() + this.basicDialogButton.getWidth(),
         this.buttonTopPos, 70, "yes_no_dialog", onPress -> {
-          NetworkMessage.openConfiguration(uuid, ConfigurationType.YES_NO_DIALOG);
+          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.YES_NO_DIALOG);
         }));
 
     // Default button stats
