@@ -24,48 +24,39 @@ import java.io.IOException;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.network.FriendlyByteBuf;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.CustomPresetData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
-public class MessagePresetExportClient {
+public class MessagePresetExportClient extends NetworkMessage {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  protected final UUID uuid;
   protected final String name;
-  protected final String skinModel;
+  protected final SkinModel skinModel;
   protected final String fileName;
   protected final CompoundTag data;
 
-  public MessagePresetExportClient(UUID uuid, String name, String skinModel, String fileName,
+  public MessagePresetExportClient(UUID uuid, String name, SkinModel skinModel, String fileName,
       CompoundTag data) {
-    this.uuid = uuid;
+    super(uuid);
     this.name = name;
     this.skinModel = skinModel;
     this.fileName = fileName;
     this.data = data;
   }
 
-  public UUID getUUID() {
-    return this.uuid;
-  }
-
   public String getName() {
     return this.name;
   }
 
-  public String getSkinModel() {
+  public SkinModel getSkinModel() {
     return this.skinModel;
   }
 
@@ -75,6 +66,19 @@ public class MessagePresetExportClient {
 
   public CompoundTag getData() {
     return this.data;
+  }
+
+  public static MessagePresetExportClient decode(final FriendlyByteBuf buffer) {
+    return new MessagePresetExportClient(buffer.readUUID(), buffer.readUtf(),
+        buffer.readEnum(SkinModel.class), buffer.readUtf(), buffer.readNbt());
+  }
+
+  public static void encode(final MessagePresetExportClient message, final FriendlyByteBuf buffer) {
+    buffer.writeUUID(message.uuid);
+    buffer.writeUtf(message.getName());
+    buffer.writeEnum(message.getSkinModel());
+    buffer.writeUtf(message.getFileName());
+    buffer.writeNbt(message.getData());
   }
 
   public static void handle(MessagePresetExportClient message,
@@ -100,9 +104,8 @@ public class MessagePresetExportClient {
     }
 
     // Validate skin model.
-    String skinModelName = message.getSkinModel();
-    SkinModel skinModel = SkinModel.get(skinModelName);
-    if (skinModelName == null || skinModelName.isEmpty() || skinModel == null) {
+    SkinModel skinModel = message.getSkinModel();
+    if (skinModel == null) {
       log.error("Invalid skin model {} for {}", skinModel, message);
       return;
     }

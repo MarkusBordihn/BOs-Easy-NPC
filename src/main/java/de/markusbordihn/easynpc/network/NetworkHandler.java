@@ -24,7 +24,6 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Pose;
 
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -33,13 +32,9 @@ import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.action.ActionData;
-import de.markusbordihn.easynpc.data.dialog.DialogType;
-import de.markusbordihn.easynpc.data.model.ModelPart;
-import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.entity.Profession;
 import de.markusbordihn.easynpc.network.message.MessageActionChange;
 import de.markusbordihn.easynpc.network.message.MessageDialogTypeChange;
+import de.markusbordihn.easynpc.network.message.MessageEntityAttributeChange;
 import de.markusbordihn.easynpc.network.message.MessageModelLockRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPoseChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPositionChange;
@@ -68,7 +63,7 @@ public class NetworkHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final String PROTOCOL_VERSION = "10";
+  private static final String PROTOCOL_VERSION = "11";
   public static final SimpleChannel INSTANCE =
       NetworkRegistry.newSimpleChannel(new ResourceLocation(Constants.MOD_ID, "network"),
           () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
@@ -83,193 +78,113 @@ public class NetworkHandler {
     event.enqueueWork(() -> {
 
       // Action Change: Client -> Server
-      INSTANCE.registerMessage(id++, MessageActionChange.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        ActionData.encode(message, buffer);
-      }, buffer -> new MessageActionChange(buffer.readUUID(), ActionData.decode(buffer)),
-          MessageActionChange::handle);
-
-      // Action Trigger: Client -> Server
-      INSTANCE.registerMessage(id++, MessageTriggerAction.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        buffer.writeUtf(message.getActionType());
-      }, buffer -> new MessageTriggerAction(buffer.readUUID(), buffer.readUtf()),
-          MessageTriggerAction::handle);
-
-      // Name Change: Client -> Server
-      INSTANCE.registerMessage(id++, MessageNameChange.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        buffer.writeUtf(message.getName());
-      }, buffer -> new MessageNameChange(buffer.readUUID(), buffer.readUtf()),
-          MessageNameChange::handle);
-
-      // Open Configuration Screen: Client -> Server
-      INSTANCE.registerMessage(id++, MessageOpenConfiguration.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        buffer.writeUtf(message.getDialogName());
-      }, buffer -> new MessageOpenConfiguration(buffer.readUUID(), buffer.readUtf()),
-          MessageOpenConfiguration::handle);
+      INSTANCE.registerMessage(id++, MessageActionChange.class, MessageActionChange::encode,
+          MessageActionChange::decode, MessageActionChange::handle);
 
       // Dialog Type: Client -> Server
-      INSTANCE.registerMessage(id++, MessageDialogTypeChange.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        buffer.writeEnum(message.getDialogType());
-      }, buffer -> new MessageDialogTypeChange(buffer.readUUID(),
-          buffer.readEnum(DialogType.class)), MessageDialogTypeChange::handle);
+      INSTANCE.registerMessage(id++, MessageDialogTypeChange.class, MessageDialogTypeChange::encode,
+          MessageDialogTypeChange::decode, MessageDialogTypeChange::handle);
 
-      // Save Basic Dialog: Client -> Server
-      INSTANCE.registerMessage(id++, MessageSaveBasicDialog.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        buffer.writeUtf(message.getDialog());
-      }, buffer -> new MessageSaveBasicDialog(buffer.readUUID(), buffer.readUtf()),
-          MessageSaveBasicDialog::handle);
-
-      // Save Yes/No Dialog: Client -> Server
-      INSTANCE.registerMessage(id++, MessageSaveYesNoDialog.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        buffer.writeUtf(message.getDialog());
-        buffer.writeUtf(message.getYesDialog());
-        buffer.writeUtf(message.getNoDialog());
-        buffer.writeUtf(message.getYesButtonText());
-        buffer.writeUtf(message.getNoButtonText());
-      }, buffer -> new MessageSaveYesNoDialog(buffer.readUUID(), buffer.readUtf(), buffer.readUtf(),
-          buffer.readUtf(), buffer.readUtf(), buffer.readUtf()), MessageSaveYesNoDialog::handle);
+      // Entity Attribute Change: Client -> Server
+      INSTANCE.registerMessage(id++, MessageEntityAttributeChange.class,
+          MessageEntityAttributeChange::encode, MessageEntityAttributeChange::decode,
+          MessageEntityAttributeChange::handle);
 
       // Model Local Rotation Change: Client -> Server
-      INSTANCE.registerMessage(id++, MessageModelLockRotationChange.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        buffer.writeBoolean(message.getLockRotation());
-      }, buffer -> new MessageModelLockRotationChange(buffer.readUUID(), buffer.readBoolean()),
+      INSTANCE.registerMessage(id++, MessageModelLockRotationChange.class,
+          MessageModelLockRotationChange::encode, MessageModelLockRotationChange::decode,
           MessageModelLockRotationChange::handle);
 
       // Model Pose Change: Client -> Server
-      INSTANCE.registerMessage(id++, MessageModelPoseChange.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        buffer.writeEnum(message.getModelPose());
-      }, buffer -> new MessageModelPoseChange(buffer.readUUID(), buffer.readEnum(ModelPose.class)),
-          MessageModelPoseChange::handle);
+      INSTANCE.registerMessage(id++, MessageModelPoseChange.class, MessageModelPoseChange::encode,
+          MessageModelPoseChange::decode, MessageModelPoseChange::handle);
 
       // Model Position Change: Client -> Server
-      INSTANCE.registerMessage(id++, MessageModelPositionChange.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        buffer.writeEnum(message.getModelPart());
-        buffer.writeFloat(message.getX());
-        buffer.writeFloat(message.getY());
-        buffer.writeFloat(message.getZ());
-      }, buffer -> new MessageModelPositionChange(buffer.readUUID(),
-          buffer.readEnum(ModelPart.class), buffer.readFloat(), buffer.readFloat(),
-          buffer.readFloat()), MessageModelPositionChange::handle);
+      INSTANCE.registerMessage(id++, MessageModelPositionChange.class,
+          MessageModelPositionChange::encode, MessageModelPositionChange::decode,
+          MessageModelPositionChange::handle);
 
       // Model Visibility Change: Client -> Server
-      INSTANCE.registerMessage(id++, MessageModelVisibilityChange.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        buffer.writeEnum(message.getModelPart());
-        buffer.writeBoolean(message.isVisible());
-      }, buffer -> new MessageModelVisibilityChange(buffer.readUUID(),
-          buffer.readEnum(ModelPart.class), buffer.readBoolean()),
+      INSTANCE.registerMessage(id++, MessageModelVisibilityChange.class,
+          MessageModelVisibilityChange::encode, MessageModelVisibilityChange::decode,
           MessageModelVisibilityChange::handle);
 
+      // Name Change: Client -> Server
+      INSTANCE.registerMessage(id++, MessageNameChange.class, MessageNameChange::encode,
+          MessageNameChange::decode, MessageNameChange::handle);
+
+      // Open Configuration Screen: Client -> Server
+      INSTANCE.registerMessage(id++, MessageOpenConfiguration.class,
+          MessageOpenConfiguration::encode, MessageOpenConfiguration::decode,
+          MessageOpenConfiguration::handle);
+
       // Pose Change: Client -> Server
-      INSTANCE.registerMessage(id++, MessagePoseChange.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        buffer.writeEnum(message.getPose());
-      }, buffer -> new MessagePoseChange(buffer.readUUID(), buffer.readEnum(Pose.class)),
-          MessagePoseChange::handle);
+      INSTANCE.registerMessage(id++, MessagePoseChange.class, MessagePoseChange::encode,
+          MessagePoseChange::decode, MessagePoseChange::handle);
 
       // Position Change: Client -> Server
-      INSTANCE.registerMessage(id++, MessagePositionChange.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        buffer.writeFloat(message.getX());
-        buffer.writeFloat(message.getY());
-        buffer.writeFloat(message.getZ());
-      }, buffer -> new MessagePositionChange(buffer.readUUID(), buffer.readFloat(),
-          buffer.readFloat(), buffer.readFloat()), MessagePositionChange::handle);
-
-      // Profession Change: Client -> Server
-      INSTANCE.registerMessage(id++, MessageProfessionChange.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        buffer.writeEnum(message.getProfession());
-      }, buffer -> new MessageProfessionChange(buffer.readUUID(),
-          buffer.readEnum(Profession.class)), MessageProfessionChange::handle);
-
-      // Rotation Change: Client -> Server
-      INSTANCE.registerMessage(id++, MessageRotationChange.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        buffer.writeEnum(message.getModelPart());
-        buffer.writeFloat(message.getX());
-        buffer.writeFloat(message.getY());
-        buffer.writeFloat(message.getZ());
-      }, buffer -> new MessageRotationChange(buffer.readUUID(), buffer.readEnum(ModelPart.class),
-          buffer.readFloat(), buffer.readFloat(), buffer.readFloat()),
-          MessageRotationChange::handle);
-
-      // Scale Change: Client -> Server
-      INSTANCE.registerMessage(id++, MessageScaleChange.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        buffer.writeUtf(message.getScaleAxis());
-        buffer.writeFloat(message.getScale());
-      }, buffer -> new MessageScaleChange(buffer.readUUID(), buffer.readUtf(), buffer.readFloat()),
-          MessageScaleChange::handle);
-
-      // Skin Change: Client -> Server
-      INSTANCE.registerMessage(id++, MessageSkinChange.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        buffer.writeUtf(message.getSkin());
-        buffer.writeUtf(message.getSkinURL());
-        buffer.writeUUID(message.getSkinUUID());
-        buffer.writeUtf(message.getSkinType());
-      }, buffer -> new MessageSkinChange(buffer.readUUID(), buffer.readUtf(), buffer.readUtf(),
-          buffer.readUUID(), buffer.readUtf()), MessageSkinChange::handle);
-
-      // Variant Change: Client -> Server
-      INSTANCE.registerMessage(id++, MessageVariantChange.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        buffer.writeUtf(message.getVariant());
-      }, buffer -> new MessageVariantChange(buffer.readUUID(), buffer.readUtf()),
-          MessageVariantChange::handle);
-
-      // Remove NPC: Client -> Server
-      INSTANCE.registerMessage(id++, MessageRemoveNPC.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-      }, buffer -> new MessageRemoveNPC(buffer.readUUID()), MessageRemoveNPC::handle);
+      INSTANCE.registerMessage(id++, MessagePositionChange.class, MessagePositionChange::encode,
+          MessagePositionChange::decode, MessagePositionChange::handle);
 
       // Export Preset: Client -> Server
-      INSTANCE.registerMessage(id++, MessagePresetExport.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        buffer.writeUtf(message.getName());
-      }, buffer -> new MessagePresetExport(buffer.readUUID(), buffer.readUtf()),
-          MessagePresetExport::handle);
+      INSTANCE.registerMessage(id++, MessagePresetExport.class, MessagePresetExport::encode,
+          MessagePresetExport::decode, MessagePresetExport::handle);
 
       // Export Preset: Server -> Client
-      INSTANCE.registerMessage(id++, MessagePresetExportClient.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        buffer.writeUtf(message.getName());
-        buffer.writeUtf(message.getSkinModel());
-        buffer.writeUtf(message.getFileName());
-        buffer.writeNbt(message.getData());
-      }, buffer -> new MessagePresetExportClient(buffer.readUUID(), buffer.readUtf(),
-          buffer.readUtf(), buffer.readUtf(), buffer.readNbt()), MessagePresetExportClient::handle);
+      INSTANCE.registerMessage(id++, MessagePresetExportClient.class,
+          MessagePresetExportClient::encode, MessagePresetExportClient::decode,
+          MessagePresetExportClient::handle);
 
       // Export Preset World: Client -> Server
-      INSTANCE.registerMessage(id++, MessagePresetExportWorld.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        buffer.writeUtf(message.getName());
-      }, buffer -> new MessagePresetExportWorld(buffer.readUUID(), buffer.readUtf()),
+      INSTANCE.registerMessage(id++, MessagePresetExportWorld.class,
+          MessagePresetExportWorld::encode, MessagePresetExportWorld::decode,
           MessagePresetExportWorld::handle);
 
       // Import Preset: Client -> Server
-      INSTANCE.registerMessage(id++, MessagePresetImport.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        buffer.writeNbt(message.getCompoundTag());
-      }, buffer -> new MessagePresetImport(buffer.readUUID(), buffer.readNbt()),
-          MessagePresetImport::handle);
+      INSTANCE.registerMessage(id++, MessagePresetImport.class, MessagePresetImport::encode,
+          MessagePresetImport::decode, MessagePresetImport::handle);
 
       // Import Preset World: Client -> Server
-      INSTANCE.registerMessage(id++, MessagePresetImportWorld.class, (message, buffer) -> {
-        buffer.writeUUID(message.getUUID());
-        buffer.writeResourceLocation(message.getResourceLocation());
-      }, buffer -> new MessagePresetImportWorld(buffer.readUUID(), buffer.readResourceLocation()),
+      INSTANCE.registerMessage(id++, MessagePresetImportWorld.class,
+          MessagePresetImportWorld::encode, MessagePresetImportWorld::decode,
           MessagePresetImportWorld::handle);
+
+      // Profession Change: Client -> Server
+      INSTANCE.registerMessage(id++, MessageProfessionChange.class, MessageProfessionChange::encode,
+          MessageProfessionChange::decode, MessageProfessionChange::handle);
+
+      // Remove NPC: Client -> Server
+      INSTANCE.registerMessage(id++, MessageRemoveNPC.class, MessageRemoveNPC::encode,
+          MessageRemoveNPC::decode, MessageRemoveNPC::handle);
+
+      // Rotation Change: Client -> Server
+      INSTANCE.registerMessage(id++, MessageRotationChange.class, MessageRotationChange::encode,
+          MessageRotationChange::decode, MessageRotationChange::handle);
+
+      // Save Basic Dialog: Client -> Server
+      INSTANCE.registerMessage(id++, MessageSaveBasicDialog.class, MessageSaveBasicDialog::encode,
+          MessageSaveBasicDialog::decode, MessageSaveBasicDialog::handle);
+
+      // Save Yes/No Dialog: Client -> Server
+      INSTANCE.registerMessage(id++, MessageSaveYesNoDialog.class, MessageSaveYesNoDialog::encode,
+          MessageSaveYesNoDialog::decode, MessageSaveYesNoDialog::handle);
+
+      // Scale Change: Client -> Server
+      INSTANCE.registerMessage(id++, MessageScaleChange.class, MessageScaleChange::encode,
+          MessageScaleChange::decode, MessageScaleChange::handle);
+
+      // Skin Change: Client -> Server
+      INSTANCE.registerMessage(id++, MessageSkinChange.class, MessageSkinChange::encode,
+          MessageSkinChange::decode, MessageSkinChange::handle);
+
+      // Action Trigger: Client -> Server
+      INSTANCE.registerMessage(id++, MessageTriggerAction.class, MessageTriggerAction::encode,
+          MessageTriggerAction::decode, MessageTriggerAction::handle);
+
+      // Variant Change: Client -> Server
+      INSTANCE.registerMessage(id++, MessageVariantChange.class, MessageVariantChange::encode,
+          MessageVariantChange::decode, MessageVariantChange::handle);
+
     });
   }
 

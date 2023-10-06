@@ -489,6 +489,7 @@ public interface EntityModelData extends EntityDataInterface {
         || compoundTag.contains(LEGACY_DATA_MODEL_LEFT_LEG_ROTATION_TAG)
         || compoundTag.contains(LEGACY_DATA_MODEL_RIGHT_LEG_ROTATION_TAG)
         || compoundTag.contains(LEGACY_DATA_MODEL_ROOT_ROTATION_TAG)) {
+      log.info("Converting legacy model data to new format for {}", this);
       if (compoundTag.contains(LEGACY_DATA_MODEL_POSE_TAG)) {
         String modelPose = compoundTag.getString(LEGACY_DATA_MODEL_POSE_TAG);
         if (modelPose != null && !modelPose.isEmpty()) {
@@ -529,10 +530,12 @@ public interface EntityModelData extends EntityDataInterface {
       return;
     }
 
-    // Model Data
+    // Early exit if no model data is available
     if (!compoundTag.contains(DATA_MODEL_DATA_TAG)) {
       return;
     }
+
+    // Read model data
     CompoundTag modelDataTag = compoundTag.getCompound(DATA_MODEL_DATA_TAG);
 
     // Model Pose

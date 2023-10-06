@@ -22,27 +22,22 @@ package de.markusbordihn.easynpc.network.message;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraftforge.network.NetworkEvent;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 
-public class MessagePresetImport {
+public class MessagePresetImport extends NetworkMessage {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  protected final UUID uuid;
   protected final CompoundTag compoundTag;
 
   public MessagePresetImport(UUID uuid, CompoundTag compoundTag) {
-    this.uuid = uuid;
+    super(uuid);
     this.compoundTag = compoundTag;
   }
 
@@ -50,8 +45,13 @@ public class MessagePresetImport {
     return this.compoundTag;
   }
 
-  public UUID getUUID() {
-    return this.uuid;
+  public static MessagePresetImport decode(final FriendlyByteBuf buffer) {
+    return new MessagePresetImport(buffer.readUUID(), buffer.readNbt());
+  }
+
+  public static void encode(final MessagePresetImport message, final FriendlyByteBuf buffer) {
+    buffer.writeUUID(message.uuid);
+    buffer.writeNbt(message.getCompoundTag());
   }
 
   public static void handle(MessagePresetImport message,
@@ -64,7 +64,7 @@ public class MessagePresetImport {
   public static void handlePacket(MessagePresetImport message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
-    if (serverPlayer == null || !MessageHelper.checkAccess(uuid, serverPlayer)) {
+    if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
       return;
     }
 

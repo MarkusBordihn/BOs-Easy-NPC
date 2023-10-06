@@ -70,6 +70,8 @@ public class EasyNPCTab {
   private static void addSpawnEggsTabItems(FeatureFlagSet featureFlagSet, Output outputTab,
       boolean hasPermissions) {
     outputTab.accept(ModItems.ALLAY_NPC_SPAWN_EGG.get());
+    outputTab.accept(ModItems.CAT_NPC_SPAWN_EGG.get());
+    outputTab.accept(ModItems.CHICKEN_NPC_SPAWN_EGG.get());
     outputTab.accept(ModItems.FAIRY_NPC_SPAWN_EGG.get());
     outputTab.accept(ModItems.HUMANOID_NPC_SPAWN_EGG.get());
     outputTab.accept(ModItems.HUMANOID_SLIM_NPC_SPAWN_EGG.get());

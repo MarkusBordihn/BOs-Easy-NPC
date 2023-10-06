@@ -1,5 +1,7 @@
 {
-  "entity.easy_npc.allay": "Allay NPC",
+  "entity.easy_npc.allay": "Allay",
+  "entity.easy_npc.cat": "Cat",
+  "entity.easy_npc.chicken": "Chicken",
   "entity.easy_npc.fairy": "Fairy",
   "entity.easy_npc.humanoid": "Humanoid",
   "entity.easy_npc.humanoid_slim": "Humanoid (slim)",
@@ -12,11 +14,14 @@
   "item.easy_npc.easy_npc_wand": "EasyNPC Wand",
 
   "item.easy_npc.allay_spawn_egg": "Allay NPC Spawn Egg",
+  "item.easy_npc.cat_spawn_egg": "Cat NPC Spawn Egg",
+  "item.easy_npc.chicken_spawn_egg": "Chicken NPC Spawn Egg",
   "item.easy_npc.fairy_spawn_egg": "Fairy NPC Spawn Egg",
   "item.easy_npc.humanoid_slim_spawn_egg": "Humanoid (slim) NPC Spawn Egg",
   "item.easy_npc.humanoid_spawn_egg": "Humanoid NPC Spawn Egg",
   "item.easy_npc.skeleton_spawn_egg": "Skeleton NPC-Spawn-Ei",
   "item.easy_npc.villager_spawn_egg": "Villager NPC Spawn Egg",
+  "item.easy_npc.zombie_spawn_egg": "Zombie NPC Spawn Egg",
   "item.easy_npc.zombie_villager_spawn_egg": "Zombie Villager NPC Spawn Egg",
 
   "text.easy_npc.config.actions": "Actions",
@@ -50,6 +55,7 @@
   "text.easy_npc.config.export": "▽ Export",
   "text.easy_npc.config.export_preset_text": "Upon clicking the Export button, the NPC settings are saved locally under %1$s as %2$s and can be loaded into other NPCs of the same type using the Import function.",
   "text.easy_npc.config.export_preset_world_text": "Upon clicking the Export button, the NPC settings are saved inside the world data and can be loaded into other NPCs of the same type using the Import function or as new NPC over the '/easy_npc preset import' command.",
+  "text.easy_npc.config.freefall": "Freefall",
   "text.easy_npc.config.import": "△ Import",
   "text.easy_npc.config.import_default_preset": "Import Default Preset",
   "text.easy_npc.config.import_custom_preset": "Import Custom Preset",

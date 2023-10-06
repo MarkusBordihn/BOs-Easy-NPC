@@ -39,7 +39,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.SliderButton;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.menu.configuration.rotation.DefaultRotationConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessage;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class DefaultRotationConfigurationScreen
@@ -86,7 +86,7 @@ public class DefaultRotationConfigurationScreen
         new SliderButton(this.contentLeftPos, this.contentTopPos, 60, 20, "rootRotationX",
             (float) Math.toDegrees(rootRotations.getX()), SliderButton.Type.DEGREE, slider -> {
               this.rootRotationX = (float) Math.toRadians(slider.getTargetValue());
-              NetworkMessage.rotationChange(uuid, ModelPart.ROOT,
+              NetworkMessageHandler.rotationChange(uuid, ModelPart.ROOT,
                   new Rotations(this.rootRotationX, this.rootRotationY, this.rootRotationZ));
             }));
     this.rootRotationXResetButton = this.addRenderableWidget(menuButton(
@@ -102,7 +102,7 @@ public class DefaultRotationConfigurationScreen
         this.contentTopPos, 60, 20, "rootRotationY", (float) Math.toDegrees(rootRotations.getY()),
         SliderButton.Type.DEGREE, slider -> {
           this.rootRotationY = (float) Math.toRadians(slider.getTargetValue());
-          NetworkMessage.rotationChange(uuid, ModelPart.ROOT,
+          NetworkMessageHandler.rotationChange(uuid, ModelPart.ROOT,
               new Rotations(this.rootRotationX, this.rootRotationY, this.rootRotationZ));
         }));
     this.rootRotationYResetButton = this.addRenderableWidget(menuButton(
@@ -118,7 +118,7 @@ public class DefaultRotationConfigurationScreen
         this.contentTopPos, 60, 20, "rootRotationZ", (float) Math.toDegrees(rootRotations.getZ()),
         SliderButton.Type.DEGREE, slider -> {
           this.rootRotationZ = (float) Math.toRadians(slider.getTargetValue());
-          NetworkMessage.rotationChange(uuid, ModelPart.ROOT,
+          NetworkMessageHandler.rotationChange(uuid, ModelPart.ROOT,
               new Rotations(this.rootRotationX, this.rootRotationY, this.rootRotationZ));
         }));
     this.rootRotationZResetButton = this.addRenderableWidget(menuButton(
@@ -138,7 +138,7 @@ public class DefaultRotationConfigurationScreen
       @Override
       public void onPress() {
         super.onPress();
-        NetworkMessage.modelLockRotationChange(uuid, this.selected());
+        NetworkMessageHandler.modelLockRotationChange(uuid, this.selected());
       }
     });
   }
