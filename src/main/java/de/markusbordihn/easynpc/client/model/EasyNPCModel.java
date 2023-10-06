@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 public interface EasyNPCModel {
 
   // General model positions
+  public static final CustomPosition MODEL_ROOT_POSITION = new CustomPosition(0, 0, 0);
   public static final CustomPosition MODEL_HEAD_POSITION = new CustomPosition(0, 0, 0);
   public static final CustomPosition MODEL_BODY_POSITION = new CustomPosition(0, 0, 0);
   public static final CustomPosition MODEL_ARMS_POSITION = new CustomPosition(0, 0, 0);
@@ -65,6 +66,15 @@ public interface EasyNPCModel {
   // Bird model rotations
   public static final Rotations MODEL_LEFT_WING_ROTATION = new Rotations(0, 0, 0);
   public static final Rotations MODEL_RIGHT_WING_ROTATION = new Rotations(0, 0, 0);
+
+  // Allay Model specific positions
+  public static final Rotations ALLAY_MODEL_LEFT_ARM_ROTATION = new Rotations(0, -0.27925268F, 0);
+  public static final Rotations ALLAY_MODEL_RIGHT_ARM_ROTATION = new Rotations(0, 0.27925268F, 0);
+  public static final CustomPosition ALLAY_MODEL_ROOT_POSITION = new CustomPosition(0, 15f, 0);
+  public static final CustomPosition ALLAY_MODEL_LEFT_ARM_POSITION =
+      new CustomPosition(2.0F, 0.0F, 0.0F);
+  public static final CustomPosition ALLAY_MODEL_RIGHT_ARM_POSITION =
+      new CustomPosition(-2.0F, 0.0F, 0.0F);
 
   // Humanoid Model specific positions
   public static final CustomPosition HUMANOID_MODEL_LEFT_ARM_POSITION =
@@ -137,6 +147,10 @@ public interface EasyNPCModel {
 
   default CustomPosition getDefaultModelRightWingPosition() {
     return MODEL_RIGHT_WING_POSITION;
+  }
+
+  default CustomPosition getDefaultModelRootPosition() {
+    return MODEL_ROOT_POSITION;
   }
 
   default boolean getDefaultModelLockRotation() {
@@ -219,7 +233,7 @@ public interface EasyNPCModel {
         entity.getModelRightLegRotation(), entity.isModelRightLegVisible());
   }
 
-  default void setupBirdModel(EasyNPCEntity entity, ModelPart headPart, ModelPart bodyPart,
+  default void setupCustomBirdModel(EasyNPCEntity entity, ModelPart headPart, ModelPart bodyPart,
       ModelPart leftWing, ModelPart rightWing, ModelPart leftLeg, ModelPart rightLeg,
       float netHeadYaw, float headPitch) {
     CustomModelHelper.setHeadPositionRotationVisibility(headPart, entity.getModelHeadPosition(),
@@ -234,6 +248,18 @@ public interface EasyNPCModel {
         entity.getModelLeftLegRotation(), entity.isModelLeftLegVisible());
     CustomModelHelper.setPositionRotationVisibility(rightLeg, entity.getModelRightLegPosition(),
         entity.getModelRightLegRotation(), entity.isModelRightLegVisible());
+  }
+
+  default void setupCustomArmModel(EasyNPCEntity entity, ModelPart headPart, ModelPart bodyPart,
+      ModelPart leftArmPart, ModelPart rightArmPart, float netHeadYaw, float headPitch) {
+    CustomModelHelper.setHeadPositionRotationVisibility(headPart, entity.getModelHeadPosition(),
+        entity.getModelHeadRotation(), entity.isModelHeadVisible(), netHeadYaw, headPitch);
+    CustomModelHelper.setPositionRotationVisibility(bodyPart, entity.getModelBodyPosition(),
+        entity.getModelBodyRotation(), entity.isModelBodyVisible());
+    CustomModelHelper.setPositionRotationVisibility(leftArmPart, entity.getModelLeftArmPosition(),
+        entity.getModelLeftArmRotation(), entity.isModelLeftArmVisible());
+    CustomModelHelper.setPositionRotationVisibility(rightArmPart, entity.getModelRightArmPosition(),
+        entity.getModelRightArmRotation(), entity.isModelRightArmVisible());
   }
 
   default void setupCustomHumanoidModel(EasyNPCEntity entity, ModelPart headPart,
@@ -281,6 +307,28 @@ public interface EasyNPCModel {
     rightFrontLeg.visible = true;
     leftHindLeg.visible = true;
     rightHindLeg.visible = true;
+  }
+
+  default void resetArmModel(ModelPart headPart, ModelPart bodyPart, ModelPart leftArm,
+      ModelPart rightArm) {
+
+    // Reset all rotations.
+    setModelPartRotation(headPart, this.getDefaultModelHeadRotation());
+    setModelPartRotation(bodyPart, this.getDefaultModelBodyRotation());
+    setModelPartRotation(leftArm, this.getDefaultModelLeftArmRotation());
+    setModelPartRotation(rightArm, this.getDefaultModelRightArmRotation());
+
+    // Reset all positions.
+    setModelPartPosition(bodyPart, this.getDefaultModelBodyPosition());
+    setModelPartPosition(headPart, this.getDefaultModelHeadPosition());
+    setModelPartPosition(leftArm, this.getDefaultModelLeftArmPosition());
+    setModelPartPosition(rightArm, this.getDefaultModelRightArmPosition());
+
+    // Reset all visibility.
+    headPart.visible = true;
+    bodyPart.visible = true;
+    leftArm.visible = true;
+    rightArm.visible = true;
   }
 
   default void resetBirdModel(ModelPart headPart, ModelPart bodyPart, ModelPart leftWingPart,

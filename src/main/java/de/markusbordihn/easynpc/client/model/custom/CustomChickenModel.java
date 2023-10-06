@@ -117,7 +117,7 @@ public class CustomChickenModel<T extends Entity> extends ChickenModel<T> implem
 
       // Individual Part Modifications
       if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
-        setupBirdModel(easyNPCEntity, head, body, leftWing, rightWing, leftLeg, rightLeg,
+        setupCustomBirdModel(easyNPCEntity, head, body, leftWing, rightWing, leftLeg, rightLeg,
             netHeadYaw, headPitch);
       } else if (easyNPCEntity.getPose() != Pose.CROUCHING) {
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
