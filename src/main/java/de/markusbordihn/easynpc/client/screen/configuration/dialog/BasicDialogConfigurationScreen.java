@@ -19,15 +19,17 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.dialog;
 
+import java.util.Collections;
+import java.util.List;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
-import java.util.Collections;
-import java.util.List;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -62,7 +64,7 @@ public class BasicDialogConfigurationScreen
     this.basicDialogButton.active = false;
 
     // Dialog
-    this.dialogBox = new EditBox(this.font, this.contentLeftPos, this.topPos + 60, 281, 20,
+    this.dialogBox = new EditBox(this.font, this.contentLeftPos, this.topPos + 60, 300, 20,
         new TranslatableComponent("Dialog"));
     this.dialogBox.setMaxLength(255);
     this.dialogBox.setValue(this.entity.getSimpleDialog());

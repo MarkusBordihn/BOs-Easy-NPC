@@ -27,10 +27,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraftforge.network.NetworkEvent;
-
+import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
-import de.markusbordihn.easynpc.entity.data.EntityAttributeData.EntityAttribute;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 
 public class MessageEntityAttributeChange extends NetworkMessage {
@@ -67,7 +66,7 @@ public class MessageEntityAttributeChange extends NetworkMessage {
     this(uuid, entityAttribute, null, 0f, 0, value);
   }
 
-  public EntityAttribute getEntityAttribute() {
+  public EntityAttribute getAttributeType() {
     return this.entityAttribute;
   }
 
@@ -96,7 +95,7 @@ public class MessageEntityAttributeChange extends NetworkMessage {
   public static void encode(final MessageEntityAttributeChange message,
       final FriendlyByteBuf buffer) {
     buffer.writeUUID(message.uuid);
-    buffer.writeEnum(message.getEntityAttribute());
+    buffer.writeEnum(message.getAttributeType());
     buffer.writeBoolean(message.getBooleanValue());
     buffer.writeFloat(message.getFloatValue());
     buffer.writeInt(message.getIntegerValue());
@@ -119,7 +118,7 @@ public class MessageEntityAttributeChange extends NetworkMessage {
     }
 
     // Validate name.
-    EntityAttribute entityAttribute = message.getEntityAttribute();
+    EntityAttribute entityAttribute = message.getAttributeType();
     if (entityAttribute == null) {
       log.error("Invalid entity attribute {} for {} from {}", entityAttribute, message,
           serverPlayer);

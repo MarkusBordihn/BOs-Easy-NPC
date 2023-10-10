@@ -19,9 +19,6 @@
 
 package de.markusbordihn.easynpc.entity.npc;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -29,13 +26,10 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.level.Level;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 
 public class Fairy extends EasyNPCEntity {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   // Constants values
   private static final float DEFAULT_SCALE_X = 0.4f;
@@ -113,7 +107,7 @@ public class Fairy extends EasyNPCEntity {
 
   @Override
   public int getEntityGuiScaling() {
-    return 70;
+    return 65;
   }
 
   @Override
@@ -123,7 +117,7 @@ public class Fairy extends EasyNPCEntity {
 
   @Override
   public int getEntityDialogTop() {
-    return -37;
+    return -38;
   }
 
   @Override

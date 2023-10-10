@@ -57,6 +57,18 @@ public class CustomPosition {
     return this.z;
   }
 
+  public float getX() {
+    return this.x;
+  }
+
+  public float getY() {
+    return this.y;
+  }
+
+  public float getZ() {
+    return this.z;
+  }
+
   public boolean isZero() {
     return this.x == 0 && this.y == 0 && this.z == 0;
   }

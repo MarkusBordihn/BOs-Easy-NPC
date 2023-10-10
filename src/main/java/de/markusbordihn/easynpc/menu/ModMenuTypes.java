@@ -49,6 +49,10 @@ import de.markusbordihn.easynpc.menu.configuration.scaling.ScalingConfigurationM
 import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.PlayerSkinConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.trading.AdvancedTradingConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.trading.BasicTradingConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.trading.CustomTradingConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.trading.NoneTradingConfigurationMenu;
 
 public class ModMenuTypes {
 
@@ -148,4 +152,18 @@ public class ModMenuTypes {
   public static final RegistryObject<MenuType<ScalingConfigurationMenu>> SCALING_CONFIGURATION_MENU =
       MENU_TYPES.register("scaling_configuration_menu",
           () -> IForgeMenuType.create(ScalingConfigurationMenu::new));
+
+  // Trading Configuration
+  public static final RegistryObject<MenuType<NoneTradingConfigurationMenu>> NONE_TRADING_CONFIGURATION_MENU =
+      MENU_TYPES.register("none_trading_configuration_menu",
+          () -> IForgeMenuType.create(NoneTradingConfigurationMenu::new));
+  public static final RegistryObject<MenuType<BasicTradingConfigurationMenu>> BASIC_TRADING_CONFIGURATION_MENU =
+      MENU_TYPES.register("basic_trading_configuration_menu",
+          () -> IForgeMenuType.create(BasicTradingConfigurationMenu::new));
+  public static final RegistryObject<MenuType<AdvancedTradingConfigurationMenu>> ADVANCED_TRADING_CONFIGURATION_MENU =
+      MENU_TYPES.register("advanced_trading_configuration_menu",
+          () -> IForgeMenuType.create(AdvancedTradingConfigurationMenu::new));
+  public static final RegistryObject<MenuType<CustomTradingConfigurationMenu>> CUSTOM_TRADING_CONFIGURATION_MENU =
+      MENU_TYPES.register("custom_trading_configuration_menu",
+          () -> IForgeMenuType.create(CustomTradingConfigurationMenu::new));
 }

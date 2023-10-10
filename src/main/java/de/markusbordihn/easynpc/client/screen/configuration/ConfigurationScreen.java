@@ -154,8 +154,8 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     super.init();
 
     // Default stats
-    this.imageHeight = 242;
-    this.imageWidth = 300;
+    this.imageHeight = 243;
+    this.imageWidth = 318; // @MarkusBordihn: Increase width to 310/320 for more space
 
     // Core Positions
     this.titleLabelX = 8;
@@ -170,7 +170,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     this.contentTopPos = this.topPos + 43;
 
     // Close Button
-    this.closeButton = this.addRenderableWidget(new ImageButton(this.rightPos - 22, this.topPos + 6,
+    this.closeButton = this.addRenderableWidget(new ImageButton(this.rightPos - 15, this.topPos + 6,
         10, 10, 60, 38, Constants.TEXTURE_CONFIGURATION, onPress -> {
           closeScreen();
         }));
@@ -205,13 +205,13 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     this.blit(poseStack, leftPos, topPos, 0, 0, 250, 170);
 
     // Main screen: top right
-    this.blit(poseStack, leftPos + 243, topPos, 195, 0, 57, 170);
+    this.blit(poseStack, leftPos + 243, topPos, 172, 0, 80, 170);
 
     // Main screen: bottom left
     this.blit(poseStack, leftPos, topPos + 77, 0, 5, 250, 170);
 
     // Main screen: bottom right
-    this.blit(poseStack, leftPos + 243, topPos + 77, 195, 5, 57, 170);
+    this.blit(poseStack, leftPos + 243, topPos + 77, 172, 5, 80, 170);
   }
 
   @Override

@@ -135,15 +135,16 @@ public class DialogActionConfigurationScreen
             "debug", openDialogActionData != null && openDialogActionData.isDebugEnabled(),
             checkbox -> this.validateOpenDialogAction()));
     this.onOpenDialogActionSaveButton = this.addRenderableWidget(
-        new SaveButton(this.leftPos + 267, openDialogActionTop - 2, onPress -> {
-          ActionData actionData =
-              new ActionData(ActionType.ON_OPEN_DIALOG, this.onOpenDialogActionBox.getValue(),
-                  this.onOpenDialogActionExecuteAsUserCheckbox.selected(),
-                  this.onOpenDialogActionDebugCheckbox.selected());
-          NetworkMessageHandler.actionChange(uuid, actionData);
-          this.lastOpenDialogActionData = actionData;
-          this.onOpenDialogActionSaveButton.active = false;
-        }));
+        new SaveButton(this.onOpenDialogActionBox.x + this.onOpenDialogActionBox.getWidth() + 5,
+            openDialogActionTop - 2, onPress -> {
+              ActionData actionData =
+                  new ActionData(ActionType.ON_OPEN_DIALOG, this.onOpenDialogActionBox.getValue(),
+                      this.onOpenDialogActionExecuteAsUserCheckbox.selected(),
+                      this.onOpenDialogActionDebugCheckbox.selected());
+              NetworkMessageHandler.actionChange(uuid, actionData);
+              this.lastOpenDialogActionData = actionData;
+              this.onOpenDialogActionSaveButton.active = false;
+            }));
     this.onOpenDialogActionSaveButton.active = false;
 
     // On Close Dialog Action
@@ -162,15 +163,16 @@ public class DialogActionConfigurationScreen
             "debug", closeDialogActionData != null && closeDialogActionData.isDebugEnabled(),
             checkbox -> this.validateCloseDialogAction()));
     this.onCloseDialogActionSaveButton = this.addRenderableWidget(
-        new SaveButton(this.leftPos + 267, closeDialogActionTop - 2, onPress -> {
-          ActionData actionData =
-              new ActionData(ActionType.ON_CLOSE_DIALOG, this.onCloseDialogActionBox.getValue(),
-                  this.onCloseDialogActionExecuteAsUserCheckbox.selected(),
-                  this.onCloseDialogActionDebugCheckbox.selected());
-          NetworkMessageHandler.actionChange(uuid, actionData);
-          this.lastCloseDialogActionData = actionData;
-          this.onCloseDialogActionSaveButton.active = false;
-        }));
+        new SaveButton(this.onCloseDialogActionBox.x + this.onCloseDialogActionBox.getWidth() + 5,
+            closeDialogActionTop - 2, onPress -> {
+              ActionData actionData =
+                  new ActionData(ActionType.ON_CLOSE_DIALOG, this.onCloseDialogActionBox.getValue(),
+                      this.onCloseDialogActionExecuteAsUserCheckbox.selected(),
+                      this.onCloseDialogActionDebugCheckbox.selected());
+              NetworkMessageHandler.actionChange(uuid, actionData);
+              this.lastCloseDialogActionData = actionData;
+              this.onCloseDialogActionSaveButton.active = false;
+            }));
     this.onCloseDialogActionSaveButton.active = false;
 
     // On Yes Selection Action
@@ -189,15 +191,16 @@ public class DialogActionConfigurationScreen
             "debug", yesSelectionActionData != null && yesSelectionActionData.isDebugEnabled(),
             checkbox -> this.validateYesSelectionAction()));
     this.onYesSelectionActionSaveButton = this.addRenderableWidget(
-        new SaveButton(this.leftPos + 267, yesSelectionActionTop - 2, onPress -> {
-          ActionData actionData =
-              new ActionData(ActionType.ON_YES_SELECTION, this.onYesSelectionActionBox.getValue(),
+        new SaveButton(this.onYesSelectionActionBox.x + this.onYesSelectionActionBox.getWidth() + 5,
+            yesSelectionActionTop - 2, onPress -> {
+              ActionData actionData = new ActionData(ActionType.ON_YES_SELECTION,
+                  this.onYesSelectionActionBox.getValue(),
                   this.onYesSelectionActionExecuteAsUserCheckbox.selected(),
                   this.onYesSelectionActionDebugCheckbox.selected());
-          NetworkMessageHandler.actionChange(uuid, actionData);
-          this.lastYesSelectionActionData = actionData;
-          this.onYesSelectionActionSaveButton.active = false;
-        }));
+              NetworkMessageHandler.actionChange(uuid, actionData);
+              this.lastYesSelectionActionData = actionData;
+              this.onYesSelectionActionSaveButton.active = false;
+            }));
     this.onYesSelectionActionSaveButton.active = false;
 
     // On No Selection Action
@@ -216,15 +219,16 @@ public class DialogActionConfigurationScreen
             "debug", noSelectionActionData != null && noSelectionActionData.isDebugEnabled(),
             checkbox -> this.validateNoSelectionAction()));
     this.onNoSelectionActionSaveButton = this.addRenderableWidget(
-        new SaveButton(this.leftPos + 267, noSelectionActionTop - 2, onPress -> {
-          ActionData actionData =
-              new ActionData(ActionType.ON_NO_SELECTION, this.onNoSelectionActionBox.getValue(),
-                  this.onNoSelectionActionExecuteAsUserCheckbox.selected(),
-                  this.onNoSelectionActionDebugCheckbox.selected());
-          NetworkMessageHandler.actionChange(uuid, actionData);
-          this.lastNoSelectionActionData = actionData;
-          this.onNoSelectionActionSaveButton.active = false;
-        }));
+        new SaveButton(this.onNoSelectionActionBox.x + this.onNoSelectionActionBox.getWidth() + 5,
+            noSelectionActionTop - 2, onPress -> {
+              ActionData actionData =
+                  new ActionData(ActionType.ON_NO_SELECTION, this.onNoSelectionActionBox.getValue(),
+                      this.onNoSelectionActionExecuteAsUserCheckbox.selected(),
+                      this.onNoSelectionActionDebugCheckbox.selected());
+              NetworkMessageHandler.actionChange(uuid, actionData);
+              this.lastNoSelectionActionData = actionData;
+              this.onNoSelectionActionSaveButton.active = false;
+            }));
     this.onNoSelectionActionSaveButton.active = false;
   }
 

@@ -74,7 +74,7 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
     int scalePositionLeft = this.contentLeftPos + 160;
     int scalePositionTop = this.contentTopPos + 20;
     int scalePositionSpace = 60;
-    int scaleWidth = 110;
+    int scaleWidth = 140;
 
     // Scale Slider for X
     this.scaleXSliderButton =

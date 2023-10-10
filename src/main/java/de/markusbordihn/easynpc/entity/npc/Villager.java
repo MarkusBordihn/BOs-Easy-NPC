@@ -19,9 +19,6 @@
 
 package de.markusbordihn.easynpc.entity.npc;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.EntityType;
@@ -30,14 +27,11 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.utils.TextUtils;
 
 public class Villager extends EasyNPCEntity {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   // General Information
   public static final String ID = "villager";

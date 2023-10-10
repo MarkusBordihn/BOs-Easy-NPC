@@ -141,8 +141,8 @@ public class DefaultSkinConfigurationScreen
     }
 
     // Render skin entity with variant and profession.
-    ScreenHelper.renderEntityDefaultSkin(x, y, x - this.xMouse, y - 40 - this.yMouse, this.entity,
-        variant, profession);
+    ScreenHelper.renderEntityDefaultSkin(x + 4, y, x - this.xMouse, y - 40 - this.yMouse,
+        this.entity, variant, profession);
 
     skinButtons.add(skinButton);
   }

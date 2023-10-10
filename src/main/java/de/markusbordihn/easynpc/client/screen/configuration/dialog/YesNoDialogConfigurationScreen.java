@@ -60,34 +60,35 @@ public class YesNoDialogConfigurationScreen
     this.yesNoDialogButton.active = false;
 
     // Dialog
-    this.mainDialogBox = new EditBox(this.font, this.contentLeftPos, this.topPos + 60, 281, 20,
+    this.mainDialogBox = new EditBox(this.font, this.contentLeftPos, this.topPos + 60, 300, 20,
         new TextComponent("Main Dialog Text"));
     this.mainDialogBox.setMaxLength(255);
     this.mainDialogBox.setValue(this.entity.getSimpleDialog());
     this.addRenderableWidget(this.mainDialogBox);
 
     // Dialog Buttons
-    this.yesDialogButtonBox = new EditBox(this.font, this.contentLeftPos, this.topPos + 85, 130, 20,
+    this.yesDialogButtonBox = new EditBox(this.font, this.contentLeftPos, this.topPos + 85, 145, 20,
         new TextComponent("Yes Dialog Button"));
     this.yesDialogButtonBox.setMaxLength(32);
     this.yesDialogButtonBox.setValue(this.entity.getYesDialogButton());
     this.addRenderableWidget(this.yesDialogButtonBox);
 
-    this.noDialogButtonBox = new EditBox(this.font, this.leftPos + 158, this.topPos + 85, 130, 20,
-        new TextComponent("No Dialog Button"));
+    this.noDialogButtonBox =
+        new EditBox(this.font, this.yesDialogButtonBox.x + this.yesDialogButtonBox.getWidth() + 10,
+            this.topPos + 85, 145, 20, new TextComponent("No Dialog Button"));
     this.noDialogButtonBox.setMaxLength(32);
     this.noDialogButtonBox.setValue(this.entity.getNoDialogButton());
     this.addRenderableWidget(this.noDialogButtonBox);
 
     // Yes Dialog
-    this.yesDialogBox = new EditBox(this.font, this.contentLeftPos, this.topPos + 130, 281, 20,
+    this.yesDialogBox = new EditBox(this.font, this.contentLeftPos, this.topPos + 130, 300, 20,
         new TextComponent("Yes Path - Dialog Text"));
     this.yesDialogBox.setMaxLength(255);
     this.yesDialogBox.setValue(this.entity.getYesDialog());
     this.addRenderableWidget(this.yesDialogBox);
 
     // No Dialog
-    this.noDialogBox = new EditBox(this.font, this.contentLeftPos, this.topPos + 170, 281, 20,
+    this.noDialogBox = new EditBox(this.font, this.contentLeftPos, this.topPos + 170, 300, 20,
         new TextComponent("No Path - Dialog Text"));
     this.noDialogBox.setMaxLength(255);
     this.noDialogBox.setValue(this.entity.getNoDialog());
