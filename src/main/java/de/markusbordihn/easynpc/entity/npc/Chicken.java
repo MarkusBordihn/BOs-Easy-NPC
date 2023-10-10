@@ -19,9 +19,6 @@
 
 package de.markusbordihn.easynpc.entity.npc;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -30,13 +27,10 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 
 public class Chicken extends EasyNPCEntity {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   // General Information
   public static final String ID = "chicken";
@@ -86,8 +80,7 @@ public class Chicken extends EasyNPCEntity {
   public void aiFlappingStep() {
     this.oFlap = this.flap;
     this.oFlapSpeed = this.flapSpeed;
-    this.flapSpeed =
-        (float) (this.flapSpeed + (this.isOnGround() ? -1 : 4) * 0.3D);
+    this.flapSpeed = (float) (this.flapSpeed + (this.isOnGround() ? -1 : 4) * 0.3D);
     this.flapSpeed = Mth.clamp(this.flapSpeed, 0.0F, 1.0F);
     if (!this.isOnGround() && this.flapping < 1.0F) {
       this.flapping = 1.0F;
@@ -126,6 +119,26 @@ public class Chicken extends EasyNPCEntity {
   @Override
   public Enum<?> getVariant(String name) {
     return Variant.valueOf(name);
+  }
+
+  @Override
+  public int getEntityGuiScaling() {
+    return 60;
+  }
+
+  @Override
+  public int getEntityGuiTop() {
+    return -5;
+  }
+
+  @Override
+  public int getEntityDialogTop() {
+    return -37;
+  }
+
+  @Override
+  public int getEntityDialogScaling() {
+    return 70;
   }
 
 }

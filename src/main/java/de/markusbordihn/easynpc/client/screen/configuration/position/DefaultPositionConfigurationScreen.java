@@ -37,7 +37,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.data.EntityAttributeData.EntityAttribute;
+import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
 import de.markusbordihn.easynpc.menu.configuration.position.DefaultPositionConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
@@ -122,8 +122,8 @@ public class DefaultPositionConfigurationScreen
           this.positionX -= POSITION_STEPS;
           this.positionXBox.setValue(String.valueOf(this.positionX));
         }));
-    this.positionXPlusButton =
-        this.addRenderableWidget(menuButton(this.positionXBox.x + this.positionXBox.getWidth() + 1,
+    this.positionXPlusButton = this
+        .addRenderableWidget(menuButton(this.positionXBox.x + this.positionXBox.getWidth() + 1,
             this.positionXBox.y, 15, Component.literal("+"), button -> {
               this.positionX += POSITION_STEPS;
               this.positionXBox.setValue(String.valueOf(this.positionX));
@@ -147,8 +147,8 @@ public class DefaultPositionConfigurationScreen
           this.positionY -= POSITION_STEPS;
           this.positionYBox.setValue(String.valueOf(this.positionY));
         }));
-    this.positionYPlusButton =
-        this.addRenderableWidget(menuButton(this.positionYBox.x + this.positionYBox.getWidth() + 1,
+    this.positionYPlusButton = this
+        .addRenderableWidget(menuButton(this.positionYBox.x + this.positionYBox.getWidth() + 1,
             this.positionYBox.y, 15, Component.literal("+"), button -> {
               this.positionY += POSITION_STEPS;
               this.positionYBox.setValue(String.valueOf(this.positionY));
@@ -172,15 +172,15 @@ public class DefaultPositionConfigurationScreen
           this.positionZ -= POSITION_STEPS;
           this.positionZBox.setValue(String.valueOf(this.positionZ));
         }));
-    this.positionZPlusButton =
-        this.addRenderableWidget(menuButton(this.positionZBox.x + this.positionZBox.getWidth() + 1,
+    this.positionZPlusButton = this
+        .addRenderableWidget(menuButton(this.positionZBox.x + this.positionZBox.getWidth() + 1,
             this.positionZBox.y, 15, Component.literal("+"), button -> {
               this.positionZ += POSITION_STEPS;
               this.positionZBox.setValue(String.valueOf(this.positionZ));
             }));
 
     // Freefall Checkbox
-    this.positionFreefallCheckbox = this.addRenderableWidget(new Checkbox(this.contentLeftPos + 180,
+    this.positionFreefallCheckbox = this.addRenderableWidget(new Checkbox(this.contentLeftPos + 190,
         this.topPos + 16, 150, 20, Component.translatable(Constants.TEXT_CONFIG_PREFIX + "freefall")
             .withStyle(ChatFormatting.WHITE),
         this.entity.getAttributeFreefall()) {

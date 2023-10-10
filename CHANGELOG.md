@@ -5,6 +5,12 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### 2023.10.10
+
+- Refactored UI and configuration system for easier support for upcoming features.
+- Added basic (over UI) and custom (over NBT) trading configuration for NPCs.
+- Fixed issue with custom model rendering.
+
 ### 2023.10.06
 
 - Refactored model and render system for better performance and easier support for custom models.

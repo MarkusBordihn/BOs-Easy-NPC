@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.entity.data;
 
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -28,11 +27,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
 
 public interface EntityAttributeData extends EntityDataInterface {
-
-  // Skin Details
-  public enum EntityAttribute {
-    FREEFALL
-  }
 
   // Synced entity data
   public static final EntityDataAccessor<Boolean> DATA_ATTRIBUTE_FREEFALL =

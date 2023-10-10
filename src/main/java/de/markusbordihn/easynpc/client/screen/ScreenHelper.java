@@ -218,7 +218,8 @@ public class ScreenHelper {
     entity.setPreview(true);
 
     // Render Entity
-    renderScaledEntityAvatar(x, y, entity.getEntityGuiScaling(), yRot, xRot, entity);
+    renderScaledEntityAvatar(x + entity.getEntityGuiLeft(), y + entity.getEntityGuiTop(),
+        entity.getEntityGuiScaling(), yRot, xRot, entity);
 
     // Restore entity information
     entity.setSkinType(entitySkinType);
@@ -240,7 +241,8 @@ public class ScreenHelper {
     entity.setProfession(profession);
 
     // Render Entity
-    renderScaledEntityAvatar(x, y, entity.getEntityGuiScaling(), yRot, xRot, entity);
+    renderScaledEntityAvatar(x + entity.getEntityGuiLeft(), y + entity.getEntityGuiTop(),
+        entity.getEntityGuiScaling(), yRot, xRot, entity);
 
     // Restore entity information
     entity.setSkinType(entitySkinType);

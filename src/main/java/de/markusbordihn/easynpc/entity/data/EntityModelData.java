@@ -26,6 +26,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 
 import de.markusbordihn.easynpc.data.CustomPosition;
+import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
 
@@ -134,10 +135,75 @@ public interface EntityModelData extends EntityDataInterface {
   public static final String LEGACY_DATA_MODEL_RIGHT_LEG_ROTATION_TAG = "ModelRightLegRotation";
   public static final String LEGACY_DATA_MODEL_ROOT_ROTATION_TAG = "ModelRootRotation";
 
-  // CompoundTags
+  // Defaults
+  CustomPosition DEFAULT_MODEL_PART_POSITION = new CustomPosition(0, 0, 0);
+  Rotations DEFAULT_MODEL_PART_ROTATION = new Rotations(0, 0, 0);
 
   default ModelPose getModelPose() {
     return getEntityData(DATA_MODEL_POSE);
+  }
+
+  default CustomPosition getModelPartPosition(ModelPart modelPart) {
+    switch (modelPart) {
+      case HEAD:
+        return getModelHeadPosition();
+      case BODY:
+        return getModelBodyPosition();
+      case ARMS:
+        return getModelArmsPosition();
+      case LEFT_ARM:
+        return getModelLeftArmPosition();
+      case RIGHT_ARM:
+        return getModelRightArmPosition();
+      case LEFT_LEG:
+        return getModelLeftLegPosition();
+      case RIGHT_LEG:
+        return getModelRightLegPosition();
+      default:
+        return DEFAULT_MODEL_PART_POSITION;
+    }
+  }
+
+  default Rotations getModelPartRotation(ModelPart modelPart) {
+    switch (modelPart) {
+      case HEAD:
+        return getModelHeadRotation();
+      case BODY:
+        return getModelBodyRotation();
+      case ARMS:
+        return getModelArmsRotation();
+      case LEFT_ARM:
+        return getModelLeftArmRotation();
+      case RIGHT_ARM:
+        return getModelRightArmRotation();
+      case LEFT_LEG:
+        return getModelLeftLegRotation();
+      case RIGHT_LEG:
+        return getModelRightLegRotation();
+      default:
+        return DEFAULT_MODEL_PART_ROTATION;
+    }
+  }
+
+  default boolean isModelPartVisible(ModelPart modelPart) {
+    switch (modelPart) {
+      case HEAD:
+        return isModelHeadVisible();
+      case BODY:
+        return isModelBodyVisible();
+      case ARMS:
+        return isModelArmsVisible();
+      case LEFT_ARM:
+        return isModelLeftArmVisible();
+      case RIGHT_ARM:
+        return isModelRightArmVisible();
+      case LEFT_LEG:
+        return isModelLeftLegVisible();
+      case RIGHT_LEG:
+        return isModelRightLegVisible();
+      default:
+        return false;
+    }
   }
 
   default void setModelPose(ModelPose modelPose) {
@@ -480,55 +546,7 @@ public interface EntityModelData extends EntityDataInterface {
   default void readAdditionalModelData(CompoundTag compoundTag) {
 
     // Legacy data support
-    if (compoundTag.contains(LEGACY_DATA_MODEL_POSE_TAG)
-        || compoundTag.contains(LEGACY_DATA_MODEL_LOCK_ROTATION_TAG)
-        || compoundTag.contains(LEGACY_DATA_MODEL_HEAD_ROTATION_TAG)
-        || compoundTag.contains(LEGACY_DATA_MODEL_BODY_ROTATION_TAG)
-        || compoundTag.contains(LEGACY_DATA_MODEL_LEFT_ARM_ROTATION_TAG)
-        || compoundTag.contains(LEGACY_DATA_MODEL_RIGHT_ARM_ROTATION_TAG)
-        || compoundTag.contains(LEGACY_DATA_MODEL_LEFT_LEG_ROTATION_TAG)
-        || compoundTag.contains(LEGACY_DATA_MODEL_RIGHT_LEG_ROTATION_TAG)
-        || compoundTag.contains(LEGACY_DATA_MODEL_ROOT_ROTATION_TAG)) {
-      log.info("Converting legacy model data to new format for {}", this);
-      if (compoundTag.contains(LEGACY_DATA_MODEL_POSE_TAG)) {
-        String modelPose = compoundTag.getString(LEGACY_DATA_MODEL_POSE_TAG);
-        if (modelPose != null && !modelPose.isEmpty()) {
-          setModelPose(ModelPose.get(modelPose));
-        }
-      }
-      if (compoundTag.contains(LEGACY_DATA_MODEL_LOCK_ROTATION_TAG)) {
-        setModelLockRotation(compoundTag.getBoolean(LEGACY_DATA_MODEL_LOCK_ROTATION_TAG));
-      }
-      if (compoundTag.contains(LEGACY_DATA_MODEL_HEAD_ROTATION_TAG)) {
-        setModelHeadRotation(
-            new Rotations(compoundTag.getList(LEGACY_DATA_MODEL_HEAD_ROTATION_TAG, 5)));
-      }
-      if (compoundTag.contains(LEGACY_DATA_MODEL_BODY_ROTATION_TAG)) {
-        setModelBodyRotation(
-            new Rotations(compoundTag.getList(LEGACY_DATA_MODEL_BODY_ROTATION_TAG, 5)));
-      }
-      if (compoundTag.contains(LEGACY_DATA_MODEL_LEFT_ARM_ROTATION_TAG)) {
-        setModelLeftArmRotation(
-            new Rotations(compoundTag.getList(LEGACY_DATA_MODEL_LEFT_ARM_ROTATION_TAG, 5)));
-      }
-      if (compoundTag.contains(LEGACY_DATA_MODEL_RIGHT_ARM_ROTATION_TAG)) {
-        setModelRightArmRotation(
-            new Rotations(compoundTag.getList(LEGACY_DATA_MODEL_RIGHT_ARM_ROTATION_TAG, 5)));
-      }
-      if (compoundTag.contains(LEGACY_DATA_MODEL_LEFT_LEG_ROTATION_TAG)) {
-        setModelLeftLegRotation(
-            new Rotations(compoundTag.getList(LEGACY_DATA_MODEL_LEFT_LEG_ROTATION_TAG, 5)));
-      }
-      if (compoundTag.contains(LEGACY_DATA_MODEL_RIGHT_LEG_ROTATION_TAG)) {
-        setModelRightLegRotation(
-            new Rotations(compoundTag.getList(LEGACY_DATA_MODEL_RIGHT_LEG_ROTATION_TAG, 5)));
-      }
-      if (compoundTag.contains(LEGACY_DATA_MODEL_ROOT_ROTATION_TAG)) {
-        setModelRootRotation(
-            new Rotations(compoundTag.getList(LEGACY_DATA_MODEL_ROOT_ROTATION_TAG, 5)));
-      }
-      return;
-    }
+    readAdditionalLegacyModelData(compoundTag);
 
     // Early exit if no model data is available
     if (!compoundTag.contains(DATA_MODEL_DATA_TAG)) {
@@ -638,6 +656,57 @@ public interface EntityModelData extends EntityDataInterface {
       }
       if (visibilityTag.contains(DATA_MODEL_RIGHT_LEG_VISIBLE_TAG)) {
         setModelRightLegVisible(visibilityTag.getBoolean(DATA_MODEL_RIGHT_LEG_VISIBLE_TAG));
+      }
+    }
+  }
+
+  default void readAdditionalLegacyModelData(CompoundTag compoundTag) {
+    if (compoundTag.contains(LEGACY_DATA_MODEL_POSE_TAG)
+        || compoundTag.contains(LEGACY_DATA_MODEL_LOCK_ROTATION_TAG)
+        || compoundTag.contains(LEGACY_DATA_MODEL_HEAD_ROTATION_TAG)
+        || compoundTag.contains(LEGACY_DATA_MODEL_BODY_ROTATION_TAG)
+        || compoundTag.contains(LEGACY_DATA_MODEL_LEFT_ARM_ROTATION_TAG)
+        || compoundTag.contains(LEGACY_DATA_MODEL_RIGHT_ARM_ROTATION_TAG)
+        || compoundTag.contains(LEGACY_DATA_MODEL_LEFT_LEG_ROTATION_TAG)
+        || compoundTag.contains(LEGACY_DATA_MODEL_RIGHT_LEG_ROTATION_TAG)
+        || compoundTag.contains(LEGACY_DATA_MODEL_ROOT_ROTATION_TAG)) {
+      log.info("Converting legacy model data to new format for {}", this);
+      if (compoundTag.contains(LEGACY_DATA_MODEL_POSE_TAG)) {
+        String modelPose = compoundTag.getString(LEGACY_DATA_MODEL_POSE_TAG);
+        if (modelPose != null && !modelPose.isEmpty()) {
+          setModelPose(ModelPose.get(modelPose));
+        }
+      }
+      if (compoundTag.contains(LEGACY_DATA_MODEL_LOCK_ROTATION_TAG)) {
+        setModelLockRotation(compoundTag.getBoolean(LEGACY_DATA_MODEL_LOCK_ROTATION_TAG));
+      }
+      if (compoundTag.contains(LEGACY_DATA_MODEL_HEAD_ROTATION_TAG)) {
+        setModelHeadRotation(
+            new Rotations(compoundTag.getList(LEGACY_DATA_MODEL_HEAD_ROTATION_TAG, 5)));
+      }
+      if (compoundTag.contains(LEGACY_DATA_MODEL_BODY_ROTATION_TAG)) {
+        setModelBodyRotation(
+            new Rotations(compoundTag.getList(LEGACY_DATA_MODEL_BODY_ROTATION_TAG, 5)));
+      }
+      if (compoundTag.contains(LEGACY_DATA_MODEL_LEFT_ARM_ROTATION_TAG)) {
+        setModelLeftArmRotation(
+            new Rotations(compoundTag.getList(LEGACY_DATA_MODEL_LEFT_ARM_ROTATION_TAG, 5)));
+      }
+      if (compoundTag.contains(LEGACY_DATA_MODEL_RIGHT_ARM_ROTATION_TAG)) {
+        setModelRightArmRotation(
+            new Rotations(compoundTag.getList(LEGACY_DATA_MODEL_RIGHT_ARM_ROTATION_TAG, 5)));
+      }
+      if (compoundTag.contains(LEGACY_DATA_MODEL_LEFT_LEG_ROTATION_TAG)) {
+        setModelLeftLegRotation(
+            new Rotations(compoundTag.getList(LEGACY_DATA_MODEL_LEFT_LEG_ROTATION_TAG, 5)));
+      }
+      if (compoundTag.contains(LEGACY_DATA_MODEL_RIGHT_LEG_ROTATION_TAG)) {
+        setModelRightLegRotation(
+            new Rotations(compoundTag.getList(LEGACY_DATA_MODEL_RIGHT_LEG_ROTATION_TAG, 5)));
+      }
+      if (compoundTag.contains(LEGACY_DATA_MODEL_ROOT_ROTATION_TAG)) {
+        setModelRootRotation(
+            new Rotations(compoundTag.getList(LEGACY_DATA_MODEL_ROOT_ROTATION_TAG, 5)));
       }
     }
   }
