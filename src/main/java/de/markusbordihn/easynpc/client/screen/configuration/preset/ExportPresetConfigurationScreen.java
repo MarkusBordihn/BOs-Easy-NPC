@@ -50,13 +50,13 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
     // Import buttons
     int buttonWidth = 92;
     this.customExportPresetButton = this.addRenderableWidget(menuButton(this.buttonLeftPos,
-        this.buttonTopPos, buttonWidth + 5, "custom_preset", button -> {
+        this.buttonTopPos, buttonWidth + 16, "custom_preset", button -> {
           NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_PRESET_EXPORT);
         }));
     this.customExportPresetButton.active = false;
     this.worldExportPresetButton = this.addRenderableWidget(
         menuButton(this.customExportPresetButton.x + this.customExportPresetButton.getWidth(),
-            this.buttonTopPos, buttonWidth - 6, "world_preset", button -> {
+            this.buttonTopPos, buttonWidth, "world_preset", button -> {
               NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.WORLD_PRESET_EXPORT);
             }));
     this.worldExportPresetButton.active = false;

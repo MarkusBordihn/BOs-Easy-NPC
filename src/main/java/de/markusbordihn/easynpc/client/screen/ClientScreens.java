@@ -48,6 +48,10 @@ import de.markusbordihn.easynpc.client.screen.configuration.rotation.DefaultRota
 import de.markusbordihn.easynpc.client.screen.configuration.scaling.ScalingConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.DefaultSkinConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.PlayerSkinConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.trading.AdvancedTradingConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.trading.BasicTradingConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.trading.CustomTradingConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.trading.NoneTradingConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.CustomSkinConfigurationScreen;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 
@@ -127,6 +131,16 @@ public class ClientScreens {
       // Scaling Configuration Screen
       MenuScreens.register(ModMenuTypes.SCALING_CONFIGURATION_MENU.get(),
           ScalingConfigurationScreen::new);
+
+      // Trades Configuration Screens
+      MenuScreens.register(ModMenuTypes.NONE_TRADING_CONFIGURATION_MENU.get(),
+          NoneTradingConfigurationScreen::new);
+      MenuScreens.register(ModMenuTypes.BASIC_TRADING_CONFIGURATION_MENU.get(),
+          BasicTradingConfigurationScreen::new);
+      MenuScreens.register(ModMenuTypes.ADVANCED_TRADING_CONFIGURATION_MENU.get(),
+          AdvancedTradingConfigurationScreen::new);
+      MenuScreens.register(ModMenuTypes.CUSTOM_TRADING_CONFIGURATION_MENU.get(),
+          CustomTradingConfigurationScreen::new);
     });
   }
 }

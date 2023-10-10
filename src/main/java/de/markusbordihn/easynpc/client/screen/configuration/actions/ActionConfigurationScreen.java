@@ -47,7 +47,7 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
   }
 
   public EditBox actionEditBox(int left, int top, ActionData actionData) {
-    EditBox editBox = new EditBox(this.font, left, top, 256, 16, Component.literal(""));
+    EditBox editBox = new EditBox(this.font, left, top, 275, 16, Component.literal(""));
     editBox.setMaxLength(255);
     editBox.setValue(actionData != null ? actionData.getAction() : "");
     return editBox;

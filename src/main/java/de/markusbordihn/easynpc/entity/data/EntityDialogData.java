@@ -140,43 +140,7 @@ public interface EntityDialogData extends EntityDataInterface {
   default void readAdditionalDialogData(CompoundTag compoundTag) {
 
     // Legacy dialog data support
-    if (compoundTag.contains(DATA_DIALOG_TYPE_TAG)) {
-      log.info("Converting legacy dialog data to new format for {}", this);
-      String dialogType = compoundTag.getString(DATA_DIALOG_TYPE_TAG);
-      if (dialogType != null && !dialogType.isEmpty()) {
-        this.setDialogType(DialogType.get(dialogType));
-      }
-      if (compoundTag.contains(DATA_DIALOG_TAG)) {
-        String dialog = compoundTag.getString(DATA_DIALOG_TAG);
-        if (dialog != null) {
-          this.setSimpleDialog(dialog);
-        }
-      }
-      if (compoundTag.contains(DATA_DIALOG_NO_TAG)) {
-        String dialog = compoundTag.getString(DATA_DIALOG_NO_TAG);
-        if (dialog != null) {
-          this.setNoDialog(dialog);
-        }
-      }
-      if (compoundTag.contains(DATA_DIALOG_NO_BUTTON_TAG)) {
-        String dialogButton = compoundTag.getString(DATA_DIALOG_NO_BUTTON_TAG);
-        if (dialogButton != null) {
-          this.setNoDialogButton(dialogButton);
-        }
-      }
-      if (compoundTag.contains(DATA_DIALOG_YES_TAG)) {
-        String dialog = compoundTag.getString(DATA_DIALOG_YES_TAG);
-        if (dialog != null) {
-          this.setYesDialog(dialog);
-        }
-      }
-      if (compoundTag.contains(DATA_DIALOG_YES_BUTTON_TAG)) {
-        String dialogButton = compoundTag.getString(DATA_DIALOG_YES_BUTTON_TAG);
-        if (dialogButton != null) {
-          this.setYesDialogButton(dialogButton);
-        }
-      }
-    }
+    readAdditionalLegacyDialogData(compoundTag);
 
     // Early exit if no dialog data is available.
     if (!compoundTag.contains(DATA_DIALOG_DATA_TAG)) {
@@ -222,6 +186,46 @@ public interface EntityDialogData extends EntityDataInterface {
       }
     }
 
+  }
+
+  default void readAdditionalLegacyDialogData(CompoundTag compoundTag) {
+    if (compoundTag.contains(DATA_DIALOG_TYPE_TAG)) {
+      log.info("Converting legacy dialog data to new format for {}", this);
+      String dialogType = compoundTag.getString(DATA_DIALOG_TYPE_TAG);
+      if (dialogType != null && !dialogType.isEmpty()) {
+        this.setDialogType(DialogType.get(dialogType));
+      }
+      if (compoundTag.contains(DATA_DIALOG_TAG)) {
+        String dialog = compoundTag.getString(DATA_DIALOG_TAG);
+        if (dialog != null) {
+          this.setSimpleDialog(dialog);
+        }
+      }
+      if (compoundTag.contains(DATA_DIALOG_NO_TAG)) {
+        String dialog = compoundTag.getString(DATA_DIALOG_NO_TAG);
+        if (dialog != null) {
+          this.setNoDialog(dialog);
+        }
+      }
+      if (compoundTag.contains(DATA_DIALOG_NO_BUTTON_TAG)) {
+        String dialogButton = compoundTag.getString(DATA_DIALOG_NO_BUTTON_TAG);
+        if (dialogButton != null) {
+          this.setNoDialogButton(dialogButton);
+        }
+      }
+      if (compoundTag.contains(DATA_DIALOG_YES_TAG)) {
+        String dialog = compoundTag.getString(DATA_DIALOG_YES_TAG);
+        if (dialog != null) {
+          this.setYesDialog(dialog);
+        }
+      }
+      if (compoundTag.contains(DATA_DIALOG_YES_BUTTON_TAG)) {
+        String dialogButton = compoundTag.getString(DATA_DIALOG_YES_BUTTON_TAG);
+        if (dialogButton != null) {
+          this.setYesDialogButton(dialogButton);
+        }
+      }
+    }
   }
 
 }

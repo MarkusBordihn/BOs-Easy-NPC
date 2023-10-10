@@ -39,6 +39,7 @@ import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
@@ -48,6 +49,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
 
   // Buttons and boxes
   protected Button editActionButton = null;
+  protected Button editAttributes = null;
   protected Button editDialogButton = null;
   protected Button editEquipmentButton = null;
   protected Button editPoseButton = null;
@@ -55,6 +57,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
   protected Button editRotationButton = null;
   protected Button editScalingButton = null;
   protected Button editSkinButton = null;
+  protected Button editTradesButton = null;
   protected Button exportButton = null;
   protected Button importButton = null;
   protected Button removeEntityButton = null;
@@ -300,6 +303,39 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
         this.hasPermissions(COMMON.defaultRotationConfigurationEnabled.get(),
             COMMON.defaultRotationConfigurationAllowInCreative.get(),
             COMMON.defaultRotationConfigurationPermissionLevel.get());
+
+    // Trades Button
+    this.editTradesButton = this.addRenderableWidget(
+        menuButton(this.editRotationButton.x + this.editRotationButton.getWidth() + buttonSpace,
+            buttonTopPosition, "trading", onPress -> {
+              TradingType tradingType = this.entity.getTradingType();
+              switch (tradingType) {
+                case NONE:
+                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_TRADING);
+                  break;
+                case BASIC:
+                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_TRADING);
+                  break;
+                case ADVANCED:
+                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.ADVANCED_TRADING);
+                  break;
+                case CUSTOM:
+                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_TRADING);
+                  break;
+                default:
+                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_TRADING);
+              }
+            }));
+
+    // Move button position down
+    buttonTopPosition = buttonTopPosition + 20 + buttonSpace;
+
+    // Attributes Button
+    this.editAttributes = this.addRenderableWidget(
+        menuButton(buttonLeftPosition, buttonTopPosition, "attributes", onPress -> {
+          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_ATTRIBUTES);
+        }));
+    this.editAttributes.active = false;
 
     // Delete Button
     this.removeEntityButton = this.addRenderableWidget(

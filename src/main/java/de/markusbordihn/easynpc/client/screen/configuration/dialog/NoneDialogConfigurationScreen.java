@@ -73,7 +73,7 @@ public class NoneDialogConfigurationScreen
 
     // None Dialog Checkbox
     this.noneDialogCheckbox =
-        this.addRenderableWidget(new Checkbox(this.contentLeftPos + 75, this.topPos + 170, 20, 20,
+        this.addRenderableWidget(new Checkbox(this.contentLeftPos + 100, this.topPos + 170, 20, 20,
             Component.translatable(Constants.TEXT_CONFIG_PREFIX + "disable_dialog_checkbox")
                 .withStyle(ChatFormatting.WHITE),
             entity.getDialogType() == DialogType.NONE) {

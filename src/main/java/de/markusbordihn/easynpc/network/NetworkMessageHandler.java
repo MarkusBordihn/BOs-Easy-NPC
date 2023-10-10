@@ -35,14 +35,15 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.CustomPosition;
 import de.markusbordihn.easynpc.data.action.ActionData;
 import de.markusbordihn.easynpc.data.action.ActionType;
+import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.entity.Profession;
-import de.markusbordihn.easynpc.entity.data.EntityAttributeData.EntityAttribute;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.message.MessageActionChange;
 
@@ -68,6 +69,7 @@ import de.markusbordihn.easynpc.network.message.MessageSaveBasicDialog;
 import de.markusbordihn.easynpc.network.message.MessageSaveYesNoDialog;
 import de.markusbordihn.easynpc.network.message.MessageScaleChange;
 import de.markusbordihn.easynpc.network.message.MessageSkinChange;
+import de.markusbordihn.easynpc.network.message.MessageTradingTypeChange;
 import de.markusbordihn.easynpc.network.message.MessageTriggerAction;
 import de.markusbordihn.easynpc.network.message.MessageVariantChange;
 
@@ -303,6 +305,13 @@ public class NetworkMessageHandler {
     if (uuid != null && entityAttribute != null && stringValue != null) {
       NetworkHandler
           .sendToServer(new MessageEntityAttributeChange(uuid, entityAttribute, stringValue));
+    }
+  }
+
+  /** Change trading type. */
+  public static void changeTradingType(UUID uuid, TradingType tradingType) {
+    if (uuid != null && tradingType != null) {
+      NetworkHandler.sendToServer(new MessageTradingTypeChange(uuid, tradingType));
     }
   }
 

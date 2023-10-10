@@ -63,7 +63,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
     this.worldImportPresetButton.active = false;
     this.customImportPresetButton = this.addRenderableWidget(
         menuButton(this.worldImportPresetButton.x + this.worldImportPresetButton.getWidth(),
-            this.buttonTopPos, buttonWidth + 5, "custom_preset", button -> {
+            this.buttonTopPos, buttonWidth + 15, "custom_preset", button -> {
               NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_PRESET_IMPORT);
             }));
     this.customImportPresetButton.active = false;
