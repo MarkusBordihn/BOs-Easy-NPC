@@ -23,6 +23,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -41,6 +42,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.commands.CommandManager;
 import de.markusbordihn.easynpc.data.action.ActionData;
 import de.markusbordihn.easynpc.data.action.ActionGroup;
@@ -190,6 +192,18 @@ public class EasyNPCEntity extends EasyNPCEntityData {
     this.level.getProfiler().pop();
   }
 
+  public InteractionResult openTradingScreen(ServerPlayer serverPlayer) {
+    if (!this.level.isClientSide) {
+      log.debug("Open trading screen for {} ... with {}", this, getOffers());
+      this.setTradingPlayer(serverPlayer);
+      this.openTradingScreen(serverPlayer,
+          getCustomName() != null ? getCustomName()
+              : Component.translatable(Constants.TEXT_PREFIX + "trading"),
+          BASE_TICKS_REQUIRED_TO_FREEZE);
+    }
+    return InteractionResult.sidedSuccess(this.level.isClientSide);
+  }
+
   @Override
   public void baseTick() {
     if (!this.level.isClientSide && this.isAlive() && this.baseTicker++ >= BASE_TICK) {
@@ -267,23 +281,37 @@ public class EasyNPCEntity extends EasyNPCEntityData {
         return InteractionResult.PASS;
       }
 
+      // Pre-check for better auto handling of interaction.
+      boolean hasInteractionAction = this.hasAction(ActionType.ON_INTERACTION);
+      boolean hasSimpleDialog = this.hasSimpleDialog();
+      boolean hasTrading = this.hasTrading();
+
       // Open configuration menu for creative mode and owner if no dialog or
       // interaction action is set or the player is crouching.
-      boolean hasInteractionAction = this.hasAction(ActionType.ON_INTERACTION);
       if ((player.isCreative() || this.isOwner(serverPlayer))
-          && ((!this.hasSimpleDialog() && !hasInteractionAction) || player.isCrouching())) {
+          && ((!hasSimpleDialog && !hasInteractionAction && !hasTrading) || player.isCrouching())) {
         this.openMainConfigurationMenu(serverPlayer);
         return InteractionResult.PASS;
       }
 
+      // Execute interaction action, if set.
       if (hasInteractionAction) {
         ActionData actionData = this.getActionData(ActionType.ON_INTERACTION);
         this.executeAction(actionData, serverPlayer);
       }
 
-      if (this.hasSimpleDialog()) {
+      // Open dialog menu, if we have a simple dialog.
+      if (hasSimpleDialog) {
         EasyNPCEntityMenu.openDialogMenu(serverPlayer, this);
+        return InteractionResult.CONSUME;
       }
+
+      // Open trading screen, if we have a trading inventory.
+      if (hasTrading) {
+        this.openTradingScreen(serverPlayer);
+        return InteractionResult.CONSUME;
+      }
+
     }
 
     return InteractionResult.PASS;

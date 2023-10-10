@@ -152,8 +152,8 @@ public class CustomSkinConfigurationScreen
     }
 
     // Render skin entity with variant and profession.
-    ScreenHelper.renderEntityPlayerSkin(x, y, x - this.xMouse, y - 40 - this.yMouse, this.entity,
-        textureUUID, SkinType.CUSTOM);
+    ScreenHelper.renderEntityPlayerSkin(x + 4, y, x - this.xMouse, y - 40 - this.yMouse,
+        this.entity, textureUUID, SkinType.CUSTOM);
 
     skinButtons.add(skinButton);
   }

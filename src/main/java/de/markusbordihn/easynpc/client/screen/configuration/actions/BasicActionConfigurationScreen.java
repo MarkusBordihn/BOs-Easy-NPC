@@ -86,15 +86,16 @@ public class BasicActionConfigurationScreen
             "debug", interactionActionData != null && interactionActionData.isDebugEnabled(),
             checkbox -> this.validateInteractionAction()));
     this.onInteractionActionSaveButton = this.addRenderableWidget(
-        new SaveButton(this.leftPos + 267, interactionActionTop - 2, onPress -> {
-          ActionData actionData =
-              new ActionData(ActionType.ON_INTERACTION, this.onInteractionActionBox.getValue(),
-                  this.onInteractionActionExecuteAsUserCheckbox.selected(),
-                  this.onInteractionActionDebugCheckbox.selected());
-          NetworkMessageHandler.actionChange(uuid, actionData);
-          this.lastInteractionActionData = actionData;
-          this.onInteractionActionSaveButton.active = false;
-        }));
+        new SaveButton(onInteractionActionBox.getX()+ onInteractionActionBox.getWidth() + 5,
+            interactionActionTop - 2, onPress -> {
+              ActionData actionData =
+                  new ActionData(ActionType.ON_INTERACTION, this.onInteractionActionBox.getValue(),
+                      this.onInteractionActionExecuteAsUserCheckbox.selected(),
+                      this.onInteractionActionDebugCheckbox.selected());
+              NetworkMessageHandler.actionChange(uuid, actionData);
+              this.lastInteractionActionData = actionData;
+              this.onInteractionActionSaveButton.active = false;
+            }));
     this.onInteractionActionSaveButton.active = false;
   }
 

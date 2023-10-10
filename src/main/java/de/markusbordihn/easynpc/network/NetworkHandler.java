@@ -55,6 +55,7 @@ import de.markusbordihn.easynpc.network.message.MessageSaveBasicDialog;
 import de.markusbordihn.easynpc.network.message.MessageSaveYesNoDialog;
 import de.markusbordihn.easynpc.network.message.MessageScaleChange;
 import de.markusbordihn.easynpc.network.message.MessageSkinChange;
+import de.markusbordihn.easynpc.network.message.MessageTradingTypeChange;
 import de.markusbordihn.easynpc.network.message.MessageTriggerAction;
 import de.markusbordihn.easynpc.network.message.MessageVariantChange;
 
@@ -63,7 +64,7 @@ public class NetworkHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final String PROTOCOL_VERSION = "11";
+  private static final String PROTOCOL_VERSION = "12";
   public static final SimpleChannel INSTANCE =
       NetworkRegistry.newSimpleChannel(new ResourceLocation(Constants.MOD_ID, "network"),
           () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
@@ -176,6 +177,11 @@ public class NetworkHandler {
       // Skin Change: Client -> Server
       INSTANCE.registerMessage(id++, MessageSkinChange.class, MessageSkinChange::encode,
           MessageSkinChange::decode, MessageSkinChange::handle);
+
+      // Trading Type: Client -> Server
+      INSTANCE.registerMessage(id++, MessageTradingTypeChange.class,
+          MessageTradingTypeChange::encode, MessageTradingTypeChange::decode,
+          MessageTradingTypeChange::handle);
 
       // Action Trigger: Client -> Server
       INSTANCE.registerMessage(id++, MessageTriggerAction.class, MessageTriggerAction::encode,
