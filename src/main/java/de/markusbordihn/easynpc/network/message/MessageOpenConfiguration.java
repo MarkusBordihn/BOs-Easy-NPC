@@ -147,6 +147,18 @@ public class MessageOpenConfiguration extends NetworkMessage {
       case CUSTOM_PRESET_IMPORT:
         EasyNPCEntityMenu.openCustomPresetImportConfigurationMenu(serverPlayer, easyNPCEntity);
         break;
+      case BASIC_TRADING:
+        EasyNPCEntityMenu.openBasicTradingConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
+      case NONE_TRADING:
+        EasyNPCEntityMenu.openNoneTradingConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
+      case ADVANCED_TRADING:
+        EasyNPCEntityMenu.openAdvancedTradingConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
+      case CUSTOM_TRADING:
+        EasyNPCEntityMenu.openCustomTradingConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
       default:
         log.debug("Unknown dialog {} for {} from {}", configurationType, easyNPCEntity,
             serverPlayer);

@@ -170,13 +170,33 @@ public class CommonConfig {
     public final ForgeConfigSpec.BooleanValue worldImportPresetConfigurationAllowInCreative;
     public final ForgeConfigSpec.IntValue worldImportPresetConfigurationPermissionLevel;
 
+    public static final String NONE_TRADING_CONFIGURATION = "none trading";
+    public final ForgeConfigSpec.BooleanValue noneTradingConfigurationEnabled;
+    public final ForgeConfigSpec.BooleanValue noneTradingConfigurationAllowInCreative;
+    public final ForgeConfigSpec.IntValue noneTradingConfigurationPermissionLevel;
+
+    public static final String BASIC_TRADING_CONFIGURATION = "basic trading";
+    public final ForgeConfigSpec.BooleanValue basicTradingConfigurationEnabled;
+    public final ForgeConfigSpec.BooleanValue basicTradingConfigurationAllowInCreative;
+    public final ForgeConfigSpec.IntValue basicTradingConfigurationPermissionLevel;
+
+    public static final String ADVANCED_TRADING_CONFIGURATION = "advanced trading";
+    public final ForgeConfigSpec.BooleanValue advancedTradingConfigurationEnabled;
+    public final ForgeConfigSpec.BooleanValue advancedTradingConfigurationAllowInCreative;
+    public final ForgeConfigSpec.IntValue advancedTradingConfigurationPermissionLevel;
+
+    public static final String CUSTOM_TRADING_CONFIGURATION = "custom trading";
+    public final ForgeConfigSpec.BooleanValue customTradingConfigurationEnabled;
+    public final ForgeConfigSpec.BooleanValue customTradingConfigurationAllowInCreative;
+    public final ForgeConfigSpec.IntValue customTradingConfigurationPermissionLevel;
+
     Config(ForgeConfigSpec.Builder builder) {
       builder.comment(Constants.MOD_NAME);
 
       builder.push("General");
       builder.pop();
 
-      builder.push("Main Configuration");
+      builder.push("[Main Configuration]");
       mainConfigurationEnabled = builder.comment(getEnableComment(MAIN_CONFIGURATION))
           .define("mainConfigurationEnabled", true);
       mainConfigurationAllowInCreative =
@@ -187,7 +207,7 @@ public class CommonConfig {
               .defineInRange("mainConfigurationPermissionLevel", 0, 0, 4);
       builder.pop();
 
-      builder.push("Basic Action Configuration");
+      builder.push("[Action Configuration] Basic Action");
       basicActionConfigurationEnabled =
           builder.comment(getEnableComment(BASIC_ACTION_CONFIGURATION))
               .define("basicActionConfigurationEnabled", true);
@@ -199,7 +219,7 @@ public class CommonConfig {
               .defineInRange("basicActionConfigurationPermissionLevel", 1, 0, 4);
       builder.pop();
 
-      builder.push("Dialog Action Configuration");
+      builder.push("[Action Configuration] Dialog Action");
       dialogActionConfigurationEnabled =
           builder.comment(getEnableComment(DIALOG_ACTION_CONFIGURATION))
               .define("dialogActionConfigurationEnabled", true);
@@ -211,7 +231,7 @@ public class CommonConfig {
               .defineInRange("dialogActionConfigurationPermissionLevel", 1, 0, 4);
       builder.pop();
 
-      builder.push("Distance Action Configuration");
+      builder.push("[Action Configuration] Distance Action");
       distanceActionConfigurationEnabled =
           builder.comment(getEnableComment(DISTANCE_ACTION_CONFIGURATION))
               .define("distanceActionConfigurationEnabled", true);
@@ -223,7 +243,18 @@ public class CommonConfig {
               .defineInRange("distanceActionConfigurationPermissionLevel", 1, 0, 4);
       builder.pop();
 
-      builder.push("Basic Dialog Configuration");
+      builder.push("[Dialog Configuration] None Dialog");
+      noneDialogConfigurationEnabled = builder.comment(getEnableComment(NONE_DIALOG_CONFIGURATION))
+          .define("noneDialogConfigurationEnabled", true);
+      noneDialogConfigurationAllowInCreative =
+          builder.comment(getAllowInCreativeComment(NONE_DIALOG_CONFIGURATION))
+              .define("noneDialogConfigurationAllowInCreative", true);
+      noneDialogConfigurationPermissionLevel =
+          builder.comment(getPermissionLevelComment(NONE_DIALOG_CONFIGURATION))
+              .defineInRange("noneDialogConfigurationPermissionLevel", 0, 0, 4);
+      builder.pop();
+
+      builder.push("[Dialog Configuration] Basic Dialog");
       basicDialogConfigurationEnabled =
           builder.comment(getEnableComment(BASIC_DIALOG_CONFIGURATION))
               .define("basicDialogConfigurationEnabled", true);
@@ -235,7 +266,7 @@ public class CommonConfig {
               .defineInRange("basicDialogConfigurationPermissionLevel", 0, 0, 4);
       builder.pop();
 
-      builder.push("Yes/No Dialog Configuration");
+      builder.push("[Dialog Configuration] Yes/No Dialog");
       yesNoDialogConfigurationEnabled =
           builder.comment(getEnableComment(YES_NO_DIALOG_CONFIGURATION))
               .define("yesNoDialogConfigurationEnabled", true);
@@ -247,18 +278,7 @@ public class CommonConfig {
               .defineInRange("yesNoDialogConfigurationPermissionLevel", 0, 0, 4);
       builder.pop();
 
-      builder.push("None Dialog Configuration");
-      noneDialogConfigurationEnabled = builder.comment(getEnableComment(NONE_DIALOG_CONFIGURATION))
-          .define("noneDialogConfigurationEnabled", true);
-      noneDialogConfigurationAllowInCreative =
-          builder.comment(getAllowInCreativeComment(NONE_DIALOG_CONFIGURATION))
-              .define("noneDialogConfigurationAllowInCreative", true);
-      noneDialogConfigurationPermissionLevel =
-          builder.comment(getPermissionLevelComment(NONE_DIALOG_CONFIGURATION))
-              .defineInRange("noneDialogConfigurationPermissionLevel", 0, 0, 4);
-      builder.pop();
-
-      builder.push("Default Skin Configuration");
+      builder.push("[Skin Configuration] Default Skin");
       defaultSkinConfigurationEnabled =
           builder.comment(getEnableComment(DEFAULT_SKIN_CONFIGURATION))
               .define("defaultSkinConfigurationEnabled", true);
@@ -270,7 +290,7 @@ public class CommonConfig {
               .defineInRange("defaultSkinConfigurationPermissionLevel", 0, 0, 4);
       builder.pop();
 
-      builder.push("Player Skin Configuration");
+      builder.push("[Skin Configuration] Player Skin");
       playerSkinConfigurationEnabled = builder.comment(getEnableComment(PLAYER_SKIN_CONFIGURATION))
           .define("playerSkinConfigurationEnabled", true);
       playerSkinConfigurationAllowInCreative =
@@ -281,7 +301,7 @@ public class CommonConfig {
               .defineInRange("playerSkinConfigurationPermissionLevel", 1, 0, 4);
       builder.pop();
 
-      builder.push("Custom Skin Configuration");
+      builder.push("[Skin Configuration] Custom Skin");
       customSkinConfigurationEnabled = builder.comment(getEnableComment(CUSTOM_SKIN_CONFIGURATION))
           .define("customSkinConfigurationEnabled", true);
       customSkinConfigurationAllowInCreative =
@@ -292,7 +312,7 @@ public class CommonConfig {
               .defineInRange("customSkinConfigurationPermissionLevel", 2, 0, 4);
       builder.pop();
 
-      builder.push("Default Pose Configuration");
+      builder.push("[Pose Configuration] Default Pose");
       defaultPoseConfigurationEnabled =
           builder.comment(getEnableComment(DEFAULT_POSE_CONFIGURATION))
               .define("defaultPoseConfigurationEnabled", true);
@@ -304,7 +324,7 @@ public class CommonConfig {
               .defineInRange("defaultPoseConfigurationPermissionLevel", 0, 0, 4);
       builder.pop();
 
-      builder.push("Advanced Pose Configuration");
+      builder.push("[Pose Configuration] Advanced Pose");
       advancedPoseConfigurationEnabled =
           builder.comment(getEnableComment(ADVANCED_POSE_CONFIGURATION))
               .define("advancedPoseConfigurationEnabled", true);
@@ -315,7 +335,7 @@ public class CommonConfig {
           builder.comment(getPermissionLevelComment(ADVANCED_POSE_CONFIGURATION))
               .defineInRange("advancedPoseConfigurationPermissionLevel", 0, 0, 4);
 
-      builder.push("Custom Pose Configuration");
+      builder.push("[Pose Configuration] Custom Pose");
       customPoseConfigurationEnabled = builder.comment(getEnableComment(CUSTOM_POSE_CONFIGURATION))
           .define("customPoseConfigurationEnabled", true);
       customPoseConfigurationAllowInCreative =
@@ -326,7 +346,7 @@ public class CommonConfig {
               .defineInRange("customPoseConfigurationPermissionLevel", 0, 0, 4);
       builder.pop();
 
-      builder.push("Equipment Configuration");
+      builder.push("[Equipment Configuration]");
       equipmentConfigurationEnabled =
           builder.comment(getEnableComment(DEFAULT_EQUIPMENT_CONFIGURATION))
               .define("equipmentConfigurationEnabled", true);
@@ -338,7 +358,7 @@ public class CommonConfig {
               .defineInRange("equipmentConfigurationPermissionLevel", 0, 0, 4);
       builder.pop();
 
-      builder.push("Position Configuration");
+      builder.push("[Position Configuration]");
       defaultPositionConfigurationEnabled =
           builder.comment(getEnableComment(DEFAULT_POSITION_CONFIGURATION))
               .define("defaultPositionConfigurationEnabled", true);
@@ -350,7 +370,7 @@ public class CommonConfig {
               .defineInRange("defaultPositionConfigurationPermissionLevel", 0, 0, 4);
       builder.pop();
 
-      builder.push("Rotation Configuration");
+      builder.push("[Rotation Configuration]");
       defaultRotationConfigurationEnabled =
           builder.comment(getEnableComment(DEFAULT_ROTATION_CONFIGURATION))
               .define("defaultRotationConfigurationEnabled", true);
@@ -362,7 +382,7 @@ public class CommonConfig {
               .defineInRange("defaultRotationConfigurationPermissionLevel", 0, 0, 4);
       builder.pop();
 
-      builder.push("Scale Configuration");
+      builder.push("[Scale Configuration]");
       scalingConfigurationEnabled = builder.comment(getEnableComment(DEFAULT_SCALE_CONFIGURATION))
           .define("scaleConfigurationEnabled", true);
       scalingConfigurationAllowInCreative =
@@ -373,7 +393,7 @@ public class CommonConfig {
               .defineInRange("scaleConfigurationPermissionLevel", 0, 0, 4);
       builder.pop();
 
-      builder.push("Export Custom Preset Configuration");
+      builder.push("[Export Configuration] Export Custom Preset");
       customExportPresetConfigurationEnabled =
           builder.comment(getEnableComment(CUSTOM_EXPORT_PRESET_CONFIGURATION))
               .define("customExportPresetConfigurationEnabled", true);
@@ -385,7 +405,7 @@ public class CommonConfig {
               .defineInRange("customExportPresetConfigurationPermissionLevel", 0, 0, 4);
       builder.pop();
 
-      builder.push("Export World Preset Configuration");
+      builder.push("[Export Configuration] Export World Preset");
       worldExportPresetConfigurationEnabled =
           builder.comment(getEnableComment(WORLD_EXPORT_PRESET_CONFIGURATION))
               .define("worldExportPresetConfigurationEnabled", true);
@@ -397,19 +417,7 @@ public class CommonConfig {
               .defineInRange("worldExportPresetConfigurationPermissionLevel", 0, 0, 4);
       builder.pop();
 
-      builder.push("Import Custom Preset Configuration");
-      customImportPresetConfigurationEnabled =
-          builder.comment(getEnableComment(CUSTOM_IMPORT_PRESET_CONFIGURATION))
-              .define("customImportPresetConfigurationEnabled", true);
-      customImportPresetConfigurationAllowInCreative =
-          builder.comment(getAllowInCreativeComment(CUSTOM_IMPORT_PRESET_CONFIGURATION))
-              .define("customImportPresetConfigurationAllowInCreative", true);
-      customImportPresetConfigurationPermissionLevel =
-          builder.comment(getPermissionLevelComment(CUSTOM_IMPORT_PRESET_CONFIGURATION))
-              .defineInRange("customImportPresetConfigurationPermissionLevel", 0, 0, 4);
-      builder.pop();
-
-      builder.push("Import Default Preset Configuration");
+      builder.push("[Import Configuration] Import Default Preset");
       defaultImportPresetConfigurationEnabled =
           builder.comment(getEnableComment(DEFAULT_IMPORT_PRESET_CONFIGURATION))
               .define("defaultImportPresetConfigurationEnabled", true);
@@ -421,7 +429,19 @@ public class CommonConfig {
               .defineInRange("defaultImportPresetConfigurationPermissionLevel", 0, 0, 4);
       builder.pop();
 
-      builder.push("Import Server Preset Configuration");
+      builder.push("[Import Configuration] Import Custom Preset");
+      customImportPresetConfigurationEnabled =
+          builder.comment(getEnableComment(CUSTOM_IMPORT_PRESET_CONFIGURATION))
+              .define("customImportPresetConfigurationEnabled", true);
+      customImportPresetConfigurationAllowInCreative =
+          builder.comment(getAllowInCreativeComment(CUSTOM_IMPORT_PRESET_CONFIGURATION))
+              .define("customImportPresetConfigurationAllowInCreative", true);
+      customImportPresetConfigurationPermissionLevel =
+          builder.comment(getPermissionLevelComment(CUSTOM_IMPORT_PRESET_CONFIGURATION))
+              .defineInRange("customImportPresetConfigurationPermissionLevel", 0, 0, 4);
+      builder.pop();
+
+      builder.push("[Import Configuration] Import Server Preset");
       worldImportPresetConfigurationEnabled =
           builder.comment(getEnableComment(WORLD_IMPORT_PRESET_CONFIGURATION))
               .define("worldImportPresetConfigurationEnabled", true);
@@ -431,6 +451,54 @@ public class CommonConfig {
       worldImportPresetConfigurationPermissionLevel =
           builder.comment(getPermissionLevelComment(WORLD_IMPORT_PRESET_CONFIGURATION))
               .defineInRange("worldImportPresetConfigurationPermissionLevel", 0, 0, 4);
+      builder.pop();
+
+      builder.push("[Trading Configuration] Default Trading");
+      noneTradingConfigurationEnabled =
+          builder.comment(getEnableComment(NONE_TRADING_CONFIGURATION))
+              .define("noneTradingConfigurationEnabled", true);
+      noneTradingConfigurationAllowInCreative =
+          builder.comment(getAllowInCreativeComment(NONE_TRADING_CONFIGURATION))
+              .define("noneTradingConfigurationAllowInCreative", true);
+      noneTradingConfigurationPermissionLevel =
+          builder.comment(getPermissionLevelComment(NONE_TRADING_CONFIGURATION))
+              .defineInRange("noneTradingConfigurationPermissionLevel", 0, 0, 4);
+      builder.pop();
+
+      builder.push("[Trading Configuration] Basic Trading");
+      basicTradingConfigurationEnabled =
+          builder.comment(getEnableComment(BASIC_TRADING_CONFIGURATION))
+              .define("basicTradingConfigurationEnabled", true);
+      basicTradingConfigurationAllowInCreative =
+          builder.comment(getAllowInCreativeComment(BASIC_TRADING_CONFIGURATION))
+              .define("basicTradingConfigurationAllowInCreative", true);
+      basicTradingConfigurationPermissionLevel =
+          builder.comment(getPermissionLevelComment(BASIC_TRADING_CONFIGURATION))
+              .defineInRange("basicTradingConfigurationPermissionLevel", 0, 0, 4);
+      builder.pop();
+
+      builder.push("[Trading Configuration] Advanced Trading");
+      advancedTradingConfigurationEnabled =
+          builder.comment(getEnableComment(ADVANCED_TRADING_CONFIGURATION))
+              .define("advancedTradingConfigurationEnabled", true);
+      advancedTradingConfigurationAllowInCreative =
+          builder.comment(getAllowInCreativeComment(ADVANCED_TRADING_CONFIGURATION))
+              .define("advancedTradingConfigurationAllowInCreative", true);
+      advancedTradingConfigurationPermissionLevel =
+          builder.comment(getPermissionLevelComment(ADVANCED_TRADING_CONFIGURATION))
+              .defineInRange("advancedTradingConfigurationPermissionLevel", 0, 0, 4);
+      builder.pop();
+
+      builder.push("[Trading Configuration] Custom Trading");
+      customTradingConfigurationEnabled =
+          builder.comment(getEnableComment(CUSTOM_TRADING_CONFIGURATION))
+              .define("customTradingConfigurationEnabled", true);
+      customTradingConfigurationAllowInCreative =
+          builder.comment(getAllowInCreativeComment(CUSTOM_TRADING_CONFIGURATION))
+              .define("customTradingConfigurationAllowInCreative", true);
+      customTradingConfigurationPermissionLevel =
+          builder.comment(getPermissionLevelComment(CUSTOM_TRADING_CONFIGURATION))
+              .defineInRange("customTradingConfigurationPermissionLevel", 0, 0, 4);
       builder.pop();
     }
   }

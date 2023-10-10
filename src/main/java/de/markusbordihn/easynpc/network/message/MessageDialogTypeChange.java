@@ -67,7 +67,7 @@ public class MessageDialogTypeChange extends NetworkMessage {
     UUID uuid = message.getUUID();
     if (serverPlayer == null || dialogType == null
         || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
-      log.error("Unable to save basic dialog with message {} from {}", message, context);
+      log.error("Unable to change dialog type with message {} from {}", message, context);
       return;
     }
 

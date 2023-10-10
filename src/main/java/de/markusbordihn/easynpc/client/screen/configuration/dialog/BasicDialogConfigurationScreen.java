@@ -62,7 +62,7 @@ public class BasicDialogConfigurationScreen
     this.basicDialogButton.active = false;
 
     // Dialog
-    this.dialogBox = new EditBox(this.font, this.contentLeftPos, this.topPos + 60, 281, 20,
+    this.dialogBox = new EditBox(this.font, this.contentLeftPos, this.topPos + 60, 300, 20,
         Component.translatable("Dialog"));
     this.dialogBox.setMaxLength(255);
     this.dialogBox.setValue(this.entity.getSimpleDialog());

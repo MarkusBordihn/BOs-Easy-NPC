@@ -21,12 +21,17 @@ package de.markusbordihn.easynpc.menu.configuration;
 
 public enum ConfigurationType {
   // @formatter:off
+  ADVANCED_POSE,
+  ADVANCED_TRADING,
   BASIC_ACTION,
   BASIC_DIALOG,
+  BASIC_TRADING,
   CUSTOM_POSE,
   CUSTOM_PRESET_EXPORT,
   CUSTOM_PRESET_IMPORT,
   CUSTOM_SKIN,
+  CUSTOM_TRADING,
+  DEFAULT_ATTRIBUTES,
   DEFAULT_POSE,
   DEFAULT_POSITION,
   DEFAULT_PRESET_IMPORT,
@@ -37,10 +42,11 @@ public enum ConfigurationType {
   EQUIPMENT,
   MAIN,
   NONE_DIALOG,
+  NONE_TRADING,
   PLAYER_SKIN,
   SCALING,
   WORLD_PRESET_EXPORT,
   WORLD_PRESET_IMPORT,
-  YES_NO_DIALOG, ADVANCED_POSE,
+  YES_NO_DIALOG,
   // @formatter:on
 }

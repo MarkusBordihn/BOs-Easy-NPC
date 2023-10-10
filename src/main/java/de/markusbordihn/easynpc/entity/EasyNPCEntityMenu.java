@@ -56,6 +56,10 @@ import de.markusbordihn.easynpc.menu.configuration.scaling.ScalingConfigurationM
 import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.PlayerSkinConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.trading.AdvancedTradingConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.trading.BasicTradingConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.trading.CustomTradingConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.trading.NoneTradingConfigurationMenu;
 
 public class EasyNPCEntityMenu {
 
@@ -341,6 +345,54 @@ public class EasyNPCEntityMenu {
       UUID uuid = easyNPCEntity.getUUID();
       NetworkHooks.openScreen(serverPlayer,
           CustomImportPresetConfigurationMenu.getMenuProvider(uuid, easyNPCEntity),
+          buffer -> buffer.writeUUID(uuid));
+    }
+  }
+
+  public static void openNoneTradingConfigurationMenu(ServerPlayer serverPlayer,
+      EasyNPCEntity entity) {
+    if (hasPermissions(serverPlayer, entity, COMMON.noneTradingConfigurationEnabled.get(),
+        COMMON.noneTradingConfigurationAllowInCreative.get(),
+        COMMON.noneTradingConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      NetworkHooks.openScreen(serverPlayer,
+          NoneTradingConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
+    }
+  }
+
+  public static void openBasicTradingConfigurationMenu(ServerPlayer serverPlayer,
+      EasyNPCEntity entity) {
+    if (hasPermissions(serverPlayer, entity, COMMON.basicTradingConfigurationEnabled.get(),
+        COMMON.basicTradingConfigurationAllowInCreative.get(),
+        COMMON.basicTradingConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      NetworkHooks.openScreen(serverPlayer,
+          BasicTradingConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
+    }
+  }
+
+  public static void openAdvancedTradingConfigurationMenu(ServerPlayer serverPlayer,
+      EasyNPCEntity entity) {
+    if (hasPermissions(serverPlayer, entity, COMMON.advancedTradingConfigurationEnabled.get(),
+        COMMON.advancedTradingConfigurationAllowInCreative.get(),
+        COMMON.advancedTradingConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      NetworkHooks.openScreen(serverPlayer,
+          AdvancedTradingConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
+    }
+  }
+
+  public static void openCustomTradingConfigurationMenu(ServerPlayer serverPlayer,
+      EasyNPCEntity entity) {
+    if (hasPermissions(serverPlayer, entity, COMMON.customTradingConfigurationEnabled.get(),
+        COMMON.customTradingConfigurationAllowInCreative.get(),
+        COMMON.customTradingConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      NetworkHooks.openScreen(serverPlayer,
+          CustomTradingConfigurationMenu.getMenuProvider(uuid, entity),
           buffer -> buffer.writeUUID(uuid));
     }
   }
