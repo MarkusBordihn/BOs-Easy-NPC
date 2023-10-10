@@ -135,7 +135,7 @@ public class SliderButton extends AbstractSliderButton {
       case SCALE:
         return 0.1f;
       case POSITION:
-        return -16.0f;
+        return -24.0f;
       default:
         return -100;
     }
@@ -148,7 +148,7 @@ public class SliderButton extends AbstractSliderButton {
       case SCALE:
         return 10.0f;
       case POSITION:
-        return 16.0f;
+        return 24.0f;
       default:
         return 100;
     }

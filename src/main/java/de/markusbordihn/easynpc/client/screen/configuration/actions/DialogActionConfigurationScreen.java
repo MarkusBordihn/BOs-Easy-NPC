@@ -130,8 +130,9 @@ public class DialogActionConfigurationScreen
         this.addRenderableWidget(new Checkbox(this.contentLeftPos + 215, openDialogActionTop + 18,
             "debug", openDialogActionData != null && openDialogActionData.isDebugEnabled(),
             checkbox -> this.validateOpenDialogAction()));
-    this.onOpenDialogActionSaveButton = this.addRenderableWidget(
-        new SaveButton(this.leftPos + 267, openDialogActionTop - 2, onPress -> {
+    this.onOpenDialogActionSaveButton = this.addRenderableWidget(new SaveButton(
+        this.onOpenDialogActionBox.getX() + this.onOpenDialogActionBox.getWidth() + 5,
+        openDialogActionTop - 2, onPress -> {
           ActionData actionData =
               new ActionData(ActionType.ON_OPEN_DIALOG, this.onOpenDialogActionBox.getValue(),
                   this.onOpenDialogActionExecuteAsUserCheckbox.selected(),
@@ -157,8 +158,9 @@ public class DialogActionConfigurationScreen
         this.addRenderableWidget(new Checkbox(this.contentLeftPos + 215, closeDialogActionTop + 18,
             "debug", closeDialogActionData != null && closeDialogActionData.isDebugEnabled(),
             checkbox -> this.validateCloseDialogAction()));
-    this.onCloseDialogActionSaveButton = this.addRenderableWidget(
-        new SaveButton(this.leftPos + 267, closeDialogActionTop - 2, onPress -> {
+    this.onCloseDialogActionSaveButton = this.addRenderableWidget(new SaveButton(
+        this.onCloseDialogActionBox.getX() + this.onCloseDialogActionBox.getWidth() + 5,
+        closeDialogActionTop - 2, onPress -> {
           ActionData actionData =
               new ActionData(ActionType.ON_CLOSE_DIALOG, this.onCloseDialogActionBox.getValue(),
                   this.onCloseDialogActionExecuteAsUserCheckbox.selected(),
@@ -184,8 +186,9 @@ public class DialogActionConfigurationScreen
         this.addRenderableWidget(new Checkbox(this.contentLeftPos + 215, yesSelectionActionTop + 18,
             "debug", yesSelectionActionData != null && yesSelectionActionData.isDebugEnabled(),
             checkbox -> this.validateYesSelectionAction()));
-    this.onYesSelectionActionSaveButton = this.addRenderableWidget(
-        new SaveButton(this.leftPos + 267, yesSelectionActionTop - 2, onPress -> {
+    this.onYesSelectionActionSaveButton = this.addRenderableWidget(new SaveButton(
+        this.onYesSelectionActionBox.getX() + this.onYesSelectionActionBox.getWidth() + 5,
+        yesSelectionActionTop - 2, onPress -> {
           ActionData actionData =
               new ActionData(ActionType.ON_YES_SELECTION, this.onYesSelectionActionBox.getValue(),
                   this.onYesSelectionActionExecuteAsUserCheckbox.selected(),
@@ -211,8 +214,9 @@ public class DialogActionConfigurationScreen
         this.addRenderableWidget(new Checkbox(this.contentLeftPos + 215, noSelectionActionTop + 18,
             "debug", noSelectionActionData != null && noSelectionActionData.isDebugEnabled(),
             checkbox -> this.validateNoSelectionAction()));
-    this.onNoSelectionActionSaveButton = this.addRenderableWidget(
-        new SaveButton(this.leftPos + 267, noSelectionActionTop - 2, onPress -> {
+    this.onNoSelectionActionSaveButton = this.addRenderableWidget(new SaveButton(
+        this.onNoSelectionActionBox.getX() + this.onNoSelectionActionBox.getWidth() + 5,
+        noSelectionActionTop - 2, onPress -> {
           ActionData actionData =
               new ActionData(ActionType.ON_NO_SELECTION, this.onNoSelectionActionBox.getValue(),
                   this.onNoSelectionActionExecuteAsUserCheckbox.selected(),

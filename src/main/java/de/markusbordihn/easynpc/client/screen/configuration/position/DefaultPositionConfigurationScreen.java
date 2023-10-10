@@ -37,7 +37,7 @@ import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.data.EntityAttributeData.EntityAttribute;
+import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
 import de.markusbordihn.easynpc.menu.configuration.position.DefaultPositionConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
@@ -180,7 +180,7 @@ public class DefaultPositionConfigurationScreen
             }));
 
     // Freefall Checkbox
-    this.positionFreefallCheckbox = this.addRenderableWidget(new Checkbox(this.contentLeftPos + 180,
+    this.positionFreefallCheckbox = this.addRenderableWidget(new Checkbox(this.contentLeftPos + 190,
         this.topPos + 16, 150, 20, Component.translatable(Constants.TEXT_CONFIG_PREFIX + "freefall")
             .withStyle(ChatFormatting.WHITE),
         this.entity.getAttributeFreefall()) {

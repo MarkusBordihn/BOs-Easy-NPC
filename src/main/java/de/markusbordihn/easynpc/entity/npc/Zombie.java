@@ -19,22 +19,16 @@
 
 package de.markusbordihn.easynpc.entity.npc;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 
 public class Zombie extends EasyNPCEntity {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   // General Information
   public static final String ID = "zombie";

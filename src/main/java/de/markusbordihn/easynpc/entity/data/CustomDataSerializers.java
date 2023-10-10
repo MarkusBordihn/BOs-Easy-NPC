@@ -22,11 +22,12 @@ package de.markusbordihn.easynpc.entity.data;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
-
+import net.minecraft.world.item.trading.MerchantOffers;
 import de.markusbordihn.easynpc.data.CustomPosition;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.Profession;
 
 public class CustomDataSerializers {
@@ -46,6 +47,21 @@ public class CustomDataSerializers {
         }
       };
 
+  public static final EntityDataSerializer<TradingType> TRADING_TYPE =
+      new EntityDataSerializer<TradingType>() {
+        public void write(FriendlyByteBuf buffer, TradingType value) {
+          buffer.writeEnum(value);
+        }
+
+        public TradingType read(FriendlyByteBuf buffer) {
+          return buffer.readEnum(TradingType.class);
+        }
+
+        public TradingType copy(TradingType value) {
+          return value;
+        }
+      };
+
   public static final EntityDataSerializer<ModelPose> MODEL_POSE =
       new EntityDataSerializer<ModelPose>() {
         public void write(FriendlyByteBuf buffer, ModelPose value) {
@@ -57,6 +73,21 @@ public class CustomDataSerializers {
         }
 
         public ModelPose copy(ModelPose value) {
+          return value;
+        }
+      };
+
+  public static final EntityDataSerializer<MerchantOffers> MERCHANT_OFFERS =
+      new EntityDataSerializer<MerchantOffers>() {
+        public void write(FriendlyByteBuf buffer, MerchantOffers value) {
+          buffer.writeNbt(value.createTag());
+        }
+
+        public MerchantOffers read(FriendlyByteBuf buffer) {
+          return new MerchantOffers(buffer.readNbt());
+        }
+
+        public MerchantOffers copy(MerchantOffers value) {
           return value;
         }
       };
@@ -110,9 +141,11 @@ public class CustomDataSerializers {
 
   static {
     EntityDataSerializers.registerSerializer(DIALOG_TYPE);
+    EntityDataSerializers.registerSerializer(MERCHANT_OFFERS);
     EntityDataSerializers.registerSerializer(MODEL_POSE);
     EntityDataSerializers.registerSerializer(POSITION);
     EntityDataSerializers.registerSerializer(PROFESSION);
     EntityDataSerializers.registerSerializer(SKIN_TYPE);
+    EntityDataSerializers.registerSerializer(TRADING_TYPE);
   }
 }

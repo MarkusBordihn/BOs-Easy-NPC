@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.entity;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,16 +32,25 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.npc.Npc;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.trading.Merchant;
+import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.data.EntityActionData;
 import de.markusbordihn.easynpc.entity.data.EntityAttackData;
 import de.markusbordihn.easynpc.entity.data.CustomDataSerializers;
@@ -50,11 +60,12 @@ import de.markusbordihn.easynpc.entity.data.EntityOwnerData;
 import de.markusbordihn.easynpc.entity.data.EntityAttributeData;
 import de.markusbordihn.easynpc.entity.data.EntityScaleData;
 import de.markusbordihn.easynpc.entity.data.EntitySkinData;
+import de.markusbordihn.easynpc.entity.data.EntityTradingData;
 import de.markusbordihn.easynpc.utils.TextUtils;
 
-public class EasyNPCEntityData extends AgeableMob
-    implements Npc, EntityActionData, EntityAttackData, EntityDialogData, EntityModelData,
-    EntityOwnerData, EntityAttributeData, EntityScaleData, EntitySkinData {
+public class EasyNPCEntityData extends AgeableMob implements EntityActionData, EntityAttackData,
+    EntityDialogData, EntityModelData, EntityOwnerData, EntityAttributeData, EntityScaleData,
+    EntitySkinData, EntityTradingData, Npc, Merchant {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -79,6 +90,8 @@ public class EasyNPCEntityData extends AgeableMob
 
   // Cache
   private boolean isPreview = false;
+  private Player tradingPlayer;
+  protected MerchantOffers offers;
 
   public EasyNPCEntityData(EntityType<? extends EasyNPCEntity> entityType, Level level) {
     super(entityType, level);
@@ -138,6 +151,85 @@ public class EasyNPCEntityData extends AgeableMob
     this.entityData.set(DATA_TAME, tamed);
   }
 
+  // Trading related methods
+  public void setTradingPlayer(@Nullable Player player) {
+    this.tradingPlayer = player;
+  }
+
+  @Nullable
+  public MerchantOffers getOffers() {
+    if (this.offers == null) {
+      this.updateTradesData();
+    }
+    return this.offers;
+  }
+
+  public Player getTradingPlayer() {
+    return this.tradingPlayer;
+  }
+
+  public boolean showProgressBar() {
+    return true;
+  }
+
+  public int getVillagerXp() {
+    return 0;
+  }
+
+  @Override
+  public void updateTradesData() {
+    MerchantOffers merchantOffers = null;
+    if (this.getTradingType() == TradingType.BASIC) {
+      merchantOffers = this.getTradingOffers();
+    }
+    if (merchantOffers != null && !merchantOffers.isEmpty()) {
+      this.offers = merchantOffers;
+    }
+    updateTrades();
+  }
+
+  protected void updateTrades() {
+  }
+
+  public void overrideOffers(@Nullable MerchantOffers merchantOffers) {}
+
+  public void overrideXp(int experience) {}
+
+  public void notifyTrade(MerchantOffer merchantOffer) {
+    merchantOffer.increaseUses();
+    this.ambientSoundTime = -this.getAmbientSoundInterval();
+    this.rewardTradeXp(merchantOffer);
+    if (this.tradingPlayer instanceof ServerPlayer) {
+      log.info("Trade {} with {} for {}", merchantOffer, this.tradingPlayer, this);
+    }
+  }
+
+  public void notifyTradeUpdated(ItemStack itemStack) {
+    if (!this.level().isClientSide && this.ambientSoundTime > -this.getAmbientSoundInterval() + 20) {
+      this.ambientSoundTime = -this.getAmbientSoundInterval();
+      this.playSound(this.getTradeUpdatedSound(!itemStack.isEmpty()), this.getSoundVolume(),
+          this.getVoicePitch());
+    }
+  }
+
+  protected SoundEvent getTradeUpdatedSound(boolean yesSound) {
+    return yesSound ? SoundEvents.VILLAGER_YES : SoundEvents.VILLAGER_NO;
+  }
+
+  public SoundEvent getNotifyTradeSound() {
+    return SoundEvents.VILLAGER_YES;
+  }
+
+  // Experience related methods
+  protected void rewardTradeXp(MerchantOffer merchantOffer) {
+    if (merchantOffer.shouldRewardExp()) {
+      int tradeExperience = 3 + this.random.nextInt(4);
+      this.level().addFreshEntity(new ExperienceOrb(this.level(), this.getX(), this.getY() + 0.5D,
+          this.getZ(), tradeExperience));
+    }
+  }
+
+  // Variant related methods
   public Enum<?> getDefaultVariant() {
     return Variant.STEVE;
   }
@@ -170,6 +262,10 @@ public class EasyNPCEntityData extends AgeableMob
   public Component getVariantName() {
     Enum<?> variant = getVariant();
     return variant != null ? TextUtils.normalizeName(variant.name()) : this.getTypeName();
+  }
+
+  public boolean isClientSide() {
+    return this.level().isClientSide;
   }
 
   public boolean isPreview() {
@@ -248,6 +344,7 @@ public class EasyNPCEntityData extends AgeableMob
     this.defineSynchedOwnerData();
     this.defineSynchedScaleData();
     this.defineSynchedSkinData();
+    this.defineSynchedTradingData();
 
     // Handle pose, profession and variant.
     this.entityData.define(DATA_TAME, false);
@@ -266,6 +363,7 @@ public class EasyNPCEntityData extends AgeableMob
     this.addAdditionalOwnerData(compoundTag);
     this.addAdditionalScaleData(compoundTag);
     this.addAdditionalSkinData(compoundTag);
+    this.addAdditionalTradingData(compoundTag);
 
     // Handle pose, profession and variant.
     if (this.getModelPose() == ModelPose.DEFAULT && this.getPose() != null) {
@@ -295,6 +393,7 @@ public class EasyNPCEntityData extends AgeableMob
     this.readAdditionalOwnerData(compoundTag);
     this.readAdditionalScaleData(compoundTag);
     this.readAdditionalSkinData(compoundTag);
+    this.readAdditionalTradingData(compoundTag);
 
     // Handle pose, profession and variant data.
     if (this.getModelPose() == ModelPose.DEFAULT && compoundTag.contains(DATA_POSE_TAG)) {
@@ -339,7 +438,17 @@ public class EasyNPCEntityData extends AgeableMob
   }
 
   @SuppressWarnings("java:S3400")
+  public int getEntityGuiLeft() {
+    return 0;
+  }
+
+  @SuppressWarnings("java:S3400")
   public int getEntityDialogTop() {
+    return 0;
+  }
+
+  @SuppressWarnings("java:S3400")
+  public int getEntityDialogLeft() {
     return 0;
   }
 
