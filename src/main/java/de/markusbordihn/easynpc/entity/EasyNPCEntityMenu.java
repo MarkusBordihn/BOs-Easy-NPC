@@ -374,14 +374,14 @@ public class EasyNPCEntityMenu {
   }
 
   public static void openAdvancedTradingConfigurationMenu(ServerPlayer serverPlayer,
-      EasyNPCEntity entity) {
+      EasyNPCEntity entity, int pageIndex) {
     if (hasPermissions(serverPlayer, entity, COMMON.advancedTradingConfigurationEnabled.get(),
         COMMON.advancedTradingConfigurationAllowInCreative.get(),
         COMMON.advancedTradingConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
       NetworkHooks.openScreen(serverPlayer,
-          AdvancedTradingConfigurationMenu.getMenuProvider(uuid, entity),
-          buffer -> buffer.writeUUID(uuid));
+          AdvancedTradingConfigurationMenu.getMenuProvider(uuid, entity, pageIndex),
+          buffer -> buffer.writeUUID(uuid).writeInt(pageIndex));
     }
   }
 
