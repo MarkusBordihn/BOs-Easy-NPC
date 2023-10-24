@@ -33,9 +33,11 @@ public class ActionUtils {
       text = "/" + text;
     }
     if (entity != null) {
+      output = output.replace("@npc-uuid", entity.getUUID().toString());
       output = output.replace("@npc", entity.getName().getString());
     }
     if (player != null) {
+      output = output.replace("@initiator-uuid", player.getUUID().toString());
       output = output.replace("@initiator", player.getName().getString());
     }
     return output;

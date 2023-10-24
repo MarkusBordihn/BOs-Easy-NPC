@@ -19,29 +19,20 @@
 
 package de.markusbordihn.easynpc.menu.configuration.trading;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.UUID;
 
-import net.minecraft.world.Container;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
 
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 
-public class ItemResultSlot extends Slot {
+public class TradingConfigurationMenu extends ConfigurationMenu {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  final TradingConfigurationMenu menu;
-
-  ItemResultSlot(TradingConfigurationMenu menu, Container container, int index, int x, int y) {
-    super(container, index, x, y);
-    this.menu = menu;
+  public TradingConfigurationMenu(MenuType<?> menuType, int windowId, Inventory playerInventory,
+      UUID uuid, int pageIndex) {
+    super(menuType, windowId, playerInventory, uuid, pageIndex);
   }
 
-  @Override
-  public void set(ItemStack itemStack) {
-    super.set(itemStack);
-    menu.setTradingChanged();
-  }
+  public void setTradingChanged() {}
+
 }

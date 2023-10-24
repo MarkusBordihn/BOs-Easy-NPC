@@ -83,7 +83,6 @@ public class TradingConfigurationScreen<T extends ConfigurationMenu>
         this.hasPermissions(COMMON.advancedTradingConfigurationEnabled.get(),
             COMMON.advancedTradingConfigurationAllowInCreative.get(),
             COMMON.advancedTradingConfigurationPermissionLevel.get());
-    this.advancedTradesButton.active = false;
     this.customTradesButton.active =
         this.hasPermissions(COMMON.customTradingConfigurationEnabled.get(),
             COMMON.customTradingConfigurationAllowInCreative.get(),

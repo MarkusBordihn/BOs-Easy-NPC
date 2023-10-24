@@ -142,6 +142,21 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     return false;
   }
 
+  protected static boolean isFloatValue(String text) {
+    return text != null && (text.isEmpty()
+        || (text.matches("^\\d+(\\.?\\d*)?$") && Float.parseFloat(text) >= 0.0F));
+  }
+
+  protected static boolean isPositiveNumericValue(String text) {
+    return text != null
+        && (text.isEmpty() || (text.matches("^\\d+$") && Integer.parseInt(text) > 0));
+  }
+
+  protected static boolean isNumericValue(String text) {
+    return text != null
+        && (text.isEmpty() || (text.matches("^\\d+$") && Integer.parseInt(text) >= 0));
+  }
+
   @Override
   public void init() {
     super.init();
