@@ -46,7 +46,8 @@ import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.entity.Profession;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.message.MessageActionChange;
-
+import de.markusbordihn.easynpc.network.message.MessageAdvancedTrading;
+import de.markusbordihn.easynpc.network.message.MessageBasicTrading;
 import de.markusbordihn.easynpc.network.message.MessageDialogTypeChange;
 import de.markusbordihn.easynpc.network.message.MessageEntityAttributeChange;
 import de.markusbordihn.easynpc.network.message.MessageModelLockRotationChange;
@@ -96,7 +97,14 @@ public class NetworkMessageHandler {
   /** Open configuration request. */
   public static void openConfiguration(UUID uuid, ConfigurationType configurationType) {
     if (uuid != null && configurationType != null) {
-      NetworkHandler.sendToServer(new MessageOpenConfiguration(uuid, configurationType));
+      NetworkHandler.sendToServer(new MessageOpenConfiguration(uuid, configurationType, 0));
+    }
+  }
+
+  public static void openConfiguration(UUID uuid, ConfigurationType configurationType,
+      int pageIndex) {
+    if (uuid != null && configurationType != null && pageIndex >= 0) {
+      NetworkHandler.sendToServer(new MessageOpenConfiguration(uuid, configurationType, pageIndex));
     }
   }
 
@@ -312,6 +320,63 @@ public class NetworkMessageHandler {
   public static void changeTradingType(UUID uuid, TradingType tradingType) {
     if (uuid != null && tradingType != null) {
       NetworkHandler.sendToServer(new MessageTradingTypeChange(uuid, tradingType));
+    }
+  }
+
+  public static void setAdvancedTradingResetsEveryMin(UUID uuid, int resetsEveryMin) {
+    if (uuid != null && resetsEveryMin >= 0) {
+      NetworkHandler.sendToServer(new MessageAdvancedTrading(uuid, 9999,
+          MessageAdvancedTrading.TradingValueType.RESETS_EVERY_MIN, resetsEveryMin));
+    }
+  }
+
+  public static void setAdvancedTradingMaxUses(UUID uuid, int tradingOfferIndex, int maxUses) {
+    if (uuid != null && maxUses > 0) {
+      NetworkHandler.sendToServer(new MessageAdvancedTrading(uuid, tradingOfferIndex,
+          MessageAdvancedTrading.TradingValueType.MAX_USES, maxUses));
+    }
+  }
+
+  public static void setAdvancedTradingRewardExp(UUID uuid, int tradingOfferIndex, int xp) {
+    if (uuid != null && xp >= 0) {
+      NetworkHandler.sendToServer(new MessageAdvancedTrading(uuid, tradingOfferIndex,
+          MessageAdvancedTrading.TradingValueType.XP, xp));
+    }
+  }
+
+  public static void setAdvancedTradingPriceMultiplier(UUID uuid, int tradingOfferIndex,
+      float priceMultiplier) {
+    if (uuid != null && priceMultiplier >= 0.0) {
+      NetworkHandler.sendToServer(new MessageAdvancedTrading(uuid, tradingOfferIndex,
+          MessageAdvancedTrading.TradingValueType.PRICE_MULTIPLIER, priceMultiplier));
+    }
+  }
+
+  public static void setAdvancedTradingDemand(UUID uuid, int tradingOfferIndex, int demand) {
+    if (uuid != null && demand >= 0) {
+      NetworkHandler.sendToServer(new MessageAdvancedTrading(uuid, tradingOfferIndex,
+          MessageAdvancedTrading.TradingValueType.DEMAND, demand));
+    }
+  }
+
+  public static void setBasicTradingMaxUses(UUID uuid, int maxUses) {
+    if (uuid != null && maxUses > 0) {
+      NetworkHandler.sendToServer(
+          new MessageBasicTrading(uuid, MessageBasicTrading.TradingValueType.MAX_USES, maxUses));
+    }
+  }
+
+  public static void setBasicTradingRewardExp(UUID uuid, int rewardExp) {
+    if (uuid != null && rewardExp >= 0) {
+      NetworkHandler.sendToServer(new MessageBasicTrading(uuid,
+          MessageBasicTrading.TradingValueType.REWARD_EXP, rewardExp));
+    }
+  }
+
+  public static void setBasicTradingResetsEveryMin(UUID uuid, int resetsEveryMin) {
+    if (uuid != null && resetsEveryMin >= 0) {
+      NetworkHandler.sendToServer(new MessageBasicTrading(uuid,
+          MessageBasicTrading.TradingValueType.RESETS_EVERY_MIN, resetsEveryMin));
     }
   }
 

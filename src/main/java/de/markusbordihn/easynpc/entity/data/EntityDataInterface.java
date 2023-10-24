@@ -24,6 +24,7 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.level.Level;
+
 import de.markusbordihn.easynpc.Constants;
 
 public interface EntityDataInterface {

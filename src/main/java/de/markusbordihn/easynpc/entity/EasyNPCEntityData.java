@@ -180,17 +180,23 @@ public class EasyNPCEntityData extends AgeableMob implements EntityActionData, E
   @Override
   public void updateTradesData() {
     MerchantOffers merchantOffers = null;
-    if (this.getTradingType() == TradingType.BASIC) {
-      merchantOffers = this.getTradingOffers();
+    if (this.getTradingType() == TradingType.BASIC
+        || this.getTradingType() == TradingType.ADVANCED) {
+      // Create a copy of the offers to avoid side effects.
+      merchantOffers = new MerchantOffers(this.getTradingOffers().createTag());
     }
     if (merchantOffers != null && !merchantOffers.isEmpty()) {
+      // Filter out offers which are missing item a, item b or result item.
+      merchantOffers.removeIf(merchantOffer -> {
+        return (merchantOffer.getBaseCostA().isEmpty() && merchantOffer.getCostB().isEmpty())
+            || merchantOffer.getResult().isEmpty();
+      });
       this.offers = merchantOffers;
     }
     updateTrades();
   }
 
-  protected void updateTrades() {
-  }
+  protected void updateTrades() {}
 
   public void overrideOffers(@Nullable MerchantOffers merchantOffers) {}
 
@@ -200,8 +206,8 @@ public class EasyNPCEntityData extends AgeableMob implements EntityActionData, E
     merchantOffer.increaseUses();
     this.ambientSoundTime = -this.getAmbientSoundInterval();
     this.rewardTradeXp(merchantOffer);
-    if (this.tradingPlayer instanceof ServerPlayer) {
-      log.info("Trade {} with {} for {}", merchantOffer, this.tradingPlayer, this);
+    if (this.tradingPlayer instanceof ServerPlayer serverPlayer) {
+      log.debug("Trade {} with {} for {}", merchantOffer, serverPlayer, this);
     }
   }
 
@@ -292,10 +298,22 @@ public class EasyNPCEntityData extends AgeableMob implements EntityActionData, E
     if (!compoundTag.contains("UUID") && !compoundTag.contains("pos")) {
       CompoundTag existingCompoundTag = this.serializeNBT();
 
+      // Remove existing dialog data to allow legacy presets to be imported.
+      if (existingCompoundTag.contains(EntityDialogData.DATA_DIALOG_DATA_TAG)) {
+        existingCompoundTag.remove(EntityDialogData.DATA_DIALOG_DATA_TAG);
+      }
+
       // Remove existing model data to allow legacy presets to be imported.
       if (existingCompoundTag.contains(EntityModelData.DATA_MODEL_DATA_TAG)) {
         existingCompoundTag.remove(EntityModelData.DATA_MODEL_DATA_TAG);
       }
+
+      // Remove existing skin data to allow legacy presets to be imported.
+      if (existingCompoundTag.contains(EntitySkinData.DATA_SKIN_DATA_TAG)) {
+        existingCompoundTag.remove(EntitySkinData.DATA_SKIN_DATA_TAG);
+      }
+
+      log.info("Merging preset {} with existing data for {}", compoundTag, this);
       compoundTag = existingCompoundTag.merge(compoundTag);
     }
 

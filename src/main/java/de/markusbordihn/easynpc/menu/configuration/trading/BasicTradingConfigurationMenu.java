@@ -39,14 +39,14 @@ import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 
-public class BasicTradingConfigurationMenu extends ConfigurationMenu {
+public class BasicTradingConfigurationMenu extends TradingConfigurationMenu {
 
   // Defining basic layout options
-  public static final int TRADING_OFFERS = 6;
-  public static final int TRADING_START_POSITION_Y = 39;
-  public static final int TRADING_START_POSITION_X = 110;
+  public static final int TRADING_OFFERS = 12;
+  public static final int TRADING_START_POSITION_Y = 40;
+  public static final int TRADING_START_POSITION_X = 30;
+  public static final int TRADING_START_POSITION_SECOND_ROW_X = TRADING_START_POSITION_X + 160;
   public static final int TRADING_SLOT_SIZE = 18;
   public static final int SLOT_SIZE = 18;
 
@@ -70,7 +70,7 @@ public class BasicTradingConfigurationMenu extends ConfigurationMenu {
 
   public BasicTradingConfigurationMenu(final MenuType<?> menuType, final int windowId,
       final Inventory playerInventory, final Container tradingContainer, UUID uuid) {
-    super(menuType, windowId, playerInventory, uuid);
+    super(menuType, windowId, playerInventory, uuid, 0);
 
     // Make sure the passed container matched the expected sizes
     checkContainerSize(tradingContainer, tradingContainerSize);
@@ -79,37 +79,47 @@ public class BasicTradingConfigurationMenu extends ConfigurationMenu {
     this.tradingContainer = tradingContainer;
 
     // Restructure Container from merchant offers.
-    MerchantOffers merchantOffers = this.entity.getTradingOffers();
-    if (merchantOffers != null) {
-      for (int tradingOffer = 0; tradingOffer < TRADING_OFFERS
-          && tradingOffer < merchantOffers.size(); tradingOffer++) {
-        MerchantOffer merchantOffer = merchantOffers.get(tradingOffer);
-        this.tradingContainer.setItem((tradingOffer * 3) + 0, merchantOffer.getCostA());
-        this.tradingContainer.setItem((tradingOffer * 3) + 1, merchantOffer.getCostB());
-        this.tradingContainer.setItem((tradingOffer * 3) + 2, merchantOffer.getResult());
+    if (!this.level.isClientSide) {
+      MerchantOffers merchantOffers = this.entity.getTradingOffers();
+      if (merchantOffers != null) {
+        for (int tradingOffer = 0; tradingOffer < TRADING_OFFERS
+            && tradingOffer < merchantOffers.size(); tradingOffer++) {
+          MerchantOffer merchantOffer = merchantOffers.get(tradingOffer);
+          this.tradingContainer.setItem((tradingOffer * 3) + 0, merchantOffer.getBaseCostA());
+          this.tradingContainer.setItem((tradingOffer * 3) + 1, merchantOffer.getCostB());
+          this.tradingContainer.setItem((tradingOffer * 3) + 2, merchantOffer.getResult());
+        }
       }
     }
 
     // Trading offers Slots
+    int slotPositionX = TRADING_START_POSITION_X;
+    int slotPositionY = TRADING_START_POSITION_Y;
     for (int tradingOffer = 0; tradingOffer < TRADING_OFFERS; tradingOffer++) {
-      int slotPositionY = TRADING_START_POSITION_Y + (tradingOffer * (TRADING_SLOT_SIZE + 1)) + 1;
+      // Position for Second row
+      if (tradingOffer == 6) {
+        slotPositionX = TRADING_START_POSITION_SECOND_ROW_X;
+        slotPositionY = TRADING_START_POSITION_Y;
+      }
+
       // Item A Slot
-      this.addSlot(new ItemASlot(this, tradingContainer, (tradingOffer * 3) + 0,
-          TRADING_START_POSITION_X, slotPositionY));
+      this.addSlot(new ItemASlot(this, tradingContainer, (tradingOffer * 3) + 0, slotPositionX,
+          slotPositionY));
 
       // Item B Slot
       this.addSlot(new ItemBSlot(this, tradingContainer, (tradingOffer * 3) + 1,
-          TRADING_START_POSITION_X + TRADING_SLOT_SIZE + TRADING_SLOT_SIZE, slotPositionY));
+          slotPositionX + TRADING_SLOT_SIZE + TRADING_SLOT_SIZE, slotPositionY));
 
       // Result Slot
       this.addSlot(new ItemResultSlot(this, tradingContainer, (tradingOffer * 3) + 2,
-          TRADING_START_POSITION_X + ((TRADING_SLOT_SIZE + TRADING_SLOT_SIZE + 5) * 2),
-          slotPositionY));
+          slotPositionX + ((TRADING_SLOT_SIZE + TRADING_SLOT_SIZE + 5) * 2), slotPositionY));
+
+      slotPositionY += TRADING_SLOT_SIZE + 1;
     }
 
     // Player Inventory Slots
-    int playerInventoryStartPositionY = 155;
-    int playerInventoryStartPositionX = 80;
+    int playerInventoryStartPositionY = 159;
+    int playerInventoryStartPositionX = 8;
     for (int inventoryRow = 0; inventoryRow < 3; ++inventoryRow) {
       for (int inventoryColumn = 0; inventoryColumn < 9; ++inventoryColumn) {
         this.addSlot(new Slot(playerInventory, inventoryColumn + inventoryRow * 9 + 9,
@@ -120,7 +130,7 @@ public class BasicTradingConfigurationMenu extends ConfigurationMenu {
 
     // Player Hotbar Slots
     int hotbarStartPositionY = 215;
-    int hotbarStartPositionX = 80;
+    int hotbarStartPositionX = 8;
     for (int playerInventorySlot = 0; playerInventorySlot < 9; ++playerInventorySlot) {
       this.addSlot(new Slot(playerInventory, playerInventorySlot,
           hotbarStartPositionX + playerInventorySlot * SLOT_SIZE, hotbarStartPositionY));
@@ -143,11 +153,11 @@ public class BasicTradingConfigurationMenu extends ConfigurationMenu {
     };
   }
 
+  @Override
   public void setTradingChanged() {
     if (this.level.isClientSide) {
       return;
     }
-    log.debug("Trading changed {} ...", tradingContainer);
     this.entity.setBasicTradingOffers(tradingContainer);
   }
 

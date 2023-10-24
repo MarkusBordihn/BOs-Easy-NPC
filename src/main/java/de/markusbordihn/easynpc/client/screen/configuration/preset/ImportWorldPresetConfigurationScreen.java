@@ -246,7 +246,7 @@ public class ImportWorldPresetConfigurationScreen
 
       private void select() {
         ImportFileSelectionList.this.setSelected(this);
-        log.info("Selected file {}.", this.resourceLocation);
+        log.debug("Selected file {}.", this.resourceLocation);
 
         // Set selected preset.
         ImportWorldPresetConfigurationScreen.updateSelectedPreset(this.resourceLocation);
