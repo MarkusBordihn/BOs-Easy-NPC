@@ -36,24 +36,31 @@ import de.markusbordihn.easynpc.network.NetworkMessage;
 public class MessageOpenConfiguration extends NetworkMessage {
 
   protected final ConfigurationType configurationType;
+  protected final int pageIndex;
 
-  public MessageOpenConfiguration(UUID uuid, ConfigurationType configurationType) {
+  public MessageOpenConfiguration(UUID uuid, ConfigurationType configurationType, int pageIndex) {
     super(uuid);
     this.configurationType = configurationType;
+    this.pageIndex = pageIndex;
   }
 
   public ConfigurationType getConfigurationType() {
     return this.configurationType;
   }
 
+  public int getPageIndex() {
+    return this.pageIndex;
+  }
+
   public static MessageOpenConfiguration decode(final FriendlyByteBuf buffer) {
     return new MessageOpenConfiguration(buffer.readUUID(),
-        buffer.readEnum(ConfigurationType.class));
+        buffer.readEnum(ConfigurationType.class), buffer.readInt());
   }
 
   public static void encode(final MessageOpenConfiguration message, final FriendlyByteBuf buffer) {
     buffer.writeUUID(message.uuid);
     buffer.writeEnum(message.getConfigurationType());
+    buffer.writeInt(message.pageIndex);
   }
 
   public static void handle(MessageOpenConfiguration message,
@@ -75,6 +82,13 @@ public class MessageOpenConfiguration extends NetworkMessage {
     if (configurationType == null) {
       log.error("Invalid configuration type {} for {} from {}", configurationType, message,
           serverPlayer);
+      return;
+    }
+
+    // Validate page index.
+    int pageIndex = message.getPageIndex();
+    if (pageIndex < 0) {
+      log.error("Invalid page index {} for {} from {}", pageIndex, message, serverPlayer);
       return;
     }
 
@@ -154,7 +168,7 @@ public class MessageOpenConfiguration extends NetworkMessage {
         EasyNPCEntityMenu.openNoneTradingConfigurationMenu(serverPlayer, easyNPCEntity);
         break;
       case ADVANCED_TRADING:
-        EasyNPCEntityMenu.openAdvancedTradingConfigurationMenu(serverPlayer, easyNPCEntity);
+        EasyNPCEntityMenu.openAdvancedTradingConfigurationMenu(serverPlayer, easyNPCEntity, pageIndex);
         break;
       case CUSTOM_TRADING:
         EasyNPCEntityMenu.openCustomTradingConfigurationMenu(serverPlayer, easyNPCEntity);

@@ -33,6 +33,8 @@ import net.minecraftforge.network.simple.SimpleChannel;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.message.MessageActionChange;
+import de.markusbordihn.easynpc.network.message.MessageAdvancedTrading;
+import de.markusbordihn.easynpc.network.message.MessageBasicTrading;
 import de.markusbordihn.easynpc.network.message.MessageDialogTypeChange;
 import de.markusbordihn.easynpc.network.message.MessageEntityAttributeChange;
 import de.markusbordihn.easynpc.network.message.MessageModelLockRotationChange;
@@ -64,7 +66,7 @@ public class NetworkHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final String PROTOCOL_VERSION = "12";
+  private static final String PROTOCOL_VERSION = "13";
   public static final SimpleChannel INSTANCE =
       NetworkRegistry.newSimpleChannel(new ResourceLocation(Constants.MOD_ID, "network"),
           () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
@@ -81,6 +83,14 @@ public class NetworkHandler {
       // Action Change: Client -> Server
       INSTANCE.registerMessage(id++, MessageActionChange.class, MessageActionChange::encode,
           MessageActionChange::decode, MessageActionChange::handle);
+
+      // Advanced Trading: Client -> Server
+      INSTANCE.registerMessage(id++, MessageAdvancedTrading.class, MessageAdvancedTrading::encode,
+          MessageAdvancedTrading::decode, MessageAdvancedTrading::handle);
+
+      // Basic Trading: Client -> Server
+      INSTANCE.registerMessage(id++, MessageBasicTrading.class, MessageBasicTrading::encode,
+          MessageBasicTrading::decode, MessageBasicTrading::handle);
 
       // Dialog Type: Client -> Server
       INSTANCE.registerMessage(id++, MessageDialogTypeChange.class, MessageDialogTypeChange::encode,

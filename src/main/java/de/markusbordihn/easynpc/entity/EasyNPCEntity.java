@@ -48,6 +48,7 @@ import de.markusbordihn.easynpc.data.action.ActionData;
 import de.markusbordihn.easynpc.data.action.ActionGroup;
 import de.markusbordihn.easynpc.data.action.ActionManager;
 import de.markusbordihn.easynpc.data.action.ActionType;
+import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.ai.goal.CustomLookAtPlayerGoal;
 import de.markusbordihn.easynpc.entity.ai.goal.ResetLookAtPlayerGoal;
 import de.markusbordihn.easynpc.item.ModItems;
@@ -56,9 +57,12 @@ public class EasyNPCEntity extends EasyNPCEntityData {
 
   // Additional ticker
   private static final int BASE_TICK = 16;
+  private static final int TRADING_TICK = Math.round((20f / BASE_TICK) * 60) - 10;
   private static final int TRAVEL_TICK = 20;
   private int baseTicker = random.nextInt(BASE_TICK / 2);
+  private int tradingTicker = random.nextInt(TRADING_TICK / 2);
   private int travelTicker = random.nextInt(TRAVEL_TICK / 2);
+  private int resetTradingTicker = 0;
 
   // Shared constants
   public static final MobCategory CATEGORY = MobCategory.MISC;
@@ -107,7 +111,31 @@ public class EasyNPCEntity extends EasyNPCEntityData {
     this.level.getProfiler().push("npcBaseTick");
 
     // Check distance for additional actions.
-    checkDistanceActions();
+    if (this.hasDistanceAction()) {
+      checkDistanceActions();
+    }
+
+    // Check if we have a trading inventory and update it.
+    if (this.tradingTicker++ >= TRADING_TICK) {
+      if (this.hasTrading()) {
+        checkTradingActions();
+      }
+      this.tradingTicker = 0;
+    }
+
+    this.level.getProfiler().pop();
+  }
+
+  public void checkTradingActions() {
+    this.level.getProfiler().push("npcCheckTradingActions");
+
+    // Check if we have a trading inventory which needs a reset.
+    if ((this.getTradingType() == TradingType.BASIC
+        || this.getTradingType() == TradingType.ADVANCED) && this.getTradingResetsEveryMin() > 0
+        && this.resetTradingTicker++ >= this.getTradingResetsEveryMin()) {
+      this.resetTradingOffers();
+      this.resetTradingTicker = 0;
+    }
 
     this.level.getProfiler().pop();
   }
