@@ -23,6 +23,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -73,24 +74,28 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
     SliderButton sliderButtonX = this.addRenderableWidget(
         new SliderButton(sliderLeftPosition, top, sliderWidth, sliderHeight, label + "RotationX",
             (float) Math.toDegrees(modelPartRotation.getX()), SliderButton.Type.DEGREE, slider -> {
+              Rotations currentModelPartRotation = this.entity.getModelPartRotation(modelPart);
               NetworkMessageHandler.rotationChange(uuid, modelPart,
                   new Rotations((float) Math.toRadians(slider.getTargetValue()),
-                      modelPartRotation.getY(), modelPartRotation.getZ()));
+                      currentModelPartRotation.getY(), currentModelPartRotation.getZ()));
             }));
     SliderButton sliderButtonY =
         this.addRenderableWidget(new SliderButton(sliderButtonX.x + sliderButtonX.getWidth(), top,
             sliderWidth, sliderHeight, label + "RotationY",
             (float) Math.toDegrees(modelPartRotation.getY()), SliderButton.Type.DEGREE, slider -> {
+              Rotations currentModelPartRotation = this.entity.getModelPartRotation(modelPart);
               NetworkMessageHandler.rotationChange(uuid, modelPart,
-                  new Rotations(modelPartRotation.getX(),
-                      (float) Math.toRadians(slider.getTargetValue()), modelPartRotation.getZ()));
+                  new Rotations(currentModelPartRotation.getX(),
+                      (float) Math.toRadians(slider.getTargetValue()),
+                      currentModelPartRotation.getZ()));
             }));
     SliderButton sliderButtonZ =
         this.addRenderableWidget(new SliderButton(sliderButtonY.x + sliderButtonY.getWidth(), top,
             sliderWidth, sliderHeight, label + "RotationZ",
             (float) Math.toDegrees(modelPartRotation.getZ()), SliderButton.Type.DEGREE, slider -> {
+              Rotations currentModelPartRotation = this.entity.getModelPartRotation(modelPart);
               NetworkMessageHandler.rotationChange(uuid, modelPart,
-                  new Rotations(modelPartRotation.getX(), modelPartRotation.getY(),
+                  new Rotations(currentModelPartRotation.getX(), currentModelPartRotation.getY(),
                       (float) Math.toRadians(slider.getTargetValue())));
             }));
 
@@ -153,20 +158,26 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
     SliderButton sliderButtonX = this
         .addRenderableWidget(new SliderButton(sliderLeftPosition, top, sliderWidth, sliderHeight,
             label + "PositionX", modelPartPosition.getX(), SliderButton.Type.POSITION, slider -> {
-              NetworkMessageHandler.modelPositionChange(uuid, modelPart, new CustomPosition(
-                  slider.getTargetValue(), modelPartPosition.getY(), modelPartPosition.getZ()));
+              CustomPosition currentModelPartPosition = this.entity.getModelPartPosition(modelPart);
+              NetworkMessageHandler.modelPositionChange(uuid, modelPart,
+                  new CustomPosition(slider.getTargetValue(), currentModelPartPosition.getY(),
+                      currentModelPartPosition.getZ()));
             }));
     SliderButton sliderButtonY = this.addRenderableWidget(
         new SliderButton(sliderButtonX.x + sliderButtonX.getWidth(), top, sliderWidth, sliderHeight,
             label + "PositionY", modelPartPosition.getY(), SliderButton.Type.POSITION, slider -> {
-              NetworkMessageHandler.modelPositionChange(uuid, modelPart, new CustomPosition(
-                  modelPartPosition.getX(), slider.getTargetValue(), modelPartPosition.getZ()));
+              CustomPosition currentModelPartPosition = this.entity.getModelPartPosition(modelPart);
+              NetworkMessageHandler.modelPositionChange(uuid, modelPart,
+                  new CustomPosition(currentModelPartPosition.getX(), slider.getTargetValue(),
+                      currentModelPartPosition.getZ()));
             }));
     SliderButton sliderButtonZ = this.addRenderableWidget(
         new SliderButton(sliderButtonY.x + sliderButtonY.getWidth(), top, sliderWidth, sliderHeight,
             label + "PositionZ", modelPartPosition.getZ(), SliderButton.Type.POSITION, slider -> {
-              NetworkMessageHandler.modelPositionChange(uuid, modelPart, new CustomPosition(
-                  modelPartPosition.getX(), modelPartPosition.getY(), slider.getTargetValue()));
+              CustomPosition currentModelPartPosition = this.entity.getModelPartPosition(modelPart);
+              NetworkMessageHandler.modelPositionChange(uuid, modelPart,
+                  new CustomPosition(currentModelPartPosition.getX(),
+                      currentModelPartPosition.getY(), slider.getTargetValue()));
             }));
 
     if (compact) {

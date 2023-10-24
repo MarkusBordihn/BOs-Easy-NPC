@@ -5,6 +5,16 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### 2023.10.24
+
+- Added advanced trading configuration for NPCs with multiple items and prices.
+- Added auto-reset for advanced and basic trading configuration.
+- Added commands to open the trading screen and to reset the trading items.
+- Added Skeleton Trader preset example for a dialog with trading options.
+- Added better basic trading configuration.
+- Fixed issue with importing legacy presets.
+- Fixed issue with advanced and custom pose configuration.
+
 ### 2023.10.10
 
 - Refactored UI and configuration system for easier support for upcoming features.

@@ -43,6 +43,7 @@ public class ConfigurationMenu extends AbstractContainerMenu {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   // Cache
+  protected final int pageIndex;
   protected final EasyNPCEntity entity;
   protected final Level level;
   protected final Player player;
@@ -51,21 +52,33 @@ public class ConfigurationMenu extends AbstractContainerMenu {
 
   public ConfigurationMenu(final MenuType<?> menuType, final int windowId,
       final Inventory playerInventory, UUID uuid) {
+    this(menuType, windowId, playerInventory, uuid, 0);
+  }
+
+  public ConfigurationMenu(final MenuType<?> menuType, final int windowId,
+      final Inventory playerInventory, UUID uuid, int pageIndex) {
     super(menuType, windowId);
 
     this.uuid = uuid;
+    this.pageIndex = pageIndex;
     this.player = playerInventory.player;
     this.level = player.getLevel();
     this.entity = this.level.isClientSide ? EntityManager.getEasyNPCEntityByUUID(uuid)
         : EntityManager.getEasyNPCEntityByUUID(uuid, (ServerPlayer) player);
     this.skinModel = this.entity.getSkinModel();
 
-    log.debug("Open configuration menu {} for {}: {} with player inventory {}", menuType, this.uuid,
-        this.entity, playerInventory);
+    if (this.level.isClientSide) {
+      log.debug("Open configuration menu {} for {}: {} with player inventory {}", menuType,
+          this.uuid, this.entity, playerInventory);
+    }
   }
 
   public EasyNPCEntity getEntity() {
     return this.entity;
+  }
+
+  public int getPageIndex() {
+    return this.pageIndex;
   }
 
   @Override
