@@ -150,7 +150,8 @@ public class TextureManager {
         return null;
       }
     } catch (IllegalArgumentException | IOException exception) {
-      log.error("{} Unable to load texture from URL {} because of:", LOG_PREFIX, remoteUrl, exception);
+      log.error("{} Unable to load texture from URL {} because of:", LOG_PREFIX, remoteUrl,
+          exception);
       return null;
     }
 

@@ -184,6 +184,7 @@ curseforge {
   project {
     id = "${curseforge_project_id}"
     changelog = file("CHANGELOG.md")
+    changelogType = 'markdown'
     releaseType = "${curseforge_release_type}"
     addGameVersion("${mc_version}")
     addGameVersion("Forge")

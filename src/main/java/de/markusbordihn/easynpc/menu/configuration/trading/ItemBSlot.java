@@ -32,9 +32,9 @@ public class ItemBSlot extends Slot {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  final BasicTradingConfigurationMenu menu;
+  final TradingConfigurationMenu menu;
 
-  ItemBSlot(BasicTradingConfigurationMenu menu, Container container, int index, int x, int y) {
+  ItemBSlot(TradingConfigurationMenu menu, Container container, int index, int x, int y) {
     super(container, index, x, y);
     this.menu = menu;
   }
