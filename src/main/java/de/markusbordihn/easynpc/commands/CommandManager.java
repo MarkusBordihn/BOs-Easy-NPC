@@ -53,6 +53,7 @@ public class CommandManager {
     // @formatter:off
       .then(ConfigureCommand.register())
       .then(PresetCommand.register())
+      .then(TradingCommand.register())
     // @formatter:on
     );
   }

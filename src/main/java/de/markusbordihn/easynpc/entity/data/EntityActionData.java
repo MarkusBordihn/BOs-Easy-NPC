@@ -85,6 +85,11 @@ public interface EntityActionData extends EntityDataInterface {
     setEntityData(DATA_ACTION_PERMISSION_LEVEL, actionPermissionLevel);
   }
 
+  default boolean hasDistanceAction() {
+    return hasAction(ActionType.ON_DISTANCE_NEAR) || hasAction(ActionType.ON_DISTANCE_CLOSE)
+        || hasAction(ActionType.ON_DISTANCE_VERY_CLOSE) || hasAction(ActionType.ON_DISTANCE_TOUCH);
+  }
+
   default void defineSynchedActionData() {
     defineEntityData(DATA_ACTION_DATA, new CompoundTag());
     defineEntityData(DATA_ACTION_PERMISSION_LEVEL, 0);

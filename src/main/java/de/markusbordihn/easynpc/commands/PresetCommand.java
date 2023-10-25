@@ -56,7 +56,7 @@ public class PresetCommand extends CustomCommand {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("preset")
-        .requires(commandSourceStack -> commandSourceStack.hasPermission(0))
+        .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
         .executes(PresetCommand::overview)
         .then(Commands.literal("export").then(Commands.argument("uuid", UuidArgument.uuid())
             .suggests(PresetCommand::suggestEasyNPCs).executes(context -> {

@@ -30,6 +30,7 @@ import net.minecraft.world.item.trading.MerchantOffers;
 
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
+import de.markusbordihn.easynpc.menu.configuration.trading.AdvancedTradingConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.trading.BasicTradingConfigurationMenu;
 
 public interface EntityTradingData extends EntityDataInterface {
@@ -41,19 +42,66 @@ public interface EntityTradingData extends EntityDataInterface {
       SynchedEntityData.defineId(EasyNPCEntityData.class, CustomDataSerializers.MERCHANT_OFFERS);
   public static final EntityDataAccessor<TradingType> DATA_TRADING_TYPE =
       SynchedEntityData.defineId(EasyNPCEntityData.class, CustomDataSerializers.TRADING_TYPE);
+  public static final EntityDataAccessor<Integer> DATA_TRADING_RESETS_EVERY_MIN =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.INT);
+  public static final EntityDataAccessor<Integer> DATA_TRADING_BASIC_MAX_USES =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.INT);
+  public static final EntityDataAccessor<Integer> DATA_TRADING_BASIC_REWARDED_XP =
+      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.INT);
 
   // CompoundTags
   public static final String DATA_TRADING_INVENTORY_TAG = "Inventory";
   public static final String DATA_TRADING_OFFERS_TAG = "Offers";
   public static final String DATA_TRADING_RECIPES_TAG = "Recipes";
   public static final String DATA_TRADING_TYPE_TAG = "TradingType";
+  public static final String DATA_TRADING_RESETS_EVERY_MIN_TAG = "ResetsEveryMin";
+  public static final String DATA_TRADING_BASIC_MAX_USES_TAG = "BasicMaxUses";
+  public static final String DATA_TRADING_BASIC_REWARDED_XP_TAG = "BasicRewardedXP";
+
+  public void updateTradesData();
 
   default MerchantOffers getTradingOffers() {
     return getEntityData(DATA_MERCHANT_OFFERS);
   }
 
   default void setTradingOffers(MerchantOffers merchantOffers) {
+    // Force update and client sync because of weak change detection.
+    setEntityData(DATA_MERCHANT_OFFERS, new MerchantOffers());
     setEntityData(DATA_MERCHANT_OFFERS, merchantOffers);
+    this.updateTradesData();
+  }
+
+  default void setAdvancedTradingOffers(Container container) {
+
+    // Update trading offers with container items.
+    MerchantOffers merchantOffers = new MerchantOffers();
+    for (int tradingOffer =
+        0; tradingOffer < AdvancedTradingConfigurationMenu.TRADING_OFFERS; tradingOffer++) {
+      ItemStack itemA = container.getItem(tradingOffer * 3 + 0);
+      ItemStack itemB = container.getItem(tradingOffer * 3 + 1);
+      ItemStack itemResult = container.getItem(tradingOffer * 3 + 2);
+
+      // Check if we have existing trading offers and use them as base for the new trading offers.
+      MerchantOffers existingMerchantOffers = this.getTradingOffers();
+      MerchantOffer existingMerchantOffer =
+          existingMerchantOffers != null && existingMerchantOffers.size() > tradingOffer
+              ? existingMerchantOffers.get(tradingOffer)
+              : null;
+      if (existingMerchantOffer != null) {
+        merchantOffers.add(tradingOffer,
+            new MerchantOffer(itemA, itemB, itemResult, existingMerchantOffer.getUses(),
+                existingMerchantOffer.getMaxUses(), existingMerchantOffer.getXp(),
+                existingMerchantOffer.getPriceMultiplier(), existingMerchantOffer.getDemand()));
+      } else {
+        merchantOffers.add(tradingOffer, new MerchantOffer(itemA, itemB, itemResult, 64, 1, 1.0F));
+      }
+    }
+
+    // Set trading offers if we have any
+    if (!merchantOffers.isEmpty()) {
+      this.setTradingType(TradingType.ADVANCED);
+      this.setTradingOffers(merchantOffers);
+    }
   }
 
   default void setBasicTradingOffers(Container container) {
@@ -66,24 +114,54 @@ public interface EntityTradingData extends EntityDataInterface {
       ItemStack itemB = container.getItem(tradingOffer * 3 + 1);
       ItemStack itemResult = container.getItem(tradingOffer * 3 + 2);
 
-      // Skip empty offers
-      if ((itemA.isEmpty() && itemB.isEmpty()) || itemResult.isEmpty()) {
-        continue;
-      }
-      MerchantOffer merchantOffer = new MerchantOffer(itemA, itemB, itemResult, 16, 64, 2.0F);
+      MerchantOffer merchantOffer = new MerchantOffer(itemA, itemB, itemResult,
+          this.getBasicTradingMaxUses(), this.getBasicTradingRewardExp(), 1.0F);
       merchantOffers.add(merchantOffer);
     }
 
     // Set trading offers if we have any
     if (!merchantOffers.isEmpty()) {
-      this.setTradingOffers(merchantOffers);
       this.setTradingType(TradingType.BASIC);
-      this.updateTradesData();
+      this.setTradingOffers(merchantOffers);
     }
   }
 
-  default void updateTradesData() {
+  default void updateBasicTradingOffers() {
+    if (this.getTradingType() != TradingType.BASIC) {
+      return;
+    }
 
+    MerchantOffers merchantOffers = this.getTradingOffers();
+    if (merchantOffers == null || merchantOffers.isEmpty()) {
+      return;
+    }
+
+    // Update trading offers
+    MerchantOffers newMerchantOffers = new MerchantOffers();
+    for (MerchantOffer merchantOffer : merchantOffers) {
+      MerchantOffer newMerchantOffer = new MerchantOffer(merchantOffer.getBaseCostA(),
+          merchantOffer.getCostB(), merchantOffer.getResult(), this.getBasicTradingMaxUses(),
+          this.getBasicTradingRewardExp(), merchantOffer.getPriceMultiplier());
+      newMerchantOffers.add(newMerchantOffer);
+    }
+
+    // Update trading offers
+    this.setTradingOffers(newMerchantOffers);
+  }
+
+  default void resetTradingOffers() {
+    MerchantOffers merchantOffers = this.getTradingOffers();
+    if (merchantOffers == null || merchantOffers.isEmpty()) {
+      return;
+    }
+
+    // Reset trading offers
+    for (MerchantOffer merchantOffer : merchantOffers) {
+      merchantOffer.resetUses();
+    }
+
+    // Update trading offers
+    this.setTradingOffers(merchantOffers);
   }
 
   default CompoundTag getTradingInventory() {
@@ -103,16 +181,110 @@ public interface EntityTradingData extends EntityDataInterface {
   }
 
   default boolean hasTrading() {
-    return (getTradingType() == TradingType.BASIC && !getEntityData(DATA_MERCHANT_OFFERS).isEmpty())
-        || (getTradingType() == TradingType.ADVANCED
-            && !getEntityData(DATA_TRADING_INVENTORY).isEmpty())
+    return ((getTradingType() == TradingType.BASIC || getTradingType() == TradingType.ADVANCED)
+        && !getEntityData(DATA_MERCHANT_OFFERS).isEmpty())
         || getTradingType() == TradingType.CUSTOM;
+  }
+
+  default void setAdvancedTradingMaxUses(int tradingOfferIndex, int maxUses) {
+    MerchantOffers merchantOffers = getTradingOffers();
+    if (merchantOffers == null || merchantOffers.isEmpty()
+        || merchantOffers.size() <= tradingOfferIndex) {
+      return;
+    }
+    MerchantOffer merchantOffer = merchantOffers.get(tradingOfferIndex);
+    if (merchantOffer == null) {
+      return;
+    }
+    merchantOffers.set(tradingOfferIndex,
+        new MerchantOffer(merchantOffer.getBaseCostA(), merchantOffer.getCostB(),
+            merchantOffer.getResult(), 0, maxUses, merchantOffer.getXp(),
+            merchantOffer.getPriceMultiplier(), merchantOffer.getDemand()));
+    this.setTradingOffers(merchantOffers);
+  }
+
+  default void setAdvancedTradingXp(int tradingOfferIndex, int xp) {
+    MerchantOffers merchantOffers = getTradingOffers();
+    if (merchantOffers == null || merchantOffers.isEmpty()
+        || merchantOffers.size() <= tradingOfferIndex) {
+      return;
+    }
+    MerchantOffer merchantOffer = merchantOffers.get(tradingOfferIndex);
+    if (merchantOffer == null) {
+      return;
+    }
+    merchantOffers.set(tradingOfferIndex,
+        new MerchantOffer(merchantOffer.getBaseCostA(), merchantOffer.getCostB(),
+            merchantOffer.getResult(), merchantOffer.getUses(), merchantOffer.getMaxUses(), xp,
+            merchantOffer.getPriceMultiplier(), merchantOffer.getDemand()));
+    this.setTradingOffers(merchantOffers);
+  }
+
+  default void setAdvancedTradingPriceMultiplier(int tradingOfferIndex, float priceMultiplier) {
+    MerchantOffers merchantOffers = getTradingOffers();
+    if (merchantOffers == null || merchantOffers.isEmpty()
+        || merchantOffers.size() <= tradingOfferIndex) {
+      return;
+    }
+    MerchantOffer merchantOffer = merchantOffers.get(tradingOfferIndex);
+    if (merchantOffer == null) {
+      return;
+    }
+    merchantOffers.set(tradingOfferIndex,
+        new MerchantOffer(merchantOffer.getBaseCostA(), merchantOffer.getCostB(),
+            merchantOffer.getResult(), merchantOffer.getUses(), merchantOffer.getMaxUses(),
+            merchantOffer.getXp(), priceMultiplier, merchantOffer.getDemand()));
+    this.setTradingOffers(merchantOffers);
+  }
+
+  default void setAdvancedTradingDemand(int tradingOfferIndex, int demand) {
+    MerchantOffers merchantOffers = getTradingOffers();
+    if (merchantOffers == null || merchantOffers.isEmpty()
+        || merchantOffers.size() <= tradingOfferIndex) {
+      return;
+    }
+    MerchantOffer merchantOffer = merchantOffers.get(tradingOfferIndex);
+    if (merchantOffer == null) {
+      return;
+    }
+    merchantOffers.set(tradingOfferIndex,
+        new MerchantOffer(merchantOffer.getBaseCostA(), merchantOffer.getCostB(),
+            merchantOffer.getResult(), merchantOffer.getUses(), merchantOffer.getMaxUses(),
+            merchantOffer.getXp(), merchantOffer.getPriceMultiplier(), demand));
+    this.setTradingOffers(merchantOffers);
+  }
+
+  default void setBasicTradingMaxUses(int maxUses) {
+    setEntityData(DATA_TRADING_BASIC_MAX_USES, maxUses);
+  }
+
+  default int getBasicTradingMaxUses() {
+    return getEntityData(DATA_TRADING_BASIC_MAX_USES);
+  }
+
+  default void setBasicTradingRewardExp(int rewardExp) {
+    setEntityData(DATA_TRADING_BASIC_REWARDED_XP, rewardExp);
+  }
+
+  default int getBasicTradingRewardExp() {
+    return getEntityData(DATA_TRADING_BASIC_REWARDED_XP);
+  }
+
+  default void setTradingResetsEveryMin(int resetsEveryMin) {
+    setEntityData(DATA_TRADING_RESETS_EVERY_MIN, resetsEveryMin);
+  }
+
+  default int getTradingResetsEveryMin() {
+    return getEntityData(DATA_TRADING_RESETS_EVERY_MIN);
   }
 
   default void defineSynchedTradingData() {
     defineEntityData(DATA_TRADING_INVENTORY, new CompoundTag());
     defineEntityData(DATA_MERCHANT_OFFERS, new MerchantOffers());
     defineEntityData(DATA_TRADING_TYPE, TradingType.NONE);
+    defineEntityData(DATA_TRADING_RESETS_EVERY_MIN, 0);
+    defineEntityData(DATA_TRADING_BASIC_MAX_USES, 64);
+    defineEntityData(DATA_TRADING_BASIC_REWARDED_XP, 1);
   }
 
   default void addAdditionalTradingData(CompoundTag compoundTag) {
@@ -121,6 +293,9 @@ public interface EntityTradingData extends EntityDataInterface {
     tradingTag.put(DATA_TRADING_INVENTORY_TAG, getTradingInventory());
     tradingTag.put(DATA_TRADING_RECIPES_TAG, getTradingOffers().createTag());
     tradingTag.putString(DATA_TRADING_TYPE_TAG, getTradingType().name());
+    tradingTag.putInt(DATA_TRADING_RESETS_EVERY_MIN_TAG, getTradingResetsEveryMin());
+    tradingTag.putInt(DATA_TRADING_BASIC_MAX_USES_TAG, getBasicTradingMaxUses());
+    tradingTag.putInt(DATA_TRADING_BASIC_REWARDED_XP_TAG, getBasicTradingRewardExp());
 
     compoundTag.put(DATA_TRADING_OFFERS_TAG, tradingTag);
   }
@@ -136,6 +311,18 @@ public interface EntityTradingData extends EntityDataInterface {
       this.setTradingType(TradingType.get(tradingType));
     }
 
+    if (tradingTag.contains(DATA_TRADING_RESETS_EVERY_MIN_TAG)) {
+      this.setTradingResetsEveryMin(tradingTag.getInt(DATA_TRADING_RESETS_EVERY_MIN_TAG));
+    }
+
+    if (tradingTag.contains(DATA_TRADING_BASIC_MAX_USES_TAG)) {
+      this.setBasicTradingMaxUses(tradingTag.getInt(DATA_TRADING_BASIC_MAX_USES_TAG));
+    }
+
+    if (tradingTag.contains(DATA_TRADING_BASIC_REWARDED_XP_TAG)) {
+      this.setBasicTradingRewardExp(tradingTag.getInt(DATA_TRADING_BASIC_REWARDED_XP_TAG));
+    }
+
     if (tradingTag.contains(DATA_TRADING_RECIPES_TAG)) {
       MerchantOffers merchantOffers =
           new MerchantOffers(tradingTag.getCompound(DATA_TRADING_RECIPES_TAG));
@@ -148,6 +335,8 @@ public interface EntityTradingData extends EntityDataInterface {
     if (tradingTag.contains(DATA_TRADING_INVENTORY_TAG)) {
       setTradingInventory(tradingTag.getCompound(DATA_TRADING_INVENTORY_TAG));
     }
+
+
   }
 
 }

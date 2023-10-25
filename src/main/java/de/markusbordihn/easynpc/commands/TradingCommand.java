@@ -34,26 +34,50 @@ import net.minecraft.server.level.ServerPlayer;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 
-public class ConfigureCommand extends CustomCommand {
+public class TradingCommand extends CustomCommand {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
-    return Commands.literal("configure")
-        .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
-        .then(Commands.argument("uuid", UuidArgument.uuid())
-            .suggests(ConfigureCommand::suggestEasyNPCs).executes(context -> {
-              return configure(context.getSource(), UuidArgument.getUuid(context, "uuid"));
-            }));
+    return Commands.literal("trading")
+        .then(Commands.literal("open")
+            .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
+            .then(Commands.argument("uuid", UuidArgument.uuid())
+                .suggests(TradingCommand::suggestEasyNPCs).executes(context -> {
+                  return open(context.getSource(), UuidArgument.getUuid(context, "uuid"));
+                })))
+        .then(Commands.literal("reset")
+            .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
+            .then(Commands.argument("uuid", UuidArgument.uuid())
+                .suggests(TradingCommand::suggestEasyNPCs).executes(context -> {
+                  return reset(context.getSource(), UuidArgument.getUuid(context, "uuid"));
+                })));
   }
 
-  private static int configure(CommandSourceStack context, UUID uuid)
-      throws CommandSyntaxException {
+  private static int open(CommandSourceStack context, UUID uuid) throws CommandSyntaxException {
     ServerPlayer serverPlayer = context.getPlayerOrException();
     if (uuid == null) {
       return 0;
     }
 
     // Try to get the EasyNPC entity by UUID.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid);
+    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    if (easyNPCEntity == null) {
+      context.sendFailure(Component.literal("EasyNPC with UUID " + uuid + " not found!"));
+      return 0;
+    }
+
+    easyNPCEntity.openTradingScreen(serverPlayer);
+
+    return Command.SINGLE_SUCCESS;
+  }
+
+  private static int reset(CommandSourceStack context, UUID uuid) throws CommandSyntaxException {
+    ServerPlayer serverPlayer = context.getPlayerOrException();
+    if (uuid == null) {
+      return 0;
+    }
+
+    // Try to get the EasyNPC entity by UUID.
+    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     if (easyNPCEntity == null) {
       context.sendFailure(Component.literal("EasyNPC with UUID " + uuid + " not found!"));
       return 0;
@@ -65,7 +89,10 @@ public class ConfigureCommand extends CustomCommand {
       return 0;
     }
 
-    easyNPCEntity.openMainConfigurationMenu(serverPlayer);
+    context.sendSuccess(() -> Component.literal("Resetting trading offers for " + easyNPCEntity),
+        false);
+    easyNPCEntity.resetTradingOffers();
+
     return Command.SINGLE_SUCCESS;
   }
 }
