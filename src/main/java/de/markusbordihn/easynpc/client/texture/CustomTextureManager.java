@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,22 +19,18 @@
 
 package de.markusbordihn.easynpc.client.texture;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import net.minecraft.resources.ResourceLocation;
-
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import java.io.File;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import net.minecraft.resources.ResourceLocation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CustomTextureManager {
 
@@ -42,13 +38,7 @@ public class CustomTextureManager {
 
   private static final String LOG_PREFIX = "[Custom Texture Manager]";
 
-  private static HashMap<TextureModelKey, ResourceLocation> customTextureCache = new HashMap<>();
-
-  protected CustomTextureManager() {}
-
-  public static Map<TextureModelKey, ResourceLocation> getCustomTextureCache() {
-    return customTextureCache;
-  }
+  private static final HashMap<TextureModelKey, ResourceLocation> customTextureCache = new HashMap<>();
 
   public static Set<UUID> getCustomTextureCacheKeys(SkinModel skinModel) {
     HashSet<UUID> hashSet = new HashSet<>();
@@ -60,8 +50,8 @@ public class CustomTextureManager {
     return hashSet;
   }
 
-  public static ResourceLocation getOrCreateTextureWithDefault(EasyNPCEntity entity,
-      ResourceLocation defaultResourceLocation) {
+  public static ResourceLocation getOrCreateTextureWithDefault(
+      EasyNPCEntity entity, ResourceLocation defaultResourceLocation) {
     // Check if we have a skin UUID otherwise we assume that the texture is unknown.
     Optional<UUID> skinUUID = entity.getSkinUUID();
     if (!skinUUID.isPresent()) {
@@ -84,9 +74,12 @@ public class CustomTextureManager {
     return registerTexture(textureModelKey, textureFile);
   }
 
-  public static ResourceLocation registerTexture(TextureModelKey textureModelKey,
-      File textureFile) {
-    log.info("{} Registering custom texture {} with UUID {}.", LOG_PREFIX, textureFile.getName(),
+  public static ResourceLocation registerTexture(
+      TextureModelKey textureModelKey, File textureFile) {
+    log.info(
+        "{} Registering custom texture {} with UUID {}.",
+        LOG_PREFIX,
+        textureFile.getName(),
         textureModelKey.getUUID());
     ResourceLocation resourceLocation =
         TextureManager.addCustomTexture(textureModelKey, textureFile);

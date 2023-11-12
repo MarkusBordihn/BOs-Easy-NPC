@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,19 +19,16 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-
-import net.minecraftforge.network.NetworkEvent;
-
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityMenu;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.NetworkMessage;
+import java.util.UUID;
+import java.util.function.Supplier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkEvent;
 
 public class MessageOpenConfiguration extends NetworkMessage {
 
@@ -44,17 +41,9 @@ public class MessageOpenConfiguration extends NetworkMessage {
     this.pageIndex = pageIndex;
   }
 
-  public ConfigurationType getConfigurationType() {
-    return this.configurationType;
-  }
-
-  public int getPageIndex() {
-    return this.pageIndex;
-  }
-
   public static MessageOpenConfiguration decode(final FriendlyByteBuf buffer) {
-    return new MessageOpenConfiguration(buffer.readUUID(),
-        buffer.readEnum(ConfigurationType.class), buffer.readInt());
+    return new MessageOpenConfiguration(
+        buffer.readUUID(), buffer.readEnum(ConfigurationType.class), buffer.readInt());
   }
 
   public static void encode(final MessageOpenConfiguration message, final FriendlyByteBuf buffer) {
@@ -63,8 +52,8 @@ public class MessageOpenConfiguration extends NetworkMessage {
     buffer.writeInt(message.pageIndex);
   }
 
-  public static void handle(MessageOpenConfiguration message,
-      Supplier<NetworkEvent.Context> contextSupplier) {
+  public static void handle(
+      MessageOpenConfiguration message, Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
@@ -80,8 +69,8 @@ public class MessageOpenConfiguration extends NetworkMessage {
     // Validate dialog name.
     ConfigurationType configurationType = message.getConfigurationType();
     if (configurationType == null) {
-      log.error("Invalid configuration type {} for {} from {}", configurationType, message,
-          serverPlayer);
+      log.error(
+          "Invalid configuration type {} for {} from {}", configurationType, message, serverPlayer);
       return;
     }
 
@@ -95,6 +84,9 @@ public class MessageOpenConfiguration extends NetworkMessage {
     // Perform action.
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     switch (configurationType) {
+      case ADVANCED_DIALOG:
+        EasyNPCEntityMenu.openAdvancedDialogConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
       case ADVANCED_POSE:
         EasyNPCEntityMenu.openAdvancedPoseConfigurationMenu(serverPlayer, easyNPCEntity);
         break;
@@ -168,15 +160,29 @@ public class MessageOpenConfiguration extends NetworkMessage {
         EasyNPCEntityMenu.openNoneTradingConfigurationMenu(serverPlayer, easyNPCEntity);
         break;
       case ADVANCED_TRADING:
-        EasyNPCEntityMenu.openAdvancedTradingConfigurationMenu(serverPlayer, easyNPCEntity, pageIndex);
+        EasyNPCEntityMenu.openAdvancedTradingConfigurationMenu(
+            serverPlayer, easyNPCEntity, pageIndex);
         break;
       case CUSTOM_TRADING:
         EasyNPCEntityMenu.openCustomTradingConfigurationMenu(serverPlayer, easyNPCEntity);
         break;
+      case BASIC_OBJECTIVE:
+        EasyNPCEntityMenu.openBasicObjectiveConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
+      case BASIC_ATTRIBUTE:
+        EasyNPCEntityMenu.openBasicAttributeConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
       default:
-        log.debug("Unknown dialog {} for {} from {}", configurationType, easyNPCEntity,
-            serverPlayer);
+        log.debug(
+            "Unknown dialog {} for {} from {}", configurationType, easyNPCEntity, serverPlayer);
     }
   }
 
+  public ConfigurationType getConfigurationType() {
+    return this.configurationType;
+  }
+
+  public int getPageIndex() {
+    return this.pageIndex;
+  }
 }

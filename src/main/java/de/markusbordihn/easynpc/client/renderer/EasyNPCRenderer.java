@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,27 +19,24 @@
 
 package de.markusbordihn.easynpc.client.renderer;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
-
-import net.minecraft.core.Rotations;
-import net.minecraft.resources.ResourceLocation;
-
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import net.minecraft.core.Rotations;
+import net.minecraft.resources.ResourceLocation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public interface EasyNPCRenderer {
 
-  public static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  public ResourceLocation getTextureByVariant(Enum<?> variant);
+  ResourceLocation getTextureByVariant(Enum<?> variant);
 
-  public ResourceLocation getDefaultTexture();
+  ResourceLocation getDefaultTexture();
 
   default ResourceLocation getCustomTexture(EasyNPCEntity entity) {
     return CustomTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
@@ -50,34 +47,25 @@ public interface EasyNPCRenderer {
   }
 
   default ResourceLocation getEntityTexture(EasyNPCEntity entity) {
-    switch (entity.getSkinType()) {
-      case CUSTOM:
-        return getCustomTexture(entity);
-      case SECURE_REMOTE_URL:
-      case INSECURE_REMOTE_URL:
-        return getPlayerTexture(entity);
-      default:
-        return getTextureByVariant(entity.getVariant());
-    }
+    return switch (entity.getSkinType()) {
+      case CUSTOM -> getCustomTexture(entity);
+      case SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> getPlayerTexture(entity);
+      default -> getTextureByVariant(entity.getVariant());
+    };
   }
 
   default ResourceLocation getEntityPlayerTexture(EasyNPCEntity entity) {
-    switch (entity.getSkinType()) {
-      case CUSTOM:
-        return getCustomTexture(entity);
-      case PLAYER_SKIN:
-      case SECURE_REMOTE_URL:
-      case INSECURE_REMOTE_URL:
-        return getPlayerTexture(entity);
-      default:
-        return getTextureByVariant(entity.getVariant());
-    }
+    return switch (entity.getSkinType()) {
+      case CUSTOM -> getCustomTexture(entity);
+      case PLAYER_SKIN, SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> getPlayerTexture(entity);
+      default -> getTextureByVariant(entity.getVariant());
+    };
   }
 
   default void scaleEntity(EasyNPCEntity entity, PoseStack poseStack) {
     if (entity.isBaby()) {
-      poseStack.scale(entity.getScaleX() * 0.5f, entity.getScaleY() * 0.5f,
-          entity.getScaleZ() * 0.5f);
+      poseStack.scale(
+          entity.getScaleX() * 0.5f, entity.getScaleY() * 0.5f, entity.getScaleZ() * 0.5f);
     } else {
       poseStack.scale(entity.getScaleX(), entity.getScaleY(), entity.getScaleZ());
     }
@@ -119,5 +107,4 @@ public interface EasyNPCRenderer {
   default int getEntityLightLevel(EasyNPCEntity entity) {
     return 7;
   }
-
 }

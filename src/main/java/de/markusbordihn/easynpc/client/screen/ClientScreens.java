@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,22 +19,18 @@
 
 package de.markusbordihn.easynpc.client.screen;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import net.minecraft.client.gui.screens.MenuScreens;
-
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.configuration.actions.BasicActionConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.actions.DialogActionConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.actions.DistanceActionConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.attribute.BasicAttributeConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.dialog.AdvancedDialogConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.BasicDialogConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.NoneDialogConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.YesNoDialogConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.equipment.EquipmentConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.main.MainConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.objective.BasicObjectiveConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.pose.AdvancedPoseConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.pose.CustomPoseConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.pose.DefaultPoseConfigurationScreen;
@@ -46,14 +42,21 @@ import de.markusbordihn.easynpc.client.screen.configuration.preset.ImportDefault
 import de.markusbordihn.easynpc.client.screen.configuration.preset.ImportWorldPresetConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.rotation.DefaultRotationConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.scaling.ScalingConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.skin.CustomSkinConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.DefaultSkinConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.PlayerSkinConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.trading.AdvancedTradingConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.trading.BasicTradingConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.trading.CustomTradingConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.trading.NoneTradingConfigurationScreen;
-import de.markusbordihn.easynpc.client.screen.configuration.skin.CustomSkinConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.dialog.DialogScreen;
+import de.markusbordihn.easynpc.client.screen.editor.DialogButtonEditorScreen;
+import de.markusbordihn.easynpc.client.screen.editor.DialogEditorScreen;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ClientScreens {
 
@@ -64,83 +67,127 @@ public class ClientScreens {
   public static void registerScreens(final FMLClientSetupEvent event) {
     log.info("{} Client Screens ...", Constants.LOG_REGISTER_PREFIX);
 
-    event.enqueueWork(() -> {
-      // Dialog Screen
-      MenuScreens.register(ModMenuTypes.DIALOG_MENU.get(), DialogScreen::new);
+    event.enqueueWork(
+        () -> {
+          // Dialog Screen
+          MenuScreens.register(ModMenuTypes.DIALOG_MENU.get(), DialogScreen::new);
 
-      // Configuration Screen
-      MenuScreens.register(ModMenuTypes.MAIN_CONFIGURATION_MENU.get(),
-          MainConfigurationScreen::new);
+          // Dialog Editor Screen
+          MenuScreens.register(ModMenuTypes.DIALOG_EDITOR_MENU.get(), DialogEditorScreen::new);
 
-      // Action Configuration Screens
-      MenuScreens.register(ModMenuTypes.BASIC_ACTION_CONFIGURATION_MENU.get(),
-          BasicActionConfigurationScreen::new);
-      MenuScreens.register(ModMenuTypes.DIALOG_ACTION_CONFIGURATION_MENU.get(),
-          DialogActionConfigurationScreen::new);
-      MenuScreens.register(ModMenuTypes.DISTANCE_ACTION_CONFIGURATION_MENU.get(),
-          DistanceActionConfigurationScreen::new);
+          // Dialog Button Editor Screen
+          MenuScreens.register(
+              ModMenuTypes.DIALOG_BUTTON_EDITOR_MENU.get(), DialogButtonEditorScreen::new);
 
-      // Dialog Configuration Screens
-      MenuScreens.register(ModMenuTypes.NONE_DIALOG_CONFIGURATION_MENU.get(),
-          NoneDialogConfigurationScreen::new);
-      MenuScreens.register(ModMenuTypes.BASIC_DIALOG_CONFIGURATION_MENU.get(),
-          BasicDialogConfigurationScreen::new);
-      MenuScreens.register(ModMenuTypes.YES_NO_DIALOG_CONFIGURATION_MENU.get(),
-          YesNoDialogConfigurationScreen::new);
+          // Configuration Screen
+          MenuScreens.register(
+              ModMenuTypes.MAIN_CONFIGURATION_MENU.get(), MainConfigurationScreen::new);
 
-      // Equipment Configuration Screen
-      MenuScreens.register(ModMenuTypes.EQUIPMENT_CONFIGURATION_MENU.get(),
-          EquipmentConfigurationScreen::new);
+          // Action Configuration Screens
+          MenuScreens.register(
+              ModMenuTypes.BASIC_ACTION_CONFIGURATION_MENU.get(),
+              BasicActionConfigurationScreen::new);
+          MenuScreens.register(
+              ModMenuTypes.DIALOG_ACTION_CONFIGURATION_MENU.get(),
+              DialogActionConfigurationScreen::new);
+          MenuScreens.register(
+              ModMenuTypes.DISTANCE_ACTION_CONFIGURATION_MENU.get(),
+              DistanceActionConfigurationScreen::new);
 
-      // Pose Configuration Screen
-      MenuScreens.register(ModMenuTypes.DEFAULT_POSE_CONFIGURATION_MENU.get(),
-          DefaultPoseConfigurationScreen::new);
-      MenuScreens.register(ModMenuTypes.ADVANCED_POSE_CONFIGURATION_MENU.get(),
-          AdvancedPoseConfigurationScreen::new);
-      MenuScreens.register(ModMenuTypes.CUSTOM_POSE_CONFIGURATION_MENU.get(),
-          CustomPoseConfigurationScreen::new);
+          // Attribute Configuration Screen
+          MenuScreens.register(
+              ModMenuTypes.BASIC_ATTRIBUTE_CONFIGURATION_MENU.get(),
+              BasicAttributeConfigurationScreen::new);
 
-      // Position Configuration Screen
-      MenuScreens.register(ModMenuTypes.DEFAULT_POSITION_CONFIGURATION_MENU.get(),
-          DefaultPositionConfigurationScreen::new);
+          // Dialog Configuration Screens
+          MenuScreens.register(
+              ModMenuTypes.NONE_DIALOG_CONFIGURATION_MENU.get(),
+              NoneDialogConfigurationScreen::new);
+          MenuScreens.register(
+              ModMenuTypes.BASIC_DIALOG_CONFIGURATION_MENU.get(),
+              BasicDialogConfigurationScreen::new);
+          MenuScreens.register(
+              ModMenuTypes.YES_NO_DIALOG_CONFIGURATION_MENU.get(),
+              YesNoDialogConfigurationScreen::new);
+          MenuScreens.register(
+              ModMenuTypes.ADVANCED_DIALOG_CONFIGURATION_MENU.get(),
+              AdvancedDialogConfigurationScreen::new);
 
-      // Preset Configuration Screen
-      MenuScreens.register(ModMenuTypes.CUSTOM_EXPORT_PRESET_CONFIGURATION_MENU.get(),
-          ExportCustomPresetConfigurationScreen::new);
-      MenuScreens.register(ModMenuTypes.WORLD_EXPORT_PRESET_CONFIGURATION_MENU.get(),
-          ExportWorldPresetConfigurationScreen::new);
-      MenuScreens.register(ModMenuTypes.CUSTOM_IMPORT_PRESET_CONFIGURATION_MENU.get(),
-          ImportCustomPresetConfigurationScreen::new);
-      MenuScreens.register(ModMenuTypes.DEFAULT_IMPORT_PRESET_CONFIGURATION_MENU.get(),
-          ImportDefaultPresetConfigurationScreen::new);
-      MenuScreens.register(ModMenuTypes.WORLD_IMPORT_PRESET_CONFIGURATION_MENU.get(),
-          ImportWorldPresetConfigurationScreen::new);
+          // Equipment Configuration Screen
+          MenuScreens.register(
+              ModMenuTypes.EQUIPMENT_CONFIGURATION_MENU.get(), EquipmentConfigurationScreen::new);
 
-      // Rotation Configuration Screen
-      MenuScreens.register(ModMenuTypes.DEFAULT_ROTATION_CONFIGURATION_MENU.get(),
-          DefaultRotationConfigurationScreen::new);
+          // Objectives Configuration Screen
+          MenuScreens.register(
+              ModMenuTypes.BASIC_OBJECTIVE_CONFIGURATION_MENU.get(),
+              BasicObjectiveConfigurationScreen::new);
 
-      // Skin Configuration Screens
-      MenuScreens.register(ModMenuTypes.CUSTOM_SKIN_CONFIGURATION_MENU.get(),
-          CustomSkinConfigurationScreen::new);
-      MenuScreens.register(ModMenuTypes.DEFAULT_SKIN_CONFIGURATION_MENU.get(),
-          DefaultSkinConfigurationScreen::new);
-      MenuScreens.register(ModMenuTypes.PLAYER_SKIN_CONFIGURATION_MENU.get(),
-          PlayerSkinConfigurationScreen::new);
+          // Pose Configuration Screen
+          MenuScreens.register(
+              ModMenuTypes.DEFAULT_POSE_CONFIGURATION_MENU.get(),
+              DefaultPoseConfigurationScreen::new);
+          MenuScreens.register(
+              ModMenuTypes.ADVANCED_POSE_CONFIGURATION_MENU.get(),
+              AdvancedPoseConfigurationScreen::new);
+          MenuScreens.register(
+              ModMenuTypes.CUSTOM_POSE_CONFIGURATION_MENU.get(),
+              CustomPoseConfigurationScreen::new);
 
-      // Scaling Configuration Screen
-      MenuScreens.register(ModMenuTypes.SCALING_CONFIGURATION_MENU.get(),
-          ScalingConfigurationScreen::new);
+          // Position Configuration Screen
+          MenuScreens.register(
+              ModMenuTypes.DEFAULT_POSITION_CONFIGURATION_MENU.get(),
+              DefaultPositionConfigurationScreen::new);
 
-      // Trades Configuration Screens
-      MenuScreens.register(ModMenuTypes.NONE_TRADING_CONFIGURATION_MENU.get(),
-          NoneTradingConfigurationScreen::new);
-      MenuScreens.register(ModMenuTypes.BASIC_TRADING_CONFIGURATION_MENU.get(),
-          BasicTradingConfigurationScreen::new);
-      MenuScreens.register(ModMenuTypes.ADVANCED_TRADING_CONFIGURATION_MENU.get(),
-          AdvancedTradingConfigurationScreen::new);
-      MenuScreens.register(ModMenuTypes.CUSTOM_TRADING_CONFIGURATION_MENU.get(),
-          CustomTradingConfigurationScreen::new);
-    });
+          // Preset Configuration Screen
+          MenuScreens.register(
+              ModMenuTypes.CUSTOM_EXPORT_PRESET_CONFIGURATION_MENU.get(),
+              ExportCustomPresetConfigurationScreen::new);
+          MenuScreens.register(
+              ModMenuTypes.WORLD_EXPORT_PRESET_CONFIGURATION_MENU.get(),
+              ExportWorldPresetConfigurationScreen::new);
+          MenuScreens.register(
+              ModMenuTypes.CUSTOM_IMPORT_PRESET_CONFIGURATION_MENU.get(),
+              ImportCustomPresetConfigurationScreen::new);
+          MenuScreens.register(
+              ModMenuTypes.DEFAULT_IMPORT_PRESET_CONFIGURATION_MENU.get(),
+              ImportDefaultPresetConfigurationScreen::new);
+          MenuScreens.register(
+              ModMenuTypes.WORLD_IMPORT_PRESET_CONFIGURATION_MENU.get(),
+              ImportWorldPresetConfigurationScreen::new);
+
+          // Rotation Configuration Screen
+          MenuScreens.register(
+              ModMenuTypes.DEFAULT_ROTATION_CONFIGURATION_MENU.get(),
+              DefaultRotationConfigurationScreen::new);
+
+          // Skin Configuration Screens
+          MenuScreens.register(
+              ModMenuTypes.CUSTOM_SKIN_CONFIGURATION_MENU.get(),
+              CustomSkinConfigurationScreen::new);
+          MenuScreens.register(
+              ModMenuTypes.DEFAULT_SKIN_CONFIGURATION_MENU.get(),
+              DefaultSkinConfigurationScreen::new);
+          MenuScreens.register(
+              ModMenuTypes.PLAYER_SKIN_CONFIGURATION_MENU.get(),
+              PlayerSkinConfigurationScreen::new);
+
+          // Scaling Configuration Screen
+          MenuScreens.register(
+              ModMenuTypes.SCALING_CONFIGURATION_MENU.get(), ScalingConfigurationScreen::new);
+
+          // Trades Configuration Screens
+          MenuScreens.register(
+              ModMenuTypes.NONE_TRADING_CONFIGURATION_MENU.get(),
+              NoneTradingConfigurationScreen::new);
+          MenuScreens.register(
+              ModMenuTypes.BASIC_TRADING_CONFIGURATION_MENU.get(),
+              BasicTradingConfigurationScreen::new);
+          MenuScreens.register(
+              ModMenuTypes.ADVANCED_TRADING_CONFIGURATION_MENU.get(),
+              AdvancedTradingConfigurationScreen::new);
+          MenuScreens.register(
+              ModMenuTypes.CUSTOM_TRADING_CONFIGURATION_MENU.get(),
+              CustomTradingConfigurationScreen::new);
+        });
   }
 }

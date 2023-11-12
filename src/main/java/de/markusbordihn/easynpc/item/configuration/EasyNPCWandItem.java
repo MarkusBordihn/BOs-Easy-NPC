@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,12 +19,11 @@
 
 package de.markusbordihn.easynpc.item.configuration;
 
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.EasyNPCEntityMenu;
 import java.util.List;
 import javax.annotation.Nullable;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -40,30 +39,27 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EasyNPCEntityMenu;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EasyNPCWandItem extends Item {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  private static final int GLOWING_DURATION = 4 * 20;
-
   public static final String ID = "easy_npc_wand";
+  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final int GLOWING_DURATION = 4 * 20;
 
   public EasyNPCWandItem(Properties properties) {
     super(properties);
   }
 
   @Override
-  public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot,
-      boolean selected) {
+  public void inventoryTick(
+      ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
     // Highlight all nearby EasyNPC entities
     if (selected && entity instanceof Player player) {
-      for (EasyNPCEntity easyNPCEntity : level.getEntitiesOfClass(EasyNPCEntity.class,
-          player.getBoundingBox().inflate(0.5), Entity::isAlive)) {
+      for (EasyNPCEntity easyNPCEntity :
+          level.getEntitiesOfClass(
+              EasyNPCEntity.class, player.getBoundingBox().inflate(0.5), Entity::isAlive)) {
         if (easyNPCEntity.hasEffect(MobEffects.GLOWING)) {
           MobEffectInstance mobEffect = easyNPCEntity.getEffect(MobEffects.GLOWING);
           if (mobEffect != null && mobEffect.getDuration() < 5) {
@@ -87,10 +83,15 @@ public class EasyNPCWandItem extends Item {
 
       // 1. Search all nearby EasyNPC entities above and below the block position.
       AABB aabbAbove =
-          new AABB(blockPos.getX() - 0.25d, blockPos.getY() - 2d, blockPos.getZ() - 0.25d,
-              blockPos.getX() + 0.25d, blockPos.getY() + 2d, blockPos.getZ() + 0.25d);
-      for (EasyNPCEntity easyNPCEntity : level.getEntitiesOfClass(EasyNPCEntity.class,
-          aabbAbove.inflate(0.5), Entity::isAlive)) {
+          new AABB(
+              blockPos.getX() - 0.25d,
+              blockPos.getY() - 2d,
+              blockPos.getZ() - 0.25d,
+              blockPos.getX() + 0.25d,
+              blockPos.getY() + 2d,
+              blockPos.getZ() + 0.25d);
+      for (EasyNPCEntity easyNPCEntity :
+          level.getEntitiesOfClass(EasyNPCEntity.class, aabbAbove.inflate(0.5), Entity::isAlive)) {
         if (easyNPCEntity != null) {
           EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, easyNPCEntity);
           return InteractionResult.SUCCESS;
@@ -98,10 +99,16 @@ public class EasyNPCWandItem extends Item {
       }
 
       // 2. Search all nearby EasyNPC entities around the block position.
-      AABB aabbAround = new AABB(blockPos.getX() - 0.5d, blockPos.getY() - 0.5d,
-          blockPos.getZ() - 0.5d, blockPos.getX() + 1d, blockPos.getY() + 1d, blockPos.getZ() + 1d);
-      for (EasyNPCEntity easyNPCEntity : level.getEntitiesOfClass(EasyNPCEntity.class,
-          aabbAround.inflate(0.5), Entity::isAlive)) {
+      AABB aabbAround =
+          new AABB(
+              blockPos.getX() - 0.5d,
+              blockPos.getY() - 0.5d,
+              blockPos.getZ() - 0.5d,
+              blockPos.getX() + 1d,
+              blockPos.getY() + 1d,
+              blockPos.getZ() + 1d);
+      for (EasyNPCEntity easyNPCEntity :
+          level.getEntitiesOfClass(EasyNPCEntity.class, aabbAround.inflate(0.5), Entity::isAlive)) {
         if (easyNPCEntity != null) {
           EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, easyNPCEntity);
           return InteractionResult.SUCCESS;
@@ -109,8 +116,8 @@ public class EasyNPCWandItem extends Item {
       }
 
       // 3. Expand the search area by 2.5x to find all nearby EasyNPC entities.
-      for (EasyNPCEntity easyNPCEntity : level.getEntitiesOfClass(EasyNPCEntity.class,
-          aabbAround.inflate(2.5), Entity::isAlive)) {
+      for (EasyNPCEntity easyNPCEntity :
+          level.getEntitiesOfClass(EasyNPCEntity.class, aabbAround.inflate(2.5), Entity::isAlive)) {
         if (easyNPCEntity != null) {
           EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, easyNPCEntity);
           return InteractionResult.SUCCESS;
@@ -126,8 +133,11 @@ public class EasyNPCWandItem extends Item {
   }
 
   @Override
-  public void appendHoverText(ItemStack itemStack, @Nullable Level level,
-      List<Component> tooltipList, TooltipFlag tooltipFlag) {
+  public void appendHoverText(
+      ItemStack itemStack,
+      @Nullable Level level,
+      List<Component> tooltipList,
+      TooltipFlag tooltipFlag) {
     // Display description.
     tooltipList.add(new TranslatableComponent(Constants.TEXT_ITEM_PREFIX + ID));
   }

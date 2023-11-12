@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,10 +19,9 @@
 
 package de.markusbordihn.easynpc.menu.configuration.trading;
 
+import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import java.util.UUID;
-
 import javax.annotation.Nullable;
-
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -39,8 +38,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 
-import de.markusbordihn.easynpc.menu.ModMenuTypes;
-
 public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
 
   // Defining basic layout options
@@ -52,27 +49,36 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
   public static final int SLOT_SIZE = 18;
 
   // Define containers
-  protected static int tradingContainerSize = TRADING_OFFERS * 3;
+  protected static final int tradingContainerSize = TRADING_OFFERS * 3;
   protected final Container tradingContainer;
 
-  public AdvancedTradingConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid,
-      int pageIndex) {
-    this(ModMenuTypes.ADVANCED_TRADING_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid,
+  public AdvancedTradingConfigurationMenu(
+      int windowId, Inventory playerInventory, UUID uuid, int pageIndex) {
+    this(
+        ModMenuTypes.ADVANCED_TRADING_CONFIGURATION_MENU.get(),
+        windowId,
+        playerInventory,
+        uuid,
         pageIndex);
   }
 
-  public AdvancedTradingConfigurationMenu(int windowId, Inventory playerInventory,
-      FriendlyByteBuf data) {
+  public AdvancedTradingConfigurationMenu(
+      int windowId, Inventory playerInventory, FriendlyByteBuf data) {
     this(windowId, playerInventory, data.readUUID(), data.readInt());
   }
 
-  public AdvancedTradingConfigurationMenu(final MenuType<?> menuType, int windowId,
-      Inventory inventory, UUID uuid, int pageIndex) {
+  public AdvancedTradingConfigurationMenu(
+      final MenuType<?> menuType, int windowId, Inventory inventory, UUID uuid, int pageIndex) {
     this(menuType, windowId, inventory, new SimpleContainer(tradingContainerSize), uuid, pageIndex);
   }
 
-  public AdvancedTradingConfigurationMenu(final MenuType<?> menuType, final int windowId,
-      final Inventory playerInventory, final Container tradingContainer, UUID uuid, int pageIndex) {
+  public AdvancedTradingConfigurationMenu(
+      final MenuType<?> menuType,
+      final int windowId,
+      final Inventory playerInventory,
+      final Container tradingContainer,
+      UUID uuid,
+      int pageIndex) {
     super(menuType, windowId, playerInventory, uuid, pageIndex);
 
     // Make sure the passed container matched the expected sizes
@@ -85,10 +91,11 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
     if (!this.level.isClientSide) {
       MerchantOffers merchantOffers = this.entity.getTradingOffers();
       if (merchantOffers != null) {
-        for (int tradingOffer = 0; tradingOffer < TRADING_OFFERS
-            && tradingOffer < merchantOffers.size(); tradingOffer++) {
+        for (int tradingOffer = 0;
+            tradingOffer < TRADING_OFFERS && tradingOffer < merchantOffers.size();
+            tradingOffer++) {
           MerchantOffer merchantOffer = merchantOffers.get(tradingOffer);
-          this.tradingContainer.setItem((tradingOffer * 3) + 0, merchantOffer.getBaseCostA());
+          this.tradingContainer.setItem((tradingOffer * 3), merchantOffer.getBaseCostA());
           this.tradingContainer.setItem((tradingOffer * 3) + 1, merchantOffer.getCostB());
           this.tradingContainer.setItem((tradingOffer * 3) + 2, merchantOffer.getResult());
         }
@@ -101,21 +108,32 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
     int slotPositionY = TRADING_START_POSITION_Y;
 
     // Only display a limited amount of trading slots per page.
-    for (int tradingOffer = (tradingPage
-        * TRADING_OFFERS_PER_PAGE); tradingOffer < ((tradingPage + 1) * TRADING_OFFERS_PER_PAGE)
-            && tradingOffer < TRADING_OFFERS; tradingOffer++) {
+    for (int tradingOffer = (tradingPage * TRADING_OFFERS_PER_PAGE);
+        tradingOffer < ((tradingPage + 1) * TRADING_OFFERS_PER_PAGE)
+            && tradingOffer < TRADING_OFFERS;
+        tradingOffer++) {
 
       // Item A Slot
-      this.addSlot(new ItemASlot(this, tradingContainer, (tradingOffer * 3) + 0, slotPositionX,
-          slotPositionY));
+      this.addSlot(
+          new ItemASlot(this, tradingContainer, (tradingOffer * 3), slotPositionX, slotPositionY));
 
       // Item B Slot
-      this.addSlot(new ItemBSlot(this, tradingContainer, (tradingOffer * 3) + 1,
-          slotPositionX + TRADING_SLOT_SIZE + TRADING_SLOT_SIZE, slotPositionY));
+      this.addSlot(
+          new ItemBSlot(
+              this,
+              tradingContainer,
+              (tradingOffer * 3) + 1,
+              slotPositionX + TRADING_SLOT_SIZE + TRADING_SLOT_SIZE,
+              slotPositionY));
 
       // Result Slot
-      this.addSlot(new ItemResultSlot(this, tradingContainer, (tradingOffer * 3) + 2,
-          slotPositionX + ((TRADING_SLOT_SIZE + TRADING_SLOT_SIZE + 5) * 2), slotPositionY));
+      this.addSlot(
+          new ItemResultSlot(
+              this,
+              tradingContainer,
+              (tradingOffer * 3) + 2,
+              slotPositionX + ((TRADING_SLOT_SIZE + TRADING_SLOT_SIZE + 5) * 2),
+              slotPositionY));
 
       slotPositionY += TRADING_SLOT_SIZE + 1;
     }
@@ -125,9 +143,12 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
     int playerInventoryStartPositionX = 80;
     for (int inventoryRow = 0; inventoryRow < 3; ++inventoryRow) {
       for (int inventoryColumn = 0; inventoryColumn < 9; ++inventoryColumn) {
-        this.addSlot(new Slot(playerInventory, inventoryColumn + inventoryRow * 9 + 9,
-            playerInventoryStartPositionX + inventoryColumn * SLOT_SIZE,
-            playerInventoryStartPositionY + inventoryRow * SLOT_SIZE));
+        this.addSlot(
+            new Slot(
+                playerInventory,
+                inventoryColumn + inventoryRow * 9 + 9,
+                playerInventoryStartPositionX + inventoryColumn * SLOT_SIZE,
+                playerInventoryStartPositionY + inventoryRow * SLOT_SIZE));
       }
     }
 
@@ -135,9 +156,29 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
     int hotbarStartPositionY = 215;
     int hotbarStartPositionX = 80;
     for (int playerInventorySlot = 0; playerInventorySlot < 9; ++playerInventorySlot) {
-      this.addSlot(new Slot(playerInventory, playerInventorySlot,
-          hotbarStartPositionX + playerInventorySlot * SLOT_SIZE, hotbarStartPositionY));
+      this.addSlot(
+          new Slot(
+              playerInventory,
+              playerInventorySlot,
+              hotbarStartPositionX + playerInventorySlot * SLOT_SIZE,
+              hotbarStartPositionY));
     }
+  }
+
+  public static MenuProvider getMenuProvider(UUID uuid, Entity entity, int pageIndex) {
+    return new MenuProvider() {
+      @Override
+      public Component getDisplayName() {
+        return new TextComponent("Advanced trades for " + entity.getName().getString());
+      }
+
+      @Nullable
+      @Override
+      public AbstractContainerMenu createMenu(
+          int windowId, Inventory inventory, Player serverPlayer) {
+        return new AdvancedTradingConfigurationMenu(windowId, inventory, uuid, pageIndex);
+      }
+    };
   }
 
   @Override
@@ -150,22 +191,6 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
 
   public int getMaxPages() {
     return TRADING_OFFERS / TRADING_OFFERS_PER_PAGE;
-  }
-
-  public static MenuProvider getMenuProvider(UUID uuid, Entity entity, int pageIndex) {
-    return new MenuProvider() {
-      @Override
-      public Component getDisplayName() {
-        return new TextComponent("Advanced trades for " + entity.getName().getString());
-      }
-
-      @Nullable
-      @Override
-      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
-          Player serverPlayer) {
-        return new AdvancedTradingConfigurationMenu(windowId, inventory, uuid, pageIndex);
-      }
-    };
   }
 
   @Override
@@ -186,5 +211,4 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
 
     return ItemStack.EMPTY;
   }
-
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,17 +19,14 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-
-import net.minecraftforge.network.NetworkEvent;
-
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
+import java.util.UUID;
+import java.util.function.Supplier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkEvent;
 
 public class MessageVariantChange extends NetworkMessage {
 
@@ -38,10 +35,6 @@ public class MessageVariantChange extends NetworkMessage {
   public MessageVariantChange(UUID uuid, String variant) {
     super(uuid);
     this.variant = variant;
-  }
-
-  public String getVariant() {
-    return this.variant;
   }
 
   public static MessageVariantChange decode(FriendlyByteBuf buffer) {
@@ -53,8 +46,8 @@ public class MessageVariantChange extends NetworkMessage {
     buffer.writeUtf(message.getVariant());
   }
 
-  public static void handle(MessageVariantChange message,
-      Supplier<NetworkEvent.Context> contextSupplier) {
+  public static void handle(
+      MessageVariantChange message, Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
@@ -80,4 +73,7 @@ public class MessageVariantChange extends NetworkMessage {
     easyNPCEntity.setVariant(variant);
   }
 
+  public String getVariant() {
+    return this.variant;
+  }
 }

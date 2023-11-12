@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,68 +19,102 @@
 
 package de.markusbordihn.easynpc.entity.npc;
 
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import net.minecraft.world.entity.EntityType;
-
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-
 @EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModEntityType {
 
-  protected ModEntityType() {
-
-  }
-
+  public static final int CLIENT_TRACKING_RANGE = 12;
+  public static final float HUMANOID_SIZE_WIDTH = 0.6F;
+  public static final float HUMANOID_SIZE_HEIGHT = 1.8F;
   public static final DeferredRegister<EntityType<?>> ENTITIES =
       DeferredRegister.create(ForgeRegistries.ENTITIES, Constants.MOD_ID);
-
-  // Default NPC Entity
-
-  public static final RegistryObject<EntityType<Cat>> CAT =
-      ENTITIES.register(Cat.ID, () -> EntityType.Builder.<Cat>of(Cat::new, EasyNPCEntity.CATEGORY)
-          .sized(1.0F, 2.0F).clientTrackingRange(8).build(Cat.ID));
-
-  public static final RegistryObject<EntityType<Chicken>> CHICKEN = ENTITIES.register(Chicken.ID,
-      () -> EntityType.Builder.<Chicken>of(Chicken::new, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F)
-          .clientTrackingRange(8).build(Chicken.ID));
-
-  public static final RegistryObject<EntityType<Fairy>> FAIRY = ENTITIES.register(Fairy.ID,
-      () -> EntityType.Builder.<Fairy>of(Fairy::new, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F)
-          .clientTrackingRange(8).build(Fairy.ID));
-
+  // Humanoid NPC Entity
   public static final RegistryObject<EntityType<Humanoid>> HUMANOID =
       registerHumanoid(Humanoid.ID, Humanoid.Variant.STEVE);
-
   public static final RegistryObject<EntityType<HumanoidSlim>> HUMANOID_SLIM =
       registerHumanoidSlim(HumanoidSlim.ID, HumanoidSlim.Variant.ALEX);
+  // Default NPC Entity
+  public static final RegistryObject<EntityType<Cat>> CAT =
+      ENTITIES.register(
+          Cat.ID,
+          () ->
+              EntityType.Builder.of(Cat::new, EasyNPCEntity.CATEGORY)
+                  .sized(0.6F, 0.6F)
+                  .clientTrackingRange(CLIENT_TRACKING_RANGE)
+                  .build(Cat.ID));
+  public static final RegistryObject<EntityType<Chicken>> CHICKEN =
+      ENTITIES.register(
+          Chicken.ID,
+          () ->
+              EntityType.Builder.of(Chicken::new, EasyNPCEntity.CATEGORY)
+                  .sized(0.6F, 0.6F)
+                  .clientTrackingRange(CLIENT_TRACKING_RANGE)
+                  .build(Chicken.ID));
+  public static final RegistryObject<EntityType<Fairy>> FAIRY =
+      ENTITIES.register(
+          Fairy.ID,
+          () ->
+              EntityType.Builder.of(Fairy::new, EasyNPCEntity.CATEGORY)
+                  .sized(0.6F, 0.6F)
+                  .clientTrackingRange(CLIENT_TRACKING_RANGE)
+                  .build(Fairy.ID));
 
-  public static final RegistryObject<EntityType<Skeleton>> SKELETON = ENTITIES.register(Skeleton.ID,
-      () -> EntityType.Builder.<Skeleton>of(Skeleton::new, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F)
-          .clientTrackingRange(8).build(Skeleton.ID));
+  public static final RegistryObject<EntityType<IronGolem>> IRON_GOLEM =
+      ENTITIES.register(
+          IronGolem.ID,
+          () ->
+              EntityType.Builder.<IronGolem>of(IronGolem::new, EasyNPCEntity.CATEGORY)
+                  .sized(1.4F, 2.7F)
+                  .clientTrackingRange(CLIENT_TRACKING_RANGE)
+                  .build(IronGolem.ID));
 
-  public static final RegistryObject<EntityType<Villager>> VILLAGER = ENTITIES.register(Villager.ID,
-      () -> EntityType.Builder.<Villager>of(Villager::new, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F)
-          .clientTrackingRange(8).build(Villager.ID));
-
-  public static final RegistryObject<EntityType<Zombie>> ZOMBIE = ENTITIES.register(Zombie.ID,
-      () -> EntityType.Builder.<Zombie>of(Zombie::new, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F)
-          .clientTrackingRange(8).build(Zombie.ID));
-
+  public static final RegistryObject<EntityType<Skeleton>> SKELETON =
+      ENTITIES.register(
+          Skeleton.ID,
+          () ->
+              EntityType.Builder.<Skeleton>of(Skeleton::new, EasyNPCEntity.CATEGORY)
+                  .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
+                  .clientTrackingRange(CLIENT_TRACKING_RANGE)
+                  .build(Skeleton.ID));
+  public static final RegistryObject<EntityType<Villager>> VILLAGER =
+      ENTITIES.register(
+          Villager.ID,
+          () ->
+              EntityType.Builder.of(Villager::new, EasyNPCEntity.CATEGORY)
+                  .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
+                  .clientTrackingRange(CLIENT_TRACKING_RANGE)
+                  .build(Villager.ID));
+  public static final RegistryObject<EntityType<Zombie>> ZOMBIE =
+      ENTITIES.register(
+          Zombie.ID,
+          () ->
+              EntityType.Builder.<Zombie>of(Zombie::new, EasyNPCEntity.CATEGORY)
+                  .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
+                  .clientTrackingRange(CLIENT_TRACKING_RANGE)
+                  .build(Zombie.ID));
   public static final RegistryObject<EntityType<ZombieVillager>> ZOMBIE_VILLAGER =
-      ENTITIES.register(ZombieVillager.ID,
-          () -> EntityType.Builder.<ZombieVillager>of(ZombieVillager::new, EasyNPCEntity.CATEGORY)
-              .sized(1.0F, 2.0F).clientTrackingRange(8).build(ZombieVillager.ID));
+      ENTITIES.register(
+          ZombieVillager.ID,
+          () ->
+              EntityType.Builder.of(ZombieVillager::new, EasyNPCEntity.CATEGORY)
+                  .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
+                  .clientTrackingRange(CLIENT_TRACKING_RANGE)
+                  .build(ZombieVillager.ID));
+
+  protected ModEntityType() {}
 
   @SubscribeEvent
-  public static final void entityAttributeCreation(EntityAttributeCreationEvent event) {
+  public static void entityAttributeCreation(EntityAttributeCreationEvent event) {
 
     // Default NPC Entities
     event.put(CAT.get(), Cat.createAttributes().build());
@@ -88,6 +122,7 @@ public class ModEntityType {
     event.put(FAIRY.get(), Fairy.createAttributes().build());
     event.put(HUMANOID.get(), Humanoid.createAttributes().build());
     event.put(HUMANOID_SLIM.get(), HumanoidSlim.createAttributes().build());
+    event.put(IRON_GOLEM.get(), IronGolem.createAttributes().build());
     event.put(SKELETON.get(), Skeleton.createAttributes().build());
     event.put(VILLAGER.get(), Villager.createAttributes().build());
     event.put(ZOMBIE.get(), Zombie.createAttributes().build());
@@ -96,15 +131,31 @@ public class ModEntityType {
 
   // Register Handler
   public static RegistryObject<EntityType<Humanoid>> registerHumanoid(String id, Enum<?> variant) {
-    return ENTITIES.register(id, () -> EntityType.Builder.<Humanoid>of((entityType, level) -> {
-      return new Humanoid(entityType, level, variant);
-    }, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F).clientTrackingRange(8).build(id));
+    return ENTITIES.register(
+        id,
+        () ->
+            EntityType.Builder.<Humanoid>of(
+                    (entityType, level) -> {
+                      return new Humanoid(entityType, level, variant);
+                    },
+                    EasyNPCEntity.CATEGORY)
+                .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
+                .clientTrackingRange(CLIENT_TRACKING_RANGE)
+                .build(id));
   }
 
-  public static RegistryObject<EntityType<HumanoidSlim>> registerHumanoidSlim(String id,
-      Enum<?> variant) {
-    return ENTITIES.register(id, () -> EntityType.Builder.<HumanoidSlim>of((entityType, level) -> {
-      return new HumanoidSlim(entityType, level, variant);
-    }, EasyNPCEntity.CATEGORY).sized(1.0F, 2.0F).clientTrackingRange(8).build(id));
+  public static RegistryObject<EntityType<HumanoidSlim>> registerHumanoidSlim(
+      String id, Enum<?> variant) {
+    return ENTITIES.register(
+        id,
+        () ->
+            EntityType.Builder.<HumanoidSlim>of(
+                    (entityType, level) -> {
+                      return new HumanoidSlim(entityType, level, variant);
+                    },
+                    EasyNPCEntity.CATEGORY)
+                .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
+                .clientTrackingRange(CLIENT_TRACKING_RANGE)
+                .build(id));
   }
 }

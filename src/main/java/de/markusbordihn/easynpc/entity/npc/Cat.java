@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.entity.npc;
 
+import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -26,31 +28,21 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 
-import de.markusbordihn.easynpc.data.skin.SkinModel;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-
 public class Cat extends EasyNPCEntity {
 
   // General Information
   public static final String ID = "cat";
   public static final String NAME = "Cat";
 
-  // Skin Details
-  public enum Variant {
-    ALL_BLACK, BLACK, BRITISH_SHORTHAIR, CALICO, JELLIE, OCELOT, PERSIAN, RAGDOLL, RED, SIAMESE, TABBY, WHITE
-  }
-
-  public Cat(EntityType<? extends EasyNPCEntity> entityType, Level level, Enum<?> variant) {
-    super(entityType, level, variant);
-  }
-
   public Cat(EntityType<? extends EasyNPCEntity> entityType, Level level) {
     super(entityType, level);
   }
 
   public static AttributeSupplier.Builder createAttributes() {
-    return Mob.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0.5F)
-        .add(Attributes.MAX_HEALTH, 16.0D).add(Attributes.ATTACK_DAMAGE, 0.0D);
+    return Mob.createMobAttributes()
+        .add(Attributes.MOVEMENT_SPEED, 0.5F)
+        .add(Attributes.MAX_HEALTH, 16.0D)
+        .add(Attributes.ATTACK_DAMAGE, 0.0D);
   }
 
   public DyeColor getCollarColor() {
@@ -97,4 +89,19 @@ public class Cat extends EasyNPCEntity {
     return 65;
   }
 
+  // Skin Details
+  public enum Variant {
+    ALL_BLACK,
+    BLACK,
+    BRITISH_SHORTHAIR,
+    CALICO,
+    JELLIE,
+    OCELOT,
+    PERSIAN,
+    RAGDOLL,
+    RED,
+    SIAMESE,
+    TABBY,
+    WHITE
+  }
 }

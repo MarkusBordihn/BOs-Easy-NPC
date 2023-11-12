@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,10 +19,11 @@
 
 package de.markusbordihn.easynpc.menu.configuration.preset;
 
+import de.markusbordihn.easynpc.menu.ModMenuTypes;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nullable;
-
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -33,33 +34,29 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-import de.markusbordihn.easynpc.menu.ModMenuTypes;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-
 public class WorldImportPresetConfigurationMenu extends ConfigurationMenu {
 
   // Cache
   protected final List<ResourceLocation> worldPresets;
 
-  public WorldImportPresetConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid,
-      List<ResourceLocation> worldPresets) {
-    super(ModMenuTypes.WORLD_IMPORT_PRESET_CONFIGURATION_MENU.get(), windowId, playerInventory,
-        uuid);
+  public WorldImportPresetConfigurationMenu(
+      int windowId, Inventory playerInventory, UUID uuid, List<ResourceLocation> worldPresets) {
+    super(
+        ModMenuTypes.WORLD_IMPORT_PRESET_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
     this.worldPresets = worldPresets;
   }
 
-  public WorldImportPresetConfigurationMenu(int windowId, Inventory playerInventory,
-      FriendlyByteBuf data) {
-    this(windowId, playerInventory, data.readUUID(),
+  public WorldImportPresetConfigurationMenu(
+      int windowId, Inventory playerInventory, FriendlyByteBuf data) {
+    this(
+        windowId,
+        playerInventory,
+        data.readUUID(),
         data.readList(FriendlyByteBuf::readResourceLocation));
   }
 
-  public List<ResourceLocation> getWorldPresets() {
-    return this.worldPresets;
-  }
-
-  public static MenuProvider getMenuProvider(UUID uuid, Entity entity,
-      List<ResourceLocation> worldPresets) {
+  public static MenuProvider getMenuProvider(
+      UUID uuid, Entity entity, List<ResourceLocation> worldPresets) {
     return new MenuProvider() {
       @Override
       public Component getDisplayName() {
@@ -68,11 +65,14 @@ public class WorldImportPresetConfigurationMenu extends ConfigurationMenu {
 
       @Nullable
       @Override
-      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
-          Player serverPlayer) {
+      public AbstractContainerMenu createMenu(
+          int windowId, Inventory inventory, Player serverPlayer) {
         return new WorldImportPresetConfigurationMenu(windowId, inventory, uuid, worldPresets);
       }
     };
   }
 
+  public List<ResourceLocation> getWorldPresets() {
+    return this.worldPresets;
+  }
 }

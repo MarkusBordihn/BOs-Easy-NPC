@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,28 +19,33 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.dialog;
 
+import de.markusbordihn.easynpc.client.screen.components.TextButton;
+import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
+import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.menu.configuration.dialog.DialogConfigurationMenu;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
-
 @OnlyIn(Dist.CLIENT)
-public class DialogConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
+public class DialogConfigurationScreen<T extends DialogConfigurationMenu>
+    extends ConfigurationScreen<T> {
 
+  // Cache
+  protected final DialogDataSet dialogDataSet;
   // Buttons
   protected Button noneDialogButton = null;
   protected Button basicDialogButton = null;
   protected Button yesNoDialogButton = null;
+  protected Button advancedDialogButton = null;
 
   public DialogConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
+    this.dialogDataSet = menu.getDialogDataSet();
   }
 
   @Override
@@ -48,33 +53,70 @@ public class DialogConfigurationScreen<T extends ConfigurationMenu> extends Conf
     super.init();
 
     // Dialog Types
-    this.noneDialogButton = this.addRenderableWidget(
-        menuButton(this.buttonLeftPos, this.buttonTopPos, 70, "disable_dialog", onPress -> {
-          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_DIALOG);
-        }));
+    this.noneDialogButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.buttonLeftPos,
+                this.buttonTopPos,
+                60,
+                "disable_dialog",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_DIALOG)));
     this.basicDialogButton =
-        this.addRenderableWidget(menuButton(this.buttonLeftPos + this.noneDialogButton.getWidth(),
-            this.buttonTopPos, 70, "basic_dialog", onPress -> {
-              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_DIALOG);
-            }));
-    this.yesNoDialogButton = this.addRenderableWidget(menuButton(
-        this.buttonLeftPos + this.noneDialogButton.getWidth() + this.basicDialogButton.getWidth(),
-        this.buttonTopPos, 70, "yes_no_dialog", onPress -> {
-          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.YES_NO_DIALOG);
-        }));
+        this.addRenderableWidget(
+            new TextButton(
+                this.buttonLeftPos + this.noneDialogButton.getWidth(),
+                this.buttonTopPos,
+                70,
+                "basic_dialog",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_DIALOG)));
+    this.yesNoDialogButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.buttonLeftPos
+                    + this.noneDialogButton.getWidth()
+                    + this.basicDialogButton.getWidth(),
+                this.buttonTopPos,
+                70,
+                "yes_no_dialog",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.YES_NO_DIALOG)));
+    this.advancedDialogButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.buttonLeftPos
+                    + this.noneDialogButton.getWidth()
+                    + this.basicDialogButton.getWidth()
+                    + this.yesNoDialogButton.getWidth(),
+                this.buttonTopPos,
+                70,
+                "advanced_dialog",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.ADVANCED_DIALOG)));
 
     // Default button stats
-    this.noneDialogButton.active = this.hasPermissions(COMMON.noneDialogConfigurationEnabled.get(),
-        COMMON.noneDialogConfigurationAllowInCreative.get(),
-        COMMON.noneDialogConfigurationPermissionLevel.get());
+    this.noneDialogButton.active =
+        this.hasPermissions(
+            COMMON.noneDialogConfigurationEnabled.get(),
+            COMMON.noneDialogConfigurationAllowInCreative.get(),
+            COMMON.noneDialogConfigurationPermissionLevel.get());
     this.basicDialogButton.active =
-        this.hasPermissions(COMMON.basicDialogConfigurationEnabled.get(),
+        this.hasPermissions(
+            COMMON.basicDialogConfigurationEnabled.get(),
             COMMON.basicDialogConfigurationAllowInCreative.get(),
             COMMON.basicDialogConfigurationPermissionLevel.get());
     this.yesNoDialogButton.active =
-        this.hasPermissions(COMMON.yesNoDialogConfigurationEnabled.get(),
+        this.hasPermissions(
+            COMMON.yesNoDialogConfigurationEnabled.get(),
             COMMON.yesNoDialogConfigurationAllowInCreative.get(),
             COMMON.yesNoDialogConfigurationPermissionLevel.get());
+    this.advancedDialogButton.active =
+        this.hasPermissions(
+            COMMON.advancedDialogConfigurationEnabled.get(),
+            COMMON.advancedDialogConfigurationAllowInCreative.get(),
+            COMMON.advancedDialogConfigurationPermissionLevel.get());
   }
-
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,12 +19,16 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity;
 
-import java.util.EnumMap;
-import java.util.Map;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
-
+import de.markusbordihn.easynpc.client.model.custom.CustomZombieModel;
+import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.OuterLayer;
+import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.npc.Zombie.Variant;
+import java.util.EnumMap;
+import java.util.Map;
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -38,16 +42,8 @@ import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import de.markusbordihn.easynpc.client.model.custom.CustomZombieModel;
-import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.layers.OuterLayer;
-import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.npc.Zombie.Variant;
 
 @OnlyIn(Dist.CLIENT)
 public class ZombieRenderer extends MobRenderer<EasyNPCEntity, CustomZombieModel<EasyNPCEntity>>
@@ -55,27 +51,34 @@ public class ZombieRenderer extends MobRenderer<EasyNPCEntity, CustomZombieModel
 
   // Variant Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
-      Util.make(new EnumMap<>(Variant.class), map -> {
-        // Build-in Variants
-        map.put(Variant.DROWNED, new ResourceLocation("textures/entity/zombie/drowned.png"));
-        map.put(Variant.HUSK, new ResourceLocation("textures/entity/zombie/husk.png"));
-        map.put(Variant.ZOMBIE, new ResourceLocation("textures/entity/zombie/zombie.png"));
+      Util.make(
+          new EnumMap<>(Variant.class),
+          map -> {
+            // Build-in Variants
+            map.put(Variant.DROWNED, new ResourceLocation("textures/entity/zombie/drowned.png"));
+            map.put(Variant.HUSK, new ResourceLocation("textures/entity/zombie/husk.png"));
+            map.put(Variant.ZOMBIE, new ResourceLocation("textures/entity/zombie/zombie.png"));
 
-        // Custom Variants
-      });
+            // Custom Variants
+          });
   protected static final Map<Variant, ResourceLocation> OUTER_TEXTURE_BY_VARIANT =
-      Util.make(new EnumMap<>(Variant.class), map -> {
-        // Build-in Variants
-        map.put(Variant.DROWNED,
-            new ResourceLocation("textures/entity/zombie/drowned_outer_layer.png"));
-      });
+      Util.make(
+          new EnumMap<>(Variant.class),
+          map -> {
+            // Build-in Variants
+            map.put(
+                Variant.DROWNED,
+                new ResourceLocation("textures/entity/zombie/drowned_outer_layer.png"));
+          });
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.ZOMBIE);
 
   public ZombieRenderer(EntityRendererProvider.Context context) {
     super(context, new CustomZombieModel<>(context.bakeLayer(ModelLayers.ZOMBIE)), 0.5F);
-    this.addLayer(new HumanoidArmorLayer<>(this,
-        new HumanoidModel<>(context.bakeLayer(ModelLayers.ZOMBIE_INNER_ARMOR)),
-        new HumanoidModel<>(context.bakeLayer(ModelLayers.ZOMBIE_OUTER_ARMOR))));
+    this.addLayer(
+        new HumanoidArmorLayer<>(
+            this,
+            new HumanoidModel<>(context.bakeLayer(ModelLayers.ZOMBIE_INNER_ARMOR)),
+            new HumanoidModel<>(context.bakeLayer(ModelLayers.ZOMBIE_OUTER_ARMOR))));
     this.addLayer(new CustomHeadLayer<>(this, context.getModelSet()));
     this.addLayer(new ItemInHandLayer<>(this));
     this.addLayer(new OuterLayer<>(this, context.getModelSet(), OUTER_TEXTURE_BY_VARIANT));
@@ -103,8 +106,13 @@ public class ZombieRenderer extends MobRenderer<EasyNPCEntity, CustomZombieModel
   }
 
   @Override
-  public void render(EasyNPCEntity entity, float entityYaw, float partialTicks, PoseStack poseStack,
-      net.minecraft.client.renderer.MultiBufferSource buffer, int light) {
+  public void render(
+      EasyNPCEntity entity,
+      float entityYaw,
+      float partialTicks,
+      PoseStack poseStack,
+      net.minecraft.client.renderer.MultiBufferSource buffer,
+      int light) {
     CustomZombieModel<EasyNPCEntity> playerModel = this.getModel();
 
     // Model Rotation
@@ -154,8 +162,12 @@ public class ZombieRenderer extends MobRenderer<EasyNPCEntity, CustomZombieModel
   }
 
   @Override
-  protected void renderNameTag(EasyNPCEntity entity, Component component, PoseStack poseStack,
-      MultiBufferSource multiBufferSource, int color) {
+  protected void renderNameTag(
+      EasyNPCEntity entity,
+      Component component,
+      PoseStack poseStack,
+      MultiBufferSource multiBufferSource,
+      int color) {
     this.renderEntityNameTag(entity, poseStack);
     super.renderNameTag(entity, component, poseStack, multiBufferSource, color);
   }
@@ -164,5 +176,4 @@ public class ZombieRenderer extends MobRenderer<EasyNPCEntity, CustomZombieModel
   protected int getBlockLightLevel(EasyNPCEntity entity, BlockPos blockPos) {
     return getEntityLightLevel(entity);
   }
-
 }

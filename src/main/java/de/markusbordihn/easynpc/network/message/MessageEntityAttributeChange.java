@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -17,20 +17,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 package de.markusbordihn.easynpc.network.message;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-
-import net.minecraftforge.network.NetworkEvent;
 import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
+import java.util.UUID;
+import java.util.function.Supplier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkEvent;
 
 public class MessageEntityAttributeChange extends NetworkMessage {
 
@@ -40,11 +37,16 @@ public class MessageEntityAttributeChange extends NetworkMessage {
   protected final Integer integerValue;
   protected final String stringValue;
 
-  public MessageEntityAttributeChange(UUID uuid, EntityAttribute entityAttribute, Boolean value,
-      Float floatValue, Integer integerValue, String stringValue) {
+  public MessageEntityAttributeChange(
+      UUID uuid,
+      EntityAttribute entityAttribute,
+      Boolean booleanValue,
+      Float floatValue,
+      Integer integerValue,
+      String stringValue) {
     super(uuid);
     this.entityAttribute = entityAttribute;
-    this.booleanValue = value;
+    this.booleanValue = booleanValue;
     this.floatValue = floatValue;
     this.integerValue = integerValue;
     this.stringValue = stringValue;
@@ -66,34 +68,18 @@ public class MessageEntityAttributeChange extends NetworkMessage {
     this(uuid, entityAttribute, null, 0f, 0, value);
   }
 
-  public EntityAttribute getAttributeType() {
-    return this.entityAttribute;
-  }
-
-  public Boolean getBooleanValue() {
-    return this.booleanValue;
-  }
-
-  public Float getFloatValue() {
-    return this.floatValue;
-  }
-
-  public Integer getIntegerValue() {
-    return this.integerValue;
-  }
-
-  public String getStringValue() {
-    return this.stringValue;
-  }
-
   public static MessageEntityAttributeChange decode(final FriendlyByteBuf buffer) {
-    return new MessageEntityAttributeChange(buffer.readUUID(),
-        buffer.readEnum(EntityAttribute.class), buffer.readBoolean(), buffer.readFloat(),
-        buffer.readInt(), buffer.readUtf());
+    return new MessageEntityAttributeChange(
+        buffer.readUUID(),
+        buffer.readEnum(EntityAttribute.class),
+        buffer.readBoolean(),
+        buffer.readFloat(),
+        buffer.readInt(),
+        buffer.readUtf());
   }
 
-  public static void encode(final MessageEntityAttributeChange message,
-      final FriendlyByteBuf buffer) {
+  public static void encode(
+      final MessageEntityAttributeChange message, final FriendlyByteBuf buffer) {
     buffer.writeUUID(message.uuid);
     buffer.writeEnum(message.getAttributeType());
     buffer.writeBoolean(message.getBooleanValue());
@@ -102,15 +88,15 @@ public class MessageEntityAttributeChange extends NetworkMessage {
     buffer.writeUtf(message.getStringValue());
   }
 
-  public static void handle(MessageEntityAttributeChange message,
-      Supplier<NetworkEvent.Context> contextSupplier) {
+  public static void handle(
+      MessageEntityAttributeChange message, Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessageEntityAttributeChange message,
-      NetworkEvent.Context context) {
+  public static void handlePacket(
+      MessageEntityAttributeChange message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
     if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
@@ -120,8 +106,8 @@ public class MessageEntityAttributeChange extends NetworkMessage {
     // Validate name.
     EntityAttribute entityAttribute = message.getAttributeType();
     if (entityAttribute == null) {
-      log.error("Invalid entity attribute {} for {} from {}", entityAttribute, message,
-          serverPlayer);
+      log.error(
+          "Invalid entity attribute {} for {} from {}", entityAttribute, message, serverPlayer);
       return;
     }
 
@@ -146,15 +132,82 @@ public class MessageEntityAttributeChange extends NetworkMessage {
     switch (entityAttribute) {
       case FREEFALL:
         if (booleanValue != null) {
-          log.debug("Change freefall {} for {} from {}", booleanValue, easyNPCEntity, serverPlayer);
+          log.debug("Change freefall={} for {} from {}", booleanValue, easyNPCEntity, serverPlayer);
           easyNPCEntity.setAttributeFreefall(booleanValue);
         }
         break;
+      case CAN_FLOAT:
+        if (booleanValue != null) {
+          log.debug("Change canFloat={} for {} from {}", booleanValue, easyNPCEntity, serverPlayer);
+          easyNPCEntity.setAttributeCanFloat(booleanValue);
+          easyNPCEntity.refreshEntityObjectives();
+        }
+        break;
+      case CAN_OPEN_DOOR:
+        if (booleanValue != null) {
+          log.debug(
+              "Change canOpenDoor={} for {} from {}", booleanValue, easyNPCEntity, serverPlayer);
+          easyNPCEntity.setAttributeCanOpenDoor(booleanValue);
+          easyNPCEntity.refreshEntityObjectives();
+        }
+        break;
+      case CAN_CLOSE_DOOR:
+        if (booleanValue != null) {
+          log.debug(
+              "Change canCloseDoor={} for {} from {}", booleanValue, easyNPCEntity, serverPlayer);
+          easyNPCEntity.setAttributeCanCloseDoor(booleanValue);
+          easyNPCEntity.refreshEntityObjectives();
+        }
+        break;
+      case CAN_PASS_DOOR:
+        if (booleanValue != null) {
+          log.debug(
+              "Change canPassDoor={} for {} from {}", booleanValue, easyNPCEntity, serverPlayer);
+          easyNPCEntity.setAttributeCanPassDoor(booleanValue);
+          easyNPCEntity.refreshEntityObjectives();
+        }
+        break;
+      case IS_ATTACKABLE:
+        if (booleanValue != null) {
+          log.debug(
+              "Change isAttackable={} for {} from {}", booleanValue, easyNPCEntity, serverPlayer);
+          easyNPCEntity.setAttributeIsAttackable(booleanValue);
+        }
+        break;
+      case IS_PUSHABLE:
+        if (booleanValue != null) {
+          log.debug(
+              "Change isPushable={} for {} from {}", booleanValue, easyNPCEntity, serverPlayer);
+          easyNPCEntity.setAttributeIsPushable(booleanValue);
+        }
+        break;
       default:
-        log.error("Unknown entity attribute {} for {} from {}", entityAttribute, message,
+        log.error(
+            "Unimplemented entity attribute {} for {} from {}",
+            entityAttribute,
+            message,
             serverPlayer);
         break;
     }
   }
 
+  public EntityAttribute getAttributeType() {
+    return this.entityAttribute;
+  }
+
+  public Boolean getBooleanValue() {
+    return this.booleanValue;
+  }
+
+  public Float getFloatValue() {
+    return this.floatValue;
+  }
+
+  public Integer getIntegerValue() {
+    return this.integerValue;
+  }
+
+  public String getStringValue() {
+    return this.stringValue;
+  }
 }

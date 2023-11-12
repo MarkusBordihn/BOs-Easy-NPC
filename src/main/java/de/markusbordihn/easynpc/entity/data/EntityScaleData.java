@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,32 +19,31 @@
 
 package de.markusbordihn.easynpc.entity.data;
 
+import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
-
 public interface EntityScaleData extends EntityDataInterface {
 
   // Constants values
-  public static final float DEFAULT_SCALE_X = 1.0f;
-  public static final float DEFAULT_SCALE_Y = 1.0f;
-  public static final float DEFAULT_SCALE_Z = 1.0f;
+  float DEFAULT_SCALE_X = 1.0f;
+  float DEFAULT_SCALE_Y = 1.0f;
+  float DEFAULT_SCALE_Z = 1.0f;
 
   // Synced entity data
-  public static final EntityDataAccessor<Float> DATA_SCALE_X =
+  EntityDataAccessor<Float> DATA_SCALE_X =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.FLOAT);
-  public static final EntityDataAccessor<Float> DATA_SCALE_Y =
+  EntityDataAccessor<Float> DATA_SCALE_Y =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.FLOAT);
-  public static final EntityDataAccessor<Float> DATA_SCALE_Z =
+  EntityDataAccessor<Float> DATA_SCALE_Z =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.FLOAT);
 
   // CompoundTags
-  public static final String DATA_SCALE_X_TAG = "ScaleX";
-  public static final String DATA_SCALE_Y_TAG = "ScaleY";
-  public static final String DATA_SCALE_Z_TAG = "ScaleZ";
+  String DATA_SCALE_X_TAG = "ScaleX";
+  String DATA_SCALE_Y_TAG = "ScaleY";
+  String DATA_SCALE_Z_TAG = "ScaleZ";
 
   default Float getDefaultScaleX() {
     return DEFAULT_SCALE_X;

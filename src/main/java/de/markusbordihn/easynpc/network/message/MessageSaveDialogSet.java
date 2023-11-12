@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,67 +19,64 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-
-import net.minecraftforge.network.NetworkEvent;
-
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.dialog.DialogType;
+import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
+import java.util.UUID;
+import java.util.function.Supplier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class MessageSaveBasicDialog extends NetworkMessage{
+public class MessageSaveDialogSet extends NetworkMessage {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  protected final String dialog;
+  protected final DialogDataSet dialogDataSet;
 
-  public MessageSaveBasicDialog(UUID uuid, String dialog) {
+  public MessageSaveDialogSet(UUID uuid, DialogDataSet dialogDataSet) {
     super(uuid);
-    this.dialog = dialog;
+    this.dialogDataSet = dialogDataSet;
   }
 
-  public String getDialog() {
-    return this.dialog;
+  public static MessageSaveDialogSet decode(final FriendlyByteBuf buffer) {
+    return new MessageSaveDialogSet(buffer.readUUID(), new DialogDataSet(buffer.readNbt()));
   }
 
-  public static MessageSaveBasicDialog decode(final FriendlyByteBuf buffer) {
-    return new MessageSaveBasicDialog(buffer.readUUID(), buffer.readUtf());
-  }
-
-  public static void encode(final MessageSaveBasicDialog message, final FriendlyByteBuf buffer) {
+  public static void encode(final MessageSaveDialogSet message, final FriendlyByteBuf buffer) {
     buffer.writeUUID(message.uuid);
-    buffer.writeUtf(message.getDialog());
+    buffer.writeNbt(message.getDialogData().createTag());
   }
 
-  public static void handle(MessageSaveBasicDialog message,
-      Supplier<NetworkEvent.Context> contextSupplier) {
+  public static void handle(
+      MessageSaveDialogSet message, Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessageSaveBasicDialog message, NetworkEvent.Context context) {
+  public static void handlePacket(MessageSaveDialogSet message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
-    String dialog = message.getDialog();
-    if (serverPlayer == null || dialog == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
-      log.error("Unable to save basic dialog with message {} from {}", message, context);
+    DialogDataSet dialogDataSet = message.getDialogData();
+    if (serverPlayer == null
+        || dialogDataSet == null
+        || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
+      log.error("Unable to save dialog with message {} from {}", message, context);
       return;
     }
 
     // Perform action.
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    log.debug("Saving basic dialog: {} for {} from {}", dialog, easyNPCEntity, serverPlayer);
-    easyNPCEntity.setDialogType(DialogType.BASIC);
-    easyNPCEntity.setSimpleDialog(dialog);
+    log.debug("Saving dialog {} for {} from {}", dialogDataSet, easyNPCEntity, serverPlayer);
+    easyNPCEntity.setDialogDataSet(dialogDataSet);
   }
 
+  public DialogDataSet getDialogData() {
+    return this.dialogDataSet;
+  }
 }

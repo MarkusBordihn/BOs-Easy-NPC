@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,21 +19,18 @@
 
 package de.markusbordihn.easynpc.data;
 
+import de.markusbordihn.easynpc.Constants;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.loading.FileUtils;
-
-import de.markusbordihn.easynpc.Constants;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CustomDataHandler {
 
@@ -45,14 +42,13 @@ public class CustomDataHandler {
     log.info("{} custom data ...", Constants.LOG_REGISTER_PREFIX);
 
     // Prepare custom data folder
-    log.info("{} custom data folder at {} ...", Constants.LOG_CREATE_PREFIX,
-        getCustomDataFolder());
+    log.info("{} custom data folder at {} ...", Constants.LOG_CREATE_PREFIX, getCustomDataFolder());
   }
 
   public static Path getCustomDataFolder() {
     try {
-      return FileUtils.getOrCreateDirectory(FMLPaths.CONFIGDIR.get().resolve(Constants.MOD_ID),
-          Constants.MOD_ID);
+      return FileUtils.getOrCreateDirectory(
+          FMLPaths.CONFIGDIR.get().resolve(Constants.MOD_ID), Constants.MOD_ID);
     } catch (Exception exception) {
       log.error("There was an error, creating the custom data folder:", exception);
     }
@@ -75,8 +71,11 @@ public class CustomDataHandler {
   public static void copyResourceFile(ResourceLocation resourceLocation, File targetFile) {
     if (resourceLocation != null) {
       try {
-        InputStream inputStream = Minecraft.getInstance().getResourceManager()
-            .getResource(resourceLocation).getInputStream();
+        InputStream inputStream =
+            Minecraft.getInstance()
+                .getResourceManager()
+                .getResource(resourceLocation)
+                .getInputStream();
         try (OutputStream outputStream = new FileOutputStream(targetFile)) {
           byte[] buffer = new byte[1024];
           int length;
@@ -89,5 +88,4 @@ public class CustomDataHandler {
       }
     }
   }
-
 }

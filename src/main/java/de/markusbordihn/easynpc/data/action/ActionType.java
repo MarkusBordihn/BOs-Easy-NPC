@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -22,15 +22,10 @@ package de.markusbordihn.easynpc.data.action;
 public enum ActionType {
   // @formatter:off
   NONE,
-  ON_CLOSE_DIALOG,
-  ON_INTERACTION,
-  ON_NO_SELECTION,
-  ON_OPEN_DIALOG,
-  ON_YES_SELECTION,
-  ON_DISTANCE_NEAR,
-  ON_DISTANCE_CLOSE,
-  ON_DISTANCE_VERY_CLOSE,
-  ON_DISTANCE_TOUCH;
+  COMMAND,
+  OPEN_TRADING_SCREEN,
+  OPEN_NAMED_DIALOG;
+
   // @formatter:on
 
   public static ActionType get(String actionType) {

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,12 +19,16 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity;
 
-import java.util.EnumMap;
-import java.util.Map;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
-
+import de.markusbordihn.easynpc.client.model.custom.CustomCatModel;
+import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.CatCollarLayer;
+import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.entity.npc.Cat;
+import de.markusbordihn.easynpc.entity.npc.Cat.Variant;
+import java.util.EnumMap;
+import java.util.Map;
 import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -33,37 +37,32 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import de.markusbordihn.easynpc.client.model.custom.CustomCatModel;
-import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.layers.CatCollarLayer;
-import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.entity.npc.Cat;
-import de.markusbordihn.easynpc.entity.npc.Cat.Variant;
 
 @OnlyIn(Dist.CLIENT)
 public class CatRenderer extends MobRenderer<Cat, CustomCatModel<Cat>> implements EasyNPCRenderer {
 
   // Variant Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
-      Util.make(new EnumMap<>(Variant.class), map -> {
-        map.put(Variant.ALL_BLACK, new ResourceLocation("textures/entity/cat/all_black.png"));
-        map.put(Variant.BLACK, new ResourceLocation("textures/entity/cat/black.png"));
-        map.put(Variant.BRITISH_SHORTHAIR,
-            new ResourceLocation("textures/entity/cat/british_shorthair.png"));
-        map.put(Variant.CALICO, new ResourceLocation("textures/entity/cat/calico.png"));
-        map.put(Variant.JELLIE, new ResourceLocation("textures/entity/cat/jellie.png"));
-        map.put(Variant.OCELOT, new ResourceLocation("textures/entity/cat/ocelot.png"));
-        map.put(Variant.PERSIAN, new ResourceLocation("textures/entity/cat/persian.png"));
-        map.put(Variant.RAGDOLL, new ResourceLocation("textures/entity/cat/ragdoll.png"));
-        map.put(Variant.RED, new ResourceLocation("textures/entity/cat/red.png"));
-        map.put(Variant.SIAMESE, new ResourceLocation("textures/entity/cat/siamese.png"));
-        map.put(Variant.TABBY, new ResourceLocation("textures/entity/cat/tabby.png"));
-        map.put(Variant.WHITE, new ResourceLocation("textures/entity/cat/white.png"));
-      });
+      Util.make(
+          new EnumMap<>(Variant.class),
+          map -> {
+            map.put(Variant.ALL_BLACK, new ResourceLocation("textures/entity/cat/all_black.png"));
+            map.put(Variant.BLACK, new ResourceLocation("textures/entity/cat/black.png"));
+            map.put(
+                Variant.BRITISH_SHORTHAIR,
+                new ResourceLocation("textures/entity/cat/british_shorthair.png"));
+            map.put(Variant.CALICO, new ResourceLocation("textures/entity/cat/calico.png"));
+            map.put(Variant.JELLIE, new ResourceLocation("textures/entity/cat/jellie.png"));
+            map.put(Variant.OCELOT, new ResourceLocation("textures/entity/cat/ocelot.png"));
+            map.put(Variant.PERSIAN, new ResourceLocation("textures/entity/cat/persian.png"));
+            map.put(Variant.RAGDOLL, new ResourceLocation("textures/entity/cat/ragdoll.png"));
+            map.put(Variant.RED, new ResourceLocation("textures/entity/cat/red.png"));
+            map.put(Variant.SIAMESE, new ResourceLocation("textures/entity/cat/siamese.png"));
+            map.put(Variant.TABBY, new ResourceLocation("textures/entity/cat/tabby.png"));
+            map.put(Variant.WHITE, new ResourceLocation("textures/entity/cat/white.png"));
+          });
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.BLACK);
 
   public CatRenderer(EntityRendererProvider.Context context) {
@@ -92,8 +91,13 @@ public class CatRenderer extends MobRenderer<Cat, CustomCatModel<Cat>> implement
   }
 
   @Override
-  public void render(Cat entity, float entityYaw, float partialTicks, PoseStack poseStack,
-      net.minecraft.client.renderer.MultiBufferSource buffer, int light) {
+  public void render(
+      Cat entity,
+      float entityYaw,
+      float partialTicks,
+      PoseStack poseStack,
+      net.minecraft.client.renderer.MultiBufferSource buffer,
+      int light) {
     CustomCatModel<Cat> playerModel = this.getModel();
 
     // Model Rotation
@@ -127,8 +131,12 @@ public class CatRenderer extends MobRenderer<Cat, CustomCatModel<Cat>> implement
   }
 
   @Override
-  protected void renderNameTag(Cat entity, Component component, PoseStack poseStack,
-      MultiBufferSource multiBufferSource, int color) {
+  protected void renderNameTag(
+      Cat entity,
+      Component component,
+      PoseStack poseStack,
+      MultiBufferSource multiBufferSource,
+      int color) {
     this.renderEntityNameTag(entity, poseStack);
     super.renderNameTag(entity, component, poseStack, multiBufferSource, color);
   }
@@ -137,5 +145,4 @@ public class CatRenderer extends MobRenderer<Cat, CustomCatModel<Cat>> implement
   protected int getBlockLightLevel(Cat entity, BlockPos blockPos) {
     return getEntityLightLevel(entity);
   }
-
 }

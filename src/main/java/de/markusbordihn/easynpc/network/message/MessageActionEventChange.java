@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,59 +19,67 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
-
-import net.minecraftforge.network.NetworkEvent;
-
 import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
+import java.util.UUID;
+import java.util.function.Supplier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkEvent;
 
-public class MessageActionChange extends NetworkMessage {
+public class MessageActionEventChange extends NetworkMessage {
 
   protected final ActionData actionData;
+  protected final ActionEventType actionEventType;
 
-  public MessageActionChange(UUID uuid, ActionData actionData) {
+  public MessageActionEventChange(UUID uuid, ActionEventType actionEventType, String action) {
+    this(uuid, actionEventType, new ActionData(ActionType.COMMAND, action));
+  }
+
+  public MessageActionEventChange(
+      UUID uuid, ActionEventType actionEventType, ActionData actionData) {
     super(uuid);
     this.actionData = actionData;
+    this.actionEventType = actionEventType;
   }
 
-  public MessageActionChange(UUID uuid, ActionType actionType, String action) {
-    super(uuid);
-    this.actionData = new ActionData(actionType, action);
+  public static MessageActionEventChange decode(final FriendlyByteBuf buffer) {
+    return new MessageActionEventChange(
+        buffer.readUUID(),
+        buffer.readEnum(ActionEventType.class),
+        new ActionData(buffer.readNbt()));
   }
 
-  public ActionData getActionData() {
-    return this.actionData;
-  }
-
-  public static MessageActionChange decode(final FriendlyByteBuf buffer) {
-    return new MessageActionChange(buffer.readUUID(), ActionData.decode(buffer));
-  }
-
-  public static void encode(final MessageActionChange message, final FriendlyByteBuf buffer) {
+  public static void encode(final MessageActionEventChange message, final FriendlyByteBuf buffer) {
     buffer.writeUUID(message.uuid);
-    ActionData.encode(message, buffer);
+    buffer.writeEnum(message.getActionEventType());
+    buffer.writeNbt(message.actionData.createTag());
   }
 
-  public static void handle(MessageActionChange message,
-      Supplier<NetworkEvent.Context> contextSupplier) {
+  public static void handle(
+      MessageActionEventChange message, Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessageActionChange message, NetworkEvent.Context context) {
+  public static void handlePacket(MessageActionEventChange message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
     if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
+      return;
+    }
+
+    // Validate action event type.
+    ActionEventType actionEventType = message.getActionEventType();
+    if (actionEventType == null || actionEventType == ActionEventType.NONE) {
+      log.error(
+          "Invalid action event type {} for {} from {}", actionEventType, message, serverPlayer);
       return;
     }
 
@@ -88,14 +96,32 @@ public class MessageActionChange extends NetworkMessage {
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     if (minecraftServer != null) {
       permissionLevel = minecraftServer.getProfilePermissions(serverPlayer.getGameProfile());
+      log.debug(
+          "Set action owner permission level {} for {} from {}",
+          permissionLevel,
+          message,
+          serverPlayer);
       easyNPCEntity.setActionPermissionLevel(permissionLevel);
+    } else {
+      log.warn("Unable to verify permission level from {} for {}", message, serverPlayer);
     }
 
     // Perform action.
-    ActionType actionType = actionData.getActionType();
-    log.debug("Set action {}:{} for {} from {} with permission level {}.", actionType, actionData,
-        easyNPCEntity, serverPlayer, permissionLevel);
-    easyNPCEntity.setAction(actionType, actionData);
+    log.debug(
+        "Set action event {} with {} for {} from {} with owner permission level {}.",
+        actionEventType,
+        actionData,
+        easyNPCEntity,
+        serverPlayer,
+        permissionLevel);
+    easyNPCEntity.getActionEventSet().setActionEvent(actionEventType, actionData);
   }
 
+  public ActionEventType getActionEventType() {
+    return this.actionEventType;
+  }
+
+  public ActionData getActionData() {
+    return this.actionData;
+  }
 }

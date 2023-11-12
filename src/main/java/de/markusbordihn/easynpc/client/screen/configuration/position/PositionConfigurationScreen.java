@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,17 +19,16 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.position;
 
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
+import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class PositionConfigurationScreen<T extends ConfigurationMenu>
@@ -48,16 +47,22 @@ public class PositionConfigurationScreen<T extends ConfigurationMenu>
 
     // Position Types
     int positionButtonWidth = 80;
-    this.defaultPositionButton = this.addRenderableWidget(menuButton(this.buttonLeftPos,
-        this.buttonTopPos, positionButtonWidth, "default_position", button -> {
-          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_POSITION);
-        }));
+    this.defaultPositionButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.buttonLeftPos,
+                this.buttonTopPos,
+                positionButtonWidth,
+                "default_position",
+                button -> {
+                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_POSITION);
+                }));
 
     // Default button stats
     this.defaultPositionButton.active =
-        this.hasPermissions(COMMON.defaultPositionConfigurationEnabled.get(),
+        this.hasPermissions(
+            COMMON.defaultPositionConfigurationEnabled.get(),
             COMMON.defaultPositionConfigurationAllowInCreative.get(),
             COMMON.defaultPositionConfigurationPermissionLevel.get());
   }
-
 }

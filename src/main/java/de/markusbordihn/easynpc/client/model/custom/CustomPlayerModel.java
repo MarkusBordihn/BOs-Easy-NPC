@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,16 +19,16 @@
 
 package de.markusbordihn.easynpc.client.model.custom;
 
-import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Pose;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class CustomPlayerModel<T extends LivingEntity> extends PlayerModel<T>
@@ -39,18 +39,31 @@ public class CustomPlayerModel<T extends LivingEntity> extends PlayerModel<T>
   }
 
   @Override
-  public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks,
-      float netHeadYaw, float headPitch) {
+  public void setupAnim(
+      T entity,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
     if (entity instanceof EasyNPCEntity easyNPCEntity) {
 
       // Reset player model to avoid any issues with other mods.
-      resetHumanoidModel(this.head, this.body, this.rightArm, this.leftArm, this.rightLeg,
-          this.leftLeg);
+      resetHumanoidModel(
+          this.head, this.body, this.rightArm, this.leftArm, this.rightLeg, this.leftLeg);
 
       // Individual Part Modifications
       if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
-        setupCustomHumanoidModel(easyNPCEntity, this.head, this.body, this.rightArm, this.leftArm,
-            this.rightLeg, this.leftLeg, netHeadYaw, headPitch);
+        setupCustomHumanoidModel(
+            easyNPCEntity,
+            this.head,
+            this.body,
+            this.rightArm,
+            this.leftArm,
+            this.rightLeg,
+            this.leftLeg,
+            netHeadYaw,
+            headPitch);
       } else if (easyNPCEntity.getPose() == Pose.CROUCHING) {
         // Crouching Pose
         this.body.xRot = 0.5F;
@@ -68,6 +81,28 @@ public class CustomPlayerModel<T extends LivingEntity> extends PlayerModel<T>
 
       if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM
           || easyNPCEntity.getPose() == Pose.CROUCHING) {
+
+        // Handle animations, if model part was not adjusted in any way.
+        if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
+          // Allow arm animation if arms are not adjusted.
+          if (hasDefaultHumanoidModelRightArm(this.rightArm)) {
+            this.rightArm.xRot =
+                Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F;
+          }
+          if (hasDefaultHumanoidModelLeftArm(this.leftArm)) {
+            this.leftArm.xRot = Mth.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
+          }
+
+          // Allow leg animation if legs are not adjusted.
+          if (hasDefaultHumanoidModelRightLeg(this.rightLeg)) {
+            this.rightLeg.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+          }
+          if (hasDefaultHumanoidModelLeftLeg(this.leftLeg)) {
+            this.leftLeg.xRot =
+                Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
+          }
+        }
+
         // Copy all outer model parts to the correct model parts.
         this.hat.copyFrom(this.head);
         this.leftPants.copyFrom(this.leftLeg);
@@ -80,5 +115,4 @@ public class CustomPlayerModel<T extends LivingEntity> extends PlayerModel<T>
       }
     }
   }
-
 }

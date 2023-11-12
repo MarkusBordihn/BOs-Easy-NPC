@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,61 +19,52 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-
-import net.minecraftforge.network.NetworkEvent;
-
-import de.markusbordihn.easynpc.data.action.ActionData;
-import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
+import java.util.UUID;
+import java.util.function.Supplier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkEvent;
 
-public class MessageTriggerAction extends NetworkMessage {
+public class MessageRemoveDialog extends NetworkMessage {
 
-  protected final ActionType actionType;
+  protected final UUID dialogId;
 
-  public MessageTriggerAction(UUID uuid, ActionType actionType) {
+  public MessageRemoveDialog(UUID uuid, UUID dialogId) {
     super(uuid);
-    this.actionType = actionType;
+    this.dialogId = dialogId;
   }
 
-  public ActionType getActionType() {
-    return this.actionType;
+  public static MessageRemoveDialog decode(final FriendlyByteBuf buffer) {
+    return new MessageRemoveDialog(buffer.readUUID(), buffer.readUUID());
   }
 
-  public static MessageTriggerAction decode(final FriendlyByteBuf buffer) {
-    return new MessageTriggerAction(buffer.readUUID(), buffer.readEnum(ActionType.class));
-  }
-
-  public static void encode(final MessageTriggerAction message, final FriendlyByteBuf buffer) {
+  public static void encode(final MessageRemoveDialog message, final FriendlyByteBuf buffer) {
     buffer.writeUUID(message.uuid);
-    buffer.writeEnum(message.getActionType());
+    buffer.writeUUID(message.getDialogId());
   }
 
-  public static void handle(MessageTriggerAction message,
-      Supplier<NetworkEvent.Context> contextSupplier) {
+  public static void handle(
+      MessageRemoveDialog message, Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessageTriggerAction message, NetworkEvent.Context context) {
+  public static void handlePacket(MessageRemoveDialog message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
-    if (serverPlayer == null || uuid == null) {
-      log.error("Unable to trigger action with message {} from {}", message, context);
+    if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
+      log.error("Unable to remove dialog with message {} from {}", message, context);
       return;
     }
 
-    // Validate action type.
-    ActionType actionType = message.getActionType();
-    if (actionType == null || actionType == ActionType.NONE) {
-      log.error("Invalid action type {} for {} from {}", actionType, message, serverPlayer);
+    // Validate dialog ID
+    UUID dialogId = message.getDialogId();
+    if (dialogId == null) {
+      log.error("Invalid dialog id for {} from {}", message, context);
       return;
     }
 
@@ -84,19 +75,25 @@ public class MessageTriggerAction extends NetworkMessage {
       return;
     }
 
-    // Validate action.
-    ActionData actionData = easyNPCEntity.getActionData(actionType);
-    if (actionData == null) {
-      log.error("Unknown trigger action {} request for UUID {} from {}", actionType, uuid,
+    // Validate dialog
+    if (!easyNPCEntity.hasDialog(dialogId)) {
+      log.error(
+          "Unknown delete dialog request for dialog {} for {} from {}",
+          dialogId,
+          uuid,
           serverPlayer);
       return;
     }
 
     // Perform action.
-    int permissionLevel = easyNPCEntity.getActionPermissionLevel();
-    log.debug("Trigger action {} for {} from {} with permission level {} ...", actionData,
-        easyNPCEntity, serverPlayer, permissionLevel);
-    easyNPCEntity.executeAction(actionData, serverPlayer);
+    if (easyNPCEntity.removeDialog(dialogId)) {
+      log.info("Removed dialog {} for {} from {}", dialogId, easyNPCEntity, serverPlayer);
+    } else {
+      log.warn("Unable to remove dialog {} for {} from {}", dialogId, easyNPCEntity, serverPlayer);
+    }
   }
 
+  public UUID getDialogId() {
+    return this.dialogId;
+  }
 }

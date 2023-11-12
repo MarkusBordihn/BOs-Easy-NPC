@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -20,18 +20,16 @@
 package de.markusbordihn.easynpc.client.renderer.entity.layers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-
+import de.markusbordihn.easynpc.client.model.custom.CustomCatModel;
+import de.markusbordihn.easynpc.entity.npc.Cat;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import de.markusbordihn.easynpc.client.model.custom.CustomCatModel;
-import de.markusbordihn.easynpc.entity.npc.Cat;
 
 @OnlyIn(Dist.CLIENT)
 public class CatCollarLayer extends RenderLayer<Cat, CustomCatModel<Cat>> {
@@ -44,14 +42,36 @@ public class CatCollarLayer extends RenderLayer<Cat, CustomCatModel<Cat>> {
     this.catModel = new CustomCatModel<>(model.bakeLayer(ModelLayers.CAT_COLLAR));
   }
 
-  public void render(PoseStack poseStack, MultiBufferSource buffer, int lightLevel, Cat cat,
-      float limbSwing, float limbSwingAmount, float ageInTicks, float ageInTicks2, float netHeadYaw,
+  public void render(
+      PoseStack poseStack,
+      MultiBufferSource buffer,
+      int lightLevel,
+      Cat cat,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float ageInTicks2,
+      float netHeadYaw,
       float headPitch) {
     if (cat.isTame()) {
       float[] afloat = cat.getCollarColor().getTextureDiffuseColors();
-      coloredCutoutModelCopyLayerRender(this.getParentModel(), this.catModel, CAT_COLLAR_LOCATION,
-          poseStack, buffer, lightLevel, cat, limbSwing, limbSwingAmount, ageInTicks2, netHeadYaw,
-          headPitch, ageInTicks, afloat[0], afloat[1], afloat[2]);
+      coloredCutoutModelCopyLayerRender(
+          this.getParentModel(),
+          this.catModel,
+          CAT_COLLAR_LOCATION,
+          poseStack,
+          buffer,
+          lightLevel,
+          cat,
+          limbSwing,
+          limbSwingAmount,
+          ageInTicks2,
+          netHeadYaw,
+          headPitch,
+          ageInTicks,
+          afloat[0],
+          afloat[1],
+          afloat[2]);
     }
   }
 }

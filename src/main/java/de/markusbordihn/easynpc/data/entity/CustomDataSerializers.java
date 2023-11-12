@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -17,32 +17,66 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.data;
+package de.markusbordihn.easynpc.data.entity;
 
+import de.markusbordihn.easynpc.data.CustomPosition;
+import de.markusbordihn.easynpc.data.action.ActionEventSet;
+import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
+import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
+import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.data.trading.TradingType;
+import de.markusbordihn.easynpc.entity.Profession;
+import java.util.HashSet;
+import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.world.item.trading.MerchantOffers;
-import de.markusbordihn.easynpc.data.CustomPosition;
-import de.markusbordihn.easynpc.data.dialog.DialogType;
-import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.data.skin.SkinType;
-import de.markusbordihn.easynpc.data.trading.TradingType;
-import de.markusbordihn.easynpc.entity.Profession;
 
 public class CustomDataSerializers {
 
-  public static final EntityDataSerializer<DialogType> DIALOG_TYPE =
-      new EntityDataSerializer<DialogType>() {
-        public void write(FriendlyByteBuf buffer, DialogType value) {
-          buffer.writeEnum(value);
+  public static final EntityDataSerializer<ActionEventSet> ACTION_EVENT_SET =
+      new EntityDataSerializer<ActionEventSet>() {
+        public void write(FriendlyByteBuf buffer, ActionEventSet value) {
+          buffer.writeNbt(value.createTag());
         }
 
-        public DialogType read(FriendlyByteBuf buffer) {
-          return buffer.readEnum(DialogType.class);
+        public ActionEventSet read(FriendlyByteBuf buffer) {
+          return new ActionEventSet(buffer.readNbt());
         }
 
-        public DialogType copy(DialogType value) {
+        public ActionEventSet copy(ActionEventSet value) {
+          return value;
+        }
+      };
+
+  public static final EntityDataSerializer<DialogDataSet> DIALOG_DATA_SET =
+      new EntityDataSerializer<DialogDataSet>() {
+        public void write(FriendlyByteBuf buffer, DialogDataSet value) {
+          buffer.writeNbt(value.createTag());
+        }
+
+        public DialogDataSet read(FriendlyByteBuf buffer) {
+          return new DialogDataSet(buffer.readNbt());
+        }
+
+        public DialogDataSet copy(DialogDataSet value) {
+          return value;
+        }
+      };
+
+  public static final EntityDataSerializer<ObjectiveDataSet> OBJECTIVE_DATA_SET =
+      new EntityDataSerializer<ObjectiveDataSet>() {
+        public void write(FriendlyByteBuf buffer, ObjectiveDataSet value) {
+          buffer.writeNbt(value.createTag());
+        }
+
+        public ObjectiveDataSet read(FriendlyByteBuf buffer) {
+          return new ObjectiveDataSet(buffer.readNbt());
+        }
+
+        public ObjectiveDataSet copy(ObjectiveDataSet value) {
           return value;
         }
       };
@@ -139,13 +173,59 @@ public class CustomDataSerializers {
         }
       };
 
+  public static final EntityDataSerializer<HashSet<String>> STRING_HASH_SET =
+      new EntityDataSerializer<HashSet<String>>() {
+        public void write(FriendlyByteBuf buffer, HashSet<String> value) {
+          for (String entry : value) {
+            buffer.writeUtf(entry);
+          }
+        }
+
+        public HashSet<String> read(FriendlyByteBuf buffer) {
+          HashSet<String> value = new HashSet<>();
+          while (buffer.isReadable()) {
+            value.add(buffer.readUtf());
+          }
+          return value;
+        }
+
+        public HashSet<String> copy(HashSet<String> value) {
+          return value;
+        }
+      };
+
+  public static final EntityDataSerializer<HashSet<UUID>> UUID_HASH_SET =
+      new EntityDataSerializer<HashSet<UUID>>() {
+        public void write(FriendlyByteBuf buffer, HashSet<UUID> value) {
+          for (UUID entry : value) {
+            buffer.writeUUID(entry);
+          }
+        }
+
+        public HashSet<UUID> read(FriendlyByteBuf buffer) {
+          HashSet<UUID> value = new HashSet<>();
+          while (buffer.isReadable()) {
+            value.add(buffer.readUUID());
+          }
+          return value;
+        }
+
+        public HashSet<UUID> copy(HashSet<UUID> value) {
+          return value;
+        }
+      };
+
   static {
-    EntityDataSerializers.registerSerializer(DIALOG_TYPE);
+    EntityDataSerializers.registerSerializer(ACTION_EVENT_SET);
+    EntityDataSerializers.registerSerializer(DIALOG_DATA_SET);
     EntityDataSerializers.registerSerializer(MERCHANT_OFFERS);
     EntityDataSerializers.registerSerializer(MODEL_POSE);
+    EntityDataSerializers.registerSerializer(OBJECTIVE_DATA_SET);
     EntityDataSerializers.registerSerializer(POSITION);
     EntityDataSerializers.registerSerializer(PROFESSION);
     EntityDataSerializers.registerSerializer(SKIN_TYPE);
+    EntityDataSerializers.registerSerializer(STRING_HASH_SET);
     EntityDataSerializers.registerSerializer(TRADING_TYPE);
+    EntityDataSerializers.registerSerializer(UUID_HASH_SET);
   }
 }

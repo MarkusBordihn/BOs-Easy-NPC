@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.data;
 
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,27 +31,21 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.LevelResource;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.storage.LevelResource;
-
-import net.minecraftforge.server.ServerLifecycleHooks;
-
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.skin.SkinModel;
-
 public class WorldPresetData {
 
+  public static final File MOD_FOLDER =
+      new File(
+          ServerLifecycleHooks.getCurrentServer().getWorldPath(LevelResource.ROOT).toFile(),
+          Constants.MOD_ID);
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String DATA_FOLDER_NAME = "preset";
-  public static final File MOD_FOLDER =
-      new File(ServerLifecycleHooks.getCurrentServer().getWorldPath(LevelResource.ROOT).toFile(),
-          Constants.MOD_ID);
-
-  private static ConcurrentHashMap<ResourceLocation, Path> presetResourceLocationMap =
+  private static final ConcurrentHashMap<ResourceLocation, Path> presetResourceLocationMap =
       new ConcurrentHashMap<>();
 
   protected WorldPresetData() {}
@@ -84,8 +80,12 @@ public class WorldPresetData {
     if (presetModelFolder != null && fileName != null && !fileName.isEmpty()) {
       // Remove all invalid characters from file name.
       fileName = fileName.toLowerCase().replaceAll("[^a-z0-9/._-]", "").replace("..", "");
-      return presetModelFolder.resolve(fileName.endsWith(Constants.NPC_NBT_SUFFIX) ? fileName
-          : fileName + Constants.NPC_NBT_SUFFIX).toFile();
+      return presetModelFolder
+          .resolve(
+              fileName.endsWith(Constants.NPC_NBT_SUFFIX)
+                  ? fileName
+                  : fileName + Constants.NPC_NBT_SUFFIX)
+          .toFile();
     }
     return null;
   }
@@ -100,15 +100,24 @@ public class WorldPresetData {
       try (Stream<Path> filesStream = Files.walk(presetDataFolder)) {
         // Get all files with the suffix .npc.nbt and return the relative path.
         List<ResourceLocation> filePaths =
-            filesStream.filter(path -> path.toString().endsWith(Constants.NPC_NBT_SUFFIX))
+            filesStream
+                .filter(path -> path.toString().endsWith(Constants.NPC_NBT_SUFFIX))
                 .filter(path -> Pattern.matches("[a-z0-9/._-]+", path.getFileName().toString()))
-                .map(path -> {
-                  ResourceLocation resourceLocation =
-                      new ResourceLocation(Constants.MOD_ID, DATA_FOLDER_NAME + '/'
-                          + presetDataFolder.relativize(path).toString().replace("\\", "/"));
-                  presetResourceLocationMap.put(resourceLocation, path);
-                  return resourceLocation;
-                }).collect(Collectors.toList());
+                .map(
+                    path -> {
+                      ResourceLocation resourceLocation =
+                          new ResourceLocation(
+                              Constants.MOD_ID,
+                              DATA_FOLDER_NAME
+                                  + '/'
+                                  + presetDataFolder
+                                      .relativize(path)
+                                      .toString()
+                                      .replace("\\", "/"));
+                      presetResourceLocationMap.put(resourceLocation, path);
+                      return resourceLocation;
+                    })
+                .collect(Collectors.toList());
         return filePaths.stream();
       }
     } catch (IOException exception) {
@@ -122,5 +131,4 @@ public class WorldPresetData {
   public static Path getPresetsResourceLocationPath(ResourceLocation resourceLocation) {
     return presetResourceLocationMap.get(resourceLocation);
   }
-
 }

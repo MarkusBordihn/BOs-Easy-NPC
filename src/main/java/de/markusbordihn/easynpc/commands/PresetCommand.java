@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,17 +19,18 @@
 
 package de.markusbordihn.easynpc.commands;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.UUID;
-
-import javax.annotation.Nullable;
-
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
+import de.markusbordihn.easynpc.data.WorldPresetData;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.UUID;
+import javax.annotation.Nullable;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
@@ -47,61 +48,105 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.phys.Vec3;
 
-import de.markusbordihn.easynpc.data.WorldPresetData;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
-
 public class PresetCommand extends CustomCommand {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("preset")
         .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
         .executes(PresetCommand::overview)
-        .then(Commands.literal("export").then(Commands.argument("uuid", UuidArgument.uuid())
-            .suggests(PresetCommand::suggestEasyNPCs).executes(context -> {
-              return exportPreset(context.getSource(), UuidArgument.getUuid(context, "uuid"));
-            })))
-        .then(Commands.literal("import")
-            .then(Commands.argument("presetLocation", ResourceLocationArgument.id())
-                .suggests(PresetCommand::suggestPresets).executes(context -> {
-                  return importPreset(context.getSource(),
-                      ResourceLocationArgument.getId(context, "presetLocation"), null, null);
-                }).then(Commands.argument("location", Vec3Argument.vec3()).executes(context -> {
-                  Coordinates coordinates = Vec3Argument.getCoordinates(context, "location");
-                  Vec3 vec3Position =
-                      coordinates != null ? coordinates.getPosition(context.getSource()) : null;
-                  return importPreset(context.getSource(),
-                      ResourceLocationArgument.getId(context, "presetLocation"), vec3Position,
-                      null);
-                }))))
-        .then(Commands.literal("import_new")
-            .then(Commands.argument("presetLocation", ResourceLocationArgument.id())
-                .suggests(PresetCommand::suggestPresets).executes(context -> {
-                  ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
-                  return importPreset(context.getSource(),
-                      ResourceLocationArgument.getId(context, "presetLocation"),
-                      serverPlayer.position(), UUID.randomUUID());
-                }).then(Commands.argument("location", Vec3Argument.vec3()).executes(context -> {
-                  Coordinates coordinates = Vec3Argument.getCoordinates(context, "location");
-                  Vec3 vec3Position =
-                      coordinates != null ? coordinates.getPosition(context.getSource()) : null;
-                  return importPreset(context.getSource(),
-                      ResourceLocationArgument.getId(context, "presetLocation"), vec3Position,
-                      UUID.randomUUID());
-                }).then(Commands.argument("uuid", UuidArgument.uuid()).executes(context -> {
-                  Coordinates coordinates = Vec3Argument.getCoordinates(context, "location");
-                  Vec3 vec3Position =
-                      coordinates != null ? coordinates.getPosition(context.getSource()) : null;
-                  return importPreset(context.getSource(),
-                      ResourceLocationArgument.getId(context, "presetLocation"), vec3Position,
-                      UuidArgument.getUuid(context, "uuid"));
-                })))));
+        .then(
+            Commands.literal("export")
+                .then(
+                    Commands.argument("uuid", UuidArgument.uuid())
+                        .suggests(PresetCommand::suggestEasyNPCs)
+                        .executes(
+                            context -> {
+                              return exportPreset(
+                                  context.getSource(), UuidArgument.getUuid(context, "uuid"));
+                            })))
+        .then(
+            Commands.literal("import")
+                .then(
+                    Commands.argument("presetLocation", ResourceLocationArgument.id())
+                        .suggests(PresetCommand::suggestPresets)
+                        .executes(
+                            context -> {
+                              return importPreset(
+                                  context.getSource(),
+                                  ResourceLocationArgument.getId(context, "presetLocation"),
+                                  null,
+                                  null);
+                            })
+                        .then(
+                            Commands.argument("location", Vec3Argument.vec3())
+                                .executes(
+                                    context -> {
+                                      Coordinates coordinates =
+                                          Vec3Argument.getCoordinates(context, "location");
+                                      Vec3 vec3Position =
+                                          coordinates != null
+                                              ? coordinates.getPosition(context.getSource())
+                                              : null;
+                                      return importPreset(
+                                          context.getSource(),
+                                          ResourceLocationArgument.getId(context, "presetLocation"),
+                                          vec3Position,
+                                          null);
+                                    }))))
+        .then(
+            Commands.literal("import_new")
+                .then(
+                    Commands.argument("presetLocation", ResourceLocationArgument.id())
+                        .suggests(PresetCommand::suggestPresets)
+                        .executes(
+                            context -> {
+                              ServerPlayer serverPlayer =
+                                  context.getSource().getPlayerOrException();
+                              return importPreset(
+                                  context.getSource(),
+                                  ResourceLocationArgument.getId(context, "presetLocation"),
+                                  serverPlayer.position(),
+                                  UUID.randomUUID());
+                            })
+                        .then(
+                            Commands.argument("location", Vec3Argument.vec3())
+                                .executes(
+                                    context -> {
+                                      Coordinates coordinates =
+                                          Vec3Argument.getCoordinates(context, "location");
+                                      Vec3 vec3Position =
+                                          coordinates != null
+                                              ? coordinates.getPosition(context.getSource())
+                                              : null;
+                                      return importPreset(
+                                          context.getSource(),
+                                          ResourceLocationArgument.getId(context, "presetLocation"),
+                                          vec3Position,
+                                          UUID.randomUUID());
+                                    })
+                                .then(
+                                    Commands.argument("uuid", UuidArgument.uuid())
+                                        .executes(
+                                            context -> {
+                                              Coordinates coordinates =
+                                                  Vec3Argument.getCoordinates(context, "location");
+                                              Vec3 vec3Position =
+                                                  coordinates != null
+                                                      ? coordinates.getPosition(context.getSource())
+                                                      : null;
+                                              return importPreset(
+                                                  context.getSource(),
+                                                  ResourceLocationArgument.getId(
+                                                      context, "presetLocation"),
+                                                  vec3Position,
+                                                  UuidArgument.getUuid(context, "uuid"));
+                                            })))));
   }
 
   private static int overview(CommandContext<CommandSourceStack> context) {
-    context.getSource().sendSuccess(new TextComponent("Preset command is not implemented yet!"),
-        false);
+    context
+        .getSource()
+        .sendSuccess(new TextComponent("Preset command is not implemented yet!"), false);
     return 0;
   }
 
@@ -125,14 +170,21 @@ public class PresetCommand extends CustomCommand {
       return 0;
     }
 
-    log.info("Exporting EasyNPC {} with UUID {} and skin {}...", easyNPCEntity.getName(), uuid,
+    log.info(
+        "Exporting EasyNPC {} with UUID {} and skin {}...",
+        easyNPCEntity.getName(),
+        uuid,
         easyNPCEntity.getSkinModel());
     NetworkMessageHandler.exportPresetClient(uuid, serverPlayer);
     return Command.SINGLE_SUCCESS;
   }
 
-  private static int importPreset(CommandSourceStack context, ResourceLocation preset,
-      @Nullable Vec3 position, @Nullable UUID uuid) throws CommandSyntaxException {
+  private static int importPreset(
+      CommandSourceStack context,
+      ResourceLocation preset,
+      @Nullable Vec3 position,
+      @Nullable UUID uuid)
+      throws CommandSyntaxException {
     if (preset == null) {
       return 0;
     }
@@ -163,18 +215,23 @@ public class PresetCommand extends CustomCommand {
 
     // Get entity type.
     EntityType<?> entityType =
-        compoundTag.contains("id") ? EntityType.byString(compoundTag.getString("id")).orElse(null)
+        compoundTag.contains("id")
+            ? EntityType.byString(compoundTag.getString("id")).orElse(null)
             : null;
     if (entityType == null) {
-      context
-          .sendFailure(new TextComponent("Unable to get entity type from preset " + preset + "!"));
+      context.sendFailure(
+          new TextComponent("Unable to get entity type from preset " + preset + "!"));
       return 0;
     }
 
     // Verify compound tag.
     log.info(
         "Importing preset {} with entity type {}, compound tag {} and position {} with UUID {}",
-        preset, entityType, compoundTag, position, compoundTag.getUUID("UUID"));
+        preset,
+        entityType,
+        compoundTag,
+        position,
+        compoundTag.getUUID("UUID"));
 
     // Overwrite spawn position if coordinates are given.
     if (position != null) {
@@ -202,8 +259,8 @@ public class PresetCommand extends CustomCommand {
       easyNPCEntity.importPreset(compoundTag);
 
       if (context.getLevel().addFreshEntity(easyNPCEntity)) {
-        context.sendSuccess(new TextComponent("Imported preset " + preset + " to " + easyNPCEntity),
-            false);
+        context.sendSuccess(
+            new TextComponent("Imported preset " + preset + " to " + easyNPCEntity), false);
       } else {
         context.sendFailure(new TextComponent("Unable to import preset " + preset + "!"));
       }
@@ -213,5 +270,4 @@ public class PresetCommand extends CustomCommand {
       return 0;
     }
   }
-
 }

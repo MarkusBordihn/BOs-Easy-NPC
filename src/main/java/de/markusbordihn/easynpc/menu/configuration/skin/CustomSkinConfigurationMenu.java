@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,9 +19,10 @@
 
 package de.markusbordihn.easynpc.menu.configuration.skin;
 
+import de.markusbordihn.easynpc.menu.ModMenuTypes;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import java.util.UUID;
 import javax.annotation.Nullable;
-
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -31,17 +32,14 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-import de.markusbordihn.easynpc.menu.ModMenuTypes;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-
 public class CustomSkinConfigurationMenu extends ConfigurationMenu {
 
   public CustomSkinConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
     super(ModMenuTypes.CUSTOM_SKIN_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
   }
 
-  public CustomSkinConfigurationMenu(int windowId, Inventory playerInventory,
-      FriendlyByteBuf data) {
+  public CustomSkinConfigurationMenu(
+      int windowId, Inventory playerInventory, FriendlyByteBuf data) {
     this(windowId, playerInventory, data.readUUID());
   }
 
@@ -54,11 +52,10 @@ public class CustomSkinConfigurationMenu extends ConfigurationMenu {
 
       @Nullable
       @Override
-      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
-          Player serverPlayer) {
+      public AbstractContainerMenu createMenu(
+          int windowId, Inventory inventory, Player serverPlayer) {
         return new CustomSkinConfigurationMenu(windowId, inventory, uuid);
       }
     };
   }
-
 }

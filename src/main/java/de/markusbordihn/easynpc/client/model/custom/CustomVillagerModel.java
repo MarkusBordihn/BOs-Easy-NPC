@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,17 +19,16 @@
 
 package de.markusbordihn.easynpc.client.model.custom;
 
-import net.minecraft.client.model.VillagerModel;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Pose;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import de.markusbordihn.easynpc.client.model.CustomModelHelper;
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import net.minecraft.client.model.VillagerModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Pose;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class CustomVillagerModel<T extends Entity> extends VillagerModel<T>
@@ -51,8 +50,13 @@ public class CustomVillagerModel<T extends Entity> extends VillagerModel<T>
   }
 
   @Override
-  public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks,
-      float netHeadYaw, float headPitch) {
+  public void setupAnim(
+      T entity,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
     if (entity instanceof EasyNPCEntity easyNPCEntity) {
 
       // Reset player model to avoid any issues with other mods.
@@ -62,28 +66,40 @@ public class CustomVillagerModel<T extends Entity> extends VillagerModel<T>
       if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
 
         // Head position, rotation and visibility.
-        CustomModelHelper.setHeadPositionRotationVisibility(this.head,
-            easyNPCEntity.getModelHeadPosition(), easyNPCEntity.getModelHeadRotation(),
-            easyNPCEntity.isModelHeadVisible(), netHeadYaw, headPitch);
+        CustomModelHelper.setHeadPositionRotationVisibility(
+            this.head,
+            easyNPCEntity.getModelHeadPosition(),
+            easyNPCEntity.getModelHeadRotation(),
+            easyNPCEntity.isModelHeadVisible(),
+            netHeadYaw,
+            headPitch);
 
         // Body position, rotation and visibility.
-        CustomModelHelper.setPositionRotationVisibility(this.body,
-            easyNPCEntity.getModelBodyPosition(), easyNPCEntity.getModelBodyRotation(),
+        CustomModelHelper.setPositionRotationVisibility(
+            this.body,
+            easyNPCEntity.getModelBodyPosition(),
+            easyNPCEntity.getModelBodyRotation(),
             easyNPCEntity.isModelBodyVisible());
 
         // Arms position, rotation and visibility.
-        CustomModelHelper.setPositionRotationVisibility(this.arms,
-            easyNPCEntity.getModelArmsPosition(), easyNPCEntity.getModelArmsRotation(),
+        CustomModelHelper.setPositionRotationVisibility(
+            this.arms,
+            easyNPCEntity.getModelArmsPosition(),
+            easyNPCEntity.getModelArmsRotation(),
             easyNPCEntity.isModelArmsVisible());
 
         // Left Leg position, rotation and visibility.
-        CustomModelHelper.setPositionRotationVisibility(this.leftLeg,
-            easyNPCEntity.getModelLeftLegPosition(), easyNPCEntity.getModelLeftLegRotation(),
+        CustomModelHelper.setPositionRotationVisibility(
+            this.leftLeg,
+            easyNPCEntity.getModelLeftLegPosition(),
+            easyNPCEntity.getModelLeftLegRotation(),
             easyNPCEntity.isModelLeftLegVisible());
 
         // Right Leg position, rotation and visibility.
-        CustomModelHelper.setPositionRotationVisibility(this.rightLeg,
-            easyNPCEntity.getModelRightLegPosition(), easyNPCEntity.getModelRightLegRotation(),
+        CustomModelHelper.setPositionRotationVisibility(
+            this.rightLeg,
+            easyNPCEntity.getModelRightLegPosition(),
+            easyNPCEntity.getModelRightLegRotation(),
             easyNPCEntity.isModelRightLegVisible());
 
       } else if (easyNPCEntity.getPose() == Pose.CROUCHING) {
@@ -106,5 +122,4 @@ public class CustomVillagerModel<T extends Entity> extends VillagerModel<T>
       }
     }
   }
-
 }

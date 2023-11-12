@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,74 +19,87 @@
 
 package de.markusbordihn.easynpc.data.action;
 
+import de.markusbordihn.easynpc.Constants;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
-
-import de.markusbordihn.easynpc.network.message.MessageActionChange;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ActionData {
 
+  // Limits
+  public static final int MAX_PERMISSION_LEVEL = 3;
+  public static final int DEFAULT_PERMISSION_LEVEL = 2;
+  public static final int MIN_PERMISSION_LEVEL = 1;
   // Action Data Tags
-  public static final String DATA_ACTION_TAG = "Action";
-  public static final String DATA_ACTION_TYPE_TAG = "ActionType";
-  public static final String DATA_ACTION_EXECUTE_AS_USER_TAG = "ActionExecuteAsUser";
-  public static final String DATA_ACTION_ENABLE_DEBUG_TAG = "ActionEnableDebug";
-  public static final String DATA_ACTION_PERMISSION_LEVEL_TAG = "ActionPermissionLevel";
-
+  public static final String DATA_COMMAND_TAG = "Cmd";
+  public static final String DATA_DEBUG_TAG = "Debug";
+  public static final String DATA_EXECUTE_AS_USER_TAG = "ExecAsUser";
+  public static final String DATA_PERMISSION_LEVEL_TAG = "PermLevel";
+  public static final String DATA_TYPE_TAG = "Type";
+  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  protected static final String DEFAULT_COMMAND = "";
   // Action Data
   private ActionType actionType = ActionType.NONE;
-  private String action = "";
+  private String command = "";
   private boolean enableDebug = false;
   private boolean executeAsUser = false;
-  private int permissionLevel = 0;
+  private int permissionLevel = DEFAULT_PERMISSION_LEVEL;
 
   public ActionData(CompoundTag compoundTag) {
     this.load(compoundTag);
   }
 
-  public ActionData(ActionType actionType, String action) {
-    this(actionType, action, 0);
+  public ActionData(ActionType actionType) {
+    this(actionType, DEFAULT_COMMAND, DEFAULT_PERMISSION_LEVEL);
   }
 
-  public ActionData(ActionType actionType, String action, int permissionLevel) {
-    this(actionType, action, permissionLevel, false);
+  public ActionData(ActionType actionType, String command) {
+    this(actionType, command, DEFAULT_PERMISSION_LEVEL);
   }
 
-  public ActionData(ActionType actionType, String action, int permissionLevel,
-      boolean executeAsUser) {
-    this(actionType, action, permissionLevel, executeAsUser, false);
+  public ActionData(ActionType actionType, String command, int permissionLevel) {
+    this(actionType, command, permissionLevel, false);
   }
 
-  public ActionData(ActionType actionType, String action, boolean executeAsUser,
+  public ActionData(
+      ActionType actionType, String command, int permissionLevel, boolean executeAsUser) {
+    this(actionType, command, permissionLevel, executeAsUser, false);
+  }
+
+  public ActionData(
+      ActionType actionType, String command, boolean executeAsUser, boolean enableDebug) {
+    this(actionType, command, DEFAULT_PERMISSION_LEVEL, executeAsUser, enableDebug);
+  }
+
+  public ActionData(
+      ActionType actionType,
+      String command,
+      int permissionLevel,
+      boolean executeAsUser,
       boolean enableDebug) {
-    this(actionType, action, 0, executeAsUser, enableDebug);
-  }
-
-  public ActionData(ActionType actionType, String action, int permissionLevel,
-      boolean executeAsUser, boolean enableDebug) {
-    this.action = action;
+    this.command = command != null ? command : DEFAULT_COMMAND;
     this.actionType = actionType;
     this.enableDebug = enableDebug;
     this.executeAsUser = executeAsUser;
     this.permissionLevel = permissionLevel;
   }
 
-  public ActionType getActionType() {
+  public ActionType getType() {
     return this.actionType;
   }
 
-  public String getActionTypeName() {
-    return this.actionType.name();
+  public void setType(ActionType actionType) {
+    this.actionType = actionType;
   }
 
-  public String getAction() {
-    return this.action;
+  public String getCommand() {
+    return this.command;
   }
 
   public String getAction(LivingEntity entity, ServerPlayer serverPlayer) {
-    return ActionUtils.parseAction(this.action, entity, serverPlayer);
+    return ActionUtils.parseAction(this.command, entity, serverPlayer);
   }
 
   public int getPermissionLevel() {
@@ -94,101 +107,105 @@ public class ActionData {
   }
 
   public void setPermissionLevel(int permissionLevel) {
-    this.permissionLevel = permissionLevel;
+    if (permissionLevel > MAX_PERMISSION_LEVEL) {
+      log.warn(
+          "Permission level {} is too high, will be set to a safe max. level {}",
+          permissionLevel,
+          MAX_PERMISSION_LEVEL);
+      this.permissionLevel = MAX_PERMISSION_LEVEL;
+    } else if (permissionLevel < MIN_PERMISSION_LEVEL) {
+      log.warn(
+          "Permission level {} is too low, will be set to min. level {}",
+          permissionLevel,
+          MIN_PERMISSION_LEVEL);
+      this.permissionLevel = MIN_PERMISSION_LEVEL;
+    } else {
+      this.permissionLevel = permissionLevel;
+    }
   }
 
   public boolean shouldExecuteAsUser() {
     return this.executeAsUser;
   }
 
-  public void setExecuteAsUser(boolean executeAsUser) {
-    this.executeAsUser = executeAsUser;
-  }
-
   public boolean isDebugEnabled() {
     return this.enableDebug;
   }
 
-  public void setEnableDebug(boolean enableDebug) {
-    this.enableDebug = enableDebug;
+  public boolean hasCommand() {
+    return this.command != null;
   }
 
-  public boolean hasAction() {
-    return this.action != null;
-  }
-
-  public boolean hasActionAndNotEmpty() {
-    return this.action != null && !this.action.isEmpty();
-  }
-
-  public boolean hasActionType() {
-    return this.actionType != null && this.actionType != ActionType.NONE;
+  public boolean hasCommandAndNotEmpty() {
+    return this.command != null && !this.command.isEmpty();
   }
 
   public boolean isValid() {
-    return this.actionType != ActionType.NONE && this.hasAction();
+    return this.actionType != ActionType.NONE && this.hasCommand();
   }
 
   public boolean isValidAndNotEmpty() {
-    return this.actionType != ActionType.NONE && this.hasActionAndNotEmpty();
+    return this.actionType != ActionType.NONE
+        && (this.hasCommandAndNotEmpty() || this.actionType == ActionType.OPEN_TRADING_SCREEN);
   }
 
   public void load(CompoundTag compoundTag) {
-    this.actionType = ActionType.get(compoundTag.getString(DATA_ACTION_TYPE_TAG));
-    this.action = compoundTag.getString(DATA_ACTION_TAG);
-    this.permissionLevel = compoundTag.getInt(DATA_ACTION_PERMISSION_LEVEL_TAG);
-    this.executeAsUser = compoundTag.getBoolean(DATA_ACTION_EXECUTE_AS_USER_TAG);
-    this.enableDebug = compoundTag.getBoolean(DATA_ACTION_ENABLE_DEBUG_TAG);
+    this.actionType = ActionType.get(compoundTag.getString(DATA_TYPE_TAG));
+    this.command = compoundTag.getString(DATA_COMMAND_TAG);
+    this.permissionLevel =
+        compoundTag.contains(DATA_PERMISSION_LEVEL_TAG)
+            ? compoundTag.getInt(DATA_PERMISSION_LEVEL_TAG)
+            : DEFAULT_PERMISSION_LEVEL;
+    this.executeAsUser =
+        compoundTag.contains(DATA_EXECUTE_AS_USER_TAG)
+            && compoundTag.getBoolean(DATA_EXECUTE_AS_USER_TAG);
+    this.enableDebug =
+        compoundTag.contains(DATA_DEBUG_TAG) && compoundTag.getBoolean(DATA_DEBUG_TAG);
   }
 
   public CompoundTag save(CompoundTag compoundTag) {
-    compoundTag.putString(DATA_ACTION_TYPE_TAG, this.getActionType().name());
-    compoundTag.putString(DATA_ACTION_TAG, this.getAction());
-    compoundTag.putInt(DATA_ACTION_PERMISSION_LEVEL_TAG, this.getPermissionLevel());
-    compoundTag.putBoolean(DATA_ACTION_EXECUTE_AS_USER_TAG, this.shouldExecuteAsUser());
-    compoundTag.putBoolean(DATA_ACTION_ENABLE_DEBUG_TAG, this.isDebugEnabled());
+    compoundTag.putString(DATA_TYPE_TAG, this.getType().name());
+    compoundTag.putString(DATA_COMMAND_TAG, this.getCommand());
+    compoundTag.putInt(DATA_PERMISSION_LEVEL_TAG, this.getPermissionLevel());
+
+    // Only save execute as user if it is true.
+    if (this.shouldExecuteAsUser()) {
+      compoundTag.putBoolean(DATA_EXECUTE_AS_USER_TAG, this.shouldExecuteAsUser());
+    }
+
+    // Only save debug if it is true.
+    if (this.isDebugEnabled()) {
+      compoundTag.putBoolean(DATA_DEBUG_TAG, this.isDebugEnabled());
+    }
+
+    // Only save permission level if it is different from default.
+    if (this.getPermissionLevel() != DEFAULT_PERMISSION_LEVEL) {
+      compoundTag.putInt(DATA_PERMISSION_LEVEL_TAG, this.getPermissionLevel());
+    }
+
     return compoundTag;
   }
 
-  public static void encode(MessageActionChange message, FriendlyByteBuf buffer) {
-    ActionData actionData = message.getActionData();
-    buffer.writeUtf(actionData.getActionType().name());
-    buffer.writeUtf(actionData.getAction());
-    buffer.writeInt(actionData.getPermissionLevel());
-    buffer.writeBoolean(actionData.shouldExecuteAsUser());
-    buffer.writeBoolean(actionData.isDebugEnabled());
-  }
-
-  public static ActionData decode(FriendlyByteBuf buffer) {
-    String actionType = buffer.readUtf();
-    String action = buffer.readUtf();
-    int permissionLevel = buffer.readInt();
-    boolean executeAsUser = buffer.readBoolean();
-    boolean enableDebug = buffer.readBoolean();
-    return new ActionData(ActionType.get(actionType), action, permissionLevel, executeAsUser,
-        enableDebug);
+  public CompoundTag createTag() {
+    return this.save(new CompoundTag());
   }
 
   @Override
   public boolean equals(Object object) {
-    if (object instanceof ActionData) {
-      ActionData actionData = (ActionData) object;
-      return this.getActionType() == actionData.getActionType()
-          && this.getAction().equals(actionData.getAction())
+    if (object instanceof ActionData actionData) {
+      return this.getType() == actionData.getType()
+          && this.getCommand().equals(actionData.getCommand())
           && this.getPermissionLevel() == actionData.getPermissionLevel()
           && this.shouldExecuteAsUser() == actionData.shouldExecuteAsUser()
           && this.isDebugEnabled() == actionData.isDebugEnabled();
-    } else if (this == object) {
-      return true;
-    }
-    return false;
+    } else return this == object;
   }
 
   @Override
   public int hashCode() {
     int result = 17;
-    result = 31 * result + this.getActionType().hashCode();
-    result = 31 * result + this.getAction().hashCode();
+    result = 31 * result + this.getType().hashCode();
+    result = 31 * result + this.getCommand().hashCode();
     result = 31 * result + this.getPermissionLevel();
     result = 31 * result + (this.shouldExecuteAsUser() ? 1 : 0);
     result = 31 * result + (this.isDebugEnabled() ? 1 : 0);
@@ -196,9 +213,16 @@ public class ActionData {
   }
 
   public String toString() {
-    return "ActionData [actionType=" + this.getActionType() + ", action=" + this.getAction()
-        + ", permissionLevel=" + this.getPermissionLevel() + ", executeAsUser="
-        + this.shouldExecuteAsUser() + ", enableDebug=" + this.isDebugEnabled() + "]";
+    return "ActionData [type="
+        + this.actionType
+        + ", cmd="
+        + this.command
+        + ", permLvl="
+        + this.permissionLevel
+        + ", execAsUser="
+        + this.executeAsUser
+        + ", debug="
+        + this.enableDebug
+        + "]";
   }
-
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -21,19 +21,17 @@ package de.markusbordihn.easynpc.client.screen.configuration.trading;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.components.Text;
+import de.markusbordihn.easynpc.client.screen.components.TextField;
+import de.markusbordihn.easynpc.menu.configuration.trading.BasicTradingConfigurationMenu;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.menu.configuration.trading.BasicTradingConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class BasicTradingConfigurationScreen
@@ -44,8 +42,8 @@ public class BasicTradingConfigurationScreen
   protected EditBox maxUsesEditBox;
   protected EditBox rewardExpEditBox;
 
-  public BasicTradingConfigurationScreen(BasicTradingConfigurationMenu menu, Inventory inventory,
-      Component component) {
+  public BasicTradingConfigurationScreen(
+      BasicTradingConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 
@@ -75,8 +73,8 @@ public class BasicTradingConfigurationScreen
     this.basicTradesButton.active = false;
 
     // Reset Every Min Edit Box
-    this.resetsEveryMinEditBox = new EditBox(this.font, this.contentLeftPos + 166,
-        this.contentTopPos + 122, 32, 16, Component.nullToEmpty(""));
+    this.resetsEveryMinEditBox =
+        new TextField(this.font, this.contentLeftPos + 166, this.contentTopPos + 122, 32);
     this.resetsEveryMinEditBox.setMaxLength(3);
     this.resetsEveryMinEditBox.setValue(this.entity.getTradingResetsEveryMin() + "");
     this.resetsEveryMinEditBox.setResponder(this::onResetsEveryMinEditBoxChanged);
@@ -84,8 +82,8 @@ public class BasicTradingConfigurationScreen
     this.addRenderableWidget(this.resetsEveryMinEditBox);
 
     // Max Uses Edit Box
-    this.maxUsesEditBox = new EditBox(this.font, this.contentLeftPos + 166,
-        this.contentTopPos + 145, 32, 16, Component.nullToEmpty(""));
+    this.maxUsesEditBox =
+        new TextField(this.font, this.contentLeftPos + 166, this.contentTopPos + 145, 32);
     this.maxUsesEditBox.setMaxLength(4);
     this.maxUsesEditBox.setValue(this.entity.getBasicTradingMaxUses() + "");
     this.maxUsesEditBox.setResponder(this::onMaxUsesEditBoxChanged);
@@ -93,8 +91,8 @@ public class BasicTradingConfigurationScreen
     this.addRenderableWidget(this.maxUsesEditBox);
 
     // Experience Edit Box
-    this.rewardExpEditBox = new EditBox(this.font, this.contentLeftPos + 166,
-        this.contentTopPos + 168, 32, 16, Component.nullToEmpty(""));
+    this.rewardExpEditBox =
+        new TextField(this.font, this.contentLeftPos + 166, this.contentTopPos + 168, 32);
     this.rewardExpEditBox.setMaxLength(3);
     this.rewardExpEditBox.setValue(this.entity.getBasicTradingRewardExp() + "");
     this.rewardExpEditBox.setResponder(this::onRewardExpEditBoxChanged);
@@ -113,8 +111,9 @@ public class BasicTradingConfigurationScreen
     // Render Trading Slots
     int slotPositionX = this.leftPos + BasicTradingConfigurationMenu.TRADING_START_POSITION_X - 1;
     int slotPositionY = this.topPos + BasicTradingConfigurationMenu.TRADING_START_POSITION_Y - 1;
-    for (int tradingOffer =
-        0; tradingOffer < BasicTradingConfigurationMenu.TRADING_OFFERS; tradingOffer++) {
+    for (int tradingOffer = 0;
+        tradingOffer < BasicTradingConfigurationMenu.TRADING_OFFERS;
+        tradingOffer++) {
 
       // Position for Second row
       if (tradingOffer == 6) {
@@ -124,8 +123,13 @@ public class BasicTradingConfigurationScreen
       }
 
       // Offer Label
-      font.draw(poseStack, (tradingOffer < 9 ? " " : "") + (tradingOffer + 1) + ".",
-          slotPositionX - 15, slotPositionY + 5, 0x404040);
+      Text.drawString(
+          poseStack,
+          this.font,
+          (tradingOffer < 9 ? " " : "") + (tradingOffer + 1) + ".",
+          slotPositionX - 15,
+          slotPositionY + 5,
+          0x404040);
 
       // Item A Slot
       int itemASlotLeftPosition = slotPositionX;
@@ -134,31 +138,48 @@ public class BasicTradingConfigurationScreen
       this.blit(poseStack, itemASlotLeftPosition, itemASlotTopPosition, 7, 7, 18, 18);
 
       // "+" Label
-      font.draw(poseStack, "+",
+      Text.drawString(
+          poseStack,
+          this.font,
+          "+",
           itemASlotLeftPosition + BasicTradingConfigurationMenu.TRADING_SLOT_SIZE + 6,
-          itemASlotTopPosition + 5, 0x404040);
+          itemASlotTopPosition + 5,
+          0x404040);
 
       // Item B Slot
-      int itemBSlotLeftPosition = slotPositionX + BasicTradingConfigurationMenu.TRADING_SLOT_SIZE
-          + BasicTradingConfigurationMenu.TRADING_SLOT_SIZE;
+      int itemBSlotLeftPosition =
+          slotPositionX
+              + BasicTradingConfigurationMenu.TRADING_SLOT_SIZE
+              + BasicTradingConfigurationMenu.TRADING_SLOT_SIZE;
       int itemBSlotTopPosition = slotPositionY;
       RenderSystem.setShaderTexture(0, Constants.TEXTURE_INVENTORY);
       this.blit(poseStack, itemBSlotLeftPosition, itemBSlotTopPosition, 7, 7, 18, 18);
 
       // "=" Label
-      font.draw(poseStack, "=",
+      Text.drawString(
+          poseStack,
+          this.font,
+          "=",
           itemBSlotLeftPosition + BasicTradingConfigurationMenu.TRADING_SLOT_SIZE + 12,
-          itemBSlotTopPosition + 5, 0x404040);
+          itemBSlotTopPosition + 5,
+          0x404040);
 
       // Result Slot
       RenderSystem.setShaderTexture(0, Constants.TEXTURE_INVENTORY);
-      this.blit(poseStack,
-          slotPositionX + ((BasicTradingConfigurationMenu.TRADING_SLOT_SIZE
-              + BasicTradingConfigurationMenu.TRADING_SLOT_SIZE + 5) * 2),
-          slotPositionY, 7, 7, 18, 18);
+      this.blit(
+          poseStack,
+          slotPositionX
+              + ((BasicTradingConfigurationMenu.TRADING_SLOT_SIZE
+                      + BasicTradingConfigurationMenu.TRADING_SLOT_SIZE
+                      + 5)
+                  * 2),
+          slotPositionY,
+          7,
+          7,
+          18,
+          18);
 
       slotPositionY += BasicTradingConfigurationMenu.TRADING_SLOT_SIZE + 1;
-
     }
 
     // Player Inventory Slots
@@ -168,20 +189,30 @@ public class BasicTradingConfigurationScreen
     this.blit(poseStack, this.contentLeftPos, this.contentTopPos + 171, 7, 141, 162, 18);
 
     // Render Reset Every Min Label
-    font.draw(poseStack,
-        new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "trading.mins_for_trade_reset"),
-        this.contentLeftPos + 202, this.contentTopPos + 127, 0x404040);
+    Text.drawConfigString(
+        poseStack,
+        this.font,
+        "trading.mins_for_trade_reset",
+        this.contentLeftPos + 202,
+        this.contentTopPos + 127,
+        0x404040);
 
     // Render Max Uses Label
-    font.draw(poseStack,
-        new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "trading.max_uses_per_trade"),
-        this.contentLeftPos + 202, this.contentTopPos + 150, 0x404040);
+    Text.drawConfigString(
+        poseStack,
+        this.font,
+        "trading.max_uses_per_trade",
+        this.contentLeftPos + 202,
+        this.contentTopPos + 150,
+        0x404040);
 
     // Render Reward Exp Label
-    font.draw(poseStack,
-        new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "trading.rewarded_exp_per_trade"),
-        this.contentLeftPos + 202, this.contentTopPos + 173, 0x404040);
-
+    Text.drawConfigString(
+        poseStack,
+        this.font,
+        "trading.rewarded_exp_per_trade",
+        this.contentLeftPos + 202,
+        this.contentTopPos + 173,
+        0x404040);
   }
-
 }

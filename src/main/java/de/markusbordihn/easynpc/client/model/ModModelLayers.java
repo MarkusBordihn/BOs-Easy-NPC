@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,28 +19,24 @@
 
 package de.markusbordihn.easynpc.client.model;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import net.minecraftforge.api.distmarker.OnlyIn;
+import de.markusbordihn.easynpc.Constants;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.resources.ResourceLocation;
-
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-
-import de.markusbordihn.easynpc.Constants;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @OnlyIn(Dist.CLIENT)
 public class ModModelLayers {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  protected ModModelLayers() {}
-
   // Model Layer Definitions
   public static final ModelLayerLocation FAIRY =
       new ModelLayerLocation(new ResourceLocation(Constants.MOD_ID, "fairy"), "main");
+  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  protected ModModelLayers() {}
 
   public static void registerEntityLayerDefinitions(
       EntityRenderersEvent.RegisterLayerDefinitions event) {

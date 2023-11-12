@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -17,76 +17,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.menu;
+package de.markusbordihn.easynpc.menu.configuration.attribute;
 
+import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import java.util.UUID;
 import javax.annotation.Nullable;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.MenuType;
 
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+public class BasicAttributeConfigurationMenu extends AttributeConfigurationMenu {
 
-public class DialogMenu extends AbstractContainerMenu {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  // Cache
-  protected EasyNPCEntity entity;
-  protected UUID uuid;
-
-  public DialogMenu(int windowId, Inventory playerInventory, UUID uuid) {
-    this(ModMenuTypes.DIALOG_MENU.get(), windowId, playerInventory, uuid);
+  public BasicAttributeConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
+    super(ModMenuTypes.BASIC_ATTRIBUTE_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
   }
 
-  public DialogMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
+  public BasicAttributeConfigurationMenu(
+      int windowId, Inventory playerInventory, FriendlyByteBuf data) {
     this(windowId, playerInventory, data.readUUID());
-  }
-
-  public DialogMenu(final MenuType<?> menuType, final int windowId, final Inventory playerInventory,
-      UUID uuid) {
-    super(menuType, windowId);
-
-    this.uuid = uuid;
-    this.entity = EntityManager.getEasyNPCEntityByUUID(uuid);
-
-    log.debug("Open Dialog menu for {}: {} with player inventory {}", this.uuid, this.entity,
-        playerInventory);
-  }
-
-  public EasyNPCEntity getEntity() {
-    return this.entity;
   }
 
   public static MenuProvider getMenuProvider(UUID uuid, Entity entity) {
     return new MenuProvider() {
       @Override
       public Component getDisplayName() {
-        return entity.getName();
+        return new TextComponent("Basic Attribute for " + entity.getName().getString());
       }
 
       @Nullable
       @Override
-      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
-          Player serverPlayer) {
-        return new DialogMenu(windowId, inventory, uuid);
+      public AbstractContainerMenu createMenu(
+          int windowId, Inventory inventory, Player serverPlayer) {
+        return new BasicAttributeConfigurationMenu(windowId, inventory, uuid);
       }
     };
-  }
-
-  @Override
-  public boolean stillValid(Player player) {
-    return player != null && player.isAlive() && entity != null && entity.isAlive();
   }
 }

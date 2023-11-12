@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,17 +19,14 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-
-import net.minecraftforge.network.NetworkEvent;
-
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import java.util.UUID;
+import java.util.function.Supplier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkEvent;
 
 public class MessagePresetExport extends NetworkMessage {
 
@@ -38,10 +35,6 @@ public class MessagePresetExport extends NetworkMessage {
   public MessagePresetExport(UUID uuid, String name) {
     super(uuid);
     this.name = name;
-  }
-
-  public String getName() {
-    return this.name;
   }
 
   public static MessagePresetExport decode(final FriendlyByteBuf buffer) {
@@ -53,8 +46,8 @@ public class MessagePresetExport extends NetworkMessage {
     buffer.writeUtf(message.getName());
   }
 
-  public static void handle(MessagePresetExport message,
-      Supplier<NetworkEvent.Context> contextSupplier) {
+  public static void handle(
+      MessagePresetExport message, Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
@@ -81,4 +74,7 @@ public class MessagePresetExport extends NetworkMessage {
     NetworkMessageHandler.exportPresetClient(uuid, name, serverPlayer);
   }
 
+  public String getName() {
+    return this.name;
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,62 +19,69 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-
-import net.minecraftforge.network.NetworkEvent;
-
-import de.markusbordihn.easynpc.data.dialog.DialogType;
+import de.markusbordihn.easynpc.data.objective.ObjectiveData;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
+import java.util.UUID;
+import java.util.function.Supplier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkEvent;
 
-public class MessageDialogTypeChange extends NetworkMessage {
+public class MessageObjectiveAdd extends NetworkMessage {
 
-  protected final DialogType dialogType;
+  protected final ObjectiveData objectiveData;
 
-  public MessageDialogTypeChange(UUID uuid, DialogType dialogType) {
+  public MessageObjectiveAdd(UUID uuid, ObjectiveData objectiveData) {
     super(uuid);
-    this.dialogType = dialogType;
+    this.objectiveData = objectiveData;
   }
 
-  public DialogType getDialogType() {
-    return this.dialogType;
+  public static MessageObjectiveAdd decode(final FriendlyByteBuf buffer) {
+    return new MessageObjectiveAdd(buffer.readUUID(), new ObjectiveData(buffer.readNbt()));
   }
 
-  public static MessageDialogTypeChange decode(FriendlyByteBuf buffer) {
-    return new MessageDialogTypeChange(buffer.readUUID(), buffer.readEnum(DialogType.class));
-  }
-
-  public static void encode(MessageDialogTypeChange message, FriendlyByteBuf buffer) {
+  public static void encode(final MessageObjectiveAdd message, final FriendlyByteBuf buffer) {
     buffer.writeUUID(message.uuid);
-    buffer.writeEnum(message.getDialogType());
+    buffer.writeNbt(message.objectiveData.createTag());
   }
 
-  public static void handle(MessageDialogTypeChange message,
-      Supplier<NetworkEvent.Context> contextSupplier) {
+  public static void handle(
+      MessageObjectiveAdd message, Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessageDialogTypeChange message, NetworkEvent.Context context) {
+  public static void handlePacket(MessageObjectiveAdd message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
-    DialogType dialogType = message.getDialogType();
     UUID uuid = message.getUUID();
-    if (serverPlayer == null || dialogType == null
-        || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
-      log.error("Unable to change dialog type with message {} from {}", message, context);
+    if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
+      return;
+    }
+
+    // Validate objective data
+    ObjectiveData objectiveData = message.getObjectiveData();
+    if (objectiveData == null) {
+      log.error("Unable to add objective data for {} because it is null!", uuid);
       return;
     }
 
     // Perform action.
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    log.debug("Change dialog type: {} for {} from {}", dialogType, easyNPCEntity, serverPlayer);
-    easyNPCEntity.setDialogType(dialogType);
+    if (easyNPCEntity == null) {
+      log.error("Unable to add objective data for {} because it is null!", uuid);
+      return;
+    }
+
+    // Perform action.
+    log.debug("Add objective {} for {} from {}", objectiveData, easyNPCEntity, serverPlayer);
+    easyNPCEntity.getObjectiveDataSet().addObjective(objectiveData);
+    easyNPCEntity.refreshEntityObjectives();
   }
 
+  public ObjectiveData getObjectiveData() {
+    return this.objectiveData;
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,19 +19,17 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Pose;
-
-import net.minecraftforge.network.NetworkEvent;
-
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
+import java.util.UUID;
+import java.util.function.Supplier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Pose;
+import net.minecraftforge.network.NetworkEvent;
 
 public class MessageModelVisibilityChange extends NetworkMessage {
 
@@ -44,35 +42,27 @@ public class MessageModelVisibilityChange extends NetworkMessage {
     this.visible = visible;
   }
 
-  public ModelPart getModelPart() {
-    return this.modelPart;
-  }
-
-  public boolean isVisible() {
-    return this.visible;
-  }
-
   public static MessageModelVisibilityChange decode(final FriendlyByteBuf buffer) {
-    return new MessageModelVisibilityChange(buffer.readUUID(), buffer.readEnum(ModelPart.class),
-        buffer.readBoolean());
+    return new MessageModelVisibilityChange(
+        buffer.readUUID(), buffer.readEnum(ModelPart.class), buffer.readBoolean());
   }
 
-  public static void encode(final MessageModelVisibilityChange message,
-      final FriendlyByteBuf buffer) {
+  public static void encode(
+      final MessageModelVisibilityChange message, final FriendlyByteBuf buffer) {
     buffer.writeUUID(message.uuid);
     buffer.writeEnum(message.getModelPart());
     buffer.writeBoolean(message.isVisible());
   }
 
-  public static void handle(MessageModelVisibilityChange message,
-      Supplier<NetworkEvent.Context> contextSupplier) {
+  public static void handle(
+      MessageModelVisibilityChange message, Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessageModelVisibilityChange message,
-      NetworkEvent.Context context) {
+  public static void handlePacket(
+      MessageModelVisibilityChange message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
     if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
@@ -91,7 +81,11 @@ public class MessageModelVisibilityChange extends NetworkMessage {
 
     // Perform action.
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    log.debug("Change {} visibility to {} for {} from {}", modelPart, visible, easyNPCEntity,
+    log.debug(
+        "Change {} visibility to {} for {} from {}",
+        modelPart,
+        visible,
+        easyNPCEntity,
         serverPlayer);
     switch (modelPart) {
       case HEAD:
@@ -137,4 +131,11 @@ public class MessageModelVisibilityChange extends NetworkMessage {
     }
   }
 
+  public ModelPart getModelPart() {
+    return this.modelPart;
+  }
+
+  public boolean isVisible() {
+    return this.visible;
+  }
 }

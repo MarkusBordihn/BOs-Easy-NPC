@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,32 +19,29 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.skin;
 
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
+import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class SkinConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
 
   // NPC Entity
   protected final boolean isPlayerSkinModel;
-
+  // Settings
+  protected final int skinPreviewWidth = 60;
   // Buttons
   protected Button customSkinButton = null;
   protected Button defaultSkinButton = null;
   protected Button playerSkinButton = null;
-
-  // Settings
-  protected int skinPreviewWidth = 56;
 
   public SkinConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -58,32 +55,52 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
 
     // Skin Types
     int skinButtonWidth = 92;
-    this.defaultSkinButton = this.addRenderableWidget(menuButton(this.buttonLeftPos,
-        this.buttonTopPos, skinButtonWidth - 4, "default_skin", onPress -> {
-          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_SKIN);
-        }));
+    this.defaultSkinButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.buttonLeftPos,
+                this.buttonTopPos,
+                skinButtonWidth - 4,
+                "default_skin",
+                onPress -> {
+                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_SKIN);
+                }));
     this.playerSkinButton =
-        this.addRenderableWidget(menuButton(this.defaultSkinButton.x + this.defaultSkinButton.getWidth(),
-            this.buttonTopPos, skinButtonWidth - 6, "player_skin", onPress -> {
-              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.PLAYER_SKIN);
-            }));
-    this.customSkinButton = this.addRenderableWidget(menuButton(
-        this.playerSkinButton.x + this.playerSkinButton.getWidth(),
-        this.buttonTopPos, skinButtonWidth + 5, "custom_skin", onPress -> {
-          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_SKIN);
-        }));
+        this.addRenderableWidget(
+            new TextButton(
+                this.defaultSkinButton.x + this.defaultSkinButton.getWidth(),
+                this.buttonTopPos,
+                skinButtonWidth - 6,
+                "player_skin",
+                onPress -> {
+                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.PLAYER_SKIN);
+                }));
+    this.customSkinButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.playerSkinButton.x + this.playerSkinButton.getWidth(),
+                this.buttonTopPos,
+                skinButtonWidth + 5,
+                "custom_skin",
+                onPress -> {
+                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_SKIN);
+                }));
 
     // Default button stats
-    this.customSkinButton.active = this.hasPermissions(COMMON.customSkinConfigurationEnabled.get(),
-        COMMON.customSkinConfigurationAllowInCreative.get(),
-        COMMON.customSkinConfigurationPermissionLevel.get());
+    this.customSkinButton.active =
+        this.hasPermissions(
+            COMMON.customSkinConfigurationEnabled.get(),
+            COMMON.customSkinConfigurationAllowInCreative.get(),
+            COMMON.customSkinConfigurationPermissionLevel.get());
     this.defaultSkinButton.active =
-        this.hasPermissions(COMMON.defaultSkinConfigurationEnabled.get(),
+        this.hasPermissions(
+            COMMON.defaultSkinConfigurationEnabled.get(),
             COMMON.defaultSkinConfigurationAllowInCreative.get(),
             COMMON.defaultSkinConfigurationPermissionLevel.get());
-    this.playerSkinButton.active = this.hasPermissions(COMMON.playerSkinConfigurationEnabled.get(),
-        COMMON.playerSkinConfigurationAllowInCreative.get(),
-        COMMON.playerSkinConfigurationPermissionLevel.get());
+    this.playerSkinButton.active =
+        this.hasPermissions(
+            COMMON.playerSkinConfigurationEnabled.get(),
+            COMMON.playerSkinConfigurationAllowInCreative.get(),
+            COMMON.playerSkinConfigurationPermissionLevel.get());
   }
-
 }

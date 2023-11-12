@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,56 +19,50 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.skin;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.entity.player.Inventory;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
+import de.markusbordihn.easynpc.client.screen.components.Text;
+import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.Profession;
 import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import de.markusbordihn.easynpc.utils.TextUtils;
+import java.util.ArrayList;
+import java.util.List;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class DefaultSkinConfigurationScreen
     extends SkinConfigurationScreen<DefaultSkinConfigurationMenu> {
 
+  // Skin Preview
+  private static final float SKIN_NAME_SCALING = 0.7f;
+  private final int maxSkinsPerPage = 10;
+  protected int numOfProfessions = 0;
+  protected int numOfSkins = 0;
+  protected int numOfVariants = 0;
   // Internal
   private Button skinPreviousButton = null;
   private Button skinNextButton = null;
   private Button skinPreviousPageButton = null;
   private Button skinNextPageButton = null;
   private List<Button> skinButtons = new ArrayList<>();
-
-  // Skin Preview
-  private static final float SKIN_NAME_SCALING = 0.7f;
   private int skinStartIndex = 0;
-  private int maxSkinsPerPage = 10;
-
   // Cache
   private Profession[] professions;
   private Enum<?>[] variants;
-  protected int numOfProfessions = 0;
-  protected int numOfSkins = 0;
-  protected int numOfVariants = 0;
 
-  public DefaultSkinConfigurationScreen(DefaultSkinConfigurationMenu menu, Inventory inventory,
-      Component component) {
+  public DefaultSkinConfigurationScreen(
+      DefaultSkinConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 
@@ -82,28 +76,41 @@ public class DefaultSkinConfigurationScreen
     for (int i = skinStartIndex; i < this.numOfSkins && i < skinStartIndex + maxSkinsPerPage; i++) {
       int variantIndex = this.numOfProfessions > 0 ? i / this.numOfProfessions : i;
       Profession profession =
-          this.numOfProfessions > 0 ? this.professions[i - (variantIndex * this.numOfProfessions)]
+          this.numOfProfessions > 0
+              ? this.professions[i - (variantIndex * this.numOfProfessions)]
               : null;
       Enum<?> variant = this.variants[variantIndex];
-      int left = this.leftPos + (skinPosition > 4 ? -(skinPreviewWidth * 4) - 24 : 32)
-          + (skinPosition * (skinPreviewWidth));
+      int left =
+          this.leftPos
+              + (skinPosition > 4 ? -(skinPreviewWidth * 4) - 28 : 32)
+              + (skinPosition * (skinPreviewWidth));
       int top = this.contentTopPos + 82 + (skinPosition > 4 ? 84 : 0);
 
       // Render skin with additional variant and professions.
       this.renderSkinEntity(poseStack, left, top, variant, profession);
 
       // Render skin name
-      float topNamePos = (top - 76f) / SKIN_NAME_SCALING;
-      float leftNamePos = (left - 21f) / SKIN_NAME_SCALING;
+      int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
+      int leftNamePos = Math.round((left - 21f) / SKIN_NAME_SCALING);
       poseStack.pushPose();
       poseStack.translate(0, 0, 100);
       poseStack.scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING, SKIN_NAME_SCALING);
-      String variantName = TextUtils.normalizeString(variant.name(), 12);
-      this.font.draw(poseStack, new TextComponent(variantName), leftNamePos, topNamePos,
+      String variantName = TextUtils.normalizeString(variant.name(), 14);
+      Text.drawString(
+          poseStack,
+          this.font,
+          variantName,
+          leftNamePos,
+          topNamePos,
           Constants.FONT_COLOR_DARK_GREEN);
       if (profession != null) {
-        String professionName = TextUtils.normalizeString(profession.name(), 11);
-        this.font.draw(poseStack, new TextComponent(professionName), leftNamePos, topNamePos + 10f,
+        String professionName = TextUtils.normalizeString(profession.name(), 13);
+        Text.drawString(
+            poseStack,
+            this.font,
+            professionName,
+            leftNamePos,
+            topNamePos + 10,
             Constants.FONT_COLOR_BLACK);
       }
       poseStack.popPose();
@@ -112,37 +119,53 @@ public class DefaultSkinConfigurationScreen
     }
   }
 
-  private void renderSkinEntity(PoseStack poseStack, int x, int y, Enum<?> variant,
-      Profession profession) {
+  private void renderSkinEntity(
+      PoseStack poseStack, int x, int y, Enum<?> variant, Profession profession) {
 
     // Create dynamically button for each skin variant and profession.
     int skinButtonLeft = x - 24;
     int skinButtonTop = y - 81;
     int skinButtonHeight = 84;
-    ImageButton skinButton = new ImageButton(skinButtonLeft, skinButtonTop, skinPreviewWidth,
-        skinButtonHeight, 0, -84, 84, Constants.TEXTURE_CONFIGURATION, button -> {
-          NetworkMessageHandler.variantChange(this.uuid, variant);
-          if (profession != null) {
-            NetworkMessageHandler.professionChange(this.uuid, profession);
-          }
-          NetworkMessageHandler.skinChange(this.uuid, SkinType.DEFAULT);
-        });
+    ImageButton skinButton =
+        new ImageButton(
+            skinButtonLeft,
+            skinButtonTop,
+            skinPreviewWidth,
+            skinButtonHeight,
+            0,
+            -84,
+            84,
+            Constants.TEXTURE_CONFIGURATION,
+            button -> {
+              NetworkMessageHandler.variantChange(this.uuid, variant);
+              if (profession != null) {
+                NetworkMessageHandler.professionChange(this.uuid, profession);
+              }
+              NetworkMessageHandler.skinChange(this.uuid, SkinType.DEFAULT);
+            });
 
     // Render active skin in different style.
-    if (this.entity.getSkinType() == SkinType.DEFAULT && this.entity.getVariant().equals(variant)
+    if (this.entity.getSkinType() == SkinType.DEFAULT
+        && this.entity.getVariant().equals(variant)
         && (profession == null || this.entity.getProfession().equals(profession))) {
       poseStack.pushPose();
       RenderSystem.setShader(GameRenderer::getPositionTexShader);
       RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
       RenderSystem.setShaderTexture(0, Constants.TEXTURE_CONFIGURATION);
-      this.blit(poseStack, skinButtonLeft, skinButtonTop, 0, skinButtonHeight, skinPreviewWidth,
+      this.blit(
+          poseStack,
+          skinButtonLeft,
+          skinButtonTop,
+          0,
+          skinButtonHeight,
+          skinPreviewWidth,
           skinButtonHeight);
       poseStack.popPose();
     }
 
     // Render skin entity with variant and profession.
-    ScreenHelper.renderEntityDefaultSkin(x + 4, y, x - this.xMouse, y - 40 - this.yMouse,
-        this.entity, variant, profession);
+    ScreenHelper.renderEntityDefaultSkin(
+        x + 4, y, x - this.xMouse, y - 40 - this.yMouse, this.entity, variant, profession);
 
     skinButtons.add(skinButton);
   }
@@ -177,49 +200,76 @@ public class DefaultSkinConfigurationScreen
     this.numOfVariants = this.variants.length;
     this.numOfSkins =
         numOfProfessions > 0 ? this.numOfVariants * this.numOfProfessions : this.numOfVariants;
-    log.debug("Found about {} skins with {} variants and {} professions.", this.numOfSkins,
-        this.numOfVariants, this.numOfProfessions);
+    log.debug(
+        "Found about {} skins with {} variants and {} professions.",
+        this.numOfSkins,
+        this.numOfVariants,
+        this.numOfProfessions);
 
     // Skin Navigation Buttons
     int skinButtonTop = this.topPos + 212;
     int skinButtonLeft = this.contentLeftPos;
-    int skinButtonRight = this.leftPos + 269;
-    this.skinPreviousPageButton = this.addRenderableWidget(
-        menuButton(skinButtonLeft, skinButtonTop, 20, new TranslatableComponent("<<"), onPress -> {
-          if (this.skinStartIndex - maxSkinsPerPage > 0) {
-            skinStartIndex = skinStartIndex - maxSkinsPerPage;
-          } else {
-            skinStartIndex = 0;
-          }
-          checkSkinButtonState();
-        }));
-    this.skinPreviousButton = this.addRenderableWidget(menuButton(skinButtonLeft + 20,
-        skinButtonTop, 20, new TranslatableComponent("<"), onPress -> {
-          if (this.skinStartIndex > 0) {
-            skinStartIndex--;
-          }
-          checkSkinButtonState();
-        }));
-    this.skinNextPageButton = this.addRenderableWidget(
-        menuButton(skinButtonRight, skinButtonTop, 20, new TranslatableComponent(">>"), onPress -> {
-          if (this.skinStartIndex >= 0
-              && this.skinStartIndex + this.maxSkinsPerPage < this.numOfSkins) {
-            this.skinStartIndex = this.skinStartIndex + this.maxSkinsPerPage;
-          } else if (this.numOfSkins > this.maxSkinsPerPage) {
-            this.skinStartIndex = this.numOfSkins - this.maxSkinsPerPage;
-          } else {
-            this.skinStartIndex = this.numOfSkins;
-          }
-          checkSkinButtonState();
-        }));
-    this.skinNextButton = this.addRenderableWidget(menuButton(skinButtonRight - 20, skinButtonTop,
-        20, new TranslatableComponent(">"), onPress -> {
-          if (this.skinStartIndex >= 0
-              && this.skinStartIndex < this.numOfSkins - this.maxSkinsPerPage) {
-            skinStartIndex++;
-          }
-          checkSkinButtonState();
-        }));
+    int skinButtonRight = this.leftPos + 289;
+    this.skinPreviousPageButton =
+        this.addRenderableWidget(
+            new TextButton(
+                skinButtonLeft,
+                skinButtonTop,
+                20,
+                "<<",
+                onPress -> {
+                  if (this.skinStartIndex - maxSkinsPerPage > 0) {
+                    skinStartIndex = skinStartIndex - maxSkinsPerPage;
+                  } else {
+                    skinStartIndex = 0;
+                  }
+                  checkSkinButtonState();
+                }));
+    this.skinPreviousButton =
+        this.addRenderableWidget(
+            new TextButton(
+                skinButtonLeft + 20,
+                skinButtonTop,
+                20,
+                "<",
+                onPress -> {
+                  if (this.skinStartIndex > 0) {
+                    skinStartIndex--;
+                  }
+                  checkSkinButtonState();
+                }));
+    this.skinNextPageButton =
+        this.addRenderableWidget(
+            new TextButton(
+                skinButtonRight,
+                skinButtonTop,
+                20,
+                ">>",
+                onPress -> {
+                  if (this.skinStartIndex >= 0
+                      && this.skinStartIndex + this.maxSkinsPerPage < this.numOfSkins) {
+                    this.skinStartIndex = this.skinStartIndex + this.maxSkinsPerPage;
+                  } else if (this.numOfSkins > this.maxSkinsPerPage) {
+                    this.skinStartIndex = this.numOfSkins - this.maxSkinsPerPage;
+                  } else {
+                    this.skinStartIndex = this.numOfSkins;
+                  }
+                  checkSkinButtonState();
+                }));
+    this.skinNextButton =
+        this.addRenderableWidget(
+            new TextButton(
+                skinButtonRight - 20,
+                skinButtonTop,
+                20,
+                ">",
+                onPress -> {
+                  if (this.skinStartIndex >= 0
+                      && this.skinStartIndex < this.numOfSkins - this.maxSkinsPerPage) {
+                    skinStartIndex++;
+                  }
+                  checkSkinButtonState();
+                }));
     checkSkinButtonState();
   }
 
@@ -243,10 +293,20 @@ public class DefaultSkinConfigurationScreen
     super.renderBg(poseStack, partialTicks, mouseX, mouseY);
 
     // Skin Selection
-    fill(poseStack, this.contentLeftPos, this.contentTopPos, this.contentLeftPos + 282,
-        this.contentTopPos + 170, 0xff000000);
-    fill(poseStack, this.contentLeftPos + 1, this.contentTopPos + 1, this.contentLeftPos + 281,
-        this.contentTopPos + 169, 0xffaaaaaa);
+    fill(
+        poseStack,
+        this.contentLeftPos,
+        this.contentTopPos,
+        this.contentLeftPos + 302,
+        this.contentTopPos + 170,
+        0xff000000);
+    fill(
+        poseStack,
+        this.contentLeftPos + 1,
+        this.contentTopPos + 1,
+        this.contentLeftPos + 301,
+        this.contentTopPos + 169,
+        0xffaaaaaa);
   }
 
   @Override
@@ -259,5 +319,4 @@ public class DefaultSkinConfigurationScreen
     }
     return super.mouseClicked(mouseX, mouseY, button);
   }
-
 }

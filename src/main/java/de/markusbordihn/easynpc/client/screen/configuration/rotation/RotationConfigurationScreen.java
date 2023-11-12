@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,17 +19,16 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.rotation;
 
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
+import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class RotationConfigurationScreen<T extends ConfigurationMenu>
@@ -48,13 +47,18 @@ public class RotationConfigurationScreen<T extends ConfigurationMenu>
 
     // Rotation Types
     int rotationButtonWidth = 80;
-    this.defaultRotationButton = this.addRenderableWidget(menuButton(this.buttonLeftPos,
-        this.buttonTopPos, rotationButtonWidth, "default_rotation", button -> {
-          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_ROTATION);
-        }));
+    this.defaultRotationButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.buttonLeftPos,
+                this.buttonTopPos,
+                rotationButtonWidth,
+                "default_rotation",
+                button -> {
+                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_ROTATION);
+                }));
 
     // Default button stats
     this.defaultRotationButton.active = false;
   }
-
 }

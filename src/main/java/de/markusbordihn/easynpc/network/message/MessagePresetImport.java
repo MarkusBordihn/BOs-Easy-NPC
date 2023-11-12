@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,18 +19,15 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-
-import net.minecraftforge.network.NetworkEvent;
-
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
+import java.util.UUID;
+import java.util.function.Supplier;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkEvent;
 
 public class MessagePresetImport extends NetworkMessage {
 
@@ -39,10 +36,6 @@ public class MessagePresetImport extends NetworkMessage {
   public MessagePresetImport(UUID uuid, CompoundTag compoundTag) {
     super(uuid);
     this.compoundTag = compoundTag;
-  }
-
-  public CompoundTag getCompoundTag() {
-    return this.compoundTag;
   }
 
   public static MessagePresetImport decode(final FriendlyByteBuf buffer) {
@@ -54,8 +47,8 @@ public class MessagePresetImport extends NetworkMessage {
     buffer.writeNbt(message.getCompoundTag());
   }
 
-  public static void handle(MessagePresetImport message,
-      Supplier<NetworkEvent.Context> contextSupplier) {
+  public static void handle(
+      MessagePresetImport message, Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
@@ -77,21 +70,29 @@ public class MessagePresetImport extends NetworkMessage {
 
     // Validate entity encoded id, if set.
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (compoundTag.contains("id") && !compoundTag.getString("id").isEmpty()
+    if (compoundTag.contains("id")
+        && !compoundTag.getString("id").isEmpty()
         && !compoundTag.getString("id").equals(easyNPCEntity.getEncodeId())) {
-      log.error("Invalid id {} for {} expected {} from {}", compoundTag.getString("id"),
-          easyNPCEntity, easyNPCEntity.getEncodeId(), serverPlayer);
+      log.error(
+          "Invalid id {} for {} expected {} from {}",
+          compoundTag.getString("id"),
+          easyNPCEntity,
+          easyNPCEntity.getEncodeId(),
+          serverPlayer);
       return;
     }
 
     // Perform action.
     if (compoundTag.contains("id") && compoundTag.contains("pos")) {
-      log.debug("Importing full preset {} for {} from {}", compoundTag, easyNPCEntity,
-          serverPlayer);
+      log.debug(
+          "Importing full preset {} for {} from {}", compoundTag, easyNPCEntity, serverPlayer);
     } else {
       log.debug("Merge preset {} for {} from {}", compoundTag, easyNPCEntity, serverPlayer);
     }
     easyNPCEntity.importPreset(compoundTag);
   }
 
+  public CompoundTag getCompoundTag() {
+    return this.compoundTag;
+  }
 }

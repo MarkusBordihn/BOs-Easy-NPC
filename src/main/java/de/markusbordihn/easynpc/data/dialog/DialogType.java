@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -21,9 +21,12 @@ package de.markusbordihn.easynpc.data.dialog;
 
 public enum DialogType {
   // @formatter:off
+  STANDARD,
   BASIC,
   YES_NO,
+  CUSTOM,
   NONE;
+
   // @formatter:on
 
   public static DialogType get(String dialogType) {

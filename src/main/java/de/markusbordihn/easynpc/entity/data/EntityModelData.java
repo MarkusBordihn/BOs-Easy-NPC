@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,121 +19,121 @@
 
 package de.markusbordihn.easynpc.entity.data;
 
+import de.markusbordihn.easynpc.data.CustomPosition;
+import de.markusbordihn.easynpc.data.entity.CustomDataSerializers;
+import de.markusbordihn.easynpc.data.model.ModelPart;
+import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 
-import de.markusbordihn.easynpc.data.CustomPosition;
-import de.markusbordihn.easynpc.data.model.ModelPart;
-import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
-
 public interface EntityModelData extends EntityDataInterface {
 
   // Synced entity data
-  public static final EntityDataAccessor<ModelPose> DATA_MODEL_POSE =
+  EntityDataAccessor<ModelPose> DATA_MODEL_POSE =
       SynchedEntityData.defineId(EasyNPCEntityData.class, CustomDataSerializers.MODEL_POSE);
 
   // Synced entity data for Model Part Positions
-  public static final EntityDataAccessor<CustomPosition> DATA_MODEL_HEAD_POSITION =
+  EntityDataAccessor<CustomPosition> DATA_MODEL_HEAD_POSITION =
       SynchedEntityData.defineId(EasyNPCEntityData.class, CustomDataSerializers.POSITION);
-  public static final EntityDataAccessor<CustomPosition> DATA_MODEL_BODY_POSITION =
+  EntityDataAccessor<CustomPosition> DATA_MODEL_BODY_POSITION =
       SynchedEntityData.defineId(EasyNPCEntityData.class, CustomDataSerializers.POSITION);
-  public static final EntityDataAccessor<CustomPosition> DATA_MODEL_ARMS_POSITION =
+  EntityDataAccessor<CustomPosition> DATA_MODEL_ARMS_POSITION =
       SynchedEntityData.defineId(EasyNPCEntityData.class, CustomDataSerializers.POSITION);
-  public static final EntityDataAccessor<CustomPosition> DATA_MODEL_LEFT_ARM_POSITION =
+  EntityDataAccessor<CustomPosition> DATA_MODEL_LEFT_ARM_POSITION =
       SynchedEntityData.defineId(EasyNPCEntityData.class, CustomDataSerializers.POSITION);
-  public static final EntityDataAccessor<CustomPosition> DATA_MODEL_RIGHT_ARM_POSITION =
+  EntityDataAccessor<CustomPosition> DATA_MODEL_RIGHT_ARM_POSITION =
       SynchedEntityData.defineId(EasyNPCEntityData.class, CustomDataSerializers.POSITION);
-  public static final EntityDataAccessor<CustomPosition> DATA_MODEL_LEFT_LEG_POSITION =
+  EntityDataAccessor<CustomPosition> DATA_MODEL_LEFT_LEG_POSITION =
       SynchedEntityData.defineId(EasyNPCEntityData.class, CustomDataSerializers.POSITION);
-  public static final EntityDataAccessor<CustomPosition> DATA_MODEL_RIGHT_LEG_POSITION =
+  EntityDataAccessor<CustomPosition> DATA_MODEL_RIGHT_LEG_POSITION =
       SynchedEntityData.defineId(EasyNPCEntityData.class, CustomDataSerializers.POSITION);
 
   // Synced entity data for Model Part Rotations
-  public static final EntityDataAccessor<Boolean> DATA_MODEL_LOCK_ROTATION =
+  EntityDataAccessor<Boolean> DATA_MODEL_LOCK_ROTATION =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.BOOLEAN);
-  public static final EntityDataAccessor<Rotations> DATA_MODEL_HEAD_ROTATION =
+  EntityDataAccessor<Rotations> DATA_MODEL_HEAD_ROTATION =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.ROTATIONS);
-  public static final EntityDataAccessor<Rotations> DATA_MODEL_BODY_ROTATION =
+  EntityDataAccessor<Rotations> DATA_MODEL_BODY_ROTATION =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.ROTATIONS);
-  public static final EntityDataAccessor<Rotations> DATA_MODEL_ARMS_ROTATION =
+  EntityDataAccessor<Rotations> DATA_MODEL_ARMS_ROTATION =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.ROTATIONS);
-  public static final EntityDataAccessor<Rotations> DATA_MODEL_LEFT_ARM_ROTATION =
+  EntityDataAccessor<Rotations> DATA_MODEL_LEFT_ARM_ROTATION =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.ROTATIONS);
-  public static final EntityDataAccessor<Rotations> DATA_MODEL_RIGHT_ARM_ROTATION =
+  EntityDataAccessor<Rotations> DATA_MODEL_RIGHT_ARM_ROTATION =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.ROTATIONS);
-  public static final EntityDataAccessor<Rotations> DATA_MODEL_LEFT_LEG_ROTATION =
+  EntityDataAccessor<Rotations> DATA_MODEL_LEFT_LEG_ROTATION =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.ROTATIONS);
-  public static final EntityDataAccessor<Rotations> DATA_MODEL_RIGHT_LEG_ROTATION =
+  EntityDataAccessor<Rotations> DATA_MODEL_RIGHT_LEG_ROTATION =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.ROTATIONS);
-  public static final EntityDataAccessor<Rotations> DATA_MODEL_ROOT_ROTATION =
+  EntityDataAccessor<Rotations> DATA_MODEL_ROOT_ROTATION =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.ROTATIONS);
 
   // Synced entity data for Model Part Visibility
-  public static final EntityDataAccessor<Boolean> DATA_MODEL_HEAD_VISIBLE =
+  EntityDataAccessor<Boolean> DATA_MODEL_HEAD_VISIBLE =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.BOOLEAN);
-  public static final EntityDataAccessor<Boolean> DATA_MODEL_BODY_VISIBLE =
+  EntityDataAccessor<Boolean> DATA_MODEL_BODY_VISIBLE =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.BOOLEAN);
-  public static final EntityDataAccessor<Boolean> DATA_MODEL_ARMS_VISIBLE =
+  EntityDataAccessor<Boolean> DATA_MODEL_ARMS_VISIBLE =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.BOOLEAN);
-  public static final EntityDataAccessor<Boolean> DATA_MODEL_LEFT_ARM_VISIBLE =
+  EntityDataAccessor<Boolean> DATA_MODEL_LEFT_ARM_VISIBLE =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.BOOLEAN);
-  public static final EntityDataAccessor<Boolean> DATA_MODEL_RIGHT_ARM_VISIBLE =
+  EntityDataAccessor<Boolean> DATA_MODEL_RIGHT_ARM_VISIBLE =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.BOOLEAN);
-  public static final EntityDataAccessor<Boolean> DATA_MODEL_LEFT_LEG_VISIBLE =
+  EntityDataAccessor<Boolean> DATA_MODEL_LEFT_LEG_VISIBLE =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.BOOLEAN);
-  public static final EntityDataAccessor<Boolean> DATA_MODEL_RIGHT_LEG_VISIBLE =
+  EntityDataAccessor<Boolean> DATA_MODEL_RIGHT_LEG_VISIBLE =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.BOOLEAN);
 
   // CompoundTags
-  public static final String DATA_MODEL_DATA_TAG = "ModelData";
-  public static final String DATA_MODEL_POSE_TAG = "Pose";
+  String DATA_MODEL_DATA_TAG = "ModelData";
+  String DATA_MODEL_POSE_TAG = "Pose";
 
   // CompoundTags for Model Part Positions
-  public static final String DATA_MODEL_POSITION_TAG = "Position";
-  public static final String DATA_MODEL_HEAD_POSITION_TAG = "HeadPosition";
-  public static final String DATA_MODEL_BODY_POSITION_TAG = "BodyPosition";
-  public static final String DATA_MODEL_ARMS_POSITION_TAG = "ArmsPosition";
-  public static final String DATA_MODEL_LEFT_ARM_POSITION_TAG = "LeftArmPosition";
-  public static final String DATA_MODEL_RIGHT_ARM_POSITION_TAG = "RightArmPosition";
-  public static final String DATA_MODEL_LEFT_LEG_POSITION_TAG = "LeftLegPosition";
-  public static final String DATA_MODEL_RIGHT_LEG_POSITION_TAG = "RightLegPosition";
+  String DATA_MODEL_POSITION_TAG = "Position";
+  String DATA_MODEL_HEAD_POSITION_TAG = "HeadPosition";
+  String DATA_MODEL_BODY_POSITION_TAG = "BodyPosition";
+  String DATA_MODEL_ARMS_POSITION_TAG = "ArmsPosition";
+  String DATA_MODEL_LEFT_ARM_POSITION_TAG = "LeftArmPosition";
+  String DATA_MODEL_RIGHT_ARM_POSITION_TAG = "RightArmPosition";
+  String DATA_MODEL_LEFT_LEG_POSITION_TAG = "LeftLegPosition";
+  String DATA_MODEL_RIGHT_LEG_POSITION_TAG = "RightLegPosition";
 
   // CompoundTags for Model Part Rotations
-  public static final String DATA_MODEL_ROTATION_TAG = "Rotation";
-  public static final String DATA_MODEL_LOCK_ROTATION_TAG = "LockRotation";
-  public static final String DATA_MODEL_HEAD_ROTATION_TAG = "HeadRotation";
-  public static final String DATA_MODEL_BODY_ROTATION_TAG = "BodyRotation";
-  public static final String DATA_MODEL_ARMS_ROTATION_TAG = "ArmsRotation";
-  public static final String DATA_MODEL_LEFT_ARM_ROTATION_TAG = "LeftArmRotation";
-  public static final String DATA_MODEL_RIGHT_ARM_ROTATION_TAG = "RightArmRotation";
-  public static final String DATA_MODEL_LEFT_LEG_ROTATION_TAG = "LeftLegRotation";
-  public static final String DATA_MODEL_RIGHT_LEG_ROTATION_TAG = "RightLegRotation";
-  public static final String DATA_MODEL_ROOT_ROTATION_TAG = "RootRotation";
+  String DATA_MODEL_ROTATION_TAG = "Rotation";
+  String DATA_MODEL_LOCK_ROTATION_TAG = "LockRotation";
+  String DATA_MODEL_HEAD_ROTATION_TAG = "HeadRotation";
+  String DATA_MODEL_BODY_ROTATION_TAG = "BodyRotation";
+  String DATA_MODEL_ARMS_ROTATION_TAG = "ArmsRotation";
+  String DATA_MODEL_LEFT_ARM_ROTATION_TAG = "LeftArmRotation";
+  String DATA_MODEL_RIGHT_ARM_ROTATION_TAG = "RightArmRotation";
+  String DATA_MODEL_LEFT_LEG_ROTATION_TAG = "LeftLegRotation";
+  String DATA_MODEL_RIGHT_LEG_ROTATION_TAG = "RightLegRotation";
+  String DATA_MODEL_ROOT_ROTATION_TAG = "RootRotation";
 
   // CompoundTags for Model Part Visibility
-  public static final String DATA_MODEL_VISIBLE_TAG = "Visible";
-  public static final String DATA_MODEL_HEAD_VISIBLE_TAG = "HeadVisible";
-  public static final String DATA_MODEL_BODY_VISIBLE_TAG = "BodyVisible";
-  public static final String DATA_MODEL_ARMS_VISIBLE_TAG = "ArmsVisible";
-  public static final String DATA_MODEL_LEFT_ARM_VISIBLE_TAG = "LeftArmVisible";
-  public static final String DATA_MODEL_RIGHT_ARM_VISIBLE_TAG = "RightArmVisible";
-  public static final String DATA_MODEL_LEFT_LEG_VISIBLE_TAG = "LeftLegVisible";
-  public static final String DATA_MODEL_RIGHT_LEG_VISIBLE_TAG = "RightLegVisible";
+  String DATA_MODEL_VISIBLE_TAG = "Visible";
+  String DATA_MODEL_HEAD_VISIBLE_TAG = "HeadVisible";
+  String DATA_MODEL_BODY_VISIBLE_TAG = "BodyVisible";
+  String DATA_MODEL_ARMS_VISIBLE_TAG = "ArmsVisible";
+  String DATA_MODEL_LEFT_ARM_VISIBLE_TAG = "LeftArmVisible";
+  String DATA_MODEL_RIGHT_ARM_VISIBLE_TAG = "RightArmVisible";
+  String DATA_MODEL_LEFT_LEG_VISIBLE_TAG = "LeftLegVisible";
+  String DATA_MODEL_RIGHT_LEG_VISIBLE_TAG = "RightLegVisible";
 
   // CompoundTags (Legacy)
-  public static final String LEGACY_DATA_MODEL_POSE_TAG = "ModelPose";
-  public static final String LEGACY_DATA_MODEL_LOCK_ROTATION_TAG = "ModelLockRotation";
-  public static final String LEGACY_DATA_MODEL_HEAD_ROTATION_TAG = "ModelHeadRotation";
-  public static final String LEGACY_DATA_MODEL_BODY_ROTATION_TAG = "ModelBodyRotation";
-  public static final String LEGACY_DATA_MODEL_LEFT_ARM_ROTATION_TAG = "ModelLeftArmRotation";
-  public static final String LEGACY_DATA_MODEL_RIGHT_ARM_ROTATION_TAG = "ModelRightArmRotation";
-  public static final String LEGACY_DATA_MODEL_LEFT_LEG_ROTATION_TAG = "ModelLeftLegRotation";
-  public static final String LEGACY_DATA_MODEL_RIGHT_LEG_ROTATION_TAG = "ModelRightLegRotation";
-  public static final String LEGACY_DATA_MODEL_ROOT_ROTATION_TAG = "ModelRootRotation";
+  String LEGACY_DATA_MODEL_POSE_TAG = "ModelPose";
+  String LEGACY_DATA_MODEL_LOCK_ROTATION_TAG = "ModelLockRotation";
+  String LEGACY_DATA_MODEL_HEAD_ROTATION_TAG = "ModelHeadRotation";
+  String LEGACY_DATA_MODEL_BODY_ROTATION_TAG = "ModelBodyRotation";
+  String LEGACY_DATA_MODEL_LEFT_ARM_ROTATION_TAG = "ModelLeftArmRotation";
+  String LEGACY_DATA_MODEL_RIGHT_ARM_ROTATION_TAG = "ModelRightArmRotation";
+  String LEGACY_DATA_MODEL_LEFT_LEG_ROTATION_TAG = "ModelLeftLegRotation";
+  String LEGACY_DATA_MODEL_RIGHT_LEG_ROTATION_TAG = "ModelRightLegRotation";
+  String LEGACY_DATA_MODEL_ROOT_ROTATION_TAG = "ModelRootRotation";
 
   // Defaults
   CustomPosition DEFAULT_MODEL_PART_POSITION = new CustomPosition(0, 0, 0);
@@ -143,71 +143,47 @@ public interface EntityModelData extends EntityDataInterface {
     return getEntityData(DATA_MODEL_POSE);
   }
 
+  default void setModelPose(ModelPose modelPose) {
+    setEntityData(DATA_MODEL_POSE, modelPose);
+  }
+
   default CustomPosition getModelPartPosition(ModelPart modelPart) {
-    switch (modelPart) {
-      case HEAD:
-        return getModelHeadPosition();
-      case BODY:
-        return getModelBodyPosition();
-      case ARMS:
-        return getModelArmsPosition();
-      case LEFT_ARM:
-        return getModelLeftArmPosition();
-      case RIGHT_ARM:
-        return getModelRightArmPosition();
-      case LEFT_LEG:
-        return getModelLeftLegPosition();
-      case RIGHT_LEG:
-        return getModelRightLegPosition();
-      default:
-        return DEFAULT_MODEL_PART_POSITION;
-    }
+    return switch (modelPart) {
+      case HEAD -> getModelHeadPosition();
+      case BODY -> getModelBodyPosition();
+      case ARMS -> getModelArmsPosition();
+      case LEFT_ARM -> getModelLeftArmPosition();
+      case RIGHT_ARM -> getModelRightArmPosition();
+      case LEFT_LEG -> getModelLeftLegPosition();
+      case RIGHT_LEG -> getModelRightLegPosition();
+      default -> DEFAULT_MODEL_PART_POSITION;
+    };
   }
 
   default Rotations getModelPartRotation(ModelPart modelPart) {
-    switch (modelPart) {
-      case HEAD:
-        return getModelHeadRotation();
-      case BODY:
-        return getModelBodyRotation();
-      case ARMS:
-        return getModelArmsRotation();
-      case LEFT_ARM:
-        return getModelLeftArmRotation();
-      case RIGHT_ARM:
-        return getModelRightArmRotation();
-      case LEFT_LEG:
-        return getModelLeftLegRotation();
-      case RIGHT_LEG:
-        return getModelRightLegRotation();
-      default:
-        return DEFAULT_MODEL_PART_ROTATION;
-    }
+    return switch (modelPart) {
+      case HEAD -> getModelHeadRotation();
+      case BODY -> getModelBodyRotation();
+      case ARMS -> getModelArmsRotation();
+      case LEFT_ARM -> getModelLeftArmRotation();
+      case RIGHT_ARM -> getModelRightArmRotation();
+      case LEFT_LEG -> getModelLeftLegRotation();
+      case RIGHT_LEG -> getModelRightLegRotation();
+      default -> DEFAULT_MODEL_PART_ROTATION;
+    };
   }
 
   default boolean isModelPartVisible(ModelPart modelPart) {
-    switch (modelPart) {
-      case HEAD:
-        return isModelHeadVisible();
-      case BODY:
-        return isModelBodyVisible();
-      case ARMS:
-        return isModelArmsVisible();
-      case LEFT_ARM:
-        return isModelLeftArmVisible();
-      case RIGHT_ARM:
-        return isModelRightArmVisible();
-      case LEFT_LEG:
-        return isModelLeftLegVisible();
-      case RIGHT_LEG:
-        return isModelRightLegVisible();
-      default:
-        return false;
-    }
-  }
-
-  default void setModelPose(ModelPose modelPose) {
-    setEntityData(DATA_MODEL_POSE, modelPose);
+    return switch (modelPart) {
+      case HEAD -> isModelHeadVisible();
+      case BODY -> isModelBodyVisible();
+      case ARMS -> isModelArmsVisible();
+      case LEFT_ARM -> isModelLeftArmVisible();
+      case RIGHT_ARM -> isModelRightArmVisible();
+      case LEFT_LEG -> isModelLeftLegVisible();
+      case RIGHT_LEG -> isModelRightLegVisible();
+      default -> false;
+    };
   }
 
   default CustomPosition getModelHeadPosition() {
@@ -710,5 +686,4 @@ public interface EntityModelData extends EntityDataInterface {
       }
     }
   }
-
 }

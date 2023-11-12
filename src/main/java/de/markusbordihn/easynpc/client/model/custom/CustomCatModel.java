@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -23,13 +23,11 @@ import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.data.CustomPosition;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-
 import net.minecraft.client.model.OcelotModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.Rotations;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -94,23 +92,40 @@ public class CustomCatModel<T extends Entity> extends OcelotModel<T> implements 
   }
 
   @Override
-  public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks,
-      float netHeadYaw, float headPitch) {
+  public void setupAnim(
+      T entity,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
 
     if (entity instanceof EasyNPCEntity easyNPCEntity) {
 
       // Reset player model to avoid any issues with other mods.
-      resetAnimalModel(this.head, this.body, this.leftFrontLeg, this.rightFrontLeg,
-          this.leftHindLeg, this.rightHindLeg);
+      resetAnimalModel(
+          this.head,
+          this.body,
+          this.leftFrontLeg,
+          this.rightFrontLeg,
+          this.leftHindLeg,
+          this.rightHindLeg);
 
       // Individual Part Modifications
       if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
-        setupCustomAnimalModel(easyNPCEntity, head, body, leftFrontLeg, rightFrontLeg, leftHindLeg,
-            rightHindLeg, netHeadYaw, headPitch);
+        setupCustomAnimalModel(
+            easyNPCEntity,
+            head,
+            body,
+            leftFrontLeg,
+            rightFrontLeg,
+            leftHindLeg,
+            rightHindLeg,
+            netHeadYaw,
+            headPitch);
       } else if (easyNPCEntity.getPose() != Pose.CROUCHING) {
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
       }
-
     }
 
     // Adjust position and rotation of the tail
@@ -121,5 +136,4 @@ public class CustomCatModel<T extends Entity> extends OcelotModel<T> implements 
     this.tail2.y = this.tail1.y + 5.0F;
     this.tail2.z = this.tail1.z + 6.0F;
   }
-
 }

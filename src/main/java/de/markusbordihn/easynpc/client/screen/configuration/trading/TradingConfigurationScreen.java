@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,17 +19,16 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.trading;
 
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
+import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class TradingConfigurationScreen<T extends ConfigurationMenu>
@@ -50,43 +49,72 @@ public class TradingConfigurationScreen<T extends ConfigurationMenu>
     super.init();
 
     // Trade Types
-    this.noneTradesButton = this.addRenderableWidget(
-        menuButton(this.buttonLeftPos, this.buttonTopPos, 64, "disable_trading", onPress -> {
-          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_TRADING);
-        }));
+    this.noneTradesButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.buttonLeftPos,
+                this.buttonTopPos,
+                64,
+                "disable_trading",
+                onPress -> {
+                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_TRADING);
+                }));
     this.basicTradesButton =
-        this.addRenderableWidget(menuButton(this.buttonLeftPos + this.noneTradesButton.getWidth(),
-            this.buttonTopPos, 64, "basic_trading", onPress -> {
-              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_TRADING);
-            }));
-    this.advancedTradesButton = this.addRenderableWidget(menuButton(
-        this.buttonLeftPos + this.noneTradesButton.getWidth() + this.basicTradesButton.getWidth(),
-        this.buttonTopPos, 70, "advanced_trading", onPress -> {
-          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.ADVANCED_TRADING);
-        }));
-    this.customTradesButton = this.addRenderableWidget(menuButton(
-        this.buttonLeftPos + this.noneTradesButton.getWidth() + this.basicTradesButton.getWidth()
-            + this.advancedTradesButton.getWidth(),
-        this.buttonTopPos, 100, "custom_trading", onPress -> {
-          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_TRADING);
-        }));
+        this.addRenderableWidget(
+            new TextButton(
+                this.buttonLeftPos + this.noneTradesButton.getWidth(),
+                this.buttonTopPos,
+                64,
+                "basic_trading",
+                onPress -> {
+                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_TRADING);
+                }));
+    this.advancedTradesButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.buttonLeftPos
+                    + this.noneTradesButton.getWidth()
+                    + this.basicTradesButton.getWidth(),
+                this.buttonTopPos,
+                70,
+                "advanced_trading",
+                onPress -> {
+                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.ADVANCED_TRADING);
+                }));
+    this.customTradesButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.buttonLeftPos
+                    + this.noneTradesButton.getWidth()
+                    + this.basicTradesButton.getWidth()
+                    + this.advancedTradesButton.getWidth(),
+                this.buttonTopPos,
+                100,
+                "custom_trading",
+                onPress -> {
+                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_TRADING);
+                }));
 
     // Default button stats
-    this.noneTradesButton.active = this.hasPermissions(COMMON.noneTradingConfigurationEnabled.get(),
-        COMMON.noneTradingConfigurationAllowInCreative.get(),
-        COMMON.noneTradingConfigurationPermissionLevel.get());
+    this.noneTradesButton.active =
+        this.hasPermissions(
+            COMMON.noneTradingConfigurationEnabled.get(),
+            COMMON.noneTradingConfigurationAllowInCreative.get(),
+            COMMON.noneTradingConfigurationPermissionLevel.get());
     this.basicTradesButton.active =
-        this.hasPermissions(COMMON.basicTradingConfigurationEnabled.get(),
+        this.hasPermissions(
+            COMMON.basicTradingConfigurationEnabled.get(),
             COMMON.basicTradingConfigurationAllowInCreative.get(),
             COMMON.basicTradingConfigurationPermissionLevel.get());
     this.advancedTradesButton.active =
-        this.hasPermissions(COMMON.advancedTradingConfigurationEnabled.get(),
+        this.hasPermissions(
+            COMMON.advancedTradingConfigurationEnabled.get(),
             COMMON.advancedTradingConfigurationAllowInCreative.get(),
             COMMON.advancedTradingConfigurationPermissionLevel.get());
     this.customTradesButton.active =
-        this.hasPermissions(COMMON.customTradingConfigurationEnabled.get(),
+        this.hasPermissions(
+            COMMON.customTradingConfigurationEnabled.get(),
             COMMON.customTradingConfigurationAllowInCreative.get(),
             COMMON.customTradingConfigurationPermissionLevel.get());
   }
-
 }

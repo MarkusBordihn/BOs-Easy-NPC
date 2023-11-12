@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,36 +19,30 @@
 
 package de.markusbordihn.easynpc;
 
-import java.util.Optional;
-import java.util.UUID;
 import cpw.mods.modlauncher.Launcher;
 import cpw.mods.modlauncher.api.IEnvironment;
+import java.util.Optional;
+import java.util.UUID;
 import net.minecraft.resources.ResourceLocation;
 
 public final class Constants {
 
-  protected Constants() {}
-
   // General Mod definitions
   public static final String LOG_NAME = "Easy NPC";
   public static final String LOG_ICON = "🗣";
-  public static final String LOG_ICON_NAME = LOG_ICON + " " + LOG_NAME;
   public static final String LOG_CREATE_PREFIX = LOG_ICON + " Create Easy NPC";
   public static final String LOG_REGISTER_PREFIX = LOG_ICON + " Register Easy NPC";
   public static final String MOD_COMMAND = "easy_npc";
   public static final String MOD_ID = "easy_npc";
   public static final String MOD_NAME = "Easy NPC";
   public static final String MOD_URL = "https://www.curseforge.com/minecraft/mc-mods/easy-npc";
-
   // Prefixes
   public static final String MINECRAFT_PREFIX = "minecraft";
   public static final String TEXT_PREFIX = "text.easy_npc.";
   public static final String TEXT_CONFIG_PREFIX = TEXT_PREFIX + "config.";
   public static final String TEXT_ITEM_PREFIX = TEXT_PREFIX + "item.";
-
   // Suffices
   public static final String NPC_NBT_SUFFIX = ".npc.nbt";
-
   // Colors
   public static final int FONT_COLOR_BLACK = 0;
   public static final int FONT_COLOR_DARK_GREEN = 43520;
@@ -58,7 +52,6 @@ public final class Constants {
   public static final int FONT_COLOR_RED = 16733525;
   public static final int FONT_COLOR_WHITE = 16777215;
   public static final int FONT_COLOR_YELLOW = 16777045;
-
   // Textures
   public static final UUID BLANK_UUID = new UUID(0L, 0L);
   public static final ResourceLocation BLANK_ENTITY_TEXTURE =
@@ -77,14 +70,16 @@ public final class Constants {
       new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/container/inventory.png");
   public static final ResourceLocation TEXTURE_CHECKBOX =
       new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/checkbox.png");
-
   // Animation Math
   public static final float MATH_27DEG_TO_RAD = 0.47123894F;
   public static final float MATH_27DEG_TO_RAD_INVERTED = -0.47123894F;
-
   // Forge Specific
   public static final Optional<String> FORGE_VERSION =
       Launcher.INSTANCE.environment().getProperty(IEnvironment.Keys.VERSION.get());
-  public static final boolean IS_MOD_DEV = FORGE_VERSION.isPresent() && FORGE_VERSION.get() != null
-      && "MOD_DEV".equals(FORGE_VERSION.get());
+  public static final boolean IS_MOD_DEV =
+      FORGE_VERSION.isPresent()
+          && FORGE_VERSION.get() != null
+          && "MOD_DEV".equals(FORGE_VERSION.get());
+
+  private Constants() {}
 }
