@@ -52,10 +52,10 @@ public class AttributeConfigurationScreen<T extends AttributeConfigurationMenu>
                 this.buttonLeftPos,
                 this.buttonTopPos,
                 80,
-                "basic_attribute",
-                onPress -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_ATTRIBUTE);
-                }));
+                "basic",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.BASIC_ATTRIBUTE)));
 
     // Default button stats
     this.basicAttributeButton.active =

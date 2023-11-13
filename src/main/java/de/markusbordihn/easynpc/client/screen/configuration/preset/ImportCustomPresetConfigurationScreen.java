@@ -136,7 +136,7 @@ public class ImportCustomPresetConfigurationScreen
                 this.buttonLeftPos + 25,
                 this.bottomPos - 40,
                 220,
-                "import_custom_preset",
+                "custom",
                 button -> {
                   if (selectedPreset != null) {
                     this.loadPresetConfirm(selectedPreset);
@@ -241,7 +241,7 @@ public class ImportCustomPresetConfigurationScreen
           new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "no_presets_found"),
           ImportCustomPresetConfigurationScreen.this.contentLeftPos + 80f,
           ImportCustomPresetConfigurationScreen.this.topPos + 105f,
-          16777215);
+          Constants.FONT_COLOR_WHITE);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -303,7 +303,7 @@ public class ImportCustomPresetConfigurationScreen
             this.skinModel,
             ImportCustomPresetConfigurationScreen.this.contentLeftPos + 3,
             fileListTop,
-            16777215);
+            Constants.FONT_COLOR_WHITE);
 
         // Display file name.
         ImportCustomPresetConfigurationScreen.this.font.drawShadow(
@@ -312,7 +312,7 @@ public class ImportCustomPresetConfigurationScreen
             ImportFileSelectionList.this.width / 2f
                 - ImportCustomPresetConfigurationScreen.this.font.width(this.fileName) / 2f,
             y + 1f,
-            16777215,
+            Constants.FONT_COLOR_WHITE,
             true);
       }
 

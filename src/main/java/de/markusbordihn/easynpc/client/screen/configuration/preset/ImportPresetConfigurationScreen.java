@@ -55,11 +55,10 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonLeftPos,
                 this.buttonTopPos,
                 buttonWidth - 4,
-                "default_preset",
-                button -> {
-                  NetworkMessageHandler.openConfiguration(
-                      uuid, ConfigurationType.DEFAULT_PRESET_IMPORT);
-                }));
+                "default",
+                button ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.DEFAULT_PRESET_IMPORT)));
     this.defaultImportPresetButton.active = false;
     this.worldImportPresetButton =
         this.addRenderableWidget(
@@ -68,10 +67,9 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 buttonWidth - 6,
                 "world_preset",
-                button -> {
-                  NetworkMessageHandler.openConfiguration(
-                      uuid, ConfigurationType.WORLD_PRESET_IMPORT);
-                }));
+                button ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.WORLD_PRESET_IMPORT)));
     this.worldImportPresetButton.active = false;
     this.customImportPresetButton =
         this.addRenderableWidget(
@@ -79,11 +77,10 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
                 this.worldImportPresetButton.x + this.worldImportPresetButton.getWidth(),
                 this.buttonTopPos,
                 buttonWidth + 15,
-                "custom_preset",
-                button -> {
-                  NetworkMessageHandler.openConfiguration(
-                      uuid, ConfigurationType.CUSTOM_PRESET_IMPORT);
-                }));
+                "custom",
+                button ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.CUSTOM_PRESET_IMPORT)));
     this.customImportPresetButton.active = false;
 
     // Default button stats

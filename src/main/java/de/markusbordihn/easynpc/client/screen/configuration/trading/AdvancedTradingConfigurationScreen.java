@@ -206,22 +206,20 @@ public class AdvancedTradingConfigurationScreen
                 this.contentLeftPos,
                 this.contentTopPos + 115,
                 70,
-                "trading.previous_page",
-                onPress -> {
-                  NetworkMessageHandler.openConfiguration(
-                      uuid, ConfigurationType.ADVANCED_TRADING, this.menu.getPageIndex() - 1);
-                }));
+                "previous_page",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.ADVANCED_TRADING, this.menu.getPageIndex() - 1)));
     this.nextPageButton =
         this.addRenderableWidget(
             new TextButton(
                 this.contentLeftPos + 235,
                 this.contentTopPos + 115,
                 70,
-                "trading.next_page",
-                onPress -> {
-                  NetworkMessageHandler.openConfiguration(
-                      uuid, ConfigurationType.ADVANCED_TRADING, this.menu.getPageIndex() + 1);
-                }));
+                "next_page",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.ADVANCED_TRADING, this.menu.getPageIndex() + 1)));
   }
 
   @Override
@@ -389,7 +387,7 @@ public class AdvancedTradingConfigurationScreen
     Text.drawConfigString(
         poseStack,
         this.font,
-        "trading.mins_for_trade_reset",
+        "trading.minutes_for_trade_reset",
         this.contentLeftPos + 236,
         this.contentTopPos + 160,
         0x404040);

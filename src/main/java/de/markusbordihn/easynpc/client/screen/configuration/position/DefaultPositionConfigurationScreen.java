@@ -203,12 +203,11 @@ public class DefaultPositionConfigurationScreen
             new Checkbox(
                 this.contentLeftPos + 200,
                 this.topPos + 18,
-                "freefall",
+                "free_fall",
                 this.entity.getAttributeFreefall(),
-                checkbox -> {
-                  NetworkMessageHandler.entityAttributeChange(
-                      uuid, EntityAttribute.FREEFALL, checkbox.selected());
-                }));
+                checkbox ->
+                    NetworkMessageHandler.entityAttributeChange(
+                        uuid, EntityAttribute.FREEFALL, checkbox.selected())));
   }
 
   @Override

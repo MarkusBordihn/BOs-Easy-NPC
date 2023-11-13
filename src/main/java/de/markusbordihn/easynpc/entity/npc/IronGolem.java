@@ -84,6 +84,11 @@ public class IronGolem extends EasyNPCEntity {
     return 38;
   }
 
+  @Override
+  public int getEntitySkinScaling() {
+    return 25;
+  }
+
   // Skin Details
   public enum Variant {
     IRON_GOLEM,

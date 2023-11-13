@@ -31,7 +31,6 @@ import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfiguration
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.renderer.GameRenderer;
@@ -46,17 +45,9 @@ public class DefaultSkinConfigurationScreen
 
   // Skin Preview
   private static final float SKIN_NAME_SCALING = 0.7f;
-  private final int maxSkinsPerPage = 10;
   protected int numOfProfessions = 0;
-  protected int numOfSkins = 0;
   protected int numOfVariants = 0;
-  // Internal
-  private Button skinPreviousButton = null;
-  private Button skinNextButton = null;
-  private Button skinPreviousPageButton = null;
-  private Button skinNextPageButton = null;
-  private List<Button> skinButtons = new ArrayList<>();
-  private int skinStartIndex = 0;
+
   // Cache
   private Profession[] professions;
   private Enum<?>[] variants;
@@ -64,6 +55,7 @@ public class DefaultSkinConfigurationScreen
   public DefaultSkinConfigurationScreen(
       DefaultSkinConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
+    this.maxSkinsPerPage = 10;
   }
 
   private void renderSkins(PoseStack poseStack) {
@@ -170,22 +162,6 @@ public class DefaultSkinConfigurationScreen
     skinButtons.add(skinButton);
   }
 
-  private void checkSkinButtonState() {
-    // Check the visible for the buttons.
-    boolean skinButtonShouldBeVisible = this.numOfSkins > this.maxSkinsPerPage;
-    this.skinPreviousButton.visible = skinButtonShouldBeVisible;
-    this.skinNextButton.visible = skinButtonShouldBeVisible;
-    this.skinPreviousPageButton.visible = skinButtonShouldBeVisible;
-    this.skinNextPageButton.visible = skinButtonShouldBeVisible;
-
-    // Enable / disable buttons depending on the current skin index.
-    this.skinPreviousButton.active = this.skinStartIndex > 0;
-    this.skinNextButton.active = this.skinStartIndex + this.maxSkinsPerPage < this.numOfSkins;
-    this.skinPreviousPageButton.active = this.skinStartIndex - this.maxSkinsPerPage > 0;
-    this.skinNextPageButton.active =
-        this.skinStartIndex + 1 + this.maxSkinsPerPage < this.numOfSkins;
-  }
-
   @Override
   public void init() {
     super.init();
@@ -223,7 +199,7 @@ public class DefaultSkinConfigurationScreen
                   } else {
                     skinStartIndex = 0;
                   }
-                  checkSkinButtonState();
+                  checkSkinNavigationButtonState();
                 }));
     this.skinPreviousButton =
         this.addRenderableWidget(
@@ -236,7 +212,7 @@ public class DefaultSkinConfigurationScreen
                   if (this.skinStartIndex > 0) {
                     skinStartIndex--;
                   }
-                  checkSkinButtonState();
+                  checkSkinNavigationButtonState();
                 }));
     this.skinNextPageButton =
         this.addRenderableWidget(
@@ -254,7 +230,7 @@ public class DefaultSkinConfigurationScreen
                   } else {
                     this.skinStartIndex = this.numOfSkins;
                   }
-                  checkSkinButtonState();
+                  checkSkinNavigationButtonState();
                 }));
     this.skinNextButton =
         this.addRenderableWidget(
@@ -268,9 +244,9 @@ public class DefaultSkinConfigurationScreen
                       && this.skinStartIndex < this.numOfSkins - this.maxSkinsPerPage) {
                     skinStartIndex++;
                   }
-                  checkSkinButtonState();
+                  checkSkinNavigationButtonState();
                 }));
-    checkSkinButtonState();
+    checkSkinNavigationButtonState();
   }
 
   @Override
@@ -289,10 +265,7 @@ public class DefaultSkinConfigurationScreen
   }
 
   @Override
-  protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
-    super.renderBg(poseStack, partialTicks, mouseX, mouseY);
-
-    // Skin Selection
+  protected void renderSkinSelectionBackground(PoseStack poseStack) {
     fill(
         poseStack,
         this.contentLeftPos,
@@ -307,16 +280,5 @@ public class DefaultSkinConfigurationScreen
         this.contentLeftPos + 301,
         this.contentTopPos + 169,
         0xffaaaaaa);
-  }
-
-  @Override
-  public boolean mouseClicked(double mouseX, double mouseY, int button) {
-    // Make sure we pass the mouse click to the dynamically added buttons, if any.
-    if (!skinButtons.isEmpty()) {
-      for (Button skinButton : skinButtons) {
-        skinButton.mouseClicked(mouseX, mouseY, button);
-      }
-    }
-    return super.mouseClicked(mouseX, mouseY, button);
   }
 }

@@ -56,20 +56,12 @@ public class CustomSkinConfigurationScreen
   private static final float SKIN_NAME_SCALING = 0.7f;
   private static final int ADD_SKIN_RELOAD_DELAY = 5;
   protected static int nextSkinReload = (int) java.time.Instant.now().getEpochSecond();
-  private final int maxSkinsPerPage = 5;
   protected Button skinFolderButton = null;
   protected Button skinReloadButton = null;
   protected int numberOfTextLines = 1;
   // Cache
-  protected int numOfSkins = 0;
   protected int lastNumOfSkins = 0;
-  // Internal
-  private Button skinNextButton = null;
-  private Button skinNextPageButton = null;
-  private Button skinPreviousButton = null;
-  private Button skinPreviousPageButton = null;
-  private List<Button> skinButtons = new ArrayList<>();
-  private int skinStartIndex = 0;
+
   // Text
   private List<FormattedCharSequence> textComponents = Collections.emptyList();
 
@@ -94,7 +86,7 @@ public class CustomSkinConfigurationScreen
 
     // Check Skin buttons state, if number of skins changed.
     if (this.lastNumOfSkins != this.numOfSkins) {
-      checkSkinButtonState();
+      checkSkinNavigationButtonState();
       this.lastNumOfSkins = this.numOfSkins;
     }
 
@@ -175,22 +167,6 @@ public class CustomSkinConfigurationScreen
     skinButtons.add(skinButton);
   }
 
-  private void checkSkinButtonState() {
-    // Check the visible for the buttons.
-    boolean skinButtonShouldBeVisible = this.numOfSkins > this.maxSkinsPerPage;
-    this.skinPreviousButton.visible = skinButtonShouldBeVisible;
-    this.skinNextButton.visible = skinButtonShouldBeVisible;
-    this.skinPreviousPageButton.visible = skinButtonShouldBeVisible;
-    this.skinNextPageButton.visible = skinButtonShouldBeVisible;
-
-    // Enable / disable buttons depending on the current skin index.
-    this.skinPreviousButton.active = this.skinStartIndex > 0;
-    this.skinNextButton.active = this.skinStartIndex + this.maxSkinsPerPage < this.numOfSkins;
-    this.skinPreviousPageButton.active = this.skinStartIndex - this.maxSkinsPerPage > 0;
-    this.skinNextPageButton.active =
-        this.skinStartIndex + 1 + this.maxSkinsPerPage < this.numOfSkins;
-  }
-
   @Override
   public void init() {
     super.init();
@@ -218,7 +194,7 @@ public class CustomSkinConfigurationScreen
                   } else {
                     skinStartIndex = 0;
                   }
-                  checkSkinButtonState();
+                  checkSkinNavigationButtonState();
                 }));
     this.skinPreviousButton =
         this.addRenderableWidget(
@@ -231,7 +207,7 @@ public class CustomSkinConfigurationScreen
                   if (this.skinStartIndex > 0) {
                     skinStartIndex--;
                   }
-                  checkSkinButtonState();
+                  checkSkinNavigationButtonState();
                 }));
     this.skinNextPageButton =
         this.addRenderableWidget(
@@ -249,7 +225,7 @@ public class CustomSkinConfigurationScreen
                   } else {
                     this.skinStartIndex = this.numOfSkins;
                   }
-                  checkSkinButtonState();
+                  checkSkinNavigationButtonState();
                 }));
     this.skinNextButton =
         this.addRenderableWidget(
@@ -263,9 +239,9 @@ public class CustomSkinConfigurationScreen
                       && this.skinStartIndex < this.numOfSkins - this.maxSkinsPerPage) {
                     skinStartIndex++;
                   }
-                  checkSkinButtonState();
+                  checkSkinNavigationButtonState();
                 }));
-    checkSkinButtonState();
+    checkSkinNavigationButtonState();
 
     // Open Skin Folder Button
     Path skinModelFolder = CustomSkinData.getSkinDataFolder(skinModel);
@@ -278,9 +254,7 @@ public class CustomSkinConfigurationScreen
                   263,
                   "open_textures_folder",
                   skinModel.toString(),
-                  onPress -> {
-                    Util.getPlatform().openFile(skinModelFolder.toFile());
-                  }));
+                  onPress -> Util.getPlatform().openFile(skinModelFolder.toFile())));
     }
 
     // Skin Reload Button
@@ -345,37 +319,5 @@ public class CustomSkinConfigurationScreen
         skinButton.render(poseStack, x, y, partialTicks);
       }
     }
-  }
-
-  @Override
-  protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
-    super.renderBg(poseStack, partialTicks, mouseX, mouseY);
-
-    // Skin Selection
-    fill(
-        poseStack,
-        this.contentLeftPos,
-        this.topPos + 102,
-        this.contentLeftPos + 302,
-        this.topPos + 188,
-        0xff000000);
-    fill(
-        poseStack,
-        this.contentLeftPos + 1,
-        this.topPos + 103,
-        this.contentLeftPos + 301,
-        this.topPos + 187,
-        0xffaaaaaa);
-  }
-
-  @Override
-  public boolean mouseClicked(double mouseX, double mouseY, int button) {
-    // Make sure we pass the mouse click to the dynamically added buttons, if any.
-    if (!skinButtons.isEmpty()) {
-      for (Button skinButton : skinButtons) {
-        skinButton.mouseClicked(mouseX, mouseY, button);
-      }
-    }
-    return super.mouseClicked(mouseX, mouseY, button);
   }
 }

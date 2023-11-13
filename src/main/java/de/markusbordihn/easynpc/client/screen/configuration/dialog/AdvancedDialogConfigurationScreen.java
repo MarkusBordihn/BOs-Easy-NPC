@@ -74,11 +74,10 @@ public class AdvancedDialogConfigurationScreen
                 this.contentTopPos + 168,
                 200,
                 "dialog.add",
-                onPress -> {
-                  NetworkMessageHandler.openDialogEditor(
-                      AdvancedDialogConfigurationScreen.this.uuid,
-                      ConfigurationType.ADVANCED_DIALOG);
-                }));
+                onPress ->
+                    NetworkMessageHandler.openDialogEditor(
+                        AdvancedDialogConfigurationScreen.this.uuid,
+                        ConfigurationType.ADVANCED_DIALOG)));
   }
 
   @Override
@@ -296,6 +295,7 @@ public class AdvancedDialogConfigurationScreen
 
         // Scale dialog text down
         float dialogDataScale = 0.75f;
+        int dialogDataTopPos = Math.round((top + 5) / dialogDataScale);
         int fontColor =
             dialogData.getLabel().equals(this.defaultDialogLabel)
                 ? Constants.FONT_COLOR_DARK_GREEN
@@ -307,21 +307,21 @@ public class AdvancedDialogConfigurationScreen
             AdvancedDialogConfigurationScreen.this.font,
             dialogData.getLabel(16),
             Math.round((leftPos + 7) / dialogDataScale),
-            Math.round((top + 5) / dialogDataScale),
+            dialogDataTopPos,
             fontColor);
         Text.drawString(
             poseStack,
             AdvancedDialogConfigurationScreen.this.font,
             dialogData.getName(21),
             Math.round((leftPos + 112) / dialogDataScale),
-            Math.round((top + 5) / dialogDataScale),
+            dialogDataTopPos,
             fontColor);
         Text.drawString(
             poseStack,
             AdvancedDialogConfigurationScreen.this.font,
             dialogData.getText(27),
             Math.round((leftPos + 200) / dialogDataScale),
-            Math.round((top + 5) / dialogDataScale),
+            dialogDataTopPos,
             fontColor);
         poseStack.popPose();
 

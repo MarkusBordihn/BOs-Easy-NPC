@@ -35,7 +35,6 @@ import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import de.markusbordihn.easynpc.utils.PlayersUtils;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -55,19 +54,11 @@ public class PlayerSkinConfigurationScreen
   private static final int ADD_SKIN_DELAY = 20;
   protected static int nextTextureSkinLocationChange =
       (int) java.time.Instant.now().getEpochSecond();
-  private final int maxSkinsPerPage = 5;
   protected Button addTextureSettingsButton = null;
   protected EditBox textureSkinLocationBox;
-  protected int numOfSkins = 0;
   protected int lastNumOfSkins = 0;
   // Internal
   private Button clearTextureSettingsButton = null;
-  private Button skinNextButton = null;
-  private Button skinNextPageButton = null;
-  private Button skinPreviousButton = null;
-  private Button skinPreviousPageButton = null;
-  private List<Button> skinButtons = new ArrayList<>();
-  private int skinStartIndex = 0;
   // Cache
   private String formerTextureSkinLocation = "";
   private boolean canTextureSkinLocationChange = true;
@@ -96,7 +87,7 @@ public class PlayerSkinConfigurationScreen
 
     // Check Skin buttons state, if number of skins changed.
     if (this.lastNumOfSkins != this.numOfSkins) {
-      checkSkinButtonState();
+      checkSkinNavigationButtonState();
       this.lastNumOfSkins = this.numOfSkins;
     }
 
@@ -219,8 +210,7 @@ public class PlayerSkinConfigurationScreen
 
     // Validations per skin models.
     switch (skinModel) {
-      case HUMANOID:
-      case HUMANOID_SLIM:
+      case HUMANOID, HUMANOID_SLIM:
         this.addTextureSettingsButton.active =
             textureSkinLocationValue != null
                 && !textureSkinLocationValue.isEmpty()
@@ -234,22 +224,6 @@ public class PlayerSkinConfigurationScreen
     // Clear button
     this.clearTextureSettingsButton.active =
         textureSkinLocationValue != null && !textureSkinLocationValue.isEmpty();
-  }
-
-  private void checkSkinButtonState() {
-    // Check the visible for the buttons.
-    boolean skinButtonShouldBeVisible = this.numOfSkins > this.maxSkinsPerPage;
-    this.skinPreviousButton.visible = skinButtonShouldBeVisible;
-    this.skinNextButton.visible = skinButtonShouldBeVisible;
-    this.skinPreviousPageButton.visible = skinButtonShouldBeVisible;
-    this.skinNextPageButton.visible = skinButtonShouldBeVisible;
-
-    // Enable / disable buttons depending on the current skin index.
-    this.skinPreviousButton.active = this.skinStartIndex > 0;
-    this.skinNextButton.active = this.skinStartIndex + this.maxSkinsPerPage < this.numOfSkins;
-    this.skinPreviousPageButton.active = this.skinStartIndex - this.maxSkinsPerPage > 0;
-    this.skinNextPageButton.active =
-        this.skinStartIndex + 1 + this.maxSkinsPerPage < this.numOfSkins;
   }
 
   @Override
@@ -278,9 +252,7 @@ public class PlayerSkinConfigurationScreen
                 this.topPos + 60,
                 65,
                 "add",
-                onPress -> {
-                  this.addTextureSkinLocation();
-                }));
+                onPress -> this.addTextureSkinLocation()));
     this.addTextureSettingsButton.active = false;
 
     // Clear Texture Buttons
@@ -291,9 +263,7 @@ public class PlayerSkinConfigurationScreen
                 this.topPos + 60,
                 55,
                 "clear",
-                onPress -> {
-                  this.clearTextureSkinLocation();
-                }));
+                onPress -> this.clearTextureSkinLocation()));
 
     // Skin Navigation Buttons
     int skinButtonTop = this.topPos + 187;
@@ -312,7 +282,7 @@ public class PlayerSkinConfigurationScreen
                   } else {
                     skinStartIndex = 0;
                   }
-                  checkSkinButtonState();
+                  checkSkinNavigationButtonState();
                 }));
     this.skinPreviousButton =
         this.addRenderableWidget(
@@ -325,7 +295,7 @@ public class PlayerSkinConfigurationScreen
                   if (this.skinStartIndex > 0) {
                     skinStartIndex--;
                   }
-                  checkSkinButtonState();
+                  checkSkinNavigationButtonState();
                 }));
     this.skinNextPageButton =
         this.addRenderableWidget(
@@ -343,7 +313,7 @@ public class PlayerSkinConfigurationScreen
                   } else {
                     this.skinStartIndex = this.numOfSkins;
                   }
-                  checkSkinButtonState();
+                  checkSkinNavigationButtonState();
                 }));
     this.skinNextButton =
         this.addRenderableWidget(
@@ -357,9 +327,9 @@ public class PlayerSkinConfigurationScreen
                       && this.skinStartIndex < this.numOfSkins - this.maxSkinsPerPage) {
                     skinStartIndex++;
                   }
-                  checkSkinButtonState();
+                  checkSkinNavigationButtonState();
                 }));
-    checkSkinButtonState();
+    checkSkinNavigationButtonState();
   }
 
   @Override
@@ -401,37 +371,5 @@ public class PlayerSkinConfigurationScreen
         skinButton.render(poseStack, x, y, partialTicks);
       }
     }
-  }
-
-  @Override
-  protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
-    super.renderBg(poseStack, partialTicks, mouseX, mouseY);
-
-    // Skin Selection
-    fill(
-        poseStack,
-        this.contentLeftPos,
-        this.topPos + 102,
-        this.contentLeftPos + 302,
-        this.topPos + 188,
-        0xff000000);
-    fill(
-        poseStack,
-        this.contentLeftPos + 1,
-        this.topPos + 103,
-        this.contentLeftPos + 301,
-        this.topPos + 187,
-        0xffaaaaaa);
-  }
-
-  @Override
-  public boolean mouseClicked(double mouseX, double mouseY, int button) {
-    // Make sure we pass the mouse click to the dynamically added buttons, if any.
-    if (!skinButtons.isEmpty()) {
-      for (Button skinButton : skinButtons) {
-        skinButton.mouseClicked(mouseX, mouseY, button);
-      }
-    }
-    return super.mouseClicked(mouseX, mouseY, button);
   }
 }

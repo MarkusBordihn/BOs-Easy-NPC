@@ -221,7 +221,7 @@ public class ImportWorldPresetConfigurationScreen
           new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "no_presets_found"),
           ImportWorldPresetConfigurationScreen.this.contentLeftPos + 80f,
           ImportWorldPresetConfigurationScreen.this.topPos + 105f,
-          16777215);
+          Constants.FONT_COLOR_WHITE);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -280,7 +280,7 @@ public class ImportWorldPresetConfigurationScreen
             this.skinModel,
             ImportWorldPresetConfigurationScreen.this.contentLeftPos + 3,
             fileListTop,
-            16777215);
+            Constants.FONT_COLOR_WHITE);
 
         // Display file name.
         ImportWorldPresetConfigurationScreen.this.font.drawShadow(
@@ -289,7 +289,7 @@ public class ImportWorldPresetConfigurationScreen
             ImportFileSelectionList.this.width / 2f
                 - ImportWorldPresetConfigurationScreen.this.font.width(this.fileName) / 2f,
             y + 1f,
-            16777215,
+            Constants.FONT_COLOR_WHITE,
             true);
       }
 

@@ -134,9 +134,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
       int resetButtonLeftPosition;
       // Switch reset button left position for compact mode and specific model parts
       switch (modelPart) {
-        case BODY:
-        case LEFT_ARM:
-        case LEFT_LEG:
+        case BODY, LEFT_ARM, LEFT_LEG:
           resetButtonLeftPosition = left;
           break;
         default:
@@ -185,7 +183,6 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
   protected SliderButton createPositionSlider(
       int left, int top, ModelPart modelPart, String label, boolean compact) {
     int sliderWidth = 34;
-    int sliderHeight = 20;
     int sliderLeftPosition = left;
 
     // Shift left position for compact mode ans specific model parts
@@ -309,10 +306,9 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 this.buttonLeftPos,
                 this.buttonTopPos,
                 poseButtonWidth - 10,
-                "default_pose",
-                button -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_POSE);
-                }));
+                "default",
+                button ->
+                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_POSE)));
 
     this.advancedPoseButton =
         this.addRenderableWidget(
@@ -320,10 +316,10 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 this.buttonLeftPos + this.defaultPoseButton.getWidth(),
                 this.buttonTopPos,
                 poseButtonWidth + 10,
-                "advanced_pose",
-                button -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.ADVANCED_POSE);
-                }));
+                "advanced",
+                button ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.ADVANCED_POSE)));
 
     this.customPoseButton =
         this.addRenderableWidget(
@@ -331,10 +327,9 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 advancedPoseButton.x + advancedPoseButton.getWidth(),
                 this.buttonTopPos,
                 poseButtonWidth + 20,
-                "custom_pose",
-                button -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_POSE);
-                }));
+                "custom",
+                button ->
+                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_POSE)));
 
     // Default button stats
     this.defaultPoseButton.active =

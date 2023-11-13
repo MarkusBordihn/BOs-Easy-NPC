@@ -68,8 +68,6 @@ public final class Constants {
       new ResourceLocation(Constants.MOD_ID, "textures/container/icons.png");
   public static final ResourceLocation TEXTURE_INVENTORY =
       new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/container/inventory.png");
-  public static final ResourceLocation TEXTURE_CHECKBOX =
-      new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/checkbox.png");
   // Animation Math
   public static final float MATH_27DEG_TO_RAD = 0.47123894F;
   public static final float MATH_27DEG_TO_RAD_INVERTED = -0.47123894F;

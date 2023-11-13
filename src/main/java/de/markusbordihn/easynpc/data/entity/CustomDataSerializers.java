@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.data.entity;
 
 import de.markusbordihn.easynpc.data.CustomPosition;
+import de.markusbordihn.easynpc.data.CustomScale;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.model.ModelPose;
@@ -50,7 +51,6 @@ public class CustomDataSerializers {
           return value;
         }
       };
-
   public static final EntityDataSerializer<DialogDataSet> DIALOG_DATA_SET =
       new EntityDataSerializer<DialogDataSet>() {
         public void write(FriendlyByteBuf buffer, DialogDataSet value) {
@@ -65,7 +65,6 @@ public class CustomDataSerializers {
           return value;
         }
       };
-
   public static final EntityDataSerializer<ObjectiveDataSet> OBJECTIVE_DATA_SET =
       new EntityDataSerializer<ObjectiveDataSet>() {
         public void write(FriendlyByteBuf buffer, ObjectiveDataSet value) {
@@ -80,7 +79,6 @@ public class CustomDataSerializers {
           return value;
         }
       };
-
   public static final EntityDataSerializer<TradingType> TRADING_TYPE =
       new EntityDataSerializer<TradingType>() {
         public void write(FriendlyByteBuf buffer, TradingType value) {
@@ -95,7 +93,6 @@ public class CustomDataSerializers {
           return value;
         }
       };
-
   public static final EntityDataSerializer<ModelPose> MODEL_POSE =
       new EntityDataSerializer<ModelPose>() {
         public void write(FriendlyByteBuf buffer, ModelPose value) {
@@ -110,7 +107,6 @@ public class CustomDataSerializers {
           return value;
         }
       };
-
   public static final EntityDataSerializer<MerchantOffers> MERCHANT_OFFERS =
       new EntityDataSerializer<MerchantOffers>() {
         public void write(FriendlyByteBuf buffer, MerchantOffers value) {
@@ -125,7 +121,6 @@ public class CustomDataSerializers {
           return value;
         }
       };
-
   public static final EntityDataSerializer<CustomPosition> POSITION =
       new EntityDataSerializer<CustomPosition>() {
         public void write(FriendlyByteBuf buffer, CustomPosition position) {
@@ -142,7 +137,22 @@ public class CustomDataSerializers {
           return position;
         }
       };
+  public static final EntityDataSerializer<CustomScale> SCALE =
+      new EntityDataSerializer<CustomScale>() {
+        public void write(FriendlyByteBuf buffer, CustomScale scale) {
+          buffer.writeFloat(scale.x());
+          buffer.writeFloat(scale.y());
+          buffer.writeFloat(scale.z());
+        }
 
+        public CustomScale read(FriendlyByteBuf buffer) {
+          return new CustomScale(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+        }
+
+        public CustomScale copy(CustomScale scale) {
+          return scale;
+        }
+      };
   public static final EntityDataSerializer<Profession> PROFESSION =
       new EntityDataSerializer<Profession>() {
         public void write(FriendlyByteBuf buffer, Profession value) {
@@ -157,7 +167,6 @@ public class CustomDataSerializers {
           return value;
         }
       };
-
   public static final EntityDataSerializer<SkinType> SKIN_TYPE =
       new EntityDataSerializer<SkinType>() {
         public void write(FriendlyByteBuf buffer, SkinType value) {
@@ -172,7 +181,6 @@ public class CustomDataSerializers {
           return value;
         }
       };
-
   public static final EntityDataSerializer<HashSet<String>> STRING_HASH_SET =
       new EntityDataSerializer<HashSet<String>>() {
         public void write(FriendlyByteBuf buffer, HashSet<String> value) {
@@ -193,7 +201,6 @@ public class CustomDataSerializers {
           return value;
         }
       };
-
   public static final EntityDataSerializer<HashSet<UUID>> UUID_HASH_SET =
       new EntityDataSerializer<HashSet<UUID>>() {
         public void write(FriendlyByteBuf buffer, HashSet<UUID> value) {
@@ -222,10 +229,13 @@ public class CustomDataSerializers {
     EntityDataSerializers.registerSerializer(MODEL_POSE);
     EntityDataSerializers.registerSerializer(OBJECTIVE_DATA_SET);
     EntityDataSerializers.registerSerializer(POSITION);
+    EntityDataSerializers.registerSerializer(SCALE);
     EntityDataSerializers.registerSerializer(PROFESSION);
     EntityDataSerializers.registerSerializer(SKIN_TYPE);
     EntityDataSerializers.registerSerializer(STRING_HASH_SET);
     EntityDataSerializers.registerSerializer(TRADING_TYPE);
     EntityDataSerializers.registerSerializer(UUID_HASH_SET);
   }
+
+  protected CustomDataSerializers() {}
 }

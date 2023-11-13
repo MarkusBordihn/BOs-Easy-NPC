@@ -56,19 +56,18 @@ public class TradingConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 64,
                 "disable_trading",
-                onPress -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_TRADING);
-                }));
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_TRADING)));
     this.basicTradesButton =
         this.addRenderableWidget(
             new TextButton(
                 this.buttonLeftPos + this.noneTradesButton.getWidth(),
                 this.buttonTopPos,
                 64,
-                "basic_trading",
-                onPress -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_TRADING);
-                }));
+                "basic",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.BASIC_TRADING)));
     this.advancedTradesButton =
         this.addRenderableWidget(
             new TextButton(
@@ -77,10 +76,10 @@ public class TradingConfigurationScreen<T extends ConfigurationMenu>
                     + this.basicTradesButton.getWidth(),
                 this.buttonTopPos,
                 70,
-                "advanced_trading",
-                onPress -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.ADVANCED_TRADING);
-                }));
+                "advanced",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.ADVANCED_TRADING)));
     this.customTradesButton =
         this.addRenderableWidget(
             new TextButton(
@@ -90,10 +89,10 @@ public class TradingConfigurationScreen<T extends ConfigurationMenu>
                     + this.advancedTradesButton.getWidth(),
                 this.buttonTopPos,
                 100,
-                "custom_trading",
-                onPress -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_TRADING);
-                }));
+                "custom",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.CUSTOM_TRADING)));
 
     // Default button stats
     this.noneTradesButton.active =

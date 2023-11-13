@@ -68,10 +68,9 @@ public class ActionConfigurationScreen<T extends ActionConfigurationMenu>
                 this.buttonLeftPos,
                 this.buttonTopPos,
                 80,
-                "basic_actions",
-                onPress -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_ACTION);
-                }));
+                "basic",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_ACTION)));
     this.dialogActionButton =
         this.addRenderableWidget(
             new TextButton(
@@ -79,9 +78,9 @@ public class ActionConfigurationScreen<T extends ActionConfigurationMenu>
                 this.buttonTopPos,
                 80,
                 "dialog_actions",
-                onPress -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DIALOG_ACTION);
-                }));
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.DIALOG_ACTION)));
     this.distanceActionButton =
         this.addRenderableWidget(
             new TextButton(
@@ -89,9 +88,9 @@ public class ActionConfigurationScreen<T extends ActionConfigurationMenu>
                 this.buttonTopPos,
                 80,
                 "distance_actions",
-                onPress -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DISTANCE_ACTION);
-                }));
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.DISTANCE_ACTION)));
 
     // Default button stats
     this.basicActionButton.active =

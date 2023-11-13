@@ -68,7 +68,7 @@ public class DialogConfigurationScreen<T extends DialogConfigurationMenu>
                 this.buttonLeftPos + this.noneDialogButton.getWidth(),
                 this.buttonTopPos,
                 70,
-                "basic_dialog",
+                "basic",
                 onPress ->
                     NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_DIALOG)));
     this.yesNoDialogButton =
@@ -92,7 +92,7 @@ public class DialogConfigurationScreen<T extends DialogConfigurationMenu>
                     + this.yesNoDialogButton.getWidth(),
                 this.buttonTopPos,
                 70,
-                "advanced_dialog",
+                "advanced",
                 onPress ->
                     NetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.ADVANCED_DIALOG)));

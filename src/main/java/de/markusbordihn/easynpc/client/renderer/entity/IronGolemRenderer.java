@@ -20,8 +20,10 @@
 package de.markusbordihn.easynpc.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.CustomIronGolemModel;
 import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.VariantOverLayer;
 import de.markusbordihn.easynpc.entity.npc.IronGolem;
 import de.markusbordihn.easynpc.entity.npc.IronGolem.Variant;
 import java.util.EnumMap;
@@ -52,6 +54,22 @@ public class IronGolemRenderer extends MobRenderer<IronGolem, CustomIronGolemMod
                 new ResourceLocation("textures/entity/iron_golem/iron_golem.png"));
             map.put(
                 Variant.IRON_GOLEM_CRACKINESS_HIGH,
+                new ResourceLocation("textures/entity/iron_golem/iron_golem.png"));
+            map.put(
+                Variant.IRON_GOLEM_CRACKINESS_MEDIUM,
+                new ResourceLocation("textures/entity/iron_golem/iron_golem.png"));
+            map.put(
+                Variant.IRON_GOLEM_CRACKINESS_LOW,
+                new ResourceLocation("textures/entity/iron_golem/iron_golem.png"));
+          });
+
+  // Variant Base Textures
+  protected static final Map<Variant, ResourceLocation> TEXTURE_OVERLAY_BY_VARIANT =
+      Util.make(
+          new EnumMap<>(Variant.class),
+          map -> {
+            map.put(
+                Variant.IRON_GOLEM_CRACKINESS_HIGH,
                 new ResourceLocation("textures/entity/iron_golem/iron_golem_crackiness_high.png"));
             map.put(
                 Variant.IRON_GOLEM_CRACKINESS_MEDIUM,
@@ -66,12 +84,18 @@ public class IronGolemRenderer extends MobRenderer<IronGolem, CustomIronGolemMod
 
   public IronGolemRenderer(EntityRendererProvider.Context context) {
     super(context, new CustomIronGolemModel<>(context.bakeLayer(ModelLayers.IRON_GOLEM)), 0.5F);
+    this.addLayer(new VariantOverLayer<>(this, context.getModelSet()));
     this.addLayer(new ItemInHandLayer<>(this));
   }
 
   @Override
   public ResourceLocation getTextureByVariant(Enum<?> variant) {
     return TEXTURE_BY_VARIANT.getOrDefault(variant, DEFAULT_TEXTURE);
+  }
+
+  @Override
+  public ResourceLocation getTextureOverlayByVariant(Enum<?> variant) {
+    return TEXTURE_OVERLAY_BY_VARIANT.getOrDefault(variant, Constants.BLANK_ENTITY_TEXTURE);
   }
 
   @Override
@@ -97,7 +121,6 @@ public class IronGolemRenderer extends MobRenderer<IronGolem, CustomIronGolemMod
       PoseStack poseStack,
       net.minecraft.client.renderer.MultiBufferSource buffer,
       int light) {
-    CustomIronGolemModel<IronGolem> playerModel = this.getModel();
 
     // Model Rotation
     this.rotateEntity(entity, poseStack);

@@ -54,11 +54,10 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonLeftPos,
                 this.buttonTopPos,
                 buttonWidth + 16,
-                "custom_preset",
-                button -> {
-                  NetworkMessageHandler.openConfiguration(
-                      uuid, ConfigurationType.CUSTOM_PRESET_EXPORT);
-                }));
+                "custom",
+                button ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.CUSTOM_PRESET_EXPORT)));
     this.customExportPresetButton.active = false;
     this.worldExportPresetButton =
         this.addRenderableWidget(
@@ -67,10 +66,9 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonTopPos,
                 buttonWidth,
                 "world_preset",
-                button -> {
-                  NetworkMessageHandler.openConfiguration(
-                      uuid, ConfigurationType.WORLD_PRESET_EXPORT);
-                }));
+                button ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.WORLD_PRESET_EXPORT)));
     this.worldExportPresetButton.active = false;
 
     // Default button stats

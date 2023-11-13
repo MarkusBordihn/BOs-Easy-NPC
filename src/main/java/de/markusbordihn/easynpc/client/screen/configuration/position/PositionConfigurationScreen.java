@@ -53,10 +53,10 @@ public class PositionConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonLeftPos,
                 this.buttonTopPos,
                 positionButtonWidth,
-                "default_position",
-                button -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_POSITION);
-                }));
+                "default",
+                button ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.DEFAULT_POSITION)));
 
     // Default button stats
     this.defaultPositionButton.active =

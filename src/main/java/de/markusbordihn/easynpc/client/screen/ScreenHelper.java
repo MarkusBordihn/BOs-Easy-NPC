@@ -39,6 +39,8 @@ import net.minecraft.world.entity.Pose;
 
 public class ScreenHelper {
 
+  protected ScreenHelper() {}
+
   public static void renderEntity(
       int x, int y, int scale, float yRot, float xRot, EasyNPCEntity entity) {
     // Prepare Renderer
@@ -213,7 +215,7 @@ public class ScreenHelper {
     renderScaledEntityAvatar(
         x + entity.getEntityGuiLeft(),
         y + entity.getEntityGuiTop(),
-        entity.getEntityGuiScaling(),
+        entity.getEntitySkinScaling(),
         yRot,
         xRot,
         entity);
@@ -247,7 +249,7 @@ public class ScreenHelper {
     renderScaledEntityAvatar(
         x + entity.getEntityGuiLeft(),
         y + entity.getEntityGuiTop(),
-        entity.getEntityGuiScaling(),
+        entity.getEntitySkinScaling(),
         yRot,
         xRot,
         entity);

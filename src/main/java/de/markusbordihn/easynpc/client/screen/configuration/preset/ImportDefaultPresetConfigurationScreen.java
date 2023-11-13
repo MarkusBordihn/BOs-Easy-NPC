@@ -207,10 +207,7 @@ public class ImportDefaultPresetConfigurationScreen
       Minecraft.getInstance()
           .getResourceManager()
           .listResources(
-              "preset",
-              resourceLocation -> {
-                return resourceLocation.endsWith(Constants.NPC_NBT_SUFFIX);
-              })
+              "preset", resourceLocation -> resourceLocation.endsWith(Constants.NPC_NBT_SUFFIX))
           .forEach(
               resourceLocation -> {
                 if (!resourceLocation
@@ -258,7 +255,7 @@ public class ImportDefaultPresetConfigurationScreen
           new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "no_presets_found"),
           ImportDefaultPresetConfigurationScreen.this.contentLeftPos + 80f,
           ImportDefaultPresetConfigurationScreen.this.topPos + 105f,
-          16777215);
+          Constants.FONT_COLOR_WHITE);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -317,7 +314,7 @@ public class ImportDefaultPresetConfigurationScreen
             this.skinModel,
             ImportDefaultPresetConfigurationScreen.this.contentLeftPos + 3,
             fileListTop,
-            16777215);
+            Constants.FONT_COLOR_WHITE);
 
         // Display file name.
         ImportDefaultPresetConfigurationScreen.this.font.drawShadow(
@@ -326,7 +323,7 @@ public class ImportDefaultPresetConfigurationScreen
             ImportFileSelectionList.this.width / 2f
                 - ImportDefaultPresetConfigurationScreen.this.font.width(this.fileName) / 2f,
             y + 1f,
-            16777215,
+            Constants.FONT_COLOR_WHITE,
             true);
       }
 

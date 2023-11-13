@@ -56,9 +56,9 @@ public class ObjectiveConfigurationScreen<T extends ObjectiveConfigurationMenu>
                 this.buttonLeftPos,
                 this.buttonTopPos,
                 80,
-                "basic_objective",
-                onPress -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_OBJECTIVE);
-                }));
+                "basic",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.BASIC_OBJECTIVE)));
   }
 }

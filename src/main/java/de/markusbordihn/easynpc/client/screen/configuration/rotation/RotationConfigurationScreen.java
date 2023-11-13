@@ -53,10 +53,10 @@ public class RotationConfigurationScreen<T extends ConfigurationMenu>
                 this.buttonLeftPos,
                 this.buttonTopPos,
                 rotationButtonWidth,
-                "default_rotation",
-                button -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_ROTATION);
-                }));
+                "default",
+                button ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.DEFAULT_ROTATION)));
 
     // Default button stats
     this.defaultRotationButton.active = false;

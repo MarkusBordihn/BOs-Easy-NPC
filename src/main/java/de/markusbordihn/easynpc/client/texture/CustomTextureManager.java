@@ -38,7 +38,10 @@ public class CustomTextureManager {
 
   private static final String LOG_PREFIX = "[Custom Texture Manager]";
 
-  private static final HashMap<TextureModelKey, ResourceLocation> customTextureCache = new HashMap<>();
+  private static final HashMap<TextureModelKey, ResourceLocation> customTextureCache =
+      new HashMap<>();
+
+  protected CustomTextureManager() {}
 
   public static Set<UUID> getCustomTextureCacheKeys(SkinModel skinModel) {
     HashSet<UUID> hashSet = new HashSet<>();

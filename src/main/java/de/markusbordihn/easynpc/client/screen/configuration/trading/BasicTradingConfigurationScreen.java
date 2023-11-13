@@ -192,7 +192,7 @@ public class BasicTradingConfigurationScreen
     Text.drawConfigString(
         poseStack,
         this.font,
-        "trading.mins_for_trade_reset",
+        "trading.minutes_for_trade_reset",
         this.contentLeftPos + 202,
         this.contentTopPos + 127,
         0x404040);

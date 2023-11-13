@@ -151,10 +151,9 @@ public class EasyNPCEntityData extends AgeableMob
     if (merchantOffers != null && !merchantOffers.isEmpty()) {
       // Filter out offers which are missing item a, item b or result item.
       merchantOffers.removeIf(
-          merchantOffer -> {
-            return (merchantOffer.getBaseCostA().isEmpty() && merchantOffer.getCostB().isEmpty())
-                || merchantOffer.getResult().isEmpty();
-          });
+          merchantOffer ->
+              (merchantOffer.getBaseCostA().isEmpty() && merchantOffer.getCostB().isEmpty())
+                  || merchantOffer.getResult().isEmpty());
       this.offers = merchantOffers;
     }
     updateTrades();
@@ -263,7 +262,7 @@ public class EasyNPCEntityData extends AgeableMob
 
     // If preset contains id and pos then we can import it directly, otherwise we
     // need to merge it with existing data.
-    if (!compoundTag.contains("UUID") && !compoundTag.contains("pos")) {
+    if (!compoundTag.contains("UUID") && !compoundTag.contains("Pos")) {
       CompoundTag existingCompoundTag = this.serializeNBT();
 
       // Remove existing dialog data to allow legacy presets to be imported.
@@ -475,34 +474,32 @@ public class EasyNPCEntityData extends AgeableMob
     return null;
   }
 
-  @SuppressWarnings("java:S3400")
   public int getEntityGuiScaling() {
     return 45;
   }
 
-  @SuppressWarnings("java:S3400")
   public int getEntityGuiTop() {
     return 0;
   }
 
-  @SuppressWarnings("java:S3400")
   public int getEntityGuiLeft() {
     return 0;
   }
 
-  @SuppressWarnings("java:S3400")
   public int getEntityDialogTop() {
     return 0;
   }
 
-  @SuppressWarnings("java:S3400")
   public int getEntityDialogLeft() {
     return 0;
   }
 
-  @SuppressWarnings("java:S3400")
   public int getEntityDialogScaling() {
     return 50;
+  }
+
+  public int getEntitySkinScaling() {
+    return 30;
   }
 
   // Default Variants

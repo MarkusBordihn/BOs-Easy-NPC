@@ -24,6 +24,7 @@ import com.mojang.math.Vector3f;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
+import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import net.minecraft.core.Rotations;
 import net.minecraft.resources.ResourceLocation;
@@ -37,6 +38,10 @@ public interface EasyNPCRenderer {
   ResourceLocation getTextureByVariant(Enum<?> variant);
 
   ResourceLocation getDefaultTexture();
+
+  default ResourceLocation getTextureOverlayByVariant(Enum<?> variant) {
+    return Constants.BLANK_ENTITY_TEXTURE;
+  }
 
   default ResourceLocation getCustomTexture(EasyNPCEntity entity) {
     return CustomTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
@@ -52,6 +57,14 @@ public interface EasyNPCRenderer {
       case SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> getPlayerTexture(entity);
       default -> getTextureByVariant(entity.getVariant());
     };
+  }
+
+  default ResourceLocation getEntityOverlayTexture(EasyNPCEntity entity) {
+    if (entity.getSkinType() == SkinType.DEFAULT) {
+      return getTextureOverlayByVariant(entity.getVariant());
+    } else {
+      return Constants.BLANK_ENTITY_TEXTURE;
+    }
   }
 
   default ResourceLocation getEntityPlayerTexture(EasyNPCEntity entity) {
