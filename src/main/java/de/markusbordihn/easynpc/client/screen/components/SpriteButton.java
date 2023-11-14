@@ -33,6 +33,7 @@ import net.minecraft.util.Mth;
 public class SpriteButton extends CustomButton {
 
   public static final int DEFAULT_HEIGHT = 16;
+  public static final ResourceLocation DEFAULT_SPRITE = Constants.TEXTURE_CONFIGURATION;
 
   private final ResourceLocation sprite;
   private final int spriteX;
@@ -51,6 +52,32 @@ public class SpriteButton extends CustomButton {
       int spriteOffsetY,
       OnPress onPress) {
     this(left, top, width, sprite, 0, 0, spriteOffsetX, spriteOffsetY, 16, 16, onPress);
+  }
+
+  public SpriteButton(
+      int left,
+      int top,
+      int width,
+      int spriteX,
+      int spriteY,
+      int spriteOffsetX,
+      int spriteOffsetY,
+      int spriteWidth,
+      int spriteHeight,
+      OnPress onPress) {
+    this(
+        left,
+        top,
+        width,
+        DEFAULT_HEIGHT,
+        DEFAULT_SPRITE,
+        spriteX,
+        spriteY,
+        spriteOffsetX,
+        spriteOffsetY,
+        spriteWidth,
+        spriteHeight,
+        onPress);
   }
 
   public SpriteButton(
@@ -114,6 +141,34 @@ public class SpriteButton extends CustomButton {
       int top,
       int width,
       int height,
+      int spriteX,
+      int spriteY,
+      int spriteOffsetX,
+      int spriteOffsetY,
+      int spriteWidth,
+      int spriteHeight,
+      OnPress onPress) {
+    this(
+        left,
+        top,
+        width,
+        height,
+        new TextComponent(""),
+        DEFAULT_SPRITE,
+        spriteX,
+        spriteY,
+        spriteOffsetX,
+        spriteOffsetY,
+        spriteWidth,
+        spriteHeight,
+        onPress);
+  }
+
+  public SpriteButton(
+      int left,
+      int top,
+      int width,
+      int height,
       ResourceLocation sprite,
       int spriteOffsetX,
       int spriteOffsetY,
@@ -129,6 +184,37 @@ public class SpriteButton extends CustomButton {
         sprite,
         0,
         0,
+        spriteOffsetX,
+        spriteOffsetY,
+        spriteWidth,
+        spriteHeight,
+        onPress);
+  }
+
+  public SpriteButton(
+      int left,
+      int top,
+      int width,
+      int height,
+      String label,
+      int spriteX,
+      int spriteY,
+      int spriteOffsetX,
+      int spriteOffsetY,
+      int spriteWidth,
+      int spriteHeight,
+      OnPress onPress) {
+    this(
+        left,
+        top,
+        width,
+        height,
+        label != null && !label.isBlank() && Character.isLowerCase(label.codePointAt(0))
+            ? new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + label)
+            : new TextComponent(label != null ? label : ""),
+        DEFAULT_SPRITE,
+        spriteX,
+        spriteY,
         spriteOffsetX,
         spriteOffsetY,
         spriteWidth,

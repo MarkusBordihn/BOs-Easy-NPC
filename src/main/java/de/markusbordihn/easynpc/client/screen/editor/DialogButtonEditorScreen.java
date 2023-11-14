@@ -25,14 +25,20 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.CancelButton;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.DeleteButton;
+import de.markusbordihn.easynpc.client.screen.components.DialogButton;
+import de.markusbordihn.easynpc.client.screen.components.DialogButtonButton;
 import de.markusbordihn.easynpc.client.screen.components.SaveButton;
+import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
+import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.data.action.ActionData;
 import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
+import de.markusbordihn.easynpc.data.dialog.DialogData;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
+import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.editor.DialogButtonEditorMenu;
@@ -68,6 +74,7 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
 
   // Data access
   protected final DialogDataSet dialogDataSet;
+  protected final DialogData dialogData;
   protected final DialogButtonData dialogButtonData;
   protected final EasyNPCEntity entity;
   protected final UUID dialogId;
@@ -75,14 +82,20 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
   protected final UUID uuid;
   protected final ConfigurationType formerConfigurationType;
 
+  // Navigation
+  protected Button homeButton;
+  protected Button dialogButton;
+  protected Button dialogButtonButton;
+
   // Buttons
-  protected Button closeButton = null;
-  protected Button saveButton = null;
-  protected Button cancelButton = null;
-  protected Button deleteButton = null;
+  protected Button closeButton;
+  protected Button saveButton;
+  protected Button cancelButton;
+  protected Button deleteButton;
 
   // Edit Boxes
   protected TextField buttonNameBox;
+  protected Button buttonNameToLabelButton;
   protected TextField buttonLabelBox;
   protected Checkbox buttonLabelCheckbox;
 
@@ -118,6 +131,7 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
     this.uuid = menu.getUUID();
     this.entity = menu.getEntity();
     this.dialogDataSet = menu.getDialogDataSet();
+    this.dialogData = this.dialogDataSet.getDialog(menu.getDialogId());
     this.dialogButtonData = menu.getDialogButtonData();
     this.dialogId = menu.getDialogId();
     this.dialogButtonId = menu.getDialogButtonId();
@@ -129,7 +143,20 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
     this.clientLevel = this.minecraftInstance.level;
   }
 
-  public void closeScreen() {
+  private void openPreviousScreen() {
+    // Return back to the simple yes and no dialog editor or the full dialog editor.
+    if (this.formerConfigurationType == ConfigurationType.ADVANCED_DIALOG) {
+      NetworkMessageHandler.openDialogEditor(uuid, this.dialogId, this.formerConfigurationType);
+    } else if (this.formerConfigurationType != null) {
+      NetworkMessageHandler.openConfiguration(uuid, this.formerConfigurationType);
+    } else if (dialogDataSet.getType() == DialogType.YES_NO) {
+      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.YES_NO_DIALOG);
+    } else {
+      this.closeScreen();
+    }
+  }
+
+  private void closeScreen() {
     if (this.minecraftInstance != null) {
       this.minecraftInstance.setScreen(null);
     }
@@ -145,18 +172,7 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
             confirmed -> {
               if (confirmed && uuid != null) {
                 NetworkMessageHandler.removeDialogButton(uuid, dialogId, dialogButtonId);
-
-                // Return back to the simple yes and no dialog editor or the full dialog editor.
-                if (this.formerConfigurationType == ConfigurationType.ADVANCED_DIALOG) {
-                  NetworkMessageHandler.openDialogEditor(
-                      uuid, this.dialogId, this.formerConfigurationType);
-                } else if (this.formerConfigurationType != null) {
-                  NetworkMessageHandler.openConfiguration(uuid, this.formerConfigurationType);
-                } else if (dialogDataSet.getType() == DialogType.YES_NO) {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.YES_NO_DIALOG);
-                } else {
-                  this.closeScreen();
-                }
+                this.openPreviousScreen();
               } else {
                 minecraft.setScreen(this);
               }
@@ -175,14 +191,14 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
         poseStack, this.font, "button.name", leftPos + 12, this.buttonNameBox.y + 4);
 
     Text.drawConfigString(
-        poseStack, this.font, "button.label", leftPos + 12, this.buttonLabelBox.y + 4);
+        poseStack, this.font, "label_id", leftPos + 12, this.buttonLabelBox.y + 4);
 
     Text.drawConfigString(
         poseStack,
         this.font,
         "dialog_actions_on_click",
         leftPos + 12,
-        this.openNamedDialogBox.y - 18,
+        this.openNamedDialogBox.y - 16,
         Constants.FONT_COLOR_BLACK);
 
     Text.drawConfigString(
@@ -227,16 +243,69 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
                 Constants.TEXTURE_CONFIGURATION,
                 onPress -> closeScreen()));
 
+    // Home Button
+    this.homeButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.leftPos + 7,
+                this.topPos + 7,
+                10,
+                18,
+                "<",
+                onPress -> this.openPreviousScreen()));
+
+    // Dialog Button
+    this.dialogButton =
+        this.addRenderableWidget(
+            new DialogButton(
+                this.homeButton.x + this.homeButton.getWidth(),
+                this.topPos + 7,
+                140,
+                this.dialogData.getName(21),
+                onPress -> this.openPreviousScreen()));
+
+    // Dialog Button Button
+    this.dialogButtonButton =
+        this.addRenderableWidget(
+            new DialogButtonButton(
+                this.dialogButton.x + this.dialogButton.getWidth(),
+                this.topPos + 7,
+                140,
+                this.dialogButtonData.getName(21),
+                onPress -> {}));
+    this.dialogButtonButton.active = false;
+
     // Button Name
     this.buttonNameValue = this.dialogButtonData.getName();
-    this.buttonNameBox = new TextField(this.font, this.leftPos + 100, this.topPos + 20, 150);
+    this.buttonNameBox = new TextField(this.font, this.leftPos + 100, this.topPos + 30, 150);
     this.buttonNameBox.setMaxLength(64);
     this.buttonNameBox.setValue(this.buttonNameValue);
     this.addRenderableWidget(this.buttonNameBox);
 
+    // Convert Button Name to Button Label
+    this.buttonNameToLabelButton =
+        this.addRenderableWidget(
+            new SpriteButton(
+                this.buttonNameBox.x + this.buttonNameBox.getWidth() + 1,
+                this.buttonNameBox.y - 1,
+                18,
+                18,
+                4,
+                4,
+                80,
+                80,
+                12,
+                12,
+                onPress -> {
+                  if (this.buttonNameBox != null && this.buttonLabelBox != null) {
+                    String buttonName = this.buttonNameBox.getValue();
+                    this.buttonLabelBox.setValue(DialogUtils.generateButtonLabel(buttonName));
+                  }
+                }));
+
     // Button Label
     this.buttonLabelValue = this.dialogButtonData.getLabel();
-    this.buttonLabelBox = new TextField(this.font, this.leftPos + 100, this.topPos + 40, 100);
+    this.buttonLabelBox = new TextField(this.font, this.leftPos + 100, this.topPos + 50, 100);
     this.buttonLabelBox.setMaxLength(DialogButtonData.MAX_BUTTON_LABEL_LENGTH);
     this.buttonLabelBox.setValue(this.buttonLabelValue);
     this.buttonLabelBox.setEditable(false);
@@ -255,7 +324,7 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
     // Open Named Dialog
     this.openNamedDialogValue =
         openNamedDialogAction != null ? openNamedDialogAction.getCommand() : "";
-    this.openNamedDialogBox = new TextField(this.font, this.leftPos + 100, this.topPos + 85, 100);
+    this.openNamedDialogBox = new TextField(this.font, this.leftPos + 100, this.topPos + 90, 100);
     this.openNamedDialogBox.setMaxLength(32);
     this.openNamedDialogBox.setValue(this.openNamedDialogValue);
     this.openNamedDialogBox.setEditable(
@@ -346,16 +415,7 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
                       uuid, this.dialogId, this.dialogButtonId, this.dialogButtonData);
 
                   // Return back to the simple yes and no dialog editor or the full dialog editor.
-                  if (this.formerConfigurationType == ConfigurationType.ADVANCED_DIALOG) {
-                    NetworkMessageHandler.openDialogEditor(
-                        uuid, this.dialogId, this.formerConfigurationType);
-                  } else if (this.formerConfigurationType != null) {
-                    NetworkMessageHandler.openConfiguration(uuid, this.formerConfigurationType);
-                  } else if (dialogDataSet.getType() == DialogType.YES_NO) {
-                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.YES_NO_DIALOG);
-                  } else {
-                    this.closeScreen();
-                  }
+                  this.openPreviousScreen();
                 }));
 
     // Delete Button
@@ -376,20 +436,7 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
                 this.bottomPos - 35,
                 85,
                 "cancel",
-                onPress -> {
-
-                  // Return back to the simple yes and no dialog editor or the full dialog editor.
-                  if (this.formerConfigurationType == ConfigurationType.ADVANCED_DIALOG) {
-                    NetworkMessageHandler.openDialogEditor(
-                        uuid, this.dialogId, this.formerConfigurationType);
-                  } else if (this.formerConfigurationType != null) {
-                    NetworkMessageHandler.openConfiguration(uuid, this.formerConfigurationType);
-                  } else if (dialogDataSet.getType() == DialogType.YES_NO) {
-                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.YES_NO_DIALOG);
-                  } else {
-                    this.closeScreen();
-                  }
-                }));
+                onPress -> this.openPreviousScreen()));
   }
 
   @Override
@@ -407,6 +454,10 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
                   != this.commandDialogExecuteAsUserValue
               || this.commandDialogDebugCheckbox.selected() != this.commandDialogDebugValue;
     }
+
+    if (this.buttonLabelCheckbox != null && this.buttonNameToLabelButton != null) {
+      this.buttonNameToLabelButton.active = !this.buttonLabelCheckbox.selected();
+    }
   }
 
   @Override
@@ -416,12 +467,19 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
     this.renderEditLabels(poseStack);
     this.xMouse = x;
     this.yMouse = y;
+
+    // Render Tooltips
+    if (this.buttonNameToLabelButton.isMouseOver(x, y)) {
+      this.renderTooltip(
+          poseStack,
+          new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "name_to_label.tooltip"),
+          x,
+          y);
+    }
   }
 
   @Override
-  protected void renderLabels(PoseStack poseStack, int x, int y) {
-    Text.drawString(poseStack, this.font, this.title, this.titleLabelX, this.titleLabelY);
-  }
+  protected void renderLabels(PoseStack poseStack, int x, int y) {}
 
   @Override
   protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {

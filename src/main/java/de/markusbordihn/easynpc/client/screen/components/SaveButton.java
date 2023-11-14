@@ -21,51 +21,27 @@ package de.markusbordihn.easynpc.client.screen.components;
 
 import de.markusbordihn.easynpc.Constants;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class SaveButton extends SpriteButton {
 
   public static final int DEFAULT_WIDTH = 100;
+  public static final int DEFAULT_HEIGHT = 18;
+  public static final ResourceLocation SPRITE = Constants.TEXTURE_CONFIGURATION;
 
   public SaveButton(int left, int top, OnPress onPress) {
     super(left, top, 20, 18, Constants.TEXTURE_CONFIGURATION, 4, 3, 64, 4, 13, 13, onPress);
   }
 
   public SaveButton(int left, int top, String label, OnPress onPress) {
-    super(
-        left,
-        top,
-        DEFAULT_WIDTH,
-        18,
-        label,
-        Constants.TEXTURE_CONFIGURATION,
-        4,
-        3,
-        64,
-        4,
-        13,
-        13,
-        onPress);
+    super(left, top, DEFAULT_WIDTH, DEFAULT_HEIGHT, label, SPRITE, 4, 3, 64, 4, 13, 13, onPress);
   }
 
   public SaveButton(int left, int top, int width, String label, OnPress onPress) {
-    super(
-        left, top, width, 18, label, Constants.TEXTURE_CONFIGURATION, 4, 3, 64, 4, 13, 13, onPress);
+    super(left, top, width, DEFAULT_HEIGHT, label, SPRITE, 4, 3, 64, 4, 13, 13, onPress);
   }
 
   public SaveButton(int left, int top, int width, Component component, OnPress onPress) {
-    super(
-        left,
-        top,
-        width,
-        18,
-        component,
-        Constants.TEXTURE_CONFIGURATION,
-        4,
-        3,
-        64,
-        4,
-        13,
-        13,
-        onPress);
+    super(left, top, width, DEFAULT_HEIGHT, component, SPRITE, 4, 3, 64, 4, 13, 13, onPress);
   }
 }

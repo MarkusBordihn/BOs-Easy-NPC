@@ -59,6 +59,18 @@ public class TextButton extends Button {
         onPress);
   }
 
+  public TextButton(int left, int top, int width, int height, String label, OnPress onPress) {
+    this(
+        left,
+        top,
+        width,
+        height,
+        label != null && !label.isBlank() && Character.isLowerCase(label.codePointAt(0))
+            ? new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + label)
+            : new TextComponent(label != null ? label : ""),
+        onPress);
+  }
+
   public TextButton(int left, int top, int width, Component label, OnPress onPress) {
     this(left, top, width, DEFAULT_HEIGHT, label, onPress);
   }

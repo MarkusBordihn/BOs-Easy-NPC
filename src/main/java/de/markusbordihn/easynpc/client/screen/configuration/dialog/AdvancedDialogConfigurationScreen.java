@@ -132,8 +132,8 @@ public class AdvancedDialogConfigurationScreen
 
     // Dialog Data Set header
     int headerLeft = this.leftPos + 10;
-    Text.drawString(
-        poseStack, this.font, "Label", headerLeft, this.topPos + 45, Constants.FONT_COLOR_BLACK);
+    Text.drawConfigString(
+        poseStack, this.font, "label_id", headerLeft, this.topPos + 45, Constants.FONT_COLOR_BLACK);
     Text.drawString(
         poseStack,
         this.font,
