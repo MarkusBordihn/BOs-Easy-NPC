@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,24 +19,21 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.dialog;
 
-import java.util.Collections;
-import java.util.List;
-
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.components.Checkbox;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.world.entity.player.Inventory;
-
 import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.client.screen.components.Text;
+import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import java.util.Collections;
+import java.util.List;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class NoneDialogConfigurationScreen
@@ -44,21 +41,15 @@ public class NoneDialogConfigurationScreen
 
   // Buttons
   protected Checkbox noneDialogCheckbox;
-
+  protected int numberOfTextLines = 1;
   // Text
   private List<FormattedCharSequence> textComponents = Collections.emptyList();
-  protected int numberOfTextLines = 1;
-
   // Cache
-  private static DialogType formerDialogType = DialogType.BASIC;
+  private DialogDataSet formerDialogDataSet;
 
-  public NoneDialogConfigurationScreen(NoneDialogConfigurationMenu menu, Inventory inventory,
-      Component component) {
+  public NoneDialogConfigurationScreen(
+      NoneDialogConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
-  }
-
-  public static void setFormerDialogType(DialogType dialogType) {
-    formerDialogType = dialogType;
   }
 
   @Override
@@ -68,32 +59,36 @@ public class NoneDialogConfigurationScreen
     // Default button stats
     this.noneDialogButton.active = false;
 
-    // Cache former dialog Type
-    setFormerDialogType(this.entity.getDialogType());
+    // Former dialog type
+    this.formerDialogDataSet = this.dialogDataSet;
 
     // None Dialog Checkbox
     this.noneDialogCheckbox =
-        this.addRenderableWidget(new Checkbox(this.contentLeftPos + 100, this.topPos + 170, 20, 20,
-            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "disable_dialog_checkbox")
-                .withStyle(ChatFormatting.WHITE),
-            entity.getDialogType() == DialogType.NONE) {
-          @Override
-          public void onPress() {
-            super.onPress();
-            if (this.selected()) {
-              NetworkMessageHandler.changeDialogType(uuid, DialogType.NONE);
-            } else {
-              NetworkMessageHandler.changeDialogType(uuid,
-                  formerDialogType != null && formerDialogType != DialogType.NONE ? formerDialogType
-                      : DialogType.BASIC);
-            }
-          }
-        });
+        this.addRenderableWidget(
+            new Checkbox(
+                this.contentLeftPos + 100,
+                this.topPos + 170,
+                "disable_dialog_checkbox",
+                !dialogDataSet.hasDialog(),
+                checkbox -> {
+                  if (checkbox.selected()) {
+                    DialogDataSet dialogDataSet = new DialogDataSet(DialogType.NONE);
+                    NetworkMessageHandler.saveDialog(uuid, dialogDataSet);
+                  } else {
+                    if (formerDialogDataSet != null) {
+                      NetworkMessageHandler.saveDialog(uuid, formerDialogDataSet);
+                    } else {
+                      DialogDataSet dialogDataSet = new DialogDataSet(DialogType.BASIC);
+                      NetworkMessageHandler.saveDialog(uuid, dialogDataSet);
+                    }
+                  }
+                }));
 
     // Pre-format text
-    this.textComponents = this.font.split(
-        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "disable_dialog_text"),
-        this.imageWidth - 20);
+    this.textComponents =
+        this.font.split(
+            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "disable_dialog_text"),
+            this.imageWidth - 20);
     this.numberOfTextLines = this.textComponents.size();
   }
 
@@ -104,8 +99,12 @@ public class NoneDialogConfigurationScreen
     if (!this.textComponents.isEmpty()) {
       for (int line = 0; line < this.numberOfTextLines; ++line) {
         FormattedCharSequence formattedCharSequence = this.textComponents.get(line);
-        this.font.draw(poseStack, formattedCharSequence, leftPos + 15f,
-            topPos + 60f + (line * (font.lineHeight + 2)), Constants.FONT_COLOR_DEFAULT);
+        Text.drawString(
+            poseStack,
+            this.font,
+            formattedCharSequence,
+            leftPos + 15,
+            topPos + 60 + (line * (font.lineHeight + 2)));
       }
     }
   }

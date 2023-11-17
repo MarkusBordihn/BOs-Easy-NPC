@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,10 +19,10 @@
 
 package de.markusbordihn.easynpc.entity.data;
 
+import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
 import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nullable;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -31,20 +31,18 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
-
 public interface EntityOwnerData extends EntityDataInterface {
 
   // Synced entity data
-  public static final EntityDataAccessor<Optional<UUID>> DATA_OWNER_UUID_ID =
+  EntityDataAccessor<Optional<UUID>> DATA_OWNER_UUID_ID =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.OPTIONAL_UUID);
 
   // CompoundTags
-  public static final String DATA_OWNER_TAG = "Owner";
+  String DATA_OWNER_TAG = "Owner";
 
   @Nullable
   default UUID getOwnerUUID() {
-    return getEntityData(DATA_OWNER_UUID_ID).orElse((UUID) null);
+    return getEntityData(DATA_OWNER_UUID_ID).orElse(null);
   }
 
   default void setOwnerUUID(@Nullable UUID uuid) {

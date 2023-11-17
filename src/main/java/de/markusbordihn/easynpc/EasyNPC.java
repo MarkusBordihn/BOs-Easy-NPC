@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,15 +19,6 @@
 
 package de.markusbordihn.easynpc;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-
 import de.markusbordihn.easynpc.client.model.ModModelLayers;
 import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
 import de.markusbordihn.easynpc.client.screen.ClientScreens;
@@ -38,8 +29,14 @@ import de.markusbordihn.easynpc.entity.npc.ModEntityType;
 import de.markusbordihn.easynpc.item.ModItems;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.network.NetworkHandler;
-import de.markusbordihn.easynpc.tabs.EasyNPCTab;
 import de.markusbordihn.easynpc.utils.StopModReposts;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Mod(Constants.MOD_ID)
 public class EasyNPC {
@@ -53,7 +50,7 @@ public class EasyNPC {
 
     modEventBus.addListener(NetworkHandler::registerNetworkHandler);
 
-    log.info("{} Entity Types ...", Constants.LOG_REGISTER_PREFIX);
+    log.info("{} Entities Types ...", Constants.LOG_REGISTER_PREFIX);
     ModEntityType.ENTITY_TYPES.register(modEventBus);
 
     log.info("{} Items ...", Constants.LOG_REGISTER_PREFIX);
@@ -64,14 +61,16 @@ public class EasyNPC {
 
     CustomDataHandler.prepare();
 
-    DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-      log.info("{} Client events ...", Constants.LOG_REGISTER_PREFIX);
-      modEventBus.addListener(ModModelLayers::registerEntityLayerDefinitions);
-      modEventBus.addListener(ClientRenderer::registerEntityRenderers);
-      modEventBus.addListener(ClientScreens::registerScreens);
-      modEventBus.addListener(CustomPresetData::registerCustomPresetData);
-      modEventBus.addListener(CustomSkinData::registerCustomSkinData);
-      modEventBus.addListener(EasyNPCTab::handleCreativeModeTabRegister);
-    });
+    DistExecutor.unsafeRunWhenOn(
+        Dist.CLIENT,
+        () ->
+            () -> {
+              log.info("{} Client events ...", Constants.LOG_REGISTER_PREFIX);
+              modEventBus.addListener(ModModelLayers::registerEntityLayerDefinitions);
+              modEventBus.addListener(ClientRenderer::registerEntityRenderers);
+              modEventBus.addListener(ClientScreens::registerScreens);
+              modEventBus.addListener(CustomPresetData::registerCustomPresetData);
+              modEventBus.addListener(CustomSkinData::registerCustomSkinData);
+            });
   }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,13 +19,12 @@
 
 package de.markusbordihn.easynpc.entity.ai.goal;
 
-import net.minecraft.world.entity.ai.goal.Goal;
-
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
 
 public class ResetLookAtPlayerGoal extends Goal {
 
-  EasyNPCEntity easyNPCEntity;
+  private final EasyNPCEntity easyNPCEntity;
   private int resetLookTime = 40;
 
   public ResetLookAtPlayerGoal(EasyNPCEntity easyNPCEntity) {
@@ -60,5 +59,4 @@ public class ResetLookAtPlayerGoal extends Goal {
       this.resetLookTime--;
     }
   }
-
 }

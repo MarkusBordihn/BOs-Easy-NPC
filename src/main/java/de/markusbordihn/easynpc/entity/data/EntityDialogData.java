@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,128 +19,146 @@
 
 package de.markusbordihn.easynpc.entity.data;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-
+import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.data.action.ActionType;
+import de.markusbordihn.easynpc.data.custom.CustomDataAccessor;
+import de.markusbordihn.easynpc.data.custom.CustomDataIndex;
+import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
+import de.markusbordihn.easynpc.data.dialog.DialogData;
+import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
-import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
+import de.markusbordihn.easynpc.data.dialog.DialogUtils;
+import de.markusbordihn.easynpc.data.entity.CustomDataSerializers;
+import de.markusbordihn.easynpc.data.entity.CustomEntityData;
+import java.util.Set;
+import java.util.UUID;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 
 public interface EntityDialogData extends EntityDataInterface {
 
-  // Synced entity data
-  public static final EntityDataAccessor<DialogType> DATA_DIALOG_TYPE =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, CustomDataSerializers.DIALOG_TYPE);
-  public static final EntityDataAccessor<String> DATA_DIALOG_SIMPLE =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
-  public static final EntityDataAccessor<String> DATA_DIALOG_NO =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
-  public static final EntityDataAccessor<String> DATA_DIALOG_NO_BUTTON =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
-  public static final EntityDataAccessor<String> DATA_DIALOG_YES =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
-  public static final EntityDataAccessor<String> DATA_DIALOG_YES_BUTTON =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
+  // Custom entity data
+  CustomDataAccessor<DialogDataSet> CUSTOM_DATA_DIALOG_DATA_SET =
+      CustomEntityData.defineId(
+          CustomDataIndex.DIALOG_DATA_SET, CustomDataSerializers.DIALOG_DATA_SET);
 
   // CompoundTags
-  public static final String DATA_DIALOG_DATA_TAG = "DialogData";
-  public static final String DATA_DIALOG_NO_BUTTON_TAG = "DialogNoButton";
-  public static final String DATA_DIALOG_NO_TAG = "DialogNo";
-  public static final String DATA_DIALOG_SIMPLE_TAG = "DialogSimple";
-  public static final String DATA_DIALOG_TAG = "Dialog";
-  public static final String DATA_DIALOG_TYPE_TAG = "DialogType";
-  public static final String DATA_DIALOG_YES_BUTTON_TAG = "DialogYesButton";
-  public static final String DATA_DIALOG_YES_TAG = "DialogYes";
+  String DATA_DIALOG_DATA_TAG = "DialogData";
+  String DATA_DIALOG_NO_BUTTON_TAG = "DialogNoButton";
+  String DATA_DIALOG_NO_TAG = "DialogNo";
+  String DATA_DIALOG_SIMPLE_TAG = "DialogSimple";
+  String DATA_DIALOG_TAG = "Dialog";
+  String DATA_DIALOG_TYPE_TAG = "DialogType";
+  String DATA_DIALOG_YES_BUTTON_TAG = "DialogYesButton";
+  String DATA_DIALOG_YES_TAG = "DialogYes";
 
-  default DialogType getDialogType() {
-    return getEntityData(DATA_DIALOG_TYPE);
+  private static ActionData readAdditionalLegacyActionData(
+      CompoundTag compoundTag, DialogDataSet dialogDataSet, String actionType) {
+    if (actionType == null
+        || !compoundTag.contains(EntityActionEventData.DATA_ACTION_PERMISSION_LEVEL_TAG)
+        || !compoundTag.contains(EntityActionEventData.DATA_ACTION_DATA_TAG)) {
+      return null;
+    }
+    CompoundTag actionDataTag = compoundTag.getCompound(EntityActionEventData.DATA_ACTION_DATA_TAG);
+    DialogData questionDialogData = dialogDataSet.getDialog("question");
+    if (questionDialogData != null
+        && actionDataTag.contains(EntityActionEventData.DATA_ACTIONS_TAG)) {
+      ListTag listTag = actionDataTag.getList(EntityActionEventData.DATA_ACTIONS_TAG, 10);
+      for (int i = 0; i < listTag.size(); ++i) {
+        CompoundTag actionTag = listTag.getCompound(i);
+        String actionEventType = actionTag.getString(EntityActionEventData.DATA_ACTION_TYPE_TAG);
+        if (actionType.equals(actionEventType)) {
+          String actionCommand = actionTag.getString(EntityActionEventData.DATA_ACTION_TAG);
+          if (actionCommand.equals("/easy_npc trading open @npc-uuid")) {
+            return new ActionData(
+                ActionType.OPEN_TRADING_SCREEN,
+                actionTag.getString(""),
+                actionTag.getInt(EntityActionEventData.DATA_ACTION_PERMISSION_LEVEL_TAG),
+                actionTag.getBoolean(EntityActionEventData.DATA_ACTION_EXECUTE_AS_USER_TAG),
+                actionTag.getBoolean(EntityActionEventData.DATA_ACTION_ENABLE_DEBUG_TAG));
+          } else {
+            return new ActionData(
+                ActionType.COMMAND,
+                actionTag.getString(actionCommand),
+                actionTag.getInt(EntityActionEventData.DATA_ACTION_PERMISSION_LEVEL_TAG),
+                actionTag.getBoolean(EntityActionEventData.DATA_ACTION_EXECUTE_AS_USER_TAG),
+                actionTag.getBoolean(EntityActionEventData.DATA_ACTION_ENABLE_DEBUG_TAG));
+          }
+        }
+      }
+    }
+    return null;
   }
 
-  default void setDialogType(DialogType dialogType) {
-    setEntityData(DATA_DIALOG_TYPE, dialogType);
+  default DialogDataSet getDialogDataSet() {
+    return getCustomEntityData(CUSTOM_DATA_DIALOG_DATA_SET);
   }
 
-  default boolean hasSimpleDialog() {
-    return !getEntityData(DATA_DIALOG_SIMPLE).isEmpty() && getDialogType() != DialogType.NONE;
+  default void setDialogDataSet(DialogDataSet dialogDataSet) {
+    setCustomEntityData(CUSTOM_DATA_DIALOG_DATA_SET, dialogDataSet);
   }
 
-  default String getSimpleDialog() {
-    return getEntityData(DATA_DIALOG_SIMPLE);
+  default void clearDialogDataSet() {
+    setCustomEntityData(CUSTOM_DATA_DIALOG_DATA_SET, new DialogDataSet());
   }
 
-  default void setSimpleDialog(String dialog) {
-    setEntityData(DATA_DIALOG_SIMPLE, dialog);
+  default boolean hasDialog() {
+    return getDialogDataSet().hasDialog();
   }
 
-  default String getNoDialog() {
-    return getEntityData(DATA_DIALOG_NO);
+  default boolean hasDialog(String dialogLabel) {
+    return getDialogDataSet().hasDialog(dialogLabel);
   }
 
-  default void setNoDialog(String dialog) {
-    setEntityData(DATA_DIALOG_NO, dialog);
+  default boolean hasDialog(UUID dialogId) {
+    return getDialogDataSet().hasDialog(dialogId);
   }
 
-  default String getNoDialogButton() {
-    return getEntityData(DATA_DIALOG_NO_BUTTON);
+  default boolean removeDialog(UUID dialogId) {
+    return getDialogDataSet().removeDialog(dialogId);
   }
 
-  default void setNoDialogButton(String dialogButton) {
-    setEntityData(DATA_DIALOG_NO_BUTTON, dialogButton);
+  default boolean removeDialogButton(UUID dialogId, UUID dialogButtonId) {
+    return getDialogDataSet().removeDialogButton(dialogId, dialogButtonId);
   }
 
-  default String getYesDialog() {
-    return getEntityData(DATA_DIALOG_YES);
+  default void setDialog(UUID dialogId, DialogData dialogData) {
+    getDialogDataSet().setDialog(dialogId, dialogData);
   }
 
-  default void setYesDialog(String dialog) {
-    setEntityData(DATA_DIALOG_YES, dialog);
+  default UUID getDialogId(String dialogLabel) {
+    return getDialogDataSet().getDialogId(dialogLabel);
   }
 
-  default String getYesDialogButton() {
-    return getEntityData(DATA_DIALOG_YES_BUTTON);
+  default boolean hasDialogButton(UUID dialogId, UUID dialogButtonId) {
+    return getDialogDataSet().hasDialogButton(dialogId, dialogButtonId);
   }
 
-  default void setYesDialogButton(String dialogButton) {
-    setEntityData(DATA_DIALOG_YES_BUTTON, dialogButton);
+  default DialogButtonData getDialogButton(UUID dialogId, UUID dialogButtonId) {
+    return getDialogDataSet().getDialogButton(dialogId, dialogButtonId);
   }
 
-  default void defineSynchedDialogData() {
-    defineEntityData(DATA_DIALOG_SIMPLE, "");
-    defineEntityData(DATA_DIALOG_TYPE, DialogType.NONE);
-    defineEntityData(DATA_DIALOG_NO, "");
-    defineEntityData(DATA_DIALOG_NO_BUTTON, "No");
-    defineEntityData(DATA_DIALOG_YES, "");
-    defineEntityData(DATA_DIALOG_YES_BUTTON, "Yes");
+  default void defineSynchedDialogData() {}
+
+  default void defineCustomDialogData() {
+    defineCustomEntityData(CUSTOM_DATA_DIALOG_DATA_SET, new DialogDataSet());
   }
 
   default void addAdditionalDialogData(CompoundTag compoundTag) {
     CompoundTag dialogTag = new CompoundTag();
-    if (this.getSimpleDialog() != null) {
-      dialogTag.putString(DATA_DIALOG_SIMPLE_TAG, this.getSimpleDialog());
-    }
-    if (this.getDialogType() != null) {
-      dialogTag.putString(DATA_DIALOG_TYPE_TAG, this.getDialogType().name());
-    }
-    if (this.getNoDialog() != null) {
-      dialogTag.putString(DATA_DIALOG_NO_TAG, this.getNoDialog());
-    }
-    if (this.getNoDialogButton() != null) {
-      dialogTag.putString(DATA_DIALOG_NO_BUTTON_TAG, this.getNoDialogButton());
-    }
-    if (this.getYesDialog() != null) {
-      dialogTag.putString(DATA_DIALOG_YES_TAG, this.getYesDialog());
-    }
-    if (this.getYesDialogButton() != null) {
-      dialogTag.putString(DATA_DIALOG_YES_BUTTON_TAG, this.getYesDialogButton());
-    }
+
+    // Write dialog data
+    getDialogDataSet().save(dialogTag);
+
     compoundTag.put(DATA_DIALOG_DATA_TAG, dialogTag);
   }
 
   default void readAdditionalDialogData(CompoundTag compoundTag) {
 
     // Legacy dialog data support
-    readAdditionalLegacyDialogData(compoundTag);
+    if (readAdditionalLegacyDialogData(compoundTag)) {
+      return;
+    }
 
     // Early exit if no dialog data is available.
     if (!compoundTag.contains(DATA_DIALOG_DATA_TAG)) {
@@ -148,84 +166,105 @@ public interface EntityDialogData extends EntityDataInterface {
     }
 
     // Read dialog data
-    CompoundTag dialogTag = compoundTag.getCompound(DATA_DIALOG_DATA_TAG);
-    if (dialogTag.contains(DATA_DIALOG_SIMPLE_TAG)) {
-      String dialog = dialogTag.getString(DATA_DIALOG_SIMPLE_TAG);
-      if (dialog != null) {
-        this.setSimpleDialog(dialog);
-      }
-    }
-    if (dialogTag.contains(DATA_DIALOG_TYPE_TAG)) {
-      String dialogType = dialogTag.getString(DATA_DIALOG_TYPE_TAG);
-      if (dialogType != null && !dialogType.isEmpty()) {
-        this.setDialogType(DialogType.get(dialogType));
-      }
-    }
-    if (dialogTag.contains(DATA_DIALOG_NO_TAG)) {
-      String dialog = dialogTag.getString(DATA_DIALOG_NO_TAG);
-      if (dialog != null) {
-        this.setNoDialog(dialog);
-      }
-    }
-    if (dialogTag.contains(DATA_DIALOG_NO_BUTTON_TAG)) {
-      String dialogButton = dialogTag.getString(DATA_DIALOG_NO_BUTTON_TAG);
-      if (dialogButton != null) {
-        this.setNoDialogButton(dialogButton);
-      }
-    }
-    if (dialogTag.contains(DATA_DIALOG_YES_TAG)) {
-      String dialog = dialogTag.getString(DATA_DIALOG_YES_TAG);
-      if (dialog != null) {
-        this.setYesDialog(dialog);
-      }
-    }
-    if (dialogTag.contains(DATA_DIALOG_YES_BUTTON_TAG)) {
-      String dialogButton = dialogTag.getString(DATA_DIALOG_YES_BUTTON_TAG);
-      if (dialogButton != null) {
-        this.setYesDialogButton(dialogButton);
-      }
-    }
+    CompoundTag dialogDataTag = compoundTag.getCompound(DATA_DIALOG_DATA_TAG);
 
+    // Read dialog
+    if (dialogDataTag.contains(DialogDataSet.DATA_DIALOG_DATA_SET_TAG)) {
+      DialogDataSet dialogDataSet = new DialogDataSet(dialogDataTag);
+      this.setDialogDataSet(dialogDataSet);
+    }
   }
 
-  default void readAdditionalLegacyDialogData(CompoundTag compoundTag) {
+  default boolean readAdditionalLegacyDialogData(CompoundTag compoundTag) {
+
+    DialogDataSet dialogDataSet;
+
+    // Very old legacy data support (just for compatibility with old worlds)
     if (compoundTag.contains(DATA_DIALOG_TYPE_TAG)) {
       log.info("Converting legacy dialog data to new format for {}", this);
-      String dialogType = compoundTag.getString(DATA_DIALOG_TYPE_TAG);
-      if (dialogType != null && !dialogType.isEmpty()) {
-        this.setDialogType(DialogType.get(dialogType));
+      DialogType dialogType = DialogType.get(compoundTag.getString(DATA_DIALOG_TYPE_TAG));
+
+      // Handle basic dialog
+      if (dialogType == DialogType.BASIC) {
+        dialogDataSet = DialogUtils.getBasicDialog(compoundTag.getString(DATA_DIALOG_TAG));
+        this.setDialogDataSet(dialogDataSet);
+        return true;
       }
-      if (compoundTag.contains(DATA_DIALOG_TAG)) {
-        String dialog = compoundTag.getString(DATA_DIALOG_TAG);
-        if (dialog != null) {
-          this.setSimpleDialog(dialog);
-        }
+
+      // Handle yes/no dialog
+      if (dialogType != DialogType.YES_NO) {
+        return false;
       }
-      if (compoundTag.contains(DATA_DIALOG_NO_TAG)) {
-        String dialog = compoundTag.getString(DATA_DIALOG_NO_TAG);
-        if (dialog != null) {
-          this.setNoDialog(dialog);
-        }
+
+      // Create yes/no dialog data set
+      dialogDataSet =
+          DialogUtils.getYesNoDialog(
+              compoundTag.getString(DATA_DIALOG_TAG),
+              compoundTag.getString(DATA_DIALOG_YES_BUTTON_TAG),
+              compoundTag.getString(DATA_DIALOG_NO_BUTTON_TAG),
+              compoundTag.getString(DATA_DIALOG_YES_TAG),
+              compoundTag.getString(DATA_DIALOG_NO_TAG));
+
+    } else if (compoundTag.contains(DATA_DIALOG_DATA_TAG)
+        && compoundTag.getCompound(DATA_DIALOG_DATA_TAG).contains(DATA_DIALOG_TYPE_TAG)) {
+      log.info("Converting legacy dialog data to new multi-format for {}", this);
+      CompoundTag dialogDataTag = compoundTag.getCompound(DATA_DIALOG_DATA_TAG);
+      DialogType dialogType = DialogType.get(dialogDataTag.getString(DATA_DIALOG_TYPE_TAG));
+
+      // Handle basic dialog
+      if (dialogType == DialogType.BASIC) {
+        dialogDataSet = DialogUtils.getBasicDialog(dialogDataTag.getString(DATA_DIALOG_SIMPLE_TAG));
+        this.setDialogDataSet(dialogDataSet);
+        return true;
       }
-      if (compoundTag.contains(DATA_DIALOG_NO_BUTTON_TAG)) {
-        String dialogButton = compoundTag.getString(DATA_DIALOG_NO_BUTTON_TAG);
-        if (dialogButton != null) {
-          this.setNoDialogButton(dialogButton);
-        }
+
+      // Handle only yes/no dialog
+      if (dialogType != DialogType.YES_NO) {
+        return false;
       }
-      if (compoundTag.contains(DATA_DIALOG_YES_TAG)) {
-        String dialog = compoundTag.getString(DATA_DIALOG_YES_TAG);
-        if (dialog != null) {
-          this.setYesDialog(dialog);
+
+      // Create yes/no dialog data set
+      dialogDataSet =
+          DialogUtils.getYesNoDialog(
+              dialogDataTag.getString(DATA_DIALOG_SIMPLE_TAG),
+              dialogDataTag.getString(DATA_DIALOG_YES_BUTTON_TAG),
+              dialogDataTag.getString(DATA_DIALOG_NO_BUTTON_TAG),
+              dialogDataTag.getString(DATA_DIALOG_YES_TAG),
+              dialogDataTag.getString(DATA_DIALOG_NO_TAG));
+    } else {
+      return false;
+    }
+
+    // Handles possible legacy action data and covert them into button actions.
+    if (compoundTag.contains(EntityActionEventData.DATA_ACTION_PERMISSION_LEVEL_TAG)
+        && compoundTag.contains(EntityActionEventData.DATA_ACTION_DATA_TAG)) {
+      log.info("Extracting legacy action data for button action for {}", this);
+      DialogData questionDialogData = dialogDataSet.getDialog("question");
+      ActionData legacyYesActionData =
+          readAdditionalLegacyActionData(
+              compoundTag, dialogDataSet, EntityActionEventData.ON_YES_SELECTION);
+      if (legacyYesActionData != null) {
+        Set<ActionData> yesActionData = questionDialogData.getButton("yes_button").getActionData();
+        if (legacyYesActionData.getType() == ActionType.OPEN_TRADING_SCREEN) {
+          yesActionData.clear();
         }
+        yesActionData.add(legacyYesActionData);
+        questionDialogData.getButton("yes_button").setActionData(yesActionData);
       }
-      if (compoundTag.contains(DATA_DIALOG_YES_BUTTON_TAG)) {
-        String dialogButton = compoundTag.getString(DATA_DIALOG_YES_BUTTON_TAG);
-        if (dialogButton != null) {
-          this.setYesDialogButton(dialogButton);
+      ActionData legacyNoActionData =
+          readAdditionalLegacyActionData(
+              compoundTag, dialogDataSet, EntityActionEventData.ON_NO_SELECTION);
+      if (legacyNoActionData != null) {
+        Set<ActionData> noActionData = questionDialogData.getButton("no_button").getActionData();
+        if (legacyNoActionData.getType() == ActionType.OPEN_TRADING_SCREEN) {
+          noActionData.clear();
         }
+        noActionData.add(legacyNoActionData);
+        questionDialogData.getButton("no_button").setActionData(noActionData);
       }
     }
-  }
 
+    this.setDialogDataSet(dialogDataSet);
+    return true;
+  }
 }

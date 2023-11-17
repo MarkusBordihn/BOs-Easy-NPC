@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,12 +19,16 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity;
 
-import java.util.EnumMap;
-import java.util.Map;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.model.custom.CustomPlayerModel;
+import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
+import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.npc.Humanoid.Variant;
+import java.util.EnumMap;
+import java.util.Map;
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -38,16 +42,8 @@ import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.model.custom.CustomPlayerModel;
-import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
-import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.npc.Humanoid.Variant;
 
 @OnlyIn(Dist.CLIENT)
 public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, CustomPlayerModel<EasyNPCEntity>>
@@ -55,35 +51,44 @@ public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, CustomPlayerMod
 
   // Variant Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
-      Util.make(new EnumMap<>(Variant.class), map -> {
-        // Build in skins
-        map.put(Variant.ALEX, new ResourceLocation("textures/entity/player/wide/alex.png"));
-        map.put(Variant.ARI, new ResourceLocation("textures/entity/player/wide/ari.png"));
-        map.put(Variant.EFE, new ResourceLocation("textures/entity/player/wide/efe.png"));
-        map.put(Variant.KAI, new ResourceLocation("textures/entity/player/wide/kai.png"));
-        map.put(Variant.MAKENA, new ResourceLocation("textures/entity/player/wide/makena.png"));
-        map.put(Variant.NOOR, new ResourceLocation("textures/entity/player/wide/noor.png"));
-        map.put(Variant.STEVE, new ResourceLocation("textures/entity/player/wide/steve.png"));
-        map.put(Variant.SUNNY, new ResourceLocation("textures/entity/player/wide/sunny.png"));
-        map.put(Variant.ZURI, new ResourceLocation("textures/entity/player/wide/zuri.png"));
+      Util.make(
+          new EnumMap<>(Variant.class),
+          map -> {
+            // Build-in Variants
+            map.put(Variant.ALEX, new ResourceLocation("textures/entity/player/wide/alex.png"));
+            map.put(Variant.ARI, new ResourceLocation("textures/entity/player/wide/ari.png"));
+            map.put(Variant.EFE, new ResourceLocation("textures/entity/player/wide/efe.png"));
+            map.put(Variant.KAI, new ResourceLocation("textures/entity/player/wide/kai.png"));
+            map.put(Variant.MAKENA, new ResourceLocation("textures/entity/player/wide/makena.png"));
+            map.put(Variant.NOOR, new ResourceLocation("textures/entity/player/wide/noor.png"));
+            map.put(Variant.STEVE, new ResourceLocation("textures/entity/player/wide/steve.png"));
+            map.put(Variant.SUNNY, new ResourceLocation("textures/entity/player/wide/sunny.png"));
+            map.put(Variant.ZURI, new ResourceLocation("textures/entity/player/wide/zuri.png"));
 
-        // Custom skins
-        map.put(Variant.JAYJASONBO,
-            new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/jayjasonbo.png"));
-        map.put(Variant.PROFESSOR_01,
-            new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/professor_01.png"));
-        map.put(Variant.SECURITY_01,
-            new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/security_01.png"));
-        map.put(Variant.KNIGHT_01,
-            new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/knight_01.png"));
-      });
+            // Custom Variants
+            map.put(
+                Variant.JAYJASONBO,
+                new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/jayjasonbo.png"));
+            map.put(
+                Variant.PROFESSOR_01,
+                new ResourceLocation(
+                    Constants.MOD_ID, "textures/entity/humanoid/professor_01.png"));
+            map.put(
+                Variant.SECURITY_01,
+                new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/security_01.png"));
+            map.put(
+                Variant.KNIGHT_01,
+                new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/knight_01.png"));
+          });
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.STEVE);
 
   public HumanoidRenderer(EntityRendererProvider.Context context) {
     super(context, new CustomPlayerModel<>(context.bakeLayer(ModelLayers.PLAYER), false), 0.5F);
-    this.addLayer(new HumanoidArmorLayer<>(this,
-        new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)),
-        new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR))));
+    this.addLayer(
+        new HumanoidArmorLayer<>(
+            this,
+            new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)),
+            new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR))));
     this.addLayer(
         new CustomHeadLayer<>(this, context.getModelSet(), context.getItemInHandRenderer()));
     this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
@@ -100,7 +105,6 @@ public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, CustomPlayerMod
     return DEFAULT_TEXTURE;
   }
 
-
   @Override
   public ResourceLocation getTextureLocation(EasyNPCEntity entity) {
     return this.getEntityPlayerTexture(entity);
@@ -112,8 +116,13 @@ public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, CustomPlayerMod
   }
 
   @Override
-  public void render(EasyNPCEntity entity, float entityYaw, float partialTicks, PoseStack poseStack,
-      net.minecraft.client.renderer.MultiBufferSource buffer, int light) {
+  public void render(
+      EasyNPCEntity entity,
+      float entityYaw,
+      float partialTicks,
+      PoseStack poseStack,
+      net.minecraft.client.renderer.MultiBufferSource buffer,
+      int light) {
     CustomPlayerModel<EasyNPCEntity> playerModel = this.getModel();
 
     // Model Rotation
@@ -126,7 +135,7 @@ public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, CustomPlayerMod
           poseStack.translate(-1.0D, 0.0D, 0.0D);
           poseStack.mulPose(Axis.YP.rotationDegrees(180f));
           poseStack.mulPose(Axis.ZP.rotationDegrees(this.getFlipDegrees(entity)));
-          poseStack.mulPose(Axis.YP.rotationDegrees(270.0F));
+          poseStack.mulPose(Axis.YP.rotationDegrees(270.0f));
           playerModel.getHead().xRot = -0.7853982F;
           playerModel.getHead().yRot = -0.7853982F;
           playerModel.getHead().zRot = -0.7853982F;
@@ -157,8 +166,12 @@ public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, CustomPlayerMod
   }
 
   @Override
-  protected void renderNameTag(EasyNPCEntity entity, Component component, PoseStack poseStack,
-      MultiBufferSource multiBufferSource, int color) {
+  protected void renderNameTag(
+      EasyNPCEntity entity,
+      Component component,
+      PoseStack poseStack,
+      MultiBufferSource multiBufferSource,
+      int color) {
     this.renderEntityNameTag(entity, poseStack);
     super.renderNameTag(entity, component, poseStack, multiBufferSource, color);
   }
@@ -167,5 +180,4 @@ public class HumanoidRenderer extends MobRenderer<EasyNPCEntity, CustomPlayerMod
   protected int getBlockLightLevel(EasyNPCEntity entity, BlockPos blockPos) {
     return getEntityLightLevel(entity);
   }
-
 }

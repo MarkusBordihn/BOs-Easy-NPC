@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,14 +19,12 @@
 
 package de.markusbordihn.easynpc.menu.configuration.trading;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import de.markusbordihn.easynpc.Constants;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-
-import de.markusbordihn.easynpc.Constants;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ItemBSlot extends Slot {
 
@@ -44,5 +42,4 @@ public class ItemBSlot extends Slot {
     super.set(itemStack);
     menu.setTradingChanged();
   }
-
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,27 +19,23 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.rotation;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Checkbox;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.core.Rotations;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Inventory;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.SliderButton;
+import de.markusbordihn.easynpc.client.screen.components.Text;
+import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.menu.configuration.rotation.DefaultRotationConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.core.Rotations;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class DefaultRotationConfigurationScreen
@@ -59,12 +55,8 @@ public class DefaultRotationConfigurationScreen
   protected float rootRotationY = 0f;
   protected float rootRotationZ = 0f;
 
-  // Background
-  NativeImage backgroundImage = null;
-  ResourceLocation backgroundImageResourceLocation = null;
-
-  public DefaultRotationConfigurationScreen(DefaultRotationConfigurationMenu menu,
-      Inventory inventory, Component component) {
+  public DefaultRotationConfigurationScreen(
+      DefaultRotationConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 
@@ -82,65 +74,103 @@ public class DefaultRotationConfigurationScreen
     this.rootRotationZ = rootRotations.getZ();
 
     // Root Rotation X
-    this.rootRotationXSliderButton = this.addRenderableWidget(
-        new SliderButton(this.contentLeftPos, this.contentTopPos, 60, 20, "rootRotationX",
-            (float) Math.toDegrees(rootRotations.getX()), SliderButton.Type.DEGREE, slider -> {
-              this.rootRotationX = (float) Math.toRadians(slider.getTargetValue());
-              NetworkMessageHandler.rotationChange(uuid, ModelPart.ROOT,
-                  new Rotations(this.rootRotationX, this.rootRotationY, this.rootRotationZ));
-            }));
-    this.rootRotationXResetButton = this.addRenderableWidget(menuButton(
-        this.rootRotationXSliderButton.getX() + this.rootRotationXSliderButton.getWidth(),
-        this.contentTopPos, 10, Component.literal("↺"), button -> {
-          this.rootRotationX = 0f;
-          this.rootRotationXSliderButton.reset();
-        }));
+    this.rootRotationXSliderButton =
+        this.addRenderableWidget(
+            new SliderButton(
+                this.contentLeftPos,
+                this.contentTopPos,
+                60,
+                "rootRotationX",
+                (float) Math.toDegrees(rootRotations.getX()),
+                SliderButton.Type.DEGREE,
+                slider -> {
+                  this.rootRotationX = (float) Math.toRadians(slider.getTargetValue());
+                  NetworkMessageHandler.rotationChange(
+                      uuid,
+                      ModelPart.ROOT,
+                      new Rotations(this.rootRotationX, this.rootRotationY, this.rootRotationZ));
+                }));
+    this.rootRotationXResetButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.rootRotationXSliderButton.getX() + this.rootRotationXSliderButton.getWidth(),
+                this.contentTopPos,
+                10,
+                Component.literal("↺"),
+                button -> {
+                  this.rootRotationX = 0f;
+                  this.rootRotationXSliderButton.reset();
+                }));
 
     // Root Rotation Y
-    this.rootRotationYSliderButton = this.addRenderableWidget(new SliderButton(
-        this.rootRotationXResetButton.getX() + this.rootRotationXResetButton.getWidth() + 5,
-        this.contentTopPos, 60, 20, "rootRotationY", (float) Math.toDegrees(rootRotations.getY()),
-        SliderButton.Type.DEGREE, slider -> {
-          this.rootRotationY = (float) Math.toRadians(slider.getTargetValue());
-          NetworkMessageHandler.rotationChange(uuid, ModelPart.ROOT,
-              new Rotations(this.rootRotationX, this.rootRotationY, this.rootRotationZ));
-        }));
-    this.rootRotationYResetButton = this.addRenderableWidget(menuButton(
-        this.rootRotationYSliderButton.getX() + this.rootRotationYSliderButton.getWidth(),
-        this.contentTopPos, 10, Component.literal("↺"), button -> {
-          this.rootRotationY = 0f;
-          this.rootRotationYSliderButton.reset();
-        }));
+    this.rootRotationYSliderButton =
+        this.addRenderableWidget(
+            new SliderButton(
+                this.rootRotationXResetButton.getX() + this.rootRotationXResetButton.getWidth() + 5,
+                this.contentTopPos,
+                60,
+                "rootRotationY",
+                (float) Math.toDegrees(rootRotations.getY()),
+                SliderButton.Type.DEGREE,
+                slider -> {
+                  this.rootRotationY = (float) Math.toRadians(slider.getTargetValue());
+                  NetworkMessageHandler.rotationChange(
+                      uuid,
+                      ModelPart.ROOT,
+                      new Rotations(this.rootRotationX, this.rootRotationY, this.rootRotationZ));
+                }));
+    this.rootRotationYResetButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.rootRotationYSliderButton.getX() + this.rootRotationYSliderButton.getWidth(),
+                this.contentTopPos,
+                10,
+                Component.literal("↺"),
+                button -> {
+                  this.rootRotationY = 0f;
+                  this.rootRotationYSliderButton.reset();
+                }));
 
     // Root Rotation Z
-    this.rootRotationZSliderButton = this.addRenderableWidget(new SliderButton(
-        this.rootRotationYResetButton.getX() + this.rootRotationYResetButton.getWidth() + 5,
-        this.contentTopPos, 60, 20, "rootRotationZ", (float) Math.toDegrees(rootRotations.getZ()),
-        SliderButton.Type.DEGREE, slider -> {
-          this.rootRotationZ = (float) Math.toRadians(slider.getTargetValue());
-          NetworkMessageHandler.rotationChange(uuid, ModelPart.ROOT,
-              new Rotations(this.rootRotationX, this.rootRotationY, this.rootRotationZ));
-        }));
-    this.rootRotationZResetButton = this.addRenderableWidget(menuButton(
-        this.rootRotationZSliderButton.getX() + this.rootRotationZSliderButton.getWidth(),
-        this.contentTopPos, 10, Component.literal("↺"), button -> {
-          this.rootRotationZ = 0f;
-          this.rootRotationZSliderButton.reset();
-        }));
+    this.rootRotationZSliderButton =
+        this.addRenderableWidget(
+            new SliderButton(
+                this.rootRotationYResetButton.getX() + this.rootRotationYResetButton.getWidth() + 5,
+                this.contentTopPos,
+                60,
+                "rootRotationZ",
+                (float) Math.toDegrees(rootRotations.getZ()),
+                SliderButton.Type.DEGREE,
+                slider -> {
+                  this.rootRotationZ = (float) Math.toRadians(slider.getTargetValue());
+                  NetworkMessageHandler.rotationChange(
+                      uuid,
+                      ModelPart.ROOT,
+                      new Rotations(this.rootRotationX, this.rootRotationY, this.rootRotationZ));
+                }));
+    this.rootRotationZResetButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.rootRotationZSliderButton.getX() + this.rootRotationZSliderButton.getWidth(),
+                this.contentTopPos,
+                10,
+                Component.literal("↺"),
+                button -> {
+                  this.rootRotationZ = 0f;
+                  this.rootRotationZSliderButton.reset();
+                }));
 
     // Lock Root Rotation Checkbox
-    this.rootRotationCheckbox = this.addRenderableWidget(new Checkbox(
-        this.rootRotationZResetButton.getX() + this.rootRotationZResetButton.getWidth() + 5,
-        this.contentTopPos, 150, 20,
-        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "lock_rotation")
-            .withStyle(ChatFormatting.WHITE),
-        this.entity.getModelLockRotation()) {
-      @Override
-      public void onPress() {
-        super.onPress();
-        NetworkMessageHandler.modelLockRotationChange(uuid, this.selected());
-      }
-    });
+    this.rootRotationCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                this.rootRotationZResetButton.getX() + this.rootRotationZResetButton.getWidth() + 5,
+                this.contentTopPos + 2,
+                "lock_rotation",
+                this.entity.getModelLockRotation(),
+                checkbox -> {
+                  NetworkMessageHandler.modelLockRotationChange(uuid, checkbox.selected());
+                }));
   }
 
   @Override
@@ -148,12 +178,24 @@ public class DefaultRotationConfigurationScreen
     super.render(poseStack, x, y, partialTicks);
 
     // Rotation Text
-    this.font.draw(poseStack, "Rotation X", this.rootRotationXSliderButton.getX() + 5f,
-        this.rootRotationXSliderButton.getY() + 25f, 4210752);
-    this.font.draw(poseStack, "Rotation Y", this.rootRotationYSliderButton.getX() + 5f,
-        this.rootRotationYSliderButton.getY() + 25f, 4210752);
-    this.font.draw(poseStack, "Rotation Z", this.rootRotationZSliderButton.getX() + 5f,
-        this.rootRotationZSliderButton.getY() + 25f, 4210752);
+    Text.drawString(
+        poseStack,
+        this.font,
+        "Rotation X",
+        this.rootRotationXSliderButton.getX() + 5,
+        this.rootRotationXSliderButton.getY() + 25);
+    Text.drawString(
+        poseStack,
+        this.font,
+        "Rotation Y",
+        this.rootRotationYSliderButton.getX() + 5,
+        this.rootRotationYSliderButton.getY() + 25);
+    Text.drawString(
+        poseStack,
+        this.font,
+        "Rotation Z",
+        this.rootRotationZSliderButton.getX() + 5,
+        this.rootRotationZSliderButton.getY() + 25);
   }
 
   @Override

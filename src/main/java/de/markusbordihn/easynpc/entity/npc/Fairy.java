@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.entity.npc;
 
+import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -26,24 +28,15 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.level.Level;
 
-import de.markusbordihn.easynpc.data.skin.SkinModel;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-
 public class Fairy extends EasyNPCEntity {
-
-  // Constants values
-  private static final float DEFAULT_SCALE_X = 0.4f;
-  private static final float DEFAULT_SCALE_Y = 0.4f;
-  private static final float DEFAULT_SCALE_Z = 0.4f;
 
   // General Information
   public static final String ID = "fairy";
   public static final String NAME = "Fairy";
-
-  // Skin Details
-  public enum Variant {
-    GREEN, RED, BLUE
-  }
+  // Constants values
+  private static final float DEFAULT_SCALE_X = 0.4f;
+  private static final float DEFAULT_SCALE_Y = 0.4f;
+  private static final float DEFAULT_SCALE_Z = 0.4f;
 
   public Fairy(EntityType<? extends EasyNPCEntity> entityType, Level level) {
     super(entityType, level);
@@ -51,8 +44,10 @@ public class Fairy extends EasyNPCEntity {
   }
 
   public static AttributeSupplier.Builder createAttributes() {
-    return Mob.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0.5F)
-        .add(Attributes.MAX_HEALTH, 16.0D).add(Attributes.ATTACK_DAMAGE, 0.0D);
+    return Mob.createMobAttributes()
+        .add(Attributes.MOVEMENT_SPEED, 0.5F)
+        .add(Attributes.MAX_HEALTH, 16.0D)
+        .add(Attributes.ATTACK_DAMAGE, 0.0D);
   }
 
   @Override
@@ -111,11 +106,6 @@ public class Fairy extends EasyNPCEntity {
   }
 
   @Override
-  public int getEntityGuiTop() {
-    return 0;
-  }
-
-  @Override
   public int getEntityDialogTop() {
     return -38;
   }
@@ -125,4 +115,10 @@ public class Fairy extends EasyNPCEntity {
     return 75;
   }
 
+  // Skin Details
+  public enum Variant {
+    GREEN,
+    RED,
+    BLUE
+  }
 }

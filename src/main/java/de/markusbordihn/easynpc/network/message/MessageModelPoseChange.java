@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,19 +19,16 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Pose;
-
-import net.minecraftforge.network.NetworkEvent;
-
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
+import java.util.UUID;
+import java.util.function.Supplier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Pose;
+import net.minecraftforge.network.NetworkEvent;
 
 public class MessageModelPoseChange extends NetworkMessage {
 
@@ -40,10 +37,6 @@ public class MessageModelPoseChange extends NetworkMessage {
   public MessageModelPoseChange(UUID uuid, ModelPose modelPose) {
     super(uuid);
     this.modelPose = modelPose;
-  }
-
-  public ModelPose getModelPose() {
-    return this.modelPose;
   }
 
   public static MessageModelPoseChange decode(final FriendlyByteBuf buffer) {
@@ -55,8 +48,8 @@ public class MessageModelPoseChange extends NetworkMessage {
     buffer.writeEnum(message.getModelPose());
   }
 
-  public static void handle(MessageModelPoseChange message,
-      Supplier<NetworkEvent.Context> contextSupplier) {
+  public static void handle(
+      MessageModelPoseChange message, Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
@@ -83,4 +76,7 @@ public class MessageModelPoseChange extends NetworkMessage {
     easyNPCEntity.setPose(Pose.STANDING);
   }
 
+  public ModelPose getModelPose() {
+    return this.modelPose;
+  }
 }

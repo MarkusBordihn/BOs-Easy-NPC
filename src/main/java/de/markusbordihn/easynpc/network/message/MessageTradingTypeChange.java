@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,18 +19,15 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-
-import net.minecraftforge.network.NetworkEvent;
-
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
+import java.util.UUID;
+import java.util.function.Supplier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkEvent;
 
 public class MessageTradingTypeChange extends NetworkMessage {
 
@@ -39,10 +36,6 @@ public class MessageTradingTypeChange extends NetworkMessage {
   public MessageTradingTypeChange(UUID uuid, TradingType tradingType) {
     super(uuid);
     this.tradingType = tradingType;
-  }
-
-  public TradingType getTradingType() {
-    return this.tradingType;
   }
 
   public static MessageTradingTypeChange decode(FriendlyByteBuf buffer) {
@@ -54,8 +47,8 @@ public class MessageTradingTypeChange extends NetworkMessage {
     buffer.writeEnum(message.getTradingType());
   }
 
-  public static void handle(MessageTradingTypeChange message,
-      Supplier<NetworkEvent.Context> contextSupplier) {
+  public static void handle(
+      MessageTradingTypeChange message, Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
@@ -65,7 +58,8 @@ public class MessageTradingTypeChange extends NetworkMessage {
     ServerPlayer serverPlayer = context.getSender();
     TradingType tradingType = message.getTradingType();
     UUID uuid = message.getUUID();
-    if (serverPlayer == null || tradingType == null
+    if (serverPlayer == null
+        || tradingType == null
         || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
       log.error("Unable to change trading type with message {} from {}", message, context);
       return;
@@ -77,4 +71,7 @@ public class MessageTradingTypeChange extends NetworkMessage {
     easyNPCEntity.setTradingType(tradingType);
   }
 
+  public TradingType getTradingType() {
+    return this.tradingType;
+  }
 }

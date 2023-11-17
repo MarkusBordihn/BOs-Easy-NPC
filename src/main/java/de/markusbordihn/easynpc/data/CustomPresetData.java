@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.data;
 
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,15 +30,10 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.loading.FileUtils;
-
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.skin.SkinModel;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CustomPresetData {
 
@@ -57,13 +54,16 @@ public class CustomPresetData {
     if (presetDataFolder == null) {
       return;
     }
-    log.info("{} custom preset data folder at {} ...", Constants.LOG_CREATE_PREFIX,
-        presetDataFolder);
+    log.info(
+        "{} custom preset data folder at {} ...", Constants.LOG_CREATE_PREFIX, presetDataFolder);
 
     for (SkinModel skinModel : SkinModel.values()) {
       Path presetModelFolder = getPresetDataFolder(skinModel);
       if (presetModelFolder != null) {
-        log.info("{} preset model folder {} at {} ...", Constants.LOG_CREATE_PREFIX, skinModel,
+        log.info(
+            "{} preset model folder {} at {} ...",
+            Constants.LOG_CREATE_PREFIX,
+            skinModel,
             presetModelFolder);
       }
     }
@@ -77,8 +77,8 @@ public class CustomPresetData {
     Path skinDataFolder = getPresetDataFolder();
     String skinModelName = skinModel.name();
     if (skinDataFolder != null && skinModelName != null) {
-      return FileUtils.getOrCreateDirectory(skinDataFolder.resolve(skinModelName.toLowerCase()),
-          skinModelName.toLowerCase());
+      return FileUtils.getOrCreateDirectory(
+          skinDataFolder.resolve(skinModelName.toLowerCase()), skinModelName.toLowerCase());
     }
     return null;
   }
@@ -87,9 +87,13 @@ public class CustomPresetData {
     Path presetModelFolder = getPresetDataFolder(skinModel);
     if (presetModelFolder != null && fileName != null && !fileName.isEmpty()) {
       // Remove all invalid characters from file name.
-      fileName = fileName.toLowerCase().replaceAll("[^a-z0-9/._-]", "").replace("..", "");
-      return presetModelFolder.resolve(fileName.endsWith(Constants.NPC_NBT_SUFFIX) ? fileName
-          : fileName + Constants.NPC_NBT_SUFFIX).toFile();
+      fileName = fileName.replaceAll("[^a-zA-Z0-9/._-]", "").replace("..", "");
+      return presetModelFolder
+          .resolve(
+              fileName.endsWith(Constants.NPC_NBT_SUFFIX)
+                  ? fileName
+                  : fileName + Constants.NPC_NBT_SUFFIX)
+          .toFile();
     }
     return null;
   }
@@ -104,11 +108,14 @@ public class CustomPresetData {
       try (Stream<Path> filesStream = Files.walk(presetDataFolder)) {
         // Get all files with the suffix .npc.nbt and return the relative path.
         List<Path> filePaths =
-            filesStream.filter(path -> path.toString().endsWith(Constants.NPC_NBT_SUFFIX))
-                .filter(path -> Pattern.matches("[a-z0-9/._-]+", path.getFileName().toString()))
-                .map(path -> {
-                  return path;
-                }).collect(Collectors.toList());
+            filesStream
+                .filter(path -> path.toString().endsWith(Constants.NPC_NBT_SUFFIX))
+                .filter(path -> Pattern.matches("[a-zA-Z0-9/._-]+", path.getFileName().toString()))
+                .map(
+                    path -> {
+                      return path;
+                    })
+                .collect(Collectors.toList());
         return filePaths.stream();
       }
     } catch (IOException exception) {
@@ -118,5 +125,4 @@ public class CustomPresetData {
     // Return a default or alternative stream in case of an exception
     return Stream.empty();
   }
-
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,18 +19,15 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.pose;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.screen.components.SliderButton;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.menu.configuration.pose.AdvancedPoseConfigurationMenu;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class AdvancedPoseConfigurationScreen
@@ -45,8 +42,8 @@ public class AdvancedPoseConfigurationScreen
   protected SliderButton leftLegRotationSliderButton;
   protected SliderButton rightLegRotationSliderButton;
 
-  public AdvancedPoseConfigurationScreen(AdvancedPoseConfigurationMenu menu, Inventory inventory,
-      Component component) {
+  public AdvancedPoseConfigurationScreen(
+      AdvancedPoseConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 
@@ -118,37 +115,62 @@ public class AdvancedPoseConfigurationScreen
     super.render(poseStack, x, y, partialTicks);
 
     // Avatar
-    ScreenHelper.renderCustomPoseEntityAvatar(this.contentLeftPos + 152, this.contentTopPos + 155,
-        50, this.contentLeftPos + 140 - this.xMouse, this.contentTopPos + 30 - this.yMouse,
+    ScreenHelper.renderCustomPoseEntityAvatar(
+        this.contentLeftPos + 152,
+        this.contentTopPos + 155,
+        50,
+        this.contentLeftPos + 140 - this.xMouse,
+        this.contentTopPos + 30 - this.yMouse,
         this.entity);
 
     // Body parts texts
     if (this.entity.hasHeadModelPart()) {
-      this.fontDraw(poseStack, "pose.head", this.headRotationSliderButton.getX() + 5f,
-          this.headRotationSliderButton.getY() - 12f);
+      this.fontDraw(
+          poseStack,
+          "pose.head",
+          this.headRotationSliderButton.getX() + 5,
+          this.headRotationSliderButton.getY() - 12);
     }
     if (this.entity.hasBodyModelPart()) {
-      this.fontDraw(poseStack, "pose.body", this.bodyRotationSliderButton.getX() + 5f,
-          this.bodyRotationSliderButton.getY() - 12f);
+      this.fontDraw(
+          poseStack,
+          "pose.body",
+          this.bodyRotationSliderButton.getX() + 5,
+          this.bodyRotationSliderButton.getY() - 12);
     }
     if (this.entity.hasLeftArmModelPart()) {
-      this.fontDraw(poseStack, "pose.left_arm", this.leftArmRotationSliderButton.getX() + 5f,
-          this.leftArmRotationSliderButton.getY() + 12f);
+      this.fontDraw(
+          poseStack,
+          "pose.left_arm",
+          this.leftArmRotationSliderButton.getX() + 5,
+          this.leftArmRotationSliderButton.getY() - 12);
     } else if (this.entity.hasArmsModelPart()) {
-      this.fontDraw(poseStack, "pose.arms", this.armsRotationSliderButton.getX() + 5f,
-          this.armsRotationSliderButton.getY() - 12f);
+      this.fontDraw(
+          poseStack,
+          "pose.arms",
+          this.armsRotationSliderButton.getX() + 5,
+          this.armsRotationSliderButton.getY() - 12);
     }
     if (this.entity.hasRightArmModelPart()) {
-      this.fontDraw(poseStack, "pose.right_arm", this.rightArmRotationSliderButton.getX() + 5f,
-          this.rightArmRotationSliderButton.getY() - 12f);
+      this.fontDraw(
+          poseStack,
+          "pose.right_arm",
+          this.rightArmRotationSliderButton.getX() + 5,
+          this.rightArmRotationSliderButton.getY() - 12);
     }
     if (this.entity.hasLeftLegModelPart()) {
-      this.fontDraw(poseStack, "pose.left_leg", this.leftLegRotationSliderButton.getX() + 5f,
-          this.leftLegRotationSliderButton.getY() - 12f);
+      this.fontDraw(
+          poseStack,
+          "pose.left_leg",
+          this.leftLegRotationSliderButton.getX() + 5,
+          this.leftLegRotationSliderButton.getY() - 12);
     }
     if (this.entity.hasRightLegModelPart()) {
-      this.fontDraw(poseStack, "pose.right_leg", this.rightLegRotationSliderButton.getX() + 5f,
-          this.rightLegRotationSliderButton.getY() - 12f);
+      this.fontDraw(
+          poseStack,
+          "pose.right_leg",
+          this.rightLegRotationSliderButton.getX() + 5,
+          this.rightLegRotationSliderButton.getY() - 12);
     }
   }
 
@@ -157,9 +179,19 @@ public class AdvancedPoseConfigurationScreen
     super.renderBg(poseStack, partialTicks, mouseX, mouseY);
 
     // Entity background
-    fill(poseStack, this.contentLeftPos + 101, this.contentTopPos, this.contentLeftPos + 201,
-        this.contentTopPos + 188, 0xff000000);
-    fill(poseStack, this.contentLeftPos + 102, this.contentTopPos + 1, this.contentLeftPos + 200,
-        this.contentTopPos + 187, 0xffaaaaaa);
+    fill(
+        poseStack,
+        this.contentLeftPos + 101,
+        this.contentTopPos,
+        this.contentLeftPos + 201,
+        this.contentTopPos + 188,
+        0xff000000);
+    fill(
+        poseStack,
+        this.contentLeftPos + 102,
+        this.contentTopPos + 1,
+        this.contentLeftPos + 200,
+        this.contentTopPos + 187,
+        0xffaaaaaa);
   }
 }
