@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,37 +19,41 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.actions;
 
+import de.markusbordihn.easynpc.client.screen.components.TextButton;
+import de.markusbordihn.easynpc.client.screen.components.TextField;
+import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
+import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.data.action.ActionEventSet;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.menu.configuration.action.ActionConfigurationMenu;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
-import de.markusbordihn.easynpc.data.action.ActionData;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
-
 @OnlyIn(Dist.CLIENT)
-public class ActionConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
+public class ActionConfigurationScreen<T extends ActionConfigurationMenu>
+    extends ConfigurationScreen<T> {
 
+  // Cache
+  protected final ActionEventSet actionDataSet;
   // Buttons
   protected Button basicActionButton = null;
   protected Button dialogActionButton = null;
-  protected Button yesNoActionButton = null;
   protected Button distanceActionButton = null;
 
   public ActionConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
+    this.actionDataSet = menu.getActionEventSet();
   }
 
   public EditBox actionEditBox(int left, int top, ActionData actionData) {
-    EditBox editBox = new EditBox(this.font, left, top, 275, 16, Component.literal(""));
+    EditBox editBox = new TextField(this.font, left, top, 275, 16);
     editBox.setMaxLength(255);
-    editBox.setValue(actionData != null ? actionData.getAction() : "");
+    editBox.setValue(actionData != null ? actionData.getCommand() : "");
     return editBox;
   }
 
@@ -58,34 +62,51 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
     super.init();
 
     // Action Types
-    this.basicActionButton = this.addRenderableWidget(
-        menuButton(this.contentLeftPos + 10, this.buttonTopPos, 80, "basic_actions", onPress -> {
-          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_ACTION);
-        }));
-    this.dialogActionButton = this.addRenderableWidget(
-        menuButton(this.basicActionButton.x + this.basicActionButton.getWidth(), this.buttonTopPos,
-            80, "dialog_actions", onPress -> {
-              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DIALOG_ACTION);
-            }));
-    this.distanceActionButton = this.addRenderableWidget(
-        menuButton(this.dialogActionButton.x + this.dialogActionButton.getWidth(),
-            this.buttonTopPos, 80, "distance_actions", onPress -> {
-              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DISTANCE_ACTION);
-            }));
+    this.basicActionButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.buttonLeftPos,
+                this.buttonTopPos,
+                80,
+                "basic",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_ACTION)));
+    this.dialogActionButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.basicActionButton.x + this.basicActionButton.getWidth(),
+                this.buttonTopPos,
+                80,
+                "dialog_actions",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.DIALOG_ACTION)));
+    this.distanceActionButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.dialogActionButton.x + this.dialogActionButton.getWidth(),
+                this.buttonTopPos,
+                80,
+                "distance_actions",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.DISTANCE_ACTION)));
 
     // Default button stats
     this.basicActionButton.active =
-        this.hasPermissions(COMMON.basicActionConfigurationEnabled.get(),
+        this.hasPermissions(
+            COMMON.basicActionConfigurationEnabled.get(),
             COMMON.basicActionConfigurationAllowInCreative.get(),
             COMMON.basicActionConfigurationPermissionLevel.get());
     this.dialogActionButton.active =
-        this.hasPermissions(COMMON.dialogActionConfigurationEnabled.get(),
+        this.hasPermissions(
+            COMMON.dialogActionConfigurationEnabled.get(),
             COMMON.dialogActionConfigurationAllowInCreative.get(),
             COMMON.dialogActionConfigurationPermissionLevel.get());
     this.distanceActionButton.active =
-        this.hasPermissions(COMMON.distanceActionConfigurationEnabled.get(),
+        this.hasPermissions(
+            COMMON.distanceActionConfigurationEnabled.get(),
             COMMON.distanceActionConfigurationAllowInCreative.get(),
             COMMON.distanceActionConfigurationPermissionLevel.get());
   }
-
 }

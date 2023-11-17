@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,21 +19,18 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
-import net.minecraft.core.Rotations;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Pose;
-
-import net.minecraftforge.network.NetworkEvent;
-
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
+import java.util.UUID;
+import java.util.function.Supplier;
+import net.minecraft.core.Rotations;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Pose;
+import net.minecraftforge.network.NetworkEvent;
 
 public class MessageRotationChange extends NetworkMessage {
 
@@ -50,29 +47,13 @@ public class MessageRotationChange extends NetworkMessage {
     this.rotations = rotations;
   }
 
-  public ModelPart getModelPart() {
-    return this.modelPart;
-  }
-
-  public Rotations getRotations() {
-    return this.rotations;
-  }
-
-  public float getX() {
-    return this.rotations.getX();
-  }
-
-  public float getY() {
-    return this.rotations.getY();
-  }
-
-  public float getZ() {
-    return this.rotations.getZ();
-  }
-
   public static MessageRotationChange decode(final FriendlyByteBuf buffer) {
-    return new MessageRotationChange(buffer.readUUID(), buffer.readEnum(ModelPart.class),
-        buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+    return new MessageRotationChange(
+        buffer.readUUID(),
+        buffer.readEnum(ModelPart.class),
+        buffer.readFloat(),
+        buffer.readFloat(),
+        buffer.readFloat());
   }
 
   public static void encode(final MessageRotationChange message, final FriendlyByteBuf buffer) {
@@ -83,8 +64,8 @@ public class MessageRotationChange extends NetworkMessage {
     buffer.writeFloat(message.getZ());
   }
 
-  public static void handle(MessageRotationChange message,
-      Supplier<NetworkEvent.Context> contextSupplier) {
+  public static void handle(
+      MessageRotationChange message, Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
@@ -113,7 +94,11 @@ public class MessageRotationChange extends NetworkMessage {
 
     // Perform action.
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    log.debug("Change {} rotation to {}° for {} from {}", modelPart, rotations, easyNPCEntity,
+    log.debug(
+        "Change {} rotation to {}° for {} from {}",
+        modelPart,
+        rotations,
+        easyNPCEntity,
         serverPlayer);
     switch (modelPart) {
       case HEAD:
@@ -160,4 +145,23 @@ public class MessageRotationChange extends NetworkMessage {
     }
   }
 
+  public ModelPart getModelPart() {
+    return this.modelPart;
+  }
+
+  public Rotations getRotations() {
+    return this.rotations;
+  }
+
+  public float getX() {
+    return this.rotations.getX();
+  }
+
+  public float getY() {
+    return this.rotations.getY();
+  }
+
+  public float getZ() {
+    return this.rotations.getZ();
+  }
 }

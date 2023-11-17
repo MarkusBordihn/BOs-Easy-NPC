@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,9 +19,10 @@
 
 package de.markusbordihn.easynpc.menu.configuration.preset;
 
+import de.markusbordihn.easynpc.menu.ModMenuTypes;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import java.util.UUID;
 import javax.annotation.Nullable;
-
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
@@ -30,18 +31,18 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-import de.markusbordihn.easynpc.menu.ModMenuTypes;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-
 public class DefaultImportPresetConfigurationMenu extends ConfigurationMenu {
 
   public DefaultImportPresetConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
-    super(ModMenuTypes.DEFAULT_IMPORT_PRESET_CONFIGURATION_MENU.get(), windowId, playerInventory,
+    super(
+        ModMenuTypes.DEFAULT_IMPORT_PRESET_CONFIGURATION_MENU.get(),
+        windowId,
+        playerInventory,
         uuid);
   }
 
-  public DefaultImportPresetConfigurationMenu(int windowId, Inventory playerInventory,
-      FriendlyByteBuf data) {
+  public DefaultImportPresetConfigurationMenu(
+      int windowId, Inventory playerInventory, FriendlyByteBuf data) {
     this(windowId, playerInventory, data.readUUID());
   }
 
@@ -54,11 +55,10 @@ public class DefaultImportPresetConfigurationMenu extends ConfigurationMenu {
 
       @Nullable
       @Override
-      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
-          Player serverPlayer) {
+      public AbstractContainerMenu createMenu(
+          int windowId, Inventory inventory, Player serverPlayer) {
         return new DefaultImportPresetConfigurationMenu(windowId, inventory, uuid);
       }
     };
   }
-
 }

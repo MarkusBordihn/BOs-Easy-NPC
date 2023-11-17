@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,36 +19,29 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.Component;
-
 import de.markusbordihn.easynpc.Constants;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
-public class SaveButton extends Button {
+public class SaveButton extends SpriteButton {
+
+  public static final int DEFAULT_WIDTH = 100;
+  public static final int DEFAULT_HEIGHT = 18;
+  public static final ResourceLocation SPRITE = Constants.TEXTURE_CONFIGURATION;
 
   public SaveButton(int left, int top, OnPress onPress) {
-    this(left, top, 22, 20, Component.literal(""), onPress);
+    super(left, top, 20, 18, Constants.TEXTURE_CONFIGURATION, 4, 3, 64, 4, 13, 13, onPress);
   }
 
-  public SaveButton(int left, int top, int width, int height, Component component,
-      OnPress onPress) {
-    super(left, top, width, height, component, onPress);
+  public SaveButton(int left, int top, String label, OnPress onPress) {
+    super(left, top, DEFAULT_WIDTH, DEFAULT_HEIGHT, label, SPRITE, 4, 3, 64, 4, 13, 13, onPress);
   }
 
-  @Override
-  public void renderButton(PoseStack poseStack, int left, int top, float partialTicks) {
-    super.renderButton(poseStack, left, top, partialTicks);
-
-    RenderSystem.setShader(GameRenderer::getPositionTexShader);
-    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-    RenderSystem.setShaderTexture(0, Constants.TEXTURE_CONFIGURATION);
-
-    // Button Icons
-    this.blit(poseStack, this.x + 4, this.y + 3, 60, this.active ? 0 : 16, 16, 16);
+  public SaveButton(int left, int top, int width, String label, OnPress onPress) {
+    super(left, top, width, DEFAULT_HEIGHT, label, SPRITE, 4, 3, 64, 4, 13, 13, onPress);
   }
 
+  public SaveButton(int left, int top, int width, Component component, OnPress onPress) {
+    super(left, top, width, DEFAULT_HEIGHT, component, SPRITE, 4, 3, 64, 4, 13, 13, onPress);
+  }
 }

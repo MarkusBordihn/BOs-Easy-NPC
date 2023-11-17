@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,18 +19,15 @@
 
 package de.markusbordihn.easynpc.entity;
 
+import de.markusbordihn.easynpc.Constants;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import de.markusbordihn.easynpc.Constants;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Mod.EventBusSubscriber()
 public class EasyNPCEntityEvents {
@@ -72,5 +69,4 @@ public class EasyNPCEntityEvents {
       }
     }
   }
-
 }

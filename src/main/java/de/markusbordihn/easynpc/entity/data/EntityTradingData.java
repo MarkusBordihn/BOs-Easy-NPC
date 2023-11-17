@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,6 +19,11 @@
 
 package de.markusbordihn.easynpc.entity.data;
 
+import de.markusbordihn.easynpc.data.entity.CustomDataSerializers;
+import de.markusbordihn.easynpc.data.trading.TradingType;
+import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
+import de.markusbordihn.easynpc.menu.configuration.trading.AdvancedTradingConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.trading.BasicTradingConfigurationMenu;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -28,37 +33,32 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 
-import de.markusbordihn.easynpc.data.trading.TradingType;
-import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
-import de.markusbordihn.easynpc.menu.configuration.trading.AdvancedTradingConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.trading.BasicTradingConfigurationMenu;
-
 public interface EntityTradingData extends EntityDataInterface {
 
   // Synced entity data
-  public static final EntityDataAccessor<CompoundTag> DATA_TRADING_INVENTORY =
+  EntityDataAccessor<CompoundTag> DATA_TRADING_INVENTORY =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.COMPOUND_TAG);
-  public static final EntityDataAccessor<MerchantOffers> DATA_MERCHANT_OFFERS =
+  EntityDataAccessor<MerchantOffers> DATA_MERCHANT_OFFERS =
       SynchedEntityData.defineId(EasyNPCEntityData.class, CustomDataSerializers.MERCHANT_OFFERS);
-  public static final EntityDataAccessor<TradingType> DATA_TRADING_TYPE =
+  EntityDataAccessor<TradingType> DATA_TRADING_TYPE =
       SynchedEntityData.defineId(EasyNPCEntityData.class, CustomDataSerializers.TRADING_TYPE);
-  public static final EntityDataAccessor<Integer> DATA_TRADING_RESETS_EVERY_MIN =
+  EntityDataAccessor<Integer> DATA_TRADING_RESETS_EVERY_MIN =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.INT);
-  public static final EntityDataAccessor<Integer> DATA_TRADING_BASIC_MAX_USES =
+  EntityDataAccessor<Integer> DATA_TRADING_BASIC_MAX_USES =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.INT);
-  public static final EntityDataAccessor<Integer> DATA_TRADING_BASIC_REWARDED_XP =
+  EntityDataAccessor<Integer> DATA_TRADING_BASIC_REWARDED_XP =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.INT);
 
   // CompoundTags
-  public static final String DATA_TRADING_INVENTORY_TAG = "Inventory";
-  public static final String DATA_TRADING_OFFERS_TAG = "Offers";
-  public static final String DATA_TRADING_RECIPES_TAG = "Recipes";
-  public static final String DATA_TRADING_TYPE_TAG = "TradingType";
-  public static final String DATA_TRADING_RESETS_EVERY_MIN_TAG = "ResetsEveryMin";
-  public static final String DATA_TRADING_BASIC_MAX_USES_TAG = "BasicMaxUses";
-  public static final String DATA_TRADING_BASIC_REWARDED_XP_TAG = "BasicRewardedXP";
+  String DATA_TRADING_INVENTORY_TAG = "Inventory";
+  String DATA_TRADING_OFFERS_TAG = "Offers";
+  String DATA_TRADING_RECIPES_TAG = "Recipes";
+  String DATA_TRADING_TYPE_TAG = "TradingType";
+  String DATA_TRADING_RESETS_EVERY_MIN_TAG = "ResetsEveryMin";
+  String DATA_TRADING_BASIC_MAX_USES_TAG = "BasicMaxUses";
+  String DATA_TRADING_BASIC_REWARDED_XP_TAG = "BasicRewardedXP";
 
-  public void updateTradesData();
+  void updateTradesData();
 
   default MerchantOffers getTradingOffers() {
     return getEntityData(DATA_MERCHANT_OFFERS);
@@ -75,9 +75,10 @@ public interface EntityTradingData extends EntityDataInterface {
 
     // Update trading offers with container items.
     MerchantOffers merchantOffers = new MerchantOffers();
-    for (int tradingOffer =
-        0; tradingOffer < AdvancedTradingConfigurationMenu.TRADING_OFFERS; tradingOffer++) {
-      ItemStack itemA = container.getItem(tradingOffer * 3 + 0);
+    for (int tradingOffer = 0;
+        tradingOffer < AdvancedTradingConfigurationMenu.TRADING_OFFERS;
+        tradingOffer++) {
+      ItemStack itemA = container.getItem(tradingOffer * 3);
       ItemStack itemB = container.getItem(tradingOffer * 3 + 1);
       ItemStack itemResult = container.getItem(tradingOffer * 3 + 2);
 
@@ -88,10 +89,17 @@ public interface EntityTradingData extends EntityDataInterface {
               ? existingMerchantOffers.get(tradingOffer)
               : null;
       if (existingMerchantOffer != null) {
-        merchantOffers.add(tradingOffer,
-            new MerchantOffer(itemA, itemB, itemResult, existingMerchantOffer.getUses(),
-                existingMerchantOffer.getMaxUses(), existingMerchantOffer.getXp(),
-                existingMerchantOffer.getPriceMultiplier(), existingMerchantOffer.getDemand()));
+        merchantOffers.add(
+            tradingOffer,
+            new MerchantOffer(
+                itemA,
+                itemB,
+                itemResult,
+                existingMerchantOffer.getUses(),
+                existingMerchantOffer.getMaxUses(),
+                existingMerchantOffer.getXp(),
+                existingMerchantOffer.getPriceMultiplier(),
+                existingMerchantOffer.getDemand()));
       } else {
         merchantOffers.add(tradingOffer, new MerchantOffer(itemA, itemB, itemResult, 64, 1, 1.0F));
       }
@@ -108,14 +116,21 @@ public interface EntityTradingData extends EntityDataInterface {
 
     // Create new trading offers based on the container and number of trading offers.
     MerchantOffers merchantOffers = new MerchantOffers();
-    for (int tradingOffer =
-        0; tradingOffer < BasicTradingConfigurationMenu.TRADING_OFFERS; tradingOffer++) {
-      ItemStack itemA = container.getItem(tradingOffer * 3 + 0);
+    for (int tradingOffer = 0;
+        tradingOffer < BasicTradingConfigurationMenu.TRADING_OFFERS;
+        tradingOffer++) {
+      ItemStack itemA = container.getItem(tradingOffer * 3);
       ItemStack itemB = container.getItem(tradingOffer * 3 + 1);
       ItemStack itemResult = container.getItem(tradingOffer * 3 + 2);
 
-      MerchantOffer merchantOffer = new MerchantOffer(itemA, itemB, itemResult,
-          this.getBasicTradingMaxUses(), this.getBasicTradingRewardExp(), 1.0F);
+      MerchantOffer merchantOffer =
+          new MerchantOffer(
+              itemA,
+              itemB,
+              itemResult,
+              this.getBasicTradingMaxUses(),
+              this.getBasicTradingRewardExp(),
+              1.0F);
       merchantOffers.add(merchantOffer);
     }
 
@@ -139,9 +154,14 @@ public interface EntityTradingData extends EntityDataInterface {
     // Update trading offers
     MerchantOffers newMerchantOffers = new MerchantOffers();
     for (MerchantOffer merchantOffer : merchantOffers) {
-      MerchantOffer newMerchantOffer = new MerchantOffer(merchantOffer.getBaseCostA(),
-          merchantOffer.getCostB(), merchantOffer.getResult(), this.getBasicTradingMaxUses(),
-          this.getBasicTradingRewardExp(), merchantOffer.getPriceMultiplier());
+      MerchantOffer newMerchantOffer =
+          new MerchantOffer(
+              merchantOffer.getBaseCostA(),
+              merchantOffer.getCostB(),
+              merchantOffer.getResult(),
+              this.getBasicTradingMaxUses(),
+              this.getBasicTradingRewardExp(),
+              merchantOffer.getPriceMultiplier());
       newMerchantOffers.add(newMerchantOffer);
     }
 
@@ -182,13 +202,15 @@ public interface EntityTradingData extends EntityDataInterface {
 
   default boolean hasTrading() {
     return ((getTradingType() == TradingType.BASIC || getTradingType() == TradingType.ADVANCED)
-        && !getEntityData(DATA_MERCHANT_OFFERS).isEmpty())
+            && getEntityData(DATA_MERCHANT_OFFERS) != null
+            && !getEntityData(DATA_MERCHANT_OFFERS).isEmpty())
         || getTradingType() == TradingType.CUSTOM;
   }
 
   default void setAdvancedTradingMaxUses(int tradingOfferIndex, int maxUses) {
     MerchantOffers merchantOffers = getTradingOffers();
-    if (merchantOffers == null || merchantOffers.isEmpty()
+    if (merchantOffers == null
+        || merchantOffers.isEmpty()
         || merchantOffers.size() <= tradingOfferIndex) {
       return;
     }
@@ -196,16 +218,24 @@ public interface EntityTradingData extends EntityDataInterface {
     if (merchantOffer == null) {
       return;
     }
-    merchantOffers.set(tradingOfferIndex,
-        new MerchantOffer(merchantOffer.getBaseCostA(), merchantOffer.getCostB(),
-            merchantOffer.getResult(), 0, maxUses, merchantOffer.getXp(),
-            merchantOffer.getPriceMultiplier(), merchantOffer.getDemand()));
+    merchantOffers.set(
+        tradingOfferIndex,
+        new MerchantOffer(
+            merchantOffer.getBaseCostA(),
+            merchantOffer.getCostB(),
+            merchantOffer.getResult(),
+            0,
+            maxUses,
+            merchantOffer.getXp(),
+            merchantOffer.getPriceMultiplier(),
+            merchantOffer.getDemand()));
     this.setTradingOffers(merchantOffers);
   }
 
   default void setAdvancedTradingXp(int tradingOfferIndex, int xp) {
     MerchantOffers merchantOffers = getTradingOffers();
-    if (merchantOffers == null || merchantOffers.isEmpty()
+    if (merchantOffers == null
+        || merchantOffers.isEmpty()
         || merchantOffers.size() <= tradingOfferIndex) {
       return;
     }
@@ -213,16 +243,24 @@ public interface EntityTradingData extends EntityDataInterface {
     if (merchantOffer == null) {
       return;
     }
-    merchantOffers.set(tradingOfferIndex,
-        new MerchantOffer(merchantOffer.getBaseCostA(), merchantOffer.getCostB(),
-            merchantOffer.getResult(), merchantOffer.getUses(), merchantOffer.getMaxUses(), xp,
-            merchantOffer.getPriceMultiplier(), merchantOffer.getDemand()));
+    merchantOffers.set(
+        tradingOfferIndex,
+        new MerchantOffer(
+            merchantOffer.getBaseCostA(),
+            merchantOffer.getCostB(),
+            merchantOffer.getResult(),
+            merchantOffer.getUses(),
+            merchantOffer.getMaxUses(),
+            xp,
+            merchantOffer.getPriceMultiplier(),
+            merchantOffer.getDemand()));
     this.setTradingOffers(merchantOffers);
   }
 
   default void setAdvancedTradingPriceMultiplier(int tradingOfferIndex, float priceMultiplier) {
     MerchantOffers merchantOffers = getTradingOffers();
-    if (merchantOffers == null || merchantOffers.isEmpty()
+    if (merchantOffers == null
+        || merchantOffers.isEmpty()
         || merchantOffers.size() <= tradingOfferIndex) {
       return;
     }
@@ -230,16 +268,24 @@ public interface EntityTradingData extends EntityDataInterface {
     if (merchantOffer == null) {
       return;
     }
-    merchantOffers.set(tradingOfferIndex,
-        new MerchantOffer(merchantOffer.getBaseCostA(), merchantOffer.getCostB(),
-            merchantOffer.getResult(), merchantOffer.getUses(), merchantOffer.getMaxUses(),
-            merchantOffer.getXp(), priceMultiplier, merchantOffer.getDemand()));
+    merchantOffers.set(
+        tradingOfferIndex,
+        new MerchantOffer(
+            merchantOffer.getBaseCostA(),
+            merchantOffer.getCostB(),
+            merchantOffer.getResult(),
+            merchantOffer.getUses(),
+            merchantOffer.getMaxUses(),
+            merchantOffer.getXp(),
+            priceMultiplier,
+            merchantOffer.getDemand()));
     this.setTradingOffers(merchantOffers);
   }
 
   default void setAdvancedTradingDemand(int tradingOfferIndex, int demand) {
     MerchantOffers merchantOffers = getTradingOffers();
-    if (merchantOffers == null || merchantOffers.isEmpty()
+    if (merchantOffers == null
+        || merchantOffers.isEmpty()
         || merchantOffers.size() <= tradingOfferIndex) {
       return;
     }
@@ -247,35 +293,42 @@ public interface EntityTradingData extends EntityDataInterface {
     if (merchantOffer == null) {
       return;
     }
-    merchantOffers.set(tradingOfferIndex,
-        new MerchantOffer(merchantOffer.getBaseCostA(), merchantOffer.getCostB(),
-            merchantOffer.getResult(), merchantOffer.getUses(), merchantOffer.getMaxUses(),
-            merchantOffer.getXp(), merchantOffer.getPriceMultiplier(), demand));
+    merchantOffers.set(
+        tradingOfferIndex,
+        new MerchantOffer(
+            merchantOffer.getBaseCostA(),
+            merchantOffer.getCostB(),
+            merchantOffer.getResult(),
+            merchantOffer.getUses(),
+            merchantOffer.getMaxUses(),
+            merchantOffer.getXp(),
+            merchantOffer.getPriceMultiplier(),
+            demand));
     this.setTradingOffers(merchantOffers);
-  }
-
-  default void setBasicTradingMaxUses(int maxUses) {
-    setEntityData(DATA_TRADING_BASIC_MAX_USES, maxUses);
   }
 
   default int getBasicTradingMaxUses() {
     return getEntityData(DATA_TRADING_BASIC_MAX_USES);
   }
 
-  default void setBasicTradingRewardExp(int rewardExp) {
-    setEntityData(DATA_TRADING_BASIC_REWARDED_XP, rewardExp);
+  default void setBasicTradingMaxUses(int maxUses) {
+    setEntityData(DATA_TRADING_BASIC_MAX_USES, maxUses);
   }
 
   default int getBasicTradingRewardExp() {
     return getEntityData(DATA_TRADING_BASIC_REWARDED_XP);
   }
 
-  default void setTradingResetsEveryMin(int resetsEveryMin) {
-    setEntityData(DATA_TRADING_RESETS_EVERY_MIN, resetsEveryMin);
+  default void setBasicTradingRewardExp(int rewardExp) {
+    setEntityData(DATA_TRADING_BASIC_REWARDED_XP, rewardExp);
   }
 
   default int getTradingResetsEveryMin() {
     return getEntityData(DATA_TRADING_RESETS_EVERY_MIN);
+  }
+
+  default void setTradingResetsEveryMin(int resetsEveryMin) {
+    setEntityData(DATA_TRADING_RESETS_EVERY_MIN, resetsEveryMin);
   }
 
   default void defineSynchedTradingData() {
@@ -335,8 +388,5 @@ public interface EntityTradingData extends EntityDataInterface {
     if (tradingTag.contains(DATA_TRADING_INVENTORY_TAG)) {
       setTradingInventory(tradingTag.getCompound(DATA_TRADING_INVENTORY_TAG));
     }
-
-
   }
-
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,21 +19,18 @@
 
 package de.markusbordihn.easynpc.tabs;
 
+import de.markusbordihn.easynpc.item.ModItems;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
-import de.markusbordihn.easynpc.item.ModItems;
-
 public class EasyNPCTab {
 
-  protected EasyNPCTab() {}
-
-  public static final CreativeModeTab TAB_SPAWN_EGGS = new CreativeModeTab("easy_npc.spawn_eggs") {
-    public ItemStack makeIcon() {
-      return new ItemStack(ModItems.FAIRY_NPC_SPAWN_EGG.get());
-    }
-  };
-
+  public static final CreativeModeTab TAB_SPAWN_EGGS =
+      new CreativeModeTab("easy_npc.spawn_eggs") {
+        public ItemStack makeIcon() {
+          return new ItemStack(ModItems.FAIRY_NPC_SPAWN_EGG.get());
+        }
+      };
   public static final CreativeModeTab TAB_CONFIG_ITEMS =
       new CreativeModeTab("easy_npc.config_items") {
         public ItemStack makeIcon() {
@@ -41,4 +38,5 @@ public class EasyNPCTab {
         }
       };
 
+  protected EasyNPCTab() {}
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,12 +19,10 @@
 
 package de.markusbordihn.easynpc.item;
 
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import java.util.Objects;
 import java.util.function.Supplier;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -40,11 +38,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.MaterialColor;
-
 import net.minecraftforge.common.ForgeSpawnEggItem;
-
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EasyNPCSpawnEggItem extends ForgeSpawnEggItem {
 
@@ -74,9 +70,15 @@ public class EasyNPCSpawnEggItem extends ForgeSpawnEggItem {
 
     // Spawn the entity based on the spawn egg type.
     EntityType<?> entityType = this.getType(itemStack.getTag());
-    Entity entity = entityType.spawn((ServerLevel) level, itemStack, context.getPlayer(), blockPos1,
-        MobSpawnType.SPAWN_EGG, true,
-        !Objects.equals(blockPos, blockPos1) && direction == Direction.UP);
+    Entity entity =
+        entityType.spawn(
+            (ServerLevel) level,
+            itemStack,
+            context.getPlayer(),
+            blockPos1,
+            MobSpawnType.SPAWN_EGG,
+            true,
+            !Objects.equals(blockPos, blockPos1) && direction == Direction.UP);
 
     if (entity != null) {
       if (player != null && entity instanceof EasyNPCEntity easyNPCEntity) {
@@ -89,5 +91,4 @@ public class EasyNPCSpawnEggItem extends ForgeSpawnEggItem {
 
     return InteractionResult.CONSUME;
   }
-
 }

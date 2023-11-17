@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,28 +19,29 @@
 
 package de.markusbordihn.easynpc.utils;
 
-import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 public class TextUtils {
 
-  public static final Component normalizeName(String name) {
+  protected TextUtils() {}
+
+  public static Component normalizeName(String name) {
     return Component.literal(normalizeString(name));
   }
 
-  public static final String normalizeString(String string) {
+  public static String normalizeString(String string) {
     String normalizedString = string.toLowerCase().replace("_", " ").replace("-", " ");
     normalizedString =
         normalizedString.substring(0, 1).toUpperCase() + normalizedString.substring(1);
     return normalizedString;
   }
 
-  public static final String normalizeString(String string, int maxSize) {
+  public static String normalizeString(String string, int maxSize) {
     return limitString(normalizeString(string), maxSize);
   }
 
-  public static final String limitString(String string, int maxSize) {
+  public static String limitString(String string, int maxSize) {
     if (string == null || string.isBlank()) {
       return string;
     }
@@ -52,13 +53,12 @@ public class TextUtils {
     return trimmedString.substring(0, maxSize) + '…';
   }
 
-  public static final Component removeAction(Component component) {
+  public static Component removeAction(Component component) {
     MutableComponent mutableComponent =
-        component.plainCopy().setStyle(component.getStyle().withClickEvent((ClickEvent) null));
+        component.plainCopy().setStyle(component.getStyle().withClickEvent(null));
     for (Component componentSibling : component.getSiblings()) {
       mutableComponent.append(removeAction(componentSibling));
     }
     return mutableComponent;
   }
-
 }

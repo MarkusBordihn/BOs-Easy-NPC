@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,29 +19,27 @@
 
 package de.markusbordihn.easynpc.network;
 
-import java.util.UUID;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import net.minecraft.server.level.ServerPlayer;
-
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import java.util.Random;
+import java.util.UUID;
+import net.minecraft.server.level.ServerPlayer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class NetworkMessage {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
+  protected static final UUID EMPTY_UUID = new UUID(0L, 0L);
+
+  protected static final Random RANDOM = new Random();
+
   protected final UUID uuid;
 
   public NetworkMessage(UUID uuid) {
     this.uuid = uuid;
-  }
-
-  public UUID getUUID() {
-    return this.uuid;
   }
 
   public static boolean checkAccess(UUID uuid, ServerPlayer serverPlayer) {
@@ -61,4 +59,7 @@ public class NetworkMessage {
     return true;
   }
 
+  public UUID getUUID() {
+    return this.uuid;
+  }
 }

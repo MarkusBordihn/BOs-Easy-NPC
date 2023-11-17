@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,17 +19,16 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.preset;
 
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
+import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
@@ -49,27 +48,39 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
 
     // Import buttons
     int buttonWidth = 92;
-    this.customExportPresetButton = this.addRenderableWidget(menuButton(this.buttonLeftPos,
-        this.buttonTopPos, buttonWidth + 16, "custom_preset", button -> {
-          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_PRESET_EXPORT);
-        }));
+    this.customExportPresetButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.buttonLeftPos,
+                this.buttonTopPos,
+                buttonWidth + 16,
+                "custom",
+                button ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.CUSTOM_PRESET_EXPORT)));
     this.customExportPresetButton.active = false;
-    this.worldExportPresetButton = this.addRenderableWidget(
-        menuButton(this.customExportPresetButton.x + this.customExportPresetButton.getWidth(),
-            this.buttonTopPos, buttonWidth, "world_preset", button -> {
-              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.WORLD_PRESET_EXPORT);
-            }));
+    this.worldExportPresetButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.customExportPresetButton.x + this.customExportPresetButton.getWidth(),
+                this.buttonTopPos,
+                buttonWidth,
+                "world_preset",
+                button ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.WORLD_PRESET_EXPORT)));
     this.worldExportPresetButton.active = false;
 
     // Default button stats
     this.customExportPresetButton.active =
-        this.hasPermissions(COMMON.customExportPresetConfigurationEnabled.get(),
+        this.hasPermissions(
+            COMMON.customExportPresetConfigurationEnabled.get(),
             COMMON.customExportPresetConfigurationAllowInCreative.get(),
             COMMON.customExportPresetConfigurationPermissionLevel.get());
     this.worldExportPresetButton.active =
-        this.hasPermissions(COMMON.worldExportPresetConfigurationEnabled.get(),
+        this.hasPermissions(
+            COMMON.worldExportPresetConfigurationEnabled.get(),
             COMMON.worldExportPresetConfigurationAllowInCreative.get(),
             COMMON.worldExportPresetConfigurationPermissionLevel.get());
   }
-
 }

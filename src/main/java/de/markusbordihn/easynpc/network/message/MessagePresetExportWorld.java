@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,23 +19,20 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.UUID;
-import java.util.function.Supplier;
-
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtIo;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-
-import net.minecraftforge.network.NetworkEvent;
-
 import de.markusbordihn.easynpc.data.WorldPresetData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
+import java.util.function.Supplier;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkEvent;
 
 public class MessagePresetExportWorld extends NetworkMessage {
 
@@ -44,10 +41,6 @@ public class MessagePresetExportWorld extends NetworkMessage {
   public MessagePresetExportWorld(UUID uuid, String name) {
     super(uuid);
     this.name = name;
-  }
-
-  public String getName() {
-    return this.name;
   }
 
   public static MessagePresetExportWorld decode(final FriendlyByteBuf buffer) {
@@ -59,8 +52,8 @@ public class MessagePresetExportWorld extends NetworkMessage {
     buffer.writeUtf(message.getName());
   }
 
-  public static void handle(MessagePresetExportWorld message,
-      Supplier<NetworkEvent.Context> contextSupplier) {
+  public static void handle(
+      MessagePresetExportWorld message, Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
@@ -99,14 +92,25 @@ public class MessagePresetExportWorld extends NetworkMessage {
 
     // Perform action.
     File presetFile = WorldPresetData.getPresetFile(skinModel, name);
-    log.info("Exporting EasyNPC {} with UUID {} and skin {} to {}", name, uuid, skinModel,
-        presetFile);
+    log.info(
+        "Exporting EasyNPC {} with UUID {} and skin {} to {}", name, uuid, skinModel, presetFile);
     try {
       NbtIo.writeCompressed(data, presetFile);
     } catch (final IOException exception) {
-      log.error("Failed to export EasyNPC " + name + " with UUID " + uuid + " and skin " + skinModel
-          + " to " + presetFile, exception);
+      log.error(
+          "Failed to export EasyNPC "
+              + name
+              + " with UUID "
+              + uuid
+              + " and skin "
+              + skinModel
+              + " to "
+              + presetFile,
+          exception);
     }
   }
 
+  public String getName() {
+    return this.name;
+  }
 }

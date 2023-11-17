@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -30,6 +30,7 @@ public enum ModelPart {
   RIGHT_LEG,
   ROOT,
   UNKNOWN;
+
   // @formatter:on
 
   public static ModelPart get(String modelPart) {

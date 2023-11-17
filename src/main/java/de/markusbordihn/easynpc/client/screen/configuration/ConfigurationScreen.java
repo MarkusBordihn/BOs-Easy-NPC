@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,35 +19,32 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration;
 
-import java.util.UUID;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.components.Text;
+import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.config.CommonConfig;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import java.util.UUID;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @OnlyIn(Dist.CLIENT)
 public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractContainerScreen<T> {
@@ -66,7 +63,10 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
   protected final EasyNPCEntity entity;
   protected final SkinModel skinModel;
   protected final UUID uuid;
-
+  protected final LivingEntity owner;
+  protected final String ownerName;
+  // Owner details
+  protected boolean hasOwner = false;
   // Buttons
   protected Button closeButton = null;
   protected Button homeButton = null;
@@ -83,45 +83,19 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
 
   public ConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
+
+    // NPC Entity Data
     this.entity = menu.getEntity();
     this.skinModel = this.entity.getSkinModel();
     this.uuid = this.entity.getUUID();
+    this.hasOwner = this.entity.hasOwner();
+    this.owner = this.hasOwner ? this.entity.getOwner() : null;
+    this.ownerName = this.hasOwner ? this.entity.getOwnerName() : "";
+
+    // General environment Data
     this.minecraftInstance = Minecraft.getInstance();
     this.localPlayer = this.minecraftInstance != null ? this.minecraftInstance.player : null;
     this.clientLevel = this.minecraftInstance != null ? this.minecraftInstance.level : null;
-  }
-
-  public void closeScreen() {
-    if (this.minecraftInstance != null) {
-      this.minecraftInstance.setScreen((Screen) null);
-    }
-  }
-
-  protected int fontDraw(PoseStack poseStack, String text, float x, float y) {
-    return this.font.draw(poseStack, Component.translatable(Constants.TEXT_CONFIG_PREFIX + text), x,
-        y, 4210752);
-  }
-
-  protected static Button menuButton(int left, int top, int width, String label,
-      Button.OnPress onPress) {
-    return menuButton(left, top, width,
-        Component.translatable(Constants.TEXT_CONFIG_PREFIX + label), onPress);
-  }
-
-  protected static Button menuButton(int left, int top, int width, String label, String data,
-      Button.OnPress onPress) {
-    return menuButton(left, top, width,
-        Component.translatable(Constants.TEXT_CONFIG_PREFIX + label, data), onPress);
-  }
-
-  protected static Button menuButton(int left, int top, int width, Component label,
-      Button.OnPress onPress) {
-    return new Button(left, top, width, 20, label, onPress);
-  }
-
-  protected static Button menuButtonSmall(int left, int top, int width, Component label,
-      Button.OnPress onPress) {
-    return new Button(left, top, width, 16, label, onPress);
   }
 
   protected static Double getDoubleValue(String value) {
@@ -135,21 +109,10 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     return null;
   }
 
-  protected boolean hasPermissions(Boolean enabled, Boolean allowInCreative, int permissionLevel) {
-    if (Boolean.FALSE.equals(enabled)) {
-      return false;
-    } else if (Boolean.TRUE.equals(allowInCreative && this.localPlayer != null)
-        && this.localPlayer.isCreative()) {
-      return true;
-    } else if (this.localPlayer != null && this.localPlayer.hasPermissions(permissionLevel)) {
-      return true;
-    }
-    return false;
-  }
-
   protected static boolean isFloatValue(String text) {
-    return text != null && (text.isEmpty()
-        || (text.matches("^\\d+(\\.?\\d*)?$") && Float.parseFloat(text) >= 0.0F));
+    return text != null
+        && (text.isEmpty()
+            || (text.matches("^\\d+(\\.?\\d*)?$") && Float.parseFloat(text) >= 0.0F));
   }
 
   protected static boolean isPositiveNumericValue(String text) {
@@ -162,13 +125,36 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
         && (text.isEmpty() || (text.matches("^\\d+$") && Integer.parseInt(text) >= 0));
   }
 
+  public void closeScreen() {
+    if (this.minecraftInstance != null) {
+      this.minecraftInstance.setScreen(null);
+    }
+  }
+
+  public void showMainScreen() {
+    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.MAIN);
+  }
+
+  protected int fontDraw(PoseStack poseStack, String text, int x, int y) {
+    return Text.drawConfigString(poseStack, this.font, text, x, y);
+  }
+
+  protected boolean hasPermissions(Boolean enabled, Boolean allowInCreative, int permissionLevel) {
+    if (Boolean.FALSE.equals(enabled)) {
+      return false;
+    } else if (Boolean.TRUE.equals(allowInCreative && this.localPlayer != null)
+        && this.localPlayer.isCreative()) {
+      return true;
+    } else return this.localPlayer != null && this.localPlayer.hasPermissions(permissionLevel);
+  }
+
   @Override
   public void init() {
     super.init();
 
     // Default stats
     this.imageHeight = 243;
-    this.imageWidth = 318; // @MarkusBordihn: Increase width to 310/320 for more space
+    this.imageWidth = 318;
 
     // Core Positions
     this.titleLabelX = 8;
@@ -183,16 +169,31 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     this.contentTopPos = this.topPos + 43;
 
     // Close Button
-    this.closeButton = this.addRenderableWidget(new ImageButton(this.rightPos - 15, this.topPos + 6,
-        10, 10, 60, 38, Constants.TEXTURE_CONFIGURATION, onPress -> {
-          closeScreen();
-        }));
+    this.closeButton =
+        this.addRenderableWidget(
+            new ImageButton(
+                this.rightPos - 15,
+                this.topPos + 6,
+                10,
+                10,
+                64,
+                38,
+                Constants.TEXTURE_CONFIGURATION,
+                onPress -> {
+                  closeScreen();
+                }));
 
     // Home Button
-    this.homeButton = this.addRenderableWidget(
-        new Button(this.leftPos + 7, this.buttonTopPos, 10, 20, Component.literal("<"), onPress -> {
-          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.MAIN);
-        }));
+    this.homeButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.leftPos + 7,
+                this.buttonTopPos,
+                10,
+                "<",
+                onPress -> {
+                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.MAIN);
+                }));
   }
 
   @Override
@@ -205,7 +206,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
 
   @Override
   protected void renderLabels(PoseStack poseStack, int x, int y) {
-    this.font.draw(poseStack, this.title, this.titleLabelX, this.titleLabelY, 4210752);
+    Text.drawString(poseStack, this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752);
   }
 
   @Override
@@ -215,16 +216,16 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     RenderSystem.setShaderTexture(0, Constants.TEXTURE_DEMO_BACKGROUND);
 
     // Main screen: top left
-    this.blit(poseStack, leftPos, topPos, 0, 0, 250, 170);
+    this.blit(poseStack, leftPos, topPos, 0, 0, 210, 160);
 
     // Main screen: top right
-    this.blit(poseStack, leftPos + 243, topPos, 172, 0, 80, 170);
+    this.blit(poseStack, leftPos + 203, topPos, 132, 0, 120, 160);
 
     // Main screen: bottom left
-    this.blit(poseStack, leftPos, topPos + 77, 0, 5, 250, 170);
+    this.blit(poseStack, leftPos, topPos + 77, 0, 5, 210, 170);
 
     // Main screen: bottom right
-    this.blit(poseStack, leftPos + 243, topPos + 77, 172, 5, 80, 170);
+    this.blit(poseStack, leftPos + 203, topPos + 77, 132, 5, 120, 170);
   }
 
   @Override

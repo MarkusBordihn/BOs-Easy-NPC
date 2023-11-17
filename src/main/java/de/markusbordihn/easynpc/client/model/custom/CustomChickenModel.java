@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,24 +19,30 @@
 
 package de.markusbordihn.easynpc.client.model.custom;
 
-import net.minecraft.client.model.ChickenModel;
-import net.minecraft.client.model.geom.ModelPart;
-
-import net.minecraft.core.Rotations;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Pose;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.data.CustomPosition;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import net.minecraft.client.model.ChickenModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.core.Rotations;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Pose;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class CustomChickenModel<T extends Entity> extends ChickenModel<T> implements EasyNPCModel {
 
+  // Model Information (rotation / position)
+  public static final CustomPosition MODEL_HEAD_POSITION = new CustomPosition(0f, 15f, -4f);
+  public static final CustomPosition MODEL_BODY_POSITION = new CustomPosition(0f, 16f, 0f);
+  public static final CustomPosition MODEL_LEFT_WING_POSITION = new CustomPosition(4f, 13f, 0f);
+  public static final CustomPosition MODEL_RIGHT_WING_POSITION = new CustomPosition(-4f, 13f, 0f);
+  public static final CustomPosition MODEL_LEFT_LEG_POSITION = new CustomPosition(1f, 19f, 1f);
+  public static final CustomPosition MODEL_RIGHT_LEG_POSITION = new CustomPosition(-2f, 19f, 1f);
+  public static final Rotations MODEL_BODY_ROTATION =
+      new Rotations(((float) Math.PI / 2f), 0.0f, 0.0f);
   // Model Parts
   private final ModelPart head;
   private final ModelPart body;
@@ -46,17 +52,6 @@ public class CustomChickenModel<T extends Entity> extends ChickenModel<T> implem
   private final ModelPart leftWing;
   private final ModelPart beak;
   private final ModelPart redThing;
-
-  // Model Information (rotation / position)
-  public static final CustomPosition MODEL_HEAD_POSITION = new CustomPosition(0f, 15f, -4f);
-  public static final CustomPosition MODEL_BODY_POSITION = new CustomPosition(0f, 16f, 0f);
-  public static final CustomPosition MODEL_LEFT_WING_POSITION = new CustomPosition(4f, 13f, 0f);
-  public static final CustomPosition MODEL_RIGHT_WING_POSITION = new CustomPosition(-4f, 13f, 0f);
-  public static final CustomPosition MODEL_LEFT_LEG_POSITION = new CustomPosition(1f, 19f, 1f);
-  public static final CustomPosition MODEL_RIGHT_LEG_POSITION = new CustomPosition(-2f, 19f, 1f);
-
-  public static final Rotations MODEL_BODY_ROTATION =
-      new Rotations(((float) Math.PI / 2f), 0.0f, 0.0f);
 
   public CustomChickenModel(ModelPart modelPart) {
     super(modelPart);
@@ -106,28 +101,39 @@ public class CustomChickenModel<T extends Entity> extends ChickenModel<T> implem
   }
 
   @Override
-  public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks,
-      float netHeadYaw, float headPitch) {
+  public void setupAnim(
+      T entity,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
 
     if (entity instanceof EasyNPCEntity easyNPCEntity) {
 
       // Reset player model to avoid any issues with other mods.
-      resetBirdModel(this.head, this.body, this.leftWing, this.rightWing, this.leftLeg,
-          this.rightLeg);
+      EasyNPCModel.resetBirdModel(
+          this, this.head, this.body, this.leftWing, this.rightWing, this.leftLeg, this.rightLeg);
 
       // Individual Part Modifications
       if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
-        setupCustomBirdModel(easyNPCEntity, head, body, leftWing, rightWing, leftLeg, rightLeg,
-            netHeadYaw, headPitch);
+        EasyNPCModel.setupBirdModel(
+            easyNPCEntity,
+            head,
+            body,
+            leftWing,
+            rightWing,
+            leftLeg,
+            rightLeg,
+            netHeadYaw,
+            headPitch);
       } else if (easyNPCEntity.getPose() != Pose.CROUCHING) {
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
       }
-
     }
 
     // Adjust position and rotation of additional parts
     this.beak.copyFrom(head);
     this.redThing.copyFrom(head);
   }
-
 }
