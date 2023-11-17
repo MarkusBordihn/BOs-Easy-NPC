@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -17,17 +17,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 package de.markusbordihn.easynpc.client.texture;
 
+import de.markusbordihn.easynpc.data.skin.SkinModel;
 import java.util.Objects;
 import java.util.UUID;
-import de.markusbordihn.easynpc.data.skin.SkinModel;
 
 public class TextureModelKey {
 
-  private UUID uuid;
-  private String subType;
+  private final UUID uuid;
+  private final String subType;
   private SkinModel skinModel;
 
   public TextureModelKey(UUID uuid, SkinModel skinModel) {
@@ -68,12 +67,10 @@ public class TextureModelKey {
     if (object == this) {
       return true;
     }
-    if (!(object instanceof TextureModelKey)) {
+    if (!(object instanceof TextureModelKey textureModelKey)) {
       return false;
     }
 
-    TextureModelKey textureModelKey = (TextureModelKey) object;
     return this.uuid.equals(textureModelKey.uuid) && this.subType.equals(textureModelKey.subType);
   }
-
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,17 +19,14 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-
-import net.minecraftforge.network.NetworkEvent;
-
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
+import java.util.UUID;
+import java.util.function.Supplier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkEvent;
 
 public class MessageScaleChange extends NetworkMessage {
 
@@ -42,14 +39,6 @@ public class MessageScaleChange extends NetworkMessage {
     this.scaleAxis = scaleAxis;
   }
 
-  public Float getScale() {
-    return this.scale;
-  }
-
-  public String getScaleAxis() {
-    return this.scaleAxis;
-  }
-
   public static MessageScaleChange decode(FriendlyByteBuf buffer) {
     return new MessageScaleChange(buffer.readUUID(), buffer.readUtf(), buffer.readFloat());
   }
@@ -60,8 +49,8 @@ public class MessageScaleChange extends NetworkMessage {
     buffer.writeFloat(message.getScale());
   }
 
-  public static void handle(MessageScaleChange message,
-      Supplier<NetworkEvent.Context> contextSupplier) {
+  public static void handle(
+      MessageScaleChange message, Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
@@ -108,8 +97,16 @@ public class MessageScaleChange extends NetworkMessage {
         easyNPCEntity.setScaleZ(scale);
         break;
       default:
-        log.error("Unknown scale axis {} request for UUID {} from {}", scaleAxis, uuid,
-            serverPlayer);
+        log.error(
+            "Unknown scale axis {} request for UUID {} from {}", scaleAxis, uuid, serverPlayer);
     }
+  }
+
+  public Float getScale() {
+    return this.scale;
+  }
+
+  public String getScaleAxis() {
+    return this.scaleAxis;
   }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,23 +19,19 @@
 
 package de.markusbordihn.easynpc.commands;
 
-import java.util.concurrent.CompletableFuture;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.server.level.ServerPlayer;
-
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.WorldPresetData;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import java.util.concurrent.CompletableFuture;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.server.level.ServerPlayer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CustomCommand {
 
@@ -48,16 +44,17 @@ public class CustomCommand {
       throws CommandSyntaxException {
     // Return all EasyNPCs for creative mode and only the EasyNPCs of the player.
     ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
-    return SharedSuggestionProvider
-        .suggest(serverPlayer.isCreative() ? EntityManager.getUUIDStrings()
-            : EntityManager.getUUIDStringsByOwner(serverPlayer), build);
+    return SharedSuggestionProvider.suggest(
+        serverPlayer.isCreative()
+            ? EntityManager.getUUIDStrings()
+            : EntityManager.getUUIDStringsByOwner(serverPlayer),
+        build);
   }
 
   protected static CompletableFuture<Suggestions> suggestPresets(
       CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {
     // Return all presets for all easy NPCs.
-    return SharedSuggestionProvider
-        .suggestResource(WorldPresetData.getPresetFilePathResourceLocations(), build);
+    return SharedSuggestionProvider.suggestResource(
+        WorldPresetData.getPresetFilePathResourceLocations(), build);
   }
-
 }

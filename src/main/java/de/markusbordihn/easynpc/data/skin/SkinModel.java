@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -33,6 +33,7 @@ public enum SkinModel {
   VILLAGER,
   ZOMBIE,
   ZOMBIE_VILLAGER;
+
   // @formatter:on
 
   public static SkinModel get(String skinModel) {

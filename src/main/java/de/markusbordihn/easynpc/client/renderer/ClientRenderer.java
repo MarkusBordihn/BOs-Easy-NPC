@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,13 +19,6 @@
 
 package de.markusbordihn.easynpc.client.renderer;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.entity.AllayRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.CatRenderer;
@@ -33,11 +26,17 @@ import de.markusbordihn.easynpc.client.renderer.entity.ChickenRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.FairyRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.HumanoidRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.HumanoidSlimRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.IronGolemRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.SkeletonRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.VillagerRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.ZombieRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.ZombieVillagerRenderer;
 import de.markusbordihn.easynpc.entity.npc.ModEntityType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientRenderer {
@@ -56,10 +55,10 @@ public class ClientRenderer {
     event.registerEntityRenderer(ModEntityType.FAIRY.get(), FairyRenderer::new);
     event.registerEntityRenderer(ModEntityType.HUMANOID.get(), HumanoidRenderer::new);
     event.registerEntityRenderer(ModEntityType.HUMANOID_SLIM.get(), HumanoidSlimRenderer::new);
+    event.registerEntityRenderer(ModEntityType.IRON_GOLEM.get(), IronGolemRenderer::new);
     event.registerEntityRenderer(ModEntityType.SKELETON.get(), SkeletonRenderer::new);
     event.registerEntityRenderer(ModEntityType.VILLAGER.get(), VillagerRenderer::new);
     event.registerEntityRenderer(ModEntityType.ZOMBIE.get(), ZombieRenderer::new);
     event.registerEntityRenderer(ModEntityType.ZOMBIE_VILLAGER.get(), ZombieVillagerRenderer::new);
   }
-
 }

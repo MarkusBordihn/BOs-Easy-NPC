@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,37 +19,36 @@
 
 package de.markusbordihn.easynpc.entity.data;
 
+import de.markusbordihn.easynpc.data.entity.CustomDataSerializers;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
 import java.util.Optional;
 import java.util.UUID;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 
-import de.markusbordihn.easynpc.data.skin.SkinModel;
-import de.markusbordihn.easynpc.data.skin.SkinType;
-import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
-
 public interface EntitySkinData extends EntityDataInterface {
 
   // Synced entity data
-  public static final EntityDataAccessor<String> DATA_SKIN_NAME =
+  EntityDataAccessor<String> DATA_SKIN_NAME =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
-  public static final EntityDataAccessor<String> DATA_SKIN_URL =
+  EntityDataAccessor<String> DATA_SKIN_URL =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
-  public static final EntityDataAccessor<Optional<UUID>> DATA_SKIN_UUID =
+  EntityDataAccessor<Optional<UUID>> DATA_SKIN_UUID =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.OPTIONAL_UUID);
-  public static final EntityDataAccessor<SkinType> DATA_SKIN_TYPE =
+  EntityDataAccessor<SkinType> DATA_SKIN_TYPE =
       SynchedEntityData.defineId(EasyNPCEntityData.class, CustomDataSerializers.SKIN_TYPE);
 
   // CompoundTags
-  public static final String DATA_SKIN_DATA_TAG = "SkinData";
-  public static final String DATA_SKIN_NAME_TAG = "SkinName";
-  public static final String DATA_SKIN_TAG = "Skin";
-  public static final String DATA_SKIN_TYPE_TAG = "SkinType";
-  public static final String DATA_SKIN_URL_TAG = "SkinURL";
-  public static final String DATA_SKIN_UUID_TAG = "SkinUUID";
+  String DATA_SKIN_DATA_TAG = "SkinData";
+  String DATA_SKIN_NAME_TAG = "SkinName";
+  String DATA_SKIN_TAG = "Skin";
+  String DATA_SKIN_TYPE_TAG = "SkinType";
+  String DATA_SKIN_URL_TAG = "SkinURL";
+  String DATA_SKIN_UUID_TAG = "SkinUUID";
 
   default String getSkinName() {
     return getEntityData(DATA_SKIN_NAME);
@@ -83,21 +82,12 @@ public interface EntitySkinData extends EntityDataInterface {
     return getEntityData(DATA_SKIN_TYPE);
   }
 
-  default SkinType getSkinType(String name) {
-    return SkinType.get(name);
-  }
-
   default void setSkinType(SkinType skinType) {
     setEntityData(DATA_SKIN_TYPE, skinType);
   }
 
-  default void setSkinType(String name) {
-    SkinType skinType = getSkinType(name);
-    if (skinType != null) {
-      setSkinType(skinType);
-    } else {
-      log.error("Unknown skin type {} for {}", name, this);
-    }
+  default SkinType getSkinType(String name) {
+    return SkinType.get(name);
   }
 
   default SkinModel getSkinModel() {
@@ -121,9 +111,7 @@ public interface EntitySkinData extends EntityDataInterface {
       skinTag.putString(DATA_SKIN_URL_TAG, this.getSkinURL());
     }
     Optional<UUID> skinUUID = this.getSkinUUID();
-    if (skinUUID.isPresent()) {
-      skinTag.putUUID(DATA_SKIN_UUID_TAG, skinUUID.get());
-    }
+    skinUUID.ifPresent(uuid -> skinTag.putUUID(DATA_SKIN_UUID_TAG, uuid));
     if (this.getSkinType() != null) {
       skinTag.putString(DATA_SKIN_TYPE_TAG, this.getSkinType().name());
     }
@@ -167,12 +155,10 @@ public interface EntitySkinData extends EntityDataInterface {
         this.setSkinUUID(skinUUID);
       }
     }
-
   }
 
   default void readAdditionalLegacySkinData(CompoundTag compoundTag) {
     if (compoundTag.contains(DATA_SKIN_TYPE_TAG)) {
-      log.info("Converting legacy skin data to new format for {}", this);
       String skinType = compoundTag.getString(DATA_SKIN_TYPE_TAG);
       if (skinType != null && !skinType.isEmpty()) {
         this.setSkinType(this.getSkinType(skinType));
@@ -197,5 +183,4 @@ public interface EntitySkinData extends EntityDataInterface {
       }
     }
   }
-
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,9 +19,10 @@
 
 package de.markusbordihn.easynpc.menu.configuration.dialog;
 
+import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
+import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import java.util.UUID;
 import javax.annotation.Nullable;
-
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
@@ -30,21 +31,25 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-import de.markusbordihn.easynpc.menu.ModMenuTypes;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
+public class NoneDialogConfigurationMenu extends DialogConfigurationMenu {
 
-public class NoneDialogConfigurationMenu extends ConfigurationMenu {
-
-  public NoneDialogConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
-    super(ModMenuTypes.NONE_DIALOG_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
+  public NoneDialogConfigurationMenu(
+      int windowId, Inventory playerInventory, UUID uuid, DialogDataSet dialogDataSet) {
+    super(
+        ModMenuTypes.NONE_DIALOG_CONFIGURATION_MENU.get(),
+        windowId,
+        playerInventory,
+        uuid,
+        dialogDataSet);
   }
 
-  public NoneDialogConfigurationMenu(int windowId, Inventory playerInventory,
-      FriendlyByteBuf data) {
-    this(windowId, playerInventory, data.readUUID());
+  public NoneDialogConfigurationMenu(
+      int windowId, Inventory playerInventory, FriendlyByteBuf data) {
+    this(windowId, playerInventory, data.readUUID(), new DialogDataSet(data.readNbt()));
   }
 
-  public static MenuProvider getMenuProvider(UUID uuid, Entity entity) {
+  public static MenuProvider getMenuProvider(
+      UUID uuid, Entity entity, DialogDataSet dialogDataSet) {
     return new MenuProvider() {
       @Override
       public Component getDisplayName() {
@@ -53,11 +58,10 @@ public class NoneDialogConfigurationMenu extends ConfigurationMenu {
 
       @Nullable
       @Override
-      public AbstractContainerMenu createMenu(int windowId, Inventory inventory,
-          Player serverPlayer) {
-        return new NoneDialogConfigurationMenu(windowId, inventory, uuid);
+      public AbstractContainerMenu createMenu(
+          int windowId, Inventory inventory, Player serverPlayer) {
+        return new NoneDialogConfigurationMenu(windowId, inventory, uuid, dialogDataSet);
       }
     };
   }
-
 }

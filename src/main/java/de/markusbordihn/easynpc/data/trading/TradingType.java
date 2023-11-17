@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -25,6 +25,7 @@ public enum TradingType {
   BASIC,
   CUSTOM,
   NONE;
+
   // @formatter:on
 
   public static TradingType get(String dialogType) {

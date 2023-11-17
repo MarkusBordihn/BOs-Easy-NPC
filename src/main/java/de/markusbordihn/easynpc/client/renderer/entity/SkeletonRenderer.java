@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,12 +19,15 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity;
 
-import java.util.EnumMap;
-import java.util.Map;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
-
+import de.markusbordihn.easynpc.client.model.custom.CustomSkeletonModel;
+import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
+import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.entity.npc.Skeleton;
+import de.markusbordihn.easynpc.entity.npc.Skeleton.Variant;
+import java.util.EnumMap;
+import java.util.Map;
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -37,15 +40,8 @@ import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import de.markusbordihn.easynpc.client.model.custom.CustomSkeletonModel;
-import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
-import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.entity.npc.Skeleton.Variant;
-import de.markusbordihn.easynpc.entity.npc.Skeleton;
 
 @OnlyIn(Dist.CLIENT)
 public class SkeletonRenderer extends HumanoidMobRenderer<Skeleton, CustomSkeletonModel<Skeleton>>
@@ -53,20 +49,26 @@ public class SkeletonRenderer extends HumanoidMobRenderer<Skeleton, CustomSkelet
 
   // Variant Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
-      Util.make(new EnumMap<>(Variant.class), map -> {
-        map.put(Variant.SKELETON, new ResourceLocation("textures/entity/skeleton/skeleton.png"));
-        map.put(Variant.STRAY, new ResourceLocation("textures/entity/skeleton/stray.png"));
-        map.put(Variant.WITHER_SKELETON,
-            new ResourceLocation("textures/entity/skeleton/wither_skeleton.png"));
-      });
+      Util.make(
+          new EnumMap<>(Variant.class),
+          map -> {
+            map.put(
+                Variant.SKELETON, new ResourceLocation("textures/entity/skeleton/skeleton.png"));
+            map.put(Variant.STRAY, new ResourceLocation("textures/entity/skeleton/stray.png"));
+            map.put(
+                Variant.WITHER_SKELETON,
+                new ResourceLocation("textures/entity/skeleton/wither_skeleton.png"));
+          });
   protected static final ResourceLocation DEFAULT_TEXTURE =
       TEXTURE_BY_VARIANT.get(Variant.SKELETON);
 
   public SkeletonRenderer(EntityRendererProvider.Context context) {
     super(context, new CustomSkeletonModel<>(context.bakeLayer(ModelLayers.SKELETON)), 0.5F);
-    this.addLayer(new HumanoidArmorLayer<>(this,
-        new CustomSkeletonModel<>(context.bakeLayer(ModelLayers.SKELETON_INNER_ARMOR)),
-        new CustomSkeletonModel<>(context.bakeLayer(ModelLayers.SKELETON_OUTER_ARMOR))));
+    this.addLayer(
+        new HumanoidArmorLayer<>(
+            this,
+            new CustomSkeletonModel<>(context.bakeLayer(ModelLayers.SKELETON_INNER_ARMOR)),
+            new CustomSkeletonModel<>(context.bakeLayer(ModelLayers.SKELETON_OUTER_ARMOR))));
     this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
     this.addLayer(new ElytraLayer<>(this, context.getModelSet()));
   }
@@ -92,8 +94,13 @@ public class SkeletonRenderer extends HumanoidMobRenderer<Skeleton, CustomSkelet
   }
 
   @Override
-  public void render(Skeleton entity, float entityYaw, float partialTicks, PoseStack poseStack,
-      net.minecraft.client.renderer.MultiBufferSource buffer, int light) {
+  public void render(
+      Skeleton entity,
+      float entityYaw,
+      float partialTicks,
+      PoseStack poseStack,
+      net.minecraft.client.renderer.MultiBufferSource buffer,
+      int light) {
     CustomSkeletonModel<Skeleton> playerModel = this.getModel();
 
     // Model Rotation
@@ -137,8 +144,12 @@ public class SkeletonRenderer extends HumanoidMobRenderer<Skeleton, CustomSkelet
   }
 
   @Override
-  protected void renderNameTag(Skeleton entity, Component component, PoseStack poseStack,
-      MultiBufferSource multiBufferSource, int color) {
+  protected void renderNameTag(
+      Skeleton entity,
+      Component component,
+      PoseStack poseStack,
+      MultiBufferSource multiBufferSource,
+      int color) {
     this.renderEntityNameTag(entity, poseStack);
     super.renderNameTag(entity, component, poseStack, multiBufferSource, color);
   }
@@ -147,5 +158,4 @@ public class SkeletonRenderer extends HumanoidMobRenderer<Skeleton, CustomSkelet
   protected int getBlockLightLevel(Skeleton entity, BlockPos blockPos) {
     return getEntityLightLevel(entity);
   }
-
 }

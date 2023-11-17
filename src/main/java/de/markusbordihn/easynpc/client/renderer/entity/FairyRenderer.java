@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2022 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,12 +19,17 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity;
 
-import java.util.EnumMap;
-import java.util.Map;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
-
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.model.FairyModel;
+import de.markusbordihn.easynpc.client.model.ModModelLayers;
+import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
+import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.npc.Fairy.Variant;
+import java.util.EnumMap;
+import java.util.Map;
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -33,17 +38,8 @@ import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.model.FairyModel;
-import de.markusbordihn.easynpc.client.model.ModModelLayers;
-import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
-import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.npc.Fairy.Variant;
 
 @OnlyIn(Dist.CLIENT)
 public class FairyRenderer extends HumanoidMobRenderer<EasyNPCEntity, FairyModel<EasyNPCEntity>>
@@ -51,14 +47,19 @@ public class FairyRenderer extends HumanoidMobRenderer<EasyNPCEntity, FairyModel
 
   // Variant Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
-      Util.make(new EnumMap<>(Variant.class), map -> {
-        map.put(Variant.BLUE,
-            new ResourceLocation(Constants.MOD_ID, "textures/entity/fairy/fairy_blue.png"));
-        map.put(Variant.GREEN,
-            new ResourceLocation(Constants.MOD_ID, "textures/entity/fairy/fairy_green.png"));
-        map.put(Variant.RED,
-            new ResourceLocation(Constants.MOD_ID, "textures/entity/fairy/fairy_red.png"));
-      });
+      Util.make(
+          new EnumMap<>(Variant.class),
+          map -> {
+            map.put(
+                Variant.BLUE,
+                new ResourceLocation(Constants.MOD_ID, "textures/entity/fairy/fairy_blue.png"));
+            map.put(
+                Variant.GREEN,
+                new ResourceLocation(Constants.MOD_ID, "textures/entity/fairy/fairy_green.png"));
+            map.put(
+                Variant.RED,
+                new ResourceLocation(Constants.MOD_ID, "textures/entity/fairy/fairy_red.png"));
+          });
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.GREEN);
 
   public FairyRenderer(EntityRendererProvider.Context context) {
@@ -86,8 +87,13 @@ public class FairyRenderer extends HumanoidMobRenderer<EasyNPCEntity, FairyModel
   }
 
   @Override
-  public void render(EasyNPCEntity entity, float entityYaw, float partialTicks, PoseStack poseStack,
-      net.minecraft.client.renderer.MultiBufferSource buffer, int light) {
+  public void render(
+      EasyNPCEntity entity,
+      float entityYaw,
+      float partialTicks,
+      PoseStack poseStack,
+      net.minecraft.client.renderer.MultiBufferSource buffer,
+      int light) {
     FairyModel<EasyNPCEntity> playerModel = this.getModel();
 
     // Model Rotation
@@ -137,8 +143,12 @@ public class FairyRenderer extends HumanoidMobRenderer<EasyNPCEntity, FairyModel
   }
 
   @Override
-  protected void renderNameTag(EasyNPCEntity entity, Component component, PoseStack poseStack,
-      MultiBufferSource multiBufferSource, int color) {
+  protected void renderNameTag(
+      EasyNPCEntity entity,
+      Component component,
+      PoseStack poseStack,
+      MultiBufferSource multiBufferSource,
+      int color) {
     this.renderEntityNameTag(entity, poseStack);
     super.renderNameTag(entity, component, poseStack, multiBufferSource, color);
   }
@@ -147,5 +157,4 @@ public class FairyRenderer extends HumanoidMobRenderer<EasyNPCEntity, FairyModel
   protected int getBlockLightLevel(EasyNPCEntity entity, BlockPos blockPos) {
     return getEntityLightLevel(entity);
   }
-
 }

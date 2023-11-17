@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,21 +19,20 @@
 
 package de.markusbordihn.easynpc.entity.data;
 
+import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
-
 public interface EntityAttackData extends EntityDataInterface {
 
   // Synced entity data
-  public static final EntityDataAccessor<Boolean> DATA_AGGRESSIVE =
+  EntityDataAccessor<Boolean> DATA_AGGRESSIVE =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.BOOLEAN);
 
   // CompoundTags
-  public static final String DATA_AGGRESSIVE_TAG = "Aggressive";
+  String DATA_AGGRESSIVE_TAG = "Aggressive";
 
   default boolean getDefaultAggression() {
     return false;

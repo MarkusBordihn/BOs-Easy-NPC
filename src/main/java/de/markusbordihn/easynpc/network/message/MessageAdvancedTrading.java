@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,17 +19,14 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-
-import net.minecraftforge.network.NetworkEvent;
-
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
+import java.util.UUID;
+import java.util.function.Supplier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkEvent;
 
 public class MessageAdvancedTrading extends NetworkMessage {
 
@@ -37,33 +34,20 @@ public class MessageAdvancedTrading extends NetworkMessage {
   protected final float tradingValue;
   protected final TradingValueType tradingValueType;
 
-  public MessageAdvancedTrading(UUID uuid, int tradingOfferIndex, TradingValueType tradingValueType,
-      float tradingValue) {
+  public MessageAdvancedTrading(
+      UUID uuid, int tradingOfferIndex, TradingValueType tradingValueType, float tradingValue) {
     super(uuid);
     this.tradingOfferIndex = tradingOfferIndex;
     this.tradingValueType = tradingValueType;
     this.tradingValue = tradingValue;
   }
 
-  public enum TradingValueType {
-    RESETS_EVERY_MIN, MAX_USES, XP, PRICE_MULTIPLIER, DEMAND;
-  }
-
-  public int getTradingOfferIndex() {
-    return this.tradingOfferIndex;
-  }
-
-  public TradingValueType getTradingValueType() {
-    return this.tradingValueType;
-  }
-
-  public float getTradingValue() {
-    return this.tradingValue;
-  }
-
   public static MessageAdvancedTrading decode(final FriendlyByteBuf buffer) {
-    return new MessageAdvancedTrading(buffer.readUUID(), buffer.readInt(),
-        buffer.readEnum(TradingValueType.class), buffer.readFloat());
+    return new MessageAdvancedTrading(
+        buffer.readUUID(),
+        buffer.readInt(),
+        buffer.readEnum(TradingValueType.class),
+        buffer.readFloat());
   }
 
   public static void encode(final MessageAdvancedTrading message, final FriendlyByteBuf buffer) {
@@ -73,8 +57,8 @@ public class MessageAdvancedTrading extends NetworkMessage {
     buffer.writeFloat(message.getTradingValue());
   }
 
-  public static void handle(MessageAdvancedTrading message,
-      Supplier<NetworkEvent.Context> contextSupplier) {
+  public static void handle(
+      MessageAdvancedTrading message, Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
@@ -90,8 +74,8 @@ public class MessageAdvancedTrading extends NetworkMessage {
     // Validate trading offer index
     int tradingOfferIndex = message.getTradingOfferIndex();
     if (tradingOfferIndex < 0) {
-      log.error("Trading offer index {} for {} is out of range (>= 0) for {}", tradingOfferIndex,
-          serverPlayer);
+      log.error(
+          "Trading offer index {} is out of range (>= 0) for {}", tradingOfferIndex, serverPlayer);
       return;
     }
 
@@ -105,8 +89,11 @@ public class MessageAdvancedTrading extends NetworkMessage {
     // Validate trading value
     float tradingValue = message.getTradingValue();
     if (tradingValue < 0.0) {
-      log.error("Trading value {} for {} is out of range (>= 0) for {}", tradingValue,
-          tradingValueType, serverPlayer);
+      log.error(
+          "Trading value {} for {} is out of range (>= 0) for {}",
+          tradingValue,
+          tradingValueType,
+          serverPlayer);
       return;
     }
 
@@ -114,35 +101,76 @@ public class MessageAdvancedTrading extends NetworkMessage {
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     switch (tradingValueType) {
       case RESETS_EVERY_MIN:
-        log.debug("Set trading resets every min to {} for {} from {}", tradingValue, easyNPCEntity,
+        log.debug(
+            "Set trading resets every min to {} for {} from {}",
+            tradingValue,
+            easyNPCEntity,
             serverPlayer);
         easyNPCEntity.setTradingResetsEveryMin((int) tradingValue);
         break;
       case MAX_USES:
-        log.debug("Set advanced trading max uses {}# for {} to {} by {}", tradingOfferIndex,
-            easyNPCEntity, tradingValue, serverPlayer);
+        log.debug(
+            "Set advanced trading max uses {}# for {} to {} by {}",
+            tradingOfferIndex,
+            easyNPCEntity,
+            tradingValue,
+            serverPlayer);
         easyNPCEntity.setAdvancedTradingMaxUses(tradingOfferIndex, (int) tradingValue);
         break;
       case XP:
-        log.debug("Set advanced trading xp {}# for {} to {} by {}", tradingOfferIndex,
-            easyNPCEntity, tradingValue, serverPlayer);
+        log.debug(
+            "Set advanced trading xp {}# for {} to {} by {}",
+            tradingOfferIndex,
+            easyNPCEntity,
+            tradingValue,
+            serverPlayer);
         easyNPCEntity.setAdvancedTradingXp(tradingOfferIndex, (int) tradingValue);
         break;
       case PRICE_MULTIPLIER:
-        log.debug("Set advanced trading price multiplier {}# for {} to {} by {}", tradingOfferIndex,
-            easyNPCEntity, tradingValue, serverPlayer);
+        log.debug(
+            "Set advanced trading price multiplier {}# for {} to {} by {}",
+            tradingOfferIndex,
+            easyNPCEntity,
+            tradingValue,
+            serverPlayer);
         easyNPCEntity.setAdvancedTradingPriceMultiplier(tradingOfferIndex, tradingValue);
         break;
       case DEMAND:
-        log.debug("Set advanced trading demand {}# for {} to {} by {}", tradingOfferIndex,
-            easyNPCEntity, tradingValue, serverPlayer);
+        log.debug(
+            "Set advanced trading demand {}# for {} to {} by {}",
+            tradingOfferIndex,
+            easyNPCEntity,
+            tradingValue,
+            serverPlayer);
         easyNPCEntity.setAdvancedTradingDemand(tradingOfferIndex, (int) tradingValue);
         break;
       default:
-        log.error("Trading value type {} with value {}# for {} is unknown for {}", tradingValueType,
-            tradingValue, tradingOfferIndex, serverPlayer);
-        return;
+        log.error(
+            "Trading value type {} with value {}# for {} is unknown for {}",
+            tradingValueType,
+            tradingValue,
+            tradingOfferIndex,
+            serverPlayer);
     }
   }
 
+  public int getTradingOfferIndex() {
+    return this.tradingOfferIndex;
+  }
+
+  public TradingValueType getTradingValueType() {
+    return this.tradingValueType;
+  }
+
+  public float getTradingValue() {
+    return this.tradingValue;
+  }
+
+  public enum TradingValueType {
+    RESETS_EVERY_MIN,
+    MAX_USES,
+    XP,
+    PRICE_MULTIPLIER,
+    DEMAND
+  }
 }

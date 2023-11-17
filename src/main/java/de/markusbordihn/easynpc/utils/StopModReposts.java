@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,18 +19,15 @@
 
 package de.markusbordihn.easynpc.utils;
 
+import cpw.mods.modlauncher.Launcher;
+import cpw.mods.modlauncher.api.IEnvironment;
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.EasyNPC;
 import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import cpw.mods.modlauncher.Launcher;
-import cpw.mods.modlauncher.api.IEnvironment;
-
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.EasyNPC;
 
 public class StopModReposts {
 
@@ -38,15 +35,15 @@ public class StopModReposts {
 
   private static final String STOP_MOD_REPOSTS_URL = "https://stopmodreposts.org/";
 
-  private static Optional<String> version =
+  private static final Optional<String> version =
       Launcher.INSTANCE.environment().getProperty(IEnvironment.Keys.VERSION.get());
 
-  private static boolean isDevEnvironment =
-      version.isPresent() && version.get() != null && "MOD_DEV".equals(version.get());
+  private static final boolean isDevEnvironment =
+      version.isPresent() && "MOD_DEV".equals(version.get());
 
-  private static String modFileFormatRegEx = Constants.MOD_ID + "_1.19-\\d+.\\d+.\\d+.jar";
+  private static final String modFileFormatRegEx = Constants.MOD_ID + "_1.18.2-\\d+.\\d+.\\d+.jar";
 
-  private static Pattern expectedFilePattern = Pattern.compile(modFileFormatRegEx);
+  private static final Pattern expectedFilePattern = Pattern.compile(modFileFormatRegEx);
 
   protected StopModReposts() {}
 
@@ -57,8 +54,8 @@ public class StopModReposts {
     }
     String jarFilePath = null;
     try {
-      jarFilePath = EasyNPC.class.getProtectionDomain().getCodeSource().getLocation()
-          .toURI().getPath();
+      jarFilePath =
+          EasyNPC.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
     } catch (SecurityException | URISyntaxException | NullPointerException exception) {
       log.error("Unable to get jar file path: {}", exception);
     }
@@ -68,7 +65,9 @@ public class StopModReposts {
     }
 
     if (expectedFilePattern.matcher(jarFilePath).find()) {
-      log.info("Thanks for using {} ({}). I hope you enjoy the mod. :)", Constants.MOD_NAME,
+      log.info(
+          "Thanks for using {} ({}). I hope you enjoy the mod. :)",
+          Constants.MOD_NAME,
           Constants.MOD_URL);
     } else {
       log.error("");
@@ -81,13 +80,13 @@ public class StopModReposts {
       log.error("It's seems that the mod file {} you are using was modified!", jarFilePath);
       log.error(
           "Please make sure to download the latest {} mod only from the original source at {}",
-          Constants.MOD_NAME, Constants.MOD_URL);
+          Constants.MOD_NAME,
+          Constants.MOD_URL);
       log.error(
           "If you downloaded this mod from other sources we could not make sure that it works as expected or does not includes any unwanted modification (e.g. adware, malware, ...).");
       log.error("");
       log.error("See the following page for more details: {}", STOP_MOD_REPOSTS_URL);
       log.error("");
     }
-
   }
 }

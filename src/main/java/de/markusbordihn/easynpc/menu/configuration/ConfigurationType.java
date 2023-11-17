@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -21,17 +21,21 @@ package de.markusbordihn.easynpc.menu.configuration;
 
 public enum ConfigurationType {
   // @formatter:off
+  ADVANCED_DIALOG,
   ADVANCED_POSE,
   ADVANCED_TRADING,
   BASIC_ACTION,
+  BASIC_ATTRIBUTE,
   BASIC_DIALOG,
+  BASIC_OBJECTIVE,
+  FOLLOW_OBJECTIVE,
+  ATTACK_OBJECTIVE,
   BASIC_TRADING,
   CUSTOM_POSE,
   CUSTOM_PRESET_EXPORT,
   CUSTOM_PRESET_IMPORT,
   CUSTOM_SKIN,
   CUSTOM_TRADING,
-  DEFAULT_ATTRIBUTES,
   DEFAULT_POSE,
   DEFAULT_POSITION,
   DEFAULT_PRESET_IMPORT,

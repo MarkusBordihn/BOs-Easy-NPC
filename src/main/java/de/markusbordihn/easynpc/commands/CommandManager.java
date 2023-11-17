@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,23 +19,19 @@
 
 package de.markusbordihn.easynpc.commands;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.mojang.brigadier.CommandDispatcher;
-
+import de.markusbordihn.easynpc.Constants;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.server.ServerLifecycleHooks;
-
-import de.markusbordihn.easynpc.Constants;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @EventBusSubscriber
 public class CommandManager {
@@ -48,17 +44,18 @@ public class CommandManager {
   public static void handleRegisterCommandsEvent(RegisterCommandsEvent event) {
     log.info("Registering {} commands ...", Constants.MOD_COMMAND);
     CommandDispatcher<CommandSourceStack> commandDispatcher = event.getDispatcher();
-    commandDispatcher.register(Commands.literal(Constants.MOD_COMMAND)
-    // @formatter:off
-      .then(ConfigureCommand.register())
-      .then(PresetCommand.register())
-      .then(TradingCommand.register())
-    // @formatter:on
-    );
+    commandDispatcher.register(
+        Commands.literal(Constants.MOD_COMMAND)
+            // @formatter:off
+            .then(ConfigureCommand.register())
+            .then(PresetCommand.register())
+            .then(TradingCommand.register())
+        // @formatter:on
+        );
   }
 
-  public static void executeEntityCommand(String command, Entity entity, int permissionLevel,
-      boolean debug) {
+  public static void executeEntityCommand(
+      String command, Entity entity, int permissionLevel, boolean debug) {
     MinecraftServer minecraftServer = ServerLifecycleHooks.getCurrentServer();
     if (minecraftServer == null) {
       return;
@@ -66,34 +63,47 @@ public class CommandManager {
     if (command.startsWith("/")) {
       command = command.substring(1);
     }
-    log.debug("Execute Entity {} Command: \"{}\" with permission level {}", entity, command,
-        permissionLevel);
-    Commands commands = minecraftServer.getCommands();
-    CommandSourceStack commandSourceStack = minecraftServer.createCommandSourceStack()
-        .withEntity(entity).withPosition(entity.position()).withRotation(entity.getRotationVector())
-        .withPermission(permissionLevel);
-    commands.performCommand(debug ? commandSourceStack : commandSourceStack.withSuppressedOutput(),
-        command);
-  }
-
-  public static void executePlayerCommand(String command, ServerPlayer serverPlayer,
-      int permissionLevel, boolean debug) {
-    MinecraftServer minecraftServer = ServerLifecycleHooks.getCurrentServer();
-    if (minecraftServer == null) {
-      return;
-    }
-    if (command.startsWith("/")) {
-      command = command.substring(1);
-    }
-    log.debug("Execute Player {} Command: \"{}\" with permission level {}", serverPlayer, command,
+    log.debug(
+        "Execute Entity {} Command: \"{}\" with permission level {}",
+        entity,
+        command,
         permissionLevel);
     Commands commands = minecraftServer.getCommands();
     CommandSourceStack commandSourceStack =
-        minecraftServer.createCommandSourceStack().withEntity(serverPlayer)
-            .withPosition(serverPlayer.position()).withRotation(serverPlayer.getRotationVector())
-            .withPermission(permissionLevel).withLevel(serverPlayer.getLevel());
-    commands.performCommand(debug ? commandSourceStack : commandSourceStack.withSuppressedOutput(),
-        command);
+        minecraftServer
+            .createCommandSourceStack()
+            .withEntity(entity)
+            .withPosition(entity.position())
+            .withRotation(entity.getRotationVector())
+            .withPermission(permissionLevel);
+    commands.performCommand(
+        debug ? commandSourceStack : commandSourceStack.withSuppressedOutput(), command);
   }
 
+  public static void executePlayerCommand(
+      String command, ServerPlayer serverPlayer, int permissionLevel, boolean debug) {
+    MinecraftServer minecraftServer = ServerLifecycleHooks.getCurrentServer();
+    if (minecraftServer == null) {
+      return;
+    }
+    if (command.startsWith("/")) {
+      command = command.substring(1);
+    }
+    log.debug(
+        "Execute Player {} Command: \"{}\" with permission level {}",
+        serverPlayer,
+        command,
+        permissionLevel);
+    Commands commands = minecraftServer.getCommands();
+    CommandSourceStack commandSourceStack =
+        minecraftServer
+            .createCommandSourceStack()
+            .withEntity(serverPlayer)
+            .withPosition(serverPlayer.position())
+            .withRotation(serverPlayer.getRotationVector())
+            .withPermission(permissionLevel)
+            .withLevel(serverPlayer.getLevel());
+    commands.performCommand(
+        debug ? commandSourceStack : commandSourceStack.withSuppressedOutput(), command);
+  }
 }

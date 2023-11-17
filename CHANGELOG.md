@@ -5,6 +5,32 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### 2023.11.18
+
+- Added attack and follow objectives.
+- Added respawn button in the case the NPC is stucked or buggy.
+- Improved objective validation and handling.
+- Optimized nbt data to skip default values for better performance and smaller data size.
+
+### 2023.11.05 (NPCs comes to life update)
+
+Note: Please backup your world before updating to this version!
+This update includes a lot of changes and new features and even if I try to support all former data it could be that some of them are not compatible with older versions.
+
+- Added attribute configuration like can open doors, can close doors, can pass doors, can be hurt, can be pushed, ...
+- Added objectives configuration for like follow owner, follow player, follow entity, walk around ...
+- Added custom dialog configuration for more complex dialogs.
+- Added custom action events `on_hurt`, `on_death` and `on_button_click`.
+- Added Iron Golem model.
+- Refactored Dialog system for supporting more complex dialogs.
+- Refactored Action system for supporting more complex actions.
+- Refactored Action Event system for supporting upcoming events.
+- Refactored NPC network data for sending only relevant data to clients.
+- Fixed issue with importing filenames with upper-case letters.
+- Fixed animation issue with custom poses.
+- Fixed compatibility issue with resource packs like Stoneborn, Mythic, Creator Pack, ...
+- Improved mod compatibility with other mods.
+
 ### 2023.10.24
 
 - Added advanced trading configuration for NPCs with multiple items and prices.

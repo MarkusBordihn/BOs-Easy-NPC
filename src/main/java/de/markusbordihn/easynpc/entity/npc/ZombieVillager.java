@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,6 +19,9 @@
 
 package de.markusbordihn.easynpc.entity.npc;
 
+import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.utils.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -26,43 +29,27 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
-import de.markusbordihn.easynpc.data.skin.SkinModel;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.utils.TextUtils;
-
 public class ZombieVillager extends EasyNPCEntity {
 
   // General Information
   public static final String ID = "zombie_villager";
   public static final String NAME = "Zombie Villager";
 
-  // Variants
-  public enum Variant {
-    DEFAULT, DESERT, JUNGLE, PLAINS, SAVANNA, SNOW, SWAMP, TAIGA
-  }
-
   public ZombieVillager(EntityType<? extends EasyNPCEntity> entityType, Level level) {
     super(entityType, level);
   }
 
   public static AttributeSupplier.Builder createAttributes() {
-    return Mob.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0.5F)
-        .add(Attributes.MAX_HEALTH, 16.0D).add(Attributes.ATTACK_DAMAGE, 0.0D);
+    return Mob.createMobAttributes()
+        .add(Attributes.MOVEMENT_SPEED, 0.5F)
+        .add(Attributes.MAX_HEALTH, 16.0D)
+        .add(Attributes.FOLLOW_RANGE, 48.0D)
+        .add(Attributes.ATTACK_DAMAGE, 0.0D);
   }
 
   @Override
   public SkinModel getSkinModel() {
     return SkinModel.ZOMBIE_VILLAGER;
-  }
-
-  @Override
-  public boolean canUseArmor() {
-    return true;
-  }
-
-  @Override
-  public boolean canUseOffHand() {
-    return true;
   }
 
   @Override
@@ -101,4 +88,15 @@ public class ZombieVillager extends EasyNPCEntity {
     return Variant.valueOf(name);
   }
 
+  // Variants
+  public enum Variant {
+    DEFAULT,
+    DESERT,
+    JUNGLE,
+    PLAINS,
+    SAVANNA,
+    SNOW,
+    SWAMP,
+    TAIGA
+  }
 }

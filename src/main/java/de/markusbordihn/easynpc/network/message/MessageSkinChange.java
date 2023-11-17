@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,20 +19,17 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-
-import net.minecraftforge.network.NetworkEvent;
-
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import de.markusbordihn.easynpc.utils.PlayersUtils;
+import java.util.UUID;
+import java.util.function.Supplier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkEvent;
 
 public class MessageSkinChange extends NetworkMessage {
 
@@ -41,8 +38,8 @@ public class MessageSkinChange extends NetworkMessage {
   protected final UUID skinUUID;
   protected final SkinType skinType;
 
-  public MessageSkinChange(UUID uuid, String skinName, String skinURL, UUID skinUUID,
-      SkinType skinType) {
+  public MessageSkinChange(
+      UUID uuid, String skinName, String skinURL, UUID skinUUID, SkinType skinType) {
     super(uuid);
     this.skinName = skinName;
     this.skinURL = skinURL;
@@ -50,25 +47,13 @@ public class MessageSkinChange extends NetworkMessage {
     this.skinType = skinType;
   }
 
-  public String getSkinName() {
-    return this.skinName;
-  }
-
-  public String getSkinURL() {
-    return this.skinURL;
-  }
-
-  public UUID getSkinUUID() {
-    return this.skinUUID;
-  }
-
-  public SkinType getSkinType() {
-    return this.skinType;
-  }
-
   public static MessageSkinChange decode(final FriendlyByteBuf buffer) {
-    return new MessageSkinChange(buffer.readUUID(), buffer.readUtf(), buffer.readUtf(),
-        buffer.readUUID(), buffer.readEnum(SkinType.class));
+    return new MessageSkinChange(
+        buffer.readUUID(),
+        buffer.readUtf(),
+        buffer.readUtf(),
+        buffer.readUUID(),
+        buffer.readEnum(SkinType.class));
   }
 
   public static void encode(final MessageSkinChange message, final FriendlyByteBuf buffer) {
@@ -79,8 +64,8 @@ public class MessageSkinChange extends NetworkMessage {
     buffer.writeEnum(message.getSkinType());
   }
 
-  public static void handle(MessageSkinChange message,
-      Supplier<NetworkEvent.Context> contextSupplier) {
+  public static void handle(
+      MessageSkinChange message, Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
@@ -114,16 +99,16 @@ public class MessageSkinChange extends NetworkMessage {
 
     switch (skinType) {
       case CUSTOM:
-        log.debug("Setting custom skin for {} to {} from {}", easyNPCEntity, skinUUID,
-            serverPlayer);
+        log.debug(
+            "Setting custom skin for {} to {} from {}", easyNPCEntity, skinUUID, serverPlayer);
         easyNPCEntity.setSkinType(skinType);
         easyNPCEntity.setSkinName("");
         easyNPCEntity.setSkinURL("");
         easyNPCEntity.setSkinUUID(skinUUID);
         break;
       case DEFAULT:
-        log.debug("Setting default skin for {} to {} from {}", easyNPCEntity, skinType,
-            serverPlayer);
+        log.debug(
+            "Setting default skin for {} to {} from {}", easyNPCEntity, skinType, serverPlayer);
         easyNPCEntity.setSkinType(skinType);
         easyNPCEntity.setSkinName("");
         easyNPCEntity.setSkinURL("");
@@ -150,16 +135,38 @@ public class MessageSkinChange extends NetworkMessage {
         easyNPCEntity.setSkinType(skinType);
         easyNPCEntity.setSkinName("");
         easyNPCEntity.setSkinURL(skinURL != null && !skinURL.isBlank() ? skinURL : skinName);
-        easyNPCEntity
-            .setSkinUUID(skinUUID != null && !Constants.BLANK_UUID.equals(skinUUID) ? skinUUID
+        easyNPCEntity.setSkinUUID(
+            skinUUID != null && !Constants.BLANK_UUID.equals(skinUUID)
+                ? skinUUID
                 : UUID.nameUUIDFromBytes(skinName.getBytes()));
         break;
       default:
-        log.error("Failed processing skin:{} uuid:{} url:{} type:{} for {} from {}", skinName, skinUUID,
-            skinURL, skinType, easyNPCEntity, serverPlayer);
+        log.error(
+            "Failed processing skin:{} uuid:{} url:{} type:{} for {} from {}",
+            skinName,
+            skinUUID,
+            skinURL,
+            skinType,
+            easyNPCEntity,
+            serverPlayer);
         easyNPCEntity.setSkinType(skinType);
         easyNPCEntity.setSkinName(skinName);
     }
   }
 
+  public String getSkinName() {
+    return this.skinName;
+  }
+
+  public String getSkinURL() {
+    return this.skinURL;
+  }
+
+  public UUID getSkinUUID() {
+    return this.skinUUID;
+  }
+
+  public SkinType getSkinType() {
+    return this.skinType;
+  }
 }
