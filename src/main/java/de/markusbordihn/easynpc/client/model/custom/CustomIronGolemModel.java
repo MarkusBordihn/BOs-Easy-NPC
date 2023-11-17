@@ -88,8 +88,8 @@ public class CustomIronGolemModel<T extends Mob> extends HierarchicalModel<T>
     if (entity instanceof EasyNPCEntity easyNPCEntity) {
 
       // Reset model to avoid any issues with other mods.
-      resetHierarchicalModel(
-          this.head, this.body, this.rightArm, this.leftArm, this.rightLeg, this.leftLeg);
+      EasyNPCModel.resetHierarchicalModel(
+          this, this.head, this.body, this.rightArm, this.leftArm, this.rightLeg, this.leftLeg);
 
       // Individual Part Modifications
       if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
@@ -118,14 +118,19 @@ public class CustomIronGolemModel<T extends Mob> extends HierarchicalModel<T>
         this.leftLeg.xRot = 1.5F * Mth.triangleWave(limbSwing, 13.0F) * limbSwingAmount;
         this.rightLeg.yRot = 0.0F;
         this.leftLeg.yRot = 0.0F;
+
+        // Arm swing and attack animation
+        int attackAnimationTick = easyNPCEntity.getAttackAnimationTick();
+        if (attackAnimationTick > 0) {
+          this.rightArm.xRot = -2.0F + 1.5F * Mth.triangleWave(attackAnimationTick, 10.0F);
+          this.leftArm.xRot = -2.0F + 1.5F * Mth.triangleWave(attackAnimationTick, 10.0F);
+        } else {
+          this.rightArm.xRot =
+              (-0.2F + 1.5F * Mth.triangleWave(limbSwing, 13.0F)) * limbSwingAmount;
+          this.leftArm.xRot = (-0.2F - 1.5F * Mth.triangleWave(limbSwing, 13.0F)) * limbSwingAmount;
+        }
       }
     }
-  }
-
-  @Override
-  public void prepareMobModel(T entity, float p_102958_, float p_102959_, float p_102960_) {
-    this.rightArm.xRot = (-0.2F + 1.5F * Mth.triangleWave(p_102958_, 13.0F)) * p_102959_;
-    this.leftArm.xRot = (-0.2F - 1.5F * Mth.triangleWave(p_102958_, 13.0F)) * p_102959_;
   }
 
   protected ModelPart getArm(HumanoidArm humanoidArm) {

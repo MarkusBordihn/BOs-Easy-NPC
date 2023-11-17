@@ -35,10 +35,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ObjectiveConfigurationScreen<T extends ObjectiveConfigurationMenu>
     extends ConfigurationScreen<T> {
 
+  protected static final int SPACE_BETWEEN_ENTRIES = 20;
+
   // Cache
   protected final ObjectiveDataSet objectiveDataSet;
   // Buttons
-  protected Button basicObjectiveButton = null;
+  protected Button basicObjectiveButton;
+  protected Button followObjectiveButton;
+  protected Button attackObjectiveButton;
 
   public ObjectiveConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -55,10 +59,49 @@ public class ObjectiveConfigurationScreen<T extends ObjectiveConfigurationMenu>
             new TextButton(
                 this.buttonLeftPos,
                 this.buttonTopPos,
-                80,
+                76,
                 "basic",
                 onPress ->
                     NetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.BASIC_OBJECTIVE)));
+
+    this.followObjectiveButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.basicObjectiveButton.x + this.basicObjectiveButton.getWidth(),
+                this.buttonTopPos,
+                76,
+                "follow",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.FOLLOW_OBJECTIVE)));
+
+    this.attackObjectiveButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.followObjectiveButton.x + this.followObjectiveButton.getWidth(),
+                this.buttonTopPos,
+                76,
+                "attack",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.ATTACK_OBJECTIVE)));
+
+    // Default button stats
+    this.basicObjectiveButton.active =
+        this.hasPermissions(
+            COMMON.basicObjectiveConfigurationEnabled.get(),
+            COMMON.basicObjectiveConfigurationAllowInCreative.get(),
+            COMMON.basicObjectiveConfigurationPermissionLevel.get());
+    this.attackObjectiveButton.active =
+        this.hasPermissions(
+            COMMON.attackObjectiveConfigurationEnabled.get(),
+            COMMON.attackObjectiveConfigurationAllowInCreative.get(),
+            COMMON.attackObjectiveConfigurationPermissionLevel.get());
+    this.followObjectiveButton.active =
+        this.hasPermissions(
+            COMMON.followObjectiveConfigurationEnabled.get(),
+            COMMON.followObjectiveConfigurationAllowInCreative.get(),
+            COMMON.followObjectiveConfigurationPermissionLevel.get());
   }
 }

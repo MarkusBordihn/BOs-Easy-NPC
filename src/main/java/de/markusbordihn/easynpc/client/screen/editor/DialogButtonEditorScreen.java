@@ -425,7 +425,6 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
                 this.saveButton.x + this.saveButton.getWidth() + 10,
                 this.bottomPos - 35,
                 85,
-                "delete",
                 onPress -> this.deleteDialogButton()));
 
     // Chancel Button

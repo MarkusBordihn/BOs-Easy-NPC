@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.model;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.model.custom.CustomAllayModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -32,6 +33,8 @@ import org.apache.logging.log4j.Logger;
 public class ModModelLayers {
 
   // Model Layer Definitions
+  public static final ModelLayerLocation ALLAY =
+      new ModelLayerLocation(new ResourceLocation(Constants.MOD_ID, "allay"), "main");
   public static final ModelLayerLocation FAIRY =
       new ModelLayerLocation(new ResourceLocation(Constants.MOD_ID, "fairy"), "main");
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
@@ -42,6 +45,7 @@ public class ModModelLayers {
       EntityRenderersEvent.RegisterLayerDefinitions event) {
     log.info("{} Entity Layer Definitions ...", Constants.LOG_REGISTER_PREFIX);
 
+    event.registerLayerDefinition(ALLAY, CustomAllayModel::createBodyLayer);
     event.registerLayerDefinition(FAIRY, FairyModel::createBodyLayer);
   }
 }

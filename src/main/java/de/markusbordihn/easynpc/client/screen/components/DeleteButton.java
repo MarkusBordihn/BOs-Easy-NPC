@@ -68,6 +68,23 @@ public class DeleteButton extends SpriteButton {
         onPress);
   }
 
+  public DeleteButton(int left, int top, int width, OnPress onPress) {
+    super(
+        left,
+        top,
+        width,
+        DEFAULT_HEIGHT,
+        "delete",
+        SPRITE,
+        SPRITE_X,
+        SPRITE_Y,
+        SPRITE_OFFSET_X,
+        SPRITE_OFFSET_Y,
+        SPRITE_WIDTH,
+        SPRITE_HEIGHT,
+        onPress);
+  }
+
   public DeleteButton(int left, int top, int width, String label, OnPress onPress) {
     super(
         left,

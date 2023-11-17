@@ -76,9 +76,17 @@ public class MessageObjectiveAdd extends NetworkMessage {
     }
 
     // Perform action.
-    log.debug("Add objective {} for {} from {}", objectiveData, easyNPCEntity, serverPlayer);
-    easyNPCEntity.getObjectiveDataSet().addObjective(objectiveData);
-    easyNPCEntity.refreshEntityObjectives();
+    if (easyNPCEntity.addOrUpdateCustomObjective(objectiveData)) {
+      log.debug("Added objective {} for {} from {}", objectiveData, easyNPCEntity, serverPlayer);
+      log.debug(
+          "Available goals for {}: {}",
+          easyNPCEntity,
+          easyNPCEntity.getEntityGoalSelector().getAvailableGoals());
+      log.debug(
+          "Available targets for {}: {}",
+          easyNPCEntity,
+          easyNPCEntity.getEntityTargetSelector().getAvailableGoals());
+    }
   }
 
   public ObjectiveData getObjectiveData() {

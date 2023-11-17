@@ -36,7 +36,9 @@ import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfiguratio
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.objective.AttackObjectiveConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.objective.BasicObjectiveConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.objective.FollowObjectiveConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.pose.AdvancedPoseConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.pose.CustomPoseConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenu;
@@ -621,6 +623,46 @@ public class EasyNPCEntityMenu {
       NetworkHooks.openGui(
           serverPlayer,
           BasicObjectiveConfigurationMenu.getMenuProvider(uuid, entity, objectiveDataSet),
+          buffer -> {
+            buffer.writeUUID(uuid);
+            buffer.writeNbt(objectiveDataSet.createTag());
+          });
+    }
+  }
+
+  public static void openAttackObjectiveConfigurationMenu(
+      ServerPlayer serverPlayer, EasyNPCEntity entity) {
+    if (hasPermissions(
+        serverPlayer,
+        entity,
+        COMMON.attackObjectiveConfigurationEnabled.get(),
+        COMMON.attackObjectiveConfigurationAllowInCreative.get(),
+        COMMON.attackObjectiveConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      ObjectiveDataSet objectiveDataSet = entity.getObjectiveDataSet();
+      NetworkHooks.openGui(
+          serverPlayer,
+          AttackObjectiveConfigurationMenu.getMenuProvider(uuid, entity, objectiveDataSet),
+          buffer -> {
+            buffer.writeUUID(uuid);
+            buffer.writeNbt(objectiveDataSet.createTag());
+          });
+    }
+  }
+
+  public static void openFollowObjectiveConfigurationMenu(
+      ServerPlayer serverPlayer, EasyNPCEntity entity) {
+    if (hasPermissions(
+        serverPlayer,
+        entity,
+        COMMON.followObjectiveConfigurationEnabled.get(),
+        COMMON.followObjectiveConfigurationAllowInCreative.get(),
+        COMMON.followObjectiveConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      ObjectiveDataSet objectiveDataSet = entity.getObjectiveDataSet();
+      NetworkHooks.openGui(
+          serverPlayer,
+          FollowObjectiveConfigurationMenu.getMenuProvider(uuid, entity, objectiveDataSet),
           buffer -> {
             buffer.writeUUID(uuid);
             buffer.writeNbt(objectiveDataSet.createTag());

@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.model.custom;
 
-import de.markusbordihn.easynpc.client.model.CustomModelHelper;
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
@@ -60,48 +59,20 @@ public class CustomVillagerModel<T extends Entity> extends VillagerModel<T>
     if (entity instanceof EasyNPCEntity easyNPCEntity) {
 
       // Reset player model to avoid any issues with other mods.
-      resetVillagerModel(this.head, this.body, this.arms, this.leftLeg, this.rightLeg);
+      EasyNPCModel.resetVillagerModel(
+          this, this.head, this.body, this.arms, this.leftLeg, this.rightLeg);
 
       // Individual Part Modifications
       if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
-
-        // Head position, rotation and visibility.
-        CustomModelHelper.setHeadPositionRotationVisibility(
+        EasyNPCModel.setupVillagerModel(
+            easyNPCEntity,
             this.head,
-            easyNPCEntity.getModelHeadPosition(),
-            easyNPCEntity.getModelHeadRotation(),
-            easyNPCEntity.isModelHeadVisible(),
+            this.body,
+            this.arms,
+            this.leftLeg,
+            this.rightLeg,
             netHeadYaw,
             headPitch);
-
-        // Body position, rotation and visibility.
-        CustomModelHelper.setPositionRotationVisibility(
-            this.body,
-            easyNPCEntity.getModelBodyPosition(),
-            easyNPCEntity.getModelBodyRotation(),
-            easyNPCEntity.isModelBodyVisible());
-
-        // Arms position, rotation and visibility.
-        CustomModelHelper.setPositionRotationVisibility(
-            this.arms,
-            easyNPCEntity.getModelArmsPosition(),
-            easyNPCEntity.getModelArmsRotation(),
-            easyNPCEntity.isModelArmsVisible());
-
-        // Left Leg position, rotation and visibility.
-        CustomModelHelper.setPositionRotationVisibility(
-            this.leftLeg,
-            easyNPCEntity.getModelLeftLegPosition(),
-            easyNPCEntity.getModelLeftLegRotation(),
-            easyNPCEntity.isModelLeftLegVisible());
-
-        // Right Leg position, rotation and visibility.
-        CustomModelHelper.setPositionRotationVisibility(
-            this.rightLeg,
-            easyNPCEntity.getModelRightLegPosition(),
-            easyNPCEntity.getModelRightLegRotation(),
-            easyNPCEntity.isModelRightLegVisible());
-
       } else if (easyNPCEntity.getPose() == Pose.CROUCHING) {
         // Crouching Pose
         this.arms.xRot += 0.4F;

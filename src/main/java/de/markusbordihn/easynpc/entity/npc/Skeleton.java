@@ -47,7 +47,7 @@ public class Skeleton extends EasyNPCEntity implements RangedAttackMob {
     return Mob.createMobAttributes()
         .add(Attributes.MOVEMENT_SPEED, 0.5F)
         .add(Attributes.MAX_HEALTH, 16.0D)
-        .add(Attributes.ATTACK_DAMAGE, 0.0D);
+        .add(Attributes.ATTACK_DAMAGE, 0.1D);
   }
 
   @Override

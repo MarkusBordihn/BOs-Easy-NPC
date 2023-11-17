@@ -135,6 +135,7 @@ public interface EntityModelData extends EntityDataInterface {
   // Defaults
   CustomPosition DEFAULT_MODEL_PART_POSITION = new CustomPosition(0, 0, 0);
   Rotations DEFAULT_MODEL_PART_ROTATION = new Rotations(0, 0, 0);
+  CustomScale DEFAULT_MODEL_PART_SCALE = new CustomScale(1, 1, 1);
 
   default ModelPose getModelPose() {
     return getEntityData(DATA_MODEL_POSE);
@@ -192,7 +193,7 @@ public interface EntityModelData extends EntityDataInterface {
       case RIGHT_ARM -> getModelRightArmScale();
       case LEFT_LEG -> getModelLeftLegScale();
       case RIGHT_LEG -> getModelRightLegScale();
-      default -> null;
+      default -> DEFAULT_MODEL_PART_SCALE;
     };
   }
 
@@ -520,25 +521,25 @@ public interface EntityModelData extends EntityDataInterface {
 
   private void addAdditionalModelPositionData(CompoundTag compoundTag) {
     CompoundTag positionsTag = new CompoundTag();
-    if (this.getModelHeadPosition() != null) {
+    if (this.getModelHeadPosition() != null && !this.getModelHeadPosition().isZero()) {
       positionsTag.put(DATA_MODEL_HEAD_TAG, this.getModelHeadPosition().save());
     }
-    if (this.getModelBodyPosition() != null) {
+    if (this.getModelBodyPosition() != null && !this.getModelBodyPosition().isZero()) {
       positionsTag.put(DATA_MODEL_BODY_TAG, this.getModelBodyPosition().save());
     }
-    if (this.getModelArmsPosition() != null) {
+    if (this.getModelArmsPosition() != null && !this.getModelArmsPosition().isZero()) {
       positionsTag.put(DATA_MODEL_ARMS_TAG, this.getModelArmsPosition().save());
     }
-    if (this.getModelLeftArmPosition() != null) {
+    if (this.getModelLeftArmPosition() != null && !this.getModelLeftArmPosition().isZero()) {
       positionsTag.put(DATA_MODEL_LEFT_ARM_TAG, this.getModelLeftArmPosition().save());
     }
-    if (this.getModelRightArmPosition() != null) {
+    if (this.getModelRightArmPosition() != null && !this.getModelRightArmPosition().isZero()) {
       positionsTag.put(DATA_MODEL_RIGHT_ARM_TAG, this.getModelRightArmPosition().save());
     }
-    if (this.getModelLeftLegPosition() != null) {
+    if (this.getModelLeftLegPosition() != null && !this.getModelLeftLegPosition().isZero()) {
       positionsTag.put(DATA_MODEL_LEFT_LEG_TAG, this.getModelLeftLegPosition().save());
     }
-    if (this.getModelRightLegPosition() != null) {
+    if (this.getModelRightLegPosition() != null && !this.getModelRightLegPosition().isZero()) {
       positionsTag.put(DATA_MODEL_RIGHT_LEG_TAG, this.getModelRightLegPosition().save());
     }
     compoundTag.put(DATA_MODEL_POSITION_TAG, positionsTag);
@@ -546,29 +547,39 @@ public interface EntityModelData extends EntityDataInterface {
 
   private void addAdditionalModelRotationData(CompoundTag compoundTag) {
     CompoundTag rotationsTag = new CompoundTag();
-    rotationsTag.putBoolean(DATA_MODEL_LOCK_TAG, this.getModelLockRotation());
-    if (this.getModelHeadRotation() != null) {
+    if (!this.getModelLockRotation()) {
+      rotationsTag.putBoolean(DATA_MODEL_LOCK_TAG, this.getModelLockRotation());
+    }
+    if (this.getModelHeadRotation() != null
+        && !this.getModelHeadRotation().equals(DEFAULT_MODEL_PART_ROTATION)) {
       rotationsTag.put(DATA_MODEL_HEAD_TAG, this.getModelHeadRotation().save());
     }
-    if (this.getModelBodyRotation() != null) {
+    if (this.getModelBodyRotation() != null
+        && !this.getModelBodyRotation().equals(DEFAULT_MODEL_PART_ROTATION)) {
       rotationsTag.put(DATA_MODEL_BODY_TAG, this.getModelBodyRotation().save());
     }
-    if (this.getModelArmsRotation() != null) {
+    if (this.getModelArmsRotation() != null
+        && !this.getModelArmsRotation().equals(DEFAULT_MODEL_PART_ROTATION)) {
       rotationsTag.put(DATA_MODEL_ARMS_TAG, this.getModelArmsRotation().save());
     }
-    if (this.getModelLeftArmRotation() != null) {
+    if (this.getModelLeftArmRotation() != null
+        && !this.getModelLeftArmRotation().equals(DEFAULT_MODEL_PART_ROTATION)) {
       rotationsTag.put(DATA_MODEL_LEFT_ARM_TAG, this.getModelLeftArmRotation().save());
     }
-    if (this.getModelRightArmRotation() != null) {
+    if (this.getModelRightArmRotation() != null
+        && !this.getModelRightArmRotation().equals(DEFAULT_MODEL_PART_ROTATION)) {
       rotationsTag.put(DATA_MODEL_RIGHT_ARM_TAG, this.getModelRightArmRotation().save());
     }
-    if (this.getModelLeftLegRotation() != null) {
+    if (this.getModelLeftLegRotation() != null
+        && !this.getModelLeftLegRotation().equals(DEFAULT_MODEL_PART_ROTATION)) {
       rotationsTag.put(DATA_MODEL_LEFT_LEG_TAG, this.getModelLeftLegRotation().save());
     }
-    if (this.getModelRightLegRotation() != null) {
+    if (this.getModelRightLegRotation() != null
+        && !this.getModelRightLegRotation().equals(DEFAULT_MODEL_PART_ROTATION)) {
       rotationsTag.put(DATA_MODEL_RIGHT_LEG_TAG, this.getModelRightLegRotation().save());
     }
-    if (this.getModelRootRotation() != null) {
+    if (this.getModelRootRotation() != null
+        && !this.getModelRootRotation().equals(DEFAULT_MODEL_PART_ROTATION)) {
       rotationsTag.put(DATA_MODEL_ROOT_TAG, this.getModelRootRotation().save());
     }
     compoundTag.put(DATA_MODEL_ROTATION_TAG, rotationsTag);
@@ -576,13 +587,27 @@ public interface EntityModelData extends EntityDataInterface {
 
   private void addAdditionalModelVisibilityData(CompoundTag compoundTag) {
     CompoundTag visibilityTag = new CompoundTag();
-    visibilityTag.putBoolean(DATA_MODEL_HEAD_TAG, this.isModelHeadVisible());
-    visibilityTag.putBoolean(DATA_MODEL_BODY_TAG, this.isModelBodyVisible());
-    visibilityTag.putBoolean(DATA_MODEL_ARMS_TAG, this.isModelArmsVisible());
-    visibilityTag.putBoolean(DATA_MODEL_LEFT_ARM_TAG, this.isModelLeftArmVisible());
-    visibilityTag.putBoolean(DATA_MODEL_RIGHT_ARM_TAG, this.isModelRightArmVisible());
-    visibilityTag.putBoolean(DATA_MODEL_LEFT_LEG_TAG, this.isModelLeftLegVisible());
-    visibilityTag.putBoolean(DATA_MODEL_RIGHT_LEG_TAG, this.isModelRightLegVisible());
+    if (this.isModelHeadVisible() != this.hasHeadModelPart()) {
+      visibilityTag.putBoolean(DATA_MODEL_HEAD_TAG, this.isModelHeadVisible());
+    }
+    if (this.isModelBodyVisible() != this.hasBodyModelPart()) {
+      visibilityTag.putBoolean(DATA_MODEL_BODY_TAG, this.isModelBodyVisible());
+    }
+    if (this.isModelArmsVisible() != this.hasArmsModelPart()) {
+      visibilityTag.putBoolean(DATA_MODEL_ARMS_TAG, this.isModelArmsVisible());
+    }
+    if (this.isModelLeftArmVisible() != this.hasLeftArmModelPart()) {
+      visibilityTag.putBoolean(DATA_MODEL_LEFT_ARM_TAG, this.isModelLeftArmVisible());
+    }
+    if (this.isModelRightArmVisible() != this.hasRightArmModelPart()) {
+      visibilityTag.putBoolean(DATA_MODEL_RIGHT_ARM_TAG, this.isModelRightArmVisible());
+    }
+    if (this.isModelLeftLegVisible() != this.hasLeftLegModelPart()) {
+      visibilityTag.putBoolean(DATA_MODEL_LEFT_LEG_TAG, this.isModelLeftLegVisible());
+    }
+    if (this.isModelRightLegVisible() != this.hasRightLegModelPart()) {
+      visibilityTag.putBoolean(DATA_MODEL_RIGHT_LEG_TAG, this.isModelRightLegVisible());
+    }
     compoundTag.put(DATA_MODEL_VISIBLE_TAG, visibilityTag);
   }
 

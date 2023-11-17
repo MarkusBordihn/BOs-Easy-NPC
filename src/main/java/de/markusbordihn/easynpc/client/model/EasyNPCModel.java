@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.data.CustomPosition;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.Rotations;
+import net.minecraft.util.Mth;
 
 public interface EasyNPCModel {
 
@@ -97,6 +98,406 @@ public interface EasyNPCModel {
     modelPart.x = position.x();
     modelPart.y = position.y();
     modelPart.z = position.z();
+  }
+
+  static void animateHumanoidModel(
+      EasyNPCModel easyNPCModel,
+      ModelPart headPart,
+      ModelPart bodyPart,
+      ModelPart rightArmPart,
+      ModelPart leftArmPart,
+      ModelPart rightLegPart,
+      ModelPart leftLegPart,
+      float limbSwing,
+      float limbSwingAmount) {
+
+    // Allow arm animation if arms are not adjusted.
+    if (easyNPCModel.hasDefaultHumanoidModelRightArm(rightArmPart)) {
+      rightArmPart.xRot =
+          Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F;
+    }
+    if (easyNPCModel.hasDefaultHumanoidModelLeftArm(leftArmPart)) {
+      leftArmPart.xRot = Mth.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
+    }
+
+    // Allow leg animation if legs are not adjusted.
+    if (easyNPCModel.hasDefaultHumanoidModelRightLeg(rightLegPart)) {
+      rightLegPart.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+    }
+    if (easyNPCModel.hasDefaultHumanoidModelLeftLeg(leftLegPart)) {
+      leftLegPart.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
+    }
+  }
+
+  static void setupArmModel(
+      EasyNPCEntity entity,
+      ModelPart headPart,
+      ModelPart bodyPart,
+      ModelPart leftArmPart,
+      ModelPart rightArmPart,
+      float netHeadYaw,
+      float headPitch) {
+    CustomModelHelper.setHeadPositionRotationVisibility(
+        headPart,
+        entity.getModelHeadPosition(),
+        entity.getModelHeadRotation(),
+        entity.isModelHeadVisible(),
+        netHeadYaw,
+        headPitch);
+    CustomModelHelper.setPositionRotationVisibility(
+        bodyPart,
+        entity.getModelBodyPosition(),
+        entity.getModelBodyRotation(),
+        entity.isModelBodyVisible());
+    CustomModelHelper.setPositionRotationVisibility(
+        leftArmPart,
+        entity.getModelLeftArmPosition(),
+        entity.getModelLeftArmRotation(),
+        entity.isModelLeftArmVisible());
+    CustomModelHelper.setPositionRotationVisibility(
+        rightArmPart,
+        entity.getModelRightArmPosition(),
+        entity.getModelRightArmRotation(),
+        entity.isModelRightArmVisible());
+  }
+
+  static void setupAnimalModel(
+      EasyNPCEntity entity,
+      ModelPart headPart,
+      ModelPart bodyPart,
+      ModelPart leftFrontLeg,
+      ModelPart rightFrontLeg,
+      ModelPart leftHindLeg,
+      ModelPart rightHindLeg,
+      float netHeadYaw,
+      float headPitch) {
+    CustomModelHelper.setHeadPositionRotationVisibility(
+        headPart,
+        entity.getModelHeadPosition(),
+        entity.getModelHeadRotation(),
+        entity.isModelHeadVisible(),
+        netHeadYaw,
+        headPitch);
+    CustomModelHelper.setPositionRotationVisibility(
+        bodyPart,
+        entity.getModelBodyPosition(),
+        entity.getModelBodyRotation(),
+        entity.isModelBodyVisible());
+    CustomModelHelper.setPositionRotationVisibility(
+        leftFrontLeg,
+        entity.getModelLeftArmPosition(),
+        entity.getModelLeftArmRotation(),
+        entity.isModelLeftArmVisible());
+    CustomModelHelper.setPositionRotationVisibility(
+        rightFrontLeg,
+        entity.getModelRightArmPosition(),
+        entity.getModelRightArmRotation(),
+        entity.isModelRightArmVisible());
+    CustomModelHelper.setPositionRotationVisibility(
+        leftHindLeg,
+        entity.getModelLeftLegPosition(),
+        entity.getModelLeftLegRotation(),
+        entity.isModelLeftLegVisible());
+    CustomModelHelper.setPositionRotationVisibility(
+        rightHindLeg,
+        entity.getModelRightLegPosition(),
+        entity.getModelRightLegRotation(),
+        entity.isModelRightLegVisible());
+  }
+
+  static void setupBirdModel(
+      EasyNPCEntity entity,
+      ModelPart headPart,
+      ModelPart bodyPart,
+      ModelPart leftWing,
+      ModelPart rightWing,
+      ModelPart leftLeg,
+      ModelPart rightLeg,
+      float netHeadYaw,
+      float headPitch) {
+    CustomModelHelper.setHeadPositionRotationVisibility(
+        headPart,
+        entity.getModelHeadPosition(),
+        entity.getModelHeadRotation(),
+        entity.isModelHeadVisible(),
+        netHeadYaw,
+        headPitch);
+    CustomModelHelper.setPositionRotationVisibility(
+        bodyPart,
+        entity.getModelBodyPosition(),
+        entity.getModelBodyRotation(),
+        entity.isModelBodyVisible());
+    CustomModelHelper.setPositionRotationVisibility(
+        leftWing,
+        entity.getModelLeftArmPosition(),
+        entity.getModelLeftArmRotation(),
+        entity.isModelLeftArmVisible());
+    CustomModelHelper.setPositionRotationVisibility(
+        rightWing,
+        entity.getModelRightArmPosition(),
+        entity.getModelRightArmRotation(),
+        entity.isModelRightArmVisible());
+    CustomModelHelper.setPositionRotationVisibility(
+        leftLeg,
+        entity.getModelLeftLegPosition(),
+        entity.getModelLeftLegRotation(),
+        entity.isModelLeftLegVisible());
+    CustomModelHelper.setPositionRotationVisibility(
+        rightLeg,
+        entity.getModelRightLegPosition(),
+        entity.getModelRightLegRotation(),
+        entity.isModelRightLegVisible());
+  }
+
+  static void setupHumanoidModel(
+      EasyNPCEntity entity,
+      ModelPart headPart,
+      ModelPart bodyPart,
+      ModelPart rightArmPart,
+      ModelPart leftArmPart,
+      ModelPart rightLegPart,
+      ModelPart leftLegPart,
+      float netHeadYaw,
+      float headPitch) {
+    CustomModelHelper.setHeadPositionRotationVisibility(
+        headPart,
+        entity.getModelHeadPosition(),
+        entity.getModelHeadRotation(),
+        entity.isModelHeadVisible(),
+        netHeadYaw,
+        headPitch);
+    CustomModelHelper.setPositionRotationVisibility(
+        bodyPart,
+        entity.getModelBodyPosition(),
+        entity.getModelBodyRotation(),
+        entity.isModelBodyVisible());
+    CustomModelHelper.setPositionRotationVisibility(
+        leftArmPart,
+        entity.getModelLeftArmPosition(),
+        entity.getModelLeftArmRotation(),
+        entity.isModelLeftArmVisible());
+    CustomModelHelper.setPositionRotationVisibility(
+        rightArmPart,
+        entity.getModelRightArmPosition(),
+        entity.getModelRightArmRotation(),
+        entity.isModelRightArmVisible());
+    CustomModelHelper.setPositionRotationVisibility(
+        leftLegPart,
+        entity.getModelLeftLegPosition(),
+        entity.getModelLeftLegRotation(),
+        entity.isModelLeftLegVisible());
+    CustomModelHelper.setPositionRotationVisibility(
+        rightLegPart,
+        entity.getModelRightLegPosition(),
+        entity.getModelRightLegRotation(),
+        entity.isModelRightLegVisible());
+  }
+
+  static void resetArmModel(
+      EasyNPCModel easyNPCModel,
+      ModelPart headPart,
+      ModelPart bodyPart,
+      ModelPart leftArm,
+      ModelPart rightArm) {
+
+    // Reset all rotations.
+    setModelPartRotation(headPart, easyNPCModel.getDefaultModelHeadRotation());
+    setModelPartRotation(bodyPart, easyNPCModel.getDefaultModelBodyRotation());
+    setModelPartRotation(leftArm, easyNPCModel.getDefaultModelLeftArmRotation());
+    setModelPartRotation(rightArm, easyNPCModel.getDefaultModelRightArmRotation());
+
+    // Reset all positions.
+    setModelPartPosition(bodyPart, easyNPCModel.getDefaultModelBodyPosition());
+    setModelPartPosition(headPart, easyNPCModel.getDefaultModelHeadPosition());
+    setModelPartPosition(leftArm, easyNPCModel.getDefaultModelLeftArmPosition());
+    setModelPartPosition(rightArm, easyNPCModel.getDefaultModelRightArmPosition());
+
+    // Reset all visibility.
+    headPart.visible = true;
+    bodyPart.visible = true;
+    leftArm.visible = true;
+    rightArm.visible = true;
+  }
+
+  static void setupVillagerModel(
+      EasyNPCEntity entity,
+      ModelPart headPart,
+      ModelPart bodyPart,
+      ModelPart armsPart,
+      ModelPart rightLegPart,
+      ModelPart leftLegPart,
+      float netHeadYaw,
+      float headPitch) {
+    CustomModelHelper.setHeadPositionRotationVisibility(
+        headPart,
+        entity.getModelHeadPosition(),
+        entity.getModelHeadRotation(),
+        entity.isModelHeadVisible(),
+        netHeadYaw,
+        headPitch);
+    CustomModelHelper.setPositionRotationVisibility(
+        bodyPart,
+        entity.getModelBodyPosition(),
+        entity.getModelBodyRotation(),
+        entity.isModelBodyVisible());
+    CustomModelHelper.setPositionRotationVisibility(
+        armsPart,
+        entity.getModelArmsPosition(),
+        entity.getModelArmsRotation(),
+        entity.isModelArmsVisible());
+    CustomModelHelper.setPositionRotationVisibility(
+        leftLegPart,
+        entity.getModelLeftLegPosition(),
+        entity.getModelLeftLegRotation(),
+        entity.isModelLeftLegVisible());
+    CustomModelHelper.setPositionRotationVisibility(
+        rightLegPart,
+        entity.getModelRightLegPosition(),
+        entity.getModelRightLegRotation(),
+        entity.isModelRightLegVisible());
+  }
+
+  static void resetAnimalModel(
+      EasyNPCModel easyNPCModel,
+      ModelPart headPart,
+      ModelPart bodyPart,
+      ModelPart leftFrontLeg,
+      ModelPart rightFrontLeg,
+      ModelPart leftHindLeg,
+      ModelPart rightHindLeg) {
+
+    // Reset all rotations.
+    setModelPartRotation(headPart, easyNPCModel.getDefaultModelHeadRotation());
+    setModelPartRotation(bodyPart, easyNPCModel.getDefaultModelBodyRotation());
+    setModelPartRotation(leftFrontLeg, easyNPCModel.getDefaultModelLeftFrontLegRotation());
+    setModelPartRotation(rightFrontLeg, easyNPCModel.getDefaultModelRightFrontLegRotation());
+    setModelPartRotation(leftHindLeg, easyNPCModel.getDefaultModelLeftHindLegRotation());
+    setModelPartRotation(rightHindLeg, easyNPCModel.getDefaultModelRightHindLegRotation());
+
+    // Reset all positions.
+    setModelPartPosition(bodyPart, easyNPCModel.getDefaultModelBodyPosition());
+    setModelPartPosition(headPart, easyNPCModel.getDefaultModelHeadPosition());
+    setModelPartPosition(leftFrontLeg, easyNPCModel.getDefaultModelLeftFrontLegPosition());
+    setModelPartPosition(rightFrontLeg, easyNPCModel.getDefaultModelRightFrontLegPosition());
+    setModelPartPosition(leftHindLeg, easyNPCModel.getDefaultModelLeftHindLegPosition());
+    setModelPartPosition(rightHindLeg, easyNPCModel.getDefaultModelRightHindLegPosition());
+
+    // Reset all visibility.
+    headPart.visible = true;
+    bodyPart.visible = true;
+    leftFrontLeg.visible = true;
+    rightFrontLeg.visible = true;
+    leftHindLeg.visible = true;
+    rightHindLeg.visible = true;
+  }
+
+  static void resetBirdModel(
+      EasyNPCModel easyNPCModel,
+      ModelPart headPart,
+      ModelPart bodyPart,
+      ModelPart leftWingPart,
+      ModelPart rightWingPart,
+      ModelPart leftLegPart,
+      ModelPart rightLegPart) {
+
+    // Reset all rotations.
+    setModelPartRotation(headPart, easyNPCModel.getDefaultModelHeadRotation());
+    setModelPartRotation(bodyPart, easyNPCModel.getDefaultModelBodyRotation());
+    setModelPartRotation(leftWingPart, easyNPCModel.getDefaultModelLeftWingRotation());
+    setModelPartRotation(rightWingPart, easyNPCModel.getDefaultModelRightArmRotation());
+    setModelPartRotation(leftLegPart, easyNPCModel.getDefaultModelLeftLegRotation());
+    setModelPartRotation(rightLegPart, easyNPCModel.getDefaultModelRightLegRotation());
+
+    // Reset all positions.
+    setModelPartPosition(bodyPart, easyNPCModel.getDefaultModelBodyPosition());
+    setModelPartPosition(headPart, easyNPCModel.getDefaultModelHeadPosition());
+    setModelPartPosition(leftWingPart, easyNPCModel.getDefaultModelLeftWingPosition());
+    setModelPartPosition(rightWingPart, easyNPCModel.getDefaultModelRightWingPosition());
+    setModelPartPosition(leftLegPart, easyNPCModel.getDefaultModelLeftLegPosition());
+    setModelPartPosition(rightLegPart, easyNPCModel.getDefaultModelRightLegPosition());
+
+    // Reset all visibility.
+    headPart.visible = true;
+    bodyPart.visible = true;
+    leftWingPart.visible = true;
+    rightWingPart.visible = true;
+    leftLegPart.visible = true;
+    rightLegPart.visible = true;
+  }
+
+  static void resetHumanoidModel(
+      EasyNPCModel easyNPCModel,
+      ModelPart headPart,
+      ModelPart bodyPart,
+      ModelPart rightArmPart,
+      ModelPart leftArmPart,
+      ModelPart rightLegPart,
+      ModelPart leftLegPart) {
+
+    // Reset all rotations.
+    setModelPartRotation(headPart, easyNPCModel.getDefaultModelHeadRotation());
+    setModelPartRotation(bodyPart, easyNPCModel.getDefaultModelBodyRotation());
+    setModelPartRotation(leftArmPart, easyNPCModel.getDefaultModelLeftArmRotation());
+    setModelPartRotation(rightArmPart, easyNPCModel.getDefaultModelRightArmRotation());
+    setModelPartRotation(leftLegPart, easyNPCModel.getDefaultModelLeftLegRotation());
+    setModelPartRotation(rightLegPart, easyNPCModel.getDefaultModelRightLegRotation());
+
+    // Reset all positions.
+    setModelPartPosition(bodyPart, easyNPCModel.getDefaultModelBodyPosition());
+    setModelPartPosition(headPart, easyNPCModel.getDefaultModelHeadPosition());
+    setModelPartPosition(leftArmPart, easyNPCModel.getDefaultModelLeftArmPosition());
+    setModelPartPosition(rightArmPart, easyNPCModel.getDefaultModelRightArmPosition());
+    setModelPartPosition(leftLegPart, easyNPCModel.getDefaultModelLeftLegPosition());
+    setModelPartPosition(rightLegPart, easyNPCModel.getDefaultModelRightLegPosition());
+
+    // Reset all visibility.
+    headPart.visible = true;
+    bodyPart.visible = true;
+    leftArmPart.visible = true;
+    rightArmPart.visible = true;
+    leftLegPart.visible = true;
+    rightLegPart.visible = true;
+  }
+
+  static void resetHierarchicalModel(
+      EasyNPCModel easyNPCModel,
+      ModelPart headPart,
+      ModelPart bodyPart,
+      ModelPart rightArmPart,
+      ModelPart leftArmPart,
+      ModelPart rightLegPart,
+      ModelPart leftLegPart) {
+    resetHumanoidModel(
+        easyNPCModel, headPart, bodyPart, rightArmPart, leftArmPart, rightLegPart, leftLegPart);
+  }
+
+  static void resetVillagerModel(
+      EasyNPCModel easyNPCModel,
+      ModelPart headPart,
+      ModelPart bodyPart,
+      ModelPart armsPart,
+      ModelPart leftLegPart,
+      ModelPart rightLegPart) {
+    // Reset all rotations.
+    setModelPartRotation(headPart, easyNPCModel.getDefaultModelHeadRotation());
+    setModelPartRotation(bodyPart, easyNPCModel.getDefaultModelBodyRotation());
+    setModelPartRotation(armsPart, easyNPCModel.getDefaultModelArmsRotation());
+    setModelPartRotation(leftLegPart, easyNPCModel.getDefaultModelLeftLegRotation());
+    setModelPartRotation(rightLegPart, easyNPCModel.getDefaultModelRightLegRotation());
+
+    // Reset all positions.
+    setModelPartPosition(bodyPart, easyNPCModel.getDefaultModelBodyPosition());
+    setModelPartPosition(headPart, easyNPCModel.getDefaultModelHeadPosition());
+    setModelPartPosition(armsPart, easyNPCModel.getDefaultModelArmsPosition());
+    setModelPartPosition(leftLegPart, easyNPCModel.getDefaultModelLeftLegPosition());
+    setModelPartPosition(rightLegPart, easyNPCModel.getDefaultModelRightLegPosition());
+
+    // Reset all visibility.
+    headPart.visible = true;
+    bodyPart.visible = true;
+    armsPart.visible = true;
+    leftLegPart.visible = true;
+    rightLegPart.visible = true;
   }
 
   default CustomPosition getDefaultModelHeadPosition() {
@@ -215,171 +616,7 @@ public interface EasyNPCModel {
     return MODEL_ROOT_ROTATION;
   }
 
-  default void setupCustomModel() {}
-
-  default void setupCustomAnimalModel(
-      EasyNPCEntity entity,
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart leftFrontLeg,
-      ModelPart rightFrontLeg,
-      ModelPart leftHindLeg,
-      ModelPart rightHindLeg,
-      float netHeadYaw,
-      float headPitch) {
-    CustomModelHelper.setHeadPositionRotationVisibility(
-        headPart,
-        entity.getModelHeadPosition(),
-        entity.getModelHeadRotation(),
-        entity.isModelHeadVisible(),
-        netHeadYaw,
-        headPitch);
-    CustomModelHelper.setPositionRotationVisibility(
-        bodyPart,
-        entity.getModelBodyPosition(),
-        entity.getModelBodyRotation(),
-        entity.isModelBodyVisible());
-    CustomModelHelper.setPositionRotationVisibility(
-        leftFrontLeg,
-        entity.getModelLeftArmPosition(),
-        entity.getModelLeftArmRotation(),
-        entity.isModelLeftArmVisible());
-    CustomModelHelper.setPositionRotationVisibility(
-        rightFrontLeg,
-        entity.getModelRightArmPosition(),
-        entity.getModelRightArmRotation(),
-        entity.isModelRightArmVisible());
-    CustomModelHelper.setPositionRotationVisibility(
-        leftHindLeg,
-        entity.getModelLeftLegPosition(),
-        entity.getModelLeftLegRotation(),
-        entity.isModelLeftLegVisible());
-    CustomModelHelper.setPositionRotationVisibility(
-        rightHindLeg,
-        entity.getModelRightLegPosition(),
-        entity.getModelRightLegRotation(),
-        entity.isModelRightLegVisible());
-  }
-
-  default void setupCustomBirdModel(
-      EasyNPCEntity entity,
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart leftWing,
-      ModelPart rightWing,
-      ModelPart leftLeg,
-      ModelPart rightLeg,
-      float netHeadYaw,
-      float headPitch) {
-    CustomModelHelper.setHeadPositionRotationVisibility(
-        headPart,
-        entity.getModelHeadPosition(),
-        entity.getModelHeadRotation(),
-        entity.isModelHeadVisible(),
-        netHeadYaw,
-        headPitch);
-    CustomModelHelper.setPositionRotationVisibility(
-        bodyPart,
-        entity.getModelBodyPosition(),
-        entity.getModelBodyRotation(),
-        entity.isModelBodyVisible());
-    CustomModelHelper.setPositionRotationVisibility(
-        leftWing,
-        entity.getModelLeftArmPosition(),
-        entity.getModelLeftArmRotation(),
-        entity.isModelLeftArmVisible());
-    CustomModelHelper.setPositionRotationVisibility(
-        rightWing,
-        entity.getModelRightArmPosition(),
-        entity.getModelRightArmRotation(),
-        entity.isModelRightArmVisible());
-    CustomModelHelper.setPositionRotationVisibility(
-        leftLeg,
-        entity.getModelLeftLegPosition(),
-        entity.getModelLeftLegRotation(),
-        entity.isModelLeftLegVisible());
-    CustomModelHelper.setPositionRotationVisibility(
-        rightLeg,
-        entity.getModelRightLegPosition(),
-        entity.getModelRightLegRotation(),
-        entity.isModelRightLegVisible());
-  }
-
-  default void setupCustomArmModel(
-      EasyNPCEntity entity,
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart leftArmPart,
-      ModelPart rightArmPart,
-      float netHeadYaw,
-      float headPitch) {
-    CustomModelHelper.setHeadPositionRotationVisibility(
-        headPart,
-        entity.getModelHeadPosition(),
-        entity.getModelHeadRotation(),
-        entity.isModelHeadVisible(),
-        netHeadYaw,
-        headPitch);
-    CustomModelHelper.setPositionRotationVisibility(
-        bodyPart,
-        entity.getModelBodyPosition(),
-        entity.getModelBodyRotation(),
-        entity.isModelBodyVisible());
-    CustomModelHelper.setPositionRotationVisibility(
-        leftArmPart,
-        entity.getModelLeftArmPosition(),
-        entity.getModelLeftArmRotation(),
-        entity.isModelLeftArmVisible());
-    CustomModelHelper.setPositionRotationVisibility(
-        rightArmPart,
-        entity.getModelRightArmPosition(),
-        entity.getModelRightArmRotation(),
-        entity.isModelRightArmVisible());
-  }
-
-  default void setupCustomHumanoidModel(
-      EasyNPCEntity entity,
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart rightArmPart,
-      ModelPart leftArmPart,
-      ModelPart rightLegPart,
-      ModelPart leftLegPart,
-      float netHeadYaw,
-      float headPitch) {
-    CustomModelHelper.setHeadPositionRotationVisibility(
-        headPart,
-        entity.getModelHeadPosition(),
-        entity.getModelHeadRotation(),
-        entity.isModelHeadVisible(),
-        netHeadYaw,
-        headPitch);
-    CustomModelHelper.setPositionRotationVisibility(
-        bodyPart,
-        entity.getModelBodyPosition(),
-        entity.getModelBodyRotation(),
-        entity.isModelBodyVisible());
-    CustomModelHelper.setPositionRotationVisibility(
-        leftArmPart,
-        entity.getModelLeftArmPosition(),
-        entity.getModelLeftArmRotation(),
-        entity.isModelLeftArmVisible());
-    CustomModelHelper.setPositionRotationVisibility(
-        rightArmPart,
-        entity.getModelRightArmPosition(),
-        entity.getModelRightArmRotation(),
-        entity.isModelRightArmVisible());
-    CustomModelHelper.setPositionRotationVisibility(
-        leftLegPart,
-        entity.getModelLeftLegPosition(),
-        entity.getModelLeftLegRotation(),
-        entity.isModelLeftLegVisible());
-    CustomModelHelper.setPositionRotationVisibility(
-        rightLegPart,
-        entity.getModelRightLegPosition(),
-        entity.getModelRightLegRotation(),
-        entity.isModelRightLegVisible());
-  }
+  default void setupModel() {}
 
   default void setupHierarchicalModel(
       EasyNPCEntity entity,
@@ -391,7 +628,7 @@ public interface EasyNPCModel {
       ModelPart leftLegPart,
       float netHeadYaw,
       float headPitch) {
-    setupCustomHumanoidModel(
+    setupHumanoidModel(
         entity,
         headPart,
         bodyPart,
@@ -401,165 +638,6 @@ public interface EasyNPCModel {
         leftLegPart,
         netHeadYaw,
         headPitch);
-  }
-
-  default void resetAnimalModel(
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart leftFrontLeg,
-      ModelPart rightFrontLeg,
-      ModelPart leftHindLeg,
-      ModelPart rightHindLeg) {
-
-    // Reset all rotations.
-    setModelPartRotation(headPart, this.getDefaultModelHeadRotation());
-    setModelPartRotation(bodyPart, this.getDefaultModelBodyRotation());
-    setModelPartRotation(leftFrontLeg, this.getDefaultModelLeftFrontLegRotation());
-    setModelPartRotation(rightFrontLeg, this.getDefaultModelRightFrontLegRotation());
-    setModelPartRotation(leftHindLeg, this.getDefaultModelLeftHindLegRotation());
-    setModelPartRotation(rightHindLeg, this.getDefaultModelRightHindLegRotation());
-
-    // Reset all positions.
-    setModelPartPosition(bodyPart, this.getDefaultModelBodyPosition());
-    setModelPartPosition(headPart, this.getDefaultModelHeadPosition());
-    setModelPartPosition(leftFrontLeg, this.getDefaultModelLeftFrontLegPosition());
-    setModelPartPosition(rightFrontLeg, this.getDefaultModelRightFrontLegPosition());
-    setModelPartPosition(leftHindLeg, this.getDefaultModelLeftHindLegPosition());
-    setModelPartPosition(rightHindLeg, this.getDefaultModelRightHindLegPosition());
-
-    // Reset all visibility.
-    headPart.visible = true;
-    bodyPart.visible = true;
-    leftFrontLeg.visible = true;
-    rightFrontLeg.visible = true;
-    leftHindLeg.visible = true;
-    rightHindLeg.visible = true;
-  }
-
-  default void resetArmModel(
-      ModelPart headPart, ModelPart bodyPart, ModelPart leftArm, ModelPart rightArm) {
-
-    // Reset all rotations.
-    setModelPartRotation(headPart, this.getDefaultModelHeadRotation());
-    setModelPartRotation(bodyPart, this.getDefaultModelBodyRotation());
-    setModelPartRotation(leftArm, this.getDefaultModelLeftArmRotation());
-    setModelPartRotation(rightArm, this.getDefaultModelRightArmRotation());
-
-    // Reset all positions.
-    setModelPartPosition(bodyPart, this.getDefaultModelBodyPosition());
-    setModelPartPosition(headPart, this.getDefaultModelHeadPosition());
-    setModelPartPosition(leftArm, this.getDefaultModelLeftArmPosition());
-    setModelPartPosition(rightArm, this.getDefaultModelRightArmPosition());
-
-    // Reset all visibility.
-    headPart.visible = true;
-    bodyPart.visible = true;
-    leftArm.visible = true;
-    rightArm.visible = true;
-  }
-
-  default void resetBirdModel(
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart leftWingPart,
-      ModelPart rightWingPart,
-      ModelPart leftLegPart,
-      ModelPart rightLegPart) {
-
-    // Reset all rotations.
-    setModelPartRotation(headPart, this.getDefaultModelHeadRotation());
-    setModelPartRotation(bodyPart, this.getDefaultModelBodyRotation());
-    setModelPartRotation(leftWingPart, this.getDefaultModelLeftWingRotation());
-    setModelPartRotation(rightWingPart, this.getDefaultModelRightArmRotation());
-    setModelPartRotation(leftLegPart, this.getDefaultModelLeftLegRotation());
-    setModelPartRotation(rightLegPart, this.getDefaultModelRightLegRotation());
-
-    // Reset all positions.
-    setModelPartPosition(bodyPart, this.getDefaultModelBodyPosition());
-    setModelPartPosition(headPart, this.getDefaultModelHeadPosition());
-    setModelPartPosition(leftWingPart, this.getDefaultModelLeftWingPosition());
-    setModelPartPosition(rightWingPart, this.getDefaultModelRightWingPosition());
-    setModelPartPosition(leftLegPart, this.getDefaultModelLeftLegPosition());
-    setModelPartPosition(rightLegPart, this.getDefaultModelRightLegPosition());
-
-    // Reset all visibility.
-    headPart.visible = true;
-    bodyPart.visible = true;
-    leftWingPart.visible = true;
-    rightWingPart.visible = true;
-    leftLegPart.visible = true;
-    rightLegPart.visible = true;
-  }
-
-  default void resetHumanoidModel(
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart rightArmPart,
-      ModelPart leftArmPart,
-      ModelPart rightLegPart,
-      ModelPart leftLegPart) {
-
-    // Reset all rotations.
-    setModelPartRotation(headPart, this.getDefaultModelHeadRotation());
-    setModelPartRotation(bodyPart, this.getDefaultModelBodyRotation());
-    setModelPartRotation(leftArmPart, this.getDefaultModelLeftArmRotation());
-    setModelPartRotation(rightArmPart, this.getDefaultModelRightArmRotation());
-    setModelPartRotation(leftLegPart, this.getDefaultModelLeftLegRotation());
-    setModelPartRotation(rightLegPart, this.getDefaultModelRightLegRotation());
-
-    // Reset all positions.
-    setModelPartPosition(bodyPart, this.getDefaultModelBodyPosition());
-    setModelPartPosition(headPart, this.getDefaultModelHeadPosition());
-    setModelPartPosition(leftArmPart, this.getDefaultModelLeftArmPosition());
-    setModelPartPosition(rightArmPart, this.getDefaultModelRightArmPosition());
-    setModelPartPosition(leftLegPart, this.getDefaultModelLeftLegPosition());
-    setModelPartPosition(rightLegPart, this.getDefaultModelRightLegPosition());
-
-    // Reset all visibility.
-    headPart.visible = true;
-    bodyPart.visible = true;
-    leftArmPart.visible = true;
-    rightArmPart.visible = true;
-    leftLegPart.visible = true;
-    rightLegPart.visible = true;
-  }
-
-  default void resetHierarchicalModel(
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart rightArmPart,
-      ModelPart leftArmPart,
-      ModelPart rightLegPart,
-      ModelPart leftLegPart) {
-    resetHumanoidModel(headPart, bodyPart, rightArmPart, leftArmPart, rightLegPart, leftLegPart);
-  }
-
-  default void resetVillagerModel(
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart armsPart,
-      ModelPart leftLegPart,
-      ModelPart rightLegPart) {
-    // Reset all rotations.
-    setModelPartRotation(headPart, this.getDefaultModelHeadRotation());
-    setModelPartRotation(bodyPart, this.getDefaultModelBodyRotation());
-    setModelPartRotation(armsPart, this.getDefaultModelArmsRotation());
-    setModelPartRotation(leftLegPart, this.getDefaultModelLeftLegRotation());
-    setModelPartRotation(rightLegPart, this.getDefaultModelRightLegRotation());
-
-    // Reset all positions.
-    setModelPartPosition(bodyPart, this.getDefaultModelBodyPosition());
-    setModelPartPosition(headPart, this.getDefaultModelHeadPosition());
-    setModelPartPosition(armsPart, this.getDefaultModelArmsPosition());
-    setModelPartPosition(leftLegPart, this.getDefaultModelLeftLegPosition());
-    setModelPartPosition(rightLegPart, this.getDefaultModelRightLegPosition());
-
-    // Reset all visibility.
-    headPart.visible = true;
-    bodyPart.visible = true;
-    armsPart.visible = true;
-    leftLegPart.visible = true;
-    rightLegPart.visible = true;
   }
 
   default boolean hasDefaultHumanoidModelLeftArm(ModelPart leftArmPart) {

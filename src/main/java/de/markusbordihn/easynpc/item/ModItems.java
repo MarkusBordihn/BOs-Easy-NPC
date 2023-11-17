@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.item;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.npc.Allay;
 import de.markusbordihn.easynpc.entity.npc.Cat;
 import de.markusbordihn.easynpc.entity.npc.Chicken;
 import de.markusbordihn.easynpc.entity.npc.Fairy;
@@ -50,6 +51,14 @@ public class ModItems {
           () -> new EasyNPCWandItem(new Item.Properties().tab(EasyNPCTab.TAB_CONFIG_ITEMS)));
   // Default NPC Entity Spawn Eggs
   private static final String SPAWN_EGG_PREFIX = "_spawn_egg";
+
+  public static final RegistryObject<Item> ALLAY_NPC_SPAWN_EGG =
+      ITEMS.register(
+          Allay.ID + SPAWN_EGG_PREFIX,
+          () ->
+              new EasyNPCSpawnEggItem(
+                  ModEntityType.ALLAY,
+                  new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
   public static final RegistryObject<Item> CAT_NPC_SPAWN_EGG =
       ITEMS.register(
           Cat.ID + SPAWN_EGG_PREFIX,

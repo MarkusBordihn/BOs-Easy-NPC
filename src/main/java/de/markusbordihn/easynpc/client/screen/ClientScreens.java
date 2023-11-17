@@ -30,7 +30,9 @@ import de.markusbordihn.easynpc.client.screen.configuration.dialog.NoneDialogCon
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.YesNoDialogConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.equipment.EquipmentConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.main.MainConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.objective.AttackObjectiveConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.objective.BasicObjectiveConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.objective.FollowObjectiveConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.pose.AdvancedPoseConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.pose.CustomPoseConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.pose.DefaultPoseConfigurationScreen;
@@ -121,6 +123,12 @@ public class ClientScreens {
           MenuScreens.register(
               ModMenuTypes.BASIC_OBJECTIVE_CONFIGURATION_MENU.get(),
               BasicObjectiveConfigurationScreen::new);
+          MenuScreens.register(
+              ModMenuTypes.FOLLOW_OBJECTIVE_CONFIGURATION_MENU.get(),
+              FollowObjectiveConfigurationScreen::new);
+          MenuScreens.register(
+              ModMenuTypes.ATTACK_OBJECTIVE_CONFIGURATION_MENU.get(),
+              AttackObjectiveConfigurationScreen::new);
 
           // Pose Configuration Screen
           MenuScreens.register(

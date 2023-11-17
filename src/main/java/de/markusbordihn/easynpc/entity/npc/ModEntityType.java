@@ -44,6 +44,14 @@ public class ModEntityType {
   public static final RegistryObject<EntityType<HumanoidSlim>> HUMANOID_SLIM =
       registerHumanoidSlim(HumanoidSlim.ID, HumanoidSlim.Variant.ALEX);
   // Default NPC Entity
+  public static final RegistryObject<EntityType<Allay>> ALLAY =
+      ENTITIES.register(
+          Allay.ID,
+          () ->
+              EntityType.Builder.of(Allay::new, EasyNPCEntity.CATEGORY)
+                  .sized(0.6F, 0.95F)
+                  .clientTrackingRange(CLIENT_TRACKING_RANGE)
+                  .build(Allay.ID));
   public static final RegistryObject<EntityType<Cat>> CAT =
       ENTITIES.register(
           Cat.ID,
@@ -117,6 +125,7 @@ public class ModEntityType {
   public static void entityAttributeCreation(EntityAttributeCreationEvent event) {
 
     // Default NPC Entities
+    event.put(ALLAY.get(), Allay.createAttributes().build());
     event.put(CAT.get(), Cat.createAttributes().build());
     event.put(CHICKEN.get(), Chicken.createAttributes().build());
     event.put(FAIRY.get(), Fairy.createAttributes().build());

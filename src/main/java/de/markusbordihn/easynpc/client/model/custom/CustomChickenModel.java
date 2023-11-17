@@ -112,12 +112,12 @@ public class CustomChickenModel<T extends Entity> extends ChickenModel<T> implem
     if (entity instanceof EasyNPCEntity easyNPCEntity) {
 
       // Reset player model to avoid any issues with other mods.
-      resetBirdModel(
-          this.head, this.body, this.leftWing, this.rightWing, this.leftLeg, this.rightLeg);
+      EasyNPCModel.resetBirdModel(
+          this, this.head, this.body, this.leftWing, this.rightWing, this.leftLeg, this.rightLeg);
 
       // Individual Part Modifications
       if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
-        setupCustomBirdModel(
+        EasyNPCModel.setupBirdModel(
             easyNPCEntity,
             head,
             body,

@@ -22,56 +22,62 @@ package de.markusbordihn.easynpc.data.objective;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
-import de.markusbordihn.easynpc.entity.ai.goal.FollowLivingEntityGoal;
 import java.util.UUID;
+import java.util.function.BooleanSupplier;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.FlyingAnimal;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.monster.Pillager;
-import net.minecraft.world.entity.npc.AbstractVillager;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.raid.Raider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ObjectiveData {
-
   // Objective Data Tags
   public static final String DATA_ID_TAG = "Id";
-  public static final String DATA_OBJECTIVE_DATA_TAG = "ObjectiveData";
   public static final String DATA_PRIORITY_TAG = "Prio";
   public static final String DATA_SPEED_TAG = "Speed";
   public static final String DATA_START_DISTANCE_TAG = "StartDistance";
   public static final String DATA_STOP_DISTANCE_TAG = "StopDistance";
+  public static final String DATA_TARGET_OWNER_UUID_TAG = "TargetOwnerUUID";
   public static final String DATA_TARGET_ENTITY_UUID_TAG = "TargetEntityUUID";
   public static final String DATA_TARGET_PLAYER_NAME_TAG = "TargetPlayerName";
-  public static final String DATA_TARGET_TAG = "Target";
   public static final String DATA_TYPE_TAG = "Type";
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   // Objective Data
-  private ObjectiveTarget objectiveTarget = ObjectiveTarget.NONE;
+  private boolean mustSee = true;
+  private boolean followingTargetEvenIfNotSeen = false;
+  private int interval = 10;
   private ObjectiveType objectiveType = ObjectiveType.NONE;
   private String id = UUID.randomUUID().toString();
   private String targetPlayerName;
+  private UUID targetOwnerUUID;
   private UUID targetEntityUUID;
   private double speedModifier = 1.0D;
   private float startDistance = 10.0F;
   private float stopDistance = 2.0F;
-  private int priority = 0;
+  private boolean onlyAtNight = false;
+  private int distanceToPoi = 16;
+  private BooleanSupplier canDealWithDoors = () -> false;
+  private int priority = 1;
 
   // Cache
-  private boolean hasValidTarget = false;
+  private boolean isRegistered = false;
+  private Goal goal = null;
+  private Goal target = null;
 
   public ObjectiveData() {}
+
+  public ObjectiveData(ObjectiveType objectiveType) {
+    this.id = objectiveType.name();
+    this.objectiveType = objectiveType;
+  }
+
+  public ObjectiveData(ObjectiveType objectiveType, int priority) {
+    this(objectiveType);
+    this.priority = priority;
+  }
 
   public ObjectiveData(CompoundTag compoundTag) {
     this.load(compoundTag);
@@ -117,12 +123,76 @@ public class ObjectiveData {
     this.stopDistance = stopDistance;
   }
 
+  public boolean isOnlyAtNight() {
+    return this.onlyAtNight;
+  }
+
+  public int getDistanceToPoi() {
+    return this.distanceToPoi;
+  }
+
+  public void setDistanceToPoi(int distanceToPoi) {
+    this.distanceToPoi = distanceToPoi;
+  }
+
+  public BooleanSupplier getCanDealWithDoors() {
+    return this.canDealWithDoors;
+  }
+
+  public void setCanDealWithDoors(BooleanSupplier canDealWithDoors) {
+    this.canDealWithDoors = canDealWithDoors;
+  }
+
+  public boolean getOnlyAtNight() {
+    return this.onlyAtNight;
+  }
+
+  public void setOnlyAtNight(boolean onlyAtNight) {
+    this.onlyAtNight = onlyAtNight;
+  }
+
+  public int getInterval() {
+    return this.interval;
+  }
+
+  public void setInterval(int interval) {
+    this.interval = interval;
+  }
+
+  public boolean isFollowingTargetEvenIfNotSeen() {
+    return this.followingTargetEvenIfNotSeen;
+  }
+
+  public void setFollowingTargetEvenIfNotSeen(boolean followingTargetEvenIfNotSeen) {
+    this.followingTargetEvenIfNotSeen = followingTargetEvenIfNotSeen;
+  }
+
+  public boolean isMustSee() {
+    return this.mustSee;
+  }
+
+  public void setMustSee(boolean mustSee) {
+    this.mustSee = mustSee;
+  }
+
   public String getId() {
     return this.id;
   }
 
   public void setId(String id) {
     this.id = id;
+  }
+
+  public void setId(ObjectiveType objectiveType) {
+    this.id = objectiveType.name();
+  }
+
+  public boolean isRegistered() {
+    return this.isRegistered;
+  }
+
+  public void setRegistered(boolean isRegistered) {
+    this.isRegistered = isRegistered;
   }
 
   public String getTargetPlayerName() {
@@ -140,6 +210,14 @@ public class ObjectiveData {
     return null;
   }
 
+  public UUID getTargetOwnerUUID() {
+    return this.targetOwnerUUID;
+  }
+
+  public void setTargetOwnerUUID(UUID targetOwnerUUID) {
+    this.targetOwnerUUID = targetOwnerUUID;
+  }
+
   public UUID getTargetEntityUUID() {
     return this.targetEntityUUID;
   }
@@ -148,22 +226,30 @@ public class ObjectiveData {
     this.targetEntityUUID = targetEntityUUID;
   }
 
+  public LivingEntity getTargetEntity(EasyNPCEntity easyNPCEntity) {
+    return this.getTargetEntity(easyNPCEntity.getEntityServerLevel());
+  }
+
   public LivingEntity getTargetEntity(ServerLevel serverLevel) {
-    if (this.hasEntityTarget()) {
+    if (this.hasEntityTarget() && serverLevel != null) {
       return EntityManager.getLivingEntityByUUID(this.targetEntityUUID, serverLevel);
     }
     return null;
   }
 
+  public Entity getTargetOwner(EasyNPCEntity easyNPCEntity) {
+    return this.getTargetOwner(easyNPCEntity, easyNPCEntity.getEntityServerLevel());
+  }
+
   public Entity getTargetOwner(EasyNPCEntity easyNPCEntity, ServerLevel serverLevel) {
-    if (this.hasOwnerTarget() && easyNPCEntity.getOwnerUUID() != null && serverLevel != null) {
-      return EntityManager.getPlayerByUUID(easyNPCEntity.getOwnerUUID(), serverLevel);
+    if (this.hasOwnerTarget() && this.targetOwnerUUID != null && serverLevel != null) {
+      return EntityManager.getPlayerByUUID(this.targetOwnerUUID, serverLevel);
     }
     return null;
   }
 
   public boolean hasOwnerTarget() {
-    return this.getType() == ObjectiveType.FOLLOW_OWNER;
+    return this.getType() == ObjectiveType.FOLLOW_OWNER && this.targetOwnerUUID != null;
   }
 
   public boolean hasPlayerTarget() {
@@ -176,79 +262,45 @@ public class ObjectiveData {
     return this.getType() == ObjectiveType.FOLLOW_ENTITY_BY_UUID && this.targetEntityUUID != null;
   }
 
-  public boolean hasValidTarget() {
-    return (hasOwnerTarget() || hasPlayerTarget() || hasEntityTarget()) && this.hasValidTarget;
+  public boolean hasValidTarget(EasyNPCEntity easyNPCEntity) {
+    ServerLevel serverLevel = easyNPCEntity.getEntityServerLevel();
+    return serverLevel != null && this.hasValidTarget(serverLevel);
   }
 
-  public void setHasValidTarget(boolean hasValidTarget) {
-    this.hasValidTarget = hasValidTarget;
-  }
-
-  public Goal getGoal(EasyNPCEntity easyNPCEntity, ServerLevel serverLevel) {
-    switch (this.objectiveType) {
-      case FOLLOW_PLAYER:
-        ServerPlayer targetServerPlayer = getTargetPlayer();
-        if (targetServerPlayer != null && !targetServerPlayer.isRemoved()) {
-          this.hasValidTarget = true;
-          return new FollowLivingEntityGoal(
-              easyNPCEntity,
-              targetServerPlayer,
-              this.speedModifier,
-              this.stopDistance,
-              this.startDistance,
-              easyNPCEntity instanceof FlyingAnimal);
-        } else {
-          this.hasValidTarget = false;
-          log.error("Unable to find player {} for {}!", this.targetPlayerName, this);
-        }
-        break;
-      case FOLLOW_OWNER:
-        Entity targetOwner = getTargetOwner(easyNPCEntity, serverLevel);
-        if (targetOwner != null
-            && targetOwner instanceof LivingEntity livingEntity
-            && !livingEntity.isRemoved()) {
-          this.hasValidTarget = true;
-          return new FollowLivingEntityGoal(
-              easyNPCEntity,
-              livingEntity,
-              this.speedModifier,
-              this.stopDistance,
-              this.startDistance,
-              easyNPCEntity instanceof FlyingAnimal);
-        } else {
-          this.hasValidTarget = false;
-          log.error(
-              "Unable to find valid owner {} for {} with {}!", targetOwner, easyNPCEntity, this);
-        }
-        break;
-      case FOLLOW_ENTITY_BY_UUID:
-        LivingEntity targetEntityMob = getTargetEntity(serverLevel);
-        if (targetEntityMob != null && !targetEntityMob.isRemoved()) {
-          this.hasValidTarget = true;
-          return new FollowLivingEntityGoal(
-              easyNPCEntity,
-              targetEntityMob,
-              this.speedModifier,
-              this.stopDistance,
-              this.startDistance,
-              easyNPCEntity instanceof FlyingAnimal);
-        } else {
-          this.hasValidTarget = false;
-          log.error("Unable to find living entity {} for {}!", this.targetEntityUUID, this);
-        }
-        break;
-      case RANDOM_STROLL:
-        return new RandomStrollGoal(easyNPCEntity, this.speedModifier);
-      case WATER_AVOIDING_RANDOM_STROLL:
-        return new WaterAvoidingRandomStrollGoal(easyNPCEntity, this.speedModifier);
-      default:
-        return null;
+  public boolean hasValidTarget(ServerLevel serverLevel) {
+    // Assume valid targeting if no owner, player or entity target is set.
+    if (!hasOwnerTarget() && !hasPlayerTarget() && !hasEntityTarget()) {
+      return true;
     }
-    return null;
+
+    // Check if we have still a valid target.
+    if (hasOwnerTarget()) {
+      ServerPlayer serverPlayer = EntityManager.getPlayerByUUID(this.targetOwnerUUID, serverLevel);
+      return serverPlayer != null && serverPlayer.isAlive();
+    } else if (hasPlayerTarget()) {
+      ServerPlayer serverPlayer = EntityManager.getPlayerByName(this.targetPlayerName);
+      return serverPlayer != null && serverPlayer.isAlive();
+    } else if (hasEntityTarget()) {
+      LivingEntity livingEntity =
+          EntityManager.getLivingEntityByUUID(this.targetEntityUUID, serverLevel);
+      return livingEntity != null && livingEntity.isAlive();
+    }
+
+    return this.goal != null;
   }
 
-  public boolean isTargetSelector() {
-    return objectiveType.isTargetSelector();
+  public Goal getGoal(EasyNPCEntity easyNPCEntity) {
+    if (this.goal == null) {
+      this.goal = ObjectiveUtils.createObjectiveGoal(this, easyNPCEntity);
+    }
+    return this.goal;
+  }
+
+  public Goal getTarget(EasyNPCEntity easyNPCEntity) {
+    if (this.target == null) {
+      this.target = ObjectiveUtils.createObjectiveTarget(this, easyNPCEntity);
+    }
+    return this.target;
   }
 
   public boolean isTargetedPlayer(String playerName) {
@@ -259,45 +311,11 @@ public class ObjectiveData {
     return this.hasEntityTarget() && this.targetEntityUUID.equals(entityUUID);
   }
 
-  public boolean isGoalSelector() {
-    return objectiveType.isGoalSelector();
-  }
-
-  public ObjectiveTarget getTarget() {
-    return this.objectiveTarget;
-  }
-
-  public void setTarget(ObjectiveTarget objectiveTarget) {
-    this.objectiveTarget = objectiveTarget;
-  }
-
-  public Class<?> getTargetClass() {
-    return getTargetClass(this.objectiveTarget);
-  }
-
-  public Class<?> getTargetClass(ObjectiveTarget objectiveTarget) {
-    return switch (objectiveTarget) {
-      case ANIMAL -> Animal.class;
-      case PLAYER -> Player.class;
-      case MOB -> Mob.class;
-      case VILLAGER -> AbstractVillager.class;
-      case IRON_GOLEM -> IronGolem.class;
-      case PILLAGER -> Pillager.class;
-      case RAIDER -> Raider.class;
-      default -> null;
-    };
-  }
-
   public void load(CompoundTag compoundTag) {
     // Main data
     this.id = compoundTag.getString(DATA_ID_TAG);
     this.objectiveType = ObjectiveType.get(compoundTag.getString(DATA_TYPE_TAG));
     this.priority = compoundTag.getInt(DATA_PRIORITY_TAG);
-
-    // Target class
-    if (compoundTag.contains(DATA_TARGET_TAG)) {
-      this.objectiveTarget = ObjectiveTarget.get(compoundTag.getString(DATA_TARGET_TAG));
-    }
 
     // Additional parameters
     if (compoundTag.contains(DATA_SPEED_TAG)) {
@@ -315,6 +333,9 @@ public class ObjectiveData {
     if (compoundTag.contains(DATA_TARGET_PLAYER_NAME_TAG)) {
       this.targetPlayerName = compoundTag.getString(DATA_TARGET_PLAYER_NAME_TAG);
     }
+    if (compoundTag.contains(DATA_TARGET_OWNER_UUID_TAG)) {
+      this.targetOwnerUUID = compoundTag.getUUID(DATA_TARGET_OWNER_UUID_TAG);
+    }
   }
 
   public CompoundTag save(CompoundTag compoundTag) {
@@ -322,11 +343,6 @@ public class ObjectiveData {
     compoundTag.putString(DATA_ID_TAG, this.id);
     compoundTag.putString(DATA_TYPE_TAG, this.objectiveType.name());
     compoundTag.putInt(DATA_PRIORITY_TAG, this.priority);
-
-    // Target class
-    if (this.objectiveTarget != ObjectiveTarget.NONE) {
-      compoundTag.putString(DATA_TARGET_TAG, this.objectiveTarget.name());
-    }
 
     // Additional parameters
     if (this.speedModifier != 1.0D) {
@@ -344,6 +360,9 @@ public class ObjectiveData {
     if (this.targetPlayerName != null && !this.targetPlayerName.isEmpty()) {
       compoundTag.putString(DATA_TARGET_PLAYER_NAME_TAG, this.targetPlayerName);
     }
+    if (this.targetOwnerUUID != null) {
+      compoundTag.putUUID(DATA_TARGET_OWNER_UUID_TAG, this.targetOwnerUUID);
+    }
 
     return compoundTag;
   }
@@ -360,16 +379,26 @@ public class ObjectiveData {
         + this.objectiveType
         + ", priority="
         + this.priority
-        + ", target="
-        + this.objectiveTarget
         + ", targetPlayerName="
         + this.targetPlayerName
         + ", targetEntityUUID="
         + this.targetEntityUUID
-        + ", hasValidTarget="
-        + this.hasValidTarget
+        + ", targetOwnerUUID="
+        + this.targetOwnerUUID
+        + ", isRegistered="
+        + this.isRegistered
         + ", speedModifier="
         + this.speedModifier
+        + ", startDistance="
+        + this.startDistance
+        + ", stopDistance="
+        + this.stopDistance
+        + ", onlyAtNight="
+        + this.onlyAtNight
+        + ", distanceToPoi="
+        + this.distanceToPoi
+        + ", canDealWithDoors="
+        + this.canDealWithDoors
         + "]";
   }
 }

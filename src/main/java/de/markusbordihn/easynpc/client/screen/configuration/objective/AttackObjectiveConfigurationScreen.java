@@ -22,27 +22,39 @@ package de.markusbordihn.easynpc.client.screen.configuration.objective;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.data.objective.ObjectiveData;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
-import de.markusbordihn.easynpc.menu.configuration.objective.BasicObjectiveConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.objective.AttackObjectiveConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class BasicObjectiveConfigurationScreen
-    extends ObjectiveConfigurationScreen<BasicObjectiveConfigurationMenu> {
+public class AttackObjectiveConfigurationScreen
+    extends ObjectiveConfigurationScreen<AttackObjectiveConfigurationMenu> {
 
-  // Basic Objective Checkbox
-  protected Checkbox strollRandomAroundCheckbox;
-  protected Checkbox waterAvoidingRandomStrollCheckbox;
-  protected Checkbox moveBackToVillageCheckbox;
-  protected Checkbox moveThroughVillageCheckbox;
-  protected Checkbox randomStrollInVillageCheckbox;
-  protected Checkbox randomSwimmingCheckbox;
+  // Attack Types
+  protected Checkbox meleeAttackCheckbox;
 
-  public BasicObjectiveConfigurationScreen(
-      BasicObjectiveConfigurationMenu menu, Inventory inventory, Component component) {
+  protected Checkbox zombieAttackCheckbox;
+
+  // Attack Target
+  protected Checkbox attackAnimalCheckbox;
+  protected Checkbox attackPlayerCheckbox;
+  protected Checkbox attackMonsterCheckbox;
+  protected Checkbox attackMobCheckbox;
+  protected Checkbox attackMobWithoutCreeperCheckbox;
+  protected Checkbox attackVillagerCheckbox;
+
+  // Attack Entity by UUID
+  protected Checkbox attackEntityByUUIDCheckbox;
+  protected EditBox attackEntityByUUIDEditBox;
+  protected Button attackEntityByUUIDSaveButton;
+
+  public AttackObjectiveConfigurationScreen(
+      AttackObjectiveConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 
@@ -51,41 +63,21 @@ public class BasicObjectiveConfigurationScreen
     super.init();
 
     // Default button stats
-    this.basicObjectiveButton.active = false;
+    this.attackObjectiveButton.active = false;
 
     int objectiveEntriesTop = this.contentTopPos + 5;
 
-    // Stroll Random Around
-    this.strollRandomAroundCheckbox =
+    // Attack Types
+    this.meleeAttackCheckbox =
         this.addRenderableWidget(
             new Checkbox(
                 this.contentLeftPos + 10,
                 objectiveEntriesTop,
-                ObjectiveType.RANDOM_STROLL.getObjectiveName(),
-                objectiveDataSet.hasObjective(ObjectiveType.RANDOM_STROLL),
-                checkbox -> {
-                  ObjectiveData objectiveData = new ObjectiveData(ObjectiveType.RANDOM_STROLL, 5);
-                  objectiveData.setSpeedModifier(0.8F);
-                  if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
-                  } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
-                  }
-                }));
-
-    // Water Avoiding Random Stroll
-    objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
-    this.waterAvoidingRandomStrollCheckbox =
-        this.addRenderableWidget(
-            new Checkbox(
-                this.contentLeftPos + 10,
-                objectiveEntriesTop,
-                ObjectiveType.WATER_AVOIDING_RANDOM_STROLL.getObjectiveName(),
-                objectiveDataSet.hasObjective(ObjectiveType.WATER_AVOIDING_RANDOM_STROLL),
+                ObjectiveType.MELEE_ATTACK.getObjectiveName(),
+                objectiveDataSet.hasObjective(ObjectiveType.MELEE_ATTACK),
                 checkbox -> {
                   ObjectiveData objectiveData =
-                      new ObjectiveData(ObjectiveType.MOVE_THROUGH_VILLAGE, 5);
-                  objectiveData.setSpeedModifier(0.6F);
+                      objectiveDataSet.getOrCreateObjective(ObjectiveType.MELEE_ATTACK, 2);
                   if (checkbox.selected()) {
                     NetworkMessageHandler.addObjective(uuid, objectiveData);
                   } else {
@@ -93,19 +85,16 @@ public class BasicObjectiveConfigurationScreen
                   }
                 }));
 
-    // Move Through Village
-    objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
-    this.moveThroughVillageCheckbox =
+    this.zombieAttackCheckbox =
         this.addRenderableWidget(
             new Checkbox(
-                this.contentLeftPos + 10,
+                this.contentLeftPos + 150,
                 objectiveEntriesTop,
-                ObjectiveType.MOVE_THROUGH_VILLAGE.getObjectiveName(),
-                objectiveDataSet.hasObjective(ObjectiveType.MOVE_THROUGH_VILLAGE),
+                ObjectiveType.ZOMBIE_ATTACK.getObjectiveName(),
+                objectiveDataSet.hasObjective(ObjectiveType.ZOMBIE_ATTACK),
                 checkbox -> {
                   ObjectiveData objectiveData =
-                      new ObjectiveData(ObjectiveType.MOVE_THROUGH_VILLAGE, 5);
-                  objectiveData.setSpeedModifier(0.6F);
+                      objectiveDataSet.getOrCreateObjective(ObjectiveType.ZOMBIE_ATTACK, 2);
                   if (checkbox.selected()) {
                     NetworkMessageHandler.addObjective(uuid, objectiveData);
                   } else {
@@ -113,19 +102,18 @@ public class BasicObjectiveConfigurationScreen
                   }
                 }));
 
-    // Move Back To Village
+    // Attack Animal
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
-    this.moveBackToVillageCheckbox =
+    this.attackAnimalCheckbox =
         this.addRenderableWidget(
             new Checkbox(
                 this.contentLeftPos + 10,
                 objectiveEntriesTop,
-                ObjectiveType.MOVE_BACK_TO_VILLAGE.getObjectiveName(),
-                objectiveDataSet.hasObjective(ObjectiveType.MOVE_BACK_TO_VILLAGE),
+                ObjectiveType.ATTACK_ANIMAL.getObjectiveName(),
+                objectiveDataSet.hasObjective(ObjectiveType.ATTACK_ANIMAL),
                 checkbox -> {
                   ObjectiveData objectiveData =
-                      new ObjectiveData(ObjectiveType.MOVE_BACK_TO_VILLAGE, 3);
-                  objectiveData.setSpeedModifier(0.6F);
+                      objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_ANIMAL, 2);
                   if (checkbox.selected()) {
                     NetworkMessageHandler.addObjective(uuid, objectiveData);
                   } else {
@@ -133,19 +121,18 @@ public class BasicObjectiveConfigurationScreen
                   }
                 }));
 
-    // Random Stroll In Village
+    // Attack Player
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
-    this.randomStrollInVillageCheckbox =
+    this.attackPlayerCheckbox =
         this.addRenderableWidget(
             new Checkbox(
                 this.contentLeftPos + 10,
                 objectiveEntriesTop,
-                ObjectiveType.RANDOM_STROLL_IN_VILLAGE.getObjectiveName(),
-                objectiveDataSet.hasObjective(ObjectiveType.RANDOM_STROLL_IN_VILLAGE),
+                ObjectiveType.ATTACK_PLAYER.getObjectiveName(),
+                objectiveDataSet.hasObjective(ObjectiveType.ATTACK_PLAYER),
                 checkbox -> {
                   ObjectiveData objectiveData =
-                      new ObjectiveData(ObjectiveType.RANDOM_STROLL_IN_VILLAGE, 2);
-                  objectiveData.setSpeedModifier(0.6F);
+                      objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_PLAYER, 2);
                   if (checkbox.selected()) {
                     NetworkMessageHandler.addObjective(uuid, objectiveData);
                   } else {
@@ -153,18 +140,76 @@ public class BasicObjectiveConfigurationScreen
                   }
                 }));
 
-    // Random Swimming
+    // Attack Monster
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
-    this.randomSwimmingCheckbox =
+    this.attackMonsterCheckbox =
         this.addRenderableWidget(
             new Checkbox(
                 this.contentLeftPos + 10,
                 objectiveEntriesTop,
-                ObjectiveType.RANDOM_SWIMMING.getObjectiveName(),
-                objectiveDataSet.hasObjective(ObjectiveType.RANDOM_SWIMMING),
+                ObjectiveType.ATTACK_MONSTER.getObjectiveName(),
+                objectiveDataSet.hasObjective(ObjectiveType.ATTACK_MONSTER),
                 checkbox -> {
-                  ObjectiveData objectiveData = new ObjectiveData(ObjectiveType.RANDOM_SWIMMING, 4);
-                  objectiveData.setSpeedModifier(0.8F);
+                  ObjectiveData objectiveData =
+                      objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_MONSTER, 2);
+                  if (checkbox.selected()) {
+                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                  } else {
+                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                  }
+                }));
+
+    // Attack Mob
+    objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
+    this.attackMobCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                this.contentLeftPos + 10,
+                objectiveEntriesTop,
+                ObjectiveType.ATTACK_MOB.getObjectiveName(),
+                objectiveDataSet.hasObjective(ObjectiveType.ATTACK_MOB),
+                checkbox -> {
+                  ObjectiveData objectiveData =
+                      objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_MOB, 2);
+                  if (checkbox.selected()) {
+                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                  } else {
+                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                  }
+                }));
+
+    // Attack Mob without Creeper
+    objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
+    this.attackMobWithoutCreeperCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                this.contentLeftPos + 10,
+                objectiveEntriesTop,
+                ObjectiveType.ATTACK_MOB_WITHOUT_CREEPER.getObjectiveName(),
+                objectiveDataSet.hasObjective(ObjectiveType.ATTACK_MOB_WITHOUT_CREEPER),
+                checkbox -> {
+                  ObjectiveData objectiveData =
+                      objectiveDataSet.getOrCreateObjective(
+                          ObjectiveType.ATTACK_MOB_WITHOUT_CREEPER, 2);
+                  if (checkbox.selected()) {
+                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                  } else {
+                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                  }
+                }));
+
+    // Attack Villager
+    objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
+    this.attackVillagerCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                this.contentLeftPos + 10,
+                objectiveEntriesTop,
+                ObjectiveType.ATTACK_VILLAGER.getObjectiveName(),
+                objectiveDataSet.hasObjective(ObjectiveType.ATTACK_VILLAGER),
+                checkbox -> {
+                  ObjectiveData objectiveData =
+                      objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_VILLAGER, 2);
                   if (checkbox.selected()) {
                     NetworkMessageHandler.addObjective(uuid, objectiveData);
                   } else {

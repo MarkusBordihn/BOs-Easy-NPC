@@ -24,7 +24,6 @@ import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraftforge.api.distmarker.Dist;
@@ -49,12 +48,12 @@ public class CustomPlayerModel<T extends LivingEntity> extends PlayerModel<T>
     if (entity instanceof EasyNPCEntity easyNPCEntity) {
 
       // Reset player model to avoid any issues with other mods.
-      resetHumanoidModel(
-          this.head, this.body, this.rightArm, this.leftArm, this.rightLeg, this.leftLeg);
+      EasyNPCModel.resetHumanoidModel(
+          this, this.head, this.body, this.rightArm, this.leftArm, this.rightLeg, this.leftLeg);
 
       // Individual Part Modifications
       if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
-        setupCustomHumanoidModel(
+        EasyNPCModel.setupHumanoidModel(
             easyNPCEntity,
             this.head,
             this.body,
@@ -82,25 +81,18 @@ public class CustomPlayerModel<T extends LivingEntity> extends PlayerModel<T>
       if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM
           || easyNPCEntity.getPose() == Pose.CROUCHING) {
 
-        // Handle animations, if model part was not adjusted in any way.
+        // Handle animations, if model specific part was not adjusted.
         if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
-          // Allow arm animation if arms are not adjusted.
-          if (hasDefaultHumanoidModelRightArm(this.rightArm)) {
-            this.rightArm.xRot =
-                Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F;
-          }
-          if (hasDefaultHumanoidModelLeftArm(this.leftArm)) {
-            this.leftArm.xRot = Mth.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
-          }
-
-          // Allow leg animation if legs are not adjusted.
-          if (hasDefaultHumanoidModelRightLeg(this.rightLeg)) {
-            this.rightLeg.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-          }
-          if (hasDefaultHumanoidModelLeftLeg(this.leftLeg)) {
-            this.leftLeg.xRot =
-                Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
-          }
+          EasyNPCModel.animateHumanoidModel(
+              this,
+              this.head,
+              this.body,
+              this.rightArm,
+              this.leftArm,
+              this.rightLeg,
+              this.leftLeg,
+              limbSwing,
+              limbSwingAmount);
         }
 
         // Copy all outer model parts to the correct model parts.

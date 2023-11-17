@@ -103,7 +103,8 @@ public class CustomCatModel<T extends Entity> extends OcelotModel<T> implements 
     if (entity instanceof EasyNPCEntity easyNPCEntity) {
 
       // Reset player model to avoid any issues with other mods.
-      resetAnimalModel(
+      EasyNPCModel.resetAnimalModel(
+          this,
           this.head,
           this.body,
           this.leftFrontLeg,
@@ -113,7 +114,7 @@ public class CustomCatModel<T extends Entity> extends OcelotModel<T> implements 
 
       // Individual Part Modifications
       if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
-        setupCustomAnimalModel(
+        EasyNPCModel.setupAnimalModel(
             easyNPCEntity,
             head,
             body,

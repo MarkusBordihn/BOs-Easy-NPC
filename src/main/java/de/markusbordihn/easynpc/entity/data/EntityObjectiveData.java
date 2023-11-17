@@ -40,11 +40,9 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
-import net.minecraft.world.entity.ai.goal.OpenDoorGoal;
-import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
+import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
 import net.minecraft.world.entity.player.Player;
 
 public interface EntityObjectiveData extends EntityDataInterface {
@@ -82,6 +80,15 @@ public interface EntityObjectiveData extends EntityDataInterface {
     setCustomEntityData(CUSTOM_DATA_OBJECTIVE_DATA_SET, objectiveDataSet);
   }
 
+  default boolean hasObjective(String objectiveId) {
+    return getObjectiveDataSet() != null && getObjectiveDataSet().hasObjective(objectiveId);
+  }
+
+  default boolean hasObjective(ObjectiveData objectiveData) {
+    return getObjectiveDataSet() != null
+        && getObjectiveDataSet().hasObjective(objectiveData.getId());
+  }
+
   default boolean hasObjectives() {
     return getObjectiveDataSet() != null && getObjectiveDataSet().hasObjectives();
   }
@@ -99,152 +106,135 @@ public interface EntityObjectiveData extends EntityDataInterface {
   }
 
   default boolean hasValidTargetObjectives() {
-    return getObjectiveDataSet() != null && getObjectiveDataSet().hasValidTarget();
+    return getObjectiveDataSet() != null && getObjectiveDataSet().hasValidTarget(this.getEntity());
   }
 
   default void onEasyNPCJoinUpdateObjective(EasyNPCEntity easyNPCEntity) {
     // Check if we need to re-register NPC based objectives.
     if (this.hasEntityTargetObjectives()
-        && !this.getObjectiveDataSet().hasValidTarget()
+        && !this.getObjectiveDataSet().hasValidTarget(this.getEntity())
         && getObjectiveDataSet().isTargetedEntity(easyNPCEntity.getUUID())) {
-      this.refreshEntityObjectives();
+      this.refreshCustomObjectives();
     }
   }
 
   default void onEasyNPCLeaveUpdateObjective(EasyNPCEntity easyNPCEntity) {
     // Check if we need to re-register NPC based objectives.
     if (this.hasEntityTargetObjectives()
-        && this.getObjectiveDataSet().hasValidTarget()
+        && this.getObjectiveDataSet().hasValidTarget(this.getEntity())
         && getObjectiveDataSet().isTargetedEntity(easyNPCEntity.getUUID())) {
-      this.getObjectiveDataSet().updateTargetedEntitySet(easyNPCEntity.getUUID());
+      this.refreshCustomObjectives();
     }
   }
 
   default void onPlayerJoinUpdateObjective(ServerPlayer serverPlayer) {
     // Check if we need to re-register owner and player based objectives.
-    boolean needRefresh = false;
     if (this.hasOwnerTargetObjectives()
-        && !this.getObjectiveDataSet().hasValidTarget()
-        && this.getEntity().isOwner(serverPlayer)) {
-      log.info("Update owner based objectives for {} ...", this.getEntity());
-      needRefresh = true;
-    } else if (this.hasPlayerTargetObjectives()
-        && !this.getObjectiveDataSet().hasValidTarget()
-        && this.getObjectiveDataSet().isTargetedPlayer(serverPlayer.getName().getString())) {
-      needRefresh = true;
-    }
-
-    // Refresh objectives only once if needed.
-    if (needRefresh) {
-      this.refreshEntityObjectives();
+        && !this.getObjectiveDataSet().hasValidTarget(this.getEntity())
+        && (this.getEntity().isOwner(serverPlayer)
+            || this.getObjectiveDataSet().isTargetedPlayer(serverPlayer.getName().getString()))) {
+      this.refreshCustomObjectives();
     }
   }
 
   default void onPlayerLeaveUpdateObjective(ServerPlayer serverPlayer) {
-    // Check if we need to re-register owner based objectives.
+    // Check if we need to re-register owner and player based objectives.
     if (this.hasOwnerTargetObjectives()
-        && this.getObjectiveDataSet().hasValidTarget()
-        && this.getEntity().isOwner(serverPlayer)) {
-      this.getObjectiveDataSet().updateTargetedOwnerSet(serverPlayer);
-    }
-
-    // Check if we need to re-register player based objectives.
-    if (this.hasPlayerTargetObjectives()
-        && this.getObjectiveDataSet().hasValidTarget()
-        && this.getObjectiveDataSet().isTargetedPlayer(serverPlayer.getName().getString())) {
-      this.getObjectiveDataSet().updateTargetedPlayerSet(serverPlayer.getName().getString());
+        && this.getObjectiveDataSet().hasValidTarget(this.getEntity())
+        && (this.getEntity().isOwner(serverPlayer)
+            || this.getObjectiveDataSet().isTargetedPlayer(serverPlayer.getName().getString()))) {
+      this.refreshCustomObjectives();
     }
   }
 
   default void onLivingEntityJoinUpdateObjective(LivingEntity livingEntity) {
     // Check if we need to re-register living entity based objectives.
     if (this.hasEntityTargetObjectives()
-        && !this.getObjectiveDataSet().hasValidTarget()
+        && !this.getObjectiveDataSet().hasValidTarget(this.getEntity())
         && this.getObjectiveDataSet().isTargetedEntity(livingEntity.getUUID())) {
-      this.refreshEntityObjectives();
+      this.refreshCustomObjectives();
     }
   }
 
   default void onLivingEntityLeaveUpdateObjective(LivingEntity livingEntity) {
     // Check if we need to re-register living entity based objectives.
     if (this.hasObjectives()
-        && this.getObjectiveDataSet().hasValidTarget()
+        && this.getObjectiveDataSet().hasValidTarget(this.getEntity())
         && this.getObjectiveDataSet().isTargetedEntity(livingEntity.getUUID())) {
-      this.getObjectiveDataSet().updateTargetedEntitySet(livingEntity.getUUID());
+      this.refreshCustomObjectives();
     }
   }
 
-  default void refreshEntityObjectives() {
+  default void refreshCustomObjectives() {
     EasyNPCEntity entity = this.getEntity();
-    GroundPathNavigation groundPathNavigation = getEntityGroundPathNavigation();
-
-    log.debug("Refresh Entity Objectives {} for {} ...", getObjectiveDataSet(), entity);
-
-    // Stop navigation and clean up old objectives.
-    this.cleanEntityObjectives();
-
-    // Register new objectives.
-    this.registerStandardObjectives();
-    if (this.hasObjectives()) {
-      this.registerCustomObjectives();
-    }
-
-    // Refresh ground navigation for new objectives.
-    if (groundPathNavigation != null) {
-      entity.refreshGroundNavigation();
-    }
-  }
-
-  default void cleanEntityObjectives() {
-    EasyNPCEntity entity = this.getEntity();
-    if (entity == null || entity.getLevel() == null || entity.getLevel().isClientSide()) {
+    if (entity == null || entity.isClientSideExecuted()) {
       return;
     }
-    GoalSelector goalSelector = this.getEntityGoalSelector();
-    if (!goalSelector.getAvailableGoals().isEmpty()) {
-      goalSelector.getAvailableGoals().clear();
+    for (ObjectiveData objectiveData : getObjectiveDataSet().getObjectives()) {
+      if (objectiveData != null
+          && objectiveData.getType() != ObjectiveType.NONE
+          && (!objectiveData.hasValidTarget(this.getEntity()) || !objectiveData.isRegistered())) {
+        log.debug("Refreshing Objective {} for {}", objectiveData, entity);
+        addOrUpdateCustomObjective(objectiveData);
+      }
     }
-    GoalSelector targetSelector = this.getEntityTargetSelector();
-    if (!targetSelector.getAvailableGoals().isEmpty()) {
-      targetSelector.getAvailableGoals().clear();
+  }
+
+  default void registerAttributeBasedObjectives() {
+    EasyNPCEntity entity = this.getEntity();
+    if (entity == null || entity.isClientSideExecuted()) {
+      return;
+    }
+
+    log.info("Register standard objectives based on entity attributes for {}", entity);
+
+    // Handle floating goals.
+    ObjectiveData floatObjective = new ObjectiveData(ObjectiveType.FLOAT, 0);
+    if (entity.getAttributeCanFloat()) {
+      if (!this.hasObjective(floatObjective)) {
+        this.addOrUpdateCustomObjective(floatObjective);
+      }
+    } else if (this.hasObjective(floatObjective)) {
+      this.removeCustomObjective(floatObjective);
+    }
+
+    // Handle close door interaction goals.
+    ObjectiveData closeDoorObjective = new ObjectiveData(ObjectiveType.CLOSE_DOOR, 8);
+    if (entity.getAttributeCanCloseDoor()) {
+      if (!this.hasObjective(closeDoorObjective)) {
+        this.addOrUpdateCustomObjective(closeDoorObjective);
+      }
+    } else if (this.hasObjective(closeDoorObjective)) {
+      this.removeCustomObjective(closeDoorObjective);
+    }
+
+    // Handle open door interaction goals.
+    ObjectiveData openDoorObjective = new ObjectiveData(ObjectiveType.OPEN_DOOR, 8);
+    if (entity.getAttributeCanOpenDoor()) {
+      if (!this.hasObjective(closeDoorObjective)) {
+        this.addOrUpdateCustomObjective(openDoorObjective);
+      }
+    } else if (this.hasObjective(openDoorObjective)) {
+      this.removeCustomObjective(openDoorObjective);
     }
   }
 
   default void registerStandardObjectives() {
     EasyNPCEntity entity = this.getEntity();
-    if (entity == null || entity.getLevel() == null || entity.getLevel().isClientSide()) {
+    if (entity == null || entity.isClientSideExecuted()) {
       return;
     }
+
+    log.debug("Register standard objectives for {}", entity);
     GoalSelector goalSelector = this.getEntityGoalSelector();
-
-    // Consider entity attributes when synced data are loaded.
-    if (entity.synchedDataLoaded()) {
-      log.info("Register standard objectives based on entity attributes for {}", entity);
-
-      // Handle floating goals.
-      if (entity.getAttributeCanFloat()) {
-        goalSelector.addGoal(0, new FloatGoal(entity));
-      }
-
-      // Handle door interaction goals.
-      if (entity.getAttributeCanCloseDoor()) {
-        goalSelector.addGoal(8, new OpenDoorGoal(entity, true));
-      }
-      if (entity.getAttributeCanOpenDoor()) {
-        goalSelector.addGoal(8, new OpenDoorGoal(entity, false));
-      }
-    } else {
-      log.debug("Register standard objectives for {}", entity);
-      goalSelector.addGoal(0, new FloatGoal(entity));
-      goalSelector.addGoal(9, new ResetLookAtPlayerGoal(entity));
-      goalSelector.addGoal(9, new CustomLookAtPlayerGoal(entity, Player.class, 15.0F, 1.0F));
-      goalSelector.addGoal(10, new CustomLookAtPlayerGoal(entity, Mob.class, 15.0F));
-    }
+    goalSelector.addGoal(9, new ResetLookAtPlayerGoal(entity));
+    goalSelector.addGoal(9, new CustomLookAtPlayerGoal(entity, Player.class, 15.0F, 1.0F));
+    goalSelector.addGoal(10, new CustomLookAtPlayerGoal(entity, Mob.class, 15.0F));
   }
 
   default void registerCustomObjectives() {
     EasyNPCEntity entity = this.getEntity();
-    if (entity == null || entity.getLevel() == null || entity.getLevel().isClientSide()) {
+    if (entity == null || entity.isClientSideExecuted()) {
       return;
     }
     Set<ObjectiveData> objectives = this.getObjectiveDataSet().getObjectives();
@@ -252,35 +242,101 @@ public interface EntityObjectiveData extends EntityDataInterface {
       return;
     }
     log.debug("Register custom objectives for {}", entity);
-    GoalSelector goalSelector = this.getEntityGoalSelector();
     GoalSelector targetSelector = this.getEntityTargetSelector();
     for (ObjectiveData objectiveData : objectives) {
-      // Skip if objective data is not valid
-      if (objectiveData == null
-          || objectiveData.getType() == null
-          || objectiveData.getType() == ObjectiveType.NONE) {
-        continue;
-      }
+      addOrUpdateCustomObjective(objectiveData);
+    }
 
-      // Create goal
-      Goal goal = objectiveData.getGoal(entity, entity.getEntityServerLevel());
-      if (goal == null) {
-        log.error("- Unable to register goal for {}!", entity);
-        continue;
-      }
+    // Reset targets if any target objective was registered.
+    if (!targetSelector.getAvailableGoals().isEmpty()) {
+      log.debug("- Register reset universal anger target for {}", entity);
+      targetSelector.addGoal(4, new ResetUniversalAngerTargetGoal<>(entity, false));
+    }
+  }
 
-      // Register objective
-      int priority = objectiveData.getPriority();
-      if (objectiveData.isGoalSelector()) {
-        log.debug("- Register goal {} with priority {} for {}", goal, priority, entity);
-        goalSelector.addGoal(priority, goal);
-      } else if (objectiveData.isTargetSelector()) {
-        log.debug("- Register target goal {} with priority {} for {}", goal, priority, entity);
-        targetSelector.addGoal(priority, goal);
+  default boolean addOrUpdateCustomObjective(ObjectiveData objectiveData) {
+    if (objectiveData == null || objectiveData.getType() == ObjectiveType.NONE) {
+      log.error("- Unable to add custom objective {} for {}!", objectiveData, this.getEntity());
+      return false;
+    }
+
+    boolean addedCustomObjective = false;
+
+    // Handle goal specific objectives.
+    Goal goal = objectiveData.getGoal(this.getEntity());
+    if (goal != null) {
+      GoalSelector goalSelector = this.getEntityGoalSelector();
+      if (!objectiveData.hasValidTarget(this.getEntity())) {
+        if (this.hasObjective(objectiveData.getId()) && objectiveData.isRegistered()) {
+          log.warn(
+              "- Removing existing goal {} for {} because target was not found! Will try later again.",
+              goal,
+              this.getEntity());
+        }
+        goalSelector.removeGoal(goal);
       } else {
-        log.error("- Unable to register goal {} for {}!", goal, entity);
+        log.debug("- Adding goal {} for {}", goal, this.getEntity());
+        goalSelector.removeGoal(goal);
+        goalSelector.addGoal(objectiveData.getPriority(), goal);
+        addedCustomObjective = true;
       }
     }
+
+    // Handle target specific objectives.
+    Goal target = objectiveData.getTarget(this.getEntity());
+    if (target != null) {
+      log.debug("- Adding target goal {} for {}", target, this.getEntity());
+      GoalSelector targetSelector = this.getEntityTargetSelector();
+      targetSelector.removeGoal(target);
+      targetSelector.addGoal(objectiveData.getPriority(), target);
+      addedCustomObjective = true;
+    }
+
+    // Set registered flag.
+    objectiveData.setRegistered(addedCustomObjective);
+
+    // Add objective data to set, regardless if goal or target was added.
+    getObjectiveDataSet().addObjective(objectiveData);
+    return objectiveData.isRegistered();
+  }
+
+  default boolean removeCustomObjective(ObjectiveData objectiveData) {
+    if (objectiveData == null || objectiveData.getType() == ObjectiveType.NONE) {
+      log.error("- Unable to remove custom objective {} for {}!", objectiveData, this.getEntity());
+      return false;
+    }
+
+    // Make sure we have the correct objective data and not a copy or clone.
+    if (objectiveData.getId() != null && !objectiveData.getId().isEmpty()) {
+      objectiveData = this.getObjectiveDataSet().getObjective(objectiveData.getId());
+      if (objectiveData == null) {
+        log.error(
+            "- Unable to remove non-existing custom objective {} for {}!",
+            objectiveData,
+            this.getEntity());
+        return false;
+      }
+    }
+
+    // Remove goal and target if available.
+    Goal goal = objectiveData.getGoal(this.getEntity());
+    Goal target = objectiveData.getTarget(this.getEntity());
+    if (goal == null && target == null) {
+      log.error("- Unable to remove custom objective for {}!", this.getEntity());
+      return false;
+    }
+
+    if (goal != null) {
+      log.debug("- Removing goal {} for {}", goal, this.getEntity());
+      this.getEntityGoalSelector().removeGoal(goal);
+    }
+
+    if (target != null) {
+      log.debug("- Removing target goal {} for {}", target, this.getEntity());
+      this.getEntityTargetSelector().removeGoal(target);
+    }
+
+    return this.getObjectiveDataSet().removeObjective(objectiveData);
   }
 
   default void defineSynchedObjectiveData() {

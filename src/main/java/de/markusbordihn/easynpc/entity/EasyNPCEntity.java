@@ -33,11 +33,13 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
@@ -59,7 +61,7 @@ public class EasyNPCEntity extends EasyNPCEntityData {
   public static final MobCategory CATEGORY = MobCategory.MISC;
   // Additional ticker
   private static final int BASE_TICK = 16;
-  private static final int DELAYED_REGISTRATION_TICK = 20 * 10; // 10 seconds
+  private static final int DELAYED_REGISTRATION_TICK = 20 * 15; // 15 seconds
   private static final int OBJECTIVE_TICK = 40;
   private static final int TRADING_TICK = Math.round((20f / BASE_TICK) * 60) - 10;
   private static final int TRAVEL_TICK = 20;
@@ -69,8 +71,6 @@ public class EasyNPCEntity extends EasyNPCEntityData {
   private int resetTradingTicker = 0;
   private int tradingTicker = random.nextInt(TRADING_TICK / 2);
   private int travelTicker = random.nextInt(TRAVEL_TICK / 2);
-  // Cache
-  private boolean delayedRegistration = false;
 
   public EasyNPCEntity(
       EntityType<? extends EasyNPCEntity> entityType, Level level, Enum<?> variant) {
@@ -350,6 +350,33 @@ public class EasyNPCEntity extends EasyNPCEntityData {
   }
 
   @Override
+  public boolean doHurtTarget(Entity entity) {
+    boolean hurtResult = super.doHurtTarget(entity);
+    this.attackAnimationTick = 10;
+    return hurtResult;
+  }
+
+  @Override
+  public void handleEntityEvent(byte flag) {
+    super.handleEntityEvent(flag);
+    if (flag == 4) {
+      this.attackAnimationTick = 10;
+    }
+  }
+
+  @Override
+  public void aiStep() {
+    super.aiStep();
+    if (this.attackAnimationTick > 0) {
+      --this.attackAnimationTick;
+    }
+
+    if (!this.level.isClientSide) {
+      this.updatePersistentAnger((ServerLevel) this.level, true);
+    }
+  }
+
+  @Override
   public void baseTick() {
     super.baseTick();
 
@@ -359,16 +386,11 @@ public class EasyNPCEntity extends EasyNPCEntityData {
     }
 
     // Delayed registration for EasyNPCs
-    if (!this.delayedRegistration
-        && this.delayedRegistrationTicker++ >= DELAYED_REGISTRATION_TICK) {
-      if (this.hasObjectives() && !this.hasValidTargetObjectives()) {
-        log.debug(
-            "Force delayed registration for {} with {} objectives",
-            this,
-            this.getObjectiveDataSet());
-        this.refreshEntityObjectives();
+    if (this.delayedRegistrationTicker++ >= DELAYED_REGISTRATION_TICK) {
+      if (this.hasObjectives()) {
+        this.refreshCustomObjectives();
       }
-      this.delayedRegistration = true;
+      this.delayedRegistrationTicker = 0;
     }
 
     // NPC Base Ticker (every 16 ticks)
@@ -447,7 +469,6 @@ public class EasyNPCEntity extends EasyNPCEntityData {
     spawnGroupData =
         super.finalizeSpawn(
             serverLevelAccessor, difficulty, mobSpawnType, spawnGroupData, compoundTag);
-
     finalizeSpawn();
     return spawnGroupData;
   }

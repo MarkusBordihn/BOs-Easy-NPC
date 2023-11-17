@@ -84,6 +84,12 @@ public class MessageOpenConfiguration extends NetworkMessage {
     // Perform action.
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     switch (configurationType) {
+      case ATTACK_OBJECTIVE:
+        EasyNPCEntityMenu.openAttackObjectiveConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
+      case FOLLOW_OBJECTIVE:
+        EasyNPCEntityMenu.openFollowObjectiveConfigurationMenu(serverPlayer, easyNPCEntity);
+        break;
       case ADVANCED_DIALOG:
         EasyNPCEntityMenu.openAdvancedDialogConfigurationMenu(serverPlayer, easyNPCEntity);
         break;

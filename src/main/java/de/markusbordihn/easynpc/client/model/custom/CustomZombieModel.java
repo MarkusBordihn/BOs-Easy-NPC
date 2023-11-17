@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.model.custom;
 
-import de.markusbordihn.easynpc.client.model.CustomModelHelper;
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
@@ -53,58 +52,21 @@ public class CustomZombieModel<T extends LivingEntity> extends HumanoidModel<T>
       isAggressive = easyNPCEntity.isAggressive();
 
       // Reset player model to avoid any issues with other mods.
-      resetHumanoidModel(
-          this.head, this.body, this.rightArm, this.leftArm, this.rightLeg, this.leftLeg);
+      EasyNPCModel.resetHumanoidModel(
+          this, this.head, this.body, this.rightArm, this.leftArm, this.rightLeg, this.leftLeg);
 
       // Individual Part Modifications
       if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
-
-        // Head position, rotation and visibility.
-        CustomModelHelper.setHeadPositionRotationVisibility(
+        EasyNPCModel.setupHumanoidModel(
+            easyNPCEntity,
             this.head,
-            easyNPCEntity.getModelHeadPosition(),
-            easyNPCEntity.getModelHeadRotation(),
-            easyNPCEntity.isModelHeadVisible(),
+            this.body,
+            this.rightArm,
+            this.leftArm,
+            this.rightLeg,
+            this.leftLeg,
             netHeadYaw,
             headPitch);
-
-        // Body position, rotation and visibility.
-        CustomModelHelper.setPositionRotationVisibility(
-            this.body,
-            easyNPCEntity.getModelBodyPosition(),
-            easyNPCEntity.getModelBodyRotation(),
-            easyNPCEntity.isModelBodyVisible());
-
-        // Right Arm position, rotation and visibility.
-        CustomModelHelper.setPositionRotationVisibility(
-            this.rightArm,
-            easyNPCEntity.getModelRightArmPosition(),
-            easyNPCEntity.getModelRightArmRotation(),
-            easyNPCEntity.isModelRightArmVisible());
-
-        // Left Arm position, rotation and visibility.
-        CustomModelHelper.setPositionRotationVisibility(
-            this.leftArm,
-            easyNPCEntity.getModelLeftArmPosition(),
-            easyNPCEntity.getModelLeftArmRotation(),
-            easyNPCEntity.isModelLeftArmVisible());
-
-        // Right Leg position, rotation and visibility.
-        CustomModelHelper.setPositionRotationVisibility(
-            this.rightLeg,
-            easyNPCEntity.getModelRightLegPosition(),
-            easyNPCEntity.getModelRightLegRotation(),
-            easyNPCEntity.isModelRightLegVisible());
-
-        // Left Leg position, rotation and visibility.
-        CustomModelHelper.setPositionRotationVisibility(
-            this.leftLeg,
-            easyNPCEntity.getModelLeftLegPosition(),
-            easyNPCEntity.getModelLeftLegRotation(),
-            easyNPCEntity.isModelLeftLegVisible());
-
-        // Copy all outer model parts to the correct model parts.
-        this.hat.copyFrom(this.head);
       } else if (easyNPCEntity.getPose() == Pose.CROUCHING) {
         // Crouching Pose
         this.body.xRot = 0.5F;
@@ -122,6 +84,21 @@ public class CustomZombieModel<T extends LivingEntity> extends HumanoidModel<T>
 
       if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM
           || easyNPCEntity.getPose() == Pose.CROUCHING) {
+
+        // Handle animations, if model specific part was not adjusted.
+        if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
+          EasyNPCModel.animateHumanoidModel(
+              this,
+              this.head,
+              this.body,
+              this.rightArm,
+              this.leftArm,
+              this.rightLeg,
+              this.leftLeg,
+              limbSwing,
+              limbSwingAmount);
+        }
+
         // Copy all outer model parts to the correct model parts.
         this.hat.copyFrom(this.head);
       } else {

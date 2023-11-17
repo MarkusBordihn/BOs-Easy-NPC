@@ -19,77 +19,74 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.data.objective.ObjectiveData;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import java.util.function.Supplier;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent.Context;
 
-public class MessageObjectiveRemove extends NetworkMessage {
+public class MessageRespawnNPC extends NetworkMessage {
 
-  protected final ObjectiveData objectiveData;
-
-  public MessageObjectiveRemove(UUID uuid, ObjectiveData objectiveData) {
+  public MessageRespawnNPC(UUID uuid) {
     super(uuid);
-    this.objectiveData = objectiveData;
   }
 
-  public static MessageObjectiveRemove decode(final FriendlyByteBuf buffer) {
-    return new MessageObjectiveRemove(buffer.readUUID(), new ObjectiveData(buffer.readNbt()));
+  public static MessageRespawnNPC decode(final FriendlyByteBuf buffer) {
+    return new MessageRespawnNPC(buffer.readUUID());
   }
 
-  public static void encode(final MessageObjectiveRemove message, final FriendlyByteBuf buffer) {
+  public static void encode(final MessageRespawnNPC message, final FriendlyByteBuf buffer) {
     buffer.writeUUID(message.uuid);
-    buffer.writeNbt(message.objectiveData.createTag());
   }
 
-  public static void handle(
-      MessageObjectiveRemove message, Supplier<NetworkEvent.Context> contextSupplier) {
+  public static void handle(MessageRespawnNPC message, Supplier<Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessageObjectiveRemove message, NetworkEvent.Context context) {
+  public static void handlePacket(MessageRespawnNPC message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
     if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
       return;
     }
 
-    // Validate objective data
-    ObjectiveData objectiveData = message.getObjectiveData();
-    if (objectiveData == null) {
-      log.error("Unable to add objective data for {} because it is null!", uuid);
-      return;
-    }
-
-    // Perform action.
+    // Verify that the entity is not null
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     if (easyNPCEntity == null) {
-      log.error("Unable to add objective data for {} because it is null!", uuid);
+      log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
       return;
     }
 
-    // Perform action.
-    if (easyNPCEntity.removeCustomObjective(objectiveData)) {
-      log.debug("Removed objective {} for {} from {}", objectiveData, easyNPCEntity, serverPlayer);
-      log.debug(
-          "Available goals for {}: {}",
-          easyNPCEntity,
-          easyNPCEntity.getEntityGoalSelector().getAvailableGoals());
-      log.debug(
-          "Available targets for {}: {}",
-          easyNPCEntity,
-          easyNPCEntity.getEntityTargetSelector().getAvailableGoals());
-    }
-  }
+    // Save entity and entity type
+    CompoundTag compoundTag = easyNPCEntity.saveWithoutId(new CompoundTag());
+    EntityType<? extends EasyNPCEntity> entityType =
+        (EntityType<? extends EasyNPCEntity>) easyNPCEntity.getType();
 
-  public ObjectiveData getObjectiveData() {
-    return this.objectiveData;
+    // Create new entity with compoundTag
+    ServerLevel serverLevel = serverPlayer.getLevel();
+    Entity entity = entityType.create(serverLevel);
+    if (entity == null) {
+      log.error("Unable to create new entity with type {} for {}", entityType, serverPlayer);
+      return;
+    }
+    entity.load(compoundTag);
+
+    // Remove old entity
+    easyNPCEntity.discard();
+
+    // Respawn new entity
+    log.info(
+        "Respawn Easy NPC {} with {} requested by {}", easyNPCEntity, entityType, serverPlayer);
+    serverLevel.addFreshEntity(entity);
   }
 }

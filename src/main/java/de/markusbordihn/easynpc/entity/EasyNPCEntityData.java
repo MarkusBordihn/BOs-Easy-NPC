@@ -37,6 +37,7 @@ import de.markusbordihn.easynpc.entity.data.EntitySkinData;
 import de.markusbordihn.easynpc.entity.data.EntityTradingData;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
@@ -48,10 +49,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.TimeUtil;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
@@ -78,7 +82,8 @@ public class EasyNPCEntityData extends AgeableMob
         EntitySkinData,
         EntityTradingData,
         Npc,
-        Merchant {
+        Merchant,
+        NeutralMob {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   // Synced Data
@@ -90,13 +95,17 @@ public class EasyNPCEntityData extends AgeableMob
   private static final String DATA_POSE_TAG = "Pose";
   private static final String DATA_TAME_TAG = "Tame";
   private static final String DATA_VARIANT_TAG = "Variant";
+  private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
   // Entity Data
   private final CustomEntityData customEntityData = new CustomEntityData(this);
   protected MerchantOffers offers;
+  protected int attackAnimationTick;
   // Cache
   private boolean syncedDataLoaded = false;
   private boolean isPreview = false;
   private Player tradingPlayer;
+  private int remainingPersistentAngerTime;
+  private UUID persistentAngerTarget;
 
   public EasyNPCEntityData(EntityType<? extends EasyNPCEntity> entityType, Level level) {
     super(entityType, level);
@@ -190,6 +199,10 @@ public class EasyNPCEntityData extends AgeableMob
 
   public SoundEvent getNotifyTradeSound() {
     return SoundEvents.VILLAGER_YES;
+  }
+
+  public int getAttackAnimationTick() {
+    return this.attackAnimationTick;
   }
 
   // Experience related methods
@@ -307,6 +320,14 @@ public class EasyNPCEntityData extends AgeableMob
 
   public boolean synchedDataLoaded() {
     return this.syncedDataLoaded;
+  }
+
+  public boolean isClientSideExecuted() {
+    return this.level.isClientSide;
+  }
+
+  public boolean isServerSideExecuted() {
+    return !this.level.isClientSide;
   }
 
   @Override
@@ -428,6 +449,9 @@ public class EasyNPCEntityData extends AgeableMob
 
     // Handle tame state.
     compoundTag.putBoolean(DATA_TAME_TAG, this.isTame());
+
+    // Handle anger target.
+    this.addPersistentAngerSaveData(compoundTag);
   }
 
   @Override
@@ -465,6 +489,12 @@ public class EasyNPCEntityData extends AgeableMob
       this.setTame(compoundTag.getBoolean(DATA_TAME_TAG));
     }
 
+    // Read persistent anger target.
+    this.readPersistentAngerSaveData(this.level, compoundTag);
+
+    // Register attribute based objectives
+    this.registerAttributeBasedObjectives();
+
     // Set synced data loaded state.
     this.syncedDataLoaded = true;
   }
@@ -500,6 +530,33 @@ public class EasyNPCEntityData extends AgeableMob
 
   public int getEntitySkinScaling() {
     return 30;
+  }
+
+  @Override
+  public int getRemainingPersistentAngerTime() {
+    return this.remainingPersistentAngerTime;
+  }
+
+  @Override
+  public void setRemainingPersistentAngerTime(int p_21673_) {
+    this.remainingPersistentAngerTime = p_21673_;
+  }
+
+  @Nullable
+  @Override
+  public UUID getPersistentAngerTarget() {
+    return this.persistentAngerTarget;
+  }
+
+  @Override
+  public void setPersistentAngerTarget(@org.jetbrains.annotations.Nullable UUID p_21672_) {
+    this.persistentAngerTarget = p_21672_;
+  }
+
+  @Override
+  public void startPersistentAngerTimer() {
+    this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(this.random));
+    this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(this.random));
   }
 
   // Default Variants

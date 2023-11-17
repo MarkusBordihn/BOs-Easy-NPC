@@ -30,7 +30,9 @@ import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfiguratio
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.objective.AttackObjectiveConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.objective.BasicObjectiveConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.objective.FollowObjectiveConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.pose.AdvancedPoseConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.pose.CustomPoseConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenu;
@@ -143,6 +145,16 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               "basic_objective_configuration_menu",
               () -> IForgeMenuType.create(BasicObjectiveConfigurationMenu::new));
+  public static final RegistryObject<MenuType<FollowObjectiveConfigurationMenu>>
+      FOLLOW_OBJECTIVE_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              "follow_objective_configuration_menu",
+              () -> IForgeMenuType.create(FollowObjectiveConfigurationMenu::new));
+  public static final RegistryObject<MenuType<AttackObjectiveConfigurationMenu>>
+      ATTACK_OBJECTIVE_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              "attack_objective_configuration_menu",
+              () -> IForgeMenuType.create(AttackObjectiveConfigurationMenu::new));
 
   // Pose Configuration
   public static final RegistryObject<MenuType<DefaultPoseConfigurationMenu>>

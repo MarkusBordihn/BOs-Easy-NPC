@@ -140,7 +140,7 @@ public class MessageEntityAttributeChange extends NetworkMessage {
         if (booleanValue != null) {
           log.debug("Change canFloat={} for {} from {}", booleanValue, easyNPCEntity, serverPlayer);
           easyNPCEntity.setAttributeCanFloat(booleanValue);
-          easyNPCEntity.refreshEntityObjectives();
+          easyNPCEntity.registerAttributeBasedObjectives();
         }
         break;
       case CAN_OPEN_DOOR:
@@ -148,7 +148,7 @@ public class MessageEntityAttributeChange extends NetworkMessage {
           log.debug(
               "Change canOpenDoor={} for {} from {}", booleanValue, easyNPCEntity, serverPlayer);
           easyNPCEntity.setAttributeCanOpenDoor(booleanValue);
-          easyNPCEntity.refreshEntityObjectives();
+          easyNPCEntity.registerAttributeBasedObjectives();
         }
         break;
       case CAN_CLOSE_DOOR:
@@ -156,7 +156,7 @@ public class MessageEntityAttributeChange extends NetworkMessage {
           log.debug(
               "Change canCloseDoor={} for {} from {}", booleanValue, easyNPCEntity, serverPlayer);
           easyNPCEntity.setAttributeCanCloseDoor(booleanValue);
-          easyNPCEntity.refreshEntityObjectives();
+          easyNPCEntity.registerAttributeBasedObjectives();
         }
         break;
       case CAN_PASS_DOOR:
@@ -164,7 +164,7 @@ public class MessageEntityAttributeChange extends NetworkMessage {
           log.debug(
               "Change canPassDoor={} for {} from {}", booleanValue, easyNPCEntity, serverPlayer);
           easyNPCEntity.setAttributeCanPassDoor(booleanValue);
-          easyNPCEntity.refreshEntityObjectives();
+          easyNPCEntity.registerAttributeBasedObjectives();
         }
         break;
       case IS_ATTACKABLE:

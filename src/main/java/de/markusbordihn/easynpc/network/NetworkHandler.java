@@ -47,6 +47,7 @@ import de.markusbordihn.easynpc.network.message.MessageProfessionChange;
 import de.markusbordihn.easynpc.network.message.MessageRemoveDialog;
 import de.markusbordihn.easynpc.network.message.MessageRemoveDialogButton;
 import de.markusbordihn.easynpc.network.message.MessageRemoveNPC;
+import de.markusbordihn.easynpc.network.message.MessageRespawnNPC;
 import de.markusbordihn.easynpc.network.message.MessageRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageSaveDialog;
 import de.markusbordihn.easynpc.network.message.MessageSaveDialogButton;
@@ -71,7 +72,7 @@ public class NetworkHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final String PROTOCOL_VERSION = "14";
+  private static final String PROTOCOL_VERSION = "15";
   public static final SimpleChannel INSTANCE =
       NetworkRegistry.newSimpleChannel(
           new ResourceLocation(Constants.MOD_ID, "network"),
@@ -307,6 +308,14 @@ public class NetworkHandler {
               MessageRemoveNPC::encode,
               MessageRemoveNPC::decode,
               MessageRemoveNPC::handle);
+
+          // Respawn NPC: Client -> Server
+          INSTANCE.registerMessage(
+              id++,
+              MessageRespawnNPC.class,
+              MessageRespawnNPC::encode,
+              MessageRespawnNPC::decode,
+              MessageRespawnNPC::handle);
 
           // Rotation Change: Client -> Server
           INSTANCE.registerMessage(

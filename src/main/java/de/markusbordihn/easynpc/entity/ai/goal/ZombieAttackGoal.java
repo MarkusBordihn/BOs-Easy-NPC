@@ -17,16 +17,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.attribute;
+package de.markusbordihn.easynpc.entity.ai.goal;
 
-public enum EntityAttribute {
-  // @formatter:off
-  FREEFALL,
-  IS_ATTACKABLE,
-  IS_PUSHABLE,
-  CAN_FLOAT,
-  CAN_CLOSE_DOOR,
-  CAN_OPEN_DOOR,
-  CAN_PASS_DOOR,
-  // @formatter:on
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+
+public class ZombieAttackGoal extends MeleeAttackGoal {
+  private final EasyNPCEntity easyNPCEntity;
+  private int raiseArmTicks;
+
+  public ZombieAttackGoal(
+      EasyNPCEntity easyNPCEntity, double speedModifier, boolean followingTargetEvenIfNotSeen) {
+    super(easyNPCEntity, speedModifier, followingTargetEvenIfNotSeen);
+    this.easyNPCEntity = easyNPCEntity;
+  }
+
+  public void start() {
+    super.start();
+    this.raiseArmTicks = 0;
+  }
+
+  public void stop() {
+    super.stop();
+    this.easyNPCEntity.setAggressive(false);
+  }
+
+  public void tick() {
+    super.tick();
+    ++this.raiseArmTicks;
+    this.easyNPCEntity.setAggressive(
+        this.raiseArmTicks >= 5 && this.getTicksUntilNextAttack() < this.getAttackInterval() / 2);
+  }
 }

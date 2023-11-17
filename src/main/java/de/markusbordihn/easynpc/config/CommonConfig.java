@@ -100,6 +100,8 @@ public class CommonConfig {
     public static final String ADVANCED_TRADING_CONFIGURATION = "advanced trading";
     public static final String CUSTOM_TRADING_CONFIGURATION = "custom trading";
     public static final String BASIC_OBJECTIVE_CONFIGURATION = "basic objective";
+    public static final String ATTACK_OBJECTIVE_CONFIGURATION = "attack objective";
+    public static final String FOLLOW_OBJECTIVE_CONFIGURATION = "follow objective";
     private static final String ADVANCED_POSE_CONFIGURATION = "advanced pose";
     public final ForgeConfigSpec.BooleanValue mainConfigurationEnabled;
     public final ForgeConfigSpec.BooleanValue mainConfigurationAllowInCreative;
@@ -188,6 +190,12 @@ public class CommonConfig {
     public final ForgeConfigSpec.BooleanValue basicObjectiveConfigurationEnabled;
     public final ForgeConfigSpec.BooleanValue basicObjectiveConfigurationAllowInCreative;
     public final ForgeConfigSpec.IntValue basicObjectiveConfigurationPermissionLevel;
+    public final ForgeConfigSpec.BooleanValue attackObjectiveConfigurationEnabled;
+    public final ForgeConfigSpec.BooleanValue attackObjectiveConfigurationAllowInCreative;
+    public final ForgeConfigSpec.IntValue attackObjectiveConfigurationPermissionLevel;
+    public final ForgeConfigSpec.BooleanValue followObjectiveConfigurationEnabled;
+    public final ForgeConfigSpec.BooleanValue followObjectiveConfigurationAllowInCreative;
+    public final ForgeConfigSpec.IntValue followObjectiveConfigurationPermissionLevel;
 
     Config(ForgeConfigSpec.Builder builder) {
       builder.comment(Constants.MOD_NAME);
@@ -627,6 +635,36 @@ public class CommonConfig {
           builder
               .comment(getPermissionLevelComment(BASIC_OBJECTIVE_CONFIGURATION))
               .defineInRange("basicObjectiveConfigurationPermissionLevel", 0, 0, 4);
+      builder.pop();
+
+      builder.push("[Objective Configuration] Attack Objective");
+      attackObjectiveConfigurationEnabled =
+          builder
+              .comment(getEnableComment(ATTACK_OBJECTIVE_CONFIGURATION))
+              .define("attackObjectiveConfigurationEnabled", true);
+      attackObjectiveConfigurationAllowInCreative =
+          builder
+              .comment(getAllowInCreativeComment(ATTACK_OBJECTIVE_CONFIGURATION))
+              .define("attackObjectiveConfigurationAllowInCreative", true);
+      attackObjectiveConfigurationPermissionLevel =
+          builder
+              .comment(getPermissionLevelComment(ATTACK_OBJECTIVE_CONFIGURATION))
+              .defineInRange("attackObjectiveConfigurationPermissionLevel", 0, 0, 4);
+      builder.pop();
+
+      builder.push("[Objective Configuration] Follow Objective");
+      followObjectiveConfigurationEnabled =
+          builder
+              .comment(getEnableComment(FOLLOW_OBJECTIVE_CONFIGURATION))
+              .define("followObjectiveConfigurationEnabled", true);
+      followObjectiveConfigurationAllowInCreative =
+          builder
+              .comment(getAllowInCreativeComment(FOLLOW_OBJECTIVE_CONFIGURATION))
+              .define("followObjectiveConfigurationAllowInCreative", true);
+      followObjectiveConfigurationPermissionLevel =
+          builder
+              .comment(getPermissionLevelComment(FOLLOW_OBJECTIVE_CONFIGURATION))
+              .defineInRange("followObjectiveConfigurationPermissionLevel", 0, 0, 4);
       builder.pop();
     }
   }

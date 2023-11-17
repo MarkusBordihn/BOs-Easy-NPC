@@ -83,7 +83,7 @@ public class IronGolemRenderer extends MobRenderer<IronGolem, CustomIronGolemMod
       TEXTURE_BY_VARIANT.get(Variant.IRON_GOLEM);
 
   public IronGolemRenderer(EntityRendererProvider.Context context) {
-    super(context, new CustomIronGolemModel<>(context.bakeLayer(ModelLayers.IRON_GOLEM)), 0.5F);
+    super(context, new CustomIronGolemModel<>(context.bakeLayer(ModelLayers.IRON_GOLEM)), 0.7F);
     this.addLayer(new VariantOverLayer<>(this, context.getModelSet()));
     this.addLayer(new ItemInHandLayer<>(this));
   }

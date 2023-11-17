@@ -40,6 +40,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.ConfirmScreen;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -54,22 +55,23 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
   public static final int BUTTON_HEIGHT = 18;
 
   // Buttons and boxes
-  protected Button copyUUIDButton = null;
-  protected Button editActionButton = null;
-  protected Button editAttributes = null;
-  protected Button editDialogButton = null;
-  protected Button editEquipmentButton = null;
-  protected Button editObjectiveButton = null;
-  protected Button editPoseButton = null;
-  protected Button editPositionButton = null;
-  protected Button editRotationButton = null;
-  protected Button editScalingButton = null;
-  protected Button editSkinButton = null;
-  protected Button editTradesButton = null;
-  protected Button exportButton = null;
-  protected Button importButton = null;
-  protected Button removeEntityButton = null;
-  protected Button saveNameButton = null;
+  protected Button copyUUIDButton;
+  protected Button editActionButton;
+  protected Button editAttributes;
+  protected Button editDialogButton;
+  protected Button editEquipmentButton;
+  protected Button editObjectiveButton;
+  protected Button editPoseButton;
+  protected Button editPositionButton;
+  protected Button editRotationButton;
+  protected Button editScalingButton;
+  protected Button editSkinButton;
+  protected Button editTradesButton;
+  protected Button exportButton;
+  protected Button importButton;
+  protected Button removeEntityButton;
+  protected Button saveNameButton;
+  protected Button respawnButton;
   private EditBox nameBox;
 
   // Cache
@@ -113,6 +115,29 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
             CommonComponents.GUI_CANCEL));
   }
 
+  private void respawnNPC() {
+    Minecraft minecraft = this.minecraft;
+    if (minecraft == null) {
+      return;
+    }
+    minecraft.setScreen(
+        new ConfirmScreen(
+            confirmed -> {
+              if (confirmed && uuid != null) {
+                NetworkMessageHandler.respawnNPC(uuid);
+                minecraft.setScreen(null);
+              } else {
+                minecraft.setScreen(this);
+              }
+            },
+            new TranslatableComponent(Constants.TEXT_PREFIX + "respawnNPC.confirmQuestion"),
+            new TranslatableComponent(
+                Constants.TEXT_PREFIX + "respawnNPC.confirmWarning",
+                this.entity.getDisplayName().getString()),
+            new TranslatableComponent(Constants.TEXT_PREFIX + "removeNPC.respawnButton"),
+            CommonComponents.GUI_CANCEL));
+  }
+
   private void validateName() {
     String nameValue = this.nameBox.getValue();
     this.saveNameButton.active = nameValue != null && !this.formerName.equals(nameValue);
@@ -150,7 +175,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
         this.addRenderableWidget(
             new TextButton(
                 this.contentLeftPos,
-                this.topPos + 190,
+                this.topPos + 195,
                 110,
                 "edit_skin",
                 onPress -> {
@@ -463,15 +488,21 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                   }
                 }));
 
+    // Respawn Button
+    this.respawnButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.copyUUIDButton.x + this.copyUUIDButton.getWidth() + buttonSpace,
+                this.bottomPos - 27,
+                70,
+                "respawn",
+                onPress -> respawnNPC()));
+
     // Delete Button
     this.removeEntityButton =
         this.addRenderableWidget(
             new DeleteButton(
-                this.rightPos - 70,
-                this.bottomPos - 29,
-                65,
-                "delete",
-                onPress -> this.deleteNPC()));
+                this.rightPos - 70, this.bottomPos - 29, 65, onPress -> this.deleteNPC()));
     this.removeEntityButton.setFGColor(16733525);
   }
 
@@ -512,6 +543,8 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
           Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
           Math.round((this.topPos + 61) / scaleEntityTypeText));
     }
+
+    // Entity UUID, if available.
     if (this.uuid != null) {
       Text.drawString(
           poseStack,
@@ -519,6 +552,17 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
           "UUID: " + this.uuid,
           Math.round((this.contentLeftPos + 1) / scaleEntityTypeText),
           Math.round((this.topPos + 15) / scaleEntityTypeText));
+    }
+
+    // Entity Position
+    BlockPos blockPos = this.entity.getOnPos();
+    if (blockPos != null) {
+      Text.drawString(
+          poseStack,
+          this.font,
+          "Pos: " + blockPos.getX() + ", " + blockPos.getY() + ", " + blockPos.getZ(),
+          Math.round((this.contentLeftPos + 20) / scaleEntityTypeText),
+          Math.round((this.topPos + 187) / scaleEntityTypeText));
     }
     poseStack.popPose();
   }
@@ -557,14 +601,14 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
         this.contentLeftPos,
         avatarTopPos + 13,
         this.leftPos + 117,
-        avatarTopPos + 150,
+        avatarTopPos + 155,
         0xff000000);
     fill(
         poseStack,
         this.leftPos + 8,
         avatarTopPos + 14,
         this.leftPos + 116,
-        avatarTopPos + 149,
+        avatarTopPos + 154,
         0xffaaaaaa);
   }
 }

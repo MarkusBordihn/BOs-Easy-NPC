@@ -5,6 +5,13 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### 2023.11.18
+
+- Added attack and follow objectives.
+- Added respawn button in the case the NPC is stucked or buggy.
+- Improved objective validation and handling.
+- Optimized nbt data to skip default values for better performance and smaller data size.
+
 ### 2023.11.05 (NPCs comes to life update)
 
 Note: Please backup your world before updating to this version!

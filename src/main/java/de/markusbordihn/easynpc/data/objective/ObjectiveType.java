@@ -21,36 +21,36 @@ package de.markusbordihn.easynpc.data.objective;
 
 public enum ObjectiveType {
   // @formatter:off
-  STANDARD,
+  NONE,
   AVOID_ENTITY,
-  RANDOM_STROLL,
-  WATER_AVOIDING_RANDOM_STROLL,
-  NEAREST_ATTACKABLE_TARGET,
-  MOVE_THROUGH_VILLAGE,
+  ATTACK_ANIMAL,
+  ATTACK_PLAYER,
+  ATTACK_MONSTER,
+  ATTACK_ENTITY_BY_UUID,
+  ATTACK_MOB_WITHOUT_CREEPER,
+  ATTACK_MOB,
+  ATTACK_VILLAGER,
+  CUSTOM,
+  FOLLOW_ENTITY_BY_UUID,
   FOLLOW_OWNER,
   FOLLOW_PLAYER,
-  FOLLOW_ENTITY_BY_UUID,
-  CUSTOM,
-  NONE;
+  MELEE_ATTACK,
+  MOVE_BACK_TO_VILLAGE,
+  MOVE_THROUGH_VILLAGE,
+  NEAREST_ATTACKABLE_TARGET,
+  RANDOM_STROLL,
+  RANDOM_STROLL_IN_VILLAGE,
+  RANDOM_SWIMMING,
+  FLOAT,
+  LOOK_AT_PLAYER,
+  LOOK_AT_MOB,
+  RESET_LOOK_AT,
+  OPEN_DOOR,
+  CLOSE_DOOR,
+  ZOMBIE_ATTACK,
+  WATER_AVOIDING_RANDOM_STROLL;
+
   // @formatter:on
-
-  private boolean isGoalSelector = false;
-  private boolean isTargetSelector = false;
-
-  ObjectiveType() {
-    this.isGoalSelector = true;
-    this.isTargetSelector = false;
-  }
-
-  ObjectiveType(boolean isTargetSelector) {
-    this.isGoalSelector = false;
-    this.isTargetSelector = isTargetSelector;
-  }
-
-  ObjectiveType(boolean isGoalSelector, boolean isTargetSelector) {
-    this.isGoalSelector = isGoalSelector;
-    this.isTargetSelector = isTargetSelector;
-  }
 
   public static ObjectiveType get(String objectiveType) {
     if (objectiveType == null || objectiveType.isEmpty()) {
@@ -63,11 +63,7 @@ public enum ObjectiveType {
     }
   }
 
-  public boolean isGoalSelector() {
-    return this.isGoalSelector;
-  }
-
-  public boolean isTargetSelector() {
-    return this.isTargetSelector;
+  public String getObjectiveName() {
+    return this.name().toLowerCase();
   }
 }

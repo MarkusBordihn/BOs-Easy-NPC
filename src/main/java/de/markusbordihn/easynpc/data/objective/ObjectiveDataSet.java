@@ -20,13 +20,13 @@
 package de.markusbordihn.easynpc.data.objective;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,12 +35,12 @@ public class ObjectiveDataSet {
   // Objective Data Tags
   public static final String DATA_OBJECTIVE_DATA_SET_TAG = "ObjectiveDataSet";
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  // Data
   private final HashMap<String, ObjectiveData> objectives = new HashMap<>();
   private final HashSet<String> targetedPlayerSet = new HashSet<>();
   private final HashSet<UUID> targetedEntitySet = new HashSet<>();
-  private boolean hasObjectives = false;
+  // Data
   private boolean hasPlayerTarget = false;
+  private boolean hasObjectives = false;
   private boolean hasEntityTarget = false;
   private boolean hasOwnerTarget = false;
 
@@ -54,6 +54,17 @@ public class ObjectiveDataSet {
     return new HashSet<>(this.objectives.values());
   }
 
+  public ObjectiveData getOrCreateObjective(ObjectiveType objectiveType, int priority) {
+    if (this.hasObjective(objectiveType)) {
+      return this.getObjective(objectiveType);
+    }
+    return new ObjectiveData(objectiveType, priority);
+  }
+
+  public ObjectiveData getObjective(ObjectiveType objectiveType) {
+    return this.getObjective(objectiveType.name());
+  }
+
   public ObjectiveData getObjective(String objectiveId) {
     ObjectiveData objectiveData = this.objectives.get(objectiveId);
     if (objectiveData != null && objectiveData.getType() != ObjectiveType.NONE) {
@@ -65,6 +76,10 @@ public class ObjectiveDataSet {
   public boolean hasObjective(String objectiveId) {
     ObjectiveData objectiveData = this.objectives.get(objectiveId);
     return objectiveData != null && objectiveData.getType() != ObjectiveType.NONE;
+  }
+
+  public boolean hasObjective(ObjectiveType objectiveType) {
+    return hasObjective(objectiveType.name());
   }
 
   public boolean hasObjectives() {
@@ -113,67 +128,12 @@ public class ObjectiveDataSet {
     return entityUUID != null && this.targetedEntitySet.contains(entityUUID);
   }
 
-  public Set<String> getTargetedPlayerSet() {
-    return this.targetedPlayerSet;
-  }
-
-  public Set<UUID> getTargetedEntitySet() {
-    return this.targetedEntitySet;
-  }
-
-  public void updateTargetedPlayerSet(String playerName) {
-    if (!isTargetedPlayer(playerName)) {
-      return;
-    }
-    for (ObjectiveData objectiveData : this.objectives.values()) {
-      if (objectiveData == null
-          || objectiveData.getType() == ObjectiveType.NONE
-          || !objectiveData.hasPlayerTarget()
-          || !objectiveData.isTargetedPlayer(playerName)
-          || !objectiveData.hasValidTarget()) {
-        continue;
-      }
-      objectiveData.setHasValidTarget(false);
-    }
-  }
-
-  public void updateTargetedEntitySet(UUID entityUUID) {
-    if (!isTargetedEntity(entityUUID)) {
-      return;
-    }
-    for (ObjectiveData objectiveData : this.objectives.values()) {
-      if (objectiveData == null
-          || objectiveData.getType() == ObjectiveType.NONE
-          || !objectiveData.hasEntityTarget()
-          || !objectiveData.isTargetedEntity(entityUUID)
-          || !objectiveData.hasValidTarget()) {
-        continue;
-      }
-      objectiveData.setHasValidTarget(false);
-    }
-  }
-
-  public void updateTargetedOwnerSet(ServerPlayer owner) {
-    if (!this.hasOwnerTarget() || owner == null || owner.getUUID() == null) {
-      return;
-    }
-    for (ObjectiveData objectiveData : this.objectives.values()) {
-      if (objectiveData == null
-          || objectiveData.getType() == ObjectiveType.NONE
-          || !objectiveData.hasOwnerTarget()
-          || !objectiveData.hasValidTarget()) {
-        continue;
-      }
-      objectiveData.setHasValidTarget(false);
-    }
-  }
-
-  public boolean hasValidTarget() {
+  public boolean hasValidTarget(EasyNPCEntity easyNPCEntity) {
     for (ObjectiveData objectiveData : this.objectives.values()) {
       if (objectiveData == null || objectiveData.getType() == ObjectiveType.NONE) {
         continue;
       }
-      if (!objectiveData.hasValidTarget()) {
+      if (!objectiveData.hasValidTarget(easyNPCEntity)) {
         return false;
       }
     }

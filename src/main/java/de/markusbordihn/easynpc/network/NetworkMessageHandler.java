@@ -63,6 +63,7 @@ import de.markusbordihn.easynpc.network.message.MessageProfessionChange;
 import de.markusbordihn.easynpc.network.message.MessageRemoveDialog;
 import de.markusbordihn.easynpc.network.message.MessageRemoveDialogButton;
 import de.markusbordihn.easynpc.network.message.MessageRemoveNPC;
+import de.markusbordihn.easynpc.network.message.MessageRespawnNPC;
 import de.markusbordihn.easynpc.network.message.MessageRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageSaveDialog;
 import de.markusbordihn.easynpc.network.message.MessageSaveDialogButton;
@@ -218,6 +219,13 @@ public class NetworkMessageHandler {
   public static void removeNPC(UUID uuid) {
     if (uuid != null) {
       NetworkHandler.sendToServer(new MessageRemoveNPC(uuid));
+    }
+  }
+
+  /** Send respawn NPC. */
+  public static void respawnNPC(UUID uuid) {
+    if (uuid != null) {
+      NetworkHandler.sendToServer(new MessageRespawnNPC(uuid));
     }
   }
 
