@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,21 +19,19 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.equipment;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.ScreenHelper;
+import de.markusbordihn.easynpc.client.screen.components.TextButton;
+import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
+import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenu;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.screen.ScreenHelper;
-import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
-import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenu;
 
 @OnlyIn(Dist.CLIENT)
 public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentConfigurationMenu> {
@@ -41,8 +39,8 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
   // Buttons
   protected Button defaultEquipmentButton;
 
-  public EquipmentConfigurationScreen(EquipmentConfigurationMenu menu, Inventory inventory,
-      Component component) {
+  public EquipmentConfigurationScreen(
+      EquipmentConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 
@@ -52,9 +50,10 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
 
     // Default button
     int buttonWidth = 80;
-    this.defaultEquipmentButton = this.addRenderableWidget(
-        menuButton(this.buttonLeftPos, this.buttonTopPos, buttonWidth, "equipment", button -> {
-        }));
+    this.defaultEquipmentButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.buttonLeftPos, this.buttonTopPos, buttonWidth, "equipment", button -> {}));
     this.defaultEquipmentButton.active = false;
 
     // Basic Position
@@ -67,8 +66,12 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
     super.render(poseStack, x, y, partialTicks);
 
     // Avatar
-    ScreenHelper.renderScaledEntityAvatar(this.contentLeftPos + 138, this.contentTopPos + 82, 35,
-        this.contentLeftPos + 140 - this.xMouse, this.contentTopPos + 30 - this.yMouse,
+    ScreenHelper.renderScaledEntityAvatar(
+        this.contentLeftPos + 138,
+        this.contentTopPos + 82,
+        35,
+        this.contentLeftPos + 140 - this.xMouse,
+        this.contentTopPos + 30 - this.yMouse,
         this.entity);
   }
 
@@ -82,30 +85,39 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
 
     // Armors Slots Left
     if (this.entity.canUseArmor()) {
-      blit(poseStack, this.contentLeftPos + 90, this.contentTopPos, 7, 7, 18, 72);
-     }
+      this.blit(poseStack, this.contentLeftPos + 90, this.contentTopPos, 7, 7, 18, 72);
+    }
 
     // Main Hand Slot Left
     if (this.entity.canUseMainHand()) {
-      blit(poseStack, this.contentLeftPos + 90, this.contentTopPos + 75, 7, 7, 18, 18);
+      this.blit(poseStack, this.contentLeftPos + 90, this.contentTopPos + 75, 7, 7, 18, 18);
     }
 
     // Off Hand Slot Right
     if (this.entity.canUseOffHand()) {
-      blit(poseStack, this.contentLeftPos + 170, this.contentTopPos + 75, 7, 7, 18, 18);
+      this.blit(poseStack, this.contentLeftPos + 170, this.contentTopPos + 75, 7, 7, 18, 18);
     }
 
     // Player Inventory Slots
-    blit(poseStack, this.contentLeftPos + 58, this.contentTopPos + 105, 7, 83, 162, 54);
+    this.blit(poseStack, this.contentLeftPos + 58, this.contentTopPos + 105, 7, 83, 162, 54);
 
     // Player Hotbar Slots
-    blit(poseStack, this.contentLeftPos + 58, this.contentTopPos + 165, 7, 141, 162, 18);
+    this.blit(poseStack, this.contentLeftPos + 58, this.contentTopPos + 165, 7, 141, 162, 18);
 
     // Entity
-    fill(poseStack, this.contentLeftPos + 109, this.contentTopPos - 8, this.contentLeftPos + 169,
-        this.contentTopPos + 102, 0xff000000);
-    fill(poseStack, this.contentLeftPos + 110, this.contentTopPos - 7, this.contentLeftPos + 168,
-        this.contentTopPos + 101, 0xffaaaaaa);
+    fill(
+        poseStack,
+        this.contentLeftPos + 109,
+        this.contentTopPos - 8,
+        this.contentLeftPos + 169,
+        this.contentTopPos + 102,
+        0xff000000);
+    fill(
+        poseStack,
+        this.contentLeftPos + 110,
+        this.contentTopPos - 7,
+        this.contentLeftPos + 168,
+        this.contentTopPos + 101,
+        0xffaaaaaa);
   }
-
 }

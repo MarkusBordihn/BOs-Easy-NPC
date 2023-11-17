@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,23 +19,20 @@
 
 package de.markusbordihn.easynpc.network.message;
 
+import de.markusbordihn.easynpc.data.WorldPresetData;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.UUID;
 import java.util.function.Supplier;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-
 import net.minecraftforge.network.NetworkEvent;
-
-import de.markusbordihn.easynpc.data.WorldPresetData;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
-import de.markusbordihn.easynpc.network.NetworkMessage;
 
 public class MessagePresetImportWorld extends NetworkMessage {
 
@@ -44,10 +41,6 @@ public class MessagePresetImportWorld extends NetworkMessage {
   public MessagePresetImportWorld(UUID uuid, ResourceLocation resourceLocation) {
     super(uuid);
     this.resourceLocation = resourceLocation;
-  }
-
-  public ResourceLocation getResourceLocation() {
-    return this.resourceLocation;
   }
 
   public static MessagePresetImportWorld decode(final FriendlyByteBuf buffer) {
@@ -59,8 +52,8 @@ public class MessagePresetImportWorld extends NetworkMessage {
     buffer.writeResourceLocation(message.getResourceLocation());
   }
 
-  public static void handle(MessagePresetImportWorld message,
-      Supplier<NetworkEvent.Context> contextSupplier) {
+  public static void handle(
+      MessagePresetImportWorld message, Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
@@ -112,10 +105,15 @@ public class MessagePresetImportWorld extends NetworkMessage {
 
     // Validate entity encoded id, if set.
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (compoundTag.contains("id") && !compoundTag.getString("id").isEmpty()
+    if (compoundTag.contains("id")
+        && !compoundTag.getString("id").isEmpty()
         && !compoundTag.getString("id").equals(easyNPCEntity.getEncodeId())) {
-      log.error("Invalid id {} for {} expected {} from {}", compoundTag.getString("id"),
-          easyNPCEntity, easyNPCEntity.getEncodeId(), serverPlayer);
+      log.error(
+          "Invalid id {} for {} expected {} from {}",
+          compoundTag.getString("id"),
+          easyNPCEntity,
+          easyNPCEntity.getEncodeId(),
+          serverPlayer);
       return;
     }
 
@@ -123,4 +121,7 @@ public class MessagePresetImportWorld extends NetworkMessage {
     easyNPCEntity.importPreset(compoundTag);
   }
 
+  public ResourceLocation getResourceLocation() {
+    return this.resourceLocation;
+  }
 }

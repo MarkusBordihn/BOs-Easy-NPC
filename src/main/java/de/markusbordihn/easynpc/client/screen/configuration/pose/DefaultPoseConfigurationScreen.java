@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,25 +19,24 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.pose;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import de.markusbordihn.easynpc.client.screen.ScreenHelper;
+import de.markusbordihn.easynpc.client.screen.components.TextButton;
+import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenu;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Inventory;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.screen.ScreenHelper;
-import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class DefaultPoseConfigurationScreen
     extends PoseConfigurationScreen<DefaultPoseConfigurationMenu> {
+
+  public static final int BUTTON_WIDTH = 100;
 
   // Pose buttons
   protected Button crouchingPoseButton;
@@ -49,15 +48,9 @@ public class DefaultPoseConfigurationScreen
   protected Button standingPoseButton;
   protected Button swimmingPoseButton;
 
-  public DefaultPoseConfigurationScreen(DefaultPoseConfigurationMenu menu, Inventory inventory,
-      Component component) {
+  public DefaultPoseConfigurationScreen(
+      DefaultPoseConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
-  }
-
-  private Button menuButton(int left, int top, String label, Button.OnPress onPress) {
-    return Button
-        .builder(Component.translatable(Constants.TEXT_CONFIG_PREFIX + "pose." + label), onPress)
-        .bounds(left, top, 100, 20).build();
   }
 
   private void checkPoseButtonState(Pose pose, ModelPose modelPose) {
@@ -83,46 +76,94 @@ public class DefaultPoseConfigurationScreen
 
     // Pose Buttons
     int poseButtonLeft = this.contentLeftPos + 175;
-    this.standingPoseButton = this
-        .addRenderableWidget(menuButton(poseButtonLeft, this.contentTopPos, "standing", button -> {
-          NetworkMessageHandler.poseChange(uuid, Pose.STANDING);
-          this.checkPoseButtonState(Pose.STANDING, ModelPose.DEFAULT);
-        }));
-    this.crouchingPoseButton = this.addRenderableWidget(
-        menuButton(poseButtonLeft, this.contentTopPos + 24, "crouching", button -> {
-          NetworkMessageHandler.poseChange(uuid, Pose.CROUCHING);
-          this.checkPoseButtonState(Pose.CROUCHING, ModelPose.DEFAULT);
-        }));
-    this.dyingPoseButton = this.addRenderableWidget(
-        menuButton(poseButtonLeft, this.contentTopPos + 48, "dying", button -> {
-          NetworkMessageHandler.poseChange(uuid, Pose.DYING);
-          this.checkPoseButtonState(Pose.DYING, ModelPose.DEFAULT);
-        }));
-    this.fallFlyingPoseButton = this.addRenderableWidget(
-        menuButton(poseButtonLeft, this.contentTopPos + 72, "fall_flying", button -> {
-          NetworkMessageHandler.poseChange(uuid, Pose.FALL_FLYING);
-          this.checkPoseButtonState(Pose.FALL_FLYING, ModelPose.DEFAULT);
-        }));
-    this.longJumpPoseButton = this.addRenderableWidget(
-        menuButton(poseButtonLeft, this.contentTopPos + 96, "long_jumping", button -> {
-          NetworkMessageHandler.poseChange(uuid, Pose.LONG_JUMPING);
-          this.checkPoseButtonState(Pose.LONG_JUMPING, ModelPose.DEFAULT);
-        }));
-    this.sleepingPoseButton = this.addRenderableWidget(
-        menuButton(poseButtonLeft, this.contentTopPos + 120, "sleeping", button -> {
-          NetworkMessageHandler.poseChange(uuid, Pose.SLEEPING);
-          this.checkPoseButtonState(Pose.SLEEPING, ModelPose.DEFAULT);
-        }));
-    this.spinAttackPoseButton = this.addRenderableWidget(
-        menuButton(poseButtonLeft, this.contentTopPos + 144, "spin_attack", button -> {
-          NetworkMessageHandler.poseChange(uuid, Pose.SPIN_ATTACK);
-          this.checkPoseButtonState(Pose.SPIN_ATTACK, ModelPose.DEFAULT);
-        }));
-    this.swimmingPoseButton = this.addRenderableWidget(
-        menuButton(poseButtonLeft, this.contentTopPos + 168, "swimming", button -> {
-          NetworkMessageHandler.poseChange(uuid, Pose.SWIMMING);
-          this.checkPoseButtonState(Pose.SWIMMING, ModelPose.DEFAULT);
-        }));
+    this.standingPoseButton =
+        this.addRenderableWidget(
+            new TextButton(
+                poseButtonLeft,
+                this.contentTopPos,
+                BUTTON_WIDTH,
+                "pose.standing",
+                button -> {
+                  NetworkMessageHandler.poseChange(uuid, Pose.STANDING);
+                  this.checkPoseButtonState(Pose.STANDING, ModelPose.DEFAULT);
+                }));
+    this.crouchingPoseButton =
+        this.addRenderableWidget(
+            new TextButton(
+                poseButtonLeft,
+                this.contentTopPos + 24,
+                BUTTON_WIDTH,
+                "pose.crouching",
+                button -> {
+                  NetworkMessageHandler.poseChange(uuid, Pose.CROUCHING);
+                  this.checkPoseButtonState(Pose.CROUCHING, ModelPose.DEFAULT);
+                }));
+    this.dyingPoseButton =
+        this.addRenderableWidget(
+            new TextButton(
+                poseButtonLeft,
+                this.contentTopPos + 48,
+                BUTTON_WIDTH,
+                "pose.dying",
+                button -> {
+                  NetworkMessageHandler.poseChange(uuid, Pose.DYING);
+                  this.checkPoseButtonState(Pose.DYING, ModelPose.DEFAULT);
+                }));
+    this.fallFlyingPoseButton =
+        this.addRenderableWidget(
+            new TextButton(
+                poseButtonLeft,
+                this.contentTopPos + 72,
+                BUTTON_WIDTH,
+                "pose.fall_flying",
+                button -> {
+                  NetworkMessageHandler.poseChange(uuid, Pose.FALL_FLYING);
+                  this.checkPoseButtonState(Pose.FALL_FLYING, ModelPose.DEFAULT);
+                }));
+    this.longJumpPoseButton =
+        this.addRenderableWidget(
+            new TextButton(
+                poseButtonLeft,
+                this.contentTopPos + 96,
+                BUTTON_WIDTH,
+                "pose.long_jumping",
+                button -> {
+                  NetworkMessageHandler.poseChange(uuid, Pose.LONG_JUMPING);
+                  this.checkPoseButtonState(Pose.LONG_JUMPING, ModelPose.DEFAULT);
+                }));
+    this.sleepingPoseButton =
+        this.addRenderableWidget(
+            new TextButton(
+                poseButtonLeft,
+                this.contentTopPos + 120,
+                BUTTON_WIDTH,
+                "pose.sleeping",
+                button -> {
+                  NetworkMessageHandler.poseChange(uuid, Pose.SLEEPING);
+                  this.checkPoseButtonState(Pose.SLEEPING, ModelPose.DEFAULT);
+                }));
+    this.spinAttackPoseButton =
+        this.addRenderableWidget(
+            new TextButton(
+                poseButtonLeft,
+                this.contentTopPos + 144,
+                BUTTON_WIDTH,
+                "pose.spin_attack",
+                button -> {
+                  NetworkMessageHandler.poseChange(uuid, Pose.SPIN_ATTACK);
+                  this.checkPoseButtonState(Pose.SPIN_ATTACK, ModelPose.DEFAULT);
+                }));
+    this.swimmingPoseButton =
+        this.addRenderableWidget(
+            new TextButton(
+                poseButtonLeft,
+                this.contentTopPos + 168,
+                BUTTON_WIDTH,
+                "pose.swimming",
+                button -> {
+                  NetworkMessageHandler.poseChange(uuid, Pose.SWIMMING);
+                  this.checkPoseButtonState(Pose.SWIMMING, ModelPose.DEFAULT);
+                }));
 
     this.checkPoseButtonState(entity.getPose(), entity.getModelPose());
   }
@@ -138,8 +179,13 @@ public class DefaultPoseConfigurationScreen
     entity.setInvisible(false);
 
     // Render Entity
-    ScreenHelper.renderScaledEntityAvatar(this.contentLeftPos + 80, this.contentTopPos + 125, 36,
-        this.contentLeftPos + 80 - this.xMouse, this.contentTopPos + 65 - this.yMouse, this.entity);
+    ScreenHelper.renderScaledEntityAvatar(
+        this.contentLeftPos + 80,
+        this.contentTopPos + 125,
+        36,
+        this.contentLeftPos + 80 - this.xMouse,
+        this.contentTopPos + 65 - this.yMouse,
+        this.entity);
 
     // Restore entity information
     entity.setInvisible(entityInvisible);
@@ -150,15 +196,35 @@ public class DefaultPoseConfigurationScreen
     super.renderBg(poseStack, partialTicks, mouseX, mouseY);
 
     // Entity
-    fill(poseStack, this.contentLeftPos, this.contentTopPos, this.contentLeftPos + 169,
-        this.contentTopPos + 187, 0xff000000);
-    fill(poseStack, this.contentLeftPos + 1, this.contentTopPos + 1, this.contentLeftPos + 168,
-        this.contentTopPos + 186, 0xffaaaaaa);
+    fill(
+        poseStack,
+        this.contentLeftPos,
+        this.contentTopPos,
+        this.contentLeftPos + 169,
+        this.contentTopPos + 187,
+        0xff000000);
+    fill(
+        poseStack,
+        this.contentLeftPos + 1,
+        this.contentTopPos + 1,
+        this.contentLeftPos + 168,
+        this.contentTopPos + 186,
+        0xffaaaaaa);
 
     // Base
-    fill(poseStack, this.contentLeftPos + 1, this.contentTopPos + 125, this.contentLeftPos + 168,
-        this.contentTopPos + 186, 0xaa888888);
-    fill(poseStack, this.contentLeftPos + 1, this.contentTopPos + 125, this.contentLeftPos + 168,
-        this.contentTopPos + 130, 0xaa888888);
+    fill(
+        poseStack,
+        this.contentLeftPos + 1,
+        this.contentTopPos + 125,
+        this.contentLeftPos + 168,
+        this.contentTopPos + 186,
+        0xaa888888);
+    fill(
+        poseStack,
+        this.contentLeftPos + 1,
+        this.contentTopPos + 125,
+        this.contentLeftPos + 168,
+        this.contentTopPos + 130,
+        0xaa888888);
   }
 }

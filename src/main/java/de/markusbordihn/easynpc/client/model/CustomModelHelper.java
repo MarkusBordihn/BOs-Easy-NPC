@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,55 +19,55 @@
 
 package de.markusbordihn.easynpc.client.model;
 
+import de.markusbordihn.easynpc.data.CustomPosition;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.Rotations;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import de.markusbordihn.easynpc.data.CustomPosition;
 
 @OnlyIn(Dist.CLIENT)
 public class CustomModelHelper {
 
-  public static final void resetRotation(ModelPart modelPart) {
+  protected CustomModelHelper() {}
+
+  public static void resetRotation(ModelPart modelPart) {
     modelPart.xRot = 0.0F;
     modelPart.yRot = 0.0F;
     modelPart.zRot = 0.0F;
   }
 
-  public static final void setRotation(ModelPart modelPart, float x, float y, float z) {
+  public static void setRotation(ModelPart modelPart, float x, float y, float z) {
     modelPart.xRot = x;
     modelPart.yRot = y;
     modelPart.zRot = z;
   }
 
-  public static final void setRotation(ModelPart modelPart, Rotations rotations) {
+  public static void setRotation(ModelPart modelPart, Rotations rotations) {
     modelPart.xRot = rotations.getX();
     modelPart.yRot = rotations.getY();
     modelPart.zRot = rotations.getZ();
   }
 
-  public static final void resetPosition(ModelPart modelPart) {
+  public static void resetPosition(ModelPart modelPart) {
     modelPart.x = 0.0F;
     modelPart.y = 0.0F;
     modelPart.z = 0.0F;
   }
 
-  public static final void setPosition(ModelPart modelPart, float x, float y, float z) {
+  public static void setPosition(ModelPart modelPart, float x, float y, float z) {
     modelPart.x = x;
     modelPart.y = y;
     modelPart.z = z;
   }
 
-  public static final void setPosition(ModelPart modelPart, CustomPosition position) {
+  public static void setPosition(ModelPart modelPart, CustomPosition position) {
     modelPart.x = position.x();
     modelPart.y = position.y();
     modelPart.z = position.z();
   }
 
-  public static final void setPositionRotationVisibility(ModelPart modelPart,
-      CustomPosition position, Rotations rotations, boolean visible) {
+  public static void setPositionRotationVisibility(
+      ModelPart modelPart, CustomPosition position, Rotations rotations, boolean visible) {
     if (visible) {
       if (position != null) {
         modelPart.x += position.x();
@@ -84,15 +84,21 @@ public class CustomModelHelper {
     }
   }
 
-  public static final void setHeadPositionRotationVisibility(ModelPart modelPart,
-      CustomPosition position, Rotations rotations, boolean visible, float netHeadYaw,
+  public static void setHeadPositionRotationVisibility(
+      ModelPart modelPart,
+      CustomPosition position,
+      Rotations rotations,
+      boolean visible,
+      float netHeadYaw,
       float headPitch) {
     setPositionRotationVisibility(modelPart, position, rotations, visible);
-    if (visible && (rotations == null
-        || (rotations.getX() == 0.0f && rotations.getY() == 0.0f && rotations.getZ() == 0.0f))) {
+    if (visible
+        && (rotations == null
+            || (rotations.getX() == 0.0f
+                && rotations.getY() == 0.0f
+                && rotations.getZ() == 0.0f))) {
       modelPart.yRot = netHeadYaw * ((float) Math.PI / 180F);
       modelPart.xRot = headPitch * ((float) Math.PI / 180F);
     }
   }
-
 }

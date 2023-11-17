@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,49 +19,88 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import de.markusbordihn.easynpc.Constants;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractSliderButton;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import de.markusbordihn.easynpc.Constants;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 public class SliderButton extends AbstractSliderButton {
 
+  public static final int DEFAULT_HEIGHT = 16;
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  public enum Type {
-    DEGREE, POSITION, SCALE, UNKNOWN
-  }
-
   protected final SliderButton.OnChange onChange;
-
+  protected final float maxValue;
+  private final float minValue;
+  private final float valueFraction;
   private float initValue;
-  private float minValue;
   private Type type = Type.UNKNOWN;
-  protected float maxValue;
-  private float valueFraction;
   private float targetValue;
   private float roundFactor = 100.0f;
 
-  public SliderButton(int x, int y, int width, int height, String name, float initValue, Type type,
+  public SliderButton(
+      int x,
+      int y,
+      int width,
+      String name,
+      float initValue,
+      Type type,
       SliderButton.OnChange onChange) {
-    this(x, y, width, height, Component.literal(name), initValue, getMinValue(type),
-        getMaxValue(type), onChange, type);
-  }
-
-  public SliderButton(int x, int y, int width, int height, String name, float initValue,
-      float minValue, float maxValue, SliderButton.OnChange onChange, Type type) {
-    this(x, y, width, height, Component.literal(name), initValue, minValue, maxValue, onChange,
+    this(
+        x,
+        y,
+        width,
+        DEFAULT_HEIGHT,
+        Component.literal(name),
+        initValue,
+        getMinValue(type),
+        getMaxValue(type),
+        onChange,
         type);
   }
 
-  public SliderButton(int x, int y, int width, int height, Component name, float initValue,
-      float minValue, float maxValue, SliderButton.OnChange onChange, Type type) {
+  public SliderButton(
+      int x,
+      int y,
+      int width,
+      int height,
+      String name,
+      float initValue,
+      Type type,
+      SliderButton.OnChange onChange) {
+    this(
+        x,
+        y,
+        width,
+        height,
+        Component.literal(name),
+        initValue,
+        getMinValue(type),
+        getMaxValue(type),
+        onChange,
+        type);
+  }
+
+  public SliderButton(
+      int x,
+      int y,
+      int width,
+      int height,
+      Component name,
+      float initValue,
+      float minValue,
+      float maxValue,
+      SliderButton.OnChange onChange,
+      Type type) {
     super(x, y, width, height, name, initValue);
     this.initValue = initValue;
     this.minValue = minValue;
@@ -76,6 +115,24 @@ public class SliderButton extends AbstractSliderButton {
     this.type = type;
     this.updateTargetValue();
     this.updateMessage();
+  }
+
+  private static float getMinValue(Type type) {
+    return switch (type) {
+      case DEGREE -> -180.0f;
+      case SCALE -> 0.1f;
+      case POSITION -> -24.0f;
+      default -> -100;
+    };
+  }
+
+  private static float getMaxValue(Type type) {
+    return switch (type) {
+      case DEGREE -> 180.0f;
+      case SCALE -> 10.0f;
+      case POSITION -> 24.0f;
+      default -> 100;
+    };
   }
 
   public void setDefaultValue(float value) {
@@ -102,11 +159,6 @@ public class SliderButton extends AbstractSliderButton {
         Math.round((this.minValue + (this.valueFraction * this.value)) * roundFactor) / roundFactor;
   }
 
-  @OnlyIn(Dist.CLIENT)
-  public interface OnChange {
-    void onChange(SliderButton sliderButton);
-  }
-
   @Override
   protected void updateMessage() {
     switch (this.type) {
@@ -128,30 +180,107 @@ public class SliderButton extends AbstractSliderButton {
     this.onChange.onChange(this);
   }
 
-  public static float getMinValue(Type type) {
-    switch (type) {
-      case DEGREE:
-        return -180.0f;
-      case SCALE:
-        return 0.1f;
-      case POSITION:
-        return -24.0f;
-      default:
-        return -100;
-    }
+  @Override
+  public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+    this.renderButton(poseStack, mouseX, mouseY, partialTicks);
   }
 
-  public static float getMaxValue(Type type) {
-    switch (type) {
-      case DEGREE:
-        return 180.0f;
-      case SCALE:
-        return 10.0f;
-      case POSITION:
-        return 24.0f;
-      default:
-        return 100;
-    }
+  protected void renderBg(@NotNull PoseStack poseStack) {
+    RenderSystem.setShaderTexture(0, SLIDER_LOCATION);
+    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+    int i = this.isHoveredOrFocused() ? 60 : 40;
+
+    // Slider: Top Part
+    blit(
+        poseStack,
+        this.getX() + (int) (this.value * (double) (this.width - 8)),
+        this.getY(),
+        0,
+        i,
+        4,
+        this.height);
+    blit(
+        poseStack,
+        this.getX() + (int) (this.value * (double) (this.width - 8)) + 4,
+        this.getY(),
+        196,
+        i,
+        4,
+        this.height);
+
+    // Slider: Bottom Part (last only 4 pixel from the bottom)
+    blit(
+        poseStack,
+        this.getX() + (int) (this.value * (double) (this.width - 8)),
+        this.getY() + this.height - 4,
+        0,
+        i + 20 - 4,
+        4,
+        4);
+    blit(
+        poseStack,
+        this.getX() + (int) (this.value * (double) (this.width - 8)) + 4,
+        this.getY() + this.height - 4,
+        196,
+        i + 20 - 4,
+        4,
+        4);
   }
 
+  public void renderButton(PoseStack poseStack, int left, int top, float partialTicks) {
+    Minecraft minecraft = Minecraft.getInstance();
+    Font font = minecraft.font;
+    RenderSystem.setShader(GameRenderer::getPositionTexShader);
+    RenderSystem.setShaderTexture(0, SLIDER_LOCATION);
+    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
+    int i = this.isHoveredOrFocused() ? 20 : 0;
+    RenderSystem.enableBlend();
+    RenderSystem.defaultBlendFunc();
+    RenderSystem.enableDepthTest();
+
+    // Top Part
+    blit(poseStack, this.getX(), this.getY(), 0, i, this.width / 2, this.height);
+    blit(
+        poseStack,
+        this.getX() + this.width / 2,
+        this.getY(),
+        200 - this.width / 2,
+        i,
+        this.width / 2,
+        this.height);
+
+    // Bottom Part (last only 4 pixel from the bottom)
+    blit(poseStack, this.getX(), this.getY() + this.height - 4, 0, i + 20 - 4, this.width / 2, 4);
+    blit(
+        poseStack,
+        this.getX() + this.width / 2,
+        this.getY() + this.height - 4,
+        200 - this.width / 2,
+        i + 20 - 4,
+        this.width / 2,
+        4);
+
+    this.renderBg(poseStack);
+    int j = getFGColor();
+    drawCenteredString(
+        poseStack,
+        font,
+        this.getMessage(),
+        this.getX() + this.width / 2,
+        this.getY() + (this.height - 8) / 2,
+        j | Mth.ceil(this.alpha * 255.0F) << 24);
+  }
+
+  public enum Type {
+    DEGREE,
+    POSITION,
+    SCALE,
+    UNKNOWN
+  }
+
+  @OnlyIn(Dist.CLIENT)
+  public interface OnChange {
+
+    void onChange(SliderButton sliderButton);
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,27 +19,32 @@
 
 package de.markusbordihn.easynpc.entity.ai.goal;
 
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-
 public class CustomLookAtPlayerGoal extends LookAtPlayerGoal {
 
-  EasyNPCEntity easyNPCEntity;
+  private final EasyNPCEntity easyNPCEntity;
 
-  public CustomLookAtPlayerGoal(EasyNPCEntity easyNPCEntity,
-      Class<? extends LivingEntity> lookAtType, float lookDistance) {
+  public CustomLookAtPlayerGoal(
+      EasyNPCEntity easyNPCEntity, Class<? extends LivingEntity> lookAtType, float lookDistance) {
     this(easyNPCEntity, lookAtType, lookDistance, 0.02F);
   }
 
-  public CustomLookAtPlayerGoal(EasyNPCEntity easyNPCEntity,
-      Class<? extends LivingEntity> lookAtType, float lookDistance, float probability) {
+  public CustomLookAtPlayerGoal(
+      EasyNPCEntity easyNPCEntity,
+      Class<? extends LivingEntity> lookAtType,
+      float lookDistance,
+      float probability) {
     this(easyNPCEntity, lookAtType, lookDistance, probability, false);
   }
 
-  public CustomLookAtPlayerGoal(EasyNPCEntity easyNPCEntity,
-      Class<? extends LivingEntity> lookAtType, float lookDistance, float probability,
+  public CustomLookAtPlayerGoal(
+      EasyNPCEntity easyNPCEntity,
+      Class<? extends LivingEntity> lookAtType,
+      float lookDistance,
+      float probability,
       boolean onlyHorizontal) {
     super(easyNPCEntity, lookAtType, lookDistance, probability, onlyHorizontal);
     this.easyNPCEntity = easyNPCEntity;

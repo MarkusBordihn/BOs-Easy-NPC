@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -21,6 +21,12 @@ package de.markusbordihn.easynpc.data.attribute;
 
 public enum EntityAttribute {
   // @formatter:off
-  FREEFALL;
+  FREEFALL,
+  IS_ATTACKABLE,
+  IS_PUSHABLE,
+  CAN_FLOAT,
+  CAN_CLOSE_DOOR,
+  CAN_OPEN_DOOR,
+  CAN_PASS_DOOR,
   // @formatter:on
 }

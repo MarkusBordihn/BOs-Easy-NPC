@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -26,6 +26,7 @@ public enum SkinType {
   PLAYER_SKIN,
   INSECURE_REMOTE_URL,
   SECURE_REMOTE_URL;
+
   // @formatter:on
 
   public static SkinType get(String skinType) {
