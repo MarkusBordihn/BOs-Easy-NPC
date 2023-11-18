@@ -26,11 +26,10 @@ import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
-import java.util.function.Supplier;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Pose;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class MessageModelPositionChange extends NetworkMessage {
 
@@ -66,14 +65,13 @@ public class MessageModelPositionChange extends NetworkMessage {
   }
 
   public static void handle(
-      MessageModelPositionChange message, Supplier<NetworkEvent.Context> contextSupplier) {
-    NetworkEvent.Context context = contextSupplier.get();
+      MessageModelPositionChange message, CustomPayloadEvent.Context context) {
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
   public static void handlePacket(
-      MessageModelPositionChange message, NetworkEvent.Context context) {
+      MessageModelPositionChange message, CustomPayloadEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
     if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {

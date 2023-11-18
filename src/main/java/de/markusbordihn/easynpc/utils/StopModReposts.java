@@ -41,7 +41,7 @@ public class StopModReposts {
   private static final boolean isDevEnvironment =
       version.isPresent() && "MOD_DEV".equals(version.get());
 
-  private static final String modFileFormatRegEx = Constants.MOD_ID + "_1.20.1-\\d+.\\d+.\\d+.jar";
+  private static final String modFileFormatRegEx = Constants.MOD_ID + "_1.20.2-\\d+.\\d+.\\d+.jar";
 
   private static final Pattern expectedFilePattern = Pattern.compile(modFileFormatRegEx);
 

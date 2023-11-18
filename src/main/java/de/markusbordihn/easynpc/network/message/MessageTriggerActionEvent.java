@@ -26,10 +26,9 @@ import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Supplier;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class MessageTriggerActionEvent extends NetworkMessage {
 
@@ -49,14 +48,13 @@ public class MessageTriggerActionEvent extends NetworkMessage {
     buffer.writeEnum(message.getActionType());
   }
 
-  public static void handle(
-      MessageTriggerActionEvent message, Supplier<NetworkEvent.Context> contextSupplier) {
-    NetworkEvent.Context context = contextSupplier.get();
+  public static void handle(MessageTriggerActionEvent message, CustomPayloadEvent.Context context) {
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessageTriggerActionEvent message, NetworkEvent.Context context) {
+  public static void handlePacket(
+      MessageTriggerActionEvent message, CustomPayloadEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
     if (serverPlayer == null || uuid == null) {

@@ -25,10 +25,9 @@ import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
-import java.util.function.Supplier;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,14 +51,13 @@ public class MessageSaveDialogSet extends NetworkMessage {
     buffer.writeNbt(message.getDialogData().createTag());
   }
 
-  public static void handle(
-      MessageSaveDialogSet message, Supplier<NetworkEvent.Context> contextSupplier) {
-    NetworkEvent.Context context = contextSupplier.get();
+  public static void handle(MessageSaveDialogSet message, CustomPayloadEvent.Context context) {
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessageSaveDialogSet message, NetworkEvent.Context context) {
+  public static void handlePacket(
+      MessageSaveDialogSet message, CustomPayloadEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
     DialogDataSet dialogDataSet = message.getDialogData();

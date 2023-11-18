@@ -233,13 +233,14 @@ public class DefaultPositionConfigurationScreen
   }
 
   @Override
-  public void renderBackground(GuiGraphics guiGraphics) {
+  public void renderBackground(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     // Use a more transparent background than the default.
     if (this.clientLevel != null) {
       guiGraphics.fillGradient(0, 0, this.width, this.height, 0x55000000, 0x55000000);
       net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(
           new net.minecraftforge.client.event.ScreenEvent.BackgroundRendered(this, guiGraphics));
     }
+    this.renderBg(guiGraphics, partialTicks, x, y);
   }
 
   @Override

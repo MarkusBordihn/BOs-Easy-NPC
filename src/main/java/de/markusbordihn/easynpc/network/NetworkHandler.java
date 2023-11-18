@@ -61,9 +61,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.ChannelBuilder;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.network.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -72,13 +73,11 @@ public class NetworkHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final String PROTOCOL_VERSION = "15";
-  public static final SimpleChannel INSTANCE =
-      NetworkRegistry.newSimpleChannel(
-          new ResourceLocation(Constants.MOD_ID, "network"),
-          () -> PROTOCOL_VERSION,
-          PROTOCOL_VERSION::equals,
-          PROTOCOL_VERSION::equals);
+  private static final int PROTOCOL_VERSION = 15;
+  private static final SimpleChannel SIMPLE_CHANNEL =
+      ChannelBuilder.named(new ResourceLocation(Constants.MOD_ID, "network"))
+          .networkProtocolVersion(PROTOCOL_VERSION)
+          .simpleChannel();
 
   private static int id = 0;
 
@@ -87,313 +86,322 @@ public class NetworkHandler {
     log.info(
         "{} Network Handler for {} with version {} ...",
         Constants.LOG_REGISTER_PREFIX,
-        INSTANCE,
+        SIMPLE_CHANNEL,
         PROTOCOL_VERSION);
 
     event.enqueueWork(
         () -> {
 
           // Action Change: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageActionEventChange.class,
-              MessageActionEventChange::encode,
-              MessageActionEventChange::decode,
-              MessageActionEventChange::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessageActionEventChange.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageActionEventChange::encode)
+              .decoder(MessageActionEventChange::decode)
+              .consumerNetworkThread(MessageActionEventChange::handle)
+              .add();
 
           // Advanced Trading: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageAdvancedTrading.class,
-              MessageAdvancedTrading::encode,
-              MessageAdvancedTrading::decode,
-              MessageAdvancedTrading::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessageAdvancedTrading.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageAdvancedTrading::encode)
+              .decoder(MessageAdvancedTrading::decode)
+              .consumerNetworkThread(MessageAdvancedTrading::handle)
+              .add();
 
           // Basic Trading: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageBasicTrading.class,
-              MessageBasicTrading::encode,
-              MessageBasicTrading::decode,
-              MessageBasicTrading::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessageBasicTrading.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageBasicTrading::encode)
+              .decoder(MessageBasicTrading::decode)
+              .consumerNetworkThread(MessageBasicTrading::handle)
+              .add();
 
           // Dialog Button Action: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageDialogButtonAction.class,
-              MessageDialogButtonAction::encode,
-              MessageDialogButtonAction::decode,
-              MessageDialogButtonAction::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(
+                  MessageDialogButtonAction.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageDialogButtonAction::encode)
+              .decoder(MessageDialogButtonAction::decode)
+              .consumerNetworkThread(MessageDialogButtonAction::handle)
+              .add();
 
           // Entity Attribute Change: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageEntityAttributeChange.class,
-              MessageEntityAttributeChange::encode,
-              MessageEntityAttributeChange::decode,
-              MessageEntityAttributeChange::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(
+                  MessageEntityAttributeChange.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageEntityAttributeChange::encode)
+              .decoder(MessageEntityAttributeChange::decode)
+              .consumerNetworkThread(MessageEntityAttributeChange::handle)
+              .add();
 
           // Model Local Rotation Change: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageModelLockRotationChange.class,
-              MessageModelLockRotationChange::encode,
-              MessageModelLockRotationChange::decode,
-              MessageModelLockRotationChange::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(
+                  MessageModelLockRotationChange.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageModelLockRotationChange::encode)
+              .decoder(MessageModelLockRotationChange::decode)
+              .consumerNetworkThread(MessageModelLockRotationChange::handle)
+              .add();
 
           // Model Pose Change: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageModelPoseChange.class,
-              MessageModelPoseChange::encode,
-              MessageModelPoseChange::decode,
-              MessageModelPoseChange::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessageModelPoseChange.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageModelPoseChange::encode)
+              .decoder(MessageModelPoseChange::decode)
+              .consumerNetworkThread(MessageModelPoseChange::handle)
+              .add();
 
           // Model Position Change: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageModelPositionChange.class,
-              MessageModelPositionChange::encode,
-              MessageModelPositionChange::decode,
-              MessageModelPositionChange::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(
+                  MessageModelPositionChange.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageModelPositionChange::encode)
+              .decoder(MessageModelPositionChange::decode)
+              .consumerNetworkThread(MessageModelPositionChange::handle)
+              .add();
 
           // Model Visibility Change: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageModelVisibilityChange.class,
-              MessageModelVisibilityChange::encode,
-              MessageModelVisibilityChange::decode,
-              MessageModelVisibilityChange::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(
+                  MessageModelVisibilityChange.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageModelVisibilityChange::encode)
+              .decoder(MessageModelVisibilityChange::decode)
+              .consumerNetworkThread(MessageModelVisibilityChange::handle)
+              .add();
 
           // Name Change: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageNameChange.class,
-              MessageNameChange::encode,
-              MessageNameChange::decode,
-              MessageNameChange::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessageNameChange.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageNameChange::encode)
+              .decoder(MessageNameChange::decode)
+              .consumerNetworkThread(MessageNameChange::handle)
+              .add();
 
           // Objective Add: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageObjectiveAdd.class,
-              MessageObjectiveAdd::encode,
-              MessageObjectiveAdd::decode,
-              MessageObjectiveAdd::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessageObjectiveAdd.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageObjectiveAdd::encode)
+              .decoder(MessageObjectiveAdd::decode)
+              .consumerNetworkThread(MessageObjectiveAdd::handle)
+              .add();
 
           // Objective Add: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageObjectiveRemove.class,
-              MessageObjectiveRemove::encode,
-              MessageObjectiveRemove::decode,
-              MessageObjectiveRemove::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessageObjectiveRemove.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageObjectiveRemove::encode)
+              .decoder(MessageObjectiveRemove::decode)
+              .consumerNetworkThread(MessageObjectiveRemove::handle)
+              .add();
 
           // Open Configuration Screen: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageOpenConfiguration.class,
-              MessageOpenConfiguration::encode,
-              MessageOpenConfiguration::decode,
-              MessageOpenConfiguration::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessageOpenConfiguration.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageOpenConfiguration::encode)
+              .decoder(MessageOpenConfiguration::decode)
+              .consumerNetworkThread(MessageOpenConfiguration::handle)
+              .add();
 
           // Open Dialog Screen: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageOpenDialog.class,
-              MessageOpenDialog::encode,
-              MessageOpenDialog::decode,
-              MessageOpenDialog::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessageOpenDialog.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageOpenDialog::encode)
+              .decoder(MessageOpenDialog::decode)
+              .consumerNetworkThread(MessageOpenDialog::handle)
+              .add();
 
           // Open Dialog Editor Screen: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageOpenDialogEditor.class,
-              MessageOpenDialogEditor::encode,
-              MessageOpenDialogEditor::decode,
-              MessageOpenDialogEditor::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessageOpenDialogEditor.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageOpenDialogEditor::encode)
+              .decoder(MessageOpenDialogEditor::decode)
+              .consumerNetworkThread(MessageOpenDialogEditor::handle)
+              .add();
 
           // Open Dialog Button Editor Screen: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageOpenDialogButtonEditor.class,
-              MessageOpenDialogButtonEditor::encode,
-              MessageOpenDialogButtonEditor::decode,
-              MessageOpenDialogButtonEditor::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(
+                  MessageOpenDialogButtonEditor.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageOpenDialogButtonEditor::encode)
+              .decoder(MessageOpenDialogButtonEditor::decode)
+              .consumerNetworkThread(MessageOpenDialogButtonEditor::handle)
+              .add();
 
           // Pose Change: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessagePoseChange.class,
-              MessagePoseChange::encode,
-              MessagePoseChange::decode,
-              MessagePoseChange::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessagePoseChange.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessagePoseChange::encode)
+              .decoder(MessagePoseChange::decode)
+              .consumerNetworkThread(MessagePoseChange::handle)
+              .add();
 
           // Position Change: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessagePositionChange.class,
-              MessagePositionChange::encode,
-              MessagePositionChange::decode,
-              MessagePositionChange::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessagePositionChange.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessagePositionChange::encode)
+              .decoder(MessagePositionChange::decode)
+              .consumerNetworkThread(MessagePositionChange::handle)
+              .add();
 
           // Export Preset: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessagePresetExport.class,
-              MessagePresetExport::encode,
-              MessagePresetExport::decode,
-              MessagePresetExport::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessagePresetExport.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessagePresetExport::encode)
+              .decoder(MessagePresetExport::decode)
+              .consumerNetworkThread(MessagePresetExport::handle)
+              .add();
 
           // Export Preset: Server -> Client
-          INSTANCE.registerMessage(
-              id++,
-              MessagePresetExportClient.class,
-              MessagePresetExportClient::encode,
-              MessagePresetExportClient::decode,
-              MessagePresetExportClient::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(
+                  MessagePresetExportClient.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+              .encoder(MessagePresetExportClient::encode)
+              .decoder(MessagePresetExportClient::decode)
+              .consumerNetworkThread(MessagePresetExportClient::handle)
+              .add();
 
           // Export Preset World: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessagePresetExportWorld.class,
-              MessagePresetExportWorld::encode,
-              MessagePresetExportWorld::decode,
-              MessagePresetExportWorld::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessagePresetExportWorld.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessagePresetExportWorld::encode)
+              .decoder(MessagePresetExportWorld::decode)
+              .consumerNetworkThread(MessagePresetExportWorld::handle)
+              .add();
 
           // Import Preset: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessagePresetImport.class,
-              MessagePresetImport::encode,
-              MessagePresetImport::decode,
-              MessagePresetImport::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessagePresetImport.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessagePresetImport::encode)
+              .decoder(MessagePresetImport::decode)
+              .consumerNetworkThread(MessagePresetImport::handle)
+              .add();
 
           // Import Preset World: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessagePresetImportWorld.class,
-              MessagePresetImportWorld::encode,
-              MessagePresetImportWorld::decode,
-              MessagePresetImportWorld::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessagePresetImportWorld.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessagePresetImportWorld::encode)
+              .decoder(MessagePresetImportWorld::decode)
+              .consumerNetworkThread(MessagePresetImportWorld::handle)
+              .add();
 
           // Profession Change: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageProfessionChange.class,
-              MessageProfessionChange::encode,
-              MessageProfessionChange::decode,
-              MessageProfessionChange::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessageProfessionChange.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageProfessionChange::encode)
+              .decoder(MessageProfessionChange::decode)
+              .consumerNetworkThread(MessageProfessionChange::handle)
+              .add();
 
           // Remove Dialog: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageRemoveDialog.class,
-              MessageRemoveDialog::encode,
-              MessageRemoveDialog::decode,
-              MessageRemoveDialog::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessageRemoveDialog.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageRemoveDialog::encode)
+              .decoder(MessageRemoveDialog::decode)
+              .consumerNetworkThread(MessageRemoveDialog::handle)
+              .add();
 
           // Remove Dialog Button: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageRemoveDialogButton.class,
-              MessageRemoveDialogButton::encode,
-              MessageRemoveDialogButton::decode,
-              MessageRemoveDialogButton::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(
+                  MessageRemoveDialogButton.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageRemoveDialogButton::encode)
+              .decoder(MessageRemoveDialogButton::decode)
+              .consumerNetworkThread(MessageRemoveDialogButton::handle)
+              .add();
 
           // Remove NPC: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageRemoveNPC.class,
-              MessageRemoveNPC::encode,
-              MessageRemoveNPC::decode,
-              MessageRemoveNPC::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessageRemoveNPC.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageRemoveNPC::encode)
+              .decoder(MessageRemoveNPC::decode)
+              .consumerNetworkThread(MessageRemoveNPC::handle)
+              .add();
 
           // Respawn NPC: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageRespawnNPC.class,
-              MessageRespawnNPC::encode,
-              MessageRespawnNPC::decode,
-              MessageRespawnNPC::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessageRespawnNPC.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageRespawnNPC::encode)
+              .decoder(MessageRespawnNPC::decode)
+              .consumerNetworkThread(MessageRespawnNPC::handle)
+              .add();
 
           // Rotation Change: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageRotationChange.class,
-              MessageRotationChange::encode,
-              MessageRotationChange::decode,
-              MessageRotationChange::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessageRotationChange.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageRotationChange::encode)
+              .decoder(MessageRotationChange::decode)
+              .consumerNetworkThread(MessageRotationChange::handle)
+              .add();
 
           // Save Dialog: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageSaveDialog.class,
-              MessageSaveDialog::encode,
-              MessageSaveDialog::decode,
-              MessageSaveDialog::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessageSaveDialog.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageSaveDialog::encode)
+              .decoder(MessageSaveDialog::decode)
+              .consumerNetworkThread(MessageSaveDialog::handle)
+              .add();
 
           // Save Dialog: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageSaveDialogSet.class,
-              MessageSaveDialogSet::encode,
-              MessageSaveDialogSet::decode,
-              MessageSaveDialogSet::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessageSaveDialogSet.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageSaveDialogSet::encode)
+              .decoder(MessageSaveDialogSet::decode)
+              .consumerNetworkThread(MessageSaveDialogSet::handle)
+              .add();
 
           // Save Dialog Button: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageSaveDialogButton.class,
-              MessageSaveDialogButton::encode,
-              MessageSaveDialogButton::decode,
-              MessageSaveDialogButton::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessageSaveDialogButton.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageSaveDialogButton::encode)
+              .decoder(MessageSaveDialogButton::decode)
+              .consumerNetworkThread(MessageSaveDialogButton::handle)
+              .add();
 
           // Scale Change: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageScaleChange.class,
-              MessageScaleChange::encode,
-              MessageScaleChange::decode,
-              MessageScaleChange::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessageScaleChange.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageScaleChange::encode)
+              .decoder(MessageScaleChange::decode)
+              .consumerNetworkThread(MessageScaleChange::handle)
+              .add();
 
           // Skin Change: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageSkinChange.class,
-              MessageSkinChange::encode,
-              MessageSkinChange::decode,
-              MessageSkinChange::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessageSkinChange.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageSkinChange::encode)
+              .decoder(MessageSkinChange::decode)
+              .consumerNetworkThread(MessageSkinChange::handle)
+              .add();
 
           // Trading Type: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageTradingTypeChange.class,
-              MessageTradingTypeChange::encode,
-              MessageTradingTypeChange::decode,
-              MessageTradingTypeChange::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessageTradingTypeChange.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageTradingTypeChange::encode)
+              .decoder(MessageTradingTypeChange::decode)
+              .consumerNetworkThread(MessageTradingTypeChange::handle)
+              .add();
 
           // Action Trigger: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageTriggerActionEvent.class,
-              MessageTriggerActionEvent::encode,
-              MessageTriggerActionEvent::decode,
-              MessageTriggerActionEvent::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(
+                  MessageTriggerActionEvent.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageTriggerActionEvent::encode)
+              .decoder(MessageTriggerActionEvent::decode)
+              .consumerNetworkThread(MessageTriggerActionEvent::handle)
+              .add();
 
           // Variant Change: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageVariantChange.class,
-              MessageVariantChange::encode,
-              MessageVariantChange::decode,
-              MessageVariantChange::handle);
+          SIMPLE_CHANNEL
+              .messageBuilder(MessageVariantChange.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageVariantChange::encode)
+              .decoder(MessageVariantChange::decode)
+              .consumerNetworkThread(MessageVariantChange::handle)
+              .add();
         });
   }
 
   public static <M> void sendToServer(M message) {
     try {
-      INSTANCE.sendToServer(message);
+      SIMPLE_CHANNEL.send(message, PacketDistributor.SERVER.noArg());
     } catch (Exception e) {
       log.error("Failed to send {} to server, got error: {}", message, e.getMessage());
     }
@@ -401,7 +409,7 @@ public class NetworkHandler {
 
   public static <M> void sendToPlayer(M message, ServerPlayer serverPlayer) {
     try {
-      INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), message);
+      SIMPLE_CHANNEL.send(message, PacketDistributor.PLAYER.with(serverPlayer));
     } catch (Exception e) {
       log.error(
           "Failed to send {} to player {}, got error: {}",

@@ -25,13 +25,12 @@ import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
-import java.util.function.Supplier;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent;
 
 public class MessagePresetExportClient extends NetworkMessage {
 
@@ -66,9 +65,7 @@ public class MessagePresetExportClient extends NetworkMessage {
     buffer.writeNbt(message.getData());
   }
 
-  public static void handle(
-      MessagePresetExportClient message, Supplier<NetworkEvent.Context> contextSupplier) {
-    NetworkEvent.Context context = contextSupplier.get();
+  public static void handle(MessagePresetExportClient message, CustomPayloadEvent.Context context) {
     context.enqueueWork(
         () -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> handlePacket(message)));
     context.setPacketHandled(true);

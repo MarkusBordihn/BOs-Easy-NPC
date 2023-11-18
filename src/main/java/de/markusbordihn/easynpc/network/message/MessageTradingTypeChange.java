@@ -24,10 +24,9 @@ import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
-import java.util.function.Supplier;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class MessageTradingTypeChange extends NetworkMessage {
 
@@ -47,14 +46,13 @@ public class MessageTradingTypeChange extends NetworkMessage {
     buffer.writeEnum(message.getTradingType());
   }
 
-  public static void handle(
-      MessageTradingTypeChange message, Supplier<NetworkEvent.Context> contextSupplier) {
-    NetworkEvent.Context context = contextSupplier.get();
+  public static void handle(MessageTradingTypeChange message, CustomPayloadEvent.Context context) {
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessageTradingTypeChange message, NetworkEvent.Context context) {
+  public static void handlePacket(
+      MessageTradingTypeChange message, CustomPayloadEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     TradingType tradingType = message.getTradingType();
     UUID uuid = message.getUUID();

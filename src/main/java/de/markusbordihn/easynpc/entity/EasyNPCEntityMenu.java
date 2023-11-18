@@ -64,7 +64,6 @@ import java.util.List;
 import java.util.UUID;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkHooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -82,8 +81,7 @@ public class EasyNPCEntityMenu {
     UUID uuid = entity.getUUID();
     ActionEventSet actionDataSet = entity.getActionEventSet();
     DialogDataSet dialogDataSet = entity.getDialogDataSet();
-    NetworkHooks.openScreen(
-        serverPlayer,
+    serverPlayer.openMenu(
         DialogMenu.getMenuProvider(uuid, entity, actionDataSet, dialogDataSet, dialogId, pageIndex),
         buffer -> {
           buffer.writeUUID(uuid);
@@ -102,8 +100,7 @@ public class EasyNPCEntityMenu {
       int pageIndex) {
     UUID uuid = entity.getUUID();
     DialogDataSet dialogDataSet = entity.getDialogDataSet();
-    NetworkHooks.openScreen(
-        serverPlayer,
+    serverPlayer.openMenu(
         DialogEditorMenu.getMenuProvider(
             uuid, entity, dialogDataSet, dialogId, formerConfigurationType, pageIndex),
         buffer -> {
@@ -124,8 +121,7 @@ public class EasyNPCEntityMenu {
       int pageIndex) {
     UUID uuid = entity.getUUID();
     DialogDataSet dialogDataSet = entity.getDialogDataSet();
-    NetworkHooks.openScreen(
-        serverPlayer,
+    serverPlayer.openMenu(
         DialogButtonEditorMenu.getMenuProvider(
             uuid,
             entity,
@@ -153,8 +149,7 @@ public class EasyNPCEntityMenu {
         COMMON.equipmentConfigurationAllowInCreative.get(),
         COMMON.equipmentConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           EquipmentConfigurationMenu.getMenuProvider(uuid, entity),
           buffer -> buffer.writeUUID(uuid));
     }
@@ -170,8 +165,7 @@ public class EasyNPCEntityMenu {
         COMMON.basicActionConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
       ActionEventSet actionDataSet = entity.getActionEventSet();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           BasicActionConfigurationMenu.getMenuProvider(uuid, entity, actionDataSet),
           buffer -> {
             buffer.writeUUID(uuid);
@@ -190,8 +184,7 @@ public class EasyNPCEntityMenu {
         COMMON.dialogActionConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
       ActionEventSet actionDataSet = entity.getActionEventSet();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           DialogActionConfigurationMenu.getMenuProvider(uuid, entity, actionDataSet),
           buffer -> {
             buffer.writeUUID(uuid);
@@ -210,8 +203,7 @@ public class EasyNPCEntityMenu {
         COMMON.distanceActionConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
       ActionEventSet actionDataSet = entity.getActionEventSet();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           DistanceActionConfigurationMenu.getMenuProvider(uuid, entity, actionDataSet),
           buffer -> {
             buffer.writeUUID(uuid);
@@ -230,8 +222,7 @@ public class EasyNPCEntityMenu {
         COMMON.basicDialogConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
       DialogDataSet dialogDataSet = entity.getDialogDataSet();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           BasicDialogConfigurationMenu.getMenuProvider(uuid, entity, dialogDataSet),
           buffer -> {
             buffer.writeUUID(uuid);
@@ -250,8 +241,7 @@ public class EasyNPCEntityMenu {
         COMMON.yesNoDialogConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
       DialogDataSet dialogDataSet = entity.getDialogDataSet();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           YesNoDialogConfigurationMenu.getMenuProvider(uuid, entity, dialogDataSet),
           buffer -> {
             buffer.writeUUID(uuid);
@@ -270,8 +260,7 @@ public class EasyNPCEntityMenu {
         COMMON.advancedDialogConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
       DialogDataSet dialogDataSet = entity.getDialogDataSet();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           AdvancedDialogConfigurationMenu.getMenuProvider(uuid, entity, dialogDataSet),
           buffer -> {
             buffer.writeUUID(uuid);
@@ -288,10 +277,8 @@ public class EasyNPCEntityMenu {
         COMMON.mainConfigurationAllowInCreative.get(),
         COMMON.mainConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
-      NetworkHooks.openScreen(
-          serverPlayer,
-          MainConfigurationMenu.getMenuProvider(uuid, entity),
-          buffer -> buffer.writeUUID(uuid));
+      serverPlayer.openMenu(
+          MainConfigurationMenu.getMenuProvider(uuid, entity), buffer -> buffer.writeUUID(uuid));
     }
   }
 
@@ -304,8 +291,7 @@ public class EasyNPCEntityMenu {
         COMMON.advancedPoseConfigurationAllowInCreative.get(),
         COMMON.advancedPoseConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           AdvancedPoseConfigurationMenu.getMenuProvider(uuid, entity),
           buffer -> buffer.writeUUID(uuid));
     }
@@ -320,8 +306,7 @@ public class EasyNPCEntityMenu {
         COMMON.customPoseConfigurationAllowInCreative.get(),
         COMMON.customPoseConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           CustomPoseConfigurationMenu.getMenuProvider(uuid, entity),
           buffer -> buffer.writeUUID(uuid));
     }
@@ -336,8 +321,7 @@ public class EasyNPCEntityMenu {
         COMMON.defaultPoseConfigurationAllowInCreative.get(),
         COMMON.defaultPoseConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           DefaultPoseConfigurationMenu.getMenuProvider(uuid, entity),
           buffer -> buffer.writeUUID(uuid));
     }
@@ -352,8 +336,7 @@ public class EasyNPCEntityMenu {
         COMMON.defaultPositionConfigurationAllowInCreative.get(),
         COMMON.defaultPositionConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           DefaultPositionConfigurationMenu.getMenuProvider(uuid, entity),
           buffer -> buffer.writeUUID(uuid));
     }
@@ -368,8 +351,7 @@ public class EasyNPCEntityMenu {
         COMMON.defaultRotationConfigurationAllowInCreative.get(),
         COMMON.defaultRotationConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           DefaultRotationConfigurationMenu.getMenuProvider(uuid, entity),
           buffer -> buffer.writeUUID(uuid));
     }
@@ -384,8 +366,7 @@ public class EasyNPCEntityMenu {
         COMMON.customSkinConfigurationAllowInCreative.get(),
         COMMON.customSkinConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           CustomSkinConfigurationMenu.getMenuProvider(uuid, entity),
           buffer -> buffer.writeUUID(uuid));
     }
@@ -400,8 +381,7 @@ public class EasyNPCEntityMenu {
         COMMON.defaultSkinConfigurationAllowInCreative.get(),
         COMMON.defaultSkinConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           DefaultSkinConfigurationMenu.getMenuProvider(uuid, entity),
           buffer -> buffer.writeUUID(uuid));
     }
@@ -417,8 +397,7 @@ public class EasyNPCEntityMenu {
         COMMON.noneDialogConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
       DialogDataSet dialogDataSet = entity.getDialogDataSet();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           NoneDialogConfigurationMenu.getMenuProvider(uuid, entity, dialogDataSet),
           buffer -> {
             buffer.writeUUID(uuid);
@@ -436,8 +415,7 @@ public class EasyNPCEntityMenu {
         COMMON.playerSkinConfigurationAllowInCreative.get(),
         COMMON.playerSkinConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           PlayerSkinConfigurationMenu.getMenuProvider(uuid, entity),
           buffer -> buffer.writeUUID(uuid));
     }
@@ -451,10 +429,8 @@ public class EasyNPCEntityMenu {
         COMMON.scalingConfigurationAllowInCreative.get(),
         COMMON.scalingConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
-      NetworkHooks.openScreen(
-          serverPlayer,
-          ScalingConfigurationMenu.getMenuProvider(uuid, entity),
-          buffer -> buffer.writeUUID(uuid));
+      serverPlayer.openMenu(
+          ScalingConfigurationMenu.getMenuProvider(uuid, entity), buffer -> buffer.writeUUID(uuid));
     }
   }
 
@@ -467,8 +443,7 @@ public class EasyNPCEntityMenu {
         COMMON.customExportPresetConfigurationAllowInCreative.get(),
         COMMON.customExportPresetConfigurationPermissionLevel.get())) {
       UUID uuid = easyNPCEntity.getUUID();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           CustomExportPresetConfigurationMenu.getMenuProvider(uuid, easyNPCEntity),
           buffer -> buffer.writeUUID(uuid));
     }
@@ -483,8 +458,7 @@ public class EasyNPCEntityMenu {
         COMMON.worldExportPresetConfigurationAllowInCreative.get(),
         COMMON.worldExportPresetConfigurationPermissionLevel.get())) {
       UUID uuid = easyNPCEntity.getUUID();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           WorldExportPresetConfigurationMenu.getMenuProvider(uuid, easyNPCEntity),
           buffer -> buffer.writeUUID(uuid));
     }
@@ -499,8 +473,7 @@ public class EasyNPCEntityMenu {
         COMMON.defaultImportPresetConfigurationAllowInCreative.get(),
         COMMON.defaultImportPresetConfigurationPermissionLevel.get())) {
       UUID uuid = easyNPCEntity.getUUID();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           DefaultImportPresetConfigurationMenu.getMenuProvider(uuid, easyNPCEntity),
           buffer -> buffer.writeUUID(uuid));
     }
@@ -517,8 +490,7 @@ public class EasyNPCEntityMenu {
       UUID uuid = easyNPCEntity.getUUID();
       List<ResourceLocation> worldPresets =
           WorldPresetData.getPresetFilePathResourceLocations().toList();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           WorldImportPresetConfigurationMenu.getMenuProvider(uuid, easyNPCEntity, worldPresets),
           buffer -> {
             buffer.writeUUID(uuid);
@@ -539,8 +511,7 @@ public class EasyNPCEntityMenu {
         COMMON.customImportPresetConfigurationAllowInCreative.get(),
         COMMON.customImportPresetConfigurationPermissionLevel.get())) {
       UUID uuid = easyNPCEntity.getUUID();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           CustomImportPresetConfigurationMenu.getMenuProvider(uuid, easyNPCEntity),
           buffer -> buffer.writeUUID(uuid));
     }
@@ -555,8 +526,7 @@ public class EasyNPCEntityMenu {
         COMMON.noneTradingConfigurationAllowInCreative.get(),
         COMMON.noneTradingConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           NoneTradingConfigurationMenu.getMenuProvider(uuid, entity),
           buffer -> buffer.writeUUID(uuid));
     }
@@ -571,8 +541,7 @@ public class EasyNPCEntityMenu {
         COMMON.basicTradingConfigurationAllowInCreative.get(),
         COMMON.basicTradingConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           BasicTradingConfigurationMenu.getMenuProvider(uuid, entity),
           buffer -> buffer.writeUUID(uuid));
     }
@@ -587,8 +556,7 @@ public class EasyNPCEntityMenu {
         COMMON.advancedTradingConfigurationAllowInCreative.get(),
         COMMON.advancedTradingConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           AdvancedTradingConfigurationMenu.getMenuProvider(uuid, entity, pageIndex),
           buffer -> buffer.writeUUID(uuid).writeInt(pageIndex));
     }
@@ -603,8 +571,7 @@ public class EasyNPCEntityMenu {
         COMMON.customTradingConfigurationAllowInCreative.get(),
         COMMON.customTradingConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           CustomTradingConfigurationMenu.getMenuProvider(uuid, entity),
           buffer -> buffer.writeUUID(uuid));
     }
@@ -620,8 +587,7 @@ public class EasyNPCEntityMenu {
         COMMON.basicObjectiveConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
       ObjectiveDataSet objectiveDataSet = entity.getObjectiveDataSet();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           BasicObjectiveConfigurationMenu.getMenuProvider(uuid, entity, objectiveDataSet),
           buffer -> {
             buffer.writeUUID(uuid);
@@ -640,8 +606,7 @@ public class EasyNPCEntityMenu {
         COMMON.attackObjectiveConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
       ObjectiveDataSet objectiveDataSet = entity.getObjectiveDataSet();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           AttackObjectiveConfigurationMenu.getMenuProvider(uuid, entity, objectiveDataSet),
           buffer -> {
             buffer.writeUUID(uuid);
@@ -660,8 +625,7 @@ public class EasyNPCEntityMenu {
         COMMON.followObjectiveConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
       ObjectiveDataSet objectiveDataSet = entity.getObjectiveDataSet();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           FollowObjectiveConfigurationMenu.getMenuProvider(uuid, entity, objectiveDataSet),
           buffer -> {
             buffer.writeUUID(uuid);
@@ -679,8 +643,7 @@ public class EasyNPCEntityMenu {
         COMMON.basicAttributeConfigurationAllowInCreative.get(),
         COMMON.basicAttributeConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
-      NetworkHooks.openScreen(
-          serverPlayer,
+      serverPlayer.openMenu(
           BasicAttributeConfigurationMenu.getMenuProvider(uuid, entity),
           buffer -> buffer.writeUUID(uuid));
     }

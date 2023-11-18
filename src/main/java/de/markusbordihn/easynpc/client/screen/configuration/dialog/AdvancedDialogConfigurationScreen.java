@@ -155,7 +155,7 @@ public class AdvancedDialogConfigurationScreen
           19);
       this.setRenderHeader(false, 0);
       this.setRenderBackground(false);
-      this.setRenderTopAndBottom(false);
+      // this.setRenderTopAndBottom(false);
 
       // Add all dialog data sets, sorted by label.
       for (DialogData dialogData :

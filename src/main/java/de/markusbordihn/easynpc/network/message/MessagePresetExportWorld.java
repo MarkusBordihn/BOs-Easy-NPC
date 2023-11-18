@@ -27,12 +27,11 @@ import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
-import java.util.function.Supplier;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class MessagePresetExportWorld extends NetworkMessage {
 
@@ -52,14 +51,13 @@ public class MessagePresetExportWorld extends NetworkMessage {
     buffer.writeUtf(message.getName());
   }
 
-  public static void handle(
-      MessagePresetExportWorld message, Supplier<NetworkEvent.Context> contextSupplier) {
-    NetworkEvent.Context context = contextSupplier.get();
+  public static void handle(MessagePresetExportWorld message, CustomPayloadEvent.Context context) {
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessagePresetExportWorld message, NetworkEvent.Context context) {
+  public static void handlePacket(
+      MessagePresetExportWorld message, CustomPayloadEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
     if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {

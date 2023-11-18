@@ -25,12 +25,11 @@ import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
-import java.util.function.Supplier;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Pose;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class MessageRotationChange extends NetworkMessage {
 
@@ -64,14 +63,13 @@ public class MessageRotationChange extends NetworkMessage {
     buffer.writeFloat(message.getZ());
   }
 
-  public static void handle(
-      MessageRotationChange message, Supplier<NetworkEvent.Context> contextSupplier) {
-    NetworkEvent.Context context = contextSupplier.get();
+  public static void handle(MessageRotationChange message, CustomPayloadEvent.Context context) {
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessageRotationChange message, NetworkEvent.Context context) {
+  public static void handlePacket(
+      MessageRotationChange message, CustomPayloadEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
     if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {

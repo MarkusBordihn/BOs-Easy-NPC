@@ -65,46 +65,17 @@ public class CustomButton extends Button {
   public void renderButton(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
     Minecraft minecraft = Minecraft.getInstance();
     Font font = minecraft.font;
-    int i = this.getYImage(this.isHoveredOrFocused());
     RenderSystem.enableBlend();
     RenderSystem.defaultBlendFunc();
     RenderSystem.enableDepthTest();
 
-    // Top Part
-    guiGraphics.blit(
-        WIDGETS_LOCATION,
+    // Background
+    guiGraphics.blitSprite(
+        SPRITES.get(this.active, this.isHoveredOrFocused()),
         this.getX(),
         this.getY(),
-        0,
-        46 + i * 20,
-        this.width / 2,
-        this.height - 4);
-    guiGraphics.blit(
-        WIDGETS_LOCATION,
-        this.getX() + this.width / 2,
-        this.getY(),
-        200 - this.width / 2,
-        46 + i * 20,
-        this.width / 2,
-        this.height - 4);
-
-    // Bottom Part (last only 4 pixel from the bottom)
-    guiGraphics.blit(
-        WIDGETS_LOCATION,
-        this.getX(),
-        this.getY() + this.height - 4,
-        0,
-        46 + i * 20 + 20 - 4,
-        this.width / 2,
-        4);
-    guiGraphics.blit(
-        WIDGETS_LOCATION,
-        this.getX() + this.width / 2,
-        this.getY() + this.height - 4,
-        200 - this.width / 2,
-        46 + i * 20 + 20 - 4,
-        this.width / 2,
-        4);
+        this.getWidth(),
+        this.getHeight());
 
     // Button Text
     this.renderButtonText(guiGraphics, font, this.getMessage(), this.getX(), this.getY());

@@ -207,7 +207,7 @@ public class ImportDefaultPresetConfigurationScreen
           14);
       this.setRenderHeader(false, 0);
       this.setRenderBackground(false);
-      this.setRenderTopAndBottom(false);
+      // this.setRenderTopAndBottom(false);
 
       // Read relevant preset files.
       Minecraft.getInstance()

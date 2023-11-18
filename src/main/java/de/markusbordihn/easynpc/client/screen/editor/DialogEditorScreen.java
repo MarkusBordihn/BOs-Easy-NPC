@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.AddButton;
 import de.markusbordihn.easynpc.client.screen.components.CancelButton;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.client.screen.components.CloseButton;
 import de.markusbordihn.easynpc.client.screen.components.DeleteButton;
 import de.markusbordihn.easynpc.client.screen.components.DialogButton;
 import de.markusbordihn.easynpc.client.screen.components.DialogButtonButton;
@@ -45,7 +46,6 @@ import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -380,15 +380,12 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
     // Close Button
     this.closeButton =
         this.addRenderableWidget(
-            new ImageButton(
+            new CloseButton(
                 this.rightPos - 15,
-                this.topPos + 6,
-                10,
-                10,
-                64,
-                38,
-                Constants.TEXTURE_CONFIGURATION,
-                onPress -> closeScreen()));
+                this.topPos + 4,
+                onPress -> {
+                  closeScreen();
+                }));
 
     // Save Button
     this.saveButton =
@@ -445,7 +442,7 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
 
   @Override
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    this.renderBackground(guiGraphics);
+    this.renderBackground(guiGraphics, x, y, partialTicks);
     super.render(guiGraphics, x, y, partialTicks);
     this.renderEditLabels(guiGraphics);
     this.xMouse = x;

@@ -9,8 +9,9 @@ buildscript {
 plugins {
   id 'com.matthewprenger.cursegradle' version '1.4.0'
   id 'eclipse'
+  id 'idea'
   id 'maven-publish'
-  id 'net.minecraftforge.gradle' version '5.1.+'
+  id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
   id 'nu.studer.credentials' version '1.0.7'
 }
 
@@ -135,12 +136,12 @@ dependencies {
   // runtimeOnly fg.deobf("curse.maven:carry-on-274259:4375894")
 
   // Integration Tests
-  runtimeOnly fg.deobf("curse.maven:daily-rewards-628798:4588446")
+  // runtimeOnly fg.deobf("curse.maven:daily-rewards-628798:4588446")
 
   // Additional helpful Mods for development (dev depenedency)
   // runtimeOnly fg.deobf("curse.maven:item-zoom-261725:3903160")
   // runtimeOnly fg.deobf("curse.maven:jade-324717:4330163")
-  runtimeOnly fg.deobf("curse.maven:jei-238222:4597711")
+  runtimeOnly fg.deobf("curse.maven:jei-238222:4767571")
   // runtimeOnly fg.deobf("curse.maven:spark-361579:4381167")
   // runtimeOnly fg.deobf("curse.maven:xaeros_minimap-263420:4381127")
 }

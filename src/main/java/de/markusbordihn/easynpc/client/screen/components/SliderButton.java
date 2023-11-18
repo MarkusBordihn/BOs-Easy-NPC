@@ -31,7 +31,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
 public class SliderButton extends AbstractSliderButton {
 
@@ -184,84 +183,25 @@ public class SliderButton extends AbstractSliderButton {
     this.renderButton(guiGraphics, mouseX, mouseY, partialTicks);
   }
 
-  protected void renderBg(@NotNull GuiGraphics guiGraphics) {
-    int i = this.isHoveredOrFocused() ? 60 : 40;
-
-    // Slider: Top Part
-    guiGraphics.blit(
-        SLIDER_LOCATION,
-        this.getX() + (int) (this.value * (double) (this.width - 8)),
-        this.getY(),
-        0,
-        i,
-        4,
-        this.height);
-    guiGraphics.blit(
-        SLIDER_LOCATION,
-        this.getX() + (int) (this.value * (double) (this.width - 8)) + 4,
-        this.getY(),
-        196,
-        i,
-        4,
-        this.height);
-
-    // Slider: Bottom Part (last only 4 pixel from the bottom)
-    guiGraphics.blit(
-        SLIDER_LOCATION,
-        this.getX() + (int) (this.value * (double) (this.width - 8)),
-        this.getY() + this.height - 4,
-        0,
-        i + 20 - 4,
-        4,
-        4);
-    guiGraphics.blit(
-        SLIDER_LOCATION,
-        this.getX() + (int) (this.value * (double) (this.width - 8)) + 4,
-        this.getY() + this.height - 4,
-        196,
-        i + 20 - 4,
-        4,
-        4);
-  }
-
   public void renderButton(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
     Minecraft minecraft = Minecraft.getInstance();
     Font font = minecraft.font;
-    int i = this.isHoveredOrFocused() ? 20 : 0;
     RenderSystem.enableBlend();
     RenderSystem.defaultBlendFunc();
     RenderSystem.enableDepthTest();
 
-    // Top Part
-    guiGraphics.blit(SLIDER_LOCATION, this.getX(), this.getY(), 0, i, this.width / 2, this.height);
-    guiGraphics.blit(
-        SLIDER_LOCATION,
-        this.getX() + this.width / 2,
+    // Slider Background
+    guiGraphics.blitSprite(
+        this.getSprite(), this.getX(), this.getY(), this.getWidth(), this.getHeight());
+
+    // Slider Handle
+    guiGraphics.blitSprite(
+        getHandleSprite(),
+        this.getX() + (int) (this.value * (this.width - 8)),
         this.getY(),
-        200 - this.width / 2,
-        i,
-        this.width / 2,
-        this.height);
+        8,
+        this.getHeight());
 
-    // Bottom Part (last only 4 pixel from the bottom)
-    guiGraphics.blit(
-        SLIDER_LOCATION,
-        this.getX(),
-        this.getY() + this.height - 4,
-        0,
-        i + 20 - 4,
-        this.width / 2,
-        4);
-    guiGraphics.blit(
-        SLIDER_LOCATION,
-        this.getX() + this.width / 2,
-        this.getY() + this.height - 4,
-        200 - this.width / 2,
-        i + 20 - 4,
-        this.width / 2,
-        4);
-
-    this.renderBg(guiGraphics);
     int j = getFGColor();
     guiGraphics.drawCenteredString(
         font,

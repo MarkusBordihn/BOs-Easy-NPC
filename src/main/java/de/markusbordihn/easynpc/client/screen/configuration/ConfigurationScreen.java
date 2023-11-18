@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.screen.configuration;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.components.CloseButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.config.CommonConfig;
@@ -32,7 +33,6 @@ import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -169,17 +169,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     // Close Button
     this.closeButton =
         this.addRenderableWidget(
-            new ImageButton(
-                this.rightPos - 15,
-                this.topPos + 6,
-                10,
-                10,
-                64,
-                38,
-                Constants.TEXTURE_CONFIGURATION,
-                onPress -> {
-                  closeScreen();
-                }));
+            new CloseButton(this.rightPos - 15, this.topPos + 4, onPress -> closeScreen()));
 
     // Home Button
     this.homeButton =
@@ -196,7 +186,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
 
   @Override
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    this.renderBackground(guiGraphics);
+    this.renderBackground(guiGraphics, x, y, partialTicks);
     super.render(guiGraphics, x, y, partialTicks);
     this.xMouse = x;
     this.yMouse = y;
