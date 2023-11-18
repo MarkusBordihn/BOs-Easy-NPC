@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,17 +19,14 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-
-import net.minecraftforge.network.NetworkEvent;
-
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
+import java.util.UUID;
+import java.util.function.Supplier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkEvent;
 
 public class MessageBasicTrading extends NetworkMessage {
 
@@ -42,21 +39,9 @@ public class MessageBasicTrading extends NetworkMessage {
     this.tradingValue = tradingValue;
   }
 
-  public enum TradingValueType {
-    RESETS_EVERY_MIN, MAX_USES, REWARD_EXP;
-  }
-
-  public TradingValueType getTradingValueType() {
-    return this.tradingValueType;
-  }
-
-  public int getTradingValue() {
-    return this.tradingValue;
-  }
-
   public static MessageBasicTrading decode(final FriendlyByteBuf buffer) {
-    return new MessageBasicTrading(buffer.readUUID(), buffer.readEnum(TradingValueType.class),
-        buffer.readInt());
+    return new MessageBasicTrading(
+        buffer.readUUID(), buffer.readEnum(TradingValueType.class), buffer.readInt());
   }
 
   public static void encode(final MessageBasicTrading message, final FriendlyByteBuf buffer) {
@@ -65,8 +50,8 @@ public class MessageBasicTrading extends NetworkMessage {
     buffer.writeInt(message.getTradingValue());
   }
 
-  public static void handle(MessageBasicTrading message,
-      Supplier<NetworkEvent.Context> contextSupplier) {
+  public static void handle(
+      MessageBasicTrading message, Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
@@ -89,8 +74,11 @@ public class MessageBasicTrading extends NetworkMessage {
     // Validate trading value
     int tradingValue = message.getTradingValue();
     if (tradingValue < 0) {
-      log.error("Trading value {} for {} is out of range (>= 0) for {}", tradingValue,
-          tradingValueType, serverPlayer);
+      log.error(
+          "Trading value {} for {} is out of range (>= 0) for {}",
+          tradingValue,
+          tradingValueType,
+          serverPlayer);
       return;
     }
 
@@ -98,7 +86,10 @@ public class MessageBasicTrading extends NetworkMessage {
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     switch (tradingValueType) {
       case RESETS_EVERY_MIN:
-        log.debug("Set trading resets every min to {} for {} from {}", tradingValue, easyNPCEntity,
+        log.debug(
+            "Set trading resets every min to {} for {} from {}",
+            tradingValue,
+            easyNPCEntity,
             serverPlayer);
         easyNPCEntity.setTradingResetsEveryMin(tradingValue);
         break;
@@ -114,8 +105,20 @@ public class MessageBasicTrading extends NetworkMessage {
         break;
       default:
         log.error("Trading value type {} is unknown for {}", tradingValueType, serverPlayer);
-        return;
     }
   }
 
+  public TradingValueType getTradingValueType() {
+    return this.tradingValueType;
+  }
+
+  public int getTradingValue() {
+    return this.tradingValue;
+  }
+
+  public enum TradingValueType {
+    RESETS_EVERY_MIN,
+    MAX_USES,
+    REWARD_EXP
+  }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,28 +19,22 @@
 
 package de.markusbordihn.easynpc.config;
 
+import de.markusbordihn.easynpc.Constants;
 import java.nio.file.Files;
-
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.loading.FMLPaths;
-
-import de.markusbordihn.easynpc.Constants;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class ClientConfig {
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  private ClientConfig() {}
-
   public static final ForgeConfigSpec clientSpec;
   public static final Config CLIENT;
+  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   static {
     com.electronwill.nightconfig.core.Config.setInsertionOrderPreserved(true);
@@ -54,9 +48,14 @@ public class ClientConfig {
     } catch (Exception exception) {
       log.error("There was an error, creating the directory:", exception);
     }
-    ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, clientSpec,
-        Constants.MOD_ID + "/" + Constants.MOD_ID + "-client.toml");
+    ModLoadingContext.get()
+        .registerConfig(
+            ModConfig.Type.CLIENT,
+            clientSpec,
+            Constants.MOD_ID + "/" + Constants.MOD_ID + "-client.toml");
   }
+
+  private ClientConfig() {}
 
   public static class Config {
 

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -72,5 +72,4 @@ public class CustomPosition {
   public boolean isZero() {
     return this.x == 0 && this.y == 0 && this.z == 0;
   }
-
 }

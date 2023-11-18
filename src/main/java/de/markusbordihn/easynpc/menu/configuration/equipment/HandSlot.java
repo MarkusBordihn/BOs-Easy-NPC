@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -20,10 +20,7 @@
 package de.markusbordihn.easynpc.menu.configuration.equipment;
 
 import com.mojang.datafixers.util.Pair;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import de.markusbordihn.easynpc.Constants;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
@@ -34,17 +31,16 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-
-import de.markusbordihn.easynpc.Constants;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class HandSlot extends Slot {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public static final ResourceLocation EMPTY_ARMOR_SLOT_WEAPON =
       new ResourceLocation(Constants.MOD_ID, "item/empty_armor/empty_armor_slot_weapon");
   public static final ResourceLocation EMPTY_ARMOR_SLOT_SHIELD =
       new ResourceLocation(Constants.MOD_ID, "item/empty_armor/empty_armor_slot_shield");
+  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   static final ResourceLocation[] TEXTURE_EMPTY_SLOTS =
       new ResourceLocation[] {EMPTY_ARMOR_SLOT_WEAPON, EMPTY_ARMOR_SLOT_SHIELD};
   private static final EquipmentSlot[] SLOT_IDS =
@@ -73,7 +69,8 @@ public class HandSlot extends Slot {
 
   @Override
   public boolean mayPlace(ItemStack itemStack) {
-    return itemStack != null && !itemStack.isEmpty()
+    return itemStack != null
+        && !itemStack.isEmpty()
         && this.equipmentSlot == LivingEntity.getEquipmentSlotForItem(itemStack);
   }
 
@@ -89,5 +86,4 @@ public class HandSlot extends Slot {
   public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
     return Pair.of(InventoryMenu.BLOCK_ATLAS, TEXTURE_EMPTY_SLOTS[this.equipmentSlot.getIndex()]);
   }
-
 }

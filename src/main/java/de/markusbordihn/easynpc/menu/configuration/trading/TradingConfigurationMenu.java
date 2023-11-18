@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,20 +19,17 @@
 
 package de.markusbordihn.easynpc.menu.configuration.trading;
 
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import java.util.UUID;
-
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-
 public class TradingConfigurationMenu extends ConfigurationMenu {
 
-  public TradingConfigurationMenu(MenuType<?> menuType, int windowId, Inventory playerInventory,
-      UUID uuid, int pageIndex) {
+  public TradingConfigurationMenu(
+      MenuType<?> menuType, int windowId, Inventory playerInventory, UUID uuid, int pageIndex) {
     super(menuType, windowId, playerInventory, uuid, pageIndex);
   }
 
   public void setTradingChanged() {}
-
 }

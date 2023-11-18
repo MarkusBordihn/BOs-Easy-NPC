@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,13 +19,6 @@
 
 package de.markusbordihn.easynpc.item;
 
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Rarity;
-
-import net.minecraftforge.registries.RegistryObject;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.npc.Allay;
 import de.markusbordihn.easynpc.entity.npc.Cat;
@@ -33,69 +26,98 @@ import de.markusbordihn.easynpc.entity.npc.Chicken;
 import de.markusbordihn.easynpc.entity.npc.Fairy;
 import de.markusbordihn.easynpc.entity.npc.Humanoid;
 import de.markusbordihn.easynpc.entity.npc.HumanoidSlim;
+import de.markusbordihn.easynpc.entity.npc.IronGolem;
 import de.markusbordihn.easynpc.entity.npc.ModEntityType;
 import de.markusbordihn.easynpc.entity.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.npc.Villager;
 import de.markusbordihn.easynpc.entity.npc.Zombie;
 import de.markusbordihn.easynpc.entity.npc.ZombieVillager;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCWandItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public class ModItems {
 
-  protected ModItems() {
-
-  }
-
   public static final DeferredRegister<Item> ITEMS =
       DeferredRegister.create(ForgeRegistries.ITEMS, Constants.MOD_ID);
-
   // Config Items
-  public static final RegistryObject<Item> EASY_NPC_WAND = ITEMS.register(EasyNPCWandItem.ID,
-      () -> new EasyNPCWandItem(new Item.Properties().rarity(Rarity.EPIC)));
-
+  public static final RegistryObject<Item> EASY_NPC_WAND =
+      ITEMS.register(EasyNPCWandItem.ID, () -> new EasyNPCWandItem(new Item.Properties()));
   // Default NPC Entity Spawn Eggs
   private static final String SPAWN_EGG_PREFIX = "_spawn_egg";
 
-  public static final RegistryObject<Item> ALLAY_NPC_SPAWN_EGG = ITEMS
-      .register(Allay.ID + SPAWN_EGG_PREFIX, () -> new EasyNPCSpawnEggItem(ModEntityType.ALLAY::get,
-          new Item.Properties().rarity(Rarity.EPIC)));
+  public static final RegistryObject<Item> ALLAY_NPC_SPAWN_EGG =
+      ITEMS.register(
+          Allay.ID + SPAWN_EGG_PREFIX,
+          () ->
+              new EasyNPCSpawnEggItem(
+                  ModEntityType.ALLAY, new Item.Properties().rarity(Rarity.EPIC)));
+  public static final RegistryObject<Item> CAT_NPC_SPAWN_EGG =
+      ITEMS.register(
+          Cat.ID + SPAWN_EGG_PREFIX,
+          () ->
+              new EasyNPCSpawnEggItem(
+                  ModEntityType.CAT, new Item.Properties().rarity(Rarity.EPIC)));
+  public static final RegistryObject<Item> CHICKEN_NPC_SPAWN_EGG =
+      ITEMS.register(
+          Chicken.ID + SPAWN_EGG_PREFIX,
+          () ->
+              new EasyNPCSpawnEggItem(
+                  ModEntityType.CHICKEN, new Item.Properties().rarity(Rarity.EPIC)));
+  public static final RegistryObject<Item> FAIRY_NPC_SPAWN_EGG =
+      ITEMS.register(
+          Fairy.ID + SPAWN_EGG_PREFIX,
+          () ->
+              new EasyNPCSpawnEggItem(
+                  ModEntityType.FAIRY, new Item.Properties().rarity(Rarity.EPIC)));
 
-  public static final RegistryObject<Item> CAT_NPC_SPAWN_EGG = ITEMS
-      .register(Cat.ID + SPAWN_EGG_PREFIX, () -> new EasyNPCSpawnEggItem(ModEntityType.CAT::get,
-          new Item.Properties().rarity(Rarity.EPIC)));
-
-  public static final RegistryObject<Item> CHICKEN_NPC_SPAWN_EGG = ITEMS.register(
-      Chicken.ID + SPAWN_EGG_PREFIX, () -> new EasyNPCSpawnEggItem(ModEntityType.CHICKEN::get,
-          new Item.Properties().rarity(Rarity.EPIC)));
-
-  public static final RegistryObject<Item> FAIRY_NPC_SPAWN_EGG = ITEMS
-      .register(Fairy.ID + SPAWN_EGG_PREFIX, () -> new EasyNPCSpawnEggItem(ModEntityType.FAIRY::get,
-          new Item.Properties().rarity(Rarity.EPIC)));
-
-  public static final RegistryObject<Item> HUMANOID_NPC_SPAWN_EGG = ITEMS.register(
-      Humanoid.ID + SPAWN_EGG_PREFIX, () -> new EasyNPCSpawnEggItem(ModEntityType.HUMANOID::get,
-          new Item.Properties().rarity(Rarity.EPIC)));
-
+  public static final RegistryObject<Item> HUMANOID_NPC_SPAWN_EGG =
+      ITEMS.register(
+          Humanoid.ID + SPAWN_EGG_PREFIX,
+          () ->
+              new EasyNPCSpawnEggItem(
+                  ModEntityType.HUMANOID, new Item.Properties().rarity(Rarity.EPIC)));
   public static final RegistryObject<Item> HUMANOID_SLIM_NPC_SPAWN_EGG =
-      ITEMS.register(HumanoidSlim.ID + SPAWN_EGG_PREFIX,
-          () -> new EasyNPCSpawnEggItem(ModEntityType.HUMANOID_SLIM::get,
-              new Item.Properties().rarity(Rarity.EPIC)));
+      ITEMS.register(
+          HumanoidSlim.ID + SPAWN_EGG_PREFIX,
+          () ->
+              new EasyNPCSpawnEggItem(
+                  ModEntityType.HUMANOID_SLIM, new Item.Properties().rarity(Rarity.EPIC)));
 
-  public static final RegistryObject<Item> SKELETON_NPC_SPAWN_EGG = ITEMS.register(
-      Skeleton.ID + SPAWN_EGG_PREFIX, () -> new EasyNPCSpawnEggItem(ModEntityType.SKELETON::get,
-          new Item.Properties().rarity(Rarity.EPIC)));
+  public static final RegistryObject<Item> IRON_GOLEM_NPC_SPAWN_EGG =
+      ITEMS.register(
+          IronGolem.ID + SPAWN_EGG_PREFIX,
+          () ->
+              new EasyNPCSpawnEggItem(
+                  ModEntityType.IRON_GOLEM, new Item.Properties().rarity(Rarity.EPIC)));
 
-  public static final RegistryObject<Item> VILLAGER_NPC_SPAWN_EGG = ITEMS.register(
-      Villager.ID + SPAWN_EGG_PREFIX, () -> new EasyNPCSpawnEggItem(ModEntityType.VILLAGER::get,
-          new Item.Properties().rarity(Rarity.EPIC)));
-
-  public static final RegistryObject<Item> ZOMBIE_NPC_SPAWN_EGG = ITEMS.register(
-      Zombie.ID + SPAWN_EGG_PREFIX, () -> new EasyNPCSpawnEggItem(ModEntityType.ZOMBIE::get,
-          new Item.Properties().rarity(Rarity.EPIC)));
-
+  public static final RegistryObject<Item> SKELETON_NPC_SPAWN_EGG =
+      ITEMS.register(
+          Skeleton.ID + SPAWN_EGG_PREFIX,
+          () ->
+              new EasyNPCSpawnEggItem(
+                  ModEntityType.SKELETON, new Item.Properties().rarity(Rarity.EPIC)));
+  public static final RegistryObject<Item> VILLAGER_NPC_SPAWN_EGG =
+      ITEMS.register(
+          Villager.ID + SPAWN_EGG_PREFIX,
+          () ->
+              new EasyNPCSpawnEggItem(
+                  ModEntityType.VILLAGER, new Item.Properties().rarity(Rarity.EPIC)));
+  public static final RegistryObject<Item> ZOMBIE_NPC_SPAWN_EGG =
+      ITEMS.register(
+          Zombie.ID + SPAWN_EGG_PREFIX,
+          () ->
+              new EasyNPCSpawnEggItem(
+                  ModEntityType.ZOMBIE, new Item.Properties().rarity(Rarity.EPIC)));
   public static final RegistryObject<Item> ZOMBIE_VILLAGER_NPC_SPAWN_EGG =
-      ITEMS.register(ZombieVillager.ID + SPAWN_EGG_PREFIX,
-          () -> new EasyNPCSpawnEggItem(ModEntityType.ZOMBIE_VILLAGER::get,
-              new Item.Properties().rarity(Rarity.EPIC)));
+      ITEMS.register(
+          ZombieVillager.ID + SPAWN_EGG_PREFIX,
+          () ->
+              new EasyNPCSpawnEggItem(
+                  ModEntityType.ZOMBIE_VILLAGER, new Item.Properties().rarity(Rarity.EPIC)));
 
+  protected ModItems() {}
 }

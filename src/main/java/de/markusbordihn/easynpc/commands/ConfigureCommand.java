@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,30 +19,30 @@
 
 package de.markusbordihn.easynpc.commands;
 
-import java.util.UUID;
-
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.EntityManager;
+import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.UuidArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
-
 public class ConfigureCommand extends CustomCommand {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("configure")
         .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
-        .then(Commands.argument("uuid", UuidArgument.uuid())
-            .suggests(ConfigureCommand::suggestEasyNPCs).executes(context -> {
-              return configure(context.getSource(), UuidArgument.getUuid(context, "uuid"));
-            }));
+        .then(
+            Commands.argument("uuid", UuidArgument.uuid())
+                .suggests(ConfigureCommand::suggestEasyNPCs)
+                .executes(
+                    context -> {
+                      return configure(context.getSource(), UuidArgument.getUuid(context, "uuid"));
+                    }));
   }
 
   private static int configure(CommandSourceStack context, UUID uuid)

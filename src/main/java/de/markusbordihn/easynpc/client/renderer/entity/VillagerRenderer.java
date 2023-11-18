@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,12 +19,19 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity;
 
-import java.util.EnumMap;
-import java.util.Map;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.model.custom.CustomVillagerModel;
+import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.ProfessionLayer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.VariantLayer;
+import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.Profession;
+import de.markusbordihn.easynpc.entity.npc.Villager.Variant;
+import java.util.EnumMap;
+import java.util.Map;
 import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -35,19 +42,8 @@ import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.model.custom.CustomVillagerModel;
-import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.layers.ProfessionLayer;
-import de.markusbordihn.easynpc.client.renderer.entity.layers.VariantLayer;
-import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.Profession;
-import de.markusbordihn.easynpc.entity.npc.Villager.Variant;
 
 @OnlyIn(Dist.CLIENT)
 public class VillagerRenderer extends MobRenderer<EasyNPCEntity, CustomVillagerModel<EasyNPCEntity>>
@@ -59,50 +55,72 @@ public class VillagerRenderer extends MobRenderer<EasyNPCEntity, CustomVillagerM
 
   // Professions Textures
   protected static final Map<Profession, ResourceLocation> TEXTURE_BY_PROFESSION =
-      Util.make(new EnumMap<>(Profession.class), map -> {
-        map.put(Profession.NONE, Constants.BLANK_ENTITY_TEXTURE);
-        map.put(Profession.ARMORER,
-            new ResourceLocation("textures/entity/villager/profession/armorer.png"));
-        map.put(Profession.BUTCHER,
-            new ResourceLocation("textures/entity/villager/profession/butcher.png"));
-        map.put(Profession.CARTOGRAPHER,
-            new ResourceLocation("textures/entity/villager/profession/cartographer.png"));
-        map.put(Profession.CLERIC,
-            new ResourceLocation("textures/entity/villager/profession/cleric.png"));
-        map.put(Profession.FARMER,
-            new ResourceLocation("textures/entity/villager/profession/farmer.png"));
-        map.put(Profession.FISHERMAN,
-            new ResourceLocation("textures/entity/villager/profession/fisherman.png"));
-        map.put(Profession.FLETCHER,
-            new ResourceLocation("textures/entity/villager/profession/fletcher.png"));
-        map.put(Profession.LEATHERWORKER,
-            new ResourceLocation("textures/entity/villager/profession/leatherworker.png"));
-        map.put(Profession.LIBRARIAN,
-            new ResourceLocation("textures/entity/villager/profession/librarian.png"));
-        map.put(Profession.MASON,
-            new ResourceLocation("textures/entity/villager/profession/mason.png"));
-        map.put(Profession.NITWIT,
-            new ResourceLocation("textures/entity/villager/profession/nitwit.png"));
-        map.put(Profession.SHEPHERD,
-            new ResourceLocation("textures/entity/villager/profession/shepherd.png"));
-        map.put(Profession.TOOLSMITH,
-            new ResourceLocation("textures/entity/villager/profession/toolsmith.png"));
-        map.put(Profession.WEAPONSMITH,
-            new ResourceLocation("textures/entity/villager/profession/weaponsmith.png"));
-      });
+      Util.make(
+          new EnumMap<>(Profession.class),
+          map -> {
+            map.put(Profession.NONE, Constants.BLANK_ENTITY_TEXTURE);
+            map.put(
+                Profession.ARMORER,
+                new ResourceLocation("textures/entity/villager/profession/armorer.png"));
+            map.put(
+                Profession.BUTCHER,
+                new ResourceLocation("textures/entity/villager/profession/butcher.png"));
+            map.put(
+                Profession.CARTOGRAPHER,
+                new ResourceLocation("textures/entity/villager/profession/cartographer.png"));
+            map.put(
+                Profession.CLERIC,
+                new ResourceLocation("textures/entity/villager/profession/cleric.png"));
+            map.put(
+                Profession.FARMER,
+                new ResourceLocation("textures/entity/villager/profession/farmer.png"));
+            map.put(
+                Profession.FISHERMAN,
+                new ResourceLocation("textures/entity/villager/profession/fisherman.png"));
+            map.put(
+                Profession.FLETCHER,
+                new ResourceLocation("textures/entity/villager/profession/fletcher.png"));
+            map.put(
+                Profession.LEATHERWORKER,
+                new ResourceLocation("textures/entity/villager/profession/leatherworker.png"));
+            map.put(
+                Profession.LIBRARIAN,
+                new ResourceLocation("textures/entity/villager/profession/librarian.png"));
+            map.put(
+                Profession.MASON,
+                new ResourceLocation("textures/entity/villager/profession/mason.png"));
+            map.put(
+                Profession.NITWIT,
+                new ResourceLocation("textures/entity/villager/profession/nitwit.png"));
+            map.put(
+                Profession.SHEPHERD,
+                new ResourceLocation("textures/entity/villager/profession/shepherd.png"));
+            map.put(
+                Profession.TOOLSMITH,
+                new ResourceLocation("textures/entity/villager/profession/toolsmith.png"));
+            map.put(
+                Profession.WEAPONSMITH,
+                new ResourceLocation("textures/entity/villager/profession/weaponsmith.png"));
+          });
 
   // Variant Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
-      Util.make(new EnumMap<>(Variant.class), map -> {
-        map.put(Variant.DEFAULT, Constants.BLANK_ENTITY_TEXTURE);
-        map.put(Variant.DESERT, new ResourceLocation("textures/entity/villager/type/desert.png"));
-        map.put(Variant.JUNGLE, new ResourceLocation("textures/entity/villager/type/jungle.png"));
-        map.put(Variant.PLAINS, new ResourceLocation("textures/entity/villager/type/plains.png"));
-        map.put(Variant.SAVANNA, new ResourceLocation("textures/entity/villager/type/savanna.png"));
-        map.put(Variant.SNOW, new ResourceLocation("textures/entity/villager/type/snow.png"));
-        map.put(Variant.SWAMP, new ResourceLocation("textures/entity/villager/type/swamp.png"));
-        map.put(Variant.TAIGA, new ResourceLocation("textures/entity/villager/type/taiga.png"));
-      });
+      Util.make(
+          new EnumMap<>(Variant.class),
+          map -> {
+            map.put(Variant.DEFAULT, Constants.BLANK_ENTITY_TEXTURE);
+            map.put(
+                Variant.DESERT, new ResourceLocation("textures/entity/villager/type/desert.png"));
+            map.put(
+                Variant.JUNGLE, new ResourceLocation("textures/entity/villager/type/jungle.png"));
+            map.put(
+                Variant.PLAINS, new ResourceLocation("textures/entity/villager/type/plains.png"));
+            map.put(
+                Variant.SAVANNA, new ResourceLocation("textures/entity/villager/type/savanna.png"));
+            map.put(Variant.SNOW, new ResourceLocation("textures/entity/villager/type/snow.png"));
+            map.put(Variant.SWAMP, new ResourceLocation("textures/entity/villager/type/swamp.png"));
+            map.put(Variant.TAIGA, new ResourceLocation("textures/entity/villager/type/taiga.png"));
+          });
 
   public VillagerRenderer(EntityRendererProvider.Context context) {
     super(context, new CustomVillagerModel<>(context.bakeLayer(ModelLayers.VILLAGER)), 0.5F);
@@ -142,8 +160,13 @@ public class VillagerRenderer extends MobRenderer<EasyNPCEntity, CustomVillagerM
   }
 
   @Override
-  public void render(EasyNPCEntity entity, float entityYaw, float partialTicks, PoseStack poseStack,
-      MultiBufferSource buffer, int light) {
+  public void render(
+      EasyNPCEntity entity,
+      float entityYaw,
+      float partialTicks,
+      PoseStack poseStack,
+      MultiBufferSource buffer,
+      int light) {
     CustomVillagerModel<EasyNPCEntity> playerModel = this.getModel();
 
     // Model Rotation
@@ -177,8 +200,12 @@ public class VillagerRenderer extends MobRenderer<EasyNPCEntity, CustomVillagerM
   }
 
   @Override
-  protected void renderNameTag(EasyNPCEntity entity, Component component, PoseStack poseStack,
-      MultiBufferSource multiBufferSource, int color) {
+  protected void renderNameTag(
+      EasyNPCEntity entity,
+      Component component,
+      PoseStack poseStack,
+      MultiBufferSource multiBufferSource,
+      int color) {
     this.renderEntityNameTag(entity, poseStack);
     super.renderNameTag(entity, component, poseStack, multiBufferSource, color);
   }
@@ -187,5 +214,4 @@ public class VillagerRenderer extends MobRenderer<EasyNPCEntity, CustomVillagerM
   protected int getBlockLightLevel(EasyNPCEntity entity, BlockPos blockPos) {
     return getEntityLightLevel(entity);
   }
-
 }

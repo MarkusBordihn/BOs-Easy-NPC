@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,30 +19,23 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-
-import net.minecraftforge.network.NetworkEvent;
-
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.entity.Profession;
 import de.markusbordihn.easynpc.network.NetworkMessage;
+import java.util.UUID;
+import java.util.function.Supplier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkEvent;
 
-public class MessageProfessionChange extends NetworkMessage{
+public class MessageProfessionChange extends NetworkMessage {
 
   protected final Profession profession;
 
   public MessageProfessionChange(UUID uuid, Profession profession) {
     super(uuid);
     this.profession = profession;
-  }
-
-  public Profession getProfession() {
-    return this.profession;
   }
 
   public static MessageProfessionChange decode(final FriendlyByteBuf buffer) {
@@ -54,8 +47,8 @@ public class MessageProfessionChange extends NetworkMessage{
     buffer.writeEnum(message.getProfession());
   }
 
-  public static void handle(MessageProfessionChange message,
-      Supplier<NetworkEvent.Context> contextSupplier) {
+  public static void handle(
+      MessageProfessionChange message, Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
@@ -81,4 +74,7 @@ public class MessageProfessionChange extends NetworkMessage{
     easyNPCEntity.setProfession(profession);
   }
 
+  public Profession getProfession() {
+    return this.profession;
+  }
 }

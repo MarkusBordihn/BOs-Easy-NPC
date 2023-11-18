@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -26,6 +26,7 @@ public enum ActionGroup {
   DISTANCE_CLOSE,
   DISTANCE_VERY_CLOSE,
   DISTANCE_TOUCH;
+
   // @formatter:on
 
   public static ActionGroup get(String actionType) {

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,18 +19,15 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.pose;
 
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.screen.components.SliderButton;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.menu.configuration.pose.AdvancedPoseConfigurationMenu;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class AdvancedPoseConfigurationScreen
@@ -45,8 +42,8 @@ public class AdvancedPoseConfigurationScreen
   protected SliderButton leftLegRotationSliderButton;
   protected SliderButton rightLegRotationSliderButton;
 
-  public AdvancedPoseConfigurationScreen(AdvancedPoseConfigurationMenu menu, Inventory inventory,
-      Component component) {
+  public AdvancedPoseConfigurationScreen(
+      AdvancedPoseConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 
@@ -118,51 +115,62 @@ public class AdvancedPoseConfigurationScreen
     super.render(guiGraphics, x, y, partialTicks);
 
     // Avatar
-    ScreenHelper.renderCustomPoseEntityAvatar(this.contentLeftPos + 142, this.contentTopPos + 155,
-        50, this.contentLeftPos + 140 - this.xMouse, this.contentTopPos + 30 - this.yMouse,
+    ScreenHelper.renderCustomPoseEntityAvatar(
+        this.contentLeftPos + 152,
+        this.contentTopPos + 155,
+        50,
+        this.contentLeftPos + 140 - this.xMouse,
+        this.contentTopPos + 30 - this.yMouse,
         this.entity);
 
     // Body parts texts
     if (this.entity.hasHeadModelPart()) {
-      guiGraphics.drawString(this.font,
-          Component.translatable(Constants.TEXT_CONFIG_PREFIX + "pose.head"),
-          this.headRotationSliderButton.getX() + 5, this.headRotationSliderButton.getY() - 12,
-          Constants.FONT_COLOR_WHITE);
+      this.fontDraw(
+          guiGraphics,
+          "pose.head",
+          this.headRotationSliderButton.getX() + 5,
+          this.headRotationSliderButton.getY() - 12);
     }
     if (this.entity.hasBodyModelPart()) {
-      guiGraphics.drawString(this.font,
-          Component.translatable(Constants.TEXT_CONFIG_PREFIX + "pose.body"),
-          this.bodyRotationSliderButton.getX() + 5, this.bodyRotationSliderButton.getY() - 12,
-          Constants.FONT_COLOR_WHITE);
+      this.fontDraw(
+          guiGraphics,
+          "pose.body",
+          this.bodyRotationSliderButton.getX() + 5,
+          this.bodyRotationSliderButton.getY() - 12);
     }
     if (this.entity.hasLeftArmModelPart()) {
-      guiGraphics.drawString(this.font,
-          Component.translatable(Constants.TEXT_CONFIG_PREFIX + "pose.left_arm"),
-          this.leftArmRotationSliderButton.getX() + 5, this.leftArmRotationSliderButton.getY() - 12,
-          Constants.FONT_COLOR_WHITE);
+      this.fontDraw(
+          guiGraphics,
+          "pose.left_arm",
+          this.leftArmRotationSliderButton.getX() + 5,
+          this.leftArmRotationSliderButton.getY() - 12);
     } else if (this.entity.hasArmsModelPart()) {
-      guiGraphics.drawString(this.font,
-          Component.translatable(Constants.TEXT_CONFIG_PREFIX + "pose.arms"),
-          this.armsRotationSliderButton.getX() + 5, this.armsRotationSliderButton.getY() - 12,
-          Constants.FONT_COLOR_WHITE);
+      this.fontDraw(
+          guiGraphics,
+          "pose.arms",
+          this.armsRotationSliderButton.getX() + 5,
+          this.armsRotationSliderButton.getY() - 12);
     }
     if (this.entity.hasRightArmModelPart()) {
-      guiGraphics.drawString(this.font,
-          Component.translatable(Constants.TEXT_CONFIG_PREFIX + "pose.right_arm"),
+      this.fontDraw(
+          guiGraphics,
+          "pose.right_arm",
           this.rightArmRotationSliderButton.getX() + 5,
-          this.rightArmRotationSliderButton.getY() - 12, Constants.FONT_COLOR_WHITE);
+          this.rightArmRotationSliderButton.getY() - 12);
     }
     if (this.entity.hasLeftLegModelPart()) {
-      guiGraphics.drawString(this.font,
-          Component.translatable(Constants.TEXT_CONFIG_PREFIX + "pose.left_leg"),
-          this.leftLegRotationSliderButton.getX() + 5, this.leftLegRotationSliderButton.getY() - 12,
-          Constants.FONT_COLOR_WHITE);
+      this.fontDraw(
+          guiGraphics,
+          "pose.left_leg",
+          this.leftLegRotationSliderButton.getX() + 5,
+          this.leftLegRotationSliderButton.getY() - 12);
     }
     if (this.entity.hasRightLegModelPart()) {
-      guiGraphics.drawString(this.font,
-          Component.translatable(Constants.TEXT_CONFIG_PREFIX + "pose.right_leg"),
+      this.fontDraw(
+          guiGraphics,
+          "pose.right_leg",
           this.rightLegRotationSliderButton.getX() + 5,
-          this.rightLegRotationSliderButton.getY() - 12, Constants.FONT_COLOR_WHITE);
+          this.rightLegRotationSliderButton.getY() - 12);
     }
   }
 
@@ -171,9 +179,17 @@ public class AdvancedPoseConfigurationScreen
     super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
 
     // Entity background
-    guiGraphics.fill(this.contentLeftPos + 101, this.contentTopPos, this.contentLeftPos + 201,
-        this.contentTopPos + 188, 0xff000000);
-    guiGraphics.fill(this.contentLeftPos + 102, this.contentTopPos + 1, this.contentLeftPos + 200,
-        this.contentTopPos + 187, 0xffaaaaaa);
+    guiGraphics.fill(
+        this.contentLeftPos + 101,
+        this.contentTopPos,
+        this.contentLeftPos + 201,
+        this.contentTopPos + 188,
+        0xff000000);
+    guiGraphics.fill(
+        this.contentLeftPos + 102,
+        this.contentTopPos + 1,
+        this.contentLeftPos + 200,
+        this.contentTopPos + 187,
+        0xffaaaaaa);
   }
 }

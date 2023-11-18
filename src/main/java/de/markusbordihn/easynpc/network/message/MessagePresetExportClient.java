@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,22 +19,19 @@
 
 package de.markusbordihn.easynpc.network.message;
 
+import de.markusbordihn.easynpc.data.CustomPresetData;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.function.Supplier;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.FriendlyByteBuf;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
-
-import de.markusbordihn.easynpc.data.CustomPresetData;
-import de.markusbordihn.easynpc.data.skin.SkinModel;
-import de.markusbordihn.easynpc.network.NetworkMessage;
 
 public class MessagePresetExportClient extends NetworkMessage {
 
@@ -43,8 +40,8 @@ public class MessagePresetExportClient extends NetworkMessage {
   protected final String fileName;
   protected final CompoundTag data;
 
-  public MessagePresetExportClient(UUID uuid, String name, SkinModel skinModel, String fileName,
-      CompoundTag data) {
+  public MessagePresetExportClient(
+      UUID uuid, String name, SkinModel skinModel, String fileName, CompoundTag data) {
     super(uuid);
     this.name = name;
     this.skinModel = skinModel;
@@ -52,25 +49,13 @@ public class MessagePresetExportClient extends NetworkMessage {
     this.data = data;
   }
 
-  public String getName() {
-    return this.name;
-  }
-
-  public SkinModel getSkinModel() {
-    return this.skinModel;
-  }
-
-  public String getFileName() {
-    return this.fileName;
-  }
-
-  public CompoundTag getData() {
-    return this.data;
-  }
-
   public static MessagePresetExportClient decode(final FriendlyByteBuf buffer) {
-    return new MessagePresetExportClient(buffer.readUUID(), buffer.readUtf(),
-        buffer.readEnum(SkinModel.class), buffer.readUtf(), buffer.readNbt());
+    return new MessagePresetExportClient(
+        buffer.readUUID(),
+        buffer.readUtf(),
+        buffer.readEnum(SkinModel.class),
+        buffer.readUtf(),
+        buffer.readNbt());
   }
 
   public static void encode(final MessagePresetExportClient message, final FriendlyByteBuf buffer) {
@@ -81,8 +66,8 @@ public class MessagePresetExportClient extends NetworkMessage {
     buffer.writeNbt(message.getData());
   }
 
-  public static void handle(MessagePresetExportClient message,
-      Supplier<NetworkEvent.Context> contextSupplier) {
+  public static void handle(
+      MessagePresetExportClient message, Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(
         () -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> handlePacket(message)));
@@ -126,14 +111,37 @@ public class MessagePresetExportClient extends NetworkMessage {
 
     // Perform action.
     File presetFile = CustomPresetData.getPresetFile(skinModel, fileName);
-    log.info("Exporting EasyNPC {} with UUID {} and skin {} to {}", name, uuid, skinModel,
-        presetFile);
+    log.info(
+        "Exporting EasyNPC {} with UUID {} and skin {} to {}", name, uuid, skinModel, presetFile);
     try {
       NbtIo.writeCompressed(data, presetFile);
     } catch (final IOException exception) {
-      log.error("Failed to export EasyNPC " + name + " with UUID " + uuid + " and skin " + skinModel
-          + " to " + presetFile, exception);
+      log.error(
+          "Failed to export EasyNPC "
+              + name
+              + " with UUID "
+              + uuid
+              + " and skin "
+              + skinModel
+              + " to "
+              + presetFile,
+          exception);
     }
   }
 
+  public String getName() {
+    return this.name;
+  }
+
+  public SkinModel getSkinModel() {
+    return this.skinModel;
+  }
+
+  public String getFileName() {
+    return this.fileName;
+  }
+
+  public CompoundTag getData() {
+    return this.data;
+  }
 }

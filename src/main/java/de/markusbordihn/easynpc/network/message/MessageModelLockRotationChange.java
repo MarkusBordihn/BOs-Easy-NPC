@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,17 +19,14 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-
-import net.minecraftforge.network.NetworkEvent;
-
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
+import java.util.UUID;
+import java.util.function.Supplier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkEvent;
 
 public class MessageModelLockRotationChange extends NetworkMessage {
 
@@ -40,29 +37,25 @@ public class MessageModelLockRotationChange extends NetworkMessage {
     this.lockRotation = lockRotation;
   }
 
-  public boolean getLockRotation() {
-    return this.lockRotation;
-  }
-
   public static MessageModelLockRotationChange decode(final FriendlyByteBuf buffer) {
     return new MessageModelLockRotationChange(buffer.readUUID(), buffer.readBoolean());
   }
 
-  public static void encode(final MessageModelLockRotationChange message,
-      final FriendlyByteBuf buffer) {
+  public static void encode(
+      final MessageModelLockRotationChange message, final FriendlyByteBuf buffer) {
     buffer.writeUUID(message.uuid);
     buffer.writeBoolean(message.getLockRotation());
   }
 
-  public static void handle(MessageModelLockRotationChange message,
-      Supplier<NetworkEvent.Context> contextSupplier) {
+  public static void handle(
+      MessageModelLockRotationChange message, Supplier<NetworkEvent.Context> contextSupplier) {
     NetworkEvent.Context context = contextSupplier.get();
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
-  public static void handlePacket(MessageModelLockRotationChange message,
-      NetworkEvent.Context context) {
+  public static void handlePacket(
+      MessageModelLockRotationChange message, NetworkEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
     if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
@@ -72,8 +65,12 @@ public class MessageModelLockRotationChange extends NetworkMessage {
     // Perform action.
     boolean lockRotation = message.getLockRotation();
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    log.debug("Reset and lock rotation {} for {} from {}", lockRotation, easyNPCEntity,
-        serverPlayer);
+    log.debug(
+        "Reset and lock rotation {} for {} from {}", lockRotation, easyNPCEntity, serverPlayer);
     easyNPCEntity.setModelLockRotation(lockRotation);
+  }
+
+  public boolean getLockRotation() {
+    return this.lockRotation;
   }
 }

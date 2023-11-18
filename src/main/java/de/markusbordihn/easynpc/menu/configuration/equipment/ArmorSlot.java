@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,11 +19,8 @@
 
 package de.markusbordihn.easynpc.menu.configuration.equipment;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.mojang.datafixers.util.Pair;
-
+import de.markusbordihn.easynpc.Constants;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -34,11 +31,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
-import de.markusbordihn.easynpc.Constants;
-
 public class ArmorSlot extends Slot {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public static final ResourceLocation EMPTY_ARMOR_SLOT_HELMET =
       new ResourceLocation(Constants.MOD_ID, "item/empty_armor/empty_armor_slot_helmet");
@@ -49,10 +42,16 @@ public class ArmorSlot extends Slot {
   public static final ResourceLocation EMPTY_ARMOR_SLOT_BOOTS =
       new ResourceLocation(Constants.MOD_ID, "item/empty_armor/empty_armor_slot_boots");
   static final ResourceLocation[] TEXTURE_EMPTY_SLOTS =
-      new ResourceLocation[] {EMPTY_ARMOR_SLOT_BOOTS, EMPTY_ARMOR_SLOT_LEGGINGS,
-          EMPTY_ARMOR_SLOT_CHESTPLATE, EMPTY_ARMOR_SLOT_HELMET};
-  private static final EquipmentSlot[] SLOT_IDS = new EquipmentSlot[] {EquipmentSlot.FEET,
-      EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD};
+      new ResourceLocation[] {
+        EMPTY_ARMOR_SLOT_BOOTS,
+        EMPTY_ARMOR_SLOT_LEGGINGS,
+        EMPTY_ARMOR_SLOT_CHESTPLATE,
+        EMPTY_ARMOR_SLOT_HELMET
+      };
+  private static final EquipmentSlot[] SLOT_IDS =
+      new EquipmentSlot[] {
+        EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD
+      };
 
   final EquipmentSlot equipmentSlot;
   final EquipmentConfigurationMenu menu;
@@ -61,10 +60,6 @@ public class ArmorSlot extends Slot {
     super(container, index, x, y);
     this.menu = menu;
     this.equipmentSlot = SLOT_IDS[index];
-  }
-
-  public EquipmentSlot getEquipmentSlot() {
-    return this.equipmentSlot;
   }
 
   @Override
@@ -96,5 +91,4 @@ public class ArmorSlot extends Slot {
   public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
     return Pair.of(InventoryMenu.BLOCK_ATLAS, TEXTURE_EMPTY_SLOTS[this.equipmentSlot.getIndex()]);
   }
-
 }

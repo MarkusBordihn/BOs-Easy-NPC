@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,31 +19,29 @@
 
 package de.markusbordihn.easynpc.client.screen;
 
-import java.util.Optional;
-import java.util.UUID;
-
-import org.joml.Quaternionf;
-
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
+import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.Profession;
+import java.util.Optional;
+import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Pose;
-
-import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.data.skin.SkinType;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.Profession;
+import org.joml.Quaternionf;
 
 public class ScreenHelper {
 
-  public static void renderEntity(int x, int y, int scale, float yRot, float xRot,
-      EasyNPCEntity entity) {
+  protected ScreenHelper() {}
+
+  public static void renderEntity(
+      int x, int y, int scale, float yRot, float xRot, EasyNPCEntity entity) {
     // Prepare Renderer
     Minecraft minecraft = Minecraft.getInstance();
     float f = (float) Math.atan(yRot / 40.0F);
@@ -76,7 +74,7 @@ public class ScreenHelper {
     entity.setXRot(-f1 * 20.0F);
     entity.yHeadRot = entity.getYRot();
 
-    // Hide gui elements
+    // Hide gui elements or remove custom name
     boolean minecraftHideGui = false;
     if (minecraft != null) {
       minecraftHideGui = minecraft.options.hideGui;
@@ -95,15 +93,10 @@ public class ScreenHelper {
     entityRenderDispatcher.setRenderShadow(false);
     MultiBufferSource.BufferSource multiBuffer =
         Minecraft.getInstance().renderBuffers().bufferSource();
-    entityRenderDispatcher.render(entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, poseStack1, multiBuffer,
-        15728880);
+    entityRenderDispatcher.render(
+        entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, poseStack1, multiBuffer, 15728880);
     multiBuffer.endBatch();
     entityRenderDispatcher.setRenderShadow(true);
-
-    // Show gui elements
-    if (minecraft != null) {
-      minecraft.options.hideGui = minecraftHideGui;
-    }
 
     // Restore entity information
     entity.yBodyRot = entityYBodyRot;
@@ -125,8 +118,13 @@ public class ScreenHelper {
     Lighting.setupFor3DItems();
   }
 
-  public static void renderScaledEntityAvatar(int x, int y, int scale, float yRot, float xRot,
-      EasyNPCEntity entity) {
+  public static void renderScaledEntityAvatar(
+      int x, int y, float yRot, float xRot, EasyNPCEntity entity) {
+    renderScaledEntityAvatar(x, y, entity.getEntityGuiScaling(), yRot, xRot, entity);
+  }
+
+  public static void renderScaledEntityAvatar(
+      int x, int y, int scale, float yRot, float xRot, EasyNPCEntity entity) {
     // Backup entity information
     float entityScaleX = entity.getScaleX();
     float entityScaleY = entity.getScaleY();
@@ -152,8 +150,8 @@ public class ScreenHelper {
     entity.setInvisible(entityInvisible);
   }
 
-  public static void renderCustomPoseEntityAvatar(int x, int y, int scale, float yRot, float xRot,
-      EasyNPCEntity entity) {
+  public static void renderCustomPoseEntityAvatar(
+      int x, int y, int scale, float yRot, float xRot, EasyNPCEntity entity) {
     // Backup entity information
     ModelPose entityModelPose = entity.getModelPose();
     Pose entityPose = entity.getPose();
@@ -170,19 +168,8 @@ public class ScreenHelper {
     entity.setPose(entityPose);
   }
 
-
-  public static void renderEntityAvatar(int x, int y, float yRot, float xRot,
-      EasyNPCEntity entity) {
-    renderEntity(x, y, entity.getEntityGuiScaling(), yRot, xRot, entity);
-  }
-
-  public static void renderEntityAvatar(int x, int y, int scale, float yRot, float xRot,
-      EasyNPCEntity entity) {
-    renderEntity(x, y, scale, yRot, xRot, entity);
-  }
-
-  public static void renderEntityAvatarForScaling(int x, int y, int scale, float yRot, float xRot,
-      EasyNPCEntity entity) {
+  public static void renderEntityAvatarForScaling(
+      int x, int y, int scale, float yRot, float xRot, EasyNPCEntity entity) {
     // Backup entity information
     Rotations entityModelRootRotation = entity.getModelRootRotation();
     boolean entityInvisible = entity.isInvisible();
@@ -199,13 +186,19 @@ public class ScreenHelper {
     entity.setInvisible(entityInvisible);
   }
 
-  public static void renderEntityDialog(int x, int y, float yRot, float xRot,
-      EasyNPCEntity entity) {
+  public static void renderEntityDialog(
+      int x, int y, float yRot, float xRot, EasyNPCEntity entity) {
     renderScaledEntityAvatar(x, y, entity.getEntityDialogScaling(), yRot, xRot, entity);
   }
 
-  public static void renderEntityPlayerSkin(int x, int y, float yRot, float xRot,
-      EasyNPCEntity entity, UUID userUUID, SkinType skinType) {
+  public static void renderEntityPlayerSkin(
+      int x,
+      int y,
+      float yRot,
+      float xRot,
+      EasyNPCEntity entity,
+      UUID userUUID,
+      SkinType skinType) {
 
     // Backup entity information
     SkinType entitySkinType = entity.getSkinType();
@@ -218,8 +211,13 @@ public class ScreenHelper {
     entity.setPreview(true);
 
     // Render Entity
-    renderScaledEntityAvatar(x + entity.getEntityGuiLeft(), y + entity.getEntityGuiTop(),
-        entity.getEntityGuiScaling(), yRot, xRot, entity);
+    renderScaledEntityAvatar(
+        x + entity.getEntityGuiLeft(),
+        y + entity.getEntityGuiTop(),
+        entity.getEntitySkinScaling(),
+        yRot,
+        xRot,
+        entity);
 
     // Restore entity information
     entity.setSkinType(entitySkinType);
@@ -227,8 +225,14 @@ public class ScreenHelper {
     entity.setPreview(entityPreview);
   }
 
-  public static void renderEntityDefaultSkin(int x, int y, float yRot, float xRot,
-      EasyNPCEntity entity, Enum<?> variant, Profession profession) {
+  public static void renderEntityDefaultSkin(
+      int x,
+      int y,
+      float yRot,
+      float xRot,
+      EasyNPCEntity entity,
+      Enum<?> variant,
+      Profession profession) {
 
     // Backup entity information
     SkinType entitySkinType = entity.getSkinType();
@@ -241,13 +245,17 @@ public class ScreenHelper {
     entity.setProfession(profession);
 
     // Render Entity
-    renderScaledEntityAvatar(x + entity.getEntityGuiLeft(), y + entity.getEntityGuiTop(),
-        entity.getEntityGuiScaling(), yRot, xRot, entity);
+    renderScaledEntityAvatar(
+        x + entity.getEntityGuiLeft(),
+        y + entity.getEntityGuiTop(),
+        entity.getEntitySkinScaling(),
+        yRot,
+        xRot,
+        entity);
 
     // Restore entity information
     entity.setSkinType(entitySkinType);
     entity.setVariant(entityVariant);
     entity.setProfession(entityProfession);
   }
-
 }

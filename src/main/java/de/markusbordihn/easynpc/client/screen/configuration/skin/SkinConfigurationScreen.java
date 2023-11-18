@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,18 +19,20 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.skin;
 
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
+import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import java.util.ArrayList;
+import java.util.List;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class SkinConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
@@ -38,18 +40,77 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
   // NPC Entity
   protected final boolean isPlayerSkinModel;
 
+  // Settings
+  protected final int skinPreviewWidth = 60;
+
   // Buttons
   protected Button customSkinButton = null;
   protected Button defaultSkinButton = null;
   protected Button playerSkinButton = null;
 
-  // Settings
-  protected int skinPreviewWidth = 56;
+  // Skin Navigation
+  protected Button skinPreviousButton = null;
+  protected Button skinNextButton = null;
+  protected Button skinPreviousPageButton = null;
+  protected Button skinNextPageButton = null;
+  protected int skinStartIndex = 0;
+  protected int numOfSkins = 0;
+  protected int maxSkinsPerPage = 5;
+
+  // Cache
+  protected List<Button> skinButtons = new ArrayList<>();
 
   public SkinConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
     this.isPlayerSkinModel =
         SkinModel.HUMANOID.equals(this.skinModel) || SkinModel.HUMANOID_SLIM.equals(this.skinModel);
+  }
+
+  protected void checkSkinNavigationButtonState() {
+    // Check the visible for the buttons.
+    boolean skinButtonShouldBeVisible = this.numOfSkins > this.maxSkinsPerPage;
+    if (this.skinPreviousButton != null) {
+      this.skinPreviousButton.visible = skinButtonShouldBeVisible;
+    }
+    if (this.skinNextButton != null) {
+      this.skinNextButton.visible = skinButtonShouldBeVisible;
+    }
+    if (this.skinPreviousPageButton != null) {
+      this.skinPreviousPageButton.visible = skinButtonShouldBeVisible;
+    }
+    if (this.skinNextPageButton != null) {
+      this.skinNextPageButton.visible = skinButtonShouldBeVisible;
+    }
+
+    // Enable / disable buttons depending on the current skin index.
+    if (this.skinPreviousButton != null) {
+      this.skinPreviousButton.active = this.skinStartIndex > 0;
+    }
+    if (this.skinNextButton != null) {
+      this.skinNextButton.active = this.skinStartIndex + this.maxSkinsPerPage < this.numOfSkins;
+    }
+    if (this.skinPreviousPageButton != null) {
+      this.skinPreviousPageButton.active = this.skinStartIndex - this.maxSkinsPerPage > 0;
+    }
+    if (this.skinNextPageButton != null) {
+      this.skinNextPageButton.active =
+          this.skinStartIndex + 1 + this.maxSkinsPerPage < this.numOfSkins;
+    }
+  }
+
+  protected void renderSkinSelectionBackground(GuiGraphics guiGraphics) {
+    guiGraphics.fill(
+        this.contentLeftPos,
+        this.topPos + 102,
+        this.contentLeftPos + 302,
+        this.topPos + 188,
+        0xff000000);
+    guiGraphics.fill(
+        this.contentLeftPos + 1,
+        this.topPos + 103,
+        this.contentLeftPos + 301,
+        this.topPos + 187,
+        0xffaaaaaa);
   }
 
   @Override
@@ -58,32 +119,66 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
 
     // Skin Types
     int skinButtonWidth = 92;
-    this.defaultSkinButton = this.addRenderableWidget(menuButton(this.buttonLeftPos,
-        this.buttonTopPos, skinButtonWidth - 2, "default_skin", onPress -> {
-          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_SKIN);
-        }));
-    this.playerSkinButton = this.addRenderableWidget(
-        menuButton(this.defaultSkinButton.getX() + this.defaultSkinButton.getWidth(),
-            this.buttonTopPos, skinButtonWidth - 6, "player_skin", onPress -> {
-              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.PLAYER_SKIN);
-            }));
-    this.customSkinButton = this.addRenderableWidget(
-        menuButton(this.playerSkinButton.getX() + this.playerSkinButton.getWidth(),
-            this.buttonTopPos, skinButtonWidth + 5, "custom_skin", onPress -> {
-              NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_SKIN);
-            }));
+    this.defaultSkinButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.buttonLeftPos,
+                this.buttonTopPos,
+                skinButtonWidth - 4,
+                "default",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_SKIN)));
+    this.playerSkinButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.defaultSkinButton.getX() + this.defaultSkinButton.getWidth(),
+                this.buttonTopPos,
+                skinButtonWidth - 6,
+                "player_skin",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.PLAYER_SKIN)));
+    this.customSkinButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.playerSkinButton.getX() + this.playerSkinButton.getWidth(),
+                this.buttonTopPos,
+                skinButtonWidth + 5,
+                "custom",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_SKIN)));
 
     // Default button stats
-    this.customSkinButton.active = this.hasPermissions(COMMON.customSkinConfigurationEnabled.get(),
-        COMMON.customSkinConfigurationAllowInCreative.get(),
-        COMMON.customSkinConfigurationPermissionLevel.get());
+    this.customSkinButton.active =
+        this.hasPermissions(
+            COMMON.customSkinConfigurationEnabled.get(),
+            COMMON.customSkinConfigurationAllowInCreative.get(),
+            COMMON.customSkinConfigurationPermissionLevel.get());
     this.defaultSkinButton.active =
-        this.hasPermissions(COMMON.defaultSkinConfigurationEnabled.get(),
+        this.hasPermissions(
+            COMMON.defaultSkinConfigurationEnabled.get(),
             COMMON.defaultSkinConfigurationAllowInCreative.get(),
             COMMON.defaultSkinConfigurationPermissionLevel.get());
-    this.playerSkinButton.active = this.hasPermissions(COMMON.playerSkinConfigurationEnabled.get(),
-        COMMON.playerSkinConfigurationAllowInCreative.get(),
-        COMMON.playerSkinConfigurationPermissionLevel.get());
+    this.playerSkinButton.active =
+        this.hasPermissions(
+            COMMON.playerSkinConfigurationEnabled.get(),
+            COMMON.playerSkinConfigurationAllowInCreative.get(),
+            COMMON.playerSkinConfigurationPermissionLevel.get());
   }
 
+  @Override
+  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
+    this.renderSkinSelectionBackground(guiGraphics);
+  }
+
+  @Override
+  public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    // Make sure we pass the mouse click to the dynamically added buttons, if any.
+    if (!skinButtons.isEmpty()) {
+      for (Button skinButton : skinButtons) {
+        skinButton.mouseClicked(mouseX, mouseY, button);
+      }
+    }
+    return super.mouseClicked(mouseX, mouseY, button);
+  }
 }
