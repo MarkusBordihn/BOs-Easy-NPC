@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,39 +19,38 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.preset;
 
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.components.Text;
+import de.markusbordihn.easynpc.client.screen.components.TextButton;
+import de.markusbordihn.easynpc.client.screen.components.TextField;
+import de.markusbordihn.easynpc.data.CustomPresetData;
+import de.markusbordihn.easynpc.menu.configuration.preset.WorldExportPresetConfigurationMenu;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
-
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.CustomPresetData;
-import de.markusbordihn.easynpc.menu.configuration.preset.WorldExportPresetConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class ExportWorldPresetConfigurationScreen
     extends ExportPresetConfigurationScreen<WorldExportPresetConfigurationMenu> {
 
+  protected Button exportPresetButton;
+  protected int numberOfTextLines = 1;
   // Buttons and Boxes
   private EditBox nameBox;
-  protected Button exportPresetButton;
-
   // Text
   private List<FormattedCharSequence> textComponents = Collections.emptyList();
-  protected int numberOfTextLines = 1;
 
-  public ExportWorldPresetConfigurationScreen(WorldExportPresetConfigurationMenu menu,
-      Inventory inventory, Component component) {
+  public ExportWorldPresetConfigurationScreen(
+      WorldExportPresetConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 
@@ -72,8 +71,7 @@ public class ExportWorldPresetConfigurationScreen
     String customPresetFileName = customPresetFile.getName();
 
     // Name Edit Box
-    this.nameBox = new EditBox(this.font, this.contentLeftPos + 5, this.bottomPos - 65, 270, 18,
-        Component.translatable("Name"));
+    this.nameBox = new TextField(this.font, this.contentLeftPos + 5, this.bottomPos - 65, 270);
     this.nameBox.setMaxLength(64);
     this.nameBox.setValue(customPresetFileName);
     this.nameBox.setResponder(consumer -> this.validateName());
@@ -82,17 +80,25 @@ public class ExportWorldPresetConfigurationScreen
     // Pre-format text
     this.textComponents =
         this.font.split(
-            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "export_preset_world_text",
-                customPresetFile.getParentFile(), customPresetFile.getName()),
+            Component.translatable(
+                Constants.TEXT_CONFIG_PREFIX + "export_preset_world_text",
+                customPresetFile.getParentFile(),
+                customPresetFile.getName()),
             this.imageWidth - 25);
     this.numberOfTextLines = this.textComponents.size();
 
     // Export button
-    this.exportPresetButton = this.addRenderableWidget(
-        menuButton(this.contentLeftPos + 65, this.bottomPos - 40, 150, "export", button -> {
-          NetworkMessageHandler.exportPresetWorld(uuid, this.nameBox.getValue());
-          exportPresetButton.active = false;
-        }));
+    this.exportPresetButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.contentLeftPos + 65,
+                this.bottomPos - 40,
+                150,
+                "export",
+                button -> {
+                  NetworkMessageHandler.exportPresetWorld(uuid, this.nameBox.getValue());
+                  exportPresetButton.active = false;
+                }));
   }
 
   @Override
@@ -102,11 +108,13 @@ public class ExportWorldPresetConfigurationScreen
     if (!this.textComponents.isEmpty()) {
       for (int line = 0; line < this.numberOfTextLines; ++line) {
         FormattedCharSequence formattedCharSequence = this.textComponents.get(line);
-        guiGraphics.drawString(this.font, formattedCharSequence, leftPos + 15,
-            topPos + 80 + (line * (font.lineHeight + 2)), Constants.FONT_COLOR_DEFAULT, false);
+        Text.drawString(
+            guiGraphics,
+            this.font,
+            formattedCharSequence,
+            leftPos + 15,
+            topPos + 80 + (line * (font.lineHeight + 2)));
       }
     }
-
   }
-
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,21 +19,17 @@
 
 package de.markusbordihn.easynpc.data;
 
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.resources.ResourceLocation;
-
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
-import de.markusbordihn.easynpc.data.skin.SkinModel;
 
 public class CustomSkinData {
 
@@ -43,10 +39,11 @@ public class CustomSkinData {
   protected CustomSkinData() {}
 
   public static void registerCustomSkinData(final FMLClientSetupEvent event) {
-    event.enqueueWork(() -> {
-      prepareFolder();
-      registerTextureFiles();
-    });
+    event.enqueueWork(
+        () -> {
+          prepareFolder();
+          registerTextureFiles();
+        });
   }
 
   public static void prepareFolder() {
@@ -62,16 +59,14 @@ public class CustomSkinData {
     for (SkinModel skinModel : SkinModel.values()) {
       Path skinModelFolder = getSkinDataFolder(skinModel);
       if (skinModelFolder != null) {
-        log.info("{} skin model folder {} at {} ...", Constants.LOG_CREATE_PREFIX, skinModel,
+        log.info(
+            "{} skin model folder {} at {} ...",
+            Constants.LOG_CREATE_PREFIX,
+            skinModel,
             skinModelFolder);
 
         // Copy example skin files, if any.
         switch (skinModel) {
-          case ALLAY:
-            CustomDataHandler.copyResourceFile(
-                new ResourceLocation(Constants.MOD_ID, "textures/entity/allay/allay_example.png"),
-                skinModelFolder.resolve("allay_example.png").toFile());
-            break;
           case FAIRY:
             CustomDataHandler.copyResourceFile(
                 new ResourceLocation(Constants.MOD_ID, "textures/entity/fairy/fairy_example.png"),
@@ -79,38 +74,38 @@ public class CustomSkinData {
             break;
           case HUMANOID:
             CustomDataHandler.copyResourceFile(
-                new ResourceLocation(Constants.MOD_ID,
-                    "textures/entity/humanoid/humanoid_example.png"),
+                new ResourceLocation(
+                    Constants.MOD_ID, "textures/entity/humanoid/humanoid_example.png"),
                 skinModelFolder.resolve("humanoid_example.png").toFile());
             break;
           case HUMANOID_SLIM:
             CustomDataHandler.copyResourceFile(
-                new ResourceLocation(Constants.MOD_ID,
-                    "textures/entity/humanoid_slim/humanoid_slim_example.png"),
+                new ResourceLocation(
+                    Constants.MOD_ID, "textures/entity/humanoid_slim/humanoid_slim_example.png"),
                 skinModelFolder.resolve("humanoid_slim_example.png").toFile());
             break;
           case ILLAGER:
             CustomDataHandler.copyResourceFile(
-                new ResourceLocation(Constants.MOD_ID,
-                    "textures/entity/illager/illager_example.png"),
+                new ResourceLocation(
+                    Constants.MOD_ID, "textures/entity/illager/illager_example.png"),
                 skinModelFolder.resolve("illager_example.png").toFile());
             break;
           case IRON_GOLEM:
             CustomDataHandler.copyResourceFile(
-                new ResourceLocation(Constants.MOD_ID,
-                    "textures/entity/iron_golem/iron_golem_example.png"),
+                new ResourceLocation(
+                    Constants.MOD_ID, "textures/entity/iron_golem/iron_golem_example.png"),
                 skinModelFolder.resolve("iron_golem_example.png").toFile());
             break;
           case SKELETON:
             CustomDataHandler.copyResourceFile(
-                new ResourceLocation(Constants.MOD_ID,
-                    "textures/entity/skeleton/skeleton_example.png"),
+                new ResourceLocation(
+                    Constants.MOD_ID, "textures/entity/skeleton/skeleton_example.png"),
                 skinModelFolder.resolve("skeleton_example.png").toFile());
             break;
           case VILLAGER:
             CustomDataHandler.copyResourceFile(
-                new ResourceLocation(Constants.MOD_ID,
-                    "textures/entity/villager/villager_example.png"),
+                new ResourceLocation(
+                    Constants.MOD_ID, "textures/entity/villager/villager_example.png"),
                 skinModelFolder.resolve("villager_example.png").toFile());
             break;
           case ZOMBIE:
@@ -120,7 +115,8 @@ public class CustomSkinData {
             break;
           case ZOMBIE_VILLAGER:
             CustomDataHandler.copyResourceFile(
-                new ResourceLocation(Constants.MOD_ID,
+                new ResourceLocation(
+                    Constants.MOD_ID,
                     "textures/entity/zombie_villager/zombie_villager_example.png"),
                 skinModelFolder.resolve("zombie_villager_example.png").toFile());
             break;
@@ -138,8 +134,10 @@ public class CustomSkinData {
     log.info("{} custom skins from {} ...", Constants.LOG_REGISTER_PREFIX, skinDataFolder);
     for (SkinModel skinModel : SkinModel.values()) {
       Path skinModelFolder = getSkinDataFolder(skinModel);
-      if (skinModelFolder != null && skinModelFolder.toFile() != null
-          && skinModelFolder.toFile().exists() && skinModelFolder.toFile().isDirectory()) {
+      if (skinModelFolder != null
+          && skinModelFolder.toFile() != null
+          && skinModelFolder.toFile().exists()
+          && skinModelFolder.toFile().isDirectory()) {
         for (String skinFileName : skinModelFolder.toFile().list()) {
           Path skinFilePath = skinModelFolder.resolve(skinFileName);
           File skinFile = skinFilePath.toFile();
@@ -167,11 +165,12 @@ public class CustomSkinData {
       try {
         return Files.createDirectories(skinDataFolder.resolve(skinModelName));
       } catch (IOException e) {
-        log.error("Could not create skin data folder for {} at {}!", skinModelName,
+        log.error(
+            "Could not create skin data folder for {} at {}!",
+            skinModelName,
             skinDataFolder.resolve(skinModelName));
       }
     }
     return null;
   }
-
 }

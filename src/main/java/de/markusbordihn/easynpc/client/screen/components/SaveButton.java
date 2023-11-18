@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,34 +19,29 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-import java.util.function.Supplier;
-
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.Component;
-
 import de.markusbordihn.easynpc.Constants;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
-public class SaveButton extends Button {
+public class SaveButton extends SpriteButton {
 
-  protected static final Button.CreateNarration DEFAULT_NARRATION = Supplier::get;
+  public static final int DEFAULT_WIDTH = 100;
+  public static final int DEFAULT_HEIGHT = 18;
+  public static final ResourceLocation SPRITE = Constants.TEXTURE_CONFIGURATION;
 
   public SaveButton(int left, int top, OnPress onPress) {
-    this(left, top, 22, 20, Component.literal(""), onPress);
+    super(left, top, 20, 18, Constants.TEXTURE_CONFIGURATION, 4, 3, 64, 4, 13, 13, onPress);
   }
 
-  public SaveButton(int left, int top, int width, int height, Component component,
-      OnPress onPress) {
-    super(left, top, width, height, component, onPress, DEFAULT_NARRATION);
+  public SaveButton(int left, int top, String label, OnPress onPress) {
+    super(left, top, DEFAULT_WIDTH, DEFAULT_HEIGHT, label, SPRITE, 4, 3, 64, 4, 13, 13, onPress);
   }
 
-  @Override
-  public void renderWidget(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
-    super.renderWidget(guiGraphics, left, top, partialTicks);
-
-    // Button Icons
-    guiGraphics.blit(Constants.TEXTURE_CONFIGURATION, this.getX() + 4, this.getY() + 3, 60,
-        this.active ? 0 : 16, 16, 16);
+  public SaveButton(int left, int top, int width, String label, OnPress onPress) {
+    super(left, top, width, DEFAULT_HEIGHT, label, SPRITE, 4, 3, 64, 4, 13, 13, onPress);
   }
 
+  public SaveButton(int left, int top, int width, Component component, OnPress onPress) {
+    super(left, top, width, DEFAULT_HEIGHT, component, SPRITE, 4, 3, 64, 4, 13, 13, onPress);
+  }
 }

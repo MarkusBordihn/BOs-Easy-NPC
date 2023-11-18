@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,24 +19,24 @@
 
 package de.markusbordihn.easynpc.data.action;
 
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
-
 import net.minecraft.server.level.ServerPlayer;
-
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 
 public class ActionManager {
 
-  private static HashMap<EasyNPCEntity, EnumMap<ActionGroup, HashSet<ServerPlayer>>> actionGroupPlayerMap =
-      new HashMap<>();
+  private static final HashMap<EasyNPCEntity, EnumMap<ActionGroup, HashSet<ServerPlayer>>>
+      actionGroupPlayerMap = new HashMap<>();
 
-  public static void addPlayer(EasyNPCEntity npcEntity, ActionGroup actionGroup, ServerPlayer serverPlayer) {
+  public static void addPlayer(
+      EasyNPCEntity npcEntity, ActionGroup actionGroup, ServerPlayer serverPlayer) {
     if (npcEntity == null || actionGroup == null || serverPlayer == null) {
       return;
     }
-    EnumMap<ActionGroup, HashSet<ServerPlayer>> actionGroupPlayer = actionGroupPlayerMap.get(npcEntity);
+    EnumMap<ActionGroup, HashSet<ServerPlayer>> actionGroupPlayer =
+        actionGroupPlayerMap.get(npcEntity);
     if (actionGroupPlayer == null) {
       actionGroupPlayer = new EnumMap<>(ActionGroup.class);
     }
@@ -49,11 +49,13 @@ public class ActionManager {
     actionGroupPlayerMap.put(npcEntity, actionGroupPlayer);
   }
 
-  public static boolean containsPlayer(EasyNPCEntity easyNPCEntity, ActionGroup actionGroup, ServerPlayer serverPlayer) {
+  public static boolean containsPlayer(
+      EasyNPCEntity easyNPCEntity, ActionGroup actionGroup, ServerPlayer serverPlayer) {
     if (easyNPCEntity == null || actionGroup == null || serverPlayer == null) {
       return false;
     }
-    EnumMap<ActionGroup, HashSet<ServerPlayer>> actionGroupPlayer = actionGroupPlayerMap.get(easyNPCEntity);
+    EnumMap<ActionGroup, HashSet<ServerPlayer>> actionGroupPlayer =
+        actionGroupPlayerMap.get(easyNPCEntity);
     if (actionGroupPlayer == null) {
       return false;
     }
@@ -64,11 +66,13 @@ public class ActionManager {
     return playerList.contains(serverPlayer);
   }
 
-  public static void removePlayer(EasyNPCEntity easyNPCEntity, ActionGroup actionGroup, ServerPlayer serverPlayer) {
+  public static void removePlayer(
+      EasyNPCEntity easyNPCEntity, ActionGroup actionGroup, ServerPlayer serverPlayer) {
     if (easyNPCEntity == null || actionGroup == null || serverPlayer == null) {
       return;
     }
-    EnumMap<ActionGroup, HashSet<ServerPlayer>> actionGroupPlayer = actionGroupPlayerMap.get(easyNPCEntity);
+    EnumMap<ActionGroup, HashSet<ServerPlayer>> actionGroupPlayer =
+        actionGroupPlayerMap.get(easyNPCEntity);
     if (actionGroupPlayer == null) {
       return;
     }
@@ -85,12 +89,12 @@ public class ActionManager {
     if (easyNPCEntity == null || actionGroup == null) {
       return;
     }
-    EnumMap<ActionGroup, HashSet<ServerPlayer>> actionGroupPlayer = actionGroupPlayerMap.get(easyNPCEntity);
+    EnumMap<ActionGroup, HashSet<ServerPlayer>> actionGroupPlayer =
+        actionGroupPlayerMap.get(easyNPCEntity);
     if (actionGroupPlayer == null || !actionGroupPlayer.containsKey(actionGroup)) {
       return;
     }
     actionGroupPlayer.remove(actionGroup);
     actionGroupPlayerMap.put(easyNPCEntity, actionGroupPlayer);
   }
-
 }

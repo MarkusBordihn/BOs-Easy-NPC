@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2022 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,6 +19,13 @@
 
 package de.markusbordihn.easynpc.utils;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
+import com.mojang.authlib.GameProfile;
+import de.markusbordihn.easynpc.Constants;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -27,24 +34,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.UUID;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
-
-import com.mojang.authlib.GameProfile;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.players.GameProfileCache;
-
-import de.markusbordihn.easynpc.Constants;
+import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PlayersUtils {
 
@@ -67,7 +62,7 @@ public class PlayersUtils {
       return Optional.empty();
     }
     final GameProfileCache gameProfileCache = server.getProfileCache();
-    return gameProfileCache != null ? gameProfileCache.get(username) : Optional.empty();
+    return gameProfileCache.get(username);
   }
 
   public static UUID getUserUUID(MinecraftServer server, String username) {
@@ -195,12 +190,18 @@ public class PlayersUtils {
   }
 
   public static boolean isValidPlayerName(String name) {
-    return name != null && !name.isEmpty() && !name.startsWith("http") && !name.equals("htt")
-        && name.length() >= 3 && name.length() <= 16 && name.matches(USER_REGEX);
+    return name != null
+        && !name.isEmpty()
+        && !name.startsWith("http")
+        && !name.equals("htt")
+        && name.length() >= 3
+        && name.length() <= 16
+        && name.matches(USER_REGEX);
   }
 
   public static boolean isValidUrl(String url) {
-    if (url == null || url.isEmpty()
+    if (url == null
+        || url.isEmpty()
         || (!url.startsWith("http://") && !url.startsWith("https://"))) {
       return false;
     }
@@ -211,5 +212,4 @@ public class PlayersUtils {
     }
     return true;
   }
-
 }

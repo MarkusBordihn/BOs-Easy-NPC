@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,21 +19,17 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity.layers;
 
-import java.util.Map;
-
 import com.mojang.blaze3d.vertex.PoseStack;
-
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import java.util.Map;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 
 @OnlyIn(Dist.CLIENT)
 public class OuterLayer<T extends EasyNPCEntity, M extends EntityModel<T>>
@@ -42,15 +38,23 @@ public class OuterLayer<T extends EasyNPCEntity, M extends EntityModel<T>>
   private final Map<?, ResourceLocation> textures;
 
   @SuppressWarnings("java:S1172")
-  public OuterLayer(RenderLayerParent<T, M> parent, EntityModelSet model,
-      Map<?, ResourceLocation> textures) {
+  public OuterLayer(
+      RenderLayerParent<T, M> parent, EntityModelSet model, Map<?, ResourceLocation> textures) {
     super(parent);
     this.textures = textures;
   }
 
   @Override
-  public void render(PoseStack poseStack, MultiBufferSource buffer, int lightLevel, T livingEntity,
-      float limbSwing, float limbSwingAmount, float ageInTicks, float ageInTicks2, float netHeadYaw,
+  public void render(
+      PoseStack poseStack,
+      MultiBufferSource buffer,
+      int lightLevel,
+      T livingEntity,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float ageInTicks2,
+      float netHeadYaw,
       float headPitch) {
     if (livingEntity.isPreview() || livingEntity.isInvisible() || textures == null) {
       return;
@@ -58,8 +62,8 @@ public class OuterLayer<T extends EasyNPCEntity, M extends EntityModel<T>>
     ResourceLocation resourceLocation = textures.get(livingEntity.getVariant());
     if (resourceLocation != null) {
       M model = this.getParentModel();
-      renderColoredCutoutModel(model, resourceLocation, poseStack, buffer, lightLevel, livingEntity,
-          1.0F, 1.0F, 1.0F);
+      renderColoredCutoutModel(
+          model, resourceLocation, poseStack, buffer, lightLevel, livingEntity, 1.0F, 1.0F, 1.0F);
     }
   }
 }

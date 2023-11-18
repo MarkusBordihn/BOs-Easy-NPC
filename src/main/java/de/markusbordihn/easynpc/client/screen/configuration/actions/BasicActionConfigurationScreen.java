@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,22 +19,22 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.actions;
 
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.client.screen.components.SaveButton;
+import de.markusbordihn.easynpc.client.screen.components.Text;
+import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.data.action.ActionEventType;
+import de.markusbordihn.easynpc.data.action.ActionType;
+import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.screen.components.Checkbox;
-import de.markusbordihn.easynpc.client.screen.components.SaveButton;
-import de.markusbordihn.easynpc.data.action.ActionData;
-import de.markusbordihn.easynpc.data.action.ActionType;
-import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class BasicActionConfigurationScreen
@@ -46,20 +46,56 @@ public class BasicActionConfigurationScreen
   protected Checkbox onInteractionActionDebugCheckbox;
   protected Button onInteractionActionSaveButton;
 
+  // On Hurt Action
+  protected EditBox onHurtActionBox;
+  protected Checkbox onHurtActionExecuteAsUserCheckbox;
+  protected Checkbox onHurtActionDebugCheckbox;
+  protected Button onHurtActionSaveButton;
+
+  // On Death Action
+  protected EditBox onDeathActionBox;
+  protected Checkbox onDeathActionExecuteAsUserCheckbox;
+  protected Checkbox onDeathActionDebugCheckbox;
+  protected Button onDeathActionSaveButton;
+
   // Cache
   private ActionData lastInteractionActionData;
+  private ActionData lastHurtActionData;
+  private ActionData lastDeathActionData;
 
-  public BasicActionConfigurationScreen(BasicActionConfigurationMenu menu, Inventory inventory,
-      Component component) {
+  public BasicActionConfigurationScreen(
+      BasicActionConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 
   public void validateInteractionAction() {
     ActionData actionData =
-        new ActionData(ActionType.ON_INTERACTION, this.onInteractionActionBox.getValue(),
+        new ActionData(
+            ActionType.COMMAND,
+            this.onInteractionActionBox.getValue(),
             this.onInteractionActionExecuteAsUserCheckbox.selected(),
             this.onInteractionActionDebugCheckbox.selected());
     this.onInteractionActionSaveButton.active = !actionData.equals(this.lastInteractionActionData);
+  }
+
+  public void validateOnHurtAction() {
+    ActionData actionData =
+        new ActionData(
+            ActionType.COMMAND,
+            this.onHurtActionBox.getValue(),
+            this.onHurtActionExecuteAsUserCheckbox.selected(),
+            this.onHurtActionDebugCheckbox.selected());
+    this.onHurtActionSaveButton.active = !actionData.equals(this.lastHurtActionData);
+  }
+
+  public void validateOnDeathAction() {
+    ActionData actionData =
+        new ActionData(
+            ActionType.COMMAND,
+            this.onDeathActionBox.getValue(),
+            this.onDeathActionExecuteAsUserCheckbox.selected(),
+            this.onDeathActionDebugCheckbox.selected());
+    this.onDeathActionSaveButton.active = !actionData.equals(this.lastDeathActionData);
   }
 
   @Override
@@ -71,31 +107,133 @@ public class BasicActionConfigurationScreen
 
     // On Interaction Action
     int interactionActionTop = this.topPos + 50;
-    ActionData interactionActionData = this.entity.getActionData(ActionType.ON_INTERACTION);
+    ActionData interactionActionData =
+        this.actionDataSet.getActionEvent(ActionEventType.ON_INTERACTION);
     this.lastInteractionActionData = interactionActionData;
-    this.onInteractionActionBox = this.addRenderableWidget(
-        actionEditBox(this.contentLeftPos, interactionActionTop, interactionActionData));
+    this.onInteractionActionBox =
+        this.addRenderableWidget(
+            actionEditBox(this.contentLeftPos, interactionActionTop, interactionActionData));
     this.onInteractionActionBox.setResponder(consumer -> this.validateInteractionAction());
-    this.onInteractionActionExecuteAsUserCheckbox = this.addRenderableWidget(
-        new Checkbox(this.contentLeftPos + 80, interactionActionTop + 18, "execute_as_player",
-            interactionActionData != null && interactionActionData.shouldExecuteAsUser(),
-            checkbox -> this.validateInteractionAction()));
+    this.onInteractionActionExecuteAsUserCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                this.contentLeftPos + 80,
+                interactionActionTop + 18,
+                "execute_as_player",
+                interactionActionData != null && interactionActionData.shouldExecuteAsUser(),
+                checkbox -> this.validateInteractionAction()));
     this.onInteractionActionDebugCheckbox =
-        this.addRenderableWidget(new Checkbox(this.contentLeftPos + 215, interactionActionTop + 18,
-            "debug", interactionActionData != null && interactionActionData.isDebugEnabled(),
-            checkbox -> this.validateInteractionAction()));
-    this.onInteractionActionSaveButton = this.addRenderableWidget(
-        new SaveButton(onInteractionActionBox.getX()+ onInteractionActionBox.getWidth() + 5,
-            interactionActionTop - 2, onPress -> {
-              ActionData actionData =
-                  new ActionData(ActionType.ON_INTERACTION, this.onInteractionActionBox.getValue(),
-                      this.onInteractionActionExecuteAsUserCheckbox.selected(),
-                      this.onInteractionActionDebugCheckbox.selected());
-              NetworkMessageHandler.actionChange(uuid, actionData);
-              this.lastInteractionActionData = actionData;
-              this.onInteractionActionSaveButton.active = false;
-            }));
+        this.addRenderableWidget(
+            new Checkbox(
+                this.contentLeftPos + 215,
+                interactionActionTop + 18,
+                "debug",
+                interactionActionData != null && interactionActionData.isDebugEnabled(),
+                checkbox -> this.validateInteractionAction()));
+    this.onInteractionActionSaveButton =
+        this.addRenderableWidget(
+            new SaveButton(
+                onInteractionActionBox.getX() + onInteractionActionBox.getWidth() + 5,
+                interactionActionTop - 1,
+                onPress -> {
+                  ActionData actionData =
+                      new ActionData(
+                          ActionType.COMMAND,
+                          this.onInteractionActionBox.getValue(),
+                          this.onInteractionActionExecuteAsUserCheckbox.selected(),
+                          this.onInteractionActionDebugCheckbox.selected());
+                  NetworkMessageHandler.actionEventChange(
+                      uuid, ActionEventType.ON_INTERACTION, actionData);
+                  this.lastInteractionActionData = actionData;
+                  this.onInteractionActionSaveButton.active = false;
+                }));
     this.onInteractionActionSaveButton.active = false;
+
+    // On Hurt Action
+    int onHurtActionTop = interactionActionTop + 50;
+    ActionData onHurtActionData = this.actionDataSet.getActionEvent(ActionEventType.ON_HURT);
+    this.lastHurtActionData = onHurtActionData;
+    this.onHurtActionBox =
+        this.addRenderableWidget(
+            actionEditBox(this.contentLeftPos, onHurtActionTop, onHurtActionData));
+    this.onHurtActionBox.setResponder(consumer -> this.validateOnHurtAction());
+    this.onHurtActionExecuteAsUserCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                this.contentLeftPos + 80,
+                onHurtActionTop + 18,
+                "execute_as_player",
+                onHurtActionData != null && onHurtActionData.shouldExecuteAsUser(),
+                checkbox -> this.validateOnHurtAction()));
+    this.onHurtActionDebugCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                this.contentLeftPos + 215,
+                onHurtActionTop + 18,
+                "debug",
+                onHurtActionData != null && onHurtActionData.isDebugEnabled(),
+                checkbox -> this.validateOnHurtAction()));
+    this.onHurtActionSaveButton =
+        this.addRenderableWidget(
+            new SaveButton(
+                onHurtActionBox.getX() + onHurtActionBox.getWidth() + 5,
+                onHurtActionTop - 1,
+                onPress -> {
+                  ActionData actionData =
+                      new ActionData(
+                          ActionType.COMMAND,
+                          this.onHurtActionBox.getValue(),
+                          this.onHurtActionExecuteAsUserCheckbox.selected(),
+                          this.onHurtActionDebugCheckbox.selected());
+                  NetworkMessageHandler.actionEventChange(
+                      uuid, ActionEventType.ON_HURT, actionData);
+                  this.lastHurtActionData = actionData;
+                  this.onHurtActionSaveButton.active = false;
+                }));
+    this.onHurtActionSaveButton.active = false;
+
+    // On Death Action
+    int onDeathActionTop = onHurtActionTop + 50;
+    ActionData onDeathActionData = this.actionDataSet.getActionEvent(ActionEventType.ON_DEATH);
+    this.lastDeathActionData = onDeathActionData;
+    this.onDeathActionBox =
+        this.addRenderableWidget(
+            actionEditBox(this.contentLeftPos, onDeathActionTop, onDeathActionData));
+    this.onDeathActionBox.setResponder(consumer -> this.validateOnDeathAction());
+    this.onDeathActionExecuteAsUserCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                this.contentLeftPos + 80,
+                onDeathActionTop + 18,
+                "execute_as_player",
+                onDeathActionData != null && onDeathActionData.shouldExecuteAsUser(),
+                checkbox -> this.validateOnDeathAction()));
+    this.onDeathActionDebugCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                this.contentLeftPos + 215,
+                onDeathActionTop + 18,
+                "debug",
+                onDeathActionData != null && onDeathActionData.isDebugEnabled(),
+                checkbox -> this.validateOnDeathAction()));
+    this.onDeathActionSaveButton =
+        this.addRenderableWidget(
+            new SaveButton(
+                onDeathActionBox.getX() + onDeathActionBox.getWidth() + 5,
+                onDeathActionTop - 1,
+                onPress -> {
+                  ActionData actionData =
+                      new ActionData(
+                          ActionType.COMMAND,
+                          this.onDeathActionBox.getValue(),
+                          this.onDeathActionExecuteAsUserCheckbox.selected(),
+                          this.onDeathActionDebugCheckbox.selected());
+                  NetworkMessageHandler.actionEventChange(
+                      uuid, ActionEventType.ON_DEATH, actionData);
+                  this.lastDeathActionData = actionData;
+                  this.onDeathActionSaveButton.active = false;
+                }));
+    this.onDeathActionSaveButton.active = false;
   }
 
   @Override
@@ -103,11 +241,28 @@ public class BasicActionConfigurationScreen
     super.render(guiGraphics, x, y, partialTicks);
 
     // Description Texts
-    guiGraphics.drawString(this.font,
-        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "on_interaction"),
-        this.contentLeftPos, this.onInteractionActionSaveButton.getY() - 8,
-        Constants.FONT_COLOR_BLACK, false);
+    Text.drawConfigString(
+        guiGraphics,
+        this.font,
+        "on_interaction",
+        this.contentLeftPos,
+        this.onInteractionActionSaveButton.getY() - 10,
+        Constants.FONT_COLOR_BLACK);
 
+    Text.drawConfigString(
+        guiGraphics,
+        this.font,
+        "on_hurt",
+        this.contentLeftPos,
+        this.onHurtActionSaveButton.getY() - 10,
+        Constants.FONT_COLOR_BLACK);
+
+    Text.drawConfigString(
+        guiGraphics,
+        this.font,
+        "on_death",
+        this.contentLeftPos,
+        this.onDeathActionSaveButton.getY() - 10,
+        Constants.FONT_COLOR_BLACK);
   }
-
 }

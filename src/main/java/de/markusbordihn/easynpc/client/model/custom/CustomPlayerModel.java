@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,16 +19,15 @@
 
 package de.markusbordihn.easynpc.client.model.custom;
 
+import de.markusbordihn.easynpc.client.model.EasyNPCModel;
+import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import de.markusbordihn.easynpc.client.model.EasyNPCModel;
-import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 
 @OnlyIn(Dist.CLIENT)
 public class CustomPlayerModel<T extends LivingEntity> extends PlayerModel<T>
@@ -39,18 +38,31 @@ public class CustomPlayerModel<T extends LivingEntity> extends PlayerModel<T>
   }
 
   @Override
-  public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks,
-      float netHeadYaw, float headPitch) {
+  public void setupAnim(
+      T entity,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
     if (entity instanceof EasyNPCEntity easyNPCEntity) {
 
       // Reset player model to avoid any issues with other mods.
-      resetHumanoidModel(this.head, this.body, this.rightArm, this.leftArm, this.rightLeg,
-          this.leftLeg);
+      EasyNPCModel.resetHumanoidModel(
+          this, this.head, this.body, this.rightArm, this.leftArm, this.rightLeg, this.leftLeg);
 
       // Individual Part Modifications
       if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
-        setupCustomHumanoidModel(easyNPCEntity, this.head, this.body, this.rightArm, this.leftArm,
-            this.rightLeg, this.leftLeg, netHeadYaw, headPitch);
+        EasyNPCModel.setupHumanoidModel(
+            easyNPCEntity,
+            this.head,
+            this.body,
+            this.rightArm,
+            this.leftArm,
+            this.rightLeg,
+            this.leftLeg,
+            netHeadYaw,
+            headPitch);
       } else if (easyNPCEntity.getPose() == Pose.CROUCHING) {
         // Crouching Pose
         this.body.xRot = 0.5F;
@@ -68,6 +80,21 @@ public class CustomPlayerModel<T extends LivingEntity> extends PlayerModel<T>
 
       if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM
           || easyNPCEntity.getPose() == Pose.CROUCHING) {
+
+        // Handle animations, if model specific part was not adjusted.
+        if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
+          EasyNPCModel.animateHumanoidModel(
+              this,
+              this.head,
+              this.body,
+              this.rightArm,
+              this.leftArm,
+              this.rightLeg,
+              this.leftLeg,
+              limbSwing,
+              limbSwingAmount);
+        }
+
         // Copy all outer model parts to the correct model parts.
         this.hat.copyFrom(this.head);
         this.leftPants.copyFrom(this.leftLeg);
@@ -80,5 +107,4 @@ public class CustomPlayerModel<T extends LivingEntity> extends PlayerModel<T>
       }
     }
   }
-
 }

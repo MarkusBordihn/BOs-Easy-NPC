@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,11 +19,11 @@
 
 package de.markusbordihn.easynpc.menu.configuration;
 
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.EntityManager;
 import java.util.UUID;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -32,11 +32,8 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.skin.SkinModel;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ConfigurationMenu extends AbstractContainerMenu {
 
@@ -50,26 +47,37 @@ public class ConfigurationMenu extends AbstractContainerMenu {
   protected final SkinModel skinModel;
   protected final UUID uuid;
 
-  public ConfigurationMenu(final MenuType<?> menuType, final int windowId,
-      final Inventory playerInventory, UUID uuid) {
+  public ConfigurationMenu(
+      final MenuType<?> menuType, final int windowId, final Inventory playerInventory, UUID uuid) {
     this(menuType, windowId, playerInventory, uuid, 0);
   }
 
-  public ConfigurationMenu(final MenuType<?> menuType, final int windowId,
-      final Inventory playerInventory, UUID uuid, int pageIndex) {
+  public ConfigurationMenu(
+      final MenuType<?> menuType,
+      final int windowId,
+      final Inventory playerInventory,
+      UUID uuid,
+      int pageIndex) {
     super(menuType, windowId);
 
     this.uuid = uuid;
     this.pageIndex = pageIndex;
     this.player = playerInventory.player;
     this.level = player.level();
-    this.entity = this.level.isClientSide ? EntityManager.getEasyNPCEntityByUUID(uuid)
-        : EntityManager.getEasyNPCEntityByUUID(uuid, (ServerPlayer) player);
+    this.entity =
+        this.level.isClientSide
+            ? EntityManager.getEasyNPCEntityByUUID(uuid)
+            : EntityManager.getEasyNPCEntityByUUID(uuid, (ServerPlayer) player);
     this.skinModel = this.entity.getSkinModel();
 
     if (this.level.isClientSide) {
-      log.debug("Open configuration menu {} for {}: {} with player inventory {}", menuType,
-          this.uuid, this.entity, playerInventory);
+      log.debug(
+          "Open configuration menu {} ({}) for {}: {} with player inventory {}",
+          menuType,
+          this.pageIndex,
+          this.uuid,
+          this.entity,
+          playerInventory);
     }
   }
 
@@ -104,5 +112,4 @@ public class ConfigurationMenu extends AbstractContainerMenu {
 
     return ItemStack.EMPTY;
   }
-
 }

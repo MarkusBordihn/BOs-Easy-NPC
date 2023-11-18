@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,51 +19,49 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.trading;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.components.Text;
+import de.markusbordihn.easynpc.client.screen.components.TextButton;
+import de.markusbordihn.easynpc.client.screen.components.TextField;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.menu.configuration.trading.AdvancedTradingConfigurationMenu;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import java.util.HashMap;
 import java.util.Objects;
-
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.menu.configuration.trading.AdvancedTradingConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class AdvancedTradingConfigurationScreen
     extends TradingConfigurationScreen<AdvancedTradingConfigurationMenu> {
 
-  // Buttons
-  protected Checkbox noneTradingCheckbox;
-  protected Button previousPageButton;
-  protected Button nextPageButton;
-
-  // Edit Boxes
-  protected EditBox resetsEveryMinEditBox;
-  protected HashMap<Integer, EditBox> maxUsesEditBoxes = new HashMap<>();
-  protected HashMap<Integer, EditBox> rewardExpEditBoxes = new HashMap<>();
-  protected HashMap<Integer, EditBox> priceMultiplierEditBoxes = new HashMap<>();
-  protected HashMap<Integer, EditBox> demandEditBoxes = new HashMap<>();
-
   // Ticker
   protected static final int NAVIGATION_TICKER = 20;
   protected static final int TRADING_OFFERS_TICKER = 20;
+  protected final HashMap<Integer, EditBox> maxUsesEditBoxes = new HashMap<>();
+  protected final HashMap<Integer, EditBox> rewardExpEditBoxes = new HashMap<>();
+  protected final HashMap<Integer, EditBox> priceMultiplierEditBoxes = new HashMap<>();
+  protected final HashMap<Integer, EditBox> demandEditBoxes = new HashMap<>();
+  // Buttons
+  protected Button previousPageButton;
+  protected Button nextPageButton;
+  // Edit Boxes
+  protected EditBox resetsEveryMinEditBox;
   private int navigationTicker = NAVIGATION_TICKER;
   private int tradingOffersTicker = TRADING_OFFERS_TICKER;
 
-  public AdvancedTradingConfigurationScreen(AdvancedTradingConfigurationMenu menu,
-      Inventory inventory, Component component) {
+  public AdvancedTradingConfigurationScreen(
+      AdvancedTradingConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 
@@ -74,29 +72,37 @@ public class AdvancedTradingConfigurationScreen
   }
 
   private void onMaxUsesEditBoxChanged(int offerIndex, String value, String formerValue) {
-    if (!Objects.equals(value, formerValue) && offerIndex >= 0 && isPositiveNumericValue(value)
+    if (!Objects.equals(value, formerValue)
+        && offerIndex >= 0
+        && isPositiveNumericValue(value)
         && !value.isEmpty()) {
       NetworkMessageHandler.setAdvancedTradingMaxUses(uuid, offerIndex, Integer.parseInt(value));
     }
   }
 
   private void onRewardExpEditBoxChanged(int offerIndex, String value, String formerValue) {
-    if (!Objects.equals(value, formerValue) && offerIndex >= 0 && isNumericValue(value)
+    if (!Objects.equals(value, formerValue)
+        && offerIndex >= 0
+        && isNumericValue(value)
         && !value.isEmpty()) {
       NetworkMessageHandler.setAdvancedTradingRewardExp(uuid, offerIndex, Integer.parseInt(value));
     }
   }
 
   private void onPriceMultiplierEditBoxChanged(int offerIndex, String value, String formerValue) {
-    if (!Objects.equals(value, formerValue) && offerIndex >= 0 && isFloatValue(value)
+    if (!Objects.equals(value, formerValue)
+        && offerIndex >= 0
+        && isFloatValue(value)
         && !value.isEmpty()) {
-      NetworkMessageHandler.setAdvancedTradingPriceMultiplier(uuid, offerIndex,
-          Float.parseFloat(value));
+      NetworkMessageHandler.setAdvancedTradingPriceMultiplier(
+          uuid, offerIndex, Float.parseFloat(value));
     }
   }
 
   private void onDemandEditBoxChanged(int offerIndex, String value, String formerValue) {
-    if (!Objects.equals(value, formerValue) && offerIndex >= 0 && isNumericValue(value)
+    if (!Objects.equals(value, formerValue)
+        && offerIndex >= 0
+        && isNumericValue(value)
         && !value.isEmpty()) {
       NetworkMessageHandler.setAdvancedTradingDemand(uuid, offerIndex, Integer.parseInt(value));
     }
@@ -110,8 +116,8 @@ public class AdvancedTradingConfigurationScreen
     this.advancedTradesButton.active = false;
 
     // Reset Every Min Edit Box
-    this.resetsEveryMinEditBox = new EditBox(this.font, this.contentLeftPos + 250,
-        this.contentTopPos + 172, 32, 16, Component.nullToEmpty(""));
+    this.resetsEveryMinEditBox =
+        new TextField(this.font, this.contentLeftPos + 250, this.contentTopPos + 172, 32);
     this.resetsEveryMinEditBox.setMaxLength(3);
     this.resetsEveryMinEditBox.setValue(this.entity.getTradingResetsEveryMin() + "");
     this.resetsEveryMinEditBox.setResponder(this::onResetsEveryMinEditBoxChanged);
@@ -122,14 +128,16 @@ public class AdvancedTradingConfigurationScreen
     int editBoxPositionX = this.contentLeftPos + 140;
     int editBoxPositionY = this.topPos + AdvancedTradingConfigurationMenu.TRADING_START_POSITION_Y;
     MerchantOffers merchantOffers = this.entity.getTradingOffers();
-    for (int tradingOffer =
-        0; tradingOffer < AdvancedTradingConfigurationMenu.TRADING_OFFERS_PER_PAGE; tradingOffer++) {
+    for (int tradingOffer = 0;
+        tradingOffer < AdvancedTradingConfigurationMenu.TRADING_OFFERS_PER_PAGE;
+        tradingOffer++) {
 
       int tradingOfferIndex =
           (this.menu.getPageIndex() * AdvancedTradingConfigurationMenu.TRADING_OFFERS_PER_PAGE)
               + tradingOffer;
       MerchantOffer merchantOffer =
-          merchantOffers.size() > tradingOfferIndex ? merchantOffers.get(tradingOfferIndex)
+          merchantOffers.size() > tradingOfferIndex
+              ? merchantOffers.get(tradingOfferIndex)
               : new MerchantOffer(ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, 0, 0, 0, 0);
       boolean hasValidOffer =
           (!merchantOffer.getBaseCostA().isEmpty() || !merchantOffer.getCostB().isEmpty())
@@ -137,21 +145,21 @@ public class AdvancedTradingConfigurationScreen
       log.info("Trading Offer {} : {}", tradingOfferIndex, merchantOffer.createTag());
 
       // Max Uses Edit Box
-      EditBox maxUsesEditBox = new EditBox(this.font, editBoxPositionX, editBoxPositionY, 32, 16,
-          Component.translatable("gui.easynpc.trading.max_uses"));
+      EditBox maxUsesEditBox = new TextField(this.font, editBoxPositionX, editBoxPositionY, 32);
       maxUsesEditBox.setMaxLength(4);
-      maxUsesEditBox
-          .setValue(merchantOffer.getMaxUses() > 0 ? merchantOffer.getMaxUses() + "" : "16");
-      maxUsesEditBox.setResponder(text -> onMaxUsesEditBoxChanged(tradingOfferIndex, text,
-          merchantOffer.getMaxUses() + ""));
+      maxUsesEditBox.setValue(
+          merchantOffer.getMaxUses() > 0 ? merchantOffer.getMaxUses() + "" : "16");
+      maxUsesEditBox.setResponder(
+          text ->
+              onMaxUsesEditBoxChanged(tradingOfferIndex, text, merchantOffer.getMaxUses() + ""));
       maxUsesEditBox.setFilter(TradingConfigurationScreen::isPositiveNumericValue);
       maxUsesEditBox.setEditable(hasValidOffer);
       maxUsesEditBoxes.put(tradingOfferIndex, maxUsesEditBox);
       this.addRenderableWidget(maxUsesEditBox);
 
       // Reward Exp Edit Box
-      EditBox rewardExpEditBox = new EditBox(this.font, editBoxPositionX + 45, editBoxPositionY, 26,
-          16, Component.translatable("gui.easynpc.trading.reward_exp"));
+      EditBox rewardExpEditBox =
+          new TextField(this.font, editBoxPositionX + 45, editBoxPositionY, 26);
       rewardExpEditBox.setMaxLength(3);
       rewardExpEditBox.setValue(merchantOffer.getXp() >= 0 ? merchantOffer.getXp() + "" : "0");
       rewardExpEditBox.setResponder(
@@ -162,21 +170,23 @@ public class AdvancedTradingConfigurationScreen
       this.addRenderableWidget(rewardExpEditBox);
 
       // Price Multiplier Edit Box
-      EditBox priceMultiplierEditBox = new EditBox(this.font, editBoxPositionX + 85,
-          editBoxPositionY, 32, 16, Component.translatable("gui.easynpc.trading.price_multiplier"));
+      EditBox priceMultiplierEditBox =
+          new TextField(this.font, editBoxPositionX + 85, editBoxPositionY, 32);
       priceMultiplierEditBox.setMaxLength(4);
       priceMultiplierEditBox.setValue(
           merchantOffer.getPriceMultiplier() >= 0 ? merchantOffer.getPriceMultiplier() + "" : "0");
-      priceMultiplierEditBox.setResponder(text -> onPriceMultiplierEditBoxChanged(tradingOfferIndex,
-          text, merchantOffer.getPriceMultiplier() + ""));
+      priceMultiplierEditBox.setResponder(
+          text ->
+              onPriceMultiplierEditBoxChanged(
+                  tradingOfferIndex, text, merchantOffer.getPriceMultiplier() + ""));
       priceMultiplierEditBox.setFilter(TradingConfigurationScreen::isFloatValue);
       priceMultiplierEditBox.setEditable(hasValidOffer);
       priceMultiplierEditBoxes.put(tradingOfferIndex, priceMultiplierEditBox);
       this.addRenderableWidget(priceMultiplierEditBox);
 
       // Demand Edit Box
-      EditBox demandEditBox = new EditBox(this.font, editBoxPositionX + 135, editBoxPositionY, 20,
-          16, Component.translatable("gui.easynpc.trading.demand"));
+      EditBox demandEditBox =
+          new TextField(this.font, editBoxPositionX + 135, editBoxPositionY, 20);
       demandEditBox.setMaxLength(2);
       demandEditBox.setValue(merchantOffer.getDemand() >= 0 ? merchantOffer.getDemand() + "" : "0");
       demandEditBox.setResponder(
@@ -190,16 +200,26 @@ public class AdvancedTradingConfigurationScreen
     }
 
     // Page navigation Buttons
-    this.previousPageButton = this.addRenderableWidget(menuButton(this.contentLeftPos + 0,
-        this.contentTopPos + 115, 70, "trading.previous_page", onPress -> {
-          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.ADVANCED_TRADING,
-              this.menu.getPageIndex() - 1);
-        }));
-    this.nextPageButton = this.addRenderableWidget(menuButton(this.contentLeftPos + 235,
-        this.contentTopPos + 115, 70, "trading.next_page", onPress -> {
-          NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.ADVANCED_TRADING,
-              this.menu.getPageIndex() + 1);
-        }));
+    this.previousPageButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.contentLeftPos,
+                this.contentTopPos + 115,
+                70,
+                "previous_page",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.ADVANCED_TRADING, this.menu.getPageIndex() - 1)));
+    this.nextPageButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.contentLeftPos + 235,
+                this.contentTopPos + 115,
+                70,
+                "next_page",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.ADVANCED_TRADING, this.menu.getPageIndex() + 1)));
   }
 
   @Override
@@ -219,15 +239,17 @@ public class AdvancedTradingConfigurationScreen
 
     // Validate trading offers
     if (this.tradingOffersTicker++ > TRADING_OFFERS_TICKER) {
-      for (int tradingOffer =
-          0; tradingOffer < AdvancedTradingConfigurationMenu.TRADING_OFFERS_PER_PAGE; tradingOffer++) {
+      for (int tradingOffer = 0;
+          tradingOffer < AdvancedTradingConfigurationMenu.TRADING_OFFERS_PER_PAGE;
+          tradingOffer++) {
 
         int tradingOfferIndex =
             (this.menu.getPageIndex() * AdvancedTradingConfigurationMenu.TRADING_OFFERS_PER_PAGE)
                 + tradingOffer;
         MerchantOffers merchantOffers = this.entity.getTradingOffers();
         MerchantOffer merchantOffer =
-            merchantOffers.size() > tradingOfferIndex ? merchantOffers.get(tradingOfferIndex)
+            merchantOffers.size() > tradingOfferIndex
+                ? merchantOffers.get(tradingOfferIndex)
                 : new MerchantOffer(ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, 16, 0, 0, 0);
         boolean hasValidOffer =
             (!merchantOffer.getBaseCostA().isEmpty() || !merchantOffer.getCostB().isEmpty())
@@ -256,93 +278,132 @@ public class AdvancedTradingConfigurationScreen
         if (demandEditBox != null) {
           demandEditBox.setEditable(hasValidOffer);
         }
-
       }
       this.tradingOffersTicker = 0;
     }
-
   }
 
   @Override
   protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
     super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
 
+    RenderSystem.setShader(GameRenderer::getPositionTexShader);
+    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+    RenderSystem.setShaderTexture(0, Constants.TEXTURE_INVENTORY);
+
     // Render Legend (without translation / not enough space for translation)
     int legendTopPositionY = this.contentTopPos + 2;
-    guiGraphics.drawString(this.font, "Cost A", this.leftPos + 18, legendTopPositionY, 0xA04040,
-        false);
-    guiGraphics.drawString(this.font, "Cost B", this.leftPos + 60, legendTopPositionY, 0x40A040,
-        false);
-    guiGraphics.drawString(this.font, "Result", this.leftPos + 102, legendTopPositionY, 0x4040A0,
-        false);
-    guiGraphics.drawString(this.font, "Max Uses", this.leftPos + 140, legendTopPositionY, 0x004040,
-        false);
-    guiGraphics.drawString(this.font, "XP", this.leftPos + 198, legendTopPositionY, 0x400040,
-        false);
-    guiGraphics.drawString(this.font, "Multiplier", this.leftPos + 225, legendTopPositionY,
-        0x404040, false);
-    guiGraphics.drawString(this.font, "Demand", this.leftPos + 275, legendTopPositionY, 0x404000,
-        false);
+    Text.drawString(
+        guiGraphics, this.font, "Cost A", this.leftPos + 18, legendTopPositionY, 0xA04040);
+    Text.drawString(
+        guiGraphics, this.font, "Cost B", this.leftPos + 60, legendTopPositionY, 0x40A040);
+    Text.drawString(
+        guiGraphics, this.font, "Result", this.leftPos + 102, legendTopPositionY, 0x4040A0);
+    Text.drawString(
+        guiGraphics, this.font, "Max Uses", this.leftPos + 140, legendTopPositionY, 0x004040);
+    Text.drawString(guiGraphics, this.font, "XP", this.leftPos + 198, legendTopPositionY, 0x400040);
+    Text.drawString(
+        guiGraphics, this.font, "Multiplier", this.leftPos + 225, legendTopPositionY, 0x404040);
+    Text.drawString(
+        guiGraphics, this.font, "Demand", this.leftPos + 275, legendTopPositionY, 0x404000);
 
     // Render Trading Slots
     int slotPositionX =
         this.leftPos + AdvancedTradingConfigurationMenu.TRADING_START_POSITION_X - 1;
     int slotPositionY = this.topPos + AdvancedTradingConfigurationMenu.TRADING_START_POSITION_Y - 1;
-    for (int tradingOffer =
-        0; tradingOffer < AdvancedTradingConfigurationMenu.TRADING_OFFERS_PER_PAGE; tradingOffer++) {
+    for (int tradingOffer = 0;
+        tradingOffer < AdvancedTradingConfigurationMenu.TRADING_OFFERS_PER_PAGE;
+        tradingOffer++) {
 
       // Offer Label
       int tradingOfferIndex =
           (this.menu.getPageIndex() * AdvancedTradingConfigurationMenu.TRADING_OFFERS_PER_PAGE)
               + tradingOffer;
-      guiGraphics.drawString(this.font,
-          (tradingOfferIndex < 9 ? " " : "") + (tradingOfferIndex + 1) + ".", slotPositionX - 15,
-          slotPositionY + 5, 0x404040, false);
+      Text.drawString(
+          guiGraphics,
+          this.font,
+          (tradingOfferIndex < 9 ? " " : "") + (tradingOfferIndex + 1) + ".",
+          slotPositionX - 15,
+          slotPositionY + 5,
+          0x404040);
 
       // Item A Slot
-      int itemASlotLeftPosition = slotPositionX;
       int itemASlotTopPosition = slotPositionY;
-      guiGraphics.blit(Constants.TEXTURE_INVENTORY, itemASlotLeftPosition, itemASlotTopPosition, 7,
-          7, 18, 18);
+      RenderSystem.setShaderTexture(0, Constants.TEXTURE_INVENTORY);
+      guiGraphics.blit(
+          Constants.TEXTURE_INVENTORY, slotPositionX, itemASlotTopPosition, 7, 7, 18, 18);
 
       // "+" Label
-      guiGraphics.drawString(this.font, "+",
-          itemASlotLeftPosition + AdvancedTradingConfigurationMenu.TRADING_SLOT_SIZE + 6,
-          itemASlotTopPosition + 5, 0x404040, false);
+      Text.drawString(
+          guiGraphics,
+          this.font,
+          "+",
+          slotPositionX + AdvancedTradingConfigurationMenu.TRADING_SLOT_SIZE + 6,
+          itemASlotTopPosition + 5,
+          0x404040);
 
       // Item B Slot
-      int itemBSlotLeftPosition = slotPositionX + AdvancedTradingConfigurationMenu.TRADING_SLOT_SIZE
-          + AdvancedTradingConfigurationMenu.TRADING_SLOT_SIZE;
+      int itemBSlotLeftPosition =
+          slotPositionX
+              + AdvancedTradingConfigurationMenu.TRADING_SLOT_SIZE
+              + AdvancedTradingConfigurationMenu.TRADING_SLOT_SIZE;
       int itemBSlotTopPosition = slotPositionY;
-      guiGraphics.blit(Constants.TEXTURE_INVENTORY, itemBSlotLeftPosition, itemBSlotTopPosition, 7,
-          7, 18, 18);
+      guiGraphics.blit(
+          Constants.TEXTURE_INVENTORY, itemBSlotLeftPosition, itemBSlotTopPosition, 7, 7, 18, 18);
 
       // "=" Label
-      guiGraphics.drawString(this.font, "=",
+      Text.drawString(
+          guiGraphics,
+          this.font,
+          "=",
           itemBSlotLeftPosition + AdvancedTradingConfigurationMenu.TRADING_SLOT_SIZE + 12,
-          itemBSlotTopPosition + 5, 0x404040, false);
+          itemBSlotTopPosition + 5,
+          0x404040);
 
       // Result Slot
-      guiGraphics.blit(Constants.TEXTURE_INVENTORY,
-          slotPositionX + ((AdvancedTradingConfigurationMenu.TRADING_SLOT_SIZE
-              + AdvancedTradingConfigurationMenu.TRADING_SLOT_SIZE + 5) * 2),
-          slotPositionY, 7, 7, 18, 18);
+      guiGraphics.blit(
+          Constants.TEXTURE_INVENTORY,
+          slotPositionX
+              + ((AdvancedTradingConfigurationMenu.TRADING_SLOT_SIZE
+                      + AdvancedTradingConfigurationMenu.TRADING_SLOT_SIZE
+                      + 5)
+                  * 2),
+          slotPositionY,
+          7,
+          7,
+          18,
+          18);
 
       slotPositionY += AdvancedTradingConfigurationMenu.TRADING_SLOT_SIZE + 1;
-
     }
 
     // Player Inventory Slots
-    guiGraphics.blit(Constants.TEXTURE_INVENTORY, this.contentLeftPos + 72,
-        this.contentTopPos + 115, 7, 83, 162, 54);
+    guiGraphics.blit(
+        Constants.TEXTURE_INVENTORY,
+        this.contentLeftPos + 72,
+        this.contentTopPos + 115,
+        7,
+        83,
+        162,
+        54);
 
     // Player Hotbar Slots
-    guiGraphics.blit(Constants.TEXTURE_INVENTORY, this.contentLeftPos + 72,
-        this.contentTopPos + 171, 7, 141, 162, 18);
+    guiGraphics.blit(
+        Constants.TEXTURE_INVENTORY,
+        this.contentLeftPos + 72,
+        this.contentTopPos + 171,
+        7,
+        141,
+        162,
+        18);
 
     // Render Reset Every Min Label
-    guiGraphics.drawString(this.font,
-        Component.translatable(Constants.TEXT_CONFIG_PREFIX + "trading.mins_for_trade_reset"),
-        this.contentLeftPos + 236, this.contentTopPos + 160, 0x404040, false);
+    Text.drawConfigString(
+        guiGraphics,
+        this.font,
+        "trading.minutes_for_trade_reset",
+        this.contentLeftPos + 236,
+        this.contentTopPos + 160,
+        0x404040);
   }
 }

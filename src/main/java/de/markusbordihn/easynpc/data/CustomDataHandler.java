@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data;
 
+import de.markusbordihn.easynpc.Constants;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -26,16 +27,12 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraftforge.fml.loading.FMLPaths;
-
-import de.markusbordihn.easynpc.Constants;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CustomDataHandler {
 
@@ -93,5 +90,4 @@ public class CustomDataHandler {
       }
     }
   }
-
 }
