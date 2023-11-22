@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.network.message.MessageAdvancedTrading;
 import de.markusbordihn.easynpc.network.message.MessageBasicTrading;
 import de.markusbordihn.easynpc.network.message.MessageDialogButtonAction;
 import de.markusbordihn.easynpc.network.message.MessageEntityAttributeChange;
+import de.markusbordihn.easynpc.network.message.MessageEntityBaseAttributeChange;
 import de.markusbordihn.easynpc.network.message.MessageModelLockRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPoseChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPositionChange;
@@ -72,7 +73,7 @@ public class NetworkHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final String PROTOCOL_VERSION = "15";
+  private static final String PROTOCOL_VERSION = "16";
   public static final SimpleChannel INSTANCE =
       NetworkRegistry.newSimpleChannel(
           new ResourceLocation(Constants.MOD_ID, "network"),
@@ -132,6 +133,14 @@ public class NetworkHandler {
               MessageEntityAttributeChange::encode,
               MessageEntityAttributeChange::decode,
               MessageEntityAttributeChange::handle);
+
+          // Entity Base Attribute Change: Client -> Server
+          INSTANCE.registerMessage(
+              id++,
+              MessageEntityBaseAttributeChange.class,
+              MessageEntityBaseAttributeChange::encode,
+              MessageEntityBaseAttributeChange::decode,
+              MessageEntityBaseAttributeChange::handle);
 
           // Model Local Rotation Change: Client -> Server
           INSTANCE.registerMessage(

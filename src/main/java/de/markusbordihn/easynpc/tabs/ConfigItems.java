@@ -19,11 +19,10 @@
 
 package de.markusbordihn.easynpc.tabs;
 
+import de.markusbordihn.easynpc.item.ModItems;
 import net.minecraft.world.item.CreativeModeTab.DisplayItemsGenerator;
 import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.CreativeModeTab.Output;
-
-import de.markusbordihn.easynpc.item.ModItems;
 
 public class ConfigItems implements DisplayItemsGenerator {
 
@@ -33,5 +32,4 @@ public class ConfigItems implements DisplayItemsGenerator {
   public void accept(ItemDisplayParameters itemDisplayParameters, Output output) {
     output.accept(ModItems.EASY_NPC_WAND.get());
   }
-
 }

@@ -20,9 +20,10 @@
 package de.markusbordihn.easynpc.client.screen.components;
 
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 
-public class TextField extends net.minecraft.client.gui.components.EditBox {
+public class TextField extends EditBox {
 
   private static final Component EMPTY_TEXT_COMPONENT = Component.literal("");
   private static final int DEFAULT_HEIGHT = 16;

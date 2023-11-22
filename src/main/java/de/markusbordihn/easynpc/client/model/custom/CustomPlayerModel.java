@@ -78,23 +78,18 @@ public class CustomPlayerModel<T extends LivingEntity> extends PlayerModel<T>
         this.rightLeg.z = 4.0F;
       }
 
-      if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM
-          || easyNPCEntity.getPose() == Pose.CROUCHING) {
-
-        // Handle animations, if model specific part was not adjusted.
-        if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
-          EasyNPCModel.animateHumanoidModel(
-              this,
-              this.head,
-              this.body,
-              this.rightArm,
-              this.leftArm,
-              this.rightLeg,
-              this.leftLeg,
-              limbSwing,
-              limbSwingAmount);
-        }
-
+      if (EasyNPCModel.animateHumanoidModel(
+          this,
+          easyNPCEntity,
+          this.head,
+          this.body,
+          this.rightArm,
+          this.leftArm,
+          this.rightLeg,
+          this.leftLeg,
+          ageInTicks,
+          limbSwing,
+          limbSwingAmount)) {
         // Copy all outer model parts to the correct model parts.
         this.hat.copyFrom(this.head);
         this.leftPants.copyFrom(this.leftLeg);

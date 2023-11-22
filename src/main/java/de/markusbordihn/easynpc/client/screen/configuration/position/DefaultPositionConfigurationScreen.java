@@ -238,7 +238,7 @@ public class DefaultPositionConfigurationScreen
   public void renderBackground(PoseStack poseStack) {
     // Use a more transparent background than the default.
     if (this.clientLevel != null) {
-      this.fillGradient(poseStack, 0, 0, this.width, this.height, 0x55000000, 0x55000000);
+      fillGradient(poseStack, 0, 0, this.width, this.height, 0x55000000, 0x55000000);
       net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(
           new net.minecraftforge.client.event.ScreenEvent.BackgroundRendered(this, poseStack));
     }
@@ -251,15 +251,15 @@ public class DefaultPositionConfigurationScreen
     RenderSystem.setShaderTexture(0, Constants.TEXTURE_DEMO_BACKGROUND);
 
     // Main screen: top left
-    this.blit(poseStack, leftPos, topPos, 0, 0, 250, 70);
+    blit(poseStack, leftPos, topPos, 0, 0, 250, 70);
 
     // Main screen: top right
-    this.blit(poseStack, leftPos + 243, topPos, 195, 0, 57, 70);
+    blit(poseStack, leftPos + 243, topPos, 195, 0, 57, 70);
 
     // Main screen: bottom left
-    this.blit(poseStack, leftPos, topPos + 22, 0, 115, 250, 60);
+    blit(poseStack, leftPos, topPos + 22, 0, 115, 250, 60);
 
     // Main screen: bottom right
-    this.blit(poseStack, leftPos + 243, topPos + 22, 195, 115, 57, 60);
+    blit(poseStack, leftPos + 243, topPos + 22, 195, 115, 57, 60);
   }
 }

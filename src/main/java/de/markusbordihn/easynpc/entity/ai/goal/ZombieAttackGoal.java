@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 
 public class ZombieAttackGoal extends MeleeAttackGoal {
+
   private final EasyNPCEntity easyNPCEntity;
   private int raiseArmTicks;
 
@@ -32,16 +33,19 @@ public class ZombieAttackGoal extends MeleeAttackGoal {
     this.easyNPCEntity = easyNPCEntity;
   }
 
+  @Override
   public void start() {
     super.start();
     this.raiseArmTicks = 0;
   }
 
+  @Override
   public void stop() {
     super.stop();
     this.easyNPCEntity.setAggressive(false);
   }
 
+  @Override
   public void tick() {
     super.tick();
     ++this.raiseArmTicks;

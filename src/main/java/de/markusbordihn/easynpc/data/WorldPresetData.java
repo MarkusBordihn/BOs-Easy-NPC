@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.LevelResource;
@@ -117,7 +116,7 @@ public class WorldPresetData {
                       presetResourceLocationMap.put(resourceLocation, path);
                       return resourceLocation;
                     })
-                .collect(Collectors.toList());
+                .toList();
         return filePaths.stream();
       }
     } catch (IOException exception) {

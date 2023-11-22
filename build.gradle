@@ -133,6 +133,7 @@ dependencies {
 
   // Compability checks
   // runtimeOnly fg.deobf("curse.maven:carry-on-274259:4375894")
+  runtimeOnly fg.deobf("curse.maven:aether-255308:4816887")
 
   // Integration Tests
   runtimeOnly fg.deobf("curse.maven:daily-rewards-628798:4443961")

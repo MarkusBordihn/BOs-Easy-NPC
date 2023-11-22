@@ -37,8 +37,9 @@ public class AttackObjectiveConfigurationScreen
 
   // Attack Types
   protected Checkbox meleeAttackCheckbox;
-
   protected Checkbox zombieAttackCheckbox;
+  protected Checkbox crossbowAttackCheckbox;
+  protected Checkbox getBowAttackCheckbox;
 
   // Attack Target
   protected Checkbox attackAnimalCheckbox;
@@ -67,7 +68,7 @@ public class AttackObjectiveConfigurationScreen
 
     int objectiveEntriesTop = this.contentTopPos + 5;
 
-    // Attack Types
+    // Melee Attacks
     this.meleeAttackCheckbox =
         this.addRenderableWidget(
             new Checkbox(
@@ -102,18 +103,36 @@ public class AttackObjectiveConfigurationScreen
                   }
                 }));
 
-    // Attack Animal
+    // Crossbow Attack
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
-    this.attackAnimalCheckbox =
+    this.crossbowAttackCheckbox =
         this.addRenderableWidget(
             new Checkbox(
                 this.contentLeftPos + 10,
                 objectiveEntriesTop,
-                ObjectiveType.ATTACK_ANIMAL.getObjectiveName(),
-                objectiveDataSet.hasObjective(ObjectiveType.ATTACK_ANIMAL),
+                ObjectiveType.CROSSBOW_ATTACK.getObjectiveName(),
+                objectiveDataSet.hasObjective(ObjectiveType.CROSSBOW_ATTACK),
                 checkbox -> {
                   ObjectiveData objectiveData =
-                      objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_ANIMAL, 2);
+                      objectiveDataSet.getOrCreateObjective(ObjectiveType.CROSSBOW_ATTACK, 3);
+                  if (checkbox.selected()) {
+                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                  } else {
+                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                  }
+                }));
+
+    // Bow Attack
+    this.getBowAttackCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                this.contentLeftPos + 150,
+                objectiveEntriesTop,
+                ObjectiveType.BOW_ATTACK.getObjectiveName(),
+                objectiveDataSet.hasObjective(ObjectiveType.BOW_ATTACK),
+                checkbox -> {
+                  ObjectiveData objectiveData =
+                      objectiveDataSet.getOrCreateObjective(ObjectiveType.BOW_ATTACK, 4);
                   if (checkbox.selected()) {
                     NetworkMessageHandler.addObjective(uuid, objectiveData);
                   } else {
@@ -140,12 +159,48 @@ public class AttackObjectiveConfigurationScreen
                   }
                 }));
 
-    // Attack Monster
+    // Attack Villager
+    this.attackVillagerCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                this.contentLeftPos + 150,
+                objectiveEntriesTop,
+                ObjectiveType.ATTACK_VILLAGER.getObjectiveName(),
+                objectiveDataSet.hasObjective(ObjectiveType.ATTACK_VILLAGER),
+                checkbox -> {
+                  ObjectiveData objectiveData =
+                      objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_VILLAGER, 2);
+                  if (checkbox.selected()) {
+                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                  } else {
+                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                  }
+                }));
+
+    // Attack Animal
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
-    this.attackMonsterCheckbox =
+    this.attackAnimalCheckbox =
         this.addRenderableWidget(
             new Checkbox(
                 this.contentLeftPos + 10,
+                objectiveEntriesTop,
+                ObjectiveType.ATTACK_ANIMAL.getObjectiveName(),
+                objectiveDataSet.hasObjective(ObjectiveType.ATTACK_ANIMAL),
+                checkbox -> {
+                  ObjectiveData objectiveData =
+                      objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_ANIMAL, 2);
+                  if (checkbox.selected()) {
+                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                  } else {
+                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                  }
+                }));
+
+    // Attack Monster
+    this.attackMonsterCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                this.contentLeftPos + 150,
                 objectiveEntriesTop,
                 ObjectiveType.ATTACK_MONSTER.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.ATTACK_MONSTER),
@@ -191,25 +246,6 @@ public class AttackObjectiveConfigurationScreen
                   ObjectiveData objectiveData =
                       objectiveDataSet.getOrCreateObjective(
                           ObjectiveType.ATTACK_MOB_WITHOUT_CREEPER, 2);
-                  if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
-                  } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
-                  }
-                }));
-
-    // Attack Villager
-    objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
-    this.attackVillagerCheckbox =
-        this.addRenderableWidget(
-            new Checkbox(
-                this.contentLeftPos + 10,
-                objectiveEntriesTop,
-                ObjectiveType.ATTACK_VILLAGER.getObjectiveName(),
-                objectiveDataSet.hasObjective(ObjectiveType.ATTACK_VILLAGER),
-                checkbox -> {
-                  ObjectiveData objectiveData =
-                      objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_VILLAGER, 2);
                   if (checkbox.selected()) {
                     NetworkMessageHandler.addObjective(uuid, objectiveData);
                   } else {

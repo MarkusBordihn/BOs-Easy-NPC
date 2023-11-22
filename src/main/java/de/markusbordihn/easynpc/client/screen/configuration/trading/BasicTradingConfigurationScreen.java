@@ -135,7 +135,7 @@ public class BasicTradingConfigurationScreen
       int itemASlotLeftPosition = slotPositionX;
       int itemASlotTopPosition = slotPositionY;
       RenderSystem.setShaderTexture(0, Constants.TEXTURE_INVENTORY);
-      this.blit(poseStack, itemASlotLeftPosition, itemASlotTopPosition, 7, 7, 18, 18);
+      blit(poseStack, itemASlotLeftPosition, itemASlotTopPosition, 7, 7, 18, 18);
 
       // "+" Label
       Text.drawString(
@@ -153,7 +153,7 @@ public class BasicTradingConfigurationScreen
               + BasicTradingConfigurationMenu.TRADING_SLOT_SIZE;
       int itemBSlotTopPosition = slotPositionY;
       RenderSystem.setShaderTexture(0, Constants.TEXTURE_INVENTORY);
-      this.blit(poseStack, itemBSlotLeftPosition, itemBSlotTopPosition, 7, 7, 18, 18);
+      blit(poseStack, itemBSlotLeftPosition, itemBSlotTopPosition, 7, 7, 18, 18);
 
       // "=" Label
       Text.drawString(
@@ -166,7 +166,7 @@ public class BasicTradingConfigurationScreen
 
       // Result Slot
       RenderSystem.setShaderTexture(0, Constants.TEXTURE_INVENTORY);
-      this.blit(
+      blit(
           poseStack,
           slotPositionX
               + ((BasicTradingConfigurationMenu.TRADING_SLOT_SIZE
@@ -183,10 +183,10 @@ public class BasicTradingConfigurationScreen
     }
 
     // Player Inventory Slots
-    this.blit(poseStack, this.contentLeftPos, this.contentTopPos + 115, 7, 83, 162, 54);
+    blit(poseStack, this.contentLeftPos, this.contentTopPos + 115, 7, 83, 162, 54);
 
     // Player Hotbar Slots
-    this.blit(poseStack, this.contentLeftPos, this.contentTopPos + 171, 7, 141, 162, 18);
+    blit(poseStack, this.contentLeftPos, this.contentTopPos + 171, 7, 141, 162, 18);
 
     // Render Reset Every Min Label
     Text.drawConfigString(

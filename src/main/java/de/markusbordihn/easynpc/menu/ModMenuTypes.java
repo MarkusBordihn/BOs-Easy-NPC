@@ -23,7 +23,8 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.action.DialogActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.action.DistanceActionConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.attribute.BasicAttributeConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.attribute.AbilitiesAttributeConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.attribute.BaseAttributeConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.AdvancedDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfigurationMenu;
@@ -33,6 +34,7 @@ import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.objective.AttackObjectiveConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.objective.BasicObjectiveConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.objective.FollowObjectiveConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.objective.LookObjectiveConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.pose.AdvancedPoseConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.pose.CustomPoseConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenu;
@@ -81,11 +83,16 @@ public class ModMenuTypes {
           "dialog_button_editor_menu", () -> IForgeMenuType.create(DialogButtonEditorMenu::new));
 
   // Attribute
-  public static final RegistryObject<MenuType<BasicAttributeConfigurationMenu>>
+  public static final RegistryObject<MenuType<AbilitiesAttributeConfigurationMenu>>
       BASIC_ATTRIBUTE_CONFIGURATION_MENU =
           MENU_TYPES.register(
               "basic_attribute_configuration_menu",
-              () -> IForgeMenuType.create(BasicAttributeConfigurationMenu::new));
+              () -> IForgeMenuType.create(AbilitiesAttributeConfigurationMenu::new));
+  public static final RegistryObject<MenuType<BaseAttributeConfigurationMenu>>
+      BASE_ATTRIBUTE_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              "base_attribute_configuration_menu",
+              () -> IForgeMenuType.create(BaseAttributeConfigurationMenu::new));
 
   // Configuration
   public static final RegistryObject<MenuType<MainConfigurationMenu>> MAIN_CONFIGURATION_MENU =
@@ -155,6 +162,12 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               "attack_objective_configuration_menu",
               () -> IForgeMenuType.create(AttackObjectiveConfigurationMenu::new));
+
+  public static final RegistryObject<MenuType<LookObjectiveConfigurationMenu>>
+      LOOK_OBJECTIVE_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              "look_objective_configuration_menu",
+              () -> IForgeMenuType.create(LookObjectiveConfigurationMenu::new));
 
   // Pose Configuration
   public static final RegistryObject<MenuType<DefaultPoseConfigurationMenu>>

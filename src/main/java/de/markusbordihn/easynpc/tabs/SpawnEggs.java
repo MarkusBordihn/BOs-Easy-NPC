@@ -19,11 +19,10 @@
 
 package de.markusbordihn.easynpc.tabs;
 
+import de.markusbordihn.easynpc.item.ModItems;
 import net.minecraft.world.item.CreativeModeTab.DisplayItemsGenerator;
 import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.CreativeModeTab.Output;
-
-import de.markusbordihn.easynpc.item.ModItems;
 
 public class SpawnEggs implements DisplayItemsGenerator {
 
@@ -37,10 +36,10 @@ public class SpawnEggs implements DisplayItemsGenerator {
     output.accept(ModItems.FAIRY_NPC_SPAWN_EGG.get());
     output.accept(ModItems.HUMANOID_NPC_SPAWN_EGG.get());
     output.accept(ModItems.HUMANOID_SLIM_NPC_SPAWN_EGG.get());
+    output.accept(ModItems.IRON_GOLEM_NPC_SPAWN_EGG.get());
     output.accept(ModItems.SKELETON_NPC_SPAWN_EGG.get());
     output.accept(ModItems.VILLAGER_NPC_SPAWN_EGG.get());
     output.accept(ModItems.ZOMBIE_NPC_SPAWN_EGG.get());
     output.accept(ModItems.ZOMBIE_VILLAGER_NPC_SPAWN_EGG.get());
   }
-
 }

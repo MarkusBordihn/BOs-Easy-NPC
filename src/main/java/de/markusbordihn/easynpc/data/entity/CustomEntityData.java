@@ -40,7 +40,7 @@ public class CustomEntityData {
   private final EnumMap<CustomDataIndex, CustomDataItem<?>> customEntityDataMap =
       new EnumMap<>(CustomDataIndex.class);
   // Cache
-  private boolean isClientSide = false;
+  private final boolean isClientSide;
 
   public CustomEntityData(Entity entity) {
     this.isClientSide = entity != null && entity.level != null && entity.level.isClientSide;

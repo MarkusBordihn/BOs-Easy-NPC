@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.client.screen.configuration;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.components.CloseButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.config.CommonConfig;
@@ -33,7 +34,6 @@ import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -65,8 +65,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
   protected final UUID uuid;
   protected final LivingEntity owner;
   protected final String ownerName;
-  // Owner details
-  protected boolean hasOwner = false;
+  protected final boolean hasOwner;
   // Buttons
   protected Button closeButton = null;
   protected Button homeButton = null;
@@ -94,8 +93,8 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
 
     // General environment Data
     this.minecraftInstance = Minecraft.getInstance();
-    this.localPlayer = this.minecraftInstance != null ? this.minecraftInstance.player : null;
-    this.clientLevel = this.minecraftInstance != null ? this.minecraftInstance.level : null;
+    this.localPlayer = this.minecraftInstance.player;
+    this.clientLevel = this.minecraftInstance.level;
   }
 
   protected static Double getDoubleValue(String value) {
@@ -135,17 +134,14 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.MAIN);
   }
 
-  protected int fontDraw(PoseStack poseStack, String text, int x, int y) {
-    return Text.drawConfigString(poseStack, this.font, text, x, y);
-  }
-
   protected boolean hasPermissions(Boolean enabled, Boolean allowInCreative, int permissionLevel) {
     if (Boolean.FALSE.equals(enabled)) {
       return false;
     } else if (Boolean.TRUE.equals(allowInCreative && this.localPlayer != null)
         && this.localPlayer.isCreative()) {
       return true;
-    } else return this.localPlayer != null && this.localPlayer.hasPermissions(permissionLevel);
+    }
+    return this.localPlayer != null && this.localPlayer.hasPermissions(permissionLevel);
   }
 
   @Override
@@ -171,17 +167,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     // Close Button
     this.closeButton =
         this.addRenderableWidget(
-            new ImageButton(
-                this.rightPos - 15,
-                this.topPos + 6,
-                10,
-                10,
-                64,
-                38,
-                Constants.TEXTURE_CONFIGURATION,
-                onPress -> {
-                  closeScreen();
-                }));
+            new CloseButton(this.rightPos - 15, this.topPos + 4, onPress -> closeScreen()));
 
     // Home Button
     this.homeButton =
@@ -191,9 +177,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
                 this.buttonTopPos,
                 10,
                 "<",
-                onPress -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.MAIN);
-                }));
+                onPress -> NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.MAIN)));
   }
 
   @Override
@@ -216,26 +200,23 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     RenderSystem.setShaderTexture(0, Constants.TEXTURE_DEMO_BACKGROUND);
 
     // Main screen: top left
-    this.blit(poseStack, leftPos, topPos, 0, 0, 210, 160);
+    blit(poseStack, leftPos, topPos, 0, 0, 210, 160);
 
     // Main screen: top right
-    this.blit(poseStack, leftPos + 203, topPos, 132, 0, 120, 160);
+    blit(poseStack, leftPos + 203, topPos, 132, 0, 120, 160);
 
     // Main screen: bottom left
-    this.blit(poseStack, leftPos, topPos + 77, 0, 5, 210, 170);
+    blit(poseStack, leftPos, topPos + 77, 0, 5, 210, 170);
 
     // Main screen: bottom right
-    this.blit(poseStack, leftPos + 203, topPos + 77, 132, 5, 120, 170);
+    blit(poseStack, leftPos + 203, topPos + 77, 132, 5, 120, 170);
   }
 
   @Override
   public boolean keyPressed(int keyCode, int unused1, int unused2) {
-    if (keyCode != 257 && keyCode != 335 && keyCode != 69) {
+    if (keyCode != 257 && keyCode != 335 && keyCode != 69 && keyCode != 73) {
       return super.keyPressed(keyCode, unused1, unused2);
-    } else if (keyCode == 257 || keyCode == 335) {
-      return true;
-    } else {
-      return true;
     }
+    return keyCode == 257 || keyCode == 335 || keyCode == 73;
   }
 }

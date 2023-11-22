@@ -23,6 +23,7 @@ import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
 
 public class CustomScale {
+
   protected final float x;
   protected final float y;
   protected final float z;

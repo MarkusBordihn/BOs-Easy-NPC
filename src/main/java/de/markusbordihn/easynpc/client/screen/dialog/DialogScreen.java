@@ -22,6 +22,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
+import de.markusbordihn.easynpc.client.screen.components.CloseButton;
 import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
@@ -42,7 +43,6 @@ import java.util.List;
 import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -125,10 +125,10 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
           COMPACT_TEXT_WITH_FOUR_BUTTONS,
           COMPACT_TEXT_WITH_FIVE_BUTTONS,
           COMPACT_TEXT_WITH_SIX_BUTTONS:
-        this.blit(poseStack, leftPos + 70, dialogTopPosition, 0, 120, 205, 78);
+        blit(poseStack, leftPos + 70, dialogTopPosition, 0, 120, 205, 78);
         break;
       default:
-        this.blit(poseStack, leftPos + 70, dialogTopPosition, 0, 0, 205, 118);
+        blit(poseStack, leftPos + 70, dialogTopPosition, 0, 0, 205, 118);
     }
 
     // Distribute text for the across the lines and the give dialogPageIndex.
@@ -380,15 +380,8 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     // Close Button
     this.closeButton =
         this.addRenderableWidget(
-            new ImageButton(
-                this.leftPos + this.imageWidth - 15,
-                this.topPos + 6,
-                10,
-                10,
-                64,
-                38,
-                Constants.TEXTURE_CONFIGURATION,
-                onPress -> closeScreen()));
+            new CloseButton(
+                this.leftPos + this.imageWidth - 13, this.topPos + 4, onPress -> closeScreen()));
 
     // Set dialog text
     this.setDialogText(this.dialogData);
@@ -528,16 +521,16 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     switch (this.dialogScreenLayout) {
       case COMPACT_TEXT_ONLY, COMPACT_TEXT_WITH_ONE_BUTTON, COMPACT_TEXT_WITH_TWO_BUTTONS:
         // Compact background
-        this.blit(poseStack, leftPos, topPos, 0, 0, 200, 170);
-        this.blit(poseStack, leftPos + 200, topPos, 165, 0, 85, 170);
+        blit(poseStack, leftPos, topPos, 0, 0, 200, 170);
+        blit(poseStack, leftPos + 200, topPos, 165, 0, 85, 170);
         break;
       default:
         // Full background
-        this.blit(poseStack, leftPos, topPos, 0, 0, 210, 140);
-        this.blit(poseStack, leftPos + 200, topPos, 165, 0, 85, 140);
+        blit(poseStack, leftPos, topPos, 0, 0, 210, 140);
+        blit(poseStack, leftPos + 200, topPos, 165, 0, 85, 140);
 
-        this.blit(poseStack, leftPos, topPos + 70, 0, 30, 210, 140);
-        this.blit(poseStack, leftPos + 200, topPos + 70, 165, 30, 85, 140);
+        blit(poseStack, leftPos, topPos + 70, 0, 30, 210, 140);
+        blit(poseStack, leftPos + 200, topPos + 70, 165, 30, 85, 140);
     }
   }
 
