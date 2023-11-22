@@ -24,6 +24,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.CancelButton;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.client.screen.components.CloseButton;
 import de.markusbordihn.easynpc.client.screen.components.DeleteButton;
 import de.markusbordihn.easynpc.client.screen.components.DialogButton;
 import de.markusbordihn.easynpc.client.screen.components.DialogButtonButton;
@@ -47,7 +48,6 @@ import java.util.HashSet;
 import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -122,6 +122,7 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
   private boolean commandDialogExecuteAsUserValue = false;
   private boolean commandDialogDebugValue = false;
 
+  @OnlyIn(Dist.CLIENT)
   public DialogButtonEditorScreen(
       DialogButtonEditorMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -237,15 +238,7 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
     // Close Button
     this.closeButton =
         this.addRenderableWidget(
-            new ImageButton(
-                this.rightPos - 15,
-                this.topPos + 6,
-                10,
-                10,
-                60,
-                38,
-                Constants.TEXTURE_CONFIGURATION,
-                onPress -> closeScreen()));
+            new CloseButton(this.rightPos - 15, this.topPos + 4, onPress -> closeScreen()));
 
     // Home Button
     this.homeButton =

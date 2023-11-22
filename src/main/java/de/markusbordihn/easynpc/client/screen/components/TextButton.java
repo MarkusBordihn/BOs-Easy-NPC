@@ -19,17 +19,10 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 
-public class TextButton extends Button {
+public class TextButton extends CustomButton {
 
   public static final int DEFAULT_HEIGHT = 16;
 
@@ -74,58 +67,6 @@ public class TextButton extends Button {
   }
 
   public TextButton(int left, int top, int width, int height, Component label, OnPress onPress) {
-    super(left, top, width, height, label, onPress, Button.DEFAULT_NARRATION);
-  }
-
-  @Override
-  public void renderButton(PoseStack poseStack, int left, int top, float partialTicks) {
-    Minecraft minecraft = Minecraft.getInstance();
-    Font font = minecraft.font;
-    RenderSystem.setShader(GameRenderer::getPositionTexShader);
-    RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
-    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
-    int i = this.getYImage(this.isHoveredOrFocused());
-    RenderSystem.enableBlend();
-    RenderSystem.defaultBlendFunc();
-    RenderSystem.enableDepthTest();
-
-    // Top Part
-    this.blit(poseStack, this.getX(), this.getY(), 0, 46 + i * 20, this.width / 2, this.height - 4);
-    this.blit(
-        poseStack,
-        this.getX() + this.width / 2,
-        this.getY(),
-        200 - this.width / 2,
-        46 + i * 20,
-        this.width / 2,
-        this.height - 4);
-
-    // Bottom Part (last only 4 pixel from the bottom)
-    this.blit(
-        poseStack,
-        this.getX(),
-        this.getY() + this.height - 4,
-        0,
-        46 + i * 20 + 20 - 4,
-        this.width / 2,
-        4);
-    this.blit(
-        poseStack,
-        this.getX() + this.width / 2,
-        this.getY() + this.height - 4,
-        200 - this.width / 2,
-        46 + i * 20 + 20 - 4,
-        this.width / 2,
-        4);
-
-    this.renderBg(poseStack, minecraft, left, top);
-    int j = getFGColor();
-    drawCenteredString(
-        poseStack,
-        font,
-        this.getMessage(),
-        this.getX() + this.width / 2,
-        this.getY() + (this.height - 8) / 2,
-        j | Mth.ceil(this.alpha * 255.0F) << 24);
+    super(left, top, width, height, label, onPress);
   }
 }

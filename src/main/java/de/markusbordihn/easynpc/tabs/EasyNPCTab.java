@@ -35,6 +35,7 @@ public class EasyNPCTab {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   public static CreativeModeTab TAB_CONFIG_ITEMS;
   public static CreativeModeTab TAB_SPAWN_EGGS;
+
   protected EasyNPCTab() {}
 
   public static void handleCreativeModeTabRegister(CreativeModeTabEvent.Register event) {

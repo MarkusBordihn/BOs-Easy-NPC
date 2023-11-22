@@ -175,6 +175,7 @@ public class AdvancedDialogConfigurationScreen
 
   @OnlyIn(Dist.CLIENT)
   class DialogList extends ObjectSelectionList<AdvancedDialogConfigurationScreen.DialogList.Entry> {
+
     DialogList() {
       super(
           AdvancedDialogConfigurationScreen.this.minecraft,

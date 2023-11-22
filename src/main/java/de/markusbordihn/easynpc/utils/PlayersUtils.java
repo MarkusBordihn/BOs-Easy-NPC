@@ -191,11 +191,10 @@ public class PlayersUtils {
 
   public static boolean isValidPlayerName(String name) {
     return name != null
-        && !name.isEmpty()
-        && !name.startsWith("http")
-        && !name.equals("htt")
         && name.length() >= 3
         && name.length() <= 16
+        && !name.startsWith("http")
+        && !name.equals("htt")
         && name.matches(USER_REGEX);
   }
 

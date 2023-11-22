@@ -19,10 +19,10 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.skin;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
+import de.markusbordihn.easynpc.client.screen.components.SkinSelectionButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.data.skin.SkinType;
@@ -32,8 +32,6 @@ import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.ArrayList;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
@@ -115,19 +113,10 @@ public class DefaultSkinConfigurationScreen
       PoseStack poseStack, int x, int y, Enum<?> variant, Profession profession) {
 
     // Create dynamically button for each skin variant and profession.
-    int skinButtonLeft = x - 24;
-    int skinButtonTop = y - 81;
-    int skinButtonHeight = 84;
-    ImageButton skinButton =
-        new ImageButton(
-            skinButtonLeft,
-            skinButtonTop,
-            skinPreviewWidth,
-            skinButtonHeight,
-            0,
-            -84,
-            84,
-            Constants.TEXTURE_CONFIGURATION,
+    Button skinButton =
+        new SkinSelectionButton(
+            x - 24,
+            y - 81,
             button -> {
               NetworkMessageHandler.variantChange(this.uuid, variant);
               if (profession != null) {
@@ -136,24 +125,11 @@ public class DefaultSkinConfigurationScreen
               NetworkMessageHandler.skinChange(this.uuid, SkinType.DEFAULT);
             });
 
-    // Render active skin in different style.
-    if (this.entity.getSkinType() == SkinType.DEFAULT
-        && this.entity.getVariant().equals(variant)
-        && (profession == null || this.entity.getProfession().equals(profession))) {
-      poseStack.pushPose();
-      RenderSystem.setShader(GameRenderer::getPositionTexShader);
-      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-      RenderSystem.setShaderTexture(0, Constants.TEXTURE_CONFIGURATION);
-      this.blit(
-          poseStack,
-          skinButtonLeft,
-          skinButtonTop,
-          0,
-          skinButtonHeight,
-          skinPreviewWidth,
-          skinButtonHeight);
-      poseStack.popPose();
-    }
+    // Disable button for active skin.
+    skinButton.active =
+        !(this.entity.getSkinType() == SkinType.DEFAULT
+            && this.entity.getVariant().equals(variant)
+            && (profession == null || this.entity.getProfession().equals(profession)));
 
     // Render skin entity with variant and profession.
     ScreenHelper.renderEntityDefaultSkin(
@@ -194,11 +170,7 @@ public class DefaultSkinConfigurationScreen
                 20,
                 "<<",
                 onPress -> {
-                  if (this.skinStartIndex - maxSkinsPerPage > 0) {
-                    skinStartIndex = skinStartIndex - maxSkinsPerPage;
-                  } else {
-                    skinStartIndex = 0;
-                  }
+                  skinStartIndex = Math.max(this.skinStartIndex - maxSkinsPerPage, 0);
                   checkSkinNavigationButtonState();
                 }));
     this.skinPreviousButton =
@@ -253,15 +225,15 @@ public class DefaultSkinConfigurationScreen
   public void render(PoseStack poseStack, int x, int y, float partialTicks) {
     super.render(poseStack, x, y, partialTicks);
 
-    // Skins
-    this.renderSkins(poseStack);
-
     // Make sure we pass the mouse movements to the dynamically added buttons, if any.
     if (!skinButtons.isEmpty()) {
       for (Button skinButton : skinButtons) {
         skinButton.render(poseStack, x, y, partialTicks);
       }
     }
+
+    // Skins
+    this.renderSkins(poseStack);
   }
 
   @Override

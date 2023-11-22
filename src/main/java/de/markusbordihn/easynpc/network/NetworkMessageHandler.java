@@ -41,6 +41,7 @@ import de.markusbordihn.easynpc.network.message.MessageAdvancedTrading;
 import de.markusbordihn.easynpc.network.message.MessageBasicTrading;
 import de.markusbordihn.easynpc.network.message.MessageDialogButtonAction;
 import de.markusbordihn.easynpc.network.message.MessageEntityAttributeChange;
+import de.markusbordihn.easynpc.network.message.MessageEntityBaseAttributeChange;
 import de.markusbordihn.easynpc.network.message.MessageModelLockRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPoseChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPositionChange;
@@ -75,10 +76,12 @@ import de.markusbordihn.easynpc.network.message.MessageTriggerActionEvent;
 import de.markusbordihn.easynpc.network.message.MessageVariantChange;
 import java.util.UUID;
 import net.minecraft.core.Rotations;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -374,6 +377,18 @@ public class NetworkMessageHandler {
     if (uuid != null && entityAttribute != null && integerValue != null) {
       NetworkHandler.sendToServer(
           new MessageEntityAttributeChange(uuid, entityAttribute, integerValue));
+    }
+  }
+
+  public static void entityBaseAttributeChange(UUID uuid, Attribute attribute, Double value) {
+    if (uuid != null
+        && attribute != null
+        && value != null
+        && BuiltInRegistries.ATTRIBUTE.getKey(attribute) != null) {
+      Double roundedValue = Math.round(value * 100.0) / 100.0;
+      NetworkHandler.sendToServer(
+          new MessageEntityBaseAttributeChange(
+              uuid, BuiltInRegistries.ATTRIBUTE.getKey(attribute), roundedValue));
     }
   }
 

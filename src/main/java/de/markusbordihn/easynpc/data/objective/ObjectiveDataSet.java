@@ -40,6 +40,7 @@ public class ObjectiveDataSet {
   private final HashSet<UUID> targetedEntitySet = new HashSet<>();
   // Data
   private boolean hasPlayerTarget = false;
+  private boolean hasTravelTarget = false;
   private boolean hasObjectives = false;
   private boolean hasEntityTarget = false;
   private boolean hasOwnerTarget = false;
@@ -106,6 +107,10 @@ public class ObjectiveDataSet {
     return removed;
   }
 
+  public boolean hasTravelTarget() {
+    return this.hasTravelTarget;
+  }
+
   public boolean hasPlayerTarget() {
     return this.hasPlayerTarget;
   }
@@ -150,12 +155,18 @@ public class ObjectiveDataSet {
     this.targetedPlayerSet.clear();
     this.targetedEntitySet.clear();
 
+    boolean hasTravelObjectives = false;
     boolean hasPlayerTargetObjective = false;
     boolean hasEntityTargetObjective = false;
     boolean hasOwnerTargetObjective = false;
     for (ObjectiveData objectiveData : this.objectives.values()) {
       if (objectiveData == null || objectiveData.getType() == ObjectiveType.NONE) {
         continue;
+      }
+
+      // Check if we have any travel objectives
+      if (objectiveData.hasTravelObjective()) {
+        hasTravelObjectives = true;
       }
 
       // Check if we have any object with a targeted player or entity.
@@ -171,6 +182,7 @@ public class ObjectiveDataSet {
     }
 
     // Update target flags
+    this.hasTravelTarget = hasTravelObjectives;
     this.hasPlayerTarget = hasPlayerTargetObjective;
     this.hasEntityTarget = hasEntityTargetObjective;
     this.hasOwnerTarget = hasOwnerTargetObjective;
@@ -215,6 +227,8 @@ public class ObjectiveDataSet {
   public String toString() {
     return "ObjectiveDataSet [ hasObjectives="
         + this.hasObjectives
+        + ", hasTravelTarget="
+        + this.hasTravelTarget
         + ", hasOwnerTarget="
         + this.hasOwnerTarget
         + ", hasEntityTarget="

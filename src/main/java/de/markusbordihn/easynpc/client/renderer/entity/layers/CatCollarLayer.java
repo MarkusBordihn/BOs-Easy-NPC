@@ -33,6 +33,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class CatCollarLayer extends RenderLayer<Cat, CustomCatModel<Cat>> {
+
   private static final ResourceLocation CAT_COLLAR_LOCATION =
       new ResourceLocation("textures/entity/cat/cat_collar.png");
   private final CustomCatModel<Cat> catModel;

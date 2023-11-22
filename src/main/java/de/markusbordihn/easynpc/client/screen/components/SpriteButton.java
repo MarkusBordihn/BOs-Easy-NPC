@@ -40,6 +40,7 @@ public class SpriteButton extends CustomButton {
   private final int spriteOffsetY;
   private final int spriteWidth;
   private final int spriteHeight;
+  private boolean renderBackground = true;
 
   public SpriteButton(
       int left,
@@ -276,6 +277,10 @@ public class SpriteButton extends CustomButton {
     this.spriteHeight = spriteHeight;
   }
 
+  public void setRenderBackground(boolean renderBackground) {
+    this.renderBackground = renderBackground;
+  }
+
   @Override
   public void renderButtonText(PoseStack poseStack, Font font, Component component, int x, int y) {
     if (component != null && !component.getString().isEmpty()) {
@@ -292,18 +297,20 @@ public class SpriteButton extends CustomButton {
 
   @Override
   public void renderButton(PoseStack poseStack, int left, int top, float partialTicks) {
-    super.renderButton(poseStack, left, top, partialTicks);
+    if (this.renderBackground) {
+      super.renderButton(poseStack, left, top, partialTicks);
+    }
 
     // Button Sprite
     RenderSystem.setShader(GameRenderer::getPositionTexShader);
     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     RenderSystem.setShaderTexture(0, this.sprite);
-    this.blit(
+    blit(
         poseStack,
         this.getX() + this.spriteX,
         this.getY() + this.spriteY,
         spriteOffsetX,
-        this.active ? this.spriteOffsetY : spriteOffsetY + spriteHeight,
+        isActive() ? this.spriteOffsetY : spriteOffsetY + spriteHeight,
         spriteWidth,
         spriteHeight);
   }

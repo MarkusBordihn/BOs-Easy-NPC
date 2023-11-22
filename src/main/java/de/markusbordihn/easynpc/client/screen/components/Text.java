@@ -46,6 +46,11 @@ public class Text {
   }
 
   public static int drawStringShadow(
+      PoseStack poseStack, Font font, String text, int x, int y, int color) {
+    return font.drawShadow(poseStack, text, x, y, color, false);
+  }
+
+  public static int drawStringShadow(
       PoseStack poseStack, Font font, Component component, int x, int y) {
     return drawStringShadow(poseStack, font, component, x, y, Constants.FONT_COLOR_DEFAULT);
   }

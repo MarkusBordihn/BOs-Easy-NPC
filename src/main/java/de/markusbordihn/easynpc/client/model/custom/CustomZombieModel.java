@@ -89,12 +89,14 @@ public class CustomZombieModel<T extends LivingEntity> extends HumanoidModel<T>
         if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM) {
           EasyNPCModel.animateHumanoidModel(
               this,
+              easyNPCEntity,
               this.head,
               this.body,
               this.rightArm,
               this.leftArm,
               this.rightLeg,
               this.leftLeg,
+              ageInTicks,
               limbSwing,
               limbSwingAmount);
         }
