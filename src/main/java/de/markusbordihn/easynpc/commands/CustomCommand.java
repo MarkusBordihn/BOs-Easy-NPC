@@ -37,7 +37,8 @@ public class CustomCommand {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  protected CustomCommand() {}
+  protected CustomCommand() {
+  }
 
   protected static CompletableFuture<Suggestions> suggestEasyNPCs(
       CommandContext<CommandSourceStack> context, SuggestionsBuilder build)

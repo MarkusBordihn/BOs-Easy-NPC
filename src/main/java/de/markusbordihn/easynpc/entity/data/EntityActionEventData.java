@@ -89,7 +89,8 @@ public interface EntityActionEventData extends EntityDataInterface {
     setCustomEntityData(CUSTOM_DATA_ACTION_PERMISSION_LEVEL, actionPermissionLevel);
   }
 
-  default void defineSynchedActionData() {}
+  default void defineSynchedActionData() {
+  }
 
   default void defineCustomActionData() {
     defineCustomEntityData(CUSTOM_DATA_ACTION_EVENT_SET, new ActionEventSet());

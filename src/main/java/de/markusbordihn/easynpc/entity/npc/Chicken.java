@@ -48,9 +48,16 @@ public class Chicken extends EasyNPCEntity {
 
   public static AttributeSupplier.Builder createAttributes() {
     return Mob.createMobAttributes()
-        .add(Attributes.MOVEMENT_SPEED, 0.5F)
         .add(Attributes.MAX_HEALTH, 16.0D)
-        .add(Attributes.ATTACK_DAMAGE, 0.0D);
+        .add(Attributes.FOLLOW_RANGE, 32.0D)
+        .add(Attributes.KNOCKBACK_RESISTANCE, 0.0D)
+        .add(Attributes.MOVEMENT_SPEED, 0.5F)
+        .add(Attributes.FLYING_SPEED, 0.3F)
+        .add(Attributes.ATTACK_DAMAGE, 0.0D)
+        .add(Attributes.ATTACK_KNOCKBACK, 0.0D)
+        .add(Attributes.ATTACK_SPEED, 0.0D)
+        .add(Attributes.ARMOR, 0.0D)
+        .add(Attributes.ARMOR_TOUGHNESS, 0.0D);
   }
 
   public float getOFlap() {

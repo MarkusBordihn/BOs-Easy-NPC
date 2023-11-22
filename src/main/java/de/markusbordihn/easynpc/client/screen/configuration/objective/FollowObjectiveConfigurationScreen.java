@@ -110,7 +110,7 @@ public class FollowObjectiveConfigurationScreen
                 }));
     this.followPlayerName =
         this.addRenderableWidget(
-            new TextField(this.font, this.contentLeftPos + 150, objectiveEntriesTop + 1, 125));
+            new TextField(this.font, this.contentLeftPos + 150, objectiveEntriesTop, 125));
     followPlayerName.setEditable(objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_PLAYER));
     followPlayerName.setResponder(
         value -> {
@@ -126,7 +126,7 @@ public class FollowObjectiveConfigurationScreen
         this.addRenderableWidget(
             new SaveButton(
                 this.followPlayerName.x + this.followPlayerName.getWidth() + 5,
-                objectiveEntriesTop,
+                objectiveEntriesTop - 1,
                 onPress -> {
                   ObjectiveData objectiveData = new ObjectiveData(ObjectiveType.FOLLOW_PLAYER);
                   objectiveData.setTargetPlayerName(this.followPlayerName.getValue());
@@ -171,7 +171,7 @@ public class FollowObjectiveConfigurationScreen
                 }));
     this.followEntityUUID =
         this.addRenderableWidget(
-            new TextField(this.font, this.contentLeftPos + 150, objectiveEntriesTop + 1, 125));
+            new TextField(this.font, this.contentLeftPos + 150, objectiveEntriesTop, 125));
     followEntityUUID.setMaxLength(36);
     followEntityUUID.setEditable(
         objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_ENTITY_BY_UUID));
@@ -183,20 +183,20 @@ public class FollowObjectiveConfigurationScreen
         });
     followEntityUUID.setValue(
         objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_ENTITY_BY_UUID)
-                && objectiveDataSet
-                        .getObjective(ObjectiveType.FOLLOW_ENTITY_BY_UUID)
-                        .getTargetEntityUUID()
-                    != null
+            && objectiveDataSet
+            .getObjective(ObjectiveType.FOLLOW_ENTITY_BY_UUID)
+            .getTargetEntityUUID()
+            != null
             ? objectiveDataSet
-                .getObjective(ObjectiveType.FOLLOW_ENTITY_BY_UUID)
-                .getTargetEntityUUID()
-                .toString()
+            .getObjective(ObjectiveType.FOLLOW_ENTITY_BY_UUID)
+            .getTargetEntityUUID()
+            .toString()
             : "");
     this.followEntityUUIDSaveButton =
         this.addRenderableWidget(
             new SaveButton(
                 this.followEntityUUID.x + this.followEntityUUID.getWidth() + 5,
-                objectiveEntriesTop,
+                objectiveEntriesTop - 1,
                 onPress -> {
                   ObjectiveData objectiveData =
                       new ObjectiveData(ObjectiveType.FOLLOW_ENTITY_BY_UUID, 7);

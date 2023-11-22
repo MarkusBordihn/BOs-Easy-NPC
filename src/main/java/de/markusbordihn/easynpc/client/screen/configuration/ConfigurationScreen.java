@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.client.screen.configuration;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.components.CloseButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.config.CommonConfig;
@@ -33,7 +34,6 @@ import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -65,8 +65,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
   protected final UUID uuid;
   protected final LivingEntity owner;
   protected final String ownerName;
-  // Owner details
-  protected boolean hasOwner = false;
+  protected final boolean hasOwner;
   // Buttons
   protected Button closeButton = null;
   protected Button homeButton = null;
@@ -94,8 +93,8 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
 
     // General environment Data
     this.minecraftInstance = Minecraft.getInstance();
-    this.localPlayer = this.minecraftInstance != null ? this.minecraftInstance.player : null;
-    this.clientLevel = this.minecraftInstance != null ? this.minecraftInstance.level : null;
+    this.localPlayer = this.minecraftInstance.player;
+    this.clientLevel = this.minecraftInstance.level;
   }
 
   protected static Double getDoubleValue(String value) {
@@ -112,7 +111,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
   protected static boolean isFloatValue(String text) {
     return text != null
         && (text.isEmpty()
-            || (text.matches("^\\d+(\\.?\\d*)?$") && Float.parseFloat(text) >= 0.0F));
+        || (text.matches("^\\d+(\\.?\\d*)?$") && Float.parseFloat(text) >= 0.0F));
   }
 
   protected static boolean isPositiveNumericValue(String text) {
@@ -135,17 +134,14 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.MAIN);
   }
 
-  protected int fontDraw(PoseStack poseStack, String text, int x, int y) {
-    return Text.drawConfigString(poseStack, this.font, text, x, y);
-  }
-
   protected boolean hasPermissions(Boolean enabled, Boolean allowInCreative, int permissionLevel) {
     if (Boolean.FALSE.equals(enabled)) {
       return false;
     } else if (Boolean.TRUE.equals(allowInCreative && this.localPlayer != null)
         && this.localPlayer.isCreative()) {
       return true;
-    } else return this.localPlayer != null && this.localPlayer.hasPermissions(permissionLevel);
+    }
+    return this.localPlayer != null && this.localPlayer.hasPermissions(permissionLevel);
   }
 
   @Override
@@ -168,20 +164,15 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     this.contentLeftPos = this.leftPos + 7;
     this.contentTopPos = this.topPos + 43;
 
+    // Allow repeated key events
+    if (this.minecraft != null) {
+      this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
+    }
+
     // Close Button
     this.closeButton =
         this.addRenderableWidget(
-            new ImageButton(
-                this.rightPos - 15,
-                this.topPos + 6,
-                10,
-                10,
-                64,
-                38,
-                Constants.TEXTURE_CONFIGURATION,
-                onPress -> {
-                  closeScreen();
-                }));
+            new CloseButton(this.rightPos - 15, this.topPos + 4, onPress -> closeScreen()));
 
     // Home Button
     this.homeButton =
@@ -191,9 +182,15 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
                 this.buttonTopPos,
                 10,
                 "<",
-                onPress -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.MAIN);
-                }));
+                onPress -> NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.MAIN)));
+  }
+
+  @Override
+  public void removed() {
+    if (this.minecraft != null) {
+      this.minecraft.keyboardHandler.setSendRepeatsToGui(false);
+    }
+    super.removed();
   }
 
   @Override

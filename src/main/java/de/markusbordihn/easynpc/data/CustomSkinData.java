@@ -35,7 +35,8 @@ public class CustomSkinData {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String DATA_FOLDER_NAME = "skin";
 
-  protected CustomSkinData() {}
+  protected CustomSkinData() {
+  }
 
   public static void registerCustomSkinData(final FMLClientSetupEvent event) {
     event.enqueueWork(

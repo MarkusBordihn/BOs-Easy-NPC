@@ -45,7 +45,8 @@ public class StopModReposts {
 
   private static final Pattern expectedFilePattern = Pattern.compile(modFileFormatRegEx);
 
-  protected StopModReposts() {}
+  protected StopModReposts() {
+  }
 
   public static void checkStopModReposts() {
     if (isDevEnvironment) {

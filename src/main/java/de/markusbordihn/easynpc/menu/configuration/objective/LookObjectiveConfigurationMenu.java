@@ -5,7 +5,7 @@
  * associated documentation files (the "Software"), to deal in the Software without restriction,
  * including without limitation the rights to use, copy, modify, merge, publish, distribute,
  * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * furnished to do so, subject to the looking conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or
  * substantial portions of the Software.
@@ -17,8 +17,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.menu.configuration.attribute;
+package de.markusbordihn.easynpc.menu.configuration.objective;
 
+import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import java.util.UUID;
 import javax.annotation.Nullable;
@@ -30,29 +31,36 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-public class BasicAttributeConfigurationMenu extends AttributeConfigurationMenu {
+public class LookObjectiveConfigurationMenu extends ObjectiveConfigurationMenu {
 
-  public BasicAttributeConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
-    super(ModMenuTypes.BASIC_ATTRIBUTE_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
+  public LookObjectiveConfigurationMenu(
+      int windowId, Inventory playerInventory, UUID uuid, ObjectiveDataSet objectiveDataSet) {
+    super(
+        ModMenuTypes.LOOK_OBJECTIVE_CONFIGURATION_MENU.get(),
+        windowId,
+        playerInventory,
+        uuid,
+        objectiveDataSet);
   }
 
-  public BasicAttributeConfigurationMenu(
+  public LookObjectiveConfigurationMenu(
       int windowId, Inventory playerInventory, FriendlyByteBuf data) {
-    this(windowId, playerInventory, data.readUUID());
+    this(windowId, playerInventory, data.readUUID(), new ObjectiveDataSet(data.readNbt()));
   }
 
-  public static MenuProvider getMenuProvider(UUID uuid, Entity entity) {
+  public static MenuProvider getMenuProvider(
+      UUID uuid, Entity entity, ObjectiveDataSet objectiveDataSet) {
     return new MenuProvider() {
       @Override
       public Component getDisplayName() {
-        return Component.literal("Basic Attribute for " + entity.getName().getString());
+        return Component.literal("Look Objective for " + entity.getName().getString());
       }
 
       @Nullable
       @Override
       public AbstractContainerMenu createMenu(
           int windowId, Inventory inventory, Player serverPlayer) {
-        return new BasicAttributeConfigurationMenu(windowId, inventory, uuid);
+        return new LookObjectiveConfigurationMenu(windowId, inventory, uuid, objectiveDataSet);
       }
     };
   }

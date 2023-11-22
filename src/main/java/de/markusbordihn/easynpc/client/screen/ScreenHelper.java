@@ -39,7 +39,8 @@ import net.minecraft.world.entity.Pose;
 
 public class ScreenHelper {
 
-  protected ScreenHelper() {}
+  protected ScreenHelper() {
+  }
 
   public static void renderEntity(
       int x, int y, int scale, float yRot, float xRot, EasyNPCEntity entity) {

@@ -73,9 +73,9 @@ public class FollowLivingEntityGoal extends Goal {
         && this.livingEntity != null
         && this.livingEntity.isAlive()
         && this.easyNPCEntity.distanceToSqr(this.livingEntity)
-            > (this.stopDistance * this.stopDistance)
+        > (this.stopDistance * this.stopDistance)
         && this.easyNPCEntity.distanceToSqr(this.livingEntity)
-            < (this.startDistance * this.startDistance);
+        < (this.startDistance * this.startDistance);
   }
 
   @Override

@@ -365,9 +365,9 @@ public class AdvancedTradingConfigurationScreen
           poseStack,
           slotPositionX
               + ((AdvancedTradingConfigurationMenu.TRADING_SLOT_SIZE
-                      + AdvancedTradingConfigurationMenu.TRADING_SLOT_SIZE
-                      + 5)
-                  * 2),
+              + AdvancedTradingConfigurationMenu.TRADING_SLOT_SIZE
+              + 5)
+              * 2),
           slotPositionY,
           7,
           7,

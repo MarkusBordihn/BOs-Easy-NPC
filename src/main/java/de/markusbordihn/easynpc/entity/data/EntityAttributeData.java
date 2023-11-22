@@ -24,6 +24,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 
 public interface EntityAttributeData extends EntityDataInterface {
 
@@ -52,6 +53,20 @@ public interface EntityAttributeData extends EntityDataInterface {
   String DATA_ATTRIBUTE_FREEFALL_TAG = "Freefall";
   String DATA_ATTRIBUTE_IS_ATTACKABLE_TAG = "IsAttackable";
   String DATA_ATTRIBUTE_IS_PUSHABLE_TAG = "IsPushable";
+
+  default void setBaseAttribute(Attribute attribute, double value) {
+    if (attribute == null || getEntity().getAttribute(attribute) == null) {
+      return;
+    }
+    getEntity().getAttribute(attribute).setBaseValue(value);
+  }
+
+  default double getBaseAttribute(Attribute attribute) {
+    if (attribute == null || getEntity().getAttribute(attribute) == null) {
+      return 0.0;
+    }
+    return getEntity().getAttribute(attribute).getBaseValue();
+  }
 
   default boolean getAttributeCanFloat() {
     return getEntityData(DATA_ATTRIBUTE_CAN_FLOAT);
@@ -110,10 +125,10 @@ public interface EntityAttributeData extends EntityDataInterface {
   }
 
   default void defineSynchedAttributeData() {
-    defineEntityData(DATA_ATTRIBUTE_CAN_FLOAT, true);
-    defineEntityData(DATA_ATTRIBUTE_CAN_CLOSE_DOOR, true);
-    defineEntityData(DATA_ATTRIBUTE_CAN_OPEN_DOOR, true);
-    defineEntityData(DATA_ATTRIBUTE_CAN_PASS_DOOR, true);
+    defineEntityData(DATA_ATTRIBUTE_CAN_FLOAT, false);
+    defineEntityData(DATA_ATTRIBUTE_CAN_CLOSE_DOOR, false);
+    defineEntityData(DATA_ATTRIBUTE_CAN_OPEN_DOOR, false);
+    defineEntityData(DATA_ATTRIBUTE_CAN_PASS_DOOR, false);
     defineEntityData(DATA_ATTRIBUTE_FREEFALL, false);
     defineEntityData(DATA_ATTRIBUTE_IS_ATTACKABLE, false);
     defineEntityData(DATA_ATTRIBUTE_IS_PUSHABLE, false);

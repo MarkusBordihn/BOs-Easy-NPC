@@ -53,7 +53,8 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
     this.defaultEquipmentButton =
         this.addRenderableWidget(
             new TextButton(
-                this.buttonLeftPos, this.buttonTopPos, buttonWidth, "equipment", button -> {}));
+                this.buttonLeftPos, this.buttonTopPos, buttonWidth, "equipment", button -> {
+            }));
     this.defaultEquipmentButton.active = false;
 
     // Basic Position

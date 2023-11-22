@@ -23,6 +23,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
+import de.markusbordihn.easynpc.client.screen.components.SkinSelectionButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
@@ -40,7 +41,6 @@ import java.util.Set;
 import java.util.UUID;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -125,41 +125,18 @@ public class PlayerSkinConfigurationScreen
     SkinType skinType = PlayerTextureManager.getPlayerTextureSkinType(textureModelKey);
 
     // Create dynamically button for each skin variant and profession.
-    int skinButtonLeft = x - 24;
-    int skinButtonTop = y - 81;
-    int skinButtonHeight = 84;
-    ImageButton skinButton =
-        new ImageButton(
-            skinButtonLeft,
-            skinButtonTop,
-            skinPreviewWidth,
-            skinButtonHeight,
-            0,
-            -84,
-            84,
-            Constants.TEXTURE_CONFIGURATION,
+    Button skinButton =
+        new SkinSelectionButton(
+            x - 24,
+            y - 81,
             button -> {
               String skinURL = PlayerTextureManager.getPlayerTextureSkinURL(textureModelKey);
               NetworkMessageHandler.skinChange(this.uuid, "", skinURL, textureUUID, skinType);
             });
 
-    // Render active skin in different style.
+    // Disable button for active skin.
     Optional<UUID> skinUUID = this.entity.getSkinUUID();
-    if (skinUUID.isPresent() && skinUUID.get().equals(textureUUID)) {
-      poseStack.pushPose();
-      RenderSystem.setShader(GameRenderer::getPositionTexShader);
-      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-      RenderSystem.setShaderTexture(0, Constants.TEXTURE_CONFIGURATION);
-      this.blit(
-          poseStack,
-          skinButtonLeft,
-          skinButtonTop,
-          0,
-          skinButtonHeight,
-          skinPreviewWidth,
-          skinButtonHeight);
-      poseStack.popPose();
-    }
+    skinButton.active = !(skinUUID.isPresent() && skinUUID.get().equals(textureUUID));
 
     // Render skin entity with variant and profession.
     ScreenHelper.renderEntityPlayerSkin(
@@ -179,8 +156,8 @@ public class PlayerSkinConfigurationScreen
     if (textureSkinLocationValue != null
         && !textureSkinLocationValue.equals(this.formerTextureSkinLocation)
         && (textureSkinLocationValue.isEmpty()
-            || PlayersUtils.isValidPlayerName(textureSkinLocationValue)
-            || PlayersUtils.isValidUrl(textureSkinLocationValue))) {
+        || PlayersUtils.isValidPlayerName(textureSkinLocationValue)
+        || PlayersUtils.isValidUrl(textureSkinLocationValue))) {
 
       if (PlayersUtils.isValidPlayerName(textureSkinLocationValue)) {
         log.debug("Setting player user texture to {}", textureSkinLocationValue);
@@ -214,7 +191,7 @@ public class PlayerSkinConfigurationScreen
             textureSkinLocationValue != null
                 && !textureSkinLocationValue.isEmpty()
                 && (PlayersUtils.isValidPlayerName(textureSkinLocationValue)
-                    || PlayersUtils.isValidUrl(textureSkinLocationValue));
+                || PlayersUtils.isValidUrl(textureSkinLocationValue));
         break;
       default:
         this.addTextureSettingsButton.active = PlayersUtils.isValidUrl(textureSkinLocationValue);
@@ -276,11 +253,7 @@ public class PlayerSkinConfigurationScreen
                 20,
                 Component.literal("<<"),
                 onPress -> {
-                  if (this.skinStartIndex - maxSkinsPerPage > 0) {
-                    skinStartIndex = skinStartIndex - maxSkinsPerPage;
-                  } else {
-                    skinStartIndex = 0;
-                  }
+                  skinStartIndex = Math.max(this.skinStartIndex - maxSkinsPerPage, 0);
                   checkSkinNavigationButtonState();
                 }));
     this.skinPreviousButton =
@@ -361,14 +334,14 @@ public class PlayerSkinConfigurationScreen
           poseStack, this.font, "processing_skin", this.leftPos + 55, this.topPos + 88);
     }
 
-    // Skins
-    this.renderSkins(poseStack);
-
     // Make sure we pass the mouse movements to the dynamically added buttons, if any.
     if (!skinButtons.isEmpty()) {
       for (Button skinButton : skinButtons) {
         skinButton.render(poseStack, x, y, partialTicks);
       }
     }
+
+    // Skins
+    this.renderSkins(poseStack);
   }
 }

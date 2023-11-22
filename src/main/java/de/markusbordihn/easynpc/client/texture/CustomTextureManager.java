@@ -41,7 +41,8 @@ public class CustomTextureManager {
   private static final HashMap<TextureModelKey, ResourceLocation> customTextureCache =
       new HashMap<>();
 
-  protected CustomTextureManager() {}
+  protected CustomTextureManager() {
+  }
 
   public static Set<UUID> getCustomTextureCacheKeys(SkinModel skinModel) {
     HashSet<UUID> hashSet = new HashSet<>();
@@ -57,7 +58,7 @@ public class CustomTextureManager {
       EasyNPCEntity entity, ResourceLocation defaultResourceLocation) {
     // Check if we have a skin UUID otherwise we assume that the texture is unknown.
     Optional<UUID> skinUUID = entity.getSkinUUID();
-    if (!skinUUID.isPresent()) {
+    if (skinUUID.isEmpty()) {
       return defaultResourceLocation;
     }
 

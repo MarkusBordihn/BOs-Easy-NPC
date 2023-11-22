@@ -51,7 +51,8 @@ public class PlayersUtils {
   // Internal Cache
   private static UUID lastUserUUIDForUserTexture;
 
-  protected PlayersUtils() {}
+  protected PlayersUtils() {
+  }
 
   public static Optional<GameProfile> getGameProfile(MinecraftServer server, Component component) {
     return getGameProfile(server, component.getString());
@@ -191,11 +192,10 @@ public class PlayersUtils {
 
   public static boolean isValidPlayerName(String name) {
     return name != null
-        && !name.isEmpty()
-        && !name.startsWith("http")
-        && !name.equals("htt")
         && name.length() >= 3
         && name.length() <= 16
+        && !name.startsWith("http")
+        && !name.equals("htt")
         && name.matches(USER_REGEX);
   }
 

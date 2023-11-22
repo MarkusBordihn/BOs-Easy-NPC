@@ -54,7 +54,8 @@ public class TextureManager {
 
   private static Path textureCachePath = null;
 
-  protected TextureManager() {}
+  protected TextureManager() {
+  }
 
   private static ResourceLocation registerTexture(TextureModelKey textureModelKey, File file) {
     // Using client Texture Manager
@@ -65,7 +66,7 @@ public class TextureManager {
     // Creative native image from file.
     NativeImage nativeImage =
         textureModelKey.getSkinModel() == SkinModel.HUMANOID
-                || textureModelKey.getSkinModel() == SkinModel.HUMANOID_SLIM
+            || textureModelKey.getSkinModel() == SkinModel.HUMANOID_SLIM
             ? getNativePlayerImage(file)
             : getNativeImage(file);
     if (nativeImage == null) {

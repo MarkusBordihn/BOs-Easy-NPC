@@ -38,7 +38,8 @@ public class CustomDataHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  protected CustomDataHandler() {}
+  protected CustomDataHandler() {
+  }
 
   public static void prepare() {
     log.info("{} custom data ...", Constants.LOG_REGISTER_PREFIX);

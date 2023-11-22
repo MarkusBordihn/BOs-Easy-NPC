@@ -138,7 +138,8 @@ public interface EntityDialogData extends EntityDataInterface {
     return getDialogDataSet().getDialogButton(dialogId, dialogButtonId);
   }
 
-  default void defineSynchedDialogData() {}
+  default void defineSynchedDialogData() {
+  }
 
   default void defineCustomDialogData() {
     defineCustomEntityData(CUSTOM_DATA_DIALOG_DATA_SET, new DialogDataSet());

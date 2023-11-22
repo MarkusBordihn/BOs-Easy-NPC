@@ -50,7 +50,8 @@ public class PlayerTextureManager {
   private static final HashSet<UUID> playerTextureReloadProtection = new HashSet<>();
   private static Path textureCachePath = null;
 
-  protected PlayerTextureManager() {}
+  protected PlayerTextureManager() {
+  }
 
   public static Map<TextureModelKey, ResourceLocation> getPlayerTextureCache() {
     return playerTextureCache;
@@ -84,7 +85,7 @@ public class PlayerTextureManager {
       EasyNPCEntity entity, ResourceLocation defaultResourceLocation) {
     // Check if we have a skin UUID otherwise we assume that the texture is unknown.
     Optional<UUID> skinUUID = entity.getSkinUUID();
-    if (!skinUUID.isPresent()) {
+    if (skinUUID.isEmpty()) {
       return defaultResourceLocation;
     }
 

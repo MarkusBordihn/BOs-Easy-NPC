@@ -35,6 +35,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class Checkbox extends AbstractButton {
+
   private static final ResourceLocation TEXTURE =
       new ResourceLocation(Constants.MOD_ID, "textures/gui/checkbox.png");
 
@@ -124,16 +125,18 @@ public class Checkbox extends AbstractButton {
     RenderSystem.defaultBlendFunc();
     RenderSystem.blendFunc(
         GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+
     blit(
         poseStack,
         this.x,
         this.y,
-        this.isHoveredOrFocused() ? 16.0F : 0.0F,
+        this.active ? (this.isHoveredOrFocused() ? 16.0F : 0.0F) : 32.0F,
         this.selected ? 16.0F : 0.0F,
         16,
         16,
-        32,
-        32);
+        64,
+        64);
+
     if (this.showLabel) {
       Text.drawString(
           poseStack,
@@ -146,6 +149,7 @@ public class Checkbox extends AbstractButton {
 
   @OnlyIn(Dist.CLIENT)
   public interface OnChange {
+
     void onChange(Checkbox checkbox);
   }
 }

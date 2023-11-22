@@ -31,5 +31,6 @@ public class TradingConfigurationMenu extends ConfigurationMenu {
     super(menuType, windowId, playerInventory, uuid, pageIndex);
   }
 
-  public void setTradingChanged() {}
+  public void setTradingChanged() {
+  }
 }

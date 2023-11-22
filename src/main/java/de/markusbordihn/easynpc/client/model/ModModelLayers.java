@@ -39,7 +39,8 @@ public class ModModelLayers {
       new ModelLayerLocation(new ResourceLocation(Constants.MOD_ID, "fairy"), "main");
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  protected ModModelLayers() {}
+  protected ModModelLayers() {
+  }
 
   public static void registerEntityLayerDefinitions(
       EntityRenderersEvent.RegisterLayerDefinitions event) {

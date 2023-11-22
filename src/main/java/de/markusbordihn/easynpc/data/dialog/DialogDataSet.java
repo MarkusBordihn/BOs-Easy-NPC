@@ -42,7 +42,8 @@ public class DialogDataSet {
   private String defaultDialogLabel = "default";
   private DialogType dialogType = DialogType.STANDARD;
 
-  public DialogDataSet() {}
+  public DialogDataSet() {
+  }
 
   public DialogDataSet(DialogType dialogType) {
     this.dialogType = dialogType;

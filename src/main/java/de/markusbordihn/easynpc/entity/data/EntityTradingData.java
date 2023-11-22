@@ -202,8 +202,8 @@ public interface EntityTradingData extends EntityDataInterface {
 
   default boolean hasTrading() {
     return ((getTradingType() == TradingType.BASIC || getTradingType() == TradingType.ADVANCED)
-            && getEntityData(DATA_MERCHANT_OFFERS) != null
-            && !getEntityData(DATA_MERCHANT_OFFERS).isEmpty())
+        && getEntityData(DATA_MERCHANT_OFFERS) != null
+        && !getEntityData(DATA_MERCHANT_OFFERS).isEmpty())
         || getTradingType() == TradingType.CUSTOM;
   }
 

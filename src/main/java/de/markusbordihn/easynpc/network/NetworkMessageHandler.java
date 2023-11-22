@@ -41,6 +41,7 @@ import de.markusbordihn.easynpc.network.message.MessageAdvancedTrading;
 import de.markusbordihn.easynpc.network.message.MessageBasicTrading;
 import de.markusbordihn.easynpc.network.message.MessageDialogButtonAction;
 import de.markusbordihn.easynpc.network.message.MessageEntityAttributeChange;
+import de.markusbordihn.easynpc.network.message.MessageEntityBaseAttributeChange;
 import de.markusbordihn.easynpc.network.message.MessageModelLockRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPoseChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPositionChange;
@@ -74,11 +75,13 @@ import de.markusbordihn.easynpc.network.message.MessageTradingTypeChange;
 import de.markusbordihn.easynpc.network.message.MessageTriggerActionEvent;
 import de.markusbordihn.easynpc.network.message.MessageVariantChange;
 import java.util.UUID;
+import net.minecraft.core.Registry;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -87,9 +90,12 @@ public class NetworkMessageHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  protected NetworkMessageHandler() {}
+  protected NetworkMessageHandler() {
+  }
 
-  /** Send action change. */
+  /**
+   * Send action change.
+   */
   public static void actionEventChange(
       UUID uuid, ActionEventType actionEventType, ActionData actionData) {
     if (uuid != null && actionEventType != null && actionData != null && actionData.isValid()) {
@@ -97,14 +103,18 @@ public class NetworkMessageHandler {
     }
   }
 
-  /** Send name change. */
+  /**
+   * Send name change.
+   */
   public static void nameChange(UUID uuid, String name) {
     if (uuid != null && name != null && !name.isEmpty()) {
       NetworkHandler.sendToServer(new MessageNameChange(uuid, name));
     }
   }
 
-  /** Open configuration request. */
+  /**
+   * Open configuration request.
+   */
   public static void openConfiguration(UUID uuid, ConfigurationType configurationType) {
     if (uuid != null && configurationType != null) {
       NetworkHandler.sendToServer(new MessageOpenConfiguration(uuid, configurationType, 0));
@@ -118,7 +128,9 @@ public class NetworkMessageHandler {
     }
   }
 
-  /** Open dialog editor request */
+  /**
+   * Open dialog editor request
+   */
   public static void openDialogEditor(
       UUID uuid, UUID dialogId, ConfigurationType formerConfigurationType) {
     if (uuid != null && dialogId != null) {
@@ -134,7 +146,9 @@ public class NetworkMessageHandler {
     }
   }
 
-  /** Open dialog button editor request */
+  /**
+   * Open dialog button editor request
+   */
   public static void openDialogButtonEditor(
       UUID uuid, UUID dialogId, ConfigurationType formerConfigurationType) {
     if (uuid != null && dialogId != null) {
@@ -153,7 +167,9 @@ public class NetworkMessageHandler {
     }
   }
 
-  /** Open dialog screen. */
+  /**
+   * Open dialog screen.
+   */
   public static void openDialog(UUID uuid, UUID dialogId) {
     if (uuid != null && dialogId != null) {
       NetworkHandler.sendToServer(new MessageOpenDialog(uuid, dialogId, 0));
@@ -166,77 +182,99 @@ public class NetworkMessageHandler {
     }
   }
 
-  /** Send model lock rotation change. */
+  /**
+   * Send model lock rotation change.
+   */
   public static void modelLockRotationChange(UUID uuid, boolean lockRotation) {
     if (uuid != null) {
       NetworkHandler.sendToServer(new MessageModelLockRotationChange(uuid, lockRotation));
     }
   }
 
-  /** Send model pose change. */
+  /**
+   * Send model pose change.
+   */
   public static void modelPoseChange(UUID uuid, ModelPose modelPose) {
     if (uuid != null && modelPose != null) {
       NetworkHandler.sendToServer(new MessageModelPoseChange(uuid, modelPose));
     }
   }
 
-  /** Send position change. */
+  /**
+   * Send position change.
+   */
   public static void modelPositionChange(UUID uuid, ModelPart modelPart, CustomPosition position) {
     if (uuid != null && modelPart != null && position != null) {
       NetworkHandler.sendToServer(new MessageModelPositionChange(uuid, modelPart, position));
     }
   }
 
-  /** Send visibility change. */
+  /**
+   * Send visibility change.
+   */
   public static void modelVisibilityChange(UUID uuid, ModelPart modelPart, boolean visible) {
     if (uuid != null && modelPart != null) {
       NetworkHandler.sendToServer(new MessageModelVisibilityChange(uuid, modelPart, visible));
     }
   }
 
-  /** Send pose change. */
+  /**
+   * Send pose change.
+   */
   public static void poseChange(UUID uuid, Pose pose) {
     if (uuid != null && pose != null) {
       NetworkHandler.sendToServer(new MessagePoseChange(uuid, pose));
     }
   }
 
-  /** Send position change. */
+  /**
+   * Send position change.
+   */
   public static void positionChange(UUID uuid, Vec3 pos) {
     if (uuid != null && pos != null) {
       NetworkHandler.sendToServer(new MessagePositionChange(uuid, pos));
     }
   }
 
-  /** Send profession change. */
+  /**
+   * Send profession change.
+   */
   public static void professionChange(UUID uuid, Profession profession) {
     if (uuid != null && profession != null) {
       NetworkHandler.sendToServer(new MessageProfessionChange(uuid, profession));
     }
   }
 
-  /** Send remove NPC. */
+  /**
+   * Send remove NPC.
+   */
   public static void removeNPC(UUID uuid) {
     if (uuid != null) {
       NetworkHandler.sendToServer(new MessageRemoveNPC(uuid));
     }
   }
 
-  /** Send respawn NPC. */
+  /**
+   * Send respawn NPC.
+   */
   public static void respawnNPC(UUID uuid) {
     if (uuid != null) {
       NetworkHandler.sendToServer(new MessageRespawnNPC(uuid));
     }
   }
 
-  /** Send rotation change. */
+  /**
+   * Send rotation change.
+   */
   public static void rotationChange(UUID uuid, ModelPart modelPart, Rotations rotations) {
     if (uuid != null && modelPart != null && rotations != null) {
       NetworkHandler.sendToServer(new MessageRotationChange(uuid, modelPart, rotations));
     }
   }
 
-  /** Save dialog. */
+  /**
+   * Save dialog.
+   */
   public static void saveDialog(UUID uuid, DialogDataSet dialogDataSet) {
     if (uuid != null && dialogDataSet != null) {
       NetworkHandler.sendToServer(new MessageSaveDialogSet(uuid, dialogDataSet));
@@ -249,14 +287,18 @@ public class NetworkMessageHandler {
     }
   }
 
-  /** Send scale change. */
+  /**
+   * Send scale change.
+   */
   public static void scaleChange(UUID uuid, String scaleAxis, float scale) {
     if (uuid != null && scaleAxis != null) {
       NetworkHandler.sendToServer(new MessageScaleChange(uuid, scaleAxis, scale));
     }
   }
 
-  /** Send skin change. */
+  /**
+   * Send skin change.
+   */
   public static void skinChange(UUID uuid, SkinType skinType) {
     if (uuid != null && skinType != null) {
       NetworkHandler.sendToServer(
@@ -278,42 +320,54 @@ public class NetworkMessageHandler {
     }
   }
 
-  /** Send trigger action. */
+  /**
+   * Send trigger action.
+   */
   public static void triggerActionEvent(UUID uuid, ActionEventType actionEventType) {
     if (uuid != null && actionEventType != null && actionEventType != ActionEventType.NONE) {
       NetworkHandler.sendToServer(new MessageTriggerActionEvent(uuid, actionEventType));
     }
   }
 
-  /** Handle Dialog Button actions. */
+  /**
+   * Handle Dialog Button actions.
+   */
   public static void triggerDialogButtonAction(UUID uuid, UUID dialogId, UUID dialogButtonId) {
     if (uuid != null && dialogId != null && dialogButtonId != null) {
       NetworkHandler.sendToServer(new MessageDialogButtonAction(uuid, dialogId, dialogButtonId));
     }
   }
 
-  /** Send variant change. */
+  /**
+   * Send variant change.
+   */
   public static void variantChange(UUID uuid, Enum<?> variant) {
     if (uuid != null && variant != null) {
       NetworkHandler.sendToServer(new MessageVariantChange(uuid, variant.name()));
     }
   }
 
-  /** Export preset to player */
+  /**
+   * Export preset to player
+   */
   public static void exportPreset(UUID uuid, String name) {
     if (uuid != null && name != null && !name.isEmpty()) {
       NetworkHandler.sendToServer(new MessagePresetExport(uuid, name));
     }
   }
 
-  /** Export preset to player */
+  /**
+   * Export preset to player
+   */
   public static void exportPresetWorld(UUID uuid, String name) {
     if (uuid != null && name != null && !name.isEmpty()) {
       NetworkHandler.sendToServer(new MessagePresetExportWorld(uuid, name));
     }
   }
 
-  /** Export preset to player */
+  /**
+   * Export preset to player
+   */
   public static void exportPresetClient(UUID uuid, String name, ServerPlayer serverPlayer) {
     if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
       return;
@@ -339,7 +393,9 @@ public class NetworkMessageHandler {
     exportPresetClient(uuid, uuid.toString(), serverPlayer);
   }
 
-  /** Import preset from player */
+  /**
+   * Import preset from player
+   */
   public static void importWorldPreset(UUID uuid, ResourceLocation resourceLocation) {
     if (uuid != null && resourceLocation != null) {
       NetworkHandler.sendToServer(new MessagePresetImportWorld(uuid, resourceLocation));
@@ -352,7 +408,9 @@ public class NetworkMessageHandler {
     }
   }
 
-  /** Entity Attribute Change */
+  /**
+   * Entity Attribute Change
+   */
   public static void entityAttributeChange(
       UUID uuid, EntityAttribute entityAttribute, Boolean booleanValue) {
     if (uuid != null && entityAttribute != null && booleanValue != null) {
@@ -377,6 +435,18 @@ public class NetworkMessageHandler {
     }
   }
 
+  public static void entityBaseAttributeChange(UUID uuid, Attribute attribute, Double value) {
+    if (uuid != null
+        && attribute != null
+        && value != null
+        && Registry.ATTRIBUTE.getKey(attribute) != null) {
+      Double roundedValue = Math.round(value * 100.0) / 100.0;
+      NetworkHandler.sendToServer(
+          new MessageEntityBaseAttributeChange(
+              uuid, Registry.ATTRIBUTE.getKey(attribute), roundedValue));
+    }
+  }
+
   public static void entityAttributeChange(
       UUID uuid, EntityAttribute entityAttribute, String stringValue) {
     if (uuid != null && entityAttribute != null && stringValue != null) {
@@ -385,7 +455,9 @@ public class NetworkMessageHandler {
     }
   }
 
-  /** Change trading type. */
+  /**
+   * Change trading type.
+   */
   public static void changeTradingType(UUID uuid, TradingType tradingType) {
     if (uuid != null && tradingType != null) {
       NetworkHandler.sendToServer(new MessageTradingTypeChange(uuid, tradingType));

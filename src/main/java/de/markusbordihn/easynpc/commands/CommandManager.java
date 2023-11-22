@@ -39,7 +39,8 @@ public class CommandManager {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  protected CommandManager() {}
+  protected CommandManager() {
+  }
 
   @SubscribeEvent
   public static void handleRegisterCommandsEvent(RegisterCommandsEvent event) {
@@ -52,7 +53,7 @@ public class CommandManager {
             .then(PresetCommand.register())
             .then(TradingCommand.register())
         // @formatter:on
-        );
+    );
   }
 
   public static void executeEntityCommand(String command, Entity entity, int permissionLevel,
@@ -68,7 +69,8 @@ public class CommandManager {
         permissionLevel);
     Commands commands = minecraftServer.getCommands();
     CommandSourceStack commandSourceStack = minecraftServer.createCommandSourceStack()
-        .withEntity(entity).withPosition(entity.position()).withRotation(entity.getRotationVector()).withPermission(permissionLevel);
+        .withEntity(entity).withPosition(entity.position()).withRotation(entity.getRotationVector())
+        .withPermission(permissionLevel);
     CommandDispatcher<CommandSourceStack> commandDispatcher = commands.getDispatcher();
     ParseResults<CommandSourceStack> parseResults = commandDispatcher.parse(command,
         debug ? commandSourceStack : commandSourceStack.withSuppressedOutput());

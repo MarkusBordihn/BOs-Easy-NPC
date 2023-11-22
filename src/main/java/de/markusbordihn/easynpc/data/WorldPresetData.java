@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.LevelResource;
@@ -48,7 +47,8 @@ public class WorldPresetData {
   private static final ConcurrentHashMap<ResourceLocation, Path> presetResourceLocationMap =
       new ConcurrentHashMap<>();
 
-  protected WorldPresetData() {}
+  protected WorldPresetData() {
+  }
 
   public static void prepareFolder() {
     log.info("{} world preset data ...", Constants.LOG_REGISTER_PREFIX);
@@ -111,13 +111,13 @@ public class WorldPresetData {
                               DATA_FOLDER_NAME
                                   + '/'
                                   + presetDataFolder
-                                      .relativize(path)
-                                      .toString()
-                                      .replace("\\", "/"));
+                                  .relativize(path)
+                                  .toString()
+                                  .replace("\\", "/"));
                       presetResourceLocationMap.put(resourceLocation, path);
                       return resourceLocation;
                     })
-                .collect(Collectors.toList());
+                .toList();
         return filePaths.stream();
       }
     } catch (IOException exception) {

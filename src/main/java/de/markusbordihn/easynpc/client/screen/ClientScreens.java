@@ -23,7 +23,8 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.configuration.actions.BasicActionConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.actions.DialogActionConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.actions.DistanceActionConfigurationScreen;
-import de.markusbordihn.easynpc.client.screen.configuration.attribute.BasicAttributeConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.attribute.AbilitiesAttributeConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.attribute.BaseAttributeConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.AdvancedDialogConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.BasicDialogConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.NoneDialogConfigurationScreen;
@@ -33,6 +34,7 @@ import de.markusbordihn.easynpc.client.screen.configuration.main.MainConfigurati
 import de.markusbordihn.easynpc.client.screen.configuration.objective.AttackObjectiveConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.objective.BasicObjectiveConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.objective.FollowObjectiveConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.objective.LookObjectiveConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.pose.AdvancedPoseConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.pose.CustomPoseConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.pose.DefaultPoseConfigurationScreen;
@@ -64,7 +66,8 @@ public class ClientScreens {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  protected ClientScreens() {}
+  protected ClientScreens() {
+  }
 
   public static void registerScreens(final FMLClientSetupEvent event) {
     log.info("{} Client Screens ...", Constants.LOG_REGISTER_PREFIX);
@@ -99,7 +102,10 @@ public class ClientScreens {
           // Attribute Configuration Screen
           MenuScreens.register(
               ModMenuTypes.BASIC_ATTRIBUTE_CONFIGURATION_MENU.get(),
-              BasicAttributeConfigurationScreen::new);
+              AbilitiesAttributeConfigurationScreen::new);
+          MenuScreens.register(
+              ModMenuTypes.BASE_ATTRIBUTE_CONFIGURATION_MENU.get(),
+              BaseAttributeConfigurationScreen::new);
 
           // Dialog Configuration Screens
           MenuScreens.register(
@@ -129,6 +135,9 @@ public class ClientScreens {
           MenuScreens.register(
               ModMenuTypes.ATTACK_OBJECTIVE_CONFIGURATION_MENU.get(),
               AttackObjectiveConfigurationScreen::new);
+          MenuScreens.register(
+              ModMenuTypes.LOOK_OBJECTIVE_CONFIGURATION_MENU.get(),
+              LookObjectiveConfigurationScreen::new);
 
           // Pose Configuration Screen
           MenuScreens.register(

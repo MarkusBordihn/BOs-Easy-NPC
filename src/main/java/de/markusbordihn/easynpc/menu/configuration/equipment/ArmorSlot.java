@@ -42,15 +42,15 @@ public class ArmorSlot extends Slot {
   public static final ResourceLocation EMPTY_ARMOR_SLOT_BOOTS =
       new ResourceLocation(Constants.MOD_ID, "item/empty_armor/empty_armor_slot_boots");
   static final ResourceLocation[] TEXTURE_EMPTY_SLOTS =
-      new ResourceLocation[] {
-        EMPTY_ARMOR_SLOT_BOOTS,
-        EMPTY_ARMOR_SLOT_LEGGINGS,
-        EMPTY_ARMOR_SLOT_CHESTPLATE,
-        EMPTY_ARMOR_SLOT_HELMET
+      new ResourceLocation[]{
+          EMPTY_ARMOR_SLOT_BOOTS,
+          EMPTY_ARMOR_SLOT_LEGGINGS,
+          EMPTY_ARMOR_SLOT_CHESTPLATE,
+          EMPTY_ARMOR_SLOT_HELMET
       };
   private static final EquipmentSlot[] SLOT_IDS =
-      new EquipmentSlot[] {
-        EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD
+      new EquipmentSlot[]{
+          EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD
       };
 
   final EquipmentSlot equipmentSlot;

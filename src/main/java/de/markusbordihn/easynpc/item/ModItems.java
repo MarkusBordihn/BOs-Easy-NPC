@@ -133,5 +133,6 @@ public class ModItems {
                   ModEntityType.ZOMBIE_VILLAGER,
                   new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
 
-  protected ModItems() {}
+  protected ModItems() {
+  }
 }

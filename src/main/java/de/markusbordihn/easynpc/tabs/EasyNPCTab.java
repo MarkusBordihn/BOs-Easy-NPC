@@ -38,5 +38,6 @@ public class EasyNPCTab {
         }
       };
 
-  protected EasyNPCTab() {}
+  protected EasyNPCTab() {
+  }
 }

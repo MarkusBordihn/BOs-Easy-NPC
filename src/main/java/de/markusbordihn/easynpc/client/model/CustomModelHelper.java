@@ -28,7 +28,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class CustomModelHelper {
 
-  protected CustomModelHelper() {}
+  protected CustomModelHelper() {
+  }
 
   public static void resetRotation(ModelPart modelPart) {
     modelPart.xRot = 0.0F;
@@ -94,9 +95,9 @@ public class CustomModelHelper {
     setPositionRotationVisibility(modelPart, position, rotations, visible);
     if (visible
         && (rotations == null
-            || (rotations.getX() == 0.0f
-                && rotations.getY() == 0.0f
-                && rotations.getZ() == 0.0f))) {
+        || (rotations.getX() == 0.0f
+        && rotations.getY() == 0.0f
+        && rotations.getZ() == 0.0f))) {
       modelPart.yRot = netHeadYaw * ((float) Math.PI / 180F);
       modelPart.xRot = headPitch * ((float) Math.PI / 180F);
     }

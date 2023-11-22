@@ -79,5 +79,6 @@ public final class Constants {
           && FORGE_VERSION.get() != null
           && "MOD_DEV".equals(FORGE_VERSION.get());
 
-  private Constants() {}
+  private Constants() {
+  }
 }

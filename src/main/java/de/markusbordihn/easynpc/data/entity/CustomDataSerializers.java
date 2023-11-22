@@ -237,5 +237,6 @@ public class CustomDataSerializers {
     EntityDataSerializers.registerSerializer(UUID_HASH_SET);
   }
 
-  protected CustomDataSerializers() {}
+  protected CustomDataSerializers() {
+  }
 }

@@ -36,7 +36,8 @@ public class EasyNPCEntityEvents {
 
   private static final Set<EasyNPCEntity> changeInvulnerableTimeSet = new HashSet<>();
 
-  protected EasyNPCEntityEvents() {}
+  protected EasyNPCEntityEvents() {
+  }
 
   @SubscribeEvent(priority = EventPriority.HIGHEST)
   public static void handleEntityInteractHIGHEST(PlayerInteractEvent.EntityInteract event) {

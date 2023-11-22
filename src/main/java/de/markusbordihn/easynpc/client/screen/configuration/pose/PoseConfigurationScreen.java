@@ -64,8 +64,8 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
     // Shift left position for compact mode ans specific model parts
     if (compact
         && (modelPart == ModelPart.BODY
-            || modelPart == ModelPart.LEFT_ARM
-            || modelPart == ModelPart.LEFT_LEG)) {
+        || modelPart == ModelPart.LEFT_ARM
+        || modelPart == ModelPart.LEFT_LEG)) {
       sliderLeftPosition = left + 10;
     }
 
@@ -130,16 +130,12 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 }));
 
     if (compact) {
-      int resetButtonLeftPosition;
+      int resetButtonLeftPosition =
+          switch (modelPart) {
+            case BODY, LEFT_ARM, LEFT_LEG -> left;
+            default -> sliderButtonZ.x + sliderButtonZ.getWidth();
+          };
       // Switch reset button left position for compact mode and specific model parts
-      switch (modelPart) {
-        case BODY, LEFT_ARM, LEFT_LEG:
-          resetButtonLeftPosition = left;
-          break;
-        default:
-          resetButtonLeftPosition = sliderButtonZ.x + sliderButtonZ.getWidth();
-          break;
-      }
       this.addRenderableWidget(
           new TextButton(
               resetButtonLeftPosition,
@@ -187,8 +183,8 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
     // Shift left position for compact mode ans specific model parts
     if (compact
         && (modelPart == ModelPart.BODY
-            || modelPart == ModelPart.LEFT_ARM
-            || modelPart == ModelPart.LEFT_LEG)) {
+        || modelPart == ModelPart.LEFT_ARM
+        || modelPart == ModelPart.LEFT_LEG)) {
       sliderLeftPosition = left + 10;
     }
 

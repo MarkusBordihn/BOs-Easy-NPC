@@ -53,7 +53,8 @@ public class LegacyEntityModelData {
   private static final String LEGACY_2_DATA_MODEL_RIGHT_LEG_VISIBLE_TAG = "RightLegVisible";
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  protected LegacyEntityModelData() {}
+  protected LegacyEntityModelData() {
+  }
 
   public static boolean readAdditionalLegacyModelData(
       CompoundTag compoundTag, EasyNPCEntity entity) {

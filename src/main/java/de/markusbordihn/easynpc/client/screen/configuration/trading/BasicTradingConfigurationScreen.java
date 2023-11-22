@@ -170,9 +170,9 @@ public class BasicTradingConfigurationScreen
           poseStack,
           slotPositionX
               + ((BasicTradingConfigurationMenu.TRADING_SLOT_SIZE
-                      + BasicTradingConfigurationMenu.TRADING_SLOT_SIZE
-                      + 5)
-                  * 2),
+              + BasicTradingConfigurationMenu.TRADING_SLOT_SIZE
+              + 5)
+              * 2),
           slotPositionY,
           7,
           7,

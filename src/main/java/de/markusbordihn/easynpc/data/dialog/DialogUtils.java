@@ -64,9 +64,9 @@ public class DialogUtils {
     return text != null
         && !text.isEmpty()
         && (text.contains(MACRO_NPC_STRING)
-            || text.contains(MACRO_INITIATOR_STRING)
-            || text.contains(MACRO_LINE_BREAK)
-            || text.contains(MACRO_HTML_LINE_BREAK));
+        || text.contains(MACRO_INITIATOR_STRING)
+        || text.contains(MACRO_LINE_BREAK)
+        || text.contains(MACRO_HTML_LINE_BREAK));
   }
 
   public static String generateButtonLabel(String name) {

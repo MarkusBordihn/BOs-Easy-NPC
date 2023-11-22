@@ -61,7 +61,8 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
     this.defaultScaleButton =
         this.addRenderableWidget(
             new TextButton(
-                this.buttonLeftPos, this.buttonTopPos, buttonWidth, "scaling", button -> {}));
+                this.buttonLeftPos, this.buttonTopPos, buttonWidth, "scaling", button -> {
+            }));
     this.defaultScaleButton.active = false;
 
     // Basic Position
@@ -98,9 +99,7 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
                 scalePositionTop + this.scaleXSliderButton.getHeight(),
                 scaleWidth,
                 "reset",
-                button -> {
-                  this.scaleXSliderButton.setDefaultValue(entity.getDefaultScaleX());
-                }));
+                button -> this.scaleXSliderButton.setDefaultValue(entity.getDefaultScaleX())));
     this.defaultScaleXButton.active =
         !this.entity.getScaleX().equals(this.entity.getDefaultScaleX());
 
@@ -129,9 +128,7 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
                 scalePositionTop + this.scaleYSliderButton.getHeight() + scalePositionSpace,
                 scaleWidth,
                 "reset",
-                button -> {
-                  this.scaleYSliderButton.setDefaultValue(entity.getDefaultScaleY());
-                }));
+                button -> this.scaleYSliderButton.setDefaultValue(entity.getDefaultScaleY())));
     this.defaultScaleYButton.active =
         !this.entity.getScaleY().equals(this.entity.getDefaultScaleY());
 
@@ -160,9 +157,7 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
                 scalePositionTop + this.scaleZSliderButton.getHeight() + scalePositionSpace * 2,
                 scaleWidth,
                 "reset",
-                button -> {
-                  this.scaleZSliderButton.setDefaultValue(entity.getDefaultScaleZ());
-                }));
+                button -> this.scaleZSliderButton.setDefaultValue(entity.getDefaultScaleZ())));
     this.defaultScaleZButton.active =
         !this.entity.getScaleZ().equals(this.entity.getDefaultScaleZ());
   }

@@ -34,40 +34,55 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ObjectiveData {
+
   // Objective Data Tags
   public static final String DATA_ID_TAG = "Id";
   public static final String DATA_PRIORITY_TAG = "Prio";
-  public static final String DATA_SPEED_TAG = "Speed";
-  public static final String DATA_START_DISTANCE_TAG = "StartDistance";
-  public static final String DATA_STOP_DISTANCE_TAG = "StopDistance";
+  public static final String DATA_SPEED_MODIFIER_TAG = "SpeedModifier";
   public static final String DATA_TARGET_OWNER_UUID_TAG = "TargetOwnerUUID";
   public static final String DATA_TARGET_ENTITY_UUID_TAG = "TargetEntityUUID";
   public static final String DATA_TARGET_PLAYER_NAME_TAG = "TargetPlayerName";
   public static final String DATA_TYPE_TAG = "Type";
+  public static final String DATA_START_DISTANCE_TAG = "StartDistance";
+  public static final String DATA_STOP_DISTANCE_TAG = "StopDistance";
+  public static final String DATA_ONLY_AT_NIGHT_TAG = "OnlyAtNight";
+  public static final String DATA_DISTANCE_TO_POI_TAG = "DistanceToPoi";
+  public static final String DATA_CAN_DEAL_WITH_DOORS_TAG = "CanDealWithDoors";
+  public static final String DATA_LOOK_DISTANCE_TAG = "LookDistance";
+  public static final String DATA_ATTACK_INTERVAL_TAG = "AttackInterval";
+  public static final String DATA_ATTACK_RADIUS_TAG = "AttackRadius";
+  public static final String DATA_INTERVAL_TAG = "Interval";
+  public static final String DATA_MUST_SEE_TARGET_TAG = "MustSeeTarget";
+  public static final String DATA_PROBABILITY_TAG = "Probability";
+
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   // Objective Data
-  private boolean mustSee = true;
-  private boolean followingTargetEvenIfNotSeen = false;
+  private boolean mustSeeTarget = true;
   private int interval = 10;
   private ObjectiveType objectiveType = ObjectiveType.NONE;
   private String id = UUID.randomUUID().toString();
   private String targetPlayerName;
   private UUID targetOwnerUUID;
   private UUID targetEntityUUID;
-  private double speedModifier = 1.0D;
-  private float startDistance = 10.0F;
+  private double speedModifier = 0.8D;
+  private float startDistance = 16.0F;
   private float stopDistance = 2.0F;
+  private int attackInterval = 20;
+  private float attackRadius = 8.0F;
   private boolean onlyAtNight = false;
   private int distanceToPoi = 16;
   private BooleanSupplier canDealWithDoors = () -> false;
   private int priority = 1;
+  private float lookDistance = 15.0F;
+  private float probability = 1.0F;
 
   // Cache
   private boolean isRegistered = false;
   private Goal goal = null;
   private Goal target = null;
 
-  public ObjectiveData() {}
+  public ObjectiveData() {
+  }
 
   public ObjectiveData(ObjectiveType objectiveType) {
     this.id = objectiveType.name();
@@ -123,6 +138,14 @@ public class ObjectiveData {
     this.stopDistance = stopDistance;
   }
 
+  public float getProbability() {
+    return this.probability;
+  }
+
+  public void setProbability(float probability) {
+    this.probability = probability;
+  }
+
   public boolean isOnlyAtNight() {
     return this.onlyAtNight;
   }
@@ -159,20 +182,12 @@ public class ObjectiveData {
     this.interval = interval;
   }
 
-  public boolean isFollowingTargetEvenIfNotSeen() {
-    return this.followingTargetEvenIfNotSeen;
+  public boolean isMustSeeTarget() {
+    return this.mustSeeTarget;
   }
 
-  public void setFollowingTargetEvenIfNotSeen(boolean followingTargetEvenIfNotSeen) {
-    this.followingTargetEvenIfNotSeen = followingTargetEvenIfNotSeen;
-  }
-
-  public boolean isMustSee() {
-    return this.mustSee;
-  }
-
-  public void setMustSee(boolean mustSee) {
-    this.mustSee = mustSee;
+  public void setMustSeeTarget(boolean mustSeeTarget) {
+    this.mustSeeTarget = mustSeeTarget;
   }
 
   public String getId() {
@@ -201,6 +216,30 @@ public class ObjectiveData {
 
   public void setTargetPlayerName(String targetPlayerName) {
     this.targetPlayerName = targetPlayerName;
+  }
+
+  public float getLookDistance() {
+    return this.lookDistance;
+  }
+
+  public void setLookDistance(float lookDistance) {
+    this.lookDistance = lookDistance;
+  }
+
+  public float getAttackRadius() {
+    return this.attackRadius;
+  }
+
+  public void setAttackRadius(float attackRadius) {
+    this.attackRadius = attackRadius;
+  }
+
+  public int getAttackInterval() {
+    return this.attackInterval;
+  }
+
+  public void setAttackInterval(int attackInterval) {
+    this.attackInterval = attackInterval;
   }
 
   public ServerPlayer getTargetPlayer() {
@@ -246,6 +285,10 @@ public class ObjectiveData {
       return EntityManager.getPlayerByUUID(this.targetOwnerUUID, serverLevel);
     }
     return null;
+  }
+
+  public boolean hasTravelObjective() {
+    return this.objectiveType.hasTravelObjective();
   }
 
   public boolean hasOwnerTarget() {
@@ -312,21 +355,17 @@ public class ObjectiveData {
   }
 
   public void load(CompoundTag compoundTag) {
-    // Main data
-    this.id = compoundTag.getString(DATA_ID_TAG);
     this.objectiveType = ObjectiveType.get(compoundTag.getString(DATA_TYPE_TAG));
     this.priority = compoundTag.getInt(DATA_PRIORITY_TAG);
 
-    // Additional parameters
-    if (compoundTag.contains(DATA_SPEED_TAG)) {
-      this.speedModifier = compoundTag.getDouble(DATA_SPEED_TAG);
+    // Restore id, if no id is set, use the objective type.
+    if (compoundTag.contains(DATA_ID_TAG) && !compoundTag.getString(DATA_ID_TAG).isEmpty()) {
+      this.id = compoundTag.getString(DATA_ID_TAG);
+    } else {
+      this.id = this.objectiveType.name();
     }
-    if (compoundTag.contains(DATA_START_DISTANCE_TAG)) {
-      this.startDistance = compoundTag.getFloat(DATA_START_DISTANCE_TAG);
-    }
-    if (compoundTag.contains(DATA_STOP_DISTANCE_TAG)) {
-      this.stopDistance = compoundTag.getFloat(DATA_STOP_DISTANCE_TAG);
-    }
+
+    // Targeting parameters
     if (compoundTag.contains(DATA_TARGET_ENTITY_UUID_TAG)) {
       this.targetEntityUUID = compoundTag.getUUID(DATA_TARGET_ENTITY_UUID_TAG);
     }
@@ -336,24 +375,56 @@ public class ObjectiveData {
     if (compoundTag.contains(DATA_TARGET_OWNER_UUID_TAG)) {
       this.targetOwnerUUID = compoundTag.getUUID(DATA_TARGET_OWNER_UUID_TAG);
     }
+
+    // Additional parameters
+    if (compoundTag.contains(DATA_SPEED_MODIFIER_TAG)) {
+      this.speedModifier = compoundTag.getDouble(DATA_SPEED_MODIFIER_TAG);
+    }
+    if (compoundTag.contains(DATA_START_DISTANCE_TAG)) {
+      this.startDistance = compoundTag.getFloat(DATA_START_DISTANCE_TAG);
+    }
+    if (compoundTag.contains(DATA_STOP_DISTANCE_TAG)) {
+      this.stopDistance = compoundTag.getFloat(DATA_STOP_DISTANCE_TAG);
+    }
+    if (compoundTag.contains(DATA_ONLY_AT_NIGHT_TAG)) {
+      this.onlyAtNight = compoundTag.getBoolean(DATA_ONLY_AT_NIGHT_TAG);
+    }
+    if (compoundTag.contains(DATA_DISTANCE_TO_POI_TAG)) {
+      this.distanceToPoi = compoundTag.getInt(DATA_DISTANCE_TO_POI_TAG);
+    }
+    if (compoundTag.contains(DATA_CAN_DEAL_WITH_DOORS_TAG)) {
+      this.canDealWithDoors = () -> compoundTag.getBoolean(DATA_CAN_DEAL_WITH_DOORS_TAG);
+    }
+    if (compoundTag.contains(DATA_LOOK_DISTANCE_TAG)) {
+      this.lookDistance = compoundTag.getFloat(DATA_LOOK_DISTANCE_TAG);
+    }
+    if (compoundTag.contains(DATA_ATTACK_INTERVAL_TAG)) {
+      this.attackInterval = compoundTag.getInt(DATA_ATTACK_INTERVAL_TAG);
+    }
+    if (compoundTag.contains(DATA_ATTACK_RADIUS_TAG)) {
+      this.attackRadius = compoundTag.getFloat(DATA_ATTACK_RADIUS_TAG);
+    }
+    if (compoundTag.contains(DATA_INTERVAL_TAG)) {
+      this.interval = compoundTag.getInt(DATA_INTERVAL_TAG);
+    }
+    if (compoundTag.contains(DATA_MUST_SEE_TARGET_TAG)) {
+      this.mustSeeTarget = compoundTag.getBoolean(DATA_MUST_SEE_TARGET_TAG);
+    }
+    if (compoundTag.contains(DATA_PROBABILITY_TAG)) {
+      this.probability = compoundTag.getFloat(DATA_PROBABILITY_TAG);
+    }
   }
 
   public CompoundTag save(CompoundTag compoundTag) {
-    // Main data
-    compoundTag.putString(DATA_ID_TAG, this.id);
     compoundTag.putString(DATA_TYPE_TAG, this.objectiveType.name());
     compoundTag.putInt(DATA_PRIORITY_TAG, this.priority);
 
-    // Additional parameters
-    if (this.speedModifier != 1.0D) {
-      compoundTag.putDouble(DATA_SPEED_TAG, this.speedModifier);
+    // Store id only if it is not the same as the objective type.
+    if (this.id != null && !this.id.isEmpty() && !this.id.equals(this.objectiveType.name())) {
+      compoundTag.putString(DATA_ID_TAG, this.id);
     }
-    if (this.startDistance != 10.0F) {
-      compoundTag.putFloat(DATA_START_DISTANCE_TAG, this.startDistance);
-    }
-    if (this.stopDistance != 2.0F) {
-      compoundTag.putFloat(DATA_STOP_DISTANCE_TAG, this.stopDistance);
-    }
+
+    // Targeting parameters
     if (this.targetEntityUUID != null) {
       compoundTag.putUUID(DATA_TARGET_ENTITY_UUID_TAG, this.targetEntityUUID);
     }
@@ -362,6 +433,44 @@ public class ObjectiveData {
     }
     if (this.targetOwnerUUID != null) {
       compoundTag.putUUID(DATA_TARGET_OWNER_UUID_TAG, this.targetOwnerUUID);
+    }
+
+    // Additional parameters
+    if (this.speedModifier != 0.8D) {
+      compoundTag.putDouble(DATA_SPEED_MODIFIER_TAG, this.speedModifier);
+    }
+    if (this.startDistance != 16.0F) {
+      compoundTag.putFloat(DATA_START_DISTANCE_TAG, this.startDistance);
+    }
+    if (this.stopDistance != 2.0F) {
+      compoundTag.putFloat(DATA_STOP_DISTANCE_TAG, this.stopDistance);
+    }
+    if (this.onlyAtNight) {
+      compoundTag.putBoolean(DATA_ONLY_AT_NIGHT_TAG, this.onlyAtNight);
+    }
+    if (this.distanceToPoi != 16) {
+      compoundTag.putInt(DATA_DISTANCE_TO_POI_TAG, this.distanceToPoi);
+    }
+    if (this.canDealWithDoors.getAsBoolean()) {
+      compoundTag.putBoolean(DATA_CAN_DEAL_WITH_DOORS_TAG, this.canDealWithDoors.getAsBoolean());
+    }
+    if (this.lookDistance != 15.0F) {
+      compoundTag.putFloat(DATA_LOOK_DISTANCE_TAG, this.lookDistance);
+    }
+    if (this.attackInterval != 20) {
+      compoundTag.putInt(DATA_ATTACK_INTERVAL_TAG, this.attackInterval);
+    }
+    if (this.attackRadius != 8.0F) {
+      compoundTag.putFloat(DATA_ATTACK_RADIUS_TAG, this.attackRadius);
+    }
+    if (this.interval != 10) {
+      compoundTag.putInt(DATA_INTERVAL_TAG, this.interval);
+    }
+    if (!this.mustSeeTarget) {
+      compoundTag.putBoolean(DATA_MUST_SEE_TARGET_TAG, this.mustSeeTarget);
+    }
+    if (this.probability != 1.0F) {
+      compoundTag.putFloat(DATA_PROBABILITY_TAG, this.probability);
     }
 
     return compoundTag;
@@ -399,6 +508,18 @@ public class ObjectiveData {
         + this.distanceToPoi
         + ", canDealWithDoors="
         + this.canDealWithDoors
+        + ", lookDistance="
+        + this.lookDistance
+        + ", attackInterval="
+        + this.attackInterval
+        + ", attackRadius="
+        + this.attackRadius
+        + ", interval="
+        + this.interval
+        + ", mustSeeTarget="
+        + this.mustSeeTarget
+        + ", probability="
+        + this.probability
         + "]";
   }
 }

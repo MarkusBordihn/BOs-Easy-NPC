@@ -32,6 +32,7 @@ import org.apache.logging.log4j.Logger;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class ClientConfig {
+
   public static final ForgeConfigSpec clientSpec;
   public static final Config CLIENT;
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
@@ -55,14 +56,15 @@ public class ClientConfig {
             Constants.MOD_ID + "/" + Constants.MOD_ID + "-client.toml");
   }
 
-  private ClientConfig() {}
+  private ClientConfig() {
+  }
 
   public static class Config {
 
     Config(ForgeConfigSpec.Builder builder) {
       builder.comment(Constants.MOD_NAME);
 
-      builder.push("General");
+      builder.push("Client Configuration");
       builder.pop();
     }
   }

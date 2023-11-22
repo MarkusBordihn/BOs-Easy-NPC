@@ -40,7 +40,8 @@ public class ActionEventSet {
   // Cache
   private boolean hasDistanceActionEvent = false;
 
-  public ActionEventSet() {}
+  public ActionEventSet() {
+  }
 
   public ActionEventSet(CompoundTag compoundTag) {
     this.load(compoundTag);
@@ -88,13 +89,13 @@ public class ActionEventSet {
   public void updateHasDistanceAction() {
     this.hasDistanceActionEvent =
         (this.actionsMap.containsKey(ActionEventType.ON_DISTANCE_NEAR)
-                && !this.actionsMap.get(ActionEventType.ON_DISTANCE_NEAR).isEmpty())
+            && !this.actionsMap.get(ActionEventType.ON_DISTANCE_NEAR).isEmpty())
             || (this.actionsMap.containsKey(ActionEventType.ON_DISTANCE_CLOSE)
-                && !this.actionsMap.get(ActionEventType.ON_DISTANCE_CLOSE).isEmpty())
+            && !this.actionsMap.get(ActionEventType.ON_DISTANCE_CLOSE).isEmpty())
             || (this.actionsMap.containsKey(ActionEventType.ON_DISTANCE_VERY_CLOSE)
-                && !this.actionsMap.get(ActionEventType.ON_DISTANCE_VERY_CLOSE).isEmpty())
+            && !this.actionsMap.get(ActionEventType.ON_DISTANCE_VERY_CLOSE).isEmpty())
             || (this.actionsMap.containsKey(ActionEventType.ON_DISTANCE_TOUCH)
-                && !this.actionsMap.get(ActionEventType.ON_DISTANCE_TOUCH).isEmpty());
+            && !this.actionsMap.get(ActionEventType.ON_DISTANCE_TOUCH).isEmpty());
   }
 
   public void clear() {
