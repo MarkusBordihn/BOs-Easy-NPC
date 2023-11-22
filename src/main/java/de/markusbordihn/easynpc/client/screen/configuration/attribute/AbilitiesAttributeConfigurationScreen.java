@@ -19,10 +19,9 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.attribute;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
-import de.markusbordihn.easynpc.menu.configuration.attribute.BasicAttributeConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.attribute.AbilitiesAttributeConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -30,8 +29,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class BasicAttributeConfigurationScreen
-    extends AttributeConfigurationScreen<BasicAttributeConfigurationMenu> {
+public class AbilitiesAttributeConfigurationScreen
+    extends AttributeConfigurationScreen<AbilitiesAttributeConfigurationMenu> {
 
   // Checkboxes
 
@@ -39,8 +38,8 @@ public class BasicAttributeConfigurationScreen
 
   // Cache
 
-  public BasicAttributeConfigurationScreen(
-      BasicAttributeConfigurationMenu menu, Inventory inventory, Component component) {
+  public AbilitiesAttributeConfigurationScreen(
+      AbilitiesAttributeConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 
@@ -49,79 +48,71 @@ public class BasicAttributeConfigurationScreen
     super.init();
 
     // Default button stats
-    this.basicAttributeButton.active = false;
+    this.abilitiesAttributeButton.active = false;
+
+    int firstButtonRow = this.leftPos + 10;
+    int secondButtonRow = this.leftPos + 100;
+    int thirdButtonRow = this.leftPos + 200;
 
     // Checkboxes
-
     this.addRenderableWidget(
         new Checkbox(
-            this.buttonLeftPos,
+            firstButtonRow,
             this.buttonTopPos + 25,
-            "Float",
+            EntityAttribute.CAN_FLOAT.getAttributeName(),
             this.entity.getAttributeCanFloat(),
-            checkbox -> {
-              NetworkMessageHandler.entityAttributeChange(
-                  uuid, EntityAttribute.CAN_FLOAT, checkbox.selected());
-            }));
+            checkbox ->
+                NetworkMessageHandler.entityAttributeChange(
+                    uuid, EntityAttribute.CAN_FLOAT, checkbox.selected())));
 
     this.addRenderableWidget(
         new Checkbox(
-            this.buttonLeftPos,
+            firstButtonRow,
             this.buttonTopPos + 45,
-            "Open Door",
+            EntityAttribute.CAN_OPEN_DOOR.getAttributeName(),
             this.entity.getAttributeCanOpenDoor(),
-            checkbox -> {
-              NetworkMessageHandler.entityAttributeChange(
-                  uuid, EntityAttribute.CAN_OPEN_DOOR, checkbox.selected());
-            }));
+            checkbox ->
+                NetworkMessageHandler.entityAttributeChange(
+                    uuid, EntityAttribute.CAN_OPEN_DOOR, checkbox.selected())));
 
     this.addRenderableWidget(
         new Checkbox(
-            this.buttonLeftPos + 90,
+            secondButtonRow,
             this.buttonTopPos + 45,
-            "Close Door",
+            EntityAttribute.CAN_CLOSE_DOOR.getAttributeName(),
             this.entity.getAttributeCanCloseDoor(),
-            checkbox -> {
-              NetworkMessageHandler.entityAttributeChange(
-                  uuid, EntityAttribute.CAN_CLOSE_DOOR, checkbox.selected());
-            }));
+            checkbox ->
+                NetworkMessageHandler.entityAttributeChange(
+                    uuid, EntityAttribute.CAN_CLOSE_DOOR, checkbox.selected())));
 
     this.addRenderableWidget(
         new Checkbox(
-            this.buttonLeftPos + 180,
+            thirdButtonRow,
             this.buttonTopPos + 45,
-            "Pass Door",
+            EntityAttribute.CAN_PASS_DOOR.getAttributeName(),
             this.entity.getAttributeCanPassDoor(),
-            checkbox -> {
-              NetworkMessageHandler.entityAttributeChange(
-                  uuid, EntityAttribute.CAN_PASS_DOOR, checkbox.selected());
-            }));
+            checkbox ->
+                NetworkMessageHandler.entityAttributeChange(
+                    uuid, EntityAttribute.CAN_PASS_DOOR, checkbox.selected())));
 
     this.addRenderableWidget(
         new Checkbox(
-            this.buttonLeftPos,
+            firstButtonRow,
             this.buttonTopPos + 65,
-            "Attackable",
+            EntityAttribute.IS_ATTACKABLE.getAttributeName(),
             this.entity.getAttributeIsAttackable(),
-            checkbox -> {
-              NetworkMessageHandler.entityAttributeChange(
-                  uuid, EntityAttribute.IS_ATTACKABLE, checkbox.selected());
-            }));
+            checkbox ->
+                NetworkMessageHandler.entityAttributeChange(
+                    uuid, EntityAttribute.IS_ATTACKABLE, checkbox.selected())));
 
     this.addRenderableWidget(
         new Checkbox(
-            this.buttonLeftPos + 90,
+            secondButtonRow,
             this.buttonTopPos + 65,
-            "Pushable",
+            EntityAttribute.IS_PUSHABLE.getAttributeName(),
             this.entity.getAttributeIsPushable(),
-            checkbox -> {
-              NetworkMessageHandler.entityAttributeChange(
-                  uuid, EntityAttribute.IS_PUSHABLE, checkbox.selected());
-            }));
-  }
-
-  @Override
-  public void render(PoseStack poseStack, int x, int y, float partialTicks) {
-    super.render(poseStack, x, y, partialTicks);
+            checkbox ->
+                NetworkMessageHandler.entityAttributeChange(
+                    uuid, EntityAttribute.IS_PUSHABLE, checkbox.selected())));
   }
 }

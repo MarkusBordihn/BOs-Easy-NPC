@@ -62,7 +62,7 @@ public class ClientConfig {
     Config(ForgeConfigSpec.Builder builder) {
       builder.comment(Constants.MOD_NAME);
 
-      builder.push("General");
+      builder.push("Client Configuration");
       builder.pop();
     }
   }

@@ -144,9 +144,7 @@ public class ModEntityType {
         id,
         () ->
             EntityType.Builder.<Humanoid>of(
-                    (entityType, level) -> {
-                      return new Humanoid(entityType, level, variant);
-                    },
+                    (entityType, level) -> new Humanoid(entityType, level, variant),
                     EasyNPCEntity.CATEGORY)
                 .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
                 .clientTrackingRange(CLIENT_TRACKING_RANGE)
@@ -159,9 +157,7 @@ public class ModEntityType {
         id,
         () ->
             EntityType.Builder.<HumanoidSlim>of(
-                    (entityType, level) -> {
-                      return new HumanoidSlim(entityType, level, variant);
-                    },
+                    (entityType, level) -> new HumanoidSlim(entityType, level, variant),
                     EasyNPCEntity.CATEGORY)
                 .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
                 .clientTrackingRange(CLIENT_TRACKING_RANGE)

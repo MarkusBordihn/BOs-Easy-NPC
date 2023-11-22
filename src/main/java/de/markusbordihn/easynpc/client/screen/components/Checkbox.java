@@ -124,16 +124,18 @@ public class Checkbox extends AbstractButton {
     RenderSystem.defaultBlendFunc();
     RenderSystem.blendFunc(
         GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+
     blit(
         poseStack,
         this.x,
         this.y,
-        this.isHoveredOrFocused() ? 16.0F : 0.0F,
+        this.active ? (this.isHoveredOrFocused() ? 16.0F : 0.0F) : 32.0F,
         this.selected ? 16.0F : 0.0F,
         16,
         16,
-        32,
-        32);
+        64,
+        64);
+
     if (this.showLabel) {
       Text.drawString(
           poseStack,

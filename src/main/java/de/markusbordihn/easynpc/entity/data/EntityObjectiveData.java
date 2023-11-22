@@ -28,8 +28,6 @@ import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
-import de.markusbordihn.easynpc.entity.ai.goal.CustomLookAtPlayerGoal;
-import de.markusbordihn.easynpc.entity.ai.goal.ResetLookAtPlayerGoal;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -39,11 +37,9 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
-import net.minecraft.world.entity.player.Player;
 
 public interface EntityObjectiveData extends EntityDataInterface {
 
@@ -69,6 +65,7 @@ public interface EntityObjectiveData extends EntityDataInterface {
   // CompoundTags
   String DATA_OBJECTIVE_DATA_TAG = "ObjectiveData";
   String DATA_HAS_OBJECTIVE_TAG = "HasObjectives";
+  String DATA_HAS_TRAVEL_TARGET_TAG = "HasTravelTarget";
   String DATA_HAS_PLAYER_TARGET_TAG = "HasPlayerTarget";
   String DATA_HAS_ENTITY_TARGET_TAG = "HasEntityTarget";
 
@@ -95,6 +92,10 @@ public interface EntityObjectiveData extends EntityDataInterface {
 
   default boolean hasObjectives() {
     return getObjectiveDataSet() != null && getObjectiveDataSet().hasObjectives();
+  }
+
+  default boolean hasTravelTargetObjectives() {
+    return getObjectiveDataSet() != null && getObjectiveDataSet().hasTravelTarget();
   }
 
   default boolean hasPlayerTargetObjectives() {
@@ -171,7 +172,7 @@ public interface EntityObjectiveData extends EntityDataInterface {
 
   default void refreshCustomObjectives() {
     EasyNPCEntity entity = this.getEntity();
-    if (entity == null || entity.isClientSideExecuted()) {
+    if (entity == null || entity.isClientSide()) {
       return;
     }
     for (ObjectiveData objectiveData : getObjectiveDataSet().getObjectives()) {
@@ -186,11 +187,10 @@ public interface EntityObjectiveData extends EntityDataInterface {
 
   default void registerAttributeBasedObjectives() {
     EasyNPCEntity entity = this.getEntity();
-    if (entity == null || entity.isClientSideExecuted()) {
+    if (entity == null || entity.isClientSide()) {
       return;
     }
-
-    log.info("Register standard objectives based on entity attributes for {}", entity);
+    log.info("Register attribute based objectives for {}", entity);
 
     // Handle floating goals.
     ObjectiveData floatObjective = new ObjectiveData(ObjectiveType.FLOAT, 0);
@@ -223,22 +223,9 @@ public interface EntityObjectiveData extends EntityDataInterface {
     }
   }
 
-  default void registerStandardObjectives() {
-    EasyNPCEntity entity = this.getEntity();
-    if (entity == null || entity.isClientSideExecuted()) {
-      return;
-    }
-
-    log.debug("Register standard objectives for {}", entity);
-    GoalSelector goalSelector = this.getEntityGoalSelector();
-    goalSelector.addGoal(9, new ResetLookAtPlayerGoal(entity));
-    goalSelector.addGoal(9, new CustomLookAtPlayerGoal(entity, Player.class, 15.0F, 1.0F));
-    goalSelector.addGoal(10, new CustomLookAtPlayerGoal(entity, Mob.class, 15.0F));
-  }
-
   default void registerCustomObjectives() {
     EasyNPCEntity entity = this.getEntity();
-    if (entity == null || entity.isClientSideExecuted()) {
+    if (entity == null || entity.isClientSide()) {
       return;
     }
     Set<ObjectiveData> objectives = this.getObjectiveDataSet().getObjectives();
@@ -343,6 +330,13 @@ public interface EntityObjectiveData extends EntityDataInterface {
     return this.getObjectiveDataSet().removeObjective(objectiveData);
   }
 
+  default void registerStandardObjectives() {
+    log.debug("Register standard objectives for {}", this);
+    this.addOrUpdateCustomObjective(new ObjectiveData(ObjectiveType.LOOK_AT_RESET, 9));
+    this.addOrUpdateCustomObjective(new ObjectiveData(ObjectiveType.LOOK_AT_PLAYER, 9));
+    this.addOrUpdateCustomObjective(new ObjectiveData(ObjectiveType.LOOK_AT_MOB, 10));
+  }
+
   default void defineSynchedObjectiveData() {
     defineEntityData(DATA_HAS_OBJECTIVES, false);
     defineEntityData(DATA_HAS_PLAYER_TARGET, false);
@@ -361,10 +355,15 @@ public interface EntityObjectiveData extends EntityDataInterface {
     // Store objectives
     getObjectiveDataSet().save(objectiveTag);
 
-    // Store misc
+    // Store debugging flags for objectives targeting.
     objectiveTag.putBoolean(DATA_HAS_OBJECTIVE_TAG, this.hasObjectives());
-    if (this.hasObjectives()) {
+    if (this.hasTravelTargetObjectives()) {
+      objectiveTag.putBoolean(DATA_HAS_TRAVEL_TARGET_TAG, this.hasTravelTargetObjectives());
+    }
+    if (this.hasPlayerTargetObjectives()) {
       objectiveTag.putBoolean(DATA_HAS_PLAYER_TARGET_TAG, this.hasPlayerTargetObjectives());
+    }
+    if (this.hasEntityTargetObjectives()) {
       objectiveTag.putBoolean(DATA_HAS_ENTITY_TARGET_TAG, this.hasEntityTargetObjectives());
     }
 
@@ -372,6 +371,14 @@ public interface EntityObjectiveData extends EntityDataInterface {
   }
 
   default void readAdditionalObjectiveData(CompoundTag compoundTag) {
+
+    // Adding legacy support for old NPC data.
+    if (this.getEntity().getNPCDataVersion() == -1
+        && !compoundTag.contains(DATA_OBJECTIVE_DATA_TAG)) {
+      log.info("Converting legacy objectives for {}", this.getEntity());
+      this.registerStandardObjectives();
+      return;
+    }
 
     // Early exit if no objective data is available.
     if (!compoundTag.contains(DATA_OBJECTIVE_DATA_TAG)) {
@@ -384,6 +391,11 @@ public interface EntityObjectiveData extends EntityDataInterface {
       ObjectiveDataSet objectiveDataSet = new ObjectiveDataSet(objectiveDataTag);
       this.setObjectiveDataSet(objectiveDataSet);
       this.registerCustomObjectives();
+    }
+
+    // Re-Register standard objectives for legacy NPCs.
+    if (this.getEntity().getNPCDataVersion() == -1) {
+      this.registerStandardObjectives();
     }
   }
 }

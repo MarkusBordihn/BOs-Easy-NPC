@@ -28,7 +28,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.loading.FileUtils;
@@ -111,11 +110,7 @@ public class CustomPresetData {
             filesStream
                 .filter(path -> path.toString().endsWith(Constants.NPC_NBT_SUFFIX))
                 .filter(path -> Pattern.matches("[a-zA-Z0-9/._-]+", path.getFileName().toString()))
-                .map(
-                    path -> {
-                      return path;
-                    })
-                .collect(Collectors.toList());
+                .toList();
         return filePaths.stream();
       }
     } catch (IOException exception) {

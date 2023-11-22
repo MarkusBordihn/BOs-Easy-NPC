@@ -40,6 +40,9 @@ public class BasicObjectiveConfigurationScreen
   protected Checkbox moveThroughVillageCheckbox;
   protected Checkbox randomStrollInVillageCheckbox;
   protected Checkbox randomSwimmingCheckbox;
+  protected Checkbox panicCheckbox;
+  protected Checkbox avoidSunCheckbox;
+  protected Checkbox fleeSunCheckbox;
 
   public BasicObjectiveConfigurationScreen(
       BasicObjectiveConfigurationMenu menu, Inventory inventory, Component component) {
@@ -165,6 +168,61 @@ public class BasicObjectiveConfigurationScreen
                 checkbox -> {
                   ObjectiveData objectiveData = new ObjectiveData(ObjectiveType.RANDOM_SWIMMING, 4);
                   objectiveData.setSpeedModifier(0.8F);
+                  if (checkbox.selected()) {
+                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                  } else {
+                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                  }
+                }));
+
+    // Panic
+    objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
+    this.panicCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                this.contentLeftPos + 10,
+                objectiveEntriesTop,
+                ObjectiveType.PANIC.getObjectiveName(),
+                objectiveDataSet.hasObjective(ObjectiveType.PANIC),
+                checkbox -> {
+                  ObjectiveData objectiveData = new ObjectiveData(ObjectiveType.PANIC, 1);
+                  objectiveData.setSpeedModifier(1.0D);
+                  if (checkbox.selected()) {
+                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                  } else {
+                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                  }
+                }));
+
+    // Avoid Sun
+    objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
+    this.avoidSunCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                this.contentLeftPos + 10,
+                objectiveEntriesTop,
+                ObjectiveType.AVOID_SUN.getObjectiveName(),
+                objectiveDataSet.hasObjective(ObjectiveType.AVOID_SUN),
+                checkbox -> {
+                  ObjectiveData objectiveData = new ObjectiveData(ObjectiveType.AVOID_SUN, 2);
+                  if (checkbox.selected()) {
+                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                  } else {
+                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                  }
+                }));
+
+    // Flee Sun
+    this.fleeSunCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                this.contentLeftPos + 150,
+                objectiveEntriesTop,
+                ObjectiveType.FLEE_SUN.getObjectiveName(),
+                objectiveDataSet.hasObjective(ObjectiveType.FLEE_SUN),
+                checkbox -> {
+                  ObjectiveData objectiveData = new ObjectiveData(ObjectiveType.FLEE_SUN, 3);
+                  objectiveData.setSpeedModifier(1.0D);
                   if (checkbox.selected()) {
                     NetworkMessageHandler.addObjective(uuid, objectiveData);
                   } else {

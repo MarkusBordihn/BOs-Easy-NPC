@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity.data;
 import de.markusbordihn.easynpc.data.CustomPosition;
 import de.markusbordihn.easynpc.data.CustomScale;
 import de.markusbordihn.easynpc.data.entity.CustomDataSerializers;
+import de.markusbordihn.easynpc.data.model.ModelArmPose;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
@@ -31,6 +32,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.CrossbowItem;
 
 public interface EntityModelData extends EntityDataInterface {
 
@@ -435,6 +438,31 @@ public interface EntityModelData extends EntityDataInterface {
 
   default void setModelRightLegVisible(boolean modelRightLegVisible) {
     setEntityData(DATA_MODEL_RIGHT_LEG_VISIBLE, modelRightLegVisible);
+  }
+
+  default ModelArmPose getModelArmPose() {
+    boolean isAggressive = this.getEntity().isAggressive();
+
+    // Bow arm pose
+    if (isAggressive && this.getEntity().isHolding(is -> is.getItem() instanceof BowItem)) {
+      return ModelArmPose.BOW_AND_ARROW;
+    }
+
+    // Crossbow arm pose
+    if (this.getEntity().isHolding(is -> is.getItem() instanceof CrossbowItem)) {
+      if (this.getEntity().isChargingCrossbow()) {
+        return ModelArmPose.CROSSBOW_CHARGE;
+      } else if (isAggressive) {
+        return ModelArmPose.CROSSBOW_HOLD;
+      }
+    }
+
+    // Sword arm pose
+    if (isAggressive && this.getEntity().isHoldingMeleeWeapon()) {
+      return ModelArmPose.ATTACKING_WITH_MELEE_WEAPON;
+    }
+
+    return isAggressive ? ModelArmPose.ATTACKING : ModelArmPose.NEUTRAL;
   }
 
   default boolean hasHeadModelPart() {

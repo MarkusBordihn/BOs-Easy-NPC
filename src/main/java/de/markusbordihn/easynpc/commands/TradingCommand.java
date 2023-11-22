@@ -44,10 +44,8 @@ public class TradingCommand extends CustomCommand {
                     Commands.argument("uuid", UuidArgument.uuid())
                         .suggests(TradingCommand::suggestEasyNPCs)
                         .executes(
-                            context -> {
-                              return open(
-                                  context.getSource(), UuidArgument.getUuid(context, "uuid"));
-                            })))
+                            context ->
+                                open(context.getSource(), UuidArgument.getUuid(context, "uuid")))))
         .then(
             Commands.literal("reset")
                 .requires(
@@ -57,10 +55,9 @@ public class TradingCommand extends CustomCommand {
                     Commands.argument("uuid", UuidArgument.uuid())
                         .suggests(TradingCommand::suggestEasyNPCs)
                         .executes(
-                            context -> {
-                              return reset(
-                                  context.getSource(), UuidArgument.getUuid(context, "uuid"));
-                            })));
+                            context ->
+                                reset(
+                                    context.getSource(), UuidArgument.getUuid(context, "uuid")))));
   }
 
   private static int open(CommandSourceStack context, UUID uuid) throws CommandSyntaxException {

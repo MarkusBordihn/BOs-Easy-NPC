@@ -42,12 +42,16 @@ public class Allay extends EasyNPCEntity {
 
   public static AttributeSupplier.Builder createAttributes() {
     return Mob.createMobAttributes()
-        .add(Attributes.MOVEMENT_SPEED, 0.1F)
-        .add(Attributes.FLYING_SPEED, 0.1F)
         .add(Attributes.MAX_HEALTH, 20.0D)
-        .add(Attributes.ATTACK_DAMAGE, 2.0D)
-        .add(Attributes.FOLLOW_RANGE, 48.0D)
-        .add(Attributes.ATTACK_DAMAGE, 0.0D);
+        .add(Attributes.FOLLOW_RANGE, 32.0D)
+        .add(Attributes.KNOCKBACK_RESISTANCE, 0.0D)
+        .add(Attributes.MOVEMENT_SPEED, 0.7F)
+        .add(Attributes.FLYING_SPEED, 0.3F)
+        .add(Attributes.ATTACK_DAMAGE, 0.0D)
+        .add(Attributes.ATTACK_KNOCKBACK, 0.0D)
+        .add(Attributes.ATTACK_SPEED, 0.0D)
+        .add(Attributes.ARMOR, 0.0D)
+        .add(Attributes.ARMOR_TOUGHNESS, 0.0D);
   }
 
   @Override

@@ -5,6 +5,24 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### 2023.11.22
+
+- Added attack animation for bow, crossbow and sword.
+- Added additional animations like celebrate, dance, spell casting for testing.
+- Added crossbow attack goal.
+- Added bow attack goal.
+- Added missing translations.
+- Improved base attribute screen for better usability.
+- Improved melee attack goal.
+- Fixed smaller issues.
+
+### 2023.11.20
+
+- Added base attribute screen for health, attack, armor, knockback resistance, movement speed, ...
+- Added missing translations for some screens.
+- Fixed smaller issues with the UI and dialogs.
+- Improved skin selection for better usability.
+
 ### 2023.11.18
 
 - Added attack and follow objectives.

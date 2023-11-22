@@ -22,6 +22,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
+import de.markusbordihn.easynpc.client.screen.components.CloseButton;
 import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
@@ -42,7 +43,6 @@ import java.util.List;
 import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -376,15 +376,8 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     // Close Button
     this.closeButton =
         this.addRenderableWidget(
-            new ImageButton(
-                this.leftPos + this.imageWidth - 15,
-                this.topPos + 6,
-                10,
-                10,
-                64,
-                38,
-                Constants.TEXTURE_CONFIGURATION,
-                onPress -> closeScreen()));
+            new CloseButton(
+                this.leftPos + this.imageWidth - 13, this.topPos + 4, onPress -> closeScreen()));
 
     // Set dialog text
     this.setDialogText(this.dialogData);
