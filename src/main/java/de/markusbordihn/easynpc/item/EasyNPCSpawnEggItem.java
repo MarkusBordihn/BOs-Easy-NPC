@@ -80,9 +80,9 @@ public class EasyNPCSpawnEggItem extends ForgeSpawnEggItem {
             !Objects.equals(blockPos, blockPos1) && direction == Direction.UP);
 
     if (entity != null) {
-      if (player != null && entity instanceof EasyNPCEntity easyNPCEntity) {
+      if (entity instanceof EasyNPCEntity easyNPCEntity) {
         log.info("Spawned Easy NPC Entity {} by player {} ...", easyNPCEntity, player);
-        easyNPCEntity.setOwnerUUID(player.getUUID());
+        easyNPCEntity.onInitialSpawn((ServerLevel) level, player, itemStack);
       }
       itemStack.shrink(1);
       level.gameEvent(context.getPlayer(), GameEvent.ENTITY_PLACE, blockPos);

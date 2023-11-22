@@ -21,10 +21,10 @@ package de.markusbordihn.easynpc.client.screen.configuration.skin;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
+import de.markusbordihn.easynpc.client.screen.components.SkinSelectionButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
-import de.markusbordihn.easynpc.client.texture.TextureModelKey;
 import de.markusbordihn.easynpc.data.CustomSkinData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
@@ -41,7 +41,6 @@ import java.util.UUID;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
@@ -117,42 +116,18 @@ public class CustomSkinConfigurationScreen
 
   private void renderSkinEntity(
       GuiGraphics guiGraphics, int x, int y, SkinModel skinModel, UUID textureUUID) {
-    // Skin details
-    TextureModelKey textureModelKey = new TextureModelKey(textureUUID, skinModel);
 
-    // Create dynamically button for each skin variant and profession.
-    int skinButtonLeft = x - 24;
-    int skinButtonTop = y - 81;
-    int skinButtonHeight = 84;
-    ImageButton skinButton =
-        new ImageButton(
-            skinButtonLeft,
-            skinButtonTop,
-            skinPreviewWidth,
-            skinButtonHeight,
-            0,
-            -84,
-            84,
-            Constants.TEXTURE_CONFIGURATION,
-            button -> {
-              log.info("Change custom skin ... {}", textureModelKey);
-              NetworkMessageHandler.skinChange(this.uuid, "", "", textureUUID, SkinType.CUSTOM);
-            });
+    // Create dynamically button for each skin variant.
+    Button skinButton =
+        new SkinSelectionButton(
+            x - 24,
+            y - 81,
+            button ->
+                NetworkMessageHandler.skinChange(this.uuid, "", "", textureUUID, SkinType.CUSTOM));
 
-    // Render active skin in different style.
+    // Disable button for active skin.
     Optional<UUID> skinUUID = this.entity.getSkinUUID();
-    if (skinUUID.isPresent() && skinUUID.get().equals(textureUUID)) {
-      guiGraphics.pose().pushPose();
-      guiGraphics.blit(
-          Constants.TEXTURE_CONFIGURATION,
-          skinButtonLeft,
-          skinButtonTop,
-          0,
-          skinButtonHeight,
-          skinPreviewWidth,
-          skinButtonHeight);
-      guiGraphics.pose().popPose();
-    }
+    skinButton.active = !(skinUUID.isPresent() && skinUUID.get().equals(textureUUID));
 
     // Render skin entity with variant and profession.
     ScreenHelper.renderEntityPlayerSkin(
@@ -183,11 +158,7 @@ public class CustomSkinConfigurationScreen
                 20,
                 "<<",
                 onPress -> {
-                  if (this.skinStartIndex - maxSkinsPerPage > 0) {
-                    skinStartIndex = skinStartIndex - maxSkinsPerPage;
-                  } else {
-                    skinStartIndex = 0;
-                  }
+                  skinStartIndex = Math.max(this.skinStartIndex - maxSkinsPerPage, 0);
                   checkSkinNavigationButtonState();
                 }));
     this.skinPreviousButton =
@@ -304,14 +275,14 @@ public class CustomSkinConfigurationScreen
     }
     this.skinReloadButton.active = canSkinReload;
 
-    // Skins
-    this.renderSkins(guiGraphics);
-
     // Make sure we pass the mouse movements to the dynamically added buttons, if any.
     if (!skinButtons.isEmpty()) {
       for (Button skinButton : skinButtons) {
         skinButton.render(guiGraphics, x, y, partialTicks);
       }
     }
+
+    // Skins
+    this.renderSkins(guiGraphics);
   }
 }

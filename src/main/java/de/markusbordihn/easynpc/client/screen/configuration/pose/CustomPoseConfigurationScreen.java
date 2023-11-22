@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.client.screen.configuration.pose;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.SliderButton;
+import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.menu.configuration.pose.CustomPoseConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
@@ -67,9 +68,8 @@ public class CustomPoseConfigurationScreen
             top - sliderPositionButtonX.getHeight(),
             "",
             modelPartVisibility,
-            checkbox -> {
-              NetworkMessageHandler.modelVisibilityChange(uuid, modelPart, checkbox.selected());
-            }));
+            checkbox ->
+                NetworkMessageHandler.modelVisibilityChange(uuid, modelPart, checkbox.selected())));
 
     return sliderRotationButtonX;
   }
@@ -164,49 +164,56 @@ public class CustomPoseConfigurationScreen
 
     // Body parts texts
     if (this.entity.hasHeadModelPart()) {
-      this.fontDraw(
+      Text.drawConfigString(
           guiGraphics,
+          this.font,
           "pose.head",
           this.headSliderButton.getX() + 20,
           this.headSliderButton.getY() - 12);
     }
     if (this.entity.hasBodyModelPart()) {
-      this.fontDraw(
+      Text.drawConfigString(
           guiGraphics,
+          this.font,
           "pose.body",
           this.bodySliderButton.getX() + 20,
           this.bodySliderButton.getY() - 12);
     }
     if (this.entity.hasLeftArmModelPart()) {
-      this.fontDraw(
+      Text.drawConfigString(
           guiGraphics,
+          this.font,
           "pose.left_arm",
           this.leftArmSliderButton.getX() + 20,
           this.leftArmSliderButton.getY() - 12);
     } else if (this.entity.hasArmsModelPart()) {
-      this.fontDraw(
+      Text.drawConfigString(
           guiGraphics,
+          this.font,
           "pose.arms",
           this.armsSliderButton.getX() + 20,
           this.armsSliderButton.getY() - 12);
     }
     if (this.entity.hasRightArmModelPart()) {
-      this.fontDraw(
+      Text.drawConfigString(
           guiGraphics,
+          this.font,
           "pose.right_arm",
           this.rightArmSliderButton.getX() + 20,
           this.rightArmSliderButton.getY() - 12);
     }
     if (this.entity.hasLeftLegModelPart()) {
-      this.fontDraw(
+      Text.drawConfigString(
           guiGraphics,
+          this.font,
           "pose.left_leg",
           this.leftLegSliderButton.getX() + 20,
           this.leftLegSliderButton.getY() - 12);
     }
     if (this.entity.hasRightLegModelPart()) {
-      this.fontDraw(
+      Text.drawConfigString(
           guiGraphics,
+          this.font,
           "pose.right_leg",
           this.rightLegSliderButton.getX() + 20,
           this.rightLegSliderButton.getY() - 12);

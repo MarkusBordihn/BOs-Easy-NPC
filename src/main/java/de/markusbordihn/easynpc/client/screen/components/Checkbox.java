@@ -35,6 +35,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class Checkbox extends AbstractButton {
+
   private static final ResourceLocation TEXTURE =
       new ResourceLocation(Constants.MOD_ID, "textures/gui/checkbox.png");
 
@@ -130,25 +131,25 @@ public class Checkbox extends AbstractButton {
         TEXTURE,
         this.getX(),
         this.getY(),
-        this.isHoveredOrFocused() ? 16.0F : 0.0F,
+        this.active ? (this.isHoveredOrFocused() ? 16.0F : 0.0F) : 32.0F,
         this.selected ? 16.0F : 0.0F,
         16,
         16,
-        32,
-        32);
+        64,
+        64);
     if (this.showLabel) {
-      guiGraphics.drawString(
+      Text.drawString(
+          guiGraphics,
           this.font,
           this.getMessage(),
           this.getX() + 18,
-          this.getY() + (this.height - 8) / 2,
-          Constants.FONT_COLOR_DEFAULT,
-          false);
+          this.getY() + (this.height - 8) / 2);
     }
   }
 
   @OnlyIn(Dist.CLIENT)
   public interface OnChange {
+
     void onChange(Checkbox checkbox);
   }
 }

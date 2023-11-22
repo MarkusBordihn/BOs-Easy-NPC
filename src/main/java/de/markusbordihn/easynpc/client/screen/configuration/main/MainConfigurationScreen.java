@@ -214,10 +214,9 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 buttonTopPosition,
                 BUTTON_WIDTH,
                 "import",
-                onPress -> {
-                  NetworkMessageHandler.openConfiguration(
-                      uuid, ConfigurationType.DEFAULT_PRESET_IMPORT);
-                }));
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.DEFAULT_PRESET_IMPORT)));
 
     // Export Button
     this.exportButton =
@@ -227,10 +226,9 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 buttonTopPosition,
                 BUTTON_WIDTH,
                 "export",
-                onPress -> {
-                  NetworkMessageHandler.openConfiguration(
-                      uuid, ConfigurationType.CUSTOM_PRESET_EXPORT);
-                }));
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.CUSTOM_PRESET_EXPORT)));
 
     // Move button position down
     buttonTopPosition = buttonTopPosition + BUTTON_HEIGHT + buttonSpace;
@@ -249,13 +247,11 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                     case NONE:
                       NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_DIALOG);
                       break;
-                    case BASIC:
-                      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_DIALOG);
-                      break;
                     case YES_NO:
                       NetworkMessageHandler.openConfiguration(
                           uuid, ConfigurationType.YES_NO_DIALOG);
                       break;
+                    case BASIC:
                     default:
                       NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_DIALOG);
                   }
@@ -282,9 +278,8 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 buttonTopPosition,
                 BUTTON_WIDTH,
                 "actions",
-                onPress -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_ACTION);
-                }));
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_ACTION)));
     this.editActionButton.active =
         this.hasPermissions(
                 COMMON.basicActionConfigurationEnabled.get(),
@@ -306,9 +301,8 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 buttonTopPosition,
                 BUTTON_WIDTH,
                 "equipment",
-                onPress -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.EQUIPMENT);
-                }));
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.EQUIPMENT)));
     this.editEquipmentButton.active =
         this.hasPermissions(
             COMMON.equipmentConfigurationEnabled.get(),
@@ -323,9 +317,8 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 buttonTopPosition,
                 BUTTON_WIDTH,
                 "scaling",
-                onPress -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.SCALING);
-                }));
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.SCALING)));
     this.editScalingButton.active =
         this.hasPermissions(
             COMMON.scalingConfigurationEnabled.get(),
@@ -361,8 +354,6 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                       }
                       break;
                     case DEFAULT:
-                      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_POSE);
-                      break;
                     default:
                       NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_POSE);
                   }
@@ -385,9 +376,9 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 buttonTopPosition,
                 BUTTON_WIDTH,
                 "position",
-                onPress -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_POSITION);
-                }));
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.DEFAULT_POSITION)));
     this.editPositionButton.active =
         this.hasPermissions(
             COMMON.defaultPositionConfigurationEnabled.get(),
@@ -405,9 +396,9 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 buttonTopPosition,
                 BUTTON_WIDTH,
                 "rotation",
-                onPress -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_ROTATION);
-                }));
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.DEFAULT_ROTATION)));
     this.editRotationButton.active =
         this.hasPermissions(
             COMMON.defaultRotationConfigurationEnabled.get(),
@@ -425,9 +416,6 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 onPress -> {
                   TradingType tradingType = this.entity.getTradingType();
                   switch (tradingType) {
-                    case NONE:
-                      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_TRADING);
-                      break;
                     case BASIC:
                       NetworkMessageHandler.openConfiguration(
                           uuid, ConfigurationType.BASIC_TRADING);
@@ -440,6 +428,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                       NetworkMessageHandler.openConfiguration(
                           uuid, ConfigurationType.CUSTOM_TRADING);
                       break;
+                    case NONE:
                     default:
                       NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_TRADING);
                   }
@@ -456,9 +445,9 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 buttonTopPosition,
                 BUTTON_WIDTH,
                 "attributes",
-                onPress -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_ATTRIBUTE);
-                }));
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.ABILITIES_ATTRIBUTE)));
 
     // Objective Button
     this.editObjectiveButton =
@@ -468,9 +457,9 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 buttonTopPosition,
                 BUTTON_WIDTH,
                 "objective",
-                onPress -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_OBJECTIVE);
-                }));
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.BASIC_OBJECTIVE)));
 
     // Copy UUID Button
     this.copyUUIDButton =
@@ -555,14 +544,12 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
 
     // Entity Position
     BlockPos blockPos = this.entity.getOnPos();
-    if (blockPos != null) {
-      Text.drawString(
-          guiGraphics,
-          this.font,
-          "Pos: " + blockPos.getX() + ", " + blockPos.getY() + ", " + blockPos.getZ(),
-          Math.round((this.contentLeftPos + 20) / scaleEntityTypeText),
-          Math.round((this.topPos + 187) / scaleEntityTypeText));
-    }
+    Text.drawString(
+        guiGraphics,
+        this.font,
+        "Pos: " + blockPos.getX() + ", " + blockPos.getY() + ", " + blockPos.getZ(),
+        Math.round((this.contentLeftPos + 20) / scaleEntityTypeText),
+        Math.round((this.topPos + 187) / scaleEntityTypeText));
     guiGraphics.pose().popPose();
   }
 
