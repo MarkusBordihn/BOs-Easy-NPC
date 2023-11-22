@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.entity.npc.ModEntityType;
 import de.markusbordihn.easynpc.item.ModItems;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.tabs.EasyNPCTab;
 import de.markusbordihn.easynpc.utils.StopModReposts;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -71,6 +72,7 @@ public class EasyNPC {
               modEventBus.addListener(ClientScreens::registerScreens);
               modEventBus.addListener(CustomPresetData::registerCustomPresetData);
               modEventBus.addListener(CustomSkinData::registerCustomSkinData);
+              modEventBus.addListener(EasyNPCTab::handleCreativeModeTabRegister);
             });
   }
 }
