@@ -22,14 +22,12 @@ package de.markusbordihn.easynpc.entity.npc;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.level.Level;
 
-public class Skeleton extends EasyNPCEntity implements RangedAttackMob {
+public class Skeleton extends EasyNPCEntity {
 
   // General Information
   public static final String ID = "skeleton";
@@ -45,9 +43,15 @@ public class Skeleton extends EasyNPCEntity implements RangedAttackMob {
 
   public static AttributeSupplier.Builder createAttributes() {
     return Mob.createMobAttributes()
-        .add(Attributes.MOVEMENT_SPEED, 0.5F)
-        .add(Attributes.MAX_HEALTH, 16.0D)
-        .add(Attributes.ATTACK_DAMAGE, 0.1D);
+        .add(Attributes.MAX_HEALTH, 20.0D)
+        .add(Attributes.FOLLOW_RANGE, 32.0D)
+        .add(Attributes.KNOCKBACK_RESISTANCE, 0.0D)
+        .add(Attributes.MOVEMENT_SPEED, 0.7F)
+        .add(Attributes.ATTACK_DAMAGE, 1.0D)
+        .add(Attributes.ATTACK_KNOCKBACK, 0.0D)
+        .add(Attributes.ATTACK_SPEED, 0.0D)
+        .add(Attributes.ARMOR, 0.0D)
+        .add(Attributes.ARMOR_TOUGHNESS, 0.0D);
   }
 
   @Override
@@ -68,11 +72,6 @@ public class Skeleton extends EasyNPCEntity implements RangedAttackMob {
   @Override
   public Enum<?> getVariant(String name) {
     return Variant.valueOf(name);
-  }
-
-  @Override
-  public void performRangedAttack(LivingEntity livingEntity, float damage) {
-    // Unused
   }
 
   // Skin Details

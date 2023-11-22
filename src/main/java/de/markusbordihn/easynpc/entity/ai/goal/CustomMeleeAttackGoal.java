@@ -17,21 +17,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.attribute;
+package de.markusbordihn.easynpc.entity.ai.goal;
 
-public enum EntityAttribute {
-  // @formatter:off
-  FREEFALL,
-  IS_ATTACKABLE,
-  IS_PUSHABLE,
-  CAN_FLOAT,
-  CAN_CLOSE_DOOR,
-  CAN_OPEN_DOOR,
-  CAN_PASS_DOOR;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 
-  // @formatter:on
+public class CustomMeleeAttackGoal extends net.minecraft.world.entity.ai.goal.MeleeAttackGoal {
 
-  public String getAttributeName() {
-    return this.name().toLowerCase();
+  private final EasyNPCEntity easyNPCEntity;
+
+  public CustomMeleeAttackGoal(
+      EasyNPCEntity easyNPCEntity, double speedModifier, boolean mustSeeTarget) {
+    super(easyNPCEntity, speedModifier, mustSeeTarget);
+    this.easyNPCEntity = easyNPCEntity;
+  }
+
+  @Override
+  public void stop() {
+    super.stop();
+    this.easyNPCEntity.setAggressive(false);
+  }
+
+  @Override
+  public void start() {
+    super.start();
+    this.easyNPCEntity.setAggressive(true);
   }
 }

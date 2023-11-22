@@ -170,11 +170,7 @@ public class DefaultSkinConfigurationScreen
                 20,
                 "<<",
                 onPress -> {
-                  if (this.skinStartIndex - maxSkinsPerPage > 0) {
-                    skinStartIndex = skinStartIndex - maxSkinsPerPage;
-                  } else {
-                    skinStartIndex = 0;
-                  }
+                  skinStartIndex = Math.max(this.skinStartIndex - maxSkinsPerPage, 0);
                   checkSkinNavigationButtonState();
                 }));
     this.skinPreviousButton =

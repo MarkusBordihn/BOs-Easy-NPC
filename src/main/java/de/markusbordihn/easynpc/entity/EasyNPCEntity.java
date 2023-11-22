@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.commands.CommandManager;
 import de.markusbordihn.easynpc.data.action.ActionData;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.action.ActionGroup;
@@ -30,9 +29,9 @@ import de.markusbordihn.easynpc.item.ModItems;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.DifficultyInstance;
@@ -54,11 +53,14 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class EasyNPCEntity extends EasyNPCEntityData {
+public class EasyNPCEntity extends EasyNPCEntityData implements EasyNPCEntityAction {
 
   // Shared constants
   public static final MobCategory CATEGORY = MobCategory.MISC;
+  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   // Additional ticker
   private static final int BASE_TICK = 16;
   private static final int DELAYED_REGISTRATION_TICK = 20 * 15; // 15 seconds
@@ -97,80 +99,6 @@ public class EasyNPCEntity extends EasyNPCEntityData {
     }
     for (ActionData actionData : actionDataSet) {
       this.executeAction(actionData, serverPlayer);
-    }
-  }
-
-  public void executeAction(ActionData actionData, ServerPlayer serverPlayer) {
-    if (actionData == null || !actionData.isValidAndNotEmpty() || this.isClientSide()) {
-      return;
-    }
-
-    switch (actionData.getType()) {
-      case NONE:
-        break;
-      case COMMAND:
-        if (actionData.shouldExecuteAsUser()) {
-          // Check if we have a valid permission level based on the user permission level.
-          int userPermissionLevel = actionData.getPermissionLevel();
-          if (userPermissionLevel > getActionPermissionLevel()) {
-            log.warn(
-                "User permission level {} is lower than action permission level {} for action {}",
-                getActionPermissionLevel(),
-                userPermissionLevel,
-                actionData);
-            userPermissionLevel = getActionPermissionLevel();
-          }
-
-          // Execute action as user with define permission level (default: 1).
-          log.debug(
-              "Try to execute action {} as user {} with action permission level {} ...",
-              actionData,
-              serverPlayer,
-              actionData.getPermissionLevel());
-          CommandManager.executePlayerCommand(
-              actionData.getAction(this, serverPlayer),
-              serverPlayer,
-              actionData.getPermissionLevel(),
-              actionData.isDebugEnabled());
-        } else {
-          // Make sure permission level is not too low or to high.
-          int ownerPermissionLevel = getActionPermissionLevel();
-          if (ownerPermissionLevel > 3) {
-            ownerPermissionLevel = 3;
-          } else if (ownerPermissionLevel <= 0) {
-            ownerPermissionLevel = 1;
-          }
-
-          // Execute action as NPC entity with owner permission level.
-          log.debug(
-              "Try to execute action {} as entity {} with owner permission level {} of max. {} ...",
-              actionData,
-              this,
-              ownerPermissionLevel,
-              getActionPermissionLevel());
-          CommandManager.executeEntityCommand(
-              actionData.getAction(this, serverPlayer),
-              this,
-              ownerPermissionLevel,
-              actionData.isDebugEnabled());
-        }
-        break;
-      case OPEN_NAMED_DIALOG:
-        String dialogLabel = actionData.getCommand();
-        if (dialogLabel != null && !dialogLabel.isEmpty() && this.hasDialog(dialogLabel)) {
-          UUID dialogId = this.getDialogId(dialogLabel);
-          EasyNPCEntityMenu.openDialogMenu(serverPlayer, this, dialogId, 0);
-        } else {
-          log.error("Unknown dialog label {} for action {}", dialogLabel, actionData);
-        }
-        break;
-      case OPEN_TRADING_SCREEN:
-        log.debug("Execute open trading screen for {} from {}", this, serverPlayer);
-        this.openTradingScreen(serverPlayer);
-        break;
-      default:
-        log.warn("Unknown action type {} for action {}", actionData.getType(), actionData);
-        break;
     }
   }
 
@@ -223,7 +151,7 @@ public class EasyNPCEntity extends EasyNPCEntityData {
 
     // Near distance action, if set.
     if (this.hasActionEvent(ActionEventType.ON_DISTANCE_NEAR)) {
-      List<Player> listOfPlayers = this.getPlayersInRange(16.0D);
+      List<? extends Player> listOfPlayers = this.getPlayersInRange(16.0D);
       if (listOfPlayers == null || listOfPlayers.isEmpty()) {
         ActionManager.removeActionGroup(this, ActionGroup.DISTANCE_NEAR);
         skipPlayerDistanceCheck = true;
@@ -241,7 +169,8 @@ public class EasyNPCEntity extends EasyNPCEntityData {
 
     // Close distance action, if set.
     if (this.hasActionEvent(ActionEventType.ON_DISTANCE_CLOSE)) {
-      List<Player> listOfPlayers = skipPlayerDistanceCheck ? null : this.getPlayersInRange(8.0D);
+      List<? extends Player> listOfPlayers =
+          skipPlayerDistanceCheck ? null : this.getPlayersInRange(8.0D);
       if (listOfPlayers == null || listOfPlayers.isEmpty()) {
         ActionManager.removeActionGroup(this, ActionGroup.DISTANCE_CLOSE);
         skipPlayerDistanceCheck = true;
@@ -259,7 +188,8 @@ public class EasyNPCEntity extends EasyNPCEntityData {
 
     // Very close distance action, if set.
     if (this.hasActionEvent(ActionEventType.ON_DISTANCE_VERY_CLOSE)) {
-      List<Player> listOfPlayers = skipPlayerDistanceCheck ? null : this.getPlayersInRange(4.0D);
+      List<? extends Player> listOfPlayers =
+          skipPlayerDistanceCheck ? null : this.getPlayersInRange(4.0D);
       if (listOfPlayers == null || listOfPlayers.isEmpty()) {
         ActionManager.removeActionGroup(this, ActionGroup.DISTANCE_VERY_CLOSE);
         skipPlayerDistanceCheck = true;
@@ -278,10 +208,10 @@ public class EasyNPCEntity extends EasyNPCEntityData {
 
     // Touch distance action, if set.
     if (this.hasActionEvent(ActionEventType.ON_DISTANCE_TOUCH)) {
-      List<Player> listOfPlayers = skipPlayerDistanceCheck ? null : this.getPlayersInRange(1.25D);
+      List<? extends Player> listOfPlayers =
+          skipPlayerDistanceCheck ? null : this.getPlayersInRange(1.25D);
       if (listOfPlayers == null || listOfPlayers.isEmpty()) {
         ActionManager.removeActionGroup(this, ActionGroup.DISTANCE_TOUCH);
-        skipPlayerDistanceCheck = true;
       } else {
         ActionData actionData = this.getActionEvent(ActionEventType.ON_DISTANCE_TOUCH);
         for (Player player : listOfPlayers) {
@@ -295,20 +225,6 @@ public class EasyNPCEntity extends EasyNPCEntityData {
     }
 
     this.level().getProfiler().pop();
-  }
-
-  public InteractionResult openTradingScreen(ServerPlayer serverPlayer) {
-    if (!this.isClientSide()) {
-      log.debug("Open trading screen for {} with {}", this, getOffers());
-      this.setTradingPlayer(serverPlayer);
-      this.openTradingScreen(
-          serverPlayer,
-          getCustomName() != null
-              ? getCustomName()
-              : Component.translatable(Constants.TEXT_PREFIX + "trading"),
-          BASE_TICKS_REQUIRED_TO_FREEZE);
-    }
-    return InteractionResult.sidedSuccess(this.isClientSide());
   }
 
   public void onEasyNPCJoin(EasyNPCEntity easyNPCEntity) {
@@ -350,7 +266,7 @@ public class EasyNPCEntity extends EasyNPCEntityData {
   }
 
   @Override
-  public boolean doHurtTarget(Entity entity) {
+  public boolean doHurtTarget(@Nonnull Entity entity) {
     boolean hurtResult = super.doHurtTarget(entity);
     this.attackAnimationTick = 10;
     return hurtResult;
@@ -422,13 +338,7 @@ public class EasyNPCEntity extends EasyNPCEntityData {
   }
 
   @Override
-  protected void registerGoals() {
-    super.registerGoals();
-    this.registerStandardObjectives();
-  }
-
-  @Override
-  public void travel(Vec3 vec3) {
+  public void travel(@Nonnull Vec3 vec3) {
 
     // Update basic movement relevant data.
     if (travelTicker++ >= TRAVEL_TICK) {
@@ -441,16 +351,20 @@ public class EasyNPCEntity extends EasyNPCEntityData {
               && !blockState.is(Blocks.WHITE_CARPET)
               && !blockState.is(Blocks.RED_CARPET));
 
-      // Allow movement for NPC, if freefall is enabled.
-      if (this.getAttributeFreefall() && !this.onGround()) {
+      // Allow movement for NPC, if free fall is enabled and synced data are loaded.
+      if (!this.hasTravelTargetObjectives()
+          && this.synchedDataLoaded()
+          && this.getAttributeFreefall()
+          && !this.onGround()) {
         this.setPos(this.getX(), Math.floor(this.getY() - 0.1d), this.getZ());
       }
+
       travelTicker = 0;
     }
 
     // Handle movement for NPC for specific conditions.
-    if (this.hasObjectives()) {
-      // Allow travel for NPC, if objectives are used.
+    if (this.hasTravelTargetObjectives()) {
+      // Allow travel for NPC, if travel objectives are used.
       super.travel(vec3);
     } else {
       // Make sure we only calculate animations for be as much as possible server-friendly.
@@ -461,9 +375,9 @@ public class EasyNPCEntity extends EasyNPCEntityData {
   @Override
   @Nullable
   public SpawnGroupData finalizeSpawn(
-      ServerLevelAccessor serverLevelAccessor,
-      DifficultyInstance difficulty,
-      MobSpawnType mobSpawnType,
+      @Nonnull ServerLevelAccessor serverLevelAccessor,
+      @Nonnull DifficultyInstance difficulty,
+      @Nonnull MobSpawnType mobSpawnType,
       @Nullable SpawnGroupData spawnGroupData,
       @Nullable CompoundTag compoundTag) {
     spawnGroupData =
@@ -474,7 +388,7 @@ public class EasyNPCEntity extends EasyNPCEntityData {
   }
 
   @Override
-  public InteractionResult mobInteract(Player player, InteractionHand hand) {
+  public InteractionResult mobInteract(@Nonnull Player player, @Nonnull InteractionHand hand) {
     if (player instanceof ServerPlayer serverPlayer && hand == InteractionHand.MAIN_HAND) {
 
       // Open configuration menu for EasyNPC wand item in hand.
@@ -517,8 +431,7 @@ public class EasyNPCEntity extends EasyNPCEntityData {
 
       // Open trading screen, if we have a trading inventory.
       if (hasTrading) {
-        this.openTradingScreen(serverPlayer);
-        return InteractionResult.CONSUME;
+        return this.openTradingScreen(serverPlayer);
       }
     }
 
@@ -526,7 +439,7 @@ public class EasyNPCEntity extends EasyNPCEntityData {
   }
 
   @Override
-  public boolean hurt(DamageSource damageSource, float damage) {
+  public boolean hurt(@Nonnull DamageSource damageSource, float damage) {
     boolean damageResult = super.hurt(damageSource, damage);
 
     // Check for action event on hurt.
@@ -541,7 +454,7 @@ public class EasyNPCEntity extends EasyNPCEntityData {
   }
 
   @Override
-  public void die(DamageSource damageSource) {
+  public void die(@Nonnull DamageSource damageSource) {
     // Check for action event on death.
     if (this.hasActionEvent(ActionEventType.ON_DEATH)) {
       ActionData actionData = this.getActionEvent(ActionEventType.ON_DEATH);
@@ -551,5 +464,16 @@ public class EasyNPCEntity extends EasyNPCEntityData {
     }
 
     super.die(damageSource);
+  }
+
+  public void onInitialSpawn(ServerLevel level, Player player, ItemStack itemStack) {
+    // Set automatic owner for EasyNPCs spawned by player.
+    if (player != null) {
+      log.debug("Set owner {} for {} ...", player, this);
+      this.setOwnerUUID(player.getUUID());
+    }
+
+    // Add standard objective for EasyNPCs spawned by player.
+    this.registerStandardObjectives();
   }
 }

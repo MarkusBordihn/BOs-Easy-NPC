@@ -5,7 +5,7 @@
  * associated documentation files (the "Software"), to deal in the Software without restriction,
  * including without limitation the rights to use, copy, modify, merge, publish, distribute,
  * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the looking conditions:
+ * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or
  * substantial portions of the Software.
@@ -17,12 +17,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.menu.configuration.objective;
+package de.markusbordihn.easynpc.menu.configuration.attribute;
 
-import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
@@ -31,36 +29,28 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-public class FollowObjectiveConfigurationMenu extends ObjectiveConfigurationMenu {
+public class AbilitiesAttributeConfigurationMenu extends AttributeConfigurationMenu {
 
-  public FollowObjectiveConfigurationMenu(
-      int windowId, Inventory playerInventory, UUID uuid, ObjectiveDataSet objectiveDataSet) {
-    super(
-        ModMenuTypes.FOLLOW_OBJECTIVE_CONFIGURATION_MENU.get(),
-        windowId,
-        playerInventory,
-        uuid,
-        objectiveDataSet);
+  public AbilitiesAttributeConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
+    super(ModMenuTypes.BASIC_ATTRIBUTE_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
   }
 
-  public FollowObjectiveConfigurationMenu(
+  public AbilitiesAttributeConfigurationMenu(
       int windowId, Inventory playerInventory, FriendlyByteBuf data) {
-    this(windowId, playerInventory, data.readUUID(), new ObjectiveDataSet(data.readNbt()));
+    this(windowId, playerInventory, data.readUUID());
   }
 
-  public static MenuProvider getMenuProvider(
-      UUID uuid, Entity entity, ObjectiveDataSet objectiveDataSet) {
+  public static MenuProvider getMenuProvider(UUID uuid, Entity entity) {
     return new MenuProvider() {
       @Override
       public Component getDisplayName() {
-        return Component.literal("Follow Objective for " + entity.getName().getString());
+        return Component.literal("Abilities Attribute for " + entity.getName().getString());
       }
 
-      @Nullable
       @Override
       public AbstractContainerMenu createMenu(
           int windowId, Inventory inventory, Player serverPlayer) {
-        return new FollowObjectiveConfigurationMenu(windowId, inventory, uuid, objectiveDataSet);
+        return new AbilitiesAttributeConfigurationMenu(windowId, inventory, uuid);
       }
     };
   }

@@ -170,6 +170,7 @@ public class MessageEntityAttributeChange extends NetworkMessage {
           log.debug(
               "Change isAttackable={} for {} from {}", booleanValue, easyNPCEntity, serverPlayer);
           easyNPCEntity.setAttributeIsAttackable(booleanValue);
+          easyNPCEntity.setInvulnerable(!booleanValue);
         }
         break;
       case IS_PUSHABLE:

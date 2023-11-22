@@ -156,6 +156,7 @@ public class ImportWorldPresetConfigurationScreen
   class ImportFileSelectionList
       extends ObjectSelectionList<
           ImportWorldPresetConfigurationScreen.ImportFileSelectionList.Entry> {
+
     public ImportFileSelectionList(Minecraft minecraft) {
       super(
           minecraft,
@@ -226,6 +227,7 @@ public class ImportWorldPresetConfigurationScreen
     public class Entry
         extends ObjectSelectionList.Entry<
             ImportWorldPresetConfigurationScreen.ImportFileSelectionList.Entry> {
+
       final ResourceLocation resourceLocation;
       final SkinModel skinModel;
       final String fileName;

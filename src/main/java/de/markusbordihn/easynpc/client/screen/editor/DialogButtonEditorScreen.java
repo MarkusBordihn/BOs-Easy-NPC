@@ -120,6 +120,7 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
   private boolean commandDialogExecuteAsUserValue = false;
   private boolean commandDialogDebugValue = false;
 
+  @OnlyIn(Dist.CLIENT)
   public DialogButtonEditorScreen(
       DialogButtonEditorMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -506,9 +507,9 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
 
   @Override
   public boolean keyPressed(int keyCode, int unused1, int unused2) {
-    if (keyCode != 257 && keyCode != 335 && keyCode != 69) {
+    if (keyCode != 257 && keyCode != 335 && keyCode != 69 && keyCode != 73) {
       return super.keyPressed(keyCode, unused1, unused2);
     }
-    return keyCode == 257 || keyCode == 335;
+    return keyCode == 257 || keyCode == 335 || keyCode == 73;
   }
 }

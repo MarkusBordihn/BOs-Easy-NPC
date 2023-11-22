@@ -35,7 +35,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class VariantLayer<T extends EasyNPCEntity, M extends EntityModel<T>>
     extends RenderLayer<T, M> {
 
-  private Map<?, ResourceLocation> textures = null;
+  private final Map<?, ResourceLocation> textures;
 
   @SuppressWarnings("java:S1172")
   public VariantLayer(

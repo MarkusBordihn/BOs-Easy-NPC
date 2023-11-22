@@ -29,7 +29,8 @@ import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.action.DialogActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.action.DistanceActionConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.attribute.BasicAttributeConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.attribute.AbilitiesAttributeConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.attribute.BaseAttributeConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.AdvancedDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfigurationMenu;
@@ -39,6 +40,7 @@ import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.objective.AttackObjectiveConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.objective.BasicObjectiveConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.objective.FollowObjectiveConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.objective.LookObjectiveConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.pose.AdvancedPoseConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.pose.CustomPoseConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenu;
@@ -64,6 +66,7 @@ import java.util.List;
 import java.util.UUID;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -634,18 +637,70 @@ public class EasyNPCEntityMenu {
     }
   }
 
-  public static void openBasicAttributeConfigurationMenu(
+  public static void openLookObjectiveConfigurationMenu(
       ServerPlayer serverPlayer, EasyNPCEntity entity) {
     if (hasPermissions(
         serverPlayer,
         entity,
-        COMMON.basicAttributeConfigurationEnabled.get(),
-        COMMON.basicAttributeConfigurationAllowInCreative.get(),
-        COMMON.basicAttributeConfigurationPermissionLevel.get())) {
+        COMMON.lookObjectiveConfigurationEnabled.get(),
+        COMMON.lookObjectiveConfigurationAllowInCreative.get(),
+        COMMON.lookObjectiveConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      ObjectiveDataSet objectiveDataSet = entity.getObjectiveDataSet();
+      serverPlayer.openMenu(
+          LookObjectiveConfigurationMenu.getMenuProvider(uuid, entity, objectiveDataSet),
+          buffer -> {
+            buffer.writeUUID(uuid);
+            buffer.writeNbt(objectiveDataSet.createTag());
+          });
+    }
+  }
+
+  public static void openAbilitiesAttributeConfigurationMenu(
+      ServerPlayer serverPlayer, EasyNPCEntity entity) {
+    if (hasPermissions(
+        serverPlayer,
+        entity,
+        COMMON.abilitiesAttributeConfigurationEnabled.get(),
+        COMMON.abilitiesAttributeConfigurationAllowInCreative.get(),
+        COMMON.abilitiesAttributeConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
       serverPlayer.openMenu(
-          BasicAttributeConfigurationMenu.getMenuProvider(uuid, entity),
+          AbilitiesAttributeConfigurationMenu.getMenuProvider(uuid, entity),
           buffer -> buffer.writeUUID(uuid));
+    }
+  }
+
+  public static void openBaseAttributeConfigurationMenu(
+      ServerPlayer serverPlayer, EasyNPCEntity entity) {
+    if (hasPermissions(
+        serverPlayer,
+        entity,
+        COMMON.baseAttributeConfigurationEnabled.get(),
+        COMMON.baseAttributeConfigurationAllowInCreative.get(),
+        COMMON.baseAttributeConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      serverPlayer.openMenu(
+          BaseAttributeConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> {
+            buffer.writeUUID(uuid);
+            buffer.writeDouble(
+                entity.getAttribute(Attributes.FOLLOW_RANGE) != null
+                    ? entity.getAttribute(Attributes.FOLLOW_RANGE).getBaseValue()
+                    : 32.0d);
+            buffer.writeDouble(
+                entity.getAttribute(Attributes.KNOCKBACK_RESISTANCE) != null
+                    ? entity.getAttribute(Attributes.KNOCKBACK_RESISTANCE).getBaseValue()
+                    : 0.0d);
+            buffer.writeDouble(
+                entity.getAttribute(Attributes.ATTACK_DAMAGE) != null
+                    ? entity.getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue()
+                    : 2.0d);
+            buffer.writeDouble(
+                entity.getAttribute(Attributes.ATTACK_KNOCKBACK) != null
+                    ? entity.getAttribute(Attributes.ATTACK_KNOCKBACK).getBaseValue()
+                    : 0.0d);
+          });
     }
   }
 
@@ -661,6 +716,8 @@ public class EasyNPCEntityMenu {
       return true;
     } else if (!entity.hasOwner() || !entity.isOwner(serverPlayer)) {
       return false;
-    } else return serverPlayer.hasPermissions(permissionLevel);
+    } else {
+      return serverPlayer.hasPermissions(permissionLevel);
+    }
   }
 }

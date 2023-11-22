@@ -17,21 +17,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.attribute;
+package de.markusbordihn.easynpc.data.model;
 
-public enum EntityAttribute {
+public enum ModelArmPose {
   // @formatter:off
-  FREEFALL,
-  IS_ATTACKABLE,
-  IS_PUSHABLE,
-  CAN_FLOAT,
-  CAN_CLOSE_DOOR,
-  CAN_OPEN_DOOR,
-  CAN_PASS_DOOR;
+  DEFAULT,
+  DANCING,
+  BOW_AND_ARROW,
+  SPELLCASTING,
+  CELEBRATING,
+  CROSSBOW_CHARGE,
+  CROSSBOW_HOLD,
+  ATTACKING,
+  ATTACKING_WITH_MELEE_WEAPON,
+  NEUTRAL,
+  CUSTOM;
 
   // @formatter:on
 
-  public String getAttributeName() {
-    return this.name().toLowerCase();
+  public static ModelArmPose get(String armPose) {
+    if (armPose == null || armPose.isEmpty()) {
+      return ModelArmPose.DEFAULT;
+    }
+    try {
+      return ModelArmPose.valueOf(armPose);
+    } catch (IllegalArgumentException e) {
+      return ModelArmPose.DEFAULT;
+    }
   }
 }

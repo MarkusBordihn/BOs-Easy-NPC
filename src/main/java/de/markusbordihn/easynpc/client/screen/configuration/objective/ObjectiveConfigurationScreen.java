@@ -43,6 +43,7 @@ public class ObjectiveConfigurationScreen<T extends ObjectiveConfigurationMenu>
   protected Button basicObjectiveButton;
   protected Button followObjectiveButton;
   protected Button attackObjectiveButton;
+  protected Button lookObjectiveButton;
 
   public ObjectiveConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -59,7 +60,7 @@ public class ObjectiveConfigurationScreen<T extends ObjectiveConfigurationMenu>
             new TextButton(
                 this.buttonLeftPos,
                 this.buttonTopPos,
-                76,
+                60,
                 "basic",
                 onPress ->
                     NetworkMessageHandler.openConfiguration(
@@ -70,7 +71,7 @@ public class ObjectiveConfigurationScreen<T extends ObjectiveConfigurationMenu>
             new TextButton(
                 this.basicObjectiveButton.getX() + this.basicObjectiveButton.getWidth(),
                 this.buttonTopPos,
-                76,
+                60,
                 "follow",
                 onPress ->
                     NetworkMessageHandler.openConfiguration(
@@ -81,11 +82,22 @@ public class ObjectiveConfigurationScreen<T extends ObjectiveConfigurationMenu>
             new TextButton(
                 this.followObjectiveButton.getX() + this.followObjectiveButton.getWidth(),
                 this.buttonTopPos,
-                76,
+                60,
                 "attack",
                 onPress ->
                     NetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.ATTACK_OBJECTIVE)));
+
+    this.lookObjectiveButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.attackObjectiveButton.getX() + this.attackObjectiveButton.getWidth(),
+                this.buttonTopPos,
+                65,
+                "look",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.LOOK_OBJECTIVE)));
 
     // Default button stats
     this.basicObjectiveButton.active =
@@ -103,5 +115,10 @@ public class ObjectiveConfigurationScreen<T extends ObjectiveConfigurationMenu>
             COMMON.followObjectiveConfigurationEnabled.get(),
             COMMON.followObjectiveConfigurationAllowInCreative.get(),
             COMMON.followObjectiveConfigurationPermissionLevel.get());
+    this.lookObjectiveButton.active =
+        this.hasPermissions(
+            COMMON.lookObjectiveConfigurationEnabled.get(),
+            COMMON.lookObjectiveConfigurationAllowInCreative.get(),
+            COMMON.lookObjectiveConfigurationPermissionLevel.get());
   }
 }

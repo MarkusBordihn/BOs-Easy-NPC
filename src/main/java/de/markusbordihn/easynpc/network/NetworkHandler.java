@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.network.message.MessageAdvancedTrading;
 import de.markusbordihn.easynpc.network.message.MessageBasicTrading;
 import de.markusbordihn.easynpc.network.message.MessageDialogButtonAction;
 import de.markusbordihn.easynpc.network.message.MessageEntityAttributeChange;
+import de.markusbordihn.easynpc.network.message.MessageEntityBaseAttributeChange;
 import de.markusbordihn.easynpc.network.message.MessageModelLockRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPoseChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPositionChange;
@@ -73,7 +74,7 @@ public class NetworkHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final int PROTOCOL_VERSION = 15;
+  private static final int PROTOCOL_VERSION = 16;
   private static final SimpleChannel SIMPLE_CHANNEL =
       ChannelBuilder.named(new ResourceLocation(Constants.MOD_ID, "network"))
           .networkProtocolVersion(PROTOCOL_VERSION)
@@ -132,6 +133,15 @@ public class NetworkHandler {
               .encoder(MessageEntityAttributeChange::encode)
               .decoder(MessageEntityAttributeChange::decode)
               .consumerNetworkThread(MessageEntityAttributeChange::handle)
+              .add();
+
+          // Entity Base Attribute Change: Client -> Server
+          SIMPLE_CHANNEL
+              .messageBuilder(
+                  MessageEntityBaseAttributeChange.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageEntityBaseAttributeChange::encode)
+              .decoder(MessageEntityBaseAttributeChange::decode)
+              .consumerNetworkThread(MessageEntityBaseAttributeChange::handle)
               .add();
 
           // Model Local Rotation Change: Client -> Server

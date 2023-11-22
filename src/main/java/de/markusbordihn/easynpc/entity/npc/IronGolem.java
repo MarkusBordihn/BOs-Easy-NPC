@@ -43,10 +43,16 @@ public class IronGolem extends EasyNPCEntity {
 
   public static AttributeSupplier.Builder createAttributes() {
     return Mob.createMobAttributes()
-        .add(Attributes.MOVEMENT_SPEED, 0.25F)
         .add(Attributes.MAX_HEALTH, 100.0D)
+        .add(Attributes.FOLLOW_RANGE, 32.0D)
         .add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)
-        .add(Attributes.ATTACK_DAMAGE, 15.0D);
+        .add(Attributes.MOVEMENT_SPEED, 0.25F)
+        .add(Attributes.FLYING_SPEED, 0.3F)
+        .add(Attributes.ATTACK_DAMAGE, 15.0D)
+        .add(Attributes.ATTACK_KNOCKBACK, 1.0D)
+        .add(Attributes.ATTACK_SPEED, 4.0D)
+        .add(Attributes.ARMOR, 0.0D)
+        .add(Attributes.ARMOR_TOUGHNESS, 0.0D);
   }
 
   @Override

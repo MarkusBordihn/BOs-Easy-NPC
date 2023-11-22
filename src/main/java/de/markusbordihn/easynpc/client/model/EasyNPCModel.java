@@ -20,7 +20,10 @@
 package de.markusbordihn.easynpc.client.model;
 
 import de.markusbordihn.easynpc.data.CustomPosition;
+import de.markusbordihn.easynpc.data.model.ModelArmPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import net.minecraft.client.model.AnimationUtils;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.Rotations;
 import net.minecraft.util.Mth;
@@ -100,33 +103,138 @@ public interface EasyNPCModel {
     modelPart.z = position.z();
   }
 
-  static void animateHumanoidModel(
+  static boolean animateHumanoidModel(
       EasyNPCModel easyNPCModel,
+      EasyNPCEntity entity,
       ModelPart headPart,
       ModelPart bodyPart,
       ModelPart rightArmPart,
       ModelPart leftArmPart,
       ModelPart rightLegPart,
       ModelPart leftLegPart,
+      float ageInTicks,
       float limbSwing,
       float limbSwingAmount) {
 
-    // Allow arm animation if arms are not adjusted.
-    if (easyNPCModel.hasDefaultHumanoidModelRightArm(rightArmPart)) {
-      rightArmPart.xRot =
-          Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F;
+    float attackTime = 0;
+    boolean hasArmAnimations = false;
+    boolean hasDefaultRightArm = easyNPCModel.hasDefaultHumanoidModelRightArm(rightArmPart);
+    boolean hasDefaultLeftArm = easyNPCModel.hasDefaultHumanoidModelLeftArm(leftArmPart);
+    boolean hasDefaultRightLeg = easyNPCModel.hasDefaultHumanoidModelRightLeg(rightLegPart);
+    boolean hasDefaultLeftLeg = easyNPCModel.hasDefaultHumanoidModelLeftLeg(leftLegPart);
+    if (easyNPCModel instanceof PlayerModel<?> playerModel) {
+      attackTime = playerModel.attackTime;
     }
-    if (easyNPCModel.hasDefaultHumanoidModelLeftArm(leftArmPart)) {
-      leftArmPart.xRot = Mth.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
+
+    // Allow arm animation if arms are not adjusted.
+    if (hasDefaultRightArm && hasDefaultLeftArm) {
+      hasArmAnimations =
+          animateHumanoidArmModel(
+              entity,
+              headPart,
+              bodyPart,
+              rightArmPart,
+              leftArmPart,
+              attackTime,
+              ageInTicks,
+              limbSwing,
+              limbSwingAmount);
+    } else {
+      if (hasDefaultRightArm) {
+        rightArmPart.xRot =
+            Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F;
+      } else if (hasDefaultLeftArm) {
+        leftArmPart.xRot = Mth.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
+      }
     }
 
     // Allow leg animation if legs are not adjusted.
-    if (easyNPCModel.hasDefaultHumanoidModelRightLeg(rightLegPart)) {
+    if (hasDefaultRightLeg) {
       rightLegPart.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
     }
-    if (easyNPCModel.hasDefaultHumanoidModelLeftLeg(leftLegPart)) {
+    if (hasDefaultLeftLeg) {
       leftLegPart.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
     }
+
+    // Was any animation applied?
+    return hasArmAnimations
+        || !hasDefaultRightArm
+        || !hasDefaultLeftArm
+        || !hasDefaultRightLeg
+        || !hasDefaultLeftLeg;
+  }
+
+  static boolean animateHumanoidArmModel(
+      EasyNPCEntity entity,
+      ModelPart headModelPart,
+      ModelPart bodyPart,
+      ModelPart rightArmPart,
+      ModelPart leftArmPart,
+      float attackTime,
+      float ageInTicks,
+      float limbSwing,
+      float limbSwingAmount) {
+    ModelArmPose modelArmPose = entity.getModelArmPose();
+    switch (modelArmPose) {
+      case ATTACKING_WITH_MELEE_WEAPON:
+        AnimationUtils.swingWeaponDown(rightArmPart, leftArmPart, entity, attackTime, ageInTicks);
+        break;
+      case ATTACKING:
+        AnimationUtils.swingWeaponDown(rightArmPart, leftArmPart, entity, attackTime, ageInTicks);
+        break;
+      case BOW_AND_ARROW:
+        rightArmPart.yRot = -0.1F + headModelPart.yRot;
+        rightArmPart.xRot = (-(float) Math.PI / 2F) + headModelPart.xRot;
+        leftArmPart.xRot = -0.9424779F + headModelPart.xRot;
+        leftArmPart.yRot = headModelPart.yRot - 0.4F;
+        leftArmPart.zRot = ((float) Math.PI / 2F);
+        break;
+      case CELEBRATING:
+        rightArmPart.z = 0.0F;
+        rightArmPart.x = -5.0F;
+        rightArmPart.xRot = Mth.cos(ageInTicks * 0.6662F) * 0.05F;
+        rightArmPart.zRot = 2.670354F;
+        rightArmPart.yRot = 0.0F;
+        leftArmPart.z = 0.0F;
+        leftArmPart.x = 5.0F;
+        leftArmPart.xRot = Mth.cos(ageInTicks * 0.6662F) * 0.05F;
+        leftArmPart.zRot = -2.3561945F;
+        leftArmPart.yRot = 0.0F;
+        break;
+      case CROSSBOW_CHARGE:
+        AnimationUtils.animateCrossbowCharge(rightArmPart, leftArmPart, entity, true);
+        break;
+      case CROSSBOW_HOLD:
+        AnimationUtils.animateCrossbowHold(rightArmPart, leftArmPart, headModelPart, true);
+        break;
+      case DANCING:
+        float swingAmount = ageInTicks / 60.0F;
+        headModelPart.x = Mth.sin(swingAmount * 10.0F);
+        headModelPart.y = Mth.sin(swingAmount * 40.0F) + 0.4F;
+        rightArmPart.zRot =
+            ((float) Math.PI / 180F) * (70.0F + Mth.cos(swingAmount * 40.0F) * 10.0F);
+        leftArmPart.zRot = rightArmPart.zRot * -1.0F;
+        rightArmPart.y = Mth.sin(swingAmount * 40.0F) * 0.5F + 1.5F;
+        leftArmPart.y = Mth.sin(swingAmount * 40.0F) * 0.5F + 1.5F;
+        bodyPart.y = Mth.sin(swingAmount * 40.0F) * 0.35F;
+        break;
+      case SPELLCASTING:
+        rightArmPart.z = 0.0F;
+        rightArmPart.x = -5.0F;
+        leftArmPart.z = 0.0F;
+        leftArmPart.x = 5.0F;
+        rightArmPart.xRot = Mth.cos(ageInTicks * 0.6662F) * 0.25F;
+        leftArmPart.xRot = Mth.cos(ageInTicks * 0.6662F) * 0.25F;
+        rightArmPart.zRot = 2.3561945F;
+        leftArmPart.zRot = -2.3561945F;
+        rightArmPart.yRot = 0.0F;
+        leftArmPart.yRot = 0.0F;
+        break;
+      case NEUTRAL:
+      default:
+        return false;
+    }
+    return true;
   }
 
   static void setupArmModel(
@@ -500,6 +608,25 @@ public interface EasyNPCModel {
     rightLegPart.visible = true;
   }
 
+  private static boolean equalPositionAndRotation(
+      ModelPart modelPart, CustomPosition position, Rotations rotations) {
+    return equalPosition(modelPart, position) && equalRotation(modelPart, rotations);
+  }
+
+  private static boolean equalPosition(ModelPart modelPart, CustomPosition position) {
+    return modelPart != null
+        && Math.abs(modelPart.x - position.x()) < 0.01
+        && Math.abs(modelPart.y - position.y()) < 0.01
+        && Math.abs(modelPart.z - position.z()) < 0.01;
+  }
+
+  private static boolean equalRotation(ModelPart modelPart, Rotations rotations) {
+    return modelPart != null
+        && Math.abs(modelPart.xRot - rotations.getX()) < 0.01
+        && Math.abs(modelPart.yRot - rotations.getY()) < 0.01
+        && Math.abs(modelPart.zRot - rotations.getZ()) < 0.01;
+  }
+
   default CustomPosition getDefaultModelHeadPosition() {
     return MODEL_HEAD_POSITION;
   }
@@ -641,50 +768,22 @@ public interface EasyNPCModel {
   }
 
   default boolean hasDefaultHumanoidModelLeftArm(ModelPart leftArmPart) {
-    if (leftArmPart == null) {
-      return false;
-    }
-    return leftArmPart.x == HUMANOID_MODEL_LEFT_ARM_POSITION.x()
-        && leftArmPart.y == HUMANOID_MODEL_LEFT_ARM_POSITION.y()
-        && leftArmPart.z == HUMANOID_MODEL_LEFT_ARM_POSITION.z()
-        && leftArmPart.xRot == MODEL_LEFT_ARM_ROTATION.getX()
-        && leftArmPart.yRot == MODEL_LEFT_ARM_ROTATION.getY()
-        && leftArmPart.zRot == MODEL_LEFT_ARM_ROTATION.getZ();
+    return equalPositionAndRotation(
+        leftArmPart, HUMANOID_MODEL_LEFT_ARM_POSITION, MODEL_LEFT_ARM_ROTATION);
   }
 
   default boolean hasDefaultHumanoidModelRightArm(ModelPart rightArmPart) {
-    if (rightArmPart == null) {
-      return false;
-    }
-    return rightArmPart.x == HUMANOID_MODEL_RIGHT_ARM_POSITION.x()
-        && rightArmPart.y == HUMANOID_MODEL_RIGHT_ARM_POSITION.y()
-        && rightArmPart.z == HUMANOID_MODEL_RIGHT_ARM_POSITION.z()
-        && rightArmPart.xRot == MODEL_RIGHT_ARM_ROTATION.getX()
-        && rightArmPart.yRot == MODEL_RIGHT_ARM_ROTATION.getY()
-        && rightArmPart.zRot == MODEL_RIGHT_ARM_ROTATION.getZ();
+    return equalPositionAndRotation(
+        rightArmPart, HUMANOID_MODEL_RIGHT_ARM_POSITION, MODEL_RIGHT_ARM_ROTATION);
   }
 
   default boolean hasDefaultHumanoidModelLeftLeg(ModelPart leftLegPart) {
-    if (leftLegPart == null) {
-      return false;
-    }
-    return leftLegPart.x == HUMANOID_MODEL_LEFT_LEG_POSITION.x()
-        && leftLegPart.y == HUMANOID_MODEL_LEFT_LEG_POSITION.y()
-        && leftLegPart.z == HUMANOID_MODEL_LEFT_LEG_POSITION.z()
-        && leftLegPart.xRot == MODEL_LEFT_LEG_ROTATION.getX()
-        && leftLegPart.yRot == MODEL_LEFT_LEG_ROTATION.getY()
-        && leftLegPart.zRot == MODEL_LEFT_LEG_ROTATION.getZ();
+    return equalPositionAndRotation(
+        leftLegPart, HUMANOID_MODEL_LEFT_LEG_POSITION, MODEL_LEFT_LEG_ROTATION);
   }
 
   default boolean hasDefaultHumanoidModelRightLeg(ModelPart rightLegPart) {
-    if (rightLegPart == null) {
-      return false;
-    }
-    return rightLegPart.x == HUMANOID_MODEL_RIGHT_LEG_POSITION.x()
-        && rightLegPart.y == HUMANOID_MODEL_RIGHT_LEG_POSITION.y()
-        && rightLegPart.z == HUMANOID_MODEL_RIGHT_LEG_POSITION.z()
-        && rightLegPart.xRot == MODEL_RIGHT_LEG_ROTATION.getX()
-        && rightLegPart.yRot == MODEL_RIGHT_LEG_ROTATION.getY()
-        && rightLegPart.zRot == MODEL_RIGHT_LEG_ROTATION.getZ();
+    return equalPositionAndRotation(
+        rightLegPart, HUMANOID_MODEL_RIGHT_LEG_POSITION, MODEL_RIGHT_LEG_ROTATION);
   }
 }

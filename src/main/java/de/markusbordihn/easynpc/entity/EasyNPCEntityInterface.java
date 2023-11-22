@@ -17,21 +17,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.attribute;
+package de.markusbordihn.easynpc.entity;
 
-public enum EntityAttribute {
-  // @formatter:off
-  FREEFALL,
-  IS_ATTACKABLE,
-  IS_PUSHABLE,
-  CAN_FLOAT,
-  CAN_CLOSE_DOOR,
-  CAN_OPEN_DOOR,
-  CAN_PASS_DOOR;
+import de.markusbordihn.easynpc.Constants;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.ai.goal.GoalSelector;
+import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
+import net.minecraft.world.level.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-  // @formatter:on
+public interface EasyNPCEntityInterface {
 
-  public String getAttributeName() {
-    return this.name().toLowerCase();
-  }
+  Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  Level getEntityLevel();
+
+  ServerLevel getEntityServerLevel();
+
+  EasyNPCEntity getEntity();
+
+  GoalSelector getEntityGoalSelector();
+
+  GoalSelector getEntityTargetSelector();
+
+  GroundPathNavigation getEntityGroundPathNavigation();
 }

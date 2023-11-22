@@ -63,8 +63,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
   protected final UUID uuid;
   protected final LivingEntity owner;
   protected final String ownerName;
-  // Owner details
-  protected boolean hasOwner = false;
+  protected final boolean hasOwner;
   // Buttons
   protected Button closeButton = null;
   protected Button homeButton = null;
@@ -92,8 +91,8 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
 
     // General environment Data
     this.minecraftInstance = Minecraft.getInstance();
-    this.localPlayer = this.minecraftInstance != null ? this.minecraftInstance.player : null;
-    this.clientLevel = this.minecraftInstance != null ? this.minecraftInstance.level : null;
+    this.localPlayer = this.minecraftInstance.player;
+    this.clientLevel = this.minecraftInstance.level;
   }
 
   protected static Double getDoubleValue(String value) {
@@ -133,17 +132,14 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.MAIN);
   }
 
-  protected int fontDraw(GuiGraphics guiGraphics, String text, int x, int y) {
-    return Text.drawConfigString(guiGraphics, this.font, text, x, y);
-  }
-
   protected boolean hasPermissions(Boolean enabled, Boolean allowInCreative, int permissionLevel) {
     if (Boolean.FALSE.equals(enabled)) {
       return false;
     } else if (Boolean.TRUE.equals(allowInCreative && this.localPlayer != null)
         && this.localPlayer.isCreative()) {
       return true;
-    } else return this.localPlayer != null && this.localPlayer.hasPermissions(permissionLevel);
+    }
+    return this.localPlayer != null && this.localPlayer.hasPermissions(permissionLevel);
   }
 
   @Override
@@ -179,9 +175,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
                 this.buttonTopPos,
                 10,
                 "<",
-                onPress -> {
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.MAIN);
-                }));
+                onPress -> NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.MAIN)));
   }
 
   @Override
@@ -216,12 +210,9 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
 
   @Override
   public boolean keyPressed(int keyCode, int unused1, int unused2) {
-    if (keyCode != 257 && keyCode != 335 && keyCode != 69) {
+    if (keyCode != 257 && keyCode != 335 && keyCode != 69 && keyCode != 73) {
       return super.keyPressed(keyCode, unused1, unused2);
-    } else if (keyCode == 257 || keyCode == 335) {
-      return true;
-    } else {
-      return true;
     }
+    return keyCode == 257 || keyCode == 335 || keyCode == 73;
   }
 }

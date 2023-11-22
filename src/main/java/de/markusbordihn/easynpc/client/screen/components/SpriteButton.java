@@ -305,7 +305,7 @@ public class SpriteButton extends CustomButton {
         this.getX() + this.spriteX,
         this.getY() + this.spriteY,
         spriteOffsetX,
-        this.active ? this.spriteOffsetY : spriteOffsetY + spriteHeight,
+        isActive() ? this.spriteOffsetY : spriteOffsetY + spriteHeight,
         spriteWidth,
         spriteHeight);
   }

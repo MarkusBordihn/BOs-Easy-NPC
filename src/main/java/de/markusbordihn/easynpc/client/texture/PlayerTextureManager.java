@@ -85,7 +85,7 @@ public class PlayerTextureManager {
       EasyNPCEntity entity, ResourceLocation defaultResourceLocation) {
     // Check if we have a skin UUID otherwise we assume that the texture is unknown.
     Optional<UUID> skinUUID = entity.getSkinUUID();
-    if (!skinUUID.isPresent()) {
+    if (skinUUID.isEmpty()) {
       return defaultResourceLocation;
     }
 
