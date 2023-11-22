@@ -30,7 +30,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
@@ -132,6 +131,9 @@ public class EntityManager {
       return;
     }
 
+    // Not all data needs to be processed on client side.
+    boolean isClientSide = event.getWorld().isClientSide();
+
     // Only take care of Easy NPC entities.
     Entity entity = event.getEntity();
     if (entity instanceof EasyNPCEntity easyNPCEntity
@@ -149,8 +151,7 @@ public class EntityManager {
     }
 
     // Only take care of server-side for server player and living entities.
-    Level entityLevel = entity.getLevel();
-    if (entityLevel == null || entityLevel.isClientSide) {
+    if (isClientSide) {
       return;
     }
 
@@ -161,23 +162,19 @@ public class EntityManager {
       playerNameMap.remove(serverPlayer.getName().getString());
 
       // Inform all server-side easy NPC entities about leaving player.
-      if (entity.getLevel() != null && !entity.getLevel().isClientSide) {
-        for (Entity entityEntry : npcEntityMap.values()) {
-          if (entityEntry instanceof EasyNPCEntity easyNPCEntityEntry) {
-            easyNPCEntityEntry.onPlayerLeave(serverPlayer);
-          }
+      for (Entity entityEntry : npcEntityMap.values()) {
+        if (entityEntry instanceof EasyNPCEntity easyNPCEntityEntry) {
+          easyNPCEntityEntry.onPlayerLeave(serverPlayer);
         }
       }
     } else if (entity instanceof LivingEntity livingEntity) {
       livingEntityMap.remove(entity.getUUID());
 
       // Inform all server-side easy NPC entities about leaving living entity.
-      if (entity.getLevel() != null && !entity.getLevel().isClientSide) {
-        for (Entity entityEntry : npcEntityMap.values()) {
-          if (entityEntry instanceof EasyNPCEntity easyNPCEntityEntry
-              && easyNPCEntityEntry != livingEntity) {
-            easyNPCEntityEntry.onLivingEntityLeave(livingEntity);
-          }
+      for (Entity entityEntry : npcEntityMap.values()) {
+        if (entityEntry instanceof EasyNPCEntity easyNPCEntityEntry
+            && easyNPCEntityEntry != livingEntity) {
+          easyNPCEntityEntry.onLivingEntityLeave(livingEntity);
         }
       }
     }

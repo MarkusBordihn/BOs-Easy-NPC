@@ -19,14 +19,13 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.skin;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
+import de.markusbordihn.easynpc.client.screen.components.SkinSelectionButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
-import de.markusbordihn.easynpc.client.texture.TextureModelKey;
 import de.markusbordihn.easynpc.data.CustomSkinData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
@@ -42,8 +41,6 @@ import java.util.Set;
 import java.util.UUID;
 import net.minecraft.Util;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.FormattedCharSequence;
@@ -120,45 +117,18 @@ public class CustomSkinConfigurationScreen
 
   private void renderSkinEntity(
       PoseStack poseStack, int x, int y, SkinModel skinModel, UUID textureUUID) {
-    // Skin details
-    TextureModelKey textureModelKey = new TextureModelKey(textureUUID, skinModel);
 
-    // Create dynamically button for each skin variant and profession.
-    int skinButtonLeft = x - 24;
-    int skinButtonTop = y - 81;
-    int skinButtonHeight = 84;
-    ImageButton skinButton =
-        new ImageButton(
-            skinButtonLeft,
-            skinButtonTop,
-            skinPreviewWidth,
-            skinButtonHeight,
-            0,
-            -84,
-            84,
-            Constants.TEXTURE_CONFIGURATION,
-            button -> {
-              log.info("Change custom skin ... {}", textureModelKey);
-              NetworkMessageHandler.skinChange(this.uuid, "", "", textureUUID, SkinType.CUSTOM);
-            });
+    // Create dynamically button for each skin variant.
+    Button skinButton =
+        new SkinSelectionButton(
+            x - 24,
+            y - 81,
+            button ->
+                NetworkMessageHandler.skinChange(this.uuid, "", "", textureUUID, SkinType.CUSTOM));
 
-    // Render active skin in different style.
+    // Disable button for active skin.
     Optional<UUID> skinUUID = this.entity.getSkinUUID();
-    if (skinUUID.isPresent() && skinUUID.get().equals(textureUUID)) {
-      poseStack.pushPose();
-      RenderSystem.setShader(GameRenderer::getPositionTexShader);
-      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-      RenderSystem.setShaderTexture(0, Constants.TEXTURE_CONFIGURATION);
-      this.blit(
-          poseStack,
-          skinButtonLeft,
-          skinButtonTop,
-          0,
-          skinButtonHeight,
-          skinPreviewWidth,
-          skinButtonHeight);
-      poseStack.popPose();
-    }
+    skinButton.active = !(skinUUID.isPresent() && skinUUID.get().equals(textureUUID));
 
     // Render skin entity with variant and profession.
     ScreenHelper.renderEntityPlayerSkin(
@@ -189,11 +159,7 @@ public class CustomSkinConfigurationScreen
                 20,
                 "<<",
                 onPress -> {
-                  if (this.skinStartIndex - maxSkinsPerPage > 0) {
-                    skinStartIndex = skinStartIndex - maxSkinsPerPage;
-                  } else {
-                    skinStartIndex = 0;
-                  }
+                  skinStartIndex = Math.max(this.skinStartIndex - maxSkinsPerPage, 0);
                   checkSkinNavigationButtonState();
                 }));
     this.skinPreviousButton =
@@ -310,14 +276,14 @@ public class CustomSkinConfigurationScreen
     }
     this.skinReloadButton.active = canSkinReload;
 
-    // Skins
-    this.renderSkins(poseStack);
-
     // Make sure we pass the mouse movements to the dynamically added buttons, if any.
     if (!skinButtons.isEmpty()) {
       for (Button skinButton : skinButtons) {
         skinButton.render(poseStack, x, y, partialTicks);
       }
     }
+
+    // Skins
+    this.renderSkins(poseStack);
   }
 }

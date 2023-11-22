@@ -83,12 +83,6 @@ public class MessagePresetImport extends NetworkMessage {
     }
 
     // Perform action.
-    if (compoundTag.contains("id") && compoundTag.contains("pos")) {
-      log.debug(
-          "Importing full preset {} for {} from {}", compoundTag, easyNPCEntity, serverPlayer);
-    } else {
-      log.debug("Merge preset {} for {} from {}", compoundTag, easyNPCEntity, serverPlayer);
-    }
     easyNPCEntity.importPreset(compoundTag);
   }
 

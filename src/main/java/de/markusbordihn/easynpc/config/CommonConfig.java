@@ -73,7 +73,8 @@ public class CommonConfig {
   public static class Config {
 
     public static final String MAIN_CONFIGURATION = "main";
-    public static final String BASIC_ATTRIBUTE_CONFIGURATION = "attribute";
+    public static final String ABILITIES_ATTRIBUTE_CONFIGURATION = "abilities attribute";
+    public static final String BASE_ATTRIBUTE_CONFIGURATION = "base attribute";
     public static final String BASIC_ACTION_CONFIGURATION = "basic action";
     public static final String DIALOG_ACTION_CONFIGURATION = "dialog action";
     public static final String DISTANCE_ACTION_CONFIGURATION = "distance action";
@@ -102,13 +103,17 @@ public class CommonConfig {
     public static final String BASIC_OBJECTIVE_CONFIGURATION = "basic objective";
     public static final String ATTACK_OBJECTIVE_CONFIGURATION = "attack objective";
     public static final String FOLLOW_OBJECTIVE_CONFIGURATION = "follow objective";
+    public static final String LOOK_OBJECTIVE_CONFIGURATION = "look objective";
     private static final String ADVANCED_POSE_CONFIGURATION = "advanced pose";
     public final ForgeConfigSpec.BooleanValue mainConfigurationEnabled;
     public final ForgeConfigSpec.BooleanValue mainConfigurationAllowInCreative;
     public final ForgeConfigSpec.IntValue mainConfigurationPermissionLevel;
-    public final ForgeConfigSpec.BooleanValue basicAttributeConfigurationEnabled;
-    public final ForgeConfigSpec.BooleanValue basicAttributeConfigurationAllowInCreative;
-    public final ForgeConfigSpec.IntValue basicAttributeConfigurationPermissionLevel;
+    public final ForgeConfigSpec.BooleanValue abilitiesAttributeConfigurationEnabled;
+    public final ForgeConfigSpec.BooleanValue abilitiesAttributeConfigurationAllowInCreative;
+    public final ForgeConfigSpec.IntValue abilitiesAttributeConfigurationPermissionLevel;
+    public final ForgeConfigSpec.BooleanValue baseAttributeConfigurationEnabled;
+    public final ForgeConfigSpec.BooleanValue baseAttributeConfigurationAllowInCreative;
+    public final ForgeConfigSpec.IntValue baseAttributeConfigurationPermissionLevel;
     public final ForgeConfigSpec.BooleanValue basicActionConfigurationEnabled;
     public final ForgeConfigSpec.BooleanValue basicActionConfigurationAllowInCreative;
     public final ForgeConfigSpec.IntValue basicActionConfigurationPermissionLevel;
@@ -196,11 +201,14 @@ public class CommonConfig {
     public final ForgeConfigSpec.BooleanValue followObjectiveConfigurationEnabled;
     public final ForgeConfigSpec.BooleanValue followObjectiveConfigurationAllowInCreative;
     public final ForgeConfigSpec.IntValue followObjectiveConfigurationPermissionLevel;
+    public final ForgeConfigSpec.BooleanValue lookObjectiveConfigurationEnabled;
+    public final ForgeConfigSpec.BooleanValue lookObjectiveConfigurationAllowInCreative;
+    public final ForgeConfigSpec.IntValue lookObjectiveConfigurationPermissionLevel;
 
     Config(ForgeConfigSpec.Builder builder) {
       builder.comment(Constants.MOD_NAME);
 
-      builder.push("General");
+      builder.push("General Configuration");
       builder.pop();
 
       builder.push("[Main Configuration]");
@@ -263,19 +271,34 @@ public class CommonConfig {
               .defineInRange("distanceActionConfigurationPermissionLevel", 1, 0, 4);
       builder.pop();
 
-      builder.push("[Attribute Configuration] Basic Attribute");
-      basicAttributeConfigurationEnabled =
+      builder.push("[Attribute Configuration] Abilities Attribute");
+      abilitiesAttributeConfigurationEnabled =
           builder
-              .comment(getEnableComment(BASIC_ATTRIBUTE_CONFIGURATION))
-              .define("basicAttributeConfigurationEnabled", true);
-      basicAttributeConfigurationAllowInCreative =
+              .comment(getEnableComment(ABILITIES_ATTRIBUTE_CONFIGURATION))
+              .define("abilitiesAttributeConfigurationEnabled", true);
+      abilitiesAttributeConfigurationAllowInCreative =
           builder
-              .comment(getAllowInCreativeComment(BASIC_ATTRIBUTE_CONFIGURATION))
-              .define("basicAttributeConfigurationAllowInCreative", true);
-      basicAttributeConfigurationPermissionLevel =
+              .comment(getAllowInCreativeComment(ABILITIES_ATTRIBUTE_CONFIGURATION))
+              .define("abilitiesAttributeConfigurationAllowInCreative", true);
+      abilitiesAttributeConfigurationPermissionLevel =
           builder
-              .comment(getPermissionLevelComment(BASIC_ATTRIBUTE_CONFIGURATION))
-              .defineInRange("basicAttributeConfigurationPermissionLevel", 1, 0, 4);
+              .comment(getPermissionLevelComment(ABILITIES_ATTRIBUTE_CONFIGURATION))
+              .defineInRange("abilitiesAttributeConfigurationPermissionLevel", 0, 0, 4);
+      builder.pop();
+
+      builder.push("[Attribute Configuration] Base Attribute");
+      baseAttributeConfigurationEnabled =
+          builder
+              .comment(getEnableComment(BASE_ATTRIBUTE_CONFIGURATION))
+              .define("baseAttributeConfigurationEnabled", true);
+      baseAttributeConfigurationAllowInCreative =
+          builder
+              .comment(getAllowInCreativeComment(BASE_ATTRIBUTE_CONFIGURATION))
+              .define("baseAttributeConfigurationAllowInCreative", true);
+      baseAttributeConfigurationPermissionLevel =
+          builder
+              .comment(getPermissionLevelComment(BASE_ATTRIBUTE_CONFIGURATION))
+              .defineInRange("baseAttributeConfigurationPermissionLevel", 1, 0, 4);
       builder.pop();
 
       builder.push("[Dialog Configuration] None Dialog");
@@ -665,6 +688,21 @@ public class CommonConfig {
           builder
               .comment(getPermissionLevelComment(FOLLOW_OBJECTIVE_CONFIGURATION))
               .defineInRange("followObjectiveConfigurationPermissionLevel", 0, 0, 4);
+      builder.pop();
+
+      builder.push("[Objective Configuration] Look Objective");
+      lookObjectiveConfigurationEnabled =
+          builder
+              .comment(getEnableComment(LOOK_OBJECTIVE_CONFIGURATION))
+              .define("lookObjectiveConfigurationEnabled", true);
+      lookObjectiveConfigurationAllowInCreative =
+          builder
+              .comment(getAllowInCreativeComment(LOOK_OBJECTIVE_CONFIGURATION))
+              .define("lookObjectiveConfigurationAllowInCreative", true);
+      lookObjectiveConfigurationPermissionLevel =
+          builder
+              .comment(getPermissionLevelComment(LOOK_OBJECTIVE_CONFIGURATION))
+              .defineInRange("lookObjectiveConfigurationPermissionLevel", 0, 0, 4);
       builder.pop();
     }
   }

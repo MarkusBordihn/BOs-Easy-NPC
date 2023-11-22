@@ -250,11 +250,12 @@ public class ImportDefaultPresetConfigurationScreen
       }
 
       // Display "No presets found" message.
-      ImportDefaultPresetConfigurationScreen.this.font.drawShadow(
+      Text.drawConfigStringShadow(
           poseStack,
-          new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "no_presets_found"),
-          ImportDefaultPresetConfigurationScreen.this.contentLeftPos + 80f,
-          ImportDefaultPresetConfigurationScreen.this.topPos + 105f,
+          ImportDefaultPresetConfigurationScreen.this.font,
+          "no_presets_found",
+          ImportDefaultPresetConfigurationScreen.this.contentLeftPos + 80,
+          ImportDefaultPresetConfigurationScreen.this.topPos + 105,
           Constants.FONT_COLOR_WHITE);
     }
 
@@ -317,14 +318,14 @@ public class ImportDefaultPresetConfigurationScreen
             Constants.FONT_COLOR_WHITE);
 
         // Display file name.
-        ImportDefaultPresetConfigurationScreen.this.font.drawShadow(
+        Text.drawStringShadow(
             poseStack,
+            ImportDefaultPresetConfigurationScreen.this.font,
             fileName,
-            ImportFileSelectionList.this.width / 2f
-                - ImportDefaultPresetConfigurationScreen.this.font.width(this.fileName) / 2f,
-            y + 1f,
-            Constants.FONT_COLOR_WHITE,
-            true);
+            ImportFileSelectionList.this.width / 2
+                - ImportDefaultPresetConfigurationScreen.this.font.width(this.fileName) / 2,
+            y + 1,
+            Constants.FONT_COLOR_WHITE);
       }
 
       @Override

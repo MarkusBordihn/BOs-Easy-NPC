@@ -21,22 +21,29 @@ package de.markusbordihn.easynpc.data.objective;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.ai.goal.CrossbowAttackGoal;
 import de.markusbordihn.easynpc.entity.ai.goal.CustomLookAtPlayerGoal;
+import de.markusbordihn.easynpc.entity.ai.goal.CustomMeleeAttackGoal;
 import de.markusbordihn.easynpc.entity.ai.goal.FollowLivingEntityGoal;
+import de.markusbordihn.easynpc.entity.ai.goal.ResetLookAtPlayerGoal;
 import de.markusbordihn.easynpc.entity.ai.goal.ZombieAttackGoal;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.FleeSunGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.GolemRandomStrollInVillageGoal;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.MoveBackToVillageGoal;
 import net.minecraft.world.entity.ai.goal.MoveThroughVillageGoal;
 import net.minecraft.world.entity.ai.goal.OpenDoorGoal;
+import net.minecraft.world.entity.ai.goal.PanicGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
+import net.minecraft.world.entity.ai.goal.RangedBowAttackGoal;
+import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
@@ -56,6 +63,8 @@ public class ObjectiveUtils {
   private ObjectiveUtils() {}
 
   public static Goal createObjectiveGoal(ObjectiveData objectiveData, EasyNPCEntity easyNPCEntity) {
+    Entity targetOwner = objectiveData.getTargetOwner(easyNPCEntity);
+
     switch (objectiveData.getType()) {
       case FOLLOW_PLAYER:
         ServerPlayer targetServerPlayer = objectiveData.getTargetPlayer();
@@ -73,7 +82,6 @@ public class ObjectiveUtils {
         }
         break;
       case FOLLOW_OWNER:
-        Entity targetOwner = objectiveData.getTargetOwner(easyNPCEntity);
         if (targetOwner instanceof LivingEntity livingEntity && !livingEntity.isRemoved()) {
           return new FollowLivingEntityGoal(
               easyNPCEntity,
@@ -122,16 +130,21 @@ public class ObjectiveUtils {
         return new MoveBackToVillageGoal(easyNPCEntity, objectiveData.getSpeedModifier(), false);
       case RANDOM_STROLL_IN_VILLAGE:
         return new GolemRandomStrollInVillageGoal(easyNPCEntity, objectiveData.getSpeedModifier());
-      case MELEE_ATTACK:
-        return new MeleeAttackGoal(
+      case CROSSBOW_ATTACK:
+        return new CrossbowAttackGoal(
+            easyNPCEntity, objectiveData.getSpeedModifier(), objectiveData.getAttackRadius());
+      case BOW_ATTACK:
+        return new RangedBowAttackGoal<>(
             easyNPCEntity,
             objectiveData.getSpeedModifier(),
-            objectiveData.isFollowingTargetEvenIfNotSeen());
+            objectiveData.getAttackInterval(),
+            objectiveData.getAttackRadius());
+      case MELEE_ATTACK:
+        return new CustomMeleeAttackGoal(
+            easyNPCEntity, objectiveData.getSpeedModifier(), objectiveData.isMustSeeTarget());
       case ZOMBIE_ATTACK:
         return new ZombieAttackGoal(
-            easyNPCEntity,
-            objectiveData.getSpeedModifier(),
-            objectiveData.isFollowingTargetEvenIfNotSeen());
+            easyNPCEntity, objectiveData.getSpeedModifier(), objectiveData.isMustSeeTarget());
       case RANDOM_SWIMMING:
         return new RandomSwimmingGoal(
             easyNPCEntity, objectiveData.getSpeedModifier(), objectiveData.getInterval());
@@ -141,10 +154,34 @@ public class ObjectiveUtils {
         return new OpenDoorGoal(easyNPCEntity, false);
       case CLOSE_DOOR:
         return new OpenDoorGoal(easyNPCEntity, true);
+      case LOOK_AT_RESET:
+        return new ResetLookAtPlayerGoal(easyNPCEntity);
       case LOOK_AT_PLAYER:
-        return new CustomLookAtPlayerGoal(easyNPCEntity, Player.class, 15.0F, 1.0F);
+        return new CustomLookAtPlayerGoal(
+            easyNPCEntity,
+            Player.class,
+            objectiveData.getLookDistance(),
+            objectiveData.getProbability());
       case LOOK_AT_MOB:
-        return new CustomLookAtPlayerGoal(easyNPCEntity, Mob.class, 15.0F, 1.0F);
+        return new CustomLookAtPlayerGoal(
+            easyNPCEntity,
+            Mob.class,
+            objectiveData.getLookDistance(),
+            objectiveData.getProbability());
+      case LOOK_AT_ANIMAL:
+        return new CustomLookAtPlayerGoal(
+            easyNPCEntity,
+            Animal.class,
+            objectiveData.getLookDistance(),
+            objectiveData.getProbability());
+      case LOOK_RANDOM_AROUND:
+        return new RandomLookAroundGoal(easyNPCEntity);
+      case PANIC:
+        return new PanicGoal(easyNPCEntity, objectiveData.getSpeedModifier());
+      case AVOID_SUN:
+        return new RestrictSunGoal(easyNPCEntity);
+      case FLEE_SUN:
+        return new FleeSunGoal(easyNPCEntity, objectiveData.getSpeedModifier());
       default:
         return null;
     }
@@ -155,11 +192,11 @@ public class ObjectiveUtils {
       ObjectiveData objectiveData, EasyNPCEntity easyNPCEntity) {
     return switch (objectiveData.getType()) {
       case ATTACK_ANIMAL -> new NearestAttackableTargetGoal<>(
-          easyNPCEntity, Animal.class, objectiveData.isMustSee());
+          easyNPCEntity, Animal.class, objectiveData.isMustSeeTarget());
       case ATTACK_PLAYER -> new NearestAttackableTargetGoal<>(
-          easyNPCEntity, Player.class, objectiveData.isMustSee());
+          easyNPCEntity, Player.class, objectiveData.isMustSeeTarget());
       case ATTACK_MONSTER -> new NearestAttackableTargetGoal<>(
-          easyNPCEntity, Monster.class, objectiveData.isMustSee());
+          easyNPCEntity, Monster.class, objectiveData.isMustSeeTarget());
       case ATTACK_MOB_WITHOUT_CREEPER -> new NearestAttackableTargetGoal<>(
           easyNPCEntity,
           Mob.class,
@@ -175,7 +212,7 @@ public class ObjectiveUtils {
           false,
           Enemy.class::isInstance);
       case ATTACK_VILLAGER -> new NearestAttackableTargetGoal<>(
-          easyNPCEntity, AbstractVillager.class, objectiveData.isMustSee());
+          easyNPCEntity, AbstractVillager.class, objectiveData.isMustSeeTarget());
       default -> null;
     };
   }

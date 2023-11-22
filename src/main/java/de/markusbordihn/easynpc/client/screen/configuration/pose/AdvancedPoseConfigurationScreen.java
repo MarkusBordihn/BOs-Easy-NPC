@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.client.screen.configuration.pose;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.screen.components.SliderButton;
+import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.menu.configuration.pose.AdvancedPoseConfigurationMenu;
 import net.minecraft.network.chat.Component;
@@ -125,49 +126,56 @@ public class AdvancedPoseConfigurationScreen
 
     // Body parts texts
     if (this.entity.hasHeadModelPart()) {
-      this.fontDraw(
+      Text.drawConfigString(
           poseStack,
+          this.font,
           "pose.head",
           this.headRotationSliderButton.x + 5,
           this.headRotationSliderButton.y - 12);
     }
     if (this.entity.hasBodyModelPart()) {
-      this.fontDraw(
+      Text.drawConfigString(
           poseStack,
+          this.font,
           "pose.body",
           this.bodyRotationSliderButton.x + 5,
           this.bodyRotationSliderButton.y - 12);
     }
     if (this.entity.hasLeftArmModelPart()) {
-      this.fontDraw(
+      Text.drawConfigString(
           poseStack,
+          this.font,
           "pose.left_arm",
           this.leftArmRotationSliderButton.x + 5,
           this.leftArmRotationSliderButton.y - 12);
     } else if (this.entity.hasArmsModelPart()) {
-      this.fontDraw(
+      Text.drawConfigString(
           poseStack,
+          this.font,
           "pose.arms",
           this.armsRotationSliderButton.x + 5,
           this.armsRotationSliderButton.y - 12);
     }
     if (this.entity.hasRightArmModelPart()) {
-      this.fontDraw(
+      Text.drawConfigString(
           poseStack,
+          this.font,
           "pose.right_arm",
           this.rightArmRotationSliderButton.x + 5,
           this.rightArmRotationSliderButton.y - 12);
     }
     if (this.entity.hasLeftLegModelPart()) {
-      this.fontDraw(
+      Text.drawConfigString(
           poseStack,
+          this.font,
           "pose.left_leg",
           this.leftLegRotationSliderButton.x + 5,
           this.leftLegRotationSliderButton.y - 12);
     }
     if (this.entity.hasRightLegModelPart()) {
-      this.fontDraw(
+      Text.drawConfigString(
           poseStack,
+          this.font,
           "pose.right_leg",
           this.rightLegRotationSliderButton.x + 5,
           this.rightLegRotationSliderButton.y - 12);

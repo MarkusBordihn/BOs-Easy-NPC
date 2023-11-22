@@ -50,8 +50,8 @@ public class EasyNPC {
 
     modEventBus.addListener(NetworkHandler::registerNetworkHandler);
 
-    log.info("{} Entities ...", Constants.LOG_REGISTER_PREFIX);
-    ModEntityType.ENTITIES.register(modEventBus);
+    log.info("{} Entity Types ...", Constants.LOG_REGISTER_PREFIX);
+    ModEntityType.ENTITY_TYPES.register(modEventBus);
 
     log.info("{} Items ...", Constants.LOG_REGISTER_PREFIX);
     ModItems.ITEMS.register(modEventBus);

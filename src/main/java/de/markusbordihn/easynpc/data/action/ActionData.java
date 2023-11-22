@@ -29,9 +29,9 @@ import org.apache.logging.log4j.Logger;
 public class ActionData {
 
   // Limits
-  public static final int MAX_PERMISSION_LEVEL = 3;
+  public static final int MAX_PERMISSION_LEVEL = 2;
   public static final int DEFAULT_PERMISSION_LEVEL = 2;
-  public static final int MIN_PERMISSION_LEVEL = 1;
+  public static final int MIN_PERMISSION_LEVEL = 0;
   // Action Data Tags
   public static final String DATA_COMMAND_TAG = "Cmd";
   public static final String DATA_DEBUG_TAG = "Debug";

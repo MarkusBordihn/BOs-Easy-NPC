@@ -169,9 +169,8 @@ public class DefaultRotationConfigurationScreen
                 this.contentTopPos + 2,
                 "lock_rotation",
                 this.entity.getModelLockRotation(),
-                checkbox -> {
-                  NetworkMessageHandler.modelLockRotationChange(uuid, checkbox.selected());
-                }));
+                checkbox ->
+                    NetworkMessageHandler.modelLockRotationChange(uuid, checkbox.selected())));
   }
 
   @Override

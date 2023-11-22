@@ -114,9 +114,7 @@ public class ExportCustomPresetConfigurationScreen
                 this.bottomPos - 95,
                 275,
                 "open_custom_export_preset_folder",
-                button -> {
-                  Util.getPlatform().openFile(customPresetFile.getParentFile());
-                }));
+                button -> Util.getPlatform().openFile(customPresetFile.getParentFile())));
 
     // Export button
     this.exportPresetButton =

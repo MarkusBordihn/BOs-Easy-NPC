@@ -131,16 +131,12 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 }));
 
     if (compact) {
-      int resetButtonLeftPosition;
+      int resetButtonLeftPosition =
+          switch (modelPart) {
+            case BODY, LEFT_ARM, LEFT_LEG -> left;
+            default -> sliderButtonZ.x + sliderButtonZ.getWidth();
+          };
       // Switch reset button left position for compact mode and specific model parts
-      switch (modelPart) {
-        case BODY, LEFT_ARM, LEFT_LEG:
-          resetButtonLeftPosition = left;
-          break;
-        default:
-          resetButtonLeftPosition = sliderButtonZ.x + sliderButtonZ.getWidth();
-          break;
-      }
       this.addRenderableWidget(
           new TextButton(
               resetButtonLeftPosition,

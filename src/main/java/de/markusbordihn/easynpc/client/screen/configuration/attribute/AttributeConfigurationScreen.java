@@ -35,7 +35,8 @@ public class AttributeConfigurationScreen<T extends AttributeConfigurationMenu>
     extends ConfigurationScreen<T> {
 
   // Buttons
-  protected Button basicAttributeButton = null;
+  protected Button abilitiesAttributeButton = null;
+  protected Button baseAttributeButton = null;
 
   public AttributeConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -46,22 +47,38 @@ public class AttributeConfigurationScreen<T extends AttributeConfigurationMenu>
     super.init();
 
     // Objective Types
-    this.basicAttributeButton =
+    this.abilitiesAttributeButton =
         this.addRenderableWidget(
             new TextButton(
                 this.buttonLeftPos,
                 this.buttonTopPos,
-                80,
-                "basic",
+                76,
+                "abilities",
                 onPress ->
                     NetworkMessageHandler.openConfiguration(
-                        uuid, ConfigurationType.BASIC_ATTRIBUTE)));
+                        uuid, ConfigurationType.ABILITIES_ATTRIBUTE)));
+
+    this.baseAttributeButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.abilitiesAttributeButton.x + this.abilitiesAttributeButton.getWidth(),
+                this.buttonTopPos,
+                60,
+                "base",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.BASE_ATTRIBUTE)));
 
     // Default button stats
-    this.basicAttributeButton.active =
+    this.abilitiesAttributeButton.active =
         this.hasPermissions(
-            COMMON.basicAttributeConfigurationEnabled.get(),
-            COMMON.basicAttributeConfigurationAllowInCreative.get(),
-            COMMON.basicAttributeConfigurationPermissionLevel.get());
+            COMMON.abilitiesAttributeConfigurationEnabled.get(),
+            COMMON.abilitiesAttributeConfigurationAllowInCreative.get(),
+            COMMON.abilitiesAttributeConfigurationPermissionLevel.get());
+    this.baseAttributeButton.active =
+        this.hasPermissions(
+            COMMON.baseAttributeConfigurationEnabled.get(),
+            COMMON.baseAttributeConfigurationAllowInCreative.get(),
+            COMMON.baseAttributeConfigurationPermissionLevel.get());
   }
 }
