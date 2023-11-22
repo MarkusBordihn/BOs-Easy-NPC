@@ -41,8 +41,8 @@ public class SliderButton extends AbstractSliderButton {
   protected final float maxValue;
   private final float minValue;
   private final float valueFraction;
+  private final Type type;
   private float initValue;
-  private Type type = Type.UNKNOWN;
   private float targetValue;
   private float roundFactor = 100.0f;
 
@@ -94,6 +94,29 @@ public class SliderButton extends AbstractSliderButton {
       int y,
       int width,
       int height,
+      String name,
+      double initValue,
+      double minValue,
+      double maxValue,
+      SliderButton.OnChange onChange) {
+    this(
+        x,
+        y,
+        width,
+        height,
+        Component.literal(name),
+        (float) initValue,
+        (float) minValue,
+        (float) maxValue,
+        onChange,
+        Type.DOUBLE);
+  }
+
+  public SliderButton(
+      int x,
+      int y,
+      int width,
+      int height,
       Component name,
       float initValue,
       float minValue,
@@ -119,6 +142,7 @@ public class SliderButton extends AbstractSliderButton {
   private static float getMinValue(Type type) {
     return switch (type) {
       case DEGREE -> -180.0f;
+      case DOUBLE -> 0.0f;
       case SCALE -> 0.1f;
       case POSITION -> -24.0f;
       default -> -100;
@@ -128,10 +152,15 @@ public class SliderButton extends AbstractSliderButton {
   private static float getMaxValue(Type type) {
     return switch (type) {
       case DEGREE -> 180.0f;
+      case DOUBLE -> 1024f;
       case SCALE -> 10.0f;
       case POSITION -> 24.0f;
       default -> 100;
     };
+  }
+
+  public void setDefaultValue(double value) {
+    this.setDefaultValue(Math.round(value * roundFactor) / roundFactor);
   }
 
   public void setDefaultValue(float value) {
@@ -153,6 +182,10 @@ public class SliderButton extends AbstractSliderButton {
     return this.targetValue;
   }
 
+  public double getTargetDoubleValue() {
+    return this.targetValue;
+  }
+
   private void updateTargetValue() {
     this.targetValue =
         Math.round((this.minValue + (this.valueFraction * this.value)) * roundFactor) / roundFactor;
@@ -164,10 +197,9 @@ public class SliderButton extends AbstractSliderButton {
       case DEGREE:
         this.setMessage(Component.literal(this.targetValue + "°"));
         break;
+      case DOUBLE:
       case SCALE:
       case POSITION:
-        this.setMessage(Component.literal(this.targetValue + ""));
-        break;
       default:
         this.setMessage(Component.literal(this.targetValue + ""));
     }
@@ -190,7 +222,7 @@ public class SliderButton extends AbstractSliderButton {
     // Slider: Top Part
     guiGraphics.blit(
         SLIDER_LOCATION,
-        this.getX() + (int) (this.value * (double) (this.width - 8)),
+        this.getX() + (int) (this.value * (this.width - 8)),
         this.getY(),
         0,
         i,
@@ -198,7 +230,7 @@ public class SliderButton extends AbstractSliderButton {
         this.height);
     guiGraphics.blit(
         SLIDER_LOCATION,
-        this.getX() + (int) (this.value * (double) (this.width - 8)) + 4,
+        this.getX() + (int) (this.value * (this.width - 8)) + 4,
         this.getY(),
         196,
         i,
@@ -208,7 +240,7 @@ public class SliderButton extends AbstractSliderButton {
     // Slider: Bottom Part (last only 4 pixel from the bottom)
     guiGraphics.blit(
         SLIDER_LOCATION,
-        this.getX() + (int) (this.value * (double) (this.width - 8)),
+        this.getX() + (int) (this.value * (this.width - 8)),
         this.getY() + this.height - 4,
         0,
         i + 20 - 4,
@@ -216,7 +248,7 @@ public class SliderButton extends AbstractSliderButton {
         4);
     guiGraphics.blit(
         SLIDER_LOCATION,
-        this.getX() + (int) (this.value * (double) (this.width - 8)) + 4,
+        this.getX() + (int) (this.value * (this.width - 8)) + 4,
         this.getY() + this.height - 4,
         196,
         i + 20 - 4,
@@ -272,6 +304,7 @@ public class SliderButton extends AbstractSliderButton {
   }
 
   public enum Type {
+    DOUBLE,
     DEGREE,
     POSITION,
     SCALE,

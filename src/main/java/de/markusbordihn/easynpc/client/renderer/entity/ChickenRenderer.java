@@ -48,9 +48,7 @@ public class ChickenRenderer extends MobRenderer<Chicken, CustomChickenModel<Chi
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
           new EnumMap<>(Variant.class),
-          map -> {
-            map.put(Variant.WHITE, new ResourceLocation("textures/entity/chicken.png"));
-          });
+          map -> map.put(Variant.WHITE, new ResourceLocation("textures/entity/chicken.png")));
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.WHITE);
 
   public ChickenRenderer(EntityRendererProvider.Context context) {

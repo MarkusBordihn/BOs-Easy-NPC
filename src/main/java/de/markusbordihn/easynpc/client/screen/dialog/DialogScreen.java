@@ -20,6 +20,7 @@ package de.markusbordihn.easynpc.client.screen.dialog;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
+import de.markusbordihn.easynpc.client.screen.components.CloseButton;
 import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
@@ -41,7 +42,6 @@ import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -375,15 +375,8 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     // Close Button
     this.closeButton =
         this.addRenderableWidget(
-            new ImageButton(
-                this.leftPos + this.imageWidth - 15,
-                this.topPos + 6,
-                10,
-                10,
-                64,
-                38,
-                Constants.TEXTURE_CONFIGURATION,
-                onPress -> closeScreen()));
+            new CloseButton(
+                this.leftPos + this.imageWidth - 13, this.topPos + 4, onPress -> closeScreen()));
 
     // Set dialog text
     this.setDialogText(this.dialogData);

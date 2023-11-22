@@ -21,36 +21,57 @@ package de.markusbordihn.easynpc.data.objective;
 
 public enum ObjectiveType {
   // @formatter:off
-  NONE,
-  AVOID_ENTITY,
+  NONE(false),
   ATTACK_ANIMAL,
-  ATTACK_PLAYER,
-  ATTACK_MONSTER,
   ATTACK_ENTITY_BY_UUID,
-  ATTACK_MOB_WITHOUT_CREEPER,
   ATTACK_MOB,
+  ATTACK_MOB_WITHOUT_CREEPER,
+  ATTACK_MONSTER,
+  ATTACK_PLAYER,
   ATTACK_VILLAGER,
+  AVOID_ENTITY,
+  AVOID_SUN,
+  CLOSE_DOOR,
+  CROSSBOW_ATTACK,
+  BOW_ATTACK,
   CUSTOM,
+  FLOAT,
   FOLLOW_ENTITY_BY_UUID,
+  FOLLOW_ITEM,
   FOLLOW_OWNER,
   FOLLOW_PLAYER,
+  LOOK_AT_ANIMAL(false),
+  LOOK_AT_ENTITY_BY_UUID(false),
+  LOOK_AT_ITEM(false),
+  LOOK_AT_MOB(false),
+  LOOK_AT_OWNER(false),
+  LOOK_AT_PLAYER(false),
+  LOOK_AT_RESET(false),
+  LOOK_RANDOM_AROUND(false),
   MELEE_ATTACK,
   MOVE_BACK_TO_VILLAGE,
   MOVE_THROUGH_VILLAGE,
   NEAREST_ATTACKABLE_TARGET,
+  FLEE_SUN,
+  PANIC,
+  OPEN_DOOR,
   RANDOM_STROLL,
   RANDOM_STROLL_IN_VILLAGE,
   RANDOM_SWIMMING,
-  FLOAT,
-  LOOK_AT_PLAYER,
-  LOOK_AT_MOB,
-  RESET_LOOK_AT,
-  OPEN_DOOR,
-  CLOSE_DOOR,
-  ZOMBIE_ATTACK,
-  WATER_AVOIDING_RANDOM_STROLL;
+  WATER_AVOIDING_RANDOM_STROLL,
+  ZOMBIE_ATTACK;
 
   // @formatter:on
+
+  private final boolean hasTravelObjective;
+
+  ObjectiveType(boolean hasTravelObjective) {
+    this.hasTravelObjective = hasTravelObjective;
+  }
+
+  ObjectiveType() {
+    this.hasTravelObjective = true;
+  }
 
   public static ObjectiveType get(String objectiveType) {
     if (objectiveType == null || objectiveType.isEmpty()) {
@@ -61,6 +82,10 @@ public enum ObjectiveType {
     } catch (IllegalArgumentException e) {
       return ObjectiveType.NONE;
     }
+  }
+
+  public boolean hasTravelObjective() {
+    return this.hasTravelObjective;
   }
 
   public String getObjectiveName() {

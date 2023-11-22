@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.AddButton;
 import de.markusbordihn.easynpc.client.screen.components.CancelButton;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.client.screen.components.CloseButton;
 import de.markusbordihn.easynpc.client.screen.components.DeleteButton;
 import de.markusbordihn.easynpc.client.screen.components.DialogButton;
 import de.markusbordihn.easynpc.client.screen.components.DialogButtonButton;
@@ -45,7 +46,6 @@ import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -110,6 +110,7 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
   private String dialogTextValue = "";
   private boolean dialogTranslateValue = false;
 
+  @OnlyIn(Dist.CLIENT)
   public DialogEditorScreen(DialogEditorMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
 
@@ -342,7 +343,7 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
         buttonTopPos += 20;
         buttonLeftPos = buttonBaseLeftPos;
       }
-      Button dialogButton =
+      Button dialogActionButton =
           new DialogButtonButton(
               buttonLeftPos,
               buttonTopPos,
@@ -353,7 +354,7 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
                 NetworkMessageHandler.openDialogButtonEditor(
                     uuid, this.dialogId, dialogButtonData.getId(), formerConfigurationType);
               });
-      this.addRenderableWidget(dialogButton);
+      this.addRenderableWidget(dialogActionButton);
       buttonLeftPos += buttonWidth + buttonSpace;
       buttonIndex++;
     }
@@ -380,15 +381,7 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
     // Close Button
     this.closeButton =
         this.addRenderableWidget(
-            new ImageButton(
-                this.rightPos - 15,
-                this.topPos + 6,
-                10,
-                10,
-                64,
-                38,
-                Constants.TEXTURE_CONFIGURATION,
-                onPress -> closeScreen()));
+            new CloseButton(this.rightPos - 15, this.topPos + 4, onPress -> closeScreen()));
 
     // Save Button
     this.saveButton =
@@ -482,9 +475,9 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
 
   @Override
   public boolean keyPressed(int keyCode, int unused1, int unused2) {
-    if (keyCode != 257 && keyCode != 335 && keyCode != 69) {
+    if (keyCode != 257 && keyCode != 335 && keyCode != 69 && keyCode != 73) {
       return super.keyPressed(keyCode, unused1, unused2);
     }
-    return keyCode == 257 || keyCode == 335;
+    return keyCode == 257 || keyCode == 335 || keyCode == 73;
   }
 }

@@ -60,23 +60,21 @@ public class PresetCommand extends CustomCommand {
                     Commands.argument("uuid", UuidArgument.uuid())
                         .suggests(PresetCommand::suggestEasyNPCs)
                         .executes(
-                            context -> {
-                              return exportPreset(
-                                  context.getSource(), UuidArgument.getUuid(context, "uuid"));
-                            })))
+                            context ->
+                                exportPreset(
+                                    context.getSource(), UuidArgument.getUuid(context, "uuid")))))
         .then(
             Commands.literal("import")
                 .then(
                     Commands.argument("presetLocation", ResourceLocationArgument.id())
                         .suggests(PresetCommand::suggestPresets)
                         .executes(
-                            context -> {
-                              return importPreset(
-                                  context.getSource(),
-                                  ResourceLocationArgument.getId(context, "presetLocation"),
-                                  null,
-                                  null);
-                            })
+                            context ->
+                                importPreset(
+                                    context.getSource(),
+                                    ResourceLocationArgument.getId(context, "presetLocation"),
+                                    null,
+                                    null))
                         .then(
                             Commands.argument("location", Vec3Argument.vec3())
                                 .executes(
