@@ -5,7 +5,8 @@
 
 Easy NPCs allows a simplified setup for custom NPCs with dialogs for map maker and other mods.
 
-**NOTE: The beta version is still undergoing changes and further testing before its official release. For this reason it will not be compatible with the final release version.**
+**NOTE: The beta version is still undergoing changes and further testing before its official
+release. For this reason it will not be compatible with the final release version.**
 
 ## ✨ Features
 
@@ -28,4 +29,5 @@ See: [Configuration](https://github.com/MarkusBordihn/BOs-Easy-NPC/wiki)
 
 ## License
 
-The MIT [LICENSE.md](LICENSE.md) applies only to the code in this repository. Images, models and other assets are explicitly excluded.
+The MIT [LICENSE.md](LICENSE.md) applies only to the code in this repository. Images, models and
+other assets are explicitly excluded.
