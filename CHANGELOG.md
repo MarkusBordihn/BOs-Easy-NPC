@@ -5,6 +5,10 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### v3.6.1
+
+- Smaller bug fixes and improvements.
+
 ### 2023.11.22
 
 - Added attack animation for bow, crossbow and sword.
@@ -33,10 +37,13 @@ For the full changelog, please go to the [Git Hub History][history] instead.
 ### 2023.11.05 (NPCs comes to life update)
 
 Note: Please backup your world before updating to this version!
-This update includes a lot of changes and new features and even if I try to support all former data it could be that some of them are not compatible with older versions.
+This update includes a lot of changes and new features and even if I try to support all former data
+it could be that some of them are not compatible with older versions.
 
-- Added attribute configuration like can open doors, can close doors, can pass doors, can be hurt, can be pushed, ...
-- Added objectives configuration for like follow owner, follow player, follow entity, walk around ...
+- Added attribute configuration like can open doors, can close doors, can pass doors, can be hurt,
+  can be pushed, ...
+- Added objectives configuration for like follow owner, follow player, follow entity, walk
+  around ...
 - Added custom dialog configuration for more complex dialogs.
 - Added custom action events `on_hurt`, `on_death` and `on_button_click`.
 - Added Iron Golem model.
@@ -76,9 +83,12 @@ This update includes a lot of changes and new features and even if I try to supp
 
 ### 2023.09.03
 
-- Added new `/easy_npc preset import_new <ResourceLocation> <x> <y> <z>` and `/easy_npc preset import_new <ResourceLocation> <x> <y> <z> <UUID>` command to allow the import a single preset multiple times.
+- Added new `/easy_npc preset import_new <ResourceLocation> <x> <y> <z>`
+  and `/easy_npc preset import_new <ResourceLocation> <x> <y> <z> <UUID>` command to allow the
+  import a single preset multiple times.
 - Improved action handling by passing block position and other additional information to the action.
-- Improved preset import to allow import of NPCs on specific position e.g. `/easy_npc preset import <ResourceLocation> <x> <y> <z>`.
+- Improved preset import to allow import of NPCs on specific position
+  e.g. `/easy_npc preset import <ResourceLocation> <x> <y> <z>`.
 
 ### 2023.06.09
 
@@ -97,8 +107,10 @@ This update includes a lot of changes and new features and even if I try to supp
 
 ### 2023.05.20
 
-- Added custom export and import functionality for NPCs over local files to allow easier sharing of NPCs.
-- Added world export and import functionality for NPCs over world files to allow easier packing of NPCs.
+- Added custom export and import functionality for NPCs over local files to allow easier sharing of
+  NPCs.
+- Added world export and import functionality for NPCs over world files to allow easier packing of
+  NPCs.
 - Added default presets for some common NPCs.
 - Added basic knight skin.
 - Improved UI and dialogs for better usability.
@@ -147,7 +159,8 @@ This update includes a lot of changes and new features and even if I try to supp
 
 ### 2023.03.04
 
-- **Breaking Change: Added custom data serialization to support more complex data types. Backup first before install!**
+- **Breaking Change: Added custom data serialization to support more complex data types. Backup
+  first before install!**
 - Improved performance of server and client processing by using custom data serialization.
 - Added basic pose support for Easy NPC entities.
 
