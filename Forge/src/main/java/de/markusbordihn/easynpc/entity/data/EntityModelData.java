@@ -575,7 +575,7 @@ public interface EntityModelData extends EntityDataInterface {
 
   private void addAdditionalModelRotationData(CompoundTag compoundTag) {
     CompoundTag rotationsTag = new CompoundTag();
-    if (!this.getModelLockRotation()) {
+    if (this.getModelLockRotation()) {
       rotationsTag.putBoolean(DATA_MODEL_LOCK_TAG, this.getModelLockRotation());
     }
     if (this.getModelHeadRotation() != null

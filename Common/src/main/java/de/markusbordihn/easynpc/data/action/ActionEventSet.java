@@ -19,8 +19,6 @@
 
 package de.markusbordihn.easynpc.data.action;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
@@ -51,8 +49,6 @@ public class ActionEventSet {
         && actionEventType != ActionEventType.NONE
         && actionData != null
         && actionData.hasCommand()) {
-      Collection<ActionData> actions = new ArrayList<>();
-      actions.add(actionData);
       Set<ActionData> actionDataList = new HashSet<>();
       actionDataList.add(actionData);
       this.actionsMap.put(actionEventType, actionDataList);

@@ -29,7 +29,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -302,13 +301,6 @@ public class ObjectiveData {
 
   public boolean hasEntityTarget() {
     return this.getType() == ObjectiveType.FOLLOW_ENTITY_BY_UUID && this.targetEntityUUID != null;
-  }
-
-  public boolean hasValidTarget(Mob mob) {
-    if (mob instanceof EasyNPCEntity easyNPCEntity) {
-      return this.hasValidTarget(easyNPCEntity);
-    }
-    return false;
   }
 
   public boolean hasValidTarget(EasyNPCEntity easyNPCEntity) {

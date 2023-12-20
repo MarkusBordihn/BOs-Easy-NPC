@@ -40,9 +40,8 @@ public class ConfigureCommand extends CustomCommand {
             Commands.argument("uuid", UuidArgument.uuid())
                 .suggests(ConfigureCommand::suggestEasyNPCs)
                 .executes(
-                    context -> {
-                      return configure(context.getSource(), UuidArgument.getUuid(context, "uuid"));
-                    }));
+                    context ->
+                        configure(context.getSource(), UuidArgument.getUuid(context, "uuid"))));
   }
 
   private static int configure(CommandSourceStack context, UUID uuid)

@@ -46,7 +46,7 @@ public class CustomZombieModel<T extends LivingEntity> extends HumanoidModel<T>
       float ageInTicks,
       float netHeadYaw,
       float headPitch) {
-    boolean isAggressive = false;
+    boolean isAggressive;
     if (entity instanceof EasyNPCEntity easyNPCEntity) {
       // Aggressive Animation
       isAggressive = easyNPCEntity.isAggressive();

@@ -5,6 +5,10 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [Git Hub History][history] instead.
 
+### v3.6.1
+
+- Smaller bug fixes and improvements.
+
 ### 2023.11.22
 
 - Added attack animation for bow, crossbow and sword.

@@ -95,7 +95,8 @@ public class Text {
 
   public static int drawConfigStringShadow(
       PoseStack poseStack, Font font, String translationKey, int x, int y) {
-    return drawConfigStringShadow(poseStack, font, translationKey, x, y);
+    return drawConfigStringShadow(
+        poseStack, font, translationKey, x, y, Constants.FONT_COLOR_DEFAULT);
   }
 
   public static int drawConfigStringShadow(

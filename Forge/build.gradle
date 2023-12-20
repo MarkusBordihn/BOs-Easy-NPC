@@ -187,7 +187,7 @@ curseforge {
   apiKey = "${credentials.forKey('curseforge_api_token')}"
   project {
     id = "${project.curseforge_project_id}"
-    changelog = file("CHANGELOG.md")
+    changelog = file("../CHANGELOG.md")
     changelogType = 'markdown'
     releaseType = "${project.curseforge_release_type}"
     addGameVersion("${project.minecraft_version}")

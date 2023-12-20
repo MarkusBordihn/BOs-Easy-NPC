@@ -38,7 +38,7 @@ import net.minecraft.world.item.trading.MerchantOffers;
 public class CustomDataSerializers {
 
   public static final EntityDataSerializer<ActionEventSet> ACTION_EVENT_SET =
-      new EntityDataSerializer<ActionEventSet>() {
+      new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, ActionEventSet value) {
           buffer.writeNbt(value.createTag());
         }
@@ -52,7 +52,7 @@ public class CustomDataSerializers {
         }
       };
   public static final EntityDataSerializer<DialogDataSet> DIALOG_DATA_SET =
-      new EntityDataSerializer<DialogDataSet>() {
+      new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, DialogDataSet value) {
           buffer.writeNbt(value.createTag());
         }
@@ -66,7 +66,7 @@ public class CustomDataSerializers {
         }
       };
   public static final EntityDataSerializer<ObjectiveDataSet> OBJECTIVE_DATA_SET =
-      new EntityDataSerializer<ObjectiveDataSet>() {
+      new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, ObjectiveDataSet value) {
           buffer.writeNbt(value.createTag());
         }
@@ -80,7 +80,7 @@ public class CustomDataSerializers {
         }
       };
   public static final EntityDataSerializer<TradingType> TRADING_TYPE =
-      new EntityDataSerializer<TradingType>() {
+      new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, TradingType value) {
           buffer.writeEnum(value);
         }
@@ -94,7 +94,7 @@ public class CustomDataSerializers {
         }
       };
   public static final EntityDataSerializer<ModelPose> MODEL_POSE =
-      new EntityDataSerializer<ModelPose>() {
+      new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, ModelPose value) {
           buffer.writeEnum(value);
         }
@@ -108,7 +108,7 @@ public class CustomDataSerializers {
         }
       };
   public static final EntityDataSerializer<MerchantOffers> MERCHANT_OFFERS =
-      new EntityDataSerializer<MerchantOffers>() {
+      new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, MerchantOffers value) {
           buffer.writeNbt(value.createTag());
         }
@@ -122,7 +122,7 @@ public class CustomDataSerializers {
         }
       };
   public static final EntityDataSerializer<CustomPosition> POSITION =
-      new EntityDataSerializer<CustomPosition>() {
+      new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, CustomPosition position) {
           buffer.writeFloat(position.x());
           buffer.writeFloat(position.y());
@@ -138,7 +138,7 @@ public class CustomDataSerializers {
         }
       };
   public static final EntityDataSerializer<CustomScale> SCALE =
-      new EntityDataSerializer<CustomScale>() {
+      new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, CustomScale scale) {
           buffer.writeFloat(scale.x());
           buffer.writeFloat(scale.y());
@@ -154,7 +154,7 @@ public class CustomDataSerializers {
         }
       };
   public static final EntityDataSerializer<Profession> PROFESSION =
-      new EntityDataSerializer<Profession>() {
+      new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, Profession value) {
           buffer.writeEnum(value);
         }
@@ -168,7 +168,7 @@ public class CustomDataSerializers {
         }
       };
   public static final EntityDataSerializer<SkinType> SKIN_TYPE =
-      new EntityDataSerializer<SkinType>() {
+      new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, SkinType value) {
           buffer.writeEnum(value);
         }
@@ -182,7 +182,7 @@ public class CustomDataSerializers {
         }
       };
   public static final EntityDataSerializer<HashSet<String>> STRING_HASH_SET =
-      new EntityDataSerializer<HashSet<String>>() {
+      new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, HashSet<String> value) {
           for (String entry : value) {
             buffer.writeUtf(entry);
@@ -202,7 +202,7 @@ public class CustomDataSerializers {
         }
       };
   public static final EntityDataSerializer<HashSet<UUID>> UUID_HASH_SET =
-      new EntityDataSerializer<HashSet<UUID>>() {
+      new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, HashSet<UUID> value) {
           for (UUID entry : value) {
             buffer.writeUUID(entry);

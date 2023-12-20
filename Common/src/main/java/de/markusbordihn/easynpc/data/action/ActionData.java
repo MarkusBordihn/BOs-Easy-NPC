@@ -198,7 +198,8 @@ public class ActionData {
           && this.getPermissionLevel() == actionData.getPermissionLevel()
           && this.shouldExecuteAsUser() == actionData.shouldExecuteAsUser()
           && this.isDebugEnabled() == actionData.isDebugEnabled();
-    } else return this == object;
+    }
+    return false;
   }
 
   @Override

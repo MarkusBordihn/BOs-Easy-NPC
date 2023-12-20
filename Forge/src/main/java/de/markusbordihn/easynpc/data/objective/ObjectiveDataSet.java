@@ -20,13 +20,13 @@
 package de.markusbordihn.easynpc.data.objective;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.world.entity.Mob;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -133,12 +133,12 @@ public class ObjectiveDataSet {
     return entityUUID != null && this.targetedEntitySet.contains(entityUUID);
   }
 
-  public boolean hasValidTarget(Mob mob) {
+  public boolean hasValidTarget(EasyNPCEntity easyNPCEntity) {
     for (ObjectiveData objectiveData : this.objectives.values()) {
       if (objectiveData == null || objectiveData.getType() == ObjectiveType.NONE) {
         continue;
       }
-      if (!objectiveData.hasValidTarget(mob)) {
+      if (!objectiveData.hasValidTarget(easyNPCEntity)) {
         return false;
       }
     }

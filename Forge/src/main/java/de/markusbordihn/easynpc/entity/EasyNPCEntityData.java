@@ -295,23 +295,23 @@ public class EasyNPCEntityData extends AgeableMob
       CompoundTag existingCompoundTag = this.serializeNBT();
 
       // Remove existing dialog data to allow legacy presets to be imported.
-      if (existingCompoundTag.contains(DATA_DIALOG_DATA_TAG)) {
-        existingCompoundTag.remove(DATA_DIALOG_DATA_TAG);
+      if (existingCompoundTag.contains(EntityDialogData.DATA_DIALOG_DATA_TAG)) {
+        existingCompoundTag.remove(EntityDialogData.DATA_DIALOG_DATA_TAG);
       }
 
       // Remove existing model data to allow legacy presets to be imported.
-      if (existingCompoundTag.contains(DATA_MODEL_DATA_TAG)) {
-        existingCompoundTag.remove(DATA_MODEL_DATA_TAG);
+      if (existingCompoundTag.contains(EntityModelData.DATA_MODEL_DATA_TAG)) {
+        existingCompoundTag.remove(EntityModelData.DATA_MODEL_DATA_TAG);
       }
 
       // Remove existing skin data to allow legacy presets to be imported.
-      if (existingCompoundTag.contains(DATA_SKIN_DATA_TAG)) {
-        existingCompoundTag.remove(DATA_SKIN_DATA_TAG);
+      if (existingCompoundTag.contains(EntitySkinData.DATA_SKIN_DATA_TAG)) {
+        existingCompoundTag.remove(EntitySkinData.DATA_SKIN_DATA_TAG);
       }
 
       // Remove existing action data to allow legacy presets to be imported.
-      if (existingCompoundTag.contains(DATA_ACTION_DATA_TAG)) {
-        existingCompoundTag.remove(DATA_ACTION_DATA_TAG);
+      if (existingCompoundTag.contains(EntityActionEventData.DATA_ACTION_DATA_TAG)) {
+        existingCompoundTag.remove(EntityActionEventData.DATA_ACTION_DATA_TAG);
       }
 
       log.debug(
