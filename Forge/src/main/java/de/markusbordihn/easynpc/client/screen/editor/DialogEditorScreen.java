@@ -33,6 +33,7 @@ import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
+import de.markusbordihn.easynpc.client.screen.components.TextEditButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
 import de.markusbordihn.easynpc.data.dialog.DialogData;
@@ -87,6 +88,7 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
   protected Button dialogButton;
 
   // Buttons
+  protected Button dialogTextButton;
   protected Button addDialogButton;
   protected Button closeButton;
   protected Button saveButton;
@@ -98,7 +100,6 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
   protected Checkbox dialogLabelCheckbox;
   protected Button dialogNameToLabelButton;
   protected TextField dialogNameTextField;
-  protected TextField dialogTextTextField;
   protected Checkbox dialogTranslateCheckbox;
 
   // Internal
@@ -110,7 +111,6 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
   // Cache
   private String dialogNameValue = "";
   private String dialogLabelValue = "";
-  private String dialogTextValue = "";
   private boolean dialogTranslateValue = false;
 
   @OnlyIn(Dist.CLIENT)
@@ -192,7 +192,7 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
         this.font,
         "dialog.text",
         leftPos + 10,
-        this.dialogTextTextField.y - 16,
+        this.dialogTextButton.y - 14,
         Constants.FONT_COLOR_BLACK);
 
     Text.drawConfigString(
@@ -209,7 +209,6 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
     boolean hasChanged =
         !this.dialogNameTextField.getValue().equals(this.dialogNameValue)
             || !this.dialogLabelTextField.getValue().equals(this.dialogLabelValue)
-            || !this.dialogTextTextField.getValue().equals(this.dialogTextValue)
             || this.dialogTranslateCheckbox.selected() != this.dialogTranslateValue;
     if (!hasChanged) {
       return;
@@ -218,13 +217,12 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
     // Define new dialog data
     this.dialogData.setName(this.dialogNameTextField.getValue());
     this.dialogData.setLabel(this.dialogLabelTextField.getValue());
-    this.dialogData.setText(this.dialogTextTextField.getValue());
     this.dialogData.setTranslate(this.dialogTranslateCheckbox.selected());
 
     // Save dialog data
     NetworkMessageHandler.saveDialog(this.uuid, this.dialogId, this.dialogData);
 
-    // Update dialog Id, if label has changed.
+    // Update dialog id, if label has changed.
     if (!this.dialogLabelTextField.getValue().equals(this.dialogLabelValue)) {
       this.dialogId = this.dialogData.getId();
     }
@@ -320,11 +318,21 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
     this.addRenderableWidget(this.dialogLabelCheckbox);
 
     // Dialog Text
-    this.dialogTextValue = this.dialogData.getText();
-    this.dialogTextTextField = new TextField(this.font, this.leftPos + 10, this.topPos + 90, 300);
-    this.dialogTextTextField.setMaxLength(512);
-    this.dialogTextTextField.setValue(this.dialogTextValue);
-    this.addRenderableWidget(this.dialogTextTextField);
+    this.dialogTextButton =
+        this.addRenderableWidget(
+            new TextEditButton(
+                this.leftPos + 7,
+                this.topPos + 105,
+                303,
+                "dialog.edit_text",
+                onPress -> {
+                  // Check if something has changed, to store the current dialog data before opening
+                  // the dialog text editor.
+                  this.saveDialogData();
+
+                  NetworkMessageHandler.openDialogTextEditor(
+                      uuid, this.dialogId, formerConfigurationType);
+                }));
 
     // Dialog Translate
     this.dialogTranslateValue = this.dialogData.getTranslate();
@@ -332,6 +340,7 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
         new Checkbox(
             this.leftPos + 15, this.topPos + 110, "dialog.translate", this.dialogTranslateValue);
     this.addRenderableWidget(this.dialogTranslateCheckbox);
+    this.dialogTranslateCheckbox.visible = false;
 
     // Dialog Buttons (max. 6 in two rows)
     boolean smallButtons = this.dialogButtons.size() < 4;
@@ -435,7 +444,6 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
       this.saveButton.active =
           !this.dialogNameTextField.getValue().equals(this.dialogNameValue)
               || !this.dialogLabelTextField.getValue().equals(this.dialogLabelValue)
-              || !this.dialogTextTextField.getValue().equals(this.dialogTextValue)
               || this.dialogTranslateCheckbox.selected() != this.dialogTranslateValue;
     }
 

@@ -29,6 +29,8 @@ import net.minecraft.util.FormattedCharSequence;
 
 public class Text {
 
+  protected Text() {}
+
   public static int drawString(PoseStack poseStack, Font font, String text, int x, int y) {
     return drawString(poseStack, font, new TextComponent(text), x, y);
   }

@@ -23,10 +23,9 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
@@ -40,14 +39,16 @@ public class DialogData {
   public static final String DATA_DIALOG_NAME = "Name";
   public static final String DATA_LABEL_TAG = "Label";
   public static final String DATA_TEXT_TAG = "Text";
+  public static final String DATA_TEXTS_TAG = "Texts";
   public static final String DATA_TRANSLATE_TAG = "Translate";
 
   // Dialog Data
   private UUID id;
   private String label = "";
   private String name;
-  private String text;
   private boolean translate;
+
+  private Set<DialogTextData> dialogTexts = new LinkedHashSet<>();
   private Set<DialogButtonData> buttons = new LinkedHashSet<>();
 
   public DialogData(CompoundTag compoundTag) {
@@ -71,9 +72,8 @@ public class DialogData {
     this.label = DialogUtils.generateButtonLabel(label != null && !label.isEmpty() ? label : name);
     this.name = name != null ? name.trim() : this.label;
     this.id = UUID.nameUUIDFromBytes(this.label.getBytes());
-    this.text = text != null ? text.trim() : "";
-    this.translate = translate;
     this.buttons = buttons != null ? buttons : new LinkedHashSet<>();
+    this.dialogTexts.add(new DialogTextData(text, translate));
   }
 
   public UUID getId() {
@@ -109,25 +109,70 @@ public class DialogData {
   }
 
   public String getText() {
-    return this.text;
+    return this.dialogTexts.stream().findFirst().get().getText();
   }
 
   public void setText(String text) {
-    this.text = text != null ? text.trim() : "";
+    this.dialogTexts.clear();
+    this.dialogTexts.add(new DialogTextData(text));
   }
 
-  public String getText(int maxLength) {
-    return this.text.length() > maxLength ? this.text.substring(0, maxLength - 1) + '…' : this.text;
+  public void setText(String text, UUID dialogTextId) {
+    for (DialogTextData dialogText : this.dialogTexts) {
+      if (dialogText.getId().equals(dialogTextId)) {
+        dialogText.setText(text);
+        return;
+      }
+    }
   }
 
   public String getDialogText() {
-    return this.translate
-        ? new TranslatableComponent(this.text).getString()
-        : new TextComponent(this.text).getString();
+    if (this.dialogTexts == null || this.dialogTexts.isEmpty()) {
+      return "";
+    }
+
+    // Return first dialog text or random dialog text.
+    DialogTextData dialogText;
+    if (this.dialogTexts.size() == 1) {
+      dialogText = this.dialogTexts.stream().findFirst().orElse(null);
+    } else {
+      // Return random dialog text
+      dialogText =
+          this.dialogTexts.stream()
+              .skip(ThreadLocalRandom.current().nextInt(this.dialogTexts.size()))
+              .findFirst()
+              .orElse(null);
+    }
+    return dialogText != null ? dialogText.getDialogText() : "";
+  }
+
+  public String getText(int maxLength) {
+    return this.dialogTexts.stream().findFirst().get().getText(maxLength);
   }
 
   public String getDialogText(LivingEntity entity, Player player) {
     return DialogUtils.parseDialogText(getDialogText(), entity, player);
+  }
+
+  public DialogTextData getDialogText(UUID dialogTextId) {
+    for (DialogTextData dialogText : this.dialogTexts) {
+      if (dialogText.getId().equals(dialogTextId)) {
+        return dialogText;
+      }
+    }
+    return null;
+  }
+
+  public Set<DialogTextData> getDialogTexts() {
+    return this.dialogTexts;
+  }
+
+  public void setDialogTexts(Set<DialogTextData> dialogTexts) {
+    this.dialogTexts = dialogTexts;
+  }
+
+  public int getRandomDialogIndex() {
+    return ThreadLocalRandom.current().nextInt(this.dialogTexts.size());
   }
 
   public boolean getTranslate() {
@@ -215,9 +260,6 @@ public class DialogData {
 
   public void load(CompoundTag compoundTag) {
     this.name = compoundTag.getString(DATA_DIALOG_NAME);
-    this.text = compoundTag.getString(DATA_TEXT_TAG);
-    this.translate =
-        compoundTag.contains(DATA_TRANSLATE_TAG) && compoundTag.getBoolean(DATA_TRANSLATE_TAG);
 
     // Handle label and id creation
     if (compoundTag.contains(DATA_LABEL_TAG)) {
@@ -226,22 +268,38 @@ public class DialogData {
       this.setLabel(this.name);
     }
 
-    // Load buttons, if available.
-    this.buttons.clear();
-    if (compoundTag.contains(DATA_BUTTONS_TAG)) {
-      ListTag buttonsList = compoundTag.getList(DATA_BUTTONS_TAG, 10);
-      if (buttonsList.isEmpty()) {
-        return;
+    // Load dialog texts, if available.
+    if (compoundTag.contains(DATA_TEXTS_TAG)) {
+      this.dialogTexts.clear();
+      ListTag dialogTextsList = compoundTag.getList(DATA_TEXTS_TAG, 10);
+      if (!dialogTextsList.isEmpty()) {
+        for (int i = 0; i < dialogTextsList.size(); i++) {
+          this.dialogTexts.add(new DialogTextData(dialogTextsList.getCompound(i)));
+        }
       }
-      for (int i = 0; i < buttonsList.size(); i++) {
-        this.buttons.add(new DialogButtonData(buttonsList.getCompound(i)));
+    } else if (compoundTag.contains(DATA_TEXT_TAG)) {
+      this.dialogTexts.clear();
+      this.dialogTexts.add(
+          new DialogTextData(
+              compoundTag.getString(DATA_TEXT_TAG),
+              compoundTag.contains(DATA_TRANSLATE_TAG)
+                  && compoundTag.getBoolean(DATA_TRANSLATE_TAG)));
+    }
+
+    // Load buttons, if available.
+    if (compoundTag.contains(DATA_BUTTONS_TAG)) {
+      this.buttons.clear();
+      ListTag buttonsList = compoundTag.getList(DATA_BUTTONS_TAG, 10);
+      if (!buttonsList.isEmpty()) {
+        for (int i = 0; i < buttonsList.size(); i++) {
+          this.buttons.add(new DialogButtonData(buttonsList.getCompound(i)));
+        }
       }
     }
   }
 
   public CompoundTag save(CompoundTag compoundTag) {
     compoundTag.putString(DATA_DIALOG_NAME, this.name.trim());
-    compoundTag.putString(DATA_TEXT_TAG, this.text.trim());
 
     // Only save label if it is different from auto-generated label.
     if (!Objects.equals(DialogUtils.generateDialogLabel(name), this.label)) {
@@ -251,6 +309,15 @@ public class DialogData {
     // Only save translate if it is true.
     if (this.translate) {
       compoundTag.putBoolean(DATA_TRANSLATE_TAG, this.translate);
+    }
+
+    // Save dialog text
+    if (this.dialogTexts != null && !this.dialogTexts.isEmpty()) {
+      ListTag dialogTextsList = new ListTag();
+      for (DialogTextData dialogText : this.dialogTexts) {
+        dialogTextsList.add(dialogText.save(new CompoundTag()));
+      }
+      compoundTag.put(DATA_TEXTS_TAG, dialogTextsList);
     }
 
     // Save buttons, if any.
@@ -277,10 +344,10 @@ public class DialogData {
         + this.name
         + ", label="
         + this.label
-        + ", text="
-        + this.text
         + ", translate="
         + this.translate
+        + ", texts="
+        + this.dialogTexts
         + ", buttons="
         + this.buttons
         + "]";

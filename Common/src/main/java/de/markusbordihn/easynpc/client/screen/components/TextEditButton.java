@@ -17,22 +17,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.attribute;
+package de.markusbordihn.easynpc.client.screen.components;
 
-public enum EntityAttribute {
-  // @formatter:off
-  FREEFALL,
-  IS_ATTACKABLE,
-  IS_PUSHABLE,
-  CAN_FLOAT,
-  CAN_CLOSE_DOOR,
-  CAN_OPEN_DOOR,
-  CAN_PASS_DOOR,
-  CAN_USE_NETHER_PORTAL;
+public class TextEditButton extends SpriteButton {
 
-  // @formatter:on
+  public static final int DEFAULT_HEIGHT = 18;
+  public static final int SPRITE_X = 3;
+  public static final int SPRITE_Y = 3;
+  public static final int SPRITE_OFFSET_X = 80;
+  public static final int SPRITE_OFFSET_Y = 104;
+  public static final int SPRITE_WIDTH = 12;
+  public static final int SPRITE_HEIGHT = 12;
 
-  public String getAttributeName() {
-    return this.name().toLowerCase();
+  public TextEditButton(int left, int top, OnPress onPress) {
+    this(left, top, 16, 16, "", onPress);
+  }
+
+  public TextEditButton(int left, int top, int width, String label, OnPress onPress) {
+    this(left, top, width, DEFAULT_HEIGHT, label, onPress);
+  }
+
+  public TextEditButton(int left, int top, int width, int height, String label, OnPress onPress) {
+    super(
+        left,
+        top,
+        width,
+        height,
+        label,
+        SPRITE_X,
+        SPRITE_Y,
+        SPRITE_OFFSET_X,
+        SPRITE_OFFSET_Y,
+        SPRITE_WIDTH,
+        SPRITE_HEIGHT,
+        onPress);
   }
 }

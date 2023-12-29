@@ -45,6 +45,7 @@ import de.markusbordihn.easynpc.network.message.MessageEntityBaseAttributeChange
 import de.markusbordihn.easynpc.network.message.MessageModelLockRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPoseChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPositionChange;
+import de.markusbordihn.easynpc.network.message.MessageModelRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageModelVisibilityChange;
 import de.markusbordihn.easynpc.network.message.MessageNameChange;
 import de.markusbordihn.easynpc.network.message.MessageObjectiveAdd;
@@ -53,6 +54,7 @@ import de.markusbordihn.easynpc.network.message.MessageOpenConfiguration;
 import de.markusbordihn.easynpc.network.message.MessageOpenDialog;
 import de.markusbordihn.easynpc.network.message.MessageOpenDialogButtonEditor;
 import de.markusbordihn.easynpc.network.message.MessageOpenDialogEditor;
+import de.markusbordihn.easynpc.network.message.MessageOpenDialogTextEditor;
 import de.markusbordihn.easynpc.network.message.MessagePoseChange;
 import de.markusbordihn.easynpc.network.message.MessagePositionChange;
 import de.markusbordihn.easynpc.network.message.MessagePresetExport;
@@ -65,7 +67,6 @@ import de.markusbordihn.easynpc.network.message.MessageRemoveDialog;
 import de.markusbordihn.easynpc.network.message.MessageRemoveDialogButton;
 import de.markusbordihn.easynpc.network.message.MessageRemoveNPC;
 import de.markusbordihn.easynpc.network.message.MessageRespawnNPC;
-import de.markusbordihn.easynpc.network.message.MessageRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageSaveDialog;
 import de.markusbordihn.easynpc.network.message.MessageSaveDialogButton;
 import de.markusbordihn.easynpc.network.message.MessageSaveDialogSet;
@@ -155,6 +156,14 @@ public class NetworkMessageHandler {
     }
   }
 
+  public static void openDialogTextEditor(
+      UUID uuid, UUID dialogId, ConfigurationType formerConfigurationType) {
+    if (uuid != null && dialogId != null) {
+      NetworkHandler.sendToServer(
+          new MessageOpenDialogTextEditor(uuid, dialogId, formerConfigurationType));
+    }
+  }
+
   /** Open dialog screen. */
   public static void openDialog(UUID uuid, UUID dialogId) {
     if (uuid != null && dialogId != null) {
@@ -234,7 +243,7 @@ public class NetworkMessageHandler {
   /** Send rotation change. */
   public static void rotationChange(UUID uuid, ModelPart modelPart, Rotations rotations) {
     if (uuid != null && modelPart != null && rotations != null) {
-      NetworkHandler.sendToServer(new MessageRotationChange(uuid, modelPart, rotations));
+      NetworkHandler.sendToServer(new MessageModelRotationChange(uuid, modelPart, rotations));
     }
   }
 

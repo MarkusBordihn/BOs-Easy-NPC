@@ -31,7 +31,7 @@ import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.client.texture.TextureModelKey;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
-import de.markusbordihn.easynpc.menu.configuration.skin.PlayerSkinConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.skin.UrlSkinConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import de.markusbordihn.easynpc.utils.PlayersUtils;
 import de.markusbordihn.easynpc.utils.TextUtils;
@@ -46,8 +46,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Inventory;
 
-public class PlayerSkinConfigurationScreen
-    extends SkinConfigurationScreen<PlayerSkinConfigurationMenu> {
+public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinConfigurationMenu> {
 
   // Skin Preview
   private static final float SKIN_NAME_SCALING = 0.7f;
@@ -63,13 +62,13 @@ public class PlayerSkinConfigurationScreen
   private String formerTextureSkinLocation = "";
   private boolean canTextureSkinLocationChange = true;
 
-  public PlayerSkinConfigurationScreen(
-      PlayerSkinConfigurationMenu menu, Inventory inventory, Component component) {
+  public UrlSkinConfigurationScreen(
+      UrlSkinConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 
   private static void updateNextTextureSkinLocationChange() {
-    PlayerSkinConfigurationScreen.nextTextureSkinLocationChange =
+    UrlSkinConfigurationScreen.nextTextureSkinLocationChange =
         (int) java.time.Instant.now().getEpochSecond() + ADD_SKIN_DELAY;
   }
 
@@ -156,12 +155,13 @@ public class PlayerSkinConfigurationScreen
     String textureSkinLocationValue = this.textureSkinLocationBox.getValue();
     if (!textureSkinLocationValue.equals(this.formerTextureSkinLocation)
         && (textureSkinLocationValue.isEmpty()
-            || PlayersUtils.isValidPlayerName(textureSkinLocationValue))) {
+            || PlayersUtils.isValidUrl(textureSkinLocationValue))) {
 
-      // Validate player name and send skin change request to server.
-      if (PlayersUtils.isValidPlayerName(textureSkinLocationValue)) {
-        log.debug("Setting player user texture to {}", textureSkinLocationValue);
-        NetworkMessageHandler.skinChange(this.uuid, textureSkinLocationValue, SkinType.PLAYER_SKIN);
+      // Validate url and send message to server.
+      if (PlayersUtils.isValidUrl(textureSkinLocationValue)) {
+        log.debug("Setting remote user texture to {}", textureSkinLocationValue);
+        NetworkMessageHandler.skinChange(
+            this.uuid, textureSkinLocationValue, SkinType.INSECURE_REMOTE_URL);
       }
 
       this.addTextureSettingsButton.active = false;
@@ -180,17 +180,8 @@ public class PlayerSkinConfigurationScreen
       return;
     }
 
-    // Validations per skin models.
-    switch (skinModel) {
-      case HUMANOID, HUMANOID_SLIM:
-        this.addTextureSettingsButton.active =
-            !textureSkinLocationValue.isEmpty()
-                && (PlayersUtils.isValidPlayerName(textureSkinLocationValue)
-                    || PlayersUtils.isValidUrl(textureSkinLocationValue));
-        break;
-      default:
-        this.addTextureSettingsButton.active = PlayersUtils.isValidUrl(textureSkinLocationValue);
-    }
+    // Validate url
+    this.addTextureSettingsButton.active = PlayersUtils.isValidUrl(textureSkinLocationValue);
 
     // Clear button
     this.clearTextureSettingsButton.active = !textureSkinLocationValue.isEmpty();
@@ -201,7 +192,7 @@ public class PlayerSkinConfigurationScreen
     super.init();
 
     // Default button stats
-    this.playerSkinButton.active = false;
+    this.urlSkinButton.active = false;
 
     // Entity specific information.
     this.numOfSkins = PlayerTextureManager.getPlayerTextureCacheKeys(skinModel).size();
@@ -303,12 +294,12 @@ public class PlayerSkinConfigurationScreen
     super.render(poseStack, x, y, partialTicks);
 
     Text.drawConfigString(
-        poseStack, this.font, "use_a_player_name", this.contentLeftPos, this.topPos + 50);
+        poseStack, this.font, "use_a_skin_url", this.contentLeftPos, this.topPos + 50);
 
     // Reload protection
     this.canTextureSkinLocationChange =
         java.time.Instant.now().getEpochSecond()
-            >= PlayerSkinConfigurationScreen.nextTextureSkinLocationChange;
+            >= UrlSkinConfigurationScreen.nextTextureSkinLocationChange;
 
     // Render Status Symbol and text, if needed.
     if (!this.canTextureSkinLocationChange) {
@@ -320,7 +311,7 @@ public class PlayerSkinConfigurationScreen
 
       // Show processing text.
       Text.drawConfigString(
-          poseStack, this.font, "processing_player_skin", this.leftPos + 55, this.topPos + 88);
+          poseStack, this.font, "processing_url_skin", this.leftPos + 55, this.topPos + 88);
     }
 
     // Make sure we pass the mouse movements to the dynamically added buttons, if any.
