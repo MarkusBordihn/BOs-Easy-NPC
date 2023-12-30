@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.network.message.MessageEntityBaseAttributeChange
 import de.markusbordihn.easynpc.network.message.MessageModelLockRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPoseChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPositionChange;
+import de.markusbordihn.easynpc.network.message.MessageModelRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageModelVisibilityChange;
 import de.markusbordihn.easynpc.network.message.MessageNameChange;
 import de.markusbordihn.easynpc.network.message.MessageObjectiveAdd;
@@ -37,6 +38,7 @@ import de.markusbordihn.easynpc.network.message.MessageOpenConfiguration;
 import de.markusbordihn.easynpc.network.message.MessageOpenDialog;
 import de.markusbordihn.easynpc.network.message.MessageOpenDialogButtonEditor;
 import de.markusbordihn.easynpc.network.message.MessageOpenDialogEditor;
+import de.markusbordihn.easynpc.network.message.MessageOpenDialogTextEditor;
 import de.markusbordihn.easynpc.network.message.MessagePoseChange;
 import de.markusbordihn.easynpc.network.message.MessagePositionChange;
 import de.markusbordihn.easynpc.network.message.MessagePresetExport;
@@ -49,7 +51,6 @@ import de.markusbordihn.easynpc.network.message.MessageRemoveDialog;
 import de.markusbordihn.easynpc.network.message.MessageRemoveDialogButton;
 import de.markusbordihn.easynpc.network.message.MessageRemoveNPC;
 import de.markusbordihn.easynpc.network.message.MessageRespawnNPC;
-import de.markusbordihn.easynpc.network.message.MessageRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageSaveDialog;
 import de.markusbordihn.easynpc.network.message.MessageSaveDialogButton;
 import de.markusbordihn.easynpc.network.message.MessageSaveDialogSet;
@@ -230,6 +231,14 @@ public class NetworkHandler {
               MessageOpenDialogButtonEditor::decode,
               MessageOpenDialogButtonEditor::handle);
 
+          // Open Dialog Text Editor Screen: Client -> Server
+          INSTANCE.registerMessage(
+              id++,
+              MessageOpenDialogTextEditor.class,
+              MessageOpenDialogTextEditor::encode,
+              MessageOpenDialogTextEditor::decode,
+              MessageOpenDialogTextEditor::handle);
+
           // Pose Change: Client -> Server
           INSTANCE.registerMessage(
               id++,
@@ -329,10 +338,10 @@ public class NetworkHandler {
           // Rotation Change: Client -> Server
           INSTANCE.registerMessage(
               id++,
-              MessageRotationChange.class,
-              MessageRotationChange::encode,
-              MessageRotationChange::decode,
-              MessageRotationChange::handle);
+              MessageModelRotationChange.class,
+              MessageModelRotationChange::encode,
+              MessageModelRotationChange::decode,
+              MessageModelRotationChange::handle);
 
           // Save Dialog: Client -> Server
           INSTANCE.registerMessage(

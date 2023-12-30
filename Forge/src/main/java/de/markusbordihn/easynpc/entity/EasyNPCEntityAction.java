@@ -26,6 +26,7 @@ import java.util.UUID;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 
 public interface EasyNPCEntityAction extends EasyNPCEntityInterface {
@@ -35,6 +36,13 @@ public interface EasyNPCEntityAction extends EasyNPCEntityInterface {
         && serverPlayer != null
         && actionData.isValidAndNotEmpty()
         && !serverPlayer.getLevel().isClientSide();
+  }
+
+  default void executeAction(ActionData actionData, DamageSource damageSource) {
+    Entity entity = damageSource.getEntity();
+    if (entity instanceof ServerPlayer serverPlayer) {
+      this.executeAction(actionData, serverPlayer);
+    }
   }
 
   default void executeAction(ActionData actionData, ServerPlayer serverPlayer) {

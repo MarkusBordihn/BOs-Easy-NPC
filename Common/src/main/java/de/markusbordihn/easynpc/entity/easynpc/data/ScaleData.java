@@ -17,15 +17,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.data;
+package de.markusbordihn.easynpc.entity.easynpc.data;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.LivingEntity;
 
-public interface EntityScaleData extends EntityDataInterface {
+public interface ScaleData<T extends LivingEntity> extends EasyNPC<T> {
 
   // Constants values
   float DEFAULT_SCALE_X = 1.0f;
@@ -34,11 +35,11 @@ public interface EntityScaleData extends EntityDataInterface {
 
   // Synced entity data
   EntityDataAccessor<Float> DATA_SCALE_X =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.FLOAT);
+      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.FLOAT);
   EntityDataAccessor<Float> DATA_SCALE_Y =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.FLOAT);
+      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.FLOAT);
   EntityDataAccessor<Float> DATA_SCALE_Z =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.FLOAT);
+      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.FLOAT);
 
   // CompoundTags
   String DATA_SCALE_X_TAG = "ScaleX";
@@ -58,33 +59,33 @@ public interface EntityScaleData extends EntityDataInterface {
   }
 
   default Float getScaleX() {
-    return getEntityData(DATA_SCALE_X);
+    return getEasyNPCData(DATA_SCALE_X);
   }
 
   default void setScaleX(Float scale) {
-    setEntityData(DATA_SCALE_X, scale);
+    setEasyNPCData(DATA_SCALE_X, scale);
   }
 
   default Float getScaleY() {
-    return getEntityData(DATA_SCALE_Y);
+    return getEasyNPCData(DATA_SCALE_Y);
   }
 
   default void setScaleY(Float scale) {
-    setEntityData(DATA_SCALE_Y, scale);
+    setEasyNPCData(DATA_SCALE_Y, scale);
   }
 
   default Float getScaleZ() {
-    return getEntityData(DATA_SCALE_Z);
+    return getEasyNPCData(DATA_SCALE_Z);
   }
 
   default void setScaleZ(Float scale) {
-    setEntityData(DATA_SCALE_Z, scale);
+    setEasyNPCData(DATA_SCALE_Z, scale);
   }
 
   default void defineSynchedScaleData() {
-    defineEntityData(DATA_SCALE_X, this.getDefaultScaleX());
-    defineEntityData(DATA_SCALE_Y, this.getDefaultScaleY());
-    defineEntityData(DATA_SCALE_Z, this.getDefaultScaleZ());
+    defineEasyNPCData(DATA_SCALE_X, this.getDefaultScaleX());
+    defineEasyNPCData(DATA_SCALE_Y, this.getDefaultScaleY());
+    defineEasyNPCData(DATA_SCALE_Z, this.getDefaultScaleZ());
   }
 
   default void addAdditionalScaleData(CompoundTag compoundTag) {
@@ -101,20 +102,20 @@ public interface EntityScaleData extends EntityDataInterface {
 
   default void readAdditionalScaleData(CompoundTag compoundTag) {
     if (compoundTag.contains(DATA_SCALE_X_TAG)) {
-      Float scale = compoundTag.getFloat(DATA_SCALE_X_TAG);
-      if (scale != null && scale > 0.0f) {
+      float scale = compoundTag.getFloat(DATA_SCALE_X_TAG);
+      if (scale > 0.0f) {
         this.setScaleX(scale);
       }
     }
     if (compoundTag.contains(DATA_SCALE_Y_TAG)) {
-      Float scale = compoundTag.getFloat(DATA_SCALE_Y_TAG);
-      if (scale != null && scale > 0.0f) {
+      float scale = compoundTag.getFloat(DATA_SCALE_Y_TAG);
+      if (scale > 0.0f) {
         this.setScaleY(scale);
       }
     }
     if (compoundTag.contains(DATA_SCALE_Z_TAG)) {
-      Float scale = compoundTag.getFloat(DATA_SCALE_Z_TAG);
-      if (scale != null && scale > 0.0f) {
+      float scale = compoundTag.getFloat(DATA_SCALE_Z_TAG);
+      if (scale > 0.0f) {
         this.setScaleZ(scale);
       }
     }
