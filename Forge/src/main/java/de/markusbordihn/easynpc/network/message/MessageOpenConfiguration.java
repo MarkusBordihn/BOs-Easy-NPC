@@ -117,6 +117,7 @@ public class MessageOpenConfiguration extends NetworkMessage {
           serverPlayer, easyNPCEntity);
       case PLAYER_SKIN -> EasyNPCEntityMenu.openPlayerSkinConfigurationMenu(
           serverPlayer, easyNPCEntity);
+      case URL_SKIN -> EasyNPCEntityMenu.openUrlSkinConfigurationMenu(serverPlayer, easyNPCEntity);
       case SCALING -> EasyNPCEntityMenu.openScalingConfigurationMenu(serverPlayer, easyNPCEntity);
       case YES_NO_DIALOG -> EasyNPCEntityMenu.openYesNoDialogConfigurationMenu(
           serverPlayer, easyNPCEntity);

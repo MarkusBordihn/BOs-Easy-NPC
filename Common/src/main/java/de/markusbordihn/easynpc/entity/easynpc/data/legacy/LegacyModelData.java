@@ -1,15 +1,34 @@
-package de.markusbordihn.easynpc.entity.data.legacy;
+/*
+ * Copyright 2023 Markus Bordihn
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+package de.markusbordihn.easynpc.entity.easynpc.data.legacy;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class LegacyEntityModelData {
+public class LegacyModelData {
 
   private static final String DATA_MODEL_VERSION_TAG = "Version";
   // CompoundTags (Legacy 1.0)
@@ -53,10 +72,10 @@ public class LegacyEntityModelData {
   private static final String LEGACY_2_DATA_MODEL_RIGHT_LEG_VISIBLE_TAG = "RightLegVisible";
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  protected LegacyEntityModelData() {}
+  protected LegacyModelData() {}
 
   public static boolean readAdditionalLegacyModelData(
-      CompoundTag compoundTag, EasyNPCEntity entity) {
+      CompoundTag compoundTag, ModelData<?> modelData) {
 
     // Version < 1.0 Conversions
     if (compoundTag.contains(LEGACY_1_DATA_MODEL_POSE_TAG)
@@ -68,42 +87,43 @@ public class LegacyEntityModelData {
         || compoundTag.contains(LEGACY_1_DATA_MODEL_LEFT_LEG_ROTATION_TAG)
         || compoundTag.contains(LEGACY_1_DATA_MODEL_RIGHT_LEG_ROTATION_TAG)
         || compoundTag.contains(LEGACY_1_DATA_MODEL_ROOT_ROTATION_TAG)) {
-      log.info("Converting legacy 1.x model data for {}", entity);
+      log.info("Converting legacy 1.x model data for {}", modelData);
       if (compoundTag.contains(LEGACY_1_DATA_MODEL_POSE_TAG)) {
         String modelPose = compoundTag.getString(LEGACY_1_DATA_MODEL_POSE_TAG);
         if (!modelPose.isEmpty()) {
-          entity.setModelPose(ModelPose.get(modelPose));
+          modelData.setModelPose(ModelPose.get(modelPose));
         }
       }
       if (compoundTag.contains(LEGACY_1_DATA_MODEL_LOCK_ROTATION_TAG)) {
-        entity.setModelLockRotation(compoundTag.getBoolean(LEGACY_1_DATA_MODEL_LOCK_ROTATION_TAG));
+        modelData.setModelLockRotation(
+            compoundTag.getBoolean(LEGACY_1_DATA_MODEL_LOCK_ROTATION_TAG));
       }
       if (compoundTag.contains(LEGACY_1_DATA_MODEL_HEAD_ROTATION_TAG)) {
-        entity.setModelHeadRotation(
+        modelData.setModelHeadRotation(
             new Rotations(compoundTag.getList(LEGACY_1_DATA_MODEL_HEAD_ROTATION_TAG, 5)));
       }
       if (compoundTag.contains(LEGACY_1_DATA_MODEL_BODY_ROTATION_TAG)) {
-        entity.setModelBodyRotation(
+        modelData.setModelBodyRotation(
             new Rotations(compoundTag.getList(LEGACY_1_DATA_MODEL_BODY_ROTATION_TAG, 5)));
       }
       if (compoundTag.contains(LEGACY_1_DATA_MODEL_LEFT_ARM_ROTATION_TAG)) {
-        entity.setModelLeftArmRotation(
+        modelData.setModelLeftArmRotation(
             new Rotations(compoundTag.getList(LEGACY_1_DATA_MODEL_LEFT_ARM_ROTATION_TAG, 5)));
       }
       if (compoundTag.contains(LEGACY_1_DATA_MODEL_RIGHT_ARM_ROTATION_TAG)) {
-        entity.setModelRightArmRotation(
+        modelData.setModelRightArmRotation(
             new Rotations(compoundTag.getList(LEGACY_1_DATA_MODEL_RIGHT_ARM_ROTATION_TAG, 5)));
       }
       if (compoundTag.contains(LEGACY_1_DATA_MODEL_LEFT_LEG_ROTATION_TAG)) {
-        entity.setModelLeftLegRotation(
+        modelData.setModelLeftLegRotation(
             new Rotations(compoundTag.getList(LEGACY_1_DATA_MODEL_LEFT_LEG_ROTATION_TAG, 5)));
       }
       if (compoundTag.contains(LEGACY_1_DATA_MODEL_RIGHT_LEG_ROTATION_TAG)) {
-        entity.setModelRightLegRotation(
+        modelData.setModelRightLegRotation(
             new Rotations(compoundTag.getList(LEGACY_1_DATA_MODEL_RIGHT_LEG_ROTATION_TAG, 5)));
       }
       if (compoundTag.contains(LEGACY_1_DATA_MODEL_ROOT_ROTATION_TAG)) {
-        entity.setModelRootRotation(
+        modelData.setModelRootRotation(
             new Rotations(compoundTag.getList(LEGACY_1_DATA_MODEL_ROOT_ROTATION_TAG, 5)));
       }
       return true;
@@ -115,13 +135,13 @@ public class LegacyEntityModelData {
       if (modelDataTag.contains(DATA_MODEL_VERSION_TAG)) {
         return false;
       }
-      log.info("Converting legacy 2.x model data for {}", entity);
+      log.info("Converting legacy 2.x model data for {}", modelData);
 
       // Model Pose
       if (modelDataTag.contains(LEGACY_2_DATA_MODEL_POSE_TAG)) {
         String modelPose = modelDataTag.getString(LEGACY_2_DATA_MODEL_POSE_TAG);
         if (!modelPose.isEmpty()) {
-          entity.setModelPose(ModelPose.get(modelPose));
+          modelData.setModelPose(ModelPose.get(modelPose));
         }
       }
 
@@ -129,34 +149,34 @@ public class LegacyEntityModelData {
       if (modelDataTag.contains(LEGACY_2_DATA_MODEL_POSITION_TAG)) {
         CompoundTag positionTag = modelDataTag.getCompound(LEGACY_2_DATA_MODEL_POSITION_TAG);
         if (positionTag.contains(LEGACY_2_DATA_MODEL_HEAD_POSITION_TAG)) {
-          entity.setModelHeadPosition(
+          modelData.setModelHeadPosition(
               new CustomPosition(positionTag.getList(LEGACY_2_DATA_MODEL_HEAD_POSITION_TAG, 5)));
         }
         if (positionTag.contains(LEGACY_2_DATA_MODEL_BODY_POSITION_TAG)) {
-          entity.setModelBodyPosition(
+          modelData.setModelBodyPosition(
               new CustomPosition(positionTag.getList(LEGACY_2_DATA_MODEL_BODY_POSITION_TAG, 5)));
         }
         if (positionTag.contains(LEGACY_2_DATA_MODEL_ARMS_POSITION_TAG)) {
-          entity.setModelArmsPosition(
+          modelData.setModelArmsPosition(
               new CustomPosition(positionTag.getList(LEGACY_2_DATA_MODEL_ARMS_POSITION_TAG, 5)));
         }
         if (positionTag.contains(LEGACY_2_DATA_MODEL_LEFT_ARM_POSITION_TAG)) {
-          entity.setModelLeftArmPosition(
+          modelData.setModelLeftArmPosition(
               new CustomPosition(
                   positionTag.getList(LEGACY_2_DATA_MODEL_LEFT_ARM_POSITION_TAG, 5)));
         }
         if (positionTag.contains(LEGACY_2_DATA_MODEL_RIGHT_ARM_POSITION_TAG)) {
-          entity.setModelRightArmPosition(
+          modelData.setModelRightArmPosition(
               new CustomPosition(
                   positionTag.getList(LEGACY_2_DATA_MODEL_RIGHT_ARM_POSITION_TAG, 5)));
         }
         if (positionTag.contains(LEGACY_2_DATA_MODEL_LEFT_LEG_POSITION_TAG)) {
-          entity.setModelLeftLegPosition(
+          modelData.setModelLeftLegPosition(
               new CustomPosition(
                   positionTag.getList(LEGACY_2_DATA_MODEL_LEFT_LEG_POSITION_TAG, 5)));
         }
         if (positionTag.contains(LEGACY_2_DATA_MODEL_RIGHT_LEG_POSITION_TAG)) {
-          entity.setModelRightLegPosition(
+          modelData.setModelRightLegPosition(
               new CustomPosition(
                   positionTag.getList(LEGACY_2_DATA_MODEL_RIGHT_LEG_POSITION_TAG, 5)));
         }
@@ -166,39 +186,39 @@ public class LegacyEntityModelData {
       if (modelDataTag.contains(LEGACY_2_DATA_MODEL_ROTATION_TAG)) {
         CompoundTag rotationsTag = modelDataTag.getCompound(LEGACY_2_DATA_MODEL_ROTATION_TAG);
         if (rotationsTag.contains(LEGACY_2_DATA_MODEL_LOCK_ROTATION_TAG)) {
-          entity.setModelLockRotation(
+          modelData.setModelLockRotation(
               rotationsTag.getBoolean(LEGACY_2_DATA_MODEL_LOCK_ROTATION_TAG));
         }
         if (rotationsTag.contains(LEGACY_2_DATA_MODEL_HEAD_ROTATION_TAG)) {
-          entity.setModelHeadRotation(
+          modelData.setModelHeadRotation(
               new Rotations(rotationsTag.getList(LEGACY_2_DATA_MODEL_HEAD_ROTATION_TAG, 5)));
         }
         if (rotationsTag.contains(LEGACY_2_DATA_MODEL_BODY_ROTATION_TAG)) {
-          entity.setModelBodyRotation(
+          modelData.setModelBodyRotation(
               new Rotations(rotationsTag.getList(LEGACY_2_DATA_MODEL_BODY_ROTATION_TAG, 5)));
         }
         if (rotationsTag.contains(LEGACY_2_DATA_MODEL_ARMS_ROTATION_TAG)) {
-          entity.setModelArmsRotation(
+          modelData.setModelArmsRotation(
               new Rotations(rotationsTag.getList(LEGACY_2_DATA_MODEL_ARMS_ROTATION_TAG, 5)));
         }
         if (rotationsTag.contains(LEGACY_2_DATA_MODEL_LEFT_ARM_ROTATION_TAG)) {
-          entity.setModelLeftArmRotation(
+          modelData.setModelLeftArmRotation(
               new Rotations(rotationsTag.getList(LEGACY_2_DATA_MODEL_LEFT_ARM_ROTATION_TAG, 5)));
         }
         if (rotationsTag.contains(LEGACY_2_DATA_MODEL_RIGHT_ARM_ROTATION_TAG)) {
-          entity.setModelRightArmRotation(
+          modelData.setModelRightArmRotation(
               new Rotations(rotationsTag.getList(LEGACY_2_DATA_MODEL_RIGHT_ARM_ROTATION_TAG, 5)));
         }
         if (rotationsTag.contains(LEGACY_2_DATA_MODEL_LEFT_LEG_ROTATION_TAG)) {
-          entity.setModelLeftLegRotation(
+          modelData.setModelLeftLegRotation(
               new Rotations(rotationsTag.getList(LEGACY_2_DATA_MODEL_LEFT_LEG_ROTATION_TAG, 5)));
         }
         if (rotationsTag.contains(LEGACY_2_DATA_MODEL_RIGHT_LEG_ROTATION_TAG)) {
-          entity.setModelRightLegRotation(
+          modelData.setModelRightLegRotation(
               new Rotations(rotationsTag.getList(LEGACY_2_DATA_MODEL_RIGHT_LEG_ROTATION_TAG, 5)));
         }
         if (rotationsTag.contains(LEGACY_2_DATA_MODEL_ROOT_ROTATION_TAG)) {
-          entity.setModelRootRotation(
+          modelData.setModelRootRotation(
               new Rotations(rotationsTag.getList(LEGACY_2_DATA_MODEL_ROOT_ROTATION_TAG, 5)));
         }
       }
@@ -207,31 +227,31 @@ public class LegacyEntityModelData {
       if (modelDataTag.contains(LEGACY_2_DATA_MODEL_VISIBLE_TAG)) {
         CompoundTag visibilityTag = modelDataTag.getCompound(LEGACY_2_DATA_MODEL_VISIBLE_TAG);
         if (visibilityTag.contains(LEGACY_2_DATA_MODEL_HEAD_VISIBLE_TAG)) {
-          entity.setModelHeadVisible(
+          modelData.setModelHeadVisible(
               visibilityTag.getBoolean(LEGACY_2_DATA_MODEL_HEAD_VISIBLE_TAG));
         }
         if (visibilityTag.contains(LEGACY_2_DATA_MODEL_BODY_VISIBLE_TAG)) {
-          entity.setModelBodyVisible(
+          modelData.setModelBodyVisible(
               visibilityTag.getBoolean(LEGACY_2_DATA_MODEL_BODY_VISIBLE_TAG));
         }
         if (visibilityTag.contains(LEGACY_2_DATA_MODEL_ARMS_VISIBLE_TAG)) {
-          entity.setModelArmsVisible(
+          modelData.setModelArmsVisible(
               visibilityTag.getBoolean(LEGACY_2_DATA_MODEL_ARMS_VISIBLE_TAG));
         }
         if (visibilityTag.contains(LEGACY_2_DATA_MODEL_LEFT_ARM_VISIBLE_TAG)) {
-          entity.setModelLeftArmVisible(
+          modelData.setModelLeftArmVisible(
               visibilityTag.getBoolean(LEGACY_2_DATA_MODEL_LEFT_ARM_VISIBLE_TAG));
         }
         if (visibilityTag.contains(LEGACY_2_DATA_MODEL_RIGHT_ARM_VISIBLE_TAG)) {
-          entity.setModelRightArmVisible(
+          modelData.setModelRightArmVisible(
               visibilityTag.getBoolean(LEGACY_2_DATA_MODEL_RIGHT_ARM_VISIBLE_TAG));
         }
         if (visibilityTag.contains(LEGACY_2_DATA_MODEL_LEFT_LEG_VISIBLE_TAG)) {
-          entity.setModelLeftLegVisible(
+          modelData.setModelLeftLegVisible(
               visibilityTag.getBoolean(LEGACY_2_DATA_MODEL_LEFT_LEG_VISIBLE_TAG));
         }
         if (visibilityTag.contains(LEGACY_2_DATA_MODEL_RIGHT_LEG_VISIBLE_TAG)) {
-          entity.setModelRightLegVisible(
+          modelData.setModelRightLegVisible(
               visibilityTag.getBoolean(LEGACY_2_DATA_MODEL_RIGHT_LEG_VISIBLE_TAG));
         }
       }

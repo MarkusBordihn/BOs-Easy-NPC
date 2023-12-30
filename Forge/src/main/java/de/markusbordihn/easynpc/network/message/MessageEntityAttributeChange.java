@@ -165,6 +165,16 @@ public class MessageEntityAttributeChange extends NetworkMessage {
           easyNPCEntity.registerAttributeBasedObjectives();
         }
         break;
+      case CAN_USE_NETHER_PORTAL:
+        if (booleanValue != null) {
+          log.debug(
+              "Change canUseNetherPortal={} for {} from {}",
+              booleanValue,
+              easyNPCEntity,
+              serverPlayer);
+          easyNPCEntity.setAttributeCanUseNetherPortal(booleanValue);
+        }
+        break;
       case IS_ATTACKABLE:
         if (booleanValue != null) {
           log.debug(

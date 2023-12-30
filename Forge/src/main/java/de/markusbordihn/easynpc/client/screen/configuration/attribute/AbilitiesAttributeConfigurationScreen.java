@@ -108,5 +108,15 @@ public class AbilitiesAttributeConfigurationScreen
             checkbox ->
                 NetworkMessageHandler.entityAttributeChange(
                     uuid, EntityAttribute.IS_PUSHABLE, checkbox.selected())));
+
+    this.addRenderableWidget(
+        new Checkbox(
+            firstButtonRow,
+            this.buttonTopPos + 85,
+            EntityAttribute.CAN_USE_NETHER_PORTAL.getAttributeName(),
+            this.entity.getAttributeCanUseNetherPortal(),
+            checkbox ->
+                NetworkMessageHandler.entityAttributeChange(
+                    uuid, EntityAttribute.CAN_USE_NETHER_PORTAL, checkbox.selected())));
   }
 }

@@ -32,6 +32,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.DifficultyInstance;
@@ -47,6 +48,7 @@ import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -323,16 +325,6 @@ public class EasyNPCEntity extends EasyNPCEntityData implements EasyNPCEntityAct
   }
 
   @Override
-  public boolean isAttackable() {
-    return this.synchedDataLoaded() && getAttributeIsAttackable();
-  }
-
-  @Override
-  public boolean isPushable() {
-    return this.synchedDataLoaded() && getAttributeIsPushable();
-  }
-
-  @Override
   public boolean removeWhenFarAway(double distance) {
     return false;
   }
@@ -391,34 +383,46 @@ public class EasyNPCEntity extends EasyNPCEntityData implements EasyNPCEntityAct
   public InteractionResult mobInteract(@Nonnull Player player, @Nonnull InteractionHand hand) {
     if (player instanceof ServerPlayer serverPlayer && hand == InteractionHand.MAIN_HAND) {
 
-      // Open configuration menu for EasyNPC wand item in hand.
+      // Item based actions.
       ItemStack handItem = player.getItemInHand(hand);
-      if (!handItem.isEmpty() && handItem.getItem() == ModItems.EASY_NPC_WAND.get()) {
-        this.openMainConfigurationMenu(serverPlayer);
-        return InteractionResult.PASS;
+      if (!handItem.isEmpty()) {
+        Item handItemStack = handItem.getItem();
+
+        // Handle Easy NPC Wand
+        if (handItemStack == ModItems.EASY_NPC_WAND.get()) {
+          this.openMainConfigurationMenu(serverPlayer);
+          return InteractionResult.PASS;
+        }
+
+        // Handle Armourer's Workshop items like the NPC wand.
+        if (Constants.MOD_ARMOURERS_WORKSHOP_ID.equals(handItemStack.getCreatorModId(handItem))) {
+          if (this.getSkinModel().hasArmourersWorkshopSupport()) {
+            log.debug("Ignore event for Armourer's Workshop Item for {} ...", this);
+            return InteractionResult.PASS;
+          } else {
+            serverPlayer.sendSystemMessage(
+                Component.translatable(
+                    Constants.TEXT_PREFIX + "armourers_workshop.no_support",
+                    this.getSkinModel().name(),
+                    this));
+          }
+        }
       }
 
-      // Pre-check for better auto handling of interaction.
-      boolean hasInteractionAction = this.hasActionEvent(ActionEventType.ON_INTERACTION);
-      boolean hasDialog = this.hasDialog();
-      boolean hasTrading = this.hasTrading();
-
-      // Open configuration menu for creative mode and owner if no dialog or
-      // interaction action is set or the player is crouching.
-      if ((player.isCreative() || this.isOwner(serverPlayer))
-          && ((!hasDialog && !hasInteractionAction && !hasTrading) || player.isCrouching())) {
+      // Open configuration menu for owner and creative mode if the player is crouching.
+      if (player.isCreative() && player.isCrouching()) {
         this.openMainConfigurationMenu(serverPlayer);
         return InteractionResult.PASS;
       }
 
       // Execute interaction action, if set.
-      if (hasInteractionAction) {
+      if (this.hasActionEvent(ActionEventType.ON_INTERACTION)) {
         ActionData actionData = this.getActionEvent(ActionEventType.ON_INTERACTION);
         this.executeAction(actionData, serverPlayer);
       }
 
       // Open dialog menu, if we have a simple dialog.
-      if (hasDialog) {
+      if (this.hasDialog()) {
         UUID dialogId = this.getDialogDataSet().getDefaultDialogId();
         if (dialogId != null) {
           EasyNPCEntityMenu.openDialogMenu(serverPlayer, this, dialogId, 0);
@@ -430,7 +434,7 @@ public class EasyNPCEntity extends EasyNPCEntityData implements EasyNPCEntityAct
       }
 
       // Open trading screen, if we have a trading inventory.
-      if (hasTrading) {
+      if (this.hasTrading()) {
         return this.openTradingScreen(serverPlayer);
       }
     }
@@ -446,7 +450,7 @@ public class EasyNPCEntity extends EasyNPCEntityData implements EasyNPCEntityAct
     if (damageResult && this.hasActionEvent(ActionEventType.ON_HURT)) {
       ActionData actionData = this.getActionEvent(ActionEventType.ON_HURT);
       if (actionData != null && actionData.isValidAndNotEmpty()) {
-        this.executeAction(actionData, null);
+        this.executeAction(actionData, damageSource);
       }
     }
 
@@ -459,7 +463,7 @@ public class EasyNPCEntity extends EasyNPCEntityData implements EasyNPCEntityAct
     if (this.hasActionEvent(ActionEventType.ON_DEATH)) {
       ActionData actionData = this.getActionEvent(ActionEventType.ON_DEATH);
       if (actionData != null && actionData.isValidAndNotEmpty()) {
-        this.executeAction(actionData, null);
+        this.executeAction(actionData, damageSource);
       }
     }
 

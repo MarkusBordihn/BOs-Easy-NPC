@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.network.message.MessageEntityBaseAttributeChange
 import de.markusbordihn.easynpc.network.message.MessageModelLockRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPoseChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPositionChange;
+import de.markusbordihn.easynpc.network.message.MessageModelRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageModelVisibilityChange;
 import de.markusbordihn.easynpc.network.message.MessageNameChange;
 import de.markusbordihn.easynpc.network.message.MessageObjectiveAdd;
@@ -37,6 +38,7 @@ import de.markusbordihn.easynpc.network.message.MessageOpenConfiguration;
 import de.markusbordihn.easynpc.network.message.MessageOpenDialog;
 import de.markusbordihn.easynpc.network.message.MessageOpenDialogButtonEditor;
 import de.markusbordihn.easynpc.network.message.MessageOpenDialogEditor;
+import de.markusbordihn.easynpc.network.message.MessageOpenDialogTextEditor;
 import de.markusbordihn.easynpc.network.message.MessagePoseChange;
 import de.markusbordihn.easynpc.network.message.MessagePositionChange;
 import de.markusbordihn.easynpc.network.message.MessagePresetExport;
@@ -49,7 +51,6 @@ import de.markusbordihn.easynpc.network.message.MessageRemoveDialog;
 import de.markusbordihn.easynpc.network.message.MessageRemoveDialogButton;
 import de.markusbordihn.easynpc.network.message.MessageRemoveNPC;
 import de.markusbordihn.easynpc.network.message.MessageRespawnNPC;
-import de.markusbordihn.easynpc.network.message.MessageRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageSaveDialog;
 import de.markusbordihn.easynpc.network.message.MessageSaveDialogButton;
 import de.markusbordihn.easynpc.network.message.MessageSaveDialogSet;
@@ -151,6 +152,15 @@ public class NetworkHandler {
               .encoder(MessageModelLockRotationChange::encode)
               .decoder(MessageModelLockRotationChange::decode)
               .consumerNetworkThread(MessageModelLockRotationChange::handle)
+              .add();
+
+          // Open Dialog Text Editor Screen: Client -> Server
+          SIMPLE_CHANNEL
+              .messageBuilder(
+                  MessageOpenDialogTextEditor.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageOpenDialogTextEditor::encode)
+              .decoder(MessageOpenDialogTextEditor::decode)
+              .consumerNetworkThread(MessageOpenDialogTextEditor::handle)
               .add();
 
           // Model Pose Change: Client -> Server
@@ -336,10 +346,11 @@ public class NetworkHandler {
 
           // Rotation Change: Client -> Server
           SIMPLE_CHANNEL
-              .messageBuilder(MessageRotationChange.class, id++, NetworkDirection.PLAY_TO_SERVER)
-              .encoder(MessageRotationChange::encode)
-              .decoder(MessageRotationChange::decode)
-              .consumerNetworkThread(MessageRotationChange::handle)
+              .messageBuilder(
+                  MessageModelRotationChange.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageModelRotationChange::encode)
+              .decoder(MessageModelRotationChange::decode)
+              .consumerNetworkThread(MessageModelRotationChange::handle)
               .add();
 
           // Save Dialog: Client -> Server

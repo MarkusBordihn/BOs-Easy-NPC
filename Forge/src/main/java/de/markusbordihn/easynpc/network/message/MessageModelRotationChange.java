@@ -31,23 +31,23 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Pose;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 
-public class MessageRotationChange extends NetworkMessage {
+public class MessageModelRotationChange extends NetworkMessage {
 
   protected final ModelPart modelPart;
   protected final Rotations rotations;
 
-  public MessageRotationChange(UUID uuid, ModelPart modelPart, float x, float y, float z) {
+  public MessageModelRotationChange(UUID uuid, ModelPart modelPart, float x, float y, float z) {
     this(uuid, modelPart, new Rotations(x, y, z));
   }
 
-  public MessageRotationChange(UUID uuid, ModelPart modelPart, Rotations rotations) {
+  public MessageModelRotationChange(UUID uuid, ModelPart modelPart, Rotations rotations) {
     super(uuid);
     this.modelPart = modelPart;
     this.rotations = rotations;
   }
 
-  public static MessageRotationChange decode(final FriendlyByteBuf buffer) {
-    return new MessageRotationChange(
+  public static MessageModelRotationChange decode(final FriendlyByteBuf buffer) {
+    return new MessageModelRotationChange(
         buffer.readUUID(),
         buffer.readEnum(ModelPart.class),
         buffer.readFloat(),
@@ -55,7 +55,8 @@ public class MessageRotationChange extends NetworkMessage {
         buffer.readFloat());
   }
 
-  public static void encode(final MessageRotationChange message, final FriendlyByteBuf buffer) {
+  public static void encode(
+      final MessageModelRotationChange message, final FriendlyByteBuf buffer) {
     buffer.writeUUID(message.uuid);
     buffer.writeEnum(message.getModelPart());
     buffer.writeFloat(message.getX());
@@ -63,13 +64,14 @@ public class MessageRotationChange extends NetworkMessage {
     buffer.writeFloat(message.getZ());
   }
 
-  public static void handle(MessageRotationChange message, CustomPayloadEvent.Context context) {
+  public static void handle(
+      MessageModelRotationChange message, CustomPayloadEvent.Context context) {
     context.enqueueWork(() -> handlePacket(message, context));
     context.setPacketHandled(true);
   }
 
   public static void handlePacket(
-      MessageRotationChange message, CustomPayloadEvent.Context context) {
+      MessageModelRotationChange message, CustomPayloadEvent.Context context) {
     ServerPlayer serverPlayer = context.getSender();
     UUID uuid = message.getUUID();
     if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
@@ -93,9 +95,11 @@ public class MessageRotationChange extends NetworkMessage {
     // Perform action.
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     log.debug(
-        "Change {} rotation to {}° for {} from {}",
+        "Change {} rotation to {}° {}° {}° for {} from {}",
         modelPart,
-        rotations,
+        rotations.getX(),
+        rotations.getY(),
+        rotations.getZ(),
         easyNPCEntity,
         serverPlayer);
     switch (modelPart) {
