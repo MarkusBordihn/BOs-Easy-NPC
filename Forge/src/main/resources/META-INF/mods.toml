@@ -31,22 +31,23 @@ credits = ""
 authors = "Markus Bordihn"
 description = '''Create easily NPCs for your world or for your mods.'''
 
-[[dependencies.easy_npc]] #optional
-# the modid of the dependency
-modId = "forge" #mandatory
-# Does this dependency have to exist - if not, ordering below must be specified
-mandatory = true #mandatory
-# The version range of the dependency
-versionRange = "[43,)" #mandatory
-# An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
+[[dependencies.easy_npc]]
+modId = "forge"
+mandatory = true
+versionRange = "[43,)"
 ordering = "NONE"
-# Side this dependency is applied on - BOTH, CLIENT or SERVER
 side = "BOTH"
 
 [[dependencies.easy_npc]]
 modId = "minecraft"
 mandatory = true
-# This version range declares a minimum of the current minecraft version up to but not including the next major version
 versionRange = "[1.19.2,1.20)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.easy_npc]]
+modId = "armourers_workshop"
+mandatory = false
+versionRange = "[2.0.1,)"
 ordering = "NONE"
 side = "BOTH"

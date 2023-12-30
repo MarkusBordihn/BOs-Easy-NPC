@@ -49,6 +49,7 @@ import de.markusbordihn.easynpc.client.screen.configuration.scaling.ScalingConfi
 import de.markusbordihn.easynpc.client.screen.configuration.skin.CustomSkinConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.DefaultSkinConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.PlayerSkinConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.skin.UrlSkinConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.trading.AdvancedTradingConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.trading.BasicTradingConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.trading.CustomTradingConfigurationScreen;
@@ -56,6 +57,7 @@ import de.markusbordihn.easynpc.client.screen.configuration.trading.NoneTradingC
 import de.markusbordihn.easynpc.client.screen.dialog.DialogScreen;
 import de.markusbordihn.easynpc.client.screen.editor.DialogButtonEditorScreen;
 import de.markusbordihn.easynpc.client.screen.editor.DialogEditorScreen;
+import de.markusbordihn.easynpc.client.screen.editor.DialogTextEditorScreen;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -83,6 +85,10 @@ public class ClientScreens {
           // Dialog Button Editor Screen
           MenuScreens.register(
               ModMenuTypes.DIALOG_BUTTON_EDITOR_MENU.get(), DialogButtonEditorScreen::new);
+
+          // Dialog Text Editor Screen
+          MenuScreens.register(
+              ModMenuTypes.DIALOG_TEXT_EDITOR_MENU.get(), DialogTextEditorScreen::new);
 
           // Configuration Screen
           MenuScreens.register(
@@ -187,6 +193,8 @@ public class ClientScreens {
           MenuScreens.register(
               ModMenuTypes.PLAYER_SKIN_CONFIGURATION_MENU.get(),
               PlayerSkinConfigurationScreen::new);
+          MenuScreens.register(
+              ModMenuTypes.URL_SKIN_CONFIGURATION_MENU.get(), UrlSkinConfigurationScreen::new);
 
           // Scaling Configuration Screen
           MenuScreens.register(

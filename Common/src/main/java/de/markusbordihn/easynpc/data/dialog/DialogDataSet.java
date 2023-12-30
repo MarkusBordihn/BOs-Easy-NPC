@@ -59,15 +59,15 @@ public class DialogDataSet {
     }
   }
 
-  public boolean setDialog(UUID dialogId, DialogData dialogData) {
+  public void setDialog(UUID dialogId, DialogData dialogData) {
     if (dialogData == null) {
       log.error("Dialog data is null, please check your dialog data!");
-      return false;
+      return;
     }
     if (this.hasDialog(dialogId)) {
       removeDialog(dialogId);
     }
-    return this.addDialog(dialogData);
+    this.addDialog(dialogData);
   }
 
   public boolean addDialog(DialogData dialogData) {

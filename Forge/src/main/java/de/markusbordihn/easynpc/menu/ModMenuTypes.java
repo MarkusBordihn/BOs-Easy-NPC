@@ -49,6 +49,7 @@ import de.markusbordihn.easynpc.menu.configuration.scaling.ScalingConfigurationM
 import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.PlayerSkinConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.skin.UrlSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.trading.AdvancedTradingConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.trading.BasicTradingConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.trading.CustomTradingConfigurationMenu;
@@ -56,6 +57,7 @@ import de.markusbordihn.easynpc.menu.configuration.trading.NoneTradingConfigurat
 import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
 import de.markusbordihn.easynpc.menu.editor.DialogButtonEditorMenu;
 import de.markusbordihn.easynpc.menu.editor.DialogEditorMenu;
+import de.markusbordihn.easynpc.menu.editor.DialogTextEditorMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -82,6 +84,11 @@ public class ModMenuTypes {
   public static final RegistryObject<MenuType<DialogButtonEditorMenu>> DIALOG_BUTTON_EDITOR_MENU =
       MENU_TYPES.register(
           "dialog_button_editor_menu", () -> IForgeMenuType.create(DialogButtonEditorMenu::new));
+
+  // Dialog Text Editor
+  public static final RegistryObject<MenuType<DialogTextEditorMenu>> DIALOG_TEXT_EDITOR_MENU =
+      MENU_TYPES.register(
+          "dialog_text_editor_menu", () -> IForgeMenuType.create(DialogTextEditorMenu::new));
 
   // Attribute
   public static final RegistryObject<MenuType<AbilitiesAttributeConfigurationMenu>>
@@ -244,6 +251,11 @@ public class ModMenuTypes {
       MENU_TYPES.register(
           "player_skin_configuration_menu",
           () -> IForgeMenuType.create(PlayerSkinConfigurationMenu::new));
+  public static final RegistryObject<MenuType<UrlSkinConfigurationMenu>>
+      URL_SKIN_CONFIGURATION_MENU =
+      MENU_TYPES.register(
+          "url_skin_configuration_menu",
+          () -> IForgeMenuType.create(UrlSkinConfigurationMenu::new));
 
   // Scaling Configuration
   public static final RegistryObject<MenuType<ScalingConfigurationMenu>>

@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import net.minecraft.core.Rotations;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
@@ -43,17 +44,18 @@ public interface EasyNPCRenderer {
     return Constants.BLANK_ENTITY_TEXTURE;
   }
 
-  default ResourceLocation getCustomTexture(EasyNPCEntity entity) {
+  default ResourceLocation getCustomTexture(SkinData<?> entity) {
     return CustomTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
   }
 
-  default ResourceLocation getPlayerTexture(EasyNPCEntity entity) {
+  default ResourceLocation getPlayerTexture(SkinData<?> entity) {
     return PlayerTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
   }
 
   default ResourceLocation getEntityTexture(EasyNPCEntity entity) {
+    SkinData<?> skinData = entity.getEasyNPCSkinData();
     return switch (entity.getSkinType()) {
-      case CUSTOM -> getCustomTexture(entity);
+      case CUSTOM -> getCustomTexture(skinData);
       case SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> getPlayerTexture(entity);
       default -> getTextureByVariant(entity.getVariant());
     };

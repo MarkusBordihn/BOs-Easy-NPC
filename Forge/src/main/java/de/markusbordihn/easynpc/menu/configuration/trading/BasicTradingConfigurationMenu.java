@@ -33,7 +33,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 
@@ -180,22 +179,4 @@ public class BasicTradingConfigurationMenu extends TradingConfigurationMenu {
     this.entity.setBasicTradingOffers(tradingContainer);
   }
 
-  @Override
-  public ItemStack quickMoveStack(Player player, int slotIndex) {
-    Slot slot = this.slots.get(slotIndex);
-    if (!slot.hasItem()) {
-      return ItemStack.EMPTY;
-    }
-
-    ItemStack itemStack = slot.getItem();
-
-    // Store changes if itemStack is not empty.
-    if (itemStack.isEmpty()) {
-      slot.set(ItemStack.EMPTY);
-    } else {
-      slot.setChanged();
-    }
-
-    return ItemStack.EMPTY;
-  }
 }

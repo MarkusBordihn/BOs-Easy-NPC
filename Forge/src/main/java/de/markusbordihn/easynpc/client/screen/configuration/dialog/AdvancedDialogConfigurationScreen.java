@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.client.screen.components.AddButton;
 import de.markusbordihn.easynpc.client.screen.components.CopyButton;
 import de.markusbordihn.easynpc.client.screen.components.EditButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
+import de.markusbordihn.easynpc.client.screen.components.TextEditButton;
 import de.markusbordihn.easynpc.data.dialog.DialogData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.dialog.AdvancedDialogConfigurationMenu;
@@ -212,6 +213,7 @@ public class AdvancedDialogConfigurationScreen
       final DialogData dialogData;
       final EditButton editButton;
       final CopyButton copyLabelButton;
+      final TextEditButton textEditButton;
       final String defaultDialogLabel;
 
       public Entry(DialogData dialogData) {
@@ -234,6 +236,15 @@ public class AdvancedDialogConfigurationScreen
                   Minecraft minecraft = Minecraft.getInstance();
                   minecraft.keyboardHandler.setClipboard(dialogData.getLabel());
                 });
+        this.textEditButton =
+            new TextEditButton(
+                0,
+                0,
+                onPress ->
+                    NetworkMessageHandler.openDialogTextEditor(
+                        AdvancedDialogConfigurationScreen.this.uuid,
+                        this.dialogData.getId(),
+                        ConfigurationType.ADVANCED_DIALOG));
         this.defaultDialogLabel =
             AdvancedDialogConfigurationScreen.this.dialogDataSet.getDefaultDialogLabel();
       }
@@ -248,6 +259,7 @@ public class AdvancedDialogConfigurationScreen
         super.mouseClicked(mouseX, mouseY, button);
         this.copyLabelButton.mouseClicked(mouseX, mouseY, button);
         this.editButton.mouseClicked(mouseX, mouseY, button);
+        this.textEditButton.mouseClicked(mouseX, mouseY, button);
         return button == 0;
       }
 
@@ -293,6 +305,19 @@ public class AdvancedDialogConfigurationScreen
               mouseY);
         }
 
+        // Render edit text button and tooltip
+        this.textEditButton.x = leftPos + 200;
+        this.textEditButton.y = top;
+        this.textEditButton.render(poseStack, mouseX, mouseY, partialTicks);
+        if (this.textEditButton.isHovered()) {
+          AdvancedDialogConfigurationScreen.this.renderTooltip(
+              poseStack,
+              Component.translatable(
+                  Constants.TEXT_CONFIG_PREFIX + "dialog.edit_dialog_text", dialogData.getText()),
+              mouseX,
+              mouseY);
+        }
+
         // Scale dialog text down
         float dialogDataScale = 0.75f;
         int dialogDataTopPos = Math.round((top + 5) / dialogDataScale);
@@ -319,8 +344,8 @@ public class AdvancedDialogConfigurationScreen
         Text.drawString(
             poseStack,
             AdvancedDialogConfigurationScreen.this.font,
-            dialogData.getText(27),
-            Math.round((leftPos + 200) / dialogDataScale),
+            dialogData.getText(25),
+            Math.round((leftPos + 220) / dialogDataScale),
             dialogDataTopPos,
             fontColor);
         poseStack.popPose();

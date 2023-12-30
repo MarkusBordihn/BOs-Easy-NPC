@@ -20,21 +20,28 @@
 package de.markusbordihn.easynpc.data.skin;
 
 public enum SkinModel {
-  // @formatter:off
   ALLAY,
   CAT,
   CHICKEN,
   FAIRY,
-  HUMANOID,
-  HUMANOID_SLIM,
+  HUMANOID(true),
+  HUMANOID_SLIM(true),
   ILLAGER,
   IRON_GOLEM,
-  SKELETON,
-  VILLAGER,
-  ZOMBIE,
-  ZOMBIE_VILLAGER;
+  SKELETON(true),
+  VILLAGER(true),
+  ZOMBIE(true),
+  ZOMBIE_VILLAGER(true);
 
-  // @formatter:on
+  private final boolean hasArmourersWorkshopSupport;
+
+  SkinModel() {
+    this.hasArmourersWorkshopSupport = false;
+  }
+
+  SkinModel(boolean hasArmourersWorkshopSupport) {
+    this.hasArmourersWorkshopSupport = hasArmourersWorkshopSupport;
+  }
 
   public static SkinModel get(String skinModel) {
     if (skinModel == null || skinModel.isEmpty()) {
@@ -45,5 +52,9 @@ public enum SkinModel {
     } catch (IllegalArgumentException e) {
       return SkinModel.HUMANOID;
     }
+  }
+
+  public boolean hasArmourersWorkshopSupport() {
+    return this.hasArmourersWorkshopSupport;
   }
 }

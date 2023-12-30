@@ -78,6 +78,8 @@ public interface EasyNPCModel {
   CustomPosition ALLAY_MODEL_RIGHT_ARM_POSITION = new CustomPosition(-2.0F, 0.0F, 0.0F);
 
   // Humanoid Model specific positions
+  CustomPosition HUMANOID_MODEL_HEAD_POSITION = new CustomPosition(0, 0, 0);
+  CustomPosition HUMANOID_MODEL_BODY_POSITION = new CustomPosition(0, 0, 0);
   CustomPosition HUMANOID_MODEL_LEFT_ARM_POSITION = new CustomPosition(5f, 2f, 0f);
   CustomPosition HUMANOID_MODEL_RIGHT_ARM_POSITION = new CustomPosition(-5f, 2f, 0f);
   CustomPosition HUMANOID_MODEL_LEFT_LEG_POSITION = new CustomPosition(1.9f, 12f, 0.1f);
@@ -118,6 +120,8 @@ public interface EasyNPCModel {
 
     float attackTime = 0;
     boolean hasArmAnimations = false;
+    boolean hasDefaultHead = easyNPCModel.hasDefaultHumanoidModelHead(headPart);
+    boolean hasDefaultBody = easyNPCModel.hasDefaultHumanoidModelBody(bodyPart);
     boolean hasDefaultRightArm = easyNPCModel.hasDefaultHumanoidModelRightArm(rightArmPart);
     boolean hasDefaultLeftArm = easyNPCModel.hasDefaultHumanoidModelLeftArm(leftArmPart);
     boolean hasDefaultRightLeg = easyNPCModel.hasDefaultHumanoidModelRightLeg(rightLegPart);
@@ -158,6 +162,8 @@ public interface EasyNPCModel {
 
     // Was any animation applied?
     return hasArmAnimations
+        || !hasDefaultHead
+        || !hasDefaultBody
         || !hasDefaultRightArm
         || !hasDefaultLeftArm
         || !hasDefaultRightLeg
@@ -174,7 +180,7 @@ public interface EasyNPCModel {
       float ageInTicks,
       float limbSwing,
       float limbSwingAmount) {
-    ModelArmPose modelArmPose = entity.getModelArmPose();
+    ModelArmPose modelArmPose = entity.getModelArmPose(entity);
     switch (modelArmPose) {
       case ATTACKING_WITH_MELEE_WEAPON:
         AnimationUtils.swingWeaponDown(rightArmPart, leftArmPart, entity, attackTime, ageInTicks);
@@ -551,8 +557,8 @@ public interface EasyNPCModel {
     setModelPartRotation(rightLegPart, easyNPCModel.getDefaultModelRightLegRotation());
 
     // Reset all positions.
-    setModelPartPosition(bodyPart, easyNPCModel.getDefaultModelBodyPosition());
     setModelPartPosition(headPart, easyNPCModel.getDefaultModelHeadPosition());
+    setModelPartPosition(bodyPart, easyNPCModel.getDefaultModelBodyPosition());
     setModelPartPosition(leftArmPart, easyNPCModel.getDefaultModelLeftArmPosition());
     setModelPartPosition(rightArmPart, easyNPCModel.getDefaultModelRightArmPosition());
     setModelPartPosition(leftLegPart, easyNPCModel.getDefaultModelLeftLegPosition());
@@ -766,6 +772,14 @@ public interface EasyNPCModel {
         leftLegPart,
         netHeadYaw,
         headPitch);
+  }
+
+  default boolean hasDefaultHumanoidModelHead(ModelPart headPart) {
+    return equalPositionAndRotation(headPart, HUMANOID_MODEL_HEAD_POSITION, MODEL_HEAD_ROTATION);
+  }
+
+  default boolean hasDefaultHumanoidModelBody(ModelPart bodyPart) {
+    return equalPositionAndRotation(bodyPart, HUMANOID_MODEL_BODY_POSITION, MODEL_BODY_ROTATION);
   }
 
   default boolean hasDefaultHumanoidModelLeftArm(ModelPart leftArmPart) {

@@ -55,6 +55,7 @@ import de.markusbordihn.easynpc.menu.configuration.scaling.ScalingConfigurationM
 import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.PlayerSkinConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.skin.UrlSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.trading.AdvancedTradingConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.trading.BasicTradingConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.trading.CustomTradingConfigurationMenu;
@@ -62,6 +63,7 @@ import de.markusbordihn.easynpc.menu.configuration.trading.NoneTradingConfigurat
 import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
 import de.markusbordihn.easynpc.menu.editor.DialogButtonEditorMenu;
 import de.markusbordihn.easynpc.menu.editor.DialogEditorMenu;
+import de.markusbordihn.easynpc.menu.editor.DialogTextEditorMenu;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.resources.ResourceLocation;
@@ -143,6 +145,27 @@ public class EasyNPCEntityMenu {
           buffer.writeNbt(dialogDataSet.createTag());
           buffer.writeUUID(dialogId);
           buffer.writeUUID(dialogButtonId);
+          buffer.writeEnum(formerConfigurationType);
+          buffer.writeInt(pageIndex);
+        });
+  }
+
+  public static void openDialogTextEditorMenu(
+      ServerPlayer serverPlayer,
+      EasyNPCEntity entity,
+      UUID dialogId,
+      ConfigurationType formerConfigurationType,
+      int pageIndex) {
+    UUID uuid = entity.getUUID();
+    DialogDataSet dialogDataSet = entity.getDialogDataSet();
+    NetworkHooks.openScreen(
+        serverPlayer,
+        DialogTextEditorMenu.getMenuProvider(
+            uuid, entity, dialogDataSet, dialogId, formerConfigurationType, pageIndex),
+        buffer -> {
+          buffer.writeUUID(uuid);
+          buffer.writeNbt(dialogDataSet.createTag());
+          buffer.writeUUID(dialogId);
           buffer.writeEnum(formerConfigurationType);
           buffer.writeInt(pageIndex);
         });
@@ -443,6 +466,21 @@ public class EasyNPCEntityMenu {
       NetworkHooks.openScreen(
           serverPlayer,
           PlayerSkinConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
+    }
+  }
+
+  public static void openUrlSkinConfigurationMenu(ServerPlayer serverPlayer, EasyNPCEntity entity) {
+    if (hasPermissions(
+        serverPlayer,
+        entity,
+        COMMON.urlSkinConfigurationEnabled.get(),
+        COMMON.urlSkinConfigurationAllowInCreative.get(),
+        COMMON.urlSkinConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      NetworkHooks.openScreen(
+          serverPlayer,
+          UrlSkinConfigurationMenu.getMenuProvider(uuid, entity),
           buffer -> buffer.writeUUID(uuid));
     }
   }

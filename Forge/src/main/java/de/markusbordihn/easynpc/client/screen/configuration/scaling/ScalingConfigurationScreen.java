@@ -82,7 +82,6 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
                 scalePositionTop,
                 scaleWidth,
                 20,
-                "scaleX",
                 this.entity.getScaleX(),
                 SliderButton.Type.SCALE,
                 button -> {
@@ -111,7 +110,6 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
                 scalePositionTop + scalePositionSpace,
                 scaleWidth,
                 20,
-                "scaleY",
                 this.entity.getScaleY(),
                 SliderButton.Type.SCALE,
                 button -> {
@@ -140,7 +138,6 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
                 scalePositionTop + scalePositionSpace * 2,
                 scaleWidth,
                 20,
-                "scaleZ",
                 this.entity.getScaleZ(),
                 SliderButton.Type.SCALE,
                 button -> {

@@ -216,22 +216,4 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
     this.entity.setItemSlot(equipmentSlot, itemStack);
   }
 
-  @Override
-  public ItemStack quickMoveStack(Player player, int slotIndex) {
-    Slot slot = this.slots.get(slotIndex);
-    if (!slot.hasItem()) {
-      return ItemStack.EMPTY;
-    }
-
-    ItemStack itemStack = slot.getItem();
-
-    // Store changes if itemStack is not empty.
-    if (itemStack.isEmpty()) {
-      slot.set(ItemStack.EMPTY);
-    } else {
-      slot.setChanged();
-    }
-
-    return ItemStack.EMPTY;
-  }
 }
