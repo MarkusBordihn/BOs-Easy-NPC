@@ -85,6 +85,7 @@ public class CommonConfig {
     public static final String ADVANCED_DIALOG_CONFIGURATION = "advanced dialog";
     public static final String DEFAULT_SKIN_CONFIGURATION = "default skin";
     public static final String PLAYER_SKIN_CONFIGURATION = "player skin";
+    public static final String URL_SKIN_CONFIGURATION = "url skin";
     public static final String CUSTOM_SKIN_CONFIGURATION = "custom skin";
     public static final String DEFAULT_POSE_CONFIGURATION = "default pose";
     public static final String CUSTOM_POSE_CONFIGURATION = "custom pose";
@@ -142,6 +143,9 @@ public class CommonConfig {
     public final ForgeConfigSpec.BooleanValue playerSkinConfigurationEnabled;
     public final ForgeConfigSpec.BooleanValue playerSkinConfigurationAllowInCreative;
     public final ForgeConfigSpec.IntValue playerSkinConfigurationPermissionLevel;
+    public final ForgeConfigSpec.BooleanValue urlSkinConfigurationEnabled;
+    public final ForgeConfigSpec.BooleanValue urlSkinConfigurationAllowInCreative;
+    public final ForgeConfigSpec.IntValue urlSkinConfigurationPermissionLevel;
     public final ForgeConfigSpec.BooleanValue customSkinConfigurationEnabled;
     public final ForgeConfigSpec.BooleanValue customSkinConfigurationAllowInCreative;
     public final ForgeConfigSpec.IntValue customSkinConfigurationPermissionLevel;
@@ -390,6 +394,21 @@ public class CommonConfig {
           builder
               .comment(getPermissionLevelComment(PLAYER_SKIN_CONFIGURATION))
               .defineInRange("playerSkinConfigurationPermissionLevel", 1, 0, 4);
+      builder.pop();
+
+      builder.push("[Skin Configuration] URL Skin");
+      urlSkinConfigurationEnabled =
+          builder
+              .comment(getEnableComment(URL_SKIN_CONFIGURATION))
+              .define("urlSkinConfigurationEnabled", true);
+      urlSkinConfigurationAllowInCreative =
+          builder
+              .comment(getAllowInCreativeComment(URL_SKIN_CONFIGURATION))
+              .define("urlSkinConfigurationAllowInCreative", true);
+      urlSkinConfigurationPermissionLevel =
+          builder
+              .comment(getPermissionLevelComment(URL_SKIN_CONFIGURATION))
+              .defineInRange("urlSkinConfigurationPermissionLevel", 1, 0, 4);
       builder.pop();
 
       builder.push("[Skin Configuration] Custom Skin");

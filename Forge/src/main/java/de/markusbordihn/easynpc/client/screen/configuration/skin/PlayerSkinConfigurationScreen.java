@@ -153,19 +153,14 @@ public class PlayerSkinConfigurationScreen
 
   private void addTextureSkinLocation() {
     String textureSkinLocationValue = this.textureSkinLocationBox.getValue();
-    if (textureSkinLocationValue != null
-        && !textureSkinLocationValue.equals(this.formerTextureSkinLocation)
+    if (!textureSkinLocationValue.equals(this.formerTextureSkinLocation)
         && (textureSkinLocationValue.isEmpty()
-            || PlayersUtils.isValidPlayerName(textureSkinLocationValue)
-            || PlayersUtils.isValidUrl(textureSkinLocationValue))) {
+            || PlayersUtils.isValidPlayerName(textureSkinLocationValue))) {
 
+      // Validate player name and send skin change request to server.
       if (PlayersUtils.isValidPlayerName(textureSkinLocationValue)) {
         log.debug("Setting player user texture to {}", textureSkinLocationValue);
         NetworkMessageHandler.skinChange(this.uuid, textureSkinLocationValue, SkinType.PLAYER_SKIN);
-      } else if (PlayersUtils.isValidUrl(textureSkinLocationValue)) {
-        log.debug("Setting remote user texture to {}", textureSkinLocationValue);
-        NetworkMessageHandler.skinChange(
-            this.uuid, textureSkinLocationValue, SkinType.INSECURE_REMOTE_URL);
       }
 
       this.addTextureSettingsButton.active = false;
@@ -178,7 +173,7 @@ public class PlayerSkinConfigurationScreen
     String textureSkinLocationValue = this.textureSkinLocationBox.getValue();
 
     // Additional check to make sure that the server is not spammed with requests.
-    if (!this.canTextureSkinLocationChange && textureSkinLocationValue != null) {
+    if (!this.canTextureSkinLocationChange) {
       this.addTextureSettingsButton.active = false;
       this.clearTextureSettingsButton.active = true;
       return;
@@ -188,8 +183,7 @@ public class PlayerSkinConfigurationScreen
     switch (skinModel) {
       case HUMANOID, HUMANOID_SLIM:
         this.addTextureSettingsButton.active =
-            textureSkinLocationValue != null
-                && !textureSkinLocationValue.isEmpty()
+            !textureSkinLocationValue.isEmpty()
                 && (PlayersUtils.isValidPlayerName(textureSkinLocationValue)
                     || PlayersUtils.isValidUrl(textureSkinLocationValue));
         break;
@@ -198,8 +192,7 @@ public class PlayerSkinConfigurationScreen
     }
 
     // Clear button
-    this.clearTextureSettingsButton.active =
-        textureSkinLocationValue != null && !textureSkinLocationValue.isEmpty();
+    this.clearTextureSettingsButton.active = !textureSkinLocationValue.isEmpty();
   }
 
   @Override
@@ -308,13 +301,8 @@ public class PlayerSkinConfigurationScreen
   public void render(PoseStack poseStack, int x, int y, float partialTicks) {
     super.render(poseStack, x, y, partialTicks);
 
-    if (this.isPlayerSkinModel) {
-      Text.drawConfigString(
-          poseStack, this.font, "use_a_player_name", this.contentLeftPos, this.topPos + 50);
-    } else {
-      Text.drawConfigString(
-          poseStack, this.font, "use_a_skin_url", this.contentLeftPos, this.topPos + 50);
-    }
+    Text.drawConfigString(
+        poseStack, this.font, "use_a_player_name", this.contentLeftPos, this.topPos + 50);
 
     // Reload protection
     this.canTextureSkinLocationChange =
@@ -331,7 +319,7 @@ public class PlayerSkinConfigurationScreen
 
       // Show processing text.
       Text.drawConfigString(
-          poseStack, this.font, "processing_skin", this.leftPos + 55, this.topPos + 88);
+          poseStack, this.font, "processing_player_skin", this.leftPos + 55, this.topPos + 88);
     }
 
     // Make sure we pass the mouse movements to the dynamically added buttons, if any.

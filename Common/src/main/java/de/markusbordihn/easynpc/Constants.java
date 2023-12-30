@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 import net.minecraft.resources.ResourceLocation;
 
@@ -69,6 +71,11 @@ public final class Constants {
   // Animation Math
   public static final float MATH_27DEG_TO_RAD = 0.47123894F;
   public static final float MATH_27DEG_TO_RAD_INVERTED = -0.47123894F;
+  // Mod definitions for adding additional support and compatibility
+  public static final String MOD_ARMOURERS_WORKSHOP_ID = "armourers_workshop";
+  public static final String MOD_ARMOURERS_WORKSHOP_NAME = "Armourer's Workshop";
+
+  public static Path GAME_DIR = Paths.get("").toAbsolutePath();
 
   private Constants() {}
 }

@@ -34,7 +34,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,6 +47,9 @@ public class EasyNPC {
 
   public EasyNPC() {
     final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+    log.info("{} Constants ...", Constants.LOG_REGISTER_PREFIX);
+    Constants.GAME_DIR = FMLPaths.GAMEDIR.get();
 
     modEventBus.addListener(NetworkHandler::registerNetworkHandler);
 
@@ -68,7 +73,9 @@ public class EasyNPC {
               modEventBus.addListener(ClientRenderer::registerEntityRenderers);
               modEventBus.addListener(ClientScreens::registerScreens);
               modEventBus.addListener(CustomPresetData::registerCustomPresetData);
-              modEventBus.addListener(CustomSkinData::registerCustomSkinData);
+              modEventBus.addListener(
+                  (final FMLClientSetupEvent event) ->
+                      event.enqueueWork(CustomSkinData::registerCustomSkinData));
               modEventBus.addListener(EasyNPCTab::handleCreativeModeTabRegister);
             });
   }

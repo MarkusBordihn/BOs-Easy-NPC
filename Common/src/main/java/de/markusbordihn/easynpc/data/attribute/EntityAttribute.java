@@ -27,7 +27,8 @@ public enum EntityAttribute {
   CAN_FLOAT,
   CAN_CLOSE_DOOR,
   CAN_OPEN_DOOR,
-  CAN_PASS_DOOR;
+  CAN_PASS_DOOR,
+  CAN_USE_NETHER_PORTAL;
 
   // @formatter:on
 

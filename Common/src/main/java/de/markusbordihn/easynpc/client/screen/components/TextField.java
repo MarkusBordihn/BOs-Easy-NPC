@@ -27,13 +27,19 @@ public class TextField extends EditBox {
 
   private static final Component EMPTY_TEXT_COMPONENT = Component.literal("");
   private static final int DEFAULT_HEIGHT = 16;
+  private static final int DEFAULT_MAX_LENGTH = 64;
 
   public TextField(Font font, int x, int y, int width) {
     this(font, x, y, width, DEFAULT_HEIGHT, EMPTY_TEXT_COMPONENT);
   }
 
   public TextField(Font font, int x, int y, int width, String value) {
+    this(font, x, y, width, value, DEFAULT_MAX_LENGTH);
+  }
+
+  public TextField(Font font, int x, int y, int width, String value, int maxLength) {
     this(font, x, y, width, DEFAULT_HEIGHT, EMPTY_TEXT_COMPONENT);
+    this.setMaxLength(maxLength);
     this.setValue(value);
   }
 

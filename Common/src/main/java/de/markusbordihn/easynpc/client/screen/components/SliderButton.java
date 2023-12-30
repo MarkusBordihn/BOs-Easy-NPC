@@ -38,12 +38,14 @@ import org.jetbrains.annotations.NotNull;
 public class SliderButton extends AbstractSliderButton {
 
   public static final int DEFAULT_HEIGHT = 16;
+  protected static final Component EMPTY_TEXT = Component.literal("");
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final ResourceLocation SLIDER_LOCATION =
       new ResourceLocation("minecraft", "textures/gui/slider.png");
   protected final SliderButton.OnChange onChange;
   protected final float maxValue;
   private final float minValue;
+  private final float stepSize;
   private final float valueFraction;
   private final Type type;
   private float initValue;
@@ -64,6 +66,27 @@ public class SliderButton extends AbstractSliderButton {
         width,
         DEFAULT_HEIGHT,
         Component.literal(name),
+        initValue,
+        getMinValue(type),
+        getMaxValue(type),
+        onChange,
+        type);
+  }
+
+  public SliderButton(
+      int x,
+      int y,
+      int width,
+      int height,
+      float initValue,
+      Type type,
+      SliderButton.OnChange onChange) {
+    this(
+        x,
+        y,
+        width,
+        height,
+        EMPTY_TEXT,
         initValue,
         getMinValue(type),
         getMaxValue(type),
@@ -131,6 +154,7 @@ public class SliderButton extends AbstractSliderButton {
     this.initValue = initValue;
     this.minValue = minValue;
     this.maxValue = maxValue;
+    this.stepSize = getStepSize(type);
     this.valueFraction = maxValue - minValue;
     this.value = (this.initValue - minValue) / this.valueFraction;
     if ((this.minValue == 0 && this.maxValue == 360)
@@ -163,6 +187,16 @@ public class SliderButton extends AbstractSliderButton {
     };
   }
 
+  private static float getStepSize(Type type) {
+    return switch (type) {
+      case DEGREE -> 0.5f;
+      case DOUBLE -> 1.0f;
+      case SCALE -> 0.1f;
+      case POSITION -> 0.1f;
+      default -> 1.0f;
+    };
+  }
+
   public void setDefaultValue(double value) {
     this.setDefaultValue(Math.round(value * roundFactor) / roundFactor);
   }
@@ -186,13 +220,32 @@ public class SliderButton extends AbstractSliderButton {
     return this.targetValue;
   }
 
+  private void setTargetValue(double value) {
+    log.info(
+        "setTargetValue: {} ({}) min:{} max:{}", value, this.value, this.minValue, this.maxValue);
+    if (value < 0) {
+      this.value = 0;
+    } else if (value > 1) {
+      this.value = 1;
+    } else {
+      this.value = value;
+    }
+    this.applyValue();
+    this.updateMessage();
+  }
+
   public double getTargetDoubleValue() {
     return this.targetValue;
   }
 
   private void updateTargetValue() {
+    // Round value to round factor.
     this.targetValue =
         Math.round((this.minValue + (this.valueFraction * this.value)) * roundFactor) / roundFactor;
+  }
+
+  private double getStepSize() {
+    return this.stepSize / this.valueFraction;
   }
 
   @Override
@@ -201,9 +254,7 @@ public class SliderButton extends AbstractSliderButton {
       case DEGREE:
         this.setMessage(Component.literal(this.targetValue + "°"));
         break;
-      case DOUBLE:
-      case SCALE:
-      case POSITION:
+      case DOUBLE, SCALE, POSITION:
       default:
         this.setMessage(Component.literal(this.targetValue + ""));
     }
@@ -260,6 +311,30 @@ public class SliderButton extends AbstractSliderButton {
         i + 20 - 4,
         4,
         4);
+  }
+
+  @Override
+  public boolean keyPressed(int $$0, int $$1, int $$2) {
+    log.info("hover: {}, keyPressed: {} {} {}", this.isHoveredOrFocused(), $$0, $$1, $$2);
+    boolean $$3 = $$0 == 263;
+    if ($$3 || $$0 == 262) {
+      float $$4 = $$3 ? -1.0F : 1.0F;
+      double incrementalSteps = $$4 * this.getStepSize();
+      this.setTargetValue(this.value + incrementalSteps);
+    }
+
+    return false;
+  }
+
+  @Override
+  public boolean mouseScrolled(double x, double y, double distance) {
+    log.info("hover: {}, mouseScrolled: {} {} {}", this.isHoveredOrFocused(), x, y, distance);
+    if (this.isHoveredOrFocused()) {
+      double incrementalSteps = distance * this.getStepSize();
+      this.setTargetValue(this.value + incrementalSteps);
+    }
+
+    return true;
   }
 
   public void renderButton(PoseStack poseStack, int left, int top, float partialTicks) {
