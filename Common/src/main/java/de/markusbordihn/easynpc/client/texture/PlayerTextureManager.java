@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.client.texture;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.utils.PlayersUtils;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -82,7 +82,7 @@ public class PlayerTextureManager {
   }
 
   public static ResourceLocation getOrCreateTextureWithDefault(
-      EasyNPCEntity entity, ResourceLocation defaultResourceLocation) {
+      SkinData<?> entity, ResourceLocation defaultResourceLocation) {
     // Check if we have a skin UUID otherwise we assume that the texture is unknown.
     Optional<UUID> skinUUID = entity.getSkinUUID();
     if (skinUUID.isEmpty()) {
@@ -106,7 +106,7 @@ public class PlayerTextureManager {
   }
 
   private static ResourceLocation createTexture(
-      TextureModelKey textureModelKey, EasyNPCEntity entity) {
+      TextureModelKey textureModelKey, SkinData<?> entity) {
     return createTexture(textureModelKey, entity.getSkinType(), entity.getSkinURL());
   }
 

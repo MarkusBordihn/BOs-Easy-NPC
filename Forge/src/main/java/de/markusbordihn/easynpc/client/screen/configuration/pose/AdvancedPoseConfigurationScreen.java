@@ -20,10 +20,12 @@
 package de.markusbordihn.easynpc.client.screen.configuration.pose;
 
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
+import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.SliderButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.menu.configuration.pose.AdvancedPoseConfigurationMenu;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -48,6 +50,25 @@ public class AdvancedPoseConfigurationScreen
     super(menu, inventory, component);
   }
 
+  private SliderButton createVisibilityRotationSlider(
+      int left, int top, ModelPart modelPart, String label) {
+    // Model Part Rotation
+    SliderButton sliderRotationButtonX = createRotationSliderCompact(left, top, modelPart, label);
+
+    // Model Part Visibility
+    boolean modelPartVisibility = this.entity.isModelPartVisible(modelPart);
+    this.addRenderableWidget(
+        new Checkbox(
+            sliderRotationButtonX.getX() + 3,
+            top - sliderRotationButtonX.getHeight(),
+            "",
+            modelPartVisibility,
+            checkbox ->
+                NetworkMessageHandler.modelVisibilityChange(uuid, modelPart, checkbox.selected())));
+
+    return sliderRotationButtonX;
+  }
+
   @Override
   public void init() {
     super.init();
@@ -57,21 +78,21 @@ public class AdvancedPoseConfigurationScreen
 
     // Position and size
     int sliderTopPos = this.contentTopPos + 16;
-    int sliderLeftPos = this.contentLeftPos;
+    int sliderLeftPos = this.contentLeftPos - 3;
     int sliderLeftSpace = 200;
     int sliderTopSpace = 66;
 
     // Head parts
     if (this.entity.hasHeadModelPart()) {
       this.headRotationSliderButton =
-          createRotationSlider(sliderLeftPos, sliderTopPos, ModelPart.HEAD, "head");
+          createVisibilityRotationSlider(sliderLeftPos, sliderTopPos, ModelPart.HEAD, "head");
     }
 
     // Body parts
     if (this.entity.hasBodyModelPart()) {
       sliderLeftPos += sliderLeftSpace;
       this.bodyRotationSliderButton =
-          createRotationSlider(sliderLeftPos, sliderTopPos, ModelPart.BODY, "body");
+          createVisibilityRotationSlider(sliderLeftPos, sliderTopPos, ModelPart.BODY, "body");
     }
 
     sliderTopPos += sliderTopSpace;
@@ -80,18 +101,20 @@ public class AdvancedPoseConfigurationScreen
     if (this.entity.hasRightArmModelPart()) {
       sliderLeftPos = this.contentLeftPos;
       this.rightArmRotationSliderButton =
-          createRotationSlider(sliderLeftPos, sliderTopPos, ModelPart.RIGHT_ARM, "right_arm");
+          createVisibilityRotationSlider(
+              sliderLeftPos, sliderTopPos, ModelPart.RIGHT_ARM, "right_arm");
     }
 
     // Left arm rotations and arms rotations.
     if (this.entity.hasLeftArmModelPart()) {
       sliderLeftPos += sliderLeftSpace;
       this.leftArmRotationSliderButton =
-          createRotationSlider(sliderLeftPos, sliderTopPos, ModelPart.LEFT_ARM, "left_arm");
+          createVisibilityRotationSlider(
+              sliderLeftPos, sliderTopPos, ModelPart.LEFT_ARM, "left_arm");
     } else if (this.entity.hasArmsModelPart()) {
       sliderLeftPos = this.contentLeftPos;
       this.armsRotationSliderButton =
-          createRotationSlider(sliderLeftPos, sliderTopPos, ModelPart.ARMS, "arms");
+          createVisibilityRotationSlider(sliderLeftPos, sliderTopPos, ModelPart.ARMS, "arms");
     }
 
     sliderTopPos += sliderTopSpace;
@@ -100,14 +123,16 @@ public class AdvancedPoseConfigurationScreen
     // Right leg rotations
     if (this.entity.hasRightLegModelPart()) {
       this.rightLegRotationSliderButton =
-          createRotationSlider(sliderLeftPos, sliderTopPos, ModelPart.RIGHT_LEG, "right_leg");
+          createVisibilityRotationSlider(
+              sliderLeftPos, sliderTopPos, ModelPart.RIGHT_LEG, "right_leg");
     }
 
     // Left leg rotations
     if (this.entity.hasLeftLegModelPart()) {
       sliderLeftPos += sliderLeftSpace;
       this.leftLegRotationSliderButton =
-          createRotationSlider(sliderLeftPos, sliderTopPos, ModelPart.LEFT_LEG, "left_leg");
+          createVisibilityRotationSlider(
+              sliderLeftPos, sliderTopPos, ModelPart.LEFT_LEG, "left_leg");
     }
   }
 
@@ -130,7 +155,7 @@ public class AdvancedPoseConfigurationScreen
           guiGraphics,
           this.font,
           "pose.head",
-          this.headRotationSliderButton.getX() + 5,
+          this.headRotationSliderButton.getX() + 20,
           this.headRotationSliderButton.getY() - 12);
     }
     if (this.entity.hasBodyModelPart()) {
@@ -138,7 +163,7 @@ public class AdvancedPoseConfigurationScreen
           guiGraphics,
           this.font,
           "pose.body",
-          this.bodyRotationSliderButton.getX() + 5,
+          this.bodyRotationSliderButton.getX() + 20,
           this.bodyRotationSliderButton.getY() - 12);
     }
     if (this.entity.hasLeftArmModelPart()) {
@@ -146,14 +171,14 @@ public class AdvancedPoseConfigurationScreen
           guiGraphics,
           this.font,
           "pose.left_arm",
-          this.leftArmRotationSliderButton.getX() + 5,
+          this.leftArmRotationSliderButton.getX() + 20,
           this.leftArmRotationSliderButton.getY() - 12);
     } else if (this.entity.hasArmsModelPart()) {
       Text.drawConfigString(
           guiGraphics,
           this.font,
           "pose.arms",
-          this.armsRotationSliderButton.getX() + 5,
+          this.armsRotationSliderButton.getX() + 20,
           this.armsRotationSliderButton.getY() - 12);
     }
     if (this.entity.hasRightArmModelPart()) {
@@ -161,7 +186,7 @@ public class AdvancedPoseConfigurationScreen
           guiGraphics,
           this.font,
           "pose.right_arm",
-          this.rightArmRotationSliderButton.getX() + 5,
+          this.rightArmRotationSliderButton.getX() + 20,
           this.rightArmRotationSliderButton.getY() - 12);
     }
     if (this.entity.hasLeftLegModelPart()) {
@@ -169,7 +194,7 @@ public class AdvancedPoseConfigurationScreen
           guiGraphics,
           this.font,
           "pose.left_leg",
-          this.leftLegRotationSliderButton.getX() + 5,
+          this.leftLegRotationSliderButton.getX() + 20,
           this.leftLegRotationSliderButton.getY() - 12);
     }
     if (this.entity.hasRightLegModelPart()) {
@@ -188,15 +213,15 @@ public class AdvancedPoseConfigurationScreen
 
     // Entity background
     guiGraphics.fill(
-        this.contentLeftPos + 101,
+        this.contentLeftPos + 99,
         this.contentTopPos,
-        this.contentLeftPos + 201,
+        this.contentLeftPos + 206,
         this.contentTopPos + 188,
         0xff000000);
     guiGraphics.fill(
-        this.contentLeftPos + 102,
+        this.contentLeftPos + 100,
         this.contentTopPos + 1,
-        this.contentLeftPos + 200,
+        this.contentLeftPos + 205,
         this.contentTopPos + 187,
         0xffaaaaaa);
   }

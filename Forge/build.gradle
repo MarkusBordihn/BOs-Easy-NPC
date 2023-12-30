@@ -136,6 +136,11 @@ dependencies {
   // Include Common code
   compileOnly project(":Common")
 
+  // Integration test dependencies
+  if (project.armourers_workshop_mod) {
+    runtimeOnly fg.deobf("curse.maven:armourers-workshop-229523:${project.armourers_workshop_mod}")
+  }
+
   // Additional helpful Mods for development (runtime dependency)
   runtimeOnly fg.deobf("curse.maven:xaeros_minimap-263420:${project.xaeros_minimap_mod}")
   runtimeOnly fg.deobf("curse.maven:spark-361579:${project.spark_mod}")
@@ -193,6 +198,11 @@ curseforge {
     addGameVersion("${project.minecraft_version}")
     addGameVersion("Forge")
     addGameVersion("NeoForge")
+    mainArtifact(jar) {
+      relations {
+        optionalDependency 'armourers-workshop'
+      }
+    }
   }
 }
 

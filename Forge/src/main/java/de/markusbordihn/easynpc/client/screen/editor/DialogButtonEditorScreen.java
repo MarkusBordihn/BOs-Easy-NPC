@@ -44,6 +44,7 @@ import de.markusbordihn.easynpc.menu.editor.DialogButtonEditorMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import java.util.HashSet;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -142,9 +143,10 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
   }
 
   private void openPreviousScreen() {
-    // Return back to the simple yes and no dialog editor or the full dialog editor.
-    if (this.formerConfigurationType == ConfigurationType.ADVANCED_DIALOG) {
+    if (this.formerConfigurationType == ConfigurationType.DIALOG_EDITOR) {
       NetworkMessageHandler.openDialogEditor(uuid, this.dialogId, this.formerConfigurationType);
+    } else if (this.formerConfigurationType == ConfigurationType.ADVANCED_DIALOG) {
+      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.ADVANCED_DIALOG);
     } else if (this.formerConfigurationType != null) {
       NetworkMessageHandler.openConfiguration(uuid, this.formerConfigurationType);
     } else if (dialogDataSet.getType() == DialogType.YES_NO) {
@@ -455,7 +457,7 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+  public void render(@Nonnull GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     this.renderBackground(guiGraphics);
     super.render(guiGraphics, x, y, partialTicks);
     this.renderEditLabels(guiGraphics);
@@ -473,7 +475,9 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
   }
 
   @Override
-  protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {}
+  protected void renderLabels(@Nonnull GuiGraphics guiGraphics, int x, int y) {
+    // No labels
+  }
 
   @Override
   protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {

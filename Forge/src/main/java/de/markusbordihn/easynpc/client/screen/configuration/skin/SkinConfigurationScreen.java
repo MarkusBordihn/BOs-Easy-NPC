@@ -47,6 +47,7 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
   protected Button customSkinButton = null;
   protected Button defaultSkinButton = null;
   protected Button playerSkinButton = null;
+  protected Button urlSkinButton = null;
 
   // Skin Navigation
   protected Button skinPreviousButton = null;
@@ -118,13 +119,12 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
     super.init();
 
     // Skin Types
-    int skinButtonWidth = 92;
     this.defaultSkinButton =
         this.addRenderableWidget(
             new TextButton(
                 this.buttonLeftPos,
                 this.buttonTopPos,
-                skinButtonWidth - 4,
+                72,
                 "default",
                 onPress ->
                     NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_SKIN)));
@@ -133,16 +133,27 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
             new TextButton(
                 this.defaultSkinButton.getX() + this.defaultSkinButton.getWidth(),
                 this.buttonTopPos,
-                skinButtonWidth - 6,
+                72,
                 "player_skin",
                 onPress ->
                     NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.PLAYER_SKIN)));
+    this.urlSkinButton =
+        this.addRenderableWidget(
+            new TextButton(
+                isPlayerSkinModel
+                    ? this.playerSkinButton.getX() + this.playerSkinButton.getWidth()
+                    : this.defaultSkinButton.getX() + this.defaultSkinButton.getWidth(),
+                this.buttonTopPos,
+                40,
+                "url_skin",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.URL_SKIN)));
     this.customSkinButton =
         this.addRenderableWidget(
             new TextButton(
-                this.playerSkinButton.getX() + this.playerSkinButton.getWidth(),
+                this.urlSkinButton.getX() + this.urlSkinButton.getWidth(),
                 this.buttonTopPos,
-                skinButtonWidth + 5,
+                100,
                 "custom",
                 onPress ->
                     NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_SKIN)));
@@ -159,10 +170,19 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
             COMMON.defaultSkinConfigurationAllowInCreative.get(),
             COMMON.defaultSkinConfigurationPermissionLevel.get());
     this.playerSkinButton.active =
+        isPlayerSkinModel
+            && this.hasPermissions(
+                COMMON.playerSkinConfigurationEnabled.get(),
+                COMMON.playerSkinConfigurationAllowInCreative.get(),
+                COMMON.playerSkinConfigurationPermissionLevel.get());
+    this.urlSkinButton.active =
         this.hasPermissions(
-            COMMON.playerSkinConfigurationEnabled.get(),
-            COMMON.playerSkinConfigurationAllowInCreative.get(),
-            COMMON.playerSkinConfigurationPermissionLevel.get());
+            COMMON.urlSkinConfigurationEnabled.get(),
+            COMMON.urlSkinConfigurationAllowInCreative.get(),
+            COMMON.urlSkinConfigurationPermissionLevel.get());
+
+    // Default visibility
+    this.playerSkinButton.visible = isPlayerSkinModel;
   }
 
   @Override

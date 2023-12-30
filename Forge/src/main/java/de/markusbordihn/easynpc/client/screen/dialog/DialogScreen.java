@@ -164,9 +164,9 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     this.numberOfDialogLines = Math.min(128 / font.lineHeight, this.cachedDialogComponents.size());
   }
 
-  private Button addDialogButton(DialogButtonData dialogButtonData) {
+  private void addDialogButton(DialogButtonData dialogButtonData) {
     if (dialogButtonData == null) {
-      return null;
+      return;
     }
 
     // Create dialog button text.
@@ -207,7 +207,6 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
         dialogButtonData.getName() != null && !dialogButtonData.getName().isBlank();
 
     this.dialogButtons.add(dialogButton);
-    return dialogButton;
   }
 
   public void closeScreen() {
