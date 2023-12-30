@@ -89,7 +89,7 @@ public interface VariantData<T extends LivingEntity> extends EasyNPC<T> {
     }
   }
 
-  public enum Variant {
+  enum Variant {
     STEVE,
     ALEX
   }

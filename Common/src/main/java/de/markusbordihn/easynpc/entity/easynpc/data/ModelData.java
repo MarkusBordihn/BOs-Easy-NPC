@@ -39,7 +39,7 @@ import net.minecraft.world.item.CrossbowItem;
 
 public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
 
-  public static final EntityDataSerializer<ModelPose> MODEL_POSE =
+  EntityDataSerializer<ModelPose> MODEL_POSE =
       new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, ModelPose value) {
           buffer.writeEnum(value);
@@ -54,7 +54,7 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
         }
       };
 
-  public static final EntityDataSerializer<CustomPosition> POSITION =
+  EntityDataSerializer<CustomPosition> POSITION =
       new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, CustomPosition position) {
           buffer.writeFloat(position.x());
@@ -71,7 +71,7 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
         }
       };
 
-  public static final EntityDataSerializer<CustomScale> SCALE =
+  EntityDataSerializer<CustomScale> SCALE =
       new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, CustomScale scale) {
           buffer.writeFloat(scale.x());

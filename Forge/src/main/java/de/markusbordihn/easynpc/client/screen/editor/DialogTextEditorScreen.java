@@ -210,7 +210,8 @@ public class DialogTextEditorScreen extends AbstractContainerScreen<DialogTextEd
                   dialogTextLeftPos,
                   dialogTextTopPos + dialogTextIndex * 20,
                   dialogTextWidth,
-                  dialogText.getText(), 512));
+                  dialogText.getText(),
+                  512));
       this.dialogTextFields.add(textfield);
       if (dialogText.getTranslate()) {
         dialogTextTranslatable = true;
@@ -223,7 +224,12 @@ public class DialogTextEditorScreen extends AbstractContainerScreen<DialogTextEd
       TextField textfield =
           this.addRenderableWidget(
               new TextField(
-                  this.font, dialogTextLeftPos, dialogTextTopPos + i * 20, dialogTextWidth, "", 512));
+                  this.font,
+                  dialogTextLeftPos,
+                  dialogTextTopPos + i * 20,
+                  dialogTextWidth,
+                  "",
+                  512));
       this.dialogTextFields.add(textfield);
     }
 

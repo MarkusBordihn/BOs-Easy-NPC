@@ -12,8 +12,8 @@ For the full changelog, please go to the [GitHub History][history] instead.
 ### v3.7.0
 
 - Restricted the edit behavior for NPC to allow more use-cases to the following:
-  - User is sneaking and clicking on the NPC (creative mode only)
-  - User is holding the NPC wand and clicking on the NPC (all modes)
+    - User is sneaking and clicking on the NPC (creative mode only)
+    - User is holding the NPC wand and clicking on the NPC (all modes)
 - Added possibility to adjust sliders with mouse wheel and arrow keys for better usability.
 - Added dialog text editor to allow multiple dialog texts variants for the same dialog.
 - Added "can_use_nether_portal" attribute to allow NPCs to use nether portals or not.

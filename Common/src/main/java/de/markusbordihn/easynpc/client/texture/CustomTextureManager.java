@@ -71,10 +71,10 @@ public class CustomTextureManager {
     return defaultResourceLocation;
   }
 
-  public static ResourceLocation registerTexture(SkinModel skinModel, File textureFile) {
+  public static void registerTexture(SkinModel skinModel, File textureFile) {
     UUID uuid = UUID.nameUUIDFromBytes(textureFile.getName().getBytes());
     TextureModelKey textureModelKey = new TextureModelKey(uuid, skinModel);
-    return registerTexture(textureModelKey, textureFile);
+    registerTexture(textureModelKey, textureFile);
   }
 
   public static ResourceLocation registerTexture(
