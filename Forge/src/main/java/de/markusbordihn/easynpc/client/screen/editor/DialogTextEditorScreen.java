@@ -104,10 +104,12 @@ public class DialogTextEditorScreen extends AbstractContainerScreen<DialogTextEd
   }
 
   private void openPreviousScreen() {
-    if (this.formerConfigurationType == ConfigurationType.ADVANCED_DIALOG) {
+    if (this.formerConfigurationType == ConfigurationType.DIALOG_EDITOR) {
+      NetworkMessageHandler.openDialogEditor(uuid, this.dialogId, this.formerConfigurationType);
+    } else if (this.formerConfigurationType == ConfigurationType.ADVANCED_DIALOG) {
       NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.ADVANCED_DIALOG);
     } else if (this.formerConfigurationType != null) {
-      NetworkMessageHandler.openDialogEditor(uuid, this.formerConfigurationType);
+      NetworkMessageHandler.openConfiguration(uuid, this.formerConfigurationType);
     } else if (dialogDataSet.getType() == DialogType.YES_NO) {
       NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.YES_NO_DIALOG);
     } else {
@@ -208,8 +210,7 @@ public class DialogTextEditorScreen extends AbstractContainerScreen<DialogTextEd
                   dialogTextLeftPos,
                   dialogTextTopPos + dialogTextIndex * 20,
                   dialogTextWidth,
-                  dialogText.getText()));
-      textfield.setMaxLength(256);
+                  dialogText.getText(), 512));
       this.dialogTextFields.add(textfield);
       if (dialogText.getTranslate()) {
         dialogTextTranslatable = true;
@@ -222,8 +223,7 @@ public class DialogTextEditorScreen extends AbstractContainerScreen<DialogTextEd
       TextField textfield =
           this.addRenderableWidget(
               new TextField(
-                  this.font, dialogTextLeftPos, dialogTextTopPos + i * 20, dialogTextWidth, ""));
-      textfield.setMaxLength(256);
+                  this.font, dialogTextLeftPos, dialogTextTopPos + i * 20, dialogTextWidth, "", 512));
       this.dialogTextFields.add(textfield);
     }
 
@@ -258,7 +258,7 @@ public class DialogTextEditorScreen extends AbstractContainerScreen<DialogTextEd
     this.cancelButton =
         this.addRenderableWidget(
             new CancelButton(
-                this.saveButton.x + this.saveButton.getWidth() + 10,
+                this.saveButton.x + 95 + this.saveButton.getWidth() + 10,
                 this.bottomPos - 35,
                 85,
                 "cancel",

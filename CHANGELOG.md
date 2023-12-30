@@ -5,6 +5,10 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [GitHub History][history] instead.
 
+### v3.7.1
+
+- Fixed dialog editor UI issue with the new dialog text editor.
+
 ### v3.7.0
 
 - Restricted the edit behavior for NPC to allow more use-cases to the following:

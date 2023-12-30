@@ -133,7 +133,9 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
   }
 
   private void openPreviousScreen() {
-    if (this.formerConfigurationType != null) {
+    if (this.formerConfigurationType == ConfigurationType.DIALOG_EDITOR) {
+      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.ADVANCED_DIALOG);
+    } else if (this.formerConfigurationType != null) {
       NetworkMessageHandler.openConfiguration(uuid, this.formerConfigurationType);
     } else if (dialogDataSet.getType() == DialogType.YES_NO) {
       NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.YES_NO_DIALOG);
@@ -331,7 +333,7 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
                   this.saveDialogData();
 
                   NetworkMessageHandler.openDialogTextEditor(
-                      uuid, this.dialogId, formerConfigurationType);
+                      uuid, this.dialogId, ConfigurationType.DIALOG_EDITOR);
                 }));
 
     // Dialog Translate
@@ -369,7 +371,7 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
               onPress -> {
                 log.info("Edit dialog button {}", dialogButtonData.getId());
                 NetworkMessageHandler.openDialogButtonEditor(
-                    uuid, this.dialogId, dialogButtonData.getId(), formerConfigurationType);
+                    uuid, this.dialogId, dialogButtonData.getId(), ConfigurationType.DIALOG_EDITOR);
               });
       this.addRenderableWidget(dialogActionButton);
       buttonLeftPos += buttonWidth + buttonSpace;
@@ -390,7 +392,7 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
                 this.saveDialogData();
 
                 NetworkMessageHandler.openDialogButtonEditor(
-                    uuid, this.dialogId, formerConfigurationType);
+                    uuid, this.dialogId, ConfigurationType.DIALOG_EDITOR);
               });
       this.addRenderableWidget(this.addDialogButton);
     }

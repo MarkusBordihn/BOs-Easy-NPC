@@ -146,9 +146,10 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
   }
 
   private void openPreviousScreen() {
-    // Return back to the simple yes and no dialog editor or the full dialog editor.
-    if (this.formerConfigurationType == ConfigurationType.ADVANCED_DIALOG) {
+    if (this.formerConfigurationType == ConfigurationType.DIALOG_EDITOR) {
       NetworkMessageHandler.openDialogEditor(uuid, this.dialogId, this.formerConfigurationType);
+    } else if (this.formerConfigurationType == ConfigurationType.ADVANCED_DIALOG) {
+      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.ADVANCED_DIALOG);
     } else if (this.formerConfigurationType != null) {
       NetworkMessageHandler.openConfiguration(uuid, this.formerConfigurationType);
     } else if (dialogDataSet.getType() == DialogType.YES_NO) {
