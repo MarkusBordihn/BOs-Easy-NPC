@@ -25,16 +25,14 @@ import de.markusbordihn.easynpc.data.entity.CustomEntityData;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.data.EntityActionEventData;
-import de.markusbordihn.easynpc.entity.data.EntityAttackData;
-import de.markusbordihn.easynpc.entity.data.EntityAttributeData;
 import de.markusbordihn.easynpc.entity.data.EntityDialogData;
-import de.markusbordihn.easynpc.entity.data.EntityModelData;
 import de.markusbordihn.easynpc.entity.data.EntityObjectiveData;
 import de.markusbordihn.easynpc.entity.data.EntityOwnerData;
 import de.markusbordihn.easynpc.entity.data.EntityProfessionData;
-import de.markusbordihn.easynpc.entity.data.EntityScaleData;
-import de.markusbordihn.easynpc.entity.data.EntitySkinData;
 import de.markusbordihn.easynpc.entity.data.EntityTradingData;
+import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.List;
 import java.util.UUID;
@@ -78,17 +76,12 @@ import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class EasyNPCEntityData extends AgeableMob
+public class EasyNPCEntityData extends EasyNPCBaseEntity
     implements EntityActionEventData,
-        EntityAttackData,
         EntityDialogData,
-        EntityModelData,
         EntityObjectiveData,
         EntityOwnerData,
         EntityProfessionData,
-        EntityAttributeData,
-        EntityScaleData,
-        EntitySkinData,
         EntityTradingData,
         RangedAttackMob,
         CrossbowAttackMob,
@@ -101,12 +94,9 @@ public class EasyNPCEntityData extends AgeableMob
   // Synced Data
   private static final EntityDataAccessor<Boolean> DATA_TAME =
       SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.BOOLEAN);
-  private static final EntityDataAccessor<String> DATA_VARIANT =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.STRING);
   private static final String DATA_INVENTORY_TAG = "Inventory";
   private static final String DATA_POSE_TAG = "Pose";
   private static final String DATA_TAME_TAG = "Tame";
-  private static final String DATA_VARIANT_TAG = "Variant";
   private static final String DATA_EASY_NPC_DATA_VERSION_TAG = "EasyNPCVersion";
   private static final int NPC_DATA_VERSION = 1;
   private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
@@ -229,41 +219,6 @@ public class EasyNPCEntityData extends AgeableMob
     }
   }
 
-  // Variant related methods
-  public Enum<?> getDefaultVariant() {
-    return Variant.STEVE;
-  }
-
-  public Enum<?> getVariant() {
-    return getVariant(this.entityData.get(DATA_VARIANT));
-  }
-
-  public void setVariant(Enum<?> variant) {
-    this.entityData.set(DATA_VARIANT, variant != null ? variant.name() : "");
-  }
-
-  public void setVariant(String name) {
-    Enum<?> variant = getVariant(name);
-    if (variant != null) {
-      setVariant(variant);
-    } else {
-      log.error("Unknown variant {} for {}", name, this);
-    }
-  }
-
-  public Enum<?> getVariant(String name) {
-    return Variant.valueOf(name);
-  }
-
-  public Enum<?>[] getVariants() {
-    return Variant.values();
-  }
-
-  public Component getVariantName() {
-    Enum<?> variant = getVariant();
-    return variant != null ? TextUtils.normalizeName(variant.name()) : this.getTypeName();
-  }
-
   public boolean isClientSide() {
     return this.level.isClientSide;
   }
@@ -299,13 +254,13 @@ public class EasyNPCEntityData extends AgeableMob
       }
 
       // Remove existing model data to allow legacy presets to be imported.
-      if (existingCompoundTag.contains(EntityModelData.DATA_MODEL_DATA_TAG)) {
-        existingCompoundTag.remove(EntityModelData.DATA_MODEL_DATA_TAG);
+      if (existingCompoundTag.contains(ModelData.EASY_NPC_DATA_MODEL_DATA_TAG)) {
+        existingCompoundTag.remove(ModelData.EASY_NPC_DATA_MODEL_DATA_TAG);
       }
 
       // Remove existing skin data to allow legacy presets to be imported.
-      if (existingCompoundTag.contains(EntitySkinData.DATA_SKIN_DATA_TAG)) {
-        existingCompoundTag.remove(EntitySkinData.DATA_SKIN_DATA_TAG);
+      if (existingCompoundTag.contains(SkinData.EASY_NPC_DATA_SKIN_DATA_TAG)) {
+        existingCompoundTag.remove(SkinData.EASY_NPC_DATA_SKIN_DATA_TAG);
       }
 
       // Remove existing action data to allow legacy presets to be imported.
@@ -425,20 +380,14 @@ public class EasyNPCEntityData extends AgeableMob
   protected void defineSynchedData() {
     super.defineSynchedData();
     this.defineSynchedActionData();
-    this.defineSynchedAttackData();
-    this.defineSynchedAttributeData();
     this.defineSynchedDialogData();
-    this.defineSynchedModelData();
     this.defineSynchedObjectiveData();
     this.defineSynchedOwnerData();
     this.defineSynchedProfessionData();
-    this.defineSynchedScaleData();
-    this.defineSynchedSkinData();
     this.defineSynchedTradingData();
 
-    // Handle pose, profession and variant.
+    // Handle pose
     this.entityData.define(DATA_TAME, false);
-    this.entityData.define(DATA_VARIANT, this.getDefaultVariant().name());
   }
 
   @Override
@@ -450,25 +399,17 @@ public class EasyNPCEntityData extends AgeableMob
 
     // Add additional data.
     this.addAdditionalActionData(compoundTag);
-    this.addAdditionalAttackData(compoundTag);
-    this.addAdditionalAttributeData(compoundTag);
     this.addAdditionalDialogData(compoundTag);
-    this.addAdditionalModelData(compoundTag);
     this.addAdditionalObjectiveData(compoundTag);
     this.addAdditionalOwnerData(compoundTag);
     this.addAdditionalProfessionData(compoundTag);
-    this.addAdditionalScaleData(compoundTag);
-    this.addAdditionalSkinData(compoundTag);
     this.addAdditionalTradingData(compoundTag);
 
-    // Handle pose and variant.
+    // Handle pose
     if (this.getModelPose() == ModelPose.DEFAULT && this.getPose() != null) {
       compoundTag.putString(DATA_POSE_TAG, this.getPose().name());
     } else {
       compoundTag.putString(DATA_POSE_TAG, Pose.STANDING.name());
-    }
-    if (this.getVariant() != null) {
-      compoundTag.putString(DATA_VARIANT_TAG, this.getVariant().name());
     }
 
     // Inventory
@@ -501,29 +442,17 @@ public class EasyNPCEntityData extends AgeableMob
 
     // Read additional data.
     this.readAdditionalActionData(compoundTag);
-    this.readAdditionalAttackData(compoundTag);
-    this.readAdditionalAttributeData(compoundTag);
     this.readAdditionalDialogData(compoundTag);
-    this.readAdditionalModelData(compoundTag);
     this.readAdditionalObjectiveData(compoundTag);
     this.readAdditionalOwnerData(compoundTag);
     this.readAdditionalProfessionData(compoundTag);
-    this.readAdditionalScaleData(compoundTag);
-    this.readAdditionalSkinData(compoundTag);
     this.readAdditionalTradingData(compoundTag);
 
-    // Handle pose, profession and variant data.
+    // Handle pose
     if (this.getModelPose() == ModelPose.DEFAULT && compoundTag.contains(DATA_POSE_TAG)) {
       String pose = compoundTag.getString(DATA_POSE_TAG);
       if (pose != null && !pose.isEmpty()) {
         this.setPose(this.getPose(pose));
-      }
-    }
-
-    if (compoundTag.contains(DATA_VARIANT_TAG)) {
-      String variant = compoundTag.getString(DATA_VARIANT_TAG);
-      if (variant != null && !variant.isEmpty()) {
-        this.setVariant(this.getVariant(variant));
       }
     }
 
@@ -611,9 +540,9 @@ public class EasyNPCEntityData extends AgeableMob
   @Override
   public void performRangedAttack(LivingEntity livingEntity, float damage) {
     if (this.getMainHandItem().getItem() instanceof BowItem) {
-      this.performBowAttack(livingEntity, damage);
+      this.performBowAttack(this, livingEntity, damage);
     } else if (this.getMainHandItem().getItem() instanceof CrossbowItem) {
-      EntityAttackData.addChargedProjectile(this.getMainHandItem(), new ItemStack(Items.ARROW, 1));
+      AttackData.addChargedProjectile(this.getMainHandItem(), new ItemStack(Items.ARROW, 1));
       this.performCrossbowAttack(this, 1.6F);
     }
   }
@@ -646,10 +575,5 @@ public class EasyNPCEntityData extends AgeableMob
 
   protected boolean canAddToInventory(ItemStack itemStack) {
     return this.inventory.canAddItem(itemStack);
-  }
-
-  // Default Variants
-  private enum Variant {
-    STEVE
   }
 }

@@ -27,13 +27,15 @@ import net.minecraft.util.FormattedCharSequence;
 
 public class Text {
 
-  public static int drawString(PoseStack poseStack, Font font, String text, int x, int y) {
-    return drawString(poseStack, font, Component.literal(text), x, y);
+  protected Text() {}
+
+  public static void drawString(PoseStack poseStack, Font font, String text, int x, int y) {
+    drawString(poseStack, font, Component.literal(text), x, y);
   }
 
-  public static int drawString(
+  public static void drawString(
       PoseStack poseStack, Font font, String text, int x, int y, int color) {
-    return drawString(poseStack, font, Component.literal(text), x, y, color);
+    drawString(poseStack, font, Component.literal(text), x, y, color);
   }
 
   public static int drawString(PoseStack poseStack, Font font, Component component, int x, int y) {
@@ -45,9 +47,9 @@ public class Text {
     return font.draw(poseStack, component, x, y, color);
   }
 
-  public static int drawStringShadow(
+  public static void drawStringShadow(
       PoseStack poseStack, Font font, String text, int x, int y, int color) {
-    return font.drawShadow(poseStack, text, x, y, color, false);
+    font.drawShadow(poseStack, text, x, y, color, false);
   }
 
   public static int drawStringShadow(
@@ -60,9 +62,9 @@ public class Text {
     return font.drawShadow(poseStack, component, x, y, color);
   }
 
-  public static int drawString(
+  public static void drawString(
       PoseStack poseStack, Font font, FormattedCharSequence formattedCharSequence, int x, int y) {
-    return drawString(poseStack, font, formattedCharSequence, x, y, Constants.FONT_COLOR_DEFAULT);
+    drawString(poseStack, font, formattedCharSequence, x, y, Constants.FONT_COLOR_DEFAULT);
   }
 
   public static int drawString(
@@ -75,9 +77,9 @@ public class Text {
     return font.draw(poseStack, formattedCharSequence, x, y, color);
   }
 
-  public static int drawConfigString(
+  public static void drawConfigString(
       PoseStack poseStack, Font font, String translationKey, int x, int y) {
-    return drawConfigString(poseStack, font, translationKey, x, y, Constants.FONT_COLOR_DEFAULT);
+    drawConfigString(poseStack, font, translationKey, x, y, Constants.FONT_COLOR_DEFAULT);
   }
 
   public static int drawConfigString(
@@ -119,9 +121,9 @@ public class Text {
         color);
   }
 
-  public static int drawConfigStringShadowWithData(
+  public static void drawConfigStringShadowWithData(
       PoseStack poseStack, Font font, String translationKey, Object data, int x, int y, int color) {
-    return drawStringShadow(
+    drawStringShadow(
         poseStack,
         font,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + translationKey, data),
