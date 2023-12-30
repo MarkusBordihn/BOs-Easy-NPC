@@ -40,7 +40,6 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -90,7 +89,7 @@ public class TextureManager {
   }
 
   public static ResourceLocation addCustomTexture(TextureModelKey textureModelKey, File file) {
-    // Verify file to make sure its not a directory, not null, exists and readable.
+    // Verify file to make sure it's not a directory, not null, exists and readable.
     if (file == null || !file.exists() || !file.canRead() || file.isDirectory()) {
       log.error("{} Texture file {} is invalid!", LOG_PREFIX, file);
       return null;
@@ -246,7 +245,7 @@ public class TextureManager {
   public static Path getTextureCacheDirectory() {
     if (textureCachePath == null) {
       Path cacheDirectory =
-          Paths.get(FMLPaths.GAMEDIR.get().resolve(Constants.MOD_ID).toString(), "texture_cache");
+          Paths.get(Constants.GAME_DIR.resolve(Constants.MOD_ID).toString(), "texture_cache");
       if (!cacheDirectory.toFile().exists()) {
         log.info("{} Creating texture cache directory at {}", LOG_PREFIX, cacheDirectory);
         try {

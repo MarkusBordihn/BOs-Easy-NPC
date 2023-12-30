@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,12 +37,9 @@ public class CustomSkinData {
 
   protected CustomSkinData() {}
 
-  public static void registerCustomSkinData(final FMLClientSetupEvent event) {
-    event.enqueueWork(
-        () -> {
-          prepareFolder();
-          registerTextureFiles();
-        });
+  public static void registerCustomSkinData() {
+    prepareFolder();
+    registerTextureFiles();
   }
 
   public static void prepareFolder() {
@@ -67,6 +63,22 @@ public class CustomSkinData {
 
         // Copy example skin files, if any.
         switch (skinModel) {
+          case ALLAY:
+            CustomDataHandler.copyResourceFile(
+                new ResourceLocation(Constants.MOD_ID, "textures/entity/allay/allay_example.png"),
+                skinModelFolder.resolve("allay_example.png").toFile());
+            break;
+          case CAT:
+            CustomDataHandler.copyResourceFile(
+                new ResourceLocation(Constants.MOD_ID, "textures/entity/cat/cat_example.png"),
+                skinModelFolder.resolve("cat_example.png").toFile());
+            break;
+          case CHICKEN:
+            CustomDataHandler.copyResourceFile(
+                new ResourceLocation(
+                    Constants.MOD_ID, "textures/entity/chicken/chicken_example.png"),
+                skinModelFolder.resolve("chicken_example.png").toFile());
+            break;
           case FAIRY:
             CustomDataHandler.copyResourceFile(
                 new ResourceLocation(Constants.MOD_ID, "textures/entity/fairy/fairy_example.png"),
@@ -135,13 +147,12 @@ public class CustomSkinData {
     for (SkinModel skinModel : SkinModel.values()) {
       Path skinModelFolder = getSkinDataFolder(skinModel);
       if (skinModelFolder != null
-          && skinModelFolder.toFile() != null
           && skinModelFolder.toFile().exists()
           && skinModelFolder.toFile().isDirectory()) {
         for (String skinFileName : skinModelFolder.toFile().list()) {
           Path skinFilePath = skinModelFolder.resolve(skinFileName);
           File skinFile = skinFilePath.toFile();
-          if (skinFile != null && skinFile.exists() && skinFileName.endsWith(".png")) {
+          if (skinFile.exists() && skinFileName.endsWith(".png")) {
             CustomTextureManager.registerTexture(skinModel, skinFile);
           }
         }

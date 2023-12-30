@@ -3,7 +3,30 @@
 ## Note
 
 This change log includes the summarized changes.
-For the full changelog, please go to the [Git Hub History][history] instead.
+For the full changelog, please go to the [GitHub History][history] instead.
+
+### v3.7.1
+
+- Fixed dialog editor UI issue with the new dialog text editor.
+
+### v3.7.0
+
+- Restricted the edit behavior for NPC to allow more use-cases to the following:
+    - User is sneaking and clicking on the NPC (creative mode only)
+    - User is holding the NPC wand and clicking on the NPC (all modes)
+- Added possibility to adjust sliders with mouse wheel and arrow keys for better usability.
+- Added dialog text editor to allow multiple dialog texts variants for the same dialog.
+- Added "can_use_nether_portal" attribute to allow NPCs to use nether portals or not.
+- Added support for `@initator` with `onHurt` and `onDeath` events.
+- Added support for [Armourer's Workshop][armourers_workshop] mod. Thanks to @SAGESSE-CN.
+- Added possibility to disable model parts to the advanced pose editor.
+- Separated the Player Skin and remote URL Skin screen for better usability.
+- Fixed head and body rotation are not show correctly in some instances.
+- Code optimizations and cleanup.
+
+### v3.6.1
+
+- Smaller bug fixes and improvements.
 
 ### 2023.11.22
 
@@ -217,3 +240,5 @@ it could be that some of them are not compatible with older versions.
 - Released first beta version for more detailed live testing.
 
 [history]: https://github.com/MarkusBordihn/BOs-Easy-NPC/commits/
+
+[armourers_workshop]: https://www.curseforge.com/minecraft/mc-mods/armourers-workshop
