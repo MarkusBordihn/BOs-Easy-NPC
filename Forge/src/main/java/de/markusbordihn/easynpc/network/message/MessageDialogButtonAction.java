@@ -122,20 +122,21 @@ public class MessageDialogButtonAction extends NetworkMessage {
     }
 
     // Perform action.
-    if (actionDataList.size() > 1) {
+    if (actionDataList.size() == 1) {
       log.debug(
-          "Trigger multiple dialog button actions for {} from {} with {} actions ...",
+          "Trigger single dialog button action for {} from {} with action: {}",
           easyNPCEntity,
           serverPlayer,
-          actionDataList.size());
-      easyNPCEntity.executeActions(actionDataList, serverPlayer);
+          actionDataList.iterator().next());
+      easyNPCEntity.executeAction(actionDataList.iterator().next(), serverPlayer);
     } else {
       log.debug(
-          "Trigger single dialog button action for {} from {} with {} actions ...",
+          "Trigger multiple dialog button actions for {} from {} with {} actions: {}",
           easyNPCEntity,
           serverPlayer,
-          actionDataList.size());
-      easyNPCEntity.executeAction(actionDataList.iterator().next(), serverPlayer);
+          actionDataList.size(),
+          actionDataList);
+      easyNPCEntity.executeActions(actionDataList, serverPlayer);
     }
   }
 

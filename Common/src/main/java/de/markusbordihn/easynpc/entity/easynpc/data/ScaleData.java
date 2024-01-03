@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import java.util.Objects;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -63,7 +64,10 @@ public interface ScaleData<T extends LivingEntity> extends EasyNPC<T> {
   }
 
   default void setScaleX(Float scale) {
-    setEasyNPCData(DATA_SCALE_X, scale);
+    if (!Objects.equals(getScaleX(), scale)) {
+      setEasyNPCData(DATA_SCALE_X, scale);
+      getEasyNPCEntity().refreshDimensions();
+    }
   }
 
   default Float getScaleY() {
@@ -71,7 +75,10 @@ public interface ScaleData<T extends LivingEntity> extends EasyNPC<T> {
   }
 
   default void setScaleY(Float scale) {
-    setEasyNPCData(DATA_SCALE_Y, scale);
+    if (!Objects.equals(getScaleY(), scale)) {
+      setEasyNPCData(DATA_SCALE_Y, scale);
+      getEasyNPCEntity().refreshDimensions();
+    }
   }
 
   default Float getScaleZ() {
@@ -79,7 +86,10 @@ public interface ScaleData<T extends LivingEntity> extends EasyNPC<T> {
   }
 
   default void setScaleZ(Float scale) {
-    setEasyNPCData(DATA_SCALE_Z, scale);
+    if (!Objects.equals(getScaleZ(), scale)) {
+      setEasyNPCData(DATA_SCALE_Z, scale);
+      getEasyNPCEntity().refreshDimensions();
+    }
   }
 
   default void defineSynchedScaleData() {

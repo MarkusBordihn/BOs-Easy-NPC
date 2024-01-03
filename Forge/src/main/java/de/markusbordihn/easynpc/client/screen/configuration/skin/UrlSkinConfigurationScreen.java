@@ -88,7 +88,7 @@ public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinC
     }
 
     for (int i = skinStartIndex; i < this.numOfSkins && i < skinStartIndex + maxSkinsPerPage; i++) {
-      int left = this.leftPos + 32 + (skinPosition * skinPreviewWidth);
+      int left = this.leftPos + 32 + (skinPosition * SKIN_PREVIEW_WIDTH);
       int top = this.topPos + 65 + positionTop;
 
       // Render Skins
@@ -177,7 +177,8 @@ public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinC
     }
 
     // Validate url
-    this.addTextureSettingsButton.active = PlayersUtils.isValidUrl(textureSkinLocationValue);
+    this.addTextureSettingsButton.active =
+        !textureSkinLocationValue.isEmpty() && PlayersUtils.isValidUrl(textureSkinLocationValue);
 
     // Clear button
     this.clearTextureSettingsButton.active = !textureSkinLocationValue.isEmpty();
