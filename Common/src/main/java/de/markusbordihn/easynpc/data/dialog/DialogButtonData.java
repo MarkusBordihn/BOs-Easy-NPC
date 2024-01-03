@@ -115,7 +115,15 @@ public class DialogButtonData {
   }
 
   public boolean hasActionData() {
-    return !this.actionData.isEmpty();
+    if (this.actionData == null || this.actionData.isEmpty()) {
+      return false;
+    }
+    for (ActionData action : this.actionData) {
+      if (action.isValidAndNotEmpty()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public Set<ActionData> getActionData() {

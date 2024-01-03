@@ -17,6 +17,20 @@ release. For this reason it will not be compatible with the final release versio
 - No additional dependencies.
 - API support / integration for other mods (WIP).
 
+## Mod Integration
+
+### [Armourer's Workshop][armourers_workshop]
+
+Easy NPC provides a basic integration for [Armourer's Workshop][armourers_workshop] to use the
+skins from the library.
+
+### [Epic Fight Mod][epic_fight_mod]
+
+Easy NPC provides a basic integration for [Epic Fight Mod][epic_fight_mod] to use the animations and
+models from the mod.
+The integration is done over an external mod
+called [Easy NPC Epic Fight Mod][easy_npc_epic_fight_mod].
+
 ## Usage
 
 Just spawn a NPC with the corresponding spawn egg and click with your empty hand on the spawned NPC.
@@ -31,3 +45,9 @@ See: [Configuration](https://github.com/MarkusBordihn/BOs-Easy-NPC/wiki/Configur
 
 The MIT [LICENSE.md](LICENSE.md) applies only to the code in this repository. Images, models and
 other assets are explicitly excluded.
+
+[armourers_workshop]: https://www.curseforge.com/minecraft/mc-mods/armourers-workshop
+
+[epic_fight_mod]: https://www.curseforge.com/minecraft/mc-mods/epic-fight-mod
+
+[easy_npc_epic_fight_mod]: https://www.curseforge.com/minecraft/mc-mods/easy-npc-epic-fight-mod

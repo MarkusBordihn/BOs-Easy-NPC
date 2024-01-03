@@ -31,5 +31,6 @@ public class ConfigItems implements DisplayItemsGenerator {
   @Override
   public void accept(ItemDisplayParameters itemDisplayParameters, Output output) {
     output.accept(ModItems.EASY_NPC_WAND.get());
+    output.accept(ModItems.MOVE_EASY_NPC.get());
   }
 }

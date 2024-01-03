@@ -66,6 +66,19 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
   protected final LivingEntity owner;
   protected final String ownerName;
   protected final boolean hasOwner;
+
+  // Settings
+  protected final boolean supportsPoseConfiguration;
+  protected final boolean supportsStandardPoseConfiguration;
+  protected final boolean supportsAdvancedPoseConfiguration;
+  protected final boolean supportsCustomPoseConfiguration;
+  protected final boolean supportsScalingConfiguration;
+  protected final boolean supportsSkinConfiguration;
+  protected final boolean supportsDefaultSkinConfiguration;
+  protected final boolean supportsUrlSkinConfiguration;
+  protected final boolean supportsPlayerSkinConfiguration;
+  protected final boolean supportsCustomSkinConfiguration;
+
   // Buttons
   protected Button closeButton = null;
   protected Button homeButton = null;
@@ -95,6 +108,18 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     this.minecraftInstance = Minecraft.getInstance();
     this.localPlayer = this.minecraftInstance.player;
     this.clientLevel = this.minecraftInstance.level;
+
+    // Supported configuration types
+    this.supportsPoseConfiguration = this.entity.supportsPoseConfiguration();
+    this.supportsStandardPoseConfiguration = this.entity.supportsStandardPoseConfiguration();
+    this.supportsAdvancedPoseConfiguration = this.entity.supportsAdvancedPoseConfiguration();
+    this.supportsCustomPoseConfiguration = this.entity.supportsCustomPoseConfiguration();
+    this.supportsScalingConfiguration = this.entity.supportsScalingConfiguration();
+    this.supportsSkinConfiguration = this.entity.supportsSkinConfiguration();
+    this.supportsCustomSkinConfiguration = this.entity.supportsCustomSkinConfiguration();
+    this.supportsDefaultSkinConfiguration = this.entity.supportsDefaultSkinConfiguration();
+    this.supportsPlayerSkinConfiguration = this.entity.supportsPlayerSkinConfiguration();
+    this.supportsUrlSkinConfiguration = this.entity.supportsUrlSkinConfiguration();
   }
 
   protected static Double getDoubleValue(String value) {
