@@ -140,6 +140,9 @@ dependencies {
   if (project.armourers_workshop_mod) {
     runtimeOnly fg.deobf("curse.maven:armourers-workshop-229523:${project.armourers_workshop_mod}")
   }
+  if (project.epic_fight_mod) {
+    runtimeOnly fg.deobf("curse.maven:epic_fight-405076:${project.epic_fight_mod}")
+  }
 
   // Additional helpful Mods for development (runtime dependency)
   runtimeOnly fg.deobf("curse.maven:xaeros_minimap-263420:${project.xaeros_minimap_mod}")
@@ -201,6 +204,7 @@ curseforge {
     mainArtifact(jar) {
       relations {
         optionalDependency 'armourers-workshop'
+        // optionalDependency 'easy-npc-epic-fight'
       }
     }
   }

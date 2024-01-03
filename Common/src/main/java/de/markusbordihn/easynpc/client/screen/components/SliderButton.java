@@ -220,8 +220,6 @@ public class SliderButton extends AbstractSliderButton {
   }
 
   private void setTargetValue(double value) {
-    log.info(
-        "setTargetValue: {} ({}) min:{} max:{}", value, this.value, this.minValue, this.maxValue);
     if (value < 0) {
       this.value = 0;
     } else if (value > 1) {
@@ -311,12 +309,10 @@ public class SliderButton extends AbstractSliderButton {
   }
 
   @Override
-  public boolean keyPressed(int $$0, int $$1, int $$2) {
-    log.info("hover: {}, keyPressed: {} {} {}", this.isHoveredOrFocused(), $$0, $$1, $$2);
-    boolean $$3 = $$0 == 263;
-    if ($$3 || $$0 == 262) {
-      float $$4 = $$3 ? -1.0F : 1.0F;
-      double incrementalSteps = $$4 * this.getStepSize();
+  public boolean keyPressed(int keyCode, int unused1, int unused2) {
+    if (keyCode == 263 || keyCode == 262) {
+      float step = keyCode == 263 ? -1.0F : 1.0F;
+      double incrementalSteps = step * this.getStepSize();
       this.setTargetValue(this.value + incrementalSteps);
     }
 
@@ -325,7 +321,6 @@ public class SliderButton extends AbstractSliderButton {
 
   @Override
   public boolean mouseScrolled(double x, double y, double distance) {
-    log.info("hover: {}, mouseScrolled: {} {} {}", this.isHoveredOrFocused(), x, y, distance);
     if (this.isHoveredOrFocused()) {
       double incrementalSteps = distance * this.getStepSize();
       this.setTargetValue(this.value + incrementalSteps);

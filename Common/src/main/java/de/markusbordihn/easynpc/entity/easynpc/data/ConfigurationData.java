@@ -17,25 +17,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.dialog;
+package de.markusbordihn.easynpc.entity.easynpc.data;
 
-public enum DialogScreenLayout {
-  // @formatter:off
-  UNKNOWN,
-  COMPACT_TEXT_ONLY,
-  COMPACT_TEXT_WITH_ONE_BUTTON,
-  COMPACT_TEXT_WITH_TWO_BUTTONS,
-  COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS,
-  COMPACT_TEXT_WITH_THREE_BUTTONS,
-  COMPACT_TEXT_WITH_FOUR_BUTTONS,
-  COMPACT_TEXT_WITH_FIVE_BUTTONS,
-  COMPACT_TEXT_WITH_SIX_BUTTONS,
-  TEXT_ONLY,
-  TEXT_WITH_ONE_BUTTON,
-  TEXT_WITH_TWO_BUTTONS,
-  TEXT_WITH_THREE_BUTTONS,
-  TEXT_WITH_FOUR_BUTTONS,
-  TEXT_WITH_FIVE_BUTTONS,
-  TEXT_WITH_SIX_BUTTONS
-  // @formatter:on
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import net.minecraft.world.entity.LivingEntity;
+
+public interface ConfigurationData<T extends LivingEntity> extends EasyNPC<T> {
+
+  default boolean supportsConfiguration() {
+    return true;
+  }
+
+  default boolean supportsPoseConfiguration() {
+    return true;
+  }
+
+  default boolean supportsStandardPoseConfiguration() {
+    return true;
+  }
+
+  default boolean supportsAdvancedPoseConfiguration() {
+    return true;
+  }
+
+  default boolean supportsCustomPoseConfiguration() {
+    return true;
+  }
+
+  default boolean supportsScalingConfiguration() {
+    return true;
+  }
+
+  default boolean supportsSkinConfiguration() {
+    return true;
+  }
+
+  default boolean supportsDefaultSkinConfiguration() {
+    return true;
+  }
+
+  default boolean supportsUrlSkinConfiguration() {
+    return true;
+  }
+
+  default boolean supportsPlayerSkinConfiguration() {
+    return false;
+  }
+
+  default boolean supportsCustomSkinConfiguration() {
+    return true;
+  }
 }

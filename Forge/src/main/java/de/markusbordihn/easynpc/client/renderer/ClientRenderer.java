@@ -52,9 +52,13 @@ public class ClientRenderer {
     event.registerEntityRenderer(ModEntityType.ALLAY.get(), AllayRenderer::new);
     event.registerEntityRenderer(ModEntityType.CAT.get(), CatRenderer::new);
     event.registerEntityRenderer(ModEntityType.CHICKEN.get(), ChickenRenderer::new);
+    event.registerEntityRenderer(ModEntityType.DROWNED.get(), ZombieRenderer::new);
     event.registerEntityRenderer(ModEntityType.FAIRY.get(), FairyRenderer::new);
     event.registerEntityRenderer(ModEntityType.HUMANOID.get(), HumanoidRenderer::new);
+    event.registerEntityRenderer(ModEntityType.STRAY.get(), SkeletonRenderer::new);
+    event.registerEntityRenderer(ModEntityType.WITHER_SKELETON.get(), SkeletonRenderer::new);
     event.registerEntityRenderer(ModEntityType.HUMANOID_SLIM.get(), HumanoidSlimRenderer::new);
+    event.registerEntityRenderer(ModEntityType.HUSK.get(), ZombieRenderer::new);
     event.registerEntityRenderer(ModEntityType.IRON_GOLEM.get(), IronGolemRenderer::new);
     event.registerEntityRenderer(ModEntityType.SKELETON.get(), SkeletonRenderer::new);
     event.registerEntityRenderer(ModEntityType.VILLAGER.get(), VillagerRenderer::new);

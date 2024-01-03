@@ -25,7 +25,9 @@ import de.markusbordihn.easynpc.data.entity.CustomEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
@@ -39,8 +41,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.item.Items;
@@ -54,7 +58,9 @@ public class EasyNPCBaseEntity extends AgeableMob
         EasyNPC<AgeableMob>,
         AttackData<AgeableMob>,
         AttributeData<AgeableMob>,
+        ConfigurationData<AgeableMob>,
         ModelData<AgeableMob>,
+        OwnerData<AgeableMob>,
         ScaleData<AgeableMob>,
         SkinData<AgeableMob>,
         VariantData<AgeableMob> {
@@ -208,12 +214,20 @@ public class EasyNPCBaseEntity extends AgeableMob
   }
 
   @Override
+  @Nonnull
+  public EntityDimensions getDimensions(@Nonnull Pose pose) {
+    float scaleXZ = getScaleX() > getScaleZ() ? getScaleX() : getScaleZ();
+    return super.getDimensions(pose).scale(scaleXZ, getScaleY());
+  }
+
+  @Override
   protected void defineSynchedData() {
     super.defineSynchedData();
 
     this.defineSynchedAttackData();
     this.defineSynchedAttributeData();
     this.defineSynchedModelData();
+    this.defineSynchedOwnerData();
     this.defineSynchedScaleData();
     this.defineSynchedSkinData();
     this.defineSynchedVariantData();
@@ -226,6 +240,7 @@ public class EasyNPCBaseEntity extends AgeableMob
     this.addAdditionalAttackData(compoundTag);
     this.addAdditionalAttributeData(compoundTag);
     this.addAdditionalModelData(compoundTag);
+    this.addAdditionalOwnerData(compoundTag);
     this.addAdditionalScaleData(compoundTag);
     this.addAdditionalSkinData(compoundTag);
     this.addAdditionalVariantData(compoundTag);
@@ -240,6 +255,7 @@ public class EasyNPCBaseEntity extends AgeableMob
     this.readAdditionalAttackData(compoundTag);
     this.readAdditionalAttributeData(compoundTag);
     this.readAdditionalModelData(compoundTag);
+    this.readAdditionalOwnerData(compoundTag);
     this.readAdditionalScaleData(compoundTag);
     this.readAdditionalSkinData(compoundTag);
     this.readAdditionalVariantData(compoundTag);

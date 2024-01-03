@@ -31,6 +31,8 @@ public class Zombie extends EasyNPCEntity {
 
   // General Information
   public static final String ID = "zombie";
+  public static final String ID_DROWNED = "drowned";
+  public static final String ID_HUSK = "husk";
   public static final String NAME = "Zombie";
 
   public Zombie(EntityType<? extends EasyNPCEntity> entityType, Level level, Enum<?> variant) {
