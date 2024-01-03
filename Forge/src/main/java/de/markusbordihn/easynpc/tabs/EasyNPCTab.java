@@ -66,6 +66,7 @@ public class EasyNPCTab {
   private static void addConfigItemsTabItems(
       FeatureFlagSet featureFlagSet, Output outputTab, boolean hasPermissions) {
     outputTab.accept(ModItems.EASY_NPC_WAND.get());
+    outputTab.accept(ModItems.MOVE_EASY_NPC.get());
   }
 
   private static void addSpawnEggsTabItems(
@@ -73,12 +74,16 @@ public class EasyNPCTab {
     outputTab.accept(ModItems.ALLAY_NPC_SPAWN_EGG.get());
     outputTab.accept(ModItems.CAT_NPC_SPAWN_EGG.get());
     outputTab.accept(ModItems.CHICKEN_NPC_SPAWN_EGG.get());
+    outputTab.accept(ModItems.DROWNED_NPC_SPAWN_EGG.get());
     outputTab.accept(ModItems.FAIRY_NPC_SPAWN_EGG.get());
     outputTab.accept(ModItems.HUMANOID_NPC_SPAWN_EGG.get());
     outputTab.accept(ModItems.HUMANOID_SLIM_NPC_SPAWN_EGG.get());
+    outputTab.accept(ModItems.HUSK_NPC_SPAWN_EGG.get());
     outputTab.accept(ModItems.IRON_GOLEM_NPC_SPAWN_EGG.get());
     outputTab.accept(ModItems.SKELETON_NPC_SPAWN_EGG.get());
+    outputTab.accept(ModItems.STRAY_NPC_SPAWN_EGG.get());
     outputTab.accept(ModItems.VILLAGER_NPC_SPAWN_EGG.get());
+    outputTab.accept(ModItems.WITHER_SKELETON_NPC_SPAWN_EGG.get());
     outputTab.accept(ModItems.ZOMBIE_NPC_SPAWN_EGG.get());
     outputTab.accept(ModItems.ZOMBIE_VILLAGER_NPC_SPAWN_EGG.get());
   }
