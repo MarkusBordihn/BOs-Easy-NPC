@@ -27,7 +27,6 @@ import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.data.EntityActionEventData;
 import de.markusbordihn.easynpc.entity.data.EntityDialogData;
 import de.markusbordihn.easynpc.entity.data.EntityObjectiveData;
-import de.markusbordihn.easynpc.entity.data.EntityOwnerData;
 import de.markusbordihn.easynpc.entity.data.EntityProfessionData;
 import de.markusbordihn.easynpc.entity.data.EntityTradingData;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
@@ -78,7 +77,6 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
     implements EntityActionEventData,
         EntityDialogData,
         EntityObjectiveData,
-        EntityOwnerData,
         EntityProfessionData,
         EntityTradingData,
         RangedAttackMob,
@@ -378,7 +376,6 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
     this.defineSynchedActionData();
     this.defineSynchedDialogData();
     this.defineSynchedObjectiveData();
-    this.defineSynchedOwnerData();
     this.defineSynchedProfessionData();
     this.defineSynchedTradingData();
 
@@ -397,7 +394,6 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
     this.addAdditionalActionData(compoundTag);
     this.addAdditionalDialogData(compoundTag);
     this.addAdditionalObjectiveData(compoundTag);
-    this.addAdditionalOwnerData(compoundTag);
     this.addAdditionalProfessionData(compoundTag);
     this.addAdditionalTradingData(compoundTag);
 
@@ -440,7 +436,6 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
     this.readAdditionalActionData(compoundTag);
     this.readAdditionalDialogData(compoundTag);
     this.readAdditionalObjectiveData(compoundTag);
-    this.readAdditionalOwnerData(compoundTag);
     this.readAdditionalProfessionData(compoundTag);
     this.readAdditionalTradingData(compoundTag);
 
@@ -546,7 +541,6 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
   @Override
   public void shootCrossbowProjectile(
       LivingEntity livingEntity, ItemStack itemStack, Projectile projectile, float rangeFactor) {
-    log.info("Shoot crossbow {} {} {}", itemStack, projectile, rangeFactor);
     this.shootCrossbowProjectile(this, livingEntity, projectile, rangeFactor, 1.6F);
   }
 

@@ -72,8 +72,8 @@ public class DefaultSkinConfigurationScreen
       Enum<?> variant = this.variants[variantIndex];
       int left =
           this.leftPos
-              + (skinPosition > 4 ? -(skinPreviewWidth * 4) - 28 : 32)
-              + (skinPosition * (skinPreviewWidth));
+              + (skinPosition > 4 ? -(SKIN_PREVIEW_WIDTH * 4) - 28 : 32)
+              + (skinPosition * (SKIN_PREVIEW_WIDTH));
       int top = this.contentTopPos + 82 + (skinPosition > 4 ? 84 : 0);
 
       // Render skin with additional variant and professions.

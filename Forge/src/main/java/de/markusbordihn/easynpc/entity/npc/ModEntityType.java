@@ -35,7 +35,7 @@ public class ModEntityType {
 
   public static final int CLIENT_TRACKING_RANGE = 12;
   public static final float HUMANOID_SIZE_WIDTH = 0.6F;
-  public static final float HUMANOID_SIZE_HEIGHT = 1.8F;
+  public static final float HUMANOID_SIZE_HEIGHT = 1.96F;
   public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
       DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Constants.MOD_ID);
   // Humanoid NPC Entity
@@ -49,7 +49,7 @@ public class ModEntityType {
           Allay.ID,
           () ->
               EntityType.Builder.of(Allay::new, EasyNPCEntity.CATEGORY)
-                  .sized(0.6F, 0.95F)
+                  .sized(0.6F, 0.90F)
                   .clientTrackingRange(CLIENT_TRACKING_RANGE)
                   .build(Allay.ID));
   public static final RegistryObject<EntityType<Cat>> CAT =
@@ -65,7 +65,7 @@ public class ModEntityType {
           Chicken.ID,
           () ->
               EntityType.Builder.of(Chicken::new, EasyNPCEntity.CATEGORY)
-                  .sized(0.6F, 0.6F)
+                  .sized(0.6F, 0.9F)
                   .clientTrackingRange(CLIENT_TRACKING_RANGE)
                   .build(Chicken.ID));
   public static final RegistryObject<EntityType<Fairy>> FAIRY =
@@ -73,7 +73,7 @@ public class ModEntityType {
           Fairy.ID,
           () ->
               EntityType.Builder.of(Fairy::new, EasyNPCEntity.CATEGORY)
-                  .sized(0.6F, 0.6F)
+                  .sized(0.6F, 1.0F)
                   .clientTrackingRange(CLIENT_TRACKING_RANGE)
                   .build(Fairy.ID));
 
@@ -94,6 +94,28 @@ public class ModEntityType {
                   .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
                   .clientTrackingRange(CLIENT_TRACKING_RANGE)
                   .build(Skeleton.ID));
+  public static final RegistryObject<EntityType<Skeleton>> STRAY =
+      ENTITY_TYPES.register(
+          Skeleton.ID_STRAY,
+          () ->
+              EntityType.Builder.<Skeleton>of(
+                      (entityType, level) ->
+                          new Skeleton(entityType, level, Skeleton.Variant.STRAY),
+                      EasyNPCEntity.CATEGORY)
+                  .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
+                  .clientTrackingRange(CLIENT_TRACKING_RANGE)
+                  .build(Skeleton.ID_STRAY));
+  public static final RegistryObject<EntityType<Skeleton>> WITHER_SKELETON =
+      ENTITY_TYPES.register(
+          Skeleton.ID_WITHER_SKELETON,
+          () ->
+              EntityType.Builder.<Skeleton>of(
+                      (entityType, level) ->
+                          new Skeleton(entityType, level, Skeleton.Variant.WITHER_SKELETON),
+                      EasyNPCEntity.CATEGORY)
+                  .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
+                  .clientTrackingRange(CLIENT_TRACKING_RANGE)
+                  .build(Skeleton.ID_WITHER_SKELETON));
   public static final RegistryObject<EntityType<Villager>> VILLAGER =
       ENTITY_TYPES.register(
           Villager.ID,
@@ -102,14 +124,6 @@ public class ModEntityType {
                   .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
                   .clientTrackingRange(CLIENT_TRACKING_RANGE)
                   .build(Villager.ID));
-  public static final RegistryObject<EntityType<Zombie>> ZOMBIE =
-      ENTITY_TYPES.register(
-          Zombie.ID,
-          () ->
-              EntityType.Builder.<Zombie>of(Zombie::new, EasyNPCEntity.CATEGORY)
-                  .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
-                  .clientTrackingRange(CLIENT_TRACKING_RANGE)
-                  .build(Zombie.ID));
   public static final RegistryObject<EntityType<ZombieVillager>> ZOMBIE_VILLAGER =
       ENTITY_TYPES.register(
           ZombieVillager.ID,
@@ -118,6 +132,34 @@ public class ModEntityType {
                   .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
                   .clientTrackingRange(CLIENT_TRACKING_RANGE)
                   .build(ZombieVillager.ID));
+  public static final RegistryObject<EntityType<Zombie>> HUSK =
+      ENTITY_TYPES.register(
+          Zombie.ID_HUSK,
+          () ->
+              EntityType.Builder.<Zombie>of(
+                      (entityType, level) -> new Zombie(entityType, level, Zombie.Variant.HUSK),
+                      EasyNPCEntity.CATEGORY)
+                  .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
+                  .clientTrackingRange(CLIENT_TRACKING_RANGE)
+                  .build(Zombie.ID_HUSK));
+  public static final RegistryObject<EntityType<Zombie>> DROWNED =
+      ENTITY_TYPES.register(
+          Zombie.ID_DROWNED,
+          () ->
+              EntityType.Builder.<Zombie>of(
+                      (entityType, level) -> new Zombie(entityType, level, Zombie.Variant.DROWNED),
+                      EasyNPCEntity.CATEGORY)
+                  .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
+                  .clientTrackingRange(CLIENT_TRACKING_RANGE)
+                  .build(Zombie.ID_DROWNED));
+  public static final RegistryObject<EntityType<Zombie>> ZOMBIE =
+      ENTITY_TYPES.register(
+          Zombie.ID,
+          () ->
+              EntityType.Builder.<Zombie>of(Zombie::new, EasyNPCEntity.CATEGORY)
+                  .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
+                  .clientTrackingRange(CLIENT_TRACKING_RANGE)
+                  .build(Zombie.ID));
 
   protected ModEntityType() {}
 
@@ -128,10 +170,14 @@ public class ModEntityType {
     event.put(ALLAY.get(), Allay.createAttributes().build());
     event.put(CAT.get(), Cat.createAttributes().build());
     event.put(CHICKEN.get(), Chicken.createAttributes().build());
+    event.put(DROWNED.get(), Zombie.createAttributes().build());
     event.put(FAIRY.get(), Fairy.createAttributes().build());
     event.put(HUMANOID.get(), Humanoid.createAttributes().build());
     event.put(HUMANOID_SLIM.get(), HumanoidSlim.createAttributes().build());
+    event.put(HUSK.get(), Zombie.createAttributes().build());
     event.put(IRON_GOLEM.get(), IronGolem.createAttributes().build());
+    event.put(WITHER_SKELETON.get(), Skeleton.createAttributes().build());
+    event.put(STRAY.get(), Skeleton.createAttributes().build());
     event.put(SKELETON.get(), Skeleton.createAttributes().build());
     event.put(VILLAGER.get(), Villager.createAttributes().build());
     event.put(ZOMBIE.get(), Zombie.createAttributes().build());

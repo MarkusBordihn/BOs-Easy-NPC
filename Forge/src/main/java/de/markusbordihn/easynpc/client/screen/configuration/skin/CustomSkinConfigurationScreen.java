@@ -87,7 +87,7 @@ public class CustomSkinConfigurationScreen
     }
 
     for (int i = skinStartIndex; i < this.numOfSkins && i < skinStartIndex + maxSkinsPerPage; i++) {
-      int left = this.leftPos + 32 + (skinPosition * skinPreviewWidth);
+      int left = this.leftPos + 32 + (skinPosition * SKIN_PREVIEW_WIDTH);
       int top = this.topPos + 65 + positionTop;
 
       // Render Skins

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "easy_npc:item/move_easy_npc"
+  }
+}

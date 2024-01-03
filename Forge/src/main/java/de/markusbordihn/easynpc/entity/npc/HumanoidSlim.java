@@ -75,6 +75,11 @@ public class HumanoidSlim extends EasyNPCEntity {
     return Variant.valueOf(name);
   }
 
+  @Override
+  public boolean supportsPlayerSkinConfiguration() {
+    return true;
+  }
+
   // Skin Details
   public enum Variant {
     ALEX,

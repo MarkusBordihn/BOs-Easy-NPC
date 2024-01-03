@@ -53,24 +53,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
   public static final int BUTTON_WIDTH = 90;
   public static final int BUTTON_HEIGHT = 18;
 
-  // Buttons and boxes
-  protected Button copyUUIDButton;
-  protected Button editActionButton;
-  protected Button editAttributes;
-  protected Button editDialogButton;
-  protected Button editEquipmentButton;
-  protected Button editObjectiveButton;
-  protected Button editPoseButton;
-  protected Button editPositionButton;
-  protected Button editRotationButton;
-  protected Button editScalingButton;
-  protected Button editSkinButton;
-  protected Button editTradesButton;
-  protected Button exportButton;
-  protected Button importButton;
-  protected Button removeEntityButton;
-  protected Button saveNameButton;
-  protected Button respawnButton;
+  private Button saveNameButton;
   private EditBox nameBox;
 
   // Cache
@@ -170,7 +153,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     this.saveNameButton.active = false;
 
     // Skins Button
-    this.editSkinButton =
+    Button editSkinButton =
         this.addRenderableWidget(
             new TextButton(
                 this.contentLeftPos,
@@ -192,11 +175,12 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                       NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_SKIN);
                   }
                 }));
-    this.editSkinButton.active =
-        this.hasPermissions(
-                COMMON.defaultSkinConfigurationEnabled.get(),
-                COMMON.defaultSkinConfigurationAllowInCreative.get(),
-                COMMON.defaultSkinConfigurationPermissionLevel.get())
+    editSkinButton.active =
+        this.supportsSkinConfiguration
+                && this.hasPermissions(
+                    COMMON.defaultSkinConfigurationEnabled.get(),
+                    COMMON.defaultSkinConfigurationAllowInCreative.get(),
+                    COMMON.defaultSkinConfigurationPermissionLevel.get())
             || this.hasPermissions(
                 COMMON.playerSkinConfigurationEnabled.get(),
                 COMMON.playerSkinConfigurationAllowInCreative.get(),
@@ -207,7 +191,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 COMMON.customSkinConfigurationPermissionLevel.get());
 
     // Import Button
-    this.importButton =
+    Button importButton =
         this.addRenderableWidget(
             new TextButton(
                 buttonLeftPosition,
@@ -217,24 +201,26 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 onPress ->
                     NetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.DEFAULT_PRESET_IMPORT)));
+    importButton.active = true;
 
     // Export Button
-    this.exportButton =
+    Button exportButton =
         this.addRenderableWidget(
             new TextButton(
-                buttonLeftPosition + this.importButton.getWidth() + buttonSpace,
+                buttonLeftPosition + importButton.getWidth() + buttonSpace,
                 buttonTopPosition,
                 BUTTON_WIDTH,
                 "export",
                 onPress ->
                     NetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.CUSTOM_PRESET_EXPORT)));
+    exportButton.active = true;
 
     // Move button position down
     buttonTopPosition = buttonTopPosition + BUTTON_HEIGHT + buttonSpace;
 
     // Dialog Button
-    this.editDialogButton =
+    Button editDialogButton =
         this.addRenderableWidget(
             new TextButton(
                 buttonLeftPosition,
@@ -256,7 +242,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                       NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_DIALOG);
                   }
                 }));
-    this.editDialogButton.active =
+    editDialogButton.active =
         this.hasPermissions(
                 COMMON.basicDialogConfigurationEnabled.get(),
                 COMMON.basicDialogConfigurationAllowInCreative.get(),
@@ -271,16 +257,16 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 COMMON.noneDialogConfigurationPermissionLevel.get());
 
     // Actions Button
-    this.editActionButton =
+    Button editActionButton =
         this.addRenderableWidget(
             new TextButton(
-                this.editDialogButton.x + this.editDialogButton.getWidth() + buttonSpace,
+                editDialogButton.x + editDialogButton.getWidth() + buttonSpace,
                 buttonTopPosition,
                 BUTTON_WIDTH,
                 "actions",
                 onPress ->
                     NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_ACTION)));
-    this.editActionButton.active =
+    editActionButton.active =
         this.hasPermissions(
                 COMMON.basicActionConfigurationEnabled.get(),
                 COMMON.basicActionConfigurationAllowInCreative.get(),
@@ -294,7 +280,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     buttonTopPosition = buttonTopPosition + BUTTON_HEIGHT + buttonSpace;
 
     // Equipment Button
-    this.editEquipmentButton =
+    Button editEquipmentButton =
         this.addRenderableWidget(
             new TextButton(
                 buttonLeftPosition,
@@ -303,33 +289,34 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 "equipment",
                 onPress ->
                     NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.EQUIPMENT)));
-    this.editEquipmentButton.active =
+    editEquipmentButton.active =
         this.hasPermissions(
             COMMON.equipmentConfigurationEnabled.get(),
             COMMON.equipmentConfigurationAllowInCreative.get(),
             COMMON.equipmentConfigurationPermissionLevel.get());
 
     // Scaling Button
-    this.editScalingButton =
+    Button editScalingButton =
         this.addRenderableWidget(
             new TextButton(
-                this.editEquipmentButton.x + this.editEquipmentButton.getWidth() + buttonSpace,
+                editEquipmentButton.x + editEquipmentButton.getWidth() + buttonSpace,
                 buttonTopPosition,
                 BUTTON_WIDTH,
                 "scaling",
                 onPress ->
                     NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.SCALING)));
-    this.editScalingButton.active =
-        this.hasPermissions(
-            COMMON.scalingConfigurationEnabled.get(),
-            COMMON.scalingConfigurationAllowInCreative.get(),
-            COMMON.scalingConfigurationPermissionLevel.get());
+    editScalingButton.active =
+        this.supportsScalingConfiguration
+            && this.hasPermissions(
+                COMMON.scalingConfigurationEnabled.get(),
+                COMMON.scalingConfigurationAllowInCreative.get(),
+                COMMON.scalingConfigurationPermissionLevel.get());
 
     // Move button position down
     buttonTopPosition = buttonTopPosition + BUTTON_HEIGHT + buttonSpace;
 
     // Pose Button
-    this.editPoseButton =
+    Button editPoseButton =
         this.addRenderableWidget(
             new TextButton(
                 buttonLeftPosition,
@@ -358,28 +345,29 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                       NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_POSE);
                   }
                 }));
-    this.editPoseButton.active =
-        this.hasPermissions(
-                COMMON.defaultPoseConfigurationEnabled.get(),
-                COMMON.defaultPoseConfigurationAllowInCreative.get(),
-                COMMON.defaultPoseConfigurationPermissionLevel.get())
-            || this.hasPermissions(
-                COMMON.customPoseConfigurationEnabled.get(),
-                COMMON.customPoseConfigurationAllowInCreative.get(),
-                COMMON.customPoseConfigurationPermissionLevel.get());
+    editPoseButton.active =
+        this.supportsPoseConfiguration
+            && (this.hasPermissions(
+                    COMMON.defaultPoseConfigurationEnabled.get(),
+                    COMMON.defaultPoseConfigurationAllowInCreative.get(),
+                    COMMON.defaultPoseConfigurationPermissionLevel.get())
+                || this.hasPermissions(
+                    COMMON.customPoseConfigurationEnabled.get(),
+                    COMMON.customPoseConfigurationAllowInCreative.get(),
+                    COMMON.customPoseConfigurationPermissionLevel.get()));
 
     // Position Button
-    this.editPositionButton =
+    Button editPositionButton =
         this.addRenderableWidget(
             new TextButton(
-                this.editPoseButton.x + this.editPoseButton.getWidth() + buttonSpace,
+                editPoseButton.x + editPoseButton.getWidth() + buttonSpace,
                 buttonTopPosition,
                 BUTTON_WIDTH,
                 "position",
                 onPress ->
                     NetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.DEFAULT_POSITION)));
-    this.editPositionButton.active =
+    editPositionButton.active =
         this.hasPermissions(
             COMMON.defaultPositionConfigurationEnabled.get(),
             COMMON.defaultPositionConfigurationAllowInCreative.get(),
@@ -389,7 +377,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     buttonTopPosition = buttonTopPosition + BUTTON_HEIGHT + buttonSpace;
 
     // Rotation Button
-    this.editRotationButton =
+    Button editRotationButton =
         this.addRenderableWidget(
             new TextButton(
                 buttonLeftPosition,
@@ -399,17 +387,17 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 onPress ->
                     NetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.DEFAULT_ROTATION)));
-    this.editRotationButton.active =
+    editRotationButton.active =
         this.hasPermissions(
             COMMON.defaultRotationConfigurationEnabled.get(),
             COMMON.defaultRotationConfigurationAllowInCreative.get(),
             COMMON.defaultRotationConfigurationPermissionLevel.get());
 
     // Trades Button
-    this.editTradesButton =
+    Button editTradesButton =
         this.addRenderableWidget(
             new TextButton(
-                this.editRotationButton.x + this.editRotationButton.getWidth() + buttonSpace,
+                editRotationButton.x + editRotationButton.getWidth() + buttonSpace,
                 buttonTopPosition,
                 BUTTON_WIDTH,
                 "trading",
@@ -433,12 +421,25 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                       NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_TRADING);
                   }
                 }));
+    editTradesButton.active =
+        this.hasPermissions(
+                COMMON.basicTradingConfigurationEnabled.get(),
+                COMMON.basicTradingConfigurationAllowInCreative.get(),
+                COMMON.basicTradingConfigurationPermissionLevel.get())
+            || this.hasPermissions(
+                COMMON.advancedTradingConfigurationEnabled.get(),
+                COMMON.advancedTradingConfigurationAllowInCreative.get(),
+                COMMON.advancedTradingConfigurationPermissionLevel.get())
+            || this.hasPermissions(
+                COMMON.customTradingConfigurationEnabled.get(),
+                COMMON.customTradingConfigurationAllowInCreative.get(),
+                COMMON.customTradingConfigurationPermissionLevel.get());
 
     // Move button position down
     buttonTopPosition = buttonTopPosition + BUTTON_HEIGHT + buttonSpace;
 
     // Attributes Button
-    this.editAttributes =
+    Button editAttributes =
         this.addRenderableWidget(
             new TextButton(
                 buttonLeftPosition,
@@ -448,21 +449,32 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 onPress ->
                     NetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.ABILITIES_ATTRIBUTE)));
+    editAttributes.active =
+        this.hasPermissions(
+            COMMON.abilitiesAttributeConfigurationEnabled.get(),
+            COMMON.abilitiesAttributeConfigurationAllowInCreative.get(),
+            COMMON.abilitiesAttributeConfigurationPermissionLevel.get());
 
     // Objective Button
-    this.editObjectiveButton =
+    Button editObjectiveButton =
         this.addRenderableWidget(
             new TextButton(
-                this.editAttributes.x + this.editAttributes.getWidth() + buttonSpace,
+                editAttributes.x + editAttributes.getWidth() + buttonSpace,
                 buttonTopPosition,
                 BUTTON_WIDTH,
                 "objective",
                 onPress ->
                     NetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.BASIC_OBJECTIVE)));
+    editObjectiveButton.active =
+        this.hasPermissions(
+            COMMON.basicObjectiveConfigurationEnabled.get(),
+            COMMON.basicObjectiveConfigurationAllowInCreative.get(),
+            COMMON.basicObjectiveConfigurationPermissionLevel.get());
 
     // Copy UUID Button
-    this.copyUUIDButton =
+    // Buttons and boxes
+    Button copyUUIDButton =
         this.addRenderableWidget(
             new CopyButton(
                 this.contentLeftPos,
@@ -475,23 +487,26 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                     minecraft.keyboardHandler.setClipboard(uuid.toString());
                   }
                 }));
+    copyUUIDButton.active = true;
 
     // Respawn Button
-    this.respawnButton =
+    Button respawnButton =
         this.addRenderableWidget(
             new TextButton(
-                this.copyUUIDButton.x + this.copyUUIDButton.getWidth() + buttonSpace,
+                copyUUIDButton.x + copyUUIDButton.getWidth() + buttonSpace,
                 this.bottomPos - 27,
                 70,
                 "respawn",
                 onPress -> respawnNPC()));
+    respawnButton.active = true;
 
     // Delete Button
-    this.removeEntityButton =
+    Button removeEntityButton =
         this.addRenderableWidget(
             new DeleteButton(
                 this.rightPos - 70, this.bottomPos - 29, 65, onPress -> this.deleteNPC()));
-    this.removeEntityButton.setFGColor(16733525);
+    removeEntityButton.setFGColor(16733525);
+    removeEntityButton.active = true;
   }
 
   @Override
