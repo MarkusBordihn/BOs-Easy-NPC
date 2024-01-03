@@ -31,6 +31,8 @@ public class Skeleton extends EasyNPCEntity {
 
   // General Information
   public static final String ID = "skeleton";
+  public static final String ID_STRAY = "stray";
+  public static final String ID_WITHER_SKELETON = "wither_skeleton";
   public static final String NAME = "Skeleton";
 
   public Skeleton(EntityType<? extends EasyNPCEntity> entityType, Level level, Enum<?> variant) {

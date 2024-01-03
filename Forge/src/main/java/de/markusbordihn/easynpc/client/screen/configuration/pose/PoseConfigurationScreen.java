@@ -328,19 +328,25 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
 
     // Default button stats
     this.defaultPoseButton.active =
-        this.hasPermissions(
-            COMMON.defaultPoseConfigurationEnabled.get(),
-            COMMON.defaultPoseConfigurationAllowInCreative.get(),
-            COMMON.defaultPoseConfigurationPermissionLevel.get());
+        this.supportsPoseConfiguration
+            && this.supportsStandardPoseConfiguration
+            && this.hasPermissions(
+                COMMON.defaultPoseConfigurationEnabled.get(),
+                COMMON.defaultPoseConfigurationAllowInCreative.get(),
+                COMMON.defaultPoseConfigurationPermissionLevel.get());
     this.advancedPoseButton.active =
-        this.hasPermissions(
-            COMMON.advancedPoseConfigurationEnabled.get(),
-            COMMON.advancedPoseConfigurationAllowInCreative.get(),
-            COMMON.advancedPoseConfigurationPermissionLevel.get());
+        this.supportsPoseConfiguration
+            && this.supportsAdvancedPoseConfiguration
+            && this.hasPermissions(
+                COMMON.advancedPoseConfigurationEnabled.get(),
+                COMMON.advancedPoseConfigurationAllowInCreative.get(),
+                COMMON.advancedPoseConfigurationPermissionLevel.get());
     this.customPoseButton.active =
-        this.hasPermissions(
-            COMMON.customPoseConfigurationEnabled.get(),
-            COMMON.customPoseConfigurationAllowInCreative.get(),
-            COMMON.customPoseConfigurationPermissionLevel.get());
+        this.supportsPoseConfiguration
+            && this.supportsCustomPoseConfiguration
+            && this.hasPermissions(
+                COMMON.customPoseConfigurationEnabled.get(),
+                COMMON.customPoseConfigurationAllowInCreative.get(),
+                COMMON.customPoseConfigurationPermissionLevel.get());
   }
 }

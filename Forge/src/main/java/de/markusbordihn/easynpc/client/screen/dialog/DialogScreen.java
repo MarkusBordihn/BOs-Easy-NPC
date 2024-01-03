@@ -60,6 +60,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private static final int BUTTON_WIDTH = 126;
+  private static final int MIDDLE_BUTTON_WIDTH = 200;
   private static final int LARGE_BUTTON_WIDTH = 250;
   private static final int MAX_NUMBER_OF_PIXEL_PER_LINE = 180;
   private static final int MAX_NUMBER_OF_DIALOG_LINES = 10;
@@ -122,6 +123,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
       case COMPACT_TEXT_ONLY,
           COMPACT_TEXT_WITH_ONE_BUTTON,
           COMPACT_TEXT_WITH_TWO_BUTTONS,
+          COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS,
           COMPACT_TEXT_WITH_THREE_BUTTONS,
           COMPACT_TEXT_WITH_FOUR_BUTTONS,
           COMPACT_TEXT_WITH_FIVE_BUTTONS,
@@ -175,14 +177,17 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
       return;
     }
 
-    // Create dialog button text.
+    // Create dialog button text and limit the length based on the dialog screen layout.
     int dialogButtonMaxTextLength =
-        this.dialogScreenLayout == DialogScreenLayout.COMPACT_TEXT_WITH_ONE_BUTTON
-                || this.dialogScreenLayout == DialogScreenLayout.TEXT_WITH_ONE_BUTTON
-                || this.dialogScreenLayout == DialogScreenLayout.COMPACT_TEXT_WITH_THREE_BUTTONS
-                || this.dialogScreenLayout == DialogScreenLayout.TEXT_WITH_THREE_BUTTONS
-            ? 42
-            : 22;
+        switch (this.dialogScreenLayout) {
+          case COMPACT_TEXT_WITH_ONE_BUTTON,
+              TEXT_WITH_ONE_BUTTON,
+              TEXT_WITH_TWO_BUTTONS,
+              COMPACT_TEXT_WITH_THREE_BUTTONS,
+              TEXT_WITH_THREE_BUTTONS -> 41;
+          case COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS -> 32;
+          default -> 22;
+        };
     Component dialogButtonText = dialogButtonData.getButtonName(dialogButtonMaxTextLength);
 
     // Create dialog button.
@@ -200,6 +205,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
               }
 
               // Custom action on button click.
+              log.info(dialogButtonData);
               if (dialogButtonData.hasActionData()) {
                 UUID buttonId = dialogButtonData.getId();
                 NetworkMessageHandler.triggerDialogButtonAction(this.uuid, this.dialogId, buttonId);
@@ -246,6 +252,15 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
             BUTTON_WIDTH,
             firstCompactDialogButton.x + firstCompactDialogButton.getWidth() + 10,
             firstCompactDialogButton.y);
+        break;
+      case COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS:
+        Button firstCompactLargeDialogButton =
+            this.renderDialogButton(0, MIDDLE_BUTTON_WIDTH, this.leftPos + 75, this.topPos + 115);
+        this.renderDialogButton(
+            1,
+            MIDDLE_BUTTON_WIDTH,
+            firstCompactLargeDialogButton.x,
+            firstCompactLargeDialogButton.y + firstCompactLargeDialogButton.getHeight() + 10);
         break;
       case TEXT_WITH_ONE_BUTTON:
         this.renderDialogButton(0, LARGE_BUTTON_WIDTH, this.leftPos + 18, this.topPos + 170);
@@ -365,7 +380,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
 
     // Dialog Screen Layout
     this.dialogScreenLayout = DialogUtils.getDialogScreenLayout(this.dialogData, this.font);
-    log.info(
+    log.debug(
         "Prepare Dialog Screen {} with page index {} for {} with {} line(s) and layout {}",
         this.dialogId,
         this.pageIndex,
@@ -391,6 +406,8 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
           this.dialogScreenLayout == DialogScreenLayout.COMPACT_TEXT_ONLY
                   || this.dialogScreenLayout == DialogScreenLayout.COMPACT_TEXT_WITH_ONE_BUTTON
                   || this.dialogScreenLayout == DialogScreenLayout.COMPACT_TEXT_WITH_TWO_BUTTONS
+                  || this.dialogScreenLayout
+                      == DialogScreenLayout.COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS
                   || this.dialogScreenLayout == DialogScreenLayout.COMPACT_TEXT_WITH_THREE_BUTTONS
                   || this.dialogScreenLayout == DialogScreenLayout.COMPACT_TEXT_WITH_FOUR_BUTTONS
                   || this.dialogScreenLayout == DialogScreenLayout.COMPACT_TEXT_WITH_FIVE_BUTTONS
@@ -515,7 +532,10 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     RenderSystem.setShaderTexture(0, Constants.TEXTURE_DEMO_BACKGROUND);
 
     switch (this.dialogScreenLayout) {
-      case COMPACT_TEXT_ONLY, COMPACT_TEXT_WITH_ONE_BUTTON, COMPACT_TEXT_WITH_TWO_BUTTONS:
+      case COMPACT_TEXT_ONLY,
+          COMPACT_TEXT_WITH_ONE_BUTTON,
+          COMPACT_TEXT_WITH_TWO_BUTTONS,
+          COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS:
         // Compact background
         this.blit(poseStack, leftPos, topPos, 0, 0, 200, 170);
         this.blit(poseStack, leftPos + 200, topPos, 165, 0, 85, 170);

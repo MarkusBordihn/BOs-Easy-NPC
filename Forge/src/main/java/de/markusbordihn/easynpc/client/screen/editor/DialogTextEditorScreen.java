@@ -125,14 +125,14 @@ public class DialogTextEditorScreen extends AbstractContainerScreen<DialogTextEd
 
   protected void saveDialogData() {
     // Save dialog texts
-    Set<DialogTextData> dialogTexts = new HashSet<>();
+    Set<DialogTextData> validDialogTexts = new HashSet<>();
     for (TextField textfield : dialogTextFields) {
       String text = textfield.getValue();
       if (!text.isEmpty()) {
-        dialogTexts.add(new DialogTextData(text, translateCheckbox.selected()));
+        validDialogTexts.add(new DialogTextData(text, translateCheckbox.selected()));
       }
     }
-    this.dialogData.setDialogTexts(dialogTexts);
+    this.dialogData.setDialogTexts(validDialogTexts);
 
     // Save dialog data
     NetworkMessageHandler.saveDialog(this.uuid, this.dialogId, this.dialogData);

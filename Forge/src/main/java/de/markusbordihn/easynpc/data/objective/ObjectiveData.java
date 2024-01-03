@@ -63,7 +63,7 @@ public class ObjectiveData {
   private String targetPlayerName;
   private UUID targetOwnerUUID;
   private UUID targetEntityUUID;
-  private double speedModifier = 0.8D;
+  private double speedModifier = 0.7D;
   private float startDistance = 16.0F;
   private float stopDistance = 2.0F;
   private int attackInterval = 20;
@@ -434,7 +434,7 @@ public class ObjectiveData {
     }
 
     // Additional parameters
-    if (this.speedModifier != 0.8D) {
+    if (this.speedModifier != 0.7D) {
       compoundTag.putDouble(DATA_SPEED_MODIFIER_TAG, this.speedModifier);
     }
     if (this.startDistance != 16.0F) {

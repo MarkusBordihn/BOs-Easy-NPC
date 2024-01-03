@@ -5,6 +5,13 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [GitHub History][history] instead.
 
+### v3.7.2
+
+- Added Easy NPC position tool to allow easier positioning of NPCs.
+- Added additional Easy NPC Spawn Eggs and entity types for mod integrations.
+- Fixed bounding boxes for NPCs with custom models, poses and scaling.
+- Fixed issue with cut-off dialog button text.
+
 ### v3.7.1
 
 - Fixed dialog editor UI issue with the new dialog text editor.
