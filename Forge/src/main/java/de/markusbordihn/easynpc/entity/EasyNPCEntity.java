@@ -105,7 +105,11 @@ public class EasyNPCEntity extends EasyNPCEntityData implements EasyNPCEntityAct
   }
 
   public void openMainConfigurationMenu(ServerPlayer serverPlayer) {
-    EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, this);
+    if (this.supportsConfiguration()) {
+      EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, this);
+    } else {
+      log.warn("Configuration for {} is disabled!", this);
+    }
   }
 
   public void npcBaseTick() {

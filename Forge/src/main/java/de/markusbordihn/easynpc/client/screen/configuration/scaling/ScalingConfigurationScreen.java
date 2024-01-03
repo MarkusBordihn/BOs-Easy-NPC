@@ -36,16 +36,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfigurationMenu> {
 
-  // Buttons
+  private static final int DIMENSION_UPDATE_TICK = 20;
   protected Button defaultScaleButton;
   protected Button defaultScaleXButton;
   protected Button defaultScaleYButton;
   protected Button defaultScaleZButton;
-
-  // Slider
   protected SliderButton scaleXSliderButton;
   protected SliderButton scaleYSliderButton;
   protected SliderButton scaleZSliderButton;
+  private int dimensionUpdateTicker = 0;
 
   public ScalingConfigurationScreen(
       ScalingConfigurationMenu menu, Inventory inventory, Component component) {
@@ -157,6 +156,17 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
                 button -> this.scaleZSliderButton.setDefaultValue(entity.getDefaultScaleZ())));
     this.defaultScaleZButton.active =
         !this.entity.getScaleZ().equals(this.entity.getDefaultScaleZ());
+  }
+
+  @Override
+  public void containerTick() {
+    super.containerTick();
+
+    // Force refresh of entity dimensions on the client side.
+    if (this.entity != null && this.dimensionUpdateTicker++ > DIMENSION_UPDATE_TICK) {
+      this.entity.refreshDimensions();
+      this.dimensionUpdateTicker = 0;
+    }
   }
 
   @Override

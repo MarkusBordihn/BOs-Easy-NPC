@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.client.screen.configuration.skin;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
-import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
@@ -37,11 +36,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class SkinConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
 
-  // NPC Entity
-  protected final boolean isPlayerSkinModel;
-
   // Settings
-  protected final int skinPreviewWidth = 60;
+  protected static final int SKIN_PREVIEW_WIDTH = 60;
 
   // Buttons
   protected Button customSkinButton = null;
@@ -63,8 +59,6 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
 
   public SkinConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
-    this.isPlayerSkinModel =
-        SkinModel.HUMANOID.equals(this.skinModel) || SkinModel.HUMANOID_SLIM.equals(this.skinModel);
   }
 
   protected void checkSkinNavigationButtonState() {
@@ -142,7 +136,7 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
     this.urlSkinButton =
         this.addRenderableWidget(
             new TextButton(
-                isPlayerSkinModel
+                supportsPlayerSkinConfiguration
                     ? this.playerSkinButton.x + this.playerSkinButton.getWidth()
                     : this.defaultSkinButton.x + this.defaultSkinButton.getWidth(),
                 this.buttonTopPos,
@@ -162,29 +156,35 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
 
     // Default button stats
     this.customSkinButton.active =
-        this.hasPermissions(
-            COMMON.customSkinConfigurationEnabled.get(),
-            COMMON.customSkinConfigurationAllowInCreative.get(),
-            COMMON.customSkinConfigurationPermissionLevel.get());
+        this.supportsSkinConfiguration
+            && this.supportsCustomSkinConfiguration &&
+            this.hasPermissions(
+                COMMON.customSkinConfigurationEnabled.get(),
+                COMMON.customSkinConfigurationAllowInCreative.get(),
+                COMMON.customSkinConfigurationPermissionLevel.get());
     this.defaultSkinButton.active =
-        this.hasPermissions(
-            COMMON.defaultSkinConfigurationEnabled.get(),
-            COMMON.defaultSkinConfigurationAllowInCreative.get(),
-            COMMON.defaultSkinConfigurationPermissionLevel.get());
+        this.supportsSkinConfiguration
+            && this.supportsDefaultSkinConfiguration &&
+            this.hasPermissions(
+                COMMON.defaultSkinConfigurationEnabled.get(),
+                COMMON.defaultSkinConfigurationAllowInCreative.get(),
+                COMMON.defaultSkinConfigurationPermissionLevel.get());
     this.playerSkinButton.active =
-        isPlayerSkinModel
+        this.supportsSkinConfiguration &&
+            this.supportsPlayerSkinConfiguration
             && this.hasPermissions(
             COMMON.playerSkinConfigurationEnabled.get(),
             COMMON.playerSkinConfigurationAllowInCreative.get(),
             COMMON.playerSkinConfigurationPermissionLevel.get());
     this.urlSkinButton.active =
-        this.hasPermissions(
-            COMMON.urlSkinConfigurationEnabled.get(),
-            COMMON.urlSkinConfigurationAllowInCreative.get(),
-            COMMON.urlSkinConfigurationPermissionLevel.get());
+        this.supportsSkinConfiguration && this.supportsUrlSkinConfiguration &&
+            this.hasPermissions(
+                COMMON.urlSkinConfigurationEnabled.get(),
+                COMMON.urlSkinConfigurationAllowInCreative.get(),
+                COMMON.urlSkinConfigurationPermissionLevel.get());
 
     // Default visibility
-    this.playerSkinButton.visible = isPlayerSkinModel;
+    this.playerSkinButton.visible = this.supportsPlayerSkinConfiguration;
   }
 
   @Override

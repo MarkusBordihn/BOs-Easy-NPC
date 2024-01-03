@@ -91,7 +91,7 @@ public class PlayerSkinConfigurationScreen
     }
 
     for (int i = skinStartIndex; i < this.numOfSkins && i < skinStartIndex + maxSkinsPerPage; i++) {
-      int left = this.leftPos + 32 + (skinPosition * skinPreviewWidth);
+      int left = this.leftPos + 32 + (skinPosition * SKIN_PREVIEW_WIDTH);
       int top = this.topPos + 65 + positionTop;
 
       // Render Skins
@@ -179,17 +179,11 @@ public class PlayerSkinConfigurationScreen
       return;
     }
 
-    // Validations per skin models.
-    switch (skinModel) {
-      case HUMANOID, HUMANOID_SLIM:
-        this.addTextureSettingsButton.active =
-            !textureSkinLocationValue.isEmpty() && (
-                PlayersUtils.isValidPlayerName(textureSkinLocationValue) || PlayersUtils.isValidUrl(
-                    textureSkinLocationValue));
-        break;
-      default:
-        this.addTextureSettingsButton.active = PlayersUtils.isValidUrl(textureSkinLocationValue);
-    }
+    // Validate player name.
+    this.addTextureSettingsButton.active =
+        !textureSkinLocationValue.isEmpty() && (
+            PlayersUtils.isValidPlayerName(textureSkinLocationValue) || PlayersUtils.isValidUrl(
+                textureSkinLocationValue));
 
     // Clear button
     this.clearTextureSettingsButton.active = !textureSkinLocationValue.isEmpty();

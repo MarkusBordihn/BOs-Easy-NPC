@@ -33,6 +33,7 @@ import de.markusbordihn.easynpc.entity.npc.Villager;
 import de.markusbordihn.easynpc.entity.npc.Zombie;
 import de.markusbordihn.easynpc.entity.npc.ZombieVillager;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCWandItem;
+import de.markusbordihn.easynpc.item.configuration.MoveEasyNPCItem;
 import de.markusbordihn.easynpc.tabs.EasyNPCTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
@@ -49,6 +50,10 @@ public class ModItems {
       ITEMS.register(
           EasyNPCWandItem.ID,
           () -> new EasyNPCWandItem(new Item.Properties().tab(EasyNPCTab.TAB_CONFIG_ITEMS)));
+  public static final RegistryObject<Item> MOVE_EASY_NPC =
+      ITEMS.register(
+          MoveEasyNPCItem.ID,
+          () -> new MoveEasyNPCItem(new Item.Properties().tab(EasyNPCTab.TAB_CONFIG_ITEMS)));
   // Default NPC Entity Spawn Eggs
   private static final String SPAWN_EGG_PREFIX = "_spawn_egg";
 
@@ -117,6 +122,34 @@ public class ModItems {
           () ->
               new EasyNPCSpawnEggItem(
                   ModEntityType.VILLAGER,
+                  new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
+  public static final RegistryObject<Item> DROWNED_NPC_SPAWN_EGG =
+      ITEMS.register(
+          Zombie.ID_DROWNED + SPAWN_EGG_PREFIX,
+          () ->
+              new EasyNPCSpawnEggItem(
+                  ModEntityType.DROWNED,
+                  new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
+  public static final RegistryObject<Item> HUSK_NPC_SPAWN_EGG =
+      ITEMS.register(
+          Zombie.ID_HUSK + SPAWN_EGG_PREFIX,
+          () ->
+              new EasyNPCSpawnEggItem(
+                  ModEntityType.HUSK,
+                  new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
+  public static final RegistryObject<Item> WITHER_SKELETON_NPC_SPAWN_EGG =
+      ITEMS.register(
+          Skeleton.ID_WITHER_SKELETON + SPAWN_EGG_PREFIX,
+          () ->
+              new EasyNPCSpawnEggItem(
+                  ModEntityType.WITHER_SKELETON,
+                  new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
+  public static final RegistryObject<Item> STRAY_NPC_SPAWN_EGG =
+      ITEMS.register(
+          Skeleton.ID_STRAY + SPAWN_EGG_PREFIX,
+          () ->
+              new EasyNPCSpawnEggItem(
+                  ModEntityType.STRAY,
                   new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
   public static final RegistryObject<Item> ZOMBIE_NPC_SPAWN_EGG =
       ITEMS.register(

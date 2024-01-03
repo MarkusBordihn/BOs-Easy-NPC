@@ -17,9 +17,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.data;
+package de.markusbordihn.easynpc.entity.easynpc.data;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nullable;
@@ -31,22 +31,23 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
-public interface EntityOwnerData extends EntityDataInterface {
+public interface OwnerData<T extends LivingEntity> extends EasyNPC<T> {
 
   // Synced entity data
   EntityDataAccessor<Optional<UUID>> DATA_OWNER_UUID_ID =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.OPTIONAL_UUID);
+      SynchedEntityData.defineId(
+          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.OPTIONAL_UUID);
 
   // CompoundTags
   String DATA_OWNER_TAG = "Owner";
 
   @Nullable
   default UUID getOwnerUUID() {
-    return getEntityData(DATA_OWNER_UUID_ID).orElse(null);
+    return getEasyNPCData(DATA_OWNER_UUID_ID).orElse(null);
   }
 
   default void setOwnerUUID(@Nullable UUID uuid) {
-    setEntityData(DATA_OWNER_UUID_ID, Optional.ofNullable(uuid));
+    setEasyNPCData(DATA_OWNER_UUID_ID, Optional.ofNullable(uuid));
   }
 
   default boolean hasOwner() {
@@ -55,7 +56,7 @@ public interface EntityOwnerData extends EntityDataInterface {
 
   @Nullable
   default LivingEntity getOwner() {
-    Level level = getEntityLevel();
+    Level level = getEasyNPCLevel();
     if (level == null) {
       return null;
     }
@@ -81,7 +82,7 @@ public interface EntityOwnerData extends EntityDataInterface {
   }
 
   default void defineSynchedOwnerData() {
-    defineEntityData(DATA_OWNER_UUID_ID, Optional.empty());
+    defineEasyNPCData(DATA_OWNER_UUID_ID, Optional.empty());
   }
 
   default void addAdditionalOwnerData(CompoundTag compoundTag) {
@@ -93,9 +94,7 @@ public interface EntityOwnerData extends EntityDataInterface {
   default void readAdditionalOwnerData(CompoundTag compoundTag) {
     if (compoundTag.hasUUID(DATA_OWNER_TAG)) {
       UUID uuid = compoundTag.getUUID(DATA_OWNER_TAG);
-      if (uuid != null) {
-        this.setOwnerUUID(uuid);
-      }
+      this.setOwnerUUID(uuid);
     }
   }
 }
