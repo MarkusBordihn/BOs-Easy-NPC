@@ -304,6 +304,8 @@ public class DialogDataSet {
     if ((this.dialogType == DialogType.BASIC && this.dialogByIdMap.size() > 1)
         || (this.dialogType == DialogType.YES_NO && this.dialogByIdMap.size() > 3)) {
       this.dialogType = DialogType.STANDARD;
+    } else if (this.dialogByIdMap.isEmpty()) {
+      this.dialogType = DialogType.NONE;
     }
     compoundTag.putString(DATA_TYPE_TAG, this.dialogType.name());
 

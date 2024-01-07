@@ -30,6 +30,7 @@ import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.objective.ObjectiveData;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
+import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
@@ -72,12 +73,12 @@ import de.markusbordihn.easynpc.network.message.MessageSaveDialogButton;
 import de.markusbordihn.easynpc.network.message.MessageSaveDialogSet;
 import de.markusbordihn.easynpc.network.message.MessageScaleChange;
 import de.markusbordihn.easynpc.network.message.MessageSkinChange;
+import de.markusbordihn.easynpc.network.message.MessageSkinTypeChange;
 import de.markusbordihn.easynpc.network.message.MessageTradingTypeChange;
 import de.markusbordihn.easynpc.network.message.MessageTriggerActionEvent;
 import de.markusbordihn.easynpc.network.message.MessageVariantChange;
 import java.util.UUID;
 import net.minecraft.core.Registry;
-import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -275,7 +276,7 @@ public class NetworkMessageHandler {
   /**
    * Send rotation change.
    */
-  public static void rotationChange(UUID uuid, ModelPart modelPart, Rotations rotations) {
+  public static void rotationChange(UUID uuid, ModelPart modelPart, CustomRotation rotations) {
     if (uuid != null && modelPart != null && rotations != null) {
       NetworkHandler.sendToServer(new MessageModelRotationChange(uuid, modelPart, rotations));
     }
@@ -326,6 +327,13 @@ public class NetworkMessageHandler {
       UUID uuid, String skin, String skinURL, UUID skinUUID, SkinType skinType) {
     if (uuid != null && skin != null && skinType != null) {
       NetworkHandler.sendToServer(new MessageSkinChange(uuid, skin, skinURL, skinUUID, skinType));
+    }
+  }
+
+  /** Send skin type change. */
+  public static void skinTypeChange(UUID uuid, SkinType skinType) {
+    if (uuid != null && skinType != null) {
+      NetworkHandler.sendToServer(new MessageSkinTypeChange(uuid, skinType));
     }
   }
 

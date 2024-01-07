@@ -23,10 +23,11 @@ import de.markusbordihn.easynpc.data.model.ModelArmPose;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
+import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.legacy.LegacyModelData;
-import net.minecraft.core.Rotations;
+import javax.annotation.Nonnull;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -41,58 +42,76 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
 
   EntityDataSerializer<ModelPose> MODEL_POSE =
       new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, ModelPose value) {
-          buffer.writeEnum(value);
+        public void write(FriendlyByteBuf buffer, @Nonnull ModelPose modelPose) {
+          buffer.writeEnum(modelPose);
         }
 
+        @Nonnull
         public ModelPose read(FriendlyByteBuf buffer) {
           return buffer.readEnum(ModelPose.class);
         }
 
-        public ModelPose copy(ModelPose value) {
+        @Nonnull
+        public ModelPose copy(@Nonnull ModelPose value) {
           return value;
         }
       };
-
   EntityDataSerializer<CustomPosition> POSITION =
       new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, CustomPosition position) {
+        public void write(FriendlyByteBuf buffer, @Nonnull CustomPosition position) {
           buffer.writeFloat(position.x());
           buffer.writeFloat(position.y());
           buffer.writeFloat(position.z());
         }
 
+        @Nonnull
         public CustomPosition read(FriendlyByteBuf buffer) {
           return new CustomPosition(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         }
 
-        public CustomPosition copy(CustomPosition position) {
+        @Nonnull
+        public CustomPosition copy(@Nonnull CustomPosition position) {
           return position;
         }
       };
+  EntityDataSerializer<CustomRotation> ROTATION =
+      new EntityDataSerializer<>() {
+        public void write(FriendlyByteBuf buffer, @Nonnull CustomRotation rotation) {
+          buffer.writeFloat(rotation.x());
+          buffer.writeFloat(rotation.y());
+          buffer.writeFloat(rotation.z());
+        }
 
+        @Nonnull
+        public CustomRotation read(FriendlyByteBuf buffer) {
+          return new CustomRotation(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+        }
+
+        @Nonnull
+        public CustomRotation copy(@Nonnull CustomRotation rotation) {
+          return rotation;
+        }
+      };
   EntityDataSerializer<CustomScale> SCALE =
       new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, CustomScale scale) {
+        public void write(FriendlyByteBuf buffer, @Nonnull CustomScale scale) {
           buffer.writeFloat(scale.x());
           buffer.writeFloat(scale.y());
           buffer.writeFloat(scale.z());
         }
 
+        @Nonnull
         public CustomScale read(FriendlyByteBuf buffer) {
           return new CustomScale(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         }
 
-        public CustomScale copy(CustomScale scale) {
+        @Nonnull
+        public CustomScale copy(@Nonnull CustomScale scale) {
           return scale;
         }
       };
-
-  // Synced entity data
   EntityDataAccessor<ModelPose> EASY_NPC_DATA_MODEL_POSE =
       SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), MODEL_POSE);
-
-  // Synced entity data for Model Part Positions
   EntityDataAccessor<CustomPosition> EASY_NPC_DATA_MODEL_HEAD_POSITION =
       SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), POSITION);
   EntityDataAccessor<CustomPosition> EASY_NPC_DATA_MODEL_BODY_POSITION =
@@ -107,37 +126,26 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
       SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), POSITION);
   EntityDataAccessor<CustomPosition> EASY_NPC_DATA_MODEL_RIGHT_LEG_POSITION =
       SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), POSITION);
-
-  // Synced entity data for Model Part Rotations
   EntityDataAccessor<Boolean> EASY_NPC_DATA_MODEL_LOCK_ROTATION =
       SynchedEntityData.defineId(
           EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Rotations> EASY_NPC_DATA_MODEL_HEAD_ROTATION =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.ROTATIONS);
-  EntityDataAccessor<Rotations> EASY_NPC_DATA_MODEL_BODY_ROTATION =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.ROTATIONS);
-  EntityDataAccessor<Rotations> EASY_NPC_DATA_MODEL_ARMS_ROTATION =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.ROTATIONS);
-  EntityDataAccessor<Rotations> EASY_NPC_DATA_MODEL_LEFT_ARM_ROTATION =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.ROTATIONS);
-  EntityDataAccessor<Rotations> EASY_NPC_DATA_MODEL_RIGHT_ARM_ROTATION =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.ROTATIONS);
-  EntityDataAccessor<Rotations> EASY_NPC_DATA_MODEL_LEFT_LEG_ROTATION =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.ROTATIONS);
-  EntityDataAccessor<Rotations> EASY_NPC_DATA_MODEL_RIGHT_LEG_ROTATION =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.ROTATIONS);
-  EntityDataAccessor<Rotations> EASY_NPC_DATA_MODEL_ROOT_ROTATION =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.ROTATIONS);
+  EntityDataAccessor<CustomRotation> EASY_NPC_DATA_MODEL_HEAD_ROTATION =
+      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), ROTATION);
+  EntityDataAccessor<CustomRotation> EASY_NPC_DATA_MODEL_BODY_ROTATION =
+      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), ROTATION);
+  EntityDataAccessor<CustomRotation> EASY_NPC_DATA_MODEL_ARMS_ROTATION =
+      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), ROTATION);
+  EntityDataAccessor<CustomRotation> EASY_NPC_DATA_MODEL_LEFT_ARM_ROTATION =
+      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), ROTATION);
+  EntityDataAccessor<CustomRotation> EASY_NPC_DATA_MODEL_RIGHT_ARM_ROTATION =
+      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), ROTATION);
+  EntityDataAccessor<CustomRotation> EASY_NPC_DATA_MODEL_LEFT_LEG_ROTATION =
+      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), ROTATION);
+  EntityDataAccessor<CustomRotation> EASY_NPC_DATA_MODEL_RIGHT_LEG_ROTATION =
+      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), ROTATION);
+  EntityDataAccessor<CustomRotation> EASY_NPC_DATA_MODEL_ROOT_ROTATION =
+      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), ROTATION);
 
-  // Synced entity data for Model Part Scaling
   EntityDataAccessor<CustomScale> EASY_NPC_DATA_MODEL_HEAD_SCALE =
       SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), SCALE);
   EntityDataAccessor<CustomScale> EASY_NPC_DATA_MODEL_BODY_SCALE =
@@ -153,7 +161,6 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
   EntityDataAccessor<CustomScale> EASY_NPC_DATA_MODEL_RIGHT_LEG_SCALE =
       SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), SCALE);
 
-  // Synced entity data for Model Part Visibility
   EntityDataAccessor<Boolean> EASY_NPC_DATA_MODEL_HEAD_VISIBLE =
       SynchedEntityData.defineId(
           EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
@@ -176,7 +183,6 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
       SynchedEntityData.defineId(
           EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
 
-  // CompoundTags
   String EASY_NPC_DATA_MODEL_VERSION_TAG = "Version";
   String EASY_NPC_DATA_MODEL_DATA_TAG = "ModelData";
   String EASY_NPC_DATA_MODEL_POSE_TAG = "Pose";
@@ -189,23 +195,20 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
   String EASY_NPC_DATA_MODEL_RIGHT_LEG_TAG = "RightLeg";
   String EASY_NPC_DATA_MODEL_ROOT_TAG = "Root";
   String EASY_NPC_DATA_MODEL_LOCK_TAG = "Lock";
-
-  // CompoundTags for Model Part Positions
   String EASY_NPC_DATA_MODEL_POSITION_TAG = "Position";
-
-  // CompoundTags for Model Part Rotations
   String EASY_NPC_DATA_MODEL_ROTATION_TAG = "Rotation";
-
-  // CompoundTags for Model Part Scaling
   String EASY_NPC_DATA_MODEL_SCALE_TAG = "Scale";
-
-  // CompoundTags for Model Part Visibility
   String EASY_NPC_DATA_MODEL_VISIBLE_TAG = "Visible";
-
-  // Defaults
   CustomPosition DEFAULT_MODEL_PART_POSITION = new CustomPosition(0, 0, 0);
-  Rotations DEFAULT_MODEL_PART_ROTATION = new Rotations(0, 0, 0);
+  CustomRotation DEFAULT_MODEL_PART_ROTATION = new CustomRotation(0, 0, 0);
   CustomScale DEFAULT_MODEL_PART_SCALE = new CustomScale(1, 1, 1);
+
+  public static void registerModelDataSerializer() {
+    EntityDataSerializers.registerSerializer(MODEL_POSE);
+    EntityDataSerializers.registerSerializer(POSITION);
+    EntityDataSerializers.registerSerializer(ROTATION);
+    EntityDataSerializers.registerSerializer(SCALE);
+  }
 
   default ModelPose getModelPose() {
     return getEasyNPCData(EASY_NPC_DATA_MODEL_POSE);
@@ -228,7 +231,7 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
     };
   }
 
-  default Rotations getModelPartRotation(ModelPart modelPart) {
+  default CustomRotation getModelPartRotation(ModelPart modelPart) {
     return switch (modelPart) {
       case HEAD -> getModelHeadRotation();
       case BODY -> getModelBodyRotation();
@@ -331,67 +334,67 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
     setEasyNPCData(EASY_NPC_DATA_MODEL_LOCK_ROTATION, modelLockRotation);
   }
 
-  default Rotations getModelHeadRotation() {
+  default CustomRotation getModelHeadRotation() {
     return getEasyNPCData(EASY_NPC_DATA_MODEL_HEAD_ROTATION);
   }
 
-  default void setModelHeadRotation(Rotations modelHeadRotation) {
+  default void setModelHeadRotation(CustomRotation modelHeadRotation) {
     setEasyNPCData(EASY_NPC_DATA_MODEL_HEAD_ROTATION, modelHeadRotation);
   }
 
-  default Rotations getModelBodyRotation() {
+  default CustomRotation getModelBodyRotation() {
     return getEasyNPCData(EASY_NPC_DATA_MODEL_BODY_ROTATION);
   }
 
-  default void setModelBodyRotation(Rotations modelBodyRotation) {
+  default void setModelBodyRotation(CustomRotation modelBodyRotation) {
     setEasyNPCData(EASY_NPC_DATA_MODEL_BODY_ROTATION, modelBodyRotation);
   }
 
-  default Rotations getModelArmsRotation() {
+  default CustomRotation getModelArmsRotation() {
     return getEasyNPCData(EASY_NPC_DATA_MODEL_ARMS_ROTATION);
   }
 
-  default void setModelArmsRotation(Rotations modelArmsRotation) {
+  default void setModelArmsRotation(CustomRotation modelArmsRotation) {
     setEasyNPCData(EASY_NPC_DATA_MODEL_ARMS_ROTATION, modelArmsRotation);
   }
 
-  default Rotations getModelLeftArmRotation() {
+  default CustomRotation getModelLeftArmRotation() {
     return getEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_ARM_ROTATION);
   }
 
-  default void setModelLeftArmRotation(Rotations modelLeftArmRotation) {
+  default void setModelLeftArmRotation(CustomRotation modelLeftArmRotation) {
     setEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_ARM_ROTATION, modelLeftArmRotation);
   }
 
-  default Rotations getModelRightArmRotation() {
+  default CustomRotation getModelRightArmRotation() {
     return getEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_ARM_ROTATION);
   }
 
-  default void setModelRightArmRotation(Rotations modelRightArmRotation) {
+  default void setModelRightArmRotation(CustomRotation modelRightArmRotation) {
     setEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_ARM_ROTATION, modelRightArmRotation);
   }
 
-  default Rotations getModelLeftLegRotation() {
+  default CustomRotation getModelLeftLegRotation() {
     return getEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_LEG_ROTATION);
   }
 
-  default void setModelLeftLegRotation(Rotations modelLeftLegRotation) {
+  default void setModelLeftLegRotation(CustomRotation modelLeftLegRotation) {
     setEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_LEG_ROTATION, modelLeftLegRotation);
   }
 
-  default Rotations getModelRightLegRotation() {
+  default CustomRotation getModelRightLegRotation() {
     return getEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_LEG_ROTATION);
   }
 
-  default void setModelRightLegRotation(Rotations modelRightLegRotation) {
+  default void setModelRightLegRotation(CustomRotation modelRightLegRotation) {
     setEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_LEG_ROTATION, modelRightLegRotation);
   }
 
-  default Rotations getModelRootRotation() {
+  default CustomRotation getModelRootRotation() {
     return getEasyNPCData(EASY_NPC_DATA_MODEL_ROOT_ROTATION);
   }
 
-  default void setModelRootRotation(Rotations modelRootRotation) {
+  default void setModelRootRotation(CustomRotation modelRootRotation) {
     setEasyNPCData(EASY_NPC_DATA_MODEL_ROOT_ROTATION, modelRootRotation);
   }
 
@@ -572,6 +575,53 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
     return true;
   }
 
+  default boolean hasChangedModel() {
+    return hasChangedModelPosition()
+        || hasChangedModelRotation()
+        || hasChangedModelScale()
+        || hasChangedModelVisibility();
+  }
+
+  default boolean hasChangedModelPosition() {
+    return (hasHeadModelPart() && getModelHeadPosition().hasChanged())
+        || (hasBodyModelPart() && getModelBodyPosition().hasChanged())
+        || (hasArmsModelPart() && getModelArmsPosition().hasChanged())
+        || (hasLeftArmModelPart() && getModelLeftArmPosition().hasChanged())
+        || (hasRightArmModelPart() && getModelRightArmPosition().hasChanged())
+        || (hasLeftLegModelPart() && getModelLeftLegPosition().hasChanged())
+        || (hasRightLegModelPart() && getModelRightLegPosition().hasChanged());
+  }
+
+  default boolean hasChangedModelRotation() {
+    return (hasHeadModelPart() && getModelHeadRotation().hasChanged())
+        || (hasBodyModelPart() && getModelBodyRotation().hasChanged())
+        || (hasArmsModelPart() && getModelArmsRotation().hasChanged())
+        || (hasLeftArmModelPart() && getModelLeftArmRotation().hasChanged())
+        || (hasRightArmModelPart() && getModelRightArmRotation().hasChanged())
+        || (hasLeftLegModelPart() && getModelLeftLegRotation().hasChanged())
+        || (hasRightLegModelPart() && getModelRightLegRotation().hasChanged());
+  }
+
+  default boolean hasChangedModelScale() {
+    return (hasHeadModelPart() && getModelHeadScale().hasChanged())
+        || (hasBodyModelPart() && getModelBodyScale().hasChanged())
+        || (hasArmsModelPart() && getModelArmsScale().hasChanged())
+        || (hasLeftArmModelPart() && getModelLeftArmScale().hasChanged())
+        || (hasRightArmModelPart() && getModelRightArmScale().hasChanged())
+        || (hasLeftLegModelPart() && getModelLeftLegScale().hasChanged())
+        || (hasRightLegModelPart() && getModelRightLegScale().hasChanged());
+  }
+
+  default boolean hasChangedModelVisibility() {
+    return (hasHeadModelPart() && !isModelHeadVisible())
+        || (hasBodyModelPart() && !isModelBodyVisible())
+        || (hasArmsModelPart() && !isModelArmsVisible())
+        || (hasLeftArmModelPart() && !isModelLeftArmVisible())
+        || (hasRightArmModelPart() && !isModelRightArmVisible())
+        || (hasLeftLegModelPart() && !isModelLeftLegVisible())
+        || (hasRightLegModelPart() && !isModelRightLegVisible());
+  }
+
   default void defineSynchedModelData() {
     defineEasyNPCData(EASY_NPC_DATA_MODEL_POSE, ModelPose.DEFAULT);
 
@@ -586,14 +636,14 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
 
     // Rotation
     defineEasyNPCData(EASY_NPC_DATA_MODEL_LOCK_ROTATION, false);
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_HEAD_ROTATION, new Rotations(0, 0, 0));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_BODY_ROTATION, new Rotations(0, 0, 0));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_ARMS_ROTATION, new Rotations(0, 0, 0));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_ARM_ROTATION, new Rotations(0, 0, 0));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_ARM_ROTATION, new Rotations(0, 0, 0));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_LEG_ROTATION, new Rotations(0, 0, 0));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_LEG_ROTATION, new Rotations(0, 0, 0));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_ROOT_ROTATION, new Rotations(0, 0, 0));
+    defineEasyNPCData(EASY_NPC_DATA_MODEL_HEAD_ROTATION, new CustomRotation(0, 0, 0));
+    defineEasyNPCData(EASY_NPC_DATA_MODEL_BODY_ROTATION, new CustomRotation(0, 0, 0));
+    defineEasyNPCData(EASY_NPC_DATA_MODEL_ARMS_ROTATION, new CustomRotation(0, 0, 0));
+    defineEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_ARM_ROTATION, new CustomRotation(0, 0, 0));
+    defineEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_ARM_ROTATION, new CustomRotation(0, 0, 0));
+    defineEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_LEG_ROTATION, new CustomRotation(0, 0, 0));
+    defineEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_LEG_ROTATION, new CustomRotation(0, 0, 0));
+    defineEasyNPCData(EASY_NPC_DATA_MODEL_ROOT_ROTATION, new CustomRotation(0, 0, 0));
 
     // Scale
     defineEasyNPCData(EASY_NPC_DATA_MODEL_HEAD_SCALE, new CustomScale(1, 1, 1));
@@ -616,25 +666,39 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
 
   private void addAdditionalModelPositionData(CompoundTag compoundTag) {
     CompoundTag positionsTag = new CompoundTag();
-    if (this.getModelHeadPosition() != null && !this.getModelHeadPosition().isZero()) {
+    if (hasHeadModelPart()
+        && this.getModelHeadPosition() != null
+        && this.getModelHeadPosition().hasChanged()) {
       positionsTag.put(EASY_NPC_DATA_MODEL_HEAD_TAG, this.getModelHeadPosition().save());
     }
-    if (this.getModelBodyPosition() != null && !this.getModelBodyPosition().isZero()) {
+    if (hasBodyModelPart()
+        && this.getModelBodyPosition() != null
+        && this.getModelBodyPosition().hasChanged()) {
       positionsTag.put(EASY_NPC_DATA_MODEL_BODY_TAG, this.getModelBodyPosition().save());
     }
-    if (this.getModelArmsPosition() != null && !this.getModelArmsPosition().isZero()) {
+    if (hasArmsModelPart()
+        && this.getModelArmsPosition() != null
+        && this.getModelArmsPosition().hasChanged()) {
       positionsTag.put(EASY_NPC_DATA_MODEL_ARMS_TAG, this.getModelArmsPosition().save());
     }
-    if (this.getModelLeftArmPosition() != null && !this.getModelLeftArmPosition().isZero()) {
+    if (hasLeftArmModelPart()
+        && this.getModelLeftArmPosition() != null
+        && this.getModelLeftArmPosition().hasChanged()) {
       positionsTag.put(EASY_NPC_DATA_MODEL_LEFT_ARM_TAG, this.getModelLeftArmPosition().save());
     }
-    if (this.getModelRightArmPosition() != null && !this.getModelRightArmPosition().isZero()) {
+    if (hasRightArmModelPart()
+        && this.getModelRightArmPosition() != null
+        && this.getModelRightArmPosition().hasChanged()) {
       positionsTag.put(EASY_NPC_DATA_MODEL_RIGHT_ARM_TAG, this.getModelRightArmPosition().save());
     }
-    if (this.getModelLeftLegPosition() != null && !this.getModelLeftLegPosition().isZero()) {
+    if (hasLeftLegModelPart()
+        && this.getModelLeftLegPosition() != null
+        && this.getModelLeftLegPosition().hasChanged()) {
       positionsTag.put(EASY_NPC_DATA_MODEL_LEFT_LEG_TAG, this.getModelLeftLegPosition().save());
     }
-    if (this.getModelRightLegPosition() != null && !this.getModelRightLegPosition().isZero()) {
+    if (hasRightLegModelPart()
+        && this.getModelRightLegPosition() != null
+        && this.getModelRightLegPosition().hasChanged()) {
       positionsTag.put(EASY_NPC_DATA_MODEL_RIGHT_LEG_TAG, this.getModelRightLegPosition().save());
     }
     compoundTag.put(EASY_NPC_DATA_MODEL_POSITION_TAG, positionsTag);
@@ -645,36 +709,42 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
     if (this.getModelLockRotation()) {
       rotationsTag.putBoolean(EASY_NPC_DATA_MODEL_LOCK_TAG, this.getModelLockRotation());
     }
-    if (this.getModelHeadRotation() != null
-        && !this.getModelHeadRotation().equals(DEFAULT_MODEL_PART_ROTATION)) {
+    if (this.hasHeadModelPart()
+        && this.getModelHeadRotation() != null
+        && this.getModelHeadRotation().hasChanged()) {
       rotationsTag.put(EASY_NPC_DATA_MODEL_HEAD_TAG, this.getModelHeadRotation().save());
     }
-    if (this.getModelBodyRotation() != null
-        && !this.getModelBodyRotation().equals(DEFAULT_MODEL_PART_ROTATION)) {
+    if (this.hasBodyModelPart()
+        && this.getModelBodyRotation() != null
+        && this.getModelBodyRotation().hasChanged()) {
       rotationsTag.put(EASY_NPC_DATA_MODEL_BODY_TAG, this.getModelBodyRotation().save());
     }
-    if (this.getModelArmsRotation() != null
-        && !this.getModelArmsRotation().equals(DEFAULT_MODEL_PART_ROTATION)) {
+    if (this.hasArmsModelPart()
+        && this.getModelArmsRotation() != null
+        && this.getModelArmsRotation().hasChanged()) {
       rotationsTag.put(EASY_NPC_DATA_MODEL_ARMS_TAG, this.getModelArmsRotation().save());
     }
-    if (this.getModelLeftArmRotation() != null
-        && !this.getModelLeftArmRotation().equals(DEFAULT_MODEL_PART_ROTATION)) {
+    if (this.hasLeftArmModelPart()
+        && this.getModelLeftArmRotation() != null
+        && this.getModelLeftArmRotation().hasChanged()) {
       rotationsTag.put(EASY_NPC_DATA_MODEL_LEFT_ARM_TAG, this.getModelLeftArmRotation().save());
     }
-    if (this.getModelRightArmRotation() != null
-        && !this.getModelRightArmRotation().equals(DEFAULT_MODEL_PART_ROTATION)) {
+    if (this.hasRightArmModelPart()
+        && this.getModelRightArmRotation() != null
+        && this.getModelRightArmRotation().hasChanged()) {
       rotationsTag.put(EASY_NPC_DATA_MODEL_RIGHT_ARM_TAG, this.getModelRightArmRotation().save());
     }
-    if (this.getModelLeftLegRotation() != null
-        && !this.getModelLeftLegRotation().equals(DEFAULT_MODEL_PART_ROTATION)) {
+    if (this.hasLeftLegModelPart()
+        && this.getModelLeftLegRotation() != null
+        && this.getModelLeftLegRotation().hasChanged()) {
       rotationsTag.put(EASY_NPC_DATA_MODEL_LEFT_LEG_TAG, this.getModelLeftLegRotation().save());
     }
-    if (this.getModelRightLegRotation() != null
-        && !this.getModelRightLegRotation().equals(DEFAULT_MODEL_PART_ROTATION)) {
+    if (this.hasRightLegModelPart()
+        && this.getModelRightLegRotation() != null
+        && this.getModelRightLegRotation().hasChanged()) {
       rotationsTag.put(EASY_NPC_DATA_MODEL_RIGHT_LEG_TAG, this.getModelRightLegRotation().save());
     }
-    if (this.getModelRootRotation() != null
-        && !this.getModelRootRotation().equals(DEFAULT_MODEL_PART_ROTATION)) {
+    if (this.getModelRootRotation() != null && this.getModelRootRotation().hasChanged()) {
       rotationsTag.put(EASY_NPC_DATA_MODEL_ROOT_TAG, this.getModelRootRotation().save());
     }
     compoundTag.put(EASY_NPC_DATA_MODEL_ROTATION_TAG, rotationsTag);
@@ -706,18 +776,127 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
     compoundTag.put(EASY_NPC_DATA_MODEL_VISIBLE_TAG, visibilityTag);
   }
 
+  private void readAdditionalModelPositionData(CompoundTag compoundTag) {
+    if (!compoundTag.contains(EASY_NPC_DATA_MODEL_POSITION_TAG)) {
+      return;
+    }
+    CompoundTag positionTag = compoundTag.getCompound(EASY_NPC_DATA_MODEL_POSITION_TAG);
+    if (positionTag.contains(EASY_NPC_DATA_MODEL_HEAD_TAG)) {
+      setModelHeadPosition(
+          new CustomPosition(positionTag.getList(EASY_NPC_DATA_MODEL_HEAD_TAG, 5)));
+    }
+    if (positionTag.contains(EASY_NPC_DATA_MODEL_BODY_TAG)) {
+      setModelBodyPosition(
+          new CustomPosition(positionTag.getList(EASY_NPC_DATA_MODEL_BODY_TAG, 5)));
+    }
+    if (positionTag.contains(EASY_NPC_DATA_MODEL_ARMS_TAG)) {
+      setModelArmsPosition(
+          new CustomPosition(positionTag.getList(EASY_NPC_DATA_MODEL_ARMS_TAG, 5)));
+    }
+    if (positionTag.contains(EASY_NPC_DATA_MODEL_LEFT_ARM_TAG)) {
+      setModelLeftArmPosition(
+          new CustomPosition(positionTag.getList(EASY_NPC_DATA_MODEL_LEFT_ARM_TAG, 5)));
+    }
+    if (positionTag.contains(EASY_NPC_DATA_MODEL_RIGHT_ARM_TAG)) {
+      setModelRightArmPosition(
+          new CustomPosition(positionTag.getList(EASY_NPC_DATA_MODEL_RIGHT_ARM_TAG, 5)));
+    }
+    if (positionTag.contains(EASY_NPC_DATA_MODEL_LEFT_LEG_TAG)) {
+      setModelLeftLegPosition(
+          new CustomPosition(positionTag.getList(EASY_NPC_DATA_MODEL_LEFT_LEG_TAG, 5)));
+    }
+    if (positionTag.contains(EASY_NPC_DATA_MODEL_RIGHT_LEG_TAG)) {
+      setModelRightLegPosition(
+          new CustomPosition(positionTag.getList(EASY_NPC_DATA_MODEL_RIGHT_LEG_TAG, 5)));
+    }
+  }
+
+  private void readAdditionalModelRotationData(CompoundTag compoundTag) {
+    if (!compoundTag.contains(EASY_NPC_DATA_MODEL_ROTATION_TAG)) {
+      return;
+    }
+    CompoundTag rotationsTag = compoundTag.getCompound(EASY_NPC_DATA_MODEL_ROTATION_TAG);
+    if (rotationsTag.contains(EASY_NPC_DATA_MODEL_LOCK_TAG)) {
+      setModelLockRotation(rotationsTag.getBoolean(EASY_NPC_DATA_MODEL_LOCK_TAG));
+    }
+    if (rotationsTag.contains(EASY_NPC_DATA_MODEL_HEAD_TAG)) {
+      setModelHeadRotation(
+          new CustomRotation(rotationsTag.getList(EASY_NPC_DATA_MODEL_HEAD_TAG, 5)));
+    }
+    if (rotationsTag.contains(EASY_NPC_DATA_MODEL_BODY_TAG)) {
+      setModelBodyRotation(
+          new CustomRotation(rotationsTag.getList(EASY_NPC_DATA_MODEL_BODY_TAG, 5)));
+    }
+    if (rotationsTag.contains(EASY_NPC_DATA_MODEL_ARMS_TAG)) {
+      setModelArmsRotation(
+          new CustomRotation(rotationsTag.getList(EASY_NPC_DATA_MODEL_ARMS_TAG, 5)));
+    }
+    if (rotationsTag.contains(EASY_NPC_DATA_MODEL_LEFT_ARM_TAG)) {
+      setModelLeftArmRotation(
+          new CustomRotation(rotationsTag.getList(EASY_NPC_DATA_MODEL_LEFT_ARM_TAG, 5)));
+    }
+    if (rotationsTag.contains(EASY_NPC_DATA_MODEL_RIGHT_ARM_TAG)) {
+      setModelRightArmRotation(
+          new CustomRotation(rotationsTag.getList(EASY_NPC_DATA_MODEL_RIGHT_ARM_TAG, 5)));
+    }
+    if (rotationsTag.contains(EASY_NPC_DATA_MODEL_LEFT_LEG_TAG)) {
+      setModelLeftLegRotation(
+          new CustomRotation(rotationsTag.getList(EASY_NPC_DATA_MODEL_LEFT_LEG_TAG, 5)));
+    }
+    if (rotationsTag.contains(EASY_NPC_DATA_MODEL_RIGHT_LEG_TAG)) {
+      setModelRightLegRotation(
+          new CustomRotation(rotationsTag.getList(EASY_NPC_DATA_MODEL_RIGHT_LEG_TAG, 5)));
+    }
+    if (rotationsTag.contains(EASY_NPC_DATA_MODEL_ROOT_TAG)) {
+      setModelRootRotation(
+          new CustomRotation(rotationsTag.getList(EASY_NPC_DATA_MODEL_ROOT_TAG, 5)));
+    }
+  }
+
+  private void readAdditionalModelVisibilityData(CompoundTag compoundTag) {
+    if (!compoundTag.contains(EASY_NPC_DATA_MODEL_VISIBLE_TAG)) {
+      return;
+    }
+    CompoundTag visibilityTag = compoundTag.getCompound(EASY_NPC_DATA_MODEL_VISIBLE_TAG);
+    if (visibilityTag.contains(EASY_NPC_DATA_MODEL_HEAD_TAG)) {
+      setModelHeadVisible(visibilityTag.getBoolean(EASY_NPC_DATA_MODEL_HEAD_TAG));
+    }
+    if (visibilityTag.contains(EASY_NPC_DATA_MODEL_BODY_TAG)) {
+      setModelBodyVisible(visibilityTag.getBoolean(EASY_NPC_DATA_MODEL_BODY_TAG));
+    }
+    if (visibilityTag.contains(EASY_NPC_DATA_MODEL_ARMS_TAG)) {
+      setModelArmsVisible(visibilityTag.getBoolean(EASY_NPC_DATA_MODEL_ARMS_TAG));
+    }
+    if (visibilityTag.contains(EASY_NPC_DATA_MODEL_LEFT_ARM_TAG)) {
+      setModelLeftArmVisible(visibilityTag.getBoolean(EASY_NPC_DATA_MODEL_LEFT_ARM_TAG));
+    }
+    if (visibilityTag.contains(EASY_NPC_DATA_MODEL_RIGHT_ARM_TAG)) {
+      setModelRightArmVisible(visibilityTag.getBoolean(EASY_NPC_DATA_MODEL_RIGHT_ARM_TAG));
+    }
+    if (visibilityTag.contains(EASY_NPC_DATA_MODEL_LEFT_LEG_TAG)) {
+      setModelLeftLegVisible(visibilityTag.getBoolean(EASY_NPC_DATA_MODEL_LEFT_LEG_TAG));
+    }
+    if (visibilityTag.contains(EASY_NPC_DATA_MODEL_RIGHT_LEG_TAG)) {
+      setModelRightLegVisible(visibilityTag.getBoolean(EASY_NPC_DATA_MODEL_RIGHT_LEG_TAG));
+    }
+  }
+
   default void addAdditionalModelData(CompoundTag compoundTag) {
     CompoundTag modelDataTag = new CompoundTag();
 
-    // Model Pose
+    // Check Model Pose
     if (this.getModelPose() != null) {
-      modelDataTag.putString(EASY_NPC_DATA_MODEL_POSE_TAG, this.getModelPose().name());
+      if (this.getModelPose() != ModelPose.DEFAULT && this.hasChangedModel()) {
+        modelDataTag.putString(EASY_NPC_DATA_MODEL_POSE_TAG, this.getModelPose().name());
+      } else {
+        modelDataTag.putString(EASY_NPC_DATA_MODEL_POSE_TAG, ModelPose.DEFAULT.name());
+      }
     }
 
     // Model Position
     this.addAdditionalModelPositionData(modelDataTag);
 
-    // Model Rotations
+    // Model Rotation
     this.addAdditionalModelRotationData(modelDataTag);
 
     // Model Visibility
@@ -753,98 +932,12 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
     }
 
     // Model Position
-    if (modelDataTag.contains(EASY_NPC_DATA_MODEL_POSITION_TAG)) {
-      CompoundTag positionTag = modelDataTag.getCompound(EASY_NPC_DATA_MODEL_POSITION_TAG);
-      if (positionTag.contains(EASY_NPC_DATA_MODEL_HEAD_TAG)) {
-        setModelHeadPosition(
-            new CustomPosition(positionTag.getList(EASY_NPC_DATA_MODEL_HEAD_TAG, 5)));
-      }
-      if (positionTag.contains(EASY_NPC_DATA_MODEL_BODY_TAG)) {
-        setModelBodyPosition(
-            new CustomPosition(positionTag.getList(EASY_NPC_DATA_MODEL_BODY_TAG, 5)));
-      }
-      if (positionTag.contains(EASY_NPC_DATA_MODEL_ARMS_TAG)) {
-        setModelArmsPosition(
-            new CustomPosition(positionTag.getList(EASY_NPC_DATA_MODEL_ARMS_TAG, 5)));
-      }
-      if (positionTag.contains(EASY_NPC_DATA_MODEL_LEFT_ARM_TAG)) {
-        setModelLeftArmPosition(
-            new CustomPosition(positionTag.getList(EASY_NPC_DATA_MODEL_LEFT_ARM_TAG, 5)));
-      }
-      if (positionTag.contains(EASY_NPC_DATA_MODEL_RIGHT_ARM_TAG)) {
-        setModelRightArmPosition(
-            new CustomPosition(positionTag.getList(EASY_NPC_DATA_MODEL_RIGHT_ARM_TAG, 5)));
-      }
-      if (positionTag.contains(EASY_NPC_DATA_MODEL_LEFT_LEG_TAG)) {
-        setModelLeftLegPosition(
-            new CustomPosition(positionTag.getList(EASY_NPC_DATA_MODEL_LEFT_LEG_TAG, 5)));
-      }
-      if (positionTag.contains(EASY_NPC_DATA_MODEL_RIGHT_LEG_TAG)) {
-        setModelRightLegPosition(
-            new CustomPosition(positionTag.getList(EASY_NPC_DATA_MODEL_RIGHT_LEG_TAG, 5)));
-      }
-    }
+    this.readAdditionalModelPositionData(modelDataTag);
 
-    // Model Rotations
-    if (modelDataTag.contains(EASY_NPC_DATA_MODEL_ROTATION_TAG)) {
-      CompoundTag rotationsTag = modelDataTag.getCompound(EASY_NPC_DATA_MODEL_ROTATION_TAG);
-      if (rotationsTag.contains(EASY_NPC_DATA_MODEL_LOCK_TAG)) {
-        setModelLockRotation(rotationsTag.getBoolean(EASY_NPC_DATA_MODEL_LOCK_TAG));
-      }
-      if (rotationsTag.contains(EASY_NPC_DATA_MODEL_HEAD_TAG)) {
-        setModelHeadRotation(new Rotations(rotationsTag.getList(EASY_NPC_DATA_MODEL_HEAD_TAG, 5)));
-      }
-      if (rotationsTag.contains(EASY_NPC_DATA_MODEL_BODY_TAG)) {
-        setModelBodyRotation(new Rotations(rotationsTag.getList(EASY_NPC_DATA_MODEL_BODY_TAG, 5)));
-      }
-      if (rotationsTag.contains(EASY_NPC_DATA_MODEL_ARMS_TAG)) {
-        setModelArmsRotation(new Rotations(rotationsTag.getList(EASY_NPC_DATA_MODEL_ARMS_TAG, 5)));
-      }
-      if (rotationsTag.contains(EASY_NPC_DATA_MODEL_LEFT_ARM_TAG)) {
-        setModelLeftArmRotation(
-            new Rotations(rotationsTag.getList(EASY_NPC_DATA_MODEL_LEFT_ARM_TAG, 5)));
-      }
-      if (rotationsTag.contains(EASY_NPC_DATA_MODEL_RIGHT_ARM_TAG)) {
-        setModelRightArmRotation(
-            new Rotations(rotationsTag.getList(EASY_NPC_DATA_MODEL_RIGHT_ARM_TAG, 5)));
-      }
-      if (rotationsTag.contains(EASY_NPC_DATA_MODEL_LEFT_LEG_TAG)) {
-        setModelLeftLegRotation(
-            new Rotations(rotationsTag.getList(EASY_NPC_DATA_MODEL_LEFT_LEG_TAG, 5)));
-      }
-      if (rotationsTag.contains(EASY_NPC_DATA_MODEL_RIGHT_LEG_TAG)) {
-        setModelRightLegRotation(
-            new Rotations(rotationsTag.getList(EASY_NPC_DATA_MODEL_RIGHT_LEG_TAG, 5)));
-      }
-      if (rotationsTag.contains(EASY_NPC_DATA_MODEL_ROOT_TAG)) {
-        setModelRootRotation(new Rotations(rotationsTag.getList(EASY_NPC_DATA_MODEL_ROOT_TAG, 5)));
-      }
-    }
+    // Model Rotation
+    this.readAdditionalModelRotationData(modelDataTag);
 
     // Model Visibility
-    if (modelDataTag.contains(EASY_NPC_DATA_MODEL_VISIBLE_TAG)) {
-      CompoundTag visibilityTag = modelDataTag.getCompound(EASY_NPC_DATA_MODEL_VISIBLE_TAG);
-      if (visibilityTag.contains(EASY_NPC_DATA_MODEL_HEAD_TAG)) {
-        setModelHeadVisible(visibilityTag.getBoolean(EASY_NPC_DATA_MODEL_HEAD_TAG));
-      }
-      if (visibilityTag.contains(EASY_NPC_DATA_MODEL_BODY_TAG)) {
-        setModelBodyVisible(visibilityTag.getBoolean(EASY_NPC_DATA_MODEL_BODY_TAG));
-      }
-      if (visibilityTag.contains(EASY_NPC_DATA_MODEL_ARMS_TAG)) {
-        setModelArmsVisible(visibilityTag.getBoolean(EASY_NPC_DATA_MODEL_ARMS_TAG));
-      }
-      if (visibilityTag.contains(EASY_NPC_DATA_MODEL_LEFT_ARM_TAG)) {
-        setModelLeftArmVisible(visibilityTag.getBoolean(EASY_NPC_DATA_MODEL_LEFT_ARM_TAG));
-      }
-      if (visibilityTag.contains(EASY_NPC_DATA_MODEL_RIGHT_ARM_TAG)) {
-        setModelRightArmVisible(visibilityTag.getBoolean(EASY_NPC_DATA_MODEL_RIGHT_ARM_TAG));
-      }
-      if (visibilityTag.contains(EASY_NPC_DATA_MODEL_LEFT_LEG_TAG)) {
-        setModelLeftLegVisible(visibilityTag.getBoolean(EASY_NPC_DATA_MODEL_LEFT_LEG_TAG));
-      }
-      if (visibilityTag.contains(EASY_NPC_DATA_MODEL_RIGHT_LEG_TAG)) {
-        setModelRightLegVisible(visibilityTag.getBoolean(EASY_NPC_DATA_MODEL_RIGHT_LEG_TAG));
-      }
-    }
+    this.readAdditionalModelVisibilityData(modelDataTag);
   }
 }

@@ -25,6 +25,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.Profession;
@@ -33,7 +34,6 @@ import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Pose;
 
@@ -131,14 +131,14 @@ public class ScreenHelper {
     float entityScaleX = entity.getScaleX();
     float entityScaleY = entity.getScaleY();
     float entityScaleZ = entity.getScaleZ();
-    Rotations entityModelRootRotation = entity.getModelRootRotation();
+    CustomRotation entityModelRootRotation = entity.getModelRootRotation();
     boolean entityInvisible = entity.isInvisible();
 
     // Adjust entity information for rendering
     entity.setScaleX(entity.getDefaultScaleX());
     entity.setScaleY(entity.getDefaultScaleY());
     entity.setScaleZ(entity.getDefaultScaleZ());
-    entity.setModelRootRotation(new Rotations(0.0F, 0.0F, 0.0F));
+    entity.setModelRootRotation(new CustomRotation(0.0F, 0.0F, 0.0F));
     entity.setInvisible(false);
 
     // Render Entity
@@ -173,11 +173,11 @@ public class ScreenHelper {
   public static void renderEntityAvatarForScaling(
       int x, int y, int scale, float yRot, float xRot, EasyNPCEntity entity) {
     // Backup entity information
-    Rotations entityModelRootRotation = entity.getModelRootRotation();
+    CustomRotation entityModelRootRotation = entity.getModelRootRotation();
     boolean entityInvisible = entity.isInvisible();
 
     // Adjust entity information for rendering
-    entity.setModelRootRotation(new Rotations(0.0F, 0.0F, 0.0F));
+    entity.setModelRootRotation(new CustomRotation(0.0F, 0.0F, 0.0F));
     entity.setInvisible(false);
 
     // Render Entity

@@ -52,6 +52,10 @@ public interface ConfigurationData<T extends LivingEntity> extends EasyNPC<T> {
     return true;
   }
 
+  default boolean supportsNoneSkinConfiguration() {
+    return true;
+  }
+
   default boolean supportsDefaultSkinConfiguration() {
     return true;
   }
