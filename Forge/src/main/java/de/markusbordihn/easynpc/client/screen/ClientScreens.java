@@ -48,6 +48,7 @@ import de.markusbordihn.easynpc.client.screen.configuration.rotation.DefaultRota
 import de.markusbordihn.easynpc.client.screen.configuration.scaling.ScalingConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.CustomSkinConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.DefaultSkinConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.skin.NoneSkinConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.PlayerSkinConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.UrlSkinConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.trading.AdvancedTradingConfigurationScreen;
@@ -183,6 +184,8 @@ public class ClientScreens {
               DefaultRotationConfigurationScreen::new);
 
           // Skin Configuration Screens
+          MenuScreens.register(
+              ModMenuTypes.NONE_SKIN_CONFIGURATION_MENU.get(), NoneSkinConfigurationScreen::new);
           MenuScreens.register(
               ModMenuTypes.CUSTOM_SKIN_CONFIGURATION_MENU.get(),
               CustomSkinConfigurationScreen::new);

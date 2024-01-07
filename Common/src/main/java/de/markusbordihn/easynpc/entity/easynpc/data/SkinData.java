@@ -51,7 +51,6 @@ public interface SkinData<T extends LivingEntity> extends EasyNPC<T> {
           return value;
         }
       };
-
   EntityDataAccessor<String> EASY_NPC_DATA_SKIN_NAME =
       SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.STRING);
   EntityDataAccessor<String> EASY_NPC_DATA_SKIN_URL =
@@ -61,13 +60,16 @@ public interface SkinData<T extends LivingEntity> extends EasyNPC<T> {
           EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.OPTIONAL_UUID);
   EntityDataAccessor<SkinType> EASY_NPC_DATA_SKIN_TYPE =
       SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), SKIN_TYPE);
-
   String EASY_NPC_DATA_SKIN_DATA_TAG = "SkinData";
   String EASY_NPC_DATA_SKIN_NAME_TAG = "SkinName";
   String EASY_NPC_DATA_SKIN_TAG = "Skin";
   String EASY_NPC_DATA_SKIN_TYPE_TAG = "SkinType";
   String EASY_NPC_DATA_SKIN_URL_TAG = "SkinURL";
   String EASY_NPC_DATA_SKIN_UUID_TAG = "SkinUUID";
+
+  public static void registerSkinDataSerializer() {
+    EntityDataSerializers.registerSerializer(SKIN_TYPE);
+  }
 
   default String getSkinName() {
     return getEasyNPCData(EASY_NPC_DATA_SKIN_NAME);
