@@ -22,8 +22,8 @@ package de.markusbordihn.easynpc.entity.easynpc.data.legacy;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
+import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
-import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -100,31 +100,31 @@ public class LegacyModelData {
       }
       if (compoundTag.contains(LEGACY_1_DATA_MODEL_HEAD_ROTATION_TAG)) {
         modelData.setModelHeadRotation(
-            new Rotations(compoundTag.getList(LEGACY_1_DATA_MODEL_HEAD_ROTATION_TAG, 5)));
+            new CustomRotation(compoundTag.getList(LEGACY_1_DATA_MODEL_HEAD_ROTATION_TAG, 5)));
       }
       if (compoundTag.contains(LEGACY_1_DATA_MODEL_BODY_ROTATION_TAG)) {
         modelData.setModelBodyRotation(
-            new Rotations(compoundTag.getList(LEGACY_1_DATA_MODEL_BODY_ROTATION_TAG, 5)));
+            new CustomRotation(compoundTag.getList(LEGACY_1_DATA_MODEL_BODY_ROTATION_TAG, 5)));
       }
       if (compoundTag.contains(LEGACY_1_DATA_MODEL_LEFT_ARM_ROTATION_TAG)) {
         modelData.setModelLeftArmRotation(
-            new Rotations(compoundTag.getList(LEGACY_1_DATA_MODEL_LEFT_ARM_ROTATION_TAG, 5)));
+            new CustomRotation(compoundTag.getList(LEGACY_1_DATA_MODEL_LEFT_ARM_ROTATION_TAG, 5)));
       }
       if (compoundTag.contains(LEGACY_1_DATA_MODEL_RIGHT_ARM_ROTATION_TAG)) {
         modelData.setModelRightArmRotation(
-            new Rotations(compoundTag.getList(LEGACY_1_DATA_MODEL_RIGHT_ARM_ROTATION_TAG, 5)));
+            new CustomRotation(compoundTag.getList(LEGACY_1_DATA_MODEL_RIGHT_ARM_ROTATION_TAG, 5)));
       }
       if (compoundTag.contains(LEGACY_1_DATA_MODEL_LEFT_LEG_ROTATION_TAG)) {
         modelData.setModelLeftLegRotation(
-            new Rotations(compoundTag.getList(LEGACY_1_DATA_MODEL_LEFT_LEG_ROTATION_TAG, 5)));
+            new CustomRotation(compoundTag.getList(LEGACY_1_DATA_MODEL_LEFT_LEG_ROTATION_TAG, 5)));
       }
       if (compoundTag.contains(LEGACY_1_DATA_MODEL_RIGHT_LEG_ROTATION_TAG)) {
         modelData.setModelRightLegRotation(
-            new Rotations(compoundTag.getList(LEGACY_1_DATA_MODEL_RIGHT_LEG_ROTATION_TAG, 5)));
+            new CustomRotation(compoundTag.getList(LEGACY_1_DATA_MODEL_RIGHT_LEG_ROTATION_TAG, 5)));
       }
       if (compoundTag.contains(LEGACY_1_DATA_MODEL_ROOT_ROTATION_TAG)) {
         modelData.setModelRootRotation(
-            new Rotations(compoundTag.getList(LEGACY_1_DATA_MODEL_ROOT_ROTATION_TAG, 5)));
+            new CustomRotation(compoundTag.getList(LEGACY_1_DATA_MODEL_ROOT_ROTATION_TAG, 5)));
       }
       return true;
     }
@@ -191,35 +191,39 @@ public class LegacyModelData {
         }
         if (rotationsTag.contains(LEGACY_2_DATA_MODEL_HEAD_ROTATION_TAG)) {
           modelData.setModelHeadRotation(
-              new Rotations(rotationsTag.getList(LEGACY_2_DATA_MODEL_HEAD_ROTATION_TAG, 5)));
+              new CustomRotation(rotationsTag.getList(LEGACY_2_DATA_MODEL_HEAD_ROTATION_TAG, 5)));
         }
         if (rotationsTag.contains(LEGACY_2_DATA_MODEL_BODY_ROTATION_TAG)) {
           modelData.setModelBodyRotation(
-              new Rotations(rotationsTag.getList(LEGACY_2_DATA_MODEL_BODY_ROTATION_TAG, 5)));
+              new CustomRotation(rotationsTag.getList(LEGACY_2_DATA_MODEL_BODY_ROTATION_TAG, 5)));
         }
         if (rotationsTag.contains(LEGACY_2_DATA_MODEL_ARMS_ROTATION_TAG)) {
           modelData.setModelArmsRotation(
-              new Rotations(rotationsTag.getList(LEGACY_2_DATA_MODEL_ARMS_ROTATION_TAG, 5)));
+              new CustomRotation(rotationsTag.getList(LEGACY_2_DATA_MODEL_ARMS_ROTATION_TAG, 5)));
         }
         if (rotationsTag.contains(LEGACY_2_DATA_MODEL_LEFT_ARM_ROTATION_TAG)) {
           modelData.setModelLeftArmRotation(
-              new Rotations(rotationsTag.getList(LEGACY_2_DATA_MODEL_LEFT_ARM_ROTATION_TAG, 5)));
+              new CustomRotation(
+                  rotationsTag.getList(LEGACY_2_DATA_MODEL_LEFT_ARM_ROTATION_TAG, 5)));
         }
         if (rotationsTag.contains(LEGACY_2_DATA_MODEL_RIGHT_ARM_ROTATION_TAG)) {
           modelData.setModelRightArmRotation(
-              new Rotations(rotationsTag.getList(LEGACY_2_DATA_MODEL_RIGHT_ARM_ROTATION_TAG, 5)));
+              new CustomRotation(
+                  rotationsTag.getList(LEGACY_2_DATA_MODEL_RIGHT_ARM_ROTATION_TAG, 5)));
         }
         if (rotationsTag.contains(LEGACY_2_DATA_MODEL_LEFT_LEG_ROTATION_TAG)) {
           modelData.setModelLeftLegRotation(
-              new Rotations(rotationsTag.getList(LEGACY_2_DATA_MODEL_LEFT_LEG_ROTATION_TAG, 5)));
+              new CustomRotation(
+                  rotationsTag.getList(LEGACY_2_DATA_MODEL_LEFT_LEG_ROTATION_TAG, 5)));
         }
         if (rotationsTag.contains(LEGACY_2_DATA_MODEL_RIGHT_LEG_ROTATION_TAG)) {
           modelData.setModelRightLegRotation(
-              new Rotations(rotationsTag.getList(LEGACY_2_DATA_MODEL_RIGHT_LEG_ROTATION_TAG, 5)));
+              new CustomRotation(
+                  rotationsTag.getList(LEGACY_2_DATA_MODEL_RIGHT_LEG_ROTATION_TAG, 5)));
         }
         if (rotationsTag.contains(LEGACY_2_DATA_MODEL_ROOT_ROTATION_TAG)) {
           modelData.setModelRootRotation(
-              new Rotations(rotationsTag.getList(LEGACY_2_DATA_MODEL_ROOT_ROTATION_TAG, 5)));
+              new CustomRotation(rotationsTag.getList(LEGACY_2_DATA_MODEL_ROOT_ROTATION_TAG, 5)));
         }
       }
 

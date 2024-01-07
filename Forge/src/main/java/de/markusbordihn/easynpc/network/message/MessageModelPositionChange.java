@@ -142,6 +142,13 @@ public class MessageModelPositionChange extends NetworkMessage {
         log.error("Invalid modelPart {} for {} from {}", modelPart, message, serverPlayer);
         break;
     }
+
+    // Verify if custom model pose is really needed.
+    if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM && !easyNPCEntity.hasChangedModel()) {
+      log.debug("Reset custom model pose for {} from {}", easyNPCEntity, serverPlayer);
+      easyNPCEntity.setModelPose(ModelPose.DEFAULT);
+      easyNPCEntity.setPose(Pose.STANDING);
+    }
   }
 
   public ModelPart getModelPart() {

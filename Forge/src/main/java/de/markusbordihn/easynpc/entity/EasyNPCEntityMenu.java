@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.config.CommonConfig;
 import de.markusbordihn.easynpc.data.WorldPresetData;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
+import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
@@ -54,6 +55,7 @@ import de.markusbordihn.easynpc.menu.configuration.rotation.DefaultRotationConfi
 import de.markusbordihn.easynpc.menu.configuration.scaling.ScalingConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.skin.NoneSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.PlayerSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.UrlSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.trading.AdvancedTradingConfigurationMenu;
@@ -302,8 +304,13 @@ public class EasyNPCEntityMenu {
         COMMON.mainConfigurationAllowInCreative.get(),
         COMMON.mainConfigurationPermissionLevel.get())) {
       UUID uuid = entity.getUUID();
+      DialogType dialogType = entity.getDialogDataSet().getType();
       serverPlayer.openMenu(
-          MainConfigurationMenu.getMenuProvider(uuid, entity), buffer -> buffer.writeUUID(uuid));
+          MainConfigurationMenu.getMenuProvider(uuid, entity, dialogType),
+          buffer -> {
+            buffer.writeUUID(uuid);
+            buffer.writeEnum(dialogType);
+          });
     }
   }
 
@@ -408,6 +415,21 @@ public class EasyNPCEntityMenu {
       UUID uuid = entity.getUUID();
       serverPlayer.openMenu(
           DefaultSkinConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
+    }
+  }
+
+  public static void openNoneSkinConfigurationMenu(
+      ServerPlayer serverPlayer, EasyNPCEntity entity) {
+    if (hasPermissions(
+        serverPlayer,
+        entity,
+        COMMON.noneSkinConfigurationEnabled.get(),
+        COMMON.noneSkinConfigurationAllowInCreative.get(),
+        COMMON.noneSkinConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      serverPlayer.openMenu(
+          NoneSkinConfigurationMenu.getMenuProvider(uuid, entity),
           buffer -> buffer.writeUUID(uuid));
     }
   }

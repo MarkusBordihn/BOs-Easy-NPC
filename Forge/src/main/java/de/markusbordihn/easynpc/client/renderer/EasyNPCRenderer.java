@@ -55,6 +55,7 @@ public interface EasyNPCRenderer {
   default ResourceLocation getEntityTexture(EasyNPCEntity entity) {
     SkinData<?> skinData = entity.getEasyNPCSkinData();
     return switch (entity.getSkinType()) {
+      case NONE -> Constants.BLANK_ENTITY_TEXTURE;
       case CUSTOM -> getCustomTexture(skinData);
       case SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> getPlayerTexture(entity);
       default -> getTextureByVariant(entity.getVariant());
@@ -71,6 +72,7 @@ public interface EasyNPCRenderer {
 
   default ResourceLocation getEntityPlayerTexture(EasyNPCEntity entity) {
     return switch (entity.getSkinType()) {
+      case NONE -> Constants.BLANK_ENTITY_TEXTURE;
       case CUSTOM -> getCustomTexture(entity);
       case PLAYER_SKIN, SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> getPlayerTexture(entity);
       default -> getTextureByVariant(entity.getVariant());

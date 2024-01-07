@@ -21,11 +21,11 @@ package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
-import net.minecraft.core.Rotations;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Pose;
@@ -34,13 +34,13 @@ import net.minecraftforge.event.network.CustomPayloadEvent;
 public class MessageModelRotationChange extends NetworkMessage {
 
   protected final ModelPart modelPart;
-  protected final Rotations rotations;
+  protected final CustomRotation rotations;
 
   public MessageModelRotationChange(UUID uuid, ModelPart modelPart, float x, float y, float z) {
-    this(uuid, modelPart, new Rotations(x, y, z));
+    this(uuid, modelPart, new CustomRotation(x, y, z));
   }
 
-  public MessageModelRotationChange(UUID uuid, ModelPart modelPart, Rotations rotations) {
+  public MessageModelRotationChange(UUID uuid, ModelPart modelPart, CustomRotation rotations) {
     super(uuid);
     this.modelPart = modelPart;
     this.rotations = rotations;
@@ -81,14 +81,14 @@ public class MessageModelRotationChange extends NetworkMessage {
     // Validate ModelPart.
     ModelPart modelPart = message.getModelPart();
     if (modelPart == null) {
-      log.error("Invalid modelPart {} for {} from {}", modelPart, message, serverPlayer);
+      log.error("Invalid modelPart for {} from {}", message, serverPlayer);
       return;
     }
 
     // Validate Rotations.
-    Rotations rotations = message.getRotations();
+    CustomRotation rotations = message.getRotations();
     if (rotations == null) {
-      log.error("Invalid rotation {} for {} from {}", rotations, message, serverPlayer);
+      log.error("Invalid rotation for {} from {}", message, serverPlayer);
       return;
     }
 
@@ -145,13 +145,20 @@ public class MessageModelRotationChange extends NetworkMessage {
         log.error("Invalid modelPart {} for {} from {}", modelPart, message, serverPlayer);
         break;
     }
+
+    // Verify if custom model pose is really needed.
+    if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM && !easyNPCEntity.hasChangedModel()) {
+      log.debug("Reset custom model pose for {} from {}", easyNPCEntity, serverPlayer);
+      easyNPCEntity.setModelPose(ModelPose.DEFAULT);
+      easyNPCEntity.setPose(Pose.STANDING);
+    }
   }
 
   public ModelPart getModelPart() {
     return this.modelPart;
   }
 
-  public Rotations getRotations() {
+  public CustomRotation getRotations() {
     return this.rotations;
   }
 
