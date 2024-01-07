@@ -17,15 +17,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.configuration.dialog;
+package de.markusbordihn.easynpc.client.screen.configuration.skin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.Text;
-import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
-import de.markusbordihn.easynpc.data.dialog.DialogType;
-import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfigurationMenu;
+import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.menu.configuration.skin.NoneSkinConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import java.util.Collections;
 import java.util.List;
@@ -33,23 +32,16 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
-public class NoneDialogConfigurationScreen
-    extends DialogConfigurationScreen<NoneDialogConfigurationMenu> {
+public class NoneSkinConfigurationScreen
+    extends SkinConfigurationScreen<NoneSkinConfigurationMenu> {
 
-  // Buttons
-  protected Checkbox noneDialogCheckbox;
+  protected Checkbox noneSkinCheckbox;
   protected int numberOfTextLines = 1;
-  // Text
   private List<FormattedCharSequence> textComponents = Collections.emptyList();
-  // Cache
-  private DialogDataSet formerDialogDataSet;
 
-  public NoneDialogConfigurationScreen(
-      NoneDialogConfigurationMenu menu, Inventory inventory, Component component) {
+  public NoneSkinConfigurationScreen(
+      NoneSkinConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 
@@ -58,39 +50,42 @@ public class NoneDialogConfigurationScreen
     super.init();
 
     // Default button stats
-    this.noneDialogButton.active = false;
+    this.noneSkinButton.active = false;
 
-    // Former dialog type
-    this.formerDialogDataSet = this.dialogDataSet;
+    // Former skin type
+    SkinType formerSkinType = entity.getSkinType();
 
     // None Dialog Checkbox
-    this.noneDialogCheckbox =
+    this.noneSkinCheckbox =
         this.addRenderableWidget(
             new Checkbox(
                 this.contentLeftPos + 100,
                 this.topPos + 170,
-                "disable_dialog_checkbox",
-                !dialogDataSet.hasDialog(),
+                "disable_skin_checkbox",
+                entity.getSkinType() == SkinType.NONE,
                 checkbox -> {
                   if (checkbox.selected()) {
-                    DialogDataSet dialogDataSet = new DialogDataSet(DialogType.NONE);
-                    NetworkMessageHandler.saveDialog(uuid, dialogDataSet);
+                    NetworkMessageHandler.skinTypeChange(uuid, SkinType.NONE);
                   } else {
-                    if (this.formerDialogDataSet != null) {
-                      NetworkMessageHandler.saveDialog(uuid, formerDialogDataSet);
-                    } else {
-                      DialogDataSet dialogDataSet = new DialogDataSet(DialogType.BASIC);
-                      NetworkMessageHandler.saveDialog(uuid, dialogDataSet);
-                    }
+                    NetworkMessageHandler.skinTypeChange(
+                        uuid,
+                        formerSkinType != null && formerSkinType != SkinType.NONE
+                            ? formerSkinType
+                            : SkinType.DEFAULT);
                   }
                 }));
 
     // Pre-format text
     this.textComponents =
         this.font.split(
-            new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "disable_dialog_text"),
+            new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "disable_skin_text"),
             this.imageWidth - 20);
     this.numberOfTextLines = this.textComponents.size();
+  }
+
+  @Override
+  protected void renderSkinSelectionBackground(PoseStack poseStack) {
+    // Do nothing
   }
 
   @Override

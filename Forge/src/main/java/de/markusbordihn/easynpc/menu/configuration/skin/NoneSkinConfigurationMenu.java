@@ -17,9 +17,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.menu.configuration.main;
+package de.markusbordihn.easynpc.menu.configuration.skin;
 
-import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import java.util.UUID;
@@ -33,38 +32,29 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-public class MainConfigurationMenu extends ConfigurationMenu {
+public class NoneSkinConfigurationMenu extends ConfigurationMenu {
 
-  protected final DialogType dialogType;
-
-  public MainConfigurationMenu(
-      int windowId, Inventory playerInventory, UUID uuid, DialogType dialogType) {
-    super(ModMenuTypes.MAIN_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
-    this.dialogType = dialogType;
+  public NoneSkinConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
+    super(ModMenuTypes.NONE_SKIN_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
   }
 
-  public MainConfigurationMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
-    this(windowId, playerInventory, data.readUUID(), data.readEnum(DialogType.class));
+  public NoneSkinConfigurationMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
+    this(windowId, playerInventory, data.readUUID());
   }
 
-  public static MenuProvider getMenuProvider(UUID uuid, Entity entity, DialogType dialogType) {
+  public static MenuProvider getMenuProvider(UUID uuid, Entity entity) {
     return new MenuProvider() {
-      @Nonnull
       @Override
+      @Nonnull
       public Component getDisplayName() {
-        return new TextComponent("Main Configuration for " + entity.getName().getString());
+        return new TextComponent("None Skin for " + entity.getName().getString());
       }
 
-      @Nonnull
       @Override
       public AbstractContainerMenu createMenu(
           int windowId, @Nonnull Inventory inventory, @Nonnull Player serverPlayer) {
-        return new MainConfigurationMenu(windowId, inventory, uuid, dialogType);
+        return new NoneSkinConfigurationMenu(windowId, inventory, uuid);
       }
     };
-  }
-
-  public DialogType getDialogType() {
-    return this.dialogType;
   }
 }

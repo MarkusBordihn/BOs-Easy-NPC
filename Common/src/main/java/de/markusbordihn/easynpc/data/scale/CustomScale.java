@@ -57,15 +57,11 @@ public class CustomScale {
     return this.z;
   }
 
-  public float getScaleX() {
-    return this.x;
+  public boolean hasChanged() {
+    return hasChanged(1, 1, 1);
   }
 
-  public float getScaleY() {
-    return this.y;
-  }
-
-  public float getScaleZ() {
-    return this.z;
+  public boolean hasChanged(float x, float y, float z) {
+    return this.x != x || this.y != y || this.z != z;
   }
 }

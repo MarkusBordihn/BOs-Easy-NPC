@@ -74,6 +74,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
   protected final boolean supportsCustomPoseConfiguration;
   protected final boolean supportsScalingConfiguration;
   protected final boolean supportsSkinConfiguration;
+  protected final boolean supportsNoneSkinConfiguration;
   protected final boolean supportsDefaultSkinConfiguration;
   protected final boolean supportsUrlSkinConfiguration;
   protected final boolean supportsPlayerSkinConfiguration;
@@ -116,6 +117,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     this.supportsCustomPoseConfiguration = this.entity.supportsCustomPoseConfiguration();
     this.supportsScalingConfiguration = this.entity.supportsScalingConfiguration();
     this.supportsSkinConfiguration = this.entity.supportsSkinConfiguration();
+    this.supportsNoneSkinConfiguration = this.entity.supportsNoneSkinConfiguration();
     this.supportsCustomSkinConfiguration = this.entity.supportsCustomSkinConfiguration();
     this.supportsDefaultSkinConfiguration = this.entity.supportsDefaultSkinConfiguration();
     this.supportsPlayerSkinConfiguration = this.entity.supportsPlayerSkinConfiguration();

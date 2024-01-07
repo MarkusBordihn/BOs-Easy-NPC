@@ -82,6 +82,7 @@ public class CommonConfig {
     public static final String YES_NO_DIALOG_CONFIGURATION = "yes/no dialog";
     public static final String NONE_DIALOG_CONFIGURATION = "none dialog";
     public static final String ADVANCED_DIALOG_CONFIGURATION = "advanced dialog";
+    public static final String NONE_SKIN_CONFIGURATION = "none skin";
     public static final String DEFAULT_SKIN_CONFIGURATION = "default skin";
     public static final String PLAYER_SKIN_CONFIGURATION = "player skin";
     public static final String URL_SKIN_CONFIGURATION = "url skin";
@@ -136,6 +137,9 @@ public class CommonConfig {
     public final ForgeConfigSpec.BooleanValue advancedDialogConfigurationEnabled;
     public final ForgeConfigSpec.BooleanValue advancedDialogConfigurationAllowInCreative;
     public final ForgeConfigSpec.IntValue advancedDialogConfigurationPermissionLevel;
+    public final ForgeConfigSpec.BooleanValue noneSkinConfigurationEnabled;
+    public final ForgeConfigSpec.BooleanValue noneSkinConfigurationAllowInCreative;
+    public final ForgeConfigSpec.IntValue noneSkinConfigurationPermissionLevel;
     public final ForgeConfigSpec.BooleanValue defaultSkinConfigurationEnabled;
     public final ForgeConfigSpec.BooleanValue defaultSkinConfigurationAllowInCreative;
     public final ForgeConfigSpec.IntValue defaultSkinConfigurationPermissionLevel;
@@ -363,6 +367,21 @@ public class CommonConfig {
           builder
               .comment(getPermissionLevelComment(ADVANCED_DIALOG_CONFIGURATION))
               .defineInRange("advancedDialogConfigurationPermissionLevel", 0, 0, 4);
+      builder.pop();
+
+      builder.push("[Skin Configuration] None Skin");
+      noneSkinConfigurationEnabled =
+          builder
+              .comment(getEnableComment(NONE_SKIN_CONFIGURATION))
+              .define("noneSkinConfigurationEnabled", true);
+      noneSkinConfigurationAllowInCreative =
+          builder
+              .comment(getAllowInCreativeComment(NONE_SKIN_CONFIGURATION))
+              .define("noneSkinConfigurationAllowInCreative", true);
+      noneSkinConfigurationPermissionLevel =
+          builder
+              .comment(getPermissionLevelComment(NONE_SKIN_CONFIGURATION))
+              .defineInRange("noneSkinConfigurationPermissionLevel", 0, 0, 4);
       builder.pop();
 
       builder.push("[Skin Configuration] Default Skin");

@@ -17,32 +17,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.position;
+package de.markusbordihn.easynpc.data.rotation;
 
-import net.minecraft.nbt.FloatTag;
+import net.minecraft.core.Rotations;
 import net.minecraft.nbt.ListTag;
 
-public class CustomPosition {
-  protected final float x;
-  protected final float y;
-  protected final float z;
+public class CustomRotation extends Rotations {
 
-  public CustomPosition(float x, float y, float z) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
+  public CustomRotation(float x, float y, float z) {
+    super(x, y, z);
   }
 
-  public CustomPosition(ListTag listTag) {
+  public CustomRotation(ListTag listTag) {
     this(listTag.getFloat(0), listTag.getFloat(1), listTag.getFloat(2));
-  }
-
-  public ListTag save() {
-    ListTag listTag = new ListTag();
-    listTag.add(FloatTag.valueOf(this.x));
-    listTag.add(FloatTag.valueOf(this.y));
-    listTag.add(FloatTag.valueOf(this.z));
-    return listTag;
   }
 
   public float x() {
