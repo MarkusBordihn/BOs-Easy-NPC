@@ -17,27 +17,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.skin;
+package de.markusbordihn.easynpc.data.rotation;
 
-public enum SkinType {
-  // @formatter:off
-  CUSTOM,
-  DEFAULT,
-  INSECURE_REMOTE_URL,
-  NONE,
-  PLAYER_SKIN,
-  SECURE_REMOTE_URL;
+import net.minecraft.core.Rotations;
+import net.minecraft.nbt.ListTag;
 
-  // @formatter:on
+public class CustomRotation extends Rotations {
 
-  public static SkinType get(String skinType) {
-    if (skinType == null || skinType.isEmpty()) {
-      return SkinType.DEFAULT;
-    }
-    try {
-      return SkinType.valueOf(skinType);
-    } catch (IllegalArgumentException e) {
-      return SkinType.DEFAULT;
-    }
+  public CustomRotation(float x, float y, float z) {
+    super(x, y, z);
+  }
+
+  public CustomRotation(ListTag listTag) {
+    this(listTag.getFloat(0), listTag.getFloat(1), listTag.getFloat(2));
+  }
+
+  public float x() {
+    return this.x;
+  }
+
+  public float y() {
+    return this.y;
+  }
+
+  public float z() {
+    return this.z;
+  }
+
+  public boolean hasChanged() {
+    return hasChanged(0, 0, 0);
+  }
+
+  public boolean hasChanged(float x, float y, float z) {
+    return this.x != x || this.y != y || this.z != z;
   }
 }

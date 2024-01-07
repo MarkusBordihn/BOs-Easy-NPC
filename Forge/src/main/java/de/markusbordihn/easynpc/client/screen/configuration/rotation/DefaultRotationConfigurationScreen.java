@@ -27,8 +27,10 @@ import de.markusbordihn.easynpc.client.screen.components.SliderButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.data.model.ModelPart;
+import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.menu.configuration.rotation.DefaultRotationConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import javax.annotation.Nonnull;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.Rotations;
@@ -88,7 +90,8 @@ public class DefaultRotationConfigurationScreen
                   NetworkMessageHandler.rotationChange(
                       uuid,
                       ModelPart.ROOT,
-                      new Rotations(this.rootRotationX, this.rootRotationY, this.rootRotationZ));
+                      new CustomRotation(
+                          this.rootRotationX, this.rootRotationY, this.rootRotationZ));
                 }));
     this.rootRotationXResetButton =
         this.addRenderableWidget(
@@ -117,7 +120,8 @@ public class DefaultRotationConfigurationScreen
                   NetworkMessageHandler.rotationChange(
                       uuid,
                       ModelPart.ROOT,
-                      new Rotations(this.rootRotationX, this.rootRotationY, this.rootRotationZ));
+                      new CustomRotation(
+                          this.rootRotationX, this.rootRotationY, this.rootRotationZ));
                 }));
     this.rootRotationYResetButton =
         this.addRenderableWidget(
@@ -146,7 +150,8 @@ public class DefaultRotationConfigurationScreen
                   NetworkMessageHandler.rotationChange(
                       uuid,
                       ModelPart.ROOT,
-                      new Rotations(this.rootRotationX, this.rootRotationY, this.rootRotationZ));
+                      new CustomRotation(
+                          this.rootRotationX, this.rootRotationY, this.rootRotationZ));
                 }));
     this.rootRotationZResetButton =
         this.addRenderableWidget(
@@ -198,7 +203,7 @@ public class DefaultRotationConfigurationScreen
   }
 
   @Override
-  public void renderBackground(PoseStack poseStack) {
+  public void renderBackground(@Nonnull PoseStack poseStack) {
     // Use a more transparent background than the default.
     if (this.clientLevel != null) {
       fillGradient(poseStack, 0, 0, this.width, this.height, 0x55000000, 0x55000000);

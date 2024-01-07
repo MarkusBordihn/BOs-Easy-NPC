@@ -29,7 +29,6 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
-import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.data.trading.TradingType;
@@ -163,10 +162,14 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 onPress -> {
                   SkinType skinType = this.entity.getSkinType();
                   switch (skinType) {
+                    case NONE:
+                      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_SKIN);
+                      break;
                     case PLAYER_SKIN:
-                    case SECURE_REMOTE_URL:
-                    case INSECURE_REMOTE_URL:
                       NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.PLAYER_SKIN);
+                      break;
+                    case SECURE_REMOTE_URL, INSECURE_REMOTE_URL:
+                      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.URL_SKIN);
                       break;
                     case CUSTOM:
                       NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_SKIN);
@@ -228,14 +231,17 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 BUTTON_WIDTH,
                 "dialog",
                 onPress -> {
-                  DialogType dialogType = DialogType.CUSTOM;
-                  switch (dialogType) {
+                  switch (this.menu.getDialogType()) {
                     case NONE:
                       NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_DIALOG);
                       break;
                     case YES_NO:
                       NetworkMessageHandler.openConfiguration(
                           uuid, ConfigurationType.YES_NO_DIALOG);
+                      break;
+                    case CUSTOM, STANDARD:
+                      NetworkMessageHandler.openConfiguration(
+                          uuid, ConfigurationType.ADVANCED_DIALOG);
                       break;
                     case BASIC:
                     default:
@@ -327,12 +333,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                   ModelPose modelPose = entity.getModelPose();
                   switch (modelPose) {
                     case CUSTOM:
-                      if (!entity.getModelHeadPosition().isZero()
-                          || !entity.getModelBodyPosition().isZero()
-                          || !entity.getModelLeftArmPosition().isZero()
-                          || !entity.getModelRightArmPosition().isZero()
-                          || !entity.getModelLeftLegPosition().isZero()
-                          || !entity.getModelRightLegPosition().isZero()) {
+                      if (entity.hasChangedModelPosition()) {
                         NetworkMessageHandler.openConfiguration(
                             uuid, ConfigurationType.CUSTOM_POSE);
                       } else {
