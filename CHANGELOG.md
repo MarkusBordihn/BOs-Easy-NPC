@@ -5,18 +5,31 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [GitHub History][history] instead.
 
-### v3.7.2
+### 3.7.3
+
+Note: Please backup your world / npcs before updating from 6.x or earlier!
+This update includes a lot of changes and new features and even if I try to support all former data
+it could be that some of them are not compatible with older versions.
+
+- Added transparent "None" skin option for better [Armourer's Workshop][armourers_workshop]
+  compatibility and other mod support.
+- Fixed issue with advanced and custom pose model rendering.
+- Fixed issue with auto-selecting the correct dialog type within the configuration screen.
+- Optimized model data for better performance and smaller data size.
+- Completed EasyNPC wiki documentation for all features.
+
+### 3.7.2
 
 - Added Easy NPC position tool to allow easier positioning of NPCs.
 - Added additional Easy NPC Spawn Eggs and entity types for mod integrations.
 - Fixed bounding boxes for NPCs with custom models, poses and scaling.
 - Fixed issue with cut-off dialog button text.
 
-### v3.7.1
+### 3.7.1
 
 - Fixed dialog editor UI issue with the new dialog text editor.
 
-### v3.7.0
+### 3.7.0
 
 - Restricted the edit behavior for NPC to allow more use-cases to the following:
     - User is sneaking and clicking on the NPC (creative mode only)
@@ -31,7 +44,7 @@ For the full changelog, please go to the [GitHub History][history] instead.
 - Fixed head and body rotation are not show correctly in some instances.
 - Code optimizations and cleanup.
 
-### v3.6.1
+### 3.6.1
 
 - Smaller bug fixes and improvements.
 

@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
+import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
@@ -85,7 +86,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                   NetworkMessageHandler.rotationChange(
                       uuid,
                       modelPart,
-                      new Rotations(
+                      new CustomRotation(
                           (float) Math.toRadians(slider.getTargetValue()),
                           currentModelPartRotation.getY(),
                           currentModelPartRotation.getZ()));
@@ -104,7 +105,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                   NetworkMessageHandler.rotationChange(
                       uuid,
                       modelPart,
-                      new Rotations(
+                      new CustomRotation(
                           currentModelPartRotation.getX(),
                           (float) Math.toRadians(slider.getTargetValue()),
                           currentModelPartRotation.getZ()));
@@ -123,7 +124,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                   NetworkMessageHandler.rotationChange(
                       uuid,
                       modelPart,
-                      new Rotations(
+                      new CustomRotation(
                           currentModelPartRotation.getX(),
                           currentModelPartRotation.getY(),
                           (float) Math.toRadians(slider.getTargetValue())));
@@ -146,7 +147,8 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 sliderButtonX.reset();
                 sliderButtonY.reset();
                 sliderButtonZ.reset();
-                NetworkMessageHandler.rotationChange(uuid, modelPart, new Rotations(0f, 0f, 0f));
+                NetworkMessageHandler.rotationChange(
+                    uuid, modelPart, new CustomRotation(0f, 0f, 0f));
               }));
     } else {
       this.addRenderableWidget(
@@ -159,7 +161,8 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 sliderButtonX.reset();
                 sliderButtonY.reset();
                 sliderButtonZ.reset();
-                NetworkMessageHandler.rotationChange(uuid, modelPart, new Rotations(0f, 0f, 0f));
+                NetworkMessageHandler.rotationChange(
+                    uuid, modelPart, new CustomRotation(0f, 0f, 0f));
               }));
     }
     return sliderButtonX;
@@ -197,7 +200,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 top,
                 sliderWidth,
                 label + "PositionX",
-                modelPartPosition.getX(),
+                modelPartPosition.x(),
                 SliderButton.Type.POSITION,
                 slider -> {
                   CustomPosition currentModelPartPosition =
@@ -207,8 +210,8 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                       modelPart,
                       new CustomPosition(
                           slider.getTargetValue(),
-                          currentModelPartPosition.getY(),
-                          currentModelPartPosition.getZ()));
+                          currentModelPartPosition.y(),
+                          currentModelPartPosition.z()));
                 }));
     SliderButton sliderButtonY =
         this.addRenderableWidget(
@@ -217,7 +220,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 top,
                 sliderWidth,
                 label + "PositionY",
-                modelPartPosition.getY(),
+                modelPartPosition.y(),
                 SliderButton.Type.POSITION,
                 slider -> {
                   CustomPosition currentModelPartPosition =
@@ -226,9 +229,9 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                       uuid,
                       modelPart,
                       new CustomPosition(
-                          currentModelPartPosition.getX(),
+                          currentModelPartPosition.x(),
                           slider.getTargetValue(),
-                          currentModelPartPosition.getZ()));
+                          currentModelPartPosition.z()));
                 }));
     SliderButton sliderButtonZ =
         this.addRenderableWidget(
@@ -237,7 +240,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 top,
                 sliderWidth,
                 label + "PositionZ",
-                modelPartPosition.getZ(),
+                modelPartPosition.z(),
                 SliderButton.Type.POSITION,
                 slider -> {
                   CustomPosition currentModelPartPosition =
@@ -246,8 +249,8 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                       uuid,
                       modelPart,
                       new CustomPosition(
-                          currentModelPartPosition.getX(),
-                          currentModelPartPosition.getY(),
+                          currentModelPartPosition.x(),
+                          currentModelPartPosition.y(),
                           slider.getTargetValue()));
                 }));
 

@@ -36,7 +36,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -69,10 +68,9 @@ public class EasyNPCBaseEntity extends AgeableMob
   private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
 
   static {
-    EntityDataSerializers.registerSerializer(SkinData.SKIN_TYPE);
-    EntityDataSerializers.registerSerializer(ModelData.MODEL_POSE);
-    EntityDataSerializers.registerSerializer(ModelData.POSITION);
-    EntityDataSerializers.registerSerializer(ModelData.SCALE);
+    // Register custom data serializers
+    SkinData.registerSkinDataSerializer();
+    ModelData.registerModelDataSerializer();
   }
 
   private final CustomEntityData customEntityData = new CustomEntityData(this);

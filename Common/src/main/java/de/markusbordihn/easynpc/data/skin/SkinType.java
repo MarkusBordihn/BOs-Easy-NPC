@@ -21,10 +21,11 @@ package de.markusbordihn.easynpc.data.skin;
 
 public enum SkinType {
   // @formatter:off
-  DEFAULT,
   CUSTOM,
-  PLAYER_SKIN,
+  DEFAULT,
   INSECURE_REMOTE_URL,
+  NONE,
+  PLAYER_SKIN,
   SECURE_REMOTE_URL;
 
   // @formatter:on

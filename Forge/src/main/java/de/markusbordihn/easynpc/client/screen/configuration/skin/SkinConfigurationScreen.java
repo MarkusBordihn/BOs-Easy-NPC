@@ -40,6 +40,7 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
   protected static final int SKIN_PREVIEW_WIDTH = 60;
 
   // Buttons
+  protected Button noneSkinButton = null;
   protected Button customSkinButton = null;
   protected Button defaultSkinButton = null;
   protected Button playerSkinButton = null;
@@ -115,12 +116,21 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
     super.init();
 
     // Skin Types
-    this.defaultSkinButton =
+    this.noneSkinButton =
         this.addRenderableWidget(
             new TextButton(
                 this.buttonLeftPos,
                 this.buttonTopPos,
-                72,
+                44,
+                "disable_skin",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_SKIN)));
+    this.defaultSkinButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.noneSkinButton.x + this.noneSkinButton.getWidth(),
+                this.buttonTopPos,
+                64,
                 "default",
                 onPress ->
                     NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_SKIN)));
@@ -129,7 +139,7 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
             new TextButton(
                 this.defaultSkinButton.x + this.defaultSkinButton.getWidth(),
                 this.buttonTopPos,
-                72,
+                62,
                 "player_skin",
                 onPress ->
                     NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.PLAYER_SKIN)));
@@ -149,12 +159,19 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
             new TextButton(
                 this.urlSkinButton.x + this.urlSkinButton.getWidth(),
                 this.buttonTopPos,
-                100,
+                80,
                 "custom",
                 onPress ->
                     NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_SKIN)));
 
     // Default button stats
+    this.noneSkinButton.active =
+        this.supportsSkinConfiguration
+            && this.supportsNoneSkinConfiguration
+            && this.hasPermissions(
+                COMMON.noneSkinConfigurationEnabled.get(),
+                COMMON.noneSkinConfigurationAllowInCreative.get(),
+                COMMON.noneSkinConfigurationPermissionLevel.get());
     this.customSkinButton.active =
         this.supportsSkinConfiguration
             && this.supportsCustomSkinConfiguration
