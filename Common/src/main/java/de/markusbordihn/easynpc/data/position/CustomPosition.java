@@ -58,19 +58,11 @@ public class CustomPosition {
     return this.z;
   }
 
-  public float getX() {
-    return this.x;
+  public boolean hasChanged() {
+    return hasChanged(0, 0, 0);
   }
 
-  public float getY() {
-    return this.y;
-  }
-
-  public float getZ() {
-    return this.z;
-  }
-
-  public boolean isZero() {
-    return this.x == 0 && this.y == 0 && this.z == 0;
+  public boolean hasChanged(float x, float y, float z) {
+    return this.x != x || this.y != y || this.z != z;
   }
 }

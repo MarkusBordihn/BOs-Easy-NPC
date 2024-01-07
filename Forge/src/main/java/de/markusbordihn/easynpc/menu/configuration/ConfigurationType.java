@@ -49,6 +49,7 @@ public enum ConfigurationType {
   LOOK_OBJECTIVE,
   MAIN,
   NONE_DIALOG,
+  NONE_SKIN,
   NONE_TRADING,
   PLAYER_SKIN,
   SCALING,

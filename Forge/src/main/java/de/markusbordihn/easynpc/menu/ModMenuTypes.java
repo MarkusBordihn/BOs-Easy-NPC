@@ -48,6 +48,7 @@ import de.markusbordihn.easynpc.menu.configuration.rotation.DefaultRotationConfi
 import de.markusbordihn.easynpc.menu.configuration.scaling.ScalingConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.skin.NoneSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.PlayerSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.skin.UrlSkinConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.trading.AdvancedTradingConfigurationMenu;
@@ -228,6 +229,11 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               "default_skin_configuration_menu",
               () -> IForgeMenuType.create(DefaultSkinConfigurationMenu::new));
+  public static final RegistryObject<MenuType<NoneSkinConfigurationMenu>>
+      NONE_SKIN_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              "none_skin_configuration_menu",
+              () -> IForgeMenuType.create(NoneSkinConfigurationMenu::new));
   public static final RegistryObject<MenuType<PlayerSkinConfigurationMenu>>
       PLAYER_SKIN_CONFIGURATION_MENU =
           MENU_TYPES.register(
