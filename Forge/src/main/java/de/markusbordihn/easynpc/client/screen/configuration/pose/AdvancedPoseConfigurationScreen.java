@@ -77,8 +77,9 @@ public class AdvancedPoseConfigurationScreen
     this.advancedPoseButton.active = false;
 
     // Position and size
+    int sliderLeftDefaultPos = this.contentLeftPos - 3;
     int sliderTopPos = this.contentTopPos + 16;
-    int sliderLeftPos = this.contentLeftPos - 3;
+    int sliderLeftPos = sliderLeftDefaultPos;
     int sliderLeftSpace = 200;
     int sliderTopSpace = 66;
 
@@ -99,7 +100,7 @@ public class AdvancedPoseConfigurationScreen
 
     // Right arm rotations
     if (this.entity.hasRightArmModelPart()) {
-      sliderLeftPos = this.contentLeftPos;
+      sliderLeftPos = sliderLeftDefaultPos;
       this.rightArmRotationSliderButton =
           createVisibilityRotationSlider(
               sliderLeftPos, sliderTopPos, ModelPart.RIGHT_ARM, "right_arm");
@@ -112,13 +113,13 @@ public class AdvancedPoseConfigurationScreen
           createVisibilityRotationSlider(
               sliderLeftPos, sliderTopPos, ModelPart.LEFT_ARM, "left_arm");
     } else if (this.entity.hasArmsModelPart()) {
-      sliderLeftPos = this.contentLeftPos;
+      sliderLeftPos = sliderLeftDefaultPos;
       this.armsRotationSliderButton =
           createVisibilityRotationSlider(sliderLeftPos, sliderTopPos, ModelPart.ARMS, "arms");
     }
 
     sliderTopPos += sliderTopSpace;
-    sliderLeftPos = this.contentLeftPos;
+    sliderLeftPos = sliderLeftDefaultPos;
 
     // Right leg rotations
     if (this.entity.hasRightLegModelPart()) {

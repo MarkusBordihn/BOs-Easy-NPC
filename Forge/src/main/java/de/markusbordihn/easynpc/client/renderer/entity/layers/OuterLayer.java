@@ -36,12 +36,16 @@ public class OuterLayer<T extends EasyNPCEntity, M extends EntityModel<T>>
     extends RenderLayer<T, M> {
 
   private final Map<?, ResourceLocation> textures;
+  private final M model;
 
   @SuppressWarnings("java:S1172")
   public OuterLayer(
-      RenderLayerParent<T, M> parent, EntityModelSet model, Map<?, ResourceLocation> textures) {
+      RenderLayerParent<T, M> parent,
+      EntityModelSet entityModelSet,
+      Map<?, ResourceLocation> textures) {
     super(parent);
     this.textures = textures;
+    this.model = parent.getModel();
   }
 
   @Override
@@ -61,9 +65,23 @@ public class OuterLayer<T extends EasyNPCEntity, M extends EntityModel<T>>
     }
     ResourceLocation resourceLocation = textures.get(livingEntity.getVariant());
     if (resourceLocation != null) {
-      M model = this.getParentModel();
-      renderColoredCutoutModel(
-          model, resourceLocation, poseStack, buffer, lightLevel, livingEntity, 1.0F, 1.0F, 1.0F);
+      coloredCutoutModelCopyLayerRender(
+          this.getParentModel(),
+          this.model,
+          resourceLocation,
+          poseStack,
+          buffer,
+          lightLevel,
+          livingEntity,
+          limbSwing,
+          limbSwingAmount,
+          ageInTicks2,
+          netHeadYaw,
+          headPitch,
+          ageInTicks,
+          1.0F,
+          1.0F,
+          1.0F);
     }
   }
 }
