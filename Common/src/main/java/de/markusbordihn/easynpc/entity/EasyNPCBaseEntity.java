@@ -23,9 +23,11 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.custom.CustomDataAccessor;
 import de.markusbordihn.easynpc.data.entity.CustomEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
+import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
@@ -55,9 +57,11 @@ import org.apache.logging.log4j.Logger;
 public class EasyNPCBaseEntity extends AgeableMob
     implements NeutralMob,
         EasyNPC<AgeableMob>,
+        ActionEventData<AgeableMob>,
         AttackData<AgeableMob>,
         AttributeData<AgeableMob>,
         ConfigurationData<AgeableMob>,
+        DialogData<AgeableMob>,
         ModelData<AgeableMob>,
         OwnerData<AgeableMob>,
         ScaleData<AgeableMob>,
@@ -69,6 +73,8 @@ public class EasyNPCBaseEntity extends AgeableMob
 
   static {
     // Register custom data serializers
+    ActionEventData.registerActionEventDataSerializer();
+    DialogData.registerDialogDataSerializer();
     SkinData.registerSkinDataSerializer();
     ModelData.registerModelDataSerializer();
   }
@@ -80,6 +86,7 @@ public class EasyNPCBaseEntity extends AgeableMob
 
   public EasyNPCBaseEntity(EntityType<? extends AgeableMob> entityType, Level world) {
     super(entityType, world);
+    this.defineCustomData();
   }
 
   @Override
@@ -219,11 +226,19 @@ public class EasyNPCBaseEntity extends AgeableMob
   }
 
   @Override
+  public void defineCustomData() {
+    this.defineCustomActionData();
+    this.defineCustomDialogData();
+  }
+
+  @Override
   protected void defineSynchedData() {
     super.defineSynchedData();
 
+    this.defineSynchedActionData();
     this.defineSynchedAttackData();
     this.defineSynchedAttributeData();
+    this.defineSynchedDialogData();
     this.defineSynchedModelData();
     this.defineSynchedOwnerData();
     this.defineSynchedScaleData();
@@ -235,8 +250,10 @@ public class EasyNPCBaseEntity extends AgeableMob
   public void addAdditionalSaveData(@Nonnull CompoundTag compoundTag) {
     super.addAdditionalSaveData(compoundTag);
 
+    this.addAdditionalActionData(compoundTag);
     this.addAdditionalAttackData(compoundTag);
     this.addAdditionalAttributeData(compoundTag);
+    this.addAdditionalDialogData(compoundTag);
     this.addAdditionalModelData(compoundTag);
     this.addAdditionalOwnerData(compoundTag);
     this.addAdditionalScaleData(compoundTag);
@@ -250,8 +267,10 @@ public class EasyNPCBaseEntity extends AgeableMob
   public void readAdditionalSaveData(@Nonnull CompoundTag compoundTag) {
     super.readAdditionalSaveData(compoundTag);
 
+    this.readAdditionalActionData(compoundTag);
     this.readAdditionalAttackData(compoundTag);
     this.readAdditionalAttributeData(compoundTag);
+    this.readAdditionalDialogData(compoundTag);
     this.readAdditionalModelData(compoundTag);
     this.readAdditionalOwnerData(compoundTag);
     this.readAdditionalScaleData(compoundTag);

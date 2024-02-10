@@ -19,17 +19,21 @@
 
 package de.markusbordihn.easynpc;
 
+import cpw.mods.modlauncher.Launcher;
+import cpw.mods.modlauncher.api.IEnvironment;
 import de.markusbordihn.easynpc.client.model.ModModelLayers;
 import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
 import de.markusbordihn.easynpc.client.screen.ClientScreens;
 import de.markusbordihn.easynpc.data.CustomDataHandler;
 import de.markusbordihn.easynpc.data.CustomPresetData;
 import de.markusbordihn.easynpc.data.CustomSkinData;
+import de.markusbordihn.easynpc.debug.DebugManager;
 import de.markusbordihn.easynpc.entity.npc.ModEntityType;
 import de.markusbordihn.easynpc.item.ModItems;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 import de.markusbordihn.easynpc.tabs.EasyNPCTab;
+import java.util.Optional;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -47,6 +51,16 @@ public class EasyNPC {
 
   public EasyNPC() {
     final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+    log.info("Initializing {} (Forge) ...", Constants.MOD_NAME);
+
+    log.info("{} Debug Manager ...", Constants.LOG_REGISTER_PREFIX);
+    Optional<String> version =
+        Launcher.INSTANCE.environment().getProperty(IEnvironment.Keys.VERSION.get());
+    if (version.isPresent() && "MOD_DEV".equals(version.get())) {
+      DebugManager.setDevelopmentEnvironment(true);
+    }
+    DebugManager.checkForDebugLogging(Constants.LOG_NAME);
 
     log.info("{} Constants ...", Constants.LOG_REGISTER_PREFIX);
     Constants.GAME_DIR = FMLPaths.GAMEDIR.get();
