@@ -29,7 +29,7 @@ import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
-import de.markusbordihn.easynpc.data.dialog.DialogData;
+import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogTextData;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
@@ -64,7 +64,7 @@ public class DialogTextEditorScreen extends AbstractContainerScreen<DialogTextEd
   protected final LocalPlayer localPlayer;
   protected final Minecraft minecraftInstance;
   protected final DialogDataSet dialogDataSet;
-  protected final DialogData dialogData;
+  protected final DialogDataEntry dialogData;
   protected final Set<DialogTextData> dialogTexts;
   protected final EasyNPCEntity entity;
   protected final UUID uuid;
