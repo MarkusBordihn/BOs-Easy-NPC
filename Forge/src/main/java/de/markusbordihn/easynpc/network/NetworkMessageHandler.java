@@ -24,7 +24,7 @@ import de.markusbordihn.easynpc.data.action.ActionData;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
-import de.markusbordihn.easynpc.data.dialog.DialogData;
+import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.model.ModelPose;
@@ -256,7 +256,7 @@ public class NetworkMessageHandler {
     }
   }
 
-  public static void saveDialog(UUID uuid, UUID dialogId, DialogData dialogData) {
+  public static void saveDialog(UUID uuid, UUID dialogId, DialogDataEntry dialogData) {
     if (uuid != null && dialogId != null && dialogData != null) {
       NetworkHandler.sendToServer(new MessageSaveDialog(uuid, dialogId, dialogData));
     }

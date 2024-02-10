@@ -17,32 +17,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.data;
+package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.action.ActionData;
 import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.data.custom.CustomDataAccessor;
 import de.markusbordihn.easynpc.data.custom.CustomDataIndex;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
-import de.markusbordihn.easynpc.data.dialog.DialogData;
+import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
-import de.markusbordihn.easynpc.data.entity.CustomDataSerializers;
 import de.markusbordihn.easynpc.data.entity.CustomEntityData;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.legacy.LegacyDialogSetData;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.syncher.EntityDataSerializer;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.world.entity.LivingEntity;
 
-public interface EntityDialogData extends EntityDataInterface {
+public interface DialogData<T extends LivingEntity> extends EasyNPC<T> {
 
-  // Custom entity data
+  EntityDataSerializer<DialogDataSet> DIALOG_DATA_SET =
+      new EntityDataSerializer<>() {
+        public void write(FriendlyByteBuf buffer, DialogDataSet value) {
+          buffer.writeNbt(value.createTag());
+        }
+
+        public DialogDataSet read(FriendlyByteBuf buffer) {
+          return new DialogDataSet(buffer.readNbt());
+        }
+
+        public DialogDataSet copy(DialogDataSet value) {
+          return value;
+        }
+      };
+
   CustomDataAccessor<DialogDataSet> CUSTOM_DATA_DIALOG_DATA_SET =
-      CustomEntityData.defineId(
-          CustomDataIndex.DIALOG_DATA_SET, CustomDataSerializers.DIALOG_DATA_SET);
+      CustomEntityData.defineId(CustomDataIndex.DIALOG_DATA_SET, DIALOG_DATA_SET);
 
-  // CompoundTags
   String DATA_DIALOG_DATA_TAG = "DialogData";
   String DATA_DIALOG_NO_BUTTON_TAG = "DialogNoButton";
   String DATA_DIALOG_NO_TAG = "DialogNo";
@@ -52,54 +68,20 @@ public interface EntityDialogData extends EntityDataInterface {
   String DATA_DIALOG_YES_BUTTON_TAG = "DialogYesButton";
   String DATA_DIALOG_YES_TAG = "DialogYes";
 
-  private static ActionData readAdditionalLegacyActionData(
-      CompoundTag compoundTag, DialogDataSet dialogDataSet, String actionType) {
-    if (actionType == null
-        || !compoundTag.contains(EntityActionEventData.DATA_ACTION_PERMISSION_LEVEL_TAG)
-        || !compoundTag.contains(EntityActionEventData.DATA_ACTION_DATA_TAG)) {
-      return null;
-    }
-    CompoundTag actionDataTag = compoundTag.getCompound(EntityActionEventData.DATA_ACTION_DATA_TAG);
-    DialogData questionDialogData = dialogDataSet.getDialog("question");
-    if (questionDialogData != null
-        && actionDataTag.contains(EntityActionEventData.DATA_ACTIONS_TAG)) {
-      ListTag listTag = actionDataTag.getList(EntityActionEventData.DATA_ACTIONS_TAG, 10);
-      for (int i = 0; i < listTag.size(); ++i) {
-        CompoundTag actionTag = listTag.getCompound(i);
-        String actionEventType = actionTag.getString(EntityActionEventData.DATA_ACTION_TYPE_TAG);
-        if (actionType.equals(actionEventType)) {
-          String actionCommand = actionTag.getString(EntityActionEventData.DATA_ACTION_TAG);
-          if (actionCommand.equals("/easy_npc trading open @npc-uuid")) {
-            return new ActionData(
-                ActionType.OPEN_TRADING_SCREEN,
-                actionTag.getString(""),
-                actionTag.getInt(EntityActionEventData.DATA_ACTION_PERMISSION_LEVEL_TAG),
-                actionTag.getBoolean(EntityActionEventData.DATA_ACTION_EXECUTE_AS_USER_TAG),
-                actionTag.getBoolean(EntityActionEventData.DATA_ACTION_ENABLE_DEBUG_TAG));
-          } else {
-            return new ActionData(
-                ActionType.COMMAND,
-                actionTag.getString(actionCommand),
-                actionTag.getInt(EntityActionEventData.DATA_ACTION_PERMISSION_LEVEL_TAG),
-                actionTag.getBoolean(EntityActionEventData.DATA_ACTION_EXECUTE_AS_USER_TAG),
-                actionTag.getBoolean(EntityActionEventData.DATA_ACTION_ENABLE_DEBUG_TAG));
-          }
-        }
-      }
-    }
-    return null;
+  public static void registerDialogDataSerializer() {
+    EntityDataSerializers.registerSerializer(DIALOG_DATA_SET);
   }
 
   default DialogDataSet getDialogDataSet() {
-    return getCustomEntityData(CUSTOM_DATA_DIALOG_DATA_SET);
+    return getEasyNPCCustomData(CUSTOM_DATA_DIALOG_DATA_SET);
   }
 
   default void setDialogDataSet(DialogDataSet dialogDataSet) {
-    setCustomEntityData(CUSTOM_DATA_DIALOG_DATA_SET, dialogDataSet);
+    setEasyNPCCustomData(CUSTOM_DATA_DIALOG_DATA_SET, dialogDataSet);
   }
 
   default void clearDialogDataSet() {
-    setCustomEntityData(CUSTOM_DATA_DIALOG_DATA_SET, new DialogDataSet());
+    setEasyNPCCustomData(CUSTOM_DATA_DIALOG_DATA_SET, new DialogDataSet());
   }
 
   default boolean hasDialog() {
@@ -122,7 +104,7 @@ public interface EntityDialogData extends EntityDataInterface {
     return getDialogDataSet().removeDialogButton(dialogId, dialogButtonId);
   }
 
-  default void setDialog(UUID dialogId, DialogData dialogData) {
+  default void setDialog(UUID dialogId, DialogDataEntry dialogData) {
     getDialogDataSet().setDialog(dialogId, dialogData);
   }
 
@@ -141,7 +123,7 @@ public interface EntityDialogData extends EntityDataInterface {
   default void defineSynchedDialogData() {}
 
   default void defineCustomDialogData() {
-    defineCustomEntityData(CUSTOM_DATA_DIALOG_DATA_SET, new DialogDataSet());
+    defineEasyNPCCustomData(CUSTOM_DATA_DIALOG_DATA_SET, new DialogDataSet());
   }
 
   default void addAdditionalDialogData(CompoundTag compoundTag) {
@@ -236,13 +218,13 @@ public interface EntityDialogData extends EntityDataInterface {
     }
 
     // Handles possible legacy action data and covert them into button actions.
-    if (compoundTag.contains(EntityActionEventData.DATA_ACTION_PERMISSION_LEVEL_TAG)
-        && compoundTag.contains(EntityActionEventData.DATA_ACTION_DATA_TAG)) {
+    if (compoundTag.contains(ActionEventData.DATA_ACTION_PERMISSION_LEVEL_TAG)
+        && compoundTag.contains(ActionEventData.DATA_ACTION_DATA_TAG)) {
       log.info("Extracting legacy action data for button action for {}", this);
-      DialogData questionDialogData = dialogDataSet.getDialog("question");
+      DialogDataEntry questionDialogData = dialogDataSet.getDialog("question");
       ActionData legacyYesActionData =
-          readAdditionalLegacyActionData(
-              compoundTag, dialogDataSet, EntityActionEventData.ON_YES_SELECTION);
+          LegacyDialogSetData.readAdditionalLegacyActionData(
+              compoundTag, dialogDataSet, ActionEventData.ON_YES_SELECTION);
       if (legacyYesActionData != null) {
         Set<ActionData> yesActionData = questionDialogData.getButton("yes_button").getActionData();
         if (legacyYesActionData.getType() == ActionType.OPEN_TRADING_SCREEN) {
@@ -252,8 +234,8 @@ public interface EntityDialogData extends EntityDataInterface {
         questionDialogData.getButton("yes_button").setActionData(yesActionData);
       }
       ActionData legacyNoActionData =
-          readAdditionalLegacyActionData(
-              compoundTag, dialogDataSet, EntityActionEventData.ON_NO_SELECTION);
+          LegacyDialogSetData.readAdditionalLegacyActionData(
+              compoundTag, dialogDataSet, ActionEventData.ON_NO_SELECTION);
       if (legacyNoActionData != null) {
         Set<ActionData> noActionData = questionDialogData.getButton("no_button").getActionData();
         if (legacyNoActionData.getType() == ActionType.OPEN_TRADING_SCREEN) {

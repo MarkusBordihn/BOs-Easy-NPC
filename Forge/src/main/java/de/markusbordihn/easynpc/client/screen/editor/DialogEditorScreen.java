@@ -36,7 +36,7 @@ import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextEditButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
-import de.markusbordihn.easynpc.data.dialog.DialogData;
+import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
@@ -75,7 +75,7 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
 
   // Data access
   protected final DialogDataSet dialogDataSet;
-  protected final DialogData dialogData;
+  protected final DialogDataEntry dialogData;
   protected final Set<DialogButtonData> dialogButtons;
   protected final EasyNPCEntity entity;
   protected final UUID uuid;
@@ -303,7 +303,7 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
     // Dialog Label
     this.dialogLabelValue = this.dialogData.getLabel();
     this.dialogLabelTextField = new TextField(this.font, this.leftPos + 100, this.topPos + 50, 100);
-    this.dialogLabelTextField.setMaxLength(DialogData.MAX_DIALOG_LABEL_LENGTH);
+    this.dialogLabelTextField.setMaxLength(DialogDataEntry.MAX_DIALOG_LABEL_LENGTH);
     this.dialogLabelTextField.setValue(this.dialogLabelValue);
     this.dialogLabelTextField.setEditable(this.dialogLabelTextField.getValue().isEmpty());
     this.addRenderableWidget(this.dialogLabelTextField);
