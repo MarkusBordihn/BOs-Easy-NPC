@@ -34,7 +34,7 @@ import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.data.action.ActionData;
 import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
-import de.markusbordihn.easynpc.data.dialog.DialogData;
+import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
@@ -72,7 +72,7 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
 
   // Data access
   protected final DialogDataSet dialogDataSet;
-  protected final DialogData dialogData;
+  protected final DialogDataEntry dialogData;
   protected final DialogButtonData dialogButtonData;
   protected final EasyNPCEntity entity;
   protected final UUID dialogId;

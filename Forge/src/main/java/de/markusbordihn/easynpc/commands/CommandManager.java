@@ -49,6 +49,7 @@ public class CommandManager {
         Commands.literal(Constants.MOD_COMMAND)
             // @formatter:off
             .then(ConfigureCommand.register())
+            .then(DebugCommand.register())
             .then(PresetCommand.register())
             .then(TradingCommand.register())
         // @formatter:on

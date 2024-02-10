@@ -25,7 +25,7 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
-import de.markusbordihn.easynpc.data.dialog.DialogData;
+import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
@@ -51,9 +51,9 @@ public class YesNoDialogConfigurationScreen
   private static final String NO_BUTTON_LABEL = "no_button";
 
   // Dialog data
-  private final DialogData questionDialogData;
-  private final DialogData yesDialogData;
-  private final DialogData noDialogData;
+  private final DialogDataEntry questionDialogData;
+  private final DialogDataEntry yesDialogData;
+  private final DialogDataEntry noDialogData;
 
   // Question Dialog
   protected EditBox mainDialogBox;

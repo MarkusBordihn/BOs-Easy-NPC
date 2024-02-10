@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonType;
-import de.markusbordihn.easynpc.data.dialog.DialogData;
+import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityMenu;
@@ -124,7 +124,7 @@ public class MessageOpenDialogButtonEditor extends NetworkMessage {
     }
 
     // Validate dialog data.
-    DialogData dialogData = dialogDataSet.getDialog(dialogId);
+    DialogDataEntry dialogData = dialogDataSet.getDialog(dialogId);
     if (dialogData == null) {
       log.error(
           "Unable to get valid dialog data for dialog {} for {} from {}",

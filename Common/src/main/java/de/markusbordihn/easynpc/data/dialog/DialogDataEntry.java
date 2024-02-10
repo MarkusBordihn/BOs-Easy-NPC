@@ -29,7 +29,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
-public class DialogData {
+public class DialogDataEntry {
 
   // Limits
   public static final int MAX_DIALOG_LABEL_LENGTH = 32;
@@ -51,23 +51,23 @@ public class DialogData {
   private Set<DialogTextData> dialogTexts = new LinkedHashSet<>();
   private Set<DialogButtonData> buttons = new LinkedHashSet<>();
 
-  public DialogData(CompoundTag compoundTag) {
+  public DialogDataEntry(CompoundTag compoundTag) {
     this.load(compoundTag);
   }
 
-  public DialogData(String name) {
+  public DialogDataEntry(String name) {
     this(null, name, "Dialog text", false, null);
   }
 
-  public DialogData(String name, String text, boolean translate) {
+  public DialogDataEntry(String name, String text, boolean translate) {
     this("default", name, text, translate, null);
   }
 
-  public DialogData(String label, String name, String text, boolean translate) {
+  public DialogDataEntry(String label, String name, String text, boolean translate) {
     this(label, name, text, translate, null);
   }
 
-  public DialogData(
+  public DialogDataEntry(
       String label, String name, String text, boolean translate, Set<DialogButtonData> buttons) {
     this.label = DialogUtils.generateButtonLabel(label != null && !label.isEmpty() ? label : name);
     this.name = name != null ? name.trim() : this.label;

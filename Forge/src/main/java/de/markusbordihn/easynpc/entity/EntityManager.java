@@ -28,8 +28,6 @@ import java.util.stream.Stream;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
@@ -45,22 +43,13 @@ public class EntityManager {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String LOG_PREFIX = "[EntityManager]";
-
-  private static final ConcurrentHashMap<String, ServerPlayer> playerNameMap =
-      new ConcurrentHashMap<>();
   private static final ConcurrentHashMap<UUID, EasyNPCEntity> npcEntityMap =
       new ConcurrentHashMap<>();
-  private static final ConcurrentHashMap<UUID, LivingEntity> livingEntityMap =
-      new ConcurrentHashMap<>();
-  private static final ConcurrentHashMap<UUID, ServerPlayer> playerMap = new ConcurrentHashMap<>();
 
   @SubscribeEvent
   public static void handleServerAboutToStartEvent(ServerAboutToStartEvent event) {
     log.info("{} Prepare Entity Manager ...", LOG_PREFIX);
-    livingEntityMap.clear();
     npcEntityMap.clear();
-    playerMap.clear();
-    playerNameMap.clear();
   }
 
   @SubscribeEvent
@@ -95,33 +84,6 @@ public class EntityManager {
         }
       }
     }
-
-    // Only take care of server-side for server player and living entities.
-    if (isClientSide) {
-      return;
-    }
-
-    if (entity instanceof ServerPlayer serverPlayer) {
-      log.debug("{} [Add] PLAYER entity {}: {}", LOG_PREFIX, serverPlayer.getUUID(), serverPlayer);
-      playerMap.put(serverPlayer.getUUID(), serverPlayer);
-      playerNameMap.put(serverPlayer.getName().getString(), serverPlayer);
-
-      // Inform all server-side easy NPC entities about the new player.
-      for (Entity entityEntry : npcEntityMap.values()) {
-        if (entityEntry instanceof EasyNPCEntity easyNPCEntity) {
-          easyNPCEntity.onPlayerJoin(serverPlayer);
-        }
-      }
-    } else if (entity instanceof LivingEntity livingEntity) {
-      livingEntityMap.put(entity.getUUID(), livingEntity);
-
-      // Inform all server-side easy NPC entities about the new living entity.
-      for (Entity entityEntry : npcEntityMap.values()) {
-        if (entityEntry instanceof EasyNPCEntity easyNPCEntity && easyNPCEntity != livingEntity) {
-          easyNPCEntity.onLivingEntityJoin(livingEntity);
-        }
-      }
-    }
   }
 
   @SubscribeEvent(priority = EventPriority.HIGH)
@@ -130,9 +92,6 @@ public class EntityManager {
     if (event.isCanceled()) {
       return;
     }
-
-    // Not all data needs to be processed on client side.
-    boolean isClientSide = event.getLevel().isClientSide();
 
     // Only take care of Easy NPC entities.
     Entity entity = event.getEntity();
@@ -146,35 +105,6 @@ public class EntityManager {
         if (entityEntry instanceof EasyNPCEntity easyNPCEntityChild
             && easyNPCEntityChild != easyNPCEntity) {
           easyNPCEntityChild.onEasyNPCLeave(easyNPCEntity);
-        }
-      }
-    }
-
-    // Only take care of server-side for server player and living entities.
-    if (isClientSide) {
-      return;
-    }
-
-    if (entity instanceof ServerPlayer serverPlayer
-        && playerMap.containsKey(serverPlayer.getUUID())) {
-      log.debug("{} [Remove] PLAYER entity {}: {}", LOG_PREFIX, entity.getUUID(), serverPlayer);
-      playerMap.remove(serverPlayer.getUUID());
-      playerNameMap.remove(serverPlayer.getName().getString());
-
-      // Inform all server-side easy NPC entities about leaving player.
-      for (Entity entityEntry : npcEntityMap.values()) {
-        if (entityEntry instanceof EasyNPCEntity easyNPCEntityEntry) {
-          easyNPCEntityEntry.onPlayerLeave(serverPlayer);
-        }
-      }
-    } else if (entity instanceof LivingEntity livingEntity) {
-      livingEntityMap.remove(entity.getUUID());
-
-      // Inform all server-side easy NPC entities about leaving living entity.
-      for (Entity entityEntry : npcEntityMap.values()) {
-        if (entityEntry instanceof EasyNPCEntity easyNPCEntityEntry
-            && easyNPCEntityEntry != livingEntity) {
-          easyNPCEntityEntry.onLivingEntityLeave(livingEntity);
         }
       }
     }
@@ -193,39 +123,6 @@ public class EntityManager {
       }
     }
     return result;
-  }
-
-  public static ServerPlayer getPlayerByUUID(UUID uuid, ServerLevel serverLevel) {
-    if (uuid == null || serverLevel == null) {
-      return null;
-    }
-    Player player = serverLevel.getPlayerByUUID(uuid);
-    if (player instanceof ServerPlayer serverPlayer) {
-      return serverPlayer;
-    }
-    return playerMap.getOrDefault(uuid, null);
-  }
-
-  public static ServerPlayer getPlayerByName(String name) {
-    if (name == null || name.isEmpty()) {
-      return null;
-    }
-    return playerNameMap.getOrDefault(name, null);
-  }
-
-  public static LivingEntity getLivingEntityByUUID(UUID uuid, ServerLevel serverLevel) {
-    if (uuid == null || serverLevel == null) {
-      return null;
-    }
-    Entity entity = serverLevel.getEntity(uuid);
-    if (entity instanceof LivingEntity livingEntity) {
-      return livingEntity;
-    }
-    ServerPlayer serverPlayer = getPlayerByUUID(uuid, serverLevel);
-    if (serverPlayer != null) {
-      return serverPlayer;
-    }
-    return getEasyNPCEntityByUUID(uuid, serverLevel);
   }
 
   public static Stream<String> getUUIDStrings() {
@@ -269,7 +166,7 @@ public class EntityManager {
   }
 
   public static void discardEasyNPCEntityByUUID(UUID uuid, ServerPlayer serverPlayer) {
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    EasyNPCEntity easyNPCEntity = getEasyNPCEntityByUUID(uuid, serverPlayer);
     if (easyNPCEntity != null) {
       easyNPCEntity.discard();
       npcEntityMap.remove(uuid);

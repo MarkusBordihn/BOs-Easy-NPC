@@ -25,7 +25,7 @@ import de.markusbordihn.easynpc.client.screen.components.CopyButton;
 import de.markusbordihn.easynpc.client.screen.components.EditButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextEditButton;
-import de.markusbordihn.easynpc.data.dialog.DialogData;
+import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.dialog.AdvancedDialogConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
@@ -160,7 +160,7 @@ public class AdvancedDialogConfigurationScreen
       // this.setRenderTopAndBottom(false);
 
       // Add all dialog data sets, sorted by label.
-      for (DialogData dialogData :
+      for (DialogDataEntry dialogData :
           AdvancedDialogConfigurationScreen.this.dialogDataSet.getDialogsByLabel()) {
         if (dialogData == null || dialogData.getId() == null) {
           continue;
@@ -186,13 +186,13 @@ public class AdvancedDialogConfigurationScreen
     class Entry
         extends ObjectSelectionList.Entry<AdvancedDialogConfigurationScreen.DialogList.Entry> {
 
-      final DialogData dialogData;
+      final DialogDataEntry dialogData;
       final EditButton editButton;
       final CopyButton copyLabelButton;
       final TextEditButton textEditButton;
       final String defaultDialogLabel;
 
-      public Entry(DialogData dialogData) {
+      public Entry(DialogDataEntry dialogData) {
         super();
         this.dialogData = dialogData;
         this.editButton =

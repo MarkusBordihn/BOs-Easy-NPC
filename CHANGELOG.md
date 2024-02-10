@@ -5,6 +5,13 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [GitHub History][history] instead.
 
+### 3.7.4
+
+- Added Debug Manager to minimize the logging and to allow better debugging.
+- Added LivingEntityManager which will replace the old EntityNPCManager.
+- Added Debugging.md to the wiki.
+- Move ActionEventData and DialogData to common package for better performance.
+
 ### 3.7.3
 
 Note: Please backup your world / npcs before updating from 6.x or earlier!
