@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.data.objective;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
 import net.minecraft.nbt.CompoundTag;
@@ -242,7 +242,7 @@ public class ObjectiveData {
 
   public ServerPlayer getTargetPlayer() {
     if (this.hasPlayerTarget()) {
-      return EntityManager.getPlayerByName(this.targetPlayerName);
+      return LivingEntityManager.getPlayerByName(this.targetPlayerName);
     }
     return null;
   }
@@ -269,7 +269,7 @@ public class ObjectiveData {
 
   public LivingEntity getTargetEntity(ServerLevel serverLevel) {
     if (this.hasEntityTarget() && serverLevel != null) {
-      return EntityManager.getLivingEntityByUUID(this.targetEntityUUID, serverLevel);
+      return LivingEntityManager.getLivingEntityByUUID(this.targetEntityUUID, serverLevel);
     }
     return null;
   }
@@ -280,7 +280,7 @@ public class ObjectiveData {
 
   public Entity getTargetOwner(EasyNPCEntity easyNPCEntity, ServerLevel serverLevel) {
     if (this.hasOwnerTarget() && this.targetOwnerUUID != null && serverLevel != null) {
-      return EntityManager.getPlayerByUUID(this.targetOwnerUUID, serverLevel);
+      return LivingEntityManager.getPlayerByUUID(this.targetOwnerUUID, serverLevel);
     }
     return null;
   }
@@ -316,14 +316,15 @@ public class ObjectiveData {
 
     // Check if we have still a valid target.
     if (hasOwnerTarget()) {
-      ServerPlayer serverPlayer = EntityManager.getPlayerByUUID(this.targetOwnerUUID, serverLevel);
+      ServerPlayer serverPlayer =
+          LivingEntityManager.getPlayerByUUID(this.targetOwnerUUID, serverLevel);
       return serverPlayer != null && serverPlayer.isAlive();
     } else if (hasPlayerTarget()) {
-      ServerPlayer serverPlayer = EntityManager.getPlayerByName(this.targetPlayerName);
+      ServerPlayer serverPlayer = LivingEntityManager.getPlayerByName(this.targetPlayerName);
       return serverPlayer != null && serverPlayer.isAlive();
     } else if (hasEntityTarget()) {
       LivingEntity livingEntity =
-          EntityManager.getLivingEntityByUUID(this.targetEntityUUID, serverLevel);
+          LivingEntityManager.getLivingEntityByUUID(this.targetEntityUUID, serverLevel);
       return livingEntity != null && livingEntity.isAlive();
     }
 

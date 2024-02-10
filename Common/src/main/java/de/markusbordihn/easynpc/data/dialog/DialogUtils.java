@@ -86,7 +86,7 @@ public class DialogUtils {
   }
 
   public static String generateDialogLabel(String name) {
-    return generateLabel(name, "dialog", DialogData.MAX_DIALOG_LABEL_LENGTH);
+    return generateLabel(name, "dialog", DialogDataEntry.MAX_DIALOG_LABEL_LENGTH);
   }
 
   private static String generateLabel(String name, String type, int maxLength) {
@@ -116,7 +116,7 @@ public class DialogUtils {
 
   public static DialogDataSet getBasicDialog(String dialog) {
     DialogDataSet dialogDataSet = new DialogDataSet(DialogType.BASIC);
-    DialogData dialogData = new DialogData("Basic Dialog", dialog, false);
+    DialogDataEntry dialogData = new DialogDataEntry("Basic Dialog", dialog, false);
     dialogDataSet.addDialog(dialogData);
     return dialogDataSet;
   }
@@ -147,13 +147,13 @@ public class DialogUtils {
     // Build dialog data set.
     DialogDataSet dialogDataSet = new DialogDataSet(DialogType.YES_NO);
     dialogDataSet.addDefaultDialog(
-        new DialogData("question", "Question Dialog", dialogText, false, buttons));
-    dialogDataSet.addDialog(new DialogData("yes_answer", "Yes Dialog", yesDialogText, false));
-    dialogDataSet.addDialog(new DialogData("no_answer", "No Dialog", noDialogText, false));
+        new DialogDataEntry("question", "Question Dialog", dialogText, false, buttons));
+    dialogDataSet.addDialog(new DialogDataEntry("yes_answer", "Yes Dialog", yesDialogText, false));
+    dialogDataSet.addDialog(new DialogDataEntry("no_answer", "No Dialog", noDialogText, false));
     return dialogDataSet;
   }
 
-  public static DialogScreenLayout getDialogScreenLayout(DialogData dialogData, Font font) {
+  public static DialogScreenLayout getDialogScreenLayout(DialogDataEntry dialogData, Font font) {
     if (dialogData == null) {
       return DialogScreenLayout.UNKNOWN;
     }

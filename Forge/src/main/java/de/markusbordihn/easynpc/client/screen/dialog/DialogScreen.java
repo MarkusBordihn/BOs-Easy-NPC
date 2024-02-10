@@ -29,7 +29,7 @@ import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
-import de.markusbordihn.easynpc.data.dialog.DialogData;
+import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogScreenLayout;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
@@ -75,7 +75,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
 
   // Layout relevant Data
   protected final DialogType dialogType;
-  protected final DialogData dialogData;
+  protected final DialogDataEntry dialogData;
   // Dialog Buttons
   protected final ArrayList<Button> dialogButtons = new ArrayList<>();
   protected DialogScreenLayout dialogScreenLayout;
@@ -152,7 +152,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     }
   }
 
-  private void setDialogText(DialogData dialogData) {
+  private void setDialogText(DialogDataEntry dialogData) {
     if (dialogData == null) {
       return;
     }
@@ -181,10 +181,11 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     int dialogButtonMaxTextLength =
         switch (this.dialogScreenLayout) {
           case COMPACT_TEXT_WITH_ONE_BUTTON,
-              TEXT_WITH_ONE_BUTTON,
-              TEXT_WITH_TWO_BUTTONS,
-              COMPACT_TEXT_WITH_THREE_BUTTONS,
-              TEXT_WITH_THREE_BUTTONS -> 41;
+                  TEXT_WITH_ONE_BUTTON,
+                  TEXT_WITH_TWO_BUTTONS,
+                  COMPACT_TEXT_WITH_THREE_BUTTONS,
+                  TEXT_WITH_THREE_BUTTONS ->
+              41;
           case COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS -> 32;
           default -> 22;
         };

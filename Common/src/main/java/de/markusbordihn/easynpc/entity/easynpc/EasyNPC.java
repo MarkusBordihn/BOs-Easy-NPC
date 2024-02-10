@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
@@ -37,6 +38,7 @@ import net.minecraft.world.entity.npc.Npc;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.system.CallbackI.V;
 
 public interface EasyNPC<T extends LivingEntity> extends Npc {
 
@@ -82,6 +84,16 @@ public interface EasyNPC<T extends LivingEntity> extends Npc {
   default Component getEasyNPCTypeName() {
     return getEasyNPCEntity().getType().getDescription();
   }
+
+  default void handlePlayerJoin(ServerPlayer serverPlayer) {}
+
+  default void handlePlayerLeave(ServerPlayer serverPlayer) {}
+
+  default void handleLivingEntityJoin(LivingEntity livingEntity) {}
+
+  default void handleLivingEntityLeave(LivingEntity livingEntity) {}
+
+  default void defineCustomData() {}
 
   <V> void setEasyNPCData(EntityDataAccessor<V> entityDataAccessor, V entityData);
 

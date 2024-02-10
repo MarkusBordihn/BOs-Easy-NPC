@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.menu.editor;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.dialog.DialogData;
+import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
@@ -46,7 +46,7 @@ public class DialogTextEditorMenu extends AbstractContainerMenu {
 
   // Cache
   protected final DialogDataSet dialogDataSet;
-  protected final DialogData dialogData;
+  protected final DialogDataEntry dialogData;
   protected final Inventory playerInventory;
   protected final EasyNPCEntity entity;
   protected final UUID dialogId;
@@ -133,7 +133,7 @@ public class DialogTextEditorMenu extends AbstractContainerMenu {
     return this.dialogDataSet;
   }
 
-  public DialogData getDialogData() {
+  public DialogDataEntry getDialogData() {
     return this.dialogData;
   }
 

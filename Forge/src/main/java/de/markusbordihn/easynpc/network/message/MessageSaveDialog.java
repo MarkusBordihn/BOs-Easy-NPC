@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.data.dialog.DialogData;
+import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
@@ -32,9 +32,9 @@ import net.minecraftforge.network.NetworkEvent;
 public class MessageSaveDialog extends NetworkMessage {
 
   protected final UUID dialogId;
-  protected final DialogData dialogData;
+  protected final DialogDataEntry dialogData;
 
-  public MessageSaveDialog(UUID uuid, UUID dialogId, DialogData dialogData) {
+  public MessageSaveDialog(UUID uuid, UUID dialogId, DialogDataEntry dialogData) {
     super(uuid);
     this.dialogId = dialogId;
     this.dialogData = dialogData;
@@ -42,7 +42,7 @@ public class MessageSaveDialog extends NetworkMessage {
 
   public static MessageSaveDialog decode(final FriendlyByteBuf buffer) {
     return new MessageSaveDialog(
-        buffer.readUUID(), buffer.readUUID(), new DialogData(buffer.readNbt()));
+        buffer.readUUID(), buffer.readUUID(), new DialogDataEntry(buffer.readNbt()));
   }
 
   public static void encode(final MessageSaveDialog message, final FriendlyByteBuf buffer) {
@@ -74,7 +74,7 @@ public class MessageSaveDialog extends NetworkMessage {
     }
 
     // Validate dialog data
-    DialogData dialogData = message.getDialogData();
+    DialogDataEntry dialogData = message.getDialogData();
     if (dialogData == null) {
       log.error("Invalid dialog data for {} from {}", message, context);
       return;
@@ -111,7 +111,7 @@ public class MessageSaveDialog extends NetworkMessage {
     return this.dialogId;
   }
 
-  public DialogData getDialogData() {
+  public DialogDataEntry getDialogData() {
     return this.dialogData;
   }
 }
