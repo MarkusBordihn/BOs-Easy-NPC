@@ -38,7 +38,6 @@ import net.minecraft.world.entity.npc.Npc;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.system.CallbackI.V;
 
 public interface EasyNPC<T extends LivingEntity> extends Npc {
 
