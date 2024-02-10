@@ -84,73 +84,73 @@ public class MessageOpenConfiguration extends NetworkMessage {
     // Perform action.
     EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     switch (configurationType) {
-      case ATTACK_OBJECTIVE -> EasyNPCEntityMenu.openAttackObjectiveConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case FOLLOW_OBJECTIVE -> EasyNPCEntityMenu.openFollowObjectiveConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case ADVANCED_DIALOG -> EasyNPCEntityMenu.openAdvancedDialogConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case ADVANCED_POSE -> EasyNPCEntityMenu.openAdvancedPoseConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case BASIC_ACTION -> EasyNPCEntityMenu.openBasicActionConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case DIALOG_ACTION -> EasyNPCEntityMenu.openDialogActionConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case DISTANCE_ACTION -> EasyNPCEntityMenu.openDistanceActionConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case BASIC_DIALOG -> EasyNPCEntityMenu.openBasicDialogConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case NONE_SKIN -> EasyNPCEntityMenu.openNoneSkinConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case CUSTOM_SKIN -> EasyNPCEntityMenu.openCustomSkinConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case DEFAULT_SKIN -> EasyNPCEntityMenu.openDefaultSkinConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case EQUIPMENT -> EasyNPCEntityMenu.openEquipmentConfigurationMenu(
-          serverPlayer, easyNPCEntity);
+      case ATTACK_OBJECTIVE ->
+          EasyNPCEntityMenu.openAttackObjectiveConfigurationMenu(serverPlayer, easyNPCEntity);
+      case FOLLOW_OBJECTIVE ->
+          EasyNPCEntityMenu.openFollowObjectiveConfigurationMenu(serverPlayer, easyNPCEntity);
+      case ADVANCED_DIALOG ->
+          EasyNPCEntityMenu.openAdvancedDialogConfigurationMenu(serverPlayer, easyNPCEntity);
+      case ADVANCED_POSE ->
+          EasyNPCEntityMenu.openAdvancedPoseConfigurationMenu(serverPlayer, easyNPCEntity);
+      case BASIC_ACTION ->
+          EasyNPCEntityMenu.openBasicActionConfigurationMenu(serverPlayer, easyNPCEntity);
+      case DIALOG_ACTION ->
+          EasyNPCEntityMenu.openDialogActionConfigurationMenu(serverPlayer, easyNPCEntity);
+      case DISTANCE_ACTION ->
+          EasyNPCEntityMenu.openDistanceActionConfigurationMenu(serverPlayer, easyNPCEntity);
+      case BASIC_DIALOG ->
+          EasyNPCEntityMenu.openBasicDialogConfigurationMenu(serverPlayer, easyNPCEntity);
+      case NONE_SKIN ->
+          EasyNPCEntityMenu.openNoneSkinConfigurationMenu(serverPlayer, easyNPCEntity);
+      case CUSTOM_SKIN ->
+          EasyNPCEntityMenu.openCustomSkinConfigurationMenu(serverPlayer, easyNPCEntity);
+      case DEFAULT_SKIN ->
+          EasyNPCEntityMenu.openDefaultSkinConfigurationMenu(serverPlayer, easyNPCEntity);
+      case EQUIPMENT ->
+          EasyNPCEntityMenu.openEquipmentConfigurationMenu(serverPlayer, easyNPCEntity);
       case MAIN -> EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, easyNPCEntity);
-      case DEFAULT_POSE -> EasyNPCEntityMenu.openDefaultPoseConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case CUSTOM_POSE -> EasyNPCEntityMenu.openCustomPoseConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case DEFAULT_POSITION -> EasyNPCEntityMenu.openDefaultPositionConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case DEFAULT_ROTATION -> EasyNPCEntityMenu.openDefaultRotationConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case NONE_DIALOG -> EasyNPCEntityMenu.openNoneDialogConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case PLAYER_SKIN -> EasyNPCEntityMenu.openPlayerSkinConfigurationMenu(
-          serverPlayer, easyNPCEntity);
+      case DEFAULT_POSE ->
+          EasyNPCEntityMenu.openDefaultPoseConfigurationMenu(serverPlayer, easyNPCEntity);
+      case CUSTOM_POSE ->
+          EasyNPCEntityMenu.openCustomPoseConfigurationMenu(serverPlayer, easyNPCEntity);
+      case DEFAULT_POSITION ->
+          EasyNPCEntityMenu.openDefaultPositionConfigurationMenu(serverPlayer, easyNPCEntity);
+      case DEFAULT_ROTATION ->
+          EasyNPCEntityMenu.openDefaultRotationConfigurationMenu(serverPlayer, easyNPCEntity);
+      case NONE_DIALOG ->
+          EasyNPCEntityMenu.openNoneDialogConfigurationMenu(serverPlayer, easyNPCEntity);
+      case PLAYER_SKIN ->
+          EasyNPCEntityMenu.openPlayerSkinConfigurationMenu(serverPlayer, easyNPCEntity);
       case URL_SKIN -> EasyNPCEntityMenu.openUrlSkinConfigurationMenu(serverPlayer, easyNPCEntity);
       case SCALING -> EasyNPCEntityMenu.openScalingConfigurationMenu(serverPlayer, easyNPCEntity);
-      case YES_NO_DIALOG -> EasyNPCEntityMenu.openYesNoDialogConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case CUSTOM_PRESET_EXPORT -> EasyNPCEntityMenu.openCustomPresetExportConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case WORLD_PRESET_EXPORT -> EasyNPCEntityMenu.openWorldPresetExportConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case DEFAULT_PRESET_IMPORT -> EasyNPCEntityMenu.openDefaultPresetImportConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case WORLD_PRESET_IMPORT -> EasyNPCEntityMenu.openServerPresetImportConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case CUSTOM_PRESET_IMPORT -> EasyNPCEntityMenu.openCustomPresetImportConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case BASIC_TRADING -> EasyNPCEntityMenu.openBasicTradingConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case NONE_TRADING -> EasyNPCEntityMenu.openNoneTradingConfigurationMenu(
-          serverPlayer, easyNPCEntity);
+      case YES_NO_DIALOG ->
+          EasyNPCEntityMenu.openYesNoDialogConfigurationMenu(serverPlayer, easyNPCEntity);
+      case CUSTOM_PRESET_EXPORT ->
+          EasyNPCEntityMenu.openCustomPresetExportConfigurationMenu(serverPlayer, easyNPCEntity);
+      case WORLD_PRESET_EXPORT ->
+          EasyNPCEntityMenu.openWorldPresetExportConfigurationMenu(serverPlayer, easyNPCEntity);
+      case DEFAULT_PRESET_IMPORT ->
+          EasyNPCEntityMenu.openDefaultPresetImportConfigurationMenu(serverPlayer, easyNPCEntity);
+      case WORLD_PRESET_IMPORT ->
+          EasyNPCEntityMenu.openServerPresetImportConfigurationMenu(serverPlayer, easyNPCEntity);
+      case CUSTOM_PRESET_IMPORT ->
+          EasyNPCEntityMenu.openCustomPresetImportConfigurationMenu(serverPlayer, easyNPCEntity);
+      case BASIC_TRADING ->
+          EasyNPCEntityMenu.openBasicTradingConfigurationMenu(serverPlayer, easyNPCEntity);
+      case NONE_TRADING ->
+          EasyNPCEntityMenu.openNoneTradingConfigurationMenu(serverPlayer, easyNPCEntity);
       case ADVANCED_TRADING -> EasyNPCEntityMenu.openAdvancedTradingConfigurationMenu(
           serverPlayer, easyNPCEntity, pageIndex);
-      case CUSTOM_TRADING -> EasyNPCEntityMenu.openCustomTradingConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case BASIC_OBJECTIVE -> EasyNPCEntityMenu.openBasicObjectiveConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case ABILITIES_ATTRIBUTE -> EasyNPCEntityMenu.openAbilitiesAttributeConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case BASE_ATTRIBUTE -> EasyNPCEntityMenu.openBaseAttributeConfigurationMenu(
-          serverPlayer, easyNPCEntity);
-      case LOOK_OBJECTIVE -> EasyNPCEntityMenu.openLookObjectiveConfigurationMenu(
-          serverPlayer, easyNPCEntity);
+      case CUSTOM_TRADING ->
+          EasyNPCEntityMenu.openCustomTradingConfigurationMenu(serverPlayer, easyNPCEntity);
+      case BASIC_OBJECTIVE ->
+          EasyNPCEntityMenu.openBasicObjectiveConfigurationMenu(serverPlayer, easyNPCEntity);
+      case ABILITIES_ATTRIBUTE ->
+          EasyNPCEntityMenu.openAbilitiesAttributeConfigurationMenu(serverPlayer, easyNPCEntity);
+      case BASE_ATTRIBUTE ->
+          EasyNPCEntityMenu.openBaseAttributeConfigurationMenu(serverPlayer, easyNPCEntity);
+      case LOOK_OBJECTIVE ->
+          EasyNPCEntityMenu.openLookObjectiveConfigurationMenu(serverPlayer, easyNPCEntity);
       default -> log.debug(
           "Unknown dialog {} for {} from {}", configurationType, easyNPCEntity, serverPlayer);
     }

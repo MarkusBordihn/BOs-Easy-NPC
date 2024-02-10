@@ -37,8 +37,8 @@ public class DialogDataSet {
   public static final String DATA_TYPE_TAG = "Type";
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   // Cache
-  private final HashMap<String, DialogData> dialogByLabelMap = new HashMap<>();
-  private final HashMap<UUID, DialogData> dialogByIdMap = new HashMap<>();
+  private final HashMap<String, DialogDataEntry> dialogByLabelMap = new HashMap<>();
+  private final HashMap<UUID, DialogDataEntry> dialogByIdMap = new HashMap<>();
   private String defaultDialogLabel = "default";
   private DialogType dialogType = DialogType.STANDARD;
 
@@ -53,13 +53,13 @@ public class DialogDataSet {
     this.load(compoundTag);
   }
 
-  public void addDefaultDialog(DialogData dialogData) {
+  public void addDefaultDialog(DialogDataEntry dialogData) {
     if (this.addDialog(dialogData)) {
       this.setDefaultDialog(dialogData);
     }
   }
 
-  public void setDialog(UUID dialogId, DialogData dialogData) {
+  public void setDialog(UUID dialogId, DialogDataEntry dialogData) {
     if (dialogData == null) {
       log.error("Dialog data is null, please check your dialog data!");
       return;
@@ -70,7 +70,7 @@ public class DialogDataSet {
     this.addDialog(dialogData);
   }
 
-  public boolean addDialog(DialogData dialogData) {
+  public boolean addDialog(DialogDataEntry dialogData) {
     // Pre-check dialog data, before adding it to the dialog set.
     if (dialogData == null) {
       log.error("Dialog data is null, please check your dialog data!");
@@ -93,7 +93,7 @@ public class DialogDataSet {
     UUID dialogId = dialogData.getId();
 
     // Warn about duplicated dialog ids
-    DialogData existingDialogData = this.dialogByIdMap.getOrDefault(dialogId, null);
+    DialogDataEntry existingDialogData = this.dialogByIdMap.getOrDefault(dialogId, null);
     if (existingDialogData != null && !existingDialogData.equals(dialogData)) {
       log.warn(
           "Duplicated dialog with id {} found, will overwrite existing dialog {} with {}!",
@@ -108,9 +108,9 @@ public class DialogDataSet {
   }
 
   public boolean removeDialog(UUID dialogId) {
-    DialogData dialogData = this.dialogByIdMap.getOrDefault(dialogId, null);
+    DialogDataEntry dialogData = this.dialogByIdMap.getOrDefault(dialogId, null);
     if (dialogData != null) {
-      DialogData formerDialogData = this.dialogByIdMap.remove(dialogData.getId());
+      DialogDataEntry formerDialogData = this.dialogByIdMap.remove(dialogData.getId());
       if (formerDialogData != null) {
         this.dialogByLabelMap.remove(formerDialogData.getLabel());
       }
@@ -120,29 +120,29 @@ public class DialogDataSet {
   }
 
   public boolean removeDialogButton(UUID dialogId, UUID dialogButtonId) {
-    DialogData dialogData = this.dialogByIdMap.getOrDefault(dialogId, null);
+    DialogDataEntry dialogData = this.dialogByIdMap.getOrDefault(dialogId, null);
     if (dialogData != null) {
       return dialogData.removeButton(dialogButtonId);
     }
     return false;
   }
 
-  public List<DialogData> getDialogsByLabel() {
+  public List<DialogDataEntry> getDialogsByLabel() {
     return this.dialogByLabelMap.values().stream()
-        .sorted(Comparator.comparing(DialogData::getLabel))
+        .sorted(Comparator.comparing(DialogDataEntry::getLabel))
         .toList();
   }
 
-  public DialogData getDialog(String label) {
+  public DialogDataEntry getDialog(String label) {
     return this.dialogByLabelMap.getOrDefault(label, null);
   }
 
-  public DialogData getDialog(UUID id) {
+  public DialogDataEntry getDialog(UUID id) {
     return this.dialogByIdMap.getOrDefault(id, null);
   }
 
   public UUID getDialogId(String dialogLabel) {
-    DialogData dialogData = this.dialogByLabelMap.getOrDefault(dialogLabel, null);
+    DialogDataEntry dialogData = this.dialogByLabelMap.getOrDefault(dialogLabel, null);
     if (dialogData != null) {
       return dialogData.getId();
     }
@@ -172,7 +172,7 @@ public class DialogDataSet {
   }
 
   public DialogButtonData getDialogButton(String dialogLabel, UUID dialogButtonId) {
-    DialogData dialogData = this.dialogByLabelMap.getOrDefault(dialogLabel, null);
+    DialogDataEntry dialogData = this.dialogByLabelMap.getOrDefault(dialogLabel, null);
     if (dialogData != null) {
       return dialogData.getButton(dialogButtonId);
     }
@@ -180,18 +180,18 @@ public class DialogDataSet {
   }
 
   public DialogButtonData getDialogButton(UUID dialogId, UUID dialogButtonId) {
-    DialogData dialogData = this.dialogByIdMap.getOrDefault(dialogId, null);
+    DialogDataEntry dialogData = this.dialogByIdMap.getOrDefault(dialogId, null);
     if (dialogData != null) {
       return dialogData.getButton(dialogButtonId);
     }
     return null;
   }
 
-  public DialogData getDefaultDialog() {
+  public DialogDataEntry getDefaultDialog() {
     return this.dialogByLabelMap.getOrDefault(this.getDefaultDialogLabel(), null);
   }
 
-  public void setDefaultDialog(DialogData dialogData) {
+  public void setDefaultDialog(DialogDataEntry dialogData) {
     if (dialogData != null
         && dialogData.getId() != null
         && dialogData.getLabel() != null
@@ -221,7 +221,7 @@ public class DialogDataSet {
     }
 
     // Iterate over all dialogs and return the first valid dialog.
-    for (DialogData dialogData : this.dialogByLabelMap.values()) {
+    for (DialogDataEntry dialogData : this.dialogByLabelMap.values()) {
       if (dialogData != null
           && dialogData.getId() != null
           && dialogData.getLabel() != null
@@ -240,7 +240,8 @@ public class DialogDataSet {
     if (currentDefaultDialogLabel == null) {
       return null;
     }
-    DialogData dialogData = this.dialogByLabelMap.getOrDefault(currentDefaultDialogLabel, null);
+    DialogDataEntry dialogData =
+        this.dialogByLabelMap.getOrDefault(currentDefaultDialogLabel, null);
     if (dialogData != null) {
       return dialogData.getId();
     }
@@ -267,7 +268,7 @@ public class DialogDataSet {
     ListTag dialogListTag = compoundTag.getList(DATA_DIALOG_DATA_SET_TAG, 10);
     for (int i = 0; i < dialogListTag.size(); ++i) {
       CompoundTag dialogCompoundTag = dialogListTag.getCompound(i);
-      DialogData dialogData = new DialogData(dialogCompoundTag);
+      DialogDataEntry dialogData = new DialogDataEntry(dialogCompoundTag);
       this.addDialog(dialogData);
     }
 
@@ -288,7 +289,7 @@ public class DialogDataSet {
 
   public CompoundTag save(CompoundTag compoundTag) {
     ListTag dialogListTag = new ListTag();
-    for (DialogData dialogData : this.dialogByLabelMap.values()) {
+    for (DialogDataEntry dialogData : this.dialogByLabelMap.values()) {
       // Skip empty dialog data
       if (dialogData == null
           || dialogData.getId() == null

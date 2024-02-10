@@ -24,12 +24,12 @@ import de.markusbordihn.easynpc.data.custom.CustomDataAccessor;
 import de.markusbordihn.easynpc.data.entity.CustomEntityData;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.trading.TradingType;
-import de.markusbordihn.easynpc.entity.data.EntityActionEventData;
-import de.markusbordihn.easynpc.entity.data.EntityDialogData;
 import de.markusbordihn.easynpc.entity.data.EntityObjectiveData;
 import de.markusbordihn.easynpc.entity.data.EntityProfessionData;
 import de.markusbordihn.easynpc.entity.data.EntityTradingData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
+import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.utils.TextUtils;
@@ -53,14 +53,12 @@ import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.npc.InventoryCarrier;
-import net.minecraft.world.entity.npc.Npc;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.BowItem;
@@ -76,17 +74,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class EasyNPCEntityData extends EasyNPCBaseEntity
-    implements EntityActionEventData,
-    EntityDialogData,
-    EntityObjectiveData,
+    implements EntityObjectiveData,
     EntityProfessionData,
     EntityTradingData,
     RangedAttackMob,
     CrossbowAttackMob,
-    Npc,
     Merchant,
-    InventoryCarrier,
-    NeutralMob {
+    InventoryCarrier {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   // Synced Data
@@ -98,7 +92,7 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
   private static final String DATA_EASY_NPC_DATA_VERSION_TAG = "EasyNPCVersion";
   private static final int NPC_DATA_VERSION = 1;
   private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
-  private final CustomEntityData customEntityData = new CustomEntityData(this);
+  private final CustomEntityData customEntityDataOld = new CustomEntityData(this);
   private final SimpleContainer inventory = new SimpleContainer(8);
   protected MerchantOffers offers;
   protected int attackAnimationTick;
@@ -111,7 +105,7 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
 
   public EasyNPCEntityData(EntityType<? extends EasyNPCEntity> entityType, Level level) {
     super(entityType, level);
-    this.defineCustomData();
+    this.defineCustomDataOld();
   }
 
   public Pose getPose(String pose) {
@@ -250,8 +244,8 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
       CompoundTag existingCompoundTag = this.serializeNBT();
 
       // Remove existing dialog data to allow legacy presets to be imported.
-      if (existingCompoundTag.contains(EntityDialogData.DATA_DIALOG_DATA_TAG)) {
-        existingCompoundTag.remove(EntityDialogData.DATA_DIALOG_DATA_TAG);
+      if (existingCompoundTag.contains(DialogData.DATA_DIALOG_DATA_TAG)) {
+        existingCompoundTag.remove(DialogData.DATA_DIALOG_DATA_TAG);
       }
 
       // Remove existing model data to allow legacy presets to be imported.
@@ -265,8 +259,8 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
       }
 
       // Remove existing action data to allow legacy presets to be imported.
-      if (existingCompoundTag.contains(EntityActionEventData.DATA_ACTION_DATA_TAG)) {
-        existingCompoundTag.remove(EntityActionEventData.DATA_ACTION_DATA_TAG);
+      if (existingCompoundTag.contains(ActionEventData.DATA_ACTION_DATA_TAG)) {
+        existingCompoundTag.remove(ActionEventData.DATA_ACTION_DATA_TAG);
       }
 
       log.debug(
@@ -291,9 +285,7 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
         .toList();
   }
 
-  protected void defineCustomData() {
-    this.defineCustomActionData();
-    this.defineCustomDialogData();
+  protected void defineCustomDataOld() {
     this.defineCustomObjectiveData();
   }
 
@@ -364,24 +356,22 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
 
   @Override
   public <T> void setCustomEntityData(CustomDataAccessor<T> entityDataAccessor, T entityData) {
-    this.customEntityData.set(entityDataAccessor, entityData);
+    this.customEntityDataOld.set(entityDataAccessor, entityData);
   }
 
   @Override
   public <T> T getCustomEntityData(CustomDataAccessor<T> entityDataAccessor) {
-    return this.customEntityData.get(entityDataAccessor);
+    return this.customEntityDataOld.get(entityDataAccessor);
   }
 
   @Override
   public <T> void defineCustomEntityData(CustomDataAccessor<T> entityDataAccessor, T entityData) {
-    this.customEntityData.define(entityDataAccessor, entityData);
+    this.customEntityDataOld.define(entityDataAccessor, entityData);
   }
 
   @Override
   protected void defineSynchedData() {
     super.defineSynchedData();
-    this.defineSynchedActionData();
-    this.defineSynchedDialogData();
     this.defineSynchedObjectiveData();
     this.defineSynchedProfessionData();
     this.defineSynchedTradingData();
@@ -398,8 +388,6 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
     compoundTag.putInt(DATA_EASY_NPC_DATA_VERSION_TAG, NPC_DATA_VERSION);
 
     // Add additional data.
-    this.addAdditionalActionData(compoundTag);
-    this.addAdditionalDialogData(compoundTag);
     this.addAdditionalObjectiveData(compoundTag);
     this.addAdditionalProfessionData(compoundTag);
     this.addAdditionalTradingData(compoundTag);
@@ -440,8 +428,6 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
     }
 
     // Read additional data.
-    this.readAdditionalActionData(compoundTag);
-    this.readAdditionalDialogData(compoundTag);
     this.readAdditionalObjectiveData(compoundTag);
     this.readAdditionalProfessionData(compoundTag);
     this.readAdditionalTradingData(compoundTag);

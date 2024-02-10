@@ -19,8 +19,6 @@
 
 package de.markusbordihn.easynpc.data.entity;
 
-import de.markusbordihn.easynpc.data.action.ActionEventSet;
-import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.Profession;
@@ -33,34 +31,6 @@ import net.minecraft.world.item.trading.MerchantOffers;
 
 public class CustomDataSerializers {
 
-  public static final EntityDataSerializer<ActionEventSet> ACTION_EVENT_SET =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, ActionEventSet value) {
-          buffer.writeNbt(value.createTag());
-        }
-
-        public ActionEventSet read(FriendlyByteBuf buffer) {
-          return new ActionEventSet(buffer.readNbt());
-        }
-
-        public ActionEventSet copy(ActionEventSet value) {
-          return value;
-        }
-      };
-  public static final EntityDataSerializer<DialogDataSet> DIALOG_DATA_SET =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, DialogDataSet value) {
-          buffer.writeNbt(value.createTag());
-        }
-
-        public DialogDataSet read(FriendlyByteBuf buffer) {
-          return new DialogDataSet(buffer.readNbt());
-        }
-
-        public DialogDataSet copy(DialogDataSet value) {
-          return value;
-        }
-      };
   public static final EntityDataSerializer<ObjectiveDataSet> OBJECTIVE_DATA_SET =
       new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, ObjectiveDataSet value) {
@@ -159,8 +129,6 @@ public class CustomDataSerializers {
       };
 
   static {
-    EntityDataSerializers.registerSerializer(ACTION_EVENT_SET);
-    EntityDataSerializers.registerSerializer(DIALOG_DATA_SET);
     EntityDataSerializers.registerSerializer(MERCHANT_OFFERS);
     EntityDataSerializers.registerSerializer(OBJECTIVE_DATA_SET);
     EntityDataSerializers.registerSerializer(PROFESSION);

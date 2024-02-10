@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.data.dialog.DialogData;
+import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EasyNPCEntityMenu;
 import de.markusbordihn.easynpc.entity.EntityManager;
@@ -106,7 +106,7 @@ public class MessageOpenDialogEditor extends NetworkMessage {
           easyNPCEntity.getDialogDataSet().hasDialog()
               ? "Dialog " + RANDOM.nextInt(1000)
               : "Default";
-      DialogData newDialogData = new DialogData(dialogName);
+      DialogDataEntry newDialogData = new DialogDataEntry(dialogName);
       log.info("Create new dialog {} for {} from {}", newDialogData, uuid, serverPlayer);
       easyNPCEntity.getDialogDataSet().addDialog(newDialogData);
       dialogId = newDialogData.getId();
