@@ -191,28 +191,34 @@ public class ObjectiveUtils {
   public static Goal createObjectiveTarget(
       ObjectiveData objectiveData, EasyNPCEntity easyNPCEntity) {
     return switch (objectiveData.getType()) {
-      case ATTACK_ANIMAL -> new NearestAttackableTargetGoal<>(
-          easyNPCEntity, Animal.class, objectiveData.isMustSeeTarget());
-      case ATTACK_PLAYER -> new NearestAttackableTargetGoal<>(
-          easyNPCEntity, Player.class, objectiveData.isMustSeeTarget());
-      case ATTACK_MONSTER -> new NearestAttackableTargetGoal<>(
-          easyNPCEntity, Monster.class, objectiveData.isMustSeeTarget());
-      case ATTACK_MOB_WITHOUT_CREEPER -> new NearestAttackableTargetGoal<>(
-          easyNPCEntity,
-          Mob.class,
-          objectiveData.getInterval(),
-          false,
-          false,
-          entity -> entity instanceof Enemy && !(entity instanceof Creeper));
-      case ATTACK_MOB -> new NearestAttackableTargetGoal<>(
-          easyNPCEntity,
-          Mob.class,
-          objectiveData.getInterval(),
-          false,
-          false,
-          Enemy.class::isInstance);
-      case ATTACK_VILLAGER -> new NearestAttackableTargetGoal<>(
-          easyNPCEntity, AbstractVillager.class, objectiveData.isMustSeeTarget());
+      case ATTACK_ANIMAL ->
+          new NearestAttackableTargetGoal<>(
+              easyNPCEntity, Animal.class, objectiveData.isMustSeeTarget());
+      case ATTACK_PLAYER ->
+          new NearestAttackableTargetGoal<>(
+              easyNPCEntity, Player.class, objectiveData.isMustSeeTarget());
+      case ATTACK_MONSTER ->
+          new NearestAttackableTargetGoal<>(
+              easyNPCEntity, Monster.class, objectiveData.isMustSeeTarget());
+      case ATTACK_MOB_WITHOUT_CREEPER ->
+          new NearestAttackableTargetGoal<>(
+              easyNPCEntity,
+              Mob.class,
+              objectiveData.getInterval(),
+              false,
+              false,
+              entity -> entity instanceof Enemy && !(entity instanceof Creeper));
+      case ATTACK_MOB ->
+          new NearestAttackableTargetGoal<>(
+              easyNPCEntity,
+              Mob.class,
+              objectiveData.getInterval(),
+              false,
+              false,
+              Enemy.class::isInstance);
+      case ATTACK_VILLAGER ->
+          new NearestAttackableTargetGoal<>(
+              easyNPCEntity, AbstractVillager.class, objectiveData.isMustSeeTarget());
       default -> null;
     };
   }
