@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc;
 
 import cpw.mods.modlauncher.Launcher;
 import cpw.mods.modlauncher.api.IEnvironment;
+import de.markusbordihn.easynpc.block.ModBlocks;
 import de.markusbordihn.easynpc.client.model.ModModelLayers;
 import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
 import de.markusbordihn.easynpc.client.screen.ClientScreens;
@@ -47,7 +48,7 @@ import org.apache.logging.log4j.Logger;
 @Mod(Constants.MOD_ID)
 public class EasyNPC {
 
-  public static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public EasyNPC() {
     final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -69,6 +70,12 @@ public class EasyNPC {
 
     log.info("{} Entities Types ...", Constants.LOG_REGISTER_PREFIX);
     ModEntityType.ENTITY_TYPES.register(modEventBus);
+
+    log.info("{} Blocks ...", Constants.LOG_REGISTER_PREFIX);
+    ModBlocks.BLOCKS.register(modEventBus);
+
+    log.info("{} Blocks Entity Types ...", Constants.LOG_REGISTER_PREFIX);
+    ModBlocks.BLOCK_ENTITY_TYPES.register(modEventBus);
 
     log.info("{} Items ...", Constants.LOG_REGISTER_PREFIX);
     ModItems.ITEMS.register(modEventBus);

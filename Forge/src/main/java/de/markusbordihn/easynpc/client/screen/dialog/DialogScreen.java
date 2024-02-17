@@ -180,10 +180,11 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     int dialogButtonMaxTextLength =
         switch (this.dialogScreenLayout) {
           case COMPACT_TEXT_WITH_ONE_BUTTON,
-              TEXT_WITH_ONE_BUTTON,
-              TEXT_WITH_TWO_BUTTONS,
-              COMPACT_TEXT_WITH_THREE_BUTTONS,
-              TEXT_WITH_THREE_BUTTONS -> 41;
+                  TEXT_WITH_ONE_BUTTON,
+                  TEXT_WITH_TWO_BUTTONS,
+                  COMPACT_TEXT_WITH_THREE_BUTTONS,
+                  TEXT_WITH_THREE_BUTTONS ->
+              41;
           case COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS -> 32;
           default -> 22;
         };

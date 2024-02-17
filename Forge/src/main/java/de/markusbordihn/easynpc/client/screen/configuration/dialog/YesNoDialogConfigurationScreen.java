@@ -115,7 +115,7 @@ public class YesNoDialogConfigurationScreen
 
     // Dialog
     this.mainDialogBox = new TextField(this.font, this.contentLeftPos, this.topPos + 50, 300);
-    this.mainDialogBox.setMaxLength(255);
+    this.mainDialogBox.setMaxLength(512);
     this.mainDialogBox.setValue(this.questionDialogValue);
     this.addRenderableWidget(this.mainDialogBox);
 

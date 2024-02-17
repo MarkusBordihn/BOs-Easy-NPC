@@ -26,8 +26,7 @@ import net.minecraft.world.entity.LivingEntity;
 
 public class LivingEntityEvents {
 
-  protected LivingEntityEvents() {
-  }
+  protected LivingEntityEvents() {}
 
   /*
    * @param livingEntity

@@ -67,6 +67,8 @@ public class EasyNPCTab {
       FeatureFlagSet featureFlagSet, Output outputTab, boolean hasPermissions) {
     outputTab.accept(ModItems.EASY_NPC_WAND.get());
     outputTab.accept(ModItems.MOVE_EASY_NPC.get());
+    outputTab.accept(ModItems.EASY_NPC_PRESET_EMPTY_ITEM.get());
+    outputTab.accept(ModItems.EASY_NPC_SPAWNER.get());
   }
 
   private static void addSpawnEggsTabItems(

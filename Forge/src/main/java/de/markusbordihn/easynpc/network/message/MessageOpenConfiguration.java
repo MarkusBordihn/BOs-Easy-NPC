@@ -139,8 +139,9 @@ public class MessageOpenConfiguration extends NetworkMessage {
           EasyNPCEntityMenu.openBasicTradingConfigurationMenu(serverPlayer, easyNPCEntity);
       case NONE_TRADING ->
           EasyNPCEntityMenu.openNoneTradingConfigurationMenu(serverPlayer, easyNPCEntity);
-      case ADVANCED_TRADING -> EasyNPCEntityMenu.openAdvancedTradingConfigurationMenu(
-          serverPlayer, easyNPCEntity, pageIndex);
+      case ADVANCED_TRADING ->
+          EasyNPCEntityMenu.openAdvancedTradingConfigurationMenu(
+              serverPlayer, easyNPCEntity, pageIndex);
       case CUSTOM_TRADING ->
           EasyNPCEntityMenu.openCustomTradingConfigurationMenu(serverPlayer, easyNPCEntity);
       case BASIC_OBJECTIVE ->
@@ -151,8 +152,11 @@ public class MessageOpenConfiguration extends NetworkMessage {
           EasyNPCEntityMenu.openBaseAttributeConfigurationMenu(serverPlayer, easyNPCEntity);
       case LOOK_OBJECTIVE ->
           EasyNPCEntityMenu.openLookObjectiveConfigurationMenu(serverPlayer, easyNPCEntity);
-      default -> log.debug(
-          "Unknown dialog {} for {} from {}", configurationType, easyNPCEntity, serverPlayer);
+      case DISPLAY_ATTRIBUTE ->
+          EasyNPCEntityMenu.openDisplayAttributeConfigurationMenu(serverPlayer, easyNPCEntity);
+      default ->
+          log.debug(
+              "Unknown dialog {} for {} from {}", configurationType, easyNPCEntity, serverPlayer);
     }
   }
 

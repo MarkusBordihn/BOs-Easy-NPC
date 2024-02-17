@@ -29,8 +29,7 @@ import net.minecraft.nbt.ListTag;
 
 public class LegacyDialogSetData {
 
-  protected LegacyDialogSetData() {
-  }
+  protected LegacyDialogSetData() {}
 
   public static ActionData readAdditionalLegacyActionData(
       CompoundTag compoundTag, DialogDataSet dialogDataSet, String actionType) {

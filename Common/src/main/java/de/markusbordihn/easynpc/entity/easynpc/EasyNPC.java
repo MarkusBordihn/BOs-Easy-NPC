@@ -25,6 +25,8 @@ import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import de.markusbordihn.easynpc.entity.easynpc.data.SpawnerData;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.server.level.ServerLevel;
@@ -50,8 +52,6 @@ public interface EasyNPC<T extends LivingEntity> extends Npc {
   Level getEasyNPCLevel();
 
   ServerLevel getEasyNPCServerLevel();
-
-  EasyNPC<T> getEasyNPC();
 
   T getEasyNPCEntity();
 
@@ -80,23 +80,26 @@ public interface EasyNPC<T extends LivingEntity> extends Npc {
     return (ModelData<T>) this;
   }
 
+  default SpawnerData<T> getEasyNPCSpawnerData() {
+    return (SpawnerData<T>) this;
+  }
+
   default Component getEasyNPCTypeName() {
     return getEasyNPCEntity().getType().getDescription();
   }
 
-  default void handlePlayerJoin(ServerPlayer serverPlayer) {
-  }
+  default void handlePlayerJoin(ServerPlayer serverPlayer) {}
 
-  default void handlePlayerLeave(ServerPlayer serverPlayer) {
-  }
+  default void handlePlayerLeave(ServerPlayer serverPlayer) {}
 
-  default void handleLivingEntityJoin(LivingEntity livingEntity) {
-  }
+  default void handleLivingEntityJoin(LivingEntity livingEntity) {}
 
-  default void handleLivingEntityLeave(LivingEntity livingEntity) {
-  }
+  default void handleLivingEntityLeave(LivingEntity livingEntity) {}
 
-  default void defineCustomData() {
+  default void defineCustomData() {}
+
+  default CompoundTag exportPreset() {
+    return getEasyNPCEntity().saveWithoutId(new CompoundTag());
   }
 
   <V> void setEasyNPCData(EntityDataAccessor<V> entityDataAccessor, V entityData);

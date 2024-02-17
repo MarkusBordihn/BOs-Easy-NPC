@@ -46,8 +46,7 @@ public class LivingEntityManager {
 
   private static final ConcurrentHashMap<UUID, ServerPlayer> playerMap = new ConcurrentHashMap<>();
 
-  private LivingEntityManager() {
-  }
+  private LivingEntityManager() {}
 
   public static void addEasyNPC(EasyNPC<?> easyNPC) {
     log.debug(

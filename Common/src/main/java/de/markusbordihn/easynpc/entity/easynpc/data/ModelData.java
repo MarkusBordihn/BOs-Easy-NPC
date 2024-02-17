@@ -203,7 +203,7 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
   CustomRotation DEFAULT_MODEL_PART_ROTATION = new CustomRotation(0, 0, 0);
   CustomScale DEFAULT_MODEL_PART_SCALE = new CustomScale(1, 1, 1);
 
-  public static void registerModelDataSerializer() {
+  static void registerModelDataSerializer() {
     EntityDataSerializers.registerSerializer(MODEL_POSE);
     EntityDataSerializers.registerSerializer(POSITION);
     EntityDataSerializers.registerSerializer(ROTATION);
