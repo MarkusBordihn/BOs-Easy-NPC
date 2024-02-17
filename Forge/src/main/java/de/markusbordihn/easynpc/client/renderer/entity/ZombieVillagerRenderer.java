@@ -32,6 +32,7 @@ import de.markusbordihn.easynpc.entity.Profession;
 import de.markusbordihn.easynpc.entity.npc.ZombieVillager.Variant;
 import java.util.EnumMap;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -237,7 +238,7 @@ public class ZombieVillagerRenderer
   }
 
   @Override
-  protected int getBlockLightLevel(EasyNPCEntity entity, BlockPos blockPos) {
-    return getEntityLightLevel(entity);
+  protected int getBlockLightLevel(@Nonnull EasyNPCEntity entity, @Nonnull BlockPos blockPos) {
+    return getEntityLightLevel(entity, blockPos);
   }
 }

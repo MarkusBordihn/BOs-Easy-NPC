@@ -20,6 +20,8 @@
 package de.markusbordihn.easynpc.item;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.block.EasyNPCSpawnerBlock;
+import de.markusbordihn.easynpc.block.ModBlocks;
 import de.markusbordihn.easynpc.entity.npc.Allay;
 import de.markusbordihn.easynpc.entity.npc.Cat;
 import de.markusbordihn.easynpc.entity.npc.Chicken;
@@ -32,9 +34,12 @@ import de.markusbordihn.easynpc.entity.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.npc.Villager;
 import de.markusbordihn.easynpc.entity.npc.Zombie;
 import de.markusbordihn.easynpc.entity.npc.ZombieVillager;
+import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetEmptyItem;
+import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetItem;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCWandItem;
 import de.markusbordihn.easynpc.item.configuration.MoveEasyNPCItem;
 import de.markusbordihn.easynpc.tabs.EasyNPCTab;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.registries.DeferredRegister;
@@ -45,7 +50,7 @@ public class ModItems {
 
   public static final DeferredRegister<Item> ITEMS =
       DeferredRegister.create(ForgeRegistries.ITEMS, Constants.MOD_ID);
-  // Config Items
+
   public static final RegistryObject<Item> EASY_NPC_WAND =
       ITEMS.register(
           EasyNPCWandItem.ID,
@@ -54,9 +59,24 @@ public class ModItems {
       ITEMS.register(
           MoveEasyNPCItem.ID,
           () -> new MoveEasyNPCItem(new Item.Properties().tab(EasyNPCTab.TAB_CONFIG_ITEMS)));
-  // Default NPC Entity Spawn Eggs
-  private static final String SPAWN_EGG_PREFIX = "_spawn_egg";
 
+  public static final RegistryObject<Item> EASY_NPC_PRESET_ITEM =
+      ITEMS.register(EasyNPCPresetItem.NAME, () -> new EasyNPCPresetItem(new Item.Properties()));
+
+  public static final RegistryObject<Item> EASY_NPC_PRESET_EMPTY_ITEM =
+      ITEMS.register(
+          EasyNPCPresetEmptyItem.NAME,
+          () -> new EasyNPCPresetEmptyItem(new Item.Properties().tab(EasyNPCTab.TAB_CONFIG_ITEMS)));
+
+  public static final RegistryObject<Item> EASY_NPC_SPAWNER =
+      ITEMS.register(
+          EasyNPCSpawnerBlock.NAME,
+          () ->
+              new BlockItem(
+                  ModBlocks.EASY_NPC_SPAWNER.get(),
+                  new Item.Properties().tab(EasyNPCTab.TAB_CONFIG_ITEMS)));
+
+  private static final String SPAWN_EGG_PREFIX = "_spawn_egg";
   public static final RegistryObject<Item> ALLAY_NPC_SPAWN_EGG =
       ITEMS.register(
           Allay.ID + SPAWN_EGG_PREFIX,
@@ -85,7 +105,6 @@ public class ModItems {
               new EasyNPCSpawnEggItem(
                   ModEntityType.FAIRY,
                   new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
-
   public static final RegistryObject<Item> HUMANOID_NPC_SPAWN_EGG =
       ITEMS.register(
           Humanoid.ID + SPAWN_EGG_PREFIX,
@@ -100,7 +119,6 @@ public class ModItems {
               new EasyNPCSpawnEggItem(
                   ModEntityType.HUMANOID_SLIM,
                   new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
-
   public static final RegistryObject<Item> IRON_GOLEM_NPC_SPAWN_EGG =
       ITEMS.register(
           IronGolem.ID + SPAWN_EGG_PREFIX,
@@ -108,7 +126,6 @@ public class ModItems {
               new EasyNPCSpawnEggItem(
                   ModEntityType.IRON_GOLEM,
                   new Item.Properties().rarity(Rarity.EPIC).tab(EasyNPCTab.TAB_SPAWN_EGGS)));
-
   public static final RegistryObject<Item> SKELETON_NPC_SPAWN_EGG =
       ITEMS.register(
           Skeleton.ID + SPAWN_EGG_PREFIX,

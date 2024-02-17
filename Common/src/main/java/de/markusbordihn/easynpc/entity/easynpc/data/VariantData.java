@@ -65,9 +65,7 @@ public interface VariantData<T extends LivingEntity> extends EasyNPC<T> {
 
   default Component getVariantName() {
     Enum<?> variant = getVariant();
-    return variant != null
-        ? TextUtils.normalizeName(variant.name())
-        : getEasyNPC().getEasyNPCTypeName();
+    return variant != null ? TextUtils.normalizeName(variant.name()) : getEasyNPCTypeName();
   }
 
   default void defineSynchedVariantData() {

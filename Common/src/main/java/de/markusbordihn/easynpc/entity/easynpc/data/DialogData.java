@@ -68,7 +68,7 @@ public interface DialogData<T extends LivingEntity> extends EasyNPC<T> {
   String DATA_DIALOG_YES_BUTTON_TAG = "DialogYesButton";
   String DATA_DIALOG_YES_TAG = "DialogYes";
 
-  public static void registerDialogDataSerializer() {
+  static void registerDialogDataSerializer() {
     EntityDataSerializers.registerSerializer(DIALOG_DATA_SET);
   }
 

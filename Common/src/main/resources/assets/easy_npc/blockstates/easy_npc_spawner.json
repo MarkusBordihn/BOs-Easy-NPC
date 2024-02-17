@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "easy_npc:block/easy_npc_spawner"
+    }
+  }
+}
