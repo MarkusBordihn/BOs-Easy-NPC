@@ -71,7 +71,7 @@ public class BasicDialogConfigurationScreen
             ? dialogDataSet.getDefaultDialog().getText()
             : "";
     this.dialogBox = new TextField(this.font, this.contentLeftPos, this.topPos + 60, 300);
-    this.dialogBox.setMaxLength(255);
+    this.dialogBox.setMaxLength(512);
     this.dialogBox.setValue(this.dialogValue);
     this.addRenderableWidget(this.dialogBox);
 

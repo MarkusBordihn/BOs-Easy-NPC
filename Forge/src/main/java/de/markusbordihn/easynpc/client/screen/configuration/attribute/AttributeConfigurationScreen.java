@@ -37,6 +37,7 @@ public class AttributeConfigurationScreen<T extends AttributeConfigurationMenu>
   // Buttons
   protected Button abilitiesAttributeButton = null;
   protected Button baseAttributeButton = null;
+  protected Button displayAttributeButton = null;
 
   public AttributeConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -69,6 +70,17 @@ public class AttributeConfigurationScreen<T extends AttributeConfigurationMenu>
                     NetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.BASE_ATTRIBUTE)));
 
+    this.displayAttributeButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.baseAttributeButton.getX() + this.baseAttributeButton.getWidth(),
+                this.buttonTopPos,
+                70,
+                "display",
+                onPress ->
+                    NetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.DISPLAY_ATTRIBUTE)));
+
     // Default button stats
     this.abilitiesAttributeButton.active =
         this.hasPermissions(
@@ -80,5 +92,10 @@ public class AttributeConfigurationScreen<T extends AttributeConfigurationMenu>
             COMMON.baseAttributeConfigurationEnabled.get(),
             COMMON.baseAttributeConfigurationAllowInCreative.get(),
             COMMON.baseAttributeConfigurationPermissionLevel.get());
+    this.displayAttributeButton.active =
+        this.hasPermissions(
+            COMMON.displayAttributeConfigurationEnabled.get(),
+            COMMON.displayAttributeConfigurationAllowInCreative.get(),
+            COMMON.displayAttributeConfigurationPermissionLevel.get());
   }
 }

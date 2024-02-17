@@ -37,6 +37,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ScreenEvent.BackgroundRendered;
 
 @OnlyIn(Dist.CLIENT)
 public class DefaultPositionConfigurationScreen
@@ -240,7 +241,7 @@ public class DefaultPositionConfigurationScreen
     if (this.clientLevel != null) {
       fillGradient(poseStack, 0, 0, this.width, this.height, 0x55000000, 0x55000000);
       net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(
-          new net.minecraftforge.client.event.ScreenEvent.BackgroundRendered(this, poseStack));
+          new BackgroundRendered(this, poseStack));
     }
   }
 

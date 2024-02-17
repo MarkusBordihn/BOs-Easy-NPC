@@ -5,11 +5,16 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [GitHub History][history] instead.
 
-### 3.7.4
+### 3.8.0
 
+- Added NPC Presets to allow easier creation and usage of NPC presets in-game.
+- Added NPC Spawner to allow spawning of NPCs with specific settings and NPC presets.
 - Added Debug Manager to minimize the logging and to allow better debugging.
 - Added LivingEntityManager which will replace the old EntityNPCManager.
 - Added Debugging.md to the wiki.
+- Added text color and text style formatting for dialog texts. #80
+- Added possibility to adjust light level for NPCs. #45 and #67
+- Increased text length for simple dialogs and yes/no dialogs to 512 characters.
 - Move ActionEventData and DialogData to common package for better performance.
 
 ### 3.7.3

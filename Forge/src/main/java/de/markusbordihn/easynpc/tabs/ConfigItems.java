@@ -32,5 +32,7 @@ public class ConfigItems implements DisplayItemsGenerator {
   public void accept(ItemDisplayParameters itemDisplayParameters, Output output) {
     output.accept(ModItems.EASY_NPC_WAND.get());
     output.accept(ModItems.MOVE_EASY_NPC.get());
+    output.accept(ModItems.EASY_NPC_PRESET_EMPTY_ITEM.get());
+    output.accept(ModItems.EASY_NPC_SPAWNER.get());
   }
 }
