@@ -67,7 +67,7 @@ public interface SkinData<T extends LivingEntity> extends EasyNPC<T> {
   String EASY_NPC_DATA_SKIN_URL_TAG = "SkinURL";
   String EASY_NPC_DATA_SKIN_UUID_TAG = "SkinUUID";
 
-  public static void registerSkinDataSerializer() {
+  static void registerSkinDataSerializer() {
     EntityDataSerializers.registerSerializer(SKIN_TYPE);
   }
 
