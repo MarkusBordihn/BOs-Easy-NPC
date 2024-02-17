@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.client.screen.configuration.trading;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.components.PositiveNumberField;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
@@ -145,14 +146,14 @@ public class AdvancedTradingConfigurationScreen
       log.info("Trading Offer {} : {}", tradingOfferIndex, merchantOffer.createTag());
 
       // Max Uses Edit Box
-      EditBox maxUsesEditBox = new TextField(this.font, editBoxPositionX, editBoxPositionY, 32);
+      EditBox maxUsesEditBox =
+          new PositiveNumberField(this.font, editBoxPositionX, editBoxPositionY, 32);
       maxUsesEditBox.setMaxLength(4);
       maxUsesEditBox.setValue(
           merchantOffer.getMaxUses() > 0 ? merchantOffer.getMaxUses() + "" : "16");
       maxUsesEditBox.setResponder(
           text ->
               onMaxUsesEditBoxChanged(tradingOfferIndex, text, merchantOffer.getMaxUses() + ""));
-      maxUsesEditBox.setFilter(TradingConfigurationScreen::isPositiveNumericValue);
       maxUsesEditBox.setEditable(hasValidOffer);
       maxUsesEditBoxes.put(tradingOfferIndex, maxUsesEditBox);
       this.addRenderableWidget(maxUsesEditBox);

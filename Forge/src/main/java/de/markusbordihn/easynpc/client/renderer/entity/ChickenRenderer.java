@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.entity.npc.Chicken;
 import de.markusbordihn.easynpc.entity.npc.Chicken.Variant;
 import java.util.EnumMap;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -120,8 +121,8 @@ public class ChickenRenderer extends MobRenderer<Chicken, CustomChickenModel<Chi
   }
 
   @Override
-  protected int getBlockLightLevel(Chicken entity, BlockPos blockPos) {
-    return getEntityLightLevel(entity);
+  protected int getBlockLightLevel(@Nonnull Chicken entity, @Nonnull BlockPos blockPos) {
+    return getEntityLightLevel(entity, blockPos);
   }
 
   @Override

@@ -25,11 +25,11 @@ import de.markusbordihn.easynpc.client.model.ModModelLayers;
 import de.markusbordihn.easynpc.client.model.custom.CustomAllayModel;
 import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
 import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.npc.Allay;
 import de.markusbordihn.easynpc.entity.npc.Allay.Variant;
 import java.util.EnumMap;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -144,12 +144,7 @@ public class AllayRenderer extends MobRenderer<Allay, CustomAllayModel<Allay>>
   }
 
   @Override
-  protected int getBlockLightLevel(Allay entity, BlockPos blockPos) {
-    return getEntityLightLevel(entity);
-  }
-
-  @Override
-  public int getEntityLightLevel(EasyNPCEntity entity) {
-    return 15;
+  protected int getBlockLightLevel(@Nonnull Allay entity, @Nonnull BlockPos blockPos) {
+    return getEntityLightLevel(entity, blockPos);
   }
 }

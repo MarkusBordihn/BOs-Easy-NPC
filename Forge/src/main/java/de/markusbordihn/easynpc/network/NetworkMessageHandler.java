@@ -32,11 +32,13 @@ import de.markusbordihn.easynpc.data.objective.ObjectiveData;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.data.spawner.SpawnerSettingType;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
 import de.markusbordihn.easynpc.entity.Profession;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.network.message.ChangeSpawnerSettingMessage;
 import de.markusbordihn.easynpc.network.message.MessageActionEventChange;
 import de.markusbordihn.easynpc.network.message.MessageAdvancedTrading;
 import de.markusbordihn.easynpc.network.message.MessageBasicTrading;
@@ -78,6 +80,7 @@ import de.markusbordihn.easynpc.network.message.MessageTradingTypeChange;
 import de.markusbordihn.easynpc.network.message.MessageTriggerActionEvent;
 import de.markusbordihn.easynpc.network.message.MessageVariantChange;
 import java.util.UUID;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -93,6 +96,14 @@ public class NetworkMessageHandler {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   protected NetworkMessageHandler() {}
+
+  public static void changeSpawnerSettings(
+      BlockPos blockPos, SpawnerSettingType spawnerSettingType, int value) {
+    if (blockPos != null && spawnerSettingType != null) {
+      NetworkHandler.sendToServer(
+          new ChangeSpawnerSettingMessage(blockPos, spawnerSettingType, value));
+    }
+  }
 
   /** Send action change. */
   public static void actionEventChange(
