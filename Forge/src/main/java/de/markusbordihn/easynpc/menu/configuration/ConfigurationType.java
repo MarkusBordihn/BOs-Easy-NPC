@@ -57,5 +57,6 @@ public enum ConfigurationType {
   WORLD_PRESET_EXPORT,
   WORLD_PRESET_IMPORT,
   YES_NO_DIALOG,
+  DISPLAY_ATTRIBUTE,
   // @formatter:on
 }

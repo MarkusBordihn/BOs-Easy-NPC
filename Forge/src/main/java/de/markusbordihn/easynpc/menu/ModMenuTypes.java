@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.menu.configuration.action.DialogActionConfigurat
 import de.markusbordihn.easynpc.menu.configuration.action.DistanceActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.attribute.AbilitiesAttributeConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.attribute.BaseAttributeConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.attribute.DisplayAttributeConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.AdvancedDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfigurationMenu;
@@ -59,6 +60,7 @@ import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
 import de.markusbordihn.easynpc.menu.editor.DialogButtonEditorMenu;
 import de.markusbordihn.easynpc.menu.editor.DialogEditorMenu;
 import de.markusbordihn.easynpc.menu.editor.DialogTextEditorMenu;
+import de.markusbordihn.easynpc.menu.spawner.SpawnerMenuWrapper;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -103,10 +105,20 @@ public class ModMenuTypes {
           "base_attribute_configuration_menu",
           () -> IForgeMenuType.create(BaseAttributeConfigurationMenu::new));
 
+  public static final RegistryObject<MenuType<DisplayAttributeConfigurationMenu>>
+      DISPLAY_ATTRIBUTE_CONFIGURATION_MENU =
+      MENU_TYPES.register(
+          "display_attribute_configuration_menu",
+          () -> IForgeMenuType.create(DisplayAttributeConfigurationMenu::new));
+
   // Configuration
   public static final RegistryObject<MenuType<MainConfigurationMenu>> MAIN_CONFIGURATION_MENU =
       MENU_TYPES.register(
           "main_configuration_menu", () -> IForgeMenuType.create(MainConfigurationMenu::new));
+
+  // Spawner Menu
+  public static final RegistryObject<MenuType<SpawnerMenuWrapper>> SPAWNER_MENU =
+      MENU_TYPES.register("spawner_menu", () -> IForgeMenuType.create(SpawnerMenuWrapper::new));
 
   // Action Configuration
   public static final RegistryObject<MenuType<BasicActionConfigurationMenu>>

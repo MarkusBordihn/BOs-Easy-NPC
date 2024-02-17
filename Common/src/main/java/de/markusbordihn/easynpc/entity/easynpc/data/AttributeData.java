@@ -54,6 +54,8 @@ public interface AttributeData<T extends LivingEntity> extends EasyNPC<T> {
   EntityDataAccessor<Boolean> EASY_NPC_DATA_ATTRIBUTE_IS_PUSHABLE =
       SynchedEntityData.defineId(
           EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
+  EntityDataAccessor<Integer> EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL =
+      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.INT);
 
   // CompoundTags
   String EASY_NPC_DATA_ATTRIBUTE_TAG = "EntityAttribute";
@@ -65,6 +67,7 @@ public interface AttributeData<T extends LivingEntity> extends EasyNPC<T> {
   String EASY_NPC_DATA_ATTRIBUTE_FREEFALL_TAG = "Freefall";
   String EASY_NPC_DATA_ATTRIBUTE_IS_ATTACKABLE_TAG = "IsAttackable";
   String EASY_NPC_DATA_ATTRIBUTE_IS_PUSHABLE_TAG = "IsPushable";
+  String EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL_TAG = "LightLevel";
 
   default void setBaseAttribute(Attribute attribute, double value) {
     if (attribute == null || getEasyNPCEntity().getAttribute(attribute) == null) {
@@ -144,6 +147,14 @@ public interface AttributeData<T extends LivingEntity> extends EasyNPC<T> {
     setEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_IS_PUSHABLE, isPushable);
   }
 
+  default int getAttributeLightLevel() {
+    return getEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL);
+  }
+
+  default void setAttributeLightLevel(int lightLevel) {
+    setEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL, lightLevel);
+  }
+
   default void defineSynchedAttributeData() {
     defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_FLOAT, false);
     defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_CLOSE_DOOR, false);
@@ -153,6 +164,7 @@ public interface AttributeData<T extends LivingEntity> extends EasyNPC<T> {
     defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_FREEFALL, false);
     defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_IS_ATTACKABLE, false);
     defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_IS_PUSHABLE, false);
+    defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL, 7);
   }
 
   default void addAdditionalAttributeData(CompoundTag compoundTag) {
@@ -166,6 +178,7 @@ public interface AttributeData<T extends LivingEntity> extends EasyNPC<T> {
     attributeTag.putBoolean(EASY_NPC_DATA_ATTRIBUTE_FREEFALL_TAG, getAttributeFreefall());
     attributeTag.putBoolean(EASY_NPC_DATA_ATTRIBUTE_IS_ATTACKABLE_TAG, getAttributeIsAttackable());
     attributeTag.putBoolean(EASY_NPC_DATA_ATTRIBUTE_IS_PUSHABLE_TAG, getAttributeIsPushable());
+    attributeTag.putInt(EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL_TAG, getAttributeLightLevel());
     compoundTag.put(EASY_NPC_DATA_ATTRIBUTE_TAG, attributeTag);
   }
 
@@ -183,5 +196,6 @@ public interface AttributeData<T extends LivingEntity> extends EasyNPC<T> {
     setAttributeFreefall(attributeTag.getBoolean(EASY_NPC_DATA_ATTRIBUTE_FREEFALL_TAG));
     setAttributeIsAttackable(attributeTag.getBoolean(EASY_NPC_DATA_ATTRIBUTE_IS_ATTACKABLE_TAG));
     setAttributeIsPushable(attributeTag.getBoolean(EASY_NPC_DATA_ATTRIBUTE_IS_PUSHABLE_TAG));
+    setAttributeLightLevel(attributeTag.getInt(EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL_TAG));
   }
 }

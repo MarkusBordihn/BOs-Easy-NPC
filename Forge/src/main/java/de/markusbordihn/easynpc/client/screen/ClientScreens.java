@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.client.screen.configuration.actions.DialogAction
 import de.markusbordihn.easynpc.client.screen.configuration.actions.DistanceActionConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.attribute.AbilitiesAttributeConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.attribute.BaseAttributeConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.attribute.DisplayAttributeConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.AdvancedDialogConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.BasicDialogConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.NoneDialogConfigurationScreen;
@@ -59,6 +60,7 @@ import de.markusbordihn.easynpc.client.screen.dialog.DialogScreen;
 import de.markusbordihn.easynpc.client.screen.editor.DialogButtonEditorScreen;
 import de.markusbordihn.easynpc.client.screen.editor.DialogEditorScreen;
 import de.markusbordihn.easynpc.client.screen.editor.DialogTextEditorScreen;
+import de.markusbordihn.easynpc.client.screen.spawner.SpawnerScreenWrapper;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -113,6 +115,9 @@ public class ClientScreens {
           MenuScreens.register(
               ModMenuTypes.BASE_ATTRIBUTE_CONFIGURATION_MENU.get(),
               BaseAttributeConfigurationScreen::new);
+          MenuScreens.register(
+              ModMenuTypes.DISPLAY_ATTRIBUTE_CONFIGURATION_MENU.get(),
+              DisplayAttributeConfigurationScreen::new);
 
           // Dialog Configuration Screens
           MenuScreens.register(
@@ -216,6 +221,9 @@ public class ClientScreens {
           MenuScreens.register(
               ModMenuTypes.CUSTOM_TRADING_CONFIGURATION_MENU.get(),
               CustomTradingConfigurationScreen::new);
+
+          // Spawner Screen
+          MenuScreens.register(ModMenuTypes.SPAWNER_MENU.get(), SpawnerScreenWrapper::new);
         });
   }
 }

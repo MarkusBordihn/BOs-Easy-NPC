@@ -56,29 +56,29 @@ public interface ActionEventData<T extends LivingEntity> extends EasyNPC<T> {
   CustomDataAccessor<Integer> CUSTOM_DATA_ACTION_PERMISSION_LEVEL =
       CustomEntityData.defineId(EntityDataSerializers.INT);
 
-  public static final String DATA_ACTIONS_TAG = "Actions";
-  public static final String DATA_ACTION_DATA_TAG = "ActionData";
-  public static final String DATA_ACTION_PERMISSION_LEVEL_TAG = "ActionPermissionLevel";
+  String DATA_ACTIONS_TAG = "Actions";
+  String DATA_ACTION_DATA_TAG = "ActionData";
+  String DATA_ACTION_PERMISSION_LEVEL_TAG = "ActionPermissionLevel";
 
   @Deprecated(since = "3.0.0")
-  public static final String DATA_ACTION_ENABLE_DEBUG_TAG = "ActionEnableDebug";
+  String DATA_ACTION_ENABLE_DEBUG_TAG = "ActionEnableDebug";
 
   @Deprecated(since = "3.0.0")
-  public static final String DATA_ACTION_EXECUTE_AS_USER_TAG = "ActionExecuteAsUser";
+  String DATA_ACTION_EXECUTE_AS_USER_TAG = "ActionExecuteAsUser";
 
   @Deprecated(since = "3.0.0")
-  public static final String DATA_ACTION_TAG = "Action";
+  String DATA_ACTION_TAG = "Action";
 
   @Deprecated(since = "3.0.0")
-  public static final String DATA_ACTION_TYPE_TAG = "ActionType";
+  String DATA_ACTION_TYPE_TAG = "ActionType";
 
   @Deprecated(since = "3.0.0")
-  public static final String ON_YES_SELECTION = "ON_YES_SELECTION";
+  String ON_YES_SELECTION = "ON_YES_SELECTION";
 
   @Deprecated(since = "3.0.0")
-  public static final String ON_NO_SELECTION = "ON_NO_SELECTION";
+  String ON_NO_SELECTION = "ON_NO_SELECTION";
 
-  public static void registerActionEventDataSerializer() {
+  static void registerActionEventDataSerializer() {
     EntityDataSerializers.registerSerializer(ACTION_EVENT_SET);
   }
 

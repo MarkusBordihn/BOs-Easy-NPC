@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.data.attribute;
 
 public enum EntityAttribute {
-  // @formatter:off
   FREEFALL,
   IS_ATTACKABLE,
   IS_PUSHABLE,
@@ -28,9 +27,8 @@ public enum EntityAttribute {
   CAN_CLOSE_DOOR,
   CAN_OPEN_DOOR,
   CAN_PASS_DOOR,
-  CAN_USE_NETHER_PORTAL;
-
-  // @formatter:on
+  CAN_USE_NETHER_PORTAL,
+  LIGHT_LEVEL;
 
   public String getAttributeName() {
     return this.name().toLowerCase();

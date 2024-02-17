@@ -77,6 +77,7 @@ public class CommonConfig {
     public static final String MAIN_CONFIGURATION = "main";
     public static final String ABILITIES_ATTRIBUTE_CONFIGURATION = "abilities attribute";
     public static final String BASE_ATTRIBUTE_CONFIGURATION = "base attribute";
+    public static final String DISPLAY_ATTRIBUTE_CONFIGURATION = "display attribute";
     public static final String BASIC_ACTION_CONFIGURATION = "basic action";
     public static final String DIALOG_ACTION_CONFIGURATION = "dialog action";
     public static final String DISTANCE_ACTION_CONFIGURATION = "distance action";
@@ -118,6 +119,9 @@ public class CommonConfig {
     public final ForgeConfigSpec.BooleanValue baseAttributeConfigurationEnabled;
     public final ForgeConfigSpec.BooleanValue baseAttributeConfigurationAllowInCreative;
     public final ForgeConfigSpec.IntValue baseAttributeConfigurationPermissionLevel;
+    public final ForgeConfigSpec.BooleanValue displayAttributeConfigurationEnabled;
+    public final ForgeConfigSpec.BooleanValue displayAttributeConfigurationAllowInCreative;
+    public final ForgeConfigSpec.IntValue displayAttributeConfigurationPermissionLevel;
     public final ForgeConfigSpec.BooleanValue basicActionConfigurationEnabled;
     public final ForgeConfigSpec.BooleanValue basicActionConfigurationAllowInCreative;
     public final ForgeConfigSpec.IntValue basicActionConfigurationPermissionLevel;
@@ -309,6 +313,21 @@ public class CommonConfig {
           builder
               .comment(getPermissionLevelComment(BASE_ATTRIBUTE_CONFIGURATION))
               .defineInRange("baseAttributeConfigurationPermissionLevel", 1, 0, 4);
+      builder.pop();
+
+      builder.push("[Attribute Configuration] Display Attribute");
+      displayAttributeConfigurationEnabled =
+          builder
+              .comment(getEnableComment(DISPLAY_ATTRIBUTE_CONFIGURATION))
+              .define("displayAttributeConfigurationEnabled", true);
+      displayAttributeConfigurationAllowInCreative =
+          builder
+              .comment(getAllowInCreativeComment(DISPLAY_ATTRIBUTE_CONFIGURATION))
+              .define("displayAttributeConfigurationAllowInCreative", true);
+      displayAttributeConfigurationPermissionLevel =
+          builder
+              .comment(getPermissionLevelComment(DISPLAY_ATTRIBUTE_CONFIGURATION))
+              .defineInRange("displayAttributeConfigurationPermissionLevel", 1, 0, 4);
       builder.pop();
 
       builder.push("[Dialog Configuration] None Dialog");

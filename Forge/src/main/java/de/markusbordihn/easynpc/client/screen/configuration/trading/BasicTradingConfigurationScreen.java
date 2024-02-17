@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.client.screen.configuration.trading;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.components.PositiveNumberField;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.menu.configuration.trading.BasicTradingConfigurationMenu;
@@ -83,11 +84,10 @@ public class BasicTradingConfigurationScreen
 
     // Max Uses Edit Box
     this.maxUsesEditBox =
-        new TextField(this.font, this.contentLeftPos + 166, this.contentTopPos + 145, 32);
+        new PositiveNumberField(this.font, this.contentLeftPos + 166, this.contentTopPos + 145, 32);
     this.maxUsesEditBox.setMaxLength(4);
     this.maxUsesEditBox.setValue(this.entity.getBasicTradingMaxUses() + "");
     this.maxUsesEditBox.setResponder(this::onMaxUsesEditBoxChanged);
-    this.maxUsesEditBox.setFilter(TradingConfigurationScreen::isPositiveNumericValue);
     this.addRenderableWidget(this.maxUsesEditBox);
 
     // Experience Edit Box

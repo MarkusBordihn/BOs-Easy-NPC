@@ -32,6 +32,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import de.markusbordihn.easynpc.entity.easynpc.data.SpawnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import java.util.UUID;
 import javax.annotation.Nonnull;
@@ -66,6 +67,7 @@ public class EasyNPCBaseEntity extends AgeableMob
     OwnerData<AgeableMob>,
     ScaleData<AgeableMob>,
     SkinData<AgeableMob>,
+    SpawnerData<AgeableMob>,
     VariantData<AgeableMob> {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
@@ -77,6 +79,7 @@ public class EasyNPCBaseEntity extends AgeableMob
     DialogData.registerDialogDataSerializer();
     SkinData.registerSkinDataSerializer();
     ModelData.registerModelDataSerializer();
+    SpawnerData.registerSpawnerDataSerializer();
   }
 
   private final CustomEntityData customEntityData = new CustomEntityData(this);
@@ -140,11 +143,6 @@ public class EasyNPCBaseEntity extends AgeableMob
   }
 
   @Override
-  public EasyNPC<AgeableMob> getEasyNPC() {
-    return this;
-  }
-
-  @Override
   public AgeableMob getEasyNPCEntity() {
     return this;
   }
@@ -203,7 +201,7 @@ public class EasyNPCBaseEntity extends AgeableMob
 
   @Override
   public boolean isAttackable() {
-    return this.attributeDataLoaded && getAttributeIsAttackable();
+    return this.attributeDataLoaded() && getAttributeIsAttackable();
   }
 
   @Override
@@ -213,7 +211,7 @@ public class EasyNPCBaseEntity extends AgeableMob
 
   @Override
   protected void handleNetherPortal() {
-    if (this.attributeDataLoaded && getAttributeCanUseNetherPortal()) {
+    if (this.attributeDataLoaded() && getAttributeCanUseNetherPortal()) {
       super.handleNetherPortal();
     }
   }
@@ -229,6 +227,7 @@ public class EasyNPCBaseEntity extends AgeableMob
   public void defineCustomData() {
     this.defineCustomActionData();
     this.defineCustomDialogData();
+    this.defineCustomSpawnerData();
   }
 
   @Override
@@ -259,6 +258,7 @@ public class EasyNPCBaseEntity extends AgeableMob
     this.addAdditionalScaleData(compoundTag);
     this.addAdditionalSkinData(compoundTag);
     this.addAdditionalVariantData(compoundTag);
+    this.addAdditionalSpawnerData(compoundTag);
 
     this.addPersistentAngerSaveData(compoundTag);
   }
@@ -276,6 +276,7 @@ public class EasyNPCBaseEntity extends AgeableMob
     this.readAdditionalScaleData(compoundTag);
     this.readAdditionalSkinData(compoundTag);
     this.readAdditionalVariantData(compoundTag);
+    this.readAdditionalSpawnerData(compoundTag);
 
     this.readPersistentAngerSaveData(this.level, compoundTag);
 

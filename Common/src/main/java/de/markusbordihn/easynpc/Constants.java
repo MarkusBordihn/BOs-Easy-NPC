@@ -40,6 +40,7 @@ public final class Constants {
   public static final String TEXT_PREFIX = "text.easy_npc.";
   public static final String TEXT_CONFIG_PREFIX = TEXT_PREFIX + "config.";
   public static final String TEXT_ITEM_PREFIX = TEXT_PREFIX + "item.";
+  public static final String CONTAINER_PREFIX = TEXT_PREFIX + "container.";
   // Suffices
   public static final String NPC_NBT_SUFFIX = ".npc.nbt";
   // Colors
@@ -60,12 +61,11 @@ public final class Constants {
       new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/demo_background.png");
   public static final ResourceLocation TEXTURE_DIALOG =
       new ResourceLocation(Constants.MOD_ID, "textures/gui/dialog.png");
-  public static final ResourceLocation TEXTURE_GENERIC_54 =
-      new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/container/generic_54.png");
+
   public static final ResourceLocation TEXTURE_CONFIGURATION =
       new ResourceLocation(Constants.MOD_ID, "textures/gui/configuration.png");
-  public static final ResourceLocation TEXTURE_ICONS =
-      new ResourceLocation(Constants.MOD_ID, "textures/container/icons.png");
+  public static final ResourceLocation TEXTURE_SPAWNER =
+      new ResourceLocation(Constants.MOD_ID, "textures/gui/spawner.png");
   public static final ResourceLocation TEXTURE_INVENTORY =
       new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/container/inventory.png");
   // Animation Math
