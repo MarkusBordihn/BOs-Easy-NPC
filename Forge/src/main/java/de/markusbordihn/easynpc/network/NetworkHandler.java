@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.network;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.network.message.ChangeSpawnerSettingMessage;
 import de.markusbordihn.easynpc.network.message.MessageActionEventChange;
 import de.markusbordihn.easynpc.network.message.MessageAdvancedTrading;
 import de.markusbordihn.easynpc.network.message.MessageBasicTrading;
@@ -64,6 +65,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -95,6 +97,17 @@ public class NetworkHandler {
 
     event.enqueueWork(
         () -> {
+          INSTANCE.registerMessage(
+              id++,
+              ChangeSpawnerSettingMessage.class,
+              ChangeSpawnerSettingMessage::encode,
+              ChangeSpawnerSettingMessage::decode,
+              (message, contextSupplier) -> {
+                NetworkEvent.Context context = contextSupplier.get();
+                context.enqueueWork(
+                    () -> ChangeSpawnerSettingMessage.handle(message, context.getSender()));
+                context.setPacketHandled(true);
+              });
 
           // Action Change: Client -> Server
           INSTANCE.registerMessage(

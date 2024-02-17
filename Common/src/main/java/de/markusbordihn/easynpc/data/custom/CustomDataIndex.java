@@ -53,7 +53,7 @@ public enum CustomDataIndex {
   OBJECTIVE_DATA_SET,
   OBJECTIVE_PLAYER_SET,
   OBJECTIVE_ENTITY_SET,
-
+  SPAWNER_UUID,
   UNKNOWN; // @formatter:on
 
   public static final int MAX_FREE_INDEX = 20;

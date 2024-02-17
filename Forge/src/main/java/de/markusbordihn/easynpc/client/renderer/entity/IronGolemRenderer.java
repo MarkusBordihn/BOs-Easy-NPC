@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.entity.npc.IronGolem;
 import de.markusbordihn.easynpc.entity.npc.IronGolem.Variant;
 import java.util.EnumMap;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -140,7 +141,7 @@ public class IronGolemRenderer extends MobRenderer<IronGolem, CustomIronGolemMod
   }
 
   @Override
-  protected int getBlockLightLevel(IronGolem entity, BlockPos blockPos) {
-    return getEntityLightLevel(entity);
+  protected int getBlockLightLevel(@Nonnull IronGolem entity, @Nonnull BlockPos blockPos) {
+    return getEntityLightLevel(entity, blockPos);
   }
 }

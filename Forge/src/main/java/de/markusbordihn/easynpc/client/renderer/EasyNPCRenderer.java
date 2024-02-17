@@ -27,8 +27,10 @@ import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.LightLayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -121,7 +123,11 @@ public interface EasyNPCRenderer {
     }
   }
 
-  default int getEntityLightLevel(EasyNPCEntity entity) {
-    return 7;
+  default int getEntityLightLevel(EasyNPCEntity entity, BlockPos blockPos) {
+    int entityLightLevel = entity.getAttributeLightLevel();
+    if (entityLightLevel > 0) {
+      return entityLightLevel;
+    }
+    return entity.level().getBrightness(LightLayer.BLOCK, blockPos);
   }
 }

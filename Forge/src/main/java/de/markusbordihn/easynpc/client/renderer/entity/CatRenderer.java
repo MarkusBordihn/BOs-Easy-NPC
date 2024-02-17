@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.entity.npc.Cat;
 import de.markusbordihn.easynpc.entity.npc.Cat.Variant;
 import java.util.EnumMap;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -142,7 +143,7 @@ public class CatRenderer extends MobRenderer<Cat, CustomCatModel<Cat>> implement
   }
 
   @Override
-  protected int getBlockLightLevel(Cat entity, BlockPos blockPos) {
-    return getEntityLightLevel(entity);
+  protected int getBlockLightLevel(@Nonnull Cat entity, @Nonnull BlockPos blockPos) {
+    return getEntityLightLevel(entity, blockPos);
   }
 }
