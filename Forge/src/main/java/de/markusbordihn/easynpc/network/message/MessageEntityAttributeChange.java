@@ -56,15 +56,15 @@ public class MessageEntityAttributeChange extends NetworkMessage {
   }
 
   public MessageEntityAttributeChange(UUID uuid, EntityAttribute entityAttribute, Float value) {
-    this(uuid, entityAttribute, null, value, 0, "");
+    this(uuid, entityAttribute, false, value, 0, "");
   }
 
   public MessageEntityAttributeChange(UUID uuid, EntityAttribute entityAttribute, Integer value) {
-    this(uuid, entityAttribute, null, 0f, value, "");
+    this(uuid, entityAttribute, false, 0f, value, "");
   }
 
   public MessageEntityAttributeChange(UUID uuid, EntityAttribute entityAttribute, String value) {
-    this(uuid, entityAttribute, null, 0f, 0, value);
+    this(uuid, entityAttribute, false, 0f, 0, value);
   }
 
   public static MessageEntityAttributeChange decode(final FriendlyByteBuf buffer) {
@@ -188,6 +188,13 @@ public class MessageEntityAttributeChange extends NetworkMessage {
           log.debug(
               "Change isPushable={} for {} from {}", booleanValue, easyNPCEntity, serverPlayer);
           easyNPCEntity.setAttributeIsPushable(booleanValue);
+        }
+        break;
+      case LIGHT_LEVEL:
+        if (integerValue != null) {
+          log.debug(
+              "Change lightLevel={} for {} from {}", integerValue, easyNPCEntity, serverPlayer);
+          easyNPCEntity.setAttributeLightLevel(integerValue);
         }
         break;
       default:

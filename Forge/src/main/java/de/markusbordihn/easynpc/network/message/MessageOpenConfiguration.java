@@ -150,6 +150,8 @@ public class MessageOpenConfiguration extends NetworkMessage {
           EasyNPCEntityMenu.openBaseAttributeConfigurationMenu(serverPlayer, easyNPCEntity);
       case LOOK_OBJECTIVE ->
           EasyNPCEntityMenu.openLookObjectiveConfigurationMenu(serverPlayer, easyNPCEntity);
+      case DISPLAY_ATTRIBUTE ->
+          EasyNPCEntityMenu.openDisplayAttributeConfigurationMenu(serverPlayer, easyNPCEntity);
       default ->
           log.debug(
               "Unknown dialog {} for {} from {}", configurationType, easyNPCEntity, serverPlayer);

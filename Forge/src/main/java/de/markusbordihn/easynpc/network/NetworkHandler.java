@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.network;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.network.message.ChangeSpawnerSettingMessage;
 import de.markusbordihn.easynpc.network.message.MessageActionEventChange;
 import de.markusbordihn.easynpc.network.message.MessageAdvancedTrading;
 import de.markusbordihn.easynpc.network.message.MessageBasicTrading;
@@ -94,6 +95,19 @@ public class NetworkHandler {
 
     event.enqueueWork(
         () -> {
+          SIMPLE_CHANNEL
+              .messageBuilder(
+                  ChangeSpawnerSettingMessage.class, id++, NetworkDirection.PLAY_TO_SERVER)
+              .encoder(ChangeSpawnerSettingMessage::encode)
+              .decoder(ChangeSpawnerSettingMessage::decode)
+              .consumerNetworkThread(
+                  (message, context) -> {
+                    ServerPlayer serverPlayer = context.getSender();
+                    if (serverPlayer != null) {
+                      ChangeSpawnerSettingMessage.handle(message, serverPlayer);
+                    }
+                  })
+              .add();
 
           // Action Change: Client -> Server
           SIMPLE_CHANNEL

@@ -32,6 +32,7 @@ import de.markusbordihn.easynpc.menu.configuration.action.DialogActionConfigurat
 import de.markusbordihn.easynpc.menu.configuration.action.DistanceActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.attribute.AbilitiesAttributeConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.attribute.BaseAttributeConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.attribute.DisplayAttributeConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.AdvancedDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfigurationMenu;
@@ -758,6 +759,21 @@ public class EasyNPCEntityMenu {
                     ? entity.getAttribute(Attributes.ATTACK_KNOCKBACK).getBaseValue()
                     : 0.0d);
           });
+    }
+  }
+
+  public static void openDisplayAttributeConfigurationMenu(
+      ServerPlayer serverPlayer, EasyNPCEntity entity) {
+    if (hasPermissions(
+        serverPlayer,
+        entity,
+        COMMON.displayAttributeConfigurationEnabled.get(),
+        COMMON.displayAttributeConfigurationAllowInCreative.get(),
+        COMMON.displayAttributeConfigurationPermissionLevel.get())) {
+      UUID uuid = entity.getUUID();
+      serverPlayer.openMenu(
+          DisplayAttributeConfigurationMenu.getMenuProvider(uuid, entity),
+          buffer -> buffer.writeUUID(uuid));
     }
   }
 

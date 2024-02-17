@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.data.dialog;
 
 import de.markusbordihn.easynpc.data.action.ActionData;
 import de.markusbordihn.easynpc.data.action.ActionType;
+import de.markusbordihn.easynpc.utils.TextFormattingCodes;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -34,51 +35,39 @@ public class DialogUtils {
 
   private static final String MACRO_NPC_STRING = "@npc";
   private static final String MACRO_INITIATOR_STRING = "@initiator";
-  private static final String MACRO_HTML_LINE_BREAK = "<br>";
-  private static final String MACRO_LINE_BREAK = "\\n";
   private static final int MAX_DIALOG_LINE_LENGTH = 178;
   private static final int MAX_SMALL_BUTTON_NAME_LENGTH = 20;
 
   protected DialogUtils() {}
 
   public static String parseDialogText(String text, LivingEntity entity, Player player) {
-    if (!hasDialogMacros(text) && !hasDialogLineBreaksMacros(text)) {
-      return text;
-    }
 
-    // Replace entity macros.
-    if (entity != null) {
-      text = text.replace(MACRO_NPC_STRING, entity.getName().getString());
-    }
+    // Handle dialog macros, if any.
+    if (hasDialogMacros(text)) {
+      // Replace entity macros.
+      if (entity != null) {
+        text = text.replace(MACRO_NPC_STRING, entity.getName().getString());
+      }
 
-    // Replace player macros.
-    if (player != null) {
-      text = text.replace(MACRO_INITIATOR_STRING, player.getName().getString());
+      // Replace player macros.
+      if (player != null) {
+        text = text.replace(MACRO_INITIATOR_STRING, player.getName().getString());
+      }
     }
 
     // Replace all line breaks macros.
-    text = parseLineBreaks(text);
+    text = TextFormattingCodes.parseTextLineBreaks(text);
+
+    // Replace color codes.
+    text = TextFormattingCodes.parseTextFormattingCodes(text);
 
     return text;
-  }
-
-  public static String parseLineBreaks(String text) {
-    if (text == null || text.isEmpty()) {
-      return text;
-    }
-    return text.replace(MACRO_LINE_BREAK, "\n").replace(MACRO_HTML_LINE_BREAK, "\n");
   }
 
   public static boolean hasDialogMacros(String text) {
     return text != null
         && !text.isEmpty()
         && (text.contains(MACRO_NPC_STRING) || text.contains(MACRO_INITIATOR_STRING));
-  }
-
-  public static boolean hasDialogLineBreaksMacros(String text) {
-    return text != null
-        && !text.isEmpty()
-        && (text.contains(MACRO_LINE_BREAK) || text.contains(MACRO_HTML_LINE_BREAK));
   }
 
   public static String generateButtonLabel(String name) {
@@ -169,8 +158,8 @@ public class DialogUtils {
     boolean hasDialogMacros = hasDialogMacros(dialogText);
 
     // Check if we need to parse line breaks.
-    if (hasDialogLineBreaksMacros(dialogText)) {
-      dialogText = parseLineBreaks(dialogText);
+    if (TextFormattingCodes.hasTextLinebreakCodes(dialogText)) {
+      dialogText = TextFormattingCodes.parseTextLineBreaks(dialogText);
     } else if (hasDialogMacros) {
       dialogText = dialogText + "PLACEHOLDER_FOR_POSSIBLE_MACROS";
     }

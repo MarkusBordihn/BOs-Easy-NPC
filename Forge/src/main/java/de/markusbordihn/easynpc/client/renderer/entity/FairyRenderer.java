@@ -30,6 +30,7 @@ import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.npc.Fairy.Variant;
 import java.util.EnumMap;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -154,7 +155,7 @@ public class FairyRenderer extends HumanoidMobRenderer<EasyNPCEntity, FairyModel
   }
 
   @Override
-  protected int getBlockLightLevel(EasyNPCEntity entity, BlockPos blockPos) {
-    return getEntityLightLevel(entity);
+  protected int getBlockLightLevel(@Nonnull EasyNPCEntity entity, @Nonnull BlockPos blockPos) {
+    return getEntityLightLevel(entity, blockPos);
   }
 }
