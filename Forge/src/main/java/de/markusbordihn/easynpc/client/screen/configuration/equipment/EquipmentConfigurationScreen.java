@@ -23,12 +23,15 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
+import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenu;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -42,6 +45,20 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
   public EquipmentConfigurationScreen(
       EquipmentConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
+  }
+
+  private Checkbox createVisibleEquipmentSlotCheckbox(
+      int left, int top, EquipmentSlot equipmentSlot) {
+    boolean modelEquipmentVisibliity = this.entity.isModelEquipmentVisible(equipmentSlot);
+    return this.addRenderableWidget(
+        new Checkbox(
+            left,
+            top,
+            "",
+            modelEquipmentVisibliity,
+            checkbox ->
+                NetworkMessageHandler.modelVisibilityChange(
+                    this.uuid, equipmentSlot, checkbox.selected())));
   }
 
   @Override
@@ -59,6 +76,20 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
     // Basic Position
     this.inventoryLabelX = 8;
     this.inventoryLabelY = this.imageHeight - 92;
+
+    // Equipment Slots
+    int equipmentSlotLeft = this.contentLeftPos + 75;
+    this.createVisibleEquipmentSlotCheckbox(
+        equipmentSlotLeft, this.contentTopPos + 2, EquipmentSlot.HEAD);
+
+    this.createVisibleEquipmentSlotCheckbox(
+        equipmentSlotLeft, this.contentTopPos + 20, EquipmentSlot.CHEST);
+
+    this.createVisibleEquipmentSlotCheckbox(
+        equipmentSlotLeft, this.contentTopPos + 38, EquipmentSlot.LEGS);
+
+    this.createVisibleEquipmentSlotCheckbox(
+        equipmentSlotLeft, this.contentTopPos + 55, EquipmentSlot.FEET);
   }
 
   @Override

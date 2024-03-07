@@ -39,10 +39,10 @@ import org.apache.logging.log4j.Logger;
 public class SpawnerMenu extends AbstractContainerMenu {
   public static final int PLAYER_SLOT_START = 9;
   public static final int PLAYER_INVENTORY_SLOT_START = PLAYER_SLOT_START;
+  public static final int presetItemSlotX = 42;
+  public static final int presetItemSlotY = 169;
+  protected static final int containerSize = 1;
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  public static int presetItemSlotX = 42;
-  public static int presetItemSlotY = 169;
-  protected static int containerSize = 1;
   private final Container container;
   private final ContainerData data;
 
@@ -93,8 +93,8 @@ public class SpawnerMenu extends AbstractContainerMenu {
     int slotSpacing = 8;
 
     // Player Inventory Slots
-    int playerInventoryStartPositionX = 88;
-    int playerInventoryStartPositionY = 151;
+    int playerInventoryStartPositionX = 90;
+    int playerInventoryStartPositionY = 153;
     for (int inventoryRow = 0; inventoryRow < 3; ++inventoryRow) {
       for (int inventoryColumn = 0; inventoryColumn < 9; ++inventoryColumn) {
         this.addSlot(
@@ -107,8 +107,8 @@ public class SpawnerMenu extends AbstractContainerMenu {
     }
 
     // Player Hotbar
-    int hotbarStartPositionX = 88;
-    int hotbarStartPositionY = 211;
+    int hotbarStartPositionX = 90;
+    int hotbarStartPositionY = 213;
     for (int playerInventorySlot = 0; playerInventorySlot < 9; ++playerInventorySlot) {
       this.addSlot(
           new Slot(
@@ -136,6 +136,10 @@ public class SpawnerMenu extends AbstractContainerMenu {
 
   public int getSpawnRange() {
     return this.data.get(BaseEasyNPCSpawnerBlockEntity.SPAWN_RANGE_DATA);
+  }
+
+  public int getDespawnRange() {
+    return this.data.get(BaseEasyNPCSpawnerBlockEntity.DESPAWN_RANGE_DATA);
   }
 
   public int getRequiredPlayerRange() {

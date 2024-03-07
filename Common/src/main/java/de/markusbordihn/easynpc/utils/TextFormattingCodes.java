@@ -28,7 +28,7 @@ import net.minecraft.Util;
 
 public class TextFormattingCodes {
 
-  private static final Map<String, String> TEXT_FORMATTING_CODES =
+  private static final Map<String, String> TEXT_COLOR_CODES =
       Util.make(
           new HashMap<>(),
           map -> {
@@ -49,7 +49,12 @@ public class TextFormattingCodes {
             map.put("light_purple", "§d");
             map.put("yellow", "§e");
             map.put("white", "§f");
+          });
 
+  private static final Map<String, String> TEXT_FORMATTING_CODES =
+      Util.make(
+          new HashMap<>(),
+          map -> {
             // Formatting codes
             map.put("obfuscated", "§k");
             map.put("bold", "§l");
@@ -64,8 +69,11 @@ public class TextFormattingCodes {
             map.put("u", "§n");
             map.put("s", "§m");
           });
+
   private static final Set<String> textLinebreakCodes = new HashSet<>(List.of("<br>", "\\n"));
-  private static final String RESET_CODE = "§r";
+
+  private static final String FORMATTING_RESET_CODE = "§r";
+  private static final String COLOR_DEFAULT_CODE = "§0";
   private static final String LINE_BREAK = "\n";
 
   private TextFormattingCodes() {}
@@ -80,9 +88,15 @@ public class TextFormattingCodes {
     }
 
     // Replace color codes
+    for (Map.Entry<String, String> entry : TEXT_COLOR_CODES.entrySet()) {
+      text = text.replace("<" + entry.getKey() + ">", entry.getValue());
+      text = text.replace("</" + entry.getKey() + ">", COLOR_DEFAULT_CODE);
+    }
+
+    // Replace formatting codes
     for (Map.Entry<String, String> entry : TEXT_FORMATTING_CODES.entrySet()) {
       text = text.replace("<" + entry.getKey() + ">", entry.getValue());
-      text = text.replace("</" + entry.getKey() + ">", RESET_CODE);
+      text = text.replace("</" + entry.getKey() + ">", FORMATTING_RESET_CODE);
     }
 
     return text;

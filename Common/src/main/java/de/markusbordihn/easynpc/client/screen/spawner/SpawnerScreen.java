@@ -47,6 +47,8 @@ public abstract class SpawnerScreen<T extends AbstractContainerMenu>
   private boolean updatedDataFields = false;
   private EditBox spawnerRangeEdit;
   private Button spawnerRangeSaveButton;
+  private EditBox spawnerDespawnRangeEdit;
+  private Button spawnerDespawnRangeSaveButton;
   private EditBox requiredPlayerRangeEdit;
   private Button requiredPlayerRangeSaveButton;
   private EditBox delayEdit;
@@ -75,7 +77,7 @@ public abstract class SpawnerScreen<T extends AbstractContainerMenu>
     this.inventoryLabelY = this.imageHeight - 92;
 
     int settingsLeft = this.leftPos + 196;
-    int settingsTop = this.topPos + 35;
+    int settingsTop = this.topPos + 20;
     int settingsWidth = 35;
 
     // Spawner Player Range Edit
@@ -230,11 +232,13 @@ public abstract class SpawnerScreen<T extends AbstractContainerMenu>
                 3));
     this.spawnerRangeEdit.setResponder(
         value -> {
-          if (this.spawnerRangeSaveButton != null) {
+          if (this.spawnerRangeSaveButton != null && this.spawnerDespawnRangeEdit != null) {
             this.spawnerRangeSaveButton.active =
                 value != null
                     && !value.isEmpty()
-                    && Integer.parseInt(value) != this.spawnerMenu.getSpawnRange();
+                    && Integer.parseInt(value) != this.spawnerMenu.getSpawnRange()
+                    && Integer.parseInt(value)
+                        < Integer.parseInt(this.spawnerDespawnRangeEdit.getValue());
           }
         });
     this.spawnerRangeSaveButton =
@@ -251,6 +255,42 @@ public abstract class SpawnerScreen<T extends AbstractContainerMenu>
                     this.spawnerRangeSaveButton.active = false;
                   }
                 }));
+
+    // Spawner Despawn Range Edit
+    settingsTop += 20;
+    this.spawnerDespawnRangeEdit =
+        this.addRenderableWidget(
+            new PositiveNumberField(
+                this.font,
+                settingsLeft,
+                settingsTop,
+                settingsWidth,
+                this.spawnerMenu.getDespawnRange(),
+                3));
+    this.spawnerDespawnRangeEdit.setResponder(
+        value -> {
+          if (this.spawnerDespawnRangeSaveButton != null && this.spawnerRangeEdit != null) {
+            this.spawnerDespawnRangeSaveButton.active =
+                value != null
+                    && !value.isEmpty()
+                    && Integer.parseInt(value) != this.spawnerMenu.getDespawnRange()
+                    && Integer.parseInt(value) > Integer.parseInt(this.spawnerRangeEdit.getValue());
+          }
+        });
+    this.spawnerDespawnRangeSaveButton =
+        this.addRenderableWidget(
+            new SaveButton(
+                this.spawnerDespawnRangeEdit.x + this.spawnerDespawnRangeEdit.getWidth() + 5,
+                this.spawnerDespawnRangeEdit.y - 1,
+                button -> {
+                  if (this.spawnerDespawnRangeEdit != null) {
+                    this.changeSpawnerSetting(
+                        this.spawnerMenu.getSpawnerPosition(),
+                        SpawnerSettingType.DESPAWN_RANGE,
+                        Integer.parseInt(this.spawnerDespawnRangeEdit.getValue()));
+                    this.spawnerDespawnRangeSaveButton.active = false;
+                  }
+                }));
   }
 
   @Override
@@ -265,6 +305,9 @@ public abstract class SpawnerScreen<T extends AbstractContainerMenu>
   protected void updateDataFields() {
     if (this.spawnerRangeEdit != null) {
       this.spawnerRangeEdit.setValue(String.valueOf(this.spawnerMenu.getSpawnRange()));
+    }
+    if (this.spawnerDespawnRangeEdit != null) {
+      this.spawnerDespawnRangeEdit.setValue(String.valueOf(this.spawnerMenu.getDespawnRange()));
     }
     if (this.requiredPlayerRangeEdit != null) {
       this.requiredPlayerRangeEdit.setValue(
@@ -295,6 +338,15 @@ public abstract class SpawnerScreen<T extends AbstractContainerMenu>
           SPAWNER_PREFIX + SpawnerSettingType.SPAWN_RANGE.name().toLowerCase(),
           this.spawnerRangeEdit.x + labelOffsetX,
           this.spawnerRangeEdit.y + labelOffsetY);
+    }
+
+    if (this.spawnerDespawnRangeEdit != null) {
+      Text.drawConfigString(
+          poseStack,
+          this.font,
+          SPAWNER_PREFIX + SpawnerSettingType.DESPAWN_RANGE.name().toLowerCase(),
+          this.spawnerDespawnRangeEdit.x + labelOffsetX,
+          this.spawnerDespawnRangeEdit.y + labelOffsetY);
     }
 
     if (this.requiredPlayerRangeEdit != null) {
@@ -346,17 +398,19 @@ public abstract class SpawnerScreen<T extends AbstractContainerMenu>
 
   @Override
   public void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
-    this.font.draw(
+    Text.drawString(
         poseStack,
+        this.font,
         this.title,
         this.titleLabelX + 80,
-        this.titleLabelY + 5,
+        this.titleLabelY + 2,
         Constants.FONT_COLOR_BLACK);
-    this.font.draw(
+    Text.drawString(
         poseStack,
+        this.font,
         this.playerInventoryTitle,
-        this.inventoryLabelX + 88,
-        this.inventoryLabelY - 12,
+        this.inventoryLabelX + 90,
+        this.inventoryLabelY - 10,
         Constants.FONT_COLOR_BLACK);
   }
 
@@ -382,8 +436,8 @@ public abstract class SpawnerScreen<T extends AbstractContainerMenu>
     RenderSystem.setShader(GameRenderer::getPositionTexShader);
     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     RenderSystem.setShaderTexture(0, Constants.TEXTURE_INVENTORY);
-    this.blit(poseStack, this.leftPos + 95, this.topPos + 150, 7, 83, 162, 54);
-    this.blit(poseStack, this.leftPos + 95, this.topPos + 210, 7, 141, 162, 18);
+    this.blit(poseStack, this.leftPos + 97, this.topPos + 152, 7, 83, 162, 54);
+    this.blit(poseStack, this.leftPos + 97, this.topPos + 212, 7, 141, 162, 18);
 
     // Easy NPC Preset Slot.
     RenderSystem.setShader(GameRenderer::getPositionTexShader);
