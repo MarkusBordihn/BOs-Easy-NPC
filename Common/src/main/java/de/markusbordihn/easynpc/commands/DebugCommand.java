@@ -23,7 +23,6 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.debug.DebugManager;
 import net.minecraft.ChatFormatting;
@@ -37,12 +36,12 @@ public class DebugCommand implements Command<CommandSourceStack> {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("debug")
-        .requires(cs -> cs.hasPermission(2))
+        .requires(cs -> cs.hasPermission(Commands.LEVEL_GAMEMASTERS))
         .then(Commands.argument("enable", BoolArgumentType.bool()).executes(command));
   }
 
   @Override
-  public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+  public int run(CommandContext<CommandSourceStack> context) {
     final boolean enable = BoolArgumentType.getBool(context, "enable");
     CommandSourceStack commandSource = context.getSource();
     if (enable) {

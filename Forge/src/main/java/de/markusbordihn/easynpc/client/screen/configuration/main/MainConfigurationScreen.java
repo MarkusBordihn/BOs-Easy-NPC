@@ -527,16 +527,6 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     // Make sure that entity text is always on top
     poseStack.translate(0, 0, 100);
 
-    // Entity Owner, if available.
-    if (this.hasOwner) {
-      Text.drawString(
-          poseStack,
-          this.font,
-          "Owner: " + this.ownerName,
-          Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
-          Math.round((this.topPos + 61) / scaleEntityTypeText));
-    }
-
     // Entity UUID, if available.
     if (this.uuid != null) {
       Text.drawString(
@@ -547,13 +537,34 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
           Math.round((this.topPos + 15) / scaleEntityTypeText));
     }
 
-    // Entity Position
+    // Entity Owner, if available.
+    if (this.hasOwner) {
+      Text.drawString(
+          poseStack,
+          this.font,
+          "Owner: " + this.ownerName,
+          Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
+          Math.round((this.topPos + 61) / scaleEntityTypeText));
+    }
+
+    // Home position
+    if (this.entity.hasHomePosition()) {
+      BlockPos blockPos = this.entity.getHomePosition();
+      Text.drawString(
+          poseStack,
+          this.font,
+          "Home: " + blockPos.getX() + ", " + blockPos.getY() + ", " + blockPos.getZ(),
+          Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
+          Math.round((this.topPos + 70) / scaleEntityTypeText));
+    }
+
+    // Current position
     BlockPos blockPos = this.entity.getOnPos();
     Text.drawString(
         poseStack,
         this.font,
         "Pos: " + blockPos.getX() + ", " + blockPos.getY() + ", " + blockPos.getZ(),
-        Math.round((this.contentLeftPos + 20) / scaleEntityTypeText),
+        Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
         Math.round((this.topPos + 187) / scaleEntityTypeText));
     poseStack.popPose();
   }

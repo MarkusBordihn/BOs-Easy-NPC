@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.network.message.MessageBasicTrading;
 import de.markusbordihn.easynpc.network.message.MessageDialogButtonAction;
 import de.markusbordihn.easynpc.network.message.MessageEntityAttributeChange;
 import de.markusbordihn.easynpc.network.message.MessageEntityBaseAttributeChange;
+import de.markusbordihn.easynpc.network.message.MessageModelEquipmentVisibilityChange;
 import de.markusbordihn.easynpc.network.message.MessageModelLockRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPoseChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPositionChange;
@@ -77,7 +78,7 @@ public class NetworkHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final String PROTOCOL_VERSION = "17";
+  private static final String PROTOCOL_VERSION = "18";
   public static final SimpleChannel INSTANCE =
       NetworkRegistry.newSimpleChannel(
           new ResourceLocation(Constants.MOD_ID, "network"),
@@ -180,6 +181,14 @@ public class NetworkHandler {
               MessageModelPositionChange::encode,
               MessageModelPositionChange::decode,
               MessageModelPositionChange::handle);
+
+          // Model Equipment Visibility Change: Client -> Server
+          INSTANCE.registerMessage(
+              id++,
+              MessageModelEquipmentVisibilityChange.class,
+              MessageModelEquipmentVisibilityChange::encode,
+              MessageModelEquipmentVisibilityChange::decode,
+              MessageModelEquipmentVisibilityChange::handle);
 
           // Model Visibility Change: Client -> Server
           INSTANCE.registerMessage(

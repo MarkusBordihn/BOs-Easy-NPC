@@ -23,6 +23,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.client.model.custom.CustomSkeletonModel;
 import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.CustomHumanoidArmorLayer;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.npc.Skeleton.Variant;
@@ -36,7 +37,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.layers.ElytraLayer;
-import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -66,7 +66,7 @@ public class SkeletonRenderer extends HumanoidMobRenderer<Skeleton, CustomSkelet
   public SkeletonRenderer(EntityRendererProvider.Context context) {
     super(context, new CustomSkeletonModel<>(context.bakeLayer(ModelLayers.SKELETON)), 0.5F);
     this.addLayer(
-        new HumanoidArmorLayer<>(
+        new CustomHumanoidArmorLayer<>(
             this,
             new CustomSkeletonModel<>(context.bakeLayer(ModelLayers.SKELETON_INNER_ARMOR)),
             new CustomSkeletonModel<>(context.bakeLayer(ModelLayers.SKELETON_OUTER_ARMOR))));
