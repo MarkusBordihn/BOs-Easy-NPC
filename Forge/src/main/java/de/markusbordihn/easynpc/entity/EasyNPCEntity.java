@@ -30,12 +30,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -43,15 +40,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -89,10 +83,6 @@ public class EasyNPCEntity extends EasyNPCEntityData implements EasyNPCEntityAct
     super(entityType, level);
     this.setInvulnerable(true);
     this.refreshGroundNavigation();
-  }
-
-  public void finalizeSpawn() {
-    // Do stuff like default names.
   }
 
   public void executeActions(Set<ActionData> actionDataSet, ServerPlayer serverPlayer) {
@@ -333,11 +323,6 @@ public class EasyNPCEntity extends EasyNPCEntityData implements EasyNPCEntityAct
   }
 
   @Override
-  public boolean removeWhenFarAway(double distance) {
-    return false;
-  }
-
-  @Override
   public void travel(@Nonnull Vec3 vec3) {
 
     // Update basic movement relevant data.
@@ -370,21 +355,6 @@ public class EasyNPCEntity extends EasyNPCEntityData implements EasyNPCEntityAct
       // Make sure we only calculate animations for be as much as possible server-friendly.
       this.calculateEntityAnimation(this, this instanceof FlyingAnimal);
     }
-  }
-
-  @Override
-  @Nullable
-  public SpawnGroupData finalizeSpawn(
-      @Nonnull ServerLevelAccessor serverLevelAccessor,
-      @Nonnull DifficultyInstance difficulty,
-      @Nonnull MobSpawnType mobSpawnType,
-      @Nullable SpawnGroupData spawnGroupData,
-      @Nullable CompoundTag compoundTag) {
-    spawnGroupData =
-        super.finalizeSpawn(
-            serverLevelAccessor, difficulty, mobSpawnType, spawnGroupData, compoundTag);
-    finalizeSpawn();
-    return spawnGroupData;
   }
 
   @Override
@@ -431,13 +401,7 @@ public class EasyNPCEntity extends EasyNPCEntityData implements EasyNPCEntityAct
 
       // Open dialog menu, if we have a simple dialog.
       if (this.hasDialog()) {
-        UUID dialogId = this.getDialogDataSet().getDefaultDialogId();
-        if (dialogId != null) {
-          EasyNPCEntityMenu.openDialogMenu(serverPlayer, this, dialogId, 0);
-          return InteractionResult.CONSUME;
-        } else {
-          log.error("Unable to get default dialog id for {}", this);
-        }
+        this.openDialog(serverPlayer);
         return InteractionResult.CONSUME;
       }
 
@@ -448,6 +412,11 @@ public class EasyNPCEntity extends EasyNPCEntityData implements EasyNPCEntityAct
     }
 
     return InteractionResult.PASS;
+  }
+
+  @Override
+  public void openDialog(ServerPlayer serverPlayer, UUID dialogId) {
+    EasyNPCEntityMenu.openDialogMenu(serverPlayer, this, dialogId, 0);
   }
 
   @Override

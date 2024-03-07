@@ -23,7 +23,9 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.custom.CustomDataAccessor;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
+import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SpawnerData;
 import net.minecraft.nbt.CompoundTag;
@@ -33,9 +35,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
-import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.npc.Npc;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
@@ -59,29 +62,42 @@ public interface EasyNPC<T extends LivingEntity> extends Npc {
 
   GoalSelector getEasyNPCTargetSelector();
 
-  GroundPathNavigation getEasyNPCGroundPathNavigation();
-
-  default NeutralMob getEasyNPCNeutralMob() {
-    if (getEasyNPCEntity() instanceof NeutralMob neutralMob) {
-      return neutralMob;
-    }
-    return null;
+  default LookControl getLookControl() {
+    return this instanceof Mob mob ? mob.getLookControl() : null;
   }
 
   default AttackData<T> getEasyNPCAttackData() {
-    return (AttackData<T>) this;
+    return this instanceof AttackData<T> attackData ? attackData : null;
+  }
+
+  default DialogData<T> getEasyNPCDialogData() {
+    return this instanceof DialogData<T> dialogData ? dialogData : null;
   }
 
   default SkinData<T> getEasyNPCSkinData() {
-    return (SkinData<T>) this;
+    return this instanceof SkinData<T> skinData ? skinData : null;
   }
 
   default ModelData<T> getEasyNPCModelData() {
-    return (ModelData<T>) this;
+    return this instanceof ModelData<T> modelData ? modelData : null;
+  }
+
+  default NavigationData<T> getEasyNPCNavigationData() {
+    return this instanceof NavigationData<T> navigationData ? navigationData : null;
   }
 
   default SpawnerData<T> getEasyNPCSpawnerData() {
-    return (SpawnerData<T>) this;
+    return this instanceof SpawnerData<T> spawnerData ? spawnerData : null;
+  }
+
+  default PathfinderMob getPathfinderMob() {
+    return this instanceof PathfinderMob pathfinderMob ? pathfinderMob : null;
+  }
+
+  default ServerLevel getServerLevel() {
+    return this instanceof Mob mob && mob.level instanceof ServerLevel serverLevel
+        ? serverLevel
+        : null;
   }
 
   default Component getEasyNPCTypeName() {

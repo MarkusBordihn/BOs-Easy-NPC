@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.network;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import java.util.Random;
 import java.util.UUID;
 import net.minecraft.server.level.ServerPlayer;
@@ -51,7 +52,7 @@ public class NetworkMessage {
     }
 
     // Validate access.
-    if (!EntityManager.hasAccess(uuid, serverPlayer)) {
+    if (!LivingEntityManager.hasAccess(uuid, serverPlayer)) {
       log.error("User {} has no access to Easy NPC with uuid {}.", serverPlayer, uuid);
       return false;
     }

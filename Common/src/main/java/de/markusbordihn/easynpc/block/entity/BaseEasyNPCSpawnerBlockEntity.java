@@ -23,8 +23,10 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.block.BaseEasyNPCSpawnerBlock;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetItem;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
@@ -58,9 +60,11 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
   public static final int DELAY_DATA = 5;
   public static final int MAX_NEARBY_ENTITIES_DATA = 6;
   public static final int SPAWN_COUNT_DATA = 7;
-  public static final int DATA_SIZE = 8;
+  public static final int DESPAWN_RANGE_DATA = 8;
+  public static final int DATA_SIZE = 9;
   public static final String UUID_TAG = "UUID";
   public static final String SPAWN_RANGE_TAG = "SpawnRange";
+  public static final String DESPAWN_RANGE_TAG = "DespawnRange";
   public static final String REQUIRED_PLAYER_RANGE_TAG = "RequiredPlayerRange";
   public static final String SPAWNER_OWNER_TAG = "Owner";
   public static final String DELAY_TAG = "Delay";
@@ -73,6 +77,7 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
   private int spawnerTicker = this.random.nextInt(SPAWNER_TICK);
   private int spawnTicker = 0;
   private int spawnRange = 2;
+  private int despawnRange = 32;
   private int requiredPlayerRange = 16;
   private UUID owner;
   private UUID spawnerUUID;
@@ -87,11 +92,12 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
             case BLOCK_POS_X_DATA -> worldPosition.getX();
             case BLOCK_POS_Y_DATA -> worldPosition.getY();
             case BLOCK_POS_Z_DATA -> worldPosition.getZ();
-            case SPAWN_RANGE_DATA -> spawnRange;
-            case REQUIRED_PLAYER_RANGE_DATA -> requiredPlayerRange;
             case DELAY_DATA -> delay;
+            case DESPAWN_RANGE_DATA -> despawnRange;
             case MAX_NEARBY_ENTITIES_DATA -> maxNearbyEntities;
+            case REQUIRED_PLAYER_RANGE_DATA -> requiredPlayerRange;
             case SPAWN_COUNT_DATA -> numbersPerSpawnInterval;
+            case SPAWN_RANGE_DATA -> spawnRange;
             default -> 0;
           };
         }
@@ -100,6 +106,9 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
           switch (index) {
             case SPAWN_RANGE_DATA:
               spawnRange = value;
+              break;
+            case DESPAWN_RANGE_DATA:
+              despawnRange = value;
               break;
             case REQUIRED_PLAYER_RANGE_DATA:
               requiredPlayerRange = value;
@@ -143,10 +152,40 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
       BaseEasyNPCSpawnerBlockEntity blockEntity) {
     if (blockEntity.spawnerTicker++ >= SPAWNER_TICK) {
       if (blockEntity.spawnTicker++ >= blockEntity.delay) {
+        despawnTick(level, blockPos, blockState, blockEntity);
         spawnTick(level, blockPos, blockState, blockEntity);
         blockEntity.spawnTicker = 0;
       }
       blockEntity.spawnerTicker = 0;
+    }
+  }
+
+  public static void despawnTick(
+      Level level,
+      BlockPos blockPos,
+      BlockState blockState,
+      BaseEasyNPCSpawnerBlockEntity blockEntity) {
+    if (!blockEntity.checkDespawnConditions()) {
+      return;
+    }
+    log.debug("Despawn tick for {}", blockEntity);
+
+    // Get all valid EasyNPCs in despawn range.
+    Set<EasyNPC<?>> validEasyNPCs =
+        blockEntity.getEasyNPCsInRange(blockEntity.worldPosition, blockEntity.despawnRange);
+
+    // Check for all EasyNPCs outside the despawn range with a maximum of plus 256.
+    Set<EasyNPC<?>> nearbyEasyNPCs =
+        blockEntity.getEasyNPCsInRange(blockEntity.worldPosition, blockEntity.despawnRange + 256);
+    for (EasyNPC<?> easyNPC : nearbyEasyNPCs) {
+      if (!validEasyNPCs.contains(easyNPC)) {
+        log.debug(
+            "Despawn {} from spawner at {} outside of range {}",
+            easyNPC,
+            blockPos,
+            blockEntity.despawnRange);
+        easyNPC.getEasyNPCEntity().discard();
+      }
     }
   }
 
@@ -216,6 +255,33 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
     return blockPos;
   }
 
+  public boolean checkDespawnConditions() {
+    // Check if present slot is not empty.
+    if (getPresetItemStack() == null) {
+      return false;
+    }
+
+    // Check if despawn range is greater than 0 and check if any entity are in range.
+    if (this.despawnRange > 0) {
+      Level level = this.getLevel();
+      if (level != null) {
+        // Get all valid EasyNPCs in despawn range.
+        Set<EasyNPC<?>> validEasyNPCs = getEasyNPCsInRange(this.worldPosition, this.despawnRange);
+
+        // Check for all EasyNPCs outside the despawn range, but inside the despawn range + 256.
+        Set<EasyNPC<?>> nearbyEasyNPCs =
+            getEasyNPCsInRange(this.worldPosition, this.despawnRange + 256);
+        for (EasyNPC<?> easyNPC : nearbyEasyNPCs) {
+          if (!validEasyNPCs.contains(easyNPC)) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
   public boolean checkSpawnConditions() {
     // Check if present slot is not empty.
     if (getPresetItemStack() == null) {
@@ -243,21 +309,8 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
 
     // Check if max nearby entities is greater than 0 and check if any entity is in range.
     if (this.maxNearbyEntities > 0) {
-      Level level = this.getLevel();
-      if (level != null) {
-        AABB aabb = new AABB(this.worldPosition).inflate(this.spawnRange);
-        int nearbyEntities = 0;
-        for (LivingEntity livingEntity : level.getEntitiesOfClass(LivingEntity.class, aabb)) {
-          if (livingEntity instanceof EasyNPC<?> easyNPC
-              && easyNPC.getEasyNPCSpawnerData().hasSpawnerUUID()
-              && easyNPC.getEasyNPCSpawnerData().getSpawnerUUID().equals(this.spawnerUUID)) {
-            nearbyEntities++;
-          }
-        }
-        if (nearbyEntities >= this.maxNearbyEntities) {
-          return false;
-        }
-      }
+      Set<EasyNPC<?>> nearbyEasyNPCs = getEasyNPCsInRange(this.worldPosition, this.spawnRange);
+      return nearbyEasyNPCs.size() < this.maxNearbyEntities;
     }
 
     return true;
@@ -308,6 +361,15 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
     this.setChanged();
   }
 
+  public int getDespawnRange() {
+    return this.dataAccess.get(DESPAWN_RANGE_DATA);
+  }
+
+  public void setDespawnRange(int despawnRange) {
+    this.dataAccess.set(DESPAWN_RANGE_DATA, Math.max(0, Math.min(128, despawnRange)));
+    this.setChanged();
+  }
+
   public int getRequiredPlayerRange() {
     return this.dataAccess.get(REQUIRED_PLAYER_RANGE_DATA);
   }
@@ -342,6 +404,22 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
   public void setSpawnCount(int spawnCount) {
     this.dataAccess.set(SPAWN_COUNT_DATA, Math.max(0, Math.min(32, spawnCount)));
     this.setChanged();
+  }
+
+  public Set<EasyNPC<?>> getEasyNPCsInRange(BlockPos blockPos, int range) {
+    if (this.level == null) {
+      return new HashSet<>();
+    }
+    Set<EasyNPC<?>> foundEasyNPCs = new HashSet<>();
+    AABB aabb = new AABB(blockPos).inflate(range);
+    for (LivingEntity livingEntity : level.getEntitiesOfClass(LivingEntity.class, aabb)) {
+      if (livingEntity instanceof EasyNPC<?> easyNPC
+          && easyNPC.getEasyNPCSpawnerData().hasSpawnerUUID()
+          && easyNPC.getEasyNPCSpawnerData().getSpawnerUUID().equals(this.spawnerUUID)) {
+        foundEasyNPCs.add(easyNPC);
+      }
+    }
+    return foundEasyNPCs;
   }
 
   @Override
@@ -405,6 +483,7 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
     this.spawnerUUID = compoundTag.getUUID(UUID_TAG);
     this.owner = compoundTag.getUUID(SPAWNER_OWNER_TAG);
     this.spawnRange = compoundTag.getInt(SPAWN_RANGE_TAG);
+    this.despawnRange = compoundTag.getInt(DESPAWN_RANGE_TAG);
     this.requiredPlayerRange = compoundTag.getInt(REQUIRED_PLAYER_RANGE_TAG);
     this.delay = compoundTag.getInt(DELAY_TAG);
     this.maxNearbyEntities = compoundTag.getInt(MAX_NEARBY_ENTITIES_TAG);
@@ -424,6 +503,7 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
       compoundTag.putUUID(SPAWNER_OWNER_TAG, this.owner);
     }
     compoundTag.putInt(SPAWN_RANGE_TAG, this.spawnRange);
+    compoundTag.putInt(DESPAWN_RANGE_TAG, this.despawnRange);
     compoundTag.putInt(REQUIRED_PLAYER_RANGE_TAG, this.requiredPlayerRange);
     compoundTag.putInt(DELAY_TAG, this.delay);
     compoundTag.putInt(MAX_NEARBY_ENTITIES_TAG, this.maxNearbyEntities);

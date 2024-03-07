@@ -21,8 +21,12 @@ package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -168,5 +172,53 @@ public class LivingEntityManager {
       return null;
     }
     return playerNameMap.getOrDefault(name, null);
+  }
+
+  public static Stream<String> getUUIDStrings() {
+    return npcEntityMap.keySet().stream().map(UUID::toString);
+  }
+
+  public static Stream<String> getUUIDStringsByOwner(ServerPlayer serverPlayer) {
+    Map<UUID, Entity> npcEntityMapByOwner = getEntityMapByOwner(serverPlayer);
+    return npcEntityMapByOwner != null
+        ? npcEntityMapByOwner.keySet().stream().map(UUID::toString)
+        : Stream.empty();
+  }
+
+  public static Map<UUID, Entity> getEntityMapByOwner(ServerPlayer serverPlayer) {
+    return serverPlayer != null ? getEntityMapByOwner(serverPlayer.getUUID()) : null;
+  }
+
+  public static Map<UUID, Entity> getEntityMapByOwner(UUID ownerUUID) {
+    HashMap<UUID, Entity> result = new HashMap<>();
+    for (var entry : npcEntityMap.entrySet()) {
+      EasyNPC<?> easyNPC = entry.getValue();
+      if (easyNPC instanceof OwnerData<?> ownerData && ownerData.isOwner(ownerUUID)) {
+        result.put(entry.getKey(), easyNPC.getEasyNPCEntity());
+      }
+    }
+    return result;
+  }
+
+  public static boolean hasAccess(UUID uuid, ServerPlayer serverPlayer) {
+    if (uuid == null || serverPlayer == null) {
+      return false;
+    }
+    return hasAccess(serverPlayer.getLevel().getEntity(uuid), serverPlayer);
+  }
+
+  public static boolean hasAccess(Entity entity, ServerPlayer serverPlayer) {
+    // Allow admins and creative mode
+    if (serverPlayer.isCreative()) {
+      return true;
+    }
+
+    // Perform more specific checks
+    if (entity instanceof EasyNPC<?> easyNPC && easyNPC instanceof OwnerData<?> ownerData) {
+      UUID uuid = ownerData.getOwnerUUID();
+      return uuid != null && uuid.equals(serverPlayer.getUUID());
+    }
+
+    return false;
   }
 }

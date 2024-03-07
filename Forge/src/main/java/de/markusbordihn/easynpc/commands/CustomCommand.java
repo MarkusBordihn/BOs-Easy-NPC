@@ -25,7 +25,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.WorldPresetData;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -47,8 +47,8 @@ public class CustomCommand {
     ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
     return SharedSuggestionProvider.suggest(
         serverPlayer.isCreative()
-            ? EntityManager.getUUIDStrings()
-            : EntityManager.getUUIDStringsByOwner(serverPlayer),
+            ? LivingEntityManager.getUUIDStrings()
+            : LivingEntityManager.getUUIDStringsByOwner(serverPlayer),
         build);
   }
 

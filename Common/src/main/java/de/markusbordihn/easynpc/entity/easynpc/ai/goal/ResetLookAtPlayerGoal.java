@@ -17,19 +17,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.ai.goal;
+package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.goal.Goal;
 
-public class ResetLookAtPlayerGoal extends Goal {
+public class ResetLookAtPlayerGoal<T extends EasyNPC<?>> extends Goal {
 
-  private final EasyNPCEntity easyNPCEntity;
+  private final T easyNPC;
+  private final ModelData<?> modelData;
   private int resetLookTime = 40;
 
-  public ResetLookAtPlayerGoal(EasyNPCEntity easyNPCEntity) {
+  public ResetLookAtPlayerGoal(T easyNPCEntity) {
     super();
-    this.easyNPCEntity = easyNPCEntity;
+    this.easyNPC = easyNPCEntity;
+    this.modelData = easyNPCEntity.getEasyNPCModelData();
   }
 
   @Override
@@ -44,18 +48,21 @@ public class ResetLookAtPlayerGoal extends Goal {
 
   @Override
   public boolean canUse() {
-    return this.easyNPCEntity.getModelLockRotation();
+    return this.modelData.getModelLockRotation();
   }
 
   @Override
   public boolean canContinueToUse() {
-    return this.easyNPCEntity.getModelLockRotation() && this.resetLookTime > 0;
+    return this.modelData.getModelLockRotation() && this.resetLookTime > 0;
   }
 
   @Override
   public void tick() {
     if (this.resetLookTime > 0) {
-      this.easyNPCEntity.getLookControl().setLookAt(0, 0, 0);
+      LookControl lookControl = this.easyNPC.getLookControl();
+      if (lookControl != null) {
+        lookControl.setLookAt(0, 0, 0);
+      }
       this.resetLookTime--;
     }
   }
