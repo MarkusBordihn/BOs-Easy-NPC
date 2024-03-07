@@ -85,7 +85,7 @@ public class DialogCommand implements Command<CommandSourceStack> {
     String dialogLabel = "";
     try {
       dialogLabel = StringArgumentType.getString(context, "dialog");
-    } catch (Exception e) {
+    } catch (Exception ignored) {
 
     }
 

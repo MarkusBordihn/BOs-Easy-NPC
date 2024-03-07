@@ -42,7 +42,7 @@ public class DebugCommand implements Command<CommandSourceStack> {
   }
 
   @Override
-  public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+  public int run(CommandContext<CommandSourceStack> context) {
     final boolean enable = BoolArgumentType.getBool(context, "enable");
     CommandSourceStack commandSource = context.getSource();
     if (enable) {

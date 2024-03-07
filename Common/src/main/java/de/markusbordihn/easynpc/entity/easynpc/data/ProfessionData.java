@@ -34,7 +34,7 @@ import net.minecraft.world.entity.LivingEntity;
 
 public interface ProfessionData<T extends LivingEntity> extends EasyNPC<T> {
 
-  public static final EntityDataSerializer<Profession> PROFESSION =
+  EntityDataSerializer<Profession> PROFESSION =
       new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, Profession value) {
           buffer.writeEnum(value);
@@ -50,7 +50,7 @@ public interface ProfessionData<T extends LivingEntity> extends EasyNPC<T> {
       };
   EntityDataAccessor<Profession> DATA_PROFESSION =
       SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), PROFESSION);
-  // CompoundTags
+
   String DATA_PROFESSION_TAG = "Profession";
 
   static void registerProfessionDataSerializer() {

@@ -40,9 +40,9 @@ public class SpawnerMenu extends AbstractContainerMenu {
   public static final int PLAYER_SLOT_START = 9;
   public static final int PLAYER_INVENTORY_SLOT_START = PLAYER_SLOT_START;
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  public static int presetItemSlotX = 42;
-  public static int presetItemSlotY = 169;
-  protected static int containerSize = 1;
+  public static final int presetItemSlotX = 42;
+  public static final int presetItemSlotY = 169;
+  protected static final int containerSize = 1;
   private final Container container;
   private final ContainerData data;
 
