@@ -25,7 +25,6 @@ import de.markusbordihn.easynpc.data.entity.CustomEntityData;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.data.EntityObjectiveData;
-import de.markusbordihn.easynpc.entity.data.EntityProfessionData;
 import de.markusbordihn.easynpc.entity.data.EntityTradingData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
@@ -76,7 +75,6 @@ import org.apache.logging.log4j.Logger;
 
 public class EasyNPCEntityData extends EasyNPCBaseEntity
     implements EntityObjectiveData,
-        EntityProfessionData,
         EntityTradingData,
         RangedAttackMob,
         CrossbowAttackMob,
@@ -371,7 +369,6 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
   protected void defineSynchedData() {
     super.defineSynchedData();
     this.defineSynchedObjectiveData();
-    this.defineSynchedProfessionData();
     this.defineSynchedTradingData();
 
     // Handle pose
@@ -387,7 +384,6 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
 
     // Add additional data.
     this.addAdditionalObjectiveData(compoundTag);
-    this.addAdditionalProfessionData(compoundTag);
     this.addAdditionalTradingData(compoundTag);
 
     // Handle pose
@@ -427,7 +423,6 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
 
     // Read additional data.
     this.readAdditionalObjectiveData(compoundTag);
-    this.readAdditionalProfessionData(compoundTag);
     this.readAdditionalTradingData(compoundTag);
 
     // Handle pose

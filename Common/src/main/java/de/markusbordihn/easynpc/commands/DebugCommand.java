@@ -37,7 +37,7 @@ public class DebugCommand implements Command<CommandSourceStack> {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("debug")
-        .requires(cs -> cs.hasPermission(2))
+        .requires(cs -> cs.hasPermission(Commands.LEVEL_GAMEMASTERS))
         .then(Commands.argument("enable", BoolArgumentType.bool()).executes(command));
   }
 

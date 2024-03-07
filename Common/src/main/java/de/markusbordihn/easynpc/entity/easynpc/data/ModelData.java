@@ -34,6 +34,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CrossbowItem;
@@ -183,6 +184,19 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
       SynchedEntityData.defineId(
           EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
 
+  EntityDataAccessor<Boolean> EASY_NPC_DATA_MODEL_HELMET_VISIBLE =
+      SynchedEntityData.defineId(
+          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
+  EntityDataAccessor<Boolean> EASY_NPC_DATA_MODEL_CHESTPLATE_VISIBLE =
+      SynchedEntityData.defineId(
+          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
+  EntityDataAccessor<Boolean> EASY_NPC_DATA_MODEL_LEGGINGS_VISIBLE =
+      SynchedEntityData.defineId(
+          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
+  EntityDataAccessor<Boolean> EASY_NPC_DATA_MODEL_BOOTS_VISIBLE =
+      SynchedEntityData.defineId(
+          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
+
   String EASY_NPC_DATA_MODEL_VERSION_TAG = "Version";
   String EASY_NPC_DATA_MODEL_DATA_TAG = "ModelData";
   String EASY_NPC_DATA_MODEL_POSE_TAG = "Pose";
@@ -193,12 +207,17 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
   String EASY_NPC_DATA_MODEL_RIGHT_ARM_TAG = "RightArm";
   String EASY_NPC_DATA_MODEL_LEFT_LEG_TAG = "LeftLeg";
   String EASY_NPC_DATA_MODEL_RIGHT_LEG_TAG = "RightLeg";
+  String EASY_NPC_DATA_MODEL_HELMET_TAG = "Helmet";
+  String EASY_NPC_DATA_MODEL_CHESTPLATE_TAG = "Chestplate";
+  String EASY_NPC_DATA_MODEL_LEGGINGS_TAG = "Leggings";
+  String EASY_NPC_DATA_MODEL_BOOTS_TAG = "Boots";
   String EASY_NPC_DATA_MODEL_ROOT_TAG = "Root";
   String EASY_NPC_DATA_MODEL_LOCK_TAG = "Lock";
   String EASY_NPC_DATA_MODEL_POSITION_TAG = "Position";
   String EASY_NPC_DATA_MODEL_ROTATION_TAG = "Rotation";
   String EASY_NPC_DATA_MODEL_SCALE_TAG = "Scale";
   String EASY_NPC_DATA_MODEL_VISIBLE_TAG = "Visible";
+
   CustomPosition DEFAULT_MODEL_PART_POSITION = new CustomPosition(0, 0, 0);
   CustomRotation DEFAULT_MODEL_PART_ROTATION = new CustomRotation(0, 0, 0);
   CustomScale DEFAULT_MODEL_PART_SCALE = new CustomScale(1, 1, 1);
@@ -253,6 +272,19 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
       case RIGHT_ARM -> isModelRightArmVisible();
       case LEFT_LEG -> isModelLeftLegVisible();
       case RIGHT_LEG -> isModelRightLegVisible();
+      default -> false;
+    };
+  }
+
+  default boolean isModelEquipmentVisible(EquipmentSlot equipmentSlot) {
+    if (equipmentSlot == null || !this.canUseArmor()) {
+      return false;
+    }
+    return switch (equipmentSlot) {
+      case HEAD -> isModelHelmetVisible();
+      case CHEST -> isModelChestplateVisible();
+      case LEGS -> isModelLeggingsVisible();
+      case FEET -> isModelBootsVisible();
       default -> false;
     };
   }
@@ -510,6 +542,38 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
     setEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_LEG_VISIBLE, modelRightLegVisible);
   }
 
+  default boolean isModelHelmetVisible() {
+    return getEasyNPCData(EASY_NPC_DATA_MODEL_HELMET_VISIBLE);
+  }
+
+  default void setModelHelmetVisible(boolean modelHelmetVisible) {
+    setEasyNPCData(EASY_NPC_DATA_MODEL_HELMET_VISIBLE, modelHelmetVisible);
+  }
+
+  default boolean isModelChestplateVisible() {
+    return getEasyNPCData(EASY_NPC_DATA_MODEL_CHESTPLATE_VISIBLE);
+  }
+
+  default void setModelChestplateVisible(boolean modelChestplateVisible) {
+    setEasyNPCData(EASY_NPC_DATA_MODEL_CHESTPLATE_VISIBLE, modelChestplateVisible);
+  }
+
+  default boolean isModelLeggingsVisible() {
+    return getEasyNPCData(EASY_NPC_DATA_MODEL_LEGGINGS_VISIBLE);
+  }
+
+  default void setModelLeggingsVisible(boolean modelLeggingsVisible) {
+    setEasyNPCData(EASY_NPC_DATA_MODEL_LEGGINGS_VISIBLE, modelLeggingsVisible);
+  }
+
+  default boolean isModelBootsVisible() {
+    return getEasyNPCData(EASY_NPC_DATA_MODEL_BOOTS_VISIBLE);
+  }
+
+  default void setModelBootsVisible(boolean modelBootsVisible) {
+    setEasyNPCData(EASY_NPC_DATA_MODEL_BOOTS_VISIBLE, modelBootsVisible);
+  }
+
   default ModelArmPose getModelArmPose(LivingEntity livingEntity) {
     boolean isAggressive = this.getEasyNPCAttackData().isAggressive();
 
@@ -662,6 +726,12 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
     defineEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_ARM_VISIBLE, this.hasRightArmModelPart());
     defineEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_LEG_VISIBLE, this.hasLeftLegModelPart());
     defineEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_LEG_VISIBLE, this.hasRightLegModelPart());
+
+    // Armor Visibility
+    defineEasyNPCData(EASY_NPC_DATA_MODEL_HELMET_VISIBLE, this.canUseArmor());
+    defineEasyNPCData(EASY_NPC_DATA_MODEL_CHESTPLATE_VISIBLE, this.canUseArmor());
+    defineEasyNPCData(EASY_NPC_DATA_MODEL_LEGGINGS_VISIBLE, this.canUseArmor());
+    defineEasyNPCData(EASY_NPC_DATA_MODEL_BOOTS_VISIBLE, this.canUseArmor());
   }
 
   private void addAdditionalModelPositionData(CompoundTag compoundTag) {
@@ -773,6 +843,18 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
     if (this.isModelRightLegVisible() != this.hasRightLegModelPart()) {
       visibilityTag.putBoolean(EASY_NPC_DATA_MODEL_RIGHT_LEG_TAG, this.isModelRightLegVisible());
     }
+    if (this.isModelHelmetVisible() != this.canUseArmor()) {
+      visibilityTag.putBoolean(EASY_NPC_DATA_MODEL_HELMET_TAG, this.isModelHelmetVisible());
+    }
+    if (this.isModelChestplateVisible() != this.canUseArmor()) {
+      visibilityTag.putBoolean(EASY_NPC_DATA_MODEL_CHESTPLATE_TAG, this.isModelChestplateVisible());
+    }
+    if (this.isModelLeggingsVisible() != this.canUseArmor()) {
+      visibilityTag.putBoolean(EASY_NPC_DATA_MODEL_LEGGINGS_TAG, this.isModelLeggingsVisible());
+    }
+    if (this.isModelBootsVisible() != this.canUseArmor()) {
+      visibilityTag.putBoolean(EASY_NPC_DATA_MODEL_BOOTS_TAG, this.isModelBootsVisible());
+    }
     compoundTag.put(EASY_NPC_DATA_MODEL_VISIBLE_TAG, visibilityTag);
   }
 
@@ -878,6 +960,18 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
     }
     if (visibilityTag.contains(EASY_NPC_DATA_MODEL_RIGHT_LEG_TAG)) {
       setModelRightLegVisible(visibilityTag.getBoolean(EASY_NPC_DATA_MODEL_RIGHT_LEG_TAG));
+    }
+    if (visibilityTag.contains(EASY_NPC_DATA_MODEL_HELMET_TAG)) {
+      setModelHelmetVisible(visibilityTag.getBoolean(EASY_NPC_DATA_MODEL_HELMET_TAG));
+    }
+    if (visibilityTag.contains(EASY_NPC_DATA_MODEL_CHESTPLATE_TAG)) {
+      setModelChestplateVisible(visibilityTag.getBoolean(EASY_NPC_DATA_MODEL_CHESTPLATE_TAG));
+    }
+    if (visibilityTag.contains(EASY_NPC_DATA_MODEL_LEGGINGS_TAG)) {
+      setModelLeggingsVisible(visibilityTag.getBoolean(EASY_NPC_DATA_MODEL_LEGGINGS_TAG));
+    }
+    if (visibilityTag.contains(EASY_NPC_DATA_MODEL_BOOTS_TAG)) {
+      setModelBootsVisible(visibilityTag.getBoolean(EASY_NPC_DATA_MODEL_BOOTS_TAG));
     }
   }
 

@@ -20,9 +20,10 @@
 package de.markusbordihn.easynpc.data.spawner;
 
 public enum SpawnerSettingType {
-  SPAWN_RANGE,
-  REQUIRED_PLAYER_RANGE,
   DELAY,
+  DESPAWN_RANGE,
   MAX_NEARBY_ENTITIES,
-  SPAWN_COUNT
+  REQUIRED_PLAYER_RANGE,
+  SPAWN_COUNT,
+  SPAWN_RANGE
 }

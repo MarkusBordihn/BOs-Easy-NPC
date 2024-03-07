@@ -93,8 +93,8 @@ public class SpawnerMenu extends AbstractContainerMenu {
     int slotSpacing = 8;
 
     // Player Inventory Slots
-    int playerInventoryStartPositionX = 88;
-    int playerInventoryStartPositionY = 151;
+    int playerInventoryStartPositionX = 90;
+    int playerInventoryStartPositionY = 153;
     for (int inventoryRow = 0; inventoryRow < 3; ++inventoryRow) {
       for (int inventoryColumn = 0; inventoryColumn < 9; ++inventoryColumn) {
         this.addSlot(
@@ -107,8 +107,8 @@ public class SpawnerMenu extends AbstractContainerMenu {
     }
 
     // Player Hotbar
-    int hotbarStartPositionX = 88;
-    int hotbarStartPositionY = 211;
+    int hotbarStartPositionX = 90;
+    int hotbarStartPositionY = 213;
     for (int playerInventorySlot = 0; playerInventorySlot < 9; ++playerInventorySlot) {
       this.addSlot(
           new Slot(
@@ -136,6 +136,10 @@ public class SpawnerMenu extends AbstractContainerMenu {
 
   public int getSpawnRange() {
     return this.data.get(BaseEasyNPCSpawnerBlockEntity.SPAWN_RANGE_DATA);
+  }
+
+  public int getDespawnRange() {
+    return this.data.get(BaseEasyNPCSpawnerBlockEntity.DESPAWN_RANGE_DATA);
   }
 
   public int getRequiredPlayerRange() {

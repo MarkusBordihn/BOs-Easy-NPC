@@ -17,37 +17,56 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.data;
+package de.markusbordihn.easynpc.entity.easynpc.data;
 
-import de.markusbordihn.easynpc.data.entity.CustomDataSerializers;
-import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
 import de.markusbordihn.easynpc.entity.Profession;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializer;
+import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.LivingEntity;
 
-public interface EntityProfessionData extends EntityDataInterface {
+public interface ProfessionData<T extends LivingEntity> extends EasyNPC<T> {
 
-  // Synced entity data
+  public static final EntityDataSerializer<Profession> PROFESSION =
+      new EntityDataSerializer<>() {
+        public void write(FriendlyByteBuf buffer, Profession value) {
+          buffer.writeEnum(value);
+        }
+
+        public Profession read(FriendlyByteBuf buffer) {
+          return buffer.readEnum(Profession.class);
+        }
+
+        public Profession copy(Profession value) {
+          return value;
+        }
+      };
   EntityDataAccessor<Profession> DATA_PROFESSION =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, CustomDataSerializers.PROFESSION);
-
+      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), PROFESSION);
   // CompoundTags
   String DATA_PROFESSION_TAG = "Profession";
+
+  static void registerProfessionDataSerializer() {
+    EntityDataSerializers.registerSerializer(PROFESSION);
+  }
 
   default Profession getDefaultProfession() {
     return Profession.NONE;
   }
 
   default Profession getProfession() {
-    return getEntityData(DATA_PROFESSION);
+    return getEasyNPCData(DATA_PROFESSION);
   }
 
   default void setProfession(Profession profession) {
-    setEntityData(DATA_PROFESSION, profession);
+    setEasyNPCData(DATA_PROFESSION, profession);
   }
 
   default void setProfession(String name) {
@@ -55,7 +74,7 @@ public interface EntityProfessionData extends EntityDataInterface {
     if (profession != null) {
       setProfession(profession);
     } else {
-      log.error("Unknown profession {} for {}", name, this);
+      EasyNPC.log.error("Unknown profession {} for {}", name, this);
     }
   }
 
@@ -81,7 +100,7 @@ public interface EntityProfessionData extends EntityDataInterface {
   }
 
   default void defineSynchedProfessionData() {
-    defineEntityData(DATA_PROFESSION, this.getDefaultProfession());
+    defineEasyNPCData(DATA_PROFESSION, this.getDefaultProfession());
   }
 
   default void addAdditionalProfessionData(CompoundTag compoundTag) {
@@ -93,7 +112,7 @@ public interface EntityProfessionData extends EntityDataInterface {
   default void readAdditionalProfessionData(CompoundTag compoundTag) {
     if (compoundTag.contains(DATA_PROFESSION_TAG)) {
       String profession = compoundTag.getString(DATA_PROFESSION_TAG);
-      if (profession != null && !profession.isEmpty()) {
+      if (!profession.isEmpty()) {
         this.setProfession(this.getProfession(profession));
       }
     }

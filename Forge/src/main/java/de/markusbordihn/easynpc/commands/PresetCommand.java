@@ -37,6 +37,7 @@ import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.commands.arguments.UuidArgument;
 import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
@@ -52,7 +53,6 @@ public class PresetCommand extends CustomCommand {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("preset")
-        .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
         .executes(PresetCommand::overview)
         .then(
             Commands.literal("export")
@@ -181,35 +181,57 @@ public class PresetCommand extends CustomCommand {
       CommandSourceStack context,
       ResourceLocation preset,
       @Nullable Vec3 position,
-      @Nullable UUID uuid)
-      throws CommandSyntaxException {
+      @Nullable UUID uuid) {
     if (preset == null) {
       return 0;
     }
+    CompoundTag compoundTag = null;
 
-    // Check if preset exists.
+    log.info("Try importing preset {} with position {} and UUID {}", preset, position, uuid);
+
+    // Check if preset exists in world resources.
     Path presetPath = WorldPresetData.getPresetsResourceLocationPath(preset);
-    log.info("Importing preset {} {}...", preset, presetPath);
-    if (!presetPath.toFile().exists()) {
-      context.sendFailure(new TextComponent("Preset file " + preset + " not found!"));
-      return 0;
+    if (presetPath != null && presetPath.toFile().exists()) {
+      log.info("Importing world preset {} from {}...", preset, presetPath);
+      try {
+        compoundTag = NbtIo.readCompressed(presetPath.toFile());
+      } catch (IOException exception) {
+        log.error("Unable to read world preset {} from {}!", preset, presetPath);
+        context.sendFailure(
+            new TextComponent(
+                "Unable to read world preset " + preset + " from " + presetPath + "!"));
+        return 0;
+      }
+    }
+
+    // Check if preset exists in mod resources.
+    if (compoundTag == null
+        || compoundTag.isEmpty() && context.getServer().getResourceManager().hasResource(preset)) {
+      try {
+        log.info("Importing preset {} from mod resources...", preset);
+        compoundTag =
+            NbtIo.readCompressed(
+                context.getServer().getResourceManager().getResource(preset).getInputStream());
+      } catch (IOException exception) {
+        log.error("Unable to read preset {} from mod resources!", preset);
+        context.sendFailure(new TextComponent("Preset file " + preset + " not found!"));
+        return 0;
+      }
     }
 
     // Read preset file and create compound tag.
-    CompoundTag compoundTag;
-    try {
-      compoundTag = NbtIo.readCompressed(presetPath.toFile());
-    } catch (IOException exception) {
-      context.sendFailure(new TextComponent("Unable to read data from preset " + preset + "!"));
-      return 0;
-    }
-    if (compoundTag == null) {
+    if (compoundTag.isEmpty()) {
       context.sendFailure(new TextComponent("Data from preset " + preset + " are empty!"));
       return 0;
     }
 
     // Get Server Player
-    ServerPlayer serverPlayer = context.getPlayerOrException();
+    ServerPlayer serverPlayer = null;
+    try {
+      serverPlayer = context.getPlayerOrException();
+    } catch (CommandSyntaxException exception) {
+      log.debug("Unable to get server player for preset import, maybe not triggered by player!");
+    }
 
     // Get entity type.
     EntityType<?> entityType =
@@ -255,6 +277,11 @@ public class PresetCommand extends CustomCommand {
     Entity entity = entityType.create(context.getLevel());
     if (entity instanceof EasyNPCEntity easyNPCEntity) {
       easyNPCEntity.importPreset(compoundTag);
+
+      // Set home position if not already set.
+      if (position != null && !easyNPCEntity.hasHomePosition()) {
+        easyNPCEntity.setHomePosition(new BlockPos(position.x, position.y, position.z));
+      }
 
       if (context.getLevel().addFreshEntity(easyNPCEntity)) {
         context.sendSuccess(
