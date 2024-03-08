@@ -24,6 +24,7 @@ import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.CustomZombieVillagerModel;
 import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.CustomHumanoidArmorLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.ProfessionLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.VariantLayer;
 import de.markusbordihn.easynpc.data.model.ModelPose;
@@ -40,7 +41,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
-import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -146,7 +146,7 @@ public class ZombieVillagerRenderer
         new CustomZombieVillagerModel<>(context.bakeLayer(ModelLayers.ZOMBIE_VILLAGER)),
         0.5F);
     this.addLayer(
-        new HumanoidArmorLayer<>(
+        new CustomHumanoidArmorLayer<>(
             this,
             new HumanoidModel<>(context.bakeLayer(ModelLayers.ZOMBIE_VILLAGER_INNER_ARMOR)),
             new HumanoidModel<>(context.bakeLayer(ModelLayers.ZOMBIE_VILLAGER_OUTER_ARMOR)),

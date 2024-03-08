@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Stream;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -110,10 +109,6 @@ public class EntityManager {
     }
   }
 
-  public static Map<UUID, Entity> getEntityMapByOwner(ServerPlayer serverPlayer) {
-    return serverPlayer != null ? getEntityMapByOwner(serverPlayer.getUUID()) : null;
-  }
-
   public static Map<UUID, Entity> getEntityMapByOwner(UUID ownerUUID) {
     HashMap<UUID, Entity> result = new HashMap<>();
     for (var entry : npcEntityMap.entrySet()) {
@@ -123,17 +118,6 @@ public class EntityManager {
       }
     }
     return result;
-  }
-
-  public static Stream<String> getUUIDStrings() {
-    return npcEntityMap.keySet().stream().map(UUID::toString);
-  }
-
-  public static Stream<String> getUUIDStringsByOwner(ServerPlayer serverPlayer) {
-    Map<UUID, Entity> npcEntityMapByOwner = getEntityMapByOwner(serverPlayer);
-    return npcEntityMapByOwner != null
-        ? npcEntityMapByOwner.keySet().stream().map(UUID::toString)
-        : null;
   }
 
   public static EasyNPCEntity getEasyNPCEntityByUUID(UUID uuid, ServerPlayer serverPlayer) {
@@ -171,34 +155,5 @@ public class EntityManager {
       easyNPCEntity.discard();
       npcEntityMap.remove(uuid);
     }
-  }
-
-  public static boolean hasAccess(UUID uuid, ServerPlayer serverPlayer) {
-    if (uuid == null || serverPlayer == null) {
-      return false;
-    }
-    return hasAccess(serverPlayer.serverLevel().getEntity(uuid), serverPlayer);
-  }
-
-  public static boolean hasAccess(Entity entity, ServerPlayer serverPlayer) {
-    if (entity instanceof EasyNPCEntity easyNPCEntity) {
-      return hasAccess(easyNPCEntity, serverPlayer);
-    }
-    return false;
-  }
-
-  public static boolean hasAccess(EasyNPCEntity entity, ServerPlayer serverPlayer) {
-    // Allow admins and creative mode
-    if (serverPlayer.isCreative()) {
-      return true;
-    }
-
-    // Perform more specific checks
-    if (entity.hasOwner()) {
-      UUID uuid = entity.getOwnerUUID();
-      return uuid != null && uuid.equals(serverPlayer.getUUID());
-    }
-
-    return false;
   }
 }

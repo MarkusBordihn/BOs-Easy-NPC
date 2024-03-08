@@ -34,6 +34,7 @@ public class BasicObjectiveConfigurationScreen
     extends ObjectiveConfigurationScreen<BasicObjectiveConfigurationMenu> {
 
   // Basic Objective Checkbox
+  protected Checkbox moveBackToHomeCheckbox;
   protected Checkbox strollRandomAroundCheckbox;
   protected Checkbox waterAvoidingRandomStrollCheckbox;
   protected Checkbox moveBackToVillageCheckbox;
@@ -57,12 +58,14 @@ public class BasicObjectiveConfigurationScreen
     this.basicObjectiveButton.active = false;
 
     int objectiveEntriesTop = this.contentTopPos + 5;
+    int objectiveEntriesFirstColumn = this.contentLeftPos + 5;
+    int objectiveEntriesSecondColumn = this.contentLeftPos + 145;
 
     // Stroll Random Around
     this.strollRandomAroundCheckbox =
         this.addRenderableWidget(
             new Checkbox(
-                this.contentLeftPos + 10,
+                objectiveEntriesFirstColumn,
                 objectiveEntriesTop,
                 ObjectiveType.RANDOM_STROLL.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.RANDOM_STROLL),
@@ -76,12 +79,31 @@ public class BasicObjectiveConfigurationScreen
                   }
                 }));
 
+    // Move Back To Home
+    this.moveBackToHomeCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                objectiveEntriesSecondColumn,
+                objectiveEntriesTop,
+                ObjectiveType.MOVE_BACK_TO_HOME.getObjectiveName(),
+                objectiveDataSet.hasObjective(ObjectiveType.MOVE_BACK_TO_HOME),
+                checkbox -> {
+                  ObjectiveData objectiveData =
+                      new ObjectiveData(ObjectiveType.MOVE_BACK_TO_HOME, 3);
+                  objectiveData.setSpeedModifier(0.6F);
+                  if (checkbox.selected()) {
+                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                  } else {
+                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                  }
+                }));
+
     // Water Avoiding Random Stroll
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
     this.waterAvoidingRandomStrollCheckbox =
         this.addRenderableWidget(
             new Checkbox(
-                this.contentLeftPos + 10,
+                objectiveEntriesFirstColumn,
                 objectiveEntriesTop,
                 ObjectiveType.WATER_AVOIDING_RANDOM_STROLL.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.WATER_AVOIDING_RANDOM_STROLL),
@@ -101,7 +123,7 @@ public class BasicObjectiveConfigurationScreen
     this.moveThroughVillageCheckbox =
         this.addRenderableWidget(
             new Checkbox(
-                this.contentLeftPos + 10,
+                objectiveEntriesFirstColumn,
                 objectiveEntriesTop,
                 ObjectiveType.MOVE_THROUGH_VILLAGE.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.MOVE_THROUGH_VILLAGE),
@@ -121,7 +143,7 @@ public class BasicObjectiveConfigurationScreen
     this.moveBackToVillageCheckbox =
         this.addRenderableWidget(
             new Checkbox(
-                this.contentLeftPos + 10,
+                objectiveEntriesFirstColumn,
                 objectiveEntriesTop,
                 ObjectiveType.MOVE_BACK_TO_VILLAGE.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.MOVE_BACK_TO_VILLAGE),
@@ -141,7 +163,7 @@ public class BasicObjectiveConfigurationScreen
     this.randomStrollInVillageCheckbox =
         this.addRenderableWidget(
             new Checkbox(
-                this.contentLeftPos + 10,
+                objectiveEntriesFirstColumn,
                 objectiveEntriesTop,
                 ObjectiveType.RANDOM_STROLL_IN_VILLAGE.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.RANDOM_STROLL_IN_VILLAGE),
@@ -161,7 +183,7 @@ public class BasicObjectiveConfigurationScreen
     this.randomSwimmingCheckbox =
         this.addRenderableWidget(
             new Checkbox(
-                this.contentLeftPos + 10,
+                objectiveEntriesFirstColumn,
                 objectiveEntriesTop,
                 ObjectiveType.RANDOM_SWIMMING.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.RANDOM_SWIMMING),
@@ -180,7 +202,7 @@ public class BasicObjectiveConfigurationScreen
     this.panicCheckbox =
         this.addRenderableWidget(
             new Checkbox(
-                this.contentLeftPos + 10,
+                objectiveEntriesFirstColumn,
                 objectiveEntriesTop,
                 ObjectiveType.PANIC.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.PANIC),
@@ -199,7 +221,7 @@ public class BasicObjectiveConfigurationScreen
     this.avoidSunCheckbox =
         this.addRenderableWidget(
             new Checkbox(
-                this.contentLeftPos + 10,
+                objectiveEntriesFirstColumn,
                 objectiveEntriesTop,
                 ObjectiveType.AVOID_SUN.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.AVOID_SUN),
@@ -216,7 +238,7 @@ public class BasicObjectiveConfigurationScreen
     this.fleeSunCheckbox =
         this.addRenderableWidget(
             new Checkbox(
-                this.contentLeftPos + 150,
+                objectiveEntriesSecondColumn,
                 objectiveEntriesTop,
                 ObjectiveType.FLEE_SUN.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.FLEE_SUN),

@@ -45,6 +45,7 @@ import de.markusbordihn.easynpc.network.message.MessageBasicTrading;
 import de.markusbordihn.easynpc.network.message.MessageDialogButtonAction;
 import de.markusbordihn.easynpc.network.message.MessageEntityAttributeChange;
 import de.markusbordihn.easynpc.network.message.MessageEntityBaseAttributeChange;
+import de.markusbordihn.easynpc.network.message.MessageModelEquipmentVisibilityChange;
 import de.markusbordihn.easynpc.network.message.MessageModelLockRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPoseChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPositionChange;
@@ -85,6 +86,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.phys.Vec3;
@@ -212,6 +214,14 @@ public class NetworkMessageHandler {
   }
 
   /** Send visibility change. */
+  public static void modelVisibilityChange(
+      UUID uuid, EquipmentSlot equipmentSlot, boolean visible) {
+    if (uuid != null && equipmentSlot != null) {
+      NetworkHandler.sendToServer(
+          new MessageModelEquipmentVisibilityChange(uuid, equipmentSlot, visible));
+    }
+  }
+
   public static void modelVisibilityChange(UUID uuid, ModelPart modelPart, boolean visible) {
     if (uuid != null && modelPart != null) {
       NetworkHandler.sendToServer(new MessageModelVisibilityChange(uuid, modelPart, visible));

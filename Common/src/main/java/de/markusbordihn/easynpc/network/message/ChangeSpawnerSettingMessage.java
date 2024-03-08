@@ -84,6 +84,10 @@ public class ChangeSpawnerSettingMessage {
           log.debug("Set spawner {} spawn range to {}", spawnerBlockEntity, message.getValue());
           spawnerBlockEntity.setSpawnRange(message.getValue());
           break;
+        case DESPAWN_RANGE:
+          log.debug("Set spawner {} despawn range to {}", spawnerBlockEntity, message.getValue());
+          spawnerBlockEntity.setDespawnRange(message.getValue());
+          break;
         case REQUIRED_PLAYER_RANGE:
           log.debug(
               "Set spawner {} required player range to {}", spawnerBlockEntity, message.getValue());
