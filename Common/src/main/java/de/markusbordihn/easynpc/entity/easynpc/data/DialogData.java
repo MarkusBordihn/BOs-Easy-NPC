@@ -37,6 +37,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 
 public interface DialogData<T extends LivingEntity> extends EasyNPC<T> {
@@ -115,6 +116,18 @@ public interface DialogData<T extends LivingEntity> extends EasyNPC<T> {
   default boolean hasDialogButton(UUID dialogId, UUID dialogButtonId) {
     return getDialogDataSet().hasDialogButton(dialogId, dialogButtonId);
   }
+
+  default void openDialog(ServerPlayer serverPlayer) {
+    openDialog(serverPlayer, getDialogDataSet().getDefaultDialogId());
+  }
+
+  default void openDialog(ServerPlayer serverPlayer, String dialogLabel) {
+    UUID dialogId = this.getDialogId(dialogLabel);
+    openDialog(
+        serverPlayer, dialogId == null ? this.getDialogDataSet().getDefaultDialogId() : dialogId);
+  }
+
+  void openDialog(ServerPlayer serverPlayer, UUID dialogId);
 
   default DialogButtonData getDialogButton(UUID dialogId, UUID dialogButtonId) {
     return getDialogDataSet().getDialogButton(dialogId, dialogButtonId);

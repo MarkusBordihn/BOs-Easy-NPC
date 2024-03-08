@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.data.entity;
 
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingType;
-import de.markusbordihn.easynpc.entity.Profession;
 import java.util.HashSet;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -73,20 +72,7 @@ public class CustomDataSerializers {
           return value;
         }
       };
-  public static final EntityDataSerializer<Profession> PROFESSION =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, Profession value) {
-          buffer.writeEnum(value);
-        }
 
-        public Profession read(FriendlyByteBuf buffer) {
-          return buffer.readEnum(Profession.class);
-        }
-
-        public Profession copy(Profession value) {
-          return value;
-        }
-      };
   public static final EntityDataSerializer<HashSet<String>> STRING_HASH_SET =
       new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, HashSet<String> value) {
@@ -131,7 +117,6 @@ public class CustomDataSerializers {
   static {
     EntityDataSerializers.registerSerializer(MERCHANT_OFFERS);
     EntityDataSerializers.registerSerializer(OBJECTIVE_DATA_SET);
-    EntityDataSerializers.registerSerializer(PROFESSION);
     EntityDataSerializers.registerSerializer(STRING_HASH_SET);
     EntityDataSerializers.registerSerializer(TRADING_TYPE);
     EntityDataSerializers.registerSerializer(UUID_HASH_SET);
