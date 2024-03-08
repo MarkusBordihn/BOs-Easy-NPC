@@ -5,6 +5,20 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [GitHub History][history] instead.
 
+Note: Please always backup your world / npcs before updating to a new version!
+
+### 3.9.0
+
+- Added `/easy_npc preset import` support for command blocks and functions with resource location.
+- Added `/easy_npc dialog open <npc-uuid> <player> <dialog>` command to open the dialog screen for a
+  specific NPC and player for #75.
+- Fixed #87: Ignore damage even from creative players and ops.
+- Fixed #85: Added de-spawn range option for the NPC Spawner.
+- Fixed #84: Text format codes applying on more text that they should.
+- Fixed #77: Added options to disable armor/equipment rendering for NPCs.
+- Fixed #76 and #79: Added home position and `MoveBackToHome` for NPCs to allow them to return to a
+  specific position.
+
 ### 3.8.0
 
 - Added NPC Presets to allow easier creation and usage of NPC presets in-game.

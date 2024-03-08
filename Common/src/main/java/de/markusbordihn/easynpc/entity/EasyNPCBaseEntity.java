@@ -29,7 +29,9 @@ import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SpawnerData;
@@ -40,18 +42,24 @@ import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -64,7 +72,9 @@ public class EasyNPCBaseEntity extends AgeableMob
         ConfigurationData<AgeableMob>,
         DialogData<AgeableMob>,
         ModelData<AgeableMob>,
+        NavigationData<AgeableMob>,
         OwnerData<AgeableMob>,
+        ProfessionData<AgeableMob>,
         ScaleData<AgeableMob>,
         SkinData<AgeableMob>,
         SpawnerData<AgeableMob>,
@@ -77,8 +87,9 @@ public class EasyNPCBaseEntity extends AgeableMob
     // Register custom data serializers
     ActionEventData.registerActionEventDataSerializer();
     DialogData.registerDialogDataSerializer();
-    SkinData.registerSkinDataSerializer();
     ModelData.registerModelDataSerializer();
+    ProfessionData.registerProfessionDataSerializer();
+    SkinData.registerSkinDataSerializer();
     SpawnerData.registerSpawnerDataSerializer();
   }
 
@@ -90,6 +101,31 @@ public class EasyNPCBaseEntity extends AgeableMob
   public EasyNPCBaseEntity(EntityType<? extends AgeableMob> entityType, Level world) {
     super(entityType, world);
     this.defineCustomData();
+  }
+
+  @Override
+  public void openDialog(ServerPlayer serverPlayer, UUID dialogId) {
+    log.warn("Not implemented: Open dialog {} for {} with {}", dialogId, this, serverPlayer);
+  }
+
+  @Override
+  @Nullable
+  public SpawnGroupData finalizeSpawn(
+      @Nonnull ServerLevelAccessor serverLevelAccessor,
+      @Nonnull DifficultyInstance difficulty,
+      @Nonnull MobSpawnType mobSpawnType,
+      @Nullable SpawnGroupData spawnGroupData,
+      @Nullable CompoundTag compoundTag) {
+    spawnGroupData =
+        super.finalizeSpawn(
+            serverLevelAccessor, difficulty, mobSpawnType, spawnGroupData, compoundTag);
+    log.debug(
+        "FinalizeSpawn for {} with spawnGroupData {} at {}",
+        this,
+        spawnGroupData,
+        this.blockPosition());
+    this.setHomePosition(this.blockPosition());
+    return spawnGroupData;
   }
 
   @Override
@@ -158,7 +194,7 @@ public class EasyNPCBaseEntity extends AgeableMob
   }
 
   @Override
-  public GroundPathNavigation getEasyNPCGroundPathNavigation() {
+  public GroundPathNavigation getGroundPathNavigation() {
     if (this.getNavigation() instanceof GroundPathNavigation groundPathNavigation) {
       return groundPathNavigation;
     }
@@ -210,10 +246,25 @@ public class EasyNPCBaseEntity extends AgeableMob
   }
 
   @Override
+  public boolean isInvulnerable() {
+    return this.attributeDataLoaded() ? !getAttributeIsAttackable() : super.isInvulnerable();
+  }
+
+  @Override
+  public boolean isInvulnerableTo(DamageSource damageSource) {
+    return isInvulnerable() || super.isInvulnerableTo(damageSource);
+  }
+
+  @Override
   protected void handleNetherPortal() {
     if (this.attributeDataLoaded() && getAttributeCanUseNetherPortal()) {
       super.handleNetherPortal();
     }
+  }
+
+  @Override
+  public boolean removeWhenFarAway(double distance) {
+    return false;
   }
 
   @Override
@@ -239,7 +290,9 @@ public class EasyNPCBaseEntity extends AgeableMob
     this.defineSynchedAttributeData();
     this.defineSynchedDialogData();
     this.defineSynchedModelData();
+    this.defineSynchedNavigationData();
     this.defineSynchedOwnerData();
+    this.defineSynchedProfessionData();
     this.defineSynchedScaleData();
     this.defineSynchedSkinData();
     this.defineSynchedVariantData();
@@ -254,7 +307,9 @@ public class EasyNPCBaseEntity extends AgeableMob
     this.addAdditionalAttributeData(compoundTag);
     this.addAdditionalDialogData(compoundTag);
     this.addAdditionalModelData(compoundTag);
+    this.addAdditionalNavigationData(compoundTag);
     this.addAdditionalOwnerData(compoundTag);
+    this.addAdditionalProfessionData(compoundTag);
     this.addAdditionalScaleData(compoundTag);
     this.addAdditionalSkinData(compoundTag);
     this.addAdditionalVariantData(compoundTag);
@@ -272,7 +327,9 @@ public class EasyNPCBaseEntity extends AgeableMob
     this.readAdditionalAttributeData(compoundTag);
     this.readAdditionalDialogData(compoundTag);
     this.readAdditionalModelData(compoundTag);
+    this.readAdditionalNavigationData(compoundTag);
     this.readAdditionalOwnerData(compoundTag);
+    this.readAdditionalProfessionData(compoundTag);
     this.readAdditionalScaleData(compoundTag);
     this.readAdditionalSkinData(compoundTag);
     this.readAdditionalVariantData(compoundTag);

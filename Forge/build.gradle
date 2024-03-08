@@ -209,6 +209,17 @@ curseforge {
   }
 }
 
+modrinth {
+  token = "${credentials.forKey('modrinth_api_token')}"
+  projectId = "${project.modrinth_project_id}"
+  versionNumber = "${project.version}"
+  versionType = "${project.modrinth_release_type}"
+  versionName = "${project.mod_name} ${project.version}"
+  uploadFile = jar
+  gameVersions = ["${project.minecraft_version}"]
+  loaders = ["forge"]
+}
+
 tasks.withType(JavaCompile).configureEach {
   options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }

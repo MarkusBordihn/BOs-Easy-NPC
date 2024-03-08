@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.network.message.MessageBasicTrading;
 import de.markusbordihn.easynpc.network.message.MessageDialogButtonAction;
 import de.markusbordihn.easynpc.network.message.MessageEntityAttributeChange;
 import de.markusbordihn.easynpc.network.message.MessageEntityBaseAttributeChange;
+import de.markusbordihn.easynpc.network.message.MessageModelEquipmentVisibilityChange;
 import de.markusbordihn.easynpc.network.message.MessageModelLockRotationChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPoseChange;
 import de.markusbordihn.easynpc.network.message.MessageModelPositionChange;
@@ -77,7 +78,7 @@ public class NetworkHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final int PROTOCOL_VERSION = 17;
+  private static final int PROTOCOL_VERSION = 18;
   private static final SimpleChannel SIMPLE_CHANNEL =
       ChannelBuilder.named(new ResourceLocation(Constants.MOD_ID, "network"))
           .networkProtocolVersion(PROTOCOL_VERSION)
@@ -193,6 +194,17 @@ public class NetworkHandler {
               .encoder(MessageModelPositionChange::encode)
               .decoder(MessageModelPositionChange::decode)
               .consumerNetworkThread(MessageModelPositionChange::handle)
+              .add();
+
+          // Model Equipment Visibility Change: Client -> Server
+          SIMPLE_CHANNEL
+              .messageBuilder(
+                  MessageModelEquipmentVisibilityChange.class,
+                  id++,
+                  NetworkDirection.PLAY_TO_SERVER)
+              .encoder(MessageModelEquipmentVisibilityChange::encode)
+              .decoder(MessageModelEquipmentVisibilityChange::decode)
+              .consumerNetworkThread(MessageModelEquipmentVisibilityChange::handle)
               .add();
 
           // Model Visibility Change: Client -> Server
