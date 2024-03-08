@@ -25,8 +25,9 @@ import de.markusbordihn.easynpc.entity.ai.goal.CrossbowAttackGoal;
 import de.markusbordihn.easynpc.entity.ai.goal.CustomLookAtPlayerGoal;
 import de.markusbordihn.easynpc.entity.ai.goal.CustomMeleeAttackGoal;
 import de.markusbordihn.easynpc.entity.ai.goal.FollowLivingEntityGoal;
-import de.markusbordihn.easynpc.entity.ai.goal.ResetLookAtPlayerGoal;
 import de.markusbordihn.easynpc.entity.ai.goal.ZombieAttackGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.MoveBackToHomeGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ResetLookAtPlayerGoal;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -126,6 +127,9 @@ public class ObjectiveUtils {
             objectiveData.getOnlyAtNight(),
             objectiveData.getDistanceToPoi(),
             objectiveData.getCanDealWithDoors());
+      case MOVE_BACK_TO_HOME:
+        return new MoveBackToHomeGoal<>(
+            easyNPCEntity, objectiveData.getSpeedModifier(), objectiveData.getStopDistance());
       case MOVE_BACK_TO_VILLAGE:
         return new MoveBackToVillageGoal(easyNPCEntity, objectiveData.getSpeedModifier(), false);
       case RANDOM_STROLL_IN_VILLAGE:
@@ -155,7 +159,7 @@ public class ObjectiveUtils {
       case CLOSE_DOOR:
         return new OpenDoorGoal(easyNPCEntity, true);
       case LOOK_AT_RESET:
-        return new ResetLookAtPlayerGoal(easyNPCEntity);
+        return new ResetLookAtPlayerGoal<>(easyNPCEntity);
       case LOOK_AT_PLAYER:
         return new CustomLookAtPlayerGoal(
             easyNPCEntity,
