@@ -30,10 +30,10 @@ public class ResetLookAtPlayerGoal<T extends EasyNPC<?>> extends Goal {
   private final ModelData<?> modelData;
   private int resetLookTime = 40;
 
-  public ResetLookAtPlayerGoal(T easyNPCEntity) {
+  public ResetLookAtPlayerGoal(T easyNPC) {
     super();
-    this.easyNPC = easyNPCEntity;
-    this.modelData = easyNPCEntity.getEasyNPCModelData();
+    this.easyNPC = easyNPC;
+    this.modelData = easyNPC.getEasyNPCModelData();
   }
 
   @Override
