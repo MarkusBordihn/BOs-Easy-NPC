@@ -56,8 +56,9 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
             top,
             "",
             modelEquipmentVisibliity,
-            checkbox -> NetworkMessageHandler.modelVisibilityChange(
-                this.uuid, equipmentSlot, checkbox.selected())));
+            checkbox ->
+                NetworkMessageHandler.modelVisibilityChange(
+                    this.uuid, equipmentSlot, checkbox.selected())));
   }
 
   @Override

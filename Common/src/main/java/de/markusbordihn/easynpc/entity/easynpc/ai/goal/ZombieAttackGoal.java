@@ -17,19 +17,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.ai.goal;
+package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 
-public class ZombieAttackGoal extends MeleeAttackGoal {
-  private final EasyNPCEntity easyNPCEntity;
+public class ZombieAttackGoal<T extends EasyNPC<?>> extends MeleeAttackGoal {
   private int raiseArmTicks;
 
-  public ZombieAttackGoal(
-      EasyNPCEntity easyNPCEntity, double speedModifier, boolean followingTargetEvenIfNotSeen) {
-    super(easyNPCEntity, speedModifier, followingTargetEvenIfNotSeen);
-    this.easyNPCEntity = easyNPCEntity;
+  public ZombieAttackGoal(T easyNPC, double speedModifier, boolean followingTargetEvenIfNotSeen) {
+    super(easyNPC.getPathfinderMob(), speedModifier, followingTargetEvenIfNotSeen);
   }
 
   @Override
@@ -41,14 +38,14 @@ public class ZombieAttackGoal extends MeleeAttackGoal {
   @Override
   public void stop() {
     super.stop();
-    this.easyNPCEntity.setAggressive(false);
+    this.mob.setAggressive(false);
   }
 
   @Override
   public void tick() {
     super.tick();
     ++this.raiseArmTicks;
-    this.easyNPCEntity.setAggressive(
+    this.mob.setAggressive(
         this.raiseArmTicks >= 5 && this.getTicksUntilNextAttack() < this.getAttackInterval() / 2);
   }
 }

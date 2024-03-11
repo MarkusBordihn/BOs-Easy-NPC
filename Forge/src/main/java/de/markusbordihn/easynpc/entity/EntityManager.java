@@ -63,25 +63,12 @@ public class EntityManager {
       return;
     }
 
-    // Not all data needs to be processed on client side.
-    boolean isClientSide = event.getWorld().isClientSide();
-
     // Only take care of Easy NPC entities.
     Entity entity = event.getEntity();
     if (entity instanceof EasyNPCEntity easyNPCEntity) {
       log.debug(
           "{} [Add] EASY NPC entity {}: {}", LOG_PREFIX, easyNPCEntity.getUUID(), easyNPCEntity);
       npcEntityMap.put(entity.getUUID(), easyNPCEntity);
-
-      // Inform all server-side easy NPC entities about the new easyNPC.
-      if (!isClientSide) {
-        for (Entity entityEntry : npcEntityMap.values()) {
-          if (entityEntry instanceof EasyNPCEntity easyNPCEntityChild
-              && easyNPCEntityChild != easyNPCEntity) {
-            easyNPCEntityChild.onEasyNPCJoin(easyNPCEntity);
-          }
-        }
-      }
     }
   }
 
@@ -98,14 +85,6 @@ public class EntityManager {
         && npcEntityMap.containsKey(entity.getUUID())) {
       log.debug("{} [Remove] EASY NPC entity {}: {}", LOG_PREFIX, entity.getUUID(), easyNPCEntity);
       npcEntityMap.remove(entity.getUUID());
-
-      // Inform all server-side easy NPC entities about leaving easyNPC.
-      for (Entity entityEntry : npcEntityMap.values()) {
-        if (entityEntry instanceof EasyNPCEntity easyNPCEntityChild
-            && easyNPCEntityChild != easyNPCEntity) {
-          easyNPCEntityChild.onEasyNPCLeave(easyNPCEntity);
-        }
-      }
     }
   }
 
@@ -147,13 +126,5 @@ public class EntityManager {
       return easyNPCEntity;
     }
     return null;
-  }
-
-  public static void discardEasyNPCEntityByUUID(UUID uuid, ServerPlayer serverPlayer) {
-    EasyNPCEntity easyNPCEntity = getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPCEntity != null) {
-      easyNPCEntity.discard();
-      npcEntityMap.remove(uuid);
-    }
   }
 }
