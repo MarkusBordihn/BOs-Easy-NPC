@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.data.objective;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -134,12 +134,12 @@ public class ObjectiveDataSet {
     return entityUUID != null && this.targetedEntitySet.contains(entityUUID);
   }
 
-  public boolean hasValidTarget(EasyNPCEntity easyNPCEntity) {
+  public boolean hasValidTarget(EasyNPC<?> easyNPC) {
     for (ObjectiveData objectiveData : this.objectives.values()) {
       if (objectiveData == null || objectiveData.getType() == ObjectiveType.NONE) {
         continue;
       }
-      if (!objectiveData.hasValidTarget(easyNPCEntity)) {
+      if (!objectiveData.hasValidTarget(easyNPC)) {
         return false;
       }
     }

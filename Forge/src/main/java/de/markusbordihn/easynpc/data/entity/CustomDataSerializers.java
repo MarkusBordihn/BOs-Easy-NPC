@@ -19,10 +19,7 @@
 
 package de.markusbordihn.easynpc.data.entity;
 
-import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingType;
-import java.util.HashSet;
-import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -30,20 +27,6 @@ import net.minecraft.world.item.trading.MerchantOffers;
 
 public class CustomDataSerializers {
 
-  public static final EntityDataSerializer<ObjectiveDataSet> OBJECTIVE_DATA_SET =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, ObjectiveDataSet value) {
-          buffer.writeNbt(value.createTag());
-        }
-
-        public ObjectiveDataSet read(FriendlyByteBuf buffer) {
-          return new ObjectiveDataSet(buffer.readNbt());
-        }
-
-        public ObjectiveDataSet copy(ObjectiveDataSet value) {
-          return value;
-        }
-      };
   public static final EntityDataSerializer<TradingType> TRADING_TYPE =
       new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, TradingType value) {
@@ -73,53 +56,9 @@ public class CustomDataSerializers {
         }
       };
 
-  public static final EntityDataSerializer<HashSet<String>> STRING_HASH_SET =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, HashSet<String> value) {
-          for (String entry : value) {
-            buffer.writeUtf(entry);
-          }
-        }
-
-        public HashSet<String> read(FriendlyByteBuf buffer) {
-          HashSet<String> value = new HashSet<>();
-          while (buffer.isReadable()) {
-            value.add(buffer.readUtf());
-          }
-          return value;
-        }
-
-        public HashSet<String> copy(HashSet<String> value) {
-          return value;
-        }
-      };
-  public static final EntityDataSerializer<HashSet<UUID>> UUID_HASH_SET =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, HashSet<UUID> value) {
-          for (UUID entry : value) {
-            buffer.writeUUID(entry);
-          }
-        }
-
-        public HashSet<UUID> read(FriendlyByteBuf buffer) {
-          HashSet<UUID> value = new HashSet<>();
-          while (buffer.isReadable()) {
-            value.add(buffer.readUUID());
-          }
-          return value;
-        }
-
-        public HashSet<UUID> copy(HashSet<UUID> value) {
-          return value;
-        }
-      };
-
   static {
     EntityDataSerializers.registerSerializer(MERCHANT_OFFERS);
-    EntityDataSerializers.registerSerializer(OBJECTIVE_DATA_SET);
-    EntityDataSerializers.registerSerializer(STRING_HASH_SET);
     EntityDataSerializers.registerSerializer(TRADING_TYPE);
-    EntityDataSerializers.registerSerializer(UUID_HASH_SET);
   }
 
   protected CustomDataSerializers() {

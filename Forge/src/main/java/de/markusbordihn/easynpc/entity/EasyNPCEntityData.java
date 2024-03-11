@@ -24,7 +24,6 @@ import de.markusbordihn.easynpc.data.custom.CustomDataAccessor;
 import de.markusbordihn.easynpc.data.entity.CustomEntityData;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.trading.TradingType;
-import de.markusbordihn.easynpc.entity.data.EntityObjectiveData;
 import de.markusbordihn.easynpc.entity.data.EntityTradingData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
@@ -53,8 +52,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.ai.goal.GoalSelector;
-import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.npc.InventoryCarrier;
@@ -73,8 +70,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class EasyNPCEntityData extends EasyNPCBaseEntity
-    implements EntityObjectiveData,
-    EntityTradingData,
+    implements EntityTradingData,
     RangedAttackMob,
     CrossbowAttackMob,
     Merchant,
@@ -87,8 +83,6 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
   private static final String DATA_INVENTORY_TAG = "Inventory";
   private static final String DATA_POSE_TAG = "Pose";
   private static final String DATA_TAME_TAG = "Tame";
-  private static final String DATA_EASY_NPC_DATA_VERSION_TAG = "EasyNPCVersion";
-  private static final int NPC_DATA_VERSION = 1;
   private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
   private final CustomEntityData customEntityDataOld = new CustomEntityData(this);
   private final SimpleContainer inventory = new SimpleContainer(8);
@@ -99,11 +93,9 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
   private Player tradingPlayer;
   private int remainingPersistentAngerTime;
   private UUID persistentAngerTarget;
-  private int npcDataVersion = -1;
 
   public EasyNPCEntityData(EntityType<? extends EasyNPCEntity> entityType, Level level) {
     super(entityType, level);
-    this.defineCustomDataOld();
   }
 
   public Pose getPose(String pose) {
@@ -116,6 +108,10 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
 
   public void setTame(boolean tamed) {
     this.entityData.set(DATA_TAME, tamed);
+  }
+
+  public boolean isClientSide() {
+    return this.level.isClientSide;
   }
 
   @Nullable
@@ -212,10 +208,6 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
     }
   }
 
-  public boolean isClientSide() {
-    return this.level.isClientSide;
-  }
-
   public boolean isPreview() {
     return this.isPreview;
   }
@@ -283,16 +275,8 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
         .toList();
   }
 
-  protected void defineCustomDataOld() {
-    this.defineCustomObjectiveData();
-  }
-
   public boolean synchedDataLoaded() {
     return this.syncedDataLoaded;
-  }
-
-  public int getNPCDataVersion() {
-    return this.npcDataVersion;
   }
 
   @Override
@@ -304,37 +288,6 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
   @Override
   public EasyNPCEntity getEntity() {
     return (EasyNPCEntity) this;
-  }
-
-  @Override
-  public GoalSelector getEntityGoalSelector() {
-    return this.goalSelector;
-  }
-
-  @Override
-  public GoalSelector getEntityTargetSelector() {
-    return this.targetSelector;
-  }
-
-  @Override
-  public Level getEntityLevel() {
-    return this.level;
-  }
-
-  @Override
-  public ServerLevel getEntityServerLevel() {
-    if (this.level instanceof ServerLevel serverLevel) {
-      return serverLevel;
-    }
-    return null;
-  }
-
-  @Override
-  public GroundPathNavigation getEntityGroundPathNavigation() {
-    if (this.getNavigation() instanceof GroundPathNavigation groundPathNavigation) {
-      return groundPathNavigation;
-    }
-    return null;
   }
 
   @Override
@@ -370,7 +323,6 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
   @Override
   protected void defineSynchedData() {
     super.defineSynchedData();
-    this.defineSynchedObjectiveData();
     this.defineSynchedTradingData();
 
     // Handle pose
@@ -381,11 +333,7 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
   public void addAdditionalSaveData(CompoundTag compoundTag) {
     super.addAdditionalSaveData(compoundTag);
 
-    // Add version tag.
-    compoundTag.putInt(DATA_EASY_NPC_DATA_VERSION_TAG, NPC_DATA_VERSION);
-
     // Add additional data.
-    this.addAdditionalObjectiveData(compoundTag);
     this.addAdditionalTradingData(compoundTag);
 
     // Handle pose
@@ -408,23 +356,7 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
   public void readAdditionalSaveData(CompoundTag compoundTag) {
     super.readAdditionalSaveData(compoundTag);
 
-    // Read version tag.
-    if (compoundTag.contains(DATA_EASY_NPC_DATA_VERSION_TAG)) {
-      this.npcDataVersion = compoundTag.getInt(DATA_EASY_NPC_DATA_VERSION_TAG);
-      if (this.npcDataVersion > NPC_DATA_VERSION) {
-        log.warn("Incompatible Easy NPC Data with version {} for {}!", this.npcDataVersion, this);
-      } else if (this.npcDataVersion < NPC_DATA_VERSION) {
-        log.warn(
-            "Outdated Easy NPC Data with version {} for {}!Will try to convert data to new format.",
-            this.npcDataVersion,
-            this);
-      }
-    } else {
-      log.warn("Legacy Easy NPC Data for {}! Will try to convert data to new format.", this);
-    }
-
     // Read additional data.
-    this.readAdditionalObjectiveData(compoundTag);
     this.readAdditionalTradingData(compoundTag);
 
     // Handle pose
@@ -444,9 +376,6 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
     if (compoundTag.contains(DATA_INVENTORY_TAG, 9)) {
       this.inventory.fromTag(compoundTag.getList(DATA_INVENTORY_TAG, 10));
     }
-
-    // Register attribute based objectives
-    this.registerAttributeBasedObjectives();
 
     // Set synced data loaded state.
     this.syncedDataLoaded = true;

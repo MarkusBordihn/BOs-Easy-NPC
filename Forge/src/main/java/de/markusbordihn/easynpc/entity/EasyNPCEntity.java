@@ -38,7 +38,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.animal.FlyingAnimal;
@@ -221,34 +220,6 @@ public class EasyNPCEntity extends EasyNPCEntityData implements EasyNPCEntityAct
     }
 
     this.level.getProfiler().pop();
-  }
-
-  public void onEasyNPCJoin(EasyNPCEntity easyNPCEntity) {
-    this.onEasyNPCJoinUpdateObjective(easyNPCEntity);
-  }
-
-  public void onEasyNPCLeave(EasyNPCEntity easyNPCEntity) {
-    this.onEasyNPCLeaveUpdateObjective(easyNPCEntity);
-  }
-
-  @Override
-  public void handlePlayerJoin(ServerPlayer serverPlayer) {
-    this.onPlayerJoinUpdateObjective(serverPlayer);
-  }
-
-  @Override
-  public void handlePlayerLeave(ServerPlayer serverPlayer) {
-    this.onPlayerLeaveUpdateObjective(serverPlayer);
-  }
-
-  @Override
-  public void handleLivingEntityJoin(LivingEntity livingEntity) {
-    this.onLivingEntityJoinUpdateObjective(livingEntity);
-  }
-
-  @Override
-  public void handleLivingEntityLeave(LivingEntity livingEntity) {
-    this.onLivingEntityLeaveUpdateObjective(livingEntity);
   }
 
   public void refreshGroundNavigation() {

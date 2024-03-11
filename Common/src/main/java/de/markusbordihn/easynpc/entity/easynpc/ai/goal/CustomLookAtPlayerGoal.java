@@ -20,50 +20,42 @@
 package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 
 public class CustomLookAtPlayerGoal<T extends EasyNPC<?>> extends LookAtPlayerGoal {
 
-  private final T easyNPC;
+  private final ModelData<?> modelData;
 
   public CustomLookAtPlayerGoal(
-      T easyNPCEntity, Class<? extends LivingEntity> lookAtType, float lookDistance) {
-    this(easyNPCEntity, lookAtType, lookDistance, 0.02F);
+      T easyNPC, Class<? extends LivingEntity> lookAtType, float lookDistance, float probability) {
+    this(easyNPC, lookAtType, lookDistance, probability, false);
   }
 
   public CustomLookAtPlayerGoal(
-      T easyNPCEntity,
-      Class<? extends LivingEntity> lookAtType,
-      float lookDistance,
-      float probability) {
-    this(easyNPCEntity, lookAtType, lookDistance, probability, false);
-  }
-
-  public CustomLookAtPlayerGoal(
-      T easyNPCEntity,
+      T easyNPC,
       Class<? extends LivingEntity> lookAtType,
       float lookDistance,
       float probability,
       boolean onlyHorizontal) {
-    super((Mob) easyNPCEntity, lookAtType, lookDistance, probability, onlyHorizontal);
-    this.easyNPC = easyNPCEntity;
+    super(easyNPC.getMob(), lookAtType, lookDistance, probability, onlyHorizontal);
+    this.modelData = easyNPC.getEasyNPCModelData();
   }
 
   @Override
   public boolean canUse() {
-    return !this.easyNPC.getEasyNPCModelData().getModelLockRotation() && super.canUse();
+    return !this.modelData.getModelLockRotation() && super.canUse();
   }
 
   @Override
   public boolean canContinueToUse() {
-    return !this.easyNPC.getEasyNPCModelData().getModelLockRotation() && super.canContinueToUse();
+    return !this.modelData.getModelLockRotation() && super.canContinueToUse();
   }
 
   @Override
   public void tick() {
-    if (!this.easyNPC.getEasyNPCModelData().getModelLockRotation()) {
+    if (!this.modelData.getModelLockRotation()) {
       super.tick();
     }
   }

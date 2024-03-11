@@ -29,7 +29,9 @@ import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import de.markusbordihn.easynpc.entity.easynpc.data.NPCData;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
@@ -50,6 +52,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.Pose;
@@ -73,7 +76,10 @@ public class EasyNPCBaseEntity extends AgeableMob
     DialogData<AgeableMob>,
     ModelData<AgeableMob>,
     NavigationData<AgeableMob>,
+    NPCData<AgeableMob>,
+    ObjectiveData<AgeableMob>,
     OwnerData<AgeableMob>,
+    // PresetData<AgeableMob>,
     ProfessionData<AgeableMob>,
     ScaleData<AgeableMob>,
     SkinData<AgeableMob>,
@@ -88,6 +94,7 @@ public class EasyNPCBaseEntity extends AgeableMob
     ActionEventData.registerActionEventDataSerializer();
     DialogData.registerDialogDataSerializer();
     ModelData.registerModelDataSerializer();
+    ObjectiveData.registerObjectiveDataSerializer();
     ProfessionData.registerProfessionDataSerializer();
     SkinData.registerSkinDataSerializer();
     SpawnerData.registerSpawnerDataSerializer();
@@ -97,10 +104,19 @@ public class EasyNPCBaseEntity extends AgeableMob
   private boolean attributeDataLoaded = false;
   private int remainingPersistentAngerTime;
   private UUID persistentAngerTarget;
+  private int npcDataVersion = -1;
 
   public EasyNPCBaseEntity(EntityType<? extends AgeableMob> entityType, Level world) {
     super(entityType, world);
     this.defineCustomData();
+  }
+
+  public int getNPCDataVersion() {
+    return this.npcDataVersion;
+  }
+
+  public void setNPCDataVersion(int version) {
+    this.npcDataVersion = version;
   }
 
   @Override
@@ -126,6 +142,36 @@ public class EasyNPCBaseEntity extends AgeableMob
         this.blockPosition());
     this.setHomePosition(this.blockPosition());
     return spawnGroupData;
+  }
+
+  @Override
+  public void handleEasyNPCJoin(EasyNPC<?> easyNPC) {
+    this.onEasyNPCJoinUpdateObjective(easyNPC);
+  }
+
+  @Override
+  public void handleEasyNPCLeave(EasyNPC<?> easyNPC) {
+    this.onEasyNPCLeaveUpdateObjective(easyNPC);
+  }
+
+  @Override
+  public void handlePlayerJoin(ServerPlayer serverPlayer) {
+    this.onPlayerJoinUpdateObjective(serverPlayer);
+  }
+
+  @Override
+  public void handlePlayerLeave(ServerPlayer serverPlayer) {
+    this.onPlayerLeaveUpdateObjective(serverPlayer);
+  }
+
+  @Override
+  public void handleLivingEntityJoin(LivingEntity livingEntity) {
+    this.onLivingEntityJoinUpdateObjective(livingEntity);
+  }
+
+  @Override
+  public void handleLivingEntityLeave(LivingEntity livingEntity) {
+    this.onLivingEntityLeaveUpdateObjective(livingEntity);
   }
 
   @Override
@@ -166,30 +212,17 @@ public class EasyNPCBaseEntity extends AgeableMob
   }
 
   @Override
-  public Level getEasyNPCLevel() {
-    return this.level;
-  }
-
-  @Override
-  public ServerLevel getEasyNPCServerLevel() {
-    if (this.level instanceof ServerLevel serverLevel) {
-      return serverLevel;
-    }
-    return null;
-  }
-
-  @Override
   public AgeableMob getEasyNPCEntity() {
     return this;
   }
 
   @Override
-  public GoalSelector getEasyNPCGoalSelector() {
+  public GoalSelector getEntityGoalSelector() {
     return this.goalSelector;
   }
 
   @Override
-  public GoalSelector getEasyNPCTargetSelector() {
+  public GoalSelector getEntityTargetSelector() {
     return this.targetSelector;
   }
 
@@ -278,6 +311,7 @@ public class EasyNPCBaseEntity extends AgeableMob
   public void defineCustomData() {
     this.defineCustomActionData();
     this.defineCustomDialogData();
+    this.defineCustomObjectiveData();
     this.defineCustomSpawnerData();
   }
 
@@ -291,6 +325,7 @@ public class EasyNPCBaseEntity extends AgeableMob
     this.defineSynchedDialogData();
     this.defineSynchedModelData();
     this.defineSynchedNavigationData();
+    this.defineSynchedObjectiveData();
     this.defineSynchedOwnerData();
     this.defineSynchedProfessionData();
     this.defineSynchedScaleData();
@@ -308,6 +343,8 @@ public class EasyNPCBaseEntity extends AgeableMob
     this.addAdditionalDialogData(compoundTag);
     this.addAdditionalModelData(compoundTag);
     this.addAdditionalNavigationData(compoundTag);
+    this.addAdditionalNPCData(compoundTag);
+    this.addAdditionalObjectiveData(compoundTag);
     this.addAdditionalOwnerData(compoundTag);
     this.addAdditionalProfessionData(compoundTag);
     this.addAdditionalScaleData(compoundTag);
@@ -322,12 +359,15 @@ public class EasyNPCBaseEntity extends AgeableMob
   public void readAdditionalSaveData(@Nonnull CompoundTag compoundTag) {
     super.readAdditionalSaveData(compoundTag);
 
+    this.readAdditionalNPCData(compoundTag);
+
     this.readAdditionalActionData(compoundTag);
     this.readAdditionalAttackData(compoundTag);
     this.readAdditionalAttributeData(compoundTag);
     this.readAdditionalDialogData(compoundTag);
     this.readAdditionalModelData(compoundTag);
     this.readAdditionalNavigationData(compoundTag);
+    this.readAdditionalObjectiveData(compoundTag);
     this.readAdditionalOwnerData(compoundTag);
     this.readAdditionalProfessionData(compoundTag);
     this.readAdditionalScaleData(compoundTag);
@@ -336,6 +376,9 @@ public class EasyNPCBaseEntity extends AgeableMob
     this.readAdditionalSpawnerData(compoundTag);
 
     this.readPersistentAngerSaveData(this.level, compoundTag);
+
+    // Register attribute based objectives
+    this.registerAttributeBasedObjectives();
 
     this.attributeDataLoaded = true;
   }

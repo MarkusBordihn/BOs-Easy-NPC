@@ -17,75 +17,135 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.data;
+package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.custom.CustomDataAccessor;
 import de.markusbordihn.easynpc.data.custom.CustomDataIndex;
-import de.markusbordihn.easynpc.data.entity.CustomDataSerializers;
 import de.markusbordihn.easynpc.data.entity.CustomEntityData;
-import de.markusbordihn.easynpc.data.objective.ObjectiveData;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EasyNPCEntityData;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ResetUniversalAngerTargetGoal;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
-import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
 
-public interface EntityObjectiveData extends EntityDataInterface {
+public interface ObjectiveData<T extends LivingEntity> extends EasyNPC<T> {
 
-  // Synced entity data
+  EntityDataSerializer<ObjectiveDataSet> OBJECTIVE_DATA_SET =
+      new EntityDataSerializer<>() {
+        public void write(FriendlyByteBuf buffer, ObjectiveDataSet value) {
+          buffer.writeNbt(value.createTag());
+        }
+
+        public ObjectiveDataSet read(FriendlyByteBuf buffer) {
+          return new ObjectiveDataSet(buffer.readNbt());
+        }
+
+        public ObjectiveDataSet copy(ObjectiveDataSet value) {
+          return value;
+        }
+      };
+
+  EntityDataSerializer<HashSet<String>> TARGETED_PLAYER_HASH_SET =
+      new EntityDataSerializer<>() {
+        public void write(FriendlyByteBuf buffer, HashSet<String> value) {
+          for (String entry : value) {
+            buffer.writeUtf(entry);
+          }
+        }
+
+        public HashSet<String> read(FriendlyByteBuf buffer) {
+          HashSet<String> value = new HashSet<>();
+          while (buffer.isReadable()) {
+            value.add(buffer.readUtf());
+          }
+          return value;
+        }
+
+        public HashSet<String> copy(HashSet<String> value) {
+          return value;
+        }
+      };
+
+  public static final EntityDataSerializer<HashSet<UUID>> TARGETED_ENTITY_HASH_SET =
+      new EntityDataSerializer<>() {
+        public void write(FriendlyByteBuf buffer, HashSet<UUID> value) {
+          for (UUID entry : value) {
+            buffer.writeUUID(entry);
+          }
+        }
+
+        public HashSet<UUID> read(FriendlyByteBuf buffer) {
+          HashSet<UUID> value = new HashSet<>();
+          while (buffer.isReadable()) {
+            value.add(buffer.readUUID());
+          }
+          return value;
+        }
+
+        public HashSet<UUID> copy(HashSet<UUID> value) {
+          return value;
+        }
+      };
+
   EntityDataAccessor<Boolean> DATA_HAS_OBJECTIVES =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.BOOLEAN);
+      SynchedEntityData.defineId(
+          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
   EntityDataAccessor<Boolean> DATA_HAS_PLAYER_TARGET =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.BOOLEAN);
+      SynchedEntityData.defineId(
+          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
   EntityDataAccessor<Boolean> DATA_HAS_ENTITY_TARGET =
-      SynchedEntityData.defineId(EasyNPCEntityData.class, EntityDataSerializers.BOOLEAN);
+      SynchedEntityData.defineId(
+          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
 
-  // Custom entity data
   CustomDataAccessor<ObjectiveDataSet> CUSTOM_DATA_OBJECTIVE_DATA_SET =
-      CustomEntityData.defineId(
-          CustomDataIndex.OBJECTIVE_DATA_SET, CustomDataSerializers.OBJECTIVE_DATA_SET);
+      CustomEntityData.defineId(CustomDataIndex.OBJECTIVE_DATA_SET, OBJECTIVE_DATA_SET);
   CustomDataAccessor<HashSet<String>> CUSTOM_DATA_TARGETED_PLAYER_SET =
-      CustomEntityData.defineId(
-          CustomDataIndex.OBJECTIVE_PLAYER_SET, CustomDataSerializers.STRING_HASH_SET);
+      CustomEntityData.defineId(CustomDataIndex.OBJECTIVE_PLAYER_SET, TARGETED_PLAYER_HASH_SET);
   CustomDataAccessor<HashSet<UUID>> CUSTOM_DATA_TARGETED_ENTITY_SET =
-      CustomEntityData.defineId(
-          CustomDataIndex.OBJECTIVE_ENTITY_SET, CustomDataSerializers.UUID_HASH_SET);
+      CustomEntityData.defineId(CustomDataIndex.OBJECTIVE_ENTITY_SET, TARGETED_ENTITY_HASH_SET);
 
-  // CompoundTags
   String DATA_OBJECTIVE_DATA_TAG = "ObjectiveData";
   String DATA_HAS_OBJECTIVE_TAG = "HasObjectives";
   String DATA_HAS_TRAVEL_TARGET_TAG = "HasTravelTarget";
   String DATA_HAS_PLAYER_TARGET_TAG = "HasPlayerTarget";
   String DATA_HAS_ENTITY_TARGET_TAG = "HasEntityTarget";
 
+  static void registerObjectiveDataSerializer() {
+    EntityDataSerializers.registerSerializer(OBJECTIVE_DATA_SET);
+    EntityDataSerializers.registerSerializer(TARGETED_PLAYER_HASH_SET);
+    EntityDataSerializers.registerSerializer(TARGETED_ENTITY_HASH_SET);
+  }
+
   default void clearObjectiveDataSet() {
-    setCustomEntityData(CUSTOM_DATA_OBJECTIVE_DATA_SET, new ObjectiveDataSet());
+    setEasyNPCCustomData(CUSTOM_DATA_OBJECTIVE_DATA_SET, new ObjectiveDataSet());
   }
 
   default ObjectiveDataSet getObjectiveDataSet() {
-    return getCustomEntityData(CUSTOM_DATA_OBJECTIVE_DATA_SET);
+    return getEasyNPCCustomData(CUSTOM_DATA_OBJECTIVE_DATA_SET);
   }
 
   default void setObjectiveDataSet(ObjectiveDataSet objectiveDataSet) {
-    setCustomEntityData(CUSTOM_DATA_OBJECTIVE_DATA_SET, objectiveDataSet);
+    setEasyNPCCustomData(CUSTOM_DATA_OBJECTIVE_DATA_SET, objectiveDataSet);
   }
 
   default boolean hasObjective(String objectiveId) {
     return getObjectiveDataSet() != null && getObjectiveDataSet().hasObjective(objectiveId);
   }
 
-  default boolean hasObjective(ObjectiveData objectiveData) {
+  default boolean hasObjective(
+      de.markusbordihn.easynpc.data.objective.ObjectiveData objectiveData) {
     return getObjectiveDataSet() != null
         && getObjectiveDataSet().hasObjective(objectiveData.getId());
   }
@@ -111,23 +171,23 @@ public interface EntityObjectiveData extends EntityDataInterface {
   }
 
   default boolean hasValidTargetObjectives() {
-    return getObjectiveDataSet() != null && getObjectiveDataSet().hasValidTarget(this.getEntity());
+    return getObjectiveDataSet() != null && getObjectiveDataSet().hasValidTarget(this);
   }
 
-  default void onEasyNPCJoinUpdateObjective(EasyNPCEntity easyNPCEntity) {
+  default void onEasyNPCJoinUpdateObjective(EasyNPC<?> easyNPC) {
     // Check if we need to re-register NPC based objectives.
     if (this.hasEntityTargetObjectives()
-        && !this.getObjectiveDataSet().hasValidTarget(this.getEntity())
-        && getObjectiveDataSet().isTargetedEntity(easyNPCEntity.getUUID())) {
+        && !this.getObjectiveDataSet().hasValidTarget(this)
+        && getObjectiveDataSet().isTargetedEntity(easyNPC.getUUID())) {
       this.refreshCustomObjectives();
     }
   }
 
-  default void onEasyNPCLeaveUpdateObjective(EasyNPCEntity easyNPCEntity) {
+  default void onEasyNPCLeaveUpdateObjective(EasyNPC<?> easyNPC) {
     // Check if we need to re-register NPC based objectives.
     if (this.hasEntityTargetObjectives()
-        && this.getObjectiveDataSet().hasValidTarget(this.getEntity())
-        && getObjectiveDataSet().isTargetedEntity(easyNPCEntity.getUUID())) {
+        && this.getObjectiveDataSet().hasValidTarget(this)
+        && getObjectiveDataSet().isTargetedEntity(this.getUUID())) {
       this.refreshCustomObjectives();
     }
   }
@@ -135,19 +195,25 @@ public interface EntityObjectiveData extends EntityDataInterface {
   default void onPlayerJoinUpdateObjective(ServerPlayer serverPlayer) {
     // Check if we need to re-register owner and player based objectives.
     if (this.hasOwnerTargetObjectives()
-        && !this.getObjectiveDataSet().hasValidTarget(this.getEntity())
-        && (this.getEntity().isOwner(serverPlayer)
-        || this.getObjectiveDataSet().isTargetedPlayer(serverPlayer.getName().getString()))) {
+        && !this.getObjectiveDataSet().hasValidTarget(this)
+        && (isObjectiveOwner(serverPlayer) || isObjectiveTargetedPlayer(serverPlayer))) {
       this.refreshCustomObjectives();
     }
+  }
+
+  private boolean isObjectiveOwner(ServerPlayer serverPlayer) {
+    return this.getEasyNPCOwnerData() != null && this.getEasyNPCOwnerData().isOwner(serverPlayer);
+  }
+
+  private boolean isObjectiveTargetedPlayer(ServerPlayer serverPlayer) {
+    return this.getObjectiveDataSet().isTargetedPlayer(serverPlayer.getName().getString());
   }
 
   default void onPlayerLeaveUpdateObjective(ServerPlayer serverPlayer) {
     // Check if we need to re-register owner and player based objectives.
     if (this.hasOwnerTargetObjectives()
-        && this.getObjectiveDataSet().hasValidTarget(this.getEntity())
-        && (this.getEntity().isOwner(serverPlayer)
-        || this.getObjectiveDataSet().isTargetedPlayer(serverPlayer.getName().getString()))) {
+        && this.getObjectiveDataSet().hasValidTarget(this)
+        && (isObjectiveOwner(serverPlayer) || isObjectiveTargetedPlayer(serverPlayer))) {
       this.refreshCustomObjectives();
     }
   }
@@ -155,7 +221,7 @@ public interface EntityObjectiveData extends EntityDataInterface {
   default void onLivingEntityJoinUpdateObjective(LivingEntity livingEntity) {
     // Check if we need to re-register living entity based objectives.
     if (this.hasEntityTargetObjectives()
-        && !this.getObjectiveDataSet().hasValidTarget(this.getEntity())
+        && !this.getObjectiveDataSet().hasValidTarget(this)
         && this.getObjectiveDataSet().isTargetedEntity(livingEntity.getUUID())) {
       this.refreshCustomObjectives();
     }
@@ -164,37 +230,38 @@ public interface EntityObjectiveData extends EntityDataInterface {
   default void onLivingEntityLeaveUpdateObjective(LivingEntity livingEntity) {
     // Check if we need to re-register living entity based objectives.
     if (this.hasObjectives()
-        && this.getObjectiveDataSet().hasValidTarget(this.getEntity())
+        && this.getObjectiveDataSet().hasValidTarget(this)
         && this.getObjectiveDataSet().isTargetedEntity(livingEntity.getUUID())) {
       this.refreshCustomObjectives();
     }
   }
 
   default void refreshCustomObjectives() {
-    EasyNPCEntity entity = this.getEntity();
-    if (entity == null || entity.isClientSide()) {
+    if (this.isClientSide()) {
       return;
     }
-    for (ObjectiveData objectiveData : getObjectiveDataSet().getObjectives()) {
+    for (de.markusbordihn.easynpc.data.objective.ObjectiveData objectiveData :
+        getObjectiveDataSet().getObjectives()) {
       if (objectiveData != null
           && objectiveData.getType() != ObjectiveType.NONE
-          && (!objectiveData.hasValidTarget(this.getEntity()) || !objectiveData.isRegistered())) {
-        log.debug("Refreshing Objective {} for {}", objectiveData, entity);
+          && (!objectiveData.hasValidTarget(this) || !objectiveData.isRegistered())) {
+        log.debug("Refreshing Objective {} for {}", objectiveData, this);
         addOrUpdateCustomObjective(objectiveData);
       }
     }
   }
 
   default void registerAttributeBasedObjectives() {
-    EasyNPCEntity entity = this.getEntity();
-    if (entity == null || entity.isClientSide()) {
+    if (this.isClientSide()) {
       return;
     }
-    log.info("Register attribute based objectives for {}", entity);
+    log.info("Register attribute based objectives for {}", this);
 
     // Handle floating goals.
-    ObjectiveData floatObjective = new ObjectiveData(ObjectiveType.FLOAT, 0);
-    if (entity.getAttributeCanFloat()) {
+    de.markusbordihn.easynpc.data.objective.ObjectiveData floatObjective =
+        new de.markusbordihn.easynpc.data.objective.ObjectiveData(ObjectiveType.FLOAT, 0);
+    AttributeData<?> attributeData = this.getEasyNPCAttributeData();
+    if (attributeData.getAttributeCanFloat()) {
       if (!this.hasObjective(floatObjective)) {
         this.addOrUpdateCustomObjective(floatObjective);
       }
@@ -203,8 +270,9 @@ public interface EntityObjectiveData extends EntityDataInterface {
     }
 
     // Handle close door interaction goals.
-    ObjectiveData closeDoorObjective = new ObjectiveData(ObjectiveType.CLOSE_DOOR, 8);
-    if (entity.getAttributeCanCloseDoor()) {
+    de.markusbordihn.easynpc.data.objective.ObjectiveData closeDoorObjective =
+        new de.markusbordihn.easynpc.data.objective.ObjectiveData(ObjectiveType.CLOSE_DOOR, 8);
+    if (attributeData.getAttributeCanCloseDoor()) {
       if (!this.hasObjective(closeDoorObjective)) {
         this.addOrUpdateCustomObjective(closeDoorObjective);
       }
@@ -213,8 +281,9 @@ public interface EntityObjectiveData extends EntityDataInterface {
     }
 
     // Handle open door interaction goals.
-    ObjectiveData openDoorObjective = new ObjectiveData(ObjectiveType.OPEN_DOOR, 8);
-    if (entity.getAttributeCanOpenDoor()) {
+    de.markusbordihn.easynpc.data.objective.ObjectiveData openDoorObjective =
+        new de.markusbordihn.easynpc.data.objective.ObjectiveData(ObjectiveType.OPEN_DOOR, 8);
+    if (attributeData.getAttributeCanOpenDoor()) {
       if (!this.hasObjective(closeDoorObjective)) {
         this.addOrUpdateCustomObjective(openDoorObjective);
       }
@@ -224,49 +293,50 @@ public interface EntityObjectiveData extends EntityDataInterface {
   }
 
   default void registerCustomObjectives() {
-    EasyNPCEntity entity = this.getEntity();
-    if (entity == null || entity.isClientSide()) {
+    if (this.isClientSide()) {
       return;
     }
-    Set<ObjectiveData> objectives = this.getObjectiveDataSet().getObjectives();
+    Set<de.markusbordihn.easynpc.data.objective.ObjectiveData> objectives =
+        this.getObjectiveDataSet().getObjectives();
     if (objectives == null || objectives.isEmpty()) {
       return;
     }
-    log.debug("Register custom objectives for {}", entity);
+    log.debug("Register custom objectives for {}", this);
     GoalSelector targetSelector = this.getEntityTargetSelector();
-    for (ObjectiveData objectiveData : objectives) {
+    for (de.markusbordihn.easynpc.data.objective.ObjectiveData objectiveData : objectives) {
       addOrUpdateCustomObjective(objectiveData);
     }
 
     // Reset targets if any target objective was registered.
     if (!targetSelector.getAvailableGoals().isEmpty()) {
-      log.debug("- Register reset universal anger target for {}", entity);
-      targetSelector.addGoal(4, new ResetUniversalAngerTargetGoal<>(entity, false));
+      log.debug("- Register reset universal anger target for {}", this);
+      targetSelector.addGoal(4, new ResetUniversalAngerTargetGoal<>(this, false));
     }
   }
 
-  default boolean addOrUpdateCustomObjective(ObjectiveData objectiveData) {
+  default boolean addOrUpdateCustomObjective(
+      de.markusbordihn.easynpc.data.objective.ObjectiveData objectiveData) {
     if (objectiveData == null || objectiveData.getType() == ObjectiveType.NONE) {
-      log.error("- Unable to add custom objective {} for {}!", objectiveData, this.getEntity());
+      log.error("- Unable to add custom objective {} for {}!", objectiveData, this);
       return false;
     }
 
     boolean addedCustomObjective = false;
 
     // Handle goal specific objectives.
-    Goal goal = objectiveData.getGoal(this.getEntity());
+    Goal goal = objectiveData.getGoal(this);
     if (goal != null) {
       GoalSelector goalSelector = this.getEntityGoalSelector();
-      if (!objectiveData.hasValidTarget(this.getEntity())) {
+      if (!objectiveData.hasValidTarget(this)) {
         if (this.hasObjective(objectiveData.getId()) && objectiveData.isRegistered()) {
           log.warn(
               "- Removing existing goal {} for {} because target was not found! Will try later again.",
               goal,
-              this.getEntity());
+              this);
         }
         goalSelector.removeGoal(goal);
       } else {
-        log.debug("- Adding goal {} for {}", goal, this.getEntity());
+        log.debug("- Adding goal {} for {}", goal, this);
         goalSelector.removeGoal(goal);
         goalSelector.addGoal(objectiveData.getPriority(), goal);
         addedCustomObjective = true;
@@ -274,9 +344,9 @@ public interface EntityObjectiveData extends EntityDataInterface {
     }
 
     // Handle target specific objectives.
-    Goal target = objectiveData.getTarget(this.getEntity());
+    Goal target = objectiveData.getTarget(this);
     if (target != null) {
-      log.debug("- Adding target goal {} for {}", target, this.getEntity());
+      log.debug("- Adding target goal {} for {}", target, this);
       GoalSelector targetSelector = this.getEntityTargetSelector();
       targetSelector.removeGoal(target);
       targetSelector.addGoal(objectiveData.getPriority(), target);
@@ -291,9 +361,10 @@ public interface EntityObjectiveData extends EntityDataInterface {
     return objectiveData.isRegistered();
   }
 
-  default boolean removeCustomObjective(ObjectiveData objectiveData) {
+  default boolean removeCustomObjective(
+      de.markusbordihn.easynpc.data.objective.ObjectiveData objectiveData) {
     if (objectiveData == null || objectiveData.getType() == ObjectiveType.NONE) {
-      log.error("- Unable to remove custom objective {} for {}!", objectiveData, this.getEntity());
+      log.error("- Unable to remove custom objective {} for {}!", objectiveData, this);
       return false;
     }
 
@@ -302,28 +373,26 @@ public interface EntityObjectiveData extends EntityDataInterface {
       objectiveData = this.getObjectiveDataSet().getObjective(objectiveData.getId());
       if (objectiveData == null) {
         log.error(
-            "- Unable to remove non-existing custom objective {} for {}!",
-            objectiveData,
-            this.getEntity());
+            "- Unable to remove non-existing custom objective {} for {}!", objectiveData, this);
         return false;
       }
     }
 
     // Remove goal and target if available.
-    Goal goal = objectiveData.getGoal(this.getEntity());
-    Goal target = objectiveData.getTarget(this.getEntity());
+    Goal goal = objectiveData.getGoal(this);
+    Goal target = objectiveData.getTarget(this);
     if (goal == null && target == null) {
-      log.error("- Unable to remove custom objective for {}!", this.getEntity());
+      log.error("- Unable to remove custom objective for {}!", this);
       return false;
     }
 
     if (goal != null) {
-      log.debug("- Removing goal {} for {}", goal, this.getEntity());
+      log.debug("- Removing goal {} for {}", goal, this);
       this.getEntityGoalSelector().removeGoal(goal);
     }
 
     if (target != null) {
-      log.debug("- Removing target goal {} for {}", target, this.getEntity());
+      log.debug("- Removing target goal {} for {}", target, this);
       this.getEntityTargetSelector().removeGoal(target);
     }
 
@@ -332,21 +401,24 @@ public interface EntityObjectiveData extends EntityDataInterface {
 
   default void registerStandardObjectives() {
     log.debug("Register standard objectives for {}", this);
-    this.addOrUpdateCustomObjective(new ObjectiveData(ObjectiveType.LOOK_AT_RESET, 9));
-    this.addOrUpdateCustomObjective(new ObjectiveData(ObjectiveType.LOOK_AT_PLAYER, 9));
-    this.addOrUpdateCustomObjective(new ObjectiveData(ObjectiveType.LOOK_AT_MOB, 10));
+    this.addOrUpdateCustomObjective(
+        new de.markusbordihn.easynpc.data.objective.ObjectiveData(ObjectiveType.LOOK_AT_RESET, 9));
+    this.addOrUpdateCustomObjective(
+        new de.markusbordihn.easynpc.data.objective.ObjectiveData(ObjectiveType.LOOK_AT_PLAYER, 9));
+    this.addOrUpdateCustomObjective(
+        new de.markusbordihn.easynpc.data.objective.ObjectiveData(ObjectiveType.LOOK_AT_MOB, 10));
   }
 
   default void defineSynchedObjectiveData() {
-    defineEntityData(DATA_HAS_OBJECTIVES, false);
-    defineEntityData(DATA_HAS_PLAYER_TARGET, false);
-    defineEntityData(DATA_HAS_ENTITY_TARGET, false);
+    defineEasyNPCData(DATA_HAS_OBJECTIVES, false);
+    defineEasyNPCData(DATA_HAS_PLAYER_TARGET, false);
+    defineEasyNPCData(DATA_HAS_ENTITY_TARGET, false);
   }
 
   default void defineCustomObjectiveData() {
-    defineCustomEntityData(CUSTOM_DATA_OBJECTIVE_DATA_SET, new ObjectiveDataSet());
-    defineCustomEntityData(CUSTOM_DATA_TARGETED_PLAYER_SET, new HashSet<>());
-    defineCustomEntityData(CUSTOM_DATA_TARGETED_ENTITY_SET, new HashSet<>());
+    defineEasyNPCCustomData(CUSTOM_DATA_OBJECTIVE_DATA_SET, new ObjectiveDataSet());
+    defineEasyNPCCustomData(CUSTOM_DATA_TARGETED_PLAYER_SET, new HashSet<>());
+    defineEasyNPCCustomData(CUSTOM_DATA_TARGETED_ENTITY_SET, new HashSet<>());
   }
 
   default void addAdditionalObjectiveData(CompoundTag compoundTag) {
@@ -373,9 +445,8 @@ public interface EntityObjectiveData extends EntityDataInterface {
   default void readAdditionalObjectiveData(CompoundTag compoundTag) {
 
     // Adding legacy support for old NPC data.
-    if (this.getEntity().getNPCDataVersion() == -1
-        && !compoundTag.contains(DATA_OBJECTIVE_DATA_TAG)) {
-      log.info("Converting legacy objectives for {}", this.getEntity());
+    if (this.getNPCDataVersion() == -1 && !compoundTag.contains(DATA_OBJECTIVE_DATA_TAG)) {
+      log.info("Converting legacy objectives for {}", this);
       this.registerStandardObjectives();
       return;
     }
@@ -394,7 +465,7 @@ public interface EntityObjectiveData extends EntityDataInterface {
     }
 
     // Re-Register standard objectives for legacy NPCs.
-    if (this.getEntity().getNPCDataVersion() == -1) {
+    if (this.getNPCDataVersion() == -1) {
       this.registerStandardObjectives();
     }
   }

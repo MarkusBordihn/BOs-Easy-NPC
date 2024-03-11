@@ -72,6 +72,9 @@ public final class Constants {
   public static final float MATH_27DEG_TO_RAD = 0.47123894F;
   public static final float MATH_27DEG_TO_RAD_INVERTED = -0.47123894F;
 
+  // Data Specific definitions
+  public static final int NPC_DATA_VERSION = 1;
+
   // Mod definitions for adding additional support and compatibility
   public static final String MOD_ARMOURERS_WORKSHOP_ID = "armourers_workshop";
   public static final String MOD_ARMOURERS_WORKSHOP_NAME = "Armourer's Workshop";

@@ -22,12 +22,17 @@ package de.markusbordihn.easynpc.entity.easynpc;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.custom.CustomDataAccessor;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
+import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
+import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
+import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SpawnerData;
+import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -36,9 +41,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
+import net.minecraft.world.entity.monster.CrossbowAttackMob;
 import net.minecraft.world.entity.npc.Npc;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
@@ -52,22 +59,26 @@ public interface EasyNPC<T extends LivingEntity> extends Npc {
     return EasyNPCBaseEntity.class;
   }
 
-  Level getEasyNPCLevel();
-
-  ServerLevel getEasyNPCServerLevel();
-
   T getEasyNPCEntity();
 
-  GoalSelector getEasyNPCGoalSelector();
+  int getNPCDataVersion();
 
-  GoalSelector getEasyNPCTargetSelector();
+  void setNPCDataVersion(int version);
 
   default LookControl getLookControl() {
     return this instanceof Mob mob ? mob.getLookControl() : null;
   }
 
+  default ActionEventData<T> getEasyNPCActionEventData() {
+    return this instanceof ActionEventData<T> actionEventData ? actionEventData : null;
+  }
+
   default AttackData<T> getEasyNPCAttackData() {
     return this instanceof AttackData<T> attackData ? attackData : null;
+  }
+
+  default AttributeData<T> getEasyNPCAttributeData() {
+    return this instanceof AttributeData<T> attributeData ? attributeData : null;
   }
 
   default DialogData<T> getEasyNPCDialogData() {
@@ -86,6 +97,14 @@ public interface EasyNPC<T extends LivingEntity> extends Npc {
     return this instanceof NavigationData<T> navigationData ? navigationData : null;
   }
 
+  default OwnerData<T> getEasyNPCOwnerData() {
+    return this instanceof OwnerData<T> ownerData ? ownerData : null;
+  }
+
+  default PresetData<T> getEasyNPCPresetData() {
+    return this instanceof PresetData<T> presetData ? presetData : null;
+  }
+
   default SpawnerData<T> getEasyNPCSpawnerData() {
     return this instanceof SpawnerData<T> spawnerData ? spawnerData : null;
   }
@@ -94,10 +113,42 @@ public interface EasyNPC<T extends LivingEntity> extends Npc {
     return this instanceof PathfinderMob pathfinderMob ? pathfinderMob : null;
   }
 
+  default Level getLevel() {
+    return this instanceof Mob mob ? mob.level : null;
+  }
+
   default ServerLevel getServerLevel() {
     return this instanceof Mob mob && mob.level instanceof ServerLevel serverLevel
         ? serverLevel
         : null;
+  }
+
+  default boolean isClientSide() {
+    return this.getLevel() != null && this.getLevel().isClientSide();
+  }
+
+  default LivingEntity getLivingEntity() {
+    return this instanceof LivingEntity livingEntity ? livingEntity : null;
+  }
+
+  default NeutralMob getNeutralMob() {
+    return this instanceof NeutralMob neutralMob ? neutralMob : null;
+  }
+
+  default Mob getMob() {
+    return this instanceof Mob mob ? mob : null;
+  }
+
+  default UUID getUUID() {
+    return this instanceof Entity entity ? entity.getUUID() : null;
+  }
+
+  GoalSelector getEntityGoalSelector();
+
+  GoalSelector getEntityTargetSelector();
+
+  default CrossbowAttackMob getCrossbowAttackMob() {
+    return this instanceof CrossbowAttackMob crossbowAttackMob ? crossbowAttackMob : null;
   }
 
   default Component getEasyNPCTypeName() {
@@ -114,6 +165,12 @@ public interface EasyNPC<T extends LivingEntity> extends Npc {
   }
 
   default void handleLivingEntityLeave(LivingEntity livingEntity) {
+  }
+
+  default void handleEasyNPCJoin(EasyNPC<?> easyNPCEntity) {
+  }
+
+  default void handleEasyNPCLeave(EasyNPC<?> easyNPCEntity) {
   }
 
   default void defineCustomData() {
