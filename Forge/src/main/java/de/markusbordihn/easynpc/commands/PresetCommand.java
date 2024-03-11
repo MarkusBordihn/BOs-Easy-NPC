@@ -25,7 +25,8 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.markusbordihn.easynpc.data.WorldPresetData;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -156,23 +157,23 @@ public class PresetCommand extends CustomCommand {
     }
 
     // Try to get the EasyNPC entity by UUID.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid);
-    if (easyNPCEntity == null) {
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid);
+    if (easyNPC == null) {
       context.sendFailure(Component.literal("EasyNPC with UUID " + uuid + " not found!"));
       return 0;
     }
 
     // Check is player is owner of the EasyNPC.
-    if (!serverPlayer.isCreative() && !easyNPCEntity.isOwner(serverPlayer)) {
+    if (!serverPlayer.isCreative() && !easyNPC.getEasyNPCOwnerData().isOwner(serverPlayer)) {
       context.sendFailure(Component.literal("You are not the owner of this EasyNPC!"));
       return 0;
     }
 
     log.info(
         "Exporting EasyNPC {} with UUID {} and skin {}...",
-        easyNPCEntity.getName(),
+        easyNPC,
         uuid,
-        easyNPCEntity.getSkinModel());
+        easyNPC.getEasyNPCSkinData().getSkinModel());
     NetworkMessageHandler.exportPresetClient(uuid, serverPlayer);
     return Command.SINGLE_SUCCESS;
   }
@@ -268,8 +269,9 @@ public class PresetCommand extends CustomCommand {
 
     // Get UUID from compound tag and check if entity with this UUID already exists.
     UUID existingUUID = compoundTag.contains("UUID") ? compoundTag.getUUID("UUID") : null;
-    if (existingUUID != null && EntityManager.getEasyNPCEntityByUUID(existingUUID) != null) {
-      EntityManager.discardEasyNPCEntityByUUID(existingUUID, serverPlayer);
+    if (existingUUID != null
+        && LivingEntityManager.getEasyNPCEntityByUUID(existingUUID, context.getLevel()) != null) {
+      LivingEntityManager.discardEasyNPCEntityByUUID(existingUUID, context.getLevel());
     }
 
     // Spawn new entity or re-use existing entity.
