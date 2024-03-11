@@ -23,10 +23,6 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.custom.CustomDataAccessor;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.ai.goal.GoalSelector;
-import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
-import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,17 +30,7 @@ public interface EntityDataInterface {
 
   Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  Level getEntityLevel();
-
-  ServerLevel getEntityServerLevel();
-
   EasyNPCEntity getEntity();
-
-  GoalSelector getEntityGoalSelector();
-
-  GoalSelector getEntityTargetSelector();
-
-  GroundPathNavigation getEntityGroundPathNavigation();
 
   <T> void setEntityData(EntityDataAccessor<T> entityDataAccessor, T entityData);
 

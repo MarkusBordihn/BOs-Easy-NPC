@@ -143,6 +143,13 @@ dependencies {
   if (project.epic_fight_mod) {
     runtimeOnly fg.deobf("curse.maven:epic_fight-405076:${project.epic_fight_mod}")
   }
+  if (project.create_mod) {
+    runtimeOnly fg.deobf("curse.maven:create-328085:${project.create_mod}")
+  }
+  if (project.mrcrayfishs_gun_mod && project.framework_mod) {
+    runtimeOnly fg.deobf("curse.maven:mrcrayfishs-gun-289479:${project.mrcrayfishs_gun_mod}")
+    runtimeOnly fg.deobf("curse.maven:framework-549225:${project.framework_mod}")
+  }
 
   // Additional helpful Mods for development (runtime dependency)
   runtimeOnly fg.deobf("curse.maven:xaeros_minimap-263420:${project.xaeros_minimap_mod}")

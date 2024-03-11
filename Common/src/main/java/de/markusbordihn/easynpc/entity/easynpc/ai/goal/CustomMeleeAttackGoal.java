@@ -17,29 +17,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.ai.goal;
+package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 
-public class CustomMeleeAttackGoal extends net.minecraft.world.entity.ai.goal.MeleeAttackGoal {
+public class CustomMeleeAttackGoal<T extends EasyNPC<?>> extends MeleeAttackGoal {
 
-  private final EasyNPCEntity easyNPCEntity;
-
-  public CustomMeleeAttackGoal(
-      EasyNPCEntity easyNPCEntity, double speedModifier, boolean mustSeeTarget) {
-    super(easyNPCEntity, speedModifier, mustSeeTarget);
-    this.easyNPCEntity = easyNPCEntity;
+  public CustomMeleeAttackGoal(T easyNPC, double speedModifier, boolean mustSeeTarget) {
+    super(easyNPC.getPathfinderMob(), speedModifier, mustSeeTarget);
   }
 
   @Override
   public void stop() {
     super.stop();
-    this.easyNPCEntity.setAggressive(false);
+    this.mob.setAggressive(false);
   }
 
   @Override
   public void start() {
     super.start();
-    this.easyNPCEntity.setAggressive(true);
+    this.mob.setAggressive(true);
   }
 }

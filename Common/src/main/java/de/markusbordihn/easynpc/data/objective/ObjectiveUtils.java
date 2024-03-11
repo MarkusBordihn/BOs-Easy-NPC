@@ -20,18 +20,20 @@
 package de.markusbordihn.easynpc.data.objective;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.ai.goal.CrossbowAttackGoal;
-import de.markusbordihn.easynpc.entity.ai.goal.CustomLookAtPlayerGoal;
-import de.markusbordihn.easynpc.entity.ai.goal.CustomMeleeAttackGoal;
-import de.markusbordihn.easynpc.entity.ai.goal.FollowLivingEntityGoal;
-import de.markusbordihn.easynpc.entity.ai.goal.ZombieAttackGoal;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CrossbowAttackGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomLookAtPlayerGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomMeleeAttackGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.FollowLivingEntityGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.MoveBackToHomeGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.RangedBowAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ResetLookAtPlayerGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ZombieAttackGoal;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.FleeSunGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -43,7 +45,6 @@ import net.minecraft.world.entity.ai.goal.PanicGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
-import net.minecraft.world.entity.ai.goal.RangedBowAttackGoal;
 import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -63,15 +64,17 @@ public class ObjectiveUtils {
 
   private ObjectiveUtils() {}
 
-  public static Goal createObjectiveGoal(ObjectiveData objectiveData, EasyNPCEntity easyNPCEntity) {
-    Entity targetOwner = objectiveData.getTargetOwner(easyNPCEntity);
+  public static Goal createObjectiveGoal(ObjectiveData objectiveData, EasyNPC<?> easyNPC) {
+    Entity targetOwner = objectiveData.getTargetOwner(easyNPC);
+    Entity easyNPCEntity = easyNPC.getEasyNPCEntity();
+    PathfinderMob pathfinderMob = easyNPC.getPathfinderMob();
 
     switch (objectiveData.getType()) {
       case FOLLOW_PLAYER:
         ServerPlayer targetServerPlayer = objectiveData.getTargetPlayer();
         if (targetServerPlayer != null && !targetServerPlayer.isRemoved()) {
           return new FollowLivingEntityGoal(
-              easyNPCEntity,
+              easyNPC,
               targetServerPlayer,
               objectiveData.getSpeedModifier(),
               objectiveData.getStopDistance(),
@@ -85,7 +88,7 @@ public class ObjectiveUtils {
       case FOLLOW_OWNER:
         if (targetOwner instanceof LivingEntity livingEntity && !livingEntity.isRemoved()) {
           return new FollowLivingEntityGoal(
-              easyNPCEntity,
+              easyNPC,
               livingEntity,
               objectiveData.getSpeedModifier(),
               objectiveData.getStopDistance(),
@@ -100,10 +103,10 @@ public class ObjectiveUtils {
         }
         break;
       case FOLLOW_ENTITY_BY_UUID:
-        LivingEntity targetEntityMob = objectiveData.getTargetEntity(easyNPCEntity);
+        LivingEntity targetEntityMob = objectiveData.getTargetEntity(easyNPC);
         if (targetEntityMob != null && !targetEntityMob.isRemoved()) {
           return new FollowLivingEntityGoal(
-              easyNPCEntity,
+              easyNPC,
               targetEntityMob,
               objectiveData.getSpeedModifier(),
               objectiveData.getStopDistance(),
@@ -117,96 +120,87 @@ public class ObjectiveUtils {
         }
         break;
       case RANDOM_STROLL:
-        return new RandomStrollGoal(easyNPCEntity, objectiveData.getSpeedModifier());
+        return new RandomStrollGoal(pathfinderMob, objectiveData.getSpeedModifier());
       case WATER_AVOIDING_RANDOM_STROLL:
-        return new WaterAvoidingRandomStrollGoal(easyNPCEntity, objectiveData.getSpeedModifier());
+        return new WaterAvoidingRandomStrollGoal(pathfinderMob, objectiveData.getSpeedModifier());
       case MOVE_THROUGH_VILLAGE:
         return new MoveThroughVillageGoal(
-            easyNPCEntity,
+            pathfinderMob,
             objectiveData.getSpeedModifier(),
             objectiveData.getOnlyAtNight(),
             objectiveData.getDistanceToPoi(),
             objectiveData.getCanDealWithDoors());
       case MOVE_BACK_TO_HOME:
         return new MoveBackToHomeGoal<>(
-            easyNPCEntity, objectiveData.getSpeedModifier(), objectiveData.getStopDistance());
+            easyNPC, objectiveData.getSpeedModifier(), objectiveData.getStopDistance());
       case MOVE_BACK_TO_VILLAGE:
-        return new MoveBackToVillageGoal(easyNPCEntity, objectiveData.getSpeedModifier(), false);
+        return new MoveBackToVillageGoal(pathfinderMob, objectiveData.getSpeedModifier(), false);
       case RANDOM_STROLL_IN_VILLAGE:
-        return new GolemRandomStrollInVillageGoal(easyNPCEntity, objectiveData.getSpeedModifier());
+        return new GolemRandomStrollInVillageGoal(pathfinderMob, objectiveData.getSpeedModifier());
       case CROSSBOW_ATTACK:
-        return new CrossbowAttackGoal(
-            easyNPCEntity, objectiveData.getSpeedModifier(), objectiveData.getAttackRadius());
+        return new CrossbowAttackGoal<>(
+            easyNPC, objectiveData.getSpeedModifier(), objectiveData.getAttackRadius());
       case BOW_ATTACK:
         return new RangedBowAttackGoal<>(
-            easyNPCEntity,
+            easyNPC,
             objectiveData.getSpeedModifier(),
             objectiveData.getAttackInterval(),
             objectiveData.getAttackRadius());
       case MELEE_ATTACK:
-        return new CustomMeleeAttackGoal(
-            easyNPCEntity, objectiveData.getSpeedModifier(), objectiveData.isMustSeeTarget());
+        return new CustomMeleeAttackGoal<>(
+            easyNPC, objectiveData.getSpeedModifier(), objectiveData.isMustSeeTarget());
       case ZOMBIE_ATTACK:
-        return new ZombieAttackGoal(
-            easyNPCEntity, objectiveData.getSpeedModifier(), objectiveData.isMustSeeTarget());
+        return new ZombieAttackGoal<>(
+            easyNPC, objectiveData.getSpeedModifier(), objectiveData.isMustSeeTarget());
       case RANDOM_SWIMMING:
         return new RandomSwimmingGoal(
-            easyNPCEntity, objectiveData.getSpeedModifier(), objectiveData.getInterval());
+            pathfinderMob, objectiveData.getSpeedModifier(), objectiveData.getInterval());
       case FLOAT:
-        return new FloatGoal(easyNPCEntity);
+        return new FloatGoal(pathfinderMob);
       case OPEN_DOOR:
-        return new OpenDoorGoal(easyNPCEntity, false);
+        return new OpenDoorGoal(pathfinderMob, false);
       case CLOSE_DOOR:
-        return new OpenDoorGoal(easyNPCEntity, true);
+        return new OpenDoorGoal(pathfinderMob, true);
       case LOOK_AT_RESET:
-        return new ResetLookAtPlayerGoal<>(easyNPCEntity);
+        return new ResetLookAtPlayerGoal<>(easyNPC);
       case LOOK_AT_PLAYER:
-        return new CustomLookAtPlayerGoal(
-            easyNPCEntity,
-            Player.class,
-            objectiveData.getLookDistance(),
-            objectiveData.getProbability());
+        return new CustomLookAtPlayerGoal<>(
+            easyNPC, Player.class, objectiveData.getLookDistance(), objectiveData.getProbability());
       case LOOK_AT_MOB:
-        return new CustomLookAtPlayerGoal(
-            easyNPCEntity,
-            Mob.class,
-            objectiveData.getLookDistance(),
-            objectiveData.getProbability());
+        return new CustomLookAtPlayerGoal<>(
+            easyNPC, Mob.class, objectiveData.getLookDistance(), objectiveData.getProbability());
       case LOOK_AT_ANIMAL:
-        return new CustomLookAtPlayerGoal(
-            easyNPCEntity,
-            Animal.class,
-            objectiveData.getLookDistance(),
-            objectiveData.getProbability());
+        return new CustomLookAtPlayerGoal<>(
+            easyNPC, Animal.class, objectiveData.getLookDistance(), objectiveData.getProbability());
       case LOOK_RANDOM_AROUND:
-        return new RandomLookAroundGoal(easyNPCEntity);
+        return new RandomLookAroundGoal(pathfinderMob);
       case PANIC:
-        return new PanicGoal(easyNPCEntity, objectiveData.getSpeedModifier());
+        return new PanicGoal(pathfinderMob, objectiveData.getSpeedModifier());
       case AVOID_SUN:
-        return new RestrictSunGoal(easyNPCEntity);
+        return new RestrictSunGoal(pathfinderMob);
       case FLEE_SUN:
-        return new FleeSunGoal(easyNPCEntity, objectiveData.getSpeedModifier());
+        return new FleeSunGoal(pathfinderMob, objectiveData.getSpeedModifier());
       default:
         return null;
     }
     return null;
   }
 
-  public static Goal createObjectiveTarget(
-      ObjectiveData objectiveData, EasyNPCEntity easyNPCEntity) {
+  public static Goal createObjectiveTarget(ObjectiveData objectiveData, EasyNPC<?> easyNPC) {
+    PathfinderMob pathfinderMob = easyNPC.getPathfinderMob();
     return switch (objectiveData.getType()) {
       case ATTACK_ANIMAL ->
           new NearestAttackableTargetGoal<>(
-              easyNPCEntity, Animal.class, objectiveData.isMustSeeTarget());
+              pathfinderMob, Animal.class, objectiveData.isMustSeeTarget());
       case ATTACK_PLAYER ->
           new NearestAttackableTargetGoal<>(
-              easyNPCEntity, Player.class, objectiveData.isMustSeeTarget());
+              pathfinderMob, Player.class, objectiveData.isMustSeeTarget());
       case ATTACK_MONSTER ->
           new NearestAttackableTargetGoal<>(
-              easyNPCEntity, Monster.class, objectiveData.isMustSeeTarget());
+              pathfinderMob, Monster.class, objectiveData.isMustSeeTarget());
       case ATTACK_MOB_WITHOUT_CREEPER ->
           new NearestAttackableTargetGoal<>(
-              easyNPCEntity,
+              pathfinderMob,
               Mob.class,
               objectiveData.getInterval(),
               false,
@@ -214,7 +208,7 @@ public class ObjectiveUtils {
               entity -> entity instanceof Enemy && !(entity instanceof Creeper));
       case ATTACK_MOB ->
           new NearestAttackableTargetGoal<>(
-              easyNPCEntity,
+              pathfinderMob,
               Mob.class,
               objectiveData.getInterval(),
               false,
@@ -222,7 +216,7 @@ public class ObjectiveUtils {
               Enemy.class::isInstance);
       case ATTACK_VILLAGER ->
           new NearestAttackableTargetGoal<>(
-              easyNPCEntity, AbstractVillager.class, objectiveData.isMustSeeTarget());
+              pathfinderMob, AbstractVillager.class, objectiveData.isMustSeeTarget());
       default -> null;
     };
   }
