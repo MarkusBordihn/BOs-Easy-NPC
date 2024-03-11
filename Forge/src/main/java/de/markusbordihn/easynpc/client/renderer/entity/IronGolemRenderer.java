@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.client.renderer.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.CustomIronGolemModel;
-import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.VariantOverLayer;
 import de.markusbordihn.easynpc.entity.npc.IronGolem;
 import de.markusbordihn.easynpc.entity.npc.IronGolem.Variant;

@@ -152,6 +152,10 @@ public class LivingEntityManager {
     return easyNPC != null ? easyNPC.getEasyNPCEntity() : null;
   }
 
+  public static EasyNPC<?> getEasyNPCEntityByUUID(UUID uuid, ServerPlayer serverPlayer) {
+    return getEasyNPCEntityByUUID(uuid, serverPlayer.getLevel());
+  }
+
   public static EasyNPC<?> getEasyNPCEntityByUUID(UUID uuid, ServerLevel serverLevel) {
     if (uuid == null || serverLevel == null) {
       return null;
