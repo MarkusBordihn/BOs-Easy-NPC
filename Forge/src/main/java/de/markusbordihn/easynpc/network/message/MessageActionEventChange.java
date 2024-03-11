@@ -22,8 +22,9 @@ package de.markusbordihn.easynpc.network.message;
 import de.markusbordihn.easynpc.data.action.ActionData;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.action.ActionType;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -93,7 +94,8 @@ public class MessageActionEventChange extends NetworkMessage {
     // Get Permission level for corresponding action.
     int permissionLevel = 0;
     MinecraftServer minecraftServer = serverPlayer.getServer();
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    ActionEventData<?> actionEventData = easyNPC.getEasyNPCActionEventData();
     if (minecraftServer != null) {
       permissionLevel = minecraftServer.getProfilePermissions(serverPlayer.getGameProfile());
       log.debug(
@@ -101,7 +103,7 @@ public class MessageActionEventChange extends NetworkMessage {
           permissionLevel,
           message,
           serverPlayer);
-      easyNPCEntity.setActionPermissionLevel(permissionLevel);
+      actionEventData.setActionPermissionLevel(permissionLevel);
     } else {
       log.warn("Unable to verify permission level from {} for {}", message, serverPlayer);
     }
@@ -111,10 +113,10 @@ public class MessageActionEventChange extends NetworkMessage {
         "Set action event {} with {} for {} from {} with owner permission level {}.",
         actionEventType,
         actionData,
-        easyNPCEntity,
+        easyNPC,
         serverPlayer,
         permissionLevel);
-    easyNPCEntity.getActionEventSet().setActionEvent(actionEventType, actionData);
+    actionEventData.getActionEventSet().setActionEvent(actionEventType, actionData);
   }
 
   public ActionEventType getActionEventType() {
