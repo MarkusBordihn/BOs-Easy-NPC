@@ -56,7 +56,7 @@ public interface OwnerData<T extends LivingEntity> extends EasyNPC<T> {
 
   @Nullable
   default LivingEntity getOwner() {
-    Level level = getEasyNPCLevel();
+    Level level = getLevel();
     if (level == null) {
       return null;
     }

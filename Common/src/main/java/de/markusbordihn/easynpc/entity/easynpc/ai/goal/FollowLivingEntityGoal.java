@@ -17,12 +17,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.ai.goal;
+package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.EnumSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -34,7 +35,7 @@ import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 
 public class FollowLivingEntityGoal extends Goal {
 
-  private final EasyNPCEntity easyNPCEntity;
+  private final PathfinderMob pathfinderMob;
   private final LivingEntity livingEntity;
   private final double speedModifier;
   private final float stopDistance;
@@ -46,35 +47,35 @@ public class FollowLivingEntityGoal extends Goal {
   private int timeToRecalcPath;
 
   public FollowLivingEntityGoal(
-      EasyNPCEntity easyNPCEntity,
+      EasyNPC<?> easyNPC,
       LivingEntity livingEntity,
       double speedModifier,
       float stopDistance,
       float startDistance,
       boolean canFly) {
-    this.easyNPCEntity = easyNPCEntity;
+    this.pathfinderMob = easyNPC.getPathfinderMob();
     this.livingEntity = livingEntity;
     this.speedModifier = speedModifier;
     this.stopDistance = stopDistance;
     this.startDistance = startDistance;
     this.canFly = canFly;
-    this.pathNavigation = easyNPCEntity.getNavigation();
-    this.level = easyNPCEntity.level();
+    this.pathNavigation = this.pathfinderMob.getNavigation();
+    this.level = easyNPC.getServerLevel();
     this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
-    if (!(easyNPCEntity.getNavigation() instanceof GroundPathNavigation)) {
+    if (!(this.pathNavigation instanceof GroundPathNavigation)) {
       throw new IllegalArgumentException("Unsupported entity type for FollowLivingEntityGoal");
     }
   }
 
   @Override
   public boolean canUse() {
-    return this.easyNPCEntity != null
-        && this.easyNPCEntity.isAlive()
+    return this.pathfinderMob != null
+        && this.pathfinderMob.isAlive()
         && this.livingEntity != null
         && this.livingEntity.isAlive()
-        && this.easyNPCEntity.distanceToSqr(this.livingEntity)
+        && this.pathfinderMob.distanceToSqr(this.livingEntity)
             > (this.stopDistance * this.stopDistance)
-        && this.easyNPCEntity.distanceToSqr(this.livingEntity)
+        && this.pathfinderMob.distanceToSqr(this.livingEntity)
             < (this.startDistance * this.startDistance);
   }
 
@@ -83,7 +84,7 @@ public class FollowLivingEntityGoal extends Goal {
     if (this.pathNavigation.isDone()) {
       return false;
     } else {
-      return this.easyNPCEntity.distanceToSqr(this.livingEntity)
+      return this.pathfinderMob.distanceToSqr(this.livingEntity)
           > this.stopDistance * this.stopDistance;
     }
   }
@@ -91,25 +92,25 @@ public class FollowLivingEntityGoal extends Goal {
   @Override
   public void start() {
     this.timeToRecalcPath = 0;
-    this.oldWaterCost = this.easyNPCEntity.getPathfindingMalus(BlockPathTypes.WATER);
-    this.easyNPCEntity.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
+    this.oldWaterCost = this.pathfinderMob.getPathfindingMalus(BlockPathTypes.WATER);
+    this.pathfinderMob.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
   }
 
   @Override
   public void stop() {
     this.pathNavigation.stop();
-    this.easyNPCEntity.setPathfindingMalus(BlockPathTypes.WATER, this.oldWaterCost);
+    this.pathfinderMob.setPathfindingMalus(BlockPathTypes.WATER, this.oldWaterCost);
   }
 
   @Override
   public void tick() {
-    this.easyNPCEntity
+    this.pathfinderMob
         .getLookControl()
-        .setLookAt(this.livingEntity, 10.0F, this.easyNPCEntity.getMaxHeadXRot());
+        .setLookAt(this.livingEntity, 10.0F, this.pathfinderMob.getMaxHeadXRot());
     if (--this.timeToRecalcPath <= 0) {
       this.timeToRecalcPath = this.adjustedTickDelay(10);
-      if (!this.easyNPCEntity.isLeashed() && !this.easyNPCEntity.isPassenger()) {
-        if (this.easyNPCEntity.distanceToSqr(this.livingEntity) >= 144.0D) {
+      if (!this.pathfinderMob.isLeashed() && !this.pathfinderMob.isPassenger()) {
+        if (this.pathfinderMob.distanceToSqr(this.livingEntity) >= 144.0D) {
           this.teleportToLivingEntity();
         } else {
           this.pathNavigation.moveTo(this.livingEntity, this.speedModifier);
@@ -140,12 +141,12 @@ public class FollowLivingEntityGoal extends Goal {
     } else if (!this.canTeleportTo(new BlockPos(posX, posY, posZ))) {
       return false;
     } else {
-      this.easyNPCEntity.moveTo(
+      this.pathfinderMob.moveTo(
           posX + 0.5D,
           posY,
           posZ + 0.5D,
-          this.easyNPCEntity.getYRot(),
-          this.easyNPCEntity.getXRot());
+          this.pathfinderMob.getYRot(),
+          this.pathfinderMob.getXRot());
       this.pathNavigation.stop();
       return true;
     }
@@ -161,14 +162,14 @@ public class FollowLivingEntityGoal extends Goal {
       if (!this.canFly && blockState.getBlock() instanceof LeavesBlock) {
         return false;
       } else {
-        BlockPos targetBlockPos = blockPos.subtract(this.easyNPCEntity.blockPosition());
+        BlockPos targetBlockPos = blockPos.subtract(this.pathfinderMob.blockPosition());
         return this.level.noCollision(
-            this.easyNPCEntity, this.easyNPCEntity.getBoundingBox().move(targetBlockPos));
+            this.pathfinderMob, this.pathfinderMob.getBoundingBox().move(targetBlockPos));
       }
     }
   }
 
   private int randomIntInclusive(int fromRange, int toRange) {
-    return this.easyNPCEntity.getRandom().nextInt(toRange - fromRange + 1) + fromRange;
+    return this.pathfinderMob.getRandom().nextInt(toRange - fromRange + 1) + fromRange;
   }
 }

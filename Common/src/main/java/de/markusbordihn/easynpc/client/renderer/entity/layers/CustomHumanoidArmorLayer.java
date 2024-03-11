@@ -45,7 +45,6 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.DyeableArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.armortrim.ArmorTrim;
-import net.minecraft.world.item.armortrim.TrimPattern;
 
 public class CustomHumanoidArmorLayer<
         T extends LivingEntity, M extends HumanoidModel<T>, A extends HumanoidModel<T>>
