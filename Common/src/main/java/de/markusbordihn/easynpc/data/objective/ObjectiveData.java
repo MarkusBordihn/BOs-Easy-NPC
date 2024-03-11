@@ -20,8 +20,8 @@
 package de.markusbordihn.easynpc.data.objective;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
 import net.minecraft.nbt.CompoundTag;
@@ -263,8 +263,8 @@ public class ObjectiveData {
     this.targetEntityUUID = targetEntityUUID;
   }
 
-  public LivingEntity getTargetEntity(EasyNPCEntity easyNPCEntity) {
-    return this.getTargetEntity(easyNPCEntity.getEntityServerLevel());
+  public LivingEntity getTargetEntity(EasyNPC<?> easyNPC) {
+    return this.getTargetEntity(easyNPC.getServerLevel());
   }
 
   public LivingEntity getTargetEntity(ServerLevel serverLevel) {
@@ -274,11 +274,11 @@ public class ObjectiveData {
     return null;
   }
 
-  public Entity getTargetOwner(EasyNPCEntity easyNPCEntity) {
-    return this.getTargetOwner(easyNPCEntity, easyNPCEntity.getEntityServerLevel());
+  public Entity getTargetOwner(EasyNPC<?> easyNPC) {
+    return this.getTargetOwner(easyNPC.getServerLevel());
   }
 
-  public Entity getTargetOwner(EasyNPCEntity easyNPCEntity, ServerLevel serverLevel) {
+  public Entity getTargetOwner(ServerLevel serverLevel) {
     if (this.hasOwnerTarget() && this.targetOwnerUUID != null && serverLevel != null) {
       return LivingEntityManager.getPlayerByUUID(this.targetOwnerUUID, serverLevel);
     }
@@ -303,8 +303,8 @@ public class ObjectiveData {
     return this.getType() == ObjectiveType.FOLLOW_ENTITY_BY_UUID && this.targetEntityUUID != null;
   }
 
-  public boolean hasValidTarget(EasyNPCEntity easyNPCEntity) {
-    ServerLevel serverLevel = easyNPCEntity.getEntityServerLevel();
+  public boolean hasValidTarget(EasyNPC<?> easyNPC) {
+    ServerLevel serverLevel = easyNPC.getServerLevel();
     return serverLevel != null && this.hasValidTarget(serverLevel);
   }
 
@@ -331,16 +331,16 @@ public class ObjectiveData {
     return this.goal != null;
   }
 
-  public Goal getGoal(EasyNPCEntity easyNPCEntity) {
+  public Goal getGoal(EasyNPC<?> easyNPC) {
     if (this.goal == null) {
-      this.goal = ObjectiveUtils.createObjectiveGoal(this, easyNPCEntity);
+      this.goal = ObjectiveUtils.createObjectiveGoal(this, easyNPC);
     }
     return this.goal;
   }
 
-  public Goal getTarget(EasyNPCEntity easyNPCEntity) {
+  public Goal getTarget(EasyNPC<?> easyNPC) {
     if (this.target == null) {
-      this.target = ObjectiveUtils.createObjectiveTarget(this, easyNPCEntity);
+      this.target = ObjectiveUtils.createObjectiveTarget(this, easyNPC);
     }
     return this.target;
   }
