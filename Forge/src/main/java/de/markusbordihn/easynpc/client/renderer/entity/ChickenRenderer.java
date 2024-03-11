@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.client.renderer.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import de.markusbordihn.easynpc.client.model.custom.CustomChickenModel;
-import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.npc.Chicken;
 import de.markusbordihn.easynpc.entity.npc.Chicken.Variant;

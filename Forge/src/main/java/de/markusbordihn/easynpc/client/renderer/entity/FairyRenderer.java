@@ -24,7 +24,6 @@ import com.mojang.math.Vector3f;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.FairyModel;
 import de.markusbordihn.easynpc.client.model.ModModelLayers;
-import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.npc.Fairy.Variant;

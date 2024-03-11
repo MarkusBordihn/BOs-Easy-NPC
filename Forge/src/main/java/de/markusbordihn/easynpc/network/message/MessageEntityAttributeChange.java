@@ -20,8 +20,10 @@
 package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -122,9 +124,23 @@ public class MessageEntityAttributeChange extends NetworkMessage {
     }
 
     // Validate entity.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPCEntity == null) {
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    if (easyNPC == null) {
       log.error("Unable to find entity {} for {} from {}", uuid, message, serverPlayer);
+      return;
+    }
+
+    // Validate attribute data
+    AttributeData<?> attributeData = easyNPC.getEasyNPCAttributeData();
+    if (attributeData == null) {
+      log.error("Unable to find attribute data for {} from {}", easyNPC, serverPlayer);
+      return;
+    }
+
+    // Validate objectives.
+    ObjectiveData<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
+    if (objectiveData == null) {
+      log.error("Unable to find objective data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
@@ -132,71 +148,64 @@ public class MessageEntityAttributeChange extends NetworkMessage {
     switch (entityAttribute) {
       case FREEFALL:
         if (booleanValue != null) {
-          log.debug("Change freefall={} for {} from {}", booleanValue, easyNPCEntity, serverPlayer);
-          easyNPCEntity.setAttributeFreefall(booleanValue);
+          log.debug("Change freefall={} for {} from {}", booleanValue, easyNPC, serverPlayer);
+          attributeData.setAttributeFreefall(booleanValue);
         }
         break;
       case CAN_FLOAT:
         if (booleanValue != null) {
-          log.debug("Change canFloat={} for {} from {}", booleanValue, easyNPCEntity, serverPlayer);
-          easyNPCEntity.setAttributeCanFloat(booleanValue);
-          easyNPCEntity.registerAttributeBasedObjectives();
+          log.debug("Change canFloat={} for {} from {}", booleanValue, easyNPC, serverPlayer);
+          attributeData.setAttributeCanFloat(booleanValue);
+          objectiveData.registerAttributeBasedObjectives();
         }
         break;
       case CAN_OPEN_DOOR:
         if (booleanValue != null) {
-          log.debug(
-              "Change canOpenDoor={} for {} from {}", booleanValue, easyNPCEntity, serverPlayer);
-          easyNPCEntity.setAttributeCanOpenDoor(booleanValue);
-          easyNPCEntity.registerAttributeBasedObjectives();
+          log.debug("Change canOpenDoor={} for {} from {}", booleanValue, easyNPC, serverPlayer);
+          attributeData.setAttributeCanOpenDoor(booleanValue);
+          objectiveData.registerAttributeBasedObjectives();
         }
         break;
       case CAN_CLOSE_DOOR:
         if (booleanValue != null) {
-          log.debug(
-              "Change canCloseDoor={} for {} from {}", booleanValue, easyNPCEntity, serverPlayer);
-          easyNPCEntity.setAttributeCanCloseDoor(booleanValue);
-          easyNPCEntity.registerAttributeBasedObjectives();
+          log.debug("Change canCloseDoor={} for {} from {}", booleanValue, easyNPC, serverPlayer);
+          attributeData.setAttributeCanCloseDoor(booleanValue);
+          objectiveData.registerAttributeBasedObjectives();
         }
         break;
       case CAN_PASS_DOOR:
         if (booleanValue != null) {
-          log.debug(
-              "Change canPassDoor={} for {} from {}", booleanValue, easyNPCEntity, serverPlayer);
-          easyNPCEntity.setAttributeCanPassDoor(booleanValue);
-          easyNPCEntity.registerAttributeBasedObjectives();
+          log.debug("Change canPassDoor={} for {} from {}", booleanValue, easyNPC, serverPlayer);
+          attributeData.setAttributeCanPassDoor(booleanValue);
+          objectiveData.registerAttributeBasedObjectives();
         }
         break;
       case CAN_USE_NETHER_PORTAL:
         if (booleanValue != null) {
           log.debug(
-              "Change canUseNetherPortal={} for {} from {}",
-              booleanValue,
-              easyNPCEntity,
-              serverPlayer);
-          easyNPCEntity.setAttributeCanUseNetherPortal(booleanValue);
+              "Change canUseNetherPortal={} for {} from {}", booleanValue, easyNPC, serverPlayer);
+          attributeData.setAttributeCanUseNetherPortal(booleanValue);
         }
         break;
       case IS_ATTACKABLE:
         if (booleanValue != null) {
-          log.debug(
-              "Change isAttackable={} for {} from {}", booleanValue, easyNPCEntity, serverPlayer);
-          easyNPCEntity.setAttributeIsAttackable(booleanValue);
-          easyNPCEntity.setInvulnerable(!booleanValue);
+          log.debug("Change isAttackable={} for {} from {}", booleanValue, easyNPC, serverPlayer);
+          attributeData.setAttributeIsAttackable(booleanValue);
+          if (easyNPC.getLivingEntity() != null) {
+            easyNPC.getLivingEntity().setInvulnerable(!booleanValue);
+          }
         }
         break;
       case IS_PUSHABLE:
         if (booleanValue != null) {
-          log.debug(
-              "Change isPushable={} for {} from {}", booleanValue, easyNPCEntity, serverPlayer);
-          easyNPCEntity.setAttributeIsPushable(booleanValue);
+          log.debug("Change isPushable={} for {} from {}", booleanValue, easyNPC, serverPlayer);
+          attributeData.setAttributeIsPushable(booleanValue);
         }
         break;
       case LIGHT_LEVEL:
         if (integerValue != null) {
-          log.debug(
-              "Change lightLevel={} for {} from {}", integerValue, easyNPCEntity, serverPlayer);
-          easyNPCEntity.setAttributeLightLevel(integerValue);
+          log.debug("Change lightLevel={} for {} from {}", integerValue, easyNPC, serverPlayer);
+          attributeData.setAttributeLightLevel(integerValue);
         }
         break;
       default:
