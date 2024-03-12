@@ -101,6 +101,12 @@ public class BasicTradingConfigurationScreen
   }
 
   @Override
+  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+    super.render(guiGraphics, x, y, partialTicks);
+    this.renderTooltip(guiGraphics, x, y);
+  }
+
+  @Override
   protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
     super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
 
