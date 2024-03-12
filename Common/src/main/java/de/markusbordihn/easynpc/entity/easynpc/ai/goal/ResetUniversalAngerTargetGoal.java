@@ -74,7 +74,8 @@ public class ResetUniversalAngerTargetGoal<T extends EasyNPC<?>> extends Goal {
     double followRange = this.mob.getAttributeValue(Attributes.FOLLOW_RANGE);
     AABB nearbyRange =
         AABB.unitCubeFromLowerCorner(this.mob.position()).inflate(followRange, 10.0, followRange);
-    return this.mob.level().getEntitiesOfClass(
-        this.mob.getClass(), nearbyRange, EntitySelector.NO_SPECTATORS);
+    return this.mob
+        .level()
+        .getEntitiesOfClass(this.mob.getClass(), nearbyRange, EntitySelector.NO_SPECTATORS);
   }
 }

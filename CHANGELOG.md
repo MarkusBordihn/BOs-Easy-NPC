@@ -5,7 +5,13 @@
 This change log includes the summarized changes.
 For the full changelog, please go to the [GitHub History][history] instead.
 
-Note: Please always backup your world / npcs before updating to a new version!
+Note: Please always back up your world / NPCs before updating to a new version!
+
+### 3.10.0
+
+- Refactored code for better performance and easier maintenance.
+- Added item tooltips for equipment and trading configuration screens.
+- Fixed #93: Added render support for equipped modded items and armors.
 
 ### 3.9.0
 

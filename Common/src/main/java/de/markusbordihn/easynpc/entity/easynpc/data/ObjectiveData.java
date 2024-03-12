@@ -259,7 +259,8 @@ public interface ObjectiveData<T extends LivingEntity> extends EasyNPC<T> {
     log.info("Register attribute based objectives for {}", this);
 
     // Handle floating goals.
-    de.markusbordihn.easynpc.data.objective.ObjectiveData floatObjective = new de.markusbordihn.easynpc.data.objective.ObjectiveData(ObjectiveType.FLOAT, 0);
+    de.markusbordihn.easynpc.data.objective.ObjectiveData floatObjective =
+        new de.markusbordihn.easynpc.data.objective.ObjectiveData(ObjectiveType.FLOAT, 0);
     AttributeData<?> attributeData = this.getEasyNPCAttributeData();
     if (attributeData.getAttributeCanFloat()) {
       if (!this.hasObjective(floatObjective)) {
