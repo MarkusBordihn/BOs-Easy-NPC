@@ -28,10 +28,14 @@ import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SpawnerData;
+import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -97,6 +101,10 @@ public interface EasyNPC<T extends LivingEntity> extends Npc {
     return this instanceof NavigationData<T> navigationData ? navigationData : null;
   }
 
+  default ObjectiveData<T> getEasyNPCObjectiveData() {
+    return this instanceof ObjectiveData<T> objectiveData ? objectiveData : null;
+  }
+
   default OwnerData<T> getEasyNPCOwnerData() {
     return this instanceof OwnerData<T> ownerData ? ownerData : null;
   }
@@ -105,8 +113,20 @@ public interface EasyNPC<T extends LivingEntity> extends Npc {
     return this instanceof PresetData<T> presetData ? presetData : null;
   }
 
+  default ProfessionData<T> getEasyNPCProfessionData() {
+    return this instanceof ProfessionData<T> professionData ? professionData : null;
+  }
+
+  default ScaleData<T> getEasyNPCScaleData() {
+    return this instanceof ScaleData<T> scaleData ? scaleData : null;
+  }
+
   default SpawnerData<T> getEasyNPCSpawnerData() {
     return this instanceof SpawnerData<T> spawnerData ? spawnerData : null;
+  }
+
+  default VariantData<T> getEasyNPCVariantData() {
+    return this instanceof VariantData<T> variantData ? variantData : null;
   }
 
   default PathfinderMob getPathfinderMob() {
@@ -133,6 +153,10 @@ public interface EasyNPC<T extends LivingEntity> extends Npc {
 
   default NeutralMob getNeutralMob() {
     return this instanceof NeutralMob neutralMob ? neutralMob : null;
+  }
+
+  default Entity getEntity() {
+    return this instanceof Entity entity ? entity : null;
   }
 
   default Mob getMob() {

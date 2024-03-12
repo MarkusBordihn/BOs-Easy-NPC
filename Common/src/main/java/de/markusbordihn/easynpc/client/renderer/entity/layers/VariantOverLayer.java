@@ -20,28 +20,34 @@
 package de.markusbordihn.easynpc.client.renderer.entity.layers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import java.util.Map;
+import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCRenderer;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class ProfessionLayer<T extends EasyNPCEntity, M extends EntityModel<T>>
+public class VariantOverLayer<T extends LivingEntity, M extends EntityModel<T>>
     extends RenderLayer<T, M> {
 
-  private final Map<?, ResourceLocation> textures;
+  private final EasyNPCRenderer easyNPCRenderer;
+  private final M model;
 
   @SuppressWarnings("java:S1172")
-  public ProfessionLayer(
-      RenderLayerParent<T, M> parent, EntityModelSet model, Map<?, ResourceLocation> textures) {
-    super(parent);
-    this.textures = textures;
+  public VariantOverLayer(RenderLayerParent<T, M> renderer, EntityModelSet model) {
+    super(renderer);
+    if (renderer instanceof EasyNPCRenderer easyNPCRendererInstance) {
+      this.easyNPCRenderer = easyNPCRendererInstance;
+    } else {
+      this.easyNPCRenderer = null;
+    }
+    this.model = renderer.getModel();
   }
 
   @Override
@@ -56,14 +62,24 @@ public class ProfessionLayer<T extends EasyNPCEntity, M extends EntityModel<T>>
       float ageInTicks2,
       float netHeadYaw,
       float headPitch) {
-    if (livingEntity.isInvisible() || textures == null) {
-      return;
-    }
-    ResourceLocation resourceLocation = textures.get(livingEntity.getProfession());
-    if (resourceLocation != null) {
-      M model = this.getParentModel();
-      renderColoredCutoutModel(
-          model, resourceLocation, poseStack, buffer, lightLevel, livingEntity, 1.0F, 1.0F, 1.0F);
+    if (!livingEntity.isInvisible()
+        && this.easyNPCRenderer != null
+        && livingEntity instanceof EasyNPC<?> easyNPC) {
+      ResourceLocation resourceLocation =
+          this.easyNPCRenderer.getTextureOverlayByVariant(
+              easyNPC.getEasyNPCVariantData().getVariant());
+      if (resourceLocation != null) {
+        renderColoredCutoutModel(
+            this.model,
+            resourceLocation,
+            poseStack,
+            buffer,
+            lightLevel,
+            livingEntity,
+            1.0F,
+            1.0F,
+            1.0F);
+      }
     }
   }
 }
