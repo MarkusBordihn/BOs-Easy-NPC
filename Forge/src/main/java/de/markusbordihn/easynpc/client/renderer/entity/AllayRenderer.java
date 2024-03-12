@@ -23,7 +23,6 @@ import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.ModModelLayers;
 import de.markusbordihn.easynpc.client.model.custom.CustomAllayModel;
-import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.npc.Allay;
 import de.markusbordihn.easynpc.entity.npc.Allay.Variant;
