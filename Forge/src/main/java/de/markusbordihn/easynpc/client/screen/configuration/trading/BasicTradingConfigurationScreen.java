@@ -101,6 +101,12 @@ public class BasicTradingConfigurationScreen
   }
 
   @Override
+  public void render(PoseStack poseStack, int x, int y, float partialTicks) {
+    super.render(poseStack, x, y, partialTicks);
+    this.renderTooltip(poseStack, x, y);
+  }
+
+  @Override
   protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
     super.renderBg(poseStack, partialTicks, mouseX, mouseY);
 

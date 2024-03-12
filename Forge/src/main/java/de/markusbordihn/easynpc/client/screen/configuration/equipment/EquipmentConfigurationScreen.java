@@ -104,6 +104,8 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
         this.contentLeftPos + 140 - this.xMouse,
         this.contentTopPos + 30 - this.yMouse,
         this.entity);
+
+    this.renderTooltip(poseStack, x, y);
   }
 
   @Override

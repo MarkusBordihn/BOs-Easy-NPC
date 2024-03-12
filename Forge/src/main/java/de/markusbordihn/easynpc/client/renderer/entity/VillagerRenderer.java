@@ -23,7 +23,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.CustomVillagerModel;
-import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.ProfessionLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.VariantLayer;
 import de.markusbordihn.easynpc.data.model.ModelPose;

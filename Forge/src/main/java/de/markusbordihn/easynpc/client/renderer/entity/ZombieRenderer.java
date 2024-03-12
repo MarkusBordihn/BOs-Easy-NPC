@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.client.renderer.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.client.model.custom.CustomZombieModel;
-import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.CustomHumanoidArmorLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.OuterLayer;
 import de.markusbordihn.easynpc.data.model.ModelPose;
