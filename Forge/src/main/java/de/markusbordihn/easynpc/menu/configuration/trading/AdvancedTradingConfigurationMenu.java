@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.menu.configuration.trading;
 
+import de.markusbordihn.easynpc.data.trading.TradingSettings;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import java.util.UUID;
 import javax.annotation.Nullable;
@@ -41,7 +42,6 @@ import net.minecraft.world.item.trading.MerchantOffers;
 public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
 
   // Defining basic layout options
-  public static final int TRADING_OFFERS = 25;
   public static final int TRADING_OFFERS_PER_PAGE = 5;
   public static final int TRADING_START_POSITION_Y = 60;
   public static final int TRADING_START_POSITION_X = 30;
@@ -49,7 +49,7 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
   public static final int SLOT_SIZE = 18;
 
   // Define containers
-  protected static final int tradingContainerSize = TRADING_OFFERS * 3;
+  protected static final int tradingContainerSize = TradingSettings.ADVANCED_TRADING_OFFERS * 3;
   protected final Container tradingContainer;
 
   public AdvancedTradingConfigurationMenu(
@@ -92,7 +92,8 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
       MerchantOffers merchantOffers = this.entity.getTradingOffers();
       if (merchantOffers != null) {
         for (int tradingOffer = 0;
-            tradingOffer < TRADING_OFFERS && tradingOffer < merchantOffers.size();
+            tradingOffer < TradingSettings.ADVANCED_TRADING_OFFERS
+                && tradingOffer < merchantOffers.size();
             tradingOffer++) {
           MerchantOffer merchantOffer = merchantOffers.get(tradingOffer);
           this.tradingContainer.setItem((tradingOffer * 3), merchantOffer.getBaseCostA());
@@ -110,7 +111,7 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
     // Only display a limited amount of trading slots per page.
     for (int tradingOffer = (tradingPage * TRADING_OFFERS_PER_PAGE);
         tradingOffer < ((tradingPage + 1) * TRADING_OFFERS_PER_PAGE)
-            && tradingOffer < TRADING_OFFERS;
+            && tradingOffer < TradingSettings.ADVANCED_TRADING_OFFERS;
         tradingOffer++) {
 
       // Item A Slot
@@ -190,7 +191,7 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
   }
 
   public int getMaxPages() {
-    return TRADING_OFFERS / TRADING_OFFERS_PER_PAGE;
+    return TradingSettings.ADVANCED_TRADING_OFFERS / TRADING_OFFERS_PER_PAGE;
   }
 
   @Override

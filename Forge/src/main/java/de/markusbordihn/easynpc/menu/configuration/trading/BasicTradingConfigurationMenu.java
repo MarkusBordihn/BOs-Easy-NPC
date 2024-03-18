@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.menu.configuration.trading;
 
+import de.markusbordihn.easynpc.data.trading.TradingSettings;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import java.util.UUID;
 import javax.annotation.Nullable;
@@ -41,7 +42,6 @@ import net.minecraft.world.item.trading.MerchantOffers;
 public class BasicTradingConfigurationMenu extends TradingConfigurationMenu {
 
   // Defining basic layout options
-  public static final int TRADING_OFFERS = 12;
   public static final int TRADING_START_POSITION_Y = 40;
   public static final int TRADING_START_POSITION_X = 30;
   public static final int TRADING_START_POSITION_SECOND_ROW_X = TRADING_START_POSITION_X + 160;
@@ -49,7 +49,7 @@ public class BasicTradingConfigurationMenu extends TradingConfigurationMenu {
   public static final int SLOT_SIZE = 18;
 
   // Define containers
-  protected static final int tradingContainerSize = TRADING_OFFERS * 3;
+  protected static final int tradingContainerSize = TradingSettings.BASIC_TRADING_OFFERS * 3;
   protected final Container tradingContainer;
 
   public BasicTradingConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
@@ -85,7 +85,8 @@ public class BasicTradingConfigurationMenu extends TradingConfigurationMenu {
       MerchantOffers merchantOffers = this.entity.getTradingOffers();
       if (merchantOffers != null) {
         for (int tradingOffer = 0;
-            tradingOffer < TRADING_OFFERS && tradingOffer < merchantOffers.size();
+            tradingOffer < TradingSettings.BASIC_TRADING_OFFERS
+                && tradingOffer < merchantOffers.size();
             tradingOffer++) {
           MerchantOffer merchantOffer = merchantOffers.get(tradingOffer);
           this.tradingContainer.setItem((tradingOffer * 3), merchantOffer.getBaseCostA());
@@ -98,7 +99,9 @@ public class BasicTradingConfigurationMenu extends TradingConfigurationMenu {
     // Trading offers Slots
     int slotPositionX = TRADING_START_POSITION_X;
     int slotPositionY = TRADING_START_POSITION_Y;
-    for (int tradingOffer = 0; tradingOffer < TRADING_OFFERS; tradingOffer++) {
+    for (int tradingOffer = 0;
+        tradingOffer < TradingSettings.BASIC_TRADING_OFFERS;
+        tradingOffer++) {
       // Position for Second row
       if (tradingOffer == 6) {
         slotPositionX = TRADING_START_POSITION_SECOND_ROW_X;

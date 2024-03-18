@@ -23,26 +23,21 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.WorldPresetData;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.server.level.ServerPlayer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-public class CustomCommand {
+public class SuggestionProvider {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  protected CustomCommand() {}
+  private SuggestionProvider() {}
 
   protected static CompletableFuture<Suggestions> suggestEasyNPCs(
       CommandContext<CommandSourceStack> context, SuggestionsBuilder build)
       throws CommandSyntaxException {
-    // Return all EasyNPCs for creative mode and only the EasyNPCs of the player.
+    // Return all EasyNPCs for creative mode or only the owned EasyNPCs of the player.
     ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
     return SharedSuggestionProvider.suggest(
         serverPlayer.isCreative()
@@ -55,6 +50,6 @@ public class CustomCommand {
       CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {
     // Return all presets for all easy NPCs.
     return SharedSuggestionProvider.suggestResource(
-        WorldPresetData.getPresetFilePathResourceLocations(), build);
+        WorldPresetDataFiles.getPresetFilePathResourceLocations(), build);
   }
 }

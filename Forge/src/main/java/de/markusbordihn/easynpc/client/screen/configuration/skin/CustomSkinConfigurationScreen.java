@@ -26,9 +26,9 @@ import de.markusbordihn.easynpc.client.screen.components.SkinSelectionButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
-import de.markusbordihn.easynpc.data.CustomSkinData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.io.SkinDataFiles;
 import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import de.markusbordihn.easynpc.utils.TextUtils;
@@ -210,7 +210,7 @@ public class CustomSkinConfigurationScreen
     checkSkinNavigationButtonState();
 
     // Open Skin Folder Button
-    Path skinModelFolder = CustomSkinData.getSkinDataFolder(skinModel);
+    Path skinModelFolder = SkinDataFiles.getSkinDataFolder(skinModel);
     if (skinModelFolder != null) {
       this.skinFolderButton =
           this.addRenderableWidget(
@@ -232,7 +232,7 @@ public class CustomSkinConfigurationScreen
                 160,
                 "reload_textures",
                 onPress -> {
-                  CustomSkinData.refreshRegisterTextureFiles();
+                  SkinDataFiles.refreshRegisterTextureFiles();
                   CustomSkinConfigurationScreen.nextSkinReload =
                       (int) java.time.Instant.now().getEpochSecond() + ADD_SKIN_RELOAD_DELAY;
                 }));

@@ -23,8 +23,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
-import de.markusbordihn.easynpc.data.CustomPresetData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.io.PresetDataFiles;
 import de.markusbordihn.easynpc.menu.configuration.preset.CustomImportPresetConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import java.io.File;
@@ -191,7 +191,7 @@ public class ImportCustomPresetConfigurationScreen
       this.setRenderTopAndBottom(false);
 
       // Read relevant preset files.
-      CustomPresetData.getPresetFilePathLocations()
+      PresetDataFiles.getPresetFilePathLocations()
           .forEach(
               path -> {
                 if (!path.toString()
