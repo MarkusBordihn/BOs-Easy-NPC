@@ -78,7 +78,7 @@ public interface ObjectiveData<T extends LivingEntity> extends EasyNPC<T> {
         }
       };
 
-  public static final EntityDataSerializer<HashSet<UUID>> TARGETED_ENTITY_HASH_SET =
+  EntityDataSerializer<HashSet<UUID>> TARGETED_ENTITY_HASH_SET =
       new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, HashSet<UUID> value) {
           for (UUID entry : value) {
@@ -425,7 +425,10 @@ public interface ObjectiveData<T extends LivingEntity> extends EasyNPC<T> {
     CompoundTag objectiveTag = new CompoundTag();
 
     // Store objectives
-    getObjectiveDataSet().save(objectiveTag);
+    ObjectiveDataSet objectiveDataSet = this.getObjectiveDataSet();
+    if (objectiveDataSet != null) {
+      objectiveDataSet.save(objectiveTag);
+    }
 
     // Store debugging flags for objectives targeting.
     objectiveTag.putBoolean(DATA_HAS_OBJECTIVE_TAG, this.hasObjectives());

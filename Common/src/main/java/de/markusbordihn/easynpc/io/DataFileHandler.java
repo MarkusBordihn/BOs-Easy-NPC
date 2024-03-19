@@ -17,40 +17,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data;
+package de.markusbordihn.easynpc.io;
 
 import de.markusbordihn.easynpc.Constants;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
-import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fml.loading.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class CustomDataHandler {
+public class DataFileHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  protected CustomDataHandler() {}
-
-  public static void prepare() {
-    log.info("{} custom data ...", Constants.LOG_REGISTER_PREFIX);
-
-    // Prepare custom data folder
-    log.info("{} custom data folder at {} ...", Constants.LOG_CREATE_PREFIX, getCustomDataFolder());
-  }
+  protected DataFileHandler() {}
 
   public static Path getCustomDataFolder() {
     try {
-      return FileUtils.getOrCreateDirectory(
-          FMLPaths.CONFIGDIR.get().resolve(Constants.MOD_ID), Constants.MOD_ID);
+      return Files.createDirectories(Constants.CONFIG_DIR.resolve(Constants.MOD_ID));
     } catch (Exception exception) {
       log.error("There was an error, creating the custom data folder:", exception);
     }
@@ -63,7 +54,7 @@ public class CustomDataHandler {
       return null;
     }
     try {
-      return FileUtils.getOrCreateDirectory(customDataFolder.resolve(dataLabel), dataLabel);
+      return Files.createDirectories(customDataFolder.resolve(dataLabel));
     } catch (Exception exception) {
       log.error("There was an error, creating the custom data folder:", exception);
     }

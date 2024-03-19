@@ -50,7 +50,8 @@ public class CommandManager {
             .then(ConfigureCommand.register())
             .then(DebugCommand.register())
             .then(DialogCommand.register())
-            .then(PresetCommand.register())
+            .then(NavigationCommand.register())
+            .then(PresetCommand.register(new PresetCommandWrapper()))
             .then(TradingCommand.register())
         // @formatter:on
         );

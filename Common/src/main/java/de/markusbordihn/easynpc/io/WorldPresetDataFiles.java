@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data;
+package de.markusbordihn.easynpc.io;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
@@ -26,37 +26,27 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.storage.LevelResource;
-import net.minecraftforge.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class WorldPresetData {
+public class WorldPresetDataFiles {
 
-  public static final File MOD_FOLDER =
-      new File(
-          ServerLifecycleHooks.getCurrentServer().getWorldPath(LevelResource.ROOT).toFile(),
-          Constants.MOD_ID);
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String DATA_FOLDER_NAME = "preset";
   private static final ConcurrentHashMap<ResourceLocation, Path> presetResourceLocationMap =
       new ConcurrentHashMap<>();
 
-  protected WorldPresetData() {}
-
-  public static void prepareFolder() {
-    log.info("{} world preset data ...", Constants.LOG_REGISTER_PREFIX);
-  }
+  protected WorldPresetDataFiles() {}
 
   public static Path getPresetDataFolder() {
-    Path path = MOD_FOLDER.toPath().resolve(DATA_FOLDER_NAME);
-    if (!path.toFile().exists()) {
-      path.toFile().mkdirs();
+    File worldDataFolder = new File(Constants.WORLD_DIR.toFile(), Constants.MOD_ID);
+    Path path = worldDataFolder.toPath().resolve(DATA_FOLDER_NAME);
+    if (!path.toFile().exists() && !path.toFile().mkdirs()) {
+      log.error("Could not create preset data folder {}!", path);
     }
     return path;
   }
@@ -64,10 +54,10 @@ public class WorldPresetData {
   public static Path getPresetDataFolder(SkinModel skinModel) {
     Path presetDataFolder = getPresetDataFolder();
     String skinModelName = skinModel.name();
-    if (skinModelName != null) {
+    if (!skinModelName.isEmpty()) {
       Path path = presetDataFolder.resolve(skinModelName.toLowerCase());
-      if (!path.toFile().exists()) {
-        path.toFile().mkdirs();
+      if (!path.toFile().exists() && !path.toFile().mkdirs()) {
+        log.error("Could not create preset model folder {}!", path);
       }
       return path;
     }
@@ -87,10 +77,6 @@ public class WorldPresetData {
           .toFile();
     }
     return null;
-  }
-
-  public static File getPresetFile(SkinModel skinModel, UUID uuid) {
-    return getPresetFile(skinModel, uuid.toString());
   }
 
   public static Stream<ResourceLocation> getPresetFilePathResourceLocations() {

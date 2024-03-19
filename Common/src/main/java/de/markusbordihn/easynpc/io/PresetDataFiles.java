@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data;
+package de.markusbordihn.easynpc.io;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
@@ -29,23 +29,17 @@ import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.loading.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class CustomPresetData {
+public class PresetDataFiles {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String DATA_FOLDER_NAME = "preset";
 
-  protected CustomPresetData() {}
+  protected PresetDataFiles() {}
 
-  public static void registerCustomPresetData(final FMLClientSetupEvent event) {
-    event.enqueueWork(CustomPresetData::prepareFolder);
-  }
-
-  public static void prepareFolder() {
+  public static void registerCustomPresetData() {
     log.info("{} custom preset data ...", Constants.LOG_REGISTER_PREFIX);
 
     // Prepare preset data folder
@@ -69,15 +63,18 @@ public class CustomPresetData {
   }
 
   public static Path getPresetDataFolder() {
-    return CustomDataHandler.getOrCreateCustomDataFolder(DATA_FOLDER_NAME);
+    return DataFileHandler.getOrCreateCustomDataFolder(DATA_FOLDER_NAME);
   }
 
   public static Path getPresetDataFolder(SkinModel skinModel) {
     Path skinDataFolder = getPresetDataFolder();
     String skinModelName = skinModel.name();
-    if (skinDataFolder != null && skinModelName != null) {
-      return FileUtils.getOrCreateDirectory(
-          skinDataFolder.resolve(skinModelName.toLowerCase()), skinModelName.toLowerCase());
+    if (skinDataFolder != null && !skinModelName.isEmpty()) {
+      try {
+        return Files.createDirectories(skinDataFolder.resolve(skinModelName.toLowerCase()));
+      } catch (IOException exception) {
+        log.error("Could not create preset data folder {}!", skinDataFolder, exception);
+      }
     }
     return null;
   }

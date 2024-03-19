@@ -19,8 +19,8 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -76,9 +76,9 @@ public class MessagePositionChange extends NetworkMessage {
     }
 
     // Perform action.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    log.debug("Change pos {} for {} from {}", pos, easyNPCEntity, serverPlayer);
-    easyNPCEntity.setPos(pos);
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    log.debug("Change pos {} for {} from {}", pos, easyNPC, serverPlayer);
+    easyNPC.getEntity().setPos(pos);
   }
 
   public Vec3 getPos() {

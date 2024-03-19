@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.custom.CustomDataAccessor;
 import de.markusbordihn.easynpc.data.entity.CustomEntityData;
+import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
@@ -33,10 +34,12 @@ import de.markusbordihn.easynpc.entity.easynpc.data.NPCData;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
+import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SpawnerData;
+import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import java.util.UUID;
 import javax.annotation.Nonnull;
@@ -45,6 +48,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.DifficultyInstance;
@@ -52,6 +57,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.NeutralMob;
@@ -59,8 +65,13 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.item.trading.Merchant;
+import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import org.apache.logging.log4j.LogManager;
@@ -68,6 +79,7 @@ import org.apache.logging.log4j.Logger;
 
 public class EasyNPCBaseEntity extends AgeableMob
     implements NeutralMob,
+        Merchant,
         EasyNPC<AgeableMob>,
         ActionEventData<AgeableMob>,
         AttackData<AgeableMob>,
@@ -79,11 +91,12 @@ public class EasyNPCBaseEntity extends AgeableMob
         NPCData<AgeableMob>,
         ObjectiveData<AgeableMob>,
         OwnerData<AgeableMob>,
-        // PresetData<AgeableMob>,
+        PresetData<AgeableMob>,
         ProfessionData<AgeableMob>,
         ScaleData<AgeableMob>,
         SkinData<AgeableMob>,
         SpawnerData<AgeableMob>,
+        TradingData<AgeableMob>,
         VariantData<AgeableMob> {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
@@ -98,17 +111,92 @@ public class EasyNPCBaseEntity extends AgeableMob
     ProfessionData.registerProfessionDataSerializer();
     SkinData.registerSkinDataSerializer();
     SpawnerData.registerSpawnerDataSerializer();
+    TradingData.registerTradingDataSerializer();
   }
 
   private final CustomEntityData customEntityData = new CustomEntityData(this);
-  private boolean attributeDataLoaded = false;
+  protected MerchantOffers offers;
   private int remainingPersistentAngerTime;
   private UUID persistentAngerTarget;
   private int npcDataVersion = -1;
+  private Player tradingPlayer;
 
   public EasyNPCBaseEntity(EntityType<? extends AgeableMob> entityType, Level world) {
     super(entityType, world);
     this.defineCustomData();
+  }
+
+  @Override
+  public boolean isClientSide() {
+    return this.getLevel().isClientSide();
+  }
+
+  public Player getTradingPlayer() {
+    return this.tradingPlayer;
+  }
+
+  public void setTradingPlayer(@Nullable Player player) {
+    this.tradingPlayer = player;
+  }
+
+  public boolean showProgressBar() {
+    return true;
+  }
+
+  public int getVillagerXp() {
+    return 0;
+  }
+
+  public void overrideOffers(@Nullable MerchantOffers merchantOffers) {
+    /* Method is not used */
+  }
+
+  public void overrideXp(int experience) {
+    /* Method is not used */
+  }
+
+  public void notifyTrade(MerchantOffer merchantOffer) {
+    merchantOffer.increaseUses();
+    this.ambientSoundTime = -this.getAmbientSoundInterval();
+    this.rewardTradeXp(merchantOffer);
+    if (this.tradingPlayer instanceof ServerPlayer serverPlayer) {
+      log.debug("Trade {} with {} for {}", merchantOffer, serverPlayer, this);
+    }
+  }
+
+  public void notifyTradeUpdated(ItemStack itemStack) {
+    if (!this.isClientSide() && this.ambientSoundTime > -this.getAmbientSoundInterval() + 20) {
+      this.ambientSoundTime = -this.getAmbientSoundInterval();
+      this.playSound(
+          this.getTradeUpdatedSound(!itemStack.isEmpty()),
+          this.getSoundVolume(),
+          this.getVoicePitch());
+    }
+  }
+
+  protected SoundEvent getTradeUpdatedSound(boolean yesSound) {
+    return yesSound ? SoundEvents.VILLAGER_YES : SoundEvents.VILLAGER_NO;
+  }
+
+  public SoundEvent getNotifyTradeSound() {
+    return SoundEvents.VILLAGER_YES;
+  }
+
+  protected void rewardTradeXp(MerchantOffer merchantOffer) {
+    if (merchantOffer.shouldRewardExp() && merchantOffer.getXp() > 0) {
+      int tradeExperience = 3 + this.random.nextInt(merchantOffer.getXp());
+      this.level.addFreshEntity(
+          new ExperienceOrb(
+              this.level, this.getX(), this.getY() + 0.5D, this.getZ(), tradeExperience));
+    }
+  }
+
+  @Nullable
+  public MerchantOffers getOffers() {
+    if (this.offers == null) {
+      this.updateTradesData();
+    }
+    return this.offers;
   }
 
   public int getNPCDataVersion() {
@@ -122,6 +210,27 @@ public class EasyNPCBaseEntity extends AgeableMob
   @Override
   public void openDialog(ServerPlayer serverPlayer, UUID dialogId) {
     log.warn("Not implemented: Open dialog {} for {} with {}", dialogId, this, serverPlayer);
+  }
+
+  protected void updateTrades() {}
+
+  @Override
+  public void updateTradesData() {
+    MerchantOffers merchantOffers = null;
+    if (this.getTradingType() == TradingType.BASIC
+        || this.getTradingType() == TradingType.ADVANCED) {
+      // Create a copy of the offers to avoid side effects.
+      merchantOffers = new MerchantOffers(this.getTradingOffers().createTag());
+    }
+    if (merchantOffers != null && !merchantOffers.isEmpty()) {
+      // Filter out offers which are missing item a, item b or result item.
+      merchantOffers.removeIf(
+          merchantOffer ->
+              (merchantOffer.getBaseCostA().isEmpty() && merchantOffer.getCostB().isEmpty())
+                  || merchantOffer.getResult().isEmpty());
+      this.offers = merchantOffers;
+    }
+    updateTrades();
   }
 
   @Override
@@ -264,23 +373,19 @@ public class EasyNPCBaseEntity extends AgeableMob
     this.customEntityData.define(entityDataAccessor, entityData);
   }
 
-  public boolean attributeDataLoaded() {
-    return this.attributeDataLoaded;
-  }
-
   @Override
   public boolean isAttackable() {
-    return this.attributeDataLoaded() && getAttributeIsAttackable();
+    return getAttributeDataLoaded() && getAttributeIsAttackable();
   }
 
   @Override
   public boolean isPushable() {
-    return this.attributeDataLoaded() && getAttributeIsPushable();
+    return getAttributeDataLoaded() && getAttributeIsPushable();
   }
 
   @Override
   public boolean isInvulnerable() {
-    return this.attributeDataLoaded() ? !getAttributeIsAttackable() : super.isInvulnerable();
+    return getAttributeDataLoaded() ? !getAttributeIsAttackable() : super.isInvulnerable();
   }
 
   @Override
@@ -290,7 +395,7 @@ public class EasyNPCBaseEntity extends AgeableMob
 
   @Override
   protected void handleNetherPortal() {
-    if (this.attributeDataLoaded() && getAttributeCanUseNetherPortal()) {
+    if (getAttributeDataLoaded() && getAttributeCanUseNetherPortal()) {
       super.handleNetherPortal();
     }
   }
@@ -330,6 +435,7 @@ public class EasyNPCBaseEntity extends AgeableMob
     this.defineSynchedProfessionData();
     this.defineSynchedScaleData();
     this.defineSynchedSkinData();
+    this.defineSynchedTradingData();
     this.defineSynchedVariantData();
   }
 
@@ -349,6 +455,7 @@ public class EasyNPCBaseEntity extends AgeableMob
     this.addAdditionalProfessionData(compoundTag);
     this.addAdditionalScaleData(compoundTag);
     this.addAdditionalSkinData(compoundTag);
+    this.addAdditionalTradingData(compoundTag);
     this.addAdditionalVariantData(compoundTag);
     this.addAdditionalSpawnerData(compoundTag);
 
@@ -372,6 +479,7 @@ public class EasyNPCBaseEntity extends AgeableMob
     this.readAdditionalProfessionData(compoundTag);
     this.readAdditionalScaleData(compoundTag);
     this.readAdditionalSkinData(compoundTag);
+    this.readAdditionalTradingData(compoundTag);
     this.readAdditionalVariantData(compoundTag);
     this.readAdditionalSpawnerData(compoundTag);
 
@@ -379,7 +487,5 @@ public class EasyNPCBaseEntity extends AgeableMob
 
     // Register attribute based objectives
     this.registerAttributeBasedObjectives();
-
-    this.attributeDataLoaded = true;
   }
 }

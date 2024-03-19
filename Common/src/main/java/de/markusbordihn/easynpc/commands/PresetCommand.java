@@ -23,11 +23,10 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import de.markusbordihn.easynpc.data.WorldPresetData;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.UUID;
@@ -49,26 +48,31 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.phys.Vec3;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class PresetCommand extends CustomCommand {
+public class PresetCommand {
+  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  public static ArgumentBuilder<CommandSourceStack, ?> register() {
+  public PresetCommand() {}
+
+  public static ArgumentBuilder<CommandSourceStack, ?> register(PresetCommand command) {
     return Commands.literal("preset")
         .executes(PresetCommand::overview)
         .then(
             Commands.literal("export")
                 .then(
                     Commands.argument("uuid", UuidArgument.uuid())
-                        .suggests(PresetCommand::suggestEasyNPCs)
+                        .suggests(SuggestionProvider::suggestEasyNPCs)
                         .executes(
                             context ->
-                                exportPreset(
+                                command.exportPreset(
                                     context.getSource(), UuidArgument.getUuid(context, "uuid")))))
         .then(
             Commands.literal("import")
                 .then(
                     Commands.argument("presetLocation", ResourceLocationArgument.id())
-                        .suggests(PresetCommand::suggestPresets)
+                        .suggests(SuggestionProvider::suggestPresets)
                         .executes(
                             context ->
                                 importPreset(
@@ -83,9 +87,7 @@ public class PresetCommand extends CustomCommand {
                                       Coordinates coordinates =
                                           Vec3Argument.getCoordinates(context, "location");
                                       Vec3 vec3Position =
-                                          coordinates != null
-                                              ? coordinates.getPosition(context.getSource())
-                                              : null;
+                                          coordinates.getPosition(context.getSource());
                                       return importPreset(
                                           context.getSource(),
                                           ResourceLocationArgument.getId(context, "presetLocation"),
@@ -96,15 +98,22 @@ public class PresetCommand extends CustomCommand {
             Commands.literal("import_new")
                 .then(
                     Commands.argument("presetLocation", ResourceLocationArgument.id())
-                        .suggests(PresetCommand::suggestPresets)
+                        .suggests(SuggestionProvider::suggestPresets)
                         .executes(
                             context -> {
-                              ServerPlayer serverPlayer =
-                                  context.getSource().getPlayerOrException();
+                              Vec3 vec3 = null;
+                              try {
+                                ServerPlayer serverPlayer =
+                                    context.getSource().getPlayerOrException();
+                                vec3 = serverPlayer.position();
+                              } catch (CommandSyntaxException exception) {
+                                log.debug(
+                                    "Unable to get server player for preset import new, maybe not triggered by player!");
+                              }
                               return importPreset(
                                   context.getSource(),
                                   ResourceLocationArgument.getId(context, "presetLocation"),
-                                  serverPlayer.position(),
+                                  vec3,
                                   UUID.randomUUID());
                             })
                         .then(
@@ -114,9 +123,7 @@ public class PresetCommand extends CustomCommand {
                                       Coordinates coordinates =
                                           Vec3Argument.getCoordinates(context, "location");
                                       Vec3 vec3Position =
-                                          coordinates != null
-                                              ? coordinates.getPosition(context.getSource())
-                                              : null;
+                                          coordinates.getPosition(context.getSource());
                                       return importPreset(
                                           context.getSource(),
                                           ResourceLocationArgument.getId(context, "presetLocation"),
@@ -130,9 +137,7 @@ public class PresetCommand extends CustomCommand {
                                               Coordinates coordinates =
                                                   Vec3Argument.getCoordinates(context, "location");
                                               Vec3 vec3Position =
-                                                  coordinates != null
-                                                      ? coordinates.getPosition(context.getSource())
-                                                      : null;
+                                                  coordinates.getPosition(context.getSource());
                                               return importPreset(
                                                   context.getSource(),
                                                   ResourceLocationArgument.getId(
@@ -146,35 +151,6 @@ public class PresetCommand extends CustomCommand {
     context
         .getSource()
         .sendSuccess(Component.literal("Preset command is not implemented yet!"), false);
-    return 0;
-  }
-
-  private static int exportPreset(CommandSourceStack context, UUID uuid)
-      throws CommandSyntaxException {
-    ServerPlayer serverPlayer = context.getPlayerOrException();
-    if (uuid == null) {
-      return 0;
-    }
-
-    // Try to get the EasyNPC entity by UUID.
-    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid);
-    if (easyNPC == null) {
-      context.sendFailure(Component.literal("EasyNPC with UUID " + uuid + " not found!"));
-      return 0;
-    }
-
-    // Check is player is owner of the EasyNPC.
-    if (!serverPlayer.isCreative() && !easyNPC.getEasyNPCOwnerData().isOwner(serverPlayer)) {
-      context.sendFailure(Component.literal("You are not the owner of this EasyNPC!"));
-      return 0;
-    }
-
-    log.info(
-        "Exporting EasyNPC {} with UUID {} and skin {}...",
-        easyNPC,
-        uuid,
-        easyNPC.getEasyNPCSkinData().getSkinModel());
-    NetworkMessageHandler.exportPresetClient(uuid, serverPlayer);
     return Command.SINGLE_SUCCESS;
   }
 
@@ -186,12 +162,16 @@ public class PresetCommand extends CustomCommand {
     if (preset == null) {
       return 0;
     }
-    CompoundTag compoundTag = null;
-
-    log.info("Try importing preset {} with position {} and UUID {}", preset, position, uuid);
+    log.info(
+        "Try importing preset {} with position {} and UUID {} by {}",
+        preset,
+        position,
+        uuid,
+        context.getEntity());
 
     // Check if preset exists in world resources.
-    Path presetPath = WorldPresetData.getPresetsResourceLocationPath(preset);
+    CompoundTag compoundTag = null;
+    Path presetPath = WorldPresetDataFiles.getPresetsResourceLocationPath(preset);
     if (presetPath != null && presetPath.toFile().exists()) {
       log.info("Importing world preset {} from {}...", preset, presetPath);
       try {
@@ -225,14 +205,6 @@ public class PresetCommand extends CustomCommand {
       return 0;
     }
 
-    // Get Server Player
-    ServerPlayer serverPlayer = null;
-    try {
-      serverPlayer = context.getPlayerOrException();
-    } catch (CommandSyntaxException exception) {
-      log.debug("Unable to get server player for preset import, maybe not triggered by player!");
-    }
-
     // Get entity type.
     EntityType<?> entityType =
         compoundTag.contains("id")
@@ -246,12 +218,12 @@ public class PresetCommand extends CustomCommand {
 
     // Verify compound tag.
     log.info(
-        "Importing preset {} with entity type {}, compound tag {} and position {} with UUID {}",
+        "Importing preset {} with entity type {} and position {} with UUID {}",
         preset,
         entityType,
-        compoundTag,
         position,
         compoundTag.getUUID("UUID"));
+    log.debug("Importing preset {} with compound tag {}", preset, compoundTag);
 
     // Overwrite spawn position if coordinates are given.
     if (position != null) {
@@ -276,17 +248,21 @@ public class PresetCommand extends CustomCommand {
 
     // Spawn new entity or re-use existing entity.
     Entity entity = entityType.create(context.getLevel());
-    if (entity instanceof EasyNPCEntity easyNPCEntity) {
-      easyNPCEntity.importPreset(compoundTag);
+    if (entity instanceof EasyNPC<?> easyNPC) {
 
-      // Set home position if not already set.
-      if (position != null && !easyNPCEntity.hasHomePosition()) {
-        easyNPCEntity.setHomePosition(new BlockPos(position.x, position.y, position.z));
+      // Import preset data.
+      easyNPC.getEasyNPCPresetData().importPresetData(compoundTag);
+
+      // Set home position, if spawn position was provided.
+      if (position != null) {
+        easyNPC
+            .getEasyNPCNavigationData()
+            .setHomePosition(new BlockPos(position.x, position.y, position.z));
       }
 
-      if (context.getLevel().addFreshEntity(easyNPCEntity)) {
+      if (context.getLevel().addFreshEntity(easyNPC.getEasyNPCEntity())) {
         context.sendSuccess(
-            Component.literal("Imported preset " + preset + " to " + easyNPCEntity), false);
+            Component.literal("Imported preset " + preset + " to " + easyNPC), false);
       } else {
         context.sendFailure(Component.literal("Unable to import preset " + preset + "!"));
       }
@@ -295,5 +271,9 @@ public class PresetCommand extends CustomCommand {
       context.sendFailure(Component.literal("Preset " + preset + " is not valid!"));
       return 0;
     }
+  }
+
+  protected int exportPreset(CommandSourceStack context, UUID uuid) throws CommandSyntaxException {
+    throw new UnsupportedOperationException("Unsupported operation");
   }
 }
