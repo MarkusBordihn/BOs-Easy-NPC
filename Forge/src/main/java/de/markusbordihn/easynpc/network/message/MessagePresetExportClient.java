@@ -19,8 +19,8 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.data.CustomPresetData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.io.PresetDataFiles;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.io.File;
 import java.io.IOException;
@@ -110,21 +110,24 @@ public class MessagePresetExportClient extends NetworkMessage {
     }
 
     // Perform action.
-    File presetFile = CustomPresetData.getPresetFile(skinModel, fileName);
+    File presetFile = PresetDataFiles.getPresetFile(skinModel, fileName);
+    if (presetFile == null) {
+      log.error("Failed to get preset file for {}", message);
+      return;
+    }
+
+    // Export preset file.
     log.info(
         "Exporting EasyNPC {} with UUID {} and skin {} to {}", name, uuid, skinModel, presetFile);
     try {
       NbtIo.writeCompressed(data, presetFile);
     } catch (final IOException exception) {
       log.error(
-          "Failed to export EasyNPC "
-              + name
-              + " with UUID "
-              + uuid
-              + " and skin "
-              + skinModel
-              + " to "
-              + presetFile,
+          "Failed to export EasyNPC {} with UUID {} and skin {} to {}",
+          name,
+          uuid,
+          skinModel,
+          presetFile,
           exception);
     }
   }

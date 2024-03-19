@@ -7,6 +7,18 @@ For the full changelog, please go to the [GitHub History][history] instead.
 
 Note: Please always back up your world / NPCs before updating to a new version!
 
+### 3.11.0
+
+- Added `/easy_npc trading open <npc-uuid> <player>` command to open trading screens for specific
+  players.
+- Added `/easy_npc navigation set position <npc-uuid> <x> <y> <z>` command to set the position for
+  the NPC.
+- Fixed #97: Added automatic home point and `/easy_npc navigation set home <npc-uuid> <x> <y> <z>`
+  command.
+- Fixed #101: Added better support for [Project MMO][project_mmo] mod.
+- Fixed #102: Added better support for [Better Combat][better_combat] weapons.
+- Improved command block support.
+
 ### 3.10.0
 
 - Refactored code for better performance and easier maintenance.
@@ -289,3 +301,7 @@ it could be that some of them are not compatible with older versions.
 [history]: https://github.com/MarkusBordihn/BOs-Easy-NPC/commits/
 
 [armourers_workshop]: https://www.curseforge.com/minecraft/mc-mods/armourers-workshop
+
+[project_mmo]: https://www.curseforge.com/minecraft/mc-mods/project-mmo
+
+[better_combat]: https://www.curseforge.com/minecraft/mc-mods/better-combat-by-daedelus

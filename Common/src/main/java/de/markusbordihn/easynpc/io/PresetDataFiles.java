@@ -17,9 +17,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data;
+package de.markusbordihn.easynpc.io;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.DataFileHandler;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import java.io.File;
 import java.io.IOException;
@@ -27,49 +28,54 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.storage.LevelResource;
-import net.minecraftforge.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class WorldPresetData {
+public class PresetDataFiles {
 
-  public static final File MOD_FOLDER =
-      new File(
-          ServerLifecycleHooks.getCurrentServer().getWorldPath(LevelResource.ROOT).toFile(),
-          Constants.MOD_ID);
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String DATA_FOLDER_NAME = "preset";
-  private static final ConcurrentHashMap<ResourceLocation, Path> presetResourceLocationMap =
-      new ConcurrentHashMap<>();
 
-  protected WorldPresetData() {}
+  protected PresetDataFiles() {}
 
-  public static void prepareFolder() {
-    log.info("{} world preset data ...", Constants.LOG_REGISTER_PREFIX);
+  public static void registerCustomPresetData() {
+    log.info("{} custom preset data ...", Constants.LOG_REGISTER_PREFIX);
+
+    // Prepare preset data folder
+    Path presetDataFolder = getPresetDataFolder();
+    if (presetDataFolder == null) {
+      return;
+    }
+    log.info(
+        "{} custom preset data folder at {} ...", Constants.LOG_CREATE_PREFIX, presetDataFolder);
+
+    for (SkinModel skinModel : SkinModel.values()) {
+      Path presetModelFolder = getPresetDataFolder(skinModel);
+      if (presetModelFolder != null) {
+        log.info(
+            "{} preset model folder {} at {} ...",
+            Constants.LOG_CREATE_PREFIX,
+            skinModel,
+            presetModelFolder);
+      }
+    }
   }
 
   public static Path getPresetDataFolder() {
-    Path path = MOD_FOLDER.toPath().resolve(DATA_FOLDER_NAME);
-    if (!path.toFile().exists()) {
-      path.toFile().mkdirs();
-    }
-    return path;
+    return DataFileHandler.getOrCreateCustomDataFolder(DATA_FOLDER_NAME);
   }
 
   public static Path getPresetDataFolder(SkinModel skinModel) {
-    Path presetDataFolder = getPresetDataFolder();
+    Path skinDataFolder = getPresetDataFolder();
     String skinModelName = skinModel.name();
-    if (skinModelName != null) {
-      Path path = presetDataFolder.resolve(skinModelName.toLowerCase());
-      if (!path.toFile().exists()) {
-        path.toFile().mkdirs();
+    if (skinDataFolder != null && !skinModelName.isEmpty()) {
+      try {
+        return Files.createDirectories(skinDataFolder.resolve(skinModelName.toLowerCase()));
+      } catch (IOException exception) {
+        log.error("Could not create preset data folder {}!", skinDataFolder, exception);
       }
-      return path;
     }
     return null;
   }
@@ -78,7 +84,7 @@ public class WorldPresetData {
     Path presetModelFolder = getPresetDataFolder(skinModel);
     if (presetModelFolder != null && fileName != null && !fileName.isEmpty()) {
       // Remove all invalid characters from file name.
-      fileName = fileName.toLowerCase().replaceAll("[^a-z0-9/._-]", "").replace("..", "");
+      fileName = fileName.replaceAll("[^a-zA-Z0-9/._-]", "").replace("..", "");
       return presetModelFolder
           .resolve(
               fileName.endsWith(Constants.NPC_NBT_SUFFIX)
@@ -93,29 +99,15 @@ public class WorldPresetData {
     return getPresetFile(skinModel, uuid.toString());
   }
 
-  public static Stream<ResourceLocation> getPresetFilePathResourceLocations() {
+  public static Stream<Path> getPresetFilePathLocations() {
     Path presetDataFolder = getPresetDataFolder();
     try {
       try (Stream<Path> filesStream = Files.walk(presetDataFolder)) {
         // Get all files with the suffix .npc.nbt and return the relative path.
-        List<ResourceLocation> filePaths =
+        List<Path> filePaths =
             filesStream
                 .filter(path -> path.toString().endsWith(Constants.NPC_NBT_SUFFIX))
-                .filter(path -> Pattern.matches("[a-z0-9/._-]+", path.getFileName().toString()))
-                .map(
-                    path -> {
-                      ResourceLocation resourceLocation =
-                          new ResourceLocation(
-                              Constants.MOD_ID,
-                              DATA_FOLDER_NAME
-                                  + '/'
-                                  + presetDataFolder
-                                      .relativize(path)
-                                      .toString()
-                                      .replace("\\", "/"));
-                      presetResourceLocationMap.put(resourceLocation, path);
-                      return resourceLocation;
-                    })
+                .filter(path -> Pattern.matches("[a-zA-Z0-9/._-]+", path.getFileName().toString()))
                 .toList();
         return filePaths.stream();
       }
@@ -125,9 +117,5 @@ public class WorldPresetData {
 
     // Return a default or alternative stream in case of an exception
     return Stream.empty();
-  }
-
-  public static Path getPresetsResourceLocationPath(ResourceLocation resourceLocation) {
-    return presetResourceLocationMap.get(resourceLocation);
   }
 }

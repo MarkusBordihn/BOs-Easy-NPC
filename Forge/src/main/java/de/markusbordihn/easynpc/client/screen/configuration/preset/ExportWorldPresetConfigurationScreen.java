@@ -24,7 +24,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
-import de.markusbordihn.easynpc.data.CustomPresetData;
+import de.markusbordihn.easynpc.io.PresetDataFiles;
 import de.markusbordihn.easynpc.menu.configuration.preset.WorldExportPresetConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import java.io.File;
@@ -67,7 +67,7 @@ public class ExportWorldPresetConfigurationScreen
     this.worldExportPresetButton.active = false;
 
     // Preset file
-    File customPresetFile = CustomPresetData.getPresetFile(skinModel, uuid);
+    File customPresetFile = PresetDataFiles.getPresetFile(skinModel, uuid);
     String customPresetFileName = customPresetFile.getName();
 
     // Name Edit Box
