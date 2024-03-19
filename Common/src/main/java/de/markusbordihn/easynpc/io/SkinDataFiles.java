@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data;
+package de.markusbordihn.easynpc.io;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
@@ -30,19 +30,14 @@ import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class CustomSkinData {
+public class SkinDataFiles {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String DATA_FOLDER_NAME = "skin";
 
-  protected CustomSkinData() {}
+  protected SkinDataFiles() {}
 
   public static void registerCustomSkinData() {
-    prepareFolder();
-    registerTextureFiles();
-  }
-
-  public static void prepareFolder() {
     log.info("{} custom skin data ...", Constants.LOG_REGISTER_PREFIX);
 
     // Prepare skin data folder
@@ -64,69 +59,69 @@ public class CustomSkinData {
         // Copy example skin files, if any.
         switch (skinModel) {
           case ALLAY:
-            CustomDataHandler.copyResourceFile(
+            DataFileHandler.copyResourceFile(
                 new ResourceLocation(Constants.MOD_ID, "textures/entity/allay/allay_example.png"),
                 skinModelFolder.resolve("allay_example.png").toFile());
             break;
           case CAT:
-            CustomDataHandler.copyResourceFile(
+            DataFileHandler.copyResourceFile(
                 new ResourceLocation(Constants.MOD_ID, "textures/entity/cat/cat_example.png"),
                 skinModelFolder.resolve("cat_example.png").toFile());
             break;
           case CHICKEN:
-            CustomDataHandler.copyResourceFile(
+            DataFileHandler.copyResourceFile(
                 new ResourceLocation(
                     Constants.MOD_ID, "textures/entity/chicken/chicken_example.png"),
                 skinModelFolder.resolve("chicken_example.png").toFile());
             break;
           case FAIRY:
-            CustomDataHandler.copyResourceFile(
+            DataFileHandler.copyResourceFile(
                 new ResourceLocation(Constants.MOD_ID, "textures/entity/fairy/fairy_example.png"),
                 skinModelFolder.resolve("fairy_example.png").toFile());
             break;
           case HUMANOID:
-            CustomDataHandler.copyResourceFile(
+            DataFileHandler.copyResourceFile(
                 new ResourceLocation(
                     Constants.MOD_ID, "textures/entity/humanoid/humanoid_example.png"),
                 skinModelFolder.resolve("humanoid_example.png").toFile());
             break;
           case HUMANOID_SLIM:
-            CustomDataHandler.copyResourceFile(
+            DataFileHandler.copyResourceFile(
                 new ResourceLocation(
                     Constants.MOD_ID, "textures/entity/humanoid_slim/humanoid_slim_example.png"),
                 skinModelFolder.resolve("humanoid_slim_example.png").toFile());
             break;
           case ILLAGER:
-            CustomDataHandler.copyResourceFile(
+            DataFileHandler.copyResourceFile(
                 new ResourceLocation(
                     Constants.MOD_ID, "textures/entity/illager/illager_example.png"),
                 skinModelFolder.resolve("illager_example.png").toFile());
             break;
           case IRON_GOLEM:
-            CustomDataHandler.copyResourceFile(
+            DataFileHandler.copyResourceFile(
                 new ResourceLocation(
                     Constants.MOD_ID, "textures/entity/iron_golem/iron_golem_example.png"),
                 skinModelFolder.resolve("iron_golem_example.png").toFile());
             break;
           case SKELETON:
-            CustomDataHandler.copyResourceFile(
+            DataFileHandler.copyResourceFile(
                 new ResourceLocation(
                     Constants.MOD_ID, "textures/entity/skeleton/skeleton_example.png"),
                 skinModelFolder.resolve("skeleton_example.png").toFile());
             break;
           case VILLAGER:
-            CustomDataHandler.copyResourceFile(
+            DataFileHandler.copyResourceFile(
                 new ResourceLocation(
                     Constants.MOD_ID, "textures/entity/villager/villager_example.png"),
                 skinModelFolder.resolve("villager_example.png").toFile());
             break;
           case ZOMBIE:
-            CustomDataHandler.copyResourceFile(
+            DataFileHandler.copyResourceFile(
                 new ResourceLocation(Constants.MOD_ID, "textures/entity/zombie/zombie_example.png"),
                 skinModelFolder.resolve("zombie_example.png").toFile());
             break;
           case ZOMBIE_VILLAGER:
-            CustomDataHandler.copyResourceFile(
+            DataFileHandler.copyResourceFile(
                 new ResourceLocation(
                     Constants.MOD_ID,
                     "textures/entity/zombie_villager/zombie_villager_example.png"),
@@ -136,6 +131,8 @@ public class CustomSkinData {
         }
       }
     }
+
+    registerTextureFiles();
   }
 
   public static void registerTextureFiles() {
@@ -166,7 +163,7 @@ public class CustomSkinData {
   }
 
   public static Path getSkinDataFolder() {
-    return CustomDataHandler.getOrCreateCustomDataFolder(DATA_FOLDER_NAME);
+    return DataFileHandler.getOrCreateCustomDataFolder(DATA_FOLDER_NAME);
   }
 
   public static Path getSkinDataFolder(SkinModel skinModel) {

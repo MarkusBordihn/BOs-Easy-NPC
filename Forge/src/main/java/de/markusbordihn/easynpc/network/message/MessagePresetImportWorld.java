@@ -19,9 +19,9 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.data.WorldPresetData;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -72,7 +72,7 @@ public class MessagePresetImportWorld extends NetworkMessage {
     }
 
     // Check if preset exists.
-    Path presetPath = WorldPresetData.getPresetsResourceLocationPath(resourceLocation);
+    Path presetPath = WorldPresetDataFiles.getPresetsResourceLocationPath(resourceLocation);
     if (!presetPath.toFile().exists()) {
       log.error("Preset {} does not exists for {}", resourceLocation, serverPlayer);
       return;
@@ -116,7 +116,7 @@ public class MessagePresetImportWorld extends NetworkMessage {
     }
 
     // Perform action.
-    easyNPCEntity.importPreset(compoundTag);
+    easyNPCEntity.importPresetData(compoundTag);
   }
 
   public ResourceLocation getResourceLocation() {

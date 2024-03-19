@@ -19,10 +19,10 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.data.WorldPresetData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
 import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.io.File;
 import java.io.IOException;
@@ -89,7 +89,7 @@ public class MessagePresetExportWorld extends NetworkMessage {
     }
 
     // Perform action.
-    File presetFile = WorldPresetData.getPresetFile(skinModel, name);
+    File presetFile = WorldPresetDataFiles.getPresetFile(skinModel, name);
     log.info(
         "Exporting EasyNPC {} with UUID {} and skin {} to {}", name, uuid, skinModel, presetFile);
     try {

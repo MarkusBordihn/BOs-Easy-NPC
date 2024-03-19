@@ -21,11 +21,11 @@ package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.config.CommonConfig;
-import de.markusbordihn.easynpc.data.WorldPresetData;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
+import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.action.DialogActionConfigurationMenu;
@@ -550,7 +550,7 @@ public class EasyNPCEntityMenu {
         COMMON.worldImportPresetConfigurationPermissionLevel.get())) {
       UUID uuid = easyNPCEntity.getUUID();
       List<ResourceLocation> worldPresets =
-          WorldPresetData.getPresetFilePathResourceLocations().toList();
+          WorldPresetDataFiles.getPresetFilePathResourceLocations().toList();
       serverPlayer.openMenu(
           WorldImportPresetConfigurationMenu.getMenuProvider(uuid, easyNPCEntity, worldPresets),
           buffer -> {

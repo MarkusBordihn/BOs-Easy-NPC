@@ -25,11 +25,10 @@ import de.markusbordihn.easynpc.block.ModBlocks;
 import de.markusbordihn.easynpc.client.model.ModModelLayers;
 import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
 import de.markusbordihn.easynpc.client.screen.ClientScreens;
-import de.markusbordihn.easynpc.data.CustomDataHandler;
-import de.markusbordihn.easynpc.data.CustomPresetData;
-import de.markusbordihn.easynpc.data.CustomSkinData;
 import de.markusbordihn.easynpc.debug.DebugManager;
 import de.markusbordihn.easynpc.entity.npc.ModEntityType;
+import de.markusbordihn.easynpc.io.PresetDataFiles;
+import de.markusbordihn.easynpc.io.SkinDataFiles;
 import de.markusbordihn.easynpc.item.ModItems;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.network.NetworkHandler;
@@ -65,6 +64,8 @@ public class EasyNPC {
 
     log.info("{} Constants ...", Constants.LOG_REGISTER_PREFIX);
     Constants.GAME_DIR = FMLPaths.GAMEDIR.get();
+    Constants.CONFIG_DIR = FMLPaths.CONFIGDIR.get();
+    Constants.MODS_DIR = FMLPaths.MODSDIR.get();
 
     modEventBus.addListener(NetworkHandler::registerNetworkHandler);
 
@@ -83,8 +84,6 @@ public class EasyNPC {
     log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
     ModMenuTypes.MENU_TYPES.register(modEventBus);
 
-    CustomDataHandler.prepare();
-
     DistExecutor.unsafeRunWhenOn(
         Dist.CLIENT,
         () ->
@@ -93,10 +92,13 @@ public class EasyNPC {
               modEventBus.addListener(ModModelLayers::registerEntityLayerDefinitions);
               modEventBus.addListener(ClientRenderer::registerEntityRenderers);
               modEventBus.addListener(ClientScreens::registerScreens);
-              modEventBus.addListener(CustomPresetData::registerCustomPresetData);
               modEventBus.addListener(
                   (final FMLClientSetupEvent event) ->
-                      event.enqueueWork(CustomSkinData::registerCustomSkinData));
+                      event.enqueueWork(
+                          () -> {
+                            SkinDataFiles.registerCustomSkinData();
+                            PresetDataFiles.registerCustomPresetData();
+                          }));
               EasyNPCTab.CREATIVE_TABS.register(modEventBus);
             });
   }

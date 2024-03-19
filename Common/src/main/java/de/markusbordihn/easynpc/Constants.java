@@ -79,7 +79,11 @@ public final class Constants {
   public static final String MOD_ARMOURERS_WORKSHOP_ID = "armourers_workshop";
   public static final String MOD_ARMOURERS_WORKSHOP_NAME = "Armourer's Workshop";
 
+  // Static paths
   public static Path GAME_DIR = Paths.get("").toAbsolutePath();
+  public static Path MODS_DIR = GAME_DIR.resolve("mods");
+  public static Path CONFIG_DIR = GAME_DIR.resolve("config");
+  public static Path WORLD_DIR = GAME_DIR.resolve("world");
 
   private Constants() {}
 }
