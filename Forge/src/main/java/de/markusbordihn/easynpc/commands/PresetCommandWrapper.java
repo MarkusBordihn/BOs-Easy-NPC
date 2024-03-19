@@ -20,53 +20,58 @@
 package de.markusbordihn.easynpc.commands;
 
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.access.EasyNPCAccessManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.UuidArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
-public class ConfigureCommand {
+public class PresetCommandWrapper extends PresetCommand {
 
-  private ConfigureCommand() {}
-
-  public static ArgumentBuilder<CommandSourceStack, ?> register() {
-    return Commands.literal("configure")
-        .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
-        .then(
-            Commands.argument("uuid", UuidArgument.uuid())
-                .suggests(SuggestionProvider::suggestEasyNPCs)
-                .executes(
-                    context ->
-                        configure(context.getSource(), UuidArgument.getUuid(context, "uuid"))));
-  }
-
-  private static int configure(CommandSourceStack context, UUID uuid)
-      throws CommandSyntaxException {
-    ServerPlayer serverPlayer = context.getPlayerOrException();
+  @Override
+  protected int exportPreset(CommandSourceStack context, UUID uuid) throws CommandSyntaxException {
     if (uuid == null) {
       return 0;
     }
 
-    // Try to get the EasyNPC entity by UUID.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid);
-    if (easyNPCEntity == null) {
-      context.sendFailure(Component.literal("EasyNPC with UUID " + uuid + " not found!"));
+    log.info("Try to exporting EasyNPC with UUID {}...", uuid);
+
+    // Check if player is available.
+    ServerPlayer serverPlayer;
+    try {
+      serverPlayer = context.getPlayerOrException();
+    } catch (CommandSyntaxException e) {
+      context.sendFailure(Component.literal("This command can only be executed by a player!"));
       return 0;
     }
 
-    // Check is player is owner of the EasyNPC.
-    if (!serverPlayer.isCreative() && !easyNPCEntity.isOwner(serverPlayer)) {
-      context.sendFailure(Component.literal("You are not the owner of this EasyNPC!"));
+    // Check if player has access to the EasyNPC.
+    if (!EasyNPCAccessManager.hasAccess(context, uuid)) {
+      context.sendFailure(Component.literal("You are not allowed to export this EasyNPC!"));
       return 0;
     }
 
-    easyNPCEntity.openMainConfigurationMenu(serverPlayer);
+    // Get the EasyNPC entity by UUID.
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid);
+
+    log.info(
+        "Exporting EasyNPC {} with UUID {} and skin {}...",
+        easyNPC,
+        uuid,
+        easyNPC.getEasyNPCSkinData().getSkinModel());
+    NetworkMessageHandler.exportPresetClient(uuid, serverPlayer);
+    context.sendSuccess(
+        Component.literal(
+            "Exported EasyNPC "
+                + easyNPC.getEntity().getDisplayName().getString()
+                + " with UUID "
+                + uuid
+                + " locally!"),
+        true);
     return Command.SINGLE_SUCCESS;
   }
 }

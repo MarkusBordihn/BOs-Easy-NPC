@@ -237,6 +237,11 @@ public class EasyNPCEntity extends EasyNPCEntityData implements EasyNPCEntityAct
   }
 
   @Override
+  public EasyNPCEntity getEasyNPCEntity() {
+    return this;
+  }
+
+  @Override
   public boolean doHurtTarget(@Nonnull Entity entity) {
     boolean hurtResult = super.doHurtTarget(entity);
     this.attackAnimationTick = 10;

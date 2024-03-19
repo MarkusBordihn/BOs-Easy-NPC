@@ -143,7 +143,10 @@ public interface DialogData<T extends LivingEntity> extends EasyNPC<T> {
     CompoundTag dialogTag = new CompoundTag();
 
     // Write dialog data
-    getDialogDataSet().save(dialogTag);
+    DialogDataSet dialogDataSet = this.getDialogDataSet();
+    if (dialogDataSet != null) {
+      dialogDataSet.save(dialogTag);
+    }
 
     compoundTag.put(DATA_DIALOG_DATA_TAG, dialogTag);
   }

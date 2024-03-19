@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.PositiveNumberField;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
+import de.markusbordihn.easynpc.data.trading.TradingSettings;
 import de.markusbordihn.easynpc.menu.configuration.trading.BasicTradingConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import net.minecraft.client.gui.components.EditBox;
@@ -118,7 +119,7 @@ public class BasicTradingConfigurationScreen
     int slotPositionX = this.leftPos + BasicTradingConfigurationMenu.TRADING_START_POSITION_X - 1;
     int slotPositionY = this.topPos + BasicTradingConfigurationMenu.TRADING_START_POSITION_Y - 1;
     for (int tradingOffer = 0;
-        tradingOffer < BasicTradingConfigurationMenu.TRADING_OFFERS;
+        tradingOffer < TradingSettings.BASIC_TRADING_OFFERS;
         tradingOffer++) {
 
       // Position for Second row

@@ -29,11 +29,11 @@ import net.minecraft.world.entity.Pose;
 
 public interface PresetData<T extends LivingEntity> extends EasyNPC<T> {
 
-  default CompoundTag exportPreset() {
-    return this.serializeNBT();
+  default CompoundTag exportPresetData() {
+    return this.serializePresetData();
   }
 
-  default void importPreset(CompoundTag compoundTag) {
+  default void importPresetData(CompoundTag compoundTag) {
 
     // Skip import if no data is or no entity is available.
     if (compoundTag == null || compoundTag.isEmpty() || this.getEasyNPCEntity() == null) {
@@ -57,7 +57,7 @@ public interface PresetData<T extends LivingEntity> extends EasyNPC<T> {
     // If preset contains id and pos then we can import it directly, otherwise we
     // need to merge it with existing data.
     if (!compoundTag.contains("UUID") && !compoundTag.contains("Pos")) {
-      CompoundTag existingCompoundTag = this.serializeNBT();
+      CompoundTag existingCompoundTag = this.serializePresetData();
 
       // Remove existing dialog data to allow legacy presets to be imported.
       if (existingCompoundTag.contains(DialogData.DATA_DIALOG_DATA_TAG)) {
@@ -91,6 +91,11 @@ public interface PresetData<T extends LivingEntity> extends EasyNPC<T> {
       compoundTag.remove("Motion");
     }
 
+    // Validate position, if any.
+    if (compoundTag.contains("Pos")) {
+      CompoundTag posTag = compoundTag.getCompound("Pos");
+    }
+
     // Import preset data to entity.
     this.getEasyNPCEntity().load(compoundTag);
   }
@@ -104,7 +109,7 @@ public interface PresetData<T extends LivingEntity> extends EasyNPC<T> {
     return entitytype.canSerialize() ? resourcelocation.toString() : null;
   }
 
-  default CompoundTag serializeNBT() {
+  default CompoundTag serializePresetData() {
     CompoundTag compoundTag = new CompoundTag();
     if (this.getEasyNPCEntity() == null) {
       return compoundTag;
