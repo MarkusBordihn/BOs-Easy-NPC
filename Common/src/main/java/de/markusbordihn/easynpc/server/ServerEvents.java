@@ -17,30 +17,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.data;
+package de.markusbordihn.easynpc.server;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.custom.CustomDataAccessor;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.storage.LevelResource;
 
-public interface EntityDataInterface {
+public class ServerEvents {
 
-  Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private ServerEvents() {
+  }
 
-  EasyNPCEntity getEntity();
-
-  <T> void setEntityData(EntityDataAccessor<T> entityDataAccessor, T entityData);
-
-  <T> T getEntityData(EntityDataAccessor<T> entityDataAccessor);
-
-  <T> void defineEntityData(EntityDataAccessor<T> entityDataAccessor, T entityData);
-
-  <T> void setCustomEntityData(CustomDataAccessor<T> entityDataAccessor, T entityData);
-
-  <T> T getCustomEntityData(CustomDataAccessor<T> entityDataAccessor);
-
-  <T> void defineCustomEntityData(CustomDataAccessor<T> entityDataAccessor, T entityData);
+  public static void handleServerStarting(MinecraftServer minecraftServer) {
+    if (minecraftServer == null) {
+      return;
+    }
+    Constants.WORLD_DIR = minecraftServer.getWorldPath(LevelResource.ROOT);
+  }
 }

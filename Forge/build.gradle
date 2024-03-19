@@ -140,7 +140,7 @@ dependencies {
   if (project.armourers_workshop_mod) {
     runtimeOnly fg.deobf("curse.maven:armourers-workshop-229523:${project.armourers_workshop_mod}")
   }
-  if (project.epic_fight_mod) {
+  if (project.epic_fight_mod && !project.better_combat_mod) {
     runtimeOnly fg.deobf("curse.maven:epic_fight-405076:${project.epic_fight_mod}")
   }
   if (project.create_mod) {
@@ -150,13 +150,25 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:mrcrayfishs-gun-289479:${project.mrcrayfishs_gun_mod}")
     runtimeOnly fg.deobf("curse.maven:framework-549225:${project.framework_mod}")
   }
+  if (project.project_mmo_mod) {
+    // runtimeOnly fg.deobf("curse.maven:project-mmo-353935:${project.project_mmo_mod}")
+  }
+  if (project.better_combat_mod && project.cloth_config_mod && project.player_animator_mod) {
+    runtimeOnly fg.deobf("curse.maven:better-combat-639842:${project.better_combat_mod}")
+  }
 
   // Additional helpful Mods for development (runtime dependency)
   runtimeOnly fg.deobf("curse.maven:xaeros_minimap-263420:${project.xaeros_minimap_mod}")
   runtimeOnly fg.deobf("curse.maven:spark-361579:${project.spark_mod}")
+  if (project.cloth_config_mod) {
+    runtimeOnly fg.deobf("curse.maven:cloth-config-348521:${project.cloth_config_mod}")
+  }
+  if (project.player_animator_mod) {
+    runtimeOnly fg.deobf("curse.maven:player-animator-658587:${project.player_animator_mod}")
+  }
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
   source(project(":Common").sourceSets.main.allSource)
 }
 

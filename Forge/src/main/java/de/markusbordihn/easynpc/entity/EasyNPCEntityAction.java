@@ -19,13 +19,11 @@
 
 package de.markusbordihn.easynpc.entity;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.commands.CommandManager;
 import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import java.util.UUID;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 
@@ -63,7 +61,12 @@ public interface EasyNPCEntityAction extends EasyNPCEntityInterface {
         this.openNamedDialog(actionData, serverPlayer);
         break;
       case OPEN_TRADING_SCREEN:
-        this.openTradingScreen(serverPlayer);
+        TradingData<?> tradingData = this.getEntity().getEasyNPCTradingData();
+        if (tradingData != null) {
+          tradingData.openTradingScreen(serverPlayer);
+        } else {
+          log.error("No trading data found for action {}", actionData);
+        }
         break;
       default:
         log.warn("Unknown action type {} for action {}", actionData.getType(), actionData);
@@ -135,24 +138,5 @@ public interface EasyNPCEntityAction extends EasyNPCEntityInterface {
         this.getEntity(),
         ownerPermissionLevel,
         actionData.isDebugEnabled());
-  }
-
-  default InteractionResult openTradingScreen(ServerPlayer serverPlayer) {
-    if (!this.getEntity().isClientSide()) {
-      log.debug(
-          "Open trading screen for {} with {} from {}",
-          this.getEntity(),
-          this.getEntity().getOffers(),
-          serverPlayer);
-      this.getEntity().setTradingPlayer(serverPlayer);
-      this.getEntity()
-          .openTradingScreen(
-              serverPlayer,
-              this.getEntity().getCustomName() != null
-                  ? this.getEntity().getCustomName()
-                  : Component.translatable(Constants.TEXT_PREFIX + "trading"),
-              Entity.BASE_TICKS_REQUIRED_TO_FREEZE);
-    }
-    return InteractionResult.sidedSuccess(this.getEntity().isClientSide());
   }
 }

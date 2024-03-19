@@ -197,7 +197,6 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
       SynchedEntityData.defineId(
           EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
 
-  String EASY_NPC_DATA_MODEL_VERSION_TAG = "Version";
   String EASY_NPC_DATA_MODEL_DATA_TAG = "ModelData";
   String EASY_NPC_DATA_MODEL_POSE_TAG = "Pose";
   String EASY_NPC_DATA_MODEL_HEAD_TAG = "Head";
@@ -995,9 +994,6 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
 
     // Model Visibility
     this.addAdditionalModelVisibilityData(modelDataTag);
-
-    // Version
-    modelDataTag.putInt(EASY_NPC_DATA_MODEL_VERSION_TAG, 3);
 
     compoundTag.put(EASY_NPC_DATA_MODEL_DATA_TAG, modelDataTag);
   }
