@@ -129,11 +129,11 @@ public interface EasyNPCRenderer {
   }
 
   default int getEntityLightLevel(EasyNPC<?> easyNPC, BlockPos blockPos) {
-    LivingEntity livingEntity = easyNPC.getLivingEntity();
     int entityLightLevel = easyNPC.getEasyNPCAttributeData().getAttributeLightLevel();
     if (entityLightLevel > 0) {
       return entityLightLevel;
     }
+    LivingEntity livingEntity = easyNPC.getLivingEntity();
     return livingEntity.level().getBrightness(LightLayer.BLOCK, blockPos);
   }
 }

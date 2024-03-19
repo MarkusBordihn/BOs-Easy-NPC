@@ -28,6 +28,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
+import net.minecraft.world.phys.Vec3;
 
 public interface NavigationData<T extends LivingEntity> extends EasyNPC<T> {
 
@@ -48,6 +49,11 @@ public interface NavigationData<T extends LivingEntity> extends EasyNPC<T> {
 
   default boolean hasHomePosition() {
     return this.getHomePosition() != null && !this.getHomePosition().equals(BlockPos.ZERO);
+  }
+
+  default void setPosition(Vec3 pos) {
+    this.getEasyNPCEntity().setPos(pos);
+    this.getEasyNPCEntity().moveTo(pos);
   }
 
   GroundPathNavigation getGroundPathNavigation();

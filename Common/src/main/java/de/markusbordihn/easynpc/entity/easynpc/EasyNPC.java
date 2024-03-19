@@ -35,6 +35,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SpawnerData;
+import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
@@ -51,6 +52,7 @@ import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
 import net.minecraft.world.entity.npc.Npc;
+import net.minecraft.world.item.trading.Merchant;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -125,6 +127,10 @@ public interface EasyNPC<T extends LivingEntity> extends Npc {
     return this instanceof SpawnerData<T> spawnerData ? spawnerData : null;
   }
 
+  default TradingData<T> getEasyNPCTradingData() {
+    return this instanceof TradingData<T> tradingData ? tradingData : null;
+  }
+
   default VariantData<T> getEasyNPCVariantData() {
     return this instanceof VariantData<T> variantData ? variantData : null;
   }
@@ -153,6 +159,10 @@ public interface EasyNPC<T extends LivingEntity> extends Npc {
 
   default NeutralMob getNeutralMob() {
     return this instanceof NeutralMob neutralMob ? neutralMob : null;
+  }
+
+  default Merchant getMerchant() {
+    return this instanceof Merchant merchant ? merchant : null;
   }
 
   default Entity getEntity() {

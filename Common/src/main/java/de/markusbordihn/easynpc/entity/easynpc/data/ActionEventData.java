@@ -125,7 +125,10 @@ public interface ActionEventData<T extends LivingEntity> extends EasyNPC<T> {
     CompoundTag actionDataTag = new CompoundTag();
 
     // Store action data
-    getActionEventSet().save(actionDataTag);
+    ActionEventSet actionEventSet = this.getActionEventSet();
+    if (actionEventSet != null) {
+      actionEventSet.save(actionDataTag);
+    }
 
     // Store permission level
     actionDataTag.putInt(DATA_ACTION_PERMISSION_LEVEL_TAG, this.getActionPermissionLevel());

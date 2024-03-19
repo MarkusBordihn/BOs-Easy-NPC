@@ -83,7 +83,7 @@ public class MessagePresetImport extends NetworkMessage {
     }
 
     // Perform action.
-    easyNPCEntity.importPreset(compoundTag);
+    easyNPCEntity.importPresetData(compoundTag);
   }
 
   public CompoundTag getCompoundTag() {

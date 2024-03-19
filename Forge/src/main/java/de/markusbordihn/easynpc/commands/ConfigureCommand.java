@@ -31,14 +31,16 @@ import net.minecraft.commands.arguments.UuidArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
-public class ConfigureCommand extends CustomCommand {
+public class ConfigureCommand {
+
+  private ConfigureCommand() {}
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("configure")
         .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
         .then(
             Commands.argument("uuid", UuidArgument.uuid())
-                .suggests(ConfigureCommand::suggestEasyNPCs)
+                .suggests(SuggestionProvider::suggestEasyNPCs)
                 .executes(
                     context ->
                         configure(context.getSource(), UuidArgument.getUuid(context, "uuid"))));

@@ -200,7 +200,6 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
               }
 
               // Custom action on button click.
-              log.info(dialogButtonData);
               if (dialogButtonData.hasActionData()) {
                 UUID buttonId = dialogButtonData.getId();
                 NetworkMessageHandler.triggerDialogButtonAction(this.uuid, this.dialogId, buttonId);
