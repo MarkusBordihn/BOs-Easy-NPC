@@ -30,6 +30,9 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 public interface AttributeData<T extends LivingEntity> extends EasyNPC<T> {
 
   // Synced entity data
+  EntityDataAccessor<Boolean> EASY_NPC_DATA_ATTRIBUTE_DATA_LOADED =
+      SynchedEntityData.defineId(
+          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
   EntityDataAccessor<Boolean> EASY_NPC_DATA_ATTRIBUTE_CAN_FLOAT =
       SynchedEntityData.defineId(
           EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
@@ -81,6 +84,14 @@ public interface AttributeData<T extends LivingEntity> extends EasyNPC<T> {
       return 0.0;
     }
     return getEasyNPCEntity().getAttribute(attribute).getBaseValue();
+  }
+
+  default boolean getAttributeDataLoaded() {
+    return getEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_DATA_LOADED);
+  }
+
+  default void setAttributeDataLoaded(boolean loaded) {
+    setEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_DATA_LOADED, loaded);
   }
 
   default boolean getAttributeCanFloat() {
@@ -156,6 +167,7 @@ public interface AttributeData<T extends LivingEntity> extends EasyNPC<T> {
   }
 
   default void defineSynchedAttributeData() {
+    defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_DATA_LOADED, false);
     defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_FLOAT, false);
     defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_CLOSE_DOOR, false);
     defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_OPEN_DOOR, false);
@@ -197,5 +209,7 @@ public interface AttributeData<T extends LivingEntity> extends EasyNPC<T> {
     setAttributeIsAttackable(attributeTag.getBoolean(EASY_NPC_DATA_ATTRIBUTE_IS_ATTACKABLE_TAG));
     setAttributeIsPushable(attributeTag.getBoolean(EASY_NPC_DATA_ATTRIBUTE_IS_PUSHABLE_TAG));
     setAttributeLightLevel(attributeTag.getInt(EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL_TAG));
+
+    setAttributeDataLoaded(true);
   }
 }
