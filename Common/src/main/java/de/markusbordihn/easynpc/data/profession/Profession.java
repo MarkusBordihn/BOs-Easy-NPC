@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity;
+package de.markusbordihn.easynpc.data.profession;
 
 public enum Profession {
   // @formatter:off

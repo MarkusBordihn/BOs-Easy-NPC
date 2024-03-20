@@ -20,8 +20,9 @@
 package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.data.skin.SkinType;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -68,15 +69,22 @@ public class MessageSkinTypeChange extends NetworkMessage {
       return;
     }
 
+    // Validate skin data.
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
+    if (skinData == null) {
+      log.error("Unable to get valid skin data for {} from {}", message, serverPlayer);
+      return;
+    }
+
     // Perform action.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     log.debug(
         "Change skin type of {} from {} to {} from {}",
-        easyNPCEntity,
-        easyNPCEntity.getSkinType(),
+        easyNPC,
+        skinData.getSkinType(),
         skinType,
         serverPlayer);
-    easyNPCEntity.setSkinType(skinType);
+    skinData.setSkinType(skinType);
   }
 
   public SkinType getSkinType() {

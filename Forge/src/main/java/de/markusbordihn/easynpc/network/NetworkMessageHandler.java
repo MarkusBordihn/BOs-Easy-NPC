@@ -28,15 +28,15 @@ import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.data.objective.ObjectiveData;
+import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
+import de.markusbordihn.easynpc.data.profession.Profession;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.data.spawner.SpawnerSettingType;
 import de.markusbordihn.easynpc.data.trading.TradingType;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
-import de.markusbordihn.easynpc.entity.Profession;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.message.ChangeSpawnerSettingMessage;
 import de.markusbordihn.easynpc.network.message.MessageActionEventChange;
@@ -359,19 +359,19 @@ public class NetworkMessageHandler {
     if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
       return;
     }
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (uuid != null && easyNPCEntity != null) {
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    if (uuid != null && easyNPC != null) {
       log.info(
           "Exporting preset for {} to {}",
-          easyNPCEntity.getName().getString(),
+          easyNPC.getEntity().getName().getString(),
           serverPlayer.getName().getString());
       NetworkHandler.sendToPlayer(
           new MessagePresetExportClient(
               uuid,
-              easyNPCEntity.getName().getString(),
-              easyNPCEntity.getSkinModel(),
+              easyNPC.getEntity().getName().getString(),
+              easyNPC.getEasyNPCSkinData().getSkinModel(),
               name,
-              easyNPCEntity.exportPreset()),
+              easyNPC.exportPreset()),
           serverPlayer);
     }
   }
@@ -515,15 +515,15 @@ public class NetworkMessageHandler {
     }
   }
 
-  public static void addObjective(UUID uuid, ObjectiveData objectiveData) {
-    if (uuid != null && objectiveData != null) {
-      NetworkHandler.sendToServer(new MessageObjectiveAdd(uuid, objectiveData));
+  public static void addObjective(UUID uuid, ObjectiveDataEntry objectiveDataEntry) {
+    if (uuid != null && objectiveDataEntry != null) {
+      NetworkHandler.sendToServer(new MessageObjectiveAdd(uuid, objectiveDataEntry));
     }
   }
 
-  public static void removeObjective(UUID uuid, ObjectiveData objectiveData) {
-    if (uuid != null && objectiveData != null) {
-      NetworkHandler.sendToServer(new MessageObjectiveRemove(uuid, objectiveData));
+  public static void removeObjective(UUID uuid, ObjectiveDataEntry objectiveDataEntry) {
+    if (uuid != null && objectiveDataEntry != null) {
+      NetworkHandler.sendToServer(new MessageObjectiveRemove(uuid, objectiveDataEntry));
     }
   }
 

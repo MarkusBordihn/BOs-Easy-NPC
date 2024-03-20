@@ -25,7 +25,9 @@ import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
+import de.markusbordihn.easynpc.entity.easynpc.data.GuiData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
@@ -37,6 +39,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SpawnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -87,8 +90,16 @@ public interface EasyNPC<T extends LivingEntity> extends Npc {
     return this instanceof AttributeData<T> attributeData ? attributeData : null;
   }
 
+  default ConfigurationData<T> getEasyNPCConfigurationData() {
+    return this instanceof ConfigurationData<T> configurationData ? configurationData : null;
+  }
+
   default DialogData<T> getEasyNPCDialogData() {
     return this instanceof DialogData<T> dialogData ? dialogData : null;
+  }
+
+  default GuiData<T> getEasyNPCGuiData() {
+    return this instanceof GuiData<T> guiData ? guiData : null;
   }
 
   default SkinData<T> getEasyNPCSkinData() {
@@ -135,6 +146,10 @@ public interface EasyNPC<T extends LivingEntity> extends Npc {
     return this instanceof VariantData<T> variantData ? variantData : null;
   }
 
+  default ActionHandler<T> getEasyNPCActionHandler() {
+    return this instanceof ActionHandler<T> actionHandler ? actionHandler : null;
+  }
+
   default PathfinderMob getPathfinderMob() {
     return this instanceof PathfinderMob pathfinderMob ? pathfinderMob : null;
   }
@@ -151,6 +166,10 @@ public interface EasyNPC<T extends LivingEntity> extends Npc {
 
   default boolean isClientSide() {
     return this.getLevel() != null && this.getLevel().isClientSide();
+  }
+
+  default boolean isServerSide() {
+    return !isClientSide();
   }
 
   default LivingEntity getLivingEntity() {

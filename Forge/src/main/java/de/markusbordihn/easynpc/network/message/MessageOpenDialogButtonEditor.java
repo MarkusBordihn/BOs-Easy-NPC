@@ -23,9 +23,10 @@ import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonType;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EasyNPCEntityMenu;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
+import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
@@ -112,22 +113,29 @@ public class MessageOpenDialogButtonEditor extends NetworkMessage {
     }
 
     // Validate entity.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPCEntity == null) {
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    if (easyNPC == null) {
       log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
       return;
     }
 
+    // Validate dialog data.
+    DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
+    if (dialogData == null) {
+      log.error("Unable to get valid dialog data for {} from {}", uuid, serverPlayer);
+      return;
+    }
+
     // Validate dialog data set.
-    DialogDataSet dialogDataSet = easyNPCEntity.getDialogDataSet();
+    DialogDataSet dialogDataSet = dialogData.getDialogDataSet();
     if (dialogDataSet == null) {
       log.error("Unable to get valid dialog data set for {} from {}", uuid, serverPlayer);
       return;
     }
 
     // Validate dialog data.
-    DialogDataEntry dialogData = dialogDataSet.getDialog(dialogId);
-    if (dialogData == null) {
+    DialogDataEntry dialogDataEntry = dialogDataSet.getDialog(dialogId);
+    if (dialogDataEntry == null) {
       log.error(
           "Unable to get valid dialog data for dialog {} for {} from {}",
           uuid,
@@ -147,9 +155,9 @@ public class MessageOpenDialogButtonEditor extends NetworkMessage {
           dialogId,
           uuid,
           serverPlayer);
-      dialogData.setButton(newDialogButton);
+      dialogDataEntry.setButton(newDialogButton);
       dialogButtonId = newDialogButton.getId();
-    } else if (dialogButtonId != null && !easyNPCEntity.hasDialogButton(dialogId, dialogButtonId)) {
+    } else if (dialogButtonId != null && !dialogData.hasDialogButton(dialogId, dialogButtonId)) {
       log.error("Invalid dialog button id {} for {} from {}", dialogButtonId, message, context);
       return;
     }
@@ -163,8 +171,9 @@ public class MessageOpenDialogButtonEditor extends NetworkMessage {
         dialogButtonId,
         uuid,
         serverPlayer);
-    EasyNPCEntityMenu.openDialogButtonEditorMenu(
-        serverPlayer, easyNPCEntity, dialogId, dialogButtonId, formerConfigurationType, pageIndex);
+    MenuManager.getMenuHandler()
+        .openDialogButtonEditorMenu(
+            serverPlayer, easyNPC, dialogId, dialogButtonId, formerConfigurationType, pageIndex);
   }
 
   public UUID getDialogId() {

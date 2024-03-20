@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.trading.TradingType;
+import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.menu.configuration.trading.CustomTradingConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import java.util.Collections;
@@ -40,6 +41,7 @@ public class CustomTradingConfigurationScreen
 
   // Cache
   private static TradingType formerTradingType = TradingType.BASIC;
+  protected final TradingData<?> tradingData;
   // Buttons
   protected Checkbox noneTradingCheckbox;
   protected int numberOfTextLines = 1;
@@ -49,6 +51,7 @@ public class CustomTradingConfigurationScreen
   public CustomTradingConfigurationScreen(
       CustomTradingConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
+    this.tradingData = this.easyNPC.getEasyNPCTradingData();
   }
 
   public static void setFormerTradingType(TradingType dialogType) {
@@ -63,7 +66,7 @@ public class CustomTradingConfigurationScreen
     this.customTradesButton.active = false;
 
     // Cache former dialog Type
-    setFormerTradingType(this.entity.getTradingType());
+    setFormerTradingType(this.tradingData.getTradingType());
 
     // Custom Trading Checkbox
     this.noneTradingCheckbox =
@@ -72,7 +75,7 @@ public class CustomTradingConfigurationScreen
                 this.contentLeftPos + 100,
                 this.topPos + 170,
                 "custom_trading_checkbox",
-                entity.getTradingType() == TradingType.CUSTOM,
+                tradingData.getTradingType() == TradingType.CUSTOM,
                 checkbox -> {
                   if (checkbox.selected()) {
                     NetworkMessageHandler.changeTradingType(uuid, TradingType.CUSTOM);

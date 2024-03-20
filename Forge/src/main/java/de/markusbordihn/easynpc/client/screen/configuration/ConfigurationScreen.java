@@ -27,7 +27,9 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.config.CommonConfig;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
@@ -60,7 +62,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
   protected final Minecraft minecraftInstance;
 
   // NPC Entity
-  protected final EasyNPCEntity entity;
+  protected final EasyNPC<?> easyNPC;
   protected final SkinModel skinModel;
   protected final UUID uuid;
   protected final LivingEntity owner;
@@ -98,12 +100,15 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     super(menu, inventory, component);
 
     // NPC Entity Data
-    this.entity = menu.getEntity();
-    this.skinModel = this.entity.getSkinModel();
-    this.uuid = this.entity.getUUID();
-    this.hasOwner = this.entity.hasOwner();
-    this.owner = this.hasOwner ? this.entity.getOwner() : null;
-    this.ownerName = this.hasOwner ? this.entity.getOwnerName() : "";
+    this.easyNPC = menu.getEasyNPC();
+    this.skinModel = this.easyNPC.getEasyNPCSkinData().getSkinModel();
+    this.uuid = this.easyNPC.getUUID();
+
+    // Owner Data
+    OwnerData<?> ownerData = this.easyNPC.getEasyNPCOwnerData();
+    this.hasOwner = ownerData.hasOwner();
+    this.owner = this.hasOwner ? ownerData.getOwner() : null;
+    this.ownerName = this.hasOwner ? ownerData.getOwnerName() : "";
 
     // General environment Data
     this.minecraftInstance = Minecraft.getInstance();
@@ -111,17 +116,18 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
     this.clientLevel = this.minecraftInstance.level;
 
     // Supported configuration types
-    this.supportsPoseConfiguration = this.entity.supportsPoseConfiguration();
-    this.supportsStandardPoseConfiguration = this.entity.supportsStandardPoseConfiguration();
-    this.supportsAdvancedPoseConfiguration = this.entity.supportsAdvancedPoseConfiguration();
-    this.supportsCustomPoseConfiguration = this.entity.supportsCustomPoseConfiguration();
-    this.supportsScalingConfiguration = this.entity.supportsScalingConfiguration();
-    this.supportsSkinConfiguration = this.entity.supportsSkinConfiguration();
-    this.supportsNoneSkinConfiguration = this.entity.supportsNoneSkinConfiguration();
-    this.supportsCustomSkinConfiguration = this.entity.supportsCustomSkinConfiguration();
-    this.supportsDefaultSkinConfiguration = this.entity.supportsDefaultSkinConfiguration();
-    this.supportsPlayerSkinConfiguration = this.entity.supportsPlayerSkinConfiguration();
-    this.supportsUrlSkinConfiguration = this.entity.supportsUrlSkinConfiguration();
+    ConfigurationData<?> configurationData = this.easyNPC.getEasyNPCConfigurationData();
+    this.supportsPoseConfiguration = configurationData.supportsPoseConfiguration();
+    this.supportsStandardPoseConfiguration = configurationData.supportsStandardPoseConfiguration();
+    this.supportsAdvancedPoseConfiguration = configurationData.supportsAdvancedPoseConfiguration();
+    this.supportsCustomPoseConfiguration = configurationData.supportsCustomPoseConfiguration();
+    this.supportsScalingConfiguration = configurationData.supportsScalingConfiguration();
+    this.supportsSkinConfiguration = configurationData.supportsSkinConfiguration();
+    this.supportsNoneSkinConfiguration = configurationData.supportsNoneSkinConfiguration();
+    this.supportsCustomSkinConfiguration = configurationData.supportsCustomSkinConfiguration();
+    this.supportsDefaultSkinConfiguration = configurationData.supportsDefaultSkinConfiguration();
+    this.supportsPlayerSkinConfiguration = configurationData.supportsPlayerSkinConfiguration();
+    this.supportsUrlSkinConfiguration = configurationData.supportsUrlSkinConfiguration();
   }
 
   protected static Double getDoubleValue(String value) {

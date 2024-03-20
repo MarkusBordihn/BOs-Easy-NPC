@@ -27,8 +27,8 @@ import de.markusbordihn.easynpc.client.renderer.entity.layers.CustomHumanoidArmo
 import de.markusbordihn.easynpc.client.renderer.entity.layers.ProfessionLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.VariantLayer;
 import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.profession.Profession;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.Profession;
 import de.markusbordihn.easynpc.entity.npc.ZombieVillager.Variant;
 import java.util.EnumMap;
 import java.util.Map;

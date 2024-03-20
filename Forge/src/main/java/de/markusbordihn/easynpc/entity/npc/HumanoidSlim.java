@@ -29,7 +29,6 @@ import net.minecraft.world.level.Level;
 
 public class HumanoidSlim extends EasyNPCEntity {
 
-  // General Information
   public static final String ID = "humanoid_slim";
   public static final String NAME = "Humanoid Slim";
 

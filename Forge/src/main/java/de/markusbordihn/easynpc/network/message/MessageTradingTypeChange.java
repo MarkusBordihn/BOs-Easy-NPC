@@ -20,8 +20,9 @@
 package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.data.trading.TradingType;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -65,10 +66,17 @@ public class MessageTradingTypeChange extends NetworkMessage {
       return;
     }
 
+    // Validate trading data.
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    TradingData<?> tradingData = easyNPC.getEasyNPCTradingData();
+    if (tradingData == null) {
+      log.error("Invalid trading data for {} from {}", easyNPC, serverPlayer);
+      return;
+    }
+
     // Perform action.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    log.debug("Change trading type: {} for {} from {}", tradingType, easyNPCEntity, serverPlayer);
-    easyNPCEntity.setTradingType(tradingType);
+    log.debug("Change trading type: {} for {} from {}", tradingType, easyNPC, serverPlayer);
+    tradingData.setTradingType(tradingType);
   }
 
   public TradingType getTradingType() {

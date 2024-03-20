@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.client.screen.components.SliderButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
+import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.menu.configuration.scaling.ScalingConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import net.minecraft.client.gui.components.Button;
@@ -37,6 +38,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfigurationMenu> {
 
   private static final int DIMENSION_UPDATE_TICK = 20;
+  private final ScaleData<?> scaleData;
   protected Button defaultScaleButton;
   protected Button defaultScaleXButton;
   protected Button defaultScaleYButton;
@@ -49,6 +51,7 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
   public ScalingConfigurationScreen(
       ScalingConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
+    this.scaleData = this.easyNPC.getEasyNPCScaleData();
   }
 
   @Override
@@ -80,14 +83,14 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
                 scalePositionTop,
                 scaleWidth,
                 20,
-                this.entity.getScaleX(),
+                this.scaleData.getScaleX(),
                 SliderButton.Type.SCALE,
                 button -> {
                   float scale = button.getTargetValue();
-                  if (entity.getScaleX() != scale) {
+                  if (this.scaleData.getScaleX() != scale) {
                     NetworkMessageHandler.scaleChange(uuid, "x", button.getTargetValue());
                   }
-                  this.defaultScaleXButton.active = scale != entity.getDefaultScaleX();
+                  this.defaultScaleXButton.active = scale != this.scaleData.getDefaultScaleX();
                 }));
     this.defaultScaleXButton =
         this.addRenderableWidget(
@@ -96,9 +99,10 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
                 scalePositionTop + this.scaleXSliderButton.getHeight(),
                 scaleWidth,
                 "reset",
-                button -> this.scaleXSliderButton.setDefaultValue(entity.getDefaultScaleX())));
+                button ->
+                    this.scaleXSliderButton.setDefaultValue(this.scaleData.getDefaultScaleX())));
     this.defaultScaleXButton.active =
-        !this.entity.getScaleX().equals(this.entity.getDefaultScaleX());
+        !this.scaleData.getScaleX().equals(this.scaleData.getDefaultScaleX());
 
     // Scale Slider for Y
     this.scaleYSliderButton =
@@ -108,14 +112,14 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
                 scalePositionTop + scalePositionSpace,
                 scaleWidth,
                 20,
-                this.entity.getScaleY(),
+                this.scaleData.getScaleY(),
                 SliderButton.Type.SCALE,
                 button -> {
                   float scale = button.getTargetValue();
-                  if (entity.getScaleY() != scale) {
+                  if (this.scaleData.getScaleY() != scale) {
                     NetworkMessageHandler.scaleChange(uuid, "y", button.getTargetValue());
                   }
-                  this.defaultScaleYButton.active = scale != entity.getDefaultScaleY();
+                  this.defaultScaleYButton.active = scale != this.scaleData.getDefaultScaleY();
                 }));
     this.defaultScaleYButton =
         this.addRenderableWidget(
@@ -124,9 +128,10 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
                 scalePositionTop + this.scaleYSliderButton.getHeight() + scalePositionSpace,
                 scaleWidth,
                 "reset",
-                button -> this.scaleYSliderButton.setDefaultValue(entity.getDefaultScaleY())));
+                button ->
+                    this.scaleYSliderButton.setDefaultValue(this.scaleData.getDefaultScaleY())));
     this.defaultScaleYButton.active =
-        !this.entity.getScaleY().equals(this.entity.getDefaultScaleY());
+        !this.scaleData.getScaleY().equals(this.scaleData.getDefaultScaleY());
 
     // Scale Slider for Z
     this.scaleZSliderButton =
@@ -136,14 +141,14 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
                 scalePositionTop + scalePositionSpace * 2,
                 scaleWidth,
                 20,
-                this.entity.getScaleZ(),
+                this.scaleData.getScaleZ(),
                 SliderButton.Type.SCALE,
                 button -> {
                   float scale = button.getTargetValue();
-                  if (entity.getScaleZ() != scale) {
+                  if (this.scaleData.getScaleZ() != scale) {
                     NetworkMessageHandler.scaleChange(uuid, "z", button.getTargetValue());
                   }
-                  this.defaultScaleZButton.active = scale != entity.getDefaultScaleZ();
+                  this.defaultScaleZButton.active = scale != this.scaleData.getDefaultScaleZ();
                 }));
     this.defaultScaleZButton =
         this.addRenderableWidget(
@@ -152,9 +157,10 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
                 scalePositionTop + this.scaleZSliderButton.getHeight() + scalePositionSpace * 2,
                 scaleWidth,
                 "reset",
-                button -> this.scaleZSliderButton.setDefaultValue(entity.getDefaultScaleZ())));
+                button ->
+                    this.scaleZSliderButton.setDefaultValue(this.scaleData.getDefaultScaleZ())));
     this.defaultScaleZButton.active =
-        !this.entity.getScaleZ().equals(this.entity.getDefaultScaleZ());
+        !this.scaleData.getScaleZ().equals(this.scaleData.getDefaultScaleZ());
   }
 
   @Override
@@ -162,8 +168,8 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
     super.containerTick();
 
     // Force refresh of entity dimensions on the client side.
-    if (this.entity != null && this.dimensionUpdateTicker++ > DIMENSION_UPDATE_TICK) {
-      this.entity.refreshDimensions();
+    if (this.easyNPC.getEntity() != null && this.dimensionUpdateTicker++ > DIMENSION_UPDATE_TICK) {
+      this.easyNPC.getEntity().refreshDimensions();
       this.dimensionUpdateTicker = 0;
     }
   }
@@ -179,7 +185,7 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
         30,
         this.contentLeftPos + 140 - this.xMouse,
         this.contentTopPos + 30 - this.yMouse,
-        this.entity);
+        this.easyNPC);
 
     // Label for Scale X
     Text.drawConfigString(

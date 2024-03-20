@@ -19,8 +19,9 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -79,22 +80,29 @@ public class MessageScaleChange extends NetworkMessage {
     }
 
     // Validate entity.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPCEntity == null) {
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    if (easyNPC == null) {
       log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
+      return;
+    }
+
+    // Validate scale data.
+    ScaleData<?> scaleData = easyNPC.getEasyNPCScaleData();
+    if (scaleData == null) {
+      log.error("Invalid scale data for {} from {}", message, context);
       return;
     }
 
     // Perform action.
     switch (scaleAxis) {
       case "x":
-        easyNPCEntity.setScaleX(scale);
+        scaleData.setScaleX(scale);
         break;
       case "y":
-        easyNPCEntity.setScaleY(scale);
+        scaleData.setScaleY(scale);
         break;
       case "z":
-        easyNPCEntity.setScaleZ(scale);
+        scaleData.setScaleZ(scale);
         break;
       default:
         log.error(
