@@ -21,8 +21,10 @@ package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.data.action.ActionData;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.Set;
 import java.util.UUID;
@@ -83,14 +85,21 @@ public class MessageDialogButtonAction extends NetworkMessage {
     }
 
     // Validate entity.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPCEntity == null) {
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    if (easyNPC == null) {
       log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
       return;
     }
 
+    // Validate dialog data.
+    DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
+    if (dialogData == null) {
+      log.error("Dialog data for {} is not available for {}", easyNPC, serverPlayer);
+      return;
+    }
+
     // Validate dialog button actions.
-    if (!easyNPCEntity.hasDialogButton(dialogId, dialogButtonId)) {
+    if (!dialogData.hasDialogButton(dialogId, dialogButtonId)) {
       log.error(
           "Unknown dialog button action {} request for dialog {} for UUID {} from {}",
           dialogButtonId,
@@ -101,7 +110,7 @@ public class MessageDialogButtonAction extends NetworkMessage {
     }
 
     // Validate dialog button data.
-    DialogButtonData dialogButtonData = easyNPCEntity.getDialogButton(dialogId, dialogButtonId);
+    DialogButtonData dialogButtonData = dialogData.getDialogButton(dialogId, dialogButtonId);
     if (dialogButtonData == null) {
       log.error(
           "Unable to get valid dialog button data for UUID {} and dialog {} from {}",
@@ -124,21 +133,27 @@ public class MessageDialogButtonAction extends NetworkMessage {
     }
 
     // Perform action.
+    ActionHandler<?> actionHandler = easyNPC.getEasyNPCActionHandler();
+    if (actionHandler == null) {
+      log.error("Action handler for {} is not available for {}", easyNPC, serverPlayer);
+      return;
+    }
+
     if (actionDataList.size() == 1) {
       log.debug(
           "Trigger single dialog button action for {} from {} with action: {}",
-          easyNPCEntity,
+          easyNPC,
           serverPlayer,
           actionDataList.iterator().next());
-      easyNPCEntity.executeAction(actionDataList.iterator().next(), serverPlayer);
+      actionHandler.executeAction(actionDataList.iterator().next(), serverPlayer);
     } else {
       log.debug(
           "Trigger multiple dialog button actions for {} from {} with {} actions: {}",
-          easyNPCEntity,
+          easyNPC,
           serverPlayer,
           actionDataList.size(),
           actionDataList);
-      easyNPCEntity.executeActions(actionDataList, serverPlayer);
+      actionHandler.executeActions(actionDataList, serverPlayer);
     }
   }
 

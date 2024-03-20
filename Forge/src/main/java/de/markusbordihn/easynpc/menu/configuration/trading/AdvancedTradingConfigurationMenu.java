@@ -89,7 +89,7 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
 
     // Restructure Container from merchant offers.
     if (!this.level.isClientSide) {
-      MerchantOffers merchantOffers = this.entity.getTradingOffers();
+      MerchantOffers merchantOffers = this.getEasyNPC().getEasyNPCTradingData().getTradingOffers();
       if (merchantOffers != null) {
         for (int tradingOffer = 0;
             tradingOffer < TradingSettings.ADVANCED_TRADING_OFFERS
@@ -187,7 +187,7 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
     if (this.level.isClientSide) {
       return;
     }
-    this.entity.setAdvancedTradingOffers(tradingContainer);
+    this.getEasyNPC().getEasyNPCTradingData().setAdvancedTradingOffers(tradingContainer);
   }
 
   public int getMaxPages() {

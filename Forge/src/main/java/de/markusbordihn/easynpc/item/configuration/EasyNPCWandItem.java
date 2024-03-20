@@ -21,7 +21,8 @@ package de.markusbordihn.easynpc.item.configuration;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EasyNPCEntityMenu;
+import de.markusbordihn.easynpc.menu.MenuManager;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
@@ -54,7 +55,7 @@ public class EasyNPCWandItem extends Item {
 
   @Override
   public void inventoryTick(
-      ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
+      ItemStack itemStack, Level level, Entity entity, int slot, boolean selected) {
     // Highlight all nearby EasyNPC entities
     if (selected && entity instanceof Player player) {
       for (EasyNPCEntity easyNPCEntity :
@@ -93,7 +94,8 @@ public class EasyNPCWandItem extends Item {
       for (EasyNPCEntity easyNPCEntity :
           level.getEntitiesOfClass(EasyNPCEntity.class, aabbAbove.inflate(0.5), Entity::isAlive)) {
         if (easyNPCEntity != null) {
-          EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, easyNPCEntity);
+          MenuManager.getMenuHandler()
+              .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPCEntity);
           return InteractionResult.SUCCESS;
         }
       }
@@ -110,7 +112,8 @@ public class EasyNPCWandItem extends Item {
       for (EasyNPCEntity easyNPCEntity :
           level.getEntitiesOfClass(EasyNPCEntity.class, aabbAround.inflate(0.5), Entity::isAlive)) {
         if (easyNPCEntity != null) {
-          EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, easyNPCEntity);
+          MenuManager.getMenuHandler()
+              .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPCEntity);
           return InteractionResult.SUCCESS;
         }
       }
@@ -119,7 +122,8 @@ public class EasyNPCWandItem extends Item {
       for (EasyNPCEntity easyNPCEntity :
           level.getEntitiesOfClass(EasyNPCEntity.class, aabbAround.inflate(2.5), Entity::isAlive)) {
         if (easyNPCEntity != null) {
-          EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, easyNPCEntity);
+          MenuManager.getMenuHandler()
+              .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPCEntity);
           return InteractionResult.SUCCESS;
         }
       }

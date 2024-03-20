@@ -30,6 +30,8 @@ import de.markusbordihn.easynpc.entity.npc.ModEntityType;
 import de.markusbordihn.easynpc.io.PresetDataFiles;
 import de.markusbordihn.easynpc.io.SkinDataFiles;
 import de.markusbordihn.easynpc.item.ModItems;
+import de.markusbordihn.easynpc.menu.MenuHandler;
+import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 import java.util.Optional;
@@ -79,6 +81,9 @@ public class EasyNPC {
 
     log.info("{} Items ...", Constants.LOG_REGISTER_PREFIX);
     ModItems.ITEMS.register(modEventBus);
+
+    log.info("{} Menu Handler ...", Constants.LOG_REGISTER_PREFIX);
+    MenuManager.registerMenuHandler(new MenuHandler());
 
     log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
     ModMenuTypes.MENU_TYPES.register(modEventBus);

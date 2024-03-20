@@ -20,8 +20,9 @@
 package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.data.skin.SkinModel;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.io.File;
@@ -73,39 +74,47 @@ public class MessagePresetExportWorld extends NetworkMessage {
       return;
     }
 
-    // Validate entity.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    // Validate skin data.
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
+    if (skinData == null) {
+      log.warn("Export preset skin data is empty for {}", uuid);
+      return;
+    }
 
     // Validate Skin Model
-    SkinModel skinModel = easyNPCEntity.getSkinModel();
+    SkinModel skinModel = skinData.getSkinModel();
     if (skinModel == null) {
       log.warn("Export preset skin model is empty for {}", uuid);
       return;
     }
 
     // Validate data.
-    CompoundTag data = easyNPCEntity.exportPreset();
+    CompoundTag data = easyNPC.exportPreset();
     if (data == null) {
       log.warn("Export preset data is empty for {}", uuid);
       return;
     }
 
-    // Perform action.
+    // Validate preset file.
     File presetFile = WorldPresetDataFiles.getPresetFile(skinModel, name);
+    if (presetFile == null) {
+      log.error("Failed to get preset file for {} with name {}", skinModel, name);
+      return;
+    }
+
+    // Perform action.
     log.info(
         "Exporting EasyNPC {} with UUID {} and skin {} to {}", name, uuid, skinModel, presetFile);
     try {
       NbtIo.writeCompressed(data, presetFile);
     } catch (final IOException exception) {
       log.error(
-          "Failed to export EasyNPC "
-              + name
-              + " with UUID "
-              + uuid
-              + " and skin "
-              + skinModel
-              + " to "
-              + presetFile,
+          "Failed to export EasyNPC {} with UUID {} and skin {} to {}",
+          name,
+          uuid,
+          skinModel,
+          presetFile,
           exception);
     }
   }

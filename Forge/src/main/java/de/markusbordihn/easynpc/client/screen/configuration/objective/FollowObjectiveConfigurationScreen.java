@@ -22,8 +22,9 @@ package de.markusbordihn.easynpc.client.screen.configuration.objective;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
-import de.markusbordihn.easynpc.data.objective.ObjectiveData;
+import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.menu.configuration.objective.FollowObjectiveConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import java.util.UUID;
@@ -38,14 +39,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class FollowObjectiveConfigurationScreen
     extends ObjectiveConfigurationScreen<FollowObjectiveConfigurationMenu> {
 
+  protected final OwnerData<?> ownerData;
   // Basic Objective Checkbox
   protected Checkbox followOwnerCheckbox;
-
   // Follow Player with name input field and save button
   protected Checkbox followPlayerCheckbox;
   protected EditBox followPlayerName;
   protected Button followPlayerNameSaveButton;
-
   // Follow entity with UUID input field and save button
   protected Checkbox followEntityCheckbox;
   protected EditBox followEntityUUID;
@@ -54,6 +54,7 @@ public class FollowObjectiveConfigurationScreen
   public FollowObjectiveConfigurationScreen(
       FollowObjectiveConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
+    this.ownerData = this.easyNPC.getEasyNPCOwnerData();
   }
 
   @Override
@@ -72,15 +73,16 @@ public class FollowObjectiveConfigurationScreen
                 this.contentLeftPos + 10,
                 objectiveEntriesTop,
                 ObjectiveType.FOLLOW_OWNER.getObjectiveName(),
-                this.entity.getOwnerName(),
+                this.ownerData.getOwnerName(),
                 objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_OWNER),
                 checkbox -> {
-                  ObjectiveData objectiveData = new ObjectiveData(ObjectiveType.FOLLOW_OWNER, 6);
-                  objectiveData.setTargetOwnerUUID(this.entity.getOwnerUUID());
+                  ObjectiveDataEntry objectiveDataEntry =
+                      new ObjectiveDataEntry(ObjectiveType.FOLLOW_OWNER, 6);
+                  objectiveDataEntry.setTargetOwnerUUID(this.ownerData.getOwnerUUID());
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -94,18 +96,19 @@ public class FollowObjectiveConfigurationScreen
                 ObjectiveType.FOLLOW_PLAYER.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_PLAYER),
                 checkbox -> {
-                  ObjectiveData objectiveData = new ObjectiveData(ObjectiveType.FOLLOW_PLAYER, 7);
+                  ObjectiveDataEntry objectiveDataEntry =
+                      new ObjectiveDataEntry(ObjectiveType.FOLLOW_PLAYER, 7);
                   if (followPlayerName != null) {
-                    objectiveData.setTargetPlayerName(followPlayerName.getValue());
+                    objectiveDataEntry.setTargetPlayerName(followPlayerName.getValue());
                     followPlayerName.setEditable(checkbox.selected());
                   }
                   if (followPlayerNameSaveButton != null) {
                     followPlayerNameSaveButton.active = checkbox.selected();
                   }
                   if (!checkbox.selected()) {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   } else if (!followPlayerName.getValue().isEmpty()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   }
                 }));
     this.followPlayerName =
@@ -128,9 +131,10 @@ public class FollowObjectiveConfigurationScreen
                 this.followPlayerName.x + this.followPlayerName.getWidth() + 5,
                 objectiveEntriesTop - 1,
                 onPress -> {
-                  ObjectiveData objectiveData = new ObjectiveData(ObjectiveType.FOLLOW_PLAYER);
-                  objectiveData.setTargetPlayerName(this.followPlayerName.getValue());
-                  NetworkMessageHandler.addObjective(uuid, objectiveData);
+                  ObjectiveDataEntry objectiveDataEntry =
+                      new ObjectiveDataEntry(ObjectiveType.FOLLOW_PLAYER);
+                  objectiveDataEntry.setTargetPlayerName(this.followPlayerName.getValue());
+                  NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                 }));
 
     // Follow Entity with UUID input field
@@ -143,8 +147,8 @@ public class FollowObjectiveConfigurationScreen
                 ObjectiveType.FOLLOW_ENTITY_BY_UUID.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.FOLLOW_ENTITY_BY_UUID),
                 checkbox -> {
-                  ObjectiveData objectiveData =
-                      new ObjectiveData(ObjectiveType.FOLLOW_ENTITY_BY_UUID, 7);
+                  ObjectiveDataEntry objectiveDataEntry =
+                      new ObjectiveDataEntry(ObjectiveType.FOLLOW_ENTITY_BY_UUID, 7);
                   if (followEntityUUID != null) {
                     if (!followEntityUUID.getValue().isEmpty()) {
                       UUID entityUUID = null;
@@ -155,7 +159,7 @@ public class FollowObjectiveConfigurationScreen
                             "Unable to parse UUID {} for {}", followEntityUUID.getValue(), uuid);
                       }
                       if (entityUUID != null) {
-                        objectiveData.setTargetEntityUUID(entityUUID);
+                        objectiveDataEntry.setTargetEntityUUID(entityUUID);
                       }
                     }
                     followEntityUUID.setEditable(checkbox.selected());
@@ -164,9 +168,9 @@ public class FollowObjectiveConfigurationScreen
                     followEntityUUIDSaveButton.active = checkbox.selected();
                   }
                   if (!checkbox.selected()) {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   } else if (!followEntityUUID.getValue().isEmpty()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   }
                 }));
     this.followEntityUUID =
@@ -198,13 +202,13 @@ public class FollowObjectiveConfigurationScreen
                 this.followEntityUUID.x + this.followEntityUUID.getWidth() + 5,
                 objectiveEntriesTop - 1,
                 onPress -> {
-                  ObjectiveData objectiveData =
-                      new ObjectiveData(ObjectiveType.FOLLOW_ENTITY_BY_UUID, 7);
-                  objectiveData.setTargetEntityUUID(
+                  ObjectiveDataEntry objectiveDataEntry =
+                      new ObjectiveDataEntry(ObjectiveType.FOLLOW_ENTITY_BY_UUID, 7);
+                  objectiveDataEntry.setTargetEntityUUID(
                       !followEntityUUID.getValue().isEmpty()
                           ? UUID.fromString(followEntityUUID.getValue())
                           : null);
-                  NetworkMessageHandler.addObjective(uuid, objectiveData);
+                  NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                 }));
   }
 }

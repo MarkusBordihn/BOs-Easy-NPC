@@ -82,7 +82,7 @@ public class BasicTradingConfigurationMenu extends TradingConfigurationMenu {
 
     // Restructure Container from merchant offers.
     if (!this.level.isClientSide) {
-      MerchantOffers merchantOffers = this.entity.getTradingOffers();
+      MerchantOffers merchantOffers = this.getEasyNPC().getEasyNPCTradingData().getTradingOffers();
       if (merchantOffers != null) {
         for (int tradingOffer = 0;
             tradingOffer < TradingSettings.BASIC_TRADING_OFFERS
@@ -181,7 +181,7 @@ public class BasicTradingConfigurationMenu extends TradingConfigurationMenu {
     if (this.level.isClientSide) {
       return;
     }
-    this.entity.setBasicTradingOffers(tradingContainer);
+    this.getEasyNPC().getEasyNPCTradingData().setBasicTradingOffers(tradingContainer);
   }
 
   @Override

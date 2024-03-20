@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.menu.configuration.equipment;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import java.util.UUID;
@@ -94,8 +95,11 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
     // Update containers, if needed.
     this.loadHand();
 
+    // Model data
+    ModelData<?> modelData = this.getEasyNPC().getEasyNPCModelData();
+
     // Player Companion Amor Slots (left / slot: 3 - 0)
-    if (this.entity.canUseArmor()) {
+    if (modelData.canUseArmor()) {
       this.loadArmor();
       int playerCompanionEquipmentLeftStartPositionY = 44;
       int playerCompanionEquipmentLeftStartPositionX = 98;
@@ -111,7 +115,7 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
     }
 
     // Player Companion Main Hand Slot (left / bottom: 0)
-    if (this.entity.canUseMainHand()) {
+    if (modelData.canUseMainHand()) {
       int playerCompanionMainHandStartPositionY = 119;
       int playerCompanionMainHandStartPositionX = 98;
       this.addSlot(
@@ -124,7 +128,7 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
     }
 
     // Player Companion Off Hand Slot (right / bottom: 1)
-    if (this.entity.canUseOffHand()) {
+    if (modelData.canUseOffHand()) {
       int playerCompanionOffHandStartPositionY = 119;
       int playerCompanionOffHandStartPositionX = 178;
       this.addSlot(
@@ -183,9 +187,11 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
     if (this.level.isClientSide) {
       return;
     }
-    log.debug("Load hand {}", this.entity.getHandSlots());
-    this.handContainer.setItem(0, entity.getItemInHand(InteractionHand.MAIN_HAND));
-    this.handContainer.setItem(1, entity.getItemInHand(InteractionHand.OFF_HAND));
+    log.debug("Load hand {}", this.getEasyNPC().getLivingEntity().getHandSlots());
+    this.handContainer.setItem(
+        0, this.getEasyNPC().getLivingEntity().getItemInHand(InteractionHand.MAIN_HAND));
+    this.handContainer.setItem(
+        1, this.getEasyNPC().getLivingEntity().getItemInHand(InteractionHand.OFF_HAND));
     this.handContainer.setChanged();
   }
 
@@ -194,18 +200,22 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
       return;
     }
     log.debug("Hand changed {} {} ...", hand, itemStack);
-    this.entity.setItemInHand(hand, itemStack);
+    this.getEasyNPC().getLivingEntity().setItemInHand(hand, itemStack);
   }
 
   public void loadArmor() {
     if (this.level.isClientSide) {
       return;
     }
-    log.debug("Load armor {}", this.entity.getArmorSlots());
-    this.armorContainer.setItem(0, this.entity.getItemBySlot(EquipmentSlot.FEET));
-    this.armorContainer.setItem(1, this.entity.getItemBySlot(EquipmentSlot.LEGS));
-    this.armorContainer.setItem(2, this.entity.getItemBySlot(EquipmentSlot.CHEST));
-    this.armorContainer.setItem(3, this.entity.getItemBySlot(EquipmentSlot.HEAD));
+    log.debug("Load armor {}", this.getEasyNPC().getLivingEntity().getArmorSlots());
+    this.armorContainer.setItem(
+        0, this.getEasyNPC().getLivingEntity().getItemBySlot(EquipmentSlot.FEET));
+    this.armorContainer.setItem(
+        1, this.getEasyNPC().getLivingEntity().getItemBySlot(EquipmentSlot.LEGS));
+    this.armorContainer.setItem(
+        2, this.getEasyNPC().getLivingEntity().getItemBySlot(EquipmentSlot.CHEST));
+    this.armorContainer.setItem(
+        3, this.getEasyNPC().getLivingEntity().getItemBySlot(EquipmentSlot.HEAD));
     this.armorContainer.setChanged();
   }
 
@@ -214,7 +224,7 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
       return;
     }
     log.debug("Armor changed {} {} {} ...", equipmentSlot, slot, itemStack);
-    this.entity.setItemSlot(equipmentSlot, itemStack);
+    this.getEasyNPC().getLivingEntity().setItemSlot(equipmentSlot, itemStack);
   }
 
   @Override

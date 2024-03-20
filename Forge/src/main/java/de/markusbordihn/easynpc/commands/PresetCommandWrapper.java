@@ -33,7 +33,7 @@ import net.minecraft.server.level.ServerPlayer;
 public class PresetCommandWrapper extends PresetCommand {
 
   @Override
-  protected int exportPreset(CommandSourceStack context, UUID uuid) throws CommandSyntaxException {
+  protected int exportPreset(CommandSourceStack context, UUID uuid) {
     if (uuid == null) {
       return 0;
     }

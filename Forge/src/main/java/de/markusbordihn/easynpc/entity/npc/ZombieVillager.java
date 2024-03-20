@@ -32,7 +32,6 @@ import net.minecraft.world.level.Level;
 
 public class ZombieVillager extends EasyNPCEntity {
 
-  // General Information
   public static final String ID = "zombie_villager";
   public static final String NAME = "Zombie Villager";
 

@@ -22,8 +22,10 @@ package de.markusbordihn.easynpc.commands;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.access.EasyNPCAccessManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
 import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -53,20 +55,20 @@ public class ConfigureCommand {
       return 0;
     }
 
-    // Try to get the EasyNPC entity by UUID.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid);
-    if (easyNPCEntity == null) {
-      context.sendFailure(new TextComponent("EasyNPC with UUID " + uuid + " not found!"));
+    // Check if server player has access to the EasyNPC entity.
+    if (!EasyNPCAccessManager.hasAccess(context, uuid)) {
+      context.sendFailure(new TextComponent("You are not allowed to edit this EasyNPC!"));
       return 0;
     }
 
-    // Check is player is owner of the EasyNPC.
-    if (!serverPlayer.isCreative() && !easyNPCEntity.isOwner(serverPlayer)) {
-      context.sendFailure(new TextComponent("You are not the owner of this EasyNPC!"));
+    // Verify configuration data for the EasyNPC.
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid);
+    ConfigurationData<?> configurationData = easyNPC.getEasyNPCConfigurationData();
+    if (configurationData == null) {
+      context.sendFailure(new TextComponent("This EasyNPC does not support configuration!"));
       return 0;
     }
-
-    easyNPCEntity.openMainConfigurationMenu(serverPlayer);
+    configurationData.openMainConfigurationMenu(serverPlayer);
     return Command.SINGLE_SUCCESS;
   }
 }

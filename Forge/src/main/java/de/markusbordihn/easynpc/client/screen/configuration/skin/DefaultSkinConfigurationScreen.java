@@ -25,8 +25,11 @@ import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.screen.components.SkinSelectionButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
+import de.markusbordihn.easynpc.data.profession.Profession;
 import de.markusbordihn.easynpc.data.skin.SkinType;
-import de.markusbordihn.easynpc.entity.Profession;
+import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import de.markusbordihn.easynpc.utils.TextUtils;
@@ -43,9 +46,11 @@ public class DefaultSkinConfigurationScreen
 
   // Skin Preview
   private static final float SKIN_NAME_SCALING = 0.7f;
+  protected final SkinData<?> skinData;
+  protected final VariantData<?> variantData;
+  protected final ProfessionData<?> professionData;
   protected int numOfProfessions = 0;
   protected int numOfVariants = 0;
-
   // Cache
   private Profession[] professions;
   private Enum<?>[] variants;
@@ -53,11 +58,14 @@ public class DefaultSkinConfigurationScreen
   public DefaultSkinConfigurationScreen(
       DefaultSkinConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
+    this.skinData = this.easyNPC.getEasyNPCSkinData();
+    this.professionData = this.easyNPC.getEasyNPCProfessionData();
+    this.variantData = this.easyNPC.getEasyNPCVariantData();
     this.maxSkinsPerPage = 10;
   }
 
   private void renderSkins(PoseStack poseStack) {
-    if (this.entity == null) {
+    if (this.easyNPC == null) {
       return;
     }
 
@@ -127,13 +135,13 @@ public class DefaultSkinConfigurationScreen
 
     // Disable button for active skin.
     skinButton.active =
-        !(this.entity.getSkinType() == SkinType.DEFAULT
-            && this.entity.getVariant().equals(variant)
-            && (profession == null || this.entity.getProfession().equals(profession)));
+        !(this.skinData.getSkinType() == SkinType.DEFAULT
+            && this.variantData.getVariant().equals(variant)
+            && (profession == null || this.professionData.getProfession().equals(profession)));
 
     // Render skin entity with variant and profession.
     ScreenHelper.renderEntityDefaultSkin(
-        x + 4, y, x - this.xMouse, y - 40 - this.yMouse, this.entity, variant, profession);
+        x + 4, y, x - this.xMouse, y - 40 - this.yMouse, this.easyNPC, variant, profession);
 
     skinButtons.add(skinButton);
   }
@@ -146,9 +154,9 @@ public class DefaultSkinConfigurationScreen
     this.defaultSkinButton.active = false;
 
     // Entity specific information.
-    this.professions = this.entity.getProfessions();
-    this.variants = this.entity.getVariants();
-    this.numOfProfessions = this.entity.hasProfessions() ? this.professions.length : 0;
+    this.professions = this.professionData.getProfessions();
+    this.variants = this.variantData.getVariants();
+    this.numOfProfessions = this.professionData.hasProfessions() ? this.professions.length : 0;
     this.numOfVariants = this.variants.length;
     this.numOfSkins =
         numOfProfessions > 0 ? this.numOfVariants * this.numOfProfessions : this.numOfVariants;

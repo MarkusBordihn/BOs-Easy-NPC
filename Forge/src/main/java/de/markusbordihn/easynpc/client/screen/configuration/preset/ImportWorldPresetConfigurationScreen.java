@@ -87,7 +87,7 @@ public class ImportWorldPresetConfigurationScreen
                     .substring(resourceLocation.getPath().lastIndexOf("/") + 1)),
             new TranslatableComponent(
                 Constants.TEXT_PREFIX + "preset.importWarning",
-                this.entity.getDisplayName().getString()),
+                this.easyNPC.getEntity().getDisplayName().getString()),
             new TranslatableComponent(Constants.TEXT_PREFIX + "preset.importButton"),
             CommonComponents.GUI_CANCEL));
   }

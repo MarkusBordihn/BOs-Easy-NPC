@@ -32,7 +32,6 @@ import net.minecraft.world.level.Level;
 
 public class Villager extends EasyNPCEntity {
 
-  // General Information
   public static final String ID = "villager";
   public static final String NAME = "Villager";
 

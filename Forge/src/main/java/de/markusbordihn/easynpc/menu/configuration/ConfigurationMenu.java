@@ -21,8 +21,8 @@ package de.markusbordihn.easynpc.menu.configuration;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.UUID;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -39,7 +39,7 @@ public class ConfigurationMenu extends AbstractContainerMenu {
 
   // Cache
   protected final int pageIndex;
-  protected final EasyNPCEntity entity;
+  protected final EasyNPC<?> easyNPC;
   protected final Level level;
   protected final Player player;
   protected final SkinModel skinModel;
@@ -62,11 +62,11 @@ public class ConfigurationMenu extends AbstractContainerMenu {
     this.pageIndex = pageIndex;
     this.player = playerInventory.player;
     this.level = player.getLevel();
-    this.entity =
+    this.easyNPC =
         this.level.isClientSide
-            ? EntityManager.getEasyNPCEntityByUUID(uuid)
-            : EntityManager.getEasyNPCEntityByUUID(uuid, (ServerPlayer) player);
-    this.skinModel = this.entity.getSkinModel();
+            ? LivingEntityManager.getEasyNPCEntityByUUID(uuid)
+            : LivingEntityManager.getEasyNPCEntityByUUID(uuid, (ServerPlayer) player);
+    this.skinModel = this.easyNPC.getEasyNPCSkinData().getSkinModel();
 
     if (this.level.isClientSide) {
       log.debug(
@@ -74,13 +74,13 @@ public class ConfigurationMenu extends AbstractContainerMenu {
           menuType.getRegistryName(),
           this.pageIndex,
           this.uuid,
-          this.entity,
+          this.easyNPC,
           playerInventory);
     }
   }
 
-  public EasyNPCEntity getEntity() {
-    return this.entity;
+  public EasyNPC<?> getEasyNPC() {
+    return this.easyNPC;
   }
 
   public int getPageIndex() {
@@ -89,6 +89,9 @@ public class ConfigurationMenu extends AbstractContainerMenu {
 
   @Override
   public boolean stillValid(Player player) {
-    return player != null && player.isAlive() && entity != null && entity.isAlive();
+    return player != null
+        && player.isAlive()
+        && this.easyNPC != null
+        && this.easyNPC.getEntity().isAlive();
   }
 }
