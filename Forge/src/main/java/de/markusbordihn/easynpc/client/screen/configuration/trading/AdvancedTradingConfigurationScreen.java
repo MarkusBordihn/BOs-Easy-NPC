@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.client.screen.components.PositiveNumberField;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
+import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.trading.AdvancedTradingConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
@@ -53,6 +54,7 @@ public class AdvancedTradingConfigurationScreen
   protected final HashMap<Integer, EditBox> rewardExpEditBoxes = new HashMap<>();
   protected final HashMap<Integer, EditBox> priceMultiplierEditBoxes = new HashMap<>();
   protected final HashMap<Integer, EditBox> demandEditBoxes = new HashMap<>();
+  protected final TradingData<?> tradingData;
   // Buttons
   protected Button previousPageButton;
   protected Button nextPageButton;
@@ -64,6 +66,7 @@ public class AdvancedTradingConfigurationScreen
   public AdvancedTradingConfigurationScreen(
       AdvancedTradingConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
+    this.tradingData = this.easyNPC.getEasyNPCTradingData();
   }
 
   private void onResetsEveryMinEditBoxChanged(String text) {
@@ -120,7 +123,7 @@ public class AdvancedTradingConfigurationScreen
     this.resetsEveryMinEditBox =
         new TextField(this.font, this.contentLeftPos + 250, this.contentTopPos + 172, 32);
     this.resetsEveryMinEditBox.setMaxLength(3);
-    this.resetsEveryMinEditBox.setValue(this.entity.getTradingResetsEveryMin() + "");
+    this.resetsEveryMinEditBox.setValue(this.tradingData.getTradingResetsEveryMin() + "");
     this.resetsEveryMinEditBox.setResponder(this::onResetsEveryMinEditBoxChanged);
     this.resetsEveryMinEditBox.setFilter(TradingConfigurationScreen::isNumericValue);
     this.addRenderableWidget(this.resetsEveryMinEditBox);
@@ -128,7 +131,7 @@ public class AdvancedTradingConfigurationScreen
     // Adding trading edit boxes for advanced trading configuration
     int editBoxPositionX = this.contentLeftPos + 140;
     int editBoxPositionY = this.topPos + AdvancedTradingConfigurationMenu.TRADING_START_POSITION_Y;
-    MerchantOffers merchantOffers = this.entity.getTradingOffers();
+    MerchantOffers merchantOffers = this.tradingData.getTradingOffers();
     for (int tradingOffer = 0;
         tradingOffer < AdvancedTradingConfigurationMenu.TRADING_OFFERS_PER_PAGE;
         tradingOffer++) {
@@ -247,7 +250,7 @@ public class AdvancedTradingConfigurationScreen
         int tradingOfferIndex =
             (this.menu.getPageIndex() * AdvancedTradingConfigurationMenu.TRADING_OFFERS_PER_PAGE)
                 + tradingOffer;
-        MerchantOffers merchantOffers = this.entity.getTradingOffers();
+        MerchantOffers merchantOffers = this.tradingData.getTradingOffers();
         MerchantOffer merchantOffer =
             merchantOffers.size() > tradingOfferIndex
                 ? merchantOffers.get(tradingOfferIndex)

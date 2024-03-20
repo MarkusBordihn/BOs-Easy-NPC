@@ -26,9 +26,9 @@ import de.markusbordihn.easynpc.data.action.ActionGroup;
 import de.markusbordihn.easynpc.data.action.ActionManager;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.item.ModItems;
+import de.markusbordihn.easynpc.menu.MenuManager;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 import javax.annotation.Nonnull;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -51,7 +51,7 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class EasyNPCEntity extends EasyNPCEntityData implements EasyNPCEntityAction {
+public class EasyNPCEntity extends EasyNPCEntityData {
 
   // Shared constants
   public static final MobCategory CATEGORY = MobCategory.MISC;
@@ -84,18 +84,11 @@ public class EasyNPCEntity extends EasyNPCEntityData implements EasyNPCEntityAct
     this.refreshGroundNavigation();
   }
 
-  public void executeActions(Set<ActionData> actionDataSet, ServerPlayer serverPlayer) {
-    if (actionDataSet == null || actionDataSet.isEmpty()) {
-      return;
-    }
-    for (ActionData actionData : actionDataSet) {
-      this.executeAction(actionData, serverPlayer);
-    }
-  }
-
+  @Override
   public void openMainConfigurationMenu(ServerPlayer serverPlayer) {
     if (this.supportsConfiguration()) {
-      EasyNPCEntityMenu.openMainConfigurationMenu(serverPlayer, this);
+      MenuManager.getMenuHandler()
+          .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, this);
     } else {
       log.warn("Configuration for {} is disabled!", this);
     }
@@ -388,11 +381,6 @@ public class EasyNPCEntity extends EasyNPCEntityData implements EasyNPCEntityAct
     }
 
     return InteractionResult.PASS;
-  }
-
-  @Override
-  public void openDialog(ServerPlayer serverPlayer, UUID dialogId) {
-    EasyNPCEntityMenu.openDialogMenu(serverPlayer, this, dialogId, 0);
   }
 
   @Override

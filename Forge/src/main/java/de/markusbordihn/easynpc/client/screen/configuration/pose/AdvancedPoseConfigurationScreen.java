@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.SliderButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.model.ModelPart;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.menu.configuration.pose.AdvancedPoseConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import net.minecraft.network.chat.Component;
@@ -36,6 +37,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class AdvancedPoseConfigurationScreen
     extends PoseConfigurationScreen<AdvancedPoseConfigurationMenu> {
 
+  protected final ModelData modelData;
   // Slider Buttons reference for positioning
   protected SliderButton headRotationSliderButton;
   protected SliderButton bodyRotationSliderButton;
@@ -48,6 +50,7 @@ public class AdvancedPoseConfigurationScreen
   public AdvancedPoseConfigurationScreen(
       AdvancedPoseConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
+    this.modelData = this.easyNPC.getEasyNPCModelData();
   }
 
   private SliderButton createVisibilityRotationSlider(
@@ -56,7 +59,7 @@ public class AdvancedPoseConfigurationScreen
     SliderButton sliderRotationButtonX = createRotationSliderCompact(left, top, modelPart, label);
 
     // Model Part Visibility
-    boolean modelPartVisibility = this.entity.isModelPartVisible(modelPart);
+    boolean modelPartVisibility = this.modelData.isModelPartVisible(modelPart);
     this.addRenderableWidget(
         new Checkbox(
             sliderRotationButtonX.x + 3,
@@ -84,13 +87,13 @@ public class AdvancedPoseConfigurationScreen
     int sliderTopSpace = 66;
 
     // Head parts
-    if (this.entity.hasHeadModelPart()) {
+    if (this.modelData.hasHeadModelPart()) {
       this.headRotationSliderButton =
           createVisibilityRotationSlider(sliderLeftPos, sliderTopPos, ModelPart.HEAD, "head");
     }
 
     // Body parts
-    if (this.entity.hasBodyModelPart()) {
+    if (this.modelData.hasBodyModelPart()) {
       sliderLeftPos += sliderLeftSpace;
       this.bodyRotationSliderButton =
           createVisibilityRotationSlider(sliderLeftPos, sliderTopPos, ModelPart.BODY, "body");
@@ -99,7 +102,7 @@ public class AdvancedPoseConfigurationScreen
     sliderTopPos += sliderTopSpace;
 
     // Right arm rotations
-    if (this.entity.hasRightArmModelPart()) {
+    if (this.modelData.hasRightArmModelPart()) {
       sliderLeftPos = sliderLeftDefaultPos;
       this.rightArmRotationSliderButton =
           createVisibilityRotationSlider(
@@ -107,12 +110,12 @@ public class AdvancedPoseConfigurationScreen
     }
 
     // Left arm rotations and arms rotations.
-    if (this.entity.hasLeftArmModelPart()) {
+    if (this.modelData.hasLeftArmModelPart()) {
       sliderLeftPos += sliderLeftSpace;
       this.leftArmRotationSliderButton =
           createVisibilityRotationSlider(
               sliderLeftPos, sliderTopPos, ModelPart.LEFT_ARM, "left_arm");
-    } else if (this.entity.hasArmsModelPart()) {
+    } else if (this.modelData.hasArmsModelPart()) {
       sliderLeftPos = sliderLeftDefaultPos;
       this.armsRotationSliderButton =
           createVisibilityRotationSlider(sliderLeftPos, sliderTopPos, ModelPart.ARMS, "arms");
@@ -122,14 +125,14 @@ public class AdvancedPoseConfigurationScreen
     sliderLeftPos = sliderLeftDefaultPos;
 
     // Right leg rotations
-    if (this.entity.hasRightLegModelPart()) {
+    if (this.modelData.hasRightLegModelPart()) {
       this.rightLegRotationSliderButton =
           createVisibilityRotationSlider(
               sliderLeftPos, sliderTopPos, ModelPart.RIGHT_LEG, "right_leg");
     }
 
     // Left leg rotations
-    if (this.entity.hasLeftLegModelPart()) {
+    if (this.modelData.hasLeftLegModelPart()) {
       sliderLeftPos += sliderLeftSpace;
       this.leftLegRotationSliderButton =
           createVisibilityRotationSlider(
@@ -148,10 +151,10 @@ public class AdvancedPoseConfigurationScreen
         50,
         this.contentLeftPos + 140 - this.xMouse,
         this.contentTopPos + 30 - this.yMouse,
-        this.entity);
+        this.easyNPC);
 
     // Body parts texts
-    if (this.entity.hasHeadModelPart()) {
+    if (this.modelData.hasHeadModelPart()) {
       Text.drawConfigString(
           poseStack,
           this.font,
@@ -159,7 +162,7 @@ public class AdvancedPoseConfigurationScreen
           this.headRotationSliderButton.x + 20,
           this.headRotationSliderButton.y - 12);
     }
-    if (this.entity.hasBodyModelPart()) {
+    if (this.modelData.hasBodyModelPart()) {
       Text.drawConfigString(
           poseStack,
           this.font,
@@ -167,14 +170,14 @@ public class AdvancedPoseConfigurationScreen
           this.bodyRotationSliderButton.x + 20,
           this.bodyRotationSliderButton.y - 12);
     }
-    if (this.entity.hasLeftArmModelPart()) {
+    if (this.modelData.hasLeftArmModelPart()) {
       Text.drawConfigString(
           poseStack,
           this.font,
           "pose.left_arm",
           this.leftArmRotationSliderButton.x + 20,
           this.leftArmRotationSliderButton.y - 12);
-    } else if (this.entity.hasArmsModelPart()) {
+    } else if (this.modelData.hasArmsModelPart()) {
       Text.drawConfigString(
           poseStack,
           this.font,
@@ -182,7 +185,7 @@ public class AdvancedPoseConfigurationScreen
           this.armsRotationSliderButton.x + 20,
           this.armsRotationSliderButton.y - 12);
     }
-    if (this.entity.hasRightArmModelPart()) {
+    if (this.modelData.hasRightArmModelPart()) {
       Text.drawConfigString(
           poseStack,
           this.font,
@@ -190,7 +193,7 @@ public class AdvancedPoseConfigurationScreen
           this.rightArmRotationSliderButton.x + 20,
           this.rightArmRotationSliderButton.y - 12);
     }
-    if (this.entity.hasLeftLegModelPart()) {
+    if (this.modelData.hasLeftLegModelPart()) {
       Text.drawConfigString(
           poseStack,
           this.font,
@@ -198,7 +201,7 @@ public class AdvancedPoseConfigurationScreen
           this.leftLegRotationSliderButton.x + 20,
           this.leftLegRotationSliderButton.y - 12);
     }
-    if (this.entity.hasRightLegModelPart()) {
+    if (this.modelData.hasRightLegModelPart()) {
       Text.drawConfigString(
           poseStack,
           this.font,

@@ -31,6 +31,7 @@ import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.client.texture.TextureModelKey;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.menu.configuration.skin.UrlSkinConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import de.markusbordihn.easynpc.utils.PlayersUtils;
@@ -55,6 +56,7 @@ public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinC
   protected Button addTextureSettingsButton = null;
   protected EditBox textureSkinLocationBox;
   protected int lastNumOfSkins = 0;
+  protected SkinData<?> skinData;
   // Internal
   private Button clearTextureSettingsButton = null;
   // Cache
@@ -64,6 +66,7 @@ public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinC
   public UrlSkinConfigurationScreen(
       UrlSkinConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
+    this.skinData = this.easyNPC.getEasyNPCSkinData();
   }
 
   private static void updateNextTextureSkinLocationChange() {
@@ -72,7 +75,7 @@ public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinC
   }
 
   private void renderSkins(PoseStack poseStack) {
-    if (this.entity == null) {
+    if (this.easyNPC == null) {
       return;
     }
 
@@ -133,12 +136,12 @@ public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinC
             });
 
     // Disable button for active skin.
-    Optional<UUID> skinUUID = this.entity.getSkinUUID();
+    Optional<UUID> skinUUID = this.skinData.getSkinUUID();
     skinButton.active = !(skinUUID.isPresent() && skinUUID.get().equals(textureUUID));
 
     // Render skin entity with variant and profession.
     ScreenHelper.renderEntityPlayerSkin(
-        x + 4, y, x - this.xMouse, y - 40 - this.yMouse, this.entity, textureUUID, skinType);
+        x + 4, y, x - this.xMouse, y - 40 - this.yMouse, this.easyNPC, textureUUID, skinType);
 
     skinButtons.add(skinButton);
   }

@@ -30,10 +30,9 @@ import net.minecraft.world.level.Level;
 
 public class Fairy extends EasyNPCEntity {
 
-  // General Information
   public static final String ID = "fairy";
   public static final String NAME = "Fairy";
-  // Constants values
+
   private static final float DEFAULT_SCALE_X = 0.4f;
   private static final float DEFAULT_SCALE_Y = 0.4f;
   private static final float DEFAULT_SCALE_Z = 0.4f;

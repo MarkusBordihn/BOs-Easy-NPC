@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.client.screen.configuration.attribute;
 
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
+import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
 import de.markusbordihn.easynpc.menu.configuration.attribute.AbilitiesAttributeConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import net.minecraft.network.chat.Component;
@@ -48,13 +49,16 @@ public class AbilitiesAttributeConfigurationScreen
     int secondButtonRow = this.leftPos + 100;
     int thirdButtonRow = this.leftPos + 200;
 
+    // Attribute data
+    AttributeData<?> attributeData = this.easyNPC.getEasyNPCAttributeData();
+
     // Checkboxes
     this.addRenderableWidget(
         new Checkbox(
             firstButtonRow,
             this.buttonTopPos + 25,
             EntityAttribute.CAN_FLOAT.getAttributeName(),
-            this.entity.getAttributeCanFloat(),
+            attributeData.getAttributeCanFloat(),
             checkbox ->
                 NetworkMessageHandler.entityAttributeChange(
                     uuid, EntityAttribute.CAN_FLOAT, checkbox.selected())));
@@ -64,7 +68,7 @@ public class AbilitiesAttributeConfigurationScreen
             firstButtonRow,
             this.buttonTopPos + 45,
             EntityAttribute.CAN_OPEN_DOOR.getAttributeName(),
-            this.entity.getAttributeCanOpenDoor(),
+            attributeData.getAttributeCanOpenDoor(),
             checkbox ->
                 NetworkMessageHandler.entityAttributeChange(
                     uuid, EntityAttribute.CAN_OPEN_DOOR, checkbox.selected())));
@@ -74,7 +78,7 @@ public class AbilitiesAttributeConfigurationScreen
             secondButtonRow,
             this.buttonTopPos + 45,
             EntityAttribute.CAN_CLOSE_DOOR.getAttributeName(),
-            this.entity.getAttributeCanCloseDoor(),
+            attributeData.getAttributeCanCloseDoor(),
             checkbox ->
                 NetworkMessageHandler.entityAttributeChange(
                     uuid, EntityAttribute.CAN_CLOSE_DOOR, checkbox.selected())));
@@ -84,7 +88,7 @@ public class AbilitiesAttributeConfigurationScreen
             thirdButtonRow,
             this.buttonTopPos + 45,
             EntityAttribute.CAN_PASS_DOOR.getAttributeName(),
-            this.entity.getAttributeCanPassDoor(),
+            attributeData.getAttributeCanPassDoor(),
             checkbox ->
                 NetworkMessageHandler.entityAttributeChange(
                     uuid, EntityAttribute.CAN_PASS_DOOR, checkbox.selected())));
@@ -94,7 +98,7 @@ public class AbilitiesAttributeConfigurationScreen
             firstButtonRow,
             this.buttonTopPos + 65,
             EntityAttribute.IS_ATTACKABLE.getAttributeName(),
-            this.entity.getAttributeIsAttackable(),
+            attributeData.getAttributeIsAttackable(),
             checkbox ->
                 NetworkMessageHandler.entityAttributeChange(
                     uuid, EntityAttribute.IS_ATTACKABLE, checkbox.selected())));
@@ -104,7 +108,7 @@ public class AbilitiesAttributeConfigurationScreen
             secondButtonRow,
             this.buttonTopPos + 65,
             EntityAttribute.IS_PUSHABLE.getAttributeName(),
-            this.entity.getAttributeIsPushable(),
+            attributeData.getAttributeIsPushable(),
             checkbox ->
                 NetworkMessageHandler.entityAttributeChange(
                     uuid, EntityAttribute.IS_PUSHABLE, checkbox.selected())));
@@ -114,7 +118,7 @@ public class AbilitiesAttributeConfigurationScreen
             firstButtonRow,
             this.buttonTopPos + 85,
             EntityAttribute.CAN_USE_NETHER_PORTAL.getAttributeName(),
-            this.entity.getAttributeCanUseNetherPortal(),
+            attributeData.getAttributeCanUseNetherPortal(),
             checkbox ->
                 NetworkMessageHandler.entityAttributeChange(
                     uuid, EntityAttribute.CAN_USE_NETHER_PORTAL, checkbox.selected())));

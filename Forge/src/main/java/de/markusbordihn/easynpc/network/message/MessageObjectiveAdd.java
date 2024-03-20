@@ -19,9 +19,10 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.data.objective.ObjectiveData;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -31,20 +32,20 @@ import net.minecraftforge.network.NetworkEvent;
 
 public class MessageObjectiveAdd extends NetworkMessage {
 
-  protected final ObjectiveData objectiveData;
+  protected final ObjectiveDataEntry objectiveDataEntry;
 
-  public MessageObjectiveAdd(UUID uuid, ObjectiveData objectiveData) {
+  public MessageObjectiveAdd(UUID uuid, ObjectiveDataEntry objectiveDataEntry) {
     super(uuid);
-    this.objectiveData = objectiveData;
+    this.objectiveDataEntry = objectiveDataEntry;
   }
 
   public static MessageObjectiveAdd decode(final FriendlyByteBuf buffer) {
-    return new MessageObjectiveAdd(buffer.readUUID(), new ObjectiveData(buffer.readNbt()));
+    return new MessageObjectiveAdd(buffer.readUUID(), new ObjectiveDataEntry(buffer.readNbt()));
   }
 
   public static void encode(final MessageObjectiveAdd message, final FriendlyByteBuf buffer) {
     buffer.writeUUID(message.uuid);
-    buffer.writeNbt(message.objectiveData.createTag());
+    buffer.writeNbt(message.objectiveDataEntry.createTag());
   }
 
   public static void handle(
@@ -62,34 +63,35 @@ public class MessageObjectiveAdd extends NetworkMessage {
     }
 
     // Validate objective data
-    ObjectiveData objectiveData = message.getObjectiveData();
+    ObjectiveDataEntry objectiveDataEntry = message.getObjectiveDataEntry();
+    if (objectiveDataEntry == null) {
+      log.error("Unable to add objective data for {} because it is null!", uuid);
+      return;
+    }
+
+    // Verify objective data
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    ObjectiveData<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
     if (objectiveData == null) {
-      log.error("Unable to add objective data for {} because it is null!", uuid);
+      log.error("Invalid objective data for {} from {}", message, serverPlayer);
       return;
     }
 
     // Perform action.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPCEntity == null) {
-      log.error("Unable to add objective data for {} because it is null!", uuid);
-      return;
-    }
-
-    // Perform action.
-    if (easyNPCEntity.addOrUpdateCustomObjective(objectiveData)) {
-      log.debug("Added objective {} for {} from {}", objectiveData, easyNPCEntity, serverPlayer);
+    if (objectiveData.addOrUpdateCustomObjective(objectiveDataEntry)) {
+      log.debug("Added objective {} for {} from {}", objectiveDataEntry, easyNPC, serverPlayer);
       log.debug(
           "Available goals for {}: {}",
-          easyNPCEntity,
-          easyNPCEntity.getEntityGoalSelector().getAvailableGoals());
+          easyNPC,
+          objectiveData.getEntityGoalSelector().getAvailableGoals());
       log.debug(
           "Available targets for {}: {}",
-          easyNPCEntity,
-          easyNPCEntity.getEntityTargetSelector().getAvailableGoals());
+          easyNPC,
+          objectiveData.getEntityTargetSelector().getAvailableGoals());
     }
   }
 
-  public ObjectiveData getObjectiveData() {
-    return this.objectiveData;
+  public ObjectiveDataEntry getObjectiveDataEntry() {
+    return this.objectiveDataEntry;
   }
 }

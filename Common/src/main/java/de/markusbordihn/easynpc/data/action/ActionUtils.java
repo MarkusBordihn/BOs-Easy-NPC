@@ -35,7 +35,7 @@ public class ActionUtils {
 
   public static final String COMMAND_DISPLAY_TITLE = "/title @initiator title {\"text\":\"";
 
-  protected ActionUtils() {}
+  private ActionUtils() {}
 
   public static String parseAction(String command, LivingEntity entity, ServerPlayer player) {
     if (command == null || command.isEmpty()) {

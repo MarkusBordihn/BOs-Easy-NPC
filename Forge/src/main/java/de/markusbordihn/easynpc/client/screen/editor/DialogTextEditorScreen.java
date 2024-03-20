@@ -34,7 +34,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogTextData;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.editor.DialogTextEditorMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
@@ -66,7 +66,7 @@ public class DialogTextEditorScreen extends AbstractContainerScreen<DialogTextEd
   protected final DialogDataSet dialogDataSet;
   protected final DialogDataEntry dialogData;
   protected final Set<DialogTextData> dialogTexts;
-  protected final EasyNPCEntity entity;
+  protected final EasyNPC<?> easyNPC;
   protected final UUID uuid;
   protected final ConfigurationType formerConfigurationType;
   protected final UUID dialogId;
@@ -90,7 +90,7 @@ public class DialogTextEditorScreen extends AbstractContainerScreen<DialogTextEd
 
     // Data access
     this.uuid = menu.getUUID();
-    this.entity = menu.getEntity();
+    this.easyNPC = menu.getEasyNPC();
     this.dialogDataSet = menu.getDialogDataSet();
     this.dialogData = menu.getDialogData();
     this.dialogTexts = dialogData.getDialogTexts();

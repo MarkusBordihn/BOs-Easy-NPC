@@ -38,12 +38,10 @@ public class ModEntityType {
   public static final float HUMANOID_SIZE_HEIGHT = 1.96F;
   public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
       DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Constants.MOD_ID);
-  // Humanoid NPC Entity
   public static final RegistryObject<EntityType<Humanoid>> HUMANOID =
       registerHumanoid(Humanoid.ID, Humanoid.Variant.STEVE);
   public static final RegistryObject<EntityType<HumanoidSlim>> HUMANOID_SLIM =
       registerHumanoidSlim(HumanoidSlim.ID, HumanoidSlim.Variant.ALEX);
-  // Default NPC Entity
   public static final RegistryObject<EntityType<Allay>> ALLAY =
       ENTITY_TYPES.register(
           Allay.ID,
@@ -165,8 +163,6 @@ public class ModEntityType {
 
   @SubscribeEvent
   public static void entityAttributeCreation(EntityAttributeCreationEvent event) {
-
-    // Default NPC Entities
     event.put(ALLAY.get(), Allay.createAttributes().build());
     event.put(CAT.get(), Cat.createAttributes().build());
     event.put(CHICKEN.get(), Chicken.createAttributes().build());

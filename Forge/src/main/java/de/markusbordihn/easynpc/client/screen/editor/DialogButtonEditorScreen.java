@@ -40,7 +40,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.editor.DialogButtonEditorMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
@@ -76,7 +76,7 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
   protected final DialogDataSet dialogDataSet;
   protected final DialogDataEntry dialogData;
   protected final DialogButtonData dialogButtonData;
-  protected final EasyNPCEntity entity;
+  protected final EasyNPC<?> easyNPC;
   protected final UUID dialogId;
   protected final UUID dialogButtonId;
   protected final UUID uuid;
@@ -130,7 +130,7 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
 
     // Data access
     this.uuid = menu.getUUID();
-    this.entity = menu.getEntity();
+    this.easyNPC = menu.getEasyNPC();
     this.dialogDataSet = menu.getDialogDataSet();
     this.dialogData = this.dialogDataSet.getDialog(menu.getDialogId());
     this.dialogButtonData = menu.getDialogButtonData();

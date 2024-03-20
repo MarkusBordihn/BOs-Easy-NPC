@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
@@ -38,6 +39,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class PoseConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
 
+  protected final ModelData<?> modelData;
   // Buttons
   protected Button defaultPoseButton;
   protected Button advancedPoseButton;
@@ -45,6 +47,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
 
   public PoseConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
+    this.modelData = this.easyNPC.getEasyNPCModelData();
   }
 
   protected SliderButton createRotationSlider(
@@ -71,7 +74,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
     }
 
     // Model Part Rotation
-    Rotations modelPartRotation = this.entity.getModelPartRotation(modelPart);
+    Rotations modelPartRotation = this.modelData.getModelPartRotation(modelPart);
     SliderButton sliderButtonX =
         this.addRenderableWidget(
             new SliderButton(
@@ -82,7 +85,8 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 (float) Math.toDegrees(modelPartRotation.getX()),
                 SliderButton.Type.DEGREE,
                 slider -> {
-                  Rotations currentModelPartRotation = this.entity.getModelPartRotation(modelPart);
+                  Rotations currentModelPartRotation =
+                      this.modelData.getModelPartRotation(modelPart);
                   NetworkMessageHandler.rotationChange(
                       uuid,
                       modelPart,
@@ -101,7 +105,8 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 (float) Math.toDegrees(modelPartRotation.getY()),
                 SliderButton.Type.DEGREE,
                 slider -> {
-                  Rotations currentModelPartRotation = this.entity.getModelPartRotation(modelPart);
+                  Rotations currentModelPartRotation =
+                      this.modelData.getModelPartRotation(modelPart);
                   NetworkMessageHandler.rotationChange(
                       uuid,
                       modelPart,
@@ -120,7 +125,8 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 (float) Math.toDegrees(modelPartRotation.getZ()),
                 SliderButton.Type.DEGREE,
                 slider -> {
-                  Rotations currentModelPartRotation = this.entity.getModelPartRotation(modelPart);
+                  Rotations currentModelPartRotation =
+                      this.modelData.getModelPartRotation(modelPart);
                   NetworkMessageHandler.rotationChange(
                       uuid,
                       modelPart,
@@ -192,7 +198,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
     }
 
     // Model Part Position
-    CustomPosition modelPartPosition = this.entity.getModelPartPosition(modelPart);
+    CustomPosition modelPartPosition = this.modelData.getModelPartPosition(modelPart);
     SliderButton sliderButtonX =
         this.addRenderableWidget(
             new SliderButton(
@@ -204,7 +210,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 SliderButton.Type.POSITION,
                 slider -> {
                   CustomPosition currentModelPartPosition =
-                      this.entity.getModelPartPosition(modelPart);
+                      this.modelData.getModelPartPosition(modelPart);
                   NetworkMessageHandler.modelPositionChange(
                       uuid,
                       modelPart,
@@ -224,7 +230,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 SliderButton.Type.POSITION,
                 slider -> {
                   CustomPosition currentModelPartPosition =
-                      this.entity.getModelPartPosition(modelPart);
+                      this.modelData.getModelPartPosition(modelPart);
                   NetworkMessageHandler.modelPositionChange(
                       uuid,
                       modelPart,
@@ -244,7 +250,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 SliderButton.Type.POSITION,
                 slider -> {
                   CustomPosition currentModelPartPosition =
-                      this.entity.getModelPartPosition(modelPart);
+                      this.modelData.getModelPartPosition(modelPart);
                   NetworkMessageHandler.modelPositionChange(
                       uuid,
                       modelPart,

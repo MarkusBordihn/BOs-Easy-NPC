@@ -273,7 +273,7 @@ public class PresetCommand {
     }
   }
 
-  protected int exportPreset(CommandSourceStack context, UUID uuid) throws CommandSyntaxException {
+  protected int exportPreset(CommandSourceStack context, UUID uuid) {
     throw new UnsupportedOperationException("Unsupported operation");
   }
 }

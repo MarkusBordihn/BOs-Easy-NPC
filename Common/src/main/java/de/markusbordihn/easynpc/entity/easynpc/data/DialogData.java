@@ -31,6 +31,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.data.entity.CustomEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.legacy.LegacyDialogSetData;
+import de.markusbordihn.easynpc.menu.MenuManager;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
@@ -71,6 +72,23 @@ public interface DialogData<T extends LivingEntity> extends EasyNPC<T> {
 
   static void registerDialogDataSerializer() {
     EntityDataSerializers.registerSerializer(DIALOG_DATA_SET);
+  }
+
+  default int getEntityDialogTop() {
+    return 0;
+  }
+
+  default int getEntityDialogLeft() {
+    return 0;
+  }
+
+  default int getEntityDialogScaling() {
+    return 50;
+  }
+
+  default void openDialogMenu(
+      ServerPlayer serverPlayer, EasyNPC<?> easyNPC, UUID dialogId, int pageIndex) {
+    MenuManager.getMenuHandler().openDialogMenu(serverPlayer, easyNPC, dialogId, pageIndex);
   }
 
   default DialogDataSet getDialogDataSet() {
@@ -127,7 +145,9 @@ public interface DialogData<T extends LivingEntity> extends EasyNPC<T> {
         serverPlayer, dialogId == null ? this.getDialogDataSet().getDefaultDialogId() : dialogId);
   }
 
-  void openDialog(ServerPlayer serverPlayer, UUID dialogId);
+  default void openDialog(ServerPlayer serverPlayer, UUID dialogId) {
+    MenuManager.getMenuHandler().openDialogMenu(serverPlayer, this, dialogId, 0);
+  }
 
   default DialogButtonData getDialogButton(UUID dialogId, UUID dialogButtonId) {
     return getDialogDataSet().getDialogButton(dialogId, dialogButtonId);
@@ -142,10 +162,11 @@ public interface DialogData<T extends LivingEntity> extends EasyNPC<T> {
   default void addAdditionalDialogData(CompoundTag compoundTag) {
     CompoundTag dialogTag = new CompoundTag();
 
-    // Write dialog data
-    DialogDataSet dialogDataSet = this.getDialogDataSet();
-    if (dialogDataSet != null) {
-      dialogDataSet.save(dialogTag);
+    if (this.isServerSide()) {
+      DialogDataSet dialogDataSet = this.getDialogDataSet();
+      if (dialogDataSet != null) {
+        dialogDataSet.save(dialogTag);
+      }
     }
 
     compoundTag.put(DATA_DIALOG_DATA_TAG, dialogTag);
