@@ -70,7 +70,6 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
   private final SimpleContainer inventory = new SimpleContainer(8);
   protected int attackAnimationTick;
   private boolean syncedDataLoaded = false;
-  private boolean isPreview = false;
   private int remainingPersistentAngerTime;
   private UUID persistentAngerTarget;
 
@@ -92,14 +91,6 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
 
   public int getAttackAnimationTick() {
     return this.attackAnimationTick;
-  }
-
-  public boolean isPreview() {
-    return this.isPreview;
-  }
-
-  public void setPreview(boolean isPreview) {
-    this.isPreview = isPreview;
   }
 
   public List<? extends Player> getPlayersInRange(Double range) {
@@ -181,34 +172,6 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
   @Override
   public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
     return null;
-  }
-
-  public int getEntityGuiScaling() {
-    return 45;
-  }
-
-  public int getEntityGuiTop() {
-    return 0;
-  }
-
-  public int getEntityGuiLeft() {
-    return 0;
-  }
-
-  public int getEntityDialogTop() {
-    return 0;
-  }
-
-  public int getEntityDialogLeft() {
-    return 0;
-  }
-
-  public int getEntityDialogScaling() {
-    return 50;
-  }
-
-  public int getEntitySkinScaling() {
-    return 30;
   }
 
   @Override

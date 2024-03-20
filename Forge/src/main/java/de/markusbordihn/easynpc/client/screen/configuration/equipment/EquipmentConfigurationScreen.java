@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import net.minecraft.client.gui.components.Button;
@@ -39,23 +40,26 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentConfigurationMenu> {
 
+  protected final ModelData<?> modelData;
   // Buttons
   protected Button defaultEquipmentButton;
 
   public EquipmentConfigurationScreen(
       EquipmentConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
+    this.modelData = this.easyNPC.getEasyNPCModelData();
   }
 
   private Checkbox createVisibleEquipmentSlotCheckbox(
       int left, int top, EquipmentSlot equipmentSlot) {
-    boolean modelEquipmentVisibliity = this.entity.isModelEquipmentVisible(equipmentSlot);
+    ModelData<?> modelData = this.easyNPC.getEasyNPCModelData();
+    boolean modelEquipmentVisibility = modelData.isModelEquipmentVisible(equipmentSlot);
     return this.addRenderableWidget(
         new Checkbox(
             left,
             top,
             "",
-            modelEquipmentVisibliity,
+            modelEquipmentVisibility,
             checkbox ->
                 NetworkMessageHandler.modelVisibilityChange(
                     this.uuid, equipmentSlot, checkbox.selected())));
@@ -104,7 +108,7 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
         35,
         this.contentLeftPos + 140 - this.xMouse,
         this.contentTopPos + 30 - this.yMouse,
-        this.entity);
+        this.easyNPC);
 
     this.renderTooltip(poseStack, x, y);
   }
@@ -118,17 +122,17 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
     RenderSystem.setShaderTexture(0, Constants.TEXTURE_INVENTORY);
 
     // Armors Slots Left
-    if (this.entity.canUseArmor()) {
+    if (this.modelData.canUseArmor()) {
       this.blit(poseStack, this.contentLeftPos + 90, this.contentTopPos, 7, 7, 18, 72);
     }
 
     // Main Hand Slot Left
-    if (this.entity.canUseMainHand()) {
+    if (this.modelData.canUseMainHand()) {
       this.blit(poseStack, this.contentLeftPos + 90, this.contentTopPos + 75, 7, 7, 18, 18);
     }
 
     // Off Hand Slot Right
-    if (this.entity.canUseOffHand()) {
+    if (this.modelData.canUseOffHand()) {
       this.blit(poseStack, this.contentLeftPos + 170, this.contentTopPos + 75, 7, 7, 18, 18);
     }
 

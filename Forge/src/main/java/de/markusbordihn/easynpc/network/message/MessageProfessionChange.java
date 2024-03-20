@@ -19,9 +19,10 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
-import de.markusbordihn.easynpc.entity.Profession;
+import de.markusbordihn.easynpc.data.profession.Profession;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -68,10 +69,17 @@ public class MessageProfessionChange extends NetworkMessage {
       return;
     }
 
+    // Validate Profession data.
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    ProfessionData<?> professionData = easyNPC.getEasyNPCProfessionData();
+    if (professionData == null) {
+      log.error("Invalid profession data for {} from {}", message, serverPlayer);
+      return;
+    }
+
     // Perform action.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    log.debug("Change profession {} for {} from {}", profession, easyNPCEntity, serverPlayer);
-    easyNPCEntity.setProfession(profession);
+    log.debug("Change profession {} for {} from {}", profession, easyNPC, serverPlayer);
+    professionData.setProfession(profession);
   }
 
   public Profession getProfession() {

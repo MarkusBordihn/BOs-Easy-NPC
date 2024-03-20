@@ -19,8 +19,9 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -76,29 +77,32 @@ public class MessageModelEquipmentVisibilityChange extends NetworkMessage {
       return;
     }
 
+    // Validate Model data.
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+    if (modelData == null) {
+      log.error("Invalid model data for {} from {}", message, serverPlayer);
+      return;
+    }
+
     // Validate Visibility.
     boolean visible = message.isVisible();
 
     // Perform action.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     log.debug(
-        "Change {} visibility to {} for {} from {}",
-        equipmentSlot,
-        visible,
-        easyNPCEntity,
-        serverPlayer);
+        "Change {} visibility to {} for {} from {}", equipmentSlot, visible, easyNPC, serverPlayer);
     switch (equipmentSlot) {
       case HEAD:
-        easyNPCEntity.setModelHelmetVisible(visible);
+        modelData.setModelHelmetVisible(visible);
         break;
       case CHEST:
-        easyNPCEntity.setModelChestplateVisible(visible);
+        modelData.setModelChestplateVisible(visible);
         break;
       case LEGS:
-        easyNPCEntity.setModelLeggingsVisible(visible);
+        modelData.setModelLeggingsVisible(visible);
         break;
       case FEET:
-        easyNPCEntity.setModelBootsVisible(visible);
+        modelData.setModelBootsVisible(visible);
         break;
       default:
         log.error("Invalid equipmentSlot {} for {} from {}", equipmentSlot, message, serverPlayer);

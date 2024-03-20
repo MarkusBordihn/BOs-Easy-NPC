@@ -29,7 +29,6 @@ import net.minecraft.world.level.Level;
 
 public class Zombie extends EasyNPCEntity {
 
-  // General Information
   public static final String ID = "zombie";
   public static final String ID_DROWNED = "drowned";
   public static final String ID_HUSK = "husk";

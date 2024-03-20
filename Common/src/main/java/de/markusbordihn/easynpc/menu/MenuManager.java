@@ -17,24 +17,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity;
+package de.markusbordihn.easynpc.menu;
 
-public enum Profession {
-  // @formatter:off
-  NONE,
-  ARMORER,
-  BUTCHER,
-  CARTOGRAPHER,
-  CLERIC,
-  FARMER,
-  FISHERMAN,
-  FLETCHER,
-  LEATHERWORKER,
-  LIBRARIAN,
-  MASON,
-  NITWIT,
-  SHEPHERD,
-  TOOLSMITH,
-  WEAPONSMITH
-  // @formatter:on
+public class MenuManager {
+
+  private static MenuHandlerInterface menuHandlerInterface;
+
+  private MenuManager() {
+  }
+
+  public static void registerMenuHandler(MenuHandlerInterface menuHandler) {
+    menuHandlerInterface = menuHandler;
+  }
+
+  public static MenuHandlerInterface getMenuHandler() {
+    return menuHandlerInterface;
+  }
 }

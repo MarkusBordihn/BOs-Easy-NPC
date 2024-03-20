@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
-import de.markusbordihn.easynpc.entity.Profession;
+import de.markusbordihn.easynpc.data.profession.Profession;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import net.minecraft.nbt.CompoundTag;

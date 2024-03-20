@@ -43,14 +43,15 @@ public class CustomHumanoidArmorLayer<
   @Override
   public ResourceLocation getArmorResource(
       Entity entity, ItemStack itemStack, EquipmentSlot equipmentSlot, @Nullable String type) {
-    ModelData<T> modelData =
-        entity instanceof EasyNPC easyNPC ? easyNPC.getEasyNPCModelData() : null;
-    if (modelData != null
-        && ((equipmentSlot == EquipmentSlot.CHEST && modelData.isModelChestplateVisible())
-        || (equipmentSlot == EquipmentSlot.LEGS && modelData.isModelLeggingsVisible())
-        || (equipmentSlot == EquipmentSlot.FEET && modelData.isModelBootsVisible())
-        || (equipmentSlot == EquipmentSlot.HEAD && modelData.isModelHelmetVisible()))) {
-      return super.getArmorResource(entity, itemStack, equipmentSlot, type);
+    if (entity instanceof EasyNPC<?> easyNPC) {
+      ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+      if (modelData != null
+          && ((equipmentSlot == EquipmentSlot.CHEST && modelData.isModelChestplateVisible())
+          || (equipmentSlot == EquipmentSlot.LEGS && modelData.isModelLeggingsVisible())
+          || (equipmentSlot == EquipmentSlot.FEET && modelData.isModelBootsVisible())
+          || (equipmentSlot == EquipmentSlot.HEAD && modelData.isModelHelmetVisible()))) {
+        return super.getArmorResource(entity, itemStack, equipmentSlot, type);
+      }
     }
     return Constants.BLANK_ENTITY_TEXTURE;
   }

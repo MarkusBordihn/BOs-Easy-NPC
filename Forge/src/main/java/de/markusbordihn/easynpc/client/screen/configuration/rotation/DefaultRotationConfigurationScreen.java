@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.menu.configuration.rotation.DefaultRotationConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import javax.annotation.Nonnull;
@@ -44,6 +45,7 @@ import net.minecraftforge.client.event.ScreenEvent.BackgroundRendered;
 public class DefaultRotationConfigurationScreen
     extends RotationConfigurationScreen<DefaultRotationConfigurationMenu> {
 
+  protected final ModelData<?> modelData;
   // Rotation Coordinates EditBoxes
   protected Button rootRotationXResetButton;
   protected Button rootRotationYResetButton;
@@ -52,7 +54,6 @@ public class DefaultRotationConfigurationScreen
   protected SliderButton rootRotationYSliderButton;
   protected SliderButton rootRotationZSliderButton;
   protected Checkbox rootRotationCheckbox;
-
   // Rotations
   protected float rootRotationX = 0f;
   protected float rootRotationY = 0f;
@@ -61,6 +62,7 @@ public class DefaultRotationConfigurationScreen
   public DefaultRotationConfigurationScreen(
       DefaultRotationConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
+    this.modelData = this.easyNPC.getEasyNPCModelData();
   }
 
   @Override
@@ -71,7 +73,7 @@ public class DefaultRotationConfigurationScreen
     this.defaultRotationButton.active = false;
 
     // Root Rotations
-    Rotations rootRotations = this.entity.getModelRootRotation();
+    Rotations rootRotations = this.modelData.getModelRootRotation();
     this.rootRotationX = rootRotations.getX();
     this.rootRotationY = rootRotations.getY();
     this.rootRotationZ = rootRotations.getZ();
@@ -173,7 +175,7 @@ public class DefaultRotationConfigurationScreen
                 this.rootRotationZResetButton.x + this.rootRotationZResetButton.getWidth() + 5,
                 this.contentTopPos + 2,
                 "lock_rotation",
-                this.entity.getModelLockRotation(),
+                this.modelData.getModelLockRotation(),
                 checkbox ->
                     NetworkMessageHandler.modelLockRotationChange(uuid, checkbox.selected())));
   }

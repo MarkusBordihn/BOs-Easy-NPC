@@ -20,9 +20,17 @@
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.menu.MenuManager;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 
 public interface ConfigurationData<T extends LivingEntity> extends EasyNPC<T> {
+
+  default void openMainConfigurationMenu(ServerPlayer serverPlayer) {
+    MenuManager.getMenuHandler()
+        .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, this, 0);
+  }
 
   default boolean supportsConfiguration() {
     return true;

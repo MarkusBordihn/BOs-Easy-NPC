@@ -19,8 +19,9 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -97,52 +98,59 @@ public class MessageAdvancedTrading extends NetworkMessage {
       return;
     }
 
+    // Validate trading data
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    TradingData<?> tradingData = easyNPC.getEasyNPCTradingData();
+    if (tradingData == null) {
+      log.error("Trading data for {} is not available for {}", easyNPC, serverPlayer);
+      return;
+    }
+
     // Perform action.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     switch (tradingValueType) {
       case RESETS_EVERY_MIN:
         log.debug(
             "Set trading resets every min to {} for {} from {}",
             tradingValue,
-            easyNPCEntity,
+            easyNPC,
             serverPlayer);
-        easyNPCEntity.setTradingResetsEveryMin((int) tradingValue);
+        tradingData.setTradingResetsEveryMin((int) tradingValue);
         break;
       case MAX_USES:
         log.debug(
             "Set advanced trading max uses {}# for {} to {} by {}",
             tradingOfferIndex,
-            easyNPCEntity,
+            easyNPC,
             tradingValue,
             serverPlayer);
-        easyNPCEntity.setAdvancedTradingMaxUses(tradingOfferIndex, (int) tradingValue);
+        tradingData.setAdvancedTradingMaxUses(tradingOfferIndex, (int) tradingValue);
         break;
       case XP:
         log.debug(
             "Set advanced trading xp {}# for {} to {} by {}",
             tradingOfferIndex,
-            easyNPCEntity,
+            easyNPC,
             tradingValue,
             serverPlayer);
-        easyNPCEntity.setAdvancedTradingXp(tradingOfferIndex, (int) tradingValue);
+        tradingData.setAdvancedTradingXp(tradingOfferIndex, (int) tradingValue);
         break;
       case PRICE_MULTIPLIER:
         log.debug(
             "Set advanced trading price multiplier {}# for {} to {} by {}",
             tradingOfferIndex,
-            easyNPCEntity,
+            easyNPC,
             tradingValue,
             serverPlayer);
-        easyNPCEntity.setAdvancedTradingPriceMultiplier(tradingOfferIndex, tradingValue);
+        tradingData.setAdvancedTradingPriceMultiplier(tradingOfferIndex, tradingValue);
         break;
       case DEMAND:
         log.debug(
             "Set advanced trading demand {}# for {} to {} by {}",
             tradingOfferIndex,
-            easyNPCEntity,
+            easyNPC,
             tradingValue,
             serverPlayer);
-        easyNPCEntity.setAdvancedTradingDemand(tradingOfferIndex, (int) tradingValue);
+        tradingData.setAdvancedTradingDemand(tradingOfferIndex, (int) tradingValue);
         break;
       default:
         log.error(

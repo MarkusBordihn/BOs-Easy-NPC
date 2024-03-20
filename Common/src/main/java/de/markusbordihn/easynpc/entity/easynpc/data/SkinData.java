@@ -71,6 +71,10 @@ public interface SkinData<T extends LivingEntity> extends EasyNPC<T> {
     EntityDataSerializers.registerSerializer(SKIN_TYPE);
   }
 
+  default int getEntitySkinScaling() {
+    return 30;
+  }
+
   default String getSkinName() {
     return getEasyNPCData(EASY_NPC_DATA_SKIN_NAME);
   }

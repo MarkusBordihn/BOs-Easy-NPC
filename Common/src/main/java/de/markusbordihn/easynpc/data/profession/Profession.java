@@ -17,15 +17,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity;
+package de.markusbordihn.easynpc.data.profession;
 
-import de.markusbordihn.easynpc.Constants;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-public interface EasyNPCEntityInterface {
-
-  Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  EasyNPCEntity getEntity();
+public enum Profession {
+  // @formatter:off
+  NONE,
+  ARMORER,
+  BUTCHER,
+  CARTOGRAPHER,
+  CLERIC,
+  FARMER,
+  FISHERMAN,
+  FLETCHER,
+  LEATHERWORKER,
+  LIBRARIAN,
+  MASON,
+  NITWIT,
+  SHEPHERD,
+  TOOLSMITH,
+  WEAPONSMITH
+  // @formatter:on
 }

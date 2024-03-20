@@ -151,7 +151,7 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:framework-549225:${project.framework_mod}")
   }
   if (project.project_mmo_mod) {
-    // runtimeOnly fg.deobf("curse.maven:project-mmo-353935:${project.project_mmo_mod}")
+    runtimeOnly fg.deobf("curse.maven:project-mmo-353935:${project.project_mmo_mod}")
   }
   if (project.better_combat_mod && project.cloth_config_mod && project.player_animator_mod) {
     runtimeOnly fg.deobf("curse.maven:better-combat-639842:${project.better_combat_mod}")

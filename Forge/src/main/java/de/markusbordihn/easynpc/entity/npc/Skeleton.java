@@ -29,7 +29,6 @@ import net.minecraft.world.level.Level;
 
 public class Skeleton extends EasyNPCEntity {
 
-  // General Information
   public static final String ID = "skeleton";
   public static final String ID_STRAY = "stray";
   public static final String ID_WITHER_SKELETON = "wither_skeleton";

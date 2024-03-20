@@ -38,16 +38,17 @@ import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DialogCommand implements Command<CommandSourceStack> {
+public class DialogCommand {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final DialogCommand command = new DialogCommand();
+  private DialogCommand() {
+  }
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("dialog")
         .requires(cs -> cs.hasPermission(Commands.LEVEL_GAMEMASTERS))
-        .executes(command)
+        .executes(DialogCommand::openDialog)
         .then(
             Commands.literal("open")
                 .then(
@@ -55,17 +56,25 @@ public class DialogCommand implements Command<CommandSourceStack> {
                         .suggests(SuggestionProvider::suggestEasyNPCs)
                         .then(
                             Commands.argument("player", EntityArgument.player())
-                                .executes(command)
+                                .executes(DialogCommand::openDialog)
                                 .then(
                                     Commands.argument("dialog", StringArgumentType.string())
-                                        .executes(command)))));
+                                        .executes(DialogCommand::openDialog)))));
   }
 
-  @Override
-  public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+  public static int openDialog(CommandContext<CommandSourceStack> context)
+      throws CommandSyntaxException {
     CommandSourceStack commandSource = context.getSource();
     UUID uuid = UuidArgument.getUuid(context, "uuid");
-    ServerPlayer serverPlayer = EntityArgument.getPlayer(context, "player");
+
+    ServerPlayer serverPlayer;
+    try {
+      serverPlayer = EntityArgument.getPlayer(context, "player");
+    } catch (Exception e) {
+      log.error("Failed to get player from context: {}", e.getMessage());
+      return 0;
+    }
+
     String dialogLabel = "";
     try {
       dialogLabel = StringArgumentType.getString(context, "dialog");
