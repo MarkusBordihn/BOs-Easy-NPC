@@ -30,7 +30,6 @@ import net.minecraft.world.level.Level;
 
 public class Cat extends EasyNPCEntity {
 
-  // General Information
   public static final String ID = "cat";
   public static final String NAME = "Cat";
 

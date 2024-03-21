@@ -28,7 +28,6 @@ import net.minecraft.world.level.Level;
 
 public class Humanoid extends EasyNPCEntity {
 
-  // General Information
   public static final String ID = "humanoid";
   public static final String NAME = "Humanoid";
 

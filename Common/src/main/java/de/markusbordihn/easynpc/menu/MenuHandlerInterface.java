@@ -17,49 +17,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.network;
+package de.markusbordihn.easynpc.menu;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import java.util.Random;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import java.util.UUID;
 import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class NetworkMessage {
+public interface MenuHandlerInterface {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  protected static final UUID EMPTY_UUID = new UUID(0L, 0L);
+  void openConfigurationMenu(
+      ConfigurationType configurationType,
+      ServerPlayer serverPlayer,
+      EasyNPC<?> easyNPC,
+      int pageIndex);
 
-  protected static final Random RANDOM = new Random();
+  void openDialogMenu(ServerPlayer serverPlayer, EasyNPC<?> easyNPC, UUID dialogId, int pageIndex);
 
-  protected final UUID uuid;
+  void openDialogEditorMenu(
+      ServerPlayer serverPlayer,
+      EasyNPC<?> easyNPC,
+      UUID dialogId,
+      ConfigurationType formerConfigurationType,
+      int pageIndex);
 
-  public NetworkMessage(UUID uuid) {
-    this.uuid = uuid;
-  }
+  void openDialogButtonEditorMenu(
+      ServerPlayer serverPlayer,
+      EasyNPC<?> easyNPC,
+      UUID dialogId,
+      UUID dialogButtonId,
+      ConfigurationType formerConfigurationType,
+      int pageIndex);
 
-  public static boolean checkAccess(UUID uuid, ServerPlayer serverPlayer) {
-    // Validate entity.
-    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPC == null) {
-      log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
-      return false;
-    }
+  void openDialogTextEditorMenu(
+      ServerPlayer serverPlayer,
+      EasyNPC<?> easyNPC,
+      UUID dialogId,
+      ConfigurationType formerConfigurationType,
+      int pageIndex);
 
-    // Validate access.
-    if (!LivingEntityManager.hasAccess(uuid, serverPlayer)) {
-      log.error("User {} has no access to Easy NPC with uuid {}.", serverPlayer, uuid);
-      return false;
-    }
-
-    return true;
-  }
-
-  public UUID getUUID() {
-    return this.uuid;
+  default void openConfigurationMenu(
+      ConfigurationType configurationType, ServerPlayer serverPlayer, EasyNPC<?> easyNPC) {
+    openConfigurationMenu(configurationType, serverPlayer, easyNPC, 0);
   }
 }

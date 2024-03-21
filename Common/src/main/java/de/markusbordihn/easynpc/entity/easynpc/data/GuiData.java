@@ -17,15 +17,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity;
+package de.markusbordihn.easynpc.entity.easynpc.data;
 
-import de.markusbordihn.easynpc.Constants;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import net.minecraft.world.entity.LivingEntity;
 
-public interface EasyNPCEntityInterface {
+public interface GuiData<T extends LivingEntity> extends EasyNPC<T> {
 
-  Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  default int getEntityGuiScaling() {
+    return 45;
+  }
 
-  EasyNPCEntity getEntity();
+  default int getEntityGuiTop() {
+    return 0;
+  }
+
+  default int getEntityGuiLeft() {
+    return 0;
+  }
 }

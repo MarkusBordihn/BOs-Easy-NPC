@@ -34,7 +34,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogScreenLayout;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import java.util.ArrayList;
@@ -67,7 +67,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
   // Data access
   protected final ActionEventSet actionEventDataSet;
   protected final DialogDataSet dialogDataSet;
-  protected final EasyNPCEntity entity;
+  protected final EasyNPC<?> easyNPC;
   protected final UUID dialogId;
   protected final UUID uuid;
   protected final int pageIndex;
@@ -96,7 +96,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
   public DialogScreen(DialogMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
     this.uuid = menu.getUUID();
-    this.entity = menu.getEntity();
+    this.easyNPC = menu.getEasyNPC();
     this.actionEventDataSet = menu.getActionEventSet();
     this.dialogDataSet = menu.getDialogDataSet();
     this.dialogType = menu.getDialogDataSet().getType();
@@ -157,7 +157,8 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     }
     Minecraft minecraft = this.minecraft;
     String dialogText =
-        dialogData.getDialogText(entity, minecraft != null ? minecraft.player : null);
+        dialogData.getDialogText(
+            this.easyNPC.getLivingEntity(), minecraft != null ? minecraft.player : null);
     if (dialogText == null || dialogText.isBlank()) {
       return;
     }
@@ -366,7 +367,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
 
   @Override
   public void init() {
-    if (this.entity == null) {
+    if (this.easyNPC == null) {
       return;
     }
     super.init();
@@ -500,7 +501,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
 
   @Override
   public void render(PoseStack poseStack, int x, int y, float partialTicks) {
-    if (this.entity == null) {
+    if (this.easyNPC == null) {
       return;
     }
 
@@ -509,7 +510,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     this.yMouse = y;
 
     // Render Avatar
-    int avatarPositionTop = 60 + this.entity.getEntityDialogTop();
+    int avatarPositionTop = 60 + this.easyNPC.getEasyNPCDialogData().getEntityDialogTop();
     int left = this.leftPos + 40;
     int top = this.topPos + 70 + avatarPositionTop;
     ScreenHelper.renderEntityDialog(
@@ -517,7 +518,7 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
         top,
         Math.round(left - 140 - (this.xMouse * 0.25)),
         Math.round(top - 120 - (this.yMouse * 0.5)),
-        this.entity);
+        this.easyNPC);
 
     // Render Dialog
     renderDialog(poseStack);

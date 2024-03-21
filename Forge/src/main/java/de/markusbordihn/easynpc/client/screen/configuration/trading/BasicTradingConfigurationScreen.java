@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.client.screen.components.PositiveNumberField;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.data.trading.TradingSettings;
+import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.menu.configuration.trading.BasicTradingConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import net.minecraft.client.gui.components.EditBox;
@@ -39,6 +40,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BasicTradingConfigurationScreen
     extends TradingConfigurationScreen<BasicTradingConfigurationMenu> {
 
+  protected final TradingData<?> tradingData;
   // Trading Options
   protected EditBox resetsEveryMinEditBox;
   protected EditBox maxUsesEditBox;
@@ -47,6 +49,7 @@ public class BasicTradingConfigurationScreen
   public BasicTradingConfigurationScreen(
       BasicTradingConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
+    this.tradingData = this.easyNPC.getEasyNPCTradingData();
   }
 
   private void onResetsEveryMinEditBoxChanged(String text) {
@@ -78,7 +81,7 @@ public class BasicTradingConfigurationScreen
     this.resetsEveryMinEditBox =
         new TextField(this.font, this.contentLeftPos + 166, this.contentTopPos + 122, 32);
     this.resetsEveryMinEditBox.setMaxLength(3);
-    this.resetsEveryMinEditBox.setValue(this.entity.getTradingResetsEveryMin() + "");
+    this.resetsEveryMinEditBox.setValue(this.tradingData.getTradingResetsEveryMin() + "");
     this.resetsEveryMinEditBox.setResponder(this::onResetsEveryMinEditBoxChanged);
     this.resetsEveryMinEditBox.setFilter(TradingConfigurationScreen::isNumericValue);
     this.addRenderableWidget(this.resetsEveryMinEditBox);
@@ -87,7 +90,7 @@ public class BasicTradingConfigurationScreen
     this.maxUsesEditBox =
         new PositiveNumberField(this.font, this.contentLeftPos + 166, this.contentTopPos + 145, 32);
     this.maxUsesEditBox.setMaxLength(4);
-    this.maxUsesEditBox.setValue(this.entity.getBasicTradingMaxUses() + "");
+    this.maxUsesEditBox.setValue(this.tradingData.getBasicTradingMaxUses() + "");
     this.maxUsesEditBox.setResponder(this::onMaxUsesEditBoxChanged);
     this.addRenderableWidget(this.maxUsesEditBox);
 
@@ -95,7 +98,7 @@ public class BasicTradingConfigurationScreen
     this.rewardExpEditBox =
         new TextField(this.font, this.contentLeftPos + 166, this.contentTopPos + 168, 32);
     this.rewardExpEditBox.setMaxLength(3);
-    this.rewardExpEditBox.setValue(this.entity.getBasicTradingRewardExp() + "");
+    this.rewardExpEditBox.setValue(this.tradingData.getBasicTradingRewardExp() + "");
     this.rewardExpEditBox.setResponder(this::onRewardExpEditBoxChanged);
     this.rewardExpEditBox.setFilter(TradingConfigurationScreen::isNumericValue);
     this.addRenderableWidget(this.rewardExpEditBox);

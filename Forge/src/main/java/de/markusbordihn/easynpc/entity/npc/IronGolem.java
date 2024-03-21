@@ -29,7 +29,6 @@ import net.minecraft.world.level.Level;
 
 public class IronGolem extends EasyNPCEntity {
 
-  // General Information
   public static final String ID = "iron_golem";
   public static final String NAME = "Iron Golem";
 

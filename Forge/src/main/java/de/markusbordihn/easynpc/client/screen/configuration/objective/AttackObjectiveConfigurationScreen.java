@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.client.screen.configuration.objective;
 
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
-import de.markusbordihn.easynpc.data.objective.ObjectiveData;
+import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.menu.configuration.objective.AttackObjectiveConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
@@ -77,12 +77,12 @@ public class AttackObjectiveConfigurationScreen
                 ObjectiveType.MELEE_ATTACK.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.MELEE_ATTACK),
                 checkbox -> {
-                  ObjectiveData objectiveData =
+                  ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.MELEE_ATTACK, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -94,12 +94,12 @@ public class AttackObjectiveConfigurationScreen
                 ObjectiveType.ZOMBIE_ATTACK.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.ZOMBIE_ATTACK),
                 checkbox -> {
-                  ObjectiveData objectiveData =
+                  ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.ZOMBIE_ATTACK, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -113,12 +113,12 @@ public class AttackObjectiveConfigurationScreen
                 ObjectiveType.CROSSBOW_ATTACK.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.CROSSBOW_ATTACK),
                 checkbox -> {
-                  ObjectiveData objectiveData =
+                  ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.CROSSBOW_ATTACK, 3);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -131,12 +131,12 @@ public class AttackObjectiveConfigurationScreen
                 ObjectiveType.BOW_ATTACK.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.BOW_ATTACK),
                 checkbox -> {
-                  ObjectiveData objectiveData =
+                  ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.BOW_ATTACK, 4);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -150,12 +150,12 @@ public class AttackObjectiveConfigurationScreen
                 ObjectiveType.ATTACK_PLAYER.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.ATTACK_PLAYER),
                 checkbox -> {
-                  ObjectiveData objectiveData =
+                  ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_PLAYER, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -168,12 +168,12 @@ public class AttackObjectiveConfigurationScreen
                 ObjectiveType.ATTACK_VILLAGER.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.ATTACK_VILLAGER),
                 checkbox -> {
-                  ObjectiveData objectiveData =
+                  ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_VILLAGER, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -187,12 +187,12 @@ public class AttackObjectiveConfigurationScreen
                 ObjectiveType.ATTACK_ANIMAL.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.ATTACK_ANIMAL),
                 checkbox -> {
-                  ObjectiveData objectiveData =
+                  ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_ANIMAL, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -205,12 +205,12 @@ public class AttackObjectiveConfigurationScreen
                 ObjectiveType.ATTACK_MONSTER.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.ATTACK_MONSTER),
                 checkbox -> {
-                  ObjectiveData objectiveData =
+                  ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_MONSTER, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -224,12 +224,12 @@ public class AttackObjectiveConfigurationScreen
                 ObjectiveType.ATTACK_MOB.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.ATTACK_MOB),
                 checkbox -> {
-                  ObjectiveData objectiveData =
+                  ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_MOB, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -243,13 +243,13 @@ public class AttackObjectiveConfigurationScreen
                 ObjectiveType.ATTACK_MOB_WITHOUT_CREEPER.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.ATTACK_MOB_WITHOUT_CREEPER),
                 checkbox -> {
-                  ObjectiveData objectiveData =
+                  ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(
                           ObjectiveType.ATTACK_MOB_WITHOUT_CREEPER, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
   }

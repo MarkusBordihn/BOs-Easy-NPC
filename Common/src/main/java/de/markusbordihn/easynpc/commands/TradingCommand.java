@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.commands;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.ArgumentBuilder;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.access.EasyNPCAccessManager;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
@@ -83,7 +82,7 @@ public class TradingCommand {
                                     context.getSource(), UuidArgument.getUuid(context, "uuid")))));
   }
 
-  private static int reset(CommandSourceStack context, UUID uuid) throws CommandSyntaxException {
+  private static int reset(CommandSourceStack context, UUID uuid) {
     if (uuid == null) {
       return 0;
     }
@@ -108,8 +107,7 @@ public class TradingCommand {
     return Command.SINGLE_SUCCESS;
   }
 
-  private static int open(CommandSourceStack context, UUID uuid, ServerPlayer serverPlayer)
-      throws CommandSyntaxException {
+  private static int open(CommandSourceStack context, UUID uuid, ServerPlayer serverPlayer) {
     if (uuid == null || serverPlayer == null) {
       return 0;
     }

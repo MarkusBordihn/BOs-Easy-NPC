@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.client.screen.configuration.objective;
 
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
-import de.markusbordihn.easynpc.data.objective.ObjectiveData;
+import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.menu.configuration.objective.BasicObjectiveConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
@@ -70,12 +70,13 @@ public class BasicObjectiveConfigurationScreen
                 ObjectiveType.RANDOM_STROLL.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.RANDOM_STROLL),
                 checkbox -> {
-                  ObjectiveData objectiveData = new ObjectiveData(ObjectiveType.RANDOM_STROLL, 5);
-                  objectiveData.setSpeedModifier(0.8F);
+                  ObjectiveDataEntry objectiveDataEntry =
+                      new ObjectiveDataEntry(ObjectiveType.RANDOM_STROLL, 5);
+                  objectiveDataEntry.setSpeedModifier(0.8F);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -88,13 +89,13 @@ public class BasicObjectiveConfigurationScreen
                 ObjectiveType.MOVE_BACK_TO_HOME.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.MOVE_BACK_TO_HOME),
                 checkbox -> {
-                  ObjectiveData objectiveData =
-                      new ObjectiveData(ObjectiveType.MOVE_BACK_TO_HOME, 3);
-                  objectiveData.setSpeedModifier(0.6F);
+                  ObjectiveDataEntry objectiveDataEntry =
+                      new ObjectiveDataEntry(ObjectiveType.MOVE_BACK_TO_HOME, 3);
+                  objectiveDataEntry.setSpeedModifier(0.6F);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -108,13 +109,13 @@ public class BasicObjectiveConfigurationScreen
                 ObjectiveType.WATER_AVOIDING_RANDOM_STROLL.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.WATER_AVOIDING_RANDOM_STROLL),
                 checkbox -> {
-                  ObjectiveData objectiveData =
-                      new ObjectiveData(ObjectiveType.WATER_AVOIDING_RANDOM_STROLL, 5);
-                  objectiveData.setSpeedModifier(0.6F);
+                  ObjectiveDataEntry objectiveDataEntry =
+                      new ObjectiveDataEntry(ObjectiveType.WATER_AVOIDING_RANDOM_STROLL, 5);
+                  objectiveDataEntry.setSpeedModifier(0.6F);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -128,13 +129,13 @@ public class BasicObjectiveConfigurationScreen
                 ObjectiveType.MOVE_THROUGH_VILLAGE.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.MOVE_THROUGH_VILLAGE),
                 checkbox -> {
-                  ObjectiveData objectiveData =
-                      new ObjectiveData(ObjectiveType.MOVE_THROUGH_VILLAGE, 5);
-                  objectiveData.setSpeedModifier(0.6F);
+                  ObjectiveDataEntry objectiveDataEntry =
+                      new ObjectiveDataEntry(ObjectiveType.MOVE_THROUGH_VILLAGE, 5);
+                  objectiveDataEntry.setSpeedModifier(0.6F);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -148,13 +149,13 @@ public class BasicObjectiveConfigurationScreen
                 ObjectiveType.MOVE_BACK_TO_VILLAGE.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.MOVE_BACK_TO_VILLAGE),
                 checkbox -> {
-                  ObjectiveData objectiveData =
-                      new ObjectiveData(ObjectiveType.MOVE_BACK_TO_VILLAGE, 3);
-                  objectiveData.setSpeedModifier(0.6F);
+                  ObjectiveDataEntry objectiveDataEntry =
+                      new ObjectiveDataEntry(ObjectiveType.MOVE_BACK_TO_VILLAGE, 3);
+                  objectiveDataEntry.setSpeedModifier(0.6F);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -168,13 +169,13 @@ public class BasicObjectiveConfigurationScreen
                 ObjectiveType.RANDOM_STROLL_IN_VILLAGE.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.RANDOM_STROLL_IN_VILLAGE),
                 checkbox -> {
-                  ObjectiveData objectiveData =
-                      new ObjectiveData(ObjectiveType.RANDOM_STROLL_IN_VILLAGE, 2);
-                  objectiveData.setSpeedModifier(0.6F);
+                  ObjectiveDataEntry objectiveDataEntry =
+                      new ObjectiveDataEntry(ObjectiveType.RANDOM_STROLL_IN_VILLAGE, 2);
+                  objectiveDataEntry.setSpeedModifier(0.6F);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -188,12 +189,13 @@ public class BasicObjectiveConfigurationScreen
                 ObjectiveType.RANDOM_SWIMMING.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.RANDOM_SWIMMING),
                 checkbox -> {
-                  ObjectiveData objectiveData = new ObjectiveData(ObjectiveType.RANDOM_SWIMMING, 4);
-                  objectiveData.setSpeedModifier(0.8F);
+                  ObjectiveDataEntry objectiveDataEntry =
+                      new ObjectiveDataEntry(ObjectiveType.RANDOM_SWIMMING, 4);
+                  objectiveDataEntry.setSpeedModifier(0.8F);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -207,12 +209,13 @@ public class BasicObjectiveConfigurationScreen
                 ObjectiveType.PANIC.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.PANIC),
                 checkbox -> {
-                  ObjectiveData objectiveData = new ObjectiveData(ObjectiveType.PANIC, 1);
-                  objectiveData.setSpeedModifier(1.0D);
+                  ObjectiveDataEntry objectiveDataEntry =
+                      new ObjectiveDataEntry(ObjectiveType.PANIC, 1);
+                  objectiveDataEntry.setSpeedModifier(1.0D);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -226,11 +229,12 @@ public class BasicObjectiveConfigurationScreen
                 ObjectiveType.AVOID_SUN.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.AVOID_SUN),
                 checkbox -> {
-                  ObjectiveData objectiveData = new ObjectiveData(ObjectiveType.AVOID_SUN, 2);
+                  ObjectiveDataEntry objectiveDataEntry =
+                      new ObjectiveDataEntry(ObjectiveType.AVOID_SUN, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -243,12 +247,13 @@ public class BasicObjectiveConfigurationScreen
                 ObjectiveType.FLEE_SUN.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.FLEE_SUN),
                 checkbox -> {
-                  ObjectiveData objectiveData = new ObjectiveData(ObjectiveType.FLEE_SUN, 3);
-                  objectiveData.setSpeedModifier(1.0D);
+                  ObjectiveDataEntry objectiveDataEntry =
+                      new ObjectiveDataEntry(ObjectiveType.FLEE_SUN, 3);
+                  objectiveDataEntry.setSpeedModifier(1.0D);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveData);
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveData);
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
   }

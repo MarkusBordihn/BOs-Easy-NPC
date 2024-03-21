@@ -19,8 +19,9 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -62,12 +63,18 @@ public class MessageModelLockRotationChange extends NetworkMessage {
       return;
     }
 
+    // Validate Model data.
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+    if (modelData == null) {
+      log.error("Invalid model data for {} from {}", message, serverPlayer);
+      return;
+    }
+
     // Perform action.
     boolean lockRotation = message.getLockRotation();
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    log.debug(
-        "Reset and lock rotation {} for {} from {}", lockRotation, easyNPCEntity, serverPlayer);
-    easyNPCEntity.setModelLockRotation(lockRotation);
+    log.debug("Reset and lock rotation {} for {} from {}", lockRotation, easyNPC, serverPlayer);
+    modelData.setModelLockRotation(lockRotation);
   }
 
   public boolean getLockRotation() {
