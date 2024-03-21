@@ -20,8 +20,9 @@
 package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -67,11 +68,18 @@ public class MessageModelPoseChange extends NetworkMessage {
       return;
     }
 
+    // Validate Model data.
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+    if (modelData == null) {
+      log.error("Invalid model data for {} from {}", message, serverPlayer);
+      return;
+    }
+
     // Perform action.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    log.debug("Change modelPose {} for {} from {}", modelPose, easyNPCEntity, serverPlayer);
-    easyNPCEntity.setModelPose(modelPose);
-    easyNPCEntity.setPose(Pose.STANDING);
+    log.debug("Change modelPose {} for {} from {}", modelPose, easyNPC, serverPlayer);
+    modelData.setModelPose(modelPose);
+    easyNPC.getEntity().setPose(Pose.STANDING);
   }
 
   public ModelPose getModelPose() {

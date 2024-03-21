@@ -27,6 +27,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.phys.Vec3;
 
@@ -56,7 +57,13 @@ public interface NavigationData<T extends LivingEntity> extends EasyNPC<T> {
     this.getEasyNPCEntity().moveTo(pos);
   }
 
-  GroundPathNavigation getGroundPathNavigation();
+  default GroundPathNavigation getGroundPathNavigation() {
+    if (this instanceof Mob mob
+        && mob.getNavigation() instanceof GroundPathNavigation groundPathNavigation) {
+      return groundPathNavigation;
+    }
+    return null;
+  }
 
   default void defineSynchedNavigationData() {
     this.getEasyNPCEntity().getEntityData().define(DATA_HOME_POSITION, BlockPos.ZERO);

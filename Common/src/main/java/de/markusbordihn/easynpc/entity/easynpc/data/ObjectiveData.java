@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.custom.CustomDataAccessor;
 import de.markusbordihn.easynpc.data.custom.CustomDataIndex;
 import de.markusbordihn.easynpc.data.entity.CustomEntityData;
+import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -144,10 +145,9 @@ public interface ObjectiveData<T extends LivingEntity> extends EasyNPC<T> {
     return getObjectiveDataSet() != null && getObjectiveDataSet().hasObjective(objectiveId);
   }
 
-  default boolean hasObjective(
-      de.markusbordihn.easynpc.data.objective.ObjectiveData objectiveData) {
+  default boolean hasObjective(ObjectiveDataEntry objectiveDataEntry) {
     return getObjectiveDataSet() != null
-        && getObjectiveDataSet().hasObjective(objectiveData.getId());
+        && getObjectiveDataSet().hasObjective(objectiveDataEntry.getId());
   }
 
   default boolean hasObjectives() {
@@ -240,13 +240,12 @@ public interface ObjectiveData<T extends LivingEntity> extends EasyNPC<T> {
     if (this.isClientSide()) {
       return;
     }
-    for (de.markusbordihn.easynpc.data.objective.ObjectiveData objectiveData :
-        getObjectiveDataSet().getObjectives()) {
-      if (objectiveData != null
-          && objectiveData.getType() != ObjectiveType.NONE
-          && (!objectiveData.hasValidTarget(this) || !objectiveData.isRegistered())) {
-        log.debug("Refreshing Objective {} for {}", objectiveData, this);
-        addOrUpdateCustomObjective(objectiveData);
+    for (ObjectiveDataEntry objectiveDataEntry : getObjectiveDataSet().getObjectives()) {
+      if (objectiveDataEntry != null
+          && objectiveDataEntry.getType() != ObjectiveType.NONE
+          && (!objectiveDataEntry.hasValidTarget(this) || !objectiveDataEntry.isRegistered())) {
+        log.debug("Refreshing Objective {} for {}", objectiveDataEntry, this);
+        addOrUpdateCustomObjective(objectiveDataEntry);
       }
     }
   }
@@ -259,8 +258,7 @@ public interface ObjectiveData<T extends LivingEntity> extends EasyNPC<T> {
     log.info("Register attribute based objectives for {}", this);
 
     // Handle floating goals.
-    de.markusbordihn.easynpc.data.objective.ObjectiveData floatObjective =
-        new de.markusbordihn.easynpc.data.objective.ObjectiveData(ObjectiveType.FLOAT, 0);
+    ObjectiveDataEntry floatObjective = new ObjectiveDataEntry(ObjectiveType.FLOAT, 0);
     AttributeData<?> attributeData = this.getEasyNPCAttributeData();
     if (attributeData.getAttributeCanFloat()) {
       if (!this.hasObjective(floatObjective)) {
@@ -271,8 +269,7 @@ public interface ObjectiveData<T extends LivingEntity> extends EasyNPC<T> {
     }
 
     // Handle close door interaction goals.
-    de.markusbordihn.easynpc.data.objective.ObjectiveData closeDoorObjective =
-        new de.markusbordihn.easynpc.data.objective.ObjectiveData(ObjectiveType.CLOSE_DOOR, 8);
+    ObjectiveDataEntry closeDoorObjective = new ObjectiveDataEntry(ObjectiveType.CLOSE_DOOR, 8);
     if (attributeData.getAttributeCanCloseDoor()) {
       if (!this.hasObjective(closeDoorObjective)) {
         this.addOrUpdateCustomObjective(closeDoorObjective);
@@ -282,8 +279,7 @@ public interface ObjectiveData<T extends LivingEntity> extends EasyNPC<T> {
     }
 
     // Handle open door interaction goals.
-    de.markusbordihn.easynpc.data.objective.ObjectiveData openDoorObjective =
-        new de.markusbordihn.easynpc.data.objective.ObjectiveData(ObjectiveType.OPEN_DOOR, 8);
+    ObjectiveDataEntry openDoorObjective = new ObjectiveDataEntry(ObjectiveType.OPEN_DOOR, 8);
     if (attributeData.getAttributeCanOpenDoor()) {
       if (!this.hasObjective(closeDoorObjective)) {
         this.addOrUpdateCustomObjective(openDoorObjective);
@@ -297,15 +293,14 @@ public interface ObjectiveData<T extends LivingEntity> extends EasyNPC<T> {
     if (this.isClientSide()) {
       return;
     }
-    Set<de.markusbordihn.easynpc.data.objective.ObjectiveData> objectives =
-        this.getObjectiveDataSet().getObjectives();
+    Set<ObjectiveDataEntry> objectives = this.getObjectiveDataSet().getObjectives();
     if (objectives == null || objectives.isEmpty()) {
       return;
     }
     log.debug("Register custom objectives for {}", this);
     GoalSelector targetSelector = this.getEntityTargetSelector();
-    for (de.markusbordihn.easynpc.data.objective.ObjectiveData objectiveData : objectives) {
-      addOrUpdateCustomObjective(objectiveData);
+    for (ObjectiveDataEntry objectiveDataEntry : objectives) {
+      addOrUpdateCustomObjective(objectiveDataEntry);
     }
 
     // Reset targets if any target objective was registered.
@@ -315,21 +310,20 @@ public interface ObjectiveData<T extends LivingEntity> extends EasyNPC<T> {
     }
   }
 
-  default boolean addOrUpdateCustomObjective(
-      de.markusbordihn.easynpc.data.objective.ObjectiveData objectiveData) {
-    if (objectiveData == null || objectiveData.getType() == ObjectiveType.NONE) {
-      log.error("- Unable to add custom objective {} for {}!", objectiveData, this);
+  default boolean addOrUpdateCustomObjective(ObjectiveDataEntry objectiveDataEntry) {
+    if (objectiveDataEntry == null || objectiveDataEntry.getType() == ObjectiveType.NONE) {
+      log.error("- Unable to add custom objective {} for {}!", objectiveDataEntry, this);
       return false;
     }
 
     boolean addedCustomObjective = false;
 
     // Handle goal specific objectives.
-    Goal goal = objectiveData.getGoal(this);
+    Goal goal = objectiveDataEntry.getGoal(this);
     if (goal != null) {
       GoalSelector goalSelector = this.getEntityGoalSelector();
-      if (!objectiveData.hasValidTarget(this)) {
-        if (this.hasObjective(objectiveData.getId()) && objectiveData.isRegistered()) {
+      if (!objectiveDataEntry.hasValidTarget(this)) {
+        if (this.hasObjective(objectiveDataEntry.getId()) && objectiveDataEntry.isRegistered()) {
           log.warn(
               "- Removing existing goal {} for {} because target was not found! Will try later again.",
               goal,
@@ -339,49 +333,50 @@ public interface ObjectiveData<T extends LivingEntity> extends EasyNPC<T> {
       } else {
         log.debug("- Adding goal {} for {}", goal, this);
         goalSelector.removeGoal(goal);
-        goalSelector.addGoal(objectiveData.getPriority(), goal);
+        goalSelector.addGoal(objectiveDataEntry.getPriority(), goal);
         addedCustomObjective = true;
       }
     }
 
     // Handle target specific objectives.
-    Goal target = objectiveData.getTarget(this);
+    Goal target = objectiveDataEntry.getTarget(this);
     if (target != null) {
       log.debug("- Adding target goal {} for {}", target, this);
       GoalSelector targetSelector = this.getEntityTargetSelector();
       targetSelector.removeGoal(target);
-      targetSelector.addGoal(objectiveData.getPriority(), target);
+      targetSelector.addGoal(objectiveDataEntry.getPriority(), target);
       addedCustomObjective = true;
     }
 
     // Set registered flag.
-    objectiveData.setRegistered(addedCustomObjective);
+    objectiveDataEntry.setRegistered(addedCustomObjective);
 
     // Add objective data to set, regardless if goal or target was added.
-    getObjectiveDataSet().addObjective(objectiveData);
-    return objectiveData.isRegistered();
+    getObjectiveDataSet().addObjective(objectiveDataEntry);
+    return objectiveDataEntry.isRegistered();
   }
 
-  default boolean removeCustomObjective(
-      de.markusbordihn.easynpc.data.objective.ObjectiveData objectiveData) {
-    if (objectiveData == null || objectiveData.getType() == ObjectiveType.NONE) {
-      log.error("- Unable to remove custom objective {} for {}!", objectiveData, this);
+  default boolean removeCustomObjective(ObjectiveDataEntry objectiveDataEntry) {
+    if (objectiveDataEntry == null || objectiveDataEntry.getType() == ObjectiveType.NONE) {
+      log.error("- Unable to remove custom objective {} for {}!", objectiveDataEntry, this);
       return false;
     }
 
     // Make sure we have the correct objective data and not a copy or clone.
-    if (objectiveData.getId() != null && !objectiveData.getId().isEmpty()) {
-      objectiveData = this.getObjectiveDataSet().getObjective(objectiveData.getId());
-      if (objectiveData == null) {
+    if (objectiveDataEntry.getId() != null && !objectiveDataEntry.getId().isEmpty()) {
+      objectiveDataEntry = this.getObjectiveDataSet().getObjective(objectiveDataEntry.getId());
+      if (objectiveDataEntry == null) {
         log.error(
-            "- Unable to remove non-existing custom objective {} for {}!", objectiveData, this);
+            "- Unable to remove non-existing custom objective {} for {}!",
+            objectiveDataEntry,
+            this);
         return false;
       }
     }
 
     // Remove goal and target if available.
-    Goal goal = objectiveData.getGoal(this);
-    Goal target = objectiveData.getTarget(this);
+    Goal goal = objectiveDataEntry.getGoal(this);
+    Goal target = objectiveDataEntry.getTarget(this);
     if (goal == null && target == null) {
       log.error("- Unable to remove custom objective for {}!", this);
       return false;
@@ -397,17 +392,14 @@ public interface ObjectiveData<T extends LivingEntity> extends EasyNPC<T> {
       this.getEntityTargetSelector().removeGoal(target);
     }
 
-    return this.getObjectiveDataSet().removeObjective(objectiveData);
+    return this.getObjectiveDataSet().removeObjective(objectiveDataEntry);
   }
 
   default void registerStandardObjectives() {
     log.debug("Register standard objectives for {}", this);
-    this.addOrUpdateCustomObjective(
-        new de.markusbordihn.easynpc.data.objective.ObjectiveData(ObjectiveType.LOOK_AT_RESET, 9));
-    this.addOrUpdateCustomObjective(
-        new de.markusbordihn.easynpc.data.objective.ObjectiveData(ObjectiveType.LOOK_AT_PLAYER, 9));
-    this.addOrUpdateCustomObjective(
-        new de.markusbordihn.easynpc.data.objective.ObjectiveData(ObjectiveType.LOOK_AT_MOB, 10));
+    this.addOrUpdateCustomObjective(new ObjectiveDataEntry(ObjectiveType.LOOK_AT_RESET, 9));
+    this.addOrUpdateCustomObjective(new ObjectiveDataEntry(ObjectiveType.LOOK_AT_PLAYER, 9));
+    this.addOrUpdateCustomObjective(new ObjectiveDataEntry(ObjectiveType.LOOK_AT_MOB, 10));
   }
 
   default void defineSynchedObjectiveData() {
@@ -425,22 +417,22 @@ public interface ObjectiveData<T extends LivingEntity> extends EasyNPC<T> {
   default void addAdditionalObjectiveData(CompoundTag compoundTag) {
     CompoundTag objectiveTag = new CompoundTag();
 
-    // Store objectives
-    ObjectiveDataSet objectiveDataSet = this.getObjectiveDataSet();
-    if (objectiveDataSet != null) {
-      objectiveDataSet.save(objectiveTag);
-    }
+    if (this.isServerSide()) {
+      ObjectiveDataSet objectiveDataSet = this.getObjectiveDataSet();
+      if (objectiveDataSet != null) {
+        objectiveDataSet.save(objectiveTag);
+      }
 
-    // Store debugging flags for objectives targeting.
-    objectiveTag.putBoolean(DATA_HAS_OBJECTIVE_TAG, this.hasObjectives());
-    if (this.hasTravelTargetObjectives()) {
-      objectiveTag.putBoolean(DATA_HAS_TRAVEL_TARGET_TAG, this.hasTravelTargetObjectives());
-    }
-    if (this.hasPlayerTargetObjectives()) {
-      objectiveTag.putBoolean(DATA_HAS_PLAYER_TARGET_TAG, this.hasPlayerTargetObjectives());
-    }
-    if (this.hasEntityTargetObjectives()) {
-      objectiveTag.putBoolean(DATA_HAS_ENTITY_TARGET_TAG, this.hasEntityTargetObjectives());
+      objectiveTag.putBoolean(DATA_HAS_OBJECTIVE_TAG, this.hasObjectives());
+      if (this.hasTravelTargetObjectives()) {
+        objectiveTag.putBoolean(DATA_HAS_TRAVEL_TARGET_TAG, this.hasTravelTargetObjectives());
+      }
+      if (this.hasPlayerTargetObjectives()) {
+        objectiveTag.putBoolean(DATA_HAS_PLAYER_TARGET_TAG, this.hasPlayerTargetObjectives());
+      }
+      if (this.hasEntityTargetObjectives()) {
+        objectiveTag.putBoolean(DATA_HAS_ENTITY_TARGET_TAG, this.hasEntityTargetObjectives());
+      }
     }
 
     compoundTag.put(DATA_OBJECTIVE_DATA_TAG, objectiveTag);

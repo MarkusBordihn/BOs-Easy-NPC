@@ -21,8 +21,9 @@ package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -68,10 +69,17 @@ public class MessageSaveDialogSet extends NetworkMessage {
       return;
     }
 
+    // Validate Dialog data.
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
+    if (dialogData == null) {
+      log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
+      return;
+    }
+
     // Perform action.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    log.debug("Saving dialog {} for {} from {}", dialogDataSet, easyNPCEntity, serverPlayer);
-    easyNPCEntity.setDialogDataSet(dialogDataSet);
+    log.debug("Saving dialog {} for {} from {}", dialogDataSet, easyNPC, serverPlayer);
+    dialogData.setDialogDataSet(dialogDataSet);
   }
 
   public DialogDataSet getDialogData() {

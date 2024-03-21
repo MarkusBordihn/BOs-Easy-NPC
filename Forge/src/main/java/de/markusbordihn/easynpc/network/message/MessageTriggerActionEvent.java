@@ -21,8 +21,10 @@ package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.data.action.ActionData;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.Set;
 import java.util.UUID;
@@ -71,15 +73,29 @@ public class MessageTriggerActionEvent extends NetworkMessage {
     }
 
     // Validate entity.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPCEntity == null) {
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    if (easyNPC == null) {
       log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
+      return;
+    }
+
+    // Validate action event data.
+    ActionEventData<?> actionEventData = easyNPC.getEasyNPCActionEventData();
+    if (actionEventData == null) {
+      log.error("Unable to get valid action event data for {} from {}", easyNPC, serverPlayer);
+      return;
+    }
+
+    // Validate action handler.
+    ActionHandler<?> actionHandler = easyNPC.getEasyNPCActionHandler();
+    if (actionHandler == null) {
+      log.error("Unable to get valid action handler for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate action.
     Set<ActionData> actionDataList =
-        easyNPCEntity.getActionEventSet().getActionEvents(actionEventType);
+        actionEventData.getActionEventSet().getActionEvents(actionEventType);
     if (actionDataList == null || actionDataList.isEmpty()) {
       log.error(
           "Unknown trigger action event {} request for UUID {} from {}",
@@ -93,7 +109,7 @@ public class MessageTriggerActionEvent extends NetworkMessage {
     if (actionDataList.size() > 1) {
       log.debug(
           "Trigger multiple actions events for {} from {} with {} actions ...",
-          easyNPCEntity,
+          easyNPC,
           serverPlayer,
           actionDataList.size());
     }
@@ -102,10 +118,10 @@ public class MessageTriggerActionEvent extends NetworkMessage {
         log.debug(
             "Trigger action event {} for {} from {} with permission level {} ...",
             actionData,
-            easyNPCEntity,
+            easyNPC,
             serverPlayer,
             actionData.getPermissionLevel());
-        easyNPCEntity.executeAction(actionData, serverPlayer);
+        actionHandler.executeAction(actionData, serverPlayer);
       }
     }
   }

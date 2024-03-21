@@ -21,8 +21,9 @@ package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinType;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import de.markusbordihn.easynpc.utils.PlayersUtils;
 import java.util.UUID;
@@ -89,50 +90,55 @@ public class MessageSkinChange extends NetworkMessage {
       return;
     }
 
+    // Validate skin data.
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
+    if (skinData == null) {
+      log.error("Skin data for {} is not available for {}", easyNPC, serverPlayer);
+      return;
+    }
+
     // Perform action.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     String skinURL = message.getSkinURL();
     UUID skinUUID = message.getSkinUUID();
 
     switch (skinType) {
       case CUSTOM:
-        log.debug(
-            "Setting custom skin for {} to {} from {}", easyNPCEntity, skinUUID, serverPlayer);
-        easyNPCEntity.setSkinType(skinType);
-        easyNPCEntity.setSkinName("");
-        easyNPCEntity.setSkinURL("");
-        easyNPCEntity.setSkinUUID(skinUUID);
+        log.debug("Setting custom skin for {} to {} from {}", easyNPC, skinUUID, serverPlayer);
+        skinData.setSkinType(skinType);
+        skinData.setSkinName("");
+        skinData.setSkinURL("");
+        skinData.setSkinUUID(skinUUID);
         break;
       case DEFAULT:
-        log.debug(
-            "Setting default skin for {} to {} from {}", easyNPCEntity, skinType, serverPlayer);
-        easyNPCEntity.setSkinType(skinType);
-        easyNPCEntity.setSkinName("");
-        easyNPCEntity.setSkinURL("");
-        easyNPCEntity.setSkinUUID(Constants.BLANK_UUID);
+        log.debug("Setting default skin for {} to {} from {}", easyNPC, skinType, serverPlayer);
+        skinData.setSkinType(skinType);
+        skinData.setSkinName("");
+        skinData.setSkinURL("");
+        skinData.setSkinUUID(Constants.BLANK_UUID);
         break;
       case PLAYER_SKIN:
-        log.debug("Setting player skin for {} to {} from {}", easyNPCEntity, skinURL, serverPlayer);
-        easyNPCEntity.setSkinType(skinType);
-        easyNPCEntity.setSkinName(skinName);
-        easyNPCEntity.setSkinURL(skinURL != null && !skinURL.isBlank() ? skinURL : "");
+        log.debug("Setting player skin for {} to {} from {}", easyNPC, skinURL, serverPlayer);
+        skinData.setSkinType(skinType);
+        skinData.setSkinName(skinName);
+        skinData.setSkinURL(skinURL != null && !skinURL.isBlank() ? skinURL : "");
         if (skinUUID != null && !Constants.BLANK_UUID.equals(skinUUID)) {
-          easyNPCEntity.setSkinUUID(skinUUID);
+          skinData.setSkinUUID(skinUUID);
         } else {
           UUID userUUID = PlayersUtils.getUserUUID(serverPlayer.getServer(), skinName);
           if (!skinName.equals(userUUID.toString())) {
             log.debug("Converted user {} to UUID {} ...", skinName, userUUID);
           }
-          easyNPCEntity.setSkinUUID(userUUID);
+          skinData.setSkinUUID(userUUID);
         }
         break;
       case INSECURE_REMOTE_URL:
       case SECURE_REMOTE_URL:
-        log.debug("Setting remote skin for {} to {} from {}", easyNPCEntity, skinURL, serverPlayer);
-        easyNPCEntity.setSkinType(skinType);
-        easyNPCEntity.setSkinName("");
-        easyNPCEntity.setSkinURL(skinURL != null && !skinURL.isBlank() ? skinURL : skinName);
-        easyNPCEntity.setSkinUUID(
+        log.debug("Setting remote skin for {} to {} from {}", easyNPC, skinURL, serverPlayer);
+        skinData.setSkinType(skinType);
+        skinData.setSkinName("");
+        skinData.setSkinURL(skinURL != null && !skinURL.isBlank() ? skinURL : skinName);
+        skinData.setSkinUUID(
             skinUUID != null && !Constants.BLANK_UUID.equals(skinUUID)
                 ? skinUUID
                 : UUID.nameUUIDFromBytes(skinName.getBytes()));
@@ -144,10 +150,10 @@ public class MessageSkinChange extends NetworkMessage {
             skinUUID,
             skinURL,
             skinType,
-            easyNPCEntity,
+            easyNPC,
             serverPlayer);
-        easyNPCEntity.setSkinType(skinType);
-        easyNPCEntity.setSkinName(skinName);
+        skinData.setSkinType(skinType);
+        skinData.setSkinName(skinName);
     }
   }
 

@@ -19,8 +19,8 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
@@ -58,16 +58,15 @@ public class MessageRespawnNPC extends NetworkMessage {
     }
 
     // Verify that the entity is not null
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPCEntity == null) {
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    if (easyNPC == null) {
       log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
       return;
     }
 
     // Save entity and entity type
-    CompoundTag compoundTag = easyNPCEntity.saveWithoutId(new CompoundTag());
-    EntityType<? extends EasyNPCEntity> entityType =
-        (EntityType<? extends EasyNPCEntity>) easyNPCEntity.getType();
+    CompoundTag compoundTag = easyNPC.getEasyNPCEntity().saveWithoutId(new CompoundTag());
+    EntityType<?> entityType = easyNPC.getEntity().getType();
 
     // Create new entity with compoundTag
     ServerLevel serverLevel = serverPlayer.serverLevel();
@@ -79,11 +78,10 @@ public class MessageRespawnNPC extends NetworkMessage {
     entity.load(compoundTag);
 
     // Remove old entity
-    easyNPCEntity.discard();
+    easyNPC.getEntity().discard();
 
     // Respawn new entity
-    log.info(
-        "Respawn Easy NPC {} with {} requested by {}", easyNPCEntity, entityType, serverPlayer);
+    log.info("Respawn Easy NPC {} with {} requested by {}", easyNPC, entityType, serverPlayer);
     serverLevel.addFreshEntity(entity);
   }
 }

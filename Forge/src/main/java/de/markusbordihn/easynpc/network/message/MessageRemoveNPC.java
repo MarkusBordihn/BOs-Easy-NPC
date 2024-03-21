@@ -19,8 +19,8 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -54,8 +54,8 @@ public class MessageRemoveNPC extends NetworkMessage {
     }
 
     // Perform action.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    EasyNPC<?> easyNPCEntity = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     log.info("Removing Easy NPC {} requested by {}", easyNPCEntity, serverPlayer);
-    easyNPCEntity.discard();
+    easyNPCEntity.getEntity().discard();
   }
 }

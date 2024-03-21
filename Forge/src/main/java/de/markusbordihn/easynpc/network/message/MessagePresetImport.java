@@ -19,8 +19,9 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
@@ -66,21 +67,28 @@ public class MessagePresetImport extends NetworkMessage {
     }
 
     // Validate entity encoded id, if set.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     if (compoundTag.contains("id")
         && !compoundTag.getString("id").isEmpty()
-        && !compoundTag.getString("id").equals(easyNPCEntity.getEncodeId())) {
+        && !compoundTag.getString("id").equals(easyNPC.getEntity().getEncodeId())) {
       log.error(
           "Invalid id {} for {} expected {} from {}",
           compoundTag.getString("id"),
-          easyNPCEntity,
-          easyNPCEntity.getEncodeId(),
+          easyNPC,
+          easyNPC.getEntity().getEncodeId(),
           serverPlayer);
       return;
     }
 
+    // Validate preset data.
+    PresetData<?> presetData = easyNPC.getEasyNPCPresetData();
+    if (presetData == null) {
+      log.error("Invalid preset data for {} from {}", message, serverPlayer);
+      return;
+    }
+
     // Perform action.
-    easyNPCEntity.importPresetData(compoundTag);
+    presetData.importPresetData(compoundTag);
   }
 
   public CompoundTag getCompoundTag() {

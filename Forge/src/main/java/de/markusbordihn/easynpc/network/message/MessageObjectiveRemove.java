@@ -19,9 +19,10 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.data.objective.ObjectiveData;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -30,20 +31,20 @@ import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class MessageObjectiveRemove extends NetworkMessage {
 
-  protected final ObjectiveData objectiveData;
+  protected final ObjectiveDataEntry objectiveDataEntry;
 
-  public MessageObjectiveRemove(UUID uuid, ObjectiveData objectiveData) {
+  public MessageObjectiveRemove(UUID uuid, ObjectiveDataEntry objectiveDataEntry) {
     super(uuid);
-    this.objectiveData = objectiveData;
+    this.objectiveDataEntry = objectiveDataEntry;
   }
 
   public static MessageObjectiveRemove decode(final FriendlyByteBuf buffer) {
-    return new MessageObjectiveRemove(buffer.readUUID(), new ObjectiveData(buffer.readNbt()));
+    return new MessageObjectiveRemove(buffer.readUUID(), new ObjectiveDataEntry(buffer.readNbt()));
   }
 
   public static void encode(final MessageObjectiveRemove message, final FriendlyByteBuf buffer) {
     buffer.writeUUID(message.uuid);
-    buffer.writeNbt(message.objectiveData.createTag());
+    buffer.writeNbt(message.objectiveDataEntry.createTag());
   }
 
   public static void handle(MessageObjectiveRemove message, CustomPayloadEvent.Context context) {
@@ -60,34 +61,35 @@ public class MessageObjectiveRemove extends NetworkMessage {
     }
 
     // Validate objective data
-    ObjectiveData objectiveData = message.getObjectiveData();
-    if (objectiveData == null) {
+    ObjectiveDataEntry objectiveDataEntry = message.getObjectiveData();
+    if (objectiveDataEntry == null) {
       log.error("Unable to add objective data for {} because it is null!", uuid);
       return;
     }
 
-    // Perform action.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPCEntity == null) {
-      log.error("Unable to add objective data for {} because it is null!", uuid);
+    // Verify objective data
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    ObjectiveData<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
+    if (objectiveDataEntry == null) {
+      log.error("Invalid objective data for {} from {}", message, serverPlayer);
       return;
     }
 
     // Perform action.
-    if (easyNPCEntity.removeCustomObjective(objectiveData)) {
-      log.debug("Removed objective {} for {} from {}", objectiveData, easyNPCEntity, serverPlayer);
+    if (objectiveData.removeCustomObjective(objectiveDataEntry)) {
+      log.debug("Removed objective {} for {} from {}", objectiveDataEntry, easyNPC, serverPlayer);
       log.debug(
           "Available goals for {}: {}",
-          easyNPCEntity,
-          easyNPCEntity.getEntityGoalSelector().getAvailableGoals());
+          easyNPC,
+          objectiveData.getEntityGoalSelector().getAvailableGoals());
       log.debug(
           "Available targets for {}: {}",
-          easyNPCEntity,
-          easyNPCEntity.getEntityTargetSelector().getAvailableGoals());
+          easyNPC,
+          objectiveData.getEntityTargetSelector().getAvailableGoals());
     }
   }
 
-  public ObjectiveData getObjectiveData() {
-    return this.objectiveData;
+  public ObjectiveDataEntry getObjectiveData() {
+    return this.objectiveDataEntry;
   }
 }

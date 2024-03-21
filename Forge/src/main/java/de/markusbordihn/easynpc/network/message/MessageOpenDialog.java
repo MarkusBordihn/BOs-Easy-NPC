@@ -19,9 +19,9 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EasyNPCEntityMenu;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -76,8 +76,8 @@ public class MessageOpenDialog extends NetworkMessage {
     }
 
     // Validate Easy NPC entity
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPCEntity == null) {
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    if (easyNPC == null) {
       log.error("Unable to find Easy NPC entity for {} from {}", uuid, serverPlayer);
       return;
     }
@@ -87,9 +87,9 @@ public class MessageOpenDialog extends NetworkMessage {
         "Open dialog {} with page index {} for {} from {} ",
         dialogId,
         pageIndex,
-        easyNPCEntity,
+        easyNPC,
         serverPlayer);
-    EasyNPCEntityMenu.openDialogMenu(serverPlayer, easyNPCEntity, dialogId, pageIndex);
+    MenuManager.getMenuHandler().openDialogMenu(serverPlayer, easyNPC, dialogId, pageIndex);
   }
 
   public UUID getDialogId() {

@@ -19,8 +19,8 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -66,9 +66,14 @@ public class MessageNameChange extends NetworkMessage {
     }
 
     // Perform action.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    log.debug("Change name {} for {} from {}", name, easyNPCEntity, serverPlayer);
-    easyNPCEntity.setCustomName(Component.literal(name));
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    if (easyNPC == null) {
+      log.error("Invalid EasyNPC {} for {} from {}", easyNPC, message, serverPlayer);
+      return;
+    }
+
+    log.debug("Change name {} for {} from {}", name, easyNPC, serverPlayer);
+    easyNPC.getEntity().setCustomName(Component.literal(name));
   }
 
   public String getName() {
