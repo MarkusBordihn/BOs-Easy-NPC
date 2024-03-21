@@ -85,7 +85,7 @@ public class ImportDefaultPresetConfigurationScreen
                     .substring(resourceLocation.getPath().lastIndexOf("/") + 1)),
             Component.translatable(
                 Constants.TEXT_PREFIX + "preset.importWarning",
-                this.entity.getDisplayName().getString()),
+                this.easyNPC.getEntity().getDisplayName().getString()),
             Component.translatable(Constants.TEXT_PREFIX + "preset.importButton"),
             CommonComponents.GUI_CANCEL));
   }

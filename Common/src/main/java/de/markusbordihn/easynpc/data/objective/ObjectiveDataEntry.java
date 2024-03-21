@@ -33,7 +33,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ObjectiveData {
+public class ObjectiveDataEntry {
 
   // Objective Data Tags
   public static final String DATA_ID_TAG = "Id";
@@ -81,19 +81,19 @@ public class ObjectiveData {
   private Goal goal = null;
   private Goal target = null;
 
-  public ObjectiveData() {}
+  public ObjectiveDataEntry() {}
 
-  public ObjectiveData(ObjectiveType objectiveType) {
+  public ObjectiveDataEntry(ObjectiveType objectiveType) {
     this.id = objectiveType.name();
     this.objectiveType = objectiveType;
   }
 
-  public ObjectiveData(ObjectiveType objectiveType, int priority) {
+  public ObjectiveDataEntry(ObjectiveType objectiveType, int priority) {
     this(objectiveType);
     this.priority = priority;
   }
 
-  public ObjectiveData(CompoundTag compoundTag) {
+  public ObjectiveDataEntry(CompoundTag compoundTag) {
     this.load(compoundTag);
   }
 

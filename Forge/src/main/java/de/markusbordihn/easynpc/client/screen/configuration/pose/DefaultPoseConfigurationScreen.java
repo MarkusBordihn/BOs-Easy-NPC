@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.client.screen.configuration.pose;
 import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import net.minecraft.client.gui.GuiGraphics;
@@ -37,7 +38,7 @@ public class DefaultPoseConfigurationScreen
     extends PoseConfigurationScreen<DefaultPoseConfigurationMenu> {
 
   public static final int BUTTON_WIDTH = 100;
-
+  protected final ModelData<?> modelData;
   // Pose buttons
   protected Button crouchingPoseButton;
   protected Button dyingPoseButton;
@@ -51,12 +52,13 @@ public class DefaultPoseConfigurationScreen
   public DefaultPoseConfigurationScreen(
       DefaultPoseConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
+    this.modelData = this.easyNPC.getEasyNPCModelData();
   }
 
   private void checkPoseButtonState(Pose pose, ModelPose modelPose) {
-    Pose currentPose = pose != null ? pose : this.entity.getPose();
+    Pose currentPose = pose != null ? pose : this.easyNPC.getEntity().getPose();
     boolean isCustomModelPose =
-        (modelPose != null ? modelPose : this.entity.getModelPose()) == ModelPose.CUSTOM;
+        (modelPose != null ? modelPose : this.modelData.getModelPose()) == ModelPose.CUSTOM;
     this.standingPoseButton.active = isCustomModelPose || currentPose != Pose.STANDING;
     this.crouchingPoseButton.active = isCustomModelPose || currentPose != Pose.CROUCHING;
     this.dyingPoseButton.active = isCustomModelPose || currentPose != Pose.DYING;
@@ -165,7 +167,7 @@ public class DefaultPoseConfigurationScreen
                   this.checkPoseButtonState(Pose.SWIMMING, ModelPose.DEFAULT);
                 }));
 
-    this.checkPoseButtonState(entity.getPose(), entity.getModelPose());
+    this.checkPoseButtonState(this.easyNPC.getEntity().getPose(), this.modelData.getModelPose());
   }
 
   @Override
@@ -173,10 +175,10 @@ public class DefaultPoseConfigurationScreen
     super.render(guiGraphics, x, y, partialTicks);
 
     // Backup entity information
-    boolean entityInvisible = entity.isInvisible();
+    boolean entityInvisible = this.easyNPC.getEntity().isInvisible();
 
     // Adjust entity information for rendering
-    entity.setInvisible(false);
+    this.easyNPC.getEntity().setInvisible(false);
 
     // Render Entity
     ScreenHelper.renderScaledEntityAvatar(
@@ -185,10 +187,10 @@ public class DefaultPoseConfigurationScreen
         36,
         this.contentLeftPos + 80 - this.xMouse,
         this.contentTopPos + 65 - this.yMouse,
-        this.entity);
+        this.easyNPC);
 
     // Restore entity information
-    entity.setInvisible(entityInvisible);
+    this.easyNPC.getEntity().setInvisible(entityInvisible);
   }
 
   @Override

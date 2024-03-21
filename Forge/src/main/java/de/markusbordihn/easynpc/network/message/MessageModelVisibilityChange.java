@@ -21,8 +21,9 @@ package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -76,52 +77,55 @@ public class MessageModelVisibilityChange extends NetworkMessage {
       return;
     }
 
+    // Validate Model data.
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+    if (modelData == null) {
+      log.error("Invalid model data for {} from {}", message, serverPlayer);
+      return;
+    }
+
     // Validate Visibility.
     boolean visible = message.isVisible();
 
     // Perform action.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     log.debug(
-        "Change {} visibility to {} for {} from {}",
-        modelPart,
-        visible,
-        easyNPCEntity,
-        serverPlayer);
+        "Change {} visibility to {} for {} from {}", modelPart, visible, easyNPC, serverPlayer);
     switch (modelPart) {
       case HEAD:
-        easyNPCEntity.setPose(Pose.STANDING);
-        easyNPCEntity.setModelPose(ModelPose.CUSTOM);
-        easyNPCEntity.setModelHeadVisible(visible);
+        easyNPC.getEntity().setPose(Pose.STANDING);
+        modelData.setModelPose(ModelPose.CUSTOM);
+        modelData.setModelHeadVisible(visible);
         break;
       case BODY:
-        easyNPCEntity.setPose(Pose.STANDING);
-        easyNPCEntity.setModelPose(ModelPose.CUSTOM);
-        easyNPCEntity.setModelBodyVisible(visible);
+        easyNPC.getEntity().setPose(Pose.STANDING);
+        modelData.setModelPose(ModelPose.CUSTOM);
+        modelData.setModelBodyVisible(visible);
         break;
       case ARMS:
-        easyNPCEntity.setPose(Pose.STANDING);
-        easyNPCEntity.setModelPose(ModelPose.CUSTOM);
-        easyNPCEntity.setModelArmsVisible(visible);
+        easyNPC.getEntity().setPose(Pose.STANDING);
+        modelData.setModelPose(ModelPose.CUSTOM);
+        modelData.setModelArmsVisible(visible);
         break;
       case LEFT_ARM:
-        easyNPCEntity.setPose(Pose.STANDING);
-        easyNPCEntity.setModelPose(ModelPose.CUSTOM);
-        easyNPCEntity.setModelLeftArmVisible(visible);
+        easyNPC.getEntity().setPose(Pose.STANDING);
+        modelData.setModelPose(ModelPose.CUSTOM);
+        modelData.setModelLeftArmVisible(visible);
         break;
       case RIGHT_ARM:
-        easyNPCEntity.setPose(Pose.STANDING);
-        easyNPCEntity.setModelPose(ModelPose.CUSTOM);
-        easyNPCEntity.setModelRightArmVisible(visible);
+        easyNPC.getEntity().setPose(Pose.STANDING);
+        modelData.setModelPose(ModelPose.CUSTOM);
+        modelData.setModelRightArmVisible(visible);
         break;
       case LEFT_LEG:
-        easyNPCEntity.setPose(Pose.STANDING);
-        easyNPCEntity.setModelPose(ModelPose.CUSTOM);
-        easyNPCEntity.setModelLeftLegVisible(visible);
+        easyNPC.getEntity().setPose(Pose.STANDING);
+        modelData.setModelPose(ModelPose.CUSTOM);
+        modelData.setModelLeftLegVisible(visible);
         break;
       case RIGHT_LEG:
-        easyNPCEntity.setPose(Pose.STANDING);
-        easyNPCEntity.setModelPose(ModelPose.CUSTOM);
-        easyNPCEntity.setModelRightLegVisible(visible);
+        easyNPC.getEntity().setPose(Pose.STANDING);
+        modelData.setModelPose(ModelPose.CUSTOM);
+        modelData.setModelRightLegVisible(visible);
         break;
       case ROOT:
         break;
@@ -131,10 +135,10 @@ public class MessageModelVisibilityChange extends NetworkMessage {
     }
 
     // Verify if custom model pose is really needed.
-    if (easyNPCEntity.getModelPose() == ModelPose.CUSTOM && !easyNPCEntity.hasChangedModel()) {
-      log.debug("Reset custom model pose for {} from {}", easyNPCEntity, serverPlayer);
-      easyNPCEntity.setModelPose(ModelPose.DEFAULT);
-      easyNPCEntity.setPose(Pose.STANDING);
+    if (modelData.getModelPose() == ModelPose.CUSTOM && !modelData.hasChangedModel()) {
+      log.debug("Reset custom model pose for {} from {}", easyNPC, serverPlayer);
+      modelData.setModelPose(ModelPose.DEFAULT);
+      easyNPC.getEntity().setPose(Pose.STANDING);
     }
   }
 

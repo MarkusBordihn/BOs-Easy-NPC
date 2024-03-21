@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.io.SkinDataFiles;
 import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
@@ -52,12 +53,12 @@ public class CustomSkinConfigurationScreen
   private static final float SKIN_NAME_SCALING = 0.7f;
   private static final int ADD_SKIN_RELOAD_DELAY = 5;
   protected static int nextSkinReload = (int) java.time.Instant.now().getEpochSecond();
+  protected final SkinData<?> skinData = this.easyNPC.getEasyNPCSkinData();
   protected Button skinFolderButton = null;
   protected Button skinReloadButton = null;
   protected int numberOfTextLines = 1;
   // Cache
   protected int lastNumOfSkins = 0;
-
   // Text
   private List<FormattedCharSequence> textComponents = Collections.emptyList();
 
@@ -67,7 +68,7 @@ public class CustomSkinConfigurationScreen
   }
 
   private void renderSkins(GuiGraphics guiGraphics) {
-    if (this.entity == null) {
+    if (this.easyNPC == null) {
       return;
     }
 
@@ -126,12 +127,18 @@ public class CustomSkinConfigurationScreen
                 NetworkMessageHandler.skinChange(this.uuid, "", "", textureUUID, SkinType.CUSTOM));
 
     // Disable button for active skin.
-    Optional<UUID> skinUUID = this.entity.getSkinUUID();
+    Optional<UUID> skinUUID = this.skinData.getSkinUUID();
     skinButton.active = !(skinUUID.isPresent() && skinUUID.get().equals(textureUUID));
 
     // Render skin entity with variant and profession.
     ScreenHelper.renderEntityPlayerSkin(
-        x + 4, y, x - this.xMouse, y - 40 - this.yMouse, this.entity, textureUUID, SkinType.CUSTOM);
+        x + 4,
+        y,
+        x - this.xMouse,
+        y - 40 - this.yMouse,
+        this.easyNPC,
+        textureUUID,
+        SkinType.CUSTOM);
 
     skinButtons.add(skinButton);
   }

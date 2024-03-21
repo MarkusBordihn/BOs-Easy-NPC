@@ -22,8 +22,8 @@ package de.markusbordihn.easynpc.menu.dialog;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import java.util.UUID;
 import javax.annotation.Nullable;
@@ -48,7 +48,7 @@ public class DialogMenu extends AbstractContainerMenu {
   protected final ActionEventSet actionDataSet;
   protected final DialogDataSet dialogDataSet;
   protected final Inventory playerInventory;
-  protected final EasyNPCEntity entity;
+  protected final EasyNPC<?> easyNPC;
   protected final UUID dialogId;
   protected final UUID uuid;
   protected final int pageIndex;
@@ -101,12 +101,12 @@ public class DialogMenu extends AbstractContainerMenu {
     this.pageIndex = pageIndex;
 
     // Get entity from cache
-    this.entity = EntityManager.getEasyNPCEntityByUUID(uuid);
+    this.easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid);
 
     log.debug(
         "Open Dialog menu for {}: {} with player inventory {} and actions {} and dialogs {}",
         this.uuid,
-        this.entity,
+        this.easyNPC,
         playerInventory,
         this.actionDataSet,
         this.dialogDataSet);
@@ -143,8 +143,8 @@ public class DialogMenu extends AbstractContainerMenu {
     return this.dialogDataSet;
   }
 
-  public EasyNPCEntity getEntity() {
-    return this.entity;
+  public EasyNPC<?> getEasyNPC() {
+    return this.easyNPC;
   }
 
   public UUID getUUID() {
@@ -165,7 +165,10 @@ public class DialogMenu extends AbstractContainerMenu {
 
   @Override
   public boolean stillValid(Player player) {
-    return player != null && player.isAlive() && entity != null && entity.isAlive();
+    return player != null
+        && player.isAlive()
+        && this.easyNPC != null
+        && this.easyNPC.getEntity().isAlive();
   }
 
   @Override

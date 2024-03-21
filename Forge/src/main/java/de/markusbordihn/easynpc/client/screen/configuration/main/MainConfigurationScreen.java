@@ -31,6 +31,10 @@ import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.data.trading.TradingType;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
@@ -66,7 +70,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
   private void saveName() {
     String value = this.nameBox.getValue();
     if (value != null && !value.isBlank()) {
-      log.debug("Saving name {} for {}", value, this.entity);
+      log.debug("Saving name {} for {}", value, this.easyNPC);
       NetworkMessageHandler.nameChange(this.uuid, value);
       this.formerName = value;
       this.saveNameButton.active = false;
@@ -91,7 +95,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
             Component.translatable(Constants.TEXT_PREFIX + "removeNPC.deleteQuestion"),
             Component.translatable(
                 Constants.TEXT_PREFIX + "removeNPC.deleteWarning",
-                this.entity.getDisplayName().getString()),
+                this.easyNPC.getEntity().getDisplayName().getString()),
             Component.translatable(Constants.TEXT_PREFIX + "removeNPC.deleteButton"),
             CommonComponents.GUI_CANCEL));
   }
@@ -114,7 +118,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
             Component.translatable(Constants.TEXT_PREFIX + "respawnNPC.confirmQuestion"),
             Component.translatable(
                 Constants.TEXT_PREFIX + "respawnNPC.confirmWarning",
-                this.entity.getDisplayName().getString()),
+                this.easyNPC.getEntity().getDisplayName().getString()),
             Component.translatable(Constants.TEXT_PREFIX + "respawnNPC.respawnButton"),
             CommonComponents.GUI_CANCEL));
   }
@@ -126,7 +130,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
 
   @Override
   public void init() {
-    if (this.entity == null) {
+    if (this.easyNPC == null) {
       return;
     }
     super.init();
@@ -140,7 +144,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     this.homeButton.visible = false;
 
     // Name Edit Box and Save Button
-    this.formerName = this.entity.getName().getString();
+    this.formerName = this.easyNPC.getEntity().getName().getString();
     this.nameBox = new TextField(this.font, this.contentLeftPos + 1, this.topPos + 25, 108);
     this.nameBox.setMaxLength(32);
     this.nameBox.setValue(this.formerName);
@@ -152,6 +156,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     this.saveNameButton.active = false;
 
     // Skins Button
+    SkinData<?> skinData = this.easyNPC.getEasyNPCSkinData();
     Button editSkinButton =
         this.addRenderableWidget(
             new TextButton(
@@ -160,7 +165,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 110,
                 "edit_skin",
                 onPress -> {
-                  SkinType skinType = this.entity.getSkinType();
+                  SkinType skinType = skinData.getSkinType();
                   switch (skinType) {
                     case NONE:
                       NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_SKIN);
@@ -322,6 +327,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     buttonTopPosition = buttonTopPosition + BUTTON_HEIGHT + buttonSpace;
 
     // Pose Button
+    ModelData<?> modelData = this.easyNPC.getEasyNPCModelData();
     Button editPoseButton =
         this.addRenderableWidget(
             new TextButton(
@@ -330,10 +336,10 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 BUTTON_WIDTH,
                 "pose",
                 onPress -> {
-                  ModelPose modelPose = entity.getModelPose();
+                  ModelPose modelPose = modelData.getModelPose();
                   switch (modelPose) {
                     case CUSTOM:
-                      if (entity.hasChangedModelPosition()) {
+                      if (modelData.hasChangedModelPosition()) {
                         NetworkMessageHandler.openConfiguration(
                             uuid, ConfigurationType.CUSTOM_POSE);
                       } else {
@@ -395,6 +401,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
             COMMON.defaultRotationConfigurationPermissionLevel.get());
 
     // Trades Button
+    TradingData<?> tradingData = this.easyNPC.getEasyNPCTradingData();
     Button editTradesButton =
         this.addRenderableWidget(
             new TextButton(
@@ -403,7 +410,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 BUTTON_WIDTH,
                 "trading",
                 onPress -> {
-                  TradingType tradingType = this.entity.getTradingType();
+                  TradingType tradingType = tradingData.getTradingType();
                   switch (tradingType) {
                     case BASIC:
                       NetworkMessageHandler.openConfiguration(
@@ -511,7 +518,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
         this.topPos + 185,
         this.leftPos + 50 - this.xMouse,
         this.topPos + 90 - this.yMouse,
-        this.entity);
+        this.easyNPC);
 
     // Entity Type
     float scaleEntityTypeText = 0.75f;
@@ -520,7 +527,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     Text.drawString(
         guiGraphics,
         this.font,
-        entity.getType().getDescription(),
+        this.easyNPC.getEntity().getType().getDescription(),
         Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
         Math.round((this.topPos + 49) / scaleEntityTypeText));
 
@@ -548,8 +555,9 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     }
 
     // Home position
-    if (this.entity.hasHomePosition()) {
-      BlockPos blockPos = this.entity.getHomePosition();
+    NavigationData<?> navigationData = this.easyNPC.getEasyNPCNavigationData();
+    if (navigationData.hasHomePosition()) {
+      BlockPos blockPos = navigationData.getHomePosition();
       Text.drawString(
           guiGraphics,
           this.font,
@@ -559,7 +567,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     }
 
     // Current Position
-    BlockPos blockPos = this.entity.getOnPos();
+    BlockPos blockPos = this.easyNPC.getEntity().getOnPos();
     Text.drawString(
         guiGraphics,
         this.font,

@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
+import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
 import de.markusbordihn.easynpc.menu.configuration.attribute.DisplayAttributeConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import net.minecraft.client.gui.GuiGraphics;
@@ -51,6 +52,9 @@ public class DisplayAttributeConfigurationScreen
 
     int firstButtonRow = this.leftPos + 10;
 
+    // Attribute data
+    AttributeData<?> attributeData = this.easyNPC.getEasyNPCAttributeData();
+
     // Light Level
     this.lightLevelBox =
         this.addRenderableWidget(
@@ -59,7 +63,7 @@ public class DisplayAttributeConfigurationScreen
                 firstButtonRow + 100,
                 this.buttonTopPos + 25,
                 20,
-                this.entity.getAttributeLightLevel(),
+                attributeData.getAttributeLightLevel(),
                 2));
     this.lightLevelBox.setResponder(
         value -> {

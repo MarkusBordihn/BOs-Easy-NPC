@@ -19,8 +19,9 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -67,10 +68,17 @@ public class MessageVariantChange extends NetworkMessage {
       return;
     }
 
+    // Validate variant data.
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    VariantData<?> variantData = easyNPC.getEasyNPCVariantData();
+    if (variantData == null) {
+      log.error("Invalid variant data for {} from {}", easyNPC, serverPlayer);
+      return;
+    }
+
     // Perform action.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    log.debug("Change variant {} for {} from {}", variant, easyNPCEntity, serverPlayer);
-    easyNPCEntity.setVariant(variant);
+    log.debug("Change variant {} for {} from {}", variant, easyNPC, serverPlayer);
+    variantData.setVariant(variant);
   }
 
   public String getVariant() {

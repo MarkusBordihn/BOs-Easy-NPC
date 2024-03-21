@@ -73,7 +73,7 @@ public interface SpawnerData<T extends LivingEntity> extends EasyNPC<T> {
   }
 
   default void addAdditionalSpawnerData(CompoundTag compoundTag) {
-    if (this.getSpawnerUUID() != null) {
+    if (this.isServerSide() && this.getSpawnerUUID() != null) {
       compoundTag.putUUID(DATA_SPAWNER_UUID_TAG, this.getSpawnerUUID());
     }
   }

@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
+import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
 import de.markusbordihn.easynpc.menu.configuration.position.DefaultPositionConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import net.minecraft.client.gui.GuiGraphics;
@@ -76,7 +77,7 @@ public class DefaultPositionConfigurationScreen
     this.defaultPositionButton.active = false;
 
     // Position Coordinates
-    Vec3 entityPosition = this.entity.position();
+    Vec3 entityPosition = this.easyNPC.getEntity().position();
     this.positionX = entityPosition.x;
     this.positionY = entityPosition.y;
     this.positionZ = entityPosition.z;
@@ -196,13 +197,14 @@ public class DefaultPositionConfigurationScreen
                 }));
 
     // Freefall Checkbox
+    AttributeData<?> attributeData = this.easyNPC.getEasyNPCAttributeData();
     this.positionFreefallCheckbox =
         this.addRenderableWidget(
             new Checkbox(
                 this.contentLeftPos + 200,
                 this.topPos + 18,
                 "free_fall",
-                this.entity.getAttributeFreefall(),
+                attributeData.getAttributeFreefall(),
                 checkbox ->
                     NetworkMessageHandler.entityAttributeChange(
                         uuid, EntityAttribute.FREEFALL, checkbox.selected())));
