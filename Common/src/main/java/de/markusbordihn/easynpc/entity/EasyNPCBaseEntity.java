@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
+import de.markusbordihn.easynpc.entity.easynpc.data.GuiData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.entity.easynpc.data.NPCData;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
@@ -41,6 +42,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SpawnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -64,7 +66,6 @@ import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
-import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -81,11 +82,13 @@ public class EasyNPCBaseEntity extends AgeableMob
     implements NeutralMob,
         Merchant,
         EasyNPC<AgeableMob>,
+        ActionHandler<AgeableMob>,
         ActionEventData<AgeableMob>,
         AttackData<AgeableMob>,
         AttributeData<AgeableMob>,
         ConfigurationData<AgeableMob>,
         DialogData<AgeableMob>,
+        GuiData<AgeableMob>,
         ModelData<AgeableMob>,
         NavigationData<AgeableMob>,
         NPCData<AgeableMob>,
@@ -206,11 +209,6 @@ public class EasyNPCBaseEntity extends AgeableMob
 
   public void setNPCDataVersion(int version) {
     this.npcDataVersion = version;
-  }
-
-  @Override
-  public void openDialog(ServerPlayer serverPlayer, UUID dialogId) {
-    log.warn("Not implemented: Open dialog {} for {} with {}", dialogId, this, serverPlayer);
   }
 
   protected void updateTrades() {}
@@ -337,14 +335,6 @@ public class EasyNPCBaseEntity extends AgeableMob
   }
 
   @Override
-  public GroundPathNavigation getGroundPathNavigation() {
-    if (this.getNavigation() instanceof GroundPathNavigation groundPathNavigation) {
-      return groundPathNavigation;
-    }
-    return null;
-  }
-
-  @Override
   public <T> void setEasyNPCData(EntityDataAccessor<T> entityDataAccessor, T entityData) {
     this.entityData.set(entityDataAccessor, entityData);
   }
@@ -415,10 +405,13 @@ public class EasyNPCBaseEntity extends AgeableMob
 
   @Override
   public void defineCustomData() {
-    this.defineCustomActionData();
-    this.defineCustomDialogData();
-    this.defineCustomObjectiveData();
-    this.defineCustomSpawnerData();
+    if (this.isServerSide()) {
+      log.info("Define custom server-side data for {}", this);
+      this.defineCustomActionData();
+      this.defineCustomDialogData();
+      this.defineCustomObjectiveData();
+      this.defineCustomSpawnerData();
+    }
   }
 
   @Override

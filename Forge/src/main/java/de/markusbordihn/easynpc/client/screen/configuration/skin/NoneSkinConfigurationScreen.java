@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.menu.configuration.skin.NoneSkinConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import java.util.Collections;
@@ -51,8 +52,11 @@ public class NoneSkinConfigurationScreen
     // Default button stats
     this.noneSkinButton.active = false;
 
+    // Skin data
+    SkinData<?> skinData = this.easyNPC.getEasyNPCSkinData();
+
     // Former skin type
-    SkinType formerSkinType = entity.getSkinType();
+    SkinType formerSkinType = skinData.getSkinType();
 
     // None Dialog Checkbox
     this.noneSkinCheckbox =
@@ -61,7 +65,7 @@ public class NoneSkinConfigurationScreen
                 this.contentLeftPos + 100,
                 this.topPos + 170,
                 "disable_skin_checkbox",
-                entity.getSkinType() == SkinType.NONE,
+                skinData.getSkinType() == SkinType.NONE,
                 checkbox -> {
                   if (checkbox.selected()) {
                     NetworkMessageHandler.skinTypeChange(uuid, SkinType.NONE);

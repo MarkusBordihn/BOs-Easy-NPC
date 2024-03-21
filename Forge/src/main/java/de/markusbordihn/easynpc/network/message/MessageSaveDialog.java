@@ -20,8 +20,9 @@
 package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -32,12 +33,12 @@ import net.minecraftforge.network.NetworkEvent;
 public class MessageSaveDialog extends NetworkMessage {
 
   protected final UUID dialogId;
-  protected final DialogDataEntry dialogData;
+  protected final DialogDataEntry dialogDataEntry;
 
-  public MessageSaveDialog(UUID uuid, UUID dialogId, DialogDataEntry dialogData) {
+  public MessageSaveDialog(UUID uuid, UUID dialogId, DialogDataEntry dialogDataEntry) {
     super(uuid);
     this.dialogId = dialogId;
-    this.dialogData = dialogData;
+    this.dialogDataEntry = dialogDataEntry;
   }
 
   public static MessageSaveDialog decode(final FriendlyByteBuf buffer) {
@@ -48,7 +49,7 @@ public class MessageSaveDialog extends NetworkMessage {
   public static void encode(final MessageSaveDialog message, final FriendlyByteBuf buffer) {
     buffer.writeUUID(message.uuid);
     buffer.writeUUID(message.getDialogId());
-    buffer.writeNbt(message.getDialogData().createTag());
+    buffer.writeNbt(message.getDialogDataEntry().createTag());
   }
 
   public static void handle(
@@ -73,22 +74,29 @@ public class MessageSaveDialog extends NetworkMessage {
       return;
     }
 
-    // Validate dialog data
-    DialogDataEntry dialogData = message.getDialogData();
-    if (dialogData == null) {
+    // Validate dialog data entry.
+    DialogDataEntry dialogDataEntry = message.getDialogDataEntry();
+    if (dialogDataEntry == null) {
       log.error("Invalid dialog data for {} from {}", message, context);
       return;
     }
 
     // Validate entity.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPCEntity == null) {
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    if (easyNPC == null) {
       log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
       return;
     }
 
+    // Validate dialog data.
+    DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
+    if (dialogData == null) {
+      log.error("Invalid dialog data for {} from {}", message, context);
+      return;
+    }
+
     // Validate dialog
-    if (!easyNPCEntity.hasDialog(dialogId)) {
+    if (!dialogData.hasDialog(dialogId)) {
       log.error(
           "Unknown dialog button editor request for dialog {} for {} from {}",
           dialogId,
@@ -100,18 +108,18 @@ public class MessageSaveDialog extends NetworkMessage {
     // Perform action.
     log.debug(
         "Saving dialog data {} for dialog {} for {} from {}",
-        dialogData,
+        dialogDataEntry,
         dialogId,
         uuid,
         serverPlayer);
-    easyNPCEntity.setDialog(dialogId, dialogData);
+    dialogData.setDialog(dialogId, dialogDataEntry);
   }
 
   public UUID getDialogId() {
     return this.dialogId;
   }
 
-  public DialogDataEntry getDialogData() {
-    return this.dialogData;
+  public DialogDataEntry getDialogDataEntry() {
+    return this.dialogDataEntry;
   }
 }

@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
@@ -124,6 +125,8 @@ public class BaseAttributeConfigurationScreen
     int sliderHeight = 14;
     int sliderYSpace = 20;
 
+    LivingEntity livingEntity = this.easyNPC.getLivingEntity();
+
     // Max Health
     this.maxHealthSlider =
         createAttributeSlider(
@@ -132,7 +135,7 @@ public class BaseAttributeConfigurationScreen
             sliderWidth,
             sliderHeight,
             "max_health",
-            this.entity.getAttributeBaseValue(Attributes.MAX_HEALTH),
+            livingEntity.getAttributeBaseValue(Attributes.MAX_HEALTH),
             1.0D,
             1024.0D,
             20.0D,
@@ -178,7 +181,7 @@ public class BaseAttributeConfigurationScreen
                     uuid, Attributes.KNOCKBACK_RESISTANCE, slider.getTargetDoubleValue()));
 
     // Movement Speed
-    if (this.entity.getAttribute(Attributes.MOVEMENT_SPEED) != null) {
+    if (livingEntity.getAttribute(Attributes.MOVEMENT_SPEED) != null) {
       sliderYPos += sliderYSpace;
       this.movementSpeedSlider =
           createAttributeSlider(
@@ -187,7 +190,7 @@ public class BaseAttributeConfigurationScreen
               sliderWidth,
               sliderHeight,
               "movement_speed",
-              this.entity.getAttributeBaseValue(Attributes.MOVEMENT_SPEED),
+              livingEntity.getAttributeBaseValue(Attributes.MOVEMENT_SPEED),
               0.0D,
               2.0D,
               0.7D,
@@ -198,7 +201,7 @@ public class BaseAttributeConfigurationScreen
     }
 
     // Flying Speed
-    if (this.entity.getAttribute(Attributes.FLYING_SPEED) != null) {
+    if (livingEntity.getAttribute(Attributes.FLYING_SPEED) != null) {
       sliderYPos += sliderYSpace;
       this.flyingSpeedSlider =
           createAttributeSlider(
@@ -207,7 +210,7 @@ public class BaseAttributeConfigurationScreen
               sliderWidth,
               sliderHeight,
               "flying_speed",
-              this.entity.getAttributeBaseValue(Attributes.FLYING_SPEED),
+              livingEntity.getAttributeBaseValue(Attributes.FLYING_SPEED),
               0.0D,
               2.0D,
               0.4D,
@@ -254,7 +257,7 @@ public class BaseAttributeConfigurationScreen
                     uuid, Attributes.ATTACK_KNOCKBACK, slider.getTargetDoubleValue()));
 
     // Attack Speed
-    if (this.entity.getAttribute(Attributes.ATTACK_SPEED) != null) {
+    if (livingEntity.getAttribute(Attributes.ATTACK_SPEED) != null) {
       sliderYPos += sliderYSpace;
       this.attackSpeedSlider =
           createAttributeSlider(
@@ -263,7 +266,7 @@ public class BaseAttributeConfigurationScreen
               sliderWidth,
               sliderHeight,
               "attack_speed",
-              this.entity.getAttributeBaseValue(Attributes.ATTACK_SPEED),
+              livingEntity.getAttributeBaseValue(Attributes.ATTACK_SPEED),
               0.0D,
               1024.0D,
               4.0D,
@@ -282,7 +285,7 @@ public class BaseAttributeConfigurationScreen
             sliderWidth,
             sliderHeight,
             "armor",
-            this.entity.getAttributeBaseValue(Attributes.ARMOR),
+            livingEntity.getAttributeBaseValue(Attributes.ARMOR),
             0.0D,
             30.0D,
             0.0D,
@@ -300,7 +303,7 @@ public class BaseAttributeConfigurationScreen
             sliderWidth,
             sliderHeight,
             "armor_toughness",
-            this.entity.getAttributeBaseValue(Attributes.ARMOR_TOUGHNESS),
+            livingEntity.getAttributeBaseValue(Attributes.ARMOR_TOUGHNESS),
             0.0D,
             20.0D,
             0.0D,

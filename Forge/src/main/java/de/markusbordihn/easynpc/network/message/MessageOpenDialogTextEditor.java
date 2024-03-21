@@ -19,9 +19,10 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EasyNPCEntityMenu;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
+import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
@@ -95,20 +96,27 @@ public class MessageOpenDialogTextEditor extends NetworkMessage {
     }
 
     // Validate entity.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPCEntity == null) {
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    if (easyNPC == null) {
       log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
       return;
     }
 
+    // Validate dialog data.
+    DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
+    if (dialogData == null) {
+      log.error("Unable to get valid dialog data for {} from {}", uuid, serverPlayer);
+      return;
+    }
+
     // Validate dialog id.
-    if (!easyNPCEntity.hasDialog(dialogId)) {
+    if (!dialogData.hasDialog(dialogId)) {
       log.error(
           "Unknown dialog button editor request for dialog {} for {} from {}",
           dialogId,
           uuid,
           serverPlayer);
-      log.debug("Available dialogs for {} are {}", uuid, easyNPCEntity.getDialogDataSet());
+      log.debug("Available dialogs for {} are {}", uuid, dialogData.getDialogDataSet());
       return;
     }
 
@@ -120,8 +128,9 @@ public class MessageOpenDialogTextEditor extends NetworkMessage {
         dialogId,
         uuid,
         serverPlayer);
-    EasyNPCEntityMenu.openDialogTextEditorMenu(
-        serverPlayer, easyNPCEntity, dialogId, formerConfigurationType, pageIndex);
+    MenuManager.getMenuHandler()
+        .openDialogTextEditorMenu(
+            serverPlayer, easyNPC, dialogId, formerConfigurationType, pageIndex);
   }
 
   public UUID getDialogId() {

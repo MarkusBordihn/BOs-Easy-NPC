@@ -31,11 +31,9 @@ import net.minecraft.world.phys.Vec3;
 
 public class Chicken extends EasyNPCEntity {
 
-  // General Information
   public static final String ID = "chicken";
   public static final String NAME = "Chicken";
 
-  // Animation related information
   private float flap;
   private float flapSpeed;
   private float oFlapSpeed;

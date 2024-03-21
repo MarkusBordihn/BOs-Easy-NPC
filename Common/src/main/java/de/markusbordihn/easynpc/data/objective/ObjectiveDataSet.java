@@ -35,7 +35,7 @@ public class ObjectiveDataSet {
   // Objective Data Tags
   public static final String DATA_OBJECTIVE_DATA_SET_TAG = "ObjectiveDataSet";
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private final HashMap<String, ObjectiveData> objectives = new HashMap<>();
+  private final HashMap<String, ObjectiveDataEntry> objectives = new HashMap<>();
   private final HashSet<String> targetedPlayerSet = new HashSet<>();
   private final HashSet<UUID> targetedEntitySet = new HashSet<>();
   // Data
@@ -51,32 +51,32 @@ public class ObjectiveDataSet {
     this.load(compoundTag);
   }
 
-  public Set<ObjectiveData> getObjectives() {
+  public Set<ObjectiveDataEntry> getObjectives() {
     return new HashSet<>(this.objectives.values());
   }
 
-  public ObjectiveData getOrCreateObjective(ObjectiveType objectiveType, int priority) {
+  public ObjectiveDataEntry getOrCreateObjective(ObjectiveType objectiveType, int priority) {
     if (this.hasObjective(objectiveType)) {
       return this.getObjective(objectiveType);
     }
-    return new ObjectiveData(objectiveType, priority);
+    return new ObjectiveDataEntry(objectiveType, priority);
   }
 
-  public ObjectiveData getObjective(ObjectiveType objectiveType) {
+  public ObjectiveDataEntry getObjective(ObjectiveType objectiveType) {
     return this.getObjective(objectiveType.name());
   }
 
-  public ObjectiveData getObjective(String objectiveId) {
-    ObjectiveData objectiveData = this.objectives.get(objectiveId);
-    if (objectiveData != null && objectiveData.getType() != ObjectiveType.NONE) {
-      return objectiveData;
+  public ObjectiveDataEntry getObjective(String objectiveId) {
+    ObjectiveDataEntry objectiveDataEntry = this.objectives.get(objectiveId);
+    if (objectiveDataEntry != null && objectiveDataEntry.getType() != ObjectiveType.NONE) {
+      return objectiveDataEntry;
     }
     return null;
   }
 
   public boolean hasObjective(String objectiveId) {
-    ObjectiveData objectiveData = this.objectives.get(objectiveId);
-    return objectiveData != null && objectiveData.getType() != ObjectiveType.NONE;
+    ObjectiveDataEntry objectiveDataEntry = this.objectives.get(objectiveId);
+    return objectiveDataEntry != null && objectiveDataEntry.getType() != ObjectiveType.NONE;
   }
 
   public boolean hasObjective(ObjectiveType objectiveType) {
@@ -87,16 +87,16 @@ public class ObjectiveDataSet {
     return this.hasObjectives;
   }
 
-  public void addObjective(ObjectiveData objectiveData) {
-    if (objectiveData == null || objectiveData.getType() == ObjectiveType.NONE) {
+  public void addObjective(ObjectiveDataEntry objectiveDataEntry) {
+    if (objectiveDataEntry == null || objectiveDataEntry.getType() == ObjectiveType.NONE) {
       return;
     }
-    this.objectives.put(objectiveData.getId(), objectiveData);
+    this.objectives.put(objectiveDataEntry.getId(), objectiveDataEntry);
     this.updateTargetFlags();
   }
 
-  public boolean removeObjective(ObjectiveData objectiveData) {
-    return this.removeObjective(objectiveData.getId());
+  public boolean removeObjective(ObjectiveDataEntry objectiveDataEntry) {
+    return this.removeObjective(objectiveDataEntry.getId());
   }
 
   public boolean removeObjective(String objectiveId) {
@@ -134,11 +134,11 @@ public class ObjectiveDataSet {
   }
 
   public boolean hasValidTarget(EasyNPC<?> easyNPC) {
-    for (ObjectiveData objectiveData : this.objectives.values()) {
-      if (objectiveData == null || objectiveData.getType() == ObjectiveType.NONE) {
+    for (ObjectiveDataEntry objectiveDataEntry : this.objectives.values()) {
+      if (objectiveDataEntry == null || objectiveDataEntry.getType() == ObjectiveType.NONE) {
         continue;
       }
-      if (!objectiveData.hasValidTarget(easyNPC)) {
+      if (!objectiveDataEntry.hasValidTarget(easyNPC)) {
         return false;
       }
     }
@@ -159,24 +159,24 @@ public class ObjectiveDataSet {
     boolean hasPlayerTargetObjective = false;
     boolean hasEntityTargetObjective = false;
     boolean hasOwnerTargetObjective = false;
-    for (ObjectiveData objectiveData : this.objectives.values()) {
-      if (objectiveData == null || objectiveData.getType() == ObjectiveType.NONE) {
+    for (ObjectiveDataEntry objectiveDataEntry : this.objectives.values()) {
+      if (objectiveDataEntry == null || objectiveDataEntry.getType() == ObjectiveType.NONE) {
         continue;
       }
 
       // Check if we have any travel objectives
-      if (objectiveData.hasTravelObjective()) {
+      if (objectiveDataEntry.hasTravelObjective()) {
         hasTravelObjectives = true;
       }
 
       // Check if we have any object with a targeted player or entity.
-      if (objectiveData.hasPlayerTarget()) {
-        targetedPlayerSet.add(objectiveData.getTargetPlayerName());
+      if (objectiveDataEntry.hasPlayerTarget()) {
+        targetedPlayerSet.add(objectiveDataEntry.getTargetPlayerName());
         hasPlayerTargetObjective = true;
-      } else if (objectiveData.hasEntityTarget()) {
-        targetedEntitySet.add(objectiveData.getTargetEntityUUID());
+      } else if (objectiveDataEntry.hasEntityTarget()) {
+        targetedEntitySet.add(objectiveDataEntry.getTargetEntityUUID());
         hasEntityTargetObjective = true;
-      } else if (objectiveData.hasOwnerTarget()) {
+      } else if (objectiveDataEntry.hasOwnerTarget()) {
         hasOwnerTargetObjective = true;
       }
     }
@@ -201,19 +201,19 @@ public class ObjectiveDataSet {
     ListTag objectiveDataList = compoundTag.getList(DATA_OBJECTIVE_DATA_SET_TAG, 10);
     for (int i = 0; i < objectiveDataList.size(); i++) {
       CompoundTag objectiveDataTag = objectiveDataList.getCompound(i);
-      ObjectiveData objectiveData = new ObjectiveData(objectiveDataTag);
-      this.addObjective(objectiveData);
+      ObjectiveDataEntry objectiveDataEntry = new ObjectiveDataEntry(objectiveDataTag);
+      this.addObjective(objectiveDataEntry);
     }
   }
 
   public CompoundTag save(CompoundTag compoundTag) {
     ListTag objectiveDataList = new ListTag();
-    for (ObjectiveData objectiveData : this.objectives.values()) {
+    for (ObjectiveDataEntry objectiveDataEntry : this.objectives.values()) {
       // Skip empty objectives
-      if (objectiveData == null || objectiveData.getType() == ObjectiveType.NONE) {
+      if (objectiveDataEntry == null || objectiveDataEntry.getType() == ObjectiveType.NONE) {
         continue;
       }
-      objectiveDataList.add(objectiveData.createTag());
+      objectiveDataList.add(objectiveDataEntry.createTag());
     }
     compoundTag.put(DATA_OBJECTIVE_DATA_SET_TAG, objectiveDataList);
     return compoundTag;

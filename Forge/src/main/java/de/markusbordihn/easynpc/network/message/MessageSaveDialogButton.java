@@ -20,8 +20,10 @@
 package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
-import de.markusbordihn.easynpc.entity.EasyNPCEntity;
-import de.markusbordihn.easynpc.entity.EntityManager;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
+import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -88,14 +90,28 @@ public class MessageSaveDialogButton extends NetworkMessage {
     }
 
     // Validate entity.
-    EasyNPCEntity easyNPCEntity = EntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPCEntity == null) {
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    if (easyNPC == null) {
       log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
       return;
     }
 
+    // Validate dialog data.
+    DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
+    if (dialogData == null) {
+      log.error("Invalid dialog data for {} from {}", message, context);
+      return;
+    }
+
+    // Validate action event data.
+    ActionEventData<?> actionEventData = easyNPC.getEasyNPCActionEventData();
+    if (actionEventData == null) {
+      log.error("Invalid action data for {} from {}", message, context);
+      return;
+    }
+
     // Validate dialog for dialog button.
-    if (!easyNPCEntity.hasDialog(dialogId)) {
+    if (!dialogData.hasDialog(dialogId)) {
       log.error(
           "Unknown dialog button editor request for dialog {} for {} from {}",
           dialogId,
@@ -106,13 +122,13 @@ public class MessageSaveDialogButton extends NetworkMessage {
 
     // Validate dialog button id.
     UUID dialogButtonId = message.getDialogButtonId();
-    if (dialogButtonId != null && !easyNPCEntity.hasDialogButton(dialogId, dialogButtonId)) {
+    if (dialogButtonId != null && !dialogData.hasDialogButton(dialogId, dialogButtonId)) {
       log.error("Invalid dialog button {} for {} from {}", dialogButtonId, message, context);
       return;
     }
 
     // Re-check permission levels for dialog related actions.
-    int currentPermissionLevel = easyNPCEntity.getActionPermissionLevel();
+    int currentPermissionLevel = actionEventData.getActionPermissionLevel();
     if (currentPermissionLevel == 0) {
       MinecraftServer minecraftServer = serverPlayer.getServer();
       if (minecraftServer != null) {
@@ -122,9 +138,9 @@ public class MessageSaveDialogButton extends NetworkMessage {
               "Update owner permission level from {} to {} for {} from {}",
               currentPermissionLevel,
               permissionLevel,
-              easyNPCEntity,
+              easyNPC,
               serverPlayer);
-          easyNPCEntity.setActionPermissionLevel(permissionLevel);
+          actionEventData.setActionPermissionLevel(permissionLevel);
         }
       }
     }
@@ -137,7 +153,7 @@ public class MessageSaveDialogButton extends NetworkMessage {
           dialogId,
           uuid,
           serverPlayer);
-      easyNPCEntity.getDialogDataSet().getDialog(dialogId).setButton(dialogButtonData);
+      dialogData.getDialogDataSet().getDialog(dialogId).setButton(dialogButtonData);
     } else {
       log.info(
           "Edit existing dialog button {} for dialog {} for {} from {}",
@@ -145,10 +161,7 @@ public class MessageSaveDialogButton extends NetworkMessage {
           dialogId,
           uuid,
           serverPlayer);
-      easyNPCEntity
-          .getDialogDataSet()
-          .getDialog(dialogId)
-          .setButton(dialogButtonId, dialogButtonData);
+      dialogData.getDialogDataSet().getDialog(dialogId).setButton(dialogButtonId, dialogButtonData);
     }
   }
 
