@@ -21,12 +21,11 @@ package de.markusbordihn.easynpc.client.renderer;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.ModModelLayers;
-import de.markusbordihn.easynpc.client.renderer.entity.AllayRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.HumanoidRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.custom.FairyRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.AllayRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.CatRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.ChickenRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.standard.HumanoidRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.HumanoidSlimRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.IronGolemRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.SkeletonRenderer;

@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 
 public class LivingEntityEvents {

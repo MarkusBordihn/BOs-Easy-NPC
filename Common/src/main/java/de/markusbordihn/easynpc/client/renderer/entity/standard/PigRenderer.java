@@ -38,14 +38,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class PigRenderer extends MobRenderer<Pig, StandardPigModel<Pig>> implements EasyNPCRenderer {
+public class PigRenderer extends MobRenderer<Pig, StandardPigModel<Pig>>
+    implements EasyNPCRenderer {
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
           new EnumMap<>(Variant.class),
           map -> {
             map.put(Variant.DEFAULT, new ResourceLocation("textures/entity/pig/pig.png"));
-            map.put(Variant.SPOTTED, new ResourceLocation(Constants.MOD_ID, "textures/entity/pig/pig_spotted.png"));
+            map.put(
+                Variant.SPOTTED,
+                new ResourceLocation(Constants.MOD_ID, "textures/entity/pig/pig_spotted.png"));
           });
 
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.DEFAULT);

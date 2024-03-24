@@ -140,7 +140,8 @@ public class ModEntityTypes {
           .build(Illager.ID_EVOKER);
   public static final EntityType<Illager> ILLUSIONER =
       EntityType.Builder.<Illager>of(
-              (entityType, level) -> new Illager(entityType, level, Variant.ILLUSIONER_CROSSED_ARMS),
+              (entityType, level) ->
+                  new Illager(entityType, level, Variant.ILLUSIONER_CROSSED_ARMS),
               MobCategory.MONSTER)
           .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
@@ -154,7 +155,8 @@ public class ModEntityTypes {
           .build(Illager.ID_PILLAGER);
   public static final EntityType<Illager> VINDICATOR =
       EntityType.Builder.<Illager>of(
-              (entityType, level) -> new Illager(entityType, level, Variant.VINDICATOR_CROSSED_ARMS),
+              (entityType, level) ->
+                  new Illager(entityType, level, Variant.VINDICATOR_CROSSED_ARMS),
               MobCategory.MONSTER)
           .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)

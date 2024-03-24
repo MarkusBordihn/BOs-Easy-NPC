@@ -724,7 +724,7 @@ public class EasyNPCBaseEntity extends PathfinderMob
   @Override
   public void equipSaddle(SoundSource soundSource) {
     if (soundSource != null) {
-      this.level.playSound((Player)null, this, SoundEvents.PIG_SADDLE, soundSource, 0.5F, 1.0F);
+      this.level.playSound((Player) null, this, SoundEvents.PIG_SADDLE, soundSource, 0.5F, 1.0F);
     }
   }
 
