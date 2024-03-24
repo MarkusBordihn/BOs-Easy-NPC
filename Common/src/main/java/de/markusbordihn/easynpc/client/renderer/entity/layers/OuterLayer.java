@@ -29,10 +29,7 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class OuterLayer<T extends LivingEntity, M extends EntityModel<T>>
     extends RenderLayer<T, M> {
 
@@ -61,30 +58,30 @@ public class OuterLayer<T extends LivingEntity, M extends EntityModel<T>>
       float ageInTicks2,
       float netHeadYaw,
       float headPitch) {
-    if (!livingEntity.isInvisible()
-        && textures != null
-        && livingEntity instanceof EasyNPC<?> easyNPC) {
-      ResourceLocation resourceLocation =
-          textures.get(easyNPC.getEasyNPCVariantData().getVariant());
-      if (resourceLocation != null) {
-        coloredCutoutModelCopyLayerRender(
-            this.getParentModel(),
-            this.model,
-            resourceLocation,
-            poseStack,
-            buffer,
-            lightLevel,
-            livingEntity,
-            limbSwing,
-            limbSwingAmount,
-            ageInTicks2,
-            netHeadYaw,
-            headPitch,
-            ageInTicks,
-            1.0F,
-            1.0F,
-            1.0F);
-      }
+    if (livingEntity.isInvisible()
+        || textures == null
+        || !(livingEntity instanceof EasyNPC<?> easyNPC)) {
+      return;
+    }
+    ResourceLocation resourceLocation = textures.get(easyNPC.getEasyNPCVariantData().getVariant());
+    if (resourceLocation != null) {
+      coloredCutoutModelCopyLayerRender(
+          this.getParentModel(),
+          this.model,
+          resourceLocation,
+          poseStack,
+          buffer,
+          lightLevel,
+          livingEntity,
+          limbSwing,
+          limbSwingAmount,
+          ageInTicks2,
+          netHeadYaw,
+          headPitch,
+          ageInTicks,
+          1.0F,
+          1.0F,
+          1.0F);
     }
   }
 }

@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 
 public class LivingEntityEvents {
@@ -60,14 +59,5 @@ public class LivingEntityEvents {
     } else {
       LivingEntityManager.removeLivingEntity(livingEntity);
     }
-  }
-
-  /*
-   * @param livingEntity
-   * @param damageSource
-   */
-  public static void handleLivingEntityDeathEvent(
-      LivingEntity livingEntity, DamageSource damageSource) {
-    // TODO: Handle death event
   }
 }

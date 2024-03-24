@@ -24,9 +24,11 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.access.EasyNPCAccessManager;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.UUID;
@@ -56,7 +58,7 @@ public class PresetCommand {
 
   public PresetCommand() {}
 
-  public static ArgumentBuilder<CommandSourceStack, ?> register(PresetCommand command) {
+  public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("preset")
         .executes(PresetCommand::overview)
         .then(
@@ -66,7 +68,7 @@ public class PresetCommand {
                         .suggests(SuggestionProvider::suggestEasyNPCs)
                         .executes(
                             context ->
-                                command.exportPreset(
+                                exportPreset(
                                     context.getSource(), UuidArgument.getUuid(context, "uuid")))))
         .then(
             Commands.literal("import")
@@ -273,7 +275,45 @@ public class PresetCommand {
     }
   }
 
-  protected int exportPreset(CommandSourceStack context, UUID uuid) {
-    throw new UnsupportedOperationException("Unsupported operation");
+  private static int exportPreset(CommandSourceStack context, UUID uuid) {
+    if (uuid == null) {
+      return 0;
+    }
+
+    log.info("Try to exporting EasyNPC with UUID {}...", uuid);
+
+    // Check if player is available.
+    ServerPlayer serverPlayer;
+    try {
+      serverPlayer = context.getPlayerOrException();
+    } catch (CommandSyntaxException e) {
+      context.sendFailure(Component.literal("This command can only be executed by a player!"));
+      return 0;
+    }
+
+    // Check if player has access to the EasyNPC.
+    if (!EasyNPCAccessManager.hasAccess(context, uuid)) {
+      context.sendFailure(Component.literal("You are not allowed to export this EasyNPC!"));
+      return 0;
+    }
+
+    // Get the EasyNPC entity by UUID.
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid);
+
+    log.info(
+        "Exporting EasyNPC {} with UUID {} and skin {}...",
+        easyNPC,
+        uuid,
+        easyNPC.getEasyNPCSkinData().getSkinModel());
+    NetworkMessageHandlerManager.getNetworkMessageHandler().exportPresetClient(uuid, serverPlayer);
+    context.sendSuccess(
+        Component.literal(
+            "Exported EasyNPC "
+                + easyNPC.getEntity().getDisplayName().getString()
+                + " with UUID "
+                + uuid
+                + " locally!"),
+        true);
+    return Command.SINGLE_SUCCESS;
   }
 }

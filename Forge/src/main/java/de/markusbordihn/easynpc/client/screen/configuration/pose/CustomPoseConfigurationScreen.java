@@ -20,14 +20,14 @@
 package de.markusbordihn.easynpc.client.screen.configuration.pose;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.SliderButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.model.ModelPart;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import de.markusbordihn.easynpc.menu.configuration.pose.CustomPoseConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.screen.ScreenHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
@@ -37,7 +37,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class CustomPoseConfigurationScreen
     extends PoseConfigurationScreen<CustomPoseConfigurationMenu> {
 
-  protected final ModelData<?> modelData;
   // Slider Buttons reference for positioning
   protected SliderButton headSliderButton;
   protected SliderButton bodySliderButton;
@@ -50,7 +49,6 @@ public class CustomPoseConfigurationScreen
   public CustomPoseConfigurationScreen(
       CustomPoseConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
-    this.modelData = this.easyNPC.getEasyNPCModelData();
   }
 
   private SliderButton createVisibilityRotationPositionSlider(
@@ -90,6 +88,10 @@ public class CustomPoseConfigurationScreen
     int sliderLeftSpace = 200;
     int sliderTopSpace = 66;
 
+    // Variant data
+    VariantData<?> variantData = this.easyNPC.getEasyNPCVariantData();
+    boolean hasCrossedArms = variantData.hasVariantCrossedArms();
+
     // Head parts
     if (this.modelData.hasHeadModelPart()) {
       this.headSliderButton =
@@ -108,9 +110,10 @@ public class CustomPoseConfigurationScreen
     sliderTopPos += sliderTopSpace;
 
     // Arms parts
-    if (!this.modelData.hasLeftArmModelPart()
-        && !this.modelData.hasRightArmModelPart()
-        && this.modelData.hasArmsModelPart()) {
+    if (hasCrossedArms
+        || (!this.modelData.hasLeftArmModelPart()
+            && !this.modelData.hasRightArmModelPart()
+            && this.modelData.hasArmsModelPart())) {
       sliderLeftPos = this.contentLeftPos - 3;
       this.armsSliderButton =
           createVisibilityRotationPositionSlider(
@@ -118,7 +121,7 @@ public class CustomPoseConfigurationScreen
     }
 
     // Right arm parts
-    if (this.modelData.hasRightArmModelPart()) {
+    if (!hasCrossedArms && this.modelData.hasRightArmModelPart()) {
       sliderLeftPos = this.contentLeftPos - 3;
       this.rightArmSliderButton =
           createVisibilityRotationPositionSlider(
@@ -126,7 +129,7 @@ public class CustomPoseConfigurationScreen
     }
 
     // Left arm parts
-    if (this.modelData.hasLeftArmModelPart()) {
+    if (!hasCrossedArms && this.modelData.hasLeftArmModelPart()) {
       sliderLeftPos += sliderLeftSpace;
       this.leftArmSliderButton =
           createVisibilityRotationPositionSlider(
@@ -166,7 +169,7 @@ public class CustomPoseConfigurationScreen
         this.easyNPC);
 
     // Body parts texts
-    if (this.modelData.hasHeadModelPart()) {
+    if (this.modelData.hasHeadModelPart() && this.headSliderButton != null) {
       Text.drawConfigString(
           poseStack,
           this.font,
@@ -174,7 +177,7 @@ public class CustomPoseConfigurationScreen
           this.headSliderButton.x + 20,
           this.headSliderButton.y - 12);
     }
-    if (this.modelData.hasBodyModelPart()) {
+    if (this.modelData.hasBodyModelPart() && this.bodySliderButton != null) {
       Text.drawConfigString(
           poseStack,
           this.font,
@@ -182,14 +185,14 @@ public class CustomPoseConfigurationScreen
           this.bodySliderButton.x + 20,
           this.bodySliderButton.y - 12);
     }
-    if (this.modelData.hasLeftArmModelPart()) {
+    if (this.modelData.hasLeftArmModelPart() && this.leftArmSliderButton != null) {
       Text.drawConfigString(
           poseStack,
           this.font,
           "pose.left_arm",
           this.leftArmSliderButton.x + 20,
           this.leftArmSliderButton.y - 12);
-    } else if (this.modelData.hasArmsModelPart()) {
+    } else if (this.modelData.hasArmsModelPart() && this.armsSliderButton != null) {
       Text.drawConfigString(
           poseStack,
           this.font,
@@ -197,7 +200,7 @@ public class CustomPoseConfigurationScreen
           this.armsSliderButton.x + 20,
           this.armsSliderButton.y - 12);
     }
-    if (this.modelData.hasRightArmModelPart()) {
+    if (this.modelData.hasRightArmModelPart() && rightArmSliderButton != null) {
       Text.drawConfigString(
           poseStack,
           this.font,
@@ -205,7 +208,7 @@ public class CustomPoseConfigurationScreen
           this.rightArmSliderButton.x + 20,
           this.rightArmSliderButton.y - 12);
     }
-    if (this.modelData.hasLeftLegModelPart()) {
+    if (this.modelData.hasLeftLegModelPart() && this.leftLegSliderButton != null) {
       Text.drawConfigString(
           poseStack,
           this.font,
@@ -213,7 +216,7 @@ public class CustomPoseConfigurationScreen
           this.leftLegSliderButton.x + 20,
           this.leftLegSliderButton.y - 12);
     }
-    if (this.modelData.hasRightLegModelPart()) {
+    if (this.modelData.hasRightLegModelPart() && this.rightLegSliderButton != null) {
       Text.drawConfigString(
           poseStack,
           this.font,

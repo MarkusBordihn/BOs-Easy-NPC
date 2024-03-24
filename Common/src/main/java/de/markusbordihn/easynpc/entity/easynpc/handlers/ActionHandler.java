@@ -20,10 +20,17 @@
 package de.markusbordihn.easynpc.entity.easynpc.handlers;
 
 import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.data.action.ActionEventType;
+import de.markusbordihn.easynpc.data.action.ActionGroup;
+import de.markusbordihn.easynpc.data.action.ActionManager;
+import de.markusbordihn.easynpc.data.ticker.TickerType;
+import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
+import de.markusbordihn.easynpc.entity.easynpc.data.TickerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
@@ -32,9 +39,12 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.player.Player;
 
-public interface ActionHandler<T extends LivingEntity> extends EasyNPC<T> {
+public interface ActionHandler<T extends PathfinderMob> extends EasyNPC<T> {
   private static boolean validateActionData(ActionData actionData, ServerPlayer serverPlayer) {
     return actionData != null
         && serverPlayer != null
@@ -95,6 +105,126 @@ public interface ActionHandler<T extends LivingEntity> extends EasyNPC<T> {
             .withLevel(serverPlayer.getLevel());
     commands.performCommand(
         debug ? commandSourceStack : commandSourceStack.withSuppressedOutput(), command);
+  }
+
+  default List<? extends Player> getPlayersInRange(Double range) {
+    Entity entity = this.getEntity();
+    return this.getLevel().players().stream()
+        .filter(EntitySelector.NO_SPECTATORS)
+        .filter(targetPlayers -> entity.closerThan(targetPlayers, range))
+        .toList();
+  }
+
+  default void checkTradingActions() {
+    this.getProfiler().push("npcCheckTradingActions");
+
+    TradingData<?> tradingData = this.getEasyNPCTradingData();
+    TickerData<?> tickerData = this.getEasyNPCTickerData();
+    if (tradingData == null || tickerData == null) {
+      return;
+    }
+
+    if ((tradingData.getTradingType() == TradingType.BASIC
+            || tradingData.getTradingType() == TradingType.ADVANCED)
+        && tradingData.getTradingResetsEveryMin() > 0
+        && tickerData.checkAndIncreaseTicker(
+            TickerType.TRADING_RESET, tradingData.getTradingResetsEveryMin())) {
+      tradingData.resetTradingOffers();
+      tickerData.resetTicker(TickerType.TRADING_RESET);
+    }
+
+    this.getProfiler().pop();
+  }
+
+  default void checkDistanceActions() {
+    this.getProfiler().push("npcCheckDistanceActions");
+
+    Mob mob = this.getMob();
+    ActionEventData<?> actionEventData = this.getEasyNPCActionEventData();
+    if (actionEventData == null || mob == null || mob.isDeadOrDying()) {
+      return;
+    }
+
+    // Check to avoid additional checks, when no player is in range.
+    boolean skipPlayerDistanceCheck = false;
+
+    // Near distance action, if set.
+    if (actionEventData.hasActionEvent(ActionEventType.ON_DISTANCE_NEAR)) {
+      List<? extends Player> listOfPlayers = this.getPlayersInRange(16.0D);
+      if (listOfPlayers == null || listOfPlayers.isEmpty()) {
+        ActionManager.removeActionGroup(mob, ActionGroup.DISTANCE_NEAR);
+        skipPlayerDistanceCheck = true;
+      } else {
+        ActionData actionData = actionEventData.getActionEvent(ActionEventType.ON_DISTANCE_NEAR);
+        for (Player player : listOfPlayers) {
+          if (player instanceof ServerPlayer serverPlayer
+              && !ActionManager.containsPlayer(mob, ActionGroup.DISTANCE_NEAR, serverPlayer)) {
+            this.executeAction(actionData, serverPlayer);
+            ActionManager.addPlayer(mob, ActionGroup.DISTANCE_NEAR, serverPlayer);
+          }
+        }
+      }
+    }
+
+    // Close distance action, if set.
+    if (actionEventData.hasActionEvent(ActionEventType.ON_DISTANCE_CLOSE)) {
+      List<? extends Player> listOfPlayers =
+          skipPlayerDistanceCheck ? null : this.getPlayersInRange(8.0D);
+      if (listOfPlayers == null || listOfPlayers.isEmpty()) {
+        ActionManager.removeActionGroup(mob, ActionGroup.DISTANCE_CLOSE);
+        skipPlayerDistanceCheck = true;
+      } else {
+        ActionData actionData = actionEventData.getActionEvent(ActionEventType.ON_DISTANCE_CLOSE);
+        for (Player player : listOfPlayers) {
+          if (player instanceof ServerPlayer serverPlayer
+              && !ActionManager.containsPlayer(mob, ActionGroup.DISTANCE_CLOSE, serverPlayer)) {
+            this.executeAction(actionData, serverPlayer);
+            ActionManager.addPlayer(mob, ActionGroup.DISTANCE_CLOSE, serverPlayer);
+          }
+        }
+      }
+    }
+
+    // Very close distance action, if set.
+    if (actionEventData.hasActionEvent(ActionEventType.ON_DISTANCE_VERY_CLOSE)) {
+      List<? extends Player> listOfPlayers =
+          skipPlayerDistanceCheck ? null : this.getPlayersInRange(4.0D);
+      if (listOfPlayers == null || listOfPlayers.isEmpty()) {
+        ActionManager.removeActionGroup(mob, ActionGroup.DISTANCE_VERY_CLOSE);
+        skipPlayerDistanceCheck = true;
+      } else {
+        ActionData actionData =
+            actionEventData.getActionEvent(ActionEventType.ON_DISTANCE_VERY_CLOSE);
+        for (Player player : listOfPlayers) {
+          if (player instanceof ServerPlayer serverPlayer
+              && !ActionManager.containsPlayer(
+                  mob, ActionGroup.DISTANCE_VERY_CLOSE, serverPlayer)) {
+            this.executeAction(actionData, serverPlayer);
+            ActionManager.addPlayer(mob, ActionGroup.DISTANCE_VERY_CLOSE, serverPlayer);
+          }
+        }
+      }
+    }
+
+    // Touch distance action, if set.
+    if (actionEventData.hasActionEvent(ActionEventType.ON_DISTANCE_TOUCH)) {
+      List<? extends Player> listOfPlayers =
+          skipPlayerDistanceCheck ? null : this.getPlayersInRange(1.25D);
+      if (listOfPlayers == null || listOfPlayers.isEmpty()) {
+        ActionManager.removeActionGroup(mob, ActionGroup.DISTANCE_TOUCH);
+      } else {
+        ActionData actionData = actionEventData.getActionEvent(ActionEventType.ON_DISTANCE_TOUCH);
+        for (Player player : listOfPlayers) {
+          if (player instanceof ServerPlayer serverPlayer
+              && !ActionManager.containsPlayer(mob, ActionGroup.DISTANCE_TOUCH, serverPlayer)) {
+            this.executeAction(actionData, serverPlayer);
+            ActionManager.addPlayer(mob, ActionGroup.DISTANCE_TOUCH, serverPlayer);
+          }
+        }
+      }
+    }
+
+    this.getProfiler().pop();
   }
 
   default void executeActions(Set<ActionData> actionDataSet, ServerPlayer serverPlayer) {

@@ -23,13 +23,17 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 
-public interface ConfigurationData<T extends LivingEntity> extends EasyNPC<T> {
+public interface ConfigurationData<T extends PathfinderMob> extends EasyNPC<T> {
 
   default void openMainConfigurationMenu(ServerPlayer serverPlayer) {
-    MenuManager.getMenuHandler()
-        .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, this, 0);
+    if (this.supportsConfiguration()) {
+      MenuManager.getMenuHandler()
+          .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, this, 0);
+    } else {
+      log.error("Configuration is not supported for {} ...", this);
+    }
   }
 
   default boolean supportsConfiguration() {

@@ -25,9 +25,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 
-public interface ScaleData<T extends LivingEntity> extends EasyNPC<T> {
+public interface ScaleData<T extends PathfinderMob> extends EasyNPC<T> {
 
   // Constants values
   float DEFAULT_SCALE_X = 1.0f;

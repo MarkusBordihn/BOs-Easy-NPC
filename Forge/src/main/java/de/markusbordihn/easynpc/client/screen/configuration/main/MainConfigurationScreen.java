@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.client.screen.configuration.main;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.screen.ScreenHelper;
+import de.markusbordihn.easynpc.client.screen.components.ColorButton;
 import de.markusbordihn.easynpc.client.screen.components.CopyButton;
 import de.markusbordihn.easynpc.client.screen.components.DeleteButton;
 import de.markusbordihn.easynpc.client.screen.components.SaveButton;
@@ -39,6 +39,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.screen.ScreenHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -47,6 +48,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.DyeColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -55,12 +57,12 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
 
   public static final int BUTTON_WIDTH = 90;
   public static final int BUTTON_HEIGHT = 18;
-
+  private ColorButton nameColorButton;
   private Button saveNameButton;
   private EditBox nameBox;
-
-  // Cache
+  private int textColor = 0xFFFFFF;
   private String formerName = "";
+  private int formerTextColor = 0xFFFFFF;
 
   public MainConfigurationScreen(
       MainConfigurationMenu menu, Inventory inventory, Component component) {
@@ -70,9 +72,13 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
   private void saveName() {
     String value = this.nameBox.getValue();
     if (value != null && !value.isBlank()) {
-      log.debug("Saving name {} for {}", value, this.easyNPC);
-      NetworkMessageHandler.nameChange(this.uuid, value);
+      if (this.nameColorButton != null) {
+        textColor = this.nameColorButton.getColorValue();
+      }
+      log.debug("Saving name {} with color {} for {}", value, textColor, this.easyNPC);
+      NetworkMessageHandler.nameChange(this.uuid, value, textColor);
       this.formerName = value;
+      this.formerTextColor = textColor;
       this.saveNameButton.active = false;
     }
   }
@@ -125,7 +131,10 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
 
   private void validateName() {
     String nameValue = this.nameBox.getValue();
-    this.saveNameButton.active = nameValue != null && !this.formerName.equals(nameValue);
+    int textColorValue = this.nameColorButton.getColorValue();
+    this.saveNameButton.active =
+        nameValue != null
+            && (!this.formerName.equals(nameValue) || this.formerTextColor != textColorValue);
   }
 
   @Override
@@ -150,9 +159,27 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     this.nameBox.setValue(this.formerName);
     this.nameBox.setResponder(consumer -> this.validateName());
     this.addRenderableWidget(this.nameBox);
+
+    this.nameColorButton =
+        this.addRenderableWidget(
+            new ColorButton(this.leftPos + 119, this.topPos + 24, onPress -> this.validateName()));
+    if (this.easyNPC.getEntity().hasCustomName()
+        && this.easyNPC.getEntity().getCustomName().getStyle() != null
+        && this.easyNPC.getEntity().getCustomName().getStyle().getColor() != null) {
+      int styleTextColor =
+          this.easyNPC.getEntity().getCustomName().getStyle().getColor().getValue();
+      for (DyeColor dyeColor : DyeColor.values()) {
+        if (dyeColor.getTextColor() == styleTextColor) {
+          this.nameColorButton.setColor(dyeColor);
+          this.formerTextColor = styleTextColor;
+          break;
+        }
+      }
+    }
+
     this.saveNameButton =
         this.addRenderableWidget(
-            new SaveButton(this.leftPos + 118, this.topPos + 24, onPress -> this.saveName()));
+            new SaveButton(this.leftPos + 139, this.topPos + 24, onPress -> this.saveName()));
     this.saveNameButton.active = false;
 
     // Skins Button
