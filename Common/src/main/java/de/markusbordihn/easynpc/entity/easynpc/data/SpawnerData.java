@@ -28,9 +28,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 
-public interface SpawnerData<T extends LivingEntity> extends EasyNPC<T> {
+public interface SpawnerData<T extends PathfinderMob> extends EasyNPC<T> {
 
   EntityDataSerializer<UUID> UUID =
       new EntityDataSerializer<>() {

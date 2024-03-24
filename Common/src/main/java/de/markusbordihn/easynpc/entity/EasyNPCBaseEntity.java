@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.custom.CustomDataAccessor;
 import de.markusbordihn.easynpc.data.entity.CustomEntityData;
+import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
@@ -39,34 +40,56 @@ import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import de.markusbordihn.easynpc.entity.easynpc.data.SpawnData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SpawnerData;
+import de.markusbordihn.easynpc.entity.easynpc.data.TickerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.BaseTickHandler;
+import de.markusbordihn.easynpc.utils.TextUtils;
+import java.util.EnumMap;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.Saddleable;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
+import net.minecraft.world.entity.animal.FlyingAnimal;
+import net.minecraft.world.entity.monster.CrossbowAttackMob;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ProjectileWeaponItem;
@@ -75,32 +98,39 @@ import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class EasyNPCBaseEntity extends AgeableMob
+public class EasyNPCBaseEntity extends PathfinderMob
     implements NeutralMob,
         Merchant,
-        EasyNPC<AgeableMob>,
-        ActionHandler<AgeableMob>,
-        ActionEventData<AgeableMob>,
-        AttackData<AgeableMob>,
-        AttributeData<AgeableMob>,
-        ConfigurationData<AgeableMob>,
-        DialogData<AgeableMob>,
-        GuiData<AgeableMob>,
-        ModelData<AgeableMob>,
-        NavigationData<AgeableMob>,
-        NPCData<AgeableMob>,
-        ObjectiveData<AgeableMob>,
-        OwnerData<AgeableMob>,
-        PresetData<AgeableMob>,
-        ProfessionData<AgeableMob>,
-        ScaleData<AgeableMob>,
-        SkinData<AgeableMob>,
-        SpawnerData<AgeableMob>,
-        TradingData<AgeableMob>,
-        VariantData<AgeableMob> {
+        RangedAttackMob,
+        CrossbowAttackMob,
+        Saddleable,
+        EasyNPC<PathfinderMob>,
+        ActionHandler<PathfinderMob>,
+        ActionEventData<PathfinderMob>,
+        AttackData<PathfinderMob>,
+        AttributeData<PathfinderMob>,
+        BaseTickHandler<PathfinderMob>,
+        ConfigurationData<PathfinderMob>,
+        DialogData<PathfinderMob>,
+        GuiData<PathfinderMob>,
+        ModelData<PathfinderMob>,
+        NavigationData<PathfinderMob>,
+        NPCData<PathfinderMob>,
+        ObjectiveData<PathfinderMob>,
+        OwnerData<PathfinderMob>,
+        PresetData<PathfinderMob>,
+        ProfessionData<PathfinderMob>,
+        ScaleData<PathfinderMob>,
+        SkinData<PathfinderMob>,
+        SpawnData<PathfinderMob>,
+        SpawnerData<PathfinderMob>,
+        TickerData<PathfinderMob>,
+        TradingData<PathfinderMob>,
+        VariantData<PathfinderMob> {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
@@ -118,15 +148,93 @@ public class EasyNPCBaseEntity extends AgeableMob
   }
 
   private final CustomEntityData customEntityData = new CustomEntityData(this);
+  private final EnumMap<TickerType, Integer> tickerMap = new EnumMap<>(TickerType.class);
   protected MerchantOffers offers;
   private int remainingPersistentAngerTime;
   private UUID persistentAngerTarget;
   private int npcDataVersion = -1;
   private Player tradingPlayer;
+  private int attackAnimationTick;
 
-  public EasyNPCBaseEntity(EntityType<? extends AgeableMob> entityType, Level world) {
+  public EasyNPCBaseEntity(
+      EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variant) {
+    this(entityType, level);
+    this.setVariant(variant);
+  }
+
+  public EasyNPCBaseEntity(EntityType<? extends PathfinderMob> entityType, Level world) {
     super(entityType, world);
     this.defineCustomData();
+    this.setInvulnerable(true);
+    this.refreshGroundNavigation();
+  }
+
+  @Override
+  public int getTicker(TickerType tickerType) {
+    return this.tickerMap.getOrDefault(tickerType, 0);
+  }
+
+  @Override
+  public void setTicker(TickerType tickerType, int ticker) {
+    this.tickerMap.put(tickerType, ticker);
+  }
+
+  @Override
+  public void performRangedAttack(LivingEntity livingEntity, float damage) {
+    if (this.getMainHandItem().getItem() instanceof BowItem) {
+      this.performBowAttack(this, livingEntity, damage);
+    } else if (this.getMainHandItem().getItem() instanceof CrossbowItem) {
+      AttackData.addChargedProjectile(this.getMainHandItem(), new ItemStack(Items.ARROW, 1));
+      this.performCrossbowAttack(this, 1.6F);
+    }
+  }
+
+  @Override
+  public void onCrossbowAttackPerformed() {
+    this.noActionTime = 0;
+  }
+
+  @Override
+  public void shootCrossbowProjectile(
+      LivingEntity livingEntity, ItemStack itemStack, Projectile projectile, float rangeFactor) {
+    this.shootCrossbowProjectile(this, livingEntity, projectile, rangeFactor, 1.6F);
+  }
+
+  @Override
+  public void setChargingCrossbow(boolean isCharging) {
+    this.entityData.set(IS_CHARGING_CROSSBOW, isCharging);
+  }
+
+  @Override
+  public int getAttackAnimationTick() {
+    return this.attackAnimationTick;
+  }
+
+  @Override
+  public boolean doHurtTarget(@Nonnull Entity entity) {
+    boolean hurtResult = super.doHurtTarget(entity);
+    this.attackAnimationTick = 10;
+    return hurtResult;
+  }
+
+  @Override
+  public void handleEntityEvent(byte flag) {
+    super.handleEntityEvent(flag);
+    if (flag == 4) {
+      this.attackAnimationTick = 10;
+    }
+  }
+
+  @Override
+  public void aiStep() {
+    super.aiStep();
+    if (this.attackAnimationTick > 0) {
+      --this.attackAnimationTick;
+    }
+
+    if (!this.isClientSide()) {
+      this.updatePersistentAnger((ServerLevel) this.level, true);
+    }
   }
 
   @Override
@@ -192,6 +300,87 @@ public class EasyNPCBaseEntity extends AgeableMob
           new ExperienceOrb(
               this.level, this.getX(), this.getY() + 0.5D, this.getZ(), tradeExperience));
     }
+  }
+
+  @Override
+  public Component getName() {
+    Component component = this.getCustomName();
+    return component != null ? TextUtils.removeAction(component) : this.getTypeName();
+  }
+
+  @Override
+  public boolean hurt(@Nonnull DamageSource damageSource, float damage) {
+    this.handleActionHurtEvent(damageSource, damage);
+    return super.hurt(damageSource, damage);
+  }
+
+  @Override
+  public void die(@Nonnull DamageSource damageSource) {
+    this.handleActionDieEvent(damageSource);
+    super.die(damageSource);
+  }
+
+  // ** TEST START **//
+  // ** TEST END **//
+
+  @Override
+  public InteractionResult mobInteract(@Nonnull Player player, @Nonnull InteractionHand hand) {
+    if (!(player instanceof ServerPlayer serverPlayer) || hand != InteractionHand.MAIN_HAND) {
+      return InteractionResult.PASS;
+    }
+
+    // Item based actions.
+    ItemStack handItemStack = player.getItemInHand(hand);
+    if (!handItemStack.isEmpty()) {
+      Item handItem = handItemStack.getItem();
+
+      // Handle Easy NPC Wand
+      Item easyNPCWand =
+          Registry.ITEM
+              .getOptional(new ResourceLocation(Constants.MOD_ID, "easy_npc_wand"))
+              .orElse(null);
+      if (handItem.equals(easyNPCWand)) {
+        this.openMainConfigurationMenu(serverPlayer);
+        return InteractionResult.PASS;
+      }
+
+      // Handle Armourer's Workshop items like the NPC wand.
+      if (Constants.MOD_ARMOURERS_WORKSHOP_ID.equals(
+          Registry.ITEM.getKey(handItem).getNamespace())) {
+        if (this.getSkinModel().hasArmourersWorkshopSupport()) {
+          log.debug("Ignore event for Armourer's Workshop Item for {} ...", this);
+          return InteractionResult.PASS;
+        } else {
+          serverPlayer.sendMessage(
+              new TranslatableComponent(
+                  Constants.TEXT_PREFIX + "armourers_workshop.no_support",
+                  this.getSkinModel().name(),
+                  this),
+              serverPlayer.getUUID());
+        }
+      }
+    }
+
+    // Open configuration menu for owner and creative mode if the player is crouching.
+    if (player.isCreative() && player.isCrouching()) {
+      this.openMainConfigurationMenu(serverPlayer);
+      return InteractionResult.PASS;
+    }
+
+    this.handleActionInteractionEvent(serverPlayer);
+
+    // Open dialog menu, if we have a simple dialog.
+    if (this.hasDialog()) {
+      this.openDialog(serverPlayer);
+      return InteractionResult.CONSUME;
+    }
+
+    // Open trading screen, if we have a trading inventory.
+    if (this.hasTrading()) {
+      return this.openTradingScreen(serverPlayer);
+    }
+
+    return InteractionResult.PASS;
   }
 
   @Nullable
@@ -283,13 +472,7 @@ public class EasyNPCBaseEntity extends AgeableMob
 
   @Override
   public boolean canFireProjectileWeapon(ProjectileWeaponItem projectileWeaponItem) {
-    return projectileWeaponItem == Items.CROSSBOW || projectileWeaponItem == Items.BOW;
-  }
-
-  @Nullable
-  @Override
-  public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-    return null;
+    return AttackData.canFireProjectileWeapon(projectileWeaponItem);
   }
 
   @Override
@@ -319,7 +502,7 @@ public class EasyNPCBaseEntity extends AgeableMob
   }
 
   @Override
-  public AgeableMob getEasyNPCEntity() {
+  public PathfinderMob getEasyNPCEntity() {
     return this;
   }
 
@@ -364,6 +547,19 @@ public class EasyNPCBaseEntity extends AgeableMob
   }
 
   @Override
+  public boolean canBeLeashed(Player player) {
+    if (!this.isLeashed()
+        && player instanceof ServerPlayer serverPlayer
+        && (serverPlayer.isCreative() || isOwner(serverPlayer))) {
+      return true;
+    }
+    return !this.isLeashed()
+        && getAttributeDataLoaded()
+        && getAttributeCanBeLeashed()
+        && !(this instanceof Enemy);
+  }
+
+  @Override
   public boolean isAttackable() {
     return getAttributeDataLoaded() && getAttributeIsAttackable();
   }
@@ -371,6 +567,13 @@ public class EasyNPCBaseEntity extends AgeableMob
   @Override
   public boolean isPushable() {
     return getAttributeDataLoaded() && getAttributeIsPushable();
+  }
+
+  @Override
+  protected void pushEntities() {
+    if (getAttributeDataLoaded() && getAttributePushEntities()) {
+      super.pushEntities();
+    }
   }
 
   @Override
@@ -400,6 +603,37 @@ public class EasyNPCBaseEntity extends AgeableMob
   public EntityDimensions getDimensions(@Nonnull Pose pose) {
     float scaleXZ = getScaleX() > getScaleZ() ? getScaleX() : getScaleZ();
     return super.getDimensions(pose).scale(scaleXZ, getScaleY());
+  }
+
+  @Override
+  public void baseTick() {
+    super.baseTick();
+
+    // Early exit for client side and dead entities.
+    if (this.isClientSide() || !this.isAlive()) {
+      return;
+    }
+
+    // Handle custom objective base tick.
+    this.handleCustomObjectiveBaseTick();
+
+    // Handle base tick for specific conditions.
+    this.handleBaseTick();
+  }
+
+  @Override
+  public void travel(@Nonnull Vec3 vec3) {
+
+    this.handleNavigationTravelEvent(vec3);
+
+    // Handle movement for NPC for specific conditions.
+    if (this.hasTravelTargetObjectives()) {
+      // Allow travel for NPC, if travel objectives are used.
+      super.travel(vec3);
+    } else {
+      // Make sure we only calculate animations for be as much as possible server-friendly.
+      this.calculateEntityAnimation(this, this instanceof FlyingAnimal);
+    }
   }
 
   @Override
@@ -480,5 +714,22 @@ public class EasyNPCBaseEntity extends AgeableMob
 
     // Register attribute based objectives
     this.registerAttributeBasedObjectives();
+  }
+
+  @Override
+  public boolean isSaddleable() {
+    return false;
+  }
+
+  @Override
+  public void equipSaddle(SoundSource soundSource) {
+    if (soundSource != null) {
+      this.level.playSound((Player)null, this, SoundEvents.PIG_SADDLE, soundSource, 0.5F, 1.0F);
+    }
+  }
+
+  @Override
+  public boolean isSaddled() {
+    return false;
   }
 }

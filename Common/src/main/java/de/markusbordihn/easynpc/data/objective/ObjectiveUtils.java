@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomLookAtPlayerGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomMeleeAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.FollowLivingEntityGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.MoveBackToHomeGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.RandomStrollAroundHomeGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.RangedBowAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ResetLookAtPlayerGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ZombieAttackGoal;
@@ -140,6 +141,8 @@ public class ObjectiveUtils {
       case MOVE_BACK_TO_VILLAGE:
         return new MoveBackToVillageGoal(
             pathfinderMob, objectiveDataEntry.getSpeedModifier(), false);
+      case RANDOM_STROLL_AROUND_HOME:
+        return new RandomStrollAroundHomeGoal<>(easyNPC, objectiveDataEntry.getSpeedModifier());
       case RANDOM_STROLL_IN_VILLAGE:
         return new GolemRandomStrollInVillageGoal(
             pathfinderMob, objectiveDataEntry.getSpeedModifier());

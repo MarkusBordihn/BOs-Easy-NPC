@@ -61,13 +61,4 @@ public class LivingEntityEvents {
       LivingEntityManager.removeLivingEntity(livingEntity);
     }
   }
-
-  /*
-   * @param livingEntity
-   * @param damageSource
-   */
-  public static void handleLivingEntityDeathEvent(
-      LivingEntity livingEntity, DamageSource damageSource) {
-    // TODO: Handle death event
-  }
 }

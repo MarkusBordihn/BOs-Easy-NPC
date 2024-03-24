@@ -32,10 +32,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class Checkbox extends AbstractButton {
   private static final ResourceLocation TEXTURE =
       new ResourceLocation(Constants.MOD_ID, "textures/gui/checkbox.png");
@@ -151,7 +148,6 @@ public class Checkbox extends AbstractButton {
     }
   }
 
-  @OnlyIn(Dist.CLIENT)
   public interface OnChange {
     void onChange(Checkbox checkbox);
   }

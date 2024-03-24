@@ -92,11 +92,13 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class NetworkMessageHandler {
+public class NetworkMessageHandler implements NetworkMessageHandlerInterface {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  protected NetworkMessageHandler() {}
+  public NetworkMessageHandler() {
+    // Register network message handler.
+  }
 
   public static void changeSpawnerSettings(
       BlockPos blockPos, SpawnerSettingType spawnerSettingType, int value) {
@@ -115,9 +117,9 @@ public class NetworkMessageHandler {
   }
 
   /** Send name change. */
-  public static void nameChange(UUID uuid, String name) {
+  public static void nameChange(UUID uuid, String name, int color) {
     if (uuid != null && name != null && !name.isEmpty()) {
-      NetworkHandler.sendToServer(new MessageNameChange(uuid, name));
+      NetworkHandler.sendToServer(new MessageNameChange(uuid, name, color));
     }
   }
 
@@ -353,32 +355,6 @@ public class NetworkMessageHandler {
     }
   }
 
-  /** Export preset to player */
-  public static void exportPresetClient(UUID uuid, String name, ServerPlayer serverPlayer) {
-    if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
-      return;
-    }
-    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (uuid != null && easyNPC != null) {
-      log.info(
-          "Exporting preset for {} to {}",
-          easyNPC.getEntity().getName().getString(),
-          serverPlayer.getName().getString());
-      NetworkHandler.sendToPlayer(
-          new MessagePresetExportClient(
-              uuid,
-              easyNPC.getEntity().getName().getString(),
-              easyNPC.getEasyNPCSkinData().getSkinModel(),
-              name,
-              easyNPC.exportPreset()),
-          serverPlayer);
-    }
-  }
-
-  public static void exportPresetClient(UUID uuid, ServerPlayer serverPlayer) {
-    exportPresetClient(uuid, uuid.toString(), serverPlayer);
-  }
-
   /** Import preset from player */
   public static void importWorldPreset(UUID uuid, ResourceLocation resourceLocation) {
     if (uuid != null && resourceLocation != null) {
@@ -539,6 +515,28 @@ public class NetworkMessageHandler {
   public static void removeDialogButton(UUID uuid, UUID dialogId, UUID dialogButtonId) {
     if (uuid != null && dialogId != null && dialogButtonId != null) {
       NetworkHandler.sendToServer(new MessageRemoveDialogButton(uuid, dialogId, dialogButtonId));
+    }
+  }
+
+  /** Export preset to player */
+  public void exportPresetClient(UUID uuid, String name, ServerPlayer serverPlayer) {
+    if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
+      return;
+    }
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    if (uuid != null && easyNPC != null) {
+      log.info(
+          "Exporting preset for {} to {}",
+          easyNPC.getEntity().getName().getString(),
+          serverPlayer.getName().getString());
+      NetworkHandler.sendToPlayer(
+          new MessagePresetExportClient(
+              uuid,
+              easyNPC.getEntity().getName().getString(),
+              easyNPC.getEasyNPCSkinData().getSkinModel(),
+              name,
+              easyNPC.exportPreset()),
+          serverPlayer);
     }
   }
 }

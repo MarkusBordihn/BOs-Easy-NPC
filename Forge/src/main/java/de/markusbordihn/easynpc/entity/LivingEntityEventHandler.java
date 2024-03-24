@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -42,13 +41,6 @@ public class LivingEntityEventHandler {
   public static void handleEntityLeaveWorldEvent(EntityLeaveWorldEvent event) {
     if (!event.isCanceled() && event.getEntity() instanceof LivingEntity livingEntity) {
       LivingEntityEvents.handleLivingEntityLeaveEvent(livingEntity);
-    }
-  }
-
-  @SubscribeEvent(priority = EventPriority.HIGHEST)
-  public static void handleLivingDeathEvent(LivingDeathEvent event) {
-    if (!event.isCanceled() && event.getEntityLiving() != null) {
-      LivingEntityEvents.handleLivingEntityDeathEvent(event.getEntityLiving(), event.getSource());
     }
   }
 }

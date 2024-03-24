@@ -34,13 +34,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.Merchant;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 
-public interface TradingData<T extends LivingEntity> extends EasyNPC<T> {
+public interface TradingData<T extends PathfinderMob> extends EasyNPC<T> {
 
   EntityDataSerializer<TradingType> TRADING_TYPE =
       new EntityDataSerializer<>() {

@@ -29,9 +29,10 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.Level;
 
-public interface OwnerData<T extends LivingEntity> extends EasyNPC<T> {
+public interface OwnerData<T extends PathfinderMob> extends EasyNPC<T> {
 
   // Synced entity data
   EntityDataAccessor<Optional<UUID>> DATA_OWNER_UUID_ID =

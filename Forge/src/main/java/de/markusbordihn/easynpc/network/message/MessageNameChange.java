@@ -25,6 +25,8 @@ import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import java.util.function.Supplier;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
@@ -32,19 +34,22 @@ import net.minecraftforge.network.NetworkEvent;
 public class MessageNameChange extends NetworkMessage {
 
   protected final String name;
+  protected final int color;
 
-  public MessageNameChange(UUID uuid, String name) {
+  public MessageNameChange(UUID uuid, String name, int color) {
     super(uuid);
     this.name = name;
+    this.color = color;
   }
 
   public static MessageNameChange decode(final FriendlyByteBuf buffer) {
-    return new MessageNameChange(buffer.readUUID(), buffer.readUtf());
+    return new MessageNameChange(buffer.readUUID(), buffer.readUtf(), buffer.readInt());
   }
 
   public static void encode(final MessageNameChange message, final FriendlyByteBuf buffer) {
     buffer.writeUUID(message.uuid);
     buffer.writeUtf(message.getName());
+    buffer.writeInt(message.color);
   }
 
   public static void handle(
@@ -68,18 +73,31 @@ public class MessageNameChange extends NetworkMessage {
       return;
     }
 
-    // Perform action.
+    // Validate EasyNPC.
     EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     if (easyNPC == null) {
       log.error("Invalid EasyNPC {} for {} from {}", easyNPC, message, serverPlayer);
       return;
     }
 
-    log.debug("Change name {} for {} from {}", name, easyNPC, serverPlayer);
-    easyNPC.getEntity().setCustomName(new TextComponent(name));
+    // Validate color.
+    int color = message.getColor();
+
+    // Perform action.
+    log.debug("Change name {} for {} from {} with color {}", name, easyNPC, serverPlayer, color);
+    if (color >= 0) {
+      Style style = Style.EMPTY.withColor(TextColor.fromRgb(color));
+      easyNPC.getEntity().setCustomName(new TextComponent(name).setStyle(style));
+    } else {
+      easyNPC.getEntity().setCustomName(new TextComponent(name));
+    }
   }
 
   public String getName() {
     return this.name;
+  }
+
+  public int getColor() {
+    return this.color;
   }
 }
