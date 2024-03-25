@@ -26,7 +26,6 @@ import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.legacy.LegacyModelData;
 import javax.annotation.Nonnull;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -36,10 +35,12 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CrossbowItem;
 
-public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
+public interface ModelData<T extends PathfinderMob> extends EasyNPC<T> {
 
   EntityDataSerializer<ModelPose> MODEL_POSE =
       new EntityDataSerializer<>() {
@@ -197,22 +198,23 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
       SynchedEntityData.defineId(
           EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
 
-  String EASY_NPC_DATA_MODEL_DATA_TAG = "ModelData";
-  String EASY_NPC_DATA_MODEL_POSE_TAG = "Pose";
-  String EASY_NPC_DATA_MODEL_HEAD_TAG = "Head";
-  String EASY_NPC_DATA_MODEL_BODY_TAG = "Body";
   String EASY_NPC_DATA_MODEL_ARMS_TAG = "Arms";
-  String EASY_NPC_DATA_MODEL_LEFT_ARM_TAG = "LeftArm";
-  String EASY_NPC_DATA_MODEL_RIGHT_ARM_TAG = "RightArm";
-  String EASY_NPC_DATA_MODEL_LEFT_LEG_TAG = "LeftLeg";
-  String EASY_NPC_DATA_MODEL_RIGHT_LEG_TAG = "RightLeg";
-  String EASY_NPC_DATA_MODEL_HELMET_TAG = "Helmet";
-  String EASY_NPC_DATA_MODEL_CHESTPLATE_TAG = "Chestplate";
-  String EASY_NPC_DATA_MODEL_LEGGINGS_TAG = "Leggings";
+  String EASY_NPC_DATA_MODEL_BODY_TAG = "Body";
   String EASY_NPC_DATA_MODEL_BOOTS_TAG = "Boots";
-  String EASY_NPC_DATA_MODEL_ROOT_TAG = "Root";
+  String EASY_NPC_DATA_MODEL_CHESTPLATE_TAG = "Chestplate";
+  String EASY_NPC_DATA_MODEL_DATA_TAG = "ModelData";
+  String EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG = "DefaultPose";
+  String EASY_NPC_DATA_MODEL_HEAD_TAG = "Head";
+  String EASY_NPC_DATA_MODEL_HELMET_TAG = "Helmet";
+  String EASY_NPC_DATA_MODEL_LEFT_ARM_TAG = "LeftArm";
+  String EASY_NPC_DATA_MODEL_LEFT_LEG_TAG = "LeftLeg";
+  String EASY_NPC_DATA_MODEL_LEGGINGS_TAG = "Leggings";
   String EASY_NPC_DATA_MODEL_LOCK_TAG = "Lock";
+  String EASY_NPC_DATA_MODEL_POSE_TAG = "Pose";
   String EASY_NPC_DATA_MODEL_POSITION_TAG = "Position";
+  String EASY_NPC_DATA_MODEL_RIGHT_ARM_TAG = "RightArm";
+  String EASY_NPC_DATA_MODEL_RIGHT_LEG_TAG = "RightLeg";
+  String EASY_NPC_DATA_MODEL_ROOT_TAG = "Root";
   String EASY_NPC_DATA_MODEL_ROTATION_TAG = "Rotation";
   String EASY_NPC_DATA_MODEL_SCALE_TAG = "Scale";
   String EASY_NPC_DATA_MODEL_VISIBLE_TAG = "Visible";
@@ -226,6 +228,14 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
     EntityDataSerializers.registerSerializer(POSITION);
     EntityDataSerializers.registerSerializer(ROTATION);
     EntityDataSerializers.registerSerializer(SCALE);
+  }
+
+  default Pose getDefaultPose() {
+    return this.getEntity().getPose();
+  }
+
+  default void setDefaultPose(Pose pose) {
+    this.getEntity().setPose(pose);
   }
 
   default ModelPose getModelPose() {
@@ -573,8 +583,13 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
     setEasyNPCData(EASY_NPC_DATA_MODEL_BOOTS_VISIBLE, modelBootsVisible);
   }
 
+  default ModelArmPose getModelArmPose() {
+    return getModelArmPose(this.getLivingEntity());
+  }
+
   default ModelArmPose getModelArmPose(LivingEntity livingEntity) {
-    boolean isAggressive = this.getEasyNPCAttackData().isAggressive();
+    AttackData<?> attackData = this.getEasyNPCAttackData();
+    boolean isAggressive = attackData.isAggressive();
 
     // Bow arm pose
     if (isAggressive && livingEntity.isHolding(is -> is.getItem() instanceof BowItem)) {
@@ -583,7 +598,7 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
 
     // Crossbow arm pose
     if (livingEntity.isHolding(is -> is.getItem() instanceof CrossbowItem)) {
-      if (this.getEasyNPCAttackData().isChargingCrossbow()) {
+      if (attackData.isChargingCrossbow()) {
         return ModelArmPose.CROSSBOW_CHARGE;
       } else if (isAggressive) {
         return ModelArmPose.CROSSBOW_HOLD;
@@ -591,7 +606,7 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
     }
 
     // Sword arm pose
-    if (isAggressive && this.getEasyNPCAttackData().isHoldingMeleeWeapon(livingEntity)) {
+    if (isAggressive && AttackData.isHoldingMeleeWeapon(livingEntity)) {
       return ModelArmPose.ATTACKING_WITH_MELEE_WEAPON;
     }
 
@@ -977,13 +992,15 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
   default void addAdditionalModelData(CompoundTag compoundTag) {
     CompoundTag modelDataTag = new CompoundTag();
 
-    // Check Model Pose
-    if (this.getModelPose() != null) {
-      if (this.getModelPose() != ModelPose.DEFAULT && this.hasChangedModel()) {
-        modelDataTag.putString(EASY_NPC_DATA_MODEL_POSE_TAG, this.getModelPose().name());
-      } else {
-        modelDataTag.putString(EASY_NPC_DATA_MODEL_POSE_TAG, ModelPose.DEFAULT.name());
-      }
+    // Model Pose
+    if (this.getModelPose() != ModelPose.DEFAULT && this.hasChangedModel()) {
+      modelDataTag.putString(EASY_NPC_DATA_MODEL_POSE_TAG, this.getModelPose().name());
+      modelDataTag.putString(EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG, Pose.STANDING.name());
+    } else {
+      modelDataTag.putString(EASY_NPC_DATA_MODEL_POSE_TAG, ModelPose.DEFAULT.name());
+      modelDataTag.putString(
+          EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG,
+          this.getDefaultPose() != null ? this.getDefaultPose().name() : Pose.STANDING.name());
     }
 
     // Model Position
@@ -1000,11 +1017,6 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
 
   default void readAdditionalModelData(CompoundTag compoundTag) {
 
-    // Legacy data support
-    if (LegacyModelData.readAdditionalLegacyModelData(compoundTag, this.getEasyNPCModelData())) {
-      return;
-    }
-
     // Early exit if no model data is available
     if (!compoundTag.contains(EASY_NPC_DATA_MODEL_DATA_TAG)) {
       return;
@@ -1017,7 +1029,16 @@ public interface ModelData<T extends LivingEntity> extends EasyNPC<T> {
     if (modelDataTag.contains(EASY_NPC_DATA_MODEL_POSE_TAG)) {
       String modelPose = modelDataTag.getString(EASY_NPC_DATA_MODEL_POSE_TAG);
       if (!modelPose.isEmpty()) {
-        setModelPose(ModelPose.get(modelPose));
+        this.setModelPose(ModelPose.get(modelPose));
+      }
+    }
+
+    // Default Pose
+    if (this.getModelPose() == ModelPose.DEFAULT
+        && modelDataTag.contains(EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG)) {
+      String defaultPose = modelDataTag.getString(EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG);
+      if (!defaultPose.isEmpty()) {
+        this.setDefaultPose(Pose.valueOf(defaultPose));
       }
     }
 

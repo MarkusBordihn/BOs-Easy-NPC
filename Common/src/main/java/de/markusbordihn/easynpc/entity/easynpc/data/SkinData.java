@@ -31,9 +31,9 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 
-public interface SkinData<T extends LivingEntity> extends EasyNPC<T> {
+public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
 
   EntityDataSerializer<SkinType> SKIN_TYPE =
       new EntityDataSerializer<>() {
@@ -146,9 +146,6 @@ public interface SkinData<T extends LivingEntity> extends EasyNPC<T> {
 
   default void readAdditionalSkinData(CompoundTag compoundTag) {
 
-    // Handle legacy skin data
-    this.readAdditionalLegacySkinData(compoundTag);
-
     // Early exit if no skin data is available.
     if (!compoundTag.contains(EASY_NPC_DATA_SKIN_DATA_TAG)) {
       return;
@@ -177,31 +174,6 @@ public interface SkinData<T extends LivingEntity> extends EasyNPC<T> {
     if (skinTag.contains(EASY_NPC_DATA_SKIN_UUID_TAG)) {
       UUID skinUUID = skinTag.getUUID(EASY_NPC_DATA_SKIN_UUID_TAG);
       this.setSkinUUID(skinUUID);
-    }
-  }
-
-  default void readAdditionalLegacySkinData(CompoundTag compoundTag) {
-    if (compoundTag.contains(EASY_NPC_DATA_SKIN_TYPE_TAG)) {
-      String skinType = compoundTag.getString(EASY_NPC_DATA_SKIN_TYPE_TAG);
-      if (!skinType.isEmpty()) {
-        this.setSkinType(this.getSkinType(skinType));
-      }
-      if (compoundTag.contains(EASY_NPC_DATA_SKIN_TAG)) {
-        String skinName = compoundTag.getString(EASY_NPC_DATA_SKIN_TAG);
-        if (!skinName.isEmpty()) {
-          this.setSkinName(skinName);
-        }
-      }
-      if (compoundTag.contains(EASY_NPC_DATA_SKIN_URL_TAG)) {
-        String url = compoundTag.getString(EASY_NPC_DATA_SKIN_URL_TAG);
-        if (!url.isEmpty()) {
-          this.setSkinURL(url);
-        }
-      }
-      if (compoundTag.contains(EASY_NPC_DATA_SKIN_UUID_TAG)) {
-        UUID skinUUID = compoundTag.getUUID(EASY_NPC_DATA_SKIN_UUID_TAG);
-        this.setSkinUUID(skinUUID);
-      }
     }
   }
 }

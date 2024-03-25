@@ -127,6 +127,11 @@ public class SkinDataFiles {
                     "textures/entity/zombie_villager/zombie_villager_example.png"),
                 skinModelFolder.resolve("zombie_villager_example.png").toFile());
             break;
+          case PIG:
+            DataFileHandler.copyResourceFile(
+                new ResourceLocation(Constants.MOD_ID, "textures/entity/pig/pig_example.png"),
+                skinModelFolder.resolve("pig_example.png").toFile());
+            break;
           default:
         }
       }

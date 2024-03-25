@@ -22,9 +22,9 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 
-public interface NPCData<T extends LivingEntity> extends EasyNPC<T> {
+public interface NPCData<T extends PathfinderMob> extends EasyNPC<T> {
 
   String DATA_EASY_NPC_DATA_VERSION_TAG = "EasyNPCVersion";
 
@@ -50,7 +50,8 @@ public interface NPCData<T extends LivingEntity> extends EasyNPC<T> {
       }
       this.setNPCDataVersion(npcDataVersion);
     } else {
-      log.warn("Legacy Easy NPC Data for {}! Will try to convert data to new format.", this);
+      log.warn("Legacy Easy NPC Data for {}!", this);
+      log.warn("It could be possible that the data is not compatible with the current version.");
       this.setNPCDataVersion(-1);
     }
   }
