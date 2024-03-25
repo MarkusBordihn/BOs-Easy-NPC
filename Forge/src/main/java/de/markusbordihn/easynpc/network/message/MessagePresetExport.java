@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.NetworkMessage;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -68,7 +68,8 @@ public class MessagePresetExport extends NetworkMessage {
     }
 
     // Perform action.
-    NetworkMessageHandler.exportPresetClient(uuid, name, serverPlayer);
+    NetworkMessageHandlerManager.getNetworkMessageHandler()
+        .exportPresetClient(uuid, name, serverPlayer);
   }
 
   public String getName() {

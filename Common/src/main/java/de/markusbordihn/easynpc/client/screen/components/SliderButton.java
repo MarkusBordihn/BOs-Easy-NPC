@@ -29,8 +29,6 @@ import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -355,7 +353,6 @@ public class SliderButton extends AbstractSliderButton {
     UNKNOWN
   }
 
-  @OnlyIn(Dist.CLIENT)
   public interface OnChange {
 
     void onChange(SliderButton sliderButton);

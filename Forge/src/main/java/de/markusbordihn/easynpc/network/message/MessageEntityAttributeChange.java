@@ -150,6 +150,12 @@ public class MessageEntityAttributeChange extends NetworkMessage {
           attributeData.setAttributeFreefall(booleanValue);
         }
         break;
+      case CAN_BE_LEASHED:
+        if (booleanValue != null) {
+          log.debug("Change canBeLeashed={} for {} from {}", booleanValue, easyNPC, serverPlayer);
+          attributeData.setAttributeCanBeLeashed(booleanValue);
+        }
+        break;
       case CAN_FLOAT:
         if (booleanValue != null) {
           log.debug("Change canFloat={} for {} from {}", booleanValue, easyNPC, serverPlayer);
@@ -198,6 +204,12 @@ public class MessageEntityAttributeChange extends NetworkMessage {
         if (booleanValue != null) {
           log.debug("Change isPushable={} for {} from {}", booleanValue, easyNPC, serverPlayer);
           attributeData.setAttributeIsPushable(booleanValue);
+        }
+        break;
+      case PUSH_ENTITIES:
+        if (booleanValue != null) {
+          log.debug("Change pushEntities={} for {} from {}", booleanValue, easyNPC, serverPlayer);
+          attributeData.setAttributePushEntities(booleanValue);
         }
         break;
       case LIGHT_LEVEL:

@@ -37,6 +37,10 @@ public class CustomButton extends Button {
           new ResourceLocation(Constants.MINECRAFT_PREFIX, "widget/button_disabled"),
           new ResourceLocation(Constants.MINECRAFT_PREFIX, "widget/button_highlighted"));
 
+  public CustomButton(int left, int top, int width, int height, OnPress onPress) {
+    this(left, top, width, height, null, onPress);
+  }
+
   public CustomButton(int left, int top, int width, int height, Component text, OnPress onPress) {
     super(
         left,

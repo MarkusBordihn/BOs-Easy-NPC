@@ -23,11 +23,13 @@ public enum EntityAttribute {
   FREEFALL,
   IS_ATTACKABLE,
   IS_PUSHABLE,
+  CAN_BE_LEASHED,
   CAN_FLOAT,
   CAN_CLOSE_DOOR,
   CAN_OPEN_DOOR,
   CAN_PASS_DOOR,
   CAN_USE_NETHER_PORTAL,
+  PUSH_ENTITIES,
   LIGHT_LEVEL;
 
   public String getAttributeName() {

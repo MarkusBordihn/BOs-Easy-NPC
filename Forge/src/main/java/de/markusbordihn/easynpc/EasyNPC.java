@@ -22,11 +22,11 @@ package de.markusbordihn.easynpc;
 import cpw.mods.modlauncher.Launcher;
 import cpw.mods.modlauncher.api.IEnvironment;
 import de.markusbordihn.easynpc.block.ModBlocks;
-import de.markusbordihn.easynpc.client.model.ModModelLayers;
+import de.markusbordihn.easynpc.client.model.ModModelLayer;
 import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
 import de.markusbordihn.easynpc.client.screen.ClientScreens;
 import de.markusbordihn.easynpc.debug.DebugManager;
-import de.markusbordihn.easynpc.entity.npc.ModEntityType;
+import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.io.PresetDataFiles;
 import de.markusbordihn.easynpc.io.SkinDataFiles;
 import de.markusbordihn.easynpc.item.ModItems;
@@ -34,7 +34,9 @@ import de.markusbordihn.easynpc.menu.MenuHandler;
 import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.network.NetworkHandler;
-import de.markusbordihn.easynpc.tabs.EasyNPCTab;
+import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.tabs.ModTabs;
 import java.util.Optional;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -89,12 +91,15 @@ public class EasyNPC {
     log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
     ModMenuTypes.MENU_TYPES.register(modEventBus);
 
+    log.info("{} Network Message Handler ...", Constants.LOG_REGISTER_PREFIX);
+    NetworkMessageHandlerManager.registerNetworkMessageHandler(new NetworkMessageHandler());
+
     DistExecutor.unsafeRunWhenOn(
         Dist.CLIENT,
         () ->
             () -> {
               log.info("{} Client events ...", Constants.LOG_REGISTER_PREFIX);
-              modEventBus.addListener(ModModelLayers::registerEntityLayerDefinitions);
+              modEventBus.addListener(ModModelLayer::registerEntityLayerDefinitions);
               modEventBus.addListener(ClientRenderer::registerEntityRenderers);
               modEventBus.addListener(ClientScreens::registerScreens);
               modEventBus.addListener(
@@ -104,7 +109,7 @@ public class EasyNPC {
                             SkinDataFiles.registerCustomSkinData();
                             PresetDataFiles.registerCustomPresetData();
                           }));
-              EasyNPCTab.CREATIVE_TABS.register(modEventBus);
+              ModTabs.CREATIVE_TABS.register(modEventBus);
             });
   }
 }

@@ -1,0 +1,113 @@
+plugins {
+  id 'fabric-loom' version '0.12-SNAPSHOT'
+  id 'maven-publish'
+  id 'idea'
+  id 'com.matthewprenger.cursegradle' version '1.4.0'
+  id 'nu.studer.credentials' version '3.0'
+  id "com.modrinth.minotaur" version "2.+"
+}
+
+archivesBaseName = "${mod_id}-fabric-${minecraft_version}"
+
+dependencies {
+  minecraft "com.mojang:minecraft:${minecraft_version}"
+  mappings loom.officialMojangMappings()
+  modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+  modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+  implementation project(":Common")
+
+  // Recommended Mods
+  modImplementation "curse.maven:tooltipfix-238222:4767570"
+}
+
+loom {
+  runs {
+    client {
+      client()
+      setConfigName("Fabric Client")
+      property("fabric.logging.markers", "REGISTRIES")
+      property("fabric.log.level", "debug")
+      property("mixin.debug.verbose", "false")
+      property("mixin.debug.export", "false")
+      ideConfigGenerated(true)
+      runDir("run")
+    }
+    server {
+      server()
+      setConfigName("Fabric Server")
+      property("fabric.logging.markers", "REGISTRIES")
+      property("fabric.log.level", "debug")
+      property("mixin.debug.verbose", "false")
+      property("mixin.debug.export", "false")
+      ideConfigGenerated(true)
+      runDir("run")
+    }
+  }
+}
+
+processResources {
+  from project(":Common").sourceSets.main.resources
+  inputs.property "version", project.version
+
+  filesMatching("fabric.mod.json") {
+    expand "version": project.version
+  }
+}
+
+tasks.withType(JavaCompile) {
+  source(project(":Common").sourceSets.main.allSource)
+}
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      groupId project.group
+      artifactId project.archivesBaseName
+      version project.version
+      from components.java
+    }
+  }
+
+  repositories {
+    maven {
+      url "file://" + System.getenv("local_maven")
+    }
+  }
+}
+
+curseforge {
+  apiKey = "${credentials.forKey('curseforge_api_token')}"
+  project {
+    id = "${curseforge_project_id}"
+    changelog = file("../CHANGELOG.md")
+    changelogType = 'markdown'
+    releaseType = "${curseforge_release_type}"
+    addGameVersion("${minecraft_version}")
+    addGameVersion("Fabric")
+    addGameVersion("Quilt")
+
+    mainArtifact(remapJar) {
+      relations {
+        requiredDependency 'fabric-api'
+        optionalDependency 'tooltipfix'
+      }
+    }
+  }
+  options {
+    forgeGradleIntegration = false
+  }
+}
+
+modrinth {
+  token = "${credentials.forKey('modrinth_api_token')}"
+  projectId = "${modrinth_project_id}"
+  versionNumber = "${version}"
+  versionType = "${modrinth_release_type}"
+  uploadFile = remapJar
+  gameVersions = ["${minecraft_version}"]
+  loaders = ["fabric", "quilt"]
+  dependencies {
+    required.project "fabric-api"
+    optional.project "tooltipfix"
+  }
+}
