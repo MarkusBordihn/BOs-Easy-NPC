@@ -33,13 +33,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BasicObjectiveConfigurationScreen
     extends ObjectiveConfigurationScreen<BasicObjectiveConfigurationMenu> {
 
-  // Basic Objective Checkbox
   protected Checkbox moveBackToHomeCheckbox;
   protected Checkbox strollRandomAroundCheckbox;
   protected Checkbox waterAvoidingRandomStrollCheckbox;
   protected Checkbox moveBackToVillageCheckbox;
   protected Checkbox moveThroughVillageCheckbox;
   protected Checkbox randomStrollInVillageCheckbox;
+  protected Checkbox randomStrollAroundHomeCheckbox;
   protected Checkbox randomSwimmingCheckbox;
   protected Checkbox panicCheckbox;
   protected Checkbox avoidSunCheckbox;
@@ -73,25 +73,6 @@ public class BasicObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       new ObjectiveDataEntry(ObjectiveType.RANDOM_STROLL, 5);
                   objectiveDataEntry.setSpeedModifier(0.8F);
-                  if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
-                  } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
-                  }
-                }));
-
-    // Move Back To Home
-    this.moveBackToHomeCheckbox =
-        this.addRenderableWidget(
-            new Checkbox(
-                objectiveEntriesSecondColumn,
-                objectiveEntriesTop,
-                ObjectiveType.MOVE_BACK_TO_HOME.getObjectiveName(),
-                objectiveDataSet.hasObjective(ObjectiveType.MOVE_BACK_TO_HOME),
-                checkbox -> {
-                  ObjectiveDataEntry objectiveDataEntry =
-                      new ObjectiveDataEntry(ObjectiveType.MOVE_BACK_TO_HOME, 3);
-                  objectiveDataEntry.setSpeedModifier(0.6F);
                   if (checkbox.selected()) {
                     NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
@@ -159,6 +140,25 @@ public class BasicObjectiveConfigurationScreen
                   }
                 }));
 
+    // Move Back To Home
+    this.moveBackToHomeCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                objectiveEntriesSecondColumn,
+                objectiveEntriesTop,
+                ObjectiveType.MOVE_BACK_TO_HOME.getObjectiveName(),
+                objectiveDataSet.hasObjective(ObjectiveType.MOVE_BACK_TO_HOME),
+                checkbox -> {
+                  ObjectiveDataEntry objectiveDataEntry =
+                      new ObjectiveDataEntry(ObjectiveType.MOVE_BACK_TO_HOME, 3);
+                  objectiveDataEntry.setSpeedModifier(0.6F);
+                  if (checkbox.selected()) {
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                  } else {
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                  }
+                }));
+
     // Random Stroll In Village
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
     this.randomStrollInVillageCheckbox =
@@ -171,6 +171,25 @@ public class BasicObjectiveConfigurationScreen
                 checkbox -> {
                   ObjectiveDataEntry objectiveDataEntry =
                       new ObjectiveDataEntry(ObjectiveType.RANDOM_STROLL_IN_VILLAGE, 2);
+                  objectiveDataEntry.setSpeedModifier(0.6F);
+                  if (checkbox.selected()) {
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                  } else {
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                  }
+                }));
+
+    // Random Stroll Around Home
+    this.randomStrollAroundHomeCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                objectiveEntriesSecondColumn,
+                objectiveEntriesTop,
+                ObjectiveType.RANDOM_STROLL_AROUND_HOME.getObjectiveName(),
+                objectiveDataSet.hasObjective(ObjectiveType.RANDOM_STROLL_AROUND_HOME),
+                checkbox -> {
+                  ObjectiveDataEntry objectiveDataEntry =
+                      new ObjectiveDataEntry(ObjectiveType.RANDOM_STROLL_AROUND_HOME, 2);
                   objectiveDataEntry.setSpeedModifier(0.6F);
                   if (checkbox.selected()) {
                     NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);

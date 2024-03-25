@@ -20,18 +20,22 @@
 package de.markusbordihn.easynpc.client.renderer;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.renderer.entity.AllayRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.CatRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.ChickenRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.FairyRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.HumanoidRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.HumanoidSlimRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.IronGolemRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.SkeletonRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.VillagerRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.ZombieRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.ZombieVillagerRenderer;
-import de.markusbordihn.easynpc.entity.npc.ModEntityType;
+import de.markusbordihn.easynpc.client.model.ModModelLayers;
+import de.markusbordihn.easynpc.client.renderer.entity.custom.FairyRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.CustomHumanoidArmorLayer;
+import de.markusbordihn.easynpc.client.renderer.entity.standard.AllayRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.standard.CatRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.standard.ChickenRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.standard.HumanoidRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.standard.HumanoidSlimRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.standard.IllagerRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.standard.IronGolemRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.standard.PigRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.standard.SkeletonRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.standard.VillagerRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.standard.ZombieRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.standard.ZombieVillagerRenderer;
+import de.markusbordihn.easynpc.entity.ModEntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -48,21 +52,45 @@ public class ClientRenderer {
   public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
     log.info("{} Entity Renders ...", Constants.LOG_REGISTER_PREFIX);
 
-    // Default NPC Entity
-    event.registerEntityRenderer(ModEntityType.ALLAY.get(), AllayRenderer::new);
+    event.registerEntityRenderer(
+        ModEntityType.ALLAY.get(), context -> new AllayRenderer(context, ModModelLayers.ALLAY));
     event.registerEntityRenderer(ModEntityType.CAT.get(), CatRenderer::new);
     event.registerEntityRenderer(ModEntityType.CHICKEN.get(), ChickenRenderer::new);
-    event.registerEntityRenderer(ModEntityType.DROWNED.get(), ZombieRenderer::new);
-    event.registerEntityRenderer(ModEntityType.FAIRY.get(), FairyRenderer::new);
-    event.registerEntityRenderer(ModEntityType.HUMANOID.get(), HumanoidRenderer::new);
-    event.registerEntityRenderer(ModEntityType.STRAY.get(), SkeletonRenderer::new);
-    event.registerEntityRenderer(ModEntityType.WITHER_SKELETON.get(), SkeletonRenderer::new);
-    event.registerEntityRenderer(ModEntityType.HUMANOID_SLIM.get(), HumanoidSlimRenderer::new);
-    event.registerEntityRenderer(ModEntityType.HUSK.get(), ZombieRenderer::new);
+    event.registerEntityRenderer(
+        ModEntityType.DROWNED.get(),
+        context -> new ZombieRenderer(context, CustomHumanoidArmorLayer.class));
+    event.registerEntityRenderer(
+        ModEntityType.FAIRY.get(), context -> new FairyRenderer(context, ModModelLayers.FAIRY));
+    event.registerEntityRenderer(
+        ModEntityType.HUMANOID.get(),
+        context -> new HumanoidRenderer(context, CustomHumanoidArmorLayer.class));
+    event.registerEntityRenderer(
+        ModEntityType.HUMANOID_SLIM.get(),
+        context -> new HumanoidSlimRenderer(context, CustomHumanoidArmorLayer.class));
+    event.registerEntityRenderer(
+        ModEntityType.STRAY.get(),
+        context -> new SkeletonRenderer(context, CustomHumanoidArmorLayer.class));
+    event.registerEntityRenderer(
+        ModEntityType.WITHER_SKELETON.get(),
+        context -> new SkeletonRenderer(context, CustomHumanoidArmorLayer.class));
+    event.registerEntityRenderer(
+        ModEntityType.HUSK.get(),
+        context -> new ZombieRenderer(context, CustomHumanoidArmorLayer.class));
     event.registerEntityRenderer(ModEntityType.IRON_GOLEM.get(), IronGolemRenderer::new);
-    event.registerEntityRenderer(ModEntityType.SKELETON.get(), SkeletonRenderer::new);
+    event.registerEntityRenderer(
+        ModEntityType.SKELETON.get(),
+        context -> new SkeletonRenderer(context, CustomHumanoidArmorLayer.class));
     event.registerEntityRenderer(ModEntityType.VILLAGER.get(), VillagerRenderer::new);
-    event.registerEntityRenderer(ModEntityType.ZOMBIE.get(), ZombieRenderer::new);
-    event.registerEntityRenderer(ModEntityType.ZOMBIE_VILLAGER.get(), ZombieVillagerRenderer::new);
+    event.registerEntityRenderer(
+        ModEntityType.ZOMBIE.get(),
+        context -> new ZombieRenderer(context, CustomHumanoidArmorLayer.class));
+    event.registerEntityRenderer(
+        ModEntityType.ZOMBIE_VILLAGER.get(),
+        context -> new ZombieVillagerRenderer(context, CustomHumanoidArmorLayer.class));
+    event.registerEntityRenderer(ModEntityType.PIG.get(), PigRenderer::new);
+    event.registerEntityRenderer(ModEntityType.EVOKER.get(), IllagerRenderer::new);
+    event.registerEntityRenderer(ModEntityType.ILLUSIONER.get(), IllagerRenderer::new);
+    event.registerEntityRenderer(ModEntityType.PILLAGER.get(), IllagerRenderer::new);
+    event.registerEntityRenderer(ModEntityType.VINDICATOR.get(), IllagerRenderer::new);
   }
 }

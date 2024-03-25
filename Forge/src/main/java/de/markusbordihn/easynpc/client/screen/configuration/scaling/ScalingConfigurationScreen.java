@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.client.screen.configuration.scaling;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.screen.components.SliderButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
@@ -28,6 +27,7 @@ import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.menu.configuration.scaling.ScalingConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.screen.ScreenHelper;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;

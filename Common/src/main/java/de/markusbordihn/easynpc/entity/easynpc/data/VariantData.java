@@ -26,9 +26,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 
-public interface VariantData<T extends LivingEntity> extends EasyNPC<T> {
+public interface VariantData<T extends PathfinderMob> extends EasyNPC<T> {
 
   EntityDataAccessor<String> EASY_NPC_DATA_VARIANT =
       SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.STRING);
@@ -67,6 +67,14 @@ public interface VariantData<T extends LivingEntity> extends EasyNPC<T> {
   default Component getVariantName() {
     Enum<?> variant = getVariant();
     return variant != null ? TextUtils.normalizeName(variant.name()) : getEasyNPCTypeName();
+  }
+
+  default boolean hasVariantCrossedArms() {
+    return this.hasVariantCrossedArms(getVariant());
+  }
+
+  default boolean hasVariantCrossedArms(Enum<?> variant) {
+    return variant != null && variant.name().endsWith("_CROSSED_ARMS");
   }
 
   default void defineSynchedVariantData() {

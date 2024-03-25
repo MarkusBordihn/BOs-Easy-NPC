@@ -24,13 +24,17 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 
-public interface AttributeData<T extends LivingEntity> extends EasyNPC<T> {
+public interface AttributeData<T extends PathfinderMob> extends EasyNPC<T> {
 
   // Synced entity data
   EntityDataAccessor<Boolean> EASY_NPC_DATA_ATTRIBUTE_DATA_LOADED =
+      SynchedEntityData.defineId(
+          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
+
+  EntityDataAccessor<Boolean> EASY_NPC_DATA_ATTRIBUTE_CAN_BE_LEASHED =
       SynchedEntityData.defineId(
           EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
   EntityDataAccessor<Boolean> EASY_NPC_DATA_ATTRIBUTE_CAN_FLOAT =
@@ -57,11 +61,15 @@ public interface AttributeData<T extends LivingEntity> extends EasyNPC<T> {
   EntityDataAccessor<Boolean> EASY_NPC_DATA_ATTRIBUTE_IS_PUSHABLE =
       SynchedEntityData.defineId(
           EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
+  EntityDataAccessor<Boolean> EASY_NPC_DATA_ATTRIBUTE_PUSH_ENTITIES =
+      SynchedEntityData.defineId(
+          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
   EntityDataAccessor<Integer> EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL =
       SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.INT);
 
   // CompoundTags
   String EASY_NPC_DATA_ATTRIBUTE_TAG = "EntityAttribute";
+  String EASY_NPC_DATA_ATTRIBUTE_CAN_BE_LEASHED_TAG = "CanBeLeashed";
   String EASY_NPC_DATA_ATTRIBUTE_CAN_FLOAT_TAG = "CanFloat";
   String EASY_NPC_DATA_ATTRIBUTE_CAN_CLOSE_DOOR_TAG = "CanCloseDoor";
   String EASY_NPC_DATA_ATTRIBUTE_CAN_OPEN_DOOR_TAG = "CanOpenDoor";
@@ -70,6 +78,7 @@ public interface AttributeData<T extends LivingEntity> extends EasyNPC<T> {
   String EASY_NPC_DATA_ATTRIBUTE_FREEFALL_TAG = "Freefall";
   String EASY_NPC_DATA_ATTRIBUTE_IS_ATTACKABLE_TAG = "IsAttackable";
   String EASY_NPC_DATA_ATTRIBUTE_IS_PUSHABLE_TAG = "IsPushable";
+  String EASY_NPC_DATA_ATTRIBUTE_PUSH_ENTITIES_TAG = "PushEntities";
   String EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL_TAG = "LightLevel";
 
   default void setBaseAttribute(Attribute attribute, double value) {
@@ -92,6 +101,14 @@ public interface AttributeData<T extends LivingEntity> extends EasyNPC<T> {
 
   default void setAttributeDataLoaded(boolean loaded) {
     setEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_DATA_LOADED, loaded);
+  }
+
+  default boolean getAttributeCanBeLeashed() {
+    return getEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_BE_LEASHED);
+  }
+
+  default void setAttributeCanBeLeashed(boolean canBeLeashed) {
+    setEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_BE_LEASHED, canBeLeashed);
   }
 
   default boolean getAttributeCanFloat() {
@@ -158,6 +175,14 @@ public interface AttributeData<T extends LivingEntity> extends EasyNPC<T> {
     setEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_IS_PUSHABLE, isPushable);
   }
 
+  default boolean getAttributePushEntities() {
+    return getEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_PUSH_ENTITIES);
+  }
+
+  default void setAttributePushEntities(boolean pushEntities) {
+    setEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_PUSH_ENTITIES, pushEntities);
+  }
+
   default int getAttributeLightLevel() {
     return getEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL);
   }
@@ -168,6 +193,7 @@ public interface AttributeData<T extends LivingEntity> extends EasyNPC<T> {
 
   default void defineSynchedAttributeData() {
     defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_DATA_LOADED, false);
+    defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_BE_LEASHED, false);
     defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_FLOAT, false);
     defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_CLOSE_DOOR, false);
     defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_OPEN_DOOR, false);
@@ -176,11 +202,13 @@ public interface AttributeData<T extends LivingEntity> extends EasyNPC<T> {
     defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_FREEFALL, false);
     defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_IS_ATTACKABLE, false);
     defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_IS_PUSHABLE, false);
+    defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_PUSH_ENTITIES, false);
     defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL, 7);
   }
 
   default void addAdditionalAttributeData(CompoundTag compoundTag) {
     CompoundTag attributeTag = new CompoundTag();
+    attributeTag.putBoolean(EASY_NPC_DATA_ATTRIBUTE_CAN_BE_LEASHED_TAG, getAttributeCanBeLeashed());
     attributeTag.putBoolean(EASY_NPC_DATA_ATTRIBUTE_CAN_FLOAT_TAG, getAttributeCanFloat());
     attributeTag.putBoolean(EASY_NPC_DATA_ATTRIBUTE_CAN_CLOSE_DOOR_TAG, getAttributeCanCloseDoor());
     attributeTag.putBoolean(EASY_NPC_DATA_ATTRIBUTE_CAN_OPEN_DOOR_TAG, getAttributeCanOpenDoor());
@@ -190,6 +218,7 @@ public interface AttributeData<T extends LivingEntity> extends EasyNPC<T> {
     attributeTag.putBoolean(EASY_NPC_DATA_ATTRIBUTE_FREEFALL_TAG, getAttributeFreefall());
     attributeTag.putBoolean(EASY_NPC_DATA_ATTRIBUTE_IS_ATTACKABLE_TAG, getAttributeIsAttackable());
     attributeTag.putBoolean(EASY_NPC_DATA_ATTRIBUTE_IS_PUSHABLE_TAG, getAttributeIsPushable());
+    attributeTag.putBoolean(EASY_NPC_DATA_ATTRIBUTE_PUSH_ENTITIES_TAG, getAttributePushEntities());
     attributeTag.putInt(EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL_TAG, getAttributeLightLevel());
     compoundTag.put(EASY_NPC_DATA_ATTRIBUTE_TAG, attributeTag);
   }
@@ -199,6 +228,7 @@ public interface AttributeData<T extends LivingEntity> extends EasyNPC<T> {
       return;
     }
     CompoundTag attributeTag = compoundTag.getCompound(EASY_NPC_DATA_ATTRIBUTE_TAG);
+    setAttributeCanBeLeashed(attributeTag.getBoolean(EASY_NPC_DATA_ATTRIBUTE_CAN_BE_LEASHED_TAG));
     setAttributeCanFloat(attributeTag.getBoolean(EASY_NPC_DATA_ATTRIBUTE_CAN_FLOAT_TAG));
     setAttributeCanCloseDoor(attributeTag.getBoolean(EASY_NPC_DATA_ATTRIBUTE_CAN_CLOSE_DOOR_TAG));
     setAttributeCanOpenDoor(attributeTag.getBoolean(EASY_NPC_DATA_ATTRIBUTE_CAN_OPEN_DOOR_TAG));
@@ -208,6 +238,7 @@ public interface AttributeData<T extends LivingEntity> extends EasyNPC<T> {
     setAttributeFreefall(attributeTag.getBoolean(EASY_NPC_DATA_ATTRIBUTE_FREEFALL_TAG));
     setAttributeIsAttackable(attributeTag.getBoolean(EASY_NPC_DATA_ATTRIBUTE_IS_ATTACKABLE_TAG));
     setAttributeIsPushable(attributeTag.getBoolean(EASY_NPC_DATA_ATTRIBUTE_IS_PUSHABLE_TAG));
+    setAttributePushEntities(attributeTag.getBoolean(EASY_NPC_DATA_ATTRIBUTE_PUSH_ENTITIES_TAG));
     setAttributeLightLevel(attributeTag.getInt(EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL_TAG));
 
     setAttributeDataLoaded(true);
