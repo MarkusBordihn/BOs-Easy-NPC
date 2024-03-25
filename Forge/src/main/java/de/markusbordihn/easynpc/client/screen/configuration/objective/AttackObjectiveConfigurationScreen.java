@@ -114,7 +114,7 @@ public class AttackObjectiveConfigurationScreen
                 objectiveDataSet.hasObjective(ObjectiveType.CROSSBOW_ATTACK),
                 checkbox -> {
                   ObjectiveDataEntry objectiveDataEntry =
-                      objectiveDataSet.getOrCreateObjective(ObjectiveType.CROSSBOW_ATTACK, 3);
+                      objectiveDataSet.getOrCreateObjective(ObjectiveType.CROSSBOW_ATTACK, 4);
                   if (checkbox.selected()) {
                     NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {

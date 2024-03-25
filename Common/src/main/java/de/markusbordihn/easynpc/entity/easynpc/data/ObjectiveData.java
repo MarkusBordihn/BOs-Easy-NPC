@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.data.entity.CustomEntityData;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
+import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ResetUniversalAngerTargetGoal;
 import java.util.HashSet;
@@ -38,10 +39,11 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 
-public interface ObjectiveData<T extends LivingEntity> extends EasyNPC<T> {
+public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
 
   EntityDataSerializer<ObjectiveDataSet> OBJECTIVE_DATA_SET =
       new EntityDataSerializer<>() {
@@ -99,6 +101,8 @@ public interface ObjectiveData<T extends LivingEntity> extends EasyNPC<T> {
           return value;
         }
       };
+
+  int CUSTOM_OBJECTIVE_DELAYED_REGISTRATION_TICK = 20 * 15;
 
   EntityDataAccessor<Boolean> DATA_HAS_OBJECTIVES =
       SynchedEntityData.defineId(
@@ -353,6 +357,18 @@ public interface ObjectiveData<T extends LivingEntity> extends EasyNPC<T> {
     // Add objective data to set, regardless if goal or target was added.
     getObjectiveDataSet().addObjective(objectiveDataEntry);
     return objectiveDataEntry.isRegistered();
+  }
+
+  default void handleCustomObjectiveBaseTick() {
+    TickerData<?> tickerData = this.getEasyNPCTickerData();
+    if (tickerData.checkAndIncreaseTicker(
+        TickerType.CUSTOM_OBJECTIVE_DELAYED_REGISTRATION,
+        CUSTOM_OBJECTIVE_DELAYED_REGISTRATION_TICK)) {
+      if (this.hasObjectives()) {
+        this.refreshCustomObjectives();
+      }
+      tickerData.resetTicker(TickerType.CUSTOM_OBJECTIVE_DELAYED_REGISTRATION);
+    }
   }
 
   default boolean removeCustomObjective(ObjectiveDataEntry objectiveDataEntry) {

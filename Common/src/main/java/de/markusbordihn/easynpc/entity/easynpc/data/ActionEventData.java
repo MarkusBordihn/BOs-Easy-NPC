@@ -22,19 +22,21 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.action.ActionData;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
-import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.data.custom.CustomDataAccessor;
 import de.markusbordihn.easynpc.data.custom.CustomDataIndex;
 import de.markusbordihn.easynpc.data.entity.CustomEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
+import javax.annotation.Nonnull;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.PathfinderMob;
 
-public interface ActionEventData<T extends LivingEntity> extends EasyNPC<T> {
+public interface ActionEventData<T extends PathfinderMob> extends EasyNPC<T> {
 
   EntityDataSerializer<ActionEventSet> ACTION_EVENT_SET =
       new EntityDataSerializer<>() {
@@ -137,11 +139,6 @@ public interface ActionEventData<T extends LivingEntity> extends EasyNPC<T> {
 
   default void readAdditionalActionData(CompoundTag compoundTag) {
 
-    // Legacy data support
-    if (readAdditionalLegacyActionData(compoundTag)) {
-      return;
-    }
-
     // Early exit if no action data is available
     if (!compoundTag.contains(DATA_ACTION_DATA_TAG)) {
       return;
@@ -162,40 +159,33 @@ public interface ActionEventData<T extends LivingEntity> extends EasyNPC<T> {
     }
   }
 
-  default boolean readAdditionalLegacyActionData(CompoundTag compoundTag) {
-    if (compoundTag.contains(DATA_ACTION_PERMISSION_LEVEL_TAG)) {
-      log.info("Converting legacy action data to new multi-format for {}", this);
-
-      // Store permission level
-      this.setActionPermissionLevel(compoundTag.getInt(DATA_ACTION_PERMISSION_LEVEL_TAG));
-
-      // Convert legacy action data
-      if (compoundTag.contains(DATA_ACTION_DATA_TAG)) {
-        CompoundTag actionDataTag = compoundTag.getCompound(DATA_ACTION_DATA_TAG);
-        if (actionDataTag.contains(DATA_ACTIONS_TAG)) {
-          ListTag listTag = actionDataTag.getList(DATA_ACTIONS_TAG, 10);
-          for (int i = 0; i < listTag.size(); ++i) {
-            CompoundTag actionTag = listTag.getCompound(i);
-            ActionEventType actionEventType =
-                ActionEventType.get(actionTag.getString(DATA_ACTION_TYPE_TAG));
-            boolean executeAsUser = actionTag.getBoolean(DATA_ACTION_EXECUTE_AS_USER_TAG);
-            boolean enableDebug = actionTag.getBoolean(DATA_ACTION_ENABLE_DEBUG_TAG);
-            int permissionLevel = actionTag.getInt(DATA_ACTION_PERMISSION_LEVEL_TAG);
-            String action = actionTag.getString(DATA_ACTION_TAG);
-            if (actionEventType != null
-                && actionEventType != ActionEventType.NONE
-                && action != null
-                && !action.isEmpty()) {
-              ActionData actionData =
-                  new ActionData(
-                      ActionType.COMMAND, action, permissionLevel, executeAsUser, enableDebug);
-              this.getActionEventSet().setActionEvent(actionEventType, actionData);
-            }
-          }
-        }
+  default void handleActionInteractionEvent(ServerPlayer serverPlayer) {
+    if (this.hasActionEvent(ActionEventType.ON_INTERACTION)) {
+      ActionData actionData = this.getActionEvent(ActionEventType.ON_INTERACTION);
+      ActionHandler<?> actionHandler = this.getEasyNPCActionHandler();
+      if (actionData != null && actionData.isValidAndNotEmpty() && actionHandler != null) {
+        actionHandler.executeAction(actionData, serverPlayer);
       }
-      return true;
     }
-    return false;
+  }
+
+  default void handleActionHurtEvent(@Nonnull DamageSource damageSource, float damage) {
+    if (this.hasActionEvent(ActionEventType.ON_HURT)) {
+      ActionData actionData = this.getActionEvent(ActionEventType.ON_HURT);
+      ActionHandler<?> actionHandler = this.getEasyNPCActionHandler();
+      if (actionData != null && actionData.isValidAndNotEmpty() && actionHandler != null) {
+        actionHandler.executeAction(actionData, damageSource);
+      }
+    }
+  }
+
+  default void handleActionDieEvent(@Nonnull DamageSource damageSource) {
+    if (this.hasActionEvent(ActionEventType.ON_DEATH)) {
+      ActionData actionData = this.getActionEvent(ActionEventType.ON_DEATH);
+      ActionHandler<?> actionHandler = this.getEasyNPCActionHandler();
+      if (actionData != null && actionData.isValidAndNotEmpty() && actionHandler != null) {
+        actionHandler.executeAction(actionData, damageSource);
+      }
+    }
   }
 }
