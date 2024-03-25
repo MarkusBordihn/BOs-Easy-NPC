@@ -20,13 +20,13 @@
 package de.markusbordihn.easynpc.client.screen.configuration.equipment;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.screen.ScreenHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -80,18 +80,20 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
     this.inventoryLabelY = this.imageHeight - 92;
 
     // Equipment Slots
-    int equipmentSlotLeft = this.contentLeftPos + 75;
-    this.createVisibleEquipmentSlotCheckbox(
-        equipmentSlotLeft, this.contentTopPos + 2, EquipmentSlot.HEAD);
+    if (this.modelData.canUseArmor()) {
+      int equipmentSlotLeft = this.contentLeftPos + 75;
+      this.createVisibleEquipmentSlotCheckbox(
+          equipmentSlotLeft, this.contentTopPos + 2, EquipmentSlot.HEAD);
 
-    this.createVisibleEquipmentSlotCheckbox(
-        equipmentSlotLeft, this.contentTopPos + 20, EquipmentSlot.CHEST);
+      this.createVisibleEquipmentSlotCheckbox(
+          equipmentSlotLeft, this.contentTopPos + 20, EquipmentSlot.CHEST);
 
-    this.createVisibleEquipmentSlotCheckbox(
-        equipmentSlotLeft, this.contentTopPos + 38, EquipmentSlot.LEGS);
+      this.createVisibleEquipmentSlotCheckbox(
+          equipmentSlotLeft, this.contentTopPos + 38, EquipmentSlot.LEGS);
 
-    this.createVisibleEquipmentSlotCheckbox(
-        equipmentSlotLeft, this.contentTopPos + 55, EquipmentSlot.FEET);
+      this.createVisibleEquipmentSlotCheckbox(
+          equipmentSlotLeft, this.contentTopPos + 55, EquipmentSlot.FEET);
+    }
   }
 
   @Override

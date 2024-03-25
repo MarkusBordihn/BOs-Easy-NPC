@@ -27,14 +27,17 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.TieredItem;
 
-public interface AttackData<T extends LivingEntity> extends EasyNPC<T> {
+public interface AttackData<T extends PathfinderMob> extends EasyNPC<T> {
 
   // Synced entity data
   EntityDataAccessor<Boolean> DATA_AGGRESSIVE =
@@ -62,6 +65,30 @@ public interface AttackData<T extends LivingEntity> extends EasyNPC<T> {
     listTag.add(projectileCompoundTag);
     weaponCompoundTag.put(DATA_CHARGED_PROJECTILES_TAG, listTag);
   }
+
+  static boolean canFireProjectileWeapon(ProjectileWeaponItem projectileWeaponItem) {
+    return projectileWeaponItem instanceof CrossbowItem || projectileWeaponItem instanceof BowItem;
+  }
+
+  static boolean isHoldingMeleeWeapon(LivingEntity livingEntity) {
+    return livingEntity != null && livingEntity.getMainHandItem().getItem() instanceof TieredItem;
+  }
+
+  static boolean isHoldingProjectileWeapon(LivingEntity livingEntity) {
+    return livingEntity != null
+        && livingEntity.getMainHandItem().getItem() instanceof ProjectileWeaponItem;
+  }
+
+  default boolean isHoldingProjectileWeapon() {
+    return isHoldingProjectileWeapon(this.getLivingEntity());
+  }
+
+  default boolean isHoldingWeapon() {
+    LivingEntity livingEntity = this.getLivingEntity();
+    return isHoldingMeleeWeapon(livingEntity) || isHoldingProjectileWeapon(livingEntity);
+  }
+
+  int getAttackAnimationTick();
 
   default boolean getDefaultAggression() {
     return false;
@@ -118,8 +145,8 @@ public interface AttackData<T extends LivingEntity> extends EasyNPC<T> {
     return ProjectileUtil.getMobArrow(livingEntity, itemStack, damage);
   }
 
-  default boolean isHoldingMeleeWeapon(LivingEntity livingEntity) {
-    return livingEntity.getMainHandItem().getItem() instanceof TieredItem;
+  default boolean isHoldingMeleeWeapon() {
+    return isHoldingMeleeWeapon(this.getLivingEntity());
   }
 
   default void addAdditionalAttackData(CompoundTag compoundTag) {

@@ -172,11 +172,6 @@ public class EasyNPCEntityData extends EasyNPCBaseEntity
   }
 
   @Override
-  public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-    return null;
-  }
-
-  @Override
   public int getRemainingPersistentAngerTime() {
     return this.remainingPersistentAngerTime;
   }

@@ -24,10 +24,10 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Pose;
 
-public interface PresetData<T extends LivingEntity> extends EasyNPC<T> {
+public interface PresetData<T extends PathfinderMob> extends EasyNPC<T> {
 
   default CompoundTag exportPresetData() {
     return this.serializePresetData();
