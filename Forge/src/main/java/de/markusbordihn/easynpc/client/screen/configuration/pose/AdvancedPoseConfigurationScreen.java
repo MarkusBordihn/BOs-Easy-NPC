@@ -20,14 +20,14 @@
 package de.markusbordihn.easynpc.client.screen.configuration.pose;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.SliderButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.model.ModelPart;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import de.markusbordihn.easynpc.menu.configuration.pose.AdvancedPoseConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.screen.ScreenHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
@@ -37,7 +37,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class AdvancedPoseConfigurationScreen
     extends PoseConfigurationScreen<AdvancedPoseConfigurationMenu> {
 
-  protected final ModelData modelData;
   // Slider Buttons reference for positioning
   protected SliderButton headRotationSliderButton;
   protected SliderButton bodyRotationSliderButton;
@@ -50,7 +49,6 @@ public class AdvancedPoseConfigurationScreen
   public AdvancedPoseConfigurationScreen(
       AdvancedPoseConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
-    this.modelData = this.easyNPC.getEasyNPCModelData();
   }
 
   private SliderButton createVisibilityRotationSlider(
@@ -86,6 +84,10 @@ public class AdvancedPoseConfigurationScreen
     int sliderLeftSpace = 200;
     int sliderTopSpace = 66;
 
+    // Variant data
+    VariantData<?> variantData = this.easyNPC.getEasyNPCVariantData();
+    boolean hasCrossedArms = variantData.hasVariantCrossedArms();
+
     // Head parts
     if (this.modelData.hasHeadModelPart()) {
       this.headRotationSliderButton =
@@ -101,8 +103,18 @@ public class AdvancedPoseConfigurationScreen
 
     sliderTopPos += sliderTopSpace;
 
+    // Arms parts
+    if (hasCrossedArms
+        || (!this.modelData.hasLeftArmModelPart()
+        && !this.modelData.hasRightArmModelPart()
+        && this.modelData.hasArmsModelPart())) {
+      sliderLeftPos = sliderLeftDefaultPos;
+      this.armsRotationSliderButton =
+          createVisibilityRotationSlider(sliderLeftPos, sliderTopPos, ModelPart.ARMS, "arms");
+    }
+
     // Right arm rotations
-    if (this.modelData.hasRightArmModelPart()) {
+    if (!hasCrossedArms && this.modelData.hasRightArmModelPart()) {
       sliderLeftPos = sliderLeftDefaultPos;
       this.rightArmRotationSliderButton =
           createVisibilityRotationSlider(
@@ -110,15 +122,11 @@ public class AdvancedPoseConfigurationScreen
     }
 
     // Left arm rotations and arms rotations.
-    if (this.modelData.hasLeftArmModelPart()) {
+    if (!hasCrossedArms && this.modelData.hasLeftArmModelPart()) {
       sliderLeftPos += sliderLeftSpace;
       this.leftArmRotationSliderButton =
           createVisibilityRotationSlider(
               sliderLeftPos, sliderTopPos, ModelPart.LEFT_ARM, "left_arm");
-    } else if (this.modelData.hasArmsModelPart()) {
-      sliderLeftPos = sliderLeftDefaultPos;
-      this.armsRotationSliderButton =
-          createVisibilityRotationSlider(sliderLeftPos, sliderTopPos, ModelPart.ARMS, "arms");
     }
 
     sliderTopPos += sliderTopSpace;
@@ -154,7 +162,7 @@ public class AdvancedPoseConfigurationScreen
         this.easyNPC);
 
     // Body parts texts
-    if (this.modelData.hasHeadModelPart()) {
+    if (this.modelData.hasHeadModelPart() && this.headRotationSliderButton != null) {
       Text.drawConfigString(
           poseStack,
           this.font,
@@ -162,7 +170,7 @@ public class AdvancedPoseConfigurationScreen
           this.headRotationSliderButton.x + 20,
           this.headRotationSliderButton.y - 12);
     }
-    if (this.modelData.hasBodyModelPart()) {
+    if (this.modelData.hasBodyModelPart() && this.bodyRotationSliderButton != null) {
       Text.drawConfigString(
           poseStack,
           this.font,
@@ -170,14 +178,14 @@ public class AdvancedPoseConfigurationScreen
           this.bodyRotationSliderButton.x + 20,
           this.bodyRotationSliderButton.y - 12);
     }
-    if (this.modelData.hasLeftArmModelPart()) {
+    if (this.modelData.hasLeftArmModelPart() && this.leftArmRotationSliderButton != null) {
       Text.drawConfigString(
           poseStack,
           this.font,
           "pose.left_arm",
           this.leftArmRotationSliderButton.x + 20,
           this.leftArmRotationSliderButton.y - 12);
-    } else if (this.modelData.hasArmsModelPart()) {
+    } else if (this.modelData.hasArmsModelPart() && this.armsRotationSliderButton != null) {
       Text.drawConfigString(
           poseStack,
           this.font,
@@ -185,7 +193,7 @@ public class AdvancedPoseConfigurationScreen
           this.armsRotationSliderButton.x + 20,
           this.armsRotationSliderButton.y - 12);
     }
-    if (this.modelData.hasRightArmModelPart()) {
+    if (this.modelData.hasRightArmModelPart() && this.rightArmRotationSliderButton != null) {
       Text.drawConfigString(
           poseStack,
           this.font,
@@ -193,7 +201,7 @@ public class AdvancedPoseConfigurationScreen
           this.rightArmRotationSliderButton.x + 20,
           this.rightArmRotationSliderButton.y - 12);
     }
-    if (this.modelData.hasLeftLegModelPart()) {
+    if (this.modelData.hasLeftLegModelPart() && this.leftLegRotationSliderButton != null) {
       Text.drawConfigString(
           poseStack,
           this.font,
@@ -201,7 +209,7 @@ public class AdvancedPoseConfigurationScreen
           this.leftLegRotationSliderButton.x + 20,
           this.leftLegRotationSliderButton.y - 12);
     }
-    if (this.modelData.hasRightLegModelPart()) {
+    if (this.modelData.hasRightLegModelPart() && this.rightLegRotationSliderButton != null) {
       Text.drawConfigString(
           poseStack,
           this.font,

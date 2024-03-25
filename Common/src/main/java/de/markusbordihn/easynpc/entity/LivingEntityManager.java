@@ -31,7 +31,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -243,9 +242,11 @@ public class LivingEntityManager {
 
   public static void discardEasyNPCEntityByUUID(UUID uuid, ServerLevel serverLevel) {
     EasyNPC<?> easyNPC = getEasyNPCEntityByUUID(uuid, serverLevel);
-    if (easyNPC != null && easyNPC.getEasyNPCEntity() instanceof Mob easyNPCEntity) {
-      easyNPCEntity.discard();
+    if (easyNPC != null && easyNPC.getMob() != null) {
+      easyNPC.getMob().discard();
       npcEntityMap.remove(uuid);
+    } else {
+      log.warn("{} [Discard] Unable to discard EASY NPC entity {}: {}", LOG_PREFIX, easyNPC, uuid);
     }
   }
 }

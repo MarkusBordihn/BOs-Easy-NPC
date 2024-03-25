@@ -36,7 +36,9 @@ import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import de.markusbordihn.easynpc.entity.easynpc.data.SpawnData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SpawnerData;
+import de.markusbordihn.easynpc.entity.easynpc.data.TickerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
@@ -46,6 +48,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -60,7 +63,7 @@ import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public interface EasyNPC<T extends LivingEntity> extends Npc {
+public interface EasyNPC<T extends PathfinderMob> extends Npc {
 
   Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -134,8 +137,16 @@ public interface EasyNPC<T extends LivingEntity> extends Npc {
     return this instanceof ScaleData<T> scaleData ? scaleData : null;
   }
 
+  default SpawnData<T> getEasyNPCSpawnData() {
+    return this instanceof SpawnData<T> spawnData ? spawnData : null;
+  }
+
   default SpawnerData<T> getEasyNPCSpawnerData() {
     return this instanceof SpawnerData<T> spawnerData ? spawnerData : null;
+  }
+
+  default TickerData<T> getEasyNPCTickerData() {
+    return this instanceof TickerData<T> tickerData ? tickerData : null;
   }
 
   default TradingData<T> getEasyNPCTradingData() {
@@ -182,6 +193,10 @@ public interface EasyNPC<T extends LivingEntity> extends Npc {
 
   default Merchant getMerchant() {
     return this instanceof Merchant merchant ? merchant : null;
+  }
+
+  default ProfilerFiller getProfiler() {
+    return this instanceof Mob mob ? mob.level.getProfiler() : null;
   }
 
   default Entity getEntity() {

@@ -38,6 +38,8 @@ public final class Constants {
   // Prefixes
   public static final String MINECRAFT_PREFIX = "minecraft";
   public static final String TEXT_PREFIX = "text.easy_npc.";
+  public static final String ITEM_PREFIX = "item." + MOD_ID + ".";
+  public static final String ENTITY_PREFIX = "entity." + MOD_ID + ".";
   public static final String TEXT_CONFIG_PREFIX = TEXT_PREFIX + "config.";
   public static final String TEXT_ITEM_PREFIX = TEXT_PREFIX + "item.";
   public static final String CONTAINER_PREFIX = TEXT_PREFIX + "container.";

@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.entity.layers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCRenderer;
+import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -29,10 +29,7 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class VariantOverLayer<T extends LivingEntity, M extends EntityModel<T>>
     extends RenderLayer<T, M> {
 
@@ -62,24 +59,25 @@ public class VariantOverLayer<T extends LivingEntity, M extends EntityModel<T>>
       float ageInTicks2,
       float netHeadYaw,
       float headPitch) {
-    if (!livingEntity.isInvisible()
-        && this.easyNPCRenderer != null
-        && livingEntity instanceof EasyNPC<?> easyNPC) {
-      ResourceLocation resourceLocation =
-          this.easyNPCRenderer.getTextureOverlayByVariant(
-              easyNPC.getEasyNPCVariantData().getVariant());
-      if (resourceLocation != null) {
-        renderColoredCutoutModel(
-            this.model,
-            resourceLocation,
-            poseStack,
-            buffer,
-            lightLevel,
-            livingEntity,
-            1.0F,
-            1.0F,
-            1.0F);
-      }
+    if (livingEntity.isInvisible()
+        || this.easyNPCRenderer == null
+        || !(livingEntity instanceof EasyNPC<?> easyNPC)) {
+      return;
+    }
+    ResourceLocation resourceLocation =
+        this.easyNPCRenderer.getTextureOverlayByVariant(
+            easyNPC.getEasyNPCVariantData().getVariant());
+    if (resourceLocation != null) {
+      renderColoredCutoutModel(
+          this.model,
+          resourceLocation,
+          poseStack,
+          buffer,
+          lightLevel,
+          livingEntity,
+          1.0F,
+          1.0F,
+          1.0F);
     }
   }
 }

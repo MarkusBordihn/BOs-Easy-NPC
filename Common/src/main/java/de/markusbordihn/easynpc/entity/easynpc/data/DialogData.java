@@ -19,29 +19,23 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
-import de.markusbordihn.easynpc.data.action.ActionData;
-import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.data.custom.CustomDataAccessor;
 import de.markusbordihn.easynpc.data.custom.CustomDataIndex;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
-import de.markusbordihn.easynpc.data.dialog.DialogType;
-import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.data.entity.CustomEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.legacy.LegacyDialogSetData;
 import de.markusbordihn.easynpc.menu.MenuManager;
-import java.util.Set;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 
-public interface DialogData<T extends LivingEntity> extends EasyNPC<T> {
+public interface DialogData<T extends PathfinderMob> extends EasyNPC<T> {
 
   EntityDataSerializer<DialogDataSet> DIALOG_DATA_SET =
       new EntityDataSerializer<>() {
@@ -175,11 +169,6 @@ public interface DialogData<T extends LivingEntity> extends EasyNPC<T> {
 
   default void readAdditionalDialogData(CompoundTag compoundTag) {
 
-    // Legacy dialog data support
-    if (readAdditionalLegacyDialogData(compoundTag)) {
-      return;
-    }
-
     // Early exit if no dialog data is available.
     if (!compoundTag.contains(DATA_DIALOG_DATA_TAG)) {
       return;
@@ -193,98 +182,5 @@ public interface DialogData<T extends LivingEntity> extends EasyNPC<T> {
       DialogDataSet dialogDataSet = new DialogDataSet(dialogDataTag);
       this.setDialogDataSet(dialogDataSet);
     }
-  }
-
-  default boolean readAdditionalLegacyDialogData(CompoundTag compoundTag) {
-
-    DialogDataSet dialogDataSet;
-
-    // Very old legacy data support (just for compatibility with old worlds)
-    if (compoundTag.contains(DATA_DIALOG_TYPE_TAG)) {
-      log.info("Converting legacy dialog data to new format for {}", this);
-      DialogType dialogType = DialogType.get(compoundTag.getString(DATA_DIALOG_TYPE_TAG));
-
-      // Handle basic dialog
-      if (dialogType == DialogType.BASIC) {
-        dialogDataSet = DialogUtils.getBasicDialog(compoundTag.getString(DATA_DIALOG_TAG));
-        this.setDialogDataSet(dialogDataSet);
-        return true;
-      }
-
-      // Handle yes/no dialog
-      if (dialogType != DialogType.YES_NO) {
-        return false;
-      }
-
-      // Create yes/no dialog data set
-      dialogDataSet =
-          DialogUtils.getYesNoDialog(
-              compoundTag.getString(DATA_DIALOG_TAG),
-              compoundTag.getString(DATA_DIALOG_YES_BUTTON_TAG),
-              compoundTag.getString(DATA_DIALOG_NO_BUTTON_TAG),
-              compoundTag.getString(DATA_DIALOG_YES_TAG),
-              compoundTag.getString(DATA_DIALOG_NO_TAG));
-
-    } else if (compoundTag.contains(DATA_DIALOG_DATA_TAG)
-        && compoundTag.getCompound(DATA_DIALOG_DATA_TAG).contains(DATA_DIALOG_TYPE_TAG)) {
-      log.info("Converting legacy dialog data to new multi-format for {}", this);
-      CompoundTag dialogDataTag = compoundTag.getCompound(DATA_DIALOG_DATA_TAG);
-      DialogType dialogType = DialogType.get(dialogDataTag.getString(DATA_DIALOG_TYPE_TAG));
-
-      // Handle basic dialog
-      if (dialogType == DialogType.BASIC) {
-        dialogDataSet = DialogUtils.getBasicDialog(dialogDataTag.getString(DATA_DIALOG_SIMPLE_TAG));
-        this.setDialogDataSet(dialogDataSet);
-        return true;
-      }
-
-      // Handle only yes/no dialog
-      if (dialogType != DialogType.YES_NO) {
-        return false;
-      }
-
-      // Create yes/no dialog data set
-      dialogDataSet =
-          DialogUtils.getYesNoDialog(
-              dialogDataTag.getString(DATA_DIALOG_SIMPLE_TAG),
-              dialogDataTag.getString(DATA_DIALOG_YES_BUTTON_TAG),
-              dialogDataTag.getString(DATA_DIALOG_NO_BUTTON_TAG),
-              dialogDataTag.getString(DATA_DIALOG_YES_TAG),
-              dialogDataTag.getString(DATA_DIALOG_NO_TAG));
-    } else {
-      return false;
-    }
-
-    // Handles possible legacy action data and covert them into button actions.
-    if (compoundTag.contains(ActionEventData.DATA_ACTION_PERMISSION_LEVEL_TAG)
-        && compoundTag.contains(ActionEventData.DATA_ACTION_DATA_TAG)) {
-      log.info("Extracting legacy action data for button action for {}", this);
-      DialogDataEntry questionDialogData = dialogDataSet.getDialog("question");
-      ActionData legacyYesActionData =
-          LegacyDialogSetData.readAdditionalLegacyActionData(
-              compoundTag, dialogDataSet, ActionEventData.ON_YES_SELECTION);
-      if (legacyYesActionData != null) {
-        Set<ActionData> yesActionData = questionDialogData.getButton("yes_button").getActionData();
-        if (legacyYesActionData.getType() == ActionType.OPEN_TRADING_SCREEN) {
-          yesActionData.clear();
-        }
-        yesActionData.add(legacyYesActionData);
-        questionDialogData.getButton("yes_button").setActionData(yesActionData);
-      }
-      ActionData legacyNoActionData =
-          LegacyDialogSetData.readAdditionalLegacyActionData(
-              compoundTag, dialogDataSet, ActionEventData.ON_NO_SELECTION);
-      if (legacyNoActionData != null) {
-        Set<ActionData> noActionData = questionDialogData.getButton("no_button").getActionData();
-        if (legacyNoActionData.getType() == ActionType.OPEN_TRADING_SCREEN) {
-          noActionData.clear();
-        }
-        noActionData.add(legacyNoActionData);
-        questionDialogData.getButton("no_button").setActionData(noActionData);
-      }
-    }
-
-    this.setDialogDataSet(dialogDataSet);
-    return true;
   }
 }

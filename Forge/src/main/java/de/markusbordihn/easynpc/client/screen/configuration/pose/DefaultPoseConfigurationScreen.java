@@ -20,12 +20,11 @@
 package de.markusbordihn.easynpc.client.screen.configuration.pose;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.markusbordihn.easynpc.client.screen.ScreenHelper;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.screen.ScreenHelper;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Pose;
@@ -38,7 +37,6 @@ public class DefaultPoseConfigurationScreen
     extends PoseConfigurationScreen<DefaultPoseConfigurationMenu> {
 
   public static final int BUTTON_WIDTH = 100;
-  protected final ModelData<?> modelData;
   // Pose buttons
   protected Button crouchingPoseButton;
   protected Button dyingPoseButton;
@@ -52,7 +50,6 @@ public class DefaultPoseConfigurationScreen
   public DefaultPoseConfigurationScreen(
       DefaultPoseConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
-    this.modelData = this.easyNPC.getEasyNPCModelData();
   }
 
   private void checkPoseButtonState(Pose pose, ModelPose modelPose) {

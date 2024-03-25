@@ -65,6 +65,16 @@ public class AbilitiesAttributeConfigurationScreen
 
     this.addRenderableWidget(
         new Checkbox(
+            secondButtonRow,
+            this.buttonTopPos + 25,
+            EntityAttribute.CAN_BE_LEASHED.getAttributeName(),
+            attributeData.getAttributeCanBeLeashed(),
+            checkbox ->
+                NetworkMessageHandler.entityAttributeChange(
+                    uuid, EntityAttribute.CAN_BE_LEASHED, checkbox.selected())));
+
+    this.addRenderableWidget(
+        new Checkbox(
             firstButtonRow,
             this.buttonTopPos + 45,
             EntityAttribute.CAN_OPEN_DOOR.getAttributeName(),
@@ -105,8 +115,8 @@ public class AbilitiesAttributeConfigurationScreen
 
     this.addRenderableWidget(
         new Checkbox(
-            secondButtonRow,
-            this.buttonTopPos + 65,
+            firstButtonRow,
+            this.buttonTopPos + 85,
             EntityAttribute.IS_PUSHABLE.getAttributeName(),
             attributeData.getAttributeIsPushable(),
             checkbox ->
@@ -115,8 +125,18 @@ public class AbilitiesAttributeConfigurationScreen
 
     this.addRenderableWidget(
         new Checkbox(
-            firstButtonRow,
+            secondButtonRow,
             this.buttonTopPos + 85,
+            EntityAttribute.PUSH_ENTITIES.getAttributeName(),
+            attributeData.getAttributePushEntities(),
+            checkbox ->
+                NetworkMessageHandler.entityAttributeChange(
+                    uuid, EntityAttribute.PUSH_ENTITIES, checkbox.selected())));
+
+    this.addRenderableWidget(
+        new Checkbox(
+            firstButtonRow,
+            this.buttonTopPos + 105,
             EntityAttribute.CAN_USE_NETHER_PORTAL.getAttributeName(),
             attributeData.getAttributeCanUseNetherPortal(),
             checkbox ->
