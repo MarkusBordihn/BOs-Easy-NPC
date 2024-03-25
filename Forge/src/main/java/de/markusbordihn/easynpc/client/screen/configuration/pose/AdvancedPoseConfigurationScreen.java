@@ -193,7 +193,7 @@ public class AdvancedPoseConfigurationScreen
           this.armsRotationSliderButton.getX() + 20,
           this.armsRotationSliderButton.getY() - 12);
     }
-    if (this.modelData.hasRightArmModelPart() && this.rightArmRotationSliderButton != null){
+    if (this.modelData.hasRightArmModelPart() && this.rightArmRotationSliderButton != null) {
       Text.drawConfigString(
           guiGraphics,
           this.font,
@@ -201,7 +201,7 @@ public class AdvancedPoseConfigurationScreen
           this.rightArmRotationSliderButton.getX() + 20,
           this.rightArmRotationSliderButton.getY() - 12);
     }
-    if (this.modelData.hasLeftLegModelPart()  && this.leftLegRotationSliderButton != null) {
+    if (this.modelData.hasLeftLegModelPart() && this.leftLegRotationSliderButton != null) {
       Text.drawConfigString(
           guiGraphics,
           this.font,
