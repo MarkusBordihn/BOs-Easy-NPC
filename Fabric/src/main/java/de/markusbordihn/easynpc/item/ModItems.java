@@ -27,7 +27,10 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
 import de.markusbordihn.easynpc.entity.easynpc.npc.HumanoidSlim;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.IronGolem;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie;
@@ -81,8 +84,20 @@ public class ModItems {
       new ModSpawnEggItem(ModEntityType.ZOMBIE, new Item.Properties().rarity(Rarity.EPIC));
   public static final Item ZOMBIE_VILLAGER_NPC_SPAWN_EGG =
       new ModSpawnEggItem(ModEntityType.ZOMBIE_VILLAGER, new Item.Properties().rarity(Rarity.EPIC));
+  public static final Item PIG_NPC_SPAWN_EGG =
+      new ModSpawnEggItem(ModEntityType.PIG, new Item.Properties().rarity(Rarity.EPIC));
+  public static final Item EVOKER_NPC_SPAWN_EGG =
+      new ModSpawnEggItem(ModEntityType.EVOKER, new Item.Properties().rarity(Rarity.EPIC));
+  public static final Item ILLUSIONER_NPC_SPAWN_EGG =
+      new ModSpawnEggItem(ModEntityType.ILLUSIONER, new Item.Properties().rarity(Rarity.EPIC));
+  public static final Item PILLAGER_NPC_SPAWN_EGG =
+      new ModSpawnEggItem(ModEntityType.PILLAGER, new Item.Properties().rarity(Rarity.EPIC));
+  public static final Item VINDICATOR_NPC_SPAWN_EGG =
+      new ModSpawnEggItem(ModEntityType.VINDICATOR, new Item.Properties().rarity(Rarity.EPIC));
+  public static final Item ORC_NPC_SPAWN_EGG =
+      new ModSpawnEggItem(ModEntityType.ORC, new Item.Properties().rarity(Rarity.EPIC));
+
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private static final String SPAWN_EGG_PREFIX = "_spawn_egg";
 
   private ModItems() {}
 
@@ -105,63 +120,87 @@ public class ModItems {
     log.info("{} Spawn Egg Items ...", Constants.LOG_REGISTER_PREFIX);
     Registry.register(
         BuiltInRegistries.ITEM,
-        Constants.MOD_ID + ":" + Allay.ID + SPAWN_EGG_PREFIX,
+        Constants.MOD_ID + ":" + Allay.ID + ModSpawnEggItem.SUFFIX,
         ALLEY_NPC_SPAWN_EGG);
     Registry.register(
         BuiltInRegistries.ITEM,
-        Constants.MOD_ID + ":" + Cat.ID + SPAWN_EGG_PREFIX,
+        Constants.MOD_ID + ":" + Cat.ID + ModSpawnEggItem.SUFFIX,
         CAT_NPC_SPAWN_EGG);
     Registry.register(
         BuiltInRegistries.ITEM,
-        Constants.MOD_ID + ":" + Chicken.ID + SPAWN_EGG_PREFIX,
+        Constants.MOD_ID + ":" + Chicken.ID + ModSpawnEggItem.SUFFIX,
         CHICKEN_NPC_SPAWN_EGG);
     Registry.register(
         BuiltInRegistries.ITEM,
-        Constants.MOD_ID + ":" + Fairy.ID + SPAWN_EGG_PREFIX,
+        Constants.MOD_ID + ":" + Fairy.ID + ModSpawnEggItem.SUFFIX,
         FAIRY_NPC_SPAWN_EGG);
     Registry.register(
         BuiltInRegistries.ITEM,
-        Constants.MOD_ID + ":" + Humanoid.ID + SPAWN_EGG_PREFIX,
+        Constants.MOD_ID + ":" + Humanoid.ID + ModSpawnEggItem.SUFFIX,
         HUMANOID_NPC_SPAWN_EGG);
     Registry.register(
         BuiltInRegistries.ITEM,
-        Constants.MOD_ID + ":" + HumanoidSlim.ID + SPAWN_EGG_PREFIX,
+        Constants.MOD_ID + ":" + HumanoidSlim.ID + ModSpawnEggItem.SUFFIX,
         HUMANOID_SLIM_NPC_SPAWN_EGG);
     Registry.register(
         BuiltInRegistries.ITEM,
-        Constants.MOD_ID + ":" + IronGolem.ID + SPAWN_EGG_PREFIX,
+        Constants.MOD_ID + ":" + IronGolem.ID + ModSpawnEggItem.SUFFIX,
         IRON_GOLEM_NPC_SPAWN_EGG);
     Registry.register(
         BuiltInRegistries.ITEM,
-        Constants.MOD_ID + ":" + Skeleton.ID + SPAWN_EGG_PREFIX,
+        Constants.MOD_ID + ":" + Skeleton.ID + ModSpawnEggItem.SUFFIX,
         SKELETON_NPC_SPAWN_EGG);
     Registry.register(
         BuiltInRegistries.ITEM,
-        Constants.MOD_ID + ":" + Villager.ID + SPAWN_EGG_PREFIX,
+        Constants.MOD_ID + ":" + Villager.ID + ModSpawnEggItem.SUFFIX,
         VILLAGER_NPC_SPAWN_EGG);
     Registry.register(
         BuiltInRegistries.ITEM,
-        Constants.MOD_ID + ":" + Zombie.ID_DROWNED + SPAWN_EGG_PREFIX,
+        Constants.MOD_ID + ":" + Zombie.ID_DROWNED + ModSpawnEggItem.SUFFIX,
         DROWNED_NPC_SPAWN_EGG);
     Registry.register(
         BuiltInRegistries.ITEM,
-        Constants.MOD_ID + ":" + Zombie.ID_HUSK + SPAWN_EGG_PREFIX,
+        Constants.MOD_ID + ":" + Zombie.ID_HUSK + ModSpawnEggItem.SUFFIX,
         HUSK_NPC_SPAWN_EGG);
     Registry.register(
         BuiltInRegistries.ITEM,
-        Constants.MOD_ID + ":" + Skeleton.ID_WITHER_SKELETON + SPAWN_EGG_PREFIX,
+        Constants.MOD_ID + ":" + Skeleton.ID_WITHER_SKELETON + ModSpawnEggItem.SUFFIX,
         WITHER_SKELETON_NPC_SPAWN_EGG);
     Registry.register(
         BuiltInRegistries.ITEM,
-        Constants.MOD_ID + ":" + Skeleton.ID_STRAY + SPAWN_EGG_PREFIX,
+        Constants.MOD_ID + ":" + Skeleton.ID_STRAY + ModSpawnEggItem.SUFFIX,
         STRAY_NPC_SPAWN_EGG);
     Registry.register(
         BuiltInRegistries.ITEM,
-        Constants.MOD_ID + ":" + Zombie.ID + SPAWN_EGG_PREFIX,
+        Constants.MOD_ID + ":" + Zombie.ID + ModSpawnEggItem.SUFFIX,
         ZOMBIE_NPC_SPAWN_EGG);
     Registry.register(
         BuiltInRegistries.ITEM,
-        Constants.MOD_ID + ":" + ZombieVillager.ID + SPAWN_EGG_PREFIX,
+        Constants.MOD_ID + ":" + ZombieVillager.ID + ModSpawnEggItem.SUFFIX,
         ZOMBIE_VILLAGER_NPC_SPAWN_EGG);
+    Registry.register(
+        BuiltInRegistries.ITEM,
+        Constants.MOD_ID + ":" + Pig.ID + ModSpawnEggItem.SUFFIX,
+        PIG_NPC_SPAWN_EGG);
+    Registry.register(
+        BuiltInRegistries.ITEM,
+        Constants.MOD_ID + ":" + Illager.ID_EVOKER + ModSpawnEggItem.SUFFIX,
+        EVOKER_NPC_SPAWN_EGG);
+    Registry.register(
+        BuiltInRegistries.ITEM,
+        Constants.MOD_ID + ":" + Illager.ID_ILLUSIONER + ModSpawnEggItem.SUFFIX,
+        ILLUSIONER_NPC_SPAWN_EGG);
+    Registry.register(
+        BuiltInRegistries.ITEM,
+        Constants.MOD_ID + ":" + Illager.ID_PILLAGER + ModSpawnEggItem.SUFFIX,
+        PILLAGER_NPC_SPAWN_EGG);
+    Registry.register(
+        BuiltInRegistries.ITEM,
+        Constants.MOD_ID + ":" + Illager.ID_VINDICATOR + ModSpawnEggItem.SUFFIX,
+        VINDICATOR_NPC_SPAWN_EGG);
+    Registry.register(
+        BuiltInRegistries.ITEM,
+        Constants.MOD_ID + ":" + Orc.ID + ModSpawnEggItem.SUFFIX,
+        ORC_NPC_SPAWN_EGG);
   }
 }

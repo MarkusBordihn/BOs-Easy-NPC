@@ -96,9 +96,6 @@ public class StandardIronGolemModel<T extends Mob> extends HierarchicalModel<T>
     if (modelData.getModelPose() == ModelPose.CUSTOM) {
       setupHierarchicalModel(
           easyNPC, head, body, rightArm, leftArm, rightLeg, leftLeg, netHeadYaw, headPitch);
-    } else if (modelData.getDefaultPose() == Pose.SLEEPING) {
-      // Sleeping Pose
-
     } else if (modelData.getDefaultPose() == Pose.CROUCHING) {
       // Crouching Pose
       this.body.xRot = 0.5F;

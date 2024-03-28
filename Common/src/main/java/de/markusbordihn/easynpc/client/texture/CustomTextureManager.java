@@ -77,8 +77,7 @@ public class CustomTextureManager {
     registerTexture(textureModelKey, textureFile);
   }
 
-  public static ResourceLocation registerTexture(
-      TextureModelKey textureModelKey, File textureFile) {
+  public static void registerTexture(TextureModelKey textureModelKey, File textureFile) {
     log.info(
         "{} Registering custom texture {} with UUID {}.",
         LOG_PREFIX,
@@ -89,7 +88,6 @@ public class CustomTextureManager {
     if (resourceLocation != null) {
       customTextureCache.put(textureModelKey, resourceLocation);
     }
-    return resourceLocation;
   }
 
   public static void clearCustomTextureCache() {

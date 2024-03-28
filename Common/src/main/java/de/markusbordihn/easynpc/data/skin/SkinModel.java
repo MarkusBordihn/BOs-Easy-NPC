@@ -28,6 +28,7 @@ public enum SkinModel {
   HUMANOID_SLIM(true),
   ILLAGER,
   IRON_GOLEM,
+  ORC,
   PIG,
   SKELETON(true),
   VILLAGER(true),

@@ -57,7 +57,7 @@ public class ModTabs {
             new ResourceLocation(Constants.MOD_ID, "spawn_eggs"),
             builder ->
                 builder
-                    .icon(() -> new ItemStack(ModItems.VILLAGER_NPC_SPAWN_EGG.get()))
+                    .icon(() -> new ItemStack(ModItems.FAIRY_NPC_SPAWN_EGG.get()))
                     .displayItems(ModTabs::addSpawnEggsTabItems)
                     .title(Component.translatable("itemGroup.easy_npc.spawn_eggs"))
                     .build());
@@ -93,5 +93,6 @@ public class ModTabs {
     outputTab.accept(ModItems.ILLUSIONER_NPC_SPAWN_EGG.get());
     outputTab.accept(ModItems.PILLAGER_NPC_SPAWN_EGG.get());
     outputTab.accept(ModItems.VINDICATOR_NPC_SPAWN_EGG.get());
+    outputTab.accept(ModItems.ORC_NPC_SPAWN_EGG.get());
   }
 }

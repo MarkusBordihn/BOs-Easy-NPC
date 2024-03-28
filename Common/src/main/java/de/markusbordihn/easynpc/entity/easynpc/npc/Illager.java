@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
@@ -36,11 +37,11 @@ public class Illager extends EasyNPCBaseEntity {
   public static final String ID_VINDICATOR = "vindicator";
   public static final String NAME = "Illager";
 
-  public Illager(EntityType<? extends EasyNPCBaseEntity> entityType, Level level, Enum<?> variant) {
+  public Illager(EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variant) {
     super(entityType, level, variant);
   }
 
-  public Illager(EntityType<? extends EasyNPCBaseEntity> entityType, Level level) {
+  public Illager(EntityType<? extends PathfinderMob> entityType, Level level) {
     super(entityType, level);
   }
 
