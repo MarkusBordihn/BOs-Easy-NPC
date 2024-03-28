@@ -21,8 +21,9 @@ package de.markusbordihn.easynpc.client.model;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.FairyModel;
+import de.markusbordihn.easynpc.client.model.custom.OrcModel;
 import de.markusbordihn.easynpc.client.model.standard.StandardAllayModel;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityModelLayerRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,5 +39,6 @@ public class ModModelLayer {
     EntityModelLayerRegistry.registerModelLayer(
         ModModelLayers.ALLAY, StandardAllayModel::createBodyLayer);
     EntityModelLayerRegistry.registerModelLayer(ModModelLayers.FAIRY, FairyModel::createBodyLayer);
+    EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ORC, OrcModel::createBodyLayer);
   }
 }

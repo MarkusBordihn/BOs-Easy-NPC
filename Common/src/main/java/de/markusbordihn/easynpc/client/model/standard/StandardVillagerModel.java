@@ -85,10 +85,6 @@ public class StandardVillagerModel<T extends Entity> extends VillagerModel<T>
       this.leftLeg.z = 4.0F;
       this.rightLeg.y = 12.2F;
       this.rightLeg.z = 4.0F;
-    }
-
-    if (modelData.getModelPose() == ModelPose.CUSTOM
-        || modelData.getDefaultPose() == Pose.CROUCHING) {
     } else {
       super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
     }

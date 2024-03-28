@@ -28,18 +28,16 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
-public class Zombie extends EasyNPCBaseEntity {
+public class Orc extends EasyNPCBaseEntity {
 
-  public static final String ID = "zombie";
-  public static final String ID_DROWNED = "drowned";
-  public static final String ID_HUSK = "husk";
-  public static final String NAME = "Zombie";
+  public static final String ID = "orc";
+  public static final String NAME = "Orc";
 
-  public Zombie(EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variant) {
+  public Orc(EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variant) {
     super(entityType, level, variant);
   }
 
-  public Zombie(EntityType<? extends PathfinderMob> entityType, Level level) {
+  public Orc(EntityType<? extends PathfinderMob> entityType, Level level) {
     super(entityType, level);
   }
 
@@ -58,7 +56,7 @@ public class Zombie extends EasyNPCBaseEntity {
 
   @Override
   public SkinModel getSkinModel() {
-    return SkinModel.ZOMBIE;
+    return SkinModel.ORC;
   }
 
   @Override
@@ -68,7 +66,7 @@ public class Zombie extends EasyNPCBaseEntity {
 
   @Override
   public Enum<?> getDefaultVariant() {
-    return Variant.ZOMBIE;
+    return Variant.DEFAULT;
   }
 
   @Override
@@ -78,8 +76,6 @@ public class Zombie extends EasyNPCBaseEntity {
 
   // Skin Details
   public enum Variant {
-    DROWNED,
-    HUSK,
-    ZOMBIE
+    DEFAULT
   }
 }

@@ -38,8 +38,8 @@ public class Text {
     drawString(poseStack, font, Component.literal(text), x, y, color);
   }
 
-  public static int drawString(PoseStack poseStack, Font font, Component component, int x, int y) {
-    return drawString(poseStack, font, component, x, y, Constants.FONT_COLOR_DEFAULT);
+  public static void drawString(PoseStack poseStack, Font font, Component component, int x, int y) {
+    drawString(poseStack, font, component, x, y, Constants.FONT_COLOR_DEFAULT);
   }
 
   public static int drawString(
@@ -67,14 +67,14 @@ public class Text {
     drawString(poseStack, font, formattedCharSequence, x, y, Constants.FONT_COLOR_DEFAULT);
   }
 
-  public static int drawString(
+  public static void drawString(
       PoseStack poseStack,
       Font font,
       FormattedCharSequence formattedCharSequence,
       int x,
       int y,
       int color) {
-    return font.draw(poseStack, formattedCharSequence, x, y, color);
+    font.draw(poseStack, formattedCharSequence, x, y, color);
   }
 
   public static void drawConfigString(
@@ -82,9 +82,9 @@ public class Text {
     drawConfigString(poseStack, font, translationKey, x, y, Constants.FONT_COLOR_DEFAULT);
   }
 
-  public static int drawConfigString(
+  public static void drawConfigString(
       PoseStack poseStack, Font font, String translationKey, int x, int y, int color) {
-    return drawString(
+    drawString(
         poseStack,
         font,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + translationKey),

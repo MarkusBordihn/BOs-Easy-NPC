@@ -25,6 +25,7 @@ import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.CreativeModeTab.Output;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -55,28 +56,34 @@ public class ModTabs {
   }
 
   private static void addConfigItemsTabItems(
-      FeatureFlagSet featureFlagSet, Output outputTab, boolean hasPermissions) {
-    outputTab.accept(ModItems.EASY_NPC_WAND.asItem().getDefaultInstance());
-    outputTab.accept(ModItems.MOVE_EASY_NPC.asItem().getDefaultInstance());
-    outputTab.accept(ModItems.EASY_NPC_PRESET_EMPTY_ITEM.asItem().getDefaultInstance());
+      ItemDisplayParameters itemDisplayParameters, Output output) {
+    output.accept(ModItems.EASY_NPC_WAND.asItem().getDefaultInstance());
+    output.accept(ModItems.MOVE_EASY_NPC.asItem().getDefaultInstance());
+    output.accept(ModItems.EASY_NPC_PRESET_EMPTY_ITEM.asItem().getDefaultInstance());
   }
 
   private static void addSpawnEggsTabItems(
-      FeatureFlagSet featureFlagSet, Output outputTab, boolean hasPermissions) {
-    outputTab.accept(ModItems.ALLEY_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    outputTab.accept(ModItems.CAT_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    outputTab.accept(ModItems.CHICKEN_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    outputTab.accept(ModItems.FAIRY_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    outputTab.accept(ModItems.HUMANOID_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    outputTab.accept(ModItems.HUMANOID_SLIM_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    outputTab.accept(ModItems.IRON_GOLEM_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    outputTab.accept(ModItems.SKELETON_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    outputTab.accept(ModItems.VILLAGER_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    outputTab.accept(ModItems.DROWNED_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    outputTab.accept(ModItems.HUSK_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    outputTab.accept(ModItems.WITHER_SKELETON_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    outputTab.accept(ModItems.STRAY_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    outputTab.accept(ModItems.ZOMBIE_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    outputTab.accept(ModItems.ZOMBIE_VILLAGER_NPC_SPAWN_EGG.asItem().getDefaultInstance());
+      ItemDisplayParameters itemDisplayParameters, Output output) {
+    output.accept(ModItems.ALLEY_NPC_SPAWN_EGG.asItem().getDefaultInstance());
+    output.accept(ModItems.CAT_NPC_SPAWN_EGG.asItem().getDefaultInstance());
+    output.accept(ModItems.CHICKEN_NPC_SPAWN_EGG.asItem().getDefaultInstance());
+    output.accept(ModItems.FAIRY_NPC_SPAWN_EGG.asItem().getDefaultInstance());
+    output.accept(ModItems.HUMANOID_NPC_SPAWN_EGG.asItem().getDefaultInstance());
+    output.accept(ModItems.HUMANOID_SLIM_NPC_SPAWN_EGG.asItem().getDefaultInstance());
+    output.accept(ModItems.IRON_GOLEM_NPC_SPAWN_EGG.asItem().getDefaultInstance());
+    output.accept(ModItems.SKELETON_NPC_SPAWN_EGG.asItem().getDefaultInstance());
+    output.accept(ModItems.VILLAGER_NPC_SPAWN_EGG.asItem().getDefaultInstance());
+    output.accept(ModItems.DROWNED_NPC_SPAWN_EGG.asItem().getDefaultInstance());
+    output.accept(ModItems.HUSK_NPC_SPAWN_EGG.asItem().getDefaultInstance());
+    output.accept(ModItems.WITHER_SKELETON_NPC_SPAWN_EGG.asItem().getDefaultInstance());
+    output.accept(ModItems.STRAY_NPC_SPAWN_EGG.asItem().getDefaultInstance());
+    output.accept(ModItems.ZOMBIE_NPC_SPAWN_EGG.asItem().getDefaultInstance());
+    output.accept(ModItems.ZOMBIE_VILLAGER_NPC_SPAWN_EGG.asItem().getDefaultInstance());
+    output.accept(ModItems.PIG_NPC_SPAWN_EGG.getDefaultInstance());
+    output.accept(ModItems.EVOKER_NPC_SPAWN_EGG.getDefaultInstance());
+    output.accept(ModItems.ILLUSIONER_NPC_SPAWN_EGG.getDefaultInstance());
+    output.accept(ModItems.PILLAGER_NPC_SPAWN_EGG.getDefaultInstance());
+    output.accept(ModItems.VINDICATOR_NPC_SPAWN_EGG.getDefaultInstance());
+    output.accept(ModItems.ORC_NPC_SPAWN_EGG.getDefaultInstance());
   }
 }

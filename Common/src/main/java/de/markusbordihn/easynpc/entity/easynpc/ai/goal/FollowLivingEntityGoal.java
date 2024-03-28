@@ -20,12 +20,12 @@
 package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
 import java.util.EnumSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.LeavesBlock;
@@ -37,6 +37,7 @@ public class FollowLivingEntityGoal extends Goal {
 
   private final PathfinderMob pathfinderMob;
   private final LivingEntity livingEntity;
+  private final NavigationData<?> navigationData;
   private final double speedModifier;
   private final float stopDistance;
   private final float startDistance;
@@ -51,20 +52,17 @@ public class FollowLivingEntityGoal extends Goal {
       LivingEntity livingEntity,
       double speedModifier,
       float stopDistance,
-      float startDistance,
-      boolean canFly) {
+      float startDistance) {
     this.pathfinderMob = easyNPC.getPathfinderMob();
+    this.navigationData = easyNPC.getEasyNPCNavigationData();
     this.livingEntity = livingEntity;
     this.speedModifier = speedModifier;
     this.stopDistance = stopDistance;
     this.startDistance = startDistance;
-    this.canFly = canFly;
+    this.canFly = this.navigationData.canFly();
     this.pathNavigation = this.pathfinderMob.getNavigation();
     this.level = easyNPC.getServerLevel();
     this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
-    if (!(this.pathNavigation instanceof GroundPathNavigation)) {
-      throw new IllegalArgumentException("Unsupported entity type for FollowLivingEntityGoal");
-    }
   }
 
   @Override
@@ -155,7 +153,7 @@ public class FollowLivingEntityGoal extends Goal {
   private boolean canTeleportTo(BlockPos blockPos) {
     BlockPathTypes blockPathTypes =
         WalkNodeEvaluator.getBlockPathTypeStatic(this.level, blockPos.mutable());
-    if (blockPathTypes != BlockPathTypes.WALKABLE) {
+    if (!this.canFly && blockPathTypes != BlockPathTypes.WALKABLE) {
       return false;
     } else {
       BlockState blockState = this.level.getBlockState(blockPos.below());
