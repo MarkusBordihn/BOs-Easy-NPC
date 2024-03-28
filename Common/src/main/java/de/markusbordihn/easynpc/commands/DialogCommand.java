@@ -23,7 +23,6 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -61,8 +60,7 @@ public class DialogCommand {
                                         .executes(DialogCommand::openDialog)))));
   }
 
-  public static int openDialog(CommandContext<CommandSourceStack> context)
-      throws CommandSyntaxException {
+  public static int openDialog(CommandContext<CommandSourceStack> context) {
     CommandSourceStack commandSource = context.getSource();
     UUID uuid = UuidArgument.getUuid(context, "uuid");
 

@@ -95,7 +95,7 @@ public class MessageOpenDialogEditor extends NetworkMessage {
     }
 
     // Validate entity.
-    EasyNPC easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     if (easyNPC == null) {
       log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
       return;

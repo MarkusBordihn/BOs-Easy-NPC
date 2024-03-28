@@ -52,14 +52,15 @@ public class ModSpawnEggItem extends SpawnEggItem {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private final Supplier<? extends EntityType<? extends Mob>> typeSupplier;
 
-  public ModSpawnEggItem(Supplier<? extends EntityType<? extends Mob>> type, Properties props) {
-    super(null, MaterialColor.COLOR_RED.col, MaterialColor.COLOR_YELLOW.col, props);
-    this.typeSupplier = type;
+  public ModSpawnEggItem(
+      Supplier<? extends EntityType<? extends Mob>> entityType, Properties properties) {
+    super(null, MaterialColor.COLOR_RED.col, MaterialColor.COLOR_YELLOW.col, properties);
+    this.typeSupplier = entityType;
   }
 
-  public ModSpawnEggItem(EntityType<? extends Mob> type, Properties tab) {
-    super(null, MaterialColor.COLOR_RED.col, MaterialColor.COLOR_YELLOW.col, tab);
-    this.typeSupplier = () -> type;
+  public ModSpawnEggItem(EntityType<? extends Mob> entityType, Properties properties) {
+    super(null, MaterialColor.COLOR_RED.col, MaterialColor.COLOR_YELLOW.col, properties);
+    this.typeSupplier = () -> entityType;
   }
 
   @Override

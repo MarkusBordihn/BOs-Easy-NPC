@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
 import de.markusbordihn.easynpc.entity.easynpc.npc.HumanoidSlim;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.IronGolem;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
@@ -87,6 +88,8 @@ public class ModEntityType {
       ENTITY_TYPES.register(Illager.ID_PILLAGER, () -> ModEntityTypes.PILLAGER);
   public static final RegistryObject<EntityType<Illager>> VINDICATOR =
       ENTITY_TYPES.register(Illager.ID_VINDICATOR, () -> ModEntityTypes.VINDICATOR);
+  public static final RegistryObject<EntityType<Orc>> ORC =
+      ENTITY_TYPES.register(Orc.ID, () -> ModEntityTypes.ORC);
 
   private ModEntityType() {}
 
@@ -112,5 +115,6 @@ public class ModEntityType {
     event.put(ILLUSIONER.get(), Illager.createAttributes().build());
     event.put(PILLAGER.get(), Illager.createAttributes().build());
     event.put(VINDICATOR.get(), Illager.createAttributes().build());
+    event.put(ORC.get(), Orc.createAttributes().build());
   }
 }

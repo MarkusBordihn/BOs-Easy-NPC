@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.HumanoidSlim;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Illager.Variant;
 import de.markusbordihn.easynpc.entity.easynpc.npc.IronGolem;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
@@ -69,7 +70,7 @@ public class ModEntityTypes {
           .build(Chicken.ID);
   public static final EntityType<Fairy> FAIRY =
       EntityType.Builder.of(Fairy::new, MobCategory.CREATURE)
-          .sized(0.6F, 1.0F)
+          .sized(0.6F, 2.0F)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Fairy.ID);
   public static final EntityType<IronGolem> IRON_GOLEM =
@@ -161,6 +162,11 @@ public class ModEntityTypes {
           .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Illager.ID_VINDICATOR);
+  public static final EntityType<Orc> ORC =
+      EntityType.Builder.<Orc>of(Orc::new, MobCategory.MONSTER)
+          .sized(HUMANOID_SIZE_WIDTH, 1.9F)
+          .clientTrackingRange(CLIENT_TRACKING_RANGE)
+          .build(Orc.ID);
 
   private ModEntityTypes() {}
 }
