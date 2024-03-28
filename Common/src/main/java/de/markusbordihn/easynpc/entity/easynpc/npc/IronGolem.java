@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
@@ -32,7 +33,7 @@ public class IronGolem extends EasyNPCBaseEntity {
   public static final String ID = "iron_golem";
   public static final String NAME = "Iron Golem";
 
-  public IronGolem(EntityType<? extends EasyNPCBaseEntity> entityType, Level level) {
+  public IronGolem(EntityType<? extends PathfinderMob> entityType, Level level) {
     super(entityType, level);
   }
 

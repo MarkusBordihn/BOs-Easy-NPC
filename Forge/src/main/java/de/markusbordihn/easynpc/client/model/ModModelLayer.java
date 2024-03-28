@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.client.model;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.FairyModel;
+import de.markusbordihn.easynpc.client.model.custom.OrcModel;
 import de.markusbordihn.easynpc.client.model.standard.StandardAllayModel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -41,5 +42,6 @@ public class ModModelLayer {
 
     event.registerLayerDefinition(ModModelLayers.ALLAY, StandardAllayModel::createBodyLayer);
     event.registerLayerDefinition(ModModelLayers.FAIRY, FairyModel::createBodyLayer);
+    event.registerLayerDefinition(ModModelLayers.ORC, OrcModel::createBodyLayer);
   }
 }

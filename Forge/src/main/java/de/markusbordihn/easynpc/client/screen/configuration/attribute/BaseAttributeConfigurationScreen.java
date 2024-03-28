@@ -37,8 +37,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class BaseAttributeConfigurationScreen
     extends AttributeConfigurationScreen<BaseAttributeConfigurationMenu> {
-
-  // Sliders
   SliderButton maxHealthSlider;
   SliderButton followRangeSlider;
   SliderButton knockbackResistanceSlider;
@@ -121,7 +119,7 @@ public class BaseAttributeConfigurationScreen
 
     // Sliders
     int sliderXPos = this.buttonLeftPos + 125;
-    int sliderYPos = this.buttonTopPos + 25;
+    int sliderYPos = this.buttonTopPos + 22;
     int sliderWidth = 170;
     int sliderHeight = 14;
     int sliderYSpace = 20;

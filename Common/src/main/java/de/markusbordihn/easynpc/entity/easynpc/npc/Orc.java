@@ -21,9 +21,6 @@ package de.markusbordihn.easynpc.entity.easynpc.npc;
 
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
-import de.markusbordihn.easynpc.utils.TextUtils;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -31,12 +28,16 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
-public class ZombieVillager extends EasyNPCBaseEntity {
+public class Orc extends EasyNPCBaseEntity {
 
-  public static final String ID = "zombie_villager";
-  public static final String NAME = "Zombie Villager";
+  public static final String ID = "orc";
+  public static final String NAME = "Orc";
 
-  public ZombieVillager(EntityType<? extends PathfinderMob> entityType, Level level) {
+  public Orc(EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variant) {
+    super(entityType, level, variant);
+  }
+
+  public Orc(EntityType<? extends PathfinderMob> entityType, Level level) {
     super(entityType, level);
   }
 
@@ -46,7 +47,7 @@ public class ZombieVillager extends EasyNPCBaseEntity {
         .add(Attributes.FOLLOW_RANGE, 32.0D)
         .add(Attributes.KNOCKBACK_RESISTANCE, 0.0D)
         .add(Attributes.MOVEMENT_SPEED, 0.7F)
-        .add(Attributes.ATTACK_DAMAGE, 0.5D)
+        .add(Attributes.ATTACK_DAMAGE, 1.0D)
         .add(Attributes.ATTACK_KNOCKBACK, 0.0D)
         .add(Attributes.ATTACK_SPEED, 0.0D)
         .add(Attributes.ARMOR, 0.0D)
@@ -55,28 +56,7 @@ public class ZombieVillager extends EasyNPCBaseEntity {
 
   @Override
   public SkinModel getSkinModel() {
-    return SkinModel.ZOMBIE_VILLAGER;
-  }
-
-  @Override
-  public Component getName() {
-    Component component = this.getCustomName();
-    if (component != null) {
-      return TextUtils.removeAction(component);
-    }
-    Component professionName = getProfessionName();
-    Component variantName = getVariantName();
-    return new TextComponent(variantName.getString() + " (" + professionName.getString() + ")");
-  }
-
-  @Override
-  public boolean hasProfessions() {
-    return true;
-  }
-
-  @Override
-  public boolean hasProfession() {
-    return true;
+    return SkinModel.ORC;
   }
 
   @Override
@@ -94,15 +74,8 @@ public class ZombieVillager extends EasyNPCBaseEntity {
     return Variant.valueOf(name);
   }
 
-  // Variants
+  // Skin Details
   public enum Variant {
-    DEFAULT,
-    DESERT,
-    JUNGLE,
-    PLAINS,
-    SAVANNA,
-    SNOW,
-    SWAMP,
-    TAIGA
+    DEFAULT
   }
 }

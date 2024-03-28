@@ -33,7 +33,6 @@ public interface AttributeData<T extends PathfinderMob> extends EasyNPC<T> {
   EntityDataAccessor<Boolean> EASY_NPC_DATA_ATTRIBUTE_DATA_LOADED =
       SynchedEntityData.defineId(
           EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-
   EntityDataAccessor<Boolean> EASY_NPC_DATA_ATTRIBUTE_CAN_BE_LEASHED =
       SynchedEntityData.defineId(
           EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);

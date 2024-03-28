@@ -212,9 +212,9 @@ public class EasyNPCBaseEntity extends PathfinderMob
 
   @Override
   public boolean doHurtTarget(@Nonnull Entity entity) {
-    boolean hurtResult = super.doHurtTarget(entity);
     this.attackAnimationTick = 10;
-    return hurtResult;
+    this.level.broadcastEntityEvent(this, (byte) 4);
+    return super.doHurtTarget(entity);
   }
 
   @Override
@@ -228,11 +228,13 @@ public class EasyNPCBaseEntity extends PathfinderMob
   @Override
   public void aiStep() {
     super.aiStep();
-    if (this.attackAnimationTick > 0) {
-      --this.attackAnimationTick;
-    }
 
-    if (!this.isClientSide()) {
+    if (this.isClientSide()) {
+      this.updateSwingTime();
+      if (this.attackAnimationTick > 0) {
+        --this.attackAnimationTick;
+      }
+    } else {
       this.updatePersistentAnger((ServerLevel) this.level, true);
     }
   }
@@ -437,6 +439,9 @@ public class EasyNPCBaseEntity extends PathfinderMob
         spawnGroupData,
         this.blockPosition());
     this.setHomePosition(this.blockPosition());
+    if (!this.hasObjectives()) {
+      this.registerStandardObjectives();
+    }
     return spawnGroupData;
   }
 
@@ -724,7 +729,7 @@ public class EasyNPCBaseEntity extends PathfinderMob
   @Override
   public void equipSaddle(SoundSource soundSource) {
     if (soundSource != null) {
-      this.level.playSound((Player) null, this, SoundEvents.PIG_SADDLE, soundSource, 0.5F, 1.0F);
+      this.level.playSound(null, this, SoundEvents.PIG_SADDLE, soundSource, 0.5F, 1.0F);
     }
   }
 

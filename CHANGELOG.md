@@ -7,6 +7,14 @@ For the full changelog, please go to the [GitHub History][history] instead.
 
 Note: Please always back up your world / NPCs before updating to a new version!
 
+### 4.0.1
+
+- Improved stroll objectives for flying NPCs.
+- Improved general navigation support for all NPCs.
+- Fixed fairy fly navigation.
+- Fixed fairy hitbox.
+- Fixed orc hitbox.
+
 ### 4.0.0
 
 Note: Please backup your world / npcs before updating from 3.x or earlier!
@@ -16,11 +24,17 @@ NPCs are now stored in a new format and the old format is not 100% compatible wi
 - Added experimental support for Fabric.
 - Added ability `Can be Leashed` to allow NPCs to be leashed.
 - Added ability `Push entities` to save resources (if deactivated) and avoid pushing entities.
+- Added `/easy_npc owner set <npc-uuid> <player>` command to change the owner of an NPC.
+- Added `/easy_npc owner get <npc-uuid>` command to get the current owner of an NPC.
+- Added experimental orc model, which is still work in progress.
 - Fixed #33 and #86: Added additional NPC models.
 - Fixed ##95: Added color support for NPC names.
 - Fixed #101: Separated client and server entity data for better compatibility.
 - Fixed #79 and #104: Added objective `Random Stroll around Home` to allow NPCs to randomly stroll
   around their home position.
+- Fixed standard sword attack swing animation.
+- Fixed standard golem attack swing animation.
+- Updated presets to match the new format.
 
 ### 3.11.0
 

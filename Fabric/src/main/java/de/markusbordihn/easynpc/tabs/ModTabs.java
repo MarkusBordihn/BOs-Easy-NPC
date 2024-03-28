@@ -54,6 +54,12 @@ public class ModTabs {
               stack.add(ModItems.STRAY_NPC_SPAWN_EGG.getDefaultInstance());
               stack.add(ModItems.ZOMBIE_NPC_SPAWN_EGG.getDefaultInstance());
               stack.add(ModItems.ZOMBIE_VILLAGER_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.PIG_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.EVOKER_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.ILLUSIONER_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.PILLAGER_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.VINDICATOR_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.ORC_NPC_SPAWN_EGG.getDefaultInstance());
             })
         .build();
 

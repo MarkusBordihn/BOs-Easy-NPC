@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2022 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,34 +17,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.renderer.entity.standard;
+package de.markusbordihn.easynpc.client.renderer.entity.custom;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
-import de.markusbordihn.easynpc.client.model.standard.StandardZombieModel;
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.model.custom.OrcModel;
 import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.layers.OuterLayer;
 import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie.Variant;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Orc.Variant;
 import java.util.EnumMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
-import net.minecraft.client.renderer.entity.layers.ElytraLayer;
-import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class ZombieRenderer extends MobRenderer<Zombie, StandardZombieModel<Zombie>>
+public class OrcRenderer extends HumanoidMobRenderer<Orc, OrcModel<Orc>>
     implements EasyNPCRenderer {
 
   // Variant Textures
@@ -52,38 +48,15 @@ public class ZombieRenderer extends MobRenderer<Zombie, StandardZombieModel<Zomb
       Util.make(
           new EnumMap<>(Variant.class),
           map -> {
-            // Build-in Variants
-            map.put(Variant.DROWNED, new ResourceLocation("textures/entity/zombie/drowned.png"));
-            map.put(Variant.HUSK, new ResourceLocation("textures/entity/zombie/husk.png"));
-            map.put(Variant.ZOMBIE, new ResourceLocation("textures/entity/zombie/zombie.png"));
-
-            // Custom Variants
-          });
-  protected static final Map<Variant, ResourceLocation> OUTER_TEXTURE_BY_VARIANT =
-      Util.make(
-          new EnumMap<>(Variant.class),
-          map -> {
-            // Build-in Variants
             map.put(
-                Variant.DROWNED,
-                new ResourceLocation("textures/entity/zombie/drowned_outer_layer.png"));
+                Variant.DEFAULT,
+                new ResourceLocation(Constants.MOD_ID, "textures/entity/orc/orc_default.png"));
           });
-  protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.ZOMBIE);
+  protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.DEFAULT);
 
-  public <T extends RenderLayer<Zombie, StandardZombieModel<Zombie>>> ZombieRenderer(
-      EntityRendererProvider.Context context, Class<T> humanoidArmorLayerClass) {
-    super(context, new StandardZombieModel<>(context.bakeLayer(ModelLayers.ZOMBIE)), 0.5F);
-    this.addLayer(
-        EasyNPCRenderer.getHumanoidArmorLayer(
-            this,
-            context,
-            ModelLayers.ZOMBIE_INNER_ARMOR,
-            ModelLayers.ZOMBIE_OUTER_ARMOR,
-            humanoidArmorLayerClass));
-    this.addLayer(new CustomHeadLayer<>(this, context.getModelSet()));
-    this.addLayer(new ItemInHandLayer<>(this));
-    this.addLayer(new OuterLayer<>(this, context.getModelSet(), OUTER_TEXTURE_BY_VARIANT));
-    this.addLayer(new ElytraLayer<>(this, context.getModelSet()));
+  public OrcRenderer(
+      EntityRendererProvider.Context context, ModelLayerLocation modelLayerLocation) {
+    super(context, new OrcModel<>(context.bakeLayer(modelLayerLocation)), 0.3F);
   }
 
   @Override
@@ -97,24 +70,24 @@ public class ZombieRenderer extends MobRenderer<Zombie, StandardZombieModel<Zomb
   }
 
   @Override
-  public ResourceLocation getTextureLocation(Zombie entity) {
+  public ResourceLocation getTextureLocation(Orc entity) {
     return this.getEntityTexture(entity);
   }
 
   @Override
-  protected void scale(Zombie entity, PoseStack poseStack, float unused) {
+  protected void scale(Orc entity, PoseStack poseStack, float unused) {
     this.scaleEntity(entity, poseStack);
   }
 
   @Override
   public void render(
-      Zombie entity,
+      Orc entity,
       float entityYaw,
       float partialTicks,
       PoseStack poseStack,
       net.minecraft.client.renderer.MultiBufferSource buffer,
       int light) {
-    StandardZombieModel<Zombie> playerModel = this.getModel();
+    OrcModel<Orc> playerModel = this.getModel();
 
     // Model Rotation
     this.rotateEntity(entity, poseStack);
@@ -127,10 +100,10 @@ public class ZombieRenderer extends MobRenderer<Zombie, StandardZombieModel<Zomb
 
       switch (entity.getPose()) {
         case DYING:
-          poseStack.translate(-1.0D, 0.0D, 0.0D);
+          poseStack.translate(-0.5D, 0.0D, 0.0D);
           poseStack.mulPose(Vector3f.YP.rotationDegrees(180f));
           poseStack.mulPose(Vector3f.ZP.rotationDegrees(this.getFlipDegrees(entity)));
-          poseStack.mulPose(Vector3f.YP.rotationDegrees(270.0f));
+          poseStack.mulPose(Vector3f.YP.rotationDegrees(270.0F));
           playerModel.getHead().xRot = -0.7853982F;
           playerModel.getHead().yRot = -0.7853982F;
           playerModel.getHead().zRot = -0.7853982F;
@@ -140,7 +113,7 @@ public class ZombieRenderer extends MobRenderer<Zombie, StandardZombieModel<Zomb
           playerModel.rightArmPose = HumanoidModel.ArmPose.SPYGLASS;
           break;
         case SLEEPING:
-          poseStack.translate(1.0D, 0.0D, 0.0D);
+          poseStack.translate(0.5D, 0.0D, 0.0D);
           break;
         case SPIN_ATTACK:
           playerModel.leftArmPose = HumanoidModel.ArmPose.BLOCK;
@@ -164,7 +137,7 @@ public class ZombieRenderer extends MobRenderer<Zombie, StandardZombieModel<Zomb
 
   @Override
   protected void renderNameTag(
-      Zombie entity,
+      Orc entity,
       Component component,
       PoseStack poseStack,
       MultiBufferSource multiBufferSource,
@@ -174,7 +147,7 @@ public class ZombieRenderer extends MobRenderer<Zombie, StandardZombieModel<Zomb
   }
 
   @Override
-  protected int getBlockLightLevel(@Nonnull Zombie entity, @Nonnull BlockPos blockPos) {
+  protected int getBlockLightLevel(@Nonnull Orc entity, @Nonnull BlockPos blockPos) {
     return getEntityLightLevel(entity, blockPos);
   }
 }

@@ -54,10 +54,10 @@ public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinC
   private static final int ADD_SKIN_DELAY = 20;
   protected static int nextTextureSkinLocationChange =
       (int) java.time.Instant.now().getEpochSecond();
+  protected final SkinData<?> skinData;
   protected Button addTextureSettingsButton = null;
   protected EditBox textureSkinLocationBox;
   protected int lastNumOfSkins = 0;
-  protected SkinData<?> skinData;
   // Internal
   private Button clearTextureSettingsButton = null;
   // Cache

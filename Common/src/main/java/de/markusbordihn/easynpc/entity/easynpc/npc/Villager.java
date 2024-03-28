@@ -26,6 +26,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
@@ -35,7 +36,7 @@ public class Villager extends EasyNPCBaseEntity {
   public static final String ID = "villager";
   public static final String NAME = "Villager";
 
-  public Villager(EntityType<? extends EasyNPCBaseEntity> entityType, Level level) {
+  public Villager(EntityType<? extends PathfinderMob> entityType, Level level) {
     super(entityType, level);
   }
 

@@ -45,9 +45,6 @@ public class LivingEntityManager {
 
   private static final ConcurrentHashMap<UUID, EasyNPC<?>> npcEntityMap = new ConcurrentHashMap<>();
 
-  private static final ConcurrentHashMap<UUID, LivingEntity> livingEntityMap =
-      new ConcurrentHashMap<>();
-
   private static final ConcurrentHashMap<UUID, ServerPlayer> playerMap = new ConcurrentHashMap<>();
 
   private LivingEntityManager() {}
@@ -92,7 +89,6 @@ public class LivingEntityManager {
     if (log.isTraceEnabled()) {
       log.trace("{} [Add] Living entity {}: {}", LOG_PREFIX, livingEntity, livingEntity.getUUID());
     }
-    livingEntityMap.put(livingEntity.getUUID(), livingEntity);
 
     // Inform all server-side easy NPC entities about the new living entity.
     for (EasyNPC<?> easyNPC : npcEntityMap.values()) {
@@ -105,7 +101,6 @@ public class LivingEntityManager {
       log.trace(
           "{} [Remove] Living entity {}: {}", LOG_PREFIX, livingEntity, livingEntity.getUUID());
     }
-    livingEntityMap.remove(livingEntity.getUUID());
 
     // Inform all server-side easy NPC entities about the leaved living entity.
     for (EasyNPC<?> easyNPC : npcEntityMap.values()) {

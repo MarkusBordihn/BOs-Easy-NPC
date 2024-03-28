@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
@@ -32,7 +33,7 @@ public class Pig extends EasyNPCBaseEntity {
   public static final String ID = "pig";
   public static final String NAME = "Pig";
 
-  public Pig(EntityType<? extends EasyNPCBaseEntity> entityType, Level level) {
+  public Pig(EntityType<? extends PathfinderMob> entityType, Level level) {
     super(entityType, level);
   }
 
@@ -82,11 +83,6 @@ public class Pig extends EasyNPCBaseEntity {
   @Override
   public int getEntityDialogTop() {
     return -37;
-  }
-
-  @Override
-  public int getEntityDialogScaling() {
-    return 50;
   }
 
   // Skin Details

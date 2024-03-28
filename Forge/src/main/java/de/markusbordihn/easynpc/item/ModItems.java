@@ -31,6 +31,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
 import de.markusbordihn.easynpc.entity.easynpc.npc.HumanoidSlim;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.IronGolem;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
@@ -214,6 +215,13 @@ public class ModItems {
           () ->
               new ModSpawnEggItem(
                   ModEntityType.VINDICATOR,
+                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+  public static final RegistryObject<Item> ORC_NPC_SPAWN_EGG =
+      ITEMS.register(
+          Orc.ID + ModSpawnEggItem.SUFFIX,
+          () ->
+              new ModSpawnEggItem(
+                  ModEntityType.ORC,
                   new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
 
   private ModItems() {}
