@@ -19,21 +19,26 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.ai.util.AirRandomPos;
 import net.minecraft.world.entity.ai.util.LandRandomPos;
 import net.minecraft.world.phys.Vec3;
 
 public class RandomStrollAroundHomeGoal<T extends EasyNPC<?>> extends RandomStrollGoal {
 
   private final NavigationData<?> navigationData;
+  private final Entity entity;
 
-  public RandomStrollAroundHomeGoal(T easyNPCEntity, double speed) {
-    super(easyNPCEntity.getPathfinderMob(), speed, 240, false);
+  public RandomStrollAroundHomeGoal(T easyNPCEntity, double speedModifier) {
+    super(easyNPCEntity.getPathfinderMob(), speedModifier, 240, false);
     this.navigationData = easyNPCEntity.getEasyNPCNavigationData();
+    this.entity = easyNPCEntity.getEntity();
   }
 
   @Nullable
@@ -50,6 +55,25 @@ public class RandomStrollAroundHomeGoal<T extends EasyNPC<?>> extends RandomStro
   protected Vec3 getPositionTowardsHome() {
     BlockPos homeBlockPos = this.navigationData.getHomePosition();
     Vec3 homePosition = new Vec3(homeBlockPos.getX(), homeBlockPos.getY(), homeBlockPos.getZ());
+    if (this.navigationData.isFlying()) {
+      BlockPos blockPos = this.entity.blockPosition();
+      int homePositionDifference = (int) (homePosition.y - blockPos.getY());
+      int flyingZ = 0;
+      if (homePositionDifference > 2) {
+        flyingZ = 4;
+      } else if (homePositionDifference < -2) {
+        flyingZ = -4;
+      }
+      int flyingX = 6;
+      int flyingY = 8;
+      int distanceToHome = blockPos.distManhattan(homeBlockPos);
+      if (distanceToHome < 15) {
+        flyingX = distanceToHome / 2;
+        flyingY = distanceToHome / 2;
+      }
+      return AirRandomPos.getPosTowards(
+          this.mob, flyingX, flyingY, flyingZ, homePosition, Constants.HALF_OF_PI);
+    }
     return LandRandomPos.getPosTowards(this.mob, 10, 7, homePosition);
   }
 

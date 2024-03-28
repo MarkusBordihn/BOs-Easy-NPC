@@ -17,7 +17,7 @@ dependencies {
   implementation project(":Common")
 
   // Recommended Mods
-  modImplementation "curse.maven:tooltipfix-411557:4087782"
+  modImplementation "curse.maven:tooltipfix-411557:4577194"
 }
 
 loom {
@@ -54,7 +54,7 @@ processResources {
   }
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
   source(project(":Common").sourceSets.main.allSource)
 }
 

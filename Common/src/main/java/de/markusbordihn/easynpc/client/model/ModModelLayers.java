@@ -29,6 +29,8 @@ public class ModModelLayers {
       new ModelLayerLocation(new ResourceLocation(Constants.MOD_ID, "allay"), "main");
   public static final ModelLayerLocation FAIRY =
       new ModelLayerLocation(new ResourceLocation(Constants.MOD_ID, "fairy"), "main");
+  public static final ModelLayerLocation ORC =
+      new ModelLayerLocation(new ResourceLocation(Constants.MOD_ID, "orc"), "main");
 
   private ModModelLayers() {}
 }
