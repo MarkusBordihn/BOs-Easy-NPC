@@ -46,7 +46,7 @@ public class ModTabs {
           "spawn_eggs",
           () ->
               CreativeModeTab.builder()
-                  .icon(() -> ModItems.VILLAGER_NPC_SPAWN_EGG.get().getDefaultInstance())
+                  .icon(() -> ModItems.FAIRY_NPC_SPAWN_EGG.get().getDefaultInstance())
                   .displayItems(new SpawnEggs())
                   .title(Component.translatable("itemGroup.easy_npc.spawn_eggs"))
                   .build());

@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.client.renderer;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.ModModelLayers;
 import de.markusbordihn.easynpc.client.renderer.entity.custom.FairyRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.custom.OrcRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.CustomHumanoidArmorLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.AllayRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.CatRenderer;
@@ -92,5 +93,7 @@ public class ClientRenderer {
     event.registerEntityRenderer(ModEntityType.ILLUSIONER.get(), IllagerRenderer::new);
     event.registerEntityRenderer(ModEntityType.PILLAGER.get(), IllagerRenderer::new);
     event.registerEntityRenderer(ModEntityType.VINDICATOR.get(), IllagerRenderer::new);
+    event.registerEntityRenderer(
+        ModEntityType.ORC.get(), context -> new OrcRenderer(context, ModModelLayers.ORC));
   }
 }

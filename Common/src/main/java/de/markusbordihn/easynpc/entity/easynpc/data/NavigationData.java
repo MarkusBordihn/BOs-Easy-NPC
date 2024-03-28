@@ -59,8 +59,8 @@ public interface NavigationData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default void setPosition(Vec3 pos) {
-    this.getEasyNPCEntity().setPos(pos);
-    this.getEasyNPCEntity().moveTo(pos);
+    this.getLivingEntity().setPos(pos);
+    this.getLivingEntity().moveTo(pos);
   }
 
   default void refreshGroundNavigation() {
@@ -88,7 +88,19 @@ public interface NavigationData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default void defineSynchedNavigationData() {
-    this.getEasyNPCEntity().getEntityData().define(DATA_HOME_POSITION, BlockPos.ZERO);
+    defineEasyNPCData(DATA_HOME_POSITION, BlockPos.ZERO);
+  }
+
+  default boolean canFly() {
+    return false;
+  }
+
+  default boolean isFlying() {
+    return canFly() && !this.getEntity().onGround();
+  }
+
+  default boolean causeFallDamage() {
+    return false;
   }
 
   default void addAdditionalNavigationData(CompoundTag compoundTag) {
