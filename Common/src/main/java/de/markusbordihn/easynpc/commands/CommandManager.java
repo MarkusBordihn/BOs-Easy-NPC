@@ -45,6 +45,7 @@ public class CommandManager {
             .then(DebugCommand.register())
             .then(DialogCommand.register())
             .then(NavigationCommand.register())
+            .then(OwnerCommand.register())
             .then(PresetCommand.register())
             .then(TradingCommand.register())
         // @formatter:on

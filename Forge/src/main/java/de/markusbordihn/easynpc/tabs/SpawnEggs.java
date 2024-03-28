@@ -50,5 +50,6 @@ public class SpawnEggs implements DisplayItemsGenerator {
     output.accept(ModItems.ILLUSIONER_NPC_SPAWN_EGG.get());
     output.accept(ModItems.PILLAGER_NPC_SPAWN_EGG.get());
     output.accept(ModItems.VINDICATOR_NPC_SPAWN_EGG.get());
+    output.accept(ModItems.ORC_NPC_SPAWN_EGG.get());
   }
 }

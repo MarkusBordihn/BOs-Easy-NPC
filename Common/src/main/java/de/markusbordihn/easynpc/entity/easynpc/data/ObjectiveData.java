@@ -248,7 +248,7 @@ public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
       if (objectiveDataEntry != null
           && objectiveDataEntry.getType() != ObjectiveType.NONE
           && (!objectiveDataEntry.hasValidTarget(this) || !objectiveDataEntry.isRegistered())) {
-        log.debug("Refreshing Objective {} for {}", objectiveDataEntry, this);
+        log.debug("Refresh Objective {} for {}", objectiveDataEntry, this);
         addOrUpdateCustomObjective(objectiveDataEntry);
       }
     }
@@ -455,13 +455,6 @@ public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default void readAdditionalObjectiveData(CompoundTag compoundTag) {
-
-    // Adding legacy support for old NPC data.
-    if (this.getNPCDataVersion() == -1 && !compoundTag.contains(DATA_OBJECTIVE_DATA_TAG)) {
-      log.info("Converting legacy objectives for {}", this);
-      this.registerStandardObjectives();
-      return;
-    }
 
     // Early exit if no objective data is available.
     if (!compoundTag.contains(DATA_OBJECTIVE_DATA_TAG)) {
