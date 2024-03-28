@@ -111,6 +111,7 @@ public class FollowObjectiveConfigurationScreen
                     NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   }
                 }));
+    this.followOwnerCheckbox.active = this.ownerData.hasOwner();
     this.followPlayerName =
         this.addRenderableWidget(
             new TextField(this.font, this.contentLeftPos + 150, objectiveEntriesTop, 125));

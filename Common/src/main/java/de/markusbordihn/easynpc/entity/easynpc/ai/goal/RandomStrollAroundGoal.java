@@ -19,72 +19,40 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
 import javax.annotation.Nullable;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.SectionPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.ai.util.AirAndWaterRandomPos;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
+import net.minecraft.world.entity.ai.util.HoverRandomPos;
 import net.minecraft.world.phys.Vec3;
 
-public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends RandomStrollGoal {
+public class RandomStrollAroundGoal<T extends EasyNPC<?>> extends RandomStrollGoal {
 
-  private final float stopDistance;
   private final NavigationData<?> navigationData;
 
-  public MoveBackToHomeGoal(T easyNPCEntity, double speedModifier, float stopDistance) {
-    this(easyNPCEntity, speedModifier, stopDistance, 240);
+  public RandomStrollAroundGoal(T easyNPCEntity, double speedModifier) {
+    this(easyNPCEntity, speedModifier, 120);
   }
 
-  public MoveBackToHomeGoal(
-      T easyNPCEntity, double speedModifier, float stopDistance, int interval) {
+  public RandomStrollAroundGoal(T easyNPCEntity, double speedModifier, int interval) {
     super(easyNPCEntity.getPathfinderMob(), speedModifier, interval);
-    this.stopDistance = stopDistance;
     this.navigationData = easyNPCEntity.getEasyNPCNavigationData();
-  }
-
-  private boolean reachedHome() {
-    if (this.navigationData == null) {
-      return true;
-    } else if (!this.navigationData.hasHomePosition()) {
-      return this.navigationData.getGroundPathNavigation().isDone();
-    }
-
-    BlockPos blockPos = this.mob.blockPosition();
-    Vec3i vec3i = new Vec3i(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-    return this.navigationData.getHomePosition().closerThan(vec3i, this.stopDistance);
-  }
-
-  @Override
-  public boolean canUse() {
-    if (reachedHome()) {
-      return false;
-    }
-    BlockPos blockPos = this.navigationData.getHomePosition();
-    this.wantedX = blockPos.getX();
-    this.wantedY = blockPos.getY();
-    this.wantedZ = blockPos.getZ();
-    return true;
-  }
-
-  @Override
-  public boolean canContinueToUse() {
-    return reachedHome() && super.canContinueToUse();
   }
 
   @Override
   @Nullable
   protected Vec3 getPosition() {
-    if (reachedHome()) {
-      return null;
+    if (this.navigationData.canFly()) {
+      Vec3 vec3 = this.mob.getViewVector(0.0F);
+      Vec3 randomHoverPos =
+          HoverRandomPos.getPos(this.mob, 8, 7, vec3.x, vec3.z, Constants.HALF_OF_PI, 3, 1);
+      return randomHoverPos != null
+          ? randomHoverPos
+          : AirAndWaterRandomPos.getPos(this.mob, 8, 4, -2, vec3.x, vec3.z, Constants.HALF_OF_PI);
     }
-    SectionPos currentPosition = SectionPos.of(this.mob.blockPosition());
-    SectionPos homePosition = SectionPos.of(this.navigationData.getHomePosition());
-    return currentPosition != homePosition
-        ? DefaultRandomPos.getPosTowards(
-        this.mob, 10, 7, Vec3.atBottomCenterOf(homePosition), 1.5707963705062866)
-        : null;
+    return DefaultRandomPos.getPos(this.mob, 10, 7);
   }
 }

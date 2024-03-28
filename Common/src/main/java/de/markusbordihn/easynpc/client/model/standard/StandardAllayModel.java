@@ -174,14 +174,7 @@ public class StandardAllayModel<T extends LivingEntity> extends HierarchicalMode
       this.leftArm.y = 2.2F;
       this.rightArm.xRot += 0.4F;
       this.rightArm.y = 2.2F;
-    }
-
-    if (modelData.getModelPose() == ModelPose.CUSTOM
-        || modelData.getDefaultPose() == Pose.CROUCHING) {
     } else {
-      // Reset all positions to avoid any issues with other mods.
-      // this.root().getAllParts().forEach(ModelPart::resetPose);
-
       // Body animations
       float ageAmount = ageInTicks * 9.0F * ((float) Math.PI / 180F);
       float limbSwingRotation = Math.min(limbSwingAmount / 0.3F, 1.0F);

@@ -22,12 +22,15 @@ package de.markusbordihn.easynpc.client.renderer;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.ModModelLayers;
 import de.markusbordihn.easynpc.client.renderer.entity.custom.FairyRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.custom.OrcRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.AllayRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.CatRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.ChickenRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.HumanoidRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.HumanoidSlimRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.standard.IllagerRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.IronGolemRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.standard.PigRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.SkeletonRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.VillagerRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.ZombieRenderer;
@@ -73,5 +76,15 @@ public class ClientRenderer {
         ModEntityType.ZOMBIE, context -> new ZombieRenderer(context, null));
     EntityRendererRegistry.register(
         ModEntityType.ZOMBIE_VILLAGER, context -> new ZombieVillagerRenderer(context, null));
+    EntityRendererRegistry.register(ModEntityType.PIG, context -> new PigRenderer(context));
+    EntityRendererRegistry.register(ModEntityType.EVOKER, context -> new IllagerRenderer(context));
+    EntityRendererRegistry.register(
+        ModEntityType.ILLUSIONER, context -> new IllagerRenderer(context));
+    EntityRendererRegistry.register(
+        ModEntityType.PILLAGER, context -> new IllagerRenderer(context));
+    EntityRendererRegistry.register(
+        ModEntityType.VINDICATOR, context -> new IllagerRenderer(context));
+    EntityRendererRegistry.register(
+        ModEntityType.ORC, context -> new OrcRenderer(context, ModModelLayers.ORC));
   }
 }

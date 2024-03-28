@@ -26,7 +26,10 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
 import de.markusbordihn.easynpc.entity.easynpc.npc.HumanoidSlim;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.IronGolem;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie;
@@ -34,6 +37,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.ZombieVillager;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.Evoker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -89,6 +93,28 @@ public class ModEntityType {
   public static final EntityType<Zombie> ZOMBIE =
       Registry.register(
           Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Zombie.ID, ModEntityTypes.ZOMBIE);
+  public static final EntityType<Pig> PIG =
+      Registry.register(Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Pig.ID, ModEntityTypes.PIG);
+  public static final EntityType<Illager> EVOKER =
+      Registry.register(
+          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Illager.ID_EVOKER, ModEntityTypes.EVOKER);
+  public static final EntityType<Illager> ILLUSIONER =
+      Registry.register(
+          Registry.ENTITY_TYPE,
+          Constants.MOD_ID + ":" + Illager.ID_ILLUSIONER,
+          ModEntityTypes.ILLUSIONER);
+  public static final EntityType<Illager> PILLAGER =
+      Registry.register(
+          Registry.ENTITY_TYPE,
+          Constants.MOD_ID + ":" + Illager.ID_PILLAGER,
+          ModEntityTypes.PILLAGER);
+  public static final EntityType<Illager> VINDICATOR =
+      Registry.register(
+          Registry.ENTITY_TYPE,
+          Constants.MOD_ID + ":" + Illager.ID_VINDICATOR,
+          ModEntityTypes.VINDICATOR);
+  public static final EntityType<Orc> ORC =
+      Registry.register(Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Orc.ID, ModEntityTypes.ORC);
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -113,5 +139,11 @@ public class ModEntityType {
     FabricDefaultAttributeRegistry.register(VILLAGER, Villager.createAttributes());
     FabricDefaultAttributeRegistry.register(ZOMBIE, Zombie.createAttributes());
     FabricDefaultAttributeRegistry.register(ZOMBIE_VILLAGER, ZombieVillager.createAttributes());
+    FabricDefaultAttributeRegistry.register(PIG, Pig.createAttributes());
+    FabricDefaultAttributeRegistry.register(EVOKER, Evoker.createAttributes());
+    FabricDefaultAttributeRegistry.register(ILLUSIONER, Illager.createAttributes());
+    FabricDefaultAttributeRegistry.register(PILLAGER, Illager.createAttributes());
+    FabricDefaultAttributeRegistry.register(VINDICATOR, Illager.createAttributes());
+    FabricDefaultAttributeRegistry.register(ORC, Orc.createAttributes());
   }
 }

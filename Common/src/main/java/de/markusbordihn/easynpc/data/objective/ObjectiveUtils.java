@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomLookAtPlayerGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomMeleeAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.FollowLivingEntityGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.MoveBackToHomeGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.RandomStrollAroundGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.RandomStrollAroundHomeGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.RangedBowAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ResetLookAtPlayerGoal;
@@ -44,13 +45,11 @@ import net.minecraft.world.entity.ai.goal.MoveThroughVillageGoal;
 import net.minecraft.world.entity.ai.goal.OpenDoorGoal;
 import net.minecraft.world.entity.ai.goal.PanicGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
 import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
@@ -81,8 +80,7 @@ public class ObjectiveUtils {
               targetServerPlayer,
               objectiveDataEntry.getSpeedModifier(),
               objectiveDataEntry.getStopDistance(),
-              objectiveDataEntry.getStartDistance(),
-              easyNPCEntity instanceof FlyingAnimal);
+              objectiveDataEntry.getStartDistance());
         } else {
           log.error(
               "Unable to find player {} for {}!", objectiveDataEntry.getTargetPlayer(),
@@ -96,8 +94,7 @@ public class ObjectiveUtils {
               livingEntity,
               objectiveDataEntry.getSpeedModifier(),
               objectiveDataEntry.getStopDistance(),
-              objectiveDataEntry.getStartDistance(),
-              easyNPCEntity instanceof FlyingAnimal);
+              objectiveDataEntry.getStartDistance());
         } else {
           log.error(
               "Unable to find valid owner {} for {} with {}!",
@@ -114,8 +111,7 @@ public class ObjectiveUtils {
               targetEntityMob,
               objectiveDataEntry.getSpeedModifier(),
               objectiveDataEntry.getStopDistance(),
-              objectiveDataEntry.getStartDistance(),
-              easyNPCEntity instanceof FlyingAnimal);
+              objectiveDataEntry.getStartDistance());
         } else {
           log.error(
               "Unable to find living entity {} for {}!",
@@ -124,7 +120,7 @@ public class ObjectiveUtils {
         }
         break;
       case RANDOM_STROLL:
-        return new RandomStrollGoal(pathfinderMob, objectiveDataEntry.getSpeedModifier());
+        return new RandomStrollAroundGoal<>(easyNPC, objectiveDataEntry.getSpeedModifier());
       case WATER_AVOIDING_RANDOM_STROLL:
         return new WaterAvoidingRandomStrollGoal(
             pathfinderMob, objectiveDataEntry.getSpeedModifier());

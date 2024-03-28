@@ -23,9 +23,12 @@ import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
+import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
 
 public class Fairy extends EasyNPCBaseEntity {
@@ -37,7 +40,7 @@ public class Fairy extends EasyNPCBaseEntity {
   private static final float DEFAULT_SCALE_Y = 0.4f;
   private static final float DEFAULT_SCALE_Z = 0.4f;
 
-  public Fairy(EntityType<? extends EasyNPCBaseEntity> entityType, Level level) {
+  public Fairy(EntityType<? extends PathfinderMob> entityType, Level level) {
     super(entityType, level);
     this.moveControl = new FlyingMoveControl(this, 20, true);
   }
@@ -47,13 +50,18 @@ public class Fairy extends EasyNPCBaseEntity {
         .add(Attributes.MAX_HEALTH, 16.0D)
         .add(Attributes.FOLLOW_RANGE, 32.0D)
         .add(Attributes.KNOCKBACK_RESISTANCE, 0.0D)
-        .add(Attributes.MOVEMENT_SPEED, 0.5F)
-        .add(Attributes.FLYING_SPEED, 0.3F)
+        .add(Attributes.MOVEMENT_SPEED, 0.3F)
+        .add(Attributes.FLYING_SPEED, 0.6F)
         .add(Attributes.ATTACK_DAMAGE, 0.0D)
         .add(Attributes.ATTACK_KNOCKBACK, 0.0D)
         .add(Attributes.ATTACK_SPEED, 0.0D)
         .add(Attributes.ARMOR, 0.0D)
         .add(Attributes.ARMOR_TOUGHNESS, 0.0D);
+  }
+
+  @Override
+  protected PathNavigation createNavigation(Level level) {
+    return new FlyingPathNavigation(this, level);
   }
 
   @Override
@@ -119,6 +127,11 @@ public class Fairy extends EasyNPCBaseEntity {
   @Override
   public int getEntityDialogScaling() {
     return 75;
+  }
+
+  @Override
+  public boolean canFly() {
+    return true;
   }
 
   // Skin Details
