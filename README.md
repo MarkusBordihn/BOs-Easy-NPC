@@ -81,6 +81,6 @@ Images, models and other assets are explicitly excluded.
 
 [epic_fight_mod]: https://www.curseforge.com/minecraft/mc-mods/epic-fight-mod
 
-[easy_npc_epic_fight_mod]: https://www.curseforge.com/minecraft/mc-mods/easy-npc-epic-fight-mod
+[easy_npc_epic_fight_mod]: https://www.curseforge.com/minecraft/mc-mods/easy-npc-epic-fight
 
 [issues]: https://github.com/MarkusBordihn/BOs-Easy-NPC/issues

@@ -96,5 +96,7 @@ public class ClientRenderer {
     event.registerEntityRenderer(ModEntityType.VINDICATOR.get(), IllagerRenderer::new);
     event.registerEntityRenderer(
         ModEntityType.ORC.get(), context -> new OrcRenderer(context, ModModelLayers.ORC));
+    event.registerEntityRenderer(
+        ModEntityType.ORC_WARRIOR.get(), context -> new OrcRenderer(context, ModModelLayers.ORC));
   }
 }

@@ -41,7 +41,7 @@ public class CustomTextureManager {
   private static final HashMap<TextureModelKey, ResourceLocation> customTextureCache =
       new HashMap<>();
 
-  protected CustomTextureManager() {
+  private CustomTextureManager() {
   }
 
   public static Set<UUID> getCustomTextureCacheKeys(SkinModel skinModel) {

@@ -38,6 +38,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -102,8 +103,8 @@ public class ImportCustomPresetConfigurationScreen
     }
 
     // Remove UUID from NBT data, if present.
-    if (compoundTag.contains("UUID")) {
-      compoundTag.remove("UUID");
+    if (compoundTag.contains(Entity.UUID_TAG)) {
+      compoundTag.remove(Entity.UUID_TAG);
     }
 
     // Remove position from NBT data, if present.

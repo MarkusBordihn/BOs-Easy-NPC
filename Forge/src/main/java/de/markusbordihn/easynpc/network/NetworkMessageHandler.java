@@ -37,6 +37,7 @@ import de.markusbordihn.easynpc.data.spawner.SpawnerSettingType;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.message.ChangeSpawnerSettingMessage;
 import de.markusbordihn.easynpc.network.message.MessageActionEventChange;
@@ -583,24 +584,29 @@ public class NetworkMessageHandler implements NetworkMessageHandlerInterface {
    * Export preset to player
    */
   public void exportPresetClient(UUID uuid, String name, ServerPlayer serverPlayer) {
-    if (serverPlayer == null || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
+    if (uuid == null
+        || name == null
+        || name.isEmpty()
+        || serverPlayer == null
+        || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
       return;
     }
+
     EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (uuid != null && easyNPC != null) {
-      log.info(
-          "Exporting preset for {} to {}",
-          easyNPC.getEntity().getName().getString(),
-          serverPlayer.getName().getString());
-      NetworkHandler.sendToPlayer(
-          new MessagePresetExportClient(
-              uuid,
-              easyNPC.getEntity().getName().getString(),
-              easyNPC.getEasyNPCSkinData().getSkinModel(),
-              name,
-              easyNPC.exportPreset()),
-          serverPlayer);
-    }
+    PresetData<?> presetData = easyNPC.getEasyNPCPresetData();
+    CompoundTag compoundTag = presetData.exportPresetData();
+    log.info(
+        "Exporting preset for {} to {}",
+        easyNPC.getEntity().getName().getString(),
+        serverPlayer.getName().getString());
+    NetworkHandler.sendToPlayer(
+        new MessagePresetExportClient(
+            uuid,
+            easyNPC.getEntity().getName().getString(),
+            easyNPC.getEasyNPCSkinData().getSkinModel(),
+            name,
+            compoundTag),
+        serverPlayer);
   }
 
 }

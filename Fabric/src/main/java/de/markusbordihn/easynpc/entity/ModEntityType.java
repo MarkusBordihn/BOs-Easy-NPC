@@ -37,7 +37,6 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.ZombieVillager;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.monster.Evoker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -115,6 +114,11 @@ public class ModEntityType {
           ModEntityTypes.VINDICATOR);
   public static final EntityType<Orc> ORC =
       Registry.register(Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Orc.ID, ModEntityTypes.ORC);
+  public static final EntityType<Orc> ORC_WARRIOR =
+      Registry.register(
+          Registry.ENTITY_TYPE,
+          Constants.MOD_ID + ":" + Orc.ID_WARRIOR,
+          ModEntityTypes.ORC_WARRIOR);
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -140,10 +144,11 @@ public class ModEntityType {
     FabricDefaultAttributeRegistry.register(ZOMBIE, Zombie.createAttributes());
     FabricDefaultAttributeRegistry.register(ZOMBIE_VILLAGER, ZombieVillager.createAttributes());
     FabricDefaultAttributeRegistry.register(PIG, Pig.createAttributes());
-    FabricDefaultAttributeRegistry.register(EVOKER, Evoker.createAttributes());
+    FabricDefaultAttributeRegistry.register(EVOKER, Illager.createAttributes());
     FabricDefaultAttributeRegistry.register(ILLUSIONER, Illager.createAttributes());
     FabricDefaultAttributeRegistry.register(PILLAGER, Illager.createAttributes());
     FabricDefaultAttributeRegistry.register(VINDICATOR, Illager.createAttributes());
     FabricDefaultAttributeRegistry.register(ORC, Orc.createAttributes());
+    FabricDefaultAttributeRegistry.register(ORC_WARRIOR, Orc.createAttributes());
   }
 }

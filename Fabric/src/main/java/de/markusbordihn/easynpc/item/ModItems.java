@@ -95,9 +95,10 @@ public class ModItems {
       new ModSpawnEggItem(ModEntityType.VINDICATOR, new Item.Properties().rarity(Rarity.EPIC));
   public static final Item ORC_NPC_SPAWN_EGG =
       new ModSpawnEggItem(ModEntityType.ORC, new Item.Properties().rarity(Rarity.EPIC));
+  public static final Item ORC_WARRIOR_NPC_SPAWN_EGG =
+      new ModSpawnEggItem(ModEntityType.ORC_WARRIOR, new Item.Properties().rarity(Rarity.EPIC));
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private static final String SPAWN_EGG_PREFIX = "_spawn_egg";
 
   private ModItems() {
   }
@@ -193,5 +194,9 @@ public class ModItems {
         VINDICATOR_NPC_SPAWN_EGG);
     Registry.register(
         Registry.ITEM, Constants.MOD_ID + ":" + Orc.ID + ModSpawnEggItem.SUFFIX, ORC_NPC_SPAWN_EGG);
+    Registry.register(
+        Registry.ITEM,
+        Constants.MOD_ID + ":" + Orc.ID_WARRIOR + ModSpawnEggItem.SUFFIX,
+        ORC_WARRIOR_NPC_SPAWN_EGG);
   }
 }

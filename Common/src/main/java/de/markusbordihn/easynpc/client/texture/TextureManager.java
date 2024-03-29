@@ -50,7 +50,7 @@ public class TextureManager {
 
   private static Path textureCachePath = null;
 
-  protected TextureManager() {
+  private TextureManager() {
   }
 
   private static ResourceLocation registerTexture(TextureModelKey textureModelKey, File file) {
@@ -148,7 +148,7 @@ public class TextureManager {
       if (connection.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM
           || connection.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP) {
         String redirectUrl = connection.getHeaderField("Location");
-        log.debug("{} Following redirect from {} to {}", LOG_PREFIX, remoteUrl, redirectUrl);
+        log.debug("{} Following redirect from {} > {}", LOG_PREFIX, remoteUrl, redirectUrl);
         remoteUrl = redirectUrl;
       } else if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
         log.error(

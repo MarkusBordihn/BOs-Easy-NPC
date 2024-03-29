@@ -30,7 +30,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -51,11 +50,7 @@ public class PlayerTextureManager {
   private static final HashSet<UUID> playerTextureReloadProtection = new HashSet<>();
   private static Path textureCachePath = null;
 
-  protected PlayerTextureManager() {
-  }
-
-  public static Map<TextureModelKey, ResourceLocation> getPlayerTextureCache() {
-    return playerTextureCache;
+  private PlayerTextureManager() {
   }
 
   public static Set<UUID> getPlayerTextureCacheKeys(SkinModel skinModel) {
@@ -170,33 +165,35 @@ public class PlayerTextureManager {
       if (!cacheDirectory.toFile().exists()) {
         log.info("{} Creating player texture cache directory at {}", LOG_PREFIX, cacheDirectory);
         try {
-          Files.createDirectories(cacheDirectory.resolve(Constants.MOD_ID));
-        } catch (IOException e) {
+          Files.createDirectories(cacheDirectory);
+        } catch (IOException exception) {
           log.error(
               "{} Failed to create player texture cache directory at {}",
               LOG_PREFIX,
               cacheDirectory,
-              e);
+              exception);
         }
       }
       textureCachePath = cacheDirectory;
     }
 
     // Get or create model cache directory.
-    Path cacheDirectory = Paths.get(textureCachePath.toString(), skinModel.name());
-    if (!cacheDirectory.toFile().exists()) {
+    Path textureCacheDirectory = Paths.get(textureCachePath.toString(), skinModel.getName());
+    if (!textureCacheDirectory.toFile().exists()) {
       log.info(
-          "{} Creating player texture model cache directory at {}", LOG_PREFIX, cacheDirectory);
+          "{} Creating player texture model cache directory at {}",
+          LOG_PREFIX,
+          textureCacheDirectory);
       try {
-        Files.createDirectories(cacheDirectory.resolve(Constants.MOD_ID));
-      } catch (IOException e) {
+        Files.createDirectories(textureCacheDirectory);
+      } catch (IOException exception) {
         log.error(
             "{} Failed to create player texture model cache directory at {}",
             LOG_PREFIX,
-            cacheDirectory,
-            e);
+            textureCacheDirectory,
+            exception);
       }
     }
-    return cacheDirectory;
+    return textureCacheDirectory;
   }
 }

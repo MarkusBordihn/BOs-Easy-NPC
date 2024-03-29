@@ -69,10 +69,10 @@ public class PresetDataFiles {
 
   public static Path getPresetDataFolder(SkinModel skinModel) {
     Path skinDataFolder = getPresetDataFolder();
-    String skinModelName = skinModel.name();
+    String skinModelName = skinModel.getName();
     if (skinDataFolder != null && !skinModelName.isEmpty()) {
       try {
-        return Files.createDirectories(skinDataFolder.resolve(skinModelName.toLowerCase()));
+        return Files.createDirectories(skinDataFolder.resolve(skinModelName));
       } catch (IOException exception) {
         log.error("Could not create preset data folder {}!", skinDataFolder, exception);
       }
