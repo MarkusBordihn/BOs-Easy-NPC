@@ -183,6 +183,12 @@ public class ModItems {
       ITEMS.register(
           Orc.ID + ModSpawnEggItem.SUFFIX,
           () -> new ModSpawnEggItem(ModEntityType.ORC, new Item.Properties().rarity(Rarity.EPIC)));
+  public static final RegistryObject<Item> ORC_WARRIOR_NPC_SPAWN_EGG =
+      ITEMS.register(
+          Orc.ID_WARRIOR + ModSpawnEggItem.SUFFIX,
+          () ->
+              new ModSpawnEggItem(
+                  ModEntityType.ORC_WARRIOR, new Item.Properties().rarity(Rarity.EPIC)));
 
   protected ModItems() {}
 }
