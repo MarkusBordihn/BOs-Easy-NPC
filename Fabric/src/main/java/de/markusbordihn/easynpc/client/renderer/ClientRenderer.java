@@ -75,15 +75,14 @@ public class ClientRenderer {
         ModEntityType.ZOMBIE, context -> new ZombieRenderer(context, null));
     EntityRendererRegistry.register(
         ModEntityType.ZOMBIE_VILLAGER, context -> new ZombieVillagerRenderer(context, null));
-    EntityRendererRegistry.register(ModEntityType.PIG, context -> new PigRenderer(context));
-    EntityRendererRegistry.register(ModEntityType.EVOKER, context -> new IllagerRenderer(context));
-    EntityRendererRegistry.register(
-        ModEntityType.ILLUSIONER, context -> new IllagerRenderer(context));
-    EntityRendererRegistry.register(
-        ModEntityType.PILLAGER, context -> new IllagerRenderer(context));
-    EntityRendererRegistry.register(
-        ModEntityType.VINDICATOR, context -> new IllagerRenderer(context));
+    EntityRendererRegistry.register(ModEntityType.PIG, PigRenderer::new);
+    EntityRendererRegistry.register(ModEntityType.EVOKER, IllagerRenderer::new);
+    EntityRendererRegistry.register(ModEntityType.ILLUSIONER, IllagerRenderer::new);
+    EntityRendererRegistry.register(ModEntityType.PILLAGER, IllagerRenderer::new);
+    EntityRendererRegistry.register(ModEntityType.VINDICATOR, IllagerRenderer::new);
     EntityRendererRegistry.register(
         ModEntityType.ORC, context -> new OrcRenderer(context, ModModelLayers.ORC));
+    EntityRendererRegistry.register(
+        ModEntityType.ORC_WARRIOR, context -> new OrcRenderer(context, ModModelLayers.ORC));
   }
 }

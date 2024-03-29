@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Pose;
@@ -56,7 +57,7 @@ public interface PresetData<T extends PathfinderMob> extends EasyNPC<T> {
 
     // If preset contains id and pos then we can import it directly, otherwise we
     // need to merge it with existing data.
-    if (!compoundTag.contains("UUID") && !compoundTag.contains("Pos")) {
+    if (!compoundTag.contains(Entity.UUID_TAG) && !compoundTag.contains("Pos")) {
       CompoundTag existingCompoundTag = this.serializePresetData();
 
       // Remove existing dialog data to allow legacy presets to be imported.
@@ -116,7 +117,7 @@ public interface PresetData<T extends PathfinderMob> extends EasyNPC<T> {
     }
     String entityTypeId = this.getEntityTypeId();
     if (entityTypeId != null) {
-      compoundTag.putString("id", entityTypeId);
+      compoundTag.putString(Entity.ID_TAG, entityTypeId);
     }
     return this.getEasyNPCEntity().saveWithoutId(compoundTag);
   }

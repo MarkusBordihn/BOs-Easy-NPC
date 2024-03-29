@@ -47,93 +47,28 @@ public class SkinDataFiles {
     }
     log.info("{} custom skin data folder at {} ...", Constants.LOG_CREATE_PREFIX, skinDataFolder);
 
+    // Prepare skin model folders
     for (SkinModel skinModel : SkinModel.values()) {
       Path skinModelFolder = getSkinDataFolder(skinModel);
-      if (skinModelFolder != null) {
-        log.info(
-            "{} skin model folder {} at {} ...",
-            Constants.LOG_CREATE_PREFIX,
-            skinModel,
-            skinModelFolder);
+      if (skinModelFolder == null) {
+        continue;
+      }
 
-        // Copy example skin files, if any.
-        switch (skinModel) {
-          case ALLAY:
-            DataFileHandler.copyResourceFile(
-                new ResourceLocation(Constants.MOD_ID, "textures/entity/allay/allay_example.png"),
-                skinModelFolder.resolve("allay_example.png").toFile());
-            break;
-          case CAT:
-            DataFileHandler.copyResourceFile(
-                new ResourceLocation(Constants.MOD_ID, "textures/entity/cat/cat_example.png"),
-                skinModelFolder.resolve("cat_example.png").toFile());
-            break;
-          case CHICKEN:
-            DataFileHandler.copyResourceFile(
-                new ResourceLocation(
-                    Constants.MOD_ID, "textures/entity/chicken/chicken_example.png"),
-                skinModelFolder.resolve("chicken_example.png").toFile());
-            break;
-          case FAIRY:
-            DataFileHandler.copyResourceFile(
-                new ResourceLocation(Constants.MOD_ID, "textures/entity/fairy/fairy_example.png"),
-                skinModelFolder.resolve("fairy_example.png").toFile());
-            break;
-          case HUMANOID:
-            DataFileHandler.copyResourceFile(
-                new ResourceLocation(
-                    Constants.MOD_ID, "textures/entity/humanoid/humanoid_example.png"),
-                skinModelFolder.resolve("humanoid_example.png").toFile());
-            break;
-          case HUMANOID_SLIM:
-            DataFileHandler.copyResourceFile(
-                new ResourceLocation(
-                    Constants.MOD_ID, "textures/entity/humanoid_slim/humanoid_slim_example.png"),
-                skinModelFolder.resolve("humanoid_slim_example.png").toFile());
-            break;
-          case ILLAGER:
-            DataFileHandler.copyResourceFile(
-                new ResourceLocation(
-                    Constants.MOD_ID, "textures/entity/illager/illager_example.png"),
-                skinModelFolder.resolve("illager_example.png").toFile());
-            break;
-          case IRON_GOLEM:
-            DataFileHandler.copyResourceFile(
-                new ResourceLocation(
-                    Constants.MOD_ID, "textures/entity/iron_golem/iron_golem_example.png"),
-                skinModelFolder.resolve("iron_golem_example.png").toFile());
-            break;
-          case SKELETON:
-            DataFileHandler.copyResourceFile(
-                new ResourceLocation(
-                    Constants.MOD_ID, "textures/entity/skeleton/skeleton_example.png"),
-                skinModelFolder.resolve("skeleton_example.png").toFile());
-            break;
-          case VILLAGER:
-            DataFileHandler.copyResourceFile(
-                new ResourceLocation(
-                    Constants.MOD_ID, "textures/entity/villager/villager_example.png"),
-                skinModelFolder.resolve("villager_example.png").toFile());
-            break;
-          case ZOMBIE:
-            DataFileHandler.copyResourceFile(
-                new ResourceLocation(Constants.MOD_ID, "textures/entity/zombie/zombie_example.png"),
-                skinModelFolder.resolve("zombie_example.png").toFile());
-            break;
-          case ZOMBIE_VILLAGER:
-            DataFileHandler.copyResourceFile(
-                new ResourceLocation(
-                    Constants.MOD_ID,
-                    "textures/entity/zombie_villager/zombie_villager_example.png"),
-                skinModelFolder.resolve("zombie_villager_example.png").toFile());
-            break;
-          case PIG:
-            DataFileHandler.copyResourceFile(
-                new ResourceLocation(Constants.MOD_ID, "textures/entity/pig/pig_example.png"),
-                skinModelFolder.resolve("pig_example.png").toFile());
-            break;
-          default:
-        }
+      // Copy example skin model template files, if any.
+      String skinModelName = skinModel.getName();
+      ResourceLocation resourceLocation =
+          new ResourceLocation(
+              Constants.MOD_ID,
+              "textures/entity/" + skinModelName + "/" + skinModelName + "_template.png");
+      File skinModelTemplateFile =
+          skinModelFolder.resolve(skinModelName + "_template.png").toFile();
+      if (skinModelTemplateFile.exists()) {
+        log.warn(
+            "Skin model template file {} already exists, skipping copy!", skinModelTemplateFile);
+      } else {
+        log.info(
+            "Copy skin model template file {} to {} ...", resourceLocation, skinModelTemplateFile);
+        DataFileHandler.copyResourceFile(resourceLocation, skinModelTemplateFile);
       }
     }
 
@@ -173,10 +108,15 @@ public class SkinDataFiles {
 
   public static Path getSkinDataFolder(SkinModel skinModel) {
     Path skinDataFolder = getSkinDataFolder();
-    String skinModelName = skinModel.name();
+    String skinModelName = skinModel.getName();
     if (skinDataFolder != null && skinModelName != null) {
       try {
-        return Files.createDirectories(skinDataFolder.resolve(skinModelName));
+        Path skinDataFolderPath = skinDataFolder.resolve(skinModelName);
+        if (!skinDataFolderPath.toFile().exists()) {
+          log.info("Created new skin data folder for {} at {}!", skinModelName, skinDataFolderPath);
+          Files.createDirectories(skinDataFolderPath);
+        }
+        return skinDataFolderPath;
       } catch (IOException e) {
         log.error(
             "Could not create skin data folder for {} at {}!",

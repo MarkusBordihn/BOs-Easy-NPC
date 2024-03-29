@@ -59,4 +59,8 @@ public enum SkinModel {
   public boolean hasArmourersWorkshopSupport() {
     return this.hasArmourersWorkshopSupport;
   }
+
+  public String getName() {
+    return this.name().toLowerCase().replaceAll("[^a-zA-Z0-9/._-]", "").replace("..", "");
+  }
 }

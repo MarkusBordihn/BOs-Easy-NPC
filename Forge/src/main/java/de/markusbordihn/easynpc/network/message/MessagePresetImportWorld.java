@@ -33,6 +33,7 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.network.NetworkEvent;
 
 public class MessagePresetImportWorld extends NetworkMessage {
@@ -95,8 +96,8 @@ public class MessagePresetImportWorld extends NetworkMessage {
     }
 
     // Remove UUID from NBT data, if present.
-    if (compoundTag.contains("UUID")) {
-      compoundTag.remove("UUID");
+    if (compoundTag.contains(Entity.UUID_TAG)) {
+      compoundTag.remove(Entity.UUID_TAG);
     }
 
     // Remove position from NBT data, if present.
@@ -106,12 +107,12 @@ public class MessagePresetImportWorld extends NetworkMessage {
 
     // Validate entity encoded id, if set.
     EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (compoundTag.contains("id")
-        && !compoundTag.getString("id").isEmpty()
-        && !compoundTag.getString("id").equals(easyNPC.getEntity().getEncodeId())) {
+    if (compoundTag.contains(Entity.ID_TAG)
+        && !compoundTag.getString(Entity.ID_TAG).isEmpty()
+        && !compoundTag.getString(Entity.ID_TAG).equals(easyNPC.getEntity().getEncodeId())) {
       log.error(
           "Invalid id {} for {} expected {} from {}",
-          compoundTag.getString("id"),
+          compoundTag.getString(Entity.ID_TAG),
           easyNPC,
           easyNPC.getEntity().getEncodeId(),
           serverPlayer);
