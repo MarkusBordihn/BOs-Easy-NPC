@@ -23,7 +23,6 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.item.ModItems;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.CreativeModeTab.Output;
@@ -85,5 +84,6 @@ public class ModTabs {
     output.accept(ModItems.PILLAGER_NPC_SPAWN_EGG.getDefaultInstance());
     output.accept(ModItems.VINDICATOR_NPC_SPAWN_EGG.getDefaultInstance());
     output.accept(ModItems.ORC_NPC_SPAWN_EGG.getDefaultInstance());
+    output.accept(ModItems.ORC_WARRIOR_NPC_SPAWN_EGG.getDefaultInstance());
   }
 }

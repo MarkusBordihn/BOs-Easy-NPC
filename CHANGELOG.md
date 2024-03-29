@@ -7,6 +7,15 @@ For the full changelog, please go to the [GitHub History][history] instead.
 
 Note: Please always back up your world / NPCs before updating to a new version!
 
+### 4.1.0
+
+- Normalized all cache, skin, template and preset names to lowercase with additional checks for
+  unsafe characters.
+- Finalized orc model and texture.
+- Fixed #123: By adding additional checks for the export and import of NPCs.
+- Replaced custom TAGs with entity TAGs for better compatibility with other mods.
+- Optimized custom and player texture manager.
+
 ### 4.0.1
 
 - Improved stroll objectives for flying NPCs.

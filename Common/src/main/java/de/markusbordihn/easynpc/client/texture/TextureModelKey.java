@@ -27,22 +27,12 @@ public class TextureModelKey {
 
   private final UUID uuid;
   private final String subType;
-  private SkinModel skinModel;
+  private final SkinModel skinModel;
 
   public TextureModelKey(UUID uuid, SkinModel skinModel) {
     this.uuid = uuid;
     this.subType = skinModel != null ? skinModel.name() : "";
     this.skinModel = skinModel;
-  }
-
-  public TextureModelKey(UUID uuid, String subType) {
-    this.uuid = uuid;
-    this.subType = subType != null ? subType : "";
-  }
-
-  public TextureModelKey(String name, String subType) {
-    this.uuid = UUID.nameUUIDFromBytes(name.getBytes());
-    this.subType = subType != null ? subType : "";
   }
 
   public UUID getUUID() {
