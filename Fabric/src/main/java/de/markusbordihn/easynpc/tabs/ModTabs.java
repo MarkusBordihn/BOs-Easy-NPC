@@ -84,5 +84,6 @@ public class ModTabs {
     outputTab.accept(ModItems.PILLAGER_NPC_SPAWN_EGG.getDefaultInstance());
     outputTab.accept(ModItems.VINDICATOR_NPC_SPAWN_EGG.getDefaultInstance());
     outputTab.accept(ModItems.ORC_NPC_SPAWN_EGG.getDefaultInstance());
+    outputTab.accept(ModItems.ORC_WARRIOR_NPC_SPAWN_EGG.getDefaultInstance());
   }
 }

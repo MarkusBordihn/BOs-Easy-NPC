@@ -321,9 +321,6 @@ public class EasyNPCBaseEntity extends PathfinderMob
     super.die(damageSource);
   }
 
-  // ** TEST START **//
-  // ** TEST END **//
-
   @Override
   public InteractionResult mobInteract(@Nonnull Player player, @Nonnull InteractionHand hand) {
     if (!(player instanceof ServerPlayer serverPlayer) || hand != InteractionHand.MAIN_HAND) {

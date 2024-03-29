@@ -26,7 +26,6 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
 import de.markusbordihn.easynpc.entity.easynpc.npc.HumanoidSlim;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Illager.Variant;
 import de.markusbordihn.easynpc.entity.easynpc.npc.IronGolem;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
@@ -135,7 +134,8 @@ public class ModEntityTypes {
           .build(Pig.ID);
   public static final EntityType<Illager> EVOKER =
       EntityType.Builder.<Illager>of(
-              (entityType, level) -> new Illager(entityType, level, Variant.EVOKER_CROSSED_ARMS),
+              (entityType, level) ->
+                  new Illager(entityType, level, Illager.Variant.EVOKER_CROSSED_ARMS),
               MobCategory.MONSTER)
           .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
@@ -143,7 +143,7 @@ public class ModEntityTypes {
   public static final EntityType<Illager> ILLUSIONER =
       EntityType.Builder.<Illager>of(
               (entityType, level) ->
-                  new Illager(entityType, level, Variant.ILLUSIONER_CROSSED_ARMS),
+                  new Illager(entityType, level, Illager.Variant.ILLUSIONER_CROSSED_ARMS),
               MobCategory.MONSTER)
           .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
@@ -158,7 +158,7 @@ public class ModEntityTypes {
   public static final EntityType<Illager> VINDICATOR =
       EntityType.Builder.<Illager>of(
               (entityType, level) ->
-                  new Illager(entityType, level, Variant.VINDICATOR_CROSSED_ARMS),
+                  new Illager(entityType, level, Illager.Variant.VINDICATOR_CROSSED_ARMS),
               MobCategory.MONSTER)
           .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
@@ -168,6 +168,13 @@ public class ModEntityTypes {
           .sized(HUMANOID_SIZE_WIDTH, 1.9F)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Orc.ID);
+  public static final EntityType<Orc> ORC_WARRIOR =
+      EntityType.Builder.<Orc>of(
+              (entityType, level) -> new Orc(entityType, level, Orc.Variant.WARRIOR),
+              MobCategory.MONSTER)
+          .sized(HUMANOID_SIZE_WIDTH, 1.9F)
+          .clientTrackingRange(CLIENT_TRACKING_RANGE)
+          .build(Orc.ID_WARRIOR);
 
   private ModEntityTypes() {}
 }

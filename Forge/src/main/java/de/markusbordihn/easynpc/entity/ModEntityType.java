@@ -90,6 +90,8 @@ public class ModEntityType {
       ENTITY_TYPES.register(Illager.ID_VINDICATOR, () -> ModEntityTypes.VINDICATOR);
   public static final RegistryObject<EntityType<Orc>> ORC =
       ENTITY_TYPES.register(Orc.ID, () -> ModEntityTypes.ORC);
+  public static final RegistryObject<EntityType<Orc>> ORC_WARRIOR =
+      ENTITY_TYPES.register(Orc.ID_WARRIOR, () -> ModEntityTypes.ORC_WARRIOR);
 
   private ModEntityType() {}
 
@@ -116,5 +118,6 @@ public class ModEntityType {
     event.put(PILLAGER.get(), Illager.createAttributes().build());
     event.put(VINDICATOR.get(), Illager.createAttributes().build());
     event.put(ORC.get(), Orc.createAttributes().build());
+    event.put(ORC_WARRIOR.get(), Orc.createAttributes().build());
   }
 }

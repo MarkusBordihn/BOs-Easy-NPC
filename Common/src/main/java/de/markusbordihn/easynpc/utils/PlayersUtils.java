@@ -132,7 +132,12 @@ public class PlayersUtils {
               new String(Base64.getDecoder().decode(propertyObject.get("value").getAsString()));
           String userTexture = getUserTextureFromTextureData(textureData);
           String userTextureModel = getUserTextureModelFromTextureData(textureData);
-          log.debug("Found user texture {} with model {} ...", userTexture, userTextureModel);
+          log.debug(
+              "Found user texture {} with model {} ...",
+              userTexture,
+              userTextureModel == null || userTextureModel.isEmpty()
+                  ? "default"
+                  : userTextureModel);
           return userTexture;
         }
       }
@@ -157,7 +162,7 @@ public class PlayersUtils {
 
   public static String getUserTextureModelFromTextureData(String data) {
     JsonObject jsonObject = getJsonObject(data);
-    log.debug("getUserTextureFromTextureData: {}", jsonObject);
+    log.debug("getUserTextureModelFromTextureData: {}", jsonObject);
     if (jsonObject != null && jsonObject.has(TEXTURES_STRING)) {
       JsonObject textureObject = jsonObject.getAsJsonObject(TEXTURES_STRING);
       if (textureObject.has("SKIN")) {
