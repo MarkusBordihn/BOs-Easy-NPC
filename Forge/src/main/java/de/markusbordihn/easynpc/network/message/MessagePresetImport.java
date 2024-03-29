@@ -28,6 +28,7 @@ import java.util.function.Supplier;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.network.NetworkEvent;
 
 public class MessagePresetImport extends NetworkMessage {
@@ -71,12 +72,12 @@ public class MessagePresetImport extends NetworkMessage {
 
     // Validate entity encoded id, if set.
     EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (compoundTag.contains("id")
-        && !compoundTag.getString("id").isEmpty()
-        && !compoundTag.getString("id").equals(easyNPC.getEntity().getEncodeId())) {
+    if (compoundTag.contains(Entity.ID_TAG)
+        && !compoundTag.getString(Entity.ID_TAG).isEmpty()
+        && !compoundTag.getString(Entity.ID_TAG).equals(easyNPC.getEntity().getEncodeId())) {
       log.error(
           "Invalid id {} for {} expected {} from {}",
-          compoundTag.getString("id"),
+          compoundTag.getString(Entity.ID_TAG),
           easyNPC,
           easyNPC.getEntity().getEncodeId(),
           serverPlayer);

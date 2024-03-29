@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.network.message;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
 import de.markusbordihn.easynpc.network.NetworkMessage;
@@ -90,8 +91,9 @@ public class MessagePresetExportWorld extends NetworkMessage {
     }
 
     // Validate data.
-    CompoundTag data = easyNPC.exportPreset();
-    if (data == null) {
+    PresetData<?> presetData = easyNPC.getEasyNPCPresetData();
+    CompoundTag compoundTag = presetData.exportPresetData();
+    if (compoundTag == null || compoundTag.isEmpty()) {
       log.warn("Export preset data is empty for {}", uuid);
       return;
     }
@@ -107,7 +109,7 @@ public class MessagePresetExportWorld extends NetworkMessage {
     log.info(
         "Exporting EasyNPC {} with UUID {} and skin {} to {}", name, uuid, skinModel, presetFile);
     try {
-      NbtIo.writeCompressed(data, presetFile);
+      NbtIo.writeCompressed(compoundTag, presetFile);
     } catch (final IOException exception) {
       log.error(
           "Failed to export EasyNPC {} with UUID {} and skin {} to {}",

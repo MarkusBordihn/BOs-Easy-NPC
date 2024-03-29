@@ -209,8 +209,8 @@ public class PresetCommand {
 
     // Get entity type.
     EntityType<?> entityType =
-        compoundTag.contains("id")
-            ? EntityType.byString(compoundTag.getString("id")).orElse(null)
+        compoundTag.contains(Entity.ID_TAG)
+            ? EntityType.byString(compoundTag.getString(Entity.ID_TAG)).orElse(null)
             : null;
     if (entityType == null) {
       context.sendFailure(
@@ -224,7 +224,7 @@ public class PresetCommand {
         preset,
         entityType,
         position,
-        compoundTag.getUUID("UUID"));
+        compoundTag.getUUID(Entity.UUID_TAG));
     log.debug("Importing preset {} with compound tag {}", preset, compoundTag);
 
     // Overwrite spawn position if coordinates are given.
@@ -238,11 +238,12 @@ public class PresetCommand {
 
     // Overwrite UUID, if UUID is given.
     if (uuid != null) {
-      compoundTag.putUUID("UUID", uuid);
+      compoundTag.putUUID(Entity.UUID_TAG, uuid);
     }
 
     // Get UUID from compound tag and check if entity with this UUID already exists.
-    UUID existingUUID = compoundTag.contains("UUID") ? compoundTag.getUUID("UUID") : null;
+    UUID existingUUID =
+        compoundTag.contains(Entity.UUID_TAG) ? compoundTag.getUUID(Entity.UUID_TAG) : null;
     if (existingUUID != null
         && LivingEntityManager.getEasyNPCEntityByUUID(existingUUID, context.getLevel()) != null) {
       LivingEntityManager.discardEasyNPCEntityByUUID(existingUUID, context.getLevel());

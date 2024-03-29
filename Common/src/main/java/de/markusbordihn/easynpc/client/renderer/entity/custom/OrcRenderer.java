@@ -51,6 +51,9 @@ public class OrcRenderer extends HumanoidMobRenderer<Orc, OrcModel<Orc>>
             map.put(
                 Variant.DEFAULT,
                 new ResourceLocation(Constants.MOD_ID, "textures/entity/orc/orc_default.png"));
+            map.put(
+                Variant.WARRIOR,
+                new ResourceLocation(Constants.MOD_ID, "textures/entity/orc/orc_warrior.png"));
           });
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.DEFAULT);
 
