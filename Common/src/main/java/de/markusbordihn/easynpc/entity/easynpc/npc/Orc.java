@@ -31,6 +31,7 @@ import net.minecraft.world.level.Level;
 public class Orc extends EasyNPCBaseEntity {
 
   public static final String ID = "orc";
+  public static final String ID_WARRIOR = "orc_warrior";
   public static final String NAME = "Orc";
 
   public Orc(EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variant) {
@@ -76,6 +77,7 @@ public class Orc extends EasyNPCBaseEntity {
 
   // Skin Details
   public enum Variant {
-    DEFAULT
+    DEFAULT,
+    WARRIOR
   }
 }

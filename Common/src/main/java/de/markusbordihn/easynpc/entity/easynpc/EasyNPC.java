@@ -43,7 +43,6 @@ import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import java.util.UUID;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.server.level.ServerLevel;
@@ -236,10 +235,6 @@ public interface EasyNPC<T extends PathfinderMob> extends Npc {
   default void handleEasyNPCLeave(EasyNPC<?> easyNPCEntity) {}
 
   default void defineCustomData() {}
-
-  default CompoundTag exportPreset() {
-    return getEasyNPCEntity().saveWithoutId(new CompoundTag());
-  }
 
   <V> void setEasyNPCData(EntityDataAccessor<V> entityDataAccessor, V entityData);
 

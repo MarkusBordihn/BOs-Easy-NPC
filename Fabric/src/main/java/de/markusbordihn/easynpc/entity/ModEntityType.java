@@ -136,6 +136,11 @@ public class ModEntityType {
   public static final EntityType<Orc> ORC =
       Registry.register(
           BuiltInRegistries.ENTITY_TYPE, Constants.MOD_ID + ":" + Orc.ID, ModEntityTypes.ORC);
+  public static final EntityType<Orc> ORC_WARRIOR =
+      Registry.register(
+          BuiltInRegistries.ENTITY_TYPE,
+          Constants.MOD_ID + ":" + Orc.ID_WARRIOR,
+          ModEntityTypes.ORC_WARRIOR);
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -165,5 +170,6 @@ public class ModEntityType {
     FabricDefaultAttributeRegistry.register(PILLAGER, Illager.createAttributes());
     FabricDefaultAttributeRegistry.register(VINDICATOR, Illager.createAttributes());
     FabricDefaultAttributeRegistry.register(ORC, Orc.createAttributes());
+    FabricDefaultAttributeRegistry.register(ORC_WARRIOR, Orc.createAttributes());
   }
 }
