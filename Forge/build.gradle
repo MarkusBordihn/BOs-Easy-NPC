@@ -166,6 +166,10 @@ dependencies {
   if (project.player_animator_mod) {
     runtimeOnly fg.deobf("curse.maven:player-animator-658587:${project.player_animator_mod}")
   }
+
+  // Testing
+  runtimeOnly fg.deobf("curse.maven:create-328085:${project.create_mod}")
+  runtimeOnly fg.deobf("curse.maven:create-328085:${project.create_mod}")
 }
 
 tasks.withType(JavaCompile).configureEach {

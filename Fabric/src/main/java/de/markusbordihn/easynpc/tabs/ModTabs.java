@@ -60,6 +60,7 @@ public class ModTabs {
               stack.add(ModItems.PILLAGER_NPC_SPAWN_EGG.getDefaultInstance());
               stack.add(ModItems.VINDICATOR_NPC_SPAWN_EGG.getDefaultInstance());
               stack.add(ModItems.ORC_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.ORC_WARRIOR_NPC_SPAWN_EGG.getDefaultInstance());
             })
         .build();
 

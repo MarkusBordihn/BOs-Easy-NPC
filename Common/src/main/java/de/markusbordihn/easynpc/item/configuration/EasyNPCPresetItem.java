@@ -51,7 +51,6 @@ public class EasyNPCPresetItem extends Item {
   public static final String PRESET_TAG = "Preset";
   public static final String ENTITY_TYPE_TAG = "EntityType";
   public static final String SPAWNER_UUID_TAG = "SpawnerUUID";
-  public static final String UUID_TAG = "UUID";
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String FALL_DISTANCE_TAG = "FallDistance";
   private static final String FIRE_TAG = "Fire";
@@ -153,8 +152,8 @@ public class EasyNPCPresetItem extends Item {
     Entity entity = entityType.create(level);
 
     // Remove UUID from preset, to avoid conflicts with existing entities.
-    if (entityPreset.contains(UUID_TAG)) {
-      entityPreset.remove(UUID_TAG);
+    if (entityPreset.contains(Entity.UUID_TAG)) {
+      entityPreset.remove(Entity.UUID_TAG);
     }
     entity.load(entityPreset);
 

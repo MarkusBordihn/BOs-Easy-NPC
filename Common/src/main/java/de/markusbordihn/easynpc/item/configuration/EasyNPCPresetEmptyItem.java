@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.item.configuration;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
 import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
@@ -75,20 +76,25 @@ public class EasyNPCPresetEmptyItem extends Item {
         log.error("Can't find item for storing preset {}", EasyNPCPresetItem.NAME);
         return InteractionResult.FAIL;
       }
-      ItemStack presetItemStack = new ItemStack(item);
-      CompoundTag presetData = easyNPC.exportPreset();
+
+      // Get preset data from entity
+      PresetData<?> presetData = easyNPC.getEasyNPCPresetData();
       if (presetData == null) {
         log.error("Can't export preset data from {}", easyNPC);
         return InteractionResult.FAIL;
       }
+
+      // Store preset data in compound tag.
+      CompoundTag compoundTag = presetData.exportPresetData();
 
       // Store entity type in preset to easier recreate the entity.
       EntityType<?> entityType = livingEntity.getType();
       ResourceLocation entityTypeRegistryName = EntityType.getKey(entityType);
 
       // Store entity type and preset data in the item stack.
-      EasyNPCPresetItem.savePreset(presetItemStack, entityTypeRegistryName, presetData);
-      log.info("Captured NPC preset from {} with {} to {}", easyNPC, presetData, presetItemStack);
+      ItemStack presetItemStack = new ItemStack(item);
+      EasyNPCPresetItem.savePreset(presetItemStack, entityTypeRegistryName, compoundTag);
+      log.info("Captured NPC preset from {} with {} to {}", easyNPC, compoundTag, presetItemStack);
 
       // Place the new preset item in the player inventory or drop it.
       if (!player.getInventory().add(presetItemStack)) {
