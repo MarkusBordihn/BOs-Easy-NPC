@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
-import javax.annotation.Nullable;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.util.AirAndWaterRandomPos;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
@@ -43,7 +42,6 @@ public class RandomStrollAroundGoal<T extends EasyNPC<?>> extends RandomStrollGo
   }
 
   @Override
-  @Nullable
   protected Vec3 getPosition() {
     if (this.navigationData.canFly()) {
       Vec3 vec3 = this.mob.getViewVector(0.0F);

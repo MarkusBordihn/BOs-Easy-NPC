@@ -40,25 +40,18 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BasicActionConfigurationScreen
     extends ActionConfigurationScreen<BasicActionConfigurationMenu> {
 
-  // On Interaction Action
   protected EditBox onInteractionActionBox;
   protected Checkbox onInteractionActionExecuteAsUserCheckbox;
   protected Checkbox onInteractionActionDebugCheckbox;
   protected Button onInteractionActionSaveButton;
-
-  // On Hurt Action
   protected EditBox onHurtActionBox;
   protected Checkbox onHurtActionExecuteAsUserCheckbox;
   protected Checkbox onHurtActionDebugCheckbox;
   protected Button onHurtActionSaveButton;
-
-  // On Death Action
   protected EditBox onDeathActionBox;
   protected Checkbox onDeathActionExecuteAsUserCheckbox;
   protected Checkbox onDeathActionDebugCheckbox;
   protected Button onDeathActionSaveButton;
-
-  // Cache
   private ActionData lastInteractionActionData;
   private ActionData lastHurtActionData;
   private ActionData lastDeathActionData;

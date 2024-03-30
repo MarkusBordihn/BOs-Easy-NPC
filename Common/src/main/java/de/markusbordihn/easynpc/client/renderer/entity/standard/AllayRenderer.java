@@ -28,7 +28,6 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Allay;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Allay.Variant;
 import java.util.EnumMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -42,7 +41,6 @@ import net.minecraft.resources.ResourceLocation;
 public class AllayRenderer extends MobRenderer<Allay, StandardAllayModel<Allay>>
     implements EasyNPCRenderer {
 
-  // Variant Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
           new EnumMap<>(Variant.class),
@@ -142,7 +140,7 @@ public class AllayRenderer extends MobRenderer<Allay, StandardAllayModel<Allay>>
   }
 
   @Override
-  protected int getBlockLightLevel(@Nonnull Allay entity, @Nonnull BlockPos blockPos) {
+  protected int getBlockLightLevel(Allay entity, BlockPos blockPos) {
     return getEntityLightLevel(entity, blockPos);
   }
 }

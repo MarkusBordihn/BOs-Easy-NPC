@@ -24,7 +24,6 @@ import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
 import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import java.util.List;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -140,10 +139,7 @@ public class EasyNPCWandItem extends Item {
 
   @Override
   public void appendHoverText(
-      ItemStack itemStack,
-      @Nullable Level level,
-      List<Component> tooltipList,
-      TooltipFlag tooltipFlag) {
+      ItemStack itemStack, Level level, List<Component> tooltipList, TooltipFlag tooltipFlag) {
     // Display description.
     tooltipList.add(Component.translatable(Constants.TEXT_ITEM_PREFIX + ID));
   }

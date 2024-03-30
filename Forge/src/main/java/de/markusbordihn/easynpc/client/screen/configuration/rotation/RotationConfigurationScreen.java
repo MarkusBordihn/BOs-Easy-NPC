@@ -34,7 +34,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class RotationConfigurationScreen<T extends ConfigurationMenu>
     extends ConfigurationScreen<T> {
 
-  // Buttons
   protected Button defaultRotationButton;
 
   public RotationConfigurationScreen(T menu, Inventory inventory, Component component) {

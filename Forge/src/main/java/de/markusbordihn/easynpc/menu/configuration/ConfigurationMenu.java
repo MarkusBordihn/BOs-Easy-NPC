@@ -39,7 +39,6 @@ public class ConfigurationMenu extends AbstractContainerMenu {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  // Cache
   protected final int pageIndex;
   protected final EasyNPC<?> easyNPC;
   protected final Level level;
@@ -91,10 +90,7 @@ public class ConfigurationMenu extends AbstractContainerMenu {
 
   @Override
   public boolean stillValid(Player player) {
-    return player != null
-        && player.isAlive()
-        && this.easyNPC != null
-        && this.easyNPC.getEntity().isAlive();
+    return player.isAlive() && this.easyNPC != null && this.easyNPC.getEntity().isAlive();
   }
 
   @Override

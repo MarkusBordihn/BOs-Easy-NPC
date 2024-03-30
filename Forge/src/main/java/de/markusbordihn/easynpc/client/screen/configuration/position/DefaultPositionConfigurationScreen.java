@@ -42,21 +42,14 @@ import net.minecraftforge.client.event.ScreenEvent.BackgroundRendered;
 public class DefaultPositionConfigurationScreen
     extends PositionConfigurationScreen<DefaultPositionConfigurationMenu> {
 
-  // Default Values
   private static final float POSITION_STEPS = 0.5f;
-
-  // Position Coordinates EditBoxes
   protected EditBox positionXBox;
   protected EditBox positionYBox;
   protected EditBox positionZBox;
   protected Checkbox positionFreefallCheckbox;
-
-  // Position Coordinates
   protected double positionX = 0.0D;
   protected double positionY = 0.0D;
   protected double positionZ = 0.0D;
-
-  // Position Coordinates Buttons
   protected Button positionXMinusButton;
   protected Button positionXPlusButton;
   protected Button positionYMinusButton;

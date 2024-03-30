@@ -29,7 +29,6 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Cat.Variant;
 import java.util.EnumMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -42,7 +41,6 @@ import net.minecraft.resources.ResourceLocation;
 public class CatRenderer extends MobRenderer<Cat, StandardCatModel<Cat>>
     implements EasyNPCRenderer {
 
-  // Variant Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
           new EnumMap<>(Variant.class),
@@ -139,7 +137,7 @@ public class CatRenderer extends MobRenderer<Cat, StandardCatModel<Cat>>
   }
 
   @Override
-  protected int getBlockLightLevel(@Nonnull Cat entity, @Nonnull BlockPos blockPos) {
+  protected int getBlockLightLevel(Cat entity, BlockPos blockPos) {
     return getEntityLightLevel(entity, blockPos);
   }
 }

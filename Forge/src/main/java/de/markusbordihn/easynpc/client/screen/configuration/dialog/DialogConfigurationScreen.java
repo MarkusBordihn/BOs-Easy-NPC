@@ -35,9 +35,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class DialogConfigurationScreen<T extends DialogConfigurationMenu>
     extends ConfigurationScreen<T> {
 
-  // Cache
   protected final DialogDataSet dialogDataSet;
-  // Buttons
   protected Button noneDialogButton = null;
   protected Button basicDialogButton = null;
   protected Button yesNoDialogButton = null;

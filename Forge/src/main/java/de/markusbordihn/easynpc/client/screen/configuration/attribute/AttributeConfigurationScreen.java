@@ -34,7 +34,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class AttributeConfigurationScreen<T extends AttributeConfigurationMenu>
     extends ConfigurationScreen<T> {
 
-  // Buttons
   protected Button abilitiesAttributeButton = null;
   protected Button baseAttributeButton = null;
   protected Button displayAttributeButton = null;

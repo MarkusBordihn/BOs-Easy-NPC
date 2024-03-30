@@ -36,7 +36,6 @@ public class VariantOverLayer<T extends LivingEntity, M extends EntityModel<T>>
   private final EasyNPCRenderer easyNPCRenderer;
   private final M model;
 
-  @SuppressWarnings("java:S1172")
   public VariantOverLayer(RenderLayerParent<T, M> renderer, EntityModelSet model) {
     super(renderer);
     if (renderer instanceof EasyNPCRenderer easyNPCRendererInstance) {

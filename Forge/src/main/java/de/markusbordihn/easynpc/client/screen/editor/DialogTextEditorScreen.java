@@ -40,7 +40,6 @@ import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import javax.annotation.Nonnull;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -287,7 +286,7 @@ public class DialogTextEditorScreen extends AbstractContainerScreen<DialogTextEd
   }
 
   @Override
-  public void render(@Nonnull GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     this.renderBackground(guiGraphics);
     super.render(guiGraphics, x, y, partialTicks);
     this.renderEditLabels(guiGraphics);
@@ -296,13 +295,12 @@ public class DialogTextEditorScreen extends AbstractContainerScreen<DialogTextEd
   }
 
   @Override
-  protected void renderLabels(@Nonnull GuiGraphics guiGraphics, int x, int y) {
+  protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
     // No labels
   }
 
   @Override
-  protected void renderBg(
-      @Nonnull GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
     RenderSystem.setShader(GameRenderer::getPositionTexShader);
     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     RenderSystem.setShaderTexture(0, Constants.TEXTURE_DEMO_BACKGROUND);

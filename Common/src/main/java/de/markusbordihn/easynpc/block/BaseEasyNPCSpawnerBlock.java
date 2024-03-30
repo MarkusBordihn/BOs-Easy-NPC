@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.block;
 
 import de.markusbordihn.easynpc.block.entity.BaseEasyNPCSpawnerBlockEntity;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -60,7 +59,7 @@ public class BaseEasyNPCSpawnerBlock extends BaseEntityBlock {
       Level level,
       BlockPos blockPos,
       BlockState blockState,
-      @Nullable LivingEntity livingEntity,
+      LivingEntity livingEntity,
       ItemStack itemStack) {
     BlockEntity blockEntity = level.getBlockEntity(blockPos);
     if (blockEntity instanceof BaseEasyNPCSpawnerBlockEntity blockEntityInstance

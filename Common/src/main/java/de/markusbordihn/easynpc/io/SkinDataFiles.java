@@ -45,7 +45,6 @@ public class SkinDataFiles {
     if (skinDataFolder == null) {
       return;
     }
-    log.info("{} custom skin data folder at {} ...", Constants.LOG_CREATE_PREFIX, skinDataFolder);
 
     // Prepare skin model folders
     for (SkinModel skinModel : SkinModel.values()) {
@@ -108,21 +107,22 @@ public class SkinDataFiles {
 
   public static Path getSkinDataFolder(SkinModel skinModel) {
     Path skinDataFolder = getSkinDataFolder();
+    if (skinDataFolder == null) {
+      return null;
+    }
     String skinModelName = skinModel.getName();
-    if (skinDataFolder != null && skinModelName != null) {
-      try {
-        Path skinDataFolderPath = skinDataFolder.resolve(skinModelName);
-        if (!skinDataFolderPath.toFile().exists()) {
-          log.info("Created new skin data folder for {} at {}!", skinModelName, skinDataFolderPath);
-          Files.createDirectories(skinDataFolderPath);
-        }
+    Path skinDataFolderPath = skinDataFolder.resolve(skinModelName);
+    try {
+      if (Files.exists(skinDataFolderPath) && Files.isDirectory(skinDataFolderPath)) {
         return skinDataFolderPath;
-      } catch (IOException e) {
-        log.error(
-            "Could not create skin data folder for {} at {}!",
-            skinModelName,
-            skinDataFolder.resolve(skinModelName));
       }
+      log.info("Created new skin data folder {} at {}!", skinModelName, skinDataFolderPath);
+      return Files.createDirectories(skinDataFolderPath);
+    } catch (IOException e) {
+      log.error(
+          "Could not create skin data folder {} at {}!",
+          skinModelName,
+          skinDataFolder.resolve(skinModelName));
     }
     return null;
   }

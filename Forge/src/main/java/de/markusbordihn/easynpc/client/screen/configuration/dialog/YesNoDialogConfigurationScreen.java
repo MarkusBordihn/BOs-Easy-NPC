@@ -49,28 +49,16 @@ public class YesNoDialogConfigurationScreen
 
   private static final String YES_BUTTON_LABEL = "yes_button";
   private static final String NO_BUTTON_LABEL = "no_button";
-
-  // Dialog data
   private final DialogDataEntry questionDialogData;
   private final DialogDataEntry yesDialogData;
   private final DialogDataEntry noDialogData;
-
-  // Question Dialog
   protected EditBox mainDialogBox;
   protected Button yesDialogButton;
   protected Button noDialogButton;
-
-  // Yes Dialog
   protected EditBox yesDialogBox;
-
-  // No Dialog
   protected EditBox noDialogBox;
-
-  // Buttons
   protected Button saveButton = null;
   protected Button cancelButton = null;
-
-  // Cache
   boolean showSaveNotificationForButtons = false;
   private String questionDialogValue = "";
   private String yesDialogValue = "";

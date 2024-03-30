@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.client.renderer.entity.layers;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
-import javax.annotation.Nullable;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
@@ -44,7 +43,7 @@ public class CustomHumanoidArmorLayer<
 
   @Override
   public ResourceLocation getArmorResource(
-      Entity entity, ItemStack itemStack, EquipmentSlot equipmentSlot, @Nullable String type) {
+      Entity entity, ItemStack itemStack, EquipmentSlot equipmentSlot, String type) {
     if (entity instanceof EasyNPC<?> easyNPC) {
       ModelData<?> modelData = easyNPC.getEasyNPCModelData();
       if (modelData != null

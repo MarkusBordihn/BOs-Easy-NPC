@@ -35,21 +35,16 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class AttackObjectiveConfigurationScreen
     extends ObjectiveConfigurationScreen<AttackObjectiveConfigurationMenu> {
 
-  // Attack Types
   protected Checkbox meleeAttackCheckbox;
   protected Checkbox zombieAttackCheckbox;
   protected Checkbox crossbowAttackCheckbox;
   protected Checkbox getBowAttackCheckbox;
-
-  // Attack Target
   protected Checkbox attackAnimalCheckbox;
   protected Checkbox attackPlayerCheckbox;
   protected Checkbox attackMonsterCheckbox;
   protected Checkbox attackMobCheckbox;
   protected Checkbox attackMobWithoutCreeperCheckbox;
   protected Checkbox attackVillagerCheckbox;
-
-  // Attack Entity by UUID
   protected Checkbox attackEntityByUUIDCheckbox;
   protected EditBox attackEntityByUUIDEditBox;
   protected Button attackEntityByUUIDSaveButton;

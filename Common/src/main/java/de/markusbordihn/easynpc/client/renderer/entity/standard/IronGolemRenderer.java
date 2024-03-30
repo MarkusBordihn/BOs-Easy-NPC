@@ -28,7 +28,6 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.IronGolem;
 import de.markusbordihn.easynpc.entity.easynpc.npc.IronGolem.Variant;
 import java.util.EnumMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -42,26 +41,18 @@ import net.minecraft.resources.ResourceLocation;
 public class IronGolemRenderer extends MobRenderer<IronGolem, StandardIronGolemModel<IronGolem>>
     implements EasyNPCRenderer {
 
-  // Variant Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
           new EnumMap<>(Variant.class),
           map -> {
-            map.put(
-                Variant.IRON_GOLEM,
-                new ResourceLocation("textures/entity/iron_golem/iron_golem.png"));
-            map.put(
-                Variant.IRON_GOLEM_CRACKINESS_HIGH,
-                new ResourceLocation("textures/entity/iron_golem/iron_golem.png"));
-            map.put(
-                Variant.IRON_GOLEM_CRACKINESS_MEDIUM,
-                new ResourceLocation("textures/entity/iron_golem/iron_golem.png"));
-            map.put(
-                Variant.IRON_GOLEM_CRACKINESS_LOW,
-                new ResourceLocation("textures/entity/iron_golem/iron_golem.png"));
+            ResourceLocation resourceLocation =
+                new ResourceLocation("textures/entity/iron_golem/iron_golem.png");
+            map.put(Variant.IRON_GOLEM, resourceLocation);
+            map.put(Variant.IRON_GOLEM_CRACKINESS_HIGH, resourceLocation);
+            map.put(Variant.IRON_GOLEM_CRACKINESS_MEDIUM, resourceLocation);
+            map.put(Variant.IRON_GOLEM_CRACKINESS_LOW, resourceLocation);
           });
 
-  // Variant Base Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_OVERLAY_BY_VARIANT =
       Util.make(
           new EnumMap<>(Variant.class),
@@ -137,7 +128,7 @@ public class IronGolemRenderer extends MobRenderer<IronGolem, StandardIronGolemM
   }
 
   @Override
-  protected int getBlockLightLevel(@Nonnull IronGolem entity, @Nonnull BlockPos blockPos) {
+  protected int getBlockLightLevel(IronGolem entity, BlockPos blockPos) {
     return getEntityLightLevel(entity, blockPos);
   }
 }

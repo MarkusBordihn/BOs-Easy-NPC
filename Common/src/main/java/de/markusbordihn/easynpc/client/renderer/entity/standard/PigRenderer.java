@@ -27,7 +27,6 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Pig.Variant;
 import java.util.EnumMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -107,7 +106,7 @@ public class PigRenderer extends MobRenderer<Pig, StandardPigModel<Pig>>
   }
 
   @Override
-  protected int getBlockLightLevel(@Nonnull Pig entity, @Nonnull BlockPos blockPos) {
+  protected int getBlockLightLevel(Pig entity, BlockPos blockPos) {
     return getEntityLightLevel(entity, blockPos);
   }
 }

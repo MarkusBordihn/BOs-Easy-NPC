@@ -34,7 +34,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TradingConfigurationScreen<T extends ConfigurationMenu>
     extends ConfigurationScreen<T> {
 
-  // Buttons
   protected Button noneTradesButton = null;
   protected Button basicTradesButton = null;
   protected Button advancedTradesButton = null;

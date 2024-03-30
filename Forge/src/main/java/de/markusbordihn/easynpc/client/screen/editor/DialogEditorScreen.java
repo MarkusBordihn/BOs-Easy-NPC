@@ -65,13 +65,9 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private static final int MAX_NUMBER_OF_BUTTONS = 6;
-
-  // General
   protected final ClientLevel clientLevel;
   protected final LocalPlayer localPlayer;
   protected final Minecraft minecraftInstance;
-
-  // Data access
   protected final DialogDataSet dialogDataSet;
   protected final DialogDataEntry dialogData;
   protected final Set<DialogButtonData> dialogButtons;
@@ -79,33 +75,23 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
   protected final UUID uuid;
   protected final ConfigurationType formerConfigurationType;
   protected UUID dialogId;
-
-  // Navigation
   protected Button homeButton;
   protected Button dialogButton;
-
-  // Buttons
   protected Button dialogTextButton;
   protected Button addDialogButton;
   protected Button closeButton;
   protected Button saveButton;
   protected Button cancelButton;
   protected Button deleteButton;
-
-  // Edit Boxes
   protected TextField dialogLabelTextField;
   protected Checkbox dialogLabelCheckbox;
   protected Button dialogNameToLabelButton;
   protected TextField dialogNameTextField;
   protected Checkbox dialogTranslateCheckbox;
-
-  // Internal
   protected int bottomPos;
   protected float xMouse;
   protected float yMouse;
   protected int rightPos;
-
-  // Cache
   private String dialogNameValue = "";
   private String dialogLabelValue = "";
   private boolean dialogTranslateValue = false;

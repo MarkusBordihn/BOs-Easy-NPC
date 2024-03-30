@@ -41,7 +41,6 @@ public class BasicTradingConfigurationScreen
     extends TradingConfigurationScreen<BasicTradingConfigurationMenu> {
 
   protected final TradingData<?> tradingData;
-  // Trading Options
   protected EditBox resetsEveryMinEditBox;
   protected EditBox maxUsesEditBox;
   protected EditBox rewardExpEditBox;

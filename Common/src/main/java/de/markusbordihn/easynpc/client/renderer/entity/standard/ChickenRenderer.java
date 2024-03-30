@@ -28,7 +28,6 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken.Variant;
 import java.util.EnumMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -42,7 +41,6 @@ import net.minecraft.util.Mth;
 public class ChickenRenderer extends MobRenderer<Chicken, StandardChickenModel<Chicken>>
     implements EasyNPCRenderer {
 
-  // Variant Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
           new EnumMap<>(Variant.class),
@@ -117,7 +115,7 @@ public class ChickenRenderer extends MobRenderer<Chicken, StandardChickenModel<C
   }
 
   @Override
-  protected int getBlockLightLevel(@Nonnull Chicken entity, @Nonnull BlockPos blockPos) {
+  protected int getBlockLightLevel(Chicken entity, BlockPos blockPos) {
     return getEntityLightLevel(entity, blockPos);
   }
 
