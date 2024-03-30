@@ -22,8 +22,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.standard;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.client.model.standard.StandardChickenModel;
-import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
-import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.client.renderer.entity.StandardMobRenderer;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken.Variant;
 import java.util.EnumMap;
@@ -32,14 +31,12 @@ import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Pose;
 
-public class ChickenRenderer extends MobRenderer<Chicken, StandardChickenModel<Chicken>>
-    implements EasyNPCRenderer {
+public class ChickenRenderer
+    extends StandardMobRenderer<Chicken, Chicken.Variant, StandardChickenModel<Chicken>> {
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
@@ -48,75 +45,38 @@ public class ChickenRenderer extends MobRenderer<Chicken, StandardChickenModel<C
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.WHITE);
 
   public ChickenRenderer(EntityRendererProvider.Context context) {
-    super(context, new StandardChickenModel<>(context.bakeLayer(ModelLayers.CHICKEN)), 0.3F);
+    super(
+        context,
+        new StandardChickenModel<>(context.bakeLayer(ModelLayers.CHICKEN)),
+        0.3F,
+        DEFAULT_TEXTURE,
+        TEXTURE_BY_VARIANT);
   }
 
   @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variant) {
-    return TEXTURE_BY_VARIANT.getOrDefault(variant, DEFAULT_TEXTURE);
-  }
-
-  @Override
-  public ResourceLocation getDefaultTexture() {
-    return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureLocation(Chicken entity) {
-    return this.getEntityTexture(entity);
-  }
-
-  @Override
-  protected void scale(Chicken entity, PoseStack poseStack, float unused) {
-    this.scaleEntity(entity, poseStack);
-  }
-
-  @Override
-  public void render(
+  public void renderDefaultPose(
       Chicken entity,
+      StandardChickenModel<Chicken> model,
+      Pose pose,
       float entityYaw,
       float partialTicks,
       PoseStack poseStack,
-      net.minecraft.client.renderer.MultiBufferSource buffer,
+      MultiBufferSource buffer,
       int light) {
-    // Model Rotation
-    this.rotateEntity(entity, poseStack);
-
-    // Render additional poses
-    if (entity.getModelPose() == ModelPose.DEFAULT) {
-      switch (entity.getPose()) {
-        case DYING:
-          poseStack.translate(-0.5D, 0.0D, 0.0D);
-          poseStack.mulPose(Axis.YP.rotationDegrees(180f));
-          poseStack.mulPose(Axis.ZP.rotationDegrees(90f));
-          poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
-          break;
-        case SLEEPING:
-          poseStack.translate(-0.5D, 0.5D, 0.0D);
-          poseStack.mulPose(Axis.ZP.rotationDegrees(90f));
-          break;
-        default:
-          break;
-      }
+    switch (entity.getPose()) {
+      case DYING:
+        poseStack.translate(-0.5D, 0.0D, 0.0D);
+        poseStack.mulPose(Axis.YP.rotationDegrees(180f));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(90f));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+        break;
+      case SLEEPING:
+        poseStack.translate(-0.5D, 0.5D, 0.0D);
+        poseStack.mulPose(Axis.ZP.rotationDegrees(90f));
+        break;
+      default:
+        break;
     }
-
-    super.render(entity, entityYaw, partialTicks, poseStack, buffer, light);
-  }
-
-  @Override
-  protected void renderNameTag(
-      Chicken entity,
-      Component component,
-      PoseStack poseStack,
-      MultiBufferSource multiBufferSource,
-      int color) {
-    this.renderEntityNameTag(entity, poseStack);
-    super.renderNameTag(entity, component, poseStack, multiBufferSource, color);
-  }
-
-  @Override
-  protected int getBlockLightLevel(Chicken entity, BlockPos blockPos) {
-    return getEntityLightLevel(entity, blockPos);
   }
 
   @Override

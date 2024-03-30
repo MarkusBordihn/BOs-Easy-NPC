@@ -35,6 +35,7 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.core.Rotations;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 
 public class FairyModel<T extends LivingEntity> extends HumanoidModel<T> {
 
@@ -182,6 +183,19 @@ public class FairyModel<T extends LivingEntity> extends HumanoidModel<T> {
           this.rightLeg.yRot = rightLegRotations.getY();
           this.rightLeg.zRot = rightLegRotations.getZ();
         }
+      } else if (modelData.getDefaultPose() == Pose.CROUCHING) {
+        // Crouching Pose
+        this.body.xRot = 0.5F;
+        this.body.y = 3.2F;
+        this.head.y = 4.2F;
+        this.leftArm.xRot += 0.4F;
+        this.leftArm.y = 5.2F;
+        this.leftLeg.y = 12.2F;
+        this.leftLeg.z = 4.0F;
+        this.rightArm.xRot += 0.4F;
+        this.rightArm.y = 5.2F;
+        this.rightLeg.y = 12.2F;
+        this.rightLeg.z = 4.0F;
       } else {
         // Reset all rotations to avoid any issues with other mods.
         this.head.xRot = 0;

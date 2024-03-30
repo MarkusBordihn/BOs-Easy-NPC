@@ -23,8 +23,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.FairyModel;
-import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
-import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.client.renderer.entity.StandardHumanoidMobRenderer;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy.Variant;
 import java.util.EnumMap;
@@ -34,13 +34,12 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
+import net.minecraft.core.Rotations;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Pose;
 
-public class FairyRenderer extends HumanoidMobRenderer<Fairy, FairyModel<Fairy>>
-    implements EasyNPCRenderer {
+public class FairyRenderer
+    extends StandardHumanoidMobRenderer<Fairy, Fairy.Variant, FairyModel<Fairy>> {
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
@@ -60,98 +59,65 @@ public class FairyRenderer extends HumanoidMobRenderer<Fairy, FairyModel<Fairy>>
 
   public FairyRenderer(
       EntityRendererProvider.Context context, ModelLayerLocation modelLayerLocation) {
-    super(context, new FairyModel<>(context.bakeLayer(modelLayerLocation)), 0.3F);
+    super(
+        context,
+        new FairyModel<>(context.bakeLayer(modelLayerLocation)),
+        0.3F,
+        DEFAULT_TEXTURE,
+        TEXTURE_BY_VARIANT);
   }
 
   @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variant) {
-    return TEXTURE_BY_VARIANT.getOrDefault(variant, DEFAULT_TEXTURE);
+  public void rotateEntity(EasyNPC<?> easyNPC, PoseStack poseStack) {
+    Rotations rootRotation = easyNPC.getEasyNPCModelData().getModelRootRotation();
+    if (rootRotation != null) {
+      poseStack.translate(0, 0.5, 0);
+      poseStack.mulPose(Axis.XP.rotation(rootRotation.getX()));
+      poseStack.mulPose(Axis.YP.rotation(rootRotation.getY()));
+      poseStack.mulPose(Axis.ZP.rotation(rootRotation.getZ()));
+      poseStack.translate(0, -0.5, 0);
+    }
   }
 
   @Override
-  public ResourceLocation getDefaultTexture() {
-    return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureLocation(Fairy entity) {
-    return this.getEntityTexture(entity);
-  }
-
-  @Override
-  protected void scale(Fairy entity, PoseStack poseStack, float unused) {
-    this.scaleEntity(entity, poseStack);
-  }
-
-  @Override
-  public void render(
+  public void renderDefaultPose(
       Fairy entity,
+      FairyModel<Fairy> model,
+      Pose pose,
       float entityYaw,
       float partialTicks,
       PoseStack poseStack,
-      net.minecraft.client.renderer.MultiBufferSource buffer,
+      MultiBufferSource buffer,
       int light) {
-    FairyModel<Fairy> playerModel = this.getModel();
-
-    // Model Rotation
-    this.rotateEntityAlternative(entity, poseStack);
-
-    // Render additional poses
-    if (entity.getModelPose() == ModelPose.DEFAULT) {
-
-      // Crouching
-      playerModel.crouching = entity.isCrouching();
-
-      switch (entity.getPose()) {
-        case DYING:
-          poseStack.translate(-0.5D, 0.0D, 0.0D);
-          poseStack.mulPose(Axis.YP.rotationDegrees(180f));
-          poseStack.mulPose(Axis.ZP.rotationDegrees(this.getFlipDegrees(entity)));
-          poseStack.mulPose(Axis.YP.rotationDegrees(270.0F));
-          playerModel.getHead().xRot = -0.7853982F;
-          playerModel.getHead().yRot = -0.7853982F;
-          playerModel.getHead().zRot = -0.7853982F;
-          break;
-        case LONG_JUMPING:
-          playerModel.leftArmPose = HumanoidModel.ArmPose.CROSSBOW_HOLD;
-          playerModel.rightArmPose = HumanoidModel.ArmPose.SPYGLASS;
-          break;
-        case SLEEPING:
-          poseStack.translate(0.5D, 0.0D, 0.0D);
-          break;
-        case SPIN_ATTACK:
-          playerModel.leftArmPose = HumanoidModel.ArmPose.BLOCK;
-          playerModel.rightArmPose = HumanoidModel.ArmPose.THROW_SPEAR;
-          poseStack.mulPose(Axis.YP.rotationDegrees(-35f));
-          break;
-        default:
-          playerModel.leftArmPose = HumanoidModel.ArmPose.EMPTY;
-          playerModel.rightArmPose = HumanoidModel.ArmPose.EMPTY;
-          playerModel.getHead().xRot = 0F;
-          playerModel.getHead().yRot = 0F;
-          playerModel.getHead().zRot = 0F;
-          break;
-      }
-    } else {
-      playerModel.crouching = false;
+    switch (pose) {
+      case DYING:
+        poseStack.translate(-0.5D, 0.0D, 0.0D);
+        poseStack.mulPose(Axis.YP.rotationDegrees(180f));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(this.getFlipDegrees(entity)));
+        poseStack.mulPose(Axis.YP.rotationDegrees(270.0F));
+        model.getHead().xRot = -0.7853982F;
+        model.getHead().yRot = -0.7853982F;
+        model.getHead().zRot = -0.7853982F;
+        break;
+      case LONG_JUMPING:
+        model.leftArmPose = HumanoidModel.ArmPose.CROSSBOW_HOLD;
+        model.rightArmPose = HumanoidModel.ArmPose.SPYGLASS;
+        break;
+      case SLEEPING:
+        poseStack.translate(0.5D, 0.0D, 0.0D);
+        break;
+      case SPIN_ATTACK:
+        model.leftArmPose = HumanoidModel.ArmPose.BLOCK;
+        model.rightArmPose = HumanoidModel.ArmPose.THROW_SPEAR;
+        poseStack.mulPose(Axis.YP.rotationDegrees(-35f));
+        break;
+      default:
+        model.leftArmPose = HumanoidModel.ArmPose.EMPTY;
+        model.rightArmPose = HumanoidModel.ArmPose.EMPTY;
+        model.getHead().xRot = 0F;
+        model.getHead().yRot = 0F;
+        model.getHead().zRot = 0F;
+        break;
     }
-
-    super.render(entity, entityYaw, partialTicks, poseStack, buffer, light);
-  }
-
-  @Override
-  protected void renderNameTag(
-      Fairy entity,
-      Component component,
-      PoseStack poseStack,
-      MultiBufferSource multiBufferSource,
-      int color) {
-    this.renderEntityNameTag(entity, poseStack);
-    super.renderNameTag(entity, component, poseStack, multiBufferSource, color);
-  }
-
-  @Override
-  protected int getBlockLightLevel(Fairy entity, BlockPos blockPos) {
-    return getEntityLightLevel(entity, blockPos);
   }
 }

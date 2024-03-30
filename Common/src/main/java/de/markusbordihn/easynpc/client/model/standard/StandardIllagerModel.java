@@ -77,6 +77,9 @@ public class StandardIllagerModel<T extends LivingEntity> extends HierarchicalMo
     if (!(entity instanceof EasyNPC<?> easyNPC)) {
       return;
     }
+
+    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+
     // Reset model to avoid any issues with other mods.
     EasyNPCModel.resetHierarchicalModel(
         this,
@@ -88,8 +91,17 @@ public class StandardIllagerModel<T extends LivingEntity> extends HierarchicalMo
         this.rightLeg,
         this.leftLeg);
 
+    // Handle crossed arms variants
+    VariantData<?> variantData = easyNPC.getEasyNPCVariantData();
+    AttackData<?> attackData = easyNPC.getEasyNPCAttackData();
+    boolean isCrossedArms =
+        (modelData.getModelArmPose() == ModelArmPose.CROSSED || variantData.hasVariantCrossedArms())
+            && !attackData.isHoldingWeapon();
+    this.arms.visible = isCrossedArms;
+    this.leftArm.visible = !isCrossedArms;
+    this.rightArm.visible = !isCrossedArms;
+
     // Handle model data
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData.getModelPose() == ModelPose.CUSTOM) {
       setupHierarchicalModel(
           easyNPC,
@@ -106,25 +118,23 @@ public class StandardIllagerModel<T extends LivingEntity> extends HierarchicalMo
       this.body.xRot = 0.5F;
       this.body.y = 3.2F;
       this.head.y = 4.2F;
-      this.leftArm.xRot += 0.4F;
-      this.leftArm.y = 5.2F;
+      if (this.arms.visible) {
+        this.arms.xRot += 0.4F;
+        this.arms.y = 5.2F;
+      }
+      if (this.leftArm.visible) {
+        this.leftArm.xRot += 0.4F;
+        this.leftArm.y = 5.2F;
+      }
       this.leftLeg.y = 12.2F;
       this.leftLeg.z = 4.0F;
-      this.rightArm.xRot += 0.4F;
-      this.rightArm.y = 5.2F;
+      if (this.rightArm.visible) {
+        this.rightArm.xRot += 0.4F;
+        this.rightArm.y = 5.2F;
+      }
       this.rightLeg.y = 12.2F;
       this.rightLeg.z = 4.0F;
     }
-
-    // Handle crossed arms variants
-    VariantData<?> variantData = easyNPC.getEasyNPCVariantData();
-    AttackData<?> attackData = easyNPC.getEasyNPCAttackData();
-    boolean isCrossedArms =
-        (modelData.getModelArmPose() == ModelArmPose.CROSSED || variantData.hasVariantCrossedArms())
-            && !attackData.isHoldingWeapon();
-    this.arms.visible = isCrossedArms;
-    this.leftArm.visible = !isCrossedArms;
-    this.rightArm.visible = !isCrossedArms;
 
     if (!EasyNPCModel.animateHierarchicalModel(
         this,
