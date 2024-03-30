@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.menu.configuration.trading;
 import de.markusbordihn.easynpc.data.trading.TradingSettings;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -49,7 +48,7 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
   public static final int SLOT_SIZE = 18;
 
   // Define containers
-  protected static final int tradingContainerSize = TradingSettings.ADVANCED_TRADING_OFFERS * 3;
+  protected static final int TRADING_CONTAINER_SIZE = TradingSettings.ADVANCED_TRADING_OFFERS * 3;
   protected final Container tradingContainer;
 
   public AdvancedTradingConfigurationMenu(
@@ -69,7 +68,7 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
 
   public AdvancedTradingConfigurationMenu(
       final MenuType<?> menuType, int windowId, Inventory inventory, UUID uuid, int pageIndex) {
-    this(menuType, windowId, inventory, new SimpleContainer(tradingContainerSize), uuid, pageIndex);
+    this(menuType, windowId, inventory, new SimpleContainer(TRADING_CONTAINER_SIZE), uuid, pageIndex);
   }
 
   public AdvancedTradingConfigurationMenu(
@@ -82,7 +81,7 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
     super(menuType, windowId, playerInventory, uuid, pageIndex);
 
     // Make sure the passed container matched the expected sizes
-    checkContainerSize(tradingContainer, tradingContainerSize);
+    checkContainerSize(tradingContainer, TRADING_CONTAINER_SIZE);
 
     // Container
     this.tradingContainer = tradingContainer;
@@ -173,7 +172,6 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
         return new TextComponent("Advanced trades for " + entity.getName().getString());
       }
 
-      @Nullable
       @Override
       public AbstractContainerMenu createMenu(
           int windowId, Inventory inventory, Player serverPlayer) {

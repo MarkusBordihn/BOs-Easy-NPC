@@ -43,12 +43,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class AdvancedDialogConfigurationScreen
     extends DialogConfigurationScreen<AdvancedDialogConfigurationMenu> {
 
-  // Buttons
   Button newDialogButton;
 
-  // Text
-
-  // List
   AdvancedDialogConfigurationScreen.DialogList dialogList;
 
   public AdvancedDialogConfigurationScreen(

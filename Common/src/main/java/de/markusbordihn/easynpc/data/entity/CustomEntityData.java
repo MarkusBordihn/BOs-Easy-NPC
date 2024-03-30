@@ -43,7 +43,7 @@ public class CustomEntityData {
   private final boolean isClientSide;
 
   public CustomEntityData(Entity entity) {
-    this.isClientSide = entity != null && entity.level != null && entity.level.isClientSide;
+    this.isClientSide = entity != null && entity.level.isClientSide;
   }
 
   /*

@@ -41,7 +41,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class PoseConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
 
   protected final ModelData<?> modelData;
-  // Buttons
   protected Button defaultPoseButton;
   protected Button advancedPoseButton;
   protected Button customPoseButton;

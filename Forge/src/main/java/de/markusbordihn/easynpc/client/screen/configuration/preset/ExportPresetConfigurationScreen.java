@@ -34,7 +34,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
     extends ConfigurationScreen<T> {
 
-  // Buttons
   protected Button customExportPresetButton;
   protected Button worldExportPresetButton;
 

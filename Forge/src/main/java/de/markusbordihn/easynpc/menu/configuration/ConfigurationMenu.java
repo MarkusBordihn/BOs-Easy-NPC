@@ -89,9 +89,6 @@ public class ConfigurationMenu extends AbstractContainerMenu {
 
   @Override
   public boolean stillValid(Player player) {
-    return player != null
-        && player.isAlive()
-        && this.easyNPC != null
-        && this.easyNPC.getEntity().isAlive();
+    return player.isAlive() && this.easyNPC != null && this.easyNPC.getEntity().isAlive();
   }
 }

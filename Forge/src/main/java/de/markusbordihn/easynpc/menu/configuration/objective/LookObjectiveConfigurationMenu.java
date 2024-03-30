@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.menu.configuration.objective;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -57,7 +56,6 @@ public class LookObjectiveConfigurationMenu extends ObjectiveConfigurationMenu {
         return new TextComponent("Look Objective for " + entity.getName().getString());
       }
 
-      @Nullable
       @Override
       public AbstractContainerMenu createMenu(
           int windowId, Inventory inventory, Player serverPlayer) {

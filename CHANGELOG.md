@@ -6,6 +6,14 @@ This change log includes the summarized changes.
 For the full changelog, please go to the [GitHub History][history] instead.
 
 Note: Please always back up your world / NPCs before updating to a new version!
+Check the [upgrade guide][upgrade_guide] for more information.
+
+### 4.2.0
+
+Note: Dropped support for Minecraft 1.19, 1.19.1, 1.19.3, 1.19.4 and 1.20 because of low usage.
+Please use the beta version 4.1.0 or former releases for these versions.
+
+- General code cleanup and refactoring per release.
 
 ### 4.1.0
 
@@ -336,3 +344,5 @@ it could be that some of them are not compatible with older versions.
 [project_mmo]: https://www.curseforge.com/minecraft/mc-mods/project-mmo
 
 [better_combat]: https://www.curseforge.com/minecraft/mc-mods/better-combat-by-daedelus
+
+[upgrade_guide]: https://github.com/MarkusBordihn/BOs-Easy-NPC/wiki/Upgrading

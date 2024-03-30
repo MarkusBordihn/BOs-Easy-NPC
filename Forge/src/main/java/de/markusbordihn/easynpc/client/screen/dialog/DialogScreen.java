@@ -64,30 +64,21 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
   private static final int LARGE_BUTTON_WIDTH = 250;
   private static final int MAX_NUMBER_OF_PIXEL_PER_LINE = 180;
   private static final int MAX_NUMBER_OF_DIALOG_LINES = 10;
-
-  // Data access
   protected final ActionEventSet actionEventDataSet;
   protected final DialogDataSet dialogDataSet;
   protected final EasyNPC<?> easyNPC;
   protected final UUID dialogId;
   protected final UUID uuid;
   protected final int pageIndex;
-
-  // Layout relevant Data
   protected final DialogType dialogType;
   protected final DialogDataEntry dialogData;
-  // Dialog Buttons
   protected final ArrayList<Button> dialogButtons = new ArrayList<>();
   protected DialogScreenLayout dialogScreenLayout;
-  // Buttons
   protected Button closeButton = null;
   protected Button dialogForwardButton = null;
   protected Button dialogBackwardButton = null;
-  // Internal
   protected float xMouse;
   protected float yMouse;
-
-  // Dialog Options
   protected String dialog;
   protected TextComponent dialogComponent;
   protected int numberOfDialogLines = 1;

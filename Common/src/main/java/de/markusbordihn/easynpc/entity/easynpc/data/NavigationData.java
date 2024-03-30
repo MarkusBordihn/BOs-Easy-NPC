@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import javax.annotation.Nonnull;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -122,7 +121,7 @@ public interface NavigationData<T extends PathfinderMob> extends EasyNPC<T> {
     }
   }
 
-  default void handleNavigationTravelEvent(@Nonnull Vec3 vec3) {
+  default void handleNavigationTravelEvent(Vec3 vec3) {
     TickerData<?> tickerData = this.getEasyNPCTickerData();
 
     // Update basic movement relevant data.

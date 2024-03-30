@@ -24,7 +24,6 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.SpawnData;
 import java.util.Objects;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -79,7 +78,7 @@ public class ModSpawnEggItem extends SpawnEggItem {
   }
 
   @Override
-  public EntityType<?> getType(@Nullable CompoundTag tag) {
+  public EntityType<?> getType(CompoundTag tag) {
     EntityType<?> type = super.getType(tag);
     return type != null ? type : this.typeSupplier.get();
   }

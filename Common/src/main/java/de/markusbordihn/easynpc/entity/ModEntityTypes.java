@@ -43,7 +43,7 @@ public class ModEntityTypes {
   public static final MobCategory CATEGORY = MobCategory.MISC;
 
   public static final EntityType<Allay> ALLAY =
-      EntityType.Builder.of(Allay::new, MobCategory.CREATURE)
+      EntityType.Builder.of(Allay::new, CATEGORY)
           .sized(0.6F, 0.90F)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Allay.ID);
@@ -58,34 +58,34 @@ public class ModEntityTypes {
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(HumanoidSlim.ID);
   public static final EntityType<Cat> CAT =
-      EntityType.Builder.of(Cat::new, MobCategory.CREATURE)
+      EntityType.Builder.of(Cat::new, CATEGORY)
           .sized(0.6F, 0.6F)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Cat.ID);
   public static final EntityType<Chicken> CHICKEN =
-      EntityType.Builder.of(Chicken::new, MobCategory.CREATURE)
+      EntityType.Builder.of(Chicken::new, CATEGORY)
           .sized(0.6F, 0.9F)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Chicken.ID);
   public static final EntityType<Fairy> FAIRY =
-      EntityType.Builder.of(Fairy::new, MobCategory.CREATURE)
+      EntityType.Builder.of(Fairy::new, CATEGORY)
           .sized(0.6F, 2.0F)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Fairy.ID);
   public static final EntityType<IronGolem> IRON_GOLEM =
-      EntityType.Builder.of(IronGolem::new, MobCategory.MISC)
+      EntityType.Builder.of(IronGolem::new, CATEGORY)
           .sized(1.4F, 2.7F)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(IronGolem.ID);
   public static final EntityType<Skeleton> SKELETON =
-      EntityType.Builder.<Skeleton>of(Skeleton::new, MobCategory.MONSTER)
+      EntityType.Builder.<Skeleton>of(Skeleton::new, CATEGORY)
           .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Skeleton.ID);
   public static final EntityType<Skeleton> STRAY =
       EntityType.Builder.<Skeleton>of(
               (entityType, level) -> new Skeleton(entityType, level, Skeleton.Variant.STRAY),
-              MobCategory.MONSTER)
+              CATEGORY)
           .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Skeleton.ID_STRAY);
@@ -93,41 +93,40 @@ public class ModEntityTypes {
       EntityType.Builder.<Skeleton>of(
               (entityType, level) ->
                   new Skeleton(entityType, level, Skeleton.Variant.WITHER_SKELETON),
-              MobCategory.MONSTER)
+              CATEGORY)
           .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Skeleton.ID_WITHER_SKELETON);
   public static final EntityType<Villager> VILLAGER =
-      EntityType.Builder.of(Villager::new, MobCategory.MISC)
+      EntityType.Builder.of(Villager::new, CATEGORY)
           .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Villager.ID);
   public static final EntityType<ZombieVillager> ZOMBIE_VILLAGER =
-      EntityType.Builder.of(ZombieVillager::new, MobCategory.MONSTER)
+      EntityType.Builder.of(ZombieVillager::new, CATEGORY)
           .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(ZombieVillager.ID);
   public static final EntityType<Zombie> DROWNED =
       EntityType.Builder.<Zombie>of(
               (entityType, level) -> new Zombie(entityType, level, Zombie.Variant.DROWNED),
-              MobCategory.MONSTER)
+              CATEGORY)
           .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Zombie.ID_DROWNED);
   public static final EntityType<Zombie> HUSK =
       EntityType.Builder.<Zombie>of(
-              (entityType, level) -> new Zombie(entityType, level, Zombie.Variant.HUSK),
-              MobCategory.MONSTER)
+              (entityType, level) -> new Zombie(entityType, level, Zombie.Variant.HUSK), CATEGORY)
           .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Zombie.ID_HUSK);
   public static final EntityType<Zombie> ZOMBIE =
-      EntityType.Builder.<Zombie>of(Zombie::new, MobCategory.MONSTER)
+      EntityType.Builder.<Zombie>of(Zombie::new, CATEGORY)
           .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Zombie.ID);
   public static final EntityType<Pig> PIG =
-      EntityType.Builder.of(Pig::new, MobCategory.CREATURE)
+      EntityType.Builder.of(Pig::new, CATEGORY)
           .sized(0.9F, 0.9F)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Pig.ID);
@@ -135,7 +134,7 @@ public class ModEntityTypes {
       EntityType.Builder.<Illager>of(
               (entityType, level) ->
                   new Illager(entityType, level, Illager.Variant.EVOKER_CROSSED_ARMS),
-              MobCategory.MONSTER)
+              CATEGORY)
           .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Illager.ID_EVOKER);
@@ -143,14 +142,14 @@ public class ModEntityTypes {
       EntityType.Builder.<Illager>of(
               (entityType, level) ->
                   new Illager(entityType, level, Illager.Variant.ILLUSIONER_CROSSED_ARMS),
-              MobCategory.MONSTER)
+              CATEGORY)
           .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Illager.ID_ILLUSIONER);
   public static final EntityType<Illager> PILLAGER =
       EntityType.Builder.<Illager>of(
               (entityType, level) -> new Illager(entityType, level, Illager.Variant.PILLAGER),
-              MobCategory.MONSTER)
+              CATEGORY)
           .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Illager.ID_PILLAGER);
@@ -158,19 +157,18 @@ public class ModEntityTypes {
       EntityType.Builder.<Illager>of(
               (entityType, level) ->
                   new Illager(entityType, level, Illager.Variant.VINDICATOR_CROSSED_ARMS),
-              MobCategory.MONSTER)
+              CATEGORY)
           .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Illager.ID_VINDICATOR);
   public static final EntityType<Orc> ORC =
-      EntityType.Builder.<Orc>of(Orc::new, MobCategory.MONSTER)
+      EntityType.Builder.<Orc>of(Orc::new, CATEGORY)
           .sized(HUMANOID_SIZE_WIDTH, 1.9F)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Orc.ID);
   public static final EntityType<Orc> ORC_WARRIOR =
       EntityType.Builder.<Orc>of(
-              (entityType, level) -> new Orc(entityType, level, Orc.Variant.WARRIOR),
-              MobCategory.MONSTER)
+              (entityType, level) -> new Orc(entityType, level, Orc.Variant.WARRIOR), CATEGORY)
           .sized(HUMANOID_SIZE_WIDTH, 1.9F)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Orc.ID_WARRIOR);

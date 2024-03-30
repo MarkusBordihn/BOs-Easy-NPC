@@ -36,7 +36,6 @@ public class OuterLayer<T extends LivingEntity, M extends EntityModel<T>>
   private final Map<?, ResourceLocation> textures;
   private final M model;
 
-  @SuppressWarnings("java:S1172")
   public OuterLayer(
       RenderLayerParent<T, M> renderer,
       EntityModelSet entityModelSet,

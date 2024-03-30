@@ -46,7 +46,6 @@ import de.markusbordihn.easynpc.menu.editor.DialogButtonEditorMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import java.util.HashSet;
 import java.util.UUID;
-import javax.annotation.Nonnull;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.ConfirmScreen;
@@ -68,12 +67,9 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  // General
   protected final ClientLevel clientLevel;
   protected final LocalPlayer localPlayer;
   protected final Minecraft minecraftInstance;
-
-  // Data access
   protected final DialogDataSet dialogDataSet;
   protected final DialogDataEntry dialogData;
   protected final DialogButtonData dialogButtonData;
@@ -82,29 +78,19 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
   protected final UUID dialogButtonId;
   protected final UUID uuid;
   protected final ConfigurationType formerConfigurationType;
-
-  // Navigation
   protected Button homeButton;
   protected Button dialogButton;
   protected Button dialogButtonButton;
-
-  // Buttons
   protected Button closeButton;
   protected Button saveButton;
   protected Button cancelButton;
   protected Button deleteButton;
-
-  // Edit Boxes
   protected TextField buttonNameBox;
   protected Button buttonNameToLabelButton;
   protected TextField buttonLabelBox;
   protected Checkbox buttonLabelCheckbox;
-
-  // Open Named Dialog
   protected TextField openNamedDialogBox;
   protected Checkbox openTradingScreenCheckbox;
-
-  // Command Dialog
   protected TextField commandDialogBox;
   protected Checkbox commandDialogExecuteAsUserCheckbox;
   protected Checkbox commandDialogDebugCheckbox;
@@ -468,7 +454,7 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
   }
 
   @Override
-  public void render(@Nonnull PoseStack poseStack, int x, int y, float partialTicks) {
+  public void render(PoseStack poseStack, int x, int y, float partialTicks) {
     this.renderBackground(poseStack);
     super.render(poseStack, x, y, partialTicks);
     this.renderEditLabels(poseStack);
@@ -486,13 +472,12 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
   }
 
   @Override
-  protected void renderLabels(@Nonnull PoseStack poseStack, int x, int y) {
+  protected void renderLabels(PoseStack poseStack, int x, int y) {
     // No labels
   }
 
   @Override
-  protected void renderBg(
-      @Nonnull PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
+  protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
     RenderSystem.setShader(GameRenderer::getPositionTexShader);
     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     RenderSystem.setShaderTexture(0, Constants.TEXTURE_DEMO_BACKGROUND);

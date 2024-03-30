@@ -29,7 +29,6 @@ public final class Constants {
   // General Mod definitions
   public static final String LOG_NAME = "Easy NPC";
   public static final String LOG_ICON = "🗣";
-  public static final String LOG_CREATE_PREFIX = LOG_ICON + " Create Easy NPC";
   public static final String LOG_REGISTER_PREFIX = LOG_ICON + " Register Easy NPC";
   public static final String MOD_COMMAND = "easy_npc";
   public static final String MOD_ID = "easy_npc";

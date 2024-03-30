@@ -308,7 +308,7 @@ public class DialogDataEntry {
 
     // Only save translate if it is true.
     if (this.translate) {
-      compoundTag.putBoolean(DATA_TRANSLATE_TAG, this.translate);
+      compoundTag.putBoolean(DATA_TRANSLATE_TAG, true);
     }
 
     // Save dialog text

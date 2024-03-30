@@ -23,7 +23,6 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.List;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
@@ -119,11 +118,10 @@ public class EasyNPCPresetItem extends Item {
 
   public static boolean hasSpawnerUUID(ItemStack itemStack) {
     CompoundTag compoundTag = itemStack.getOrCreateTag();
-    return compoundTag.contains(SPAWNER_UUID_TAG)
-        && !compoundTag.getUUID(SPAWNER_UUID_TAG).equals(null);
+    return compoundTag.contains(SPAWNER_UUID_TAG) && compoundTag.getUUID(SPAWNER_UUID_TAG) != null;
   }
 
-  public static void setSpawnerUUID(ItemStack itemStack, @Nullable UUID uuid) {
+  public static void setSpawnerUUID(ItemStack itemStack, UUID uuid) {
     CompoundTag compoundTag = itemStack.getOrCreateTag();
     if (uuid != null) {
       compoundTag.putUUID(SPAWNER_UUID_TAG, uuid);
@@ -149,6 +147,10 @@ public class EasyNPCPresetItem extends Item {
     // Get entity type and create entity.
     CompoundTag entityPreset = getPreset(itemStack);
     EntityType<?> entityType = getEntityType(itemStack);
+    if (entityType == null) {
+      log.error("No valid entity type found in {}!", itemStack);
+      return false;
+    }
     Entity entity = entityType.create(level);
 
     // Remove UUID from preset, to avoid conflicts with existing entities.
@@ -201,7 +203,7 @@ public class EasyNPCPresetItem extends Item {
       }
     }
 
-    return InteractionResult.sidedSuccess(level.isClientSide);
+    return InteractionResult.PASS;
   }
 
   @Override
@@ -212,10 +214,7 @@ public class EasyNPCPresetItem extends Item {
 
   @Override
   public void appendHoverText(
-      ItemStack itemStack,
-      @Nullable Level level,
-      List<Component> tooltipList,
-      TooltipFlag tooltipFlag) {
+      ItemStack itemStack, Level level, List<Component> tooltipList, TooltipFlag tooltipFlag) {
     if (hasPreset(itemStack)) {
       EntityType<?> entityType = getEntityType(itemStack);
       if (entityType != null) {

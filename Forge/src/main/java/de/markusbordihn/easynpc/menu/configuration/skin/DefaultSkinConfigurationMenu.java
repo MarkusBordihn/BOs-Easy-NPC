@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.menu.configuration.skin;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -50,7 +49,6 @@ public class DefaultSkinConfigurationMenu extends ConfigurationMenu {
         return new TextComponent("Default Skin for " + entity.getName().getString());
       }
 
-      @Nullable
       @Override
       public AbstractContainerMenu createMenu(
           int windowId, Inventory inventory, Player serverPlayer) {

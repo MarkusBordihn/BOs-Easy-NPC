@@ -44,12 +44,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ImportWorldPresetConfigurationScreen
     extends ImportPresetConfigurationScreen<WorldImportPresetConfigurationMenu> {
 
-  // Cache
   protected static ResourceLocation selectedPreset;
   protected static List<ResourceLocation> worldPresets;
-  // Buttons
   protected Button importPresetButton;
-  // Preset Selection List
   private ImportWorldPresetConfigurationScreen.ImportFileSelectionList presetSelectionList;
 
   public ImportWorldPresetConfigurationScreen(

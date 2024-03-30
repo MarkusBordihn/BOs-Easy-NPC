@@ -47,11 +47,8 @@ public class ExportCustomPresetConfigurationScreen
   protected Button exportPresetButton;
   protected Button openCustomExportPresetFolder;
   protected int numberOfTextLines = 1;
-  // Buttons and Boxes
   private EditBox nameBox;
-  // Text
   private List<FormattedCharSequence> textComponents = Collections.emptyList();
-  // Cache
   private File customPresetFile;
   private String customPresetFileName = "";
 

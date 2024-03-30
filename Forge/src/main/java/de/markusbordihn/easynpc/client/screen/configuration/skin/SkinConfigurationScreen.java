@@ -36,17 +36,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class SkinConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
 
-  // Settings
   protected static final int SKIN_PREVIEW_WIDTH = 60;
-
-  // Buttons
   protected Button noneSkinButton = null;
   protected Button customSkinButton = null;
   protected Button defaultSkinButton = null;
   protected Button playerSkinButton = null;
   protected Button urlSkinButton = null;
-
-  // Skin Navigation
   protected Button skinPreviousButton = null;
   protected Button skinNextButton = null;
   protected Button skinPreviousPageButton = null;
@@ -54,8 +49,6 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
   protected int skinStartIndex = 0;
   protected int numOfSkins = 0;
   protected int maxSkinsPerPage = 5;
-
-  // Cache
   protected List<Button> skinButtons = new ArrayList<>();
 
   public SkinConfigurationScreen(T menu, Inventory inventory, Component component) {

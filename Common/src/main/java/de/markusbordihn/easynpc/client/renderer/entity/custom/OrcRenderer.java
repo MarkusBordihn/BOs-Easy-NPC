@@ -29,7 +29,6 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Orc.Variant;
 import java.util.EnumMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -43,7 +42,6 @@ import net.minecraft.resources.ResourceLocation;
 public class OrcRenderer extends HumanoidMobRenderer<Orc, OrcModel<Orc>>
     implements EasyNPCRenderer {
 
-  // Variant Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
           new EnumMap<>(Variant.class),
@@ -150,7 +148,7 @@ public class OrcRenderer extends HumanoidMobRenderer<Orc, OrcModel<Orc>>
   }
 
   @Override
-  protected int getBlockLightLevel(@Nonnull Orc entity, @Nonnull BlockPos blockPos) {
+  protected int getBlockLightLevel(Orc entity, BlockPos blockPos) {
     return getEntityLightLevel(entity, blockPos);
   }
 }

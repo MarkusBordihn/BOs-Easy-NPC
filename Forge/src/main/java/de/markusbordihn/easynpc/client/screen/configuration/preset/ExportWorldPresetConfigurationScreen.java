@@ -45,9 +45,7 @@ public class ExportWorldPresetConfigurationScreen
 
   protected Button exportPresetButton;
   protected int numberOfTextLines = 1;
-  // Buttons and Boxes
   private EditBox nameBox;
-  // Text
   private List<FormattedCharSequence> textComponents = Collections.emptyList();
 
   public ExportWorldPresetConfigurationScreen(

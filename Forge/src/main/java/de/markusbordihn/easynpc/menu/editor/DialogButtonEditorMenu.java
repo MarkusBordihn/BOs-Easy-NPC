@@ -27,7 +27,6 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -126,7 +125,6 @@ public class DialogButtonEditorMenu extends AbstractContainerMenu {
         return new TextComponent("Edit Dialog Button " + dialogButtonId);
       }
 
-      @Nullable
       @Override
       public AbstractContainerMenu createMenu(
           int windowId, Inventory inventory, Player serverPlayer) {
@@ -181,9 +179,6 @@ public class DialogButtonEditorMenu extends AbstractContainerMenu {
 
   @Override
   public boolean stillValid(Player player) {
-    return player != null
-        && player.isAlive()
-        && this.easyNPC != null
-        && this.easyNPC.getEntity().isAlive();
+    return player.isAlive() && this.easyNPC != null && this.easyNPC.getEntity().isAlive();
   }
 }

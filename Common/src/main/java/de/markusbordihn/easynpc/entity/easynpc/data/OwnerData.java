@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.Optional;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -42,12 +41,11 @@ public interface OwnerData<T extends PathfinderMob> extends EasyNPC<T> {
   // CompoundTags
   String DATA_OWNER_TAG = "Owner";
 
-  @Nullable
   default UUID getOwnerUUID() {
     return getEasyNPCData(DATA_OWNER_UUID_ID).orElse(null);
   }
 
-  default void setOwnerUUID(@Nullable UUID uuid) {
+  default void setOwnerUUID(UUID uuid) {
     setEasyNPCData(DATA_OWNER_UUID_ID, Optional.ofNullable(uuid));
   }
 
@@ -55,7 +53,6 @@ public interface OwnerData<T extends PathfinderMob> extends EasyNPC<T> {
     return this.getOwnerUUID() != null;
   }
 
-  @Nullable
   default LivingEntity getOwner() {
     Level level = getLevel();
     if (level == null) {

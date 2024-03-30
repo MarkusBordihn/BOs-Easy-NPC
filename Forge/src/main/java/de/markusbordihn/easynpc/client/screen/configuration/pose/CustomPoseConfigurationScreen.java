@@ -37,7 +37,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class CustomPoseConfigurationScreen
     extends PoseConfigurationScreen<CustomPoseConfigurationMenu> {
 
-  // Slider Buttons reference for positioning
   protected SliderButton headSliderButton;
   protected SliderButton bodySliderButton;
   protected SliderButton armsSliderButton;

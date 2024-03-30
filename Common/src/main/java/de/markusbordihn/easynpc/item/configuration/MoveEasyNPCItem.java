@@ -24,7 +24,6 @@ import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -74,10 +73,7 @@ public class MoveEasyNPCItem extends Item {
 
   @Override
   public void appendHoverText(
-      ItemStack itemStack,
-      @Nullable Level level,
-      List<Component> tooltipList,
-      TooltipFlag tooltipFlag) {
+      ItemStack itemStack, Level level, List<Component> tooltipList, TooltipFlag tooltipFlag) {
     tooltipList.add(new TranslatableComponent(Constants.TEXT_ITEM_PREFIX + ID));
   }
 }

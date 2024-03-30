@@ -24,7 +24,6 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -48,9 +47,9 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   // Defining basic layout options
-  protected static final int armorContainerSize = 4;
-  protected static final int handContainerSize = 2;
-  protected static final int slotSize = 18;
+  protected static final int ARMOR_CONTAINER_SIZE = 4;
+  protected static final int HAND_CONTAINER_SIZE = 2;
+  protected static final int SLOT_SIZE = 18;
 
   // Define containers
   protected final Container armorContainer;
@@ -70,8 +69,8 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
         menuType,
         windowId,
         inventory,
-        new SimpleContainer(armorContainerSize),
-        new SimpleContainer(handContainerSize),
+        new SimpleContainer(ARMOR_CONTAINER_SIZE),
+        new SimpleContainer(HAND_CONTAINER_SIZE),
         uuid);
   }
 
@@ -85,8 +84,8 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
     super(menuType, windowId, playerInventory, uuid);
 
     // Make sure the passed container matched the expected sizes
-    checkContainerSize(armorContainer, armorContainerSize);
-    checkContainerSize(handContainer, handContainerSize);
+    checkContainerSize(armorContainer, ARMOR_CONTAINER_SIZE);
+    checkContainerSize(handContainer, HAND_CONTAINER_SIZE);
 
     // Container
     this.armorContainer = armorContainer;
@@ -110,7 +109,7 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
                 this.armorContainer,
                 3 - armorSlot,
                 playerCompanionEquipmentLeftStartPositionX,
-                playerCompanionEquipmentLeftStartPositionY + armorSlot * slotSize));
+                playerCompanionEquipmentLeftStartPositionY + armorSlot * SLOT_SIZE));
       }
     }
 
@@ -149,8 +148,8 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
             new Slot(
                 playerInventory,
                 inventoryColumn + inventoryRow * 9 + 9,
-                playerInventoryStartPositionX + inventoryColumn * slotSize,
-                playerInventoryStartPositionY + inventoryRow * slotSize));
+                playerInventoryStartPositionX + inventoryColumn * SLOT_SIZE,
+                playerInventoryStartPositionY + inventoryRow * SLOT_SIZE));
       }
     }
 
@@ -162,7 +161,7 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
           new Slot(
               playerInventory,
               playerInventorySlot,
-              hotbarStartPositionX + playerInventorySlot * slotSize,
+              hotbarStartPositionX + playerInventorySlot * SLOT_SIZE,
               hotbarStartPositionY));
     }
   }
@@ -174,7 +173,6 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
         return new TextComponent("Equipment for " + entity.getName().getString());
       }
 
-      @Nullable
       @Override
       public AbstractContainerMenu createMenu(
           int windowId, Inventory inventory, Player serverPlayer) {

@@ -28,7 +28,6 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton.Variant;
 import java.util.EnumMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -45,7 +44,6 @@ import net.minecraft.resources.ResourceLocation;
 public class SkeletonRenderer extends HumanoidMobRenderer<Skeleton, StandardSkeletonModel<Skeleton>>
     implements EasyNPCRenderer {
 
-  // Variant Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
           new EnumMap<>(Variant.class),
@@ -156,7 +154,7 @@ public class SkeletonRenderer extends HumanoidMobRenderer<Skeleton, StandardSkel
   }
 
   @Override
-  protected int getBlockLightLevel(@Nonnull Skeleton entity, @Nonnull BlockPos blockPos) {
+  protected int getBlockLightLevel(Skeleton entity, BlockPos blockPos) {
     return getEntityLightLevel(entity, blockPos);
   }
 }
