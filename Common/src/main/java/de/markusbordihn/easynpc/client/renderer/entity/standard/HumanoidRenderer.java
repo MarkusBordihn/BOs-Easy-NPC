@@ -29,7 +29,6 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid.Variant;
 import java.util.EnumMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -47,15 +46,11 @@ import net.minecraft.resources.ResourceLocation;
 public class HumanoidRenderer extends LivingEntityRenderer<Humanoid, StandardPlayerModel<Humanoid>>
     implements EasyNPCRenderer {
 
-  // Variant Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
           new EnumMap<>(Variant.class),
           map -> {
-            // Build-in Variants
             map.put(Variant.STEVE, new ResourceLocation("textures/entity/steve.png"));
-
-            // Custom Variants
             map.put(
                 Variant.JAYJASONBO,
                 new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/jayjasonbo.png"));
@@ -170,7 +165,7 @@ public class HumanoidRenderer extends LivingEntityRenderer<Humanoid, StandardPla
   }
 
   @Override
-  protected int getBlockLightLevel(@Nonnull Humanoid entity, @Nonnull BlockPos blockPos) {
+  protected int getBlockLightLevel(Humanoid entity, BlockPos blockPos) {
     return getEntityLightLevel(entity, blockPos);
   }
 }

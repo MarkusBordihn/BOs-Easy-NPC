@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.block;
 
 import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntity;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -40,7 +39,6 @@ public class EasyNPCSpawnerBlock extends BaseEasyNPCSpawnerBlock {
   }
 
   @Override
-  @Nullable
   public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
       Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
     return createTickerHelper(

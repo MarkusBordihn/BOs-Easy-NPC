@@ -32,7 +32,6 @@ import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
@@ -159,10 +158,7 @@ public class PresetCommand {
   }
 
   private static int importPreset(
-      CommandSourceStack context,
-      ResourceLocation preset,
-      @Nullable Vec3 position,
-      @Nullable UUID uuid) {
+      CommandSourceStack context, ResourceLocation preset, Vec3 position, UUID uuid) {
     if (preset == null) {
       return 0;
     }

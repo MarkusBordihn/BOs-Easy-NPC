@@ -26,7 +26,6 @@ import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -72,8 +71,7 @@ public class OwnerCommand {
                                     context.getSource(), UuidArgument.getUuid(context, "uuid")))));
   }
 
-  private static int setOwner(
-      CommandSourceStack context, @Nullable UUID uuid, ServerPlayer serverPlayer) {
+  private static int setOwner(CommandSourceStack context, UUID uuid, ServerPlayer serverPlayer) {
     if (uuid == null || serverPlayer == null) {
       return 0;
     }

@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.Vec3i;
@@ -75,7 +74,6 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends RandomStrollGoal {
   }
 
   @Override
-  @Nullable
   protected Vec3 getPosition() {
     if (reachedHome()) {
       return null;

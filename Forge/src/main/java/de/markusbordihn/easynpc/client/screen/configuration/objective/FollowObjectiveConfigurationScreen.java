@@ -40,13 +40,10 @@ public class FollowObjectiveConfigurationScreen
     extends ObjectiveConfigurationScreen<FollowObjectiveConfigurationMenu> {
 
   protected final OwnerData<?> ownerData;
-  // Basic Objective Checkbox
   protected Checkbox followOwnerCheckbox;
-  // Follow Player with name input field and save button
   protected Checkbox followPlayerCheckbox;
   protected EditBox followPlayerName;
   protected Button followPlayerNameSaveButton;
-  // Follow entity with UUID input field and save button
   protected Checkbox followEntityCheckbox;
   protected EditBox followEntityUUID;
   protected Button followEntityUUIDSaveButton;

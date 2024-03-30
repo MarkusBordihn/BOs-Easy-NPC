@@ -36,7 +36,6 @@ public class VariantLayer<T extends LivingEntity, M extends EntityModel<T>>
   private final Map<?, ResourceLocation> textures;
   private final M model;
 
-  @SuppressWarnings("java:S1172")
   public VariantLayer(
       RenderLayerParent<T, M> renderer, EntityModelSet model, Map<?, ResourceLocation> textures) {
     super(renderer);

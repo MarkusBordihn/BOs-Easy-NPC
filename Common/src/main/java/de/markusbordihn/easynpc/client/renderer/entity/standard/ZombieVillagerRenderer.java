@@ -32,7 +32,6 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.ZombieVillager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.ZombieVillager.Variant;
 import java.util.EnumMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -51,11 +50,9 @@ public class ZombieVillagerRenderer
     extends MobRenderer<ZombieVillager, StandardZombieVillagerModel<ZombieVillager>>
     implements EasyNPCRenderer {
 
-  // Base Texture
   public static final ResourceLocation BASE_TEXTURE =
       new ResourceLocation("textures/entity/zombie_villager/zombie_villager.png");
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  // Professions Textures
   protected static final Map<Profession, ResourceLocation> TEXTURE_BY_PROFESSION =
       Util.make(
           new EnumMap<>(Profession.class),
@@ -107,7 +104,6 @@ public class ZombieVillagerRenderer
                 new ResourceLocation("textures/entity/zombie_villager/profession/weaponsmith.png"));
           });
 
-  // Variant Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
           new EnumMap<>(Variant.class),
@@ -239,7 +235,7 @@ public class ZombieVillagerRenderer
   }
 
   @Override
-  protected int getBlockLightLevel(@Nonnull ZombieVillager entity, @Nonnull BlockPos blockPos) {
+  protected int getBlockLightLevel(ZombieVillager entity, BlockPos blockPos) {
     return getEntityLightLevel(entity, blockPos);
   }
 }

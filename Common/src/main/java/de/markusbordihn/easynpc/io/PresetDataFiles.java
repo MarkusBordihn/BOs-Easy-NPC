@@ -48,17 +48,11 @@ public class PresetDataFiles {
     if (presetDataFolder == null) {
       return;
     }
-    log.info(
-        "{} custom preset data folder at {} ...", Constants.LOG_CREATE_PREFIX, presetDataFolder);
 
     for (SkinModel skinModel : SkinModel.values()) {
       Path presetModelFolder = getPresetDataFolder(skinModel);
-      if (presetModelFolder != null) {
-        log.info(
-            "{} preset model folder {} at {} ...",
-            Constants.LOG_CREATE_PREFIX,
-            skinModel,
-            presetModelFolder);
+      if (presetModelFolder == null) {
+        continue;
       }
     }
   }
@@ -69,13 +63,19 @@ public class PresetDataFiles {
 
   public static Path getPresetDataFolder(SkinModel skinModel) {
     Path skinDataFolder = getPresetDataFolder();
+    if (skinDataFolder == null) {
+      return null;
+    }
     String skinModelName = skinModel.getName();
-    if (skinDataFolder != null && !skinModelName.isEmpty()) {
-      try {
-        return Files.createDirectories(skinDataFolder.resolve(skinModelName));
-      } catch (IOException exception) {
-        log.error("Could not create preset data folder {}!", skinDataFolder, exception);
+    Path presetDataFolderPath = skinDataFolder.resolve(skinModelName);
+    try {
+      if (Files.exists(presetDataFolderPath) && Files.isDirectory(presetDataFolderPath)) {
+        return presetDataFolderPath;
       }
+      log.info("Creating preset data folder {} at {} ...", skinModelName, presetDataFolderPath);
+      return Files.createDirectories(presetDataFolderPath);
+    } catch (IOException exception) {
+      log.error("Could not create preset data folder {}!", skinDataFolder, exception);
     }
     return null;
   }

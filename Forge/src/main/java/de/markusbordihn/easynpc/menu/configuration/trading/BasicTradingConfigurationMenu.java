@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.menu.configuration.trading;
 import de.markusbordihn.easynpc.data.trading.TradingSettings;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
@@ -47,7 +46,7 @@ public class BasicTradingConfigurationMenu extends TradingConfigurationMenu {
   public static final int SLOT_SIZE = 18;
 
   // Define containers
-  protected static final int tradingContainerSize = TradingSettings.BASIC_TRADING_OFFERS * 3;
+  protected static final int TRADING_CONTAINER_SIZE = TradingSettings.BASIC_TRADING_OFFERS * 3;
   protected final Container tradingContainer;
 
   public BasicTradingConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
@@ -61,7 +60,7 @@ public class BasicTradingConfigurationMenu extends TradingConfigurationMenu {
 
   public BasicTradingConfigurationMenu(
       final MenuType<?> menuType, int windowId, Inventory inventory, UUID uuid) {
-    this(menuType, windowId, inventory, new SimpleContainer(tradingContainerSize), uuid);
+    this(menuType, windowId, inventory, new SimpleContainer(TRADING_CONTAINER_SIZE), uuid);
   }
 
   public BasicTradingConfigurationMenu(
@@ -73,7 +72,7 @@ public class BasicTradingConfigurationMenu extends TradingConfigurationMenu {
     super(menuType, windowId, playerInventory, uuid, 0);
 
     // Make sure the passed container matched the expected sizes
-    checkContainerSize(tradingContainer, tradingContainerSize);
+    checkContainerSize(tradingContainer, TRADING_CONTAINER_SIZE);
 
     // Container
     this.tradingContainer = tradingContainer;
@@ -165,7 +164,7 @@ public class BasicTradingConfigurationMenu extends TradingConfigurationMenu {
         return Component.literal("Basic Trades for " + entity.getName().getString());
       }
 
-      @Nullable
+
       @Override
       public AbstractContainerMenu createMenu(
           int windowId, Inventory inventory, Player serverPlayer) {

@@ -40,31 +40,22 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class DistanceActionConfigurationScreen
     extends ActionConfigurationScreen<DistanceActionConfigurationMenu> {
 
-  // On Near Action
   protected EditBox onNearActionBox;
   protected Checkbox onNearActionExecuteAsUserCheckbox;
   protected Checkbox onNearActionDebugCheckbox;
   protected Button onNearActionSaveButton;
-
-  // On Close Action
   protected EditBox onCloseActionBox;
   protected Checkbox onCloseActionExecuteAsUserCheckbox;
   protected Checkbox onCloseActionDebugCheckbox;
   protected Button onCloseActionSaveButton;
-
-  // On Very Close Action
   protected EditBox onVeryCloseActionBox;
   protected Checkbox onVeryCloseActionExecuteAsUserCheckbox;
   protected Checkbox onVeryCloseActionDebugCheckbox;
   protected Button onVeryCloseActionSaveButton;
-
-  // On Touch Action
   protected EditBox onTouchActionBox;
   protected Checkbox onTouchActionExecuteAsUserCheckbox;
   protected Checkbox onTouchActionDebugCheckbox;
   protected Button onTouchActionSaveButton;
-
-  // Cache
   private ActionData lastNearActionData;
   private ActionData lastCloseActionData;
   private ActionData lastVeryCloseActionData;

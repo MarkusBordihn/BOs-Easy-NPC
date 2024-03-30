@@ -39,13 +39,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class NoneTradingConfigurationScreen
     extends TradingConfigurationScreen<NoneTradingConfigurationMenu> {
 
-  // Cache
   private static TradingType formerTradingType = TradingType.BASIC;
   protected final TradingData<?> tradingData;
-  // Buttons
   protected Checkbox noneTradingCheckbox;
   protected int numberOfTextLines = 1;
-  // Text
   private List<FormattedCharSequence> textComponents = Collections.emptyList();
 
   public NoneTradingConfigurationScreen(

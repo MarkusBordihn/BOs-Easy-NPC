@@ -49,7 +49,6 @@ import net.minecraft.world.entity.player.Inventory;
 public class CustomSkinConfigurationScreen
     extends SkinConfigurationScreen<CustomSkinConfigurationMenu> {
 
-  // Skin Preview
   private static final float SKIN_NAME_SCALING = 0.7f;
   private static final int ADD_SKIN_RELOAD_DELAY = 5;
   protected static int nextSkinReload = (int) java.time.Instant.now().getEpochSecond();
@@ -57,9 +56,7 @@ public class CustomSkinConfigurationScreen
   protected Button skinFolderButton = null;
   protected Button skinReloadButton = null;
   protected int numberOfTextLines = 1;
-  // Cache
   protected int lastNumOfSkins = 0;
-  // Text
   private List<FormattedCharSequence> textComponents = Collections.emptyList();
 
   public CustomSkinConfigurationScreen(

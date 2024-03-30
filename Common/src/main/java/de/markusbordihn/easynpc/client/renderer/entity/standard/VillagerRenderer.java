@@ -32,7 +32,6 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Villager.Variant;
 import java.util.EnumMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -47,11 +46,8 @@ import net.minecraft.resources.ResourceLocation;
 public class VillagerRenderer extends MobRenderer<Villager, StandardVillagerModel<Villager>>
     implements EasyNPCRenderer {
 
-  // Base Texture
   public static final ResourceLocation BASE_TEXTURE =
       new ResourceLocation("textures/entity/villager/villager.png");
-
-  // Professions Textures
   protected static final Map<Profession, ResourceLocation> TEXTURE_BY_PROFESSION =
       Util.make(
           new EnumMap<>(Profession.class),
@@ -100,8 +96,6 @@ public class VillagerRenderer extends MobRenderer<Villager, StandardVillagerMode
                 Profession.WEAPONSMITH,
                 new ResourceLocation("textures/entity/villager/profession/weaponsmith.png"));
           });
-
-  // Variant Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
           new EnumMap<>(Variant.class),
@@ -207,7 +201,7 @@ public class VillagerRenderer extends MobRenderer<Villager, StandardVillagerMode
   }
 
   @Override
-  protected int getBlockLightLevel(@Nonnull Villager entity, @Nonnull BlockPos blockPos) {
+  protected int getBlockLightLevel(Villager entity, BlockPos blockPos) {
     return getEntityLightLevel(entity, blockPos);
   }
 }

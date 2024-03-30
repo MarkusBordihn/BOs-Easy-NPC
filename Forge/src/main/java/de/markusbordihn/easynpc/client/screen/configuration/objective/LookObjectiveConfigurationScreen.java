@@ -40,14 +40,12 @@ public class LookObjectiveConfigurationScreen
     extends ObjectiveConfigurationScreen<LookObjectiveConfigurationMenu> {
 
   protected final OwnerData<?> ownerData;
-  // Basic Look Objective Checkbox
   protected Checkbox lookResetCheckbox;
   protected Checkbox randomLookAroundCheckbox;
   protected Checkbox lookAtOwnerCheckbox;
   protected Checkbox lookAtPlayerCheckbox;
   protected Checkbox lookAtMobCheckbox;
   protected Checkbox lookAtAnimalCheckbox;
-  // Look entity with UUID input field and save button
   protected Checkbox lookAtEntityCheckbox;
   protected EditBox lookAtEntityUUID;
   protected Button lookAtEntityUUIDSaveButton;

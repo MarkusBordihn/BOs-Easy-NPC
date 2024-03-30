@@ -53,23 +53,16 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  // Config values
   protected static final CommonConfig.Config COMMON = CommonConfig.COMMON;
-
-  // General
   protected final ClientLevel clientLevel;
   protected final LocalPlayer localPlayer;
   protected final Minecraft minecraftInstance;
-
-  // NPC Entity
   protected final EasyNPC<?> easyNPC;
   protected final SkinModel skinModel;
   protected final UUID uuid;
   protected final LivingEntity owner;
   protected final String ownerName;
   protected final boolean hasOwner;
-
-  // Settings
   protected final boolean supportsPoseConfiguration;
   protected final boolean supportsStandardPoseConfiguration;
   protected final boolean supportsAdvancedPoseConfiguration;
@@ -81,12 +74,8 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
   protected final boolean supportsUrlSkinConfiguration;
   protected final boolean supportsPlayerSkinConfiguration;
   protected final boolean supportsCustomSkinConfiguration;
-
-  // Buttons
   protected Button closeButton = null;
   protected Button homeButton = null;
-
-  // Internal
   protected float xMouse;
   protected float yMouse;
   protected int bottomPos;

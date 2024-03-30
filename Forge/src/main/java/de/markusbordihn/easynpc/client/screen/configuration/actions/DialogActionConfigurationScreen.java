@@ -40,25 +40,18 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class DialogActionConfigurationScreen
     extends ActionConfigurationScreen<DialogActionConfigurationMenu> {
 
-  // On Open Dialog Action
   protected EditBox onOpenDialogActionBox;
   protected Checkbox onOpenDialogActionExecuteAsUserCheckbox;
   protected Checkbox onOpenDialogActionDebugCheckbox;
   protected Button onOpenDialogActionSaveButton;
-
-  // On Close Dialog Action
   protected EditBox onCloseDialogActionBox;
   protected Checkbox onCloseDialogActionExecuteAsUserCheckbox;
   protected Checkbox onCloseDialogActionDebugCheckbox;
   protected Button onCloseDialogActionSaveButton;
-
-  // On Yes Selection Action
   protected EditBox onButtonClickActionBox;
   protected Checkbox onButtonClickActionExecuteAsUserCheckbox;
   protected Checkbox onButtonClickActionDebugCheckbox;
   protected Button onButtonClickActionSaveButton;
-
-  // Cache
   private ActionData lastOpenDialogActionData;
   private ActionData lastCloseDialogActionData;
   private ActionData lastButtonClickActionData;

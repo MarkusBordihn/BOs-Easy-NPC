@@ -40,16 +40,14 @@ public class DataFileHandler {
   protected DataFileHandler() {
   }
 
-  public static void prepare() {
-    log.info("{} custom data ...", Constants.LOG_REGISTER_PREFIX);
-
-    // Prepare custom data folder
-    log.info("{} custom data folder at {} ...", Constants.LOG_CREATE_PREFIX, getCustomDataFolder());
-  }
-
   public static Path getCustomDataFolder() {
+    Path customDataFolder = Constants.CONFIG_DIR.resolve(Constants.MOD_ID);
     try {
-      return Files.createDirectories(Constants.CONFIG_DIR.resolve(Constants.MOD_ID));
+      if (Files.exists(customDataFolder) && Files.isDirectory(customDataFolder)) {
+        return customDataFolder;
+      }
+      log.info("Creating custom data folder at {} ...", customDataFolder);
+      return Files.createDirectories(customDataFolder);
     } catch (Exception exception) {
       log.error("There was an error, creating the custom data folder:", exception);
     }
@@ -61,8 +59,13 @@ public class DataFileHandler {
     if (customDataFolder == null) {
       return null;
     }
+    Path customDataFolderPath = customDataFolder.resolve(dataLabel);
     try {
-      return Files.createDirectories(customDataFolder.resolve(dataLabel));
+      if (Files.exists(customDataFolderPath) && Files.isDirectory(customDataFolderPath)) {
+        return customDataFolderPath;
+      }
+      log.info("Creating custom data folder {} at {} ...", dataLabel, customDataFolder);
+      return Files.createDirectories(customDataFolderPath);
     } catch (Exception exception) {
       log.error("There was an error, creating the custom data folder:", exception);
     }
@@ -70,24 +73,25 @@ public class DataFileHandler {
   }
 
   public static void copyResourceFile(ResourceLocation resourceLocation, File targetFile) {
-    if (resourceLocation != null) {
-      try {
-        Optional<Resource> resources =
-            Minecraft.getInstance().getResourceManager().getResource(resourceLocation);
-        if (resources.isPresent()) {
-          try (InputStream inputStream = resources.get().open()) {
-            try (OutputStream outputStream = new FileOutputStream(targetFile)) {
-              byte[] buffer = new byte[1024];
-              int length;
-              while ((length = inputStream.read(buffer)) > 0) {
-                outputStream.write(buffer, 0, length);
-              }
+    if (resourceLocation == null || targetFile == null) {
+      return;
+    }
+    try {
+      Optional<Resource> resources =
+          Minecraft.getInstance().getResourceManager().getResource(resourceLocation);
+      if (resources.isPresent()) {
+        try (InputStream inputStream = resources.get().open()) {
+          try (OutputStream outputStream = new FileOutputStream(targetFile)) {
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+              outputStream.write(buffer, 0, length);
             }
           }
         }
-      } catch (Exception e) {
-        log.error("Failed to load resource {}!", resourceLocation, e);
       }
+    } catch (Exception e) {
+      log.error("Failed to load resource {}!", resourceLocation, e);
     }
   }
 }

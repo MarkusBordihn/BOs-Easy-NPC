@@ -24,7 +24,6 @@ import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.Optional;
 import java.util.UUID;
-import javax.annotation.Nonnull;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -37,17 +36,15 @@ public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
 
   EntityDataSerializer<SkinType> SKIN_TYPE =
       new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, @Nonnull SkinType value) {
+        public void write(FriendlyByteBuf buffer, SkinType value) {
           buffer.writeEnum(value);
         }
 
-        @Nonnull
         public SkinType read(FriendlyByteBuf buffer) {
           return buffer.readEnum(SkinType.class);
         }
 
-        @Nonnull
-        public SkinType copy(@Nonnull SkinType value) {
+        public SkinType copy(SkinType value) {
           return value;
         }
       };

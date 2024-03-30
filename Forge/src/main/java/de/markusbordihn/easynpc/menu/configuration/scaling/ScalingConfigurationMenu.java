@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.menu.configuration.scaling;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
@@ -48,7 +47,7 @@ public class ScalingConfigurationMenu extends ConfigurationMenu {
         return Component.literal("Scaling for " + entity.getName().getString());
       }
 
-      @Nullable
+
       @Override
       public AbstractContainerMenu createMenu(
           int windowId, Inventory inventory, Player serverPlayer) {

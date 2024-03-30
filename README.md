@@ -49,6 +49,10 @@ called [Easy NPC Epic Fight Mod][easy_npc_epic_fight_mod].
 Just spawn a NPC with the corresponding spawn egg and click with your empty hand on the spawned NPC.
 If you need to adjust the existing dialog, just click with your empty hand and crouching on the NPC.
 
+## Upgrading
+
+Please make sure to check the [upgrade guide][upgrade_guide] before upgrading to a new version.
+
 ## ℹ️ More Information
 
 Please check the [wiki][wiki] for additional information.
@@ -70,12 +74,13 @@ costs.
 The [MIT LICENSE](LICENSE.md) applies only to the code in this repository.
 Images, models and other assets are explicitly excluded.
 
-
 [ko-fi]: https://ko-fi.com/Kaworru
 
 [patreon]: https://www.patreon.com/Kaworru
 
 [wiki]: https://github.com/MarkusBordihn/BOs-Easy-NPC/wiki
+
+[upgrade_guide]: https://github.com/MarkusBordihn/BOs-Easy-NPC/wiki/Upgrading
 
 [armourers_workshop]: https://www.curseforge.com/minecraft/mc-mods/armourers-workshop
 

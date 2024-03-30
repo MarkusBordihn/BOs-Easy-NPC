@@ -47,7 +47,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class AdvancedTradingConfigurationScreen
     extends TradingConfigurationScreen<AdvancedTradingConfigurationMenu> {
 
-  // Ticker
   protected static final int NAVIGATION_TICKER = 20;
   protected static final int TRADING_OFFERS_TICKER = 20;
   protected final HashMap<Integer, EditBox> maxUsesEditBoxes = new HashMap<>();
@@ -55,10 +54,8 @@ public class AdvancedTradingConfigurationScreen
   protected final HashMap<Integer, EditBox> priceMultiplierEditBoxes = new HashMap<>();
   protected final HashMap<Integer, EditBox> demandEditBoxes = new HashMap<>();
   protected final TradingData<?> tradingData;
-  // Buttons
   protected Button previousPageButton;
   protected Button nextPageButton;
-  // Edit Boxes
   protected EditBox resetsEveryMinEditBox;
   private int navigationTicker = NAVIGATION_TICKER;
   private int tradingOffersTicker = TRADING_OFFERS_TICKER;

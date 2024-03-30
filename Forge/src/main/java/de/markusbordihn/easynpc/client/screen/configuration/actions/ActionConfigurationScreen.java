@@ -38,9 +38,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ActionConfigurationScreen<T extends ActionConfigurationMenu>
     extends ConfigurationScreen<T> {
 
-  // Cache
   protected final ActionEventSet actionDataSet;
-  // Buttons
   protected Button basicActionButton = null;
   protected Button dialogActionButton = null;
   protected Button distanceActionButton = null;

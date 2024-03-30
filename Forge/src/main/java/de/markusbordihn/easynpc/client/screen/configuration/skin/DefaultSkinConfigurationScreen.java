@@ -44,14 +44,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class DefaultSkinConfigurationScreen
     extends SkinConfigurationScreen<DefaultSkinConfigurationMenu> {
 
-  // Skin Preview
   private static final float SKIN_NAME_SCALING = 0.7f;
   protected final SkinData<?> skinData;
   protected final VariantData<?> variantData;
   protected final ProfessionData<?> professionData;
   protected int numOfProfessions = 0;
   protected int numOfVariants = 0;
-  // Cache
   private Profession[] professions;
   private Enum<?>[] variants;
 

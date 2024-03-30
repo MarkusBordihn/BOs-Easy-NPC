@@ -27,7 +27,6 @@ import de.markusbordihn.easynpc.data.custom.CustomDataIndex;
 import de.markusbordihn.easynpc.data.entity.CustomEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
-import javax.annotation.Nonnull;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
@@ -58,27 +57,8 @@ public interface ActionEventData<T extends PathfinderMob> extends EasyNPC<T> {
   CustomDataAccessor<Integer> CUSTOM_DATA_ACTION_PERMISSION_LEVEL =
       CustomEntityData.defineId(EntityDataSerializers.INT);
 
-  String DATA_ACTIONS_TAG = "Actions";
   String DATA_ACTION_DATA_TAG = "ActionData";
   String DATA_ACTION_PERMISSION_LEVEL_TAG = "ActionPermissionLevel";
-
-  @Deprecated(since = "3.0.0")
-  String DATA_ACTION_ENABLE_DEBUG_TAG = "ActionEnableDebug";
-
-  @Deprecated(since = "3.0.0")
-  String DATA_ACTION_EXECUTE_AS_USER_TAG = "ActionExecuteAsUser";
-
-  @Deprecated(since = "3.0.0")
-  String DATA_ACTION_TAG = "Action";
-
-  @Deprecated(since = "3.0.0")
-  String DATA_ACTION_TYPE_TAG = "ActionType";
-
-  @Deprecated(since = "3.0.0")
-  String ON_YES_SELECTION = "ON_YES_SELECTION";
-
-  @Deprecated(since = "3.0.0")
-  String ON_NO_SELECTION = "ON_NO_SELECTION";
 
   static void registerActionEventDataSerializer() {
     EntityDataSerializers.registerSerializer(ACTION_EVENT_SET);
@@ -170,7 +150,7 @@ public interface ActionEventData<T extends PathfinderMob> extends EasyNPC<T> {
     }
   }
 
-  default void handleActionHurtEvent(@Nonnull DamageSource damageSource, float damage) {
+  default void handleActionHurtEvent(DamageSource damageSource, float damage) {
     if (this.hasActionEvent(ActionEventType.ON_HURT)) {
       ActionData actionData = this.getActionEvent(ActionEventType.ON_HURT);
       ActionHandler<?> actionHandler = this.getEasyNPCActionHandler();
@@ -180,7 +160,7 @@ public interface ActionEventData<T extends PathfinderMob> extends EasyNPC<T> {
     }
   }
 
-  default void handleActionDieEvent(@Nonnull DamageSource damageSource) {
+  default void handleActionDieEvent(DamageSource damageSource) {
     if (this.hasActionEvent(ActionEventType.ON_DEATH)) {
       ActionData actionData = this.getActionEvent(ActionEventType.ON_DEATH);
       ActionHandler<?> actionHandler = this.getEasyNPCActionHandler();

@@ -47,11 +47,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ImportCustomPresetConfigurationScreen
     extends ImportPresetConfigurationScreen<CustomImportPresetConfigurationMenu> {
 
-  // Cache
   protected static Path selectedPreset;
-  // Buttons
   protected Button importPresetButton;
-  // Preset Selection List
   private ImportCustomPresetConfigurationScreen.ImportFileSelectionList presetSelectionList;
 
   public ImportCustomPresetConfigurationScreen(

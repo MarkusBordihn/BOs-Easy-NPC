@@ -39,13 +39,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class NoneDialogConfigurationScreen
     extends DialogConfigurationScreen<NoneDialogConfigurationMenu> {
 
-  // Buttons
   protected Checkbox noneDialogCheckbox;
   protected int numberOfTextLines = 1;
-  // Text
   private List<FormattedCharSequence> textComponents = Collections.emptyList();
-  // Cache
-  private DialogDataSet formerDialogDataSet;
 
   public NoneDialogConfigurationScreen(
       NoneDialogConfigurationMenu menu, Inventory inventory, Component component) {
@@ -60,7 +56,7 @@ public class NoneDialogConfigurationScreen
     this.noneDialogButton.active = false;
 
     // Former dialog type
-    this.formerDialogDataSet = this.dialogDataSet;
+    DialogDataSet formerDialogDataSet = this.dialogDataSet;
 
     // None Dialog Checkbox
     this.noneDialogCheckbox =
@@ -75,7 +71,7 @@ public class NoneDialogConfigurationScreen
                     DialogDataSet dialogDataSet = new DialogDataSet(DialogType.NONE);
                     NetworkMessageHandler.saveDialog(uuid, dialogDataSet);
                   } else {
-                    if (this.formerDialogDataSet != null) {
+                    if (formerDialogDataSet != null) {
                       NetworkMessageHandler.saveDialog(uuid, formerDialogDataSet);
                     } else {
                       DialogDataSet dialogDataSet = new DialogDataSet(DialogType.BASIC);

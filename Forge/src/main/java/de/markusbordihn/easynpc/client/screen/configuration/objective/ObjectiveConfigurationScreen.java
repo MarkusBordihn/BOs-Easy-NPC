@@ -36,10 +36,7 @@ public class ObjectiveConfigurationScreen<T extends ObjectiveConfigurationMenu>
     extends ConfigurationScreen<T> {
 
   protected static final int SPACE_BETWEEN_ENTRIES = 20;
-
-  // Cache
   protected final ObjectiveDataSet objectiveDataSet;
-  // Buttons
   protected Button basicObjectiveButton;
   protected Button followObjectiveButton;
   protected Button attackObjectiveButton;
