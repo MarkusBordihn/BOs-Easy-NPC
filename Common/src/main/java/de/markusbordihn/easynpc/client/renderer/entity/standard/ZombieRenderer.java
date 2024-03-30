@@ -23,8 +23,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import de.markusbordihn.easynpc.client.model.standard.StandardZombieModel;
 import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.StandardHumanoidMobRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.OuterLayer;
-import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie.Variant;
 import java.util.EnumMap;
@@ -32,19 +32,16 @@ import java.util.Map;
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.client.renderer.entity.layers.ElytraLayer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Pose;
 
-public class ZombieRenderer extends MobRenderer<Zombie, StandardZombieModel<Zombie>>
-    implements EasyNPCRenderer {
+public class ZombieRenderer
+    extends StandardHumanoidMobRenderer<Zombie, Zombie.Variant, StandardZombieModel<Zombie>> {
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
@@ -66,7 +63,12 @@ public class ZombieRenderer extends MobRenderer<Zombie, StandardZombieModel<Zomb
 
   public <T extends RenderLayer<Zombie, StandardZombieModel<Zombie>>> ZombieRenderer(
       EntityRendererProvider.Context context, Class<T> humanoidArmorLayerClass) {
-    super(context, new StandardZombieModel<>(context.bakeLayer(ModelLayers.ZOMBIE)), 0.5F);
+    super(
+        context,
+        new StandardZombieModel<>(context.bakeLayer(ModelLayers.ZOMBIE)),
+        0.5F,
+        DEFAULT_TEXTURE,
+        TEXTURE_BY_VARIANT);
     this.addLayer(
         EasyNPCRenderer.getHumanoidArmorLayer(
             this,
@@ -82,94 +84,44 @@ public class ZombieRenderer extends MobRenderer<Zombie, StandardZombieModel<Zomb
   }
 
   @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variant) {
-    return TEXTURE_BY_VARIANT.getOrDefault(variant, DEFAULT_TEXTURE);
-  }
-
-  @Override
-  public ResourceLocation getDefaultTexture() {
-    return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureLocation(Zombie entity) {
-    return this.getEntityTexture(entity);
-  }
-
-  @Override
-  protected void scale(Zombie entity, PoseStack poseStack, float unused) {
-    this.scaleEntity(entity, poseStack);
-  }
-
-  @Override
-  public void render(
+  public void renderDefaultPose(
       Zombie entity,
+      StandardZombieModel<Zombie> playerModel,
+      Pose pose,
       float entityYaw,
       float partialTicks,
       PoseStack poseStack,
       net.minecraft.client.renderer.MultiBufferSource buffer,
       int light) {
-    StandardZombieModel<Zombie> playerModel = this.getModel();
-
-    // Model Rotation
-    this.rotateEntity(entity, poseStack);
-
-    // Render additional poses
-    if (entity.getModelPose() == ModelPose.DEFAULT) {
-
-      // Crouching
-      playerModel.crouching = entity.isCrouching();
-
-      switch (entity.getPose()) {
-        case DYING:
-          poseStack.translate(-1.0D, 0.0D, 0.0D);
-          poseStack.mulPose(Vector3f.YP.rotationDegrees(180f));
-          poseStack.mulPose(Vector3f.ZP.rotationDegrees(this.getFlipDegrees(entity)));
-          poseStack.mulPose(Vector3f.YP.rotationDegrees(270.0f));
-          playerModel.getHead().xRot = -0.7853982F;
-          playerModel.getHead().yRot = -0.7853982F;
-          playerModel.getHead().zRot = -0.7853982F;
-          break;
-        case LONG_JUMPING:
-          playerModel.leftArmPose = HumanoidModel.ArmPose.CROSSBOW_HOLD;
-          playerModel.rightArmPose = HumanoidModel.ArmPose.SPYGLASS;
-          break;
-        case SLEEPING:
-          poseStack.translate(1.0D, 0.0D, 0.0D);
-          break;
-        case SPIN_ATTACK:
-          playerModel.leftArmPose = HumanoidModel.ArmPose.BLOCK;
-          playerModel.rightArmPose = HumanoidModel.ArmPose.THROW_SPEAR;
-          poseStack.mulPose(Vector3f.YP.rotationDegrees(-35f));
-          break;
-        default:
-          playerModel.leftArmPose = HumanoidModel.ArmPose.EMPTY;
-          playerModel.rightArmPose = HumanoidModel.ArmPose.EMPTY;
-          playerModel.getHead().xRot = 0F;
-          playerModel.getHead().yRot = 0F;
-          playerModel.getHead().zRot = 0F;
-          break;
-      }
-    } else {
-      playerModel.crouching = false;
+    switch (pose) {
+      case DYING:
+        poseStack.translate(-1.0D, 0.0D, 0.0D);
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(180f));
+        poseStack.mulPose(Vector3f.ZP.rotationDegrees(this.getFlipDegrees(entity)));
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(270.0f));
+        playerModel.getHead().xRot = -0.7853982F;
+        playerModel.getHead().yRot = -0.7853982F;
+        playerModel.getHead().zRot = -0.7853982F;
+        break;
+      case LONG_JUMPING:
+        playerModel.leftArmPose = HumanoidModel.ArmPose.CROSSBOW_HOLD;
+        playerModel.rightArmPose = HumanoidModel.ArmPose.SPYGLASS;
+        break;
+      case SLEEPING:
+        poseStack.translate(1.0D, 0.0D, 0.0D);
+        break;
+      case SPIN_ATTACK:
+        playerModel.leftArmPose = HumanoidModel.ArmPose.BLOCK;
+        playerModel.rightArmPose = HumanoidModel.ArmPose.THROW_SPEAR;
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(-35f));
+        break;
+      default:
+        playerModel.leftArmPose = HumanoidModel.ArmPose.EMPTY;
+        playerModel.rightArmPose = HumanoidModel.ArmPose.EMPTY;
+        playerModel.getHead().xRot = 0F;
+        playerModel.getHead().yRot = 0F;
+        playerModel.getHead().zRot = 0F;
+        break;
     }
-
-    super.render(entity, entityYaw, partialTicks, poseStack, buffer, light);
-  }
-
-  @Override
-  protected void renderNameTag(
-      Zombie entity,
-      Component component,
-      PoseStack poseStack,
-      MultiBufferSource multiBufferSource,
-      int color) {
-    this.renderEntityNameTag(entity, poseStack);
-    super.renderNameTag(entity, component, poseStack, multiBufferSource, color);
-  }
-
-  @Override
-  protected int getBlockLightLevel(Zombie entity, BlockPos blockPos) {
-    return getEntityLightLevel(entity, blockPos);
   }
 }

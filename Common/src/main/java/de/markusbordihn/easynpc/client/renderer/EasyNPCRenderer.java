@@ -144,17 +144,6 @@ public interface EasyNPCRenderer {
     }
   }
 
-  default void rotateEntityAlternative(EasyNPC<?> easyNPC, PoseStack poseStack) {
-    Rotations rootRotation = easyNPC.getEasyNPCModelData().getModelRootRotation();
-    if (rootRotation != null) {
-      poseStack.translate(0, 0.5, 0);
-      poseStack.mulPose(Vector3f.XP.rotation(rootRotation.getX()));
-      poseStack.mulPose(Vector3f.YP.rotation(rootRotation.getY()));
-      poseStack.mulPose(Vector3f.ZP.rotation(rootRotation.getZ()));
-      poseStack.translate(0, -0.5, 0);
-    }
-  }
-
   default void renderEntityNameTag(EasyNPC<?> easyNPC, PoseStack poseStack) {
     Rotations rootRotation = easyNPC.getEasyNPCModelData().getModelRootRotation();
     if (rootRotation != null) {

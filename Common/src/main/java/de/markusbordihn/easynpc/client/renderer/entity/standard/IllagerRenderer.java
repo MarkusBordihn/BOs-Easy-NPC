@@ -22,26 +22,22 @@ package de.markusbordihn.easynpc.client.renderer.entity.standard;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import de.markusbordihn.easynpc.client.model.standard.StandardIllagerModel;
-import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
-import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.client.renderer.entity.StandardMobRenderer;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Illager.Variant;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Pose;
 
-public class IllagerRenderer extends MobRenderer<Illager, StandardIllagerModel<Illager>>
-    implements EasyNPCRenderer {
+public class IllagerRenderer
+    extends StandardMobRenderer<Illager, Illager.Variant, StandardIllagerModel<Illager>> {
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
@@ -68,84 +64,41 @@ public class IllagerRenderer extends MobRenderer<Illager, StandardIllagerModel<I
 
   public <L extends RenderLayer<Illager, StandardIllagerModel<Illager>>> IllagerRenderer(
       EntityRendererProvider.Context context) {
-    super(context, new StandardIllagerModel<>(context.bakeLayer(ModelLayers.PILLAGER)), 0.5F);
+    super(context, new StandardIllagerModel<>(context.bakeLayer(ModelLayers.PILLAGER)), 0.5F,
+        DEFAULT_TEXTURE, TEXTURE_BY_VARIANT);
     this.addLayer(
         new CustomHeadLayer<>(this, context.getModelSet(), context.getItemInHandRenderer()));
     this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
   }
 
   @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variant) {
-    return TEXTURE_BY_VARIANT.getOrDefault(variant, DEFAULT_TEXTURE);
-  }
-
-  @Override
-  public ResourceLocation getDefaultTexture() {
-    return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureLocation(Illager entity) {
-    return this.getEntityTexture(entity);
-  }
-
-  @Override
-  protected void scale(Illager entity, PoseStack poseStack, float unused) {
-    this.scaleEntity(entity, poseStack);
-  }
-
-  @Override
-  public void render(
+  public void renderDefaultPose(
       Illager entity,
+      StandardIllagerModel<Illager> model,
+      Pose pose,
       float entityYaw,
       float partialTicks,
       PoseStack poseStack,
       net.minecraft.client.renderer.MultiBufferSource buffer,
       int light) {
-    StandardIllagerModel<Illager> playerModel = this.getModel();
-
-    // Model Rotation
-    this.rotateEntity(entity, poseStack);
-
-    // Render additional poses
-    if (entity.getModelPose() == ModelPose.DEFAULT) {
-      switch (entity.getPose()) {
-        case DYING:
-          poseStack.translate(-1.0D, 0.0D, 0.0D);
-          poseStack.mulPose(Vector3f.YP.rotationDegrees(180f));
-          poseStack.mulPose(Vector3f.ZP.rotationDegrees(this.getFlipDegrees(entity)));
-          poseStack.mulPose(Vector3f.YP.rotationDegrees(270.0F));
-          playerModel.getHead().xRot = -0.7853982F;
-          playerModel.getHead().yRot = -0.7853982F;
-          playerModel.getHead().zRot = -0.7853982F;
-          break;
-        case SLEEPING:
-          poseStack.translate(1.0D, 0.0D, 0.0D);
-          break;
-        default:
-          playerModel.getHead().xRot = 0F;
-          playerModel.getHead().yRot = 0F;
-          playerModel.getHead().zRot = 0F;
-          break;
-      }
+    switch (pose) {
+      case DYING:
+        poseStack.translate(-1.0D, 0.0D, 0.0D);
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(180f));
+        poseStack.mulPose(Vector3f.ZP.rotationDegrees(this.getFlipDegrees(entity)));
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(270.0F));
+        model.getHead().xRot = -0.7853982F;
+        model.getHead().yRot = -0.7853982F;
+        model.getHead().zRot = -0.7853982F;
+        break;
+      case SLEEPING:
+        poseStack.translate(1.0D, 0.0D, 0.0D);
+        break;
+      default:
+        model.getHead().xRot = 0F;
+        model.getHead().yRot = 0F;
+        model.getHead().zRot = 0F;
+        break;
     }
-
-    super.render(entity, entityYaw, partialTicks, poseStack, buffer, light);
-  }
-
-  @Override
-  protected void renderNameTag(
-      Illager entity,
-      Component component,
-      PoseStack poseStack,
-      MultiBufferSource multiBufferSource,
-      int color) {
-    this.renderEntityNameTag(entity, poseStack);
-    super.renderNameTag(entity, component, poseStack, multiBufferSource, color);
-  }
-
-  @Override
-  protected int getBlockLightLevel(Illager entity, BlockPos blockPos) {
-    return getEntityLightLevel(entity, blockPos);
   }
 }

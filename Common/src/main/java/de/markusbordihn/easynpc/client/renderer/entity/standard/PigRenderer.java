@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.standard;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.standard.StandardPigModel;
-import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.StandardMobRenderer;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Pig.Variant;
 import java.util.EnumMap;
@@ -31,14 +31,11 @@ import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.SaddleLayer;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Pose;
 
-public class PigRenderer extends MobRenderer<Pig, StandardPigModel<Pig>>
-    implements EasyNPCRenderer {
+public class PigRenderer extends StandardMobRenderer<Pig, Pig.Variant, StandardPigModel<Pig>> {
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
@@ -53,7 +50,12 @@ public class PigRenderer extends MobRenderer<Pig, StandardPigModel<Pig>>
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.DEFAULT);
 
   public PigRenderer(EntityRendererProvider.Context context) {
-    super(context, new StandardPigModel<>(context.bakeLayer(ModelLayers.PIG)), 0.7F);
+    super(
+        context,
+        new StandardPigModel<>(context.bakeLayer(ModelLayers.PIG)),
+        0.7F,
+        DEFAULT_TEXTURE,
+        TEXTURE_BY_VARIANT);
     this.addLayer(
         new SaddleLayer<>(
             this,
@@ -62,51 +64,14 @@ public class PigRenderer extends MobRenderer<Pig, StandardPigModel<Pig>>
   }
 
   @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variant) {
-    return TEXTURE_BY_VARIANT.getOrDefault(variant, DEFAULT_TEXTURE);
-  }
-
-  @Override
-  public ResourceLocation getDefaultTexture() {
-    return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureLocation(Pig entity) {
-    return this.getEntityTexture(entity);
-  }
-
-  @Override
-  protected void scale(Pig entity, PoseStack poseStack, float unused) {
-    this.scaleEntity(entity, poseStack);
-  }
-
-  @Override
-  public void render(
+  public void renderDefaultPose(
       Pig entity,
+      StandardPigModel<Pig> model,
+      Pose pose,
       float entityYaw,
       float partialTicks,
       PoseStack poseStack,
       MultiBufferSource buffer,
       int light) {
-    this.rotateEntity(entity, poseStack);
-
-    super.render(entity, entityYaw, partialTicks, poseStack, buffer, light);
-  }
-
-  @Override
-  protected void renderNameTag(
-      Pig entity,
-      Component component,
-      PoseStack poseStack,
-      MultiBufferSource multiBufferSource,
-      int color) {
-    this.renderEntityNameTag(entity, poseStack);
-    super.renderNameTag(entity, component, poseStack, multiBufferSource, color);
-  }
-
-  @Override
-  protected int getBlockLightLevel(Pig entity, BlockPos blockPos) {
-    return getEntityLightLevel(entity, blockPos);
   }
 }
