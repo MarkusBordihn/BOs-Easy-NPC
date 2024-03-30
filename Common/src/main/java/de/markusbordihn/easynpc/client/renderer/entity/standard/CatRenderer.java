@@ -22,9 +22,8 @@ package de.markusbordihn.easynpc.client.renderer.entity.standard;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import de.markusbordihn.easynpc.client.model.standard.StandardCatModel;
-import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.StandardMobRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.CatCollarLayer;
-import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Cat.Variant;
 import java.util.EnumMap;
@@ -33,13 +32,10 @@ import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Pose;
 
-public class CatRenderer extends MobRenderer<Cat, StandardCatModel<Cat>>
-    implements EasyNPCRenderer {
+public class CatRenderer extends StandardMobRenderer<Cat, Cat.Variant, StandardCatModel<Cat>> {
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
@@ -63,81 +59,44 @@ public class CatRenderer extends MobRenderer<Cat, StandardCatModel<Cat>>
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.BLACK);
 
   public CatRenderer(EntityRendererProvider.Context context) {
-    super(context, new StandardCatModel<>(context.bakeLayer(ModelLayers.CAT)), 0.4F);
+    super(
+        context,
+        new StandardCatModel<>(context.bakeLayer(ModelLayers.CAT)),
+        0.4F,
+        DEFAULT_TEXTURE,
+        TEXTURE_BY_VARIANT);
     this.addLayer(new CatCollarLayer<>(this, context.getModelSet()));
   }
 
   @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variant) {
-    return TEXTURE_BY_VARIANT.getOrDefault(variant, DEFAULT_TEXTURE);
-  }
-
-  @Override
-  public ResourceLocation getDefaultTexture() {
-    return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureLocation(Cat entity) {
-    return this.getEntityTexture(entity);
-  }
-
-  @Override
-  protected void scale(Cat entity, PoseStack poseStack, float unused) {
-    this.scaleEntity(entity, poseStack);
-  }
-
-  @Override
-  public void render(
+  public void renderDefaultPose(
       Cat entity,
+      StandardCatModel<Cat> model,
+      Pose pose,
       float entityYaw,
       float partialTicks,
       PoseStack poseStack,
       MultiBufferSource buffer,
       int light) {
-    // Model Rotation
-    this.rotateEntity(entity, poseStack);
-
-    // Render additional poses
-    if (entity.getModelPose() == ModelPose.DEFAULT) {
-      switch (entity.getPose()) {
-        case DYING:
-          poseStack.translate(-0.5D, 0.0D, 0.0D);
-          poseStack.mulPose(Vector3f.YP.rotationDegrees(180f));
-          poseStack.mulPose(Vector3f.ZP.rotationDegrees(90f));
-          poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
-          this.getModel().getHead().xRot = -0.7853982F;
-          this.getModel().getHead().yRot = -0.7853982F;
-          this.getModel().getHead().zRot = -0.7853982F;
-          break;
-        case SLEEPING:
-          poseStack.translate(-0.5D, 0.5D, 0.0D);
-          poseStack.mulPose(Vector3f.ZP.rotationDegrees(90f));
-          break;
-        default:
-          this.getModel().getHead().xRot = 0F;
-          this.getModel().getHead().yRot = 0F;
-          this.getModel().getHead().zRot = 0F;
-          break;
-      }
+    switch (pose) {
+      case DYING:
+        poseStack.translate(-0.5D, 0.0D, 0.0D);
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(180f));
+        poseStack.mulPose(Vector3f.ZP.rotationDegrees(90f));
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
+        this.getModel().getHead().xRot = -0.7853982F;
+        this.getModel().getHead().yRot = -0.7853982F;
+        this.getModel().getHead().zRot = -0.7853982F;
+        break;
+      case SLEEPING:
+        poseStack.translate(-0.5D, 0.5D, 0.0D);
+        poseStack.mulPose(Vector3f.ZP.rotationDegrees(90f));
+        break;
+      default:
+        this.getModel().getHead().xRot = 0F;
+        this.getModel().getHead().yRot = 0F;
+        this.getModel().getHead().zRot = 0F;
+        break;
     }
-
-    super.render(entity, entityYaw, partialTicks, poseStack, buffer, light);
-  }
-
-  @Override
-  protected void renderNameTag(
-      Cat entity,
-      Component component,
-      PoseStack poseStack,
-      MultiBufferSource multiBufferSource,
-      int color) {
-    this.renderEntityNameTag(entity, poseStack);
-    super.renderNameTag(entity, component, poseStack, multiBufferSource, color);
-  }
-
-  @Override
-  protected int getBlockLightLevel(Cat entity, BlockPos blockPos) {
-    return getEntityLightLevel(entity, blockPos);
   }
 }

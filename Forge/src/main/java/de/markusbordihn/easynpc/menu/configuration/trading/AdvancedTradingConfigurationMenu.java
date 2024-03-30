@@ -68,7 +68,13 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
 
   public AdvancedTradingConfigurationMenu(
       final MenuType<?> menuType, int windowId, Inventory inventory, UUID uuid, int pageIndex) {
-    this(menuType, windowId, inventory, new SimpleContainer(TRADING_CONTAINER_SIZE), uuid, pageIndex);
+    this(
+        menuType,
+        windowId,
+        inventory,
+        new SimpleContainer(TRADING_CONTAINER_SIZE),
+        uuid,
+        pageIndex);
   }
 
   public AdvancedTradingConfigurationMenu(

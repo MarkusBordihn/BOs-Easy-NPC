@@ -46,9 +46,10 @@ called [Easy NPC Epic Fight Mod][easy_npc_epic_fight_mod].
 Just spawn a NPC with the corresponding spawn egg and click with your empty hand on the spawned NPC.
 If you need to adjust the existing dialog, just click with your empty hand and crouching on the NPC.
 
-## Upgrading
+## ⬆️ Upgrading
 
-Please make sure to check the [upgrade guide][upgrade_guide] before upgrading to a new version.
+Please make sure to check the [upgrade guide][upgrade_guide] before upgrading/updating to a new
+version.
 
 ## ℹ️ More Information
 

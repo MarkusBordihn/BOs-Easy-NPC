@@ -24,7 +24,7 @@ import com.mojang.math.Vector3f;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.standard.StandardPlayerModel;
 import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
-import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.client.renderer.entity.StandardLivingEntityRenderer;
 import de.markusbordihn.easynpc.entity.easynpc.npc.HumanoidSlim;
 import de.markusbordihn.easynpc.entity.easynpc.npc.HumanoidSlim.Variant;
 import java.util.EnumMap;
@@ -32,20 +32,17 @@ import java.util.Map;
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.client.renderer.entity.layers.ElytraLayer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Pose;
 
 public class HumanoidSlimRenderer
-    extends LivingEntityRenderer<HumanoidSlim, StandardPlayerModel<HumanoidSlim>>
-    implements EasyNPCRenderer {
+    extends StandardLivingEntityRenderer<
+        HumanoidSlim, HumanoidSlim.Variant, StandardPlayerModel<HumanoidSlim>> {
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
@@ -63,7 +60,11 @@ public class HumanoidSlimRenderer
       HumanoidSlimRenderer(
           EntityRendererProvider.Context context, Class<L> humanoidArmorLayerClass) {
     super(
-        context, new StandardPlayerModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM), true), 0.5F);
+        context,
+        new StandardPlayerModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM), true),
+        0.5F,
+        DEFAULT_TEXTURE,
+        TEXTURE_BY_VARIANT);
     this.addLayer(
         EasyNPCRenderer.getHumanoidArmorLayer(
             this,
@@ -71,95 +72,50 @@ public class HumanoidSlimRenderer
             ModelLayers.PLAYER_SLIM_INNER_ARMOR,
             ModelLayers.PLAYER_SLIM_OUTER_ARMOR,
             humanoidArmorLayerClass));
-    // this.addLayer(new CapeLayer(this));
     this.addLayer(new CustomHeadLayer<>(this, context.getModelSet()));
     this.addLayer(new ItemInHandLayer<>(this));
     this.addLayer(new ElytraLayer<>(this, context.getModelSet()));
   }
 
   @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variant) {
-    return TEXTURE_BY_VARIANT.getOrDefault(variant, DEFAULT_TEXTURE);
-  }
-
-  @Override
-  public ResourceLocation getDefaultTexture() {
-    return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureLocation(HumanoidSlim entity) {
-    return this.getEntityPlayerTexture(entity);
-  }
-
-  @Override
-  protected void scale(HumanoidSlim entity, PoseStack poseStack, float unused) {
-    this.scaleEntity(entity, poseStack);
-  }
-
-  @Override
-  public void render(
+  public void renderDefaultPose(
       HumanoidSlim entity,
+      StandardPlayerModel<HumanoidSlim> model,
+      Pose pose,
       float entityYaw,
       float partialTicks,
       PoseStack poseStack,
       net.minecraft.client.renderer.MultiBufferSource buffer,
       int light) {
-    StandardPlayerModel<HumanoidSlim> playerModel = this.getModel();
-
-    // Model Rotation
-    this.rotateEntity(entity, poseStack);
-
-    // Render additional poses
-    if (entity.getModelPose() == ModelPose.DEFAULT) {
-      switch (entity.getPose()) {
-        case DYING:
-          poseStack.translate(-1.0D, 0.0D, 0.0D);
-          poseStack.mulPose(Vector3f.YP.rotationDegrees(180f));
-          poseStack.mulPose(Vector3f.ZP.rotationDegrees(this.getFlipDegrees(entity)));
-          poseStack.mulPose(Vector3f.YP.rotationDegrees(270.0F));
-          playerModel.getHead().xRot = -0.7853982F;
-          playerModel.getHead().yRot = -0.7853982F;
-          playerModel.getHead().zRot = -0.7853982F;
-          break;
-        case LONG_JUMPING:
-          playerModel.leftArmPose = HumanoidModel.ArmPose.CROSSBOW_HOLD;
-          playerModel.rightArmPose = HumanoidModel.ArmPose.SPYGLASS;
-          break;
-        case SLEEPING:
-          poseStack.translate(1.0D, 0.0D, 0.0D);
-          break;
-        case SPIN_ATTACK:
-          playerModel.leftArmPose = HumanoidModel.ArmPose.BLOCK;
-          playerModel.rightArmPose = HumanoidModel.ArmPose.THROW_SPEAR;
-          poseStack.mulPose(Vector3f.YP.rotationDegrees(-35f));
-          break;
-        default:
-          playerModel.leftArmPose = HumanoidModel.ArmPose.EMPTY;
-          playerModel.rightArmPose = HumanoidModel.ArmPose.EMPTY;
-          playerModel.getHead().xRot = 0F;
-          playerModel.getHead().yRot = 0F;
-          playerModel.getHead().zRot = 0F;
-          break;
-      }
+    switch (pose) {
+      case DYING:
+        poseStack.translate(-1.0D, 0.0D, 0.0D);
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(180f));
+        poseStack.mulPose(Vector3f.ZP.rotationDegrees(this.getFlipDegrees(entity)));
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(270.0F));
+        model.getHead().xRot = -0.7853982F;
+        model.getHead().yRot = -0.7853982F;
+        model.getHead().zRot = -0.7853982F;
+        break;
+      case LONG_JUMPING:
+        model.leftArmPose = HumanoidModel.ArmPose.CROSSBOW_HOLD;
+        model.rightArmPose = HumanoidModel.ArmPose.SPYGLASS;
+        break;
+      case SLEEPING:
+        poseStack.translate(1.0D, 0.0D, 0.0D);
+        break;
+      case SPIN_ATTACK:
+        model.leftArmPose = HumanoidModel.ArmPose.BLOCK;
+        model.rightArmPose = HumanoidModel.ArmPose.THROW_SPEAR;
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(-35f));
+        break;
+      default:
+        model.leftArmPose = HumanoidModel.ArmPose.EMPTY;
+        model.rightArmPose = HumanoidModel.ArmPose.EMPTY;
+        model.getHead().xRot = 0F;
+        model.getHead().yRot = 0F;
+        model.getHead().zRot = 0F;
+        break;
     }
-
-    super.render(entity, entityYaw, partialTicks, poseStack, buffer, light);
-  }
-
-  @Override
-  protected void renderNameTag(
-      HumanoidSlim entity,
-      Component component,
-      PoseStack poseStack,
-      MultiBufferSource multiBufferSource,
-      int color) {
-    this.renderEntityNameTag(entity, poseStack);
-    super.renderNameTag(entity, component, poseStack, multiBufferSource, color);
-  }
-
-  @Override
-  protected int getBlockLightLevel(HumanoidSlim entity, BlockPos blockPos) {
-    return getEntityLightLevel(entity, blockPos);
   }
 }

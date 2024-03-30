@@ -13,6 +13,7 @@ Check the [upgrade guide][upgrade_guide] for more information.
 Note: Dropped support for Minecraft 1.19, 1.19.1, 1.19.3, 1.19.4 and 1.20 because of low usage.
 Please use the beta version 4.1.0 or former releases for these versions.
 
+- Improved NPC Renderer performance and improved support for custom models.
 - General code cleanup and refactoring per release.
 
 ### 4.1.0
