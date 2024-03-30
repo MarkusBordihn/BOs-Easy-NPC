@@ -34,7 +34,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class PositionConfigurationScreen<T extends ConfigurationMenu>
     extends ConfigurationScreen<T> {
 
-  // Buttons
   protected Button defaultPositionButton;
 
   public PositionConfigurationScreen(T menu, Inventory inventory, Component component) {

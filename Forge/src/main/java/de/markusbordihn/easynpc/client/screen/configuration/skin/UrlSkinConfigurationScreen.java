@@ -46,7 +46,6 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinConfigurationMenu> {
 
-  // Skin Preview
   private static final float SKIN_NAME_SCALING = 0.7f;
   private static final int ADD_SKIN_DELAY = 20;
   protected static int nextTextureSkinLocationChange =
@@ -55,9 +54,7 @@ public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinC
   protected Button addTextureSettingsButton = null;
   protected EditBox textureSkinLocationBox;
   protected int lastNumOfSkins = 0;
-  // Internal
   private Button clearTextureSettingsButton = null;
-  // Cache
   private String formerTextureSkinLocation = "";
   private boolean canTextureSkinLocationChange = true;
 

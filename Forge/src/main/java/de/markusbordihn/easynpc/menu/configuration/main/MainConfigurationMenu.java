@@ -23,7 +23,6 @@ import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import java.util.UUID;
-import javax.annotation.Nonnull;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
@@ -48,16 +47,15 @@ public class MainConfigurationMenu extends ConfigurationMenu {
 
   public static MenuProvider getMenuProvider(UUID uuid, Entity entity, DialogType dialogType) {
     return new MenuProvider() {
-      @Nonnull
+
       @Override
       public Component getDisplayName() {
         return Component.literal("Main Configuration for " + entity.getName().getString());
       }
 
-      @Nonnull
       @Override
       public AbstractContainerMenu createMenu(
-          int windowId, @Nonnull Inventory inventory, @Nonnull Player serverPlayer) {
+          int windowId, Inventory inventory, Player serverPlayer) {
         return new MainConfigurationMenu(windowId, inventory, uuid, dialogType);
       }
     };

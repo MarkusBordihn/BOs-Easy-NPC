@@ -29,7 +29,6 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy.Variant;
 import java.util.EnumMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -43,7 +42,6 @@ import net.minecraft.resources.ResourceLocation;
 public class FairyRenderer extends HumanoidMobRenderer<Fairy, FairyModel<Fairy>>
     implements EasyNPCRenderer {
 
-  // Variant Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
           new EnumMap<>(Variant.class),
@@ -153,7 +151,7 @@ public class FairyRenderer extends HumanoidMobRenderer<Fairy, FairyModel<Fairy>>
   }
 
   @Override
-  protected int getBlockLightLevel(@Nonnull Fairy entity, @Nonnull BlockPos blockPos) {
+  protected int getBlockLightLevel(Fairy entity, BlockPos blockPos) {
     return getEntityLightLevel(entity, blockPos);
   }
 }

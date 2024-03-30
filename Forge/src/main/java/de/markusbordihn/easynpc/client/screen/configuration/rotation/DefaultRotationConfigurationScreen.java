@@ -29,7 +29,6 @@ import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.menu.configuration.rotation.DefaultRotationConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
-import javax.annotation.Nonnull;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.core.Rotations;
@@ -44,7 +43,6 @@ public class DefaultRotationConfigurationScreen
     extends RotationConfigurationScreen<DefaultRotationConfigurationMenu> {
 
   protected final ModelData<?> modelData;
-  // Rotation Coordinates EditBoxes
   protected Button rootRotationXResetButton;
   protected Button rootRotationYResetButton;
   protected Button rootRotationZResetButton;
@@ -52,7 +50,6 @@ public class DefaultRotationConfigurationScreen
   protected SliderButton rootRotationYSliderButton;
   protected SliderButton rootRotationZSliderButton;
   protected Checkbox rootRotationCheckbox;
-  // Rotations
   protected float rootRotationX = 0f;
   protected float rootRotationY = 0f;
   protected float rootRotationZ = 0f;
@@ -204,7 +201,7 @@ public class DefaultRotationConfigurationScreen
   }
 
   @Override
-  public void renderBackground(@Nonnull GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+  public void renderBackground(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     // Use a more transparent background than the default.
     if (this.clientLevel != null) {
       guiGraphics.fillGradient(0, 0, this.width, this.height, 0x55000000, 0x55000000);

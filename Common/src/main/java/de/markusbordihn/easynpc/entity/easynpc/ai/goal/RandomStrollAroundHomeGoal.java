@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
@@ -41,7 +40,6 @@ public class RandomStrollAroundHomeGoal<T extends EasyNPC<?>> extends RandomStro
     this.entity = easyNPCEntity.getEntity();
   }
 
-  @Nullable
   @Override
   protected Vec3 getPosition() {
     if (this.mob.level().random.nextFloat() < 0.5F) {
@@ -77,7 +75,6 @@ public class RandomStrollAroundHomeGoal<T extends EasyNPC<?>> extends RandomStro
     return LandRandomPos.getPosTowards(this.mob, 10, 7, homePosition);
   }
 
-  @Nullable
   private Vec3 getPositionTowardsAnywhere() {
     return LandRandomPos.getPos(this.mob, 10, 7);
   }

@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.menu.configuration.action;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
@@ -56,7 +55,6 @@ public class DialogActionConfigurationMenu extends ActionConfigurationMenu {
         return Component.literal("Dialog Actions for " + entity.getName().getString());
       }
 
-      @Nullable
       @Override
       public AbstractContainerMenu createMenu(
           int windowId, Inventory inventory, Player serverPlayer) {

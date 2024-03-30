@@ -44,13 +44,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BasicDialogConfigurationScreen
     extends DialogConfigurationScreen<BasicDialogConfigurationMenu> {
 
-  // Buttons
   protected EditBox dialogBox;
   protected Button saveButton = null;
   protected int numberOfTextLines = 1;
-  // Text
   private List<FormattedCharSequence> textComponents = Collections.emptyList();
-  // Cache
   private String dialogValue = "";
 
   public BasicDialogConfigurationScreen(

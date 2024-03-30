@@ -29,7 +29,6 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.HumanoidSlim;
 import de.markusbordihn.easynpc.entity.easynpc.npc.HumanoidSlim.Variant;
 import java.util.EnumMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -48,12 +47,10 @@ public class HumanoidSlimRenderer
     extends LivingEntityRenderer<HumanoidSlim, StandardPlayerModel<HumanoidSlim>>
     implements EasyNPCRenderer {
 
-  // Variant Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
           new EnumMap<>(Variant.class),
           map -> {
-            // Build-in Variants
             map.put(Variant.ALEX, new ResourceLocation("textures/entity/player/slim/alex.png"));
             map.put(Variant.ARI, new ResourceLocation("textures/entity/player/slim/ari.png"));
             map.put(Variant.EFE, new ResourceLocation("textures/entity/player/slim/efe.png"));
@@ -63,8 +60,6 @@ public class HumanoidSlimRenderer
             map.put(Variant.STEVE, new ResourceLocation("textures/entity/player/slim/steve.png"));
             map.put(Variant.SUNNY, new ResourceLocation("textures/entity/player/slim/sunny.png"));
             map.put(Variant.ZURI, new ResourceLocation("textures/entity/player/slim/zuri.png"));
-
-            // Custom Variants
             map.put(
                 Variant.KAWORRU,
                 new ResourceLocation(
@@ -172,7 +167,7 @@ public class HumanoidSlimRenderer
   }
 
   @Override
-  protected int getBlockLightLevel(@Nonnull HumanoidSlim entity, @Nonnull BlockPos blockPos) {
+  protected int getBlockLightLevel(HumanoidSlim entity, BlockPos blockPos) {
     return getEntityLightLevel(entity, blockPos);
   }
 }

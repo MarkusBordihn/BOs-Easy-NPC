@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.menu.configuration.skin;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import java.util.UUID;
-import javax.annotation.Nonnull;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
@@ -44,14 +43,13 @@ public class NoneSkinConfigurationMenu extends ConfigurationMenu {
   public static MenuProvider getMenuProvider(UUID uuid, Entity entity) {
     return new MenuProvider() {
       @Override
-      @Nonnull
       public Component getDisplayName() {
         return Component.translatable("None Skin for " + entity.getName().getString());
       }
 
       @Override
       public AbstractContainerMenu createMenu(
-          int windowId, @Nonnull Inventory inventory, @Nonnull Player serverPlayer) {
+          int windowId, Inventory inventory, Player serverPlayer) {
         return new NoneSkinConfigurationMenu(windowId, inventory, uuid);
       }
     };

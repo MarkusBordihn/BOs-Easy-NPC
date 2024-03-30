@@ -28,7 +28,6 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Illager.Variant;
 import java.util.EnumMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -146,7 +145,7 @@ public class IllagerRenderer extends MobRenderer<Illager, StandardIllagerModel<I
   }
 
   @Override
-  protected int getBlockLightLevel(@Nonnull Illager entity, @Nonnull BlockPos blockPos) {
+  protected int getBlockLightLevel(Illager entity, BlockPos blockPos) {
     return getEntityLightLevel(entity, blockPos);
   }
 }

@@ -23,7 +23,6 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
 import java.util.List;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -114,10 +113,7 @@ public class EasyNPCPresetEmptyItem extends Item {
 
   @Override
   public void appendHoverText(
-      ItemStack itemStack,
-      @Nullable Level level,
-      List<Component> tooltipList,
-      TooltipFlag tooltipFlag) {
+      ItemStack itemStack, Level level, List<Component> tooltipList, TooltipFlag tooltipFlag) {
     tooltipList.add(Component.translatable(Constants.TEXT_ITEM_PREFIX + NAME));
   }
 }

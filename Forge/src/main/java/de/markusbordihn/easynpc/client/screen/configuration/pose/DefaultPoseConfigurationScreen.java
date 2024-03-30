@@ -37,7 +37,6 @@ public class DefaultPoseConfigurationScreen
     extends PoseConfigurationScreen<DefaultPoseConfigurationMenu> {
 
   public static final int BUTTON_WIDTH = 100;
-  // Pose buttons
   protected Button crouchingPoseButton;
   protected Button dyingPoseButton;
   protected Button fallFlyingPoseButton;

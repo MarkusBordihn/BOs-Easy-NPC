@@ -29,7 +29,6 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie.Variant;
 import java.util.EnumMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -47,23 +46,18 @@ import net.minecraft.resources.ResourceLocation;
 public class ZombieRenderer extends MobRenderer<Zombie, StandardZombieModel<Zombie>>
     implements EasyNPCRenderer {
 
-  // Variant Textures
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
           new EnumMap<>(Variant.class),
           map -> {
-            // Build-in Variants
             map.put(Variant.DROWNED, new ResourceLocation("textures/entity/zombie/drowned.png"));
             map.put(Variant.HUSK, new ResourceLocation("textures/entity/zombie/husk.png"));
             map.put(Variant.ZOMBIE, new ResourceLocation("textures/entity/zombie/zombie.png"));
-
-            // Custom Variants
           });
   protected static final Map<Variant, ResourceLocation> OUTER_TEXTURE_BY_VARIANT =
       Util.make(
           new EnumMap<>(Variant.class),
           map -> {
-            // Build-in Variants
             map.put(
                 Variant.DROWNED,
                 new ResourceLocation("textures/entity/zombie/drowned_outer_layer.png"));
@@ -175,7 +169,7 @@ public class ZombieRenderer extends MobRenderer<Zombie, StandardZombieModel<Zomb
   }
 
   @Override
-  protected int getBlockLightLevel(@Nonnull Zombie entity, @Nonnull BlockPos blockPos) {
+  protected int getBlockLightLevel(Zombie entity, BlockPos blockPos) {
     return getEntityLightLevel(entity, blockPos);
   }
 }

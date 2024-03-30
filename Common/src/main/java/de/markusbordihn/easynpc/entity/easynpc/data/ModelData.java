@@ -26,7 +26,6 @@ import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import javax.annotation.Nonnull;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -44,71 +43,63 @@ public interface ModelData<T extends PathfinderMob> extends EasyNPC<T> {
 
   EntityDataSerializer<ModelPose> MODEL_POSE =
       new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, @Nonnull ModelPose modelPose) {
+        public void write(FriendlyByteBuf buffer, ModelPose modelPose) {
           buffer.writeEnum(modelPose);
         }
 
-        @Nonnull
         public ModelPose read(FriendlyByteBuf buffer) {
           return buffer.readEnum(ModelPose.class);
         }
 
-        @Nonnull
-        public ModelPose copy(@Nonnull ModelPose value) {
+        public ModelPose copy(ModelPose value) {
           return value;
         }
       };
   EntityDataSerializer<CustomPosition> POSITION =
       new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, @Nonnull CustomPosition position) {
+        public void write(FriendlyByteBuf buffer, CustomPosition position) {
           buffer.writeFloat(position.x());
           buffer.writeFloat(position.y());
           buffer.writeFloat(position.z());
         }
 
-        @Nonnull
         public CustomPosition read(FriendlyByteBuf buffer) {
           return new CustomPosition(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         }
 
-        @Nonnull
-        public CustomPosition copy(@Nonnull CustomPosition position) {
+        public CustomPosition copy(CustomPosition position) {
           return position;
         }
       };
   EntityDataSerializer<CustomRotation> ROTATION =
       new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, @Nonnull CustomRotation rotation) {
+        public void write(FriendlyByteBuf buffer, CustomRotation rotation) {
           buffer.writeFloat(rotation.x());
           buffer.writeFloat(rotation.y());
           buffer.writeFloat(rotation.z());
         }
 
-        @Nonnull
         public CustomRotation read(FriendlyByteBuf buffer) {
           return new CustomRotation(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         }
 
-        @Nonnull
-        public CustomRotation copy(@Nonnull CustomRotation rotation) {
+        public CustomRotation copy(CustomRotation rotation) {
           return rotation;
         }
       };
   EntityDataSerializer<CustomScale> SCALE =
       new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, @Nonnull CustomScale scale) {
+        public void write(FriendlyByteBuf buffer, CustomScale scale) {
           buffer.writeFloat(scale.x());
           buffer.writeFloat(scale.y());
           buffer.writeFloat(scale.z());
         }
 
-        @Nonnull
         public CustomScale read(FriendlyByteBuf buffer) {
           return new CustomScale(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         }
 
-        @Nonnull
-        public CustomScale copy(@Nonnull CustomScale scale) {
+        public CustomScale copy(CustomScale scale) {
           return scale;
         }
       };

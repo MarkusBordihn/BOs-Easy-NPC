@@ -44,7 +44,6 @@ import de.markusbordihn.easynpc.menu.editor.DialogButtonEditorMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import java.util.HashSet;
 import java.util.UUID;
-import javax.annotation.Nonnull;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -65,12 +64,9 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  // General
   protected final ClientLevel clientLevel;
   protected final LocalPlayer localPlayer;
   protected final Minecraft minecraftInstance;
-
-  // Data access
   protected final DialogDataSet dialogDataSet;
   protected final DialogDataEntry dialogData;
   protected final DialogButtonData dialogButtonData;
@@ -79,29 +75,19 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
   protected final UUID dialogButtonId;
   protected final UUID uuid;
   protected final ConfigurationType formerConfigurationType;
-
-  // Navigation
   protected Button homeButton;
   protected Button dialogButton;
   protected Button dialogButtonButton;
-
-  // Buttons
   protected Button closeButton;
   protected Button saveButton;
   protected Button cancelButton;
   protected Button deleteButton;
-
-  // Edit Boxes
   protected TextField buttonNameBox;
   protected Button buttonNameToLabelButton;
   protected TextField buttonLabelBox;
   protected Checkbox buttonLabelCheckbox;
-
-  // Open Named Dialog
   protected TextField openNamedDialogBox;
   protected Checkbox openTradingScreenCheckbox;
-
-  // Command Dialog
   protected TextField commandDialogBox;
   protected Checkbox commandDialogExecuteAsUserCheckbox;
   protected Checkbox commandDialogDebugCheckbox;
@@ -457,7 +443,7 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
   }
 
   @Override
-  public void render(@Nonnull GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     this.renderBackground(guiGraphics, x, y, partialTicks);
     super.render(guiGraphics, x, y, partialTicks);
     this.renderEditLabels(guiGraphics);
@@ -475,7 +461,7 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
   }
 
   @Override
-  protected void renderLabels(@Nonnull GuiGraphics guiGraphics, int x, int y) {
+  protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
     // No labels
   }
 

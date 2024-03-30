@@ -50,8 +50,6 @@ import de.markusbordihn.easynpc.entity.easynpc.handlers.BaseTickHandler;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.EnumMap;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -210,7 +208,7 @@ public class EasyNPCBaseEntity extends PathfinderMob
   }
 
   @Override
-  public boolean doHurtTarget(@Nonnull Entity entity) {
+  public boolean doHurtTarget(Entity entity) {
     this.attackAnimationTick = 10;
     this.level().broadcastEntityEvent(this, (byte) 4);
     return super.doHurtTarget(entity);
@@ -247,7 +245,7 @@ public class EasyNPCBaseEntity extends PathfinderMob
     return this.tradingPlayer;
   }
 
-  public void setTradingPlayer(@Nullable Player player) {
+  public void setTradingPlayer(Player player) {
     this.tradingPlayer = player;
   }
 
@@ -259,7 +257,7 @@ public class EasyNPCBaseEntity extends PathfinderMob
     return 0;
   }
 
-  public void overrideOffers(@Nullable MerchantOffers merchantOffers) {
+  public void overrideOffers(MerchantOffers merchantOffers) {
     /* Method is not used */
   }
 
@@ -311,19 +309,19 @@ public class EasyNPCBaseEntity extends PathfinderMob
   }
 
   @Override
-  public boolean hurt(@Nonnull DamageSource damageSource, float damage) {
+  public boolean hurt(DamageSource damageSource, float damage) {
     this.handleActionHurtEvent(damageSource, damage);
     return super.hurt(damageSource, damage);
   }
 
   @Override
-  public void die(@Nonnull DamageSource damageSource) {
+  public void die(DamageSource damageSource) {
     this.handleActionDieEvent(damageSource);
     super.die(damageSource);
   }
 
   @Override
-  public InteractionResult mobInteract(@Nonnull Player player, @Nonnull InteractionHand hand) {
+  public InteractionResult mobInteract(Player player, InteractionHand hand) {
     if (!(player instanceof ServerPlayer serverPlayer) || hand != InteractionHand.MAIN_HAND) {
       return InteractionResult.PASS;
     }
@@ -381,7 +379,6 @@ public class EasyNPCBaseEntity extends PathfinderMob
     return InteractionResult.PASS;
   }
 
-  @Nullable
   public MerchantOffers getOffers() {
     if (this.offers == null) {
       this.updateTradesData();
@@ -419,13 +416,12 @@ public class EasyNPCBaseEntity extends PathfinderMob
   }
 
   @Override
-  @Nullable
   public SpawnGroupData finalizeSpawn(
-      @Nonnull ServerLevelAccessor serverLevelAccessor,
-      @Nonnull DifficultyInstance difficulty,
-      @Nonnull MobSpawnType mobSpawnType,
-      @Nullable SpawnGroupData spawnGroupData,
-      @Nullable CompoundTag compoundTag) {
+      ServerLevelAccessor serverLevelAccessor,
+      DifficultyInstance difficulty,
+      MobSpawnType mobSpawnType,
+      SpawnGroupData spawnGroupData,
+      CompoundTag compoundTag) {
     spawnGroupData =
         super.finalizeSpawn(
             serverLevelAccessor, difficulty, mobSpawnType, spawnGroupData, compoundTag);
@@ -486,7 +482,6 @@ public class EasyNPCBaseEntity extends PathfinderMob
     this.remainingPersistentAngerTime = remainingPersistentAngerTime;
   }
 
-  @Nullable
   @Override
   public UUID getPersistentAngerTarget() {
     return this.persistentAngerTarget;
@@ -600,8 +595,7 @@ public class EasyNPCBaseEntity extends PathfinderMob
   }
 
   @Override
-  @Nonnull
-  public EntityDimensions getDimensions(@Nonnull Pose pose) {
+  public EntityDimensions getDimensions(Pose pose) {
     float scaleXZ = getScaleX() > getScaleZ() ? getScaleX() : getScaleZ();
     return super.getDimensions(pose).scale(scaleXZ, getScaleY());
   }
@@ -623,7 +617,7 @@ public class EasyNPCBaseEntity extends PathfinderMob
   }
 
   @Override
-  public void travel(@Nonnull Vec3 vec3) {
+  public void travel(Vec3 vec3) {
 
     this.handleNavigationTravelEvent(vec3);
 
@@ -668,7 +662,7 @@ public class EasyNPCBaseEntity extends PathfinderMob
   }
 
   @Override
-  public void addAdditionalSaveData(@Nonnull CompoundTag compoundTag) {
+  public void addAdditionalSaveData(CompoundTag compoundTag) {
     super.addAdditionalSaveData(compoundTag);
 
     this.addAdditionalActionData(compoundTag);
@@ -691,7 +685,7 @@ public class EasyNPCBaseEntity extends PathfinderMob
   }
 
   @Override
-  public void readAdditionalSaveData(@Nonnull CompoundTag compoundTag) {
+  public void readAdditionalSaveData(CompoundTag compoundTag) {
     super.readAdditionalSaveData(compoundTag);
 
     this.readAdditionalNPCData(compoundTag);
