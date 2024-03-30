@@ -29,7 +29,6 @@ import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.menu.configuration.rotation.DefaultRotationConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
-import javax.annotation.Nonnull;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.core.Rotations;

@@ -23,10 +23,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.standard.StandardVillagerModel;
-import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.StandardMobRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.ProfessionLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.VariantLayer;
-import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.profession.Profession;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Villager.Variant;
@@ -36,15 +35,13 @@ import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.CrossedArmsItemLayer;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Pose;
 
-public class VillagerRenderer extends MobRenderer<Villager, StandardVillagerModel<Villager>>
-    implements EasyNPCRenderer {
+public class VillagerRenderer
+    extends StandardMobRenderer<Villager, Villager.Variant, StandardVillagerModel<Villager>> {
 
   public static final ResourceLocation BASE_TEXTURE =
       new ResourceLocation("textures/entity/villager/villager.png");
@@ -115,20 +112,16 @@ public class VillagerRenderer extends MobRenderer<Villager, StandardVillagerMode
           });
 
   public VillagerRenderer(EntityRendererProvider.Context context) {
-    super(context, new StandardVillagerModel<>(context.bakeLayer(ModelLayers.VILLAGER)), 0.5F);
+    super(
+        context,
+        new StandardVillagerModel<>(context.bakeLayer(ModelLayers.VILLAGER)),
+        0.5F,
+        BASE_TEXTURE);
     this.addLayer(new VariantLayer<>(this, context.getModelSet(), TEXTURE_BY_VARIANT));
     this.addLayer(
         new CustomHeadLayer<>(this, context.getModelSet(), context.getItemInHandRenderer()));
     this.addLayer(new ProfessionLayer<>(this, context.getModelSet(), TEXTURE_BY_PROFESSION));
     this.addLayer(new CrossedArmsItemLayer<>(this, context.getItemInHandRenderer()));
-  }
-
-  public ResourceLocation getProfessionTextureLocation(Enum<?> profession) {
-    return TEXTURE_BY_PROFESSION.get(profession);
-  }
-
-  public ResourceLocation getVariantTextureLocation(Enum<?> variant) {
-    return TEXTURE_BY_VARIANT.get(variant);
   }
 
   @Override
@@ -137,71 +130,33 @@ public class VillagerRenderer extends MobRenderer<Villager, StandardVillagerMode
   }
 
   @Override
-  public ResourceLocation getDefaultTexture() {
-    return BASE_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureLocation(Villager entity) {
-    return this.getEntityTexture(entity);
-  }
-
-  @Override
-  protected void scale(Villager entity, PoseStack poseStack, float unused) {
-    this.scaleEntity(entity, poseStack);
-  }
-
-  @Override
-  public void render(
+  public void renderDefaultPose(
       Villager entity,
+      StandardVillagerModel<Villager> model,
+      Pose pose,
       float entityYaw,
       float partialTicks,
       PoseStack poseStack,
       MultiBufferSource buffer,
       int light) {
-    // Model Rotation
-    this.rotateEntity(entity, poseStack);
-
-    // Render additional poses
-    if (entity.getModelPose() == ModelPose.DEFAULT) {
-
-      switch (entity.getPose()) {
-        case DYING:
-          poseStack.translate(-1.0D, 0.0D, 0.0D);
-          poseStack.mulPose(Axis.YP.rotationDegrees(180f));
-          poseStack.mulPose(Axis.ZP.rotationDegrees(this.getFlipDegrees(entity)));
-          poseStack.mulPose(Axis.YP.rotationDegrees(270.0F));
-          this.getModel().getHead().xRot = -0.7853982F;
-          this.getModel().getHead().yRot = -0.7853982F;
-          this.getModel().getHead().zRot = -0.7853982F;
-          break;
-        case SLEEPING:
-          poseStack.translate(1.0D, 0.0D, 0.0D);
-          break;
-        default:
-          this.getModel().getHead().xRot = 0F;
-          this.getModel().getHead().yRot = 0F;
-          this.getModel().getHead().zRot = 0F;
-          break;
-      }
+    switch (pose) {
+      case DYING:
+        poseStack.translate(-1.0D, 0.0D, 0.0D);
+        poseStack.mulPose(Axis.YP.rotationDegrees(180f));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(this.getFlipDegrees(entity)));
+        poseStack.mulPose(Axis.YP.rotationDegrees(270.0F));
+        this.getModel().getHead().xRot = -0.7853982F;
+        this.getModel().getHead().yRot = -0.7853982F;
+        this.getModel().getHead().zRot = -0.7853982F;
+        break;
+      case SLEEPING:
+        poseStack.translate(1.0D, 0.0D, 0.0D);
+        break;
+      default:
+        this.getModel().getHead().xRot = 0F;
+        this.getModel().getHead().yRot = 0F;
+        this.getModel().getHead().zRot = 0F;
+        break;
     }
-
-    super.render(entity, entityYaw, partialTicks, poseStack, buffer, light);
-  }
-
-  @Override
-  protected void renderNameTag(
-      Villager entity,
-      Component component,
-      PoseStack poseStack,
-      MultiBufferSource multiBufferSource,
-      int color) {
-    this.renderEntityNameTag(entity, poseStack);
-    super.renderNameTag(entity, component, poseStack, multiBufferSource, color);
-  }
-
-  @Override
-  protected int getBlockLightLevel(Villager entity, BlockPos blockPos) {
-    return getEntityLightLevel(entity, blockPos);
   }
 }

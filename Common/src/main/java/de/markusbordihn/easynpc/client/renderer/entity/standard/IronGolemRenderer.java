@@ -20,9 +20,8 @@
 package de.markusbordihn.easynpc.client.renderer.entity.standard;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.standard.StandardIronGolemModel;
-import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.StandardMobRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.VariantOverLayer;
 import de.markusbordihn.easynpc.entity.easynpc.npc.IronGolem;
 import de.markusbordihn.easynpc.entity.easynpc.npc.IronGolem.Variant;
@@ -30,16 +29,13 @@ import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Pose;
 
-public class IronGolemRenderer extends MobRenderer<IronGolem, StandardIronGolemModel<IronGolem>>
-    implements EasyNPCRenderer {
+public class IronGolemRenderer
+    extends StandardMobRenderer<IronGolem, IronGolem.Variant, StandardIronGolemModel<IronGolem>> {
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
@@ -72,63 +68,25 @@ public class IronGolemRenderer extends MobRenderer<IronGolem, StandardIronGolemM
       TEXTURE_BY_VARIANT.get(Variant.IRON_GOLEM);
 
   public IronGolemRenderer(EntityRendererProvider.Context context) {
-    super(context, new StandardIronGolemModel<>(context.bakeLayer(ModelLayers.IRON_GOLEM)), 0.7F);
+    super(
+        context,
+        new StandardIronGolemModel<>(context.bakeLayer(ModelLayers.IRON_GOLEM)),
+        0.7F,
+        DEFAULT_TEXTURE,
+        TEXTURE_BY_VARIANT,
+        TEXTURE_OVERLAY_BY_VARIANT);
     this.addLayer(new VariantOverLayer<>(this, context.getModelSet()));
     this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
   }
 
   @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variant) {
-    return TEXTURE_BY_VARIANT.getOrDefault(variant, DEFAULT_TEXTURE);
-  }
-
-  @Override
-  public ResourceLocation getTextureOverlayByVariant(Enum<?> variant) {
-    return TEXTURE_OVERLAY_BY_VARIANT.getOrDefault(variant, Constants.BLANK_ENTITY_TEXTURE);
-  }
-
-  @Override
-  public ResourceLocation getDefaultTexture() {
-    return DEFAULT_TEXTURE;
-  }
-
-  @Override
-  public ResourceLocation getTextureLocation(IronGolem entity) {
-    return this.getEntityTexture(entity);
-  }
-
-  @Override
-  protected void scale(IronGolem entity, PoseStack poseStack, float unused) {
-    this.scaleEntity(entity, poseStack);
-  }
-
-  @Override
-  public void render(
+  public void renderDefaultPose(
       IronGolem entity,
+      StandardIronGolemModel<IronGolem> model,
+      Pose pose,
       float entityYaw,
       float partialTicks,
       PoseStack poseStack,
       net.minecraft.client.renderer.MultiBufferSource buffer,
-      int light) {
-    // Model Rotation
-    this.rotateEntity(entity, poseStack);
-
-    super.render(entity, entityYaw, partialTicks, poseStack, buffer, light);
-  }
-
-  @Override
-  protected void renderNameTag(
-      IronGolem entity,
-      Component component,
-      PoseStack poseStack,
-      MultiBufferSource multiBufferSource,
-      int color) {
-    this.renderEntityNameTag(entity, poseStack);
-    super.renderNameTag(entity, component, poseStack, multiBufferSource, color);
-  }
-
-  @Override
-  protected int getBlockLightLevel(IronGolem entity, BlockPos blockPos) {
-    return getEntityLightLevel(entity, blockPos);
-  }
+      int light) {}
 }
