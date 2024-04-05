@@ -22,10 +22,11 @@ package de.markusbordihn.easynpc.client.texture;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import de.markusbordihn.easynpc.io.CustomSkinDataFiles;
 import java.io.File;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.resources.ResourceLocation;
@@ -35,17 +36,16 @@ import org.apache.logging.log4j.Logger;
 public class CustomTextureManager {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  private static final String LOG_PREFIX = "[Custom Texture Manager]";
-
-  private static final HashMap<TextureModelKey, ResourceLocation> customTextureCache =
-      new HashMap<>();
+  protected static final int RELOAD_PROTECTION = 10000;
+  private static final HashMap<TextureModelKey, ResourceLocation> textureCache = new HashMap<>();
+  private static final HashSet<UUID> textureReloadProtection = new HashSet<>();
+  private static int reloadProtectionCounter = 0;
 
   private CustomTextureManager() {}
 
   public static Set<UUID> getCustomTextureCacheKeys(SkinModel skinModel) {
     HashSet<UUID> hashSet = new HashSet<>();
-    for (TextureModelKey textureModelKey : customTextureCache.keySet()) {
+    for (TextureModelKey textureModelKey : textureCache.keySet()) {
       if (skinModel.equals(textureModelKey.getSkinModel())) {
         hashSet.add(textureModelKey.getUUID());
       }
@@ -54,43 +54,70 @@ public class CustomTextureManager {
   }
 
   public static ResourceLocation getOrCreateTextureWithDefault(
-      SkinData<?> entity, ResourceLocation defaultResourceLocation) {
+      SkinData<?> skinData, ResourceLocation defaultResourceLocation) {
     // Check if we have a skin UUID otherwise we assume that the texture is unknown.
-    Optional<UUID> skinUUID = entity.getSkinUUID();
-    if (skinUUID.isEmpty()) {
+    UUID skinUUID = skinData.getSkinUUID();
+    if (skinUUID.equals(Constants.BLANK_UUID)) {
       return defaultResourceLocation;
     }
 
     // Check if there is already any cached resource location.
-    TextureModelKey textureModelKey = new TextureModelKey(skinUUID.get(), entity.getSkinModel());
-    ResourceLocation resourceLocation = customTextureCache.get(textureModelKey);
+    TextureModelKey textureModelKey = new TextureModelKey(skinUUID, skinData.getSkinModel());
+    ResourceLocation resourceLocation = textureCache.get(textureModelKey);
     if (resourceLocation != null) {
       return resourceLocation;
     }
 
-    return defaultResourceLocation;
+    ResourceLocation createdResourceLocation = createTexture(textureModelKey, skinData);
+    return createdResourceLocation != null ? createdResourceLocation : defaultResourceLocation;
+  }
+
+  private static ResourceLocation createTexture(
+      TextureModelKey textureModelKey, SkinData<?> skinData) {
+
+    // Reload protection to avoid multiple texture requests in a short time.
+    UUID skinUUID = textureModelKey.getUUID();
+    if (!textureReloadProtection.add(skinUUID)) {
+      if (reloadProtectionCounter++ > RELOAD_PROTECTION) {
+        textureReloadProtection.clear();
+        reloadProtectionCounter = 0;
+      }
+      return null;
+    }
+
+    // Get the skin model and texture data folder
+    SkinModel skinModel = skinData.getSkinModel();
+    Path textureDataFolder = CustomSkinDataFiles.getCustomSkinDataFolder(skinModel);
+    if (textureDataFolder == null) {
+      return null;
+    }
+
+    // Search the local texture cache directory for any matching texture.
+    ResourceLocation localTextureCache =
+        TextureManager.searchCachedTexture(textureModelKey, textureDataFolder);
+    if (localTextureCache != null) {
+      textureCache.put(textureModelKey, localTextureCache);
+      return localTextureCache;
+    }
+
+    log.error("Unable to load custom texture {} from {}!", textureModelKey, textureDataFolder);
+    return null;
   }
 
   public static void registerTexture(SkinModel skinModel, File textureFile) {
-    UUID uuid = UUID.nameUUIDFromBytes(textureFile.getName().getBytes());
-    TextureModelKey textureModelKey = new TextureModelKey(uuid, skinModel);
-    registerTexture(textureModelKey, textureFile);
+    registerTexture(TextureManager.getTextureModelKey(skinModel, textureFile), textureFile);
   }
 
   public static void registerTexture(TextureModelKey textureModelKey, File textureFile) {
-    log.info(
-        "{} Registering custom texture {} with UUID {}.",
-        LOG_PREFIX,
-        textureFile.getName(),
-        textureModelKey.getUUID());
     ResourceLocation resourceLocation =
         TextureManager.addCustomTexture(textureModelKey, textureFile);
     if (resourceLocation != null) {
-      customTextureCache.put(textureModelKey, resourceLocation);
+      textureCache.put(textureModelKey, resourceLocation);
     }
   }
 
-  public static void clearCustomTextureCache() {
-    customTextureCache.clear();
+  public static void clearTextureCache() {
+    textureReloadProtection.clear();
+    textureCache.clear();
   }
 }

@@ -20,7 +20,10 @@
 package de.markusbordihn.easynpc.entity.easynpc.npc;
 
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.sound.SoundDataSet;
+import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -28,13 +31,13 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
-public class Cat extends EasyNPCBaseEntity {
+public class Cat extends EasyNPCBaseEntity<Cat> {
 
   public static final String ID = "cat";
   public static final String NAME = "Cat";
 
   public Cat(EntityType<? extends PathfinderMob> entityType, Level level) {
-    super(entityType, level);
+    super(entityType, level, Variant.BLACK);
   }
 
   public static AttributeSupplier.Builder createAttributes() {
@@ -48,6 +51,11 @@ public class Cat extends EasyNPCBaseEntity {
         .add(Attributes.ATTACK_SPEED, 0.0D)
         .add(Attributes.ARMOR, 0.0D)
         .add(Attributes.ARMOR_TOUGHNESS, 0.0D);
+  }
+
+  @Override
+  public boolean canUseArmor() {
+    return false;
   }
 
   @Override
@@ -88,6 +96,22 @@ public class Cat extends EasyNPCBaseEntity {
   @Override
   public int getEntityDialogScaling() {
     return 65;
+  }
+
+  @Override
+  public boolean supportsSmartAnimations() {
+    return false;
+  }
+
+  @Override
+  public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
+    soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.CAT_AMBIENT);
+    soundDataSet.addSound(SoundType.AMBIENT_TAMED, SoundEvents.CAT_PURREOW);
+    soundDataSet.addSound(SoundType.AMBIENT_STRAY, SoundEvents.CAT_STRAY_AMBIENT);
+    soundDataSet.addSound(SoundType.DEATH, SoundEvents.CAT_DEATH);
+    soundDataSet.addSound(SoundType.HURT, SoundEvents.CAT_HURT);
+    soundDataSet.addSound(SoundType.EAT, SoundEvents.CAT_EAT);
+    return soundDataSet;
   }
 
   // Skin Details

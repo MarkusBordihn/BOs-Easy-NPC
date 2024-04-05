@@ -24,7 +24,7 @@ import com.mojang.math.Vector3f;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.standard.StandardZombieVillagerModel;
 import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.StandardHumanoidMobRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.base.BaseHumanoidMobRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.ProfessionLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.VariantLayer;
 import de.markusbordihn.easynpc.data.profession.Profession;
@@ -42,8 +42,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Pose;
 
 public class ZombieVillagerRenderer
-    extends StandardHumanoidMobRenderer<
-        ZombieVillager, ZombieVillager.Variant, StandardZombieVillagerModel<ZombieVillager>> {
+    extends BaseHumanoidMobRenderer<
+        ZombieVillager, Variant, StandardZombieVillagerModel<ZombieVillager>> {
 
   public static final ResourceLocation BASE_TEXTURE =
       new ResourceLocation("textures/entity/zombie_villager/zombie_villager.png");

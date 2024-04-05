@@ -19,37 +19,22 @@
 
 package de.markusbordihn.easynpc.client.model.standard;
 
-import de.markusbordihn.easynpc.client.model.EasyNPCModel;
-import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.client.model.base.BaseHumanoidModel;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import net.minecraft.client.model.AnimationUtils;
-import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.VillagerHeadModel;
-import net.minecraft.client.model.ZombieVillagerModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Pose;
 
-public class StandardZombieVillagerModel<T extends LivingEntity> extends HumanoidModel<T>
-    implements EasyNPCModel, VillagerHeadModel {
+public class StandardZombieVillagerModel<T extends LivingEntity> extends BaseHumanoidModel<T>
+    implements VillagerHeadModel {
 
   private final ModelPart hatRim;
 
   public StandardZombieVillagerModel(ModelPart modelPart) {
     super(modelPart);
     this.hatRim = this.hat.getChild("hat_rim");
-  }
-
-  public static LayerDefinition createBodyLayer() {
-    return ZombieVillagerModel.createBodyLayer();
-  }
-
-  public static LayerDefinition createArmorLayer(CubeDeformation cubeDeformation) {
-    return ZombieVillagerModel.createArmorLayer(cubeDeformation);
   }
 
   @Override
@@ -60,68 +45,21 @@ public class StandardZombieVillagerModel<T extends LivingEntity> extends Humanoi
       float ageInTicks,
       float netHeadYaw,
       float headPitch) {
-    boolean isAggressive;
-    if (!(entity instanceof EasyNPC<?> easyNPC)) {
-      return;
-    }
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+    this.setupAnimation(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+  }
 
-    // Reset player model to avoid any issues with other mods.
-    EasyNPCModel.resetHumanoidModel(
-        this, this.head, this.body, this.rightArm, this.leftArm, this.rightLeg, this.leftLeg);
-
-    // Individual Part Modifications
-    if (modelData.getModelPose() == ModelPose.CUSTOM) {
-      EasyNPCModel.setupHumanoidModel(
-          easyNPC,
-          this.head,
-          this.body,
-          this.rightArm,
-          this.leftArm,
-          this.rightLeg,
-          this.leftLeg,
-          netHeadYaw,
-          headPitch);
-    } else if (modelData.getDefaultPose() == Pose.CROUCHING) {
-      // Crouching Pose
-      this.body.xRot = 0.5F;
-      this.body.y = 3.2F;
-      this.head.y = 4.2F;
-      this.leftArm.xRot += 0.4F;
-      this.leftArm.y = 5.2F;
-      this.leftLeg.y = 12.2F;
-      this.leftLeg.z = 4.0F;
-      this.rightArm.xRot += 0.4F;
-      this.rightArm.y = 5.2F;
-      this.rightLeg.y = 12.2F;
-      this.rightLeg.z = 4.0F;
-    }
-
-    if (modelData.getModelPose() == ModelPose.CUSTOM
-        || modelData.getDefaultPose() == Pose.CROUCHING) {
-      // Handle animations, if model specific part was not adjusted.
-      if (modelData.getModelPose() == ModelPose.CUSTOM) {
-        EasyNPCModel.animateHumanoidModel(
-            this,
-            easyNPC,
-            this.head,
-            this.body,
-            this.rightArm,
-            this.leftArm,
-            this.rightLeg,
-            this.leftLeg,
-            ageInTicks,
-            limbSwing,
-            limbSwingAmount);
-      }
-
-      this.hat.copyFrom(this.head);
-    } else {
-      super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-      AttackData<?> attackData = easyNPC.getEasyNPCAttackData();
-      AnimationUtils.animateZombieArms(
-          this.leftArm, this.rightArm, attackData.isAggressive(), this.attackTime, ageInTicks);
-    }
+  @Override
+  public void animateAttackModelPose(
+      T entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
+    AnimationUtils.animateZombieArms(
+        this.leftArm, this.rightArm, attackData.isAggressive(), this.attackTime, ageInTicks);
   }
 
   public void hatVisible(boolean visible) {

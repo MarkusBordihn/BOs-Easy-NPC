@@ -24,7 +24,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.access.EasyNPCAccessManager;
+import de.markusbordihn.easynpc.access.AccessManager;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
@@ -290,7 +290,7 @@ public class PresetCommand {
     }
 
     // Check if player has access to the EasyNPC.
-    if (!EasyNPCAccessManager.hasAccess(context, uuid)) {
+    if (!AccessManager.hasAccess(context, uuid)) {
       context.sendFailure(new TextComponent("You are not allowed to export this EasyNPC!"));
       return 0;
     }

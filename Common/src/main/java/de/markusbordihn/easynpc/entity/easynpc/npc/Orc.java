@@ -20,7 +20,10 @@
 package de.markusbordihn.easynpc.entity.easynpc.npc;
 
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.sound.SoundDataSet;
+import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -28,18 +31,18 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
-public class Orc extends EasyNPCBaseEntity {
+public class Orc extends EasyNPCBaseEntity<Orc> {
 
   public static final String ID = "orc";
   public static final String ID_WARRIOR = "orc_warrior";
   public static final String NAME = "Orc";
 
-  public Orc(EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variant) {
-    super(entityType, level, variant);
+  public Orc(EntityType<? extends PathfinderMob> entityType, Level level) {
+    this(entityType, level, Variant.DEFAULT);
   }
 
-  public Orc(EntityType<? extends PathfinderMob> entityType, Level level) {
-    super(entityType, level);
+  public Orc(EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variant) {
+    super(entityType, level, variant);
   }
 
   public static AttributeSupplier.Builder createAttributes() {
@@ -73,6 +76,16 @@ public class Orc extends EasyNPCBaseEntity {
   @Override
   public Enum<?> getVariant(String name) {
     return Variant.valueOf(name);
+  }
+
+  @Override
+  public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
+    soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.ZOGLIN_AMBIENT);
+    soundDataSet.addSound(SoundType.DEATH, SoundEvents.ZOGLIN_ATTACK);
+    soundDataSet.addSound(SoundType.EAT, SoundEvents.PLAYER_BURP);
+    soundDataSet.addSound(SoundType.HURT, SoundEvents.ZOGLIN_HURT);
+    soundDataSet.addSound(SoundType.STEP, SoundEvents.ZOGLIN_STEP);
+    return soundDataSet;
   }
 
   // Skin Details

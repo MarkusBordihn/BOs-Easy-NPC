@@ -20,7 +20,10 @@
 package de.markusbordihn.easynpc.entity.easynpc.npc;
 
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.sound.SoundDataSet;
+import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -30,7 +33,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class Chicken extends EasyNPCBaseEntity {
+public class Chicken extends EasyNPCBaseEntity<Chicken> {
 
   public static final String ID = "chicken";
   public static final String NAME = "Chicken";
@@ -42,7 +45,7 @@ public class Chicken extends EasyNPCBaseEntity {
   private float flapping = 1.0F;
 
   public Chicken(EntityType<? extends PathfinderMob> entityType, Level level) {
-    super(entityType, level);
+    super(entityType, level, Variant.WHITE);
   }
 
   public static AttributeSupplier.Builder createAttributes() {
@@ -100,6 +103,11 @@ public class Chicken extends EasyNPCBaseEntity {
   }
 
   @Override
+  public boolean canUseArmor() {
+    return false;
+  }
+
+  @Override
   public SkinModel getSkinModel() {
     return SkinModel.CHICKEN;
   }
@@ -137,6 +145,20 @@ public class Chicken extends EasyNPCBaseEntity {
   @Override
   public int getEntityDialogScaling() {
     return 70;
+  }
+
+  @Override
+  public boolean supportsSmartAnimations() {
+    return false;
+  }
+
+  @Override
+  public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
+    soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.CHICKEN_AMBIENT);
+    soundDataSet.addSound(SoundType.DEATH, SoundEvents.CHICKEN_DEATH);
+    soundDataSet.addSound(SoundType.HURT, SoundEvents.CHICKEN_HURT);
+    soundDataSet.addSound(SoundType.STEP, SoundEvents.CHICKEN_STEP);
+    return soundDataSet;
   }
 
   // Skin Details

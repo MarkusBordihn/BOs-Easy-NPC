@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.utils.TextUtils;
+import java.util.stream.Stream;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -61,6 +62,10 @@ public interface VariantData<T extends PathfinderMob> extends EasyNPC<T> {
 
   default Enum<?>[] getVariants() {
     return Variant.values();
+  }
+
+  default Stream<String> getVariantNames() {
+    return Stream.of(getVariants()).map(Enum::name);
   }
 
   default Component getVariantName() {

@@ -21,23 +21,12 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.item.BowItem;
-import net.minecraft.world.item.CrossbowItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.ProjectileWeaponItem;
-import net.minecraft.world.item.TieredItem;
 
-public interface AttackData<T extends PathfinderMob> extends EasyNPC<T> {
+public interface AttackData<E extends PathfinderMob> extends EasyNPC<E> {
 
   // Synced entity data
   EntityDataAccessor<Boolean> DATA_AGGRESSIVE =
@@ -50,43 +39,6 @@ public interface AttackData<T extends PathfinderMob> extends EasyNPC<T> {
 
   // CompoundTags
   String DATA_AGGRESSIVE_TAG = "Aggressive";
-  String DATA_CHARGED_PROJECTILES_TAG = "ChargedProjectiles";
-
-  static void addChargedProjectile(ItemStack weaponItemStack, ItemStack projectileItemStack) {
-    CompoundTag weaponCompoundTag = weaponItemStack.getOrCreateTag();
-    ListTag listTag;
-    if (weaponCompoundTag.contains(DATA_CHARGED_PROJECTILES_TAG, 9)) {
-      listTag = weaponCompoundTag.getList(DATA_CHARGED_PROJECTILES_TAG, 10);
-    } else {
-      listTag = new ListTag();
-    }
-    CompoundTag projectileCompoundTag = new CompoundTag();
-    projectileItemStack.save(projectileCompoundTag);
-    listTag.add(projectileCompoundTag);
-    weaponCompoundTag.put(DATA_CHARGED_PROJECTILES_TAG, listTag);
-  }
-
-  static boolean canFireProjectileWeapon(ProjectileWeaponItem projectileWeaponItem) {
-    return projectileWeaponItem instanceof CrossbowItem || projectileWeaponItem instanceof BowItem;
-  }
-
-  static boolean isHoldingMeleeWeapon(LivingEntity livingEntity) {
-    return livingEntity != null && livingEntity.getMainHandItem().getItem() instanceof TieredItem;
-  }
-
-  static boolean isHoldingProjectileWeapon(LivingEntity livingEntity) {
-    return livingEntity != null
-        && livingEntity.getMainHandItem().getItem() instanceof ProjectileWeaponItem;
-  }
-
-  default boolean isHoldingProjectileWeapon() {
-    return isHoldingProjectileWeapon(this.getLivingEntity());
-  }
-
-  default boolean isHoldingWeapon() {
-    LivingEntity livingEntity = this.getLivingEntity();
-    return isHoldingMeleeWeapon(livingEntity) || isHoldingProjectileWeapon(livingEntity);
-  }
 
   int getAttackAnimationTick();
 
@@ -113,40 +65,6 @@ public interface AttackData<T extends PathfinderMob> extends EasyNPC<T> {
   default void defineSynchedAttackData() {
     defineEasyNPCData(DATA_AGGRESSIVE, getDefaultAggression());
     defineEasyNPCData(IS_CHARGING_CROSSBOW, false);
-  }
-
-  default void performBowAttack(
-      LivingEntity livingEntity, LivingEntity livingEntityTarget, float damage) {
-    ItemStack itemstack =
-        livingEntity.getProjectile(
-            livingEntity.getItemInHand(
-                ProjectileUtil.getWeaponHoldingHand(livingEntity, Items.BOW)));
-    AbstractArrow abstractArrow = this.getArrow(livingEntity, itemstack, damage);
-    if (livingEntity.getMainHandItem().getItem() instanceof BowItem) {
-      double targetX = livingEntityTarget.getX() - livingEntity.getX();
-      double targetY = livingEntityTarget.getY(0.3333333333333333D) - abstractArrow.getY();
-      double targetZ = livingEntityTarget.getZ() - livingEntity.getZ();
-      double targetRadius = Math.sqrt(targetX * targetX + targetZ * targetZ);
-      abstractArrow.shoot(
-          targetX,
-          targetY + targetRadius * 0.2F,
-          targetZ,
-          1.6F,
-          14.0F - livingEntity.level.getDifficulty().getId() * 4);
-      livingEntity.playSound(
-          SoundEvents.SKELETON_SHOOT,
-          1.0F,
-          1.0F / (livingEntity.getRandom().nextFloat() * 0.4F + 0.8F));
-      livingEntity.level.addFreshEntity(abstractArrow);
-    }
-  }
-
-  default AbstractArrow getArrow(LivingEntity livingEntity, ItemStack itemStack, float damage) {
-    return ProjectileUtil.getMobArrow(livingEntity, itemStack, damage);
-  }
-
-  default boolean isHoldingMeleeWeapon() {
-    return isHoldingMeleeWeapon(this.getLivingEntity());
   }
 
   default void addAdditionalAttackData(CompoundTag compoundTag) {

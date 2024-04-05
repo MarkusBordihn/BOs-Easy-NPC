@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.standard;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.client.model.standard.StandardIronGolemModel;
-import de.markusbordihn.easynpc.client.renderer.entity.StandardMobRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.base.BaseMobRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.VariantOverLayer;
 import de.markusbordihn.easynpc.entity.easynpc.npc.IronGolem;
 import de.markusbordihn.easynpc.entity.easynpc.npc.IronGolem.Variant;
@@ -36,7 +36,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Pose;
 
 public class IronGolemRenderer
-    extends StandardMobRenderer<IronGolem, IronGolem.Variant, StandardIronGolemModel<IronGolem>> {
+    extends BaseMobRenderer<IronGolem, Variant, StandardIronGolemModel<IronGolem>> {
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(

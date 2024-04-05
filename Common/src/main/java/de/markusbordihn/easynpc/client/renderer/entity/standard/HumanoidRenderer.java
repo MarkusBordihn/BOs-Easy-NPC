@@ -24,7 +24,7 @@ import com.mojang.math.Vector3f;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.standard.StandardPlayerModel;
 import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.StandardLivingEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.base.BaseLivingEntityRenderer;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid.Variant;
 import java.util.EnumMap;
@@ -41,8 +41,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Pose;
 
 public class HumanoidRenderer
-    extends StandardLivingEntityRenderer<
-        Humanoid, Humanoid.Variant, StandardPlayerModel<Humanoid>> {
+    extends BaseLivingEntityRenderer<Humanoid, Variant, StandardPlayerModel<Humanoid>> {
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
@@ -83,6 +82,11 @@ public class HumanoidRenderer
     this.addLayer(new CustomHeadLayer<>(this, context.getModelSet()));
     this.addLayer(new ItemInHandLayer<>(this));
     this.addLayer(new ElytraLayer<>(this, context.getModelSet()));
+  }
+
+  @Override
+  public ResourceLocation getTextureLocation(Humanoid entity) {
+    return this.getEntityPlayerTexture(entity);
   }
 
   @Override

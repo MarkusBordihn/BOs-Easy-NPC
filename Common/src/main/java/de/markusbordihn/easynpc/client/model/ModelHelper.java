@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.client.model;
 
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.Rotations;
@@ -76,8 +77,19 @@ public class ModelHelper {
         modelPart.yRot += rotations.getY();
         modelPart.zRot += rotations.getZ();
       }
-    } else {
-      modelPart.visible = false;
+    }
+    modelPart.visible = visible;
+  }
+
+  public static boolean hasModelPart(ModelPart parentModelPart, String name) {
+    if (parentModelPart == null || name == null || name.isEmpty()) {
+      return false;
+    }
+    try {
+      parentModelPart.getChild(name);
+      return true;
+    } catch (Exception e) {
+      return false;
     }
   }
 
@@ -94,8 +106,8 @@ public class ModelHelper {
             || (rotations.getX() == 0.0f
                 && rotations.getY() == 0.0f
                 && rotations.getZ() == 0.0f))) {
-      modelPart.yRot = netHeadYaw * ((float) Math.PI / 180F);
-      modelPart.xRot = headPitch * ((float) Math.PI / 180F);
+      modelPart.yRot = netHeadYaw * Constants.PI_180DEG;
+      modelPart.xRot = headPitch * Constants.PI_180DEG;
     }
   }
 }

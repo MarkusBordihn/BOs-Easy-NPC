@@ -37,7 +37,6 @@ public class FollowLivingEntityGoal extends Goal {
 
   private final PathfinderMob pathfinderMob;
   private final LivingEntity livingEntity;
-  private final NavigationData<?> navigationData;
   private final double speedModifier;
   private final float stopDistance;
   private final float startDistance;
@@ -54,12 +53,12 @@ public class FollowLivingEntityGoal extends Goal {
       float stopDistance,
       float startDistance) {
     this.pathfinderMob = easyNPC.getPathfinderMob();
-    this.navigationData = easyNPC.getEasyNPCNavigationData();
+    NavigationData<?> navigationData = easyNPC.getEasyNPCNavigationData();
     this.livingEntity = livingEntity;
     this.speedModifier = speedModifier;
     this.stopDistance = stopDistance;
     this.startDistance = startDistance;
-    this.canFly = this.navigationData.canFly();
+    this.canFly = navigationData.canFly();
     this.pathNavigation = this.pathfinderMob.getNavigation();
     this.level = easyNPC.getServerLevel();
     this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));

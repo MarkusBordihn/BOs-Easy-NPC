@@ -142,5 +142,15 @@ public class AbilitiesAttributeConfigurationScreen
             checkbox ->
                 NetworkMessageHandler.entityAttributeChange(
                     uuid, EntityAttribute.CAN_USE_NETHER_PORTAL, checkbox.selected())));
+
+    this.addRenderableWidget(
+        new Checkbox(
+            firstButtonRow,
+            this.buttonTopPos + 125,
+            EntityAttribute.SILENT.getAttributeName(),
+            attributeData.getAttributeSilent(),
+            checkbox ->
+                NetworkMessageHandler.entityAttributeChange(
+                    uuid, EntityAttribute.SILENT, checkbox.selected())));
   }
 }

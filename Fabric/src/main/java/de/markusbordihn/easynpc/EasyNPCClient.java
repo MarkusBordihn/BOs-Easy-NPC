@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc;
 import de.markusbordihn.easynpc.client.model.ModModelLayer;
 import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
 import de.markusbordihn.easynpc.entity.LivingEntityEventHandler;
+import de.markusbordihn.easynpc.io.DataFileHandler;
 import de.markusbordihn.easynpc.tabs.ModTabs;
 import net.fabricmc.api.ClientModInitializer;
 import org.apache.logging.log4j.LogManager;
@@ -46,5 +47,8 @@ public class EasyNPCClient implements ClientModInitializer {
 
     log.info("{} Tabs ...", Constants.LOG_REGISTER_PREFIX);
     ModTabs.registerModTabs();
+
+    log.info("{} Register Data Files ...", Constants.LOG_REGISTER_PREFIX);
+    DataFileHandler.registerDataFiles();
   }
 }

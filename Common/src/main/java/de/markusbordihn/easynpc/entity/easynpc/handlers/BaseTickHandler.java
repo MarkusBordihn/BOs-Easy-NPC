@@ -6,7 +6,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.TickerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import net.minecraft.world.entity.PathfinderMob;
 
-public interface BaseTickHandler<T extends PathfinderMob> extends EasyNPC<T> {
+public interface BaseTickHandler<E extends PathfinderMob> extends EasyNPC<E> {
 
   int BASE_TICK = 16;
   int TRADING_BASE_TICK = Math.round((20f / BASE_TICK) * 60) - 10;
@@ -14,16 +14,16 @@ public interface BaseTickHandler<T extends PathfinderMob> extends EasyNPC<T> {
   default void handleBaseTick() {
     this.getProfiler().push("npcBaseTick");
 
-    TickerData<?> tickerData = this.getEasyNPCTickerData();
+    TickerData<E> tickerData = this.getEasyNPCTickerData();
     if (tickerData.checkAndIncreaseTicker(TickerType.BASE_TICK, BASE_TICK)) {
-      ActionHandler<?> actionHandler = this.getEasyNPCActionHandler();
+      ActionHandler<E> actionHandler = this.getEasyNPCActionHandler();
 
       // Check distance for additional actions.
       actionHandler.checkDistanceActions();
 
       // Check if we have a trading inventory and update it.
       if (tickerData.checkAndIncreaseTicker(TickerType.TRADING_BASE_TICK, TRADING_BASE_TICK)) {
-        TradingData<?> tradingData = this.getEasyNPCTradingData();
+        TradingData<E> tradingData = this.getEasyNPCTradingData();
         if (tradingData.hasTrading()) {
           actionHandler.checkTradingActions();
         }

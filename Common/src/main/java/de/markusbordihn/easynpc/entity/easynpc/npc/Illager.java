@@ -19,8 +19,13 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc;
 
+import static de.markusbordihn.easynpc.entity.easynpc.npc.Illager.Variant.EVOKER_CROSSED_ARMS;
+
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.sound.SoundDataSet;
+import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -28,7 +33,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
-public class Illager extends EasyNPCBaseEntity {
+public class Illager extends EasyNPCBaseEntity<Illager> {
 
   public static final String ID = "illager";
   public static final String ID_EVOKER = "evoker";
@@ -39,10 +44,6 @@ public class Illager extends EasyNPCBaseEntity {
 
   public Illager(EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variant) {
     super(entityType, level, variant);
-  }
-
-  public Illager(EntityType<? extends PathfinderMob> entityType, Level level) {
-    super(entityType, level);
   }
 
   public static AttributeSupplier.Builder createAttributes() {
@@ -86,6 +87,41 @@ public class Illager extends EasyNPCBaseEntity {
   @Override
   public Enum<?> getVariant(String name) {
     return Variant.valueOf(name);
+  }
+
+  @Override
+  public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
+    Variant soundVariant = Variant.valueOf(variantName);
+    switch (soundVariant) {
+      case EVOKER, EVOKER_CROSSED_ARMS:
+        soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.EVOKER_AMBIENT);
+        soundDataSet.addSound(SoundType.DEATH, SoundEvents.EVOKER_DEATH);
+        soundDataSet.addSound(SoundType.HURT, SoundEvents.EVOKER_HURT);
+        soundDataSet.addSound(SoundType.CAST_SPELL, SoundEvents.EVOKER_CAST_SPELL);
+        soundDataSet.addSound(SoundType.CELEBRATE, SoundEvents.EVOKER_CELEBRATE);
+        break;
+      case ILLUSIONER, ILLUSIONER_CROSSED_ARMS:
+        soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.ILLUSIONER_AMBIENT);
+        soundDataSet.addSound(SoundType.DEATH, SoundEvents.ILLUSIONER_DEATH);
+        soundDataSet.addSound(SoundType.HURT, SoundEvents.ILLUSIONER_HURT);
+        soundDataSet.addSound(SoundType.CAST_SPELL, SoundEvents.ILLUSIONER_CAST_SPELL);
+        soundDataSet.addSound(SoundType.CELEBRATE, SoundEvents.PILLAGER_CELEBRATE);
+        break;
+      case VINDICATOR, VINDICATOR_CROSSED_ARMS:
+        soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.VINDICATOR_AMBIENT);
+        soundDataSet.addSound(SoundType.DEATH, SoundEvents.VINDICATOR_DEATH);
+        soundDataSet.addSound(SoundType.HURT, SoundEvents.VINDICATOR_HURT);
+        soundDataSet.addSound(SoundType.CELEBRATE, SoundEvents.VINDICATOR_CELEBRATE);
+        break;
+      case PILLAGER:
+      default:
+        soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.PILLAGER_AMBIENT);
+        soundDataSet.addSound(SoundType.DEATH, SoundEvents.PILLAGER_DEATH);
+        soundDataSet.addSound(SoundType.HURT, SoundEvents.PILLAGER_HURT);
+        soundDataSet.addSound(SoundType.CELEBRATE, SoundEvents.PILLAGER_CELEBRATE);
+        break;
+    }
+    return soundDataSet;
   }
 
   // Skin Details

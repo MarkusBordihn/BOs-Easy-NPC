@@ -20,10 +20,14 @@
 package de.markusbordihn.easynpc.entity.easynpc.npc;
 
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.sound.SoundDataSet;
+import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie.Variant;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -31,13 +35,13 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
-public class ZombieVillager extends EasyNPCBaseEntity {
+public class ZombieVillager extends EasyNPCBaseEntity<ZombieVillager> {
 
   public static final String ID = "zombie_villager";
   public static final String NAME = "Zombie Villager";
 
   public ZombieVillager(EntityType<? extends PathfinderMob> entityType, Level level) {
-    super(entityType, level);
+    super(entityType, level, Variant.DEFAULT);
   }
 
   public static AttributeSupplier.Builder createAttributes() {
@@ -92,6 +96,15 @@ public class ZombieVillager extends EasyNPCBaseEntity {
   @Override
   public Enum<?> getVariant(String name) {
     return Variant.valueOf(name);
+  }
+
+  @Override
+  public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
+    soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.ZOMBIE_VILLAGER_AMBIENT);
+    soundDataSet.addSound(SoundType.HURT, SoundEvents.ZOMBIE_VILLAGER_HURT);
+    soundDataSet.addSound(SoundType.DEATH, SoundEvents.ZOMBIE_VILLAGER_DEATH);
+    soundDataSet.addSound(SoundType.STEP, SoundEvents.ZOMBIE_VILLAGER_STEP);
+    return soundDataSet;
   }
 
   // Variants

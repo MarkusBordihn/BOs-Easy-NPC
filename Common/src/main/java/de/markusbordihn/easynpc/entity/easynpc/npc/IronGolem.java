@@ -20,7 +20,10 @@
 package de.markusbordihn.easynpc.entity.easynpc.npc;
 
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.sound.SoundDataSet;
+import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -28,13 +31,13 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
-public class IronGolem extends EasyNPCBaseEntity {
+public class IronGolem extends EasyNPCBaseEntity<IronGolem> {
 
   public static final String ID = "iron_golem";
   public static final String NAME = "Iron Golem";
 
   public IronGolem(EntityType<? extends PathfinderMob> entityType, Level level) {
-    super(entityType, level);
+    super(entityType, level, Variant.IRON_GOLEM);
   }
 
   public static AttributeSupplier.Builder createAttributes() {
@@ -89,6 +92,15 @@ public class IronGolem extends EasyNPCBaseEntity {
   @Override
   public int getEntitySkinScaling() {
     return 25;
+  }
+
+  @Override
+  public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
+    soundDataSet.addSound(SoundType.DAMAGE, SoundEvents.IRON_GOLEM_DAMAGE);
+    soundDataSet.addSound(SoundType.DEATH, SoundEvents.IRON_GOLEM_DEATH);
+    soundDataSet.addSound(SoundType.HURT, SoundEvents.IRON_GOLEM_HURT);
+    soundDataSet.addSound(SoundType.STEP, SoundEvents.IRON_GOLEM_STEP);
+    return soundDataSet;
   }
 
   // Skin Details

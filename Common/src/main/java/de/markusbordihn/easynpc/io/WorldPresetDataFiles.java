@@ -40,7 +40,7 @@ public class WorldPresetDataFiles {
   private static final ConcurrentHashMap<ResourceLocation, Path> presetResourceLocationMap =
       new ConcurrentHashMap<>();
 
-  protected WorldPresetDataFiles() {}
+  private WorldPresetDataFiles() {}
 
   public static Path getPresetDataFolder() {
     File worldDataFolder = new File(Constants.WORLD_DIR.toFile(), Constants.MOD_ID);

@@ -19,10 +19,12 @@
 
 package de.markusbordihn.easynpc.client.model.custom;
 
-import com.google.common.collect.Iterables;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.model.ModelHelper;
+import de.markusbordihn.easynpc.client.model.ModelPartType;
+import de.markusbordihn.easynpc.client.model.base.BaseHumanoidModel;
 import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -32,13 +34,12 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.core.Rotations;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Pose;
 
-public class FairyModel<T extends LivingEntity> extends HumanoidModel<T> {
+public class FairyModel<T extends LivingEntity> extends BaseHumanoidModel<T> {
 
+  public static final float MODEL_OFFSET_Y = -1.0F;
   private final ModelPart leftWing;
   private final ModelPart rightWing;
 
@@ -46,13 +47,12 @@ public class FairyModel<T extends LivingEntity> extends HumanoidModel<T> {
     super(modelPart);
     this.leftLeg.visible = false;
     this.hat.visible = false;
-    this.leftWing = modelPart.getChild("left_wing");
-    this.rightWing = modelPart.getChild("right_wing");
+    this.leftWing = defineModelPart(ModelPartType.LEFT_WING, modelPart, "left_wing");
+    this.rightWing = defineModelPart(ModelPartType.RIGHT_WING, modelPart, "right_wing");
   }
 
   public static LayerDefinition createBodyLayer() {
-    float offsetY = 24.0F;
-    MeshDefinition meshDefinition = HumanoidModel.createMesh(CubeDeformation.NONE, offsetY);
+    MeshDefinition meshDefinition = HumanoidModel.createMesh(CubeDeformation.NONE, MODEL_OFFSET_Y);
     PartDefinition partDefinition = meshDefinition.getRoot();
 
     // Head
@@ -63,7 +63,7 @@ public class FairyModel<T extends LivingEntity> extends HumanoidModel<T> {
             .addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F))
             .texOffs(0, 25)
             .addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.5F)),
-        PartPose.offset(0.0F, 0.0F + offsetY, 0.0F));
+        PartPose.offset(0.0F, 0.0F + MODEL_OFFSET_Y, 0.0F));
 
     // Body
     partDefinition.addOrReplaceChild(
@@ -73,7 +73,7 @@ public class FairyModel<T extends LivingEntity> extends HumanoidModel<T> {
             .addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
             .texOffs(0, 41)
             .addBox(-4.0F, 0.0F, -2.0F, 8.0F, 15.0F, 4.0F, new CubeDeformation(0.5F)),
-        PartPose.offset(0.0F, 0.0F + offsetY, 0.0F));
+        PartPose.offset(0.0F, 0.0F + MODEL_OFFSET_Y, 0.0F));
 
     // Smaller arms
     partDefinition.addOrReplaceChild(
@@ -83,7 +83,7 @@ public class FairyModel<T extends LivingEntity> extends HumanoidModel<T> {
             .addBox(-2.0F, -2.0F, -2.0F, 3.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
             .texOffs(0, 60)
             .addBox(-2.0F, -2.0F, -2.0F, 3.0F, 8.0F, 4.0F, new CubeDeformation(0.5F)),
-        PartPose.offset(-5.0F, 2.0F + offsetY, 0.0F));
+        PartPose.offset(-5.0F, 2.0F + MODEL_OFFSET_Y, 0.0F));
     partDefinition.addOrReplaceChild(
         "left_arm",
         CubeListBuilder.create()
@@ -93,7 +93,7 @@ public class FairyModel<T extends LivingEntity> extends HumanoidModel<T> {
             .mirror(false)
             .texOffs(20, 57)
             .addBox(-1.0F, -2.0F, -2.0F, 3.0F, 8.0F, 4.0F, new CubeDeformation(0.5F)),
-        PartPose.offset(5.0F, 2.0F + offsetY, 0.0F));
+        PartPose.offset(5.0F, 2.0F + MODEL_OFFSET_Y, 0.0F));
 
     // Combined legs like Vex
     partDefinition.addOrReplaceChild(
@@ -105,7 +105,7 @@ public class FairyModel<T extends LivingEntity> extends HumanoidModel<T> {
             .addBox(-1.0F, -1.0F, -2.0F, 6.0F, 10.0F, 4.0F, new CubeDeformation(0.0F))
             .texOffs(42, 0)
             .addBox(-1.0F, -1.0F, -2.0F, 6.0F, 10.0F, 4.0F, new CubeDeformation(0.5F)),
-        PartPose.offset(-1.9F, 12.0F + offsetY, 0.0F));
+        PartPose.offset(-1.9F, 12.0F + MODEL_OFFSET_Y, 0.0F));
 
     // Adding Wings
     partDefinition.addOrReplaceChild(
@@ -115,123 +115,135 @@ public class FairyModel<T extends LivingEntity> extends HumanoidModel<T> {
             .mirror()
             .addBox(0.0F, -8.0F, 0.0F, 20.0F, 24.0F, 1.0F, new CubeDeformation(0.0F))
             .mirror(false),
-        PartPose.offset(0.0F, 0.0F + offsetY, 0.0F));
+        PartPose.offset(0.0F, 0.0F + MODEL_OFFSET_Y, 0.0F));
     partDefinition.addOrReplaceChild(
         "right_wing",
         CubeListBuilder.create()
             .texOffs(0, 0)
             .addBox(-20.0F, -8.0F, 0.0F, 20.0F, 24.0F, 1.0F, new CubeDeformation(0.0F)),
-        PartPose.offset(0.0F, 0.0F + offsetY, 0.0F));
+        PartPose.offset(0.0F, 0.0F + MODEL_OFFSET_Y, 0.0F));
 
     return LayerDefinition.create(meshDefinition, 128, 128);
   }
 
   @Override
   protected Iterable<ModelPart> bodyParts() {
-    return Iterables.concat(super.bodyParts(), java.util.List.of(this.leftWing, this.rightWing));
+    return java.util.List.of(
+        this.head,
+        this.body,
+        this.rightArm,
+        this.leftArm,
+        this.rightLeg,
+        this.leftWing,
+        this.rightWing);
   }
 
   @Override
-  public void setupAnim(
+  public void resetModelParts() {
+    this.resetModelPart(ModelPartType.HEAD, this.head);
+    this.resetModelPart(ModelPartType.HAT, this.hat);
+    this.resetModelPart(ModelPartType.BODY, this.body);
+    this.resetModelPart(ModelPartType.RIGHT_ARM, this.rightArm);
+    this.resetModelPart(ModelPartType.LEFT_ARM, this.leftArm);
+    this.resetModelPart(ModelPartType.RIGHT_LEG, this.rightLeg);
+    this.resetModelPart(ModelPartType.RIGHT_WING, this.rightWing);
+    this.resetModelPart(ModelPartType.LEFT_WING, this.leftWing);
+  }
+
+  @Override
+  public boolean setupCrouchingModelPose(
       T entity,
+      ModelData<?> modelData,
       float limbSwing,
       float limbSwingAmount,
       float ageInTicks,
       float netHeadYaw,
       float headPitch) {
-    // Don't animate death entities
-    if (entity.isDeadOrDying()) {
-      return;
-    }
+    this.body.xRot = 0.5F;
+    this.body.y += 3.2F;
+    this.body.z -= 1.2F;
+    this.head.y += 4.2F;
+    this.leftArm.xRot += 0.4F;
+    this.leftArm.y += 5.2F;
+    this.rightArm.xRot += 0.4F;
+    this.rightArm.y += 5.2F;
+    this.rightLeg.y += 4F;
+    this.rightLeg.z = 4.4F;
+    this.rightWing.y += 4.0F;
+    this.leftWing.y += 4.0F;
+    return true;
+  }
 
-    if (entity instanceof EasyNPC<?> easyNPC) {
-      ModelData<?> modelData = easyNPC.getEasyNPCModelData();
-      // Individual Part Rotations
-      if (modelData.getModelPose() == ModelPose.CUSTOM) {
-
-        Rotations headRotations = modelData.getModelHeadRotation();
-        if (headRotations != null) {
-          this.head.xRot = headRotations.getX();
-          this.head.yRot = headRotations.getY();
-          this.head.zRot = headRotations.getZ();
-        }
-
-        Rotations bodyRotations = modelData.getModelBodyRotation();
-        if (bodyRotations != null) {
-          this.body.xRot = bodyRotations.getX();
-          this.body.yRot = bodyRotations.getY();
-          this.body.zRot = bodyRotations.getZ();
-        }
-
-        Rotations rightArmRotations = modelData.getModelRightArmRotation();
-        if (rightArmRotations != null) {
-          this.rightArm.xRot = rightArmRotations.getX();
-          this.rightArm.yRot = rightArmRotations.getY();
-          this.rightArm.zRot = rightArmRotations.getZ();
-        }
-
-        Rotations leftArmRotations = modelData.getModelLeftArmRotation();
-        if (leftArmRotations != null) {
-          this.leftArm.xRot = leftArmRotations.getX();
-          this.leftArm.yRot = leftArmRotations.getY();
-          this.leftArm.zRot = leftArmRotations.getZ();
-        }
-
-        Rotations rightLegRotations = modelData.getModelRightLegRotation();
-        if (rightLegRotations != null) {
-          this.rightLeg.xRot = rightLegRotations.getX();
-          this.rightLeg.yRot = rightLegRotations.getY();
-          this.rightLeg.zRot = rightLegRotations.getZ();
-        }
-      } else if (modelData.getDefaultPose() == Pose.CROUCHING) {
-        // Crouching Pose
-        this.body.xRot = 0.5F;
-        this.body.y = 3.2F;
-        this.head.y = 4.2F;
-        this.leftArm.xRot += 0.4F;
-        this.leftArm.y = 5.2F;
-        this.leftLeg.y = 12.2F;
-        this.leftLeg.z = 4.0F;
-        this.rightArm.xRot += 0.4F;
-        this.rightArm.y = 5.2F;
-        this.rightLeg.y = 12.2F;
-        this.rightLeg.z = 4.0F;
-      } else {
-        // Reset all rotations to avoid any issues with other mods.
-        this.head.xRot = 0;
-        this.head.yRot = 0;
-        this.head.zRot = 0;
-        this.body.xRot = 0;
-        this.body.yRot = 0;
-        this.body.zRot = 0;
-        this.rightArm.xRot = 0;
-        this.rightArm.yRot = 0;
-        this.rightArm.zRot = 0;
-        this.leftArm.xRot = 0;
-        this.leftArm.yRot = 0;
-        this.leftArm.zRot = 0;
-        this.rightLeg.xRot = 0;
-        this.rightLeg.yRot = 0;
-        this.rightLeg.zRot = 0;
-
-        // General animations
-        super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        this.rightLeg.xRot += ((float) Math.PI / 5F);
-      }
-    }
-
-    // Wing animations
-    this.rightWing.z = 2.0F;
-    this.leftWing.z = 2.0F;
-    this.rightWing.y = 1.0F;
-    this.leftWing.y = 1.0F;
+  @Override
+  public boolean additionalModelAnimation(
+      T entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
     this.rightWing.yRot =
         Constants.MATH_27DEG_TO_RAD
-            + Mth.cos(ageInTicks * 45.836624F * ((float) Math.PI / 180F)) * (float) Math.PI * 0.05F;
+            + Mth.cos(ageInTicks * 20F * Constants.PI_180DEG) * (float) Math.PI * 0.15F;
     this.leftWing.yRot = -this.rightWing.yRot;
     this.leftWing.zRot = Constants.MATH_27DEG_TO_RAD_INVERTED;
     this.leftWing.xRot = Constants.MATH_27DEG_TO_RAD;
     this.rightWing.xRot = Constants.MATH_27DEG_TO_RAD;
     this.rightWing.zRot = Constants.MATH_27DEG_TO_RAD;
+    return true;
+  }
+
+  @Override
+  public boolean setupStandingModelPose(
+      T entity,
+      ModelData<?> modelData,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
+    super.setupStandingModelPose(
+        entity, modelData, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+    this.rightLeg.xRot += ((float) Math.PI / 5F);
+    return true;
+  }
+
+  @Override
+  public void setupCustomModelPose(
+      T entity,
+      ModelPose modelPose,
+      ModelData<?> modelData,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
+    ModelHelper.setPositionRotationVisibility(
+        this.head,
+        modelData.getModelHeadPosition(),
+        modelData.getModelHeadRotation(),
+        modelData.isModelHeadVisible());
+    ModelHelper.setPositionRotationVisibility(
+        this.body,
+        modelData.getModelBodyPosition(),
+        modelData.getModelBodyRotation(),
+        modelData.isModelBodyVisible());
+    ModelHelper.setPositionRotationVisibility(
+        this.leftArm,
+        modelData.getModelLeftArmPosition(),
+        modelData.getModelLeftArmRotation(),
+        modelData.isModelLeftArmVisible());
+    ModelHelper.setPositionRotationVisibility(
+        this.rightArm,
+        modelData.getModelRightArmPosition(),
+        modelData.getModelRightArmRotation(),
+        modelData.isModelRightArmVisible());
+    ModelHelper.setPositionRotationVisibility(
+        this.rightLeg,
+        modelData.getModelRightLegPosition(),
+        modelData.getModelRightLegRotation(),
+        modelData.isModelRightLegVisible());
   }
 }

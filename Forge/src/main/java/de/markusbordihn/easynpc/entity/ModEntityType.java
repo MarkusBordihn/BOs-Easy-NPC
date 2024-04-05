@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Allay;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Horse;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
 import de.markusbordihn.easynpc.entity.easynpc.npc.HumanoidSlim;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
@@ -32,6 +33,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Wolf;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie;
 import de.markusbordihn.easynpc.entity.easynpc.npc.ZombieVillager;
 import net.minecraft.world.entity.EntityType;
@@ -92,6 +94,10 @@ public class ModEntityType {
       ENTITY_TYPES.register(Orc.ID, () -> ModEntityTypes.ORC);
   public static final RegistryObject<EntityType<Orc>> ORC_WARRIOR =
       ENTITY_TYPES.register(Orc.ID_WARRIOR, () -> ModEntityTypes.ORC_WARRIOR);
+  public static final RegistryObject<EntityType<Wolf>> WOLF =
+      ENTITY_TYPES.register(Wolf.ID, () -> ModEntityTypes.WOLF);
+  public static final RegistryObject<EntityType<Horse>> HORSE =
+      ENTITY_TYPES.register(Horse.ID, () -> ModEntityTypes.HORSE);
 
   private ModEntityType() {}
 
@@ -119,5 +125,7 @@ public class ModEntityType {
     event.put(VINDICATOR.get(), Illager.createAttributes().build());
     event.put(ORC.get(), Orc.createAttributes().build());
     event.put(ORC_WARRIOR.get(), Orc.createAttributes().build());
+    event.put(WOLF.get(), Wolf.createAttributes().build());
+    event.put(HORSE.get(), Horse.createAttributes().build());
   }
 }

@@ -58,10 +58,8 @@ import de.markusbordihn.easynpc.network.message.MessageSaveDialogButton;
 import de.markusbordihn.easynpc.network.message.MessageSaveDialogSet;
 import de.markusbordihn.easynpc.network.message.MessageScaleChange;
 import de.markusbordihn.easynpc.network.message.MessageSkinChange;
-import de.markusbordihn.easynpc.network.message.MessageSkinTypeChange;
 import de.markusbordihn.easynpc.network.message.MessageTradingTypeChange;
 import de.markusbordihn.easynpc.network.message.MessageTriggerActionEvent;
-import de.markusbordihn.easynpc.network.message.MessageVariantChange;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -78,7 +76,7 @@ public class NetworkHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final String PROTOCOL_VERSION = "18";
+  private static final String PROTOCOL_VERSION = "19";
   public static final SimpleChannel INSTANCE =
       NetworkRegistry.newSimpleChannel(
           new ResourceLocation(Constants.MOD_ID, "network"),
@@ -406,14 +404,6 @@ public class NetworkHandler {
               MessageSkinChange::decode,
               MessageSkinChange::handle);
 
-          // Skin Type Change: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageSkinTypeChange.class,
-              MessageSkinTypeChange::encode,
-              MessageSkinTypeChange::decode,
-              MessageSkinTypeChange::handle);
-
           // Trading Type: Client -> Server
           INSTANCE.registerMessage(
               id++,
@@ -429,14 +419,6 @@ public class NetworkHandler {
               MessageTriggerActionEvent::encode,
               MessageTriggerActionEvent::decode,
               MessageTriggerActionEvent::handle);
-
-          // Variant Change: Client -> Server
-          INSTANCE.registerMessage(
-              id++,
-              MessageVariantChange.class,
-              MessageVariantChange::encode,
-              MessageVariantChange::decode,
-              MessageVariantChange::handle);
         });
   }
 

@@ -20,650 +20,20 @@
 package de.markusbordihn.easynpc.client.model;
 
 import de.markusbordihn.easynpc.data.model.ModelArmPose;
+import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
+import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
-import net.minecraft.client.model.AnimationUtils;
-import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.Rotations;
-import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Pose;
 
-public interface EasyNPCModel {
-
-  // General model positions
-  CustomPosition MODEL_ROOT_POSITION = new CustomPosition(0, 0, 0);
-  CustomPosition MODEL_HEAD_POSITION = new CustomPosition(0, 0, 0);
-  CustomPosition MODEL_BODY_POSITION = new CustomPosition(0, 0, 0);
-  CustomPosition MODEL_ARMS_POSITION = new CustomPosition(0, 0, 0);
-  CustomPosition MODEL_LEFT_ARM_POSITION = new CustomPosition(0, 0, 0);
-  CustomPosition MODEL_RIGHT_ARM_POSITION = new CustomPosition(0, 0, 0);
-  CustomPosition MODEL_LEFT_LEG_POSITION = new CustomPosition(0, 0, 0);
-  CustomPosition MODEL_RIGHT_LEG_POSITION = new CustomPosition(0, 0, 0);
-
-  // Animal model position
-  CustomPosition MODEL_LEFT_FRONT_LEG_POSITION = new CustomPosition(0, 0, 0);
-  CustomPosition MODEL_RIGHT_FRONT_LEG_POSITION = new CustomPosition(0, 0, 0);
-  CustomPosition MODEL_LEFT_HIND_LEG_POSITION = new CustomPosition(0, 0, 0);
-  CustomPosition MODEL_RIGHT_HIND_LEG_POSITION = new CustomPosition(0, 0, 0);
-
-  // Bird model position
-  CustomPosition MODEL_LEFT_WING_POSITION = new CustomPosition(0, 0, 0);
-  CustomPosition MODEL_RIGHT_WING_POSITION = new CustomPosition(0, 0, 0);
-
-  // General model rotations
-  Rotations MODEL_HEAD_ROTATION = new Rotations(0, 0, 0);
-  Rotations MODEL_BODY_ROTATION = new Rotations(0, 0, 0);
-  Rotations MODEL_ARMS_ROTATION = new Rotations(0, 0, 0);
-  Rotations MODEL_LEFT_ARM_ROTATION = new Rotations(0, 0, 0);
-  Rotations MODEL_RIGHT_ARM_ROTATION = new Rotations(0, 0, 0);
-  Rotations MODEL_LEFT_LEG_ROTATION = new Rotations(0, 0, 0);
-  Rotations MODEL_RIGHT_LEG_ROTATION = new Rotations(0, 0, 0);
-  Rotations MODEL_ROOT_ROTATION = new Rotations(0, 0, 0);
-
-  // Animal model rotations
-  Rotations MODEL_LEFT_FRONT_LEG_ROTATION = new Rotations(0, 0, 0);
-  Rotations MODEL_RIGHT_FRONT_LEG_ROTATION = new Rotations(0, 0, 0);
-  Rotations MODEL_LEFT_HIND_LEG_ROTATION = new Rotations(0, 0, 0);
-  Rotations MODEL_RIGHT_HIND_LEG_ROTATION = new Rotations(0, 0, 0);
-
-  // Bird model rotations
-  Rotations MODEL_LEFT_WING_ROTATION = new Rotations(0, 0, 0);
-  Rotations MODEL_RIGHT_WING_ROTATION = new Rotations(0, 0, 0);
-
-  // Allay Model specific positions
-  Rotations ALLAY_MODEL_LEFT_ARM_ROTATION = new Rotations(0, -0.27925268F, 0);
-  Rotations ALLAY_MODEL_RIGHT_ARM_ROTATION = new Rotations(0, 0.27925268F, 0);
-  CustomPosition ALLAY_MODEL_ROOT_POSITION = new CustomPosition(0, 15f, 0);
-  CustomPosition ALLAY_MODEL_LEFT_ARM_POSITION = new CustomPosition(2.0F, 0.0F, 0.0F);
-  CustomPosition ALLAY_MODEL_RIGHT_ARM_POSITION = new CustomPosition(-2.0F, 0.0F, 0.0F);
-
-  // Humanoid Model specific positions
-  CustomPosition HUMANOID_MODEL_HEAD_POSITION = new CustomPosition(0, 0, 0);
-  CustomPosition HUMANOID_MODEL_BODY_POSITION = new CustomPosition(0, 0, 0);
-  CustomPosition HUMANOID_MODEL_LEFT_ARM_POSITION = new CustomPosition(5f, 2f, 0f);
-  CustomPosition HUMANOID_MODEL_RIGHT_ARM_POSITION = new CustomPosition(-5f, 2f, 0f);
-  CustomPosition HUMANOID_MODEL_LEFT_LEG_POSITION = new CustomPosition(1.9f, 12f, 0.1f);
-  CustomPosition HUMANOID_MODEL_RIGHT_LEG_POSITION = new CustomPosition(-1.9f, 12f, 0.1f);
-
-  // Villager Model specific positions
-  CustomPosition VILLAGER_MODEL_ARMS_POSITION = new CustomPosition(0.0f, 2.0f, 0.0f);
-  CustomPosition VILLAGER_MODEL_LEFT_LEG_POSITION = new CustomPosition(1.9f, 12f, 0.1f);
-  CustomPosition VILLAGER_MODEL_RIGHT_LEG_POSITION = new CustomPosition(-1.9f, 12f, 0.1f);
-
-  // Villager Model specific rotations
-  Rotations VILLAGER_MODEL_ARMS_ROTATION = new Rotations(-0.8f, 0.0f, 0.0f);
-
-  private static void setModelPartRotation(ModelPart modelPart, Rotations rotations) {
-    modelPart.xRot = rotations.getX();
-    modelPart.yRot = rotations.getY();
-    modelPart.zRot = rotations.getZ();
-  }
-
-  private static void setModelPartPosition(ModelPart modelPart, CustomPosition position) {
-    modelPart.x = position.x();
-    modelPart.y = position.y();
-    modelPart.z = position.z();
-  }
-
-  static boolean animateHumanoidModel(
-      EasyNPCModel easyNPCModel,
-      EasyNPC<?> easyNPC,
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart rightArmPart,
-      ModelPart leftArmPart,
-      ModelPart rightLegPart,
-      ModelPart leftLegPart,
-      float ageInTicks,
-      float limbSwing,
-      float limbSwingAmount) {
-
-    float attackTime = 0;
-    boolean hasArmAnimations = false;
-    boolean hasDefaultHead = easyNPCModel.hasDefaultHumanoidModelHead(headPart);
-    boolean hasDefaultBody = easyNPCModel.hasDefaultHumanoidModelBody(bodyPart);
-    boolean hasDefaultRightArm = easyNPCModel.hasDefaultHumanoidModelRightArm(rightArmPart);
-    boolean hasDefaultLeftArm = easyNPCModel.hasDefaultHumanoidModelLeftArm(leftArmPart);
-    boolean hasDefaultRightLeg = easyNPCModel.hasDefaultHumanoidModelRightLeg(rightLegPart);
-    boolean hasDefaultLeftLeg = easyNPCModel.hasDefaultHumanoidModelLeftLeg(leftLegPart);
-    if (easyNPCModel instanceof PlayerModel<?> playerModel) {
-      attackTime = playerModel.attackTime;
-    }
-
-    // Allow arm animation if arms are not adjusted.
-    if (hasDefaultRightArm && hasDefaultLeftArm) {
-      hasArmAnimations =
-          animateHumanoidArmModel(
-              easyNPC,
-              headPart,
-              bodyPart,
-              rightArmPart,
-              leftArmPart,
-              attackTime,
-              ageInTicks,
-              limbSwing,
-              limbSwingAmount);
-    } else {
-      if (hasDefaultRightArm) {
-        rightArmPart.xRot =
-            Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F;
-      } else if (hasDefaultLeftArm) {
-        leftArmPart.xRot = Mth.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
-      }
-    }
-
-    // Allow leg animation if legs are not adjusted.
-    if (hasDefaultRightLeg) {
-      rightLegPart.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-    }
-    if (hasDefaultLeftLeg) {
-      leftLegPart.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
-    }
-
-    // Was any animation applied?
-    return hasArmAnimations
-        || !hasDefaultHead
-        || !hasDefaultBody
-        || !hasDefaultRightArm
-        || !hasDefaultLeftArm
-        || !hasDefaultRightLeg
-        || !hasDefaultLeftLeg;
-  }
-
-  static boolean animateHierarchicalModel(
-      EasyNPCModel easyNPCModel,
-      EasyNPC<?> easyNPC,
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart rightArmPart,
-      ModelPart leftArmPart,
-      ModelPart rightLegPart,
-      ModelPart leftLegPart,
-      float ageInTicks,
-      float limbSwing,
-      float limbSwingAmount) {
-    return animateHumanoidModel(
-        easyNPCModel,
-        easyNPC,
-        headPart,
-        bodyPart,
-        rightArmPart,
-        leftArmPart,
-        rightLegPart,
-        leftLegPart,
-        ageInTicks,
-        limbSwing,
-        limbSwingAmount);
-  }
-
-  static boolean animateHumanoidArmModel(
-      EasyNPC<?> easyNPC,
-      ModelPart headModelPart,
-      ModelPart bodyPart,
-      ModelPart rightArmPart,
-      ModelPart leftArmPart,
-      float attackTime,
-      float ageInTicks,
-      float limbSwing,
-      float limbSwingAmount) {
-
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
-    ModelArmPose modelArmPose = modelData.getModelArmPose();
-    switch (modelArmPose) {
-      case ATTACKING_WITH_MELEE_WEAPON:
-        AnimationUtils.swingWeaponDown(
-            rightArmPart, leftArmPart, easyNPC.getMob(), attackTime, ageInTicks);
-        break;
-      case ATTACKING:
-        AnimationUtils.swingWeaponDown(
-            rightArmPart, leftArmPart, easyNPC.getMob(), attackTime, ageInTicks);
-        break;
-      case BOW_AND_ARROW:
-        rightArmPart.yRot = -0.1F + headModelPart.yRot;
-        rightArmPart.xRot = (-(float) Math.PI / 2F) + headModelPart.xRot;
-        leftArmPart.xRot = -0.9424779F + headModelPart.xRot;
-        leftArmPart.yRot = headModelPart.yRot - 0.4F;
-        leftArmPart.zRot = ((float) Math.PI / 2F);
-        break;
-      case CELEBRATING:
-        rightArmPart.z = 0.0F;
-        rightArmPart.x = -5.0F;
-        rightArmPart.xRot = Mth.cos(ageInTicks * 0.6662F) * 0.05F;
-        rightArmPart.zRot = 2.670354F;
-        rightArmPart.yRot = 0.0F;
-        leftArmPart.z = 0.0F;
-        leftArmPart.x = 5.0F;
-        leftArmPart.xRot = Mth.cos(ageInTicks * 0.6662F) * 0.05F;
-        leftArmPart.zRot = -2.3561945F;
-        leftArmPart.yRot = 0.0F;
-        break;
-      case CROSSBOW_CHARGE:
-        AnimationUtils.animateCrossbowCharge(rightArmPart, leftArmPart, easyNPC.getMob(), true);
-        break;
-      case CROSSBOW_HOLD:
-        AnimationUtils.animateCrossbowHold(rightArmPart, leftArmPart, headModelPart, true);
-        break;
-      case DANCING:
-        float swingAmount = ageInTicks / 60.0F;
-        headModelPart.x = Mth.sin(swingAmount * 10.0F);
-        headModelPart.y = Mth.sin(swingAmount * 40.0F) + 0.4F;
-        rightArmPart.zRot =
-            ((float) Math.PI / 180F) * (70.0F + Mth.cos(swingAmount * 40.0F) * 10.0F);
-        leftArmPart.zRot = rightArmPart.zRot * -1.0F;
-        rightArmPart.y = Mth.sin(swingAmount * 40.0F) * 0.5F + 1.5F;
-        leftArmPart.y = Mth.sin(swingAmount * 40.0F) * 0.5F + 1.5F;
-        bodyPart.y = Mth.sin(swingAmount * 40.0F) * 0.35F;
-        break;
-      case SPELLCASTING:
-        rightArmPart.z = 0.0F;
-        rightArmPart.x = -5.0F;
-        leftArmPart.z = 0.0F;
-        leftArmPart.x = 5.0F;
-        rightArmPart.xRot = Mth.cos(ageInTicks * 0.6662F) * 0.25F;
-        leftArmPart.xRot = Mth.cos(ageInTicks * 0.6662F) * 0.25F;
-        rightArmPart.zRot = 2.3561945F;
-        leftArmPart.zRot = -2.3561945F;
-        rightArmPart.yRot = 0.0F;
-        leftArmPart.yRot = 0.0F;
-        break;
-      case NEUTRAL:
-      default:
-        return false;
-    }
-    return true;
-  }
-
-  static void setupArmModel(
-      EasyNPC<?> easyNPC,
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart leftArmPart,
-      ModelPart rightArmPart,
-      float netHeadYaw,
-      float headPitch) {
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
-    ModelHelper.setHeadPositionRotationVisibility(
-        headPart,
-        modelData.getModelHeadPosition(),
-        modelData.getModelHeadRotation(),
-        modelData.isModelHeadVisible(),
-        netHeadYaw,
-        headPitch);
-    ModelHelper.setPositionRotationVisibility(
-        bodyPart,
-        modelData.getModelBodyPosition(),
-        modelData.getModelBodyRotation(),
-        modelData.isModelBodyVisible());
-    ModelHelper.setPositionRotationVisibility(
-        leftArmPart,
-        modelData.getModelLeftArmPosition(),
-        modelData.getModelLeftArmRotation(),
-        modelData.isModelLeftArmVisible());
-    ModelHelper.setPositionRotationVisibility(
-        rightArmPart,
-        modelData.getModelRightArmPosition(),
-        modelData.getModelRightArmRotation(),
-        modelData.isModelRightArmVisible());
-  }
-
-  static void setupAnimalModel(
-      EasyNPC<?> easyNPC,
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart leftFrontLeg,
-      ModelPart rightFrontLeg,
-      ModelPart leftHindLeg,
-      ModelPart rightHindLeg,
-      float netHeadYaw,
-      float headPitch) {
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
-    ModelHelper.setHeadPositionRotationVisibility(
-        headPart,
-        modelData.getModelHeadPosition(),
-        modelData.getModelHeadRotation(),
-        modelData.isModelHeadVisible(),
-        netHeadYaw,
-        headPitch);
-    ModelHelper.setPositionRotationVisibility(
-        bodyPart,
-        modelData.getModelBodyPosition(),
-        modelData.getModelBodyRotation(),
-        modelData.isModelBodyVisible());
-    ModelHelper.setPositionRotationVisibility(
-        leftFrontLeg,
-        modelData.getModelLeftArmPosition(),
-        modelData.getModelLeftArmRotation(),
-        modelData.isModelLeftArmVisible());
-    ModelHelper.setPositionRotationVisibility(
-        rightFrontLeg,
-        modelData.getModelRightArmPosition(),
-        modelData.getModelRightArmRotation(),
-        modelData.isModelRightArmVisible());
-    ModelHelper.setPositionRotationVisibility(
-        leftHindLeg,
-        modelData.getModelLeftLegPosition(),
-        modelData.getModelLeftLegRotation(),
-        modelData.isModelLeftLegVisible());
-    ModelHelper.setPositionRotationVisibility(
-        rightHindLeg,
-        modelData.getModelRightLegPosition(),
-        modelData.getModelRightLegRotation(),
-        modelData.isModelRightLegVisible());
-  }
-
-  static void setupBirdModel(
-      EasyNPC<?> easyNPC,
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart leftWing,
-      ModelPart rightWing,
-      ModelPart leftLeg,
-      ModelPart rightLeg,
-      float netHeadYaw,
-      float headPitch) {
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
-    ModelHelper.setHeadPositionRotationVisibility(
-        headPart,
-        modelData.getModelHeadPosition(),
-        modelData.getModelHeadRotation(),
-        modelData.isModelHeadVisible(),
-        netHeadYaw,
-        headPitch);
-    ModelHelper.setPositionRotationVisibility(
-        bodyPart,
-        modelData.getModelBodyPosition(),
-        modelData.getModelBodyRotation(),
-        modelData.isModelBodyVisible());
-    ModelHelper.setPositionRotationVisibility(
-        leftWing,
-        modelData.getModelLeftArmPosition(),
-        modelData.getModelLeftArmRotation(),
-        modelData.isModelLeftArmVisible());
-    ModelHelper.setPositionRotationVisibility(
-        rightWing,
-        modelData.getModelRightArmPosition(),
-        modelData.getModelRightArmRotation(),
-        modelData.isModelRightArmVisible());
-    ModelHelper.setPositionRotationVisibility(
-        leftLeg,
-        modelData.getModelLeftLegPosition(),
-        modelData.getModelLeftLegRotation(),
-        modelData.isModelLeftLegVisible());
-    ModelHelper.setPositionRotationVisibility(
-        rightLeg,
-        modelData.getModelRightLegPosition(),
-        modelData.getModelRightLegRotation(),
-        modelData.isModelRightLegVisible());
-  }
-
-  static void setupHumanoidModel(
-      EasyNPC<?> easyNPC,
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart rightArmPart,
-      ModelPart leftArmPart,
-      ModelPart rightLegPart,
-      ModelPart leftLegPart,
-      float netHeadYaw,
-      float headPitch) {
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
-    ModelHelper.setHeadPositionRotationVisibility(
-        headPart,
-        modelData.getModelHeadPosition(),
-        modelData.getModelHeadRotation(),
-        modelData.isModelHeadVisible(),
-        netHeadYaw,
-        headPitch);
-    ModelHelper.setPositionRotationVisibility(
-        bodyPart,
-        modelData.getModelBodyPosition(),
-        modelData.getModelBodyRotation(),
-        modelData.isModelBodyVisible());
-    ModelHelper.setPositionRotationVisibility(
-        leftArmPart,
-        modelData.getModelLeftArmPosition(),
-        modelData.getModelLeftArmRotation(),
-        modelData.isModelLeftArmVisible());
-    ModelHelper.setPositionRotationVisibility(
-        rightArmPart,
-        modelData.getModelRightArmPosition(),
-        modelData.getModelRightArmRotation(),
-        modelData.isModelRightArmVisible());
-    ModelHelper.setPositionRotationVisibility(
-        leftLegPart,
-        modelData.getModelLeftLegPosition(),
-        modelData.getModelLeftLegRotation(),
-        modelData.isModelLeftLegVisible());
-    ModelHelper.setPositionRotationVisibility(
-        rightLegPart,
-        modelData.getModelRightLegPosition(),
-        modelData.getModelRightLegRotation(),
-        modelData.isModelRightLegVisible());
-  }
-
-  static void resetArmModel(
-      EasyNPCModel easyNPCModel,
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart leftArm,
-      ModelPart rightArm) {
-
-    // Reset all rotations.
-    setModelPartRotation(headPart, easyNPCModel.getDefaultModelHeadRotation());
-    setModelPartRotation(bodyPart, easyNPCModel.getDefaultModelBodyRotation());
-    setModelPartRotation(leftArm, easyNPCModel.getDefaultModelLeftArmRotation());
-    setModelPartRotation(rightArm, easyNPCModel.getDefaultModelRightArmRotation());
-
-    // Reset all positions.
-    setModelPartPosition(bodyPart, easyNPCModel.getDefaultModelBodyPosition());
-    setModelPartPosition(headPart, easyNPCModel.getDefaultModelHeadPosition());
-    setModelPartPosition(leftArm, easyNPCModel.getDefaultModelLeftArmPosition());
-    setModelPartPosition(rightArm, easyNPCModel.getDefaultModelRightArmPosition());
-
-    // Reset all visibility.
-    headPart.visible = true;
-    bodyPart.visible = true;
-    leftArm.visible = true;
-    rightArm.visible = true;
-  }
-
-  static void setupVillagerModel(
-      EasyNPC<?> easyNPC,
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart armsPart,
-      ModelPart rightLegPart,
-      ModelPart leftLegPart,
-      float netHeadYaw,
-      float headPitch) {
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
-    ModelHelper.setHeadPositionRotationVisibility(
-        headPart,
-        modelData.getModelHeadPosition(),
-        modelData.getModelHeadRotation(),
-        modelData.isModelHeadVisible(),
-        netHeadYaw,
-        headPitch);
-    ModelHelper.setPositionRotationVisibility(
-        bodyPart,
-        modelData.getModelBodyPosition(),
-        modelData.getModelBodyRotation(),
-        modelData.isModelBodyVisible());
-    ModelHelper.setPositionRotationVisibility(
-        armsPart,
-        modelData.getModelArmsPosition(),
-        modelData.getModelArmsRotation(),
-        modelData.isModelArmsVisible());
-    ModelHelper.setPositionRotationVisibility(
-        leftLegPart,
-        modelData.getModelLeftLegPosition(),
-        modelData.getModelLeftLegRotation(),
-        modelData.isModelLeftLegVisible());
-    ModelHelper.setPositionRotationVisibility(
-        rightLegPart,
-        modelData.getModelRightLegPosition(),
-        modelData.getModelRightLegRotation(),
-        modelData.isModelRightLegVisible());
-  }
-
-  static void resetAnimalModel(
-      EasyNPCModel easyNPCModel,
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart leftFrontLeg,
-      ModelPart rightFrontLeg,
-      ModelPart leftHindLeg,
-      ModelPart rightHindLeg) {
-
-    // Reset all rotations.
-    setModelPartRotation(headPart, easyNPCModel.getDefaultModelHeadRotation());
-    setModelPartRotation(bodyPart, easyNPCModel.getDefaultModelBodyRotation());
-    setModelPartRotation(leftFrontLeg, easyNPCModel.getDefaultModelLeftFrontLegRotation());
-    setModelPartRotation(rightFrontLeg, easyNPCModel.getDefaultModelRightFrontLegRotation());
-    setModelPartRotation(leftHindLeg, easyNPCModel.getDefaultModelLeftHindLegRotation());
-    setModelPartRotation(rightHindLeg, easyNPCModel.getDefaultModelRightHindLegRotation());
-
-    // Reset all positions.
-    setModelPartPosition(bodyPart, easyNPCModel.getDefaultModelBodyPosition());
-    setModelPartPosition(headPart, easyNPCModel.getDefaultModelHeadPosition());
-    setModelPartPosition(leftFrontLeg, easyNPCModel.getDefaultModelLeftFrontLegPosition());
-    setModelPartPosition(rightFrontLeg, easyNPCModel.getDefaultModelRightFrontLegPosition());
-    setModelPartPosition(leftHindLeg, easyNPCModel.getDefaultModelLeftHindLegPosition());
-    setModelPartPosition(rightHindLeg, easyNPCModel.getDefaultModelRightHindLegPosition());
-
-    // Reset all visibility.
-    headPart.visible = true;
-    bodyPart.visible = true;
-    leftFrontLeg.visible = true;
-    rightFrontLeg.visible = true;
-    leftHindLeg.visible = true;
-    rightHindLeg.visible = true;
-  }
-
-  static void resetBirdModel(
-      EasyNPCModel easyNPCModel,
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart leftWingPart,
-      ModelPart rightWingPart,
-      ModelPart leftLegPart,
-      ModelPart rightLegPart) {
-
-    // Reset all rotations.
-    setModelPartRotation(headPart, easyNPCModel.getDefaultModelHeadRotation());
-    setModelPartRotation(bodyPart, easyNPCModel.getDefaultModelBodyRotation());
-    setModelPartRotation(leftWingPart, easyNPCModel.getDefaultModelLeftWingRotation());
-    setModelPartRotation(rightWingPart, easyNPCModel.getDefaultModelRightArmRotation());
-    setModelPartRotation(leftLegPart, easyNPCModel.getDefaultModelLeftLegRotation());
-    setModelPartRotation(rightLegPart, easyNPCModel.getDefaultModelRightLegRotation());
-
-    // Reset all positions.
-    setModelPartPosition(bodyPart, easyNPCModel.getDefaultModelBodyPosition());
-    setModelPartPosition(headPart, easyNPCModel.getDefaultModelHeadPosition());
-    setModelPartPosition(leftWingPart, easyNPCModel.getDefaultModelLeftWingPosition());
-    setModelPartPosition(rightWingPart, easyNPCModel.getDefaultModelRightWingPosition());
-    setModelPartPosition(leftLegPart, easyNPCModel.getDefaultModelLeftLegPosition());
-    setModelPartPosition(rightLegPart, easyNPCModel.getDefaultModelRightLegPosition());
-
-    // Reset all visibility.
-    headPart.visible = true;
-    bodyPart.visible = true;
-    leftWingPart.visible = true;
-    rightWingPart.visible = true;
-    leftLegPart.visible = true;
-    rightLegPart.visible = true;
-  }
-
-  static void resetHumanoidModel(
-      EasyNPCModel easyNPCModel,
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart rightArmPart,
-      ModelPart leftArmPart,
-      ModelPart rightLegPart,
-      ModelPart leftLegPart) {
-
-    // Reset all rotations.
-    setModelPartRotation(headPart, easyNPCModel.getDefaultModelHeadRotation());
-    setModelPartRotation(bodyPart, easyNPCModel.getDefaultModelBodyRotation());
-    setModelPartRotation(leftArmPart, easyNPCModel.getDefaultModelLeftArmRotation());
-    setModelPartRotation(rightArmPart, easyNPCModel.getDefaultModelRightArmRotation());
-    setModelPartRotation(leftLegPart, easyNPCModel.getDefaultModelLeftLegRotation());
-    setModelPartRotation(rightLegPart, easyNPCModel.getDefaultModelRightLegRotation());
-
-    // Reset all positions.
-    setModelPartPosition(headPart, easyNPCModel.getDefaultModelHeadPosition());
-    setModelPartPosition(bodyPart, easyNPCModel.getDefaultModelBodyPosition());
-    setModelPartPosition(leftArmPart, easyNPCModel.getDefaultModelLeftArmPosition());
-    setModelPartPosition(rightArmPart, easyNPCModel.getDefaultModelRightArmPosition());
-    setModelPartPosition(leftLegPart, easyNPCModel.getDefaultModelLeftLegPosition());
-    setModelPartPosition(rightLegPart, easyNPCModel.getDefaultModelRightLegPosition());
-
-    // Reset all visibility.
-    headPart.visible = true;
-    bodyPart.visible = true;
-    leftArmPart.visible = true;
-    rightArmPart.visible = true;
-    leftLegPart.visible = true;
-    rightLegPart.visible = true;
-  }
-
-  static void resetHierarchicalModel(
-      EasyNPCModel easyNPCModel,
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart rightArmPart,
-      ModelPart leftArmPart,
-      ModelPart rightLegPart,
-      ModelPart leftLegPart) {
-    resetHumanoidModel(
-        easyNPCModel, headPart, bodyPart, rightArmPart, leftArmPart, rightLegPart, leftLegPart);
-  }
-
-  static void resetHierarchicalModel(
-      EasyNPCModel easyNPCModel,
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart armsPart,
-      ModelPart rightArmPart,
-      ModelPart leftArmPart,
-      ModelPart rightLegPart,
-      ModelPart leftLegPart) {
-    setModelPartRotation(armsPart, easyNPCModel.getDefaultModelArmsRotation());
-    setModelPartPosition(armsPart, easyNPCModel.getDefaultModelArmsPosition());
-    resetHumanoidModel(
-        easyNPCModel, headPart, bodyPart, rightArmPart, leftArmPart, rightLegPart, leftLegPart);
-  }
-
-  static void resetVillagerModel(
-      EasyNPCModel easyNPCModel,
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart armsPart,
-      ModelPart leftLegPart,
-      ModelPart rightLegPart) {
-    // Reset all rotations.
-    setModelPartRotation(headPart, easyNPCModel.getDefaultModelHeadRotation());
-    setModelPartRotation(bodyPart, easyNPCModel.getDefaultModelBodyRotation());
-    setModelPartRotation(armsPart, easyNPCModel.getDefaultModelArmsRotation());
-    setModelPartRotation(leftLegPart, easyNPCModel.getDefaultModelLeftLegRotation());
-    setModelPartRotation(rightLegPart, easyNPCModel.getDefaultModelRightLegRotation());
-
-    // Reset all positions.
-    setModelPartPosition(bodyPart, easyNPCModel.getDefaultModelBodyPosition());
-    setModelPartPosition(headPart, easyNPCModel.getDefaultModelHeadPosition());
-    setModelPartPosition(armsPart, easyNPCModel.getDefaultModelArmsPosition());
-    setModelPartPosition(leftLegPart, easyNPCModel.getDefaultModelLeftLegPosition());
-    setModelPartPosition(rightLegPart, easyNPCModel.getDefaultModelRightLegPosition());
-
-    // Reset all visibility.
-    headPart.visible = true;
-    bodyPart.visible = true;
-    armsPart.visible = true;
-    leftLegPart.visible = true;
-    rightLegPart.visible = true;
-  }
+public interface EasyNPCModel<E extends Entity> {
+  CustomRotation EMPTY_ROTATION = new CustomRotation(0, 0, 0);
+  CustomPosition EMPTY_POSITION = new CustomPosition(0, 0, 0);
 
   private static boolean equalPositionAndRotation(
       ModelPart modelPart, CustomPosition position, Rotations rotations) {
@@ -684,200 +54,476 @@ public interface EasyNPCModel {
         && Math.abs(modelPart.zRot - rotations.getZ()) < 0.01;
   }
 
-  default CustomPosition getDefaultModelHeadPosition() {
-    return MODEL_HEAD_POSITION;
+  default void resetModelPart(ModelPartType modelPartType, ModelPart modelPart) {
+    CustomPosition defaultPosition = getDefaultModelPartPosition(modelPartType);
+    modelPart.x = defaultPosition.x();
+    modelPart.y = defaultPosition.y();
+    modelPart.z = defaultPosition.z();
+    Rotations defaultRotation = getDefaultModelPartRotation(modelPartType);
+    modelPart.xRot = defaultRotation.getX();
+    modelPart.yRot = defaultRotation.getY();
+    modelPart.zRot = defaultRotation.getZ();
   }
 
-  default CustomPosition getDefaultModelBodyPosition() {
-    return MODEL_BODY_POSITION;
+  default boolean hasDefaultModelPart(ModelPartType modelPartType, ModelPart modelPart) {
+    CustomPosition defaultPosition = getDefaultModelPartPosition(modelPartType);
+    Rotations defaultRotation = getDefaultModelPartRotation(modelPartType);
+    return equalPositionAndRotation(modelPart, defaultPosition, defaultRotation);
   }
 
-  default CustomPosition getDefaultModelArmsPosition() {
-    return VILLAGER_MODEL_ARMS_POSITION;
+  default ModelPart defineModelPart(
+      ModelPartType modelPartType, ModelPart parentModel, String name) {
+    ModelPart modelPart = parentModel.getChild(name);
+    return defineModelPart(modelPartType, modelPart);
   }
 
-  default CustomPosition getDefaultModelLeftArmPosition() {
-    return HUMANOID_MODEL_LEFT_ARM_POSITION;
+  default ModelPart defineModelPart(ModelPartType modelPartType, ModelPart modelPart) {
+    setDefaultModelPartPosition(
+        modelPartType, new CustomPosition(modelPart.x, modelPart.y, modelPart.z));
+    setDefaultModelPartRotation(
+        modelPartType, new Rotations(modelPart.xRot, modelPart.yRot, modelPart.zRot));
+    setDefaultModelPart(modelPartType, modelPart);
+    return modelPart;
   }
 
-  default CustomPosition getDefaultModelRightArmPosition() {
-    return HUMANOID_MODEL_RIGHT_ARM_POSITION;
-  }
+  void resetModelParts();
 
-  default CustomPosition getDefaultModelLeftLegPosition() {
-    return HUMANOID_MODEL_LEFT_LEG_POSITION;
-  }
+  void setDefaultModelPartPosition(ModelPartType modelPartType, CustomPosition customPosition);
 
-  default CustomPosition getDefaultModelRightLegPosition() {
-    return HUMANOID_MODEL_RIGHT_LEG_POSITION;
-  }
+  CustomPosition getDefaultModelPartPosition(ModelPartType modelPartType);
 
-  default CustomPosition getDefaultModelLeftFrontLegPosition() {
-    return MODEL_LEFT_FRONT_LEG_POSITION;
-  }
+  void setDefaultModelPartRotation(ModelPartType modelPartType, Rotations rotations);
 
-  default CustomPosition getDefaultModelRightFrontLegPosition() {
-    return MODEL_RIGHT_FRONT_LEG_POSITION;
-  }
+  Rotations getDefaultModelPartRotation(ModelPartType modelPartType);
 
-  default CustomPosition getDefaultModelLeftHindLegPosition() {
-    return MODEL_LEFT_HIND_LEG_POSITION;
-  }
+  void setDefaultModelPart(ModelPartType modelPartType, ModelPart modelPart);
 
-  default CustomPosition getDefaultModelRightHindLegPosition() {
-    return MODEL_RIGHT_HIND_LEG_POSITION;
-  }
+  ModelPart getDefaultModelPart(ModelPartType modelPartType);
 
-  default CustomPosition getDefaultModelLeftWingPosition() {
-    return MODEL_LEFT_WING_POSITION;
-  }
+  default void setupCustomModelPose(
+      E entity,
+      ModelPose modelPose,
+      ModelData<?> modelData,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {}
 
-  default CustomPosition getDefaultModelRightWingPosition() {
-    return MODEL_RIGHT_WING_POSITION;
-  }
+  default void animateCustomModelPose(
+      E entity,
+      ModelPose modelPose,
+      ModelData<?> modelData,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {}
 
-  default CustomPosition getDefaultModelRootPosition() {
-    return MODEL_ROOT_POSITION;
-  }
+  default void adjustDefaultModelParts(E entity) {}
 
-  default boolean getDefaultModelLockRotation() {
+  default boolean setupDefaultModelPose(
+      E entity,
+      Pose pose,
+      ModelData<?> modelData,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
     return false;
   }
 
-  default Rotations getDefaultModelHeadRotation() {
-    return MODEL_HEAD_ROTATION;
-  }
-
-  default Rotations getDefaultModelBodyRotation() {
-    return MODEL_BODY_ROTATION;
-  }
-
-  default Rotations getDefaultModelArmsRotation() {
-    return VILLAGER_MODEL_ARMS_ROTATION;
-  }
-
-  default Rotations getDefaultModelLeftArmRotation() {
-    return MODEL_LEFT_ARM_ROTATION;
-  }
-
-  default Rotations getDefaultModelRightArmRotation() {
-    return MODEL_RIGHT_ARM_ROTATION;
-  }
-
-  default Rotations getDefaultModelLeftLegRotation() {
-    return MODEL_LEFT_LEG_ROTATION;
-  }
-
-  default Rotations getDefaultModelRightLegRotation() {
-    return MODEL_RIGHT_LEG_ROTATION;
-  }
-
-  default Rotations getDefaultModelLeftFrontLegRotation() {
-    return MODEL_LEFT_FRONT_LEG_ROTATION;
-  }
-
-  default Rotations getDefaultModelRightFrontLegRotation() {
-    return MODEL_RIGHT_FRONT_LEG_ROTATION;
-  }
-
-  default Rotations getDefaultModelLeftHindLegRotation() {
-    return MODEL_LEFT_HIND_LEG_ROTATION;
-  }
-
-  default Rotations getDefaultModelRightHindLegRotation() {
-    return MODEL_RIGHT_HIND_LEG_ROTATION;
-  }
-
-  default Rotations getDefaultModelLeftWingRotation() {
-    return MODEL_LEFT_WING_ROTATION;
-  }
-
-  default Rotations getDefaultModelRightWingRotation() {
-    return MODEL_RIGHT_WING_ROTATION;
-  }
-
-  default Rotations getDefaultModelRootRotation() {
-    return MODEL_ROOT_ROTATION;
-  }
-
-  default void setupModel() {}
-
-  default void setupHierarchicalModel(
-      EasyNPC<?> easyNPC,
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart rightArmPart,
-      ModelPart leftArmPart,
-      ModelPart rightLegPart,
-      ModelPart leftLegPart,
+  default boolean animateDefaultModelPose(
+      E entity,
+      Pose pose,
+      ModelData<?> modelData,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
       float netHeadYaw,
       float headPitch) {
-    setupHumanoidModel(
-        easyNPC,
-        headPart,
-        bodyPart,
-        rightArmPart,
-        leftArmPart,
-        rightLegPart,
-        leftLegPart,
+    return false;
+  }
+
+  default boolean setupStandingModelPose(
+      E entity,
+      ModelData<?> modelData,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
+    return false;
+  }
+
+  default boolean setupCrouchingModelPose(
+      E entity,
+      ModelData<?> modelData,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
+    return false;
+  }
+
+  default boolean setupFallbackModelPose(
+      E entity,
+      Pose pose,
+      ModelData<?> modelData,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
+    return false;
+  }
+
+  default boolean additionalModelAnimation(
+      E entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
+    return false;
+  }
+
+  default boolean animateModelArmPose(
+      E entity,
+      ModelArmPose modelArmPose,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
+    return false;
+  }
+
+  default boolean animateModelArms(
+      E entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      ModelPart rightArmPart,
+      ModelPart leftArmPart,
+      float ageInTicks,
+      float limbSwing,
+      float limbSwingAmount) {
+    boolean result = false;
+    if (rightArmPart != null) {
+      result =
+          this.animateModelRightArm(
+              entity, attackData, modelData, rightArmPart, ageInTicks, limbSwing, limbSwingAmount);
+    }
+    if (leftArmPart != null) {
+      result =
+          this.animateModelLeftArm(
+              entity, attackData, modelData, leftArmPart, ageInTicks, limbSwing, limbSwingAmount);
+    }
+    return result;
+  }
+
+  default boolean animateModelRightArm(
+      E entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      ModelPart rightArmPart,
+      float ageInTicks,
+      float limbSwing,
+      float limbSwingAmount) {
+    return false;
+  }
+
+  default boolean animateModelLeftArm(
+      E entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      ModelPart leftArmPart,
+      float ageInTicks,
+      float limbSwing,
+      float limbSwingAmount) {
+    return false;
+  }
+
+  default void animateModelLegs(
+      E entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      ModelPart rightLegPart,
+      ModelPart leftLegPart,
+      float ageInTicks,
+      float limbSwing,
+      float limbSwingAmount) {}
+
+  default void animateModelHead(
+      E entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      ModelPart headPart,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {}
+
+  default void animateAttackModelPose(
+      E entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {}
+
+  default boolean handleDefaultModelPose(
+      E entity,
+      ModelData<?> modelData,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
+    boolean hasAdjustedDefaultModelPose = false;
+    Pose pose = modelData.getDefaultPose();
+    hasAdjustedDefaultModelPose =
+        this.setupDefaultModelPose(
+            entity, pose, modelData, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+
+    // Handle default standard model poses.
+    hasAdjustedDefaultModelPose =
+        switch (pose) {
+          case STANDING ->
+              hasAdjustedDefaultModelPose
+                  || this.setupStandingModelPose(
+                      entity,
+                      modelData,
+                      limbSwing,
+                      limbSwingAmount,
+                      ageInTicks,
+                      netHeadYaw,
+                      headPitch);
+          case CROUCHING ->
+              hasAdjustedDefaultModelPose
+                  || this.setupCrouchingModelPose(
+                      entity,
+                      modelData,
+                      limbSwing,
+                      limbSwingAmount,
+                      ageInTicks,
+                      netHeadYaw,
+                      headPitch);
+          default ->
+              hasAdjustedDefaultModelPose
+                  || this.setupFallbackModelPose(
+                      entity,
+                      pose,
+                      modelData,
+                      limbSwing,
+                      limbSwingAmount,
+                      ageInTicks,
+                      netHeadYaw,
+                      headPitch);
+        };
+    hasAdjustedDefaultModelPose =
+        hasAdjustedDefaultModelPose
+            || this.animateDefaultModelPose(
+                entity,
+                pose,
+                modelData,
+                limbSwing,
+                limbSwingAmount,
+                ageInTicks,
+                netHeadYaw,
+                headPitch);
+    return hasAdjustedDefaultModelPose;
+  }
+
+  default boolean handleSmartAnimations(
+      E entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
+
+    // Track default model parts.
+    boolean hasDefaultHead = true;
+    boolean hasAnimatedModelHead = false;
+    boolean hasAnimatedModelArms = false;
+    boolean hasAnimatedModelArmPose = false;
+    boolean hasAnimatedModelLegs = false;
+    boolean hasDefaultRightArm = true;
+    boolean hasDefaultLeftArm = true;
+    boolean hasDefaultRightLeg;
+    boolean hasDefaultLeftLeg;
+
+    // Handle attack related model animation.
+    this.animateAttackModelPose(
+        entity,
+        attackData,
+        modelData,
+        limbSwing,
+        limbSwingAmount,
+        ageInTicks,
         netHeadYaw,
         headPitch);
+
+    // Animate model head.
+    ModelPart head = this.getDefaultModelPart(ModelPartType.HEAD);
+    hasDefaultHead = head != null && this.hasDefaultModelPart(ModelPartType.HEAD, head);
+    if (hasDefaultHead) {
+      this.animateModelHead(entity, attackData, modelData, head, ageInTicks, netHeadYaw, headPitch);
+    }
+
+    // Animate model arms and model arm pose.
+    ModelArmPose modelArmPose = modelData.getModelArmPose();
+    if (modelArmPose == ModelArmPose.DEFAULT || modelArmPose == ModelArmPose.NEUTRAL) {
+      ModelPart rightArm = this.getDefaultModelPart(ModelPartType.RIGHT_ARM);
+      hasDefaultRightArm =
+          rightArm != null && this.hasDefaultModelPart(ModelPartType.RIGHT_ARM, rightArm);
+      ModelPart leftArm = this.getDefaultModelPart(ModelPartType.LEFT_ARM);
+      hasDefaultLeftArm =
+          leftArm != null && this.hasDefaultModelPart(ModelPartType.LEFT_ARM, leftArm);
+      hasAnimatedModelArms =
+          this.animateModelArms(
+              entity,
+              attackData,
+              modelData,
+              hasDefaultRightArm ? rightArm : null,
+              hasDefaultLeftArm ? leftArm : null,
+              ageInTicks,
+              limbSwing,
+              limbSwingAmount);
+    } else {
+      hasAnimatedModelArmPose =
+          this.animateModelArmPose(
+              entity,
+              modelArmPose,
+              attackData,
+              modelData,
+              limbSwing,
+              limbSwingAmount,
+              ageInTicks,
+              netHeadYaw,
+              headPitch);
+    }
+
+    // Animate model legs.
+    ModelPart rightLeg = this.getDefaultModelPart(ModelPartType.RIGHT_LEG);
+    hasDefaultRightLeg =
+        rightLeg != null && this.hasDefaultModelPart(ModelPartType.RIGHT_LEG, rightLeg);
+    ModelPart leftLeg = this.getDefaultModelPart(ModelPartType.LEFT_LEG);
+    hasDefaultLeftLeg =
+        leftLeg != null && this.hasDefaultModelPart(ModelPartType.LEFT_LEG, leftLeg);
+    this.animateModelLegs(
+        entity,
+        attackData,
+        modelData,
+        hasDefaultRightLeg ? rightLeg : null,
+        hasDefaultLeftLeg ? leftLeg : null,
+        ageInTicks,
+        limbSwing,
+        limbSwingAmount);
+
+    return !(hasDefaultHead
+        && !hasAnimatedModelArms
+        && !hasAnimatedModelArmPose
+        && hasDefaultRightArm
+        && hasDefaultLeftArm
+        && hasDefaultRightLeg
+        && hasDefaultLeftLeg);
   }
 
-  default void setupHierarchicalModel(
-      EasyNPC<?> easyNPC,
-      ModelPart headPart,
-      ModelPart bodyPart,
-      ModelPart armsPart,
-      ModelPart rightArmPart,
-      ModelPart leftArmPart,
-      ModelPart rightLegPart,
-      ModelPart leftLegPart,
+  default boolean setupAnimation(
+      E entity,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
       float netHeadYaw,
       float headPitch) {
+    if (!(entity instanceof EasyNPC<?> easyNPC)) {
+      return false;
+    }
+
+    // Reset model parts to avoid any issues with other modifications.
+    this.resetModelParts();
+
+    // Get model data and pose.
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
-    ModelHelper.setPositionRotationVisibility(
-        armsPart,
-        modelData.getModelArmsPosition(),
-        modelData.getModelArmsRotation(),
-        modelData.isModelArmsVisible());
-    setupHumanoidModel(
-        easyNPC,
-        headPart,
-        bodyPart,
-        rightArmPart,
-        leftArmPart,
-        rightLegPart,
-        leftLegPart,
-        netHeadYaw,
-        headPitch);
-  }
+    ModelPose modelPose = modelData.getModelPose();
+    AttackData<?> attackData = easyNPC.getEasyNPCAttackData();
 
-  default boolean hasDefaultHumanoidModelHead(ModelPart headPart) {
-    return equalPositionAndRotation(headPart, HUMANOID_MODEL_HEAD_POSITION, MODEL_HEAD_ROTATION);
-  }
+    // Track model adjustments and animations.
+    boolean isCustomModelPose = modelPose == ModelPose.CUSTOM;
+    boolean isDefaultModelPose = modelPose == ModelPose.DEFAULT;
+    boolean hasAdjustedDefaultModelPose = false;
+    boolean hasSmartAnimations = modelData.useSmartAnimations();
+    boolean hasAdditionalModelAnimation = false;
 
-  default boolean hasDefaultHumanoidModelBody(ModelPart bodyPart) {
-    return equalPositionAndRotation(bodyPart, HUMANOID_MODEL_BODY_POSITION, MODEL_BODY_ROTATION);
-  }
+    if (isCustomModelPose) {
+      // Handle custom model pose and animation.
+      this.setupCustomModelPose(
+          entity,
+          modelPose,
+          modelData,
+          limbSwing,
+          limbSwingAmount,
+          ageInTicks,
+          netHeadYaw,
+          headPitch);
+      this.animateCustomModelPose(
+          entity,
+          modelPose,
+          modelData,
+          limbSwing,
+          limbSwingAmount,
+          ageInTicks,
+          netHeadYaw,
+          headPitch);
+    } else if (isDefaultModelPose) {
+      hasAdjustedDefaultModelPose =
+          this.handleDefaultModelPose(
+              entity, modelData, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+    }
 
-  default boolean hasDefaultHumanoidModelLeftArm(ModelPart leftArmPart) {
-    return equalPositionAndRotation(
-        leftArmPart, HUMANOID_MODEL_LEFT_ARM_POSITION, MODEL_LEFT_ARM_ROTATION);
-  }
+    // Use smart animations for better performance, if enabled.
+    if (modelData.useSmartAnimations() || isCustomModelPose || hasAdjustedDefaultModelPose) {
+      hasSmartAnimations =
+          this.handleSmartAnimations(
+              entity,
+              attackData,
+              modelData,
+              limbSwing,
+              limbSwingAmount,
+              ageInTicks,
+              netHeadYaw,
+              headPitch);
+    }
 
-  default boolean hasDefaultHumanoidModelRightArm(ModelPart rightArmPart) {
-    return equalPositionAndRotation(
-        rightArmPart, HUMANOID_MODEL_RIGHT_ARM_POSITION, MODEL_RIGHT_ARM_ROTATION);
-  }
+    // Handle additional model animation.
+    hasAdditionalModelAnimation =
+        this.additionalModelAnimation(
+            entity,
+            attackData,
+            modelData,
+            limbSwing,
+            limbSwingAmount,
+            ageInTicks,
+            netHeadYaw,
+            headPitch);
 
-  default boolean hasDefaultHumanoidModelLeftLeg(ModelPart leftLegPart) {
-    return equalPositionAndRotation(
-        leftLegPart, HUMANOID_MODEL_LEFT_LEG_POSITION, MODEL_LEFT_LEG_ROTATION);
-  }
+    // Handle additional model adjustments parts.
+    this.adjustDefaultModelParts(entity);
 
-  default boolean hasDefaultHumanoidModelRightLeg(ModelPart rightLegPart) {
-    return equalPositionAndRotation(
-        rightLegPart, HUMANOID_MODEL_RIGHT_LEG_POSITION, MODEL_RIGHT_LEG_ROTATION);
+    return isCustomModelPose
+        || (isDefaultModelPose && hasAdjustedDefaultModelPose)
+        || hasSmartAnimations
+        || hasAdditionalModelAnimation;
   }
 }
