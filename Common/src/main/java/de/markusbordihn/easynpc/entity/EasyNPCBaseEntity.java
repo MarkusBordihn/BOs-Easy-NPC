@@ -28,11 +28,11 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ConfigData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.entity.easynpc.data.GuiData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
-import de.markusbordihn.easynpc.entity.easynpc.data.NPCData;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
@@ -40,16 +40,19 @@ import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import de.markusbordihn.easynpc.entity.easynpc.data.SoundData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SpawnData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SpawnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TickerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.BaseTickHandler;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.EnumMap;
 import java.util.UUID;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -84,50 +87,49 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.BowItem;
-import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.trading.Merchant;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class EasyNPCBaseEntity extends PathfinderMob
+public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
     implements NeutralMob,
         Merchant,
         RangedAttackMob,
         CrossbowAttackMob,
         Saddleable,
-        EasyNPC<PathfinderMob>,
-        ActionHandler<PathfinderMob>,
-        ActionEventData<PathfinderMob>,
-        AttackData<PathfinderMob>,
-        AttributeData<PathfinderMob>,
-        BaseTickHandler<PathfinderMob>,
-        ConfigurationData<PathfinderMob>,
-        DialogData<PathfinderMob>,
-        GuiData<PathfinderMob>,
-        ModelData<PathfinderMob>,
-        NavigationData<PathfinderMob>,
-        NPCData<PathfinderMob>,
-        ObjectiveData<PathfinderMob>,
-        OwnerData<PathfinderMob>,
-        PresetData<PathfinderMob>,
-        ProfessionData<PathfinderMob>,
-        ScaleData<PathfinderMob>,
-        SkinData<PathfinderMob>,
-        SpawnData<PathfinderMob>,
-        SpawnerData<PathfinderMob>,
-        TickerData<PathfinderMob>,
-        TradingData<PathfinderMob>,
-        VariantData<PathfinderMob> {
+        EasyNPC<E>,
+        ActionHandler<E>,
+        ActionEventData<E>,
+        AttackData<E>,
+        AttributeData<E>,
+        BaseTickHandler<E>,
+        ConfigurationData<E>,
+        DialogData<E>,
+        GuiData<E>,
+        ModelData<E>,
+        NavigationData<E>,
+        ConfigData<E>,
+        ObjectiveData<E>,
+        OwnerData<E>,
+        PresetData<E>,
+        ProfessionData<E>,
+        ScaleData<E>,
+        SkinData<E>,
+        SoundData<E>,
+        SpawnData<E>,
+        SpawnerData<E>,
+        TickerData<E>,
+        TradingData<E>,
+        VariantData<E> {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
@@ -139,6 +141,7 @@ public class EasyNPCBaseEntity extends PathfinderMob
     ModelData.registerModelDataSerializer();
     ObjectiveData.registerObjectiveDataSerializer();
     ProfessionData.registerProfessionDataSerializer();
+    SoundData.registerSoundDataSerializer();
     SkinData.registerSkinDataSerializer();
     SpawnerData.registerSpawnerDataSerializer();
     TradingData.registerTradingDataSerializer();
@@ -155,13 +158,8 @@ public class EasyNPCBaseEntity extends PathfinderMob
 
   public EasyNPCBaseEntity(
       EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variant) {
-    this(entityType, level);
-    this.setVariant(variant);
-  }
-
-  public EasyNPCBaseEntity(EntityType<? extends PathfinderMob> entityType, Level world) {
-    super(entityType, world);
-    this.defineCustomData();
+    super(entityType, level);
+    this.registerEasyNPCDefaultHandler(variant);
     this.setInvulnerable(true);
     this.refreshGroundNavigation();
   }
@@ -178,12 +176,7 @@ public class EasyNPCBaseEntity extends PathfinderMob
 
   @Override
   public void performRangedAttack(LivingEntity livingEntity, float damage) {
-    if (this.getMainHandItem().getItem() instanceof BowItem) {
-      this.performBowAttack(this, livingEntity, damage);
-    } else if (this.getMainHandItem().getItem() instanceof CrossbowItem) {
-      AttackData.addChargedProjectile(this.getMainHandItem(), new ItemStack(Items.ARROW, 1));
-      this.performCrossbowAttack(this, 1.6F);
-    }
+    AttackHandler.performDefaultRangedAttack(this, livingEntity, damage);
   }
 
   @Override
@@ -469,7 +462,7 @@ public class EasyNPCBaseEntity extends PathfinderMob
 
   @Override
   public boolean canFireProjectileWeapon(ProjectileWeaponItem projectileWeaponItem) {
-    return AttackData.canFireProjectileWeapon(projectileWeaponItem);
+    return AttackHandler.canFireProjectileWeapon(projectileWeaponItem);
   }
 
   @Override
@@ -498,8 +491,8 @@ public class EasyNPCBaseEntity extends PathfinderMob
   }
 
   @Override
-  public PathfinderMob getEasyNPCEntity() {
-    return this;
+  public E getEasyNPCEntity() {
+    return (E) this;
   }
 
   @Override
@@ -583,6 +576,31 @@ public class EasyNPCBaseEntity extends PathfinderMob
   }
 
   @Override
+  public void playAmbientSound() {
+    this.playDefaultAmbientSound();
+  }
+
+  @Override
+  public int getAmbientSoundInterval() {
+    return 240;
+  }
+
+  @Override
+  public void playHurtSound(DamageSource damageSource) {
+    this.playDefaultHurtSound(damageSource);
+  }
+
+  @Override
+  protected void playStepSound(BlockPos blockPos, BlockState blockState) {
+    this.playDefaultStepSound(blockPos, blockState);
+  }
+
+  @Override
+  public SoundEvent getDeathSound() {
+    return this.getDefaultDeathSound();
+  }
+
+  @Override
   protected void handleNetherPortal() {
     if (getAttributeDataLoaded() && getAttributeCanUseNetherPortal()) {
       super.handleNetherPortal();
@@ -632,86 +650,6 @@ public class EasyNPCBaseEntity extends PathfinderMob
   }
 
   @Override
-  public void defineCustomData() {
-    if (this.isServerSide()) {
-      log.info("Define custom server-side data for {}", this);
-      this.defineCustomActionData();
-      this.defineCustomDialogData();
-      this.defineCustomObjectiveData();
-      this.defineCustomSpawnerData();
-    }
-  }
-
-  @Override
-  protected void defineSynchedData() {
-    super.defineSynchedData();
-
-    this.defineSynchedActionData();
-    this.defineSynchedAttackData();
-    this.defineSynchedAttributeData();
-    this.defineSynchedDialogData();
-    this.defineSynchedModelData();
-    this.defineSynchedNavigationData();
-    this.defineSynchedObjectiveData();
-    this.defineSynchedOwnerData();
-    this.defineSynchedProfessionData();
-    this.defineSynchedScaleData();
-    this.defineSynchedSkinData();
-    this.defineSynchedTradingData();
-    this.defineSynchedVariantData();
-  }
-
-  @Override
-  public void addAdditionalSaveData(CompoundTag compoundTag) {
-    super.addAdditionalSaveData(compoundTag);
-
-    this.addAdditionalActionData(compoundTag);
-    this.addAdditionalAttackData(compoundTag);
-    this.addAdditionalAttributeData(compoundTag);
-    this.addAdditionalDialogData(compoundTag);
-    this.addAdditionalModelData(compoundTag);
-    this.addAdditionalNavigationData(compoundTag);
-    this.addAdditionalNPCData(compoundTag);
-    this.addAdditionalObjectiveData(compoundTag);
-    this.addAdditionalOwnerData(compoundTag);
-    this.addAdditionalProfessionData(compoundTag);
-    this.addAdditionalScaleData(compoundTag);
-    this.addAdditionalSkinData(compoundTag);
-    this.addAdditionalTradingData(compoundTag);
-    this.addAdditionalVariantData(compoundTag);
-    this.addAdditionalSpawnerData(compoundTag);
-
-    this.addPersistentAngerSaveData(compoundTag);
-  }
-
-  @Override
-  public void readAdditionalSaveData(CompoundTag compoundTag) {
-    super.readAdditionalSaveData(compoundTag);
-
-    this.readAdditionalNPCData(compoundTag);
-
-    this.readAdditionalActionData(compoundTag);
-    this.readAdditionalAttackData(compoundTag);
-    this.readAdditionalAttributeData(compoundTag);
-    this.readAdditionalDialogData(compoundTag);
-    this.readAdditionalModelData(compoundTag);
-    this.readAdditionalNavigationData(compoundTag);
-    this.readAdditionalObjectiveData(compoundTag);
-    this.readAdditionalOwnerData(compoundTag);
-    this.readAdditionalProfessionData(compoundTag);
-    this.readAdditionalScaleData(compoundTag);
-    this.readAdditionalSkinData(compoundTag);
-    this.readAdditionalTradingData(compoundTag);
-    this.readAdditionalVariantData(compoundTag);
-    this.readAdditionalSpawnerData(compoundTag);
-
-    this.readPersistentAngerSaveData(this.level(), compoundTag);
-
-    // Register attribute based objectives
-    this.registerAttributeBasedObjectives();
-  }
-
-  @Override
   public boolean isSaddleable() {
     return false;
   }
@@ -726,5 +664,25 @@ public class EasyNPCBaseEntity extends PathfinderMob
   @Override
   public boolean isSaddled() {
     return false;
+  }
+
+  @Override
+  protected void defineSynchedData() {
+    super.defineSynchedData();
+    this.defineEasyNPCSyncedData();
+  }
+
+  @Override
+  public void addAdditionalSaveData(CompoundTag compoundTag) {
+    super.addAdditionalSaveData(compoundTag);
+    this.addPersistentAngerSaveData(compoundTag);
+    this.addEasyNPCAdditionalSaveData(compoundTag);
+  }
+
+  @Override
+  public void readAdditionalSaveData(CompoundTag compoundTag) {
+    super.readAdditionalSaveData(compoundTag);
+    this.readPersistentAngerSaveData(this.level(), compoundTag);
+    this.readEasyNPCAdditionalSaveData(compoundTag);
   }
 }

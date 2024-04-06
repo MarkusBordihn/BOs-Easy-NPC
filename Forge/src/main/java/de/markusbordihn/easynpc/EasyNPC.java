@@ -27,8 +27,7 @@ import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
 import de.markusbordihn.easynpc.client.screen.ClientScreens;
 import de.markusbordihn.easynpc.debug.DebugManager;
 import de.markusbordihn.easynpc.entity.ModEntityType;
-import de.markusbordihn.easynpc.io.PresetDataFiles;
-import de.markusbordihn.easynpc.io.SkinDataFiles;
+import de.markusbordihn.easynpc.io.DataFileHandler;
 import de.markusbordihn.easynpc.item.ModItems;
 import de.markusbordihn.easynpc.menu.MenuHandler;
 import de.markusbordihn.easynpc.menu.MenuManager;
@@ -104,11 +103,7 @@ public class EasyNPC {
               modEventBus.addListener(ClientScreens::registerScreens);
               modEventBus.addListener(
                   (final FMLClientSetupEvent event) ->
-                      event.enqueueWork(
-                          () -> {
-                            SkinDataFiles.registerCustomSkinData();
-                            PresetDataFiles.registerCustomPresetData();
-                          }));
+                      event.enqueueWork(DataFileHandler::registerDataFiles));
               ModTabs.CREATIVE_TABS.register(modEventBus);
             });
   }

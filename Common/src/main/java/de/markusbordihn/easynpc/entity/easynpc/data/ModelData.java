@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -188,6 +189,9 @@ public interface ModelData<T extends PathfinderMob> extends EasyNPC<T> {
   EntityDataAccessor<Boolean> EASY_NPC_DATA_MODEL_BOOTS_VISIBLE =
       SynchedEntityData.defineId(
           EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
+  EntityDataAccessor<Boolean> EASY_NPC_DATA_MODEL_SMART_ANIMATIONS =
+      SynchedEntityData.defineId(
+          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
 
   String EASY_NPC_DATA_MODEL_ARMS_TAG = "Arms";
   String EASY_NPC_DATA_MODEL_BODY_TAG = "Body";
@@ -209,6 +213,7 @@ public interface ModelData<T extends PathfinderMob> extends EasyNPC<T> {
   String EASY_NPC_DATA_MODEL_ROTATION_TAG = "Rotation";
   String EASY_NPC_DATA_MODEL_SCALE_TAG = "Scale";
   String EASY_NPC_DATA_MODEL_VISIBLE_TAG = "Visible";
+  String EASY_NPC_DATA_MODEL_SMART_ANIMATIONS_TAG = "SmartAnimations";
 
   CustomPosition DEFAULT_MODEL_PART_POSITION = new CustomPosition(0, 0, 0);
   CustomRotation DEFAULT_MODEL_PART_ROTATION = new CustomRotation(0, 0, 0);
@@ -574,6 +579,18 @@ public interface ModelData<T extends PathfinderMob> extends EasyNPC<T> {
     setEasyNPCData(EASY_NPC_DATA_MODEL_BOOTS_VISIBLE, modelBootsVisible);
   }
 
+  default boolean useSmartAnimations() {
+    return supportsSmartAnimations() && getEasyNPCData(EASY_NPC_DATA_MODEL_SMART_ANIMATIONS);
+  }
+
+  default void setUseSmartAnimations(boolean useSmartAnimations) {
+    setEasyNPCData(EASY_NPC_DATA_MODEL_SMART_ANIMATIONS, useSmartAnimations);
+  }
+
+  default boolean supportsSmartAnimations() {
+    return true;
+  }
+
   default ModelArmPose getModelArmPose() {
     return getModelArmPose(this.getLivingEntity());
   }
@@ -597,7 +614,7 @@ public interface ModelData<T extends PathfinderMob> extends EasyNPC<T> {
     }
 
     // Sword arm pose
-    if (isAggressive && AttackData.isHoldingMeleeWeapon(livingEntity)) {
+    if (isAggressive && AttackHandler.isHoldingMeleeWeapon(livingEntity)) {
       return ModelArmPose.ATTACKING_WITH_MELEE_WEAPON;
     }
 
@@ -692,7 +709,9 @@ public interface ModelData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default void defineSynchedModelData() {
+    // General
     defineEasyNPCData(EASY_NPC_DATA_MODEL_POSE, ModelPose.DEFAULT);
+    defineEasyNPCData(EASY_NPC_DATA_MODEL_SMART_ANIMATIONS, true);
 
     // Position
     defineEasyNPCData(EASY_NPC_DATA_MODEL_HEAD_POSITION, new CustomPosition(0, 0, 0));
@@ -1003,6 +1022,9 @@ public interface ModelData<T extends PathfinderMob> extends EasyNPC<T> {
     // Model Visibility
     this.addAdditionalModelVisibilityData(modelDataTag);
 
+    // Smart Animations
+    modelDataTag.putBoolean(EASY_NPC_DATA_MODEL_SMART_ANIMATIONS_TAG, this.useSmartAnimations());
+
     compoundTag.put(EASY_NPC_DATA_MODEL_DATA_TAG, modelDataTag);
   }
 
@@ -1041,5 +1063,10 @@ public interface ModelData<T extends PathfinderMob> extends EasyNPC<T> {
 
     // Model Visibility
     this.readAdditionalModelVisibilityData(modelDataTag);
+
+    // Smart Animations
+    if (modelDataTag.contains(EASY_NPC_DATA_MODEL_SMART_ANIMATIONS_TAG)) {
+      this.setUseSmartAnimations(modelDataTag.getBoolean(EASY_NPC_DATA_MODEL_SMART_ANIMATIONS_TAG));
+    }
   }
 }

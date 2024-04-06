@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import de.markusbordihn.easynpc.handler.SkinHandler;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import de.markusbordihn.easynpc.utils.PlayersUtils;
 import java.util.UUID;
@@ -38,14 +39,21 @@ public class MessageSkinChange extends NetworkMessage {
   protected final String skinURL;
   protected final UUID skinUUID;
   protected final SkinType skinType;
+  protected final String skinVariant;
 
   public MessageSkinChange(
-      UUID uuid, String skinName, String skinURL, UUID skinUUID, SkinType skinType) {
+      UUID uuid,
+      String skinName,
+      String skinURL,
+      UUID skinUUID,
+      SkinType skinType,
+      String skinVariant) {
     super(uuid);
     this.skinName = skinName;
     this.skinURL = skinURL;
     this.skinUUID = skinUUID;
     this.skinType = skinType;
+    this.skinVariant = skinVariant;
   }
 
   public static MessageSkinChange decode(final FriendlyByteBuf buffer) {
@@ -54,7 +62,8 @@ public class MessageSkinChange extends NetworkMessage {
         buffer.readUtf(),
         buffer.readUtf(),
         buffer.readUUID(),
-        buffer.readEnum(SkinType.class));
+        buffer.readEnum(SkinType.class),
+        buffer.readUtf());
   }
 
   public static void encode(final MessageSkinChange message, final FriendlyByteBuf buffer) {
@@ -63,6 +72,7 @@ public class MessageSkinChange extends NetworkMessage {
     buffer.writeUtf(message.getSkinURL());
     buffer.writeUUID(message.getSkinUUID());
     buffer.writeEnum(message.getSkinType());
+    buffer.writeUtf(message.getSkinVariant());
   }
 
   public static void handle(
@@ -101,50 +111,35 @@ public class MessageSkinChange extends NetworkMessage {
       return;
     }
 
+    // Validate variant data.
+    String skinVariant = message.getSkinVariant();
+
     // Perform action.
     String skinURL = message.getSkinURL();
     UUID skinUUID = message.getSkinUUID();
 
     switch (skinType) {
+      case NONE:
+        SkinHandler.setNoneSkin(easyNPC);
+        break;
       case CUSTOM:
-        log.debug("Setting custom skin for {} to {} from {}", easyNPC, skinUUID, serverPlayer);
-        skinData.setSkinType(skinType);
-        skinData.setSkinName("");
-        skinData.setSkinURL("");
-        skinData.setSkinUUID(skinUUID);
+        SkinHandler.setCustomSkin(easyNPC, skinUUID);
         break;
       case DEFAULT:
-        log.debug("Setting default skin for {} to {} from {}", easyNPC, skinType, serverPlayer);
-        skinData.setSkinType(skinType);
-        skinData.setSkinName("");
-        skinData.setSkinURL("");
-        skinData.setSkinUUID(Constants.BLANK_UUID);
+        SkinHandler.setDefaultSkin(easyNPC, skinVariant);
         break;
       case PLAYER_SKIN:
-        log.debug("Setting player skin for {} to {} from {}", easyNPC, skinURL, serverPlayer);
-        skinData.setSkinType(skinType);
-        skinData.setSkinName(skinName);
-        skinData.setSkinURL(skinURL != null && !skinURL.isBlank() ? skinURL : "");
-        if (skinUUID != null && !Constants.BLANK_UUID.equals(skinUUID)) {
-          skinData.setSkinUUID(skinUUID);
-        } else {
-          UUID userUUID = PlayersUtils.getUserUUID(serverPlayer.getServer(), skinName);
-          if (!skinName.equals(userUUID.toString())) {
-            log.debug("Converted user {} to UUID {} ...", skinName, userUUID);
-          }
-          skinData.setSkinUUID(userUUID);
-        }
-        break;
-      case INSECURE_REMOTE_URL:
-      case SECURE_REMOTE_URL:
-        log.debug("Setting remote skin for {} to {} from {}", easyNPC, skinURL, serverPlayer);
-        skinData.setSkinType(skinType);
-        skinData.setSkinName("");
-        skinData.setSkinURL(skinURL != null && !skinURL.isBlank() ? skinURL : skinName);
-        skinData.setSkinUUID(
+        UUID userUUID =
             skinUUID != null && !Constants.BLANK_UUID.equals(skinUUID)
                 ? skinUUID
-                : UUID.nameUUIDFromBytes(skinName.getBytes()));
+                : PlayersUtils.getUserUUID(serverPlayer.getServer(), skinName);
+        if (userUUID != null && !skinName.equals(userUUID.toString())) {
+          log.debug("Converted user {} to UUID {} ...", skinName, userUUID);
+        }
+        SkinHandler.setPlayerSkin(easyNPC, skinName, userUUID);
+        break;
+      case SECURE_REMOTE_URL, INSECURE_REMOTE_URL:
+        SkinHandler.setRemoteSkin(easyNPC, skinURL);
         break;
       default:
         log.error(
@@ -174,5 +169,9 @@ public class MessageSkinChange extends NetworkMessage {
 
   public SkinType getSkinType() {
     return this.skinType;
+  }
+
+  public String getSkinVariant() {
+    return this.skinVariant;
   }
 }

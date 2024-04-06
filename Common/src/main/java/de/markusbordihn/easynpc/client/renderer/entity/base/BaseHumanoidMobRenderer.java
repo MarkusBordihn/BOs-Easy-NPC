@@ -17,12 +17,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.renderer.entity;
+package de.markusbordihn.easynpc.client.renderer.entity.base;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
-import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
 import java.util.Map;
 import net.minecraft.client.model.EntityModel;
@@ -32,16 +31,15 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Pose;
 
-public class StandardHumanoidMobRenderer<T extends EasyNPCBaseEntity, V, M extends EntityModel<T>>
-    extends MobRenderer<T, M> implements EasyNPCRenderer {
+public class BaseHumanoidMobRenderer<E extends EasyNPCBaseEntity<E>, V, M extends EntityModel<E>>
+    extends MobRenderer<E, M> implements EasyNPCRenderer<E, M> {
 
   protected final Map<V, ResourceLocation> textures;
   protected final Map<V, ResourceLocation> texturesOverlay;
   protected final ResourceLocation defaultTexture;
 
-  public StandardHumanoidMobRenderer(
+  public BaseHumanoidMobRenderer(
       EntityRendererProvider.Context context,
       M model,
       float shadowRadius,
@@ -49,7 +47,7 @@ public class StandardHumanoidMobRenderer<T extends EasyNPCBaseEntity, V, M exten
     this(context, model, shadowRadius, defaultTexture, null, null);
   }
 
-  public StandardHumanoidMobRenderer(
+  public BaseHumanoidMobRenderer(
       EntityRendererProvider.Context context,
       M model,
       float shadowRadius,
@@ -58,7 +56,7 @@ public class StandardHumanoidMobRenderer<T extends EasyNPCBaseEntity, V, M exten
     this(context, model, shadowRadius, defaultTexture, textures, null);
   }
 
-  public StandardHumanoidMobRenderer(
+  public BaseHumanoidMobRenderer(
       EntityRendererProvider.Context context,
       M model,
       float shadowRadius,
@@ -72,7 +70,7 @@ public class StandardHumanoidMobRenderer<T extends EasyNPCBaseEntity, V, M exten
   }
 
   @Override
-  public ResourceLocation getTextureLocation(T entity) {
+  public ResourceLocation getTextureLocation(E entity) {
     return this.getEntityTexture(entity);
   }
 
@@ -96,66 +94,37 @@ public class StandardHumanoidMobRenderer<T extends EasyNPCBaseEntity, V, M exten
   }
 
   @Override
-  protected void scale(T entity, PoseStack poseStack, float unused) {
-    this.scaleEntity(entity, poseStack);
+  protected void scale(E entity, PoseStack poseStack, float unused) {
+    EasyNPCRenderer.scaleEntity(entity, poseStack);
   }
 
   @Override
   protected void renderNameTag(
-      T entity,
+      E entity,
       Component component,
       PoseStack poseStack,
       MultiBufferSource multiBufferSource,
       int color) {
-    this.renderEntityNameTag(entity, poseStack);
+    EasyNPCRenderer.renderEntityNameTag(entity, poseStack);
     super.renderNameTag(entity, component, poseStack, multiBufferSource, color);
   }
 
   @Override
-  protected int getBlockLightLevel(T entity, BlockPos blockPos) {
-    return getEntityLightLevel(entity, blockPos);
+  protected int getBlockLightLevel(E entity, BlockPos blockPos) {
+    return EasyNPCRenderer.getEntityLightLevel(entity, blockPos);
   }
-
-  public void renderCustomPose(
-      T entity,
-      M model,
-      float entityYaw,
-      float partialTicks,
-      PoseStack poseStack,
-      MultiBufferSource buffer,
-      int packedLight) {}
-
-  public void renderDefaultPose(
-      T entity,
-      M model,
-      Pose pose,
-      float entityYaw,
-      float partialTicks,
-      PoseStack poseStack,
-      MultiBufferSource buffer,
-      int packedLight) {}
 
   @Override
   public void render(
-      T entity,
+      E entity,
       float entityYaw,
       float partialTicks,
       PoseStack poseStack,
       MultiBufferSource buffer,
       int packedLight) {
-    M model = this.getModel();
-
-    // Rotate entity, if needed
-    this.rotateEntity(entity, poseStack);
-
-    // Render custom or default pose.
-    ModelPose modelPose = entity.getModelPose();
-    if (modelPose == ModelPose.DEFAULT) {
-      this.renderDefaultPose(
-          entity, model, entity.getPose(), entityYaw, partialTicks, poseStack, buffer, packedLight);
-    } else if (modelPose == ModelPose.CUSTOM) {
-      this.renderCustomPose(entity, model, entityYaw, partialTicks, poseStack, buffer, packedLight);
-    }
+    // Render model specific pose.
+    this.renderModel(
+        entity, this.getModel(), entityYaw, partialTicks, poseStack, buffer, packedLight);
 
     // Render entity with original render method.
     super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);

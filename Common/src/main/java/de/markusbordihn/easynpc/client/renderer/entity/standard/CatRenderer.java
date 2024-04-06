@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.standard;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.client.model.standard.StandardCatModel;
-import de.markusbordihn.easynpc.client.renderer.entity.StandardMobRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.base.BaseMobRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.CatCollarLayer;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Cat.Variant;
@@ -35,7 +35,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Pose;
 
-public class CatRenderer extends StandardMobRenderer<Cat, Cat.Variant, StandardCatModel<Cat>> {
+public class CatRenderer extends BaseMobRenderer<Cat, Variant, StandardCatModel<Cat>> {
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(

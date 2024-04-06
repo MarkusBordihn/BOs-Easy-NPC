@@ -25,7 +25,10 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -39,10 +42,10 @@ public class SuggestionProvider {
 
   protected SuggestionProvider() {}
 
+  // Return all EasyNPCs for creative mode or only the owned EasyNPCs of the player.
   protected static CompletableFuture<Suggestions> suggestEasyNPCs(
       CommandContext<CommandSourceStack> context, SuggestionsBuilder build)
       throws CommandSyntaxException {
-    // Return all EasyNPCs for creative mode or only the owned EasyNPCs of the player.
     ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
     return SharedSuggestionProvider.suggest(
         serverPlayer.isCreative()
@@ -51,10 +54,24 @@ public class SuggestionProvider {
         build);
   }
 
+  // Return all presets for all easy NPCs.
   protected static CompletableFuture<Suggestions> suggestPresets(
       CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {
-    // Return all presets for all easy NPCs.
     return SharedSuggestionProvider.suggestResource(
         WorldPresetDataFiles.getPresetFilePathResourceLocations(), build);
+  }
+
+  // Return all variants for the given EasyNPC.
+  protected static CompletableFuture<Suggestions> suggestVariants(
+      CommandContext<CommandSourceStack> context, SuggestionsBuilder build, UUID uuid) {
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid);
+    if (easyNPC == null) {
+      return SharedSuggestionProvider.suggest(new String[0], build);
+    }
+    VariantData<?> variantData = easyNPC.getEasyNPCVariantData();
+    if (variantData == null) {
+      return SharedSuggestionProvider.suggest(new String[0], build);
+    }
+    return SharedSuggestionProvider.suggest(variantData.getVariantNames(), build);
   }
 }

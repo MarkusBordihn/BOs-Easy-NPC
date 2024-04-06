@@ -21,18 +21,19 @@ package de.markusbordihn.easynpc.data.model;
 
 public enum ModelArmPose {
   // @formatter:off
-  DEFAULT,
-  DANCING,
+  ATTACKING,
+  ATTACKING_WITH_MELEE_WEAPON,
   BOW_AND_ARROW,
-  SPELLCASTING,
   CELEBRATING,
   CROSSBOW_CHARGE,
   CROSSBOW_HOLD,
-  ATTACKING,
-  ATTACKING_WITH_MELEE_WEAPON,
   CROSSED,
+  CUSTOM,
+  DANCING,
+  DEFAULT,
   NEUTRAL,
-  CUSTOM;
+  SPELLCASTING,
+  SPYGLASS;
 
   // @formatter:on
 

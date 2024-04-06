@@ -23,7 +23,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.FairyModel;
-import de.markusbordihn.easynpc.client.renderer.entity.StandardHumanoidMobRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.base.BaseHumanoidMobRenderer;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy.Variant;
@@ -38,8 +38,7 @@ import net.minecraft.core.Rotations;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Pose;
 
-public class FairyRenderer
-    extends StandardHumanoidMobRenderer<Fairy, Fairy.Variant, FairyModel<Fairy>> {
+public class FairyRenderer extends BaseHumanoidMobRenderer<Fairy, Variant, FairyModel<Fairy>> {
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
@@ -68,7 +67,7 @@ public class FairyRenderer
   }
 
   @Override
-  public void rotateEntity(EasyNPC<?> easyNPC, PoseStack poseStack) {
+  public <N extends EasyNPC<Fairy>> void rotateEntity(N easyNPC, PoseStack poseStack) {
     Rotations rootRotation = easyNPC.getEasyNPCModelData().getModelRootRotation();
     if (rootRotation != null) {
       poseStack.translate(0, 0.5, 0);

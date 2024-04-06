@@ -21,14 +21,11 @@ package de.markusbordihn.easynpc.client.model.standard;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import de.markusbordihn.easynpc.client.model.EasyNPCModel;
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.ModelHelper;
-import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.data.position.CustomPosition;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.client.model.base.BaseHierarchicalArmModel;
+import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
-import net.minecraft.client.model.ArmedModel;
-import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -36,29 +33,17 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.core.Rotations;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.Mob;
 
-public class StandardAllayModel<T extends LivingEntity> extends HierarchicalModel<T>
-    implements ArmedModel, EasyNPCModel {
+public class StandardAllayModel<T extends Mob> extends BaseHierarchicalArmModel<T> {
 
-  protected final ModelPart head;
-  private final ModelPart root;
-  private final ModelPart body;
-  private final ModelPart rightArm;
-  private final ModelPart leftArm;
   private final ModelPart rightWing;
   private final ModelPart leftWing;
 
   public StandardAllayModel(ModelPart modelPart) {
-    this.root = modelPart.getChild("root");
-    this.head = this.root.getChild("head");
-    this.body = this.root.getChild("body");
-    this.rightArm = this.body.getChild("right_arm");
-    this.leftArm = this.body.getChild("left_arm");
+    super(modelPart);
     this.rightWing = this.body.getChild("right_wing");
     this.leftWing = this.body.getChild("left_wing");
   }
@@ -111,37 +96,23 @@ public class StandardAllayModel<T extends LivingEntity> extends HierarchicalMode
     return LayerDefinition.create(meshDefinition, 32, 32);
   }
 
-  public ModelPart root() {
-    return this.root;
-  }
-
-  public ModelPart getHead() {
-    return this.head;
-  }
-
   @Override
-  public Rotations getDefaultModelLeftArmRotation() {
-    return ALLAY_MODEL_LEFT_ARM_ROTATION;
-  }
-
-  @Override
-  public Rotations getDefaultModelRightArmRotation() {
-    return ALLAY_MODEL_RIGHT_ARM_ROTATION;
-  }
-
-  @Override
-  public CustomPosition getDefaultModelRootPosition() {
-    return ALLAY_MODEL_ROOT_POSITION;
-  }
-
-  @Override
-  public CustomPosition getDefaultModelLeftArmPosition() {
-    return ALLAY_MODEL_LEFT_ARM_POSITION;
-  }
-
-  @Override
-  public CustomPosition getDefaultModelRightArmPosition() {
-    return ALLAY_MODEL_RIGHT_ARM_POSITION;
+  public boolean setupCrouchingModelPose(
+      T entity,
+      ModelData<?> modelData,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
+    this.body.xRot = 0.5F;
+    this.body.y += 1.2F;
+    this.head.y += 2.2F;
+    this.leftArm.xRot += 0.4F;
+    this.leftArm.y = 2.2F;
+    this.rightArm.xRot += 0.4F;
+    this.rightArm.y = 2.2F;
+    return true;
   }
 
   @Override
@@ -152,68 +123,69 @@ public class StandardAllayModel<T extends LivingEntity> extends HierarchicalMode
       float ageInTicks,
       float netHeadYaw,
       float headPitch) {
-    if (!(entity instanceof EasyNPC<?> easyNPC)) {
-      return;
-    }
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
-
-    // Reset player model to avoid any issues with other mods.
-    EasyNPCModel.resetArmModel(this, head, body, leftArm, rightArm);
-
     // Change root position so that the model is floating in the air.
-    ModelHelper.setPosition(this.root, 0, 15, 0);
+    ModelHelper.setPosition(this.root, 0, 18, 0);
 
-    // Individual Part Modifications
-    if (modelData.getModelPose() == ModelPose.CUSTOM) {
-      EasyNPCModel.setupArmModel(easyNPC, head, body, leftArm, rightArm, netHeadYaw, headPitch);
-    } else if (modelData.getDefaultPose() == Pose.CROUCHING) {
-      this.body.xRot = 0.5F;
-      this.body.y = 3.2F;
-      this.head.y = 4.2F;
-      this.leftArm.xRot += 0.4F;
-      this.leftArm.y = 2.2F;
-      this.rightArm.xRot += 0.4F;
-      this.rightArm.y = 2.2F;
-    } else {
-      // Body animations
-      float ageAmount = ageInTicks * 9.0F * ((float) Math.PI / 180F);
-      float limbSwingRotation = Math.min(limbSwingAmount / 0.3F, 1.0F);
-      float bodyRotationAmount = limbSwingRotation * 0.6981317F;
-      this.body.xRot = bodyRotationAmount;
-      this.root.y += (float) Math.cos(ageAmount) * 0.25F * 1.0F - limbSwingRotation;
+    super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+  }
 
-      // Arm animations
-      float armRotationAmount =
-          0.43633232F
-              - Mth.cos(ageAmount + ((float) Math.PI * 1.5F)) * (float) Math.PI * 0.075F * 1.0F
-              - limbSwingRotation;
-      this.rightArm.xRot =
-          Mth.lerp(
-              1f,
-              bodyRotationAmount,
-              Mth.lerp(limbSwingRotation, (-(float) Math.PI / 3F), (-(float) Math.PI / 4F)));
-      this.leftArm.xRot = this.rightArm.xRot;
-      this.leftArm.zRot = -armRotationAmount;
-      this.rightArm.zRot = armRotationAmount;
-      this.rightArm.yRot = 0.27925268F;
-      this.leftArm.yRot = -0.27925268F;
-    }
+  public void miscAnimation(
+      T entity,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
+    // Body animations
+    float ageAmount = ageInTicks * 9.0F * Constants.PI_180DEG;
+    float limbSwingRotation = Math.min(limbSwingAmount / 0.3F, 1.0F);
+    float bodyRotationAmount = limbSwingRotation * 0.6981317F;
+    this.body.xRot = bodyRotationAmount;
+    this.root.y += (float) Math.cos(ageAmount) * 0.25F * 1.0F - limbSwingRotation;
 
-    // Wing animations
+    // Arm animations
+    float armRotationAmount =
+        0.43633232F
+            - Mth.cos(ageAmount + ((float) Math.PI * 1.5F)) * (float) Math.PI * 0.075F * 1.0F
+            - limbSwingRotation;
+    this.rightArm.xRot =
+        Mth.lerp(
+            1f,
+            bodyRotationAmount,
+            Mth.lerp(limbSwingRotation, (-(float) Math.PI / 3F), (-(float) Math.PI / 4F)));
+    this.leftArm.xRot = this.rightArm.xRot;
+    this.leftArm.zRot = -armRotationAmount;
+    this.rightArm.zRot = armRotationAmount;
+    this.rightArm.yRot = 0.27925268F;
+    this.leftArm.yRot = -0.27925268F;
+  }
+
+  @Override
+  public boolean additionalModelAnimation(
+      T entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
     float wingRotationAmount =
-        Mth.cos(ageInTicks * 20.0F * ((float) Math.PI / 180F) + limbSwingAmount)
+        Mth.cos(ageInTicks * 20.0F * Constants.PI_180DEG + limbSwingAmount)
             * (float) Math.PI
             * 0.15F;
     this.rightWing.xRot = 0.43633232F;
     this.rightWing.yRot = -0.61086524F + wingRotationAmount;
     this.leftWing.xRot = 0.43633232F;
     this.leftWing.yRot = 0.61086524F - wingRotationAmount;
+    return true;
   }
 
-  protected ModelPart getArm(HumanoidArm humanoidArm) {
-    return humanoidArm == HumanoidArm.LEFT ? this.leftArm : this.rightArm;
+  public ModelPart getHead() {
+    return this.head;
   }
 
+  @Override
   public void translateToHand(HumanoidArm humanoidArm, PoseStack poseStack) {
     this.root.translateAndRotate(poseStack);
     this.body.translateAndRotate(poseStack);

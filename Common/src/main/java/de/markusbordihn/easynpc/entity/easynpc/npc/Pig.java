@@ -20,7 +20,10 @@
 package de.markusbordihn.easynpc.entity.easynpc.npc;
 
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.sound.SoundDataSet;
+import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -28,13 +31,13 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
-public class Pig extends EasyNPCBaseEntity {
+public class Pig extends EasyNPCBaseEntity<Pig> {
 
   public static final String ID = "pig";
   public static final String NAME = "Pig";
 
   public Pig(EntityType<? extends PathfinderMob> entityType, Level level) {
-    super(entityType, level);
+    super(entityType, level, Variant.DEFAULT);
   }
 
   public static AttributeSupplier.Builder createAttributes() {
@@ -48,6 +51,11 @@ public class Pig extends EasyNPCBaseEntity {
         .add(Attributes.ATTACK_SPEED, 0.0D)
         .add(Attributes.ARMOR, 0.0D)
         .add(Attributes.ARMOR_TOUGHNESS, 0.0D);
+  }
+
+  @Override
+  public boolean canUseArmor() {
+    return false;
   }
 
   @Override
@@ -83,6 +91,20 @@ public class Pig extends EasyNPCBaseEntity {
   @Override
   public int getEntityDialogTop() {
     return -37;
+  }
+
+  @Override
+  public boolean supportsSmartAnimations() {
+    return false;
+  }
+
+  @Override
+  public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
+    soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.PIG_AMBIENT);
+    soundDataSet.addSound(SoundType.DEATH, SoundEvents.PIG_DEATH);
+    soundDataSet.addSound(SoundType.HURT, SoundEvents.PIG_HURT);
+    soundDataSet.addSound(SoundType.STEP, SoundEvents.PIG_STEP);
+    return soundDataSet;
   }
 
   // Skin Details

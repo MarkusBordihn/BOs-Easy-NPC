@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.commands;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import de.markusbordihn.easynpc.access.EasyNPCAccessManager;
+import de.markusbordihn.easynpc.access.AccessManager;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
@@ -56,7 +56,7 @@ public class ConfigureCommand {
     }
 
     // Check if server player has access to the EasyNPC entity.
-    if (!EasyNPCAccessManager.hasAccess(context, uuid)) {
+    if (!AccessManager.hasAccess(context, uuid)) {
       context.sendFailure(Component.literal("You are not allowed to edit this EasyNPC!"));
       return 0;
     }

@@ -20,34 +20,36 @@
 package de.markusbordihn.easynpc.client.model.standard;
 
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
+import de.markusbordihn.easynpc.client.model.ModelHelper;
+import de.markusbordihn.easynpc.client.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import java.util.EnumMap;
+import java.util.Map;
 import net.minecraft.client.model.OcelotModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.Rotations;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Pose;
 
-public class StandardCatModel<T extends Entity> extends OcelotModel<T> implements EasyNPCModel {
+public class StandardCatModel<T extends Entity> extends OcelotModel<T> implements EasyNPCModel<T> {
 
-  // Model Information (rotation / position)
-  public static final Rotations MODEL_BODY_ROTATION =
-      new Rotations(((float) Math.PI / 2F), 0.0F, 0.0F);
-  public static final CustomPosition MODEL_BODY_POSITION = new CustomPosition(0.0F, 12.0F, -10.0F);
-  public static final CustomPosition MODEL_HEAD_POSITION = new CustomPosition(0.0F, 15.0F, -9.0F);
-  public static final CustomPosition MODEL_LEFT_FRONT_LEG_POSITION =
-      new CustomPosition(1.2F, 14.1F, -5.0F);
-  public static final CustomPosition MODEL_RIGHT_FRONT_LEG_POSITION =
-      new CustomPosition(-1.2F, 14.1F, -5.0F);
-  public static final CustomPosition MODEL_LEFT_HIND_LEG_POSITION =
-      new CustomPosition(1.1F, 18.0F, 5.0F);
-  public static final CustomPosition MODEL_RIGHT_HIND_LEG_POSITION =
-      new CustomPosition(-1.1F, 18.0F, 5.0F);
+  protected final Map<ModelPartType, CustomPosition> modelPartPositionMap =
+      new EnumMap<>(ModelPartType.class);
+  protected final Map<ModelPartType, Rotations> modelPartRotationMap =
+      new EnumMap<>(ModelPartType.class);
+  protected final Map<ModelPartType, ModelPart> modelPartMap = new EnumMap<>(ModelPartType.class);
 
   public StandardCatModel(ModelPart modelPart) {
     super(modelPart);
+    defineModelPart(ModelPartType.HEAD, modelPart, "head");
+    defineModelPart(ModelPartType.BODY, modelPart, "body");
+    defineModelPart(ModelPartType.RIGHT_HIND_LEG, modelPart, "right_hind_leg");
+    defineModelPart(ModelPartType.LEFT_HIND_LEG, modelPart, "left_hind_leg");
+    defineModelPart(ModelPartType.RIGHT_FRONT_LEG, modelPart, "right_front_leg");
+    defineModelPart(ModelPartType.LEFT_FRONT_LEG, modelPart, "left_front_leg");
+    defineModelPart(ModelPartType.TAIL1, modelPart, "tail1");
+    defineModelPart(ModelPartType.TAIL2, modelPart, "tail2");
   }
 
   public ModelPart getHead() {
@@ -55,38 +57,15 @@ public class StandardCatModel<T extends Entity> extends OcelotModel<T> implement
   }
 
   @Override
-  public Rotations getDefaultModelBodyRotation() {
-    return MODEL_BODY_ROTATION;
-  }
-
-  @Override
-  public CustomPosition getDefaultModelBodyPosition() {
-    return MODEL_BODY_POSITION;
-  }
-
-  @Override
-  public CustomPosition getDefaultModelHeadPosition() {
-    return MODEL_HEAD_POSITION;
-  }
-
-  @Override
-  public CustomPosition getDefaultModelLeftFrontLegPosition() {
-    return MODEL_LEFT_FRONT_LEG_POSITION;
-  }
-
-  @Override
-  public CustomPosition getDefaultModelRightFrontLegPosition() {
-    return MODEL_RIGHT_FRONT_LEG_POSITION;
-  }
-
-  @Override
-  public CustomPosition getDefaultModelLeftHindLegPosition() {
-    return MODEL_LEFT_HIND_LEG_POSITION;
-  }
-
-  @Override
-  public CustomPosition getDefaultModelRightHindLegPosition() {
-    return MODEL_RIGHT_HIND_LEG_POSITION;
+  public void resetModelParts() {
+    this.resetModelPart(ModelPartType.HEAD, this.head);
+    this.resetModelPart(ModelPartType.BODY, this.body);
+    this.resetModelPart(ModelPartType.RIGHT_HIND_LEG, this.rightHindLeg);
+    this.resetModelPart(ModelPartType.LEFT_HIND_LEG, this.leftHindLeg);
+    this.resetModelPart(ModelPartType.RIGHT_FRONT_LEG, this.rightFrontLeg);
+    this.resetModelPart(ModelPartType.LEFT_FRONT_LEG, this.leftFrontLeg);
+    this.resetModelPart(ModelPartType.TAIL1, this.tail1);
+    this.resetModelPart(ModelPartType.TAIL2, this.tail2);
   }
 
   @Override
@@ -97,41 +76,92 @@ public class StandardCatModel<T extends Entity> extends OcelotModel<T> implement
       float ageInTicks,
       float netHeadYaw,
       float headPitch) {
-    if (!(entity instanceof EasyNPC<?> easyNPC)) {
-      return;
-    }
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
-
-    EasyNPCModel.resetAnimalModel(
-        this,
-        this.head,
-        this.body,
-        this.leftFrontLeg,
-        this.rightFrontLeg,
-        this.leftHindLeg,
-        this.rightHindLeg);
-
-    if (modelData.getModelPose() == ModelPose.CUSTOM) {
-      EasyNPCModel.setupAnimalModel(
-          easyNPC,
-          head,
-          body,
-          leftFrontLeg,
-          rightFrontLeg,
-          leftHindLeg,
-          rightHindLeg,
-          netHeadYaw,
-          headPitch);
-    } else if (modelData.getDefaultPose() != Pose.CROUCHING) {
+    if (!this.setupAnimation(
+        entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch)) {
       super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
     }
+  }
 
-    // Adjust position and rotation of the tail
+  @Override
+  public void adjustDefaultModelParts(T entity) {
     this.tail1.x = this.body.x;
     this.tail1.y = this.body.y + 3.0F;
     this.tail1.z = this.body.z + 18.0F;
     this.tail2.x = this.tail1.x;
     this.tail2.y = this.tail1.y + 5.0F;
     this.tail2.z = this.tail1.z + 6.0F;
+  }
+
+  @Override
+  public void setupCustomModelPose(
+      T entity,
+      ModelPose modelPose,
+      ModelData<?> modelData,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
+    ModelHelper.setPositionRotationVisibility(
+        this.head,
+        modelData.getModelHeadPosition(),
+        modelData.getModelHeadRotation(),
+        modelData.isModelHeadVisible());
+    ModelHelper.setPositionRotationVisibility(
+        this.body,
+        modelData.getModelBodyPosition(),
+        modelData.getModelBodyRotation(),
+        modelData.isModelBodyVisible());
+    ModelHelper.setPositionRotationVisibility(
+        this.leftFrontLeg,
+        modelData.getModelLeftArmPosition(),
+        modelData.getModelLeftArmRotation(),
+        modelData.isModelLeftArmVisible());
+    ModelHelper.setPositionRotationVisibility(
+        this.rightFrontLeg,
+        modelData.getModelRightArmPosition(),
+        modelData.getModelRightArmRotation(),
+        modelData.isModelRightArmVisible());
+    ModelHelper.setPositionRotationVisibility(
+        this.leftHindLeg,
+        modelData.getModelLeftLegPosition(),
+        modelData.getModelLeftLegRotation(),
+        modelData.isModelLeftLegVisible());
+    ModelHelper.setPositionRotationVisibility(
+        this.rightHindLeg,
+        modelData.getModelRightLegPosition(),
+        modelData.getModelRightLegRotation(),
+        modelData.isModelRightLegVisible());
+  }
+
+  @Override
+  public void setDefaultModelPartPosition(
+      ModelPartType modelPartType, CustomPosition customPosition) {
+    this.modelPartPositionMap.put(modelPartType, customPosition);
+  }
+
+  @Override
+  public void setDefaultModelPartRotation(ModelPartType modelPartType, Rotations rotations) {
+    this.modelPartRotationMap.put(modelPartType, rotations);
+  }
+
+  @Override
+  public void setDefaultModelPart(ModelPartType modelPartType, ModelPart modelPart) {
+    this.modelPartMap.put(modelPartType, modelPart);
+  }
+
+  @Override
+  public CustomPosition getDefaultModelPartPosition(ModelPartType modelPartType) {
+    return this.modelPartPositionMap.getOrDefault(modelPartType, EMPTY_POSITION);
+  }
+
+  @Override
+  public Rotations getDefaultModelPartRotation(ModelPartType modelPartType) {
+    return this.modelPartRotationMap.getOrDefault(modelPartType, EMPTY_ROTATION);
+  }
+
+  @Override
+  public ModelPart getDefaultModelPart(ModelPartType modelPartType) {
+    return this.modelPartMap.getOrDefault(modelPartType, null);
   }
 }

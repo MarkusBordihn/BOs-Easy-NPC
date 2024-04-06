@@ -23,7 +23,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.OrcModel;
-import de.markusbordihn.easynpc.client.renderer.entity.StandardHumanoidMobRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.base.BaseHumanoidMobRenderer;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Orc.Variant;
 import java.util.EnumMap;
@@ -35,7 +35,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Pose;
 
-public class OrcRenderer extends StandardHumanoidMobRenderer<Orc, Orc.Variant, OrcModel<Orc>> {
+public class OrcRenderer extends BaseHumanoidMobRenderer<Orc, Variant, OrcModel<Orc>> {
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(

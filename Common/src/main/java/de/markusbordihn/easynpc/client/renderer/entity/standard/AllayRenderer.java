@@ -22,7 +22,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.standard.StandardAllayModel;
-import de.markusbordihn.easynpc.client.renderer.entity.StandardMobRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.base.BaseMobRenderer;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Allay;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Allay.Variant;
 import java.util.EnumMap;
@@ -34,8 +34,7 @@ import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Pose;
 
-public class AllayRenderer
-    extends StandardMobRenderer<Allay, Allay.Variant, StandardAllayModel<Allay>> {
+public class AllayRenderer extends BaseMobRenderer<Allay, Variant, StandardAllayModel<Allay>> {
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(

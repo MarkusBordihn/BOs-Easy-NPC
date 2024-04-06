@@ -24,7 +24,7 @@ import de.markusbordihn.easynpc.client.screen.components.SkinSelectionButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
-import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
+import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
 import de.markusbordihn.easynpc.client.texture.TextureModelKey;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
@@ -32,10 +32,9 @@ import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.menu.configuration.skin.UrlSkinConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
-import de.markusbordihn.easynpc.utils.PlayersUtils;
 import de.markusbordihn.easynpc.utils.TextUtils;
+import de.markusbordihn.easynpc.validator.UrlValidator;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.client.gui.GuiGraphics;
@@ -77,7 +76,7 @@ public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinC
     int positionTop = 119;
     int skinPosition = 0;
     skinButtons = new ArrayList<>();
-    Set<UUID> textures = PlayerTextureManager.getPlayerTextureCacheKeys(skinModel);
+    Set<UUID> textures = RemoteTextureManager.getTextureCacheKeys(skinModel);
     this.numOfSkins = textures.size();
     Object[] textureKeys = textures.toArray();
 
@@ -118,7 +117,7 @@ public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinC
   private void renderSkinEntity(int x, int y, SkinModel skinModel, UUID textureUUID) {
     // Skin details
     TextureModelKey textureModelKey = new TextureModelKey(textureUUID, skinModel);
-    SkinType skinType = PlayerTextureManager.getPlayerTextureSkinType(textureModelKey);
+    SkinType skinType = RemoteTextureManager.getTextureSkinType(textureModelKey);
 
     // Create dynamically button for each skin variant and profession.
     Button skinButton =
@@ -126,13 +125,13 @@ public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinC
             x - 24,
             y - 81,
             button -> {
-              String skinURL = PlayerTextureManager.getPlayerTextureSkinURL(textureModelKey);
+              String skinURL = RemoteTextureManager.getTextureSkinURL(textureModelKey);
               NetworkMessageHandler.skinChange(this.uuid, "", skinURL, textureUUID, skinType);
             });
 
     // Disable button for active skin.
-    Optional<UUID> skinUUID = this.skinData.getSkinUUID();
-    skinButton.active = !(skinUUID.isPresent() && skinUUID.get().equals(textureUUID));
+    UUID skinUUID = this.skinData.getSkinUUID();
+    skinButton.active = !skinUUID.equals(textureUUID);
 
     // Render skin entity with variant and profession.
     ScreenHelper.renderEntityPlayerSkin(
@@ -151,13 +150,12 @@ public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinC
     String textureSkinLocationValue = this.textureSkinLocationBox.getValue();
     if (!textureSkinLocationValue.equals(this.formerTextureSkinLocation)
         && (textureSkinLocationValue.isEmpty()
-            || PlayersUtils.isValidUrl(textureSkinLocationValue))) {
+            || UrlValidator.isValidUrl(textureSkinLocationValue))) {
 
       // Validate url and send message to server.
-      if (PlayersUtils.isValidUrl(textureSkinLocationValue)) {
+      if (UrlValidator.isValidUrl(textureSkinLocationValue)) {
         log.debug("Setting remote user texture to {}", textureSkinLocationValue);
-        NetworkMessageHandler.skinChange(
-            this.uuid, textureSkinLocationValue, SkinType.INSECURE_REMOTE_URL);
+        NetworkMessageHandler.setRemoteSkin(this.uuid, textureSkinLocationValue);
       }
 
       this.addTextureSettingsButton.active = false;
@@ -178,7 +176,7 @@ public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinC
 
     // Validate url
     this.addTextureSettingsButton.active =
-        !textureSkinLocationValue.isEmpty() && PlayersUtils.isValidUrl(textureSkinLocationValue);
+        !textureSkinLocationValue.isEmpty() && UrlValidator.isValidUrl(textureSkinLocationValue);
 
     // Clear button
     this.clearTextureSettingsButton.active = !textureSkinLocationValue.isEmpty();
@@ -192,7 +190,7 @@ public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinC
     this.urlSkinButton.active = false;
 
     // Entity specific information.
-    this.numOfSkins = PlayerTextureManager.getPlayerTextureCacheKeys(skinModel).size();
+    this.numOfSkins = RemoteTextureManager.getTextureCacheKeys(skinModel).size();
 
     // Texture Skin Location
     this.textureSkinLocationBox =

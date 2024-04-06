@@ -35,7 +35,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.PathfinderMob;
 
-public interface ActionEventData<T extends PathfinderMob> extends EasyNPC<T> {
+public interface ActionEventData<E extends PathfinderMob> extends EasyNPC<E> {
 
   EntityDataSerializer<ActionEventSet> ACTION_EVENT_SET =
       new EntityDataSerializer<>() {
@@ -142,7 +142,7 @@ public interface ActionEventData<T extends PathfinderMob> extends EasyNPC<T> {
   default void handleActionInteractionEvent(ServerPlayer serverPlayer) {
     if (this.hasActionEvent(ActionEventType.ON_INTERACTION)) {
       ActionData actionData = this.getActionEvent(ActionEventType.ON_INTERACTION);
-      ActionHandler<?> actionHandler = this.getEasyNPCActionHandler();
+      ActionHandler<E> actionHandler = this.getEasyNPCActionHandler();
       if (actionData != null && actionData.isValidAndNotEmpty() && actionHandler != null) {
         actionHandler.executeAction(actionData, serverPlayer);
       }
@@ -152,7 +152,7 @@ public interface ActionEventData<T extends PathfinderMob> extends EasyNPC<T> {
   default void handleActionHurtEvent(DamageSource damageSource, float damage) {
     if (this.hasActionEvent(ActionEventType.ON_HURT)) {
       ActionData actionData = this.getActionEvent(ActionEventType.ON_HURT);
-      ActionHandler<?> actionHandler = this.getEasyNPCActionHandler();
+      ActionHandler<E> actionHandler = this.getEasyNPCActionHandler();
       if (actionData != null && actionData.isValidAndNotEmpty() && actionHandler != null) {
         actionHandler.executeAction(actionData, damageSource);
       }
@@ -162,7 +162,7 @@ public interface ActionEventData<T extends PathfinderMob> extends EasyNPC<T> {
   default void handleActionDieEvent(DamageSource damageSource) {
     if (this.hasActionEvent(ActionEventType.ON_DEATH)) {
       ActionData actionData = this.getActionEvent(ActionEventType.ON_DEATH);
-      ActionHandler<?> actionHandler = this.getEasyNPCActionHandler();
+      ActionHandler<E> actionHandler = this.getEasyNPCActionHandler();
       if (actionData != null && actionData.isValidAndNotEmpty() && actionHandler != null) {
         actionHandler.executeAction(actionData, damageSource);
       }

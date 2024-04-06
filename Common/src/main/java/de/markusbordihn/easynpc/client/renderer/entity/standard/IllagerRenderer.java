@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.standard;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.client.model.standard.StandardIllagerModel;
-import de.markusbordihn.easynpc.client.renderer.entity.StandardMobRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.base.BaseMobRenderer;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Illager.Variant;
 import java.util.EnumMap;
@@ -37,7 +37,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Pose;
 
 public class IllagerRenderer
-    extends StandardMobRenderer<Illager, Illager.Variant, StandardIllagerModel<Illager>> {
+    extends BaseMobRenderer<Illager, Variant, StandardIllagerModel<Illager>> {
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(

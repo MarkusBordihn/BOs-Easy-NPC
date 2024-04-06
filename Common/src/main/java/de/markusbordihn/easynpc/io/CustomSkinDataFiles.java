@@ -30,25 +30,25 @@ import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SkinDataFiles {
+public class CustomSkinDataFiles {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String DATA_FOLDER_NAME = "skin";
 
-  protected SkinDataFiles() {}
+  private CustomSkinDataFiles() {}
 
   public static void registerCustomSkinData() {
     log.info("{} custom skin data ...", Constants.LOG_REGISTER_PREFIX);
 
     // Prepare skin data folder
-    Path skinDataFolder = getSkinDataFolder();
+    Path skinDataFolder = getCustomSkinDataFolder();
     if (skinDataFolder == null) {
       return;
     }
 
     // Prepare skin model folders
     for (SkinModel skinModel : SkinModel.values()) {
-      Path skinModelFolder = getSkinDataFolder(skinModel);
+      Path skinModelFolder = getCustomSkinDataFolder(skinModel);
       if (skinModelFolder == null) {
         continue;
       }
@@ -75,13 +75,13 @@ public class SkinDataFiles {
   }
 
   public static void registerTextureFiles() {
-    Path skinDataFolder = getSkinDataFolder();
+    Path skinDataFolder = getCustomSkinDataFolder();
     if (skinDataFolder == null) {
       return;
     }
     log.info("{} custom skins from {} ...", Constants.LOG_REGISTER_PREFIX, skinDataFolder);
     for (SkinModel skinModel : SkinModel.values()) {
-      Path skinModelFolder = getSkinDataFolder(skinModel);
+      Path skinModelFolder = getCustomSkinDataFolder(skinModel);
       if (skinModelFolder != null
           && skinModelFolder.toFile().exists()
           && skinModelFolder.toFile().isDirectory()) {
@@ -97,16 +97,16 @@ public class SkinDataFiles {
   }
 
   public static void refreshRegisterTextureFiles() {
-    CustomTextureManager.clearCustomTextureCache();
+    CustomTextureManager.clearTextureCache();
     registerTextureFiles();
   }
 
-  public static Path getSkinDataFolder() {
+  public static Path getCustomSkinDataFolder() {
     return DataFileHandler.getOrCreateCustomDataFolder(DATA_FOLDER_NAME);
   }
 
-  public static Path getSkinDataFolder(SkinModel skinModel) {
-    Path skinDataFolder = getSkinDataFolder();
+  public static Path getCustomSkinDataFolder(SkinModel skinModel) {
+    Path skinDataFolder = getCustomSkinDataFolder();
     if (skinDataFolder == null) {
       return null;
     }
