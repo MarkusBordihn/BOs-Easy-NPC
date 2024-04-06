@@ -39,7 +39,7 @@ public enum SkinModel {
   private final boolean hasArmourersWorkshopSupport;
 
   SkinModel() {
-    this.hasArmourersWorkshopSupport = false;
+    this(false);
   }
 
   SkinModel(boolean hasArmourersWorkshopSupport) {

@@ -41,7 +41,6 @@ public class SuggestionProvider {
   protected static CompletableFuture<Suggestions> suggestEasyNPCs(
       CommandContext<CommandSourceStack> context, SuggestionsBuilder build)
       throws CommandSyntaxException {
-    // Return all EasyNPCs for creative mode or only the owned EasyNPCs of the player.
     ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
     return SharedSuggestionProvider.suggest(
         serverPlayer.isCreative()

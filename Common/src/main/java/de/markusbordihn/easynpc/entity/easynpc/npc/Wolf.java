@@ -60,17 +60,17 @@ public class Wolf extends EasyNPCBaseEntity<Wolf> {
 
   @Override
   public Enum<?>[] getVariants() {
-    return Wolf.Variant.values();
+    return Variant.values();
   }
 
   @Override
   public Enum<?> getDefaultVariant() {
-    return Wolf.Variant.DEFAULT;
+    return Variant.DEFAULT;
   }
 
   @Override
   public Enum<?> getVariant(String name) {
-    return Wolf.Variant.valueOf(name);
+    return Variant.valueOf(name);
   }
 
   @Override

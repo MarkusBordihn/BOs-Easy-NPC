@@ -24,8 +24,10 @@ import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -185,5 +187,12 @@ public class AttributeHandler {
       return true;
     }
     return false;
+  }
+
+  public static Attribute getAttribute(ResourceLocation resourceLocation) {
+    if (resourceLocation == null) {
+      return null;
+    }
+    return Registry.ATTRIBUTE.getOptional(resourceLocation).orElse(null);
   }
 }

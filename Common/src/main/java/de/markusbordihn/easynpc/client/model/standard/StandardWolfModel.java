@@ -60,11 +60,23 @@ public class StandardWolfModel<T extends Entity> extends BaseColorableAgeableLis
     } else {
       this.tail.yRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
     }
+    return true;
+  }
+
+  @Override
+  public void animateModelLegs(
+      T entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      ModelPart rightLegPart,
+      ModelPart leftLegPart,
+      float ageInTicks,
+      float limbSwing,
+      float limbSwingAmount) {
     this.rightHindLeg.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
     this.leftHindLeg.xRot = Mth.cos(limbSwing * 0.6662F + 3.1415927F) * 1.4F * limbSwingAmount;
     this.rightFrontLeg.xRot = Mth.cos(limbSwing * 0.6662F + 3.1415927F) * 1.4F * limbSwingAmount;
     this.leftFrontLeg.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-    return true;
   }
 
   @Override
