@@ -36,7 +36,6 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
-import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -219,7 +218,7 @@ public class ScreenHelper {
 
     // Backup entity information
     SkinType entitySkinType = skinData.getSkinType();
-    Optional<UUID> entitySkinUUID = skinData.getSkinUUID();
+    UUID entitySkinUUID = skinData.getSkinUUID();
 
     // Adjust entity information for rendering
     skinData.setSkinType(skinType);

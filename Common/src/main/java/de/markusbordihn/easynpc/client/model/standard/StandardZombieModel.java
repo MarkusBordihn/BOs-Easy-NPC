@@ -19,19 +19,14 @@
 
 package de.markusbordihn.easynpc.client.model.standard;
 
-import de.markusbordihn.easynpc.client.model.EasyNPCModel;
-import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.client.model.base.BaseHumanoidModel;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import net.minecraft.client.model.AnimationUtils;
-import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Pose;
 
-public class StandardZombieModel<T extends LivingEntity> extends HumanoidModel<T>
-    implements EasyNPCModel {
+public class StandardZombieModel<T extends LivingEntity> extends BaseHumanoidModel<T> {
 
   public StandardZombieModel(ModelPart modelPart) {
     super(modelPart);
@@ -45,67 +40,24 @@ public class StandardZombieModel<T extends LivingEntity> extends HumanoidModel<T
       float ageInTicks,
       float netHeadYaw,
       float headPitch) {
-    if (!(entity instanceof EasyNPC<?> easyNPC)) {
-      return;
+    this.setupAnimation(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+  }
+
+  @Override
+  public boolean animateModelArms(
+      T entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      ModelPart rightArmPart,
+      ModelPart leftArmPart,
+      float ageInTicks,
+      float limbSwing,
+      float limbSwingAmount) {
+    if (rightArmPart == null || leftArmPart == null) {
+      return false;
     }
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
-    // Reset player model to avoid any issues with other mods.
-    EasyNPCModel.resetHumanoidModel(
-        this, this.head, this.body, this.rightArm, this.leftArm, this.rightLeg, this.leftLeg);
-
-    // Individual Part Modifications
-    if (modelData.getModelPose() == ModelPose.CUSTOM) {
-      EasyNPCModel.setupHumanoidModel(
-          easyNPC,
-          this.head,
-          this.body,
-          this.rightArm,
-          this.leftArm,
-          this.rightLeg,
-          this.leftLeg,
-          netHeadYaw,
-          headPitch);
-    } else if (modelData.getDefaultPose() == Pose.CROUCHING) {
-      // Crouching Pose
-      this.body.xRot = 0.5F;
-      this.body.y = 3.2F;
-      this.head.y = 4.2F;
-      this.leftArm.xRot += 0.4F;
-      this.leftArm.y = 5.2F;
-      this.leftLeg.y = 12.2F;
-      this.leftLeg.z = 4.0F;
-      this.rightArm.xRot += 0.4F;
-      this.rightArm.y = 5.2F;
-      this.rightLeg.y = 12.2F;
-      this.rightLeg.z = 4.0F;
-    }
-
-    if (modelData.getModelPose() == ModelPose.CUSTOM
-        || modelData.getDefaultPose() == Pose.CROUCHING) {
-
-      // Handle animations, if model specific part was not adjusted.
-      if (modelData.getModelPose() == ModelPose.CUSTOM) {
-        EasyNPCModel.animateHumanoidModel(
-            this,
-            easyNPC,
-            this.head,
-            this.body,
-            this.rightArm,
-            this.leftArm,
-            this.rightLeg,
-            this.leftLeg,
-            ageInTicks,
-            limbSwing,
-            limbSwingAmount);
-      }
-
-      // Copy all outer model parts to the correct model parts.
-      this.hat.copyFrom(this.head);
-    } else {
-      super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-      AttackData<?> attackData = easyNPC.getEasyNPCAttackData();
-      AnimationUtils.animateZombieArms(
-          this.leftArm, this.rightArm, attackData.isAggressive(), this.attackTime, ageInTicks);
-    }
+    AnimationUtils.animateZombieArms(
+        this.leftArm, this.rightArm, attackData.isAggressive(), this.attackTime, ageInTicks);
+    return true;
   }
 }

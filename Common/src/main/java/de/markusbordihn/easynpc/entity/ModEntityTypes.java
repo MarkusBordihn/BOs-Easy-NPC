@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Allay;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Horse;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
 import de.markusbordihn.easynpc.entity.easynpc.npc.HumanoidSlim;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
@@ -31,6 +32,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Wolf;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie;
 import de.markusbordihn.easynpc.entity.easynpc.npc.ZombieVillager;
 import net.minecraft.world.entity.EntityType;
@@ -69,7 +71,7 @@ public class ModEntityTypes {
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Chicken.ID);
   public static final EntityType<Fairy> FAIRY =
-      EntityType.Builder.of(Fairy::new, CATEGORY)
+      EntityType.Builder.<Fairy>of(Fairy::new, CATEGORY)
           .sized(0.6F, 2.0F)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Fairy.ID);
@@ -173,6 +175,16 @@ public class ModEntityTypes {
           .sized(HUMANOID_SIZE_WIDTH, 1.9F)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Orc.ID_WARRIOR);
+  public static final EntityType<Wolf> WOLF =
+      EntityType.Builder.of(Wolf::new, CATEGORY)
+          .sized(0.6F, 0.85F)
+          .clientTrackingRange(CLIENT_TRACKING_RANGE)
+          .build(Wolf.ID);
+  public static final EntityType<Horse> HORSE =
+      EntityType.Builder.of(Horse::new, CATEGORY)
+          .sized(1.4F, 1.6F)
+          .clientTrackingRange(CLIENT_TRACKING_RANGE)
+          .build(Horse.ID);
 
   private ModEntityTypes() {
   }

@@ -23,14 +23,12 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import de.markusbordihn.easynpc.io.PlayerSkinDataFiles;
 import de.markusbordihn.easynpc.utils.PlayersUtils;
-import java.io.IOException;
-import java.nio.file.Files;
+import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.resources.ResourceLocation;
@@ -40,160 +38,109 @@ import org.apache.logging.log4j.Logger;
 public class PlayerTextureManager {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  private static final String LOG_PREFIX = "[Player Texture Manager]";
-  private static final HashMap<TextureModelKey, ResourceLocation> playerTextureCache =
-      new HashMap<>();
-  private static final HashMap<TextureModelKey, SkinType> playerTextureSkinTypeCache =
-      new HashMap<>();
-  private static final HashMap<TextureModelKey, String> playerTextureSkinURLCache = new HashMap<>();
-  private static final HashSet<UUID> playerTextureReloadProtection = new HashSet<>();
-  private static Path textureCachePath = null;
+  private static final HashMap<TextureModelKey, ResourceLocation> textureCache = new HashMap<>();
+  private static final HashMap<TextureModelKey, SkinType> textureSkinTypeCache = new HashMap<>();
+  private static final HashSet<UUID> textureReloadProtection = new HashSet<>();
 
   private PlayerTextureManager() {
   }
 
-  public static Set<UUID> getPlayerTextureCacheKeys(SkinModel skinModel) {
+  public static Set<UUID> getTextureCacheKeys(SkinModel skinModel) {
     HashSet<UUID> hashSet = new HashSet<>();
-    for (TextureModelKey textureModelKey : playerTextureCache.keySet()) {
-      if (skinModel.equals(textureModelKey.getSkinModel())
-          && hasPlayerTextureSkinData(textureModelKey)) {
+    for (TextureModelKey textureModelKey : textureCache.keySet()) {
+      if (skinModel.equals(textureModelKey.getSkinModel()) && hasTextureSkinData(textureModelKey)) {
         hashSet.add(textureModelKey.getUUID());
       }
     }
     return hashSet;
   }
 
-  public static SkinType getPlayerTextureSkinType(TextureModelKey textureModelKey) {
-    return playerTextureSkinTypeCache.get(textureModelKey);
+  public static SkinType getTextureSkinType(TextureModelKey textureModelKey) {
+    return textureSkinTypeCache.get(textureModelKey);
   }
 
-  public static String getPlayerTextureSkinURL(TextureModelKey textureModelKey) {
-    return playerTextureSkinURLCache.get(textureModelKey);
-  }
-
-  public static boolean hasPlayerTextureSkinData(TextureModelKey textureModelKey) {
-    return playerTextureSkinTypeCache.containsKey(textureModelKey)
-        && playerTextureSkinURLCache.containsKey(textureModelKey);
+  public static boolean hasTextureSkinData(TextureModelKey textureModelKey) {
+    return textureSkinTypeCache.containsKey(textureModelKey);
   }
 
   public static ResourceLocation getOrCreateTextureWithDefault(
-      SkinData<?> entity, ResourceLocation defaultResourceLocation) {
+      SkinData<?> skinData, ResourceLocation defaultResourceLocation) {
     // Check if we have a skin UUID otherwise we assume that the texture is unknown.
-    Optional<UUID> skinUUID = entity.getSkinUUID();
-    if (skinUUID.isEmpty()) {
+    UUID skinUUID = skinData.getSkinUUID();
+    if (skinUUID.equals(Constants.BLANK_UUID)) {
       return defaultResourceLocation;
     }
 
     // Check if there is already any cached resource location.
-    TextureModelKey textureModelKey = new TextureModelKey(skinUUID.get(), entity.getSkinModel());
-    ResourceLocation resourceLocation = playerTextureCache.get(textureModelKey);
+    TextureModelKey textureModelKey = new TextureModelKey(skinUUID, skinData.getSkinModel());
+    ResourceLocation resourceLocation = textureCache.get(textureModelKey);
     if (resourceLocation != null) {
       // Return resource location and update reference, if needed.
-      if (!hasPlayerTextureSkinData(textureModelKey)) {
-        playerTextureSkinTypeCache.put(textureModelKey, entity.getSkinType());
-        playerTextureSkinURLCache.put(textureModelKey, entity.getSkinURL());
+      if (!hasTextureSkinData(textureModelKey)) {
+        textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
       }
       return resourceLocation;
     }
 
-    ResourceLocation createdResourceLocation = createTexture(textureModelKey, entity);
+    UUID playerUUID = skinData.getSkinUUID();
+    ResourceLocation createdResourceLocation = createTexture(textureModelKey, skinData, playerUUID);
     return createdResourceLocation != null ? createdResourceLocation : defaultResourceLocation;
   }
 
   private static ResourceLocation createTexture(
-      TextureModelKey textureModelKey, SkinData<?> entity) {
-    return createTexture(textureModelKey, entity.getSkinType(), entity.getSkinURL());
-  }
+      TextureModelKey textureModelKey, SkinData<?> skinData, UUID playerUUID) {
 
-  private static ResourceLocation createTexture(
-      TextureModelKey textureModelKey, SkinType skinType, String skinURL) {
+    // Reload protection to avoid multiple texture requests in the same session.
+    if (!textureReloadProtection.add(playerUUID)) {
+      return null;
+    }
 
-    // Check the local texture cache for any matching files.
-    SkinModel skinModel = textureModelKey.getSkinModel();
-    String targetDirectory = getTextureCacheDirectory(skinModel).toString();
+    // Get the skin model and texture data folder
+    SkinModel skinModel = skinData.getSkinModel();
+    Path textureDataFolder = PlayerSkinDataFiles.getPlayerSkinDataFolder(skinModel);
+    if (textureDataFolder == null) {
+      return null;
+    }
+
+    // Check the local texture cache for any matching texture.
     ResourceLocation localTextureCache =
-        TextureManager.getCachedTexture(textureModelKey, targetDirectory);
+        TextureManager.getCachedTexture(textureModelKey, textureDataFolder);
     if (localTextureCache != null) {
-      playerTextureCache.put(textureModelKey, localTextureCache);
-      playerTextureSkinTypeCache.put(textureModelKey, skinType);
-      playerTextureSkinURLCache.put(textureModelKey, skinURL);
+      textureCache.put(textureModelKey, localTextureCache);
+      textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
       return localTextureCache;
     }
 
-    // Reload protection to avoid multiple http requests in the same session.
-    UUID skinUUID = textureModelKey.getUUID();
-    if (playerTextureReloadProtection.contains(skinUUID)) {
-      return null;
-    }
-    playerTextureReloadProtection.add(skinUUID);
+    // Get skin texture location based on the player UUID.
+    String playerSkinUrl = PlayersUtils.getUserTexture(playerUUID);
 
-    // Get skin texture location depending on skin type.
-    String textureSkinURL = null;
-    switch (skinType) {
-      case PLAYER_SKIN:
-        textureSkinURL = PlayersUtils.getUserTexture(skinUUID);
-        break;
-      case SECURE_REMOTE_URL:
-      case INSECURE_REMOTE_URL:
-        if (PlayersUtils.isValidUrl(skinURL)) {
-          textureSkinURL = skinURL;
-        }
-        break;
-      default:
-    }
-
-    // Check if we got any valid texture skin location.
-    if (textureSkinURL == null || textureSkinURL.isEmpty()) {
-      return null;
-    }
-
-    // Add Texture to texture manager.
+    // Validate the skin URL and perform some basic sanity checks and
+    // process the remote texture.
     ResourceLocation resourceLocation =
-        TextureManager.addRemoteTexture(textureModelKey, textureSkinURL, targetDirectory);
-    playerTextureCache.put(textureModelKey, resourceLocation);
-    playerTextureSkinTypeCache.put(textureModelKey, skinType);
-    playerTextureSkinURLCache.put(textureModelKey, textureSkinURL);
-    return resourceLocation;
+        TextureManager.addRemoteTexture(textureModelKey, playerSkinUrl, textureDataFolder);
+    if (resourceLocation != null) {
+      textureCache.put(textureModelKey, resourceLocation);
+      textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
+      return resourceLocation;
+    }
+
+    log.error(
+        "Unable to load player {} texture {} from {}!",
+        playerUUID,
+        textureModelKey,
+        textureDataFolder);
+    return null;
   }
 
-  private static Path getTextureCacheDirectory(SkinModel skinModel) {
-    // Get or create main cache directory.
-    if (textureCachePath == null) {
-      Path cacheDirectory =
-          Paths.get(TextureManager.getTextureCacheDirectory().toString(), "player");
-      if (!cacheDirectory.toFile().exists()) {
-        log.info("{} Creating player texture cache directory at {}", LOG_PREFIX, cacheDirectory);
-        try {
-          Files.createDirectories(cacheDirectory);
-        } catch (IOException exception) {
-          log.error(
-              "{} Failed to create player texture cache directory at {}",
-              LOG_PREFIX,
-              cacheDirectory,
-              exception);
-        }
-      }
-      textureCachePath = cacheDirectory;
-    }
+  public static void registerTexture(SkinModel skinModel, File textureFile) {
+    registerTexture(TextureManager.getTextureModelKey(skinModel, textureFile), textureFile);
+  }
 
-    // Get or create model cache directory.
-    Path textureCacheDirectory = Paths.get(textureCachePath.toString(), skinModel.getName());
-    if (!textureCacheDirectory.toFile().exists()) {
-      log.info(
-          "{} Creating player texture model cache directory at {}",
-          LOG_PREFIX,
-          textureCacheDirectory);
-      try {
-        Files.createDirectories(textureCacheDirectory);
-      } catch (IOException exception) {
-        log.error(
-            "{} Failed to create player texture model cache directory at {}",
-            LOG_PREFIX,
-            textureCacheDirectory,
-            exception);
-      }
+  public static void registerTexture(TextureModelKey textureModelKey, File textureFile) {
+    ResourceLocation resourceLocation =
+        TextureManager.addCustomTexture(textureModelKey, textureFile);
+    if (resourceLocation != null) {
+      textureCache.put(textureModelKey, resourceLocation);
     }
-    return textureCacheDirectory;
   }
 }

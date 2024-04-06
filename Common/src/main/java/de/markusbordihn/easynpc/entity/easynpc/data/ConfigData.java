@@ -24,15 +24,15 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.PathfinderMob;
 
-public interface NPCData<T extends PathfinderMob> extends EasyNPC<T> {
+public interface ConfigData<T extends PathfinderMob> extends EasyNPC<T> {
 
   String DATA_EASY_NPC_DATA_VERSION_TAG = "EasyNPCVersion";
 
-  default void addAdditionalNPCData(CompoundTag compoundTag) {
+  default void addAdditionalConfigData(CompoundTag compoundTag) {
     compoundTag.putInt(DATA_EASY_NPC_DATA_VERSION_TAG, Constants.NPC_DATA_VERSION);
   }
 
-  default void readAdditionalNPCData(CompoundTag compoundTag) {
+  default void readAdditionalConfigData(CompoundTag compoundTag) {
 
     // Read Easy NPC Data Version to check for compatibility issues.
     if (compoundTag.contains(DATA_EASY_NPC_DATA_VERSION_TAG)) {

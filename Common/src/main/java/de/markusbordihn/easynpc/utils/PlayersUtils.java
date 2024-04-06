@@ -27,8 +27,6 @@ import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import de.markusbordihn.easynpc.Constants;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -45,7 +43,6 @@ public class PlayersUtils {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final String USER_REGEX = "^\\w{2,16}$";
   private static final String TEXTURES_STRING = "textures";
 
   // Internal Cache
@@ -193,28 +190,5 @@ public class PlayersUtils {
       log.error("ERROR: Unable to parse json data: {}", data);
     }
     return null;
-  }
-
-  public static boolean isValidPlayerName(String name) {
-    return name != null
-        && name.length() >= 3
-        && name.length() <= 16
-        && !name.startsWith("http")
-        && !name.equals("htt")
-        && name.matches(USER_REGEX);
-  }
-
-  public static boolean isValidUrl(String url) {
-    if (url == null
-        || url.isEmpty()
-        || (!url.startsWith("http://") && !url.startsWith("https://"))) {
-      return false;
-    }
-    try {
-      new URL(url).toURI();
-    } catch (MalformedURLException | URISyntaxException e) {
-      return false;
-    }
-    return true;
   }
 }

@@ -120,13 +120,13 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     int dialogTopPosition = topPos + 20;
     switch (this.dialogScreenLayout) {
       case COMPACT_TEXT_ONLY,
-          COMPACT_TEXT_WITH_ONE_BUTTON,
-          COMPACT_TEXT_WITH_TWO_BUTTONS,
-          COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS,
-          COMPACT_TEXT_WITH_THREE_BUTTONS,
-          COMPACT_TEXT_WITH_FOUR_BUTTONS,
-          COMPACT_TEXT_WITH_FIVE_BUTTONS,
-          COMPACT_TEXT_WITH_SIX_BUTTONS:
+           COMPACT_TEXT_WITH_ONE_BUTTON,
+           COMPACT_TEXT_WITH_TWO_BUTTONS,
+           COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS,
+           COMPACT_TEXT_WITH_THREE_BUTTONS,
+           COMPACT_TEXT_WITH_FOUR_BUTTONS,
+           COMPACT_TEXT_WITH_FIVE_BUTTONS,
+           COMPACT_TEXT_WITH_SIX_BUTTONS:
         this.blit(poseStack, leftPos + 70, dialogTopPosition, 0, 120, 205, 78);
         break;
       default:
@@ -181,10 +181,10 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
     int dialogButtonMaxTextLength =
         switch (this.dialogScreenLayout) {
           case COMPACT_TEXT_WITH_ONE_BUTTON,
-              TEXT_WITH_ONE_BUTTON,
-              TEXT_WITH_TWO_BUTTONS,
-              COMPACT_TEXT_WITH_THREE_BUTTONS,
-              TEXT_WITH_THREE_BUTTONS -> 41;
+               TEXT_WITH_ONE_BUTTON,
+               TEXT_WITH_TWO_BUTTONS,
+               COMPACT_TEXT_WITH_THREE_BUTTONS,
+               TEXT_WITH_THREE_BUTTONS -> 41;
           case COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS -> 32;
           default -> 22;
         };
@@ -532,9 +532,9 @@ public class DialogScreen extends AbstractContainerScreen<DialogMenu> {
 
     switch (this.dialogScreenLayout) {
       case COMPACT_TEXT_ONLY,
-          COMPACT_TEXT_WITH_ONE_BUTTON,
-          COMPACT_TEXT_WITH_TWO_BUTTONS,
-          COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS:
+           COMPACT_TEXT_WITH_ONE_BUTTON,
+           COMPACT_TEXT_WITH_TWO_BUTTONS,
+           COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS:
         // Compact background
         this.blit(poseStack, leftPos, topPos, 0, 0, 200, 170);
         this.blit(poseStack, leftPos + 200, topPos, 165, 0, 85, 170);

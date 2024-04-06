@@ -31,7 +31,7 @@ import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
 
-public class Fairy extends EasyNPCBaseEntity {
+public class Fairy extends EasyNPCBaseEntity<Fairy> {
 
   public static final String ID = "fairy";
   public static final String NAME = "Fairy";
@@ -41,7 +41,11 @@ public class Fairy extends EasyNPCBaseEntity {
   private static final float DEFAULT_SCALE_Z = 0.4f;
 
   public Fairy(EntityType<? extends PathfinderMob> entityType, Level level) {
-    super(entityType, level);
+    this(entityType, level, Variant.GREEN);
+  }
+
+  public Fairy(EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variant) {
+    super(entityType, level, variant);
     this.moveControl = new FlyingMoveControl(this, 20, true);
   }
 

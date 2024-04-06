@@ -27,7 +27,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 
-public interface AttributeData<T extends PathfinderMob> extends EasyNPC<T> {
+public interface AttributeData<E extends PathfinderMob> extends EasyNPC<E> {
 
   // Synced entity data
   EntityDataAccessor<Boolean> EASY_NPC_DATA_ATTRIBUTE_DATA_LOADED =
@@ -188,6 +188,18 @@ public interface AttributeData<T extends PathfinderMob> extends EasyNPC<T> {
 
   default void setAttributeLightLevel(int lightLevel) {
     setEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL, lightLevel);
+  }
+
+  default boolean getAttributeSilent() {
+    return getEntity().isSilent();
+  }
+
+  default void setAttributeSilent(boolean silent) {
+    getEntity().setSilent(silent);
+  }
+
+  default void registerDefaultAttributeData(Enum<?> variant) {
+    setAttributeDataLoaded(true);
   }
 
   default void defineSynchedAttributeData() {

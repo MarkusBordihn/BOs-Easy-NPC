@@ -124,11 +124,10 @@ public class DefaultSkinConfigurationScreen
             x - 24,
             y - 81,
             button -> {
-              NetworkMessageHandler.variantChange(this.uuid, variant);
               if (profession != null) {
                 NetworkMessageHandler.professionChange(this.uuid, profession);
               }
-              NetworkMessageHandler.skinChange(this.uuid, SkinType.DEFAULT);
+              NetworkMessageHandler.setDefaultSkin(this.uuid, variant);
             });
 
     // Disable button for active skin.

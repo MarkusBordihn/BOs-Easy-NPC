@@ -19,160 +19,52 @@
 
 package de.markusbordihn.easynpc.client.model.standard;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import de.markusbordihn.easynpc.client.model.EasyNPCModel;
-import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.data.position.CustomPosition;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.client.model.base.BaseHierarchicalArmLegsModel;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
-import net.minecraft.client.model.ArmedModel;
-import net.minecraft.client.model.HierarchicalModel;
-import net.minecraft.client.model.IronGolemModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.Pose;
 
-public class StandardIronGolemModel<T extends Mob> extends HierarchicalModel<T>
-    implements ArmedModel, EasyNPCModel {
-
-  // Model Information (rotation / position)
-  public static final CustomPosition MODEL_BODY_POSITION = new CustomPosition(0.0F, -7.0F, 0.0F);
-  public static final CustomPosition MODEL_HEAD_POSITION = new CustomPosition(0.0F, -7.0F, -2.0F);
-  public static final CustomPosition MODEL_LEFT_ARM_POSITION = new CustomPosition(0f, -7f, 0f);
-  public static final CustomPosition MODEL_RIGHT_ARM_POSITION = new CustomPosition(0f, -7f, 0f);
-  public static final CustomPosition MODEL_LEFT_LEG_POSITION = new CustomPosition(-4f, 11f, 0f);
-  public static final CustomPosition MODEL_RIGHT_LEG_POSITION = new CustomPosition(5f, 11f, 0f);
-
-  // Model Parts
-  private final ModelPart root;
-
-  // Iron Golem Model specific positions
-  private final ModelPart body;
-  private final ModelPart head;
-  private final ModelPart rightArm;
-  private final ModelPart leftArm;
-  private final ModelPart rightLeg;
-  private final ModelPart leftLeg;
+public class StandardIronGolemModel<T extends Mob> extends BaseHierarchicalArmLegsModel<T> {
 
   public StandardIronGolemModel(ModelPart modelPart) {
-    this.root = modelPart;
-    this.head = modelPart.getChild("head");
-    this.body = modelPart.getChild("body");
-    this.rightArm = modelPart.getChild("right_arm");
-    this.leftArm = modelPart.getChild("left_arm");
-    this.rightLeg = modelPart.getChild("right_leg");
-    this.leftLeg = modelPart.getChild("left_leg");
+    super(modelPart);
   }
 
-  public static LayerDefinition createBodyLayer() {
-    return IronGolemModel.createBodyLayer();
-  }
-
-  public ModelPart root() {
-    return this.root;
-  }
-
-  public void setupAnim(
+  @Override
+  public void animateModelLegs(
       T entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      ModelPart rightLegPart,
+      ModelPart leftLegPart,
+      float ageInTicks,
+      float limbSwing,
+      float limbSwingAmount) {
+    this.rightLeg.xRot = -1.5F * Mth.triangleWave(limbSwing, 13.0F) * limbSwingAmount;
+    this.leftLeg.xRot = 1.5F * Mth.triangleWave(limbSwing, 13.0F) * limbSwingAmount;
+    this.rightLeg.yRot = 0.0F;
+    this.leftLeg.yRot = 0.0F;
+  }
+
+  @Override
+  public void animateAttackModelPose(
+      T entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
       float limbSwing,
       float limbSwingAmount,
       float ageInTicks,
       float netHeadYaw,
       float headPitch) {
-    if (!(entity instanceof EasyNPC<?> easyNPC)) {
-      return;
-    }
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
-
-    // Reset model to avoid any issues with other mods.
-    EasyNPCModel.resetHierarchicalModel(
-        this, this.head, this.body, this.rightArm, this.leftArm, this.rightLeg, this.leftLeg);
-
-    // Individual Part Modifications
-    if (modelData.getModelPose() == ModelPose.CUSTOM) {
-      setupHierarchicalModel(
-          easyNPC, head, body, rightArm, leftArm, rightLeg, leftLeg, netHeadYaw, headPitch);
-    } else if (modelData.getDefaultPose() == Pose.CROUCHING) {
-      // Crouching Pose
-      this.body.xRot = 0.5F;
-      this.body.y = 3.2F;
-      this.head.y = 4.2F;
-      this.leftArm.xRot += 0.4F;
-      this.leftArm.y = 5.2F;
-      this.leftLeg.y = 12.2F;
-      this.leftLeg.z = 4.0F;
-      this.rightArm.xRot += 0.4F;
-      this.rightArm.y = 5.2F;
-      this.rightLeg.y = 12.2F;
-      this.rightLeg.z = 4.0F;
+    int attackAnimationTick = attackData.getAttackAnimationTick();
+    if (attackAnimationTick > 0) {
+      this.rightArm.xRot = -2.0F + 1.5F * Mth.triangleWave(attackAnimationTick, 10.0F);
+      this.leftArm.xRot = -2.0F + 1.5F * Mth.triangleWave(attackAnimationTick, 10.0F);
     } else {
-      this.head.yRot = netHeadYaw * ((float) Math.PI / 180F);
-      this.head.xRot = headPitch * ((float) Math.PI / 180F);
-      this.rightLeg.xRot = -1.5F * Mth.triangleWave(limbSwing, 13.0F) * limbSwingAmount;
-      this.leftLeg.xRot = 1.5F * Mth.triangleWave(limbSwing, 13.0F) * limbSwingAmount;
-      this.rightLeg.yRot = 0.0F;
-      this.leftLeg.yRot = 0.0F;
-
-      // Arm swing and attack animation
-      AttackData<?> attackData = easyNPC.getEasyNPCAttackData();
-      int attackAnimationTick = attackData.getAttackAnimationTick();
-      if (attackAnimationTick > 0) {
-        this.rightArm.xRot = -2.0F + 1.5F * Mth.triangleWave(attackAnimationTick, 10.0F);
-        this.leftArm.xRot = -2.0F + 1.5F * Mth.triangleWave(attackAnimationTick, 10.0F);
-      } else {
-        this.rightArm.xRot = (-0.2F + 1.5F * Mth.triangleWave(limbSwing, 13.0F)) * limbSwingAmount;
-        this.leftArm.xRot = (-0.2F - 1.5F * Mth.triangleWave(limbSwing, 13.0F)) * limbSwingAmount;
-      }
+      this.rightArm.xRot = (-0.2F + 1.5F * Mth.triangleWave(limbSwing, 13.0F)) * limbSwingAmount;
+      this.leftArm.xRot = (-0.2F - 1.5F * Mth.triangleWave(limbSwing, 13.0F)) * limbSwingAmount;
     }
-  }
-
-  protected ModelPart getArm(HumanoidArm humanoidArm) {
-    return humanoidArm == HumanoidArm.LEFT ? this.leftArm : this.rightArm;
-  }
-
-  @Override
-  public void translateToHand(HumanoidArm humanoidArm, PoseStack poseStack) {
-    float xTranslation = humanoidArm == HumanoidArm.RIGHT ? -10.0F : 10.0F;
-    float yTranslation = humanoidArm == HumanoidArm.RIGHT ? -16.0F : 16.0F;
-    ModelPart modelpart = this.getArm(humanoidArm);
-    modelpart.x += xTranslation;
-    modelpart.y -= yTranslation;
-    modelpart.translateAndRotate(poseStack);
-    modelpart.x -= xTranslation;
-    modelpart.y += yTranslation;
-  }
-
-  @Override
-  public CustomPosition getDefaultModelBodyPosition() {
-    return MODEL_BODY_POSITION;
-  }
-
-  @Override
-  public CustomPosition getDefaultModelHeadPosition() {
-    return MODEL_HEAD_POSITION;
-  }
-
-  @Override
-  public CustomPosition getDefaultModelLeftArmPosition() {
-    return MODEL_LEFT_ARM_POSITION;
-  }
-
-  @Override
-  public CustomPosition getDefaultModelRightArmPosition() {
-    return MODEL_RIGHT_ARM_POSITION;
-  }
-
-  @Override
-  public CustomPosition getDefaultModelLeftLegPosition() {
-    return MODEL_LEFT_LEG_POSITION;
-  }
-
-  @Override
-  public CustomPosition getDefaultModelRightLegPosition() {
-    return MODEL_RIGHT_LEG_POSITION;
   }
 }

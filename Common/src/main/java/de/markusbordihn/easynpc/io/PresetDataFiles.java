@@ -37,7 +37,7 @@ public class PresetDataFiles {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String DATA_FOLDER_NAME = "preset";
 
-  protected PresetDataFiles() {
+  private PresetDataFiles() {
   }
 
   public static void registerCustomPresetData() {

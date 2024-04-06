@@ -30,6 +30,7 @@ public enum SkinModel {
   IRON_GOLEM,
   ORC,
   PIG,
+  WOLF,
   SKELETON(true),
   VILLAGER(true),
   ZOMBIE(true),
@@ -38,7 +39,7 @@ public enum SkinModel {
   private final boolean hasArmourersWorkshopSupport;
 
   SkinModel() {
-    this.hasArmourersWorkshopSupport = false;
+    this(false);
   }
 
   SkinModel(boolean hasArmourersWorkshopSupport) {

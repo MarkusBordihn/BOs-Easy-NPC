@@ -69,6 +69,7 @@ public class BaseEasyNPCSpawnerBlock extends BaseEntityBlock {
     }
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   public InteractionResult use(
       BlockState blockState,
@@ -84,6 +85,7 @@ public class BaseEasyNPCSpawnerBlock extends BaseEntityBlock {
     return InteractionResult.CONSUME;
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   public RenderShape getRenderShape(BlockState blockstate) {
     return RenderShape.MODEL;

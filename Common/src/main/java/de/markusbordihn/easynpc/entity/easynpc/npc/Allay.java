@@ -19,7 +19,10 @@
 package de.markusbordihn.easynpc.entity.easynpc.npc;
 
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.sound.SoundDataSet;
+import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -27,13 +30,13 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
-public class Allay extends EasyNPCBaseEntity {
+public class Allay extends EasyNPCBaseEntity<Allay> {
 
   public static final String ID = "allay";
   public static final String NAME = "Allay";
 
   public Allay(EntityType<? extends PathfinderMob> entityType, Level level) {
-    super(entityType, level);
+    super(entityType, level, Variant.DEFAULT);
   }
 
   public static AttributeSupplier.Builder createAttributes() {
@@ -98,6 +101,15 @@ public class Allay extends EasyNPCBaseEntity {
   @Override
   public int getEntityDialogScaling() {
     return 70;
+  }
+
+  @Override
+  public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
+    soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.PARROT_AMBIENT);
+    soundDataSet.addSound(SoundType.DEATH, SoundEvents.PARROT_DEATH);
+    soundDataSet.addSound(SoundType.HURT, SoundEvents.PARROT_HURT);
+    soundDataSet.addSound(SoundType.EAT, SoundEvents.PARROT_EAT);
+    return soundDataSet;
   }
 
   // Skin Details

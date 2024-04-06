@@ -56,13 +56,6 @@ public interface DialogData<T extends PathfinderMob> extends EasyNPC<T> {
       CustomEntityData.defineId(CustomDataIndex.DIALOG_DATA_SET, DIALOG_DATA_SET);
 
   String DATA_DIALOG_DATA_TAG = "DialogData";
-  String DATA_DIALOG_NO_BUTTON_TAG = "DialogNoButton";
-  String DATA_DIALOG_NO_TAG = "DialogNo";
-  String DATA_DIALOG_SIMPLE_TAG = "DialogSimple";
-  String DATA_DIALOG_TAG = "Dialog";
-  String DATA_DIALOG_TYPE_TAG = "DialogType";
-  String DATA_DIALOG_YES_BUTTON_TAG = "DialogYesButton";
-  String DATA_DIALOG_YES_TAG = "DialogYes";
 
   static void registerDialogDataSerializer() {
     EntityDataSerializers.registerSerializer(DIALOG_DATA_SET);
@@ -94,7 +87,7 @@ public interface DialogData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default void clearDialogDataSet() {
-    setEasyNPCCustomData(CUSTOM_DATA_DIALOG_DATA_SET, new DialogDataSet());
+    setDialogDataSet(new DialogDataSet());
   }
 
   default boolean hasDialog() {

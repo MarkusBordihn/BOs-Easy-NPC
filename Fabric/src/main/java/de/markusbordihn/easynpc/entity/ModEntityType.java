@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Allay;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Horse;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
 import de.markusbordihn.easynpc.entity.easynpc.npc.HumanoidSlim;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
@@ -32,6 +33,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Wolf;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie;
 import de.markusbordihn.easynpc.entity.easynpc.npc.ZombieVillager;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
@@ -119,6 +121,12 @@ public class ModEntityType {
           Registry.ENTITY_TYPE,
           Constants.MOD_ID + ":" + Orc.ID_WARRIOR,
           ModEntityTypes.ORC_WARRIOR);
+  public static final EntityType<Wolf> WOLF =
+      Registry.register(
+          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Wolf.ID, ModEntityTypes.WOLF);
+  public static final EntityType<Horse> HORSE =
+      Registry.register(
+          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Horse.ID, ModEntityTypes.HORSE);
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -150,5 +158,7 @@ public class ModEntityType {
     FabricDefaultAttributeRegistry.register(VINDICATOR, Illager.createAttributes());
     FabricDefaultAttributeRegistry.register(ORC, Orc.createAttributes());
     FabricDefaultAttributeRegistry.register(ORC_WARRIOR, Orc.createAttributes());
+    FabricDefaultAttributeRegistry.register(WOLF, Wolf.createAttributes());
+    FabricDefaultAttributeRegistry.register(HORSE, Horse.createAttributes());
   }
 }

@@ -8,6 +8,23 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 4.3.0
+
+- Large code refactoring for better client-side performance to increase render fps.
+- Fixed issue with attributes only apply after a re-spawn of the NPC.
+- Fixed issue with skin textures are not applied correctly.
+- Fixed #86: Added Horse NPC model.
+- Fixed #127: Added Wolf NPC model.
+- Added basic support for custom sounds with default sound events.
+- Added additional safety checks for the NPC skin and texture manager.
+- Added additional data checks for better performance and smaller data size.
+- Added silent attribute to allow NPCs to be silent and not to make any sounds.
+- Improved NPC Model performance, animations and general support for custom models.
+- Improved Orc NPC textures.
+- Improved type safety for most Easy NPC data types.
+- Improved Skin Manager for better handling of different skins and styles.
+- Optimized texture manager for better performance and less file access.
+
 ### 4.2.0
 
 Note: Dropped support for Minecraft 1.19, 1.19.1, 1.19.3, 1.19.4 and 1.20 because of low usage.

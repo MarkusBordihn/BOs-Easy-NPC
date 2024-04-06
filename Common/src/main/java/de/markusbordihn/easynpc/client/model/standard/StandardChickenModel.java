@@ -19,30 +19,30 @@
 
 package de.markusbordihn.easynpc.client.model.standard;
 
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
+import de.markusbordihn.easynpc.client.model.ModelHelper;
+import de.markusbordihn.easynpc.client.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import java.util.EnumMap;
+import java.util.Map;
 import net.minecraft.client.model.ChickenModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.Rotations;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Pose;
 
 public class StandardChickenModel<T extends Entity> extends ChickenModel<T>
-    implements EasyNPCModel {
+    implements EasyNPCModel<T> {
 
-  // Model Information (rotation / position)
-  public static final CustomPosition MODEL_HEAD_POSITION = new CustomPosition(0f, 15f, -4f);
-  public static final CustomPosition MODEL_BODY_POSITION = new CustomPosition(0f, 16f, 0f);
-  public static final CustomPosition MODEL_LEFT_WING_POSITION = new CustomPosition(4f, 13f, 0f);
-  public static final CustomPosition MODEL_RIGHT_WING_POSITION = new CustomPosition(-4f, 13f, 0f);
-  public static final CustomPosition MODEL_LEFT_LEG_POSITION = new CustomPosition(1f, 19f, 1f);
-  public static final CustomPosition MODEL_RIGHT_LEG_POSITION = new CustomPosition(-2f, 19f, 1f);
-  public static final Rotations MODEL_BODY_ROTATION =
-      new Rotations(((float) Math.PI / 2f), 0.0f, 0.0f);
-  // Model Parts
+  protected final Map<ModelPartType, CustomPosition> modelPartPositionMap =
+      new EnumMap<>(ModelPartType.class);
+  protected final Map<ModelPartType, Rotations> modelPartRotationMap =
+      new EnumMap<>(ModelPartType.class);
+  protected final Map<ModelPartType, ModelPart> modelPartMap = new EnumMap<>(ModelPartType.class);
+
   private final ModelPart head;
   private final ModelPart body;
   private final ModelPart rightLeg;
@@ -54,49 +54,24 @@ public class StandardChickenModel<T extends Entity> extends ChickenModel<T>
 
   public StandardChickenModel(ModelPart modelPart) {
     super(modelPart);
-    this.head = modelPart.getChild("head");
-    this.beak = modelPart.getChild("beak");
-    this.redThing = modelPart.getChild("red_thing");
-    this.body = modelPart.getChild("body");
-    this.rightLeg = modelPart.getChild("right_leg");
-    this.leftLeg = modelPart.getChild("left_leg");
-    this.rightWing = modelPart.getChild("right_wing");
-    this.leftWing = modelPart.getChild("left_wing");
+    this.head = defineModelPart(ModelPartType.HEAD, modelPart, "head");
+    this.beak = defineModelPart(ModelPartType.BEAK, modelPart, "beak");
+    this.redThing = defineModelPart(ModelPartType.RED_THING, modelPart, "red_thing");
+    this.body = defineModelPart(ModelPartType.BODY, modelPart, "body");
+    this.rightLeg = defineModelPart(ModelPartType.RIGHT_LEG, modelPart, "right_leg");
+    this.leftLeg = defineModelPart(ModelPartType.LEFT_LEG, modelPart, "left_leg");
+    this.rightWing = defineModelPart(ModelPartType.RIGHT_WING, modelPart, "right_wing");
+    this.leftWing = defineModelPart(ModelPartType.LEFT_WING, modelPart, "left_wing");
   }
 
   @Override
-  public CustomPosition getDefaultModelBodyPosition() {
-    return MODEL_BODY_POSITION;
-  }
-
-  @Override
-  public CustomPosition getDefaultModelHeadPosition() {
-    return MODEL_HEAD_POSITION;
-  }
-
-  @Override
-  public CustomPosition getDefaultModelLeftWingPosition() {
-    return MODEL_LEFT_WING_POSITION;
-  }
-
-  @Override
-  public CustomPosition getDefaultModelRightWingPosition() {
-    return MODEL_RIGHT_WING_POSITION;
-  }
-
-  @Override
-  public CustomPosition getDefaultModelLeftLegPosition() {
-    return MODEL_LEFT_LEG_POSITION;
-  }
-
-  @Override
-  public CustomPosition getDefaultModelRightLegPosition() {
-    return MODEL_RIGHT_LEG_POSITION;
-  }
-
-  @Override
-  public Rotations getDefaultModelBodyRotation() {
-    return MODEL_BODY_ROTATION;
+  public void resetModelParts() {
+    this.resetModelPart(ModelPartType.HEAD, this.head);
+    this.resetModelPart(ModelPartType.BODY, this.body);
+    this.resetModelPart(ModelPartType.RIGHT_LEG, this.rightLeg);
+    this.resetModelPart(ModelPartType.LEFT_LEG, this.leftLeg);
+    this.resetModelPart(ModelPartType.RIGHT_WING, this.rightWing);
+    this.resetModelPart(ModelPartType.LEFT_WING, this.leftWing);
   }
 
   @Override
@@ -107,25 +82,100 @@ public class StandardChickenModel<T extends Entity> extends ChickenModel<T>
       float ageInTicks,
       float netHeadYaw,
       float headPitch) {
-    if (!(entity instanceof EasyNPC<?> easyNPC)) {
-      return;
-    }
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
-
-    // Reset player model to avoid any issues with other mods.
-    EasyNPCModel.resetBirdModel(
-        this, this.head, this.body, this.leftWing, this.rightWing, this.leftLeg, this.rightLeg);
-
-    // Individual Part Modifications
-    if (modelData.getModelPose() == ModelPose.CUSTOM) {
-      EasyNPCModel.setupBirdModel(
-          easyNPC, head, body, leftWing, rightWing, leftLeg, rightLeg, netHeadYaw, headPitch);
-    } else if (modelData.getDefaultPose() != Pose.CROUCHING) {
+    if (!setupAnimation(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch)) {
       super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
     }
+  }
 
-    // Adjust position and rotation of additional parts
+  @Override
+  public void adjustDefaultModelParts(T entity) {
     this.beak.copyFrom(head);
     this.redThing.copyFrom(head);
+  }
+
+  @Override
+  public void animateModelHead(
+      T entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      ModelPart headPart,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
+    headPart.xRot = headPitch * Constants.PI_180DEG;
+    headPart.yRot = netHeadYaw * Constants.PI_180DEG;
+  }
+
+  @Override
+  public void setupCustomModelPose(
+      T entity,
+      ModelPose modelPose,
+      ModelData<?> modelData,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
+    ModelHelper.setPositionRotationVisibility(
+        this.head,
+        modelData.getModelHeadPosition(),
+        modelData.getModelHeadRotation(),
+        modelData.isModelHeadVisible());
+    ModelHelper.setPositionRotationVisibility(
+        this.body,
+        modelData.getModelBodyPosition(),
+        modelData.getModelBodyRotation(),
+        modelData.isModelBodyVisible());
+    ModelHelper.setPositionRotationVisibility(
+        this.leftWing,
+        modelData.getModelLeftArmPosition(),
+        modelData.getModelLeftArmRotation(),
+        modelData.isModelLeftArmVisible());
+    ModelHelper.setPositionRotationVisibility(
+        this.rightWing,
+        modelData.getModelRightArmPosition(),
+        modelData.getModelRightArmRotation(),
+        modelData.isModelRightArmVisible());
+    ModelHelper.setPositionRotationVisibility(
+        this.leftLeg,
+        modelData.getModelLeftLegPosition(),
+        modelData.getModelLeftLegRotation(),
+        modelData.isModelLeftLegVisible());
+    ModelHelper.setPositionRotationVisibility(
+        this.rightLeg,
+        modelData.getModelRightLegPosition(),
+        modelData.getModelRightLegRotation(),
+        modelData.isModelRightLegVisible());
+  }
+
+  @Override
+  public void setDefaultModelPartPosition(
+      ModelPartType modelPartType, CustomPosition customPosition) {
+    this.modelPartPositionMap.put(modelPartType, customPosition);
+  }
+
+  @Override
+  public void setDefaultModelPartRotation(ModelPartType modelPartType, Rotations rotations) {
+    this.modelPartRotationMap.put(modelPartType, rotations);
+  }
+
+  @Override
+  public void setDefaultModelPart(ModelPartType modelPartType, ModelPart modelPart) {
+    this.modelPartMap.put(modelPartType, modelPart);
+  }
+
+  @Override
+  public CustomPosition getDefaultModelPartPosition(ModelPartType modelPartType) {
+    return this.modelPartPositionMap.getOrDefault(modelPartType, EMPTY_POSITION);
+  }
+
+  @Override
+  public Rotations getDefaultModelPartRotation(ModelPartType modelPartType) {
+    return this.modelPartRotationMap.getOrDefault(modelPartType, EMPTY_ROTATION);
+  }
+
+  @Override
+  public ModelPart getDefaultModelPart(ModelPartType modelPartType) {
+    return this.modelPartMap.getOrDefault(modelPartType, null);
   }
 }

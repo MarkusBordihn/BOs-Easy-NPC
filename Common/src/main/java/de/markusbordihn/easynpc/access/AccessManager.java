@@ -30,11 +30,11 @@ import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class EasyNPCAccessManager {
+public class AccessManager {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private EasyNPCAccessManager() {
+  private AccessManager() {
   }
 
   public static boolean hasAccess(CommandSourceStack context, UUID uuid) {
@@ -66,25 +66,54 @@ public class EasyNPCAccessManager {
   }
 
   public static boolean hasAccess(ServerPlayer serverPlayer, UUID uuid) {
-    if (serverPlayer == null || uuid == null) {
-      return false;
+    return getEasyNPCEntityByUUID(uuid, serverPlayer) != null;
+  }
+
+  public static EasyNPC<?> getEasyNPCEntityByUUID(UUID uuid, CommandSourceStack context) {
+    if (context == null || uuid == null) {
+      return null;
     }
 
-    // Try to get the EasyNPC entity by UUID.
+    ServerPlayer serverPlayer = null;
+    Entity entity = null;
+    try {
+      serverPlayer = context.getPlayerOrException();
+    } catch (CommandSyntaxException serverPlayerException) {
+      try {
+        entity = context.getEntityOrException();
+      } catch (CommandSyntaxException entityException) {
+        log.warn(
+            "Skipping access check for EasyNPC with UUID {} due to missing player and entity!",
+            uuid);
+      }
+      if (entity != null) {
+        log.error("The entity {} tried to access EasyNPC with UUID {}!", entity, uuid);
+        return null;
+      }
+    }
+    if (serverPlayer != null) {
+      return getEasyNPCEntityByUUID(uuid, serverPlayer);
+    }
+
+    return LivingEntityManager.getEasyNPCEntityByUUID(uuid, context.getLevel());
+  }
+
+  public static EasyNPC<?> getEasyNPCEntityByUUID(UUID uuid, ServerPlayer serverPlayer) {
+    if (serverPlayer == null || uuid == null) {
+      return null;
+    }
+
     EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     if (easyNPC == null) {
-      log.error("EasyNPC with UUID {} not found!", uuid);
-      return false;
+      log.error("[{}:{}] Unable to get valid entity!", uuid, serverPlayer);
+      return null;
     }
 
     if (!serverPlayer.isCreative() && !easyNPC.getEasyNPCOwnerData().isOwner(serverPlayer)) {
-      log.error(
-          "Player {} has no access to EasyNPC with UUID {}!",
-          serverPlayer.getName().getString(),
-          uuid);
-      return false;
+      log.error("[{}:{}] Player has no access!", uuid, serverPlayer);
+      return null;
     }
 
-    return true;
+    return easyNPC;
   }
 }

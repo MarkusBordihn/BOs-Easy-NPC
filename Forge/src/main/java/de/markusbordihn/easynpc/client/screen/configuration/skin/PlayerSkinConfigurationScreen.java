@@ -34,10 +34,10 @@ import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.menu.configuration.skin.PlayerSkinConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
-import de.markusbordihn.easynpc.utils.PlayersUtils;
 import de.markusbordihn.easynpc.utils.TextUtils;
+import de.markusbordihn.easynpc.validator.NameValidator;
+import de.markusbordihn.easynpc.validator.UrlValidator;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.client.gui.components.Button;
@@ -80,7 +80,7 @@ public class PlayerSkinConfigurationScreen
     int positionTop = 119;
     int skinPosition = 0;
     skinButtons = new ArrayList<>();
-    Set<UUID> textures = PlayerTextureManager.getPlayerTextureCacheKeys(skinModel);
+    Set<UUID> textures = PlayerTextureManager.getTextureCacheKeys(skinModel);
     this.numOfSkins = textures.size();
     Object[] textureKeys = textures.toArray();
 
@@ -122,21 +122,18 @@ public class PlayerSkinConfigurationScreen
       PoseStack poseStack, int x, int y, SkinModel skinModel, UUID textureUUID) {
     // Skin details
     TextureModelKey textureModelKey = new TextureModelKey(textureUUID, skinModel);
-    SkinType skinType = PlayerTextureManager.getPlayerTextureSkinType(textureModelKey);
+    SkinType skinType = PlayerTextureManager.getTextureSkinType(textureModelKey);
 
     // Create dynamically button for each skin variant and profession.
     Button skinButton =
         new SkinSelectionButton(
             x - 24,
             y - 81,
-            button -> {
-              String skinURL = PlayerTextureManager.getPlayerTextureSkinURL(textureModelKey);
-              NetworkMessageHandler.skinChange(this.uuid, "", skinURL, textureUUID, skinType);
-            });
+            button -> NetworkMessageHandler.setPlayerSkin(this.uuid, "", textureUUID));
 
     // Disable button for active skin.
-    Optional<UUID> skinUUID = this.skinData.getSkinUUID();
-    skinButton.active = !(skinUUID.isPresent() && skinUUID.get().equals(textureUUID));
+    UUID skinUUID = this.skinData.getSkinUUID();
+    skinButton.active = !skinUUID.equals(textureUUID);
 
     // Render skin entity with variant and profession.
     ScreenHelper.renderEntityPlayerSkin(
@@ -154,13 +151,14 @@ public class PlayerSkinConfigurationScreen
   private void addTextureSkinLocation() {
     String textureSkinLocationValue = this.textureSkinLocationBox.getValue();
     if (!textureSkinLocationValue.equals(this.formerTextureSkinLocation) && (
-        textureSkinLocationValue.isEmpty() || PlayersUtils.isValidPlayerName(
+        textureSkinLocationValue.isEmpty() || NameValidator.isValidPlayerName(
             textureSkinLocationValue))) {
 
       // Validate player name and send skin change request to server.
-      if (PlayersUtils.isValidPlayerName(textureSkinLocationValue)) {
+      if (NameValidator.isValidPlayerName(textureSkinLocationValue)) {
         log.debug("Setting player user texture to {}", textureSkinLocationValue);
-        NetworkMessageHandler.skinChange(this.uuid, textureSkinLocationValue, SkinType.PLAYER_SKIN);
+        NetworkMessageHandler.setPlayerSkin(this.uuid, textureSkinLocationValue,
+            Constants.BLANK_UUID);
       }
 
       this.addTextureSettingsButton.active = false;
@@ -182,7 +180,7 @@ public class PlayerSkinConfigurationScreen
     // Validate player name.
     this.addTextureSettingsButton.active =
         !textureSkinLocationValue.isEmpty() && (
-            PlayersUtils.isValidPlayerName(textureSkinLocationValue) || PlayersUtils.isValidUrl(
+            NameValidator.isValidPlayerName(textureSkinLocationValue) || UrlValidator.isValidUrl(
                 textureSkinLocationValue));
 
     // Clear button
@@ -197,7 +195,7 @@ public class PlayerSkinConfigurationScreen
     this.playerSkinButton.active = false;
 
     // Entity specific information.
-    this.numOfSkins = PlayerTextureManager.getPlayerTextureCacheKeys(skinModel).size();
+    this.numOfSkins = PlayerTextureManager.getTextureCacheKeys(skinModel).size();
 
     // Texture Skin Location
     this.textureSkinLocationBox =
