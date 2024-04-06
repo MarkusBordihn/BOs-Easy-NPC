@@ -20,7 +20,10 @@
 package de.markusbordihn.easynpc.entity.easynpc.npc;
 
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.sound.SoundDataSet;
+import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -28,19 +31,19 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
-public class Skeleton extends EasyNPCBaseEntity {
+public class Skeleton extends EasyNPCBaseEntity<Skeleton> {
 
   public static final String ID = "skeleton";
   public static final String ID_STRAY = "stray";
   public static final String ID_WITHER_SKELETON = "wither_skeleton";
   public static final String NAME = "Skeleton";
 
-  public Skeleton(EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variant) {
-    super(entityType, level, variant);
+  public Skeleton(EntityType<? extends PathfinderMob> entityType, Level level) {
+    this(entityType, level, Variant.SKELETON);
   }
 
-  public Skeleton(EntityType<? extends PathfinderMob> entityType, Level level) {
-    super(entityType, level);
+  public Skeleton(EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variant) {
+    super(entityType, level, variant);
   }
 
   public static AttributeSupplier.Builder createAttributes() {
@@ -74,6 +77,32 @@ public class Skeleton extends EasyNPCBaseEntity {
   @Override
   public Enum<?> getVariant(String name) {
     return Variant.valueOf(name);
+  }
+
+  @Override
+  public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
+    Variant soundVariant = Variant.valueOf(variantName);
+    switch (soundVariant) {
+      case STRAY:
+        soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.STRAY_AMBIENT);
+        soundDataSet.addSound(SoundType.DEATH, SoundEvents.STRAY_DEATH);
+        soundDataSet.addSound(SoundType.HURT, SoundEvents.STRAY_HURT);
+        soundDataSet.addSound(SoundType.STEP, SoundEvents.STRAY_STEP);
+        break;
+      case WITHER_SKELETON:
+        soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.WITHER_SKELETON_AMBIENT);
+        soundDataSet.addSound(SoundType.DEATH, SoundEvents.WITHER_SKELETON_DEATH);
+        soundDataSet.addSound(SoundType.HURT, SoundEvents.WITHER_SKELETON_HURT);
+        soundDataSet.addSound(SoundType.STEP, SoundEvents.WITHER_SKELETON_STEP);
+        break;
+      case SKELETON:
+      default:
+        soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.SKELETON_AMBIENT);
+        soundDataSet.addSound(SoundType.DEATH, SoundEvents.SKELETON_DEATH);
+        soundDataSet.addSound(SoundType.HURT, SoundEvents.SKELETON_HURT);
+        soundDataSet.addSound(SoundType.STEP, SoundEvents.SKELETON_STEP);
+    }
+    return soundDataSet;
   }
 
   // Skin Details

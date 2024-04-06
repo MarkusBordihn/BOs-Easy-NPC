@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.standard;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.client.model.standard.StandardChickenModel;
-import de.markusbordihn.easynpc.client.renderer.entity.StandardMobRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.base.BaseMobRenderer;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken.Variant;
 import java.util.EnumMap;
@@ -36,7 +36,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Pose;
 
 public class ChickenRenderer
-    extends StandardMobRenderer<Chicken, Chicken.Variant, StandardChickenModel<Chicken>> {
+    extends BaseMobRenderer<Chicken, Variant, StandardChickenModel<Chicken>> {
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(

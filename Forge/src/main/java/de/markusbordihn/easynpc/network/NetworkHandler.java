@@ -58,10 +58,8 @@ import de.markusbordihn.easynpc.network.message.MessageSaveDialogButton;
 import de.markusbordihn.easynpc.network.message.MessageSaveDialogSet;
 import de.markusbordihn.easynpc.network.message.MessageScaleChange;
 import de.markusbordihn.easynpc.network.message.MessageSkinChange;
-import de.markusbordihn.easynpc.network.message.MessageSkinTypeChange;
 import de.markusbordihn.easynpc.network.message.MessageTradingTypeChange;
 import de.markusbordihn.easynpc.network.message.MessageTriggerActionEvent;
-import de.markusbordihn.easynpc.network.message.MessageVariantChange;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -78,7 +76,7 @@ public class NetworkHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final int PROTOCOL_VERSION = 18;
+  private static final int PROTOCOL_VERSION = 19;
   private static final SimpleChannel SIMPLE_CHANNEL =
       ChannelBuilder.named(new ResourceLocation(Constants.MOD_ID, "network"))
           .networkProtocolVersion(PROTOCOL_VERSION)
@@ -420,14 +418,6 @@ public class NetworkHandler {
               .consumerNetworkThread(MessageSkinChange::handle)
               .add();
 
-          // Skin Type Change: Client -> Server
-          SIMPLE_CHANNEL
-              .messageBuilder(MessageSkinTypeChange.class, id++, NetworkDirection.PLAY_TO_SERVER)
-              .encoder(MessageSkinTypeChange::encode)
-              .decoder(MessageSkinTypeChange::decode)
-              .consumerNetworkThread(MessageSkinTypeChange::handle)
-              .add();
-
           // Trading Type: Client -> Server
           SIMPLE_CHANNEL
               .messageBuilder(MessageTradingTypeChange.class, id++, NetworkDirection.PLAY_TO_SERVER)
@@ -443,14 +433,6 @@ public class NetworkHandler {
               .encoder(MessageTriggerActionEvent::encode)
               .decoder(MessageTriggerActionEvent::decode)
               .consumerNetworkThread(MessageTriggerActionEvent::handle)
-              .add();
-
-          // Variant Change: Client -> Server
-          SIMPLE_CHANNEL
-              .messageBuilder(MessageVariantChange.class, id++, NetworkDirection.PLAY_TO_SERVER)
-              .encoder(MessageVariantChange::encode)
-              .decoder(MessageVariantChange::decode)
-              .consumerNetworkThread(MessageVariantChange::handle)
               .add();
         });
   }

@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Allay;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Horse;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
 import de.markusbordihn.easynpc.entity.easynpc.npc.HumanoidSlim;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
@@ -35,6 +36,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Wolf;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie;
 import de.markusbordihn.easynpc.entity.easynpc.npc.ZombieVillager;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetEmptyItem;
@@ -189,6 +191,15 @@ public class ModItems {
           () ->
               new ModSpawnEggItem(
                   ModEntityType.ORC_WARRIOR, new Item.Properties().rarity(Rarity.EPIC)));
+  public static final RegistryObject<Item> WOLF_NPC_SPAWN_EGG =
+      ITEMS.register(
+          Wolf.ID + ModSpawnEggItem.SUFFIX,
+          () -> new ModSpawnEggItem(ModEntityType.WOLF, new Item.Properties().rarity(Rarity.EPIC)));
+  public static final RegistryObject<Item> HORSE_NPC_SPAWN_EGG =
+      ITEMS.register(
+          Horse.ID + ModSpawnEggItem.SUFFIX,
+          () ->
+              new ModSpawnEggItem(ModEntityType.HORSE, new Item.Properties().rarity(Rarity.EPIC)));
 
   protected ModItems() {}
 }

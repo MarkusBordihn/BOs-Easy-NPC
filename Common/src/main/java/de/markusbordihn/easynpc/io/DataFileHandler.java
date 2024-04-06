@@ -36,14 +36,66 @@ import org.apache.logging.log4j.Logger;
 public class DataFileHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  protected static final String CACHE_FOLDER_NAME = "cache";
 
-  protected DataFileHandler() {}
+  private DataFileHandler() {}
+
+  public static void registerDataFiles() {
+    log.info("{} general data folders ...", Constants.LOG_REGISTER_PREFIX);
+    getCacheFolder();
+    getCustomDataFolder();
+
+    log.info("{} skin data folders ...", Constants.LOG_REGISTER_PREFIX);
+    CustomSkinDataFiles.registerCustomSkinData();
+    PlayerSkinDataFiles.registerPlayerSkinData();
+    RemoteSkinDataFiles.registerRemoteSkinData();
+
+    log.info("{} preset data folders ...", Constants.LOG_REGISTER_PREFIX);
+    PresetDataFiles.registerCustomPresetData();
+  }
+
+  public static Path getCacheFolder() {
+    Path cacheFolder = Constants.GAME_DIR.resolve(Constants.MOD_ID).resolve(CACHE_FOLDER_NAME);
+    try {
+      if (Files.exists(cacheFolder) && Files.isDirectory(cacheFolder)) {
+        return cacheFolder;
+      }
+      log.info("Creating cache folder at {} ...", cacheFolder);
+      return Files.createDirectories(cacheFolder);
+    } catch (Exception exception) {
+      log.error("There was an error, creating the cache folder:", exception);
+    }
+    return null;
+  }
 
   public static Path getCustomDataFolder() {
+    Path customDataFolder = Constants.CONFIG_DIR.resolve(Constants.MOD_ID);
     try {
-      return Files.createDirectories(Constants.CONFIG_DIR.resolve(Constants.MOD_ID));
+      if (Files.exists(customDataFolder) && Files.isDirectory(customDataFolder)) {
+        return customDataFolder;
+      }
+      log.info("Creating custom data folder at {} ...", customDataFolder);
+      return Files.createDirectories(customDataFolder);
     } catch (Exception exception) {
       log.error("There was an error, creating the custom data folder:", exception);
+    }
+    return null;
+  }
+
+  public static Path getOrCreateCacheFolder(String dataLabel) {
+    Path cacheFolder = getCacheFolder();
+    if (cacheFolder == null) {
+      return null;
+    }
+    Path cacheFolderPath = cacheFolder.resolve(dataLabel);
+    try {
+      if (Files.exists(cacheFolderPath) && Files.isDirectory(cacheFolderPath)) {
+        return cacheFolderPath;
+      }
+      log.info("Creating cache folder {} at {} ...", dataLabel, cacheFolder);
+      return Files.createDirectories(cacheFolderPath);
+    } catch (Exception exception) {
+      log.error("There was an error, creating the cache folder {}:", dataLabel, exception);
     }
     return null;
   }

@@ -23,7 +23,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.client.model.standard.StandardSkeletonModel;
 import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.StandardHumanoidMobRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.base.BaseHumanoidMobRenderer;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton.Variant;
 import java.util.EnumMap;
@@ -39,8 +39,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Pose;
 
 public class SkeletonRenderer
-    extends StandardHumanoidMobRenderer<Skeleton, Skeleton.Variant, StandardSkeletonModel<Skeleton>>
-    implements EasyNPCRenderer {
+    extends BaseHumanoidMobRenderer<Skeleton, Variant, StandardSkeletonModel<Skeleton>> {
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(

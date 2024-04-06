@@ -23,7 +23,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.client.model.standard.StandardZombieModel;
 import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.StandardHumanoidMobRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.base.BaseHumanoidMobRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.OuterLayer;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie.Variant;
@@ -41,7 +41,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Pose;
 
 public class ZombieRenderer
-    extends StandardHumanoidMobRenderer<Zombie, Zombie.Variant, StandardZombieModel<Zombie>> {
+    extends BaseHumanoidMobRenderer<Zombie, Variant, StandardZombieModel<Zombie>> {
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(

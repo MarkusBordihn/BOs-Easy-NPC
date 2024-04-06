@@ -23,7 +23,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.standard.StandardVillagerModel;
-import de.markusbordihn.easynpc.client.renderer.entity.StandardMobRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.base.BaseMobRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.ProfessionLayer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.VariantLayer;
 import de.markusbordihn.easynpc.data.profession.Profession;
@@ -41,7 +41,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Pose;
 
 public class VillagerRenderer
-    extends StandardMobRenderer<Villager, Villager.Variant, StandardVillagerModel<Villager>> {
+    extends BaseMobRenderer<Villager, Variant, StandardVillagerModel<Villager>> {
 
   public static final ResourceLocation BASE_TEXTURE =
       new ResourceLocation("textures/entity/villager/villager.png");

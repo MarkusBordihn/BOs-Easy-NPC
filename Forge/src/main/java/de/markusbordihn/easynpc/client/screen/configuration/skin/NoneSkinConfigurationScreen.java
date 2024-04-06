@@ -24,10 +24,12 @@ import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import de.markusbordihn.easynpc.menu.configuration.skin.NoneSkinConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -52,11 +54,16 @@ public class NoneSkinConfigurationScreen
     // Default button stats
     this.noneSkinButton.active = false;
 
-    // Skin data
+    // Skin data and variant
     SkinData<?> skinData = this.easyNPC.getEasyNPCSkinData();
+    VariantData<?> variantData = this.easyNPC.getEasyNPCVariantData();
 
-    // Former skin type
+    // Former skin type and variant
     SkinType formerSkinType = skinData.getSkinType();
+    String formerSkinName = skinData.getSkinName();
+    String formerSkinURL = skinData.getSkinURL();
+    UUID formerSkinUUID = skinData.getSkinUUID();
+    Enum<?> formerVariant = variantData.getVariant();
 
     // None Dialog Checkbox
     this.noneSkinCheckbox =
@@ -68,13 +75,19 @@ public class NoneSkinConfigurationScreen
                 skinData.getSkinType() == SkinType.NONE,
                 checkbox -> {
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.skinTypeChange(uuid, SkinType.NONE);
+                    NetworkMessageHandler.setNoneSkin(uuid);
                   } else {
-                    NetworkMessageHandler.skinTypeChange(
-                        uuid,
-                        formerSkinType != null && formerSkinType != SkinType.NONE
-                            ? formerSkinType
-                            : SkinType.DEFAULT);
+                    switch (formerSkinType) {
+                      case DEFAULT:
+                        NetworkMessageHandler.setDefaultSkin(uuid, formerVariant);
+                        break;
+                      case CUSTOM:
+                        NetworkMessageHandler.setCustomSkin(uuid, formerSkinUUID);
+                        break;
+                      case NONE:
+                      default:
+                        NetworkMessageHandler.setDefaultSkin(uuid, variantData.getDefaultVariant());
+                    }
                   }
                 }));
 

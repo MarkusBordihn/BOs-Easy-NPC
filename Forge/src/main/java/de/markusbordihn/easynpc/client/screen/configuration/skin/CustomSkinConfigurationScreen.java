@@ -28,7 +28,7 @@ import de.markusbordihn.easynpc.client.texture.TextureModelKey;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
-import de.markusbordihn.easynpc.io.SkinDataFiles;
+import de.markusbordihn.easynpc.io.CustomSkinDataFiles;
 import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
@@ -37,7 +37,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.Util;
@@ -127,8 +126,8 @@ public class CustomSkinConfigurationScreen
                 NetworkMessageHandler.skinChange(this.uuid, "", "", textureUUID, SkinType.CUSTOM));
 
     // Disable button for active skin.
-    Optional<UUID> skinUUID = this.skinData.getSkinUUID();
-    skinButton.active = !(skinUUID.isPresent() && skinUUID.get().equals(textureUUID));
+    UUID skinUUID = this.skinData.getSkinUUID();
+    skinButton.active = !(skinUUID.equals(textureUUID));
 
     // Render skin entity with variant and profession.
     ScreenHelper.renderEntityPlayerSkin(
@@ -216,7 +215,7 @@ public class CustomSkinConfigurationScreen
     checkSkinNavigationButtonState();
 
     // Open Skin Folder Button
-    Path skinModelFolder = SkinDataFiles.getSkinDataFolder(skinModel);
+    Path skinModelFolder = CustomSkinDataFiles.getCustomSkinDataFolder(skinModel);
     if (skinModelFolder != null) {
       this.skinFolderButton =
           this.addRenderableWidget(
@@ -238,7 +237,7 @@ public class CustomSkinConfigurationScreen
                 160,
                 "reload_textures",
                 onPress -> {
-                  SkinDataFiles.refreshRegisterTextureFiles();
+                  CustomSkinDataFiles.refreshRegisterTextureFiles();
                   CustomSkinConfigurationScreen.nextSkinReload =
                       (int) java.time.Instant.now().getEpochSecond() + ADD_SKIN_RELOAD_DELAY;
                 }));

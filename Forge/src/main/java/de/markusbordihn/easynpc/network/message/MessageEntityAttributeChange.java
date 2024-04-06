@@ -22,8 +22,7 @@ package de.markusbordihn.easynpc.network.message;
 import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
+import de.markusbordihn.easynpc.handler.AttributeHandler;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -128,103 +127,20 @@ public class MessageEntityAttributeChange extends NetworkMessage {
       return;
     }
 
-    // Validate attribute data
-    AttributeData<?> attributeData = easyNPC.getEasyNPCAttributeData();
-    if (attributeData == null) {
-      log.error("Unable to find attribute data for {} from {}", easyNPC, serverPlayer);
-      return;
+    boolean successfullyChanged = false;
+    if (entityAttribute == EntityAttribute.LIGHT_LEVEL) {
+      successfullyChanged =
+          AttributeHandler.setEntityAttribute(easyNPC, entityAttribute, integerValue);
+    } else if (booleanValue != null) {
+      successfullyChanged =
+          AttributeHandler.setEntityAttribute(easyNPC, entityAttribute, booleanValue);
     }
-
-    // Validate objectives.
-    ObjectiveData<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
-    if (objectiveData == null) {
-      log.error("Unable to find objective data for {} from {}", easyNPC, serverPlayer);
-      return;
-    }
-
-    // Update entity attribute.
-    switch (entityAttribute) {
-      case FREEFALL:
-        if (booleanValue != null) {
-          log.debug("Change freefall={} for {} from {}", booleanValue, easyNPC, serverPlayer);
-          attributeData.setAttributeFreefall(booleanValue);
-        }
-        break;
-      case CAN_BE_LEASHED:
-        if (booleanValue != null) {
-          log.debug("Change canBeLeashed={} for {} from {}", booleanValue, easyNPC, serverPlayer);
-          attributeData.setAttributeCanBeLeashed(booleanValue);
-        }
-        break;
-      case CAN_FLOAT:
-        if (booleanValue != null) {
-          log.debug("Change canFloat={} for {} from {}", booleanValue, easyNPC, serverPlayer);
-          attributeData.setAttributeCanFloat(booleanValue);
-          objectiveData.registerAttributeBasedObjectives();
-        }
-        break;
-      case CAN_OPEN_DOOR:
-        if (booleanValue != null) {
-          log.debug("Change canOpenDoor={} for {} from {}", booleanValue, easyNPC, serverPlayer);
-          attributeData.setAttributeCanOpenDoor(booleanValue);
-          objectiveData.registerAttributeBasedObjectives();
-        }
-        break;
-      case CAN_CLOSE_DOOR:
-        if (booleanValue != null) {
-          log.debug("Change canCloseDoor={} for {} from {}", booleanValue, easyNPC, serverPlayer);
-          attributeData.setAttributeCanCloseDoor(booleanValue);
-          objectiveData.registerAttributeBasedObjectives();
-        }
-        break;
-      case CAN_PASS_DOOR:
-        if (booleanValue != null) {
-          log.debug("Change canPassDoor={} for {} from {}", booleanValue, easyNPC, serverPlayer);
-          attributeData.setAttributeCanPassDoor(booleanValue);
-          objectiveData.registerAttributeBasedObjectives();
-        }
-        break;
-      case CAN_USE_NETHER_PORTAL:
-        if (booleanValue != null) {
-          log.debug(
-              "Change canUseNetherPortal={} for {} from {}", booleanValue, easyNPC, serverPlayer);
-          attributeData.setAttributeCanUseNetherPortal(booleanValue);
-        }
-        break;
-      case IS_ATTACKABLE:
-        if (booleanValue != null) {
-          log.debug("Change isAttackable={} for {} from {}", booleanValue, easyNPC, serverPlayer);
-          attributeData.setAttributeIsAttackable(booleanValue);
-          if (easyNPC.getLivingEntity() != null) {
-            easyNPC.getLivingEntity().setInvulnerable(!booleanValue);
-          }
-        }
-        break;
-      case IS_PUSHABLE:
-        if (booleanValue != null) {
-          log.debug("Change isPushable={} for {} from {}", booleanValue, easyNPC, serverPlayer);
-          attributeData.setAttributeIsPushable(booleanValue);
-        }
-        break;
-      case PUSH_ENTITIES:
-        if (booleanValue != null) {
-          log.debug("Change pushEntities={} for {} from {}", booleanValue, easyNPC, serverPlayer);
-          attributeData.setAttributePushEntities(booleanValue);
-        }
-        break;
-      case LIGHT_LEVEL:
-        if (integerValue != null) {
-          log.debug("Change lightLevel={} for {} from {}", integerValue, easyNPC, serverPlayer);
-          attributeData.setAttributeLightLevel(integerValue);
-        }
-        break;
-      default:
-        log.error(
-            "Unimplemented entity attribute {} for {} from {}",
-            entityAttribute,
-            message,
-            serverPlayer);
-        break;
+    if (!successfullyChanged) {
+      log.error(
+          "Unable to change entity attribute {} for {} from {}",
+          entityAttribute,
+          easyNPC,
+          serverPlayer);
     }
   }
 

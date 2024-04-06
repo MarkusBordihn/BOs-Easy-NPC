@@ -19,7 +19,10 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc;
 
+import de.markusbordihn.easynpc.data.sound.SoundDataSet;
+import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -27,17 +30,17 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
-public class Humanoid extends EasyNPCBaseEntity {
+public class Humanoid extends EasyNPCBaseEntity<Humanoid> {
 
   public static final String ID = "humanoid";
   public static final String NAME = "Humanoid";
 
-  public Humanoid(EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variant) {
-    super(entityType, level, variant);
+  public Humanoid(EntityType<? extends PathfinderMob> entityType, Level level) {
+    this(entityType, level, Variant.STEVE);
   }
 
-  public Humanoid(EntityType<? extends PathfinderMob> entityType, Level level) {
-    super(entityType, level);
+  public Humanoid(EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variant) {
+    super(entityType, level, variant);
   }
 
   public static AttributeSupplier.Builder createAttributes() {
@@ -71,6 +74,14 @@ public class Humanoid extends EasyNPCBaseEntity {
   @Override
   public boolean supportsPlayerSkinConfiguration() {
     return true;
+  }
+
+  @Override
+  public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
+    soundDataSet.addSound(SoundType.DEATH, SoundEvents.PLAYER_DEATH);
+    soundDataSet.addSound(SoundType.HURT, SoundEvents.PLAYER_HURT);
+    soundDataSet.addSound(SoundType.EAT, SoundEvents.PLAYER_HURT);
+    return soundDataSet;
   }
 
   // Skin Details

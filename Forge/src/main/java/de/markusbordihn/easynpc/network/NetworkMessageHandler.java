@@ -77,10 +77,9 @@ import de.markusbordihn.easynpc.network.message.MessageSaveDialogButton;
 import de.markusbordihn.easynpc.network.message.MessageSaveDialogSet;
 import de.markusbordihn.easynpc.network.message.MessageScaleChange;
 import de.markusbordihn.easynpc.network.message.MessageSkinChange;
-import de.markusbordihn.easynpc.network.message.MessageSkinTypeChange;
 import de.markusbordihn.easynpc.network.message.MessageTradingTypeChange;
 import de.markusbordihn.easynpc.network.message.MessageTriggerActionEvent;
-import de.markusbordihn.easynpc.network.message.MessageVariantChange;
+import de.markusbordihn.easynpc.validator.UrlValidator;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -292,31 +291,48 @@ public class NetworkMessageHandler implements NetworkMessageHandlerInterface {
   }
 
   /** Send skin change. */
-  public static void skinChange(UUID uuid, SkinType skinType) {
-    if (uuid != null && skinType != null) {
+  public static void setNoneSkin(UUID uuid) {
+    if (uuid != null) {
       NetworkHandler.sendToServer(
-          new MessageSkinChange(uuid, "", "", Constants.BLANK_UUID, skinType));
+          new MessageSkinChange(uuid, "", "", Constants.BLANK_UUID, SkinType.NONE, ""));
     }
   }
 
-  public static void skinChange(UUID uuid, String skin, SkinType skinType) {
-    if (uuid != null && skin != null && skinType != null) {
+  public static void setDefaultSkin(UUID uuid, Enum<?> variant) {
+    if (uuid != null && variant != null) {
       NetworkHandler.sendToServer(
-          new MessageSkinChange(uuid, skin, "", Constants.BLANK_UUID, skinType));
+          new MessageSkinChange(
+              uuid, "", "", Constants.BLANK_UUID, SkinType.DEFAULT, variant.name()));
+    }
+  }
+
+  public static void setCustomSkin(UUID uuid, UUID skinUUID) {
+    if (uuid != null && skinUUID != null) {
+      NetworkHandler.sendToServer(
+          new MessageSkinChange(uuid, "", "", skinUUID, SkinType.CUSTOM, ""));
+    }
+  }
+
+  public static void setPlayerSkin(UUID uuid, String playerName, UUID playerUUID) {
+    if (uuid != null && playerName != null && playerUUID != null) {
+      NetworkHandler.sendToServer(
+          new MessageSkinChange(uuid, playerName, "", playerUUID, SkinType.PLAYER_SKIN, ""));
+    }
+  }
+
+  public static void setRemoteSkin(UUID uuid, String skinURL) {
+    if (uuid != null && UrlValidator.isValidUrl(skinURL)) {
+      NetworkHandler.sendToServer(
+          new MessageSkinChange(
+              uuid, "", skinURL, Constants.BLANK_UUID, SkinType.INSECURE_REMOTE_URL, ""));
     }
   }
 
   public static void skinChange(
       UUID uuid, String skin, String skinURL, UUID skinUUID, SkinType skinType) {
     if (uuid != null && skin != null && skinType != null) {
-      NetworkHandler.sendToServer(new MessageSkinChange(uuid, skin, skinURL, skinUUID, skinType));
-    }
-  }
-
-  /** Send skin type change. */
-  public static void skinTypeChange(UUID uuid, SkinType skinType) {
-    if (uuid != null && skinType != null) {
-      NetworkHandler.sendToServer(new MessageSkinTypeChange(uuid, skinType));
+      NetworkHandler.sendToServer(
+          new MessageSkinChange(uuid, skin, skinURL, skinUUID, skinType, ""));
     }
   }
 
@@ -331,13 +347,6 @@ public class NetworkMessageHandler implements NetworkMessageHandlerInterface {
   public static void triggerDialogButtonAction(UUID uuid, UUID dialogId, UUID dialogButtonId) {
     if (uuid != null && dialogId != null && dialogButtonId != null) {
       NetworkHandler.sendToServer(new MessageDialogButtonAction(uuid, dialogId, dialogButtonId));
-    }
-  }
-
-  /** Send variant change. */
-  public static void variantChange(UUID uuid, Enum<?> variant) {
-    if (uuid != null && variant != null) {
-      NetworkHandler.sendToServer(new MessageVariantChange(uuid, variant.name()));
     }
   }
 

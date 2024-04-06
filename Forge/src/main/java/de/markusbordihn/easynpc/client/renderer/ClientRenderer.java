@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.client.renderer.entity.layers.CustomHumanoidArmo
 import de.markusbordihn.easynpc.client.renderer.entity.standard.AllayRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.CatRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.ChickenRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.standard.HorseRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.HumanoidRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.HumanoidSlimRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.IllagerRenderer;
@@ -34,6 +35,7 @@ import de.markusbordihn.easynpc.client.renderer.entity.standard.IronGolemRendere
 import de.markusbordihn.easynpc.client.renderer.entity.standard.PigRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.SkeletonRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.VillagerRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.standard.WolfRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.ZombieRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.ZombieVillagerRenderer;
 import de.markusbordihn.easynpc.entity.ModEntityType;
@@ -97,5 +99,7 @@ public class ClientRenderer {
         ModEntityType.ORC.get(), context -> new OrcRenderer(context, ModModelLayers.ORC));
     event.registerEntityRenderer(
         ModEntityType.ORC_WARRIOR.get(), context -> new OrcRenderer(context, ModModelLayers.ORC));
+    event.registerEntityRenderer(ModEntityType.WOLF.get(), WolfRenderer::new);
+    event.registerEntityRenderer(ModEntityType.HORSE.get(), HorseRenderer::new);
   }
 }

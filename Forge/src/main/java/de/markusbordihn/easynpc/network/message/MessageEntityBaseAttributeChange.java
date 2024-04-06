@@ -21,13 +21,12 @@ package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
+import de.markusbordihn.easynpc.handler.AttributeHandler;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class MessageEntityBaseAttributeChange extends NetworkMessage {
@@ -89,52 +88,8 @@ public class MessageEntityBaseAttributeChange extends NetworkMessage {
       return;
     }
 
-    // Validate attribute data.
-    AttributeData<?> attributeData = easyNPC.getEasyNPCAttributeData();
-    if (attributeData == null) {
-      log.error("Attribute data for {} is not available for {}", easyNPC, serverPlayer);
-      return;
-    }
-
-    // Perform action.
-    String attributeString = attribute.toString();
-    switch (attributeString) {
-      case "minecraft:generic.max_health":
-        attributeData.setBaseAttribute(Attributes.MAX_HEALTH, value);
-        easyNPC.getLivingEntity().setHealth(value.floatValue());
-        break;
-      case "minecraft:generic.follow_range":
-        attributeData.setBaseAttribute(Attributes.FOLLOW_RANGE, value);
-        break;
-      case "minecraft:generic.knockback_resistance":
-        attributeData.setBaseAttribute(Attributes.KNOCKBACK_RESISTANCE, value);
-        break;
-      case "minecraft:generic.movement_speed":
-        attributeData.setBaseAttribute(Attributes.MOVEMENT_SPEED, value);
-        break;
-      case "minecraft:generic.flying_speed":
-        attributeData.setBaseAttribute(Attributes.FLYING_SPEED, value);
-        break;
-      case "minecraft:generic.attack_damage":
-        attributeData.setBaseAttribute(Attributes.ATTACK_DAMAGE, value);
-        break;
-      case "minecraft:generic.attack_knockback":
-        attributeData.setBaseAttribute(Attributes.ATTACK_KNOCKBACK, value);
-        break;
-      case "minecraft:generic.attack_speed":
-        attributeData.setBaseAttribute(Attributes.ATTACK_SPEED, value);
-        break;
-      case "minecraft:generic.armor":
-        attributeData.setBaseAttribute(Attributes.ARMOR, value);
-        break;
-      case "minecraft:generic.armor_toughness":
-        attributeData.setBaseAttribute(Attributes.ARMOR_TOUGHNESS, value);
-        break;
-      case "minecraft:generic.luck":
-        attributeData.setBaseAttribute(Attributes.LUCK, value);
-        break;
-      default:
-        log.error("Unknown attribute {} for {} from {}", attribute, message, serverPlayer);
+    if (!AttributeHandler.setBaseAttribute(easyNPC, attribute, value)) {
+      log.error("Unable to set base attribute {} for {} from {}", attribute, message, serverPlayer);
     }
   }
 

@@ -63,4 +63,19 @@ public class TextureModelKey {
 
     return this.uuid.equals(textureModelKey.uuid) && this.subType.equals(textureModelKey.subType);
   }
+
+  @Override
+  public String toString() {
+    return "TextureModelKey{"
+        + "uuid="
+        + this.uuid
+        + ", "
+        + "skinModel="
+        + this.skinModel
+        + ", "
+        + "subType='"
+        + this.subType
+        + '\''
+        + '}';
+  }
 }

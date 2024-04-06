@@ -19,7 +19,9 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
+import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.Objects;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -35,17 +37,15 @@ public interface ScaleData<T extends PathfinderMob> extends EasyNPC<T> {
   float DEFAULT_SCALE_Z = 1.0f;
 
   // Synced entity data
-  EntityDataAccessor<Float> DATA_SCALE_X =
+  EntityDataAccessor<Float> EASY_NPC_DATA_SCALE_X =
       SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.FLOAT);
-  EntityDataAccessor<Float> DATA_SCALE_Y =
+  EntityDataAccessor<Float> EASY_NPC_DATA_SCALE_Y =
       SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.FLOAT);
-  EntityDataAccessor<Float> DATA_SCALE_Z =
+  EntityDataAccessor<Float> EASY_NPC_DATA_SCALE_Z =
       SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.FLOAT);
 
   // CompoundTags
-  String DATA_SCALE_X_TAG = "ScaleX";
-  String DATA_SCALE_Y_TAG = "ScaleY";
-  String DATA_SCALE_Z_TAG = "ScaleZ";
+  String EASY_NPC_DATA_SCALE_DATA_TAG = "ScaleData";
 
   default Float getDefaultScaleX() {
     return DEFAULT_SCALE_X;
@@ -60,74 +60,69 @@ public interface ScaleData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default Float getScaleX() {
-    return getEasyNPCData(DATA_SCALE_X);
+    return getEasyNPCData(EASY_NPC_DATA_SCALE_X);
   }
 
   default void setScaleX(Float scale) {
     if (!Objects.equals(getScaleX(), scale)) {
-      setEasyNPCData(DATA_SCALE_X, scale);
+      setEasyNPCData(EASY_NPC_DATA_SCALE_X, scale);
       getEasyNPCEntity().refreshDimensions();
     }
   }
 
   default Float getScaleY() {
-    return getEasyNPCData(DATA_SCALE_Y);
+    return getEasyNPCData(EASY_NPC_DATA_SCALE_Y);
   }
 
   default void setScaleY(Float scale) {
     if (!Objects.equals(getScaleY(), scale)) {
-      setEasyNPCData(DATA_SCALE_Y, scale);
+      setEasyNPCData(EASY_NPC_DATA_SCALE_Y, scale);
       getEasyNPCEntity().refreshDimensions();
     }
   }
 
   default Float getScaleZ() {
-    return getEasyNPCData(DATA_SCALE_Z);
+    return getEasyNPCData(EASY_NPC_DATA_SCALE_Z);
   }
 
   default void setScaleZ(Float scale) {
     if (!Objects.equals(getScaleZ(), scale)) {
-      setEasyNPCData(DATA_SCALE_Z, scale);
+      setEasyNPCData(EASY_NPC_DATA_SCALE_Z, scale);
       getEasyNPCEntity().refreshDimensions();
     }
   }
 
   default void defineSynchedScaleData() {
-    defineEasyNPCData(DATA_SCALE_X, this.getDefaultScaleX());
-    defineEasyNPCData(DATA_SCALE_Y, this.getDefaultScaleY());
-    defineEasyNPCData(DATA_SCALE_Z, this.getDefaultScaleZ());
+    defineEasyNPCData(EASY_NPC_DATA_SCALE_X, this.getDefaultScaleX());
+    defineEasyNPCData(EASY_NPC_DATA_SCALE_Y, this.getDefaultScaleY());
+    defineEasyNPCData(EASY_NPC_DATA_SCALE_Z, this.getDefaultScaleZ());
   }
 
   default void addAdditionalScaleData(CompoundTag compoundTag) {
-    if (this.getScaleX() != null && this.getScaleX() > 0.0f) {
-      compoundTag.putFloat(DATA_SCALE_X_TAG, this.getScaleX());
+    if (Objects.equals(this.getScaleX(), this.getDefaultScaleX())
+        && Objects.equals(this.getScaleY(), this.getDefaultScaleY())
+        && Objects.equals(this.getScaleZ(), this.getDefaultScaleZ())) {
+      return;
     }
-    if (this.getScaleY() != null && this.getScaleY() > 0.0f) {
-      compoundTag.putFloat(DATA_SCALE_Y_TAG, this.getScaleY());
-    }
-    if (this.getScaleZ() != null && this.getScaleZ() > 0.0f) {
-      compoundTag.putFloat(DATA_SCALE_Z_TAG, this.getScaleZ());
-    }
+    compoundTag.put(
+        EASY_NPC_DATA_SCALE_DATA_TAG,
+        CompoundTagUtils.writeScale(this.getScaleX(), this.getScaleY(), this.getScaleZ()));
   }
 
   default void readAdditionalScaleData(CompoundTag compoundTag) {
-    if (compoundTag.contains(DATA_SCALE_X_TAG)) {
-      float scale = compoundTag.getFloat(DATA_SCALE_X_TAG);
-      if (scale > 0.0f) {
-        this.setScaleX(scale);
-      }
+    if (!compoundTag.contains(EASY_NPC_DATA_SCALE_DATA_TAG)) {
+      return;
     }
-    if (compoundTag.contains(DATA_SCALE_Y_TAG)) {
-      float scale = compoundTag.getFloat(DATA_SCALE_Y_TAG);
-      if (scale > 0.0f) {
-        this.setScaleY(scale);
-      }
+    CustomScale customScale =
+        CompoundTagUtils.readCustomScale(compoundTag.getCompound(EASY_NPC_DATA_SCALE_DATA_TAG));
+    if (customScale.x() > 0.0f) {
+      this.setScaleX(customScale.x());
     }
-    if (compoundTag.contains(DATA_SCALE_Z_TAG)) {
-      float scale = compoundTag.getFloat(DATA_SCALE_Z_TAG);
-      if (scale > 0.0f) {
-        this.setScaleZ(scale);
-      }
+    if (customScale.y() > 0.0f) {
+      this.setScaleY(customScale.y());
+    }
+    if (customScale.z() > 0.0f) {
+      this.setScaleZ(customScale.z());
     }
   }
 }

@@ -30,6 +30,8 @@ public class ActionManager {
   private static final HashMap<Mob, EnumMap<ActionGroup, HashSet<ServerPlayer>>>
       actionGroupPlayerMap = new HashMap<>();
 
+  private ActionManager() {}
+
   public static void addPlayer(Mob mob, ActionGroup actionGroup, ServerPlayer serverPlayer) {
     if (mob == null || actionGroup == null || serverPlayer == null) {
       return;
