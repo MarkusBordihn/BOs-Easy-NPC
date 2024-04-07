@@ -143,7 +143,7 @@ public class BaseColorableAgeableListModel<E extends Entity> extends ColorableAg
   }
 
   @Override
-  public void animateModelHead(
+  public boolean animateModelHead(
       E entity,
       AttackData<?> attackData,
       ModelData<?> modelData,
@@ -153,6 +153,7 @@ public class BaseColorableAgeableListModel<E extends Entity> extends ColorableAg
       float headPitch) {
     headPart.xRot = headPitch * Constants.PI_180DEG;
     headPart.yRot = netHeadYaw * Constants.PI_180DEG;
+    return true;
   }
 
   @Override
@@ -184,5 +185,10 @@ public class BaseColorableAgeableListModel<E extends Entity> extends ColorableAg
   @Override
   public ModelPart getDefaultModelPart(ModelPartType modelPartType) {
     return this.modelPartMap.getOrDefault(modelPartType, null);
+  }
+
+  @Override
+  public boolean isHumanoidModel() {
+    return false;
   }
 }

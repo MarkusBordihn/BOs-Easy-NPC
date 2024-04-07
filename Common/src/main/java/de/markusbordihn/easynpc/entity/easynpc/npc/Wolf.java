@@ -54,6 +54,11 @@ public class Wolf extends EasyNPCBaseEntity<Wolf> {
   }
 
   @Override
+  public boolean canUseOffHand() {
+    return false;
+  }
+
+  @Override
   public SkinModel getSkinModel() {
     return SkinModel.WOLF;
   }

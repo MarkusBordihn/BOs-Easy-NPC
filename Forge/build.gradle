@@ -234,6 +234,7 @@ modrinth {
   versionNumber = "${project.version}"
   versionType = "${project.modrinth_release_type}"
   versionName = "${project.mod_name} ${project.version}"
+  changelog = rootProject.file("CHANGELOG.md").text
   uploadFile = jar
   gameVersions = ["${project.minecraft_version}"]
   loaders = ["forge"]

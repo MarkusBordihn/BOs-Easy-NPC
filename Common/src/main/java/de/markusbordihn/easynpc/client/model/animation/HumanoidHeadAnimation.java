@@ -24,8 +24,9 @@ import net.minecraft.client.model.geom.ModelPart;
 
 public interface HumanoidHeadAnimation {
 
-  static void animateHumanoidModelHead(ModelPart headPart, float headYaw, float headPitch) {
+  static boolean animateHumanoidModelHead(ModelPart headPart, float headYaw, float headPitch) {
     headPart.yRot = headYaw * Constants.PI_180DEG;
     headPart.xRot = headPitch * Constants.PI_180DEG;
+    return true;
   }
 }

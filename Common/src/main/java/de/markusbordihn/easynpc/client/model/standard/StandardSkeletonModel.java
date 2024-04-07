@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.client.model.animation.HumanoidArmPoseAnimation;
 import de.markusbordihn.easynpc.data.model.ModelArmPose;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import java.util.EnumMap;
@@ -84,7 +85,7 @@ public class StandardSkeletonModel<T extends Mob & RangedAttackMob> extends Skel
   }
 
   @Override
-  public void animateModelHead(
+  public boolean animateModelHead(
       T entity,
       AttackData<?> attackData,
       ModelData<?> modelData,
@@ -94,6 +95,7 @@ public class StandardSkeletonModel<T extends Mob & RangedAttackMob> extends Skel
       float headPitch) {
     headPart.xRot = headPitch * Constants.PI_180DEG;
     headPart.yRot = netHeadYaw * Constants.PI_180DEG;
+    return true;
   }
 
   @Override
@@ -133,7 +135,7 @@ public class StandardSkeletonModel<T extends Mob & RangedAttackMob> extends Skel
   }
 
   @Override
-  public void adjustDefaultModelParts(T entity) {
+  public void adjustDefaultModelParts(T entity, EasyNPC<?> easyNPC) {
     this.hat.copyFrom(this.head);
   }
 

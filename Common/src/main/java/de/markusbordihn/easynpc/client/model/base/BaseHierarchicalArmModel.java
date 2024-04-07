@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.model.base;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.client.model.ModelHelper;
 import de.markusbordihn.easynpc.client.model.ModelPartType;
@@ -131,7 +132,7 @@ public class BaseHierarchicalArmModel<E extends Mob> extends HierarchicalModel<E
   }
 
   @Override
-  public void animateModelHead(
+  public boolean animateModelHead(
       E entity,
       AttackData<?> attackData,
       ModelData<?> modelData,
@@ -139,7 +140,7 @@ public class BaseHierarchicalArmModel<E extends Mob> extends HierarchicalModel<E
       float ageInTicks,
       float netHeadYaw,
       float headPitch) {
-    HumanoidHeadAnimation.animateHumanoidModelHead(headPart, netHeadYaw, headPitch);
+    return HumanoidHeadAnimation.animateHumanoidModelHead(headPart, netHeadYaw, headPitch);
   }
 
   @Override
@@ -212,13 +213,11 @@ public class BaseHierarchicalArmModel<E extends Mob> extends HierarchicalModel<E
 
   @Override
   public void translateToHand(HumanoidArm humanoidArm, PoseStack poseStack) {
-    float xTranslation = humanoidArm == HumanoidArm.RIGHT ? -10.0F : 10.0F;
-    float yTranslation = humanoidArm == HumanoidArm.RIGHT ? -16.0F : 16.0F;
-    ModelPart modelpart = this.getArm(humanoidArm);
-    modelpart.x += xTranslation;
-    modelpart.y -= yTranslation;
-    modelpart.translateAndRotate(poseStack);
-    modelpart.x -= xTranslation;
-    modelpart.y += yTranslation;
+    this.root.translateAndRotate(poseStack);
+    this.body.translateAndRotate(poseStack);
+    poseStack.translate(0.0, -0.09375, 0.09375);
+    poseStack.mulPose(Vector3f.XP.rotation(this.rightArm.xRot + 0.43633232F));
+    poseStack.scale(0.7F, 0.7F, 0.7F);
+    poseStack.translate(0.0625, 0.0, 0.0);
   }
 }

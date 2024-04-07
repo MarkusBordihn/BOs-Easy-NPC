@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity.standard;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.client.model.standard.StandardIronGolemModel;
 import de.markusbordihn.easynpc.client.renderer.entity.base.BaseMobRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.VariantOverLayer;
@@ -32,7 +31,6 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Pose;
 
 public class IronGolemRenderer
     extends BaseMobRenderer<IronGolem, Variant, StandardIronGolemModel<IronGolem>> {
@@ -74,15 +72,4 @@ public class IronGolemRenderer
     this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
   }
 
-  @Override
-  public void renderDefaultPose(
-      IronGolem entity,
-      StandardIronGolemModel<IronGolem> model,
-      Pose pose,
-      float entityYaw,
-      float partialTicks,
-      PoseStack poseStack,
-      net.minecraft.client.renderer.MultiBufferSource buffer,
-      int light) {
-  }
 }

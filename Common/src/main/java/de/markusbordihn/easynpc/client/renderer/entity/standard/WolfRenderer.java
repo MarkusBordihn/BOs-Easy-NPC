@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.standard;
 
 import de.markusbordihn.easynpc.client.model.standard.StandardWolfModel;
 import de.markusbordihn.easynpc.client.renderer.entity.base.BaseMobRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.HeldItemLayer;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Wolf;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Wolf.Variant;
 import java.util.EnumMap;
@@ -50,5 +51,6 @@ public class WolfRenderer extends BaseMobRenderer<Wolf, Variant, StandardWolfMod
         0.7F,
         DEFAULT_TEXTURE,
         TEXTURE_BY_VARIANT);
+    this.addLayer(new HeldItemLayer<>(this, context.getItemInHandRenderer()));
   }
 }

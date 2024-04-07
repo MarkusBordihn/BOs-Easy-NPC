@@ -49,8 +49,8 @@ public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
         }
       };
 
-  public static final EntityDataSerializer<UUID> SKIN_UUID =
-      new EntityDataSerializer<UUID>() {
+  EntityDataSerializer<UUID> SKIN_UUID =
+      new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, UUID skinUUID) {
           buffer.writeUUID(skinUUID);
         }

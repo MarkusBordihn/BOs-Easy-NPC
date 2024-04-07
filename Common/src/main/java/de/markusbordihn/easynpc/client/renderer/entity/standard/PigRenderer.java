@@ -19,21 +19,19 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity.standard;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.standard.StandardPigModel;
 import de.markusbordihn.easynpc.client.renderer.entity.base.BaseMobRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.HeldItemLayer;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Pig.Variant;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.layers.SaddleLayer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Pose;
 
 public class PigRenderer extends BaseMobRenderer<Pig, Variant, StandardPigModel<Pig>> {
 
@@ -61,17 +59,7 @@ public class PigRenderer extends BaseMobRenderer<Pig, Variant, StandardPigModel<
             this,
             new StandardPigModel<>(context.bakeLayer(ModelLayers.PIG_SADDLE)),
             new ResourceLocation("textures/entity/pig/pig_saddle.png")));
+    this.addLayer(new HeldItemLayer<>(this, context.getItemInHandRenderer(), -0.10, 0.22, -0.75));
   }
 
-  @Override
-  public void renderDefaultPose(
-      Pig entity,
-      StandardPigModel<Pig> model,
-      Pose pose,
-      float entityYaw,
-      float partialTicks,
-      PoseStack poseStack,
-      MultiBufferSource buffer,
-      int light) {
-  }
 }

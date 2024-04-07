@@ -181,10 +181,22 @@ public class ModEntityTypes {
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Wolf.ID);
   public static final EntityType<Horse> HORSE =
-      EntityType.Builder.of(Horse::new, CATEGORY)
+      EntityType.Builder.<Horse>of(Horse::new, CATEGORY)
           .sized(1.4F, 1.6F)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Horse.ID);
+  public static final EntityType<Horse> SKELETON_HORSE =
+      EntityType.Builder.<Horse>of(
+              (entityType, level) -> new Horse(entityType, level, Horse.Variant.SKELETON), CATEGORY)
+          .sized(1.4F, 1.6F)
+          .clientTrackingRange(CLIENT_TRACKING_RANGE)
+          .build(Horse.ID_SKELETON);
+  public static final EntityType<Horse> ZOMBIE_HORSE =
+      EntityType.Builder.<Horse>of(
+              (entityType, level) -> new Horse(entityType, level, Horse.Variant.ZOMBIE), CATEGORY)
+          .sized(1.4F, 1.6F)
+          .clientTrackingRange(CLIENT_TRACKING_RANGE)
+          .build(Horse.ID_ZOMBIE);
 
   private ModEntityTypes() {
   }
