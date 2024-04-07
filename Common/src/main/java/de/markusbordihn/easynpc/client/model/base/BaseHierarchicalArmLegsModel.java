@@ -110,7 +110,7 @@ public class BaseHierarchicalArmLegsModel<E extends Mob> extends HierarchicalMod
   }
 
   @Override
-  public void animateModelHead(
+  public boolean animateModelHead(
       E entity,
       AttackData<?> attackData,
       ModelData<?> modelData,
@@ -120,6 +120,7 @@ public class BaseHierarchicalArmLegsModel<E extends Mob> extends HierarchicalMod
       float headPitch) {
     headPart.xRot = headPitch * Constants.PI_180DEG;
     headPart.yRot = netHeadYaw * Constants.PI_180DEG;
+    return true;
   }
 
   @Override
@@ -131,7 +132,7 @@ public class BaseHierarchicalArmLegsModel<E extends Mob> extends HierarchicalMod
       float ageInTicks,
       float limbSwing,
       float limbSwingAmount) {
-    AnimationUtils.bobModelPart(rightArmPart, ageInTicks, 1.0F);
+    AnimationUtils.bobModelPart(rightArmPart, ageInTicks, 0.5F);
     return true;
   }
 
@@ -144,7 +145,7 @@ public class BaseHierarchicalArmLegsModel<E extends Mob> extends HierarchicalMod
       float ageInTicks,
       float limbSwing,
       float limbSwingAmount) {
-    AnimationUtils.bobModelPart(leftArmPart, ageInTicks, -1.0F);
+    AnimationUtils.bobModelPart(leftArmPart, ageInTicks, -0.5F);
     return true;
   }
 
@@ -189,17 +190,6 @@ public class BaseHierarchicalArmLegsModel<E extends Mob> extends HierarchicalMod
         modelData.getModelRightLegRotation(),
         modelData.isModelRightLegVisible());
   }
-
-  @Override
-  public void animateCustomModelPose(
-      E entity,
-      ModelPose modelPose,
-      ModelData<?> modelData,
-      float limbSwing,
-      float limbSwingAmount,
-      float ageInTicks,
-      float netHeadYaw,
-      float headPitch) {}
 
   @Override
   public boolean setupCrouchingModelPose(
@@ -261,13 +251,7 @@ public class BaseHierarchicalArmLegsModel<E extends Mob> extends HierarchicalMod
 
   @Override
   public void translateToHand(HumanoidArm humanoidArm, PoseStack poseStack) {
-    float xTranslation = humanoidArm == HumanoidArm.RIGHT ? -10.0F : 10.0F;
-    float yTranslation = humanoidArm == HumanoidArm.RIGHT ? -16.0F : 16.0F;
     ModelPart modelpart = this.getArm(humanoidArm);
-    modelpart.x += xTranslation;
-    modelpart.y -= yTranslation;
     modelpart.translateAndRotate(poseStack);
-    modelpart.x -= xTranslation;
-    modelpart.y += yTranslation;
   }
 }

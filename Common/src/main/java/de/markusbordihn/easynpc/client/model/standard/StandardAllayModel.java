@@ -129,35 +129,50 @@ public class StandardAllayModel<T extends Mob> extends BaseHierarchicalArmModel<
     super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
   }
 
-  public void miscAnimation(
+  @Override
+  public boolean animateModelArms(
       T entity,
-      float limbSwing,
-      float limbSwingAmount,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      ModelPart rightArmPart,
+      ModelPart leftArmPart,
       float ageInTicks,
-      float netHeadYaw,
-      float headPitch) {
-    // Body animations
+      float limbSwing,
+      float limbSwingAmount) {
+    if (rightArmPart == null || leftArmPart == null) {
+      return false;
+    }
     float ageAmount = ageInTicks * 9.0F * Constants.PI_180DEG;
-    float limbSwingRotation = Math.min(limbSwingAmount / 0.3F, 1.0F);
-    float bodyRotationAmount = limbSwingRotation * 0.6981317F;
-    this.body.xRot = bodyRotationAmount;
-    this.root.y += (float) Math.cos(ageAmount) * 0.25F * 1.0F - limbSwingRotation;
-
-    // Arm animations
     float armRotationAmount =
         0.43633232F
             - Mth.cos(ageAmount + ((float) Math.PI * 1.5F)) * (float) Math.PI * 0.075F * 1.0F
-            - limbSwingRotation;
+            - limbSwingAmount;
     this.rightArm.xRot =
         Mth.lerp(
             1f,
-            bodyRotationAmount,
-            Mth.lerp(limbSwingRotation, (-(float) Math.PI / 3F), (-(float) Math.PI / 4F)));
+            limbSwingAmount * 0.6981317F,
+            Mth.lerp(limbSwingAmount, (-(float) Math.PI / 3F), (-(float) Math.PI / 4F)));
     this.leftArm.xRot = this.rightArm.xRot;
     this.leftArm.zRot = -armRotationAmount;
     this.rightArm.zRot = armRotationAmount;
     this.rightArm.yRot = 0.27925268F;
     this.leftArm.yRot = -0.27925268F;
+    return true;
+  }
+
+  @Override
+  public boolean animateModelBody(
+      T entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      ModelPart bodyPart,
+      float ageInTicks,
+      float limbSwing,
+      float limbSwingAmount) {
+    float ageAmount = ageInTicks * 9.0F * Constants.PI_180DEG;
+    this.body.xRot = limbSwingAmount * 0.6981317F;
+    this.root.y += (float) Math.cos(ageAmount) * 0.25F * 1.0F - limbSwingAmount;
+    return true;
   }
 
   @Override
@@ -201,10 +216,10 @@ public class StandardAllayModel<T extends Mob> extends BaseHierarchicalArmModel<
       VertexConsumer vertexConsumer,
       int lightLevel,
       int overlay,
-      float unused1,
-      float unused2,
-      float unused3,
-      float unused4) {
+      float red,
+      float green,
+      float blue,
+      float alpha) {
     this.root.render(poseStack, vertexConsumer, lightLevel, overlay);
   }
 }

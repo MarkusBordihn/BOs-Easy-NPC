@@ -92,8 +92,10 @@ public class BaseEntityModel<E extends Entity> extends EntityModel<E> implements
       VertexConsumer vertexConsumer,
       int lightLevel,
       int overlay,
-      float unused1,
-      float unused2,
-      float unused3,
-      float unused4) {}
+      float red,
+      float green,
+      float blue,
+      float alpha) {
+    // Mo use implemented renderToBuffer method
+  }
 }

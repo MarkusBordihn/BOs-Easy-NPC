@@ -220,14 +220,7 @@ public class BaseHierarchicalArmHeadModel<E extends Mob> extends HierarchicalMod
 
   @Override
   public void translateToHand(HumanoidArm humanoidArm, PoseStack poseStack) {
-    float xTranslation = humanoidArm == HumanoidArm.RIGHT ? -10.0F : 10.0F;
-    float yTranslation = humanoidArm == HumanoidArm.RIGHT ? -16.0F : 16.0F;
-    ModelPart modelpart = this.getArm(humanoidArm);
-    modelpart.x += xTranslation;
-    modelpart.y -= yTranslation;
-    modelpart.translateAndRotate(poseStack);
-    modelpart.x -= xTranslation;
-    modelpart.y += yTranslation;
+    this.getArm(humanoidArm).translateAndRotate(poseStack);
   }
 
   public ModelPart getHead() {

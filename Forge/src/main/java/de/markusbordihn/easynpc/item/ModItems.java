@@ -246,6 +246,20 @@ public class ModItems {
               new ModSpawnEggItem(
                   ModEntityType.HORSE,
                   new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+  public static final RegistryObject<Item> SKELETON_HORSE_NPC_SPAWN_EGG =
+      ITEMS.register(
+          Horse.ID_SKELETON + ModSpawnEggItem.SUFFIX,
+          () ->
+              new ModSpawnEggItem(
+                  ModEntityType.SKELETON_HORSE,
+                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+  public static final RegistryObject<Item> ZOMBIE_HORSE_NPC_SPAWN_EGG =
+      ITEMS.register(
+          Horse.ID_ZOMBIE + ModSpawnEggItem.SUFFIX,
+          () ->
+              new ModSpawnEggItem(
+                  ModEntityType.ZOMBIE_HORSE,
+                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
 
   private ModItems() {}
 }

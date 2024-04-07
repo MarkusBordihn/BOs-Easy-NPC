@@ -33,12 +33,12 @@ import net.minecraft.world.entity.LivingEntity;
 public class VariantOverLayer<T extends LivingEntity, M extends EntityModel<T>>
     extends RenderLayer<T, M> {
 
-  private final EasyNPCRenderer easyNPCRenderer;
+  private final EasyNPCRenderer<?, ?> easyNPCRenderer;
   private final M model;
 
   public VariantOverLayer(RenderLayerParent<T, M> renderer, EntityModelSet model) {
     super(renderer);
-    if (renderer instanceof EasyNPCRenderer easyNPCRendererInstance) {
+    if (renderer instanceof EasyNPCRenderer<?, ?> easyNPCRendererInstance) {
       this.easyNPCRenderer = easyNPCRendererInstance;
     } else {
       this.easyNPCRenderer = null;

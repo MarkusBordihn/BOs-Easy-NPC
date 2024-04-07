@@ -31,6 +31,7 @@ import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Pose;
@@ -51,6 +52,7 @@ public class ChickenRenderer
         0.3F,
         DEFAULT_TEXTURE,
         TEXTURE_BY_VARIANT);
+    this.addLayer(new ItemInHandLayer<>(this));
   }
 
   @Override

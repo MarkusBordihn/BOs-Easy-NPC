@@ -19,11 +19,13 @@
 
 package de.markusbordihn.easynpc.client.model.standard;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.client.model.base.BaseHierarchicalArmLegsModel;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.Mob;
 
 public class StandardIronGolemModel<T extends Mob> extends BaseHierarchicalArmLegsModel<T> {
@@ -33,7 +35,7 @@ public class StandardIronGolemModel<T extends Mob> extends BaseHierarchicalArmLe
   }
 
   @Override
-  public void animateModelLegs(
+  public boolean animateModelLegs(
       T entity,
       AttackData<?> attackData,
       ModelData<?> modelData,
@@ -42,10 +44,14 @@ public class StandardIronGolemModel<T extends Mob> extends BaseHierarchicalArmLe
       float ageInTicks,
       float limbSwing,
       float limbSwingAmount) {
+    if (rightLegPart == null && leftLegPart == null) {
+      return false;
+    }
     this.rightLeg.xRot = -1.5F * Mth.triangleWave(limbSwing, 13.0F) * limbSwingAmount;
     this.leftLeg.xRot = 1.5F * Mth.triangleWave(limbSwing, 13.0F) * limbSwingAmount;
     this.rightLeg.yRot = 0.0F;
     this.leftLeg.yRot = 0.0F;
+    return true;
   }
 
   @Override
@@ -66,5 +72,12 @@ public class StandardIronGolemModel<T extends Mob> extends BaseHierarchicalArmLe
       this.rightArm.xRot = (-0.2F + 1.5F * Mth.triangleWave(limbSwing, 13.0F)) * limbSwingAmount;
       this.leftArm.xRot = (-0.2F - 1.5F * Mth.triangleWave(limbSwing, 13.0F)) * limbSwingAmount;
     }
+  }
+
+  @Override
+  public void translateToHand(HumanoidArm humanoidArm, PoseStack poseStack) {
+    ModelPart modelpart = this.getArm(humanoidArm);
+    modelpart.translateAndRotate(poseStack);
+    poseStack.translate(humanoidArm == HumanoidArm.RIGHT ? -0.64F : 0.64F, 0.9F, 0);
   }
 }

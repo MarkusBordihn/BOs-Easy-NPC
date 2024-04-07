@@ -26,15 +26,21 @@ import de.markusbordihn.easynpc.client.model.ModelPartType;
 import de.markusbordihn.easynpc.client.model.base.BaseEntityModel;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.Rotations;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 
-public class StandardHorseModel<T extends Entity> extends BaseEntityModel<T> {
+public class StandardHorseModel<T extends Entity> extends BaseEntityModel<T>
+    implements HeadedModel {
 
   protected final Map<ModelPartType, CustomPosition> modelPartPositionMap =
       new EnumMap<>(ModelPartType.class);
@@ -50,6 +56,13 @@ public class StandardHorseModel<T extends Entity> extends BaseEntityModel<T> {
   protected final ModelPart leftHindLeg;
   protected final ModelPart tail;
   protected final ModelPart headParts;
+  protected final ModelPart saddle;
+  protected final ModelPart leftSaddleMouth;
+  protected final ModelPart rightSaddleMouth;
+  protected final ModelPart leftSaddleLine;
+  protected final ModelPart rightSaddleLine;
+  protected final ModelPart headSaddle;
+  protected final ModelPart mouthSaddleWrap;
 
   public StandardHorseModel(ModelPart modelPart) {
     this.body = defineModelPart(ModelPartType.BODY, modelPart, "body");
@@ -61,6 +74,13 @@ public class StandardHorseModel<T extends Entity> extends BaseEntityModel<T> {
     this.rightHindLeg = defineModelPart(ModelPartType.RIGHT_HIND_LEG, modelPart, "right_hind_leg");
     this.leftHindLeg = defineModelPart(ModelPartType.LEFT_HIND_LEG, modelPart, "left_hind_leg");
     this.tail = defineModelPart(ModelPartType.TAIL, this.body, "tail");
+    this.saddle = this.body.getChild("saddle");
+    this.rightSaddleMouth = this.headParts.getChild("right_saddle_mouth");
+    this.leftSaddleMouth = this.headParts.getChild("left_saddle_mouth");
+    this.rightSaddleLine = this.headParts.getChild("right_saddle_line");
+    this.leftSaddleLine = this.headParts.getChild("left_saddle_line");
+    this.headSaddle = this.headParts.getChild("head_saddle");
+    this.mouthSaddleWrap = this.headParts.getChild("mouth_saddle_wrap");
   }
 
   @Override
@@ -73,6 +93,19 @@ public class StandardHorseModel<T extends Entity> extends BaseEntityModel<T> {
     resetModelPart(ModelPartType.RIGHT_HIND_LEG, this.rightHindLeg);
     resetModelPart(ModelPartType.LEFT_HIND_LEG, this.leftHindLeg);
     resetModelPart(ModelPartType.TAIL, this.tail);
+  }
+
+  @Override
+  public void adjustDefaultModelParts(T entity, EasyNPC<?> easyNPC) {
+    VariantData<?> variantData = easyNPC.getEasyNPCVariantData();
+    boolean isSaddled = variantData.hasVariantSaddled();
+    this.saddle.visible = isSaddled;
+    this.rightSaddleMouth.visible = isSaddled;
+    this.leftSaddleMouth.visible = isSaddled;
+    this.rightSaddleLine.visible = isSaddled;
+    this.leftSaddleLine.visible = isSaddled;
+    this.headSaddle.visible = isSaddled;
+    this.mouthSaddleWrap.visible = isSaddled;
   }
 
   @Override
@@ -117,6 +150,50 @@ public class StandardHorseModel<T extends Entity> extends BaseEntityModel<T> {
         modelData.isModelRightLegVisible());
   }
 
+  @Override
+  public boolean animateModelFrontLegs(
+      T entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      ModelPart rightLegPart,
+      ModelPart leftLegPart,
+      float ageInTicks,
+      float limbSwing,
+      float limbSwingAmount) {
+    if (rightLegPart == null && leftLegPart == null) {
+      return false;
+    }
+    if (rightLegPart != null) {
+      rightLegPart.xRot = Mth.cos(limbSwing * 0.6662F + 3.1415927F) * 1.4F * limbSwingAmount;
+    }
+    if (leftLegPart != null) {
+      leftLegPart.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+    }
+    return true;
+  }
+
+  @Override
+  public boolean animateModelHindLegs(
+      T entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      ModelPart rightLegPart,
+      ModelPart leftLegPart,
+      float ageInTicks,
+      float limbSwing,
+      float limbSwingAmount) {
+    if (rightLegPart == null && leftLegPart == null) {
+      return false;
+    }
+    if (rightLegPart != null) {
+      rightLegPart.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+    }
+    if (leftLegPart != null) {
+      leftLegPart.xRot = Mth.cos(limbSwing * 0.6662F + 3.1415927F) * 1.4F * limbSwingAmount;
+    }
+    return true;
+  }
+
   public Iterable<ModelPart> headParts() {
     return List.of(this.headParts);
   }
@@ -130,35 +207,31 @@ public class StandardHorseModel<T extends Entity> extends BaseEntityModel<T> {
   public void renderToBuffer(
       PoseStack poseStack,
       VertexConsumer vertexConsumer,
-      int p_102036_,
-      int p_102037_,
-      float p_102038_,
-      float p_102039_,
-      float p_102040_,
-      float p_102041_) {
+      int light,
+      int overlay,
+      float red,
+      float green,
+      float blue,
+      float alpha) {
     this.headParts()
         .forEach(
             headPart ->
                 headPart.render(
-                    poseStack,
-                    vertexConsumer,
-                    p_102036_,
-                    p_102037_,
-                    p_102038_,
-                    p_102039_,
-                    p_102040_,
-                    p_102041_));
+                    poseStack, vertexConsumer, light, overlay, red, green, blue, alpha));
     this.bodyParts()
         .forEach(
             bodyPart ->
                 bodyPart.render(
-                    poseStack,
-                    vertexConsumer,
-                    p_102036_,
-                    p_102037_,
-                    p_102038_,
-                    p_102039_,
-                    p_102040_,
-                    p_102041_));
+                    poseStack, vertexConsumer, light, overlay, red, green, blue, alpha));
+  }
+
+  @Override
+  public ModelPart getHead() {
+    return this.head;
+  }
+
+  @Override
+  public boolean isHumanoidModel() {
+    return false;
   }
 }

@@ -193,7 +193,7 @@ public class BaseAttributeConfigurationScreen
               livingEntity.getAttributeBaseValue(Attributes.MOVEMENT_SPEED),
               0.0D,
               2.0D,
-              0.7D,
+              0.6D,
               0.1D,
               slider ->
                   NetworkMessageHandler.entityBaseAttributeChange(

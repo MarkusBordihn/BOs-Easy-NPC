@@ -59,6 +59,11 @@ public class Pig extends EasyNPCBaseEntity<Pig> {
   }
 
   @Override
+  public boolean canUseOffHand() {
+    return false;
+  }
+
+  @Override
   public SkinModel getSkinModel() {
     return SkinModel.PIG;
   }

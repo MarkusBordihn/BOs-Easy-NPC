@@ -78,7 +78,7 @@ public class StandardVillagerModel<T extends Entity> extends VillagerModel<T>
   }
 
   @Override
-  public void animateModelHead(
+  public boolean animateModelHead(
       T entity,
       AttackData<?> attackData,
       ModelData<?> modelData,
@@ -88,6 +88,7 @@ public class StandardVillagerModel<T extends Entity> extends VillagerModel<T>
       float headPitch) {
     headPart.xRot = headPitch * Constants.PI_180DEG;
     headPart.yRot = netHeadYaw * Constants.PI_180DEG;
+    return true;
   }
 
   @Override

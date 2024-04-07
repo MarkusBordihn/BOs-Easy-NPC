@@ -27,12 +27,14 @@ import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import java.util.EnumMap;
 import java.util.Map;
+import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.model.PigModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.Rotations;
 import net.minecraft.world.entity.Entity;
 
-public class StandardPigModel<T extends Entity> extends PigModel<T> implements EasyNPCModel<T> {
+public class StandardPigModel<T extends Entity> extends PigModel<T>
+    implements EasyNPCModel<T>, HeadedModel {
   protected final Map<ModelPartType, CustomPosition> modelPartPositionMap =
       new EnumMap<>(ModelPartType.class);
   protected final Map<ModelPartType, Rotations> modelPartRotationMap =
@@ -144,5 +146,10 @@ public class StandardPigModel<T extends Entity> extends PigModel<T> implements E
   @Override
   public ModelPart getDefaultModelPart(ModelPartType modelPartType) {
     return this.modelPartMap.getOrDefault(modelPartType, null);
+  }
+
+  @Override
+  public ModelPart getHead() {
+    return this.head;
   }
 }

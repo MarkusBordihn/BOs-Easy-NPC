@@ -57,7 +57,7 @@ public class EasyNPCWandItem extends Item {
       ItemStack itemStack, Level level, Entity entity, int slot, boolean selected) {
     // Highlight all nearby EasyNPC entities
     if (selected && entity instanceof Player player) {
-      for (EasyNPCBaseEntity easyNPCEntity :
+      for (EasyNPCBaseEntity<?> easyNPCEntity :
           level.getEntitiesOfClass(
               EasyNPCBaseEntity.class, player.getBoundingBox().inflate(0.5), Entity::isAlive)) {
         if (easyNPCEntity.hasEffect(MobEffects.GLOWING)) {
@@ -90,7 +90,7 @@ public class EasyNPCWandItem extends Item {
               blockPos.getX() + 0.25d,
               blockPos.getY() + 2d,
               blockPos.getZ() + 0.25d);
-      for (EasyNPCBaseEntity easyNPCEntity :
+      for (EasyNPCBaseEntity<?> easyNPCEntity :
           level.getEntitiesOfClass(
               EasyNPCBaseEntity.class, aabbAbove.inflate(0.5), Entity::isAlive)) {
         if (easyNPCEntity != null) {
@@ -109,7 +109,7 @@ public class EasyNPCWandItem extends Item {
               blockPos.getX() + 1d,
               blockPos.getY() + 1d,
               blockPos.getZ() + 1d);
-      for (EasyNPCBaseEntity easyNPCEntity :
+      for (EasyNPCBaseEntity<?> easyNPCEntity :
           level.getEntitiesOfClass(
               EasyNPCBaseEntity.class, aabbAround.inflate(0.5), Entity::isAlive)) {
         if (easyNPCEntity != null) {
@@ -120,7 +120,7 @@ public class EasyNPCWandItem extends Item {
       }
 
       // 3. Expand the search area by 2.5x to find all nearby EasyNPC entities.
-      for (EasyNPCBaseEntity easyNPCEntity :
+      for (EasyNPCBaseEntity<?> easyNPCEntity :
           level.getEntitiesOfClass(
               EasyNPCBaseEntity.class, aabbAround.inflate(2.5), Entity::isAlive)) {
         if (easyNPCEntity != null) {

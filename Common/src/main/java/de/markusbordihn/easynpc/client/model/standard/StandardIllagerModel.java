@@ -20,9 +20,11 @@
 package de.markusbordihn.easynpc.client.model.standard;
 
 import de.markusbordihn.easynpc.client.model.ModelPartType;
+import de.markusbordihn.easynpc.client.model.animation.HumanoidLegAnimation;
 import de.markusbordihn.easynpc.client.model.base.BaseHierarchicalArmHeadModel;
 import de.markusbordihn.easynpc.data.model.ModelArmPose;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
@@ -68,6 +70,20 @@ public class StandardIllagerModel<T extends Mob> extends BaseHierarchicalArmHead
     this.rightArm.visible = !isCrossedArms;
 
     this.setupAnimation(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+  }
+
+  @Override
+  public boolean animateModelLegs(
+      T entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      ModelPart rightLegPart,
+      ModelPart leftLegPart,
+      float ageInTicks,
+      float limbSwing,
+      float limbSwingAmount) {
+    return HumanoidLegAnimation.animateHumanoidModelLegs(
+        rightLegPart, leftLegPart, limbSwing, limbSwingAmount);
   }
 
   @Override

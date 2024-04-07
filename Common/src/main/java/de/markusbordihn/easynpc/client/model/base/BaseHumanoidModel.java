@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.client.model.animation.HumanoidLegAnimation;
 import de.markusbordihn.easynpc.data.model.ModelArmPose;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import java.util.EnumMap;
@@ -89,7 +90,7 @@ public class BaseHumanoidModel<E extends LivingEntity> extends HumanoidModel<E>
   }
 
   @Override
-  public void adjustDefaultModelParts(E entity) {
+  public void adjustDefaultModelParts(E entity, EasyNPC<?> easyNPC) {
     if (this.hat.visible) {
       this.hat.copyFrom(this.head);
     }
@@ -138,7 +139,7 @@ public class BaseHumanoidModel<E extends LivingEntity> extends HumanoidModel<E>
   }
 
   @Override
-  public void animateModelHead(
+  public boolean animateModelHead(
       E entity,
       AttackData<?> attackData,
       ModelData<?> modelData,
@@ -146,7 +147,7 @@ public class BaseHumanoidModel<E extends LivingEntity> extends HumanoidModel<E>
       float ageInTicks,
       float netHeadYaw,
       float headPitch) {
-    HumanoidHeadAnimation.animateHumanoidModelHead(headPart, netHeadYaw, headPitch);
+    return HumanoidHeadAnimation.animateHumanoidModelHead(headPart, netHeadYaw, headPitch);
   }
 
   @Override
@@ -186,7 +187,7 @@ public class BaseHumanoidModel<E extends LivingEntity> extends HumanoidModel<E>
   }
 
   @Override
-  public void animateModelLegs(
+  public boolean animateModelLegs(
       E entity,
       AttackData<?> attackData,
       ModelData<?> modelData,
@@ -195,7 +196,7 @@ public class BaseHumanoidModel<E extends LivingEntity> extends HumanoidModel<E>
       float ageInTicks,
       float limbSwing,
       float limbSwingAmount) {
-    HumanoidLegAnimation.animateHumanoidModelLegs(
+    return HumanoidLegAnimation.animateHumanoidModelLegs(
         rightLegPart, leftLegPart, limbSwing, limbSwingAmount);
   }
 

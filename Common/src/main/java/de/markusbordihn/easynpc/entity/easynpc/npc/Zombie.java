@@ -23,7 +23,6 @@ import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton.Variant;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -52,7 +51,7 @@ public class Zombie extends EasyNPCBaseEntity<Zombie> {
         .add(Attributes.MAX_HEALTH, 20.0D)
         .add(Attributes.FOLLOW_RANGE, 32.0D)
         .add(Attributes.KNOCKBACK_RESISTANCE, 0.0D)
-        .add(Attributes.MOVEMENT_SPEED, 0.7F)
+        .add(Attributes.MOVEMENT_SPEED, 0.5F)
         .add(Attributes.ATTACK_DAMAGE, 1.0D)
         .add(Attributes.ATTACK_KNOCKBACK, 0.0D)
         .add(Attributes.ATTACK_SPEED, 0.0D)

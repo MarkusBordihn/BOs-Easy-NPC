@@ -65,6 +65,10 @@ public interface EasyNPCModel<E extends Entity> {
     modelPart.zRot = defaultRotation.getZ();
   }
 
+  default boolean isHumanoidModel() {
+    return true;
+  }
+
   default boolean hasDefaultModelPart(ModelPartType modelPartType, ModelPart modelPart) {
     CustomPosition defaultPosition = getDefaultModelPartPosition(modelPartType);
     Rotations defaultRotation = getDefaultModelPartRotation(modelPartType);
@@ -120,7 +124,7 @@ public interface EasyNPCModel<E extends Entity> {
       float netHeadYaw,
       float headPitch) {}
 
-  default void adjustDefaultModelParts(E entity) {}
+  default void adjustDefaultModelParts(E entity, EasyNPC<?> easyNPC) {}
 
   default boolean setupDefaultModelPose(
       E entity,
@@ -192,6 +196,28 @@ public interface EasyNPCModel<E extends Entity> {
     return false;
   }
 
+  default boolean animateModelHead(
+      E entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      ModelPart headPart,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
+    return false;
+  }
+
+  default boolean animateModelBody(
+      E entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      ModelPart bodyPart,
+      float ageInTicks,
+      float limbSwing,
+      float limbSwingAmount) {
+    return false;
+  }
+
   default boolean animateModelArmPose(
       E entity,
       ModelArmPose modelArmPose,
@@ -250,7 +276,7 @@ public interface EasyNPCModel<E extends Entity> {
     return false;
   }
 
-  default void animateModelLegs(
+  default boolean animateModelLegs(
       E entity,
       AttackData<?> attackData,
       ModelData<?> modelData,
@@ -258,16 +284,33 @@ public interface EasyNPCModel<E extends Entity> {
       ModelPart leftLegPart,
       float ageInTicks,
       float limbSwing,
-      float limbSwingAmount) {}
+      float limbSwingAmount) {
+    return false;
+  }
 
-  default void animateModelHead(
+  default boolean animateModelFrontLegs(
       E entity,
       AttackData<?> attackData,
       ModelData<?> modelData,
-      ModelPart headPart,
+      ModelPart rightLegPart,
+      ModelPart leftLegPart,
       float ageInTicks,
-      float netHeadYaw,
-      float headPitch) {}
+      float limbSwing,
+      float limbSwingAmount) {
+    return false;
+  }
+
+  default boolean animateModelHindLegs(
+      E entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      ModelPart rightLegPart,
+      ModelPart leftLegPart,
+      float ageInTicks,
+      float limbSwing,
+      float limbSwingAmount) {
+    return false;
+  }
 
   default void animateAttackModelPose(
       E entity,
@@ -353,15 +396,14 @@ public interface EasyNPCModel<E extends Entity> {
       float headPitch) {
 
     // Track default model parts.
-    boolean hasDefaultHead = true;
+    boolean isHumanoidModel = this.isHumanoidModel();
+    boolean hasAnimatedModelBody = false;
     boolean hasAnimatedModelHead = false;
     boolean hasAnimatedModelArms = false;
     boolean hasAnimatedModelArmPose = false;
     boolean hasAnimatedModelLegs = false;
-    boolean hasDefaultRightArm = true;
-    boolean hasDefaultLeftArm = true;
-    boolean hasDefaultRightLeg;
-    boolean hasDefaultLeftLeg;
+    boolean hasAnimatedModelFrontLegs = false;
+    boolean hasAnimatedModelHindLegs = false;
 
     // Handle attack related model animation.
     this.animateAttackModelPose(
@@ -376,68 +418,123 @@ public interface EasyNPCModel<E extends Entity> {
 
     // Animate model head.
     ModelPart head = this.getDefaultModelPart(ModelPartType.HEAD);
-    hasDefaultHead = head != null && this.hasDefaultModelPart(ModelPartType.HEAD, head);
+    boolean hasDefaultHead = head != null && this.hasDefaultModelPart(ModelPartType.HEAD, head);
     if (hasDefaultHead) {
-      this.animateModelHead(entity, attackData, modelData, head, ageInTicks, netHeadYaw, headPitch);
+      hasAnimatedModelHead =
+          this.animateModelHead(
+              entity, attackData, modelData, head, ageInTicks, netHeadYaw, headPitch);
     }
 
-    // Animate model arms and model arm pose.
-    ModelArmPose modelArmPose = modelData.getModelArmPose();
-    if (modelArmPose == ModelArmPose.DEFAULT || modelArmPose == ModelArmPose.NEUTRAL) {
-      ModelPart rightArm = this.getDefaultModelPart(ModelPartType.RIGHT_ARM);
-      hasDefaultRightArm =
-          rightArm != null && this.hasDefaultModelPart(ModelPartType.RIGHT_ARM, rightArm);
-      ModelPart leftArm = this.getDefaultModelPart(ModelPartType.LEFT_ARM);
-      hasDefaultLeftArm =
-          leftArm != null && this.hasDefaultModelPart(ModelPartType.LEFT_ARM, leftArm);
-      hasAnimatedModelArms =
-          this.animateModelArms(
+    // Animate model body.
+    ModelPart body = this.getDefaultModelPart(ModelPartType.BODY);
+    boolean hasDefaultBody = body != null && this.hasDefaultModelPart(ModelPartType.BODY, body);
+    if (hasDefaultBody) {
+      hasAnimatedModelBody =
+          this.animateModelBody(
+              entity, attackData, modelData, body, ageInTicks, limbSwing, limbSwingAmount);
+    }
+
+    if (isHumanoidModel) {
+      // Animate model arms and model arm pose.
+      ModelArmPose modelArmPose = modelData.getModelArmPose();
+      if (modelArmPose == ModelArmPose.DEFAULT || modelArmPose == ModelArmPose.NEUTRAL) {
+        ModelPart rightArm = this.getDefaultModelPart(ModelPartType.RIGHT_ARM);
+        boolean hasDefaultRightArm =
+            rightArm != null && this.hasDefaultModelPart(ModelPartType.RIGHT_ARM, rightArm);
+        ModelPart leftArm = this.getDefaultModelPart(ModelPartType.LEFT_ARM);
+        boolean hasDefaultLeftArm =
+            leftArm != null && this.hasDefaultModelPart(ModelPartType.LEFT_ARM, leftArm);
+        hasAnimatedModelArms =
+            this.animateModelArms(
+                entity,
+                attackData,
+                modelData,
+                hasDefaultRightArm ? rightArm : null,
+                hasDefaultLeftArm ? leftArm : null,
+                ageInTicks,
+                limbSwing,
+                limbSwingAmount);
+      } else {
+        hasAnimatedModelArmPose =
+            this.animateModelArmPose(
+                entity,
+                modelArmPose,
+                attackData,
+                modelData,
+                limbSwing,
+                limbSwingAmount,
+                ageInTicks,
+                netHeadYaw,
+                headPitch);
+      }
+
+      // Animate model legs.
+      ModelPart rightLeg = this.getDefaultModelPart(ModelPartType.RIGHT_LEG);
+      ModelPart leftLeg = this.getDefaultModelPart(ModelPartType.LEFT_LEG);
+      hasAnimatedModelLegs =
+          this.animateModelLegs(
               entity,
               attackData,
               modelData,
-              hasDefaultRightArm ? rightArm : null,
-              hasDefaultLeftArm ? leftArm : null,
+              rightLeg != null && this.hasDefaultModelPart(ModelPartType.RIGHT_LEG, rightLeg)
+                  ? rightLeg
+                  : null,
+              leftLeg != null && this.hasDefaultModelPart(ModelPartType.LEFT_LEG, leftLeg)
+                  ? leftLeg
+                  : null,
               ageInTicks,
               limbSwing,
               limbSwingAmount);
     } else {
-      hasAnimatedModelArmPose =
-          this.animateModelArmPose(
+      // Animate model front legs.
+      ModelPart rightFrontLeg = this.getDefaultModelPart(ModelPartType.RIGHT_FRONT_LEG);
+      ModelPart leftFrontLeg = this.getDefaultModelPart(ModelPartType.LEFT_FRONT_LEG);
+      hasAnimatedModelFrontLegs =
+          this.animateModelFrontLegs(
               entity,
-              modelArmPose,
               attackData,
               modelData,
-              limbSwing,
-              limbSwingAmount,
+              rightFrontLeg != null
+                      && this.hasDefaultModelPart(ModelPartType.RIGHT_FRONT_LEG, rightFrontLeg)
+                  ? rightFrontLeg
+                  : null,
+              leftFrontLeg != null
+                      && this.hasDefaultModelPart(ModelPartType.LEFT_FRONT_LEG, leftFrontLeg)
+                  ? leftFrontLeg
+                  : null,
               ageInTicks,
-              netHeadYaw,
-              headPitch);
+              limbSwing,
+              limbSwingAmount);
+
+      // Animate model hind legs.
+      ModelPart rightHindLeg = this.getDefaultModelPart(ModelPartType.RIGHT_HIND_LEG);
+      ModelPart leftHindLeg = this.getDefaultModelPart(ModelPartType.LEFT_HIND_LEG);
+      hasAnimatedModelHindLegs =
+          this.animateModelHindLegs(
+              entity,
+              attackData,
+              modelData,
+              rightHindLeg != null
+                      && this.hasDefaultModelPart(ModelPartType.RIGHT_HIND_LEG, rightHindLeg)
+                  ? rightHindLeg
+                  : null,
+              leftHindLeg != null
+                      && this.hasDefaultModelPart(ModelPartType.LEFT_HIND_LEG, leftHindLeg)
+                  ? leftHindLeg
+                  : null,
+              ageInTicks,
+              limbSwing,
+              limbSwingAmount);
     }
 
-    // Animate model legs.
-    ModelPart rightLeg = this.getDefaultModelPart(ModelPartType.RIGHT_LEG);
-    hasDefaultRightLeg =
-        rightLeg != null && this.hasDefaultModelPart(ModelPartType.RIGHT_LEG, rightLeg);
-    ModelPart leftLeg = this.getDefaultModelPart(ModelPartType.LEFT_LEG);
-    hasDefaultLeftLeg =
-        leftLeg != null && this.hasDefaultModelPart(ModelPartType.LEFT_LEG, leftLeg);
-    this.animateModelLegs(
-        entity,
-        attackData,
-        modelData,
-        hasDefaultRightLeg ? rightLeg : null,
-        hasDefaultLeftLeg ? leftLeg : null,
-        ageInTicks,
-        limbSwing,
-        limbSwingAmount);
-
-    return !(hasDefaultHead
+    return !(!hasAnimatedModelHead
+        && !hasAnimatedModelBody
         && !hasAnimatedModelArms
         && !hasAnimatedModelArmPose
-        && hasDefaultRightArm
-        && hasDefaultLeftArm
-        && hasDefaultRightLeg
-        && hasDefaultLeftLeg);
+        && !hasAnimatedModelLegs
+        && !hasAnimatedModelFrontLegs
+        && !hasAnimatedModelHindLegs
+        && hasDefaultHead);
   }
 
   default boolean setupAnimation(
@@ -519,7 +616,7 @@ public interface EasyNPCModel<E extends Entity> {
             headPitch);
 
     // Handle additional model adjustments parts.
-    this.adjustDefaultModelParts(entity);
+    this.adjustDefaultModelParts(entity, easyNPC);
 
     return isCustomModelPose
         || (isDefaultModelPose && hasAdjustedDefaultModelPose)
