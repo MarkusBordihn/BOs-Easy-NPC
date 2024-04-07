@@ -50,7 +50,7 @@ public class MoveEasyNPCItem extends Item {
   public InteractionResult interactLivingEntity(
       ItemStack itemStack, Player player, LivingEntity livingEntity, InteractionHand hand) {
     if (!player.level().isClientSide
-        && livingEntity instanceof EasyNPCBaseEntity easyNPCBaseEntity
+        && livingEntity instanceof EasyNPCBaseEntity<?> easyNPCBaseEntity
         && player instanceof ServerPlayer serverPlayer
         && (serverPlayer.isCreative() || easyNPCBaseEntity.isOwner(serverPlayer))) {
       targetedLivingEntityMap.put(player, easyNPCBaseEntity);

@@ -52,6 +52,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -275,6 +276,32 @@ public interface EasyNPC<E extends PathfinderMob> extends Npc {
     ObjectiveData<E> objectiveData = getEasyNPCObjectiveData();
     if (objectiveData != null && entity != null) {
       objectiveData.onEasyNPCLeaveUpdateObjective(entity);
+    }
+  }
+
+  default void handleDieEvent(DamageSource damageSource) {
+    TradingData<E> tradingData = getEasyNPCTradingData();
+    if (tradingData != null) {
+      tradingData.stopTrading();
+    }
+
+    ActionEventData<E> actionEventData = getEasyNPCActionEventData();
+    if (actionEventData != null) {
+      actionEventData.handleActionDieEvent(damageSource);
+    }
+  }
+
+  default void handleChangeDimensionEvent(ServerLevel serverLevel) {
+    TradingData<E> tradingData = getEasyNPCTradingData();
+    if (tradingData != null) {
+      tradingData.stopTrading();
+    }
+  }
+
+  default void handleHurtEvent(DamageSource damageSource, float damage) {
+    ActionEventData<E> actionEventData = getEasyNPCActionEventData();
+    if (actionEventData != null) {
+      actionEventData.handleActionHurtEvent(damageSource, damage);
     }
   }
 

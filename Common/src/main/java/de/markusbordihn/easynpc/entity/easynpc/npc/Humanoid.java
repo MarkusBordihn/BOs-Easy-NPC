@@ -80,7 +80,7 @@ public class Humanoid extends EasyNPCBaseEntity<Humanoid> {
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
     soundDataSet.addSound(SoundType.DEATH, SoundEvents.PLAYER_DEATH);
     soundDataSet.addSound(SoundType.HURT, SoundEvents.PLAYER_HURT);
-    soundDataSet.addSound(SoundType.EAT, SoundEvents.PLAYER_HURT);
+    soundDataSet.addSound(SoundType.EAT, SoundEvents.GENERIC_EAT);
     return soundDataSet;
   }
 

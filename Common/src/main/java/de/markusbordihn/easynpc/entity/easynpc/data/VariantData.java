@@ -82,6 +82,14 @@ public interface VariantData<T extends PathfinderMob> extends EasyNPC<T> {
     return variant != null && variant.name().endsWith("_CROSSED_ARMS");
   }
 
+  default boolean hasVariantSaddled() {
+    return this.hasVariantSaddled(getVariant());
+  }
+
+  default boolean hasVariantSaddled(Enum<?> variant) {
+    return variant != null && variant.name().endsWith("_SADDLED");
+  }
+
   default void defineSynchedVariantData() {
     defineEasyNPCData(EASY_NPC_DATA_VARIANT, getDefaultVariant().name());
   }

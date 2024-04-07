@@ -34,13 +34,17 @@ public interface HumanoidLegAnimation {
     leftLegPart.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
   }
 
-  static void animateHumanoidModelLegs(
+  static boolean animateHumanoidModelLegs(
       ModelPart rightLegPart, ModelPart leftLegPart, float limbSwing, float limbSwingAmount) {
+    if (rightLegPart == null && leftLegPart == null) {
+      return false;
+    }
     if (rightLegPart != null) {
       animateHumanoidModelRightLegSwing(rightLegPart, limbSwing, limbSwingAmount);
     }
     if (leftLegPart != null) {
       animateHumanoidModelLeftLegSwing(leftLegPart, limbSwing, limbSwingAmount);
     }
+    return true;
   }
 }

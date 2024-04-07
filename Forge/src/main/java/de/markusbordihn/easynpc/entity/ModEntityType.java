@@ -98,6 +98,10 @@ public class ModEntityType {
       ENTITY_TYPES.register(Wolf.ID, () -> ModEntityTypes.WOLF);
   public static final RegistryObject<EntityType<Horse>> HORSE =
       ENTITY_TYPES.register(Horse.ID, () -> ModEntityTypes.HORSE);
+  public static final RegistryObject<EntityType<Horse>> SKELETON_HORSE =
+      ENTITY_TYPES.register(Horse.ID_SKELETON, () -> ModEntityTypes.SKELETON_HORSE);
+  public static final RegistryObject<EntityType<Horse>> ZOMBIE_HORSE =
+      ENTITY_TYPES.register(Horse.ID_ZOMBIE, () -> ModEntityTypes.ZOMBIE_HORSE);
 
   private ModEntityType() {}
 
@@ -127,5 +131,7 @@ public class ModEntityType {
     event.put(ORC_WARRIOR.get(), Orc.createAttributes().build());
     event.put(WOLF.get(), Wolf.createAttributes().build());
     event.put(HORSE.get(), Horse.createAttributes().build());
+    event.put(SKELETON_HORSE.get(), Horse.createAttributes().build());
+    event.put(ZOMBIE_HORSE.get(), Horse.createAttributes().build());
   }
 }

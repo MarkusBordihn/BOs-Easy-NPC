@@ -34,10 +34,16 @@ import net.minecraft.world.level.Level;
 public class Horse extends EasyNPCBaseEntity<Horse> {
 
   public static final String ID = "horse";
+  public static final String ID_ZOMBIE = "zombie_horse";
+  public static final String ID_SKELETON = "skeleton_horse";
   public static final String NAME = "Horse";
 
   public Horse(EntityType<? extends PathfinderMob> entityType, Level level) {
-    super(entityType, level, Variant.WHITE);
+    this(entityType, level, Variant.WHITE);
+  }
+
+  public Horse(EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variant) {
+    super(entityType, level, variant);
   }
 
   public static AttributeSupplier.Builder createAttributes() {
@@ -55,6 +61,16 @@ public class Horse extends EasyNPCBaseEntity<Horse> {
 
   @Override
   public boolean canUseArmor() {
+    return false;
+  }
+
+  @Override
+  public boolean canUseOffHand() {
+    return false;
+  }
+
+  @Override
+  public boolean canUseMainHand() {
     return false;
   }
 
@@ -101,15 +117,26 @@ public class Horse extends EasyNPCBaseEntity<Horse> {
   // Skin Details
   public enum Variant {
     WHITE,
+    WHITE_SADDLED,
     CREAMY,
+    CREAMY_SADDLED,
     CHESTNUT,
+    CHESTNUT_SADDLED,
     BROWN,
+    BROWN_SADDLED,
     BLACK,
+    BLACK_SADDLED,
     GRAY,
+    GRAY_SADDLED,
     DARKBROWN,
+    DARKBROWN_SADDLED,
     SKELETON,
+    SKELETON_SADDLED,
     ZOMBIE,
+    ZOMBIE_SADDLED,
     DONKEY,
+    DONKEY_SADDLED,
     MULE,
+    MULE_SADDLED,
   }
 }

@@ -303,14 +303,20 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
 
   @Override
   public boolean hurt(DamageSource damageSource, float damage) {
-    this.handleActionHurtEvent(damageSource, damage);
+    this.handleHurtEvent(damageSource, damage);
     return super.hurt(damageSource, damage);
   }
 
   @Override
   public void die(DamageSource damageSource) {
-    this.handleActionDieEvent(damageSource);
+    this.handleDieEvent(damageSource);
     super.die(damageSource);
+  }
+
+  @Override
+  public Entity changeDimension(ServerLevel serverLevel) {
+    this.handleChangeDimensionEvent(serverLevel);
+    return super.changeDimension(serverLevel);
   }
 
   @Override

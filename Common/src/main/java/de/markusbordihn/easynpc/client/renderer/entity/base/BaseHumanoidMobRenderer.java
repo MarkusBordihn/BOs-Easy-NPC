@@ -24,15 +24,18 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
 import java.util.Map;
+import net.minecraft.client.model.ArmedModel;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class BaseHumanoidMobRenderer<E extends EasyNPCBaseEntity<E>, V, M extends EntityModel<E>>
+public class BaseHumanoidMobRenderer<
+        E extends EasyNPCBaseEntity<E>, V, M extends EntityModel<E> & ArmedModel>
     extends MobRenderer<E, M> implements EasyNPCRenderer<E, M> {
 
   protected final Map<V, ResourceLocation> textures;
@@ -67,6 +70,7 @@ public class BaseHumanoidMobRenderer<E extends EasyNPCBaseEntity<E>, V, M extend
     this.defaultTexture = defaultTexture != null ? defaultTexture : Constants.BLANK_ENTITY_TEXTURE;
     this.textures = textures;
     this.texturesOverlay = texturesOverlay;
+    this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
   }
 
   @Override
