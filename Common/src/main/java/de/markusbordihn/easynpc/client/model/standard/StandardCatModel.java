@@ -24,15 +24,18 @@ import de.markusbordihn.easynpc.client.model.ModelHelper;
 import de.markusbordihn.easynpc.client.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import java.util.EnumMap;
 import java.util.Map;
+import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.model.OcelotModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.Rotations;
 import net.minecraft.world.entity.Entity;
 
-public class StandardCatModel<T extends Entity> extends OcelotModel<T> implements EasyNPCModel<T> {
+public class StandardCatModel<T extends Entity> extends OcelotModel<T>
+    implements EasyNPCModel<T>, HeadedModel {
 
   protected final Map<ModelPartType, CustomPosition> modelPartPositionMap =
       new EnumMap<>(ModelPartType.class);
@@ -83,7 +86,7 @@ public class StandardCatModel<T extends Entity> extends OcelotModel<T> implement
   }
 
   @Override
-  public void adjustDefaultModelParts(T entity) {
+  public void adjustDefaultModelParts(T entity, EasyNPC<?> easyNPC) {
     this.tail1.x = this.body.x;
     this.tail1.y = this.body.y + 3.0F;
     this.tail1.z = this.body.z + 18.0F;

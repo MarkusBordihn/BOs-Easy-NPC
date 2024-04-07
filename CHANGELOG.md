@@ -8,6 +8,19 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 4.3.1
+
+- Fixed Illager head and leg animations.
+- Fixed #138: Added additional debug information.
+- Fixed #135: Added check if NPC is already trading before opening a new trading screen and inform
+  the player about it.
+- Fixed #136: Added additional fallback check for missing sounds, before using the explosion sound.
+- Fixed #137: Correcting the item arm position for all model.
+- Added hand item render support for most NPCs even for chicken and others. ;)
+- Improved NPC model and NPC renderer by skipping rendering of invisible parts based on the model
+  type.
+- Unified initial movement speed for all NPCs according to their types.
+
 ### 4.3.0
 
 - Large code refactoring for better client-side performance to increase render fps.

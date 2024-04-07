@@ -99,11 +99,6 @@ public class Fairy extends EasyNPCBaseEntity<Fairy> {
   }
 
   @Override
-  public boolean canUseOffHand() {
-    return false;
-  }
-
-  @Override
   public Enum<?>[] getVariants() {
     return Variant.values();
   }

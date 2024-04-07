@@ -19,23 +19,27 @@
 
 package de.markusbordihn.easynpc.client.model.standard;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.client.model.ModelHelper;
 import de.markusbordihn.easynpc.client.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import java.util.EnumMap;
 import java.util.Map;
+import net.minecraft.client.model.ArmedModel;
 import net.minecraft.client.model.ChickenModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.Rotations;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.HumanoidArm;
 
 public class StandardChickenModel<T extends Entity> extends ChickenModel<T>
-    implements EasyNPCModel<T> {
+    implements EasyNPCModel<T>, ArmedModel {
 
   protected final Map<ModelPartType, CustomPosition> modelPartPositionMap =
       new EnumMap<>(ModelPartType.class);
@@ -88,13 +92,13 @@ public class StandardChickenModel<T extends Entity> extends ChickenModel<T>
   }
 
   @Override
-  public void adjustDefaultModelParts(T entity) {
+  public void adjustDefaultModelParts(T entity, EasyNPC<?> easyNPC) {
     this.beak.copyFrom(head);
     this.redThing.copyFrom(head);
   }
 
   @Override
-  public void animateModelHead(
+  public boolean animateModelHead(
       T entity,
       AttackData<?> attackData,
       ModelData<?> modelData,
@@ -104,6 +108,7 @@ public class StandardChickenModel<T extends Entity> extends ChickenModel<T>
       float headPitch) {
     headPart.xRot = headPitch * Constants.PI_180DEG;
     headPart.yRot = netHeadYaw * Constants.PI_180DEG;
+    return true;
   }
 
   @Override
@@ -177,5 +182,20 @@ public class StandardChickenModel<T extends Entity> extends ChickenModel<T>
   @Override
   public ModelPart getDefaultModelPart(ModelPartType modelPartType) {
     return this.modelPartMap.getOrDefault(modelPartType, null);
+  }
+
+  private ModelPart getArm(HumanoidArm humanoidArm) {
+    return humanoidArm == HumanoidArm.LEFT ? this.leftWing : this.rightWing;
+  }
+
+  public ModelPart getHead() {
+    return this.head;
+  }
+
+  public void translateToHand(HumanoidArm humanoidArm, PoseStack poseStack) {
+    this.getArm(humanoidArm).translateAndRotate(poseStack);
+    poseStack.translate(0.0, -0.2, 0.1);
+    poseStack.scale(0.7F, 0.7F, 0.7F);
+    poseStack.translate(0.0625, 0.0, 0.0);
   }
 }

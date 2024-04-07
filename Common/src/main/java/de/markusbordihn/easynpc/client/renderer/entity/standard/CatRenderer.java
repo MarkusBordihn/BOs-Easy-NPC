@@ -24,6 +24,7 @@ import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.client.model.standard.StandardCatModel;
 import de.markusbordihn.easynpc.client.renderer.entity.base.BaseMobRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.CatCollarLayer;
+import de.markusbordihn.easynpc.client.renderer.entity.layers.HeldItemLayer;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Cat.Variant;
 import java.util.EnumMap;
@@ -66,6 +67,7 @@ public class CatRenderer extends BaseMobRenderer<Cat, Variant, StandardCatModel<
         DEFAULT_TEXTURE,
         TEXTURE_BY_VARIANT);
     this.addLayer(new CatCollarLayer<>(this, context.getModelSet()));
+    this.addLayer(new HeldItemLayer<>(this, context.getItemInHandRenderer(), -0.05, 0.10, -0.5));
   }
 
   @Override

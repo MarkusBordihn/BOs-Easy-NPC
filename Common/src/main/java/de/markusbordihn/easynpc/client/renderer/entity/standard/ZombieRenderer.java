@@ -35,7 +35,6 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.client.renderer.entity.layers.ElytraLayer;
-import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Pose;
@@ -78,7 +77,6 @@ public class ZombieRenderer
             humanoidArmorLayerClass));
     this.addLayer(
         new CustomHeadLayer<>(this, context.getModelSet(), context.getItemInHandRenderer()));
-    this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
     this.addLayer(new OuterLayer<>(this, context.getModelSet(), OUTER_TEXTURE_BY_VARIANT));
     this.addLayer(new ElytraLayer<>(this, context.getModelSet()));
   }

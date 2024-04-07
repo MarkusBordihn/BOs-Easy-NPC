@@ -46,8 +46,6 @@ public class TextureManager {
   private static final String TEXTURE_PREFIX = Constants.MOD_ID + "_client_texture_";
   private static final String LOG_PREFIX = "[Texture Manager]";
 
-  private static Path textureCachePath = null;
-
   private TextureManager() {}
 
   public static ResourceLocation addCustomTexture(TextureModelKey textureModelKey, File file) {

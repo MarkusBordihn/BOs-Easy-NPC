@@ -138,7 +138,7 @@ public interface SoundData<E extends PathfinderMob> extends EasyNPC<E> {
             soundEvent,
             soundDataEntry.getVolume(),
             soundDataEntry.getPitch()
-                + +(EasyNPC.randomNumber.nextFloat() - EasyNPC.randomNumber.nextFloat()) * 0.3F);
+                + (EasyNPC.randomNumber.nextFloat() - EasyNPC.randomNumber.nextFloat()) * 0.3F);
       }
     }
   }
