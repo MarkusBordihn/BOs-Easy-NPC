@@ -93,6 +93,14 @@ public interface SoundData<E extends PathfinderMob> extends EasyNPC<E> {
     return this.getDefaultSound(soundType).getSoundEvent();
   }
 
+  default void playDefaultTradeUpdatedSound(boolean yesSound) {
+    if (yesSound) {
+      this.playDefaultSound(SoundType.TRADE_YES);
+    } else {
+      this.playDefaultSound(SoundType.TRADE_NO);
+    }
+  }
+
   default void playDefaultAmbientSound() {
     OwnerData<E> ownerData = this.getEasyNPCOwnerData();
     if (ownerData != null && ownerData.hasOwner()) {

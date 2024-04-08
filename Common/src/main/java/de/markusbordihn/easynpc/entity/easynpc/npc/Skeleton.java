@@ -102,10 +102,12 @@ public class Skeleton extends EasyNPCBaseEntity<Skeleton> {
         soundDataSet.addSound(SoundType.HURT, SoundEvents.SKELETON_HURT);
         soundDataSet.addSound(SoundType.STEP, SoundEvents.SKELETON_STEP);
     }
+    soundDataSet.addSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
+    soundDataSet.addSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
+    soundDataSet.addSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
   }
 
-  // Skin Details
   public enum Variant {
     SKELETON,
     STRAY,

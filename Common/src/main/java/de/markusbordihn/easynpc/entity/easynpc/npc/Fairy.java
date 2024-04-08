@@ -20,7 +20,10 @@
 package de.markusbordihn.easynpc.entity.easynpc.npc;
 
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.sound.SoundDataSet;
+import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -133,7 +136,18 @@ public class Fairy extends EasyNPCBaseEntity<Fairy> {
     return true;
   }
 
-  // Skin Details
+  @Override
+  public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
+    soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.PARROT_AMBIENT);
+    soundDataSet.addSound(SoundType.DEATH, SoundEvents.PARROT_DEATH);
+    soundDataSet.addSound(SoundType.HURT, SoundEvents.PARROT_HURT);
+    soundDataSet.addSound(SoundType.EAT, SoundEvents.PARROT_EAT);
+    soundDataSet.addSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
+    soundDataSet.addSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
+    soundDataSet.addSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
+    return soundDataSet;
+  }
+
   public enum Variant {
     GREEN,
     RED,

@@ -128,10 +128,11 @@ public class Villager extends EasyNPCBaseEntity<Villager> {
     soundDataSet.addSound(SoundType.DEATH, SoundEvents.VILLAGER_DEATH);
     soundDataSet.addSound(SoundType.HURT, SoundEvents.VILLAGER_HURT);
     soundDataSet.addSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
+    soundDataSet.addSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
+    soundDataSet.addSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
   }
 
-  // Variants
   public enum Variant {
     DEFAULT,
     DESERT,

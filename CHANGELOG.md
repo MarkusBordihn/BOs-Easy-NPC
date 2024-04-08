@@ -8,6 +8,11 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 4.3.2
+
+- Added basic trading sound for all NPCs.
+- Possible fix for #145 by adding specific Java markers.
+
 ### 4.3.1
 
 - Fixed Illager head and leg animations.
