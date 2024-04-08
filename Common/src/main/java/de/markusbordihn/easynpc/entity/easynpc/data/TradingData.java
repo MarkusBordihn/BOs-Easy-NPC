@@ -23,7 +23,6 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.trading.TradingSettings;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -36,7 +35,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.Merchant;
 import net.minecraft.world.item.trading.MerchantOffer;
@@ -99,10 +97,6 @@ public interface TradingData<T extends PathfinderMob> extends EasyNPC<T> {
     EntityDataSerializers.registerSerializer(MERCHANT_OFFERS);
     EntityDataSerializers.registerSerializer(TRADING_TYPE);
   }
-
-  Player getTradingPlayer();
-
-  void setTradingPlayer(@Nullable Player player);
 
   void updateTradesData();
 
@@ -253,12 +247,11 @@ public interface TradingData<T extends PathfinderMob> extends EasyNPC<T> {
         || getTradingType() == TradingType.CUSTOM;
   }
 
-  default boolean isTrading() {
-    return this.getTradingPlayer() != null;
-  }
-
   default void stopTrading() {
-    this.setTradingPlayer(null);
+    Merchant merchant = this.getMerchant();
+    if (merchant != null) {
+      merchant.setTradingPlayer(null);
+    }
   }
 
   default void setAdvancedTradingMaxUses(int tradingOfferIndex, int maxUses) {
@@ -396,21 +389,22 @@ public interface TradingData<T extends PathfinderMob> extends EasyNPC<T> {
             serverPlayer);
         return InteractionResult.PASS;
       }
-      if (this.isTrading() && this.getTradingPlayer() != serverPlayer) {
+      if (merchant.getTradingPlayer() != null && merchant.getTradingPlayer() != serverPlayer) {
         log.warn(
             "Unable to open trading screen for {} with {} from {}, {} is still trading.",
             this,
             merchant.getOffers(),
             serverPlayer,
-            this.getTradingPlayer());
+            merchant.getTradingPlayer());
         serverPlayer.sendMessage(
-            new TranslatableComponent(Constants.TEXT_PREFIX + "trading.busy", getTradingPlayer()),
+            new TranslatableComponent(
+                Constants.TEXT_PREFIX + "trading.busy", merchant.getTradingPlayer()),
             this.getUUID());
         return InteractionResult.PASS;
       }
       log.debug(
           "Open trading screen for {} with {} from {}", this, merchant.getOffers(), serverPlayer);
-      this.setTradingPlayer(serverPlayer);
+      merchant.setTradingPlayer(serverPlayer);
       merchant.openTradingScreen(
           serverPlayer,
           this.getEntity().getCustomName() != null
