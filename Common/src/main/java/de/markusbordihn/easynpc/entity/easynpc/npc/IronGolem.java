@@ -100,10 +100,12 @@ public class IronGolem extends EasyNPCBaseEntity<IronGolem> {
     soundDataSet.addSound(SoundType.DEATH, SoundEvents.IRON_GOLEM_DEATH);
     soundDataSet.addSound(SoundType.HURT, SoundEvents.IRON_GOLEM_HURT);
     soundDataSet.addSound(SoundType.STEP, SoundEvents.IRON_GOLEM_STEP);
+    soundDataSet.addSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
+    soundDataSet.addSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
+    soundDataSet.addSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
   }
 
-  // Skin Details
   public enum Variant {
     IRON_GOLEM,
     IRON_GOLEM_CRACKINESS_HIGH,
