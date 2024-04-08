@@ -234,30 +234,37 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
     return this.getLevel().isClientSide();
   }
 
+  @Override
   public Player getTradingPlayer() {
     return this.tradingPlayer;
   }
 
+  @Override
   public void setTradingPlayer(Player player) {
     this.tradingPlayer = player;
   }
 
+  @Override
   public boolean showProgressBar() {
     return true;
   }
 
+  @Override
   public int getVillagerXp() {
     return 0;
   }
 
+  @Override
   public void overrideOffers(MerchantOffers merchantOffers) {
     /* Method is not used */
   }
 
+  @Override
   public void overrideXp(int experience) {
     /* Method is not used */
   }
 
+  @Override
   public void notifyTrade(MerchantOffer merchantOffer) {
     merchantOffer.increaseUses();
     this.ambientSoundTime = -this.getAmbientSoundInterval();
@@ -267,20 +274,15 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
     }
   }
 
+  @Override
   public void notifyTradeUpdated(ItemStack itemStack) {
     if (!this.isClientSide() && this.ambientSoundTime > -this.getAmbientSoundInterval() + 20) {
       this.ambientSoundTime = -this.getAmbientSoundInterval();
-      this.playSound(
-          this.getTradeUpdatedSound(!itemStack.isEmpty()),
-          this.getSoundVolume(),
-          this.getVoicePitch());
+      this.playDefaultTradeUpdatedSound(!itemStack.isEmpty());
     }
   }
 
-  protected SoundEvent getTradeUpdatedSound(boolean yesSound) {
-    return yesSound ? SoundEvents.VILLAGER_YES : SoundEvents.VILLAGER_NO;
-  }
-
+  @Override
   public SoundEvent getNotifyTradeSound() {
     return SoundEvents.VILLAGER_YES;
   }
@@ -377,6 +379,7 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
     return InteractionResult.PASS;
   }
 
+  @Override
   public MerchantOffers getOffers() {
     if (this.offers == null) {
       this.updateTradesData();
@@ -384,15 +387,14 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
     return this.offers;
   }
 
+  @Override
   public int getNPCDataVersion() {
     return this.npcDataVersion;
   }
 
+  @Override
   public void setNPCDataVersion(int version) {
     this.npcDataVersion = version;
-  }
-
-  protected void updateTrades() {
   }
 
   @Override
@@ -411,7 +413,6 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
                   || merchantOffer.getResult().isEmpty());
       this.offers = merchantOffers;
     }
-    updateTrades();
   }
 
   @Override
@@ -690,5 +691,21 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
     super.readAdditionalSaveData(compoundTag);
     this.readPersistentAngerSaveData(this.level, compoundTag);
     this.readEasyNPCAdditionalSaveData(compoundTag);
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (this == object) {
+      return true;
+    }
+    if (!(object instanceof EasyNPCBaseEntity<?> easyNPCBaseEntity)) {
+      return false;
+    }
+    return java.util.Objects.equals(this.getUUID(), easyNPCBaseEntity.getUUID());
+  }
+
+  @Override
+  public int hashCode() {
+    return java.util.Objects.hash(this.getUUID());
   }
 }

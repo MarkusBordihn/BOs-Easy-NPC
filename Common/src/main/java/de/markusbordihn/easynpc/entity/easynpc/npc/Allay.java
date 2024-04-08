@@ -109,10 +109,12 @@ public class Allay extends EasyNPCBaseEntity<Allay> {
     soundDataSet.addSound(SoundType.DEATH, SoundEvents.PARROT_DEATH);
     soundDataSet.addSound(SoundType.HURT, SoundEvents.PARROT_HURT);
     soundDataSet.addSound(SoundType.EAT, SoundEvents.PARROT_EAT);
+    soundDataSet.addSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
+    soundDataSet.addSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
+    soundDataSet.addSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
   }
 
-  // Skin Details
   public enum Variant {
     DEFAULT,
     LAVA,
