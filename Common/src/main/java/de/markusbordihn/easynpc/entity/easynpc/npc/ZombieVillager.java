@@ -102,10 +102,12 @@ public class ZombieVillager extends EasyNPCBaseEntity<ZombieVillager> {
     soundDataSet.addSound(SoundType.HURT, SoundEvents.ZOMBIE_VILLAGER_HURT);
     soundDataSet.addSound(SoundType.DEATH, SoundEvents.ZOMBIE_VILLAGER_DEATH);
     soundDataSet.addSound(SoundType.STEP, SoundEvents.ZOMBIE_VILLAGER_STEP);
+    soundDataSet.addSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
+    soundDataSet.addSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
+    soundDataSet.addSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
   }
 
-  // Variants
   public enum Variant {
     DEFAULT,
     DESERT,

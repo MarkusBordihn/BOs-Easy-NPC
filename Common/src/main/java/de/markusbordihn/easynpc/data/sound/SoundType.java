@@ -35,4 +35,6 @@ public enum SoundType {
   STEP,
   SWIM,
   TRADE,
+  TRADE_YES,
+  TRADE_NO,
 }

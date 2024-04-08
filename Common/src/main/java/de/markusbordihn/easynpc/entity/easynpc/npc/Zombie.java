@@ -103,10 +103,12 @@ public class Zombie extends EasyNPCBaseEntity<Zombie> {
         soundDataSet.addSound(SoundType.STEP, SoundEvents.ZOMBIE_STEP);
         break;
     }
+    soundDataSet.addSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
+    soundDataSet.addSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
+    soundDataSet.addSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
   }
 
-  // Skin Details
   public enum Variant {
     DROWNED,
     HUSK,
