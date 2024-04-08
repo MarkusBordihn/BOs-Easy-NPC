@@ -35,7 +35,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.Merchant;
 import net.minecraft.world.item.trading.MerchantOffer;
@@ -98,10 +97,6 @@ public interface TradingData<T extends PathfinderMob> extends EasyNPC<T> {
     EntityDataSerializers.registerSerializer(MERCHANT_OFFERS);
     EntityDataSerializers.registerSerializer(TRADING_TYPE);
   }
-
-  Player getTradingPlayer();
-
-  void setTradingPlayer(Player player);
 
   void updateTradesData();
 
@@ -252,12 +247,11 @@ public interface TradingData<T extends PathfinderMob> extends EasyNPC<T> {
         || getTradingType() == TradingType.CUSTOM;
   }
 
-  default boolean isTrading() {
-    return this.getTradingPlayer() != null;
-  }
-
   default void stopTrading() {
-    this.setTradingPlayer(null);
+    Merchant merchant = this.getMerchant();
+    if (merchant != null) {
+      merchant.setTradingPlayer(null);
+    }
   }
 
   default void setAdvancedTradingMaxUses(int tradingOfferIndex, int maxUses) {
@@ -395,20 +389,21 @@ public interface TradingData<T extends PathfinderMob> extends EasyNPC<T> {
             serverPlayer);
         return InteractionResult.PASS;
       }
-      if (this.isTrading() && this.getTradingPlayer() != serverPlayer) {
+      if (merchant.getTradingPlayer() != null && merchant.getTradingPlayer() != serverPlayer) {
         log.warn(
             "Unable to open trading screen for {} with {} from {}, {} is still trading.",
             this,
             merchant.getOffers(),
             serverPlayer,
-            this.getTradingPlayer());
+            merchant.getTradingPlayer());
         serverPlayer.sendSystemMessage(
-            Component.translatable(Constants.TEXT_PREFIX + "trading.busy", getTradingPlayer()));
+            Component.translatable(
+                Constants.TEXT_PREFIX + "trading.busy", merchant.getTradingPlayer()));
         return InteractionResult.PASS;
       }
       log.debug(
           "Open trading screen for {} with {} from {}", this, merchant.getOffers(), serverPlayer);
-      this.setTradingPlayer(serverPlayer);
+      merchant.setTradingPlayer(serverPlayer);
       merchant.openTradingScreen(
           serverPlayer,
           this.getEntity().getCustomName() != null
