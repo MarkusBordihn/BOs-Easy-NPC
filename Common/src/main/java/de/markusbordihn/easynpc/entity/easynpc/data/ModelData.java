@@ -25,14 +25,17 @@ import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
+import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
+import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -104,95 +107,6 @@ public interface ModelData<T extends PathfinderMob> extends EasyNPC<T> {
           return scale;
         }
       };
-  EntityDataAccessor<ModelPose> EASY_NPC_DATA_MODEL_POSE =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), MODEL_POSE);
-  EntityDataAccessor<CustomPosition> EASY_NPC_DATA_MODEL_HEAD_POSITION =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), POSITION);
-  EntityDataAccessor<CustomPosition> EASY_NPC_DATA_MODEL_BODY_POSITION =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), POSITION);
-  EntityDataAccessor<CustomPosition> EASY_NPC_DATA_MODEL_ARMS_POSITION =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), POSITION);
-  EntityDataAccessor<CustomPosition> EASY_NPC_DATA_MODEL_LEFT_ARM_POSITION =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), POSITION);
-  EntityDataAccessor<CustomPosition> EASY_NPC_DATA_MODEL_RIGHT_ARM_POSITION =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), POSITION);
-  EntityDataAccessor<CustomPosition> EASY_NPC_DATA_MODEL_LEFT_LEG_POSITION =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), POSITION);
-  EntityDataAccessor<CustomPosition> EASY_NPC_DATA_MODEL_RIGHT_LEG_POSITION =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), POSITION);
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_MODEL_LOCK_ROTATION =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<CustomRotation> EASY_NPC_DATA_MODEL_HEAD_ROTATION =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), ROTATION);
-  EntityDataAccessor<CustomRotation> EASY_NPC_DATA_MODEL_BODY_ROTATION =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), ROTATION);
-  EntityDataAccessor<CustomRotation> EASY_NPC_DATA_MODEL_ARMS_ROTATION =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), ROTATION);
-  EntityDataAccessor<CustomRotation> EASY_NPC_DATA_MODEL_LEFT_ARM_ROTATION =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), ROTATION);
-  EntityDataAccessor<CustomRotation> EASY_NPC_DATA_MODEL_RIGHT_ARM_ROTATION =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), ROTATION);
-  EntityDataAccessor<CustomRotation> EASY_NPC_DATA_MODEL_LEFT_LEG_ROTATION =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), ROTATION);
-  EntityDataAccessor<CustomRotation> EASY_NPC_DATA_MODEL_RIGHT_LEG_ROTATION =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), ROTATION);
-  EntityDataAccessor<CustomRotation> EASY_NPC_DATA_MODEL_ROOT_ROTATION =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), ROTATION);
-
-  EntityDataAccessor<CustomScale> EASY_NPC_DATA_MODEL_HEAD_SCALE =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), SCALE);
-  EntityDataAccessor<CustomScale> EASY_NPC_DATA_MODEL_BODY_SCALE =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), SCALE);
-  EntityDataAccessor<CustomScale> EASY_NPC_DATA_MODEL_ARMS_SCALE =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), SCALE);
-  EntityDataAccessor<CustomScale> EASY_NPC_DATA_MODEL_LEFT_ARM_SCALE =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), SCALE);
-  EntityDataAccessor<CustomScale> EASY_NPC_DATA_MODEL_RIGHT_ARM_SCALE =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), SCALE);
-  EntityDataAccessor<CustomScale> EASY_NPC_DATA_MODEL_LEFT_LEG_SCALE =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), SCALE);
-  EntityDataAccessor<CustomScale> EASY_NPC_DATA_MODEL_RIGHT_LEG_SCALE =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), SCALE);
-
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_MODEL_HEAD_VISIBLE =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_MODEL_BODY_VISIBLE =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_MODEL_ARMS_VISIBLE =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_MODEL_LEFT_ARM_VISIBLE =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_MODEL_RIGHT_ARM_VISIBLE =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_MODEL_LEFT_LEG_VISIBLE =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_MODEL_RIGHT_LEG_VISIBLE =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_MODEL_HELMET_VISIBLE =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_MODEL_CHESTPLATE_VISIBLE =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_MODEL_LEGGINGS_VISIBLE =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_MODEL_BOOTS_VISIBLE =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_MODEL_SMART_ANIMATIONS =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-
   String EASY_NPC_DATA_MODEL_ARMS_TAG = "Arms";
   String EASY_NPC_DATA_MODEL_BODY_TAG = "Body";
   String EASY_NPC_DATA_MODEL_BOOTS_TAG = "Boots";
@@ -214,10 +128,99 @@ public interface ModelData<T extends PathfinderMob> extends EasyNPC<T> {
   String EASY_NPC_DATA_MODEL_SCALE_TAG = "Scale";
   String EASY_NPC_DATA_MODEL_VISIBLE_TAG = "Visible";
   String EASY_NPC_DATA_MODEL_SMART_ANIMATIONS_TAG = "SmartAnimations";
-
   CustomPosition DEFAULT_MODEL_PART_POSITION = new CustomPosition(0, 0, 0);
   CustomRotation DEFAULT_MODEL_PART_ROTATION = new CustomRotation(0, 0, 0);
   CustomScale DEFAULT_MODEL_PART_SCALE = new CustomScale(1, 1, 1);
+
+  static void registerSyncedModelData(
+      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
+    log.info("- Registering Synched Model Data for {}.", entityClass.getSimpleName());
+    map.put(SynchedDataIndex.MODEL_POSE, SynchedEntityData.defineId(entityClass, MODEL_POSE));
+    map.put(
+        SynchedDataIndex.MODEL_HEAD_POSITION, SynchedEntityData.defineId(entityClass, POSITION));
+    map.put(
+        SynchedDataIndex.MODEL_BODY_POSITION, SynchedEntityData.defineId(entityClass, POSITION));
+    map.put(
+        SynchedDataIndex.MODEL_ARMS_POSITION, SynchedEntityData.defineId(entityClass, POSITION));
+    map.put(
+        SynchedDataIndex.MODEL_LEFT_ARM_POSITION,
+        SynchedEntityData.defineId(entityClass, POSITION));
+    map.put(
+        SynchedDataIndex.MODEL_RIGHT_ARM_POSITION,
+        SynchedEntityData.defineId(entityClass, POSITION));
+    map.put(
+        SynchedDataIndex.MODEL_LEFT_LEG_POSITION,
+        SynchedEntityData.defineId(entityClass, POSITION));
+    map.put(
+        SynchedDataIndex.MODEL_RIGHT_LEG_POSITION,
+        SynchedEntityData.defineId(entityClass, POSITION));
+    map.put(
+        SynchedDataIndex.MODEL_LOCK_ROTATION,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.MODEL_HEAD_ROTATION, SynchedEntityData.defineId(entityClass, ROTATION));
+    map.put(
+        SynchedDataIndex.MODEL_BODY_ROTATION, SynchedEntityData.defineId(entityClass, ROTATION));
+    map.put(
+        SynchedDataIndex.MODEL_ARMS_ROTATION, SynchedEntityData.defineId(entityClass, ROTATION));
+    map.put(
+        SynchedDataIndex.MODEL_LEFT_ARM_ROTATION,
+        SynchedEntityData.defineId(entityClass, ROTATION));
+    map.put(
+        SynchedDataIndex.MODEL_RIGHT_ARM_ROTATION,
+        SynchedEntityData.defineId(entityClass, ROTATION));
+    map.put(
+        SynchedDataIndex.MODEL_LEFT_LEG_ROTATION,
+        SynchedEntityData.defineId(entityClass, ROTATION));
+    map.put(
+        SynchedDataIndex.MODEL_RIGHT_LEG_ROTATION,
+        SynchedEntityData.defineId(entityClass, ROTATION));
+    map.put(
+        SynchedDataIndex.MODEL_ROOT_ROTATION, SynchedEntityData.defineId(entityClass, ROTATION));
+    map.put(SynchedDataIndex.MODEL_HEAD_SCALE, SynchedEntityData.defineId(entityClass, SCALE));
+    map.put(SynchedDataIndex.MODEL_BODY_SCALE, SynchedEntityData.defineId(entityClass, SCALE));
+    map.put(SynchedDataIndex.MODEL_ARMS_SCALE, SynchedEntityData.defineId(entityClass, SCALE));
+    map.put(SynchedDataIndex.MODEL_LEFT_ARM_SCALE, SynchedEntityData.defineId(entityClass, SCALE));
+    map.put(SynchedDataIndex.MODEL_RIGHT_ARM_SCALE, SynchedEntityData.defineId(entityClass, SCALE));
+    map.put(SynchedDataIndex.MODEL_LEFT_LEG_SCALE, SynchedEntityData.defineId(entityClass, SCALE));
+    map.put(SynchedDataIndex.MODEL_RIGHT_LEG_SCALE, SynchedEntityData.defineId(entityClass, SCALE));
+    map.put(
+        SynchedDataIndex.MODEL_HEAD_VISIBLE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.MODEL_BODY_VISIBLE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.MODEL_ARMS_VISIBLE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.MODEL_LEFT_ARM_VISIBLE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.MODEL_RIGHT_ARM_VISIBLE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.MODEL_LEFT_LEG_VISIBLE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.MODEL_RIGHT_LEG_VISIBLE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.MODEL_HELMET_VISIBLE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.MODEL_CHESTPLATE_VISIBLE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.MODEL_LEGGINGS_VISIBLE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.MODEL_BOOTS_VISIBLE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.MODEL_SMART_ANIMATIONS,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+  }
 
   static void registerModelDataSerializer() {
     EntityDataSerializers.registerSerializer(MODEL_POSE);
@@ -235,11 +238,11 @@ public interface ModelData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default ModelPose getModelPose() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_POSE);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_POSE);
   }
 
   default void setModelPose(ModelPose modelPose) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_POSE, modelPose);
+    setSynchedEntityData(SynchedDataIndex.MODEL_POSE, modelPose);
   }
 
   default CustomPosition getModelPartPosition(ModelPart modelPart) {
@@ -308,283 +311,284 @@ public interface ModelData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default CustomPosition getModelHeadPosition() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_HEAD_POSITION);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_HEAD_POSITION);
   }
 
   default void setModelHeadPosition(CustomPosition modelHeadPosition) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_HEAD_POSITION, modelHeadPosition);
+    setSynchedEntityData(SynchedDataIndex.MODEL_HEAD_POSITION, modelHeadPosition);
   }
 
   default CustomPosition getModelBodyPosition() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_BODY_POSITION);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_BODY_POSITION);
   }
 
   default void setModelBodyPosition(CustomPosition modelBodyPosition) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_BODY_POSITION, modelBodyPosition);
+    setSynchedEntityData(SynchedDataIndex.MODEL_BODY_POSITION, modelBodyPosition);
   }
 
   default CustomPosition getModelArmsPosition() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_ARMS_POSITION);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_ARMS_POSITION);
   }
 
   default void setModelArmsPosition(CustomPosition modelArmsPosition) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_ARMS_POSITION, modelArmsPosition);
+    setSynchedEntityData(SynchedDataIndex.MODEL_ARMS_POSITION, modelArmsPosition);
   }
 
   default CustomPosition getModelLeftArmPosition() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_ARM_POSITION);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_LEFT_ARM_POSITION);
   }
 
   default void setModelLeftArmPosition(CustomPosition modelLeftArmPosition) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_ARM_POSITION, modelLeftArmPosition);
+    setSynchedEntityData(SynchedDataIndex.MODEL_LEFT_ARM_POSITION, modelLeftArmPosition);
   }
 
   default CustomPosition getModelRightArmPosition() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_ARM_POSITION);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_ARM_POSITION);
   }
 
   default void setModelRightArmPosition(CustomPosition modelRightArmPosition) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_ARM_POSITION, modelRightArmPosition);
+    setSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_ARM_POSITION, modelRightArmPosition);
   }
 
   default CustomPosition getModelLeftLegPosition() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_LEG_POSITION);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_LEFT_LEG_POSITION);
   }
 
   default void setModelLeftLegPosition(CustomPosition modelLeftLegPosition) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_LEG_POSITION, modelLeftLegPosition);
+    setSynchedEntityData(SynchedDataIndex.MODEL_LEFT_LEG_POSITION, modelLeftLegPosition);
   }
 
   default CustomPosition getModelRightLegPosition() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_LEG_POSITION);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_LEG_POSITION);
   }
 
   default void setModelRightLegPosition(CustomPosition modelRightLegPosition) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_LEG_POSITION, modelRightLegPosition);
+    setSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_LEG_POSITION, modelRightLegPosition);
   }
 
   default boolean getModelLockRotation() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_LOCK_ROTATION);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_LOCK_ROTATION);
   }
 
   default void setModelLockRotation(boolean modelLockRotation) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_LOCK_ROTATION, modelLockRotation);
+    setSynchedEntityData(SynchedDataIndex.MODEL_LOCK_ROTATION, modelLockRotation);
   }
 
   default CustomRotation getModelHeadRotation() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_HEAD_ROTATION);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_HEAD_ROTATION);
   }
 
   default void setModelHeadRotation(CustomRotation modelHeadRotation) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_HEAD_ROTATION, modelHeadRotation);
+    setSynchedEntityData(SynchedDataIndex.MODEL_HEAD_ROTATION, modelHeadRotation);
   }
 
   default CustomRotation getModelBodyRotation() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_BODY_ROTATION);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_BODY_ROTATION);
   }
 
   default void setModelBodyRotation(CustomRotation modelBodyRotation) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_BODY_ROTATION, modelBodyRotation);
+    setSynchedEntityData(SynchedDataIndex.MODEL_BODY_ROTATION, modelBodyRotation);
   }
 
   default CustomRotation getModelArmsRotation() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_ARMS_ROTATION);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_ARMS_ROTATION);
   }
 
   default void setModelArmsRotation(CustomRotation modelArmsRotation) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_ARMS_ROTATION, modelArmsRotation);
+    setSynchedEntityData(SynchedDataIndex.MODEL_ARMS_ROTATION, modelArmsRotation);
   }
 
   default CustomRotation getModelLeftArmRotation() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_ARM_ROTATION);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_LEFT_ARM_ROTATION);
   }
 
   default void setModelLeftArmRotation(CustomRotation modelLeftArmRotation) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_ARM_ROTATION, modelLeftArmRotation);
+    setSynchedEntityData(SynchedDataIndex.MODEL_LEFT_ARM_ROTATION, modelLeftArmRotation);
   }
 
   default CustomRotation getModelRightArmRotation() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_ARM_ROTATION);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_ARM_ROTATION);
   }
 
   default void setModelRightArmRotation(CustomRotation modelRightArmRotation) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_ARM_ROTATION, modelRightArmRotation);
+    setSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_ARM_ROTATION, modelRightArmRotation);
   }
 
   default CustomRotation getModelLeftLegRotation() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_LEG_ROTATION);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_LEFT_LEG_ROTATION);
   }
 
   default void setModelLeftLegRotation(CustomRotation modelLeftLegRotation) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_LEG_ROTATION, modelLeftLegRotation);
+    setSynchedEntityData(SynchedDataIndex.MODEL_LEFT_LEG_ROTATION, modelLeftLegRotation);
   }
 
   default CustomRotation getModelRightLegRotation() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_LEG_ROTATION);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_LEG_ROTATION);
   }
 
   default void setModelRightLegRotation(CustomRotation modelRightLegRotation) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_LEG_ROTATION, modelRightLegRotation);
+    setSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_LEG_ROTATION, modelRightLegRotation);
   }
 
   default CustomRotation getModelRootRotation() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_ROOT_ROTATION);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_ROOT_ROTATION);
   }
 
   default void setModelRootRotation(CustomRotation modelRootRotation) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_ROOT_ROTATION, modelRootRotation);
+    setSynchedEntityData(SynchedDataIndex.MODEL_ROOT_ROTATION, modelRootRotation);
   }
 
   default CustomScale getModelHeadScale() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_HEAD_SCALE);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_HEAD_SCALE);
   }
 
   default void setModelHeadScale(CustomScale modelHeadScale) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_HEAD_SCALE, modelHeadScale);
+    setSynchedEntityData(SynchedDataIndex.MODEL_HEAD_SCALE, modelHeadScale);
   }
 
   default CustomScale getModelBodyScale() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_BODY_SCALE);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_BODY_SCALE);
   }
 
   default void setModelBodyScale(CustomScale modelBodyScale) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_BODY_SCALE, modelBodyScale);
+    setSynchedEntityData(SynchedDataIndex.MODEL_BODY_SCALE, modelBodyScale);
   }
 
   default CustomScale getModelArmsScale() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_ARMS_SCALE);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_ARMS_SCALE);
   }
 
   default void setModelArmsScale(CustomScale modelArmsScale) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_ARMS_SCALE, modelArmsScale);
+    setSynchedEntityData(SynchedDataIndex.MODEL_ARMS_SCALE, modelArmsScale);
   }
 
   default CustomScale getModelLeftArmScale() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_ARM_SCALE);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_LEFT_ARM_SCALE);
   }
 
   default void setModelLeftArmScale(CustomScale modelLeftArmScale) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_ARM_SCALE, modelLeftArmScale);
+    setSynchedEntityData(SynchedDataIndex.MODEL_LEFT_ARM_SCALE, modelLeftArmScale);
   }
 
   default CustomScale getModelRightArmScale() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_ARM_SCALE);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_ARM_SCALE);
   }
 
   default void setModelRightArmScale(CustomScale modelRightArmScale) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_ARM_SCALE, modelRightArmScale);
+    setSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_ARM_SCALE, modelRightArmScale);
   }
 
   default CustomScale getModelLeftLegScale() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_LEG_SCALE);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_LEFT_LEG_SCALE);
   }
 
   default void setModelLeftLegScale(CustomScale modelLeftLegScale) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_LEG_SCALE, modelLeftLegScale);
+    setSynchedEntityData(SynchedDataIndex.MODEL_LEFT_LEG_SCALE, modelLeftLegScale);
   }
 
   default CustomScale getModelRightLegScale() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_LEG_SCALE);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_LEG_SCALE);
   }
 
   default void setModelRightLegScale(CustomScale modelRightLegScale) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_LEG_SCALE, modelRightLegScale);
+    setSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_LEG_SCALE, modelRightLegScale);
   }
 
   default boolean isModelHeadVisible() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_HEAD_VISIBLE);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_HEAD_VISIBLE);
   }
 
   default void setModelHeadVisible(boolean modelHeadVisible) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_HEAD_VISIBLE, modelHeadVisible);
+    setSynchedEntityData(SynchedDataIndex.MODEL_HEAD_VISIBLE, modelHeadVisible);
   }
 
   default boolean isModelBodyVisible() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_BODY_VISIBLE);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_BODY_VISIBLE);
   }
 
   default void setModelBodyVisible(boolean modelBodyVisible) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_BODY_VISIBLE, modelBodyVisible);
+    setSynchedEntityData(SynchedDataIndex.MODEL_BODY_VISIBLE, modelBodyVisible);
   }
 
   default boolean isModelArmsVisible() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_ARMS_VISIBLE);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_ARMS_VISIBLE);
   }
 
   default void setModelArmsVisible(boolean modelArmsVisible) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_ARMS_VISIBLE, modelArmsVisible);
+    setSynchedEntityData(SynchedDataIndex.MODEL_ARMS_VISIBLE, modelArmsVisible);
   }
 
   default boolean isModelLeftArmVisible() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_ARM_VISIBLE);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_LEFT_ARM_VISIBLE);
   }
 
   default void setModelLeftArmVisible(boolean modelLeftArmVisible) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_ARM_VISIBLE, modelLeftArmVisible);
+    setSynchedEntityData(SynchedDataIndex.MODEL_LEFT_ARM_VISIBLE, modelLeftArmVisible);
   }
 
   default boolean isModelRightArmVisible() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_ARM_VISIBLE);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_ARM_VISIBLE);
   }
 
   default void setModelRightArmVisible(boolean modelRightArmVisible) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_ARM_VISIBLE, modelRightArmVisible);
+    setSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_ARM_VISIBLE, modelRightArmVisible);
   }
 
   default boolean isModelLeftLegVisible() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_LEG_VISIBLE);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_LEFT_LEG_VISIBLE);
   }
 
   default void setModelLeftLegVisible(boolean modelLeftLegVisible) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_LEG_VISIBLE, modelLeftLegVisible);
+    setSynchedEntityData(SynchedDataIndex.MODEL_LEFT_LEG_VISIBLE, modelLeftLegVisible);
   }
 
   default boolean isModelRightLegVisible() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_LEG_VISIBLE);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_LEG_VISIBLE);
   }
 
   default void setModelRightLegVisible(boolean modelRightLegVisible) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_LEG_VISIBLE, modelRightLegVisible);
+    setSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_LEG_VISIBLE, modelRightLegVisible);
   }
 
   default boolean isModelHelmetVisible() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_HELMET_VISIBLE);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_HELMET_VISIBLE);
   }
 
   default void setModelHelmetVisible(boolean modelHelmetVisible) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_HELMET_VISIBLE, modelHelmetVisible);
+    setSynchedEntityData(SynchedDataIndex.MODEL_HELMET_VISIBLE, modelHelmetVisible);
   }
 
   default boolean isModelChestplateVisible() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_CHESTPLATE_VISIBLE);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_CHESTPLATE_VISIBLE);
   }
 
   default void setModelChestplateVisible(boolean modelChestplateVisible) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_CHESTPLATE_VISIBLE, modelChestplateVisible);
+    setSynchedEntityData(SynchedDataIndex.MODEL_CHESTPLATE_VISIBLE, modelChestplateVisible);
   }
 
   default boolean isModelLeggingsVisible() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_LEGGINGS_VISIBLE);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_LEGGINGS_VISIBLE);
   }
 
   default void setModelLeggingsVisible(boolean modelLeggingsVisible) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_LEGGINGS_VISIBLE, modelLeggingsVisible);
+    setSynchedEntityData(SynchedDataIndex.MODEL_LEGGINGS_VISIBLE, modelLeggingsVisible);
   }
 
   default boolean isModelBootsVisible() {
-    return getEasyNPCData(EASY_NPC_DATA_MODEL_BOOTS_VISIBLE);
+    return getSynchedEntityData(SynchedDataIndex.MODEL_BOOTS_VISIBLE);
   }
 
   default void setModelBootsVisible(boolean modelBootsVisible) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_BOOTS_VISIBLE, modelBootsVisible);
+    setSynchedEntityData(SynchedDataIndex.MODEL_BOOTS_VISIBLE, modelBootsVisible);
   }
 
   default boolean useSmartAnimations() {
-    return supportsSmartAnimations() && getEasyNPCData(EASY_NPC_DATA_MODEL_SMART_ANIMATIONS);
+    return supportsSmartAnimations()
+        && getSynchedEntityData(SynchedDataIndex.MODEL_SMART_ANIMATIONS) != null;
   }
 
   default void setUseSmartAnimations(boolean useSmartAnimations) {
-    setEasyNPCData(EASY_NPC_DATA_MODEL_SMART_ANIMATIONS, useSmartAnimations);
+    setSynchedEntityData(SynchedDataIndex.MODEL_SMART_ANIMATIONS, useSmartAnimations);
   }
 
   default boolean supportsSmartAnimations() {
@@ -710,52 +714,52 @@ public interface ModelData<T extends PathfinderMob> extends EasyNPC<T> {
 
   default void defineSynchedModelData() {
     // General
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_POSE, ModelPose.DEFAULT);
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_SMART_ANIMATIONS, true);
+    defineSynchedEntityData(SynchedDataIndex.MODEL_POSE, ModelPose.DEFAULT);
+    defineSynchedEntityData(SynchedDataIndex.MODEL_SMART_ANIMATIONS, true);
 
     // Position
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_HEAD_POSITION, new CustomPosition(0, 0, 0));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_BODY_POSITION, new CustomPosition(0, 0, 0));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_ARMS_POSITION, new CustomPosition(0, 0, 0));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_ARM_POSITION, new CustomPosition(0, 0, 0));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_ARM_POSITION, new CustomPosition(0, 0, 0));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_LEG_POSITION, new CustomPosition(0, 0, 0));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_LEG_POSITION, new CustomPosition(0, 0, 0));
+    defineSynchedEntityData(SynchedDataIndex.MODEL_HEAD_POSITION, new CustomPosition(0, 0, 0));
+    defineSynchedEntityData(SynchedDataIndex.MODEL_BODY_POSITION, new CustomPosition(0, 0, 0));
+    defineSynchedEntityData(SynchedDataIndex.MODEL_ARMS_POSITION, new CustomPosition(0, 0, 0));
+    defineSynchedEntityData(SynchedDataIndex.MODEL_LEFT_ARM_POSITION, new CustomPosition(0, 0, 0));
+    defineSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_ARM_POSITION, new CustomPosition(0, 0, 0));
+    defineSynchedEntityData(SynchedDataIndex.MODEL_LEFT_LEG_POSITION, new CustomPosition(0, 0, 0));
+    defineSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_LEG_POSITION, new CustomPosition(0, 0, 0));
 
     // Rotation
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_LOCK_ROTATION, false);
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_HEAD_ROTATION, new CustomRotation(0, 0, 0));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_BODY_ROTATION, new CustomRotation(0, 0, 0));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_ARMS_ROTATION, new CustomRotation(0, 0, 0));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_ARM_ROTATION, new CustomRotation(0, 0, 0));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_ARM_ROTATION, new CustomRotation(0, 0, 0));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_LEG_ROTATION, new CustomRotation(0, 0, 0));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_LEG_ROTATION, new CustomRotation(0, 0, 0));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_ROOT_ROTATION, new CustomRotation(0, 0, 0));
+    defineSynchedEntityData(SynchedDataIndex.MODEL_LOCK_ROTATION, false);
+    defineSynchedEntityData(SynchedDataIndex.MODEL_HEAD_ROTATION, new CustomRotation(0, 0, 0));
+    defineSynchedEntityData(SynchedDataIndex.MODEL_BODY_ROTATION, new CustomRotation(0, 0, 0));
+    defineSynchedEntityData(SynchedDataIndex.MODEL_ARMS_ROTATION, new CustomRotation(0, 0, 0));
+    defineSynchedEntityData(SynchedDataIndex.MODEL_LEFT_ARM_ROTATION, new CustomRotation(0, 0, 0));
+    defineSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_ARM_ROTATION, new CustomRotation(0, 0, 0));
+    defineSynchedEntityData(SynchedDataIndex.MODEL_LEFT_LEG_ROTATION, new CustomRotation(0, 0, 0));
+    defineSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_LEG_ROTATION, new CustomRotation(0, 0, 0));
+    defineSynchedEntityData(SynchedDataIndex.MODEL_ROOT_ROTATION, new CustomRotation(0, 0, 0));
 
     // Scale
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_HEAD_SCALE, new CustomScale(1, 1, 1));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_BODY_SCALE, new CustomScale(1, 1, 1));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_ARMS_SCALE, new CustomScale(1, 1, 1));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_ARM_SCALE, new CustomScale(1, 1, 1));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_ARM_SCALE, new CustomScale(1, 1, 1));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_LEG_SCALE, new CustomScale(1, 1, 1));
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_LEG_SCALE, new CustomScale(1, 1, 1));
+    defineSynchedEntityData(SynchedDataIndex.MODEL_HEAD_SCALE, new CustomScale(1, 1, 1));
+    defineSynchedEntityData(SynchedDataIndex.MODEL_BODY_SCALE, new CustomScale(1, 1, 1));
+    defineSynchedEntityData(SynchedDataIndex.MODEL_ARMS_SCALE, new CustomScale(1, 1, 1));
+    defineSynchedEntityData(SynchedDataIndex.MODEL_LEFT_ARM_SCALE, new CustomScale(1, 1, 1));
+    defineSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_ARM_SCALE, new CustomScale(1, 1, 1));
+    defineSynchedEntityData(SynchedDataIndex.MODEL_LEFT_LEG_SCALE, new CustomScale(1, 1, 1));
+    defineSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_LEG_SCALE, new CustomScale(1, 1, 1));
 
     // Visibility
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_HEAD_VISIBLE, this.hasHeadModelPart());
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_BODY_VISIBLE, this.hasBodyModelPart());
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_ARMS_VISIBLE, this.hasArmsModelPart());
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_ARM_VISIBLE, this.hasLeftArmModelPart());
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_ARM_VISIBLE, this.hasRightArmModelPart());
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_LEFT_LEG_VISIBLE, this.hasLeftLegModelPart());
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_RIGHT_LEG_VISIBLE, this.hasRightLegModelPart());
+    defineSynchedEntityData(SynchedDataIndex.MODEL_HEAD_VISIBLE, this.hasHeadModelPart());
+    defineSynchedEntityData(SynchedDataIndex.MODEL_BODY_VISIBLE, this.hasBodyModelPart());
+    defineSynchedEntityData(SynchedDataIndex.MODEL_ARMS_VISIBLE, this.hasArmsModelPart());
+    defineSynchedEntityData(SynchedDataIndex.MODEL_LEFT_ARM_VISIBLE, this.hasLeftArmModelPart());
+    defineSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_ARM_VISIBLE, this.hasRightArmModelPart());
+    defineSynchedEntityData(SynchedDataIndex.MODEL_LEFT_LEG_VISIBLE, this.hasLeftLegModelPart());
+    defineSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_LEG_VISIBLE, this.hasRightLegModelPart());
 
     // Armor Visibility
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_HELMET_VISIBLE, this.canUseArmor());
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_CHESTPLATE_VISIBLE, this.canUseArmor());
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_LEGGINGS_VISIBLE, this.canUseArmor());
-    defineEasyNPCData(EASY_NPC_DATA_MODEL_BOOTS_VISIBLE, this.canUseArmor());
+    defineSynchedEntityData(SynchedDataIndex.MODEL_HELMET_VISIBLE, this.canUseArmor());
+    defineSynchedEntityData(SynchedDataIndex.MODEL_CHESTPLATE_VISIBLE, this.canUseArmor());
+    defineSynchedEntityData(SynchedDataIndex.MODEL_LEGGINGS_VISIBLE, this.canUseArmor());
+    defineSynchedEntityData(SynchedDataIndex.MODEL_BOOTS_VISIBLE, this.canUseArmor());
   }
 
   private void addAdditionalModelPositionData(CompoundTag compoundTag) {

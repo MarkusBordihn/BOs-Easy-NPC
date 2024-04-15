@@ -19,26 +19,38 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
+import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
+import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.monster.CrossbowAttackMob;
+import net.minecraft.world.entity.monster.RangedAttackMob;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.ItemStack;
 
-public interface AttackData<E extends PathfinderMob> extends EasyNPC<E> {
+public interface AttackData<E extends PathfinderMob>
+    extends EasyNPC<E>, NeutralMob, RangedAttackMob, CrossbowAttackMob {
 
-  // Synced entity data
-  EntityDataAccessor<Boolean> DATA_AGGRESSIVE =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-
-  EntityDataAccessor<Boolean> IS_CHARGING_CROSSBOW =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-
-  // CompoundTags
   String DATA_AGGRESSIVE_TAG = "Aggressive";
+
+  static void registerSyncedAttackData(
+      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
+    log.info("- Registering Synched Attack Data for {}.", entityClass.getSimpleName());
+    map.put(
+        SynchedDataIndex.ATTACK_IS_AGGRESSIVE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+  }
 
   int getAttackAnimationTick();
 
@@ -47,24 +59,37 @@ public interface AttackData<E extends PathfinderMob> extends EasyNPC<E> {
   }
 
   default boolean isAggressive() {
-    return getEasyNPCData(DATA_AGGRESSIVE);
+    return getSynchedEntityData(SynchedDataIndex.ATTACK_IS_AGGRESSIVE);
   }
 
   default void setAggressive(Boolean aggressive) {
-    setEasyNPCData(DATA_AGGRESSIVE, aggressive);
+    setSynchedEntityData(SynchedDataIndex.ATTACK_IS_AGGRESSIVE, aggressive);
   }
 
   default boolean isChargingCrossbow() {
-    return getEasyNPCData(IS_CHARGING_CROSSBOW);
+    return getSynchedEntityData(SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW);
   }
 
+  @Override
   default void setChargingCrossbow(boolean isCharging) {
-    setEasyNPCData(IS_CHARGING_CROSSBOW, isCharging);
+    setSynchedEntityData(SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW, isCharging);
+  }
+
+  @Override
+  default void shootCrossbowProjectile(
+      LivingEntity livingEntity, ItemStack itemStack, Projectile projectile, float rangeFactor) {
+    this.shootCrossbowProjectile(
+        this.getLivingEntity(), livingEntity, projectile, rangeFactor, 1.6F);
+  }
+
+  @Override
+  default void performRangedAttack(LivingEntity livingEntity, float damage) {
+    AttackHandler.performDefaultRangedAttack(this.getLivingEntity(), livingEntity, damage);
   }
 
   default void defineSynchedAttackData() {
-    defineEasyNPCData(DATA_AGGRESSIVE, getDefaultAggression());
-    defineEasyNPCData(IS_CHARGING_CROSSBOW, false);
+    defineSynchedEntityData(SynchedDataIndex.ATTACK_IS_AGGRESSIVE, getDefaultAggression());
+    defineSynchedEntityData(SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW, false);
   }
 
   default void addAdditionalAttackData(CompoundTag compoundTag) {

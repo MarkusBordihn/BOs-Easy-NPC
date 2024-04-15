@@ -19,12 +19,12 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
-import de.markusbordihn.easynpc.data.custom.CustomDataAccessor;
-import de.markusbordihn.easynpc.data.custom.CustomDataIndex;
-import de.markusbordihn.easynpc.data.entity.CustomEntityData;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
+import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
+import de.markusbordihn.easynpc.data.server.ServerDataIndex;
+import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ResetUniversalAngerTargetGoal;
@@ -33,10 +33,8 @@ import java.util.Set;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -104,22 +102,12 @@ public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
 
   int CUSTOM_OBJECTIVE_DELAYED_REGISTRATION_TICK = 20 * 15;
 
-  EntityDataAccessor<Boolean> DATA_HAS_OBJECTIVES =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Boolean> DATA_HAS_PLAYER_TARGET =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Boolean> DATA_HAS_ENTITY_TARGET =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-
-  CustomDataAccessor<ObjectiveDataSet> CUSTOM_DATA_OBJECTIVE_DATA_SET =
-      CustomEntityData.defineId(CustomDataIndex.OBJECTIVE_DATA_SET, OBJECTIVE_DATA_SET);
-  CustomDataAccessor<HashSet<String>> CUSTOM_DATA_TARGETED_PLAYER_SET =
-      CustomEntityData.defineId(CustomDataIndex.OBJECTIVE_PLAYER_SET, TARGETED_PLAYER_HASH_SET);
-  CustomDataAccessor<HashSet<UUID>> CUSTOM_DATA_TARGETED_ENTITY_SET =
-      CustomEntityData.defineId(CustomDataIndex.OBJECTIVE_ENTITY_SET, TARGETED_ENTITY_HASH_SET);
+  ServerDataAccessor<ObjectiveDataSet> CUSTOM_DATA_OBJECTIVE_DATA_SET =
+      ServerEntityData.defineId(ServerDataIndex.OBJECTIVE_DATA_SET, OBJECTIVE_DATA_SET);
+  ServerDataAccessor<HashSet<String>> CUSTOM_DATA_TARGETED_PLAYER_SET =
+      ServerEntityData.defineId(ServerDataIndex.OBJECTIVE_PLAYER_SET, TARGETED_PLAYER_HASH_SET);
+  ServerDataAccessor<HashSet<UUID>> CUSTOM_DATA_TARGETED_ENTITY_SET =
+      ServerEntityData.defineId(ServerDataIndex.OBJECTIVE_ENTITY_SET, TARGETED_ENTITY_HASH_SET);
 
   String DATA_OBJECTIVE_DATA_TAG = "ObjectiveData";
   String DATA_HAS_OBJECTIVE_TAG = "HasObjectives";
@@ -134,19 +122,23 @@ public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default void clearObjectiveDataSet() {
-    setEasyNPCCustomData(CUSTOM_DATA_OBJECTIVE_DATA_SET, new ObjectiveDataSet());
+    setServerEntityData(CUSTOM_DATA_OBJECTIVE_DATA_SET, new ObjectiveDataSet());
   }
 
   default ObjectiveDataSet getObjectiveDataSet() {
-    return getEasyNPCCustomData(CUSTOM_DATA_OBJECTIVE_DATA_SET);
+    return getServerEntityData(CUSTOM_DATA_OBJECTIVE_DATA_SET);
   }
 
   default void setObjectiveDataSet(ObjectiveDataSet objectiveDataSet) {
-    setEasyNPCCustomData(CUSTOM_DATA_OBJECTIVE_DATA_SET, objectiveDataSet);
+    setServerEntityData(CUSTOM_DATA_OBJECTIVE_DATA_SET, objectiveDataSet);
   }
 
   default boolean hasObjective(String objectiveId) {
     return getObjectiveDataSet() != null && getObjectiveDataSet().hasObjective(objectiveId);
+  }
+
+  default boolean hasObjective(ObjectiveType objectiveType) {
+    return getObjectiveDataSet() != null && getObjectiveDataSet().hasObjective(objectiveType);
   }
 
   default boolean hasObjective(ObjectiveDataEntry objectiveDataEntry) {
@@ -156,6 +148,35 @@ public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
 
   default boolean hasObjectives() {
     return getObjectiveDataSet() != null && getObjectiveDataSet().hasObjectives();
+  }
+
+  default ObjectiveDataEntry getObjective(ObjectiveType objectiveType) {
+    return getObjectiveDataSet() != null ? getObjectiveDataSet().getObjective(objectiveType) : null;
+  }
+
+  default ObjectiveDataEntry getObjective(String objectiveId) {
+    return getObjectiveDataSet() != null ? getObjectiveDataSet().getObjective(objectiveId) : null;
+  }
+
+  default void removeObjective(ObjectiveType objectiveType) {
+    if (objectiveType == null) {
+      return;
+    }
+    getObjectiveDataSet().removeObjective(objectiveType);
+  }
+
+  default void removeObjective(ObjectiveDataEntry objectiveDataEntry) {
+    if (objectiveDataEntry == null) {
+      return;
+    }
+    getObjectiveDataSet().removeObjective(objectiveDataEntry);
+  }
+
+  default void addObjective(ObjectiveDataEntry objectiveDataEntry) {
+    if (objectiveDataEntry == null) {
+      return;
+    }
+    getObjectiveDataSet().addObjective(objectiveDataEntry);
   }
 
   default boolean hasTravelTargetObjectives() {
@@ -418,16 +439,10 @@ public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
     this.addOrUpdateCustomObjective(new ObjectiveDataEntry(ObjectiveType.LOOK_AT_MOB, 10));
   }
 
-  default void defineSynchedObjectiveData() {
-    defineEasyNPCData(DATA_HAS_OBJECTIVES, false);
-    defineEasyNPCData(DATA_HAS_PLAYER_TARGET, false);
-    defineEasyNPCData(DATA_HAS_ENTITY_TARGET, false);
-  }
-
   default void defineCustomObjectiveData() {
-    defineEasyNPCCustomData(CUSTOM_DATA_OBJECTIVE_DATA_SET, new ObjectiveDataSet());
-    defineEasyNPCCustomData(CUSTOM_DATA_TARGETED_PLAYER_SET, new HashSet<>());
-    defineEasyNPCCustomData(CUSTOM_DATA_TARGETED_ENTITY_SET, new HashSet<>());
+    defineServerEntityData(CUSTOM_DATA_OBJECTIVE_DATA_SET, new ObjectiveDataSet());
+    defineServerEntityData(CUSTOM_DATA_TARGETED_PLAYER_SET, new HashSet<>());
+    defineServerEntityData(CUSTOM_DATA_TARGETED_ENTITY_SET, new HashSet<>());
   }
 
   default void addAdditionalObjectiveData(CompoundTag compoundTag) {

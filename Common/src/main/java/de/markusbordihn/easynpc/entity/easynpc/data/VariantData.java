@@ -19,33 +19,42 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
+import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.utils.TextUtils;
+import java.util.EnumMap;
 import java.util.stream.Stream;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 
 public interface VariantData<T extends PathfinderMob> extends EasyNPC<T> {
 
-  EntityDataAccessor<String> EASY_NPC_DATA_VARIANT =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.STRING);
-
   String EASY_NPC_DATA_VARIANT_TAG = "Variant";
+
+  static void registerSyncedVariantData(
+      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
+    log.info("- Registering Synched Variant Data for {}.", entityClass.getSimpleName());
+    map.put(
+        SynchedDataIndex.VARIANT,
+        SynchedEntityData.defineId(
+            EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.STRING));
+  }
 
   default Enum<?> getDefaultVariant() {
     return Variant.STEVE;
   }
 
   default Enum<?> getVariant() {
-    return getVariant(getEasyNPCData(EASY_NPC_DATA_VARIANT));
+    return getVariant(getSynchedEntityData(SynchedDataIndex.VARIANT));
   }
 
   default void setVariant(Enum<?> variant) {
-    setEasyNPCData(EASY_NPC_DATA_VARIANT, variant != null ? variant.name() : "");
+    setSynchedEntityData(SynchedDataIndex.VARIANT, variant != null ? variant.name() : "");
   }
 
   default void setVariant(String name) {
@@ -91,7 +100,7 @@ public interface VariantData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default void defineSynchedVariantData() {
-    defineEasyNPCData(EASY_NPC_DATA_VARIANT, getDefaultVariant().name());
+    defineSynchedEntityData(SynchedDataIndex.VARIANT, getDefaultVariant().name());
   }
 
   default void addAdditionalVariantData(CompoundTag compoundTag) {

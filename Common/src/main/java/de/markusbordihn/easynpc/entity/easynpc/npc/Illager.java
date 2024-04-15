@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.entity.easynpc.npc;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
-import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
+import de.markusbordihn.easynpc.entity.EasyNPCBaseModelEntity;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -31,7 +31,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
-public class Illager extends EasyNPCBaseEntity<Illager> {
+public class Illager extends EasyNPCBaseModelEntity<Illager> {
 
   public static final String ID = "illager";
   public static final String ID_EVOKER = "evoker";

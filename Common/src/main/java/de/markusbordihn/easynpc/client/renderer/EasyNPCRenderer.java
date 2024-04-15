@@ -20,103 +20,123 @@
 package de.markusbordihn.easynpc.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
-import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.render.RenderDataSet;
+import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.data.skin.SkinType;
-import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
+import de.markusbordihn.easynpc.entity.easynpc.data.RenderData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.RenderLayerParent;
-import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.resources.model.ModelManager;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Rotations;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Pose;
-import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.entity.PathfinderMob;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public interface EasyNPCRenderer<E extends EasyNPCBaseEntity<E>, M extends EntityModel<E>> {
+public interface EasyNPCRenderer<E extends PathfinderMob, M extends EntityModel<E>> {
 
   Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  static <
-          T extends LivingEntity,
-          M extends HumanoidModel<T>,
-          L extends RenderLayer<T, M>,
-          R extends LivingEntityRenderer<T, M>>
-      L getHumanoidArmorLayer(
-          R mobRenderer,
-          EntityRendererProvider.Context context,
-          ModelLayerLocation innerArmor,
-          ModelLayerLocation outerArmor,
-          Class<L> armorLayerClass) {
-    try {
-      return armorLayerClass
-          .getConstructor(
-              RenderLayerParent.class, HumanoidModel.class, HumanoidModel.class, ModelManager.class)
-          .newInstance(
-              mobRenderer,
-              new HumanoidModel<>(context.bakeLayer(innerArmor)),
-              new HumanoidModel<>(context.bakeLayer(outerArmor)),
-              context.getModelManager());
-    } catch (Exception e) {
-      log.error(
-          "Failed to create custom armor layer for {} will use default armor layer instead.",
-          mobRenderer,
-          e);
+  static boolean renderEntity(
+      PathfinderMob entity,
+      float entityYaw,
+      float partialTicks,
+      PoseStack poseStack,
+      MultiBufferSource buffer,
+      int packedLight) {
+    if (!(entity instanceof EasyNPC<?> easyNPC)) {
+      return false;
     }
-    return (L)
-        new HumanoidArmorLayer<>(
-            mobRenderer,
-            new HumanoidModel<>(context.bakeLayer(innerArmor)),
-            new HumanoidModel<>(context.bakeLayer(outerArmor)),
-            context.getModelManager());
+
+    RenderData<?> renderData = easyNPC.getEasyNPCRenderData();
+    if (renderData == null
+        || renderData.getRenderData() == null
+        || renderData.getRenderData().getRenderType() == RenderType.DEFAULT) {
+      return false;
+    }
+
+    RenderDataSet renderDataSet = renderData.getRenderData();
+    RenderType renderType = renderDataSet.getRenderType();
+    EntityType<?> renderEntityType = renderDataSet.getRenderEntityType();
+
+    if (renderType == RenderType.CUSTOM_ENTITY
+        && renderEntityType != null
+        && !RendererManager.isUnsupportedEntityType(renderEntityType)) {
+
+      // Try to render custom entity or living entity over existing renderer.
+      PathfinderMob customEntity = RendererManager.getPathfinderMob(renderEntityType);
+      if (customEntity != null) {
+        LivingEntityRenderer<?, ?> livingEntityRenderer =
+            RendererManager.getLivingEntityRenderer(renderEntityType);
+        if (livingEntityRenderer != null) {
+          renderCustomLivingEntity(
+              entity,
+              customEntity,
+              (LivingEntityRenderer<LivingEntity, EntityModel<LivingEntity>>) livingEntityRenderer,
+              entityYaw,
+              partialTicks,
+              poseStack,
+              buffer,
+              packedLight);
+          return true;
+        }
+
+        EntityRenderer<?> entityRenderer = RendererManager.getEntityRenderer(renderEntityType);
+        if (entityRenderer != null) {
+          renderCustomEntity(
+              entity,
+              customEntity,
+              (EntityRenderer<Entity>) entityRenderer,
+              entityYaw,
+              partialTicks,
+              poseStack,
+              buffer,
+              packedLight);
+          return true;
+        }
+      }
+
+      // Register custom entity renderer, if not already registered and supported.
+      RendererManager.registerRenderer(renderEntityType, entity.level());
+    }
+
+    return false;
   }
 
-  static void scaleEntity(EasyNPC<?> easyNPC, PoseStack poseStack) {
-    LivingEntity livingEntity = easyNPC.getLivingEntity();
-    ScaleData<?> scaleData = easyNPC.getEasyNPCScaleData();
-    if (livingEntity.isBaby()) {
-      poseStack.scale(
-          scaleData.getScaleX() * 0.5f, scaleData.getScaleY() * 0.5f, scaleData.getScaleZ() * 0.5f);
-    } else {
-      poseStack.scale(scaleData.getScaleX(), scaleData.getScaleY(), scaleData.getScaleZ());
-    }
+  static void renderCustomEntity(
+      PathfinderMob entity,
+      Entity customEntity,
+      EntityRenderer<Entity> entityRenderer,
+      float entityYaw,
+      float partialTicks,
+      PoseStack poseStack,
+      MultiBufferSource buffer,
+      int packedLight) {
+    RendererManager.copyCustomEntityData(entity, customEntity);
+    entityRenderer.render(customEntity, entityYaw, partialTicks, poseStack, buffer, packedLight);
   }
 
-  static void renderEntityNameTag(EasyNPC<?> easyNPC, PoseStack poseStack) {
-    Rotations rootRotation = easyNPC.getEasyNPCModelData().getModelRootRotation();
-    if (rootRotation != null) {
-      poseStack.translate(0, -1, 0);
-      poseStack.mulPose(Axis.XP.rotation(-rootRotation.getX()));
-      poseStack.mulPose(Axis.YP.rotation(-rootRotation.getY()));
-      poseStack.mulPose(Axis.ZP.rotation(-rootRotation.getZ()));
-      poseStack.translate(0, 1, 0);
-    }
-  }
-
-  static int getEntityLightLevel(EasyNPC<?> easyNPC, BlockPos blockPos) {
-    int entityLightLevel = easyNPC.getEasyNPCAttributeData().getAttributeLightLevel();
-    if (entityLightLevel > 0) {
-      return entityLightLevel;
-    }
-    LivingEntity livingEntity = easyNPC.getLivingEntity();
-    return livingEntity.level().getBrightness(LightLayer.BLOCK, blockPos);
+  static void renderCustomLivingEntity(
+      PathfinderMob entity,
+      LivingEntity customEntity,
+      LivingEntityRenderer<LivingEntity, EntityModel<LivingEntity>> livingEntityRenderer,
+      float entityYaw,
+      float partialTicks,
+      PoseStack poseStack,
+      MultiBufferSource buffer,
+      int packedLight) {
+    RendererManager.copyCustomLivingEntityData(entity, customEntity);
+    livingEntityRenderer.render(
+        customEntity, entityYaw, partialTicks, poseStack, buffer, packedLight);
   }
 
   ResourceLocation getTextureByVariant(Enum<?> variant);
@@ -138,25 +158,6 @@ public interface EasyNPCRenderer<E extends EasyNPCBaseEntity<E>, M extends Entit
   default ResourceLocation getRemoteTexture(SkinData<?> entity) {
     return RemoteTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
   }
-
-  default void renderCustomPose(
-      E entity,
-      M model,
-      float entityYaw,
-      float partialTicks,
-      PoseStack poseStack,
-      MultiBufferSource buffer,
-      int packedLight) {}
-
-  default void renderDefaultPose(
-      E entity,
-      M model,
-      Pose pose,
-      float entityYaw,
-      float partialTicks,
-      PoseStack poseStack,
-      MultiBufferSource buffer,
-      int packedLight) {}
 
   default <N extends EasyNPC<E>> ResourceLocation getEntityTexture(N easyNPC) {
     SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
@@ -185,38 +186,5 @@ public interface EasyNPCRenderer<E extends EasyNPCBaseEntity<E>, M extends Entit
       case SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> getRemoteTexture(skinData);
       default -> getTextureByVariant(easyNPC.getEasyNPCVariantData().getVariant());
     };
-  }
-
-  default <N extends EasyNPC<E>> void rotateEntity(N easyNPC, PoseStack poseStack) {
-    Rotations rootRotation = easyNPC.getEasyNPCModelData().getModelRootRotation();
-    if (rootRotation != null) {
-      poseStack.translate(0, 1, 0);
-      poseStack.mulPose(Axis.XP.rotation(rootRotation.getX()));
-      poseStack.mulPose(Axis.YP.rotation(rootRotation.getY()));
-      poseStack.mulPose(Axis.ZP.rotation(rootRotation.getZ()));
-      poseStack.translate(0, -1, 0);
-    }
-  }
-
-  default void renderModel(
-      E entity,
-      M model,
-      float entityYaw,
-      float partialTicks,
-      PoseStack poseStack,
-      MultiBufferSource buffer,
-      int packedLight) {
-
-    // Rotate entity, if needed
-    this.rotateEntity(entity, poseStack);
-
-    // Render custom or default pose.
-    ModelPose modelPose = entity.getModelPose();
-    if (modelPose == ModelPose.DEFAULT) {
-      this.renderDefaultPose(
-          entity, model, entity.getPose(), entityYaw, partialTicks, poseStack, buffer, packedLight);
-    } else if (modelPose == ModelPose.CUSTOM) {
-      this.renderCustomPose(entity, model, entityYaw, partialTicks, poseStack, buffer, packedLight);
-    }
   }
 }

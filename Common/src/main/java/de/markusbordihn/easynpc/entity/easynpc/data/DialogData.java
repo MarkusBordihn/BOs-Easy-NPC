@@ -19,12 +19,12 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
-import de.markusbordihn.easynpc.data.custom.CustomDataAccessor;
-import de.markusbordihn.easynpc.data.custom.CustomDataIndex;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
-import de.markusbordihn.easynpc.data.entity.CustomEntityData;
+import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
+import de.markusbordihn.easynpc.data.server.ServerDataIndex;
+import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.MenuManager;
 import java.util.UUID;
@@ -52,8 +52,8 @@ public interface DialogData<T extends PathfinderMob> extends EasyNPC<T> {
         }
       };
 
-  CustomDataAccessor<DialogDataSet> CUSTOM_DATA_DIALOG_DATA_SET =
-      CustomEntityData.defineId(CustomDataIndex.DIALOG_DATA_SET, DIALOG_DATA_SET);
+  ServerDataAccessor<DialogDataSet> CUSTOM_DATA_DIALOG_DATA_SET =
+      ServerEntityData.defineId(ServerDataIndex.DIALOG_DATA_SET, DIALOG_DATA_SET);
 
   String DATA_DIALOG_DATA_TAG = "DialogData";
 
@@ -79,11 +79,11 @@ public interface DialogData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default DialogDataSet getDialogDataSet() {
-    return getEasyNPCCustomData(CUSTOM_DATA_DIALOG_DATA_SET);
+    return getServerEntityData(CUSTOM_DATA_DIALOG_DATA_SET);
   }
 
   default void setDialogDataSet(DialogDataSet dialogDataSet) {
-    setEasyNPCCustomData(CUSTOM_DATA_DIALOG_DATA_SET, dialogDataSet);
+    setServerEntityData(CUSTOM_DATA_DIALOG_DATA_SET, dialogDataSet);
   }
 
   default void clearDialogDataSet() {
@@ -143,20 +143,20 @@ public interface DialogData<T extends PathfinderMob> extends EasyNPC<T> {
   default void defineSynchedDialogData() {}
 
   default void defineCustomDialogData() {
-    defineEasyNPCCustomData(CUSTOM_DATA_DIALOG_DATA_SET, new DialogDataSet());
+    defineServerEntityData(CUSTOM_DATA_DIALOG_DATA_SET, new DialogDataSet());
   }
 
   default void addAdditionalDialogData(CompoundTag compoundTag) {
-    CompoundTag dialogTag = new CompoundTag();
+    CompoundTag dialogDataTag = new CompoundTag();
 
     if (this.isServerSide()) {
       DialogDataSet dialogDataSet = this.getDialogDataSet();
       if (dialogDataSet != null) {
-        dialogDataSet.save(dialogTag);
+        dialogDataSet.save(dialogDataTag);
       }
     }
 
-    compoundTag.put(DATA_DIALOG_DATA_TAG, dialogTag);
+    compoundTag.put(DATA_DIALOG_DATA_TAG, dialogDataTag);
   }
 
   default void readAdditionalDialogData(CompoundTag compoundTag) {

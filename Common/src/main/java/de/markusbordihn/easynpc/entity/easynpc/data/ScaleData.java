@@ -20,32 +20,38 @@
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.scale.CustomScale;
+import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
+import java.util.EnumMap;
 import java.util.Objects;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 
 public interface ScaleData<T extends PathfinderMob> extends EasyNPC<T> {
 
-  // Constants values
   float DEFAULT_SCALE_X = 1.0f;
   float DEFAULT_SCALE_Y = 1.0f;
   float DEFAULT_SCALE_Z = 1.0f;
-
-  // Synced entity data
-  EntityDataAccessor<Float> EASY_NPC_DATA_SCALE_X =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.FLOAT);
-  EntityDataAccessor<Float> EASY_NPC_DATA_SCALE_Y =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.FLOAT);
-  EntityDataAccessor<Float> EASY_NPC_DATA_SCALE_Z =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.FLOAT);
-
-  // CompoundTags
   String EASY_NPC_DATA_SCALE_DATA_TAG = "ScaleData";
+
+  static void registerSyncedScaleData(
+      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
+    log.info("- Registering Synched Scale Data for {}.", entityClass.getSimpleName());
+    map.put(
+        SynchedDataIndex.SCALE_X,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.FLOAT));
+    map.put(
+        SynchedDataIndex.SCALE_Y,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.FLOAT));
+    map.put(
+        SynchedDataIndex.SCALE_Z,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.FLOAT));
+  }
 
   default Float getDefaultScaleX() {
     return DEFAULT_SCALE_X;
@@ -60,42 +66,42 @@ public interface ScaleData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default Float getScaleX() {
-    return getEasyNPCData(EASY_NPC_DATA_SCALE_X);
+    return getSynchedEntityData(SynchedDataIndex.SCALE_X);
   }
 
   default void setScaleX(Float scale) {
     if (!Objects.equals(getScaleX(), scale)) {
-      setEasyNPCData(EASY_NPC_DATA_SCALE_X, scale);
-      getEasyNPCEntity().refreshDimensions();
+      setSynchedEntityData(SynchedDataIndex.SCALE_X, scale);
+      getEntity().refreshDimensions();
     }
   }
 
   default Float getScaleY() {
-    return getEasyNPCData(EASY_NPC_DATA_SCALE_Y);
+    return getSynchedEntityData(SynchedDataIndex.SCALE_Y);
   }
 
   default void setScaleY(Float scale) {
     if (!Objects.equals(getScaleY(), scale)) {
-      setEasyNPCData(EASY_NPC_DATA_SCALE_Y, scale);
-      getEasyNPCEntity().refreshDimensions();
+      setSynchedEntityData(SynchedDataIndex.SCALE_Y, scale);
+      getEntity().refreshDimensions();
     }
   }
 
   default Float getScaleZ() {
-    return getEasyNPCData(EASY_NPC_DATA_SCALE_Z);
+    return getSynchedEntityData(SynchedDataIndex.SCALE_Z);
   }
 
   default void setScaleZ(Float scale) {
     if (!Objects.equals(getScaleZ(), scale)) {
-      setEasyNPCData(EASY_NPC_DATA_SCALE_Z, scale);
-      getEasyNPCEntity().refreshDimensions();
+      setSynchedEntityData(SynchedDataIndex.SCALE_Z, scale);
+      getEntity().refreshDimensions();
     }
   }
 
   default void defineSynchedScaleData() {
-    defineEasyNPCData(EASY_NPC_DATA_SCALE_X, this.getDefaultScaleX());
-    defineEasyNPCData(EASY_NPC_DATA_SCALE_Y, this.getDefaultScaleY());
-    defineEasyNPCData(EASY_NPC_DATA_SCALE_Z, this.getDefaultScaleZ());
+    defineSynchedEntityData(SynchedDataIndex.SCALE_X, this.getDefaultScaleX());
+    defineSynchedEntityData(SynchedDataIndex.SCALE_Y, this.getDefaultScaleY());
+    defineSynchedEntityData(SynchedDataIndex.SCALE_Z, this.getDefaultScaleZ());
   }
 
   default void addAdditionalScaleData(CompoundTag compoundTag) {

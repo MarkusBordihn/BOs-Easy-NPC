@@ -129,13 +129,26 @@ public class ScreenHelper {
   public static void renderScaledEntityAvatar(
       int x, int y, float yRot, float xRot, EasyNPC<?> easyNPC) {
     GuiData<?> guiData = easyNPC.getEasyNPCGuiData();
-    renderScaledEntityAvatar(x, y, guiData.getEntityGuiScaling(), yRot, xRot, easyNPC);
+    ScaleData<?> scaleData = easyNPC.getEasyNPCScaleData();
+    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+    if (scaleData != null && modelData != null) {
+      renderScaledEntityAvatar(
+          x, y, guiData.getEntityGuiScaling(), yRot, xRot, easyNPC, scaleData, modelData);
+    } else {
+      renderScaledEntityAvatar(
+          x, y, guiData.getEntityGuiScaling(), yRot, xRot, easyNPC.getLivingEntity());
+    }
   }
 
   public static void renderScaledEntityAvatar(
-      int x, int y, int scale, float yRot, float xRot, EasyNPC<?> easyNPC) {
-    ScaleData<?> scaleData = easyNPC.getEasyNPCScaleData();
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+      int x,
+      int y,
+      int scale,
+      float yRot,
+      float xRot,
+      EasyNPC<?> easyNPC,
+      ScaleData<?> scaleData,
+      ModelData<?> modelData) {
 
     // Backup entity information
     float entityScaleX = scaleData.getScaleX();
@@ -162,6 +175,22 @@ public class ScreenHelper {
     easyNPC.getEntity().setInvisible(entityInvisible);
   }
 
+  public static void renderScaledEntityAvatar(
+      int x, int y, int scale, float yRot, float xRot, LivingEntity livingEntity) {
+
+    // Backup entity information
+    boolean entityInvisible = livingEntity.isInvisible();
+
+    // Adjust entity information for rendering
+    livingEntity.setInvisible(false);
+
+    // Render Entity
+    renderEntity(x, y, scale, yRot, xRot, livingEntity);
+
+    // Restore entity information
+    livingEntity.setInvisible(entityInvisible);
+  }
+
   public static void renderCustomPoseEntityAvatar(
       int x, int y, int scale, float yRot, float xRot, EasyNPC<?> easyNPC) {
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
@@ -176,7 +205,8 @@ public class ScreenHelper {
     entity.setPose(Pose.STANDING);
 
     // Render Entity
-    renderScaledEntityAvatar(x, y, scale, yRot, xRot, easyNPC);
+    renderScaledEntityAvatar(
+        x, y, scale, yRot, xRot, easyNPC, easyNPC.getEasyNPCScaleData(), modelData);
 
     // Restore entity information
     modelData.setModelPose(entityModelPose);
@@ -206,7 +236,8 @@ public class ScreenHelper {
 
   public static void renderEntityDialog(int x, int y, float yRot, float xRot, EasyNPC<?> easyNPC) {
     DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
-    renderScaledEntityAvatar(x, y, dialogData.getEntityDialogScaling(), yRot, xRot, easyNPC);
+    renderScaledEntityAvatar(
+        x, y, dialogData.getEntityDialogScaling(), yRot, xRot, easyNPC.getLivingEntity());
   }
 
   public static void renderEntityPlayerSkin(
@@ -229,7 +260,9 @@ public class ScreenHelper {
         skinData.getEntitySkinScaling(),
         yRot,
         xRot,
-        easyNPC);
+        easyNPC,
+        easyNPC.getEasyNPCScaleData(),
+        easyNPC.getEasyNPCModelData());
 
     // Restore entity information
     skinData.setSkinType(entitySkinType);
@@ -266,7 +299,7 @@ public class ScreenHelper {
         skinData.getEntitySkinScaling(),
         yRot,
         xRot,
-        easyNPC);
+        easyNPC.getLivingEntity());
 
     // Restore entity information
     skinData.setSkinType(entitySkinType);
