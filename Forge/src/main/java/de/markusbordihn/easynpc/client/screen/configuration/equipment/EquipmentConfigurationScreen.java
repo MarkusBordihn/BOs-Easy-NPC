@@ -104,7 +104,7 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
         35,
         this.contentLeftPos + 140 - this.xMouse,
         this.contentTopPos + 30 - this.yMouse,
-        this.easyNPC);
+        this.easyNPC.getLivingEntity());
 
     this.renderTooltip(guiGraphics, x, y);
   }
@@ -114,13 +114,13 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
     super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
 
     // Armors Slots Left
-    if (this.modelData.canUseArmor()) {
+    if (modelData == null || this.modelData.canUseArmor()) {
       guiGraphics.blit(
           Constants.TEXTURE_INVENTORY, this.contentLeftPos + 90, this.contentTopPos, 7, 7, 18, 72);
     }
 
     // Main Hand Slot Left
-    if (this.modelData.canUseMainHand()) {
+    if (modelData == null || this.modelData.canUseMainHand()) {
       guiGraphics.blit(
           Constants.TEXTURE_INVENTORY,
           this.contentLeftPos + 90,
@@ -132,7 +132,7 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
     }
 
     // Off Hand Slot Right
-    if (this.modelData.canUseOffHand()) {
+    if (modelData == null || this.modelData.canUseOffHand()) {
       guiGraphics.blit(
           Constants.TEXTURE_INVENTORY,
           this.contentLeftPos + 170,

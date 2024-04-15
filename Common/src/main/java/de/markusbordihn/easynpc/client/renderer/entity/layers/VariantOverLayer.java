@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.entity.layers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
+import de.markusbordihn.easynpc.client.renderer.EasyNPCModelRenderer;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -33,15 +33,15 @@ import net.minecraft.world.entity.LivingEntity;
 public class VariantOverLayer<T extends LivingEntity, M extends EntityModel<T>>
     extends RenderLayer<T, M> {
 
-  private final EasyNPCRenderer<?, ?> easyNPCRenderer;
+  private final EasyNPCModelRenderer<?, ?> easyNPCModelRenderer;
   private final M model;
 
   public VariantOverLayer(RenderLayerParent<T, M> renderer, EntityModelSet model) {
     super(renderer);
-    if (renderer instanceof EasyNPCRenderer<?, ?> easyNPCRendererInstance) {
-      this.easyNPCRenderer = easyNPCRendererInstance;
+    if (renderer instanceof EasyNPCModelRenderer<?, ?> easyNPCModelRendererInstance) {
+      this.easyNPCModelRenderer = easyNPCModelRendererInstance;
     } else {
-      this.easyNPCRenderer = null;
+      this.easyNPCModelRenderer = null;
     }
     this.model = renderer.getModel();
   }
@@ -59,12 +59,12 @@ public class VariantOverLayer<T extends LivingEntity, M extends EntityModel<T>>
       float netHeadYaw,
       float headPitch) {
     if (livingEntity.isInvisible()
-        || this.easyNPCRenderer == null
+        || this.easyNPCModelRenderer == null
         || !(livingEntity instanceof EasyNPC<?> easyNPC)) {
       return;
     }
     ResourceLocation resourceLocation =
-        this.easyNPCRenderer.getTextureOverlayByVariant(
+        this.easyNPCModelRenderer.getTextureOverlayByVariant(
             easyNPC.getEasyNPCVariantData().getVariant());
     if (resourceLocation != null) {
       renderColoredCutoutModel(

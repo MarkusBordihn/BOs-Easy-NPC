@@ -68,7 +68,7 @@ public class MessageRespawnNPC extends NetworkMessage {
     }
 
     // Save entity and entity type
-    CompoundTag compoundTag = easyNPC.getEasyNPCEntity().saveWithoutId(new CompoundTag());
+    CompoundTag compoundTag = easyNPC.getEntity().saveWithoutId(new CompoundTag());
     EntityType<?> entityType = easyNPC.getEntity().getType();
 
     // Create new entity with compoundTag

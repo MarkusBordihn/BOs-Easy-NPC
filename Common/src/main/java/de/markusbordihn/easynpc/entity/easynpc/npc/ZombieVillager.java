@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.entity.easynpc.npc;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
-import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
+import de.markusbordihn.easynpc.entity.EasyNPCBaseModelEntity;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -33,7 +33,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
-public class ZombieVillager extends EasyNPCBaseEntity<ZombieVillager> {
+public class ZombieVillager extends EasyNPCBaseModelEntity<ZombieVillager> {
 
   public static final String ID = "zombie_villager";
   public static final String NAME = "Zombie Villager";
