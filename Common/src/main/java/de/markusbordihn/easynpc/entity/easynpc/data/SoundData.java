@@ -22,7 +22,9 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.sound.SoundDataEntry;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
+import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import java.util.EnumMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -53,21 +55,25 @@ public interface SoundData<E extends PathfinderMob> extends EasyNPC<E> {
           return value;
         }
       };
-
-  EntityDataAccessor<SoundDataSet> EASY_NPC_DATA_SOUND_DATA_SET =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), SOUND_DATA_SET);
   String EASY_NPC_DATA_SOUND_DATA_TAG = "SoundData";
+
+  static void registerSyncedSoundData(
+      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
+    log.info("- Registering Synched Sound Data for {}.", entityClass.getSimpleName());
+    map.put(
+        SynchedDataIndex.SOUND_DATA_SET, SynchedEntityData.defineId(entityClass, SOUND_DATA_SET));
+  }
 
   static void registerSoundDataSerializer() {
     EntityDataSerializers.registerSerializer(SOUND_DATA_SET);
   }
 
   default SoundDataSet getSoundDataSet() {
-    return getEasyNPCData(EASY_NPC_DATA_SOUND_DATA_SET);
+    return getSynchedEntityData(SynchedDataIndex.SOUND_DATA_SET);
   }
 
   default void setSoundDataSet(SoundDataSet soundDataSet) {
-    setEasyNPCData(EASY_NPC_DATA_SOUND_DATA_SET, soundDataSet);
+    setSynchedEntityData(SynchedDataIndex.SOUND_DATA_SET, soundDataSet);
   }
 
   default SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
@@ -158,7 +164,7 @@ public interface SoundData<E extends PathfinderMob> extends EasyNPC<E> {
   }
 
   default void defineSynchedSoundData() {
-    defineEasyNPCData(EASY_NPC_DATA_SOUND_DATA_SET, new SoundDataSet());
+    defineSynchedEntityData(SynchedDataIndex.SOUND_DATA_SET, new SoundDataSet());
   }
 
   default void registerDefaultSoundData(Enum<?> variant) {

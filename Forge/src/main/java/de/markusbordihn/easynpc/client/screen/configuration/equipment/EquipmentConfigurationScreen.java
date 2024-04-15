@@ -107,7 +107,7 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
         35,
         this.contentLeftPos + 140 - this.xMouse,
         this.contentTopPos + 30 - this.yMouse,
-        this.easyNPC);
+        this.easyNPC.getLivingEntity());
 
     this.renderTooltip(poseStack, x, y);
   }
@@ -121,17 +121,17 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
     RenderSystem.setShaderTexture(0, Constants.TEXTURE_INVENTORY);
 
     // Armors Slots Left
-    if (this.modelData.canUseArmor()) {
+    if (modelData == null || this.modelData.canUseArmor()) {
       this.blit(poseStack, this.contentLeftPos + 90, this.contentTopPos, 7, 7, 18, 72);
     }
 
     // Main Hand Slot Left
-    if (this.modelData.canUseMainHand()) {
+    if (modelData == null || this.modelData.canUseMainHand()) {
       this.blit(poseStack, this.contentLeftPos + 90, this.contentTopPos + 75, 7, 7, 18, 18);
     }
 
     // Off Hand Slot Right
-    if (this.modelData.canUseOffHand()) {
+    if (modelData == null || this.modelData.canUseOffHand()) {
       this.blit(poseStack, this.contentLeftPos + 170, this.contentTopPos + 75, 7, 7, 18, 18);
     }
 

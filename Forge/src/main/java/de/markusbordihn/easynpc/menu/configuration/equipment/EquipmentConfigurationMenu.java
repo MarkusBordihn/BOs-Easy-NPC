@@ -98,7 +98,7 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
     ModelData<?> modelData = this.getEasyNPC().getEasyNPCModelData();
 
     // Player Companion Amor Slots (left / slot: 3 - 0)
-    if (modelData.canUseArmor()) {
+    if (modelData == null || modelData.canUseArmor()) {
       this.loadArmor();
       int playerCompanionEquipmentLeftStartPositionY = 44;
       int playerCompanionEquipmentLeftStartPositionX = 98;
@@ -114,7 +114,7 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
     }
 
     // Player Companion Main Hand Slot (left / bottom: 0)
-    if (modelData.canUseMainHand()) {
+    if (modelData == null || modelData.canUseMainHand()) {
       int playerCompanionMainHandStartPositionY = 119;
       int playerCompanionMainHandStartPositionX = 98;
       this.addSlot(
@@ -127,7 +127,7 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
     }
 
     // Player Companion Off Hand Slot (right / bottom: 1)
-    if (modelData.canUseOffHand()) {
+    if (modelData == null || modelData.canUseOffHand()) {
       int playerCompanionOffHandStartPositionY = 119;
       int playerCompanionOffHandStartPositionX = 178;
       this.addSlot(

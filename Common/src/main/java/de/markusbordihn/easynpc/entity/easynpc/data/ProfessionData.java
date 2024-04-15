@@ -20,8 +20,10 @@
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.profession.Profession;
+import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.utils.TextUtils;
+import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -30,6 +32,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 
 public interface ProfessionData<T extends PathfinderMob> extends EasyNPC<T> {
@@ -48,8 +51,6 @@ public interface ProfessionData<T extends PathfinderMob> extends EasyNPC<T> {
           return value;
         }
       };
-  EntityDataAccessor<Profession> DATA_PROFESSION =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), PROFESSION);
 
   String DATA_PROFESSION_TAG = "Profession";
 
@@ -57,16 +58,22 @@ public interface ProfessionData<T extends PathfinderMob> extends EasyNPC<T> {
     EntityDataSerializers.registerSerializer(PROFESSION);
   }
 
+  static void registerSyncedProfessionData(
+      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
+    log.info("- Registering Synched Profession Data for {}.", entityClass.getSimpleName());
+    map.put(SynchedDataIndex.PROFESSION, SynchedEntityData.defineId(entityClass, PROFESSION));
+  }
+
   default Profession getDefaultProfession() {
     return Profession.NONE;
   }
 
   default Profession getProfession() {
-    return getEasyNPCData(DATA_PROFESSION);
+    return getSynchedEntityData(SynchedDataIndex.PROFESSION);
   }
 
   default void setProfession(Profession profession) {
-    setEasyNPCData(DATA_PROFESSION, profession);
+    setSynchedEntityData(SynchedDataIndex.PROFESSION, profession);
   }
 
   default void setProfession(String name) {
@@ -100,7 +107,7 @@ public interface ProfessionData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default void defineSynchedProfessionData() {
-    defineEasyNPCData(DATA_PROFESSION, this.getDefaultProfession());
+    defineSynchedEntityData(SynchedDataIndex.PROFESSION, getDefaultProfession());
   }
 
   default void addAdditionalProfessionData(CompoundTag compoundTag) {

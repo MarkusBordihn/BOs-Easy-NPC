@@ -185,7 +185,7 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
             easyNPC,
             blockPos,
             blockEntity.despawnRange);
-        easyNPC.getEasyNPCEntity().discard();
+        easyNPC.getEntity().discard();
       }
     }
   }

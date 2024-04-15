@@ -26,14 +26,14 @@ import net.minecraft.world.entity.ai.goal.Goal;
 
 public class ResetLookAtPlayerGoal<T extends EasyNPC<?>> extends Goal {
 
-  private final T easyNPC;
   private final ModelData<?> modelData;
+  private final LookControl lookControl;
   private int resetLookTime = 40;
 
   public ResetLookAtPlayerGoal(T easyNPC) {
     super();
-    this.easyNPC = easyNPC;
     this.modelData = easyNPC.getEasyNPCModelData();
+    this.lookControl = easyNPC.getLookControl();
   }
 
   @Override
@@ -48,20 +48,21 @@ public class ResetLookAtPlayerGoal<T extends EasyNPC<?>> extends Goal {
 
   @Override
   public boolean canUse() {
-    return this.modelData.getModelLockRotation();
+    return this.modelData == null || !this.modelData.getModelLockRotation();
   }
 
   @Override
   public boolean canContinueToUse() {
-    return this.modelData.getModelLockRotation() && this.resetLookTime > 0;
+    return (this.modelData == null || !this.modelData.getModelLockRotation())
+        && this.resetLookTime > 0;
   }
 
   @Override
   public void tick() {
-    if (this.resetLookTime > 0) {
-      LookControl lookControl = this.easyNPC.getLookControl();
-      if (lookControl != null) {
-        lookControl.setLookAt(0, 0, 0);
+    if ((this.modelData == null || this.modelData.getModelLockRotation())
+        && this.resetLookTime > 0) {
+      if (this.lookControl != null) {
+        this.lookControl.setLookAt(0, 0, 0);
       }
       this.resetLookTime--;
     }

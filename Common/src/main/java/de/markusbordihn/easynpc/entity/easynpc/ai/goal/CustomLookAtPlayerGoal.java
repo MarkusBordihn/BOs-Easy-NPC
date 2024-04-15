@@ -44,17 +44,18 @@ public class CustomLookAtPlayerGoal<T extends EasyNPC<?>> extends LookAtPlayerGo
 
   @Override
   public boolean canUse() {
-    return !this.modelData.getModelLockRotation() && super.canUse();
+    return (this.modelData == null || !this.modelData.getModelLockRotation()) && super.canUse();
   }
 
   @Override
   public boolean canContinueToUse() {
-    return !this.modelData.getModelLockRotation() && super.canContinueToUse();
+    return (this.modelData == null || !this.modelData.getModelLockRotation())
+        && super.canContinueToUse();
   }
 
   @Override
   public void tick() {
-    if (!this.modelData.getModelLockRotation()) {
+    if (this.modelData == null || !this.modelData.getModelLockRotation()) {
       super.tick();
     }
   }

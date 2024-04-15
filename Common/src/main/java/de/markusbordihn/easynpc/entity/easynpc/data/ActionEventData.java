@@ -22,9 +22,9 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.action.ActionData;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
-import de.markusbordihn.easynpc.data.custom.CustomDataAccessor;
-import de.markusbordihn.easynpc.data.custom.CustomDataIndex;
-import de.markusbordihn.easynpc.data.entity.CustomEntityData;
+import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
+import de.markusbordihn.easynpc.data.server.ServerDataIndex;
+import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import net.minecraft.nbt.CompoundTag;
@@ -52,10 +52,10 @@ public interface ActionEventData<E extends PathfinderMob> extends EasyNPC<E> {
         }
       };
 
-  CustomDataAccessor<ActionEventSet> CUSTOM_DATA_ACTION_EVENT_SET =
-      CustomEntityData.defineId(CustomDataIndex.ACTION_EVENT_SET, ACTION_EVENT_SET);
-  CustomDataAccessor<Integer> CUSTOM_DATA_ACTION_PERMISSION_LEVEL =
-      CustomEntityData.defineId(EntityDataSerializers.INT);
+  ServerDataAccessor<ActionEventSet> CUSTOM_DATA_ACTION_EVENT_SET =
+      ServerEntityData.defineId(ServerDataIndex.ACTION_EVENT_SET, ACTION_EVENT_SET);
+  ServerDataAccessor<Integer> CUSTOM_DATA_ACTION_PERMISSION_LEVEL =
+      ServerEntityData.defineId(EntityDataSerializers.INT);
 
   String DATA_ACTION_DATA_TAG = "ActionData";
   String DATA_ACTION_PERMISSION_LEVEL_TAG = "ActionPermissionLevel";
@@ -65,11 +65,11 @@ public interface ActionEventData<E extends PathfinderMob> extends EasyNPC<E> {
   }
 
   default ActionEventSet getActionEventSet() {
-    return getEasyNPCCustomData(CUSTOM_DATA_ACTION_EVENT_SET);
+    return getServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET);
   }
 
   default void setActionEventSet(ActionEventSet actions) {
-    setEasyNPCCustomData(CUSTOM_DATA_ACTION_EVENT_SET, actions);
+    setServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET, actions);
   }
 
   default boolean hasActionEvent(ActionEventType actionEventType) {
@@ -85,22 +85,22 @@ public interface ActionEventData<E extends PathfinderMob> extends EasyNPC<E> {
   }
 
   default void clearActionEventSet() {
-    setEasyNPCCustomData(CUSTOM_DATA_ACTION_EVENT_SET, new ActionEventSet());
+    setServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET, new ActionEventSet());
   }
 
   default int getActionPermissionLevel() {
-    return getEasyNPCCustomData(CUSTOM_DATA_ACTION_PERMISSION_LEVEL);
+    return getServerEntityData(CUSTOM_DATA_ACTION_PERMISSION_LEVEL);
   }
 
   default void setActionPermissionLevel(int actionPermissionLevel) {
-    setEasyNPCCustomData(CUSTOM_DATA_ACTION_PERMISSION_LEVEL, actionPermissionLevel);
+    setServerEntityData(CUSTOM_DATA_ACTION_PERMISSION_LEVEL, actionPermissionLevel);
   }
 
   default void defineSynchedActionData() {}
 
   default void defineCustomActionData() {
-    defineEasyNPCCustomData(CUSTOM_DATA_ACTION_EVENT_SET, new ActionEventSet());
-    defineEasyNPCCustomData(CUSTOM_DATA_ACTION_PERMISSION_LEVEL, 0);
+    defineServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET, new ActionEventSet());
+    defineServerEntityData(CUSTOM_DATA_ACTION_PERMISSION_LEVEL, 0);
   }
 
   default void addAdditionalActionData(CompoundTag compoundTag) {

@@ -183,7 +183,9 @@ public class DefaultPoseConfigurationScreen
         36,
         this.contentLeftPos + 80 - this.xMouse,
         this.contentTopPos + 65 - this.yMouse,
-        this.easyNPC);
+        this.easyNPC,
+        this.easyNPC.getEasyNPCScaleData(),
+        this.easyNPC.getEasyNPCModelData());
 
     // Restore entity information
     this.easyNPC.getEntity().setInvisible(entityInvisible);

@@ -19,9 +19,9 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
-import de.markusbordihn.easynpc.data.custom.CustomDataAccessor;
-import de.markusbordihn.easynpc.data.custom.CustomDataIndex;
-import de.markusbordihn.easynpc.data.entity.CustomEntityData;
+import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
+import de.markusbordihn.easynpc.data.server.ServerDataIndex;
+import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
@@ -49,8 +49,8 @@ public interface SpawnerData<T extends PathfinderMob> extends EasyNPC<T> {
 
   String DATA_SPAWNER_UUID_TAG = "SpawnerUUID";
 
-  CustomDataAccessor<UUID> CUSTOM_DATA_SPAWNER_UUID =
-      CustomEntityData.defineId(CustomDataIndex.SPAWNER_UUID, UUID);
+  ServerDataAccessor<UUID> CUSTOM_DATA_SPAWNER_UUID =
+      ServerEntityData.defineId(ServerDataIndex.SPAWNER_UUID, UUID);
 
   static void registerSpawnerDataSerializer() {
     EntityDataSerializers.registerSerializer(UUID);
@@ -61,15 +61,15 @@ public interface SpawnerData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default UUID getSpawnerUUID() {
-    return this.getEasyNPCCustomData(CUSTOM_DATA_SPAWNER_UUID);
+    return this.getServerEntityData(CUSTOM_DATA_SPAWNER_UUID);
   }
 
   default void setSpawnerUUID(UUID uuid) {
-    this.setEasyNPCCustomData(CUSTOM_DATA_SPAWNER_UUID, uuid);
+    this.setServerEntityData(CUSTOM_DATA_SPAWNER_UUID, uuid);
   }
 
   default void defineCustomSpawnerData() {
-    defineEasyNPCCustomData(CUSTOM_DATA_SPAWNER_UUID, null);
+    defineServerEntityData(CUSTOM_DATA_SPAWNER_UUID, null);
   }
 
   default void addAdditionalSpawnerData(CompoundTag compoundTag) {

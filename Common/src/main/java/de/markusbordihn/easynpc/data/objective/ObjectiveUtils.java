@@ -67,7 +67,7 @@ public class ObjectiveUtils {
   public static Goal createObjectiveGoal(
       ObjectiveDataEntry objectiveDataEntry, EasyNPC<?> easyNPC) {
     Entity targetOwner = objectiveDataEntry.getTargetOwner(easyNPC);
-    Entity easyNPCEntity = easyNPC.getEasyNPCEntity();
+    Entity easyNPCEntity = easyNPC.getEntity();
     PathfinderMob pathfinderMob = easyNPC.getPathfinderMob();
 
     switch (objectiveDataEntry.getType()) {

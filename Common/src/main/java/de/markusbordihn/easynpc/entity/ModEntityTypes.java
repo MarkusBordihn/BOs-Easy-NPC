@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Allay;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken;
+import de.markusbordihn.easynpc.entity.easynpc.npc.CrashTestDummy;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Horse;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
@@ -43,6 +44,12 @@ public class ModEntityTypes {
   public static final float HUMANOID_SIZE_WIDTH = 0.6F;
   public static final float HUMANOID_SIZE_HEIGHT = 1.96F;
   public static final MobCategory CATEGORY = MobCategory.MISC;
+
+  public static final EntityType<CrashTestDummy> CRASH_TEST_DUMMY =
+      EntityType.Builder.of(CrashTestDummy::new, CATEGORY)
+          .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
+          .clientTrackingRange(CLIENT_TRACKING_RANGE)
+          .build(CrashTestDummy.ID);
 
   public static final EntityType<Allay> ALLAY =
       EntityType.Builder.of(Allay::new, CATEGORY)

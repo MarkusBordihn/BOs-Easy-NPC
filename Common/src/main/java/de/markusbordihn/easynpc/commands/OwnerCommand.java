@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
+import de.markusbordihn.easynpc.handler.OwnerHandler;
 import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -82,37 +83,15 @@ public class OwnerCommand {
       return 0;
     }
 
-    // Get owner data for EasyNPC entity.
-    OwnerData<?> ownerData = easyNPC.getEasyNPCOwnerData();
-    if (ownerData == null) {
-      context.sendFailure(new TextComponent("No owner data available for " + easyNPC));
+    // Set owner data for EasyNPC entity.
+    if (!OwnerHandler.setOwner(easyNPC, serverPlayer)) {
+      context.sendFailure(new TextComponent("Failed to set owner for " + easyNPC));
       return 0;
-    } else if (ownerData.getOwner() != null) {
-      if (ownerData.getOwnerUUID().equals(serverPlayer.getUUID())) {
-        context.sendSuccess(
-            new TextComponent(
-                EASY_NPC_PREFIX
-                    + easyNPC.getUUID()
-                    + " is already owned by "
-                    + ownerData.getOwner()),
-            false);
-        return Command.SINGLE_SUCCESS;
-      } else {
-        context.sendFailure(
-            new TextComponent(
-                EASY_NPC_PREFIX
-                    + easyNPC.getUUID()
-                    + " is currently owned by "
-                    + ownerData.getOwner()));
-        return 0;
-      }
     }
 
-    // Set owner data for EasyNPC entity.
-    ownerData.setOwnerUUID(serverPlayer.getUUID());
     context.sendSuccess(
         new TextComponent(
-            EASY_NPC_PREFIX + easyNPC.getUUID() + " owners was changed to " + ownerData.getOwner()),
+            EASY_NPC_PREFIX + easyNPC.getUUID() + " owners was changed to " + serverPlayer),
         false);
     return Command.SINGLE_SUCCESS;
   }

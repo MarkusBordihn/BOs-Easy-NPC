@@ -8,6 +8,13 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 4.4.0
+
+- Fixed #155: Automatically update follow owner objective, if owner has changed.
+- Added experimental model override support for custom models
+  over `/easy_npc render set <npc-uuid> <entity_type>`.
+- Added own synched entity data handler for better performance and less network traffic.
+
 ### 4.3.3
 
 - Added basic trading sound for all NPCs.
