@@ -96,6 +96,10 @@ public class ObjectiveDataSet {
     this.updateTargetFlags();
   }
 
+  public boolean removeObjective(ObjectiveType objectiveType) {
+    return this.removeObjective(objectiveType.name());
+  }
+
   public boolean removeObjective(ObjectiveDataEntry objectiveDataEntry) {
     return this.removeObjective(objectiveDataEntry.getId());
   }

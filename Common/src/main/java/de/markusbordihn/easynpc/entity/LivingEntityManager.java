@@ -52,11 +52,8 @@ public class LivingEntityManager {
 
   public static void addEasyNPC(EasyNPC<?> easyNPC) {
     log.debug(
-        "{} [Add] EASY NPC entity {}: {}",
-        LOG_PREFIX,
-        easyNPC,
-        easyNPC.getEasyNPCEntity().getUUID());
-    npcEntityMap.put(easyNPC.getEasyNPCEntity().getUUID(), easyNPC);
+        "{} [Add] EASY NPC entity {}: {}", LOG_PREFIX, easyNPC, easyNPC.getEntity().getUUID());
+    npcEntityMap.put(easyNPC.getEntity().getUUID(), easyNPC);
 
     // Inform all server-side easy NPC entities about the new easyNPC.
     if (!easyNPC.isClientSide()) {
@@ -70,11 +67,8 @@ public class LivingEntityManager {
 
   public static void removeEasyNPC(EasyNPC<?> easyNPC) {
     log.debug(
-        "{} [Remove] EASY NPC entity {}: {}",
-        LOG_PREFIX,
-        easyNPC,
-        easyNPC.getEasyNPCEntity().getUUID());
-    npcEntityMap.remove(easyNPC.getEasyNPCEntity().getUUID());
+        "{} [Remove] EASY NPC entity {}: {}", LOG_PREFIX, easyNPC, easyNPC.getEntity().getUUID());
+    npcEntityMap.remove(easyNPC.getEntity().getUUID());
 
     // Inform all server-side easy NPC entities about the removed easyNPC.
     if (!easyNPC.isClientSide()) {
@@ -144,7 +138,7 @@ public class LivingEntityManager {
       return serverPlayer;
     }
     EasyNPC<?> easyNPC = getEasyNPCEntityByUUID(uuid, serverLevel);
-    return easyNPC != null ? easyNPC.getEasyNPCEntity() : null;
+    return easyNPC != null ? easyNPC.getLivingEntity() : null;
   }
 
   public static EasyNPC<?> getEasyNPCEntityByUUID(UUID uuid, ServerPlayer serverPlayer) {
@@ -207,7 +201,7 @@ public class LivingEntityManager {
     for (var entry : npcEntityMap.entrySet()) {
       EasyNPC<?> easyNPC = entry.getValue();
       if (easyNPC instanceof OwnerData<?> ownerData && ownerData.isOwner(ownerUUID)) {
-        result.put(entry.getKey(), easyNPC.getEasyNPCEntity());
+        result.put(entry.getKey(), easyNPC.getEntity());
       }
     }
     return result;

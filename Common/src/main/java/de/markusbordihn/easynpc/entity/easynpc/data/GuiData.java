@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.world.entity.PathfinderMob;
 
-public interface GuiData<T extends PathfinderMob> extends EasyNPC<T> {
+public interface GuiData<E extends PathfinderMob> extends EasyNPC<E> {
 
   default int getEntityGuiScaling() {
     return 45;

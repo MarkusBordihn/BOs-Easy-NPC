@@ -261,7 +261,7 @@ public class PresetCommand {
             .setHomePosition(new BlockPos(position.x, position.y, position.z));
       }
 
-      if (context.getLevel().addFreshEntity(easyNPC.getEasyNPCEntity())) {
+      if (context.getLevel().addFreshEntity(easyNPC.getEntity())) {
         context.sendSuccess(
             Component.literal("Imported preset " + preset + " to " + easyNPC), false);
       } else {

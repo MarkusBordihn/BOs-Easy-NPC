@@ -20,9 +20,11 @@
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.trading.TradingSettings;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -31,16 +33,19 @@ import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.Merchant;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 
-public interface TradingData<T extends PathfinderMob> extends EasyNPC<T> {
+public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Merchant {
 
   EntityDataSerializer<TradingType> TRADING_TYPE =
       new EntityDataSerializer<>() {
@@ -63,28 +68,14 @@ public interface TradingData<T extends PathfinderMob> extends EasyNPC<T> {
         }
 
         public MerchantOffers read(FriendlyByteBuf buffer) {
-          return new MerchantOffers(buffer.readNbt());
+          CompoundTag compoundTag = buffer.readNbt();
+          return compoundTag != null ? new MerchantOffers(compoundTag) : null;
         }
 
         public MerchantOffers copy(MerchantOffers value) {
           return value;
         }
       };
-
-  EntityDataAccessor<CompoundTag> DATA_TRADING_INVENTORY =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.COMPOUND_TAG);
-  EntityDataAccessor<MerchantOffers> DATA_MERCHANT_OFFERS =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), MERCHANT_OFFERS);
-  EntityDataAccessor<TradingType> DATA_TRADING_TYPE =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), TRADING_TYPE);
-  EntityDataAccessor<Integer> DATA_TRADING_RESETS_EVERY_MIN =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.INT);
-  EntityDataAccessor<Integer> DATA_TRADING_BASIC_MAX_USES =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.INT);
-  EntityDataAccessor<Integer> DATA_TRADING_BASIC_REWARDED_XP =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.INT);
-
   String DATA_TRADING_INVENTORY_TAG = "Inventory";
   String DATA_TRADING_OFFERS_TAG = "Offers";
   String DATA_TRADING_RECIPES_TAG = "Recipes";
@@ -93,6 +84,27 @@ public interface TradingData<T extends PathfinderMob> extends EasyNPC<T> {
   String DATA_TRADING_BASIC_MAX_USES_TAG = "BasicMaxUses";
   String DATA_TRADING_BASIC_REWARDED_XP_TAG = "BasicRewardedXP";
 
+  static void registerSyncedTradingData(
+      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
+    log.info("- Registering Synched Trading Data for {}.", entityClass.getSimpleName());
+    map.put(
+        SynchedDataIndex.TRADING_INVENTORY,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.COMPOUND_TAG));
+    map.put(
+        SynchedDataIndex.TRADING_MERCHANT_OFFERS,
+        SynchedEntityData.defineId(entityClass, MERCHANT_OFFERS));
+    map.put(SynchedDataIndex.TRADING_TYPE, SynchedEntityData.defineId(entityClass, TRADING_TYPE));
+    map.put(
+        SynchedDataIndex.TRADING_RESETS_EVERY_MIN,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.INT));
+    map.put(
+        SynchedDataIndex.TRADING_BASIC_MAX_USES,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.INT));
+    map.put(
+        SynchedDataIndex.TRADING_BASIC_REWARDED_XP,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.INT));
+  }
+
   static void registerTradingDataSerializer() {
     EntityDataSerializers.registerSerializer(MERCHANT_OFFERS);
     EntityDataSerializers.registerSerializer(TRADING_TYPE);
@@ -100,15 +112,44 @@ public interface TradingData<T extends PathfinderMob> extends EasyNPC<T> {
 
   void updateTradesData();
 
-  default MerchantOffers getTradingOffers() {
-    return getEasyNPCData(DATA_MERCHANT_OFFERS);
+  Player getTradingPlayer();
+
+  void setTradingPlayer(Player player);
+
+  MerchantOffers getOffers();
+
+  @Override
+  default void overrideOffers(MerchantOffers merchantOffers) {
+    /* Method is not used */
   }
 
-  default void setTradingOffers(MerchantOffers merchantOffers) {
-    // Force update and client sync because of weak change detection.
-    setEasyNPCData(DATA_MERCHANT_OFFERS, new MerchantOffers());
-    setEasyNPCData(DATA_MERCHANT_OFFERS, merchantOffers);
-    this.updateTradesData();
+  void notifyTrade(MerchantOffer merchantOffer);
+
+  void notifyTradeUpdated(ItemStack itemStack);
+
+  @Override
+  default int getVillagerXp() {
+    return 0;
+  }
+
+  @Override
+  default void overrideXp(int experience) {
+    /* Method is not used */
+  }
+
+  @Override
+  default boolean showProgressBar() {
+    return true;
+  }
+
+  @Override
+  default SoundEvent getNotifyTradeSound() {
+    return SoundEvents.VILLAGER_YES;
+  }
+
+  @Override
+  default boolean isClientSide() {
+    return this.getLevel() != null && this.getLevel().isClientSide();
   }
 
   default void setAdvancedTradingOffers(Container container) {
@@ -224,26 +265,37 @@ public interface TradingData<T extends PathfinderMob> extends EasyNPC<T> {
     this.setTradingOffers(merchantOffers);
   }
 
+  default MerchantOffers getTradingOffers() {
+    return getSynchedEntityData(SynchedDataIndex.TRADING_MERCHANT_OFFERS);
+  }
+
+  default void setTradingOffers(MerchantOffers merchantOffers) {
+    // Force update and client sync because of weak change detection.
+    setSynchedEntityData(SynchedDataIndex.TRADING_MERCHANT_OFFERS, new MerchantOffers());
+    setSynchedEntityData(SynchedDataIndex.TRADING_MERCHANT_OFFERS, merchantOffers);
+    this.updateTradesData();
+  }
+
   default CompoundTag getTradingInventory() {
-    return getEasyNPCData(DATA_TRADING_INVENTORY);
+    return getSynchedEntityData(SynchedDataIndex.TRADING_INVENTORY);
   }
 
   default void setTradingInventory(CompoundTag tradingInventory) {
-    setEasyNPCData(DATA_TRADING_INVENTORY, tradingInventory);
+    setSynchedEntityData(SynchedDataIndex.TRADING_INVENTORY, tradingInventory);
   }
 
   default TradingType getTradingType() {
-    return getEasyNPCData(DATA_TRADING_TYPE);
+    return getSynchedEntityData(SynchedDataIndex.TRADING_TYPE);
   }
 
   default void setTradingType(TradingType tradingType) {
-    setEasyNPCData(DATA_TRADING_TYPE, tradingType);
+    setSynchedEntityData(SynchedDataIndex.TRADING_TYPE, tradingType);
   }
 
   default boolean hasTrading() {
     return ((getTradingType() == TradingType.BASIC || getTradingType() == TradingType.ADVANCED)
-        && getEasyNPCData(DATA_MERCHANT_OFFERS) != null
-        && !getEasyNPCData(DATA_MERCHANT_OFFERS).isEmpty())
+        && getTradingOffers() != null
+        && !getTradingOffers().isEmpty())
         || getTradingType() == TradingType.CUSTOM;
   }
 
@@ -355,27 +407,27 @@ public interface TradingData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default int getBasicTradingMaxUses() {
-    return getEasyNPCData(DATA_TRADING_BASIC_MAX_USES);
+    return getSynchedEntityData(SynchedDataIndex.TRADING_BASIC_MAX_USES);
   }
 
   default void setBasicTradingMaxUses(int maxUses) {
-    setEasyNPCData(DATA_TRADING_BASIC_MAX_USES, maxUses);
+    setSynchedEntityData(SynchedDataIndex.TRADING_BASIC_MAX_USES, maxUses);
   }
 
   default int getBasicTradingRewardExp() {
-    return getEasyNPCData(DATA_TRADING_BASIC_REWARDED_XP);
+    return getSynchedEntityData(SynchedDataIndex.TRADING_BASIC_REWARDED_XP);
   }
 
   default void setBasicTradingRewardExp(int rewardExp) {
-    setEasyNPCData(DATA_TRADING_BASIC_REWARDED_XP, rewardExp);
+    setSynchedEntityData(SynchedDataIndex.TRADING_BASIC_REWARDED_XP, rewardExp);
   }
 
   default int getTradingResetsEveryMin() {
-    return getEasyNPCData(DATA_TRADING_RESETS_EVERY_MIN);
+    return getSynchedEntityData(SynchedDataIndex.TRADING_RESETS_EVERY_MIN);
   }
 
   default void setTradingResetsEveryMin(int resetsEveryMin) {
-    setEasyNPCData(DATA_TRADING_RESETS_EVERY_MIN, resetsEveryMin);
+    setSynchedEntityData(SynchedDataIndex.TRADING_RESETS_EVERY_MIN, resetsEveryMin);
   }
 
   default InteractionResult openTradingScreen(ServerPlayer serverPlayer) {
@@ -415,12 +467,12 @@ public interface TradingData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default void defineSynchedTradingData() {
-    defineEasyNPCData(DATA_TRADING_INVENTORY, new CompoundTag());
-    defineEasyNPCData(DATA_MERCHANT_OFFERS, new MerchantOffers());
-    defineEasyNPCData(DATA_TRADING_TYPE, TradingType.NONE);
-    defineEasyNPCData(DATA_TRADING_RESETS_EVERY_MIN, 0);
-    defineEasyNPCData(DATA_TRADING_BASIC_MAX_USES, 64);
-    defineEasyNPCData(DATA_TRADING_BASIC_REWARDED_XP, 1);
+    defineSynchedEntityData(SynchedDataIndex.TRADING_INVENTORY, new CompoundTag());
+    defineSynchedEntityData(SynchedDataIndex.TRADING_MERCHANT_OFFERS, new MerchantOffers());
+    defineSynchedEntityData(SynchedDataIndex.TRADING_TYPE, TradingType.NONE);
+    defineSynchedEntityData(SynchedDataIndex.TRADING_RESETS_EVERY_MIN, 0);
+    defineSynchedEntityData(SynchedDataIndex.TRADING_BASIC_MAX_USES, 64);
+    defineSynchedEntityData(SynchedDataIndex.TRADING_BASIC_REWARDED_XP, 1);
   }
 
   default void addAdditionalTradingData(CompoundTag compoundTag) {
@@ -443,7 +495,7 @@ public interface TradingData<T extends PathfinderMob> extends EasyNPC<T> {
     CompoundTag tradingTag = compoundTag.getCompound(DATA_TRADING_OFFERS_TAG);
 
     String tradingType = tradingTag.getString(DATA_TRADING_TYPE_TAG);
-    if (tradingType != null && !tradingType.isEmpty()) {
+    if (!tradingType.isEmpty()) {
       this.setTradingType(TradingType.get(tradingType));
     }
 

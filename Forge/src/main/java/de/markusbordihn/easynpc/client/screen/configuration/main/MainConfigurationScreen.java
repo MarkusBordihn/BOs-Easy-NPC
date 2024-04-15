@@ -30,10 +30,13 @@ import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
+import de.markusbordihn.easynpc.entity.easynpc.data.RenderData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
@@ -152,6 +155,13 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
     // Hide home button
     this.homeButton.visible = false;
 
+    // Data access
+    RenderData<?> renderData = this.easyNPC.getEasyNPCRenderData();
+    RenderType renderType =
+        renderData != null && renderData.getRenderData() != null
+            ? renderData.getRenderData().getRenderType()
+            : RenderType.DEFAULT;
+
     // Name Edit Box and Save Button
     this.formerName = this.easyNPC.getEntity().getName().getString();
     this.nameBox = new TextField(this.font, this.contentLeftPos + 1, this.topPos + 25, 108);
@@ -211,19 +221,20 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                   }
                 }));
     editSkinButton.active =
-        this.supportsSkinConfiguration && (
-            this.hasPermissions(
-                COMMON.defaultSkinConfigurationEnabled.get(),
-                COMMON.defaultSkinConfigurationAllowInCreative.get(),
-                COMMON.defaultSkinConfigurationPermissionLevel.get())
-                || this.hasPermissions(
-                COMMON.playerSkinConfigurationEnabled.get(),
-                COMMON.playerSkinConfigurationAllowInCreative.get(),
-                COMMON.playerSkinConfigurationPermissionLevel.get())
-                || this.hasPermissions(
-                COMMON.customSkinConfigurationEnabled.get(),
-                COMMON.customSkinConfigurationAllowInCreative.get(),
-                COMMON.customSkinConfigurationPermissionLevel.get()));
+        renderType == RenderType.DEFAULT
+            && this.supportsSkinConfiguration
+            && (this.hasPermissions(
+            COMMON.defaultSkinConfigurationEnabled.get(),
+            COMMON.defaultSkinConfigurationAllowInCreative.get(),
+            COMMON.defaultSkinConfigurationPermissionLevel.get())
+            || this.hasPermissions(
+            COMMON.playerSkinConfigurationEnabled.get(),
+            COMMON.playerSkinConfigurationAllowInCreative.get(),
+            COMMON.playerSkinConfigurationPermissionLevel.get())
+            || this.hasPermissions(
+            COMMON.customSkinConfigurationEnabled.get(),
+            COMMON.customSkinConfigurationAllowInCreative.get(),
+            COMMON.customSkinConfigurationPermissionLevel.get()));
 
     // Import Button
     Button importButton =
@@ -333,7 +344,8 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
             COMMON.equipmentConfigurationAllowInCreative.get(),
             COMMON.equipmentConfigurationPermissionLevel.get());
 
-    // Scaling Button
+    // Scaling
+    ScaleData<?> scaleData = this.easyNPC.getEasyNPCScaleData();
     Button editScalingButton =
         this.addRenderableWidget(
             new TextButton(
@@ -344,7 +356,9 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 onPress ->
                     NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.SCALING)));
     editScalingButton.active =
-        this.supportsScalingConfiguration
+        renderType == RenderType.DEFAULT
+            && scaleData != null
+            && this.supportsScalingConfiguration
             && this.hasPermissions(
             COMMON.scalingConfigurationEnabled.get(),
             COMMON.scalingConfigurationAllowInCreative.get(),
@@ -380,15 +394,17 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                   }
                 }));
     editPoseButton.active =
-        this.supportsPoseConfiguration && (
-            this.hasPermissions(
-                COMMON.defaultPoseConfigurationEnabled.get(),
-                COMMON.defaultPoseConfigurationAllowInCreative.get(),
-                COMMON.defaultPoseConfigurationPermissionLevel.get())
-                || this.hasPermissions(
-                COMMON.customPoseConfigurationEnabled.get(),
-                COMMON.customPoseConfigurationAllowInCreative.get(),
-                COMMON.customPoseConfigurationPermissionLevel.get()));
+        renderType == RenderType.DEFAULT
+            && modelData != null
+            && this.supportsPoseConfiguration
+            && (this.hasPermissions(
+            COMMON.defaultPoseConfigurationEnabled.get(),
+            COMMON.defaultPoseConfigurationAllowInCreative.get(),
+            COMMON.defaultPoseConfigurationPermissionLevel.get())
+            || this.hasPermissions(
+            COMMON.customPoseConfigurationEnabled.get(),
+            COMMON.customPoseConfigurationAllowInCreative.get(),
+            COMMON.customPoseConfigurationPermissionLevel.get()));
 
     // Position Button
     Button editPositionButton =
@@ -422,7 +438,9 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                     NetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.DEFAULT_ROTATION)));
     editRotationButton.active =
-        this.hasPermissions(
+        renderType == RenderType.DEFAULT
+            && modelData != null
+            && this.hasPermissions(
             COMMON.defaultRotationConfigurationEnabled.get(),
             COMMON.defaultRotationConfigurationAllowInCreative.get(),
             COMMON.defaultRotationConfigurationPermissionLevel.get());
@@ -457,7 +475,8 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                   }
                 }));
     editTradesButton.active =
-        this.hasPermissions(
+        tradingData != null
+            && this.hasPermissions(
             COMMON.basicTradingConfigurationEnabled.get(),
             COMMON.basicTradingConfigurationAllowInCreative.get(),
             COMMON.basicTradingConfigurationPermissionLevel.get())

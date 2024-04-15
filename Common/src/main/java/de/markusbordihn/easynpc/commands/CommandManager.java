@@ -48,6 +48,7 @@ public class CommandManager {
             .then(NavigationCommand.register())
             .then(OwnerCommand.register())
             .then(PresetCommand.register())
+            .then(RenderCommand.register())
             .then(SkinCommand.register())
             .then(TradingCommand.register())
         // @formatter:on

@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.entity.easynpc.npc;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
-import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
+import de.markusbordihn.easynpc.entity.EasyNPCBaseModelEntity;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
@@ -33,7 +33,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class Chicken extends EasyNPCBaseEntity<Chicken> {
+public class Chicken extends EasyNPCBaseModelEntity<Chicken> {
 
   public static final String ID = "chicken";
   public static final String NAME = "Chicken";

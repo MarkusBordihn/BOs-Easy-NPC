@@ -19,14 +19,17 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
+import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import java.util.EnumMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
@@ -37,20 +40,24 @@ import net.minecraft.world.phys.Vec3;
 
 public interface NavigationData<T extends PathfinderMob> extends EasyNPC<T> {
 
-  EntityDataAccessor<BlockPos> DATA_HOME_POSITION =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BLOCK_POS);
-
   String DATA_NAVIGATION_TAG = "Navigation";
   String DATA_HOME_TAG = "Home";
   int TRAVEL_EVENT_TICK = 20;
 
+  static void registerSyncedNavigationData(
+      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
+    log.info("- Registering Synched Navigation Data for {}.", entityClass.getSimpleName());
+    map.put(
+        SynchedDataIndex.NAVIGATION_HOME_POSITION,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BLOCK_POS));
+  }
+
   default BlockPos getHomePosition() {
-    return getEasyNPCData(DATA_HOME_POSITION);
+    return getSynchedEntityData(SynchedDataIndex.NAVIGATION_HOME_POSITION);
   }
 
   default void setHomePosition(BlockPos blockPos) {
-    setEasyNPCData(DATA_HOME_POSITION, blockPos);
+    setSynchedEntityData(SynchedDataIndex.NAVIGATION_HOME_POSITION, blockPos);
   }
 
   default boolean hasHomePosition() {
@@ -87,7 +94,7 @@ public interface NavigationData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default void defineSynchedNavigationData() {
-    defineEasyNPCData(DATA_HOME_POSITION, BlockPos.ZERO);
+    defineSynchedEntityData(SynchedDataIndex.NAVIGATION_HOME_POSITION, BlockPos.ZERO);
   }
 
   default boolean canFly() {

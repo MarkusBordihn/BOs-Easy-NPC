@@ -19,54 +19,19 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
+import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 
 public interface AttributeData<E extends PathfinderMob> extends EasyNPC<E> {
 
-  // Synced entity data
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_ATTRIBUTE_DATA_LOADED =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_ATTRIBUTE_CAN_BE_LEASHED =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_ATTRIBUTE_CAN_FLOAT =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_ATTRIBUTE_CAN_CLOSE_DOOR =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_ATTRIBUTE_CAN_OPEN_DOOR =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_ATTRIBUTE_CAN_USE_NETHER_PORTAL =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_ATTRIBUTE_CAN_PASS_DOOR =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_ATTRIBUTE_FREEFALL =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_ATTRIBUTE_IS_ATTACKABLE =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_ATTRIBUTE_IS_PUSHABLE =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Boolean> EASY_NPC_DATA_ATTRIBUTE_PUSH_ENTITIES =
-      SynchedEntityData.defineId(
-          EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.BOOLEAN);
-  EntityDataAccessor<Integer> EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.INT);
-
-  // CompoundTags
   String EASY_NPC_DATA_ATTRIBUTE_TAG = "EntityAttribute";
   String EASY_NPC_DATA_ATTRIBUTE_CAN_BE_LEASHED_TAG = "CanBeLeashed";
   String EASY_NPC_DATA_ATTRIBUTE_CAN_FLOAT_TAG = "CanFloat";
@@ -80,114 +45,155 @@ public interface AttributeData<E extends PathfinderMob> extends EasyNPC<E> {
   String EASY_NPC_DATA_ATTRIBUTE_PUSH_ENTITIES_TAG = "PushEntities";
   String EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL_TAG = "LightLevel";
 
+  static void registerSyncedAttributeData(
+      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
+    log.info("- Registering Synched Attribute Data for {}.", entityClass.getSimpleName());
+    map.put(
+        SynchedDataIndex.ATTRIBUTE_DATA_LOADED,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.ATTRIBUTE_CAN_BE_LEASHED,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.ATTRIBUTE_CAN_FLOAT,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.ATTRIBUTE_CAN_CLOSE_DOOR,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.ATTRIBUTE_CAN_OPEN_DOOR,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.ATTRIBUTE_CAN_PASS_DOOR,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.ATTRIBUTE_CAN_USE_NETHER_PORTAL,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.ATTRIBUTE_FREEFALL,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.ATTRIBUTE_IS_ATTACKABLE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.ATTRIBUTE_IS_PUSHABLE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.ATTRIBUTE_PUSH_ENTITIES,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
+        SynchedDataIndex.ATTRIBUTE_LIGHT_LEVEL,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.INT));
+  }
+
   default void setBaseAttribute(Attribute attribute, double value) {
-    if (attribute == null || getEasyNPCEntity().getAttribute(attribute) == null) {
+    if (attribute == null || getLivingEntity().getAttribute(attribute) == null) {
       return;
     }
-    getEasyNPCEntity().getAttribute(attribute).setBaseValue(value);
+    getLivingEntity().getAttribute(attribute).setBaseValue(value);
   }
 
   default double getBaseAttribute(Attribute attribute) {
-    if (attribute == null || getEasyNPCEntity().getAttribute(attribute) == null) {
+    if (attribute == null || getLivingEntity().getAttribute(attribute) == null) {
       return 0.0;
     }
-    return getEasyNPCEntity().getAttribute(attribute).getBaseValue();
+    return getLivingEntity().getAttribute(attribute).getBaseValue();
   }
 
   default boolean getAttributeDataLoaded() {
-    return getEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_DATA_LOADED);
+    return getSynchedEntityData(SynchedDataIndex.ATTRIBUTE_DATA_LOADED);
   }
 
   default void setAttributeDataLoaded(boolean loaded) {
-    setEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_DATA_LOADED, loaded);
+    setSynchedEntityData(SynchedDataIndex.ATTRIBUTE_DATA_LOADED, loaded);
   }
 
   default boolean getAttributeCanBeLeashed() {
-    return getEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_BE_LEASHED);
+    return getSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_BE_LEASHED);
   }
 
   default void setAttributeCanBeLeashed(boolean canBeLeashed) {
-    setEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_BE_LEASHED, canBeLeashed);
+    setSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_BE_LEASHED, canBeLeashed);
   }
 
   default boolean getAttributeCanFloat() {
-    return getEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_FLOAT);
+    return getSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_FLOAT);
   }
 
   default void setAttributeCanFloat(boolean canFloat) {
-    setEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_FLOAT, canFloat);
+    setSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_FLOAT, canFloat);
   }
 
   default boolean getAttributeCanCloseDoor() {
-    return getEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_CLOSE_DOOR);
+    return getSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_CLOSE_DOOR);
   }
 
   default void setAttributeCanCloseDoor(boolean canCloseDoor) {
-    setEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_CLOSE_DOOR, canCloseDoor);
+    setSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_CLOSE_DOOR, canCloseDoor);
   }
 
   default boolean getAttributeCanOpenDoor() {
-    return getEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_OPEN_DOOR);
+    return getSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_OPEN_DOOR);
   }
 
   default void setAttributeCanOpenDoor(boolean canOpenDoor) {
-    setEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_OPEN_DOOR, canOpenDoor);
+    setSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_OPEN_DOOR, canOpenDoor);
   }
 
   default boolean getAttributeCanPassDoor() {
-    return getEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_PASS_DOOR);
+    return getSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_PASS_DOOR);
   }
 
   default void setAttributeCanPassDoor(boolean canPassDoor) {
-    setEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_PASS_DOOR, canPassDoor);
+    setSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_PASS_DOOR, canPassDoor);
   }
 
   default boolean getAttributeCanUseNetherPortal() {
-    return getEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_USE_NETHER_PORTAL);
+    return getSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_USE_NETHER_PORTAL);
   }
 
   default void setAttributeCanUseNetherPortal(boolean canUseNetherPortal) {
-    setEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_USE_NETHER_PORTAL, canUseNetherPortal);
+    setSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_USE_NETHER_PORTAL, canUseNetherPortal);
   }
 
   default boolean getAttributeFreefall() {
-    return getEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_FREEFALL);
+    return getSynchedEntityData(SynchedDataIndex.ATTRIBUTE_FREEFALL);
   }
 
   default void setAttributeFreefall(boolean freefall) {
-    setEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_FREEFALL, freefall);
+    setSynchedEntityData(SynchedDataIndex.ATTRIBUTE_FREEFALL, freefall);
   }
 
   default boolean getAttributeIsAttackable() {
-    return getEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_IS_ATTACKABLE);
+    return getSynchedEntityData(SynchedDataIndex.ATTRIBUTE_IS_ATTACKABLE);
   }
 
   default void setAttributeIsAttackable(boolean isAttackable) {
-    setEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_IS_ATTACKABLE, isAttackable);
+    setSynchedEntityData(SynchedDataIndex.ATTRIBUTE_IS_ATTACKABLE, isAttackable);
   }
 
   default boolean getAttributeIsPushable() {
-    return getEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_IS_PUSHABLE);
+    return getSynchedEntityData(SynchedDataIndex.ATTRIBUTE_IS_PUSHABLE);
   }
 
   default void setAttributeIsPushable(boolean isPushable) {
-    setEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_IS_PUSHABLE, isPushable);
+    setSynchedEntityData(SynchedDataIndex.ATTRIBUTE_IS_PUSHABLE, isPushable);
   }
 
   default boolean getAttributePushEntities() {
-    return getEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_PUSH_ENTITIES);
+    return getSynchedEntityData(SynchedDataIndex.ATTRIBUTE_PUSH_ENTITIES);
   }
 
   default void setAttributePushEntities(boolean pushEntities) {
-    setEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_PUSH_ENTITIES, pushEntities);
+    setSynchedEntityData(SynchedDataIndex.ATTRIBUTE_PUSH_ENTITIES, pushEntities);
   }
 
   default int getAttributeLightLevel() {
-    return getEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL);
+    return getSynchedEntityData(SynchedDataIndex.ATTRIBUTE_LIGHT_LEVEL);
   }
 
   default void setAttributeLightLevel(int lightLevel) {
-    setEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL, lightLevel);
+    setSynchedEntityData(SynchedDataIndex.ATTRIBUTE_LIGHT_LEVEL, lightLevel);
   }
 
   default boolean getAttributeSilent() {
@@ -203,18 +209,18 @@ public interface AttributeData<E extends PathfinderMob> extends EasyNPC<E> {
   }
 
   default void defineSynchedAttributeData() {
-    defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_DATA_LOADED, false);
-    defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_BE_LEASHED, false);
-    defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_FLOAT, false);
-    defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_CLOSE_DOOR, false);
-    defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_OPEN_DOOR, false);
-    defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_PASS_DOOR, false);
-    defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_CAN_USE_NETHER_PORTAL, false);
-    defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_FREEFALL, false);
-    defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_IS_ATTACKABLE, false);
-    defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_IS_PUSHABLE, false);
-    defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_PUSH_ENTITIES, false);
-    defineEasyNPCData(EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL, 7);
+    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_DATA_LOADED, false);
+    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_BE_LEASHED, false);
+    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_FLOAT, false);
+    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_CLOSE_DOOR, false);
+    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_OPEN_DOOR, false);
+    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_PASS_DOOR, false);
+    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_USE_NETHER_PORTAL, false);
+    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_FREEFALL, false);
+    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_IS_ATTACKABLE, false);
+    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_IS_PUSHABLE, false);
+    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_PUSH_ENTITIES, false);
+    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_LIGHT_LEVEL, 7);
   }
 
   default void addAdditionalAttributeData(CompoundTag compoundTag) {

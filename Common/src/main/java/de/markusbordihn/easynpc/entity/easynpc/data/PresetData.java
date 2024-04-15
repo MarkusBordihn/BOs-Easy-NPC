@@ -37,13 +37,13 @@ public interface PresetData<T extends PathfinderMob> extends EasyNPC<T> {
   default void importPresetData(CompoundTag compoundTag) {
 
     // Skip import if no data is or no entity is available.
-    if (compoundTag == null || compoundTag.isEmpty() || this.getEasyNPCEntity() == null) {
+    if (compoundTag == null || compoundTag.isEmpty() || this.getEntity() == null) {
       return;
     }
 
     // Reset specific data to avoid side effects
-    if (this.getEasyNPCEntity() != null) {
-      this.getEasyNPCEntity().setPose(Pose.STANDING);
+    if (this.getEntity() != null) {
+      this.getEntity().setPose(Pose.STANDING);
     }
     if (this.getEasyNPCModelData() != null) {
       this.getEasyNPCModelData().setModelPose(ModelPose.DEFAULT);
@@ -98,27 +98,27 @@ public interface PresetData<T extends PathfinderMob> extends EasyNPC<T> {
     }
 
     // Import preset data to entity.
-    this.getEasyNPCEntity().load(compoundTag);
+    this.getEntity().load(compoundTag);
   }
 
   default String getEntityTypeId() {
-    if (this.getEasyNPCEntity() == null) {
+    if (this.getEntity() == null) {
       return null;
     }
-    EntityType<?> entitytype = this.getEasyNPCEntity().getType();
+    EntityType<?> entitytype = this.getEntity().getType();
     ResourceLocation resourcelocation = EntityType.getKey(entitytype);
     return entitytype.canSerialize() ? resourcelocation.toString() : null;
   }
 
   default CompoundTag serializePresetData() {
     CompoundTag compoundTag = new CompoundTag();
-    if (this.getEasyNPCEntity() == null) {
+    if (this.getEntity() == null) {
       return compoundTag;
     }
     String entityTypeId = this.getEntityTypeId();
     if (entityTypeId != null) {
       compoundTag.putString(Entity.ID_TAG, entityTypeId);
     }
-    return this.getEasyNPCEntity().saveWithoutId(compoundTag);
+    return this.getEntity().saveWithoutId(compoundTag);
   }
 }

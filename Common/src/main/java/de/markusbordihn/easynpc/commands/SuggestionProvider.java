@@ -23,24 +23,68 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.core.Registry;
 import net.minecraft.server.level.ServerPlayer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class SuggestionProvider {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static List<String> filteredEntityTypes;
+  private static Set<String> deniedEntityTypes =
+      Set.of(
+          "minecraft:area_effect_cloud",
+          "minecraft:armor_stand",
+          "minecraft:arrow",
+          "minecraft:boat",
+          "minecraft:chest_minecart",
+          "minecraft:command_block_minecart",
+          "minecraft:dragon_fireball",
+          "minecraft:egg",
+          "minecraft:ender_dragon",
+          "minecraft:end_crystal",
+          "minecraft:ender_pearl",
+          "minecraft:evoker_fangs",
+          "minecraft:experience_bottle",
+          "minecraft:experience_orb",
+          "minecraft:eye_of_ender",
+          "minecraft:falling_block",
+          "minecraft:fireball",
+          "minecraft:firework_rocket",
+          "minecraft:fishing_bobber",
+          "minecraft:furnace_minecart",
+          "minecraft:glow_item_frame",
+          "minecraft:hopper_minecart",
+          "minecraft:item",
+          "minecraft:item_frame",
+          "minecraft:leash_knot",
+          "minecraft:lightning_bolt",
+          "minecraft:llama_spit",
+          "minecraft:marker",
+          "minecraft:minecart",
+          "minecraft:mooshroom",
+          "minecraft:painting",
+          "minecraft:potion",
+          "minecraft:shulker_bullet",
+          "minecraft:small_fireball",
+          "minecraft:snowball",
+          "minecraft:spawner_minecart",
+          "minecraft:spectral_arrow",
+          "minecraft:tnt",
+          "minecraft:tnt_minecart",
+          "minecraft:trident");
 
-  protected SuggestionProvider() {
+  private SuggestionProvider() {
   }
 
   // Return all EasyNPCs for creative mode or only the owned EasyNPCs of the player.
@@ -74,5 +118,33 @@ public class SuggestionProvider {
       return SharedSuggestionProvider.suggest(new String[0], build);
     }
     return SharedSuggestionProvider.suggest(variantData.getVariantNames(), build);
+  }
+
+  // Return all render types for the given EasyNPC.
+  protected static CompletableFuture<Suggestions> suggestRenderTypes(
+      CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {
+    return SharedSuggestionProvider.suggest(RenderType.getRenderTypeNames(), build);
+  }
+
+  // Return all entity types from the entity registry.
+  protected static CompletableFuture<Suggestions> suggestEntityTypes(
+      CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {
+    return SharedSuggestionProvider.suggest(getFilteredEntityTypes(), build);
+  }
+
+  protected static Stream<String> getFilteredEntityTypes() {
+    if (filteredEntityTypes == null) {
+      filteredEntityTypes =
+          Registry.ENTITY_TYPE.keySet().stream()
+              .filter(
+                  entityType -> {
+                    String entityTypeName = entityType.toString();
+                    return !entityTypeName.startsWith("easy_npc")
+                        && !deniedEntityTypes.contains(entityType.toString());
+                  })
+              .map(entityType -> "\"" + entityType.toString() + "\"")
+              .toList();
+    }
+    return filteredEntityTypes.stream();
   }
 }

@@ -22,7 +22,9 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import java.util.EnumMap;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -30,6 +32,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 
 public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
@@ -64,20 +67,25 @@ public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
         }
       };
 
-  EntityDataAccessor<String> EASY_NPC_DATA_SKIN_NAME =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.STRING);
-  EntityDataAccessor<String> EASY_NPC_DATA_SKIN_URL =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.STRING);
-  EntityDataAccessor<UUID> EASY_NPC_DATA_SKIN_UUID =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), SKIN_UUID);
-  EntityDataAccessor<SkinType> EASY_NPC_DATA_SKIN_TYPE =
-      SynchedEntityData.defineId(EasyNPC.getSynchedEntityDataClass(), SKIN_TYPE);
   String EASY_NPC_DATA_SKIN_DATA_TAG = "SkinData";
   String EASY_NPC_DATA_SKIN_NAME_TAG = "SkinName";
   String EASY_NPC_DATA_SKIN_TAG = "Skin";
   String EASY_NPC_DATA_SKIN_TYPE_TAG = "SkinType";
   String EASY_NPC_DATA_SKIN_URL_TAG = "SkinURL";
   String EASY_NPC_DATA_SKIN_UUID_TAG = "SkinUUID";
+
+  static void registerSyncedSkinData(
+      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
+    log.info("- Registering Synched Skin Data for {}.", entityClass.getSimpleName());
+    map.put(
+        SynchedDataIndex.SKIN_NAME,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.STRING));
+    map.put(
+        SynchedDataIndex.SKIN_URL,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.STRING));
+    map.put(SynchedDataIndex.SKIN_UUID, SynchedEntityData.defineId(entityClass, SKIN_UUID));
+    map.put(SynchedDataIndex.SKIN_TYPE, SynchedEntityData.defineId(entityClass, SKIN_TYPE));
+  }
 
   static void registerSkinDataSerializer() {
     EntityDataSerializers.registerSerializer(SKIN_TYPE);
@@ -89,35 +97,35 @@ public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default String getSkinName() {
-    return getEasyNPCData(EASY_NPC_DATA_SKIN_NAME);
+    return getSynchedEntityData(SynchedDataIndex.SKIN_NAME);
   }
 
   default void setSkinName(String skin) {
-    setEasyNPCData(EASY_NPC_DATA_SKIN_NAME, skin != null ? skin : "");
+    setSynchedEntityData(SynchedDataIndex.SKIN_NAME, skin != null ? skin : "");
   }
 
   default String getSkinURL() {
-    return getEasyNPCData(EASY_NPC_DATA_SKIN_URL);
+    return getSynchedEntityData(SynchedDataIndex.SKIN_URL);
   }
 
   default void setSkinURL(String skinURL) {
-    setEasyNPCData(EASY_NPC_DATA_SKIN_URL, skinURL != null ? skinURL : "");
+    setSynchedEntityData(SynchedDataIndex.SKIN_URL, skinURL != null ? skinURL : "");
   }
 
   default UUID getSkinUUID() {
-    return getEasyNPCData(EASY_NPC_DATA_SKIN_UUID);
+    return getSynchedEntityData(SynchedDataIndex.SKIN_UUID);
   }
 
   default void setSkinUUID(UUID uuid) {
-    setEasyNPCData(EASY_NPC_DATA_SKIN_UUID, uuid);
+    setSynchedEntityData(SynchedDataIndex.SKIN_UUID, uuid != null ? uuid : Constants.BLANK_UUID);
   }
 
   default SkinType getSkinType() {
-    return getEasyNPCData(EASY_NPC_DATA_SKIN_TYPE);
+    return getSynchedEntityData(SynchedDataIndex.SKIN_TYPE);
   }
 
   default void setSkinType(SkinType skinType) {
-    setEasyNPCData(EASY_NPC_DATA_SKIN_TYPE, skinType);
+    setSynchedEntityData(SynchedDataIndex.SKIN_TYPE, skinType);
   }
 
   default SkinType getSkinType(String name) {
@@ -129,10 +137,10 @@ public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default void defineSynchedSkinData() {
-    defineEasyNPCData(EASY_NPC_DATA_SKIN_NAME, "");
-    defineEasyNPCData(EASY_NPC_DATA_SKIN_URL, "");
-    defineEasyNPCData(EASY_NPC_DATA_SKIN_UUID, Constants.BLANK_UUID);
-    defineEasyNPCData(EASY_NPC_DATA_SKIN_TYPE, SkinType.DEFAULT);
+    defineSynchedEntityData(SynchedDataIndex.SKIN_NAME, "");
+    defineSynchedEntityData(SynchedDataIndex.SKIN_URL, "");
+    defineSynchedEntityData(SynchedDataIndex.SKIN_UUID, Constants.BLANK_UUID);
+    defineSynchedEntityData(SynchedDataIndex.SKIN_TYPE, SkinType.DEFAULT);
   }
 
   default void addAdditionalSkinData(CompoundTag compoundTag) {
