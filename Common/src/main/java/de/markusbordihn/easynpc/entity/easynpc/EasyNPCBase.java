@@ -199,7 +199,7 @@ public interface EasyNPCBase<E extends PathfinderMob>
   }
 
   default void addEasyNPCBaseAdditionalSaveData(CompoundTag compoundTag) {
-    log.info("Add additional save data for {}", this);
+    log.debug("Add additional save data for {}", this);
     ActionEventData<E> actionEventData = getEasyNPCActionEventData();
     if (actionEventData != null) {
       actionEventData.addAdditionalActionData(compoundTag);

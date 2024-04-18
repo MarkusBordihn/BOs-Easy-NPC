@@ -20,18 +20,25 @@
 package de.markusbordihn.easynpc.data.model;
 
 public enum ModelPart {
-  // @formatter:off
-  ARMS,
-  BODY,
-  HEAD,
-  LEFT_ARM,
-  LEFT_LEG,
-  RIGHT_ARM,
-  RIGHT_LEG,
-  ROOT,
-  UNKNOWN;
+  ARMS("Arms"),
+  BODY("Body"),
+  HEAD("Head"),
+  LEFT_ARM("LeftArm"),
+  LEFT_LEG("LeftLeg"),
+  RIGHT_ARM("RightArm"),
+  RIGHT_LEG("RightLeg"),
+  ROOT("Root"),
+  BOOTS("Boots"),
+  CHESTPLATE("Chestplate"),
+  HELMET("Helmet"),
+  LEGGINGS("Leggings"),
+  UNKNOWN("Unknown");
 
-  // @formatter:on
+  public final String tagName;
+
+  ModelPart(String tagName) {
+    this.tagName = tagName;
+  }
 
   public static ModelPart get(String modelPart) {
     if (modelPart == null || modelPart.isEmpty()) {
@@ -42,5 +49,9 @@ public enum ModelPart {
     } catch (IllegalArgumentException e) {
       return ModelPart.UNKNOWN;
     }
+  }
+
+  public String getTagName() {
+    return this.tagName;
   }
 }

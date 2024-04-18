@@ -37,7 +37,6 @@ import net.minecraft.world.level.Level;
 public class Fairy extends EasyNPCBaseModelEntity<Fairy> {
 
   public static final String ID = "fairy";
-  public static final String NAME = "Fairy";
 
   private static final float DEFAULT_SCALE_X = 0.4f;
   private static final float DEFAULT_SCALE_Y = 0.4f;

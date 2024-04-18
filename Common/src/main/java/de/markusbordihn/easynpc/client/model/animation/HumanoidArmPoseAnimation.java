@@ -71,6 +71,14 @@ public interface HumanoidArmPoseAnimation {
     AnimationUtils.animateCrossbowHold(rightArmPart, leftArmPart, headModelPart, true);
   }
 
+  static void animateHumanoidModelArmPoseGunHold(
+      ModelPart rightArmPart, ModelPart leftArmPart, ModelPart headModelPart) {
+    rightArmPart.yRot = -0.1F + headModelPart.yRot;
+    rightArmPart.xRot = -Constants.HALF_OF_PI + headModelPart.xRot + 0.3F;
+    leftArmPart.yRot = 0.1F + headModelPart.yRot;
+    leftArmPart.xRot = -Constants.HALF_OF_PI + headModelPart.xRot + 1.5F;
+  }
+
   static void animateHumanoidModelArmPoseDancing(
       ModelPart headModelPart,
       ModelPart bodyPart,
@@ -130,6 +138,7 @@ public interface HumanoidArmPoseAnimation {
           animateHumanoidModelArmPoseCrossbowHold(rightArmPart, leftArmPart, headModelPart);
       case DANCING -> animateHumanoidModelArmPoseDancing(
           headModelPart, bodyPart, rightArmPart, leftArmPart, ageInTicks);
+      case GUN_HOLD -> animateHumanoidModelArmPoseGunHold(rightArmPart, leftArmPart, headModelPart);
       case SPELLCASTING ->
           animateHumanoidModelArmPoseSpellcasting(rightArmPart, leftArmPart, ageInTicks);
       case SPYGLASS -> animateHumanoidModelArmPoseSpyglass(rightArmPart, leftArmPart, ageInTicks);

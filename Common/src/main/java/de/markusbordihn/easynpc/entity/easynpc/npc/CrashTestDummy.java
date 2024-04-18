@@ -30,7 +30,6 @@ import net.minecraft.world.level.Level;
 public class CrashTestDummy extends EasyNPCBaseEntity<Humanoid> {
 
   public static final String ID = "crash_test_dummy";
-  public static final String NAME = "Crash Test Dummy";
 
   public CrashTestDummy(EntityType<? extends PathfinderMob> entityType, Level level) {
     super(entityType, level, Variant.DEFAULT);

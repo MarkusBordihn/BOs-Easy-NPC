@@ -1,0 +1,34 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:bow",
+    {
+      "id": "spartanweaponry:wooden_longbow",
+      "required": false
+    },
+    {
+      "id": "spartanweaponry:leather_longbow",
+      "required": false
+    },
+    {
+      "id": "spartanweaponry:copper_longbow",
+      "required": false
+    },
+    {
+      "id": "spartanweaponry:iron_longbow",
+      "required": false
+    },
+    {
+      "id": "spartanweaponry:golden_longbow",
+      "required": false
+    },
+    {
+      "id": "spartanweaponry:diamond_longbow",
+      "required": false
+    },
+    {
+      "id": "spartanweaponry:netherite_longbow",
+      "required": false
+    }
+  ]
+}

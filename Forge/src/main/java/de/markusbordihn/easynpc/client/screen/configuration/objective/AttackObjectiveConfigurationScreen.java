@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.objective;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
@@ -38,9 +40,11 @@ public class AttackObjectiveConfigurationScreen
   protected Checkbox meleeAttackCheckbox;
   protected Checkbox zombieAttackCheckbox;
   protected Checkbox crossbowAttackCheckbox;
-  protected Checkbox getBowAttackCheckbox;
+  protected Checkbox bowAttackCheckbox;
+  protected Checkbox gunAttackCheckbox;
   protected Checkbox attackAnimalCheckbox;
   protected Checkbox attackPlayerCheckbox;
+  protected Checkbox attackPlayerWithoutOwnerCheckbox;
   protected Checkbox attackMonsterCheckbox;
   protected Checkbox attackMobCheckbox;
   protected Checkbox attackMobWithoutCreeperCheckbox;
@@ -118,7 +122,7 @@ public class AttackObjectiveConfigurationScreen
                 }));
 
     // Bow Attack
-    this.getBowAttackCheckbox =
+    this.bowAttackCheckbox =
         this.addRenderableWidget(
             new Checkbox(
                 this.contentLeftPos + 150,
@@ -135,8 +139,27 @@ public class AttackObjectiveConfigurationScreen
                   }
                 }));
 
-    // Attack Player
+    // Gun Attack
     objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
+    this.gunAttackCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                this.contentLeftPos + 10,
+                objectiveEntriesTop,
+                ObjectiveType.GUN_ATTACK.getObjectiveName(),
+                objectiveDataSet.hasObjective(ObjectiveType.GUN_ATTACK),
+                checkbox -> {
+                  ObjectiveDataEntry objectiveDataEntry =
+                      objectiveDataSet.getOrCreateObjective(ObjectiveType.GUN_ATTACK, 4);
+                  if (checkbox.selected()) {
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                  } else {
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                  }
+                }));
+
+    // Attack Player
+    objectiveEntriesTop += SPACE_BETWEEN_ENTRIES + 10;
     this.attackPlayerCheckbox =
         this.addRenderableWidget(
             new Checkbox(
@@ -154,11 +177,31 @@ public class AttackObjectiveConfigurationScreen
                   }
                 }));
 
-    // Attack Villager
-    this.attackVillagerCheckbox =
+    // Attack Player (w/o Owner)
+    this.attackPlayerWithoutOwnerCheckbox =
         this.addRenderableWidget(
             new Checkbox(
                 this.contentLeftPos + 150,
+                objectiveEntriesTop,
+                ObjectiveType.ATTACK_PLAYER_WITHOUT_OWNER.getObjectiveName(),
+                objectiveDataSet.hasObjective(ObjectiveType.ATTACK_PLAYER_WITHOUT_OWNER),
+                checkbox -> {
+                  ObjectiveDataEntry objectiveDataEntry =
+                      objectiveDataSet.getOrCreateObjective(
+                          ObjectiveType.ATTACK_PLAYER_WITHOUT_OWNER, 2);
+                  if (checkbox.selected()) {
+                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                  } else {
+                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                  }
+                }));
+
+    // Attack Villager
+    objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
+    this.attackVillagerCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                this.contentLeftPos + 10,
                 objectiveEntriesTop,
                 ObjectiveType.ATTACK_VILLAGER.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.ATTACK_VILLAGER),
@@ -228,12 +271,11 @@ public class AttackObjectiveConfigurationScreen
                   }
                 }));
 
-    // Attack Mob without Creeper
-    objectiveEntriesTop += SPACE_BETWEEN_ENTRIES;
+    // Attack Mob w/o Creeper
     this.attackMobWithoutCreeperCheckbox =
         this.addRenderableWidget(
             new Checkbox(
-                this.contentLeftPos + 10,
+                this.contentLeftPos + 150,
                 objectiveEntriesTop,
                 ObjectiveType.ATTACK_MOB_WITHOUT_CREEPER.getObjectiveName(),
                 objectiveDataSet.hasObjective(ObjectiveType.ATTACK_MOB_WITHOUT_CREEPER),
@@ -247,5 +289,46 @@ public class AttackObjectiveConfigurationScreen
                     NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
+  }
+
+  @Override
+  protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
+    super.renderBg(poseStack, partialTicks, mouseX, mouseY);
+
+    if (this.meleeAttackCheckbox != null) {
+      int y = this.meleeAttackCheckbox.y - 3;
+      this.fillGradient(
+          poseStack,
+          this.contentLeftPos + 5,
+          y,
+          this.contentLeftPos + 300,
+          y + 1,
+          0x60808080,
+          0x60808080);
+      this.font.draw(
+          poseStack,
+          Component.translatable(Constants.TEXT_CONFIG_PREFIX + "attack_types"),
+          this.contentLeftPos + 115,
+          y - 8,
+          0xFF808080);
+    }
+
+    if (this.attackPlayerCheckbox != null) {
+      int y = this.attackPlayerCheckbox.y - 3;
+      this.fillGradient(
+          poseStack,
+          this.contentLeftPos + 5,
+          y,
+          this.contentLeftPos + 300,
+          y + 1,
+          0x60808080,
+          0x60808080);
+      this.font.draw(
+          poseStack,
+          Component.translatable(Constants.TEXT_CONFIG_PREFIX + "attack_targets"),
+          this.contentLeftPos + 115,
+          y - 8,
+          0xFF808080);
+    }
   }
 }

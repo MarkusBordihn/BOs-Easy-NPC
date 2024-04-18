@@ -30,9 +30,9 @@ public class ActionEventSet {
 
   // Action Data Tags
   public static final String DATA_ACTION_EVENT_SET_TAG = "ActionEventSet";
-  protected static final Set<ActionData> EMPTY_ACTION_DATA_SET = new HashSet<>();
+  protected static final Set<ActionDataEntry> EMPTY_ACTION_DATA_SET = new HashSet<>();
   // Data
-  private final EnumMap<ActionEventType, Set<ActionData>> actionsMap =
+  private final EnumMap<ActionEventType, Set<ActionDataEntry>> actionsMap =
       new EnumMap<>(ActionEventType.class);
 
   // Cache
@@ -45,21 +45,21 @@ public class ActionEventSet {
     this.load(compoundTag);
   }
 
-  public void setActionEvent(ActionEventType actionEventType, ActionData actionData) {
+  public void setActionEvent(ActionEventType actionEventType, ActionDataEntry actionDataEntry) {
     if (actionEventType != null
         && actionEventType != ActionEventType.NONE
-        && actionData != null
-        && actionData.hasCommand()) {
-      Set<ActionData> actionDataList = new HashSet<>();
-      actionDataList.add(actionData);
-      this.actionsMap.put(actionEventType, actionDataList);
+        && actionDataEntry != null
+        && actionDataEntry.hasCommand()) {
+      Set<ActionDataEntry> actionDataEntryList = new HashSet<>();
+      actionDataEntryList.add(actionDataEntry);
+      this.actionsMap.put(actionEventType, actionDataEntryList);
       this.updateHasDistanceAction();
     }
   }
 
-  public ActionData getActionEvent(ActionEventType actionEventType) {
+  public ActionDataEntry getActionEvent(ActionEventType actionEventType) {
     if (actionEventType != null && actionEventType != ActionEventType.NONE) {
-      Set<ActionData> actions = this.actionsMap.get(actionEventType);
+      Set<ActionDataEntry> actions = this.actionsMap.get(actionEventType);
       if (actions != null && !actions.isEmpty()) {
         return actions.iterator().next();
       }
@@ -67,7 +67,7 @@ public class ActionEventSet {
     return null;
   }
 
-  public Set<ActionData> getActionEvents(ActionEventType actionEventType) {
+  public Set<ActionDataEntry> getActionEvents(ActionEventType actionEventType) {
     if (actionEventType != ActionEventType.NONE) {
       return this.actionsMap.get(actionEventType);
     }
@@ -76,7 +76,7 @@ public class ActionEventSet {
 
   public boolean hasActionEvent(ActionEventType actionEventType) {
     if (actionEventType != null && actionEventType != ActionEventType.NONE) {
-      Set<ActionData> actions = this.actionsMap.get(actionEventType);
+      Set<ActionDataEntry> actions = this.actionsMap.get(actionEventType);
       return actions != null && !actions.isEmpty();
     }
     return false;
@@ -115,12 +115,12 @@ public class ActionEventSet {
         if (actionListTag.isEmpty()) {
           continue;
         }
-        Set<ActionData> actionDataList = new HashSet<>();
+        Set<ActionDataEntry> actionDataEntryList = new HashSet<>();
         for (int i = 0; i < actionListTag.size(); i++) {
           CompoundTag actionTag = actionListTag.getCompound(i);
-          actionDataList.add(new ActionData(actionTag));
+          actionDataEntryList.add(new ActionDataEntry(actionTag));
         }
-        this.actionsMap.put(actionEventType, actionDataList);
+        this.actionsMap.put(actionEventType, actionDataEntryList);
         this.updateHasDistanceAction();
       }
     }
@@ -128,12 +128,12 @@ public class ActionEventSet {
 
   public CompoundTag save(CompoundTag compoundTag) {
     CompoundTag actionsTag = new CompoundTag();
-    for (Entry<ActionEventType, Set<ActionData>> entry : this.actionsMap.entrySet()) {
+    for (Entry<ActionEventType, Set<ActionDataEntry>> entry : this.actionsMap.entrySet()) {
       ActionEventType actionEventType = entry.getKey();
-      Set<ActionData> actionDataList = entry.getValue();
+      Set<ActionDataEntry> actionDataEntryList = entry.getValue();
       ListTag actionListTag = new ListTag();
-      for (ActionData actionData : actionDataList) {
-        actionListTag.add(actionData.createTag());
+      for (ActionDataEntry actionDataEntry : actionDataEntryList) {
+        actionListTag.add(actionDataEntry.createTag());
       }
       actionsTag.put(actionEventType.name(), actionListTag);
     }

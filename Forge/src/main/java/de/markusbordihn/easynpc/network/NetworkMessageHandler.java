@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.network;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
@@ -113,9 +113,11 @@ public class NetworkMessageHandler implements NetworkMessageHandlerInterface {
    * Send action change.
    */
   public static void actionEventChange(
-      UUID uuid, ActionEventType actionEventType, ActionData actionData) {
-    if (uuid != null && actionEventType != null && actionData != null && actionData.isValid()) {
-      NetworkHandler.sendToServer(new MessageActionEventChange(uuid, actionEventType, actionData));
+      UUID uuid, ActionEventType actionEventType, ActionDataEntry actionDataEntry) {
+    if (uuid != null && actionEventType != null && actionDataEntry != null
+        && actionDataEntry.isValid()) {
+      NetworkHandler.sendToServer(
+          new MessageActionEventChange(uuid, actionEventType, actionDataEntry));
     }
   }
 

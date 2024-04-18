@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.client.screen.configuration.actions;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
-import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.action.ActionConfigurationMenu;
@@ -48,10 +48,10 @@ public class ActionConfigurationScreen<T extends ActionConfigurationMenu>
     this.actionDataSet = menu.getActionEventSet();
   }
 
-  public EditBox actionEditBox(int left, int top, ActionData actionData) {
+  public EditBox actionEditBox(int left, int top, ActionDataEntry actionDataEntry) {
     EditBox editBox = new TextField(this.font, left, top, 275, 16);
     editBox.setMaxLength(255);
-    editBox.setValue(actionData != null ? actionData.getCommand() : "");
+    editBox.setValue(actionDataEntry != null ? actionDataEntry.getCommand() : "");
     return editBox;
   }
 

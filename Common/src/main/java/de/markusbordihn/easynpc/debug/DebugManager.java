@@ -27,13 +27,13 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 
-public class DebugManager {
+public final class DebugManager {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  protected static final String LOG_PREFIX = "[Debug Manager]";
-  protected static boolean isDevelopmentEnvironment = false;
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final String LOG_PREFIX = "[Debug Manager]";
+  private static boolean isDevelopmentEnvironment = false;
 
-  protected DebugManager() {
+  private DebugManager() {
   }
 
   public static void setLogLevel(Logger logger, Level logLevel) {

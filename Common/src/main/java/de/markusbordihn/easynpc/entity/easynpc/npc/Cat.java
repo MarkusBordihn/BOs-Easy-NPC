@@ -34,7 +34,6 @@ import net.minecraft.world.level.Level;
 public class Cat extends EasyNPCBaseModelEntity<Cat> {
 
   public static final String ID = "cat";
-  public static final String NAME = "Cat";
 
   public Cat(EntityType<? extends PathfinderMob> entityType, Level level) {
     super(entityType, level, Variant.BLACK);

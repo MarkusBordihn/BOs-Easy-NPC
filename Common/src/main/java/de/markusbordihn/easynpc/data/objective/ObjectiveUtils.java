@@ -21,14 +21,15 @@ package de.markusbordihn.easynpc.data.objective;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.BowAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CrossbowAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomLookAtPlayerGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomMeleeAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.FollowLivingEntityGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.GunAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.MoveBackToHomeGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.RandomStrollAroundGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.RandomStrollAroundHomeGoal;
-import de.markusbordihn.easynpc.entity.easynpc.ai.goal.RangedBowAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ResetLookAtPlayerGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ZombieAttackGoal;
 import net.minecraft.server.level.ServerPlayer;
@@ -68,7 +69,6 @@ public class ObjectiveUtils {
   public static Goal createObjectiveGoal(ObjectiveDataEntry objectiveDataEntry,
       EasyNPC<?> easyNPC) {
     Entity targetOwner = objectiveDataEntry.getTargetOwner(easyNPC);
-    Entity easyNPCEntity = easyNPC.getEntity();
     PathfinderMob pathfinderMob = easyNPC.getPathfinderMob();
 
     switch (objectiveDataEntry.getType()) {
@@ -99,7 +99,7 @@ public class ObjectiveUtils {
           log.error(
               "Unable to find valid owner {} for {} with {}!",
               targetOwner,
-              easyNPCEntity,
+              easyNPC.getEntity(),
               objectiveDataEntry);
         }
         break;
@@ -146,7 +146,7 @@ public class ObjectiveUtils {
         return new CrossbowAttackGoal<>(
             easyNPC, objectiveDataEntry.getSpeedModifier(), objectiveDataEntry.getAttackRadius());
       case BOW_ATTACK:
-        return new RangedBowAttackGoal<>(
+        return new BowAttackGoal<>(
             easyNPC,
             objectiveDataEntry.getSpeedModifier(),
             objectiveDataEntry.getAttackInterval(),
@@ -157,6 +157,12 @@ public class ObjectiveUtils {
       case ZOMBIE_ATTACK:
         return new ZombieAttackGoal<>(
             easyNPC, objectiveDataEntry.getSpeedModifier(), objectiveDataEntry.isMustSeeTarget());
+      case GUN_ATTACK:
+        return new GunAttackGoal<>(
+            easyNPC,
+            objectiveDataEntry.getSpeedModifier(),
+            objectiveDataEntry.getAttackInterval(),
+            objectiveDataEntry.getAttackRadius());
       case RANDOM_SWIMMING:
         return new RandomSwimmingGoal(
             pathfinderMob, objectiveDataEntry.getSpeedModifier(), objectiveDataEntry.getInterval());
@@ -208,21 +214,30 @@ public class ObjectiveUtils {
           pathfinderMob, Animal.class, objectiveDataEntry.isMustSeeTarget());
       case ATTACK_PLAYER -> new NearestAttackableTargetGoal<>(
           pathfinderMob, Player.class, objectiveDataEntry.isMustSeeTarget());
+      case ATTACK_PLAYER_WITHOUT_OWNER -> new NearestAttackableTargetGoal<>(
+          pathfinderMob,
+          Player.class,
+          objectiveDataEntry.getInterval(),
+          objectiveDataEntry.isMustSeeTarget(),
+          objectiveDataEntry.isMustReachTarget(),
+          entity ->
+              easyNPC.getEasyNPCOwnerData() != null
+                  && entity != easyNPC.getEasyNPCOwnerData().getOwner());
       case ATTACK_MONSTER -> new NearestAttackableTargetGoal<>(
           pathfinderMob, Monster.class, objectiveDataEntry.isMustSeeTarget());
       case ATTACK_MOB_WITHOUT_CREEPER -> new NearestAttackableTargetGoal<>(
           pathfinderMob,
           Mob.class,
           objectiveDataEntry.getInterval(),
-          false,
-          false,
+          objectiveDataEntry.isMustSeeTarget(),
+          objectiveDataEntry.isMustReachTarget(),
           entity -> entity instanceof Enemy && !(entity instanceof Creeper));
       case ATTACK_MOB -> new NearestAttackableTargetGoal<>(
           pathfinderMob,
           Mob.class,
           objectiveDataEntry.getInterval(),
-          false,
-          false,
+          objectiveDataEntry.isMustSeeTarget(),
+          objectiveDataEntry.isMustReachTarget(),
           Enemy.class::isInstance);
       case ATTACK_VILLAGER -> new NearestAttackableTargetGoal<>(
           pathfinderMob, AbstractVillager.class, objectiveDataEntry.isMustSeeTarget());

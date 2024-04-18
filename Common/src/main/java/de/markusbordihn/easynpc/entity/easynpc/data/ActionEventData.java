@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
-import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
@@ -78,7 +78,7 @@ public interface ActionEventData<E extends PathfinderMob> extends EasyNPC<E> {
         && getActionEventSet().hasActionEvent(actionEventType);
   }
 
-  default ActionData getActionEvent(ActionEventType actionEventType) {
+  default ActionDataEntry getActionEvent(ActionEventType actionEventType) {
     return hasActionEvent(actionEventType)
         ? getActionEventSet().getActionEvent(actionEventType)
         : null;
@@ -142,30 +142,36 @@ public interface ActionEventData<E extends PathfinderMob> extends EasyNPC<E> {
 
   default void handleActionInteractionEvent(ServerPlayer serverPlayer) {
     if (this.hasActionEvent(ActionEventType.ON_INTERACTION)) {
-      ActionData actionData = this.getActionEvent(ActionEventType.ON_INTERACTION);
+      ActionDataEntry actionDataEntry = this.getActionEvent(ActionEventType.ON_INTERACTION);
       ActionHandler<E> actionHandler = this.getEasyNPCActionHandler();
-      if (actionData != null && actionData.isValidAndNotEmpty() && actionHandler != null) {
-        actionHandler.executeAction(actionData, serverPlayer);
+      if (actionDataEntry != null
+          && actionDataEntry.isValidAndNotEmpty()
+          && actionHandler != null) {
+        actionHandler.executeAction(actionDataEntry, serverPlayer);
       }
     }
   }
 
   default void handleActionHurtEvent(DamageSource damageSource, float damage) {
     if (this.hasActionEvent(ActionEventType.ON_HURT)) {
-      ActionData actionData = this.getActionEvent(ActionEventType.ON_HURT);
+      ActionDataEntry actionDataEntry = this.getActionEvent(ActionEventType.ON_HURT);
       ActionHandler<E> actionHandler = this.getEasyNPCActionHandler();
-      if (actionData != null && actionData.isValidAndNotEmpty() && actionHandler != null) {
-        actionHandler.executeAction(actionData, damageSource);
+      if (actionDataEntry != null
+          && actionDataEntry.isValidAndNotEmpty()
+          && actionHandler != null) {
+        actionHandler.executeAction(actionDataEntry, damageSource);
       }
     }
   }
 
   default void handleActionDieEvent(DamageSource damageSource) {
     if (this.hasActionEvent(ActionEventType.ON_DEATH)) {
-      ActionData actionData = this.getActionEvent(ActionEventType.ON_DEATH);
+      ActionDataEntry actionDataEntry = this.getActionEvent(ActionEventType.ON_DEATH);
       ActionHandler<E> actionHandler = this.getEasyNPCActionHandler();
-      if (actionData != null && actionData.isValidAndNotEmpty() && actionHandler != null) {
-        actionHandler.executeAction(actionData, damageSource);
+      if (actionDataEntry != null
+          && actionDataEntry.isValidAndNotEmpty()
+          && actionHandler != null) {
+        actionHandler.executeAction(actionDataEntry, damageSource);
       }
     }
   }

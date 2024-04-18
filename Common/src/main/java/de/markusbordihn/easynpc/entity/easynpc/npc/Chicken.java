@@ -36,7 +36,6 @@ import net.minecraft.world.phys.Vec3;
 public class Chicken extends EasyNPCBaseModelEntity<Chicken> {
 
   public static final String ID = "chicken";
-  public static final String NAME = "Chicken";
 
   private float flap;
   private float flapSpeed;

@@ -39,12 +39,14 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Wolf;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie;
 import de.markusbordihn.easynpc.entity.easynpc.npc.ZombieVillager;
+import de.markusbordihn.easynpc.item.attack.BulletItem;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetEmptyItem;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetItem;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCWandItem;
 import de.markusbordihn.easynpc.item.configuration.MoveEasyNPCItem;
 import de.markusbordihn.easynpc.tabs.ModTabs;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.registries.DeferredRegister;
@@ -80,6 +82,11 @@ public class ModItems {
               new BlockItem(
                   ModBlocks.EASY_NPC_SPAWNER.get(),
                   new Item.Properties().tab(ModTabs.TAB_CONFIG_ITEMS)));
+
+  public static final RegistryObject<Item> BULLET_ITEM =
+      ITEMS.register(
+          BulletItem.ID,
+          () -> new BulletItem(new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
 
   public static final RegistryObject<Item> ALLAY_NPC_SPAWN_EGG =
       ITEMS.register(
