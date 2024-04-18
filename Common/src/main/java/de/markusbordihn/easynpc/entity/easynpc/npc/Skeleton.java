@@ -36,7 +36,6 @@ public class Skeleton extends EasyNPCBaseModelEntity<Skeleton> {
   public static final String ID = "skeleton";
   public static final String ID_STRAY = "stray";
   public static final String ID_WITHER_SKELETON = "wither_skeleton";
-  public static final String NAME = "Skeleton";
 
   public Skeleton(EntityType<? extends PathfinderMob> entityType, Level level) {
     this(entityType, level, Variant.SKELETON);

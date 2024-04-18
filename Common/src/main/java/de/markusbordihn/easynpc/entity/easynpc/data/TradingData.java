@@ -25,7 +25,6 @@ import de.markusbordihn.easynpc.data.trading.TradingSettings;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.EnumMap;
-import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -115,7 +114,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
 
   Player getTradingPlayer();
 
-  void setTradingPlayer(@Nullable Player player);
+  void setTradingPlayer(Player player);
 
   MerchantOffers getOffers();
 

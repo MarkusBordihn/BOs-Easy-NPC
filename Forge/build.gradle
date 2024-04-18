@@ -163,6 +163,10 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:player-animator-658587:${project.player_animator_mod}")
   }
 
+  if (test_integration_mod && project.spartan_weaponry_mod) {
+    runtimeOnly fg.deobf("curse.maven:spartan-weaponry-278141:${project.spartan_weaponry_mod}")
+  }
+
   // Additional helpful Mods for development (runtime dependency)
   runtimeOnly fg.deobf("curse.maven:xaeros_minimap-263420:${project.xaeros_minimap_mod}")
   runtimeOnly fg.deobf("curse.maven:spark-361579:${project.spark_mod}")

@@ -109,7 +109,7 @@ public class ImportDefaultPresetConfigurationScreen
       log.error("Failed to read NBT data from {}", resourceLocation, exception);
       return;
     }
-    if (compoundTag == null) {
+    if (compoundTag.isEmpty()) {
       log.error("Received empty preset {}", resourceLocation);
       return;
     }

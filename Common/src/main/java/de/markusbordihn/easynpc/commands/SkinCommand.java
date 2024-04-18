@@ -57,12 +57,12 @@ public class SkinCommand {
                                                     build,
                                                     UuidArgument.getUuid(context, "uuid")))
                                         .executes(
-                                            context -> {
-                                              return setDefaultSkinVariant(
-                                                  context.getSource(),
-                                                  UuidArgument.getUuid(context, "uuid"),
-                                                  StringArgumentType.getString(context, "variant"));
-                                            })))));
+                                            context ->
+                                                setDefaultSkinVariant(
+                                                    context.getSource(),
+                                                    UuidArgument.getUuid(context, "uuid"),
+                                                    StringArgumentType.getString(
+                                                        context, "variant")))))));
   }
 
   private static int setDefaultSkinVariant(CommandSourceStack context, UUID uuid, String variant) {

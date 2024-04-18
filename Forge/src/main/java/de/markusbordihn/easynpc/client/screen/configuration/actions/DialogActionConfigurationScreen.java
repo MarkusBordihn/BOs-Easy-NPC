@@ -24,7 +24,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
-import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.menu.configuration.action.DialogActionConfigurationMenu;
@@ -52,9 +52,9 @@ public class DialogActionConfigurationScreen
   protected Checkbox onButtonClickActionExecuteAsUserCheckbox;
   protected Checkbox onButtonClickActionDebugCheckbox;
   protected Button onButtonClickActionSaveButton;
-  private ActionData lastOpenDialogActionData;
-  private ActionData lastCloseDialogActionData;
-  private ActionData lastButtonClickActionData;
+  private ActionDataEntry lastOpenDialogActionDataEntry;
+  private ActionDataEntry lastCloseDialogActionDataEntry;
+  private ActionDataEntry lastButtonClickActionDataEntry;
 
   public DialogActionConfigurationScreen(
       DialogActionConfigurationMenu menu, Inventory inventory, Component component) {
@@ -62,33 +62,36 @@ public class DialogActionConfigurationScreen
   }
 
   public void validateOpenDialogAction() {
-    ActionData actionData =
-        new ActionData(
+    ActionDataEntry actionDataEntry =
+        new ActionDataEntry(
             ActionType.COMMAND,
             this.onOpenDialogActionBox.getValue(),
             this.onOpenDialogActionExecuteAsUserCheckbox.selected(),
             this.onOpenDialogActionDebugCheckbox.selected());
-    this.onOpenDialogActionSaveButton.active = !actionData.equals(this.lastOpenDialogActionData);
+    this.onOpenDialogActionSaveButton.active =
+        !actionDataEntry.equals(this.lastOpenDialogActionDataEntry);
   }
 
   public void validateCloseDialogAction() {
-    ActionData actionData =
-        new ActionData(
+    ActionDataEntry actionDataEntry =
+        new ActionDataEntry(
             ActionType.COMMAND,
             this.onCloseDialogActionBox.getValue(),
             this.onCloseDialogActionExecuteAsUserCheckbox.selected(),
             this.onCloseDialogActionDebugCheckbox.selected());
-    this.onCloseDialogActionSaveButton.active = !actionData.equals(this.lastCloseDialogActionData);
+    this.onCloseDialogActionSaveButton.active =
+        !actionDataEntry.equals(this.lastCloseDialogActionDataEntry);
   }
 
   public void validateButtonClickAction() {
-    ActionData actionData =
-        new ActionData(
+    ActionDataEntry actionDataEntry =
+        new ActionDataEntry(
             ActionType.COMMAND,
             this.onButtonClickActionBox.getValue(),
             this.onButtonClickActionExecuteAsUserCheckbox.selected(),
             this.onButtonClickActionDebugCheckbox.selected());
-    this.onButtonClickActionSaveButton.active = !actionData.equals(this.lastButtonClickActionData);
+    this.onButtonClickActionSaveButton.active =
+        !actionDataEntry.equals(this.lastButtonClickActionDataEntry);
   }
 
   @Override
@@ -100,12 +103,12 @@ public class DialogActionConfigurationScreen
 
     // On Open Dialog Action
     int openDialogActionTop = this.topPos + 50;
-    ActionData openDialogActionData =
+    ActionDataEntry openDialogActionDataEntry =
         this.actionDataSet.getActionEvent(ActionEventType.ON_OPEN_DIALOG);
-    this.lastOpenDialogActionData = openDialogActionData;
+    this.lastOpenDialogActionDataEntry = openDialogActionDataEntry;
     this.onOpenDialogActionBox =
         this.addRenderableWidget(
-            actionEditBox(this.contentLeftPos, openDialogActionTop, openDialogActionData));
+            actionEditBox(this.contentLeftPos, openDialogActionTop, openDialogActionDataEntry));
     this.onOpenDialogActionBox.setResponder(consumer -> this.validateOpenDialogAction());
     this.onOpenDialogActionExecuteAsUserCheckbox =
         this.addRenderableWidget(
@@ -113,7 +116,8 @@ public class DialogActionConfigurationScreen
                 this.contentLeftPos + 80,
                 openDialogActionTop + 18,
                 "execute_as_player",
-                openDialogActionData != null && openDialogActionData.shouldExecuteAsUser(),
+                openDialogActionDataEntry != null
+                    && openDialogActionDataEntry.shouldExecuteAsUser(),
                 checkbox -> this.validateOpenDialogAction()));
     this.onOpenDialogActionDebugCheckbox =
         this.addRenderableWidget(
@@ -121,7 +125,7 @@ public class DialogActionConfigurationScreen
                 this.contentLeftPos + 215,
                 openDialogActionTop + 18,
                 "debug",
-                openDialogActionData != null && openDialogActionData.isDebugEnabled(),
+                openDialogActionDataEntry != null && openDialogActionDataEntry.isDebugEnabled(),
                 checkbox -> this.validateOpenDialogAction()));
     this.onOpenDialogActionSaveButton =
         this.addRenderableWidget(
@@ -129,27 +133,27 @@ public class DialogActionConfigurationScreen
                 this.onOpenDialogActionBox.x + this.onOpenDialogActionBox.getWidth() + 5,
                 openDialogActionTop - 1,
                 onPress -> {
-                  ActionData actionData =
-                      new ActionData(
+                  ActionDataEntry actionDataEntry =
+                      new ActionDataEntry(
                           ActionType.COMMAND,
                           this.onOpenDialogActionBox.getValue(),
                           this.onOpenDialogActionExecuteAsUserCheckbox.selected(),
                           this.onOpenDialogActionDebugCheckbox.selected());
                   NetworkMessageHandler.actionEventChange(
-                      uuid, ActionEventType.ON_OPEN_DIALOG, actionData);
-                  this.lastOpenDialogActionData = actionData;
+                      uuid, ActionEventType.ON_OPEN_DIALOG, actionDataEntry);
+                  this.lastOpenDialogActionDataEntry = actionDataEntry;
                   this.onOpenDialogActionSaveButton.active = false;
                 }));
     this.onOpenDialogActionSaveButton.active = false;
 
     // On Close Dialog Action
     int closeDialogActionTop = this.topPos + 100;
-    ActionData closeDialogActionData =
+    ActionDataEntry closeDialogActionDataEntry =
         this.actionDataSet.getActionEvent(ActionEventType.ON_CLOSE_DIALOG);
-    this.lastCloseDialogActionData = closeDialogActionData;
+    this.lastCloseDialogActionDataEntry = closeDialogActionDataEntry;
     this.onCloseDialogActionBox =
         this.addRenderableWidget(
-            actionEditBox(this.contentLeftPos, closeDialogActionTop, closeDialogActionData));
+            actionEditBox(this.contentLeftPos, closeDialogActionTop, closeDialogActionDataEntry));
     this.onCloseDialogActionBox.setResponder(consumer -> this.validateCloseDialogAction());
     this.onCloseDialogActionExecuteAsUserCheckbox =
         this.addRenderableWidget(
@@ -157,7 +161,8 @@ public class DialogActionConfigurationScreen
                 this.contentLeftPos + 80,
                 closeDialogActionTop + 18,
                 "execute_as_player",
-                closeDialogActionData != null && closeDialogActionData.shouldExecuteAsUser(),
+                closeDialogActionDataEntry != null
+                    && closeDialogActionDataEntry.shouldExecuteAsUser(),
                 checkbox -> this.validateCloseDialogAction()));
     this.onCloseDialogActionDebugCheckbox =
         this.addRenderableWidget(
@@ -165,7 +170,7 @@ public class DialogActionConfigurationScreen
                 this.contentLeftPos + 215,
                 closeDialogActionTop + 18,
                 "debug",
-                closeDialogActionData != null && closeDialogActionData.isDebugEnabled(),
+                closeDialogActionDataEntry != null && closeDialogActionDataEntry.isDebugEnabled(),
                 checkbox -> this.validateCloseDialogAction()));
     this.onCloseDialogActionSaveButton =
         this.addRenderableWidget(
@@ -173,27 +178,28 @@ public class DialogActionConfigurationScreen
                 this.onCloseDialogActionBox.x + this.onCloseDialogActionBox.getWidth() + 5,
                 closeDialogActionTop - 1,
                 onPress -> {
-                  ActionData actionData =
-                      new ActionData(
+                  ActionDataEntry actionDataEntry =
+                      new ActionDataEntry(
                           ActionType.COMMAND,
                           this.onCloseDialogActionBox.getValue(),
                           this.onCloseDialogActionExecuteAsUserCheckbox.selected(),
                           this.onCloseDialogActionDebugCheckbox.selected());
                   NetworkMessageHandler.actionEventChange(
-                      uuid, ActionEventType.ON_CLOSE_DIALOG, actionData);
-                  this.lastCloseDialogActionData = actionData;
+                      uuid, ActionEventType.ON_CLOSE_DIALOG, actionDataEntry);
+                  this.lastCloseDialogActionDataEntry = actionDataEntry;
                   this.onCloseDialogActionSaveButton.active = false;
                 }));
     this.onCloseDialogActionSaveButton.active = false;
 
     // On Yes Selection Action
     int onButtonClickActionTop = this.topPos + 150;
-    ActionData onButtonClickActionData =
+    ActionDataEntry onButtonClickActionDataEntry =
         this.actionDataSet.getActionEvent(ActionEventType.ON_BUTTON_CLICK);
-    this.lastButtonClickActionData = onButtonClickActionData;
+    this.lastButtonClickActionDataEntry = onButtonClickActionDataEntry;
     this.onButtonClickActionBox =
         this.addRenderableWidget(
-            actionEditBox(this.contentLeftPos, onButtonClickActionTop, onButtonClickActionData));
+            actionEditBox(
+                this.contentLeftPos, onButtonClickActionTop, onButtonClickActionDataEntry));
     this.onButtonClickActionBox.setResponder(consumer -> this.validateButtonClickAction());
     this.onButtonClickActionExecuteAsUserCheckbox =
         this.addRenderableWidget(
@@ -201,7 +207,8 @@ public class DialogActionConfigurationScreen
                 this.contentLeftPos + 80,
                 onButtonClickActionTop + 18,
                 "execute_as_player",
-                onButtonClickActionData != null && onButtonClickActionData.shouldExecuteAsUser(),
+                onButtonClickActionDataEntry != null
+                    && onButtonClickActionDataEntry.shouldExecuteAsUser(),
                 checkbox -> this.validateButtonClickAction()));
     this.onButtonClickActionDebugCheckbox =
         this.addRenderableWidget(
@@ -209,7 +216,8 @@ public class DialogActionConfigurationScreen
                 this.contentLeftPos + 215,
                 onButtonClickActionTop + 18,
                 "debug",
-                onButtonClickActionData != null && onButtonClickActionData.isDebugEnabled(),
+                onButtonClickActionDataEntry != null
+                    && onButtonClickActionDataEntry.isDebugEnabled(),
                 checkbox -> this.validateButtonClickAction()));
     this.onButtonClickActionSaveButton =
         this.addRenderableWidget(
@@ -217,15 +225,15 @@ public class DialogActionConfigurationScreen
                 this.onButtonClickActionBox.x + this.onButtonClickActionBox.getWidth() + 5,
                 onButtonClickActionTop - 1,
                 onPress -> {
-                  ActionData actionData =
-                      new ActionData(
+                  ActionDataEntry actionDataEntry =
+                      new ActionDataEntry(
                           ActionType.COMMAND,
                           this.onButtonClickActionBox.getValue(),
                           this.onButtonClickActionExecuteAsUserCheckbox.selected(),
                           this.onButtonClickActionDebugCheckbox.selected());
                   NetworkMessageHandler.actionEventChange(
-                      uuid, ActionEventType.ON_BUTTON_CLICK, actionData);
-                  this.lastButtonClickActionData = actionData;
+                      uuid, ActionEventType.ON_BUTTON_CLICK, actionDataEntry);
+                  this.lastButtonClickActionDataEntry = actionDataEntry;
                   this.onButtonClickActionSaveButton.active = false;
                 }));
     this.onButtonClickActionSaveButton.active = false;

@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.data.dialog;
 
-import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.utils.TextFormattingCodes;
 import java.util.HashSet;
@@ -118,15 +118,16 @@ public class DialogUtils {
       String noDialogText) {
 
     // Define yes and no actions.
-    HashSet<ActionData> yesActionData = new HashSet<>();
-    yesActionData.add(new ActionData(ActionType.OPEN_NAMED_DIALOG, "yes_answer"));
-    HashSet<ActionData> noActionData = new HashSet<>();
-    noActionData.add(new ActionData(ActionType.OPEN_NAMED_DIALOG, "no_answer"));
+    HashSet<ActionDataEntry> yesActionDatumEntries = new HashSet<>();
+    yesActionDatumEntries.add(new ActionDataEntry(ActionType.OPEN_NAMED_DIALOG, "yes_answer"));
+    HashSet<ActionDataEntry> noActionDatumEntries = new HashSet<>();
+    noActionDatumEntries.add(new ActionDataEntry(ActionType.OPEN_NAMED_DIALOG, "no_answer"));
 
     // Define yes and no buttons.
     DialogButtonData yesButtonData =
-        new DialogButtonData(yesButtonText, "yes_button", yesActionData);
-    DialogButtonData noButtonData = new DialogButtonData(noButtonText, "no_button", noActionData);
+        new DialogButtonData(yesButtonText, "yes_button", yesActionDatumEntries);
+    DialogButtonData noButtonData =
+        new DialogButtonData(noButtonText, "no_button", noActionDatumEntries);
 
     // Define list of buttons for the dialog.
     Set<DialogButtonData> buttons = new LinkedHashSet<>();

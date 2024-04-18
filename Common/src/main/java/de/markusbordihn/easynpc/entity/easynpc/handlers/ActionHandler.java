@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.handlers;
 
-import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.action.ActionGroup;
 import de.markusbordihn.easynpc.data.action.ActionManager;
@@ -45,10 +45,11 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
 
 public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
-  private static boolean validateActionData(ActionData actionData, ServerPlayer serverPlayer) {
-    return actionData != null
+  private static boolean validateActionData(
+      ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
+    return actionDataEntry != null
         && serverPlayer != null
-        && actionData.isValidAndNotEmpty()
+        && actionDataEntry.isValidAndNotEmpty()
         && !serverPlayer.getLevel().isClientSide();
   }
 
@@ -149,11 +150,12 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
         ActionManager.removeActionGroup(mob, ActionGroup.DISTANCE_NEAR);
         skipPlayerDistanceCheck = true;
       } else {
-        ActionData actionData = actionEventData.getActionEvent(ActionEventType.ON_DISTANCE_NEAR);
+        ActionDataEntry actionDataEntry =
+            actionEventData.getActionEvent(ActionEventType.ON_DISTANCE_NEAR);
         for (Player player : listOfPlayers) {
           if (player instanceof ServerPlayer serverPlayer
               && !ActionManager.containsPlayer(mob, ActionGroup.DISTANCE_NEAR, serverPlayer)) {
-            this.executeAction(actionData, serverPlayer);
+            this.executeAction(actionDataEntry, serverPlayer);
             ActionManager.addPlayer(mob, ActionGroup.DISTANCE_NEAR, serverPlayer);
           }
         }
@@ -168,11 +170,12 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
         ActionManager.removeActionGroup(mob, ActionGroup.DISTANCE_CLOSE);
         skipPlayerDistanceCheck = true;
       } else {
-        ActionData actionData = actionEventData.getActionEvent(ActionEventType.ON_DISTANCE_CLOSE);
+        ActionDataEntry actionDataEntry =
+            actionEventData.getActionEvent(ActionEventType.ON_DISTANCE_CLOSE);
         for (Player player : listOfPlayers) {
           if (player instanceof ServerPlayer serverPlayer
               && !ActionManager.containsPlayer(mob, ActionGroup.DISTANCE_CLOSE, serverPlayer)) {
-            this.executeAction(actionData, serverPlayer);
+            this.executeAction(actionDataEntry, serverPlayer);
             ActionManager.addPlayer(mob, ActionGroup.DISTANCE_CLOSE, serverPlayer);
           }
         }
@@ -187,13 +190,13 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
         ActionManager.removeActionGroup(mob, ActionGroup.DISTANCE_VERY_CLOSE);
         skipPlayerDistanceCheck = true;
       } else {
-        ActionData actionData =
+        ActionDataEntry actionDataEntry =
             actionEventData.getActionEvent(ActionEventType.ON_DISTANCE_VERY_CLOSE);
         for (Player player : listOfPlayers) {
           if (player instanceof ServerPlayer serverPlayer
               && !ActionManager.containsPlayer(
                   mob, ActionGroup.DISTANCE_VERY_CLOSE, serverPlayer)) {
-            this.executeAction(actionData, serverPlayer);
+            this.executeAction(actionDataEntry, serverPlayer);
             ActionManager.addPlayer(mob, ActionGroup.DISTANCE_VERY_CLOSE, serverPlayer);
           }
         }
@@ -207,11 +210,12 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
       if (listOfPlayers == null || listOfPlayers.isEmpty()) {
         ActionManager.removeActionGroup(mob, ActionGroup.DISTANCE_TOUCH);
       } else {
-        ActionData actionData = actionEventData.getActionEvent(ActionEventType.ON_DISTANCE_TOUCH);
+        ActionDataEntry actionDataEntry =
+            actionEventData.getActionEvent(ActionEventType.ON_DISTANCE_TOUCH);
         for (Player player : listOfPlayers) {
           if (player instanceof ServerPlayer serverPlayer
               && !ActionManager.containsPlayer(mob, ActionGroup.DISTANCE_TOUCH, serverPlayer)) {
-            this.executeAction(actionData, serverPlayer);
+            this.executeAction(actionDataEntry, serverPlayer);
             ActionManager.addPlayer(mob, ActionGroup.DISTANCE_TOUCH, serverPlayer);
           }
         }
@@ -221,58 +225,59 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
     this.getProfiler().pop();
   }
 
-  default void executeActions(Set<ActionData> actionDataSet, ServerPlayer serverPlayer) {
-    if (actionDataSet == null || actionDataSet.isEmpty()) {
+  default void executeActions(Set<ActionDataEntry> actionDataEntrySet, ServerPlayer serverPlayer) {
+    if (actionDataEntrySet == null || actionDataEntrySet.isEmpty()) {
       return;
     }
-    for (ActionData actionData : actionDataSet) {
-      this.executeAction(actionData, serverPlayer);
+    for (ActionDataEntry actionDataEntry : actionDataEntrySet) {
+      this.executeAction(actionDataEntry, serverPlayer);
     }
   }
 
-  default void executeAction(ActionData actionData, DamageSource damageSource) {
+  default void executeAction(ActionDataEntry actionDataEntry, DamageSource damageSource) {
     Entity entity = damageSource.getEntity();
     if (entity instanceof ServerPlayer serverPlayer) {
-      this.executeAction(actionData, serverPlayer);
+      this.executeAction(actionDataEntry, serverPlayer);
     }
   }
 
-  default void executeAction(ActionData actionData, ServerPlayer serverPlayer) {
-    if (!validateActionData(actionData, serverPlayer)) {
+  default void executeAction(ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
+    if (!validateActionData(actionDataEntry, serverPlayer)) {
       return;
     }
-    switch (actionData.getType()) {
+    switch (actionDataEntry.getType()) {
       case NONE:
         break;
       case COMMAND:
-        if (actionData.shouldExecuteAsUser()) {
-          this.executePlayerCommand(actionData, serverPlayer);
+        if (actionDataEntry.shouldExecuteAsUser()) {
+          this.executePlayerCommand(actionDataEntry, serverPlayer);
         } else {
-          this.executeEntityCommand(actionData, serverPlayer);
+          this.executeEntityCommand(actionDataEntry, serverPlayer);
         }
         break;
       case OPEN_NAMED_DIALOG:
-        this.openNamedDialog(actionData, serverPlayer);
+        this.openNamedDialog(actionDataEntry, serverPlayer);
         break;
       case OPEN_TRADING_SCREEN:
         TradingData<E> tradingData = this.getEasyNPCTradingData();
         if (tradingData != null) {
           tradingData.openTradingScreen(serverPlayer);
         } else {
-          log.error("No trading data found for action {}", actionData);
+          log.error("No trading data found for action {}", actionDataEntry);
         }
         break;
       default:
-        log.warn("Unknown action type {} for action {}", actionData.getType(), actionData);
+        log.warn(
+            "Unknown action type {} for action {}", actionDataEntry.getType(), actionDataEntry);
         break;
     }
   }
 
-  default void openNamedDialog(ActionData actionData, ServerPlayer serverPlayer) {
-    if (!validateActionData(actionData, serverPlayer)) {
+  default void openNamedDialog(ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
+    if (!validateActionData(actionDataEntry, serverPlayer)) {
       return;
     }
-    String dialogLabel = actionData.getCommand();
+    String dialogLabel = actionDataEntry.getCommand();
     DialogData<?> dialogData = this.getEasyNPCDialogData();
     if (dialogLabel != null
         && !dialogLabel.isEmpty()
@@ -281,50 +286,50 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
       UUID dialogId = dialogData.getDialogId(dialogLabel);
       dialogData.openDialogMenu(serverPlayer, this, dialogId, 0);
     } else {
-      log.error("Unknown dialog label {} for action {}", dialogLabel, actionData);
+      log.error("Unknown dialog label {} for action {}", dialogLabel, actionDataEntry);
     }
   }
 
-  default void executePlayerCommand(ActionData actionData, ServerPlayer serverPlayer) {
-    if (!validateActionData(actionData, serverPlayer)) {
+  default void executePlayerCommand(ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
+    if (!validateActionData(actionDataEntry, serverPlayer)) {
       return;
     }
     ActionEventData<E> actionEventData = this.getEasyNPCActionEventData();
     if (actionEventData == null) {
-      log.error("No action event data found for action {}", actionData);
+      log.error("No action event data found for action {}", actionDataEntry);
       return;
     }
-    int userPermissionLevel = actionData.getPermissionLevel();
+    int userPermissionLevel = actionDataEntry.getPermissionLevel();
     if (userPermissionLevel > actionEventData.getActionPermissionLevel()) {
       log.warn(
           "User permission level {} is lower than action permission level {} for action {}",
           actionEventData.getActionPermissionLevel(),
           userPermissionLevel,
-          actionData);
+          actionDataEntry);
       userPermissionLevel = actionEventData.getActionPermissionLevel();
     }
 
     // Execute action as user with define permission level (default: 1).
     log.debug(
         "Try to execute action {} as user {} with user permission level {} of requested action permission level {} ...",
-        actionData,
+        actionDataEntry,
         serverPlayer,
         userPermissionLevel,
-        actionData.getPermissionLevel());
+        actionDataEntry.getPermissionLevel());
     executePlayerCommand(
-        actionData.getAction(this.getLivingEntity(), serverPlayer),
+        actionDataEntry.getAction(this.getLivingEntity(), serverPlayer),
         serverPlayer,
         userPermissionLevel,
-        actionData.isDebugEnabled());
+        actionDataEntry.isDebugEnabled());
   }
 
-  default void executeEntityCommand(ActionData actionData, ServerPlayer serverPlayer) {
-    if (!validateActionData(actionData, serverPlayer)) {
+  default void executeEntityCommand(ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
+    if (!validateActionData(actionDataEntry, serverPlayer)) {
       return;
     }
     ActionEventData<E> actionEventData = this.getEasyNPCActionEventData();
     if (actionEventData == null) {
-      log.error("No action event data found for action {}", actionData);
+      log.error("No action event data found for action {}", actionDataEntry);
       return;
     }
     int ownerPermissionLevel = actionEventData.getActionPermissionLevel();
@@ -337,14 +342,14 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
     // Execute action as NPC entity with owner permission level.
     log.debug(
         "Try to execute action {} as entity {} with owner permission level {} of max. {} ...",
-        actionData,
+        actionDataEntry,
         this.getEntity(),
         ownerPermissionLevel,
         actionEventData.getActionPermissionLevel());
     executeEntityCommand(
-        actionData.getAction(this.getLivingEntity(), serverPlayer),
+        actionDataEntry.getAction(this.getLivingEntity(), serverPlayer),
         this.getEntity(),
         ownerPermissionLevel,
-        actionData.isDebugEnabled());
+        actionDataEntry.isDebugEnabled());
   }
 }

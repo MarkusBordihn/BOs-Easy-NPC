@@ -33,7 +33,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ObjectiveDataEntry {
+public final class ObjectiveDataEntry {
   // Objective Data Tags
   public static final String DATA_ID_TAG = "Id";
   public static final String DATA_PRIORITY_TAG = "Prio";
@@ -52,11 +52,13 @@ public class ObjectiveDataEntry {
   public static final String DATA_ATTACK_RADIUS_TAG = "AttackRadius";
   public static final String DATA_INTERVAL_TAG = "Interval";
   public static final String DATA_MUST_SEE_TARGET_TAG = "MustSeeTarget";
+  public static final String DATA_MUST_REACH_TARGET_TAG = "MustReachTarget";
   public static final String DATA_PROBABILITY_TAG = "Probability";
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   // Objective Data
   private boolean mustSeeTarget = true;
+  private boolean mustReachTarget = true;
   private int interval = 10;
   private ObjectiveType objectiveType = ObjectiveType.NONE;
   private String id = UUID.randomUUID().toString();
@@ -186,6 +188,14 @@ public class ObjectiveDataEntry {
 
   public void setMustSeeTarget(boolean mustSeeTarget) {
     this.mustSeeTarget = mustSeeTarget;
+  }
+
+  public boolean isMustReachTarget() {
+    return this.mustReachTarget;
+  }
+
+  public void setMustReachTarget(boolean mustReachTarget) {
+    this.mustReachTarget = mustReachTarget;
   }
 
   public String getId() {
@@ -409,6 +419,9 @@ public class ObjectiveDataEntry {
     if (compoundTag.contains(DATA_MUST_SEE_TARGET_TAG)) {
       this.mustSeeTarget = compoundTag.getBoolean(DATA_MUST_SEE_TARGET_TAG);
     }
+    if (compoundTag.contains(DATA_MUST_REACH_TARGET_TAG)) {
+      this.mustReachTarget = compoundTag.getBoolean(DATA_MUST_REACH_TARGET_TAG);
+    }
     if (compoundTag.contains(DATA_PROBABILITY_TAG)) {
       this.probability = compoundTag.getFloat(DATA_PROBABILITY_TAG);
     }
@@ -467,6 +480,9 @@ public class ObjectiveDataEntry {
     }
     if (!this.mustSeeTarget) {
       compoundTag.putBoolean(DATA_MUST_SEE_TARGET_TAG, this.mustSeeTarget);
+    }
+    if (!this.mustReachTarget) {
+      compoundTag.putBoolean(DATA_MUST_REACH_TARGET_TAG, this.mustReachTarget);
     }
     if (this.probability != 1.0F) {
       compoundTag.putFloat(DATA_PROBABILITY_TAG, this.probability);

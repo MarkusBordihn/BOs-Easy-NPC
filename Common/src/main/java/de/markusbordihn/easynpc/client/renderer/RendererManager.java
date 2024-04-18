@@ -45,7 +45,7 @@ public class RendererManager {
   private static final Map<EntityType<?>, EntityRenderer<?>> entityRendererMap = new HashMap<>();
   private static final Map<EntityType<?>, LivingEntityRenderer<?, ?>> livingEntityRendererMap =
       new HashMap<>();
-  private static Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private RendererManager() {}
 
@@ -183,6 +183,10 @@ public class RendererManager {
     targetEntity.setYHeadRot(sourceEntity.getYHeadRot());
 
     targetEntity.setYBodyRot(sourceEntity.yBodyRot);
+
+    // Additional entity data.
+    targetEntity.setOnGround(sourceEntity.isOnGround());
+    targetEntity.setDeltaMovement(sourceEntity.getDeltaMovement());
   }
 
   public static void copyCustomLivingEntityData(
@@ -198,6 +202,8 @@ public class RendererManager {
     targetEntity.yBodyRotO = sourceEntity.yBodyRotO;
 
     // Adjust animation position and speed.
+    targetEntity.attackAnim = sourceEntity.attackAnim;
+    targetEntity.oAttackAnim = sourceEntity.oAttackAnim;
     targetEntity.animationPosition = sourceEntity.animationPosition;
     targetEntity.animationSpeedOld = sourceEntity.animationSpeedOld;
     targetEntity.animationSpeed = sourceEntity.animationSpeed;

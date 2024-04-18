@@ -40,14 +40,15 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class SuggestionProvider {
 
-  private static List<String> filteredEntityTypes;
-  private static Set<String> deniedEntityTypes =
+  private static final Set<String> deniedEntityTypes =
       Set.of(
           "minecraft:area_effect_cloud",
           "minecraft:armor_stand",
           "minecraft:arrow",
           "minecraft:boat",
+          "minecraft:block_display",
           "minecraft:chest_minecart",
+          "minecraft:chest_boat",
           "minecraft:command_block_minecart",
           "minecraft:dragon_fireball",
           "minecraft:egg",
@@ -67,6 +68,7 @@ public class SuggestionProvider {
           "minecraft:hopper_minecart",
           "minecraft:item",
           "minecraft:item_frame",
+          "minecraft:interaction",
           "minecraft:leash_knot",
           "minecraft:lightning_bolt",
           "minecraft:llama_spit",
@@ -80,9 +82,12 @@ public class SuggestionProvider {
           "minecraft:snowball",
           "minecraft:spawner_minecart",
           "minecraft:spectral_arrow",
+          "minecraft:text_display",
           "minecraft:tnt",
           "minecraft:tnt_minecart",
-          "minecraft:trident");
+          "minecraft:trident",
+          "minecraft:wither_skull");
+  private static List<String> filteredEntityTypes;
 
   private SuggestionProvider() {}
 

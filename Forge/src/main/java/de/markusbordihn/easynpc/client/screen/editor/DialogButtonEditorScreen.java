@@ -33,7 +33,7 @@ import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
-import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
@@ -218,11 +218,11 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
     }
 
     // Dialog Button Data
-    ActionData openNamedDialogAction =
+    ActionDataEntry openNamedDialogAction =
         this.dialogButtonData.getActionData(ActionType.OPEN_NAMED_DIALOG);
-    ActionData openTradingScreenAction =
+    ActionDataEntry openTradingScreenAction =
         this.dialogButtonData.getActionData(ActionType.OPEN_TRADING_SCREEN);
-    ActionData commandAction = this.dialogButtonData.getActionData(ActionType.COMMAND);
+    ActionDataEntry commandAction = this.dialogButtonData.getActionData(ActionType.COMMAND);
 
     // Close Button
     this.closeButton =
@@ -372,31 +372,31 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
                   this.dialogButtonData.setLabel(this.buttonLabelBox.getValue());
 
                   // Action data set
-                  HashSet<ActionData> actionDataSet = new HashSet<>();
+                  HashSet<ActionDataEntry> actionDataEntrySet = new HashSet<>();
 
                   // Open named dialog or trading screen
                   if (this.openTradingScreenCheckbox.selected()) {
-                    ActionData openTradingScreenActionData =
-                        new ActionData(ActionType.OPEN_TRADING_SCREEN);
-                    actionDataSet.add(openTradingScreenActionData);
+                    ActionDataEntry openTradingScreenActionDataEntry =
+                        new ActionDataEntry(ActionType.OPEN_TRADING_SCREEN);
+                    actionDataEntrySet.add(openTradingScreenActionDataEntry);
                   } else if (!this.openNamedDialogBox.getValue().isEmpty()) {
-                    ActionData openNamedDialogActionData =
-                        new ActionData(
+                    ActionDataEntry openNamedDialogActionDataEntry =
+                        new ActionDataEntry(
                             ActionType.OPEN_NAMED_DIALOG, this.openNamedDialogBox.getValue());
-                    actionDataSet.add(openNamedDialogActionData);
+                    actionDataEntrySet.add(openNamedDialogActionDataEntry);
                   }
 
                   // Other action commands
-                  ActionData commandActionData =
-                      new ActionData(
+                  ActionDataEntry commandActionDataEntry =
+                      new ActionDataEntry(
                           ActionType.COMMAND,
                           this.commandDialogBox.getValue(),
                           this.commandDialogExecuteAsUserCheckbox.selected(),
                           this.commandDialogDebugCheckbox.selected());
-                  actionDataSet.add(commandActionData);
+                  actionDataEntrySet.add(commandActionDataEntry);
 
                   // Save dialog button action data.
-                  this.dialogButtonData.setActionData(actionDataSet);
+                  this.dialogButtonData.setActionData(actionDataEntrySet);
                   NetworkMessageHandler.saveDialogButton(
                       uuid, this.dialogId, this.dialogButtonId, this.dialogButtonData);
 

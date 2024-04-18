@@ -37,7 +37,6 @@ import net.minecraft.world.level.Level;
 public class Villager extends EasyNPCBaseModelEntity<Villager> {
 
   public static final String ID = "villager";
-  public static final String NAME = "Villager";
 
   public Villager(EntityType<? extends PathfinderMob> entityType, Level level) {
     super(entityType, level, Variant.DEFAULT);

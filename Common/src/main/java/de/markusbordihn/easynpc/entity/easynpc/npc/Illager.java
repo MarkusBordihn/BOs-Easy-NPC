@@ -35,12 +35,10 @@ import net.minecraft.world.level.Level;
 
 public class Illager extends EasyNPCBaseModelEntity<Illager> {
 
-  public static final String ID = "illager";
   public static final String ID_EVOKER = "evoker";
   public static final String ID_ILLUSIONER = "illusioner";
   public static final String ID_PILLAGER = "pillager";
   public static final String ID_VINDICATOR = "vindicator";
-  public static final String NAME = "Illager";
 
   public Illager(EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variant) {
     super(entityType, level, variant);

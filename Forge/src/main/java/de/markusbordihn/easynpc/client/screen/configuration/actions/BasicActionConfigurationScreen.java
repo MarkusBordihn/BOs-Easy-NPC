@@ -24,7 +24,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
-import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
@@ -52,9 +52,9 @@ public class BasicActionConfigurationScreen
   protected Checkbox onDeathActionExecuteAsUserCheckbox;
   protected Checkbox onDeathActionDebugCheckbox;
   protected Button onDeathActionSaveButton;
-  private ActionData lastInteractionActionData;
-  private ActionData lastHurtActionData;
-  private ActionData lastDeathActionData;
+  private ActionDataEntry lastInteractionActionDataEntry;
+  private ActionDataEntry lastHurtActionDataEntry;
+  private ActionDataEntry lastDeathActionDataEntry;
 
   public BasicActionConfigurationScreen(
       BasicActionConfigurationMenu menu, Inventory inventory, Component component) {
@@ -62,33 +62,34 @@ public class BasicActionConfigurationScreen
   }
 
   public void validateInteractionAction() {
-    ActionData actionData =
-        new ActionData(
+    ActionDataEntry actionDataEntry =
+        new ActionDataEntry(
             ActionType.COMMAND,
             this.onInteractionActionBox.getValue(),
             this.onInteractionActionExecuteAsUserCheckbox.selected(),
             this.onInteractionActionDebugCheckbox.selected());
-    this.onInteractionActionSaveButton.active = !actionData.equals(this.lastInteractionActionData);
+    this.onInteractionActionSaveButton.active =
+        !actionDataEntry.equals(this.lastInteractionActionDataEntry);
   }
 
   public void validateOnHurtAction() {
-    ActionData actionData =
-        new ActionData(
+    ActionDataEntry actionDataEntry =
+        new ActionDataEntry(
             ActionType.COMMAND,
             this.onHurtActionBox.getValue(),
             this.onHurtActionExecuteAsUserCheckbox.selected(),
             this.onHurtActionDebugCheckbox.selected());
-    this.onHurtActionSaveButton.active = !actionData.equals(this.lastHurtActionData);
+    this.onHurtActionSaveButton.active = !actionDataEntry.equals(this.lastHurtActionDataEntry);
   }
 
   public void validateOnDeathAction() {
-    ActionData actionData =
-        new ActionData(
+    ActionDataEntry actionDataEntry =
+        new ActionDataEntry(
             ActionType.COMMAND,
             this.onDeathActionBox.getValue(),
             this.onDeathActionExecuteAsUserCheckbox.selected(),
             this.onDeathActionDebugCheckbox.selected());
-    this.onDeathActionSaveButton.active = !actionData.equals(this.lastDeathActionData);
+    this.onDeathActionSaveButton.active = !actionDataEntry.equals(this.lastDeathActionDataEntry);
   }
 
   @Override
@@ -100,12 +101,12 @@ public class BasicActionConfigurationScreen
 
     // On Interaction Action
     int interactionActionTop = this.topPos + 50;
-    ActionData interactionActionData =
+    ActionDataEntry interactionActionDataEntry =
         this.actionDataSet.getActionEvent(ActionEventType.ON_INTERACTION);
-    this.lastInteractionActionData = interactionActionData;
+    this.lastInteractionActionDataEntry = interactionActionDataEntry;
     this.onInteractionActionBox =
         this.addRenderableWidget(
-            actionEditBox(this.contentLeftPos, interactionActionTop, interactionActionData));
+            actionEditBox(this.contentLeftPos, interactionActionTop, interactionActionDataEntry));
     this.onInteractionActionBox.setResponder(consumer -> this.validateInteractionAction());
     this.onInteractionActionExecuteAsUserCheckbox =
         this.addRenderableWidget(
@@ -113,7 +114,8 @@ public class BasicActionConfigurationScreen
                 this.contentLeftPos + 80,
                 interactionActionTop + 18,
                 "execute_as_player",
-                interactionActionData != null && interactionActionData.shouldExecuteAsUser(),
+                interactionActionDataEntry != null
+                    && interactionActionDataEntry.shouldExecuteAsUser(),
                 checkbox -> this.validateInteractionAction()));
     this.onInteractionActionDebugCheckbox =
         this.addRenderableWidget(
@@ -121,7 +123,7 @@ public class BasicActionConfigurationScreen
                 this.contentLeftPos + 215,
                 interactionActionTop + 18,
                 "debug",
-                interactionActionData != null && interactionActionData.isDebugEnabled(),
+                interactionActionDataEntry != null && interactionActionDataEntry.isDebugEnabled(),
                 checkbox -> this.validateInteractionAction()));
     this.onInteractionActionSaveButton =
         this.addRenderableWidget(
@@ -129,26 +131,27 @@ public class BasicActionConfigurationScreen
                 onInteractionActionBox.x + onInteractionActionBox.getWidth() + 5,
                 interactionActionTop - 1,
                 onPress -> {
-                  ActionData actionData =
-                      new ActionData(
+                  ActionDataEntry actionDataEntry =
+                      new ActionDataEntry(
                           ActionType.COMMAND,
                           this.onInteractionActionBox.getValue(),
                           this.onInteractionActionExecuteAsUserCheckbox.selected(),
                           this.onInteractionActionDebugCheckbox.selected());
                   NetworkMessageHandler.actionEventChange(
-                      uuid, ActionEventType.ON_INTERACTION, actionData);
-                  this.lastInteractionActionData = actionData;
+                      uuid, ActionEventType.ON_INTERACTION, actionDataEntry);
+                  this.lastInteractionActionDataEntry = actionDataEntry;
                   this.onInteractionActionSaveButton.active = false;
                 }));
     this.onInteractionActionSaveButton.active = false;
 
     // On Hurt Action
     int onHurtActionTop = interactionActionTop + 50;
-    ActionData onHurtActionData = this.actionDataSet.getActionEvent(ActionEventType.ON_HURT);
-    this.lastHurtActionData = onHurtActionData;
+    ActionDataEntry onHurtActionDataEntry =
+        this.actionDataSet.getActionEvent(ActionEventType.ON_HURT);
+    this.lastHurtActionDataEntry = onHurtActionDataEntry;
     this.onHurtActionBox =
         this.addRenderableWidget(
-            actionEditBox(this.contentLeftPos, onHurtActionTop, onHurtActionData));
+            actionEditBox(this.contentLeftPos, onHurtActionTop, onHurtActionDataEntry));
     this.onHurtActionBox.setResponder(consumer -> this.validateOnHurtAction());
     this.onHurtActionExecuteAsUserCheckbox =
         this.addRenderableWidget(
@@ -156,7 +159,7 @@ public class BasicActionConfigurationScreen
                 this.contentLeftPos + 80,
                 onHurtActionTop + 18,
                 "execute_as_player",
-                onHurtActionData != null && onHurtActionData.shouldExecuteAsUser(),
+                onHurtActionDataEntry != null && onHurtActionDataEntry.shouldExecuteAsUser(),
                 checkbox -> this.validateOnHurtAction()));
     this.onHurtActionDebugCheckbox =
         this.addRenderableWidget(
@@ -164,7 +167,7 @@ public class BasicActionConfigurationScreen
                 this.contentLeftPos + 215,
                 onHurtActionTop + 18,
                 "debug",
-                onHurtActionData != null && onHurtActionData.isDebugEnabled(),
+                onHurtActionDataEntry != null && onHurtActionDataEntry.isDebugEnabled(),
                 checkbox -> this.validateOnHurtAction()));
     this.onHurtActionSaveButton =
         this.addRenderableWidget(
@@ -172,26 +175,27 @@ public class BasicActionConfigurationScreen
                 onHurtActionBox.x + onHurtActionBox.getWidth() + 5,
                 onHurtActionTop - 1,
                 onPress -> {
-                  ActionData actionData =
-                      new ActionData(
+                  ActionDataEntry actionDataEntry =
+                      new ActionDataEntry(
                           ActionType.COMMAND,
                           this.onHurtActionBox.getValue(),
                           this.onHurtActionExecuteAsUserCheckbox.selected(),
                           this.onHurtActionDebugCheckbox.selected());
                   NetworkMessageHandler.actionEventChange(
-                      uuid, ActionEventType.ON_HURT, actionData);
-                  this.lastHurtActionData = actionData;
+                      uuid, ActionEventType.ON_HURT, actionDataEntry);
+                  this.lastHurtActionDataEntry = actionDataEntry;
                   this.onHurtActionSaveButton.active = false;
                 }));
     this.onHurtActionSaveButton.active = false;
 
     // On Death Action
     int onDeathActionTop = onHurtActionTop + 50;
-    ActionData onDeathActionData = this.actionDataSet.getActionEvent(ActionEventType.ON_DEATH);
-    this.lastDeathActionData = onDeathActionData;
+    ActionDataEntry onDeathActionDataEntry =
+        this.actionDataSet.getActionEvent(ActionEventType.ON_DEATH);
+    this.lastDeathActionDataEntry = onDeathActionDataEntry;
     this.onDeathActionBox =
         this.addRenderableWidget(
-            actionEditBox(this.contentLeftPos, onDeathActionTop, onDeathActionData));
+            actionEditBox(this.contentLeftPos, onDeathActionTop, onDeathActionDataEntry));
     this.onDeathActionBox.setResponder(consumer -> this.validateOnDeathAction());
     this.onDeathActionExecuteAsUserCheckbox =
         this.addRenderableWidget(
@@ -199,7 +203,7 @@ public class BasicActionConfigurationScreen
                 this.contentLeftPos + 80,
                 onDeathActionTop + 18,
                 "execute_as_player",
-                onDeathActionData != null && onDeathActionData.shouldExecuteAsUser(),
+                onDeathActionDataEntry != null && onDeathActionDataEntry.shouldExecuteAsUser(),
                 checkbox -> this.validateOnDeathAction()));
     this.onDeathActionDebugCheckbox =
         this.addRenderableWidget(
@@ -207,7 +211,7 @@ public class BasicActionConfigurationScreen
                 this.contentLeftPos + 215,
                 onDeathActionTop + 18,
                 "debug",
-                onDeathActionData != null && onDeathActionData.isDebugEnabled(),
+                onDeathActionDataEntry != null && onDeathActionDataEntry.isDebugEnabled(),
                 checkbox -> this.validateOnDeathAction()));
     this.onDeathActionSaveButton =
         this.addRenderableWidget(
@@ -215,15 +219,15 @@ public class BasicActionConfigurationScreen
                 onDeathActionBox.x + onDeathActionBox.getWidth() + 5,
                 onDeathActionTop - 1,
                 onPress -> {
-                  ActionData actionData =
-                      new ActionData(
+                  ActionDataEntry actionDataEntry =
+                      new ActionDataEntry(
                           ActionType.COMMAND,
                           this.onDeathActionBox.getValue(),
                           this.onDeathActionExecuteAsUserCheckbox.selected(),
                           this.onDeathActionDebugCheckbox.selected());
                   NetworkMessageHandler.actionEventChange(
-                      uuid, ActionEventType.ON_DEATH, actionData);
-                  this.lastDeathActionData = actionData;
+                      uuid, ActionEventType.ON_DEATH, actionDataEntry);
+                  this.lastDeathActionDataEntry = actionDataEntry;
                   this.onDeathActionSaveButton.active = false;
                 }));
     this.onDeathActionSaveButton.active = false;

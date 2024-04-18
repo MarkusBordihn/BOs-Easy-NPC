@@ -17,28 +17,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.server;
+package de.markusbordihn.easynpc.item;
 
-public final class ServerDataItem<T> {
+import de.markusbordihn.easynpc.Constants;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 
-  final ServerDataAccessor<T> entityDataAccessor;
+public class ModItemTags {
 
-  private T value;
-
-  public ServerDataItem(ServerDataAccessor<T> entityDataAccessor, T value) {
-    this.entityDataAccessor = entityDataAccessor;
-    this.value = value;
-  }
-
-  public ServerDataAccessor<T> getAccessor() {
-    return this.entityDataAccessor;
-  }
-
-  public T getValue() {
-    return this.value;
-  }
-
-  public void setValue(T customData) {
-    this.value = customData;
-  }
+  // Ranged Weapon Tags
+  public static final TagKey<Item> RANGED_WEAPON_BOW =
+      TagKey.create(
+          Registry.ITEM_REGISTRY, new ResourceLocation(Constants.MOD_ID, "ranged_weapon/bow"));
+  public static final TagKey<Item> RANGED_WEAPON_CROSSBOW =
+      TagKey.create(
+          Registry.ITEM_REGISTRY, new ResourceLocation(Constants.MOD_ID, "ranged_weapon/crossbow"));
+  public static final TagKey<Item> RANGED_WEAPON_GUN =
+      TagKey.create(
+          Registry.ITEM_REGISTRY, new ResourceLocation(Constants.MOD_ID, "ranged_weapon/gun"));
 }

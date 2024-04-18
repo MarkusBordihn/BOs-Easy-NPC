@@ -96,7 +96,7 @@ public class ImportCustomPresetConfigurationScreen
       log.error("Failed to read NBT data from {}", path, exception);
       return;
     }
-    if (compoundTag == null) {
+    if (compoundTag.isEmpty()) {
       log.error("Received empty preset {}", path);
       return;
     }

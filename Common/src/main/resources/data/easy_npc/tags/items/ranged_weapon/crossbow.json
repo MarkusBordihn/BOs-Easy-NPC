@@ -1,0 +1,26 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:crossbow",
+    {
+      "id": "spartanweaponry:wooden_heavy_crossbow",
+      "required": false
+    },
+    {
+      "id": "spartanweaponry:iron_heavy_crossbow",
+      "required": false
+    },
+    {
+      "id": "spartanweaponry:gold_heavy_crossbow",
+      "required": false
+    },
+    {
+      "id": "spartanweaponry:diamond_heavy_crossbow",
+      "required": false
+    },
+    {
+      "id": "spartanweaponry:netherite_heavy_crossbow",
+      "required": false
+    }
+  ]
+}

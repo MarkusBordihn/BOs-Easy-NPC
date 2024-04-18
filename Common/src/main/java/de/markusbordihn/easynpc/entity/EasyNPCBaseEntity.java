@@ -29,7 +29,7 @@ import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
-import de.markusbordihn.easynpc.handler.InteractionHandler;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.InteractionHandler;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.EnumMap;
 import java.util.UUID;

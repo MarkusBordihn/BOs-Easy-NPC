@@ -17,13 +17,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.handler;
+package de.markusbordihn.easynpc.entity.easynpc.handlers;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import net.minecraft.core.Registry;
@@ -50,6 +51,8 @@ public class InteractionHandler {
       return InteractionResult.PASS;
     }
     ConfigurationData<?> configurationData = easyNPC.getEasyNPCConfigurationData();
+    OwnerData<?> ownerData = easyNPC.getEasyNPCOwnerData();
+    boolean isOwnerOrCreative = serverPlayer.isCreative() || ownerData.isOwner(serverPlayer);
 
     // Item based actions.
     ItemStack handItemStack = player.getItemInHand(hand);
@@ -69,17 +72,25 @@ public class InteractionHandler {
       // Handle Armourer's Workshop items like the NPC wand.
       if (Constants.MOD_ARMOURERS_WORKSHOP_ID.equals(
           Registry.ITEM.getKey(handItem).getNamespace())) {
-        SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
-        if (skinData.getSkinModel().hasArmourersWorkshopSupport()) {
-          log.debug("Ignore event for Armourer's Workshop Item for {} ...", easyNPC);
-          return InteractionResult.PASS;
+        if (isOwnerOrCreative) {
+          SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
+          if (skinData.getSkinModel().hasArmourersWorkshopSupport()) {
+            log.debug("Ignore event for Armourer's Workshop Item for {} ...", easyNPC);
+            return InteractionResult.PASS;
+          } else {
+            serverPlayer.sendMessage(
+                new TranslatableComponent(
+                    Constants.TEXT_PREFIX + "armourers_workshop.no_support",
+                    skinData.getSkinModel().name(),
+                    easyNPC),
+                serverPlayer.getUUID());
+          }
         } else {
-          serverPlayer.sendMessage(
-              new TranslatableComponent(
-                  Constants.TEXT_PREFIX + "armourers_workshop.no_support",
-                  skinData.getSkinModel().name(),
-                  easyNPC),
-              serverPlayer.getUUID());
+          log.debug(
+              "{} has no permissions to use Armourer's Workshop Item for {} ...",
+              serverPlayer,
+              easyNPC);
+          return InteractionResult.CONSUME;
         }
       }
     }

@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -96,9 +96,9 @@ public class MessageTriggerActionEvent extends NetworkMessage {
     }
 
     // Validate action.
-    Set<ActionData> actionDataList =
+    Set<ActionDataEntry> actionDataEntryList =
         actionEventData.getActionEventSet().getActionEvents(actionEventType);
-    if (actionDataList == null || actionDataList.isEmpty()) {
+    if (actionDataEntryList == null || actionDataEntryList.isEmpty()) {
       log.error(
           "Unknown trigger action event {} request for UUID {} from {}",
           actionEventType,
@@ -108,22 +108,22 @@ public class MessageTriggerActionEvent extends NetworkMessage {
     }
 
     // Perform action.
-    if (actionDataList.size() > 1) {
+    if (actionDataEntryList.size() > 1) {
       log.debug(
           "Trigger multiple actions events for {} from {} with {} actions ...",
           easyNPC,
           serverPlayer,
-          actionDataList.size());
+          actionDataEntryList.size());
     }
-    for (ActionData actionData : actionDataList) {
-      if (actionData != null) {
+    for (ActionDataEntry actionDataEntry : actionDataEntryList) {
+      if (actionDataEntry != null) {
         log.debug(
             "Trigger action event {} for {} from {} with permission level {} ...",
-            actionData,
+            actionDataEntry,
             easyNPC,
             serverPlayer,
-            actionData.getPermissionLevel());
-        actionHandler.executeAction(actionData, serverPlayer);
+            actionDataEntry.getPermissionLevel());
+        actionHandler.executeAction(actionDataEntry, serverPlayer);
       }
     }
   }

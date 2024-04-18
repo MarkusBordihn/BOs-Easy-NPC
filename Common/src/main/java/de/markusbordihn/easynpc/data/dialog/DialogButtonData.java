@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.data.dialog;
 
-import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionType;
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -44,7 +44,7 @@ public class DialogButtonData {
   public static final String DATA_LABEL_TAG = "Label";
 
   // Dialog Button Data
-  private Set<ActionData> actionData = new LinkedHashSet<>();
+  private Set<ActionDataEntry> actionDatumEntries = new LinkedHashSet<>();
   private UUID id;
   private String label = "";
   private DialogButtonType type;
@@ -55,8 +55,8 @@ public class DialogButtonData {
     this.load(compoundTag);
   }
 
-  public DialogButtonData(String name, String label, Set<ActionData> actionData) {
-    this(name, label, DialogButtonType.DEFAULT, actionData, false);
+  public DialogButtonData(String name, String label, Set<ActionDataEntry> actionDatumEntries) {
+    this(name, label, DialogButtonType.DEFAULT, actionDatumEntries, false);
   }
 
   public DialogButtonData(String name, DialogButtonType type) {
@@ -67,13 +67,14 @@ public class DialogButtonData {
       String name,
       String label,
       DialogButtonType type,
-      Set<ActionData> actionData,
+      Set<ActionDataEntry> actionDatumEntries,
       boolean translate) {
     this.name = name;
     this.label = DialogUtils.generateButtonLabel(label != null && !label.isEmpty() ? label : name);
     this.id = UUID.nameUUIDFromBytes(this.label.getBytes());
     this.type = type;
-    this.actionData = actionData != null ? actionData : new LinkedHashSet<>();
+    this.actionDatumEntries =
+        actionDatumEntries != null ? actionDatumEntries : new LinkedHashSet<>();
     this.translate = translate;
   }
 
@@ -117,10 +118,10 @@ public class DialogButtonData {
   }
 
   public boolean hasActionData() {
-    if (this.actionData == null || this.actionData.isEmpty()) {
+    if (this.actionDatumEntries == null || this.actionDatumEntries.isEmpty()) {
       return false;
     }
-    for (ActionData action : this.actionData) {
+    for (ActionDataEntry action : this.actionDatumEntries) {
       if (action.isValidAndNotEmpty()) {
         return true;
       }
@@ -128,26 +129,27 @@ public class DialogButtonData {
     return false;
   }
 
-  public Set<ActionData> getActionData() {
-    return this.actionData;
+  public Set<ActionDataEntry> getActionData() {
+    return this.actionDatumEntries;
   }
 
-  public void setActionData(Set<ActionData> actionData) {
-    this.actionData = actionData == null ? new LinkedHashSet<>() : actionData;
+  public void setActionData(Set<ActionDataEntry> actionDatumEntries) {
+    this.actionDatumEntries =
+        actionDatumEntries == null ? new LinkedHashSet<>() : actionDatumEntries;
   }
 
-  public Set<ActionData> getAllActionData(ActionType actionType) {
-    Set<ActionData> actionDataSet = new LinkedHashSet<>();
-    for (ActionData action : this.actionData) {
+  public Set<ActionDataEntry> getAllActionData(ActionType actionType) {
+    Set<ActionDataEntry> actionDataEntrySet = new LinkedHashSet<>();
+    for (ActionDataEntry action : this.actionDatumEntries) {
       if (action.getType() == actionType) {
-        actionDataSet.add(action);
+        actionDataEntrySet.add(action);
       }
     }
-    return actionDataSet;
+    return actionDataEntrySet;
   }
 
-  public ActionData getActionData(ActionType actionType) {
-    for (ActionData action : this.actionData) {
+  public ActionDataEntry getActionData(ActionType actionType) {
+    for (ActionDataEntry action : this.actionDatumEntries) {
       if (action.getType() == actionType) {
         return action;
       }
@@ -175,9 +177,9 @@ public class DialogButtonData {
 
     // Load action data
     ListTag actionDataList = compoundTag.getList(DATA_ACTIONS_TAG, 10);
-    this.actionData.clear();
+    this.actionDatumEntries.clear();
     for (int i = 0; i < actionDataList.size(); i++) {
-      this.actionData.add(new ActionData(actionDataList.getCompound(i)));
+      this.actionDatumEntries.add(new ActionDataEntry(actionDataList.getCompound(i)));
     }
   }
 
@@ -197,7 +199,7 @@ public class DialogButtonData {
 
     // Save action data
     ListTag actionDataList = new ListTag();
-    for (ActionData action : this.actionData) {
+    for (ActionDataEntry action : this.actionDatumEntries) {
       actionDataList.add(action.save(new CompoundTag()));
     }
     compoundTag.put(DATA_ACTIONS_TAG, actionDataList);
@@ -222,7 +224,7 @@ public class DialogButtonData {
         + ", translate="
         + this.translate
         + ", actionData="
-        + this.actionData
+        + this.actionDatumEntries
         + "]";
   }
 }

@@ -29,7 +29,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
-public class DialogDataEntry {
+public final class DialogDataEntry {
 
   // Limits
   public static final int MAX_DIALOG_LABEL_LENGTH = 32;

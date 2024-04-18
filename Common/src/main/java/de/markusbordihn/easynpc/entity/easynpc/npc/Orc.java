@@ -35,7 +35,6 @@ public class Orc extends EasyNPCBaseModelEntity<Orc> {
 
   public static final String ID = "orc";
   public static final String ID_WARRIOR = "orc_warrior";
-  public static final String NAME = "Orc";
 
   public Orc(EntityType<? extends PathfinderMob> entityType, Level level) {
     this(entityType, level, Variant.DEFAULT);
