@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
 import java.util.EnumSet;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -27,10 +28,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 public class CrossbowAttackGoal<T extends EasyNPC<?>> extends Goal {
 
@@ -53,21 +52,16 @@ public class CrossbowAttackGoal<T extends EasyNPC<?>> extends Goal {
   }
 
   public boolean canUse() {
-    return this.pathfinderMob != null
-        && this.crossbowAttackMob != null
+    return this.crossbowAttackMob != null
         && this.isValidTarget()
-        && this.isHoldingCrossbow();
-  }
-
-  private boolean isHoldingCrossbow() {
-    return this.pathfinderMob.isHolding(is -> is.getItem() instanceof CrossbowItem);
+        && AttackHandler.isHoldingCrossbowWeapon(this.pathfinderMob);
   }
 
   @Override
   public boolean canContinueToUse() {
     return this.isValidTarget()
         && (this.canUse() || !this.pathfinderMob.getNavigation().isDone())
-        && this.isHoldingCrossbow();
+        && AttackHandler.isHoldingCrossbowWeapon(this.pathfinderMob);
   }
 
   private boolean isValidTarget() {
@@ -134,7 +128,7 @@ public class CrossbowAttackGoal<T extends EasyNPC<?>> extends Goal {
       if (this.crossbowState == CrossbowState.UNCHARGED) {
         if (!flag2) {
           this.pathfinderMob.startUsingItem(
-              ProjectileUtil.getWeaponHoldingHand(this.pathfinderMob, Items.CROSSBOW));
+              AttackHandler.getCrossbowHoldingHand(this.pathfinderMob));
           this.crossbowState = CrossbowState.CHARGING;
           this.crossbowAttackMob.setChargingCrossbow(true);
         }
@@ -160,7 +154,7 @@ public class CrossbowAttackGoal<T extends EasyNPC<?>> extends Goal {
         this.crossbowAttackMob.performRangedAttack(livingentity, 1.0F);
         ItemStack itemStack1 =
             this.pathfinderMob.getItemInHand(
-                ProjectileUtil.getWeaponHoldingHand(this.pathfinderMob, Items.CROSSBOW));
+                AttackHandler.getCrossbowHoldingHand(this.pathfinderMob));
         CrossbowItem.setCharged(itemStack1, false);
         this.crossbowState = CrossbowState.UNCHARGED;
       }

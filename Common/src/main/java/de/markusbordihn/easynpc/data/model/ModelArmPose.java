@@ -31,6 +31,7 @@ public enum ModelArmPose {
   CUSTOM,
   DANCING,
   DEFAULT,
+  GUN_HOLD,
   NEUTRAL,
   SPELLCASTING,
   SPYGLASS;

@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -121,8 +121,8 @@ public class MessageDialogButtonAction extends NetworkMessage {
     }
 
     // Validate dialog button actions.
-    Set<ActionData> actionDataList = dialogButtonData.getActionData();
-    if (actionDataList == null || actionDataList.isEmpty()) {
+    Set<ActionDataEntry> actionDataEntryList = dialogButtonData.getActionData();
+    if (actionDataEntryList == null || actionDataEntryList.isEmpty()) {
       log.error(
           "Empty dialog button action {} request for UUID {} and dialog {} from {}",
           dialogButtonId,
@@ -139,21 +139,21 @@ public class MessageDialogButtonAction extends NetworkMessage {
       return;
     }
 
-    if (actionDataList.size() == 1) {
+    if (actionDataEntryList.size() == 1) {
       log.debug(
           "Trigger single dialog button action for {} from {} with action: {}",
           easyNPC,
           serverPlayer,
-          actionDataList.iterator().next());
-      actionHandler.executeAction(actionDataList.iterator().next(), serverPlayer);
+          actionDataEntryList.iterator().next());
+      actionHandler.executeAction(actionDataEntryList.iterator().next(), serverPlayer);
     } else {
       log.debug(
           "Trigger multiple dialog button actions for {} from {} with {} actions: {}",
           easyNPC,
           serverPlayer,
-          actionDataList.size(),
-          actionDataList);
-      actionHandler.executeActions(actionDataList, serverPlayer);
+          actionDataEntryList.size(),
+          actionDataEntryList);
+      actionHandler.executeActions(actionDataEntryList, serverPlayer);
     }
   }
 

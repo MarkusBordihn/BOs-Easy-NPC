@@ -36,7 +36,6 @@ import net.minecraft.world.level.Level;
 public class ZombieVillager extends EasyNPCBaseModelEntity<ZombieVillager> {
 
   public static final String ID = "zombie_villager";
-  public static final String NAME = "Zombie Villager";
 
   public ZombieVillager(EntityType<? extends PathfinderMob> entityType, Level level) {
     super(entityType, level, Variant.DEFAULT);

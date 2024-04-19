@@ -36,7 +36,6 @@ public class Zombie extends EasyNPCBaseModelEntity<Zombie> {
   public static final String ID = "zombie";
   public static final String ID_DROWNED = "drowned";
   public static final String ID_HUSK = "husk";
-  public static final String NAME = "Zombie";
 
   public Zombie(EntityType<? extends PathfinderMob> entityType, Level level) {
     this(entityType, level, Variant.ZOMBIE);

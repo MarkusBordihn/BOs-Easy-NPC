@@ -33,7 +33,6 @@ import net.minecraft.world.level.Level;
 public class Humanoid extends EasyNPCBaseModelEntity<Humanoid> {
 
   public static final String ID = "humanoid";
-  public static final String NAME = "Humanoid";
 
   public Humanoid(EntityType<? extends PathfinderMob> entityType, Level level) {
     this(entityType, level, Variant.STEVE);

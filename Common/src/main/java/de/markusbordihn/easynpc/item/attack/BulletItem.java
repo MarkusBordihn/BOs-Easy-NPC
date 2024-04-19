@@ -17,28 +17,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.server;
+package de.markusbordihn.easynpc.item.attack;
 
-public final class ServerDataItem<T> {
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.item.ArrowItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
-  final ServerDataAccessor<T> entityDataAccessor;
+public class BulletItem extends ArrowItem {
 
-  private T value;
+  public static final String ID = "bullet";
 
-  public ServerDataItem(ServerDataAccessor<T> entityDataAccessor, T value) {
-    this.entityDataAccessor = entityDataAccessor;
-    this.value = value;
+  public BulletItem(Properties properties) {
+    super(properties);
   }
 
-  public ServerDataAccessor<T> getAccessor() {
-    return this.entityDataAccessor;
-  }
-
-  public T getValue() {
-    return this.value;
-  }
-
-  public void setValue(T customData) {
-    this.value = customData;
+  @Override
+  public AbstractArrow createArrow(Level level, ItemStack itemStack, LivingEntity livingEntity) {
+    Arrow arrow = new Arrow(level, livingEntity);
+    arrow.setEffectsFromItem(itemStack);
+    return arrow;
   }
 }

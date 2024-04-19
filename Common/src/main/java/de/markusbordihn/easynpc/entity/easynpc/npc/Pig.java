@@ -34,7 +34,6 @@ import net.minecraft.world.level.Level;
 public class Pig extends EasyNPCBaseModelEntity<Pig> {
 
   public static final String ID = "pig";
-  public static final String NAME = "Pig";
 
   public Pig(EntityType<? extends PathfinderMob> entityType, Level level) {
     super(entityType, level, Variant.DEFAULT);

@@ -34,7 +34,6 @@ import net.minecraft.world.level.Level;
 public class Wolf extends EasyNPCBaseModelEntity<Wolf> {
 
   public static final String ID = "wolf";
-  public static final String NAME = "Wolf";
 
   public Wolf(EntityType<? extends PathfinderMob> entityType, Level level) {
     super(entityType, level, Variant.DEFAULT);

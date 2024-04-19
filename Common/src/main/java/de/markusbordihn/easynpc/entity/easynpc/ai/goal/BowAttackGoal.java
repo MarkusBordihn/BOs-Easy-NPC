@@ -20,18 +20,18 @@
 package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
 import java.util.EnumSet;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.monster.RangedAttackMob;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.BowItem;
-import net.minecraft.world.item.Items;
 
-public class RangedBowAttackGoal<T extends EasyNPC<?>> extends Goal {
+public class BowAttackGoal<T extends EasyNPC<?>> extends Goal {
 
   private final PathfinderMob pathfinderMob;
+  private final RangedAttackMob rangedAttackMob;
   private final double speedModifier;
   private final float attackRadiusSqr;
   private int attackIntervalMin;
@@ -41,9 +41,9 @@ public class RangedBowAttackGoal<T extends EasyNPC<?>> extends Goal {
   private boolean strafingBackwards;
   private int strafingTime = -1;
 
-  public RangedBowAttackGoal(
-      T livingEntity, double targetDistance, int hasLineOfSight, float hasSeen) {
-    this.pathfinderMob = livingEntity.getPathfinderMob();
+  public BowAttackGoal(T easyNPC, double targetDistance, int hasLineOfSight, float hasSeen) {
+    this.pathfinderMob = easyNPC.getPathfinderMob();
+    this.rangedAttackMob = easyNPC.getRangedAttackMob();
     this.speedModifier = targetDistance;
     this.attackIntervalMin = hasLineOfSight;
     this.attackRadiusSqr = hasSeen * hasSeen;
@@ -55,16 +55,14 @@ public class RangedBowAttackGoal<T extends EasyNPC<?>> extends Goal {
   }
 
   public boolean canUse() {
-    return this.pathfinderMob.getTarget() != null && this.isHoldingBow();
-  }
-
-  protected boolean isHoldingBow() {
-    return this.pathfinderMob.isHolding(Items.BOW);
+    return this.pathfinderMob.getTarget() != null
+        && AttackHandler.isHoldingBowWeapon(this.pathfinderMob);
   }
 
   @Override
   public boolean canContinueToUse() {
-    return (this.canUse() || !this.pathfinderMob.getNavigation().isDone()) && this.isHoldingBow();
+    return (this.canUse() || !this.pathfinderMob.getNavigation().isDone())
+        && AttackHandler.isHoldingBowWeapon(this.pathfinderMob);
   }
 
   @Override
@@ -145,17 +143,16 @@ public class RangedBowAttackGoal<T extends EasyNPC<?>> extends Goal {
         if (!hasLineOfSight && this.seeTime < -60) {
           this.pathfinderMob.stopUsingItem();
         } else if (hasLineOfSight) {
-          int $$4 = this.pathfinderMob.getTicksUsingItem();
-          if ($$4 >= 20) {
+          int chargingTime = this.pathfinderMob.getTicksUsingItem();
+          if (chargingTime >= 20) {
             this.pathfinderMob.stopUsingItem();
-            ((RangedAttackMob) this.pathfinderMob)
-                .performRangedAttack(livingEntity, BowItem.getPowerForTime($$4));
+            this.rangedAttackMob.performRangedAttack(
+                livingEntity, BowItem.getPowerForTime(chargingTime));
             this.attackTime = this.attackIntervalMin;
           }
         }
       } else if (--this.attackTime <= 0 && this.seeTime >= -60) {
-        this.pathfinderMob.startUsingItem(
-            ProjectileUtil.getWeaponHoldingHand(this.pathfinderMob, Items.BOW));
+        this.pathfinderMob.startUsingItem(AttackHandler.getBowHoldingHand(this.pathfinderMob));
       }
     }
   }
