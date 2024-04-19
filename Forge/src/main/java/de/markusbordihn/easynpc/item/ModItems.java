@@ -39,6 +39,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Wolf;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie;
 import de.markusbordihn.easynpc.entity.easynpc.npc.ZombieVillager;
+import de.markusbordihn.easynpc.item.attack.BulletItem;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetEmptyItem;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetItem;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCWandItem;
@@ -71,6 +72,9 @@ public class ModItems {
       ITEMS.register(
           EasyNPCSpawnerBlock.NAME,
           () -> new BlockItem(ModBlocks.EASY_NPC_SPAWNER.get(), new Item.Properties()));
+
+  public static final RegistryObject<Item> BULLET_ITEM =
+      ITEMS.register(BulletItem.ID, () -> new BulletItem(new Item.Properties()));
 
   public static final RegistryObject<Item> ALLAY_NPC_SPAWN_EGG =
       ITEMS.register(

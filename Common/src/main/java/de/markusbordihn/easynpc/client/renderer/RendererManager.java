@@ -45,7 +45,7 @@ public class RendererManager {
   private static final Map<EntityType<?>, EntityRenderer<?>> entityRendererMap = new HashMap<>();
   private static final Map<EntityType<?>, LivingEntityRenderer<?, ?>> livingEntityRendererMap =
       new HashMap<>();
-  private static Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private RendererManager() {}
 

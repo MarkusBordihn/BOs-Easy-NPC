@@ -61,6 +61,7 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
+import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.npc.Npc;
 import net.minecraft.world.item.trading.Merchant;
 import net.minecraft.world.level.Level;
@@ -211,6 +212,10 @@ public interface EasyNPC<E extends PathfinderMob> extends Npc {
 
   default Merchant getMerchant() {
     return this instanceof Merchant merchant ? merchant : null;
+  }
+
+  default RangedAttackMob getRangedAttackMob() {
+    return this instanceof RangedAttackMob rangedAttackMob ? rangedAttackMob : null;
   }
 
   default ProfilerFiller getProfiler() {

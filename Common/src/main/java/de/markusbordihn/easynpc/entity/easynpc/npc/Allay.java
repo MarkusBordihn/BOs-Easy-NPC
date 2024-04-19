@@ -33,7 +33,6 @@ import net.minecraft.world.level.Level;
 public class Allay extends EasyNPCBaseModelEntity<Allay> {
 
   public static final String ID = "allay";
-  public static final String NAME = "Allay";
 
   public Allay(EntityType<? extends PathfinderMob> entityType, Level level) {
     super(entityType, level, Variant.DEFAULT);

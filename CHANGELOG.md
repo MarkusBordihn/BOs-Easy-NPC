@@ -10,7 +10,11 @@ Check the [upgrade guide][upgrade_guide] for more information.
 
 ### 4.4.0
 
+- Fixed #159: Added additional tags and support for modded bows and crossbows items.
+- Fixed #158: By moving specific log messages to debug level.
 - Fixed #155: Automatically update follow owner objective, if owner has changed.
+- Fixed #94: Added basic support for guns which are not extending the vanilla bow or crossbow item.
+- Fixed #72: Added additional owner objectives and checks for Armour's Workshop Wand.
 - Added experimental model override support for custom models
   over `/easy_npc render set <npc-uuid> <entity_type>`.
 - Added own synched entity data handler for better performance and less network traffic.

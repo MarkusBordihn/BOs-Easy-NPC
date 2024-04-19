@@ -27,10 +27,9 @@ import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SynchedEntityData {
+public final class SynchedEntityData {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private final Entity entity;
   private final Class<? extends Entity> entityClass;
   private final Map<SynchedDataIndex, EntityDataAccessor<?>> entityDataAccessorMap;

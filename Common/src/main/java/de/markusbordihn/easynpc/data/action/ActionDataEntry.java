@@ -26,54 +26,51 @@ import net.minecraft.world.entity.LivingEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ActionData {
+public final class ActionDataEntry {
 
-  // Limits
   public static final int MAX_PERMISSION_LEVEL = 2;
   public static final int DEFAULT_PERMISSION_LEVEL = 2;
   public static final int MIN_PERMISSION_LEVEL = 0;
-  // Action Data Tags
   public static final String DATA_COMMAND_TAG = "Cmd";
   public static final String DATA_DEBUG_TAG = "Debug";
   public static final String DATA_EXECUTE_AS_USER_TAG = "ExecAsUser";
   public static final String DATA_PERMISSION_LEVEL_TAG = "PermLevel";
   public static final String DATA_TYPE_TAG = "Type";
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  protected static final String DEFAULT_COMMAND = "";
-  // Action Data
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final String DEFAULT_COMMAND = "";
   private ActionType actionType = ActionType.NONE;
   private String command = "";
   private boolean enableDebug = false;
   private boolean executeAsUser = false;
   private int permissionLevel = DEFAULT_PERMISSION_LEVEL;
 
-  public ActionData(CompoundTag compoundTag) {
+  public ActionDataEntry(CompoundTag compoundTag) {
     this.load(compoundTag);
   }
 
-  public ActionData(ActionType actionType) {
+  public ActionDataEntry(ActionType actionType) {
     this(actionType, DEFAULT_COMMAND, DEFAULT_PERMISSION_LEVEL);
   }
 
-  public ActionData(ActionType actionType, String command) {
+  public ActionDataEntry(ActionType actionType, String command) {
     this(actionType, command, DEFAULT_PERMISSION_LEVEL);
   }
 
-  public ActionData(ActionType actionType, String command, int permissionLevel) {
+  public ActionDataEntry(ActionType actionType, String command, int permissionLevel) {
     this(actionType, command, permissionLevel, false);
   }
 
-  public ActionData(
+  public ActionDataEntry(
       ActionType actionType, String command, int permissionLevel, boolean executeAsUser) {
     this(actionType, command, permissionLevel, executeAsUser, false);
   }
 
-  public ActionData(
+  public ActionDataEntry(
       ActionType actionType, String command, boolean executeAsUser, boolean enableDebug) {
     this(actionType, command, DEFAULT_PERMISSION_LEVEL, executeAsUser, enableDebug);
   }
 
-  public ActionData(
+  public ActionDataEntry(
       ActionType actionType,
       String command,
       int permissionLevel,
@@ -170,12 +167,12 @@ public class ActionData {
 
     // Only save execute as user if it is true.
     if (this.shouldExecuteAsUser()) {
-      compoundTag.putBoolean(DATA_EXECUTE_AS_USER_TAG, this.shouldExecuteAsUser());
+      compoundTag.putBoolean(DATA_EXECUTE_AS_USER_TAG, true);
     }
 
     // Only save debug if it is true.
     if (this.isDebugEnabled()) {
-      compoundTag.putBoolean(DATA_DEBUG_TAG, this.isDebugEnabled());
+      compoundTag.putBoolean(DATA_DEBUG_TAG, true);
     }
 
     // Only save permission level if it is different from default.
@@ -192,12 +189,12 @@ public class ActionData {
 
   @Override
   public boolean equals(Object object) {
-    if (object instanceof ActionData actionData) {
-      return this.getType() == actionData.getType()
-          && this.getCommand().equals(actionData.getCommand())
-          && this.getPermissionLevel() == actionData.getPermissionLevel()
-          && this.shouldExecuteAsUser() == actionData.shouldExecuteAsUser()
-          && this.isDebugEnabled() == actionData.isDebugEnabled();
+    if (object instanceof ActionDataEntry actionDataEntry) {
+      return this.getType() == actionDataEntry.getType()
+          && this.getCommand().equals(actionDataEntry.getCommand())
+          && this.getPermissionLevel() == actionDataEntry.getPermissionLevel()
+          && this.shouldExecuteAsUser() == actionDataEntry.shouldExecuteAsUser()
+          && this.isDebugEnabled() == actionDataEntry.isDebugEnabled();
     }
     return false;
   }

@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.data.server;
 
 import net.minecraft.network.syncher.EntityDataSerializer;
 
-public class ServerDataAccessor<T> {
+public final class ServerDataAccessor<T> {
 
   private final ServerDataIndex serverDataIndex;
   private final EntityDataSerializer<T> entityDataSerializer;

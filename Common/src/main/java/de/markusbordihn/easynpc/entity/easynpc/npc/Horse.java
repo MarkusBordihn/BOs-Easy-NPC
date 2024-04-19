@@ -36,7 +36,6 @@ public class Horse extends EasyNPCBaseModelEntity<Horse> {
   public static final String ID = "horse";
   public static final String ID_ZOMBIE = "zombie_horse";
   public static final String ID_SKELETON = "skeleton_horse";
-  public static final String NAME = "Horse";
 
   public Horse(EntityType<? extends PathfinderMob> entityType, Level level) {
     this(entityType, level, Variant.WHITE);

@@ -34,7 +34,6 @@ import net.minecraft.world.level.Level;
 public class IronGolem extends EasyNPCBaseModelEntity<IronGolem> {
 
   public static final String ID = "iron_golem";
-  public static final String NAME = "Iron Golem";
 
   public IronGolem(EntityType<? extends PathfinderMob> entityType, Level level) {
     super(entityType, level, Variant.IRON_GOLEM);

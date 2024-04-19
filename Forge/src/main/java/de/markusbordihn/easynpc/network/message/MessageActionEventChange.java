@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.data.action.ActionData;
+import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
@@ -34,17 +34,17 @@ import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class MessageActionEventChange extends NetworkMessage {
 
-  protected final ActionData actionData;
+  protected final ActionDataEntry actionDataEntry;
   protected final ActionEventType actionEventType;
 
   public MessageActionEventChange(UUID uuid, ActionEventType actionEventType, String action) {
-    this(uuid, actionEventType, new ActionData(ActionType.COMMAND, action));
+    this(uuid, actionEventType, new ActionDataEntry(ActionType.COMMAND, action));
   }
 
   public MessageActionEventChange(
-      UUID uuid, ActionEventType actionEventType, ActionData actionData) {
+      UUID uuid, ActionEventType actionEventType, ActionDataEntry actionDataEntry) {
     super(uuid);
-    this.actionData = actionData;
+    this.actionDataEntry = actionDataEntry;
     this.actionEventType = actionEventType;
   }
 
@@ -52,13 +52,13 @@ public class MessageActionEventChange extends NetworkMessage {
     return new MessageActionEventChange(
         buffer.readUUID(),
         buffer.readEnum(ActionEventType.class),
-        new ActionData(buffer.readNbt()));
+        new ActionDataEntry(buffer.readNbt()));
   }
 
   public static void encode(final MessageActionEventChange message, final FriendlyByteBuf buffer) {
     buffer.writeUUID(message.uuid);
     buffer.writeEnum(message.getActionEventType());
-    buffer.writeNbt(message.actionData.createTag());
+    buffer.writeNbt(message.actionDataEntry.createTag());
   }
 
   public static void handle(MessageActionEventChange message, CustomPayloadEvent.Context context) {
@@ -83,9 +83,9 @@ public class MessageActionEventChange extends NetworkMessage {
     }
 
     // Validate action data.
-    ActionData actionData = message.getActionData();
-    if (actionData == null || !actionData.isValid()) {
-      log.error("Invalid action data {} for {} from {}", actionData, message, serverPlayer);
+    ActionDataEntry actionDataEntry = message.getActionData();
+    if (actionDataEntry == null || !actionDataEntry.isValid()) {
+      log.error("Invalid action data {} for {} from {}", actionDataEntry, message, serverPlayer);
       return;
     }
 
@@ -110,18 +110,18 @@ public class MessageActionEventChange extends NetworkMessage {
     log.debug(
         "Set action event {} with {} for {} from {} with owner permission level {}.",
         actionEventType,
-        actionData,
+        actionDataEntry,
         easyNPC,
         serverPlayer,
         permissionLevel);
-    actionEventData.getActionEventSet().setActionEvent(actionEventType, actionData);
+    actionEventData.getActionEventSet().setActionEvent(actionEventType, actionDataEntry);
   }
 
   public ActionEventType getActionEventType() {
     return this.actionEventType;
   }
 
-  public ActionData getActionData() {
-    return this.actionData;
+  public ActionDataEntry getActionData() {
+    return this.actionDataEntry;
   }
 }
