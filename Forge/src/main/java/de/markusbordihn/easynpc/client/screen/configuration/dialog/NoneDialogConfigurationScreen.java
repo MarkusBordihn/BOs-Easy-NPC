@@ -25,7 +25,7 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
@@ -69,13 +69,13 @@ public class NoneDialogConfigurationScreen
                 checkbox -> {
                   if (checkbox.selected()) {
                     DialogDataSet dialogDataSet = new DialogDataSet(DialogType.NONE);
-                    NetworkMessageHandler.saveDialog(uuid, dialogDataSet);
+                    ServerNetworkMessageHandler.saveDialog(uuid, dialogDataSet);
                   } else {
                     if (formerDialogDataSet != null) {
-                      NetworkMessageHandler.saveDialog(uuid, formerDialogDataSet);
+                      ServerNetworkMessageHandler.saveDialog(uuid, formerDialogDataSet);
                     } else {
                       DialogDataSet dialogDataSet = new DialogDataSet(DialogType.BASIC);
-                      NetworkMessageHandler.saveDialog(uuid, dialogDataSet);
+                      ServerNetworkMessageHandler.saveDialog(uuid, dialogDataSet);
                     }
                   }
                 }));

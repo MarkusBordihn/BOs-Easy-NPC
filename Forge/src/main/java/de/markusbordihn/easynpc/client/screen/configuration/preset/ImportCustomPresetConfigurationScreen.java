@@ -19,26 +19,11 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.preset;
 
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.screen.components.Text;
-import de.markusbordihn.easynpc.client.screen.components.TextButton;
-import de.markusbordihn.easynpc.data.skin.SkinModel;
-import de.markusbordihn.easynpc.io.PresetDataFiles;
+import de.markusbordihn.easynpc.data.cache.CacheManager;
 import de.markusbordihn.easynpc.menu.configuration.preset.CustomImportPresetConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ObjectSelectionList;
-import net.minecraft.client.gui.screens.ConfirmScreen;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtIo;
-import net.minecraft.network.chat.CommonComponents;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -47,69 +32,18 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ImportCustomPresetConfigurationScreen
     extends ImportPresetConfigurationScreen<CustomImportPresetConfigurationMenu> {
 
-  protected static Path selectedPreset;
-  protected Button importPresetButton;
-  private ImportCustomPresetConfigurationScreen.ImportFileSelectionList presetSelectionList;
+  private boolean dataLoaded = false;
 
   public ImportCustomPresetConfigurationScreen(
       CustomImportPresetConfigurationMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
+    importPresetButtonLabel = "import_custom_preset";
+    importPresetHeaderLabel = "preset_custom_for";
   }
 
-  public static void updateSelectedPreset(Path path) {
-    selectedPreset = path;
-  }
-
-  public void loadPresetConfirm(Path path) {
-    Minecraft minecraft = this.minecraft;
-    if (minecraft == null) {
-      return;
-    }
-    minecraft.setScreen(
-        new ConfirmScreen(
-            confirmed -> {
-              if (confirmed && uuid != null) {
-                loadPreset(path);
-                minecraft.setScreen(null);
-              } else {
-                minecraft.setScreen(this);
-              }
-            },
-            Component.translatable(
-                Constants.TEXT_PREFIX + "preset.importQuestion",
-                path.toString().substring(path.toString().lastIndexOf("/") + 1)),
-            Component.translatable(
-                Constants.TEXT_PREFIX + "preset.importWarning",
-                this.easyNPC.getEntity().getDisplayName().getString()),
-            Component.translatable(Constants.TEXT_PREFIX + "preset.importButton"),
-            CommonComponents.GUI_CANCEL));
-  }
-
-  public void loadPreset(Path path) {
-    // Read NBT data from file.
-    CompoundTag compoundTag;
-    try {
-      compoundTag = NbtIo.readCompressed(path.toFile());
-    } catch (IOException exception) {
-      log.error("Failed to read NBT data from {}", path, exception);
-      return;
-    }
-    if (compoundTag.isEmpty()) {
-      log.error("Received empty preset {}", path);
-      return;
-    }
-
-    // Remove UUID from NBT data, if present.
-    if (compoundTag.contains(Entity.UUID_TAG)) {
-      compoundTag.remove(Entity.UUID_TAG);
-    }
-
-    // Remove position from NBT data, if present.
-    if (compoundTag.contains("Pos")) {
-      compoundTag.remove("Pos");
-    }
-
-    NetworkMessageHandler.importPreset(uuid, compoundTag);
+  @Override
+  public void loadPreset(ResourceLocation resourceLocation) {
+    NetworkMessageHandlerManager.getServerHandler().importCustomPreset(uuid, resourceLocation);
   }
 
   @Override
@@ -118,220 +52,16 @@ public class ImportCustomPresetConfigurationScreen
 
     // Default button stats
     this.customImportPresetButton.active = false;
-
-    // File Selection List
-    this.presetSelectionList =
-        new ImportCustomPresetConfigurationScreen.ImportFileSelectionList(this.minecraft);
-    this.addWidget(this.presetSelectionList);
-    ImportCustomPresetConfigurationScreen.updateSelectedPreset(null);
-
-    // Import button
-    this.importPresetButton =
-        this.addRenderableWidget(
-            new TextButton(
-                this.buttonLeftPos + 25,
-                this.bottomPos - 40,
-                220,
-                "custom",
-                button -> {
-                  if (selectedPreset != null) {
-                    this.loadPresetConfirm(selectedPreset);
-                  }
-                }));
-    this.importPresetButton.active = false;
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
-    this.presetSelectionList.render(guiGraphics, x, y, partialTicks);
-    this.importPresetButton.active = ImportCustomPresetConfigurationScreen.selectedPreset != null;
-  }
-
-  @Override
-  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-    super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
-
-    int fileListTop = this.topPos + 55;
-    int fileListHeight = fileListTop + 110;
-    int fileListWidth = this.leftPos + 290;
-
-    // File Selection List
-    guiGraphics.fill(
-        this.contentLeftPos - 1,
-        fileListTop - 1,
-        fileListWidth + 1,
-        fileListHeight + 1,
-        0xff000000);
-    guiGraphics.fill(this.contentLeftPos, fileListTop, fileListWidth, fileListHeight, 0xffaaaaaa);
-  }
-
-  @OnlyIn(Dist.CLIENT)
-  class ImportFileSelectionList
-      extends ObjectSelectionList<
-          ImportCustomPresetConfigurationScreen.ImportFileSelectionList.Entry> {
-
-    public ImportFileSelectionList(Minecraft minecraft) {
-      super(
-          minecraft,
-          ImportCustomPresetConfigurationScreen.this.width - 5,
-          ImportCustomPresetConfigurationScreen.this.height - 150 + 66,
-          ImportCustomPresetConfigurationScreen.this.topPos + 66,
-          ImportCustomPresetConfigurationScreen.this.height
-              - 150
-              - ImportCustomPresetConfigurationScreen.this.topPos
-              + 66,
-          14);
-      this.setRenderHeader(false, 0);
-      this.setRenderBackground(false);
-      this.setRenderTopAndBottom(false);
-
-      // Read relevant preset files.
-      PresetDataFiles.getPresetFilePathLocations()
-          .forEach(
-              path -> {
-                if (!path.toString()
-                    .contains(
-                        "preset"
-                            + File.separator
-                            + skinModel.toString().toLowerCase()
-                            + File.separator)) {
-                  log.warn(
-                      "Skipping preset file {} as it does not match the current skin model {}",
-                      path,
-                      skinModel.toString().toLowerCase());
-                  return;
-                }
-                ImportCustomPresetConfigurationScreen.ImportFileSelectionList.Entry entry =
-                    new ImportCustomPresetConfigurationScreen.ImportFileSelectionList.Entry(
-                        path, skinModel);
-                this.addEntry(entry);
-              });
-    }
-
-    @Override
-    protected int getScrollbarPosition() {
-      return super.getScrollbarPosition() + 12;
-    }
-
-    @Override
-    public int getRowWidth() {
-      return super.getRowWidth() + 40;
-    }
-
-    @Override
-    public boolean isFocused() {
-      return ImportCustomPresetConfigurationScreen.this.getFocused() == this;
-    }
-
-    @Override
-    public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-      if (this.getItemCount() > 0) {
-        super.render(guiGraphics, x, y, partialTicks);
-        return;
-      }
-
-      // Display "No presets found" message.
-      Text.drawConfigStringShadow(
-          guiGraphics,
-          ImportCustomPresetConfigurationScreen.this.font,
-          "no_presets_found",
-          ImportCustomPresetConfigurationScreen.this.contentLeftPos + 80,
-          ImportCustomPresetConfigurationScreen.this.topPos + 105,
-          Constants.FONT_COLOR_WHITE);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public class Entry
-        extends ObjectSelectionList.Entry<
-            ImportCustomPresetConfigurationScreen.ImportFileSelectionList.Entry> {
-
-      final Path path;
-      final SkinModel skinModel;
-      final String fileName;
-
-      public Entry(Path path, SkinModel skinModel) {
-        this.path = path;
-        this.skinModel = skinModel;
-        this.fileName =
-            path.getFileName()
-                .toString()
-                .replace(
-                    "preset"
-                        + File.separator
-                        + this.skinModel.toString().toLowerCase()
-                        + File.separator,
-                    "")
-                .replace(Constants.NPC_NBT_SUFFIX, "");
-      }
-
-      public void render(
-          GuiGraphics guiGraphics,
-          int x,
-          int y,
-          int unused1,
-          int unused2,
-          int unused3,
-          int unused4,
-          int unused5,
-          boolean unused6,
-          float partialTicks) {
-
-        // File Selection List Header
-        int fileListTop = ImportCustomPresetConfigurationScreen.this.topPos + 55;
-        int fileListWidth = ImportCustomPresetConfigurationScreen.this.leftPos + 290;
-        guiGraphics.fill(
-            ImportCustomPresetConfigurationScreen.this.contentLeftPos - 1,
-            fileListTop - 4,
-            fileListWidth + 1,
-            fileListTop + 12,
-            0xff000000);
-        guiGraphics.fill(
-            ImportCustomPresetConfigurationScreen.this.contentLeftPos,
-            fileListTop - 3,
-            fileListWidth,
-            fileListTop + 11,
-            0xff888888);
-        Text.drawConfigStringShadowWithData(
-            guiGraphics,
-            ImportCustomPresetConfigurationScreen.this.font,
-            "preset_custom_for",
-            this.skinModel,
-            ImportCustomPresetConfigurationScreen.this.contentLeftPos + 3,
-            fileListTop,
-            Constants.FONT_COLOR_WHITE);
-
-        // Display file name.
-        Text.drawStringShadow(
-            guiGraphics,
-            ImportCustomPresetConfigurationScreen.this.font,
-            fileName,
-            ImportFileSelectionList.this.width / 2
-                - ImportCustomPresetConfigurationScreen.this.font.width(this.fileName) / 2,
-            y + 1,
-            Constants.FONT_COLOR_WHITE);
-      }
-
-      @Override
-      public boolean mouseClicked(double unused1, double unused2, int button) {
-        if (button == 0) {
-          this.select();
-          return true;
-        } else {
-          return false;
-        }
-      }
-
-      private void select() {
-        ImportFileSelectionList.this.setSelected(this);
-
-        // Set selected preset.
-        ImportCustomPresetConfigurationScreen.updateSelectedPreset(this.path);
-      }
-
-      public Component getNarration() {
-        return Component.literal(this.fileName);
-      }
+  public void containerTick() {
+    super.containerTick();
+    if (!this.dataLoaded && CacheManager.hasCustomPresets()) {
+      ImportPresetConfigurationScreen.updatePresets(
+          CacheManager.getCustomPresets(this.skinModel).stream().toList());
+      this.presetSelectionList.updatePresets();
+      this.dataLoaded = true;
     }
   }
 }

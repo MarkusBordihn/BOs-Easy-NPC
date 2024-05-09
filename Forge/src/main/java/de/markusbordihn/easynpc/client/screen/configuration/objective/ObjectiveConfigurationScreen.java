@@ -21,10 +21,10 @@ package de.markusbordihn.easynpc.client.screen.configuration.objective;
 
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.objective.ObjectiveConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -60,7 +60,7 @@ public class ObjectiveConfigurationScreen<T extends ObjectiveConfigurationMenu>
                 60,
                 "basic",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.BASIC_OBJECTIVE)));
 
     this.followObjectiveButton =
@@ -71,7 +71,7 @@ public class ObjectiveConfigurationScreen<T extends ObjectiveConfigurationMenu>
                 60,
                 "follow",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.FOLLOW_OBJECTIVE)));
 
     this.attackObjectiveButton =
@@ -82,7 +82,7 @@ public class ObjectiveConfigurationScreen<T extends ObjectiveConfigurationMenu>
                 60,
                 "attack",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.ATTACK_OBJECTIVE)));
 
     this.lookObjectiveButton =
@@ -93,7 +93,7 @@ public class ObjectiveConfigurationScreen<T extends ObjectiveConfigurationMenu>
                 65,
                 "look",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.LOOK_OBJECTIVE)));
 
     // Default button stats

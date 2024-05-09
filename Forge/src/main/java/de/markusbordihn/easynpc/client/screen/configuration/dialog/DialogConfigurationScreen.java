@@ -21,10 +21,10 @@ package de.markusbordihn.easynpc.client.screen.configuration.dialog;
 
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.dialog.DialogConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -59,7 +59,8 @@ public class DialogConfigurationScreen<T extends DialogConfigurationMenu>
                 60,
                 "disable_dialog",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_DIALOG)));
+                    ServerNetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.NONE_DIALOG)));
     this.basicDialogButton =
         this.addRenderableWidget(
             new TextButton(
@@ -68,7 +69,8 @@ public class DialogConfigurationScreen<T extends DialogConfigurationMenu>
                 70,
                 "basic",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_DIALOG)));
+                    ServerNetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.BASIC_DIALOG)));
     this.yesNoDialogButton =
         this.addRenderableWidget(
             new TextButton(
@@ -79,7 +81,7 @@ public class DialogConfigurationScreen<T extends DialogConfigurationMenu>
                 70,
                 "yes_no_dialog",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.YES_NO_DIALOG)));
     this.advancedDialogButton =
         this.addRenderableWidget(
@@ -92,7 +94,7 @@ public class DialogConfigurationScreen<T extends DialogConfigurationMenu>
                 70,
                 "advanced",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.ADVANCED_DIALOG)));
 
     // Default button stats

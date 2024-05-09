@@ -78,14 +78,13 @@ publishing {
 curseforge {
   apiKey = "${credentials.forKey('curseforge_api_token')}"
   project {
-    id = "${curseforge_project_id}"
-    changelog = file("../CHANGELOG.md")
+    id = "${project.curseforge_project_id}"
+    changelog = rootProject.file("CHANGELOG.md")
     changelogType = 'markdown'
-    releaseType = "${curseforge_release_type}"
-    addGameVersion("${minecraft_version}")
+    releaseType = "beta"
+    addGameVersion("${project.minecraft_version}")
     addGameVersion("Fabric")
     addGameVersion("Quilt")
-
     mainArtifact(remapJar) {
       relations {
         requiredDependency 'fabric-api'
@@ -100,9 +99,11 @@ curseforge {
 
 modrinth {
   token = "${credentials.forKey('modrinth_api_token')}"
-  projectId = "${modrinth_project_id}"
+  projectId = "${project.modrinth_project_id}"
   versionNumber = "${version}"
-  versionType = "${modrinth_release_type}"
+  versionType = "beta"
+  versionName = "${project.mod_name} ${project.version}"
+  changelog = rootProject.file("CHANGELOG.md").text
   uploadFile = remapJar
   gameVersions = ["${minecraft_version}"]
   loaders = ["fabric", "quilt"]

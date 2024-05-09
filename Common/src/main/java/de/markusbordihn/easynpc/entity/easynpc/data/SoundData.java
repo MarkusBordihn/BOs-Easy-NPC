@@ -80,6 +80,14 @@ public interface SoundData<E extends PathfinderMob> extends EasyNPC<E> {
     return soundDataSet;
   }
 
+  default void refreshSoundDataSet() {
+    SoundDataSet soundDataSet = this.getSoundDataSet();
+    if (soundDataSet == null || soundDataSet.isEmpty()) {
+      clearSoundDataSet();
+      setSoundDataSet(soundDataSet);
+    }
+  }
+
   default void clearSoundDataSet() {
     setSoundDataSet(new SoundDataSet());
   }

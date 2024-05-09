@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.block.ModBlocks;
 import de.markusbordihn.easynpc.client.model.ModModelLayer;
 import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
 import de.markusbordihn.easynpc.client.screen.ClientScreens;
+import de.markusbordihn.easynpc.commands.ModArgumentTypes;
 import de.markusbordihn.easynpc.debug.DebugManager;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.io.DataFileHandler;
@@ -32,9 +33,10 @@ import de.markusbordihn.easynpc.item.ModItems;
 import de.markusbordihn.easynpc.menu.MenuHandler;
 import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
+import de.markusbordihn.easynpc.network.ClientNetworkMessageHandler;
 import de.markusbordihn.easynpc.network.NetworkHandler;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import de.markusbordihn.easynpc.tabs.ModTabs;
 import java.util.Optional;
 import net.minecraftforge.api.distmarker.Dist;
@@ -68,9 +70,9 @@ public class EasyNPC {
     log.info("{} Constants ...", Constants.LOG_REGISTER_PREFIX);
     Constants.GAME_DIR = FMLPaths.GAMEDIR.get();
     Constants.CONFIG_DIR = FMLPaths.CONFIGDIR.get();
-    Constants.MODS_DIR = FMLPaths.MODSDIR.get();
 
-    modEventBus.addListener(NetworkHandler::registerNetworkHandler);
+    log.info("{} Command Argument Types ...", Constants.LOG_REGISTER_PREFIX);
+    ModArgumentTypes.COMMAND_ARGUMENT_TYPES.register(modEventBus);
 
     log.info("{} Entities Types ...", Constants.LOG_REGISTER_PREFIX);
     ModEntityType.ENTITY_TYPES.register(modEventBus);
@@ -90,8 +92,9 @@ public class EasyNPC {
     log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
     ModMenuTypes.MENU_TYPES.register(modEventBus);
 
-    log.info("{} Network Message Handler ...", Constants.LOG_REGISTER_PREFIX);
-    NetworkMessageHandlerManager.registerNetworkMessageHandler(new NetworkMessageHandler());
+    log.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
+    modEventBus.addListener(NetworkHandler::registerNetworkHandler);
+    NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
 
     DistExecutor.unsafeRunWhenOn(
         Dist.CLIENT,
@@ -104,6 +107,7 @@ public class EasyNPC {
               modEventBus.addListener(
                   (final FMLClientSetupEvent event) ->
                       event.enqueueWork(DataFileHandler::registerDataFiles));
+              NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
               ModTabs.CREATIVE_TABS.register(modEventBus);
             });
   }

@@ -24,7 +24,7 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.menu.configuration.objective.AttackObjectiveConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -79,9 +79,9 @@ public class AttackObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.MELEE_ATTACK, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -96,9 +96,9 @@ public class AttackObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.ZOMBIE_ATTACK, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -115,9 +115,9 @@ public class AttackObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.CROSSBOW_ATTACK, 4);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -133,9 +133,9 @@ public class AttackObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.BOW_ATTACK, 4);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -152,9 +152,9 @@ public class AttackObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.GUN_ATTACK, 4);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -171,9 +171,9 @@ public class AttackObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_PLAYER, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -190,9 +190,9 @@ public class AttackObjectiveConfigurationScreen
                       objectiveDataSet.getOrCreateObjective(
                           ObjectiveType.ATTACK_PLAYER_WITHOUT_OWNER, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -209,9 +209,9 @@ public class AttackObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_VILLAGER, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -228,9 +228,9 @@ public class AttackObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_ANIMAL, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -246,9 +246,9 @@ public class AttackObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_MONSTER, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -265,9 +265,9 @@ public class AttackObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_MOB, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -284,9 +284,9 @@ public class AttackObjectiveConfigurationScreen
                       objectiveDataSet.getOrCreateObjective(
                           ObjectiveType.ATTACK_MOB_WITHOUT_CREEPER, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
   }
