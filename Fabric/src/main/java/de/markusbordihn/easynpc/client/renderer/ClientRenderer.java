@@ -89,5 +89,7 @@ public class ClientRenderer {
         ModEntityType.ORC_WARRIOR, context -> new OrcModelRenderer(context, ModModelLayers.ORC));
     EntityRendererRegistry.register(ModEntityType.WOLF, WolfModelRenderer::new);
     EntityRendererRegistry.register(ModEntityType.HORSE, HorseModelRenderer::new);
+    EntityRendererRegistry.register(ModEntityType.SKELETON_HORSE, HorseModelRenderer::new);
+    EntityRendererRegistry.register(ModEntityType.ZOMBIE_HORSE, HorseModelRenderer::new);
   }
 }

@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
 import de.markusbordihn.easynpc.menu.configuration.attribute.AbilitiesAttributeConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
@@ -60,7 +60,7 @@ public class AbilitiesAttributeConfigurationScreen
             EntityAttribute.CAN_FLOAT.getAttributeName(),
             attributeData.getAttributeCanFloat(),
             checkbox ->
-                NetworkMessageHandler.entityAttributeChange(
+                ServerNetworkMessageHandler.entityAttributeChange(
                     uuid, EntityAttribute.CAN_FLOAT, checkbox.selected())));
 
     this.addRenderableWidget(
@@ -70,7 +70,7 @@ public class AbilitiesAttributeConfigurationScreen
             EntityAttribute.CAN_BE_LEASHED.getAttributeName(),
             attributeData.getAttributeCanBeLeashed(),
             checkbox ->
-                NetworkMessageHandler.entityAttributeChange(
+                ServerNetworkMessageHandler.entityAttributeChange(
                     uuid, EntityAttribute.CAN_BE_LEASHED, checkbox.selected())));
 
     this.addRenderableWidget(
@@ -80,7 +80,7 @@ public class AbilitiesAttributeConfigurationScreen
             EntityAttribute.CAN_OPEN_DOOR.getAttributeName(),
             attributeData.getAttributeCanOpenDoor(),
             checkbox ->
-                NetworkMessageHandler.entityAttributeChange(
+                ServerNetworkMessageHandler.entityAttributeChange(
                     uuid, EntityAttribute.CAN_OPEN_DOOR, checkbox.selected())));
 
     this.addRenderableWidget(
@@ -90,7 +90,7 @@ public class AbilitiesAttributeConfigurationScreen
             EntityAttribute.CAN_CLOSE_DOOR.getAttributeName(),
             attributeData.getAttributeCanCloseDoor(),
             checkbox ->
-                NetworkMessageHandler.entityAttributeChange(
+                ServerNetworkMessageHandler.entityAttributeChange(
                     uuid, EntityAttribute.CAN_CLOSE_DOOR, checkbox.selected())));
 
     this.addRenderableWidget(
@@ -100,7 +100,7 @@ public class AbilitiesAttributeConfigurationScreen
             EntityAttribute.CAN_PASS_DOOR.getAttributeName(),
             attributeData.getAttributeCanPassDoor(),
             checkbox ->
-                NetworkMessageHandler.entityAttributeChange(
+                ServerNetworkMessageHandler.entityAttributeChange(
                     uuid, EntityAttribute.CAN_PASS_DOOR, checkbox.selected())));
 
     this.addRenderableWidget(
@@ -110,7 +110,7 @@ public class AbilitiesAttributeConfigurationScreen
             EntityAttribute.IS_ATTACKABLE.getAttributeName(),
             attributeData.getAttributeIsAttackable(),
             checkbox ->
-                NetworkMessageHandler.entityAttributeChange(
+                ServerNetworkMessageHandler.entityAttributeChange(
                     uuid, EntityAttribute.IS_ATTACKABLE, checkbox.selected())));
 
     this.addRenderableWidget(
@@ -120,7 +120,7 @@ public class AbilitiesAttributeConfigurationScreen
             EntityAttribute.IS_PUSHABLE.getAttributeName(),
             attributeData.getAttributeIsPushable(),
             checkbox ->
-                NetworkMessageHandler.entityAttributeChange(
+                ServerNetworkMessageHandler.entityAttributeChange(
                     uuid, EntityAttribute.IS_PUSHABLE, checkbox.selected())));
 
     this.addRenderableWidget(
@@ -130,7 +130,7 @@ public class AbilitiesAttributeConfigurationScreen
             EntityAttribute.PUSH_ENTITIES.getAttributeName(),
             attributeData.getAttributePushEntities(),
             checkbox ->
-                NetworkMessageHandler.entityAttributeChange(
+                ServerNetworkMessageHandler.entityAttributeChange(
                     uuid, EntityAttribute.PUSH_ENTITIES, checkbox.selected())));
 
     this.addRenderableWidget(
@@ -140,7 +140,7 @@ public class AbilitiesAttributeConfigurationScreen
             EntityAttribute.CAN_USE_NETHER_PORTAL.getAttributeName(),
             attributeData.getAttributeCanUseNetherPortal(),
             checkbox ->
-                NetworkMessageHandler.entityAttributeChange(
+                ServerNetworkMessageHandler.entityAttributeChange(
                     uuid, EntityAttribute.CAN_USE_NETHER_PORTAL, checkbox.selected())));
 
     this.addRenderableWidget(
@@ -150,7 +150,7 @@ public class AbilitiesAttributeConfigurationScreen
             EntityAttribute.SILENT.getAttributeName(),
             attributeData.getAttributeSilent(),
             checkbox ->
-                NetworkMessageHandler.entityAttributeChange(
+                ServerNetworkMessageHandler.entityAttributeChange(
                     uuid, EntityAttribute.SILENT, checkbox.selected())));
   }
 }

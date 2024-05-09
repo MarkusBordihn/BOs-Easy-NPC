@@ -348,7 +348,7 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
   }
 
   @Override
-  protected AbstractContainerMenu createMenu(int windowId, Inventory inventory) {
+  protected AbstractContainerMenu createMenu(int containerId, Inventory inventory) {
     return null;
   }
 

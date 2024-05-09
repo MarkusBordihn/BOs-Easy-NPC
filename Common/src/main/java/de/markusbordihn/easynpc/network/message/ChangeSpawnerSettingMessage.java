@@ -26,8 +26,10 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk.EntityCreationType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -59,61 +61,77 @@ public class ChangeSpawnerSettingMessage {
     return buffer;
   }
 
-  public static void handle(final ChangeSpawnerSettingMessage message, ServerPlayer player) {
-    if (player == null) {
+  public static void handle(final FriendlyByteBuf buffer, ServerPlayer serverPlayer) {
+    handle(decode(buffer), serverPlayer);
+  }
+
+  public static void handle(final ChangeSpawnerSettingMessage message, ServerPlayer serverPlayer) {
+    if (serverPlayer == null) {
       return;
     }
-    Level level = player.getLevel();
-    if (level.getBlockEntity(message.getSpawnerPos())
-        instanceof BaseEasyNPCSpawnerBlockEntity spawnerBlockEntity) {
 
-      // Verify if player has permission to change the settings.
-      if (!player.isCreative()
-          && spawnerBlockEntity.getOwner() != null
-          && !spawnerBlockEntity.getOwner().equals(player.getUUID())) {
-        log.warn(
-            "Player {} has no permission to change the settings of spawner at {}",
-            player.getName().getString(),
-            message.getSpawnerPos());
-        return;
-      }
+    // Try to get block entity from the current or different server thread.
+    ServerLevel serverLevel = serverPlayer.getLevel();
+    BlockEntity blockEntity = serverLevel.getBlockEntity(message.getSpawnerPos());
+    if (blockEntity == null) {
+      blockEntity =
+          serverLevel
+              .getChunkAt(message.getSpawnerPos())
+              .getBlockEntity(message.getSpawnerPos(), EntityCreationType.IMMEDIATE);
+    }
 
-      // Update the spawner settings
-      switch (message.getSettingType()) {
-        case SPAWN_RANGE:
-          log.debug("Set spawner {} spawn range to {}", spawnerBlockEntity, message.getValue());
-          spawnerBlockEntity.setSpawnRange(message.getValue());
-          break;
-        case DESPAWN_RANGE:
-          log.debug("Set spawner {} despawn range to {}", spawnerBlockEntity, message.getValue());
-          spawnerBlockEntity.setDespawnRange(message.getValue());
-          break;
-        case REQUIRED_PLAYER_RANGE:
-          log.debug(
-              "Set spawner {} required player range to {}", spawnerBlockEntity, message.getValue());
-          spawnerBlockEntity.setRequiredPlayerRange(message.getValue());
-          break;
-        case DELAY:
-          log.debug("Set spawner {} delay to {}", spawnerBlockEntity, message.getValue());
-          spawnerBlockEntity.setDelay(message.getValue());
-          break;
-        case MAX_NEARBY_ENTITIES:
-          log.debug(
-              "Set spawner {} max nearby entities to {}", spawnerBlockEntity, message.getValue());
-          spawnerBlockEntity.setMaxNearbyEntities(message.getValue());
-          break;
-        case SPAWN_COUNT:
-          log.debug("Set spawner {} spawn count to {}", spawnerBlockEntity, message.getValue());
-          spawnerBlockEntity.setSpawnCount(message.getValue());
-          break;
-        default:
-          log.error(
-              "Unknown spawner setting type {} for {}",
-              message.getSettingType(),
-              spawnerBlockEntity);
-      }
-    } else {
-      log.error("No valid spawner block entity found at {}", message.getSpawnerPos());
+    // Verify if block entity is a NPC spawner block entity.
+    if (!(blockEntity instanceof BaseEasyNPCSpawnerBlockEntity spawnerBlockEntity)) {
+      log.error(
+          "Found {}({}) instead of NPC spawner block entity at {}",
+          blockEntity,
+          serverLevel.getBlockState(message.getSpawnerPos()),
+          message.getSpawnerPos());
+      return;
+    }
+
+    // Verify if player has permission to change the settings.
+    if (!serverPlayer.isCreative()
+        && spawnerBlockEntity.getOwner() != null
+        && !spawnerBlockEntity.getOwner().equals(serverPlayer.getUUID())) {
+      log.warn(
+          "Player {} has no permission to change the settings of spawner at {}",
+          serverPlayer.getName().getString(),
+          message.getSpawnerPos());
+      return;
+    }
+
+    // Update the spawner settings
+    switch (message.getSettingType()) {
+      case SPAWN_RANGE:
+        log.debug("Set spawner {} spawn range to {}", spawnerBlockEntity, message.getValue());
+        spawnerBlockEntity.setSpawnRange(message.getValue());
+        break;
+      case DESPAWN_RANGE:
+        log.debug("Set spawner {} despawn range to {}", spawnerBlockEntity, message.getValue());
+        spawnerBlockEntity.setDespawnRange(message.getValue());
+        break;
+      case REQUIRED_PLAYER_RANGE:
+        log.debug(
+            "Set spawner {} required player range to {}", spawnerBlockEntity, message.getValue());
+        spawnerBlockEntity.setRequiredPlayerRange(message.getValue());
+        break;
+      case DELAY:
+        log.debug("Set spawner {} delay to {}", spawnerBlockEntity, message.getValue());
+        spawnerBlockEntity.setDelay(message.getValue());
+        break;
+      case MAX_NEARBY_ENTITIES:
+        log.debug(
+            "Set spawner {} max nearby entities to {}", spawnerBlockEntity, message.getValue());
+        spawnerBlockEntity.setMaxNearbyEntities(message.getValue());
+        break;
+      case SPAWN_COUNT:
+        log.debug("Set spawner {} spawn count to {}", spawnerBlockEntity, message.getValue());
+        spawnerBlockEntity.setSpawnCount(message.getValue());
+        break;
+      default:
+        log.error(
+            "Unknown spawner setting type {} for {}", message.getSettingType(), spawnerBlockEntity);
     }
   }
 

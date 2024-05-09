@@ -95,10 +95,8 @@ public class SkinHandler {
 
   public static boolean setPlayerSkin(EasyNPC<?> easyNPC, String playerName, UUID playerUUID) {
     if (easyNPC == null
-        || playerName == null
-        || playerName.isEmpty()
-        || playerUUID == null
-        || playerUUID.equals(Constants.BLANK_UUID)) {
+        || ((playerName == null || playerName.isEmpty())
+        && (playerUUID == null || playerUUID.equals(Constants.BLANK_UUID)))) {
       log.error(
           "[{}] Error setting player skin to {} with UUID {}", easyNPC, playerName, playerUUID);
       return false;

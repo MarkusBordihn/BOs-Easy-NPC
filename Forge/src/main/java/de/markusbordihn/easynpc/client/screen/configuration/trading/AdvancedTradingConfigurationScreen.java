@@ -26,10 +26,10 @@ import de.markusbordihn.easynpc.client.screen.components.PositiveNumberField;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.trading.AdvancedTradingConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import java.util.HashMap;
 import java.util.Objects;
 import net.minecraft.client.gui.components.Button;
@@ -68,7 +68,7 @@ public class AdvancedTradingConfigurationScreen
 
   private void onResetsEveryMinEditBoxChanged(String text) {
     if (isNumericValue(text) && !text.isEmpty()) {
-      NetworkMessageHandler.setAdvancedTradingResetsEveryMin(uuid, Integer.parseInt(text));
+      ServerNetworkMessageHandler.setAdvancedTradingResetsEveryMin(uuid, Integer.parseInt(text));
     }
   }
 
@@ -77,7 +77,8 @@ public class AdvancedTradingConfigurationScreen
         && offerIndex >= 0
         && isPositiveNumericValue(value)
         && !value.isEmpty()) {
-      NetworkMessageHandler.setAdvancedTradingMaxUses(uuid, offerIndex, Integer.parseInt(value));
+      ServerNetworkMessageHandler.setAdvancedTradingMaxUses(
+          uuid, offerIndex, Integer.parseInt(value));
     }
   }
 
@@ -86,7 +87,8 @@ public class AdvancedTradingConfigurationScreen
         && offerIndex >= 0
         && isNumericValue(value)
         && !value.isEmpty()) {
-      NetworkMessageHandler.setAdvancedTradingRewardExp(uuid, offerIndex, Integer.parseInt(value));
+      ServerNetworkMessageHandler.setAdvancedTradingRewardExp(
+          uuid, offerIndex, Integer.parseInt(value));
     }
   }
 
@@ -95,7 +97,7 @@ public class AdvancedTradingConfigurationScreen
         && offerIndex >= 0
         && isFloatValue(value)
         && !value.isEmpty()) {
-      NetworkMessageHandler.setAdvancedTradingPriceMultiplier(
+      ServerNetworkMessageHandler.setAdvancedTradingPriceMultiplier(
           uuid, offerIndex, Float.parseFloat(value));
     }
   }
@@ -105,7 +107,8 @@ public class AdvancedTradingConfigurationScreen
         && offerIndex >= 0
         && isNumericValue(value)
         && !value.isEmpty()) {
-      NetworkMessageHandler.setAdvancedTradingDemand(uuid, offerIndex, Integer.parseInt(value));
+      ServerNetworkMessageHandler.setAdvancedTradingDemand(
+          uuid, offerIndex, Integer.parseInt(value));
     }
   }
 
@@ -209,7 +212,7 @@ public class AdvancedTradingConfigurationScreen
                 70,
                 "previous_page",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.ADVANCED_TRADING, this.menu.getPageIndex() - 1)));
     this.nextPageButton =
         this.addRenderableWidget(
@@ -219,7 +222,7 @@ public class AdvancedTradingConfigurationScreen
                 70,
                 "next_page",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.ADVANCED_TRADING, this.menu.getPageIndex() + 1)));
   }
 

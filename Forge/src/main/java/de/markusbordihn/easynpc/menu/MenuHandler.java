@@ -21,13 +21,12 @@ package de.markusbordihn.easynpc.menu;
 
 import de.markusbordihn.easynpc.config.CommonConfig;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
-import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.action.DialogActionConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.action.DistanceActionConfigurationMenu;
@@ -51,6 +50,7 @@ import de.markusbordihn.easynpc.menu.configuration.position.DefaultPositionConfi
 import de.markusbordihn.easynpc.menu.configuration.preset.CustomExportPresetConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.preset.CustomImportPresetConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.preset.DefaultImportPresetConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.preset.LocalImportPresetConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.preset.WorldExportPresetConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.preset.WorldImportPresetConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.rotation.DefaultRotationConfigurationMenu;
@@ -64,13 +64,11 @@ import de.markusbordihn.easynpc.menu.configuration.trading.AdvancedTradingConfig
 import de.markusbordihn.easynpc.menu.configuration.trading.BasicTradingConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.trading.CustomTradingConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.trading.NoneTradingConfigurationMenu;
-import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
 import de.markusbordihn.easynpc.menu.editor.DialogButtonEditorMenu;
 import de.markusbordihn.easynpc.menu.editor.DialogEditorMenu;
 import de.markusbordihn.easynpc.menu.editor.DialogTextEditorMenu;
-import java.util.List;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import java.util.UUID;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -471,6 +469,7 @@ public class MenuHandler implements MenuHandlerInterface {
         COMMON.defaultImportPresetConfigurationEnabled.get(),
         COMMON.defaultImportPresetConfigurationAllowInCreative.get(),
         COMMON.defaultImportPresetConfigurationPermissionLevel.get())) {
+      NetworkMessageHandlerManager.getClientHandler().syncDefaultPresets(serverPlayer);
       UUID uuid = easyNPC.getUUID();
       NetworkHooks.openScreen(
           serverPlayer,
@@ -487,20 +486,12 @@ public class MenuHandler implements MenuHandlerInterface {
         COMMON.worldImportPresetConfigurationEnabled.get(),
         COMMON.worldImportPresetConfigurationAllowInCreative.get(),
         COMMON.worldImportPresetConfigurationPermissionLevel.get())) {
+      NetworkMessageHandlerManager.getClientHandler().syncWorldPresets(serverPlayer);
       UUID uuid = easyNPC.getUUID();
-      List<ResourceLocation> worldPresets =
-          WorldPresetDataFiles.getPresetFilePathResourceLocations().toList();
       NetworkHooks.openScreen(
           serverPlayer,
-          WorldImportPresetConfigurationMenu.getMenuProvider(
-              uuid, easyNPC.getEntity(), worldPresets),
-          buffer -> {
-            buffer.writeUUID(uuid);
-            buffer.writeVarInt(worldPresets.size());
-            for (ResourceLocation worldPreset : worldPresets) {
-              buffer.writeResourceLocation(worldPreset);
-            }
-          });
+          WorldImportPresetConfigurationMenu.getMenuProvider(uuid, easyNPC.getEntity()),
+          buffer -> buffer.writeUUID(uuid));
     }
   }
 
@@ -512,6 +503,7 @@ public class MenuHandler implements MenuHandlerInterface {
         COMMON.customImportPresetConfigurationEnabled.get(),
         COMMON.customImportPresetConfigurationAllowInCreative.get(),
         COMMON.customImportPresetConfigurationPermissionLevel.get())) {
+      NetworkMessageHandlerManager.getClientHandler().syncCustomPresets(serverPlayer);
       UUID uuid = easyNPC.getUUID();
       NetworkHooks.openScreen(
           serverPlayer,
@@ -858,6 +850,7 @@ public class MenuHandler implements MenuHandlerInterface {
       case YES_NO_DIALOG -> openYesNoDialogConfigurationMenu(serverPlayer, easyNPC);
       case CUSTOM_PRESET_EXPORT -> openCustomPresetExportConfigurationMenu(serverPlayer, easyNPC);
       case WORLD_PRESET_EXPORT -> openWorldPresetExportConfigurationMenu(serverPlayer, easyNPC);
+      case LOCAL_PRESET_IMPORT -> openLocalPresetImportConfigurationMenu(serverPlayer, easyNPC);
       case DEFAULT_PRESET_IMPORT -> openDefaultPresetImportConfigurationMenu(serverPlayer, easyNPC);
       case WORLD_PRESET_IMPORT -> openServerPresetImportConfigurationMenu(serverPlayer, easyNPC);
       case CUSTOM_PRESET_IMPORT -> openCustomPresetImportConfigurationMenu(serverPlayer, easyNPC);
@@ -876,22 +869,30 @@ public class MenuHandler implements MenuHandlerInterface {
     }
   }
 
+  private void openLocalPresetImportConfigurationMenu(
+      ServerPlayer serverPlayer, EasyNPC<?> easyNPC) {
+    if (hasPermissions(
+        serverPlayer,
+        easyNPC,
+        COMMON.localImportPresetConfigurationEnabled.get(),
+        COMMON.localImportPresetConfigurationAllowInCreative.get(),
+        COMMON.localImportPresetConfigurationPermissionLevel.get())) {
+      UUID uuid = easyNPC.getUUID();
+      NetworkHooks.openScreen(
+          serverPlayer,
+          LocalImportPresetConfigurationMenu.getMenuProvider(uuid, easyNPC.getEntity()),
+          buffer -> buffer.writeUUID(uuid));
+    }
+  }
+
   @Override
   public void openDialogMenu(
       ServerPlayer serverPlayer, EasyNPC<?> easyNPC, UUID dialogId, int pageIndex) {
-    UUID uuid = easyNPC.getUUID();
-    ActionEventSet actionDataSet = easyNPC.getEasyNPCActionEventData().getActionEventSet();
-    DialogDataSet dialogDataSet = easyNPC.getEasyNPCDialogData().getDialogDataSet();
-    NetworkHooks.openScreen(
-        serverPlayer,
-        DialogMenu.getMenuProvider(
-            uuid, easyNPC.getEntity(), actionDataSet, dialogDataSet, dialogId, pageIndex),
-        buffer -> {
-          buffer.writeUUID(uuid);
-          buffer.writeNbt(actionDataSet.createTag());
-          buffer.writeNbt(dialogDataSet.createTag());
-          buffer.writeUUID(dialogId);
-          buffer.writeInt(pageIndex);
-        });
+    openDialogMenu(serverPlayer, ModMenuTypes.DIALOG_MENU.get(), easyNPC, dialogId, pageIndex);
+  }
+
+  @Override
+  public void openTestMenu(ServerPlayer serverPlayer, UUID npcUUID) {
+    openTestMenu(serverPlayer, ModMenuTypes.TEST_MENU.get(), npcUUID);
   }
 }

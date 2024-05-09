@@ -34,7 +34,7 @@ public class TextureStitcher {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  protected TextureStitcher() {
+  private TextureStitcher() {
   }
 
   @SubscribeEvent

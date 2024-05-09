@@ -28,7 +28,7 @@ import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.menu.configuration.action.DistanceActionConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
@@ -151,7 +151,7 @@ public class DistanceActionConfigurationScreen
                           this.onNearActionBox.getValue(),
                           this.onNearActionExecuteAsUserCheckbox.selected(),
                           this.onNearActionDebugCheckbox.selected());
-                  NetworkMessageHandler.actionEventChange(
+                  ServerNetworkMessageHandler.actionEventChange(
                       uuid, ActionEventType.ON_DISTANCE_NEAR, actionDataEntry);
                   this.lastNearActionDataEntry = actionDataEntry;
                   this.onNearActionSaveButton.active = false;
@@ -195,7 +195,7 @@ public class DistanceActionConfigurationScreen
                           this.onCloseActionBox.getValue(),
                           this.onCloseActionExecuteAsUserCheckbox.selected(),
                           this.onCloseActionDebugCheckbox.selected());
-                  NetworkMessageHandler.actionEventChange(
+                  ServerNetworkMessageHandler.actionEventChange(
                       uuid, ActionEventType.ON_DISTANCE_CLOSE, actionDataEntry);
                   this.lastCloseActionDataEntry = actionDataEntry;
                   this.onCloseActionSaveButton.active = false;
@@ -239,7 +239,7 @@ public class DistanceActionConfigurationScreen
                           this.onVeryCloseActionBox.getValue(),
                           this.onVeryCloseActionExecuteAsUserCheckbox.selected(),
                           this.onVeryCloseActionDebugCheckbox.selected());
-                  NetworkMessageHandler.actionEventChange(
+                  ServerNetworkMessageHandler.actionEventChange(
                       uuid, ActionEventType.ON_DISTANCE_VERY_CLOSE, actionDataEntry);
                   this.lastVeryCloseActionDataEntry = actionDataEntry;
                   this.onVeryCloseActionSaveButton.active = false;
@@ -283,7 +283,7 @@ public class DistanceActionConfigurationScreen
                           this.onTouchActionBox.getValue(),
                           this.onTouchActionExecuteAsUserCheckbox.selected(),
                           this.onTouchActionDebugCheckbox.selected());
-                  NetworkMessageHandler.actionEventChange(
+                  ServerNetworkMessageHandler.actionEventChange(
                       uuid, ActionEventType.ON_DISTANCE_TOUCH, actionDataEntry);
                   this.lastTouchActionDataEntry = actionDataEntry;
                   this.onTouchActionSaveButton.active = false;

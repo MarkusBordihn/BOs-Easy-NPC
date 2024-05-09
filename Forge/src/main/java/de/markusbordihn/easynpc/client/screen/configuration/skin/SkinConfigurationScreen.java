@@ -22,9 +22,9 @@ package de.markusbordihn.easynpc.client.screen.configuration.skin;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.gui.components.Button;
@@ -117,7 +117,8 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
                 44,
                 "disable_skin",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_SKIN)));
+                    ServerNetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.NONE_SKIN)));
     this.defaultSkinButton =
         this.addRenderableWidget(
             new TextButton(
@@ -126,7 +127,8 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
                 64,
                 "default",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_SKIN)));
+                    ServerNetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.DEFAULT_SKIN)));
     this.playerSkinButton =
         this.addRenderableWidget(
             new TextButton(
@@ -135,7 +137,8 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
                 62,
                 "player_skin",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.PLAYER_SKIN)));
+                    ServerNetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.PLAYER_SKIN)));
     this.urlSkinButton =
         this.addRenderableWidget(
             new TextButton(
@@ -146,7 +149,8 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
                 40,
                 "url_skin",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.URL_SKIN)));
+                    ServerNetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.URL_SKIN)));
     this.customSkinButton =
         this.addRenderableWidget(
             new TextButton(
@@ -155,7 +159,8 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
                 80,
                 "custom",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_SKIN)));
+                    ServerNetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.CUSTOM_SKIN)));
 
     // Default button stats
     this.noneSkinButton.active =

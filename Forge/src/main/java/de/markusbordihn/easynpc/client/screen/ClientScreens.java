@@ -44,6 +44,7 @@ import de.markusbordihn.easynpc.client.screen.configuration.preset.ExportCustomP
 import de.markusbordihn.easynpc.client.screen.configuration.preset.ExportWorldPresetConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.preset.ImportCustomPresetConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.preset.ImportDefaultPresetConfigurationScreen;
+import de.markusbordihn.easynpc.client.screen.configuration.preset.ImportLocalPresetConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.preset.ImportWorldPresetConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.rotation.DefaultRotationConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.scaling.ScalingConfigurationScreen;
@@ -56,11 +57,12 @@ import de.markusbordihn.easynpc.client.screen.configuration.trading.AdvancedTrad
 import de.markusbordihn.easynpc.client.screen.configuration.trading.BasicTradingConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.trading.CustomTradingConfigurationScreen;
 import de.markusbordihn.easynpc.client.screen.configuration.trading.NoneTradingConfigurationScreen;
-import de.markusbordihn.easynpc.client.screen.dialog.DialogScreen;
+import de.markusbordihn.easynpc.client.screen.dialog.DialogScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.editor.DialogButtonEditorScreen;
 import de.markusbordihn.easynpc.client.screen.editor.DialogEditorScreen;
 import de.markusbordihn.easynpc.client.screen.editor.DialogTextEditorScreen;
 import de.markusbordihn.easynpc.client.screen.spawner.SpawnerScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.testing.TestScreenWrapper;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -79,9 +81,6 @@ public class ClientScreens {
 
     event.enqueueWork(
         () -> {
-          // Dialog Screen
-          MenuScreens.register(ModMenuTypes.DIALOG_MENU.get(), DialogScreen::new);
-
           // Dialog Editor Screen
           MenuScreens.register(ModMenuTypes.DIALOG_EDITOR_MENU.get(), DialogEditorScreen::new);
 
@@ -175,6 +174,9 @@ public class ClientScreens {
               ModMenuTypes.WORLD_EXPORT_PRESET_CONFIGURATION_MENU.get(),
               ExportWorldPresetConfigurationScreen::new);
           MenuScreens.register(
+              ModMenuTypes.LOCAL_IMPORT_PRESET_CONFIGURATION_MENU.get(),
+              ImportLocalPresetConfigurationScreen::new);
+          MenuScreens.register(
               ModMenuTypes.CUSTOM_IMPORT_PRESET_CONFIGURATION_MENU.get(),
               ImportCustomPresetConfigurationScreen::new);
           MenuScreens.register(
@@ -224,6 +226,12 @@ public class ClientScreens {
 
           // Spawner Screen
           MenuScreens.register(ModMenuTypes.SPAWNER_MENU.get(), SpawnerScreenWrapper::new);
+
+          // Dialog Screen
+          MenuScreens.register(ModMenuTypes.DIALOG_MENU.get(), DialogScreenWrapper::new);
+
+          // Test Screen
+          MenuScreens.register(ModMenuTypes.TEST_MENU.get(), TestScreenWrapper::new);
         });
   }
 }

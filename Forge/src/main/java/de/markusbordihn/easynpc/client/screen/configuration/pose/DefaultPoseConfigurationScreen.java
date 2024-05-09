@@ -23,7 +23,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -82,7 +82,7 @@ public class DefaultPoseConfigurationScreen
                 BUTTON_WIDTH,
                 "pose.standing",
                 button -> {
-                  NetworkMessageHandler.poseChange(uuid, Pose.STANDING);
+                  ServerNetworkMessageHandler.poseChange(uuid, Pose.STANDING);
                   this.checkPoseButtonState(Pose.STANDING, ModelPose.DEFAULT);
                 }));
     this.crouchingPoseButton =
@@ -93,7 +93,7 @@ public class DefaultPoseConfigurationScreen
                 BUTTON_WIDTH,
                 "pose.crouching",
                 button -> {
-                  NetworkMessageHandler.poseChange(uuid, Pose.CROUCHING);
+                  ServerNetworkMessageHandler.poseChange(uuid, Pose.CROUCHING);
                   this.checkPoseButtonState(Pose.CROUCHING, ModelPose.DEFAULT);
                 }));
     this.dyingPoseButton =
@@ -104,7 +104,7 @@ public class DefaultPoseConfigurationScreen
                 BUTTON_WIDTH,
                 "pose.dying",
                 button -> {
-                  NetworkMessageHandler.poseChange(uuid, Pose.DYING);
+                  ServerNetworkMessageHandler.poseChange(uuid, Pose.DYING);
                   this.checkPoseButtonState(Pose.DYING, ModelPose.DEFAULT);
                 }));
     this.fallFlyingPoseButton =
@@ -115,7 +115,7 @@ public class DefaultPoseConfigurationScreen
                 BUTTON_WIDTH,
                 "pose.fall_flying",
                 button -> {
-                  NetworkMessageHandler.poseChange(uuid, Pose.FALL_FLYING);
+                  ServerNetworkMessageHandler.poseChange(uuid, Pose.FALL_FLYING);
                   this.checkPoseButtonState(Pose.FALL_FLYING, ModelPose.DEFAULT);
                 }));
     this.longJumpPoseButton =
@@ -126,7 +126,7 @@ public class DefaultPoseConfigurationScreen
                 BUTTON_WIDTH,
                 "pose.long_jumping",
                 button -> {
-                  NetworkMessageHandler.poseChange(uuid, Pose.LONG_JUMPING);
+                  ServerNetworkMessageHandler.poseChange(uuid, Pose.LONG_JUMPING);
                   this.checkPoseButtonState(Pose.LONG_JUMPING, ModelPose.DEFAULT);
                 }));
     this.sleepingPoseButton =
@@ -137,7 +137,7 @@ public class DefaultPoseConfigurationScreen
                 BUTTON_WIDTH,
                 "pose.sleeping",
                 button -> {
-                  NetworkMessageHandler.poseChange(uuid, Pose.SLEEPING);
+                  ServerNetworkMessageHandler.poseChange(uuid, Pose.SLEEPING);
                   this.checkPoseButtonState(Pose.SLEEPING, ModelPose.DEFAULT);
                 }));
     this.spinAttackPoseButton =
@@ -148,7 +148,7 @@ public class DefaultPoseConfigurationScreen
                 BUTTON_WIDTH,
                 "pose.spin_attack",
                 button -> {
-                  NetworkMessageHandler.poseChange(uuid, Pose.SPIN_ATTACK);
+                  ServerNetworkMessageHandler.poseChange(uuid, Pose.SPIN_ATTACK);
                   this.checkPoseButtonState(Pose.SPIN_ATTACK, ModelPose.DEFAULT);
                 }));
     this.swimmingPoseButton =
@@ -159,7 +159,7 @@ public class DefaultPoseConfigurationScreen
                 BUTTON_WIDTH,
                 "pose.swimming",
                 button -> {
-                  NetworkMessageHandler.poseChange(uuid, Pose.SWIMMING);
+                  ServerNetworkMessageHandler.poseChange(uuid, Pose.SWIMMING);
                   this.checkPoseButtonState(Pose.SWIMMING, ModelPose.DEFAULT);
                 }));
 

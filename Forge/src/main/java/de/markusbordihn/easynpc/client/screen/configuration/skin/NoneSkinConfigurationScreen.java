@@ -27,7 +27,7 @@ import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import de.markusbordihn.easynpc.menu.configuration.skin.NoneSkinConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -75,18 +75,19 @@ public class NoneSkinConfigurationScreen
                 skinData.getSkinType() == SkinType.NONE,
                 checkbox -> {
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.setNoneSkin(uuid);
+                    ServerNetworkMessageHandler.setNoneSkin(uuid);
                   } else {
                     switch (formerSkinType) {
                       case DEFAULT:
-                        NetworkMessageHandler.setDefaultSkin(uuid, formerVariant);
+                        ServerNetworkMessageHandler.setDefaultSkin(uuid, formerVariant);
                         break;
                       case CUSTOM:
-                        NetworkMessageHandler.setCustomSkin(uuid, formerSkinUUID);
+                        ServerNetworkMessageHandler.setCustomSkin(uuid, formerSkinUUID);
                         break;
                       case NONE:
                       default:
-                        NetworkMessageHandler.setDefaultSkin(uuid, variantData.getDefaultVariant());
+                        ServerNetworkMessageHandler.setDefaultSkin(
+                            uuid, variantData.getDefaultVariant());
                     }
                   }
                 }));

@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.data.skin.SkinType;
@@ -39,9 +40,8 @@ import de.markusbordihn.easynpc.entity.easynpc.data.RenderData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -79,7 +79,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
         textColor = this.nameColorButton.getColorValue();
       }
       log.debug("Saving name {} with color {} for {}", value, textColor, this.easyNPC);
-      NetworkMessageHandler.nameChange(this.uuid, value, textColor);
+      ServerNetworkMessageHandler.nameChange(this.uuid, value, textColor);
       this.formerName = value;
       this.formerTextColor = textColor;
       this.saveNameButton.active = false;
@@ -95,7 +95,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
         new ConfirmScreen(
             confirmed -> {
               if (confirmed && uuid != null) {
-                NetworkMessageHandler.removeNPC(uuid);
+                ServerNetworkMessageHandler.removeNPC(uuid);
                 minecraft.setScreen(null);
               } else {
                 minecraft.setScreen(this);
@@ -118,7 +118,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
         new ConfirmScreen(
             confirmed -> {
               if (confirmed && uuid != null) {
-                NetworkMessageHandler.respawnNPC(uuid);
+                ServerNetworkMessageHandler.respawnNPC(uuid);
                 minecraft.setScreen(null);
               } else {
                 minecraft.setScreen(this);
@@ -205,19 +205,24 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                   SkinType skinType = skinData.getSkinType();
                   switch (skinType) {
                     case NONE:
-                      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_SKIN);
+                      ServerNetworkMessageHandler.openConfiguration(
+                          uuid, ConfigurationType.NONE_SKIN);
                       break;
                     case PLAYER_SKIN:
-                      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.PLAYER_SKIN);
+                      ServerNetworkMessageHandler.openConfiguration(
+                          uuid, ConfigurationType.PLAYER_SKIN);
                       break;
                     case SECURE_REMOTE_URL, INSECURE_REMOTE_URL:
-                      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.URL_SKIN);
+                      ServerNetworkMessageHandler.openConfiguration(
+                          uuid, ConfigurationType.URL_SKIN);
                       break;
                     case CUSTOM:
-                      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_SKIN);
+                      ServerNetworkMessageHandler.openConfiguration(
+                          uuid, ConfigurationType.CUSTOM_SKIN);
                       break;
                     default:
-                      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_SKIN);
+                      ServerNetworkMessageHandler.openConfiguration(
+                          uuid, ConfigurationType.DEFAULT_SKIN);
                   }
                 }));
     editSkinButton.active =
@@ -245,7 +250,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 BUTTON_WIDTH,
                 "import",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.DEFAULT_PRESET_IMPORT)));
     importButton.active = true;
 
@@ -258,7 +263,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 BUTTON_WIDTH,
                 "export",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.CUSTOM_PRESET_EXPORT)));
     exportButton.active = true;
 
@@ -276,19 +281,21 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 onPress -> {
                   switch (this.menu.getDialogType()) {
                     case NONE:
-                      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_DIALOG);
+                      ServerNetworkMessageHandler.openConfiguration(
+                          uuid, ConfigurationType.NONE_DIALOG);
                       break;
                     case YES_NO:
-                      NetworkMessageHandler.openConfiguration(
+                      ServerNetworkMessageHandler.openConfiguration(
                           uuid, ConfigurationType.YES_NO_DIALOG);
                       break;
                     case CUSTOM, STANDARD:
-                      NetworkMessageHandler.openConfiguration(
+                      ServerNetworkMessageHandler.openConfiguration(
                           uuid, ConfigurationType.ADVANCED_DIALOG);
                       break;
                     case BASIC:
                     default:
-                      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_DIALOG);
+                      ServerNetworkMessageHandler.openConfiguration(
+                          uuid, ConfigurationType.BASIC_DIALOG);
                   }
                 }));
     editDialogButton.active =
@@ -314,7 +321,8 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 BUTTON_WIDTH,
                 "actions",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_ACTION)));
+                    ServerNetworkMessageHandler.openConfiguration(uuid,
+                        ConfigurationType.BASIC_ACTION)));
     editActionButton.active =
         this.hasPermissions(
             COMMON.basicActionConfigurationEnabled.get(),
@@ -337,7 +345,8 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 BUTTON_WIDTH,
                 "equipment",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.EQUIPMENT)));
+                    ServerNetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.EQUIPMENT)));
     editEquipmentButton.active =
         this.hasPermissions(
             COMMON.equipmentConfigurationEnabled.get(),
@@ -354,7 +363,8 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 BUTTON_WIDTH,
                 "scaling",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.SCALING)));
+                    ServerNetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.SCALING)));
     editScalingButton.active =
         renderType == RenderType.DEFAULT
             && scaleData != null
@@ -381,16 +391,17 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                   switch (modelPose) {
                     case CUSTOM:
                       if (modelData.hasChangedModelPosition()) {
-                        NetworkMessageHandler.openConfiguration(
+                        ServerNetworkMessageHandler.openConfiguration(
                             uuid, ConfigurationType.CUSTOM_POSE);
                       } else {
-                        NetworkMessageHandler.openConfiguration(
+                        ServerNetworkMessageHandler.openConfiguration(
                             uuid, ConfigurationType.ADVANCED_POSE);
                       }
                       break;
                     case DEFAULT:
                     default:
-                      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_POSE);
+                      ServerNetworkMessageHandler.openConfiguration(
+                          uuid, ConfigurationType.DEFAULT_POSE);
                   }
                 }));
     editPoseButton.active =
@@ -415,7 +426,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 BUTTON_WIDTH,
                 "position",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.DEFAULT_POSITION)));
     editPositionButton.active =
         this.hasPermissions(
@@ -435,7 +446,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 BUTTON_WIDTH,
                 "rotation",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.DEFAULT_ROTATION)));
     editRotationButton.active =
         renderType == RenderType.DEFAULT
@@ -458,20 +469,21 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                   TradingType tradingType = tradingData.getTradingType();
                   switch (tradingType) {
                     case BASIC:
-                      NetworkMessageHandler.openConfiguration(
+                      ServerNetworkMessageHandler.openConfiguration(
                           uuid, ConfigurationType.BASIC_TRADING);
                       break;
                     case ADVANCED:
-                      NetworkMessageHandler.openConfiguration(
+                      ServerNetworkMessageHandler.openConfiguration(
                           uuid, ConfigurationType.ADVANCED_TRADING);
                       break;
                     case CUSTOM:
-                      NetworkMessageHandler.openConfiguration(
+                      ServerNetworkMessageHandler.openConfiguration(
                           uuid, ConfigurationType.CUSTOM_TRADING);
                       break;
                     case NONE:
                     default:
-                      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_TRADING);
+                      ServerNetworkMessageHandler.openConfiguration(
+                          uuid, ConfigurationType.NONE_TRADING);
                   }
                 }));
     editTradesButton.active =
@@ -501,7 +513,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 BUTTON_WIDTH,
                 "attributes",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.ABILITIES_ATTRIBUTE)));
     editAttributes.active =
         this.hasPermissions(
@@ -518,7 +530,7 @@ public class MainConfigurationScreen extends ConfigurationScreen<MainConfigurati
                 BUTTON_WIDTH,
                 "objective",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.BASIC_OBJECTIVE)));
     editObjectiveButton.active =
         this.hasPermissions(

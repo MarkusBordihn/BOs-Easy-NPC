@@ -57,8 +57,7 @@ public class ClientRenderer {
   public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
     log.info("{} Entity Renders ...", Constants.LOG_REGISTER_PREFIX);
 
-    event.registerEntityRenderer(
-        ModEntityType.CRASH_TEST_DUMMY.get(), context -> new CrashTestDummyRenderer<>(context));
+    event.registerEntityRenderer(ModEntityType.CRASH_TEST_DUMMY.get(), CrashTestDummyRenderer::new);
 
     event.registerEntityRenderer(
         ModEntityType.ALLAY.get(),

@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Allay;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken;
+import de.markusbordihn.easynpc.entity.easynpc.npc.CrashTestDummy;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Horse;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
@@ -43,6 +44,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ModEntityType {
+
+  public static final EntityType<CrashTestDummy> CRASH_TEST_DUMMY =
+      Registry.register(
+          Registry.ENTITY_TYPE,
+          Constants.MOD_ID + ":" + CrashTestDummy.ID,
+          ModEntityTypes.CRASH_TEST_DUMMY);
 
   public static final EntityType<Allay> ALLAY =
       Registry.register(
@@ -127,6 +134,16 @@ public class ModEntityType {
   public static final EntityType<Horse> HORSE =
       Registry.register(
           Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Horse.ID, ModEntityTypes.HORSE);
+  public static final EntityType<Horse> SKELETON_HORSE =
+      Registry.register(
+          Registry.ENTITY_TYPE,
+          Constants.MOD_ID + ":" + Horse.ID_SKELETON,
+          ModEntityTypes.SKELETON_HORSE);
+  public static final EntityType<Horse> ZOMBIE_HORSE =
+      Registry.register(
+          Registry.ENTITY_TYPE,
+          Constants.MOD_ID + ":" + Horse.ID_ZOMBIE,
+          ModEntityTypes.ZOMBIE_HORSE);
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -135,6 +152,8 @@ public class ModEntityType {
 
   public static void registerEntitiesAttributes() {
     log.info("{} Registering Entities Attributes ...", Constants.LOG_REGISTER_PREFIX);
+
+    FabricDefaultAttributeRegistry.register(CRASH_TEST_DUMMY, CrashTestDummy.createAttributes());
 
     FabricDefaultAttributeRegistry.register(ALLAY, Allay.createAttributes());
     FabricDefaultAttributeRegistry.register(CAT, Cat.createAttributes());
@@ -160,5 +179,7 @@ public class ModEntityType {
     FabricDefaultAttributeRegistry.register(ORC_WARRIOR, Orc.createAttributes());
     FabricDefaultAttributeRegistry.register(WOLF, Wolf.createAttributes());
     FabricDefaultAttributeRegistry.register(HORSE, Horse.createAttributes());
+    FabricDefaultAttributeRegistry.register(SKELETON_HORSE, Horse.createAttributes());
+    FabricDefaultAttributeRegistry.register(ZOMBIE_HORSE, Horse.createAttributes());
   }
 }

@@ -30,7 +30,20 @@ release. For this reason it will not be compatible with the final release versio
 - No additional dependencies.
 - API support / integration for other mods (WIP).
 
-## Mod Integration
+## 🧪 Fabric Beta Version
+
+The current Fabric Beta version presents some limitations and is not yet feature-complete.
+These include:
+
+- Absence of a configuration UI
+- Non-functionality of the Easy NPC Wand
+- Limited support for other mods
+
+Despite these constraints, the Fabric Beta version remains fully functional. Users can create and
+configure NPCs with dialogs via the Forge version, and subsequently export them for utilization in
+the Fabric version.
+
+## 📦 Mod Integration
 
 ### [Armourer's Workshop][armourers_workshop]
 

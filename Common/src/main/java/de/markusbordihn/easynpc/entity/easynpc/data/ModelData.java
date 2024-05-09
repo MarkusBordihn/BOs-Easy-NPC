@@ -76,7 +76,6 @@ public interface ModelData<T extends PathfinderMob>
   String EASY_NPC_DATA_MODEL_DATA_TAG = "ModelData";
   String EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG = "DefaultPose";
   String EASY_NPC_DATA_MODEL_POSE_TAG = "Pose";
-  ;
   String EASY_NPC_DATA_MODEL_SCALE_TAG = "Scale";
 
   String EASY_NPC_DATA_MODEL_SMART_ANIMATIONS_TAG = "SmartAnimations";

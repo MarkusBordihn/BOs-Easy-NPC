@@ -26,7 +26,7 @@ import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.menu.configuration.objective.FollowObjectiveConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import java.util.UUID;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -77,9 +77,9 @@ public class FollowObjectiveConfigurationScreen
                       new ObjectiveDataEntry(ObjectiveType.FOLLOW_OWNER, 6);
                   objectiveDataEntry.setTargetOwnerUUID(this.ownerData.getOwnerUUID());
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -103,9 +103,9 @@ public class FollowObjectiveConfigurationScreen
                     followPlayerNameSaveButton.active = checkbox.selected();
                   }
                   if (!checkbox.selected()) {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   } else if (!followPlayerName.getValue().isEmpty()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   }
                 }));
     this.followOwnerCheckbox.active = this.ownerData.hasOwner();
@@ -132,7 +132,7 @@ public class FollowObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       new ObjectiveDataEntry(ObjectiveType.FOLLOW_PLAYER);
                   objectiveDataEntry.setTargetPlayerName(this.followPlayerName.getValue());
-                  NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                  ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                 }));
 
     // Follow Entity with UUID input field
@@ -166,9 +166,9 @@ public class FollowObjectiveConfigurationScreen
                     followEntityUUIDSaveButton.active = checkbox.selected();
                   }
                   if (!checkbox.selected()) {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   } else if (!followEntityUUID.getValue().isEmpty()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   }
                 }));
     this.followEntityUUID =
@@ -206,7 +206,7 @@ public class FollowObjectiveConfigurationScreen
                       !followEntityUUID.getValue().isEmpty()
                           ? UUID.fromString(followEntityUUID.getValue())
                           : null);
-                  NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                  ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                 }));
   }
 }

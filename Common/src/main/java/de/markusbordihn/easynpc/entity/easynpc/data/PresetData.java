@@ -22,16 +22,20 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Pose;
 
 public interface PresetData<T extends PathfinderMob> extends EasyNPC<T> {
 
   default CompoundTag exportPresetData() {
-    return this.serializePresetData();
+    CompoundTag compoundTag = this.serializePresetData();
+
+    // Remove spawner UUID to avoid side effects.
+    if (compoundTag.contains(SpawnerData.DATA_SPAWNER_UUID_TAG)) {
+      compoundTag.remove(SpawnerData.DATA_SPAWNER_UUID_TAG);
+    }
+    return compoundTag;
   }
 
   default void importPresetData(CompoundTag compoundTag) {
@@ -57,25 +61,25 @@ public interface PresetData<T extends PathfinderMob> extends EasyNPC<T> {
 
     // If preset contains id and pos then we can import it directly, otherwise we
     // need to merge it with existing data.
-    if (!compoundTag.contains(Entity.UUID_TAG) && !compoundTag.contains("Pos")) {
+    if (!compoundTag.contains(Entity.UUID_TAG) || !compoundTag.contains("Pos")) {
       CompoundTag existingCompoundTag = this.serializePresetData();
 
-      // Remove existing dialog data to allow legacy presets to be imported.
+      // Remove existing dialog data.
       if (existingCompoundTag.contains(DialogData.DATA_DIALOG_DATA_TAG)) {
         existingCompoundTag.remove(DialogData.DATA_DIALOG_DATA_TAG);
       }
 
-      // Remove existing model data to allow legacy presets to be imported.
+      // Remove existing model data.
       if (existingCompoundTag.contains(ModelData.EASY_NPC_DATA_MODEL_DATA_TAG)) {
         existingCompoundTag.remove(ModelData.EASY_NPC_DATA_MODEL_DATA_TAG);
       }
 
-      // Remove existing skin data to allow legacy presets to be imported.
+      // Remove existing skin data.
       if (existingCompoundTag.contains(SkinData.EASY_NPC_DATA_SKIN_DATA_TAG)) {
         existingCompoundTag.remove(SkinData.EASY_NPC_DATA_SKIN_DATA_TAG);
       }
 
-      // Remove existing action data to allow legacy presets to be imported.
+      // Remove existing action data.
       if (existingCompoundTag.contains(ActionEventData.DATA_ACTION_DATA_TAG)) {
         existingCompoundTag.remove(ActionEventData.DATA_ACTION_DATA_TAG);
       }
@@ -92,22 +96,8 @@ public interface PresetData<T extends PathfinderMob> extends EasyNPC<T> {
       compoundTag.remove("Motion");
     }
 
-    // Validate position, if any.
-    if (compoundTag.contains("Pos")) {
-      CompoundTag posTag = compoundTag.getCompound("Pos");
-    }
-
     // Import preset data to entity.
     this.getEntity().load(compoundTag);
-  }
-
-  default String getEntityTypeId() {
-    if (this.getEntity() == null) {
-      return null;
-    }
-    EntityType<?> entitytype = this.getEntity().getType();
-    ResourceLocation resourcelocation = EntityType.getKey(entitytype);
-    return entitytype.canSerialize() ? resourcelocation.toString() : null;
   }
 
   default CompoundTag serializePresetData() {

@@ -30,7 +30,7 @@ import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.io.CustomSkinDataFiles;
 import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.nio.file.Path;
@@ -120,7 +120,8 @@ public class CustomSkinConfigurationScreen
             x - 24,
             y - 81,
             button ->
-                NetworkMessageHandler.skinChange(this.uuid, "", "", textureUUID, SkinType.CUSTOM));
+                ServerNetworkMessageHandler.skinChange(
+                    this.uuid, "", "", textureUUID, SkinType.CUSTOM));
 
     // Disable button for active skin.
     UUID skinUUID = this.skinData.getSkinUUID();

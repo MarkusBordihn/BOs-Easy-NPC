@@ -35,15 +35,15 @@ import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionType;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.editor.DialogButtonEditorMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import java.util.HashSet;
 import java.util.UUID;
 import net.minecraft.client.Minecraft;
@@ -132,13 +132,14 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
 
   private void openPreviousScreen() {
     if (this.formerConfigurationType == ConfigurationType.DIALOG_EDITOR) {
-      NetworkMessageHandler.openDialogEditor(uuid, this.dialogId, this.formerConfigurationType);
+      ServerNetworkMessageHandler.openDialogEditor(
+          uuid, this.dialogId, this.formerConfigurationType);
     } else if (this.formerConfigurationType == ConfigurationType.ADVANCED_DIALOG) {
-      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.ADVANCED_DIALOG);
+      ServerNetworkMessageHandler.openConfiguration(uuid, ConfigurationType.ADVANCED_DIALOG);
     } else if (this.formerConfigurationType != null) {
-      NetworkMessageHandler.openConfiguration(uuid, this.formerConfigurationType);
+      ServerNetworkMessageHandler.openConfiguration(uuid, this.formerConfigurationType);
     } else if (dialogDataSet.getType() == DialogType.YES_NO) {
-      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.YES_NO_DIALOG);
+      ServerNetworkMessageHandler.openConfiguration(uuid, ConfigurationType.YES_NO_DIALOG);
     } else {
       this.closeScreen();
     }
@@ -159,7 +160,7 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
         new ConfirmScreen(
             confirmed -> {
               if (confirmed && uuid != null) {
-                NetworkMessageHandler.removeDialogButton(uuid, dialogId, dialogButtonId);
+                ServerNetworkMessageHandler.removeDialogButton(uuid, dialogId, dialogButtonId);
                 this.openPreviousScreen();
               } else {
                 minecraft.setScreen(this);
@@ -397,7 +398,7 @@ public class DialogButtonEditorScreen extends AbstractContainerScreen<DialogButt
 
                   // Save dialog button action data.
                   this.dialogButtonData.setActionData(actionDataEntrySet);
-                  NetworkMessageHandler.saveDialogButton(
+                  ServerNetworkMessageHandler.saveDialogButton(
                       uuid, this.dialogId, this.dialogButtonId, this.dialogButtonData);
 
                   // Return back to the simple yes and no dialog editor or the full dialog editor.

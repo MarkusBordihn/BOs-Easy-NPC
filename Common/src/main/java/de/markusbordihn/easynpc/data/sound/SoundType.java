@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.data.sound;
 
+import java.util.stream.Stream;
+
 public enum SoundType {
   AMBIENT,
   AMBIENT_STRAY,
@@ -27,6 +29,7 @@ public enum SoundType {
   CELEBRATE,
   DAMAGE,
   DEATH,
+  DEFAULT,
   DRINKING,
   EAT,
   FALL_DAMAGE_BIG,
@@ -37,4 +40,20 @@ public enum SoundType {
   TRADE,
   TRADE_YES,
   TRADE_NO,
+  ;
+
+  public static SoundType get(String soundType) {
+    if (soundType == null || soundType.isEmpty()) {
+      return SoundType.DEFAULT;
+    }
+    try {
+      return SoundType.valueOf(soundType);
+    } catch (IllegalArgumentException e) {
+      return SoundType.DEFAULT;
+    }
+  }
+
+  public static Stream<String> getSoundTypeNames() {
+    return Stream.of(SoundType.values()).map(Enum::name);
+  }
 }

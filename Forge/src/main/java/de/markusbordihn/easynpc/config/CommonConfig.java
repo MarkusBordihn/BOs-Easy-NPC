@@ -98,6 +98,7 @@ public class CommonConfig {
     public static final String DEFAULT_SCALE_CONFIGURATION = "scale";
     public static final String CUSTOM_EXPORT_PRESET_CONFIGURATION = "custom export preset";
     public static final String WORLD_EXPORT_PRESET_CONFIGURATION = "world export preset";
+    public static final String LOCAL_IMPORT_PRESET_CONFIGURATION = "local import preset";
     public static final String CUSTOM_IMPORT_PRESET_CONFIGURATION = "custom import preset";
     public static final String DEFAULT_IMPORT_PRESET_CONFIGURATION = "default import preset";
     public static final String WORLD_IMPORT_PRESET_CONFIGURATION = "world import preset";
@@ -185,6 +186,9 @@ public class CommonConfig {
     public final ForgeConfigSpec.BooleanValue worldExportPresetConfigurationEnabled;
     public final ForgeConfigSpec.BooleanValue worldExportPresetConfigurationAllowInCreative;
     public final ForgeConfigSpec.IntValue worldExportPresetConfigurationPermissionLevel;
+    public final ForgeConfigSpec.BooleanValue localImportPresetConfigurationEnabled;
+    public final ForgeConfigSpec.BooleanValue localImportPresetConfigurationAllowInCreative;
+    public final ForgeConfigSpec.IntValue localImportPresetConfigurationPermissionLevel;
     public final ForgeConfigSpec.BooleanValue customImportPresetConfigurationEnabled;
     public final ForgeConfigSpec.BooleanValue customImportPresetConfigurationAllowInCreative;
     public final ForgeConfigSpec.IntValue customImportPresetConfigurationPermissionLevel;
@@ -612,6 +616,21 @@ public class CommonConfig {
           builder
               .comment(getPermissionLevelComment(DEFAULT_IMPORT_PRESET_CONFIGURATION))
               .defineInRange("defaultImportPresetConfigurationPermissionLevel", 0, 0, 4);
+      builder.pop();
+
+      builder.push("[Import Configuration] Import Local Preset");
+      localImportPresetConfigurationEnabled =
+          builder
+              .comment(getEnableComment(LOCAL_IMPORT_PRESET_CONFIGURATION))
+              .define("localImportPresetConfigurationEnabled", true);
+      localImportPresetConfigurationAllowInCreative =
+          builder
+              .comment(getAllowInCreativeComment(LOCAL_IMPORT_PRESET_CONFIGURATION))
+              .define("localImportPresetConfigurationAllowInCreative", true);
+      localImportPresetConfigurationPermissionLevel =
+          builder
+              .comment(getPermissionLevelComment(LOCAL_IMPORT_PRESET_CONFIGURATION))
+              .defineInRange("localImportPresetConfigurationPermissionLevel", 0, 0, 4);
       builder.pop();
 
       builder.push("[Import Configuration] Import Custom Preset");

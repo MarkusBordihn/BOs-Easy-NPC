@@ -29,7 +29,7 @@ import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
 import de.markusbordihn.easynpc.menu.configuration.position.DefaultPositionConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.GameRenderer;
@@ -88,7 +88,7 @@ public class DefaultPositionConfigurationScreen
           Double newPositionX = getDoubleValue(this.positionXBox.getValue());
           if (newPositionX != null) {
             this.positionX = newPositionX;
-            NetworkMessageHandler.positionChange(
+            ServerNetworkMessageHandler.positionChange(
                 this.uuid, new Vec3(this.positionX, this.positionY, this.positionZ));
           }
         });
@@ -126,7 +126,7 @@ public class DefaultPositionConfigurationScreen
           Double newPositionY = getDoubleValue(this.positionYBox.getValue());
           if (newPositionY != null) {
             this.positionY = newPositionY;
-            NetworkMessageHandler.positionChange(
+            ServerNetworkMessageHandler.positionChange(
                 this.uuid, new Vec3(this.positionX, this.positionY, this.positionZ));
           }
         });
@@ -164,7 +164,7 @@ public class DefaultPositionConfigurationScreen
           Double newPositionZ = getDoubleValue(this.positionZBox.getValue());
           if (newPositionZ != null) {
             this.positionZ = newPositionZ;
-            NetworkMessageHandler.positionChange(
+            ServerNetworkMessageHandler.positionChange(
                 this.uuid, new Vec3(this.positionX, this.positionY, this.positionZ));
           }
         });
@@ -201,7 +201,7 @@ public class DefaultPositionConfigurationScreen
                 "free_fall",
                 attributeData.getAttributeFreefall(),
                 checkbox ->
-                    NetworkMessageHandler.entityAttributeChange(
+                    ServerNetworkMessageHandler.entityAttributeChange(
                         uuid, EntityAttribute.FREEFALL, checkbox.selected())));
   }
 

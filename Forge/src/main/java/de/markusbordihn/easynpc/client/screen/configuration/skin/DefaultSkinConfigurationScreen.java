@@ -30,7 +30,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.ArrayList;
@@ -125,9 +125,9 @@ public class DefaultSkinConfigurationScreen
             y - 81,
             button -> {
               if (profession != null) {
-                NetworkMessageHandler.professionChange(this.uuid, profession);
+                ServerNetworkMessageHandler.professionChange(this.uuid, profession);
               }
-              NetworkMessageHandler.setDefaultSkin(this.uuid, variant);
+              ServerNetworkMessageHandler.setDefaultSkin(this.uuid, variant);
             });
 
     // Disable button for active skin.

@@ -27,7 +27,7 @@ import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
@@ -58,7 +58,7 @@ public class EquipmentConfigurationScreen extends ConfigurationScreen<EquipmentC
             "",
             modelEquipmentVisibility,
             checkbox ->
-                NetworkMessageHandler.modelVisibilityChange(
+                ServerNetworkMessageHandler.modelVisibilityChange(
                     this.uuid, equipmentSlot, checkbox.selected())));
   }
 

@@ -76,7 +76,7 @@ public interface EasyNPCBase<E extends PathfinderMob>
     VariantData<E> {
 
   static void registerEasyNPCDataSerializers() {
-    // Register custom data serializers
+    log.info("Register data serializers ...");
     ActionEventData.registerActionEventDataSerializer();
     DialogData.registerDialogDataSerializer();
     ObjectiveData.registerObjectiveDataSerializer();
@@ -90,7 +90,6 @@ public interface EasyNPCBase<E extends PathfinderMob>
 
   static void registerEasyNPCSyncedData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("Register synced data for {} ...", entityClass);
     AttackData.registerSyncedAttackData(map, entityClass);
     AttributeData.registerSyncedAttributeData(map, entityClass);
     NavigationData.registerSyncedNavigationData(map, entityClass);
@@ -143,7 +142,7 @@ public interface EasyNPCBase<E extends PathfinderMob>
   }
 
   default void defineEasyNPCBaseSyncedData() {
-    log.info("Define synced data for {}", this);
+    log.debug("Define synced data for {}", this);
 
     // First define variant data to ensure that all other data can be linked to the variant.
     VariantData<E> variantData = getEasyNPCVariantData();
@@ -263,7 +262,7 @@ public interface EasyNPCBase<E extends PathfinderMob>
   }
 
   default void readEasyNPCBaseAdditionalSaveData(CompoundTag compoundTag) {
-    log.info("Read additional save data for {} ...", this);
+    log.debug("Read additional save data for {} ...", this);
 
     // First read important data to ensure that all other data can be linked to the variant.
     ConfigData<E> configData = getEasyNPCConfigData();

@@ -43,6 +43,7 @@ import de.markusbordihn.easynpc.menu.configuration.position.DefaultPositionConfi
 import de.markusbordihn.easynpc.menu.configuration.preset.CustomExportPresetConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.preset.CustomImportPresetConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.preset.DefaultImportPresetConfigurationMenu;
+import de.markusbordihn.easynpc.menu.configuration.preset.LocalImportPresetConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.preset.WorldExportPresetConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.preset.WorldImportPresetConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.rotation.DefaultRotationConfigurationMenu;
@@ -56,11 +57,12 @@ import de.markusbordihn.easynpc.menu.configuration.trading.AdvancedTradingConfig
 import de.markusbordihn.easynpc.menu.configuration.trading.BasicTradingConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.trading.CustomTradingConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.trading.NoneTradingConfigurationMenu;
-import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
+import de.markusbordihn.easynpc.menu.dialog.DialogMenuWrapper;
 import de.markusbordihn.easynpc.menu.editor.DialogButtonEditorMenu;
 import de.markusbordihn.easynpc.menu.editor.DialogEditorMenu;
 import de.markusbordihn.easynpc.menu.editor.DialogTextEditorMenu;
 import de.markusbordihn.easynpc.menu.spawner.SpawnerMenuWrapper;
+import de.markusbordihn.easynpc.menu.testing.TestMenuWrapper;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -76,8 +78,8 @@ public class ModMenuTypes {
   }
 
   // Dialog
-  public static final RegistryObject<MenuType<DialogMenu>> DIALOG_MENU =
-      MENU_TYPES.register("dialog_menu", () -> IForgeMenuType.create(DialogMenu::new));
+  public static final RegistryObject<MenuType<DialogMenuWrapper>> DIALOG_MENU =
+      MENU_TYPES.register("dialog_menu", () -> IForgeMenuType.create(DialogMenuWrapper::new));
 
   // Dialog Editor
   public static final RegistryObject<MenuType<DialogEditorMenu>> DIALOG_EDITOR_MENU =
@@ -225,6 +227,11 @@ public class ModMenuTypes {
       MENU_TYPES.register(
           "world_export_preset_configuration_menu",
           () -> IForgeMenuType.create(WorldExportPresetConfigurationMenu::new));
+  public static final RegistryObject<MenuType<LocalImportPresetConfigurationMenu>>
+      LOCAL_IMPORT_PRESET_CONFIGURATION_MENU =
+      MENU_TYPES.register(
+          "local_import_preset_configuration_menu",
+          () -> IForgeMenuType.create(LocalImportPresetConfigurationMenu::new));
   public static final RegistryObject<MenuType<CustomImportPresetConfigurationMenu>>
       CUSTOM_IMPORT_PRESET_CONFIGURATION_MENU =
       MENU_TYPES.register(
@@ -303,4 +310,9 @@ public class ModMenuTypes {
       MENU_TYPES.register(
           "custom_trading_configuration_menu",
           () -> IForgeMenuType.create(CustomTradingConfigurationMenu::new));
+
+  // Test Menu
+  public static final RegistryObject<MenuType<TestMenuWrapper>> TEST_MENU =
+      MENU_TYPES.register("test_menu", () -> IForgeMenuType.create(TestMenuWrapper::new));
+
 }

@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.spawner.SpawnerSettingType;
 import de.markusbordihn.easynpc.menu.spawner.SpawnerMenu;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -324,8 +325,11 @@ public abstract class SpawnerScreen<T extends AbstractContainerMenu>
     }
   }
 
-  protected abstract void changeSpawnerSetting(
-      BlockPos blockPos, SpawnerSettingType spawnerSettingType, int value);
+  protected void changeSpawnerSetting(
+      BlockPos blockPos, SpawnerSettingType spawnerSettingType, int value) {
+    NetworkMessageHandlerManager.getServerHandler()
+        .changeSpawnerSettings(blockPos, spawnerSettingType, value);
+  }
 
   protected void renderLabels(PoseStack poseStack) {
     int labelOffsetX = -180;
@@ -405,6 +409,13 @@ public abstract class SpawnerScreen<T extends AbstractContainerMenu>
         this.titleLabelX + 80,
         this.titleLabelY + 2,
         Constants.FONT_COLOR_BLACK);
+    Text.drawString(
+        poseStack,
+        this.font,
+        "(" + this.spawnerMenu.getSpawnerPosition().toShortString() + ")",
+        this.titleLabelX + 180,
+        this.titleLabelY + 2,
+        Constants.FONT_COLOR_GRAY);
     Text.drawString(
         poseStack,
         this.font,

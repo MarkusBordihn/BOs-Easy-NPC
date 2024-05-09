@@ -19,19 +19,38 @@
 
 package de.markusbordihn.easynpc.network;
 
+import de.markusbordihn.easynpc.Constants;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class NetworkMessageHandlerManager {
 
-  private static NetworkMessageHandlerInterface networkMessageHandlerInterface;
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  private static ServerNetworkMessageHandlerInterface serverNetworkMessageHandlerInterface;
+  private static ClientNetworkMessageHandlerInterface clientNetworkMessageHandlerInterface;
 
   private NetworkMessageHandlerManager() {
   }
 
-  public static void registerNetworkMessageHandler(
-      NetworkMessageHandlerInterface networkMessageHandler) {
-    networkMessageHandlerInterface = networkMessageHandler;
+  public static void registerServerHandler(
+      ServerNetworkMessageHandlerInterface networkMessageHandler) {
+    log.info("{} Server Network Message Handler ...", Constants.LOG_REGISTER_PREFIX);
+    serverNetworkMessageHandlerInterface = networkMessageHandler;
   }
 
-  public static NetworkMessageHandlerInterface getNetworkMessageHandler() {
-    return networkMessageHandlerInterface;
+  public static ServerNetworkMessageHandlerInterface getServerHandler() {
+    return serverNetworkMessageHandlerInterface;
+  }
+
+  public static void registerClientHandler(
+      ClientNetworkMessageHandlerInterface clientNetworkMessageHandlerInterface) {
+    log.info("{} Client Network Message Handler ...", Constants.LOG_REGISTER_PREFIX);
+    NetworkMessageHandlerManager.clientNetworkMessageHandlerInterface =
+        clientNetworkMessageHandlerInterface;
+  }
+
+  public static ClientNetworkMessageHandlerInterface getClientHandler() {
+    return clientNetworkMessageHandlerInterface;
   }
 }
