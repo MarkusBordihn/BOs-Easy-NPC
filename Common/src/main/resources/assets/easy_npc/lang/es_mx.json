@@ -50,9 +50,7 @@
   "text.easy_npc.config.attack_player": "Atacar Jugador",
   "text.easy_npc.config.attack_player_without_owner": "Atacar Jugador (sin Propietario)",
   "text.easy_npc.config.attack_speed": "Velocidad de Ataque",
-  "text.easy_npc.config.attack_targets": "Objetivos de Ataque",
   "text.easy_npc.config.attack_types": "Tipos de Ataque",
-  "text.easy_npc.config.attack_villager": "Atacar Aldeano",
   "text.easy_npc.config.attributes": "Atributos",
   "text.easy_npc.config.avoid_sun": "Evitar el Sol",
   "text.easy_npc.config.base": "Base",
@@ -119,7 +117,6 @@
   "text.easy_npc.config.follow_player": "Seguir Jugador",
   "text.easy_npc.config.follow_range": "Rango de Seguimiento",
   "text.easy_npc.config.free_fall": "Caída Libre",
-  "text.easy_npc.config.gun_attack": "Ataque con Arma de Fuego",
   "text.easy_npc.config.import": "▽ Importar",
   "text.easy_npc.config.import_custom_preset": "Importar Preset Personalizado",
   "text.easy_npc.config.import_default_preset": "Importar Preset Estándar",
@@ -257,6 +254,4 @@
   "text.easy_npc.respawnNPC.confirmQuestion": "¿Estás seguro de que quieres reaparecer este NPC?",
   "text.easy_npc.respawnNPC.confirmWarning": "¡El NPC '%s' reaparecerá como un nuevo NPC, pero con la misma configuración, posición y UUID!",
   "text.easy_npc.respawnNPC.respawnButton": "Reaparecer NPC",
-  "text.easy_npc.trading": "Comercio",
-  "text.easy_npc.trading.busy": "El NPC está ocupado actualmente con otro comercio con %s.\n Por favor espera hasta que el comercio termine."
 }
