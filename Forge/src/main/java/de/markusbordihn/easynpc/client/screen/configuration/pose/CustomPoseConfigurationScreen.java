@@ -26,7 +26,7 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import de.markusbordihn.easynpc.menu.configuration.pose.CustomPoseConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -69,7 +69,8 @@ public class CustomPoseConfigurationScreen
             "",
             modelPartVisibility,
             checkbox ->
-                NetworkMessageHandler.modelVisibilityChange(uuid, modelPart, checkbox.selected())));
+                ServerNetworkMessageHandler.modelVisibilityChange(
+                    uuid, modelPart, checkbox.selected())));
 
     return sliderRotationButtonX;
   }

@@ -11,6 +11,7 @@
   "sorting_id": 0,
   "daily_quest": false,
   "submission_trigger": "",
+  "visibility": "NEVER",
   "entries": {
     "cows": {
       "predicate": {

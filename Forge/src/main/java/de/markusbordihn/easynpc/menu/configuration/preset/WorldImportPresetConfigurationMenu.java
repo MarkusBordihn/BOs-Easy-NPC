@@ -21,12 +21,10 @@ package de.markusbordihn.easynpc.menu.configuration.preset;
 
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import java.util.List;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
@@ -35,27 +33,17 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public class WorldImportPresetConfigurationMenu extends ConfigurationMenu {
 
-  // Cache
-  protected final List<ResourceLocation> worldPresets;
-
-  public WorldImportPresetConfigurationMenu(
-      int windowId, Inventory playerInventory, UUID uuid, List<ResourceLocation> worldPresets) {
+  public WorldImportPresetConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
     super(
         ModMenuTypes.WORLD_IMPORT_PRESET_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
-    this.worldPresets = worldPresets;
   }
 
   public WorldImportPresetConfigurationMenu(
       int windowId, Inventory playerInventory, FriendlyByteBuf data) {
-    this(
-        windowId,
-        playerInventory,
-        data.readUUID(),
-        data.readList(FriendlyByteBuf::readResourceLocation));
+    this(windowId, playerInventory, data.readUUID());
   }
 
-  public static MenuProvider getMenuProvider(
-      UUID uuid, Entity entity, List<ResourceLocation> worldPresets) {
+  public static MenuProvider getMenuProvider(UUID uuid, Entity entity) {
     return new MenuProvider() {
       @Override
       public Component getDisplayName() {
@@ -65,12 +53,8 @@ public class WorldImportPresetConfigurationMenu extends ConfigurationMenu {
       @Override
       public AbstractContainerMenu createMenu(
           int windowId, Inventory inventory, Player serverPlayer) {
-        return new WorldImportPresetConfigurationMenu(windowId, inventory, uuid, worldPresets);
+        return new WorldImportPresetConfigurationMenu(windowId, inventory, uuid);
       }
     };
-  }
-
-  public List<ResourceLocation> getWorldPresets() {
-    return this.worldPresets;
   }
 }

@@ -22,13 +22,13 @@ package de.markusbordihn.easynpc.client.screen.configuration.pose;
 import de.markusbordihn.easynpc.client.screen.components.SliderButton;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
@@ -87,7 +87,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 slider -> {
                   Rotations currentModelPartRotation =
                       this.modelData.getModelPartRotation(modelPart);
-                  NetworkMessageHandler.rotationChange(
+                  ServerNetworkMessageHandler.rotationChange(
                       uuid,
                       modelPart,
                       new CustomRotation(
@@ -107,7 +107,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 slider -> {
                   Rotations currentModelPartRotation =
                       this.modelData.getModelPartRotation(modelPart);
-                  NetworkMessageHandler.rotationChange(
+                  ServerNetworkMessageHandler.rotationChange(
                       uuid,
                       modelPart,
                       new CustomRotation(
@@ -127,7 +127,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 slider -> {
                   Rotations currentModelPartRotation =
                       this.modelData.getModelPartRotation(modelPart);
-                  NetworkMessageHandler.rotationChange(
+                  ServerNetworkMessageHandler.rotationChange(
                       uuid,
                       modelPart,
                       new CustomRotation(
@@ -152,7 +152,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 sliderButtonX.reset();
                 sliderButtonY.reset();
                 sliderButtonZ.reset();
-                NetworkMessageHandler.rotationChange(
+                ServerNetworkMessageHandler.rotationChange(
                     uuid, modelPart, new CustomRotation(0f, 0f, 0f));
               }));
     } else {
@@ -166,7 +166,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 sliderButtonX.reset();
                 sliderButtonY.reset();
                 sliderButtonZ.reset();
-                NetworkMessageHandler.rotationChange(
+                ServerNetworkMessageHandler.rotationChange(
                     uuid, modelPart, new CustomRotation(0f, 0f, 0f));
               }));
     }
@@ -210,7 +210,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 slider -> {
                   CustomPosition currentModelPartPosition =
                       this.modelData.getModelPartPosition(modelPart);
-                  NetworkMessageHandler.modelPositionChange(
+                  ServerNetworkMessageHandler.modelPositionChange(
                       uuid,
                       modelPart,
                       new CustomPosition(
@@ -230,7 +230,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 slider -> {
                   CustomPosition currentModelPartPosition =
                       this.modelData.getModelPartPosition(modelPart);
-                  NetworkMessageHandler.modelPositionChange(
+                  ServerNetworkMessageHandler.modelPositionChange(
                       uuid,
                       modelPart,
                       new CustomPosition(
@@ -250,7 +250,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 slider -> {
                   CustomPosition currentModelPartPosition =
                       this.modelData.getModelPartPosition(modelPart);
-                  NetworkMessageHandler.modelPositionChange(
+                  ServerNetworkMessageHandler.modelPositionChange(
                       uuid,
                       modelPart,
                       new CustomPosition(
@@ -276,7 +276,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 sliderButtonX.reset();
                 sliderButtonY.reset();
                 sliderButtonZ.reset();
-                NetworkMessageHandler.modelPositionChange(
+                ServerNetworkMessageHandler.modelPositionChange(
                     uuid, modelPart, new CustomPosition(0f, 0f, 0f));
               }));
     } else {
@@ -290,7 +290,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 sliderButtonX.reset();
                 sliderButtonY.reset();
                 sliderButtonZ.reset();
-                NetworkMessageHandler.modelPositionChange(
+                ServerNetworkMessageHandler.modelPositionChange(
                     uuid, modelPart, new CustomPosition(0f, 0f, 0f));
               }));
     }
@@ -311,7 +311,8 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 poseButtonWidth - 10,
                 "default",
                 button ->
-                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.DEFAULT_POSE)));
+                    ServerNetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.DEFAULT_POSE)));
 
     this.advancedPoseButton =
         this.addRenderableWidget(
@@ -321,7 +322,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 poseButtonWidth + 10,
                 "advanced",
                 button ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.ADVANCED_POSE)));
 
     this.customPoseButton =
@@ -332,7 +333,8 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 poseButtonWidth + 20,
                 "custom",
                 button ->
-                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.CUSTOM_POSE)));
+                    ServerNetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.CUSTOM_POSE)));
 
     // Default button stats
     this.defaultPoseButton.active =

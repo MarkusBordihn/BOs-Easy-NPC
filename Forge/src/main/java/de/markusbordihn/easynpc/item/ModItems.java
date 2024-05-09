@@ -45,6 +45,9 @@ import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetItem;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCWandItem;
 import de.markusbordihn.easynpc.item.configuration.MoveEasyNPCItem;
 import de.markusbordihn.easynpc.tabs.ModTabs;
+import java.util.function.Supplier;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -86,187 +89,67 @@ public class ModItems {
           () -> new BulletItem(new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
 
   public static final RegistryObject<Item> ALLAY_NPC_SPAWN_EGG =
-      ITEMS.register(
-          Allay.ID + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.ALLAY,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(Allay.ID, ModEntityType.ALLAY);
   public static final RegistryObject<Item> CAT_NPC_SPAWN_EGG =
-      ITEMS.register(
-          Cat.ID + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.CAT,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(Cat.ID, ModEntityType.CAT);
   public static final RegistryObject<Item> CHICKEN_NPC_SPAWN_EGG =
-      ITEMS.register(
-          Chicken.ID + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.CHICKEN,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(Chicken.ID, ModEntityType.CHICKEN);
   public static final RegistryObject<Item> FAIRY_NPC_SPAWN_EGG =
-      ITEMS.register(
-          Fairy.ID + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.FAIRY,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(Fairy.ID, ModEntityType.FAIRY);
   public static final RegistryObject<Item> HUMANOID_NPC_SPAWN_EGG =
-      ITEMS.register(
-          Humanoid.ID + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.HUMANOID,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(Humanoid.ID, ModEntityType.HUMANOID);
   public static final RegistryObject<Item> HUMANOID_SLIM_NPC_SPAWN_EGG =
-      ITEMS.register(
-          HumanoidSlim.ID + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.HUMANOID_SLIM,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(HumanoidSlim.ID, ModEntityType.HUMANOID_SLIM);
   public static final RegistryObject<Item> IRON_GOLEM_NPC_SPAWN_EGG =
-      ITEMS.register(
-          IronGolem.ID + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.IRON_GOLEM,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(IronGolem.ID, ModEntityType.IRON_GOLEM);
   public static final RegistryObject<Item> SKELETON_NPC_SPAWN_EGG =
-      ITEMS.register(
-          Skeleton.ID + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.SKELETON,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(Skeleton.ID, ModEntityType.SKELETON);
   public static final RegistryObject<Item> VILLAGER_NPC_SPAWN_EGG =
-      ITEMS.register(
-          Villager.ID + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.VILLAGER,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(Villager.ID, ModEntityType.VILLAGER);
   public static final RegistryObject<Item> DROWNED_NPC_SPAWN_EGG =
-      ITEMS.register(
-          Zombie.ID_DROWNED + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.DROWNED,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(Zombie.ID_DROWNED, ModEntityType.DROWNED);
   public static final RegistryObject<Item> HUSK_NPC_SPAWN_EGG =
-      ITEMS.register(
-          Zombie.ID_HUSK + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.HUSK,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(Zombie.ID_HUSK, ModEntityType.HUSK);
   public static final RegistryObject<Item> WITHER_SKELETON_NPC_SPAWN_EGG =
-      ITEMS.register(
-          Skeleton.ID_WITHER_SKELETON + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.WITHER_SKELETON,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(Skeleton.ID_WITHER_SKELETON, ModEntityType.WITHER_SKELETON);
   public static final RegistryObject<Item> STRAY_NPC_SPAWN_EGG =
-      ITEMS.register(
-          Skeleton.ID_STRAY + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.STRAY,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(Skeleton.ID_STRAY, ModEntityType.STRAY);
   public static final RegistryObject<Item> ZOMBIE_NPC_SPAWN_EGG =
-      ITEMS.register(
-          Zombie.ID + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.ZOMBIE,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(Zombie.ID, ModEntityType.ZOMBIE);
   public static final RegistryObject<Item> ZOMBIE_VILLAGER_NPC_SPAWN_EGG =
-      ITEMS.register(
-          ZombieVillager.ID + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.ZOMBIE_VILLAGER,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(ZombieVillager.ID, ModEntityType.ZOMBIE_VILLAGER);
   public static final RegistryObject<Item> PIG_NPC_SPAWN_EGG =
-      ITEMS.register(
-          Pig.ID + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.PIG,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(Pig.ID, ModEntityType.PIG);
   public static final RegistryObject<Item> EVOKER_NPC_SPAWN_EGG =
-      ITEMS.register(
-          Illager.ID_EVOKER + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.EVOKER,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(Illager.ID_EVOKER, ModEntityType.EVOKER);
   public static final RegistryObject<Item> ILLUSIONER_NPC_SPAWN_EGG =
-      ITEMS.register(
-          Illager.ID_ILLUSIONER + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.ILLUSIONER,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(Illager.ID_ILLUSIONER, ModEntityType.ILLUSIONER);
   public static final RegistryObject<Item> PILLAGER_NPC_SPAWN_EGG =
-      ITEMS.register(
-          Illager.ID_PILLAGER + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.PILLAGER,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(Illager.ID_PILLAGER, ModEntityType.PILLAGER);
   public static final RegistryObject<Item> VINDICATOR_NPC_SPAWN_EGG =
-      ITEMS.register(
-          Illager.ID_VINDICATOR + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.VINDICATOR,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(Illager.ID_VINDICATOR, ModEntityType.VINDICATOR);
   public static final RegistryObject<Item> ORC_NPC_SPAWN_EGG =
-      ITEMS.register(
-          Orc.ID + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.ORC,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(Orc.ID, ModEntityType.ORC);
   public static final RegistryObject<Item> ORC_WARRIOR_NPC_SPAWN_EGG =
-      ITEMS.register(
-          Orc.ID_WARRIOR + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.ORC_WARRIOR,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(Orc.ID_WARRIOR, ModEntityType.ORC_WARRIOR);
   public static final RegistryObject<Item> WOLF_NPC_SPAWN_EGG =
-      ITEMS.register(
-          Wolf.ID + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.WOLF,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(Wolf.ID, ModEntityType.WOLF);
   public static final RegistryObject<Item> HORSE_NPC_SPAWN_EGG =
-      ITEMS.register(
-          Horse.ID + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.HORSE,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(Horse.ID, ModEntityType.HORSE);
   public static final RegistryObject<Item> SKELETON_HORSE_NPC_SPAWN_EGG =
-      ITEMS.register(
-          Horse.ID_SKELETON + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.SKELETON_HORSE,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(Horse.ID_SKELETON, ModEntityType.SKELETON_HORSE);
   public static final RegistryObject<Item> ZOMBIE_HORSE_NPC_SPAWN_EGG =
-      ITEMS.register(
-          Horse.ID_ZOMBIE + ModSpawnEggItem.SUFFIX,
-          () ->
-              new ModSpawnEggItem(
-                  ModEntityType.ZOMBIE_HORSE,
-                  new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+      registerSpawnEgg(Horse.ID_ZOMBIE, ModEntityType.ZOMBIE_HORSE);
 
   private ModItems() {}
+
+  private static RegistryObject<Item> registerSpawnEgg(
+      String id, Supplier<? extends EntityType<? extends Mob>> entityTypeSupplier) {
+    return ITEMS.register(
+        id + ModSpawnEggItem.SUFFIX,
+        () ->
+            new ModSpawnEggItem(
+                entityTypeSupplier,
+                new Item.Properties().rarity(Rarity.EPIC).tab(ModTabs.TAB_SPAWN_EGGS)));
+  }
 }

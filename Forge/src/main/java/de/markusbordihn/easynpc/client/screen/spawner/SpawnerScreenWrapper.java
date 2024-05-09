@@ -19,10 +19,7 @@
 
 package de.markusbordihn.easynpc.client.screen.spawner;
 
-import de.markusbordihn.easynpc.data.spawner.SpawnerSettingType;
 import de.markusbordihn.easynpc.menu.spawner.SpawnerMenuWrapper;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -30,11 +27,5 @@ public class SpawnerScreenWrapper extends SpawnerScreen<SpawnerMenuWrapper> {
 
   public SpawnerScreenWrapper(SpawnerMenuWrapper menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
-  }
-
-  @Override
-  protected void changeSpawnerSetting(
-      BlockPos blockPos, SpawnerSettingType spawnerSettingType, int value) {
-    NetworkMessageHandler.changeSpawnerSettings(blockPos, spawnerSettingType, value);
   }
 }

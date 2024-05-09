@@ -32,6 +32,7 @@ public interface EasyNPCBaseModel<E extends PathfinderMob>
     extends EasyNPCBase<E>, ModelData<E>, ScaleData<E> {
 
   static void registerEasyNPCDataSerializers() {
+    log.info("Register model data serializers for ...");
     ModelData.registerModelDataSerializer();
   }
 

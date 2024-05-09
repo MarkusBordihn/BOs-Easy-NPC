@@ -21,8 +21,12 @@ package de.markusbordihn.easynpc;
 
 import de.markusbordihn.easynpc.client.model.ModModelLayer;
 import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
+import de.markusbordihn.easynpc.client.screen.ClientScreens;
 import de.markusbordihn.easynpc.entity.LivingEntityEventHandler;
 import de.markusbordihn.easynpc.io.DataFileHandler;
+import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import de.markusbordihn.easynpc.tabs.ModTabs;
 import net.fabricmc.api.ClientModInitializer;
 import org.apache.logging.log4j.LogManager;
@@ -50,5 +54,12 @@ public class EasyNPCClient implements ClientModInitializer {
 
     log.info("{} Register Data Files ...", Constants.LOG_REGISTER_PREFIX);
     DataFileHandler.registerDataFiles();
+
+    log.info("{} Client Network Handler ...", Constants.LOG_REGISTER_PREFIX);
+    NetworkHandler.registerClientNetworkHandler();
+    NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
+
+    log.info("{} Client Screens ...", Constants.LOG_REGISTER_PREFIX);
+    ClientScreens.registerScreens();
   }
 }

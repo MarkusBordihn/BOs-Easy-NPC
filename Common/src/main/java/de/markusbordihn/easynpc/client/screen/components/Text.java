@@ -29,7 +29,7 @@ import net.minecraft.util.FormattedCharSequence;
 
 public class Text {
 
-  protected Text() {}
+  private Text() {}
 
   public static void drawString(PoseStack poseStack, Font font, String text, int x, int y) {
     drawString(poseStack, font, new TextComponent(text), x, y);

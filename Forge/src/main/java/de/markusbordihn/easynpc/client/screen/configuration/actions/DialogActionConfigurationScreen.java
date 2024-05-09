@@ -28,7 +28,7 @@ import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.menu.configuration.action.DialogActionConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
@@ -139,7 +139,7 @@ public class DialogActionConfigurationScreen
                           this.onOpenDialogActionBox.getValue(),
                           this.onOpenDialogActionExecuteAsUserCheckbox.selected(),
                           this.onOpenDialogActionDebugCheckbox.selected());
-                  NetworkMessageHandler.actionEventChange(
+                  ServerNetworkMessageHandler.actionEventChange(
                       uuid, ActionEventType.ON_OPEN_DIALOG, actionDataEntry);
                   this.lastOpenDialogActionDataEntry = actionDataEntry;
                   this.onOpenDialogActionSaveButton.active = false;
@@ -184,7 +184,7 @@ public class DialogActionConfigurationScreen
                           this.onCloseDialogActionBox.getValue(),
                           this.onCloseDialogActionExecuteAsUserCheckbox.selected(),
                           this.onCloseDialogActionDebugCheckbox.selected());
-                  NetworkMessageHandler.actionEventChange(
+                  ServerNetworkMessageHandler.actionEventChange(
                       uuid, ActionEventType.ON_CLOSE_DIALOG, actionDataEntry);
                   this.lastCloseDialogActionDataEntry = actionDataEntry;
                   this.onCloseDialogActionSaveButton.active = false;
@@ -231,7 +231,7 @@ public class DialogActionConfigurationScreen
                           this.onButtonClickActionBox.getValue(),
                           this.onButtonClickActionExecuteAsUserCheckbox.selected(),
                           this.onButtonClickActionDebugCheckbox.selected());
-                  NetworkMessageHandler.actionEventChange(
+                  ServerNetworkMessageHandler.actionEventChange(
                       uuid, ActionEventType.ON_BUTTON_CLICK, actionDataEntry);
                   this.lastButtonClickActionDataEntry = actionDataEntry;
                   this.onButtonClickActionSaveButton.active = false;

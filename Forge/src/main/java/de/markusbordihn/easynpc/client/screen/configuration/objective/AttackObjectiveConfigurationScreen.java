@@ -20,16 +20,15 @@
 package de.markusbordihn.easynpc.client.screen.configuration.objective;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.menu.configuration.objective.AttackObjectiveConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -80,9 +79,9 @@ public class AttackObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.MELEE_ATTACK, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -97,9 +96,9 @@ public class AttackObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.ZOMBIE_ATTACK, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -116,9 +115,9 @@ public class AttackObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.CROSSBOW_ATTACK, 4);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -134,9 +133,9 @@ public class AttackObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.BOW_ATTACK, 4);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -153,9 +152,9 @@ public class AttackObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.GUN_ATTACK, 4);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -172,9 +171,9 @@ public class AttackObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_PLAYER, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -191,9 +190,9 @@ public class AttackObjectiveConfigurationScreen
                       objectiveDataSet.getOrCreateObjective(
                           ObjectiveType.ATTACK_PLAYER_WITHOUT_OWNER, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -210,9 +209,9 @@ public class AttackObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_VILLAGER, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -229,9 +228,9 @@ public class AttackObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_ANIMAL, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -247,9 +246,9 @@ public class AttackObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_MONSTER, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -266,9 +265,9 @@ public class AttackObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       objectiveDataSet.getOrCreateObjective(ObjectiveType.ATTACK_MOB, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -285,9 +284,9 @@ public class AttackObjectiveConfigurationScreen
                       objectiveDataSet.getOrCreateObjective(
                           ObjectiveType.ATTACK_MOB_WITHOUT_CREEPER, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
   }
@@ -306,12 +305,8 @@ public class AttackObjectiveConfigurationScreen
           y + 1,
           0x60808080,
           0x60808080);
-      this.font.draw(
-          poseStack,
-          new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "attack_types"),
-          this.contentLeftPos + 115,
-          y - 8,
-          0xFF808080);
+      Text.drawConfigString(
+          poseStack, this.font, "attack_types", this.contentLeftPos + 115, y - 8, 0xFF808080);
     }
 
     if (this.attackPlayerCheckbox != null) {
@@ -324,12 +319,8 @@ public class AttackObjectiveConfigurationScreen
           y + 1,
           0x60808080,
           0x60808080);
-      this.font.draw(
-          poseStack,
-          new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "attack_targets"),
-          this.contentLeftPos + 115,
-          y - 8,
-          0xFF808080);
+      Text.drawConfigString(
+          poseStack, this.font, "attack_targets", this.contentLeftPos + 115, y - 8, 0xFF808080);
     }
   }
 }

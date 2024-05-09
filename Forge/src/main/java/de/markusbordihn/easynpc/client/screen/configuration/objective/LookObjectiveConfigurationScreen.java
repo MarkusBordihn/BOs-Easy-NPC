@@ -26,7 +26,7 @@ import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.menu.configuration.objective.LookObjectiveConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import java.util.UUID;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -77,9 +77,9 @@ public class LookObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       new ObjectiveDataEntry(ObjectiveType.LOOK_AT_RESET, 9);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -96,9 +96,9 @@ public class LookObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       new ObjectiveDataEntry(ObjectiveType.LOOK_RANDOM_AROUND, 10);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -117,9 +117,9 @@ public class LookObjectiveConfigurationScreen
                       new ObjectiveDataEntry(ObjectiveType.LOOK_AT_OWNER, 9);
                   objectiveDataEntry.setTargetOwnerUUID(this.ownerData.getOwnerUUID());
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
     this.lookAtOwnerCheckbox.active = false;
@@ -137,9 +137,9 @@ public class LookObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       new ObjectiveDataEntry(ObjectiveType.LOOK_AT_PLAYER, 9);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -156,9 +156,9 @@ public class LookObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       new ObjectiveDataEntry(ObjectiveType.LOOK_AT_MOB, 10);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -175,9 +175,9 @@ public class LookObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       new ObjectiveDataEntry(ObjectiveType.LOOK_AT_ANIMAL, 10);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -212,9 +212,9 @@ public class LookObjectiveConfigurationScreen
                     lookAtEntityUUIDSaveButton.active = checkbox.selected();
                   }
                   if (!checkbox.selected()) {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   } else if (!lookAtEntityUUID.getValue().isEmpty()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   }
                 }));
     this.lookAtEntityCheckbox.active = false;
@@ -254,7 +254,7 @@ public class LookObjectiveConfigurationScreen
                       !lookAtEntityUUID.getValue().isEmpty()
                           ? UUID.fromString(lookAtEntityUUID.getValue())
                           : null);
-                  NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                  ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                 }));
     this.lookAtEntityUUIDSaveButton.active = false;
   }

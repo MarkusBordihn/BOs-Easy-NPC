@@ -30,7 +30,7 @@ import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.menu.configuration.rotation.DefaultRotationConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.Rotations;
@@ -87,7 +87,7 @@ public class DefaultRotationConfigurationScreen
                 SliderButton.Type.DEGREE,
                 slider -> {
                   this.rootRotationX = (float) Math.toRadians(slider.getTargetValue());
-                  NetworkMessageHandler.rotationChange(
+                  ServerNetworkMessageHandler.rotationChange(
                       uuid,
                       ModelPart.ROOT,
                       new CustomRotation(
@@ -117,7 +117,7 @@ public class DefaultRotationConfigurationScreen
                 SliderButton.Type.DEGREE,
                 slider -> {
                   this.rootRotationY = (float) Math.toRadians(slider.getTargetValue());
-                  NetworkMessageHandler.rotationChange(
+                  ServerNetworkMessageHandler.rotationChange(
                       uuid,
                       ModelPart.ROOT,
                       new CustomRotation(
@@ -147,7 +147,7 @@ public class DefaultRotationConfigurationScreen
                 SliderButton.Type.DEGREE,
                 slider -> {
                   this.rootRotationZ = (float) Math.toRadians(slider.getTargetValue());
-                  NetworkMessageHandler.rotationChange(
+                  ServerNetworkMessageHandler.rotationChange(
                       uuid,
                       ModelPart.ROOT,
                       new CustomRotation(
@@ -174,7 +174,8 @@ public class DefaultRotationConfigurationScreen
                 "lock_rotation",
                 this.modelData.getModelLockRotation(),
                 checkbox ->
-                    NetworkMessageHandler.modelLockRotationChange(uuid, checkbox.selected())));
+                    ServerNetworkMessageHandler.modelLockRotationChange(
+                        uuid, checkbox.selected())));
   }
 
   @Override

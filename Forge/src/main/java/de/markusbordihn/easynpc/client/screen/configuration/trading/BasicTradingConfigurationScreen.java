@@ -28,7 +28,7 @@ import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.data.trading.TradingSettings;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.menu.configuration.trading.BasicTradingConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -53,19 +53,19 @@ public class BasicTradingConfigurationScreen
 
   private void onResetsEveryMinEditBoxChanged(String text) {
     if (isNumericValue(text) && !text.isEmpty()) {
-      NetworkMessageHandler.setBasicTradingResetsEveryMin(uuid, Integer.parseInt(text));
+      ServerNetworkMessageHandler.setBasicTradingResetsEveryMin(uuid, Integer.parseInt(text));
     }
   }
 
   private void onMaxUsesEditBoxChanged(String text) {
     if (isPositiveNumericValue(text) && !text.isEmpty()) {
-      NetworkMessageHandler.setBasicTradingMaxUses(uuid, Integer.parseInt(text));
+      ServerNetworkMessageHandler.setBasicTradingMaxUses(uuid, Integer.parseInt(text));
     }
   }
 
   private void onRewardExpEditBoxChanged(String text) {
     if (isNumericValue(text) && !text.isEmpty()) {
-      NetworkMessageHandler.setBasicTradingRewardExp(uuid, Integer.parseInt(text));
+      ServerNetworkMessageHandler.setBasicTradingRewardExp(uuid, Integer.parseInt(text));
     }
   }
 

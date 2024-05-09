@@ -67,19 +67,17 @@ public class WorldPresetDataFiles {
   public static File getPresetFile(SkinModel skinModel, String fileName) {
     Path presetModelFolder = getPresetDataFolder(skinModel);
     if (presetModelFolder != null && fileName != null && !fileName.isEmpty()) {
-      // Remove all invalid characters from file name.
-      fileName = fileName.toLowerCase().replaceAll("[^a-z0-9/._-]", "").replace("..", "");
-      return presetModelFolder
-          .resolve(
-              fileName.endsWith(Constants.NPC_NBT_SUFFIX)
-                  ? fileName
-                  : fileName + Constants.NPC_NBT_SUFFIX)
-          .toFile();
+      return presetModelFolder.resolve(getPresetFileName(fileName)).toFile();
     }
     return null;
   }
 
-  public static Stream<ResourceLocation> getPresetFilePathResourceLocations() {
+  public static String getPresetFileName(String fileName) {
+    String result = fileName.replaceAll("[^a-zA-Z0-9/._-]", "").replace("..", "").replace("/", "_");
+    return result.endsWith(Constants.NPC_NBT_SUFFIX) ? result : result + Constants.NPC_NBT_SUFFIX;
+  }
+
+  public static Stream<ResourceLocation> getPresetResourceLocations() {
     Path presetDataFolder = getPresetDataFolder();
     try {
       try (Stream<Path> filesStream = Files.walk(presetDataFolder)) {
@@ -106,7 +104,7 @@ public class WorldPresetDataFiles {
         return filePaths.stream();
       }
     } catch (IOException exception) {
-      log.error("Could not read preset data folder {}!", presetDataFolder, exception);
+      log.error("Could not read world preset data folder {}!", presetDataFolder, exception);
     }
 
     // Return a default or alternative stream in case of an exception

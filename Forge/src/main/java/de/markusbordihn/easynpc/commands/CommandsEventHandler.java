@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.commands;
 
+import de.markusbordihn.easynpc.commands.manager.CommandManager;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;

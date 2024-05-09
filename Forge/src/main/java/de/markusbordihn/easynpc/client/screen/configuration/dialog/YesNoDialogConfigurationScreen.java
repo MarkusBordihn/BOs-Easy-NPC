@@ -25,14 +25,14 @@ import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.Set;
 import java.util.UUID;
@@ -124,13 +124,13 @@ public class YesNoDialogConfigurationScreen
                   UUID yesButtonId = yesButtonData == null ? null : yesButtonData.getId();
                   if (this.questionDialogData != null) {
                     if (yesButtonId != null) {
-                      NetworkMessageHandler.openDialogButtonEditor(
+                      ServerNetworkMessageHandler.openDialogButtonEditor(
                           uuid,
                           this.questionDialogData.getId(),
                           yesButtonId,
                           ConfigurationType.YES_NO_DIALOG);
                     } else {
-                      NetworkMessageHandler.openDialogButtonEditor(
+                      ServerNetworkMessageHandler.openDialogButtonEditor(
                           uuid, this.questionDialogData.getId(), ConfigurationType.YES_NO_DIALOG);
                     }
                   }
@@ -150,13 +150,13 @@ public class YesNoDialogConfigurationScreen
                   UUID noButtonId = noButtonData == null ? null : noButtonData.getId();
                   if (this.questionDialogData != null) {
                     if (noButtonId != null) {
-                      NetworkMessageHandler.openDialogButtonEditor(
+                      ServerNetworkMessageHandler.openDialogButtonEditor(
                           uuid,
                           this.questionDialogData.getId(),
                           noButtonId,
                           ConfigurationType.YES_NO_DIALOG);
                     } else {
-                      NetworkMessageHandler.openDialogButtonEditor(
+                      ServerNetworkMessageHandler.openDialogButtonEditor(
                           uuid, this.questionDialogData.getId(), ConfigurationType.YES_NO_DIALOG);
                     }
                   }
@@ -214,8 +214,9 @@ public class YesNoDialogConfigurationScreen
                   this.questionDialogValue = this.mainDialogBox.getValue();
                   this.yesDialogValue = this.yesDialogBox.getValue();
                   this.noDialogValue = this.noDialogBox.getValue();
-                  NetworkMessageHandler.saveDialog(uuid, dialogDataSet);
-                  NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.YES_NO_DIALOG);
+                  ServerNetworkMessageHandler.saveDialog(uuid, dialogDataSet);
+                  ServerNetworkMessageHandler.openConfiguration(
+                      uuid, ConfigurationType.YES_NO_DIALOG);
                 }));
 
     // Chancel Button

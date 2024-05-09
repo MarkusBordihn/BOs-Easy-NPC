@@ -68,35 +68,6 @@ public class AccessManager {
     return getEasyNPCEntityByUUID(uuid, serverPlayer) != null;
   }
 
-  public static EasyNPC<?> getEasyNPCEntityByUUID(UUID uuid, CommandSourceStack context) {
-    if (context == null || uuid == null) {
-      return null;
-    }
-
-    ServerPlayer serverPlayer = null;
-    Entity entity = null;
-    try {
-      serverPlayer = context.getPlayerOrException();
-    } catch (CommandSyntaxException serverPlayerException) {
-      try {
-        entity = context.getEntityOrException();
-      } catch (CommandSyntaxException entityException) {
-        log.warn(
-            "Skipping access check for EasyNPC with UUID {} due to missing player and entity!",
-            uuid);
-      }
-      if (entity != null) {
-        log.error("The entity {} tried to access EasyNPC with UUID {}!", entity, uuid);
-        return null;
-      }
-    }
-    if (serverPlayer != null) {
-      return getEasyNPCEntityByUUID(uuid, serverPlayer);
-    }
-
-    return LivingEntityManager.getEasyNPCEntityByUUID(uuid, context.getLevel());
-  }
-
   public static EasyNPC<?> getEasyNPCEntityByUUID(UUID uuid, ServerPlayer serverPlayer) {
     if (serverPlayer == null || uuid == null) {
       return null;

@@ -49,7 +49,7 @@ public class DataFileHandler {
     RemoteSkinDataFiles.registerRemoteSkinData();
 
     log.info("{} preset data folders ...", Constants.LOG_REGISTER_PREFIX);
-    PresetDataFiles.registerCustomPresetData();
+    CustomPresetDataFiles.registerCustomPresetData();
   }
 
   public static Path getCacheFolder() {

@@ -8,6 +8,27 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 4.5.0
+
+- Fixed #175 by moving additional log messages to debug level.
+- Fixed #173 by setting the test quest to visibility `NEVER`.
+- Added `@e` target selector support for all commands.
+- Added UUID suggestion for targeted NPC for all commands.
+- Added `/easy_npc delete <npc>` command to delete NPCs.
+- Added `/easy_npc sound set <npc> <sound_type> <sound>` command to set the sound for NPCs for #177.
+- Added `/easy_npc preset import [custom|data|default|world] <resource_location> <position> <UUID>`
+  command with better auto-suggestions.
+- Added `/easy_npc preset export [custom|local|world] <npc> <name>` command with better
+  auto-suggestions.
+- Improved command support to allow more complex commands.
+- Improved Fabric support for better compatibility with other mods.
+- Separated client and server network handler for better performance. Please open an issue if you
+  encounter any issues with this change.
+
+### 4.4.0 Fabric beta
+
+- Released first beta version for Fabric for more detailed live testing.
+
 ### 4.4.0
 
 - Fixed #159: Added additional tags and support for modded bows and crossbows items.

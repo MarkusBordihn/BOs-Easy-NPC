@@ -24,9 +24,9 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
-import de.markusbordihn.easynpc.io.PresetDataFiles;
+import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.menu.configuration.preset.CustomExportPresetConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
@@ -83,7 +83,7 @@ public class ExportCustomPresetConfigurationScreen
     this.customExportPresetButton.active = false;
 
     // Preset file
-    customPresetFile = PresetDataFiles.getPresetFile(skinModel, uuid);
+    customPresetFile = CustomPresetDataFiles.getPresetFile(skinModel, uuid);
     customPresetFileName = customPresetFile.getName();
 
     // Name Edit Box
@@ -122,7 +122,7 @@ public class ExportCustomPresetConfigurationScreen
                 150,
                 "export",
                 button -> {
-                  NetworkMessageHandler.exportPreset(uuid, this.nameBox.getValue());
+                  ServerNetworkMessageHandler.exportPreset(uuid, this.nameBox.getValue());
                   exportPresetButton.active = false;
                 }));
   }

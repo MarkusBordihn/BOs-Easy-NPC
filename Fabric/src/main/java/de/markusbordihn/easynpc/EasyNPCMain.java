@@ -19,13 +19,24 @@
 
 package de.markusbordihn.easynpc;
 
-import de.markusbordihn.easynpc.commands.CommandManager;
+import de.markusbordihn.easynpc.block.ModBlocks;
+import de.markusbordihn.easynpc.commands.manager.CommandManager;
+import de.markusbordihn.easynpc.commands.synchronization.ArgumentTypes;
 import de.markusbordihn.easynpc.debug.DebugManager;
 import de.markusbordihn.easynpc.entity.LivingEntityEventHandler;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.item.ModItems;
+import de.markusbordihn.easynpc.menu.MenuHandler;
+import de.markusbordihn.easynpc.menu.MenuManager;
+import de.markusbordihn.easynpc.menu.ModMenuTypes;
+import de.markusbordihn.easynpc.network.ClientNetworkMessageHandler;
+import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.server.ServerEvents;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,8 +54,18 @@ public class EasyNPCMain implements ModInitializer {
     }
     DebugManager.checkForDebugLogging(Constants.LOG_NAME);
 
+    log.info("{} Constants ...", Constants.LOG_REGISTER_PREFIX);
+    Constants.GAME_DIR = FabricLoader.getInstance().getGameDir();
+    Constants.CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
+
     log.info("{} Entity Types ...", Constants.LOG_REGISTER_PREFIX);
     ModEntityType.registerEntitiesAttributes();
+
+    log.info("{} Blocks ...", Constants.LOG_REGISTER_PREFIX);
+    ModBlocks.registerModBlocks();
+
+    log.info("{} Blocks Entities ...", Constants.LOG_REGISTER_PREFIX);
+    ModBlocks.registerModBlockEntities();
 
     log.info("{} Items ...", Constants.LOG_REGISTER_PREFIX);
     ModItems.registerModItems();
@@ -53,7 +74,21 @@ public class EasyNPCMain implements ModInitializer {
     CommandRegistrationCallback.EVENT.register(
         (dispatcher, dedicated) -> CommandManager.registerCommands(dispatcher));
 
-    log.info("{} Entity Server Events ...", Constants.LOG_REGISTER_PREFIX);
+    log.info("{} Server Events ...", Constants.LOG_REGISTER_PREFIX);
+    ServerLifecycleEvents.SERVER_STARTING.register(ServerEvents::handleServerStarting);
     LivingEntityEventHandler.registerServerEntityEvents();
+
+    log.info("{} Menu Handler ...", Constants.LOG_REGISTER_PREFIX);
+    MenuManager.registerMenuHandler(new MenuHandler());
+
+    log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
+    ModMenuTypes.register();
+
+    log.info("{} Server Network Handler ...", Constants.LOG_REGISTER_PREFIX);
+    NetworkHandler.registerServerNetworkHandler();
+    NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
+
+    log.info("{} Argument Types ...", Constants.LOG_REGISTER_PREFIX);
+    ArgumentTypes.register();
   }
 }

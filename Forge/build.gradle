@@ -218,15 +218,16 @@ curseforge {
   apiKey = "${credentials.forKey('curseforge_api_token')}"
   project {
     id = "${project.curseforge_project_id}"
-    changelog = file("../CHANGELOG.md")
+    changelog = rootProject.file("CHANGELOG.md")
     changelogType = 'markdown'
     releaseType = "${project.curseforge_release_type}"
     addGameVersion("${project.minecraft_version}")
     addGameVersion("Forge")
     mainArtifact(jar) {
       relations {
-        optionalDependency 'armourers-workshop'
         optionalDependency 'easy-npc-epic-fight'
+        optionalDependency 'armourers-workshop'
+        optionalDependency 'simple-quests-forge'
       }
     }
   }
@@ -242,6 +243,11 @@ modrinth {
   uploadFile = jar
   gameVersions = ["${project.minecraft_version}"]
   loaders = ["forge"]
+  dependencies {
+    optional.project "easy-npc-epic-fight"
+    optional.project "armourers-workshop"
+    optional.project "simple-quests"
+  }
 }
 
 tasks.withType(JavaCompile).configureEach {

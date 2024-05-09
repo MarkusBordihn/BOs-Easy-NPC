@@ -26,7 +26,7 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.menu.configuration.trading.CustomTradingConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.network.chat.Component;
@@ -76,9 +76,9 @@ public class CustomTradingConfigurationScreen
                 tradingData.getTradingType() == TradingType.CUSTOM,
                 checkbox -> {
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.changeTradingType(uuid, TradingType.CUSTOM);
+                    ServerNetworkMessageHandler.changeTradingType(uuid, TradingType.CUSTOM);
                   } else {
-                    NetworkMessageHandler.changeTradingType(
+                    ServerNetworkMessageHandler.changeTradingType(
                         uuid,
                         formerTradingType != null && formerTradingType != TradingType.NONE
                             ? formerTradingType

@@ -32,7 +32,7 @@ import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.menu.configuration.skin.PlayerSkinConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import de.markusbordihn.easynpc.validator.NameValidator;
@@ -129,7 +129,7 @@ public class PlayerSkinConfigurationScreen
         new SkinSelectionButton(
             x - 24,
             y - 81,
-            button -> NetworkMessageHandler.setPlayerSkin(this.uuid, "", textureUUID));
+            button -> ServerNetworkMessageHandler.setPlayerSkin(this.uuid, "", textureUUID));
 
     // Disable button for active skin.
     UUID skinUUID = this.skinData.getSkinUUID();
@@ -157,7 +157,7 @@ public class PlayerSkinConfigurationScreen
       // Validate player name and send skin change request to server.
       if (NameValidator.isValidPlayerName(textureSkinLocationValue)) {
         log.debug("Setting player user texture to {}", textureSkinLocationValue);
-        NetworkMessageHandler.setPlayerSkin(
+        ServerNetworkMessageHandler.setPlayerSkin(
             this.uuid, textureSkinLocationValue, Constants.BLANK_UUID);
       }
 

@@ -28,7 +28,7 @@ import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
@@ -137,7 +137,7 @@ public class BasicActionConfigurationScreen
                           this.onInteractionActionBox.getValue(),
                           this.onInteractionActionExecuteAsUserCheckbox.selected(),
                           this.onInteractionActionDebugCheckbox.selected());
-                  NetworkMessageHandler.actionEventChange(
+                  ServerNetworkMessageHandler.actionEventChange(
                       uuid, ActionEventType.ON_INTERACTION, actionDataEntry);
                   this.lastInteractionActionDataEntry = actionDataEntry;
                   this.onInteractionActionSaveButton.active = false;
@@ -181,7 +181,7 @@ public class BasicActionConfigurationScreen
                           this.onHurtActionBox.getValue(),
                           this.onHurtActionExecuteAsUserCheckbox.selected(),
                           this.onHurtActionDebugCheckbox.selected());
-                  NetworkMessageHandler.actionEventChange(
+                  ServerNetworkMessageHandler.actionEventChange(
                       uuid, ActionEventType.ON_HURT, actionDataEntry);
                   this.lastHurtActionDataEntry = actionDataEntry;
                   this.onHurtActionSaveButton.active = false;
@@ -225,7 +225,7 @@ public class BasicActionConfigurationScreen
                           this.onDeathActionBox.getValue(),
                           this.onDeathActionExecuteAsUserCheckbox.selected(),
                           this.onDeathActionDebugCheckbox.selected());
-                  NetworkMessageHandler.actionEventChange(
+                  ServerNetworkMessageHandler.actionEventChange(
                       uuid, ActionEventType.ON_DEATH, actionDataEntry);
                   this.lastDeathActionDataEntry = actionDataEntry;
                   this.onDeathActionSaveButton.active = false;

@@ -26,7 +26,7 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.menu.configuration.trading.NoneTradingConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.network.chat.Component;
@@ -76,9 +76,9 @@ public class NoneTradingConfigurationScreen
                 this.tradingData.getTradingType() == TradingType.NONE,
                 checkbox -> {
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.changeTradingType(uuid, TradingType.NONE);
+                    ServerNetworkMessageHandler.changeTradingType(uuid, TradingType.NONE);
                   } else {
-                    NetworkMessageHandler.changeTradingType(
+                    ServerNetworkMessageHandler.changeTradingType(
                         uuid,
                         formerTradingType != null && formerTradingType != TradingType.NONE
                             ? formerTradingType

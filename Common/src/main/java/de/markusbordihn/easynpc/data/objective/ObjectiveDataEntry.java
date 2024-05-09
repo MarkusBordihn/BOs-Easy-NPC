@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.data.objective;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.UUID;
@@ -30,8 +29,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public final class ObjectiveDataEntry {
   // Objective Data Tags
@@ -55,7 +52,6 @@ public final class ObjectiveDataEntry {
   public static final String DATA_MUST_REACH_TARGET_TAG = "MustReachTarget";
   public static final String DATA_PROBABILITY_TAG = "Probability";
 
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   // Objective Data
   private boolean mustSeeTarget = true;
   private boolean mustReachTarget = true;

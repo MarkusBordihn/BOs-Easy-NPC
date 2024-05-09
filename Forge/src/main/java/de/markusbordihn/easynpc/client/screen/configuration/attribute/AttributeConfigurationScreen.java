@@ -21,9 +21,9 @@ package de.markusbordihn.easynpc.client.screen.configuration.attribute;
 
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.attribute.AttributeConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -55,7 +55,7 @@ public class AttributeConfigurationScreen<T extends AttributeConfigurationMenu>
                 76,
                 "abilities",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.ABILITIES_ATTRIBUTE)));
 
     this.baseAttributeButton =
@@ -66,7 +66,7 @@ public class AttributeConfigurationScreen<T extends AttributeConfigurationMenu>
                 60,
                 "base",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.BASE_ATTRIBUTE)));
 
     this.displayAttributeButton =
@@ -77,7 +77,7 @@ public class AttributeConfigurationScreen<T extends AttributeConfigurationMenu>
                 70,
                 "display",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.DISPLAY_ATTRIBUTE)));
 
     // Default button stats

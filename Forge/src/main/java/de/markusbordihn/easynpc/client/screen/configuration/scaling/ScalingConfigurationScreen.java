@@ -26,7 +26,7 @@ import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.menu.configuration.scaling.ScalingConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -88,7 +88,7 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
                 button -> {
                   float scale = button.getTargetValue();
                   if (this.scaleData.getScaleX() != scale) {
-                    NetworkMessageHandler.scaleChange(uuid, "x", button.getTargetValue());
+                    ServerNetworkMessageHandler.scaleChange(uuid, "x", button.getTargetValue());
                   }
                   this.defaultScaleXButton.active = scale != this.scaleData.getDefaultScaleX();
                 }));
@@ -117,7 +117,7 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
                 button -> {
                   float scale = button.getTargetValue();
                   if (this.scaleData.getScaleY() != scale) {
-                    NetworkMessageHandler.scaleChange(uuid, "y", button.getTargetValue());
+                    ServerNetworkMessageHandler.scaleChange(uuid, "y", button.getTargetValue());
                   }
                   this.defaultScaleYButton.active = scale != this.scaleData.getDefaultScaleY();
                 }));
@@ -146,7 +146,7 @@ public class ScalingConfigurationScreen extends ConfigurationScreen<ScalingConfi
                 button -> {
                   float scale = button.getTargetValue();
                   if (this.scaleData.getScaleZ() != scale) {
-                    NetworkMessageHandler.scaleChange(uuid, "z", button.getTargetValue());
+                    ServerNetworkMessageHandler.scaleChange(uuid, "z", button.getTargetValue());
                   }
                   this.defaultScaleZButton.active = scale != this.scaleData.getDefaultScaleZ();
                 }));

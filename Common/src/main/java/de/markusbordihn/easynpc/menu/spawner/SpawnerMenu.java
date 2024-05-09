@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.menu.spawner;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.block.entity.BaseEasyNPCSpawnerBlockEntity;
 import de.markusbordihn.easynpc.menu.slots.PresetSlot;
 import net.minecraft.core.BlockPos;
@@ -33,8 +32,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class SpawnerMenu extends AbstractContainerMenu {
   public static final int PLAYER_SLOT_START = 9;
@@ -42,30 +39,29 @@ public class SpawnerMenu extends AbstractContainerMenu {
   public static final int presetItemSlotX = 42;
   public static final int presetItemSlotY = 169;
   protected static final int containerSize = 1;
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private final Container container;
   private final ContainerData data;
 
-  public SpawnerMenu(int windowId, Inventory playerInventory) {
+  public SpawnerMenu(int containerId, Inventory playerInventory) {
     this(
-        windowId,
+        containerId,
         playerInventory,
         new SimpleContainer(containerSize),
         new SimpleContainerData(BaseEasyNPCSpawnerBlockEntity.DATA_SIZE));
   }
 
   public SpawnerMenu(
-      final int windowId,
+      final int containerId,
       final Inventory playerInventory,
       final Container container,
       final ContainerData containerData) {
-    this(null, windowId, playerInventory, container, containerData);
+    this(null, containerId, playerInventory, container, containerData);
   }
 
-  public SpawnerMenu(MenuType<?> menuType, final int windowId, final Inventory playerInventory) {
+  public SpawnerMenu(MenuType<?> menuType, final int containerId, final Inventory playerInventory) {
     this(
         menuType,
-        windowId,
+        containerId,
         playerInventory,
         new SimpleContainer(containerSize),
         new SimpleContainerData(BaseEasyNPCSpawnerBlockEntity.DATA_SIZE));
@@ -73,11 +69,11 @@ public class SpawnerMenu extends AbstractContainerMenu {
 
   public SpawnerMenu(
       MenuType<?> menuType,
-      final int windowId,
+      final int containerId,
       final Inventory playerInventory,
       final Container container,
       final ContainerData containerData) {
-    super(menuType, windowId);
+    super(menuType, containerId);
 
     // Make sure the passed container matched the expected sizes
     checkContainerSize(container, containerSize);

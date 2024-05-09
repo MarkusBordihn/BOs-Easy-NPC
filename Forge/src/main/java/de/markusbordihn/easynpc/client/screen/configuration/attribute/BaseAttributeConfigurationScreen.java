@@ -24,7 +24,7 @@ import de.markusbordihn.easynpc.client.screen.components.SliderButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.menu.configuration.attribute.BaseAttributeConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -141,7 +141,7 @@ public class BaseAttributeConfigurationScreen
             20.0D,
             1.0D,
             slider ->
-                NetworkMessageHandler.entityBaseAttributeChange(
+                ServerNetworkMessageHandler.entityBaseAttributeChange(
                     uuid, Attributes.MAX_HEALTH, slider.getTargetDoubleValue()));
 
     // Follow Range
@@ -159,7 +159,7 @@ public class BaseAttributeConfigurationScreen
             32.0D,
             1.0D,
             slider ->
-                NetworkMessageHandler.entityBaseAttributeChange(
+                ServerNetworkMessageHandler.entityBaseAttributeChange(
                     uuid, Attributes.FOLLOW_RANGE, slider.getTargetDoubleValue()));
 
     // Knock-back Resistance
@@ -177,7 +177,7 @@ public class BaseAttributeConfigurationScreen
             0.0D,
             0.1D,
             slider ->
-                NetworkMessageHandler.entityBaseAttributeChange(
+                ServerNetworkMessageHandler.entityBaseAttributeChange(
                     uuid, Attributes.KNOCKBACK_RESISTANCE, slider.getTargetDoubleValue()));
 
     // Movement Speed
@@ -196,7 +196,7 @@ public class BaseAttributeConfigurationScreen
               0.6D,
               0.1D,
               slider ->
-                  NetworkMessageHandler.entityBaseAttributeChange(
+                  ServerNetworkMessageHandler.entityBaseAttributeChange(
                       uuid, Attributes.MOVEMENT_SPEED, slider.getTargetDoubleValue()));
     }
 
@@ -216,7 +216,7 @@ public class BaseAttributeConfigurationScreen
               0.4D,
               0.1D,
               slider ->
-                  NetworkMessageHandler.entityBaseAttributeChange(
+                  ServerNetworkMessageHandler.entityBaseAttributeChange(
                       uuid, Attributes.FLYING_SPEED, slider.getTargetDoubleValue()));
     }
 
@@ -235,7 +235,7 @@ public class BaseAttributeConfigurationScreen
             2.0D,
             1.0D,
             slider ->
-                NetworkMessageHandler.entityBaseAttributeChange(
+                ServerNetworkMessageHandler.entityBaseAttributeChange(
                     uuid, Attributes.ATTACK_DAMAGE, slider.getTargetDoubleValue()));
 
     // Attack Knock-back
@@ -253,7 +253,7 @@ public class BaseAttributeConfigurationScreen
             0.0D,
             0.1D,
             slider ->
-                NetworkMessageHandler.entityBaseAttributeChange(
+                ServerNetworkMessageHandler.entityBaseAttributeChange(
                     uuid, Attributes.ATTACK_KNOCKBACK, slider.getTargetDoubleValue()));
 
     // Attack Speed
@@ -272,7 +272,7 @@ public class BaseAttributeConfigurationScreen
               4.0D,
               0.5D,
               slider ->
-                  NetworkMessageHandler.entityBaseAttributeChange(
+                  ServerNetworkMessageHandler.entityBaseAttributeChange(
                       uuid, Attributes.ATTACK_SPEED, slider.getTargetDoubleValue()));
     }
 
@@ -291,7 +291,7 @@ public class BaseAttributeConfigurationScreen
             0.0D,
             1.0D,
             slider ->
-                NetworkMessageHandler.entityBaseAttributeChange(
+                ServerNetworkMessageHandler.entityBaseAttributeChange(
                     uuid, Attributes.ARMOR, slider.getTargetDoubleValue()));
 
     // Armor Toughness
@@ -309,7 +309,7 @@ public class BaseAttributeConfigurationScreen
             0.0D,
             0.5D,
             slider ->
-                NetworkMessageHandler.entityBaseAttributeChange(
+                ServerNetworkMessageHandler.entityBaseAttributeChange(
                     uuid, Attributes.ARMOR_TOUGHNESS, slider.getTargetDoubleValue()));
   }
 
