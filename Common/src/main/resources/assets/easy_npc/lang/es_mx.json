@@ -253,5 +253,5 @@
   "text.easy_npc.removeNPC.deleteWarning": "¡'%s' se perderá para siempre! (¡Eso es mucho tiempo!)",
   "text.easy_npc.respawnNPC.confirmQuestion": "¿Estás seguro de que quieres reaparecer este NPC?",
   "text.easy_npc.respawnNPC.confirmWarning": "¡El NPC '%s' reaparecerá como un nuevo NPC, pero con la misma configuración, posición y UUID!",
-  "text.easy_npc.respawnNPC.respawnButton": "Reaparecer NPC",
+  "text.easy_npc.respawnNPC.respawnButton": "Reaparecer NPC"
 }
