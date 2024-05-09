@@ -68,8 +68,7 @@ public class MessagePresetExport extends NetworkMessage {
     }
 
     // Perform action.
-    NetworkMessageHandlerManager.getNetworkMessageHandler()
-        .exportPresetClient(uuid, name, serverPlayer);
+    NetworkMessageHandlerManager.getClientHandler().exportClientPreset(uuid, name, serverPlayer);
   }
 
   public String getName() {

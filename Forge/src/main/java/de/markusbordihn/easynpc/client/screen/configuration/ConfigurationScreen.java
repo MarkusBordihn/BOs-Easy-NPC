@@ -24,13 +24,13 @@ import de.markusbordihn.easynpc.client.screen.components.CloseButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.config.CommonConfig;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -144,6 +144,10 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
         && (text.isEmpty() || (text.matches("^\\d+$") && Integer.parseInt(text) >= 0));
   }
 
+  protected SkinModel getSkinModel() {
+    return this.skinModel;
+  }
+
   public void closeScreen() {
     if (this.minecraftInstance != null) {
       this.minecraftInstance.setScreen(null);
@@ -151,7 +155,7 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
   }
 
   public void showMainScreen() {
-    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.MAIN);
+    ServerNetworkMessageHandler.openConfiguration(uuid, ConfigurationType.MAIN);
   }
 
   protected boolean hasPermissions(Boolean enabled, Boolean allowInCreative, int permissionLevel) {
@@ -197,7 +201,8 @@ public class ConfigurationScreen<T extends ConfigurationMenu> extends AbstractCo
                 this.buttonTopPos,
                 10,
                 "<",
-                onPress -> NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.MAIN)));
+                onPress ->
+                    ServerNetworkMessageHandler.openConfiguration(uuid, ConfigurationType.MAIN)));
   }
 
   @Override

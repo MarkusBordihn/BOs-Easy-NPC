@@ -29,14 +29,14 @@ import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogTextData;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.editor.DialogTextEditorMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -104,13 +104,14 @@ public class DialogTextEditorScreen extends AbstractContainerScreen<DialogTextEd
 
   private void openPreviousScreen() {
     if (this.formerConfigurationType == ConfigurationType.DIALOG_EDITOR) {
-      NetworkMessageHandler.openDialogEditor(uuid, this.dialogId, this.formerConfigurationType);
+      ServerNetworkMessageHandler.openDialogEditor(
+          uuid, this.dialogId, this.formerConfigurationType);
     } else if (this.formerConfigurationType == ConfigurationType.ADVANCED_DIALOG) {
-      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.ADVANCED_DIALOG);
+      ServerNetworkMessageHandler.openConfiguration(uuid, ConfigurationType.ADVANCED_DIALOG);
     } else if (this.formerConfigurationType != null) {
-      NetworkMessageHandler.openConfiguration(uuid, this.formerConfigurationType);
+      ServerNetworkMessageHandler.openConfiguration(uuid, this.formerConfigurationType);
     } else if (dialogDataSet.getType() == DialogType.YES_NO) {
-      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.YES_NO_DIALOG);
+      ServerNetworkMessageHandler.openConfiguration(uuid, ConfigurationType.YES_NO_DIALOG);
     } else {
       this.closeScreen();
     }
@@ -134,7 +135,7 @@ public class DialogTextEditorScreen extends AbstractContainerScreen<DialogTextEd
     this.dialogData.setDialogTexts(validDialogTexts);
 
     // Save dialog data
-    NetworkMessageHandler.saveDialog(this.uuid, this.dialogId, this.dialogData);
+    ServerNetworkMessageHandler.saveDialog(this.uuid, this.dialogId, this.dialogData);
   }
 
   @Override

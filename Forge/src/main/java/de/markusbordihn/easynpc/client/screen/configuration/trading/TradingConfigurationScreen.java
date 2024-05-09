@@ -21,9 +21,9 @@ package de.markusbordihn.easynpc.client.screen.configuration.trading;
 
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -56,7 +56,8 @@ public class TradingConfigurationScreen<T extends ConfigurationMenu>
                 64,
                 "disable_trading",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.NONE_TRADING)));
+                    ServerNetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.NONE_TRADING)));
     this.basicTradesButton =
         this.addRenderableWidget(
             new TextButton(
@@ -65,7 +66,7 @@ public class TradingConfigurationScreen<T extends ConfigurationMenu>
                 64,
                 "basic",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.BASIC_TRADING)));
     this.advancedTradesButton =
         this.addRenderableWidget(
@@ -77,7 +78,7 @@ public class TradingConfigurationScreen<T extends ConfigurationMenu>
                 70,
                 "advanced",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.ADVANCED_TRADING)));
     this.customTradesButton =
         this.addRenderableWidget(
@@ -90,7 +91,7 @@ public class TradingConfigurationScreen<T extends ConfigurationMenu>
                 100,
                 "custom",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.CUSTOM_TRADING)));
 
     // Default button stats

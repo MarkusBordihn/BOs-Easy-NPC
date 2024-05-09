@@ -25,7 +25,7 @@ import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
 import de.markusbordihn.easynpc.menu.configuration.attribute.DisplayAttributeConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -79,7 +79,7 @@ public class DisplayAttributeConfigurationScreen
                 onPress -> {
                   int lightLevel = Integer.parseInt(this.lightLevelBox.getValue());
                   if (lightLevel >= 0 && lightLevel <= 15) {
-                    NetworkMessageHandler.entityAttributeChange(
+                    ServerNetworkMessageHandler.entityAttributeChange(
                         uuid, EntityAttribute.LIGHT_LEVEL, lightLevel);
                   }
                 }));

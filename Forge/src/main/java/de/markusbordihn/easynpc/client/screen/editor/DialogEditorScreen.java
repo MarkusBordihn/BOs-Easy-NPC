@@ -33,15 +33,15 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextEditButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.editor.DialogEditorMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.client.Minecraft;
@@ -117,11 +117,11 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
 
   private void openPreviousScreen() {
     if (this.formerConfigurationType == ConfigurationType.DIALOG_EDITOR) {
-      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.ADVANCED_DIALOG);
+      ServerNetworkMessageHandler.openConfiguration(uuid, ConfigurationType.ADVANCED_DIALOG);
     } else if (this.formerConfigurationType != null) {
-      NetworkMessageHandler.openConfiguration(uuid, this.formerConfigurationType);
+      ServerNetworkMessageHandler.openConfiguration(uuid, this.formerConfigurationType);
     } else if (dialogDataSet.getType() == DialogType.YES_NO) {
-      NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.YES_NO_DIALOG);
+      ServerNetworkMessageHandler.openConfiguration(uuid, ConfigurationType.YES_NO_DIALOG);
     } else {
       this.closeScreen();
     }
@@ -142,7 +142,7 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
         new ConfirmScreen(
             confirmed -> {
               if (confirmed && uuid != null) {
-                NetworkMessageHandler.removeDialog(uuid, dialogId);
+                ServerNetworkMessageHandler.removeDialog(uuid, dialogId);
                 this.openPreviousScreen();
               } else {
                 minecraft.setScreen(this);
@@ -205,7 +205,7 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
     this.dialogData.setTranslate(this.dialogTranslateCheckbox.selected());
 
     // Save dialog data
-    NetworkMessageHandler.saveDialog(this.uuid, this.dialogId, this.dialogData);
+    ServerNetworkMessageHandler.saveDialog(this.uuid, this.dialogId, this.dialogData);
 
     // Update dialog id, if label has changed.
     if (!this.dialogLabelTextField.getValue().equals(this.dialogLabelValue)) {
@@ -310,7 +310,7 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
                   // the dialog text editor.
                   this.saveDialogData();
 
-                  NetworkMessageHandler.openDialogTextEditor(
+                  ServerNetworkMessageHandler.openDialogTextEditor(
                       uuid, this.dialogId, ConfigurationType.DIALOG_EDITOR);
                 }));
 
@@ -348,7 +348,7 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
               dialogButtonData.getName(buttonMaxTextLength),
               onPress -> {
                 log.info("Edit dialog button {}", dialogButtonData.getId());
-                NetworkMessageHandler.openDialogButtonEditor(
+                ServerNetworkMessageHandler.openDialogButtonEditor(
                     uuid, this.dialogId, dialogButtonData.getId(), ConfigurationType.DIALOG_EDITOR);
               });
       this.addRenderableWidget(dialogActionButton);
@@ -369,7 +369,7 @@ public class DialogEditorScreen extends AbstractContainerScreen<DialogEditorMenu
                 // the dialog button editor.
                 this.saveDialogData();
 
-                NetworkMessageHandler.openDialogButtonEditor(
+                ServerNetworkMessageHandler.openDialogButtonEditor(
                     uuid, this.dialogId, ConfigurationType.DIALOG_EDITOR);
               });
       this.addRenderableWidget(this.addDialogButton);

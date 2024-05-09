@@ -24,7 +24,7 @@ import net.minecraft.network.chat.MutableComponent;
 
 public class TextUtils {
 
-  protected TextUtils() {}
+  private TextUtils() {}
 
   public static Component normalizeName(String name) {
     return Component.literal(normalizeString(name));

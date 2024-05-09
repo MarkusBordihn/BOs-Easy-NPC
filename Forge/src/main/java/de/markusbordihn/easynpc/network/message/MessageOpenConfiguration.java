@@ -19,10 +19,10 @@
 
 package de.markusbordihn.easynpc.network.message;
 
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.MenuManager;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.network.NetworkMessage;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;

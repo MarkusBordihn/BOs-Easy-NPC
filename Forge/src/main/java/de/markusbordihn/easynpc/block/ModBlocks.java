@@ -49,7 +49,7 @@ public class ModBlocks {
                       .sound(SoundType.METAL)
                       .noOcclusion()));
 
-  protected ModBlocks() {}
+  private ModBlocks() {}
 
   public static final RegistryObject<BlockEntityType<EasyNPCSpawnerBlockEntity>>
       EASY_NPC_SPAWNER_ENTITY =

@@ -25,10 +25,10 @@ import de.markusbordihn.easynpc.client.screen.components.CopyButton;
 import de.markusbordihn.easynpc.client.screen.components.EditButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextEditButton;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.dialog.AdvancedDialogConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -70,7 +70,7 @@ public class AdvancedDialogConfigurationScreen
                 200,
                 "dialog.add",
                 onPress ->
-                    NetworkMessageHandler.openDialogEditor(
+                    ServerNetworkMessageHandler.openDialogEditor(
                         AdvancedDialogConfigurationScreen.this.uuid,
                         ConfigurationType.ADVANCED_DIALOG)));
   }
@@ -195,7 +195,7 @@ public class AdvancedDialogConfigurationScreen
                 0,
                 0,
                 onPress ->
-                    NetworkMessageHandler.openDialogEditor(
+                    ServerNetworkMessageHandler.openDialogEditor(
                         AdvancedDialogConfigurationScreen.this.uuid,
                         this.dialogData.getId(),
                         ConfigurationType.ADVANCED_DIALOG));
@@ -212,7 +212,7 @@ public class AdvancedDialogConfigurationScreen
                 0,
                 0,
                 onPress ->
-                    NetworkMessageHandler.openDialogTextEditor(
+                    ServerNetworkMessageHandler.openDialogTextEditor(
                         AdvancedDialogConfigurationScreen.this.uuid,
                         this.dialogData.getId(),
                         ConfigurationType.ADVANCED_DIALOG));

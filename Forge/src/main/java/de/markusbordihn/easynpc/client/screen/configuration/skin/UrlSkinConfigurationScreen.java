@@ -30,7 +30,7 @@ import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.menu.configuration.skin.UrlSkinConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import de.markusbordihn.easynpc.validator.UrlValidator;
@@ -126,7 +126,7 @@ public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinC
             y - 81,
             button -> {
               String skinURL = RemoteTextureManager.getTextureSkinURL(textureModelKey);
-              NetworkMessageHandler.skinChange(this.uuid, "", skinURL, textureUUID, skinType);
+              ServerNetworkMessageHandler.skinChange(this.uuid, "", skinURL, textureUUID, skinType);
             });
 
     // Disable button for active skin.
@@ -155,7 +155,7 @@ public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinC
       // Validate url and send message to server.
       if (UrlValidator.isValidUrl(textureSkinLocationValue)) {
         log.debug("Setting remote user texture to {}", textureSkinLocationValue);
-        NetworkMessageHandler.setRemoteSkin(this.uuid, textureSkinLocationValue);
+        ServerNetworkMessageHandler.setRemoteSkin(this.uuid, textureSkinLocationValue);
       }
 
       this.addTextureSettingsButton.active = false;

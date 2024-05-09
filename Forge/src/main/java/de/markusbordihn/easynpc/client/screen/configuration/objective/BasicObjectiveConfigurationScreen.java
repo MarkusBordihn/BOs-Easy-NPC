@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.menu.configuration.objective.BasicObjectiveConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
@@ -74,9 +74,9 @@ public class BasicObjectiveConfigurationScreen
                       new ObjectiveDataEntry(ObjectiveType.RANDOM_STROLL, 5);
                   objectiveDataEntry.setSpeedModifier(0.8F);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -94,9 +94,9 @@ public class BasicObjectiveConfigurationScreen
                       new ObjectiveDataEntry(ObjectiveType.WATER_AVOIDING_RANDOM_STROLL, 5);
                   objectiveDataEntry.setSpeedModifier(0.6F);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -114,9 +114,9 @@ public class BasicObjectiveConfigurationScreen
                       new ObjectiveDataEntry(ObjectiveType.MOVE_THROUGH_VILLAGE, 5);
                   objectiveDataEntry.setSpeedModifier(0.6F);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -134,9 +134,9 @@ public class BasicObjectiveConfigurationScreen
                       new ObjectiveDataEntry(ObjectiveType.MOVE_BACK_TO_VILLAGE, 3);
                   objectiveDataEntry.setSpeedModifier(0.6F);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -153,9 +153,9 @@ public class BasicObjectiveConfigurationScreen
                       new ObjectiveDataEntry(ObjectiveType.MOVE_BACK_TO_HOME, 3);
                   objectiveDataEntry.setSpeedModifier(0.6F);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -173,9 +173,9 @@ public class BasicObjectiveConfigurationScreen
                       new ObjectiveDataEntry(ObjectiveType.RANDOM_STROLL_IN_VILLAGE, 2);
                   objectiveDataEntry.setSpeedModifier(0.6F);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -192,9 +192,9 @@ public class BasicObjectiveConfigurationScreen
                       new ObjectiveDataEntry(ObjectiveType.RANDOM_STROLL_AROUND_HOME, 2);
                   objectiveDataEntry.setSpeedModifier(0.6F);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -212,9 +212,9 @@ public class BasicObjectiveConfigurationScreen
                       new ObjectiveDataEntry(ObjectiveType.RANDOM_SWIMMING, 4);
                   objectiveDataEntry.setSpeedModifier(0.8F);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -232,9 +232,9 @@ public class BasicObjectiveConfigurationScreen
                       new ObjectiveDataEntry(ObjectiveType.PANIC, 1);
                   objectiveDataEntry.setSpeedModifier(1.0D);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -251,9 +251,9 @@ public class BasicObjectiveConfigurationScreen
                   ObjectiveDataEntry objectiveDataEntry =
                       new ObjectiveDataEntry(ObjectiveType.AVOID_SUN, 2);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
 
@@ -270,9 +270,9 @@ public class BasicObjectiveConfigurationScreen
                       new ObjectiveDataEntry(ObjectiveType.FLEE_SUN, 3);
                   objectiveDataEntry.setSpeedModifier(1.0D);
                   if (checkbox.selected()) {
-                    NetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.addObjective(uuid, objectiveDataEntry);
                   } else {
-                    NetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
+                    ServerNetworkMessageHandler.removeObjective(uuid, objectiveDataEntry);
                   }
                 }));
   }

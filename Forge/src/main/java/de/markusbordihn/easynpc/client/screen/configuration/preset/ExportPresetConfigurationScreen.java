@@ -21,9 +21,9 @@ package de.markusbordihn.easynpc.client.screen.configuration.preset;
 
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -55,7 +55,7 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
                 buttonWidth + 16,
                 "custom",
                 button ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.CUSTOM_PRESET_EXPORT)));
     this.customExportPresetButton.active = false;
     this.worldExportPresetButton =
@@ -66,7 +66,7 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
                 buttonWidth,
                 "world_preset",
                 button ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.WORLD_PRESET_EXPORT)));
     this.worldExportPresetButton.active = false;
 

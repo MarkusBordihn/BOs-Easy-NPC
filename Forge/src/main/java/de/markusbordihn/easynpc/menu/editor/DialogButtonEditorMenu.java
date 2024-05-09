@@ -20,12 +20,12 @@
 package de.markusbordihn.easynpc.menu.editor;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;

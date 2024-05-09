@@ -20,13 +20,18 @@
 package de.markusbordihn.easynpc.utils;
 
 import de.markusbordihn.easynpc.data.scale.CustomScale;
+import java.util.HashSet;
+import java.util.Set;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
 
 public class CompoundTagUtils {
 
   public static final String X_TAG = "X";
   public static final String Y_TAG = "Y";
   public static final String Z_TAG = "Z";
+  public static final String ID_PREFIX = "id_";
 
   private CompoundTagUtils() {}
 
@@ -48,5 +53,34 @@ public class CompoundTagUtils {
     }
     return new CustomScale(
         compoundTag.getFloat(X_TAG), compoundTag.getFloat(Y_TAG), compoundTag.getFloat(Z_TAG));
+  }
+
+  public static ListTag writeResourceLocations(Set<ResourceLocation> resourceLocations) {
+    ListTag listTag = new ListTag();
+    resourceLocations.forEach(
+        resourceLocation -> {
+          int hashCode = resourceLocation.hashCode();
+          CompoundTag compoundTag = new CompoundTag();
+          compoundTag.putString(ID_PREFIX + hashCode, resourceLocation.toString());
+          listTag.add(compoundTag);
+        });
+    return listTag;
+  }
+
+  public static Set<ResourceLocation> readResourceLocations(ListTag listTag) {
+    Set<ResourceLocation> resourceLocations = new HashSet<>();
+    listTag.forEach(
+        tag -> {
+          CompoundTag compoundTag = (CompoundTag) tag;
+          compoundTag
+              .getAllKeys()
+              .forEach(
+                  key -> {
+                    if (key.startsWith(ID_PREFIX)) {
+                      resourceLocations.add(new ResourceLocation(compoundTag.getString(key)));
+                    }
+                  });
+        });
+    return resourceLocations;
   }
 }

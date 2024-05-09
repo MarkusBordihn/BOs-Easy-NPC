@@ -21,9 +21,9 @@ package de.markusbordihn.easynpc.client.screen.configuration.position;
 
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -54,7 +54,7 @@ public class PositionConfigurationScreen<T extends ConfigurationMenu>
                 positionButtonWidth,
                 "default",
                 button ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.DEFAULT_POSITION)));
 
     // Default button stats

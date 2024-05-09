@@ -21,9 +21,12 @@ package de.markusbordihn.easynpc.menu.configuration.preset;
 
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
@@ -31,6 +34,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public class DefaultImportPresetConfigurationMenu extends ConfigurationMenu {
+
+  protected final List<ResourceLocation> defaultPresets = new ArrayList<>();
 
   public DefaultImportPresetConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
     super(
@@ -58,5 +63,9 @@ public class DefaultImportPresetConfigurationMenu extends ConfigurationMenu {
         return new DefaultImportPresetConfigurationMenu(windowId, inventory, uuid);
       }
     };
+  }
+
+  public List<ResourceLocation> getDefaultPresets() {
+    return this.defaultPresets;
   }
 }

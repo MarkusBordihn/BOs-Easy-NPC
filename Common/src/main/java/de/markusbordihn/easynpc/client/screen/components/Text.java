@@ -27,7 +27,7 @@ import net.minecraft.util.FormattedCharSequence;
 
 public class Text {
 
-  protected Text() {}
+  private Text() {}
 
   public static void drawString(GuiGraphics guiGraphics, Font font, String text, int x, int y) {
     guiGraphics.drawString(

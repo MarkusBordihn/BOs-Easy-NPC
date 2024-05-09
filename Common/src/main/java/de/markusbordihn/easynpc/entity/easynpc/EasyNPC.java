@@ -49,14 +49,15 @@ import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import java.util.Random;
 import java.util.UUID;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
@@ -206,10 +207,6 @@ public interface EasyNPC<E extends PathfinderMob> extends Npc {
     return this instanceof LivingEntity livingEntity ? livingEntity : null;
   }
 
-  default NeutralMob getNeutralMob() {
-    return this instanceof NeutralMob neutralMob ? neutralMob : null;
-  }
-
   default Merchant getMerchant() {
     return this instanceof Merchant merchant ? merchant : null;
   }
@@ -244,6 +241,15 @@ public interface EasyNPC<E extends PathfinderMob> extends Npc {
 
   default Component getEasyNPCTypeName() {
     return getEntity().getType().getDescription();
+  }
+
+  default String getEntityTypeId() {
+    if (this.getEntity() == null) {
+      return null;
+    }
+    EntityType<?> entitytype = this.getEntity().getType();
+    ResourceLocation resourcelocation = EntityType.getKey(entitytype);
+    return entitytype.canSerialize() ? resourcelocation.toString() : null;
   }
 
   default void handlePlayerJoin(ServerPlayer serverPlayer) {

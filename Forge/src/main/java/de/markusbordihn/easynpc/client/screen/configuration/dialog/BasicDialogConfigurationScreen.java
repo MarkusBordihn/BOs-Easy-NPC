@@ -28,7 +28,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
@@ -82,7 +82,7 @@ public class BasicDialogConfigurationScreen
                 onPress -> {
                   DialogDataSet dialogDataSet =
                       DialogUtils.getBasicDialog(this.dialogBox.getValue());
-                  NetworkMessageHandler.saveDialog(uuid, dialogDataSet);
+                  ServerNetworkMessageHandler.saveDialog(uuid, dialogDataSet);
                   this.dialogValue = this.dialogBox.getValue();
                 }));
 

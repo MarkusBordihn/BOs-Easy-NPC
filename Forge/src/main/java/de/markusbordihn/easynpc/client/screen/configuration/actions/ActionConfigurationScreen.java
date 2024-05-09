@@ -24,9 +24,9 @@ import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
-import de.markusbordihn.easynpc.menu.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.action.ActionConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandler;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
@@ -68,7 +68,8 @@ public class ActionConfigurationScreen<T extends ActionConfigurationMenu>
                 80,
                 "basic",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(uuid, ConfigurationType.BASIC_ACTION)));
+                    ServerNetworkMessageHandler.openConfiguration(
+                        uuid, ConfigurationType.BASIC_ACTION)));
     this.dialogActionButton =
         this.addRenderableWidget(
             new TextButton(
@@ -77,7 +78,7 @@ public class ActionConfigurationScreen<T extends ActionConfigurationMenu>
                 80,
                 "dialog_actions",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.DIALOG_ACTION)));
     this.distanceActionButton =
         this.addRenderableWidget(
@@ -87,7 +88,7 @@ public class ActionConfigurationScreen<T extends ActionConfigurationMenu>
                 80,
                 "distance_actions",
                 onPress ->
-                    NetworkMessageHandler.openConfiguration(
+                    ServerNetworkMessageHandler.openConfiguration(
                         uuid, ConfigurationType.DISTANCE_ACTION)));
 
     // Default button stats
