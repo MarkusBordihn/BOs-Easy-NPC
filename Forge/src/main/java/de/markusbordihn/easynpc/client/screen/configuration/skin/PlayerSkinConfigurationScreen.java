@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
+import de.markusbordihn.easynpc.client.texture.TextureManager;
 import de.markusbordihn.easynpc.client.texture.TextureModelKey;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
@@ -36,12 +37,14 @@ import de.markusbordihn.easynpc.utils.TextUtils;
 import de.markusbordihn.easynpc.validator.NameValidator;
 import de.markusbordihn.easynpc.validator.UrlValidator;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 
 public class PlayerSkinConfigurationScreen
@@ -155,6 +158,7 @@ public class PlayerSkinConfigurationScreen
       // Validate player name and send skin change request to server.
       if (NameValidator.isValidPlayerName(textureSkinLocationValue)) {
         log.debug("Setting player user texture to {}", textureSkinLocationValue);
+        TextureManager.clearLastErrorMessage();
         ServerNetworkMessageHandler.setPlayerSkin(
             this.uuid, textureSkinLocationValue, Constants.BLANK_UUID);
       }
@@ -192,12 +196,15 @@ public class PlayerSkinConfigurationScreen
     // Default button stats
     this.playerSkinButton.active = false;
 
+    // Clear former error messages, if any.
+    TextureManager.clearLastErrorMessage();
+
     // Entity specific information.
     this.numOfSkins = PlayerTextureManager.getTextureCacheKeys(skinModel).size();
 
     // Texture Skin Location
     this.textureSkinLocationBox =
-        new TextField(this.font, this.contentLeftPos, this.topPos + 60, 160);
+        new TextField(this.font, this.contentLeftPos, this.topPos + 50, 180);
     this.textureSkinLocationBox.setMaxLength(255);
     this.textureSkinLocationBox.setValue("");
     this.textureSkinLocationBox.setResponder(consumer -> this.validateTextureSkinLocation());
@@ -208,7 +215,7 @@ public class PlayerSkinConfigurationScreen
         this.addRenderableWidget(
             new TextButton(
                 this.textureSkinLocationBox.getX() + this.textureSkinLocationBox.getWidth() + 2,
-                this.topPos + 60,
+                this.topPos + 50,
                 65,
                 "add",
                 onPress -> this.addTextureSkinLocation()));
@@ -219,10 +226,11 @@ public class PlayerSkinConfigurationScreen
         this.addRenderableWidget(
             new TextButton(
                 this.addTextureSettingsButton.getX() + this.addTextureSettingsButton.getWidth() + 1,
-                this.topPos + 60,
+                this.topPos + 50,
                 55,
                 "clear",
                 onPress -> this.clearTextureSkinLocation()));
+    this.clearTextureSettingsButton.active = false;
 
     // Skin Navigation Buttons
     int skinButtonTop = this.topPos + 187;
@@ -291,8 +299,14 @@ public class PlayerSkinConfigurationScreen
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
 
-    Text.drawConfigString(
-        guiGraphics, this.font, "use_a_player_name", this.contentLeftPos, this.topPos + 50);
+    if (addTextureSettingsButton != null) {
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          "use_a_player_name",
+          this.contentLeftPos,
+          addTextureSettingsButton.getY() - 10);
+    }
 
     // Reload protection
     this.canTextureSkinLocationChange =
@@ -303,11 +317,29 @@ public class PlayerSkinConfigurationScreen
     if (!this.canTextureSkinLocationChange) {
       guiGraphics.pose().translate(0, 0, 100);
       guiGraphics.blit(
-          Constants.TEXTURE_CONFIGURATION, this.leftPos + 155, this.topPos + 63, 82, 1, 8, 10);
+          Constants.TEXTURE_CONFIGURATION, this.leftPos + 176, this.topPos + 53, 82, 1, 8, 10);
 
-      // Show processing text.
-      Text.drawConfigString(
-          guiGraphics, this.font, "processing_player_skin", this.leftPos + 55, this.topPos + 88);
+      if (!TextureManager.hasLastErrorMessage()) {
+        Text.drawConfigString(
+            guiGraphics, this.font, "processing_player_skin", this.leftPos + 55, this.topPos + 88);
+      }
+    }
+
+    // Show error messages, if any.
+    if (TextureManager.hasLastErrorMessage()) {
+      List<FormattedCharSequence> textComponents =
+          this.font.split(
+              Component.literal(TextureManager.getLastErrorMessage()), this.imageWidth - 14);
+      int line = 0;
+      for (FormattedCharSequence formattedCharSequence : textComponents) {
+        Text.drawString(
+            guiGraphics,
+            this.font,
+            formattedCharSequence,
+            this.leftPos + 10,
+            this.topPos + 71 + (line++ * (this.font.lineHeight + 2)),
+            Constants.FONT_COLOR_RED);
+      }
     }
 
     // Make sure we pass the mouse movements to the dynamically added buttons, if any.

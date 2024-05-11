@@ -8,6 +8,12 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 4.5.1
+
+- Fixed #179 by adding and documenting the new `/easy_npc preset` commands.
+- Fixed #164 by adding mob types for NPCs.
+- Fixed #146 by showing processing errors with skins.
+
 ### 4.5.0
 
 - Fixed #175 by moving additional log messages to debug level.
