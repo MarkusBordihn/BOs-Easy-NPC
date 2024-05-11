@@ -31,6 +31,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import javax.imageio.ImageIO;
 import net.minecraft.client.Minecraft;
@@ -42,9 +44,10 @@ import org.apache.logging.log4j.Logger;
 public class TextureManager {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
   private static final String TEXTURE_PREFIX = Constants.MOD_ID + "_client_texture_";
   private static final String LOG_PREFIX = "[Texture Manager]";
+  private static final Map<TextureModelKey, String> errorMessageMap = new HashMap<>();
+  private static String lastErrorMessage;
 
   private TextureManager() {}
 
@@ -127,7 +130,7 @@ public class TextureManager {
   public static ResourceLocation addRemoteTexture(
       TextureModelKey textureModelKey, String remoteUrl, Path targetDirectory) {
     if (!UrlValidator.isValidUrl(remoteUrl)) {
-      log.error("{} Texture URL {} is invalid!", LOG_PREFIX, remoteUrl);
+      urlLoadErrorMessage(textureModelKey, remoteUrl, "Invalid URL");
       return null;
     }
 
@@ -152,16 +155,11 @@ public class TextureManager {
         log.debug("{} Following redirect from {} > {}", LOG_PREFIX, remoteUrl, redirectUrl);
         remoteUrl = redirectUrl;
       } else if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-        log.error(
-            "{} Unable to load texture from URL {} because of: {}",
-            LOG_PREFIX,
-            remoteUrl,
-            connection.getResponseMessage());
+        urlLoadErrorMessage(textureModelKey, remoteUrl, connection.getResponseMessage());
         return null;
       }
     } catch (IllegalArgumentException | IOException exception) {
-      log.error(
-          "{} Unable to load texture from URL {} because of:", LOG_PREFIX, remoteUrl, exception);
+      urlLoadErrorMessage(textureModelKey, remoteUrl, exception.getMessage());
       return null;
     }
 
@@ -170,24 +168,24 @@ public class TextureManager {
     try {
       image = ImageIO.read(new URL(remoteUrl));
     } catch (IllegalArgumentException | IOException exception) {
-      log.error("{} Unable to parse image from {} because of:", LOG_PREFIX, remoteUrl, exception);
+      processingErrorMessage(textureModelKey, remoteUrl, exception.getMessage());
       return null;
     }
 
     // Verify the image data to make sure we got a valid image!
     if (image == null) {
-      log.error("{} Unable to get any valid texture from {}!", LOG_PREFIX, remoteUrl);
+      processingErrorMessage(textureModelKey, remoteUrl, "Unable to get any valid texture");
       return null;
     } else if (image.getWidth() < 32
         || image.getHeight() < 32
         || image.getWidth() % 32 != 0
         || image.getHeight() % 32 != 0) {
-      log.error(
-          "{} Unable to get any valid texture from {}, got {}x{}!",
-          LOG_PREFIX,
+      processingErrorMessage(
+          textureModelKey,
           remoteUrl,
-          image.getWidth(),
-          image.getHeight());
+          String.format(
+              "Got %dx%d, but expected 32x32 or multiple of 32",
+              image.getWidth(), image.getHeight()));
       return null;
     }
 
@@ -197,12 +195,7 @@ public class TextureManager {
     try {
       ImageIO.write(image, "png", file);
     } catch (IllegalArgumentException | IOException exception) {
-      log.error(
-          "{} Unable to store texture from {} to {} because of:",
-          LOG_PREFIX,
-          remoteUrl,
-          file,
-          exception);
+      processingErrorMessage(textureModelKey, remoteUrl, exception.getMessage());
       return null;
     }
 
@@ -257,7 +250,7 @@ public class TextureManager {
         UUID uuid = getUUIDFromFilename(filename);
         if (textureUUID.equals(uuid)) {
           log.debug(
-              "{} Found texture file in cache, will re-used file {} for {}",
+              "{} Found texture file in cache directory, will re-used file {} for {}",
               LOG_PREFIX,
               file,
               textureModelKey);
@@ -328,5 +321,36 @@ public class TextureManager {
     } catch (IllegalArgumentException e) {
       return UUID.nameUUIDFromBytes(fileName.getBytes());
     }
+  }
+
+  private static void processingErrorMessage(
+      TextureModelKey textureModelKey, String remoteUrl, String reason) {
+    String errorMessage = String.format("Unable to process texture from %s: %s", remoteUrl, reason);
+    log.error("{} {}", LOG_PREFIX, errorMessage);
+    addErrorMessage(textureModelKey, errorMessage);
+  }
+
+  private static void urlLoadErrorMessage(
+      TextureModelKey textureModelKey, String remoteUrl, String reason) {
+    String errorMessage = String.format("Unable to load texture from %s: %s", remoteUrl, reason);
+    log.error("{} {}", LOG_PREFIX, errorMessage);
+    addErrorMessage(textureModelKey, errorMessage);
+  }
+
+  private static void addErrorMessage(TextureModelKey textureModelKey, String errorMessage) {
+    errorMessageMap.put(textureModelKey, errorMessage);
+    lastErrorMessage = errorMessage;
+  }
+
+  public static boolean hasLastErrorMessage() {
+    return lastErrorMessage != null && !lastErrorMessage.isEmpty();
+  }
+
+  public static String getLastErrorMessage() {
+    return lastErrorMessage;
+  }
+
+  public static void clearLastErrorMessage() {
+    lastErrorMessage = null;
   }
 }

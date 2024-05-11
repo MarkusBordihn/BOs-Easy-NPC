@@ -233,7 +233,7 @@ public class CustomSkinConfigurationScreen
     this.skinReloadButton =
         this.addRenderableWidget(
             new TextButton(
-                this.contentLeftPos + 60,
+                this.contentLeftPos + 70,
                 skinButtonTop,
                 160,
                 "reload_textures",
