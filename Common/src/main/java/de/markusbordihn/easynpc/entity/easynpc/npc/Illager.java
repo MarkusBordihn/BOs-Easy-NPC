@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.entity.EasyNPCBaseModelEntity;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -123,6 +124,11 @@ public class Illager extends EasyNPCBaseModelEntity<Illager> {
     soundDataSet.addSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
     soundDataSet.addSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
+  }
+
+  @Override
+  public MobType getMobType() {
+    return MobType.ILLAGER;
   }
 
   public enum Variant {

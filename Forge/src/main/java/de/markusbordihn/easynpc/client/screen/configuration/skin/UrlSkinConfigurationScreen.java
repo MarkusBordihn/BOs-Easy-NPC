@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
+import de.markusbordihn.easynpc.client.texture.TextureManager;
 import de.markusbordihn.easynpc.client.texture.TextureModelKey;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
@@ -37,6 +38,7 @@ import de.markusbordihn.easynpc.screen.ScreenHelper;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import de.markusbordihn.easynpc.validator.UrlValidator;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.client.gui.components.Button;
@@ -44,6 +46,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 
 public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinConfigurationMenu> {
@@ -159,6 +162,7 @@ public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinC
       // Validate url and send message to server.
       if (UrlValidator.isValidUrl(textureSkinLocationValue)) {
         log.debug("Setting remote user texture to {}", textureSkinLocationValue);
+        TextureManager.clearLastErrorMessage();
         ServerNetworkMessageHandler.setRemoteSkin(this.uuid, textureSkinLocationValue);
       }
 
@@ -193,12 +197,15 @@ public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinC
     // Default button stats
     this.urlSkinButton.active = false;
 
+    // Clear former error messages, if any.
+    TextureManager.clearLastErrorMessage();
+
     // Entity specific information.
     this.numOfSkins = RemoteTextureManager.getTextureCacheKeys(skinModel).size();
 
     // Texture Skin Location
     this.textureSkinLocationBox =
-        new TextField(this.font, this.contentLeftPos, this.topPos + 60, 160);
+        new TextField(this.font, this.contentLeftPos, this.topPos + 50, 180);
     this.textureSkinLocationBox.setMaxLength(255);
     this.textureSkinLocationBox.setValue("");
     this.textureSkinLocationBox.setResponder(consumer -> this.validateTextureSkinLocation());
@@ -209,7 +216,7 @@ public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinC
         this.addRenderableWidget(
             new TextButton(
                 this.textureSkinLocationBox.x + this.textureSkinLocationBox.getWidth() + 2,
-                this.topPos + 60,
+                this.topPos + 50,
                 65,
                 "add",
                 onPress -> this.addTextureSkinLocation()));
@@ -220,10 +227,11 @@ public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinC
         this.addRenderableWidget(
             new TextButton(
                 this.addTextureSettingsButton.x + this.addTextureSettingsButton.getWidth() + 1,
-                this.topPos + 60,
+                this.topPos + 50,
                 55,
                 "clear",
                 onPress -> this.clearTextureSkinLocation()));
+    this.clearTextureSettingsButton.active = false;
 
     // Skin Navigation Buttons
     int skinButtonTop = this.topPos + 187;
@@ -292,8 +300,14 @@ public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinC
   public void render(PoseStack poseStack, int x, int y, float partialTicks) {
     super.render(poseStack, x, y, partialTicks);
 
-    Text.drawConfigString(
-        poseStack, this.font, "use_a_skin_url", this.contentLeftPos, this.topPos + 50);
+    if (addTextureSettingsButton != null) {
+      Text.drawConfigString(
+          poseStack,
+          this.font,
+          "use_a_skin_url",
+          this.contentLeftPos,
+          addTextureSettingsButton.y - 10);
+    }
 
     // Reload protection
     this.canTextureSkinLocationChange =
@@ -306,11 +320,29 @@ public class UrlSkinConfigurationScreen extends SkinConfigurationScreen<UrlSkinC
       RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
       RenderSystem.setShaderTexture(0, Constants.TEXTURE_CONFIGURATION);
       poseStack.translate(0, 0, 100);
-      this.blit(poseStack, this.leftPos + 155, this.topPos + 63, 82, 1, 8, 10);
+      this.blit(poseStack, this.leftPos + 176, this.topPos + 53, 82, 1, 8, 10);
 
-      // Show processing text.
-      Text.drawConfigString(
-          poseStack, this.font, "processing_url_skin", this.leftPos + 55, this.topPos + 88);
+      if (!TextureManager.hasLastErrorMessage()) {
+        Text.drawConfigString(
+            poseStack, this.font, "processing_url_skin", this.leftPos + 55, this.topPos + 80);
+      }
+    }
+
+    // Show error messages, if any.
+    if (TextureManager.hasLastErrorMessage()) {
+      List<FormattedCharSequence> textComponents =
+          this.font.split(
+              new TextComponent(TextureManager.getLastErrorMessage()), this.imageWidth - 14);
+      int line = 0;
+      for (FormattedCharSequence formattedCharSequence : textComponents) {
+        Text.drawString(
+            poseStack,
+            this.font,
+            formattedCharSequence,
+            this.leftPos + 10,
+            this.topPos + 71 + (line++ * (this.font.lineHeight + 2)),
+            Constants.FONT_COLOR_RED);
+      }
     }
 
     // Make sure we pass the mouse movements to the dynamically added buttons, if any.

@@ -91,14 +91,14 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
               }
             },
             new TranslatableComponent(
-                Constants.TEXT_PREFIX + "preset.importQuestion",
+                Constants.TEXT_CONFIG_PREFIX + "preset.importQuestion",
                 resourceLocation
                     .getPath()
                     .substring(resourceLocation.getPath().lastIndexOf("/") + 1)),
             new TranslatableComponent(
-                Constants.TEXT_PREFIX + "preset.importWarning",
+                Constants.TEXT_CONFIG_PREFIX + "preset.importWarning",
                 this.easyNPC.getEntity().getDisplayName().getString()),
-            new TranslatableComponent(Constants.TEXT_PREFIX + "preset.importButton"),
+            new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "preset.importButton"),
             CommonComponents.GUI_CANCEL));
   }
 
@@ -380,6 +380,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
         ImportPresetConfigurationScreen.updateSelectedPreset(this.resourceLocation);
       }
 
+      @Override
       public Component getNarration() {
         return new TextComponent(this.resourceLocation.getPath());
       }

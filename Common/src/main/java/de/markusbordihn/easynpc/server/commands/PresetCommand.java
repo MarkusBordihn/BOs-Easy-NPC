@@ -416,11 +416,10 @@ public class PresetCommand extends Command {
     }
 
     if (!PresetHandler.importCustomPreset(context.getLevel(), preset, position, uuid)) {
-      return sendFailureMessage(context, "Unable to import custom preset " + preset + "!");
+      return sendFailureMessage(context, importedPresetFailedMessage(CUSTOM_ARG, preset));
     }
 
-    return sendSuccessMessage(
-        context, "Imported custom preset " + preset + " at " + position + "!");
+    return sendSuccessMessage(context, importedPresetMessage(CUSTOM_ARG, preset, position, uuid));
   }
 
   private static int importDataPreset(
@@ -430,10 +429,10 @@ public class PresetCommand extends Command {
     }
 
     if (!PresetHandler.importDataPreset(context.getLevel(), preset, position, uuid)) {
-      return sendFailureMessage(context, "Unable to import data preset " + preset + "!");
+      return sendFailureMessage(context, importedPresetFailedMessage(DATA_ARG, preset));
     }
 
-    return sendSuccessMessage(context, "Imported data preset " + preset + " at " + position + "!");
+    return sendSuccessMessage(context, importedPresetMessage(DATA_ARG, preset, position, uuid));
   }
 
   private static int importDefaultPreset(
@@ -443,11 +442,10 @@ public class PresetCommand extends Command {
     }
 
     if (!PresetHandler.importDefaultPreset(context.getLevel(), preset, position, uuid)) {
-      return sendFailureMessage(context, "Unable to import default preset " + preset + "!");
+      return sendFailureMessage(context, importedPresetFailedMessage(DEFAULT_ARG, preset));
     }
 
-    return sendSuccessMessage(
-        context, "Imported default preset " + preset + " at " + position + "!");
+    return sendSuccessMessage(context, importedPresetMessage(DEFAULT_ARG, preset, position, uuid));
   }
 
   private static int importWorldPreset(
@@ -457,10 +455,25 @@ public class PresetCommand extends Command {
     }
 
     if (!PresetHandler.importWorldPreset(context.getLevel(), preset, position, uuid)) {
-      return sendFailureMessage(context, "Unable to import world preset " + preset + "!");
+      return sendFailureMessage(context, importedPresetFailedMessage(WORLD_ARG, preset));
     }
 
-    return sendSuccessMessage(context, "Imported world preset " + preset + " at " + position + "!");
+    return sendSuccessMessage(context, importedPresetMessage(WORLD_ARG, preset, position, uuid));
+  }
+
+  private static String importedPresetFailedMessage(String presetType, ResourceLocation preset) {
+    return "Unable to import " + presetType + " preset " + preset + " !";
+  }
+
+  private static String importedPresetMessage(
+      String presetType, ResourceLocation preset, Vec3 position, UUID uuid) {
+    return "Imported "
+        + presetType
+        + " preset "
+        + preset
+        + (position != null ? " at " + position : "")
+        + (uuid != null ? " with UUID " + uuid : "")
+        + " !";
   }
 
   private static int exportCustomPreset(
@@ -475,7 +488,7 @@ public class PresetCommand extends Command {
 
     return sendSuccessMessage(
         context,
-        "Exported custom preset "
+        "Exporting custom preset "
             + name
             + " for "
             + easyNPC
@@ -496,7 +509,7 @@ public class PresetCommand extends Command {
 
     return sendSuccessMessage(
         context,
-        "Exported world preset "
+        "Exporting world preset "
             + name
             + " for "
             + easyNPC
