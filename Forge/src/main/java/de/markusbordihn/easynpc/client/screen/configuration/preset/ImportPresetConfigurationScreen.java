@@ -89,14 +89,14 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
               }
             },
             Component.translatable(
-                Constants.TEXT_PREFIX + "preset.importQuestion",
+                Constants.TEXT_CONFIG_PREFIX + "preset.importQuestion",
                 resourceLocation
                     .getPath()
                     .substring(resourceLocation.getPath().lastIndexOf("/") + 1)),
             Component.translatable(
-                Constants.TEXT_PREFIX + "preset.importWarning",
+                Constants.TEXT_CONFIG_PREFIX + "preset.importWarning",
                 this.easyNPC.getEntity().getDisplayName().getString()),
-            Component.translatable(Constants.TEXT_PREFIX + "preset.importButton"),
+            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "preset.importButton"),
             CommonComponents.GUI_CANCEL));
   }
 

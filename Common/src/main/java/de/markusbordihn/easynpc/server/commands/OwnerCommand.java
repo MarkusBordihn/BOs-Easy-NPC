@@ -28,7 +28,6 @@ import de.markusbordihn.easynpc.handler.OwnerHandler;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 public class OwnerCommand extends Command {
@@ -89,10 +88,7 @@ public class OwnerCommand extends Command {
       return sendFailureMessageNoOwnerData(context, easyNPC);
     }
 
-    context.sendSuccess(
-        Component.literal(
-            EASY_NPC_PREFIX + easyNPC.getUUID() + " is owned by " + ownerData.getOwner()),
-        false);
-    return Command.SINGLE_SUCCESS;
+    return sendSuccessMessage(
+        context, EASY_NPC_PREFIX + easyNPC.getUUID() + " is owned by " + ownerData.getOwner());
   }
 }
