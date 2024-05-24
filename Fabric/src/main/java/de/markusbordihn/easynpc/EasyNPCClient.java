@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import de.markusbordihn.easynpc.tabs.ModTabs;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,14 +53,17 @@ public class EasyNPCClient implements ClientModInitializer {
     log.info("{} Tabs ...", Constants.LOG_REGISTER_PREFIX);
     ModTabs.handleCreativeModeTabRegister();
 
-    log.info("{} Register Data Files ...", Constants.LOG_REGISTER_PREFIX);
-    DataFileHandler.registerDataFiles();
-
     log.info("{} Client Network Handler ...", Constants.LOG_REGISTER_PREFIX);
     NetworkHandler.registerClientNetworkHandler();
     NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
 
     log.info("{} Client Screens ...", Constants.LOG_REGISTER_PREFIX);
     ClientScreens.registerScreens();
+
+    ClientLifecycleEvents.CLIENT_STARTED.register(
+        client -> {
+          log.info("{} Register Data Files ...", Constants.LOG_REGISTER_PREFIX);
+          DataFileHandler.registerDataFiles();
+        });
   }
 }

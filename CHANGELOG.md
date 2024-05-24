@@ -8,6 +8,10 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 4.5.2
+
+- Fixed #203 by moving texture registration to later stage.
+
 ### 4.5.1
 
 - Fixed #179 by adding and documenting the new `/easy_npc preset` commands.
