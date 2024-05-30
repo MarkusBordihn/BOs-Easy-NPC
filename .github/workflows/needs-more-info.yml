@@ -17,14 +17,15 @@ jobs:
           GH_REPO: ${{ github.repository }}
           NUMBER: ${{ github.event.issue.number }}
           BODY: >
-            🚀 **Thank you for reporting this issue!** 🚀
-            
+            **Thank you for reporting this issue!**
+            \
             To help me better understand and address the problem, I need some additional information from you.
-            
+            \
             🔍 **Please enable the debug mode** by running `/easy_npc debug true` and provide the detailed information found in the logs. 
             For more information, please refer to the [debugging guide](https://github.com/MarkusBordihn/BOs-Easy-NPC/wiki/Debugging). 
+            \
             Additionally, use the issue template as thoroughly as possible to make it easier for me to reproduce and fix the error.
-            
+            \
             ⚠️ **Note:** Issues with insufficient information may be deprioritized, and stale issues will be closed.
-            
-            🙏 Thank you for your cooperation!
+            \
+            Thank you for your cooperation! 🙏
