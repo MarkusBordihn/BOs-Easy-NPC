@@ -21,40 +21,15 @@ package de.markusbordihn.easynpc.menu.configuration.preset;
 
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 
-public class WorldExportPresetConfigurationMenu extends ConfigurationMenu {
+public class ImportCustomPresetConfigurationMenuWrapper extends ConfigurationMenu {
 
-  public WorldExportPresetConfigurationMenu(int windowId, Inventory playerInventory, UUID uuid) {
-    super(
-        ModMenuTypes.WORLD_EXPORT_PRESET_CONFIGURATION_MENU.get(), windowId, playerInventory, uuid);
-  }
-
-  public WorldExportPresetConfigurationMenu(
-      int windowId, Inventory playerInventory, FriendlyByteBuf data) {
-    this(windowId, playerInventory, data.readUUID());
-  }
-
-  public static MenuProvider getMenuProvider(UUID uuid, Entity entity) {
-    return new MenuProvider() {
-      @Override
-      public Component getDisplayName() {
-        return new TextComponent("World Export preset for " + entity.getName().getString());
-      }
-
-      @Override
-      public AbstractContainerMenu createMenu(
-          int windowId, Inventory inventory, Player serverPlayer) {
-        return new WorldExportPresetConfigurationMenu(windowId, inventory, uuid);
-      }
-    };
+  public ImportCustomPresetConfigurationMenuWrapper(
+      final int containerId,
+      final Inventory playerInventory,
+      @SuppressWarnings("unused") final FriendlyByteBuf buffer) {
+    super(ModMenuTypes.CUSTOM_IMPORT_PRESET_CONFIGURATION_MENU.get(), containerId, playerInventory);
   }
 }
