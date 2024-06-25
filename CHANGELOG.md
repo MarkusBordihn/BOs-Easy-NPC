@@ -8,6 +8,21 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.0.0 (beta only for testing)
+
+Note: Please backup your world / NPCs before testing!
+
+- First fully feature completed Fabric version for testing.
+- Removed Forge config files for better compatibility and easier maintenance.
+- Large code refactoring for better performance and easier maintenance.
+- Replaced local cache manager with a network based cache manager.
+- Replaced standard menu and screen handling with a new screen manager with two-way communication to
+  avoid crashes.
+- Added better translation support for all screens and dialogs.
+- Added better support for custom models and textures.
+- Added hotkey ALT+Left Arrow to go back within the configuration screens.
+- Added additional error and warn messages for better debugging.
+
 ### 4.5.2
 
 - Fixed #203 by moving texture registration to later stage.

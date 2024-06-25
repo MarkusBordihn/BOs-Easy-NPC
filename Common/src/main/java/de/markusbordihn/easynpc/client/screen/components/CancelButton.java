@@ -25,15 +25,15 @@ import net.minecraft.resources.ResourceLocation;
 
 public class CancelButton extends SpriteButton {
 
-  public static final int DEFAULT_WIDTH = 100;
   public static final int DEFAULT_HEIGHT = 18;
+  public static final int DEFAULT_WIDTH = 100;
   public static final ResourceLocation SPRITE = Constants.TEXTURE_CONFIGURATION;
-  public static final int SPRITE_X = 4;
-  public static final int SPRITE_Y = 3;
+  public static final int SPRITE_HEIGHT = 10;
   public static final int SPRITE_OFFSET_X = 64;
   public static final int SPRITE_OFFSET_Y = 47;
   public static final int SPRITE_WIDTH = 10;
-  public static final int SPRITE_HEIGHT = 10;
+  public static final int SPRITE_X = 4;
+  public static final int SPRITE_Y = 3;
 
   public CancelButton(int left, int top, OnPress onPress) {
     super(

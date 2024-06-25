@@ -33,23 +33,21 @@ import net.minecraft.network.chat.TranslatableComponent;
 
 public class DialogButtonData {
 
-  // Limits
-  public static final int MAX_BUTTON_LABEL_LENGTH = 32;
-
   // Dialog Button Data Tags
   public static final String DATA_ACTIONS_TAG = "Actions";
   public static final String DATA_BUTTON_NAME_TAG = "Name";
+  public static final String DATA_LABEL_TAG = "Label";
   public static final String DATA_TRANSLATE_TAG = "Translate";
   public static final String DATA_TYPE_TAG = "Type";
-  public static final String DATA_LABEL_TAG = "Label";
-
+  // Limits
+  public static final int MAX_BUTTON_LABEL_LENGTH = 32;
   // Dialog Button Data
   private Set<ActionDataEntry> actionDatumEntries = new LinkedHashSet<>();
   private UUID id;
   private String label = "";
-  private DialogButtonType type;
   private String name;
   private boolean translate;
+  private DialogButtonType type;
 
   public DialogButtonData(CompoundTag compoundTag) {
     this.load(compoundTag);

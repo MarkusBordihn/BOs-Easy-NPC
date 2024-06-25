@@ -87,12 +87,12 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
   private final ServerEntityData serverEntityData = new ServerEntityData(this);
   private final EnumMap<TickerType, Integer> tickerMap = new EnumMap<>(TickerType.class);
   protected MerchantOffers offers;
-  private SynchedEntityData synchedEntityData;
-  private int remainingPersistentAngerTime;
-  private UUID persistentAngerTarget;
-  private int npcDataVersion = -1;
-  private Player tradingPlayer;
   private int attackAnimationTick;
+  private int npcDataVersion = -1;
+  private UUID persistentAngerTarget;
+  private int remainingPersistentAngerTime;
+  private SynchedEntityData synchedEntityData;
+  private Player tradingPlayer;
 
   public EasyNPCBaseEntity(
       EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variant) {

@@ -35,8 +35,8 @@ public class GunAttackGoal<T extends EasyNPC<?>> extends Goal {
   private int attackIntervalMin;
   private int attackTime = -1;
   private int seeTime;
-  private boolean strafingClockwise;
   private boolean strafingBackwards;
+  private boolean strafingClockwise;
   private int strafingTime = -1;
 
   public GunAttackGoal(T easyNPC, double targetDistance, int hasLineOfSight, float hasSeen) {

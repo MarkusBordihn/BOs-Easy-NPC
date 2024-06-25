@@ -28,10 +28,10 @@ import net.minecraft.resources.ResourceLocation;
 
 public class CompoundTagUtils {
 
+  public static final String ID_PREFIX = "id_";
   public static final String X_TAG = "X";
   public static final String Y_TAG = "Y";
   public static final String Z_TAG = "Z";
-  public static final String ID_PREFIX = "id_";
 
   private CompoundTagUtils() {}
 

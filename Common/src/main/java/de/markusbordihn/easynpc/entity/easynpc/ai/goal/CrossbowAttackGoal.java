@@ -37,9 +37,9 @@ public class CrossbowAttackGoal<T extends EasyNPC<?>> extends Goal {
   private final float attackRadiusSqr;
   private final PathfinderMob pathfinderMob;
   private final CrossbowAttackMob crossbowAttackMob;
+  private int attackDelay;
   private CrossbowState crossbowState = CrossbowState.UNCHARGED;
   private int seeTime;
-  private int attackDelay;
   private int updatePathDelay;
 
   public CrossbowAttackGoal(T easyNPC, double speedModifier, float attackRange) {

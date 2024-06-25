@@ -22,9 +22,7 @@
       "de.markusbordihn.easynpc.EasyNPCClient"
     ]
   },
-  "mixins": [
-    "easynpc.mixins.json"
-  ],
+  "mixins": [],
   "depends": {
     "fabricloader": ">=0.13",
     "fabric": "*",

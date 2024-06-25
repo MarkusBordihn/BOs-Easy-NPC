@@ -37,6 +37,7 @@ import net.minecraft.world.entity.PathfinderMob;
 
 public interface ProfessionData<T extends PathfinderMob> extends EasyNPC<T> {
 
+  String DATA_PROFESSION_TAG = "Profession";
   EntityDataSerializer<Profession> PROFESSION =
       new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, Profession value) {
@@ -51,8 +52,6 @@ public interface ProfessionData<T extends PathfinderMob> extends EasyNPC<T> {
           return value;
         }
       };
-
-  String DATA_PROFESSION_TAG = "Profession";
 
   static void registerProfessionDataSerializer() {
     EntityDataSerializers.registerSerializer(PROFESSION);

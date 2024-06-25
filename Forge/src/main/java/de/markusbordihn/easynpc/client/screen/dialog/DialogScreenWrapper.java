@@ -19,13 +19,13 @@
 
 package de.markusbordihn.easynpc.client.screen.dialog;
 
-import de.markusbordihn.easynpc.menu.dialog.DialogMenuWrapper;
+import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public class DialogScreenWrapper extends DialogScreen<DialogMenuWrapper> {
+public class DialogScreenWrapper extends DialogScreen<DialogMenu> {
 
-  public DialogScreenWrapper(DialogMenuWrapper menu, Inventory inventory, Component component) {
+  public DialogScreenWrapper(DialogMenu menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 }

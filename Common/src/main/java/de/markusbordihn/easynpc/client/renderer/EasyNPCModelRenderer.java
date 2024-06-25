@@ -59,18 +59,20 @@ public interface EasyNPCModelRenderer<E extends EasyNPCBaseModelEntity<E>, M ext
           ModelLayerLocation innerArmor,
           ModelLayerLocation outerArmor,
           Class<L> armorLayerClass) {
-    try {
-      return armorLayerClass
-          .getConstructor(RenderLayerParent.class, HumanoidModel.class, HumanoidModel.class)
-          .newInstance(
-              mobRenderer,
-              new HumanoidModel<>(context.bakeLayer(innerArmor)),
-              new HumanoidModel<>(context.bakeLayer(outerArmor)));
-    } catch (Exception e) {
-      log.error(
-          "Failed to create custom armor layer for {} will use default armor layer instead.",
-          mobRenderer,
-          e);
+    if (armorLayerClass != null) {
+      try {
+        return armorLayerClass
+            .getConstructor(RenderLayerParent.class, HumanoidModel.class, HumanoidModel.class)
+            .newInstance(
+                mobRenderer,
+                new HumanoidModel<>(context.bakeLayer(innerArmor)),
+                new HumanoidModel<>(context.bakeLayer(outerArmor)));
+      } catch (Exception e) {
+        log.error(
+            "Failed to create custom armor layer for {} will use default armor layer instead.",
+            mobRenderer,
+            e);
+      }
     }
     return (L)
         new HumanoidArmorLayer<>(

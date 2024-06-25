@@ -1,7 +1,7 @@
 plugins {
-  id 'fabric-loom' version '0.12-SNAPSHOT'
+  id 'java'
+  id 'fabric-loom' version '1.7-SNAPSHOT'
   id 'maven-publish'
-  id 'idea'
   id 'com.matthewprenger.cursegradle' version '1.4.0'
   id 'nu.studer.credentials' version '3.0'
   id "com.modrinth.minotaur" version "2.+"
@@ -65,12 +65,6 @@ publishing {
       artifactId project.archivesBaseName
       version project.version
       from components.java
-    }
-  }
-
-  repositories {
-    maven {
-      url "file://" + System.getenv("local_maven")
     }
   }
 }

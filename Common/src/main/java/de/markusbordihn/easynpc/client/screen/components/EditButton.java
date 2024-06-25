@@ -25,21 +25,22 @@ import net.minecraft.resources.ResourceLocation;
 
 public class EditButton extends SpriteButton {
 
-  public static final int DEFAULT_WIDTH = 100;
   public static final int DEFAULT_HEIGHT = 16;
+  public static final int DEFAULT_WIDTH_SMALL = 16;
+  public static final int DEFAULT_WIDTH = 100;
   public static final ResourceLocation SPRITE = Constants.TEXTURE_CONFIGURATION;
-  public static final int SPRITE_X = 2;
-  public static final int SPRITE_Y = 2;
+  public static final int SPRITE_HEIGHT = 12;
   public static final int SPRITE_OFFSET_X = 64;
   public static final int SPRITE_OFFSET_Y = 79;
   public static final int SPRITE_WIDTH = 12;
-  public static final int SPRITE_HEIGHT = 12;
+  public static final int SPRITE_X = 2;
+  public static final int SPRITE_Y = 2;
 
   public EditButton(int left, int top, OnPress onPress) {
     super(
         left,
         top,
-        DEFAULT_HEIGHT,
+        DEFAULT_WIDTH_SMALL,
         DEFAULT_HEIGHT,
         SPRITE,
         SPRITE_X,

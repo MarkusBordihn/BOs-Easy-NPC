@@ -60,9 +60,10 @@ public class EasyNPCClient implements ClientModInitializer {
     log.info("{} Client Screens ...", Constants.LOG_REGISTER_PREFIX);
     ClientScreens.registerScreens();
 
-    ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-      log.info("{} Register Data Files ...", Constants.LOG_REGISTER_PREFIX);
-      DataFileHandler.registerDataFiles();
-    });
+    ClientLifecycleEvents.CLIENT_STARTED.register(
+        client -> {
+          log.info("{} Register Data Files ...", Constants.LOG_REGISTER_PREFIX);
+          DataFileHandler.registerDataFiles();
+        });
   }
 }

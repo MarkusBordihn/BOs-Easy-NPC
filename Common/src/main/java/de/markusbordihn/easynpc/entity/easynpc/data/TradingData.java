@@ -47,6 +47,28 @@ import net.minecraft.world.item.trading.MerchantOffers;
 
 public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Merchant {
 
+  String DATA_TRADING_BASIC_MAX_USES_TAG = "BasicMaxUses";
+  String DATA_TRADING_BASIC_REWARDED_XP_TAG = "BasicRewardedXP";
+  String DATA_TRADING_INVENTORY_TAG = "Inventory";
+  String DATA_TRADING_OFFERS_TAG = "Offers";
+  String DATA_TRADING_RECIPES_TAG = "Recipes";
+  String DATA_TRADING_RESETS_EVERY_MIN_TAG = "ResetsEveryMin";
+  String DATA_TRADING_TYPE_TAG = "TradingType";
+  EntityDataSerializer<MerchantOffers> MERCHANT_OFFERS =
+      new EntityDataSerializer<>() {
+        public void write(FriendlyByteBuf buffer, MerchantOffers value) {
+          buffer.writeNbt(value.createTag());
+        }
+
+        public MerchantOffers read(FriendlyByteBuf buffer) {
+          CompoundTag compoundTag = buffer.readNbt();
+          return compoundTag != null ? new MerchantOffers(compoundTag) : new MerchantOffers();
+        }
+
+        public MerchantOffers copy(MerchantOffers value) {
+          return value;
+        }
+      };
   EntityDataSerializer<TradingType> TRADING_TYPE =
       new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, TradingType value) {
@@ -61,28 +83,6 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
           return value;
         }
       };
-  EntityDataSerializer<MerchantOffers> MERCHANT_OFFERS =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, MerchantOffers value) {
-          buffer.writeNbt(value.createTag());
-        }
-
-        public MerchantOffers read(FriendlyByteBuf buffer) {
-          CompoundTag compoundTag = buffer.readNbt();
-          return compoundTag != null ? new MerchantOffers(compoundTag) : null;
-        }
-
-        public MerchantOffers copy(MerchantOffers value) {
-          return value;
-        }
-      };
-  String DATA_TRADING_INVENTORY_TAG = "Inventory";
-  String DATA_TRADING_OFFERS_TAG = "Offers";
-  String DATA_TRADING_RECIPES_TAG = "Recipes";
-  String DATA_TRADING_TYPE_TAG = "TradingType";
-  String DATA_TRADING_RESETS_EVERY_MIN_TAG = "ResetsEveryMin";
-  String DATA_TRADING_BASIC_MAX_USES_TAG = "BasicMaxUses";
-  String DATA_TRADING_BASIC_REWARDED_XP_TAG = "BasicRewardedXP";
 
   static void registerSyncedTradingData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {

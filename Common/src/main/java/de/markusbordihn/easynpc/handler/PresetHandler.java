@@ -74,12 +74,21 @@ public class PresetHandler {
       return false;
     }
 
+    // Get EasyNPC entity
+    UUID compoundUUID = compoundTag.getUUID(Entity.UUID_TAG);
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(compoundUUID, serverLevel);
+    if (easyNPC == null) {
+      log.error(
+          "[{}] Error importing preset {}, no entity found for {}",
+          serverLevel,
+          compoundTag,
+          compoundUUID);
+      return false;
+    }
+
     // Set home position, if spawn position was provided.
     if (position != null) {
-      UUID compoundUUID = compoundTag.getUUID(Entity.UUID_TAG);
-      EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(compoundUUID, serverLevel);
-      NavigationData<?> navigationData =
-          easyNPC != null ? easyNPC.getEasyNPCNavigationData() : null;
+      NavigationData<?> navigationData = easyNPC.getEasyNPCNavigationData();
       if (navigationData == null) {
         log.warn(
             "[{}] Warning: Importing preset, no navigation data available for {}",
@@ -90,6 +99,7 @@ public class PresetHandler {
       }
     }
 
+    log.debug("[{}] Imported preset data {} for {}", serverLevel, compoundUUID, easyNPC);
     return true;
   }
 
@@ -159,7 +169,7 @@ public class PresetHandler {
       return false;
     }
 
-    log.debug("[{}] Imported preset data for {}", serverLevel, easyNPCEntity);
+    log.debug("[{}] Imported preset data {} for {}", serverLevel, compoundTag, easyNPCEntity);
     return true;
   }
 

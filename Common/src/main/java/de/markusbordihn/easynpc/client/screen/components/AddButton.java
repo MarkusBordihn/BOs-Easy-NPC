@@ -25,15 +25,15 @@ import net.minecraft.resources.ResourceLocation;
 
 public class AddButton extends SpriteButton {
 
-  public static final int DEFAULT_WIDTH = 100;
   public static final int DEFAULT_HEIGHT = 18;
+  public static final int DEFAULT_WIDTH = 100;
   public static final ResourceLocation SPRITE = Constants.TEXTURE_CONFIGURATION;
-  public static final int SPRITE_X = 4;
-  public static final int SPRITE_Y = 3;
+  public static final int SPRITE_HEIGHT = 12;
   public static final int SPRITE_OFFSET_X = 65;
   public static final int SPRITE_OFFSET_Y = 104;
   public static final int SPRITE_WIDTH = 12;
-  public static final int SPRITE_HEIGHT = 12;
+  public static final int SPRITE_X = 4;
+  public static final int SPRITE_Y = 3;
 
   public AddButton(int left, int top, OnPress onPress) {
     super(left, top, 20, 18, Constants.TEXTURE_CONFIGURATION, 4, 3, 64, 4, 13, 13, onPress);

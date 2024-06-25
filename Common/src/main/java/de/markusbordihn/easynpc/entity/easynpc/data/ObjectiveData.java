@@ -57,7 +57,26 @@ public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
           return value;
         }
       };
+  EntityDataSerializer<HashSet<UUID>> TARGETED_ENTITY_HASH_SET =
+      new EntityDataSerializer<>() {
+        public void write(FriendlyByteBuf buffer, HashSet<UUID> value) {
+          for (UUID entry : value) {
+            buffer.writeUUID(entry);
+          }
+        }
 
+        public HashSet<UUID> read(FriendlyByteBuf buffer) {
+          HashSet<UUID> value = new HashSet<>();
+          while (buffer.isReadable()) {
+            value.add(buffer.readUUID());
+          }
+          return value;
+        }
+
+        public HashSet<UUID> copy(HashSet<UUID> value) {
+          return value;
+        }
+      };
   EntityDataSerializer<HashSet<String>> TARGETED_PLAYER_HASH_SET =
       new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, HashSet<String> value) {
@@ -79,41 +98,18 @@ public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
         }
       };
 
-  EntityDataSerializer<HashSet<UUID>> TARGETED_ENTITY_HASH_SET =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, HashSet<UUID> value) {
-          for (UUID entry : value) {
-            buffer.writeUUID(entry);
-          }
-        }
-
-        public HashSet<UUID> read(FriendlyByteBuf buffer) {
-          HashSet<UUID> value = new HashSet<>();
-          while (buffer.isReadable()) {
-            value.add(buffer.readUUID());
-          }
-          return value;
-        }
-
-        public HashSet<UUID> copy(HashSet<UUID> value) {
-          return value;
-        }
-      };
-
-  int CUSTOM_OBJECTIVE_DELAYED_REGISTRATION_TICK = 20 * 15;
-
   ServerDataAccessor<ObjectiveDataSet> CUSTOM_DATA_OBJECTIVE_DATA_SET =
       ServerEntityData.defineId(ServerDataIndex.OBJECTIVE_DATA_SET, OBJECTIVE_DATA_SET);
-  ServerDataAccessor<HashSet<String>> CUSTOM_DATA_TARGETED_PLAYER_SET =
-      ServerEntityData.defineId(ServerDataIndex.OBJECTIVE_PLAYER_SET, TARGETED_PLAYER_HASH_SET);
   ServerDataAccessor<HashSet<UUID>> CUSTOM_DATA_TARGETED_ENTITY_SET =
       ServerEntityData.defineId(ServerDataIndex.OBJECTIVE_ENTITY_SET, TARGETED_ENTITY_HASH_SET);
-
-  String DATA_OBJECTIVE_DATA_TAG = "ObjectiveData";
-  String DATA_HAS_OBJECTIVE_TAG = "HasObjectives";
-  String DATA_HAS_TRAVEL_TARGET_TAG = "HasTravelTarget";
-  String DATA_HAS_PLAYER_TARGET_TAG = "HasPlayerTarget";
+  ServerDataAccessor<HashSet<String>> CUSTOM_DATA_TARGETED_PLAYER_SET =
+      ServerEntityData.defineId(ServerDataIndex.OBJECTIVE_PLAYER_SET, TARGETED_PLAYER_HASH_SET);
+  int CUSTOM_OBJECTIVE_DELAYED_REGISTRATION_TICK = 20 * 15;
   String DATA_HAS_ENTITY_TARGET_TAG = "HasEntityTarget";
+  String DATA_HAS_OBJECTIVE_TAG = "HasObjectives";
+  String DATA_HAS_PLAYER_TARGET_TAG = "HasPlayerTarget";
+  String DATA_HAS_TRAVEL_TARGET_TAG = "HasTravelTarget";
+  String DATA_OBJECTIVE_DATA_TAG = "ObjectiveData";
 
   static void registerObjectiveDataSerializer() {
     EntityDataSerializers.registerSerializer(OBJECTIVE_DATA_SET);

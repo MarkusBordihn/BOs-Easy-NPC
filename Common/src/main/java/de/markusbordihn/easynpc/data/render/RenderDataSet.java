@@ -32,9 +32,8 @@ public class RenderDataSet {
 
   private static final String DATA_RENDER_TYPE_TAG = "Type";
   private static final String DATA_RENDER_ENTITY_TYPE_TAG = "EntityType";
-
-  private RenderType renderType = RenderType.DEFAULT;
   private EntityType<?> renderEntityType = null;
+  private RenderType renderType = RenderType.DEFAULT;
 
   public RenderDataSet() {}
 

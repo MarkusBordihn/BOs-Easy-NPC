@@ -20,49 +20,50 @@
 package de.markusbordihn.easynpc.menu;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.action.DialogActionConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.action.DistanceActionConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.attribute.AbilitiesAttributeConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.attribute.BaseAttributeConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.attribute.DisplayAttributeConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.dialog.AdvancedDialogConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.objective.AttackObjectiveConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.objective.BasicObjectiveConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.objective.FollowObjectiveConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.objective.LookObjectiveConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.pose.AdvancedPoseConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.pose.CustomPoseConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.position.DefaultPositionConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.preset.CustomExportPresetConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.preset.CustomImportPresetConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.preset.DefaultImportPresetConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.preset.LocalImportPresetConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.preset.WorldExportPresetConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.preset.WorldImportPresetConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.rotation.DefaultRotationConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.scaling.ScalingConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.skin.NoneSkinConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.skin.PlayerSkinConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.skin.UrlSkinConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.trading.AdvancedTradingConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.trading.BasicTradingConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.trading.CustomTradingConfigurationMenu;
-import de.markusbordihn.easynpc.menu.configuration.trading.NoneTradingConfigurationMenu;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.data.editor.EditorType;
+import de.markusbordihn.easynpc.menu.configuration.action.BasicActionConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.action.DialogActionConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.action.DistanceActionConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.attribute.AbilitiesAttributeConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.attribute.BaseAttributeConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.attribute.DisplayAttributeConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.dialog.AdvancedDialogConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.dialog.BasicDialogConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.objective.AttackObjectiveConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.objective.BasicObjectiveConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.objective.FollowObjectiveConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.objective.LookObjectiveConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.pose.AdvancedPoseConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.pose.CustomPoseConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.position.DefaultPositionConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.preset.ExportCustomPresetConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.preset.ExportWorldPresetConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.preset.ImportCustomPresetConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.preset.ImportDefaultPresetConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.preset.ImportLocalPresetConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.preset.ImportWorldPresetConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.rotation.DefaultRotationConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.scaling.ScalingConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.skin.NoneSkinConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.skin.PlayerSkinConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.skin.UrlSkinConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.trading.AdvancedTradingConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.trading.BasicTradingConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.trading.CustomTradingConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.trading.NoneTradingConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.dialog.DialogMenuWrapper;
-import de.markusbordihn.easynpc.menu.editor.DialogButtonEditorMenu;
-import de.markusbordihn.easynpc.menu.editor.DialogEditorMenu;
-import de.markusbordihn.easynpc.menu.editor.DialogTextEditorMenu;
+import de.markusbordihn.easynpc.menu.editor.DialogButtonEditorMenuWrapper;
+import de.markusbordihn.easynpc.menu.editor.DialogEditorMenuWrapper;
+import de.markusbordihn.easynpc.menu.editor.DialogTextEditorMenuWrapper;
 import de.markusbordihn.easynpc.menu.spawner.SpawnerMenuWrapper;
-import de.markusbordihn.easynpc.menu.testing.TestMenuWrapper;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -74,243 +75,210 @@ public class ModMenuTypes {
   public static final DeferredRegister<MenuType<?>> MENU_TYPES =
       DeferredRegister.create(ForgeRegistries.CONTAINERS, Constants.MOD_ID);
 
-  protected ModMenuTypes() {}
+  private ModMenuTypes() {}
 
-  // Dialog
-  public static final RegistryObject<MenuType<DialogMenuWrapper>> DIALOG_MENU =
-      MENU_TYPES.register("dialog_menu", () -> IForgeMenuType.create(DialogMenuWrapper::new));
-
-  // Dialog Editor
-  public static final RegistryObject<MenuType<DialogEditorMenu>> DIALOG_EDITOR_MENU =
-      MENU_TYPES.register("dialog_editor_menu", () -> IForgeMenuType.create(DialogEditorMenu::new));
-
-  // Dialog Button Editor
-  public static final RegistryObject<MenuType<DialogButtonEditorMenu>> DIALOG_BUTTON_EDITOR_MENU =
-      MENU_TYPES.register(
-          "dialog_button_editor_menu", () -> IForgeMenuType.create(DialogButtonEditorMenu::new));
-
-  // Dialog Text Editor
-  public static final RegistryObject<MenuType<DialogTextEditorMenu>> DIALOG_TEXT_EDITOR_MENU =
-      MENU_TYPES.register(
-          "dialog_text_editor_menu", () -> IForgeMenuType.create(DialogTextEditorMenu::new));
-
-  // Attribute
-  public static final RegistryObject<MenuType<AbilitiesAttributeConfigurationMenu>>
-      BASIC_ATTRIBUTE_CONFIGURATION_MENU =
+  public static final RegistryObject<MenuType<AbilitiesAttributeConfigurationMenuWrapper>>
+      ABILITIES_ATTRIBUTE_CONFIGURATION_MENU =
           MENU_TYPES.register(
-              "basic_attribute_configuration_menu",
-              () -> IForgeMenuType.create(AbilitiesAttributeConfigurationMenu::new));
-  public static final RegistryObject<MenuType<BaseAttributeConfigurationMenu>>
-      BASE_ATTRIBUTE_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "base_attribute_configuration_menu",
-              () -> IForgeMenuType.create(BaseAttributeConfigurationMenu::new));
-  public static final RegistryObject<MenuType<DisplayAttributeConfigurationMenu>>
-      DISPLAY_ATTRIBUTE_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "display_attribute_configuration_menu",
-              () -> IForgeMenuType.create(DisplayAttributeConfigurationMenu::new));
-
-  // Configuration
-  public static final RegistryObject<MenuType<MainConfigurationMenu>> MAIN_CONFIGURATION_MENU =
-      MENU_TYPES.register(
-          "main_configuration_menu", () -> IForgeMenuType.create(MainConfigurationMenu::new));
-
-  // Action Configuration
-  public static final RegistryObject<MenuType<BasicActionConfigurationMenu>>
-      BASIC_ACTION_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "basic_action_configuration_menu",
-              () -> IForgeMenuType.create(BasicActionConfigurationMenu::new));
-  public static final RegistryObject<MenuType<DialogActionConfigurationMenu>>
-      DIALOG_ACTION_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "dialog_action_configuration_menu",
-              () -> IForgeMenuType.create(DialogActionConfigurationMenu::new));
-  public static final RegistryObject<MenuType<DistanceActionConfigurationMenu>>
-      DISTANCE_ACTION_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "distance_action_configuration_menu",
-              () -> IForgeMenuType.create(DistanceActionConfigurationMenu::new));
-
-  // Dialog Configuration
-  public static final RegistryObject<MenuType<NoneDialogConfigurationMenu>>
-      NONE_DIALOG_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "none_dialog_configuration_menu",
-              () -> IForgeMenuType.create(NoneDialogConfigurationMenu::new));
-  public static final RegistryObject<MenuType<BasicDialogConfigurationMenu>>
-      BASIC_DIALOG_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "basic_dialog_configuration_menu",
-              () -> IForgeMenuType.create(BasicDialogConfigurationMenu::new));
-  public static final RegistryObject<MenuType<YesNoDialogConfigurationMenu>>
-      YES_NO_DIALOG_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "yes_no_dialog_configuration_menu",
-              () -> IForgeMenuType.create(YesNoDialogConfigurationMenu::new));
-
-  public static final RegistryObject<MenuType<AdvancedDialogConfigurationMenu>>
+              ConfigurationType.ABILITIES_ATTRIBUTE.getName(),
+              () -> IForgeMenuType.create(AbilitiesAttributeConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<AdvancedDialogConfigurationMenuWrapper>>
       ADVANCED_DIALOG_CONFIGURATION_MENU =
           MENU_TYPES.register(
-              "advanced_dialog_configuration_menu",
-              () -> IForgeMenuType.create(AdvancedDialogConfigurationMenu::new));
-
-  // Equipment Configuration
-  public static final RegistryObject<MenuType<EquipmentConfigurationMenu>>
-      EQUIPMENT_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "equipment_configuration_menu",
-              () -> IForgeMenuType.create(EquipmentConfigurationMenu::new));
-
-  // Objective Configuration
-  public static final RegistryObject<MenuType<BasicObjectiveConfigurationMenu>>
-      BASIC_OBJECTIVE_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "basic_objective_configuration_menu",
-              () -> IForgeMenuType.create(BasicObjectiveConfigurationMenu::new));
-  public static final RegistryObject<MenuType<FollowObjectiveConfigurationMenu>>
-      FOLLOW_OBJECTIVE_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "follow_objective_configuration_menu",
-              () -> IForgeMenuType.create(FollowObjectiveConfigurationMenu::new));
-  public static final RegistryObject<MenuType<AttackObjectiveConfigurationMenu>>
-      ATTACK_OBJECTIVE_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "attack_objective_configuration_menu",
-              () -> IForgeMenuType.create(AttackObjectiveConfigurationMenu::new));
-
-  public static final RegistryObject<MenuType<LookObjectiveConfigurationMenu>>
-      LOOK_OBJECTIVE_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "look_objective_configuration_menu",
-              () -> IForgeMenuType.create(LookObjectiveConfigurationMenu::new));
-
-  // Pose Configuration
-  public static final RegistryObject<MenuType<DefaultPoseConfigurationMenu>>
-      DEFAULT_POSE_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "default_pose_configuration_menu",
-              () -> IForgeMenuType.create(DefaultPoseConfigurationMenu::new));
-  public static final RegistryObject<MenuType<AdvancedPoseConfigurationMenu>>
+              ConfigurationType.ADVANCED_DIALOG.getName(),
+              () -> IForgeMenuType.create(AdvancedDialogConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<AdvancedPoseConfigurationMenuWrapper>>
       ADVANCED_POSE_CONFIGURATION_MENU =
           MENU_TYPES.register(
-              "advanced_pose_configuration_menu",
-              () -> IForgeMenuType.create(AdvancedPoseConfigurationMenu::new));
-  public static final RegistryObject<MenuType<CustomPoseConfigurationMenu>>
-      CUSTOM_POSE_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "custom_pose_configuration_menu",
-              () -> IForgeMenuType.create(CustomPoseConfigurationMenu::new));
-
-  // Position Configuration
-  public static final RegistryObject<MenuType<DefaultPositionConfigurationMenu>>
-      DEFAULT_POSITION_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "default_position_configuration_menu",
-              () -> IForgeMenuType.create(DefaultPositionConfigurationMenu::new));
-
-  // Preset Configuration
-  public static final RegistryObject<MenuType<CustomExportPresetConfigurationMenu>>
-      CUSTOM_EXPORT_PRESET_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "custom_export_preset_configuration_menu",
-              () -> IForgeMenuType.create(CustomExportPresetConfigurationMenu::new));
-  public static final RegistryObject<MenuType<WorldExportPresetConfigurationMenu>>
-      WORLD_EXPORT_PRESET_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "world_export_preset_configuration_menu",
-              () -> IForgeMenuType.create(WorldExportPresetConfigurationMenu::new));
-  public static final RegistryObject<MenuType<LocalImportPresetConfigurationMenu>>
-      LOCAL_IMPORT_PRESET_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "local_import_preset_configuration_menu",
-              () -> IForgeMenuType.create(LocalImportPresetConfigurationMenu::new));
-  public static final RegistryObject<MenuType<CustomImportPresetConfigurationMenu>>
-      CUSTOM_IMPORT_PRESET_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "custom_import_preset_configuration_menu",
-              () -> IForgeMenuType.create(CustomImportPresetConfigurationMenu::new));
-  public static final RegistryObject<MenuType<DefaultImportPresetConfigurationMenu>>
-      DEFAULT_IMPORT_PRESET_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "default_import_preset_configuration_menu",
-              () -> IForgeMenuType.create(DefaultImportPresetConfigurationMenu::new));
-  public static final RegistryObject<MenuType<WorldImportPresetConfigurationMenu>>
-      WORLD_IMPORT_PRESET_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "world_import_preset_configuration_menu",
-              () -> IForgeMenuType.create(WorldImportPresetConfigurationMenu::new));
-
-  // Rotation Configuration
-  public static final RegistryObject<MenuType<DefaultRotationConfigurationMenu>>
-      DEFAULT_ROTATION_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "default_rotation_configuration_menu",
-              () -> IForgeMenuType.create(DefaultRotationConfigurationMenu::new));
-
-  // Skin Configuration
-  public static final RegistryObject<MenuType<CustomSkinConfigurationMenu>>
-      CUSTOM_SKIN_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "custom_skin_configuration_menu",
-              () -> IForgeMenuType.create(CustomSkinConfigurationMenu::new));
-  public static final RegistryObject<MenuType<DefaultSkinConfigurationMenu>>
-      DEFAULT_SKIN_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "default_skin_configuration_menu",
-              () -> IForgeMenuType.create(DefaultSkinConfigurationMenu::new));
-  public static final RegistryObject<MenuType<NoneSkinConfigurationMenu>>
-      NONE_SKIN_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "none_skin_configuration_menu",
-              () -> IForgeMenuType.create(NoneSkinConfigurationMenu::new));
-  public static final RegistryObject<MenuType<PlayerSkinConfigurationMenu>>
-      PLAYER_SKIN_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "player_skin_configuration_menu",
-              () -> IForgeMenuType.create(PlayerSkinConfigurationMenu::new));
-
-  public static final RegistryObject<MenuType<UrlSkinConfigurationMenu>>
-      URL_SKIN_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "url_skin_configuration_menu",
-              () -> IForgeMenuType.create(UrlSkinConfigurationMenu::new));
-
-  // Scaling Configuration
-  public static final RegistryObject<MenuType<ScalingConfigurationMenu>>
-      SCALING_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "scaling_configuration_menu",
-              () -> IForgeMenuType.create(ScalingConfigurationMenu::new));
-
-  // Trading Configuration
-  public static final RegistryObject<MenuType<NoneTradingConfigurationMenu>>
-      NONE_TRADING_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "none_trading_configuration_menu",
-              () -> IForgeMenuType.create(NoneTradingConfigurationMenu::new));
-  public static final RegistryObject<MenuType<BasicTradingConfigurationMenu>>
-      BASIC_TRADING_CONFIGURATION_MENU =
-          MENU_TYPES.register(
-              "basic_trading_configuration_menu",
-              () -> IForgeMenuType.create(BasicTradingConfigurationMenu::new));
-  public static final RegistryObject<MenuType<AdvancedTradingConfigurationMenu>>
+              ConfigurationType.ADVANCED_POSE.getName(),
+              () -> IForgeMenuType.create(AdvancedPoseConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<AdvancedTradingConfigurationMenuWrapper>>
       ADVANCED_TRADING_CONFIGURATION_MENU =
           MENU_TYPES.register(
-              "advanced_trading_configuration_menu",
-              () -> IForgeMenuType.create(AdvancedTradingConfigurationMenu::new));
-  public static final RegistryObject<MenuType<CustomTradingConfigurationMenu>>
+              ConfigurationType.ADVANCED_TRADING.getName(),
+              () -> IForgeMenuType.create(AdvancedTradingConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<AttackObjectiveConfigurationMenuWrapper>>
+      ATTACK_OBJECTIVE_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.ATTACK_OBJECTIVE.getName(),
+              () -> IForgeMenuType.create(AttackObjectiveConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<BaseAttributeConfigurationMenuWrapper>>
+      BASE_ATTRIBUTE_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.BASE_ATTRIBUTE.getName(),
+              () -> IForgeMenuType.create(BaseAttributeConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<BasicActionConfigurationMenuWrapper>>
+      BASIC_ACTION_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.BASIC_ACTION.getName(),
+              () -> IForgeMenuType.create(BasicActionConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<BasicDialogConfigurationMenuWrapper>>
+      BASIC_DIALOG_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.BASIC_DIALOG.getName(),
+              () -> IForgeMenuType.create(BasicDialogConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<BasicObjectiveConfigurationMenuWrapper>>
+      BASIC_OBJECTIVE_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.BASIC_OBJECTIVE.getName(),
+              () -> IForgeMenuType.create(BasicObjectiveConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<BasicTradingConfigurationMenuWrapper>>
+      BASIC_TRADING_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.BASIC_TRADING.getName(),
+              () -> IForgeMenuType.create(BasicTradingConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<CustomPoseConfigurationMenuWrapper>>
+      CUSTOM_POSE_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.CUSTOM_POSE.getName(),
+              () -> IForgeMenuType.create(CustomPoseConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<ExportCustomPresetConfigurationMenuWrapper>>
+      CUSTOM_EXPORT_PRESET_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.CUSTOM_PRESET_EXPORT.getName(),
+              () -> IForgeMenuType.create(ExportCustomPresetConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<ImportCustomPresetConfigurationMenuWrapper>>
+      CUSTOM_IMPORT_PRESET_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.CUSTOM_PRESET_IMPORT.getName(),
+              () -> IForgeMenuType.create(ImportCustomPresetConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<CustomSkinConfigurationMenuWrapper>>
+      CUSTOM_SKIN_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.CUSTOM_SKIN.getName(),
+              () -> IForgeMenuType.create(CustomSkinConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<CustomTradingConfigurationMenuWrapper>>
       CUSTOM_TRADING_CONFIGURATION_MENU =
           MENU_TYPES.register(
-              "custom_trading_configuration_menu",
-              () -> IForgeMenuType.create(CustomTradingConfigurationMenu::new));
-
-  // Spawner Menu
+              ConfigurationType.CUSTOM_TRADING.getName(),
+              () -> IForgeMenuType.create(CustomTradingConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<DefaultPoseConfigurationMenuWrapper>>
+      DEFAULT_POSE_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.DEFAULT_POSE.getName(),
+              () -> IForgeMenuType.create(DefaultPoseConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<DefaultPositionConfigurationMenuWrapper>>
+      DEFAULT_POSITION_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.DEFAULT_POSITION.getName(),
+              () -> IForgeMenuType.create(DefaultPositionConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<ImportDefaultPresetConfigurationMenuWrapper>>
+      DEFAULT_IMPORT_PRESET_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.DEFAULT_PRESET_IMPORT.getName(),
+              () -> IForgeMenuType.create(ImportDefaultPresetConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<DefaultRotationConfigurationMenuWrapper>>
+      DEFAULT_ROTATION_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.DEFAULT_ROTATION.getName(),
+              () -> IForgeMenuType.create(DefaultRotationConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<DefaultSkinConfigurationMenuWrapper>>
+      DEFAULT_SKIN_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.DEFAULT_SKIN.getName(),
+              () -> IForgeMenuType.create(DefaultSkinConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<DialogEditorMenuWrapper>> DIALOG_EDITOR_MENU =
+      MENU_TYPES.register(
+          EditorType.DIALOG.getName(), () -> IForgeMenuType.create(DialogEditorMenuWrapper::new));
+  public static final RegistryObject<MenuType<DialogButtonEditorMenuWrapper>>
+      DIALOG_BUTTON_EDITOR_MENU =
+          MENU_TYPES.register(
+              EditorType.DIALOG_BUTTON.getName(),
+              () -> IForgeMenuType.create(DialogButtonEditorMenuWrapper::new));
+  public static final RegistryObject<MenuType<DialogTextEditorMenuWrapper>>
+      DIALOG_TEXT_EDITOR_MENU =
+          MENU_TYPES.register(
+              EditorType.DIALOG_TEXT.getName(),
+              () -> IForgeMenuType.create(DialogTextEditorMenuWrapper::new));
+  public static final RegistryObject<MenuType<DialogMenuWrapper>> DIALOG_MENU =
+      MENU_TYPES.register(
+          ModMenuType.DIALOG.getName(), () -> IForgeMenuType.create(DialogMenuWrapper::new));
+  public static final RegistryObject<MenuType<DialogActionConfigurationMenuWrapper>>
+      DIALOG_ACTION_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.DIALOG_ACTION.getName(),
+              () -> IForgeMenuType.create(DialogActionConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<DisplayAttributeConfigurationMenuWrapper>>
+      DISPLAY_ATTRIBUTE_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.DISPLAY_ATTRIBUTE.getName(),
+              () -> IForgeMenuType.create(DisplayAttributeConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<DistanceActionConfigurationMenuWrapper>>
+      DISTANCE_ACTION_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.DISTANCE_ACTION.getName(),
+              () -> IForgeMenuType.create(DistanceActionConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<EquipmentConfigurationMenuWrapper>>
+      EQUIPMENT_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.EQUIPMENT.getName(),
+              () -> IForgeMenuType.create(EquipmentConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<FollowObjectiveConfigurationMenuWrapper>>
+      FOLLOW_OBJECTIVE_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.FOLLOW_OBJECTIVE.getName(),
+              () -> IForgeMenuType.create(FollowObjectiveConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<ImportLocalPresetConfigurationMenuWrapper>>
+      LOCAL_IMPORT_PRESET_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.LOCAL_PRESET_IMPORT.getName(),
+              () -> IForgeMenuType.create(ImportLocalPresetConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<LookObjectiveConfigurationMenuWrapper>>
+      LOOK_OBJECTIVE_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.LOOK_OBJECTIVE.getName(),
+              () -> IForgeMenuType.create(LookObjectiveConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<MainConfigurationMenuWrapper>>
+      MAIN_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.MAIN.getName(),
+              () -> IForgeMenuType.create(MainConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<NoneDialogConfigurationMenuWrapper>>
+      NONE_DIALOG_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.NONE_DIALOG.getName(),
+              () -> IForgeMenuType.create(NoneDialogConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<NoneSkinConfigurationMenuWrapper>>
+      NONE_SKIN_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.NONE_SKIN.getName(),
+              () -> IForgeMenuType.create(NoneSkinConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<NoneTradingConfigurationMenuWrapper>>
+      NONE_TRADING_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.NONE_TRADING.getName(),
+              () -> IForgeMenuType.create(NoneTradingConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<PlayerSkinConfigurationMenuWrapper>>
+      PLAYER_SKIN_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.PLAYER_SKIN.getName(),
+              () -> IForgeMenuType.create(PlayerSkinConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<ScalingConfigurationMenuWrapper>>
+      SCALING_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.SCALING.getName(),
+              () -> IForgeMenuType.create(ScalingConfigurationMenuWrapper::new));
   public static final RegistryObject<MenuType<SpawnerMenuWrapper>> SPAWNER_MENU =
-      MENU_TYPES.register("spawner_menu", () -> IForgeMenuType.create(SpawnerMenuWrapper::new));
-
-  // Test Menu
-  public static final RegistryObject<MenuType<TestMenuWrapper>> TEST_MENU =
-      MENU_TYPES.register("test_menu", () -> IForgeMenuType.create(TestMenuWrapper::new));
+      MENU_TYPES.register(
+          ModMenuType.SPAWNER.getName(), () -> IForgeMenuType.create(SpawnerMenuWrapper::new));
+  public static final RegistryObject<MenuType<UrlSkinConfigurationMenuWrapper>>
+      URL_SKIN_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.URL_SKIN.getName(),
+              () -> IForgeMenuType.create(UrlSkinConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<ExportWorldPresetConfigurationMenuWrapper>>
+      WORLD_EXPORT_PRESET_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.WORLD_PRESET_EXPORT.getName(),
+              () -> IForgeMenuType.create(ExportWorldPresetConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<ImportWorldPresetConfigurationMenuWrapper>>
+      WORLD_IMPORT_PRESET_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.WORLD_PRESET_IMPORT.getName(),
+              () -> IForgeMenuType.create(ImportWorldPresetConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<YesNoDialogConfigurationMenuWrapper>>
+      YES_NO_DIALOG_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.YES_NO_DIALOG.getName(),
+              () -> IForgeMenuType.create(YesNoDialogConfigurationMenuWrapper::new));
 }

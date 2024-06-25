@@ -19,14 +19,16 @@
 
 package de.markusbordihn.easynpc.menu.dialog;
 
-import de.markusbordihn.easynpc.menu.EasyNPCMenu;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 
-public class DialogMenuWrapper extends EasyNPCMenu {
+public class DialogMenuWrapper extends DialogMenu {
 
-  public DialogMenuWrapper(int containerId, Inventory playerInventory, FriendlyByteBuf buffer) {
+  public DialogMenuWrapper(
+      final int containerId,
+      final Inventory playerInventory,
+      @SuppressWarnings("unused") final FriendlyByteBuf buffer) {
     super(ModMenuTypes.DIALOG_MENU.get(), containerId, playerInventory);
   }
 }

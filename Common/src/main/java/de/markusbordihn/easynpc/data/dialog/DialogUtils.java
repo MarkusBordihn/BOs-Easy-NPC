@@ -148,7 +148,7 @@ public class DialogUtils {
       return DialogScreenLayout.UNKNOWN;
     }
     boolean hasText = !dialogData.getText().isBlank();
-    int numberOfButtons = dialogData.getNumberOfButtons();
+    int numberOfButtons = dialogData.getNumberOfDialogButtons();
 
     if (!hasText) {
       return DialogScreenLayout.UNKNOWN;
@@ -171,7 +171,7 @@ public class DialogUtils {
     // Get the max length of the button names to check if we could use a compact layout.
     int maxButtonNameLength = 0;
     if (numberOfButtons > 0) {
-      for (DialogButtonData buttonData : dialogData.getButtons()) {
+      for (DialogButtonData buttonData : dialogData.getDialogButtons()) {
         int buttonNameLength = buttonData.getName().length();
         if (buttonNameLength > maxButtonNameLength) {
           maxButtonNameLength = buttonNameLength;

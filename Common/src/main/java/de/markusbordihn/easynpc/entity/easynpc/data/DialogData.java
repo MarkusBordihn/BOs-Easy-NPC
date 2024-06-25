@@ -51,10 +51,8 @@ public interface DialogData<T extends PathfinderMob> extends EasyNPC<T> {
           return value;
         }
       };
-
   ServerDataAccessor<DialogDataSet> CUSTOM_DATA_DIALOG_DATA_SET =
       ServerEntityData.defineId(ServerDataIndex.DIALOG_DATA_SET, DIALOG_DATA_SET);
-
   String DATA_DIALOG_DATA_TAG = "DialogData";
 
   static void registerDialogDataSerializer() {

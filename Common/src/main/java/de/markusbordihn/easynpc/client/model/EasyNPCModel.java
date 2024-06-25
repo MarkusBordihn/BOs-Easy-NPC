@@ -32,8 +32,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
 
 public interface EasyNPCModel<E extends Entity> {
-  CustomRotation EMPTY_ROTATION = new CustomRotation(0, 0, 0);
   CustomPosition EMPTY_POSITION = new CustomPosition(0, 0, 0);
+  CustomRotation EMPTY_ROTATION = new CustomRotation(0, 0, 0);
 
   private static boolean equalPositionAndRotation(
       ModelPart modelPart, CustomPosition position, Rotations rotations) {
@@ -330,9 +330,8 @@ public interface EasyNPCModel<E extends Entity> {
       float ageInTicks,
       float netHeadYaw,
       float headPitch) {
-    boolean hasAdjustedDefaultModelPose = false;
     Pose pose = modelData.getDefaultPose();
-    hasAdjustedDefaultModelPose =
+    boolean hasAdjustedDefaultModelPose =
         this.setupDefaultModelPose(
             entity, pose, modelData, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
@@ -561,7 +560,6 @@ public interface EasyNPCModel<E extends Entity> {
     boolean isDefaultModelPose = modelPose == ModelPose.DEFAULT;
     boolean hasAdjustedDefaultModelPose = false;
     boolean hasSmartAnimations = modelData.useSmartAnimations();
-    boolean hasAdditionalModelAnimation = false;
 
     if (isCustomModelPose) {
       // Handle custom model pose and animation.
@@ -604,7 +602,7 @@ public interface EasyNPCModel<E extends Entity> {
     }
 
     // Handle additional model animation.
-    hasAdditionalModelAnimation =
+    boolean hasAdditionalModelAnimation =
         this.additionalModelAnimation(
             entity,
             attackData,

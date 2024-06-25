@@ -30,8 +30,8 @@ import org.apache.logging.log4j.Logger;
 
 public class Command {
 
-  public static final int SINGLE_SUCCESS = 1;
   public static final int FAILURE = 0;
+  public static final int SINGLE_SUCCESS = 1;
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   protected Command() {}

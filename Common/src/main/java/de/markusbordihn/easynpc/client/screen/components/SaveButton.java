@@ -25,8 +25,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public class SaveButton extends SpriteButton {
 
-  public static final int DEFAULT_WIDTH = 100;
   public static final int DEFAULT_HEIGHT = 18;
+  public static final int DEFAULT_WIDTH = 100;
   public static final ResourceLocation SPRITE = Constants.TEXTURE_CONFIGURATION;
 
   public SaveButton(int left, int top, OnPress onPress) {

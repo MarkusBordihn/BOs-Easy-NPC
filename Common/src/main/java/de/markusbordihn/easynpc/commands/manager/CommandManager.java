@@ -31,7 +31,6 @@ import de.markusbordihn.easynpc.server.commands.PresetCommand;
 import de.markusbordihn.easynpc.server.commands.RenderCommand;
 import de.markusbordihn.easynpc.server.commands.SkinCommand;
 import de.markusbordihn.easynpc.server.commands.SoundCommand;
-import de.markusbordihn.easynpc.server.commands.TestCommand;
 import de.markusbordihn.easynpc.server.commands.TradingCommand;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -63,7 +62,6 @@ public class CommandManager {
             .then(RenderCommand.register())
             .then(SkinCommand.register())
             .then(SoundCommand.register())
-            .then(TestCommand.register())
             .then(TradingCommand.register())
         // @formatter:on
         );

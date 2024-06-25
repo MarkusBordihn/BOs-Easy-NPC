@@ -22,12 +22,12 @@ package de.markusbordihn.easynpc.client.screen.components;
 public class TextEditButton extends SpriteButton {
 
   public static final int DEFAULT_HEIGHT = 18;
-  public static final int SPRITE_X = 3;
-  public static final int SPRITE_Y = 3;
+  public static final int SPRITE_HEIGHT = 12;
   public static final int SPRITE_OFFSET_X = 80;
   public static final int SPRITE_OFFSET_Y = 104;
   public static final int SPRITE_WIDTH = 12;
-  public static final int SPRITE_HEIGHT = 12;
+  public static final int SPRITE_X = 3;
+  public static final int SPRITE_Y = 3;
 
   public TextEditButton(int left, int top, OnPress onPress) {
     this(left, top, 16, 16, "", onPress);

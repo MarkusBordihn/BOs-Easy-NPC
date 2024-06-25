@@ -26,14 +26,19 @@ import net.minecraft.world.inventory.ContainerData;
 public class ScreenContainerData implements ContainerData {
 
   // Order of the data fields, do not change the order!
-  private static final int SYNCED_INDEX = 0;
-  private static final int NPC_UUID_INDEX_START = 1;
-  private static final int NPC_UUID_INDEX_END = NPC_UUID_INDEX_START + 8;
-  private static final int NPC_UUID_INDEX_SIZE = NPC_UUID_INDEX_END - NPC_UUID_INDEX_START;
-  private static final int DIALOG_UUID_INDEX_START = NPC_UUID_INDEX_END + 1;
-  private static final int DIALOG_UUID_INDEX_END = DIALOG_UUID_INDEX_START + 8;
-  private static final int DIALOG_UUID_INDEX_SIZE = DIALOG_UUID_INDEX_END - DIALOG_UUID_INDEX_START;
-  private static final int PAGE_INDEX = DIALOG_UUID_INDEX_END + 1;
+  protected static final int SYNCED_INDEX = 0;
+  protected static final int NPC_UUID_INDEX_START = 1;
+  protected static final int NPC_UUID_INDEX_END = NPC_UUID_INDEX_START + 8;
+  protected static final int NPC_UUID_INDEX_SIZE = NPC_UUID_INDEX_END - NPC_UUID_INDEX_START;
+  protected static final int DIALOG_UUID_INDEX_START = NPC_UUID_INDEX_END + 1;
+  protected static final int DIALOG_UUID_INDEX_END = DIALOG_UUID_INDEX_START + 8;
+  protected static final int DIALOG_UUID_INDEX_SIZE =
+      DIALOG_UUID_INDEX_END - DIALOG_UUID_INDEX_START;
+  protected static final int DIALOG_BUTTON_UUID_INDEX_START = DIALOG_UUID_INDEX_END + 1;
+  protected static final int DIALOG_BUTTON_UUID_INDEX_END = DIALOG_BUTTON_UUID_INDEX_START + 8;
+  protected static final int DIALOG_BUTTON_UUID_INDEX_SIZE =
+      DIALOG_BUTTON_UUID_INDEX_END - DIALOG_BUTTON_UUID_INDEX_START;
+  protected static final int PAGE_INDEX = DIALOG_BUTTON_UUID_INDEX_END + 1;
   private static final int SIZE = PAGE_INDEX + 1;
 
   private final short[] data;
@@ -44,20 +49,20 @@ public class ScreenContainerData implements ContainerData {
   }
 
   public ScreenContainerData(UUID npcUUID) {
-    this(npcUUID, null, 0);
+    this(npcUUID, null, null, 0);
   }
 
-  public ScreenContainerData(UUID npcUUID, UUID dialogUUID) {
-    this(npcUUID, dialogUUID, 0);
-  }
-
-  public ScreenContainerData(UUID npcUUID, UUID dialogUUID, Integer pageIndex) {
+  public ScreenContainerData(
+      UUID npcUUID, UUID dialogUUID, UUID dialogButtonUUID, Integer pageIndex) {
     this.data = new short[SIZE];
     if (npcUUID != null) {
       this.setNpcUUID(npcUUID);
     }
     if (dialogUUID != null) {
       this.setDialogUUID(dialogUUID);
+    }
+    if (dialogButtonUUID != null) {
+      this.setDialogButtonUUID(dialogButtonUUID);
     }
     this.setPageIndex(pageIndex);
     this.setSynced(true);
@@ -91,6 +96,19 @@ public class ScreenContainerData implements ContainerData {
   public void setDialogUUID(UUID uuid) {
     short[] uuidShorts = UUIDUtils.encodeUUIDToShort(uuid);
     System.arraycopy(uuidShorts, 0, this.data, DIALOG_UUID_INDEX_START, DIALOG_UUID_INDEX_SIZE);
+  }
+
+  public UUID getDialogButtonUUID() {
+    short[] uuidShorts = new short[8];
+    System.arraycopy(
+        this.data, DIALOG_BUTTON_UUID_INDEX_START, uuidShorts, 0, DIALOG_BUTTON_UUID_INDEX_SIZE);
+    return UUIDUtils.decodeShortToUUID(uuidShorts);
+  }
+
+  public void setDialogButtonUUID(UUID uuid) {
+    short[] uuidShorts = UUIDUtils.encodeUUIDToShort(uuid);
+    System.arraycopy(
+        uuidShorts, 0, this.data, DIALOG_BUTTON_UUID_INDEX_START, DIALOG_BUTTON_UUID_INDEX_SIZE);
   }
 
   public Integer getPageIndex() {

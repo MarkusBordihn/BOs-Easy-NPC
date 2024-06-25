@@ -46,9 +46,9 @@ import org.apache.logging.log4j.Logger;
 
 public class EasyNPCPresetItem extends Item {
 
+  public static final String ENTITY_TYPE_TAG = "EntityType";
   public static final String NAME = "easy_npc_preset";
   public static final String PRESET_TAG = "Preset";
-  public static final String ENTITY_TYPE_TAG = "EntityType";
   public static final String SPAWNER_UUID_TAG = "SpawnerUUID";
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String FALL_DISTANCE_TAG = "FallDistance";
@@ -151,7 +151,13 @@ public class EasyNPCPresetItem extends Item {
       log.error("No valid entity type found in {}!", itemStack);
       return false;
     }
+
+    // Create and validate entity.
     Entity entity = entityType.create(level);
+    if (entity == null) {
+      log.error("Unable to create entity for {} in {}", entityType, level);
+      return false;
+    }
 
     // Remove UUID from preset, to avoid conflicts with existing entities.
     if (entityPreset.contains(Entity.UUID_TAG)) {

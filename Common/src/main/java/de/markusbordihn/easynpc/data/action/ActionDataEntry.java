@@ -28,14 +28,14 @@ import org.apache.logging.log4j.Logger;
 
 public final class ActionDataEntry {
 
-  public static final int MAX_PERMISSION_LEVEL = 2;
-  public static final int DEFAULT_PERMISSION_LEVEL = 2;
-  public static final int MIN_PERMISSION_LEVEL = 0;
   public static final String DATA_COMMAND_TAG = "Cmd";
   public static final String DATA_DEBUG_TAG = "Debug";
   public static final String DATA_EXECUTE_AS_USER_TAG = "ExecAsUser";
   public static final String DATA_PERMISSION_LEVEL_TAG = "PermLevel";
   public static final String DATA_TYPE_TAG = "Type";
+  public static final int DEFAULT_PERMISSION_LEVEL = 2;
+  public static final int MAX_PERMISSION_LEVEL = 2;
+  public static final int MIN_PERMISSION_LEVEL = 0;
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String DEFAULT_COMMAND = "";
   private ActionType actionType = ActionType.NONE;

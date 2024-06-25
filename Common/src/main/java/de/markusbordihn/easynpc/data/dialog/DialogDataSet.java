@@ -121,7 +121,7 @@ public class DialogDataSet {
   public boolean removeDialogButton(UUID dialogId, UUID dialogButtonId) {
     DialogDataEntry dialogData = this.dialogByIdMap.getOrDefault(dialogId, null);
     if (dialogData != null) {
-      return dialogData.removeButton(dialogButtonId);
+      return dialogData.removeDialogButton(dialogButtonId);
     }
     return false;
   }
@@ -162,18 +162,18 @@ public class DialogDataSet {
 
   public boolean hasDialogButton(String dialogLabel, UUID dialogButtonId) {
     return this.dialogByLabelMap.containsKey(dialogLabel)
-        && this.dialogByLabelMap.get(dialogLabel).hasButton(dialogButtonId);
+        && this.dialogByLabelMap.get(dialogLabel).hasDialogButton(dialogButtonId);
   }
 
   public boolean hasDialogButton(UUID dialogId, UUID dialogButtonId) {
     return this.dialogByIdMap.containsKey(dialogId)
-        && this.dialogByIdMap.get(dialogId).hasButton(dialogButtonId);
+        && this.dialogByIdMap.get(dialogId).hasDialogButton(dialogButtonId);
   }
 
   public DialogButtonData getDialogButton(String dialogLabel, UUID dialogButtonId) {
     DialogDataEntry dialogData = this.dialogByLabelMap.getOrDefault(dialogLabel, null);
     if (dialogData != null) {
-      return dialogData.getButton(dialogButtonId);
+      return dialogData.getDialogButton(dialogButtonId);
     }
     return null;
   }
@@ -181,7 +181,7 @@ public class DialogDataSet {
   public DialogButtonData getDialogButton(UUID dialogId, UUID dialogButtonId) {
     DialogDataEntry dialogData = this.dialogByIdMap.getOrDefault(dialogId, null);
     if (dialogData != null) {
-      return dialogData.getButton(dialogButtonId);
+      return dialogData.getDialogButton(dialogButtonId);
     }
     return null;
   }

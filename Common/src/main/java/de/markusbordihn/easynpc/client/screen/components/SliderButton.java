@@ -25,7 +25,6 @@ import de.markusbordihn.easynpc.Constants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractSliderButton;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
@@ -45,8 +44,8 @@ public class SliderButton extends AbstractSliderButton {
   private final float valueFraction;
   private final Type type;
   private float initValue;
-  private float targetValue;
   private float roundFactor = 100.0f;
+  private float targetValue;
 
   public SliderButton(
       int x,
@@ -187,8 +186,7 @@ public class SliderButton extends AbstractSliderButton {
     return switch (type) {
       case DEGREE -> 0.5f;
       case DOUBLE -> 1.0f;
-      case SCALE -> 0.1f;
-      case POSITION -> 0.1f;
+      case SCALE, POSITION -> 0.1f;
       default -> 1.0f;
     };
   }
@@ -329,18 +327,17 @@ public class SliderButton extends AbstractSliderButton {
   public void renderButton(PoseStack poseStack, int left, int top, float partialTicks) {
     Minecraft minecraft = Minecraft.getInstance();
     Font font = minecraft.font;
-    RenderSystem.setShader(GameRenderer::getPositionTexShader);
-    RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
-    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
     int i = this.getYImage(this.isHoveredOrFocused());
     RenderSystem.enableBlend();
     RenderSystem.defaultBlendFunc();
     RenderSystem.enableDepthTest();
 
     // Top Part
-    this.blit(poseStack, this.x, this.y, 0, 46 + i * 20, this.width / 2, this.height);
-    this.blit(
+    Graphics.blit(
+        poseStack, WIDGETS_LOCATION, this.x, this.y, 0, 46 + i * 20, this.width / 2, this.height);
+    Graphics.blit(
         poseStack,
+        WIDGETS_LOCATION,
         this.x + this.width / 2,
         this.y,
         200 - this.width / 2,
@@ -349,10 +346,18 @@ public class SliderButton extends AbstractSliderButton {
         this.height);
 
     // Bottom Part (last only 4 pixel from the bottom)
-    this.blit(
-        poseStack, this.x, this.y + this.height - 4, 0, 46 + i * 20 + 20 - 4, this.width / 2, 4);
-    this.blit(
+    Graphics.blit(
         poseStack,
+        WIDGETS_LOCATION,
+        this.x,
+        this.y + this.height - 4,
+        0,
+        46 + i * 20 + 20 - 4,
+        this.width / 2,
+        4);
+    Graphics.blit(
+        poseStack,
+        WIDGETS_LOCATION,
         this.x + this.width / 2,
         this.y + this.height - 4,
         200 - this.width / 2,

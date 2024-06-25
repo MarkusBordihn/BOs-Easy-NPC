@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.action.ActionGroup;
 import de.markusbordihn.easynpc.data.action.ActionManager;
+import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -229,8 +230,20 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
     if (actionDataEntrySet == null || actionDataEntrySet.isEmpty()) {
       return;
     }
+
+    // Filter close dialog action and execute all other actions first.
+    ActionDataEntry closeDialogActionDataEntry = null;
     for (ActionDataEntry actionDataEntry : actionDataEntrySet) {
-      this.executeAction(actionDataEntry, serverPlayer);
+      if (actionDataEntry.getType() == ActionType.CLOSE_DIALOG) {
+        closeDialogActionDataEntry = actionDataEntry;
+      } else {
+        this.executeAction(actionDataEntry, serverPlayer);
+      }
+    }
+
+    // Execute close dialog action and the end of the action list.
+    if (closeDialogActionDataEntry != null) {
+      this.executeAction(closeDialogActionDataEntry, serverPlayer);
     }
   }
 
@@ -254,6 +267,9 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
         } else {
           this.executeEntityCommand(actionDataEntry, serverPlayer);
         }
+        break;
+      case CLOSE_DIALOG:
+        serverPlayer.closeContainer();
         break;
       case OPEN_NAMED_DIALOG:
         this.openNamedDialog(actionDataEntry, serverPlayer);
@@ -287,6 +303,7 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
       dialogData.openDialogMenu(serverPlayer, this, dialogId, 0);
     } else {
       log.error("Unknown dialog label {} for action {}", dialogLabel, actionDataEntry);
+      serverPlayer.closeContainer();
     }
   }
 

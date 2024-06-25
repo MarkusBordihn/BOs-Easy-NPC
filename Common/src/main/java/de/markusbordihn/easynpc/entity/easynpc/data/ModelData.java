@@ -42,6 +42,12 @@ import net.minecraft.world.item.ItemStack;
 public interface ModelData<T extends PathfinderMob>
     extends EasyNPC<T>, ModelPositionData<T>, ModelRotationData<T>, ModelVisibilityData<T> {
 
+  CustomScale DEFAULT_MODEL_PART_SCALE = new CustomScale(1, 1, 1);
+  String EASY_NPC_DATA_MODEL_DATA_TAG = "ModelData";
+  String EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG = "DefaultPose";
+  String EASY_NPC_DATA_MODEL_POSE_TAG = "Pose";
+  String EASY_NPC_DATA_MODEL_SCALE_TAG = "Scale";
+  String EASY_NPC_DATA_MODEL_SMART_ANIMATIONS_TAG = "SmartAnimations";
   EntityDataSerializer<ModelPose> MODEL_POSE =
       new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, ModelPose modelPose) {
@@ -56,7 +62,6 @@ public interface ModelData<T extends PathfinderMob>
           return value;
         }
       };
-
   EntityDataSerializer<CustomScale> SCALE =
       new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, CustomScale scale) {
@@ -73,13 +78,6 @@ public interface ModelData<T extends PathfinderMob>
           return scale;
         }
       };
-  String EASY_NPC_DATA_MODEL_DATA_TAG = "ModelData";
-  String EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG = "DefaultPose";
-  String EASY_NPC_DATA_MODEL_POSE_TAG = "Pose";
-  String EASY_NPC_DATA_MODEL_SCALE_TAG = "Scale";
-
-  String EASY_NPC_DATA_MODEL_SMART_ANIMATIONS_TAG = "SmartAnimations";
-  CustomScale DEFAULT_MODEL_PART_SCALE = new CustomScale(1, 1, 1);
 
   static void registerSyncedModelData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {

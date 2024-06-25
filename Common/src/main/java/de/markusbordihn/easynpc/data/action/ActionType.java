@@ -23,6 +23,7 @@ public enum ActionType {
   // @formatter:off
   NONE,
   COMMAND,
+  CLOSE_DIALOG,
   OPEN_TRADING_SCREEN,
   OPEN_NAMED_DIALOG;
 

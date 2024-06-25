@@ -16,13 +16,13 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 package de.markusbordihn.easynpc.client.screen.dialog;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.screen.EasyNPCScreen;
-import de.markusbordihn.easynpc.client.screen.components.CloseButton;
+import de.markusbordihn.easynpc.client.screen.Screen;
+import de.markusbordihn.easynpc.client.screen.components.Graphics;
 import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
@@ -31,7 +31,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogScreenLayout;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
-import de.markusbordihn.easynpc.menu.EasyNPCMenu;
+import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,17 +39,12 @@ import java.util.List;
 import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-public class DialogScreen<T extends EasyNPCMenu> extends EasyNPCScreen<T> {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+public class DialogScreen<T extends DialogMenu> extends Screen<T> {
 
   private static final int BUTTON_WIDTH = 126;
   private static final int MIDDLE_BUTTON_WIDTH = 200;
@@ -58,7 +53,6 @@ public class DialogScreen<T extends EasyNPCMenu> extends EasyNPCScreen<T> {
   private static final int MAX_NUMBER_OF_DIALOG_LINES = 10;
   private static DialogScreenLayout dialogScreenLayout = DialogScreenLayout.UNKNOWN;
   protected final ArrayList<Button> dialogButtons = new ArrayList<>();
-  protected Button closeButton = null;
   protected Button dialogForwardButton = null;
   protected Button dialogBackwardButton = null;
   protected String dialog;
@@ -76,10 +70,6 @@ public class DialogScreen<T extends EasyNPCMenu> extends EasyNPCScreen<T> {
   }
 
   protected void renderDialog(PoseStack poseStack) {
-    RenderSystem.setShader(GameRenderer::getPositionTexShader);
-    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-    RenderSystem.setShaderTexture(0, Constants.TEXTURE_DIALOG);
-
     // Draw dialog background bobble.
     int dialogTopPosition = topPos + 20;
     switch (dialogScreenLayout) {
@@ -91,10 +81,12 @@ public class DialogScreen<T extends EasyNPCMenu> extends EasyNPCScreen<T> {
           COMPACT_TEXT_WITH_FOUR_BUTTONS,
           COMPACT_TEXT_WITH_FIVE_BUTTONS,
           COMPACT_TEXT_WITH_SIX_BUTTONS:
-        this.blit(poseStack, leftPos + 70, dialogTopPosition, 0, 120, 205, 78);
+        Graphics.blit(
+            poseStack, Constants.TEXTURE_DIALOG, leftPos + 70, dialogTopPosition, 0, 120, 205, 78);
         break;
       default:
-        this.blit(poseStack, leftPos + 70, dialogTopPosition, 0, 0, 205, 118);
+        Graphics.blit(
+            poseStack, Constants.TEXTURE_DIALOG, leftPos + 70, dialogTopPosition, 0, 0, 205, 118);
     }
 
     // Distribute text for the across the lines and the give dialogPageIndex.
@@ -164,8 +156,7 @@ public class DialogScreen<T extends EasyNPCMenu> extends EasyNPCScreen<T> {
             dialogButtonText,
             onPress -> {
               // Action Event on button click.
-              if (this.hasActionEventSet()
-                  && this.getActionEventSet().hasActionEvent(ActionEventType.ON_BUTTON_CLICK)) {
+              if (this.getActionEventSet().hasActionEvent(ActionEventType.ON_BUTTON_CLICK)) {
                 networkMessageHandler.triggerActionEvent(
                     this.getNpcUUID(), ActionEventType.ON_BUTTON_CLICK);
               }
@@ -406,14 +397,10 @@ public class DialogScreen<T extends EasyNPCMenu> extends EasyNPCScreen<T> {
     this.titleLabelY = 8;
     this.topPos = (this.height - this.imageHeight) / 2;
     this.leftPos = (this.width - this.imageWidth) / 2;
-  }
 
-  @Override
-  public void defineScreen() {
-    super.defineScreen();
-
-    // Dialog Data
-    DialogDataEntry dialogData = this.getDialogData();
+    // Close Button
+    this.closeButton.x = this.leftPos + this.imageWidth - 13;
+    this.closeButton.y = this.topPos + 4;
 
     // Dialog Screen Layout
     setDialogScreenLayout(DialogUtils.getDialogScreenLayout(this.getDialogData(), this.font));
@@ -425,14 +412,8 @@ public class DialogScreen<T extends EasyNPCMenu> extends EasyNPCScreen<T> {
         this.numberOfDialogLines,
         dialogScreenLayout);
 
-    // Close Button
-    this.closeButton =
-        this.addRenderableWidget(
-            new CloseButton(
-                this.leftPos + this.imageWidth - 13, this.topPos + 4, onPress -> closeScreen()));
-
     // Set dialog text
-    this.setDialogText(dialogData);
+    this.setDialogText(this.getDialogData());
     log.debug("Dialog with {} line(s) and layout {}", this.numberOfDialogLines, dialogScreenLayout);
 
     // If the dialog has more than 10 lines, add a button to switch between pages.
@@ -441,15 +422,14 @@ public class DialogScreen<T extends EasyNPCMenu> extends EasyNPCScreen<T> {
     }
 
     // Action Event for open dialog.
-    if (this.hasActionEventSet()
-        && this.getActionEventSet().hasActionEvent(ActionEventType.ON_OPEN_DIALOG)) {
+    if (this.getActionEventSet().hasActionEvent(ActionEventType.ON_OPEN_DIALOG)) {
       networkMessageHandler.triggerActionEvent(this.getNpcUUID(), ActionEventType.ON_OPEN_DIALOG);
     }
 
     // Get and render dialog buttons, if any.
-    if (this.hasDialogDataSet() && dialogData.getNumberOfButtons() > 0) {
-      this.dialogButtons.ensureCapacity(dialogData.getNumberOfButtons());
-      for (DialogButtonData dialogButtonData : dialogData.getButtons()) {
+    if (this.hasDialogData() && this.getDialogData().getNumberOfDialogButtons() > 0) {
+      this.dialogButtons.ensureCapacity(this.getDialogData().getNumberOfDialogButtons());
+      for (DialogButtonData dialogButtonData : this.getDialogData().getDialogButtons()) {
         if (dialogButtonData == null) {
           continue;
         }
@@ -488,10 +468,6 @@ public class DialogScreen<T extends EasyNPCMenu> extends EasyNPCScreen<T> {
 
   @Override
   protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
-    RenderSystem.setShader(GameRenderer::getPositionTexShader);
-    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-    RenderSystem.setShaderTexture(0, Constants.TEXTURE_DEMO_BACKGROUND);
-
     switch (dialogScreenLayout) {
       case UNKNOWN:
         break;
@@ -500,24 +476,36 @@ public class DialogScreen<T extends EasyNPCMenu> extends EasyNPCScreen<T> {
           COMPACT_TEXT_WITH_TWO_BUTTONS,
           COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS:
         // Compact background
-        this.blit(poseStack, leftPos, topPos, 0, 0, 200, 170);
-        this.blit(poseStack, leftPos + 200, topPos, 165, 0, 85, 170);
+        Graphics.blit(
+            poseStack, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos, 0, 0, 200, 170);
+        Graphics.blit(
+            poseStack, Constants.TEXTURE_DEMO_BACKGROUND, leftPos + 200, topPos, 165, 0, 85, 170);
         break;
       default:
         // Full background
-        this.blit(poseStack, leftPos, topPos, 0, 0, 210, 140);
-        this.blit(poseStack, leftPos + 200, topPos, 165, 0, 85, 140);
+        Graphics.blit(
+            poseStack, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos, 0, 0, 210, 140);
+        Graphics.blit(
+            poseStack, Constants.TEXTURE_DEMO_BACKGROUND, leftPos + 200, topPos, 165, 0, 85, 140);
 
-        this.blit(poseStack, leftPos, topPos + 70, 0, 30, 210, 140);
-        this.blit(poseStack, leftPos + 200, topPos + 70, 165, 30, 85, 140);
+        Graphics.blit(
+            poseStack, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos + 70, 0, 30, 210, 140);
+        Graphics.blit(
+            poseStack,
+            Constants.TEXTURE_DEMO_BACKGROUND,
+            leftPos + 200,
+            topPos + 70,
+            165,
+            30,
+            85,
+            140);
     }
   }
 
   @Override
   public void onClose() {
     // Action Event for close dialog.
-    if (this.hasActionEventSet()
-        && this.getActionEventSet().hasActionEvent(ActionEventType.ON_CLOSE_DIALOG)) {
+    if (this.getActionEventSet().hasActionEvent(ActionEventType.ON_CLOSE_DIALOG)) {
       networkMessageHandler.triggerActionEvent(this.getNpcUUID(), ActionEventType.ON_CLOSE_DIALOG);
     }
     super.onClose();
