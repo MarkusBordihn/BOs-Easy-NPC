@@ -31,8 +31,7 @@ import net.minecraft.commands.Commands;
 
 public class DeleteCommand extends Command {
 
-  private DeleteCommand() {
-  }
+  private DeleteCommand() {}
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("delete")

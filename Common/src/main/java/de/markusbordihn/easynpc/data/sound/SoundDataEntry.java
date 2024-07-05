@@ -30,20 +30,20 @@ import org.apache.logging.log4j.Logger;
 
 public class SoundDataEntry {
 
-  public static final String DATA_SOUND_TYPE = "Type";
-  public static final String DATA_SOUND_NAME_TAG = "Name";
-  public static final String DATA_SOUND_VOLUME_TAG = "Volume";
-  public static final String DATA_SOUND_PITCH_TAG = "Pitch";
   public static final String DATA_SOUND_ENABLED_TAG = "Enabled";
-  public static final float DEFAULT_VOLUME = 0.75F;
-  public static final float DEFAULT_PITCH = 1.0F;
+  public static final String DATA_SOUND_NAME_TAG = "Name";
+  public static final String DATA_SOUND_PITCH_TAG = "Pitch";
+  public static final String DATA_SOUND_TYPE = "Type";
+  public static final String DATA_SOUND_VOLUME_TAG = "Volume";
   public static final boolean DEFAULT_ENABLED = true;
+  public static final float DEFAULT_PITCH = 1.0F;
+  public static final float DEFAULT_VOLUME = 0.75F;
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private boolean enabled = DEFAULT_ENABLED;
+  private float pitch = DEFAULT_PITCH;
+  private SoundEvent soundEvent;
   private SoundType type;
   private float volume = DEFAULT_VOLUME;
-  private float pitch = DEFAULT_PITCH;
-  private boolean enabled = DEFAULT_ENABLED;
-  private SoundEvent soundEvent;
 
   public SoundDataEntry(SoundType type, ResourceLocation location) {
     this(type, location, DEFAULT_VOLUME, DEFAULT_PITCH, DEFAULT_ENABLED);

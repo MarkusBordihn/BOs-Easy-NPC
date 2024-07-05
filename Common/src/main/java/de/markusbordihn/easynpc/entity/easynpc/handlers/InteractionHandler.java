@@ -43,8 +43,7 @@ public class InteractionHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private InteractionHandler() {
-  }
+  private InteractionHandler() {}
 
   public static InteractionResult handleMobInteraction(
       EasyNPC<?> easyNPC, Player player, InteractionHand hand) {

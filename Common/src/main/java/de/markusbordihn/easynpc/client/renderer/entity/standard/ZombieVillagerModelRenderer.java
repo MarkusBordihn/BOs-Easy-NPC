@@ -42,7 +42,7 @@ import net.minecraft.world.entity.Pose;
 
 public class ZombieVillagerModelRenderer
     extends BaseHumanoidMobModelRenderer<
-    ZombieVillager, Variant, StandardZombieVillagerModel<ZombieVillager>> {
+        ZombieVillager, Variant, StandardZombieVillagerModel<ZombieVillager>> {
 
   public static final ResourceLocation BASE_TEXTURE =
       new ResourceLocation("textures/entity/zombie_villager/zombie_villager.png");
@@ -126,8 +126,8 @@ public class ZombieVillagerModelRenderer
           });
 
   public <L extends RenderLayer<ZombieVillager, StandardZombieVillagerModel<ZombieVillager>>>
-  ZombieVillagerModelRenderer(
-      EntityRendererProvider.Context context, Class<L> humanoidArmorLayerClass) {
+      ZombieVillagerModelRenderer(
+          EntityRendererProvider.Context context, Class<L> humanoidArmorLayerClass) {
     super(
         context,
         new StandardZombieVillagerModel<>(context.bakeLayer(ModelLayers.ZOMBIE_VILLAGER)),

@@ -28,9 +28,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber
 public class LivingEntityEventHandler {
-
-  private LivingEntityEventHandler() {
-  }
+  private LivingEntityEventHandler() {}
 
   @SubscribeEvent(priority = EventPriority.HIGHEST)
   public static void handleEntityJoinWorldEvent(EntityJoinLevelEvent event) {

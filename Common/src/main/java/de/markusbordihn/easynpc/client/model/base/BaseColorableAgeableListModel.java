@@ -37,7 +37,6 @@ import net.minecraft.world.entity.Entity;
 
 public class BaseColorableAgeableListModel<E extends Entity> extends ColorableAgeableListModel<E>
     implements EasyNPCModel<E> {
-
   protected final Map<ModelPartType, CustomPosition> modelPartPositionMap =
       new EnumMap<>(ModelPartType.class);
   protected final Map<ModelPartType, Rotations> modelPartRotationMap =

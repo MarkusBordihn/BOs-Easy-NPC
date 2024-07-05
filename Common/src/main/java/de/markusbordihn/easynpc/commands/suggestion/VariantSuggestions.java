@@ -32,8 +32,7 @@ import net.minecraft.commands.SharedSuggestionProvider;
 
 public class VariantSuggestions {
 
-  private VariantSuggestions() {
-  }
+  private VariantSuggestions() {}
 
   public static CompletableFuture<Suggestions> suggest(
       CommandContext<CommandSourceStack> context, SuggestionsBuilder build, UUID uuid) {

@@ -35,6 +35,7 @@ import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.network.ClientNetworkMessageHandler;
 import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import java.util.Optional;
@@ -73,7 +74,7 @@ public class EasyNPC {
     log.info("{} Command Argument Types ...", Constants.LOG_REGISTER_PREFIX);
     ModArgumentTypes.COMMAND_ARGUMENT_TYPES.register(modEventBus);
 
-    log.info("{} Entities Types ...", Constants.LOG_REGISTER_PREFIX);
+    log.info("{} Entity Types ...", Constants.LOG_REGISTER_PREFIX);
     ModEntityType.ENTITY_TYPES.register(modEventBus);
 
     log.info("{} Blocks ...", Constants.LOG_REGISTER_PREFIX);
@@ -85,15 +86,17 @@ public class EasyNPC {
     log.info("{} Items ...", Constants.LOG_REGISTER_PREFIX);
     ModItems.ITEMS.register(modEventBus);
 
-    log.info("{} Menu Handler ...", Constants.LOG_REGISTER_PREFIX);
-    MenuManager.registerMenuHandler(new MenuHandler());
-
     log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
     ModMenuTypes.MENU_TYPES.register(modEventBus);
 
+    log.info("{} Menu Handler ...", Constants.LOG_REGISTER_PREFIX);
+    MenuManager.registerMenuHandler(new MenuHandler());
+    modEventBus.addListener(MenuHandler::registerMenuHandler);
+
     log.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
-    modEventBus.addListener(NetworkHandler::registerNetworkHandler);
+    NetworkHandlerManager.registerHandler(new NetworkHandler());
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
+    modEventBus.addListener(NetworkHandler::registerNetworkHandler);
 
     DistExecutor.unsafeRunWhenOn(
         Dist.CLIENT,

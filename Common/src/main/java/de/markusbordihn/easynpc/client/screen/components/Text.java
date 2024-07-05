@@ -21,14 +21,15 @@ package de.markusbordihn.easynpc.client.screen.components;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.texture.TextureManager;
+import java.util.List;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 
 public class Text {
 
-  private Text() {
-  }
+  private Text() {}
 
   public static void drawString(PoseStack poseStack, Font font, String text, int x, int y) {
     drawString(poseStack, font, Component.literal(text), x, y);
@@ -66,6 +67,27 @@ public class Text {
   public static void drawString(
       PoseStack poseStack, Font font, FormattedCharSequence formattedCharSequence, int x, int y) {
     drawString(poseStack, font, formattedCharSequence, x, y, Constants.FONT_COLOR_DEFAULT);
+  }
+
+  public static void drawErrorMessage(
+      PoseStack poseStack, Font font, String text, int x, int y, int width) {
+    drawErrorMessage(poseStack, font, Component.literal(text), x, y, width);
+  }
+
+  public static void drawErrorMessage(
+      PoseStack poseStack, Font font, Component component, int x, int y, int width) {
+    List<FormattedCharSequence> textComponents =
+        font.split(Component.literal(TextureManager.getLastErrorMessage()), width);
+    int line = 0;
+    for (FormattedCharSequence formattedCharSequence : textComponents) {
+      Text.drawString(
+          poseStack,
+          font,
+          formattedCharSequence,
+          x,
+          y + (line++ * (font.lineHeight + 2)),
+          Constants.FONT_COLOR_RED);
+    }
   }
 
   public static void drawString(

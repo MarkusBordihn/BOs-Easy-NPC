@@ -31,8 +31,7 @@ public class ModModelLayer {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private ModModelLayer() {
-  }
+  private ModModelLayer() {}
 
   public static void registerEntityLayerDefinitions() {
     log.info("{} Entity Layer Definitions ...", Constants.LOG_REGISTER_PREFIX);

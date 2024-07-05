@@ -33,8 +33,7 @@ public class OwnerHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private OwnerHandler() {
-  }
+  private OwnerHandler() {}
 
   public static boolean setOwner(EasyNPC<?> easyNPC, LivingEntity owner) {
     if (easyNPC == null || owner == null) {

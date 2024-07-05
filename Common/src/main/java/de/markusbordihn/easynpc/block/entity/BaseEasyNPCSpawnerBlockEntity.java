@@ -51,39 +51,36 @@ import org.apache.logging.log4j.Logger;
 
 public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
 
-  public static final String NAME = "easy_npc_spawner_entity";
   public static final int BLOCK_POS_X_DATA = 0;
   public static final int BLOCK_POS_Y_DATA = 1;
   public static final int BLOCK_POS_Z_DATA = 2;
-  public static final int SPAWN_RANGE_DATA = 3;
-  public static final int REQUIRED_PLAYER_RANGE_DATA = 4;
-  public static final int DELAY_DATA = 5;
-  public static final int MAX_NEARBY_ENTITIES_DATA = 6;
-  public static final int SPAWN_COUNT_DATA = 7;
-  public static final int DESPAWN_RANGE_DATA = 8;
   public static final int DATA_SIZE = 9;
-  public static final String UUID_TAG = "UUID";
-  public static final String SPAWN_RANGE_TAG = "SpawnRange";
+  public static final int DELAY_DATA = 5;
+  public static final String DELAY_TAG = "Delay";
+  public static final int DESPAWN_RANGE_DATA = 8;
   public static final String DESPAWN_RANGE_TAG = "DespawnRange";
+  public static final int MAX_NEARBY_ENTITIES_DATA = 6;
+  public static final String MAX_NEARBY_ENTITIES_TAG = "MaxNearbyEntities";
+  public static final String NAME = "easy_npc_spawner_entity";
+  public static final int REQUIRED_PLAYER_RANGE_DATA = 4;
   public static final String REQUIRED_PLAYER_RANGE_TAG = "RequiredPlayerRange";
   public static final String SPAWNER_OWNER_TAG = "Owner";
-  public static final String DELAY_TAG = "Delay";
-  public static final String MAX_NEARBY_ENTITIES_TAG = "MaxNearbyEntities";
-  public static final String SPAWN_COUNT_TAG = "SpawnCount";
   public static final int SPAWNER_TICK = 20;
+  public static final int SPAWN_COUNT_DATA = 7;
+  public static final String SPAWN_COUNT_TAG = "SpawnCount";
+  public static final int SPAWN_RANGE_DATA = 3;
+  public static final String SPAWN_RANGE_TAG = "SpawnRange";
+  public static final String UUID_TAG = "UUID";
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected final Random random = new Random();
   protected final NonNullList<ItemStack> items = NonNullList.withSize(8, ItemStack.EMPTY);
-  private int spawnerTicker = this.random.nextInt(SPAWNER_TICK);
-  private int spawnTicker = 0;
-  private int spawnRange = 2;
-  private int despawnRange = 32;
-  private int requiredPlayerRange = 16;
-  private UUID owner;
-  private UUID spawnerUUID;
   private int delay = 10;
+  private int despawnRange = 32;
   private int maxNearbyEntities = 1;
   private int numbersPerSpawnInterval = 1;
+  private UUID owner;
+  private int requiredPlayerRange = 16;
+  private int spawnRange = 2;
   protected final ContainerData dataAccess =
       new ContainerData() {
 
@@ -131,6 +128,9 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
           return DATA_SIZE;
         }
       };
+  private int spawnTicker = 0;
+  private int spawnerTicker = this.random.nextInt(SPAWNER_TICK);
+  private UUID spawnerUUID;
 
   public BaseEasyNPCSpawnerBlockEntity(
       BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
@@ -295,7 +295,7 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
         boolean isPlayerInRange = false;
         for (Player player : level.players()) {
           if (player.distanceToSqr(
-              this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ())
+                  this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ())
               <= this.requiredPlayerRange * this.requiredPlayerRange) {
             isPlayerInRange = true;
             break;
@@ -466,10 +466,10 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
     Level level = this.level;
     return (level != null && level.getBlockEntity(this.worldPosition) == this)
         && player.distanceToSqr(
-        this.worldPosition.getX() + 0.5D,
-        this.worldPosition.getY() + 0.5D,
-        this.worldPosition.getZ() + 0.5D)
-        <= 64.0D;
+                this.worldPosition.getX() + 0.5D,
+                this.worldPosition.getY() + 0.5D,
+                this.worldPosition.getZ() + 0.5D)
+            <= 64.0D;
   }
 
   @Override

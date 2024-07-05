@@ -81,8 +81,7 @@ public class EntityTypeSuggestions {
           "minecraft:wither_skull");
   private static List<String> filteredEntityTypes;
 
-  private EntityTypeSuggestions() {
-  }
+  private EntityTypeSuggestions() {}
 
   public static CompletableFuture<Suggestions> suggest(
       CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {

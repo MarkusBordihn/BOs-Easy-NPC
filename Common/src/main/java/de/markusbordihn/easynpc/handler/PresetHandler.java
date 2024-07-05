@@ -49,8 +49,7 @@ public class PresetHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private PresetHandler() {
-  }
+  private PresetHandler() {}
 
   public static boolean importPreset(
       ServerLevel serverLevel, CompoundTag compoundTag, Vec3 position, UUID uuid) {
@@ -73,12 +72,21 @@ public class PresetHandler {
       return false;
     }
 
+    // Get EasyNPC entity
+    UUID compoundUUID = compoundTag.getUUID(Entity.UUID_TAG);
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(compoundUUID, serverLevel);
+    if (easyNPC == null) {
+      log.error(
+          "[{}] Error importing preset {}, no entity found for {}",
+          serverLevel,
+          compoundTag,
+          compoundUUID);
+      return false;
+    }
+
     // Set home position, if spawn position was provided.
     if (position != null) {
-      UUID compoundUUID = compoundTag.getUUID(Entity.UUID_TAG);
-      EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(compoundUUID, serverLevel);
-      NavigationData<?> navigationData =
-          easyNPC != null ? easyNPC.getEasyNPCNavigationData() : null;
+      NavigationData<?> navigationData = easyNPC.getEasyNPCNavigationData();
       if (navigationData == null) {
         log.warn(
             "[{}] Warning: Importing preset, no navigation data available for {}",
@@ -89,6 +97,7 @@ public class PresetHandler {
       }
     }
 
+    log.debug("[{}] Imported preset data {} for {}", serverLevel, compoundUUID, easyNPC);
     return true;
   }
 
@@ -158,7 +167,7 @@ public class PresetHandler {
       return false;
     }
 
-    log.debug("[{}] Imported preset data for {}", serverLevel, easyNPCEntity);
+    log.debug("[{}] Imported preset data {} for {}", serverLevel, compoundTag, easyNPCEntity);
     return true;
   }
 
@@ -204,8 +213,8 @@ public class PresetHandler {
     }
 
     try {
-      CompoundTag compoundTag = NbtIo.readCompressed(
-          minecraftServer.getResourceManager().open(presetLocation));
+      CompoundTag compoundTag =
+          NbtIo.readCompressed(minecraftServer.getResourceManager().open(presetLocation));
       return importPreset(serverLevel, compoundTag, position, uuid);
     } catch (IOException exception) {
       log.error("[{}] Error reading data preset file {}", serverLevel, presetLocation, exception);
@@ -230,8 +239,8 @@ public class PresetHandler {
     }
 
     try {
-      CompoundTag compoundTag = NbtIo.readCompressed(
-          minecraftServer.getResourceManager().open(presetLocation));
+      CompoundTag compoundTag =
+          NbtIo.readCompressed(minecraftServer.getResourceManager().open(presetLocation));
       return importPreset(serverLevel, compoundTag, position, uuid);
     } catch (IOException exception) {
       log.error(

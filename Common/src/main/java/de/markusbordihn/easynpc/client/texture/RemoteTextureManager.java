@@ -42,8 +42,7 @@ public class RemoteTextureManager {
   private static final HashMap<TextureModelKey, String> textureSkinURLCache = new HashMap<>();
   private static final HashSet<UUID> textureReloadProtection = new HashSet<>();
 
-  private RemoteTextureManager() {
-  }
+  private RemoteTextureManager() {}
 
   public static Set<UUID> getTextureCacheKeys(SkinModel skinModel) {
     HashSet<UUID> hashSet = new HashSet<>();

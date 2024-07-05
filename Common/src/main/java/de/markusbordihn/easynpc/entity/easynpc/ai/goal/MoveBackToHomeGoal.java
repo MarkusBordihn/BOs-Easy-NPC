@@ -82,7 +82,7 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends RandomStrollGoal {
     SectionPos homePosition = SectionPos.of(this.navigationData.getHomePosition());
     return currentPosition != homePosition
         ? DefaultRandomPos.getPosTowards(
-        this.mob, 10, 7, Vec3.atBottomCenterOf(homePosition), 1.5707963705062866)
+            this.mob, 10, 7, Vec3.atBottomCenterOf(homePosition), 1.5707963705062866)
         : null;
   }
 }

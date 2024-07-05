@@ -30,8 +30,7 @@ import net.minecraft.commands.Commands;
 
 public class DebugCommand extends Command {
 
-  private DebugCommand() {
-  }
+  private DebugCommand() {}
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("debug")

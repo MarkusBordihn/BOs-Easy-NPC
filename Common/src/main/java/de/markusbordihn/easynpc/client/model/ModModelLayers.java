@@ -32,6 +32,5 @@ public class ModModelLayers {
   public static final ModelLayerLocation ORC =
       new ModelLayerLocation(new ResourceLocation(Constants.MOD_ID, "orc"), "main");
 
-  private ModModelLayers() {
-  }
+  private ModModelLayers() {}
 }

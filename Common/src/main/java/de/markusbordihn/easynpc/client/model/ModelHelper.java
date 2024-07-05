@@ -26,8 +26,7 @@ import net.minecraft.core.Rotations;
 
 public class ModelHelper {
 
-  protected ModelHelper() {
-  }
+  protected ModelHelper() {}
 
   public static void resetRotation(ModelPart modelPart) {
     modelPart.xRot = 0.0F;
@@ -104,9 +103,9 @@ public class ModelHelper {
     setPositionRotationVisibility(modelPart, position, rotations, visible);
     if (visible
         && (rotations == null
-        || (rotations.getX() == 0.0f
-        && rotations.getY() == 0.0f
-        && rotations.getZ() == 0.0f))) {
+            || (rotations.getX() == 0.0f
+                && rotations.getY() == 0.0f
+                && rotations.getZ() == 0.0f))) {
       modelPart.yRot = netHeadYaw * Constants.PI_180DEG;
       modelPart.xRot = headPitch * Constants.PI_180DEG;
     }

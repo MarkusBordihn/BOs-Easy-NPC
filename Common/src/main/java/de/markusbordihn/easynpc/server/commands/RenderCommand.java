@@ -33,8 +33,7 @@ import net.minecraft.commands.Commands;
 
 public class RenderCommand extends Command {
 
-  private RenderCommand() {
-  }
+  private RenderCommand() {}
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("render")

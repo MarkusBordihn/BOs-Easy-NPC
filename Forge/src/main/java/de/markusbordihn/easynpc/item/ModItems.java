@@ -61,20 +61,24 @@ public class ModItems {
   public static final DeferredRegister<Item> ITEMS =
       DeferredRegister.create(ForgeRegistries.ITEMS, Constants.MOD_ID);
 
-  public static final RegistryObject<Item> EASY_NPC_WAND =
+  public static final RegistryObject<Item> ALLAY_NPC_SPAWN_EGG =
+      registerSpawnEgg(Allay.ID, ModEntityType.ALLAY);
+  public static final RegistryObject<Item> BULLET_ITEM =
       ITEMS.register(
-          EasyNPCWandItem.ID,
-          () -> new EasyNPCWandItem(new Item.Properties().tab(ModTabs.TAB_CONFIG_ITEMS)));
-  public static final RegistryObject<Item> MOVE_EASY_NPC =
-      ITEMS.register(
-          MoveEasyNPCItem.ID,
-          () -> new MoveEasyNPCItem(new Item.Properties().tab(ModTabs.TAB_CONFIG_ITEMS)));
-  public static final RegistryObject<Item> EASY_NPC_PRESET_ITEM =
-      ITEMS.register(EasyNPCPresetItem.NAME, () -> new EasyNPCPresetItem(new Item.Properties()));
+          BulletItem.ID,
+          () -> new BulletItem(new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
+  public static final RegistryObject<Item> CAT_NPC_SPAWN_EGG =
+      registerSpawnEgg(Cat.ID, ModEntityType.CAT);
+  public static final RegistryObject<Item> CHICKEN_NPC_SPAWN_EGG =
+      registerSpawnEgg(Chicken.ID, ModEntityType.CHICKEN);
+  public static final RegistryObject<Item> DROWNED_NPC_SPAWN_EGG =
+      registerSpawnEgg(Zombie.ID_DROWNED, ModEntityType.DROWNED);
   public static final RegistryObject<Item> EASY_NPC_PRESET_EMPTY_ITEM =
       ITEMS.register(
           EasyNPCPresetEmptyItem.NAME,
           () -> new EasyNPCPresetEmptyItem(new Item.Properties().tab(ModTabs.TAB_CONFIG_ITEMS)));
+  public static final RegistryObject<Item> EASY_NPC_PRESET_ITEM =
+      ITEMS.register(EasyNPCPresetItem.NAME, () -> new EasyNPCPresetItem(new Item.Properties()));
   public static final RegistryObject<Item> EASY_NPC_SPAWNER =
       ITEMS.register(
           BaseEasyNPCSpawnerBlock.NAME,
@@ -82,67 +86,60 @@ public class ModItems {
               new BlockItem(
                   ModBlocks.EASY_NPC_SPAWNER.get(),
                   new Item.Properties().tab(ModTabs.TAB_CONFIG_ITEMS)));
-
-  public static final RegistryObject<Item> BULLET_ITEM =
+  public static final RegistryObject<Item> EASY_NPC_WAND =
       ITEMS.register(
-          BulletItem.ID,
-          () -> new BulletItem(new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
-
-  public static final RegistryObject<Item> ALLAY_NPC_SPAWN_EGG =
-      registerSpawnEgg(Allay.ID, ModEntityType.ALLAY);
-  public static final RegistryObject<Item> CAT_NPC_SPAWN_EGG =
-      registerSpawnEgg(Cat.ID, ModEntityType.CAT);
-  public static final RegistryObject<Item> CHICKEN_NPC_SPAWN_EGG =
-      registerSpawnEgg(Chicken.ID, ModEntityType.CHICKEN);
+          EasyNPCWandItem.ID,
+          () -> new EasyNPCWandItem(new Item.Properties().tab(ModTabs.TAB_CONFIG_ITEMS)));
+  public static final RegistryObject<Item> EVOKER_NPC_SPAWN_EGG =
+      registerSpawnEgg(Illager.ID_EVOKER, ModEntityType.EVOKER);
   public static final RegistryObject<Item> FAIRY_NPC_SPAWN_EGG =
       registerSpawnEgg(Fairy.ID, ModEntityType.FAIRY);
+  public static final RegistryObject<Item> HORSE_NPC_SPAWN_EGG =
+      registerSpawnEgg(Horse.ID, ModEntityType.HORSE);
   public static final RegistryObject<Item> HUMANOID_NPC_SPAWN_EGG =
       registerSpawnEgg(Humanoid.ID, ModEntityType.HUMANOID);
   public static final RegistryObject<Item> HUMANOID_SLIM_NPC_SPAWN_EGG =
       registerSpawnEgg(HumanoidSlim.ID, ModEntityType.HUMANOID_SLIM);
-  public static final RegistryObject<Item> IRON_GOLEM_NPC_SPAWN_EGG =
-      registerSpawnEgg(IronGolem.ID, ModEntityType.IRON_GOLEM);
-  public static final RegistryObject<Item> SKELETON_NPC_SPAWN_EGG =
-      registerSpawnEgg(Skeleton.ID, ModEntityType.SKELETON);
-  public static final RegistryObject<Item> VILLAGER_NPC_SPAWN_EGG =
-      registerSpawnEgg(Villager.ID, ModEntityType.VILLAGER);
-  public static final RegistryObject<Item> DROWNED_NPC_SPAWN_EGG =
-      registerSpawnEgg(Zombie.ID_DROWNED, ModEntityType.DROWNED);
   public static final RegistryObject<Item> HUSK_NPC_SPAWN_EGG =
       registerSpawnEgg(Zombie.ID_HUSK, ModEntityType.HUSK);
-  public static final RegistryObject<Item> WITHER_SKELETON_NPC_SPAWN_EGG =
-      registerSpawnEgg(Skeleton.ID_WITHER_SKELETON, ModEntityType.WITHER_SKELETON);
-  public static final RegistryObject<Item> STRAY_NPC_SPAWN_EGG =
-      registerSpawnEgg(Skeleton.ID_STRAY, ModEntityType.STRAY);
-  public static final RegistryObject<Item> ZOMBIE_NPC_SPAWN_EGG =
-      registerSpawnEgg(Zombie.ID, ModEntityType.ZOMBIE);
-  public static final RegistryObject<Item> ZOMBIE_VILLAGER_NPC_SPAWN_EGG =
-      registerSpawnEgg(ZombieVillager.ID, ModEntityType.ZOMBIE_VILLAGER);
-  public static final RegistryObject<Item> PIG_NPC_SPAWN_EGG =
-      registerSpawnEgg(Pig.ID, ModEntityType.PIG);
-  public static final RegistryObject<Item> EVOKER_NPC_SPAWN_EGG =
-      registerSpawnEgg(Illager.ID_EVOKER, ModEntityType.EVOKER);
   public static final RegistryObject<Item> ILLUSIONER_NPC_SPAWN_EGG =
       registerSpawnEgg(Illager.ID_ILLUSIONER, ModEntityType.ILLUSIONER);
-  public static final RegistryObject<Item> PILLAGER_NPC_SPAWN_EGG =
-      registerSpawnEgg(Illager.ID_PILLAGER, ModEntityType.PILLAGER);
-  public static final RegistryObject<Item> VINDICATOR_NPC_SPAWN_EGG =
-      registerSpawnEgg(Illager.ID_VINDICATOR, ModEntityType.VINDICATOR);
+  public static final RegistryObject<Item> IRON_GOLEM_NPC_SPAWN_EGG =
+      registerSpawnEgg(IronGolem.ID, ModEntityType.IRON_GOLEM);
+  public static final RegistryObject<Item> MOVE_EASY_NPC =
+      ITEMS.register(
+          MoveEasyNPCItem.ID,
+          () -> new MoveEasyNPCItem(new Item.Properties().tab(ModTabs.TAB_CONFIG_ITEMS)));
   public static final RegistryObject<Item> ORC_NPC_SPAWN_EGG =
       registerSpawnEgg(Orc.ID, ModEntityType.ORC);
   public static final RegistryObject<Item> ORC_WARRIOR_NPC_SPAWN_EGG =
       registerSpawnEgg(Orc.ID_WARRIOR, ModEntityType.ORC_WARRIOR);
-  public static final RegistryObject<Item> WOLF_NPC_SPAWN_EGG =
-      registerSpawnEgg(Wolf.ID, ModEntityType.WOLF);
-  public static final RegistryObject<Item> HORSE_NPC_SPAWN_EGG =
-      registerSpawnEgg(Horse.ID, ModEntityType.HORSE);
+  public static final RegistryObject<Item> PIG_NPC_SPAWN_EGG =
+      registerSpawnEgg(Pig.ID, ModEntityType.PIG);
+  public static final RegistryObject<Item> PILLAGER_NPC_SPAWN_EGG =
+      registerSpawnEgg(Illager.ID_PILLAGER, ModEntityType.PILLAGER);
   public static final RegistryObject<Item> SKELETON_HORSE_NPC_SPAWN_EGG =
       registerSpawnEgg(Horse.ID_SKELETON, ModEntityType.SKELETON_HORSE);
+  public static final RegistryObject<Item> SKELETON_NPC_SPAWN_EGG =
+      registerSpawnEgg(Skeleton.ID, ModEntityType.SKELETON);
+  public static final RegistryObject<Item> STRAY_NPC_SPAWN_EGG =
+      registerSpawnEgg(Skeleton.ID_STRAY, ModEntityType.STRAY);
+  public static final RegistryObject<Item> VILLAGER_NPC_SPAWN_EGG =
+      registerSpawnEgg(Villager.ID, ModEntityType.VILLAGER);
+  public static final RegistryObject<Item> VINDICATOR_NPC_SPAWN_EGG =
+      registerSpawnEgg(Illager.ID_VINDICATOR, ModEntityType.VINDICATOR);
+  public static final RegistryObject<Item> WITHER_SKELETON_NPC_SPAWN_EGG =
+      registerSpawnEgg(Skeleton.ID_WITHER_SKELETON, ModEntityType.WITHER_SKELETON);
+  public static final RegistryObject<Item> WOLF_NPC_SPAWN_EGG =
+      registerSpawnEgg(Wolf.ID, ModEntityType.WOLF);
   public static final RegistryObject<Item> ZOMBIE_HORSE_NPC_SPAWN_EGG =
       registerSpawnEgg(Horse.ID_ZOMBIE, ModEntityType.ZOMBIE_HORSE);
+  public static final RegistryObject<Item> ZOMBIE_NPC_SPAWN_EGG =
+      registerSpawnEgg(Zombie.ID, ModEntityType.ZOMBIE);
+  public static final RegistryObject<Item> ZOMBIE_VILLAGER_NPC_SPAWN_EGG =
+      registerSpawnEgg(ZombieVillager.ID, ModEntityType.ZOMBIE_VILLAGER);
 
-  private ModItems() {
-  }
+  private ModItems() {}
 
   private static RegistryObject<Item> registerSpawnEgg(
       String id, Supplier<? extends EntityType<? extends Mob>> entityTypeSupplier) {

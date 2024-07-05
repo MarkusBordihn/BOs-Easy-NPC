@@ -48,14 +48,13 @@ public class ModBlocks {
                       .sound(SoundType.METAL)
                       .noOcclusion()));
 
-  private ModBlocks() {
-  }
+  private ModBlocks() {}
 
   public static final RegistryObject<BlockEntityType<EasyNPCSpawnerBlockEntity>>
       EASY_NPC_SPAWNER_ENTITY =
-      BLOCK_ENTITY_TYPES.register(
-          BaseEasyNPCSpawnerBlockEntity.NAME,
-          () ->
-              BlockEntityType.Builder.of(EasyNPCSpawnerBlockEntity::new, EASY_NPC_SPAWNER.get())
-                  .build(null));
+          BLOCK_ENTITY_TYPES.register(
+              BaseEasyNPCSpawnerBlockEntity.NAME,
+              () ->
+                  BlockEntityType.Builder.of(EasyNPCSpawnerBlockEntity::new, EASY_NPC_SPAWNER.get())
+                      .build(null));
 }

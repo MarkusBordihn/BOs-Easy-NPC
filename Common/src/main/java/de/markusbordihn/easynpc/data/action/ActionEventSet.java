@@ -20,63 +20,51 @@
 package de.markusbordihn.easynpc.data.action;
 
 import java.util.EnumMap;
-import java.util.HashSet;
 import java.util.Map.Entry;
-import java.util.Set;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 
 public class ActionEventSet {
 
-  // Action Data Tags
   public static final String DATA_ACTION_EVENT_SET_TAG = "ActionEventSet";
-  protected static final Set<ActionDataEntry> EMPTY_ACTION_DATA_SET = new HashSet<>();
-  // Data
-  private final EnumMap<ActionEventType, Set<ActionDataEntry>> actionsMap =
+  private final EnumMap<ActionEventType, ActionDataSet> actionsMap =
       new EnumMap<>(ActionEventType.class);
-
-  // Cache
   private boolean hasDistanceActionEvent = false;
 
-  public ActionEventSet() {
-  }
+  public ActionEventSet() {}
 
   public ActionEventSet(CompoundTag compoundTag) {
     this.load(compoundTag);
   }
 
-  public void setActionEvent(ActionEventType actionEventType, ActionDataEntry actionDataEntry) {
+  public void setActionEvent(ActionEventType actionEventType, ActionDataSet actionDataSet) {
     if (actionEventType != null
         && actionEventType != ActionEventType.NONE
-        && actionDataEntry != null
-        && actionDataEntry.hasCommand()) {
-      Set<ActionDataEntry> actionDataEntryList = new HashSet<>();
-      actionDataEntryList.add(actionDataEntry);
-      this.actionsMap.put(actionEventType, actionDataEntryList);
+        && actionDataSet != null) {
+      this.actionsMap.put(actionEventType, actionDataSet);
       this.updateHasDistanceAction();
     }
   }
 
   public ActionDataEntry getActionEvent(ActionEventType actionEventType) {
     if (actionEventType != null && actionEventType != ActionEventType.NONE) {
-      Set<ActionDataEntry> actions = this.actionsMap.get(actionEventType);
-      if (actions != null && !actions.isEmpty()) {
-        return actions.iterator().next();
+      ActionDataSet actionDataSet = this.actionsMap.get(actionEventType);
+      if (actionDataSet != null && !actionDataSet.isEmpty()) {
+        return actionDataSet.getRandomEntry();
       }
     }
     return null;
   }
 
-  public Set<ActionDataEntry> getActionEvents(ActionEventType actionEventType) {
-    if (actionEventType != ActionEventType.NONE) {
+  public ActionDataSet getActionEvents(ActionEventType actionEventType) {
+    if (actionEventType != ActionEventType.NONE && this.actionsMap.containsKey(actionEventType)) {
       return this.actionsMap.get(actionEventType);
     }
-    return EMPTY_ACTION_DATA_SET;
+    return ActionDataSet.EMPTY;
   }
 
   public boolean hasActionEvent(ActionEventType actionEventType) {
     if (actionEventType != null && actionEventType != ActionEventType.NONE) {
-      Set<ActionDataEntry> actions = this.actionsMap.get(actionEventType);
+      ActionDataSet actions = this.actionsMap.get(actionEventType);
       return actions != null && !actions.isEmpty();
     }
     return false;
@@ -85,13 +73,13 @@ public class ActionEventSet {
   public void updateHasDistanceAction() {
     this.hasDistanceActionEvent =
         (this.actionsMap.containsKey(ActionEventType.ON_DISTANCE_NEAR)
-            && !this.actionsMap.get(ActionEventType.ON_DISTANCE_NEAR).isEmpty())
+                && !this.actionsMap.get(ActionEventType.ON_DISTANCE_NEAR).isEmpty())
             || (this.actionsMap.containsKey(ActionEventType.ON_DISTANCE_CLOSE)
-            && !this.actionsMap.get(ActionEventType.ON_DISTANCE_CLOSE).isEmpty())
+                && !this.actionsMap.get(ActionEventType.ON_DISTANCE_CLOSE).isEmpty())
             || (this.actionsMap.containsKey(ActionEventType.ON_DISTANCE_VERY_CLOSE)
-            && !this.actionsMap.get(ActionEventType.ON_DISTANCE_VERY_CLOSE).isEmpty())
+                && !this.actionsMap.get(ActionEventType.ON_DISTANCE_VERY_CLOSE).isEmpty())
             || (this.actionsMap.containsKey(ActionEventType.ON_DISTANCE_TOUCH)
-            && !this.actionsMap.get(ActionEventType.ON_DISTANCE_TOUCH).isEmpty());
+                && !this.actionsMap.get(ActionEventType.ON_DISTANCE_TOUCH).isEmpty());
   }
 
   public void clear() {
@@ -107,35 +95,24 @@ public class ActionEventSet {
     // Clear existing actions
     this.clear();
 
-    // Load actions
+    // Load actions data
     CompoundTag actionDataSetTag = compoundTag.getCompound(DATA_ACTION_EVENT_SET_TAG);
     for (ActionEventType actionEventType : ActionEventType.values()) {
-      if (actionDataSetTag.contains(actionEventType.name())) {
-        ListTag actionListTag = actionDataSetTag.getList(actionEventType.name(), 10);
-        if (actionListTag.isEmpty()) {
-          continue;
-        }
-        Set<ActionDataEntry> actionDataEntryList = new HashSet<>();
-        for (int i = 0; i < actionListTag.size(); i++) {
-          CompoundTag actionTag = actionListTag.getCompound(i);
-          actionDataEntryList.add(new ActionDataEntry(actionTag));
-        }
+      ActionDataSet actionDataEntryList =
+          new ActionDataSet(actionDataSetTag, actionEventType.name());
+      if (!actionDataEntryList.isEmpty()) {
         this.actionsMap.put(actionEventType, actionDataEntryList);
-        this.updateHasDistanceAction();
       }
     }
+    this.updateHasDistanceAction();
   }
 
   public CompoundTag save(CompoundTag compoundTag) {
     CompoundTag actionsTag = new CompoundTag();
-    for (Entry<ActionEventType, Set<ActionDataEntry>> entry : this.actionsMap.entrySet()) {
+    for (Entry<ActionEventType, ActionDataSet> entry : this.actionsMap.entrySet()) {
       ActionEventType actionEventType = entry.getKey();
-      Set<ActionDataEntry> actionDataEntryList = entry.getValue();
-      ListTag actionListTag = new ListTag();
-      for (ActionDataEntry actionDataEntry : actionDataEntryList) {
-        actionListTag.add(actionDataEntry.createTag());
-      }
-      actionsTag.put(actionEventType.name(), actionListTag);
+      ActionDataSet actionDataSet = entry.getValue();
+      actionDataSet.save(actionsTag, actionEventType.name());
     }
     compoundTag.put(DATA_ACTION_EVENT_SET_TAG, actionsTag);
     return compoundTag;

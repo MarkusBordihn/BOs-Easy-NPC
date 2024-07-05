@@ -32,8 +32,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class EasyNPCSuggestions {
 
-  private EasyNPCSuggestions() {
-  }
+  private EasyNPCSuggestions() {}
 
   public static Stream<String> suggestUUID(ServerPlayer serverPlayer) {
     return serverPlayer.isCreative()

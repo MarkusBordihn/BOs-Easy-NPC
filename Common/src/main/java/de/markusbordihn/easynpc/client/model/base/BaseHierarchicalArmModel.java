@@ -41,7 +41,6 @@ import net.minecraft.world.entity.Mob;
 
 public class BaseHierarchicalArmModel<E extends Mob> extends HierarchicalModel<E>
     implements ArmedModel, EasyNPCModel<E> {
-
   public final ModelPart head;
   protected final Map<ModelPartType, CustomPosition> modelPartPositionMap =
       new EnumMap<>(ModelPartType.class);

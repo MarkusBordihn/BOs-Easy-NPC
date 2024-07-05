@@ -33,12 +33,11 @@ public class SkinHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private SkinHandler() {
-  }
+  private SkinHandler() {}
 
   public static boolean setNoneSkin(EasyNPC<?> easyNPC) {
     if (easyNPC == null) {
-      log.error("[{}] Error setting none skin", easyNPC);
+      log.error("[{}] Error setting none skin", "None");
       return false;
     }
     log.debug("[{}] Setting none skin", easyNPC);
@@ -96,7 +95,7 @@ public class SkinHandler {
   public static boolean setPlayerSkin(EasyNPC<?> easyNPC, String playerName, UUID playerUUID) {
     if (easyNPC == null
         || ((playerName == null || playerName.isEmpty())
-        && (playerUUID == null || playerUUID.equals(Constants.BLANK_UUID)))) {
+            && (playerUUID == null || playerUUID.equals(Constants.BLANK_UUID)))) {
       log.error(
           "[{}] Error setting player skin to {} with UUID {}", easyNPC, playerName, playerUUID);
       return false;
@@ -164,9 +163,9 @@ public class SkinHandler {
     return skinURL != null
         && !skinURL.isEmpty()
         && (skinURL.startsWith("https://www.minecraftskins.com/")
-        || skinURL.startsWith("http://novask.in/")
-        || skinURL.startsWith("https://minecraft.novaskin.me/")
-        || skinURL.startsWith("https://mcskins.top/")
-        || skinURL.startsWith("https://skinmc.net/") && UrlValidator.isValidUrl(skinURL));
+            || skinURL.startsWith("http://novask.in/")
+            || skinURL.startsWith("https://minecraft.novaskin.me/")
+            || skinURL.startsWith("https://mcskins.top/")
+            || skinURL.startsWith("https://skinmc.net/") && UrlValidator.isValidUrl(skinURL));
   }
 }

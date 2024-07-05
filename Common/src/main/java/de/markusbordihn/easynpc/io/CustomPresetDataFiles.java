@@ -41,8 +41,7 @@ public class CustomPresetDataFiles {
   private static final ConcurrentHashMap<ResourceLocation, Path> presetResourceLocationMap =
       new ConcurrentHashMap<>();
 
-  private CustomPresetDataFiles() {
-  }
+  private CustomPresetDataFiles() {}
 
   public static void registerCustomPresetData() {
     log.info("{} custom preset data ...", Constants.LOG_REGISTER_PREFIX);
@@ -124,9 +123,9 @@ public class CustomPresetDataFiles {
                               DATA_FOLDER_NAME
                                   + '/'
                                   + presetDataFolder
-                                  .relativize(path)
-                                  .toString()
-                                  .replace("\\", "/"));
+                                      .relativize(path)
+                                      .toString()
+                                      .replace("\\", "/"));
                       presetResourceLocationMap.put(resourceLocation, path);
                       return resourceLocation;
                     })

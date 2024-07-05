@@ -24,19 +24,17 @@ import net.minecraft.world.entity.LivingEntity;
 
 public class ActionUtils {
 
-  public static final String MACRO_NPC_UUID = "@npc-uuid";
-  public static final String MACRO_NPC = "@npc";
-  public static final String MACRO_INITIATOR_UUID = "@initiator-uuid";
-  public static final String MACRO_INITIATOR = "@initiator";
-  public static final String MACRO_ERROR_MESSAGE = "/error_message";
-  public static final String MACRO_WARN_MESSAGE = "/warn_message";
-  public static final String MACRO_INFO_MESSAGE = "/info_message";
-  public static final String MACRO_SUCCESS_MESSAGE = "/success_message";
-
   public static final String COMMAND_DISPLAY_TITLE = "/title @initiator title {\"text\":\"";
+  public static final String MACRO_ERROR_MESSAGE = "/error_message";
+  public static final String MACRO_INFO_MESSAGE = "/info_message";
+  public static final String MACRO_INITIATOR = "@initiator";
+  public static final String MACRO_INITIATOR_UUID = "@initiator-uuid";
+  public static final String MACRO_NPC = "@npc";
+  public static final String MACRO_NPC_UUID = "@npc-uuid";
+  public static final String MACRO_SUCCESS_MESSAGE = "/success_message";
+  public static final String MACRO_WARN_MESSAGE = "/warn_message";
 
-  private ActionUtils() {
-  }
+  private ActionUtils() {}
 
   public static String parseAction(String command, LivingEntity entity, ServerPlayer player) {
     if (command == null || command.isEmpty()) {

@@ -36,7 +36,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class BaseHumanoidMobModelRenderer<
-    E extends EasyNPCBaseModelEntity<E>, V, M extends EntityModel<E> & ArmedModel>
+        E extends EasyNPCBaseModelEntity<E>, V, M extends EntityModel<E> & ArmedModel>
     extends MobRenderer<E, M> implements EasyNPCModelRenderer<E, M> {
 
   protected final Map<V, ResourceLocation> textures;

@@ -34,8 +34,7 @@ public class ModModelLayer {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private ModModelLayer() {
-  }
+  private ModModelLayer() {}
 
   public static void registerEntityLayerDefinitions(
       EntityRenderersEvent.RegisterLayerDefinitions event) {

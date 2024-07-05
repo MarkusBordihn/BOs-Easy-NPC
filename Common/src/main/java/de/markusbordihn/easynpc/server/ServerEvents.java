@@ -25,8 +25,7 @@ import net.minecraft.world.level.storage.LevelResource;
 
 public class ServerEvents {
 
-  private ServerEvents() {
-  }
+  private ServerEvents() {}
 
   public static void handleServerStarting(MinecraftServer minecraftServer) {
     if (minecraftServer == null) {

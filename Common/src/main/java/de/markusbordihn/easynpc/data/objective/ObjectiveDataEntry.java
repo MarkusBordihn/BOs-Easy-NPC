@@ -31,56 +31,52 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 
 public final class ObjectiveDataEntry {
-
-  // Objective Data Tags
-  public static final String DATA_ID_TAG = "Id";
-  public static final String DATA_PRIORITY_TAG = "Prio";
-  public static final String DATA_SPEED_MODIFIER_TAG = "SpeedModifier";
-  public static final String DATA_TARGET_OWNER_UUID_TAG = "TargetOwnerUUID";
-  public static final String DATA_TARGET_ENTITY_UUID_TAG = "TargetEntityUUID";
-  public static final String DATA_TARGET_PLAYER_NAME_TAG = "TargetPlayerName";
-  public static final String DATA_TYPE_TAG = "Type";
-  public static final String DATA_START_DISTANCE_TAG = "StartDistance";
-  public static final String DATA_STOP_DISTANCE_TAG = "StopDistance";
-  public static final String DATA_ONLY_AT_NIGHT_TAG = "OnlyAtNight";
-  public static final String DATA_DISTANCE_TO_POI_TAG = "DistanceToPoi";
-  public static final String DATA_CAN_DEAL_WITH_DOORS_TAG = "CanDealWithDoors";
-  public static final String DATA_LOOK_DISTANCE_TAG = "LookDistance";
   public static final String DATA_ATTACK_INTERVAL_TAG = "AttackInterval";
   public static final String DATA_ATTACK_RADIUS_TAG = "AttackRadius";
+  public static final String DATA_CAN_DEAL_WITH_DOORS_TAG = "CanDealWithDoors";
+  public static final String DATA_DISTANCE_TO_POI_TAG = "DistanceToPoi";
+  // Objective Data Tags
+  public static final String DATA_ID_TAG = "Id";
   public static final String DATA_INTERVAL_TAG = "Interval";
-  public static final String DATA_MUST_SEE_TARGET_TAG = "MustSeeTarget";
+  public static final String DATA_LOOK_DISTANCE_TAG = "LookDistance";
   public static final String DATA_MUST_REACH_TARGET_TAG = "MustReachTarget";
+  public static final String DATA_MUST_SEE_TARGET_TAG = "MustSeeTarget";
+  public static final String DATA_ONLY_AT_NIGHT_TAG = "OnlyAtNight";
+  public static final String DATA_PRIORITY_TAG = "Prio";
   public static final String DATA_PROBABILITY_TAG = "Probability";
-
+  public static final String DATA_SPEED_MODIFIER_TAG = "SpeedModifier";
+  public static final String DATA_START_DISTANCE_TAG = "StartDistance";
+  public static final String DATA_STOP_DISTANCE_TAG = "StopDistance";
+  public static final String DATA_TARGET_ENTITY_UUID_TAG = "TargetEntityUUID";
+  public static final String DATA_TARGET_OWNER_UUID_TAG = "TargetOwnerUUID";
+  public static final String DATA_TARGET_PLAYER_NAME_TAG = "TargetPlayerName";
+  public static final String DATA_TYPE_TAG = "Type";
+  private int attackInterval = 20;
+  private float attackRadius = 8.0F;
+  private BooleanSupplier canDealWithDoors = () -> false;
+  private int distanceToPoi = 16;
+  private Goal goal = null;
+  private String id = UUID.randomUUID().toString();
+  private int interval = 10;
+  // Cache
+  private boolean isRegistered = false;
+  private float lookDistance = 15.0F;
+  private boolean mustReachTarget = true;
   // Objective Data
   private boolean mustSeeTarget = true;
-  private boolean mustReachTarget = true;
-  private int interval = 10;
   private ObjectiveType objectiveType = ObjectiveType.NONE;
-  private String id = UUID.randomUUID().toString();
-  private String targetPlayerName;
-  private UUID targetOwnerUUID;
-  private UUID targetEntityUUID;
+  private boolean onlyAtNight = false;
+  private int priority = 1;
+  private float probability = 1.0F;
   private double speedModifier = 0.7D;
   private float startDistance = 16.0F;
   private float stopDistance = 2.0F;
-  private int attackInterval = 20;
-  private float attackRadius = 8.0F;
-  private boolean onlyAtNight = false;
-  private int distanceToPoi = 16;
-  private BooleanSupplier canDealWithDoors = () -> false;
-  private int priority = 1;
-  private float lookDistance = 15.0F;
-  private float probability = 1.0F;
-
-  // Cache
-  private boolean isRegistered = false;
-  private Goal goal = null;
   private Goal target = null;
+  private UUID targetEntityUUID;
+  private UUID targetOwnerUUID;
+  private String targetPlayerName;
 
-  public ObjectiveDataEntry() {
-  }
+  public ObjectiveDataEntry() {}
 
   public ObjectiveDataEntry(ObjectiveType objectiveType) {
     this.id = objectiveType.name();
@@ -456,7 +452,7 @@ public final class ObjectiveDataEntry {
       compoundTag.putFloat(DATA_STOP_DISTANCE_TAG, this.stopDistance);
     }
     if (this.onlyAtNight) {
-      compoundTag.putBoolean(DATA_ONLY_AT_NIGHT_TAG, this.onlyAtNight);
+      compoundTag.putBoolean(DATA_ONLY_AT_NIGHT_TAG, true);
     }
     if (this.distanceToPoi != 16) {
       compoundTag.putInt(DATA_DISTANCE_TO_POI_TAG, this.distanceToPoi);
@@ -477,10 +473,10 @@ public final class ObjectiveDataEntry {
       compoundTag.putInt(DATA_INTERVAL_TAG, this.interval);
     }
     if (!this.mustSeeTarget) {
-      compoundTag.putBoolean(DATA_MUST_SEE_TARGET_TAG, this.mustSeeTarget);
+      compoundTag.putBoolean(DATA_MUST_SEE_TARGET_TAG, false);
     }
     if (!this.mustReachTarget) {
-      compoundTag.putBoolean(DATA_MUST_REACH_TARGET_TAG, this.mustReachTarget);
+      compoundTag.putBoolean(DATA_MUST_REACH_TARGET_TAG, false);
     }
     if (this.probability != 1.0F) {
       compoundTag.putFloat(DATA_PROBABILITY_TAG, this.probability);

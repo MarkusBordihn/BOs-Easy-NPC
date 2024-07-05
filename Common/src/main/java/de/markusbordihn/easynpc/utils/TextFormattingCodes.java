@@ -71,12 +71,12 @@ public class TextFormattingCodes {
           });
 
   private static final Set<String> textLinebreakCodes = new HashSet<>(List.of("<br>", "\\n"));
+
   private static final String FORMATTING_RESET_CODE = "§r";
   private static final String COLOR_DEFAULT_CODE = "§0";
   private static final String LINE_BREAK = "\n";
 
-  private TextFormattingCodes() {
-  }
+  private TextFormattingCodes() {}
 
   public static boolean hasTextFormattingCodes(String text) {
     return text != null && text.contains("<") && text.contains(">");

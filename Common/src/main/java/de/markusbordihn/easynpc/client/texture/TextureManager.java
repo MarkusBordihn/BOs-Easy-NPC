@@ -49,21 +49,20 @@ public class TextureManager {
   private static final Map<TextureModelKey, String> errorMessageMap = new HashMap<>();
   private static String lastErrorMessage;
 
-  private TextureManager() {
-  }
+  private TextureManager() {}
 
   public static ResourceLocation addCustomTexture(TextureModelKey textureModelKey, File file) {
-    log.info(
-        "{} Registering texture {} with UUID {}.",
-        LOG_PREFIX,
-        file.getName(),
-        textureModelKey.getUUID());
-
     // Verify file to make sure it's not a directory, not null, exists and readable.
     if (file == null || !file.exists() || !file.canRead() || file.isDirectory()) {
       log.error("{} Texture file {} is invalid!", LOG_PREFIX, file);
       return null;
     }
+
+    log.info(
+        "{} Registering texture {} with UUID {}.",
+        LOG_PREFIX,
+        file.getName(),
+        textureModelKey.getUUID());
 
     // Try to load the image from file.
     BufferedImage image;
@@ -104,7 +103,7 @@ public class TextureManager {
     // Creative native image from file.
     NativeImage nativeImage =
         textureModelKey.getSkinModel() == SkinModel.HUMANOID
-            || textureModelKey.getSkinModel() == SkinModel.HUMANOID_SLIM
+                || textureModelKey.getSkinModel() == SkinModel.HUMANOID_SLIM
             ? getNativePlayerImage(file)
             : getNativeImage(file);
     if (nativeImage == null) {
@@ -113,7 +112,17 @@ public class TextureManager {
     }
 
     // Creative dynamic texture from native image.
-    DynamicTexture dynamicTexture = new DynamicTexture(nativeImage);
+    DynamicTexture dynamicTexture;
+    try {
+      dynamicTexture = new DynamicTexture(nativeImage);
+    } catch (Exception exception) {
+      log.error(
+          "{} Unable to create dynamic texture for file {} because of:",
+          LOG_PREFIX,
+          file,
+          exception);
+      return null;
+    }
 
     // Register dynamic texture under resource location.
     String resourceName = getResourceName(textureModelKey);

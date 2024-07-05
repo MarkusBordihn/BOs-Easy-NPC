@@ -41,6 +41,7 @@ public class SpriteButton extends CustomButton {
   private final int spriteWidth;
   private final int spriteHeight;
   private boolean renderBackground = true;
+  private boolean renderCenter = true;
 
   public SpriteButton(
       int left,
@@ -258,7 +259,7 @@ public class SpriteButton extends CustomButton {
       int top,
       int width,
       int height,
-      Component text,
+      Component component,
       ResourceLocation sprite,
       int spriteX,
       int spriteY,
@@ -267,7 +268,7 @@ public class SpriteButton extends CustomButton {
       int spriteWidth,
       int spriteHeight,
       OnPress onPress) {
-    super(left, top, width, height, text != null ? text : Component.literal(""), onPress);
+    super(left, top, width, height, component, onPress);
     this.sprite = sprite;
     this.spriteX = spriteX;
     this.spriteY = spriteY;
@@ -281,18 +282,34 @@ public class SpriteButton extends CustomButton {
   public void renderButtonText(PoseStack poseStack, Font font, Component component, int x, int y) {
     if (component != null && !component.getString().isEmpty()) {
       int fgColor = this.active ? Constants.FONT_COLOR_WHITE : Constants.FONT_COLOR_LIGHT_GRAY;
-      drawCenteredString(
-          poseStack,
-          font,
-          component,
-          this.x + (this.width + this.spriteWidth) / 2,
-          this.y + (this.height - 8) / 2,
-          fgColor | Mth.ceil(this.alpha * 255.0F) << 24);
+      int textColor = fgColor | Mth.ceil(this.alpha * 255.0F) << 24;
+      if (this.renderCenter) {
+        drawCenteredString(
+            poseStack,
+            font,
+            component,
+            this.x + (this.width + this.spriteWidth) / 2,
+            this.y + (this.height - 8) / 2,
+            textColor);
+      } else {
+        drawString(
+            poseStack,
+            font,
+            component,
+            this.x + this.spriteWidth + 4,
+            this.y + (this.height - 8) / 2,
+            textColor);
+      }
     }
   }
 
   public void setRenderBackground(boolean renderBackground) {
     this.renderBackground = renderBackground;
+  }
+
+  public SpriteButton setRenderCenter(boolean renderCenter) {
+    this.renderCenter = renderCenter;
+    return this;
   }
 
   @Override

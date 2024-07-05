@@ -39,8 +39,7 @@ public class BaseEntityModel<E extends Entity> extends EntityModel<E> implements
       new EnumMap<>(ModelPartType.class);
   protected final Map<ModelPartType, ModelPart> modelPartMap = new EnumMap<>(ModelPartType.class);
 
-  public BaseEntityModel() {
-  }
+  public BaseEntityModel() {}
 
   @Override
   public void setupAnim(
@@ -54,8 +53,7 @@ public class BaseEntityModel<E extends Entity> extends EntityModel<E> implements
   }
 
   @Override
-  public void resetModelParts() {
-  }
+  public void resetModelParts() {}
 
   @Override
   public void setDefaultModelPartPosition(
@@ -98,6 +96,6 @@ public class BaseEntityModel<E extends Entity> extends EntityModel<E> implements
       float green,
       float blue,
       float alpha) {
-    // No use implemented renderToBuffer method
+    // Mo use implemented renderToBuffer method
   }
 }

@@ -53,9 +53,10 @@ public class ZombieModelRenderer
   protected static final Map<Variant, ResourceLocation> OUTER_TEXTURE_BY_VARIANT =
       Util.make(
           new EnumMap<>(Variant.class),
-          map -> map.put(
-              Variant.DROWNED,
-              new ResourceLocation("textures/entity/zombie/drowned_outer_layer.png")));
+          map ->
+              map.put(
+                  Variant.DROWNED,
+                  new ResourceLocation("textures/entity/zombie/drowned_outer_layer.png")));
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.ZOMBIE);
 
   public <T extends RenderLayer<Zombie, StandardZombieModel<Zombie>>> ZombieModelRenderer(

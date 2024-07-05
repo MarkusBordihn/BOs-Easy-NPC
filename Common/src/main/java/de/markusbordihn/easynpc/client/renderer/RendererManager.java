@@ -47,8 +47,7 @@ public class RendererManager {
       new HashMap<>();
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private RendererManager() {
-  }
+  private RendererManager() {}
 
   public static void setPathfinderMob(EntityType<?> entityType, PathfinderMob pathfinderMob) {
     pathfinderMobMap.put(entityType, pathfinderMob);

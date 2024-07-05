@@ -23,11 +23,9 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 
 public class ZombieAttackGoal<T extends EasyNPC<?>> extends MeleeAttackGoal {
-
   private int raiseArmTicks;
 
-  public ZombieAttackGoal(
-      T easyNPC, double speedModifier, boolean followingTargetEvenIfNotSeen) {
+  public ZombieAttackGoal(T easyNPC, double speedModifier, boolean followingTargetEvenIfNotSeen) {
     super(easyNPC.getPathfinderMob(), speedModifier, followingTargetEvenIfNotSeen);
   }
 

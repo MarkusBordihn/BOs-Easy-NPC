@@ -36,8 +36,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class SoundCommand extends Command {
 
-  private SoundCommand() {
-  }
+  private SoundCommand() {}
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("sound")

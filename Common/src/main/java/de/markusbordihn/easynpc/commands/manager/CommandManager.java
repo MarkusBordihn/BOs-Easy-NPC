@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.server.commands.ConfigureCommand;
 import de.markusbordihn.easynpc.server.commands.DebugCommand;
 import de.markusbordihn.easynpc.server.commands.DeleteCommand;
 import de.markusbordihn.easynpc.server.commands.DialogCommand;
+import de.markusbordihn.easynpc.server.commands.InteractCommand;
 import de.markusbordihn.easynpc.server.commands.NavigationCommand;
 import de.markusbordihn.easynpc.server.commands.OwnerCommand;
 import de.markusbordihn.easynpc.server.commands.PresetCommand;
@@ -41,8 +42,7 @@ public class CommandManager {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private CommandManager() {
-  }
+  private CommandManager() {}
 
   public static void registerCommands(CommandDispatcher<CommandSourceStack> commandDispatcher) {
     log.info(
@@ -52,19 +52,17 @@ public class CommandManager {
         Constants.MOD_NAME);
     commandDispatcher.register(
         Commands.literal(Constants.MOD_COMMAND)
-            // @formatter:off
             .then(ConfigureCommand.register())
             .then(DebugCommand.register())
             .then(DeleteCommand.register())
             .then(DialogCommand.register())
+            .then(InteractCommand.register())
             .then(NavigationCommand.register())
             .then(OwnerCommand.register())
             .then(PresetCommand.register())
             .then(RenderCommand.register())
             .then(SkinCommand.register())
             .then(SoundCommand.register())
-            .then(TradingCommand.register())
-        // @formatter:on
-    );
+            .then(TradingCommand.register()));
   }
 }

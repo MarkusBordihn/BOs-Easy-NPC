@@ -30,8 +30,7 @@ import net.minecraft.commands.Commands;
 
 public class SkinCommand extends Command {
 
-  private SkinCommand() {
-  }
+  private SkinCommand() {}
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("skin")

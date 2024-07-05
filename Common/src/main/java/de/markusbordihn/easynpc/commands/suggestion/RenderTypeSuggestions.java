@@ -29,8 +29,7 @@ import net.minecraft.commands.SharedSuggestionProvider;
 
 public class RenderTypeSuggestions {
 
-  private RenderTypeSuggestions() {
-  }
+  private RenderTypeSuggestions() {}
 
   public static CompletableFuture<Suggestions> suggest(
       CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {

@@ -20,11 +20,9 @@
 package de.markusbordihn.easynpc.validator;
 
 public class NameValidator {
-
   private static final String USER_REGEX = "^\\w{2,16}$";
 
-  private NameValidator() {
-  }
+  private NameValidator() {}
 
   public static boolean isValidPlayerName(String name) {
     return name != null

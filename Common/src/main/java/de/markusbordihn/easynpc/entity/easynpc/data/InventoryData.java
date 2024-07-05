@@ -32,8 +32,7 @@ public interface InventoryData<T extends PathfinderMob> extends EasyNPC<T> {
 
   Container getInventory();
 
-  default void defineSynchedInventoryData() {
-  }
+  default void defineSynchedInventoryData() {}
 
   default void addAdditionalInventoryData(CompoundTag compoundTag) {
     if (this.getInventory() instanceof SimpleContainer inventory && !inventory.isEmpty()) {

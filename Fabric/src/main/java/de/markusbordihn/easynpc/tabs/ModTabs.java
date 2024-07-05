@@ -30,8 +30,7 @@ public class ModTabs {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private ModTabs() {
-  }
+  private ModTabs() {}
 
   public static void registerModTabs() {
     log.info("{} Registering Mod Tabs ...", Constants.LOG_REGISTER_PREFIX);

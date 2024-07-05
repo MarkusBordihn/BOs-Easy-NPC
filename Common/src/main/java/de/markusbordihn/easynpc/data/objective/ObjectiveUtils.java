@@ -63,11 +63,10 @@ public class ObjectiveUtils {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private ObjectiveUtils() {
-  }
+  private ObjectiveUtils() {}
 
-  public static Goal createObjectiveGoal(ObjectiveDataEntry objectiveDataEntry,
-      EasyNPC<?> easyNPC) {
+  public static Goal createObjectiveGoal(
+      ObjectiveDataEntry objectiveDataEntry, EasyNPC<?> easyNPC) {
     Entity targetOwner = objectiveDataEntry.getTargetOwner(easyNPC);
     PathfinderMob pathfinderMob = easyNPC.getPathfinderMob();
 
@@ -83,7 +82,8 @@ public class ObjectiveUtils {
               objectiveDataEntry.getStartDistance());
         } else {
           log.error(
-              "Unable to find player {} for {}!", objectiveDataEntry.getTargetPlayer(),
+              "Unable to find player {} for {}!",
+              objectiveDataEntry.getTargetPlayer(),
               objectiveDataEntry);
         }
         break;
@@ -210,37 +210,44 @@ public class ObjectiveUtils {
       ObjectiveDataEntry objectiveDataEntry, EasyNPC<?> easyNPC) {
     PathfinderMob pathfinderMob = easyNPC.getPathfinderMob();
     return switch (objectiveDataEntry.getType()) {
-      case ATTACK_ANIMAL -> new NearestAttackableTargetGoal<>(
-          pathfinderMob, Animal.class, objectiveDataEntry.isMustSeeTarget());
-      case ATTACK_PLAYER -> new NearestAttackableTargetGoal<>(
-          pathfinderMob, Player.class, objectiveDataEntry.isMustSeeTarget());
-      case ATTACK_PLAYER_WITHOUT_OWNER -> new NearestAttackableTargetGoal<>(
-          pathfinderMob,
-          Player.class,
-          objectiveDataEntry.getInterval(),
-          objectiveDataEntry.isMustSeeTarget(),
-          objectiveDataEntry.isMustReachTarget(),
-          entity ->
-              easyNPC.getEasyNPCOwnerData() != null
-                  && entity != easyNPC.getEasyNPCOwnerData().getOwner());
-      case ATTACK_MONSTER -> new NearestAttackableTargetGoal<>(
-          pathfinderMob, Monster.class, objectiveDataEntry.isMustSeeTarget());
-      case ATTACK_MOB_WITHOUT_CREEPER -> new NearestAttackableTargetGoal<>(
-          pathfinderMob,
-          Mob.class,
-          objectiveDataEntry.getInterval(),
-          objectiveDataEntry.isMustSeeTarget(),
-          objectiveDataEntry.isMustReachTarget(),
-          entity -> entity instanceof Enemy && !(entity instanceof Creeper));
-      case ATTACK_MOB -> new NearestAttackableTargetGoal<>(
-          pathfinderMob,
-          Mob.class,
-          objectiveDataEntry.getInterval(),
-          objectiveDataEntry.isMustSeeTarget(),
-          objectiveDataEntry.isMustReachTarget(),
-          Enemy.class::isInstance);
-      case ATTACK_VILLAGER -> new NearestAttackableTargetGoal<>(
-          pathfinderMob, AbstractVillager.class, objectiveDataEntry.isMustSeeTarget());
+      case ATTACK_ANIMAL ->
+          new NearestAttackableTargetGoal<>(
+              pathfinderMob, Animal.class, objectiveDataEntry.isMustSeeTarget());
+      case ATTACK_PLAYER ->
+          new NearestAttackableTargetGoal<>(
+              pathfinderMob, Player.class, objectiveDataEntry.isMustSeeTarget());
+      case ATTACK_PLAYER_WITHOUT_OWNER ->
+          new NearestAttackableTargetGoal<>(
+              pathfinderMob,
+              Player.class,
+              objectiveDataEntry.getInterval(),
+              objectiveDataEntry.isMustSeeTarget(),
+              objectiveDataEntry.isMustReachTarget(),
+              entity ->
+                  easyNPC.getEasyNPCOwnerData() != null
+                      && entity != easyNPC.getEasyNPCOwnerData().getOwner());
+      case ATTACK_MONSTER ->
+          new NearestAttackableTargetGoal<>(
+              pathfinderMob, Monster.class, objectiveDataEntry.isMustSeeTarget());
+      case ATTACK_MOB_WITHOUT_CREEPER ->
+          new NearestAttackableTargetGoal<>(
+              pathfinderMob,
+              Mob.class,
+              objectiveDataEntry.getInterval(),
+              objectiveDataEntry.isMustSeeTarget(),
+              objectiveDataEntry.isMustReachTarget(),
+              entity -> entity instanceof Enemy && !(entity instanceof Creeper));
+      case ATTACK_MOB ->
+          new NearestAttackableTargetGoal<>(
+              pathfinderMob,
+              Mob.class,
+              objectiveDataEntry.getInterval(),
+              objectiveDataEntry.isMustSeeTarget(),
+              objectiveDataEntry.isMustReachTarget(),
+              Enemy.class::isInstance);
+      case ATTACK_VILLAGER ->
+          new NearestAttackableTargetGoal<>(
+              pathfinderMob, AbstractVillager.class, objectiveDataEntry.isMustSeeTarget());
       default -> null;
     };
   }

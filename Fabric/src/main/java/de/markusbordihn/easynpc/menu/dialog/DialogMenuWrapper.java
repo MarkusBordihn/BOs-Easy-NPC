@@ -19,11 +19,10 @@
 
 package de.markusbordihn.easynpc.menu.dialog;
 
-import de.markusbordihn.easynpc.menu.EasyNPCMenu;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import net.minecraft.world.entity.player.Inventory;
 
-public class DialogMenuWrapper extends EasyNPCMenu {
+public class DialogMenuWrapper extends DialogMenu {
 
   public DialogMenuWrapper(int containerId, final Inventory playerInventory) {
     super(ModMenuTypes.DIALOG_MENU, containerId, playerInventory);

@@ -33,8 +33,7 @@ public final class DebugManager {
   private static final String LOG_PREFIX = "[Debug Manager]";
   private static boolean isDevelopmentEnvironment = false;
 
-  private DebugManager() {
-  }
+  private DebugManager() {}
 
   public static void setLogLevel(Logger logger, Level logLevel) {
     if (logLevel == null || logLevel == logger.getLevel()) {

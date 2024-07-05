@@ -32,8 +32,7 @@ public class SoundDataSet {
 
   private final Map<SoundType, SoundDataEntry> soundDataEntryMap = new EnumMap<>(SoundType.class);
 
-  public SoundDataSet() {
-  }
+  public SoundDataSet() {}
 
   public SoundDataSet(CompoundTag compoundTag) {
     this.load(compoundTag);

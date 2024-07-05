@@ -51,29 +51,29 @@ import net.minecraft.world.entity.Saddleable;
 
 public interface EasyNPCBase<E extends PathfinderMob>
     extends Saddleable,
-    EasyNPC<E>,
-    ActionHandler<E>,
-    ActionEventData<E>,
-    AttackData<E>,
-    AttributeData<E>,
-    BaseTickHandler<E>,
-    ConfigurationData<E>,
-    DialogData<E>,
-    GuiData<E>,
-    NavigationData<E>,
-    ConfigData<E>,
-    ObjectiveData<E>,
-    OwnerData<E>,
-    PresetData<E>,
-    ProfessionData<E>,
-    RenderData<E>,
-    SkinData<E>,
-    SoundData<E>,
-    SpawnData<E>,
-    SpawnerData<E>,
-    TickerData<E>,
-    TradingData<E>,
-    VariantData<E> {
+        EasyNPC<E>,
+        ActionHandler<E>,
+        ActionEventData<E>,
+        AttackData<E>,
+        AttributeData<E>,
+        BaseTickHandler<E>,
+        ConfigurationData<E>,
+        DialogData<E>,
+        GuiData<E>,
+        NavigationData<E>,
+        ConfigData<E>,
+        ObjectiveData<E>,
+        OwnerData<E>,
+        PresetData<E>,
+        ProfessionData<E>,
+        RenderData<E>,
+        SkinData<E>,
+        SoundData<E>,
+        SpawnData<E>,
+        SpawnerData<E>,
+        TickerData<E>,
+        TradingData<E>,
+        VariantData<E> {
 
   static void registerEasyNPCDataSerializers() {
     log.info("Register data serializers ...");
@@ -331,6 +331,11 @@ public interface EasyNPCBase<E extends PathfinderMob>
     // Register Objectives after all data is loaded.
     if (objectiveData != null) {
       objectiveData.readAdditionalObjectiveData(compoundTag);
+    }
+
+    // Refresh navigation data after all data is loaded.
+    if (navigationData != null) {
+      navigationData.refreshGroundNavigation();
     }
   }
 }

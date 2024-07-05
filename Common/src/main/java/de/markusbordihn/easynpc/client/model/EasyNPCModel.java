@@ -32,9 +32,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
 
 public interface EasyNPCModel<E extends Entity> {
-
-  CustomRotation EMPTY_ROTATION = new CustomRotation(0, 0, 0);
   CustomPosition EMPTY_POSITION = new CustomPosition(0, 0, 0);
+  CustomRotation EMPTY_ROTATION = new CustomRotation(0, 0, 0);
 
   private static boolean equalPositionAndRotation(
       ModelPart modelPart, CustomPosition position, Rotations rotations) {
@@ -113,8 +112,7 @@ public interface EasyNPCModel<E extends Entity> {
       float limbSwingAmount,
       float ageInTicks,
       float netHeadYaw,
-      float headPitch) {
-  }
+      float headPitch) {}
 
   default void animateCustomModelPose(
       E entity,
@@ -124,11 +122,9 @@ public interface EasyNPCModel<E extends Entity> {
       float limbSwingAmount,
       float ageInTicks,
       float netHeadYaw,
-      float headPitch) {
-  }
+      float headPitch) {}
 
-  default void adjustDefaultModelParts(E entity, EasyNPC<?> easyNPC) {
-  }
+  default void adjustDefaultModelParts(E entity, EasyNPC<?> easyNPC) {}
 
   default boolean setupDefaultModelPose(
       E entity,
@@ -324,8 +320,7 @@ public interface EasyNPCModel<E extends Entity> {
       float limbSwingAmount,
       float ageInTicks,
       float netHeadYaw,
-      float headPitch) {
-  }
+      float headPitch) {}
 
   default boolean handleDefaultModelPose(
       E entity,
@@ -335,55 +330,57 @@ public interface EasyNPCModel<E extends Entity> {
       float ageInTicks,
       float netHeadYaw,
       float headPitch) {
-    boolean hasAdjustedDefaultModelPose = false;
     Pose pose = modelData.getDefaultPose();
-    hasAdjustedDefaultModelPose =
+    boolean hasAdjustedDefaultModelPose =
         this.setupDefaultModelPose(
             entity, pose, modelData, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
     // Handle default standard model poses.
     hasAdjustedDefaultModelPose =
         switch (pose) {
-          case STANDING -> hasAdjustedDefaultModelPose
-              || this.setupStandingModelPose(
-              entity,
-              modelData,
-              limbSwing,
-              limbSwingAmount,
-              ageInTicks,
-              netHeadYaw,
-              headPitch);
-          case CROUCHING -> hasAdjustedDefaultModelPose
-              || this.setupCrouchingModelPose(
-              entity,
-              modelData,
-              limbSwing,
-              limbSwingAmount,
-              ageInTicks,
-              netHeadYaw,
-              headPitch);
-          default -> hasAdjustedDefaultModelPose
-              || this.setupFallbackModelPose(
-              entity,
-              pose,
-              modelData,
-              limbSwing,
-              limbSwingAmount,
-              ageInTicks,
-              netHeadYaw,
-              headPitch);
+          case STANDING ->
+              hasAdjustedDefaultModelPose
+                  || this.setupStandingModelPose(
+                      entity,
+                      modelData,
+                      limbSwing,
+                      limbSwingAmount,
+                      ageInTicks,
+                      netHeadYaw,
+                      headPitch);
+          case CROUCHING ->
+              hasAdjustedDefaultModelPose
+                  || this.setupCrouchingModelPose(
+                      entity,
+                      modelData,
+                      limbSwing,
+                      limbSwingAmount,
+                      ageInTicks,
+                      netHeadYaw,
+                      headPitch);
+          default ->
+              hasAdjustedDefaultModelPose
+                  || this.setupFallbackModelPose(
+                      entity,
+                      pose,
+                      modelData,
+                      limbSwing,
+                      limbSwingAmount,
+                      ageInTicks,
+                      netHeadYaw,
+                      headPitch);
         };
     hasAdjustedDefaultModelPose =
         hasAdjustedDefaultModelPose
             || this.animateDefaultModelPose(
-            entity,
-            pose,
-            modelData,
-            limbSwing,
-            limbSwingAmount,
-            ageInTicks,
-            netHeadYaw,
-            headPitch);
+                entity,
+                pose,
+                modelData,
+                limbSwing,
+                limbSwingAmount,
+                ageInTicks,
+                netHeadYaw,
+                headPitch);
     return hasAdjustedDefaultModelPose;
   }
 
@@ -497,11 +494,11 @@ public interface EasyNPCModel<E extends Entity> {
               attackData,
               modelData,
               rightFrontLeg != null
-                  && this.hasDefaultModelPart(ModelPartType.RIGHT_FRONT_LEG, rightFrontLeg)
+                      && this.hasDefaultModelPart(ModelPartType.RIGHT_FRONT_LEG, rightFrontLeg)
                   ? rightFrontLeg
                   : null,
               leftFrontLeg != null
-                  && this.hasDefaultModelPart(ModelPartType.LEFT_FRONT_LEG, leftFrontLeg)
+                      && this.hasDefaultModelPart(ModelPartType.LEFT_FRONT_LEG, leftFrontLeg)
                   ? leftFrontLeg
                   : null,
               ageInTicks,
@@ -517,11 +514,11 @@ public interface EasyNPCModel<E extends Entity> {
               attackData,
               modelData,
               rightHindLeg != null
-                  && this.hasDefaultModelPart(ModelPartType.RIGHT_HIND_LEG, rightHindLeg)
+                      && this.hasDefaultModelPart(ModelPartType.RIGHT_HIND_LEG, rightHindLeg)
                   ? rightHindLeg
                   : null,
               leftHindLeg != null
-                  && this.hasDefaultModelPart(ModelPartType.LEFT_HIND_LEG, leftHindLeg)
+                      && this.hasDefaultModelPart(ModelPartType.LEFT_HIND_LEG, leftHindLeg)
                   ? leftHindLeg
                   : null,
               ageInTicks,
@@ -563,7 +560,6 @@ public interface EasyNPCModel<E extends Entity> {
     boolean isDefaultModelPose = modelPose == ModelPose.DEFAULT;
     boolean hasAdjustedDefaultModelPose = false;
     boolean hasSmartAnimations = modelData.useSmartAnimations();
-    boolean hasAdditionalModelAnimation = false;
 
     if (isCustomModelPose) {
       // Handle custom model pose and animation.
@@ -606,7 +602,7 @@ public interface EasyNPCModel<E extends Entity> {
     }
 
     // Handle additional model animation.
-    hasAdditionalModelAnimation =
+    boolean hasAdditionalModelAnimation =
         this.additionalModelAnimation(
             entity,
             attackData,

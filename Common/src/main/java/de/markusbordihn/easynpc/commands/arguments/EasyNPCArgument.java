@@ -47,8 +47,7 @@ public class EasyNPCArgument implements ArgumentType<EntitySelector> {
       Arrays.asList(
           "EasyNPC", "0123", "@e", "@e[type=foo]", "dd12be42-52a9-4a91-a8a1-11c01849e498");
 
-  public EasyNPCArgument() {
-  }
+  public EasyNPCArgument() {}
 
   public static EasyNPC<?> getEntityWithAccess(
       CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {

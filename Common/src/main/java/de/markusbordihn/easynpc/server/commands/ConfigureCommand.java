@@ -31,8 +31,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class ConfigureCommand extends Command {
 
-  private ConfigureCommand() {
-  }
+  private ConfigureCommand() {}
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("configure")

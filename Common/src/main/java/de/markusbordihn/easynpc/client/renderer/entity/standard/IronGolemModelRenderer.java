@@ -66,10 +66,14 @@ public class IronGolemModelRenderer
       TEXTURE_BY_VARIANT.get(Variant.IRON_GOLEM);
 
   public IronGolemModelRenderer(EntityRendererProvider.Context context) {
-    super(context, new StandardIronGolemModel<>(context.bakeLayer(ModelLayers.IRON_GOLEM)), 0.7F,
-        DEFAULT_TEXTURE, TEXTURE_BY_VARIANT, TEXTURE_OVERLAY_BY_VARIANT);
+    super(
+        context,
+        new StandardIronGolemModel<>(context.bakeLayer(ModelLayers.IRON_GOLEM)),
+        0.7F,
+        DEFAULT_TEXTURE,
+        TEXTURE_BY_VARIANT,
+        TEXTURE_OVERLAY_BY_VARIANT);
     this.addLayer(new VariantOverLayer<>(this, context.getModelSet()));
     this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
   }
-
 }

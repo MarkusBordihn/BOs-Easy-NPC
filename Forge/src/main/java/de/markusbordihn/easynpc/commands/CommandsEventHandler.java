@@ -27,8 +27,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 @EventBusSubscriber
 public class CommandsEventHandler {
 
-  protected CommandsEventHandler() {
-  }
+  protected CommandsEventHandler() {}
 
   @SubscribeEvent
   public static void handleRegisterCommandsEvent(RegisterCommandsEvent event) {

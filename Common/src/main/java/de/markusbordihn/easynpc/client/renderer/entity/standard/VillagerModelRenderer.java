@@ -112,7 +112,10 @@ public class VillagerModelRenderer
           });
 
   public VillagerModelRenderer(EntityRendererProvider.Context context) {
-    super(context, new StandardVillagerModel<>(context.bakeLayer(ModelLayers.VILLAGER)), 0.5F,
+    super(
+        context,
+        new StandardVillagerModel<>(context.bakeLayer(ModelLayers.VILLAGER)),
+        0.5F,
         BASE_TEXTURE);
     this.addLayer(new VariantLayer<>(this, context.getModelSet(), TEXTURE_BY_VARIANT));
     this.addLayer(

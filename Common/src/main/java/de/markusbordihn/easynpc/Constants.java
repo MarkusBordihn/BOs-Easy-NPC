@@ -26,68 +26,63 @@ import net.minecraft.resources.ResourceLocation;
 
 public final class Constants {
 
-  // General Mod definitions
-  public static final String LOG_NAME = "Easy NPC";
-  public static final String LOG_ICON = "🗣";
-  public static final String LOG_REGISTER_PREFIX = LOG_ICON + " Register Easy NPC";
+  public static final ResourceLocation BLANK_ENTITY_TEXTURE =
+      new ResourceLocation(Constants.MOD_ID, "textures/entity/blank.png");
+  // Mod definitions for adding additional support and compatibility
+  public static final String MOD_ARMOURERS_WORKSHOP_ID = "armourers_workshop";
+  public static final String MOD_ARMOURERS_WORKSHOP_NAME = "Armourer's Workshop";
   public static final String MOD_COMMAND = "easy_npc";
   public static final String MOD_ID = "easy_npc";
   public static final String MOD_NAME = "Easy NPC";
   public static final String MOD_URL = "https://www.curseforge.com/minecraft/mc-mods/easy-npc";
   // Prefixes
   public static final String MINECRAFT_PREFIX = "minecraft";
-  public static final String TEXT_PREFIX = "text.easy_npc.";
-  public static final String ITEM_PREFIX = "item." + MOD_ID + ".";
-  public static final String ENTITY_PREFIX = "entity." + MOD_ID + ".";
-  public static final String TEXT_CONFIG_PREFIX = TEXT_PREFIX + "config.";
-  public static final String TEXT_ITEM_PREFIX = TEXT_PREFIX + "item.";
-  public static final String CONTAINER_PREFIX = TEXT_PREFIX + "container.";
   // Suffices
   public static final String NPC_NBT_SUFFIX = ".npc.nbt";
+  public static final float PI_180DEG = (float) Math.PI / 180F;
+  public static final ResourceLocation TEXTURE_CONFIGURATION =
+      new ResourceLocation(Constants.MOD_ID, "textures/gui/configuration.png");
+  public static final ResourceLocation TEXTURE_DEMO_BACKGROUND =
+      new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/demo_background.png");
+  public static final ResourceLocation TEXTURE_DIALOG =
+      new ResourceLocation(Constants.MOD_ID, "textures/gui/dialog.png");
+  public static final ResourceLocation TEXTURE_INVENTORY =
+      new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/container/inventory.png");
+  public static final ResourceLocation TEXTURE_SPAWNER =
+      new ResourceLocation(Constants.MOD_ID, "textures/gui/spawner.png");
+  public static final String TEXT_PREFIX = "text.easy_npc.";
+  public static final String TEXT_CONFIG_PREFIX = TEXT_PREFIX + "config.";
+  public static final String TEXT_ITEM_PREFIX = TEXT_PREFIX + "item.";
+  // Textures
+  public static final UUID BLANK_UUID = new UUID(0L, 0L);
+  public static final String CONTAINER_PREFIX = TEXT_PREFIX + "container.";
+  public static final UUID EMPTY_UUID = new UUID(0L, 0L);
+  public static final String ENTITY_PREFIX = "entity." + MOD_ID + ".";
   // Colors
   public static final int FONT_COLOR_BLACK = 0;
   public static final int FONT_COLOR_DARK_GREEN = 43520;
   public static final int FONT_COLOR_DEFAULT = 4210752;
   public static final int FONT_COLOR_GRAY = 11184810;
   public static final int FONT_COLOR_GREEN = 5635925;
+  public static final int FONT_COLOR_LIGHT_GRAY = 10526880;
   public static final int FONT_COLOR_RED = 16733525;
   public static final int FONT_COLOR_WHITE = 16777215;
   public static final int FONT_COLOR_YELLOW = 16777045;
-  public static final int FONT_COLOR_LIGHT_GRAY = 10526880;
-  // Textures
-  public static final UUID BLANK_UUID = new UUID(0L, 0L);
-  public static final ResourceLocation BLANK_ENTITY_TEXTURE =
-      new ResourceLocation(Constants.MOD_ID, "textures/entity/blank.png");
-  public static final ResourceLocation TEXTURE_DEMO_BACKGROUND =
-      new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/demo_background.png");
-  public static final ResourceLocation TEXTURE_DIALOG =
-      new ResourceLocation(Constants.MOD_ID, "textures/gui/dialog.png");
-
-  public static final ResourceLocation TEXTURE_CONFIGURATION =
-      new ResourceLocation(Constants.MOD_ID, "textures/gui/configuration.png");
-  public static final ResourceLocation TEXTURE_SPAWNER =
-      new ResourceLocation(Constants.MOD_ID, "textures/gui/spawner.png");
-  public static final ResourceLocation TEXTURE_INVENTORY =
-      new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/container/inventory.png");
+  public static final float HALF_OF_PI = (float) Math.PI / 2F;
+  public static final String ITEM_PREFIX = "item." + MOD_ID + ".";
+  public static final String LOG_ICON = "🗣";
+  // General Mod definitions
+  public static final String LOG_NAME = "Easy NPC";
+  public static final String LOG_REGISTER_PREFIX = LOG_ICON + " Register Easy NPC";
   // Animation Math
   public static final float MATH_27DEG_TO_RAD = 0.47123894F;
   public static final float MATH_27DEG_TO_RAD_INVERTED = -0.47123894F;
-  public static final float HALF_OF_PI = (float) Math.PI / 2F;
-  public static final float PI_180DEG = (float) Math.PI / 180F;
-
   // Data Specific definitions
   public static final int NPC_DATA_VERSION = 1;
-  public static final UUID EMPTY_UUID = new UUID(0L, 0L);
-
-  // Mod definitions for adding additional support and compatibility
-  public static final String MOD_ARMOURERS_WORKSHOP_ID = "armourers_workshop";
-  public static final String MOD_ARMOURERS_WORKSHOP_NAME = "Armourer's Workshop";
-
   // Static paths
   public static Path GAME_DIR = Paths.get("").toAbsolutePath();
   public static Path CONFIG_DIR = GAME_DIR.resolve("config");
   public static Path WORLD_DIR = GAME_DIR.resolve("world");
 
-  private Constants() {
-  }
+  private Constants() {}
 }

@@ -27,13 +27,12 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ModArgumentTypes {
 
-  private ModArgumentTypes() {
-  }
+  private ModArgumentTypes() {}
 
   public static void register() {
-    ArgumentTypeRegistry.registerArgumentType(new ResourceLocation(Constants.MOD_ID, "easy_npc"),
+    ArgumentTypeRegistry.registerArgumentType(
+        new ResourceLocation(Constants.MOD_ID, "easy_npc"),
         EasyNPCArgument.class,
-        SingletonArgumentInfo.contextFree(EasyNPCArgument::new)
-    );
+        SingletonArgumentInfo.contextFree(EasyNPCArgument::new));
   }
 }

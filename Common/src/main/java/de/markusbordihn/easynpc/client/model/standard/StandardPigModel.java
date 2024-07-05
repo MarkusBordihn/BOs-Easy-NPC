@@ -33,9 +33,8 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.Rotations;
 import net.minecraft.world.entity.Entity;
 
-public class StandardPigModel<T extends Entity> extends PigModel<T> implements EasyNPCModel<T>,
-    HeadedModel {
-
+public class StandardPigModel<T extends Entity> extends PigModel<T>
+    implements EasyNPCModel<T>, HeadedModel {
   protected final Map<ModelPartType, CustomPosition> modelPartPositionMap =
       new EnumMap<>(ModelPartType.class);
   protected final Map<ModelPartType, Rotations> modelPartRotationMap =

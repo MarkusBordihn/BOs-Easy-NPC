@@ -38,8 +38,7 @@ public class DataFileHandler {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String CACHE_FOLDER_NAME = "cache";
 
-  private DataFileHandler() {
-  }
+  private DataFileHandler() {}
 
   public static void registerDataFiles() {
     log.info("{} general data folders ...", Constants.LOG_REGISTER_PREFIX);
@@ -114,7 +113,7 @@ public class DataFileHandler {
       log.info("Creating custom data folder {} at {} ...", dataLabel, customDataFolder);
       return Files.createDirectories(customDataFolderPath);
     } catch (Exception exception) {
-      log.error("There was an error, creating the custom data folder:", exception);
+      log.error("There was an error, creating the custom data folder {}:", dataLabel, exception);
     }
     return null;
   }

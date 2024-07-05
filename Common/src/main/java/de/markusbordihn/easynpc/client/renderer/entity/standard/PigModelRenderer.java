@@ -61,5 +61,4 @@ public class PigModelRenderer extends BaseMobModelRenderer<Pig, Variant, Standar
             new ResourceLocation("textures/entity/pig/pig_saddle.png")));
     this.addLayer(new HeldItemLayer<>(this, context.getItemInHandRenderer(), -0.10, 0.22, -0.75));
   }
-
 }

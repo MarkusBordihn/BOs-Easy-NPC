@@ -37,6 +37,7 @@ import de.markusbordihn.easynpc.client.renderer.entity.standard.VillagerModelRen
 import de.markusbordihn.easynpc.client.renderer.entity.standard.WolfModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.ZombieModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.ZombieVillagerModelRenderer;
+import de.markusbordihn.easynpc.client.renderer.layers.CustomHumanoidArmorLayer;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import org.apache.logging.log4j.LogManager;
@@ -46,8 +47,7 @@ public class ClientRenderer {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private ClientRenderer() {
-  }
+  private ClientRenderer() {}
 
   public static void registerEntityRenderers() {
     log.info("{} Entity Renders ...", Constants.LOG_REGISTER_PREFIX);
@@ -57,27 +57,36 @@ public class ClientRenderer {
     EntityRendererRegistry.register(ModEntityType.CAT, CatModelRenderer::new);
     EntityRendererRegistry.register(ModEntityType.CHICKEN, ChickenModelRenderer::new);
     EntityRendererRegistry.register(
-        ModEntityType.DROWNED, context -> new ZombieModelRenderer(context, null));
+        ModEntityType.DROWNED,
+        context -> new ZombieModelRenderer(context, CustomHumanoidArmorLayer.class));
     EntityRendererRegistry.register(
         ModEntityType.FAIRY, context -> new FairyModelRenderer(context, ModModelLayers.FAIRY));
     EntityRendererRegistry.register(
-        ModEntityType.HUMANOID, context -> new HumanoidModelRenderer(context, null));
+        ModEntityType.HUMANOID,
+        context -> new HumanoidModelRenderer(context, CustomHumanoidArmorLayer.class));
     EntityRendererRegistry.register(
-        ModEntityType.HUMANOID_SLIM, context -> new HumanoidSlimModelRenderer(context, null));
+        ModEntityType.HUMANOID_SLIM,
+        context -> new HumanoidSlimModelRenderer(context, CustomHumanoidArmorLayer.class));
     EntityRendererRegistry.register(
-        ModEntityType.STRAY, context -> new SkeletonModelRenderer(context, null));
+        ModEntityType.STRAY,
+        context -> new SkeletonModelRenderer(context, CustomHumanoidArmorLayer.class));
     EntityRendererRegistry.register(
-        ModEntityType.WITHER_SKELETON, context -> new SkeletonModelRenderer(context, null));
+        ModEntityType.WITHER_SKELETON,
+        context -> new SkeletonModelRenderer(context, CustomHumanoidArmorLayer.class));
     EntityRendererRegistry.register(
-        ModEntityType.HUSK, context -> new ZombieModelRenderer(context, null));
+        ModEntityType.HUSK,
+        context -> new ZombieModelRenderer(context, CustomHumanoidArmorLayer.class));
     EntityRendererRegistry.register(ModEntityType.IRON_GOLEM, IronGolemModelRenderer::new);
     EntityRendererRegistry.register(
-        ModEntityType.SKELETON, context -> new SkeletonModelRenderer(context, null));
+        ModEntityType.SKELETON,
+        context -> new SkeletonModelRenderer(context, CustomHumanoidArmorLayer.class));
     EntityRendererRegistry.register(ModEntityType.VILLAGER, VillagerModelRenderer::new);
     EntityRendererRegistry.register(
-        ModEntityType.ZOMBIE, context -> new ZombieModelRenderer(context, null));
+        ModEntityType.ZOMBIE,
+        context -> new ZombieModelRenderer(context, CustomHumanoidArmorLayer.class));
     EntityRendererRegistry.register(
-        ModEntityType.ZOMBIE_VILLAGER, context -> new ZombieVillagerModelRenderer(context, null));
+        ModEntityType.ZOMBIE_VILLAGER,
+        context -> new ZombieVillagerModelRenderer(context, CustomHumanoidArmorLayer.class));
     EntityRendererRegistry.register(ModEntityType.PIG, PigModelRenderer::new);
     EntityRendererRegistry.register(ModEntityType.EVOKER, IllagerModelRenderer::new);
     EntityRendererRegistry.register(ModEntityType.ILLUSIONER, IllagerModelRenderer::new);

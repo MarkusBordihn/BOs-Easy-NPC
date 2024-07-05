@@ -32,7 +32,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 public class CustomHumanoidArmorLayer<
-    T extends LivingEntity, M extends HumanoidModel<T>, A extends HumanoidModel<T>>
+        T extends LivingEntity, M extends HumanoidModel<T>, A extends HumanoidModel<T>>
     extends HumanoidArmorLayer<T, M, A> {
 
   public CustomHumanoidArmorLayer(RenderLayerParent<T, M> renderer, A innerModel, A outerModel) {
@@ -46,9 +46,9 @@ public class CustomHumanoidArmorLayer<
       ModelData<?> modelData = easyNPC.getEasyNPCModelData();
       if (modelData != null
           && ((equipmentSlot == EquipmentSlot.CHEST && modelData.isModelChestplateVisible())
-          || (equipmentSlot == EquipmentSlot.LEGS && modelData.isModelLeggingsVisible())
-          || (equipmentSlot == EquipmentSlot.FEET && modelData.isModelBootsVisible())
-          || (equipmentSlot == EquipmentSlot.HEAD && modelData.isModelHelmetVisible()))) {
+              || (equipmentSlot == EquipmentSlot.LEGS && modelData.isModelLeggingsVisible())
+              || (equipmentSlot == EquipmentSlot.FEET && modelData.isModelBootsVisible())
+              || (equipmentSlot == EquipmentSlot.HEAD && modelData.isModelHelmetVisible()))) {
         return super.getArmorResource(entity, itemStack, equipmentSlot, type);
       }
     }

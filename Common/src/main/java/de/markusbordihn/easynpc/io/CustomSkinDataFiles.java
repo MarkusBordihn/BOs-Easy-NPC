@@ -35,8 +35,7 @@ public class CustomSkinDataFiles {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String DATA_FOLDER_NAME = "skin";
 
-  private CustomSkinDataFiles() {
-  }
+  private CustomSkinDataFiles() {}
 
   public static void registerCustomSkinData() {
     log.info("{} custom skin data ...", Constants.LOG_REGISTER_PREFIX);

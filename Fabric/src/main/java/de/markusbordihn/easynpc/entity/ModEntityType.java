@@ -45,12 +45,6 @@ import org.apache.logging.log4j.Logger;
 
 public class ModEntityType {
 
-  public static final EntityType<CrashTestDummy> CRASH_TEST_DUMMY =
-      Registry.register(
-          Registry.ENTITY_TYPE,
-          Constants.MOD_ID + ":" + CrashTestDummy.ID,
-          ModEntityTypes.CRASH_TEST_DUMMY);
-
   public static final EntityType<Allay> ALLAY =
       Registry.register(
           Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Allay.ID, ModEntityTypes.ALLAY);
@@ -59,9 +53,23 @@ public class ModEntityType {
   public static final EntityType<Chicken> CHICKEN =
       Registry.register(
           Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Chicken.ID, ModEntityTypes.CHICKEN);
+  public static final EntityType<CrashTestDummy> CRASH_TEST_DUMMY =
+      Registry.register(
+          Registry.ENTITY_TYPE,
+          Constants.MOD_ID + ":" + CrashTestDummy.ID,
+          ModEntityTypes.CRASH_TEST_DUMMY);
+  public static final EntityType<Zombie> DROWNED =
+      Registry.register(
+          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Zombie.ID_DROWNED, ModEntityTypes.DROWNED);
+  public static final EntityType<Illager> EVOKER =
+      Registry.register(
+          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Illager.ID_EVOKER, ModEntityTypes.EVOKER);
   public static final EntityType<Fairy> FAIRY =
       Registry.register(
           Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Fairy.ID, ModEntityTypes.FAIRY);
+  public static final EntityType<Horse> HORSE =
+      Registry.register(
+          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Horse.ID, ModEntityTypes.HORSE);
   public static final EntityType<Humanoid> HUMANOID =
       Registry.register(
           Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Humanoid.ID, ModEntityTypes.HUMANOID);
@@ -70,57 +78,17 @@ public class ModEntityType {
           Registry.ENTITY_TYPE,
           Constants.MOD_ID + ":" + HumanoidSlim.ID,
           ModEntityTypes.HUMANOID_SLIM);
-  public static final EntityType<IronGolem> IRON_GOLEM =
-      Registry.register(
-          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + IronGolem.ID, ModEntityTypes.IRON_GOLEM);
-  public static final EntityType<Skeleton> SKELETON =
-      Registry.register(
-          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Skeleton.ID, ModEntityTypes.SKELETON);
-  public static final EntityType<Skeleton> STRAY =
-      Registry.register(
-          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Skeleton.ID_STRAY, ModEntityTypes.STRAY);
-  public static final EntityType<Skeleton> WITHER_SKELETON =
-      Registry.register(
-          Registry.ENTITY_TYPE,
-          Constants.MOD_ID + ":" + Skeleton.ID_WITHER_SKELETON,
-          ModEntityTypes.WITHER_SKELETON);
-  public static final EntityType<Villager> VILLAGER =
-      Registry.register(
-          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Villager.ID, ModEntityTypes.VILLAGER);
-  public static final EntityType<ZombieVillager> ZOMBIE_VILLAGER =
-      Registry.register(
-          Registry.ENTITY_TYPE,
-          Constants.MOD_ID + ":" + ZombieVillager.ID,
-          ModEntityTypes.ZOMBIE_VILLAGER);
   public static final EntityType<Zombie> HUSK =
       Registry.register(
           Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Zombie.ID_HUSK, ModEntityTypes.HUSK);
-  public static final EntityType<Zombie> DROWNED =
-      Registry.register(
-          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Zombie.ID_DROWNED, ModEntityTypes.DROWNED);
-  public static final EntityType<Zombie> ZOMBIE =
-      Registry.register(
-          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Zombie.ID, ModEntityTypes.ZOMBIE);
-  public static final EntityType<Pig> PIG =
-      Registry.register(Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Pig.ID, ModEntityTypes.PIG);
-  public static final EntityType<Illager> EVOKER =
-      Registry.register(
-          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Illager.ID_EVOKER, ModEntityTypes.EVOKER);
   public static final EntityType<Illager> ILLUSIONER =
       Registry.register(
           Registry.ENTITY_TYPE,
           Constants.MOD_ID + ":" + Illager.ID_ILLUSIONER,
           ModEntityTypes.ILLUSIONER);
-  public static final EntityType<Illager> PILLAGER =
+  public static final EntityType<IronGolem> IRON_GOLEM =
       Registry.register(
-          Registry.ENTITY_TYPE,
-          Constants.MOD_ID + ":" + Illager.ID_PILLAGER,
-          ModEntityTypes.PILLAGER);
-  public static final EntityType<Illager> VINDICATOR =
-      Registry.register(
-          Registry.ENTITY_TYPE,
-          Constants.MOD_ID + ":" + Illager.ID_VINDICATOR,
-          ModEntityTypes.VINDICATOR);
+          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + IronGolem.ID, ModEntityTypes.IRON_GOLEM);
   public static final EntityType<Orc> ORC =
       Registry.register(Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Orc.ID, ModEntityTypes.ORC);
   public static final EntityType<Orc> ORC_WARRIOR =
@@ -128,27 +96,56 @@ public class ModEntityType {
           Registry.ENTITY_TYPE,
           Constants.MOD_ID + ":" + Orc.ID_WARRIOR,
           ModEntityTypes.ORC_WARRIOR);
-  public static final EntityType<Wolf> WOLF =
+  public static final EntityType<Pig> PIG =
+      Registry.register(Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Pig.ID, ModEntityTypes.PIG);
+  public static final EntityType<Illager> PILLAGER =
       Registry.register(
-          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Wolf.ID, ModEntityTypes.WOLF);
-  public static final EntityType<Horse> HORSE =
+          Registry.ENTITY_TYPE,
+          Constants.MOD_ID + ":" + Illager.ID_PILLAGER,
+          ModEntityTypes.PILLAGER);
+  public static final EntityType<Skeleton> SKELETON =
       Registry.register(
-          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Horse.ID, ModEntityTypes.HORSE);
+          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Skeleton.ID, ModEntityTypes.SKELETON);
   public static final EntityType<Horse> SKELETON_HORSE =
       Registry.register(
           Registry.ENTITY_TYPE,
           Constants.MOD_ID + ":" + Horse.ID_SKELETON,
           ModEntityTypes.SKELETON_HORSE);
+  public static final EntityType<Skeleton> STRAY =
+      Registry.register(
+          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Skeleton.ID_STRAY, ModEntityTypes.STRAY);
+  public static final EntityType<Villager> VILLAGER =
+      Registry.register(
+          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Villager.ID, ModEntityTypes.VILLAGER);
+  public static final EntityType<Illager> VINDICATOR =
+      Registry.register(
+          Registry.ENTITY_TYPE,
+          Constants.MOD_ID + ":" + Illager.ID_VINDICATOR,
+          ModEntityTypes.VINDICATOR);
+  public static final EntityType<Skeleton> WITHER_SKELETON =
+      Registry.register(
+          Registry.ENTITY_TYPE,
+          Constants.MOD_ID + ":" + Skeleton.ID_WITHER_SKELETON,
+          ModEntityTypes.WITHER_SKELETON);
+  public static final EntityType<Wolf> WOLF =
+      Registry.register(
+          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Wolf.ID, ModEntityTypes.WOLF);
+  public static final EntityType<Zombie> ZOMBIE =
+      Registry.register(
+          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Zombie.ID, ModEntityTypes.ZOMBIE);
   public static final EntityType<Horse> ZOMBIE_HORSE =
       Registry.register(
           Registry.ENTITY_TYPE,
           Constants.MOD_ID + ":" + Horse.ID_ZOMBIE,
           ModEntityTypes.ZOMBIE_HORSE);
-
+  public static final EntityType<ZombieVillager> ZOMBIE_VILLAGER =
+      Registry.register(
+          Registry.ENTITY_TYPE,
+          Constants.MOD_ID + ":" + ZombieVillager.ID,
+          ModEntityTypes.ZOMBIE_VILLAGER);
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private ModEntityType() {
-  }
+  private ModEntityType() {}
 
   public static void registerEntitiesAttributes() {
     log.info("{} Registering Entities Attributes ...", Constants.LOG_REGISTER_PREFIX);

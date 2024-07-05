@@ -35,6 +35,8 @@ import net.minecraft.world.entity.PathfinderMob;
 
 public interface ModelPositionData<T extends PathfinderMob> extends EasyNPC<T> {
 
+  CustomPosition DEFAULT_MODEL_PART_POSITION = new CustomPosition(0, 0, 0);
+  String EASY_NPC_DATA_MODEL_POSITION_TAG = "Position";
   EntityDataSerializer<CustomPosition> POSITION =
       new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, CustomPosition position) {
@@ -51,8 +53,6 @@ public interface ModelPositionData<T extends PathfinderMob> extends EasyNPC<T> {
           return position;
         }
       };
-  String EASY_NPC_DATA_MODEL_POSITION_TAG = "Position";
-  CustomPosition DEFAULT_MODEL_PART_POSITION = new CustomPosition(0, 0, 0);
 
   static void registerSyncedModelPositionData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {

@@ -64,8 +64,12 @@ public class IllagerModelRenderer
 
   public <L extends RenderLayer<Illager, StandardIllagerModel<Illager>>> IllagerModelRenderer(
       EntityRendererProvider.Context context) {
-    super(context, new StandardIllagerModel<>(context.bakeLayer(ModelLayers.PILLAGER)), 0.5F,
-        DEFAULT_TEXTURE, TEXTURE_BY_VARIANT);
+    super(
+        context,
+        new StandardIllagerModel<>(context.bakeLayer(ModelLayers.PILLAGER)),
+        0.5F,
+        DEFAULT_TEXTURE,
+        TEXTURE_BY_VARIANT);
     this.addLayer(
         new CustomHeadLayer<>(this, context.getModelSet(), context.getItemInHandRenderer()));
     this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));

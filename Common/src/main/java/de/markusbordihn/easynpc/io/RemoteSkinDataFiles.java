@@ -34,8 +34,7 @@ public class RemoteSkinDataFiles {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String DATA_FOLDER_NAME = "remote_skin";
 
-  private RemoteSkinDataFiles() {
-  }
+  private RemoteSkinDataFiles() {}
 
   public static void registerRemoteSkinData() {
     log.info("{} remote skin data ...", Constants.LOG_REGISTER_PREFIX);

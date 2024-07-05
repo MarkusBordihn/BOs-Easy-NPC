@@ -94,7 +94,7 @@ public class EasyNPCWandItem extends Item {
               EasyNPCBaseEntity.class, aabbAbove.inflate(0.5), Entity::isAlive)) {
         if (easyNPCEntity != null) {
           MenuManager.getMenuHandler()
-              .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPCEntity);
+              .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPCEntity, 0);
           return InteractionResult.SUCCESS;
         }
       }
@@ -113,7 +113,7 @@ public class EasyNPCWandItem extends Item {
               EasyNPCBaseEntity.class, aabbAround.inflate(0.5), Entity::isAlive)) {
         if (easyNPCEntity != null) {
           MenuManager.getMenuHandler()
-              .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPCEntity);
+              .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPCEntity, 0);
           return InteractionResult.SUCCESS;
         }
       }
@@ -124,7 +124,7 @@ public class EasyNPCWandItem extends Item {
               EasyNPCBaseEntity.class, aabbAround.inflate(2.5), Entity::isAlive)) {
         if (easyNPCEntity != null) {
           MenuManager.getMenuHandler()
-              .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPCEntity);
+              .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPCEntity, 0);
           return InteractionResult.SUCCESS;
         }
       }
@@ -139,10 +139,7 @@ public class EasyNPCWandItem extends Item {
 
   @Override
   public void appendHoverText(
-      ItemStack itemStack,
-      Level level,
-      List<Component> tooltipList,
-      TooltipFlag tooltipFlag) {
+      ItemStack itemStack, Level level, List<Component> tooltipList, TooltipFlag tooltipFlag) {
     // Display description.
     tooltipList.add(Component.translatable(Constants.TEXT_ITEM_PREFIX + ID));
   }

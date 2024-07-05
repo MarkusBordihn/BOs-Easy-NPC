@@ -35,8 +35,7 @@ public class NavigationCommand extends Command {
 
   private static final String ARG_POSITION = "position";
 
-  private NavigationCommand() {
-  }
+  private NavigationCommand() {}
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("navigation")

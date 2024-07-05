@@ -24,8 +24,7 @@ import net.minecraft.network.chat.MutableComponent;
 
 public class TextUtils {
 
-  private TextUtils() {
-  }
+  private TextUtils() {}
 
   public static Component normalizeName(String name) {
     return Component.literal(normalizeString(name));
@@ -61,5 +60,24 @@ public class TextUtils {
       mutableComponent.append(removeAction(componentSibling));
     }
     return mutableComponent;
+  }
+
+  public static String convertToCamelCase(String text) {
+    if (text == null || text.isEmpty()) {
+      return text;
+    }
+    StringBuilder stringBuilder = new StringBuilder();
+    boolean nextUpperCase = false;
+    for (char character : text.toCharArray()) {
+      if (character == '_' || character == ' ') {
+        nextUpperCase = true;
+      } else if (nextUpperCase) {
+        stringBuilder.append(Character.toUpperCase(character));
+        nextUpperCase = false;
+      } else {
+        stringBuilder.append(Character.toLowerCase(character));
+      }
+    }
+    return stringBuilder.toString();
   }
 }

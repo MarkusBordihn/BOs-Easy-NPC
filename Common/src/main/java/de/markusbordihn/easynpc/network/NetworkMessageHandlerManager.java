@@ -20,6 +20,8 @@
 package de.markusbordihn.easynpc.network;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.network.message.ClientNetworkMessageHandlerInterface;
+import de.markusbordihn.easynpc.network.message.ServerNetworkMessageHandlerInterface;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,24 +29,19 @@ public class NetworkMessageHandlerManager {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static ServerNetworkMessageHandlerInterface serverNetworkMessageHandlerInterface;
   private static ClientNetworkMessageHandlerInterface clientNetworkMessageHandlerInterface;
+  private static ServerNetworkMessageHandlerInterface serverNetworkMessageHandlerInterface;
 
-  private NetworkMessageHandlerManager() {
-  }
+  private NetworkMessageHandlerManager() {}
 
   public static void registerServerHandler(
-      ServerNetworkMessageHandlerInterface networkMessageHandler) {
+      final ServerNetworkMessageHandlerInterface networkMessageHandler) {
     log.info("{} Server Network Message Handler ...", Constants.LOG_REGISTER_PREFIX);
     serverNetworkMessageHandlerInterface = networkMessageHandler;
   }
 
-  public static ServerNetworkMessageHandlerInterface getServerHandler() {
-    return serverNetworkMessageHandlerInterface;
-  }
-
   public static void registerClientHandler(
-      ClientNetworkMessageHandlerInterface clientNetworkMessageHandlerInterface) {
+      final ClientNetworkMessageHandlerInterface clientNetworkMessageHandlerInterface) {
     log.info("{} Client Network Message Handler ...", Constants.LOG_REGISTER_PREFIX);
     NetworkMessageHandlerManager.clientNetworkMessageHandlerInterface =
         clientNetworkMessageHandlerInterface;
@@ -52,5 +49,9 @@ public class NetworkMessageHandlerManager {
 
   public static ClientNetworkMessageHandlerInterface getClientHandler() {
     return clientNetworkMessageHandlerInterface;
+  }
+
+  public static ServerNetworkMessageHandlerInterface getServerHandler() {
+    return serverNetworkMessageHandlerInterface;
   }
 }

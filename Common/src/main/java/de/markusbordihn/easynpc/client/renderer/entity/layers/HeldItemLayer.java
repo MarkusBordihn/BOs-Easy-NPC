@@ -44,7 +44,9 @@ public class HeldItemLayer<E extends LivingEntity, M extends EntityModel<E> & He
   public HeldItemLayer(
       RenderLayerParent<E, M> renderer,
       ItemInHandRenderer itemInHandRenderer,
-      double offsetX, double offsetY, double offsetZ) {
+      double offsetX,
+      double offsetY,
+      double offsetZ) {
     this(renderer, itemInHandRenderer);
     this.offsetX = offsetX;
     this.offsetY = offsetY;
@@ -58,26 +60,26 @@ public class HeldItemLayer<E extends LivingEntity, M extends EntityModel<E> & He
 
   public void render(
       PoseStack poseStack,
-      MultiBufferSource $$1,
-      int $$2,
+      MultiBufferSource buffer,
+      int lightLevel,
       E entity,
-      float $$4,
-      float $$5,
-      float $$6,
-      float $$7,
-      float $$8,
-      float $$9) {
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float ageInTicks2,
+      float netHeadYaw,
+      float headPitch) {
     ModelPart head = this.getParentModel().getHead();
     poseStack.pushPose();
     poseStack.translate(head.x / 16.0F, head.y / 16.0F, head.z / 16.0F);
     poseStack.mulPose(Vector3f.ZP.rotation(0));
-    poseStack.mulPose(Vector3f.YP.rotationDegrees($$8));
-    poseStack.mulPose(Vector3f.XP.rotationDegrees($$9));
+    poseStack.mulPose(Vector3f.YP.rotationDegrees(netHeadYaw));
+    poseStack.mulPose(Vector3f.XP.rotationDegrees(headPitch));
     poseStack.translate(offsetX, offsetY, offsetZ);
     poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
     ItemStack itemStack = entity.getItemBySlot(EquipmentSlot.MAINHAND);
-    this.itemInHandRenderer
-        .renderItem(entity, itemStack, TransformType.GROUND, false, poseStack, $$1, $$2);
+    this.itemInHandRenderer.renderItem(
+        entity, itemStack, TransformType.GROUND, false, poseStack, buffer, lightLevel);
     poseStack.popPose();
   }
 }

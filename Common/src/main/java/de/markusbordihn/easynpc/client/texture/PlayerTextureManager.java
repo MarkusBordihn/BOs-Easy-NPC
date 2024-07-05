@@ -42,8 +42,7 @@ public class PlayerTextureManager {
   private static final HashMap<TextureModelKey, SkinType> textureSkinTypeCache = new HashMap<>();
   private static final HashSet<UUID> textureReloadProtection = new HashSet<>();
 
-  private PlayerTextureManager() {
-  }
+  private PlayerTextureManager() {}
 
   public static Set<UUID> getTextureCacheKeys(SkinModel skinModel) {
     HashSet<UUID> hashSet = new HashSet<>();

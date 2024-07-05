@@ -34,7 +34,6 @@ import net.minecraft.world.item.DyeColor;
 
 public class CatCollarLayer<T extends LivingEntity, M extends StandardCatModel<T>>
     extends RenderLayer<T, M> {
-
   private static final ResourceLocation CAT_COLLAR_LOCATION =
       new ResourceLocation("textures/entity/cat/cat_collar.png");
   private final StandardCatModel<T> catModel;

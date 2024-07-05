@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
-import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
+import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
@@ -51,10 +51,8 @@ public interface DialogData<T extends PathfinderMob> extends EasyNPC<T> {
           return value;
         }
       };
-
   ServerDataAccessor<DialogDataSet> CUSTOM_DATA_DIALOG_DATA_SET =
       ServerEntityData.defineId(ServerDataIndex.DIALOG_DATA_SET, DIALOG_DATA_SET);
-
   String DATA_DIALOG_DATA_TAG = "DialogData";
 
   static void registerDialogDataSerializer() {
@@ -136,12 +134,11 @@ public interface DialogData<T extends PathfinderMob> extends EasyNPC<T> {
     MenuManager.getMenuHandler().openDialogMenu(serverPlayer, this, dialogId, 0);
   }
 
-  default DialogButtonData getDialogButton(UUID dialogId, UUID dialogButtonId) {
+  default DialogButtonEntry getDialogButton(UUID dialogId, UUID dialogButtonId) {
     return getDialogDataSet().getDialogButton(dialogId, dialogButtonId);
   }
 
-  default void defineSynchedDialogData() {
-  }
+  default void defineSynchedDialogData() {}
 
   default void defineCustomDialogData() {
     defineServerEntityData(CUSTOM_DATA_DIALOG_DATA_SET, new DialogDataSet());

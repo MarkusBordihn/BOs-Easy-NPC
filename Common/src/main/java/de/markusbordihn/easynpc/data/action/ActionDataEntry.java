@@ -20,6 +20,10 @@
 package de.markusbordihn.easynpc.data.action;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
+import java.util.UUID;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -28,18 +32,23 @@ import org.apache.logging.log4j.Logger;
 
 public final class ActionDataEntry {
 
-  public static final int MAX_PERMISSION_LEVEL = 2;
-  public static final int DEFAULT_PERMISSION_LEVEL = 2;
-  public static final int MIN_PERMISSION_LEVEL = 0;
+  public static final String DATA_TAG = "ActionDataEntry";
   public static final String DATA_COMMAND_TAG = "Cmd";
   public static final String DATA_DEBUG_TAG = "Debug";
   public static final String DATA_EXECUTE_AS_USER_TAG = "ExecAsUser";
   public static final String DATA_PERMISSION_LEVEL_TAG = "PermLevel";
+  public static final String DATA_BLOCK_POS_TAG = "BlockPos";
   public static final String DATA_TYPE_TAG = "Type";
+  public static final int DEFAULT_PERMISSION_LEVEL = 2;
+  public static final int MAX_PERMISSION_LEVEL = 2;
+  public static final int MIN_PERMISSION_LEVEL = 0;
+  public static final ActionDataEntry EMPTY = new ActionDataEntry(ActionDataType.NONE);
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String DEFAULT_COMMAND = "";
-  private ActionType actionType = ActionType.NONE;
-  private String command = "";
+  private ActionDataType actionDataType = ActionDataType.NONE;
+  private ConditionDataSet conditionDataSet = new ConditionDataSet();
+  private String command = DEFAULT_COMMAND;
+  private BlockPos blockPos = BlockPos.ZERO;
   private boolean enableDebug = false;
   private boolean executeAsUser = false;
   private int permissionLevel = DEFAULT_PERMISSION_LEVEL;
@@ -48,47 +57,72 @@ public final class ActionDataEntry {
     this.load(compoundTag);
   }
 
-  public ActionDataEntry(ActionType actionType) {
-    this(actionType, DEFAULT_COMMAND, DEFAULT_PERMISSION_LEVEL);
+  public ActionDataEntry(ActionDataType actionDataType) {
+    this(actionDataType, DEFAULT_COMMAND, DEFAULT_PERMISSION_LEVEL);
   }
 
-  public ActionDataEntry(ActionType actionType, String command) {
-    this(actionType, command, DEFAULT_PERMISSION_LEVEL);
+  public ActionDataEntry(ActionDataType actionDataType, String command) {
+    this(actionDataType, command, DEFAULT_PERMISSION_LEVEL);
   }
 
-  public ActionDataEntry(ActionType actionType, String command, int permissionLevel) {
-    this(actionType, command, permissionLevel, false);
-  }
-
-  public ActionDataEntry(
-      ActionType actionType, String command, int permissionLevel, boolean executeAsUser) {
-    this(actionType, command, permissionLevel, executeAsUser, false);
+  public ActionDataEntry(ActionDataType actionDataType, String command, int permissionLevel) {
+    this(actionDataType, command, permissionLevel, false);
   }
 
   public ActionDataEntry(
-      ActionType actionType, String command, boolean executeAsUser, boolean enableDebug) {
-    this(actionType, command, DEFAULT_PERMISSION_LEVEL, executeAsUser, enableDebug);
+      ActionDataType actionDataType, String command, int permissionLevel, boolean executeAsUser) {
+    this(actionDataType, command, permissionLevel, executeAsUser, false);
   }
 
   public ActionDataEntry(
-      ActionType actionType,
+      ActionDataType actionDataType, String command, boolean executeAsUser, boolean enableDebug) {
+    this(actionDataType, command, DEFAULT_PERMISSION_LEVEL, executeAsUser, enableDebug);
+  }
+
+  public ActionDataEntry(
+      ActionDataType actionDataType,
       String command,
       int permissionLevel,
       boolean executeAsUser,
       boolean enableDebug) {
     this.command = command != null ? command : DEFAULT_COMMAND;
-    this.actionType = actionType;
+    this.actionDataType = actionDataType;
     this.enableDebug = enableDebug;
     this.executeAsUser = executeAsUser;
     this.permissionLevel = permissionLevel;
   }
 
-  public ActionType getType() {
-    return this.actionType;
+  private static int checkPermissionLevel(int permissionLevel) {
+    if (permissionLevel > MAX_PERMISSION_LEVEL) {
+      log.warn(
+          "Permission level {} is too high, will be set to a safe max. level {}",
+          permissionLevel,
+          MAX_PERMISSION_LEVEL);
+      return MAX_PERMISSION_LEVEL;
+    } else if (permissionLevel < MIN_PERMISSION_LEVEL) {
+      log.warn(
+          "Permission level {} is too low, will be set to min. level {}",
+          permissionLevel,
+          MIN_PERMISSION_LEVEL);
+      return MIN_PERMISSION_LEVEL;
+    }
+    return permissionLevel;
   }
 
-  public void setType(ActionType actionType) {
-    this.actionType = actionType;
+  public ActionDataType getType() {
+    return this.actionDataType;
+  }
+
+  public void setType(ActionDataType actionDataType) {
+    this.actionDataType = actionDataType;
+  }
+
+  public BlockPos getBlockPos() {
+    return this.blockPos;
+  }
+
+  public void setBlockPos(BlockPos blockPos) {
+    this.blockPos = blockPos;
   }
 
   public String getCommand() {
@@ -99,26 +133,16 @@ public final class ActionDataEntry {
     return ActionUtils.parseAction(this.command, entity, serverPlayer);
   }
 
-  public int getPermissionLevel() {
-    return this.permissionLevel;
+  public ConditionDataSet getConditionDataSet() {
+    return this.conditionDataSet;
   }
 
-  public void setPermissionLevel(int permissionLevel) {
-    if (permissionLevel > MAX_PERMISSION_LEVEL) {
-      log.warn(
-          "Permission level {} is too high, will be set to a safe max. level {}",
-          permissionLevel,
-          MAX_PERMISSION_LEVEL);
-      this.permissionLevel = MAX_PERMISSION_LEVEL;
-    } else if (permissionLevel < MIN_PERMISSION_LEVEL) {
-      log.warn(
-          "Permission level {} is too low, will be set to min. level {}",
-          permissionLevel,
-          MIN_PERMISSION_LEVEL);
-      this.permissionLevel = MIN_PERMISSION_LEVEL;
-    } else {
-      this.permissionLevel = permissionLevel;
-    }
+  public void setConditionDataSet(ConditionDataSet conditionDataSet) {
+    this.conditionDataSet = conditionDataSet;
+  }
+
+  public int getPermissionLevel() {
+    return this.permissionLevel;
   }
 
   public boolean shouldExecuteAsUser() {
@@ -137,33 +161,64 @@ public final class ActionDataEntry {
     return this.command != null && !this.command.isEmpty();
   }
 
+  public boolean hasBlockPos() {
+    return this.blockPos != null && this.blockPos != BlockPos.ZERO;
+  }
+
   public boolean isValid() {
-    return this.actionType != ActionType.NONE && this.hasCommand();
+    return this.actionDataType != ActionDataType.NONE && this.hasCommand();
   }
 
   public boolean isValidAndNotEmpty() {
-    return this.actionType != ActionType.NONE
-        && (this.hasCommandAndNotEmpty() || this.actionType == ActionType.OPEN_TRADING_SCREEN);
+    return this.actionDataType != ActionDataType.NONE
+        && (this.hasCommandAndNotEmpty()
+            || this.hasBlockPos()
+            || this.actionDataType == ActionDataType.CLOSE_DIALOG
+            || this.actionDataType == ActionDataType.OPEN_TRADING_SCREEN);
   }
 
   public void load(CompoundTag compoundTag) {
-    this.actionType = ActionType.get(compoundTag.getString(DATA_TYPE_TAG));
-    this.command = compoundTag.getString(DATA_COMMAND_TAG);
+    this.actionDataType = ActionDataType.get(compoundTag.getString(DATA_TYPE_TAG));
+    this.blockPos =
+        compoundTag.contains(DATA_BLOCK_POS_TAG)
+            ? CompoundTagUtils.readBlockPos(compoundTag.getCompound(DATA_BLOCK_POS_TAG))
+            : BlockPos.ZERO;
+    this.command =
+        compoundTag.contains(DATA_COMMAND_TAG)
+            ? compoundTag.getString(DATA_COMMAND_TAG)
+            : DEFAULT_COMMAND;
     this.permissionLevel =
         compoundTag.contains(DATA_PERMISSION_LEVEL_TAG)
-            ? compoundTag.getInt(DATA_PERMISSION_LEVEL_TAG)
+            ? checkPermissionLevel(compoundTag.getInt(DATA_PERMISSION_LEVEL_TAG))
             : DEFAULT_PERMISSION_LEVEL;
     this.executeAsUser =
         compoundTag.contains(DATA_EXECUTE_AS_USER_TAG)
             && compoundTag.getBoolean(DATA_EXECUTE_AS_USER_TAG);
     this.enableDebug =
         compoundTag.contains(DATA_DEBUG_TAG) && compoundTag.getBoolean(DATA_DEBUG_TAG);
+    this.conditionDataSet =
+        compoundTag.contains(ConditionDataSet.CONDITION_DATA_SET_TAG)
+            ? new ConditionDataSet(compoundTag.getCompound(ConditionDataSet.CONDITION_DATA_SET_TAG))
+            : new ConditionDataSet();
   }
 
   public CompoundTag save(CompoundTag compoundTag) {
     compoundTag.putString(DATA_TYPE_TAG, this.getType().name());
-    compoundTag.putString(DATA_COMMAND_TAG, this.getCommand());
-    compoundTag.putInt(DATA_PERMISSION_LEVEL_TAG, this.getPermissionLevel());
+
+    // Only save permission level if it is different from default.
+    if (this.getPermissionLevel() != DEFAULT_PERMISSION_LEVEL) {
+      compoundTag.putInt(DATA_PERMISSION_LEVEL_TAG, this.getPermissionLevel());
+    }
+
+    // Only save block position if it is different from default.
+    if (this.getBlockPos() != BlockPos.ZERO) {
+      compoundTag.put(DATA_BLOCK_POS_TAG, CompoundTagUtils.writeBlockPos(this.getBlockPos()));
+    }
+
+    // Save command, if it is not empty.
+    if (this.getCommand() != null && !this.getCommand().trim().isEmpty()) {
+      compoundTag.putString(DATA_COMMAND_TAG, this.getCommand().trim());
+    }
 
     // Only save execute as user if it is true.
     if (this.shouldExecuteAsUser()) {
@@ -180,6 +235,11 @@ public final class ActionDataEntry {
       compoundTag.putInt(DATA_PERMISSION_LEVEL_TAG, this.getPermissionLevel());
     }
 
+    // Store condition data set, if it is not empty.
+    if (!this.conditionDataSet.isEmpty()) {
+      this.conditionDataSet.save(compoundTag);
+    }
+
     return compoundTag;
   }
 
@@ -187,14 +247,21 @@ public final class ActionDataEntry {
     return this.save(new CompoundTag());
   }
 
+  public UUID getId() {
+    String idString = DATA_TAG + hashCode();
+    return UUID.nameUUIDFromBytes(idString.getBytes());
+  }
+
   @Override
   public boolean equals(Object object) {
     if (object instanceof ActionDataEntry actionDataEntry) {
       return this.getType() == actionDataEntry.getType()
           && this.getCommand().equals(actionDataEntry.getCommand())
+          && this.getBlockPos().equals(actionDataEntry.getBlockPos())
           && this.getPermissionLevel() == actionDataEntry.getPermissionLevel()
           && this.shouldExecuteAsUser() == actionDataEntry.shouldExecuteAsUser()
-          && this.isDebugEnabled() == actionDataEntry.isDebugEnabled();
+          && this.isDebugEnabled() == actionDataEntry.isDebugEnabled()
+          && this.conditionDataSet.equals(actionDataEntry.getConditionDataSet());
     }
     return false;
   }
@@ -204,23 +271,32 @@ public final class ActionDataEntry {
     int result = 17;
     result = 31 * result + this.getType().hashCode();
     result = 31 * result + this.getCommand().hashCode();
+    result = 31 * result + this.getBlockPos().hashCode();
     result = 31 * result + this.getPermissionLevel();
     result = 31 * result + (this.shouldExecuteAsUser() ? 1 : 0);
     result = 31 * result + (this.isDebugEnabled() ? 1 : 0);
+    if (this.conditionDataSet != null && !this.conditionDataSet.isEmpty()) {
+      result = 31 * result + this.conditionDataSet.size();
+    }
     return result;
   }
 
   public String toString() {
     return "ActionData [type="
-        + this.actionType
+        + this.actionDataType
         + ", cmd="
         + this.command
+        + ", blockPos="
+        + this.blockPos
         + ", permLvl="
         + this.permissionLevel
         + ", execAsUser="
         + this.executeAsUser
         + ", debug="
         + this.enableDebug
+        + (this.conditionDataSet != null && !this.conditionDataSet.isEmpty()
+            ? ", conditions=" + this.conditionDataSet
+            : "")
         + "]";
   }
 }

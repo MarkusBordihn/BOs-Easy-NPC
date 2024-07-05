@@ -124,10 +124,12 @@ public interface HumanoidArmPoseAnimation {
       float attackTime,
       float ageInTicks) {
     switch (modelArmPose) {
-      case ATTACKING -> animateHumanoidModelArmPoseAttacking(
-          rightArmPart, leftArmPart, mob, attackTime, ageInTicks);
-      case ATTACKING_WITH_MELEE_WEAPON -> animateHumanoidModelArmPoseAttackingWithMeleeWeapon(
-          rightArmPart, leftArmPart, mob, attackTime, ageInTicks);
+      case ATTACKING ->
+          animateHumanoidModelArmPoseAttacking(
+              rightArmPart, leftArmPart, mob, attackTime, ageInTicks);
+      case ATTACKING_WITH_MELEE_WEAPON ->
+          animateHumanoidModelArmPoseAttackingWithMeleeWeapon(
+              rightArmPart, leftArmPart, mob, attackTime, ageInTicks);
       case BOW_AND_ARROW ->
           animateHumanoidModelArmPoseBowAndArrow(rightArmPart, leftArmPart, headModelPart);
       case CELEBRATING ->
@@ -136,8 +138,9 @@ public interface HumanoidArmPoseAnimation {
           animateHumanoidModelArmPoseCrossbowCharge(rightArmPart, leftArmPart, mob);
       case CROSSBOW_HOLD ->
           animateHumanoidModelArmPoseCrossbowHold(rightArmPart, leftArmPart, headModelPart);
-      case DANCING -> animateHumanoidModelArmPoseDancing(
-          headModelPart, bodyPart, rightArmPart, leftArmPart, ageInTicks);
+      case DANCING ->
+          animateHumanoidModelArmPoseDancing(
+              headModelPart, bodyPart, rightArmPart, leftArmPart, ageInTicks);
       case GUN_HOLD -> animateHumanoidModelArmPoseGunHold(rightArmPart, leftArmPart, headModelPart);
       case SPELLCASTING ->
           animateHumanoidModelArmPoseSpellcasting(rightArmPart, leftArmPart, ageInTicks);

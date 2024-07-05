@@ -30,13 +30,14 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class ModArgumentTypes {
 
-  public static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister.create(
-      ForgeRegistries.COMMAND_ARGUMENT_TYPES, Constants.MOD_ID);
-  public static final RegistryObject<SingletonArgumentInfo<EasyNPCArgument>> EASY_NPC_ARGUMENT = COMMAND_ARGUMENT_TYPES
-      .register("easy_npc",
-          () -> ArgumentTypeInfos.registerByClass(EasyNPCArgument.class,
-              SingletonArgumentInfo.contextFree(EasyNPCArgument::new)));
+  public static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES =
+      DeferredRegister.create(ForgeRegistries.COMMAND_ARGUMENT_TYPES, Constants.MOD_ID);
+  public static final RegistryObject<SingletonArgumentInfo<EasyNPCArgument>> EASY_NPC_ARGUMENT =
+      COMMAND_ARGUMENT_TYPES.register(
+          "easy_npc",
+          () ->
+              ArgumentTypeInfos.registerByClass(
+                  EasyNPCArgument.class, SingletonArgumentInfo.contextFree(EasyNPCArgument::new)));
 
-  private ModArgumentTypes() {
-  }
+  private ModArgumentTypes() {}
 }

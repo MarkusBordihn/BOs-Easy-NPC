@@ -30,8 +30,7 @@ public class RenderHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private RenderHandler() {
-  }
+  private RenderHandler() {}
 
   public static boolean setRenderType(EasyNPC<?> easyNPC, RenderType renderType) {
     if (easyNPC == null || renderType == null) {

@@ -26,8 +26,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 @EventBusSubscriber
 public class ServerEventHandler {
 
-  private ServerEventHandler() {
-  }
+  private ServerEventHandler() {}
 
   @SubscribeEvent
   public static void handleServerAboutToStartEvent(ServerStartingEvent event) {

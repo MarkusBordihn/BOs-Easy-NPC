@@ -48,8 +48,7 @@ public class PlayersUtils {
   // Internal Cache
   private static UUID lastUserUUIDForUserTexture;
 
-  protected PlayersUtils() {
-  }
+  protected PlayersUtils() {}
 
   public static Optional<GameProfile> getGameProfile(MinecraftServer server, Component component) {
     return getGameProfile(server, component.getString());
@@ -71,7 +70,7 @@ public class PlayersUtils {
     }
 
     Optional<GameProfile> gameProfile = PlayersUtils.getGameProfile(server, username);
-    if (gameProfile.isPresent() && gameProfile.get() != null && gameProfile.get().getId() != null) {
+    if (gameProfile.isPresent() && gameProfile.get().getId() != null) {
       String userUUID = gameProfile.get().getId().toString();
       if (userUUID != null && !userUUID.isEmpty()) {
         return getUUIDfromString(userUUID);
@@ -82,10 +81,7 @@ public class PlayersUtils {
 
   public static UUID getUUIDfromString(String uuidString) {
     try {
-      UUID uuid = UUID.fromString(uuidString);
-      if (uuid != null) {
-        return uuid;
-      }
+      return UUID.fromString(uuidString);
     } catch (IllegalArgumentException exception) {
       // Ignore the case where string is not valid UUID
     }

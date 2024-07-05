@@ -41,8 +41,7 @@ public class CustomTextureManager {
   private static final HashSet<UUID> textureReloadProtection = new HashSet<>();
   private static int reloadProtectionCounter = 0;
 
-  private CustomTextureManager() {
-  }
+  private CustomTextureManager() {}
 
   public static Set<UUID> getCustomTextureCacheKeys(SkinModel skinModel) {
     HashSet<UUID> hashSet = new HashSet<>();

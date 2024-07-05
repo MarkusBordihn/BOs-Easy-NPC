@@ -57,8 +57,7 @@ public class PresetCommand extends Command {
   private static final String UUID_ARG = "uuid";
   private static final String WORLD_ARG = "world";
 
-  private PresetCommand() {
-  }
+  private PresetCommand() {}
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal(COMMAND_NAME)

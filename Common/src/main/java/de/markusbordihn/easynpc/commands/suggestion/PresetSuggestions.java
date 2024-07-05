@@ -32,8 +32,7 @@ import net.minecraft.commands.SharedSuggestionProvider;
 
 public class PresetSuggestions {
 
-  private PresetSuggestions() {
-  }
+  private PresetSuggestions() {}
 
   public static CompletableFuture<Suggestions> suggest(
       CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {

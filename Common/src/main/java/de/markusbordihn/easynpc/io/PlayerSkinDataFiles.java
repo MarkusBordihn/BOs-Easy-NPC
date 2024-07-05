@@ -34,8 +34,7 @@ public class PlayerSkinDataFiles {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String DATA_FOLDER_NAME = "player_skin";
 
-  private PlayerSkinDataFiles() {
-  }
+  private PlayerSkinDataFiles() {}
 
   public static void registerPlayerSkinData() {
     log.info("{} player skin data ...", Constants.LOG_REGISTER_PREFIX);

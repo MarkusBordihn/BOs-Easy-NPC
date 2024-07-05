@@ -43,11 +43,10 @@ import net.minecraft.world.entity.Mob;
 
 public class BaseHierarchicalArmHeadModel<E extends Mob> extends HierarchicalModel<E>
     implements ArmedModel,
-    HeadedModel,
-    EasyNPCModel<E>,
-    HumanoidArmAnimation,
-    HumanoidArmPoseAnimation {
-
+        HeadedModel,
+        EasyNPCModel<E>,
+        HumanoidArmAnimation,
+        HumanoidArmPoseAnimation {
   protected final Map<ModelPartType, CustomPosition> modelPartPositionMap =
       new EnumMap<>(ModelPartType.class);
   protected final Map<ModelPartType, Rotations> modelPartRotationMap =

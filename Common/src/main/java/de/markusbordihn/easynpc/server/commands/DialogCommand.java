@@ -34,8 +34,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class DialogCommand extends Command {
 
-  private DialogCommand() {
-  }
+  private DialogCommand() {}
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("dialog")

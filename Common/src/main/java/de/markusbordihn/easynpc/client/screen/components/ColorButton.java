@@ -24,8 +24,8 @@ import net.minecraft.world.item.DyeColor;
 
 public class ColorButton extends CustomButton {
 
-  public static final int DEFAULT_WIDTH = 18;
   public static final int DEFAULT_HEIGHT = 18;
+  public static final int DEFAULT_WIDTH = 18;
   DyeColor color = DyeColor.WHITE;
 
   public ColorButton(int x, int y, OnPress onPress) {

@@ -42,7 +42,7 @@ import net.minecraft.world.entity.Pose;
 
 public class HumanoidSlimModelRenderer
     extends BaseLivingEntityModelRenderer<
-    HumanoidSlim, Variant, StandardPlayerModel<HumanoidSlim>> {
+        HumanoidSlim, Variant, StandardPlayerModel<HumanoidSlim>> {
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
@@ -57,11 +57,14 @@ public class HumanoidSlimModelRenderer
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.ALEX);
 
   public <L extends RenderLayer<HumanoidSlim, StandardPlayerModel<HumanoidSlim>>>
-  HumanoidSlimModelRenderer(
-      EntityRendererProvider.Context context, Class<L> humanoidArmorLayerClass) {
+      HumanoidSlimModelRenderer(
+          EntityRendererProvider.Context context, Class<L> humanoidArmorLayerClass) {
     super(
-        context, new StandardPlayerModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM), true), 0.5F,
-        DEFAULT_TEXTURE, TEXTURE_BY_VARIANT);
+        context,
+        new StandardPlayerModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM), true),
+        0.5F,
+        DEFAULT_TEXTURE,
+        TEXTURE_BY_VARIANT);
     this.addLayer(
         EasyNPCModelRenderer.getHumanoidArmorLayer(
             this,

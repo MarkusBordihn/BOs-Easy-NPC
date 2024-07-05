@@ -49,28 +49,30 @@ public interface EasyNPCModelRenderer<E extends EasyNPCBaseModelEntity<E>, M ext
   Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   static <
-      T extends LivingEntity,
-      M extends HumanoidModel<T>,
-      L extends RenderLayer<T, M>,
-      R extends LivingEntityRenderer<T, M>>
-  L getHumanoidArmorLayer(
-      R mobRenderer,
-      EntityRendererProvider.Context context,
-      ModelLayerLocation innerArmor,
-      ModelLayerLocation outerArmor,
-      Class<L> armorLayerClass) {
-    try {
-      return armorLayerClass
-          .getConstructor(RenderLayerParent.class, HumanoidModel.class, HumanoidModel.class)
-          .newInstance(
-              mobRenderer,
-              new HumanoidModel<>(context.bakeLayer(innerArmor)),
-              new HumanoidModel<>(context.bakeLayer(outerArmor)));
-    } catch (Exception e) {
-      log.error(
-          "Failed to create custom armor layer for {} will use default armor layer instead.",
-          mobRenderer,
-          e);
+          T extends LivingEntity,
+          M extends HumanoidModel<T>,
+          L extends RenderLayer<T, M>,
+          R extends LivingEntityRenderer<T, M>>
+      L getHumanoidArmorLayer(
+          R mobRenderer,
+          EntityRendererProvider.Context context,
+          ModelLayerLocation innerArmor,
+          ModelLayerLocation outerArmor,
+          Class<L> armorLayerClass) {
+    if (armorLayerClass != null) {
+      try {
+        return armorLayerClass
+            .getConstructor(RenderLayerParent.class, HumanoidModel.class, HumanoidModel.class)
+            .newInstance(
+                mobRenderer,
+                new HumanoidModel<>(context.bakeLayer(innerArmor)),
+                new HumanoidModel<>(context.bakeLayer(outerArmor)));
+      } catch (Exception e) {
+        log.error(
+            "Failed to create custom armor layer for {} will use default armor layer instead.",
+            mobRenderer,
+            e);
+      }
     }
     return (L)
         new HumanoidArmorLayer<>(
@@ -117,8 +119,7 @@ public interface EasyNPCModelRenderer<E extends EasyNPCBaseModelEntity<E>, M ext
       float partialTicks,
       PoseStack poseStack,
       MultiBufferSource buffer,
-      int packedLight) {
-  }
+      int packedLight) {}
 
   default void renderDefaultPose(
       E entity,
@@ -128,8 +129,7 @@ public interface EasyNPCModelRenderer<E extends EasyNPCBaseModelEntity<E>, M ext
       float partialTicks,
       PoseStack poseStack,
       MultiBufferSource buffer,
-      int packedLight) {
-  }
+      int packedLight) {}
 
   default <N extends EasyNPC<E>> void rotateEntity(N easyNPC, PoseStack poseStack) {
     Rotations rootRotation = easyNPC.getEasyNPCModelData().getModelRootRotation();

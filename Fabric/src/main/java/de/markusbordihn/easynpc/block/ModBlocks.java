@@ -41,8 +41,7 @@ public class ModBlocks {
               .sound(SoundType.METAL)
               .noOcclusion());
 
-  private ModBlocks() {
-  }
+  private ModBlocks() {}
 
   public static void registerModBlocks() {
     registerBlock(BaseEasyNPCSpawnerBlock.NAME, EASY_NPC_SPAWNER);

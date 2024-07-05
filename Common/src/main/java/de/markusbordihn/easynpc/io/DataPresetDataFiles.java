@@ -30,8 +30,7 @@ public class DataPresetDataFiles {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private DataPresetDataFiles() {
-  }
+  private DataPresetDataFiles() {}
 
   public static Stream<ResourceLocation> getPresetResourceLocations(
       MinecraftServer minecraftServer) {
@@ -41,7 +40,8 @@ public class DataPresetDataFiles {
           .listResources(
               "preset",
               resourceLocation -> resourceLocation.toString().endsWith(Constants.NPC_NBT_SUFFIX))
-          .keySet().stream();
+          .keySet()
+          .stream();
     } catch (Exception e) {
       log.error("Could not get default preset resource locations!", e);
     }

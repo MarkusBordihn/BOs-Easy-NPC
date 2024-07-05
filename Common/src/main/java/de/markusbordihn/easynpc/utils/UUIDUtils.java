@@ -23,8 +23,7 @@ import java.util.UUID;
 
 public class UUIDUtils {
 
-  private UUIDUtils() {
-  }
+  private UUIDUtils() {}
 
   public static short[] encodeUUIDToShort(UUID uuid) {
     long mostSignificantBits = uuid.getMostSignificantBits();

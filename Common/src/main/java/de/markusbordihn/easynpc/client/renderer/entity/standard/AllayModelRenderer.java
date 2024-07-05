@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2023 Markus Bordihn
  *
  * <p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software
@@ -41,7 +41,6 @@ public class AllayModelRenderer
       Util.make(
           new EnumMap<>(Variant.class),
           map -> {
-            map.put(Variant.DEFAULT, new ResourceLocation("textures/entity/allay/allay.png"));
             map.put(
                 Variant.LAVA,
                 new ResourceLocation(Constants.MOD_ID, "textures/entity/allay/allay_lava.png"));
@@ -53,12 +52,16 @@ public class AllayModelRenderer
                 Variant.WATER,
                 new ResourceLocation(Constants.MOD_ID, "textures/entity/allay/allay_water.png"));
           });
-  protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.DEFAULT);
+  protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.WATER);
 
   public AllayModelRenderer(
       EntityRendererProvider.Context context, ModelLayerLocation modelLayerLocation) {
-    super(context, new StandardAllayModel<>(context.bakeLayer(modelLayerLocation)), 0.4F,
-        DEFAULT_TEXTURE, TEXTURE_BY_VARIANT);
+    super(
+        context,
+        new StandardAllayModel<>(context.bakeLayer(modelLayerLocation)),
+        0.4F,
+        DEFAULT_TEXTURE,
+        TEXTURE_BY_VARIANT);
     this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
   }
 

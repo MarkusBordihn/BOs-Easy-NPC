@@ -34,8 +34,7 @@ public class AccessManager {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private AccessManager() {
-  }
+  private AccessManager() {}
 
   public static boolean hasAccess(CommandSourceStack context, UUID uuid) {
     if (context == null || uuid == null) {
@@ -56,6 +55,12 @@ public class AccessManager {
         log.warn(
             "Skipping access check for EasyNPC with UUID {} due to missing player and entity!",
             uuid);
+        return true;
+      }
+
+      // Check if entity is allowed to access EasyNPC.
+      EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, context.getLevel());
+      if (easyNPC != null && easyNPC.getEntity() == entity) {
         return true;
       }
       log.error("The entity {} tried to access EasyNPC with UUID {}!", entity, uuid);

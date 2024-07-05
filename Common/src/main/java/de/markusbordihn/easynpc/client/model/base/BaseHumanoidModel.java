@@ -42,10 +42,10 @@ import net.minecraft.world.entity.Mob;
 
 public class BaseHumanoidModel<E extends LivingEntity> extends HumanoidModel<E>
     implements EasyNPCModel<E>,
-    HumanoidArmAnimation,
-    HumanoidArmPoseAnimation,
-    HumanoidHeadAnimation,
-    HumanoidLegAnimation {
+        HumanoidArmAnimation,
+        HumanoidArmPoseAnimation,
+        HumanoidHeadAnimation,
+        HumanoidLegAnimation {
 
   protected final Map<ModelPartType, CustomPosition> modelPartPositionMap =
       new EnumMap<>(ModelPartType.class);

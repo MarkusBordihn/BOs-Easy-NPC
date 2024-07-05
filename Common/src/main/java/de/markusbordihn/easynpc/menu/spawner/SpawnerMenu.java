@@ -34,7 +34,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class SpawnerMenu extends AbstractContainerMenu {
-
   public static final int PLAYER_SLOT_START = 9;
   public static final int PLAYER_INVENTORY_SLOT_START = PLAYER_SLOT_START;
   public static final int presetItemSlotX = 42;

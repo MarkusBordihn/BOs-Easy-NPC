@@ -113,10 +113,7 @@ public class EasyNPCPresetEmptyItem extends Item {
 
   @Override
   public void appendHoverText(
-      ItemStack itemStack,
-      Level level,
-      List<Component> tooltipList,
-      TooltipFlag tooltipFlag) {
+      ItemStack itemStack, Level level, List<Component> tooltipList, TooltipFlag tooltipFlag) {
     tooltipList.add(Component.translatable(Constants.TEXT_ITEM_PREFIX + NAME));
   }
 }

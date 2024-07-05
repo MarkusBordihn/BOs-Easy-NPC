@@ -8,6 +8,41 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.1.0 (beta only for testing)
+
+Note: Please backup your world / NPCs before testing!
+
+- Fixed #239 by passing `can_pass_door` and `can_open_door` to navigation.
+- Fixed #61, #141, #227 by adding new action UI for button actions and dialog actions.
+- Fixed #51, #225 by allowing interaction with blocks, levers, buttons, ...
+- Fixed #114, #195 by fully supporting config screen for Fabric.
+- Fixed #149 by adding additional `close_dialog` action.
+- Fixed German translations and overlapping texts.
+- Improved editor and dialog screen for better usability.
+- Added compact mode for the configuration screen for better usability.
+- Added new action UI to allow more complex actions and interactions.
+- Added block interaction action for NPCs over action UI and `/easy_npc interact block ...` command.
+- Added Fabric armor renderer support to allow hiding armor parts.
+- Added support to place weapons in the shield slot.
+- Added Villager builder example preset.
+- Removed screen container data for better performance and less network traffic.
+- Removed custom empty slot images for armor and equipment.
+
+### 5.0.0 (beta only for testing)
+
+Note: Please backup your world / NPCs before testing!
+
+- First fully feature completed Fabric version for testing.
+- Removed Forge config files for better compatibility and easier maintenance.
+- Large code refactoring for better performance and easier maintenance.
+- Replaced local cache manager with a network based cache manager.
+- Replaced standard menu and screen handling with a new screen manager with two-way communication to
+  avoid crashes.
+- Added better translation support for all screens and dialogs.
+- Added better support for custom models and textures.
+- Added hotkey ALT+Left Arrow to go back within the configuration screens.
+- Added additional error and warn messages for better debugging.
+
 ### 4.5.2
 
 - Fixed #203 by moving texture registration to later stage.
@@ -373,7 +408,6 @@ it could be that some of them are not compatible with older versions.
 ### 2023.02.24
 
 - Added basic CarryOn support to block unwanted pickup of NPCs.
-- Fixed Allay scale rendering.
 - Improved documentation and added more examples.
 
 ### 2023.02.22
@@ -411,11 +445,6 @@ it could be that some of them are not compatible with older versions.
 - Added possibility to adding Skin over remote url.
 - Added possibility to remove NPC.
 - Improved separation of client and server side handling.
-
-### 2023.01.29
-
-- Added Allay NPC version and Lava variant.
-- Refactored code for 1.19.2-43.2.4.
 
 ### 2023.01.28
 
