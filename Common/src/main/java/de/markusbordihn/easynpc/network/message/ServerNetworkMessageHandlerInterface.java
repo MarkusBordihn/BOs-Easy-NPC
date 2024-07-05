@@ -21,12 +21,14 @@ package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
+import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
+import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
+import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
@@ -61,6 +63,8 @@ import de.markusbordihn.easynpc.network.message.server.ExecuteDialogButtonAction
 import de.markusbordihn.easynpc.network.message.server.ExportPresetMessage;
 import de.markusbordihn.easynpc.network.message.server.ExportWorldPresetMessage;
 import de.markusbordihn.easynpc.network.message.server.ImportPresetMessage;
+import de.markusbordihn.easynpc.network.message.server.OpenActionDataEditorMessage;
+import de.markusbordihn.easynpc.network.message.server.OpenActionDataEntryEditorMessage;
 import de.markusbordihn.easynpc.network.message.server.OpenConfigurationMessage;
 import de.markusbordihn.easynpc.network.message.server.OpenDialogButtonEditorMessage;
 import de.markusbordihn.easynpc.network.message.server.OpenDialogEditorMessage;
@@ -92,14 +96,11 @@ public interface ServerNetworkMessageHandlerInterface {
   Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   default void actionEventChange(
-      UUID uuid, ActionEventType actionEventType, ActionDataEntry actionDataEntry) {
-    if (uuid != null
-        && actionEventType != null
-        && actionDataEntry != null
-        && actionDataEntry.isValid()) {
+      UUID uuid, ActionEventType actionEventType, ActionDataSet actionDataSet) {
+    if (uuid != null && actionEventType != null && actionDataSet != null) {
       NetworkHandlerManager.sendToServer(
           ChangeActionEventMessage.MESSAGE_ID,
-          new ChangeActionEventMessage(uuid, actionEventType, actionDataEntry));
+          new ChangeActionEventMessage(uuid, actionEventType, actionDataSet));
     }
   }
 
@@ -227,6 +228,55 @@ public interface ServerNetworkMessageHandlerInterface {
     }
   }
 
+  default void openActionDataEditor(
+      UUID uuid, ActionEventType actionEventType, ConfigurationType configurationType) {
+    if (uuid != null && actionEventType != null && actionEventType != ActionEventType.NONE) {
+      NetworkHandlerManager.sendToServer(
+          OpenActionDataEditorMessage.MESSAGE_ID,
+          new OpenActionDataEditorMessage(uuid, actionEventType, configurationType));
+    }
+  }
+
+  default void openActionDataEditor(
+      UUID uuid, EditorType editorType, UUID dialogId, UUID dialogButtonId) {
+    if (uuid != null && editorType != null && dialogId != null && dialogButtonId != null) {
+      NetworkHandlerManager.sendToServer(
+          OpenActionDataEditorMessage.MESSAGE_ID,
+          new OpenActionDataEditorMessage(uuid, editorType, dialogId, dialogButtonId));
+    }
+  }
+
+  default void openActionDataEntryEditor(
+      UUID uuid,
+      EditorType editorType,
+      UUID dialogId,
+      UUID dialogButtonId,
+      ActionDataEntry actionDataEntry) {
+    if (uuid != null
+        && editorType != null
+        && dialogId != null
+        && dialogButtonId != null
+        && actionDataEntry != null) {
+      NetworkHandlerManager.sendToServer(
+          OpenActionDataEntryEditorMessage.MESSAGE_ID,
+          new OpenActionDataEntryEditorMessage(
+              uuid, dialogId, dialogButtonId, actionDataEntry.getId(), editorType));
+    }
+  }
+
+  default void openActionDataEntryEditor(
+      UUID uuid,
+      ActionEventType actionEventType,
+      ConfigurationType configurationType,
+      ActionDataEntry actionDataEntry) {
+    if (uuid != null && actionEventType != null && actionDataEntry != null) {
+      NetworkHandlerManager.sendToServer(
+          OpenActionDataEntryEditorMessage.MESSAGE_ID,
+          new OpenActionDataEntryEditorMessage(
+              uuid, actionDataEntry.getId(), actionEventType, configurationType));
+    }
+  }
+
   default void openDialogEditor(UUID uuid, UUID dialogId) {
     if (uuid != null && dialogId != null) {
       NetworkHandlerManager.sendToServer(
@@ -257,11 +307,11 @@ public interface ServerNetworkMessageHandlerInterface {
   }
 
   default void saveDialogButton(
-      UUID uuid, UUID dialogId, UUID dialogButtonId, DialogButtonData dialogButtonData) {
-    if (uuid != null && dialogId != null && dialogButtonId != null && dialogButtonData != null) {
+      UUID uuid, UUID dialogId, UUID dialogButtonId, DialogButtonEntry dialogButtonEntry) {
+    if (uuid != null && dialogId != null && dialogButtonId != null && dialogButtonEntry != null) {
       NetworkHandlerManager.sendToServer(
           SaveDialogButtonMessage.MESSAGE_ID,
-          new SaveDialogButtonMessage(uuid, dialogId, dialogButtonId, dialogButtonData));
+          new SaveDialogButtonMessage(uuid, dialogId, dialogButtonId, dialogButtonEntry));
     }
   }
 

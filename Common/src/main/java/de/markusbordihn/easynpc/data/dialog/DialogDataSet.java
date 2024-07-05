@@ -170,7 +170,7 @@ public class DialogDataSet {
         && this.dialogByIdMap.get(dialogId).hasDialogButton(dialogButtonId);
   }
 
-  public DialogButtonData getDialogButton(String dialogLabel, UUID dialogButtonId) {
+  public DialogButtonEntry getDialogButton(String dialogLabel, UUID dialogButtonId) {
     DialogDataEntry dialogData = this.dialogByLabelMap.getOrDefault(dialogLabel, null);
     if (dialogData != null) {
       return dialogData.getDialogButton(dialogButtonId);
@@ -178,7 +178,7 @@ public class DialogDataSet {
     return null;
   }
 
-  public DialogButtonData getDialogButton(UUID dialogId, UUID dialogButtonId) {
+  public DialogButtonEntry getDialogButton(UUID dialogId, UUID dialogButtonId) {
     DialogDataEntry dialogData = this.dialogByIdMap.getOrDefault(dialogId, null);
     if (dialogData != null) {
       return dialogData.getDialogButton(dialogButtonId);
@@ -252,7 +252,7 @@ public class DialogDataSet {
   }
 
   public void load(CompoundTag compoundTag) {
-    if (!compoundTag.contains(DATA_DIALOG_DATA_SET_TAG)) {
+    if (compoundTag == null || !compoundTag.contains(DATA_DIALOG_DATA_SET_TAG)) {
       return;
     }
 

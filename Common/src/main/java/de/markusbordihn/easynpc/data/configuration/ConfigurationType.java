@@ -26,6 +26,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public enum ConfigurationType {
+  NONE,
   ABILITIES_ATTRIBUTE,
   ADVANCED_DIALOG,
   ADVANCED_POSE,
@@ -76,13 +77,19 @@ public enum ConfigurationType {
     this.isAlias = isAlias;
   }
 
-  public boolean isAlias() {
-    return isAlias;
+  public static ConfigurationType get(String configurationType) {
+    if (configurationType == null || configurationType.isEmpty()) {
+      return ConfigurationType.NONE;
+    }
+    try {
+      return ConfigurationType.valueOf(configurationType);
+    } catch (IllegalArgumentException e) {
+      return ConfigurationType.NONE;
+    }
   }
 
-  public Component getConfigurationTitle(final EasyNPC<?> easyNPC) {
-    String translationKey = Constants.TEXT_CONFIG_PREFIX + this.name().toLowerCase() + ".title";
-    return new TranslatableComponent(translationKey, easyNPC.getEntity().getName().getString(16));
+  public boolean isAlias() {
+    return isAlias;
   }
 
   public ResourceLocation getId() {
@@ -91,5 +98,10 @@ public enum ConfigurationType {
 
   public String getName() {
     return this.name().toLowerCase() + "_configuration";
+  }
+
+  public Component getConfigurationTitle(final EasyNPC<?> easyNPC) {
+    String translationKey = Constants.TEXT_CONFIG_PREFIX + this.name().toLowerCase() + ".title";
+    return new TranslatableComponent(translationKey, easyNPC.getEntity().getName().getString(16));
   }
 }

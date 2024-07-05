@@ -20,12 +20,22 @@
 package de.markusbordihn.easynpc.menu.editor;
 
 import de.markusbordihn.easynpc.menu.EasyNPCMenu;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 public class EditorMenu extends EasyNPCMenu {
 
-  public EditorMenu(MenuType<?> menuType, int containerId, Inventory playerInventory) {
-    super(menuType, containerId, playerInventory);
+  public EditorMenu(
+      final MenuType<?> menuType, final int containerId, final Inventory playerInventory) {
+    this(menuType, containerId, playerInventory, new CompoundTag());
+  }
+
+  public EditorMenu(
+      final MenuType<?> menuType,
+      final int containerId,
+      final Inventory playerInventory,
+      final CompoundTag data) {
+    super(menuType, containerId, playerInventory, data);
   }
 }

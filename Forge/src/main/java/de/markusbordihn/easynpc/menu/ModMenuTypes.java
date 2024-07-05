@@ -60,6 +60,8 @@ import de.markusbordihn.easynpc.menu.configuration.trading.BasicTradingConfigura
 import de.markusbordihn.easynpc.menu.configuration.trading.CustomTradingConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.configuration.trading.NoneTradingConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.dialog.DialogMenuWrapper;
+import de.markusbordihn.easynpc.menu.editor.ActionDataEditorMenuWrapper;
+import de.markusbordihn.easynpc.menu.editor.ActionDataEntryEditorMenuWrapper;
 import de.markusbordihn.easynpc.menu.editor.DialogButtonEditorMenuWrapper;
 import de.markusbordihn.easynpc.menu.editor.DialogEditorMenuWrapper;
 import de.markusbordihn.easynpc.menu.editor.DialogTextEditorMenuWrapper;
@@ -82,6 +84,16 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               ConfigurationType.ABILITIES_ATTRIBUTE.getName(),
               () -> IForgeMenuType.create(AbilitiesAttributeConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<ActionDataEditorMenuWrapper>>
+      ACTION_DATA_EDITOR_MENU =
+          MENU_TYPES.register(
+              EditorType.ACTION_DATA.getName(),
+              () -> IForgeMenuType.create(ActionDataEditorMenuWrapper::new));
+  public static final RegistryObject<MenuType<ActionDataEntryEditorMenuWrapper>>
+      ACTION_DATA_ENTRY_EDITOR_MENU =
+          MENU_TYPES.register(
+              EditorType.ACTION_DATA_ENTRY.getName(),
+              () -> IForgeMenuType.create(ActionDataEntryEditorMenuWrapper::new));
   public static final RegistryObject<MenuType<AdvancedDialogConfigurationMenuWrapper>>
       ADVANCED_DIALOG_CONFIGURATION_MENU =
           MENU_TYPES.register(

@@ -20,12 +20,29 @@
 package de.markusbordihn.easynpc.data.editor;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public enum EditorType {
+  NONE,
+  ACTION_DATA,
+  ACTION_DATA_ENTRY,
   DIALOG,
   DIALOG_BUTTON,
   DIALOG_TEXT;
+
+  public static EditorType get(String editorType) {
+    if (editorType == null || editorType.isEmpty()) {
+      return EditorType.NONE;
+    }
+    try {
+      return EditorType.valueOf(editorType);
+    } catch (IllegalArgumentException e) {
+      return EditorType.NONE;
+    }
+  }
 
   public ResourceLocation getId() {
     return new ResourceLocation(Constants.MOD_ID, this.name().toLowerCase() + "_editor");
@@ -33,5 +50,10 @@ public enum EditorType {
 
   public String getName() {
     return this.name().toLowerCase() + "_editor";
+  }
+
+  public Component getEditorTitle(final EasyNPC<?> easyNPC) {
+    String translationKey = Constants.TEXT_CONFIG_PREFIX + this.name().toLowerCase() + ".title";
+    return new TranslatableComponent(translationKey, easyNPC.getEntity().getName().getString(20));
   }
 }

@@ -26,8 +26,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public class EditorScreen<T extends EasyNPCMenu>
-    extends de.markusbordihn.easynpc.client.screen.Screen<T> {
+public class EditorScreen<T extends EasyNPCMenu> extends Screen<T> {
 
   protected final ClientLevel clientLevel;
   protected final LocalPlayer localPlayer;
@@ -61,5 +60,10 @@ public class EditorScreen<T extends EasyNPCMenu>
   @Override
   public void render(PoseStack poseStack, int x, int y, float partialTicks) {
     super.render(poseStack, x, y, partialTicks);
+  }
+
+  @Override
+  protected void renderLabels(PoseStack poseStack, int x, int y) {
+    // No labels
   }
 }

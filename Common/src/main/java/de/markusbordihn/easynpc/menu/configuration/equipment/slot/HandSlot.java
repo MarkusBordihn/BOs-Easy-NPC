@@ -37,13 +37,7 @@ import org.apache.logging.log4j.Logger;
 
 public class HandSlot extends Slot {
 
-  public static final ResourceLocation EMPTY_ARMOR_SLOT_SHIELD =
-      new ResourceLocation(Constants.MOD_ID, "item/empty_armor/empty_armor_slot_shield");
-  public static final ResourceLocation EMPTY_ARMOR_SLOT_WEAPON =
-      new ResourceLocation(Constants.MOD_ID, "item/empty_armor/empty_armor_slot_weapon");
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  static final ResourceLocation[] TEXTURE_EMPTY_SLOTS =
-      new ResourceLocation[] {EMPTY_ARMOR_SLOT_WEAPON, EMPTY_ARMOR_SLOT_SHIELD};
   private static final EquipmentSlot[] SLOT_IDS =
       new EquipmentSlot[] {EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND};
 
@@ -73,8 +67,16 @@ public class HandSlot extends Slot {
 
   @Override
   public boolean mayPlace(ItemStack itemStack) {
-    return !itemStack.isEmpty()
-        && this.equipmentSlot == LivingEntity.getEquipmentSlotForItem(itemStack);
+    if (itemStack.isEmpty()) {
+      return false;
+    }
+    EquipmentSlot equipmentSlotForItem = LivingEntity.getEquipmentSlotForItem(itemStack);
+    return this.equipmentSlot == EquipmentSlot.OFFHAND
+            && equipmentSlotForItem == EquipmentSlot.OFFHAND
+        || this.equipmentSlot == EquipmentSlot.MAINHAND
+            && equipmentSlotForItem == EquipmentSlot.MAINHAND
+        || this.equipmentSlot == EquipmentSlot.OFFHAND
+            && equipmentSlotForItem == EquipmentSlot.MAINHAND;
   }
 
   @Override
@@ -87,6 +89,9 @@ public class HandSlot extends Slot {
 
   @Override
   public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-    return Pair.of(InventoryMenu.BLOCK_ATLAS, TEXTURE_EMPTY_SLOTS[this.equipmentSlot.getIndex()]);
+    if (this.equipmentSlot == EquipmentSlot.OFFHAND) {
+      return Pair.of(InventoryMenu.BLOCK_ATLAS, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD);
+    }
+    return null;
   }
 }

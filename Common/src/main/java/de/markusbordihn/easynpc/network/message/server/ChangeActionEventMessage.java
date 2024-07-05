@@ -20,9 +20,8 @@
 package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.action.ActionDataEntry;
+import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
-import de.markusbordihn.easynpc.data.action.ActionType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
 import de.markusbordihn.easynpc.network.message.NetworkMessage;
@@ -38,20 +37,13 @@ public class ChangeActionEventMessage extends NetworkMessage {
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_action_event");
 
-  protected final ActionDataEntry actionDataEntry;
+  protected final ActionDataSet actionDataSet;
   protected final ActionEventType actionEventType;
 
   public ChangeActionEventMessage(
-      final UUID uuid, final ActionEventType actionEventType, final String action) {
-    this(uuid, actionEventType, new ActionDataEntry(ActionType.COMMAND, action));
-  }
-
-  public ChangeActionEventMessage(
-      final UUID uuid,
-      final ActionEventType actionEventType,
-      final ActionDataEntry actionDataEntry) {
+      final UUID uuid, final ActionEventType actionEventType, final ActionDataSet actionDataSet) {
     super(uuid);
-    this.actionDataEntry = actionDataEntry;
+    this.actionDataSet = actionDataSet;
     this.actionEventType = actionEventType;
   }
 
@@ -59,14 +51,14 @@ public class ChangeActionEventMessage extends NetworkMessage {
     return new ChangeActionEventMessage(
         buffer.readUUID(),
         buffer.readEnum(ActionEventType.class),
-        new ActionDataEntry(buffer.readNbt()));
+        new ActionDataSet(buffer.readNbt()));
   }
 
   public static FriendlyByteBuf encode(
       final ChangeActionEventMessage message, final FriendlyByteBuf buffer) {
     buffer.writeUUID(message.uuid);
     buffer.writeEnum(message.getActionEventType());
-    buffer.writeNbt(message.actionDataEntry.createTag());
+    buffer.writeNbt(message.actionDataSet.createTag());
     return buffer;
   }
 
@@ -89,9 +81,9 @@ public class ChangeActionEventMessage extends NetworkMessage {
     }
 
     // Validate action data.
-    ActionDataEntry actionDataEntry = message.getActionData();
-    if (actionDataEntry == null || !actionDataEntry.isValid()) {
-      log.error("Invalid action data {} for {} from {}", actionDataEntry, message, serverPlayer);
+    ActionDataSet actionDataSet = message.getActionDataSet();
+    if (actionDataSet == null) {
+      log.error("Invalid action data set for {} from {}", message, serverPlayer);
       return;
     }
 
@@ -116,11 +108,11 @@ public class ChangeActionEventMessage extends NetworkMessage {
     log.debug(
         "Set action event {} with {} for {} from {} with owner permission level {}.",
         actionEventType,
-        actionDataEntry,
+        actionDataSet,
         easyNPC,
         serverPlayer,
         permissionLevel);
-    actionEventData.getActionEventSet().setActionEvent(actionEventType, actionDataEntry);
+    actionEventData.getActionEventSet().setActionEvent(actionEventType, actionDataSet);
   }
 
   @Override
@@ -132,7 +124,7 @@ public class ChangeActionEventMessage extends NetworkMessage {
     return this.actionEventType;
   }
 
-  public ActionDataEntry getActionData() {
-    return this.actionDataEntry;
+  public ActionDataSet getActionDataSet() {
+    return this.actionDataSet;
   }
 }

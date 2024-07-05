@@ -67,7 +67,6 @@ public class OpenMenuCallbackMessage extends NetworkMessage {
     UUID uuid = message.getUUID();
     UUID menuId = message.getMenuId();
     CompoundTag data = message.getData();
-    log.info("Open menu callback message for {} with menuId {} and data {}", uuid, menuId, data);
 
     // Store additional menu data for later use.
     ClientMenuManager.setMenuData(menuId, data);

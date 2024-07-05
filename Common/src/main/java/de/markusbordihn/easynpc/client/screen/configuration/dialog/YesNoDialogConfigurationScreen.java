@@ -27,7 +27,7 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
+import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
@@ -77,9 +77,9 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
     DialogDataEntry noDialogData = this.getDialogDataSet().getDialog("no_answer");
 
     // Dialog Buttons
-    DialogButtonData yesButtonData =
+    DialogButtonEntry yesButtonData =
         questionDialogData == null ? null : questionDialogData.getDialogButton(YES_BUTTON_LABEL);
-    DialogButtonData noButtonData =
+    DialogButtonEntry noButtonData =
         questionDialogData == null ? null : questionDialogData.getDialogButton(NO_BUTTON_LABEL);
 
     // Question Text (copy from basic text if not set)
@@ -183,22 +183,22 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
 
                   // Check if we have a question dialog and add yes/no buttons if not available.
                   if (questionDialogData != null) {
-                    Set<DialogButtonData> dialogButtonDataSet =
+                    Set<DialogButtonEntry> dialogButtonEntrySet =
                         questionDialogData.getDialogButtons();
 
                     // Double-check that we have valid yes_no buttons, in the case the user
                     // renamed the labels to something else and not to get lost.
                     if (!questionDialogData.hasDialogButton(YES_BUTTON_LABEL)) {
-                      dialogButtonDataSet.add(
+                      dialogButtonEntrySet.add(
                           dialogDataSet.getDialog("question").getDialogButton(YES_BUTTON_LABEL));
                     }
                     if (!questionDialogData.hasDialogButton(NO_BUTTON_LABEL)) {
-                      dialogButtonDataSet.add(
+                      dialogButtonEntrySet.add(
                           dialogDataSet.getDialog("question").getDialogButton(NO_BUTTON_LABEL));
                     }
 
                     // Update dialog buttons for question dialog
-                    dialogDataSet.getDialog("question").setDialogButtons(dialogButtonDataSet);
+                    dialogDataSet.getDialog("question").setDialogButtons(dialogButtonEntrySet);
                   }
 
                   this.questionDialogValue = this.mainDialogBox.getValue();

@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
+import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
@@ -40,17 +40,17 @@ public class SaveDialogButtonMessage extends NetworkMessage {
 
   protected final UUID dialogId;
   protected final UUID dialogButtonId;
-  protected final DialogButtonData dialogButtonData;
+  protected final DialogButtonEntry dialogButtonEntry;
 
   public SaveDialogButtonMessage(
       final UUID uuid,
       final UUID dialogId,
       final UUID dialogButtonId,
-      final DialogButtonData dialogButtonData) {
+      final DialogButtonEntry dialogButtonEntry) {
     super(uuid);
     this.dialogId = dialogId;
     this.dialogButtonId = dialogButtonId;
-    this.dialogButtonData = dialogButtonData;
+    this.dialogButtonEntry = dialogButtonEntry;
   }
 
   public static SaveDialogButtonMessage decode(final FriendlyByteBuf buffer) {
@@ -58,7 +58,7 @@ public class SaveDialogButtonMessage extends NetworkMessage {
         buffer.readUUID(),
         buffer.readUUID(),
         buffer.readUUID(),
-        new DialogButtonData(buffer.readNbt()));
+        new DialogButtonEntry(buffer.readNbt()));
   }
 
   public static FriendlyByteBuf encode(
@@ -88,8 +88,8 @@ public class SaveDialogButtonMessage extends NetworkMessage {
     }
 
     // Validate dialog button data.
-    DialogButtonData dialogButtonData = message.getDialogButtonData();
-    if (dialogButtonData == null) {
+    DialogButtonEntry dialogButtonEntry = message.getDialogButtonData();
+    if (dialogButtonEntry == null) {
       log.error("Invalid dialog button data for {} from {}", message.getUUID(), serverPlayer);
       return;
     }
@@ -155,22 +155,22 @@ public class SaveDialogButtonMessage extends NetworkMessage {
     if (dialogButtonId == null) {
       log.info(
           "Add new dialog button {} for dialog {} for {} from {}",
-          dialogButtonData,
+          dialogButtonEntry,
           dialogId,
           message.getUUID(),
           serverPlayer);
-      dialogData.getDialogDataSet().getDialog(dialogId).setDialogButton(dialogButtonData);
+      dialogData.getDialogDataSet().getDialog(dialogId).setDialogButton(dialogButtonEntry);
     } else {
       log.info(
           "Edit existing dialog button {} for dialog {} for {} from {}",
-          dialogButtonData,
+          dialogButtonEntry,
           dialogId,
           message.getUUID(),
           serverPlayer);
       dialogData
           .getDialogDataSet()
           .getDialog(dialogId)
-          .setDialogButton(dialogButtonId, dialogButtonData);
+          .setDialogButton(dialogButtonId, dialogButtonEntry);
     }
   }
 
@@ -187,7 +187,7 @@ public class SaveDialogButtonMessage extends NetworkMessage {
     return this.dialogButtonId;
   }
 
-  public DialogButtonData getDialogButtonData() {
-    return this.dialogButtonData;
+  public DialogButtonEntry getDialogButtonData() {
+    return this.dialogButtonEntry;
   }
 }

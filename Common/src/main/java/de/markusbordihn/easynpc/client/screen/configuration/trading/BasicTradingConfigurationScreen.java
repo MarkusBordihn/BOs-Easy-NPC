@@ -46,21 +46,21 @@ public class BasicTradingConfigurationScreen<T extends ConfigurationMenu>
   }
 
   private void onResetsEveryMinEditBoxChanged(String text) {
-    if (isNumericValue(text) && !text.isEmpty()) {
+    if (isPositiveNumericValueOrZero(text) && !text.isEmpty()) {
       NetworkMessageHandlerManager.getServerHandler()
           .setBasicTradingResetsEveryMin(this.getNpcUUID(), Integer.parseInt(text));
     }
   }
 
   private void onMaxUsesEditBoxChanged(String text) {
-    if (isPositiveNumericValue(text) && !text.isEmpty()) {
+    if (isPositiveNumericValueOrZero(text) && !text.isEmpty()) {
       NetworkMessageHandlerManager.getServerHandler()
           .setBasicTradingMaxUses(this.getNpcUUID(), Integer.parseInt(text));
     }
   }
 
   private void onRewardExpEditBoxChanged(String text) {
-    if (isNumericValue(text) && !text.isEmpty()) {
+    if (isPositiveNumericValueOrZero(text) && !text.isEmpty()) {
       NetworkMessageHandlerManager.getServerHandler()
           .setBasicTradingRewardExp(this.getNpcUUID(), Integer.parseInt(text));
     }
@@ -82,7 +82,7 @@ public class BasicTradingConfigurationScreen<T extends ConfigurationMenu>
     this.resetsEveryMinEditBox.setMaxLength(3);
     this.resetsEveryMinEditBox.setValue(tradingData.getTradingResetsEveryMin() + "");
     this.resetsEveryMinEditBox.setResponder(this::onResetsEveryMinEditBoxChanged);
-    this.resetsEveryMinEditBox.setFilter(TradingConfigurationScreen::isNumericValue);
+    this.resetsEveryMinEditBox.setFilter(TradingConfigurationScreen::isPositiveNumericValueOrZero);
     this.addRenderableWidget(this.resetsEveryMinEditBox);
 
     // Max Uses Edit Box
@@ -91,6 +91,7 @@ public class BasicTradingConfigurationScreen<T extends ConfigurationMenu>
     this.maxUsesEditBox.setMaxLength(4);
     this.maxUsesEditBox.setValue(tradingData.getBasicTradingMaxUses() + "");
     this.maxUsesEditBox.setResponder(this::onMaxUsesEditBoxChanged);
+    this.maxUsesEditBox.setFilter(TradingConfigurationScreen::isPositiveNumericValueOrZero);
     this.addRenderableWidget(this.maxUsesEditBox);
 
     // Experience Edit Box
@@ -99,7 +100,7 @@ public class BasicTradingConfigurationScreen<T extends ConfigurationMenu>
     this.rewardExpEditBox.setMaxLength(3);
     this.rewardExpEditBox.setValue(tradingData.getBasicTradingRewardExp() + "");
     this.rewardExpEditBox.setResponder(this::onRewardExpEditBoxChanged);
-    this.rewardExpEditBox.setFilter(TradingConfigurationScreen::isNumericValue);
+    this.rewardExpEditBox.setFilter(TradingConfigurationScreen::isPositiveNumericValueOrZero);
     this.addRenderableWidget(this.rewardExpEditBox);
   }
 

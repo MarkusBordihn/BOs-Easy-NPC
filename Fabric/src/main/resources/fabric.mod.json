@@ -23,6 +23,7 @@
     ]
   },
   "mixins": [],
+  "accessWidener": "easynpc.accesswidener",
   "depends": {
     "fabricloader": ">=0.13",
     "fabric": "*",

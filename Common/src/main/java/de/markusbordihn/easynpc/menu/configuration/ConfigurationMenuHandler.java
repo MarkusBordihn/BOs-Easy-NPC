@@ -49,7 +49,7 @@ public class ConfigurationMenuHandler {
       final ConfigurationType configurationType,
       final EasyNPC<?> easyNPC,
       final MenuType<? extends ConfigurationMenu> menuType,
-      ScreenData screenData) {
+      final ScreenData screenData) {
     final Component displayName = configurationType.getConfigurationTitle(easyNPC);
 
     // Special configuration menu for equipment
@@ -154,6 +154,6 @@ public class ConfigurationMenuHandler {
         // Do nothing
       }
     }
-    return new ScreenData(npcUUID, null, null, pageIndex, additionalSyncData);
+    return new ScreenData(npcUUID, null, null, null, pageIndex, additionalSyncData);
   }
 }

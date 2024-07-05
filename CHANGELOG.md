@@ -8,6 +8,24 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.1.0 (beta only for testing)
+
+- Fixed #239 by passing `can_pass_door` and `can_open_door` to navigation.
+- Fixed #61, #141, #227 by adding new action UI for button actions and dialog actions.
+- Fixed #51, #225 by allowing interaction with blocks, levers, buttons, ...
+- Fixed #114, #195 by fully supporting config screen for Fabric.
+- Fixed #149 by adding additional `close_dialog` action.
+- Fixed German translations and overlapping texts.
+- Improved editor and dialog screen for better usability.
+- Added compact mode for the configuration screen for better usability.
+- Added new action UI to allow more complex actions and interactions.
+- Added block interaction action for NPCs over action UI and `/easy_npc interact block ...` command.
+- Added Fabric armor renderer support to allow hiding armor parts.
+- Added support to place weapons in the shield slot.
+- Added Villager builder example preset.
+- Removed screen container data for better performance and less network traffic.
+- Removed custom empty slot images for armor and equipment.
+
 ### 5.0.0 (beta only for testing)
 
 Note: Please backup your world / NPCs before testing!

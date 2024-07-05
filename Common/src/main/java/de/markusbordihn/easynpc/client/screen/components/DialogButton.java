@@ -29,10 +29,6 @@ public class DialogButton extends SpriteButton {
   public static final int SPRITE_X = 4;
   public static final int SPRITE_Y = 3;
 
-  public DialogButton(int left, int top, OnPress onPress) {
-    super(left, top, 20, 18, 4, 3, 64, 4, 13, 13, onPress);
-  }
-
   public DialogButton(int left, int top, int width, String label, OnPress onPress) {
     super(
         left,

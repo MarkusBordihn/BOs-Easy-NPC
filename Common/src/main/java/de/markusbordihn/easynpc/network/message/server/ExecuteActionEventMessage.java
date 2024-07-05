@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.action.ActionDataEntry;
+import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -28,7 +28,6 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessage;
 import io.netty.buffer.Unpooled;
-import java.util.Set;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -91,6 +90,18 @@ public class ExecuteActionEventMessage extends NetworkMessage {
       return;
     }
 
+    // Validate action.
+    ActionDataSet actionDataSet =
+        actionEventData.getActionEventSet().getActionEvents(actionEventType);
+    if (actionDataSet == null || actionDataSet.isEmpty()) {
+      log.error(
+          "Empty trigger action event {} request for UUID {} from {}",
+          actionEventType,
+          uuid,
+          serverPlayer);
+      return;
+    }
+
     // Validate action handler.
     ActionHandler<?> actionHandler = easyNPC.getEasyNPCActionHandler();
     if (actionHandler == null) {
@@ -98,37 +109,8 @@ public class ExecuteActionEventMessage extends NetworkMessage {
       return;
     }
 
-    // Validate action.
-    Set<ActionDataEntry> actionDataEntryList =
-        actionEventData.getActionEventSet().getActionEvents(actionEventType);
-    if (actionDataEntryList == null || actionDataEntryList.isEmpty()) {
-      log.error(
-          "Unknown trigger action event {} request for UUID {} from {}",
-          actionEventType,
-          uuid,
-          serverPlayer);
-      return;
-    }
-
     // Perform action.
-    if (actionDataEntryList.size() > 1) {
-      log.debug(
-          "Trigger multiple actions events for {} from {} with {} actions ...",
-          easyNPC,
-          serverPlayer,
-          actionDataEntryList.size());
-    }
-    for (ActionDataEntry actionDataEntry : actionDataEntryList) {
-      if (actionDataEntry != null) {
-        log.debug(
-            "Trigger action event {} for {} from {} with permission level {} ...",
-            actionDataEntry,
-            easyNPC,
-            serverPlayer,
-            actionDataEntry.getPermissionLevel());
-        actionHandler.executeAction(actionDataEntry, serverPlayer);
-      }
-    }
+    actionHandler.executeActions(actionDataSet, serverPlayer);
   }
 
   @Override

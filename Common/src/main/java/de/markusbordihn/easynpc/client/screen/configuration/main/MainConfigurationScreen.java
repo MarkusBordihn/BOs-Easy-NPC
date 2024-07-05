@@ -129,7 +129,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         this.font,
         "UUID: " + getEasyNPCEntity().getUUID(),
         Math.round((this.contentLeftPos + 1) / scaleEntityTypeText),
-        Math.round((this.buttonTopPos) / scaleEntityTypeText));
+        Math.round((this.buttonTopPos + 1) / scaleEntityTypeText));
 
     // Entity Type
     Text.drawString(
@@ -220,9 +220,9 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     Button importButton =
         this.addRenderableWidget(
             new TextButton(
-                this.leftPos + 165,
+                this.leftPos + 134,
                 this.contentTopPos,
-                65,
+                80,
                 "import",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
@@ -234,9 +234,9 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     Button exportButton =
         this.addRenderableWidget(
             new TextButton(
-                importButton.x + importButton.getWidth() + 3,
+                importButton.x + importButton.getWidth() + 5,
                 importButton.y,
-                65,
+                80,
                 "export",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
@@ -248,7 +248,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
   private void defineNameAndColorBox() {
     // Name Edit Box and Save Button
     this.formerName = getEasyNPCEntity().getName().getString();
-    this.nameBox = new TextField(this.font, this.contentLeftPos, this.contentTopPos, 108);
+    this.nameBox = new TextField(this.font, this.contentLeftPos, this.contentTopPos, 70);
     this.nameBox.setMaxLength(32);
     this.nameBox.setValue(this.formerName);
     this.nameBox.setResponder(consumer -> this.validateName());
@@ -256,8 +256,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
 
     this.nameColorButton =
         this.addRenderableWidget(
-            new ColorButton(
-                this.leftPos + 118, this.nameBox.y - 1, onPress -> this.validateName()));
+            new ColorButton(this.leftPos + 78, this.nameBox.y - 1, onPress -> this.validateName()));
     if (getEasyNPCEntity().hasCustomName()
         && getEasyNPCEntity().getCustomName().getStyle() != null
         && getEasyNPCEntity().getCustomName().getStyle().getColor() != null) {
@@ -273,7 +272,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
 
     this.saveNameButton =
         this.addRenderableWidget(
-            new SaveButton(this.leftPos + 137, this.nameBox.y - 1, onPress -> this.saveName()));
+            new SaveButton(this.leftPos + 97, this.nameBox.y - 1, onPress -> this.saveName()));
     this.saveNameButton.active = false;
   }
 

@@ -20,8 +20,11 @@
 package de.markusbordihn.easynpc.data.screen;
 
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
+import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.attribute.BaseAttributes;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
+import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.nbt.CompoundTag;
@@ -30,33 +33,59 @@ import net.minecraft.nbt.ListTag;
 public class AdditionalScreenData {
 
   private static final String ACTION_EVENT_DATA_TAG = "ActionEventData";
+  private static final String ACTION_EVENT_TYPE_TAG = "ActionEventType";
   private static final String BASE_ATTRIBUTES_DATA_TAG = "BaseAttributesData";
+  private static final String CONFIGURATION_TYPE_TAG = "ConfigurationType";
   private static final String DIALOG_DATA_TAG = "DialogData";
+  private static final String EDITOR_TYPE_TAG = "EditorType";
   private static final String OBJECTIVE_DATA_TAG = "ObjectiveData";
 
-  private final CompoundTag data;
   private final ActionEventSet actionEventSet;
+  private final ActionEventType actionEventType;
   private final BaseAttributes baseAttributes;
+  private final CompoundTag data;
+  private final ConfigurationType configurationType;
   private final DialogDataSet dialogDataSet;
+  private final EditorType editorType;
   private final ObjectiveDataSet objectiveDataSet;
-
-  public AdditionalScreenData() {
-    this(new CompoundTag());
-  }
 
   public AdditionalScreenData(CompoundTag compoundTag) {
     // Processing know data.
-    this.actionEventSet = getActionDataSet(compoundTag);
+    this.actionEventSet = getActionEventSet(compoundTag);
+    this.actionEventType = getActionEventType(compoundTag);
     this.baseAttributes = getBaseAttributes(compoundTag);
+    this.configurationType = getConfigurationType(compoundTag);
     this.dialogDataSet = getDialogDataSet(compoundTag);
+    this.editorType = getEditorType(compoundTag);
     this.objectiveDataSet = getObjectiveDataSet(compoundTag);
 
     // Store data and remove already processed data.
     this.data = compoundTag;
     this.data.remove(ACTION_EVENT_DATA_TAG);
+    this.data.remove(ACTION_EVENT_TYPE_TAG);
     this.data.remove(BASE_ATTRIBUTES_DATA_TAG);
+    this.data.remove(CONFIGURATION_TYPE_TAG);
     this.data.remove(DIALOG_DATA_TAG);
+    this.data.remove(EDITOR_TYPE_TAG);
     this.data.remove(OBJECTIVE_DATA_TAG);
+  }
+
+  public static void addActionEventType(CompoundTag compoundTag, ActionEventType actionEventType) {
+    if (compoundTag == null || actionEventType == null) {
+      return;
+    }
+    compoundTag.putString(ACTION_EVENT_TYPE_TAG, actionEventType.name());
+  }
+
+  public static ActionEventType getActionEventType(CompoundTag compoundTag) {
+    if (!hasActionEventType(compoundTag)) {
+      return ActionEventType.NONE;
+    }
+    return ActionEventType.get(compoundTag.getString(ACTION_EVENT_TYPE_TAG));
+  }
+
+  public static boolean hasActionEventType(CompoundTag compoundTag) {
+    return compoundTag != null && compoundTag.contains(ACTION_EVENT_TYPE_TAG);
   }
 
   public static void addActionEventSet(CompoundTag compoundTag, EasyNPC<?> easyNPC) {
@@ -67,14 +96,14 @@ public class AdditionalScreenData {
         ACTION_EVENT_DATA_TAG, easyNPC.getEasyNPCActionEventData().getActionEventSet().createTag());
   }
 
-  public static ActionEventSet getActionDataSet(CompoundTag compoundTag) {
-    if (!hasActionDataSet(compoundTag)) {
+  public static ActionEventSet getActionEventSet(CompoundTag compoundTag) {
+    if (!hasActionEventSet(compoundTag)) {
       return new ActionEventSet();
     }
     return new ActionEventSet(compoundTag.getCompound(ACTION_EVENT_DATA_TAG));
   }
 
-  public static boolean hasActionDataSet(CompoundTag compoundTag) {
+  public static boolean hasActionEventSet(CompoundTag compoundTag) {
     return compoundTag != null && compoundTag.contains(ACTION_EVENT_DATA_TAG);
   }
 
@@ -97,6 +126,25 @@ public class AdditionalScreenData {
     return compoundTag != null && compoundTag.contains(BASE_ATTRIBUTES_DATA_TAG);
   }
 
+  public static void addConfigurationType(
+      CompoundTag compoundTag, ConfigurationType configurationType) {
+    if (compoundTag == null || configurationType == null) {
+      return;
+    }
+    compoundTag.putString(CONFIGURATION_TYPE_TAG, configurationType.name());
+  }
+
+  public static ConfigurationType getConfigurationType(CompoundTag compoundTag) {
+    if (!hasConfigurationType(compoundTag)) {
+      return ConfigurationType.NONE;
+    }
+    return ConfigurationType.get(compoundTag.getString(CONFIGURATION_TYPE_TAG));
+  }
+
+  public static boolean hasConfigurationType(CompoundTag compoundTag) {
+    return compoundTag != null && compoundTag.contains(CONFIGURATION_TYPE_TAG);
+  }
+
   public static void addDialogDataSet(CompoundTag compoundTag, EasyNPC<?> easyNPC) {
     if (compoundTag == null || easyNPC == null || easyNPC.getEasyNPCDialogData() == null) {
       return;
@@ -113,6 +161,24 @@ public class AdditionalScreenData {
 
   public static boolean hasDialogDataSet(CompoundTag compoundTag) {
     return compoundTag != null && compoundTag.contains(DIALOG_DATA_TAG);
+  }
+
+  public static void addEditorType(CompoundTag compoundTag, EditorType editorType) {
+    if (compoundTag == null || editorType == null) {
+      return;
+    }
+    compoundTag.putString(EDITOR_TYPE_TAG, editorType.name());
+  }
+
+  public static EditorType getEditorType(CompoundTag compoundTag) {
+    if (!hasEditorType(compoundTag)) {
+      return EditorType.NONE;
+    }
+    return EditorType.get(compoundTag.getString(EDITOR_TYPE_TAG));
+  }
+
+  public static boolean hasEditorType(CompoundTag compoundTag) {
+    return compoundTag != null && compoundTag.contains(EDITOR_TYPE_TAG);
   }
 
   public static void addObjectiveDataSet(CompoundTag compoundTag, EasyNPC<?> easyNPC) {
@@ -134,6 +200,10 @@ public class AdditionalScreenData {
     return compoundTag != null && compoundTag.contains(OBJECTIVE_DATA_TAG);
   }
 
+  public ActionEventType getActionEventType() {
+    return this.actionEventType;
+  }
+
   public ActionEventSet getActionEventSet() {
     return this.actionEventSet;
   }
@@ -142,8 +212,16 @@ public class AdditionalScreenData {
     return this.baseAttributes;
   }
 
+  public ConfigurationType getConfigurationType() {
+    return this.configurationType;
+  }
+
   public DialogDataSet getDialogDataSet() {
     return this.dialogDataSet;
+  }
+
+  public EditorType getEditorType() {
+    return this.editorType;
   }
 
   public ObjectiveDataSet getObjectiveDataSet() {

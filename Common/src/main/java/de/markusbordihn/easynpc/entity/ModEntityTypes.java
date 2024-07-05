@@ -94,7 +94,7 @@ public class ModEntityTypes {
           .sized(1.4F, 1.6F)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Horse.ID_ZOMBIE);
-  private static final float HUMANOID_SIZE_HEIGHT = 1.96F;
+  private static final float HUMANOID_SIZE_HEIGHT = 1.95F;
   private static final float HUMANOID_SIZE_WIDTH = 0.6F;
   public static final EntityType<CrashTestDummy> CRASH_TEST_DUMMY =
       EntityType.Builder.of(CrashTestDummy::new, CATEGORY)

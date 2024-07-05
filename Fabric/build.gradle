@@ -21,6 +21,7 @@ dependencies {
 }
 
 loom {
+  accessWidenerPath = file("src/main/resources/easynpc.accesswidener")
   runs {
     client {
       client()

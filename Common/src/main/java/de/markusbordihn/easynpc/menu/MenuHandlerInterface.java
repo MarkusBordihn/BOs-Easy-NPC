@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.menu;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationTypeHelper;
 import de.markusbordihn.easynpc.data.editor.EditorType;
@@ -28,14 +29,14 @@ import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenuHandler;
+import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
+import de.markusbordihn.easynpc.menu.dialog.DialogMenuHandler;
+import de.markusbordihn.easynpc.menu.editor.EditorMenu;
+import de.markusbordihn.easynpc.menu.editor.EditorMenuHandler;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,35 +44,6 @@ import org.apache.logging.log4j.Logger;
 public interface MenuHandlerInterface {
 
   Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  private static void openEasyNpcMenu(
-      final ServerPlayer serverPlayer,
-      final MenuType<?> menuType,
-      final EasyNPC<?> easyNPC,
-      final UUID dialogId,
-      final UUID dialogButtonId,
-      final int pageIndex,
-      final Component menuName,
-      final CompoundTag data) {
-    final UUID npcUUID = easyNPC.getUUID();
-    final Component displayName = menuName != null ? menuName : easyNPC.getEntity().getName();
-    final ScreenData screenData =
-        new ScreenData(npcUUID, dialogId, dialogButtonId, pageIndex, data);
-    final MenuProvider menuProvider =
-        new MenuProvider() {
-          @Override
-          public AbstractContainerMenu createMenu(
-              int containerId, Inventory playerInventory, Player player) {
-            return new EasyNPCMenu(menuType, containerId, playerInventory, screenData.encode());
-          }
-
-          @Override
-          public Component getDisplayName() {
-            return displayName;
-          }
-        };
-    MenuManager.openMenu(npcUUID, menuProvider, serverPlayer, screenData.encode());
-  }
 
   default void openConfigurationMenu(
       final ConfigurationType configurationType,
@@ -83,11 +55,6 @@ public interface MenuHandlerInterface {
     final ConfigurationType configurationTypeAlias =
         ConfigurationTypeHelper.resolveConfigurationTypeAlias(configurationType, easyNPC);
 
-    // Additional data for specific configuration menu.
-    final ScreenData screenData =
-        ConfigurationMenuHandler.getScreenData(
-            configurationTypeAlias, easyNPC, serverPlayer, pageIndex);
-
     // Get menu type for configuration type.
     final MenuType<? extends ConfigurationMenu> menuType =
         getMenuTypeByConfigurationType(configurationTypeAlias);
@@ -96,6 +63,11 @@ public interface MenuHandlerInterface {
           "Unknown configuration {} for {} from {}", configurationTypeAlias, easyNPC, serverPlayer);
       return;
     }
+
+    // Additional data for specific configuration menu.
+    final ScreenData screenData =
+        ConfigurationMenuHandler.getScreenData(
+            configurationTypeAlias, easyNPC, serverPlayer, pageIndex);
 
     // Get menu provider for configuration type and open configuration menu.
     final MenuProvider menuProvider =
@@ -106,90 +78,121 @@ public interface MenuHandlerInterface {
   }
 
   default void openEditorMenu(
-      ServerPlayer serverPlayer,
-      final MenuType<?> menuType,
-      EasyNPC<?> easyNPC,
-      UUID dialogId,
-      UUID dialogButtonId,
-      int pageIndex,
-      final CompoundTag additionalSyncData) {
-    openEasyNpcMenu(
+      final EditorType editorType,
+      final ServerPlayer serverPlayer,
+      final EasyNPC<?> easyNPC,
+      final UUID dialogId,
+      final UUID dialogButtonId,
+      final UUID actionDataEntryId,
+      final ActionEventType actionEventType,
+      final ConfigurationType configurationType,
+      final EditorType formerEditorType,
+      final int pageIndex) {
+    CompoundTag additionalSyncData = new CompoundTag();
+    AdditionalScreenData.addActionEventType(additionalSyncData, actionEventType);
+    AdditionalScreenData.addConfigurationType(additionalSyncData, configurationType);
+    AdditionalScreenData.addEditorType(additionalSyncData, formerEditorType);
+    openEditorMenu(
+        editorType,
         serverPlayer,
-        menuType,
         easyNPC,
         dialogId,
         dialogButtonId,
+        actionDataEntryId,
         pageIndex,
-        null,
         additionalSyncData);
   }
 
   default void openEditorMenu(
       final EditorType editorType,
-      ServerPlayer serverPlayer,
-      EasyNPC<?> easyNPC,
-      UUID dialogId,
-      int pageIndex) {
-    openEditorMenu(editorType, serverPlayer, easyNPC, dialogId, null, pageIndex);
+      final ServerPlayer serverPlayer,
+      final EasyNPC<?> easyNPC,
+      final UUID dialogId,
+      final int pageIndex) {
+    openEditorMenu(
+        editorType, serverPlayer, easyNPC, dialogId, null, null, pageIndex, new CompoundTag());
   }
 
   default void openEditorMenu(
       final EditorType editorType,
-      ServerPlayer serverPlayer,
-      EasyNPC<?> easyNPC,
-      UUID dialogId,
-      UUID dialogButtonId,
-      int pageIndex) {
-    // Add additional sync data for specific editor menu.
-    CompoundTag additionalSyncData = new CompoundTag();
-    switch (editorType) {
-      case DIALOG, DIALOG_BUTTON, DIALOG_TEXT ->
-          AdditionalScreenData.addDialogDataSet(additionalSyncData, easyNPC);
-      default -> {
-        // Do nothing
-      }
-    }
-
-    // Open editor menu based on editor type.
-    MenuType<?> menuType = getMenuTypeByEditorType(editorType);
-    if (menuType != null) {
-      this.openEditorMenu(
-          serverPlayer, menuType, easyNPC, dialogId, dialogButtonId, pageIndex, additionalSyncData);
-    } else {
-      log.error("Unknown editor {} for {} from {}", editorType, easyNPC, serverPlayer);
-    }
-  }
-
-  default void openDialogMenu(
-      ServerPlayer serverPlayer, EasyNPC<?> easyNPC, UUID dialogId, int pageIndex) {
-    openDialogMenu(serverPlayer, getDialogMenuType(), easyNPC, dialogId, pageIndex);
-  }
-
-  default void openDialogMenu(
-      ServerPlayer serverPlayer,
-      MenuType<?> menuType,
-      EasyNPC<?> easyNPC,
-      UUID dialogId,
-      int pageIndex) {
-    // Add additional sync data for the dialog.
-    CompoundTag additionalSyncData = new CompoundTag();
-    AdditionalScreenData.addActionEventSet(additionalSyncData, easyNPC);
-    AdditionalScreenData.addDialogDataSet(additionalSyncData, easyNPC);
-    openEasyNpcMenu(
+      final ServerPlayer serverPlayer,
+      final EasyNPC<?> easyNPC,
+      final UUID dialogId,
+      final UUID dialogButtonId,
+      final int pageIndex) {
+    openEditorMenu(
+        editorType,
         serverPlayer,
-        menuType,
         easyNPC,
         dialogId,
+        dialogButtonId,
         null,
         pageIndex,
-        easyNPC.getEntity().getName(),
-        additionalSyncData);
+        new CompoundTag());
+  }
+
+  default void openEditorMenu(
+      final EditorType editorType,
+      final ServerPlayer serverPlayer,
+      final EasyNPC<?> easyNPC,
+      final UUID dialogId,
+      final UUID dialogButtonId,
+      final UUID actionDataEntryId,
+      final int pageIndex,
+      CompoundTag additionalSyncData) {
+
+    // Get menu type for configuration type.
+    final MenuType<? extends EditorMenu> menuType = getMenuTypeByEditorType(editorType);
+    if (menuType == null) {
+      log.error("Unknown editor {} for {} from {}", editorType, easyNPC, serverPlayer);
+      return;
+    }
+
+    // Additional data for specific configuration menu.
+    final ScreenData screenData =
+        EditorMenuHandler.getScreenData(
+            editorType,
+            easyNPC,
+            dialogId,
+            dialogButtonId,
+            actionDataEntryId,
+            pageIndex,
+            additionalSyncData);
+
+    // Get menu provider for configuration type and open configuration menu.
+    final MenuProvider menuProvider =
+        EditorMenuHandler.getMenuProvider(editorType, easyNPC, menuType, screenData);
+    final UUID npcUUID = easyNPC.getUUID();
+    MenuManager.openMenu(npcUUID, menuProvider, serverPlayer, screenData.encode());
+  }
+
+  default void openDialogMenu(
+      final ServerPlayer serverPlayer,
+      final EasyNPC<?> easyNPC,
+      final UUID dialogId,
+      int pageIndex) {
+
+    // Get menu type for configuration type.
+    final MenuType<? extends DialogMenu> menuType = getDialogMenuType();
+    if (menuType == null) {
+      log.error("Unknown dialog {} for {} from {}", menuType, easyNPC, serverPlayer);
+      return;
+    }
+
+    // Additional data for specific configuration menu.
+    final ScreenData screenData = DialogMenuHandler.getScreenData(easyNPC, dialogId, pageIndex);
+
+    // Get menu provider for configuration type and open configuration menu.
+    final MenuProvider menuProvider =
+        DialogMenuHandler.getMenuProvider(easyNPC, menuType, screenData);
+    final UUID npcUUID = easyNPC.getUUID();
+    MenuManager.openMenu(npcUUID, menuProvider, serverPlayer, screenData.encode());
   }
 
   MenuType<? extends ConfigurationMenu> getMenuTypeByConfigurationType(
       ConfigurationType configurationType);
 
-  MenuType<?> getMenuTypeByEditorType(EditorType editorType);
+  MenuType<? extends EditorMenu> getMenuTypeByEditorType(EditorType editorType);
 
-  MenuType<?> getDialogMenuType();
+  MenuType<? extends DialogMenu> getDialogMenuType();
 }

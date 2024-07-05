@@ -48,6 +48,8 @@ import de.markusbordihn.easynpc.network.message.server.ExecuteDialogButtonAction
 import de.markusbordihn.easynpc.network.message.server.ExportPresetMessage;
 import de.markusbordihn.easynpc.network.message.server.ExportWorldPresetMessage;
 import de.markusbordihn.easynpc.network.message.server.ImportPresetMessage;
+import de.markusbordihn.easynpc.network.message.server.OpenActionDataEditorMessage;
+import de.markusbordihn.easynpc.network.message.server.OpenActionDataEntryEditorMessage;
 import de.markusbordihn.easynpc.network.message.server.OpenConfigurationMessage;
 import de.markusbordihn.easynpc.network.message.server.OpenDialogButtonEditorMessage;
 import de.markusbordihn.easynpc.network.message.server.OpenDialogEditorMessage;
@@ -306,6 +308,20 @@ public class NetworkHandlerManager {
         ImportPresetMessage::encode,
         ImportPresetMessage::decode,
         ImportPresetMessage::handle);
+
+    networkHandler.registerServerNetworkMessageHandler(
+        OpenActionDataEditorMessage.MESSAGE_ID,
+        OpenActionDataEditorMessage.class,
+        OpenActionDataEditorMessage::encode,
+        OpenActionDataEditorMessage::decode,
+        OpenActionDataEditorMessage::handle);
+
+    networkHandler.registerServerNetworkMessageHandler(
+        OpenActionDataEntryEditorMessage.MESSAGE_ID,
+        OpenActionDataEntryEditorMessage.class,
+        OpenActionDataEntryEditorMessage::encode,
+        OpenActionDataEntryEditorMessage::decode,
+        OpenActionDataEntryEditorMessage::handle);
 
     networkHandler.registerServerNetworkMessageHandler(
         OpenConfigurationMessage.MESSAGE_ID,

@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
+import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -46,6 +47,7 @@ public class AttributeHandler {
     AttributeData<?> attributeData = easyNPC.getEasyNPCAttributeData();
     if (attributeData != null) {
       ObjectiveData<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
+      NavigationData<?> navigationData = easyNPC.getEasyNPCNavigationData();
       switch (entityAttribute) {
         case FREEFALL:
           log.debug("Change freefall={} for {}", value, easyNPC);
@@ -61,10 +63,16 @@ public class AttributeHandler {
           if (objectiveData != null) {
             objectiveData.registerAttributeBasedObjectives();
           }
+          if (navigationData != null) {
+            navigationData.refreshGroundNavigation();
+          }
           break;
         case CAN_OPEN_DOOR:
           log.debug("Change canOpenDoor={} for {}", value, easyNPC);
           attributeData.setAttributeCanOpenDoor(value);
+          if (navigationData != null) {
+            navigationData.refreshGroundNavigation();
+          }
           if (objectiveData != null) {
             objectiveData.registerAttributeBasedObjectives();
           }
@@ -79,8 +87,8 @@ public class AttributeHandler {
         case CAN_PASS_DOOR:
           log.debug("Change canPassDoor={} for {}", value, easyNPC);
           attributeData.setAttributeCanPassDoor(value);
-          if (objectiveData != null) {
-            objectiveData.registerAttributeBasedObjectives();
+          if (navigationData != null) {
+            navigationData.refreshGroundNavigation();
           }
           break;
         case CAN_USE_NETHER_PORTAL:

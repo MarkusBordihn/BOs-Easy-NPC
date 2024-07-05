@@ -58,9 +58,11 @@ import de.markusbordihn.easynpc.client.screen.configuration.trading.BasicTrading
 import de.markusbordihn.easynpc.client.screen.configuration.trading.CustomTradingConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.trading.NoneTradingConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.dialog.DialogScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.editor.DialogButtonEditorScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.editor.DialogEditorScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.editor.DialogTextEditorScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.editor.action.ActionDataEditorScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.editor.action.ActionDataEntryEditorScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.editor.dialog.DialogButtonEditorScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.editor.dialog.DialogEditorScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.editor.dialog.DialogTextEditorScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.spawner.SpawnerScreenWrapper;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -79,6 +81,9 @@ public class ClientScreens {
     MenuScreens.register(
         ModMenuTypes.ABILITIES_ATTRIBUTE_CONFIGURATION_MENU,
         AbilitiesAttributeConfigurationScreenWrapper::new);
+    MenuScreens.register(ModMenuTypes.ACTION_DATA_EDITOR_MENU, ActionDataEditorScreenWrapper::new);
+    MenuScreens.register(
+        ModMenuTypes.ACTION_DATA_ENTRY_EDITOR_MENU, ActionDataEntryEditorScreenWrapper::new);
     MenuScreens.register(
         ModMenuTypes.ADVANCED_DIALOG_CONFIGURATION_MENU,
         AdvancedDialogConfigurationScreenWrapper::new);

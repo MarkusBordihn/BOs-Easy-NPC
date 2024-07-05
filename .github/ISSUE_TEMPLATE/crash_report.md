@@ -18,6 +18,9 @@ Please make sure to fill out the following template to the best of your ability.
 diagnose and resolve the issue faster. Without the necessary logs, there might not be much we can do
 to help.
 
+**Minecraft and Mod version** 🐞
+The used Minecraft and Mod version.
+
 **Description of the crash** 💥
 A clear and concise description of what happened when the crash occurred.
 

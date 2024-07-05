@@ -52,12 +52,12 @@ public class ModBlocks {
         Registry.BLOCK_ENTITY_TYPE,
         new ResourceLocation(Constants.MOD_ID, BaseEasyNPCSpawnerBlockEntity.NAME),
         EASY_NPC_SPAWNER_ENTITY);
-  }  public static final BlockEntityType<EasyNPCSpawnerBlockEntity> EASY_NPC_SPAWNER_ENTITY =
-      FabricBlockEntityTypeBuilder.create(EasyNPCSpawnerBlockEntity::new, EASY_NPC_SPAWNER).build();
+  }
 
   private static void registerBlock(String id, Block block) {
     Registry.register(Registry.BLOCK, new ResourceLocation(Constants.MOD_ID, id), block);
   }
 
-
+  public static final BlockEntityType<EasyNPCSpawnerBlockEntity> EASY_NPC_SPAWNER_ENTITY =
+      FabricBlockEntityTypeBuilder.create(EasyNPCSpawnerBlockEntity::new, EASY_NPC_SPAWNER).build();
 }

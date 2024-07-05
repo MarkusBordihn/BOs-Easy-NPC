@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
+import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonType;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
@@ -134,8 +134,8 @@ public class OpenDialogButtonEditorMessage extends NetworkMessage {
     // Validate dialog button id and create new button if needed.
     UUID dialogButtonId = message.getDialogButtonId();
     if (dialogButtonId != null && dialogButtonId.equals(EMPTY_UUID)) {
-      DialogButtonData newDialogButton =
-          new DialogButtonData("Button " + RANDOM.nextInt(1000), DialogButtonType.DEFAULT);
+      DialogButtonEntry newDialogButton =
+          new DialogButtonEntry("Button " + RANDOM.nextInt(1000), DialogButtonType.DEFAULT);
       log.info(
           "Created new dialog button {} for dialog {} for {} from {}",
           newDialogButton,

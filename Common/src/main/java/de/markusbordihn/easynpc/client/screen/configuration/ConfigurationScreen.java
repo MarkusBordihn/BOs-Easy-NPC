@@ -81,7 +81,7 @@ public class ConfigurationScreen<T extends EasyNPCMenu> extends Screen<T> {
 
     // Core Positions
     this.buttonLeftPos = this.leftPos + 13;
-    this.buttonTopPos = this.topPos + 4;
+    this.buttonTopPos = this.topPos + 3;
     this.contentLeftPos = this.leftPos + 7;
     this.contentTopPos = this.topPos + 23;
 
@@ -121,7 +121,11 @@ public class ConfigurationScreen<T extends EasyNPCMenu> extends Screen<T> {
 
   @Override
   protected void renderLabels(PoseStack poseStack, int x, int y) {
-    Text.drawString(poseStack, this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752);
+    // Render Title if not in compact mode
+    if (!this.compactMode) {
+      Text.drawString(
+          poseStack, this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752);
+    }
   }
 
   public void showMainScreen() {

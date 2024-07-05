@@ -60,6 +60,8 @@ import de.markusbordihn.easynpc.menu.configuration.trading.BasicTradingConfigura
 import de.markusbordihn.easynpc.menu.configuration.trading.CustomTradingConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.configuration.trading.NoneTradingConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.dialog.DialogMenuWrapper;
+import de.markusbordihn.easynpc.menu.editor.ActionDataEditorMenuWrapper;
+import de.markusbordihn.easynpc.menu.editor.ActionDataEntryEditorMenuWrapper;
 import de.markusbordihn.easynpc.menu.editor.DialogButtonEditorMenuWrapper;
 import de.markusbordihn.easynpc.menu.editor.DialogEditorMenuWrapper;
 import de.markusbordihn.easynpc.menu.editor.DialogTextEditorMenuWrapper;
@@ -77,20 +79,24 @@ public class ModMenuTypes {
 
   public static void register() {
     log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
-  }  public static final MenuType<AbilitiesAttributeConfigurationMenuWrapper>
+  }
+
+  public static final MenuType<AbilitiesAttributeConfigurationMenuWrapper>
       ABILITIES_ATTRIBUTE_CONFIGURATION_MENU =
           ScreenHandlerRegistry.registerSimple(
               ConfigurationType.ABILITIES_ATTRIBUTE.getId(),
               AbilitiesAttributeConfigurationMenuWrapper::new);
-
-
-
+  public static final MenuType<ActionDataEditorMenuWrapper> ACTION_DATA_EDITOR_MENU =
+      ScreenHandlerRegistry.registerSimple(
+          EditorType.ACTION_DATA.getId(), ActionDataEditorMenuWrapper::new);
+  public static final MenuType<ActionDataEntryEditorMenuWrapper> ACTION_DATA_ENTRY_EDITOR_MENU =
+      ScreenHandlerRegistry.registerSimple(
+          EditorType.ACTION_DATA_ENTRY.getId(), ActionDataEntryEditorMenuWrapper::new);
   public static final MenuType<AdvancedDialogConfigurationMenuWrapper>
       ADVANCED_DIALOG_CONFIGURATION_MENU =
           ScreenHandlerRegistry.registerSimple(
               ConfigurationType.ADVANCED_DIALOG.getId(),
               AdvancedDialogConfigurationMenuWrapper::new);
-
   public static final MenuType<AdvancedPoseConfigurationMenuWrapper>
       ADVANCED_POSE_CONFIGURATION_MENU =
           ScreenHandlerRegistry.registerSimple(

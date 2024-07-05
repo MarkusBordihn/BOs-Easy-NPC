@@ -26,12 +26,19 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public record ScreenData(
-    UUID uuid, UUID dialogId, UUID dialogButtonId, int pageIndex, CompoundTag additionalData) {
+    UUID uuid,
+    UUID dialogId,
+    UUID dialogButtonId,
+    UUID actionDataEntryId,
+    int pageIndex,
+    CompoundTag additionalData) {
 
-  public static final ScreenData EMPTY = new ScreenData(null, null, null, 0, new CompoundTag());
+  public static final ScreenData EMPTY =
+      new ScreenData(null, null, null, null, 0, new CompoundTag());
+  public static final String SCREEN_DATA_ACTION_DATA_ENTRY_ID_TAG = "ActionDataEntryId";
   public static final String SCREEN_DATA_ADDITIONAL_DATA_TAG = "AdditionalData";
   public static final String SCREEN_DATA_DIALOG_BUTTON_ID_TAG = "DialogButtonId";
-  public static final String SCREEN_DATA_DIALOG_ID_TAG = "DialogID";
+  public static final String SCREEN_DATA_DIALOG_ID_TAG = "DialogId";
   public static final String SCREEN_DATA_PAGE_INDEX_TAG = "PageIndex";
   public static final String SCREEN_DATA_TAG = "ScreenData";
   public static final String SCREEN_DATA_UUID_TAG = "UUID";
@@ -52,12 +59,16 @@ public record ScreenData(
         screenDataTag.contains(SCREEN_DATA_DIALOG_BUTTON_ID_TAG)
             ? screenDataTag.getUUID(SCREEN_DATA_DIALOG_BUTTON_ID_TAG)
             : null;
+    UUID actionDataEntryId =
+        screenDataTag.contains(SCREEN_DATA_ACTION_DATA_ENTRY_ID_TAG)
+            ? screenDataTag.getUUID(SCREEN_DATA_ACTION_DATA_ENTRY_ID_TAG)
+            : null;
     int pageIndex = screenDataTag.getInt(SCREEN_DATA_PAGE_INDEX_TAG);
     CompoundTag data =
         screenDataTag.contains(SCREEN_DATA_ADDITIONAL_DATA_TAG)
             ? screenDataTag.getCompound(SCREEN_DATA_ADDITIONAL_DATA_TAG)
             : new CompoundTag();
-    return new ScreenData(uuid, dialogID, dialogButtonId, pageIndex, data);
+    return new ScreenData(uuid, dialogID, dialogButtonId, actionDataEntryId, pageIndex, data);
   }
 
   public CompoundTag encode() {
@@ -68,6 +79,9 @@ public record ScreenData(
     }
     if (this.dialogButtonId != null) {
       screenDataTag.putUUID(SCREEN_DATA_DIALOG_BUTTON_ID_TAG, this.dialogButtonId);
+    }
+    if (this.actionDataEntryId != null) {
+      screenDataTag.putUUID(SCREEN_DATA_ACTION_DATA_ENTRY_ID_TAG, this.actionDataEntryId);
     }
     screenDataTag.putInt(SCREEN_DATA_PAGE_INDEX_TAG, this.pageIndex);
     if (this.additionalData != null) {

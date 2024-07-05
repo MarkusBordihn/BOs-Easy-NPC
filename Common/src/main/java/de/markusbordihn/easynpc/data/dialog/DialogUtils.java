@@ -20,9 +20,9 @@
 package de.markusbordihn.easynpc.data.dialog;
 
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
-import de.markusbordihn.easynpc.data.action.ActionType;
+import de.markusbordihn.easynpc.data.action.ActionDataSet;
+import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.utils.TextFormattingCodes;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -71,7 +71,7 @@ public class DialogUtils {
   }
 
   public static String generateButtonLabel(String name) {
-    return generateLabel(name, "button", DialogButtonData.MAX_BUTTON_LABEL_LENGTH);
+    return generateLabel(name, "button", DialogButtonEntry.MAX_BUTTON_LABEL_LENGTH);
   }
 
   public static String generateDialogLabel(String name) {
@@ -118,19 +118,19 @@ public class DialogUtils {
       String noDialogText) {
 
     // Define yes and no actions.
-    HashSet<ActionDataEntry> yesActionDatumEntries = new HashSet<>();
-    yesActionDatumEntries.add(new ActionDataEntry(ActionType.OPEN_NAMED_DIALOG, "yes_answer"));
-    HashSet<ActionDataEntry> noActionDatumEntries = new HashSet<>();
-    noActionDatumEntries.add(new ActionDataEntry(ActionType.OPEN_NAMED_DIALOG, "no_answer"));
+    ActionDataSet yesActionDataSet = new ActionDataSet();
+    yesActionDataSet.add(new ActionDataEntry(ActionDataType.OPEN_NAMED_DIALOG, "yes_answer"));
+    ActionDataSet noActionDataSet = new ActionDataSet();
+    noActionDataSet.add(new ActionDataEntry(ActionDataType.OPEN_NAMED_DIALOG, "no_answer"));
 
     // Define yes and no buttons.
-    DialogButtonData yesButtonData =
-        new DialogButtonData(yesButtonText, "yes_button", yesActionDatumEntries);
-    DialogButtonData noButtonData =
-        new DialogButtonData(noButtonText, "no_button", noActionDatumEntries);
+    DialogButtonEntry yesButtonData =
+        new DialogButtonEntry(yesButtonText, "yes_button", yesActionDataSet);
+    DialogButtonEntry noButtonData =
+        new DialogButtonEntry(noButtonText, "no_button", noActionDataSet);
 
     // Define list of buttons for the dialog.
-    Set<DialogButtonData> buttons = new LinkedHashSet<>();
+    Set<DialogButtonEntry> buttons = new LinkedHashSet<>();
     buttons.add(yesButtonData);
     buttons.add(noButtonData);
 
@@ -171,7 +171,7 @@ public class DialogUtils {
     // Get the max length of the button names to check if we could use a compact layout.
     int maxButtonNameLength = 0;
     if (numberOfButtons > 0) {
-      for (DialogButtonData buttonData : dialogData.getDialogButtons()) {
+      for (DialogButtonEntry buttonData : dialogData.getDialogButtons()) {
         int buttonNameLength = buttonData.getName().length();
         if (buttonNameLength > maxButtonNameLength) {
           maxButtonNameLength = buttonNameLength;

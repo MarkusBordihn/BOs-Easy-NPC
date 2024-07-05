@@ -40,7 +40,7 @@ public final class DialogDataEntry {
   public static final String DATA_TRANSLATE_TAG = "Translate";
   // Limits
   public static final int MAX_DIALOG_LABEL_LENGTH = 32;
-  private Set<DialogButtonData> dialogButtons = new LinkedHashSet<>();
+  private Set<DialogButtonEntry> dialogButtons = new LinkedHashSet<>();
   private Set<DialogTextData> dialogTexts = new LinkedHashSet<>();
   // Dialog Data
   private UUID id;
@@ -69,7 +69,7 @@ public final class DialogDataEntry {
       String name,
       String text,
       boolean translate,
-      Set<DialogButtonData> dialogButtons) {
+      Set<DialogButtonEntry> dialogButtons) {
     this.label = DialogUtils.generateButtonLabel(label != null && !label.isEmpty() ? label : name);
     this.name = name != null ? name.trim() : this.label;
     this.id = UUID.nameUUIDFromBytes(this.label.getBytes());
@@ -184,16 +184,16 @@ public final class DialogDataEntry {
     this.translate = translate;
   }
 
-  public Set<DialogButtonData> getDialogButtons() {
+  public Set<DialogButtonEntry> getDialogButtons() {
     return this.dialogButtons;
   }
 
-  public void setDialogButtons(Set<DialogButtonData> buttons) {
+  public void setDialogButtons(Set<DialogButtonEntry> buttons) {
     this.dialogButtons = buttons;
   }
 
-  public DialogButtonData getDialogButton(UUID dialogButtonId) {
-    for (DialogButtonData button : this.dialogButtons) {
+  public DialogButtonEntry getDialogButton(UUID dialogButtonId) {
+    for (DialogButtonEntry button : this.dialogButtons) {
       if (button.getId().equals(dialogButtonId)) {
         return button;
       }
@@ -201,8 +201,8 @@ public final class DialogDataEntry {
     return null;
   }
 
-  public DialogButtonData getDialogButton(String label) {
-    for (DialogButtonData button : this.dialogButtons) {
+  public DialogButtonEntry getDialogButton(String label) {
+    for (DialogButtonEntry button : this.dialogButtons) {
       if (button.getLabel().equals(label)) {
         return button;
       }
@@ -210,25 +210,25 @@ public final class DialogDataEntry {
     return null;
   }
 
-  public void setDialogButton(DialogButtonData dialogButtonData) {
-    this.setDialogButton(dialogButtonData.getId(), dialogButtonData);
+  public void setDialogButton(DialogButtonEntry dialogButtonEntry) {
+    this.setDialogButton(dialogButtonEntry.getId(), dialogButtonEntry);
   }
 
-  public void setDialogButton(UUID dialogButtonId, DialogButtonData dialogButtonData) {
+  public void setDialogButton(UUID dialogButtonId, DialogButtonEntry dialogButtonEntry) {
     if (dialogButtonId != null) {
-      for (DialogButtonData button : this.dialogButtons) {
+      for (DialogButtonEntry button : this.dialogButtons) {
         if (button.getId().equals(dialogButtonId)) {
           this.dialogButtons.remove(button);
-          this.dialogButtons.add(dialogButtonData);
+          this.dialogButtons.add(dialogButtonEntry);
           return;
         }
       }
     }
-    this.dialogButtons.add(dialogButtonData);
+    this.dialogButtons.add(dialogButtonEntry);
   }
 
   public boolean hasDialogButton(String label) {
-    for (DialogButtonData button : this.dialogButtons) {
+    for (DialogButtonEntry button : this.dialogButtons) {
       if (button.getLabel().equals(label)) {
         return true;
       }
@@ -237,7 +237,7 @@ public final class DialogDataEntry {
   }
 
   public boolean hasDialogButton(UUID dialogButtonId) {
-    for (DialogButtonData button : this.dialogButtons) {
+    for (DialogButtonEntry button : this.dialogButtons) {
       if (button.getId().equals(dialogButtonId)) {
         return true;
       }
@@ -246,7 +246,7 @@ public final class DialogDataEntry {
   }
 
   public boolean removeDialogButton(UUID dialogButtonId) {
-    for (DialogButtonData button : this.dialogButtons) {
+    for (DialogButtonEntry button : this.dialogButtons) {
       if (button.getId().equals(dialogButtonId)) {
         this.dialogButtons.remove(button);
         return true;
@@ -290,7 +290,7 @@ public final class DialogDataEntry {
       ListTag buttonsList = compoundTag.getList(DATA_BUTTONS_TAG, 10);
       if (!buttonsList.isEmpty()) {
         for (int i = 0; i < buttonsList.size(); i++) {
-          this.dialogButtons.add(new DialogButtonData(buttonsList.getCompound(i)));
+          this.dialogButtons.add(new DialogButtonEntry(buttonsList.getCompound(i)));
         }
       }
     }
@@ -321,7 +321,7 @@ public final class DialogDataEntry {
     // Save buttons, if any.
     if (this.dialogButtons != null) {
       ListTag buttonsList = new ListTag();
-      for (DialogButtonData button : this.dialogButtons) {
+      for (DialogButtonEntry button : this.dialogButtons) {
         buttonsList.add(button.save(new CompoundTag()));
       }
       compoundTag.put(DATA_BUTTONS_TAG, buttonsList);

@@ -332,5 +332,10 @@ public interface EasyNPCBase<E extends PathfinderMob>
     if (objectiveData != null) {
       objectiveData.readAdditionalObjectiveData(compoundTag);
     }
+
+    // Refresh navigation data after all data is loaded.
+    if (navigationData != null) {
+      navigationData.refreshGroundNavigation();
+    }
   }
 }

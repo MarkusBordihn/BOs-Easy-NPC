@@ -117,15 +117,16 @@ public class ChangeSkinMessage extends NetworkMessage {
     String skinURL = message.getSkinURL();
     UUID skinUUID = message.getSkinUUID();
 
+    boolean successfullyChanged = false;
     switch (skinType) {
       case NONE:
-        SkinHandler.setNoneSkin(easyNPC);
+        successfullyChanged = SkinHandler.setNoneSkin(easyNPC);
         break;
       case CUSTOM:
-        SkinHandler.setCustomSkin(easyNPC, skinUUID);
+        successfullyChanged = SkinHandler.setCustomSkin(easyNPC, skinUUID);
         break;
       case DEFAULT:
-        SkinHandler.setDefaultSkin(easyNPC, skinVariant);
+        successfullyChanged = SkinHandler.setDefaultSkin(easyNPC, skinVariant);
         break;
       case PLAYER_SKIN:
         UUID userUUID =
@@ -135,10 +136,10 @@ public class ChangeSkinMessage extends NetworkMessage {
         if (userUUID != null && !skinName.equals(userUUID.toString())) {
           log.debug("Converted user {} to UUID {} ...", skinName, userUUID);
         }
-        SkinHandler.setPlayerSkin(easyNPC, skinName, userUUID);
+        successfullyChanged = SkinHandler.setPlayerSkin(easyNPC, skinName, userUUID);
         break;
       case SECURE_REMOTE_URL, INSECURE_REMOTE_URL:
-        SkinHandler.setRemoteSkin(easyNPC, skinURL);
+        successfullyChanged = SkinHandler.setRemoteSkin(easyNPC, skinURL);
         break;
       default:
         log.error(
@@ -151,6 +152,18 @@ public class ChangeSkinMessage extends NetworkMessage {
             serverPlayer);
         skinData.setSkinType(skinType);
         skinData.setSkinName(skinName);
+        return;
+    }
+
+    if (!successfullyChanged) {
+      log.error(
+          "Failed changing skin:{} uuid:{} url:{} type:{} for {} from {}",
+          skinName,
+          skinUUID,
+          skinURL,
+          skinType,
+          easyNPC,
+          serverPlayer);
     }
   }
 

@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
-import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
+import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
@@ -134,7 +134,7 @@ public interface DialogData<T extends PathfinderMob> extends EasyNPC<T> {
     MenuManager.getMenuHandler().openDialogMenu(serverPlayer, this, dialogId, 0);
   }
 
-  default DialogButtonData getDialogButton(UUID dialogId, UUID dialogButtonId) {
+  default DialogButtonEntry getDialogButton(UUID dialogId, UUID dialogButtonId) {
     return getDialogDataSet().getDialogButton(dialogId, dialogButtonId);
   }
 

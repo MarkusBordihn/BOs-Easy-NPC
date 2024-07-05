@@ -19,88 +19,17 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.actions;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.screen.components.Checkbox;
-import de.markusbordihn.easynpc.client.screen.components.SaveButton;
-import de.markusbordihn.easynpc.client.screen.components.Text;
-import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
-import de.markusbordihn.easynpc.data.action.ActionType;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 public class DistanceActionConfigurationScreen<T extends ConfigurationMenu>
     extends ActionConfigurationScreen<T> {
 
-  protected EditBox onNearActionBox;
-  protected Checkbox onNearActionExecuteAsUserCheckbox;
-  protected Checkbox onNearActionDebugCheckbox;
-  protected Button onNearActionSaveButton;
-  protected EditBox onCloseActionBox;
-  protected Checkbox onCloseActionExecuteAsUserCheckbox;
-  protected Checkbox onCloseActionDebugCheckbox;
-  protected Button onCloseActionSaveButton;
-  protected EditBox onVeryCloseActionBox;
-  protected Checkbox onVeryCloseActionExecuteAsUserCheckbox;
-  protected Checkbox onVeryCloseActionDebugCheckbox;
-  protected Button onVeryCloseActionSaveButton;
-  protected EditBox onTouchActionBox;
-  protected Checkbox onTouchActionExecuteAsUserCheckbox;
-  protected Checkbox onTouchActionDebugCheckbox;
-  protected Button onTouchActionSaveButton;
-  private ActionDataEntry lastCloseActionDataEntry;
-  private ActionDataEntry lastNearActionDataEntry;
-  private ActionDataEntry lastTouchActionDataEntry;
-  private ActionDataEntry lastVeryCloseActionDataEntry;
-
   public DistanceActionConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
-  }
-
-  public void validateNearAction() {
-    ActionDataEntry actionDataEntry =
-        new ActionDataEntry(
-            ActionType.COMMAND,
-            this.onNearActionBox.getValue(),
-            this.onNearActionExecuteAsUserCheckbox.selected(),
-            this.onNearActionDebugCheckbox.selected());
-    this.onNearActionSaveButton.active = !actionDataEntry.equals(this.lastNearActionDataEntry);
-  }
-
-  public void validateCloseAction() {
-    ActionDataEntry actionDataEntry =
-        new ActionDataEntry(
-            ActionType.COMMAND,
-            this.onCloseActionBox.getValue(),
-            this.onCloseActionExecuteAsUserCheckbox.selected(),
-            this.onCloseActionDebugCheckbox.selected());
-    this.onCloseActionSaveButton.active = !actionDataEntry.equals(this.lastCloseActionDataEntry);
-  }
-
-  public void validateVeryCloseAction() {
-    ActionDataEntry actionDataEntry =
-        new ActionDataEntry(
-            ActionType.COMMAND,
-            this.onVeryCloseActionBox.getValue(),
-            this.onVeryCloseActionExecuteAsUserCheckbox.selected(),
-            this.onVeryCloseActionDebugCheckbox.selected());
-    this.onVeryCloseActionSaveButton.active =
-        !actionDataEntry.equals(this.lastVeryCloseActionDataEntry);
-  }
-
-  public void validateTouchAction() {
-    ActionDataEntry actionDataEntry =
-        new ActionDataEntry(
-            ActionType.COMMAND,
-            this.onTouchActionBox.getValue(),
-            this.onTouchActionExecuteAsUserCheckbox.selected(),
-            this.onTouchActionDebugCheckbox.selected());
-    this.onTouchActionSaveButton.active = !actionDataEntry.equals(this.lastTouchActionDataEntry);
   }
 
   @Override
@@ -111,228 +40,35 @@ public class DistanceActionConfigurationScreen<T extends ConfigurationMenu>
     this.distanceActionButton.active = false;
 
     // On Near Distance Action
-    int nearActionTop = this.topPos + 50;
-    ActionDataEntry nearActionDataEntry =
-        this.getActionEventSet().getActionEvent(ActionEventType.ON_DISTANCE_NEAR);
-    this.lastNearActionDataEntry = nearActionDataEntry;
-    this.onNearActionBox =
-        this.addRenderableWidget(
-            actionEditBox(this.contentLeftPos, nearActionTop, nearActionDataEntry));
-    this.onNearActionBox.setResponder(consumer -> this.validateNearAction());
-    this.onNearActionExecuteAsUserCheckbox =
-        this.addRenderableWidget(
-            new Checkbox(
-                this.contentLeftPos + 80,
-                nearActionTop + 18,
-                "execute_as_player",
-                nearActionDataEntry != null && nearActionDataEntry.shouldExecuteAsUser(),
-                checkbox -> this.validateNearAction()));
-    this.onNearActionDebugCheckbox =
-        this.addRenderableWidget(
-            new Checkbox(
-                this.contentLeftPos + 215,
-                nearActionTop + 18,
-                "debug",
-                nearActionDataEntry != null && nearActionDataEntry.isDebugEnabled(),
-                checkbox -> this.validateNearAction()));
-    this.onNearActionSaveButton =
-        this.addRenderableWidget(
-            new SaveButton(
-                this.onNearActionBox.x + this.onNearActionBox.getWidth() + 5,
-                nearActionTop - 1,
-                onPress -> {
-                  ActionDataEntry actionDataEntry =
-                      new ActionDataEntry(
-                          ActionType.COMMAND,
-                          this.onNearActionBox.getValue(),
-                          this.onNearActionExecuteAsUserCheckbox.selected(),
-                          this.onNearActionDebugCheckbox.selected());
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .actionEventChange(
-                          this.getNpcUUID(), ActionEventType.ON_DISTANCE_NEAR, actionDataEntry);
-                  this.lastNearActionDataEntry = actionDataEntry;
-                  this.onNearActionSaveButton.active = false;
-                }));
-    this.onNearActionSaveButton.active = false;
+    this.addRenderableWidget(
+        this.getActionDataButton(
+            this.contentLeftPos,
+            this.contentTopPos + 10,
+            ActionEventType.ON_DISTANCE_NEAR,
+            ConfigurationType.DISTANCE_ACTION));
 
     // On Close Distance Action
-    int closeActionTop = this.topPos + 100;
-    ActionDataEntry closeActionDataEntry =
-        this.getActionEventSet().getActionEvent(ActionEventType.ON_DISTANCE_CLOSE);
-    this.lastCloseActionDataEntry = closeActionDataEntry;
-    this.onCloseActionBox =
-        this.addRenderableWidget(
-            actionEditBox(this.contentLeftPos, closeActionTop, closeActionDataEntry));
-    this.onCloseActionBox.setResponder(consumer -> this.validateCloseAction());
-    this.onCloseActionExecuteAsUserCheckbox =
-        this.addRenderableWidget(
-            new Checkbox(
-                this.contentLeftPos + 80,
-                closeActionTop + 18,
-                "execute_as_player",
-                closeActionDataEntry != null && closeActionDataEntry.shouldExecuteAsUser(),
-                checkbox -> this.validateCloseAction()));
-    this.onCloseActionDebugCheckbox =
-        this.addRenderableWidget(
-            new Checkbox(
-                this.contentLeftPos + 215,
-                closeActionTop + 18,
-                "debug",
-                closeActionDataEntry != null && closeActionDataEntry.isDebugEnabled(),
-                checkbox -> this.validateCloseAction()));
-    this.onCloseActionSaveButton =
-        this.addRenderableWidget(
-            new SaveButton(
-                this.onCloseActionBox.x + this.onCloseActionBox.getWidth() + 5,
-                closeActionTop - 1,
-                onPress -> {
-                  ActionDataEntry actionDataEntry =
-                      new ActionDataEntry(
-                          ActionType.COMMAND,
-                          this.onCloseActionBox.getValue(),
-                          this.onCloseActionExecuteAsUserCheckbox.selected(),
-                          this.onCloseActionDebugCheckbox.selected());
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .actionEventChange(
-                          this.getNpcUUID(), ActionEventType.ON_DISTANCE_CLOSE, actionDataEntry);
-                  this.lastCloseActionDataEntry = actionDataEntry;
-                  this.onCloseActionSaveButton.active = false;
-                }));
-    this.onCloseActionSaveButton.active = false;
+    this.addRenderableWidget(
+        this.getActionDataButton(
+            this.contentLeftPos,
+            this.contentTopPos + 60,
+            ActionEventType.ON_DISTANCE_CLOSE,
+            ConfigurationType.DISTANCE_ACTION));
 
     // On Very Close Distance Action
-    int veryCloseActionTop = this.topPos + 150;
-    ActionDataEntry veryCloseActionDataEntry =
-        this.getActionEventSet().getActionEvent(ActionEventType.ON_DISTANCE_VERY_CLOSE);
-    this.lastVeryCloseActionDataEntry = veryCloseActionDataEntry;
-    this.onVeryCloseActionBox =
-        this.addRenderableWidget(
-            actionEditBox(this.contentLeftPos, veryCloseActionTop, veryCloseActionDataEntry));
-    this.onVeryCloseActionBox.setResponder(consumer -> this.validateVeryCloseAction());
-    this.onVeryCloseActionExecuteAsUserCheckbox =
-        this.addRenderableWidget(
-            new Checkbox(
-                this.contentLeftPos + 80,
-                veryCloseActionTop + 18,
-                "execute_as_player",
-                veryCloseActionDataEntry != null && veryCloseActionDataEntry.shouldExecuteAsUser(),
-                checkbox -> this.validateVeryCloseAction()));
-    this.onVeryCloseActionDebugCheckbox =
-        this.addRenderableWidget(
-            new Checkbox(
-                this.contentLeftPos + 215,
-                veryCloseActionTop + 18,
-                "debug",
-                veryCloseActionDataEntry != null && veryCloseActionDataEntry.isDebugEnabled(),
-                checkbox -> this.validateVeryCloseAction()));
-    this.onVeryCloseActionSaveButton =
-        this.addRenderableWidget(
-            new SaveButton(
-                this.onVeryCloseActionBox.x + this.onVeryCloseActionBox.getWidth() + 5,
-                veryCloseActionTop - 1,
-                onPress -> {
-                  ActionDataEntry actionDataEntry =
-                      new ActionDataEntry(
-                          ActionType.COMMAND,
-                          this.onVeryCloseActionBox.getValue(),
-                          this.onVeryCloseActionExecuteAsUserCheckbox.selected(),
-                          this.onVeryCloseActionDebugCheckbox.selected());
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .actionEventChange(
-                          this.getNpcUUID(),
-                          ActionEventType.ON_DISTANCE_VERY_CLOSE,
-                          actionDataEntry);
-                  this.lastVeryCloseActionDataEntry = actionDataEntry;
-                  this.onVeryCloseActionSaveButton.active = false;
-                }));
-    this.onVeryCloseActionSaveButton.active = false;
+    this.addRenderableWidget(
+        this.getActionDataButton(
+            this.contentLeftPos,
+            this.contentTopPos + 110,
+            ActionEventType.ON_DISTANCE_VERY_CLOSE,
+            ConfigurationType.DISTANCE_ACTION));
 
     // On Touch Distance Action
-    int touchActionTop = this.topPos + 200;
-    ActionDataEntry touchActionDataEntry =
-        this.getActionEventSet().getActionEvent(ActionEventType.ON_DISTANCE_TOUCH);
-    this.lastTouchActionDataEntry = touchActionDataEntry;
-    this.onTouchActionBox =
-        this.addRenderableWidget(
-            actionEditBox(this.contentLeftPos, touchActionTop, touchActionDataEntry));
-    this.onTouchActionBox.setResponder(consumer -> this.validateTouchAction());
-    this.onTouchActionExecuteAsUserCheckbox =
-        this.addRenderableWidget(
-            new Checkbox(
-                this.contentLeftPos + 80,
-                touchActionTop + 18,
-                "execute_as_player",
-                touchActionDataEntry != null && touchActionDataEntry.shouldExecuteAsUser(),
-                checkbox -> this.validateTouchAction()));
-    this.onTouchActionDebugCheckbox =
-        this.addRenderableWidget(
-            new Checkbox(
-                this.contentLeftPos + 215,
-                touchActionTop + 18,
-                "debug",
-                touchActionDataEntry != null && touchActionDataEntry.isDebugEnabled(),
-                checkbox -> this.validateTouchAction()));
-    this.onTouchActionSaveButton =
-        this.addRenderableWidget(
-            new SaveButton(
-                this.onTouchActionBox.x + this.onTouchActionBox.getWidth() + 5,
-                touchActionTop - 1,
-                onPress -> {
-                  ActionDataEntry actionDataEntry =
-                      new ActionDataEntry(
-                          ActionType.COMMAND,
-                          this.onTouchActionBox.getValue(),
-                          this.onTouchActionExecuteAsUserCheckbox.selected(),
-                          this.onTouchActionDebugCheckbox.selected());
-                  NetworkMessageHandlerManager.getServerHandler()
-                      .actionEventChange(
-                          this.getNpcUUID(), ActionEventType.ON_DISTANCE_TOUCH, actionDataEntry);
-                  this.lastTouchActionDataEntry = actionDataEntry;
-                  this.onTouchActionSaveButton.active = false;
-                }));
-    this.onTouchActionSaveButton.active = false;
-  }
-
-  @Override
-  public void render(PoseStack poseStack, int x, int y, float partialTicks) {
-    super.render(poseStack, x, y, partialTicks);
-
-    // Description Texts
-    if (this.onNearActionSaveButton != null) {
-      Text.drawConfigString(
-          poseStack,
-          this.font,
-          "on_distance_near",
-          this.contentLeftPos,
-          this.onNearActionSaveButton.y - 10,
-          Constants.FONT_COLOR_BLACK);
-    }
-    if (this.onCloseActionSaveButton != null) {
-      Text.drawConfigString(
-          poseStack,
-          this.font,
-          "on_distance_close",
-          this.contentLeftPos,
-          this.onCloseActionSaveButton.y - 10,
-          Constants.FONT_COLOR_BLACK);
-    }
-    if (this.onVeryCloseActionSaveButton != null) {
-      Text.drawConfigString(
-          poseStack,
-          this.font,
-          "on_distance_very_close",
-          this.contentLeftPos,
-          this.onVeryCloseActionSaveButton.y - 10,
-          Constants.FONT_COLOR_BLACK);
-    }
-    if (this.onTouchActionSaveButton != null) {
-      Text.drawConfigString(
-          poseStack,
-          this.font,
-          "on_distance_touch",
-          this.contentLeftPos,
-          this.onTouchActionSaveButton.y - 10,
-          Constants.FONT_COLOR_BLACK);
-    }
+    this.addRenderableWidget(
+        this.getActionDataButton(
+            this.contentLeftPos,
+            this.contentTopPos + 160,
+            ActionEventType.ON_DISTANCE_TOUCH,
+            ConfigurationType.DISTANCE_ACTION));
   }
 }

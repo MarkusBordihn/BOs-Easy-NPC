@@ -62,14 +62,7 @@ public class EasyNPCMenu extends AbstractContainerMenu {
     this.level = playerInventory.player.getLevel();
 
     // Get additional menu and screen data, if available.
-    CompoundTag menuData;
-    if (this.level.isClientSide()) {
-      log.info("Client-side menu data: {}", ClientMenuManager.getMenuData());
-      menuData = ClientMenuManager.getMenuData();
-    } else {
-      log.info("Server-side menu data: {}", data);
-      menuData = data;
-    }
+    CompoundTag menuData = this.level.isClientSide() ? ClientMenuManager.getMenuData() : data;
     this.screenData = ScreenData.decode(menuData);
 
     // Get easy NPC entity from screen data.
@@ -77,8 +70,6 @@ public class EasyNPCMenu extends AbstractContainerMenu {
         this.level.isClientSide
             ? LivingEntityManager.getEasyNPCEntityByUUID(getNpcUUID())
             : LivingEntityManager.getEasyNPCEntityByUUID(getNpcUUID(), (ServerPlayer) player);
-
-    log.info("EasyNPCMenu created with containerId: {} and data: {}", containerId, menuData);
   }
 
   public ScreenData getScreenData() {

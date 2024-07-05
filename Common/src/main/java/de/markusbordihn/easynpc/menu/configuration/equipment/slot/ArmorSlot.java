@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.menu.configuration.equipment.slot;
 
 import com.mojang.datafixers.util.Pair;
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenu;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -34,20 +33,12 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 public class ArmorSlot extends Slot {
 
-  public static final ResourceLocation EMPTY_ARMOR_SLOT_BOOTS =
-      new ResourceLocation(Constants.MOD_ID, "item/empty_armor/empty_armor_slot_boots");
-  public static final ResourceLocation EMPTY_ARMOR_SLOT_CHESTPLATE =
-      new ResourceLocation(Constants.MOD_ID, "item/empty_armor/empty_armor_slot_chestplate");
-  public static final ResourceLocation EMPTY_ARMOR_SLOT_HELMET =
-      new ResourceLocation(Constants.MOD_ID, "item/empty_armor/empty_armor_slot_helmet");
-  public static final ResourceLocation EMPTY_ARMOR_SLOT_LEGGINGS =
-      new ResourceLocation(Constants.MOD_ID, "item/empty_armor/empty_armor_slot_leggings");
-  static final ResourceLocation[] TEXTURE_EMPTY_SLOTS =
+  private static final ResourceLocation[] TEXTURE_EMPTY_SLOTS =
       new ResourceLocation[] {
-        EMPTY_ARMOR_SLOT_BOOTS,
-        EMPTY_ARMOR_SLOT_LEGGINGS,
-        EMPTY_ARMOR_SLOT_CHESTPLATE,
-        EMPTY_ARMOR_SLOT_HELMET
+        InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS,
+        InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS,
+        InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE,
+        InventoryMenu.EMPTY_ARMOR_SLOT_HELMET
       };
   private static final EquipmentSlot[] SLOT_IDS =
       new EquipmentSlot[] {

@@ -75,7 +75,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
   public void render(PoseStack poseStack, int x, int y, float partialTicks) {
     super.render(poseStack, x, y, partialTicks);
 
-    // White background for dialog list
+    // Gray background for dialog list
     fill(
         poseStack,
         this.leftPos + 5,
@@ -167,11 +167,6 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
     if (this.newDialogButton != null) {
       this.newDialogButton.render(poseStack, x, y, partialTicks);
     }
-  }
-
-  @Override
-  public void containerTick() {
-    super.containerTick();
   }
 
   class DialogList

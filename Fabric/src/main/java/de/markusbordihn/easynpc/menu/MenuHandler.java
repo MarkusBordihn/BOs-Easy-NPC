@@ -22,6 +22,8 @@ package de.markusbordihn.easynpc.menu;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
+import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
+import de.markusbordihn.easynpc.menu.editor.EditorMenu;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.world.inventory.MenuType;
@@ -30,7 +32,7 @@ public class MenuHandler implements MenuHandlerInterface {
 
   protected static final Map<ConfigurationType, MenuType<? extends ConfigurationMenu>>
       configurationMenuMap = new EnumMap<>(ConfigurationType.class);
-  protected static final Map<EditorType, MenuType<?>> editorMenuMap =
+  protected static final Map<EditorType, MenuType<? extends EditorMenu>> editorMenuMap =
       new EnumMap<>(EditorType.class);
 
   static {
@@ -109,6 +111,8 @@ public class MenuHandler implements MenuHandlerInterface {
     configurationMenuMap.put(
         ConfigurationType.YES_NO_DIALOG, ModMenuTypes.YES_NO_DIALOG_CONFIGURATION_MENU);
 
+    editorMenuMap.put(EditorType.ACTION_DATA, ModMenuTypes.ACTION_DATA_EDITOR_MENU);
+    editorMenuMap.put(EditorType.ACTION_DATA_ENTRY, ModMenuTypes.ACTION_DATA_ENTRY_EDITOR_MENU);
     editorMenuMap.put(EditorType.DIALOG, ModMenuTypes.DIALOG_EDITOR_MENU);
     editorMenuMap.put(EditorType.DIALOG_BUTTON, ModMenuTypes.DIALOG_BUTTON_EDITOR_MENU);
     editorMenuMap.put(EditorType.DIALOG_TEXT, ModMenuTypes.DIALOG_TEXT_EDITOR_MENU);
@@ -121,12 +125,12 @@ public class MenuHandler implements MenuHandlerInterface {
   }
 
   @Override
-  public MenuType<?> getMenuTypeByEditorType(EditorType editorType) {
+  public MenuType<? extends EditorMenu> getMenuTypeByEditorType(EditorType editorType) {
     return editorMenuMap.get(editorType);
   }
 
   @Override
-  public MenuType<?> getDialogMenuType() {
+  public MenuType<? extends DialogMenu> getDialogMenuType() {
     return ModMenuTypes.DIALOG_MENU;
   }
 }

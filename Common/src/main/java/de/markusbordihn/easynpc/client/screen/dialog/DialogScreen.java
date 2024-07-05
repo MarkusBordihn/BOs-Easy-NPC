@@ -27,7 +27,7 @@ import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
-import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
+import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogScreenLayout;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
@@ -128,8 +128,8 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
     this.numberOfDialogLines = Math.min(128 / font.lineHeight, this.cachedDialogComponents.size());
   }
 
-  private void addDialogButton(DialogButtonData dialogButtonData) {
-    if (dialogButtonData == null) {
+  private void addDialogButton(DialogButtonEntry dialogButtonEntry) {
+    if (dialogButtonEntry == null) {
       return;
     }
 
@@ -145,7 +145,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
           case COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS -> 32;
           default -> 22;
         };
-    Component dialogButtonText = dialogButtonData.getButtonName(dialogButtonMaxTextLength);
+    Component dialogButtonText = dialogButtonEntry.getButtonName(dialogButtonMaxTextLength);
 
     // Create dialog button.
     TextButton dialogButton =
@@ -162,8 +162,8 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
               }
 
               // Custom action on button click.
-              if (dialogButtonData.hasActionData()) {
-                UUID buttonId = dialogButtonData.getId();
+              if (dialogButtonEntry.hasActionData()) {
+                UUID buttonId = dialogButtonEntry.getId();
                 networkMessageHandler.triggerDialogButtonAction(
                     this.getNpcUUID(), this.getDialogUUID(), buttonId);
               } else {
@@ -173,7 +173,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
 
     // Set dialog button visibility.
     dialogButton.visible =
-        dialogButtonData.getName() != null && !dialogButtonData.getName().isBlank();
+        dialogButtonEntry.getName() != null && !dialogButtonEntry.getName().isBlank();
 
     this.dialogButtons.add(dialogButton);
   }
@@ -429,11 +429,11 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
     // Get and render dialog buttons, if any.
     if (this.hasDialogData() && this.getDialogData().getNumberOfDialogButtons() > 0) {
       this.dialogButtons.ensureCapacity(this.getDialogData().getNumberOfDialogButtons());
-      for (DialogButtonData dialogButtonData : this.getDialogData().getDialogButtons()) {
-        if (dialogButtonData == null) {
+      for (DialogButtonEntry dialogButtonEntry : this.getDialogData().getDialogButtons()) {
+        if (dialogButtonEntry == null) {
           continue;
         }
-        this.addDialogButton(dialogButtonData);
+        this.addDialogButton(dialogButtonEntry);
       }
       this.renderDialogButtons();
     }

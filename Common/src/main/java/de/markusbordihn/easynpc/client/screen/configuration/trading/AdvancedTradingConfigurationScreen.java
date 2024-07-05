@@ -71,7 +71,7 @@ public class AdvancedTradingConfigurationScreen<T extends ConfigurationMenu>
   private void onMaxUsesEditBoxChanged(int offerIndex, String value, String formerValue) {
     if (!Objects.equals(value, formerValue)
         && offerIndex >= 0
-        && isPositiveNumericValue(value)
+        && isPositiveNumericValueOrZero(value)
         && !value.isEmpty()) {
       NetworkMessageHandlerManager.getServerHandler()
           .setAdvancedTradingMaxUses(this.getNpcUUID(), offerIndex, Integer.parseInt(value));

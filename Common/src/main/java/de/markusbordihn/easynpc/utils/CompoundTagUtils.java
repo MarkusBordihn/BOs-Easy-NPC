@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.utils;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import java.util.HashSet;
 import java.util.Set;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
@@ -34,6 +35,25 @@ public class CompoundTagUtils {
   public static final String Z_TAG = "Z";
 
   private CompoundTagUtils() {}
+
+  public static CompoundTag writeBlockPos(BlockPos blockPos) {
+    CompoundTag compoundTag = new CompoundTag();
+    compoundTag.putInt(X_TAG, blockPos.getX());
+    compoundTag.putInt(Y_TAG, blockPos.getY());
+    compoundTag.putInt(Z_TAG, blockPos.getZ());
+    return compoundTag;
+  }
+
+  public static BlockPos readBlockPos(CompoundTag compoundTag) {
+    if (compoundTag == null
+        || !compoundTag.contains(X_TAG)
+        || !compoundTag.contains(Y_TAG)
+        || !compoundTag.contains(Z_TAG)) {
+      return BlockPos.ZERO;
+    }
+    return new BlockPos(
+        compoundTag.getInt(X_TAG), compoundTag.getInt(Y_TAG), compoundTag.getInt(Z_TAG));
+  }
 
   public static CompoundTag writeScale(float x, float y, float z) {
     CompoundTag compoundTag = new CompoundTag();

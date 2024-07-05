@@ -25,7 +25,7 @@ import de.markusbordihn.easynpc.client.screen.components.CloseButton;
 import de.markusbordihn.easynpc.client.screen.components.Graphics;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.attribute.BaseAttributes;
-import de.markusbordihn.easynpc.data.dialog.DialogButtonData;
+import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
@@ -65,6 +65,7 @@ public class Screen<T extends EasyNPCMenu> extends AbstractContainerScreen<T> {
   protected int bottomPos;
   protected boolean showCloseButton = true;
   protected Button closeButton = null;
+  protected boolean compactMode = false;
 
   protected Screen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -109,9 +110,17 @@ public class Screen<T extends EasyNPCMenu> extends AbstractContainerScreen<T> {
         && (text.isEmpty() || (text.matches("^\\d+$") && Integer.parseInt(text) > 0));
   }
 
-  protected static boolean isNumericValue(String text) {
+  protected static boolean isPositiveNumericValueOrZero(String text) {
     return text != null
         && (text.isEmpty() || (text.matches("^\\d+$") && Integer.parseInt(text) >= 0));
+  }
+
+  public static boolean isNumericValue(String text) {
+    return text != null && (text.isEmpty() || (text.matches("^-?\\d+$")));
+  }
+
+  public static boolean isBlockPosValue(String text) {
+    return text != null && (text.isEmpty() || (text.matches("^~?-?\\d+$")));
   }
 
   public void closeScreen() {
@@ -131,6 +140,10 @@ public class Screen<T extends EasyNPCMenu> extends AbstractContainerScreen<T> {
 
   public UUID getDialogButtonUUID() {
     return this.screenData.dialogButtonId();
+  }
+
+  public UUID getActionDataEntryUUID() {
+    return this.screenData.actionDataEntryId();
   }
 
   public int getPageIndex() {
@@ -179,7 +192,7 @@ public class Screen<T extends EasyNPCMenu> extends AbstractContainerScreen<T> {
     return this.getDialogDataSet().getDialog(dialogUUID);
   }
 
-  public DialogButtonData getDialogButtonData() {
+  public DialogButtonEntry getDialogButtonData() {
     if (!this.hasDialog() || this.screenData.dialogButtonId() == null) {
       return null;
     }
@@ -214,11 +227,12 @@ public class Screen<T extends EasyNPCMenu> extends AbstractContainerScreen<T> {
     // Default stats
     this.imageHeight = 243;
     this.imageWidth = 318;
+    this.compactMode = this.height < 260;
 
     // Basic position
     this.titleLabelX = 7;
     this.titleLabelY = -9;
-    this.topPos = (this.height - this.imageHeight) / 2 + 2;
+    this.topPos = (this.height - this.imageHeight) / 2 + (this.compactMode ? 2 : 10);
     this.leftPos = (this.width - this.imageWidth) / 2;
     this.rightPos = this.leftPos + this.imageWidth;
     this.bottomPos = this.topPos + this.imageHeight;
@@ -257,8 +271,10 @@ public class Screen<T extends EasyNPCMenu> extends AbstractContainerScreen<T> {
     // Render screen background
     this.renderScreenBg(poseStack);
 
-    // Render title background
-    this.renderTitleBg(poseStack);
+    // Render title background for none compact mode
+    if (!this.compactMode) {
+      this.renderTitleBg(poseStack);
+    }
   }
 
   protected void renderScreenBg(PoseStack poseStack) {
