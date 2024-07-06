@@ -25,7 +25,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 
 public class CustomLookAtPlayerGoal<T extends EasyNPC<?>> extends LookAtPlayerGoal {
-
   private final ModelData<?> modelData;
 
   public CustomLookAtPlayerGoal(

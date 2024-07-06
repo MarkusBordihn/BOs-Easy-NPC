@@ -20,44 +20,28 @@
 package de.markusbordihn.easynpc.client.screen.components;
 
 import de.markusbordihn.easynpc.Constants;
-import net.minecraft.network.chat.Component;
+import net.minecraft.client.gui.components.Button.OnPress;
 import net.minecraft.resources.ResourceLocation;
 
 public class CopyButton extends SpriteButton {
 
-  public static final int DEFAULT_WIDTH = 100;
   public static final int DEFAULT_HEIGHT = 16;
+  public static final int DEFAULT_WIDTH_SMALL = 16;
+  public static final int DEFAULT_WIDTH = 100;
   public static final ResourceLocation SPRITE = Constants.TEXTURE_CONFIGURATION;
-  public static final int SPRITE_X = 3;
-  public static final int SPRITE_Y = 2;
+  public static final int SPRITE_HEIGHT = 12;
   public static final int SPRITE_OFFSET_X = 65;
   public static final int SPRITE_OFFSET_Y = 130;
   public static final int SPRITE_WIDTH = 12;
-  public static final int SPRITE_HEIGHT = 12;
+  public static final int SPRITE_X = 3;
+  public static final int SPRITE_Y = 2;
 
   public CopyButton(int left, int top, OnPress onPress) {
     super(
         left,
         top,
+        DEFAULT_WIDTH_SMALL,
         DEFAULT_HEIGHT,
-        DEFAULT_HEIGHT,
-        SPRITE,
-        SPRITE_X,
-        SPRITE_Y,
-        SPRITE_OFFSET_X,
-        SPRITE_OFFSET_Y,
-        SPRITE_WIDTH,
-        SPRITE_HEIGHT,
-        onPress);
-  }
-
-  public CopyButton(int left, int top, String label, OnPress onPress) {
-    super(
-        left,
-        top,
-        DEFAULT_WIDTH,
-        DEFAULT_HEIGHT,
-        label,
         SPRITE,
         SPRITE_X,
         SPRITE_Y,
@@ -74,40 +58,6 @@ public class CopyButton extends SpriteButton {
         top,
         width,
         DEFAULT_HEIGHT,
-        label,
-        SPRITE,
-        SPRITE_X,
-        SPRITE_Y,
-        SPRITE_OFFSET_X,
-        SPRITE_OFFSET_Y,
-        SPRITE_WIDTH,
-        SPRITE_HEIGHT,
-        onPress);
-  }
-
-  public CopyButton(int left, int top, int width, Component component, OnPress onPress) {
-    super(
-        left,
-        top,
-        width,
-        DEFAULT_HEIGHT,
-        component,
-        SPRITE,
-        SPRITE_X,
-        SPRITE_Y,
-        SPRITE_OFFSET_X,
-        SPRITE_OFFSET_Y,
-        SPRITE_WIDTH,
-        SPRITE_HEIGHT,
-        onPress);
-  }
-
-  public CopyButton(int left, int top, int width, int height, String label, OnPress onPress) {
-    super(
-        left,
-        top,
-        width,
-        height,
         label,
         SPRITE,
         SPRITE_X,

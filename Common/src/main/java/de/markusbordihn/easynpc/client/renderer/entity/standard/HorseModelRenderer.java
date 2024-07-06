@@ -92,7 +92,7 @@ public class HorseModelRenderer
         1.1F,
         DEFAULT_TEXTURE,
         TEXTURE_BY_VARIANT);
-    // this.addLayer(new HeldItemLayer<>(this));
+    // this.addLayer(new HeldItemLayer<>(this, context.getItemInHandRenderer()));
     // this.addLayer(new HorseMarkingLayer(this));
     // this.addLayer(new HorseArmorLayer(this, context.getModelSet()));
   }

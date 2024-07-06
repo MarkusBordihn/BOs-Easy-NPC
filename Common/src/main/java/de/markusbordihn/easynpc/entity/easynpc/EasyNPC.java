@@ -46,8 +46,10 @@ import de.markusbordihn.easynpc.entity.easynpc.data.TickerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
+import de.markusbordihn.easynpc.server.player.FakePlayer;
 import java.util.Random;
 import java.util.UUID;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -84,6 +86,8 @@ public interface EasyNPC<E extends PathfinderMob> extends Npc {
   int getNPCDataVersion();
 
   void setNPCDataVersion(int version);
+
+  FakePlayer getFakePlayer(ServerLevel level, BlockPos blockPos);
 
   default LookControl getLookControl() {
     return this instanceof Mob mob ? mob.getLookControl() : null;

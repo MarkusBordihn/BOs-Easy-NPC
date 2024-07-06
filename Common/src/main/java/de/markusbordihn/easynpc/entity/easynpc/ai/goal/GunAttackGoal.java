@@ -28,7 +28,6 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 
 public class GunAttackGoal<T extends EasyNPC<?>> extends Goal {
-
   private final PathfinderMob pathfinderMob;
   private final RangedAttackMob rangedAttackMob;
   private final double speedModifier;
@@ -36,8 +35,8 @@ public class GunAttackGoal<T extends EasyNPC<?>> extends Goal {
   private int attackIntervalMin;
   private int attackTime = -1;
   private int seeTime;
-  private boolean strafingClockwise;
   private boolean strafingBackwards;
+  private boolean strafingClockwise;
   private int strafingTime = -1;
 
   public GunAttackGoal(T easyNPC, double targetDistance, int hasLineOfSight, float hasSeen) {

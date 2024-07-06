@@ -30,17 +30,22 @@ import net.minecraft.util.Mth;
 
 public class CustomButton extends Button {
 
+  public CustomButton(int left, int top, int width, int height) {
+    this(left, top, width, height, null, unused -> {});
+  }
+
   public CustomButton(int left, int top, int width, int height, OnPress onPress) {
     this(left, top, width, height, null, onPress);
   }
 
-  public CustomButton(int left, int top, int width, int height, Component text, OnPress onPress) {
+  public CustomButton(
+      int left, int top, int width, int height, Component component, OnPress onPress) {
     super(
         left,
         top,
         width,
         height,
-        text != null ? text : Component.literal(""),
+        component != null ? component : Component.literal(""),
         onPress,
         Button.DEFAULT_NARRATION);
   }

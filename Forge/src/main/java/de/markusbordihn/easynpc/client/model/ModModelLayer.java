@@ -31,6 +31,7 @@ import org.apache.logging.log4j.Logger;
 
 @OnlyIn(Dist.CLIENT)
 public class ModModelLayer {
+
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ModModelLayer() {}

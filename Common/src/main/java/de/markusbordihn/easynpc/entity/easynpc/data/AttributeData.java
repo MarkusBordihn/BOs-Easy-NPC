@@ -32,18 +32,18 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 
 public interface AttributeData<E extends PathfinderMob> extends EasyNPC<E> {
 
-  String EASY_NPC_DATA_ATTRIBUTE_TAG = "EntityAttribute";
   String EASY_NPC_DATA_ATTRIBUTE_CAN_BE_LEASHED_TAG = "CanBeLeashed";
-  String EASY_NPC_DATA_ATTRIBUTE_CAN_FLOAT_TAG = "CanFloat";
   String EASY_NPC_DATA_ATTRIBUTE_CAN_CLOSE_DOOR_TAG = "CanCloseDoor";
+  String EASY_NPC_DATA_ATTRIBUTE_CAN_FLOAT_TAG = "CanFloat";
   String EASY_NPC_DATA_ATTRIBUTE_CAN_OPEN_DOOR_TAG = "CanOpenDoor";
   String EASY_NPC_DATA_ATTRIBUTE_CAN_PASS_DOOR_TAG = "CanPassDoor";
   String EASY_NPC_DATA_ATTRIBUTE_CAN_USE_NETHER_PORTAL_TAG = "CanUseNetherPortal";
   String EASY_NPC_DATA_ATTRIBUTE_FREEFALL_TAG = "Freefall";
   String EASY_NPC_DATA_ATTRIBUTE_IS_ATTACKABLE_TAG = "IsAttackable";
   String EASY_NPC_DATA_ATTRIBUTE_IS_PUSHABLE_TAG = "IsPushable";
-  String EASY_NPC_DATA_ATTRIBUTE_PUSH_ENTITIES_TAG = "PushEntities";
   String EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL_TAG = "LightLevel";
+  String EASY_NPC_DATA_ATTRIBUTE_PUSH_ENTITIES_TAG = "PushEntities";
+  String EASY_NPC_DATA_ATTRIBUTE_TAG = "EntityAttribute";
 
   static void registerSyncedAttributeData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {

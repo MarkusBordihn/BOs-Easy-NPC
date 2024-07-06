@@ -37,6 +37,12 @@ import net.minecraft.world.entity.PathfinderMob;
 
 public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
 
+  String EASY_NPC_DATA_SKIN_DATA_TAG = "SkinData";
+  String EASY_NPC_DATA_SKIN_NAME_TAG = "SkinName";
+  String EASY_NPC_DATA_SKIN_TAG = "Skin";
+  String EASY_NPC_DATA_SKIN_TYPE_TAG = "SkinType";
+  String EASY_NPC_DATA_SKIN_URL_TAG = "SkinURL";
+  String EASY_NPC_DATA_SKIN_UUID_TAG = "SkinUUID";
   EntityDataSerializer<SkinType> SKIN_TYPE =
       new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, SkinType skinType) {
@@ -51,7 +57,6 @@ public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
           return skinType;
         }
       };
-
   EntityDataSerializer<UUID> SKIN_UUID =
       new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, UUID skinUUID) {
@@ -66,13 +71,6 @@ public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
           return skinUUID;
         }
       };
-
-  String EASY_NPC_DATA_SKIN_DATA_TAG = "SkinData";
-  String EASY_NPC_DATA_SKIN_NAME_TAG = "SkinName";
-  String EASY_NPC_DATA_SKIN_TAG = "Skin";
-  String EASY_NPC_DATA_SKIN_TYPE_TAG = "SkinType";
-  String EASY_NPC_DATA_SKIN_URL_TAG = "SkinURL";
-  String EASY_NPC_DATA_SKIN_UUID_TAG = "SkinUUID";
 
   static void registerSyncedSkinData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {

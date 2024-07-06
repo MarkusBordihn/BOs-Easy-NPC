@@ -1,7 +1,7 @@
 plugins {
-  id 'fabric-loom' version '0.12-SNAPSHOT'
+  id 'java'
+  id 'fabric-loom' version '1.7-SNAPSHOT'
   id 'maven-publish'
-  id 'idea'
   id 'com.matthewprenger.cursegradle' version '1.4.0'
   id 'nu.studer.credentials' version '3.0'
   id "com.modrinth.minotaur" version "2.+"
@@ -21,6 +21,7 @@ dependencies {
 }
 
 loom {
+  accessWidenerPath = file("src/main/resources/easynpc.accesswidener")
   runs {
     client {
       client()
@@ -67,12 +68,6 @@ publishing {
       from components.java
     }
   }
-
-  repositories {
-    maven {
-      url "file://" + System.getenv("local_maven")
-    }
-  }
 }
 
 curseforge {
@@ -81,7 +76,7 @@ curseforge {
     id = "${project.curseforge_project_id}"
     changelog = rootProject.file("CHANGELOG.md")
     changelogType = 'markdown'
-    releaseType = "beta"
+    releaseType = "${project.curseforge_release_type}"
     addGameVersion("${project.minecraft_version}")
     addGameVersion("Fabric")
     addGameVersion("Quilt")
@@ -101,7 +96,7 @@ modrinth {
   token = "${credentials.forKey('modrinth_api_token')}"
   projectId = "${project.modrinth_project_id}"
   versionNumber = "${version}"
-  versionType = "beta"
+  versionType = "${project.modrinth_release_type}"
   versionName = "${project.mod_name} ${project.version}"
   changelog = rootProject.file("CHANGELOG.md").text
   uploadFile = remapJar

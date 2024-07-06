@@ -17,7 +17,7 @@ subprojects {
   }
 
   tasks.register('wrapper', Wrapper) {
-    gradleVersion = '7.6.3'
+    gradleVersion = '8.8'
   }
 
   tasks.withType(JavaCompile).configureEach {
@@ -33,5 +33,4 @@ subprojects {
   }
 
   tasks.register("prepareKotlinBuildScriptModel") {}
-
 }

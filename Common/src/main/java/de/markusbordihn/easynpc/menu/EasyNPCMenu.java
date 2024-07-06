@@ -20,13 +20,19 @@
 package de.markusbordihn.easynpc.menu;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.screen.ScreenContainerData;
+import de.markusbordihn.easynpc.data.screen.ScreenData;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import java.util.UUID;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,28 +40,52 @@ public class EasyNPCMenu extends AbstractContainerMenu {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private final ScreenContainerData containerData;
+  protected final Level level;
+  protected final Player player;
+  protected final ScreenData screenData;
+  protected final EasyNPC<?> easyNPC;
 
-  public EasyNPCMenu(MenuType<?> menuType, int containerId, final Inventory playerInventory) {
-    this(menuType, containerId, playerInventory, new ScreenContainerData());
+  public EasyNPCMenu(
+      final MenuType<?> menuType, final int containerId, final Inventory playerInventory) {
+    this(menuType, containerId, playerInventory, new CompoundTag());
   }
 
   public EasyNPCMenu(
-      MenuType<?> menuType,
-      int containerId,
+      final MenuType<?> menuType,
+      final int containerId,
       final Inventory playerInventory,
-      final ScreenContainerData containerData) {
+      final CompoundTag data) {
     super(menuType, containerId);
 
-    this.containerData = containerData;
+    // Get player and level data.
+    this.player = playerInventory.player;
+    this.level = playerInventory.player.level();
 
-    this.addDataSlots(containerData);
+    // Get additional menu and screen data, if available.
+    CompoundTag menuData = this.level.isClientSide() ? ClientMenuManager.getMenuData() : data;
+    this.screenData = ScreenData.decode(menuData);
 
-    log.info("EasyNPCMenu created with containerId: {} and data: {}", containerId, containerData);
+    // Get easy NPC entity from screen data.
+    this.easyNPC =
+        this.level.isClientSide
+            ? LivingEntityManager.getEasyNPCEntityByUUID(getNpcUUID())
+            : LivingEntityManager.getEasyNPCEntityByUUID(getNpcUUID(), (ServerPlayer) player);
   }
 
-  public ScreenContainerData getContainerData() {
-    return this.containerData;
+  public ScreenData getScreenData() {
+    return this.screenData;
+  }
+
+  public UUID getNpcUUID() {
+    return this.screenData.uuid();
+  }
+
+  public int getPageIndex() {
+    return this.screenData.pageIndex();
+  }
+
+  public EasyNPC<?> getEasyNPC() {
+    return this.easyNPC;
   }
 
   @Override

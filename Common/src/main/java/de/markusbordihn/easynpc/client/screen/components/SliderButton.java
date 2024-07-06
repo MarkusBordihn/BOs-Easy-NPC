@@ -46,8 +46,8 @@ public class SliderButton extends AbstractSliderButton {
   private final float valueFraction;
   private final Type type;
   private float initValue;
-  private float targetValue;
   private float roundFactor = 100.0f;
+  private float targetValue;
 
   public SliderButton(
       int x,
@@ -188,8 +188,7 @@ public class SliderButton extends AbstractSliderButton {
     return switch (type) {
       case DEGREE -> 0.5f;
       case DOUBLE -> 1.0f;
-      case SCALE -> 0.1f;
-      case POSITION -> 0.1f;
+      case SCALE, POSITION -> 0.1f;
       default -> 1.0f;
     };
   }
@@ -261,11 +260,6 @@ public class SliderButton extends AbstractSliderButton {
     this.onChange.onChange(this);
   }
 
-  @Override
-  public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-    this.renderButton(guiGraphics, mouseX, mouseY, partialTicks);
-  }
-
   protected void renderBg(@NotNull GuiGraphics guiGraphics) {
     int i = this.isHoveredOrFocused() ? 60 : 40;
 
@@ -327,6 +321,11 @@ public class SliderButton extends AbstractSliderButton {
     return true;
   }
 
+  @Override
+  public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    this.renderButton(guiGraphics, mouseX, mouseY, partialTicks);
+  }
+
   public void renderButton(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
     Minecraft minecraft = Minecraft.getInstance();
     Font font = minecraft.font;
@@ -383,7 +382,6 @@ public class SliderButton extends AbstractSliderButton {
   }
 
   public interface OnChange {
-
     void onChange(SliderButton sliderButton);
   }
 }

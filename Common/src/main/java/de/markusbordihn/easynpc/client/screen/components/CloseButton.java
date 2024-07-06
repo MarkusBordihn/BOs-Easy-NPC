@@ -24,15 +24,15 @@ import net.minecraft.resources.ResourceLocation;
 
 public class CloseButton extends SpriteButton {
 
-  public static final int DEFAULT_WIDTH = 12;
   public static final int DEFAULT_HEIGHT = 12;
+  public static final int DEFAULT_WIDTH = 12;
   public static final ResourceLocation SPRITE = Constants.TEXTURE_CONFIGURATION;
-  public static final int SPRITE_X = 1;
-  public static final int SPRITE_Y = 1;
+  public static final int SPRITE_HEIGHT = 10;
   public static final int SPRITE_OFFSET_X = 64;
   public static final int SPRITE_OFFSET_Y = 38;
   public static final int SPRITE_WIDTH = 10;
-  public static final int SPRITE_HEIGHT = 10;
+  public static final int SPRITE_X = 1;
+  public static final int SPRITE_Y = 1;
 
   public CloseButton(int left, int top, OnPress onPress) {
     super(

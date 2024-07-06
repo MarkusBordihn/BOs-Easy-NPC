@@ -32,7 +32,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class Checkbox extends AbstractButton {
-
   private static final ResourceLocation TEXTURE =
       new ResourceLocation(Constants.MOD_ID, "textures/gui/checkbox.png");
 
@@ -120,20 +119,23 @@ public class Checkbox extends AbstractButton {
 
   public void renderButton(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
     RenderSystem.enableDepthTest();
+    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
     RenderSystem.enableBlend();
     RenderSystem.defaultBlendFunc();
     RenderSystem.blendFunc(
         GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+
     guiGraphics.blit(
         TEXTURE,
         this.getX(),
         this.getY(),
-        this.active ? (this.isHoveredOrFocused() ? 16.0F : 0.0F) : 32.0F,
-        this.selected ? 16.0F : 0.0F,
+        this.active ? (this.isHoveredOrFocused() ? 16 : 0) : 32,
+        this.selected ? 16 : 0,
         16,
         16,
         64,
         64);
+
     if (this.showLabel) {
       Text.drawString(
           guiGraphics,
@@ -145,7 +147,6 @@ public class Checkbox extends AbstractButton {
   }
 
   public interface OnChange {
-
     void onChange(Checkbox checkbox);
   }
 }

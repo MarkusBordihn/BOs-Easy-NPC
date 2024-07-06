@@ -31,6 +31,7 @@ import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.network.ClientNetworkMessageHandler;
 import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.server.ServerEvents;
 import net.fabricmc.api.ModInitializer;
@@ -85,8 +86,9 @@ public class EasyNPCMain implements ModInitializer {
     ModMenuTypes.register();
 
     log.info("{} Server Network Handler ...", Constants.LOG_REGISTER_PREFIX);
-    NetworkHandler.registerServerNetworkHandler();
+    NetworkHandlerManager.registerHandler(new NetworkHandler());
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
+    NetworkHandler.registerServerNetworkHandler();
 
     log.info("{} Argument Types ...", Constants.LOG_REGISTER_PREFIX);
     ModArgumentTypes.register();

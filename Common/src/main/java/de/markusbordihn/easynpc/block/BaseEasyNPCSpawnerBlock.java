@@ -93,7 +93,6 @@ public class BaseEasyNPCSpawnerBlock extends BaseEntityBlock {
     return InteractionResult.CONSUME;
   }
 
-  @SuppressWarnings("deprecation")
   @Override
   public RenderShape getRenderShape(BlockState blockstate) {
     return RenderShape.MODEL;

@@ -37,7 +37,7 @@ public class SkinHandler {
 
   public static boolean setNoneSkin(EasyNPC<?> easyNPC) {
     if (easyNPC == null) {
-      log.error("[{}] Error setting none skin", easyNPC);
+      log.error("[{}] Error setting none skin", "None");
       return false;
     }
     log.debug("[{}] Setting none skin", easyNPC);

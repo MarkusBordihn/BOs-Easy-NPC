@@ -47,10 +47,9 @@ public interface SpawnerData<T extends PathfinderMob> extends EasyNPC<T> {
         }
       };
 
-  String DATA_SPAWNER_UUID_TAG = "SpawnerUUID";
-
   ServerDataAccessor<UUID> CUSTOM_DATA_SPAWNER_UUID =
       ServerEntityData.defineId(ServerDataIndex.SPAWNER_UUID, UUID);
+  String DATA_SPAWNER_UUID_TAG = "SpawnerUUID";
 
   static void registerSpawnerDataSerializer() {
     EntityDataSerializers.registerSerializer(UUID);

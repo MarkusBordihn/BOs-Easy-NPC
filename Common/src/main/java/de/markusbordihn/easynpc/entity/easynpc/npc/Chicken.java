@@ -39,9 +39,9 @@ public class Chicken extends EasyNPCBaseModelEntity<Chicken> {
 
   private float flap;
   private float flapSpeed;
-  private float oFlapSpeed;
-  private float oFlap;
   private float flapping = 1.0F;
+  private float oFlap;
+  private float oFlapSpeed;
 
   public Chicken(EntityType<? extends PathfinderMob> entityType, Level level) {
     super(entityType, level, Variant.WHITE);

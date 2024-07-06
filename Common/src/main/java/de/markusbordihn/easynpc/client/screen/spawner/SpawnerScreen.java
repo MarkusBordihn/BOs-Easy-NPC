@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.screen.spawner;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.components.Graphics;
 import de.markusbordihn.easynpc.client.screen.components.PositiveNumberField;
 import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
@@ -33,33 +34,31 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class SpawnerScreen<T extends AbstractContainerMenu>
-    extends AbstractContainerScreen<T> {
+public class SpawnerScreen<T extends SpawnerMenu> extends AbstractContainerScreen<T> {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String SPAWNER_PREFIX = "spawner.";
   private final SpawnerMenu spawnerMenu;
-  private boolean updatedDataFields = false;
-  private EditBox spawnerRangeEdit;
-  private Button spawnerRangeSaveButton;
-  private EditBox spawnerDespawnRangeEdit;
-  private Button spawnerDespawnRangeSaveButton;
-  private EditBox requiredPlayerRangeEdit;
-  private Button requiredPlayerRangeSaveButton;
   private EditBox delayEdit;
   private Button delaySaveButton;
   private EditBox maxNearbyEntitiesEdit;
   private Button maxNearbyEntitiesSaveButton;
+  private EditBox requiredPlayerRangeEdit;
+  private Button requiredPlayerRangeSaveButton;
   private EditBox spawnCountEdit;
   private Button spawnCountSaveButton;
+  private EditBox spawnerDespawnRangeEdit;
+  private Button spawnerDespawnRangeSaveButton;
+  private EditBox spawnerRangeEdit;
+  private Button spawnerRangeSaveButton;
+  private boolean updatedDataFields = false;
 
-  protected SpawnerScreen(T menu, Inventory inventory, Component component) {
+  public SpawnerScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
-    this.spawnerMenu = (SpawnerMenu) menu;
+    this.spawnerMenu = menu;
   }
 
   @Override
@@ -328,7 +327,6 @@ public abstract class SpawnerScreen<T extends AbstractContainerMenu>
     NetworkMessageHandlerManager.getServerHandler()
         .changeSpawnerSettings(blockPos, spawnerSettingType, value);
   }
-  ;
 
   protected void renderLabels(GuiGraphics guiGraphics) {
     int labelOffsetX = -180;
@@ -434,20 +432,44 @@ public abstract class SpawnerScreen<T extends AbstractContainerMenu>
   @Override
   protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
     // Background
-    guiGraphics.blit(Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos, 0, 0, 210, 160);
-    guiGraphics.blit(Constants.TEXTURE_DEMO_BACKGROUND, leftPos + 153, topPos, 132, 0, 120, 160);
-    guiGraphics.blit(Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos + 77, 0, 5, 210, 170);
-    guiGraphics.blit(
-        Constants.TEXTURE_DEMO_BACKGROUND, leftPos + 153, topPos + 77, 132, 5, 120, 170);
+    Graphics.blit(guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos, 0, 0, 210, 160);
+    Graphics.blit(
+        guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos + 153, topPos, 132, 0, 120, 160);
+    Graphics.blit(
+        guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos + 77, 0, 5, 210, 170);
+    Graphics.blit(
+        guiGraphics,
+        Constants.TEXTURE_DEMO_BACKGROUND,
+        leftPos + 153,
+        topPos + 77,
+        132,
+        5,
+        120,
+        170);
 
     // Player Inventory Slots and Hotbar Slots
-    guiGraphics.blit(
-        Constants.TEXTURE_INVENTORY, this.leftPos + 97, this.topPos + 152, 7, 83, 162, 54);
-    guiGraphics.blit(
-        Constants.TEXTURE_INVENTORY, this.leftPos + 97, this.topPos + 212, 7, 141, 162, 18);
+    Graphics.blit(
+        guiGraphics,
+        Constants.TEXTURE_INVENTORY,
+        this.leftPos + 97,
+        this.topPos + 152,
+        7,
+        83,
+        162,
+        54);
+    Graphics.blit(
+        guiGraphics,
+        Constants.TEXTURE_INVENTORY,
+        this.leftPos + 97,
+        this.topPos + 212,
+        7,
+        141,
+        162,
+        18);
 
     // Easy NPC Preset Slot.
-    guiGraphics.blit(
+    Graphics.blit(
+        guiGraphics,
         Constants.TEXTURE_INVENTORY,
         leftPos + SpawnerMenu.presetItemSlotX - 1,
         topPos + SpawnerMenu.presetItemSlotY - 1,
@@ -458,7 +480,8 @@ public abstract class SpawnerScreen<T extends AbstractContainerMenu>
 
     // Helper Icons for empty Easy NPC Preset Slot.
     if (this.spawnerMenu.getPresetItem().isEmpty()) {
-      guiGraphics.blit(
+      Graphics.blit(
+          guiGraphics,
           Constants.TEXTURE_SPAWNER,
           leftPos + SpawnerMenu.presetItemSlotX + 20,
           topPos + SpawnerMenu.presetItemSlotY + 2,
@@ -466,7 +489,8 @@ public abstract class SpawnerScreen<T extends AbstractContainerMenu>
           0,
           32,
           12);
-      guiGraphics.blit(
+      Graphics.blit(
+          guiGraphics,
           Constants.TEXTURE_SPAWNER,
           leftPos + SpawnerMenu.presetItemSlotX + 1,
           topPos + SpawnerMenu.presetItemSlotY,

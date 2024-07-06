@@ -21,60 +21,62 @@ package de.markusbordihn.easynpc.data.objective;
 
 public enum ObjectiveType {
   // @formatter:off
+  ATTACK_ANIMAL(2),
+  ATTACK_MOB(2),
+  ATTACK_MOB_WITHOUT_CREEPER(2),
+  ATTACK_MONSTER(2),
+  ATTACK_PLAYER(2),
+  ATTACK_PLAYER_WITHOUT_OWNER(2),
+  ATTACK_VILLAGER(2),
+  AVOID_SUN(2),
+  BOW_ATTACK(4),
+  CLOSE_DOOR(8),
+  CROSSBOW_ATTACK(4),
+  FLEE_SUN(3),
+  FLOAT(0),
+  FOLLOW_ENTITY_BY_UUID(7),
+  FOLLOW_ITEM(7),
+  FOLLOW_OWNER(6),
+  FOLLOW_PLAYER(7),
+  GUN_ATTACK(4),
+  LOOK_AT_ANIMAL(10, false),
+  LOOK_AT_ENTITY_BY_UUID(9, false),
+  LOOK_AT_ITEM(9, false),
+  LOOK_AT_MOB(10, false),
+  LOOK_AT_OWNER(9, false),
+  LOOK_AT_PLAYER(9, false),
+  LOOK_AT_RESET(9, false),
+  LOOK_RANDOM_AROUND(10, false),
+  MELEE_ATTACK(2),
+  MOVE_BACK_TO_HOME(3),
+  MOVE_BACK_TO_VILLAGE(3),
+  MOVE_THROUGH_VILLAGE(5),
   NONE(false),
-  ATTACK_ANIMAL,
-  ATTACK_ENTITY_BY_UUID,
-  ATTACK_MOB,
-  ATTACK_MOB_WITHOUT_CREEPER,
-  ATTACK_MONSTER,
-  ATTACK_PLAYER,
-  ATTACK_VILLAGER,
-  AVOID_ENTITY,
-  AVOID_SUN,
-  CLOSE_DOOR,
-  CROSSBOW_ATTACK,
-  BOW_ATTACK,
-  CUSTOM,
-  FLOAT,
-  FOLLOW_ENTITY_BY_UUID,
-  FOLLOW_ITEM,
-  FOLLOW_OWNER,
-  FOLLOW_PLAYER,
-  LOOK_AT_ANIMAL(false),
-  LOOK_AT_ENTITY_BY_UUID(false),
-  LOOK_AT_ITEM(false),
-  LOOK_AT_MOB(false),
-  LOOK_AT_OWNER(false),
-  LOOK_AT_PLAYER(false),
-  LOOK_AT_RESET(false),
-  LOOK_RANDOM_AROUND(false),
-  MELEE_ATTACK,
-  MOVE_BACK_TO_HOME,
-  MOVE_BACK_TO_VILLAGE,
-  MOVE_THROUGH_VILLAGE,
-  NEAREST_ATTACKABLE_TARGET,
-  FLEE_SUN,
-  PANIC,
-  OPEN_DOOR,
-  RANDOM_STROLL,
-  RANDOM_STROLL_AROUND_HOME,
-  RANDOM_STROLL_IN_VILLAGE,
-  RANDOM_SWIMMING,
-  WATER_AVOIDING_RANDOM_STROLL,
-  ZOMBIE_ATTACK,
-  ATTACK_PLAYER_WITHOUT_OWNER,
-  GUN_ATTACK;
+  OPEN_DOOR(8),
+  PANIC(1),
+  RANDOM_STROLL(5),
+  RANDOM_STROLL_AROUND_HOME(2),
+  RANDOM_STROLL_IN_VILLAGE(2),
+  RANDOM_SWIMMING(4),
+  WATER_AVOIDING_RANDOM_STROLL(5),
+  ZOMBIE_ATTACK(2);
 
   // @formatter:on
 
   private final boolean hasTravelObjective;
+  private final int defaultPriority;
 
   ObjectiveType(boolean hasTravelObjective) {
-    this.hasTravelObjective = hasTravelObjective;
+    this(5, hasTravelObjective);
   }
 
-  ObjectiveType() {
-    this.hasTravelObjective = true;
+  ObjectiveType(int defaultPriority) {
+    this(defaultPriority, true);
+  }
+
+  ObjectiveType(int defaultPriority, boolean hasTravelObjective) {
+    this.defaultPriority = defaultPriority;
+    this.hasTravelObjective = hasTravelObjective;
   }
 
   public static ObjectiveType get(String objectiveType) {
@@ -90,6 +92,10 @@ public enum ObjectiveType {
 
   public boolean hasTravelObjective() {
     return this.hasTravelObjective;
+  }
+
+  public int getDefaultPriority() {
+    return this.defaultPriority;
   }
 
   public String getObjectiveName() {

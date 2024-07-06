@@ -95,5 +95,7 @@ public class BaseEntityModel<E extends Entity> extends EntityModel<E> implements
       float red,
       float green,
       float blue,
-      float alpha) {}
+      float alpha) {
+    // Mo use implemented renderToBuffer method
+  }
 }

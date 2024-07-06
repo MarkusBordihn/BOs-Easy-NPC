@@ -30,6 +30,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.InteractionHandler;
+import de.markusbordihn.easynpc.server.player.FakePlayer;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.EnumMap;
 import java.util.UUID;
@@ -87,12 +88,13 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
   private final ServerEntityData serverEntityData = new ServerEntityData(this);
   private final EnumMap<TickerType, Integer> tickerMap = new EnumMap<>(TickerType.class);
   protected MerchantOffers offers;
-  private SynchedEntityData synchedEntityData;
-  private int remainingPersistentAngerTime;
-  private UUID persistentAngerTarget;
-  private int npcDataVersion = -1;
-  private Player tradingPlayer;
   private int attackAnimationTick;
+  private int npcDataVersion = -1;
+  private UUID persistentAngerTarget;
+  private int remainingPersistentAngerTime;
+  private SynchedEntityData synchedEntityData;
+  private Player tradingPlayer;
+  private FakePlayer fakePlayer;
 
   public EasyNPCBaseEntity(
       EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variant) {
@@ -100,6 +102,14 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
     this.registerEasyNPCDefaultHandler(variant);
     this.setInvulnerable(true);
     this.refreshGroundNavigation();
+  }
+
+  @Override
+  public FakePlayer getFakePlayer(ServerLevel level, BlockPos blockPos) {
+    if (this.fakePlayer == null) {
+      this.fakePlayer = new FakePlayer(level, blockPos);
+    }
+    return this.fakePlayer.setBlockPos(blockPos);
   }
 
   @Override
