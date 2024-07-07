@@ -1,6 +1,6 @@
-# 🗣 Easy NPC (1.20.1)
+# 🗣 Easy NPC (1.20.2)
 
-![Versions](http://cf.way2muchnoise.eu/versions/Minecraft_559312_all.svg)
+![Daily Rewards Versions](http://cf.way2muchnoise.eu/versions/Minecraft_559312_all.svg)
 
 [![Download on CurseForge](http://cf.way2muchnoise.eu/title/559312.svg)](https://www.curseforge.com/minecraft/mc-mods/easy-npc)
 [![CurseForge Downloads](http://cf.way2muchnoise.eu/full_559312_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/easy-npc)
@@ -16,7 +16,7 @@
 [![Support me on Patreon](https://img.shields.io/badge/Support_me_on_Patreon-!?labelColor=black&style=flat&logo=patreon)][patreon]
 [![Support me on Ko-fi](https://img.shields.io/badge/Support_me_on_Ko--fi-!?labelColor=black&style=flat&logo=ko-fi)][ko-fi]
 
-Easy NPCs allows a simplified setup for custom NPCs with dialogs for map maker and other mods.
+Easy NPCs allows a simplified setup for custom NPCs with dialogs for mapmaker and other mods.
 
 ## ✨ Features
 

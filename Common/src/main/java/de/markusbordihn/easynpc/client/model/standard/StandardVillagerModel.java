@@ -34,7 +34,6 @@ import net.minecraft.world.entity.Entity;
 
 public class StandardVillagerModel<T extends Entity> extends VillagerModel<T>
     implements EasyNPCModel<T> {
-
   protected final Map<ModelPartType, CustomPosition> modelPartPositionMap =
       new EnumMap<>(ModelPartType.class);
   protected final Map<ModelPartType, Rotations> modelPartRotationMap =

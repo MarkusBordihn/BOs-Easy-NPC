@@ -30,7 +30,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class LivingEntityEventHandler {
-
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private LivingEntityEventHandler() {}

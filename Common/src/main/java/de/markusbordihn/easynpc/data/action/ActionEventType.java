@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.data.action;
 
 public enum ActionEventType {
-  // @formatter:off
   NONE,
   ON_BUTTON_CLICK,
   ON_CLOSE_DIALOG,
@@ -32,8 +31,6 @@ public enum ActionEventType {
   ON_HURT,
   ON_INTERACTION,
   ON_OPEN_DIALOG;
-
-  // @formatter:on
 
   public static ActionEventType get(String actionType) {
     if (actionType == null || actionType.isEmpty()) {

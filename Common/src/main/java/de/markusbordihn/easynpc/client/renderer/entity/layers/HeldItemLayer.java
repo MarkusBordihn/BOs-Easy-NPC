@@ -60,26 +60,26 @@ public class HeldItemLayer<E extends LivingEntity, M extends EntityModel<E> & He
 
   public void render(
       PoseStack poseStack,
-      MultiBufferSource $$1,
-      int $$2,
+      MultiBufferSource buffer,
+      int lightLevel,
       E entity,
-      float $$4,
-      float $$5,
-      float $$6,
-      float $$7,
-      float $$8,
-      float $$9) {
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float ageInTicks2,
+      float netHeadYaw,
+      float headPitch) {
     ModelPart head = this.getParentModel().getHead();
     poseStack.pushPose();
     poseStack.translate(head.x / 16.0F, head.y / 16.0F, head.z / 16.0F);
     poseStack.mulPose(Axis.ZP.rotation(0));
-    poseStack.mulPose(Axis.YP.rotationDegrees($$8));
-    poseStack.mulPose(Axis.XP.rotationDegrees($$9));
+    poseStack.mulPose(Axis.YP.rotationDegrees(netHeadYaw));
+    poseStack.mulPose(Axis.XP.rotationDegrees(headPitch));
     poseStack.translate(offsetX, offsetY, offsetZ);
     poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
     ItemStack itemStack = entity.getItemBySlot(EquipmentSlot.MAINHAND);
     this.itemInHandRenderer.renderItem(
-        entity, itemStack, ItemDisplayContext.GROUND, false, poseStack, $$1, $$2);
+        entity, itemStack, ItemDisplayContext.GROUND, false, poseStack, buffer, lightLevel);
     poseStack.popPose();
   }
 }

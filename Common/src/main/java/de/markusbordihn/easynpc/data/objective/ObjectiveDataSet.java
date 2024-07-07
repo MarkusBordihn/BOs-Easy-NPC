@@ -38,12 +38,12 @@ public class ObjectiveDataSet {
   private final HashMap<String, ObjectiveDataEntry> objectives = new HashMap<>();
   private final HashSet<String> targetedPlayerSet = new HashSet<>();
   private final HashSet<UUID> targetedEntitySet = new HashSet<>();
+  private boolean hasEntityTarget = false;
+  private boolean hasObjectives = false;
+  private boolean hasOwnerTarget = false;
   // Data
   private boolean hasPlayerTarget = false;
   private boolean hasTravelTarget = false;
-  private boolean hasObjectives = false;
-  private boolean hasEntityTarget = false;
-  private boolean hasOwnerTarget = false;
 
   public ObjectiveDataSet() {}
 
@@ -55,9 +55,17 @@ public class ObjectiveDataSet {
     return new HashSet<>(this.objectives.values());
   }
 
+  public ObjectiveDataEntry getOrCreateObjective(ObjectiveType objectiveType) {
+    return this.getOrCreateObjective(objectiveType, objectiveType.getDefaultPriority());
+  }
+
   public ObjectiveDataEntry getOrCreateObjective(ObjectiveType objectiveType, int priority) {
     if (this.hasObjective(objectiveType)) {
-      return this.getObjective(objectiveType);
+      ObjectiveDataEntry objectiveDataEntry = this.getObjective(objectiveType);
+      if (objectiveDataEntry.getPriority() != priority) {
+        objectiveDataEntry.setPriority(priority);
+      }
+      return objectiveDataEntry;
     }
     return new ObjectiveDataEntry(objectiveType, priority);
   }
@@ -95,8 +103,8 @@ public class ObjectiveDataSet {
     this.updateTargetFlags();
   }
 
-  public boolean removeObjective(ObjectiveType objectiveType) {
-    return this.removeObjective(objectiveType.name());
+  public void removeObjective(ObjectiveType objectiveType) {
+    this.removeObjective(objectiveType.name());
   }
 
   public boolean removeObjective(ObjectiveDataEntry objectiveDataEntry) {

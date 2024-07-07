@@ -7,8 +7,8 @@ assignees: ''
 
 ---
 
-💡 Check the [Wiki](https://github.com/MarkusBordihn/BOs-Easy-NPC/wiki)
-and [Feature Request Tracker](https://github.com/MarkusBordihn/BOs-Easy-NPC/issues?q=label%3Aenhancement)
+💡 Check the [Wiki](https://github.com/MarkusBordihn/BOs-Easy-NPC/wiki) and
+[Feature Request Tracker](https://github.com/MarkusBordihn/BOs-Easy-NPC/issues?q=label%3Aenhancement)
 before reporting a feature request.
 There you can find a lot of useful information and solutions for common problems.
 

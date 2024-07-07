@@ -40,8 +40,8 @@ import net.minecraft.world.phys.Vec3;
 
 public interface NavigationData<T extends PathfinderMob> extends EasyNPC<T> {
 
-  String DATA_NAVIGATION_TAG = "Navigation";
   String DATA_HOME_TAG = "Home";
+  String DATA_NAVIGATION_TAG = "Navigation";
   int TRAVEL_EVENT_TICK = 20;
 
   static void registerSyncedNavigationData(

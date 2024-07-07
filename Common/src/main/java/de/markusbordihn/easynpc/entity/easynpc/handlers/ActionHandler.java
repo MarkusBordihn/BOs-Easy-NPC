@@ -22,6 +22,8 @@ package de.markusbordihn.easynpc.entity.easynpc.handlers;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.ParseResults;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
+import de.markusbordihn.easynpc.data.action.ActionDataSet;
+import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.action.ActionGroup;
 import de.markusbordihn.easynpc.data.action.ActionManager;
@@ -33,22 +35,28 @@ import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TickerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 
 public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
 
-  private static boolean validateActionDataEntry(
+  private static boolean validateActionData(
       ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
     return actionDataEntry != null
         && serverPlayer != null
@@ -240,12 +248,62 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
     this.getProfiler().pop();
   }
 
-  default void executeActions(Set<ActionDataEntry> actionDataEntrySet, ServerPlayer serverPlayer) {
-    if (actionDataEntrySet == null || actionDataEntrySet.isEmpty()) {
+  default void interactWithBlock(BlockPos blockPos) {
+    LivingEntity livingEntity = this.getLivingEntity();
+    if (livingEntity != null && !this.isClientSide()) {
+      this.lookAtBlock(blockPos);
+      livingEntity.swing(InteractionHand.MAIN_HAND);
+      this.getServerLevel()
+          .getBlockState(blockPos)
+          .use(
+              this.getServerLevel(),
+              this.getFakePlayer(this.getServerLevel(), blockPos),
+              InteractionHand.MAIN_HAND,
+              new BlockHitResult(Vec3.atCenterOf(blockPos), Direction.DOWN, blockPos, false));
+      livingEntity
+          .getMainHandItem()
+          .use(
+              this.getServerLevel(),
+              this.getFakePlayer(this.getServerLevel(), blockPos),
+              InteractionHand.MAIN_HAND);
+    }
+  }
+
+  default void lookAtBlock(BlockPos target) {
+    Entity entity = this.getEntity();
+    Vec3 vec3d = entity.position();
+    Vec3 targetVec = Vec3.atCenterOf(target);
+    Vec3 delta = targetVec.subtract(vec3d);
+    double horizontalDistance = delta.horizontalDistance();
+    entity.setXRot(
+        Mth.wrapDegrees((float) (-(Mth.atan2(delta.y, horizontalDistance) * (180D / Math.PI)))));
+    entity.setYBodyRot(
+        Mth.wrapDegrees((float) (Mth.atan2(delta.z, delta.x) * (180D / Math.PI)) - 90.0F));
+    entity.setYHeadRot(entity.getYHeadRot());
+  }
+
+  default void executeActions(ActionDataSet actionDataSet, ServerPlayer serverPlayer) {
+    if (actionDataSet == null || actionDataSet.isEmpty()) {
       return;
     }
-    for (ActionDataEntry actionDataEntry : actionDataEntrySet) {
-      this.executeAction(actionDataEntry, serverPlayer);
+
+    // Filter close dialog action and execute all other actions first.
+    ActionDataEntry closeDialogActionDataEntry = null;
+    for (ActionDataEntry actionDataEntry : actionDataSet.getEntries()) {
+      if (actionDataEntry.getType() == ActionDataType.CLOSE_DIALOG) {
+        if (closeDialogActionDataEntry == null) {
+          closeDialogActionDataEntry = actionDataEntry;
+        } else {
+          log.error("Multiple close dialog actions found in action data set {}!", actionDataSet);
+        }
+      } else {
+        this.executeAction(actionDataEntry, serverPlayer);
+      }
+    }
+
+    // Execute close dialog action and the end of the action list.
+    if (closeDialogActionDataEntry != null) {
+      this.executeAction(closeDialogActionDataEntry, serverPlayer);
     }
   }
 
@@ -257,7 +315,7 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
   }
 
   default void executeAction(ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
-    if (!validateActionDataEntry(actionDataEntry, serverPlayer)) {
+    if (!validateActionData(actionDataEntry, serverPlayer)) {
       return;
     }
     switch (actionDataEntry.getType()) {
@@ -268,6 +326,17 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
           this.executePlayerCommand(actionDataEntry, serverPlayer);
         } else {
           this.executeEntityCommand(actionDataEntry, serverPlayer);
+        }
+        break;
+      case CLOSE_DIALOG:
+        serverPlayer.closeContainer();
+        break;
+      case INTERACT_BLOCK:
+        BlockPos blockPos = actionDataEntry.getBlockPos();
+        if (blockPos != null && !blockPos.equals(BlockPos.ZERO)) {
+          this.interactWithBlock(blockPos);
+        } else {
+          log.error("No block position found for action {}", actionDataEntry);
         }
         break;
       case OPEN_NAMED_DIALOG:
@@ -289,7 +358,7 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
   }
 
   default void openNamedDialog(ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
-    if (!validateActionDataEntry(actionDataEntry, serverPlayer)) {
+    if (!validateActionData(actionDataEntry, serverPlayer)) {
       return;
     }
     String dialogLabel = actionDataEntry.getCommand();
@@ -302,11 +371,12 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
       dialogData.openDialogMenu(serverPlayer, this, dialogId, 0);
     } else {
       log.error("Unknown dialog label {} for action {}", dialogLabel, actionDataEntry);
+      serverPlayer.closeContainer();
     }
   }
 
   default void executePlayerCommand(ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
-    if (!validateActionDataEntry(actionDataEntry, serverPlayer)) {
+    if (!validateActionData(actionDataEntry, serverPlayer)) {
       return;
     }
     ActionEventData<E> actionEventData = this.getEasyNPCActionEventData();
@@ -339,7 +409,7 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
   }
 
   default void executeEntityCommand(ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
-    if (!validateActionDataEntry(actionDataEntry, serverPlayer)) {
+    if (!validateActionData(actionDataEntry, serverPlayer)) {
       return;
     }
     ActionEventData<E> actionEventData = this.getEasyNPCActionEventData();

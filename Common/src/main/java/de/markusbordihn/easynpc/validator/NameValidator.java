@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.validator;
 
 public class NameValidator {
-
   private static final String USER_REGEX = "^\\w{2,16}$";
 
   private NameValidator() {}

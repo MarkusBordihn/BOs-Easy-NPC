@@ -52,13 +52,13 @@ public class ModSpawnEggItem extends SpawnEggItem {
   private final Supplier<? extends EntityType<? extends Mob>> typeSupplier;
 
   public ModSpawnEggItem(
-      Supplier<? extends EntityType<? extends Mob>> entityType, Properties props) {
-    super(null, Constants.FONT_COLOR_RED, Constants.FONT_COLOR_YELLOW, props);
+      Supplier<? extends EntityType<? extends Mob>> entityType, Properties properties) {
+    super(null, Constants.FONT_COLOR_RED, Constants.FONT_COLOR_YELLOW, properties);
     this.typeSupplier = entityType;
   }
 
-  public ModSpawnEggItem(EntityType<? extends Mob> entityType, Properties props) {
-    super(null, Constants.FONT_COLOR_RED, Constants.FONT_COLOR_YELLOW, props);
+  public ModSpawnEggItem(EntityType<? extends Mob> entityType, Properties properties) {
+    super(null, Constants.FONT_COLOR_RED, Constants.FONT_COLOR_YELLOW, properties);
     this.typeSupplier = () -> entityType;
   }
 
@@ -77,8 +77,8 @@ public class ModSpawnEggItem extends SpawnEggItem {
   }
 
   @Override
-  public EntityType<?> getType(CompoundTag compoundTag) {
-    EntityType<?> type = super.getType(compoundTag);
+  public EntityType<?> getType(CompoundTag tag) {
+    EntityType<?> type = super.getType(tag);
     return type != null ? type : this.typeSupplier.get();
   }
 

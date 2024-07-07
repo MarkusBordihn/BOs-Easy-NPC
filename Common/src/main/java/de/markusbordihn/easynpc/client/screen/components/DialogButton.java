@@ -22,16 +22,12 @@ package de.markusbordihn.easynpc.client.screen.components;
 public class DialogButton extends SpriteButton {
 
   public static final int DEFAULT_HEIGHT = 18;
-  public static final int SPRITE_X = 4;
-  public static final int SPRITE_Y = 3;
+  public static final int SPRITE_HEIGHT = 12;
   public static final int SPRITE_OFFSET_X = 80;
   public static final int SPRITE_OFFSET_Y = 30;
   public static final int SPRITE_WIDTH = 12;
-  public static final int SPRITE_HEIGHT = 12;
-
-  public DialogButton(int left, int top, OnPress onPress) {
-    super(left, top, 20, 18, 4, 3, 64, 4, 13, 13, onPress);
-  }
+  public static final int SPRITE_X = 4;
+  public static final int SPRITE_Y = 3;
 
   public DialogButton(int left, int top, int width, String label, OnPress onPress) {
     super(

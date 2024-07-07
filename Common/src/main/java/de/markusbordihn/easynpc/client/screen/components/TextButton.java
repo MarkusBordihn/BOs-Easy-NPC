@@ -26,6 +26,10 @@ public class TextButton extends CustomButton {
 
   public static final int DEFAULT_HEIGHT = 16;
 
+  public TextButton(int left, int top, int width, int height) {
+    this(left, top, width, height, "", null);
+  }
+
   public TextButton(int left, int top, int width, String label, Object data, OnPress onPress) {
     this(
         left,
@@ -48,6 +52,10 @@ public class TextButton extends CustomButton {
             ? Component.translatable(Constants.TEXT_CONFIG_PREFIX + label)
             : Component.literal(label != null ? label : ""),
         onPress);
+  }
+
+  public TextButton(int left, int top, int width, int height, Component label) {
+    this(left, top, width, height, label, (OnPress) -> {});
   }
 
   public TextButton(int left, int top, int width, int height, String label, OnPress onPress) {

@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
+import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
@@ -84,6 +85,12 @@ public interface ActionEventData<E extends PathfinderMob> extends EasyNPC<E> {
         : null;
   }
 
+  default ActionDataSet getActionDataSet(ActionEventType actionEventType) {
+    return hasActionEvent(actionEventType)
+        ? getActionEventSet().getActionEvents(actionEventType)
+        : null;
+  }
+
   default void clearActionEventSet() {
     setServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET, new ActionEventSet());
   }
@@ -141,12 +148,10 @@ public interface ActionEventData<E extends PathfinderMob> extends EasyNPC<E> {
 
   default void handleActionInteractionEvent(ServerPlayer serverPlayer) {
     if (this.hasActionEvent(ActionEventType.ON_INTERACTION)) {
-      ActionDataEntry actionDataEntry = this.getActionEvent(ActionEventType.ON_INTERACTION);
+      ActionDataSet actionDataSet = this.getActionDataSet(ActionEventType.ON_INTERACTION);
       ActionHandler<E> actionHandler = this.getEasyNPCActionHandler();
-      if (actionDataEntry != null
-          && actionDataEntry.isValidAndNotEmpty()
-          && actionHandler != null) {
-        actionHandler.executeAction(actionDataEntry, serverPlayer);
+      if (actionDataSet != null && actionHandler != null) {
+        actionHandler.executeActions(actionDataSet, serverPlayer);
       }
     }
   }

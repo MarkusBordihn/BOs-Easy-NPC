@@ -54,24 +54,21 @@ import org.apache.logging.log4j.Logger;
 
 public class ModItems {
 
-  public static final Item EASY_NPC_WAND = new EasyNPCWandItem(new Item.Properties());
-  public static final Item MOVE_EASY_NPC = new MoveEasyNPCItem(new Item.Properties());
-  public static final Item EASY_NPC_PRESET_ITEM = new EasyNPCPresetItem(new Item.Properties());
-  public static final Item EASY_NPC_PRESET_EMPTY_ITEM =
-      new EasyNPCPresetEmptyItem(new Item.Properties());
-  public static final Item EASY_NPC_SPAWNER =
-      new BlockItem(ModBlocks.EASY_NPC_SPAWNER, new Item.Properties());
-
-  public static final Item BULLET_ITEM = new Item(new Item.Properties());
-
   public static final Item ALLEY_NPC_SPAWN_EGG =
       new ModSpawnEggItem(ModEntityType.ALLAY, new Item.Properties().rarity(Rarity.EPIC));
+  public static final Item BULLET_ITEM = new Item(new Item.Properties());
   public static final Item CAT_NPC_SPAWN_EGG =
       new ModSpawnEggItem(ModEntityType.CAT, new Item.Properties().rarity(Rarity.EPIC));
   public static final Item CHICKEN_NPC_SPAWN_EGG =
       new ModSpawnEggItem(ModEntityType.CHICKEN, new Item.Properties().rarity(Rarity.EPIC));
   public static final Item DROWNED_NPC_SPAWN_EGG =
       new ModSpawnEggItem(ModEntityType.DROWNED, new Item.Properties().rarity(Rarity.EPIC));
+  public static final Item EASY_NPC_PRESET_EMPTY_ITEM =
+      new EasyNPCPresetEmptyItem(new Item.Properties());
+  public static final Item EASY_NPC_PRESET_ITEM = new EasyNPCPresetItem(new Item.Properties());
+  public static final Item EASY_NPC_SPAWNER =
+      new BlockItem(ModBlocks.EASY_NPC_SPAWNER, new Item.Properties());
+  public static final Item EASY_NPC_WAND = new EasyNPCWandItem(new Item.Properties());
   public static final Item EVOKER_NPC_SPAWN_EGG =
       new ModSpawnEggItem(ModEntityType.EVOKER, new Item.Properties().rarity(Rarity.EPIC));
   public static final Item FAIRY_NPC_SPAWN_EGG =
@@ -88,6 +85,7 @@ public class ModItems {
       new ModSpawnEggItem(ModEntityType.ILLUSIONER, new Item.Properties().rarity(Rarity.EPIC));
   public static final Item IRON_GOLEM_NPC_SPAWN_EGG =
       new ModSpawnEggItem(ModEntityType.IRON_GOLEM, new Item.Properties().rarity(Rarity.EPIC));
+  public static final Item MOVE_EASY_NPC = new MoveEasyNPCItem(new Item.Properties());
   public static final Item ORC_NPC_SPAWN_EGG =
       new ModSpawnEggItem(ModEntityType.ORC, new Item.Properties().rarity(Rarity.EPIC));
   public static final Item ORC_WARRIOR_NPC_SPAWN_EGG =

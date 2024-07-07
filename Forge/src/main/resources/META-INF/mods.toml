@@ -17,7 +17,7 @@ license = "MIT"
 #issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/" #optional
 
 # A list of mods - how many allowed here is determined by the individual mod loader
-[[mods]]
+[[mods]] #mandatory
 modId = "easy_npc"
 version = "${file.jarVersion}"
 displayName = "Easy NPC"

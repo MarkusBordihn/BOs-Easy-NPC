@@ -35,6 +35,7 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
 import net.minecraft.world.entity.LivingEntity;
@@ -59,18 +60,25 @@ public interface EasyNPCModelRenderer<E extends EasyNPCBaseModelEntity<E>, M ext
           ModelLayerLocation innerArmor,
           ModelLayerLocation outerArmor,
           Class<L> armorLayerClass) {
-    try {
-      return armorLayerClass
-          .getConstructor(RenderLayerParent.class, HumanoidModel.class, HumanoidModel.class)
-          .newInstance(
-              mobRenderer,
-              new HumanoidModel<>(context.bakeLayer(innerArmor)),
-              new HumanoidModel<>(context.bakeLayer(outerArmor)));
-    } catch (Exception e) {
-      log.error(
-          "Failed to create custom armor layer for {} will use default armor layer instead.",
-          mobRenderer,
-          e);
+    if (armorLayerClass != null) {
+      try {
+        return armorLayerClass
+            .getConstructor(
+                RenderLayerParent.class,
+                HumanoidModel.class,
+                HumanoidModel.class,
+                ModelManager.class)
+            .newInstance(
+                mobRenderer,
+                new HumanoidModel<>(context.bakeLayer(innerArmor)),
+                new HumanoidModel<>(context.bakeLayer(outerArmor)),
+                context.getModelManager());
+      } catch (Exception e) {
+        log.error(
+            "Failed to create custom armor layer for {} will use default armor layer instead.",
+            mobRenderer,
+            e);
+      }
     }
     return (L)
         new HumanoidArmorLayer<>(

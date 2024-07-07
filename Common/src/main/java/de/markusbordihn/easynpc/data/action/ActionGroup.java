@@ -20,14 +20,11 @@
 package de.markusbordihn.easynpc.data.action;
 
 public enum ActionGroup {
-  // @formatter:off
   NONE,
   DISTANCE_NEAR,
   DISTANCE_CLOSE,
   DISTANCE_VERY_CLOSE,
   DISTANCE_TOUCH;
-
-  // @formatter:on
 
   public static ActionGroup get(String actionType) {
     if (actionType == null || actionType.isEmpty()) {

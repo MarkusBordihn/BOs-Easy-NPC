@@ -29,7 +29,6 @@ import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.item.BowItem;
 
 public class BowAttackGoal<T extends EasyNPC<?>> extends Goal {
-
   private final PathfinderMob pathfinderMob;
   private final RangedAttackMob rangedAttackMob;
   private final double speedModifier;
@@ -37,8 +36,8 @@ public class BowAttackGoal<T extends EasyNPC<?>> extends Goal {
   private int attackIntervalMin;
   private int attackTime = -1;
   private int seeTime;
-  private boolean strafingClockwise;
   private boolean strafingBackwards;
+  private boolean strafingClockwise;
   private int strafingTime = -1;
 
   public BowAttackGoal(T easyNPC, double targetDistance, int hasLineOfSight, float hasSeen) {

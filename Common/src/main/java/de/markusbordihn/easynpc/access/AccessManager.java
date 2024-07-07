@@ -57,6 +57,12 @@ public class AccessManager {
             uuid);
         return true;
       }
+
+      // Check if entity is allowed to access EasyNPC.
+      EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, context.getLevel());
+      if (easyNPC != null && easyNPC.getEntity() == entity) {
+        return true;
+      }
       log.error("The entity {} tried to access EasyNPC with UUID {}!", entity, uuid);
       return false;
     }

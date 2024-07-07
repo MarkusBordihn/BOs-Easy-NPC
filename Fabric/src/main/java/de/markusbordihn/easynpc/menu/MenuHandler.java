@@ -20,52 +20,117 @@
 package de.markusbordihn.easynpc.menu;
 
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import java.util.UUID;
-import net.minecraft.server.level.ServerPlayer;
+import de.markusbordihn.easynpc.data.editor.EditorType;
+import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
+import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
+import de.markusbordihn.easynpc.menu.editor.EditorMenu;
+import java.util.EnumMap;
+import java.util.Map;
+import net.minecraft.world.inventory.MenuType;
 
 public class MenuHandler implements MenuHandlerInterface {
 
-  @Override
-  public void openConfigurationMenu(
-      ConfigurationType configurationType,
-      ServerPlayer serverPlayer,
-      EasyNPC<?> easyNPC,
-      int pageIndex) {}
+  protected static final Map<ConfigurationType, MenuType<? extends ConfigurationMenu>>
+      configurationMenuMap = new EnumMap<>(ConfigurationType.class);
+  protected static final Map<EditorType, MenuType<? extends EditorMenu>> editorMenuMap =
+      new EnumMap<>(EditorType.class);
 
-  @Override
-  public void openDialogEditorMenu(
-      ServerPlayer serverPlayer,
-      EasyNPC<?> easyNPC,
-      UUID dialogId,
-      ConfigurationType formerConfigurationType,
-      int pageIndex) {}
+  static {
+    configurationMenuMap.put(
+        ConfigurationType.ABILITIES_ATTRIBUTE, ModMenuTypes.ABILITIES_ATTRIBUTE_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.ADVANCED_DIALOG, ModMenuTypes.ADVANCED_DIALOG_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.ADVANCED_POSE, ModMenuTypes.ADVANCED_POSE_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.ADVANCED_TRADING, ModMenuTypes.ADVANCED_TRADING_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.ATTACK_OBJECTIVE, ModMenuTypes.ATTACK_OBJECTIVE_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.BASE_ATTRIBUTE, ModMenuTypes.BASE_ATTRIBUTE_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.BASIC_ACTION, ModMenuTypes.BASIC_ACTION_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.BASIC_DIALOG, ModMenuTypes.BASIC_DIALOG_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.BASIC_OBJECTIVE, ModMenuTypes.BASIC_OBJECTIVE_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.BASIC_TRADING, ModMenuTypes.BASIC_TRADING_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.CUSTOM_POSE, ModMenuTypes.CUSTOM_POSE_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.CUSTOM_PRESET_EXPORT,
+        ModMenuTypes.CUSTOM_EXPORT_PRESET_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.CUSTOM_PRESET_IMPORT,
+        ModMenuTypes.CUSTOM_IMPORT_PRESET_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.CUSTOM_SKIN, ModMenuTypes.CUSTOM_SKIN_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.CUSTOM_TRADING, ModMenuTypes.CUSTOM_TRADING_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.DEFAULT_POSE, ModMenuTypes.DEFAULT_POSE_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.DEFAULT_POSITION, ModMenuTypes.DEFAULT_POSITION_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.DEFAULT_PRESET_IMPORT,
+        ModMenuTypes.DEFAULT_IMPORT_PRESET_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.DEFAULT_ROTATION, ModMenuTypes.DEFAULT_ROTATION_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.DEFAULT_SKIN, ModMenuTypes.DEFAULT_SKIN_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.DIALOG_ACTION, ModMenuTypes.DIALOG_ACTION_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.DISPLAY_ATTRIBUTE, ModMenuTypes.DISPLAY_ATTRIBUTE_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.DISTANCE_ACTION, ModMenuTypes.DISTANCE_ACTION_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.EQUIPMENT, ModMenuTypes.EQUIPMENT_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.FOLLOW_OBJECTIVE, ModMenuTypes.FOLLOW_OBJECTIVE_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.LOCAL_PRESET_IMPORT, ModMenuTypes.LOCAL_IMPORT_PRESET_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.LOOK_OBJECTIVE, ModMenuTypes.LOOK_OBJECTIVE_CONFIGURATION_MENU);
+    configurationMenuMap.put(ConfigurationType.MAIN, ModMenuTypes.MAIN_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.NONE_DIALOG, ModMenuTypes.NONE_DIALOG_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.NONE_SKIN, ModMenuTypes.NONE_SKIN_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.NONE_TRADING, ModMenuTypes.NONE_TRADING_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.PLAYER_SKIN, ModMenuTypes.PLAYER_SKIN_CONFIGURATION_MENU);
+    configurationMenuMap.put(ConfigurationType.SCALING, ModMenuTypes.SCALING_CONFIGURATION_MENU);
+    configurationMenuMap.put(ConfigurationType.URL_SKIN, ModMenuTypes.URL_SKIN_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.WORLD_PRESET_EXPORT, ModMenuTypes.WORLD_EXPORT_PRESET_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.WORLD_PRESET_IMPORT, ModMenuTypes.WORLD_IMPORT_PRESET_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.YES_NO_DIALOG, ModMenuTypes.YES_NO_DIALOG_CONFIGURATION_MENU);
 
-  @Override
-  public void openDialogButtonEditorMenu(
-      ServerPlayer serverPlayer,
-      EasyNPC<?> easyNPC,
-      UUID dialogId,
-      UUID dialogButtonId,
-      ConfigurationType formerConfigurationType,
-      int pageIndex) {}
-
-  @Override
-  public void openDialogTextEditorMenu(
-      ServerPlayer serverPlayer,
-      EasyNPC<?> easyNPC,
-      UUID dialogId,
-      ConfigurationType formerConfigurationType,
-      int pageIndex) {}
-
-  @Override
-  public void openDialogMenu(
-      ServerPlayer serverPlayer, EasyNPC<?> easyNPC, UUID dialogId, int pageIndex) {
-    openDialogMenu(serverPlayer, ModMenuTypes.DIALOG_MENU, easyNPC, dialogId, pageIndex);
+    editorMenuMap.put(EditorType.ACTION_DATA, ModMenuTypes.ACTION_DATA_EDITOR_MENU);
+    editorMenuMap.put(EditorType.ACTION_DATA_ENTRY, ModMenuTypes.ACTION_DATA_ENTRY_EDITOR_MENU);
+    editorMenuMap.put(EditorType.DIALOG, ModMenuTypes.DIALOG_EDITOR_MENU);
+    editorMenuMap.put(EditorType.DIALOG_BUTTON, ModMenuTypes.DIALOG_BUTTON_EDITOR_MENU);
+    editorMenuMap.put(EditorType.DIALOG_TEXT, ModMenuTypes.DIALOG_TEXT_EDITOR_MENU);
   }
 
   @Override
-  public void openTestMenu(ServerPlayer serverPlayer, UUID npcUUID) {
-    openTestMenu(serverPlayer, ModMenuTypes.TEST_MENU, npcUUID);
+  public MenuType<? extends ConfigurationMenu> getMenuTypeByConfigurationType(
+      ConfigurationType configurationType) {
+    return configurationMenuMap.get(configurationType);
+  }
+
+  @Override
+  public MenuType<? extends EditorMenu> getMenuTypeByEditorType(EditorType editorType) {
+    return editorMenuMap.get(editorType);
+  }
+
+  @Override
+  public MenuType<? extends DialogMenu> getDialogMenuType() {
+    return ModMenuTypes.DIALOG_MENU;
   }
 }

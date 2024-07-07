@@ -28,7 +28,6 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.commands.suggestion.EasyNPCSuggestions;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -52,38 +51,28 @@ public class EasyNPCSelectorParser extends EntitySelectorParser {
   @Override
   public CompletableFuture<Suggestions> fillSuggestions(
       SuggestionsBuilder suggestionsBuilder, Consumer<SuggestionsBuilder> consumer) {
-    List<Suggestion> suggestionsList = new ArrayList<>();
 
     // Define suggestion string range
     StringRange stringRange =
         StringRange.between(suggestionsBuilder.getStart(), suggestionsBuilder.getInput().length());
 
-    // Filter out player selectors, if any.
-    CompletableFuture<Suggestions> suggestionsOriginal =
-        super.fillSuggestions(suggestionsBuilder, consumer);
+    // Filter out player selectors like @p, @a, @r and @s.
+    List<Suggestion> suggestionsList = new ArrayList<>();
     try {
-      ListIterator<Suggestion> suggestionsListIterator =
-          suggestionsOriginal.get().getList().listIterator();
-      if (suggestionsList.isEmpty()) {
-        stringRange = suggestionsOriginal.get().getRange();
-      }
-      while (suggestionsListIterator.hasNext()) {
-        Suggestion suggestion = suggestionsListIterator.next();
-        String text = suggestion.getText();
-        if (text.startsWith("@p")
-            || text.startsWith("@a")
-            || text.startsWith("@r")
-            || text.startsWith("@s")) {
-          // Ignore player selectors
-        } else {
-          // Add specific selectors at the beginning.
-          if (!text.startsWith("@")) {
-            suggestionsList.add(0, suggestion);
-          } else {
-            suggestionsList.add(suggestion);
-          }
-        }
-      }
+      CompletableFuture<Suggestions> suggestionsOriginal =
+          super.fillSuggestions(suggestionsBuilder, consumer);
+      List<Suggestion> originalSuggestionsList = suggestionsOriginal.get().getList();
+      stringRange = suggestionsOriginal.get().getRange();
+      originalSuggestionsList.stream()
+          .filter(suggestion -> !suggestion.getText().matches("@[pars]"))
+          .forEach(
+              suggestion -> {
+                if (suggestion.getText().startsWith("@")) {
+                  suggestionsList.add(suggestion);
+                } else {
+                  suggestionsList.add(0, suggestion);
+                }
+              });
     } catch (InterruptedException | ExecutionException e) {
       log.error("Failed to get suggestions: {}", e.getMessage());
     }

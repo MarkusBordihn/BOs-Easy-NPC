@@ -19,49 +19,11 @@
 
 package de.markusbordihn.easynpc.network;
 
-import de.markusbordihn.easynpc.data.cache.CacheType;
-import de.markusbordihn.easynpc.entity.LivingEntityManager;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
-import de.markusbordihn.easynpc.network.message.CacheDataSyncMessage;
-import de.markusbordihn.easynpc.network.message.PresetExportClientMessage;
-import java.util.UUID;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
+import de.markusbordihn.easynpc.network.message.ClientNetworkMessageHandlerInterface;
 
 public class ClientNetworkMessageHandler implements ClientNetworkMessageHandlerInterface {
 
-  @Override
-  public void exportClientPreset(UUID uuid, String name, ServerPlayer serverPlayer) {
-    if (name != null && !name.isEmpty() && NetworkMessage.checkAccess(uuid, serverPlayer)) {
-      EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-      PresetData<?> presetData = easyNPC.getEasyNPCPresetData();
-      CompoundTag compoundTag = presetData.exportPresetData();
-      log.info(
-          "Exporting preset for {} to {}",
-          easyNPC.getEntity().getName().getString(),
-          serverPlayer.getName().getString());
-      NetworkHandler.sendToPlayer(
-          serverPlayer,
-          PresetExportClientMessage.MESSAGE_ID,
-          new PresetExportClientMessage(
-                  uuid,
-                  easyNPC.getEntity().getName().getString(),
-                  easyNPC.getEasyNPCSkinData().getSkinModel(),
-                  name,
-                  compoundTag)
-              .encode());
-    }
-  }
-
-  @Override
-  public void syncCacheData(
-      UUID uuid, ServerPlayer serverPlayer, CacheType cacheType, CompoundTag data) {
-    if (uuid != null && serverPlayer != null && cacheType != null && data != null) {
-      NetworkHandler.sendToPlayer(
-          serverPlayer,
-          CacheDataSyncMessage.MESSAGE_ID,
-          new CacheDataSyncMessage(uuid, cacheType, data).encode());
-    }
+  public ClientNetworkMessageHandler() {
+    // Register server network handler for Server -> Client messages.
   }
 }

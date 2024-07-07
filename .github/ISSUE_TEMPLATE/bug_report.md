@@ -17,6 +17,9 @@ There you can find a lot of useful information and solutions for common problems
 Please make sure to fill out the following template to the best of your ability. This will help us
 to identify and fix the issue faster.
 
+**Minecraft and Mod version** 🐞
+The used Minecraft and Mod version.
+
 **Describe the bug** 🐞
 A clear and concise description of what the bug is.
 

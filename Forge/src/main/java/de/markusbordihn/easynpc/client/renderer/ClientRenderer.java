@@ -51,7 +51,7 @@ public class ClientRenderer {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  protected ClientRenderer() {}
+  private ClientRenderer() {}
 
   public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
     log.info("{} Entity Renders ...", Constants.LOG_REGISTER_PREFIX);

@@ -20,10 +20,10 @@
 package de.markusbordihn.easynpc.network;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.network.message.CacheDataSyncMessage;
-import de.markusbordihn.easynpc.network.message.ChangeSpawnerSettingMessage;
-import de.markusbordihn.easynpc.network.message.DialogButtonActionMessage;
-import de.markusbordihn.easynpc.network.message.TriggerActionEventMessage;
+import de.markusbordihn.easynpc.network.message.NetworkMessage;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
@@ -32,43 +32,57 @@ import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class NetworkHandler {
-
+public class NetworkHandler implements NetworkHandlerInterface {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private NetworkHandler() {}
+  public NetworkHandler() {
+    log.info("{} NetworkHandler ...", Constants.LOG_REGISTER_PREFIX);
+  }
 
   public static void registerClientNetworkHandler() {
-
-    ClientPlayNetworking.registerGlobalReceiver(
-        CacheDataSyncMessage.MESSAGE_ID,
-        (client, handler, buffer, responseSender) -> CacheDataSyncMessage.handle(buffer, null));
+    NetworkHandlerManager.registerClientNetworkHandler();
   }
 
   public static void registerServerNetworkHandler() {
-
-    ServerPlayNetworking.registerGlobalReceiver(
-        TriggerActionEventMessage.MESSAGE_ID,
-        (server, serverPlayer, handler, buffer, responseSender) ->
-            TriggerActionEventMessage.handle(buffer, serverPlayer));
-
-    ServerPlayNetworking.registerGlobalReceiver(
-        ChangeSpawnerSettingMessage.MESSAGE_ID,
-        (server, serverPlayer, handler, buffer, responseSender) ->
-            ChangeSpawnerSettingMessage.handle(buffer, serverPlayer));
-
-    ServerPlayNetworking.registerGlobalReceiver(
-        DialogButtonActionMessage.MESSAGE_ID,
-        (server, serverPlayer, handler, buffer, responseSender) ->
-            DialogButtonActionMessage.handle(buffer, serverPlayer));
+    NetworkHandlerManager.registerServerNetworkHandler();
   }
 
-  public static void sendToServer(ResourceLocation messageId, FriendlyByteBuf buffer) {
-    ClientPlayNetworking.send(messageId, buffer);
+  @Override
+  public <M extends NetworkMessage> void sendToServer(
+      ResourceLocation messageId, M networkMessage) {
+    ClientPlayNetworking.send(messageId, networkMessage.encode());
   }
 
-  public static void sendToPlayer(
-      ServerPlayer serverPlayer, ResourceLocation messageId, FriendlyByteBuf buffer) {
-    ServerPlayNetworking.send(serverPlayer, messageId, buffer);
+  @Override
+  public <M extends NetworkMessage> void sendToPlayer(
+      ResourceLocation messageId, M networkMessage, ServerPlayer serverPlayer) {
+    ServerPlayNetworking.send(serverPlayer, messageId, networkMessage.encode());
+  }
+
+  @Override
+  public <M> void registerClientNetworkMessageHandler(
+      ResourceLocation messageID,
+      Class<M> networkMessage,
+      BiConsumer<M, FriendlyByteBuf> encoder,
+      Function<FriendlyByteBuf, M> decoder,
+      Consumer<M> handler) {
+
+    ClientPlayNetworking.registerGlobalReceiver(
+        messageID,
+        (client, channelHandler, buffer, responseSender) -> handler.accept(decoder.apply(buffer)));
+  }
+
+  @Override
+  public <M> void registerServerNetworkMessageHandler(
+      ResourceLocation messageID,
+      Class<M> networkMessage,
+      BiConsumer<M, FriendlyByteBuf> encoder,
+      Function<FriendlyByteBuf, M> decoder,
+      BiConsumer<M, ServerPlayer> handler) {
+
+    ServerPlayNetworking.registerGlobalReceiver(
+        messageID,
+        (server, serverPlayer, channelHandler, buffer, responseSender) ->
+            handler.accept(decoder.apply(buffer), serverPlayer));
   }
 }

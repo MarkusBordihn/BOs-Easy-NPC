@@ -31,23 +31,29 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 public class CustomButton extends Button {
+
   protected static final WidgetSprites SPRITES =
       new WidgetSprites(
           new ResourceLocation(Constants.MINECRAFT_PREFIX, "widget/button"),
           new ResourceLocation(Constants.MINECRAFT_PREFIX, "widget/button_disabled"),
           new ResourceLocation(Constants.MINECRAFT_PREFIX, "widget/button_highlighted"));
 
+  public CustomButton(int left, int top, int width, int height) {
+    this(left, top, width, height, null, unused -> {});
+  }
+
   public CustomButton(int left, int top, int width, int height, OnPress onPress) {
     this(left, top, width, height, null, onPress);
   }
 
-  public CustomButton(int left, int top, int width, int height, Component text, OnPress onPress) {
+  public CustomButton(
+      int left, int top, int width, int height, Component component, OnPress onPress) {
     super(
         left,
         top,
         width,
         height,
-        text != null ? text : Component.literal(""),
+        component != null ? component : Component.literal(""),
         onPress,
         Button.DEFAULT_NARRATION);
   }
@@ -91,14 +97,5 @@ public class CustomButton extends Button {
 
     // Button Text
     this.renderButtonText(guiGraphics, font, this.getMessage(), this.getX(), this.getY());
-  }
-
-  protected int getYImage(boolean isHoverOrFocused) {
-    if (!this.active) {
-      return 0;
-    } else if (isHoverOrFocused) {
-      return 2;
-    }
-    return 1;
   }
 }

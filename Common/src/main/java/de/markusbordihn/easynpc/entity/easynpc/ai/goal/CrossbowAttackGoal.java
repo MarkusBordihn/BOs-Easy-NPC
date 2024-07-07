@@ -32,15 +32,14 @@ import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 
 public class CrossbowAttackGoal<T extends EasyNPC<?>> extends Goal {
-
   public static final UniformInt PATHFINDING_DELAY_RANGE = TimeUtil.rangeOfSeconds(1, 2);
-  private final PathfinderMob pathfinderMob;
-  private final CrossbowAttackMob crossbowAttackMob;
   private final double speedModifier;
   private final float attackRadiusSqr;
+  private final PathfinderMob pathfinderMob;
+  private final CrossbowAttackMob crossbowAttackMob;
+  private int attackDelay;
   private CrossbowState crossbowState = CrossbowState.UNCHARGED;
   private int seeTime;
-  private int attackDelay;
   private int updatePathDelay;
 
   public CrossbowAttackGoal(T easyNPC, double speedModifier, float attackRange) {

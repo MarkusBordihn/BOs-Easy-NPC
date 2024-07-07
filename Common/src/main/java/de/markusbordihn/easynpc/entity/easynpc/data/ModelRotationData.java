@@ -35,6 +35,9 @@ import net.minecraft.world.entity.PathfinderMob;
 
 public interface ModelRotationData<T extends PathfinderMob> extends EasyNPC<T> {
 
+  CustomRotation DEFAULT_MODEL_PART_ROTATION = new CustomRotation(0, 0, 0);
+  String EASY_NPC_DATA_MODEL_LOCK_TAG = "Lock";
+  String EASY_NPC_DATA_MODEL_ROTATION_TAG = "Rotation";
   EntityDataSerializer<CustomRotation> ROTATION =
       new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, CustomRotation rotation) {
@@ -51,9 +54,6 @@ public interface ModelRotationData<T extends PathfinderMob> extends EasyNPC<T> {
           return rotation;
         }
       };
-  String EASY_NPC_DATA_MODEL_ROTATION_TAG = "Rotation";
-  String EASY_NPC_DATA_MODEL_LOCK_TAG = "Lock";
-  CustomRotation DEFAULT_MODEL_PART_ROTATION = new CustomRotation(0, 0, 0);
 
   static void registerSyncedModelRotationData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {

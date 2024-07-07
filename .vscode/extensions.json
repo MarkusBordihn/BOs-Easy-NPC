@@ -2,12 +2,17 @@
   "recommendations": [
     "davidanson.vscode-markdownlint",
     "dotjoshjohnson.xml",
-    "naco-siren.gradle-language",
+    "esbenp.prettier-vscode",
+    "lacroixdavid1.vscode-format-context-menu",
+    "misodee.vscode-nbt",
     "shd101wyy.markdown-preview-enhanced",
     "sonarsource.sonarlint-vscode",
+    "spgoding.datapack-language-server",
     "streetsidesoftware.code-spell-checker",
+    "streetsidesoftware.code-spell-checker-german",
+    "tamasfe.even-better-toml",
+    "tyriar.sort-lines",
     "vscjava.vscode-gradle",
-    "vscjava.vscode-java-pack",
-    "tamasfe.even-better-toml"
+    "vscjava.vscode-java-pack"
   ]
 }

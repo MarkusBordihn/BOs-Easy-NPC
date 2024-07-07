@@ -113,7 +113,7 @@ public class DataFileHandler {
       log.info("Creating custom data folder {} at {} ...", dataLabel, customDataFolder);
       return Files.createDirectories(customDataFolderPath);
     } catch (Exception exception) {
-      log.error("There was an error, creating the custom data folder:", exception);
+      log.error("There was an error, creating the custom data folder {}:", dataLabel, exception);
     }
     return null;
   }

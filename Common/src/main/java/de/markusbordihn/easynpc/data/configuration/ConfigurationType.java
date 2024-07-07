@@ -19,8 +19,13 @@
 
 package de.markusbordihn.easynpc.data.configuration;
 
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+
 public enum ConfigurationType {
-  // @formatter:off
+  NONE,
   ABILITIES_ATTRIBUTE,
   ADVANCED_DIALOG,
   ADVANCED_POSE,
@@ -41,23 +46,61 @@ public enum ConfigurationType {
   DEFAULT_PRESET_IMPORT,
   DEFAULT_ROTATION,
   DEFAULT_SKIN,
+  DIALOG(true),
   DIALOG_ACTION,
-  DIALOG_EDITOR,
+  DISPLAY_ATTRIBUTE,
   DISTANCE_ACTION,
   EQUIPMENT,
   FOLLOW_OBJECTIVE,
+  LOCAL_PRESET_IMPORT,
   LOOK_OBJECTIVE,
   MAIN,
   NONE_DIALOG,
   NONE_SKIN,
   NONE_TRADING,
   PLAYER_SKIN,
+  POSE(true),
   SCALING,
+  SKIN(true),
+  TRADING(true),
   URL_SKIN,
   WORLD_PRESET_EXPORT,
   WORLD_PRESET_IMPORT,
-  YES_NO_DIALOG,
-  DISPLAY_ATTRIBUTE,
-  LOCAL_PRESET_IMPORT,
-  // @formatter:on
+  YES_NO_DIALOG;
+
+  private boolean isAlias = false;
+
+  ConfigurationType() {}
+
+  ConfigurationType(boolean isAlias) {
+    this.isAlias = isAlias;
+  }
+
+  public static ConfigurationType get(String configurationType) {
+    if (configurationType == null || configurationType.isEmpty()) {
+      return ConfigurationType.NONE;
+    }
+    try {
+      return ConfigurationType.valueOf(configurationType);
+    } catch (IllegalArgumentException e) {
+      return ConfigurationType.NONE;
+    }
+  }
+
+  public boolean isAlias() {
+    return isAlias;
+  }
+
+  public ResourceLocation getId() {
+    return new ResourceLocation(Constants.MOD_ID, this.name().toLowerCase() + "_configuration");
+  }
+
+  public String getName() {
+    return this.name().toLowerCase() + "_configuration";
+  }
+
+  public Component getConfigurationTitle(final EasyNPC<?> easyNPC) {
+    String translationKey = Constants.TEXT_CONFIG_PREFIX + this.name().toLowerCase() + ".title";
+    return Component.translatable(translationKey, easyNPC.getEntity().getName().getString(16));
+  }
 }

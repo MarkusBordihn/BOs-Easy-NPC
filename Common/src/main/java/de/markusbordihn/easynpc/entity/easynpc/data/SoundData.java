@@ -41,6 +41,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public interface SoundData<E extends PathfinderMob> extends EasyNPC<E> {
 
+  String EASY_NPC_DATA_SOUND_DATA_TAG = "SoundData";
   EntityDataSerializer<SoundDataSet> SOUND_DATA_SET =
       new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, SoundDataSet value) {
@@ -55,7 +56,6 @@ public interface SoundData<E extends PathfinderMob> extends EasyNPC<E> {
           return value;
         }
       };
-  String EASY_NPC_DATA_SOUND_DATA_TAG = "SoundData";
 
   static void registerSyncedSoundData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {

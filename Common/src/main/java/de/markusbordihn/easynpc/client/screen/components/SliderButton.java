@@ -53,8 +53,8 @@ public class SliderButton extends AbstractSliderButton {
   private final Type type;
   private boolean canChangeValue;
   private float initValue;
-  private float targetValue;
   private float roundFactor = 100.0f;
+  private float targetValue;
 
   public SliderButton(
       int x,
@@ -195,8 +195,7 @@ public class SliderButton extends AbstractSliderButton {
     return switch (type) {
       case DEGREE -> 0.5f;
       case DOUBLE -> 1.0f;
-      case SCALE -> 0.1f;
-      case POSITION -> 0.1f;
+      case SCALE, POSITION -> 0.1f;
       default -> 1.0f;
     };
   }
@@ -263,6 +262,12 @@ public class SliderButton extends AbstractSliderButton {
   }
 
   @Override
+  protected void applyValue() {
+    this.updateTargetValue();
+    this.onChange.onChange(this);
+  }
+
+  @Override
   public boolean keyPressed(int keyCode, int unused1, int unused2) {
     if (keyCode == 263 || keyCode == 262) {
       float step = keyCode == 263 ? -1.0F : 1.0F;
@@ -274,19 +279,13 @@ public class SliderButton extends AbstractSliderButton {
   }
 
   @Override
-  public boolean mouseScrolled(double x, double y, double distance, double unknown) {
+  public boolean mouseScrolled(double x, double y, double distance, double unused) {
     if (this.isHoveredOrFocused()) {
       double incrementalSteps = distance * this.getStepSize();
       this.setTargetValue(this.value + incrementalSteps);
     }
 
     return true;
-  }
-
-  @Override
-  protected void applyValue() {
-    this.updateTargetValue();
-    this.onChange.onChange(this);
   }
 
   @Override
@@ -354,7 +353,6 @@ public class SliderButton extends AbstractSliderButton {
   }
 
   public interface OnChange {
-
     void onChange(SliderButton sliderButton);
   }
 }

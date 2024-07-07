@@ -47,7 +47,6 @@ public class BaseHierarchicalArmHeadModel<E extends Mob> extends HierarchicalMod
         EasyNPCModel<E>,
         HumanoidArmAnimation,
         HumanoidArmPoseAnimation {
-
   protected final Map<ModelPartType, CustomPosition> modelPartPositionMap =
       new EnumMap<>(ModelPartType.class);
   protected final Map<ModelPartType, Rotations> modelPartRotationMap =

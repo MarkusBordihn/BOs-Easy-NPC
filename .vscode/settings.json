@@ -29,9 +29,11 @@
     "markusbordihn",
     "modid",
     "Pickable",
+    "Prio",
     "purpur",
     "Pushable",
     "RAGDOLL",
+    "Recalc",
     "REPOSTS",
     "SHORTHAIR",
     "simplequests",
@@ -47,7 +49,7 @@
     "build",
     "models",
     "run",
-    "src/main/resources/assets/easy_npc/lang"
+    "src/main/resources/assets/*"
   ],
   "java.configuration.updateBuildConfiguration": "automatic",
   "java.format.settings.url": "./java-google-style.xml",
@@ -66,5 +68,5 @@
     "javax.annotation.Nonnull",
     "org.eclipse.jdt.annotation.NonNull"
   ],
-  "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx2G -Xms100m -Xlog:disable"
+  "java.project.outputPath": "bin"
 }

@@ -25,13 +25,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ModTabs {
 
   public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS =
       DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Constants.MOD_ID);
+
   public static final RegistryObject<CreativeModeTab> TAB_CONFIG_ITEMS =
       CREATIVE_TABS.register(
           "config_items",
@@ -41,6 +40,7 @@ public class ModTabs {
                   .displayItems(new ConfigItems())
                   .title(Component.translatable("itemGroup.easy_npc.config_items"))
                   .build());
+
   public static final RegistryObject<CreativeModeTab> TAB_SPAWN_EGGS =
       CREATIVE_TABS.register(
           "spawn_eggs",
@@ -50,7 +50,6 @@ public class ModTabs {
                   .displayItems(new SpawnEggs())
                   .title(Component.translatable("itemGroup.easy_npc.spawn_eggs"))
                   .build());
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   protected ModTabs() {}
 }

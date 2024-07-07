@@ -17,6 +17,7 @@ out
 # Gradle
 build
 run
+NeoForge/runs/
 .gradle
 *local.properties
 

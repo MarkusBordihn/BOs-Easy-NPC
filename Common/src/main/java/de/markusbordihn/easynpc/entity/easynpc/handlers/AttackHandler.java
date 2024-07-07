@@ -40,7 +40,6 @@ import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.TieredItem;
 
 public class AttackHandler {
-
   public static final String CHARGED_PROJECTILES_TAG = "ChargedProjectiles";
 
   private AttackHandler() {}

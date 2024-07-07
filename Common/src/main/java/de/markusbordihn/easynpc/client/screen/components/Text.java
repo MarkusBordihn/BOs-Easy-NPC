@@ -20,6 +20,8 @@
 package de.markusbordihn.easynpc.client.screen.components;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.texture.TextureManager;
+import java.util.List;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -30,38 +32,37 @@ public class Text {
   private Text() {}
 
   public static void drawString(GuiGraphics guiGraphics, Font font, String text, int x, int y) {
-    guiGraphics.drawString(
-        font, Component.literal(text), x, y, Constants.FONT_COLOR_DEFAULT, false);
+    drawString(guiGraphics, font, Component.literal(text), x, y);
   }
 
   public static void drawString(
       GuiGraphics guiGraphics, Font font, String text, int x, int y, int color) {
-    guiGraphics.drawString(font, Component.literal(text), x, y, color, false);
+    drawString(guiGraphics, font, Component.literal(text), x, y, color);
   }
 
   public static void drawString(
       GuiGraphics guiGraphics, Font font, Component component, int x, int y) {
-    guiGraphics.drawString(font, component, x, y, Constants.FONT_COLOR_DEFAULT, false);
+    drawString(guiGraphics, font, component, x, y, Constants.FONT_COLOR_DEFAULT);
   }
 
-  public static void drawString(
+  public static int drawString(
       GuiGraphics guiGraphics, Font font, Component component, int x, int y, int color) {
-    guiGraphics.drawString(font, component, x, y, color, false);
+    return guiGraphics.drawString(font, component, x, y, color, false);
   }
 
   public static void drawStringShadow(
       GuiGraphics guiGraphics, Font font, String text, int x, int y, int color) {
-    guiGraphics.drawString(font, Component.literal(text), x, y, color, false);
+    guiGraphics.drawString(font, text, x, y, color, true);
   }
 
-  public static void drawStringShadow(
+  public static int drawStringShadow(
       GuiGraphics guiGraphics, Font font, Component component, int x, int y) {
-    guiGraphics.drawString(font, component, x, y, Constants.FONT_COLOR_DEFAULT, false);
+    return drawStringShadow(guiGraphics, font, component, x, y, Constants.FONT_COLOR_DEFAULT);
   }
 
-  public static void drawStringShadow(
+  public static int drawStringShadow(
       GuiGraphics guiGraphics, Font font, Component component, int x, int y, int color) {
-    guiGraphics.drawString(font, component, x, y, color, true);
+    return guiGraphics.drawString(font, component, x, y, color, true);
   }
 
   public static void drawString(
@@ -70,7 +71,28 @@ public class Text {
       FormattedCharSequence formattedCharSequence,
       int x,
       int y) {
-    guiGraphics.drawString(font, formattedCharSequence, x, y, Constants.FONT_COLOR_DEFAULT, false);
+    drawString(guiGraphics, font, formattedCharSequence, x, y, Constants.FONT_COLOR_DEFAULT);
+  }
+
+  public static void drawErrorMessage(
+      GuiGraphics guiGraphics, Font font, String text, int x, int y, int width) {
+    drawErrorMessage(guiGraphics, font, Component.literal(text), x, y, width);
+  }
+
+  public static void drawErrorMessage(
+      GuiGraphics guiGraphics, Font font, Component component, int x, int y, int width) {
+    List<FormattedCharSequence> textComponents =
+        font.split(Component.literal(TextureManager.getLastErrorMessage()), width);
+    int line = 0;
+    for (FormattedCharSequence formattedCharSequence : textComponents) {
+      Text.drawString(
+          guiGraphics,
+          font,
+          formattedCharSequence,
+          x,
+          y + (line++ * (font.lineHeight + 2)),
+          Constants.FONT_COLOR_RED);
+    }
   }
 
   public static void drawString(
@@ -99,14 +121,15 @@ public class Text {
         color);
   }
 
-  public static void drawConfigStringShadow(
+  public static int drawConfigStringShadow(
       GuiGraphics guiGraphics, Font font, String translationKey, int x, int y) {
-    drawConfigStringShadow(guiGraphics, font, translationKey, x, y, Constants.FONT_COLOR_DEFAULT);
+    return drawConfigStringShadow(
+        guiGraphics, font, translationKey, x, y, Constants.FONT_COLOR_DEFAULT);
   }
 
-  public static void drawConfigStringShadow(
+  public static int drawConfigStringShadow(
       GuiGraphics guiGraphics, Font font, String translationKey, int x, int y, int color) {
-    drawStringShadow(
+    return drawStringShadow(
         guiGraphics,
         font,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + translationKey),
@@ -115,7 +138,7 @@ public class Text {
         color);
   }
 
-  public static void drawConfigStringWithData(
+  public static int drawConfigStringWithData(
       GuiGraphics guiGraphics,
       Font font,
       String translationKey,
@@ -123,7 +146,7 @@ public class Text {
       int x,
       int y,
       int color) {
-    drawString(
+    return drawString(
         guiGraphics,
         font,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + translationKey, data),
