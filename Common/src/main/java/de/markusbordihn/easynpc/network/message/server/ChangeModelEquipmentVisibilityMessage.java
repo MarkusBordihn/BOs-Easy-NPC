@@ -23,14 +23,14 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.network.message.NetworkMessage;
-import io.netty.buffer.Unpooled;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 
-public class ChangeModelEquipmentVisibilityMessage extends NetworkMessage {
+public class ChangeModelEquipmentVisibilityMessage
+    extends NetworkMessage<ChangeModelEquipmentVisibilityMessage> {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_model_equipment_visibility");
@@ -109,8 +109,13 @@ public class ChangeModelEquipmentVisibilityMessage extends NetworkMessage {
   }
 
   @Override
-  public FriendlyByteBuf encode() {
-    return encode(this, new FriendlyByteBuf(Unpooled.buffer()));
+  public FriendlyByteBuf encodeBuffer(FriendlyByteBuf buffer) {
+    return encode(this, buffer);
+  }
+
+  @Override
+  public ChangeModelEquipmentVisibilityMessage decodeBuffer(FriendlyByteBuf buffer) {
+    return decode(buffer);
   }
 
   public EquipmentSlot getEquipmentSlot() {

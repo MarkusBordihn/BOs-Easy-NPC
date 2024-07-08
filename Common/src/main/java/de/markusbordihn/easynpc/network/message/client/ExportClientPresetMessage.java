@@ -23,7 +23,6 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.network.message.NetworkMessage;
-import io.netty.buffer.Unpooled;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
@@ -32,7 +31,7 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
-public class ExportClientPresetMessage extends NetworkMessage {
+public class ExportClientPresetMessage extends NetworkMessage<ExportClientPresetMessage> {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "preset_export_client");
@@ -124,7 +123,7 @@ public class ExportClientPresetMessage extends NetworkMessage {
     log.info(
         "Exporting EasyNPC {} with UUID {} and skin {} to {}", name, uuid, skinModel, presetFile);
     try {
-      NbtIo.writeCompressed(data, presetFile);
+      NbtIo.writeCompressed(data, presetFile.toPath());
     } catch (final IOException exception) {
       log.error(
           "Failed to export EasyNPC {} with UUID {} and skin {} to {}",
@@ -137,8 +136,13 @@ public class ExportClientPresetMessage extends NetworkMessage {
   }
 
   @Override
-  public FriendlyByteBuf encode() {
-    return encode(this, new FriendlyByteBuf(Unpooled.buffer()));
+  public FriendlyByteBuf encodeBuffer(FriendlyByteBuf buffer) {
+    return encode(this, buffer);
+  }
+
+  @Override
+  public ExportClientPresetMessage decodeBuffer(FriendlyByteBuf buffer) {
+    return decode(buffer);
   }
 
   public String getName() {

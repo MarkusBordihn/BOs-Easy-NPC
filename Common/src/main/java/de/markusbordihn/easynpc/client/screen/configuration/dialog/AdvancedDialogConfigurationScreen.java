@@ -98,7 +98,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
 
     // Render dialog list.
     if (this.dialogList != null) {
-      this.dialogList.render(guiGraphics, x, y, partialTicks);
+      this.dialogList.renderSelectionList(guiGraphics, x, y, partialTicks);
     }
 
     // Header background
@@ -167,9 +167,8 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
       super(
           AdvancedDialogConfigurationScreen.this.minecraft,
           AdvancedDialogConfigurationScreen.this.width + 50,
-          AdvancedDialogConfigurationScreen.this.height - 60,
+          177,
           AdvancedDialogConfigurationScreen.this.contentTopPos + 15,
-          AdvancedDialogConfigurationScreen.this.contentTopPos + 195,
           19);
       this.setRenderHeader(false, 0);
       this.setRenderBackground(false);
@@ -184,8 +183,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
       }
     }
 
-    @Override
-    public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+    public void renderSelectionList(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
       if (this.getItemCount() > 0) {
         super.render(guiGraphics, x, y, partialTicks);
       }

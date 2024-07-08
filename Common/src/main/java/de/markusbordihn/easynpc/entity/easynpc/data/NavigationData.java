@@ -140,7 +140,7 @@ public interface NavigationData<T extends PathfinderMob> extends EasyNPC<T> {
       BlockState blockState = level.getBlockState(mob.getOnPos());
       mob.setOnGround(
           !blockState.is(Blocks.AIR)
-              && !blockState.is(Blocks.GRASS)
+              && !blockState.is(Blocks.GRASS_BLOCK)
               && !blockState.is(Blocks.WHITE_CARPET)
               && !blockState.is(Blocks.RED_CARPET));
 

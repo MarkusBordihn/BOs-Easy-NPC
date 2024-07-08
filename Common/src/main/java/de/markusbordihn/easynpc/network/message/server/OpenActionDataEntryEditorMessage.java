@@ -25,13 +25,13 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.network.message.NetworkMessage;
-import io.netty.buffer.Unpooled;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public class OpenActionDataEntryEditorMessage extends NetworkMessage {
+public class OpenActionDataEntryEditorMessage
+    extends NetworkMessage<OpenActionDataEntryEditorMessage> {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "open_action_data_entry_editor");
@@ -139,8 +139,13 @@ public class OpenActionDataEntryEditorMessage extends NetworkMessage {
   }
 
   @Override
-  public FriendlyByteBuf encode() {
-    return encode(this, new FriendlyByteBuf(Unpooled.buffer()));
+  public FriendlyByteBuf encodeBuffer(FriendlyByteBuf buffer) {
+    return encode(this, buffer);
+  }
+
+  @Override
+  public OpenActionDataEntryEditorMessage decodeBuffer(FriendlyByteBuf buffer) {
+    return decode(buffer);
   }
 
   public UUID getActionDataEntryId() {

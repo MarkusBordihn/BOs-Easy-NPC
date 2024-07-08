@@ -36,7 +36,7 @@ public class BulletItem extends ArrowItem {
 
   @Override
   public AbstractArrow createArrow(Level level, ItemStack itemStack, LivingEntity livingEntity) {
-    Arrow arrow = new Arrow(level, livingEntity);
+    Arrow arrow = new Arrow(level, livingEntity, itemStack);
     arrow.setEffectsFromItem(itemStack);
     return arrow;
   }

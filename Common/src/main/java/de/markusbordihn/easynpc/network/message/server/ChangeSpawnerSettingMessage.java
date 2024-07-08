@@ -23,7 +23,6 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.block.entity.BaseEasyNPCSpawnerBlockEntity;
 import de.markusbordihn.easynpc.data.spawner.SpawnerSettingType;
 import de.markusbordihn.easynpc.network.message.NetworkMessage;
-import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -34,7 +33,7 @@ import net.minecraft.world.level.chunk.LevelChunk.EntityCreationType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChangeSpawnerSettingMessage extends NetworkMessage {
+public class ChangeSpawnerSettingMessage extends NetworkMessage<ChangeSpawnerSettingMessage> {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_spawner_settings");
@@ -140,8 +139,14 @@ public class ChangeSpawnerSettingMessage extends NetworkMessage {
     }
   }
 
-  public FriendlyByteBuf encode() {
-    return encode(this, new FriendlyByteBuf(Unpooled.buffer()));
+  @Override
+  public FriendlyByteBuf encodeBuffer(FriendlyByteBuf buffer) {
+    return encode(this, buffer);
+  }
+
+  @Override
+  public ChangeSpawnerSettingMessage decodeBuffer(FriendlyByteBuf buffer) {
+    return decode(buffer);
   }
 
   public BlockPos getSpawnerPos() {

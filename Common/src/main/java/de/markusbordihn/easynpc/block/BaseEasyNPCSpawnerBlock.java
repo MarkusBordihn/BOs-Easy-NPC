@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.block;
 
+import com.mojang.serialization.MapCodec;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.block.entity.BaseEasyNPCSpawnerBlockEntity;
 import java.util.UUID;
@@ -39,11 +40,18 @@ import org.apache.logging.log4j.Logger;
 
 public class BaseEasyNPCSpawnerBlock extends BaseEntityBlock {
 
+  public static final MapCodec<BaseEasyNPCSpawnerBlock> CODEC =
+      simpleCodec(BaseEasyNPCSpawnerBlock::new);
   public static final String NAME = "easy_npc_spawner";
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public BaseEasyNPCSpawnerBlock(Properties properties) {
     super(properties);
+  }
+
+  @Override
+  protected MapCodec<? extends BaseEntityBlock> codec() {
+    return CODEC;
   }
 
   @Override

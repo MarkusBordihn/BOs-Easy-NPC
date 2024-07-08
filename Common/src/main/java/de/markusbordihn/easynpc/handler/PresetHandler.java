@@ -35,6 +35,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -189,7 +190,8 @@ public class PresetHandler {
     }
 
     try {
-      CompoundTag compoundTag = NbtIo.readCompressed(presetFile.toFile());
+      CompoundTag compoundTag =
+          NbtIo.readCompressed(presetFile.toFile().toPath(), NbtAccounter.unlimitedHeap());
       return importPreset(serverLevel, compoundTag, position, uuid);
     } catch (IOException exception) {
       log.error("[{}] Error reading custom preset file {}", serverLevel, presetFile, exception);
@@ -215,7 +217,9 @@ public class PresetHandler {
 
     try {
       CompoundTag compoundTag =
-          NbtIo.readCompressed(minecraftServer.getResourceManager().open(presetLocation));
+          NbtIo.readCompressed(
+              minecraftServer.getResourceManager().open(presetLocation),
+              NbtAccounter.unlimitedHeap());
       return importPreset(serverLevel, compoundTag, position, uuid);
     } catch (IOException exception) {
       log.error("[{}] Error reading data preset file {}", serverLevel, presetLocation, exception);
@@ -241,7 +245,9 @@ public class PresetHandler {
 
     try {
       CompoundTag compoundTag =
-          NbtIo.readCompressed(minecraftServer.getResourceManager().open(presetLocation));
+          NbtIo.readCompressed(
+              minecraftServer.getResourceManager().open(presetLocation),
+              NbtAccounter.unlimitedHeap());
       return importPreset(serverLevel, compoundTag, position, uuid);
     } catch (IOException exception) {
       log.error(
@@ -267,7 +273,8 @@ public class PresetHandler {
     }
 
     try {
-      CompoundTag compoundTag = NbtIo.readCompressed(presetFile.toFile());
+      CompoundTag compoundTag =
+          NbtIo.readCompressed(presetFile.toFile().toPath(), NbtAccounter.unlimitedHeap());
       return importPreset(serverLevel, compoundTag, position, uuid);
     } catch (IOException exception) {
       log.error("[{}] Error reading world preset file {}", serverLevel, presetFile, exception);
@@ -330,7 +337,7 @@ public class PresetHandler {
     }
 
     try {
-      NbtIo.writeCompressed(compoundTag, file);
+      NbtIo.writeCompressed(compoundTag, file.toPath());
       return true;
     } catch (IOException exception) {
       log.error("Failed to export preset file {} with {} !", file, compoundTag, exception);

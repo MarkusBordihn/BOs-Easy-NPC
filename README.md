@@ -1,4 +1,4 @@
-# 🗣 Easy NPC (1.20.2)
+# 🗣 Easy NPC (1.20.4)
 
 ![Daily Rewards Versions](http://cf.way2muchnoise.eu/versions/Minecraft_559312_all.svg)
 

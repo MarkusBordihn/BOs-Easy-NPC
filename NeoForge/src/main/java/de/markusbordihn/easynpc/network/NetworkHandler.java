@@ -25,49 +25,57 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.network.NetworkRegistry.ChannelBuilder;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.PlayNetworkDirection;
-import net.neoforged.neoforge.network.simple.SimpleChannel;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
 
 public class NetworkHandler implements NetworkHandlerInterface {
 
   private static final int PROTOCOL_VERSION = 21;
-  public static final SimpleChannel INSTANCE =
-      ChannelBuilder.named(new ResourceLocation(Constants.MOD_ID, "network"))
-          .clientAcceptedVersions(version -> version.equals(String.valueOf(PROTOCOL_VERSION)))
-          .serverAcceptedVersions(version -> version.equals(String.valueOf(PROTOCOL_VERSION)))
-          .networkProtocolVersion(() -> String.valueOf(PROTOCOL_VERSION))
-          .simpleChannel();
-
-  private static int id = 0;
+  public static IPayloadRegistrar INSTANCE;
 
   public NetworkHandler() {
     log.info("{} NetworkHandler ...", Constants.LOG_REGISTER_PREFIX);
   }
 
-  public static void registerNetworkHandler(final FMLCommonSetupEvent event) {
+  public static void registerNetworkHandler(final RegisterPayloadHandlerEvent payloadHandlerEvent) {
+
+    INSTANCE =
+        payloadHandlerEvent
+            .registrar(Constants.MOD_ID)
+            .versioned(String.valueOf(PROTOCOL_VERSION))
+            .optional();
     log.info(
         "{} Network Handler for {} with version {} ...",
         Constants.LOG_REGISTER_PREFIX,
         INSTANCE,
         PROTOCOL_VERSION);
 
-    event.enqueueWork(
-        () -> {
-          NetworkHandlerManager.registerClientNetworkHandler();
-          NetworkHandlerManager.registerServerNetworkHandler();
-        });
+    NetworkHandlerManager.registerClientNetworkHandler();
+    NetworkHandlerManager.registerServerNetworkHandler();
   }
 
   @Override
   public <M extends NetworkMessage> void sendToServer(
       ResourceLocation messageId, M networkMessage) {
     try {
-      INSTANCE.send(PacketDistributor.SERVER.noArg(), networkMessage);
+      PacketDistributor.SERVER
+          .noArg()
+          .send(
+              new CustomPacketPayload() {
+                @Override
+                public void write(FriendlyByteBuf friendlyByteBuf) {
+                  networkMessage.encodeBuffer(friendlyByteBuf);
+                }
+
+                @Override
+                public ResourceLocation id() {
+                  return messageId;
+                }
+              });
     } catch (Exception e) {
       log.error("Failed to send {} to server, got error: {}", networkMessage, e.getMessage());
     }
@@ -77,7 +85,20 @@ public class NetworkHandler implements NetworkHandlerInterface {
   public <M extends NetworkMessage> void sendToPlayer(
       ResourceLocation messageId, M networkMessage, ServerPlayer serverPlayer) {
     try {
-      INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), networkMessage);
+      PacketDistributor.PLAYER
+          .with(serverPlayer)
+          .send(
+              new CustomPacketPayload() {
+                @Override
+                public void write(FriendlyByteBuf friendlyByteBuf) {
+                  networkMessage.encodeBuffer(friendlyByteBuf);
+                }
+
+                @Override
+                public ResourceLocation id() {
+                  return messageId;
+                }
+              });
     } catch (Exception e) {
       log.error(
           "Failed to send {} to player {}, got error: {}",
@@ -94,18 +115,14 @@ public class NetworkHandler implements NetworkHandlerInterface {
       BiConsumer<M, FriendlyByteBuf> encoder,
       Function<FriendlyByteBuf, M> decoder,
       Consumer<M> handler) {
-    INSTANCE
-        .messageBuilder(networkMessage, id++, PlayNetworkDirection.PLAY_TO_CLIENT)
-        .encoder(encoder::accept)
-        .decoder(decoder::apply)
-        .consumerNetworkThread(
-            (message, context) ->
-                context.enqueueWork(
-                    () -> {
-                      handler.accept(message);
-                      context.setPacketHandled(true);
-                    }))
-        .add();
+    INSTANCE.play(
+        messageID,
+        buffer -> decoder.apply(buffer),
+        payloadHandlerBuilder ->
+            payloadHandlerBuilder.client(
+                (customPacketPayload, playPayloadContext) -> {
+                  playPayloadContext.workHandler().submitAsync(() -> {});
+                }));
   }
 
   @Override
@@ -115,17 +132,19 @@ public class NetworkHandler implements NetworkHandlerInterface {
       BiConsumer<M, FriendlyByteBuf> encoder,
       Function<FriendlyByteBuf, M> decoder,
       BiConsumer<M, ServerPlayer> handler) {
-    INSTANCE
-        .messageBuilder(networkMessage, id++, PlayNetworkDirection.PLAY_TO_SERVER)
-        .encoder(encoder::accept)
-        .decoder(decoder::apply)
-        .consumerNetworkThread(
-            (message, context) ->
-                context.enqueueWork(
-                    () -> {
-                      handler.accept(message, context.getSender());
-                      context.setPacketHandled(true);
-                    }))
-        .add();
+    INSTANCE.play(
+        messageID,
+        decoder::apply,
+        messageHandler ->
+            messageHandler.server(
+                context -> {
+                  context
+                      .workHandler()
+                      .submitAsync(
+                          () -> {
+                            M content = messageHandler.decode(context.getBuffer());
+                            handler.accept(content);
+                          });
+                }));
   }
 }

@@ -23,13 +23,12 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.ClientMenuManager;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.message.NetworkMessage;
-import io.netty.buffer.Unpooled;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
-public class OpenMenuCallbackMessage extends NetworkMessage {
+public class OpenMenuCallbackMessage extends NetworkMessage<OpenMenuCallbackMessage> {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "open_menu_callback_message");
@@ -76,8 +75,13 @@ public class OpenMenuCallbackMessage extends NetworkMessage {
   }
 
   @Override
-  public FriendlyByteBuf encode() {
-    return encode(this, new FriendlyByteBuf(Unpooled.buffer()));
+  public FriendlyByteBuf encodeBuffer(FriendlyByteBuf buffer) {
+    return encode(this, buffer);
+  }
+
+  @Override
+  public OpenMenuCallbackMessage decodeBuffer(FriendlyByteBuf buffer) {
+    return decode(buffer);
   }
 
   public UUID getMenuId() {

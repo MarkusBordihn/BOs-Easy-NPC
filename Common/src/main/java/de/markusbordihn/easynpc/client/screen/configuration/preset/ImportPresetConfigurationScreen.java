@@ -190,7 +190,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
     if (this.presetSelectionList != null) {
-      this.presetSelectionList.render(guiGraphics, x, y, partialTicks);
+      this.presetSelectionList.renderSelectionList(guiGraphics, x, y, partialTicks);
     }
     if (this.importPresetButton != null) {
       this.importPresetButton.active = ImportPresetConfigurationScreen.selectedPreset != null;
@@ -219,13 +219,9 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
     public ImportFileSelectionList(Minecraft minecraft) {
       super(
           minecraft,
-          ImportPresetConfigurationScreen.this.width - 5,
-          ImportPresetConfigurationScreen.this.height - 150 + 66,
-          ImportPresetConfigurationScreen.this.topPos + 66,
-          ImportPresetConfigurationScreen.this.height
-              - 150
-              - ImportPresetConfigurationScreen.this.topPos
-              + 66,
+          ImportPresetConfigurationScreen.this.width - 22,
+          95,
+          ImportPresetConfigurationScreen.this.contentTopPos + 47,
           14);
       this.setRenderHeader(false, 0);
       this.setRenderBackground(false);
@@ -264,8 +260,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
       return ImportPresetConfigurationScreen.this.getFocused() == this;
     }
 
-    @Override
-    public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+    public void renderSelectionList(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
       if (this.getItemCount() > 0) {
         super.render(guiGraphics, x, y, partialTicks);
         return;

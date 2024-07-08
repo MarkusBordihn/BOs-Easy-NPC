@@ -39,7 +39,7 @@ class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
       int entryHeight,
       OnEdit onEdit,
       OnRemove onRemove) {
-    super(minecraft, width, height, top, bottom, entryHeight);
+    super(minecraft, width, height, top, entryHeight);
     this.setRenderHeader(false, 0);
     this.setRenderBackground(false);
 

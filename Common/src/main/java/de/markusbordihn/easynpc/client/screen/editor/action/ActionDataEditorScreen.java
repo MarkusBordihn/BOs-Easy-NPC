@@ -147,7 +147,7 @@ public class ActionDataEditorScreen<T extends EditorMenu> extends EditorScreen<T
             this.actionDataSet,
             this.minecraft,
             this.width + 50,
-            this.height - 60,
+            161,
             this.leftPos + 5,
             this.topPos + 40,
             this.topPos + 200,

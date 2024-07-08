@@ -76,9 +76,6 @@ public class ModMenuTypes {
 
   public static final DeferredRegister<MenuType<?>> MENU_TYPES =
       DeferredRegister.create(BuiltInRegistries.MENU, Constants.MOD_ID);
-
-  private ModMenuTypes() {}
-
   public static final DeferredHolder<
           MenuType<?>, MenuType<AbilitiesAttributeConfigurationMenuWrapper>>
       ABILITIES_ATTRIBUTE_CONFIGURATION_MENU =
@@ -303,4 +300,5 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               ConfigurationType.YES_NO_DIALOG.getName(),
               () -> IMenuTypeExtension.create(YesNoDialogConfigurationMenuWrapper::new));
+  private ModMenuTypes() {}
 }

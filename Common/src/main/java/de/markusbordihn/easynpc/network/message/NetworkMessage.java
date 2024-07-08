@@ -30,7 +30,7 @@ import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class NetworkMessage {
+public class NetworkMessage<T> {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -107,10 +107,15 @@ public class NetworkMessage {
     return this.easyNPC;
   }
 
-  public FriendlyByteBuf encode() {
-    FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
-    buffer.writeUUID(this.uuid);
-    buffer.writeInt(this.pageIndex);
+  public T decodeBuffer(final FriendlyByteBuf buffer) {
+    return null;
+  }
+
+  public FriendlyByteBuf encodeBuffer(FriendlyByteBuf buffer) {
     return buffer;
+  }
+
+  public FriendlyByteBuf encode() {
+    return encodeBuffer(new FriendlyByteBuf(Unpooled.buffer()));
   }
 }
