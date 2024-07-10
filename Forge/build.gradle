@@ -6,7 +6,6 @@ buildscript {
 }
 
 plugins {
-  id 'java'
   id 'maven-publish'
   id 'net.minecraftforge.gradle' version '6.+'
   id 'com.matthewprenger.cursegradle' version '1.4.0'
@@ -17,9 +16,6 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 
 archivesBaseName = "${mod_id}-forge-${minecraft_version}"
-
-// Mojang ships Java 17 to end users in 1.18+.
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {

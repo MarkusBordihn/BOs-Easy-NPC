@@ -36,7 +36,6 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class ConfigurationScreen<T extends EasyNPCMenu> extends Screen<T> {
 
-  protected boolean renderBackground = true;
   protected Button homeButton = null;
   protected int buttonLeftPos;
   protected int buttonTopPos;
@@ -95,14 +94,6 @@ public class ConfigurationScreen<T extends EasyNPCMenu> extends Screen<T> {
                 onPress ->
                     this.networkMessageHandler.openConfiguration(
                         this.getNpcUUID(), ConfigurationType.MAIN)));
-  }
-
-  @Override
-  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    if (this.renderBackground) {
-      super.renderBackground(guiGraphics);
-    }
-    super.render(guiGraphics, x, y, partialTicks);
   }
 
   @Override
