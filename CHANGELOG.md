@@ -8,6 +8,10 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.1.1 (beta only for testing)
+
+- Fixed #248 by adding new Chinese translations. Thanks to @Sunny-Again.
+
 ### 5.1.0 (beta only for testing)
 
 - Fixed #239 by passing `can_pass_door` and `can_open_door` to navigation.

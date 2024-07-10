@@ -37,7 +37,6 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class ConfigurationScreen<T extends EasyNPCMenu> extends Screen<T> {
 
-  protected boolean renderBackground = true;
   protected Button homeButton = null;
   protected int buttonLeftPos;
   protected int buttonTopPos;
@@ -109,14 +108,6 @@ public class ConfigurationScreen<T extends EasyNPCMenu> extends Screen<T> {
       this.minecraft.keyboardHandler.setSendRepeatsToGui(false);
     }
     super.removed();
-  }
-
-  @Override
-  public void render(PoseStack poseStack, int x, int y, float partialTicks) {
-    if (this.renderBackground) {
-      super.renderBackground(poseStack);
-    }
-    super.render(poseStack, x, y, partialTicks);
   }
 
   @Override

@@ -1,8 +1,5 @@
 plugins {
-  id 'java'
   id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
-  id 'maven-publish'
-  id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
 
 archivesBaseName = "${mod_name}-common-${minecraft_version}"
@@ -30,16 +27,4 @@ processResources {
   filesMatching(['pack.mcmeta']) {
     expand buildProps
   }
-}
-
-publishing {
-  publications {
-    mavenJava(MavenPublication) {
-      groupId project.group
-      artifactId project.archivesBaseName
-      version project.version
-      from components.java
-    }
-  }
-
 }
