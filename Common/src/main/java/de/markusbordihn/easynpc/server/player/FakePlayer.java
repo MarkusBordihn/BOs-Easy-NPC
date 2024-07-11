@@ -34,8 +34,11 @@ public class FakePlayer extends ServerPlayer {
   public void displayClientMessage(Component chatComponent, boolean actionBar) {}
 
   @Override
-  public void awardStat(Stat par1StatBase, int par2) {}
+  public void awardStat(Stat stat, int increment) {}
 
   @Override
   public void tick() {}
+
+  @Override
+  public void doTick() {}
 }

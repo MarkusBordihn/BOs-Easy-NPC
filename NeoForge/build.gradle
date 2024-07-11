@@ -90,10 +90,7 @@ curseforge {
     releaseType = "${project.curseforge_release_type}"
     addGameVersion("${project.minecraft_version}")
     addGameVersion("NeoForge")
-    mainArtifact(jar) {
-      relations {
-      }
-    }
+    mainArtifact(jar)
   }
 }
 
@@ -107,6 +104,4 @@ modrinth {
   uploadFile = jar
   gameVersions = ["${project.minecraft_version}"]
   loaders = ["neoforge"]
-  dependencies {
-  }
 }
