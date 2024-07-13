@@ -267,12 +267,17 @@ public class Screen<T extends EasyNPCMenu> extends AbstractContainerScreen<T> {
   }
 
   @Override
-  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-
-    // Render screen background
+  public void renderBackground(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     if (this.renderBackground) {
-      this.renderScreenBg(guiGraphics);
+      super.renderBackground(guiGraphics, x, y, partialTicks);
     }
+    this.renderBg(guiGraphics, partialTicks, x, y);
+  }
+
+  @Override
+  protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    // Render screen background
+    this.renderScreenBg(guiGraphics);
 
     // Render title background for none compact mode
     if (!this.compactMode) {

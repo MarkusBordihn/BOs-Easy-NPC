@@ -33,14 +33,14 @@ description = '''Create easily NPCs for your world or for your mods.'''
 
 [[dependencies.easy_npc]]
 modId = "neoforge"
-mandatory = true
-versionRange = "[2,)"
+type = "required"
+versionRange = "[20.4,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.easy_npc]]
 modId = "minecraft"
-mandatory = true
+type = "required"
 versionRange = "[1.20.4,1.21)"
 ordering = "NONE"
 side = "BOTH"

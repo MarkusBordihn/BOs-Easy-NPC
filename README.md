@@ -1,6 +1,6 @@
 # 🗣 Easy NPC (1.20.4)
 
-![Daily Rewards Versions](http://cf.way2muchnoise.eu/versions/Minecraft_559312_all.svg)
+![Easy NPC Versions](http://cf.way2muchnoise.eu/versions/Minecraft_559312_all.svg)
 
 [![Download on CurseForge](http://cf.way2muchnoise.eu/title/559312.svg)](https://www.curseforge.com/minecraft/mc-mods/easy-npc)
 [![CurseForge Downloads](http://cf.way2muchnoise.eu/full_559312_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/easy-npc)

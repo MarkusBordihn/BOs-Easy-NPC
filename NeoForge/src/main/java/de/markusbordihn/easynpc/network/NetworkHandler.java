@@ -21,6 +21,10 @@ package de.markusbordihn.easynpc.network;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.message.NetworkMessage;
+import de.markusbordihn.easynpc.network.message.client.OpenMenuCallbackMessage;
+import de.markusbordihn.easynpc.network.message.client.OpenMenuCallbackMessageRecord;
+import de.markusbordihn.easynpc.network.message.server.OpenMenuMessage;
+import de.markusbordihn.easynpc.network.message.server.OpenMenuMessageRecord;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -54,8 +58,17 @@ public class NetworkHandler implements NetworkHandlerInterface {
         INSTANCE,
         PROTOCOL_VERSION);
 
-    NetworkHandlerManager.registerClientNetworkHandler();
-    NetworkHandlerManager.registerServerNetworkHandler();
+    // NetworkHandlerManager.registerClientNetworkHandler();
+    INSTANCE.play(
+        OpenMenuCallbackMessage.MESSAGE_ID,
+        OpenMenuCallbackMessageRecord::create,
+        handler -> handler.client(OpenMenuCallbackMessageRecord::handle));
+
+    // NetworkHandlerManager.registerServerNetworkHandler();
+    INSTANCE.play(
+        OpenMenuMessage.MESSAGE_ID,
+        OpenMenuMessageRecord::create,
+        handler -> handler.server(OpenMenuMessageRecord::handle));
   }
 
   @Override
@@ -115,14 +128,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
       BiConsumer<M, FriendlyByteBuf> encoder,
       Function<FriendlyByteBuf, M> decoder,
       Consumer<M> handler) {
-    INSTANCE.play(
-        messageID,
-        buffer -> decoder.apply(buffer),
-        payloadHandlerBuilder ->
-            payloadHandlerBuilder.client(
-                (customPacketPayload, playPayloadContext) -> {
-                  playPayloadContext.workHandler().submitAsync(() -> {});
-                }));
+    // Unused for current implementation
   }
 
   @Override
@@ -132,19 +138,6 @@ public class NetworkHandler implements NetworkHandlerInterface {
       BiConsumer<M, FriendlyByteBuf> encoder,
       Function<FriendlyByteBuf, M> decoder,
       BiConsumer<M, ServerPlayer> handler) {
-    INSTANCE.play(
-        messageID,
-        decoder::apply,
-        messageHandler ->
-            messageHandler.server(
-                context -> {
-                  context
-                      .workHandler()
-                      .submitAsync(
-                          () -> {
-                            M content = messageHandler.decode(context.getBuffer());
-                            handler.accept(content);
-                          });
-                }));
+    // Unused for current implementation
   }
 }
