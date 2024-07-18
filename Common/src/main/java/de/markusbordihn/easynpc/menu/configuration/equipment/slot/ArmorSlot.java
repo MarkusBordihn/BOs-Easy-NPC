@@ -59,7 +59,6 @@ public class ArmorSlot extends Slot {
   @Override
   public void set(ItemStack itemStack) {
     super.set(itemStack);
-
     this.menu.setArmorChanged(this.equipmentSlot, this.slotIndex, itemStack);
   }
 

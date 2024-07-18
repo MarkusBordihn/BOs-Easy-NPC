@@ -21,8 +21,7 @@ package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
-import io.netty.buffer.Unpooled;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -32,36 +31,33 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
-public class RespawnNPCMessage extends NetworkMessage {
+public record RespawnNPCMessage(UUID uuid) implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "respawn_npc");
 
-  public RespawnNPCMessage(final UUID uuid) {
-    super(uuid);
-  }
-
-  public static RespawnNPCMessage decode(final FriendlyByteBuf buffer) {
+  public static RespawnNPCMessage create(final FriendlyByteBuf buffer) {
     return new RespawnNPCMessage(buffer.readUUID());
   }
 
-  public static FriendlyByteBuf encode(
-      final RespawnNPCMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    return buffer;
+  @Override
+  public void write(final FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
   }
 
-  public static void handle(final FriendlyByteBuf buffer, final ServerPlayer serverPlayer) {
-    handle(decode(buffer), serverPlayer);
+  @Override
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public static void handle(final RespawnNPCMessage message, final ServerPlayer serverPlayer) {
-    if (!message.handleMessage(serverPlayer)) {
+  @Override
+  public void handleServer(final ServerPlayer serverPlayer) {
+    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    if (easyNPC == null) {
       return;
     }
 
     // Save entity and entity type
-    EasyNPC<?> easyNPC = message.getEasyNPC();
     CompoundTag compoundTag = easyNPC.getEntity().saveWithoutId(new CompoundTag());
     EntityType<?> entityType = easyNPC.getEntity().getType();
 
@@ -80,10 +76,5 @@ public class RespawnNPCMessage extends NetworkMessage {
     // Respawn new entity
     log.info("Respawn Easy NPC {} with {} requested by {}", easyNPC, entityType, serverPlayer);
     serverLevel.addFreshEntity(entity);
-  }
-
-  @Override
-  public FriendlyByteBuf encode() {
-    return encode(this, new FriendlyByteBuf(Unpooled.buffer()));
   }
 }

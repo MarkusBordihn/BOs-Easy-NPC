@@ -22,69 +22,41 @@ package de.markusbordihn.easynpc.network.message.client;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.ClientMenuManager;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
-import io.netty.buffer.Unpooled;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
-public class OpenMenuCallbackMessage extends NetworkMessage {
+public record OpenMenuCallbackMessage(UUID uuid, UUID menuId, CompoundTag data)
+    implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "open_menu_callback_message");
 
-  private final UUID menuId;
-  private final CompoundTag data;
-
-  public OpenMenuCallbackMessage(final UUID uuid, final UUID menuId) {
-    this(uuid, menuId, new CompoundTag());
-  }
-
-  public OpenMenuCallbackMessage(final UUID uuid, final UUID menuId, CompoundTag data) {
-    super(uuid);
-    this.menuId = menuId;
-    this.data = data;
-  }
-
-  public static OpenMenuCallbackMessage decode(final FriendlyByteBuf buffer) {
+  public static OpenMenuCallbackMessage create(final FriendlyByteBuf buffer) {
     return new OpenMenuCallbackMessage(buffer.readUUID(), buffer.readUUID(), buffer.readNbt());
   }
 
-  public static FriendlyByteBuf encode(
-      final OpenMenuCallbackMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    buffer.writeUUID(message.getMenuId());
-    buffer.writeNbt(message.getData());
-    return buffer;
-  }
-
-  public static void handle(final FriendlyByteBuf buffer) {
-    handle(decode(buffer));
-  }
-
-  public static void handle(final OpenMenuCallbackMessage message) {
-    UUID uuid = message.getUUID();
-    UUID menuId = message.getMenuId();
-    CompoundTag data = message.getData();
-
-    // Store additional menu data for later use.
-    ClientMenuManager.setMenuData(menuId, data);
-
-    // Send open menu message back to server for final processing.
-    NetworkMessageHandlerManager.getServerHandler().openMenu(uuid, menuId);
+  @Override
+  public void write(FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
+    buffer.writeUUID(this.menuId);
+    buffer.writeNbt(this.data);
   }
 
   @Override
-  public FriendlyByteBuf encode() {
-    return encode(this, new FriendlyByteBuf(Unpooled.buffer()));
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public UUID getMenuId() {
-    return this.menuId;
-  }
+  @Override
+  public void handleClient() {
+    UUID uuid = this.uuid;
+    UUID menuId = this.menuId;
+    CompoundTag data = this.data;
 
-  public CompoundTag getData() {
-    return this.data;
+    ClientMenuManager.setMenuData(menuId, data);
+    NetworkMessageHandlerManager.getServerHandler().openMenu(uuid, menuId);
   }
 }

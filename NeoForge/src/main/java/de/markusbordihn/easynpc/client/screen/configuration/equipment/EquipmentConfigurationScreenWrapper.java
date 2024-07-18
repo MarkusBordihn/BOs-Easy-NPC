@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.equipment;
 
-import de.markusbordihn.easynpc.client.screen.equipment.EquipmentConfigurationScreen;
 import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenu;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;

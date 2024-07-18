@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.commands;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
+import de.markusbordihn.easynpc.commands.arguments.EquipmentSlotArgument;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
@@ -40,6 +41,16 @@ public class ModArgumentTypes {
                   ArgumentTypeInfos.registerByClass(
                       EasyNPCArgument.class,
                       SingletonArgumentInfo.contextFree(EasyNPCArgument::new)));
+
+  public static final DeferredHolder<
+          ArgumentTypeInfo<?, ?>, SingletonArgumentInfo<EquipmentSlotArgument>>
+      EQUIPMENT_SLOT_ARGUMENT =
+          COMMAND_ARGUMENT_TYPES.register(
+              "equipment_slot",
+              () ->
+                  ArgumentTypeInfos.registerByClass(
+                      EquipmentSlotArgument.class,
+                      SingletonArgumentInfo.contextFree(EquipmentSlotArgument::new)));
 
   private ModArgumentTypes() {}
 }

@@ -17,17 +17,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.configuration.equipment;
+package de.markusbordihn.easynpc.data.trading;
 
-import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenu;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-
-public class EquipmentConfigurationScreenWrapper
-    extends EquipmentConfigurationScreen<EquipmentConfigurationMenu> {
-
-  public EquipmentConfigurationScreenWrapper(
-      EquipmentConfigurationMenu menu, Inventory inventory, Component component) {
-    super(menu, inventory, component);
-  }
+public enum TradingValueType {
+  RESETS_EVERY_MIN,
+  MAX_USES,
+  REWARD_EXP,
+  PRICE_MULTIPLIER,
+  DEMAND
 }

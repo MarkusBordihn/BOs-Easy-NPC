@@ -39,7 +39,7 @@ public final class SynchedEntityData {
     this.entity = entity;
     this.entityClass = entity.getClass();
     this.entityDataAccessorMap = entityDataAccessorMap;
-    log.info(
+    log.debug(
         "Initialized SynchedEntityData for {} ({}) with {}",
         entity,
         entityClass,

@@ -31,6 +31,6 @@ public class CommandsEventHandler {
 
   @SubscribeEvent
   public static void handleRegisterCommandsEvent(RegisterCommandsEvent event) {
-    CommandManager.registerCommands(event.getDispatcher());
+    CommandManager.registerCommands(event.getDispatcher(), event.getBuildContext());
   }
 }

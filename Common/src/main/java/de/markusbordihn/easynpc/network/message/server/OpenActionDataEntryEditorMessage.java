@@ -23,74 +23,28 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.editor.EditorType;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.MenuManager;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
-import io.netty.buffer.Unpooled;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public class OpenActionDataEntryEditorMessage extends NetworkMessage {
+public record OpenActionDataEntryEditorMessage(
+    UUID uuid,
+    UUID dialogId,
+    UUID dialogButtonId,
+    UUID actionDataEntryId,
+    ActionEventType actionEventType,
+    ConfigurationType configurationType,
+    EditorType editorType)
+    implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "open_action_data_entry_editor");
-  public final ActionEventType actionEventType;
-  public final ConfigurationType configurationType;
-  public final EditorType editorType;
-  public final UUID actionDataEntryId;
-  public final UUID dialogButtonId;
-  public final UUID dialogId;
 
-  public OpenActionDataEntryEditorMessage(
-      UUID uuid,
-      UUID dialogId,
-      UUID dialogButtonId,
-      UUID actionDataEntryId,
-      ActionEventType actionEventType,
-      ConfigurationType configurationType,
-      EditorType editorType) {
-    super(uuid, 0);
-    this.actionDataEntryId = actionDataEntryId;
-    this.actionEventType = actionEventType;
-    this.configurationType = configurationType;
-    this.dialogId = dialogId;
-    this.dialogButtonId = dialogButtonId;
-    this.editorType = editorType;
-  }
-
-  public OpenActionDataEntryEditorMessage(
-      UUID uuid,
-      UUID dialogId,
-      UUID dialogButtonId,
-      UUID actionDataEntryId,
-      EditorType editorType) {
-    this(
-        uuid,
-        dialogId,
-        dialogButtonId,
-        actionDataEntryId,
-        ActionEventType.NONE,
-        ConfigurationType.NONE,
-        editorType);
-  }
-
-  public OpenActionDataEntryEditorMessage(
-      UUID uuid,
-      UUID actionDataEntryUUID,
-      ActionEventType actionEventType,
-      ConfigurationType configurationType) {
-    this(
-        uuid,
-        Constants.EMPTY_UUID,
-        Constants.EMPTY_UUID,
-        actionDataEntryUUID,
-        actionEventType,
-        configurationType,
-        EditorType.NONE);
-  }
-
-  public static OpenActionDataEntryEditorMessage decode(final FriendlyByteBuf buffer) {
+  public static OpenActionDataEntryEditorMessage create(final FriendlyByteBuf buffer) {
     return new OpenActionDataEntryEditorMessage(
         buffer.readUUID(),
         buffer.readUUID(),
@@ -101,25 +55,26 @@ public class OpenActionDataEntryEditorMessage extends NetworkMessage {
         buffer.readEnum(EditorType.class));
   }
 
-  public static FriendlyByteBuf encode(
-      final OpenActionDataEntryEditorMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    buffer.writeUUID(message.dialogId);
-    buffer.writeUUID(message.dialogButtonId);
-    buffer.writeUUID(message.actionDataEntryId);
-    buffer.writeEnum(message.actionEventType);
-    buffer.writeEnum(message.configurationType);
-    buffer.writeEnum(message.editorType);
-    return buffer;
+  @Override
+  public void write(final FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
+    buffer.writeUUID(this.dialogId);
+    buffer.writeUUID(this.dialogButtonId);
+    buffer.writeUUID(this.actionDataEntryId);
+    buffer.writeEnum(this.actionEventType);
+    buffer.writeEnum(this.configurationType);
+    buffer.writeEnum(this.editorType);
   }
 
-  public static void handle(final FriendlyByteBuf buffer, final ServerPlayer serverPlayer) {
-    handle(decode(buffer), serverPlayer);
+  @Override
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public static void handle(
-      OpenActionDataEntryEditorMessage message, final ServerPlayer serverPlayer) {
-    if (!message.handleMessage(serverPlayer)) {
+  @Override
+  public void handleServer(final ServerPlayer serverPlayer) {
+    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    if (easyNPC == null) {
       return;
     }
 
@@ -128,42 +83,13 @@ public class OpenActionDataEntryEditorMessage extends NetworkMessage {
         .openEditorMenu(
             EditorType.ACTION_DATA_ENTRY,
             serverPlayer,
-            message.getEasyNPC(),
-            message.getDialogId(),
-            message.getDialogButtonId(),
-            message.getActionDataEntryId(),
-            message.getActionEventType(),
-            message.getConfigurationType(),
-            message.getEditorType(),
+            easyNPC,
+            this.dialogId,
+            this.dialogButtonId,
+            this.actionDataEntryId,
+            this.actionEventType,
+            this.configurationType,
+            this.editorType,
             0);
-  }
-
-  @Override
-  public FriendlyByteBuf encode() {
-    return encode(this, new FriendlyByteBuf(Unpooled.buffer()));
-  }
-
-  public UUID getActionDataEntryId() {
-    return this.actionDataEntryId;
-  }
-
-  public ActionEventType getActionEventType() {
-    return this.actionEventType;
-  }
-
-  public ConfigurationType getConfigurationType() {
-    return this.configurationType;
-  }
-
-  public EditorType getEditorType() {
-    return this.editorType;
-  }
-
-  public UUID getDialogId() {
-    return this.dialogId;
-  }
-
-  public UUID getDialogButtonId() {
-    return this.dialogButtonId;
   }
 }
