@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.commands;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
+import de.markusbordihn.easynpc.commands.arguments.EquipmentSlotArgument;
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.resources.ResourceLocation;
@@ -34,5 +35,9 @@ public class ModArgumentTypes {
         new ResourceLocation(Constants.MOD_ID, "easy_npc"),
         EasyNPCArgument.class,
         SingletonArgumentInfo.contextFree(EasyNPCArgument::new));
+    ArgumentTypeRegistry.registerArgumentType(
+        new ResourceLocation(Constants.MOD_ID, "equipment_slot"),
+        EquipmentSlotArgument.class,
+        SingletonArgumentInfo.contextFree(EquipmentSlotArgument::new));
   }
 }

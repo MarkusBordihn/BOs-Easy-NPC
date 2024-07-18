@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.network;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.network.message.client.ExportClientPresetMessage;
 import de.markusbordihn.easynpc.network.message.client.OpenMenuCallbackMessage;
 import de.markusbordihn.easynpc.network.message.server.AddObjectiveMessage;
@@ -63,7 +63,6 @@ import de.markusbordihn.easynpc.network.message.server.RespawnNPCMessage;
 import de.markusbordihn.easynpc.network.message.server.SaveDialogButtonMessage;
 import de.markusbordihn.easynpc.network.message.server.SaveDialogMessage;
 import de.markusbordihn.easynpc.network.message.server.SaveDialogSetMessage;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -85,19 +84,18 @@ public class NetworkHandlerManager {
     return networkHandler;
   }
 
-  public static <M extends NetworkMessage> void sendToServer(
-      ResourceLocation messageId, M networkMessage) {
+  public static void sendToServer(NetworkMessageRecord networkMessageRecord) {
     NetworkHandlerInterface networkHandler = getHandler();
     if (networkHandler != null) {
-      networkHandler.sendToServer(messageId, networkMessage);
+      networkHandler.sendToServer(networkMessageRecord);
     }
   }
 
-  public static <M extends NetworkMessage> void sendToPlayer(
-      ResourceLocation messageId, M networkMessage, ServerPlayer serverPlayer) {
+  public static void sendToPlayer(
+      NetworkMessageRecord networkMessageRecord, ServerPlayer serverPlayer) {
     NetworkHandlerInterface networkHandler = getHandler();
     if (networkHandler != null) {
-      networkHandler.sendToPlayer(messageId, networkMessage, serverPlayer);
+      networkHandler.sendToPlayer(networkMessageRecord, serverPlayer);
     }
   }
 
@@ -113,16 +111,11 @@ public class NetworkHandlerManager {
     networkHandler.registerClientNetworkMessageHandler(
         ExportClientPresetMessage.MESSAGE_ID,
         ExportClientPresetMessage.class,
-        ExportClientPresetMessage::encode,
-        ExportClientPresetMessage::decode,
-        ExportClientPresetMessage::handle);
-
+        ExportClientPresetMessage::create);
     networkHandler.registerClientNetworkMessageHandler(
         OpenMenuCallbackMessage.MESSAGE_ID,
         OpenMenuCallbackMessage.class,
-        OpenMenuCallbackMessage::encode,
-        OpenMenuCallbackMessage::decode,
-        OpenMenuCallbackMessage::handle);
+        OpenMenuCallbackMessage::create);
   }
 
   public static void registerServerNetworkHandler() {
@@ -135,283 +128,177 @@ public class NetworkHandlerManager {
     log.info("Registering server network handler ...");
 
     networkHandler.registerServerNetworkMessageHandler(
-        AddObjectiveMessage.MESSAGE_ID,
-        AddObjectiveMessage.class,
-        AddObjectiveMessage::encode,
-        AddObjectiveMessage::decode,
-        AddObjectiveMessage::handle);
+        AddObjectiveMessage.MESSAGE_ID, AddObjectiveMessage.class, AddObjectiveMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ChangeActionEventMessage.MESSAGE_ID,
         ChangeActionEventMessage.class,
-        ChangeActionEventMessage::encode,
-        ChangeActionEventMessage::decode,
-        ChangeActionEventMessage::handle);
+        ChangeActionEventMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ChangeAdvancedTradingMessage.MESSAGE_ID,
         ChangeAdvancedTradingMessage.class,
-        ChangeAdvancedTradingMessage::encode,
-        ChangeAdvancedTradingMessage::decode,
-        ChangeAdvancedTradingMessage::handle);
+        ChangeAdvancedTradingMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ChangeBasicTradingMessage.MESSAGE_ID,
         ChangeBasicTradingMessage.class,
-        ChangeBasicTradingMessage::encode,
-        ChangeBasicTradingMessage::decode,
-        ChangeBasicTradingMessage::handle);
+        ChangeBasicTradingMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ChangeEntityAttributeMessage.MESSAGE_ID,
         ChangeEntityAttributeMessage.class,
-        ChangeEntityAttributeMessage::encode,
-        ChangeEntityAttributeMessage::decode,
-        ChangeEntityAttributeMessage::handle);
+        ChangeEntityAttributeMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ChangeEntityBaseAttributeMessage.MESSAGE_ID,
         ChangeEntityBaseAttributeMessage.class,
-        ChangeEntityBaseAttributeMessage::encode,
-        ChangeEntityBaseAttributeMessage::decode,
-        ChangeEntityBaseAttributeMessage::handle);
+        ChangeEntityBaseAttributeMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ChangeModelEquipmentVisibilityMessage.MESSAGE_ID,
         ChangeModelEquipmentVisibilityMessage.class,
-        ChangeModelEquipmentVisibilityMessage::encode,
-        ChangeModelEquipmentVisibilityMessage::decode,
-        ChangeModelEquipmentVisibilityMessage::handle);
+        ChangeModelEquipmentVisibilityMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ChangeModelLockRotationMessage.MESSAGE_ID,
         ChangeModelLockRotationMessage.class,
-        ChangeModelLockRotationMessage::encode,
-        ChangeModelLockRotationMessage::decode,
-        ChangeModelLockRotationMessage::handle);
+        ChangeModelLockRotationMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ChangeModelPoseMessage.MESSAGE_ID,
         ChangeModelPoseMessage.class,
-        ChangeModelPoseMessage::encode,
-        ChangeModelPoseMessage::decode,
-        ChangeModelPoseMessage::handle);
+        ChangeModelPoseMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ChangeModelPositionMessage.MESSAGE_ID,
         ChangeModelPositionMessage.class,
-        ChangeModelPositionMessage::encode,
-        ChangeModelPositionMessage::decode,
-        ChangeModelPositionMessage::handle);
+        ChangeModelPositionMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ChangeModelRotationMessage.MESSAGE_ID,
         ChangeModelRotationMessage.class,
-        ChangeModelRotationMessage::encode,
-        ChangeModelRotationMessage::decode,
-        ChangeModelRotationMessage::handle);
+        ChangeModelRotationMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ChangeModelVisibilityMessage.MESSAGE_ID,
         ChangeModelVisibilityMessage.class,
-        ChangeModelVisibilityMessage::encode,
-        ChangeModelVisibilityMessage::decode,
-        ChangeModelVisibilityMessage::handle);
+        ChangeModelVisibilityMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
-        ChangeNameMessage.MESSAGE_ID,
-        ChangeNameMessage.class,
-        ChangeNameMessage::encode,
-        ChangeNameMessage::decode,
-        ChangeNameMessage::handle);
+        ChangeNameMessage.MESSAGE_ID, ChangeNameMessage.class, ChangeNameMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
-        ChangePoseMessage.MESSAGE_ID,
-        ChangePoseMessage.class,
-        ChangePoseMessage::encode,
-        ChangePoseMessage::decode,
-        ChangePoseMessage::handle);
+        ChangePoseMessage.MESSAGE_ID, ChangePoseMessage.class, ChangePoseMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ChangePositionMessage.MESSAGE_ID,
         ChangePositionMessage.class,
-        ChangePositionMessage::encode,
-        ChangePositionMessage::decode,
-        ChangePositionMessage::handle);
+        ChangePositionMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ChangeProfessionMessage.MESSAGE_ID,
         ChangeProfessionMessage.class,
-        ChangeProfessionMessage::encode,
-        ChangeProfessionMessage::decode,
-        ChangeProfessionMessage::handle);
+        ChangeProfessionMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
-        ChangeScaleMessage.MESSAGE_ID,
-        ChangeScaleMessage.class,
-        ChangeScaleMessage::encode,
-        ChangeScaleMessage::decode,
-        ChangeScaleMessage::handle);
+        ChangeScaleMessage.MESSAGE_ID, ChangeScaleMessage.class, ChangeScaleMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
-        ChangeSkinMessage.MESSAGE_ID,
-        ChangeSkinMessage.class,
-        ChangeSkinMessage::encode,
-        ChangeSkinMessage::decode,
-        ChangeSkinMessage::handle);
+        ChangeSkinMessage.MESSAGE_ID, ChangeSkinMessage.class, ChangeSkinMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ChangeSpawnerSettingMessage.MESSAGE_ID,
         ChangeSpawnerSettingMessage.class,
-        ChangeSpawnerSettingMessage::encode,
-        ChangeSpawnerSettingMessage::decode,
-        ChangeSpawnerSettingMessage::handle);
+        ChangeSpawnerSettingMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ChangeTradingTypeMessage.MESSAGE_ID,
         ChangeTradingTypeMessage.class,
-        ChangeTradingTypeMessage::encode,
-        ChangeTradingTypeMessage::decode,
-        ChangeTradingTypeMessage::handle);
+        ChangeTradingTypeMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ExecuteActionEventMessage.MESSAGE_ID,
         ExecuteActionEventMessage.class,
-        ExecuteActionEventMessage::encode,
-        ExecuteActionEventMessage::decode,
-        ExecuteActionEventMessage::handle);
+        ExecuteActionEventMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ExecuteDialogButtonActionMessage.MESSAGE_ID,
         ExecuteDialogButtonActionMessage.class,
-        ExecuteDialogButtonActionMessage::encode,
-        ExecuteDialogButtonActionMessage::decode,
-        ExecuteDialogButtonActionMessage::handle);
+        ExecuteDialogButtonActionMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
-        ExportPresetMessage.MESSAGE_ID,
-        ExportPresetMessage.class,
-        ExportPresetMessage::encode,
-        ExportPresetMessage::decode,
-        ExportPresetMessage::handle);
+        ExportPresetMessage.MESSAGE_ID, ExportPresetMessage.class, ExportPresetMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ExportWorldPresetMessage.MESSAGE_ID,
         ExportWorldPresetMessage.class,
-        ExportWorldPresetMessage::encode,
-        ExportWorldPresetMessage::decode,
-        ExportWorldPresetMessage::handle);
+        ExportWorldPresetMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
-        ImportPresetMessage.MESSAGE_ID,
-        ImportPresetMessage.class,
-        ImportPresetMessage::encode,
-        ImportPresetMessage::decode,
-        ImportPresetMessage::handle);
+        ImportPresetMessage.MESSAGE_ID, ImportPresetMessage.class, ImportPresetMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         OpenActionDataEditorMessage.MESSAGE_ID,
         OpenActionDataEditorMessage.class,
-        OpenActionDataEditorMessage::encode,
-        OpenActionDataEditorMessage::decode,
-        OpenActionDataEditorMessage::handle);
+        OpenActionDataEditorMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         OpenActionDataEntryEditorMessage.MESSAGE_ID,
         OpenActionDataEntryEditorMessage.class,
-        OpenActionDataEntryEditorMessage::encode,
-        OpenActionDataEntryEditorMessage::decode,
-        OpenActionDataEntryEditorMessage::handle);
+        OpenActionDataEntryEditorMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         OpenConfigurationMessage.MESSAGE_ID,
         OpenConfigurationMessage.class,
-        OpenConfigurationMessage::encode,
-        OpenConfigurationMessage::decode,
-        OpenConfigurationMessage::handle);
+        OpenConfigurationMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         OpenDialogButtonEditorMessage.MESSAGE_ID,
         OpenDialogButtonEditorMessage.class,
-        OpenDialogButtonEditorMessage::encode,
-        OpenDialogButtonEditorMessage::decode,
-        OpenDialogButtonEditorMessage::handle);
+        OpenDialogButtonEditorMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         OpenDialogEditorMessage.MESSAGE_ID,
         OpenDialogEditorMessage.class,
-        OpenDialogEditorMessage::encode,
-        OpenDialogEditorMessage::decode,
-        OpenDialogEditorMessage::handle);
+        OpenDialogEditorMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
-        OpenMenuMessage.MESSAGE_ID,
-        OpenMenuMessage.class,
-        OpenMenuMessage::encode,
-        OpenMenuMessage::decode,
-        OpenMenuMessage::handle);
+        OpenMenuMessage.MESSAGE_ID, OpenMenuMessage.class, OpenMenuMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         OpenDialogTextEditorMessage.MESSAGE_ID,
         OpenDialogTextEditorMessage.class,
-        OpenDialogTextEditorMessage::encode,
-        OpenDialogTextEditorMessage::decode,
-        OpenDialogTextEditorMessage::handle);
+        OpenDialogTextEditorMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         RemoveDialogButtonMessage.MESSAGE_ID,
         RemoveDialogButtonMessage.class,
-        RemoveDialogButtonMessage::encode,
-        RemoveDialogButtonMessage::decode,
-        RemoveDialogButtonMessage::handle);
+        RemoveDialogButtonMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
-        RemoveDialogMessage.MESSAGE_ID,
-        RemoveDialogMessage.class,
-        RemoveDialogMessage::encode,
-        RemoveDialogMessage::decode,
-        RemoveDialogMessage::handle);
+        RemoveDialogMessage.MESSAGE_ID, RemoveDialogMessage.class, RemoveDialogMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
-        RemoveNPCMessage.MESSAGE_ID,
-        RemoveNPCMessage.class,
-        RemoveNPCMessage::encode,
-        RemoveNPCMessage::decode,
-        RemoveNPCMessage::handle);
+        RemoveNPCMessage.MESSAGE_ID, RemoveNPCMessage.class, RemoveNPCMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         RemoveObjectiveMessage.MESSAGE_ID,
         RemoveObjectiveMessage.class,
-        RemoveObjectiveMessage::encode,
-        RemoveObjectiveMessage::decode,
-        RemoveObjectiveMessage::handle);
+        RemoveObjectiveMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
-        RespawnNPCMessage.MESSAGE_ID,
-        RespawnNPCMessage.class,
-        RespawnNPCMessage::encode,
-        RespawnNPCMessage::decode,
-        RespawnNPCMessage::handle);
+        RespawnNPCMessage.MESSAGE_ID, RespawnNPCMessage.class, RespawnNPCMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         SaveDialogButtonMessage.MESSAGE_ID,
         SaveDialogButtonMessage.class,
-        SaveDialogButtonMessage::encode,
-        SaveDialogButtonMessage::decode,
-        SaveDialogButtonMessage::handle);
+        SaveDialogButtonMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
-        SaveDialogMessage.MESSAGE_ID,
-        SaveDialogMessage.class,
-        SaveDialogMessage::encode,
-        SaveDialogMessage::decode,
-        SaveDialogMessage::handle);
+        SaveDialogMessage.MESSAGE_ID, SaveDialogMessage.class, SaveDialogMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
-        SaveDialogSetMessage.MESSAGE_ID,
-        SaveDialogSetMessage.class,
-        SaveDialogSetMessage::encode,
-        SaveDialogSetMessage::decode,
-        SaveDialogSetMessage::handle);
+        SaveDialogSetMessage.MESSAGE_ID, SaveDialogSetMessage.class, SaveDialogSetMessage::create);
   }
 }

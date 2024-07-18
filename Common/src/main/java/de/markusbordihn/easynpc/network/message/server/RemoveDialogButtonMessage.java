@@ -20,121 +20,89 @@
 package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
-import io.netty.buffer.Unpooled;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public class RemoveDialogButtonMessage extends NetworkMessage {
+public record RemoveDialogButtonMessage(UUID uuid, UUID dialogId, UUID dialogButtonId)
+    implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "remove_dialog_button");
 
-  protected final UUID dialogId;
-  protected final UUID dialogButtonId;
-
-  public RemoveDialogButtonMessage(
-      final UUID uuid, final UUID dialogId, final UUID dialogButtonId) {
-    super(uuid);
-    this.dialogId = dialogId;
-    this.dialogButtonId = dialogButtonId;
-  }
-
-  public static RemoveDialogButtonMessage decode(final FriendlyByteBuf buffer) {
+  public static RemoveDialogButtonMessage create(final FriendlyByteBuf buffer) {
     return new RemoveDialogButtonMessage(buffer.readUUID(), buffer.readUUID(), buffer.readUUID());
   }
 
-  public static FriendlyByteBuf encode(
-      final RemoveDialogButtonMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    buffer.writeUUID(message.getDialogId());
-    buffer.writeUUID(message.getDialogButtonId());
-    return buffer;
+  @Override
+  public void write(final FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
+    buffer.writeUUID(this.dialogId);
+    buffer.writeUUID(this.dialogButtonId);
   }
 
-  public static void handle(final FriendlyByteBuf buffer, final ServerPlayer serverPlayer) {
-    handle(decode(buffer), serverPlayer);
+  @Override
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public static void handle(
-      final RemoveDialogButtonMessage message, final ServerPlayer serverPlayer) {
-    if (!message.handleMessage(serverPlayer)) {
+  @Override
+  public void handleServer(final ServerPlayer serverPlayer) {
+    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    if (easyNPC == null) {
       return;
     }
 
     // Validate dialog ID
-    UUID dialogId = message.getDialogId();
-    if (dialogId == null) {
-      log.error("Invalid dialog id for {} from {}", message, serverPlayer);
+    if (this.dialogId == null) {
+      log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog button ID
-    UUID dialogButtonId = message.getDialogButtonId();
-    if (dialogButtonId == null) {
-      log.error("Invalid dialog button id for {} from {}", message, serverPlayer);
-      return;
-    }
-
-    // Validate entity.
-    EasyNPC<?> easyNPC =
-        LivingEntityManager.getEasyNPCEntityByUUID(message.getUUID(), serverPlayer);
-    if (easyNPC == null) {
-      log.error("Unable to get valid entity with UUID {} for {}", message.getUUID(), serverPlayer);
+    if (this.dialogButtonId == null) {
+      log.error("Invalid dialog button id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog data
     DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
-      log.error("Invalid dialog data for {} from {}", message, serverPlayer);
+      log.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog button
-    if (!dialogData.hasDialog(dialogId) || !dialogData.hasDialogButton(dialogId, dialogButtonId)) {
+    if (!dialogData.hasDialog(this.dialogId)
+        || !dialogData.hasDialogButton(this.dialogId, this.dialogButtonId)) {
       log.error(
           "Unknown delete dialog request for dialog button {} for dialog {} for {} from {}",
-          dialogButtonId,
-          dialogId,
-          message.getUUID(),
+          this.dialogButtonId,
+          this.dialogId,
+          easyNPC,
           serverPlayer);
       return;
     }
 
     // Perform action.
-    if (dialogData.removeDialogButton(dialogId, dialogButtonId)) {
+    if (dialogData.removeDialogButton(this.dialogId, this.dialogButtonId)) {
       log.info(
           "Removed dialog button {} from dialog {} for {} from {}",
-          dialogButtonId,
-          dialogId,
+          this.dialogButtonId,
+          this.dialogId,
           easyNPC,
           serverPlayer);
     } else {
       log.warn(
           "Unable to remove dialog button {} from dialog {} for {} from {}",
-          dialogButtonId,
-          dialogId,
+          this.dialogButtonId,
+          this.dialogId,
           easyNPC,
           serverPlayer);
     }
-  }
-
-  @Override
-  public FriendlyByteBuf encode() {
-    return encode(this, new FriendlyByteBuf(Unpooled.buffer()));
-  }
-
-  public UUID getDialogId() {
-    return this.dialogId;
-  }
-
-  public UUID getDialogButtonId() {
-    return this.dialogButtonId;
   }
 }

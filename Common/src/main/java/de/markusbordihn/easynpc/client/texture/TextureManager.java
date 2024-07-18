@@ -127,7 +127,7 @@ public class TextureManager {
     // Register dynamic texture under resource location.
     String resourceName = getResourceName(textureModelKey);
     ResourceLocation resourceLocation = textureManager.register(resourceName, dynamicTexture);
-    log.debug(
+    log.info(
         "{} Registered image {} as texture {} with {}.",
         LOG_PREFIX,
         nativeImage,
@@ -147,7 +147,7 @@ public class TextureManager {
     // Check for cached textured.
     ResourceLocation cachedTexture = getCachedTexture(textureModelKey, targetDirectory);
     if (cachedTexture != null) {
-      log.debug(
+      log.info(
           "{} Found downloaded file in cache, will re-used {} for {}",
           LOG_PREFIX,
           cachedTexture,
@@ -162,7 +162,7 @@ public class TextureManager {
       if (connection.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM
           || connection.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP) {
         String redirectUrl = connection.getHeaderField("Location");
-        log.debug("{} Following redirect from {} > {}", LOG_PREFIX, remoteUrl, redirectUrl);
+        log.info("{} Following redirect from {} > {}", LOG_PREFIX, remoteUrl, redirectUrl);
         remoteUrl = redirectUrl;
       } else if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
         urlLoadErrorMessage(textureModelKey, remoteUrl, connection.getResponseMessage());
@@ -208,6 +208,12 @@ public class TextureManager {
       processingErrorMessage(textureModelKey, remoteUrl, exception.getMessage());
       return null;
     }
+    log.info(
+        "{} Downloaded texture from {} and stored it as {} for {}",
+        LOG_PREFIX,
+        remoteUrl,
+        file,
+        textureModelKey);
 
     // Adding file to texture manager.
     return registerTexture(textureModelKey, file);
@@ -234,7 +240,7 @@ public class TextureManager {
     String fileName = String.format("%s.png", textureModelKey.getUUID());
     File file = targetDirectory.resolve(fileName).toFile();
     if (file.exists()) {
-      log.debug(
+      log.info(
           "{} Found texture file in cache, will re-used file {} for {}",
           LOG_PREFIX,
           file,
@@ -259,7 +265,7 @@ public class TextureManager {
         String filename = file.getName();
         UUID uuid = getUUIDFromFilename(filename);
         if (textureUUID.equals(uuid)) {
-          log.debug(
+          log.info(
               "{} Found texture file in cache directory, will re-used file {} for {}",
               LOG_PREFIX,
               file,

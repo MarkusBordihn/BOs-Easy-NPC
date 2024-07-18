@@ -73,7 +73,8 @@ public class EasyNPCMain implements ModInitializer {
 
     log.info("{} Command register event ...", Constants.LOG_REGISTER_PREFIX);
     CommandRegistrationCallback.EVENT.register(
-        (dispatcher, registryAccess, environment) -> CommandManager.registerCommands(dispatcher));
+        (dispatcher, commandBuildContext, commandSelection) ->
+            CommandManager.registerCommands(dispatcher, commandBuildContext));
 
     log.info("{} Server Events ...", Constants.LOG_REGISTER_PREFIX);
     ServerLifecycleEvents.SERVER_STARTING.register(ServerEvents::handleServerStarting);

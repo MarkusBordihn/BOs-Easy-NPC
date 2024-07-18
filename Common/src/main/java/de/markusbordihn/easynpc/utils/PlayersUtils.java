@@ -136,6 +136,7 @@ public class PlayersUtils {
         }
       }
     }
+    log.error("Unable to get user texture from session response: {}", data);
     return "";
   }
 
@@ -151,6 +152,7 @@ public class PlayersUtils {
         }
       }
     }
+    log.error("Unable to get user texture from texture data: {}", data);
     return "";
   }
 
@@ -169,6 +171,7 @@ public class PlayersUtils {
         }
       }
     }
+    log.debug("Unable to get user texture model from texture data: {}", data);
     return "";
   }
 

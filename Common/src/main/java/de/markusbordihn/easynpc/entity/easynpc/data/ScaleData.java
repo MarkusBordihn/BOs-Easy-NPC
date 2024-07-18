@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
+import de.markusbordihn.easynpc.data.model.ModelScaleAxis;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -63,6 +64,15 @@ public interface ScaleData<T extends PathfinderMob> extends EasyNPC<T> {
 
   default Float getDefaultScaleZ() {
     return DEFAULT_SCALE_Z;
+  }
+
+  default void setModelScaleAxis(ModelScaleAxis scaleAxis, Float scaleValue) {
+    switch (scaleAxis) {
+      case X -> setScaleX(scaleValue);
+      case Y -> setScaleY(scaleValue);
+      case Z -> setScaleZ(scaleValue);
+      default -> log.error("Invalid scale axis {} for {}", scaleAxis, this);
+    }
   }
 
   default Float getScaleX() {
