@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.client.screen.components.SliderButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
+import de.markusbordihn.easynpc.data.model.ModelScaleAxis;
 import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
@@ -85,7 +86,7 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
                   float scale = button.getTargetValue();
                   if (scaleData.getScaleX() != scale) {
                     NetworkMessageHandlerManager.getServerHandler()
-                        .scaleChange(this.getNpcUUID(), "x", button.getTargetValue());
+                        .scaleChange(this.getNpcUUID(), ModelScaleAxis.X, button.getTargetValue());
                   }
                   this.defaultScaleXButton.active = scale != scaleData.getDefaultScaleX();
                 }));
@@ -113,7 +114,7 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
                   float scale = button.getTargetValue();
                   if (scaleData.getScaleY() != scale) {
                     NetworkMessageHandlerManager.getServerHandler()
-                        .scaleChange(this.getNpcUUID(), "y", button.getTargetValue());
+                        .scaleChange(this.getNpcUUID(), ModelScaleAxis.Y, button.getTargetValue());
                   }
                   this.defaultScaleYButton.active = scale != scaleData.getDefaultScaleY();
                 }));
@@ -141,7 +142,7 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
                   float scale = button.getTargetValue();
                   if (scaleData.getScaleZ() != scale) {
                     NetworkMessageHandlerManager.getServerHandler()
-                        .scaleChange(this.getNpcUUID(), "z", button.getTargetValue());
+                        .scaleChange(this.getNpcUUID(), ModelScaleAxis.Z, button.getTargetValue());
                   }
                   this.defaultScaleZButton.active = scale != scaleData.getDefaultScaleZ();
                 }));

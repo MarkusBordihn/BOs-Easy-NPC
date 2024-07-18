@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.equipment;
+package de.markusbordihn.easynpc.client.screen.configuration.equipment;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;

@@ -97,6 +97,7 @@ public class CustomTextureManager {
         TextureManager.searchCachedTexture(textureModelKey, textureDataFolder);
     if (localTextureCache != null) {
       textureCache.put(textureModelKey, localTextureCache);
+      log.info("Loaded custom texture {} from {}.", textureModelKey, textureDataFolder);
       return localTextureCache;
     }
 

@@ -41,10 +41,9 @@ public class NetworkMessageHandlerManager {
   }
 
   public static void registerClientHandler(
-      final ClientNetworkMessageHandlerInterface clientNetworkMessageHandlerInterface) {
+      final ClientNetworkMessageHandlerInterface networkMessageHandler) {
     log.info("{} Client Network Message Handler ...", Constants.LOG_REGISTER_PREFIX);
-    NetworkMessageHandlerManager.clientNetworkMessageHandlerInterface =
-        clientNetworkMessageHandlerInterface;
+    clientNetworkMessageHandlerInterface = networkMessageHandler;
   }
 
   public static ClientNetworkMessageHandlerInterface getClientHandler() {

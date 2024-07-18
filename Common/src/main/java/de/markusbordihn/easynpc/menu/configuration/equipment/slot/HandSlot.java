@@ -60,7 +60,6 @@ public class HandSlot extends Slot {
   @Override
   public void set(ItemStack itemStack) {
     super.set(itemStack);
-
     this.menu.setHandChanged(
         this.slotIndex == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND, itemStack);
   }

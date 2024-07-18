@@ -21,53 +21,39 @@ package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.MenuManager;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
-import io.netty.buffer.Unpooled;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public class OpenMenuMessage extends NetworkMessage {
+public record OpenMenuMessage(UUID uuid, UUID menuId) implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "open_menu_message");
 
-  private final UUID menuId;
-
-  public OpenMenuMessage(final UUID uuid, final UUID menuId) {
-    super(uuid);
-    this.menuId = menuId;
-  }
-
-  public static OpenMenuMessage decode(final FriendlyByteBuf buffer) {
+  public static OpenMenuMessage create(final FriendlyByteBuf buffer) {
     return new OpenMenuMessage(buffer.readUUID(), buffer.readUUID());
   }
 
-  public static FriendlyByteBuf encode(
-      final OpenMenuMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    buffer.writeUUID(message.getMenuId());
-    return buffer;
-  }
-
-  public static void handle(final FriendlyByteBuf buffer, final ServerPlayer serverPlayer) {
-    handle(decode(buffer), serverPlayer);
-  }
-
-  public static void handle(final OpenMenuMessage message, final ServerPlayer serverPlayer) {
-    UUID uuid = message.getUUID();
-    UUID menuId = message.getMenuId();
-    log.info("Try open menu message for {} with menuId {} from {}", uuid, menuId, serverPlayer);
-    MenuManager.openMenu(menuId);
+  @Override
+  public void write(final FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
+    buffer.writeUUID(this.menuId);
   }
 
   @Override
-  public FriendlyByteBuf encode() {
-    return encode(this, new FriendlyByteBuf(Unpooled.buffer()));
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public UUID getMenuId() {
-    return this.menuId;
+  @Override
+  public void handleServer(final ServerPlayer serverPlayer) {
+    log.info(
+        "Try open menu message for {} with menuId {} from {}",
+        this.uuid,
+        this.menuId,
+        serverPlayer);
+    MenuManager.openMenu(this.menuId);
   }
 }
