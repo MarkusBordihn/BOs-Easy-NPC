@@ -54,7 +54,6 @@ public interface ClientNetworkMessageHandlerInterface {
         easyNPC.getEntity().getName().getString(),
         serverPlayer.getName().getString());
     NetworkHandlerManager.sendToPlayer(
-        ExportClientPresetMessage.MESSAGE_ID,
         new ExportClientPresetMessage(
             uuid,
             easyNPC.getEntity().getName().getString(),
@@ -68,9 +67,7 @@ public interface ClientNetworkMessageHandlerInterface {
     if (uuid != null && menuId != null && serverPlayer != null) {
       log.info("Open menu with UUID {}", uuid);
       NetworkHandlerManager.sendToPlayer(
-          OpenMenuCallbackMessage.MESSAGE_ID,
-          new OpenMenuCallbackMessage(uuid, menuId, data),
-          serverPlayer);
+          new OpenMenuCallbackMessage(uuid, menuId, data), serverPlayer);
     }
   }
 }

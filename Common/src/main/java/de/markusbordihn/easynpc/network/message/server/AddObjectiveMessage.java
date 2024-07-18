@@ -23,80 +23,47 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
-import io.netty.buffer.Unpooled;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public class AddObjectiveMessage extends NetworkMessage {
+public record AddObjectiveMessage(UUID uuid, ObjectiveDataEntry objectiveDataEntry)
+    implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "add_objective");
 
-  protected final ObjectiveDataEntry objectiveDataEntry;
-
-  public AddObjectiveMessage(final UUID uuid, final ObjectiveDataEntry objectiveDataEntry) {
-    super(uuid);
-    this.objectiveDataEntry = objectiveDataEntry;
-  }
-
-  public static AddObjectiveMessage decode(final FriendlyByteBuf buffer) {
+  public static AddObjectiveMessage create(final FriendlyByteBuf buffer) {
     return new AddObjectiveMessage(buffer.readUUID(), new ObjectiveDataEntry(buffer.readNbt()));
   }
 
-  public static FriendlyByteBuf encode(
-      final AddObjectiveMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    buffer.writeNbt(message.objectiveDataEntry.createTag());
-    return buffer;
-  }
-
-  public static void handle(final FriendlyByteBuf buffer, final ServerPlayer serverPlayer) {
-    handle(decode(buffer), serverPlayer);
-  }
-
-  public static void handle(final AddObjectiveMessage message, final ServerPlayer serverPlayer) {
-    if (!message.handleMessage(serverPlayer)) {
-      return;
-    }
-
-    // Validate objective data
-    ObjectiveDataEntry objectiveDataEntry = message.getObjectiveDataEntry();
-    if (objectiveDataEntry == null) {
-      log.error("Unable to add objective data for {} because it is null!", message.getUUID());
-      return;
-    }
-
-    // Verify objective data
-    EasyNPC<?> easyNPC = message.getEasyNPC();
-    ObjectiveData<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
-    if (objectiveData == null) {
-      log.error("Invalid objective data for {} from {}", message, serverPlayer);
-      return;
-    }
-
-    // Perform action.
-    if (objectiveData.addOrUpdateCustomObjective(objectiveDataEntry)) {
-      log.debug("Added objective {} for {} from {}", objectiveDataEntry, easyNPC, serverPlayer);
-      log.debug(
-          "Available goals for {}: {}",
-          easyNPC,
-          objectiveData.getEntityGoalSelector().getAvailableGoals());
-      log.debug(
-          "Available targets for {}: {}",
-          easyNPC,
-          objectiveData.getEntityTargetSelector().getAvailableGoals());
-    }
+  @Override
+  public void write(FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
+    buffer.writeNbt(this.objectiveDataEntry.createTag());
   }
 
   @Override
-  public FriendlyByteBuf encode() {
-    return encode(this, new FriendlyByteBuf(Unpooled.buffer()));
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public ObjectiveDataEntry getObjectiveDataEntry() {
-    return this.objectiveDataEntry;
+  @Override
+  public void handleServer(final ServerPlayer serverPlayer) {
+    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    ObjectiveData<?> objectiveData = easyNPC != null ? easyNPC.getEasyNPCObjectiveData() : null;
+
+    if (easyNPC == null || this.objectiveDataEntry == null || objectiveData == null) {
+      log.error("Failed to add/update objective for {}: Invalid data", this.uuid);
+      return;
+    }
+
+    if (objectiveData.addOrUpdateCustomObjective(objectiveDataEntry)) {
+      log.debug("Objective updated for {}: {}", easyNPC, objectiveDataEntry);
+      log.debug("Goals: {}", objectiveData.getEntityGoalSelector().getAvailableGoals());
+      log.debug("Targets: {}", objectiveData.getEntityTargetSelector().getAvailableGoals());
+    }
   }
 }

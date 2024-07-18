@@ -91,6 +91,9 @@ public interface ModelData<T extends PathfinderMob>
     map.put(SynchedDataIndex.MODEL_LEFT_LEG_SCALE, SynchedEntityData.defineId(entityClass, SCALE));
     map.put(SynchedDataIndex.MODEL_RIGHT_LEG_SCALE, SynchedEntityData.defineId(entityClass, SCALE));
     map.put(
+        SynchedDataIndex.ITEM_SMART_ANIMATIONS,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    map.put(
         SynchedDataIndex.MODEL_SMART_ANIMATIONS,
         SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
 
@@ -193,11 +196,26 @@ public interface ModelData<T extends PathfinderMob>
 
   default boolean useSmartAnimations() {
     return supportsSmartAnimations()
-        && getSynchedEntityData(SynchedDataIndex.MODEL_SMART_ANIMATIONS) != null;
+        && getModelSupportsSmartAnimations()
+        && getItemSupportsSmartAnimations();
   }
 
-  default void setUseSmartAnimations(boolean useSmartAnimations) {
+  default boolean getModelSupportsSmartAnimations() {
+    return getSynchedEntityData(SynchedDataIndex.MODEL_SMART_ANIMATIONS) != null
+        && getSynchedEntityData(SynchedDataIndex.MODEL_SMART_ANIMATIONS).equals(true);
+  }
+
+  default void setModelSupportsSmartAnimations(boolean useSmartAnimations) {
     setSynchedEntityData(SynchedDataIndex.MODEL_SMART_ANIMATIONS, useSmartAnimations);
+  }
+
+  default boolean getItemSupportsSmartAnimations() {
+    return getSynchedEntityData(SynchedDataIndex.ITEM_SMART_ANIMATIONS) != null
+        && getSynchedEntityData(SynchedDataIndex.ITEM_SMART_ANIMATIONS).equals(true);
+  }
+
+  default void setItemSupportsSmartAnimations(boolean useItemSmartAnimations) {
+    setSynchedEntityData(SynchedDataIndex.ITEM_SMART_ANIMATIONS, useItemSmartAnimations);
   }
 
   default boolean supportsSmartAnimations() {
@@ -309,6 +327,7 @@ public interface ModelData<T extends PathfinderMob>
     // General
     defineSynchedEntityData(SynchedDataIndex.MODEL_POSE, ModelPose.DEFAULT);
     defineSynchedEntityData(SynchedDataIndex.MODEL_SMART_ANIMATIONS, true);
+    defineSynchedEntityData(SynchedDataIndex.ITEM_SMART_ANIMATIONS, true);
 
     // Model Position Data
     defineSynchedModelPositionData();
@@ -396,7 +415,8 @@ public interface ModelData<T extends PathfinderMob>
 
     // Smart Animations
     if (modelDataTag.contains(EASY_NPC_DATA_MODEL_SMART_ANIMATIONS_TAG)) {
-      this.setUseSmartAnimations(modelDataTag.getBoolean(EASY_NPC_DATA_MODEL_SMART_ANIMATIONS_TAG));
+      this.setModelSupportsSmartAnimations(
+          modelDataTag.getBoolean(EASY_NPC_DATA_MODEL_SMART_ANIMATIONS_TAG));
     }
   }
 }

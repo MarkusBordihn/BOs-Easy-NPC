@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.commands.synchronization;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
+import de.markusbordihn.easynpc.commands.arguments.EquipmentSlotArgument;
 import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
@@ -40,5 +41,9 @@ public class ArgumentTypes {
         new ResourceLocation(Constants.MOD_ID, "easy_npc").toString(),
         EasyNPCArgument.class,
         new EmptyArgumentSerializer<>(EasyNPCArgument::new));
+    net.minecraft.commands.synchronization.ArgumentTypes.register(
+        new ResourceLocation(Constants.MOD_ID, "equipment_slot").toString(),
+        EquipmentSlotArgument.class,
+        new EmptyArgumentSerializer<>(EquipmentSlotArgument::new));
   }
 }

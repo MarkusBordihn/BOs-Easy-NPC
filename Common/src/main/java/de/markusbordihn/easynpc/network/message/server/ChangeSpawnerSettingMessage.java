@@ -22,8 +22,7 @@ package de.markusbordihn.easynpc.network.message.server;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.block.entity.BaseEasyNPCSpawnerBlockEntity;
 import de.markusbordihn.easynpc.data.spawner.SpawnerSettingType;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
-import io.netty.buffer.Unpooled;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -31,58 +30,45 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk.EntityCreationType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-public class ChangeSpawnerSettingMessage extends NetworkMessage {
+public record ChangeSpawnerSettingMessage(
+    BlockPos blockPos, SpawnerSettingType settingType, int settingValue)
+    implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_spawner_settings");
 
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private final BlockPos spawnerPos;
-  private final SpawnerSettingType settingType;
-  private final int value;
-
-  public ChangeSpawnerSettingMessage(
-      final BlockPos blockPos, final SpawnerSettingType settingType, final int value) {
-    super();
-    this.spawnerPos = blockPos;
-    this.settingType = settingType;
-    this.value = value;
-  }
-
-  public static ChangeSpawnerSettingMessage decode(final FriendlyByteBuf buffer) {
+  public static ChangeSpawnerSettingMessage create(final FriendlyByteBuf buffer) {
     return new ChangeSpawnerSettingMessage(
         buffer.readBlockPos(), buffer.readEnum(SpawnerSettingType.class), buffer.readInt());
   }
 
-  public static FriendlyByteBuf encode(
-      final ChangeSpawnerSettingMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeBlockPos(message.getSpawnerPos());
-    buffer.writeEnum(message.getSettingType());
-    buffer.writeInt(message.getValue());
-    return buffer;
+  @Override
+  public void write(final FriendlyByteBuf buffer) {
+    buffer.writeBlockPos(this.blockPos);
+    buffer.writeEnum(this.settingType);
+    buffer.writeInt(this.settingValue);
   }
 
-  public static void handle(final FriendlyByteBuf buffer, final ServerPlayer serverPlayer) {
-    handle(decode(buffer), serverPlayer);
+  @Override
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public static void handle(
-      final ChangeSpawnerSettingMessage message, final ServerPlayer serverPlayer) {
+  @Override
+  public void handleServer(final ServerPlayer serverPlayer) {
     if (serverPlayer == null) {
       return;
     }
 
     // Try to get block entity from the current or different server thread.
     ServerLevel serverLevel = serverPlayer.getLevel();
-    BlockEntity blockEntity = serverLevel.getBlockEntity(message.getSpawnerPos());
+    BlockEntity blockEntity = serverLevel.getBlockEntity(this.blockPos);
     if (blockEntity == null) {
       blockEntity =
           serverLevel
-              .getChunkAt(message.getSpawnerPos())
-              .getBlockEntity(message.getSpawnerPos(), EntityCreationType.IMMEDIATE);
+              .getChunkAt(this.blockPos)
+              .getBlockEntity(this.blockPos, EntityCreationType.IMMEDIATE);
     }
 
     // Verify if block entity is a NPC spawner block entity.
@@ -90,8 +76,8 @@ public class ChangeSpawnerSettingMessage extends NetworkMessage {
       log.error(
           "Found {}({}) instead of NPC spawner block entity at {}",
           blockEntity,
-          serverLevel.getBlockState(message.getSpawnerPos()),
-          message.getSpawnerPos());
+          serverLevel.getBlockState(this.blockPos),
+          this.blockPos);
       return;
     }
 
@@ -102,57 +88,40 @@ public class ChangeSpawnerSettingMessage extends NetworkMessage {
       log.warn(
           "Player {} has no permission to change the settings of spawner at {}",
           serverPlayer.getName().getString(),
-          message.getSpawnerPos());
+          this.blockPos);
       return;
     }
 
     // Update the spawner settings
-    switch (message.getSettingType()) {
+    switch (this.settingType) {
       case SPAWN_RANGE:
-        log.debug("Set spawner {} spawn range to {}", spawnerBlockEntity, message.getValue());
-        spawnerBlockEntity.setSpawnRange(message.getValue());
+        log.debug("Set spawner {} spawn range to {}", spawnerBlockEntity, this.settingValue);
+        spawnerBlockEntity.setSpawnRange(this.settingValue);
         break;
       case DESPAWN_RANGE:
-        log.debug("Set spawner {} despawn range to {}", spawnerBlockEntity, message.getValue());
-        spawnerBlockEntity.setDespawnRange(message.getValue());
+        log.debug("Set spawner {} despawn range to {}", spawnerBlockEntity, this.settingValue);
+        spawnerBlockEntity.setDespawnRange(this.settingValue);
         break;
       case REQUIRED_PLAYER_RANGE:
         log.debug(
-            "Set spawner {} required player range to {}", spawnerBlockEntity, message.getValue());
-        spawnerBlockEntity.setRequiredPlayerRange(message.getValue());
+            "Set spawner {} required player range to {}", spawnerBlockEntity, this.settingValue);
+        spawnerBlockEntity.setRequiredPlayerRange(this.settingValue);
         break;
       case DELAY:
-        log.debug("Set spawner {} delay to {}", spawnerBlockEntity, message.getValue());
-        spawnerBlockEntity.setDelay(message.getValue());
+        log.debug("Set spawner {} delay to {}", spawnerBlockEntity, this.settingValue);
+        spawnerBlockEntity.setDelay(this.settingValue);
         break;
       case MAX_NEARBY_ENTITIES:
         log.debug(
-            "Set spawner {} max nearby entities to {}", spawnerBlockEntity, message.getValue());
-        spawnerBlockEntity.setMaxNearbyEntities(message.getValue());
+            "Set spawner {} max nearby entities to {}", spawnerBlockEntity, this.settingValue);
+        spawnerBlockEntity.setMaxNearbyEntities(this.settingValue);
         break;
       case SPAWN_COUNT:
-        log.debug("Set spawner {} spawn count to {}", spawnerBlockEntity, message.getValue());
-        spawnerBlockEntity.setSpawnCount(message.getValue());
+        log.debug("Set spawner {} spawn count to {}", spawnerBlockEntity, this.settingValue);
+        spawnerBlockEntity.setSpawnCount(this.settingValue);
         break;
       default:
-        log.error(
-            "Unknown spawner setting type {} for {}", message.getSettingType(), spawnerBlockEntity);
+        log.error("Unknown spawner setting type {} for {}", this.settingType, spawnerBlockEntity);
     }
-  }
-
-  public FriendlyByteBuf encode() {
-    return encode(this, new FriendlyByteBuf(Unpooled.buffer()));
-  }
-
-  public BlockPos getSpawnerPos() {
-    return this.spawnerPos;
-  }
-
-  public SpawnerSettingType getSettingType() {
-    return this.settingType;
-  }
-
-  public int getValue() {
-    return this.value;
   }
 }

@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.server.commands.ConfigureCommand;
 import de.markusbordihn.easynpc.server.commands.DebugCommand;
 import de.markusbordihn.easynpc.server.commands.DeleteCommand;
 import de.markusbordihn.easynpc.server.commands.DialogCommand;
+import de.markusbordihn.easynpc.server.commands.EquipmentCommand;
 import de.markusbordihn.easynpc.server.commands.InteractCommand;
 import de.markusbordihn.easynpc.server.commands.NavigationCommand;
 import de.markusbordihn.easynpc.server.commands.OwnerCommand;
@@ -56,6 +57,7 @@ public class CommandManager {
             .then(DebugCommand.register())
             .then(DeleteCommand.register())
             .then(DialogCommand.register())
+            .then(EquipmentCommand.register())
             .then(InteractCommand.register())
             .then(NavigationCommand.register())
             .then(OwnerCommand.register())

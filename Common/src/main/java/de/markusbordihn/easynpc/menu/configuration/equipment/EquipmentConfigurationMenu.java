@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.menu.configuration.equipment;
 
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import de.markusbordihn.easynpc.handler.EquipmentHandler;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.equipment.slot.ArmorSlot;
 import de.markusbordihn.easynpc.menu.configuration.equipment.slot.HandSlot;
@@ -169,8 +170,7 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
     if (this.level.isClientSide) {
       return;
     }
-    log.debug("Hand changed {} {} ...", hand, itemStack);
-    this.getEasyNPC().getLivingEntity().setItemInHand(hand, itemStack);
+    EquipmentHandler.setHandSlotItem(this.getEasyNPC(), hand, itemStack);
   }
 
   public void loadArmor() {
@@ -193,7 +193,6 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
     if (this.level.isClientSide) {
       return;
     }
-    log.debug("Armor changed {} {} {} ...", equipmentSlot, slot, itemStack);
-    this.getEasyNPC().getLivingEntity().setItemSlot(equipmentSlot, itemStack);
+    EquipmentHandler.setArmorSlotItem(this.getEasyNPC(), equipmentSlot, itemStack);
   }
 }

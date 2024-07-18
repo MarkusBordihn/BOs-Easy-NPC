@@ -8,6 +8,15 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.2.0 (beta only for testing)
+
+- Refactored Network Protocol to support 1.20.4 and 1.21.x changes.
+- Fixed #188 by adding support for [Immersive Melodies][immersive-melodies]
+- Fixed #245 by moving specific log messages to debug level.
+- Fixed Smart Animation detection.
+- Added `/easy_npc equipment set <npc> <slot> <item>` command to set equipment for NPCs.
+- Added `/easy_npc equipment remove <npc> <slot>` command to remove equipment from NPCs.
+
 ### 5.1.1 (beta only for testing)
 
 - Fixed #248 by adding new Chinese translations. Thanks to @Sunny-Again.
@@ -459,5 +468,7 @@ it could be that some of them are not compatible with older versions.
 [project_mmo]: https://www.curseforge.com/minecraft/mc-mods/project-mmo
 
 [better_combat]: https://www.curseforge.com/minecraft/mc-mods/better-combat-by-daedelus
+
+[immersive-melodies]: https://www.curseforge.com/minecraft/mc-mods/immersive-melodies
 
 [upgrade_guide]: https://github.com/MarkusBordihn/BOs-Easy-NPC/wiki/Upgrading

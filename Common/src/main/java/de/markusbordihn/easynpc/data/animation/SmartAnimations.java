@@ -17,17 +17,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.configuration.equipment;
+package de.markusbordihn.easynpc.data.animation;
 
-import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenu;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
+import java.util.Set;
+import net.minecraft.core.Registry;
+import net.minecraft.world.item.Item;
 
-public class EquipmentConfigurationScreenWrapper
-    extends EquipmentConfigurationScreen<EquipmentConfigurationMenu> {
+public class SmartAnimations {
 
-  public EquipmentConfigurationScreenWrapper(
-      EquipmentConfigurationMenu menu, Inventory inventory, Component component) {
-    super(menu, inventory, component);
+  private static final Set<String> unsupportedItemSet = Set.of("immersive_melodies:");
+
+  private SmartAnimations() {}
+
+  public static boolean itemSupportSmartAnimation(Item item) {
+    String itemName = Registry.ITEM.getKey(item).toString();
+    return unsupportedItemSet.stream().noneMatch(itemName::startsWith);
   }
 }

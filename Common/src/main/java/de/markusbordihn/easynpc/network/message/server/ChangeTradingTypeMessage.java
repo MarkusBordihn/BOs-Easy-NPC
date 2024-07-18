@@ -23,55 +23,47 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
-import io.netty.buffer.Unpooled;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public class ChangeTradingTypeMessage extends NetworkMessage {
+public record ChangeTradingTypeMessage(UUID uuid, TradingType tradingType)
+    implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_trading_type");
 
-  protected final TradingType tradingType;
-
-  public ChangeTradingTypeMessage(final UUID uuid, final TradingType tradingType) {
-    super(uuid);
-    this.tradingType = tradingType;
-  }
-
-  public static ChangeTradingTypeMessage decode(final FriendlyByteBuf buffer) {
+  public static ChangeTradingTypeMessage create(final FriendlyByteBuf buffer) {
     return new ChangeTradingTypeMessage(buffer.readUUID(), buffer.readEnum(TradingType.class));
   }
 
-  public static FriendlyByteBuf encode(
-      final ChangeTradingTypeMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    buffer.writeEnum(message.getTradingType());
-    return buffer;
+  @Override
+  public void write(final FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
+    buffer.writeEnum(this.tradingType);
   }
 
-  public static void handle(final FriendlyByteBuf buffer, final ServerPlayer serverPlayer) {
-    handle(decode(buffer), serverPlayer);
+  @Override
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public static void handle(
-      final ChangeTradingTypeMessage message, final ServerPlayer serverPlayer) {
-    if (!message.handleMessage(serverPlayer)) {
+  @Override
+  public void handleServer(final ServerPlayer serverPlayer) {
+    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    if (easyNPC == null) {
       return;
     }
 
     // Validate trading type
-    TradingType tradingType = message.getTradingType();
-    if (tradingType == null) {
-      log.error("Invalid trading type for {} from {}", message, serverPlayer);
+    if (this.tradingType == null) {
+      log.error("Invalid trading type for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate trading data.
-    EasyNPC<?> easyNPC = message.getEasyNPC();
     TradingData<?> tradingData = easyNPC.getEasyNPCTradingData();
     if (tradingData == null) {
       log.error("Invalid trading data for {} from {}", easyNPC, serverPlayer);
@@ -79,16 +71,7 @@ public class ChangeTradingTypeMessage extends NetworkMessage {
     }
 
     // Perform action.
-    log.debug("Change trading type: {} for {} from {}", tradingType, easyNPC, serverPlayer);
-    tradingData.setTradingType(tradingType);
-  }
-
-  @Override
-  public FriendlyByteBuf encode() {
-    return encode(this, new FriendlyByteBuf(Unpooled.buffer()));
-  }
-
-  public TradingType getTradingType() {
-    return this.tradingType;
+    log.debug("Change trading type: {} for {} from {}", this.tradingType, easyNPC, serverPlayer);
+    tradingData.setTradingType(this.tradingType);
   }
 }

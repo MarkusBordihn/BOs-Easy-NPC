@@ -21,49 +21,40 @@ package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
-import io.netty.buffer.Unpooled;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public class RemoveNPCMessage extends NetworkMessage {
+public record RemoveNPCMessage(UUID uuid) implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "remove_npc");
 
-  public RemoveNPCMessage(final UUID uuid) {
-    super(uuid);
-  }
-
-  public static RemoveNPCMessage decode(final FriendlyByteBuf buffer) {
+  public static RemoveNPCMessage create(final FriendlyByteBuf buffer) {
     return new RemoveNPCMessage(buffer.readUUID());
   }
 
-  public static FriendlyByteBuf encode(
-      final RemoveNPCMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    return buffer;
+  @Override
+  public void write(final FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
   }
 
-  public static void handle(final FriendlyByteBuf buffer, final ServerPlayer serverPlayer) {
-    handle(decode(buffer), serverPlayer);
+  @Override
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public static void handle(final RemoveNPCMessage message, final ServerPlayer serverPlayer) {
-    if (!message.handleMessage(serverPlayer)) {
+  @Override
+  public void handleServer(final ServerPlayer serverPlayer) {
+    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    if (easyNPC == null) {
       return;
     }
 
     // Perform action.
-    EasyNPC<?> easyNPC = message.getEasyNPC();
     log.info("Removing Easy NPC {} requested by {}", easyNPC, serverPlayer);
     easyNPC.getEntity().discard();
-  }
-
-  @Override
-  public FriendlyByteBuf encode() {
-    return encode(this, new FriendlyByteBuf(Unpooled.buffer()));
   }
 }
