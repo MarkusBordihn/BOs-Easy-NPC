@@ -49,13 +49,14 @@ public class ModBlocks {
                       .strength(5.0F)
                       .sound(SoundType.METAL)
                       .noOcclusion()));
-  private ModBlocks() {}  public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EasyNPCSpawnerBlockEntity>>
+
+  private ModBlocks() {}
+
+  public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EasyNPCSpawnerBlockEntity>>
       EASY_NPC_SPAWNER_ENTITY =
           BLOCK_ENTITY_TYPES.register(
               BaseEasyNPCSpawnerBlockEntity.NAME,
               () ->
                   BlockEntityType.Builder.of(EasyNPCSpawnerBlockEntity::new, EASY_NPC_SPAWNER.get())
                       .build(null));
-
-
 }

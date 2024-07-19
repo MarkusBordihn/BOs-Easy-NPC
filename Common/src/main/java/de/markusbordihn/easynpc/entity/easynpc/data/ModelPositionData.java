@@ -108,6 +108,22 @@ public interface ModelPositionData<T extends PathfinderMob> extends EasyNPC<T> {
     };
   }
 
+  default void setModelPartPosition(ModelPart modelPart, CustomPosition position) {
+    if (modelPart == ModelPart.ROOT) {
+      return;
+    }
+    switch (modelPart) {
+      case HEAD -> setModelHeadPosition(position);
+      case BODY -> setModelBodyPosition(position);
+      case ARMS -> setModelArmsPosition(position);
+      case LEFT_ARM -> setModelLeftArmPosition(position);
+      case RIGHT_ARM -> setModelRightArmPosition(position);
+      case LEFT_LEG -> setModelLeftLegPosition(position);
+      case RIGHT_LEG -> setModelRightLegPosition(position);
+      default -> log.error("Invalid position model part {} for {}", modelPart, this);
+    }
+  }
+
   default CustomPosition getModelHeadPosition() {
     return getSynchedEntityData(SynchedDataIndex.MODEL_HEAD_POSITION);
   }

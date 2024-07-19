@@ -20,35 +20,23 @@
 package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.trading.TradingValueType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public class ChangeAdvancedTradingMessage extends NetworkMessage<ChangeAdvancedTradingMessage> {
+public record ChangeAdvancedTradingMessage(
+    UUID uuid, int tradingOfferIndex, TradingValueType tradingValueType, float tradingValue)
+    implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_advanced_trading");
 
-  protected final int tradingOfferIndex;
-  protected final float tradingValue;
-  protected final TradingValueType tradingValueType;
-
-  public ChangeAdvancedTradingMessage(
-      final UUID uuid,
-      final int tradingOfferIndex,
-      final TradingValueType tradingValueType,
-      final float tradingValue) {
-    super(uuid);
-    this.tradingOfferIndex = tradingOfferIndex;
-    this.tradingValueType = tradingValueType;
-    this.tradingValue = tradingValue;
-  }
-
-  public static ChangeAdvancedTradingMessage decode(final FriendlyByteBuf buffer) {
+  public static ChangeAdvancedTradingMessage create(final FriendlyByteBuf buffer) {
     return new ChangeAdvancedTradingMessage(
         buffer.readUUID(),
         buffer.readInt(),
@@ -56,43 +44,43 @@ public class ChangeAdvancedTradingMessage extends NetworkMessage<ChangeAdvancedT
         buffer.readFloat());
   }
 
-  public static FriendlyByteBuf encode(
-      final ChangeAdvancedTradingMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    buffer.writeInt(message.getTradingOfferIndex());
-    buffer.writeEnum(message.getTradingValueType());
-    buffer.writeFloat(message.getTradingValue());
-    return buffer;
+  @Override
+  public void write(final FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
+    buffer.writeInt(this.tradingOfferIndex);
+    buffer.writeEnum(this.tradingValueType);
+    buffer.writeFloat(this.tradingValue);
   }
 
-  public static void handle(final FriendlyByteBuf buffer, final ServerPlayer serverPlayer) {
-    handle(decode(buffer), serverPlayer);
+  @Override
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public static void handle(
-      final ChangeAdvancedTradingMessage message, final ServerPlayer serverPlayer) {
-    if (!message.handleMessage(serverPlayer)) {
+  @Override
+  public void handleServer(final ServerPlayer serverPlayer) {
+    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    if (easyNPC == null) {
       return;
     }
 
     // Validate trading offer index
-    int tradingOfferIndex = message.getTradingOfferIndex();
-    if (tradingOfferIndex < 0) {
+    if (this.tradingOfferIndex < 0) {
       log.error(
-          "Trading offer index {} is out of range (>= 0) for {}", tradingOfferIndex, serverPlayer);
+          "Trading offer index {} is out of range (>= 0) for {}",
+          this.tradingOfferIndex,
+          serverPlayer);
       return;
     }
 
     // Validate trading value type
-    TradingValueType tradingValueType = message.getTradingValueType();
-    if (tradingValueType == null) {
-      log.error("Trading value type is unknown for {} from {}", message, serverPlayer);
+    if (this.tradingValueType == null) {
+      log.error("Trading value type is unknown for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate trading value
-    float tradingValue = message.getTradingValue();
-    if (tradingValue < 0.0) {
+    if (this.tradingValue < 0.0) {
       log.error(
           "Trading value {} for {} is out of range (>= 0) for {}",
           tradingValue,
@@ -102,7 +90,6 @@ public class ChangeAdvancedTradingMessage extends NetworkMessage<ChangeAdvancedT
     }
 
     // Validate trading data
-    EasyNPC<?> easyNPC = message.getEasyNPC();
     TradingData<?> tradingData = easyNPC.getEasyNPCTradingData();
     if (tradingData == null) {
       log.error("Trading data for {} is not available for {}", easyNPC, serverPlayer);
@@ -110,88 +97,58 @@ public class ChangeAdvancedTradingMessage extends NetworkMessage<ChangeAdvancedT
     }
 
     // Perform action.
-    switch (tradingValueType) {
+    switch (this.tradingValueType) {
       case RESETS_EVERY_MIN:
         log.debug(
             "Set trading resets every min to {} for {} from {}",
-            tradingValue,
+            this.tradingValue,
             easyNPC,
             serverPlayer);
-        tradingData.setTradingResetsEveryMin((int) tradingValue);
+        tradingData.setTradingResetsEveryMin((int) this.tradingValue);
         break;
       case MAX_USES:
         log.debug(
             "Set advanced trading max uses {}# for {} to {} by {}",
-            tradingOfferIndex,
+            this.tradingOfferIndex,
             easyNPC,
-            tradingValue,
+            this.tradingValue,
             serverPlayer);
-        tradingData.setAdvancedTradingMaxUses(tradingOfferIndex, (int) tradingValue);
+        tradingData.setAdvancedTradingMaxUses(this.tradingOfferIndex, (int) this.tradingValue);
         break;
-      case XP:
+      case REWARD_EXP:
         log.debug(
             "Set advanced trading xp {}# for {} to {} by {}",
-            tradingOfferIndex,
+            this.tradingOfferIndex,
             easyNPC,
-            tradingValue,
+            this.tradingValue,
             serverPlayer);
-        tradingData.setAdvancedTradingXp(tradingOfferIndex, (int) tradingValue);
+        tradingData.setAdvancedTradingXp(this.tradingOfferIndex, (int) this.tradingValue);
         break;
       case PRICE_MULTIPLIER:
         log.debug(
             "Set advanced trading price multiplier {}# for {} to {} by {}",
-            tradingOfferIndex,
+            this.tradingOfferIndex,
             easyNPC,
-            tradingValue,
+            this.tradingValue,
             serverPlayer);
-        tradingData.setAdvancedTradingPriceMultiplier(tradingOfferIndex, tradingValue);
+        tradingData.setAdvancedTradingPriceMultiplier(this.tradingOfferIndex, this.tradingValue);
         break;
       case DEMAND:
         log.debug(
             "Set advanced trading demand {}# for {} to {} by {}",
-            tradingOfferIndex,
+            this.tradingOfferIndex,
             easyNPC,
-            tradingValue,
+            this.tradingValue,
             serverPlayer);
-        tradingData.setAdvancedTradingDemand(tradingOfferIndex, (int) tradingValue);
+        tradingData.setAdvancedTradingDemand(this.tradingOfferIndex, (int) this.tradingValue);
         break;
       default:
         log.error(
             "Trading value type {} with value {}# for {} is unknown for {}",
-            tradingValueType,
-            tradingValue,
-            tradingOfferIndex,
+            this.tradingValueType,
+            this.tradingValue,
+            this.tradingOfferIndex,
             serverPlayer);
     }
-  }
-
-  @Override
-  public FriendlyByteBuf encodeBuffer(FriendlyByteBuf buffer) {
-    return encode(this, buffer);
-  }
-
-  @Override
-  public ChangeAdvancedTradingMessage decodeBuffer(FriendlyByteBuf buffer) {
-    return decode(buffer);
-  }
-
-  public int getTradingOfferIndex() {
-    return this.tradingOfferIndex;
-  }
-
-  public TradingValueType getTradingValueType() {
-    return this.tradingValueType;
-  }
-
-  public float getTradingValue() {
-    return this.tradingValue;
-  }
-
-  public enum TradingValueType {
-    RESETS_EVERY_MIN,
-    MAX_USES,
-    XP,
-    PRICE_MULTIPLIER,
-    DEMAND
   }
 }

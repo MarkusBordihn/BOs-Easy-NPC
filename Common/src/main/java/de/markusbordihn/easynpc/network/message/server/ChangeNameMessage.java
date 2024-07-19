@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -30,76 +30,46 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public class ChangeNameMessage extends NetworkMessage<ChangeNameMessage> {
+public record ChangeNameMessage(UUID uuid, String name, int color) implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_name");
 
-  private final String name;
-  private final int color;
-
-  public ChangeNameMessage(final UUID uuid, final String name, final int color) {
-    super(uuid);
-    this.name = name;
-    this.color = color;
-  }
-
-  public static ChangeNameMessage decode(final FriendlyByteBuf buffer) {
+  public static ChangeNameMessage create(final FriendlyByteBuf buffer) {
     return new ChangeNameMessage(buffer.readUUID(), buffer.readUtf(), buffer.readInt());
   }
 
-  public static FriendlyByteBuf encode(
-      final ChangeNameMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    buffer.writeUtf(message.getName());
-    buffer.writeInt(message.getColor());
-    return buffer;
+  @Override
+  public void write(final FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
+    buffer.writeUtf(this.name);
+    buffer.writeInt(this.color);
   }
 
-  public static void handle(final FriendlyByteBuf buffer, ServerPlayer serverPlayer) {
-    handle(decode(buffer), serverPlayer);
+  @Override
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public static void handle(final ChangeNameMessage message, final ServerPlayer serverPlayer) {
-    if (!message.handleMessage(serverPlayer)) {
+  @Override
+  public void handleServer(final ServerPlayer serverPlayer) {
+    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    if (easyNPC == null) {
       return;
     }
 
     // Validate name.
-    String name = message.getName();
-    if (name == null || name.isEmpty()) {
-      log.error("Invalid name {} for {} from {}", name, message, serverPlayer);
+    if (this.name == null || this.name.isEmpty()) {
+      log.error("Invalid name {} for {} from {}", this.name, easyNPC, serverPlayer);
       return;
     }
 
-    // Validate color.
-    int color = message.getColor();
-
     // Perform action.
-    EasyNPC<?> easyNPC = message.getEasyNPC();
-    if (color >= 0) {
-      Style style = Style.EMPTY.withColor(TextColor.fromRgb(color));
-      easyNPC.getEntity().setCustomName(Component.literal(name).setStyle(style));
+    if (this.color >= 0) {
+      Style style = Style.EMPTY.withColor(TextColor.fromRgb(this.color));
+      easyNPC.getEntity().setCustomName(Component.literal(this.name).setStyle(style));
     } else {
-      easyNPC.getEntity().setCustomName(Component.literal(name));
+      easyNPC.getEntity().setCustomName(Component.literal(this.name));
     }
-  }
-
-  @Override
-  public FriendlyByteBuf encodeBuffer(FriendlyByteBuf buffer) {
-    return encode(this, buffer);
-  }
-
-  @Override
-  public ChangeNameMessage decodeBuffer(FriendlyByteBuf buffer) {
-    return decode(buffer);
-  }
-
-  public String getName() {
-    return this.name;
-  }
-
-  public int getColor() {
-    return this.color;
   }
 }

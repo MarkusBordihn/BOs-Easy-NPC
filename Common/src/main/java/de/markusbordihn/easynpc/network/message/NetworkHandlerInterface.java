@@ -17,12 +17,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.network;
+package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -34,22 +31,18 @@ public interface NetworkHandlerInterface {
 
   Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  <M> void registerClientNetworkMessageHandler(
+  <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
       final ResourceLocation messageID,
       final Class<M> networkMessage,
-      final BiConsumer<M, FriendlyByteBuf> encoder,
-      final Function<FriendlyByteBuf, M> decoder,
-      final Consumer<M> handler);
+      final Function<FriendlyByteBuf, M> creator);
 
-  <M> void registerServerNetworkMessageHandler(
+  <M extends NetworkMessageRecord> void registerServerNetworkMessageHandler(
       final ResourceLocation messageID,
       final Class<M> networkMessage,
-      final BiConsumer<M, FriendlyByteBuf> encoder,
-      final Function<FriendlyByteBuf, M> decoder,
-      final BiConsumer<M, ServerPlayer> handler);
+      final Function<FriendlyByteBuf, M> creator);
 
-  <M extends NetworkMessage> void sendToServer(ResourceLocation messageId, M networkMessage);
+  <M extends NetworkMessageRecord> void sendToServer(M networkMessageRecord);
 
-  <M extends NetworkMessage> void sendToPlayer(
-      ResourceLocation messageId, M networkMessage, ServerPlayer serverPlayer);
+  <M extends NetworkMessageRecord> void sendToPlayer(
+      M networkMessageRecord, ServerPlayer serverPlayer);
 }

@@ -114,6 +114,20 @@ public interface ModelRotationData<T extends PathfinderMob> extends EasyNPC<T> {
     };
   }
 
+  default void setModelPartRotation(ModelPart modelPart, CustomRotation rotation) {
+    switch (modelPart) {
+      case HEAD -> setModelHeadRotation(rotation);
+      case BODY -> setModelBodyRotation(rotation);
+      case ARMS -> setModelArmsRotation(rotation);
+      case LEFT_ARM -> setModelLeftArmRotation(rotation);
+      case RIGHT_ARM -> setModelRightArmRotation(rotation);
+      case LEFT_LEG -> setModelLeftLegRotation(rotation);
+      case RIGHT_LEG -> setModelRightLegRotation(rotation);
+      case ROOT -> setModelRootRotation(rotation);
+      default -> log.error("Invalid rotation model part {} for {}", modelPart, this);
+    }
+  }
+
   default boolean hasChangedModelRotation() {
     return (hasHeadModelPart() && getModelHeadRotation().hasChanged())
         || (hasBodyModelPart() && getModelBodyRotation().hasChanged())

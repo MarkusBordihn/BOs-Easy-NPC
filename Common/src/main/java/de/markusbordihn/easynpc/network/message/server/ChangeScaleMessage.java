@@ -20,106 +20,66 @@
 package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.model.ModelScaleAxis;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public class ChangeScaleMessage extends NetworkMessage<ChangeScaleMessage> {
+public record ChangeScaleMessage(UUID uuid, ModelScaleAxis scaleAxis, Float scaleValue)
+    implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_scale");
 
-  protected final Float scale;
-  protected final String scaleAxis;
-
-  public ChangeScaleMessage(final UUID uuid, final String scaleAxis, final Float scale) {
-    super(uuid);
-    this.scale = scale;
-    this.scaleAxis = scaleAxis;
+  public static ChangeScaleMessage create(final FriendlyByteBuf buffer) {
+    return new ChangeScaleMessage(
+        buffer.readUUID(), buffer.readEnum(ModelScaleAxis.class), buffer.readFloat());
   }
 
-  public static ChangeScaleMessage decode(final FriendlyByteBuf buffer) {
-    return new ChangeScaleMessage(buffer.readUUID(), buffer.readUtf(), buffer.readFloat());
+  @Override
+  public void write(final FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
+    buffer.writeEnum(this.scaleAxis);
+    buffer.writeFloat(this.scaleValue);
   }
 
-  public static FriendlyByteBuf encode(
-      final ChangeScaleMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    buffer.writeUtf(message.getScaleAxis());
-    buffer.writeFloat(message.getScale());
-    return buffer;
+  @Override
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public static void handle(final FriendlyByteBuf buffer, final ServerPlayer serverPlayer) {
-    handle(decode(buffer), serverPlayer);
-  }
-
-  public static void handle(final ChangeScaleMessage message, final ServerPlayer serverPlayer) {
-    if (!message.handleMessage(serverPlayer)) {
+  @Override
+  public void handleServer(final ServerPlayer serverPlayer) {
+    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    if (easyNPC == null) {
       return;
     }
 
     // Validate scale axis.
-    String scaleAxis = message.getScaleAxis();
-    if (scaleAxis == null
-        || !scaleAxis.equals("x") && !scaleAxis.equals("y") && !scaleAxis.equals("z")) {
-      log.error(
-          "Unknown scale axis {} request for UUID {} from {}",
-          scaleAxis,
-          message.getUUID(),
-          serverPlayer);
+    if (this.scaleAxis == null) {
+      log.error("Invalid scale axis request for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate scale.
-    Float scale = message.getScale();
-    if (scale == null || scale < 0.1f || scale > 10.0f) {
+    if (this.scaleValue == null || this.scaleValue < 0.1f || this.scaleValue > 10.0f) {
       log.error(
-          "Invalid scale {} request for UUID {} from {}", scale, message.getUUID(), serverPlayer);
+          "Invalid scale {} request for UUID {} from {}", this.scaleValue, easyNPC, serverPlayer);
       return;
     }
 
     // Validate scale data.
-    EasyNPC<?> easyNPC = message.getEasyNPC();
     ScaleData<?> scaleData = easyNPC.getEasyNPCScaleData();
     if (scaleData == null) {
-      log.error("Invalid scale data for {} from {}", message, serverPlayer);
+      log.error("Invalid scale data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    switch (scaleAxis) {
-      case "x":
-        scaleData.setScaleX(scale);
-        break;
-      case "y":
-        scaleData.setScaleY(scale);
-        break;
-      case "z":
-        scaleData.setScaleZ(scale);
-        break;
-    }
-  }
-
-  @Override
-  public FriendlyByteBuf encodeBuffer(FriendlyByteBuf buffer) {
-    return encode(this, buffer);
-  }
-
-  @Override
-  public ChangeScaleMessage decodeBuffer(FriendlyByteBuf buffer) {
-    return decode(buffer);
-  }
-
-  public Float getScale() {
-    return this.scale;
-  }
-
-  public String getScaleAxis() {
-    return this.scaleAxis;
+    scaleData.setModelScaleAxis(this.scaleAxis, this.scaleValue);
   }
 }

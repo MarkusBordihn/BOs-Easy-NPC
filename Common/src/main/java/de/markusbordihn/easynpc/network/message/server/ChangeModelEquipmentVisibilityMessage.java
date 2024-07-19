@@ -22,107 +22,79 @@ package de.markusbordihn.easynpc.network.message.server;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 
-public class ChangeModelEquipmentVisibilityMessage
-    extends NetworkMessage<ChangeModelEquipmentVisibilityMessage> {
+public record ChangeModelEquipmentVisibilityMessage(
+    UUID uuid, EquipmentSlot equipmentSlot, boolean visible) implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_model_equipment_visibility");
 
-  protected final EquipmentSlot equipmentSlot;
-  protected final boolean visible;
-
-  public ChangeModelEquipmentVisibilityMessage(
-      final UUID uuid, final EquipmentSlot equipmentSlot, final boolean visible) {
-    super(uuid);
-    this.equipmentSlot = equipmentSlot;
-    this.visible = visible;
-  }
-
-  public static ChangeModelEquipmentVisibilityMessage decode(final FriendlyByteBuf buffer) {
+  public static ChangeModelEquipmentVisibilityMessage create(final FriendlyByteBuf buffer) {
     return new ChangeModelEquipmentVisibilityMessage(
         buffer.readUUID(), buffer.readEnum(EquipmentSlot.class), buffer.readBoolean());
   }
 
-  public static FriendlyByteBuf encode(
-      final ChangeModelEquipmentVisibilityMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    buffer.writeEnum(message.getEquipmentSlot());
-    buffer.writeBoolean(message.isVisible());
-    return buffer;
+  @Override
+  public void write(final FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
+    buffer.writeEnum(this.equipmentSlot);
+    buffer.writeBoolean(this.visible);
   }
 
-  public static void handle(final FriendlyByteBuf buffer, final ServerPlayer serverPlayer) {
-    handle(decode(buffer), serverPlayer);
+  @Override
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public static void handle(
-      final ChangeModelEquipmentVisibilityMessage message, final ServerPlayer serverPlayer) {
-    if (!message.handleMessage(serverPlayer)) {
+  @Override
+  public void handleServer(final ServerPlayer serverPlayer) {
+    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    if (easyNPC == null) {
       return;
     }
 
     // Validate ModelPart.
-    EquipmentSlot equipmentSlot = message.getEquipmentSlot();
-    if (equipmentSlot == null) {
-      log.error("Invalid equipmentSlot for {} from {}", message, serverPlayer);
+    if (this.equipmentSlot == null) {
+      log.error("Invalid equipmentSlot for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate Model data.
-    EasyNPC<?> easyNPC = message.getEasyNPC();
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
-      log.error("Invalid model data for {} from {}", message, serverPlayer);
+      log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate Visibility.
-    boolean visible = message.isVisible();
-
     // Perform action.
     log.debug(
-        "Change {} visibility to {} for {} from {}", equipmentSlot, visible, easyNPC, serverPlayer);
-    switch (equipmentSlot) {
+        "Change {} visibility to {} for {} from {}",
+        this.equipmentSlot,
+        this.visible,
+        easyNPC,
+        serverPlayer);
+    switch (this.equipmentSlot) {
       case HEAD:
-        modelData.setModelHelmetVisible(visible);
+        modelData.setModelHelmetVisible(this.visible);
         break;
       case CHEST:
-        modelData.setModelChestplateVisible(visible);
+        modelData.setModelChestplateVisible(this.visible);
         break;
       case LEGS:
-        modelData.setModelLeggingsVisible(visible);
+        modelData.setModelLeggingsVisible(this.visible);
         break;
       case FEET:
-        modelData.setModelBootsVisible(visible);
+        modelData.setModelBootsVisible(this.visible);
         break;
       default:
-        log.error("Invalid equipmentSlot {} for {} from {}", equipmentSlot, message, serverPlayer);
+        log.error("Invalid equipmentSlot {} for {} from {}", equipmentSlot, easyNPC, serverPlayer);
         break;
     }
-  }
-
-  @Override
-  public FriendlyByteBuf encodeBuffer(FriendlyByteBuf buffer) {
-    return encode(this, buffer);
-  }
-
-  @Override
-  public ChangeModelEquipmentVisibilityMessage decodeBuffer(FriendlyByteBuf buffer) {
-    return decode(buffer);
-  }
-
-  public EquipmentSlot getEquipmentSlot() {
-    return this.equipmentSlot;
-  }
-
-  public boolean isVisible() {
-    return this.visible;
   }
 }

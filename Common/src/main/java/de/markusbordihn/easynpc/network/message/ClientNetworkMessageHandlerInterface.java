@@ -23,7 +23,6 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
-import de.markusbordihn.easynpc.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.network.message.client.ExportClientPresetMessage;
 import de.markusbordihn.easynpc.network.message.client.OpenMenuCallbackMessage;
 import java.util.UUID;
@@ -54,7 +53,6 @@ public interface ClientNetworkMessageHandlerInterface {
         easyNPC.getEntity().getName().getString(),
         serverPlayer.getName().getString());
     NetworkHandlerManager.sendToPlayer(
-        ExportClientPresetMessage.MESSAGE_ID,
         new ExportClientPresetMessage(
             uuid,
             easyNPC.getEntity().getName().getString(),
@@ -68,9 +66,7 @@ public interface ClientNetworkMessageHandlerInterface {
     if (uuid != null && menuId != null && serverPlayer != null) {
       log.info("Open menu with UUID {}", uuid);
       NetworkHandlerManager.sendToPlayer(
-          OpenMenuCallbackMessage.MESSAGE_ID,
-          new OpenMenuCallbackMessage(uuid, menuId, data),
-          serverPlayer);
+          new OpenMenuCallbackMessage(uuid, menuId, data), serverPlayer);
     }
   }
 }

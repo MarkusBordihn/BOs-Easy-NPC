@@ -20,20 +20,10 @@
 package de.markusbordihn.easynpc.network;
 
 import de.markusbordihn.easynpc.network.message.ServerNetworkMessageHandlerInterface;
-import de.markusbordihn.easynpc.network.message.server.OpenMenuMessageRecord;
-import java.util.UUID;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 public class ServerNetworkMessageHandler implements ServerNetworkMessageHandlerInterface {
 
   public ServerNetworkMessageHandler() {
     // Register client network handler for Client -> Server messages.
-  }
-
-  @Override
-  public void openMenu(UUID uuid, UUID menuId) {
-    if (uuid != null && menuId != null) {
-      PacketDistributor.SERVER.noArg().send(new OpenMenuMessageRecord(uuid, menuId));
-    }
   }
 }

@@ -22,78 +22,54 @@ package de.markusbordihn.easynpc.network.message.server;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
-import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public class ExecuteDialogButtonActionMessage
-    extends NetworkMessage<ExecuteDialogButtonActionMessage> {
+public record ExecuteDialogButtonActionMessage(UUID uuid, UUID dialogId, UUID dialogButtonId)
+    implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "dialog_button_action");
 
-  private final UUID dialogId;
-  private final UUID dialogButtonId;
-
-  public ExecuteDialogButtonActionMessage(
-      final UUID uuid, final UUID dialogId, final UUID dialogButtonId) {
-    super(uuid);
-    this.dialogId = dialogId;
-    this.dialogButtonId = dialogButtonId;
-  }
-
-  public static ExecuteDialogButtonActionMessage decode(final FriendlyByteBuf buffer) {
+  public static ExecuteDialogButtonActionMessage create(final FriendlyByteBuf buffer) {
     return new ExecuteDialogButtonActionMessage(
         buffer.readUUID(), buffer.readUUID(), buffer.readUUID());
   }
 
-  public static FriendlyByteBuf encode(
-      final ExecuteDialogButtonActionMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    buffer.writeUUID(message.getDialogId());
-    buffer.writeUUID(message.getDialogButtonId());
-    return buffer;
+  @Override
+  public void write(final FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
+    buffer.writeUUID(this.dialogId);
+    buffer.writeUUID(this.dialogButtonId);
   }
 
-  public static void handle(final FriendlyByteBuf buffer, final ServerPlayer serverPlayer) {
-    handle(decode(buffer), serverPlayer);
+  @Override
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public static void handle(
-      final ExecuteDialogButtonActionMessage message, final ServerPlayer serverPlayer) {
-    UUID uuid = message.getUUID();
-    if (serverPlayer == null || uuid == null) {
-      log.error(
-          "Unable to trigger dialog button action event with message {} from {}",
-          message,
-          serverPlayer);
+  @Override
+  public void handleServer(final ServerPlayer serverPlayer) {
+    EasyNPC<?> easyNPC = getEasyNPC(this.uuid, serverPlayer);
+    if (easyNPC == null) {
       return;
     }
 
     // Validate dialog id.
-    UUID dialogId = message.getDialogId();
-    if (dialogId == null) {
-      log.error("Invalid dialog id for {} from {}", message, serverPlayer);
+    if (this.dialogId == null) {
+      log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog button id.
-    UUID dialogButtonId = message.getDialogButtonId();
-    if (dialogButtonId == null) {
-      log.error("Invalid dialog button id for {} from {}", message, serverPlayer);
-      return;
-    }
-
-    // Validate entity.
-    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPC == null) {
-      log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
+    if (this.dialogButtonId == null) {
+      log.error("Invalid dialog button id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
@@ -105,12 +81,12 @@ public class ExecuteDialogButtonActionMessage
     }
 
     // Validate dialog button actions.
-    if (!dialogData.hasDialogButton(dialogId, dialogButtonId)) {
+    if (!dialogData.hasDialogButton(this.dialogId, this.dialogButtonId)) {
       log.error(
-          "Unknown dialog button action {} request for dialog {} for UUID {} from {}",
-          dialogButtonId,
-          dialogId,
-          uuid,
+          "Unknown dialog button action {} request for dialog {} for {} from {}",
+          this.dialogButtonId,
+          this.dialogId,
+          easyNPC,
           serverPlayer);
       return;
     }
@@ -119,9 +95,9 @@ public class ExecuteDialogButtonActionMessage
     DialogButtonEntry dialogButtonEntry = dialogData.getDialogButton(dialogId, dialogButtonId);
     if (dialogButtonEntry == null) {
       log.error(
-          "Unable to get valid dialog button data for UUID {} and dialog {} from {}",
-          uuid,
-          dialogId,
+          "Unable to get valid dialog button data for {} and dialog {} from {}",
+          easyNPC,
+          this.dialogId,
           serverPlayer);
       return;
     }
@@ -130,10 +106,10 @@ public class ExecuteDialogButtonActionMessage
     ActionDataSet actionDataSet = dialogButtonEntry.getActionDataSet();
     if (actionDataSet == null || actionDataSet.isEmpty()) {
       log.error(
-          "Empty dialog button action {} request for UUID {} and dialog {} from {}",
-          dialogButtonId,
-          uuid,
-          dialogId,
+          "Empty dialog button action {} request for {} and dialog {} from {}",
+          this.dialogButtonId,
+          easyNPC,
+          this.dialogId,
           serverPlayer);
       return;
     }
@@ -147,23 +123,5 @@ public class ExecuteDialogButtonActionMessage
 
     // Perform action.
     actionHandler.executeActions(actionDataSet, serverPlayer);
-  }
-
-  @Override
-  public FriendlyByteBuf encodeBuffer(FriendlyByteBuf buffer) {
-    return encode(this, buffer);
-  }
-
-  @Override
-  public ExecuteDialogButtonActionMessage decodeBuffer(FriendlyByteBuf buffer) {
-    return decode(buffer);
-  }
-
-  public UUID getDialogId() {
-    return this.dialogId;
-  }
-
-  public UUID getDialogButtonId() {
-    return this.dialogButtonId;
   }
 }

@@ -22,70 +22,50 @@ package de.markusbordihn.easynpc.network.message.server;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public class ChangeModelLockRotationMessage extends NetworkMessage<ChangeModelLockRotationMessage> {
+public record ChangeModelLockRotationMessage(UUID uuid, boolean lockRotation)
+    implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_model_lock_rotation");
 
-  protected final boolean lockRotation;
-
-  public ChangeModelLockRotationMessage(final UUID uuid, final boolean lockRotation) {
-    super(uuid);
-    this.lockRotation = lockRotation;
-  }
-
-  public static ChangeModelLockRotationMessage decode(final FriendlyByteBuf buffer) {
+  public static ChangeModelLockRotationMessage create(final FriendlyByteBuf buffer) {
     return new ChangeModelLockRotationMessage(buffer.readUUID(), buffer.readBoolean());
   }
 
-  public static FriendlyByteBuf encode(
-      final ChangeModelLockRotationMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    buffer.writeBoolean(message.getLockRotation());
-    return buffer;
+  @Override
+  public void write(final FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
+    buffer.writeBoolean(this.lockRotation);
   }
 
-  public static void handle(final FriendlyByteBuf buffer, final ServerPlayer serverPlayer) {
-    handle(decode(buffer), serverPlayer);
+  @Override
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public static void handle(
-      final ChangeModelLockRotationMessage message, final ServerPlayer serverPlayer) {
-    if (!message.handleMessage(serverPlayer)) {
+  @Override
+  public void handleServer(final ServerPlayer serverPlayer) {
+    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    if (easyNPC == null) {
       return;
     }
 
     // Validate Model data.
-    EasyNPC<?> easyNPC = message.getEasyNPC();
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
-      log.error("Invalid model data for {} from {}", message, serverPlayer);
+      log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    boolean lockRotation = message.getLockRotation();
-    log.debug("Reset and lock rotation {} for {} from {}", lockRotation, easyNPC, serverPlayer);
-    modelData.setModelLockRotation(lockRotation);
-  }
-
-  @Override
-  public FriendlyByteBuf encodeBuffer(FriendlyByteBuf buffer) {
-    return encode(this, buffer);
-  }
-
-  @Override
-  public ChangeModelLockRotationMessage decodeBuffer(FriendlyByteBuf buffer) {
-    return decode(buffer);
-  }
-
-  public boolean getLockRotation() {
-    return this.lockRotation;
+    log.debug(
+        "Reset and lock rotation {} for {} from {}", this.lockRotation, easyNPC, serverPlayer);
+    modelData.setModelLockRotation(this.lockRotation);
   }
 }

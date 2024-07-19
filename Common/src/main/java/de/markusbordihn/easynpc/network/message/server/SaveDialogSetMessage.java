@@ -21,79 +21,57 @@ package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
-import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public class SaveDialogSetMessage extends NetworkMessage<SaveDialogSetMessage> {
+public record SaveDialogSetMessage(UUID uuid, DialogDataSet dialogDataSet)
+    implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "save_dialog_set");
 
-  protected final DialogDataSet dialogDataSet;
-
-  public SaveDialogSetMessage(final UUID uuid, final DialogDataSet dialogDataSet) {
-    super(uuid);
-    this.dialogDataSet = dialogDataSet;
-  }
-
-  public static SaveDialogSetMessage decode(final FriendlyByteBuf buffer) {
+  public static SaveDialogSetMessage create(final FriendlyByteBuf buffer) {
     return new SaveDialogSetMessage(buffer.readUUID(), new DialogDataSet(buffer.readNbt()));
   }
 
-  public static FriendlyByteBuf encode(
-      final SaveDialogSetMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    buffer.writeNbt(message.getDialogData().createTag());
-    return buffer;
+  @Override
+  public void write(final FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
+    buffer.writeNbt(this.dialogDataSet.createTag());
   }
 
-  public static void handle(final FriendlyByteBuf buffer, final ServerPlayer serverPlayer) {
-    handle(decode(buffer), serverPlayer);
+  @Override
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public static void handle(final SaveDialogSetMessage message, final ServerPlayer serverPlayer) {
-    if (!message.handleMessage(serverPlayer)) {
+  @Override
+  public void handleServer(final ServerPlayer serverPlayer) {
+    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    if (easyNPC == null) {
       return;
     }
 
     // Verify dialog data set.
-    DialogDataSet dialogDataSet = message.getDialogData();
-    if (dialogDataSet == null) {
-      log.error("Unable to get dialog data set with message {} from {}", message, serverPlayer);
+    if (this.dialogDataSet == null) {
+      log.error("Unable to get dialog data set with message {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate Dialog data.
-    EasyNPC<?> easyNPC =
-        LivingEntityManager.getEasyNPCEntityByUUID(message.getUUID(), serverPlayer);
     DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
-      log.error("Unable to get valid entity with UUID {} for {}", message.getUUID(), serverPlayer);
+      log.error("Unable to get valid entity with UUID {} for {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    log.debug("Saving dialog {} for {} from {}", dialogDataSet, easyNPC, serverPlayer);
-    dialogData.setDialogDataSet(dialogDataSet);
-  }
-
-  @Override
-  public FriendlyByteBuf encodeBuffer(FriendlyByteBuf buffer) {
-    return encode(this, buffer);
-  }
-
-  @Override
-  public SaveDialogSetMessage decodeBuffer(FriendlyByteBuf buffer) {
-    return decode(buffer);
-  }
-
-  public DialogDataSet getDialogData() {
-    return this.dialogDataSet;
+    log.debug("Saving dialog {} for {} from {}", this.dialogDataSet, easyNPC, serverPlayer);
+    dialogData.setDialogDataSet(this.dialogDataSet);
   }
 }

@@ -20,9 +20,9 @@
 package de.markusbordihn.easynpc.network;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+import de.markusbordihn.easynpc.network.message.NetworkHandlerInterface;
+import de.markusbordihn.easynpc.network.message.NetworkHandlerManager;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -48,41 +48,47 @@ public class NetworkHandler implements NetworkHandlerInterface {
   }
 
   @Override
-  public <M extends NetworkMessage> void sendToServer(
-      ResourceLocation messageId, M networkMessage) {
-    ClientPlayNetworking.send(messageId, networkMessage.encode());
+  public void sendToServer(NetworkMessageRecord networkMessageRecord) {
+    ClientPlayNetworking.send(networkMessageRecord.id(), networkMessageRecord.payload());
   }
 
   @Override
-  public <M extends NetworkMessage> void sendToPlayer(
-      ResourceLocation messageId, M networkMessage, ServerPlayer serverPlayer) {
-    ServerPlayNetworking.send(serverPlayer, messageId, networkMessage.encode());
+  public void sendToPlayer(NetworkMessageRecord networkMessageRecord, ServerPlayer serverPlayer) {
+    ServerPlayNetworking.send(
+        serverPlayer, networkMessageRecord.id(), networkMessageRecord.payload());
   }
 
   @Override
-  public <M> void registerClientNetworkMessageHandler(
-      ResourceLocation messageID,
-      Class<M> networkMessage,
-      BiConsumer<M, FriendlyByteBuf> encoder,
-      Function<FriendlyByteBuf, M> decoder,
-      Consumer<M> handler) {
-
-    ClientPlayNetworking.registerGlobalReceiver(
-        messageID,
-        (client, channelHandler, buffer, responseSender) -> handler.accept(decoder.apply(buffer)));
+  public <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
+      final ResourceLocation messageID,
+      final Class<M> networkMessageRecord,
+      final Function<FriendlyByteBuf, M> creator) {
+    try {
+      ClientPlayNetworking.registerGlobalReceiver(
+          messageID,
+          (client, channelHandler, buffer, responseSender) -> {
+            M networkMessage = creator.apply(buffer);
+            networkMessage.handleClient();
+          });
+    } catch (Exception e) {
+      log.error("Failed to register network message handler {}:", networkMessageRecord, e);
+    }
   }
 
   @Override
-  public <M> void registerServerNetworkMessageHandler(
-      ResourceLocation messageID,
-      Class<M> networkMessage,
-      BiConsumer<M, FriendlyByteBuf> encoder,
-      Function<FriendlyByteBuf, M> decoder,
-      BiConsumer<M, ServerPlayer> handler) {
-
-    ServerPlayNetworking.registerGlobalReceiver(
-        messageID,
-        (server, serverPlayer, channelHandler, buffer, responseSender) ->
-            handler.accept(decoder.apply(buffer), serverPlayer));
+  public <M extends NetworkMessageRecord> void registerServerNetworkMessageHandler(
+      final ResourceLocation messageID,
+      final Class<M> networkMessageRecord,
+      final Function<FriendlyByteBuf, M> creator) {
+    try {
+      ServerPlayNetworking.registerGlobalReceiver(
+          messageID,
+          (server, serverPlayer, channelHandler, buffer, responseSender) -> {
+            M networkMessage = creator.apply(buffer);
+            networkMessage.handleServer(serverPlayer);
+          });
+    } catch (Exception e) {
+      log.error("Failed to register network message handler {}:", messageID, e);
+    }
   }
 }

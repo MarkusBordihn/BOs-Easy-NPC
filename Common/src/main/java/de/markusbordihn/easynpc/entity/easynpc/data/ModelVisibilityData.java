@@ -115,6 +115,22 @@ public interface ModelVisibilityData<T extends PathfinderMob> extends EasyNPC<T>
     };
   }
 
+  default void setModelPartVisible(ModelPart modelPart, boolean visible) {
+    if (modelPart == ModelPart.ROOT) {
+      return;
+    }
+    switch (modelPart) {
+      case HEAD -> setModelHeadVisible(visible);
+      case BODY -> setModelBodyVisible(visible);
+      case ARMS -> setModelArmsVisible(visible);
+      case LEFT_ARM -> setModelLeftArmVisible(visible);
+      case RIGHT_ARM -> setModelRightArmVisible(visible);
+      case LEFT_LEG -> setModelLeftLegVisible(visible);
+      case RIGHT_LEG -> setModelRightLegVisible(visible);
+      default -> log.error("Invalid visible model part {} for {}", modelPart, this);
+    }
+  }
+
   default boolean hasChangedModelVisibility() {
     return (hasHeadModelPart() && !isModelHeadVisible())
         || (hasBodyModelPart() && !isModelBodyVisible())

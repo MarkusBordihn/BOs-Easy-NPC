@@ -23,62 +23,57 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public class RemoveObjectiveMessage extends NetworkMessage<RemoveObjectiveMessage> {
+public record RemoveObjectiveMessage(UUID uuid, ObjectiveDataEntry objectiveDataEntry)
+    implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "remove_objective");
 
-  protected final ObjectiveDataEntry objectiveDataEntry;
-
-  public RemoveObjectiveMessage(final UUID uuid, final ObjectiveDataEntry objectiveDataEntry) {
-    super(uuid);
-    this.objectiveDataEntry = objectiveDataEntry;
-  }
-
-  public static RemoveObjectiveMessage decode(final FriendlyByteBuf buffer) {
+  public static RemoveObjectiveMessage create(final FriendlyByteBuf buffer) {
     return new RemoveObjectiveMessage(buffer.readUUID(), new ObjectiveDataEntry(buffer.readNbt()));
   }
 
-  public static FriendlyByteBuf encode(
-      final RemoveObjectiveMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    buffer.writeNbt(message.objectiveDataEntry.createTag());
-    return buffer;
+  @Override
+  public void write(final FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
+    buffer.writeNbt(this.objectiveDataEntry.createTag());
   }
 
-  public static void handle(final FriendlyByteBuf buffer, final ServerPlayer serverPlayer) {
-    handle(decode(buffer), serverPlayer);
+  @Override
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public static void handle(final RemoveObjectiveMessage message, final ServerPlayer serverPlayer) {
-    if (!message.handleMessage(serverPlayer)) {
+  @Override
+  public void handleServer(final ServerPlayer serverPlayer) {
+    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    if (easyNPC == null) {
       return;
     }
 
     // Validate objective data
-    ObjectiveDataEntry objectiveDataEntry = message.getObjectiveData();
-    if (objectiveDataEntry == null) {
-      log.error("Unable to add objective data for {} because it is null!", message.getUUID());
+    if (this.objectiveDataEntry == null) {
+      log.error("Unable to add objective data for {} because it is null!", easyNPC);
       return;
     }
 
     // Verify objective data
-    EasyNPC<?> easyNPC = message.getEasyNPC();
     ObjectiveData<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
     if (objectiveData == null) {
-      log.error("Invalid objective data for {} from {}", message, serverPlayer);
+      log.error("Invalid objective data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    if (objectiveData.removeCustomObjective(objectiveDataEntry)) {
-      log.debug("Removed objective {} for {} from {}", objectiveDataEntry, easyNPC, serverPlayer);
+    if (objectiveData.removeCustomObjective(this.objectiveDataEntry)) {
+      log.debug(
+          "Removed objective {} for {} from {}", this.objectiveDataEntry, easyNPC, serverPlayer);
       log.debug(
           "Available goals for {}: {}",
           easyNPC,
@@ -88,19 +83,5 @@ public class RemoveObjectiveMessage extends NetworkMessage<RemoveObjectiveMessag
           easyNPC,
           objectiveData.getEntityTargetSelector().getAvailableGoals());
     }
-  }
-
-  @Override
-  public FriendlyByteBuf encodeBuffer(FriendlyByteBuf buffer) {
-    return encode(this, buffer);
-  }
-
-  @Override
-  public RemoveObjectiveMessage decodeBuffer(FriendlyByteBuf buffer) {
-    return decode(buffer);
-  }
-
-  public ObjectiveDataEntry getObjectiveData() {
-    return this.objectiveDataEntry;
   }
 }

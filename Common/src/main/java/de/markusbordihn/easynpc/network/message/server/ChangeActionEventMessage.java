@@ -24,83 +24,64 @@ import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
-public class ChangeActionEventMessage extends NetworkMessage<ChangeActionEventMessage> {
+public record ChangeActionEventMessage(
+    UUID uuid, ActionEventType actionEventType, ActionDataSet actionDataSet)
+    implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_action_event");
 
-  protected final ActionDataSet actionDataSet;
-  protected final ActionEventType actionEventType;
-
-  public ChangeActionEventMessage(
-      final UUID uuid, final ActionEventType actionEventType, final ActionDataSet actionDataSet) {
-    super(uuid);
-    this.actionDataSet = actionDataSet;
-    this.actionEventType = actionEventType;
-  }
-
-  public static ChangeActionEventMessage decode(final FriendlyByteBuf buffer) {
+  public static ChangeActionEventMessage create(final FriendlyByteBuf buffer) {
     return new ChangeActionEventMessage(
         buffer.readUUID(),
         buffer.readEnum(ActionEventType.class),
         new ActionDataSet(buffer.readNbt()));
   }
 
-  public static FriendlyByteBuf encode(
-      final ChangeActionEventMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    buffer.writeEnum(message.getActionEventType());
-    buffer.writeNbt(message.actionDataSet.createTag());
-    return buffer;
+  @Override
+  public void write(final FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
+    buffer.writeEnum(this.actionEventType);
+    buffer.writeNbt(this.actionDataSet.createTag());
   }
 
-  public static void handle(final FriendlyByteBuf buffer, final ServerPlayer serverPlayer) {
-    handle(decode(buffer), serverPlayer);
+  @Override
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public static void handle(
-      final ChangeActionEventMessage message, final ServerPlayer serverPlayer) {
-    if (!message.handleMessage(serverPlayer)) {
-      return;
-    }
-
-    // Validate action event type.
-    ActionEventType actionEventType = message.getActionEventType();
-    if (actionEventType == null || actionEventType == ActionEventType.NONE) {
-      log.error(
-          "Invalid action event type {} for {} from {}", actionEventType, message, serverPlayer);
-      return;
-    }
-
-    // Validate action data.
-    ActionDataSet actionDataSet = message.getActionDataSet();
-    if (actionDataSet == null) {
-      log.error("Invalid action data set for {} from {}", message, serverPlayer);
+  @Override
+  public void handleServer(final ServerPlayer serverPlayer) {
+    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    if (easyNPC == null
+        || this.actionEventType == null
+        || this.actionEventType == ActionEventType.NONE
+        || this.actionDataSet == null) {
+      log.error("Failed to change action event for {}: Invalid data", easyNPC);
       return;
     }
 
     // Get Permission level for corresponding action.
     int permissionLevel = 0;
     MinecraftServer minecraftServer = serverPlayer.getServer();
-    EasyNPC<?> easyNPC = message.getEasyNPC();
     ActionEventData<?> actionEventData = easyNPC.getEasyNPCActionEventData();
     if (minecraftServer != null) {
       permissionLevel = minecraftServer.getProfilePermissions(serverPlayer.getGameProfile());
       log.debug(
           "Set action owner permission level {} for {} from {}",
           permissionLevel,
-          message,
+          easyNPC,
           serverPlayer);
       actionEventData.setActionPermissionLevel(permissionLevel);
     } else {
-      log.warn("Unable to verify permission level from {} for {}", message, serverPlayer);
+      log.warn("Unable to verify permission level from {} for {}", this, serverPlayer);
     }
 
     // Perform action.
@@ -112,23 +93,5 @@ public class ChangeActionEventMessage extends NetworkMessage<ChangeActionEventMe
         serverPlayer,
         permissionLevel);
     actionEventData.getActionEventSet().setActionEvent(actionEventType, actionDataSet);
-  }
-
-  @Override
-  public FriendlyByteBuf encodeBuffer(FriendlyByteBuf buffer) {
-    return encode(this, buffer);
-  }
-
-  @Override
-  public ChangeActionEventMessage decodeBuffer(FriendlyByteBuf buffer) {
-    return decode(buffer);
-  }
-
-  public ActionEventType getActionEventType() {
-    return this.actionEventType;
-  }
-
-  public ActionDataSet getActionDataSet() {
-    return this.actionDataSet;
   }
 }

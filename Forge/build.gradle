@@ -143,9 +143,11 @@ dependencies {
   if (test_integration_mod && project.player_animator_mod) {
     runtimeOnly fg.deobf("curse.maven:player-animator-658587:${project.player_animator_mod}")
   }
-
   if (test_integration_mod && project.spartan_weaponry_mod) {
     runtimeOnly fg.deobf("curse.maven:spartan-weaponry-278141:${project.spartan_weaponry_mod}")
+  }
+  if (test_integration_mod && project.immersive_melodies_mod) {
+    runtimeOnly fg.deobf("curse.maven:immersive-melodies-904471:${project.immersive_melodies_mod}")
   }
 
   // Additional helpful Mods for development (runtime dependency)

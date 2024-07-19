@@ -21,88 +21,51 @@ package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 
-public class ChangePositionMessage extends NetworkMessage<ChangePositionMessage> {
+public record ChangePositionMessage(UUID uuid, Vec3 pos) implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_position");
 
-  protected final Vec3 pos;
-
-  public ChangePositionMessage(final UUID uuid, final float x, final float y, final float z) {
-    this(uuid, new Vec3(x, y, z));
-  }
-
-  public ChangePositionMessage(final UUID uuid, final Vec3 pos) {
-    super(uuid);
-    this.pos = pos;
-  }
-
-  public static ChangePositionMessage decode(final FriendlyByteBuf buffer) {
+  public static ChangePositionMessage create(final FriendlyByteBuf buffer) {
     return new ChangePositionMessage(
-        buffer.readUUID(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+        buffer.readUUID(), new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble()));
   }
 
-  public static FriendlyByteBuf encode(
-      final ChangePositionMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    buffer.writeFloat(message.getX());
-    buffer.writeFloat(message.getY());
-    buffer.writeFloat(message.getZ());
-    return buffer;
+  @Override
+  public void write(final FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
+    buffer.writeDouble(this.pos.x);
+    buffer.writeDouble(this.pos.y);
+    buffer.writeDouble(this.pos.z);
   }
 
-  public static void handle(final FriendlyByteBuf buffer, final ServerPlayer serverPlayer) {
-    handle(decode(buffer), serverPlayer);
+  @Override
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public static void handle(final ChangePositionMessage message, final ServerPlayer serverPlayer) {
-    if (!message.handleMessage(serverPlayer)) {
+  @Override
+  public void handleServer(final ServerPlayer serverPlayer) {
+    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    if (easyNPC == null) {
       return;
     }
 
     // Validate position.
-    Vec3 pos = message.getPos();
-    if (pos == null) {
-      log.error("Invalid pos for {} from {}", message, serverPlayer);
+    if (this.pos == null) {
+      log.error("Invalid pos for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    EasyNPC<?> easyNPC = message.getEasyNPC();
-    log.debug("Change pos {} for {} from {}", pos, easyNPC, serverPlayer);
-    easyNPC.getEntity().setPos(pos);
-  }
-
-  @Override
-  public FriendlyByteBuf encodeBuffer(FriendlyByteBuf buffer) {
-    return encode(this, buffer);
-  }
-
-  @Override
-  public ChangePositionMessage decodeBuffer(FriendlyByteBuf buffer) {
-    return decode(buffer);
-  }
-
-  public Vec3 getPos() {
-    return this.pos;
-  }
-
-  public float getX() {
-    return (float) this.pos.x;
-  }
-
-  public float getY() {
-    return (float) this.pos.y;
-  }
-
-  public float getZ() {
-    return (float) this.pos.z;
+    log.debug("Change pos {} for {} from {}", this.pos, easyNPC, serverPlayer);
+    easyNPC.getEntity().setPos(this.pos);
   }
 }

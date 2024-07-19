@@ -20,9 +20,9 @@
 package de.markusbordihn.easynpc.network;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+import de.markusbordihn.easynpc.network.message.NetworkHandlerInterface;
+import de.markusbordihn.easynpc.network.message.NetworkHandlerManager;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.function.Function;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -62,45 +62,40 @@ public class NetworkHandler implements NetworkHandlerInterface {
   }
 
   @Override
-  public <M extends NetworkMessage> void sendToServer(
-      ResourceLocation messageId, M networkMessage) {
+  public <M extends NetworkMessageRecord> void sendToServer(M networkMessageRecord) {
     try {
-      INSTANCE.send(networkMessage, PacketDistributor.SERVER.noArg());
+      INSTANCE.send(networkMessageRecord, PacketDistributor.SERVER.noArg());
     } catch (Exception e) {
-      log.error("Failed to send {} to server, got error: {}", networkMessage, e.getMessage());
+      log.error("Failed to send {} to server: {}", networkMessageRecord, e);
     }
   }
 
   @Override
-  public <M extends NetworkMessage> void sendToPlayer(
-      ResourceLocation messageId, M networkMessage, ServerPlayer serverPlayer) {
+  public <M extends NetworkMessageRecord> void sendToPlayer(
+      M networkMessageRecord, ServerPlayer serverPlayer) {
     try {
-      INSTANCE.send(networkMessage, PacketDistributor.PLAYER.with(serverPlayer));
+      INSTANCE.send(networkMessageRecord, PacketDistributor.PLAYER.with(serverPlayer));
     } catch (Exception e) {
       log.error(
-          "Failed to send {} to player {}, got error: {}",
-          networkMessage,
+          "Failed to send {} to player {}: {}",
+          networkMessageRecord,
           serverPlayer.getName().getString(),
-          e.getMessage());
+          e);
     }
   }
 
   @Override
-  public <M> void registerClientNetworkMessageHandler(
-      ResourceLocation messageID,
-      Class<M> networkMessage,
-      BiConsumer<M, FriendlyByteBuf> encoder,
-      Function<FriendlyByteBuf, M> decoder,
-      Consumer<M> handler) {
+  public <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
+      ResourceLocation messageID, Class<M> networkMessage, Function<FriendlyByteBuf, M> creator) {
     INSTANCE
         .messageBuilder(networkMessage, id++, NetworkDirection.PLAY_TO_CLIENT)
-        .encoder(encoder)
-        .decoder(decoder)
+        .encoder(M::write)
+        .decoder(creator)
         .consumerNetworkThread(
             (message, context) -> {
               context.enqueueWork(
                   () -> {
-                    handler.accept(message);
+                    message.handleClient();
                     context.setPacketHandled(true);
                   });
             })
@@ -108,21 +103,17 @@ public class NetworkHandler implements NetworkHandlerInterface {
   }
 
   @Override
-  public <M> void registerServerNetworkMessageHandler(
-      ResourceLocation messageID,
-      Class<M> networkMessage,
-      BiConsumer<M, FriendlyByteBuf> encoder,
-      Function<FriendlyByteBuf, M> decoder,
-      BiConsumer<M, ServerPlayer> handler) {
+  public <M extends NetworkMessageRecord> void registerServerNetworkMessageHandler(
+      ResourceLocation messageID, Class<M> networkMessage, Function<FriendlyByteBuf, M> creator) {
     INSTANCE
         .messageBuilder(networkMessage, id++, NetworkDirection.PLAY_TO_SERVER)
-        .encoder(encoder)
-        .decoder(decoder)
+        .encoder(M::write)
+        .decoder(creator)
         .consumerNetworkThread(
             (message, context) -> {
               context.enqueueWork(
                   () -> {
-                    handler.accept(message, context.getSender());
+                    message.handleServer(context.getSender());
                     context.setPacketHandled(true);
                   });
             })

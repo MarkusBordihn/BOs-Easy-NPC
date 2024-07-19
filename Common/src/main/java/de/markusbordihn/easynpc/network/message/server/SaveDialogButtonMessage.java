@@ -21,38 +21,24 @@ package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
-import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
-public class SaveDialogButtonMessage extends NetworkMessage<SaveDialogButtonMessage> {
+public record SaveDialogButtonMessage(
+    UUID uuid, UUID dialogId, UUID dialogButtonId, DialogButtonEntry dialogButtonEntry)
+    implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "save_dialog_button");
 
-  protected final UUID dialogId;
-  protected final UUID dialogButtonId;
-  protected final DialogButtonEntry dialogButtonEntry;
-
-  public SaveDialogButtonMessage(
-      final UUID uuid,
-      final UUID dialogId,
-      final UUID dialogButtonId,
-      final DialogButtonEntry dialogButtonEntry) {
-    super(uuid);
-    this.dialogId = dialogId;
-    this.dialogButtonId = dialogButtonId;
-    this.dialogButtonEntry = dialogButtonEntry;
-  }
-
-  public static SaveDialogButtonMessage decode(final FriendlyByteBuf buffer) {
+  public static SaveDialogButtonMessage create(final FriendlyByteBuf buffer) {
     return new SaveDialogButtonMessage(
         buffer.readUUID(),
         buffer.readUUID(),
@@ -60,75 +46,67 @@ public class SaveDialogButtonMessage extends NetworkMessage<SaveDialogButtonMess
         new DialogButtonEntry(buffer.readNbt()));
   }
 
-  public static FriendlyByteBuf encode(
-      final SaveDialogButtonMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    buffer.writeUUID(message.getDialogId());
-    buffer.writeUUID(message.getDialogButtonId());
-    buffer.writeNbt(message.getDialogButtonData().createTag());
-    return buffer;
+  @Override
+  public void write(final FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
+    buffer.writeUUID(this.dialogId);
+    buffer.writeUUID(this.dialogButtonId);
+    buffer.writeNbt(this.dialogButtonEntry.createTag());
   }
 
-  public static void handle(final FriendlyByteBuf buffer, final ServerPlayer serverPlayer) {
-    handle(decode(buffer), serverPlayer);
+  @Override
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public static void handle(
-      final SaveDialogButtonMessage message, final ServerPlayer serverPlayer) {
-    if (!message.handleMessage(serverPlayer)) {
+  @Override
+  public void handleServer(final ServerPlayer serverPlayer) {
+    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    if (easyNPC == null) {
       return;
     }
 
     // Validate dialog id.
-    UUID dialogId = message.getDialogId();
-    if (dialogId == null) {
-      log.error("Invalid dialog id for {} from {}", message, serverPlayer);
+    if (this.dialogId == null) {
+      log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog button data.
-    DialogButtonEntry dialogButtonEntry = message.getDialogButtonData();
-    if (dialogButtonEntry == null) {
-      log.error("Invalid dialog button data for {} from {}", message.getUUID(), serverPlayer);
-      return;
-    }
-
-    // Validate entity.
-    EasyNPC<?> easyNPC =
-        LivingEntityManager.getEasyNPCEntityByUUID(message.getUUID(), serverPlayer);
-    if (easyNPC == null) {
-      log.error("Unable to get valid entity with UUID {} for {}", message.getUUID(), serverPlayer);
+    if (this.dialogButtonEntry == null) {
+      log.error("Invalid dialog button data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog data.
     DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
-      log.error("Invalid dialog data for {} from {}", message, serverPlayer);
+      log.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate action event data.
     ActionEventData<?> actionEventData = easyNPC.getEasyNPCActionEventData();
     if (actionEventData == null) {
-      log.error("Invalid action data for {} from {}", message, serverPlayer);
+      log.error("Invalid action data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog for dialog button.
-    if (!dialogData.hasDialog(dialogId)) {
+    if (!dialogData.hasDialog(this.dialogId)) {
       log.error(
           "Unknown dialog button editor request for dialog {} for {} from {}",
-          dialogId,
-          message.getUUID(),
+          this.dialogId,
+          easyNPC,
           serverPlayer);
       return;
     }
 
     // Validate dialog button id.
-    UUID dialogButtonId = message.getDialogButtonId();
-    if (dialogButtonId != null && !dialogData.hasDialogButton(dialogId, dialogButtonId)) {
-      log.error("Invalid dialog button {} for {} from {}", dialogButtonId, message, serverPlayer);
+    if (this.dialogButtonId != null
+        && !dialogData.hasDialogButton(this.dialogId, this.dialogButtonId)) {
+      log.error(
+          "Invalid dialog button {} for {} from {}", this.dialogButtonId, easyNPC, serverPlayer);
       return;
     }
 
@@ -151,47 +129,28 @@ public class SaveDialogButtonMessage extends NetworkMessage<SaveDialogButtonMess
     }
 
     // Perform action.
-    if (dialogButtonId == null) {
+    if (this.dialogButtonId == null) {
       log.info(
           "Add new dialog button {} for dialog {} for {} from {}",
           dialogButtonEntry,
           dialogId,
-          message.getUUID(),
+          easyNPC,
           serverPlayer);
-      dialogData.getDialogDataSet().getDialog(dialogId).setDialogButton(dialogButtonEntry);
+      dialogData
+          .getDialogDataSet()
+          .getDialog(this.dialogId)
+          .setDialogButton(this.dialogButtonEntry);
     } else {
       log.info(
           "Edit existing dialog button {} for dialog {} for {} from {}",
           dialogButtonEntry,
           dialogId,
-          message.getUUID(),
+          easyNPC,
           serverPlayer);
       dialogData
           .getDialogDataSet()
-          .getDialog(dialogId)
-          .setDialogButton(dialogButtonId, dialogButtonEntry);
+          .getDialog(this.dialogId)
+          .setDialogButton(this.dialogButtonId, this.dialogButtonEntry);
     }
-  }
-
-  @Override
-  public FriendlyByteBuf encodeBuffer(FriendlyByteBuf buffer) {
-    return encode(this, buffer);
-  }
-
-  @Override
-  public SaveDialogButtonMessage decodeBuffer(FriendlyByteBuf buffer) {
-    return decode(buffer);
-  }
-
-  public UUID getDialogId() {
-    return this.dialogId;
-  }
-
-  public UUID getDialogButtonId() {
-    return this.dialogButtonId;
-  }
-
-  public DialogButtonEntry getDialogButtonData() {
-    return this.dialogButtonEntry;
   }
 }

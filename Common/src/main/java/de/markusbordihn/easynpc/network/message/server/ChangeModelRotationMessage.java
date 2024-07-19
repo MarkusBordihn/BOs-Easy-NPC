@@ -25,172 +25,90 @@ import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Pose;
 
-public class ChangeModelRotationMessage extends NetworkMessage<ChangeModelRotationMessage> {
+public record ChangeModelRotationMessage(UUID uuid, ModelPart modelPart, CustomRotation rotations)
+    implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_model_rotation");
 
-  protected final ModelPart modelPart;
-  protected final CustomRotation rotations;
-
-  public ChangeModelRotationMessage(
-      final UUID uuid, final ModelPart modelPart, final float x, final float y, final float z) {
-    this(uuid, modelPart, new CustomRotation(x, y, z));
-  }
-
-  public ChangeModelRotationMessage(
-      final UUID uuid, final ModelPart modelPart, final CustomRotation rotations) {
-    super(uuid);
-    this.modelPart = modelPart;
-    this.rotations = rotations;
-  }
-
-  public static ChangeModelRotationMessage decode(final FriendlyByteBuf buffer) {
+  public static ChangeModelRotationMessage create(final FriendlyByteBuf buffer) {
     return new ChangeModelRotationMessage(
         buffer.readUUID(),
         buffer.readEnum(ModelPart.class),
-        buffer.readFloat(),
-        buffer.readFloat(),
-        buffer.readFloat());
+        new CustomRotation(buffer.readFloat(), buffer.readFloat(), buffer.readFloat()));
   }
 
-  public static FriendlyByteBuf encode(
-      final ChangeModelRotationMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    buffer.writeEnum(message.getModelPart());
-    buffer.writeFloat(message.getX());
-    buffer.writeFloat(message.getY());
-    buffer.writeFloat(message.getZ());
-    return buffer;
+  @Override
+  public void write(final FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
+    buffer.writeEnum(this.modelPart);
+    buffer.writeFloat(this.rotations.getX());
+    buffer.writeFloat(this.rotations.getY());
+    buffer.writeFloat(this.rotations.getZ());
   }
 
-  public static void handle(final FriendlyByteBuf buffer, final ServerPlayer serverPlayer) {
-    handle(decode(buffer), serverPlayer);
+  @Override
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public static void handle(
-      final ChangeModelRotationMessage message, final ServerPlayer serverPlayer) {
-    if (!message.handleMessage(serverPlayer)) {
+  @Override
+  public void handleServer(final ServerPlayer serverPlayer) {
+    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    if (easyNPC == null) {
       return;
     }
 
     // Validate ModelPart.
-    ModelPart modelPart = message.getModelPart();
-    if (modelPart == null) {
-      log.error("Invalid modelPart for {} from {}", message, serverPlayer);
+    if (this.modelPart == null) {
+      log.error("Invalid modelPart for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate Rotations.
-    CustomRotation rotations = message.getRotations();
-    if (rotations == null) {
-      log.error("Invalid rotation for {} from {}", message, serverPlayer);
+    if (this.rotations == null) {
+      log.error("Invalid rotation for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate Model data.
-    EasyNPC<?> easyNPC = message.getEasyNPC();
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
-      log.error("Invalid model data for {} from {}", message, serverPlayer);
+      log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
     log.debug(
         "Change {} rotation to {}° {}° {}° for {} from {}",
-        modelPart,
-        rotations.getX(),
-        rotations.getY(),
-        rotations.getZ(),
+        this.modelPart,
+        this.rotations.getX(),
+        this.rotations.getY(),
+        this.rotations.getZ(),
         easyNPC,
         serverPlayer);
-    switch (modelPart) {
-      case HEAD:
-        easyNPC.getEntity().setPose(Pose.STANDING);
-        modelData.setModelPose(ModelPose.CUSTOM);
-        modelData.setModelHeadRotation(rotations);
-        break;
-      case BODY:
-        easyNPC.getEntity().setPose(Pose.STANDING);
-        modelData.setModelPose(ModelPose.CUSTOM);
-        modelData.setModelBodyRotation(rotations);
-        break;
-      case ARMS:
-        easyNPC.getEntity().setPose(Pose.STANDING);
-        modelData.setModelPose(ModelPose.CUSTOM);
-        modelData.setModelArmsRotation(rotations);
-        break;
-      case LEFT_ARM:
-        easyNPC.getEntity().setPose(Pose.STANDING);
-        modelData.setModelPose(ModelPose.CUSTOM);
-        modelData.setModelLeftArmRotation(rotations);
-        break;
-      case RIGHT_ARM:
-        easyNPC.getEntity().setPose(Pose.STANDING);
-        modelData.setModelPose(ModelPose.CUSTOM);
-        modelData.setModelRightArmRotation(rotations);
-        break;
-      case LEFT_LEG:
-        easyNPC.getEntity().setPose(Pose.STANDING);
-        modelData.setModelPose(ModelPose.CUSTOM);
-        modelData.setModelLeftLegRotation(rotations);
-        break;
-      case RIGHT_LEG:
-        easyNPC.getEntity().setPose(Pose.STANDING);
-        modelData.setModelPose(ModelPose.CUSTOM);
-        modelData.setModelRightLegRotation(rotations);
-        break;
-      case ROOT:
-        modelData.setModelRootRotation(rotations);
-        break;
-      default:
-        log.error("Invalid modelPart {} for {} from {}", modelPart, message, serverPlayer);
-        break;
+
+    // Set common properties for all cases except ROOT.
+    if (this.modelPart != ModelPart.ROOT) {
+      easyNPC.getEntity().setPose(Pose.STANDING);
+      modelData.setModelPose(ModelPose.CUSTOM);
     }
 
+    // Apply rotation based on the model part.
+    modelData.setModelPartRotation(this.modelPart, this.rotations);
+
     // Verify if custom model pose is really needed.
-    if (modelData.getModelPose() == ModelPose.CUSTOM && !modelData.hasChangedModel()) {
+    if (!modelData.hasChangedModel()) {
       log.debug("Reset custom model pose for {} from {}", easyNPC, serverPlayer);
       modelData.setModelPose(ModelPose.DEFAULT);
       easyNPC.getEntity().setPose(Pose.STANDING);
     }
-  }
-
-  @Override
-  public FriendlyByteBuf encodeBuffer(FriendlyByteBuf buffer) {
-    return encode(this, buffer);
-  }
-
-  @Override
-  public ChangeModelRotationMessage decodeBuffer(FriendlyByteBuf buffer) {
-    return decode(buffer);
-  }
-
-  public ModelPart getModelPart() {
-    return this.modelPart;
-  }
-
-  public CustomRotation getRotations() {
-    return this.rotations;
-  }
-
-  public float getX() {
-    return this.rotations.getX();
-  }
-
-  public float getY() {
-    return this.rotations.getY();
-  }
-
-  public float getZ() {
-    return this.rotations.getZ();
   }
 }

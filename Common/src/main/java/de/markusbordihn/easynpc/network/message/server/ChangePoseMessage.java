@@ -23,54 +23,47 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Pose;
 
-public class ChangePoseMessage extends NetworkMessage<ChangePoseMessage> {
+public record ChangePoseMessage(UUID uuid, Pose pose) implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_pose");
 
-  protected final Pose pose;
-
-  public ChangePoseMessage(final UUID uuid, final Pose pose) {
-    super(uuid);
-    this.pose = pose;
-  }
-
-  public static ChangePoseMessage decode(final FriendlyByteBuf buffer) {
+  public static ChangePoseMessage create(final FriendlyByteBuf buffer) {
     return new ChangePoseMessage(buffer.readUUID(), buffer.readEnum(Pose.class));
   }
 
-  public static FriendlyByteBuf encode(
-      final ChangePoseMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    buffer.writeEnum(message.getPose());
-    return buffer;
+  @Override
+  public void write(final FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
+    buffer.writeEnum(this.pose);
   }
 
-  public static void handle(final FriendlyByteBuf buffer, final ServerPlayer serverPlayer) {
-    handle(decode(buffer), serverPlayer);
+  @Override
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public static void handle(final ChangePoseMessage message, final ServerPlayer serverPlayer) {
-    if (!message.handleMessage(serverPlayer)) {
+  @Override
+  public void handleServer(final ServerPlayer serverPlayer) {
+    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    if (easyNPC == null) {
       return;
     }
 
     // Validate name.
-    Pose pose = message.getPose();
-    if (pose == null) {
-      log.error("Invalid pose for {} from {}", message, serverPlayer);
+    if (this.pose == null) {
+      log.error("Invalid pose for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate model data.
-    EasyNPC<?> easyNPC = message.getEasyNPC();
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
       log.error("Missing model data for {} from {}", easyNPC, serverPlayer);
@@ -78,22 +71,8 @@ public class ChangePoseMessage extends NetworkMessage<ChangePoseMessage> {
     }
 
     // Perform action.
-    log.debug("Change pose {} for {} from {}", pose, easyNPC, serverPlayer);
+    log.debug("Change pose {} for {} from {}", this.pose, easyNPC, serverPlayer);
     modelData.setModelPose(ModelPose.DEFAULT);
-    easyNPC.getEntity().setPose(pose);
-  }
-
-  @Override
-  public FriendlyByteBuf encodeBuffer(FriendlyByteBuf buffer) {
-    return encode(this, buffer);
-  }
-
-  @Override
-  public ChangePoseMessage decodeBuffer(FriendlyByteBuf buffer) {
-    return decode(buffer);
-  }
-
-  public Pose getPose() {
-    return this.pose;
+    easyNPC.getEntity().setPose(this.pose);
   }
 }

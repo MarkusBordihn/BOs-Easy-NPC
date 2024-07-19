@@ -22,63 +22,50 @@ package de.markusbordihn.easynpc.network.message.server;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
-import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public class ExecuteActionEventMessage extends NetworkMessage<ExecuteActionEventMessage> {
+public record ExecuteActionEventMessage(UUID uuid, ActionEventType actionEventType)
+    implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "trigger_action_event");
 
-  private final ActionEventType actionEventType;
-
-  public ExecuteActionEventMessage(final UUID uuid, final ActionEventType actionEventType) {
-    super(uuid);
-    this.actionEventType = actionEventType;
-  }
-
-  public static ExecuteActionEventMessage decode(final FriendlyByteBuf buffer) {
+  public static ExecuteActionEventMessage create(final FriendlyByteBuf buffer) {
     return new ExecuteActionEventMessage(buffer.readUUID(), buffer.readEnum(ActionEventType.class));
   }
 
-  public static FriendlyByteBuf encode(
-      final ExecuteActionEventMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    buffer.writeEnum(message.getActionType());
-    return buffer;
+  @Override
+  public void write(final FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
+    buffer.writeEnum(this.actionEventType);
   }
 
-  public static void handle(final FriendlyByteBuf buffer, final ServerPlayer serverPlayer) {
-    handle(decode(buffer), serverPlayer);
+  @Override
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public static void handle(
-      final ExecuteActionEventMessage message, final ServerPlayer serverPlayer) {
-    UUID uuid = message.getUUID();
-    if (serverPlayer == null || uuid == null) {
-      log.error("Unable to trigger action event with message {} from {}", message, serverPlayer);
+  @Override
+  public void handleServer(final ServerPlayer serverPlayer) {
+    EasyNPC<?> easyNPC = getEasyNPC(this.uuid, serverPlayer);
+    if (easyNPC == null) {
       return;
     }
 
     // Validate action type.
-    ActionEventType actionEventType = message.getActionType();
-    if (actionEventType == null || actionEventType == ActionEventType.NONE) {
+    if (this.actionEventType == null || this.actionEventType == ActionEventType.NONE) {
       log.error(
-          "Invalid action event type {} for {} from {}", actionEventType, message, serverPlayer);
-      return;
-    }
-
-    // Validate entity.
-    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    if (easyNPC == null) {
-      log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
+          "Invalid action event type {} for {} from {}",
+          this.actionEventType,
+          easyNPC,
+          serverPlayer);
       return;
     }
 
@@ -91,12 +78,12 @@ public class ExecuteActionEventMessage extends NetworkMessage<ExecuteActionEvent
 
     // Validate action.
     ActionDataSet actionDataSet =
-        actionEventData.getActionEventSet().getActionEvents(actionEventType);
+        actionEventData.getActionEventSet().getActionEvents(this.actionEventType);
     if (actionDataSet == null || actionDataSet.isEmpty()) {
       log.error(
-          "Empty trigger action event {} request for UUID {} from {}",
-          actionEventType,
-          uuid,
+          "Empty trigger action event {} request for {} from {}",
+          this.actionEventType,
+          easyNPC,
           serverPlayer);
       return;
     }
@@ -110,19 +97,5 @@ public class ExecuteActionEventMessage extends NetworkMessage<ExecuteActionEvent
 
     // Perform action.
     actionHandler.executeActions(actionDataSet, serverPlayer);
-  }
-
-  @Override
-  public FriendlyByteBuf encodeBuffer(FriendlyByteBuf buffer) {
-    return encode(this, buffer);
-  }
-
-  @Override
-  public ExecuteActionEventMessage decodeBuffer(FriendlyByteBuf buffer) {
-    return decode(buffer);
-  }
-
-  public ActionEventType getActionType() {
-    return this.actionEventType;
   }
 }

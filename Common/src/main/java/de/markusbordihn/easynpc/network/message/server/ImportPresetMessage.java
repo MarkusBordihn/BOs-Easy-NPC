@@ -23,131 +23,83 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.preset.PresetType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.PresetHandler;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public class ImportPresetMessage extends NetworkMessage<ImportPresetMessage> {
+public record ImportPresetMessage(
+    UUID uuid, PresetType presetType, CompoundTag compoundTag, ResourceLocation resourceLocation)
+    implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "import_preset");
 
-  private final CompoundTag compoundTag;
-  private final ResourceLocation resourceLocation;
-  private final PresetType presetType;
-
-  public ImportPresetMessage(
-      final UUID uuid, final PresetType presetType, final CompoundTag compoundTag) {
-    super(uuid);
-    this.presetType = presetType;
-    this.compoundTag = compoundTag;
-    this.resourceLocation = null;
+  public static ImportPresetMessage create(final FriendlyByteBuf buffer) {
+    return new ImportPresetMessage(
+        buffer.readUUID(),
+        buffer.readEnum(PresetType.class),
+        buffer.readNbt(),
+        buffer.readResourceLocation());
   }
 
-  public ImportPresetMessage(
-      final UUID uuid, final PresetType presetType, final ResourceLocation resourceLocation) {
-    super(uuid);
-    this.presetType = presetType;
-    this.compoundTag = null;
-    this.resourceLocation = resourceLocation;
+  @Override
+  public void write(final FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
+    buffer.writeEnum(this.presetType);
+    buffer.writeNbt(this.compoundTag);
+    buffer.writeResourceLocation(this.resourceLocation);
   }
 
-  public static ImportPresetMessage decode(final FriendlyByteBuf buffer) {
-    UUID uuid = buffer.readUUID();
-    PresetType presetType = buffer.readEnum(PresetType.class);
-    if (presetType == PresetType.LOCAL) {
-      CompoundTag compoundTag = buffer.readNbt();
-      return new ImportPresetMessage(uuid, presetType, compoundTag);
-    } else {
-      ResourceLocation resourceLocation = buffer.readResourceLocation();
-      return new ImportPresetMessage(uuid, presetType, resourceLocation);
-    }
+  @Override
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public static FriendlyByteBuf encode(
-      final ImportPresetMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    buffer.writeEnum(message.presetType);
-    if (message.presetType == PresetType.LOCAL) {
-      buffer.writeNbt(message.compoundTag);
-    } else {
-      buffer.writeResourceLocation(message.resourceLocation);
-    }
-    return buffer;
-  }
-
-  public static void handle(final FriendlyByteBuf buffer, final ServerPlayer serverPlayer) {
-    handle(decode(buffer), serverPlayer);
-  }
-
-  public static void handle(final ImportPresetMessage message, final ServerPlayer serverPlayer) {
-    if (!message.handleMessage(serverPlayer)) {
+  @Override
+  public void handleServer(final ServerPlayer serverPlayer) {
+    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+    if (easyNPC == null) {
       return;
     }
 
     // Validate preset type and data
-    EasyNPC<?> easyNPC = message.getEasyNPC();
-    UUID uuid = message.getUUID();
-    switch (message.getPresetType()) {
+    switch (this.presetType) {
       case LOCAL:
-        PresetHandler.importPreset(
-            serverPlayer.serverLevel(), message.getCompoundTag(), null, uuid);
+        PresetHandler.importPreset(serverPlayer.serverLevel(), this.compoundTag, null, this.uuid);
         break;
       case CUSTOM:
         PresetHandler.importCustomPreset(
             serverPlayer.serverLevel(),
-            message.getResourceLocation(),
+            this.resourceLocation,
             easyNPC.getEntity().position(),
-            uuid);
+            this.uuid);
         break;
       case DATA:
         PresetHandler.importDataPreset(
             serverPlayer.serverLevel(),
-            message.getResourceLocation(),
+            this.resourceLocation,
             easyNPC.getEntity().position(),
-            uuid);
+            this.uuid);
         break;
       case DEFAULT:
         PresetHandler.importDefaultPreset(
             serverPlayer.serverLevel(),
-            message.getResourceLocation(),
+            this.resourceLocation,
             easyNPC.getEntity().position(),
-            uuid);
+            this.uuid);
         break;
       case WORLD:
         PresetHandler.importWorldPreset(
             serverPlayer.serverLevel(),
-            message.getResourceLocation(),
+            this.resourceLocation,
             easyNPC.getEntity().position(),
-            uuid);
+            this.uuid);
         break;
       default:
-        log.error("Invalid preset type {} from {}", message.getPresetType(), serverPlayer);
+        log.error("Invalid preset type {} from {}", this.presetType, serverPlayer);
     }
-  }
-
-  @Override
-  public FriendlyByteBuf encodeBuffer(FriendlyByteBuf buffer) {
-    return encode(this, buffer);
-  }
-
-  @Override
-  public ImportPresetMessage decodeBuffer(FriendlyByteBuf buffer) {
-    return decode(buffer);
-  }
-
-  public PresetType getPresetType() {
-    return this.presetType;
-  }
-
-  public ResourceLocation getResourceLocation() {
-    return this.resourceLocation;
-  }
-
-  public CompoundTag getCompoundTag() {
-    return this.compoundTag;
   }
 }

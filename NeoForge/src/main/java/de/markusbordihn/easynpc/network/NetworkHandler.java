@@ -20,16 +20,11 @@
 package de.markusbordihn.easynpc.network;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
-import de.markusbordihn.easynpc.network.message.client.OpenMenuCallbackMessage;
-import de.markusbordihn.easynpc.network.message.client.OpenMenuCallbackMessageRecord;
-import de.markusbordihn.easynpc.network.message.server.OpenMenuMessage;
-import de.markusbordihn.easynpc.network.message.server.OpenMenuMessageRecord;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+import de.markusbordihn.easynpc.network.message.NetworkHandlerInterface;
+import de.markusbordihn.easynpc.network.message.NetworkHandlerManager;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.function.Function;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -58,86 +53,59 @@ public class NetworkHandler implements NetworkHandlerInterface {
         INSTANCE,
         PROTOCOL_VERSION);
 
-    // NetworkHandlerManager.registerClientNetworkHandler();
-    INSTANCE.play(
-        OpenMenuCallbackMessage.MESSAGE_ID,
-        OpenMenuCallbackMessageRecord::create,
-        handler -> handler.client(OpenMenuCallbackMessageRecord::handle));
-
-    // NetworkHandlerManager.registerServerNetworkHandler();
-    INSTANCE.play(
-        OpenMenuMessage.MESSAGE_ID,
-        OpenMenuMessageRecord::create,
-        handler -> handler.server(OpenMenuMessageRecord::handle));
+    NetworkHandlerManager.registerClientNetworkHandler();
+    NetworkHandlerManager.registerServerNetworkHandler();
   }
 
   @Override
-  public <M extends NetworkMessage> void sendToServer(
-      ResourceLocation messageId, M networkMessage) {
+  public <M extends NetworkMessageRecord> void sendToServer(M networkMessageRecord) {
     try {
-      PacketDistributor.SERVER
-          .noArg()
-          .send(
-              new CustomPacketPayload() {
-                @Override
-                public void write(FriendlyByteBuf friendlyByteBuf) {
-                  networkMessage.encodeBuffer(friendlyByteBuf);
-                }
-
-                @Override
-                public ResourceLocation id() {
-                  return messageId;
-                }
-              });
+      PacketDistributor.SERVER.noArg().send(networkMessageRecord);
     } catch (Exception e) {
-      log.error("Failed to send {} to server, got error: {}", networkMessage, e.getMessage());
+      log.error("Failed to send {} to server, got error: {}", networkMessageRecord, e);
     }
   }
 
   @Override
-  public <M extends NetworkMessage> void sendToPlayer(
-      ResourceLocation messageId, M networkMessage, ServerPlayer serverPlayer) {
+  public <M extends NetworkMessageRecord> void sendToPlayer(
+      M networkMessageRecord, ServerPlayer serverPlayer) {
     try {
-      PacketDistributor.PLAYER
-          .with(serverPlayer)
-          .send(
-              new CustomPacketPayload() {
-                @Override
-                public void write(FriendlyByteBuf friendlyByteBuf) {
-                  networkMessage.encodeBuffer(friendlyByteBuf);
-                }
-
-                @Override
-                public ResourceLocation id() {
-                  return messageId;
-                }
-              });
+      PacketDistributor.PLAYER.with(serverPlayer).send(networkMessageRecord);
     } catch (Exception e) {
       log.error(
-          "Failed to send {} to player {}, got error: {}",
-          networkMessage,
+          "Failed to send {} to player {}: {}",
+          networkMessageRecord,
           serverPlayer.getName().getString(),
-          e.getMessage());
+          e);
     }
   }
 
   @Override
-  public <M> void registerClientNetworkMessageHandler(
-      ResourceLocation messageID,
-      Class<M> networkMessage,
-      BiConsumer<M, FriendlyByteBuf> encoder,
-      Function<FriendlyByteBuf, M> decoder,
-      Consumer<M> handler) {
-    // Unused for current implementation
+  public <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
+      final ResourceLocation messageID,
+      final Class<M> networkMessageRecord,
+      final Function<FriendlyByteBuf, M> creator) {
+    INSTANCE.play(
+        messageID,
+        creator::apply,
+        handler ->
+            handler.client((customPacketPayload, unused) -> customPacketPayload.handleClient()));
   }
 
   @Override
-  public <M> void registerServerNetworkMessageHandler(
-      ResourceLocation messageID,
-      Class<M> networkMessage,
-      BiConsumer<M, FriendlyByteBuf> encoder,
-      Function<FriendlyByteBuf, M> decoder,
-      BiConsumer<M, ServerPlayer> handler) {
-    // Unused for current implementation
+  public <M extends NetworkMessageRecord> void registerServerNetworkMessageHandler(
+      ResourceLocation messageID, Class<M> networkMessage, Function<FriendlyByteBuf, M> creator) {
+    INSTANCE.play(
+        messageID,
+        creator::apply,
+        handler ->
+            handler.server(
+                (customPacketPayload, playPayloadContext) -> {
+                  if (playPayloadContext.player().get() instanceof ServerPlayer serverPlayer) {
+                    customPacketPayload.handleServer(serverPlayer);
+                  } else {
+                    log.error("Failed to get server player for {}", customPacketPayload);
+                  }
+                }));
   }
 }

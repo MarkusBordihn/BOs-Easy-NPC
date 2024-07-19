@@ -17,11 +17,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.network;
+package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.network.message.ClientNetworkMessageHandlerInterface;
-import de.markusbordihn.easynpc.network.message.ServerNetworkMessageHandlerInterface;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,10 +39,9 @@ public class NetworkMessageHandlerManager {
   }
 
   public static void registerClientHandler(
-      final ClientNetworkMessageHandlerInterface clientNetworkMessageHandlerInterface) {
+      final ClientNetworkMessageHandlerInterface networkMessageHandler) {
     log.info("{} Client Network Message Handler ...", Constants.LOG_REGISTER_PREFIX);
-    NetworkMessageHandlerManager.clientNetworkMessageHandlerInterface =
-        clientNetworkMessageHandlerInterface;
+    clientNetworkMessageHandlerInterface = networkMessageHandler;
   }
 
   public static ClientNetworkMessageHandlerInterface getClientHandler() {

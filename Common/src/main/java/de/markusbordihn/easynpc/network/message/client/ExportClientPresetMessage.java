@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.network.message.client;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
-import de.markusbordihn.easynpc.network.message.NetworkMessage;
+import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
@@ -31,30 +31,14 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
-public class ExportClientPresetMessage extends NetworkMessage<ExportClientPresetMessage> {
+public record ExportClientPresetMessage(
+    UUID uuid, String name, SkinModel skinModel, String fileName, CompoundTag data)
+    implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "preset_export_client");
 
-  private final String name;
-  private final SkinModel skinModel;
-  private final String fileName;
-  private final CompoundTag data;
-
-  public ExportClientPresetMessage(
-      final UUID uuid,
-      final String name,
-      final SkinModel skinModel,
-      final String fileName,
-      final CompoundTag data) {
-    super(uuid);
-    this.name = name;
-    this.skinModel = skinModel;
-    this.fileName = fileName;
-    this.data = data;
-  }
-
-  public static ExportClientPresetMessage decode(final FriendlyByteBuf buffer) {
+  public static ExportClientPresetMessage create(final FriendlyByteBuf buffer) {
     return new ExportClientPresetMessage(
         buffer.readUUID(),
         buffer.readUtf(),
@@ -63,59 +47,55 @@ public class ExportClientPresetMessage extends NetworkMessage<ExportClientPreset
         buffer.readNbt());
   }
 
-  public static FriendlyByteBuf encode(
-      final ExportClientPresetMessage message, final FriendlyByteBuf buffer) {
-    buffer.writeUUID(message.uuid);
-    buffer.writeUtf(message.getName());
-    buffer.writeEnum(message.getSkinModel());
-    buffer.writeUtf(message.getFileName());
-    buffer.writeNbt(message.getData());
-    return buffer;
+  @Override
+  public void write(FriendlyByteBuf buffer) {
+    buffer.writeUUID(this.uuid);
+    buffer.writeUtf(this.name);
+    buffer.writeEnum(this.skinModel);
+    buffer.writeUtf(this.fileName);
+    buffer.writeNbt(this.data);
   }
 
-  public static void handle(final FriendlyByteBuf buffer) {
-    handle(decode(buffer));
+  @Override
+  public ResourceLocation id() {
+    return MESSAGE_ID;
   }
 
-  public static void handle(final ExportClientPresetMessage message) {
-    UUID uuid = message.getUUID();
-    if (uuid == null || uuid.toString().isEmpty()) {
-      log.error("Invalid UUID {} for {}", uuid, message);
+  @Override
+  public void handleClient() {
+    if (this.uuid == null || this.uuid.toString().isEmpty()) {
+      log.error("Invalid UUID {} for {}", this.uuid, this);
       return;
     }
 
     // Validate name.
-    String name = message.getName();
-    if (name == null || name.isEmpty()) {
-      log.error("Invalid name {} for {}", name, message);
+    if (this.name == null || this.name.isEmpty()) {
+      log.error("Invalid name {} for {}", this.name, this);
       return;
     }
 
     // Validate skin model.
-    SkinModel skinModel = message.getSkinModel();
-    if (skinModel == null) {
-      log.error("Invalid skin model for {}", message);
+    if (this.skinModel == null) {
+      log.error("Invalid skin model for {}", this);
       return;
     }
 
     // Validate data.
-    CompoundTag data = message.getData();
-    if (data == null) {
-      log.error("Invalid data for {}", message);
+    if (this.data == null) {
+      log.error("Invalid data for {}", this);
       return;
     }
 
     // Validate name.
-    String fileName = message.getFileName();
-    if (fileName == null || fileName.isEmpty()) {
+    if (this.fileName == null || this.fileName.isEmpty()) {
       log.warn("Export preset file name is empty for {}", uuid);
       return;
     }
 
     // Perform action.
-    File presetFile = CustomPresetDataFiles.getPresetFile(skinModel, fileName);
+    File presetFile = CustomPresetDataFiles.getPresetFile(this.skinModel, this.fileName);
     if (presetFile == null) {
-      log.error("Failed to get preset file for {}", message);
+      log.error("Failed to get preset file for {}", this);
       return;
     }
 
@@ -133,31 +113,5 @@ public class ExportClientPresetMessage extends NetworkMessage<ExportClientPreset
           presetFile,
           exception);
     }
-  }
-
-  @Override
-  public FriendlyByteBuf encodeBuffer(FriendlyByteBuf buffer) {
-    return encode(this, buffer);
-  }
-
-  @Override
-  public ExportClientPresetMessage decodeBuffer(FriendlyByteBuf buffer) {
-    return decode(buffer);
-  }
-
-  public String getName() {
-    return this.name;
-  }
-
-  public SkinModel getSkinModel() {
-    return this.skinModel;
-  }
-
-  public String getFileName() {
-    return this.fileName;
-  }
-
-  public CompoundTag getData() {
-    return this.data;
   }
 }
