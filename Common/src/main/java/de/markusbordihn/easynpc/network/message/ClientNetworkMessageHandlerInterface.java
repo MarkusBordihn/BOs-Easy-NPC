@@ -37,11 +37,7 @@ public interface ClientNetworkMessageHandlerInterface {
 
   default void exportClientPreset(
       final UUID uuid, final String name, final ServerPlayer serverPlayer) {
-    if (uuid == null
-        || name == null
-        || name.isEmpty()
-        || serverPlayer == null
-        || !NetworkMessage.checkAccess(uuid, serverPlayer)) {
+    if (name == null || name.isEmpty() || !NetworkMessageRecord.checkAccess(uuid, serverPlayer)) {
       return;
     }
 

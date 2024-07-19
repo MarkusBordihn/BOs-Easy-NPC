@@ -21,10 +21,10 @@ package de.markusbordihn.easynpc.menu;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.message.NetworkMessageHandlerManager;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.OptionalInt;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
@@ -35,10 +35,8 @@ public class MenuManager {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final Map<UUID, MenuProvider> menuProviderMap = new HashMap<>();
-  private static final Map<UUID, ServerPlayer> serverPlayerMap = new HashMap<>();
-  private static final Map<UUID, CompoundTag> menuDataMap = new HashMap<>();
-  private static final Map<Integer, UUID> dialogIdMap = new HashMap<>();
+  private static final Map<UUID, MenuProvider> menuProviderMap = new ConcurrentHashMap<>();
+  private static final Map<UUID, ServerPlayer> serverPlayerMap = new ConcurrentHashMap<>();
 
   private static MenuHandlerInterface menuHandlerInterface;
 
@@ -57,32 +55,39 @@ public class MenuManager {
     UUID menuId = UUID.randomUUID();
     menuProviderMap.put(menuId, menuProvider);
     serverPlayerMap.put(menuId, serverPlayer);
-    menuDataMap.put(menuId, data);
     NetworkMessageHandlerManager.getClientHandler().openMenu(uuid, menuId, serverPlayer, data);
   }
 
-  public static void openMenu(UUID menuId) {
-    MenuProvider menuProvider = menuProviderMap.get(menuId);
-    ServerPlayer serverPlayer = serverPlayerMap.get(menuId);
-    if (menuProvider != null && serverPlayer != null) {
-      OptionalInt dialogId = serverPlayer.openMenu(menuProvider);
-      if (dialogId.isPresent()) {
-        dialogIdMap.put(dialogId.getAsInt(), menuId);
-        log.debug(
-            "Opened menu with ID {} ({}) and {} for {}",
-            menuId,
-            dialogId.getAsInt(),
-            menuProvider,
-            serverPlayer.getName().getString());
-        menuProviderMap.remove(menuId);
-        serverPlayerMap.remove(menuId);
-        return;
-      }
+  public static void openMenu(final UUID menuId, final ServerPlayer serverPlayer) {
+    // Verify if the menu is still available for the player.
+    ServerPlayer menuServerPlayer = serverPlayerMap.get(menuId);
+    if (menuServerPlayer == null || !menuServerPlayer.equals(serverPlayer)) {
+      log.error(
+          "Invalid server player ({} != {}) for menu {}", serverPlayer, menuServerPlayer, menuId);
+      return;
     }
-    log.error("Unable to open menu with ID {}", menuId);
-  }
 
-  public static CompoundTag getMenuData(UUID menuId) {
-    return menuDataMap.get(menuId);
+    // Validate the menu provider
+    MenuProvider menuProvider = menuProviderMap.get(menuId);
+    if (menuProvider == null) {
+      log.error("Invalid menu provider for menu {}", menuId);
+      return;
+    }
+
+    // Open the menu for the player
+    log.info("Opening menu {} for {} with {}", menuId, serverPlayer, menuProvider);
+    OptionalInt dialogId = serverPlayer.openMenu(menuProvider);
+    if (dialogId.isPresent()) {
+      log.debug(
+          "Opened menu {} ({}) and {} for {}",
+          menuId,
+          dialogId.getAsInt(),
+          menuProvider,
+          serverPlayer);
+      menuProviderMap.remove(menuId);
+      serverPlayerMap.remove(menuId);
+    } else {
+      log.error("Got invalid dialog ID for menu {}", menuId);
+    }
   }
 }
