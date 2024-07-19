@@ -38,7 +38,6 @@ public record OpenMenuMessage(UUID uuid, UUID menuId) implements NetworkMessageR
 
   @Override
   public void write(final FriendlyByteBuf buffer) {
-    buffer.writeUUID(this.uuid);
     buffer.writeUUID(this.menuId);
   }
 
