@@ -38,7 +38,6 @@ public record OpenMenuMessage(UUID uuid, UUID menuId) implements NetworkMessageR
 
   @Override
   public void write(final FriendlyByteBuf buffer) {
-    buffer.writeUUID(this.uuid);
     buffer.writeUUID(this.menuId);
   }
 
@@ -49,11 +48,6 @@ public record OpenMenuMessage(UUID uuid, UUID menuId) implements NetworkMessageR
 
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    log.info(
-        "Try open menu message for {} with menuId {} from {}",
-        this.uuid,
-        this.menuId,
-        serverPlayer);
-    MenuManager.openMenu(this.menuId);
+    MenuManager.openMenu(this.menuId, serverPlayer);
   }
 }
