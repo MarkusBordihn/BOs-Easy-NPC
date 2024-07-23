@@ -461,6 +461,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
     int left = this.leftPos + 40;
     int top = this.topPos + 70 + avatarPositionTop;
     ScreenHelper.renderEntityDialog(
+        guiGraphics,
         left,
         top,
         Math.round(left - 140 - (this.xMouse * 0.25)),

@@ -171,7 +171,6 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
           AdvancedDialogConfigurationScreen.this.contentTopPos + 15,
           19);
       this.setRenderHeader(false, 0);
-      this.setRenderBackground(false);
 
       // Add all dialog data sets, sorted by label.
       for (DialogDataEntry dialogData :
@@ -187,6 +186,16 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
       if (this.getItemCount() > 0) {
         super.render(guiGraphics, x, y, partialTicks);
       }
+    }
+
+    @Override
+    protected void renderListSeparators(GuiGraphics guiGraphics) {
+      // Do not render list separators.
+    }
+
+    @Override
+    protected void renderListBackground(GuiGraphics guiGraphics) {
+      // Do not render list background.
     }
 
     class Entry

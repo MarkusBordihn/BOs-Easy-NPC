@@ -19,10 +19,32 @@
 
 package de.markusbordihn.easynpc.data.rotation;
 
+import de.markusbordihn.easynpc.data.position.CustomPosition;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
 public class CustomRotation extends Rotations {
+
+  public static final StreamCodec<RegistryFriendlyByteBuf, CustomRotation> STREAM_CODEC =
+      new StreamCodec<>() {
+        @Override
+        public CustomRotation decode(RegistryFriendlyByteBuf registryFriendlyByteBuf) {
+          return new CustomRotation(
+              registryFriendlyByteBuf.readFloat(),
+              registryFriendlyByteBuf.readFloat(),
+              registryFriendlyByteBuf.readFloat());
+        }
+
+        @Override
+        public void encode(
+            RegistryFriendlyByteBuf registryFriendlyByteBuf, CustomRotation rotation) {
+          registryFriendlyByteBuf.writeFloat(rotation.x);
+          registryFriendlyByteBuf.writeFloat(rotation.y);
+          registryFriendlyByteBuf.writeFloat(rotation.z);
+        }
+      };
 
   public CustomRotation(float x, float y, float z) {
     super(x, y, z);

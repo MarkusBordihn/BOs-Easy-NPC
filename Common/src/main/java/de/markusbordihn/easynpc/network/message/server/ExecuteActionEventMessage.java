@@ -28,6 +28,9 @@ import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -36,6 +39,10 @@ public record ExecuteActionEventMessage(UUID uuid, ActionEventType actionEventTy
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "trigger_action_event");
+  public static final CustomPacketPayload.Type<ExecuteActionEventMessage> PAYLOAD_TYPE =
+      CustomPacketPayload.createType(MESSAGE_ID.toString());
+  public static final StreamCodec<RegistryFriendlyByteBuf, ExecuteActionEventMessage> STREAM_CODEC =
+      StreamCodec.of((buffer, message) -> message.write(buffer), ExecuteActionEventMessage::create);
 
   public static ExecuteActionEventMessage create(final FriendlyByteBuf buffer) {
     return new ExecuteActionEventMessage(buffer.readUUID(), buffer.readEnum(ActionEventType.class));
@@ -50,6 +57,11 @@ public record ExecuteActionEventMessage(UUID uuid, ActionEventType actionEventTy
   @Override
   public ResourceLocation id() {
     return MESSAGE_ID;
+  }
+
+  @Override
+  public Type<? extends CustomPacketPayload> type() {
+    return PAYLOAD_TYPE;
   }
 
   @Override

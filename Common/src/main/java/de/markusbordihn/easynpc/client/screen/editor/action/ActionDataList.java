@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.client.screen.editor.action.ActionDataListEntry.
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 
 class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
@@ -41,7 +42,6 @@ class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
       OnRemove onRemove) {
     super(minecraft, width, height, top, entryHeight);
     this.setRenderHeader(false, 0);
-    this.setRenderBackground(false);
 
     // Add entries
     if (actionDataSet != null) {
@@ -50,5 +50,15 @@ class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
             new ActionDataListEntry(minecraft, actionDataEntry, left, top, onEdit, onRemove));
       }
     }
+  }
+
+  @Override
+  protected void renderListSeparators(GuiGraphics guiGraphics) {
+    // Do not render list separators.
+  }
+
+  @Override
+  protected void renderListBackground(GuiGraphics guiGraphics) {
+    // Do not render list background.
   }
 }

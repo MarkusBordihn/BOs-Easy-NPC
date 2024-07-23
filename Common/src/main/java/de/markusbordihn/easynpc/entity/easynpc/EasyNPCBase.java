@@ -43,8 +43,10 @@ import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.BaseTickHandler;
 import java.util.EnumMap;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Saddleable;
@@ -74,19 +76,6 @@ public interface EasyNPCBase<E extends PathfinderMob>
         TickerData<E>,
         TradingData<E>,
         VariantData<E> {
-
-  static void registerEasyNPCDataSerializers() {
-    log.info("Register data serializers ...");
-    ActionEventData.registerActionEventDataSerializer();
-    DialogData.registerDialogDataSerializer();
-    ObjectiveData.registerObjectiveDataSerializer();
-    ProfessionData.registerProfessionDataSerializer();
-    RenderData.registerRenderDataSerializer();
-    SoundData.registerSoundDataSerializer();
-    SkinData.registerSkinDataSerializer();
-    SpawnerData.registerSpawnerDataSerializer();
-    TradingData.registerTradingDataSerializer();
-  }
 
   static void registerEasyNPCSyncedData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
@@ -141,63 +130,64 @@ public interface EasyNPCBase<E extends PathfinderMob>
     }
   }
 
-  default void defineEasyNPCBaseSyncedData() {
-    log.debug("Define synced data for {}", this);
+  default void defineEasyNPCBaseSyncedData(SynchedEntityData.Builder builder) {
+    log.debug("Define synced data for {} with {}", this, builder);
 
     // First define variant data to ensure that all other data can be linked to the variant.
     VariantData<E> variantData = getEasyNPCVariantData();
     if (variantData != null) {
-      variantData.defineSynchedVariantData();
+      variantData.defineSynchedVariantData(builder);
     }
 
     // Define all other synced data.
     ActionEventData<E> actionEventData = getEasyNPCActionEventData();
     if (actionEventData != null) {
-      actionEventData.defineSynchedActionData();
+      actionEventData.defineSynchedActionData(builder);
     }
     AttackData<E> attackData = getEasyNPCAttackData();
     if (attackData != null) {
-      attackData.defineSynchedAttackData();
+      attackData.defineSynchedAttackData(builder);
     }
     AttributeData<E> attributeData = getEasyNPCAttributeData();
     if (attributeData != null) {
-      attributeData.defineSynchedAttributeData();
+      attributeData.defineSynchedAttributeData(builder);
     }
     DialogData<E> dialogData = getEasyNPCDialogData();
     if (dialogData != null) {
-      dialogData.defineSynchedDialogData();
+      dialogData.defineSynchedDialogData(builder);
     }
     NavigationData<E> navigationData = getEasyNPCNavigationData();
     if (navigationData != null) {
-      navigationData.defineSynchedNavigationData();
+      navigationData.defineSynchedNavigationData(builder);
     }
     OwnerData<E> ownerData = getEasyNPCOwnerData();
     if (ownerData != null) {
-      ownerData.defineSynchedOwnerData();
+      ownerData.defineSynchedOwnerData(builder);
     }
     ProfessionData<E> professionData = getEasyNPCProfessionData();
     if (professionData != null) {
-      professionData.defineSynchedProfessionData();
+      professionData.defineSynchedProfessionData(builder);
     }
     RenderData<E> renderData = getEasyNPCRenderData();
     if (renderData != null) {
-      renderData.defineSynchedRenderData();
+      renderData.defineSynchedRenderData(builder);
     }
     SkinData<E> skinData = getEasyNPCSkinData();
     if (skinData != null) {
-      skinData.defineSynchedSkinData();
+      skinData.defineSynchedSkinData(builder);
     }
     SoundData<E> soundData = getEasyNPCSoundData();
     if (soundData != null) {
-      soundData.defineSynchedSoundData();
+      soundData.defineSynchedSoundData(builder);
     }
     TradingData<E> tradingData = getEasyNPCTradingData();
     if (tradingData != null) {
-      tradingData.defineSynchedTradingData();
+      tradingData.defineSynchedTradingData(builder);
     }
   }
 
-  default void addEasyNPCBaseAdditionalSaveData(CompoundTag compoundTag) {
+  default void addEasyNPCBaseAdditionalSaveData(
+      CompoundTag compoundTag, HolderLookup.Provider provider) {
     log.debug("Add additional save data for {}", this);
     ActionEventData<E> actionEventData = getEasyNPCActionEventData();
     if (actionEventData != null) {
@@ -253,7 +243,7 @@ public interface EasyNPCBase<E extends PathfinderMob>
     }
     TradingData<E> tradingData = getEasyNPCTradingData();
     if (tradingData != null) {
-      tradingData.addAdditionalTradingData(compoundTag);
+      tradingData.addAdditionalTradingData(compoundTag, provider);
     }
     VariantData<E> variantData = getEasyNPCVariantData();
     if (variantData != null) {
@@ -261,7 +251,8 @@ public interface EasyNPCBase<E extends PathfinderMob>
     }
   }
 
-  default void readEasyNPCBaseAdditionalSaveData(CompoundTag compoundTag) {
+  default void readEasyNPCBaseAdditionalSaveData(
+      CompoundTag compoundTag, HolderLookup.Provider provider) {
     log.debug("Read additional save data for {} ...", this);
 
     // First read important data to ensure that all other data can be linked to the variant.
@@ -325,7 +316,7 @@ public interface EasyNPCBase<E extends PathfinderMob>
     }
     TradingData<E> tradingData = getEasyNPCTradingData();
     if (tradingData != null) {
-      tradingData.readAdditionalTradingData(compoundTag);
+      tradingData.readAdditionalTradingData(compoundTag, provider);
     }
 
     // Register Objectives after all data is loaded.

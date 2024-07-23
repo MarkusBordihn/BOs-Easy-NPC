@@ -23,12 +23,10 @@ import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializer;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -37,48 +35,31 @@ public interface ModelPositionData<T extends PathfinderMob> extends EasyNPC<T> {
 
   CustomPosition DEFAULT_MODEL_PART_POSITION = new CustomPosition(0, 0, 0);
   String EASY_NPC_DATA_MODEL_POSITION_TAG = "Position";
-  EntityDataSerializer<CustomPosition> POSITION =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, CustomPosition position) {
-          buffer.writeFloat(position.x());
-          buffer.writeFloat(position.y());
-          buffer.writeFloat(position.z());
-        }
-
-        public CustomPosition read(FriendlyByteBuf buffer) {
-          return new CustomPosition(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
-        }
-
-        public CustomPosition copy(CustomPosition position) {
-          return position;
-        }
-      };
 
   static void registerSyncedModelPositionData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
     log.info("- Registering Synched Model Position Data for {}.", entityClass.getSimpleName());
     map.put(
-        SynchedDataIndex.MODEL_HEAD_POSITION, SynchedEntityData.defineId(entityClass, POSITION));
+        SynchedDataIndex.MODEL_HEAD_POSITION,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.POSITION));
     map.put(
-        SynchedDataIndex.MODEL_BODY_POSITION, SynchedEntityData.defineId(entityClass, POSITION));
+        SynchedDataIndex.MODEL_BODY_POSITION,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.POSITION));
     map.put(
-        SynchedDataIndex.MODEL_ARMS_POSITION, SynchedEntityData.defineId(entityClass, POSITION));
+        SynchedDataIndex.MODEL_ARMS_POSITION,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.POSITION));
     map.put(
         SynchedDataIndex.MODEL_LEFT_ARM_POSITION,
-        SynchedEntityData.defineId(entityClass, POSITION));
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.POSITION));
     map.put(
         SynchedDataIndex.MODEL_RIGHT_ARM_POSITION,
-        SynchedEntityData.defineId(entityClass, POSITION));
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.POSITION));
     map.put(
         SynchedDataIndex.MODEL_LEFT_LEG_POSITION,
-        SynchedEntityData.defineId(entityClass, POSITION));
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.POSITION));
     map.put(
         SynchedDataIndex.MODEL_RIGHT_LEG_POSITION,
-        SynchedEntityData.defineId(entityClass, POSITION));
-  }
-
-  static void registerModelPositionDataSerializer() {
-    EntityDataSerializers.registerSerializer(POSITION);
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.POSITION));
   }
 
   boolean hasHeadModelPart();
@@ -190,15 +171,22 @@ public interface ModelPositionData<T extends PathfinderMob> extends EasyNPC<T> {
         || (hasRightLegModelPart() && getModelRightLegPosition().hasChanged());
   }
 
-  default void defineSynchedModelPositionData() {
+  default void defineSynchedModelPositionData(SynchedEntityData.Builder builder) {
     // Position
-    defineSynchedEntityData(SynchedDataIndex.MODEL_HEAD_POSITION, new CustomPosition(0, 0, 0));
-    defineSynchedEntityData(SynchedDataIndex.MODEL_BODY_POSITION, new CustomPosition(0, 0, 0));
-    defineSynchedEntityData(SynchedDataIndex.MODEL_ARMS_POSITION, new CustomPosition(0, 0, 0));
-    defineSynchedEntityData(SynchedDataIndex.MODEL_LEFT_ARM_POSITION, new CustomPosition(0, 0, 0));
-    defineSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_ARM_POSITION, new CustomPosition(0, 0, 0));
-    defineSynchedEntityData(SynchedDataIndex.MODEL_LEFT_LEG_POSITION, new CustomPosition(0, 0, 0));
-    defineSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_LEG_POSITION, new CustomPosition(0, 0, 0));
+    defineSynchedEntityData(
+        builder, SynchedDataIndex.MODEL_HEAD_POSITION, new CustomPosition(0, 0, 0));
+    defineSynchedEntityData(
+        builder, SynchedDataIndex.MODEL_BODY_POSITION, new CustomPosition(0, 0, 0));
+    defineSynchedEntityData(
+        builder, SynchedDataIndex.MODEL_ARMS_POSITION, new CustomPosition(0, 0, 0));
+    defineSynchedEntityData(
+        builder, SynchedDataIndex.MODEL_LEFT_ARM_POSITION, new CustomPosition(0, 0, 0));
+    defineSynchedEntityData(
+        builder, SynchedDataIndex.MODEL_RIGHT_ARM_POSITION, new CustomPosition(0, 0, 0));
+    defineSynchedEntityData(
+        builder, SynchedDataIndex.MODEL_LEFT_LEG_POSITION, new CustomPosition(0, 0, 0));
+    defineSynchedEntityData(
+        builder, SynchedDataIndex.MODEL_RIGHT_LEG_POSITION, new CustomPosition(0, 0, 0));
   }
 
   default void addAdditionalModelPositionData(CompoundTag compoundTag) {

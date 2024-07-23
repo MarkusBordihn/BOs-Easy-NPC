@@ -25,9 +25,12 @@ import de.markusbordihn.easynpc.network.message.NetworkHandlerManager;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,27 +52,33 @@ public class NetworkHandler implements NetworkHandlerInterface {
 
   @Override
   public void sendToServer(NetworkMessageRecord networkMessageRecord) {
-    ClientPlayNetworking.send(networkMessageRecord.id(), networkMessageRecord.payload());
+    try {
+      ClientPlayNetworking.send(networkMessageRecord);
+    } catch (Exception e) {
+      log.error("Failed to send {} to server:", networkMessageRecord, e);
+    }
   }
 
   @Override
   public void sendToPlayer(NetworkMessageRecord networkMessageRecord, ServerPlayer serverPlayer) {
-    ServerPlayNetworking.send(
-        serverPlayer, networkMessageRecord.id(), networkMessageRecord.payload());
+    try {
+      ServerPlayNetworking.send(serverPlayer, networkMessageRecord);
+    } catch (Exception e) {
+      log.error("Failed to send {} to player {}:", networkMessageRecord, serverPlayer, e);
+    }
   }
 
   @Override
   public <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
-      final ResourceLocation messageID,
+      final CustomPacketPayload.Type<M> type,
+      final StreamCodec<RegistryFriendlyByteBuf, M> codec,
       final Class<M> networkMessageRecord,
       final Function<FriendlyByteBuf, M> creator) {
     try {
+      log.info("Registering client payload type {} with {}", type, codec);
+      PayloadTypeRegistry.playS2C().register(type, codec);
       ClientPlayNetworking.registerGlobalReceiver(
-          messageID,
-          (client, channelHandler, buffer, responseSender) -> {
-            M networkMessage = creator.apply(buffer);
-            networkMessage.handleClient();
-          });
+          type, (payload, context) -> payload.handleClient());
     } catch (Exception e) {
       log.error("Failed to register network message handler {}:", networkMessageRecord, e);
     }
@@ -77,18 +86,17 @@ public class NetworkHandler implements NetworkHandlerInterface {
 
   @Override
   public <M extends NetworkMessageRecord> void registerServerNetworkMessageHandler(
-      final ResourceLocation messageID,
+      final CustomPacketPayload.Type<M> type,
+      final StreamCodec<RegistryFriendlyByteBuf, M> codec,
       final Class<M> networkMessageRecord,
       final Function<FriendlyByteBuf, M> creator) {
     try {
+      log.info("Registering server payload type {} with {}", type, codec);
+      PayloadTypeRegistry.playC2S().register(type, codec);
       ServerPlayNetworking.registerGlobalReceiver(
-          messageID,
-          (server, serverPlayer, channelHandler, buffer, responseSender) -> {
-            M networkMessage = creator.apply(buffer);
-            networkMessage.handleServer(serverPlayer);
-          });
+          type, (payload, context) -> payload.handleServer(context.player()));
     } catch (Exception e) {
-      log.error("Failed to register network message handler {}:", messageID, e);
+      log.error("Failed to register network message handler {}:", networkMessageRecord, e);
     }
   }
 }

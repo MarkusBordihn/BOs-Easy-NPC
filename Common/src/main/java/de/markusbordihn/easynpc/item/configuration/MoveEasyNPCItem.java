@@ -72,7 +72,10 @@ public class MoveEasyNPCItem extends Item {
 
   @Override
   public void appendHoverText(
-      ItemStack itemStack, Level level, List<Component> tooltipList, TooltipFlag tooltipFlag) {
+      ItemStack itemStack,
+      TooltipContext tooltipContext,
+      List<Component> tooltipList,
+      TooltipFlag tooltipFlag) {
     tooltipList.add(Component.translatable(Constants.TEXT_ITEM_PREFIX + ID));
   }
 }

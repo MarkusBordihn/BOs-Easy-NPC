@@ -30,7 +30,7 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 
 public class FollowLivingEntityGoal extends Goal {
@@ -89,14 +89,14 @@ public class FollowLivingEntityGoal extends Goal {
   @Override
   public void start() {
     this.timeToRecalcPath = 0;
-    this.oldWaterCost = this.pathfinderMob.getPathfindingMalus(BlockPathTypes.WATER);
-    this.pathfinderMob.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
+    this.oldWaterCost = this.pathfinderMob.getPathfindingMalus(PathType.WATER);
+    this.pathfinderMob.setPathfindingMalus(PathType.WATER, 0.0F);
   }
 
   @Override
   public void stop() {
     this.pathNavigation.stop();
-    this.pathfinderMob.setPathfindingMalus(BlockPathTypes.WATER, this.oldWaterCost);
+    this.pathfinderMob.setPathfindingMalus(PathType.WATER, this.oldWaterCost);
   }
 
   @Override
@@ -150,9 +150,9 @@ public class FollowLivingEntityGoal extends Goal {
   }
 
   private boolean canTeleportTo(BlockPos blockPos) {
-    BlockPathTypes blockPathTypes =
-        WalkNodeEvaluator.getBlockPathTypeStatic(this.level, blockPos.mutable());
-    if (!this.canFly && blockPathTypes != BlockPathTypes.WALKABLE) {
+    PathType blockPathTypes =
+        WalkNodeEvaluator.getPathTypeStatic(this.pathfinderMob, blockPos.mutable());
+    if (!this.canFly && blockPathTypes != PathType.WALKABLE) {
       return false;
     } else {
       BlockState blockState = this.level.getBlockState(blockPos.below());

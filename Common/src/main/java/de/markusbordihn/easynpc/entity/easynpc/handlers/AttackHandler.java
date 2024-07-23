@@ -22,8 +22,6 @@ package de.markusbordihn.easynpc.entity.easynpc.handlers;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.item.ModItemTags;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
@@ -35,7 +33,6 @@ import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.TieredItem;
 
@@ -43,21 +40,6 @@ public class AttackHandler {
   public static final String CHARGED_PROJECTILES_TAG = "ChargedProjectiles";
 
   private AttackHandler() {}
-
-  public static void addChargedProjectile(
-      ItemStack weaponItemStack, ItemStack projectileItemStack) {
-    CompoundTag weaponCompoundTag = weaponItemStack.getOrCreateTag();
-    ListTag listTag;
-    if (weaponCompoundTag.contains(CHARGED_PROJECTILES_TAG, 9)) {
-      listTag = weaponCompoundTag.getList(CHARGED_PROJECTILES_TAG, 10);
-    } else {
-      listTag = new ListTag();
-    }
-    CompoundTag projectileCompoundTag = new CompoundTag();
-    projectileItemStack.save(projectileCompoundTag);
-    listTag.add(projectileCompoundTag);
-    weaponCompoundTag.put(CHARGED_PROJECTILES_TAG, listTag);
-  }
 
   public static boolean isMeeleeWeapon(ItemStack itemStack) {
     return itemStack.getItem() instanceof TieredItem;
@@ -111,7 +93,7 @@ public class AttackHandler {
       performBowAttack(livingEntity, targedtedLivingEntity, damage);
     } else if (livingEntity instanceof CrossbowAttackMob crossbowAttackMob
         && isHoldingCrossbowWeapon(livingEntity)) {
-      addChargedProjectile(livingEntity.getMainHandItem(), new ItemStack(Items.ARROW, 1));
+      // addChargedProjectile(livingEntity.getMainHandItem(), new ItemStack(Items.ARROW, 1));
       crossbowAttackMob.performCrossbowAttack(livingEntity, 1.6F);
     } else if (isHoldingGunWeapon(livingEntity)) {
       performGunAttack(livingEntity, targedtedLivingEntity, damage);

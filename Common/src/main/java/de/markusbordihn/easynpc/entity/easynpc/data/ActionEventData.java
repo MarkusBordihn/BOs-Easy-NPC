@@ -28,42 +28,24 @@ import de.markusbordihn.easynpc.data.server.ServerDataIndex;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.PathfinderMob;
 
 public interface ActionEventData<E extends PathfinderMob> extends EasyNPC<E> {
 
-  EntityDataSerializer<ActionEventSet> ACTION_EVENT_SET =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, ActionEventSet value) {
-          buffer.writeNbt(value.createTag());
-        }
-
-        public ActionEventSet read(FriendlyByteBuf buffer) {
-          return new ActionEventSet(buffer.readNbt());
-        }
-
-        public ActionEventSet copy(ActionEventSet value) {
-          return value;
-        }
-      };
-
   ServerDataAccessor<ActionEventSet> CUSTOM_DATA_ACTION_EVENT_SET =
-      ServerEntityData.defineId(ServerDataIndex.ACTION_EVENT_SET, ACTION_EVENT_SET);
+      ServerEntityData.defineId(
+          ServerDataIndex.ACTION_EVENT_SET, EntityDataSerializersManager.ACTION_EVENT_SET);
   ServerDataAccessor<Integer> CUSTOM_DATA_ACTION_PERMISSION_LEVEL =
       ServerEntityData.defineId(EntityDataSerializers.INT);
 
   String DATA_ACTION_DATA_TAG = "ActionData";
   String DATA_ACTION_PERMISSION_LEVEL_TAG = "ActionPermissionLevel";
-
-  static void registerActionEventDataSerializer() {
-    EntityDataSerializers.registerSerializer(ACTION_EVENT_SET);
-  }
 
   default ActionEventSet getActionEventSet() {
     return getServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET);
@@ -103,7 +85,7 @@ public interface ActionEventData<E extends PathfinderMob> extends EasyNPC<E> {
     setServerEntityData(CUSTOM_DATA_ACTION_PERMISSION_LEVEL, actionPermissionLevel);
   }
 
-  default void defineSynchedActionData() {}
+  default void defineSynchedActionData(SynchedEntityData.Builder builder) {}
 
   default void defineCustomActionData() {
     defineServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET, new ActionEventSet());

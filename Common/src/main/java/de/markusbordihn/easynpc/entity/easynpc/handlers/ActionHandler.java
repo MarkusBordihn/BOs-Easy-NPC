@@ -253,13 +253,23 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
     if (livingEntity != null && !this.isClientSide()) {
       this.lookAtBlock(blockPos);
       livingEntity.swing(InteractionHand.MAIN_HAND);
-      this.getServerLevel()
-          .getBlockState(blockPos)
-          .use(
-              this.getServerLevel(),
-              this.getFakePlayer(this.getServerLevel(), blockPos),
-              InteractionHand.MAIN_HAND,
-              new BlockHitResult(Vec3.atCenterOf(blockPos), Direction.DOWN, blockPos, false));
+      if (!livingEntity.getMainHandItem().isEmpty()) {
+        this.getServerLevel()
+            .getBlockState(blockPos)
+            .useItemOn(
+                livingEntity.getMainHandItem(),
+                this.getServerLevel(),
+                this.getFakePlayer(this.getServerLevel(), blockPos),
+                InteractionHand.MAIN_HAND,
+                new BlockHitResult(Vec3.atCenterOf(blockPos), Direction.DOWN, blockPos, false));
+      } else {
+        this.getServerLevel()
+            .getBlockState(blockPos)
+            .useWithoutItem(
+                this.getServerLevel(),
+                this.getFakePlayer(this.getServerLevel(), blockPos),
+                new BlockHitResult(Vec3.atCenterOf(blockPos), Direction.DOWN, blockPos, false));
+      }
       livingEntity
           .getMainHandItem()
           .use(

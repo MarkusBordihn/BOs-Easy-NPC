@@ -94,8 +94,8 @@ public interface OwnerData<T extends PathfinderMob> extends EasyNPC<T>, OwnableE
     return uuid != null && this.hasOwner() && uuid.equals(this.getOwnerUUID());
   }
 
-  default void defineSynchedOwnerData() {
-    defineSynchedEntityData(SynchedDataIndex.OWNER_UUID, Optional.empty());
+  default void defineSynchedOwnerData(SynchedEntityData.Builder builder) {
+    defineSynchedEntityData(builder, SynchedDataIndex.OWNER_UUID, Optional.empty());
   }
 
   default void addAdditionalOwnerData(CompoundTag compoundTag) {

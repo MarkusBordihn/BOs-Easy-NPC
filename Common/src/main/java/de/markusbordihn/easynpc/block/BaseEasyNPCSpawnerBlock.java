@@ -24,7 +24,6 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.block.entity.BaseEasyNPCSpawnerBlockEntity;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -85,14 +84,12 @@ public class BaseEasyNPCSpawnerBlock extends BaseEntityBlock {
     }
   }
 
-  @SuppressWarnings("deprecation")
   @Override
-  public InteractionResult use(
+  public InteractionResult useWithoutItem(
       BlockState blockState,
       Level level,
       BlockPos blockPos,
       Player player,
-      InteractionHand interactionHand,
       BlockHitResult blockHitResult) {
     if (level.isClientSide) {
       return InteractionResult.SUCCESS;

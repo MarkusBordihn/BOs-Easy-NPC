@@ -26,6 +26,9 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -34,6 +37,10 @@ public record ChangeScaleMessage(UUID uuid, ModelScaleAxis scaleAxis, Float scal
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_scale");
+  public static final CustomPacketPayload.Type<ChangeScaleMessage> PAYLOAD_TYPE =
+      CustomPacketPayload.createType(MESSAGE_ID.toString());
+  public static final StreamCodec<RegistryFriendlyByteBuf, ChangeScaleMessage> STREAM_CODEC =
+      StreamCodec.of((buffer, message) -> message.write(buffer), ChangeScaleMessage::create);
 
   public static ChangeScaleMessage create(final FriendlyByteBuf buffer) {
     return new ChangeScaleMessage(
@@ -50,6 +57,11 @@ public record ChangeScaleMessage(UUID uuid, ModelScaleAxis scaleAxis, Float scal
   @Override
   public ResourceLocation id() {
     return MESSAGE_ID;
+  }
+
+  @Override
+  public Type<? extends CustomPacketPayload> type() {
+    return PAYLOAD_TYPE;
   }
 
   @Override

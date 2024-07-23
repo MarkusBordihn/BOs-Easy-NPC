@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 
@@ -39,7 +39,7 @@ public class LivingEntityEventHandler {
 
   @SubscribeEvent(priority = EventPriority.HIGHEST)
   public static void handleEntityLeaveWorldEvent(EntityLeaveLevelEvent event) {
-    if (event.hasResult() && event.getEntity() instanceof LivingEntity livingEntity) {
+    if (event.getEntity() instanceof LivingEntity livingEntity) {
       LivingEntityEvents.handleLivingEntityLeaveEvent(livingEntity);
     }
   }

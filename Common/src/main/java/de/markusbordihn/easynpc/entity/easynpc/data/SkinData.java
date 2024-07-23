@@ -24,12 +24,11 @@ import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
@@ -43,34 +42,6 @@ public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
   String EASY_NPC_DATA_SKIN_TYPE_TAG = "SkinType";
   String EASY_NPC_DATA_SKIN_URL_TAG = "SkinURL";
   String EASY_NPC_DATA_SKIN_UUID_TAG = "SkinUUID";
-  EntityDataSerializer<SkinType> SKIN_TYPE =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, SkinType skinType) {
-          buffer.writeEnum(skinType);
-        }
-
-        public SkinType read(FriendlyByteBuf buffer) {
-          return buffer.readEnum(SkinType.class);
-        }
-
-        public SkinType copy(SkinType skinType) {
-          return skinType;
-        }
-      };
-  EntityDataSerializer<UUID> SKIN_UUID =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, UUID skinUUID) {
-          buffer.writeUUID(skinUUID);
-        }
-
-        public UUID read(FriendlyByteBuf buffer) {
-          return buffer.readUUID();
-        }
-
-        public UUID copy(UUID skinUUID) {
-          return skinUUID;
-        }
-      };
 
   static void registerSyncedSkinData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
@@ -81,13 +52,12 @@ public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
     map.put(
         SynchedDataIndex.SKIN_URL,
         SynchedEntityData.defineId(entityClass, EntityDataSerializers.STRING));
-    map.put(SynchedDataIndex.SKIN_UUID, SynchedEntityData.defineId(entityClass, SKIN_UUID));
-    map.put(SynchedDataIndex.SKIN_TYPE, SynchedEntityData.defineId(entityClass, SKIN_TYPE));
-  }
-
-  static void registerSkinDataSerializer() {
-    EntityDataSerializers.registerSerializer(SKIN_TYPE);
-    EntityDataSerializers.registerSerializer(SKIN_UUID);
+    map.put(
+        SynchedDataIndex.SKIN_UUID,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.SKIN_UUID));
+    map.put(
+        SynchedDataIndex.SKIN_TYPE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.SKIN_TYPE));
   }
 
   default int getEntitySkinScaling() {
@@ -134,11 +104,11 @@ public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
     return SkinModel.HUMANOID;
   }
 
-  default void defineSynchedSkinData() {
-    defineSynchedEntityData(SynchedDataIndex.SKIN_NAME, "");
-    defineSynchedEntityData(SynchedDataIndex.SKIN_URL, "");
-    defineSynchedEntityData(SynchedDataIndex.SKIN_UUID, Constants.BLANK_UUID);
-    defineSynchedEntityData(SynchedDataIndex.SKIN_TYPE, SkinType.DEFAULT);
+  default void defineSynchedSkinData(SynchedEntityData.Builder builder) {
+    defineSynchedEntityData(builder, SynchedDataIndex.SKIN_NAME, "");
+    defineSynchedEntityData(builder, SynchedDataIndex.SKIN_URL, "");
+    defineSynchedEntityData(builder, SynchedDataIndex.SKIN_UUID, Constants.BLANK_UUID);
+    defineSynchedEntityData(builder, SynchedDataIndex.SKIN_TYPE, SkinType.DEFAULT);
   }
 
   default void addAdditionalSkinData(CompoundTag compoundTag) {

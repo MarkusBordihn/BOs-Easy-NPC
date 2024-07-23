@@ -28,6 +28,9 @@ import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -35,6 +38,10 @@ public record OpenDialogEditorMessage(UUID uuid, UUID dialogId) implements Netwo
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "open_dialog_editor");
+  public static final CustomPacketPayload.Type<OpenDialogEditorMessage> PAYLOAD_TYPE =
+      CustomPacketPayload.createType(MESSAGE_ID.toString());
+  public static final StreamCodec<RegistryFriendlyByteBuf, OpenDialogEditorMessage> STREAM_CODEC =
+      StreamCodec.of((buffer, message) -> message.write(buffer), OpenDialogEditorMessage::create);
 
   public static OpenDialogEditorMessage create(final FriendlyByteBuf buffer) {
     return new OpenDialogEditorMessage(buffer.readUUID(), buffer.readUUID());
@@ -49,6 +56,11 @@ public record OpenDialogEditorMessage(UUID uuid, UUID dialogId) implements Netwo
   @Override
   public ResourceLocation id() {
     return MESSAGE_ID;
+  }
+
+  @Override
+  public Type<? extends CustomPacketPayload> type() {
+    return PAYLOAD_TYPE;
   }
 
   @Override

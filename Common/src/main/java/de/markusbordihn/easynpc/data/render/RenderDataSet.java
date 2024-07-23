@@ -21,6 +21,8 @@ package de.markusbordihn.easynpc.data.render;
 
 import de.markusbordihn.easynpc.Constants;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import org.apache.logging.log4j.LogManager;
@@ -29,9 +31,21 @@ import org.apache.logging.log4j.Logger;
 public class RenderDataSet {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
   private static final String DATA_RENDER_TYPE_TAG = "Type";
   private static final String DATA_RENDER_ENTITY_TYPE_TAG = "EntityType";
+  public static final StreamCodec<RegistryFriendlyByteBuf, RenderDataSet> STREAM_CODEC =
+      new StreamCodec<>() {
+        @Override
+        public RenderDataSet decode(RegistryFriendlyByteBuf registryFriendlyByteBuf) {
+          return new RenderDataSet(registryFriendlyByteBuf.readNbt());
+        }
+
+        @Override
+        public void encode(
+            RegistryFriendlyByteBuf registryFriendlyByteBuf, RenderDataSet renderDataSet) {
+          registryFriendlyByteBuf.writeNbt(renderDataSet.createTag());
+        }
+      };
   private EntityType<?> renderEntityType = null;
   private RenderType renderType = RenderType.DEFAULT;
 

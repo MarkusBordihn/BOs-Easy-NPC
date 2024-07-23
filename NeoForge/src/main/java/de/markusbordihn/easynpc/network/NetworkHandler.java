@@ -25,25 +25,28 @@ import de.markusbordihn.easynpc.network.message.NetworkHandlerManager;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.function.Function;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class NetworkHandler implements NetworkHandlerInterface {
 
   private static final int PROTOCOL_VERSION = 21;
-  public static IPayloadRegistrar INSTANCE;
+  public static PayloadRegistrar INSTANCE;
 
   public NetworkHandler() {
     log.info("{} NetworkHandler ...", Constants.LOG_REGISTER_PREFIX);
   }
 
-  public static void registerNetworkHandler(final RegisterPayloadHandlerEvent payloadHandlerEvent) {
+  public static void registerNetworkHandler(
+      final RegisterPayloadHandlersEvent payloadHandlersEvent) {
 
     INSTANCE =
-        payloadHandlerEvent
+        payloadHandlersEvent
             .registrar(Constants.MOD_ID)
             .versioned(String.valueOf(PROTOCOL_VERSION))
             .optional();
@@ -60,9 +63,9 @@ public class NetworkHandler implements NetworkHandlerInterface {
   @Override
   public <M extends NetworkMessageRecord> void sendToServer(M networkMessageRecord) {
     try {
-      PacketDistributor.SERVER.noArg().send(networkMessageRecord);
+      PacketDistributor.sendToServer(networkMessageRecord);
     } catch (Exception e) {
-      log.error("Failed to send {} to server, got error: {}", networkMessageRecord, e);
+      log.error("Failed to send {} to server: {}", networkMessageRecord, e);
     }
   }
 
@@ -70,7 +73,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
   public <M extends NetworkMessageRecord> void sendToPlayer(
       M networkMessageRecord, ServerPlayer serverPlayer) {
     try {
-      PacketDistributor.PLAYER.with(serverPlayer).send(networkMessageRecord);
+      PacketDistributor.sendToPlayer(serverPlayer, networkMessageRecord);
     } catch (Exception e) {
       log.error(
           "Failed to send {} to player {}: {}",
@@ -82,30 +85,39 @@ public class NetworkHandler implements NetworkHandlerInterface {
 
   @Override
   public <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
-      final ResourceLocation messageID,
+      final CustomPacketPayload.Type<M> type,
+      final StreamCodec<RegistryFriendlyByteBuf, M> codec,
       final Class<M> networkMessageRecord,
       final Function<FriendlyByteBuf, M> creator) {
-    INSTANCE.play(
-        messageID,
-        creator::apply,
-        handler ->
-            handler.client((customPacketPayload, unused) -> customPacketPayload.handleClient()));
+    try {
+      INSTANCE.playToClient(
+          type,
+          codec,
+          (customPacketPayload, playPayloadContext) -> customPacketPayload.handleClient());
+    } catch (Exception e) {
+      log.error("Failed to register network message handler {}:", networkMessageRecord, e);
+    }
   }
 
   @Override
   public <M extends NetworkMessageRecord> void registerServerNetworkMessageHandler(
-      ResourceLocation messageID, Class<M> networkMessage, Function<FriendlyByteBuf, M> creator) {
-    INSTANCE.play(
-        messageID,
-        creator::apply,
-        handler ->
-            handler.server(
-                (customPacketPayload, playPayloadContext) -> {
-                  if (playPayloadContext.player().get() instanceof ServerPlayer serverPlayer) {
-                    customPacketPayload.handleServer(serverPlayer);
-                  } else {
-                    log.error("Failed to get server player for {}", customPacketPayload);
-                  }
-                }));
+      final CustomPacketPayload.Type<M> type,
+      final StreamCodec<RegistryFriendlyByteBuf, M> codec,
+      Class<M> networkMessage,
+      Function<FriendlyByteBuf, M> creator) {
+    try {
+      INSTANCE.playToServer(
+          type,
+          codec,
+          (customPacketPayload, playPayloadContext) -> {
+            if (playPayloadContext.player() instanceof ServerPlayer serverPlayer) {
+              customPacketPayload.handleServer(serverPlayer);
+            } else {
+              log.error("Unable to get valid player for network message {}", customPacketPayload);
+            }
+          });
+    } catch (Exception e) {
+      log.error("Failed to register network message handler {}:", networkMessage, e);
+    }
   }
 }

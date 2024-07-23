@@ -25,6 +25,9 @@ import de.markusbordihn.easynpc.data.spawner.SpawnerSettingType;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,6 +40,12 @@ public record ChangeSpawnerSettingMessage(
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_spawner_settings");
+  public static final CustomPacketPayload.Type<ChangeSpawnerSettingMessage> PAYLOAD_TYPE =
+      CustomPacketPayload.createType(MESSAGE_ID.toString());
+  public static final StreamCodec<RegistryFriendlyByteBuf, ChangeSpawnerSettingMessage>
+      STREAM_CODEC =
+          StreamCodec.of(
+              (buffer, message) -> message.write(buffer), ChangeSpawnerSettingMessage::create);
 
   public static ChangeSpawnerSettingMessage create(final FriendlyByteBuf buffer) {
     return new ChangeSpawnerSettingMessage(
@@ -53,6 +62,11 @@ public record ChangeSpawnerSettingMessage(
   @Override
   public ResourceLocation id() {
     return MESSAGE_ID;
+  }
+
+  @Override
+  public Type<? extends CustomPacketPayload> type() {
+    return PAYLOAD_TYPE;
   }
 
   @Override

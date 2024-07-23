@@ -22,10 +22,25 @@ package de.markusbordihn.easynpc.data.action;
 import java.util.EnumMap;
 import java.util.Map.Entry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
 public class ActionEventSet {
 
   public static final String DATA_ACTION_EVENT_SET_TAG = "ActionEventSet";
+  public static final StreamCodec<RegistryFriendlyByteBuf, ActionEventSet> STREAM_CODEC =
+      new StreamCodec<>() {
+        @Override
+        public ActionEventSet decode(RegistryFriendlyByteBuf registryFriendlyByteBuf) {
+          return new ActionEventSet(registryFriendlyByteBuf.readNbt());
+        }
+
+        @Override
+        public void encode(
+            RegistryFriendlyByteBuf registryFriendlyByteBuf, ActionEventSet actionEventSet) {
+          registryFriendlyByteBuf.writeNbt(actionEventSet.createTag());
+        }
+      };
   private final EnumMap<ActionEventType, ActionDataSet> actionsMap =
       new EnumMap<>(ActionEventType.class);
   private boolean hasDistanceActionEvent = false;

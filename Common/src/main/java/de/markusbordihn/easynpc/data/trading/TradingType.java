@@ -19,14 +19,28 @@
 
 package de.markusbordihn.easynpc.data.trading;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+
 public enum TradingType {
-  // @formatter:off
   ADVANCED,
   BASIC,
   CUSTOM,
   NONE;
 
-  // @formatter:on
+  public static final StreamCodec<RegistryFriendlyByteBuf, TradingType> STREAM_CODEC =
+      new StreamCodec<>() {
+        @Override
+        public TradingType decode(RegistryFriendlyByteBuf registryFriendlyByteBuf) {
+          return registryFriendlyByteBuf.readEnum(TradingType.class);
+        }
+
+        @Override
+        public void encode(
+            RegistryFriendlyByteBuf registryFriendlyByteBuf, TradingType tradingType) {
+          registryFriendlyByteBuf.writeEnum(tradingType);
+        }
+      };
 
   public static TradingType get(String dialogType) {
     if (dialogType == null || dialogType.isEmpty()) {

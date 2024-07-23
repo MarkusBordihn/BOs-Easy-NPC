@@ -19,8 +19,10 @@
 
 package de.markusbordihn.easynpc.data.profession;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+
 public enum Profession {
-  // @formatter:off
   NONE,
   ARMORER,
   BUTCHER,
@@ -35,6 +37,18 @@ public enum Profession {
   NITWIT,
   SHEPHERD,
   TOOLSMITH,
-  WEAPONSMITH
-  // @formatter:on
+  WEAPONSMITH;
+
+  public static final StreamCodec<RegistryFriendlyByteBuf, Profession> STREAM_CODEC =
+      new StreamCodec<>() {
+        @Override
+        public Profession decode(RegistryFriendlyByteBuf registryFriendlyByteBuf) {
+          return registryFriendlyByteBuf.readEnum(Profession.class);
+        }
+
+        @Override
+        public void encode(RegistryFriendlyByteBuf registryFriendlyByteBuf, Profession profession) {
+          registryFriendlyByteBuf.writeEnum(profession);
+        }
+      };
 }

@@ -75,7 +75,7 @@ public class ExportWorldPresetConfigurationScreen<T extends ConfigurationMenu>
         this.font.split(
             Component.translatable(
                 Constants.TEXT_CONFIG_PREFIX + "export_preset_world_text",
-                customPresetFile.getParentFile(),
+                customPresetFile.getParentFile().getPath(),
                 customPresetFile.getName()),
             this.imageWidth - 25);
     this.numberOfTextLines = this.textComponents.size();

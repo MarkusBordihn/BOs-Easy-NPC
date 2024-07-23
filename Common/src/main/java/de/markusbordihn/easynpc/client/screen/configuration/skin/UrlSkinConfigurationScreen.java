@@ -91,7 +91,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
 
       // Render Skins
       UUID textureKey = (UUID) textureKeys[i];
-      this.renderSkinEntity(left, top, skinModel, textureKey);
+      this.renderSkinEntity(guiGraphics, left, top, skinModel, textureKey);
 
       // Render skin name
       int topNamePos = Math.round((top - 76) / SKIN_NAME_SCALING);
@@ -113,7 +113,8 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
     }
   }
 
-  private void renderSkinEntity(int x, int y, SkinModel skinModel, UUID textureUUID) {
+  private void renderSkinEntity(
+      GuiGraphics guiGraphics, int x, int y, SkinModel skinModel, UUID textureUUID) {
     // Skin details
     TextureModelKey textureModelKey = new TextureModelKey(textureUUID, skinModel);
     SkinType skinType = RemoteTextureManager.getTextureSkinType(textureModelKey);
@@ -136,7 +137,14 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
 
     // Render skin entity with variant and profession.
     ScreenHelper.renderEntityPlayerSkin(
-        x + 4, y, x - this.xMouse, y - 40 - this.yMouse, this.getEasyNPC(), textureUUID, skinType);
+        guiGraphics,
+        x + 4,
+        y,
+        x - this.xMouse,
+        y - 40 - this.yMouse,
+        this.getEasyNPC(),
+        textureUUID,
+        skinType);
 
     skinButtons.add(skinButton);
   }

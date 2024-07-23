@@ -111,6 +111,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
 
     // Avatar
     ScreenHelper.renderScaledEntityAvatar(
+        guiGraphics,
         this.leftPos + 60,
         this.contentTopPos + 160,
         this.leftPos + 50 - this.xMouse,

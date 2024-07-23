@@ -33,6 +33,7 @@ import de.markusbordihn.easynpc.network.ClientNetworkMessageHandler;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 import de.markusbordihn.easynpc.network.message.NetworkHandlerManager;
 import de.markusbordihn.easynpc.network.message.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import de.markusbordihn.easynpc.server.ServerEvents;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -58,6 +59,9 @@ public class EasyNPCMain implements ModInitializer {
     log.info("{} Constants ...", Constants.LOG_REGISTER_PREFIX);
     Constants.GAME_DIR = FabricLoader.getInstance().getGameDir();
     Constants.CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
+
+    log.info("{} Entity Data Serializers ...", Constants.LOG_REGISTER_PREFIX);
+    EntityDataSerializersManager.register();
 
     log.info("{} Entity Types ...", Constants.LOG_REGISTER_PREFIX);
     ModEntityType.registerEntitiesAttributes();
@@ -86,8 +90,10 @@ public class EasyNPCMain implements ModInitializer {
     log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
     ModMenuTypes.register();
 
-    log.info("{} Server Network Handler ...", Constants.LOG_REGISTER_PREFIX);
+    log.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
     NetworkHandlerManager.registerHandler(new NetworkHandler());
+
+    log.info("{} Server Network Handler ...", Constants.LOG_REGISTER_PREFIX);
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
     NetworkHandler.registerServerNetworkHandler();
 

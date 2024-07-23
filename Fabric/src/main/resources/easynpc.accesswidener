@@ -1,2 +1,2 @@
 accessWidener	v1	named
-extendable method net/minecraft/client/renderer/entity/layers/HumanoidArmorLayer getArmorLocation (Lnet/minecraft/world/item/ArmorItem;ZLjava/lang/String;)Lnet/minecraft/resources/ResourceLocation;
+# extendable method net/minecraft/client/renderer/entity/layers/HumanoidArmorLayer getArmorLocation (Lnet/minecraft/world/item/ArmorItem;ZLjava/lang/String;)Lnet/minecraft/resources/ResourceLocation;

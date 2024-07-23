@@ -24,6 +24,9 @@ import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -31,6 +34,10 @@ public record OpenMenuMessage(UUID uuid, UUID menuId) implements NetworkMessageR
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "open_menu_message");
+  public static final CustomPacketPayload.Type<OpenMenuMessage> PAYLOAD_TYPE =
+      CustomPacketPayload.createType(MESSAGE_ID.toString());
+  public static final StreamCodec<RegistryFriendlyByteBuf, OpenMenuMessage> STREAM_CODEC =
+      StreamCodec.of((buffer, message) -> message.write(buffer), OpenMenuMessage::create);
 
   public static OpenMenuMessage create(final FriendlyByteBuf buffer) {
     return new OpenMenuMessage(buffer.readUUID(), buffer.readUUID());
@@ -48,12 +55,12 @@ public record OpenMenuMessage(UUID uuid, UUID menuId) implements NetworkMessageR
   }
 
   @Override
+  public Type<? extends CustomPacketPayload> type() {
+    return PAYLOAD_TYPE;
+  }
+
+  @Override
   public void handleServer(final ServerPlayer serverPlayer) {
-    log.info(
-        "Try open menu message for {} with menuId {} from {}",
-        this.uuid,
-        this.menuId,
-        serverPlayer);
-    MenuManager.openMenu(this.menuId);
+    MenuManager.openMenu(this.menuId, serverPlayer);
   }
 }

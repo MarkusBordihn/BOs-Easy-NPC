@@ -95,7 +95,7 @@ public class SoundDataEntry {
               .orElseGet(() -> SoundEvent.createVariableRangeEvent(location));
     } else {
       log.error("Unable to load sound event for type {} and {}", this.type.name(), compoundTag);
-      this.soundEvent = SoundEvents.GENERIC_EXPLODE;
+      this.soundEvent = SoundEvents.GENERIC_SPLASH;
     }
     if (compoundTag.contains(DATA_SOUND_VOLUME_TAG)) {
       this.volume = compoundTag.getFloat(DATA_SOUND_VOLUME_TAG);

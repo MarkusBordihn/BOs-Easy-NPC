@@ -182,6 +182,7 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
 
     // Render Entity
     ScreenHelper.renderScaledEntityAvatar(
+        guiGraphics,
         this.contentLeftPos + 80,
         this.contentTopPos + 145,
         36,

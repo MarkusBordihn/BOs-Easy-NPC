@@ -26,17 +26,30 @@ import java.util.List;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class DialogDataSet {
 
-  // Dialog Data Tags
+  public static final StreamCodec<RegistryFriendlyByteBuf, DialogDataSet> STREAM_CODEC =
+      new StreamCodec<>() {
+        @Override
+        public DialogDataSet decode(RegistryFriendlyByteBuf registryFriendlyByteBuf) {
+          return new DialogDataSet(registryFriendlyByteBuf.readNbt());
+        }
+
+        @Override
+        public void encode(
+            RegistryFriendlyByteBuf registryFriendlyByteBuf, DialogDataSet dialogDataSet) {
+          registryFriendlyByteBuf.writeNbt(dialogDataSet.createTag());
+        }
+      };
   public static final String DATA_DIALOG_DATA_SET_TAG = "DialogDataSet";
   public static final String DATA_DIALOG_DEFAULT_TAG = "Default";
   public static final String DATA_TYPE_TAG = "Type";
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  // Cache
   private final HashMap<String, DialogDataEntry> dialogByLabelMap = new HashMap<>();
   private final HashMap<UUID, DialogDataEntry> dialogByIdMap = new HashMap<>();
   private String defaultDialogLabel = "default";

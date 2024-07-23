@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.EnumMap;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -86,14 +87,14 @@ public interface AttributeData<E extends PathfinderMob> extends EasyNPC<E> {
         SynchedEntityData.defineId(entityClass, EntityDataSerializers.INT));
   }
 
-  default void setBaseAttribute(Attribute attribute, double value) {
+  default void setBaseAttribute(Holder<Attribute> attribute, double value) {
     if (attribute == null || getLivingEntity().getAttribute(attribute) == null) {
       return;
     }
     getLivingEntity().getAttribute(attribute).setBaseValue(value);
   }
 
-  default double getBaseAttribute(Attribute attribute) {
+  default double getBaseAttribute(Holder<Attribute> attribute) {
     if (attribute == null || getLivingEntity().getAttribute(attribute) == null) {
       return 0.0;
     }
@@ -208,19 +209,19 @@ public interface AttributeData<E extends PathfinderMob> extends EasyNPC<E> {
     setAttributeDataLoaded(true);
   }
 
-  default void defineSynchedAttributeData() {
-    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_DATA_LOADED, false);
-    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_BE_LEASHED, false);
-    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_FLOAT, false);
-    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_CLOSE_DOOR, false);
-    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_OPEN_DOOR, false);
-    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_PASS_DOOR, false);
-    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_CAN_USE_NETHER_PORTAL, false);
-    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_FREEFALL, false);
-    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_IS_ATTACKABLE, false);
-    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_IS_PUSHABLE, false);
-    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_PUSH_ENTITIES, false);
-    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_LIGHT_LEVEL, 7);
+  default void defineSynchedAttributeData(SynchedEntityData.Builder builder) {
+    defineSynchedEntityData(builder, SynchedDataIndex.ATTRIBUTE_DATA_LOADED, false);
+    defineSynchedEntityData(builder, SynchedDataIndex.ATTRIBUTE_CAN_BE_LEASHED, false);
+    defineSynchedEntityData(builder, SynchedDataIndex.ATTRIBUTE_CAN_FLOAT, false);
+    defineSynchedEntityData(builder, SynchedDataIndex.ATTRIBUTE_CAN_CLOSE_DOOR, false);
+    defineSynchedEntityData(builder, SynchedDataIndex.ATTRIBUTE_CAN_OPEN_DOOR, false);
+    defineSynchedEntityData(builder, SynchedDataIndex.ATTRIBUTE_CAN_PASS_DOOR, false);
+    defineSynchedEntityData(builder, SynchedDataIndex.ATTRIBUTE_CAN_USE_NETHER_PORTAL, false);
+    defineSynchedEntityData(builder, SynchedDataIndex.ATTRIBUTE_FREEFALL, false);
+    defineSynchedEntityData(builder, SynchedDataIndex.ATTRIBUTE_IS_ATTACKABLE, false);
+    defineSynchedEntityData(builder, SynchedDataIndex.ATTRIBUTE_IS_PUSHABLE, false);
+    defineSynchedEntityData(builder, SynchedDataIndex.ATTRIBUTE_PUSH_ENTITIES, false);
+    defineSynchedEntityData(builder, SynchedDataIndex.ATTRIBUTE_LIGHT_LEVEL, 7);
   }
 
   default void addAdditionalAttributeData(CompoundTag compoundTag) {

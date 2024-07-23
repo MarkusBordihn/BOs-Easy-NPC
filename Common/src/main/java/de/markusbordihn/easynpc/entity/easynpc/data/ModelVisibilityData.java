@@ -229,19 +229,23 @@ public interface ModelVisibilityData<T extends PathfinderMob> extends EasyNPC<T>
     setSynchedEntityData(SynchedDataIndex.MODEL_BOOTS_VISIBLE, modelBootsVisible);
   }
 
-  default void defineSynchedModelVisibilityData() {
-    defineSynchedEntityData(SynchedDataIndex.MODEL_HEAD_VISIBLE, this.hasHeadModelPart());
-    defineSynchedEntityData(SynchedDataIndex.MODEL_BODY_VISIBLE, this.hasBodyModelPart());
-    defineSynchedEntityData(SynchedDataIndex.MODEL_ARMS_VISIBLE, this.hasArmsModelPart());
-    defineSynchedEntityData(SynchedDataIndex.MODEL_LEFT_ARM_VISIBLE, this.hasLeftArmModelPart());
-    defineSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_ARM_VISIBLE, this.hasRightArmModelPart());
-    defineSynchedEntityData(SynchedDataIndex.MODEL_LEFT_LEG_VISIBLE, this.hasLeftLegModelPart());
-    defineSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_LEG_VISIBLE, this.hasRightLegModelPart());
+  default void defineSynchedModelVisibilityData(SynchedEntityData.Builder builder) {
+    defineSynchedEntityData(builder, SynchedDataIndex.MODEL_HEAD_VISIBLE, this.hasHeadModelPart());
+    defineSynchedEntityData(builder, SynchedDataIndex.MODEL_BODY_VISIBLE, this.hasBodyModelPart());
+    defineSynchedEntityData(builder, SynchedDataIndex.MODEL_ARMS_VISIBLE, this.hasArmsModelPart());
+    defineSynchedEntityData(
+        builder, SynchedDataIndex.MODEL_LEFT_ARM_VISIBLE, this.hasLeftArmModelPart());
+    defineSynchedEntityData(
+        builder, SynchedDataIndex.MODEL_RIGHT_ARM_VISIBLE, this.hasRightArmModelPart());
+    defineSynchedEntityData(
+        builder, SynchedDataIndex.MODEL_LEFT_LEG_VISIBLE, this.hasLeftLegModelPart());
+    defineSynchedEntityData(
+        builder, SynchedDataIndex.MODEL_RIGHT_LEG_VISIBLE, this.hasRightLegModelPart());
 
-    defineSynchedEntityData(SynchedDataIndex.MODEL_HELMET_VISIBLE, this.canUseArmor());
-    defineSynchedEntityData(SynchedDataIndex.MODEL_CHESTPLATE_VISIBLE, this.canUseArmor());
-    defineSynchedEntityData(SynchedDataIndex.MODEL_LEGGINGS_VISIBLE, this.canUseArmor());
-    defineSynchedEntityData(SynchedDataIndex.MODEL_BOOTS_VISIBLE, this.canUseArmor());
+    defineSynchedEntityData(builder, SynchedDataIndex.MODEL_HELMET_VISIBLE, this.canUseArmor());
+    defineSynchedEntityData(builder, SynchedDataIndex.MODEL_CHESTPLATE_VISIBLE, this.canUseArmor());
+    defineSynchedEntityData(builder, SynchedDataIndex.MODEL_LEGGINGS_VISIBLE, this.canUseArmor());
+    defineSynchedEntityData(builder, SynchedDataIndex.MODEL_BOOTS_VISIBLE, this.canUseArmor());
   }
 
   default void addAdditionalModelVisibilityData(CompoundTag compoundTag) {

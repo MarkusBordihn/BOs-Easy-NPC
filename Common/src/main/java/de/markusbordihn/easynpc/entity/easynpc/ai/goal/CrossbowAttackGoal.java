@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
 import java.util.EnumSet;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.LivingEntity;
@@ -30,6 +31,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ChargedProjectiles;
 
 public class CrossbowAttackGoal<T extends EasyNPC<?>> extends Goal {
   public static final UniformInt PATHFINDING_DELAY_RANGE = TimeUtil.rangeOfSeconds(1, 2);
@@ -76,7 +78,9 @@ public class CrossbowAttackGoal<T extends EasyNPC<?>> extends Goal {
     if (this.pathfinderMob.isUsingItem()) {
       this.pathfinderMob.stopUsingItem();
       this.crossbowAttackMob.setChargingCrossbow(false);
-      CrossbowItem.setCharged(this.pathfinderMob.getUseItem(), false);
+      this.pathfinderMob
+          .getUseItem()
+          .set(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY);
     }
   }
 
@@ -151,10 +155,10 @@ public class CrossbowAttackGoal<T extends EasyNPC<?>> extends Goal {
         }
       } else if (this.crossbowState == CrossbowState.READY_TO_ATTACK && hasLineOfSight) {
         this.crossbowAttackMob.performRangedAttack(livingentity, 1.0F);
-        ItemStack itemStack1 =
-            this.pathfinderMob.getItemInHand(
-                AttackHandler.getCrossbowHoldingHand(this.pathfinderMob));
-        CrossbowItem.setCharged(itemStack1, false);
+        // ItemStack itemStack1 =
+        //    this.pathfinderMob.getItemInHand(
+        //        AttackHandler.getCrossbowHoldingHand(this.pathfinderMob));
+        // CrossbowItem.setCharged(itemStack1, false);
         this.crossbowState = CrossbowState.UNCHARGED;
       }
     }

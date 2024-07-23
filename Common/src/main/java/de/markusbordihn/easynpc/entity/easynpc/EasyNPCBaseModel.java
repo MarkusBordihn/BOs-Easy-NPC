@@ -25,16 +25,12 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 
 public interface EasyNPCBaseModel<E extends PathfinderMob>
     extends EasyNPCBase<E>, ModelData<E>, ScaleData<E> {
-
-  static void registerEasyNPCDataSerializers() {
-    log.info("Register model data serializers for ...");
-    ModelData.registerModelDataSerializer();
-  }
 
   static void registerEasyNPCSyncedData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
@@ -42,14 +38,14 @@ public interface EasyNPCBaseModel<E extends PathfinderMob>
     ScaleData.registerSyncedScaleData(map, entityClass);
   }
 
-  default void defineEasyNPCBaseModelSyncedData() {
+  default void defineEasyNPCBaseModelSyncedData(SynchedEntityData.Builder builder) {
     ModelData<E> modelData = getEasyNPCModelData();
     if (modelData != null) {
-      modelData.defineSynchedModelData();
+      modelData.defineSynchedModelData(builder);
     }
     ScaleData<E> scaleData = getEasyNPCScaleData();
     if (scaleData != null) {
-      scaleData.defineSynchedScaleData();
+      scaleData.defineSynchedScaleData(builder);
     }
   }
 

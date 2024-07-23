@@ -26,6 +26,9 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Pose;
@@ -35,6 +38,10 @@ public record ChangeModelPoseMessage(UUID uuid, ModelPose modelPose)
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_model_pose");
+  public static final CustomPacketPayload.Type<ChangeModelPoseMessage> PAYLOAD_TYPE =
+      CustomPacketPayload.createType(MESSAGE_ID.toString());
+  public static final StreamCodec<RegistryFriendlyByteBuf, ChangeModelPoseMessage> STREAM_CODEC =
+      StreamCodec.of((buffer, message) -> message.write(buffer), ChangeModelPoseMessage::create);
 
   public static ChangeModelPoseMessage create(final FriendlyByteBuf buffer) {
     return new ChangeModelPoseMessage(buffer.readUUID(), buffer.readEnum(ModelPose.class));
@@ -49,6 +56,11 @@ public record ChangeModelPoseMessage(UUID uuid, ModelPose modelPose)
   @Override
   public ResourceLocation id() {
     return MESSAGE_ID;
+  }
+
+  @Override
+  public Type<? extends CustomPacketPayload> type() {
+    return PAYLOAD_TYPE;
   }
 
   @Override

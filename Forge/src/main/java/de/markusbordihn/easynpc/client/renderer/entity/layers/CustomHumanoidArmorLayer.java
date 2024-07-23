@@ -19,18 +19,11 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity.layers;
 
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.resources.model.ModelManager;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 
 public class CustomHumanoidArmorLayer<
         T extends LivingEntity, M extends HumanoidModel<T>, A extends HumanoidModel<T>>
@@ -39,21 +32,5 @@ public class CustomHumanoidArmorLayer<
   public CustomHumanoidArmorLayer(
       RenderLayerParent<T, M> renderer, A innerModel, A outerModel, ModelManager modelManager) {
     super(renderer, innerModel, outerModel, modelManager);
-  }
-
-  @Override
-  public ResourceLocation getArmorResource(
-      Entity entity, ItemStack itemStack, EquipmentSlot equipmentSlot, String type) {
-    if (entity instanceof EasyNPC<?> easyNPC) {
-      ModelData<?> modelData = easyNPC.getEasyNPCModelData();
-      if (modelData != null
-          && ((equipmentSlot == EquipmentSlot.CHEST && modelData.isModelChestplateVisible())
-              || (equipmentSlot == EquipmentSlot.LEGS && modelData.isModelLeggingsVisible())
-              || (equipmentSlot == EquipmentSlot.FEET && modelData.isModelBootsVisible())
-              || (equipmentSlot == EquipmentSlot.HEAD && modelData.isModelHelmetVisible()))) {
-        return super.getArmorResource(entity, itemStack, equipmentSlot, type);
-      }
-    }
-    return Constants.BLANK_ENTITY_TEXTURE;
   }
 }

@@ -22,7 +22,9 @@ package de.markusbordihn.easynpc.network.message;
 import de.markusbordihn.easynpc.Constants;
 import java.util.function.Function;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,12 +34,14 @@ public interface NetworkHandlerInterface {
   Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
-      final ResourceLocation messageID,
+      final CustomPacketPayload.Type<M> type,
+      final StreamCodec<RegistryFriendlyByteBuf, M> codec,
       final Class<M> networkMessage,
       final Function<FriendlyByteBuf, M> creator);
 
   <M extends NetworkMessageRecord> void registerServerNetworkMessageHandler(
-      final ResourceLocation messageID,
+      final CustomPacketPayload.Type<M> type,
+      final StreamCodec<RegistryFriendlyByteBuf, M> codec,
       final Class<M> networkMessage,
       final Function<FriendlyByteBuf, M> creator);
 

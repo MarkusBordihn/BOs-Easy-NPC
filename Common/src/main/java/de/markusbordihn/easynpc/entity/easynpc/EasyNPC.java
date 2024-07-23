@@ -51,6 +51,7 @@ import java.util.Random;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -324,7 +325,8 @@ public interface EasyNPC<E extends PathfinderMob> extends Npc {
     }
   }
 
-  <T> void defineSynchedEntityData(SynchedDataIndex synchedDataIndex, T defaultData);
+  <T> void defineSynchedEntityData(
+      SynchedEntityData.Builder builder, SynchedDataIndex synchedDataIndex, T defaultData);
 
   <T> void setSynchedEntityData(SynchedDataIndex synchedDataIndex, T data);
 

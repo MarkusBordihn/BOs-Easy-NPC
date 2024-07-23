@@ -25,6 +25,9 @@ import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -33,6 +36,10 @@ public record RemoveDialogButtonMessage(UUID uuid, UUID dialogId, UUID dialogBut
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "remove_dialog_button");
+  public static final CustomPacketPayload.Type<RemoveDialogButtonMessage> PAYLOAD_TYPE =
+      CustomPacketPayload.createType(MESSAGE_ID.toString());
+  public static final StreamCodec<RegistryFriendlyByteBuf, RemoveDialogButtonMessage> STREAM_CODEC =
+      StreamCodec.of((buffer, message) -> message.write(buffer), RemoveDialogButtonMessage::create);
 
   public static RemoveDialogButtonMessage create(final FriendlyByteBuf buffer) {
     return new RemoveDialogButtonMessage(buffer.readUUID(), buffer.readUUID(), buffer.readUUID());
@@ -48,6 +55,11 @@ public record RemoveDialogButtonMessage(UUID uuid, UUID dialogId, UUID dialogBut
   @Override
   public ResourceLocation id() {
     return MESSAGE_ID;
+  }
+
+  @Override
+  public Type<? extends CustomPacketPayload> type() {
+    return PAYLOAD_TYPE;
   }
 
   @Override

@@ -1,4 +1,4 @@
-# Changelog for Easy NPC (1.20.4)
+# Changelog for Easy NPC (1.20.6)
 
 ## Note
 
@@ -10,7 +10,7 @@ Check the [upgrade guide][upgrade_guide] for more information.
 
 ### 5.2.0 (beta only for testing)
 
-- Refactored Network Protocol to support 1.20.4 and 1.21.x changes.
+- Refactored Network Protocol to support 1.20.6 and 1.21.x changes.
 - Fixed #188 by adding support for [Immersive Melodies][immersive-melodies]
 - Fixed #245 by moving specific log messages to debug level.
 - Fixed Smart Animation detection.

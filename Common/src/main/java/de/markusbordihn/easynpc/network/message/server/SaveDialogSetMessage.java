@@ -26,6 +26,9 @@ import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -34,6 +37,10 @@ public record SaveDialogSetMessage(UUID uuid, DialogDataSet dialogDataSet)
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "save_dialog_set");
+  public static final CustomPacketPayload.Type<SaveDialogSetMessage> PAYLOAD_TYPE =
+      CustomPacketPayload.createType(MESSAGE_ID.toString());
+  public static final StreamCodec<RegistryFriendlyByteBuf, SaveDialogSetMessage> STREAM_CODEC =
+      StreamCodec.of((buffer, message) -> message.write(buffer), SaveDialogSetMessage::create);
 
   public static SaveDialogSetMessage create(final FriendlyByteBuf buffer) {
     return new SaveDialogSetMessage(buffer.readUUID(), new DialogDataSet(buffer.readNbt()));
@@ -48,6 +55,11 @@ public record SaveDialogSetMessage(UUID uuid, DialogDataSet dialogDataSet)
   @Override
   public ResourceLocation id() {
     return MESSAGE_ID;
+  }
+
+  @Override
+  public Type<? extends CustomPacketPayload> type() {
+    return PAYLOAD_TYPE;
   }
 
   @Override

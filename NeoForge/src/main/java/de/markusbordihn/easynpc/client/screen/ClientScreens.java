@@ -65,8 +65,7 @@ import de.markusbordihn.easynpc.client.screen.editor.dialog.DialogEditorScreenWr
 import de.markusbordihn.easynpc.client.screen.editor.dialog.DialogTextEditorScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.spawner.SpawnerScreenWrapper;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
-import net.minecraft.client.gui.screens.MenuScreens;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -76,134 +75,121 @@ public class ClientScreens {
 
   protected ClientScreens() {}
 
-  public static void registerScreens(final FMLClientSetupEvent event) {
+  public static void registerScreens(RegisterMenuScreensEvent event) {
     log.info("{} Client Screens ...", Constants.LOG_REGISTER_PREFIX);
-
-    event.enqueueWork(
-        () -> {
-          MenuScreens.register(
-              ModMenuTypes.ABILITIES_ATTRIBUTE_CONFIGURATION_MENU.get(),
-              AbilitiesAttributeConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.ACTION_DATA_EDITOR_MENU.get(), ActionDataEditorScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.ACTION_DATA_ENTRY_EDITOR_MENU.get(),
-              ActionDataEntryEditorScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.ADVANCED_DIALOG_CONFIGURATION_MENU.get(),
-              AdvancedDialogConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.ADVANCED_POSE_CONFIGURATION_MENU.get(),
-              AdvancedPoseConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.ADVANCED_TRADING_CONFIGURATION_MENU.get(),
-              AdvancedTradingConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.ATTACK_OBJECTIVE_CONFIGURATION_MENU.get(),
-              AttackObjectiveConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.BASE_ATTRIBUTE_CONFIGURATION_MENU.get(),
-              BaseAttributeConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.BASIC_ACTION_CONFIGURATION_MENU.get(),
-              BasicActionConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.BASIC_DIALOG_CONFIGURATION_MENU.get(),
-              BasicDialogConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.BASIC_OBJECTIVE_CONFIGURATION_MENU.get(),
-              BasicObjectiveConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.BASIC_TRADING_CONFIGURATION_MENU.get(),
-              BasicTradingConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.CUSTOM_EXPORT_PRESET_CONFIGURATION_MENU.get(),
-              ExportCustomPresetConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.CUSTOM_IMPORT_PRESET_CONFIGURATION_MENU.get(),
-              ImportCustomPresetConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.CUSTOM_POSE_CONFIGURATION_MENU.get(),
-              CustomPoseConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.CUSTOM_SKIN_CONFIGURATION_MENU.get(),
-              CustomSkinConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.CUSTOM_TRADING_CONFIGURATION_MENU.get(),
-              CustomTradingConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.DEFAULT_IMPORT_PRESET_CONFIGURATION_MENU.get(),
-              ImportDefaultPresetConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.DEFAULT_POSE_CONFIGURATION_MENU.get(),
-              DefaultPoseConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.DEFAULT_POSITION_CONFIGURATION_MENU.get(),
-              DefaultPositionConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.DEFAULT_ROTATION_CONFIGURATION_MENU.get(),
-              DefaultRotationConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.DEFAULT_SKIN_CONFIGURATION_MENU.get(),
-              DefaultSkinConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.DIALOG_ACTION_CONFIGURATION_MENU.get(),
-              DialogActionConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.DIALOG_BUTTON_EDITOR_MENU.get(), DialogButtonEditorScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.DIALOG_EDITOR_MENU.get(), DialogEditorScreenWrapper::new);
-          MenuScreens.register(ModMenuTypes.DIALOG_MENU.get(), DialogScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.DIALOG_TEXT_EDITOR_MENU.get(), DialogTextEditorScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.DISPLAY_ATTRIBUTE_CONFIGURATION_MENU.get(),
-              DisplayAttributeConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.DISTANCE_ACTION_CONFIGURATION_MENU.get(),
-              DistanceActionConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.EQUIPMENT_CONFIGURATION_MENU.get(),
-              EquipmentConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.FOLLOW_OBJECTIVE_CONFIGURATION_MENU.get(),
-              FollowObjectiveConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.LOCAL_IMPORT_PRESET_CONFIGURATION_MENU.get(),
-              ImportLocalPresetConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.LOOK_OBJECTIVE_CONFIGURATION_MENU.get(),
-              LookObjectiveConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.MAIN_CONFIGURATION_MENU.get(), MainConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.NONE_DIALOG_CONFIGURATION_MENU.get(),
-              NoneDialogConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.NONE_SKIN_CONFIGURATION_MENU.get(),
-              NoneSkinConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.NONE_TRADING_CONFIGURATION_MENU.get(),
-              NoneTradingConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.PLAYER_SKIN_CONFIGURATION_MENU.get(),
-              PlayerSkinConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.SCALING_CONFIGURATION_MENU.get(),
-              ScalingConfigurationScreenWrapper::new);
-          MenuScreens.register(ModMenuTypes.SPAWNER_MENU.get(), SpawnerScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.URL_SKIN_CONFIGURATION_MENU.get(),
-              UrlSkinConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.WORLD_EXPORT_PRESET_CONFIGURATION_MENU.get(),
-              ExportWorldPresetConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.WORLD_IMPORT_PRESET_CONFIGURATION_MENU.get(),
-              ImportWorldPresetConfigurationScreenWrapper::new);
-          MenuScreens.register(
-              ModMenuTypes.YES_NO_DIALOG_CONFIGURATION_MENU.get(),
-              YesNoDialogConfigurationScreenWrapper::new);
-        });
+    event.register(
+        ModMenuTypes.ABILITIES_ATTRIBUTE_CONFIGURATION_MENU.get(),
+        AbilitiesAttributeConfigurationScreenWrapper::new);
+    event.register(ModMenuTypes.ACTION_DATA_EDITOR_MENU.get(), ActionDataEditorScreenWrapper::new);
+    event.register(
+        ModMenuTypes.ACTION_DATA_ENTRY_EDITOR_MENU.get(), ActionDataEntryEditorScreenWrapper::new);
+    event.register(
+        ModMenuTypes.ADVANCED_DIALOG_CONFIGURATION_MENU.get(),
+        AdvancedDialogConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.ADVANCED_POSE_CONFIGURATION_MENU.get(),
+        AdvancedPoseConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.ADVANCED_TRADING_CONFIGURATION_MENU.get(),
+        AdvancedTradingConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.ATTACK_OBJECTIVE_CONFIGURATION_MENU.get(),
+        AttackObjectiveConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.BASE_ATTRIBUTE_CONFIGURATION_MENU.get(),
+        BaseAttributeConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.BASIC_ACTION_CONFIGURATION_MENU.get(),
+        BasicActionConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.BASIC_DIALOG_CONFIGURATION_MENU.get(),
+        BasicDialogConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.BASIC_OBJECTIVE_CONFIGURATION_MENU.get(),
+        BasicObjectiveConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.BASIC_TRADING_CONFIGURATION_MENU.get(),
+        BasicTradingConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.CUSTOM_EXPORT_PRESET_CONFIGURATION_MENU.get(),
+        ExportCustomPresetConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.CUSTOM_IMPORT_PRESET_CONFIGURATION_MENU.get(),
+        ImportCustomPresetConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.CUSTOM_POSE_CONFIGURATION_MENU.get(),
+        CustomPoseConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.CUSTOM_SKIN_CONFIGURATION_MENU.get(),
+        CustomSkinConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.CUSTOM_TRADING_CONFIGURATION_MENU.get(),
+        CustomTradingConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.DEFAULT_IMPORT_PRESET_CONFIGURATION_MENU.get(),
+        ImportDefaultPresetConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.DEFAULT_POSE_CONFIGURATION_MENU.get(),
+        DefaultPoseConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.DEFAULT_POSITION_CONFIGURATION_MENU.get(),
+        DefaultPositionConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.DEFAULT_ROTATION_CONFIGURATION_MENU.get(),
+        DefaultRotationConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.DEFAULT_SKIN_CONFIGURATION_MENU.get(),
+        DefaultSkinConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.DIALOG_ACTION_CONFIGURATION_MENU.get(),
+        DialogActionConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.DIALOG_BUTTON_EDITOR_MENU.get(), DialogButtonEditorScreenWrapper::new);
+    event.register(ModMenuTypes.DIALOG_EDITOR_MENU.get(), DialogEditorScreenWrapper::new);
+    event.register(ModMenuTypes.DIALOG_MENU.get(), DialogScreenWrapper::new);
+    event.register(ModMenuTypes.DIALOG_TEXT_EDITOR_MENU.get(), DialogTextEditorScreenWrapper::new);
+    event.register(
+        ModMenuTypes.DISPLAY_ATTRIBUTE_CONFIGURATION_MENU.get(),
+        DisplayAttributeConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.DISTANCE_ACTION_CONFIGURATION_MENU.get(),
+        DistanceActionConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.EQUIPMENT_CONFIGURATION_MENU.get(), EquipmentConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.FOLLOW_OBJECTIVE_CONFIGURATION_MENU.get(),
+        FollowObjectiveConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.LOCAL_IMPORT_PRESET_CONFIGURATION_MENU.get(),
+        ImportLocalPresetConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.LOOK_OBJECTIVE_CONFIGURATION_MENU.get(),
+        LookObjectiveConfigurationScreenWrapper::new);
+    event.register(ModMenuTypes.MAIN_CONFIGURATION_MENU.get(), MainConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.NONE_DIALOG_CONFIGURATION_MENU.get(),
+        NoneDialogConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.NONE_SKIN_CONFIGURATION_MENU.get(), NoneSkinConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.NONE_TRADING_CONFIGURATION_MENU.get(),
+        NoneTradingConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.PLAYER_SKIN_CONFIGURATION_MENU.get(),
+        PlayerSkinConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.SCALING_CONFIGURATION_MENU.get(), ScalingConfigurationScreenWrapper::new);
+    event.register(ModMenuTypes.SPAWNER_MENU.get(), SpawnerScreenWrapper::new);
+    event.register(
+        ModMenuTypes.URL_SKIN_CONFIGURATION_MENU.get(), UrlSkinConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.WORLD_EXPORT_PRESET_CONFIGURATION_MENU.get(),
+        ExportWorldPresetConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.WORLD_IMPORT_PRESET_CONFIGURATION_MENU.get(),
+        ImportWorldPresetConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.YES_NO_DIALOG_CONFIGURATION_MENU.get(),
+        YesNoDialogConfigurationScreenWrapper::new);
   }
 }

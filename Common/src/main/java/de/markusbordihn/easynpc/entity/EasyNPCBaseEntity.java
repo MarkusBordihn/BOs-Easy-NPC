@@ -54,7 +54,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
@@ -81,7 +80,6 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
   private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
 
   static {
-    EasyNPCBase.registerEasyNPCDataSerializers();
     EasyNPCBase.registerEasyNPCSyncedData(entityDataAccessorMap, EasyNPCBaseEntity.class);
   }
 
@@ -252,7 +250,7 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
     if (this.getTradingType() == TradingType.BASIC
         || this.getTradingType() == TradingType.ADVANCED) {
       // Create a copy of the offers to avoid side effects.
-      merchantOffers = new MerchantOffers(this.getTradingOffers().createTag());
+      merchantOffers = this.getTradingOffers().copy();
     }
     if (merchantOffers != null && !merchantOffers.isEmpty()) {
       // Filter out offers which are missing item a, item b or result item.
@@ -269,11 +267,9 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
       ServerLevelAccessor serverLevelAccessor,
       DifficultyInstance difficulty,
       MobSpawnType mobSpawnType,
-      SpawnGroupData spawnGroupData,
-      CompoundTag compoundTag) {
+      SpawnGroupData spawnGroupData) {
     spawnGroupData =
-        super.finalizeSpawn(
-            serverLevelAccessor, difficulty, mobSpawnType, spawnGroupData, compoundTag);
+        super.finalizeSpawn(serverLevelAccessor, difficulty, mobSpawnType, spawnGroupData);
     log.debug(
         "FinalizeSpawn for {} with spawnGroupData {} at {}",
         this,
@@ -357,11 +353,14 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
   }
 
   @Override
-  public <T> void defineSynchedEntityData(SynchedDataIndex synchedDataIndex, T defaultData) {
+  public <T> void defineSynchedEntityData(
+      net.minecraft.network.syncher.SynchedEntityData.Builder builder,
+      SynchedDataIndex synchedDataIndex,
+      T defaultData) {
     if (this.synchedEntityData == null) {
       this.synchedEntityData = new SynchedEntityData(this, entityDataAccessorMap);
     }
-    this.synchedEntityData.define(synchedDataIndex, defaultData);
+    this.synchedEntityData.define(builder, synchedDataIndex, defaultData);
   }
 
   @Override
@@ -515,28 +514,24 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
   }
 
   @Override
-  public MobType getMobType() {
-    return MobType.UNDEFINED;
-  }
-
-  @Override
-  protected void defineSynchedData() {
-    super.defineSynchedData();
-    this.defineEasyNPCBaseSyncedData();
+  protected void defineSynchedData(
+      net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+    super.defineSynchedData(builder);
+    this.defineEasyNPCBaseSyncedData(builder);
   }
 
   @Override
   public void addAdditionalSaveData(CompoundTag compoundTag) {
     super.addAdditionalSaveData(compoundTag);
     this.addPersistentAngerSaveData(compoundTag);
-    this.addEasyNPCBaseAdditionalSaveData(compoundTag);
+    this.addEasyNPCBaseAdditionalSaveData(compoundTag, this.registryAccess());
   }
 
   @Override
   public void readAdditionalSaveData(CompoundTag compoundTag) {
     super.readAdditionalSaveData(compoundTag);
     this.readPersistentAngerSaveData(this.level(), compoundTag);
-    this.readEasyNPCBaseAdditionalSaveData(compoundTag);
+    this.readEasyNPCBaseAdditionalSaveData(compoundTag, this.registryAccess());
   }
 
   @Override

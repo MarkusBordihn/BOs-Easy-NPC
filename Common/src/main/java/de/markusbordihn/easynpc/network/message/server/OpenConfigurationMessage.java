@@ -26,6 +26,9 @@ import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -34,6 +37,10 @@ public record OpenConfigurationMessage(
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "open_configuration_screen");
+  public static final CustomPacketPayload.Type<OpenConfigurationMessage> PAYLOAD_TYPE =
+      CustomPacketPayload.createType(MESSAGE_ID.toString());
+  public static final StreamCodec<RegistryFriendlyByteBuf, OpenConfigurationMessage> STREAM_CODEC =
+      StreamCodec.of((buffer, message) -> message.write(buffer), OpenConfigurationMessage::create);
 
   public static OpenConfigurationMessage create(final FriendlyByteBuf buffer) {
     return new OpenConfigurationMessage(
@@ -50,6 +57,11 @@ public record OpenConfigurationMessage(
   @Override
   public ResourceLocation id() {
     return MESSAGE_ID;
+  }
+
+  @Override
+  public Type<? extends CustomPacketPayload> type() {
+    return PAYLOAD_TYPE;
   }
 
   @Override

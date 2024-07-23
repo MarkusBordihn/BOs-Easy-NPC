@@ -72,7 +72,7 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
       int top = this.contentTopPos + 102 + (skinPosition > 4 ? 84 : 0);
 
       // Render skin with additional variant and professions.
-      this.renderSkinEntity(left, top, variant, profession);
+      this.renderSkinEntity(guiGraphics, left, top, variant, profession);
 
       // Render skin name
       int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
@@ -104,7 +104,8 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
     }
   }
 
-  private void renderSkinEntity(int x, int y, Enum<?> variant, Profession profession) {
+  private void renderSkinEntity(
+      GuiGraphics guiGraphics, int x, int y, Enum<?> variant, Profession profession) {
 
     // Create dynamically button for each skin variant and profession.
     Button skinButton =
@@ -131,7 +132,14 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
 
     // Render skin entity with variant and profession.
     ScreenHelper.renderEntityDefaultSkin(
-        x + 4, y, x - this.xMouse, y - 40 - this.yMouse, this.getEasyNPC(), variant, profession);
+        guiGraphics,
+        x + 4,
+        y,
+        x - this.xMouse,
+        y - 40 - this.yMouse,
+        this.getEasyNPC(),
+        variant,
+        profession);
 
     skinButtons.add(skinButton);
   }

@@ -27,6 +27,9 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,6 +40,10 @@ public record ChangeActionEventMessage(
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_action_event");
+  public static final CustomPacketPayload.Type<ChangeActionEventMessage> PAYLOAD_TYPE =
+      CustomPacketPayload.createType(MESSAGE_ID.toString());
+  public static final StreamCodec<RegistryFriendlyByteBuf, ChangeActionEventMessage> STREAM_CODEC =
+      StreamCodec.of((buffer, message) -> message.write(buffer), ChangeActionEventMessage::create);
 
   public static ChangeActionEventMessage create(final FriendlyByteBuf buffer) {
     return new ChangeActionEventMessage(
@@ -55,6 +62,11 @@ public record ChangeActionEventMessage(
   @Override
   public ResourceLocation id() {
     return MESSAGE_ID;
+  }
+
+  @Override
+  public Type<? extends CustomPacketPayload> type() {
+    return PAYLOAD_TYPE;
   }
 
   @Override

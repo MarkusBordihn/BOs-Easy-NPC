@@ -157,6 +157,7 @@ public class CustomPoseConfigurationScreen<T extends ConfigurationMenu>
 
     // Avatar
     ScreenHelper.renderCustomPoseEntityAvatar(
+        guiGraphics,
         this.contentLeftPos + 152,
         this.contentTopPos + 165,
         45,

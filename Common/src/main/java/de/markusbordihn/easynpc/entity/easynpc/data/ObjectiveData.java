@@ -28,13 +28,11 @@ import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ResetUniversalAngerTargetGoal;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.syncher.EntityDataSerializer;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -43,79 +41,23 @@ import net.minecraft.world.entity.ai.goal.GoalSelector;
 
 public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
 
-  EntityDataSerializer<ObjectiveDataSet> OBJECTIVE_DATA_SET =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, ObjectiveDataSet value) {
-          buffer.writeNbt(value.createTag());
-        }
-
-        public ObjectiveDataSet read(FriendlyByteBuf buffer) {
-          return new ObjectiveDataSet(buffer.readNbt());
-        }
-
-        public ObjectiveDataSet copy(ObjectiveDataSet value) {
-          return value;
-        }
-      };
-  EntityDataSerializer<HashSet<UUID>> TARGETED_ENTITY_HASH_SET =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, HashSet<UUID> value) {
-          for (UUID entry : value) {
-            buffer.writeUUID(entry);
-          }
-        }
-
-        public HashSet<UUID> read(FriendlyByteBuf buffer) {
-          HashSet<UUID> value = new HashSet<>();
-          while (buffer.isReadable()) {
-            value.add(buffer.readUUID());
-          }
-          return value;
-        }
-
-        public HashSet<UUID> copy(HashSet<UUID> value) {
-          return value;
-        }
-      };
-  EntityDataSerializer<HashSet<String>> TARGETED_PLAYER_HASH_SET =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, HashSet<String> value) {
-          for (String entry : value) {
-            buffer.writeUtf(entry);
-          }
-        }
-
-        public HashSet<String> read(FriendlyByteBuf buffer) {
-          HashSet<String> value = new HashSet<>();
-          while (buffer.isReadable()) {
-            value.add(buffer.readUtf());
-          }
-          return value;
-        }
-
-        public HashSet<String> copy(HashSet<String> value) {
-          return value;
-        }
-      };
-
   ServerDataAccessor<ObjectiveDataSet> CUSTOM_DATA_OBJECTIVE_DATA_SET =
-      ServerEntityData.defineId(ServerDataIndex.OBJECTIVE_DATA_SET, OBJECTIVE_DATA_SET);
+      ServerEntityData.defineId(
+          ServerDataIndex.OBJECTIVE_DATA_SET, EntityDataSerializersManager.OBJECTIVE_DATA_SET);
   ServerDataAccessor<HashSet<UUID>> CUSTOM_DATA_TARGETED_ENTITY_SET =
-      ServerEntityData.defineId(ServerDataIndex.OBJECTIVE_ENTITY_SET, TARGETED_ENTITY_HASH_SET);
+      ServerEntityData.defineId(
+          ServerDataIndex.OBJECTIVE_ENTITY_SET,
+          EntityDataSerializersManager.TARGETED_ENTITY_HASH_SET);
   ServerDataAccessor<HashSet<String>> CUSTOM_DATA_TARGETED_PLAYER_SET =
-      ServerEntityData.defineId(ServerDataIndex.OBJECTIVE_PLAYER_SET, TARGETED_PLAYER_HASH_SET);
+      ServerEntityData.defineId(
+          ServerDataIndex.OBJECTIVE_PLAYER_SET,
+          EntityDataSerializersManager.TARGETED_PLAYER_HASH_SET);
   int CUSTOM_OBJECTIVE_DELAYED_REGISTRATION_TICK = 20 * 15;
   String DATA_HAS_ENTITY_TARGET_TAG = "HasEntityTarget";
   String DATA_HAS_OBJECTIVE_TAG = "HasObjectives";
   String DATA_HAS_PLAYER_TARGET_TAG = "HasPlayerTarget";
   String DATA_HAS_TRAVEL_TARGET_TAG = "HasTravelTarget";
   String DATA_OBJECTIVE_DATA_TAG = "ObjectiveData";
-
-  static void registerObjectiveDataSerializer() {
-    EntityDataSerializers.registerSerializer(OBJECTIVE_DATA_SET);
-    EntityDataSerializers.registerSerializer(TARGETED_PLAYER_HASH_SET);
-    EntityDataSerializers.registerSerializer(TARGETED_ENTITY_HASH_SET);
-  }
 
   default void clearObjectiveDataSet() {
     setServerEntityData(CUSTOM_DATA_OBJECTIVE_DATA_SET, new ObjectiveDataSet());

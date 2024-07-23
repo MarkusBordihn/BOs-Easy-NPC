@@ -108,10 +108,10 @@ public interface ScaleData<T extends PathfinderMob> extends EasyNPC<T> {
     }
   }
 
-  default void defineSynchedScaleData() {
-    defineSynchedEntityData(SynchedDataIndex.SCALE_X, this.getDefaultScaleX());
-    defineSynchedEntityData(SynchedDataIndex.SCALE_Y, this.getDefaultScaleY());
-    defineSynchedEntityData(SynchedDataIndex.SCALE_Z, this.getDefaultScaleZ());
+  default void defineSynchedScaleData(SynchedEntityData.Builder builder) {
+    defineSynchedEntityData(builder, SynchedDataIndex.SCALE_X, this.getDefaultScaleX());
+    defineSynchedEntityData(builder, SynchedDataIndex.SCALE_Y, this.getDefaultScaleY());
+    defineSynchedEntityData(builder, SynchedDataIndex.SCALE_Z, this.getDefaultScaleZ());
   }
 
   default void addAdditionalScaleData(CompoundTag compoundTag) {

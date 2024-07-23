@@ -39,6 +39,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 
@@ -142,11 +143,11 @@ public class AdvancedTradingConfigurationScreen<T extends ConfigurationMenu>
       MerchantOffer merchantOffer =
           merchantOffers.size() > tradingOfferIndex
               ? merchantOffers.get(tradingOfferIndex)
-              : new MerchantOffer(ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, 0, 0, 0, 0);
+              : this.getEmptyMerchangeOffer();
       boolean hasValidOffer =
           (!merchantOffer.getBaseCostA().isEmpty() || !merchantOffer.getCostB().isEmpty())
               && !merchantOffer.getResult().isEmpty();
-      log.info("Trading Offer {} : {}", tradingOfferIndex, merchantOffer.createTag());
+      log.info("Trading Offer {} : {}", tradingOfferIndex, merchantOffer);
 
       // Max Uses Edit Box
       EditBox maxUsesEditBox =
@@ -292,7 +293,7 @@ public class AdvancedTradingConfigurationScreen<T extends ConfigurationMenu>
     MerchantOffer merchantOffer =
         merchantOffers.size() > tradingOfferIndex
             ? merchantOffers.get(tradingOfferIndex)
-            : new MerchantOffer(ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, 16, 0, 0, 0);
+            : this.getEmptyMerchangeOffer();
     return (!merchantOffer.getBaseCostA().isEmpty() || !merchantOffer.getCostB().isEmpty())
         && !merchantOffer.getResult().isEmpty();
   }
@@ -442,5 +443,9 @@ public class AdvancedTradingConfigurationScreen<T extends ConfigurationMenu>
   public int getMaxPages() {
     return TradingSettings.ADVANCED_TRADING_OFFERS
         / AdvancedTradingConfigurationMenu.TRADING_OFFERS_PER_PAGE;
+  }
+
+  private MerchantOffer getEmptyMerchangeOffer() {
+    return new MerchantOffer(new ItemCost(ItemStack.EMPTY.getItem(), 0), ItemStack.EMPTY, 0, 0, 0);
   }
 }

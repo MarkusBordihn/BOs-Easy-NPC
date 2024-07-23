@@ -54,10 +54,13 @@ public final class SynchedEntityData {
     return entityDataAccessor;
   }
 
-  public <T> void define(SynchedDataIndex synchedDataIndex, T defaultData) {
+  public <T> void define(
+      net.minecraft.network.syncher.SynchedEntityData.Builder builder,
+      SynchedDataIndex synchedDataIndex,
+      T defaultData) {
     EntityDataAccessor<T> entityDataAccessor =
         (EntityDataAccessor<T>) this.entityDataAccessorMap.get(synchedDataIndex);
-    this.entity.getEntityData().define(entityDataAccessor, defaultData);
+    builder.define(entityDataAccessor, defaultData);
   }
 
   public <T> T get(SynchedDataIndex synchedDataIndex) {

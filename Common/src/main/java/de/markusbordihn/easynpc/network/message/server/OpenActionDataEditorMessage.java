@@ -28,6 +28,9 @@ import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -42,6 +45,12 @@ public record OpenActionDataEditorMessage(
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "open_action_data_editor");
+  public static final CustomPacketPayload.Type<OpenActionDataEditorMessage> PAYLOAD_TYPE =
+      CustomPacketPayload.createType(MESSAGE_ID.toString());
+  public static final StreamCodec<RegistryFriendlyByteBuf, OpenActionDataEditorMessage>
+      STREAM_CODEC =
+          StreamCodec.of(
+              (buffer, message) -> message.write(buffer), OpenActionDataEditorMessage::create);
 
   public static OpenActionDataEditorMessage create(final FriendlyByteBuf buffer) {
     return new OpenActionDataEditorMessage(
@@ -66,6 +75,11 @@ public record OpenActionDataEditorMessage(
   @Override
   public ResourceLocation id() {
     return MESSAGE_ID;
+  }
+
+  @Override
+  public Type<? extends CustomPacketPayload> type() {
+    return PAYLOAD_TYPE;
   }
 
   @Override

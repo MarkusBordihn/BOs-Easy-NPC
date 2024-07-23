@@ -26,6 +26,7 @@ import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -34,8 +35,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -62,18 +65,22 @@ public class EasyNPCPresetItem extends Item {
   }
 
   public static boolean hasPreset(ItemStack itemStack) {
-    CompoundTag compoundTag = itemStack.getOrCreateTag();
-    return compoundTag.contains(PRESET_TAG) && !compoundTag.getCompound(PRESET_TAG).isEmpty();
+    CustomData customData = itemStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+    return customData != null
+        && customData.contains(PRESET_TAG)
+        && !customData.getUnsafe().getCompound(PRESET_TAG).isEmpty();
   }
 
   public static CompoundTag getPreset(ItemStack itemStack) {
-    CompoundTag compoundTag = itemStack.getOrCreateTag();
-    return compoundTag.getCompound(PRESET_TAG);
+    CustomData customData = itemStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+    return customData.contains(PRESET_TAG)
+        ? customData.getUnsafe().getCompound(PRESET_TAG)
+        : new CompoundTag();
   }
 
   public static void savePreset(
       ItemStack itemStack, ResourceLocation entityType, CompoundTag presetData) {
-    CompoundTag compoundTag = itemStack.getOrCreateTag();
+    CompoundTag compoundTag = new CompoundTag();
     compoundTag.putString(ENTITY_TYPE_TAG, entityType.toString());
     compoundTag.put(PRESET_TAG, presetData);
     if (compoundTag.contains(FIRE_TAG)) {
@@ -88,6 +95,7 @@ public class EasyNPCPresetItem extends Item {
     if (compoundTag.contains(ON_GROUND_TAG)) {
       compoundTag.remove(ON_GROUND_TAG);
     }
+    CustomData.set(DataComponents.CUSTOM_DATA, itemStack, compoundTag);
   }
 
   public static String getCustomName(ItemStack itemStack) {
@@ -102,39 +110,41 @@ public class EasyNPCPresetItem extends Item {
   }
 
   public static boolean hasEntityType(ItemStack itemStack) {
-    CompoundTag compoundTag = itemStack.getOrCreateTag();
-    return compoundTag.contains(ENTITY_TYPE_TAG)
-        && !compoundTag.getString(ENTITY_TYPE_TAG).isEmpty();
+    CustomData customData = itemStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+    return customData.contains(ENTITY_TYPE_TAG)
+        && !customData.getUnsafe().getString(ENTITY_TYPE_TAG).isEmpty();
   }
 
   public static EntityType<?> getEntityType(ItemStack itemStack) {
-    CompoundTag compoundTag = itemStack.getOrCreateTag();
-    if (compoundTag.contains(ENTITY_TYPE_TAG)) {
-      return EntityType.byString(compoundTag.getString(ENTITY_TYPE_TAG)).orElse(null);
+    CustomData customData = itemStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+    if (customData.contains(ENTITY_TYPE_TAG)) {
+      return EntityType.byString(customData.getUnsafe().getString(ENTITY_TYPE_TAG)).orElse(null);
     }
     return null;
   }
 
   public static boolean hasSpawnerUUID(ItemStack itemStack) {
-    CompoundTag compoundTag = itemStack.getOrCreateTag();
-    return compoundTag.contains(SPAWNER_UUID_TAG) && compoundTag.getUUID(SPAWNER_UUID_TAG) != null;
+    CustomData customData = itemStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+    return customData.contains(SPAWNER_UUID_TAG)
+        && customData.getUnsafe().getUUID(SPAWNER_UUID_TAG) != null;
   }
 
   public static void setSpawnerUUID(ItemStack itemStack, UUID uuid) {
-    CompoundTag compoundTag = itemStack.getOrCreateTag();
+    CustomData customData = itemStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+    CompoundTag compoundTag = customData.getUnsafe();
     if (uuid != null) {
       compoundTag.putUUID(SPAWNER_UUID_TAG, uuid);
     } else {
       compoundTag.remove(SPAWNER_UUID_TAG);
     }
+    CustomData.set(DataComponents.CUSTOM_DATA, itemStack, compoundTag);
   }
 
   public static UUID getSpawnerUUID(ItemStack itemStack) {
-    CompoundTag compoundTag = itemStack.getOrCreateTag();
-    if (compoundTag.contains(SPAWNER_UUID_TAG)) {
-      return compoundTag.getUUID(SPAWNER_UUID_TAG);
-    }
-    return null;
+    CustomData customData = itemStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+    return customData.contains(SPAWNER_UUID_TAG)
+        ? customData.getUnsafe().getUUID(SPAWNER_UUID_TAG)
+        : null;
   }
 
   public static boolean spawnAtPosition(BlockPos blockPos, ItemStack itemStack, Level level) {
@@ -218,7 +228,10 @@ public class EasyNPCPresetItem extends Item {
 
   @Override
   public void appendHoverText(
-      ItemStack itemStack, Level level, List<Component> tooltipList, TooltipFlag tooltipFlag) {
+      ItemStack itemStack,
+      TooltipContext tooltipContext,
+      List<Component> tooltipList,
+      TooltipFlag tooltipFlag) {
     if (hasPreset(itemStack)) {
       EntityType<?> entityType = getEntityType(itemStack);
       if (entityType != null) {

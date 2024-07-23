@@ -27,12 +27,26 @@ import java.util.Set;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ObjectiveDataSet {
 
-  // Objective Data Tags
+  public static final StreamCodec<RegistryFriendlyByteBuf, ObjectiveDataSet> STREAM_CODEC =
+      new StreamCodec<>() {
+        @Override
+        public ObjectiveDataSet decode(RegistryFriendlyByteBuf registryFriendlyByteBuf) {
+          return new ObjectiveDataSet(registryFriendlyByteBuf.readNbt());
+        }
+
+        @Override
+        public void encode(
+            RegistryFriendlyByteBuf registryFriendlyByteBuf, ObjectiveDataSet objectiveDataSet) {
+          registryFriendlyByteBuf.writeNbt(objectiveDataSet.createTag());
+        }
+      };
   public static final String DATA_OBJECTIVE_DATA_SET_TAG = "ObjectiveDataSet";
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private final HashMap<String, ObjectiveDataEntry> objectives = new HashMap<>();
@@ -41,7 +55,6 @@ public class ObjectiveDataSet {
   private boolean hasEntityTarget = false;
   private boolean hasObjectives = false;
   private boolean hasOwnerTarget = false;
-  // Data
   private boolean hasPlayerTarget = false;
   private boolean hasTravelTarget = false;
 

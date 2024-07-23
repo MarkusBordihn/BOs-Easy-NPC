@@ -26,7 +26,6 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
@@ -77,8 +76,8 @@ public class ModSpawnEggItem extends SpawnEggItem {
   }
 
   @Override
-  public EntityType<?> getType(CompoundTag tag) {
-    EntityType<?> type = super.getType(tag);
+  public EntityType<?> getType(ItemStack itemStack) {
+    EntityType<?> type = super.getType(itemStack);
     return type != null ? type : this.typeSupplier.get();
   }
 
@@ -106,7 +105,7 @@ public class ModSpawnEggItem extends SpawnEggItem {
     }
 
     // Spawn the entity based on the spawn egg type.
-    EntityType<?> entityType = this.getType(itemStack.getTag());
+    EntityType<?> entityType = this.getType(itemStack);
     Entity entity =
         entityType.spawn(
             (ServerLevel) level,

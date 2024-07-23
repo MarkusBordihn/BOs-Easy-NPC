@@ -26,6 +26,9 @@ import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
 public record OpenMenuCallbackMessage(UUID uuid, UUID menuId, CompoundTag data)
@@ -33,6 +36,10 @@ public record OpenMenuCallbackMessage(UUID uuid, UUID menuId, CompoundTag data)
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "open_menu_callback_message");
+  public static final CustomPacketPayload.Type<OpenMenuCallbackMessage> PAYLOAD_TYPE =
+      new CustomPacketPayload.Type<>(MESSAGE_ID);
+  public static final StreamCodec<RegistryFriendlyByteBuf, OpenMenuCallbackMessage> STREAM_CODEC =
+      StreamCodec.of((buffer, message) -> message.write(buffer), OpenMenuCallbackMessage::create);
 
   public static OpenMenuCallbackMessage create(final FriendlyByteBuf buffer) {
     return new OpenMenuCallbackMessage(buffer.readUUID(), buffer.readUUID(), buffer.readNbt());
@@ -48,6 +55,11 @@ public record OpenMenuCallbackMessage(UUID uuid, UUID menuId, CompoundTag data)
   @Override
   public ResourceLocation id() {
     return MESSAGE_ID;
+  }
+
+  @Override
+  public Type<OpenMenuCallbackMessage> type() {
+    return PAYLOAD_TYPE;
   }
 
   @Override

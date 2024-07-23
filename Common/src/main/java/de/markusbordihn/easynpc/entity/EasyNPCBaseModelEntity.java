@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBaseModel;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
@@ -31,7 +32,6 @@ public class EasyNPCBaseModelEntity<E extends PathfinderMob> extends EasyNPCBase
     implements EasyNPCBaseModel<E> {
 
   static {
-    EasyNPCBaseModel.registerEasyNPCDataSerializers();
     EasyNPCBaseModel.registerEasyNPCSyncedData(entityDataAccessorMap, EasyNPCBaseModelEntity.class);
   }
 
@@ -41,15 +41,15 @@ public class EasyNPCBaseModelEntity<E extends PathfinderMob> extends EasyNPCBase
   }
 
   @Override
-  public EntityDimensions getDimensions(Pose pose) {
+  public EntityDimensions getDefaultDimensions(Pose pose) {
     float scaleXZ = getScaleX() > getScaleZ() ? getScaleX() : getScaleZ();
-    return super.getDimensions(pose).scale(scaleXZ, getScaleY());
+    return super.getDefaultDimensions(pose).scale(scaleXZ, getScaleY());
   }
 
   @Override
-  protected void defineSynchedData() {
-    super.defineSynchedData();
-    this.defineEasyNPCBaseModelSyncedData();
+  protected void defineSynchedData(SynchedEntityData.Builder builder) {
+    super.defineSynchedData(builder);
+    this.defineEasyNPCBaseModelSyncedData(builder);
   }
 
   @Override

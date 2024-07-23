@@ -19,12 +19,25 @@
 
 package de.markusbordihn.easynpc.data.model;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+
 public enum ModelPose {
-  // @formatter:off
   DEFAULT,
   CUSTOM;
 
-  // @formatter:on
+  public static final StreamCodec<RegistryFriendlyByteBuf, ModelPose> STREAM_CODEC =
+      new StreamCodec<>() {
+        @Override
+        public ModelPose decode(RegistryFriendlyByteBuf registryFriendlyByteBuf) {
+          return registryFriendlyByteBuf.readEnum(ModelPose.class);
+        }
+
+        @Override
+        public void encode(RegistryFriendlyByteBuf registryFriendlyByteBuf, ModelPose modelPose) {
+          registryFriendlyByteBuf.writeEnum(modelPose);
+        }
+      };
 
   public static ModelPose get(String modelPose) {
     if (modelPose == null || modelPose.isEmpty()) {

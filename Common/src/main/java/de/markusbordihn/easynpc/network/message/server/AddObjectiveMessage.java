@@ -26,6 +26,9 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -34,6 +37,10 @@ public record AddObjectiveMessage(UUID uuid, ObjectiveDataEntry objectiveDataEnt
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "add_objective");
+  public static final CustomPacketPayload.Type<AddObjectiveMessage> PAYLOAD_TYPE =
+      CustomPacketPayload.createType(MESSAGE_ID.toString());
+  public static final StreamCodec<RegistryFriendlyByteBuf, AddObjectiveMessage> STREAM_CODEC =
+      StreamCodec.of((buffer, message) -> message.write(buffer), AddObjectiveMessage::create);
 
   public static AddObjectiveMessage create(final FriendlyByteBuf buffer) {
     return new AddObjectiveMessage(buffer.readUUID(), new ObjectiveDataEntry(buffer.readNbt()));
@@ -48,6 +55,11 @@ public record AddObjectiveMessage(UUID uuid, ObjectiveDataEntry objectiveDataEnt
   @Override
   public ResourceLocation id() {
     return MESSAGE_ID;
+  }
+
+  @Override
+  public Type<? extends CustomPacketPayload> type() {
+    return PAYLOAD_TYPE;
   }
 
   @Override

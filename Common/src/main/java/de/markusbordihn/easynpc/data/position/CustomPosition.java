@@ -21,8 +21,28 @@ package de.markusbordihn.easynpc.data.position;
 
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
 public class CustomPosition {
+  public static final StreamCodec<RegistryFriendlyByteBuf, CustomPosition> STREAM_CODEC =
+      new StreamCodec<>() {
+        @Override
+        public CustomPosition decode(RegistryFriendlyByteBuf registryFriendlyByteBuf) {
+          return new CustomPosition(
+              registryFriendlyByteBuf.readFloat(),
+              registryFriendlyByteBuf.readFloat(),
+              registryFriendlyByteBuf.readFloat());
+        }
+
+        @Override
+        public void encode(
+            RegistryFriendlyByteBuf registryFriendlyByteBuf, CustomPosition position) {
+          registryFriendlyByteBuf.writeFloat(position.x);
+          registryFriendlyByteBuf.writeFloat(position.y);
+          registryFriendlyByteBuf.writeFloat(position.z);
+        }
+      };
   protected final float x;
   protected final float y;
   protected final float z;

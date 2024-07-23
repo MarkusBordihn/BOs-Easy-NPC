@@ -99,8 +99,8 @@ public interface VariantData<T extends PathfinderMob> extends EasyNPC<T> {
     return variant != null && variant.name().endsWith("_SADDLED");
   }
 
-  default void defineSynchedVariantData() {
-    defineSynchedEntityData(SynchedDataIndex.VARIANT, getDefaultVariant().name());
+  default void defineSynchedVariantData(SynchedEntityData.Builder builder) {
+    defineSynchedEntityData(builder, SynchedDataIndex.VARIANT, getDefaultVariant().name());
   }
 
   default void addAdditionalVariantData(CompoundTag compoundTag) {

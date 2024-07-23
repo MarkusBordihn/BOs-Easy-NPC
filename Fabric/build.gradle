@@ -22,7 +22,7 @@ dependencies {
   implementation project(":Common")
 
   // Recommended Mods
-  modImplementation "curse.maven:tooltipfix-411557:4577194"
+  // modImplementation "curse.maven:tooltipfix-411557:4577194"
 }
 
 loom {

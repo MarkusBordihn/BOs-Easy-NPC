@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "easy_npc:skeleton",
+    "easy_npc:stray",
+    "easy_npc:wither_skeleton",
+    "easy_npc:skeleton_horse"
+  ]
+}

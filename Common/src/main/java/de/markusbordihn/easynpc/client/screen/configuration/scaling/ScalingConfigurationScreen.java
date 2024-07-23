@@ -174,6 +174,7 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
 
     // Avatar
     ScreenHelper.renderEntityAvatarForScaling(
+        guiGraphics,
         this.contentLeftPos + 80,
         this.contentTopPos + 192,
         30,

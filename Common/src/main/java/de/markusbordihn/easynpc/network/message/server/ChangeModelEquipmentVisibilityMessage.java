@@ -25,6 +25,9 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -34,6 +37,13 @@ public record ChangeModelEquipmentVisibilityMessage(
 
   public static final ResourceLocation MESSAGE_ID =
       new ResourceLocation(Constants.MOD_ID, "change_model_equipment_visibility");
+  public static final CustomPacketPayload.Type<ChangeModelEquipmentVisibilityMessage> PAYLOAD_TYPE =
+      CustomPacketPayload.createType(MESSAGE_ID.toString());
+  public static final StreamCodec<RegistryFriendlyByteBuf, ChangeModelEquipmentVisibilityMessage>
+      STREAM_CODEC =
+          StreamCodec.of(
+              (buffer, message) -> message.write(buffer),
+              ChangeModelEquipmentVisibilityMessage::create);
 
   public static ChangeModelEquipmentVisibilityMessage create(final FriendlyByteBuf buffer) {
     return new ChangeModelEquipmentVisibilityMessage(
@@ -50,6 +60,11 @@ public record ChangeModelEquipmentVisibilityMessage(
   @Override
   public ResourceLocation id() {
     return MESSAGE_ID;
+  }
+
+  @Override
+  public Type<? extends CustomPacketPayload> type() {
+    return PAYLOAD_TYPE;
   }
 
   @Override

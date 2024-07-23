@@ -22,10 +22,10 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.EnumMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -93,8 +93,8 @@ public interface NavigationData<T extends PathfinderMob> extends EasyNPC<T> {
     return null;
   }
 
-  default void defineSynchedNavigationData() {
-    defineSynchedEntityData(SynchedDataIndex.NAVIGATION_HOME_POSITION, BlockPos.ZERO);
+  default void defineSynchedNavigationData(SynchedEntityData.Builder builder) {
+    defineSynchedEntityData(builder, SynchedDataIndex.NAVIGATION_HOME_POSITION, BlockPos.ZERO);
   }
 
   default boolean canFly() {
@@ -112,7 +112,7 @@ public interface NavigationData<T extends PathfinderMob> extends EasyNPC<T> {
   default void addAdditionalNavigationData(CompoundTag compoundTag) {
     CompoundTag navigationTag = new CompoundTag();
     if (this.hasHomePosition()) {
-      navigationTag.put(DATA_HOME_TAG, NbtUtils.writeBlockPos(this.getHomePosition()));
+      navigationTag.put(DATA_HOME_TAG, CompoundTagUtils.writeBlockPos(this.getHomePosition()));
     }
     compoundTag.put(DATA_NAVIGATION_TAG, navigationTag);
   }
@@ -124,7 +124,7 @@ public interface NavigationData<T extends PathfinderMob> extends EasyNPC<T> {
 
     CompoundTag navigationTag = compoundTag.getCompound(DATA_NAVIGATION_TAG);
     if (navigationTag.contains(DATA_HOME_TAG)) {
-      this.setHomePosition(NbtUtils.readBlockPos(navigationTag.getCompound(DATA_HOME_TAG)));
+      this.setHomePosition(CompoundTagUtils.readBlockPos(navigationTag.getCompound(DATA_HOME_TAG)));
     }
   }
 

@@ -99,6 +99,7 @@ public class EquipmentConfigurationScreen<T extends ConfigurationMenu>
 
     // Avatar
     ScreenHelper.renderScaledEntityAvatar(
+        guiGraphics,
         this.contentLeftPos + 138,
         this.contentTopPos + 102,
         35,

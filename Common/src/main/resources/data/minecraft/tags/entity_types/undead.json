@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "#easy_npc:skeletons",
+    "#easy_npc:zombies"
+  ]
+}

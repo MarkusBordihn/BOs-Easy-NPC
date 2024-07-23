@@ -31,6 +31,7 @@ import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -73,7 +74,7 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
   public static final String UUID_TAG = "UUID";
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected final Random random = new Random();
-  protected final NonNullList<ItemStack> items = NonNullList.withSize(8, ItemStack.EMPTY);
+  protected NonNullList<ItemStack> items = NonNullList.withSize(8, ItemStack.EMPTY);
   private int delay = 10;
   private int despawnRange = 32;
   private int maxNearbyEntities = 1;
@@ -317,10 +318,10 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
 
   public ItemStack getPresetItemStack() {
     if (this.items.isEmpty()
-        || this.items.get(0).isEmpty() && !EasyNPCPresetItem.hasPreset(this.items.get(0))) {
+        || this.items.getFirst().isEmpty() && !EasyNPCPresetItem.hasPreset(this.items.getFirst())) {
       return null;
     }
-    return this.items.get(0);
+    return this.items.getFirst();
   }
 
   public UUID getSpawnerUUID() {
@@ -347,6 +348,16 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
   }
 
   @Override
+  protected NonNullList<ItemStack> getItems() {
+    return this.items;
+  }
+
+  @Override
+  protected void setItems(NonNullList<ItemStack> items) {
+    this.items = items;
+  }
+
+  @Override
   protected AbstractContainerMenu createMenu(int containerId, Inventory inventory) {
     return null;
   }
@@ -356,7 +367,7 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
   }
 
   public void setSpawnRange(int spawnRange) {
-    this.dataAccess.set(SPAWN_RANGE_DATA, Math.max(0, Math.min(64, spawnRange)));
+    this.dataAccess.set(SPAWN_RANGE_DATA, Math.clamp(spawnRange, 0, 64));
     this.setChanged();
   }
 
@@ -365,7 +376,7 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
   }
 
   public void setDespawnRange(int despawnRange) {
-    this.dataAccess.set(DESPAWN_RANGE_DATA, Math.max(0, Math.min(128, despawnRange)));
+    this.dataAccess.set(DESPAWN_RANGE_DATA, Math.clamp(despawnRange, 0, 128));
     this.setChanged();
   }
 
@@ -374,7 +385,7 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
   }
 
   public void setRequiredPlayerRange(int requiredPlayerRange) {
-    this.dataAccess.set(REQUIRED_PLAYER_RANGE_DATA, Math.max(0, Math.min(64, requiredPlayerRange)));
+    this.dataAccess.set(REQUIRED_PLAYER_RANGE_DATA, Math.clamp(requiredPlayerRange, 0, 64));
     this.setChanged();
   }
 
@@ -383,7 +394,7 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
   }
 
   public void setDelay(int delay) {
-    this.dataAccess.set(DELAY_DATA, Math.max(0, Math.min(3600, delay)));
+    this.dataAccess.set(DELAY_DATA, Math.clamp(delay, 0, 3600));
     this.setChanged();
   }
 
@@ -392,7 +403,7 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
   }
 
   public void setMaxNearbyEntities(int maxNearbyEntities) {
-    this.dataAccess.set(MAX_NEARBY_ENTITIES_DATA, Math.max(0, Math.min(256, maxNearbyEntities)));
+    this.dataAccess.set(MAX_NEARBY_ENTITIES_DATA, Math.clamp(maxNearbyEntities, 0, 256));
     this.setChanged();
   }
 
@@ -401,7 +412,7 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
   }
 
   public void setSpawnCount(int spawnCount) {
-    this.dataAccess.set(SPAWN_COUNT_DATA, Math.max(0, Math.min(32, spawnCount)));
+    this.dataAccess.set(SPAWN_COUNT_DATA, Math.clamp(spawnCount, 0, 32));
     this.setChanged();
   }
 
@@ -477,8 +488,8 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
   }
 
   @Override
-  public void load(CompoundTag compoundTag) {
-    super.load(compoundTag);
+  public void loadAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
+    super.loadAdditional(compoundTag, provider);
     this.spawnerUUID = compoundTag.getUUID(UUID_TAG);
     this.owner = compoundTag.getUUID(SPAWNER_OWNER_TAG);
     this.spawnRange = compoundTag.getInt(SPAWN_RANGE_TAG);
@@ -490,12 +501,12 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
 
     // Load slot items
     this.items.clear();
-    ContainerHelper.loadAllItems(compoundTag, this.items);
+    ContainerHelper.loadAllItems(compoundTag, this.items, provider);
   }
 
   @Override
-  public void saveAdditional(CompoundTag compoundTag) {
-    super.saveAdditional(compoundTag);
+  public void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
+    super.saveAdditional(compoundTag, provider);
     compoundTag.putUUID(
         UUID_TAG, Objects.requireNonNullElseGet(this.spawnerUUID, UUID::randomUUID));
     if (this.owner != null) {
@@ -509,6 +520,6 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
     compoundTag.putInt(SPAWN_COUNT_TAG, this.numbersPerSpawnInterval);
 
     // Save slot items
-    ContainerHelper.saveAllItems(compoundTag, this.items);
+    ContainerHelper.saveAllItems(compoundTag, this.items, provider);
   }
 }

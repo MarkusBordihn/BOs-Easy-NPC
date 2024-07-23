@@ -105,9 +105,10 @@ public class BaseMobModelRenderer<E extends EasyNPCBaseModelEntity<E>, V, M exte
       Component component,
       PoseStack poseStack,
       MultiBufferSource multiBufferSource,
-      int color) {
+      int color,
+      float rotation) {
     EasyNPCModelRenderer.renderEntityNameTag(entity, poseStack);
-    super.renderNameTag(entity, component, poseStack, multiBufferSource, color);
+    super.renderNameTag(entity, component, poseStack, multiBufferSource, color, rotation);
   }
 
   @Override

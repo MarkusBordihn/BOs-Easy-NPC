@@ -19,17 +19,21 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
+import com.mojang.serialization.DataResult;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.trading.TradingSettings;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
+import java.util.Optional;
+import net.minecraft.Util;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
@@ -41,48 +45,19 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.Merchant;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 
 public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Merchant {
 
+  String DATA_TRADING_TAG = "TradingData";
   String DATA_TRADING_BASIC_MAX_USES_TAG = "BasicMaxUses";
   String DATA_TRADING_BASIC_REWARDED_XP_TAG = "BasicRewardedXP";
-  String DATA_TRADING_INVENTORY_TAG = "Inventory";
-  String DATA_TRADING_OFFERS_TAG = "Offers";
-  String DATA_TRADING_RECIPES_TAG = "Recipes";
+  String DATA_OFFERS_TAG = "Offers";
   String DATA_TRADING_RESETS_EVERY_MIN_TAG = "ResetsEveryMin";
   String DATA_TRADING_TYPE_TAG = "TradingType";
-  EntityDataSerializer<MerchantOffers> MERCHANT_OFFERS =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, MerchantOffers value) {
-          buffer.writeNbt(value.createTag());
-        }
-
-        public MerchantOffers read(FriendlyByteBuf buffer) {
-          CompoundTag compoundTag = buffer.readNbt();
-          return compoundTag != null ? new MerchantOffers(compoundTag) : new MerchantOffers();
-        }
-
-        public MerchantOffers copy(MerchantOffers value) {
-          return value;
-        }
-      };
-  EntityDataSerializer<TradingType> TRADING_TYPE =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, TradingType value) {
-          buffer.writeEnum(value);
-        }
-
-        public TradingType read(FriendlyByteBuf buffer) {
-          return buffer.readEnum(TradingType.class);
-        }
-
-        public TradingType copy(TradingType value) {
-          return value;
-        }
-      };
 
   static void registerSyncedTradingData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
@@ -92,8 +67,10 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
         SynchedEntityData.defineId(entityClass, EntityDataSerializers.COMPOUND_TAG));
     map.put(
         SynchedDataIndex.TRADING_MERCHANT_OFFERS,
-        SynchedEntityData.defineId(entityClass, MERCHANT_OFFERS));
-    map.put(SynchedDataIndex.TRADING_TYPE, SynchedEntityData.defineId(entityClass, TRADING_TYPE));
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.MERCHANT_OFFERS));
+    map.put(
+        SynchedDataIndex.TRADING_TYPE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.TRADING_TYPE));
     map.put(
         SynchedDataIndex.TRADING_RESETS_EVERY_MIN,
         SynchedEntityData.defineId(entityClass, EntityDataSerializers.INT));
@@ -105,9 +82,14 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
         SynchedEntityData.defineId(entityClass, EntityDataSerializers.INT));
   }
 
-  static void registerTradingDataSerializer() {
-    EntityDataSerializers.registerSerializer(MERCHANT_OFFERS);
-    EntityDataSerializers.registerSerializer(TRADING_TYPE);
+  private static ItemCost getItemCost(ItemStack itemStack) {
+    return new ItemCost(
+        itemStack.isEmpty() ? ItemStack.EMPTY.getItem() : itemStack.getItem(),
+        itemStack.getCount());
+  }
+
+  private static Optional<ItemCost> getOptionalItemCost(ItemStack itemStack) {
+    return itemStack.isEmpty() ? Optional.empty() : Optional.of(getItemCost(itemStack));
   }
 
   void updateTradesData();
@@ -159,8 +141,9 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     for (int tradingOffer = 0;
         tradingOffer < TradingSettings.ADVANCED_TRADING_OFFERS;
         tradingOffer++) {
-      ItemStack itemA = container.getItem(tradingOffer * 3);
-      ItemStack itemB = container.getItem(tradingOffer * 3 + 1);
+      // Get items from container and create item cost holder.
+      ItemCost itemCostA = getItemCost(container.getItem(tradingOffer * 3));
+      Optional<ItemCost> itemCostB = getOptionalItemCost(container.getItem(tradingOffer * 3 + 1));
       ItemStack itemResult = container.getItem(tradingOffer * 3 + 2);
 
       // Check if we have existing trading offers and use them as base for the new trading offers.
@@ -173,8 +156,8 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
         merchantOffers.add(
             tradingOffer,
             new MerchantOffer(
-                itemA,
-                itemB,
+                itemCostA,
+                itemCostB,
                 itemResult,
                 existingMerchantOffer.getUses(),
                 existingMerchantOffer.getMaxUses(),
@@ -182,7 +165,8 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
                 existingMerchantOffer.getPriceMultiplier(),
                 existingMerchantOffer.getDemand()));
       } else {
-        merchantOffers.add(tradingOffer, new MerchantOffer(itemA, itemB, itemResult, 64, 1, 1.0F));
+        merchantOffers.add(
+            tradingOffer, new MerchantOffer(itemCostA, itemCostB, itemResult, 64, 1, 1.0F));
       }
     }
 
@@ -200,14 +184,14 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     for (int tradingOffer = 0;
         tradingOffer < TradingSettings.BASIC_TRADING_OFFERS;
         tradingOffer++) {
-      ItemStack itemA = container.getItem(tradingOffer * 3);
-      ItemStack itemB = container.getItem(tradingOffer * 3 + 1);
+      ItemCost itemCostA = getItemCost(container.getItem(tradingOffer * 3));
+      Optional<ItemCost> itemCostB = getOptionalItemCost(container.getItem(tradingOffer * 3 + 1));
       ItemStack itemResult = container.getItem(tradingOffer * 3 + 2);
 
       MerchantOffer merchantOffer =
           new MerchantOffer(
-              itemA,
-              itemB,
+              itemCostA,
+              itemCostB,
               itemResult,
               this.getBasicTradingMaxUses(),
               this.getBasicTradingRewardExp(),
@@ -237,8 +221,8 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     for (MerchantOffer merchantOffer : merchantOffers) {
       MerchantOffer newMerchantOffer =
           new MerchantOffer(
-              merchantOffer.getBaseCostA(),
-              merchantOffer.getCostB(),
+              getItemCost(merchantOffer.getBaseCostA()),
+              getOptionalItemCost(merchantOffer.getCostB()),
               merchantOffer.getResult(),
               this.getBasicTradingMaxUses(),
               this.getBasicTradingRewardExp(),
@@ -274,14 +258,6 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     setSynchedEntityData(SynchedDataIndex.TRADING_MERCHANT_OFFERS, new MerchantOffers());
     setSynchedEntityData(SynchedDataIndex.TRADING_MERCHANT_OFFERS, merchantOffers);
     this.updateTradesData();
-  }
-
-  default CompoundTag getTradingInventory() {
-    return getSynchedEntityData(SynchedDataIndex.TRADING_INVENTORY);
-  }
-
-  default void setTradingInventory(CompoundTag tradingInventory) {
-    setSynchedEntityData(SynchedDataIndex.TRADING_INVENTORY, tradingInventory);
   }
 
   default TradingType getTradingType() {
@@ -320,8 +296,8 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     merchantOffers.set(
         tradingOfferIndex,
         new MerchantOffer(
-            merchantOffer.getBaseCostA(),
-            merchantOffer.getCostB(),
+            getItemCost(merchantOffer.getBaseCostA()),
+            getOptionalItemCost(merchantOffer.getCostB()),
             merchantOffer.getResult(),
             0,
             maxUses,
@@ -345,8 +321,8 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     merchantOffers.set(
         tradingOfferIndex,
         new MerchantOffer(
-            merchantOffer.getBaseCostA(),
-            merchantOffer.getCostB(),
+            getItemCost(merchantOffer.getBaseCostA()),
+            getOptionalItemCost(merchantOffer.getCostB()),
             merchantOffer.getResult(),
             merchantOffer.getUses(),
             merchantOffer.getMaxUses(),
@@ -370,8 +346,8 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     merchantOffers.set(
         tradingOfferIndex,
         new MerchantOffer(
-            merchantOffer.getBaseCostA(),
-            merchantOffer.getCostB(),
+            getItemCost(merchantOffer.getBaseCostA()),
+            getOptionalItemCost(merchantOffer.getCostB()),
             merchantOffer.getResult(),
             merchantOffer.getUses(),
             merchantOffer.getMaxUses(),
@@ -395,8 +371,8 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     merchantOffers.set(
         tradingOfferIndex,
         new MerchantOffer(
-            merchantOffer.getBaseCostA(),
-            merchantOffer.getCostB(),
+            getItemCost(merchantOffer.getBaseCostA()),
+            getOptionalItemCost(merchantOffer.getCostB()),
             merchantOffer.getResult(),
             merchantOffer.getUses(),
             merchantOffer.getMaxUses(),
@@ -466,62 +442,66 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     return InteractionResult.sidedSuccess(this.isClientSide());
   }
 
-  default void defineSynchedTradingData() {
-    defineSynchedEntityData(SynchedDataIndex.TRADING_INVENTORY, new CompoundTag());
-    defineSynchedEntityData(SynchedDataIndex.TRADING_MERCHANT_OFFERS, new MerchantOffers());
-    defineSynchedEntityData(SynchedDataIndex.TRADING_TYPE, TradingType.NONE);
-    defineSynchedEntityData(SynchedDataIndex.TRADING_RESETS_EVERY_MIN, 0);
-    defineSynchedEntityData(SynchedDataIndex.TRADING_BASIC_MAX_USES, 64);
-    defineSynchedEntityData(SynchedDataIndex.TRADING_BASIC_REWARDED_XP, 1);
+  default void defineSynchedTradingData(SynchedEntityData.Builder builder) {
+    defineSynchedEntityData(builder, SynchedDataIndex.TRADING_INVENTORY, new CompoundTag());
+    defineSynchedEntityData(
+        builder, SynchedDataIndex.TRADING_MERCHANT_OFFERS, new MerchantOffers());
+    defineSynchedEntityData(builder, SynchedDataIndex.TRADING_TYPE, TradingType.NONE);
+    defineSynchedEntityData(builder, SynchedDataIndex.TRADING_RESETS_EVERY_MIN, 0);
+    defineSynchedEntityData(builder, SynchedDataIndex.TRADING_BASIC_MAX_USES, 64);
+    defineSynchedEntityData(builder, SynchedDataIndex.TRADING_BASIC_REWARDED_XP, 1);
   }
 
-  default void addAdditionalTradingData(CompoundTag compoundTag) {
-    CompoundTag tradingTag = new CompoundTag();
+  default void addAdditionalTradingData(CompoundTag compoundTag, HolderLookup.Provider provider) {
+    // Add trading data to the compound tag.
+    CompoundTag tradingDataTag = new CompoundTag();
+    tradingDataTag.putString(DATA_TRADING_TYPE_TAG, getTradingType().name());
+    tradingDataTag.putInt(DATA_TRADING_RESETS_EVERY_MIN_TAG, getTradingResetsEveryMin());
+    tradingDataTag.putInt(DATA_TRADING_BASIC_MAX_USES_TAG, getBasicTradingMaxUses());
+    tradingDataTag.putInt(DATA_TRADING_BASIC_REWARDED_XP_TAG, getBasicTradingRewardExp());
+    compoundTag.put(DATA_TRADING_TAG, tradingDataTag);
 
-    tradingTag.put(DATA_TRADING_INVENTORY_TAG, getTradingInventory());
-    tradingTag.put(DATA_TRADING_RECIPES_TAG, getTradingOffers().createTag());
-    tradingTag.putString(DATA_TRADING_TYPE_TAG, getTradingType().name());
-    tradingTag.putInt(DATA_TRADING_RESETS_EVERY_MIN_TAG, getTradingResetsEveryMin());
-    tradingTag.putInt(DATA_TRADING_BASIC_MAX_USES_TAG, getBasicTradingMaxUses());
-    tradingTag.putInt(DATA_TRADING_BASIC_REWARDED_XP_TAG, getBasicTradingRewardExp());
-
-    compoundTag.put(DATA_TRADING_OFFERS_TAG, tradingTag);
+    // Add trading offers to the compound tag.
+    MerchantOffers merchantOffers = getTradingOffers();
+    if (merchantOffers != null && !merchantOffers.isEmpty()) {
+      compoundTag.put(
+          DATA_OFFERS_TAG,
+          MerchantOffers.CODEC
+              .encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), merchantOffers)
+              .getOrThrow());
+    }
   }
 
-  default void readAdditionalTradingData(CompoundTag compoundTag) {
-    if (!compoundTag.contains(DATA_TRADING_OFFERS_TAG)) {
+  default void readAdditionalTradingData(CompoundTag compoundTag, HolderLookup.Provider provider) {
+
+    // Read trading data from the compound tag.
+    if (!compoundTag.contains(DATA_TRADING_TAG)) {
       return;
     }
-    CompoundTag tradingTag = compoundTag.getCompound(DATA_TRADING_OFFERS_TAG);
-
-    String tradingType = tradingTag.getString(DATA_TRADING_TYPE_TAG);
+    CompoundTag tradingDataTag = compoundTag.getCompound(DATA_TRADING_TAG);
+    String tradingType = tradingDataTag.getString(DATA_TRADING_TYPE_TAG);
     if (!tradingType.isEmpty()) {
       this.setTradingType(TradingType.get(tradingType));
     }
-
-    if (tradingTag.contains(DATA_TRADING_RESETS_EVERY_MIN_TAG)) {
-      this.setTradingResetsEveryMin(tradingTag.getInt(DATA_TRADING_RESETS_EVERY_MIN_TAG));
+    if (tradingDataTag.contains(DATA_TRADING_RESETS_EVERY_MIN_TAG)) {
+      this.setTradingResetsEveryMin(tradingDataTag.getInt(DATA_TRADING_RESETS_EVERY_MIN_TAG));
+    }
+    if (tradingDataTag.contains(DATA_TRADING_BASIC_MAX_USES_TAG)) {
+      this.setBasicTradingMaxUses(tradingDataTag.getInt(DATA_TRADING_BASIC_MAX_USES_TAG));
+    }
+    if (tradingDataTag.contains(DATA_TRADING_BASIC_REWARDED_XP_TAG)) {
+      this.setBasicTradingRewardExp(tradingDataTag.getInt(DATA_TRADING_BASIC_REWARDED_XP_TAG));
     }
 
-    if (tradingTag.contains(DATA_TRADING_BASIC_MAX_USES_TAG)) {
-      this.setBasicTradingMaxUses(tradingTag.getInt(DATA_TRADING_BASIC_MAX_USES_TAG));
-    }
-
-    if (tradingTag.contains(DATA_TRADING_BASIC_REWARDED_XP_TAG)) {
-      this.setBasicTradingRewardExp(tradingTag.getInt(DATA_TRADING_BASIC_REWARDED_XP_TAG));
-    }
-
-    if (tradingTag.contains(DATA_TRADING_RECIPES_TAG)) {
-      MerchantOffers merchantOffers =
-          new MerchantOffers(tradingTag.getCompound(DATA_TRADING_RECIPES_TAG));
-      if (!merchantOffers.isEmpty()) {
-        this.setTradingOffers(merchantOffers);
-      }
+    // Read trading offers from the compound tag.
+    if (!compoundTag.contains(DATA_OFFERS_TAG)) {
       return;
     }
-
-    if (tradingTag.contains(DATA_TRADING_INVENTORY_TAG)) {
-      setTradingInventory(tradingTag.getCompound(DATA_TRADING_INVENTORY_TAG));
-    }
+    DataResult<MerchantOffers> dataResult =
+        MerchantOffers.CODEC.parse(
+            provider.createSerializationContext(NbtOps.INSTANCE), compoundTag.get(DATA_OFFERS_TAG));
+    dataResult
+        .resultOrPartial(Util.prefix("Failed to load offers: ", log::warn))
+        .ifPresent(this::setTradingOffers);
   }
 }

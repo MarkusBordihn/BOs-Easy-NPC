@@ -224,7 +224,6 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
           ImportPresetConfigurationScreen.this.contentTopPos + 47,
           14);
       this.setRenderHeader(false, 0);
-      this.setRenderBackground(false);
       this.updatePresets();
     }
 
@@ -243,6 +242,16 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
                         resourceLocation, getSkinModel());
                 this.addEntry(entry);
               });
+    }
+
+    @Override
+    protected void renderListSeparators(GuiGraphics guiGraphics) {
+      // Do not render list separators.
+    }
+
+    @Override
+    protected void renderListBackground(GuiGraphics guiGraphics) {
+      // Do not render list background.
     }
 
     @Override
@@ -318,7 +327,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
             guiGraphics,
             ImportPresetConfigurationScreen.this.font,
             importPresetHeaderLabel,
-            this.skinModel,
+            this.skinModel.getName(),
             ImportPresetConfigurationScreen.this.contentLeftPos + 3,
             fileListTop,
             Constants.FONT_COLOR_WHITE);

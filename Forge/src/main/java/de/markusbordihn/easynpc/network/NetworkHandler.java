@@ -25,6 +25,9 @@ import de.markusbordihn.easynpc.network.message.NetworkHandlerManager;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.function.Function;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -86,37 +89,51 @@ public class NetworkHandler implements NetworkHandlerInterface {
 
   @Override
   public <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
-      ResourceLocation messageID, Class<M> networkMessage, Function<FriendlyByteBuf, M> creator) {
-    INSTANCE
-        .messageBuilder(networkMessage, id++, NetworkDirection.PLAY_TO_CLIENT)
-        .encoder(M::write)
-        .decoder(creator)
-        .consumerNetworkThread(
-            (message, context) -> {
-              context.enqueueWork(
-                  () -> {
-                    message.handleClient();
-                    context.setPacketHandled(true);
-                  });
-            })
-        .add();
+      final CustomPacketPayload.Type<M> type,
+      final StreamCodec<RegistryFriendlyByteBuf, M> codec,
+      final Class<M> networkMessage,
+      final Function<FriendlyByteBuf, M> creator) {
+    try {
+      INSTANCE
+          .messageBuilder(networkMessage, id++, NetworkDirection.PLAY_TO_CLIENT)
+          .encoder(M::write)
+          .decoder(creator::apply)
+          .consumerNetworkThread(
+              (message, context) -> {
+                context.enqueueWork(
+                    () -> {
+                      message.handleClient();
+                      context.setPacketHandled(true);
+                    });
+              })
+          .add();
+    } catch (Exception e) {
+      log.error("Failed to register network message handler {}:", networkMessage, e);
+    }
   }
 
   @Override
   public <M extends NetworkMessageRecord> void registerServerNetworkMessageHandler(
-      ResourceLocation messageID, Class<M> networkMessage, Function<FriendlyByteBuf, M> creator) {
-    INSTANCE
-        .messageBuilder(networkMessage, id++, NetworkDirection.PLAY_TO_SERVER)
-        .encoder(M::write)
-        .decoder(creator)
-        .consumerNetworkThread(
-            (message, context) -> {
-              context.enqueueWork(
-                  () -> {
-                    message.handleServer(context.getSender());
-                    context.setPacketHandled(true);
-                  });
-            })
-        .add();
+      final CustomPacketPayload.Type<M> type,
+      final StreamCodec<RegistryFriendlyByteBuf, M> codec,
+      final Class<M> networkMessage,
+      final Function<FriendlyByteBuf, M> creator) {
+    try {
+      INSTANCE
+          .messageBuilder(networkMessage, id++, NetworkDirection.PLAY_TO_SERVER)
+          .encoder(M::write)
+          .decoder(creator::apply)
+          .consumerNetworkThread(
+              (message, context) -> {
+                context.enqueueWork(
+                    () -> {
+                      message.handleServer(context.getSender());
+                      context.setPacketHandled(true);
+                    });
+              })
+          .add();
+    } catch (Exception e) {
+      log.error("Failed to register network message handler {}:", networkMessage, e);
+    }
   }
 }

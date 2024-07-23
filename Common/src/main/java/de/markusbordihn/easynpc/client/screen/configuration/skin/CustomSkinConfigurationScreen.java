@@ -82,7 +82,7 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
 
       // Render Skins
       UUID textureKey = (UUID) textureKeys[i];
-      this.renderSkinEntity(left, top, textureKey);
+      this.renderSkinEntity(guiGraphics, left, top, textureKey);
 
       // Render skin name
       int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
@@ -104,7 +104,7 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
     }
   }
 
-  private void renderSkinEntity(int x, int y, UUID textureUUID) {
+  private void renderSkinEntity(GuiGraphics guiGraphics, int x, int y, UUID textureUUID) {
     // Create dynamically button for each skin variant.
     Button skinButton =
         new SkinSelectionButton(
@@ -121,6 +121,7 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
 
     // Render skin entity with variant and profession.
     ScreenHelper.renderEntityPlayerSkin(
+        guiGraphics,
         x + 4,
         y,
         x - this.xMouse,

@@ -19,8 +19,10 @@
 
 package de.markusbordihn.easynpc.data.skin;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+
 public enum SkinType {
-  // @formatter:off
   CUSTOM,
   DEFAULT,
   INSECURE_REMOTE_URL,
@@ -29,7 +31,18 @@ public enum SkinType {
   SERVER_SKIN,
   SECURE_REMOTE_URL;
 
-  // @formatter:on
+  public static final StreamCodec<RegistryFriendlyByteBuf, SkinType> STREAM_CODEC =
+      new StreamCodec<>() {
+        @Override
+        public SkinType decode(RegistryFriendlyByteBuf registryFriendlyByteBuf) {
+          return registryFriendlyByteBuf.readEnum(SkinType.class);
+        }
+
+        @Override
+        public void encode(RegistryFriendlyByteBuf registryFriendlyByteBuf, SkinType skinType) {
+          registryFriendlyByteBuf.writeEnum(skinType);
+        }
+      };
 
   public static SkinType get(String skinType) {
     if (skinType == null || skinType.isEmpty()) {

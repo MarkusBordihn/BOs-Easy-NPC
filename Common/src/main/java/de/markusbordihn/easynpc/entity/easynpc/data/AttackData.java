@@ -33,8 +33,6 @@ import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
 import net.minecraft.world.entity.monster.RangedAttackMob;
-import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.ItemStack;
 
 public interface AttackData<E extends PathfinderMob>
     extends EasyNPC<E>, NeutralMob, RangedAttackMob, CrossbowAttackMob {
@@ -76,20 +74,13 @@ public interface AttackData<E extends PathfinderMob>
   }
 
   @Override
-  default void shootCrossbowProjectile(
-      LivingEntity livingEntity, ItemStack itemStack, Projectile projectile, float rangeFactor) {
-    this.shootCrossbowProjectile(
-        this.getLivingEntity(), livingEntity, projectile, rangeFactor, 1.6F);
-  }
-
-  @Override
   default void performRangedAttack(LivingEntity livingEntity, float damage) {
     AttackHandler.performDefaultRangedAttack(this.getLivingEntity(), livingEntity, damage);
   }
 
-  default void defineSynchedAttackData() {
-    defineSynchedEntityData(SynchedDataIndex.ATTACK_IS_AGGRESSIVE, getDefaultAggression());
-    defineSynchedEntityData(SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW, false);
+  default void defineSynchedAttackData(SynchedEntityData.Builder builder) {
+    defineSynchedEntityData(builder, SynchedDataIndex.ATTACK_IS_AGGRESSIVE, getDefaultAggression());
+    defineSynchedEntityData(builder, SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW, false);
   }
 
   default void addAdditionalAttackData(CompoundTag compoundTag) {

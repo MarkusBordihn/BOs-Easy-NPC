@@ -20,8 +20,6 @@
 package de.markusbordihn.easynpc.screen;
 
 import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.profession.Profession;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
@@ -36,7 +34,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import java.util.UUID;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
@@ -49,23 +47,20 @@ public class ScreenHelper {
   protected ScreenHelper() {}
 
   public static void renderEntity(
-      int x, int y, int scale, float yRot, float xRot, LivingEntity livingEntity) {
+      GuiGraphics guiGraphics,
+      int x,
+      int y,
+      int scale,
+      float yRot,
+      float xRot,
+      LivingEntity livingEntity) {
     // Prepare Renderer
     Minecraft minecraft = Minecraft.getInstance();
-    float f = (float) Math.atan(yRot / 40.0F);
-    float f1 = (float) Math.atan(xRot / 40.0F);
-    PoseStack poseStack = RenderSystem.getModelViewStack();
-    poseStack.pushPose();
-    poseStack.translate(x, y, 1050.0D);
-    poseStack.scale(1.0F, 1.0F, -1.0F);
-    RenderSystem.applyModelViewMatrix();
-    PoseStack poseStack1 = new PoseStack();
-    poseStack1.translate(0.0D, 0.0D, 1000.0D);
-    poseStack1.scale(scale, scale, scale);
-    Quaternionf quaternionf = (new Quaternionf()).rotateZ((float) Math.PI);
-    Quaternionf quaternionf1 = (new Quaternionf()).rotateX(f1 * 20.0F * ((float) Math.PI / 180F));
-    quaternionf.mul(quaternionf1);
-    poseStack1.mulPose(quaternionf);
+    float rotationY = (float) Math.atan(yRot / 40.0F);
+    float rotationX = (float) Math.atan(xRot / 40.0F);
+    Quaternionf quaternionfZ = (new Quaternionf()).rotateZ(3.1415927F);
+    Quaternionf quaternionfX = (new Quaternionf()).rotateX(rotationX * 20.0F * 0.017453292F);
+    quaternionfZ.mul(quaternionfX);
 
     // Backup entity information
     Component entityCustomName = livingEntity.getCustomName();
@@ -77,10 +72,11 @@ public class ScreenHelper {
     float entityYRot = livingEntity.getYRot();
 
     // Adjust entity information for rendering
-    livingEntity.yBodyRot = 180.0F + f * 20.0F;
-    livingEntity.setYRot(180.0F + f * 40.0F);
-    livingEntity.setXRot(-f1 * 20.0F);
+    livingEntity.yBodyRot = 180.0F + rotationY * 20.0F;
+    livingEntity.setYRot(180.0F + rotationY * 40.0F);
+    livingEntity.setXRot(-rotationX * 20.0F);
     livingEntity.yHeadRot = livingEntity.getYRot();
+    livingEntity.yHeadRotO = livingEntity.getYRot();
 
     // Hide gui elements or remove custom name
     boolean minecraftHideGui = false;
@@ -93,18 +89,30 @@ public class ScreenHelper {
     }
 
     // Render Entity
+    guiGraphics.pose().pushPose();
+    guiGraphics.pose().translate(x, y, 1050.0D);
+    guiGraphics.pose().scale(scale, scale, -scale);
+    guiGraphics.pose().mulPose(quaternionfZ);
     Lighting.setupForEntityInInventory();
     EntityRenderDispatcher entityRenderDispatcher =
         Minecraft.getInstance().getEntityRenderDispatcher();
-    quaternionf1.conjugate();
-    entityRenderDispatcher.overrideCameraOrientation(quaternionf1);
+    quaternionfX.conjugate();
+    entityRenderDispatcher.overrideCameraOrientation(quaternionfX);
     entityRenderDispatcher.setRenderShadow(false);
-    MultiBufferSource.BufferSource multiBuffer =
-        Minecraft.getInstance().renderBuffers().bufferSource();
     entityRenderDispatcher.render(
-        livingEntity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, poseStack1, multiBuffer, 15728880);
-    multiBuffer.endBatch();
+        livingEntity,
+        0.0D,
+        0.0D,
+        0.0D,
+        0.0F,
+        1.0F,
+        guiGraphics.pose(),
+        guiGraphics.bufferSource(),
+        15728880);
+    guiGraphics.flush();
     entityRenderDispatcher.setRenderShadow(true);
+    guiGraphics.pose().popPose();
+    Lighting.setupFor3DItems();
 
     // Restore entity information
     livingEntity.yBodyRot = entityYBodyRot;
@@ -120,27 +128,32 @@ public class ScreenHelper {
       livingEntity.setCustomName(entityCustomName);
       livingEntity.setCustomNameVisible(entityShouldShowName);
     }
-
-    poseStack.popPose();
-    RenderSystem.applyModelViewMatrix();
-    Lighting.setupFor3DItems();
   }
 
   public static void renderScaledEntityAvatar(
-      int x, int y, float yRot, float xRot, EasyNPC<?> easyNPC) {
+      GuiGraphics guiGraphics, int x, int y, float yRot, float xRot, EasyNPC<?> easyNPC) {
     GuiData<?> guiData = easyNPC.getEasyNPCGuiData();
     ScaleData<?> scaleData = easyNPC.getEasyNPCScaleData();
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     if (scaleData != null && modelData != null) {
       renderScaledEntityAvatar(
-          x, y, guiData.getEntityGuiScaling(), yRot, xRot, easyNPC, scaleData, modelData);
+          guiGraphics,
+          x,
+          y,
+          guiData.getEntityGuiScaling(),
+          yRot,
+          xRot,
+          easyNPC,
+          scaleData,
+          modelData);
     } else {
       renderScaledEntityAvatar(
-          x, y, guiData.getEntityGuiScaling(), yRot, xRot, easyNPC.getLivingEntity());
+          guiGraphics, x, y, guiData.getEntityGuiScaling(), yRot, xRot, easyNPC.getLivingEntity());
     }
   }
 
   public static void renderScaledEntityAvatar(
+      GuiGraphics guiGraphics,
       int x,
       int y,
       int scale,
@@ -165,7 +178,7 @@ public class ScreenHelper {
     easyNPC.getEntity().setInvisible(false);
 
     // Render Entity
-    renderEntity(x, y, scale, yRot, xRot, easyNPC.getLivingEntity());
+    renderEntity(guiGraphics, x, y, scale, yRot, xRot, easyNPC.getLivingEntity());
 
     // Restore entity information
     scaleData.setScaleX(entityScaleX);
@@ -176,7 +189,13 @@ public class ScreenHelper {
   }
 
   public static void renderScaledEntityAvatar(
-      int x, int y, int scale, float yRot, float xRot, LivingEntity livingEntity) {
+      GuiGraphics guiGraphics,
+      int x,
+      int y,
+      int scale,
+      float yRot,
+      float xRot,
+      LivingEntity livingEntity) {
 
     // Backup entity information
     boolean entityInvisible = livingEntity.isInvisible();
@@ -185,14 +204,20 @@ public class ScreenHelper {
     livingEntity.setInvisible(false);
 
     // Render Entity
-    renderEntity(x, y, scale, yRot, xRot, livingEntity);
+    renderEntity(guiGraphics, x, y, scale, yRot, xRot, livingEntity);
 
     // Restore entity information
     livingEntity.setInvisible(entityInvisible);
   }
 
   public static void renderCustomPoseEntityAvatar(
-      int x, int y, int scale, float yRot, float xRot, EasyNPC<?> easyNPC) {
+      GuiGraphics guiGraphics,
+      int x,
+      int y,
+      int scale,
+      float yRot,
+      float xRot,
+      EasyNPC<?> easyNPC) {
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     Entity entity = easyNPC.getEntity();
 
@@ -206,7 +231,7 @@ public class ScreenHelper {
 
     // Render Entity
     renderScaledEntityAvatar(
-        x, y, scale, yRot, xRot, easyNPC, easyNPC.getEasyNPCScaleData(), modelData);
+        guiGraphics, x, y, scale, yRot, xRot, easyNPC, easyNPC.getEasyNPCScaleData(), modelData);
 
     // Restore entity information
     modelData.setModelPose(entityModelPose);
@@ -214,7 +239,13 @@ public class ScreenHelper {
   }
 
   public static void renderEntityAvatarForScaling(
-      int x, int y, int scale, float yRot, float xRot, EasyNPC<?> easyNPC) {
+      GuiGraphics guiGraphics,
+      int x,
+      int y,
+      int scale,
+      float yRot,
+      float xRot,
+      EasyNPC<?> easyNPC) {
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     Entity entity = easyNPC.getEntity();
 
@@ -227,21 +258,35 @@ public class ScreenHelper {
     entity.setInvisible(false);
 
     // Render Entity
-    renderEntity(x, y, scale, yRot, xRot, easyNPC.getLivingEntity());
+    renderEntity(guiGraphics, x, y, scale, yRot, xRot, easyNPC.getLivingEntity());
 
     // Restore entity information
     modelData.setModelRootRotation(entityModelRootRotation);
     entity.setInvisible(entityInvisible);
   }
 
-  public static void renderEntityDialog(int x, int y, float yRot, float xRot, EasyNPC<?> easyNPC) {
+  public static void renderEntityDialog(
+      GuiGraphics guiGraphics, int x, int y, float yRot, float xRot, EasyNPC<?> easyNPC) {
     DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
     renderScaledEntityAvatar(
-        x, y, dialogData.getEntityDialogScaling(), yRot, xRot, easyNPC.getLivingEntity());
+        guiGraphics,
+        x,
+        y,
+        dialogData.getEntityDialogScaling(),
+        yRot,
+        xRot,
+        easyNPC.getLivingEntity());
   }
 
   public static void renderEntityPlayerSkin(
-      int x, int y, float yRot, float xRot, EasyNPC<?> easyNPC, UUID userUUID, SkinType skinType) {
+      GuiGraphics guiGraphics,
+      int x,
+      int y,
+      float yRot,
+      float xRot,
+      EasyNPC<?> easyNPC,
+      UUID userUUID,
+      SkinType skinType) {
     SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
     GuiData<?> guiData = easyNPC.getEasyNPCGuiData();
 
@@ -255,6 +300,7 @@ public class ScreenHelper {
 
     // Render Entity
     renderScaledEntityAvatar(
+        guiGraphics,
         x + guiData.getEntityGuiLeft(),
         y + guiData.getEntityGuiTop(),
         skinData.getEntitySkinScaling(),
@@ -270,6 +316,7 @@ public class ScreenHelper {
   }
 
   public static void renderEntityDefaultSkin(
+      GuiGraphics guiGraphics,
       int x,
       int y,
       float yRot,
@@ -294,6 +341,7 @@ public class ScreenHelper {
 
     // Render Entity
     renderScaledEntityAvatar(
+        guiGraphics,
         x + guiData.getEntityGuiLeft(),
         y + guiData.getEntityGuiTop(),
         skinData.getEntitySkinScaling(),

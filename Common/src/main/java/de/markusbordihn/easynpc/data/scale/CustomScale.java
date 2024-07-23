@@ -21,8 +21,28 @@ package de.markusbordihn.easynpc.data.scale;
 
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
 public class CustomScale {
+
+  public static final StreamCodec<RegistryFriendlyByteBuf, CustomScale> STREAM_CODEC =
+      new StreamCodec<>() {
+        @Override
+        public CustomScale decode(RegistryFriendlyByteBuf registryFriendlyByteBuf) {
+          return new CustomScale(
+              registryFriendlyByteBuf.readFloat(),
+              registryFriendlyByteBuf.readFloat(),
+              registryFriendlyByteBuf.readFloat());
+        }
+
+        @Override
+        public void encode(RegistryFriendlyByteBuf registryFriendlyByteBuf, CustomScale scale) {
+          registryFriendlyByteBuf.writeFloat(scale.x);
+          registryFriendlyByteBuf.writeFloat(scale.y);
+          registryFriendlyByteBuf.writeFloat(scale.z);
+        }
+      };
   protected final float x;
   protected final float y;
   protected final float z;

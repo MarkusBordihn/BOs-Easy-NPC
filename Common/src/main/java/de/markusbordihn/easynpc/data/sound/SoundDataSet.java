@@ -23,12 +23,28 @@ import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 
 public class SoundDataSet {
 
   public static final String DATA_SOUND_DATA_SET_TAG = "SoundDataSet";
+
+  public static final StreamCodec<RegistryFriendlyByteBuf, SoundDataSet> STREAM_CODEC =
+      new StreamCodec<>() {
+        @Override
+        public SoundDataSet decode(RegistryFriendlyByteBuf registryFriendlyByteBuf) {
+          return new SoundDataSet(registryFriendlyByteBuf.readNbt());
+        }
+
+        @Override
+        public void encode(
+            RegistryFriendlyByteBuf registryFriendlyByteBuf, SoundDataSet soundDataSet) {
+          registryFriendlyByteBuf.writeNbt(soundDataSet.createTag());
+        }
+      };
 
   private final Map<SoundType, SoundDataEntry> soundDataEntryMap = new EnumMap<>(SoundType.class);
 
