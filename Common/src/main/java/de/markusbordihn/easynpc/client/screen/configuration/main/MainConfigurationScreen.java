@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.ColorButton;
 import de.markusbordihn.easynpc.client.screen.components.CopyButton;
 import de.markusbordihn.easynpc.client.screen.components.DeleteButton;
+import de.markusbordihn.easynpc.client.screen.components.ReloadButton;
 import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
@@ -292,10 +293,11 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
 
   private void defineRespawnButton() {
     this.addRenderableWidget(
-        new TextButton(
+        new ReloadButton(
             copyUUIDButton.x + copyUUIDButton.getWidth() + 4,
             this.bottomPos - 27,
-            70,
+            80,
+            16,
             "respawn",
             onPress -> respawnNPC()));
   }

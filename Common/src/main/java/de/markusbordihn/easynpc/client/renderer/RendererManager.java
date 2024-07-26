@@ -38,7 +38,7 @@ import org.apache.logging.log4j.Logger;
 
 public class RendererManager {
 
-  private static final String LOG_PREFIX = "[RendererManager]";
+  private static final String LOG_PREFIX = "[Renderer Manager]";
 
   private static final Set<EntityType<?>> unsupportedEntityTypes = new HashSet<>();
   private static final Map<EntityType<?>, PathfinderMob> pathfinderMobMap = new HashMap<>();

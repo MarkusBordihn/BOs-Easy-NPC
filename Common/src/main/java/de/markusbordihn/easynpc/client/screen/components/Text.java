@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.client.screen.components;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.texture.TextureManager;
 import java.util.List;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
@@ -73,13 +72,12 @@ public class Text {
 
   public static void drawErrorMessage(
       PoseStack poseStack, Font font, String text, int x, int y, int width) {
-    drawErrorMessage(poseStack, font, new TextComponent(text), x, y, width);
+    drawErrorMessage(poseStack, font, new TextComponent(text != null ? text : ""), x, y, width);
   }
 
   public static void drawErrorMessage(
       PoseStack poseStack, Font font, Component component, int x, int y, int width) {
-    List<FormattedCharSequence> textComponents =
-        font.split(new TextComponent(TextureManager.getLastErrorMessage()), width);
+    List<FormattedCharSequence> textComponents = font.split(component, width);
     int line = 0;
     for (FormattedCharSequence formattedCharSequence : textComponents) {
       Text.drawString(

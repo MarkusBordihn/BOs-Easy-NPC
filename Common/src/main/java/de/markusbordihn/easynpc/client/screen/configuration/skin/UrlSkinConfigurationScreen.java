@@ -36,13 +36,16 @@ import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import de.markusbordihn.easynpc.utils.TextUtils;
+import de.markusbordihn.easynpc.validator.ImageValidator;
 import de.markusbordihn.easynpc.validator.UrlValidator;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 
 public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
@@ -55,6 +58,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
   private boolean canTextureSkinLocationChange = true;
   private Button clearTextureSettingsButton = null;
   private String formerTextureSkinLocation = "";
+  private String errorMessage = "";
 
   public UrlSkinConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -149,17 +153,34 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
 
   private void addTextureSkinLocation() {
     String textureSkinLocationValue = this.textureSkinLocationBox.getValue();
-    if (!textureSkinLocationValue.equals(this.formerTextureSkinLocation)
-        && (textureSkinLocationValue.isEmpty()
-            || UrlValidator.isValidUrl(textureSkinLocationValue))) {
+    if (!textureSkinLocationValue.isEmpty()
+        && !textureSkinLocationValue.equals(this.formerTextureSkinLocation)) {
 
-      // Validate url and send message to server.
-      if (UrlValidator.isValidUrl(textureSkinLocationValue)) {
-        log.debug("Setting remote user texture to {}", textureSkinLocationValue);
-        TextureManager.clearLastErrorMessage();
-        NetworkMessageHandlerManager.getServerHandler()
-            .setRemoteSkin(this.getNpcUUID(), textureSkinLocationValue);
+      // Validate url
+      if (!UrlValidator.isValidUrl(textureSkinLocationValue)) {
+        this.errorMessage = "invalid_remote_image";
+        return;
       }
+      URL textureSkinLocation = null;
+      try {
+        textureSkinLocation = new URL(textureSkinLocationValue);
+      } catch (Exception e) {
+        return;
+      }
+
+      // Validate image before sending it to the server.
+      if (!ImageValidator.isValidImage(textureSkinLocation)) {
+        log.error("Unable to set remote user texture to {}", textureSkinLocationValue);
+        this.errorMessage = "invalid_remote_image";
+        return;
+      }
+
+      // Send texture skin location to server.
+      log.debug("Setting remote user texture to {}", textureSkinLocationValue);
+      TextureManager.clearLastErrorMessage();
+      this.errorMessage = "";
+      NetworkMessageHandlerManager.getServerHandler()
+          .setRemoteSkin(this.getNpcUUID(), textureSkinLocationValue);
 
       this.addTextureSettingsButton.active = false;
       this.formerTextureSkinLocation = textureSkinLocationValue;
@@ -268,7 +289,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
           8,
           10);
 
-      if (!TextureManager.hasLastErrorMessage()) {
+      if (!TextureManager.hasLastErrorMessage() && this.errorMessage.isEmpty()) {
         Text.drawConfigString(
             poseStack,
             this.font,
@@ -279,7 +300,15 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
     }
 
     // Show error messages, if any.
-    if (TextureManager.hasLastErrorMessage()) {
+    if (this.errorMessage != null && !this.errorMessage.isEmpty()) {
+      Text.drawErrorMessage(
+          poseStack,
+          this.font,
+          new TranslatableComponent(Constants.TEXT_PREFIX + this.errorMessage),
+          this.leftPos + 10,
+          this.contentTopPos + 71,
+          this.imageWidth - 14);
+    } else if (TextureManager.hasLastErrorMessage()) {
       Text.drawErrorMessage(
           poseStack,
           this.font,

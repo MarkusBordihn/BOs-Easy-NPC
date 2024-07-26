@@ -21,6 +21,8 @@ package de.markusbordihn.easynpc.client.screen.configuration.skin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.screen.components.ReloadButton;
+import de.markusbordihn.easynpc.client.screen.components.SearchField;
 import de.markusbordihn.easynpc.client.screen.components.SkinSelectionButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
@@ -39,6 +41,7 @@ import java.util.Set;
 import java.util.UUID;
 import net.minecraft.Util;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -49,6 +52,8 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
   private static final int ADD_SKIN_RELOAD_DELAY = 5;
   protected Button skinFolderButton = null;
   protected Button skinReloadButton = null;
+  protected EditBox skinSearchField = null;
+  private String searchFilter = null;
 
   public CustomSkinConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -65,7 +70,7 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
 
     SkinData<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
     SkinModel skinModel = skinData.getSkinModel();
-    Set<UUID> textures = CustomTextureManager.getCustomTextureCacheKeys(skinModel);
+    Set<UUID> textures = CustomTextureManager.getCustomTextureCacheKeys(skinModel, searchFilter);
     this.numOfSkins = textures.size();
 
     Object[] textureKeys = textures.toArray();
@@ -156,8 +161,8 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
       this.skinFolderButton =
           this.addRenderableWidget(
               new TextButton(
-                  this.contentLeftPos + 20,
-                  this.contentTopPos + 70,
+                  this.contentLeftPos + 10,
+                  this.contentTopPos + 65,
                   263,
                   "open_textures_folder",
                   skinModel.toString(),
@@ -167,16 +172,24 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
     // Skin Reload Button
     this.skinReloadButton =
         this.addRenderableWidget(
-            new TextButton(
-                this.contentLeftPos + 70,
-                this.contentTopPos + 192,
-                160,
-                "reload_textures",
+            new ReloadButton(
+                this.skinFolderButton.x + this.skinFolderButton.getWidth(),
+                this.skinFolderButton.y,
+                17,
+                16,
+                null,
                 onPress -> {
                   CustomSkinDataFiles.refreshRegisterTextureFiles();
                   CustomSkinConfigurationScreen.nextSkinReload =
                       (int) java.time.Instant.now().getEpochSecond() + ADD_SKIN_RELOAD_DELAY;
                 }));
+
+    // Skin Search Field
+    this.skinSearchField =
+        this.addRenderableWidget(
+            new SearchField(
+                this.font, this.contentLeftPos + 100, this.contentTopPos + 190, 100, 14));
+    this.skinSearchField.setResponder(this::onSearchFieldChanged);
   }
 
   @Override
@@ -204,5 +217,9 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
 
     // Skins
     this.renderSkins(poseStack);
+  }
+
+  private void onSearchFieldChanged(String searchText) {
+    this.searchFilter = searchText != null && !searchText.isEmpty() ? searchText : "";
   }
 }

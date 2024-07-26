@@ -81,8 +81,8 @@ public class ObjectiveUtils {
               objectiveDataEntry.getStopDistance(),
               objectiveDataEntry.getStartDistance());
         } else {
-          log.error(
-              "Unable to find player {} for {}!",
+          log.debug(
+              "Unable to find valid player {} for {}!",
               objectiveDataEntry.getTargetPlayer(),
               objectiveDataEntry);
         }
@@ -96,7 +96,7 @@ public class ObjectiveUtils {
               objectiveDataEntry.getStopDistance(),
               objectiveDataEntry.getStartDistance());
         } else {
-          log.error(
+          log.debug(
               "Unable to find valid owner {} for {} with {}!",
               targetOwner,
               easyNPC.getEntity(),
@@ -113,7 +113,7 @@ public class ObjectiveUtils {
               objectiveDataEntry.getStopDistance(),
               objectiveDataEntry.getStartDistance());
         } else {
-          log.error(
+          log.debug(
               "Unable to find living entity {} for {}!",
               objectiveDataEntry.getTargetEntityUUID(),
               objectiveDataEntry);
