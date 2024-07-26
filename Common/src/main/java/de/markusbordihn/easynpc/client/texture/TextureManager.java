@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.client.texture;
 import com.mojang.blaze3d.platform.NativeImage;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.validator.ImageValidator;
 import de.markusbordihn.easynpc.validator.UrlValidator;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -49,6 +50,16 @@ public class TextureManager {
   private static final Map<TextureModelKey, String> errorMessageMap = new HashMap<>();
   private static String lastErrorMessage;
 
+  static {
+    // Scan for plugins to support additional image formats.
+    try {
+      Class.forName("com.twelvemonkeys.imageio.plugins.webp.WebPImageReader");
+    } catch (ClassNotFoundException e) {
+      log.error("{} Unable to load WebPImageReader because of:", LOG_PREFIX, e);
+    }
+    ImageIO.scanForPlugins();
+  }
+
   private TextureManager() {}
 
   public static ResourceLocation addCustomTexture(TextureModelKey textureModelKey, File file) {
@@ -74,19 +85,8 @@ public class TextureManager {
     }
 
     // Verify the image data to make sure we got a valid image!
-    if (image == null) {
+    if (!ImageValidator.isValidImage(image)) {
       log.error("{} Unable to get any valid texture from file {}!", LOG_PREFIX, file);
-      return null;
-    } else if (image.getWidth() < 32
-        || image.getHeight() < 32
-        || image.getWidth() % 32 != 0
-        || image.getHeight() % 32 != 0) {
-      log.error(
-          "{} Unable to get any valid texture from file {}, got {}x{}!",
-          LOG_PREFIX,
-          file,
-          image.getWidth(),
-          image.getHeight());
       return null;
     }
 
@@ -183,19 +183,8 @@ public class TextureManager {
     }
 
     // Verify the image data to make sure we got a valid image!
-    if (image == null) {
+    if (!ImageValidator.isValidImage(image)) {
       processingErrorMessage(textureModelKey, remoteUrl, "Unable to get any valid texture");
-      return null;
-    } else if (image.getWidth() < 32
-        || image.getHeight() < 32
-        || image.getWidth() % 32 != 0
-        || image.getHeight() % 32 != 0) {
-      processingErrorMessage(
-          textureModelKey,
-          remoteUrl,
-          String.format(
-              "Got %dx%d, but expected 32x32 or multiple of 32",
-              image.getWidth(), image.getHeight()));
       return null;
     }
 
@@ -265,15 +254,30 @@ public class TextureManager {
         String filename = file.getName();
         UUID uuid = getUUIDFromFilename(filename);
         if (textureUUID.equals(uuid)) {
-          log.info(
-              "{} Found texture file in cache directory, will re-used file {} for {}",
-              LOG_PREFIX,
-              file,
-              textureModelKey);
-          return registerTexture(textureModelKey, file);
+          ResourceLocation textureResourceLocation = registerTexture(textureModelKey, file);
+          if (textureResourceLocation != null) {
+            log.info(
+                "{} Registered cached texture file {} for {} with {}",
+                LOG_PREFIX,
+                file,
+                textureModelKey,
+                textureResourceLocation);
+          } else {
+            log.error(
+                "{} Unable to register cached texture file {} for {}",
+                LOG_PREFIX,
+                file,
+                textureModelKey);
+          }
+          return textureResourceLocation;
         }
       }
     }
+    log.warn(
+        "{} Unable to find any cached texture file for {} in {}",
+        LOG_PREFIX,
+        textureModelKey,
+        targetDirectory);
     return null;
   }
 
@@ -328,7 +332,7 @@ public class TextureManager {
   public static TextureModelKey getTextureModelKey(SkinModel skinModel, File textureFile) {
     String filename = textureFile.getName();
     UUID uuid = getUUIDFromFilename(filename);
-    return new TextureModelKey(uuid, skinModel);
+    return new TextureModelKey(uuid, skinModel, filename);
   }
 
   public static UUID getUUIDFromFilename(String fileName) {

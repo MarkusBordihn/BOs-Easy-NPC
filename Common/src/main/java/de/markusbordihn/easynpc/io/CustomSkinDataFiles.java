@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.Stream;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -85,12 +86,15 @@ public class CustomSkinDataFiles {
       if (skinModelFolder != null
           && skinModelFolder.toFile().exists()
           && skinModelFolder.toFile().isDirectory()) {
-        for (String skinFileName : skinModelFolder.toFile().list()) {
-          Path skinFilePath = skinModelFolder.resolve(skinFileName);
-          File skinFile = skinFilePath.toFile();
-          if (skinFile.exists() && skinFileName.endsWith(".png")) {
-            CustomTextureManager.registerTexture(skinModel, skinFile);
-          }
+        try (Stream<Path> skinPaths = Files.walk(skinModelFolder)) {
+          skinPaths
+              .filter(
+                  skinPath -> Files.isRegularFile(skinPath) && skinPath.toString().endsWith(".png"))
+              .forEach(
+                  skinPath -> CustomTextureManager.registerTexture(skinModel, skinPath.toFile()));
+        } catch (IOException e) {
+          log.error(
+              "Error reading custom skin files from {} for {}:{}", skinModelFolder, skinModel, e);
         }
       }
     }
@@ -120,9 +124,7 @@ public class CustomSkinDataFiles {
       return Files.createDirectories(skinDataFolderPath);
     } catch (IOException e) {
       log.error(
-          "Could not create skin data folder {} at {}!",
-          skinModelName,
-          skinDataFolder.resolve(skinModelName));
+          "Error creating skin data folder {} at {}:{}", skinModelName, skinDataFolderPath, e);
     }
     return null;
   }
