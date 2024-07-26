@@ -55,6 +55,7 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
   private boolean canTextureSkinLocationChange = true;
   private Button clearTextureSettingsButton = null;
   private String formerTextureSkinLocation = "";
+  private String errorMessage = "";
 
   public PlayerSkinConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -147,17 +148,21 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
 
   private void addTextureSkinLocation() {
     String textureSkinLocationValue = this.textureSkinLocationBox.getValue();
-    if (!textureSkinLocationValue.equals(this.formerTextureSkinLocation)
-        && (textureSkinLocationValue.isEmpty()
-            || NameValidator.isValidPlayerName(textureSkinLocationValue))) {
+    if (!textureSkinLocationValue.isEmpty()
+        && !textureSkinLocationValue.equals(this.formerTextureSkinLocation)) {
 
-      // Validate player name and send skin change request to server.
-      if (NameValidator.isValidPlayerName(textureSkinLocationValue)) {
-        log.debug("Setting player user texture to {}", textureSkinLocationValue);
-        TextureManager.clearLastErrorMessage();
-        NetworkMessageHandlerManager.getServerHandler()
-            .setPlayerSkin(this.getNpcUUID(), textureSkinLocationValue, Constants.BLANK_UUID);
+      // Validate player name
+      if (!NameValidator.isValidPlayerName(textureSkinLocationValue)) {
+        this.errorMessage = "invalid_player_name";
+        return;
       }
+
+      // Send texture skin location to server.
+      log.debug("Setting player texture to {}", textureSkinLocationValue);
+      TextureManager.clearLastErrorMessage();
+      this.errorMessage = "";
+      NetworkMessageHandlerManager.getServerHandler()
+          .setPlayerSkin(this.getNpcUUID(), textureSkinLocationValue, Constants.BLANK_UUID);
 
       this.addTextureSettingsButton.active = false;
       this.formerTextureSkinLocation = textureSkinLocationValue;
@@ -267,7 +272,7 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
           8,
           10);
 
-      if (!TextureManager.hasLastErrorMessage()) {
+      if (!TextureManager.hasLastErrorMessage() && this.errorMessage.isEmpty()) {
         Text.drawConfigString(
             poseStack,
             this.font,
@@ -278,7 +283,15 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
     }
 
     // Show error messages, if any.
-    if (TextureManager.hasLastErrorMessage()) {
+    if (this.errorMessage != null && !this.errorMessage.isEmpty()) {
+      Text.drawErrorMessage(
+          poseStack,
+          this.font,
+          Component.translatable(Constants.TEXT_PREFIX + this.errorMessage),
+          this.leftPos + 10,
+          this.contentTopPos + 71,
+          this.imageWidth - 14);
+    } else if (TextureManager.hasLastErrorMessage()) {
       Text.drawErrorMessage(
           poseStack,
           this.font,
