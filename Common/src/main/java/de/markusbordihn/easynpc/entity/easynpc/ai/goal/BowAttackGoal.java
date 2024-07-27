@@ -103,7 +103,7 @@ public class BowAttackGoal<T extends EasyNPC<?>> extends Goal {
         --this.seeTime;
       }
 
-      if (!(targetDistance > this.attackRadiusSqr) && this.seeTime >= 20) {
+      if (targetDistance <= this.attackRadiusSqr && this.seeTime >= 20) {
         this.pathfinderMob.getNavigation().stop();
         ++this.strafingTime;
       } else {

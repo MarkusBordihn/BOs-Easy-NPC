@@ -8,6 +8,15 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.3.0 (beta only for testing)
+
+- Fixed #261 by adding additional Image Validation before storing skins to the NPC.
+- Fixed #260 by moving specific log messages to debug level.
+- Fixed #257 by adding a search bar for custom skins.
+- Added Traditional Chinese translations. Thanks a lot to @yichifauzi.
+- Added sub-folder support for custom skins.
+- Added additional icons and symbols for better usability.
+
 ### 5.2.0 (beta only for testing)
 
 - Refactored Network Protocol to support 1.20.6 and 1.21.x changes.

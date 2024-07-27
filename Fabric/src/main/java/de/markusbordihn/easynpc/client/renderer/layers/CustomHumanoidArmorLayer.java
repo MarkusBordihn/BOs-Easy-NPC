@@ -21,18 +21,18 @@ package de.markusbordihn.easynpc.client.renderer.layers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.resources.model.ModelManager;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 
 public class CustomHumanoidArmorLayer<
         T extends LivingEntity, M extends HumanoidModel<T>, A extends HumanoidModel<T>>
     extends HumanoidArmorLayer<T, M, A> {
-
-  private EasyNPC<?> easyNPC = null;
 
   public CustomHumanoidArmorLayer(
       RenderLayerParent<T, M> renderer, A innerModel, A outerModel, ModelManager modelManager) {
@@ -40,30 +40,22 @@ public class CustomHumanoidArmorLayer<
   }
 
   @Override
-  public void render(
+  protected void renderArmorPiece(
       PoseStack poseStack,
-      MultiBufferSource buffer,
-      int lightLevel,
-      T livingEntity,
-      float limbSwing,
-      float limbSwingAmount,
-      float ageInTicks,
-      float ageInTicks2,
-      float netHeadYaw,
-      float headPitch) {
-    if (easyNPC == null && livingEntity instanceof EasyNPC<?> easyNPCEntity) {
-      this.easyNPC = easyNPCEntity;
+      MultiBufferSource multiBufferSource,
+      T entity,
+      EquipmentSlot equipmentSlot,
+      int light,
+      A model) {
+    if (entity instanceof EasyNPC<?> easyNPC) {
+      ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+      if (modelData != null
+          && ((equipmentSlot == EquipmentSlot.CHEST && modelData.isModelChestplateVisible())
+              || (equipmentSlot == EquipmentSlot.LEGS && modelData.isModelLeggingsVisible())
+              || (equipmentSlot == EquipmentSlot.FEET && modelData.isModelBootsVisible())
+              || (equipmentSlot == EquipmentSlot.HEAD && modelData.isModelHelmetVisible()))) {
+        super.renderArmorPiece(poseStack, multiBufferSource, entity, equipmentSlot, light, model);
+      }
     }
-    super.render(
-        poseStack,
-        buffer,
-        lightLevel,
-        livingEntity,
-        limbSwing,
-        limbSwingAmount,
-        ageInTicks,
-        ageInTicks2,
-        netHeadYaw,
-        headPitch);
   }
 }

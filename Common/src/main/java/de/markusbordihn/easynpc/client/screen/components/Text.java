@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.client.screen.components;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.texture.TextureManager;
 import java.util.List;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -76,13 +75,12 @@ public class Text {
 
   public static void drawErrorMessage(
       GuiGraphics guiGraphics, Font font, String text, int x, int y, int width) {
-    drawErrorMessage(guiGraphics, font, Component.literal(text), x, y, width);
+    drawErrorMessage(guiGraphics, font, Component.literal(text != null ? text : ""), x, y, width);
   }
 
   public static void drawErrorMessage(
       GuiGraphics guiGraphics, Font font, Component component, int x, int y, int width) {
-    List<FormattedCharSequence> textComponents =
-        font.split(Component.literal(TextureManager.getLastErrorMessage()), width);
+    List<FormattedCharSequence> textComponents = font.split(component, width);
     int line = 0;
     for (FormattedCharSequence formattedCharSequence : textComponents) {
       Text.drawString(

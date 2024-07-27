@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.entity.easynpc.handlers;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.item.ModItemTags;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -33,8 +34,10 @@ import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.component.ChargedProjectiles;
 
 public class AttackHandler {
   public static final String CHARGED_PROJECTILES_TAG = "ChargedProjectiles";
@@ -87,13 +90,19 @@ public class AttackHandler {
     return isHoldingMeleeWeapon(livingEntity) || isHoldingProjectileWeapon(livingEntity);
   }
 
+  public static void addChargedProjectile(
+      ItemStack weaponItemStack, ItemStack projectileItemStack) {
+    weaponItemStack.set(
+        DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.of(projectileItemStack));
+  }
+
   public static void performDefaultRangedAttack(
       LivingEntity livingEntity, LivingEntity targedtedLivingEntity, float damage) {
     if (isHoldingBowWeapon(livingEntity)) {
       performBowAttack(livingEntity, targedtedLivingEntity, damage);
     } else if (livingEntity instanceof CrossbowAttackMob crossbowAttackMob
         && isHoldingCrossbowWeapon(livingEntity)) {
-      // addChargedProjectile(livingEntity.getMainHandItem(), new ItemStack(Items.ARROW, 1));
+      addChargedProjectile(livingEntity.getMainHandItem(), new ItemStack(Items.ARROW, 1));
       crossbowAttackMob.performCrossbowAttack(livingEntity, 1.6F);
     } else if (isHoldingGunWeapon(livingEntity)) {
       performGunAttack(livingEntity, targedtedLivingEntity, damage);

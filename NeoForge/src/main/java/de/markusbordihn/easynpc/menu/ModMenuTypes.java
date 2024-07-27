@@ -80,7 +80,9 @@ public class ModMenuTypes {
       MENU_TYPES.register(
           ModMenuType.SPAWNER.getName(), () -> IMenuTypeExtension.create(SpawnerMenuWrapper::new));
 
-  private ModMenuTypes() {}  public static final DeferredHolder<
+  private ModMenuTypes() {}
+
+  public static final DeferredHolder<
           MenuType<?>, MenuType<AbilitiesAttributeConfigurationMenuWrapper>>
       ABILITIES_ATTRIBUTE_CONFIGURATION_MENU =
           MENU_TYPES.register(

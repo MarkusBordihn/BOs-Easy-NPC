@@ -22,10 +22,7 @@ public class EquipmentSlotArgument implements ArgumentType<EquipmentSlot> {
   private static final Collection<String> EXAMPLES =
       Arrays.asList("weapon.mainhand", "weapon.offhand");
   private static final DynamicCommandExceptionType ERROR_UNKNOWN_SLOT =
-      new DynamicCommandExceptionType(
-          (slot) -> {
-            return Component.translatable("slot.unknown", slot);
-          });
+      new DynamicCommandExceptionType(slot -> Component.translatable("slot.unknown", slot));
   private static final Map<String, EquipmentSlot> SLOTS =
       Util.make(
           Maps.newHashMap(),

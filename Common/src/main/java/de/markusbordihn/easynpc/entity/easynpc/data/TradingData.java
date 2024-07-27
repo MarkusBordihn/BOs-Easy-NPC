@@ -136,15 +136,23 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
 
   default void setAdvancedTradingOffers(Container container) {
 
-    // Update trading offers with container items.
+    log.debug("Setting advanced trading offers for {} with container {}", this, container);
     MerchantOffers merchantOffers = new MerchantOffers();
     for (int tradingOffer = 0;
         tradingOffer < TradingSettings.ADVANCED_TRADING_OFFERS;
         tradingOffer++) {
-      // Get items from container and create item cost holder.
-      ItemCost itemCostA = getItemCost(container.getItem(tradingOffer * 3));
-      Optional<ItemCost> itemCostB = getOptionalItemCost(container.getItem(tradingOffer * 3 + 1));
+
+      // Check if we have a valid trading offer.
+      ItemStack itemA = container.getItem(tradingOffer * 3);
+      ItemStack itemB = container.getItem(tradingOffer * 3 + 1);
       ItemStack itemResult = container.getItem(tradingOffer * 3 + 2);
+      if ((itemA.isEmpty() && itemB.isEmpty()) || itemResult.isEmpty()) {
+        continue;
+      }
+
+      // Calculate item costs based on item A and item B.
+      ItemCost itemCostA = getItemCost(itemA);
+      Optional<ItemCost> itemCostB = getOptionalItemCost(itemB);
 
       // Check if we have existing trading offers and use them as base for the new trading offers.
       MerchantOffers existingMerchantOffers = this.getTradingOffers();
@@ -179,14 +187,23 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
 
   default void setBasicTradingOffers(Container container) {
 
-    // Create new trading offers based on the container and number of trading offers.
+    log.debug("Setting basic trading offers for {} with container {}", this, container);
     MerchantOffers merchantOffers = new MerchantOffers();
     for (int tradingOffer = 0;
         tradingOffer < TradingSettings.BASIC_TRADING_OFFERS;
         tradingOffer++) {
-      ItemCost itemCostA = getItemCost(container.getItem(tradingOffer * 3));
-      Optional<ItemCost> itemCostB = getOptionalItemCost(container.getItem(tradingOffer * 3 + 1));
+
+      // Check if we have a valid trading offer.
+      ItemStack itemA = container.getItem(tradingOffer * 3);
+      ItemStack itemB = container.getItem(tradingOffer * 3 + 1);
       ItemStack itemResult = container.getItem(tradingOffer * 3 + 2);
+      if ((itemA.isEmpty() && itemB.isEmpty()) || itemResult.isEmpty()) {
+        continue;
+      }
+
+      // Calculate item costs based on item A and item B.
+      ItemCost itemCostA = getItemCost(itemA);
+      Optional<ItemCost> itemCostB = getOptionalItemCost(itemB);
 
       MerchantOffer merchantOffer =
           new MerchantOffer(

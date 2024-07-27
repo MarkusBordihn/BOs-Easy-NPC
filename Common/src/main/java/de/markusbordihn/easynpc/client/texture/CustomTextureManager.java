@@ -44,9 +44,18 @@ public class CustomTextureManager {
   private CustomTextureManager() {}
 
   public static Set<UUID> getCustomTextureCacheKeys(SkinModel skinModel) {
+    return getCustomTextureCacheKeys(skinModel, null);
+  }
+
+  public static Set<UUID> getCustomTextureCacheKeys(SkinModel skinModel, String searchName) {
     HashSet<UUID> hashSet = new HashSet<>();
+    String skinSearchName =
+        searchName != null && !searchName.isEmpty() ? searchName.toLowerCase() : null;
     for (TextureModelKey textureModelKey : textureCache.keySet()) {
-      if (skinModel.equals(textureModelKey.getSkinModel())) {
+      if (skinModel.equals(textureModelKey.getSkinModel())
+          && (skinSearchName == null
+              || textureModelKey.getResourceName().isEmpty()
+              || textureModelKey.getResourceName().toLowerCase().contains(skinSearchName))) {
         hashSet.add(textureModelKey.getUUID());
       }
     }
@@ -97,12 +106,9 @@ public class CustomTextureManager {
         TextureManager.searchCachedTexture(textureModelKey, textureDataFolder);
     if (localTextureCache != null) {
       textureCache.put(textureModelKey, localTextureCache);
-      log.info("Loaded custom texture {} from {}.", textureModelKey, textureDataFolder);
-      return localTextureCache;
     }
 
-    log.error("Unable to load custom texture {} from {}!", textureModelKey, textureDataFolder);
-    return null;
+    return localTextureCache;
   }
 
   public static void registerTexture(SkinModel skinModel, File textureFile) {

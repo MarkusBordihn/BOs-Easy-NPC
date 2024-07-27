@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.data.rotation;
 
-import de.markusbordihn.easynpc.data.position.CustomPosition;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
