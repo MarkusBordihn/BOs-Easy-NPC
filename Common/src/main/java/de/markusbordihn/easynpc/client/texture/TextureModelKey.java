@@ -28,11 +28,17 @@ public class TextureModelKey {
   private final UUID uuid;
   private final String subType;
   private final SkinModel skinModel;
+  private final String resourceName;
 
   public TextureModelKey(UUID uuid, SkinModel skinModel) {
+    this(uuid, skinModel, "");
+  }
+
+  public TextureModelKey(UUID uuid, SkinModel skinModel, String resourceName) {
     this.uuid = uuid;
     this.subType = skinModel != null ? skinModel.name() : "";
     this.skinModel = skinModel;
+    this.resourceName = resourceName != null ? resourceName : "";
   }
 
   public UUID getUUID() {
@@ -45,6 +51,10 @@ public class TextureModelKey {
 
   public SkinModel getSkinModel() {
     return this.skinModel;
+  }
+
+  public String getResourceName() {
+    return this.resourceName;
   }
 
   @Override
@@ -69,12 +79,12 @@ public class TextureModelKey {
     return "TextureModelKey{"
         + "uuid="
         + this.uuid
-        + ", "
-        + "skinModel="
+        + ", skinModel="
         + this.skinModel
-        + ", "
-        + "subType='"
+        + ", subType='"
         + this.subType
+        + ", resourceName='"
+        + this.resourceName
         + '\''
         + '}';
   }
