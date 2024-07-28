@@ -61,6 +61,9 @@ public class ClientRenderer {
     event.registerEntityRenderer(
         ModEntityType.ALLAY.get(),
         context -> new AllayModelRenderer(context, ModModelLayers.ALLAY));
+    event.registerEntityRenderer(
+        ModEntityType.BOGGED.get(),
+        context -> new SkeletonModelRenderer(context, CustomHumanoidArmorLayer.class));
     event.registerEntityRenderer(ModEntityType.CAT.get(), CatModelRenderer::new);
     event.registerEntityRenderer(ModEntityType.CHICKEN.get(), ChickenModelRenderer::new);
     event.registerEntityRenderer(

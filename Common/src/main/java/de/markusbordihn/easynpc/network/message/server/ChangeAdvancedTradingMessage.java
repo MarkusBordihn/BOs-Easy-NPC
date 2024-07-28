@@ -37,9 +37,9 @@ public record ChangeAdvancedTradingMessage(
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "change_advanced_trading");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "change_advanced_trading");
   public static final CustomPacketPayload.Type<ChangeAdvancedTradingMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ChangeAdvancedTradingMessage>
       STREAM_CODEC =
           StreamCodec.of(

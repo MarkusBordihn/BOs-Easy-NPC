@@ -41,9 +41,9 @@ public record OpenDialogButtonEditorMessage(UUID uuid, UUID dialogId, UUID dialo
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "open_dialog_button_editor");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "open_dialog_button_editor");
   public static final CustomPacketPayload.Type<OpenDialogButtonEditorMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, OpenDialogButtonEditorMessage>
       STREAM_CODEC =
           StreamCodec.of(

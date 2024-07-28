@@ -1,4 +1,4 @@
-# 🗣 Easy NPC (1.20.6)
+# 🗣 Easy NPC (1.21)
 
 ![Easy NPC Versions](http://cf.way2muchnoise.eu/versions/Minecraft_559312_all.svg)
 

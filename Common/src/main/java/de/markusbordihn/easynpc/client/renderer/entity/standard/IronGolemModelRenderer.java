@@ -40,7 +40,7 @@ public class IronGolemModelRenderer
           new EnumMap<>(Variant.class),
           map -> {
             ResourceLocation resourceLocation =
-                new ResourceLocation("textures/entity/iron_golem/iron_golem.png");
+                ResourceLocation.withDefaultNamespace("textures/entity/iron_golem/iron_golem.png");
             map.put(Variant.IRON_GOLEM, resourceLocation);
             map.put(Variant.IRON_GOLEM_CRACKINESS_HIGH, resourceLocation);
             map.put(Variant.IRON_GOLEM_CRACKINESS_MEDIUM, resourceLocation);
@@ -53,14 +53,16 @@ public class IronGolemModelRenderer
           map -> {
             map.put(
                 Variant.IRON_GOLEM_CRACKINESS_HIGH,
-                new ResourceLocation("textures/entity/iron_golem/iron_golem_crackiness_high.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/iron_golem/iron_golem_crackiness_high.png"));
             map.put(
                 Variant.IRON_GOLEM_CRACKINESS_MEDIUM,
-                new ResourceLocation(
+                ResourceLocation.withDefaultNamespace(
                     "textures/entity/iron_golem/iron_golem_crackiness_medium.png"));
             map.put(
                 Variant.IRON_GOLEM_CRACKINESS_LOW,
-                new ResourceLocation("textures/entity/iron_golem/iron_golem_crackiness_low.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/iron_golem/iron_golem_crackiness_low.png"));
           });
   protected static final ResourceLocation DEFAULT_TEXTURE =
       TEXTURE_BY_VARIANT.get(Variant.IRON_GOLEM);

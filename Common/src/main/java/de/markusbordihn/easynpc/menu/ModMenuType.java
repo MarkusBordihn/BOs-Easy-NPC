@@ -28,7 +28,7 @@ public enum ModMenuType {
   ;
 
   public ResourceLocation getId() {
-    return new ResourceLocation(Constants.MOD_ID, this.name().toLowerCase());
+    return ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, this.name().toLowerCase());
   }
 
   public String getName() {

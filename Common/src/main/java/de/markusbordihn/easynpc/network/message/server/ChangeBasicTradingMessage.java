@@ -37,9 +37,9 @@ public record ChangeBasicTradingMessage(
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "change_basic_trading");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "change_basic_trading");
   public static final CustomPacketPayload.Type<ChangeBasicTradingMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ChangeBasicTradingMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), ChangeBasicTradingMessage::create);
 

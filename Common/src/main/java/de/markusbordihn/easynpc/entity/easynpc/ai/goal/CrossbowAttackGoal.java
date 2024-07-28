@@ -143,7 +143,7 @@ public class CrossbowAttackGoal<T extends EasyNPC<?>> extends Goal {
 
         int i = this.pathfinderMob.getTicksUsingItem();
         ItemStack itemstack = this.pathfinderMob.getUseItem();
-        if (i >= CrossbowItem.getChargeDuration(itemstack)) {
+        if (i >= CrossbowItem.getChargeDuration(itemstack, livingentity)) {
           this.pathfinderMob.releaseUsingItem();
           this.crossbowState = CrossbowState.CHARGED;
           this.attackDelay = 20 + this.pathfinderMob.getRandom().nextInt(20);

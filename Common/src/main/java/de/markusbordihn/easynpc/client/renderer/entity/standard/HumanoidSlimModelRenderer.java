@@ -48,18 +48,36 @@ public class HumanoidSlimModelRenderer
       Util.make(
           new EnumMap<>(Variant.class),
           map -> {
-            map.put(Variant.ALEX, new ResourceLocation("textures/entity/player/slim/alex.png"));
-            map.put(Variant.ARI, new ResourceLocation("textures/entity/player/slim/ari.png"));
-            map.put(Variant.EFE, new ResourceLocation("textures/entity/player/slim/efe.png"));
-            map.put(Variant.KAI, new ResourceLocation("textures/entity/player/slim/kai.png"));
-            map.put(Variant.MAKENA, new ResourceLocation("textures/entity/player/slim/makena.png"));
-            map.put(Variant.NOOR, new ResourceLocation("textures/entity/player/slim/noor.png"));
-            map.put(Variant.STEVE, new ResourceLocation("textures/entity/player/slim/steve.png"));
-            map.put(Variant.SUNNY, new ResourceLocation("textures/entity/player/slim/sunny.png"));
-            map.put(Variant.ZURI, new ResourceLocation("textures/entity/player/slim/zuri.png"));
+            map.put(
+                Variant.ALEX,
+                ResourceLocation.withDefaultNamespace("textures/entity/player/slim/alex.png"));
+            map.put(
+                Variant.ARI,
+                ResourceLocation.withDefaultNamespace("textures/entity/player/slim/ari.png"));
+            map.put(
+                Variant.EFE,
+                ResourceLocation.withDefaultNamespace("textures/entity/player/slim/efe.png"));
+            map.put(
+                Variant.KAI,
+                ResourceLocation.withDefaultNamespace("textures/entity/player/slim/kai.png"));
+            map.put(
+                Variant.MAKENA,
+                ResourceLocation.withDefaultNamespace("textures/entity/player/slim/makena.png"));
+            map.put(
+                Variant.NOOR,
+                ResourceLocation.withDefaultNamespace("textures/entity/player/slim/noor.png"));
+            map.put(
+                Variant.STEVE,
+                ResourceLocation.withDefaultNamespace("textures/entity/player/slim/steve.png"));
+            map.put(
+                Variant.SUNNY,
+                ResourceLocation.withDefaultNamespace("textures/entity/player/slim/sunny.png"));
+            map.put(
+                Variant.ZURI,
+                ResourceLocation.withDefaultNamespace("textures/entity/player/slim/zuri.png"));
             map.put(
                 Variant.KAWORRU,
-                new ResourceLocation(
+                ResourceLocation.fromNamespaceAndPath(
                     Constants.MOD_ID, "textures/entity/humanoid_slim/kaworru.png"));
           });
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.ALEX);

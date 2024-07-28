@@ -35,7 +35,7 @@ import net.minecraft.world.item.DyeColor;
 public class CatCollarLayer<T extends LivingEntity, M extends StandardCatModel<T>>
     extends RenderLayer<T, M> {
   private static final ResourceLocation CAT_COLLAR_LOCATION =
-      new ResourceLocation("textures/entity/cat/cat_collar.png");
+      ResourceLocation.withDefaultNamespace("textures/entity/cat/cat_collar.png");
   private final StandardCatModel<T> catModel;
 
   public CatCollarLayer(RenderLayerParent<T, M> parent, EntityModelSet model) {
@@ -59,7 +59,7 @@ public class CatCollarLayer<T extends LivingEntity, M extends StandardCatModel<T
     }
     OwnerData<?> ownerData = easyNPC.getEasyNPCOwnerData();
     if (ownerData != null && ownerData.hasOwner()) {
-      float[] afloat = DyeColor.RED.getTextureDiffuseColors();
+      int diffuseColor = DyeColor.RED.getTextureDiffuseColor();
       coloredCutoutModelCopyLayerRender(
           this.getParentModel(),
           this.catModel,
@@ -74,9 +74,7 @@ public class CatCollarLayer<T extends LivingEntity, M extends StandardCatModel<T
           netHeadYaw,
           headPitch,
           ageInTicks,
-          afloat[0],
-          afloat[1],
-          afloat[2]);
+          diffuseColor);
     }
   }
 }

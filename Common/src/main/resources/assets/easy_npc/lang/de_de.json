@@ -1,6 +1,7 @@
 {
   "block.easy_npc.easy_npc_spawner": "EasyNPC Spawner",
   "entity.easy_npc.allay": "Allay",
+  "entity.easy_npc.bogged": "Bogged",
   "entity.easy_npc.cat": "Katze",
   "entity.easy_npc.chicken": "Huhn",
   "entity.easy_npc.drowned": "Ertrunkener",

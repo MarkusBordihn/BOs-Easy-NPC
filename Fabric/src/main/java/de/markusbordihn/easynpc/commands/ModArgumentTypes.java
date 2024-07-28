@@ -32,11 +32,11 @@ public class ModArgumentTypes {
 
   public static void register() {
     ArgumentTypeRegistry.registerArgumentType(
-        new ResourceLocation(Constants.MOD_ID, "easy_npc"),
+        ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "easy_npc"),
         EasyNPCArgument.class,
         SingletonArgumentInfo.contextFree(EasyNPCArgument::new));
     ArgumentTypeRegistry.registerArgumentType(
-        new ResourceLocation(Constants.MOD_ID, "equipment_slot"),
+        ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "equipment_slot"),
         EquipmentSlotArgument.class,
         SingletonArgumentInfo.contextFree(EquipmentSlotArgument::new));
   }

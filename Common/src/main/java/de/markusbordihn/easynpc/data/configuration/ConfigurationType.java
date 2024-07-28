@@ -92,7 +92,8 @@ public enum ConfigurationType {
   }
 
   public ResourceLocation getId() {
-    return new ResourceLocation(Constants.MOD_ID, this.name().toLowerCase() + "_configuration");
+    return ResourceLocation.fromNamespaceAndPath(
+        Constants.MOD_ID, this.name().toLowerCase() + "_configuration");
   }
 
   public String getName() {

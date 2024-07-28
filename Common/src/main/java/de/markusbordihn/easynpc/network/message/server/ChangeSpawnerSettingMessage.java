@@ -39,9 +39,9 @@ public record ChangeSpawnerSettingMessage(
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "change_spawner_settings");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "change_spawner_settings");
   public static final CustomPacketPayload.Type<ChangeSpawnerSettingMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ChangeSpawnerSettingMessage>
       STREAM_CODEC =
           StreamCodec.of(

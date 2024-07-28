@@ -20,11 +20,12 @@
 package de.markusbordihn.easynpc.menu.configuration.equipment.slot;
 
 import com.mojang.datafixers.util.Pair;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenu;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
@@ -69,14 +70,16 @@ public class ArmorSlot extends Slot {
 
   @Override
   public boolean mayPlace(ItemStack itemStack) {
-    return this.equipmentSlot == LivingEntity.getEquipmentSlotForItem(itemStack);
+    EasyNPC<?> easyNPC = this.menu.getEasyNPC();
+    return easyNPC != null
+        && this.equipmentSlot == easyNPC.getLivingEntity().getEquipmentSlotForItem(itemStack);
   }
 
   @Override
   public boolean mayPickup(Player player) {
     ItemStack itemStack = this.getItem();
     return !itemStack.isEmpty()
-        && (player.isCreative() || !EnchantmentHelper.hasBindingCurse(itemStack))
+        && (player.isCreative() || !EnchantmentHelper.hasTag(itemStack, EnchantmentTags.CURSE))
         && super.mayPickup(player);
   }
 

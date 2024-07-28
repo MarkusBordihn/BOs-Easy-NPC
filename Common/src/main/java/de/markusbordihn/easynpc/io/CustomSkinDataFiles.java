@@ -57,7 +57,7 @@ public class CustomSkinDataFiles {
       // Copy example skin model template files, if any.
       String skinModelName = skinModel.getName();
       ResourceLocation resourceLocation =
-          new ResourceLocation(
+          ResourceLocation.fromNamespaceAndPath(
               Constants.MOD_ID,
               "textures/entity/" + skinModelName + "/" + skinModelName + "_template.png");
       File skinModelTemplateFile =

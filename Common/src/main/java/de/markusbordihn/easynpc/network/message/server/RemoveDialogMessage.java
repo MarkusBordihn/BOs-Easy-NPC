@@ -34,9 +34,9 @@ import net.minecraft.server.level.ServerPlayer;
 public record RemoveDialogMessage(UUID uuid, UUID dialogId) implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "remove_dialog");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "remove_dialog");
   public static final CustomPacketPayload.Type<RemoveDialogMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, RemoveDialogMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), RemoveDialogMessage::create);
 

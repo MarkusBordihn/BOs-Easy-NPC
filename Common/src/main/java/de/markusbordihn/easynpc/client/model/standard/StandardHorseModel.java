@@ -205,24 +205,11 @@ public class StandardHorseModel<T extends Entity> extends BaseEntityModel<T>
 
   @Override
   public void renderToBuffer(
-      PoseStack poseStack,
-      VertexConsumer vertexConsumer,
-      int light,
-      int overlay,
-      float red,
-      float green,
-      float blue,
-      float alpha) {
+      PoseStack poseStack, VertexConsumer vertexConsumer, int light, int overlay, int color) {
     this.headParts()
-        .forEach(
-            headPart ->
-                headPart.render(
-                    poseStack, vertexConsumer, light, overlay, red, green, blue, alpha));
+        .forEach(headPart -> headPart.render(poseStack, vertexConsumer, light, overlay, color));
     this.bodyParts()
-        .forEach(
-            bodyPart ->
-                bodyPart.render(
-                    poseStack, vertexConsumer, light, overlay, red, green, blue, alpha));
+        .forEach(bodyPart -> bodyPart.render(poseStack, vertexConsumer, light, overlay, color));
   }
 
   @Override

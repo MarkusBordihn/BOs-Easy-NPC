@@ -212,14 +212,7 @@ public class StandardAllayModel<T extends Mob> extends BaseHierarchicalArmModel<
 
   @Override
   public void renderToBuffer(
-      PoseStack poseStack,
-      VertexConsumer vertexConsumer,
-      int lightLevel,
-      int overlay,
-      float red,
-      float green,
-      float blue,
-      float alpha) {
-    this.root.render(poseStack, vertexConsumer, lightLevel, overlay);
+      PoseStack poseStack, VertexConsumer vertexConsumer, int lightLevel, int overlay, int color) {
+    this.root.render(poseStack, vertexConsumer, lightLevel, overlay, color);
   }
 }

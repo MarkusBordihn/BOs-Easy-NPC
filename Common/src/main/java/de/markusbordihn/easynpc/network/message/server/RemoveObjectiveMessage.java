@@ -36,9 +36,9 @@ public record RemoveObjectiveMessage(UUID uuid, ObjectiveDataEntry objectiveData
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "remove_objective");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "remove_objective");
   public static final CustomPacketPayload.Type<RemoveObjectiveMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, RemoveObjectiveMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), RemoveObjectiveMessage::create);
 

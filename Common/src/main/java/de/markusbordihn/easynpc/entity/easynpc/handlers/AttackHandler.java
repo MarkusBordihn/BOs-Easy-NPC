@@ -172,11 +172,13 @@ public class AttackHandler {
 
   public static AbstractArrow getArrow(
       LivingEntity livingEntity, ItemStack itemStack, float damage) {
-    return ProjectileUtil.getMobArrow(livingEntity, itemStack, damage);
+    return ProjectileUtil.getMobArrow(livingEntity, itemStack, damage, null);
   }
 
   public static AbstractArrow getBullet(LivingEntity livingEntity, float damage) {
-    Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(Constants.MOD_ID, "bullet"));
-    return ProjectileUtil.getMobArrow(livingEntity, new ItemStack(item), damage);
+    Item item =
+        BuiltInRegistries.ITEM.get(
+            ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "bullet"));
+    return ProjectileUtil.getMobArrow(livingEntity, new ItemStack(item), damage, null);
   }
 }

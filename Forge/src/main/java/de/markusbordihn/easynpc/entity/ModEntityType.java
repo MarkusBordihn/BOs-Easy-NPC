@@ -54,6 +54,8 @@ public class ModEntityType {
 
   public static final RegistryObject<EntityType<Allay>> ALLAY =
       ENTITY_TYPES.register(Allay.ID, () -> ModEntityTypes.ALLAY);
+  public static final RegistryObject<EntityType<Skeleton>> BOGGED =
+      ENTITY_TYPES.register(Skeleton.ID_BOGGED, () -> ModEntityTypes.BOGGED);
   public static final RegistryObject<EntityType<Cat>> CAT =
       ENTITY_TYPES.register(Cat.ID, () -> ModEntityTypes.CAT);
   public static final RegistryObject<EntityType<Chicken>> CHICKEN =
@@ -114,6 +116,7 @@ public class ModEntityType {
     event.put(CRASH_TEST_DUMMY.get(), CrashTestDummy.createAttributes().build());
 
     event.put(ALLAY.get(), Allay.createAttributes().build());
+    event.put(BOGGED.get(), Skeleton.createAttributes().build());
     event.put(CAT.get(), Cat.createAttributes().build());
     event.put(CHICKEN.get(), Chicken.createAttributes().build());
     event.put(DROWNED.get(), Zombie.createAttributes().build());

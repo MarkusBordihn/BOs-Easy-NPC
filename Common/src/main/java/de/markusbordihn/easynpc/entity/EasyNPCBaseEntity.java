@@ -67,6 +67,7 @@ import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -216,9 +217,9 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
   }
 
   @Override
-  public Entity changeDimension(ServerLevel serverLevel) {
-    this.handleChangeDimensionEvent(serverLevel);
-    return super.changeDimension(serverLevel);
+  public Entity changeDimension(DimensionTransition dimensionTransition) {
+    this.handleChangeDimensionEvent(dimensionTransition);
+    return super.changeDimension(dimensionTransition);
   }
 
   @Override
@@ -389,12 +390,7 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
   }
 
   @Override
-  public boolean canBeLeashed(Player player) {
-    if (!this.isLeashed()
-        && player instanceof ServerPlayer serverPlayer
-        && (serverPlayer.isCreative() || isOwner(serverPlayer))) {
-      return true;
-    }
+  public boolean canBeLeashed() {
     return !this.isLeashed()
         && getAttributeDataLoaded()
         && getAttributeCanBeLeashed()
@@ -454,9 +450,9 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
   }
 
   @Override
-  protected void handleNetherPortal() {
+  protected void handlePortal() {
     if (getAttributeDataLoaded() && getAttributeCanUseNetherPortal()) {
-      super.handleNetherPortal();
+      super.handlePortal();
     }
   }
 
@@ -502,7 +498,7 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
   }
 
   @Override
-  public void equipSaddle(SoundSource soundSource) {
+  public void equipSaddle(ItemStack itemStack, SoundSource soundSource) {
     if (soundSource != null) {
       this.level().playSound(null, this, SoundEvents.PIG_SADDLE, soundSource, 0.5F, 1.0F);
     }

@@ -43,14 +43,16 @@ public class AllayModelRenderer
           map -> {
             map.put(
                 Variant.LAVA,
-                new ResourceLocation(Constants.MOD_ID, "textures/entity/allay/allay_lava.png"));
+                ResourceLocation.fromNamespaceAndPath(
+                    Constants.MOD_ID, "textures/entity/allay/allay_lava.png"));
             map.put(
                 Variant.GRASSLAND,
-                new ResourceLocation(
+                ResourceLocation.fromNamespaceAndPath(
                     Constants.MOD_ID, "textures/entity/allay/allay_grassland.png"));
             map.put(
                 Variant.WATER,
-                new ResourceLocation(Constants.MOD_ID, "textures/entity/allay/allay_water.png"));
+                ResourceLocation.fromNamespaceAndPath(
+                    Constants.MOD_ID, "textures/entity/allay/allay_water.png"));
           });
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.WATER);
 

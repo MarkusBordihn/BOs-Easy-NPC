@@ -33,9 +33,9 @@ import net.minecraft.server.level.ServerPlayer;
 public record RemoveNPCMessage(UUID uuid) implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "remove_npc");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "remove_npc");
   public static final CustomPacketPayload.Type<RemoveNPCMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, RemoveNPCMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), RemoveNPCMessage::create);
 

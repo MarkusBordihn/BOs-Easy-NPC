@@ -44,9 +44,9 @@ public record OpenActionDataEditorMessage(
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "open_action_data_editor");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "open_action_data_editor");
   public static final CustomPacketPayload.Type<OpenActionDataEditorMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, OpenActionDataEditorMessage>
       STREAM_CODEC =
           StreamCodec.of(

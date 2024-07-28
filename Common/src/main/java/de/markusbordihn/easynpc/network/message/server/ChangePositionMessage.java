@@ -34,9 +34,9 @@ import net.minecraft.world.phys.Vec3;
 public record ChangePositionMessage(UUID uuid, Vec3 pos) implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "change_position");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "change_position");
   public static final CustomPacketPayload.Type<ChangePositionMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ChangePositionMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), ChangePositionMessage::create);
 

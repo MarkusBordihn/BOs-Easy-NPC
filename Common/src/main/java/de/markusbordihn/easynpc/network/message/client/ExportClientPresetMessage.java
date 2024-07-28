@@ -39,9 +39,9 @@ public record ExportClientPresetMessage(
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "preset_export_client");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "preset_export_client");
   public static final CustomPacketPayload.Type<ExportClientPresetMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ExportClientPresetMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), ExportClientPresetMessage::create);
 

@@ -45,7 +45,7 @@ public class ZombieVillagerModelRenderer
         ZombieVillager, Variant, StandardZombieVillagerModel<ZombieVillager>> {
 
   public static final ResourceLocation BASE_TEXTURE =
-      new ResourceLocation("textures/entity/zombie_villager/zombie_villager.png");
+      ResourceLocation.withDefaultNamespace("textures/entity/zombie_villager/zombie_villager.png");
   protected static final Map<Profession, ResourceLocation> TEXTURE_BY_PROFESSION =
       Util.make(
           new EnumMap<>(Profession.class),
@@ -53,48 +53,60 @@ public class ZombieVillagerModelRenderer
             map.put(Profession.NONE, Constants.BLANK_ENTITY_TEXTURE);
             map.put(
                 Profession.ARMORER,
-                new ResourceLocation("textures/entity/zombie_villager/profession/armorer.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/zombie_villager/profession/armorer.png"));
             map.put(
                 Profession.BUTCHER,
-                new ResourceLocation("textures/entity/zombie_villager/profession/butcher.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/zombie_villager/profession/butcher.png"));
             map.put(
                 Profession.CARTOGRAPHER,
-                new ResourceLocation(
+                ResourceLocation.withDefaultNamespace(
                     "textures/entity/zombie_villager/profession/cartographer.png"));
             map.put(
                 Profession.CLERIC,
-                new ResourceLocation("textures/entity/zombie_villager/profession/cleric.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/zombie_villager/profession/cleric.png"));
             map.put(
                 Profession.FARMER,
-                new ResourceLocation("textures/entity/zombie_villager/profession/farmer.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/zombie_villager/profession/farmer.png"));
             map.put(
                 Profession.FISHERMAN,
-                new ResourceLocation("textures/entity/zombie_villager/profession/fisherman.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/zombie_villager/profession/fisherman.png"));
             map.put(
                 Profession.FLETCHER,
-                new ResourceLocation("textures/entity/zombie_villager/profession/fletcher.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/zombie_villager/profession/fletcher.png"));
             map.put(
                 Profession.LEATHERWORKER,
-                new ResourceLocation(
+                ResourceLocation.withDefaultNamespace(
                     "textures/entity/zombie_villager/profession/leatherworker.png"));
             map.put(
                 Profession.LIBRARIAN,
-                new ResourceLocation("textures/entity/zombie_villager/profession/librarian.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/zombie_villager/profession/librarian.png"));
             map.put(
                 Profession.MASON,
-                new ResourceLocation("textures/entity/zombie_villager/profession/mason.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/zombie_villager/profession/mason.png"));
             map.put(
                 Profession.NITWIT,
-                new ResourceLocation("textures/entity/zombie_villager/profession/nitwit.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/zombie_villager/profession/nitwit.png"));
             map.put(
                 Profession.SHEPHERD,
-                new ResourceLocation("textures/entity/zombie_villager/profession/shepherd.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/zombie_villager/profession/shepherd.png"));
             map.put(
                 Profession.TOOLSMITH,
-                new ResourceLocation("textures/entity/zombie_villager/profession/toolsmith.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/zombie_villager/profession/toolsmith.png"));
             map.put(
                 Profession.WEAPONSMITH,
-                new ResourceLocation("textures/entity/zombie_villager/profession/weaponsmith.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/zombie_villager/profession/weaponsmith.png"));
           });
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
@@ -104,25 +116,32 @@ public class ZombieVillagerModelRenderer
             map.put(Variant.DEFAULT, Constants.BLANK_ENTITY_TEXTURE);
             map.put(
                 Variant.DESERT,
-                new ResourceLocation("textures/entity/zombie_villager/type/desert.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/zombie_villager/type/desert.png"));
             map.put(
                 Variant.JUNGLE,
-                new ResourceLocation("textures/entity/zombie_villager/type/jungle.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/zombie_villager/type/jungle.png"));
             map.put(
                 Variant.PLAINS,
-                new ResourceLocation("textures/entity/zombie_villager/type/plains.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/zombie_villager/type/plains.png"));
             map.put(
                 Variant.SAVANNA,
-                new ResourceLocation("textures/entity/zombie_villager/type/savanna.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/zombie_villager/type/savanna.png"));
             map.put(
                 Variant.SNOW,
-                new ResourceLocation("textures/entity/zombie_villager/type/snow.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/zombie_villager/type/snow.png"));
             map.put(
                 Variant.SWAMP,
-                new ResourceLocation("textures/entity/zombie_villager/type/swamp.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/zombie_villager/type/swamp.png"));
             map.put(
                 Variant.TAIGA,
-                new ResourceLocation("textures/entity/zombie_villager/type/taiga.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/zombie_villager/type/taiga.png"));
           });
 
   public <L extends RenderLayer<ZombieVillager, StandardZombieVillagerModel<ZombieVillager>>>

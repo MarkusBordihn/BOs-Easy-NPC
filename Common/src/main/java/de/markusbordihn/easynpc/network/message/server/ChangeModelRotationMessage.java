@@ -39,9 +39,9 @@ public record ChangeModelRotationMessage(UUID uuid, ModelPart modelPart, CustomR
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "change_model_rotation");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "change_model_rotation");
   public static final CustomPacketPayload.Type<ChangeModelRotationMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ChangeModelRotationMessage>
       STREAM_CODEC =
           StreamCodec.of(

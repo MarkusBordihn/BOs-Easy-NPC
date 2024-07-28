@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.utils;
 
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import java.util.HashSet;
 import java.util.Set;
@@ -75,6 +76,22 @@ public class CompoundTagUtils {
         compoundTag.getFloat(X_TAG), compoundTag.getFloat(Y_TAG), compoundTag.getFloat(Z_TAG));
   }
 
+  public static ResourceLocation readResourceLocation(CompoundTag compoundTag, String name) {
+    if (compoundTag == null || !compoundTag.contains(name)) {
+      return null;
+    }
+    String resourceLocationString = compoundTag.getString(name);
+    if (resourceLocationString.isEmpty()) {
+      return null;
+    }
+    if (!resourceLocationString.contains(":")) {
+      return ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, resourceLocationString);
+    }
+    String namespace = compoundTag.getString(name).split(":")[0];
+    String path = compoundTag.getString(name).split(":")[1];
+    return ResourceLocation.fromNamespaceAndPath(namespace, path);
+  }
+
   public static ListTag writeResourceLocations(Set<ResourceLocation> resourceLocations) {
     ListTag listTag = new ListTag();
     resourceLocations.forEach(
@@ -97,7 +114,7 @@ public class CompoundTagUtils {
               .forEach(
                   key -> {
                     if (key.startsWith(ID_PREFIX)) {
-                      resourceLocations.add(new ResourceLocation(compoundTag.getString(key)));
+                      resourceLocations.add(readResourceLocation(compoundTag, key));
                     }
                   });
         });

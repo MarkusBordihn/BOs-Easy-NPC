@@ -38,9 +38,9 @@ public record ExecuteDialogButtonActionMessage(UUID uuid, UUID dialogId, UUID di
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "dialog_button_action");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "dialog_button_action");
   public static final CustomPacketPayload.Type<ExecuteDialogButtonActionMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ExecuteDialogButtonActionMessage>
       STREAM_CODEC =
           StreamCodec.of(

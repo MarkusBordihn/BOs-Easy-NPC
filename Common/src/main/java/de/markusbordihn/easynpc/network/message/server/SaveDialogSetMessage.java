@@ -36,9 +36,9 @@ public record SaveDialogSetMessage(UUID uuid, DialogDataSet dialogDataSet)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "save_dialog_set");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "save_dialog_set");
   public static final CustomPacketPayload.Type<SaveDialogSetMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, SaveDialogSetMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), SaveDialogSetMessage::create);
 

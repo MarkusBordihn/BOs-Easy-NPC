@@ -35,9 +35,9 @@ public record ChangeEntityBaseAttributeMessage(UUID uuid, ResourceLocation attri
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "change_entity_base_attribute");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "change_entity_base_attribute");
   public static final CustomPacketPayload.Type<ChangeEntityBaseAttributeMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ChangeEntityBaseAttributeMessage>
       STREAM_CODEC =
           StreamCodec.of(

@@ -45,7 +45,7 @@ public class CrashTestDummyRenderer<E extends PathfinderMob, M extends PlayerMod
 
   @Override
   public ResourceLocation getTextureLocation(E t) {
-    return new ResourceLocation("textures/entity/steve.png");
+    return ResourceLocation.withDefaultNamespace("textures/entity/steve.png");
   }
 
   @Override

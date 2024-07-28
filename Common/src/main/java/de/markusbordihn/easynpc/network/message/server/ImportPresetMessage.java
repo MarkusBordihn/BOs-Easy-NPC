@@ -38,9 +38,9 @@ public record ImportPresetMessage(
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "import_preset");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "import_preset");
   public static final CustomPacketPayload.Type<ImportPresetMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ImportPresetMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), ImportPresetMessage::create);
 

@@ -44,7 +44,7 @@ public class VillagerModelRenderer
     extends BaseMobModelRenderer<Villager, Variant, StandardVillagerModel<Villager>> {
 
   public static final ResourceLocation BASE_TEXTURE =
-      new ResourceLocation("textures/entity/villager/villager.png");
+      ResourceLocation.withDefaultNamespace("textures/entity/villager/villager.png");
   protected static final Map<Profession, ResourceLocation> TEXTURE_BY_PROFESSION =
       Util.make(
           new EnumMap<>(Profession.class),
@@ -52,46 +52,60 @@ public class VillagerModelRenderer
             map.put(Profession.NONE, Constants.BLANK_ENTITY_TEXTURE);
             map.put(
                 Profession.ARMORER,
-                new ResourceLocation("textures/entity/villager/profession/armorer.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/villager/profession/armorer.png"));
             map.put(
                 Profession.BUTCHER,
-                new ResourceLocation("textures/entity/villager/profession/butcher.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/villager/profession/butcher.png"));
             map.put(
                 Profession.CARTOGRAPHER,
-                new ResourceLocation("textures/entity/villager/profession/cartographer.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/villager/profession/cartographer.png"));
             map.put(
                 Profession.CLERIC,
-                new ResourceLocation("textures/entity/villager/profession/cleric.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/villager/profession/cleric.png"));
             map.put(
                 Profession.FARMER,
-                new ResourceLocation("textures/entity/villager/profession/farmer.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/villager/profession/farmer.png"));
             map.put(
                 Profession.FISHERMAN,
-                new ResourceLocation("textures/entity/villager/profession/fisherman.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/villager/profession/fisherman.png"));
             map.put(
                 Profession.FLETCHER,
-                new ResourceLocation("textures/entity/villager/profession/fletcher.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/villager/profession/fletcher.png"));
             map.put(
                 Profession.LEATHERWORKER,
-                new ResourceLocation("textures/entity/villager/profession/leatherworker.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/villager/profession/leatherworker.png"));
             map.put(
                 Profession.LIBRARIAN,
-                new ResourceLocation("textures/entity/villager/profession/librarian.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/villager/profession/librarian.png"));
             map.put(
                 Profession.MASON,
-                new ResourceLocation("textures/entity/villager/profession/mason.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/villager/profession/mason.png"));
             map.put(
                 Profession.NITWIT,
-                new ResourceLocation("textures/entity/villager/profession/nitwit.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/villager/profession/nitwit.png"));
             map.put(
                 Profession.SHEPHERD,
-                new ResourceLocation("textures/entity/villager/profession/shepherd.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/villager/profession/shepherd.png"));
             map.put(
                 Profession.TOOLSMITH,
-                new ResourceLocation("textures/entity/villager/profession/toolsmith.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/villager/profession/toolsmith.png"));
             map.put(
                 Profession.WEAPONSMITH,
-                new ResourceLocation("textures/entity/villager/profession/weaponsmith.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/villager/profession/weaponsmith.png"));
           });
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
@@ -99,16 +113,26 @@ public class VillagerModelRenderer
           map -> {
             map.put(Variant.DEFAULT, Constants.BLANK_ENTITY_TEXTURE);
             map.put(
-                Variant.DESERT, new ResourceLocation("textures/entity/villager/type/desert.png"));
+                Variant.DESERT,
+                ResourceLocation.withDefaultNamespace("textures/entity/villager/type/desert.png"));
             map.put(
-                Variant.JUNGLE, new ResourceLocation("textures/entity/villager/type/jungle.png"));
+                Variant.JUNGLE,
+                ResourceLocation.withDefaultNamespace("textures/entity/villager/type/jungle.png"));
             map.put(
-                Variant.PLAINS, new ResourceLocation("textures/entity/villager/type/plains.png"));
+                Variant.PLAINS,
+                ResourceLocation.withDefaultNamespace("textures/entity/villager/type/plains.png"));
             map.put(
-                Variant.SAVANNA, new ResourceLocation("textures/entity/villager/type/savanna.png"));
-            map.put(Variant.SNOW, new ResourceLocation("textures/entity/villager/type/snow.png"));
-            map.put(Variant.SWAMP, new ResourceLocation("textures/entity/villager/type/swamp.png"));
-            map.put(Variant.TAIGA, new ResourceLocation("textures/entity/villager/type/taiga.png"));
+                Variant.SAVANNA,
+                ResourceLocation.withDefaultNamespace("textures/entity/villager/type/savanna.png"));
+            map.put(
+                Variant.SNOW,
+                ResourceLocation.withDefaultNamespace("textures/entity/villager/type/snow.png"));
+            map.put(
+                Variant.SWAMP,
+                ResourceLocation.withDefaultNamespace("textures/entity/villager/type/swamp.png"));
+            map.put(
+                Variant.TAIGA,
+                ResourceLocation.withDefaultNamespace("textures/entity/villager/type/taiga.png"));
           });
 
   public VillagerModelRenderer(EntityRendererProvider.Context context) {

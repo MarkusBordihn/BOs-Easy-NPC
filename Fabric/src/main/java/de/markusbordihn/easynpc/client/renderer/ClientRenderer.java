@@ -57,6 +57,9 @@ public class ClientRenderer {
     EntityRendererRegistry.register(ModEntityType.CAT, CatModelRenderer::new);
     EntityRendererRegistry.register(ModEntityType.CHICKEN, ChickenModelRenderer::new);
     EntityRendererRegistry.register(
+        ModEntityType.BOGGED,
+        context -> new SkeletonModelRenderer(context, CustomHumanoidArmorLayer.class));
+    EntityRendererRegistry.register(
         ModEntityType.DROWNED,
         context -> new ZombieModelRenderer(context, CustomHumanoidArmorLayer.class));
     EntityRendererRegistry.register(

@@ -1,9 +1,3 @@
-buildscript {
-  dependencies {
-    classpath 'com.google.code.gson:gson:2.10.1'
-  }
-}
-
 plugins {
   id 'fabric-loom' version '1.7-SNAPSHOT'
   id 'maven-publish'
@@ -88,6 +82,7 @@ curseforge {
     mainArtifact(remapJar) {
       relations {
         requiredDependency 'fabric-api'
+        optionalDependency 'armourers-workshop'
         optionalDependency 'tooltipfix'
       }
     }
@@ -109,6 +104,7 @@ modrinth {
   loaders = ["fabric", "quilt"]
   dependencies {
     required.project "fabric-api"
+    optional.project "armourers-workshop"
     optional.project "tooltipfix"
   }
 }

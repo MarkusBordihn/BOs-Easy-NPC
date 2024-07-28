@@ -39,9 +39,9 @@ public record SaveDialogButtonMessage(
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "save_dialog_button");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "save_dialog_button");
   public static final CustomPacketPayload.Type<SaveDialogButtonMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, SaveDialogButtonMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), SaveDialogButtonMessage::create);
 

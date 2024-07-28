@@ -31,13 +31,13 @@ public class ModItemTags {
   public static final TagKey<Item> RANGED_WEAPON_BOW =
       TagKey.create(
           BuiltInRegistries.ITEM.key(),
-          new ResourceLocation(Constants.MOD_ID, "ranged_weapon/bow"));
+          ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "ranged_weapon/bow"));
   public static final TagKey<Item> RANGED_WEAPON_CROSSBOW =
       TagKey.create(
           BuiltInRegistries.ITEM.key(),
-          new ResourceLocation(Constants.MOD_ID, "ranged_weapon/crossbow"));
+          ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "ranged_weapon/crossbow"));
   public static final TagKey<Item> RANGED_WEAPON_GUN =
       TagKey.create(
           BuiltInRegistries.ITEM.key(),
-          new ResourceLocation(Constants.MOD_ID, "ranged_weapon/gun"));
+          ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "ranged_weapon/gun"));
 }

@@ -46,11 +46,18 @@ public class SkeletonModelRenderer
           new EnumMap<>(Variant.class),
           map -> {
             map.put(
-                Variant.SKELETON, new ResourceLocation("textures/entity/skeleton/skeleton.png"));
-            map.put(Variant.STRAY, new ResourceLocation("textures/entity/skeleton/stray.png"));
+                Variant.BOGGED,
+                ResourceLocation.withDefaultNamespace("textures/entity/skeleton/bogged.png"));
+            map.put(
+                Variant.SKELETON,
+                ResourceLocation.withDefaultNamespace("textures/entity/skeleton/skeleton.png"));
+            map.put(
+                Variant.STRAY,
+                ResourceLocation.withDefaultNamespace("textures/entity/skeleton/stray.png"));
             map.put(
                 Variant.WITHER_SKELETON,
-                new ResourceLocation("textures/entity/skeleton/wither_skeleton.png"));
+                ResourceLocation.withDefaultNamespace(
+                    "textures/entity/skeleton/wither_skeleton.png"));
           });
   protected static final ResourceLocation DEFAULT_TEXTURE =
       TEXTURE_BY_VARIANT.get(Variant.SKELETON);

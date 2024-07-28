@@ -63,15 +63,7 @@ public class VariantLayer<T extends LivingEntity, M extends EntityModel<T>>
     ResourceLocation resourceLocation = textures.get(easyNPC.getEasyNPCVariantData().getVariant());
     if (resourceLocation != null) {
       renderColoredCutoutModel(
-          this.model,
-          resourceLocation,
-          poseStack,
-          buffer,
-          lightLevel,
-          livingEntity,
-          1.0F,
-          1.0F,
-          1.0F);
+          this.model, resourceLocation, poseStack, buffer, lightLevel, livingEntity, 0xFFFFFF);
     }
   }
 }

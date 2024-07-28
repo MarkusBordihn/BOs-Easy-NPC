@@ -33,7 +33,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class Checkbox extends AbstractButton {
   private static final ResourceLocation TEXTURE =
-      new ResourceLocation(Constants.MOD_ID, "textures/gui/checkbox.png");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/checkbox.png");
 
   protected final Checkbox.OnChange onChange;
   private final boolean showLabel;

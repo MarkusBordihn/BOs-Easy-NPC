@@ -35,9 +35,9 @@ public record RemoveDialogButtonMessage(UUID uuid, UUID dialogId, UUID dialogBut
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "remove_dialog_button");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "remove_dialog_button");
   public static final CustomPacketPayload.Type<RemoveDialogButtonMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, RemoveDialogButtonMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), RemoveDialogButtonMessage::create);
 

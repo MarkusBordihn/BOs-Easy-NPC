@@ -88,14 +88,7 @@ public class BaseEntityModel<E extends Entity> extends EntityModel<E> implements
 
   @Override
   public void renderToBuffer(
-      PoseStack poseStack,
-      VertexConsumer vertexConsumer,
-      int lightLevel,
-      int overlay,
-      float red,
-      float green,
-      float blue,
-      float alpha) {
+      PoseStack poseStack, VertexConsumer vertexConsumer, int lightLevel, int overlay, int color) {
     // Mo use implemented renderToBuffer method
   }
 }

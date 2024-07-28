@@ -34,9 +34,11 @@ public class CustomButton extends Button {
 
   protected static final WidgetSprites SPRITES =
       new WidgetSprites(
-          new ResourceLocation(Constants.MINECRAFT_PREFIX, "widget/button"),
-          new ResourceLocation(Constants.MINECRAFT_PREFIX, "widget/button_disabled"),
-          new ResourceLocation(Constants.MINECRAFT_PREFIX, "widget/button_highlighted"));
+          ResourceLocation.fromNamespaceAndPath(Constants.MINECRAFT_PREFIX, "widget/button"),
+          ResourceLocation.fromNamespaceAndPath(
+              Constants.MINECRAFT_PREFIX, "widget/button_disabled"),
+          ResourceLocation.fromNamespaceAndPath(
+              Constants.MINECRAFT_PREFIX, "widget/button_highlighted"));
 
   public CustomButton(int left, int top, int width, int height) {
     this(left, top, width, height, null, unused -> {});

@@ -42,20 +42,41 @@ public class CatModelRenderer extends BaseMobModelRenderer<Cat, Variant, Standar
       Util.make(
           new EnumMap<>(Variant.class),
           map -> {
-            map.put(Variant.ALL_BLACK, new ResourceLocation("textures/entity/cat/all_black.png"));
-            map.put(Variant.BLACK, new ResourceLocation("textures/entity/cat/black.png"));
+            map.put(
+                Variant.ALL_BLACK,
+                ResourceLocation.withDefaultNamespace("textures/entity/cat/all_black.png"));
+            map.put(
+                Variant.BLACK,
+                ResourceLocation.withDefaultNamespace("textures/entity/cat/black.png"));
             map.put(
                 Variant.BRITISH_SHORTHAIR,
-                new ResourceLocation("textures/entity/cat/british_shorthair.png"));
-            map.put(Variant.CALICO, new ResourceLocation("textures/entity/cat/calico.png"));
-            map.put(Variant.JELLIE, new ResourceLocation("textures/entity/cat/jellie.png"));
-            map.put(Variant.OCELOT, new ResourceLocation("textures/entity/cat/ocelot.png"));
-            map.put(Variant.PERSIAN, new ResourceLocation("textures/entity/cat/persian.png"));
-            map.put(Variant.RAGDOLL, new ResourceLocation("textures/entity/cat/ragdoll.png"));
-            map.put(Variant.RED, new ResourceLocation("textures/entity/cat/red.png"));
-            map.put(Variant.SIAMESE, new ResourceLocation("textures/entity/cat/siamese.png"));
-            map.put(Variant.TABBY, new ResourceLocation("textures/entity/cat/tabby.png"));
-            map.put(Variant.WHITE, new ResourceLocation("textures/entity/cat/white.png"));
+                ResourceLocation.withDefaultNamespace("textures/entity/cat/british_shorthair.png"));
+            map.put(
+                Variant.CALICO,
+                ResourceLocation.withDefaultNamespace("textures/entity/cat/calico.png"));
+            map.put(
+                Variant.JELLIE,
+                ResourceLocation.withDefaultNamespace("textures/entity/cat/jellie.png"));
+            map.put(
+                Variant.OCELOT,
+                ResourceLocation.withDefaultNamespace("textures/entity/cat/ocelot.png"));
+            map.put(
+                Variant.PERSIAN,
+                ResourceLocation.withDefaultNamespace("textures/entity/cat/persian.png"));
+            map.put(
+                Variant.RAGDOLL,
+                ResourceLocation.withDefaultNamespace("textures/entity/cat/ragdoll.png"));
+            map.put(
+                Variant.RED, ResourceLocation.withDefaultNamespace("textures/entity/cat/red.png"));
+            map.put(
+                Variant.SIAMESE,
+                ResourceLocation.withDefaultNamespace("textures/entity/cat/siamese.png"));
+            map.put(
+                Variant.TABBY,
+                ResourceLocation.withDefaultNamespace("textures/entity/cat/tabby.png"));
+            map.put(
+                Variant.WHITE,
+                ResourceLocation.withDefaultNamespace("textures/entity/cat/white.png"));
           });
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.BLACK);
 

@@ -44,7 +44,8 @@ public enum EditorType {
   }
 
   public ResourceLocation getId() {
-    return new ResourceLocation(Constants.MOD_ID, this.name().toLowerCase() + "_editor");
+    return ResourceLocation.fromNamespaceAndPath(
+        Constants.MOD_ID, this.name().toLowerCase() + "_editor");
   }
 
   public String getName() {

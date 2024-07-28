@@ -39,10 +39,13 @@ public class PigModelRenderer extends BaseMobModelRenderer<Pig, Variant, Standar
       Util.make(
           new EnumMap<>(Variant.class),
           map -> {
-            map.put(Variant.DEFAULT, new ResourceLocation("textures/entity/pig/pig.png"));
+            map.put(
+                Variant.DEFAULT,
+                ResourceLocation.withDefaultNamespace("textures/entity/pig/pig.png"));
             map.put(
                 Variant.SPOTTED,
-                new ResourceLocation(Constants.MOD_ID, "textures/entity/pig/pig_spotted.png"));
+                ResourceLocation.fromNamespaceAndPath(
+                    Constants.MOD_ID, "textures/entity/pig/pig_spotted.png"));
           });
 
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.DEFAULT);
@@ -58,7 +61,7 @@ public class PigModelRenderer extends BaseMobModelRenderer<Pig, Variant, Standar
         new SaddleLayer<>(
             this,
             new StandardPigModel<>(context.bakeLayer(ModelLayers.PIG_SADDLE)),
-            new ResourceLocation("textures/entity/pig/pig_saddle.png")));
+            ResourceLocation.withDefaultNamespace("textures/entity/pig/pig_saddle.png")));
     this.addLayer(new HeldItemLayer<>(this, context.getItemInHandRenderer(), -0.10, 0.22, -0.75));
   }
 }

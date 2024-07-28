@@ -21,7 +21,10 @@ package de.markusbordihn.easynpc.client.model.standard;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
+import de.markusbordihn.easynpc.client.model.ModelHelper;
 import de.markusbordihn.easynpc.client.model.ModelPartType;
+import de.markusbordihn.easynpc.client.model.animation.HumanoidLegAnimation;
+import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
@@ -62,7 +65,7 @@ public class StandardVillagerModel<T extends Entity> extends VillagerModel<T>
       float ageInTicks,
       float netHeadYaw,
       float headPitch) {
-    if (this.setupAnimation(
+    if (!this.setupAnimation(
         entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch)) {
       super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
     }
@@ -78,6 +81,43 @@ public class StandardVillagerModel<T extends Entity> extends VillagerModel<T>
   }
 
   @Override
+  public void setupCustomModelPose(
+      T entity,
+      ModelPose modelPose,
+      ModelData<?> modelData,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
+    ModelHelper.setPositionRotationVisibility(
+        this.head,
+        modelData.getModelHeadPosition(),
+        modelData.getModelHeadRotation(),
+        modelData.isModelHeadVisible());
+    ModelHelper.setPositionRotationVisibility(
+        this.body,
+        modelData.getModelBodyPosition(),
+        modelData.getModelBodyRotation(),
+        modelData.isModelBodyVisible());
+    ModelHelper.setPositionRotationVisibility(
+        this.arms,
+        modelData.getModelArmsPosition(),
+        modelData.getModelArmsRotation(),
+        modelData.isModelArmsVisible());
+    ModelHelper.setPositionRotationVisibility(
+        this.leftLeg,
+        modelData.getModelLeftLegPosition(),
+        modelData.getModelLeftLegRotation(),
+        modelData.isModelLeftLegVisible());
+    ModelHelper.setPositionRotationVisibility(
+        this.rightLeg,
+        modelData.getModelRightLegPosition(),
+        modelData.getModelRightLegRotation(),
+        modelData.isModelRightLegVisible());
+  }
+
+  @Override
   public boolean animateModelHead(
       T entity,
       AttackData<?> attackData,
@@ -89,6 +129,20 @@ public class StandardVillagerModel<T extends Entity> extends VillagerModel<T>
     headPart.xRot = headPitch * Constants.PI_180DEG;
     headPart.yRot = netHeadYaw * Constants.PI_180DEG;
     return true;
+  }
+
+  @Override
+  public boolean animateModelLegs(
+      T entity,
+      AttackData<?> attackData,
+      ModelData<?> modelData,
+      ModelPart rightLegPart,
+      ModelPart leftLegPart,
+      float ageInTicks,
+      float limbSwing,
+      float limbSwingAmount) {
+    return HumanoidLegAnimation.animateHumanoidModelLegs(
+        rightLegPart, leftLegPart, limbSwing, limbSwingAmount);
   }
 
   @Override

@@ -38,13 +38,15 @@ public class SliderButton extends AbstractSliderButton {
   protected static final Component EMPTY_TEXT = Component.literal("");
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final ResourceLocation SLIDER_SPRITE =
-      new ResourceLocation(Constants.MINECRAFT_PREFIX, "widget/slider");
+      ResourceLocation.fromNamespaceAndPath(Constants.MINECRAFT_PREFIX, "widget/slider");
   private static final ResourceLocation HIGHLIGHTED_SPRITE =
-      new ResourceLocation(Constants.MINECRAFT_PREFIX, "widget/slider_highlighted");
+      ResourceLocation.fromNamespaceAndPath(
+          Constants.MINECRAFT_PREFIX, "widget/slider_highlighted");
   private static final ResourceLocation SLIDER_HANDLE_SPRITE =
-      new ResourceLocation(Constants.MINECRAFT_PREFIX, "widget/slider_handle");
+      ResourceLocation.fromNamespaceAndPath(Constants.MINECRAFT_PREFIX, "widget/slider_handle");
   private static final ResourceLocation SLIDER_HANDLE_HIGHLIGHTED_SPRITE =
-      new ResourceLocation(Constants.MINECRAFT_PREFIX, "widget/slider_handle_highlighted");
+      ResourceLocation.fromNamespaceAndPath(
+          Constants.MINECRAFT_PREFIX, "widget/slider_handle_highlighted");
   protected final SliderButton.OnChange onChange;
   protected final float maxValue;
   private final float minValue;

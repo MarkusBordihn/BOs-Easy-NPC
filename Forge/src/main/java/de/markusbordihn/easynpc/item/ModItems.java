@@ -63,6 +63,8 @@ public class ModItems {
       registerSpawnEgg(Allay.ID, ModEntityType.ALLAY);
   public static final RegistryObject<Item> BULLET_ITEM =
       ITEMS.register(BulletItem.ID, () -> new BulletItem(new Item.Properties()));
+  public static final RegistryObject<Item> BOGGED_NPC_SPAWN_EGG =
+      registerSpawnEgg(Skeleton.ID_BOGGED, ModEntityType.BOGGED);
   public static final RegistryObject<Item> CAT_NPC_SPAWN_EGG =
       registerSpawnEgg(Cat.ID, ModEntityType.CAT);
   public static final RegistryObject<Item> CHICKEN_NPC_SPAWN_EGG =

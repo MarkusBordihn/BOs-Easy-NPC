@@ -89,7 +89,7 @@ public class WorldPresetDataFiles {
                 .map(
                     path -> {
                       ResourceLocation resourceLocation =
-                          new ResourceLocation(
+                          ResourceLocation.fromNamespaceAndPath(
                               Constants.MOD_ID,
                               DATA_FOLDER_NAME
                                   + '/'

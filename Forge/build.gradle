@@ -170,13 +170,7 @@ curseforge {
     releaseType = "${project.curseforge_release_type}"
     addGameVersion("${project.minecraft_version}")
     addGameVersion("Forge")
-    mainArtifact(jar) {
-      relations {
-        optionalDependency 'easy-npc-epic-fight'
-        optionalDependency 'armourers-workshop'
-        optionalDependency 'simple-quests-forge'
-      }
-    }
+    mainArtifact(jar)
   }
 }
 
@@ -190,11 +184,6 @@ modrinth {
   uploadFile = jar
   gameVersions = ["${project.minecraft_version}"]
   loaders = ["forge"]
-  dependencies {
-    optional.project "easy-npc-epic-fight"
-    optional.project "armourers-workshop"
-    optional.project "simple-quests"
-  }
 }
 
 tasks.withType(JavaCompile).configureEach {

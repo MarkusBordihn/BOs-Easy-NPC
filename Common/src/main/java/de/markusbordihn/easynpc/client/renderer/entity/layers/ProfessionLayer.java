@@ -64,15 +64,7 @@ public class ProfessionLayer<T extends LivingEntity, M extends EntityModel<T>>
         textures.get(easyNPC.getEasyNPCProfessionData().getProfession());
     if (resourceLocation != null) {
       renderColoredCutoutModel(
-          this.model,
-          resourceLocation,
-          poseStack,
-          buffer,
-          lightLevel,
-          livingEntity,
-          1.0F,
-          1.0F,
-          1.0F);
+          this.model, resourceLocation, poseStack, buffer, lightLevel, livingEntity, 0xFFFFFF);
     }
   }
 }

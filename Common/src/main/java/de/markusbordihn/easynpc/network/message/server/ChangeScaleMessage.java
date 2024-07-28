@@ -36,9 +36,9 @@ public record ChangeScaleMessage(UUID uuid, ModelScaleAxis scaleAxis, Float scal
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "change_scale");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "change_scale");
   public static final CustomPacketPayload.Type<ChangeScaleMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ChangeScaleMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), ChangeScaleMessage::create);
 

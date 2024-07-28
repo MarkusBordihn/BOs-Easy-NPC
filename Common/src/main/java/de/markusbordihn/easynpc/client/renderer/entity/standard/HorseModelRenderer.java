@@ -37,50 +37,72 @@ public class HorseModelRenderer
       Util.make(
           new EnumMap<>(Variant.class),
           map -> {
-            map.put(Variant.WHITE, new ResourceLocation("textures/entity/horse/horse_white.png"));
+            map.put(
+                Variant.WHITE,
+                ResourceLocation.withDefaultNamespace("textures/entity/horse/horse_white.png"));
             map.put(
                 Variant.WHITE_SADDLED,
-                new ResourceLocation("textures/entity/horse/horse_white.png"));
-            map.put(Variant.CREAMY, new ResourceLocation("textures/entity/horse/horse_creamy.png"));
+                ResourceLocation.withDefaultNamespace("textures/entity/horse/horse_white.png"));
+            map.put(
+                Variant.CREAMY,
+                ResourceLocation.withDefaultNamespace("textures/entity/horse/horse_creamy.png"));
             map.put(
                 Variant.CREAMY_SADDLED,
-                new ResourceLocation("textures/entity/horse/horse_creamy.png"));
+                ResourceLocation.withDefaultNamespace("textures/entity/horse/horse_creamy.png"));
             map.put(
-                Variant.CHESTNUT, new ResourceLocation("textures/entity/horse/horse_chestnut.png"));
+                Variant.CHESTNUT,
+                ResourceLocation.withDefaultNamespace("textures/entity/horse/horse_chestnut.png"));
             map.put(
                 Variant.CHESTNUT_SADDLED,
-                new ResourceLocation("textures/entity/horse/horse_chestnut.png"));
-            map.put(Variant.BROWN, new ResourceLocation("textures/entity/horse/horse_brown.png"));
+                ResourceLocation.withDefaultNamespace("textures/entity/horse/horse_chestnut.png"));
+            map.put(
+                Variant.BROWN,
+                ResourceLocation.withDefaultNamespace("textures/entity/horse/horse_brown.png"));
             map.put(
                 Variant.BROWN_SADDLED,
-                new ResourceLocation("textures/entity/horse/horse_brown.png"));
-            map.put(Variant.BLACK, new ResourceLocation("textures/entity/horse/horse_black.png"));
+                ResourceLocation.withDefaultNamespace("textures/entity/horse/horse_brown.png"));
+            map.put(
+                Variant.BLACK,
+                ResourceLocation.withDefaultNamespace("textures/entity/horse/horse_black.png"));
             map.put(
                 Variant.BLACK_SADDLED,
-                new ResourceLocation("textures/entity/horse/horse_black.png"));
-            map.put(Variant.GRAY, new ResourceLocation("textures/entity/horse/horse_gray.png"));
+                ResourceLocation.withDefaultNamespace("textures/entity/horse/horse_black.png"));
             map.put(
-                Variant.GRAY_SADDLED, new ResourceLocation("textures/entity/horse/horse_gray.png"));
+                Variant.GRAY,
+                ResourceLocation.withDefaultNamespace("textures/entity/horse/horse_gray.png"));
+            map.put(
+                Variant.GRAY_SADDLED,
+                ResourceLocation.withDefaultNamespace("textures/entity/horse/horse_gray.png"));
             map.put(
                 Variant.DARKBROWN,
-                new ResourceLocation("textures/entity/horse/horse_darkbrown.png"));
+                ResourceLocation.withDefaultNamespace("textures/entity/horse/horse_darkbrown.png"));
             map.put(
                 Variant.DARKBROWN_SADDLED,
-                new ResourceLocation("textures/entity/horse/horse_darkbrown.png"));
-            map.put(Variant.ZOMBIE, new ResourceLocation("textures/entity/horse/horse_zombie.png"));
+                ResourceLocation.withDefaultNamespace("textures/entity/horse/horse_darkbrown.png"));
+            map.put(
+                Variant.ZOMBIE,
+                ResourceLocation.withDefaultNamespace("textures/entity/horse/horse_zombie.png"));
             map.put(
                 Variant.ZOMBIE_SADDLED,
-                new ResourceLocation("textures/entity/horse/horse_zombie.png"));
+                ResourceLocation.withDefaultNamespace("textures/entity/horse/horse_zombie.png"));
             map.put(
-                Variant.SKELETON, new ResourceLocation("textures/entity/horse/horse_skeleton.png"));
+                Variant.SKELETON,
+                ResourceLocation.withDefaultNamespace("textures/entity/horse/horse_skeleton.png"));
             map.put(
                 Variant.SKELETON_SADDLED,
-                new ResourceLocation("textures/entity/horse/horse_skeleton.png"));
-            map.put(Variant.DONKEY, new ResourceLocation("textures/entity/horse/donkey.png"));
+                ResourceLocation.withDefaultNamespace("textures/entity/horse/horse_skeleton.png"));
             map.put(
-                Variant.DONKEY_SADDLED, new ResourceLocation("textures/entity/horse/donkey.png"));
-            map.put(Variant.MULE, new ResourceLocation("textures/entity/horse/mule.png"));
-            map.put(Variant.MULE_SADDLED, new ResourceLocation("textures/entity/horse/mule.png"));
+                Variant.DONKEY,
+                ResourceLocation.withDefaultNamespace("textures/entity/horse/donkey.png"));
+            map.put(
+                Variant.DONKEY_SADDLED,
+                ResourceLocation.withDefaultNamespace("textures/entity/horse/donkey.png"));
+            map.put(
+                Variant.MULE,
+                ResourceLocation.withDefaultNamespace("textures/entity/horse/mule.png"));
+            map.put(
+                Variant.MULE_SADDLED,
+                ResourceLocation.withDefaultNamespace("textures/entity/horse/mule.png"));
           });
 
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.WHITE);

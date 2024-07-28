@@ -19,12 +19,7 @@
 
 package de.markusbordihn.easynpc.item.attack;
 
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.ArrowItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 
 public class BulletItem extends ArrowItem {
 
@@ -32,11 +27,5 @@ public class BulletItem extends ArrowItem {
 
   public BulletItem(Properties properties) {
     super(properties);
-  }
-
-  @Override
-  public AbstractArrow createArrow(Level level, ItemStack itemStack, LivingEntity livingEntity) {
-    Arrow arrow = new Arrow(level, livingEntity, itemStack.copyWithCount(1));
-    return arrow;
   }
 }

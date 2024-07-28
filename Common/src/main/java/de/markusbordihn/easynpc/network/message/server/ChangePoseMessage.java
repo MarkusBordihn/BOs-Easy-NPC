@@ -36,9 +36,9 @@ import net.minecraft.world.entity.Pose;
 public record ChangePoseMessage(UUID uuid, Pose pose) implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "change_pose");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "change_pose");
   public static final CustomPacketPayload.Type<ChangePoseMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ChangePoseMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), ChangePoseMessage::create);
 

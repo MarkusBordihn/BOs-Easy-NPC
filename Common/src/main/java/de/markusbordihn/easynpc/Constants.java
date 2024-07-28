@@ -27,7 +27,7 @@ import net.minecraft.resources.ResourceLocation;
 public final class Constants {
 
   public static final ResourceLocation BLANK_ENTITY_TEXTURE =
-      new ResourceLocation(Constants.MOD_ID, "textures/entity/blank.png");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/entity/blank.png");
   // Mod definitions for adding additional support and compatibility
   public static final String MOD_ARMOURERS_WORKSHOP_ID = "armourers_workshop";
   public static final String MOD_ARMOURERS_WORKSHOP_NAME = "Armourer's Workshop";
@@ -41,15 +41,16 @@ public final class Constants {
   public static final String NPC_NBT_SUFFIX = ".npc.nbt";
   public static final float PI_180DEG = (float) Math.PI / 180F;
   public static final ResourceLocation TEXTURE_CONFIGURATION =
-      new ResourceLocation(Constants.MOD_ID, "textures/gui/configuration.png");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/configuration.png");
   public static final ResourceLocation TEXTURE_DEMO_BACKGROUND =
-      new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/demo_background.png");
+      ResourceLocation.fromNamespaceAndPath(MINECRAFT_PREFIX, "textures/gui/demo_background.png");
   public static final ResourceLocation TEXTURE_DIALOG =
-      new ResourceLocation(Constants.MOD_ID, "textures/gui/dialog.png");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/dialog.png");
   public static final ResourceLocation TEXTURE_INVENTORY =
-      new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/container/inventory.png");
+      ResourceLocation.fromNamespaceAndPath(
+          MINECRAFT_PREFIX, "textures/gui/container/inventory.png");
   public static final ResourceLocation TEXTURE_SPAWNER =
-      new ResourceLocation(Constants.MOD_ID, "textures/gui/spawner.png");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/spawner.png");
   public static final String TEXT_PREFIX = "text.easy_npc.";
   public static final String TEXT_CONFIG_PREFIX = TEXT_PREFIX + "config.";
   public static final String TEXT_ITEM_PREFIX = TEXT_PREFIX + "item.";

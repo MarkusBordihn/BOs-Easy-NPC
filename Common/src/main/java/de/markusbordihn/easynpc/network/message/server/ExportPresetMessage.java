@@ -34,9 +34,9 @@ import net.minecraft.server.level.ServerPlayer;
 public record ExportPresetMessage(UUID uuid, String name) implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "export_preset");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "export_preset");
   public static final CustomPacketPayload.Type<ExportPresetMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ExportPresetMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), ExportPresetMessage::create);
 

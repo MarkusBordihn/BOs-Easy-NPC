@@ -34,6 +34,7 @@ import net.minecraft.world.level.Level;
 public class Skeleton extends EasyNPCBaseModelEntity<Skeleton> {
 
   public static final String ID = "skeleton";
+  public static final String ID_BOGGED = "bogged";
   public static final String ID_STRAY = "stray";
   public static final String ID_WITHER_SKELETON = "wither_skeleton";
 
@@ -82,6 +83,12 @@ public class Skeleton extends EasyNPCBaseModelEntity<Skeleton> {
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
     Variant soundVariant = Variant.valueOf(variantName);
     switch (soundVariant) {
+      case BOGGED:
+        soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.BOGGED_AMBIENT);
+        soundDataSet.addSound(SoundType.DEATH, SoundEvents.BOGGED_DEATH);
+        soundDataSet.addSound(SoundType.HURT, SoundEvents.BOGGED_HURT);
+        soundDataSet.addSound(SoundType.STEP, SoundEvents.BOGGED_STEP);
+        break;
       case STRAY:
         soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.STRAY_AMBIENT);
         soundDataSet.addSound(SoundType.DEATH, SoundEvents.STRAY_DEATH);
@@ -108,6 +115,7 @@ public class Skeleton extends EasyNPCBaseModelEntity<Skeleton> {
   }
 
   public enum Variant {
+    BOGGED,
     SKELETON,
     STRAY,
     WITHER_SKELETON

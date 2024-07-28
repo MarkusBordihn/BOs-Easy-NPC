@@ -1,4 +1,4 @@
-# Changelog for Easy NPC (1.20.6)
+# Changelog for Easy NPC (1.21)
 
 ## Note
 

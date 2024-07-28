@@ -40,7 +40,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
 
   private static final int PROTOCOL_VERSION = 21;
   public static final SimpleChannel INSTANCE =
-      ChannelBuilder.named(new ResourceLocation(Constants.MOD_ID, "network"))
+      ChannelBuilder.named(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "network"))
           .networkProtocolVersion(PROTOCOL_VERSION)
           .simpleChannel();
 

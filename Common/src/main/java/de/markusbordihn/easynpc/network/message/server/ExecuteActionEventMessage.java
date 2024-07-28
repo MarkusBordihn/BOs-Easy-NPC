@@ -38,9 +38,9 @@ public record ExecuteActionEventMessage(UUID uuid, ActionEventType actionEventTy
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "trigger_action_event");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "trigger_action_event");
   public static final CustomPacketPayload.Type<ExecuteActionEventMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ExecuteActionEventMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), ExecuteActionEventMessage::create);
 

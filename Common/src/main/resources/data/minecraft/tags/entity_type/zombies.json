@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "easy_npc:drowned",
+    "easy_npc:husk",
+    "easy_npc:zombie",
+    "easy_npc:zombie_horse",
+    "easy_npc:zombie_villager"
+  ]
+}

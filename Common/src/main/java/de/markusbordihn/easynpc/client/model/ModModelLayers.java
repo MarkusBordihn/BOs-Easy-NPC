@@ -26,11 +26,14 @@ import net.minecraft.resources.ResourceLocation;
 public class ModModelLayers {
 
   public static final ModelLayerLocation ALLAY =
-      new ModelLayerLocation(new ResourceLocation(Constants.MOD_ID, "allay"), "main");
+      new ModelLayerLocation(
+          ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "allay"), "main");
   public static final ModelLayerLocation FAIRY =
-      new ModelLayerLocation(new ResourceLocation(Constants.MOD_ID, "fairy"), "main");
+      new ModelLayerLocation(
+          ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "fairy"), "main");
   public static final ModelLayerLocation ORC =
-      new ModelLayerLocation(new ResourceLocation(Constants.MOD_ID, "orc"), "main");
+      new ModelLayerLocation(
+          ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "orc"), "main");
 
   private ModModelLayers() {}
 }

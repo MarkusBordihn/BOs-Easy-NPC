@@ -62,7 +62,7 @@ public class InteractionHandler {
       // Handle Easy NPC Wand
       Item easyNPCWand =
           BuiltInRegistries.ITEM
-              .getOptional(new ResourceLocation(Constants.MOD_ID, "easy_npc_wand"))
+              .getOptional(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "easy_npc_wand"))
               .orElse(null);
       if (handItem.equals(easyNPCWand)) {
         configurationData.openMainConfigurationMenu(serverPlayer);

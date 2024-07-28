@@ -37,9 +37,9 @@ public record ChangeModelPoseMessage(UUID uuid, ModelPose modelPose)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "change_model_pose");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "change_model_pose");
   public static final CustomPacketPayload.Type<ChangeModelPoseMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ChangeModelPoseMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), ChangeModelPoseMessage::create);
 

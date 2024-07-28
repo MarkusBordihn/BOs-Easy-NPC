@@ -36,9 +36,9 @@ public record ChangeTradingTypeMessage(UUID uuid, TradingType tradingType)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "change_trading_type");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "change_trading_type");
   public static final CustomPacketPayload.Type<ChangeTradingTypeMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ChangeTradingTypeMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), ChangeTradingTypeMessage::create);
 

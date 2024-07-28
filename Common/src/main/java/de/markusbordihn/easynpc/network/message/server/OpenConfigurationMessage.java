@@ -36,9 +36,9 @@ public record OpenConfigurationMessage(
     UUID uuid, ConfigurationType configurationType, int pageIndex) implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "open_configuration_screen");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "open_configuration_screen");
   public static final CustomPacketPayload.Type<OpenConfigurationMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, OpenConfigurationMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), OpenConfigurationMessage::create);
 

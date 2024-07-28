@@ -36,9 +36,9 @@ public record ChangeModelEquipmentVisibilityMessage(
     UUID uuid, EquipmentSlot equipmentSlot, boolean visible) implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "change_model_equipment_visibility");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "change_model_equipment_visibility");
   public static final CustomPacketPayload.Type<ChangeModelEquipmentVisibilityMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ChangeModelEquipmentVisibilityMessage>
       STREAM_CODEC =
           StreamCodec.of(

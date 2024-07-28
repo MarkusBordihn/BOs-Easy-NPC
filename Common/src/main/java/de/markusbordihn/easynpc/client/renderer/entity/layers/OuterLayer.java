@@ -78,9 +78,7 @@ public class OuterLayer<T extends LivingEntity, M extends EntityModel<T>>
           netHeadYaw,
           headPitch,
           ageInTicks,
-          1.0F,
-          1.0F,
-          1.0F);
+          0xFFFFFF);
     }
   }
 }

@@ -47,13 +47,16 @@ public class FairyModelRenderer
           map -> {
             map.put(
                 Variant.BLUE,
-                new ResourceLocation(Constants.MOD_ID, "textures/entity/fairy/fairy_blue.png"));
+                ResourceLocation.fromNamespaceAndPath(
+                    Constants.MOD_ID, "textures/entity/fairy/fairy_blue.png"));
             map.put(
                 Variant.GREEN,
-                new ResourceLocation(Constants.MOD_ID, "textures/entity/fairy/fairy_green.png"));
+                ResourceLocation.fromNamespaceAndPath(
+                    Constants.MOD_ID, "textures/entity/fairy/fairy_green.png"));
             map.put(
                 Variant.RED,
-                new ResourceLocation(Constants.MOD_ID, "textures/entity/fairy/fairy_red.png"));
+                ResourceLocation.fromNamespaceAndPath(
+                    Constants.MOD_ID, "textures/entity/fairy/fairy_red.png"));
           });
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.GREEN);
 

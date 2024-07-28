@@ -38,9 +38,15 @@ public class WolfModelRenderer
       Util.make(
           new EnumMap<>(Variant.class),
           map -> {
-            map.put(Variant.DEFAULT, new ResourceLocation("textures/entity/wolf/wolf.png"));
-            map.put(Variant.TAMED, new ResourceLocation("textures/entity/wolf/wolf_tame.png"));
-            map.put(Variant.ANGRY, new ResourceLocation("textures/entity/wolf/wolf_angry.png"));
+            map.put(
+                Variant.DEFAULT,
+                ResourceLocation.withDefaultNamespace("textures/entity/wolf/wolf.png"));
+            map.put(
+                Variant.TAMED,
+                ResourceLocation.withDefaultNamespace("textures/entity/wolf/wolf_tame.png"));
+            map.put(
+                Variant.ANGRY,
+                ResourceLocation.withDefaultNamespace("textures/entity/wolf/wolf_angry.png"));
           });
 
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.DEFAULT);

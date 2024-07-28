@@ -43,21 +43,27 @@ public class IllagerModelRenderer
       Util.make(
           new EnumMap<>(Variant.class),
           map -> {
-            map.put(Variant.EVOKER, new ResourceLocation("textures/entity/illager/evoker.png"));
+            map.put(
+                Variant.EVOKER,
+                ResourceLocation.withDefaultNamespace("textures/entity/illager/evoker.png"));
             map.put(
                 Variant.EVOKER_CROSSED_ARMS,
-                new ResourceLocation("textures/entity/illager/evoker.png"));
+                ResourceLocation.withDefaultNamespace("textures/entity/illager/evoker.png"));
             map.put(
-                Variant.ILLUSIONER, new ResourceLocation("textures/entity/illager/illusioner.png"));
+                Variant.ILLUSIONER,
+                ResourceLocation.withDefaultNamespace("textures/entity/illager/illusioner.png"));
             map.put(
                 Variant.ILLUSIONER_CROSSED_ARMS,
-                new ResourceLocation("textures/entity/illager/illusioner.png"));
-            map.put(Variant.PILLAGER, new ResourceLocation("textures/entity/illager/pillager.png"));
+                ResourceLocation.withDefaultNamespace("textures/entity/illager/illusioner.png"));
             map.put(
-                Variant.VINDICATOR, new ResourceLocation("textures/entity/illager/vindicator.png"));
+                Variant.PILLAGER,
+                ResourceLocation.withDefaultNamespace("textures/entity/illager/pillager.png"));
+            map.put(
+                Variant.VINDICATOR,
+                ResourceLocation.withDefaultNamespace("textures/entity/illager/vindicator.png"));
             map.put(
                 Variant.VINDICATOR_CROSSED_ARMS,
-                new ResourceLocation("textures/entity/illager/vindicator.png"));
+                ResourceLocation.withDefaultNamespace("textures/entity/illager/vindicator.png"));
           });
   protected static final ResourceLocation DEFAULT_TEXTURE =
       TEXTURE_BY_VARIANT.get(Variant.PILLAGER);

@@ -35,9 +35,9 @@ public record OpenMenuCallbackMessage(UUID uuid, UUID menuId, CompoundTag data)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "open_menu_callback_message");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "open_menu_callback_message");
   public static final CustomPacketPayload.Type<OpenMenuCallbackMessage> PAYLOAD_TYPE =
-      new CustomPacketPayload.Type<>(MESSAGE_ID);
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, OpenMenuCallbackMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), OpenMenuCallbackMessage::create);
 

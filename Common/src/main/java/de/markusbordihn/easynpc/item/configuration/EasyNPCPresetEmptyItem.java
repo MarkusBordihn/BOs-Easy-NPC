@@ -68,7 +68,8 @@ public class EasyNPCPresetEmptyItem extends Item {
       // Get new preset item from registry
       Item item =
           BuiltInRegistries.ITEM
-              .getOptional(new ResourceLocation(Constants.MOD_ID, EasyNPCPresetItem.NAME))
+              .getOptional(
+                  ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, EasyNPCPresetItem.NAME))
               .orElse(null);
       if (item == null) {
         log.error("Can't find item for storing preset {}", EasyNPCPresetItem.NAME);

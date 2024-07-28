@@ -49,6 +49,11 @@ public class ModEntityType {
   public static final EntityType<Allay> ALLAY =
       Registry.register(
           BuiltInRegistries.ENTITY_TYPE, Constants.MOD_ID + ":" + Allay.ID, ModEntityTypes.ALLAY);
+  public static final EntityType<Skeleton> BOGGED =
+      Registry.register(
+          BuiltInRegistries.ENTITY_TYPE,
+          Constants.MOD_ID + ":" + Skeleton.ID_BOGGED,
+          ModEntityTypes.BOGGED);
   public static final EntityType<Cat> CAT =
       Registry.register(
           BuiltInRegistries.ENTITY_TYPE, Constants.MOD_ID + ":" + Cat.ID, ModEntityTypes.CAT);
@@ -175,6 +180,7 @@ public class ModEntityType {
     FabricDefaultAttributeRegistry.register(CRASH_TEST_DUMMY, CrashTestDummy.createAttributes());
 
     FabricDefaultAttributeRegistry.register(ALLAY, Allay.createAttributes());
+    FabricDefaultAttributeRegistry.register(BOGGED, Skeleton.createAttributes());
     FabricDefaultAttributeRegistry.register(CAT, Cat.createAttributes());
     FabricDefaultAttributeRegistry.register(CHICKEN, Chicken.createAttributes());
     FabricDefaultAttributeRegistry.register(DROWNED, Zombie.createAttributes());

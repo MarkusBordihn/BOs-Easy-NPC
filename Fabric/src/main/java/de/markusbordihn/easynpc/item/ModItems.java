@@ -57,6 +57,8 @@ public class ModItems {
   public static final Item ALLEY_NPC_SPAWN_EGG =
       new ModSpawnEggItem(ModEntityType.ALLAY, new Item.Properties().rarity(Rarity.EPIC));
   public static final Item BULLET_ITEM = new Item(new Item.Properties());
+  public static final Item BOGGED_NPC_SPAWN_EGG =
+      new ModSpawnEggItem(ModEntityType.BOGGED, new Item.Properties().rarity(Rarity.EPIC));
   public static final Item CAT_NPC_SPAWN_EGG =
       new ModSpawnEggItem(ModEntityType.CAT, new Item.Properties().rarity(Rarity.EPIC));
   public static final Item CHICKEN_NPC_SPAWN_EGG =
@@ -135,6 +137,7 @@ public class ModItems {
 
     log.info("{} Spawn Egg Items ...", Constants.LOG_REGISTER_PREFIX);
     registerSpawnEgg(Allay.ID, ALLEY_NPC_SPAWN_EGG);
+    registerSpawnEgg(Skeleton.ID_BOGGED, BOGGED_NPC_SPAWN_EGG);
     registerSpawnEgg(Cat.ID, CAT_NPC_SPAWN_EGG);
     registerSpawnEgg(Chicken.ID, CHICKEN_NPC_SPAWN_EGG);
     registerSpawnEgg(Fairy.ID, FAIRY_NPC_SPAWN_EGG);

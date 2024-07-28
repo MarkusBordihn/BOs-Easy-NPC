@@ -61,6 +61,8 @@ public class ModItems {
       registerSpawnEgg(Allay.ID, ModEntityType.ALLAY);
   public static final DeferredItem<Item> BULLET_ITEM =
       ITEMS.register(BulletItem.ID, () -> new BulletItem(new Item.Properties()));
+  public static final DeferredItem<Item> BOGGED_NPC_SPAWN_EGG =
+      registerSpawnEgg(Skeleton.ID_BOGGED, ModEntityType.BOGGED);
   public static final DeferredItem<Item> CAT_NPC_SPAWN_EGG =
       registerSpawnEgg(Cat.ID, ModEntityType.CAT);
   public static final DeferredItem<Item> CHICKEN_NPC_SPAWN_EGG =

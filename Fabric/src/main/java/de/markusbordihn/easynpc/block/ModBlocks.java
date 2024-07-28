@@ -52,12 +52,15 @@ public class ModBlocks {
   public static void registerModBlockEntities() {
     Registry.register(
         BuiltInRegistries.BLOCK_ENTITY_TYPE,
-        new ResourceLocation(Constants.MOD_ID, BaseEasyNPCSpawnerBlockEntity.NAME),
+        ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, BaseEasyNPCSpawnerBlockEntity.NAME),
         EASY_NPC_SPAWNER_ENTITY);
   }
 
   private static void registerBlock(String id, Block block) {
-    Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(Constants.MOD_ID, id), block);
+    Registry.register(
+        BuiltInRegistries.BLOCK,
+        ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id),
+        block);
   }
 
   public static final BlockEntityType<EasyNPCSpawnerBlockEntity> EASY_NPC_SPAWNER_ENTITY =

@@ -47,6 +47,13 @@ public class ModEntityTypes {
           .sized(0.6F, 0.90F)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Allay.ID);
+  public static final EntityType<Skeleton> BOGGED =
+      EntityType.Builder.<Skeleton>of(
+              (entityType, level) -> new Skeleton(entityType, level, Skeleton.Variant.BOGGED),
+              CATEGORY)
+          .sized(0.6F, 1.99F)
+          .clientTrackingRange(CLIENT_TRACKING_RANGE)
+          .build(Skeleton.ID_BOGGED);
   public static final EntityType<Cat> CAT =
       EntityType.Builder.of(Cat::new, CATEGORY)
           .sized(0.6F, 0.6F)

@@ -69,6 +69,7 @@ import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.npc.Npc;
 import net.minecraft.world.item.trading.Merchant;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.portal.DimensionTransition;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -311,7 +312,7 @@ public interface EasyNPC<E extends PathfinderMob> extends Npc {
     }
   }
 
-  default void handleChangeDimensionEvent(ServerLevel serverLevel) {
+  default void handleChangeDimensionEvent(DimensionTransition dimensionTransition) {
     TradingData<E> tradingData = getEasyNPCTradingData();
     if (tradingData != null) {
       tradingData.stopTrading();

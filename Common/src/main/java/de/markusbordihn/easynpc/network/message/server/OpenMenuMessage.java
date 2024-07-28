@@ -33,9 +33,9 @@ import net.minecraft.server.level.ServerPlayer;
 public record OpenMenuMessage(UUID uuid, UUID menuId) implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "open_menu_message");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "open_menu_message");
   public static final CustomPacketPayload.Type<OpenMenuMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, OpenMenuMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), OpenMenuMessage::create);
 

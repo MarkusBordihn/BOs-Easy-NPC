@@ -37,9 +37,9 @@ import net.minecraft.world.entity.EntityType;
 public record RespawnNPCMessage(UUID uuid) implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "respawn_npc");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "respawn_npc");
   public static final CustomPacketPayload.Type<RespawnNPCMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, RespawnNPCMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), RespawnNPCMessage::create);
 

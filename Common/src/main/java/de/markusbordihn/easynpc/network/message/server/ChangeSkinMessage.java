@@ -43,9 +43,9 @@ public record ChangeSkinMessage(
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "change_skin");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "change_skin");
   public static final CustomPacketPayload.Type<ChangeSkinMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ChangeSkinMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), ChangeSkinMessage::create);
 

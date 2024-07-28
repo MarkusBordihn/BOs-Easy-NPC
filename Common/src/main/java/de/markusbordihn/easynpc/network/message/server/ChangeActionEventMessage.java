@@ -39,9 +39,9 @@ public record ChangeActionEventMessage(
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "change_action_event");
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "change_action_event");
   public static final CustomPacketPayload.Type<ChangeActionEventMessage> PAYLOAD_TYPE =
-      CustomPacketPayload.createType(MESSAGE_ID.toString());
+      new Type<>(MESSAGE_ID);
   public static final StreamCodec<RegistryFriendlyByteBuf, ChangeActionEventMessage> STREAM_CODEC =
       StreamCodec.of((buffer, message) -> message.write(buffer), ChangeActionEventMessage::create);
 
