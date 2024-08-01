@@ -81,7 +81,7 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
                   if (lightLevel >= 0 && lightLevel <= 15) {
                     NetworkMessageHandlerManager.getServerHandler()
                         .entityAttributeChange(
-                            this.getNpcUUID(), EntityAttribute.LIGHT_LEVEL, lightLevel);
+                            this.getEasyNPCUUID(), EntityAttribute.LIGHT_LEVEL, lightLevel);
                   }
                 }));
   }

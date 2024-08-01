@@ -31,7 +31,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Inventory;
 
 public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
-    extends de.markusbordihn.easynpc.client.screen.configuration.pose.PoseConfigurationScreen<T> {
+    extends PoseConfigurationScreen<T> {
 
   public static final int BUTTON_WIDTH = 100;
   protected Button crouchingPoseButton;
@@ -79,7 +79,7 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
                 "pose.standing",
                 button -> {
                   NetworkMessageHandlerManager.getServerHandler()
-                      .poseChange(this.getNpcUUID(), Pose.STANDING);
+                      .poseChange(this.getEasyNPCUUID(), Pose.STANDING);
                   this.checkPoseButtonState(Pose.STANDING, ModelPose.DEFAULT);
                 }));
     this.crouchingPoseButton =
@@ -91,7 +91,7 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
                 "pose.crouching",
                 button -> {
                   NetworkMessageHandlerManager.getServerHandler()
-                      .poseChange(this.getNpcUUID(), Pose.CROUCHING);
+                      .poseChange(this.getEasyNPCUUID(), Pose.CROUCHING);
                   this.checkPoseButtonState(Pose.CROUCHING, ModelPose.DEFAULT);
                 }));
     this.dyingPoseButton =
@@ -103,7 +103,7 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
                 "pose.dying",
                 button -> {
                   NetworkMessageHandlerManager.getServerHandler()
-                      .poseChange(this.getNpcUUID(), Pose.DYING);
+                      .poseChange(this.getEasyNPCUUID(), Pose.DYING);
                   this.checkPoseButtonState(Pose.DYING, ModelPose.DEFAULT);
                 }));
     this.fallFlyingPoseButton =
@@ -115,7 +115,7 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
                 "pose.fall_flying",
                 button -> {
                   NetworkMessageHandlerManager.getServerHandler()
-                      .poseChange(this.getNpcUUID(), Pose.FALL_FLYING);
+                      .poseChange(this.getEasyNPCUUID(), Pose.FALL_FLYING);
                   this.checkPoseButtonState(Pose.FALL_FLYING, ModelPose.DEFAULT);
                 }));
     this.longJumpPoseButton =
@@ -127,7 +127,7 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
                 "pose.long_jumping",
                 button -> {
                   NetworkMessageHandlerManager.getServerHandler()
-                      .poseChange(this.getNpcUUID(), Pose.LONG_JUMPING);
+                      .poseChange(this.getEasyNPCUUID(), Pose.LONG_JUMPING);
                   this.checkPoseButtonState(Pose.LONG_JUMPING, ModelPose.DEFAULT);
                 }));
     this.sleepingPoseButton =
@@ -139,7 +139,7 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
                 "pose.sleeping",
                 button -> {
                   NetworkMessageHandlerManager.getServerHandler()
-                      .poseChange(this.getNpcUUID(), Pose.SLEEPING);
+                      .poseChange(this.getEasyNPCUUID(), Pose.SLEEPING);
                   this.checkPoseButtonState(Pose.SLEEPING, ModelPose.DEFAULT);
                 }));
     this.spinAttackPoseButton =
@@ -151,7 +151,7 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
                 "pose.spin_attack",
                 button -> {
                   NetworkMessageHandlerManager.getServerHandler()
-                      .poseChange(this.getNpcUUID(), Pose.SPIN_ATTACK);
+                      .poseChange(this.getEasyNPCUUID(), Pose.SPIN_ATTACK);
                   this.checkPoseButtonState(Pose.SPIN_ATTACK, ModelPose.DEFAULT);
                 }));
     this.swimmingPoseButton =
@@ -163,7 +163,7 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
                 "pose.swimming",
                 button -> {
                   NetworkMessageHandlerManager.getServerHandler()
-                      .poseChange(this.getNpcUUID(), Pose.SWIMMING);
+                      .poseChange(this.getEasyNPCUUID(), Pose.SWIMMING);
                   this.checkPoseButtonState(Pose.SWIMMING, ModelPose.DEFAULT);
                 }));
 

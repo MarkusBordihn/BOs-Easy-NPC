@@ -78,11 +78,16 @@ public class NetworkHandler implements NetworkHandlerInterface {
     try {
       INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), networkMessageRecord);
     } catch (Exception e) {
-      log.error(
-          "Failed to send {} to player {}: {}",
-          networkMessageRecord,
-          serverPlayer.getName().getString(),
-          e);
+      log.error("Failed to send {} to player {}: {}", networkMessageRecord, serverPlayer, e);
+    }
+  }
+
+  @Override
+  public void sendToAllPlayers(final NetworkMessageRecord networkMessageRecord) {
+    try {
+      INSTANCE.send(PacketDistributor.ALL.noArg(), networkMessageRecord);
+    } catch (Exception e) {
+      log.error("Failed to send {} to all players: {}", networkMessageRecord, e);
     }
   }
 

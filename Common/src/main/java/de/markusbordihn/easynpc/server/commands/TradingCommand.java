@@ -40,7 +40,7 @@ public class TradingCommand extends Command {
                     commandSourceStack ->
                         commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(
-                    Commands.argument("target", new EasyNPCArgument())
+                    Commands.argument("target", EasyNPCArgument.npc())
                         .executes(
                             context -> {
                               ServerPlayer serverPlayer =
@@ -64,7 +64,7 @@ public class TradingCommand extends Command {
                     commandSourceStack ->
                         commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(
-                    Commands.argument("target", new EasyNPCArgument())
+                    Commands.argument("target", EasyNPCArgument.npc())
                         .executes(
                             context ->
                                 reset(

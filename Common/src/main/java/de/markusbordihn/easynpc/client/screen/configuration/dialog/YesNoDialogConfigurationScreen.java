@@ -119,10 +119,10 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
                     if (yesButtonId != null) {
                       NetworkMessageHandlerManager.getServerHandler()
                           .openDialogButtonEditor(
-                              getNpcUUID(), questionDialogData.getId(), yesButtonId);
+                              getEasyNPCUUID(), questionDialogData.getId(), yesButtonId);
                     } else {
                       NetworkMessageHandlerManager.getServerHandler()
-                          .openDialogButtonEditor(getNpcUUID(), questionDialogData.getId());
+                          .openDialogButtonEditor(getEasyNPCUUID(), questionDialogData.getId());
                     }
                   }
                 }));
@@ -143,10 +143,10 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
                     if (noButtonId != null) {
                       NetworkMessageHandlerManager.getServerHandler()
                           .openDialogButtonEditor(
-                              getNpcUUID(), questionDialogData.getId(), noButtonId);
+                              getEasyNPCUUID(), questionDialogData.getId(), noButtonId);
                     } else {
                       NetworkMessageHandlerManager.getServerHandler()
-                          .openDialogButtonEditor(getNpcUUID(), questionDialogData.getId());
+                          .openDialogButtonEditor(getEasyNPCUUID(), questionDialogData.getId());
                     }
                   }
                 }));
@@ -205,9 +205,9 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
                   this.yesDialogValue = this.yesDialogBox.getValue();
                   this.noDialogValue = this.noDialogBox.getValue();
                   NetworkMessageHandlerManager.getServerHandler()
-                      .saveDialogSet(getNpcUUID(), dialogDataSet);
+                      .saveDialogSet(getEasyNPCUUID(), dialogDataSet);
                   NetworkMessageHandlerManager.getServerHandler()
-                      .openConfiguration(getNpcUUID(), ConfigurationType.YES_NO_DIALOG);
+                      .openConfiguration(getEasyNPCUUID(), ConfigurationType.YES_NO_DIALOG);
                 }));
 
     // Chancel Button
@@ -256,8 +256,8 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  public void containerTick() {
-    super.containerTick();
+  public void updateTick() {
+    super.updateTick();
 
     if (this.saveButton != null) {
       this.saveButton.active =

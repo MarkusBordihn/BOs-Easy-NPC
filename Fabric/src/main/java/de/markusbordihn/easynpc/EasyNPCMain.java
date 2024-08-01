@@ -21,7 +21,8 @@ package de.markusbordihn.easynpc;
 
 import de.markusbordihn.easynpc.block.ModBlocks;
 import de.markusbordihn.easynpc.commands.manager.CommandManager;
-import de.markusbordihn.easynpc.commands.synchronization.ArgumentTypes;
+import de.markusbordihn.easynpc.commands.synchronization.ModArgumentTypes;
+import de.markusbordihn.easynpc.config.Config;
 import de.markusbordihn.easynpc.debug.DebugManager;
 import de.markusbordihn.easynpc.entity.LivingEntityEventHandler;
 import de.markusbordihn.easynpc.entity.ModEntityType;
@@ -59,6 +60,9 @@ public class EasyNPCMain implements ModInitializer {
     Constants.GAME_DIR = FabricLoader.getInstance().getGameDir();
     Constants.CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
 
+    log.info("{} Configuration ...", Constants.LOG_REGISTER_PREFIX);
+    Config.register();
+
     log.info("{} Entity Types ...", Constants.LOG_REGISTER_PREFIX);
     ModEntityType.registerEntitiesAttributes();
 
@@ -91,6 +95,6 @@ public class EasyNPCMain implements ModInitializer {
     NetworkHandler.registerServerNetworkHandler();
 
     log.info("{} Argument Types ...", Constants.LOG_REGISTER_PREFIX);
-    ArgumentTypes.register();
+    ModArgumentTypes.register();
   }
 }

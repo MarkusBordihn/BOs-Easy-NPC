@@ -86,7 +86,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                       this.modelData.getModelPartRotation(modelPart);
                   NetworkMessageHandlerManager.getServerHandler()
                       .rotationChange(
-                          this.getNpcUUID(),
+                          this.getEasyNPCUUID(),
                           modelPart,
                           new CustomRotation(
                               (float) Math.toRadians(slider.getTargetValue()),
@@ -107,7 +107,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                       this.modelData.getModelPartRotation(modelPart);
                   NetworkMessageHandlerManager.getServerHandler()
                       .rotationChange(
-                          this.getNpcUUID(),
+                          this.getEasyNPCUUID(),
                           modelPart,
                           new CustomRotation(
                               currentModelPartRotation.getX(),
@@ -128,7 +128,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                       this.modelData.getModelPartRotation(modelPart);
                   NetworkMessageHandlerManager.getServerHandler()
                       .rotationChange(
-                          this.getNpcUUID(),
+                          this.getEasyNPCUUID(),
                           modelPart,
                           new CustomRotation(
                               currentModelPartRotation.getX(),
@@ -153,7 +153,8 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 sliderButtonY.reset();
                 sliderButtonZ.reset();
                 NetworkMessageHandlerManager.getServerHandler()
-                    .rotationChange(this.getNpcUUID(), modelPart, new CustomRotation(0f, 0f, 0f));
+                    .rotationChange(
+                        this.getEasyNPCUUID(), modelPart, new CustomRotation(0f, 0f, 0f));
               }));
     } else {
       this.addRenderableWidget(
@@ -167,7 +168,8 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 sliderButtonY.reset();
                 sliderButtonZ.reset();
                 NetworkMessageHandlerManager.getServerHandler()
-                    .rotationChange(this.getNpcUUID(), modelPart, new CustomRotation(0f, 0f, 0f));
+                    .rotationChange(
+                        this.getEasyNPCUUID(), modelPart, new CustomRotation(0f, 0f, 0f));
               }));
     }
     return sliderButtonX;
@@ -212,7 +214,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                       this.modelData.getModelPartPosition(modelPart);
                   NetworkMessageHandlerManager.getServerHandler()
                       .modelPositionChange(
-                          this.getNpcUUID(),
+                          this.getEasyNPCUUID(),
                           modelPart,
                           new CustomPosition(
                               slider.getTargetValue(),
@@ -233,7 +235,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                       this.modelData.getModelPartPosition(modelPart);
                   NetworkMessageHandlerManager.getServerHandler()
                       .modelPositionChange(
-                          this.getNpcUUID(),
+                          this.getEasyNPCUUID(),
                           modelPart,
                           new CustomPosition(
                               currentModelPartPosition.x(),
@@ -254,7 +256,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                       this.modelData.getModelPartPosition(modelPart);
                   NetworkMessageHandlerManager.getServerHandler()
                       .modelPositionChange(
-                          this.getNpcUUID(),
+                          this.getEasyNPCUUID(),
                           modelPart,
                           new CustomPosition(
                               currentModelPartPosition.x(),
@@ -281,7 +283,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 sliderButtonZ.reset();
                 NetworkMessageHandlerManager.getServerHandler()
                     .modelPositionChange(
-                        this.getNpcUUID(), modelPart, new CustomPosition(0f, 0f, 0f));
+                        this.getEasyNPCUUID(), modelPart, new CustomPosition(0f, 0f, 0f));
               }));
     } else {
       this.addRenderableWidget(
@@ -296,7 +298,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 sliderButtonZ.reset();
                 NetworkMessageHandlerManager.getServerHandler()
                     .modelPositionChange(
-                        this.getNpcUUID(), modelPart, new CustomPosition(0f, 0f, 0f));
+                        this.getEasyNPCUUID(), modelPart, new CustomPosition(0f, 0f, 0f));
               }));
     }
     return sliderButtonX;
@@ -317,7 +319,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 "default",
                 button ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getNpcUUID(), ConfigurationType.DEFAULT_POSE)));
+                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.DEFAULT_POSE)));
 
     this.advancedPoseButton =
         this.addRenderableWidget(
@@ -328,7 +330,8 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 "advanced",
                 button ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getNpcUUID(), ConfigurationType.ADVANCED_POSE)));
+                        .openConfiguration(
+                            this.getEasyNPCUUID(), ConfigurationType.ADVANCED_POSE)));
 
     this.customPoseButton =
         this.addRenderableWidget(
@@ -339,6 +342,6 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 "custom",
                 button ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getNpcUUID(), ConfigurationType.CUSTOM_POSE)));
+                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.CUSTOM_POSE)));
   }
 }

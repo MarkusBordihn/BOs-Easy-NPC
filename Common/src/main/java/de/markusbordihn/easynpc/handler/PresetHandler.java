@@ -55,6 +55,7 @@ public class PresetHandler {
 
   public static boolean importPreset(
       ServerLevel serverLevel, CompoundTag compoundTag, Vec3 position, UUID uuid) {
+
     // Overwrite spawn position, if provided.
     if (position != null) {
       ListTag posTag = new ListTag();
@@ -198,6 +199,17 @@ public class PresetHandler {
     }
   }
 
+  public static boolean exportCustomPreset(EasyNPC<?> easyNPC, String name) {
+    SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
+    if (skinData == null) {
+      log.warn("[{}] Error no skin data available!", easyNPC);
+      return false;
+    }
+
+    File presetFile = CustomPresetDataFiles.getPresetFile(skinData.getSkinModel(), name);
+    return exportPreset(easyNPC, presetFile);
+  }
+
   public static boolean importDataPreset(
       ServerLevel serverLevel, ResourceLocation presetLocation, Vec3 position, UUID uuid) {
     if (serverLevel == null || presetLocation == null) {
@@ -253,6 +265,33 @@ public class PresetHandler {
     }
   }
 
+  public static boolean importLocalPreset(
+      ServerLevel serverLevel,
+      CompoundTag compoundTag,
+      ResourceLocation presetLocation,
+      Vec3 position,
+      UUID uuid) {
+    if (serverLevel == null || presetLocation == null) {
+      log.error("[{}] Error importing local preset {}", serverLevel, presetLocation);
+      return false;
+    }
+
+    if (compoundTag == null || compoundTag.isEmpty()) {
+      log.error(
+          "[{}] Error importing local preset {}, no preset data found!",
+          serverLevel,
+          presetLocation);
+      return false;
+    }
+
+    if (importPreset(serverLevel, compoundTag, position, uuid)) {
+      return true;
+    }
+
+    log.error("[{}] Error reading data preset file {}", serverLevel, presetLocation);
+    return false;
+  }
+
   public static boolean importWorldPreset(
       ServerLevel serverLevel, ResourceLocation presetLocation, Vec3 position, UUID uuid) {
     if (serverLevel == null || presetLocation == null) {
@@ -276,17 +315,6 @@ public class PresetHandler {
       log.error("[{}] Error reading world preset file {}", serverLevel, presetFile, exception);
       return false;
     }
-  }
-
-  public static boolean exportCustomPreset(EasyNPC<?> easyNPC, String name) {
-    SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
-    if (skinData == null) {
-      log.warn("[{}] Error no skin data available!", easyNPC);
-      return false;
-    }
-
-    File presetFile = CustomPresetDataFiles.getPresetFile(skinData.getSkinModel(), name);
-    return exportPreset(easyNPC, presetFile);
   }
 
   public static boolean exportWorldPreset(EasyNPC<?> easyNPC, String name) {

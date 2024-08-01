@@ -130,7 +130,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
             button -> {
               String skinURL = RemoteTextureManager.getTextureSkinURL(textureModelKey);
               NetworkMessageHandlerManager.getServerHandler()
-                  .setSkin(this.getNpcUUID(), "", skinURL, textureUUID, skinType, "");
+                  .setSkin(this.getEasyNPCUUID(), "", skinURL, textureUUID, skinType, "");
             });
 
     // Disable button for active skin.
@@ -180,7 +180,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
       TextureManager.clearLastErrorMessage();
       this.errorMessage = "";
       NetworkMessageHandlerManager.getServerHandler()
-          .setRemoteSkin(this.getNpcUUID(), textureSkinLocationValue);
+          .setRemoteSkin(this.getEasyNPCUUID(), textureSkinLocationValue);
 
       this.addTextureSettingsButton.active = false;
       this.formerTextureSkinLocation = textureSkinLocationValue;

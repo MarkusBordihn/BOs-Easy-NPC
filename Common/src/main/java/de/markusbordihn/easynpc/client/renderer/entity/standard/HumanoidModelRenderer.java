@@ -32,6 +32,7 @@ import java.util.Map;
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.client.renderer.entity.layers.ElytraLayer;
@@ -97,7 +98,7 @@ public class HumanoidModelRenderer
       float entityYaw,
       float partialTicks,
       PoseStack poseStack,
-      net.minecraft.client.renderer.MultiBufferSource buffer,
+      MultiBufferSource buffer,
       int light) {
     switch (pose) {
       case DYING:

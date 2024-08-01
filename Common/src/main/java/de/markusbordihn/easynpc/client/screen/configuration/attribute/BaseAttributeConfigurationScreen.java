@@ -139,7 +139,9 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             slider ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityBaseAttributeChange(
-                        this.getNpcUUID(), Attributes.MAX_HEALTH, slider.getTargetDoubleValue()));
+                        this.getEasyNPCUUID(),
+                        Attributes.MAX_HEALTH,
+                        slider.getTargetDoubleValue()));
 
     // Follow Range
     sliderYPos += sliderYSpace;
@@ -158,7 +160,9 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             slider ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityBaseAttributeChange(
-                        this.getNpcUUID(), Attributes.FOLLOW_RANGE, slider.getTargetDoubleValue()));
+                        this.getEasyNPCUUID(),
+                        Attributes.FOLLOW_RANGE,
+                        slider.getTargetDoubleValue()));
 
     // Knock-back Resistance
     sliderYPos += sliderYSpace;
@@ -177,7 +181,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             slider ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityBaseAttributeChange(
-                        this.getNpcUUID(),
+                        this.getEasyNPCUUID(),
                         Attributes.KNOCKBACK_RESISTANCE,
                         slider.getTargetDoubleValue()));
 
@@ -199,7 +203,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
               slider ->
                   NetworkMessageHandlerManager.getServerHandler()
                       .entityBaseAttributeChange(
-                          this.getNpcUUID(),
+                          this.getEasyNPCUUID(),
                           Attributes.MOVEMENT_SPEED,
                           slider.getTargetDoubleValue()));
     }
@@ -222,7 +226,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
               slider ->
                   NetworkMessageHandlerManager.getServerHandler()
                       .entityBaseAttributeChange(
-                          this.getNpcUUID(),
+                          this.getEasyNPCUUID(),
                           Attributes.FLYING_SPEED,
                           slider.getTargetDoubleValue()));
     }
@@ -244,7 +248,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             slider ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityBaseAttributeChange(
-                        this.getNpcUUID(),
+                        this.getEasyNPCUUID(),
                         Attributes.ATTACK_DAMAGE,
                         slider.getTargetDoubleValue()));
 
@@ -265,7 +269,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             slider ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityBaseAttributeChange(
-                        this.getNpcUUID(),
+                        this.getEasyNPCUUID(),
                         Attributes.ATTACK_KNOCKBACK,
                         slider.getTargetDoubleValue()));
 
@@ -287,7 +291,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
               slider ->
                   NetworkMessageHandlerManager.getServerHandler()
                       .entityBaseAttributeChange(
-                          this.getNpcUUID(),
+                          this.getEasyNPCUUID(),
                           Attributes.ATTACK_SPEED,
                           slider.getTargetDoubleValue()));
     }
@@ -309,7 +313,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             slider ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityBaseAttributeChange(
-                        this.getNpcUUID(), Attributes.ARMOR, slider.getTargetDoubleValue()));
+                        this.getEasyNPCUUID(), Attributes.ARMOR, slider.getTargetDoubleValue()));
 
     // Armor Toughness
     sliderYPos += sliderYSpace;
@@ -328,7 +332,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             slider ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityBaseAttributeChange(
-                        this.getNpcUUID(),
+                        this.getEasyNPCUUID(),
                         Attributes.ARMOR_TOUGHNESS,
                         slider.getTargetDoubleValue()));
   }

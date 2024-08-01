@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.utils.ValueUtils;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
@@ -83,12 +84,13 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
     this.positionXBox.setValue(String.valueOf(this.positionX));
     this.positionXBox.setResponder(
         consumer -> {
-          Double newPositionX = getDoubleValue(this.positionXBox.getValue());
+          Double newPositionX = ValueUtils.getDoubleValue(this.positionXBox.getValue());
           if (newPositionX != null) {
             this.positionX = newPositionX;
             NetworkMessageHandlerManager.getServerHandler()
                 .positionChange(
-                    this.getNpcUUID(), new Vec3(this.positionX, this.positionY, this.positionZ));
+                    this.getEasyNPCUUID(),
+                    new Vec3(this.positionX, this.positionY, this.positionZ));
           }
         });
     this.positionXMinusButton =
@@ -122,12 +124,13 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
     this.positionYBox.setValue(String.valueOf(this.positionY));
     this.positionYBox.setResponder(
         consumer -> {
-          Double newPositionY = getDoubleValue(this.positionYBox.getValue());
+          Double newPositionY = ValueUtils.getDoubleValue(this.positionYBox.getValue());
           if (newPositionY != null) {
             this.positionY = newPositionY;
             NetworkMessageHandlerManager.getServerHandler()
                 .positionChange(
-                    this.getNpcUUID(), new Vec3(this.positionX, this.positionY, this.positionZ));
+                    this.getEasyNPCUUID(),
+                    new Vec3(this.positionX, this.positionY, this.positionZ));
           }
         });
     this.positionYMinusButton =
@@ -161,12 +164,13 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
     this.positionZBox.setValue(String.valueOf(this.positionZ));
     this.positionZBox.setResponder(
         consumer -> {
-          Double newPositionZ = getDoubleValue(this.positionZBox.getValue());
+          Double newPositionZ = ValueUtils.getDoubleValue(this.positionZBox.getValue());
           if (newPositionZ != null) {
             this.positionZ = newPositionZ;
             NetworkMessageHandlerManager.getServerHandler()
                 .positionChange(
-                    this.getNpcUUID(), new Vec3(this.positionX, this.positionY, this.positionZ));
+                    this.getEasyNPCUUID(),
+                    new Vec3(this.positionX, this.positionY, this.positionZ));
           }
         });
     this.positionZMinusButton =
@@ -204,7 +208,7 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
                 checkbox ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .entityAttributeChange(
-                            this.getNpcUUID(), EntityAttribute.FREEFALL, checkbox.selected())));
+                            this.getEasyNPCUUID(), EntityAttribute.FREEFALL, checkbox.selected())));
   }
 
   @Override

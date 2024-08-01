@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.commands;
 
-import de.markusbordihn.easynpc.commands.synchronization.ArgumentTypes;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -31,6 +30,6 @@ public class ModArgumentTypes {
 
   @SubscribeEvent
   public static void registerArgumentTypes(final FMLCommonSetupEvent event) {
-    event.enqueueWork(ArgumentTypes::register);
+    event.enqueueWork(de.markusbordihn.easynpc.commands.synchronization.ModArgumentTypes::register);
   }
 }

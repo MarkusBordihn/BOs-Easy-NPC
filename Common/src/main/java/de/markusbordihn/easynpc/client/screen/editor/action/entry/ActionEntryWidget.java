@@ -1,7 +1,7 @@
 package de.markusbordihn.easynpc.client.screen.editor.action.entry;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.markusbordihn.easynpc.client.screen.editor.action.ActionDataEntryEditorScreen;
+import de.markusbordihn.easynpc.client.screen.editor.action.ActionDataEntryEditorContainerScreen;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
@@ -11,13 +11,13 @@ public class ActionEntryWidget {
 
   protected final ActionDataEntry actionDataEntry;
   protected final ActionDataSet actionDataSet;
-  protected final ActionDataEntryEditorScreen<?> screen;
+  protected final ActionDataEntryEditorContainerScreen<?> screen;
   protected final Font font;
 
   public ActionEntryWidget(
       ActionDataEntry actionDataEntry,
       ActionDataSet actionDataSet,
-      ActionDataEntryEditorScreen<?> screen) {
+      ActionDataEntryEditorContainerScreen<?> screen) {
     this.actionDataEntry = actionDataEntry;
     this.actionDataSet = actionDataSet;
     this.screen = screen;
