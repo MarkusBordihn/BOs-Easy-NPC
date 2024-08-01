@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.network.message.client.ExportClientPresetMessage;
 import de.markusbordihn.easynpc.network.message.client.OpenMenuCallbackMessage;
+import de.markusbordihn.easynpc.network.message.client.SyncDataMessage;
 import de.markusbordihn.easynpc.network.message.server.AddObjectiveMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeActionEventMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeAdvancedTradingMessage;
@@ -39,6 +40,7 @@ import de.markusbordihn.easynpc.network.message.server.ChangeNameMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangePoseMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangePositionMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeProfessionMessage;
+import de.markusbordihn.easynpc.network.message.server.ChangeRendererMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeScaleMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeSkinMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeSpawnerSettingMessage;
@@ -59,6 +61,7 @@ import de.markusbordihn.easynpc.network.message.server.RemoveDialogButtonMessage
 import de.markusbordihn.easynpc.network.message.server.RemoveDialogMessage;
 import de.markusbordihn.easynpc.network.message.server.RemoveNPCMessage;
 import de.markusbordihn.easynpc.network.message.server.RemoveObjectiveMessage;
+import de.markusbordihn.easynpc.network.message.server.RequestDataSyncMessage;
 import de.markusbordihn.easynpc.network.message.server.RespawnNPCMessage;
 import de.markusbordihn.easynpc.network.message.server.SaveDialogButtonMessage;
 import de.markusbordihn.easynpc.network.message.server.SaveDialogMessage;
@@ -99,6 +102,13 @@ public class NetworkHandlerManager {
     }
   }
 
+  public static void sendToAllPlayers(NetworkMessageRecord networkMessageRecord) {
+    NetworkHandlerInterface networkHandler = getHandler();
+    if (networkHandler != null) {
+      networkHandler.sendToAllPlayers(networkMessageRecord);
+    }
+  }
+
   public static void registerClientNetworkHandler() {
 
     NetworkHandlerInterface networkHandler = getHandler();
@@ -116,6 +126,8 @@ public class NetworkHandlerManager {
         OpenMenuCallbackMessage.MESSAGE_ID,
         OpenMenuCallbackMessage.class,
         OpenMenuCallbackMessage::create);
+    networkHandler.registerClientNetworkMessageHandler(
+        SyncDataMessage.MESSAGE_ID, SyncDataMessage.class, SyncDataMessage::create);
   }
 
   public static void registerServerNetworkHandler() {
@@ -202,6 +214,11 @@ public class NetworkHandlerManager {
         ChangeProfessionMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
+        ChangeRendererMessage.MESSAGE_ID,
+        ChangeRendererMessage.class,
+        ChangeRendererMessage::create);
+
+    networkHandler.registerServerNetworkMessageHandler(
         ChangeScaleMessage.MESSAGE_ID, ChangeScaleMessage.class, ChangeScaleMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
@@ -286,6 +303,11 @@ public class NetworkHandlerManager {
         RemoveObjectiveMessage.MESSAGE_ID,
         RemoveObjectiveMessage.class,
         RemoveObjectiveMessage::create);
+
+    networkHandler.registerServerNetworkMessageHandler(
+        RequestDataSyncMessage.MESSAGE_ID,
+        RequestDataSyncMessage.class,
+        RequestDataSyncMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         RespawnNPCMessage.MESSAGE_ID, RespawnNPCMessage.class, RespawnNPCMessage::create);

@@ -82,8 +82,8 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
     minecraft.setScreen(
         new ConfirmScreen(
             confirmed -> {
-              if (confirmed && this.getNpcUUID() != null) {
-                loadPreset(resourceLocation);
+              if (confirmed && this.getEasyNPCUUID() != null) {
+                this.loadPreset(resourceLocation);
                 minecraft.setScreen(null);
               } else {
                 minecraft.setScreen(this);
@@ -102,7 +102,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
   }
 
   public void loadPreset(ResourceLocation resourceLocation) {
-    // Define the preset loading action.
+    log.error("Not implemented! Received resource location {}", resourceLocation);
   }
 
   public String getPresetFileName(ResourceLocation resourceLocation) {
@@ -128,7 +128,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
                 button ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(
-                            this.getNpcUUID(), ConfigurationType.LOCAL_PRESET_IMPORT)));
+                            this.getEasyNPCUUID(), ConfigurationType.LOCAL_PRESET_IMPORT)));
 
     this.defaultImportPresetButton =
         this.addRenderableWidget(
@@ -140,7 +140,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
                 button ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(
-                            this.getNpcUUID(), ConfigurationType.DEFAULT_PRESET_IMPORT)));
+                            this.getEasyNPCUUID(), ConfigurationType.DEFAULT_PRESET_IMPORT)));
 
     this.worldImportPresetButton =
         this.addRenderableWidget(
@@ -152,7 +152,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
                 button ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(
-                            this.getNpcUUID(), ConfigurationType.WORLD_PRESET_IMPORT)));
+                            this.getEasyNPCUUID(), ConfigurationType.WORLD_PRESET_IMPORT)));
 
     this.customImportPresetButton =
         this.addRenderableWidget(
@@ -164,7 +164,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
                 button ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(
-                            this.getNpcUUID(), ConfigurationType.CUSTOM_PRESET_IMPORT)));
+                            this.getEasyNPCUUID(), ConfigurationType.CUSTOM_PRESET_IMPORT)));
 
     // Import button
     this.importPresetButton =

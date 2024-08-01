@@ -78,7 +78,7 @@ public class ExportCustomPresetConfigurationScreen<T extends ConfigurationMenu>
     this.customExportPresetButton.active = false;
 
     // Preset file
-    customPresetFile = CustomPresetDataFiles.getPresetFile(getSkinModel(), getNpcUUID());
+    customPresetFile = CustomPresetDataFiles.getPresetFile(getSkinModel(), getEasyNPCUUID());
     customPresetFileName = customPresetFile.getName();
 
     // Name Edit Box
@@ -118,7 +118,7 @@ public class ExportCustomPresetConfigurationScreen<T extends ConfigurationMenu>
                 "export",
                 button -> {
                   NetworkMessageHandlerManager.getServerHandler()
-                      .exportPreset(getNpcUUID(), this.nameBox.getValue());
+                      .exportPreset(getEasyNPCUUID(), this.nameBox.getValue());
                   exportPresetButton.active = false;
                 }));
   }

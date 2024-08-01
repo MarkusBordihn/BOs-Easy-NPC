@@ -49,7 +49,7 @@ public class ImportWorldPresetConfigurationScreen<T extends ConfigurationMenu>
   @Override
   public void loadPreset(ResourceLocation resourceLocation) {
     NetworkMessageHandlerManager.getServerHandler()
-        .importWorldPreset(getNpcUUID(), resourceLocation);
+        .importWorldPreset(getEasyNPCUUID(), resourceLocation);
   }
 
   @Override

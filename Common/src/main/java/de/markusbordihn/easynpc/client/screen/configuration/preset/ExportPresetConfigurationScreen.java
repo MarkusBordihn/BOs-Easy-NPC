@@ -53,7 +53,8 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
                 "custom",
                 button ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(getNpcUUID(), ConfigurationType.CUSTOM_PRESET_EXPORT)));
+                        .openConfiguration(
+                            getEasyNPCUUID(), ConfigurationType.CUSTOM_PRESET_EXPORT)));
 
     this.worldExportPresetButton =
         this.addRenderableWidget(
@@ -64,6 +65,7 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
                 "world_preset",
                 button ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(getNpcUUID(), ConfigurationType.WORLD_PRESET_EXPORT)));
+                        .openConfiguration(
+                            getEasyNPCUUID(), ConfigurationType.WORLD_PRESET_EXPORT)));
   }
 }

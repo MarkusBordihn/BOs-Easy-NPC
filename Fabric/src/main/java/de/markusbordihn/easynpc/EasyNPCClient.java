@@ -21,12 +21,14 @@ package de.markusbordihn.easynpc;
 
 import de.markusbordihn.easynpc.client.model.ModModelLayer;
 import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
+import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.client.screen.ClientScreens;
 import de.markusbordihn.easynpc.entity.LivingEntityEventHandler;
 import de.markusbordihn.easynpc.io.DataFileHandler;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
+import de.markusbordihn.easynpc.screen.ScreenManager;
 import de.markusbordihn.easynpc.tabs.ModTabs;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -62,8 +64,14 @@ public class EasyNPCClient implements ClientModInitializer {
 
     ClientLifecycleEvents.CLIENT_STARTED.register(
         client -> {
-          log.info("{} Register Data Files ...", Constants.LOG_REGISTER_PREFIX);
+          log.info("{} Data Files ...", Constants.LOG_REGISTER_PREFIX);
           DataFileHandler.registerDataFiles();
+
+          log.info("{} Entity Type Manager ...", Constants.LOG_REGISTER_PREFIX);
+          EntityTypeManager.register();
+
+          log.info("{} Screen Manager ...", Constants.LOG_REGISTER_PREFIX);
+          ScreenManager.register();
         });
   }
 }

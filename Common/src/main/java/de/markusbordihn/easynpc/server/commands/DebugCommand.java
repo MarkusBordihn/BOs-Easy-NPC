@@ -22,11 +22,15 @@ package de.markusbordihn.easynpc.server.commands;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.debug.DebugManager;
+import java.util.Set;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 
 public class DebugCommand extends Command {
 
@@ -36,11 +40,19 @@ public class DebugCommand extends Command {
     return Commands.literal("debug")
         .requires(cs -> cs.hasPermission(Commands.LEVEL_GAMEMASTERS))
         .then(
-            Commands.argument("enable", BoolArgumentType.bool())
-                .executes(
-                    context ->
-                        setDebug(
-                            context.getSource(), BoolArgumentType.getBool(context, "enable"))));
+            Commands.literal("log")
+                .then(
+                    Commands.argument("enable", BoolArgumentType.bool())
+                        .executes(
+                            context ->
+                                setDebug(
+                                    context.getSource(),
+                                    BoolArgumentType.getBool(context, "enable")))))
+        .then(
+            Commands.literal("info")
+                .then(
+                    Commands.literal("entity_types")
+                        .executes(context -> getEntityTypes(context.getSource()))));
   }
 
   public static int setDebug(CommandSourceStack context, boolean enable) {
@@ -64,6 +76,33 @@ public class DebugCommand extends Command {
           ChatFormatting.WHITE);
     }
     DebugManager.enableDebugLevel(enable);
+    return Command.SINGLE_SUCCESS;
+  }
+
+  public static int getEntityTypes(CommandSourceStack context) {
+    Set<EntityType<? extends Entity>> supportedEntityTypes =
+        EntityTypeManager.getSupportedEntityTypes();
+    Set<EntityType<? extends Entity>> unsupportedEntityTypes =
+        EntityTypeManager.getUnsupportedEntityTypes();
+    Set<EntityType<? extends Entity>> unknownEntityTypes =
+        EntityTypeManager.getUnknownEntityTypes();
+    sendSuccessMessage(
+        context,
+        "► Found "
+            + supportedEntityTypes.size()
+            + " supported, "
+            + unsupportedEntityTypes.size()
+            + " unsupported and "
+            + unknownEntityTypes.size()
+            + " unknown entity types.",
+        ChatFormatting.GREEN);
+    sendSuccessMessage(
+        context,
+        "> Please check the latest.log and/or debug.log for the full output.",
+        ChatFormatting.WHITE);
+    log.info("Supported entity types: {}", supportedEntityTypes);
+    log.info("Unsupported entity types: {}", unsupportedEntityTypes);
+    log.info("Unknown entity types: {}", unknownEntityTypes);
     return Command.SINGLE_SUCCESS;
   }
 }

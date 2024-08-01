@@ -8,6 +8,22 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.4.0 (beta only for testing)
+
+- Fixed #214 by using `Screen` instead of `AbstractContainerScreen` for immersion of the dialog.
+- Fixed #222 by improving preset import and export commands and handling.
+- Fixed #266 by adding `/easy_npc dialog set default <npc> <dialog>` command.
+- Fixed #258 by improving "Move Back to Home" objective handling.
+- Fixed #259 by improved custom model handling and rendering.
+- Fixed broken animations for some NPCs.
+- Added custom model screen to select custom models for NPCs.
+- Added hand item support for custom models.
+- Added asynchronous client <-> server syncs for better performance.
+- Added basic universal config system.
+- Added additional debug commands for better debugging.
+- Improved dialog argument handling and suggestions for better usability.
+- Improved general screen performance and handling.
+
 ### 5.3.0 (beta only for testing)
 
 - Fixed #261 by adding additional Image Validation before storing skins to the NPC.

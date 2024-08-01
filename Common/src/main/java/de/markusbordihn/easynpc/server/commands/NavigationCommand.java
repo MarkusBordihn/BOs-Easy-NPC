@@ -48,7 +48,7 @@ public class NavigationCommand extends Command {
                             commandSourceStack ->
                                 commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                         .then(
-                            Commands.argument("target", new EasyNPCArgument())
+                            Commands.argument("target", EasyNPCArgument.npc())
                                 .then(
                                     Commands.argument(ARG_POSITION, Vec3Argument.vec3())
                                         .executes(
@@ -68,7 +68,7 @@ public class NavigationCommand extends Command {
                             commandSourceStack ->
                                 commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                         .then(
-                            Commands.argument("target", new EasyNPCArgument())
+                            Commands.argument("target", EasyNPCArgument.npc())
                                 .then(
                                     Commands.argument(ARG_POSITION, Vec3Argument.vec3())
                                         .executes(
@@ -87,7 +87,7 @@ public class NavigationCommand extends Command {
                 .requires(
                     commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                 .then(
-                    Commands.argument("target", new EasyNPCArgument())
+                    Commands.argument("target", EasyNPCArgument.npc())
                         .executes(
                             context ->
                                 reset(

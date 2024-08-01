@@ -20,7 +20,9 @@
 package de.markusbordihn.easynpc.commands;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.commands.arguments.DialogArgument;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
+import de.markusbordihn.easynpc.commands.arguments.EntityTypeArgument;
 import de.markusbordihn.easynpc.commands.arguments.EquipmentSlotArgument;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
@@ -33,13 +35,27 @@ public class ModArgumentTypes {
 
   public static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES =
       DeferredRegister.create(ForgeRegistries.COMMAND_ARGUMENT_TYPES, Constants.MOD_ID);
+
+  public static final RegistryObject<SingletonArgumentInfo<DialogArgument>> DIALOG_ARGUMENT =
+      COMMAND_ARGUMENT_TYPES.register(
+          "dialog",
+          () ->
+              ArgumentTypeInfos.registerByClass(
+                  DialogArgument.class, SingletonArgumentInfo.contextFree(DialogArgument::new)));
   public static final RegistryObject<SingletonArgumentInfo<EasyNPCArgument>> EASY_NPC_ARGUMENT =
       COMMAND_ARGUMENT_TYPES.register(
           "easy_npc",
           () ->
               ArgumentTypeInfos.registerByClass(
                   EasyNPCArgument.class, SingletonArgumentInfo.contextFree(EasyNPCArgument::new)));
-
+  public static final RegistryObject<SingletonArgumentInfo<EntityTypeArgument>>
+      ENTITY_TYPE_ARGUMENT =
+          COMMAND_ARGUMENT_TYPES.register(
+              "entity_type",
+              () ->
+                  ArgumentTypeInfos.registerByClass(
+                      EntityTypeArgument.class,
+                      SingletonArgumentInfo.contextFree(EntityTypeArgument::new)));
   public static final RegistryObject<SingletonArgumentInfo<EquipmentSlotArgument>>
       EQUIPMENT_SLOT_ARGUMENT =
           COMMAND_ARGUMENT_TYPES.register(

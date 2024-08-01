@@ -118,6 +118,7 @@ dependencies {
   // Additional helpful Mods for development (runtime dependency)
   runtimeOnly fg.deobf("curse.maven:xaeros_minimap-263420:${project.xaeros_minimap_mod}")
   runtimeOnly fg.deobf("curse.maven:spark-361579:${project.spark_mod}")
+  runtimeOnly fg.deobf("curse.maven:jei-238222:${project.jei_mod}")
 }
 
 tasks.withType(JavaCompile).configureEach {

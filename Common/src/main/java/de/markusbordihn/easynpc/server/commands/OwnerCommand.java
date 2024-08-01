@@ -41,7 +41,7 @@ public class OwnerCommand extends Command {
         .then(
             Commands.literal("set")
                 .then(
-                    Commands.argument("target", new EasyNPCArgument())
+                    Commands.argument("target", EasyNPCArgument.npc())
                         .then(
                             Commands.argument("player", EntityArgument.player())
                                 .executes(
@@ -53,7 +53,7 @@ public class OwnerCommand extends Command {
         .then(
             Commands.literal("get")
                 .then(
-                    Commands.argument("target", new EasyNPCArgument())
+                    Commands.argument("target", EasyNPCArgument.npc())
                         .executes(
                             context ->
                                 getOwner(

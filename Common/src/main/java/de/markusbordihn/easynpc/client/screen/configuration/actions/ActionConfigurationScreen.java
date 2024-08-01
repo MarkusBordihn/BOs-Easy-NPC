@@ -67,7 +67,7 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
                 "basic",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getNpcUUID(), ConfigurationType.BASIC_ACTION)));
+                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.BASIC_ACTION)));
     this.dialogActionButton =
         this.addRenderableWidget(
             new TextButton(
@@ -77,7 +77,8 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
                 "dialog_actions",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getNpcUUID(), ConfigurationType.DIALOG_ACTION)));
+                        .openConfiguration(
+                            this.getEasyNPCUUID(), ConfigurationType.DIALOG_ACTION)));
     this.distanceActionButton =
         this.addRenderableWidget(
             new TextButton(
@@ -87,7 +88,8 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
                 "distance_actions",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getNpcUUID(), ConfigurationType.DISTANCE_ACTION)));
+                        .openConfiguration(
+                            this.getEasyNPCUUID(), ConfigurationType.DISTANCE_ACTION)));
   }
 
   protected Button getActionDataButton(
@@ -108,7 +110,7 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
               onPress ->
                   NetworkMessageHandlerManager.getServerHandler()
                       .openActionDataEntryEditor(
-                          this.getNpcUUID(),
+                          this.getEasyNPCUUID(),
                           actionEventType,
                           configurationType,
                           ActionDataEntry.EMPTY))
@@ -126,7 +128,8 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
               buttonLabel,
               onPress ->
                   NetworkMessageHandlerManager.getServerHandler()
-                      .openActionDataEditor(this.getNpcUUID(), actionEventType, configurationType))
+                      .openActionDataEditor(
+                          this.getEasyNPCUUID(), actionEventType, configurationType))
           .setRenderCenter(false);
     }
   }

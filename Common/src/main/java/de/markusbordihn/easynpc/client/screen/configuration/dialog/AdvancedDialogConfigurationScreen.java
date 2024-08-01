@@ -63,7 +63,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
                 "dialog.add",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openDialogEditor(this.getNpcUUID())));
+                        .openDialogEditor(this.getEasyNPCUUID())));
 
     // Dialog List
     this.dialogList = new DialogList();
@@ -218,7 +218,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .openDialogEditor(
-                            AdvancedDialogConfigurationScreen.this.getNpcUUID(),
+                            AdvancedDialogConfigurationScreen.this.getEasyNPCUUID(),
                             this.dialogData.getId()));
         this.copyLabelButton =
             new CopyButton(
@@ -235,7 +235,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .openDialogTextEditor(
-                            AdvancedDialogConfigurationScreen.this.getNpcUUID(),
+                            AdvancedDialogConfigurationScreen.this.getEasyNPCUUID(),
                             this.dialogData.getId()));
         this.defaultDialogLabel =
             AdvancedDialogConfigurationScreen.this.getDialogDataSet().getDefaultDialogLabel();

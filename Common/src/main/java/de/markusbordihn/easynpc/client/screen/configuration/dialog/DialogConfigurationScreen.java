@@ -53,7 +53,7 @@ public class DialogConfigurationScreen<T extends ConfigurationMenu> extends Conf
                 "disable_dialog",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getNpcUUID(), ConfigurationType.NONE_DIALOG)));
+                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.NONE_DIALOG)));
     this.basicDialogButton =
         this.addRenderableWidget(
             new TextButton(
@@ -63,7 +63,7 @@ public class DialogConfigurationScreen<T extends ConfigurationMenu> extends Conf
                 "basic",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getNpcUUID(), ConfigurationType.BASIC_DIALOG)));
+                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.BASIC_DIALOG)));
     this.yesNoDialogButton =
         this.addRenderableWidget(
             new TextButton(
@@ -75,7 +75,8 @@ public class DialogConfigurationScreen<T extends ConfigurationMenu> extends Conf
                 "yes_no_dialog",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getNpcUUID(), ConfigurationType.YES_NO_DIALOG)));
+                        .openConfiguration(
+                            this.getEasyNPCUUID(), ConfigurationType.YES_NO_DIALOG)));
     this.advancedDialogButton =
         this.addRenderableWidget(
             new TextButton(
@@ -88,6 +89,7 @@ public class DialogConfigurationScreen<T extends ConfigurationMenu> extends Conf
                 "advanced",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getNpcUUID(), ConfigurationType.ADVANCED_DIALOG)));
+                        .openConfiguration(
+                            this.getEasyNPCUUID(), ConfigurationType.ADVANCED_DIALOG)));
   }
 }

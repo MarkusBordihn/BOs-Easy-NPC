@@ -69,6 +69,10 @@ public class MenuHandler implements MenuHandlerInterface {
     configurationMenuMap.put(
         ConfigurationType.CUSTOM_TRADING, ModMenuTypes.CUSTOM_TRADING_CONFIGURATION_MENU);
     configurationMenuMap.put(
+        ConfigurationType.CUSTOM_MODEL, ModMenuTypes.CUSTOM_MODEL_CONFIGURATION_MENU);
+    configurationMenuMap.put(
+        ConfigurationType.DEFAULT_MODEL, ModMenuTypes.DEFAULT_MODEL_CONFIGURATION_MENU);
+    configurationMenuMap.put(
         ConfigurationType.DEFAULT_POSE, ModMenuTypes.DEFAULT_POSE_CONFIGURATION_MENU);
     configurationMenuMap.put(
         ConfigurationType.DEFAULT_POSITION, ModMenuTypes.DEFAULT_POSITION_CONFIGURATION_MENU);

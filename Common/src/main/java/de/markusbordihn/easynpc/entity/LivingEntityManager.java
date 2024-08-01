@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -50,15 +51,20 @@ public class LivingEntityManager {
   private LivingEntityManager() {}
 
   public static void addEasyNPC(EasyNPC<?> easyNPC) {
-    log.debug("{} [Add] EASY NPC entity {}: {}", LOG_PREFIX, easyNPC, easyNPC.getUUID());
-    npcEntityMap.put(easyNPC.getUUID(), easyNPC);
+    UUID uuid = easyNPC.getUUID();
+    log.debug("{} [Add] EASY NPC entity {}: {}", LOG_PREFIX, easyNPC, uuid);
+    npcEntityMap.put(uuid, easyNPC);
+
+    // Request data sync from the client side for known easyNPC.
+    if (easyNPC.isClientSide()) {
+      NetworkMessageHandlerManager.getServerHandler().requestDataSync(uuid);
+      return;
+    }
 
     // Inform all server-side easy NPC entities about the new easyNPC.
-    if (!easyNPC.isClientSide()) {
-      for (EasyNPC<?> easyNPCChild : npcEntityMap.values()) {
-        if (easyNPCChild != easyNPC) {
-          easyNPCChild.handleEasyNPCJoin(easyNPC);
-        }
+    for (EasyNPC<?> easyNPCChild : npcEntityMap.values()) {
+      if (easyNPCChild != easyNPC) {
+        easyNPCChild.handleEasyNPCJoin(easyNPC);
       }
     }
   }
@@ -67,12 +73,15 @@ public class LivingEntityManager {
     log.debug("{} [Remove] EASY NPC entity {}: {}", LOG_PREFIX, easyNPC, easyNPC.getUUID());
     npcEntityMap.remove(easyNPC.getUUID());
 
+    // Client side could stop here.
+    if (easyNPC.isClientSide()) {
+      return;
+    }
+
     // Inform all server-side easy NPC entities about the removed easyNPC.
-    if (!easyNPC.isClientSide()) {
-      for (EasyNPC<?> easyNPCChild : npcEntityMap.values()) {
-        if (easyNPCChild != easyNPC) {
-          easyNPCChild.handleEasyNPCLeave(easyNPC);
-        }
+    for (EasyNPC<?> easyNPCChild : npcEntityMap.values()) {
+      if (easyNPCChild != easyNPC) {
+        easyNPCChild.handleEasyNPCLeave(easyNPC);
       }
     }
   }

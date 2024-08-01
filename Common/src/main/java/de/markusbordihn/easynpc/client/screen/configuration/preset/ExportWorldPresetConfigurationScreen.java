@@ -60,7 +60,8 @@ public class ExportWorldPresetConfigurationScreen<T extends ConfigurationMenu>
     this.worldExportPresetButton.active = false;
 
     // Preset file
-    File customPresetFile = CustomPresetDataFiles.getPresetFile(this.getSkinModel(), getNpcUUID());
+    File customPresetFile =
+        CustomPresetDataFiles.getPresetFile(this.getSkinModel(), getEasyNPCUUID());
     String customPresetFileName = customPresetFile.getName();
 
     // Name Edit Box
@@ -90,7 +91,7 @@ public class ExportWorldPresetConfigurationScreen<T extends ConfigurationMenu>
                 "export",
                 button -> {
                   NetworkMessageHandlerManager.getServerHandler()
-                      .exportWorldPreset(this.getNpcUUID(), this.nameBox.getValue());
+                      .exportWorldPreset(this.getEasyNPCUUID(), this.nameBox.getValue());
                   exportPresetButton.active = false;
                 }));
   }
