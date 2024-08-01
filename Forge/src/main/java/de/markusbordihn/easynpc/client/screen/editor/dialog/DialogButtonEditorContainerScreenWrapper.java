@@ -19,14 +19,15 @@
 
 package de.markusbordihn.easynpc.client.screen.editor.dialog;
 
-import de.markusbordihn.easynpc.menu.editor.DialogEditorMenuWrapper;
+import de.markusbordihn.easynpc.menu.editor.DialogButtonEditorMenuWrapper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public class DialogEditorScreenWrapper extends DialogEditorScreen<DialogEditorMenuWrapper> {
+public class DialogButtonEditorContainerScreenWrapper
+    extends DialogButtonEditorContainerScreen<DialogButtonEditorMenuWrapper> {
 
-  public DialogEditorScreenWrapper(
-      DialogEditorMenuWrapper menu, Inventory inventory, Component component) {
+  public DialogButtonEditorContainerScreenWrapper(
+      DialogButtonEditorMenuWrapper menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 }
