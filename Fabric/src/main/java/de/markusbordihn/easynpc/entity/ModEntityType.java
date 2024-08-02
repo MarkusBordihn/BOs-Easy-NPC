@@ -23,7 +23,6 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Allay;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken;
-import de.markusbordihn.easynpc.entity.easynpc.npc.CrashTestDummy;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Horse;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
@@ -57,11 +56,6 @@ public class ModEntityType {
           BuiltInRegistries.ENTITY_TYPE,
           Constants.MOD_ID + ":" + Chicken.ID,
           ModEntityTypes.CHICKEN);
-  public static final EntityType<CrashTestDummy> CRASH_TEST_DUMMY =
-      Registry.register(
-          BuiltInRegistries.ENTITY_TYPE,
-          Constants.MOD_ID + ":" + CrashTestDummy.ID,
-          ModEntityTypes.CRASH_TEST_DUMMY);
   public static final EntityType<Zombie> DROWNED =
       Registry.register(
           BuiltInRegistries.ENTITY_TYPE,
@@ -171,34 +165,31 @@ public class ModEntityType {
 
   public static void registerEntitiesAttributes() {
     log.info("{} Registering Entities Attributes ...", Constants.LOG_REGISTER_PREFIX);
-
-    FabricDefaultAttributeRegistry.register(CRASH_TEST_DUMMY, CrashTestDummy.createAttributes());
-
     FabricDefaultAttributeRegistry.register(ALLAY, Allay.createAttributes());
     FabricDefaultAttributeRegistry.register(CAT, Cat.createAttributes());
     FabricDefaultAttributeRegistry.register(CHICKEN, Chicken.createAttributes());
     FabricDefaultAttributeRegistry.register(DROWNED, Zombie.createAttributes());
+    FabricDefaultAttributeRegistry.register(EVOKER, Illager.createAttributes());
     FabricDefaultAttributeRegistry.register(FAIRY, Fairy.createAttributes());
+    FabricDefaultAttributeRegistry.register(HORSE, Horse.createAttributes());
     FabricDefaultAttributeRegistry.register(HUMANOID, Humanoid.createAttributes());
     FabricDefaultAttributeRegistry.register(HUMANOID_SLIM, HumanoidSlim.createAttributes());
     FabricDefaultAttributeRegistry.register(HUSK, Zombie.createAttributes());
-    FabricDefaultAttributeRegistry.register(IRON_GOLEM, IronGolem.createAttributes());
-    FabricDefaultAttributeRegistry.register(WITHER_SKELETON, Skeleton.createAttributes());
-    FabricDefaultAttributeRegistry.register(STRAY, Skeleton.createAttributes());
-    FabricDefaultAttributeRegistry.register(SKELETON, Skeleton.createAttributes());
-    FabricDefaultAttributeRegistry.register(VILLAGER, Villager.createAttributes());
-    FabricDefaultAttributeRegistry.register(ZOMBIE, Zombie.createAttributes());
-    FabricDefaultAttributeRegistry.register(ZOMBIE_VILLAGER, ZombieVillager.createAttributes());
-    FabricDefaultAttributeRegistry.register(PIG, Pig.createAttributes());
-    FabricDefaultAttributeRegistry.register(EVOKER, Illager.createAttributes());
     FabricDefaultAttributeRegistry.register(ILLUSIONER, Illager.createAttributes());
-    FabricDefaultAttributeRegistry.register(PILLAGER, Illager.createAttributes());
-    FabricDefaultAttributeRegistry.register(VINDICATOR, Illager.createAttributes());
+    FabricDefaultAttributeRegistry.register(IRON_GOLEM, IronGolem.createAttributes());
     FabricDefaultAttributeRegistry.register(ORC, Orc.createAttributes());
     FabricDefaultAttributeRegistry.register(ORC_WARRIOR, Orc.createAttributes());
-    FabricDefaultAttributeRegistry.register(WOLF, Wolf.createAttributes());
-    FabricDefaultAttributeRegistry.register(HORSE, Horse.createAttributes());
+    FabricDefaultAttributeRegistry.register(PIG, Pig.createAttributes());
+    FabricDefaultAttributeRegistry.register(PILLAGER, Illager.createAttributes());
+    FabricDefaultAttributeRegistry.register(SKELETON, Skeleton.createAttributes());
     FabricDefaultAttributeRegistry.register(SKELETON_HORSE, Horse.createAttributes());
+    FabricDefaultAttributeRegistry.register(STRAY, Skeleton.createAttributes());
+    FabricDefaultAttributeRegistry.register(VILLAGER, Villager.createAttributes());
+    FabricDefaultAttributeRegistry.register(VINDICATOR, Illager.createAttributes());
+    FabricDefaultAttributeRegistry.register(WITHER_SKELETON, Skeleton.createAttributes());
+    FabricDefaultAttributeRegistry.register(WOLF, Wolf.createAttributes());
+    FabricDefaultAttributeRegistry.register(ZOMBIE, Zombie.createAttributes());
     FabricDefaultAttributeRegistry.register(ZOMBIE_HORSE, Horse.createAttributes());
+    FabricDefaultAttributeRegistry.register(ZOMBIE_VILLAGER, ZombieVillager.createAttributes());
   }
 }

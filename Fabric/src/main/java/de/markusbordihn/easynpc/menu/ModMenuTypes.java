@@ -34,6 +34,8 @@ import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfiguratio
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.model.CustomModelConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.model.DefaultModelConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.configuration.objective.AttackObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.configuration.objective.BasicObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.configuration.objective.FollowObjectiveConfigurationMenuWrapper;
@@ -152,6 +154,14 @@ public class ModMenuTypes {
       CUSTOM_TRADING_CONFIGURATION_MENU =
           ScreenHandlerRegistry.registerSimple(
               ConfigurationType.CUSTOM_TRADING.getId(), CustomTradingConfigurationMenuWrapper::new);
+  public static final MenuType<CustomModelConfigurationMenuWrapper>
+      CUSTOM_MODEL_CONFIGURATION_MENU =
+          ScreenHandlerRegistry.registerSimple(
+              ConfigurationType.CUSTOM_MODEL.getId(), CustomModelConfigurationMenuWrapper::new);
+  public static final MenuType<DefaultModelConfigurationMenuWrapper>
+      DEFAULT_MODEL_CONFIGURATION_MENU =
+          ScreenHandlerRegistry.registerSimple(
+              ConfigurationType.DEFAULT_MODEL.getId(), DefaultModelConfigurationMenuWrapper::new);
   public static final MenuType<DefaultPoseConfigurationMenuWrapper>
       DEFAULT_POSE_CONFIGURATION_MENU =
           ScreenHandlerRegistry.registerSimple(

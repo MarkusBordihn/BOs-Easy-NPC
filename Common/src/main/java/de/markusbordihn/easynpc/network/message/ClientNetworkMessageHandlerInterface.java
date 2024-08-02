@@ -23,8 +23,10 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
+import de.markusbordihn.easynpc.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.network.message.client.ExportClientPresetMessage;
 import de.markusbordihn.easynpc.network.message.client.OpenMenuCallbackMessage;
+import de.markusbordihn.easynpc.network.message.client.SyncDataMessage;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -63,6 +65,31 @@ public interface ClientNetworkMessageHandlerInterface {
       log.info("Open menu with UUID {}", uuid);
       NetworkHandlerManager.sendToPlayer(
           new OpenMenuCallbackMessage(uuid, menuId, data), serverPlayer);
+    }
+  }
+
+  default void syncData(EasyNPC<?> easyNPC) {
+    if (easyNPC != null) {
+      log.debug("Sync {} data to all players.", easyNPC);
+      NetworkHandlerManager.sendToAllPlayers(
+          new SyncDataMessage(
+              easyNPC.getUUID(),
+              easyNPC.getEasyNPCDialogData() != null
+                  ? easyNPC.getEasyNPCDialogData().getDialogDataSet()
+                  : null));
+    }
+  }
+
+  default void syncData(EasyNPC<?> easyNPC, ServerPlayer serverPlayer) {
+    if (easyNPC != null && serverPlayer != null) {
+      log.debug("Sync {} data to player {}", easyNPC, serverPlayer);
+      NetworkHandlerManager.sendToPlayer(
+          new SyncDataMessage(
+              easyNPC.getUUID(),
+              easyNPC.getEasyNPCDialogData() != null
+                  ? easyNPC.getEasyNPCDialogData().getDialogDataSet()
+                  : null),
+          serverPlayer);
     }
   }
 }

@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.entity;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Allay;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken;
-import de.markusbordihn.easynpc.entity.easynpc.npc.CrashTestDummy;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Horse;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
@@ -96,11 +95,6 @@ public class ModEntityTypes {
           .build(Horse.ID_ZOMBIE);
   private static final float HUMANOID_SIZE_HEIGHT = 1.95F;
   private static final float HUMANOID_SIZE_WIDTH = 0.6F;
-  public static final EntityType<CrashTestDummy> CRASH_TEST_DUMMY =
-      EntityType.Builder.of(CrashTestDummy::new, CATEGORY)
-          .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
-          .clientTrackingRange(CLIENT_TRACKING_RANGE)
-          .build(CrashTestDummy.ID);
   public static final EntityType<Zombie> DROWNED =
       EntityType.Builder.<Zombie>of(
               (entityType, level) -> new Zombie(entityType, level, Zombie.Variant.DROWNED),

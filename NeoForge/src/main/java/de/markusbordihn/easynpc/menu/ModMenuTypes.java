@@ -34,6 +34,8 @@ import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfiguratio
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.model.CustomModelConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.model.DefaultModelConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.configuration.objective.AttackObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.configuration.objective.BasicObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.configuration.objective.FollowObjectiveConfigurationMenuWrapper;
@@ -76,11 +78,14 @@ public class ModMenuTypes {
 
   public static final DeferredRegister<MenuType<?>> MENU_TYPES =
       DeferredRegister.create(BuiltInRegistries.MENU, Constants.MOD_ID);
-  public static final DeferredHolder<MenuType<?>, MenuType<SpawnerMenuWrapper>> SPAWNER_MENU =
+
+  private ModMenuTypes() {}  public static final DeferredHolder<MenuType<?>, MenuType<SpawnerMenuWrapper>> SPAWNER_MENU =
       MENU_TYPES.register(
           ModMenuType.SPAWNER.getName(), () -> IMenuTypeExtension.create(SpawnerMenuWrapper::new));
 
-  private ModMenuTypes() {}  public static final DeferredHolder<
+
+
+  public static final DeferredHolder<
           MenuType<?>, MenuType<AbilitiesAttributeConfigurationMenuWrapper>>
       ABILITIES_ATTRIBUTE_CONFIGURATION_MENU =
           MENU_TYPES.register(
@@ -168,6 +173,16 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               ConfigurationType.CUSTOM_TRADING.getName(),
               () -> IMenuTypeExtension.create(CustomTradingConfigurationMenuWrapper::new));
+  public static final DeferredHolder<MenuType<?>, MenuType<CustomModelConfigurationMenuWrapper>>
+      CUSTOM_MODEL_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.CUSTOM_MODEL.getName(),
+              () -> IMenuTypeExtension.create(CustomModelConfigurationMenuWrapper::new));
+  public static final DeferredHolder<MenuType<?>, MenuType<DefaultModelConfigurationMenuWrapper>>
+      DEFAULT_MODEL_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.DEFAULT_MODEL.getName(),
+              () -> IMenuTypeExtension.create(DefaultModelConfigurationMenuWrapper::new));
   public static final DeferredHolder<MenuType<?>, MenuType<DefaultPoseConfigurationMenuWrapper>>
       DEFAULT_POSE_CONFIGURATION_MENU =
           MENU_TYPES.register(

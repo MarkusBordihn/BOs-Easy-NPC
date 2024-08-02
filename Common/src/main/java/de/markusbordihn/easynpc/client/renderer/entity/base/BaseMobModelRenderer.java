@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.client.renderer.entity.base;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.EasyNPCModelRenderer;
-import de.markusbordihn.easynpc.client.renderer.EasyNPCRenderer;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseModelEntity;
 import java.util.Map;
 import net.minecraft.client.model.EntityModel;
@@ -123,13 +122,13 @@ public class BaseMobModelRenderer<E extends EasyNPCBaseModelEntity<E>, V, M exte
       PoseStack poseStack,
       MultiBufferSource buffer,
       int packedLight) {
+
     // Render model specific pose.
     this.renderModel(
         entity, this.getModel(), entityYaw, partialTicks, poseStack, buffer, packedLight);
 
     // Render entity with optional custom renderer or default renderer.
-    if (!EasyNPCRenderer.renderEntity(
-        entity, entityYaw, partialTicks, poseStack, buffer, packedLight)) {
+    if (!this.renderEntity(entity, entityYaw, partialTicks, poseStack, buffer, packedLight)) {
       super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
     }
   }

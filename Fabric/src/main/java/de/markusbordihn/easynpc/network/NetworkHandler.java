@@ -20,8 +20,6 @@
 package de.markusbordihn.easynpc.network;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.network.message.NetworkHandlerInterface;
-import de.markusbordihn.easynpc.network.message.NetworkHandlerManager;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -48,14 +46,21 @@ public class NetworkHandler implements NetworkHandlerInterface {
   }
 
   @Override
-  public void sendToServer(NetworkMessageRecord networkMessageRecord) {
+  public void sendToServer(final NetworkMessageRecord networkMessageRecord) {
     ClientPlayNetworking.send(networkMessageRecord.id(), networkMessageRecord.payload());
   }
 
   @Override
-  public void sendToPlayer(NetworkMessageRecord networkMessageRecord, ServerPlayer serverPlayer) {
+  public void sendToPlayer(
+      final NetworkMessageRecord networkMessageRecord, final ServerPlayer serverPlayer) {
     ServerPlayNetworking.send(
         serverPlayer, networkMessageRecord.id(), networkMessageRecord.payload());
+  }
+
+  @Override
+  public void sendToAllPlayers(final NetworkMessageRecord networkMessageRecord) {
+    // PlayerLookup.all(EnvironmentManager.getServer()).forEach(
+    //    player -> sendToPlayer(networkMessageRecord, player));
   }
 
   @Override

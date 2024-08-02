@@ -23,7 +23,8 @@ import de.markusbordihn.easynpc.menu.editor.DialogEditorMenuWrapper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public class DialogEditorScreenWrapper extends DialogEditorScreen<DialogEditorMenuWrapper> {
+public class DialogEditorScreenWrapper
+    extends DialogEditorContainerScreen<DialogEditorMenuWrapper> {
 
   public DialogEditorScreenWrapper(
       DialogEditorMenuWrapper menu, Inventory inventory, Component component) {

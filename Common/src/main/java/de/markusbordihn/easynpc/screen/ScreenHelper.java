@@ -24,6 +24,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.profession.Profession;
+import de.markusbordihn.easynpc.data.render.RenderDataSet;
+import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -31,6 +33,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.entity.easynpc.data.GuiData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
+import de.markusbordihn.easynpc.entity.easynpc.data.RenderData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
@@ -40,6 +43,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import org.joml.Quaternionf;
@@ -238,6 +242,42 @@ public class ScreenHelper {
     DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
     renderScaledEntityAvatar(
         x, y, dialogData.getEntityDialogScaling(), yRot, xRot, easyNPC.getLivingEntity());
+  }
+
+  public static void renderEntityCustomModel(
+      int x,
+      int y,
+      int scale,
+      float yRot,
+      float xRot,
+      EasyNPC<?> easyNPC,
+      EntityType<? extends Entity> entityType) {
+    GuiData<?> guiData = easyNPC.getEasyNPCGuiData();
+    RenderData<?> renderData = easyNPC.getEasyNPCRenderData();
+    RenderDataSet renderDataSet = renderData.getRenderDataSet();
+
+    // Backup renderer information
+    RenderType renderType = renderDataSet.getRenderType();
+    EntityType<?> renderEntityType = renderDataSet.getRenderEntityType();
+
+    // Adjust entity information for rendering
+    renderDataSet.setRenderType(RenderType.CUSTOM);
+    renderDataSet.setRenderEntityType(entityType);
+
+    // Render Entity
+    renderScaledEntityAvatar(
+        x + guiData.getEntityGuiLeft(),
+        y + guiData.getEntityGuiTop(),
+        scale,
+        yRot,
+        xRot,
+        easyNPC,
+        easyNPC.getEasyNPCScaleData(),
+        easyNPC.getEasyNPCModelData());
+
+    // Restore renderer information
+    renderDataSet.setRenderType(renderType);
+    renderDataSet.setRenderEntityType(renderEntityType);
   }
 
   public static void renderEntityPlayerSkin(

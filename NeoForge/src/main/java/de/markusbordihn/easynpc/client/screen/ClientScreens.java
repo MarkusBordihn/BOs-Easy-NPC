@@ -32,6 +32,8 @@ import de.markusbordihn.easynpc.client.screen.configuration.dialog.NoneDialogCon
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.YesNoDialogConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.equipment.EquipmentConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.main.MainConfigurationScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.configuration.model.CustomModelConfigurationScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.configuration.model.DefaultModelConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.objective.AttackObjectiveConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.objective.BasicObjectiveConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.objective.FollowObjectiveConfigurationScreenWrapper;
@@ -132,8 +134,14 @@ public class ClientScreens {
               ModMenuTypes.CUSTOM_TRADING_CONFIGURATION_MENU.get(),
               CustomTradingConfigurationScreenWrapper::new);
           MenuScreens.register(
+              ModMenuTypes.CUSTOM_MODEL_CONFIGURATION_MENU.get(),
+              CustomModelConfigurationScreenWrapper::new);
+          MenuScreens.register(
               ModMenuTypes.DEFAULT_IMPORT_PRESET_CONFIGURATION_MENU.get(),
               ImportDefaultPresetConfigurationScreenWrapper::new);
+          MenuScreens.register(
+              ModMenuTypes.DEFAULT_MODEL_CONFIGURATION_MENU.get(),
+              DefaultModelConfigurationScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.DEFAULT_POSE_CONFIGURATION_MENU.get(),
               DefaultPoseConfigurationScreenWrapper::new);

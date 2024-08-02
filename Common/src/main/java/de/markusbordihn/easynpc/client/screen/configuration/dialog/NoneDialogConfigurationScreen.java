@@ -25,7 +25,7 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.network.message.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
@@ -73,15 +73,15 @@ public class NoneDialogConfigurationScreen<T extends ConfigurationMenu>
                   if (checkbox.selected()) {
                     DialogDataSet dialogDataSet = new DialogDataSet(DialogType.NONE);
                     NetworkMessageHandlerManager.getServerHandler()
-                        .saveDialogSet(this.getNpcUUID(), dialogDataSet);
+                        .saveDialogSet(this.getEasyNPCUUID(), dialogDataSet);
                   } else {
                     if (formerDialogDataSet != null && formerDialogDataSet.hasDialog()) {
                       NetworkMessageHandlerManager.getServerHandler()
-                          .saveDialogSet(this.getNpcUUID(), formerDialogDataSet);
+                          .saveDialogSet(this.getEasyNPCUUID(), formerDialogDataSet);
                     } else {
                       DialogDataSet dialogDataSet = new DialogDataSet(DialogType.BASIC);
                       NetworkMessageHandlerManager.getServerHandler()
-                          .saveDialogSet(this.getNpcUUID(), dialogDataSet);
+                          .saveDialogSet(this.getEasyNPCUUID(), dialogDataSet);
                     }
                   }
                 }));

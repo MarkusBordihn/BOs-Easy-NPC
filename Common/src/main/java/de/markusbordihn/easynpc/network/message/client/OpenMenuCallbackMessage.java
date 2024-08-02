@@ -20,8 +20,10 @@
 package de.markusbordihn.easynpc.network.message.client;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.dialog.DialogDataManager;
+import de.markusbordihn.easynpc.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.menu.ClientMenuManager;
-import de.markusbordihn.easynpc.network.message.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
@@ -56,7 +58,25 @@ public record OpenMenuCallbackMessage(UUID uuid, UUID menuId, CompoundTag data)
     UUID menuId = this.menuId;
     CompoundTag data = this.data;
 
+    // Validate menu data
+    if (uuid == null || menuId == null || data == null) {
+      log.error(
+          "Invalid menu data received for {} with menuId {} and data: {}", uuid, menuId, data);
+      return;
+    }
+
+    // Update menu data within the client menu manager
     ClientMenuManager.setMenuData(menuId, data);
+
+    // Check if additional screen data is available and re-use some of the data.
+    if (ClientMenuManager.hasAdditionalScreenData()) {
+      AdditionalScreenData additionalScreenData = ClientMenuManager.getAdditionalScreenData();
+      if (additionalScreenData.hasDialogDataSet()) {
+        DialogDataManager.addDialogDataSet(this.uuid, additionalScreenData.getDialogDataSet());
+      }
+    }
+
+    // Request to open the menu on the client side over the server.
     NetworkMessageHandlerManager.getServerHandler().openMenu(uuid, menuId);
   }
 }

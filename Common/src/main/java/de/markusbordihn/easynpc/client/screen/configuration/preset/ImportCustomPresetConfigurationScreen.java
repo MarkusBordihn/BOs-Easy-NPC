@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.client.screen.configuration.preset;
 
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.network.message.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -38,7 +38,8 @@ public class ImportCustomPresetConfigurationScreen<T extends ConfigurationMenu>
     importPresetButtonLabel = "import_custom_preset";
     importPresetHeaderLabel = "preset_custom_for";
     this.customPresets =
-        CompoundTagUtils.readResourceLocations(this.additionalScreenData.getList("CustomPresets"))
+        CompoundTagUtils.readResourceLocations(
+                this.getAdditionalScreenData().getList("CustomPresets"))
             .stream()
             .filter(
                 resourceLocation ->
@@ -49,7 +50,7 @@ public class ImportCustomPresetConfigurationScreen<T extends ConfigurationMenu>
   @Override
   public void loadPreset(ResourceLocation resourceLocation) {
     NetworkMessageHandlerManager.getServerHandler()
-        .importCustomPreset(getNpcUUID(), resourceLocation);
+        .importCustomPreset(getEasyNPCUUID(), resourceLocation);
   }
 
   @Override

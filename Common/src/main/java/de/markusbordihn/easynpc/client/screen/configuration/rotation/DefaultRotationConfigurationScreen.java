@@ -27,7 +27,7 @@ import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.network.message.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.core.Rotations;
@@ -82,7 +82,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                   this.rootRotationX = (float) Math.toRadians(slider.getTargetValue());
                   NetworkMessageHandlerManager.getServerHandler()
                       .rotationChange(
-                          this.getNpcUUID(),
+                          this.getEasyNPCUUID(),
                           ModelPart.ROOT,
                           new CustomRotation(
                               this.rootRotationX, this.rootRotationY, this.rootRotationZ));
@@ -113,7 +113,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                   this.rootRotationY = (float) Math.toRadians(slider.getTargetValue());
                   NetworkMessageHandlerManager.getServerHandler()
                       .rotationChange(
-                          this.getNpcUUID(),
+                          this.getEasyNPCUUID(),
                           ModelPart.ROOT,
                           new CustomRotation(
                               this.rootRotationX, this.rootRotationY, this.rootRotationZ));
@@ -144,7 +144,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                   this.rootRotationZ = (float) Math.toRadians(slider.getTargetValue());
                   NetworkMessageHandlerManager.getServerHandler()
                       .rotationChange(
-                          this.getNpcUUID(),
+                          this.getEasyNPCUUID(),
                           ModelPart.ROOT,
                           new CustomRotation(
                               this.rootRotationX, this.rootRotationY, this.rootRotationZ));
@@ -171,7 +171,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                 modelData.getModelLockRotation(),
                 checkbox ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .modelLockRotationChange(this.getNpcUUID(), checkbox.selected())));
+                        .modelLockRotationChange(this.getEasyNPCUUID(), checkbox.selected())));
   }
 
   @Override

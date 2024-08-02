@@ -27,7 +27,7 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextEditButton;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.network.message.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -63,7 +63,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
                 "dialog.add",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openDialogEditor(this.getNpcUUID())));
+                        .openDialogEditor(this.getEasyNPCUUID())));
 
     // Dialog List
     this.dialogList = new DialogList();
@@ -208,7 +208,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .openDialogEditor(
-                            AdvancedDialogConfigurationScreen.this.getNpcUUID(),
+                            AdvancedDialogConfigurationScreen.this.getEasyNPCUUID(),
                             this.dialogData.getId()));
         this.copyLabelButton =
             new CopyButton(
@@ -225,7 +225,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .openDialogTextEditor(
-                            AdvancedDialogConfigurationScreen.this.getNpcUUID(),
+                            AdvancedDialogConfigurationScreen.this.getEasyNPCUUID(),
                             this.dialogData.getId()));
         this.defaultDialogLabel =
             AdvancedDialogConfigurationScreen.this.getDialogDataSet().getDefaultDialogLabel();

@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.menu;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.network.message.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import java.util.Map;
 import java.util.OptionalInt;
 import java.util.UUID;

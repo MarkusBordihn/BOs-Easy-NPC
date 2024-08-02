@@ -19,23 +19,49 @@
 
 package de.markusbordihn.easynpc.menu;
 
+import de.markusbordihn.easynpc.data.screen.AdditionalScreenData;
+import de.markusbordihn.easynpc.data.screen.ScreenData;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 
 public class ClientMenuManager {
 
+  private static ScreenData screenData;
+  private static AdditionalScreenData additionalScreenData;
   private static CompoundTag menuData;
   private static UUID menuId;
 
   private ClientMenuManager() {}
 
   public static void setMenuData(UUID menuId, CompoundTag menuData) {
+    ClientMenuManager.clearMenuData();
     ClientMenuManager.menuId = menuId;
     ClientMenuManager.menuData = menuData;
+
+    // Decode screen data and additional screen data, if available.
+    if (ScreenData.hasScreenData(menuData)) {
+      ClientMenuManager.screenData = ScreenData.decode(menuData);
+      ClientMenuManager.additionalScreenData =
+          ClientMenuManager.screenData != null
+              ? new AdditionalScreenData(ClientMenuManager.screenData.additionalData())
+              : null;
+    }
   }
 
   public static CompoundTag getMenuData() {
     return ClientMenuManager.menuData;
+  }
+
+  public static ScreenData getScreenData() {
+    return ClientMenuManager.screenData;
+  }
+
+  public static AdditionalScreenData getAdditionalScreenData() {
+    return ClientMenuManager.additionalScreenData;
+  }
+
+  public static boolean hasAdditionalScreenData() {
+    return ClientMenuManager.additionalScreenData != null;
   }
 
   public static UUID getMenuId() {
@@ -45,5 +71,7 @@ public class ClientMenuManager {
   public static void clearMenuData() {
     ClientMenuManager.menuId = null;
     ClientMenuManager.menuData = null;
+    ClientMenuManager.screenData = null;
+    ClientMenuManager.additionalScreenData = null;
   }
 }
