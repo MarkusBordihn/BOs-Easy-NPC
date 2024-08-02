@@ -92,8 +92,8 @@ public class ConfigurationScreen<T extends EasyNPCMenu> extends Screen<T> {
                 10,
                 "<",
                 onPress ->
-                    this.networkMessageHandler.openConfiguration(
-                        this.getNpcUUID(), ConfigurationType.MAIN)));
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.MAIN)));
   }
 
   @Override
@@ -101,13 +101,18 @@ public class ConfigurationScreen<T extends EasyNPCMenu> extends Screen<T> {
     // Render Title if not in compact mode
     if (!this.compactMode) {
       Text.drawString(
-          guiGraphics, this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752);
+          guiGraphics,
+          this.font,
+          this.title,
+          this.leftPos + this.titleLabelX,
+          this.topPos + this.titleLabelY,
+          4210752);
     }
   }
 
   public void showMainScreen() {
     NetworkMessageHandlerManager.getServerHandler()
-        .openConfiguration(this.getNpcUUID(), ConfigurationType.MAIN);
+        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.MAIN);
   }
 
   @Override

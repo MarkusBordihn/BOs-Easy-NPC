@@ -65,7 +65,7 @@ public interface RenderData<E extends PathfinderMob> extends EasyNPC<E> {
     defineSynchedEntityData(SynchedDataIndex.RENDER_DATA, new RenderDataSet());
   }
 
-  default RenderDataSet getRenderData() {
+  default RenderDataSet getRenderDataSet() {
     return this.getSynchedEntityData(SynchedDataIndex.RENDER_DATA);
   }
 
@@ -74,15 +74,15 @@ public interface RenderData<E extends PathfinderMob> extends EasyNPC<E> {
   }
 
   default void updateRenderData() {
-    RenderDataSet renderData = this.getRenderData();
+    RenderDataSet renderDataSet = this.getRenderDataSet();
     this.setRenderData(new RenderDataSet());
-    this.setRenderData(renderData);
+    this.setRenderData(renderDataSet);
   }
 
   default void addAdditionalRenderData(CompoundTag compoundTag) {
     CompoundTag renderTag = new CompoundTag();
 
-    RenderDataSet renderData = this.getRenderData();
+    RenderDataSet renderData = this.getRenderDataSet();
     if (renderData != null) {
       renderData.save(renderTag);
     }

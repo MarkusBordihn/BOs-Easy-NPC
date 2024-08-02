@@ -37,7 +37,7 @@ public class ConfigureCommand extends Command {
     return Commands.literal("configure")
         .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
         .then(
-            Commands.argument("target", new EasyNPCArgument())
+            Commands.argument("target", EasyNPCArgument.npc())
                 .executes(
                     context ->
                         configure(

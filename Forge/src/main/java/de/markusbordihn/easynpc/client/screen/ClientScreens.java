@@ -30,8 +30,10 @@ import de.markusbordihn.easynpc.client.screen.configuration.dialog.AdvancedDialo
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.BasicDialogConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.NoneDialogConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.YesNoDialogConfigurationScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.configuration.equipment.EquipmentConfigurationScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.configuration.main.MainConfigurationScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.configuration.equipment.EquipmentConfigurationContainerScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.configuration.main.MainConfigurationContainerScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.configuration.model.CustomModelConfigurationScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.configuration.model.DefaultModelConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.objective.AttackObjectiveConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.objective.BasicObjectiveConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.objective.FollowObjectiveConfigurationScreenWrapper;
@@ -53,16 +55,16 @@ import de.markusbordihn.easynpc.client.screen.configuration.skin.DefaultSkinConf
 import de.markusbordihn.easynpc.client.screen.configuration.skin.NoneSkinConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.PlayerSkinConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.skin.UrlSkinConfigurationScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.configuration.trading.AdvancedTradingConfigurationScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.configuration.trading.BasicTradingConfigurationScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.configuration.trading.CustomTradingConfigurationScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.configuration.trading.NoneTradingConfigurationScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.dialog.DialogScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.editor.action.ActionDataEditorScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.editor.action.ActionDataEntryEditorScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.editor.dialog.DialogButtonEditorScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.editor.dialog.DialogEditorScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.editor.dialog.DialogTextEditorScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.configuration.trading.AdvancedTradingConfigurationContainerScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.configuration.trading.BasicTradingConfigurationContainerScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.configuration.trading.CustomTradingConfigurationContainerScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.configuration.trading.NoneTradingConfigurationContainerScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.dialog.DialogContainerScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.editor.action.ActionDataEditorContainerScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.editor.action.ActionDataEntryEditorContainerScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.editor.dialog.DialogButtonEditorContainerScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.editor.dialog.DialogEditorContainerScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.editor.dialog.DialogTextEditorContainerScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.spawner.SpawnerScreenWrapper;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -85,10 +87,11 @@ public class ClientScreens {
               ModMenuTypes.ABILITIES_ATTRIBUTE_CONFIGURATION_MENU.get(),
               AbilitiesAttributeConfigurationScreenWrapper::new);
           MenuScreens.register(
-              ModMenuTypes.ACTION_DATA_EDITOR_MENU.get(), ActionDataEditorScreenWrapper::new);
+              ModMenuTypes.ACTION_DATA_EDITOR_MENU.get(),
+              ActionDataEditorContainerScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.ACTION_DATA_ENTRY_EDITOR_MENU.get(),
-              ActionDataEntryEditorScreenWrapper::new);
+              ActionDataEntryEditorContainerScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.ADVANCED_DIALOG_CONFIGURATION_MENU.get(),
               AdvancedDialogConfigurationScreenWrapper::new);
@@ -97,7 +100,7 @@ public class ClientScreens {
               AdvancedPoseConfigurationScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.ADVANCED_TRADING_CONFIGURATION_MENU.get(),
-              AdvancedTradingConfigurationScreenWrapper::new);
+              AdvancedTradingConfigurationContainerScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.ATTACK_OBJECTIVE_CONFIGURATION_MENU.get(),
               AttackObjectiveConfigurationScreenWrapper::new);
@@ -115,7 +118,7 @@ public class ClientScreens {
               BasicObjectiveConfigurationScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.BASIC_TRADING_CONFIGURATION_MENU.get(),
-              BasicTradingConfigurationScreenWrapper::new);
+              BasicTradingConfigurationContainerScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.CUSTOM_EXPORT_PRESET_CONFIGURATION_MENU.get(),
               ExportCustomPresetConfigurationScreenWrapper::new);
@@ -130,10 +133,16 @@ public class ClientScreens {
               CustomSkinConfigurationScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.CUSTOM_TRADING_CONFIGURATION_MENU.get(),
-              CustomTradingConfigurationScreenWrapper::new);
+              CustomTradingConfigurationContainerScreenWrapper::new);
+          MenuScreens.register(
+              ModMenuTypes.CUSTOM_MODEL_CONFIGURATION_MENU.get(),
+              CustomModelConfigurationScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.DEFAULT_IMPORT_PRESET_CONFIGURATION_MENU.get(),
               ImportDefaultPresetConfigurationScreenWrapper::new);
+          MenuScreens.register(
+              ModMenuTypes.DEFAULT_MODEL_CONFIGURATION_MENU.get(),
+              DefaultModelConfigurationScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.DEFAULT_POSE_CONFIGURATION_MENU.get(),
               DefaultPoseConfigurationScreenWrapper::new);
@@ -150,12 +159,14 @@ public class ClientScreens {
               ModMenuTypes.DIALOG_ACTION_CONFIGURATION_MENU.get(),
               DialogActionConfigurationScreenWrapper::new);
           MenuScreens.register(
-              ModMenuTypes.DIALOG_BUTTON_EDITOR_MENU.get(), DialogButtonEditorScreenWrapper::new);
+              ModMenuTypes.DIALOG_BUTTON_EDITOR_MENU.get(),
+              DialogButtonEditorContainerScreenWrapper::new);
           MenuScreens.register(
-              ModMenuTypes.DIALOG_EDITOR_MENU.get(), DialogEditorScreenWrapper::new);
-          MenuScreens.register(ModMenuTypes.DIALOG_MENU.get(), DialogScreenWrapper::new);
+              ModMenuTypes.DIALOG_EDITOR_MENU.get(), DialogEditorContainerScreenWrapper::new);
+          MenuScreens.register(ModMenuTypes.DIALOG_MENU.get(), DialogContainerScreenWrapper::new);
           MenuScreens.register(
-              ModMenuTypes.DIALOG_TEXT_EDITOR_MENU.get(), DialogTextEditorScreenWrapper::new);
+              ModMenuTypes.DIALOG_TEXT_EDITOR_MENU.get(),
+              DialogTextEditorContainerScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.DISPLAY_ATTRIBUTE_CONFIGURATION_MENU.get(),
               DisplayAttributeConfigurationScreenWrapper::new);
@@ -164,7 +175,7 @@ public class ClientScreens {
               DistanceActionConfigurationScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.EQUIPMENT_CONFIGURATION_MENU.get(),
-              EquipmentConfigurationScreenWrapper::new);
+              EquipmentConfigurationContainerScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.FOLLOW_OBJECTIVE_CONFIGURATION_MENU.get(),
               FollowObjectiveConfigurationScreenWrapper::new);
@@ -175,7 +186,8 @@ public class ClientScreens {
               ModMenuTypes.LOOK_OBJECTIVE_CONFIGURATION_MENU.get(),
               LookObjectiveConfigurationScreenWrapper::new);
           MenuScreens.register(
-              ModMenuTypes.MAIN_CONFIGURATION_MENU.get(), MainConfigurationScreenWrapper::new);
+              ModMenuTypes.MAIN_CONFIGURATION_MENU.get(),
+              MainConfigurationContainerScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.NONE_DIALOG_CONFIGURATION_MENU.get(),
               NoneDialogConfigurationScreenWrapper::new);
@@ -184,7 +196,7 @@ public class ClientScreens {
               NoneSkinConfigurationScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.NONE_TRADING_CONFIGURATION_MENU.get(),
-              NoneTradingConfigurationScreenWrapper::new);
+              NoneTradingConfigurationContainerScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.PLAYER_SKIN_CONFIGURATION_MENU.get(),
               PlayerSkinConfigurationScreenWrapper::new);

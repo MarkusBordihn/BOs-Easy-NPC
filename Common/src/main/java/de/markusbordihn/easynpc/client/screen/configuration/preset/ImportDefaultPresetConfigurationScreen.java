@@ -38,7 +38,8 @@ public class ImportDefaultPresetConfigurationScreen<T extends ConfigurationMenu>
     importPresetButtonLabel = "import_default_preset";
     importPresetHeaderLabel = "preset_default_for";
     this.defaultPresets =
-        CompoundTagUtils.readResourceLocations(this.additionalScreenData.getList("DefaultPresets"))
+        CompoundTagUtils.readResourceLocations(
+                this.getAdditionalScreenData().getList("DefaultPresets"))
             .stream()
             .filter(
                 resourceLocation ->
@@ -49,7 +50,7 @@ public class ImportDefaultPresetConfigurationScreen<T extends ConfigurationMenu>
   @Override
   public void loadPreset(ResourceLocation resourceLocation) {
     NetworkMessageHandlerManager.getServerHandler()
-        .importDefaultPreset(getNpcUUID(), resourceLocation);
+        .importDefaultPreset(getEasyNPCUUID(), resourceLocation);
   }
 
   @Override

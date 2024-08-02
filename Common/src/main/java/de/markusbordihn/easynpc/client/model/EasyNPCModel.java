@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.client.model;
 
+import de.markusbordihn.easynpc.client.model.animation.HumanoidLegAnimation;
 import de.markusbordihn.easynpc.data.model.ModelArmPose;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
@@ -285,7 +286,11 @@ public interface EasyNPCModel<E extends Entity> {
       float ageInTicks,
       float limbSwing,
       float limbSwingAmount) {
-    return false;
+    if (rightLegPart == null || leftLegPart == null) {
+      return false;
+    }
+    return HumanoidLegAnimation.animateHumanoidModelLegs(
+        rightLegPart, leftLegPart, limbSwing, limbSwingAmount);
   }
 
   default boolean animateModelFrontLegs(

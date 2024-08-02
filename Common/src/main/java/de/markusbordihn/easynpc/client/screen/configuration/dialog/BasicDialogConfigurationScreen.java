@@ -91,7 +91,7 @@ public class BasicDialogConfigurationScreen<T extends ConfigurationMenu>
                   DialogDataSet dialogDataSet =
                       DialogUtils.getBasicDialog(this.dialogBox.getValue());
                   NetworkMessageHandlerManager.getServerHandler()
-                      .saveDialogSet(this.getNpcUUID(), dialogDataSet);
+                      .saveDialogSet(this.getEasyNPCUUID(), dialogDataSet);
                   this.dialogValue = this.dialogBox.getValue();
                 }));
   }
@@ -117,8 +117,8 @@ public class BasicDialogConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  public void containerTick() {
-    super.containerTick();
+  public void updateTick() {
+    super.updateTick();
 
     if (saveButton != null) {
       saveButton.active = !dialogBox.getValue().equals(dialogValue);

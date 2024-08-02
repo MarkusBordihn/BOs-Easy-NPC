@@ -3,7 +3,7 @@ package de.markusbordihn.easynpc.client.screen.editor.action.entry;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
-import de.markusbordihn.easynpc.client.screen.editor.action.ActionDataEntryEditorScreen;
+import de.markusbordihn.easynpc.client.screen.editor.action.ActionDataEntryEditorContainerScreen;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
@@ -19,7 +19,7 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
   public OpenNamedDialogEntry(
       ActionDataEntry actionDataEntry,
       ActionDataSet actionDataSet,
-      ActionDataEntryEditorScreen<?> screen) {
+      ActionDataEntryEditorContainerScreen<?> screen) {
     super(actionDataEntry, actionDataSet, screen);
     this.dialogDataSet = screen.getDialogDataSet();
   }

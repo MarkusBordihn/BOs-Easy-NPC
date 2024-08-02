@@ -55,11 +55,12 @@ public class PositionConfigurationScreen<T extends ConfigurationMenu>
                 "default",
                 button ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getNpcUUID(), ConfigurationType.DEFAULT_POSITION)));
+                        .openConfiguration(
+                            this.getEasyNPCUUID(), ConfigurationType.DEFAULT_POSITION)));
   }
 
   @Override
-  protected void renderScreenBg(GuiGraphics guiGraphics) {
+  public void renderDefaultScreenBg(GuiGraphics guiGraphics, int leftPos, int topPos) {
     Graphics.blit(guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos, 0, 0, 210, 40);
     Graphics.blit(
         guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos + 203, topPos, 132, 0, 120, 40);

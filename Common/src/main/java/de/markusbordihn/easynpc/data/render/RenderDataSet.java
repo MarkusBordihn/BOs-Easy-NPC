@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.data.render;
 import de.markusbordihn.easynpc.Constants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,22 +50,13 @@ public class RenderDataSet {
     this.renderType = renderType;
   }
 
-  public EntityType<?> getRenderEntityType() {
+  public EntityType<? extends Entity> getRenderEntityType() {
     return this.renderEntityType;
   }
 
-  public void setRenderEntityType(String entityTypeName) {
-    EntityType<?> entityType = EntityType.byString(entityTypeName).orElse(null);
-    if (entityType != null && !entityType.canSerialize()) {
-      log.error(
-          "Error Not serializable render entity type {} from {}!", entityType, entityTypeName);
-    }
-    this.renderEntityType = entityType;
-    this.renderType = this.renderEntityType != null ? RenderType.CUSTOM_ENTITY : RenderType.DEFAULT;
-  }
-
-  public void setRenderEntityType(EntityType<?> renderEntityType) {
+  public void setRenderEntityType(EntityType<? extends Entity> renderEntityType) {
     this.renderEntityType = renderEntityType;
+    this.renderType = this.renderEntityType != null ? RenderType.CUSTOM_ENTITY : RenderType.DEFAULT;
   }
 
   public void load(CompoundTag compoundTag) {

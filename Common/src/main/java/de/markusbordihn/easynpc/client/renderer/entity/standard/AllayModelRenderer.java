@@ -29,6 +29,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.resources.ResourceLocation;
@@ -73,7 +74,7 @@ public class AllayModelRenderer
       float entityYaw,
       float partialTicks,
       PoseStack poseStack,
-      net.minecraft.client.renderer.MultiBufferSource buffer,
+      MultiBufferSource buffer,
       int light) {
     switch (pose) {
       case DYING:

@@ -31,18 +31,15 @@ import net.minecraft.world.entity.player.Player;
 
 public final class DialogDataEntry {
 
-  // Dialog Data Tags
   public static final String DATA_BUTTONS_TAG = "Buttons";
   public static final String DATA_DIALOG_NAME = "Name";
   public static final String DATA_LABEL_TAG = "Label";
   public static final String DATA_TEXTS_TAG = "Texts";
   public static final String DATA_TEXT_TAG = "Text";
   public static final String DATA_TRANSLATE_TAG = "Translate";
-  // Limits
   public static final int MAX_DIALOG_LABEL_LENGTH = 32;
   private Set<DialogButtonEntry> dialogButtons = new LinkedHashSet<>();
   private Set<DialogTextData> dialogTexts = new LinkedHashSet<>();
-  // Dialog Data
   private UUID id;
   private String label = "";
   private String name;

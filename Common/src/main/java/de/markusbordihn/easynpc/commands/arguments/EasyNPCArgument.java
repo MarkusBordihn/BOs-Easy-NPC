@@ -49,6 +49,10 @@ public class EasyNPCArgument implements ArgumentType<EntitySelector> {
 
   public EasyNPCArgument() {}
 
+  public static EasyNPCArgument npc() {
+    return new EasyNPCArgument();
+  }
+
   public static EasyNPC<?> getEntityWithAccess(
       CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
 

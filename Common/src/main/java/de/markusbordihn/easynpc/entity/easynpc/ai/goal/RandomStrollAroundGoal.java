@@ -42,6 +42,13 @@ public class RandomStrollAroundGoal<T extends EasyNPC<?>> extends RandomStrollGo
   }
 
   @Override
+  public boolean canContinueToUse() {
+    return !this.mob.getNavigation().isDone()
+        && !this.mob.isVehicle()
+        && (!this.mob.isAggressive() || this.mob.getTarget() == null);
+  }
+
+  @Override
   protected Vec3 getPosition() {
     if (this.navigationData.canFly()) {
       Vec3 vec3 = this.mob.getViewVector(0.0F);

@@ -28,6 +28,7 @@ import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
 
 public class StandardWolfModel<T extends Entity> extends BaseColorableAgeableListModel<T>
     implements HeadedModel {
@@ -57,7 +58,7 @@ public class StandardWolfModel<T extends Entity> extends BaseColorableAgeableLis
       float ageInTicks,
       float netHeadYaw,
       float headPitch) {
-    if (attackData.isAggressive()) {
+    if (entity instanceof Mob mob && mob.isAggressive()) {
       this.tail.yRot = 0.0F;
     } else {
       this.tail.yRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;

@@ -190,20 +190,6 @@ public class StandardPlayerModel<T extends LivingEntity> extends PlayerModel<T>
   }
 
   @Override
-  public boolean animateModelLegs(
-      T entity,
-      AttackData<?> attackData,
-      ModelData<?> modelData,
-      ModelPart rightLegPart,
-      ModelPart leftLegPart,
-      float ageInTicks,
-      float limbSwing,
-      float limbSwingAmount) {
-    return HumanoidLegAnimation.animateHumanoidModelLegs(
-        rightLegPart, leftLegPart, limbSwing, limbSwingAmount);
-  }
-
-  @Override
   public boolean setupCrouchingModelPose(
       T entity,
       ModelData<?> modelData,

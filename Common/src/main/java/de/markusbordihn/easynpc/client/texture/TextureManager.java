@@ -50,16 +50,6 @@ public class TextureManager {
   private static final Map<TextureModelKey, String> errorMessageMap = new HashMap<>();
   private static String lastErrorMessage;
 
-  static {
-    // Scan for plugins to support additional image formats.
-    try {
-      Class.forName("com.twelvemonkeys.imageio.plugins.webp.WebPImageReader");
-    } catch (ClassNotFoundException e) {
-      log.error("{} Unable to load WebPImageReader because of:", LOG_PREFIX, e);
-    }
-    ImageIO.scanForPlugins();
-  }
-
   private TextureManager() {}
 
   public static ResourceLocation addCustomTexture(TextureModelKey textureModelKey, File file) {

@@ -59,7 +59,7 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityAttributeChange(
-                        this.getNpcUUID(), EntityAttribute.CAN_FLOAT, checkbox.selected())));
+                        this.getEasyNPCUUID(), EntityAttribute.CAN_FLOAT, checkbox.selected())));
 
     this.addRenderableWidget(
         new Checkbox(
@@ -70,7 +70,9 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityAttributeChange(
-                        this.getNpcUUID(), EntityAttribute.CAN_BE_LEASHED, checkbox.selected())));
+                        this.getEasyNPCUUID(),
+                        EntityAttribute.CAN_BE_LEASHED,
+                        checkbox.selected())));
 
     this.addRenderableWidget(
         new Checkbox(
@@ -81,7 +83,9 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityAttributeChange(
-                        this.getNpcUUID(), EntityAttribute.CAN_OPEN_DOOR, checkbox.selected())));
+                        this.getEasyNPCUUID(),
+                        EntityAttribute.CAN_OPEN_DOOR,
+                        checkbox.selected())));
 
     this.addRenderableWidget(
         new Checkbox(
@@ -92,7 +96,9 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityAttributeChange(
-                        this.getNpcUUID(), EntityAttribute.CAN_CLOSE_DOOR, checkbox.selected())));
+                        this.getEasyNPCUUID(),
+                        EntityAttribute.CAN_CLOSE_DOOR,
+                        checkbox.selected())));
 
     this.addRenderableWidget(
         new Checkbox(
@@ -103,7 +109,9 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityAttributeChange(
-                        this.getNpcUUID(), EntityAttribute.CAN_PASS_DOOR, checkbox.selected())));
+                        this.getEasyNPCUUID(),
+                        EntityAttribute.CAN_PASS_DOOR,
+                        checkbox.selected())));
 
     this.addRenderableWidget(
         new Checkbox(
@@ -114,7 +122,9 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityAttributeChange(
-                        this.getNpcUUID(), EntityAttribute.IS_ATTACKABLE, checkbox.selected())));
+                        this.getEasyNPCUUID(),
+                        EntityAttribute.IS_ATTACKABLE,
+                        checkbox.selected())));
 
     this.addRenderableWidget(
         new Checkbox(
@@ -125,7 +135,7 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityAttributeChange(
-                        this.getNpcUUID(), EntityAttribute.IS_PUSHABLE, checkbox.selected())));
+                        this.getEasyNPCUUID(), EntityAttribute.IS_PUSHABLE, checkbox.selected())));
 
     this.addRenderableWidget(
         new Checkbox(
@@ -136,7 +146,9 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityAttributeChange(
-                        this.getNpcUUID(), EntityAttribute.PUSH_ENTITIES, checkbox.selected())));
+                        this.getEasyNPCUUID(),
+                        EntityAttribute.PUSH_ENTITIES,
+                        checkbox.selected())));
 
     this.addRenderableWidget(
         new Checkbox(
@@ -147,7 +159,7 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityAttributeChange(
-                        this.getNpcUUID(),
+                        this.getEasyNPCUUID(),
                         EntityAttribute.CAN_USE_NETHER_PORTAL,
                         checkbox.selected())));
 
@@ -160,6 +172,6 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityAttributeChange(
-                        this.getNpcUUID(), EntityAttribute.SILENT, checkbox.selected())));
+                        this.getEasyNPCUUID(), EntityAttribute.SILENT, checkbox.selected())));
   }
 }
