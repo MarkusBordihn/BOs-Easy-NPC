@@ -44,7 +44,7 @@ public class SoundCommand extends Command {
         .then(
             Commands.literal("set")
                 .then(
-                    Commands.argument("target", new EasyNPCArgument())
+                    Commands.argument("target", EasyNPCArgument.npc())
                         .then(
                             Commands.argument("type", StringArgumentType.string())
                                 .suggests(SoundTypeSuggestions::suggest)

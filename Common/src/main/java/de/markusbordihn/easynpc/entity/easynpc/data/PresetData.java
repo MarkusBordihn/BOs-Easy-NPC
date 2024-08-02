@@ -79,6 +79,11 @@ public interface PresetData<T extends PathfinderMob> extends EasyNPC<T> {
         existingCompoundTag.remove(SkinData.EASY_NPC_DATA_SKIN_DATA_TAG);
       }
 
+      // Remove existing render data.
+      if (existingCompoundTag.contains(RenderData.DATA_RENDER_DATA_TAG)) {
+        existingCompoundTag.remove(RenderData.DATA_RENDER_DATA_TAG);
+      }
+
       // Remove existing action data.
       if (existingCompoundTag.contains(ActionEventData.DATA_ACTION_DATA_TAG)) {
         existingCompoundTag.remove(ActionEventData.DATA_ACTION_DATA_TAG);

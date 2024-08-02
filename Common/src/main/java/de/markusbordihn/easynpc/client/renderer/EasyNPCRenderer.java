@@ -21,10 +21,11 @@ package de.markusbordihn.easynpc.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
+import de.markusbordihn.easynpc.client.renderer.manager.RendererManager;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
-import de.markusbordihn.easynpc.data.render.RenderDataSet;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -37,7 +38,6 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,97 +46,61 @@ public interface EasyNPCRenderer<E extends PathfinderMob, M extends EntityModel<
 
   Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  static boolean renderEntity(
+  default boolean renderEntity(
       PathfinderMob entity,
       float entityYaw,
       float partialTicks,
       PoseStack poseStack,
       MultiBufferSource buffer,
       int packedLight) {
+
+    // We only take care of EasyNPC entities.
     if (!(entity instanceof EasyNPC<?> easyNPC)) {
       return false;
     }
 
+    // Get render data.
     RenderData<?> renderData = easyNPC.getEasyNPCRenderData();
     if (renderData == null
-        || renderData.getRenderData() == null
-        || renderData.getRenderData().getRenderType() == RenderType.DEFAULT) {
+        || renderData.getRenderDataSet() == null
+        || renderData.getRenderDataSet().getRenderType() != RenderType.CUSTOM_ENTITY) {
       return false;
     }
 
-    RenderDataSet renderDataSet = renderData.getRenderData();
-    RenderType renderType = renderDataSet.getRenderType();
-    EntityType<?> renderEntityType = renderDataSet.getRenderEntityType();
+    // Get custom render data.
+    EntityType<? extends Entity> renderEntityType =
+        renderData.getRenderDataSet().getRenderEntityType();
 
-    if (renderType == RenderType.CUSTOM_ENTITY
-        && renderEntityType != null
-        && !RendererManager.isUnsupportedEntityType(renderEntityType)) {
-
-      // Try to render custom entity or living entity over existing renderer.
-      PathfinderMob customEntity = RendererManager.getPathfinderMob(renderEntityType);
-      if (customEntity != null) {
-        LivingEntityRenderer<?, ?> livingEntityRenderer =
-            RendererManager.getLivingEntityRenderer(renderEntityType);
-        if (livingEntityRenderer != null) {
-          renderCustomLivingEntity(
-              entity,
-              customEntity,
-              (LivingEntityRenderer<LivingEntity, EntityModel<LivingEntity>>) livingEntityRenderer,
-              entityYaw,
-              partialTicks,
-              poseStack,
-              buffer,
-              packedLight);
-          return true;
-        }
-
-        EntityRenderer<?> entityRenderer = RendererManager.getEntityRenderer(renderEntityType);
-        if (entityRenderer != null) {
-          renderCustomEntity(
-              entity,
-              customEntity,
-              (EntityRenderer<Entity>) entityRenderer,
-              entityYaw,
-              partialTicks,
-              poseStack,
-              buffer,
-              packedLight);
-          return true;
-        }
-      }
-
-      // Register custom entity renderer, if not already registered and supported.
-      RendererManager.registerRenderer(renderEntityType, entity.level());
+    // Get custom entity for render custom .
+    PathfinderMob customEntity =
+        EntityTypeManager.getPathfinderMob(renderEntityType, entity.level());
+    if (customEntity == null) {
+      return false;
     }
 
+    // Render custom entity over living render, if supported.
+    LivingEntityRenderer<E, M> livingEntityRenderer =
+        (LivingEntityRenderer<E, M>)
+            RendererManager.getLivingEntityRenderer(renderEntityType, customEntity);
+    if (livingEntityRenderer != null) {
+      RendererManager.copyCustomLivingEntityData(entity, customEntity);
+      livingEntityRenderer.render(
+          (E) customEntity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+      return true;
+    }
+
+    // Alternative render custom entity over entity render, if supported.
+    EntityRenderer<E> entityRenderer =
+        (EntityRenderer<E>) RendererManager.getEntityRenderer(renderEntityType, customEntity);
+    if (entityRenderer != null) {
+      RendererManager.copyCustomLivingEntityData(entity, customEntity);
+      entityRenderer.render(
+          (E) customEntity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+      return true;
+    }
+
+    // Give up rendering, if no custom renderer is available.
     return false;
-  }
-
-  static void renderCustomEntity(
-      PathfinderMob entity,
-      Entity customEntity,
-      EntityRenderer<Entity> entityRenderer,
-      float entityYaw,
-      float partialTicks,
-      PoseStack poseStack,
-      MultiBufferSource buffer,
-      int packedLight) {
-    RendererManager.copyCustomEntityData(entity, customEntity);
-    entityRenderer.render(customEntity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-  }
-
-  static void renderCustomLivingEntity(
-      PathfinderMob entity,
-      LivingEntity customEntity,
-      LivingEntityRenderer<LivingEntity, EntityModel<LivingEntity>> livingEntityRenderer,
-      float entityYaw,
-      float partialTicks,
-      PoseStack poseStack,
-      MultiBufferSource buffer,
-      int packedLight) {
-    RendererManager.copyCustomLivingEntityData(entity, customEntity);
-    livingEntityRenderer.render(
-        customEntity, entityYaw, partialTicks, poseStack, buffer, packedLight);
   }
 
   ResourceLocation getTextureByVariant(Enum<?> variant);

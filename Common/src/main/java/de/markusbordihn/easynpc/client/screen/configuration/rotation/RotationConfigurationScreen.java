@@ -55,14 +55,15 @@ public class RotationConfigurationScreen<T extends ConfigurationMenu>
                 "default",
                 button ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getNpcUUID(), ConfigurationType.DEFAULT_ROTATION)));
+                        .openConfiguration(
+                            this.getEasyNPCUUID(), ConfigurationType.DEFAULT_ROTATION)));
 
     // Default button stats
     this.defaultRotationButton.active = false;
   }
 
   @Override
-  protected void renderScreenBg(GuiGraphics guiGraphics) {
+  public void renderDefaultScreenBg(GuiGraphics guiGraphics, int leftPos, int topPos) {
     Graphics.blit(guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos, 0, 0, 210, 40);
     Graphics.blit(
         guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos + 203, topPos, 132, 0, 120, 40);

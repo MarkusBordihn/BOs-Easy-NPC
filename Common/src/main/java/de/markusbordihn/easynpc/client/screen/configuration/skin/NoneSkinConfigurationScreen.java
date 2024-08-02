@@ -70,21 +70,22 @@ public class NoneSkinConfigurationScreen<T extends ConfigurationMenu>
                 skinData.getSkinType() == SkinType.NONE,
                 checkbox -> {
                   if (checkbox.selected()) {
-                    NetworkMessageHandlerManager.getServerHandler().setNoneSkin(this.getNpcUUID());
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .setNoneSkin(this.getEasyNPCUUID());
                   } else {
                     switch (formerSkinType) {
                       case DEFAULT:
                         NetworkMessageHandlerManager.getServerHandler()
-                            .setDefaultSkin(this.getNpcUUID(), formerVariant);
+                            .setDefaultSkin(this.getEasyNPCUUID(), formerVariant);
                         break;
                       case CUSTOM:
                         NetworkMessageHandlerManager.getServerHandler()
-                            .setCustomSkin(this.getNpcUUID(), formerSkinUUID);
+                            .setCustomSkin(this.getEasyNPCUUID(), formerSkinUUID);
                         break;
                       case NONE:
                       default:
                         NetworkMessageHandlerManager.getServerHandler()
-                            .setDefaultSkin(this.getNpcUUID(), variantData.getDefaultVariant());
+                            .setDefaultSkin(this.getEasyNPCUUID(), variantData.getDefaultVariant());
                     }
                   }
                 }));

@@ -25,6 +25,8 @@ import java.util.function.Function;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.DistExecutor;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.network.NetworkRegistry.ChannelBuilder;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -85,36 +87,48 @@ public class NetworkHandler implements NetworkHandlerInterface {
   }
 
   @Override
+  public void sendToAllPlayers(final NetworkMessageRecord networkMessageRecord) {
+    try {
+      INSTANCE.send(PacketDistributor.ALL.noArg(), networkMessageRecord);
+    } catch (Exception e) {
+      log.error("Failed to send {} to all players: {}", networkMessageRecord, e);
+    }
+  }
+
+  @Override
   public <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
       ResourceLocation messageID, Class<M> networkMessage, Function<FriendlyByteBuf, M> creator) {
+    int registrationID = id++;
+    log.debug(
+        "Registering client network message handler for {} with ID {}", messageID, registrationID);
     INSTANCE
-        .messageBuilder(networkMessage, id++, PlayNetworkDirection.PLAY_TO_CLIENT)
+        .messageBuilder(networkMessage, registrationID, PlayNetworkDirection.PLAY_TO_CLIENT)
         .encoder(M::write)
         .decoder(creator::apply)
         .consumerNetworkThread(
-            (message, context) ->
-                context.enqueueWork(
-                    () -> {
-                      message.handleClient();
-                      context.setPacketHandled(true);
-                    }))
+            (message, context) -> {
+              context.enqueueWork(
+                  () -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> message::handleClient));
+              context.setPacketHandled(true);
+            })
         .add();
   }
 
   @Override
   public <M extends NetworkMessageRecord> void registerServerNetworkMessageHandler(
       ResourceLocation messageID, Class<M> networkMessage, Function<FriendlyByteBuf, M> creator) {
+    int registrationID = id++;
+    log.debug(
+        "Registering server network message handler for {} with ID {}", messageID, registrationID);
     INSTANCE
-        .messageBuilder(networkMessage, id++, PlayNetworkDirection.PLAY_TO_SERVER)
+        .messageBuilder(networkMessage, registrationID, PlayNetworkDirection.PLAY_TO_SERVER)
         .encoder(M::write)
         .decoder(creator::apply)
         .consumerNetworkThread(
-            (message, context) ->
-                context.enqueueWork(
-                    () -> {
-                      message.handleServer(context.getSender());
-                      context.setPacketHandled(true);
-                    }))
+            (message, context) -> {
+              context.enqueueWork(() -> message.handleServer(context.getSender()));
+              context.setPacketHandled(true);
+            })
         .add();
   }
 }

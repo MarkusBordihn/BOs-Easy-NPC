@@ -23,7 +23,6 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Allay;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken;
-import de.markusbordihn.easynpc.entity.easynpc.npc.CrashTestDummy;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Horse;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
@@ -58,8 +57,6 @@ public class ModEntityType {
       ENTITY_TYPES.register(Cat.ID, () -> ModEntityTypes.CAT);
   public static final RegistryObject<EntityType<Chicken>> CHICKEN =
       ENTITY_TYPES.register(Chicken.ID, () -> ModEntityTypes.CHICKEN);
-  public static final RegistryObject<EntityType<CrashTestDummy>> CRASH_TEST_DUMMY =
-      ENTITY_TYPES.register(CrashTestDummy.ID, () -> ModEntityTypes.CRASH_TEST_DUMMY);
   public static final RegistryObject<EntityType<Zombie>> DROWNED =
       ENTITY_TYPES.register(Zombie.ID_DROWNED, () -> ModEntityTypes.DROWNED);
   public static final RegistryObject<EntityType<Illager>> EVOKER =
@@ -111,33 +108,31 @@ public class ModEntityType {
 
   @SubscribeEvent
   public static void entityAttributeCreation(EntityAttributeCreationEvent event) {
-    event.put(CRASH_TEST_DUMMY.get(), CrashTestDummy.createAttributes().build());
-
     event.put(ALLAY.get(), Allay.createAttributes().build());
     event.put(CAT.get(), Cat.createAttributes().build());
     event.put(CHICKEN.get(), Chicken.createAttributes().build());
     event.put(DROWNED.get(), Zombie.createAttributes().build());
+    event.put(EVOKER.get(), Illager.createAttributes().build());
     event.put(FAIRY.get(), Fairy.createAttributes().build());
+    event.put(HORSE.get(), Horse.createAttributes().build());
     event.put(HUMANOID.get(), Humanoid.createAttributes().build());
     event.put(HUMANOID_SLIM.get(), HumanoidSlim.createAttributes().build());
     event.put(HUSK.get(), Zombie.createAttributes().build());
-    event.put(IRON_GOLEM.get(), IronGolem.createAttributes().build());
-    event.put(WITHER_SKELETON.get(), Skeleton.createAttributes().build());
-    event.put(STRAY.get(), Skeleton.createAttributes().build());
-    event.put(SKELETON.get(), Skeleton.createAttributes().build());
-    event.put(VILLAGER.get(), Villager.createAttributes().build());
-    event.put(ZOMBIE.get(), Zombie.createAttributes().build());
-    event.put(ZOMBIE_VILLAGER.get(), ZombieVillager.createAttributes().build());
-    event.put(PIG.get(), Pig.createAttributes().build());
-    event.put(EVOKER.get(), Illager.createAttributes().build());
     event.put(ILLUSIONER.get(), Illager.createAttributes().build());
-    event.put(PILLAGER.get(), Illager.createAttributes().build());
-    event.put(VINDICATOR.get(), Illager.createAttributes().build());
+    event.put(IRON_GOLEM.get(), IronGolem.createAttributes().build());
     event.put(ORC.get(), Orc.createAttributes().build());
     event.put(ORC_WARRIOR.get(), Orc.createAttributes().build());
-    event.put(WOLF.get(), Wolf.createAttributes().build());
-    event.put(HORSE.get(), Horse.createAttributes().build());
+    event.put(PIG.get(), Pig.createAttributes().build());
+    event.put(PILLAGER.get(), Illager.createAttributes().build());
+    event.put(SKELETON.get(), Skeleton.createAttributes().build());
     event.put(SKELETON_HORSE.get(), Horse.createAttributes().build());
+    event.put(STRAY.get(), Skeleton.createAttributes().build());
+    event.put(VILLAGER.get(), Villager.createAttributes().build());
+    event.put(VINDICATOR.get(), Illager.createAttributes().build());
+    event.put(WITHER_SKELETON.get(), Skeleton.createAttributes().build());
+    event.put(WOLF.get(), Wolf.createAttributes().build());
+    event.put(ZOMBIE.get(), Zombie.createAttributes().build());
     event.put(ZOMBIE_HORSE.get(), Horse.createAttributes().build());
+    event.put(ZOMBIE_VILLAGER.get(), ZombieVillager.createAttributes().build());
   }
 }

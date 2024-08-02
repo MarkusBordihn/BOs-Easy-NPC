@@ -114,10 +114,10 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
             button -> {
               if (profession != null) {
                 NetworkMessageHandlerManager.getServerHandler()
-                    .changeProfession(this.getNpcUUID(), profession);
+                    .changeProfession(this.getEasyNPCUUID(), profession);
               }
               NetworkMessageHandlerManager.getServerHandler()
-                  .setDefaultSkin(this.getNpcUUID(), variant);
+                  .setDefaultSkin(this.getEasyNPCUUID(), variant);
             });
 
     // Disable button for active skin.

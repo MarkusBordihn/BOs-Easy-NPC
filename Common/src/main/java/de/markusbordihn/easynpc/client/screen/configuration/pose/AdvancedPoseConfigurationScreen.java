@@ -61,7 +61,7 @@ public class AdvancedPoseConfigurationScreen<T extends ConfigurationMenu>
             modelPartVisibility,
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
-                    .modelVisibilityChange(this.getNpcUUID(), modelPart, checkbox.selected())));
+                    .modelVisibilityChange(this.getEasyNPCUUID(), modelPart, checkbox.selected())));
 
     return sliderRotationButtonX;
   }

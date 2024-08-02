@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.data.synched;
 
 public enum SynchedDataIndex {
-  ATTACK_IS_AGGRESSIVE,
   ATTACK_IS_CHARGING_CROSSBOW,
   ATTRIBUTE_CAN_BE_LEASHED,
   ATTRIBUTE_CAN_CLOSE_DOOR,

@@ -19,13 +19,14 @@
 
 package de.markusbordihn.easynpc.server.commands;
 
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.datafixers.util.Pair;
 import de.markusbordihn.easynpc.commands.Command;
+import de.markusbordihn.easynpc.commands.arguments.DialogArgument;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
+import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import java.util.UUID;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -38,69 +39,174 @@ public class DialogCommand extends Command {
 
   public static ArgumentBuilder<CommandSourceStack, ?> register() {
     return Commands.literal("dialog")
-        .requires(cs -> cs.hasPermission(Commands.LEVEL_GAMEMASTERS))
-        .executes(DialogCommand::openDialog)
+        .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
+        .then(
+            Commands.literal("set")
+                .then(
+                    Commands.literal("default")
+                        .then(
+                            Commands.argument("target", EasyNPCArgument.npc())
+                                .then(
+                                    Commands.argument("dialog", DialogArgument.uuidOrLabel())
+                                        .executes(
+                                            context ->
+                                                setDefaultDialog(
+                                                    context.getSource(),
+                                                    EasyNPCArgument.getEntityWithAccess(
+                                                        context, "target"),
+                                                    DialogArgument.getUuidOrLabel(
+                                                        context, "dialog")))))))
         .then(
             Commands.literal("open")
                 .then(
-                    Commands.argument("target", new EasyNPCArgument())
+                    Commands.argument("target", EasyNPCArgument.npc())
                         .then(
                             Commands.argument("player", EntityArgument.player())
-                                .executes(DialogCommand::openDialog)
+                                .executes(
+                                    context ->
+                                        openDialog(
+                                            context.getSource(),
+                                            EasyNPCArgument.getEntityWithAccess(context, "target"),
+                                            EntityArgument.getPlayer(context, "player")))
                                 .then(
-                                    Commands.argument("dialog", StringArgumentType.string())
-                                        .executes(DialogCommand::openDialog)))));
+                                    Commands.argument("dialog", DialogArgument.uuidOrLabel())
+                                        .executes(
+                                            context ->
+                                                openDialog(
+                                                    context.getSource(),
+                                                    EasyNPCArgument.getEntityWithAccess(
+                                                        context, "target"),
+                                                    EntityArgument.getPlayer(context, "player"),
+                                                    DialogArgument.getUuidOrLabel(
+                                                        context, "dialog")))))));
   }
 
-  public static int openDialog(CommandContext<CommandSourceStack> context)
-      throws CommandSyntaxException {
-    CommandSourceStack commandSource = context.getSource();
-
-    ServerPlayer serverPlayer;
-    try {
-      serverPlayer = EntityArgument.getPlayer(context, "player");
-    } catch (Exception e) {
-      return sendFailureMessage(
-          commandSource, "Failed to get player from context: " + e.getMessage());
+  public static int setDefaultDialog(
+      CommandSourceStack context, EasyNPC<?> easyNPC, Pair<UUID, String> dialogPair) {
+    if (dialogPair.getFirst() != null) {
+      return setDefaultDialog(context, easyNPC, dialogPair.getFirst());
+    } else if (dialogPair.getSecond() != null) {
+      return setDefaultDialog(context, easyNPC, dialogPair.getSecond());
     }
+    return sendFailureMessage(context, "Invalid dialog UUID or label!");
+  }
 
-    String dialogLabel = "";
-    try {
-      dialogLabel = StringArgumentType.getString(context, "dialog");
-    } catch (Exception ignored) {
-
-    }
-
-    // Verify Player
-    if (!serverPlayer.isAlive()) {
-      return sendFailureMessage(commandSource, "Player is death!");
-    }
-
-    // Verify NPC
-    EasyNPC<?> easyNPC = EasyNPCArgument.getEntity(context, "target");
-
-    // Verify dialog data
-    if (easyNPC.getEasyNPCDialogData() == null || !easyNPC.getEasyNPCDialogData().hasDialog()) {
-      return sendFailureMessage(
-          commandSource, "Found no Dialog data for EasyNPC with UUID " + easyNPC.getUUID() + " !");
-    }
-
+  public static int setDefaultDialog(
+      CommandSourceStack context, EasyNPC<?> easyNPC, String dialogLabel) {
     // Verify dialog label, if any
     if (!dialogLabel.isEmpty() && !easyNPC.getEasyNPCDialogData().hasDialog(dialogLabel)) {
       return sendFailureMessage(
-          commandSource,
+          context,
           "Found no Dialog with label "
               + dialogLabel
               + " for EasyNPC with UUID "
               + easyNPC.getUUID()
               + "!");
     }
+    return setDefaultDialog(
+        context, easyNPC, easyNPC.getEasyNPCDialogData().getDialogId(dialogLabel));
+  }
+
+  public static int setDefaultDialog(
+      CommandSourceStack context, EasyNPC<?> easyNPC, UUID dialogUUID) {
+
+    // Verify dialog data
+    if (easyNPC.getEasyNPCDialogData() == null
+        || !easyNPC.getEasyNPCDialogData().hasDialog(dialogUUID)) {
+      return sendFailureMessage(
+          context, "Found no Dialog data for EasyNPC with UUID " + easyNPC.getUUID() + " !");
+    }
+
+    DialogDataSet dialogDataSet = easyNPC.getEasyNPCDialogData().getDialogDataSet();
+    dialogDataSet.setDefaultDialog(dialogUUID);
+
+    return sendSuccessMessage(
+        context, "► Set default dialog for " + easyNPC + " to " + dialogUUID, ChatFormatting.GREEN);
+  }
+
+  public static int openDialog(
+      CommandSourceStack context, EasyNPC<?> easyNPC, ServerPlayer serverPlayer) {
+
+    // Verify Player
+    if (!serverPlayer.isAlive()) {
+      return sendFailureMessage(context, "Player is death!");
+    }
+
+    // Verify dialog data
+    if (easyNPC.getEasyNPCDialogData() == null || !easyNPC.getEasyNPCDialogData().hasDialog()) {
+      return sendFailureMessage(
+          context, "Found no Dialog data for EasyNPC with UUID " + easyNPC.getUUID() + " !");
+    }
 
     // Open dialog
-    easyNPC.getEasyNPCDialogData().openDialog(serverPlayer, dialogLabel);
+    easyNPC.getEasyNPCDialogData().openDialog(serverPlayer);
     return sendSuccessMessage(
-        commandSource,
-        "► Open dialog for " + easyNPC + " with " + serverPlayer + " and dialog " + dialogLabel,
+        context, "► Open dialog for " + easyNPC + " with " + serverPlayer, ChatFormatting.GREEN);
+  }
+
+  public static int openDialog(
+      CommandSourceStack context,
+      EasyNPC<?> easyNPC,
+      ServerPlayer serverPlayer,
+      Pair<UUID, String> dialogPair) {
+    if (dialogPair.getFirst() != null) {
+      return openDialog(context, easyNPC, serverPlayer, dialogPair.getFirst());
+    } else if (dialogPair.getSecond() != null) {
+      return openDialog(context, easyNPC, serverPlayer, dialogPair.getSecond());
+    }
+    return sendFailureMessage(context, "Invalid dialog UUID or label!");
+  }
+
+  public static int openDialog(
+      CommandSourceStack context,
+      EasyNPC<?> easyNPC,
+      ServerPlayer serverPlayer,
+      String dialogLabel) {
+
+    // Verify dialog label, if any
+    if (!dialogLabel.isEmpty() && !easyNPC.getEasyNPCDialogData().hasDialog(dialogLabel)) {
+      return sendFailureMessage(
+          context,
+          "Found no Dialog with label "
+              + dialogLabel
+              + " for EasyNPC with UUID "
+              + easyNPC.getUUID()
+              + "!");
+    }
+    return openDialog(
+        context, easyNPC, serverPlayer, easyNPC.getEasyNPCDialogData().getDialogId(dialogLabel));
+  }
+
+  public static int openDialog(
+      CommandSourceStack context, EasyNPC<?> easyNPC, ServerPlayer serverPlayer, UUID dialogUUID) {
+
+    // Verify Player
+    if (!serverPlayer.isAlive()) {
+      return sendFailureMessage(context, "Player is death!");
+    }
+
+    // Verify dialog data
+    if (easyNPC.getEasyNPCDialogData() == null || !easyNPC.getEasyNPCDialogData().hasDialog()) {
+      return sendFailureMessage(
+          context, "Found no Dialog data for EasyNPC with UUID " + easyNPC.getUUID() + " !");
+    }
+
+    // Verify dialog label, if any
+    if (!easyNPC.getEasyNPCDialogData().hasDialog(dialogUUID)) {
+      return sendFailureMessage(
+          context,
+          "Found no Dialog with UUID "
+              + dialogUUID
+              + " for EasyNPC with UUID "
+              + easyNPC.getUUID()
+              + "!");
+    }
+
+    // Open dialog
+    easyNPC.getEasyNPCDialogData().openDialog(serverPlayer, dialogUUID);
+    return sendSuccessMessage(
+        context,
+        "► Open dialog for " + easyNPC + " with " + serverPlayer + " and dialog " + dialogUUID,
         ChatFormatting.GREEN);
   }
 }

@@ -44,8 +44,12 @@ public record ScreenData(
   public static final String SCREEN_DATA_UUID_TAG = "UUID";
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
+  public static boolean hasScreenData(CompoundTag compoundTag) {
+    return compoundTag != null && compoundTag.contains(SCREEN_DATA_TAG);
+  }
+
   public static ScreenData decode(CompoundTag compoundTag) {
-    if (compoundTag == null || !compoundTag.contains(SCREEN_DATA_TAG)) {
+    if (!hasScreenData(compoundTag)) {
       log.error("Unable to decode screen data from compound tag: {}", compoundTag);
       return null;
     }

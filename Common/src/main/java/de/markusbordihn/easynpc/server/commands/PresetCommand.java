@@ -67,7 +67,7 @@ public class PresetCommand extends Command {
                 .then(
                     Commands.literal(LOCAL_ARG)
                         .then(
-                            Commands.argument(TARGET_ARG, new EasyNPCArgument())
+                            Commands.argument(TARGET_ARG, EasyNPCArgument.npc())
                                 .executes(
                                     context ->
                                         exportLocalPreset(
@@ -88,7 +88,7 @@ public class PresetCommand extends Command {
                 .then(
                     Commands.literal(CUSTOM_ARG)
                         .then(
-                            Commands.argument(TARGET_ARG, new EasyNPCArgument())
+                            Commands.argument(TARGET_ARG, EasyNPCArgument.npc())
                                 .executes(
                                     context ->
                                         exportCustomPreset(
@@ -109,7 +109,7 @@ public class PresetCommand extends Command {
                 .then(
                     Commands.literal(WORLD_ARG)
                         .then(
-                            Commands.argument(TARGET_ARG, new EasyNPCArgument())
+                            Commands.argument(TARGET_ARG, EasyNPCArgument.npc())
                                 .executes(
                                     context ->
                                         exportWorldPreset(
@@ -129,6 +129,9 @@ public class PresetCommand extends Command {
                                                         context, NAME_ARG)))))))
         .then(
             Commands.literal(IMPORT_ARG)
+                .then(
+                    Commands.literal(LOCAL_ARG)
+                        .executes(context -> importLocalPreset(context.getSource())))
                 .then(
                     Commands.literal(CUSTOM_ARG)
                         .then(
@@ -446,6 +449,11 @@ public class PresetCommand extends Command {
     }
 
     return sendSuccessMessage(context, importedPresetMessage(DEFAULT_ARG, preset, position, uuid));
+  }
+
+  private static int importLocalPreset(CommandSourceStack context) {
+    return sendFailureMessage(
+        context, "Importing a local preset from the server is not supported!");
   }
 
   private static int importWorldPreset(

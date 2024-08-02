@@ -24,7 +24,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 public class DialogTextEditorScreenWrapper
-    extends DialogTextEditorScreen<DialogTextEditorMenuWrapper> {
+    extends DialogTextEditorContainerScreen<DialogTextEditorMenuWrapper> {
 
   public DialogTextEditorScreenWrapper(
       DialogTextEditorMenuWrapper menu, Inventory inventory, Component component) {

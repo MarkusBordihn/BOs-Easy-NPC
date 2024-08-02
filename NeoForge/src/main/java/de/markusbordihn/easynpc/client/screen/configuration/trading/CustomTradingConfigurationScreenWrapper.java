@@ -24,7 +24,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 public class CustomTradingConfigurationScreenWrapper
-    extends CustomTradingConfigurationScreen<CustomTradingConfigurationMenuWrapper> {
+    extends CustomTradingConfigurationContainerScreen<CustomTradingConfigurationMenuWrapper> {
 
   public CustomTradingConfigurationScreenWrapper(
       CustomTradingConfigurationMenuWrapper menu, Inventory inventory, Component component) {

@@ -26,6 +26,7 @@ import net.minecraft.client.model.AnimationUtils;
 import net.minecraft.client.model.VillagerHeadModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 
 public class StandardZombieVillagerModel<T extends LivingEntity> extends BaseHumanoidModel<T>
     implements VillagerHeadModel {
@@ -59,7 +60,11 @@ public class StandardZombieVillagerModel<T extends LivingEntity> extends BaseHum
       float netHeadYaw,
       float headPitch) {
     AnimationUtils.animateZombieArms(
-        this.leftArm, this.rightArm, attackData.isAggressive(), this.attackTime, ageInTicks);
+        this.leftArm,
+        this.rightArm,
+        entity instanceof Mob mob && mob.isAggressive(),
+        this.attackTime,
+        ageInTicks);
   }
 
   public void hatVisible(boolean visible) {

@@ -63,9 +63,6 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
     this.defaultScaleButton.active = false;
 
     // Basic Position
-    this.inventoryLabelX = 8;
-    this.inventoryLabelY = this.imageHeight - 92;
-
     int scalePositionLeft = this.contentLeftPos + 165;
     int scalePositionTop = this.contentTopPos + 20;
     int scalePositionSpace = 60;
@@ -86,7 +83,8 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
                   float scale = button.getTargetValue();
                   if (scaleData.getScaleX() != scale) {
                     NetworkMessageHandlerManager.getServerHandler()
-                        .scaleChange(this.getNpcUUID(), ModelScaleAxis.X, button.getTargetValue());
+                        .scaleChange(
+                            this.getEasyNPCUUID(), ModelScaleAxis.X, button.getTargetValue());
                   }
                   this.defaultScaleXButton.active = scale != scaleData.getDefaultScaleX();
                 }));
@@ -114,7 +112,8 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
                   float scale = button.getTargetValue();
                   if (scaleData.getScaleY() != scale) {
                     NetworkMessageHandlerManager.getServerHandler()
-                        .scaleChange(this.getNpcUUID(), ModelScaleAxis.Y, button.getTargetValue());
+                        .scaleChange(
+                            this.getEasyNPCUUID(), ModelScaleAxis.Y, button.getTargetValue());
                   }
                   this.defaultScaleYButton.active = scale != scaleData.getDefaultScaleY();
                 }));
@@ -142,7 +141,8 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
                   float scale = button.getTargetValue();
                   if (scaleData.getScaleZ() != scale) {
                     NetworkMessageHandlerManager.getServerHandler()
-                        .scaleChange(this.getNpcUUID(), ModelScaleAxis.Z, button.getTargetValue());
+                        .scaleChange(
+                            this.getEasyNPCUUID(), ModelScaleAxis.Z, button.getTargetValue());
                   }
                   this.defaultScaleZButton.active = scale != scaleData.getDefaultScaleZ();
                 }));
@@ -158,8 +158,8 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  public void containerTick() {
-    super.containerTick();
+  public void updateTick() {
+    super.updateTick();
 
     // Force refresh of entity dimensions on the client side.
     if (this.getEasyNPCEntity() != null && this.dimensionUpdateTicker++ > DIMENSION_UPDATE_TICK) {

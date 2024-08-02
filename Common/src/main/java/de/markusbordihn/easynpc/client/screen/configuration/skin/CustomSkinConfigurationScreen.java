@@ -117,7 +117,7 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
             y - 81,
             button ->
                 NetworkMessageHandlerManager.getServerHandler()
-                    .setCustomSkin(this.getNpcUUID(), textureUUID));
+                    .setCustomSkin(this.getEasyNPCUUID(), textureUUID));
 
     // Disable button for active skin.
     SkinData<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
@@ -220,6 +220,12 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
   }
 
   private void onSearchFieldChanged(String searchText) {
-    this.searchFilter = searchText != null && !searchText.isEmpty() ? searchText : "";
+    if (searchText != null && !searchText.isEmpty()) {
+      this.searchFilter = searchText;
+      this.skinStartIndex = 0;
+      this.checkSkinNavigationButtonState();
+    } else {
+      this.searchFilter = "";
+    }
   }
 }
