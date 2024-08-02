@@ -45,8 +45,6 @@ public class Screen<T extends EasyNPCMenu> extends net.minecraft.client.gui.scre
   protected static double formerMouseX = -1;
   protected static double formerMouseY = -1;
   protected final Minecraft minecraftInstance;
-  protected final ScreenData screenData;
-  protected final AdditionalScreenData additionalScreenData;
   protected final T menu;
   protected float xMouse;
   protected float yMouse;
@@ -66,12 +64,8 @@ public class Screen<T extends EasyNPCMenu> extends net.minecraft.client.gui.scre
   protected Screen(T menu, Inventory inventory, Component component) {
     super(component);
 
-    // Set menu
+    // Get menu and screen data
     this.menu = menu;
-
-    // Get basic screen data
-    this.screenData = menu.getScreenData();
-    this.additionalScreenData = new AdditionalScreenData(this.screenData.additionalData());
 
     // Get Minecraft instance
     this.minecraftInstance = Minecraft.getInstance();
@@ -98,12 +92,12 @@ public class Screen<T extends EasyNPCMenu> extends net.minecraft.client.gui.scre
 
   @Override
   public ScreenData getScreenData() {
-    return this.screenData;
+    return menu.getScreenData();
   }
 
   @Override
   public AdditionalScreenData getAdditionalScreenData() {
-    return this.additionalScreenData;
+    return menu.getAdditionalScreenData();
   }
 
   @Override

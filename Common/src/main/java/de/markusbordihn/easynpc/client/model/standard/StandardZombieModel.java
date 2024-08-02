@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import net.minecraft.client.model.AnimationUtils;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 
 public class StandardZombieModel<T extends LivingEntity> extends BaseHumanoidModel<T> {
 
@@ -57,7 +58,11 @@ public class StandardZombieModel<T extends LivingEntity> extends BaseHumanoidMod
       return false;
     }
     AnimationUtils.animateZombieArms(
-        this.leftArm, this.rightArm, attackData.isAggressive(), this.attackTime, ageInTicks);
+        this.leftArm,
+        this.rightArm,
+        entity instanceof Mob mob && mob.isAggressive(),
+        this.attackTime,
+        ageInTicks);
     return true;
   }
 }

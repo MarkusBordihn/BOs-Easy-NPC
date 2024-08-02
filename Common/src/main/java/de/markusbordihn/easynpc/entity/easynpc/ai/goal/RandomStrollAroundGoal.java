@@ -45,7 +45,7 @@ public class RandomStrollAroundGoal<T extends EasyNPC<?>> extends RandomStrollGo
   public boolean canContinueToUse() {
     return !this.mob.getNavigation().isDone()
         && !this.mob.isVehicle()
-        && this.mob.getTarget() == null;
+        && (!this.mob.isAggressive() || this.mob.getTarget() == null);
   }
 
   @Override

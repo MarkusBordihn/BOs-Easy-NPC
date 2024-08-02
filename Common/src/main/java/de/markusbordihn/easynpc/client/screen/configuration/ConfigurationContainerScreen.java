@@ -20,18 +20,14 @@
 package de.markusbordihn.easynpc.client.screen.configuration;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.ContainerScreen;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.EasyNPCMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
-import java.util.Collections;
-import java.util.List;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ConfigurationContainerScreen<T extends EasyNPCMenu> extends ContainerScreen<T> {
@@ -41,36 +37,10 @@ public class ConfigurationContainerScreen<T extends EasyNPCMenu> extends Contain
   protected int buttonTopPos;
   protected int contentLeftPos;
   protected int contentTopPos;
-  protected int numberOfDescriptionTextLines = 1;
-  protected List<FormattedCharSequence> descriptionTextComponents = Collections.emptyList();
 
   public ConfigurationContainerScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
     this.showCloseButton = false;
-  }
-
-  protected void renderDescriptionText(
-      PoseStack poseStack, int descriptionLeft, int descriptionTop) {
-    if (!this.descriptionTextComponents.isEmpty() && this.numberOfDescriptionTextLines > 0) {
-      for (int line = 0; line < this.numberOfDescriptionTextLines; ++line) {
-        FormattedCharSequence formattedCharSequence = this.descriptionTextComponents.get(line);
-        Text.drawString(
-            poseStack,
-            this.font,
-            formattedCharSequence,
-            descriptionLeft,
-            descriptionTop + (line * (font.lineHeight + 2)));
-      }
-    }
-  }
-
-  protected void setDescriptionText(String textId) {
-    setDescriptionText(Component.translatable(Constants.TEXT_CONFIG_PREFIX + textId));
-  }
-
-  protected void setDescriptionText(Component component) {
-    this.descriptionTextComponents = this.font.split(component, this.imageWidth - 20);
-    this.numberOfDescriptionTextLines = this.descriptionTextComponents.size();
   }
 
   @Override
