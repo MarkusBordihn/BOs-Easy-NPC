@@ -8,6 +8,13 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.4.1 (beta only for testing)
+
+- Fixed #209 by adding additional checks and error messages for the screen data.
+- Fixed #270 by removing duplicated entity data.
+- Added basic pose support for custom models. Works best if source model is close to target model.
+- Improved strolling and home back navigation for NPCs.
+
 ### 5.4.0 (beta only for testing)
 
 - Fixed #214 by using `Screen` instead of `AbstractContainerScreen` for immersion of the dialog.

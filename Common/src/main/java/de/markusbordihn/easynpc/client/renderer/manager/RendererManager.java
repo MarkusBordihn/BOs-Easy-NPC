@@ -179,6 +179,11 @@ public class RendererManager {
       targetEntity.setCustomName(sourceEntity.getCustomName());
       targetEntity.setCustomNameVisible(sourceEntity.isCustomNameVisible());
     }
+
+    // Sync entity pose, if available.
+    if (sourceEntity.getPose() != targetEntity.getPose()) {
+      targetEntity.setPose(sourceEntity.getPose());
+    }
   }
 
   public static void copyCustomLivingEntityData(

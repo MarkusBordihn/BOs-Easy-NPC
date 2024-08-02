@@ -80,9 +80,9 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
 
   public ActionDataEntryEditorContainerScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
-    this.actionEventType = this.additionalScreenData.getActionEventType();
-    this.configurationType = this.additionalScreenData.getConfigurationType();
-    this.editorType = this.additionalScreenData.getEditorType();
+    this.actionEventType = this.getAdditionalScreenData().getActionEventType();
+    this.configurationType = this.getAdditionalScreenData().getConfigurationType();
+    this.editorType = this.getAdditionalScreenData().getEditorType();
     this.actionDataSet = getActionDataSet();
 
     // Action Data Entry
@@ -96,7 +96,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
 
   private ActionDataSet getActionDataSet() {
     if (this.actionEventType != null && this.actionEventType != ActionEventType.NONE) {
-      return this.additionalScreenData.getActionEventSet().getActionEvents(actionEventType);
+      return this.getAdditionalScreenData().getActionEventSet().getActionEvents(actionEventType);
     } else if (this.editorType != null && this.editorType == EditorType.DIALOG_BUTTON) {
       return this.getDialogButtonData().getActionDataSet();
     }

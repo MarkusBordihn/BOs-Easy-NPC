@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.menu;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -43,6 +44,7 @@ public class EasyNPCMenu extends AbstractContainerMenu {
   protected final Level level;
   protected final Player player;
   protected final ScreenData screenData;
+  protected final AdditionalScreenData additionalScreenData;
   protected final EasyNPC<?> easyNPC;
 
   public EasyNPCMenu(
@@ -61,19 +63,45 @@ public class EasyNPCMenu extends AbstractContainerMenu {
     this.player = playerInventory.player;
     this.level = playerInventory.player.getLevel();
 
-    // Get additional menu and screen data, if available.
-    CompoundTag menuData = this.level.isClientSide() ? ClientMenuManager.getMenuData() : data;
-    this.screenData = ScreenData.decode(menuData);
+    // Get screen data, if available.
+    this.screenData =
+        this.level.isClientSide() ? ClientMenuManager.getScreenData() : ScreenData.decode(data);
+    if (this.screenData == null) {
+      log.error("Screen data is missing for menu {} with {}", menuType, data);
+      this.additionalScreenData = null;
+      this.easyNPC = null;
+      return;
+    }
+
+    // Check if additional screen data is available.
+    this.additionalScreenData =
+        this.level.isClientSide()
+            ? ClientMenuManager.getAdditionalScreenData()
+            : new AdditionalScreenData(this.screenData.additionalData());
+    if (this.additionalScreenData == null) {
+      log.warn("Additional screen data is missing  menu {} with {}", menuType, this.screenData);
+    }
 
     // Get easy NPC entity from screen data.
     this.easyNPC =
         this.level.isClientSide
             ? LivingEntityManager.getEasyNPCEntityByUUID(getNpcUUID())
             : LivingEntityManager.getEasyNPCEntityByUUID(getNpcUUID(), (ServerPlayer) player);
+    if (this.easyNPC == null) {
+      log.error(
+          "EasyNPC entity with UUID {} is missing for menu {} with {}",
+          getNpcUUID(),
+          menuType,
+          this.screenData);
+    }
   }
 
   public ScreenData getScreenData() {
     return this.screenData;
+  }
+
+  public AdditionalScreenData getAdditionalScreenData() {
+    return this.additionalScreenData;
   }
 
   public UUID getNpcUUID() {

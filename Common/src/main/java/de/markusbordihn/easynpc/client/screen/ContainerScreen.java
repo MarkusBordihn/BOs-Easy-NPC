@@ -45,8 +45,7 @@ public class ContainerScreen<T extends EasyNPCMenu> extends AbstractContainerScr
   protected static double formerMouseY = -1;
   protected final Minecraft minecraftInstance;
   protected final ServerNetworkMessageHandlerInterface networkMessageHandler;
-  protected final ScreenData screenData;
-  protected final AdditionalScreenData additionalScreenData;
+  protected final T menu;
   protected float xMouse;
   protected float yMouse;
   protected int rightPos;
@@ -59,9 +58,8 @@ public class ContainerScreen<T extends EasyNPCMenu> extends AbstractContainerScr
   protected ContainerScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
 
-    // Get basic screen data
-    this.screenData = menu.getScreenData();
-    this.additionalScreenData = new AdditionalScreenData(this.screenData.additionalData());
+    // Get menu and screen data
+    this.menu = menu;
 
     // Get Minecraft instance and network message handler
     this.minecraftInstance = Minecraft.getInstance();
@@ -84,12 +82,12 @@ public class ContainerScreen<T extends EasyNPCMenu> extends AbstractContainerScr
 
   @Override
   public ScreenData getScreenData() {
-    return this.screenData;
+    return menu.getScreenData();
   }
 
   @Override
   public AdditionalScreenData getAdditionalScreenData() {
-    return this.additionalScreenData;
+    return menu.getAdditionalScreenData();
   }
 
   public void closeScreen() {

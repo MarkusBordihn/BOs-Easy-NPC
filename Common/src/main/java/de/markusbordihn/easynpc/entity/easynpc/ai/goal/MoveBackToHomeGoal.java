@@ -58,7 +58,7 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
     if (this.pathfinderMob.isVehicle()
         || reachedHome()
         || this.pathfinderMob.getRandom().nextInt(reducedTickDelay(this.interval)) != 0
-        || this.pathfinderMob.getTarget() != null) {
+        || (this.pathfinderMob.isAggressive() && this.pathfinderMob.getTarget() != null)) {
       return false;
     }
 
