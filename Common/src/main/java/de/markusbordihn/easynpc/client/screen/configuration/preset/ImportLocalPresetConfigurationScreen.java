@@ -21,7 +21,11 @@ package de.markusbordihn.easynpc.client.screen.configuration.preset;
 
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import java.nio.file.Path;
 import java.util.List;
+import net.minecraft.nbt.NbtAccounter;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -37,6 +41,20 @@ public class ImportLocalPresetConfigurationScreen<T extends ConfigurationMenu>
     importPresetHeaderLabel = "preset_local_for";
     this.localPresets =
         CustomPresetDataFiles.getPresetResourceLocations(this.getSkinModel()).toList();
+  }
+
+  @Override
+  public void loadPreset(ResourceLocation resourceLocation) {
+    try {
+      Path presetFilePath = CustomPresetDataFiles.getPresetsResourceLocationPath(resourceLocation);
+      NetworkMessageHandlerManager.getServerHandler()
+          .importLocalPreset(
+              getEasyNPCUUID(),
+              NbtIo.readCompressed(presetFilePath.toFile().toPath(), NbtAccounter.unlimitedHeap()),
+              resourceLocation);
+    } catch (Exception e) {
+      log.error("Failed to import local preset file {}: {}", resourceLocation, e);
+    }
   }
 
   @Override

@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.client.renderer;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.ModModelLayers;
-import de.markusbordihn.easynpc.client.renderer.entity.custom.CrashTestDummyRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.custom.FairyModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.custom.OrcModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.CustomHumanoidArmorLayer;
@@ -55,8 +54,6 @@ public class ClientRenderer {
 
   public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
     log.info("{} Entity Renders ...", Constants.LOG_REGISTER_PREFIX);
-
-    event.registerEntityRenderer(ModEntityType.CRASH_TEST_DUMMY.get(), CrashTestDummyRenderer::new);
 
     event.registerEntityRenderer(
         ModEntityType.ALLAY.get(),

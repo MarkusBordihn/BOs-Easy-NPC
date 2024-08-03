@@ -19,46 +19,33 @@
 
 package de.markusbordihn.easynpc.client.screen;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.CloseButton;
-import de.markusbordihn.easynpc.client.screen.components.Graphics;
-import de.markusbordihn.easynpc.data.action.ActionEventSet;
-import de.markusbordihn.easynpc.data.attribute.BaseAttributes;
-import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
-import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
-import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
-import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
+import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
-import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
-import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.menu.EasyNPCMenu;
-import de.markusbordihn.easynpc.network.message.NetworkMessageHandlerManager;
-import de.markusbordihn.easynpc.network.message.ServerNetworkMessageHandlerInterface;
 import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
-public class Screen<T extends EasyNPCMenu> extends AbstractContainerScreen<T> {
+public class Screen<T extends EasyNPCMenu> extends net.minecraft.client.gui.screens.Screen
+    implements MenuAccess<T>, ScreenInterface {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static double formerMouseX = -1;
   protected static double formerMouseY = -1;
   protected final Minecraft minecraftInstance;
-  protected final ServerNetworkMessageHandlerInterface networkMessageHandler;
-  protected final ScreenData screenData;
-  protected final AdditionalScreenData additionalScreenData;
+  protected final T menu;
   protected float xMouse;
   protected float yMouse;
   protected int rightPos;
@@ -67,17 +54,21 @@ public class Screen<T extends EasyNPCMenu> extends AbstractContainerScreen<T> {
   protected boolean showCloseButton = true;
   protected Button closeButton = null;
   protected boolean compactMode = false;
+  protected int imageWidth = 318;
+  protected int imageHeight = 243;
+  protected int titleLabelX;
+  protected int titleLabelY;
+  protected int leftPos;
+  protected int topPos;
 
   protected Screen(T menu, Inventory inventory, Component component) {
-    super(menu, inventory, component);
+    super(component);
 
-    // Get basic screen data
-    this.screenData = menu.getScreenData();
-    this.additionalScreenData = new AdditionalScreenData(this.screenData.additionalData());
+    // Get menu and screen data
+    this.menu = menu;
 
-    // Get Minecraft instance and network message handler
+    // Get Minecraft instance
     this.minecraftInstance = Minecraft.getInstance();
-    this.networkMessageHandler = NetworkMessageHandlerManager.getServerHandler();
   }
 
   protected static void resetFormerMousePosition() {
@@ -89,39 +80,29 @@ public class Screen<T extends EasyNPCMenu> extends AbstractContainerScreen<T> {
     formerMouseY = y;
   }
 
-  protected static Double getDoubleValue(String value) {
-    if (value != null && !value.isEmpty()) {
-      try {
-        return Double.parseDouble(value);
-      } catch (NumberFormatException e) {
-        log.error("Failed to parse double value: {}", value);
-      }
-    }
-    return null;
+  @Override
+  public UUID getEasyNPCUUID() {
+    return menu.getNpcUUID();
   }
 
-  protected static boolean isFloatValue(String text) {
-    return text != null
-        && (text.isEmpty()
-            || (text.matches("^\\d+(\\.?\\d*)?$") && Float.parseFloat(text) >= 0.0F));
+  @Override
+  public EasyNPC<?> getEasyNPC() {
+    return menu.getEasyNPC();
   }
 
-  protected static boolean isPositiveNumericValue(String text) {
-    return text != null
-        && (text.isEmpty() || (text.matches("^\\d+$") && Integer.parseInt(text) > 0));
+  @Override
+  public ScreenData getScreenData() {
+    return menu.getScreenData();
   }
 
-  protected static boolean isPositiveNumericValueOrZero(String text) {
-    return text != null
-        && (text.isEmpty() || (text.matches("^\\d+$") && Integer.parseInt(text) >= 0));
+  @Override
+  public AdditionalScreenData getAdditionalScreenData() {
+    return menu.getAdditionalScreenData();
   }
 
-  public static boolean isNumericValue(String text) {
-    return text != null && (text.isEmpty() || (text.matches("^-?\\d+$")));
-  }
-
-  public static boolean isBlockPosValue(String text) {
-    return text != null && (text.isEmpty() || (text.matches("^~?-?\\d+$")));
+  @Override
+  public boolean isPauseScreen() {
+    return false;
   }
 
   public void closeScreen() {
@@ -131,103 +112,11 @@ public class Screen<T extends EasyNPCMenu> extends AbstractContainerScreen<T> {
     this.onClose();
   }
 
-  public UUID getNpcUUID() {
-    return menu.getNpcUUID();
-  }
-
-  public UUID getDialogUUID() {
-    return this.screenData.dialogId();
-  }
-
-  public UUID getDialogButtonUUID() {
-    return this.screenData.dialogButtonId();
-  }
-
-  public UUID getActionDataEntryUUID() {
-    return this.screenData.actionDataEntryId();
-  }
-
-  public int getPageIndex() {
-    return this.screenData.pageIndex();
-  }
-
-  public EasyNPC<?> getEasyNPC() {
-    return menu.getEasyNPC();
-  }
-
-  public Entity getEasyNPCEntity() {
-    return getEasyNPC() != null ? getEasyNPC().getEntity() : null;
-  }
-
-  public LivingEntity getEasyNPCLivingEntity() {
-    return getEasyNPC() != null ? getEasyNPC().getLivingEntity() : null;
-  }
-
-  public ActionEventSet getActionEventSet() {
-    return this.additionalScreenData.getActionEventSet();
-  }
-
-  public BaseAttributes getBaseAttributes() {
-    return this.additionalScreenData.getBaseAttributes();
-  }
-
-  public DialogDataSet getDialogDataSet() {
-    return this.additionalScreenData.getDialogDataSet();
-  }
-
-  public OwnerData<?> getOwnerData() {
-    return this.getEasyNPC().getEasyNPCOwnerData();
-  }
-
-  public boolean hasDialogData() {
-    return this.getDialogData() != null;
-  }
-
-  public DialogDataEntry getDialogData() {
-    return this.screenData.dialogId() != null
-        ? this.getDialogData(this.screenData.dialogId())
-        : this.getDialogDataSet().getDefaultDialog();
-  }
-
-  public DialogDataEntry getDialogData(UUID dialogUUID) {
-    return this.getDialogDataSet().getDialog(dialogUUID);
-  }
-
-  public DialogButtonEntry getDialogButtonData() {
-    if (!this.hasDialog() || this.screenData.dialogButtonId() == null) {
-      return null;
-    }
-    DialogDataEntry dialogData = this.getDialogData();
-    if (dialogData == null) {
-      return null;
-    }
-    return dialogData.getDialogButton(this.screenData.dialogButtonId());
-  }
-
-  public boolean hasDialog() {
-    return this.getDialogDataSet().hasDialog();
-  }
-
-  public ObjectiveDataSet getObjectiveDataSet() {
-    return this.additionalScreenData.getObjectiveDataSet();
-  }
-
-  public SkinModel getSkinModel() {
-    if (getEasyNPCEntity() == null) {
-      return null;
-    }
-    EasyNPC<?> easyNPC = getEasyNPC();
-    SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
-    return skinData != null ? skinData.getSkinModel() : null;
-  }
-
   @Override
   protected void init() {
     super.init();
 
     // Default stats
-    this.imageHeight = 243;
-    this.imageWidth = 318;
     this.compactMode = this.height < 260;
 
     // Basic position
@@ -261,9 +150,13 @@ public class Screen<T extends EasyNPCMenu> extends AbstractContainerScreen<T> {
 
   @Override
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
-    super.render(guiGraphics, x, y, partialTicks);
     this.xMouse = x;
     this.yMouse = y;
+    RenderSystem.disableDepthTest();
+    this.renderBg(guiGraphics, partialTicks, x, y);
+    this.renderLabels(guiGraphics, x, y);
+    super.render(guiGraphics, x, y, partialTicks);
+    RenderSystem.enableDepthTest();
   }
 
   @Override
@@ -274,37 +167,34 @@ public class Screen<T extends EasyNPCMenu> extends AbstractContainerScreen<T> {
     this.renderBg(guiGraphics, partialTicks, x, y);
   }
 
-  @Override
   protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
     // Render screen background
-    this.renderScreenBg(guiGraphics);
+    this.renderDefaultScreenBg(guiGraphics, this.leftPos, this.topPos);
 
     // Render title background for none compact mode
     if (!this.compactMode) {
-      this.renderTitleBg(guiGraphics);
+      this.renderDefaultTitleBg(guiGraphics, this.leftPos, this.topPos);
     }
   }
 
-  protected void renderScreenBg(GuiGraphics guiGraphics) {
-    Graphics.blit(guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos, 0, 0, 210, 160);
-    Graphics.blit(
-        guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos + 203, topPos, 132, 0, 120, 160);
-    Graphics.blit(
-        guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos + 77, 0, 5, 210, 170);
-    Graphics.blit(
+  protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
+    Text.drawString(
         guiGraphics,
-        Constants.TEXTURE_DEMO_BACKGROUND,
-        leftPos + 203,
-        topPos + 77,
-        132,
-        5,
-        120,
-        170);
+        this.font,
+        this.title,
+        this.leftPos + this.titleLabelX,
+        this.topPos + this.titleLabelY,
+        4210752);
   }
 
-  protected void renderTitleBg(GuiGraphics guiGraphics) {
-    Graphics.blit(
-        guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos - 16, 0, 0, 248, 19);
+  protected void updateTick() {}
+
+  @Override
+  public final void tick() {
+    super.tick();
+    if (this.minecraft.player.isAlive() && !this.minecraft.player.isRemoved()) {
+      this.updateTick();
+    }
   }
 
   @Override
@@ -319,5 +209,10 @@ public class Screen<T extends EasyNPCMenu> extends AbstractContainerScreen<T> {
       return super.keyPressed(keyCode, unused1, unused2);
     }
     return keyCode == 257 || keyCode == 335 || keyCode == 73;
+  }
+
+  @Override
+  public T getMenu() {
+    return this.menu;
   }
 }

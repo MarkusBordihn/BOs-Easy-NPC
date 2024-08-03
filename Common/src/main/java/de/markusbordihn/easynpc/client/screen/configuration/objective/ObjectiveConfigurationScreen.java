@@ -27,7 +27,7 @@ import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.network.message.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -64,10 +64,10 @@ public class ObjectiveConfigurationScreen<T extends ConfigurationMenu>
           objectiveDataEntry.setSpeedModifier(speedModifier);
           if (checkbox.selected()) {
             NetworkMessageHandlerManager.getServerHandler()
-                .addObjective(this.getNpcUUID(), objectiveDataEntry);
+                .addObjective(this.getEasyNPCUUID(), objectiveDataEntry);
           } else {
             NetworkMessageHandlerManager.getServerHandler()
-                .removeObjective(this.getNpcUUID(), objectiveDataEntry);
+                .removeObjective(this.getEasyNPCUUID(), objectiveDataEntry);
           }
         });
   }
@@ -86,7 +86,8 @@ public class ObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 "basic",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getNpcUUID(), ConfigurationType.BASIC_OBJECTIVE)));
+                        .openConfiguration(
+                            this.getEasyNPCUUID(), ConfigurationType.BASIC_OBJECTIVE)));
 
     this.followObjectiveButton =
         this.addRenderableWidget(
@@ -97,7 +98,8 @@ public class ObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 "follow",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getNpcUUID(), ConfigurationType.FOLLOW_OBJECTIVE)));
+                        .openConfiguration(
+                            this.getEasyNPCUUID(), ConfigurationType.FOLLOW_OBJECTIVE)));
 
     this.attackObjectiveButton =
         this.addRenderableWidget(
@@ -108,7 +110,8 @@ public class ObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 "attack",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getNpcUUID(), ConfigurationType.ATTACK_OBJECTIVE)));
+                        .openConfiguration(
+                            this.getEasyNPCUUID(), ConfigurationType.ATTACK_OBJECTIVE)));
 
     this.lookObjectiveButton =
         this.addRenderableWidget(
@@ -119,6 +122,7 @@ public class ObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 "look",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getNpcUUID(), ConfigurationType.LOOK_OBJECTIVE)));
+                        .openConfiguration(
+                            this.getEasyNPCUUID(), ConfigurationType.LOOK_OBJECTIVE)));
   }
 }

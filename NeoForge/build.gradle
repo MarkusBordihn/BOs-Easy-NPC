@@ -24,6 +24,12 @@ runs {
     systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
   }
 
+  client2 {
+    configure('client')
+    workingDirectory project.file('run/client2')
+    programArguments.addAll '--username', 'guest_player'
+  }
+
   server {
     systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
     programArgument '--nogui'

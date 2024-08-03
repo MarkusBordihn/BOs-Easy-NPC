@@ -26,7 +26,7 @@ import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.network.message.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import java.util.UUID;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -75,10 +75,10 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                   objectiveDataEntry.setTargetOwnerUUID(ownerData.getOwnerUUID());
                   if (checkbox.selected()) {
                     NetworkMessageHandlerManager.getServerHandler()
-                        .addObjective(this.getNpcUUID(), objectiveDataEntry);
+                        .addObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                   } else {
                     NetworkMessageHandlerManager.getServerHandler()
-                        .removeObjective(this.getNpcUUID(), objectiveDataEntry);
+                        .removeObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                   }
                 }));
 
@@ -103,10 +103,10 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                   }
                   if (!checkbox.selected()) {
                     NetworkMessageHandlerManager.getServerHandler()
-                        .removeObjective(this.getNpcUUID(), objectiveDataEntry);
+                        .removeObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                   } else if (!followPlayerName.getValue().isEmpty()) {
                     NetworkMessageHandlerManager.getServerHandler()
-                        .addObjective(this.getNpcUUID(), objectiveDataEntry);
+                        .addObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                   }
                 }));
     this.followOwnerCheckbox.active = ownerData.hasOwner();
@@ -134,7 +134,7 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                       new ObjectiveDataEntry(ObjectiveType.FOLLOW_PLAYER);
                   objectiveDataEntry.setTargetPlayerName(this.followPlayerName.getValue());
                   NetworkMessageHandlerManager.getServerHandler()
-                      .addObjective(this.getNpcUUID(), objectiveDataEntry);
+                      .addObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                 }));
 
     // Follow Entity with UUID input field
@@ -158,7 +158,7 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                         log.error(
                             "Unable to parse UUID {} for {}",
                             followEntityUUID.getValue(),
-                            this.getNpcUUID());
+                            this.getEasyNPCUUID());
                       }
                       if (entityUUID != null) {
                         objectiveDataEntry.setTargetEntityUUID(entityUUID);
@@ -171,10 +171,10 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                   }
                   if (!checkbox.selected()) {
                     NetworkMessageHandlerManager.getServerHandler()
-                        .removeObjective(this.getNpcUUID(), objectiveDataEntry);
+                        .removeObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                   } else if (!followEntityUUID.getValue().isEmpty()) {
                     NetworkMessageHandlerManager.getServerHandler()
-                        .addObjective(this.getNpcUUID(), objectiveDataEntry);
+                        .addObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                   }
                 }));
     this.followEntityUUID =
@@ -213,7 +213,7 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
                           ? UUID.fromString(followEntityUUID.getValue())
                           : null);
                   NetworkMessageHandlerManager.getServerHandler()
-                      .addObjective(this.getNpcUUID(), objectiveDataEntry);
+                      .addObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                 }));
   }
 }

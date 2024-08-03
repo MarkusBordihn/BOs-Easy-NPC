@@ -38,7 +38,7 @@ public class InteractCommand extends Command {
                 .requires(
                     commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                 .then(
-                    Commands.argument("target", new EasyNPCArgument())
+                    Commands.argument("target", EasyNPCArgument.npc())
                         .then(
                             Commands.argument("position", BlockPosArgument.blockPos())
                                 .executes(

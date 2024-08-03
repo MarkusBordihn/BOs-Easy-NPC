@@ -21,10 +21,12 @@ package de.markusbordihn.easynpc;
 
 import de.markusbordihn.easynpc.client.model.ModModelLayer;
 import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
+import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.client.screen.ClientScreens;
 import de.markusbordihn.easynpc.io.DataFileHandler;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
-import de.markusbordihn.easynpc.network.message.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.screen.ScreenManager;
 import de.markusbordihn.easynpc.tabs.ModTabs;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -45,7 +47,16 @@ public class EasyNPCClient {
     modEventBus.addListener(ClientRenderer::registerEntityRenderers);
     modEventBus.addListener(ClientScreens::registerScreens);
     modEventBus.addListener(
-        (final FMLClientSetupEvent event) -> event.enqueueWork(DataFileHandler::registerDataFiles));
+        (final FMLClientSetupEvent event) -> {
+          log.info("{} Register Data Files ...", Constants.LOG_REGISTER_PREFIX);
+          event.enqueueWork(DataFileHandler::registerDataFiles);
+
+          log.info("{} Register Entity Type Manager ...", Constants.LOG_REGISTER_PREFIX);
+          event.enqueueWork(EntityTypeManager::register);
+
+          log.info("{} Screen Manager ...", Constants.LOG_REGISTER_PREFIX);
+          ScreenManager.register();
+        });
     NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
     ModTabs.CREATIVE_TABS.register(modEventBus);
   }

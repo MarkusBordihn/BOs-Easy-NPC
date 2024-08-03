@@ -245,4 +245,8 @@ public class AdditionalScreenData {
     }
     return new ListTag();
   }
+
+  public boolean hasDialogDataSet() {
+    return this.dialogDataSet != null;
+  }
 }

@@ -23,13 +23,15 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
-import de.markusbordihn.easynpc.commands.suggestion.EntityTypeSuggestions;
+import de.markusbordihn.easynpc.commands.arguments.EntityTypeArgument;
 import de.markusbordihn.easynpc.commands.suggestion.RenderTypeSuggestions;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.RenderHandler;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 
 public class RenderCommand extends Command {
 
@@ -46,7 +48,7 @@ public class RenderCommand extends Command {
                             commandSourceStack ->
                                 commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                         .then(
-                            Commands.argument("target", new EasyNPCArgument())
+                            Commands.argument("target", EasyNPCArgument.npc())
                                 .then(
                                     Commands.argument("type", StringArgumentType.string())
                                         .suggests(RenderTypeSuggestions::suggest)
@@ -65,17 +67,16 @@ public class RenderCommand extends Command {
                             commandSourceStack ->
                                 commandSourceStack.hasPermission(Commands.LEVEL_ALL))
                         .then(
-                            Commands.argument("target", new EasyNPCArgument())
+                            Commands.argument("target", EasyNPCArgument.npc())
                                 .then(
-                                    Commands.argument("entity", StringArgumentType.string())
-                                        .suggests(EntityTypeSuggestions::suggest)
+                                    Commands.argument("entity", EntityTypeArgument.entityType())
                                         .executes(
                                             context ->
                                                 setRenderEntityType(
                                                     context.getSource(),
                                                     EasyNPCArgument.getEntityWithAccess(
                                                         context, "target"),
-                                                    StringArgumentType.getString(
+                                                    EntityTypeArgument.getEntityType(
                                                         context, "entity")))))));
   }
 
@@ -95,18 +96,18 @@ public class RenderCommand extends Command {
   }
 
   private static int setRenderEntityType(
-      CommandSourceStack context, EasyNPC<?> easyNPC, String entity) {
-    if (easyNPC == null || entity == null || entity.isEmpty()) {
+      CommandSourceStack context, EasyNPC<?> easyNPC, EntityType<? extends Entity> entityType) {
+    if (easyNPC == null || entityType == null) {
       return 0;
     }
 
     // Set render entity.
-    if (!RenderHandler.setRenderEntity(easyNPC, entity)) {
+    if (!RenderHandler.setRenderEntity(easyNPC, entityType)) {
       return sendFailureMessage(
-          context, "Failed to set render entity " + entity + " for EasyNPC " + easyNPC);
+          context, "Failed to set render entity " + entityType + " for EasyNPC " + easyNPC);
     }
 
     return sendSuccessMessage(
-        context, "Set render entity " + entity + " for EasyNPC with UUID " + easyNPC.getUUID());
+        context, "Set render entity " + entityType + " for EasyNPC with UUID " + easyNPC.getUUID());
   }
 }

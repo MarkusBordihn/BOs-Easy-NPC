@@ -26,7 +26,7 @@ import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.network.message.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import java.util.UUID;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -93,10 +93,10 @@ public class LookObjectiveConfigurationScreen<T extends ConfigurationMenu>
                   objectiveDataEntry.setTargetOwnerUUID(ownerData.getOwnerUUID());
                   if (checkbox.selected()) {
                     NetworkMessageHandlerManager.getServerHandler()
-                        .addObjective(this.getNpcUUID(), objectiveDataEntry);
+                        .addObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                   } else {
                     NetworkMessageHandlerManager.getServerHandler()
-                        .removeObjective(this.getNpcUUID(), objectiveDataEntry);
+                        .removeObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                   }
                 }));
     this.lookAtOwnerCheckbox.active = false;
@@ -143,7 +143,7 @@ public class LookObjectiveConfigurationScreen<T extends ConfigurationMenu>
                         log.error(
                             "Unable to parse UUID {} for {}",
                             lookAtEntityUUID.getValue(),
-                            this.getNpcUUID());
+                            this.getEasyNPCUUID());
                       }
                       if (entityUUID != null) {
                         objectiveDataEntry.setTargetEntityUUID(entityUUID);
@@ -156,10 +156,10 @@ public class LookObjectiveConfigurationScreen<T extends ConfigurationMenu>
                   }
                   if (!checkbox.selected()) {
                     NetworkMessageHandlerManager.getServerHandler()
-                        .removeObjective(this.getNpcUUID(), objectiveDataEntry);
+                        .removeObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                   } else if (!lookAtEntityUUID.getValue().isEmpty()) {
                     NetworkMessageHandlerManager.getServerHandler()
-                        .addObjective(this.getNpcUUID(), objectiveDataEntry);
+                        .addObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                   }
                 }));
     this.lookAtEntityCheckbox.active = false;
@@ -200,7 +200,7 @@ public class LookObjectiveConfigurationScreen<T extends ConfigurationMenu>
                           ? UUID.fromString(lookAtEntityUUID.getValue())
                           : null);
                   NetworkMessageHandlerManager.getServerHandler()
-                      .addObjective(this.getNpcUUID(), objectiveDataEntry);
+                      .addObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                 }));
     this.lookAtEntityUUIDSaveButton.active = false;
   }

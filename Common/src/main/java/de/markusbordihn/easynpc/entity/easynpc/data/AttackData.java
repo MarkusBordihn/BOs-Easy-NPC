@@ -37,32 +37,15 @@ import net.minecraft.world.entity.monster.RangedAttackMob;
 public interface AttackData<E extends PathfinderMob>
     extends EasyNPC<E>, NeutralMob, RangedAttackMob, CrossbowAttackMob {
 
-  String DATA_AGGRESSIVE_TAG = "Aggressive";
-
   static void registerSyncedAttackData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
     log.info("- Registering Synched Attack Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.ATTACK_IS_AGGRESSIVE,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
     map.put(
         SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW,
         SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
   }
 
   int getAttackAnimationTick();
-
-  default boolean getDefaultAggression() {
-    return false;
-  }
-
-  default boolean isAggressive() {
-    return getSynchedEntityData(SynchedDataIndex.ATTACK_IS_AGGRESSIVE);
-  }
-
-  default void setAggressive(Boolean aggressive) {
-    setSynchedEntityData(SynchedDataIndex.ATTACK_IS_AGGRESSIVE, aggressive);
-  }
 
   default boolean isChargingCrossbow() {
     return getSynchedEntityData(SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW);
@@ -79,17 +62,10 @@ public interface AttackData<E extends PathfinderMob>
   }
 
   default void defineSynchedAttackData(SynchedEntityData.Builder builder) {
-    defineSynchedEntityData(builder, SynchedDataIndex.ATTACK_IS_AGGRESSIVE, getDefaultAggression());
     defineSynchedEntityData(builder, SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW, false);
   }
 
-  default void addAdditionalAttackData(CompoundTag compoundTag) {
-    compoundTag.putBoolean(DATA_AGGRESSIVE_TAG, this.isAggressive());
-  }
+  default void addAdditionalAttackData(CompoundTag compoundTag) {}
 
-  default void readAdditionalAttackData(CompoundTag compoundTag) {
-    if (compoundTag.contains(DATA_AGGRESSIVE_TAG)) {
-      this.setAggressive(compoundTag.getBoolean(DATA_AGGRESSIVE_TAG));
-    }
-  }
+  default void readAdditionalAttackData(CompoundTag compoundTag) {}
 }

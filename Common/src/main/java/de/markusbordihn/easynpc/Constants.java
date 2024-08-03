@@ -37,6 +37,8 @@ public final class Constants {
   public static final String MOD_URL = "https://www.curseforge.com/minecraft/mc-mods/easy-npc";
   // Prefixes
   public static final String MINECRAFT_PREFIX = "minecraft";
+  public static final String MINECRAFT_RESOURCE_PREFIX = MINECRAFT_PREFIX + ":";
+  public static final String ENTITY_MINECRAFT_PREFIX = "entity." + MINECRAFT_PREFIX + ".";
   // Suffices
   public static final String NPC_NBT_SUFFIX = ".npc.nbt";
   public static final float PI_180DEG = (float) Math.PI / 180F;

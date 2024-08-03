@@ -23,6 +23,7 @@ import cpw.mods.modlauncher.Launcher;
 import cpw.mods.modlauncher.api.IEnvironment;
 import de.markusbordihn.easynpc.block.ModBlocks;
 import de.markusbordihn.easynpc.commands.ModArgumentTypes;
+import de.markusbordihn.easynpc.config.Config;
 import de.markusbordihn.easynpc.debug.DebugManager;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.item.ModItems;
@@ -31,8 +32,8 @@ import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.network.ClientNetworkMessageHandler;
 import de.markusbordihn.easynpc.network.NetworkHandler;
-import de.markusbordihn.easynpc.network.message.NetworkHandlerManager;
-import de.markusbordihn.easynpc.network.message.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.syncher.ModEntityDataSerializers;
 import java.util.Optional;
 import net.neoforged.bus.api.IEventBus;
@@ -48,7 +49,7 @@ public class EasyNPC {
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public EasyNPC(IEventBus modEventBus, ModContainer modContainer) {
-    log.info("Initializing {} (Forge) ...", Constants.MOD_NAME);
+    log.info("Initializing {} (NeoForge) ...", Constants.MOD_NAME);
 
     log.info("{} Debug Manager ...", Constants.LOG_REGISTER_PREFIX);
     Optional<String> version =
@@ -61,6 +62,9 @@ public class EasyNPC {
     log.info("{} Constants ...", Constants.LOG_REGISTER_PREFIX);
     Constants.GAME_DIR = FMLPaths.GAMEDIR.get();
     Constants.CONFIG_DIR = FMLPaths.CONFIGDIR.get();
+
+    log.info("{} Configuration ...", Constants.LOG_REGISTER_PREFIX);
+    Config.register();
 
     log.info("{} Command Argument Types ...", Constants.LOG_REGISTER_PREFIX);
     ModArgumentTypes.COMMAND_ARGUMENT_TYPES.register(modEventBus);

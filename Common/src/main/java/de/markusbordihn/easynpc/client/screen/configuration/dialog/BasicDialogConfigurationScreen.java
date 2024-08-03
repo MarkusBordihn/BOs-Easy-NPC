@@ -28,7 +28,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.network.message.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
@@ -91,7 +91,7 @@ public class BasicDialogConfigurationScreen<T extends ConfigurationMenu>
                   DialogDataSet dialogDataSet =
                       DialogUtils.getBasicDialog(this.dialogBox.getValue());
                   NetworkMessageHandlerManager.getServerHandler()
-                      .saveDialogSet(this.getNpcUUID(), dialogDataSet);
+                      .saveDialogSet(this.getEasyNPCUUID(), dialogDataSet);
                   this.dialogValue = this.dialogBox.getValue();
                 }));
   }
@@ -117,8 +117,8 @@ public class BasicDialogConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  public void containerTick() {
-    super.containerTick();
+  public void updateTick() {
+    super.updateTick();
 
     if (saveButton != null) {
       saveButton.active = !dialogBox.getValue().equals(dialogValue);

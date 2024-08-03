@@ -23,7 +23,6 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Allay;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken;
-import de.markusbordihn.easynpc.entity.easynpc.npc.CrashTestDummy;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Horse;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
@@ -59,8 +58,6 @@ public class ModEntityType {
       ENTITY_TYPES.register(Cat.ID, () -> ModEntityTypes.CAT);
   public static final DeferredHolder<EntityType<?>, EntityType<Chicken>> CHICKEN =
       ENTITY_TYPES.register(Chicken.ID, () -> ModEntityTypes.CHICKEN);
-  public static final DeferredHolder<EntityType<?>, EntityType<CrashTestDummy>> CRASH_TEST_DUMMY =
-      ENTITY_TYPES.register(CrashTestDummy.ID, () -> ModEntityTypes.CRASH_TEST_DUMMY);
   public static final DeferredHolder<EntityType<?>, EntityType<Zombie>> DROWNED =
       ENTITY_TYPES.register(Zombie.ID_DROWNED, () -> ModEntityTypes.DROWNED);
   public static final DeferredHolder<EntityType<?>, EntityType<Illager>> EVOKER =
@@ -112,7 +109,6 @@ public class ModEntityType {
 
   @SubscribeEvent
   public static void entityAttributeCreation(EntityAttributeCreationEvent event) {
-    event.put(CRASH_TEST_DUMMY.get(), CrashTestDummy.createAttributes().build());
 
     event.put(ALLAY.get(), Allay.createAttributes().build());
     event.put(BOGGED.get(), Skeleton.createAttributes().build());

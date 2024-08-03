@@ -24,7 +24,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 public class MainConfigurationScreenWrapper
-    extends MainConfigurationScreen<MainConfigurationMenuWrapper> {
+    extends MainConfigurationContainerScreen<MainConfigurationMenuWrapper> {
 
   public MainConfigurationScreenWrapper(
       MainConfigurationMenuWrapper menu, Inventory inventory, Component component) {

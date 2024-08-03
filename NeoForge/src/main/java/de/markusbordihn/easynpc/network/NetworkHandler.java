@@ -20,14 +20,13 @@
 package de.markusbordihn.easynpc.network;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.network.message.NetworkHandlerInterface;
-import de.markusbordihn.easynpc.network.message.NetworkHandlerManager;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.function.Function;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -44,7 +43,6 @@ public class NetworkHandler implements NetworkHandlerInterface {
 
   public static void registerNetworkHandler(
       final RegisterPayloadHandlersEvent payloadHandlersEvent) {
-
     INSTANCE =
         payloadHandlersEvent
             .registrar(Constants.MOD_ID)
@@ -55,9 +53,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
         Constants.LOG_REGISTER_PREFIX,
         INSTANCE,
         PROTOCOL_VERSION);
-
-    NetworkHandlerManager.registerClientNetworkHandler();
-    NetworkHandlerManager.registerServerNetworkHandler();
+    NetworkHandlerManager.registerNetworkHandler();
   }
 
   @Override
@@ -84,11 +80,33 @@ public class NetworkHandler implements NetworkHandlerInterface {
   }
 
   @Override
+  public void sendToAllPlayers(final NetworkMessageRecord networkMessageRecord) {
+    try {
+      PacketDistributor.sendToAllPlayers(networkMessageRecord);
+    } catch (Exception e) {
+      log.error("Failed to send {} to all players: {}", networkMessageRecord, e);
+    }
+  }
+
+  @Override
+  public <M extends NetworkMessageRecord> void registerClientPayloadType(
+      Type<M> type, StreamCodec<RegistryFriendlyByteBuf, M> codec) {
+    // Not needed for NeoForge.
+  }
+
+  @Override
+  public <M extends NetworkMessageRecord> void registerServerPayloadType(
+      Type<M> type, StreamCodec<RegistryFriendlyByteBuf, M> codec) {
+    // Not needed for NeoForge.
+  }
+
+  @Override
   public <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
       final CustomPacketPayload.Type<M> type,
       final StreamCodec<RegistryFriendlyByteBuf, M> codec,
       final Class<M> networkMessageRecord,
       final Function<FriendlyByteBuf, M> creator) {
+    log.debug("Registering client network message handler for {}", type);
     try {
       INSTANCE.playToClient(
           type,
@@ -105,6 +123,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
       final StreamCodec<RegistryFriendlyByteBuf, M> codec,
       Class<M> networkMessage,
       Function<FriendlyByteBuf, M> creator) {
+    log.debug("Registering server network message handler for {}", type);
     try {
       INSTANCE.playToServer(
           type,

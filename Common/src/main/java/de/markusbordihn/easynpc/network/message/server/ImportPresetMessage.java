@@ -80,7 +80,12 @@ public record ImportPresetMessage(
     // Validate preset type and data
     switch (this.presetType) {
       case LOCAL:
-        PresetHandler.importPreset(serverPlayer.serverLevel(), this.compoundTag, null, this.uuid);
+        PresetHandler.importLocalPreset(
+            serverPlayer.serverLevel(),
+            this.compoundTag,
+            this.resourceLocation,
+            easyNPC.getEntity().position(),
+            this.uuid);
         break;
       case CUSTOM:
         PresetHandler.importCustomPreset(

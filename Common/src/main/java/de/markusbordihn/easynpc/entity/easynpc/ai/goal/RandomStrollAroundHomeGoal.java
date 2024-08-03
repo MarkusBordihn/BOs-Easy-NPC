@@ -41,6 +41,13 @@ public class RandomStrollAroundHomeGoal<T extends EasyNPC<?>> extends RandomStro
   }
 
   @Override
+  public boolean canContinueToUse() {
+    return !this.mob.getNavigation().isDone()
+        && !this.mob.isVehicle()
+        && (!this.mob.isAggressive() || this.mob.getTarget() == null);
+  }
+
+  @Override
   protected Vec3 getPosition() {
     if (this.mob.level().random.nextFloat() < 0.5F) {
       return this.getPositionTowardsAnywhere();

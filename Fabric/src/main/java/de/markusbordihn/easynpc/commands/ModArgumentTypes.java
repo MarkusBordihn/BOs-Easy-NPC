@@ -20,7 +20,9 @@
 package de.markusbordihn.easynpc.commands;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.commands.arguments.DialogArgument;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
+import de.markusbordihn.easynpc.commands.arguments.EntityTypeArgument;
 import de.markusbordihn.easynpc.commands.arguments.EquipmentSlotArgument;
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
@@ -32,9 +34,17 @@ public class ModArgumentTypes {
 
   public static void register() {
     ArgumentTypeRegistry.registerArgumentType(
+        ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "dialog"),
+        DialogArgument.class,
+        SingletonArgumentInfo.contextFree(DialogArgument::new));
+    ArgumentTypeRegistry.registerArgumentType(
         ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "easy_npc"),
         EasyNPCArgument.class,
         SingletonArgumentInfo.contextFree(EasyNPCArgument::new));
+    ArgumentTypeRegistry.registerArgumentType(
+        ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "entity_type"),
+        EntityTypeArgument.class,
+        SingletonArgumentInfo.contextFree(EntityTypeArgument::new));
     ArgumentTypeRegistry.registerArgumentType(
         ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "equipment_slot"),
         EquipmentSlotArgument.class,

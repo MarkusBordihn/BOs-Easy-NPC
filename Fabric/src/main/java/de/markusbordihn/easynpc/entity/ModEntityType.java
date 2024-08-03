@@ -23,7 +23,6 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Allay;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken;
-import de.markusbordihn.easynpc.entity.easynpc.npc.CrashTestDummy;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Horse;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
@@ -62,11 +61,6 @@ public class ModEntityType {
           BuiltInRegistries.ENTITY_TYPE,
           Constants.MOD_ID + ":" + Chicken.ID,
           ModEntityTypes.CHICKEN);
-  public static final EntityType<CrashTestDummy> CRASH_TEST_DUMMY =
-      Registry.register(
-          BuiltInRegistries.ENTITY_TYPE,
-          Constants.MOD_ID + ":" + CrashTestDummy.ID,
-          ModEntityTypes.CRASH_TEST_DUMMY);
   public static final EntityType<Zombie> DROWNED =
       Registry.register(
           BuiltInRegistries.ENTITY_TYPE,
@@ -176,8 +170,6 @@ public class ModEntityType {
 
   public static void registerEntitiesAttributes() {
     log.info("{} Registering Entities Attributes ...", Constants.LOG_REGISTER_PREFIX);
-
-    FabricDefaultAttributeRegistry.register(CRASH_TEST_DUMMY, CrashTestDummy.createAttributes());
 
     FabricDefaultAttributeRegistry.register(ALLAY, Allay.createAttributes());
     FabricDefaultAttributeRegistry.register(BOGGED, Skeleton.createAttributes());
