@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.network.message.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -53,7 +53,8 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
                 "custom",
                 button ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(getNpcUUID(), ConfigurationType.CUSTOM_PRESET_EXPORT)));
+                        .openConfiguration(
+                            getEasyNPCUUID(), ConfigurationType.CUSTOM_PRESET_EXPORT)));
 
     this.worldExportPresetButton =
         this.addRenderableWidget(
@@ -64,6 +65,7 @@ public class ExportPresetConfigurationScreen<T extends ConfigurationMenu>
                 "world_preset",
                 button ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(getNpcUUID(), ConfigurationType.WORLD_PRESET_EXPORT)));
+                        .openConfiguration(
+                            getEasyNPCUUID(), ConfigurationType.WORLD_PRESET_EXPORT)));
   }
 }

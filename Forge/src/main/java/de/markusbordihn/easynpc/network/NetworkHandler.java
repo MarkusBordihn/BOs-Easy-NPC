@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.network;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.message.NetworkHandlerInterface;
-import de.markusbordihn.easynpc.network.message.NetworkHandlerManager;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.function.Function;
 import net.minecraft.network.FriendlyByteBuf;
@@ -30,6 +29,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.ChannelBuilder;
 import net.minecraftforge.network.NetworkDirection;
@@ -88,23 +89,32 @@ public class NetworkHandler implements NetworkHandlerInterface {
   }
 
   @Override
+  public void sendToAllPlayers(final NetworkMessageRecord networkMessageRecord) {
+    try {
+      INSTANCE.send(networkMessageRecord, PacketDistributor.ALL.noArg());
+    } catch (Exception e) {
+      log.error("Failed to send {} to all players: {}", networkMessageRecord, e);
+    }
+  }
+
+  @Override
   public <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
       final CustomPacketPayload.Type<M> type,
       final StreamCodec<RegistryFriendlyByteBuf, M> codec,
       final Class<M> networkMessage,
       final Function<FriendlyByteBuf, M> creator) {
+    int registrationID = id++;
+    log.debug("Registering client network message handler for {} with ID {}", type, registrationID);
     try {
       INSTANCE
-          .messageBuilder(networkMessage, id++, NetworkDirection.PLAY_TO_CLIENT)
+          .messageBuilder(networkMessage, registrationID, NetworkDirection.PLAY_TO_CLIENT)
           .encoder(M::write)
           .decoder(creator::apply)
           .consumerNetworkThread(
               (message, context) -> {
                 context.enqueueWork(
-                    () -> {
-                      message.handleClient();
-                      context.setPacketHandled(true);
-                    });
+                    () -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> message::handleClient));
+                context.setPacketHandled(true);
               })
           .add();
     } catch (Exception e) {
@@ -118,18 +128,17 @@ public class NetworkHandler implements NetworkHandlerInterface {
       final StreamCodec<RegistryFriendlyByteBuf, M> codec,
       final Class<M> networkMessage,
       final Function<FriendlyByteBuf, M> creator) {
+    int registrationID = id++;
+    log.debug("Registering server network message handler for {} with ID {}", type, registrationID);
     try {
       INSTANCE
-          .messageBuilder(networkMessage, id++, NetworkDirection.PLAY_TO_SERVER)
+          .messageBuilder(networkMessage, registrationID, NetworkDirection.PLAY_TO_SERVER)
           .encoder(M::write)
           .decoder(creator::apply)
           .consumerNetworkThread(
               (message, context) -> {
-                context.enqueueWork(
-                    () -> {
-                      message.handleServer(context.getSender());
-                      context.setPacketHandled(true);
-                    });
+                context.enqueueWork(() -> message.handleServer(context.getSender()));
+                context.setPacketHandled(true);
               })
           .add();
     } catch (Exception e) {

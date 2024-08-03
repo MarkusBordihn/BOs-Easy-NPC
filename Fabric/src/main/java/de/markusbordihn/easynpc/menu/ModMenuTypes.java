@@ -34,6 +34,8 @@ import de.markusbordihn.easynpc.menu.configuration.dialog.NoneDialogConfiguratio
 import de.markusbordihn.easynpc.menu.configuration.dialog.YesNoDialogConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.configuration.equipment.EquipmentConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.model.CustomModelConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.model.DefaultModelConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.configuration.objective.AttackObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.configuration.objective.BasicObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.configuration.objective.FollowObjectiveConfigurationMenuWrapper;
@@ -188,6 +190,18 @@ public class ModMenuTypes {
               BuiltInRegistries.MENU,
               ConfigurationType.CUSTOM_TRADING.getId(),
               new MenuType<>(CustomTradingConfigurationMenuWrapper::new, FeatureFlagSet.of()));
+  public static final MenuType<CustomModelConfigurationMenuWrapper>
+      CUSTOM_MODEL_CONFIGURATION_MENU =
+          Registry.register(
+              BuiltInRegistries.MENU,
+              ConfigurationType.CUSTOM_MODEL.getId(),
+              new MenuType<>(CustomModelConfigurationMenuWrapper::new, FeatureFlagSet.of()));
+  public static final MenuType<DefaultModelConfigurationMenuWrapper>
+      DEFAULT_MODEL_CONFIGURATION_MENU =
+          Registry.register(
+              BuiltInRegistries.MENU,
+              ConfigurationType.DEFAULT_MODEL.getId(),
+              new MenuType<>(DefaultModelConfigurationMenuWrapper::new, FeatureFlagSet.of()));
   public static final MenuType<DefaultPoseConfigurationMenuWrapper>
       DEFAULT_POSE_CONFIGURATION_MENU =
           Registry.register(

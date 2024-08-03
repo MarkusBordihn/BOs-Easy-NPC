@@ -69,7 +69,7 @@ public record ExportClientPresetMessage(
   }
 
   @Override
-  public Type<? extends CustomPacketPayload> type() {
+  public Type<ExportClientPresetMessage> type() {
     return PAYLOAD_TYPE;
   }
 

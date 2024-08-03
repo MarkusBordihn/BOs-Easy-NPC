@@ -187,20 +187,6 @@ public class BaseHumanoidModel<E extends LivingEntity> extends HumanoidModel<E>
   }
 
   @Override
-  public boolean animateModelLegs(
-      E entity,
-      AttackData<?> attackData,
-      ModelData<?> modelData,
-      ModelPart rightLegPart,
-      ModelPart leftLegPart,
-      float ageInTicks,
-      float limbSwing,
-      float limbSwingAmount) {
-    return HumanoidLegAnimation.animateHumanoidModelLegs(
-        rightLegPart, leftLegPart, limbSwing, limbSwingAmount);
-  }
-
-  @Override
   public boolean setupCrouchingModelPose(
       E entity,
       ModelData<?> modelData,

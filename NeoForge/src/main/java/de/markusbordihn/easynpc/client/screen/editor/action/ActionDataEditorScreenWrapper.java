@@ -24,7 +24,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ActionDataEditorScreenWrapper
-    extends ActionDataEditorScreen<ActionDataEditorMenuWrapper> {
+    extends ActionDataEditorContainerScreen<ActionDataEditorMenuWrapper> {
 
   public ActionDataEditorScreenWrapper(
       ActionDataEditorMenuWrapper menu, Inventory inventory, Component component) {

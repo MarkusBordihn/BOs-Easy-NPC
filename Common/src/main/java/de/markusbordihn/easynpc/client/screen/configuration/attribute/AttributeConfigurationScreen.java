@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.network.message.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -54,7 +54,7 @@ public class AttributeConfigurationScreen<T extends ConfigurationMenu>
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(
-                            this.getNpcUUID(), ConfigurationType.ABILITIES_ATTRIBUTE)));
+                            this.getEasyNPCUUID(), ConfigurationType.ABILITIES_ATTRIBUTE)));
 
     this.baseAttributeButton =
         this.addRenderableWidget(
@@ -65,7 +65,8 @@ public class AttributeConfigurationScreen<T extends ConfigurationMenu>
                 "base",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getNpcUUID(), ConfigurationType.BASE_ATTRIBUTE)));
+                        .openConfiguration(
+                            this.getEasyNPCUUID(), ConfigurationType.BASE_ATTRIBUTE)));
 
     this.displayAttributeButton =
         this.addRenderableWidget(
@@ -77,6 +78,6 @@ public class AttributeConfigurationScreen<T extends ConfigurationMenu>
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(
-                            this.getNpcUUID(), ConfigurationType.DISPLAY_ATTRIBUTE)));
+                            this.getEasyNPCUUID(), ConfigurationType.DISPLAY_ATTRIBUTE)));
   }
 }

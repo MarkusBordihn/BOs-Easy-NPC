@@ -34,6 +34,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemStack;
@@ -205,8 +206,7 @@ public interface ModelData<T extends PathfinderMob>
   }
 
   default ModelArmPose getModelArmPose(LivingEntity livingEntity) {
-    AttackData<?> attackData = this.getEasyNPCAttackData();
-    boolean isAggressive = attackData.isAggressive();
+    boolean isAggressive = livingEntity instanceof Mob mob && mob.isAggressive();
     ItemStack itemStack = livingEntity.getMainHandItem();
 
     // Bow arm pose
@@ -215,6 +215,7 @@ public interface ModelData<T extends PathfinderMob>
     }
 
     // Crossbow arm pose
+    AttackData<?> attackData = this.getEasyNPCAttackData();
     if (AttackHandler.isCrossbowWeapon(itemStack)) {
       if (attackData.isChargingCrossbow()) {
         return ModelArmPose.CROSSBOW_CHARGE;

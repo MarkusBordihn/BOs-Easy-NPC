@@ -24,14 +24,21 @@ import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.Vec3i;
-import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.phys.Vec3;
 
-public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends RandomStrollGoal {
+public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
 
   private final float stopDistance;
   private final NavigationData<?> navigationData;
+  private final PathfinderMob pathfinderMob;
+  private final double speedModifier;
+  private final int interval;
+  protected double wantedX;
+  protected double wantedY;
+  protected double wantedZ;
 
   public MoveBackToHomeGoal(T easyNPCEntity, double speedModifier, float stopDistance) {
     this(easyNPCEntity, speedModifier, stopDistance, 240);
@@ -39,26 +46,25 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends RandomStrollGoal {
 
   public MoveBackToHomeGoal(
       T easyNPCEntity, double speedModifier, float stopDistance, int interval) {
-    super(easyNPCEntity.getPathfinderMob(), speedModifier, interval);
     this.stopDistance = stopDistance;
+    this.speedModifier = speedModifier;
+    this.interval = interval;
     this.navigationData = easyNPCEntity.getEasyNPCNavigationData();
-  }
-
-  private boolean reachedHome() {
-    if (this.navigationData == null) {
-      return true;
-    } else if (!this.navigationData.hasHomePosition()) {
-      return this.navigationData.getGroundPathNavigation().isDone();
-    }
-
-    BlockPos blockPos = this.mob.blockPosition();
-    Vec3i vec3i = new Vec3i(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-    return this.navigationData.getHomePosition().closerThan(vec3i, this.stopDistance);
+    this.pathfinderMob = easyNPCEntity.getPathfinderMob();
   }
 
   @Override
   public boolean canUse() {
-    if (reachedHome()) {
+    if (this.pathfinderMob.isVehicle()
+        || reachedHome()
+        || this.pathfinderMob.getRandom().nextInt(reducedTickDelay(this.interval)) != 0
+        || (this.pathfinderMob.isAggressive() && this.pathfinderMob.getTarget() != null)) {
+      return false;
+    }
+
+    // Check if we have a valid home position.
+    Vec3 vec3 = getPosition();
+    if (vec3 == null) {
       return false;
     }
     BlockPos blockPos = this.navigationData.getHomePosition();
@@ -70,19 +76,45 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends RandomStrollGoal {
 
   @Override
   public boolean canContinueToUse() {
-    return reachedHome() && super.canContinueToUse();
+    return !reachedHome()
+        && !this.pathfinderMob.getNavigation().isDone()
+        && this.pathfinderMob.getTarget() == null;
   }
 
   @Override
-  protected Vec3 getPosition() {
+  public void start() {
+    this.pathfinderMob
+        .getNavigation()
+        .moveTo(this.wantedX, this.wantedY, this.wantedZ, this.speedModifier);
+  }
+
+  @Override
+  public void stop() {
+    this.pathfinderMob.getNavigation().stop();
+    super.stop();
+  }
+
+  private Vec3 getPosition() {
     if (reachedHome()) {
       return null;
     }
-    SectionPos currentPosition = SectionPos.of(this.mob.blockPosition());
+    SectionPos currentPosition = SectionPos.of(this.pathfinderMob.blockPosition());
     SectionPos homePosition = SectionPos.of(this.navigationData.getHomePosition());
     return currentPosition != homePosition
         ? DefaultRandomPos.getPosTowards(
-            this.mob, 10, 7, Vec3.atBottomCenterOf(homePosition), 1.5707963705062866)
+            this.pathfinderMob, 10, 7, Vec3.atBottomCenterOf(homePosition), 1.5707963705062866)
         : null;
+  }
+
+  private boolean reachedHome() {
+    if (this.navigationData == null) {
+      return true;
+    } else if (!this.navigationData.hasHomePosition()) {
+      return this.navigationData.getGroundPathNavigation().isDone();
+    }
+
+    BlockPos blockPos = this.pathfinderMob.blockPosition();
+    Vec3i vec3i = new Vec3i(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+    return this.navigationData.getHomePosition().closerThan(vec3i, this.stopDistance);
   }
 }

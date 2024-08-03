@@ -24,8 +24,10 @@ import cpw.mods.modlauncher.api.IEnvironment;
 import de.markusbordihn.easynpc.block.ModBlocks;
 import de.markusbordihn.easynpc.client.model.ModModelLayer;
 import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
+import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.client.screen.ClientScreens;
 import de.markusbordihn.easynpc.commands.ModArgumentTypes;
+import de.markusbordihn.easynpc.config.Config;
 import de.markusbordihn.easynpc.debug.DebugManager;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.io.DataFileHandler;
@@ -35,10 +37,11 @@ import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.network.ClientNetworkMessageHandler;
 import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.network.NetworkHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
-import de.markusbordihn.easynpc.network.message.NetworkHandlerManager;
-import de.markusbordihn.easynpc.network.message.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
+import de.markusbordihn.easynpc.screen.ScreenManager;
 import de.markusbordihn.easynpc.tabs.ModTabs;
 import java.util.Optional;
 import net.minecraftforge.api.distmarker.Dist;
@@ -72,6 +75,9 @@ public class EasyNPC {
     log.info("{} Constants ...", Constants.LOG_REGISTER_PREFIX);
     Constants.GAME_DIR = FMLPaths.GAMEDIR.get();
     Constants.CONFIG_DIR = FMLPaths.CONFIGDIR.get();
+
+    log.info("{} Configuration ...", Constants.LOG_REGISTER_PREFIX);
+    Config.register();
 
     log.info("{} Command Argument Types ...", Constants.LOG_REGISTER_PREFIX);
     ModArgumentTypes.COMMAND_ARGUMENT_TYPES.register(modEventBus);
@@ -112,8 +118,16 @@ public class EasyNPC {
               modEventBus.addListener(ClientRenderer::registerEntityRenderers);
               modEventBus.addListener(ClientScreens::registerScreens);
               modEventBus.addListener(
-                  (final FMLClientSetupEvent event) ->
-                      event.enqueueWork(DataFileHandler::registerDataFiles));
+                  (final FMLClientSetupEvent event) -> {
+                    log.info("{} Register Data Files ...", Constants.LOG_REGISTER_PREFIX);
+                    event.enqueueWork(DataFileHandler::registerDataFiles);
+
+                    log.info("{} Register Entity Type Manager ...", Constants.LOG_REGISTER_PREFIX);
+                    event.enqueueWork(EntityTypeManager::register);
+
+                    log.info("{} Screen Manager ...", Constants.LOG_REGISTER_PREFIX);
+                    ScreenManager.register();
+                  });
               NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
               ModTabs.CREATIVE_TABS.register(modEventBus);
             });

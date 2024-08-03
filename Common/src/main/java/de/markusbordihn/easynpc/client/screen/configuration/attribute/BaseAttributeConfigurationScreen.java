@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.client.screen.components.SliderButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.network.message.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -138,7 +138,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             slider ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityBaseAttributeChange(
-                        this.getNpcUUID(),
+                        this.getEasyNPCUUID(),
                         Attributes.MAX_HEALTH.value(),
                         slider.getTargetDoubleValue()));
 
@@ -159,7 +159,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             slider ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityBaseAttributeChange(
-                        this.getNpcUUID(),
+                        this.getEasyNPCUUID(),
                         Attributes.FOLLOW_RANGE.value(),
                         slider.getTargetDoubleValue()));
 
@@ -180,7 +180,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             slider ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityBaseAttributeChange(
-                        this.getNpcUUID(),
+                        this.getEasyNPCUUID(),
                         Attributes.KNOCKBACK_RESISTANCE.value(),
                         slider.getTargetDoubleValue()));
 
@@ -202,7 +202,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
               slider ->
                   NetworkMessageHandlerManager.getServerHandler()
                       .entityBaseAttributeChange(
-                          this.getNpcUUID(),
+                          this.getEasyNPCUUID(),
                           Attributes.MOVEMENT_SPEED.value(),
                           slider.getTargetDoubleValue()));
     }
@@ -225,7 +225,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
               slider ->
                   NetworkMessageHandlerManager.getServerHandler()
                       .entityBaseAttributeChange(
-                          this.getNpcUUID(),
+                          this.getEasyNPCUUID(),
                           Attributes.FLYING_SPEED.value(),
                           slider.getTargetDoubleValue()));
     }
@@ -247,7 +247,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             slider ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityBaseAttributeChange(
-                        this.getNpcUUID(),
+                        this.getEasyNPCUUID(),
                         Attributes.ATTACK_DAMAGE.value(),
                         slider.getTargetDoubleValue()));
 
@@ -268,7 +268,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             slider ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityBaseAttributeChange(
-                        this.getNpcUUID(),
+                        this.getEasyNPCUUID(),
                         Attributes.ATTACK_KNOCKBACK.value(),
                         slider.getTargetDoubleValue()));
 
@@ -290,7 +290,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
               slider ->
                   NetworkMessageHandlerManager.getServerHandler()
                       .entityBaseAttributeChange(
-                          this.getNpcUUID(),
+                          this.getEasyNPCUUID(),
                           Attributes.ATTACK_SPEED.value(),
                           slider.getTargetDoubleValue()));
     }
@@ -312,7 +312,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             slider ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityBaseAttributeChange(
-                        this.getNpcUUID(),
+                        this.getEasyNPCUUID(),
                         Attributes.ARMOR.value(),
                         slider.getTargetDoubleValue()));
 
@@ -333,7 +333,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             slider ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityBaseAttributeChange(
-                        this.getNpcUUID(),
+                        this.getEasyNPCUUID(),
                         Attributes.ARMOR_TOUGHNESS.value(),
                         slider.getTargetDoubleValue()));
   }

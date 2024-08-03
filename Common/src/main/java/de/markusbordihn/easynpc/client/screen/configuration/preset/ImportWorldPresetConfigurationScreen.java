@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.client.screen.configuration.preset;
 
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.network.message.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -38,7 +38,8 @@ public class ImportWorldPresetConfigurationScreen<T extends ConfigurationMenu>
     importPresetButtonLabel = "import_world_preset";
     importPresetHeaderLabel = "preset_world_for";
     this.worldPresets =
-        CompoundTagUtils.readResourceLocations(this.additionalScreenData.getList("WorldPresets"))
+        CompoundTagUtils.readResourceLocations(
+                this.getAdditionalScreenData().getList("WorldPresets"))
             .stream()
             .filter(
                 resourceLocation ->
@@ -49,7 +50,7 @@ public class ImportWorldPresetConfigurationScreen<T extends ConfigurationMenu>
   @Override
   public void loadPreset(ResourceLocation resourceLocation) {
     NetworkMessageHandlerManager.getServerHandler()
-        .importWorldPreset(getNpcUUID(), resourceLocation);
+        .importWorldPreset(getEasyNPCUUID(), resourceLocation);
   }
 
   @Override

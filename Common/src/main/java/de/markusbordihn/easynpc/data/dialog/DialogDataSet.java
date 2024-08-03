@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -145,6 +146,10 @@ public class DialogDataSet {
         .toList();
   }
 
+  public Map<String, DialogDataEntry> getDialogByLabelMap() {
+    return dialogByLabelMap;
+  }
+
   public DialogDataEntry getDialog(String label) {
     return this.dialogByLabelMap.getOrDefault(label, null);
   }
@@ -201,6 +206,13 @@ public class DialogDataSet {
 
   public DialogDataEntry getDefaultDialog() {
     return this.dialogByLabelMap.getOrDefault(this.getDefaultDialogLabel(), null);
+  }
+
+  public void setDefaultDialog(UUID dialogId) {
+    DialogDataEntry dialogData = this.dialogByIdMap.getOrDefault(dialogId, null);
+    if (dialogData != null) {
+      this.defaultDialogLabel = dialogData.getLabel();
+    }
   }
 
   public void setDefaultDialog(DialogDataEntry dialogData) {

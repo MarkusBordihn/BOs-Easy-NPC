@@ -37,7 +37,7 @@ public class DeleteCommand extends Command {
     return Commands.literal("delete")
         .requires(cs -> cs.hasPermission(Commands.LEVEL_ALL))
         .then(
-            Commands.argument("targets", new EasyNPCArgument())
+            Commands.argument("targets", EasyNPCArgument.npc())
                 .executes(
                     context ->
                         delete(

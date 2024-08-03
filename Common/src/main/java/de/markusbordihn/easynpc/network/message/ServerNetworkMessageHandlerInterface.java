@@ -35,11 +35,13 @@ import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.preset.PresetType;
 import de.markusbordihn.easynpc.data.profession.Profession;
+import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.data.spawner.SpawnerSettingType;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.data.trading.TradingValueType;
+import de.markusbordihn.easynpc.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.network.message.server.AddObjectiveMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeActionEventMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeAdvancedTradingMessage;
@@ -55,6 +57,7 @@ import de.markusbordihn.easynpc.network.message.server.ChangeNameMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangePoseMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangePositionMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeProfessionMessage;
+import de.markusbordihn.easynpc.network.message.server.ChangeRendererMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeScaleMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeSkinMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeSpawnerSettingMessage;
@@ -75,16 +78,19 @@ import de.markusbordihn.easynpc.network.message.server.RemoveDialogButtonMessage
 import de.markusbordihn.easynpc.network.message.server.RemoveDialogMessage;
 import de.markusbordihn.easynpc.network.message.server.RemoveNPCMessage;
 import de.markusbordihn.easynpc.network.message.server.RemoveObjectiveMessage;
+import de.markusbordihn.easynpc.network.message.server.RequestDataSyncMessage;
 import de.markusbordihn.easynpc.network.message.server.RespawnNPCMessage;
 import de.markusbordihn.easynpc.network.message.server.SaveDialogButtonMessage;
 import de.markusbordihn.easynpc.network.message.server.SaveDialogMessage;
 import de.markusbordihn.easynpc.network.message.server.SaveDialogSetMessage;
 import de.markusbordihn.easynpc.validator.UrlValidator;
+import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -341,10 +347,14 @@ public interface ServerNetworkMessageHandlerInterface {
     }
   }
 
-  default void importPreset(UUID uuid, PresetType presetType, CompoundTag compoundTag) {
+  default void importPreset(
+      UUID uuid,
+      PresetType presetType,
+      CompoundTag compoundTag,
+      ResourceLocation resourceLocation) {
     if (uuid != null && presetType != null && compoundTag != null && !compoundTag.isEmpty()) {
       NetworkHandlerManager.sendToServer(
-          new ImportPresetMessage(uuid, presetType, compoundTag, null));
+          new ImportPresetMessage(uuid, presetType, compoundTag, resourceLocation));
     }
   }
 
@@ -424,8 +434,9 @@ public interface ServerNetworkMessageHandlerInterface {
     importPreset(uuid, PresetType.DEFAULT, resourceLocation);
   }
 
-  default void importLocalPreset(UUID uuid, CompoundTag compoundTag) {
-    importPreset(uuid, PresetType.LOCAL, compoundTag);
+  default void importLocalPreset(
+      UUID uuid, CompoundTag compoundTag, ResourceLocation resourceLocation) {
+    importPreset(uuid, PresetType.LOCAL, compoundTag, resourceLocation);
   }
 
   default void importWorldPreset(UUID uuid, ResourceLocation resourceLocation) {
@@ -539,6 +550,26 @@ public interface ServerNetworkMessageHandlerInterface {
   default void removeObjective(UUID uuid, ObjectiveDataEntry objectiveDataEntry) {
     if (uuid != null && objectiveDataEntry != null) {
       NetworkHandlerManager.sendToServer(new RemoveObjectiveMessage(uuid, objectiveDataEntry));
+    }
+  }
+
+  default void requestDataSync(UUID uuid) {
+    if (uuid != null) {
+      NetworkHandlerManager.sendToServer(new RequestDataSyncMessage(uuid));
+    }
+  }
+
+  default void setRenderType(UUID uuid, RenderType renderType) {
+    if (uuid != null && renderType != null) {
+      NetworkHandlerManager.sendToServer(
+          new ChangeRendererMessage(uuid, renderType, Optional.empty()));
+    }
+  }
+
+  default void setRenderEntityType(UUID uuid, EntityType<?> entityType) {
+    if (uuid != null && entityType != null) {
+      NetworkHandlerManager.sendToServer(
+          new ChangeRendererMessage(uuid, RenderType.CUSTOM, Optional.of(entityType)));
     }
   }
 }

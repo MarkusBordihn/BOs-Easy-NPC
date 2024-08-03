@@ -25,7 +25,7 @@ import de.markusbordihn.easynpc.client.texture.TextureManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.network.message.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
@@ -104,7 +104,7 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
                 "disable_skin",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getNpcUUID(), ConfigurationType.NONE_SKIN)));
+                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.NONE_SKIN)));
     this.defaultSkinButton =
         this.addRenderableWidget(
             new TextButton(
@@ -114,7 +114,7 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
                 "default",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getNpcUUID(), ConfigurationType.DEFAULT_SKIN)));
+                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.DEFAULT_SKIN)));
     this.playerSkinButton =
         this.addRenderableWidget(
             new TextButton(
@@ -124,7 +124,7 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
                 "player_skin",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getNpcUUID(), ConfigurationType.PLAYER_SKIN)));
+                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.PLAYER_SKIN)));
     this.urlSkinButton =
         this.addRenderableWidget(
             new TextButton(
@@ -134,7 +134,7 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
                 "url_skin",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getNpcUUID(), ConfigurationType.URL_SKIN)));
+                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.URL_SKIN)));
     this.customSkinButton =
         this.addRenderableWidget(
             new TextButton(
@@ -144,7 +144,7 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
                 "custom",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getNpcUUID(), ConfigurationType.CUSTOM_SKIN)));
+                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.CUSTOM_SKIN)));
 
     // Clear former error messages, if any.
     TextureManager.clearLastErrorMessage();

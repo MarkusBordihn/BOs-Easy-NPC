@@ -25,7 +25,7 @@ import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.network.message.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -55,11 +55,12 @@ public class PositionConfigurationScreen<T extends ConfigurationMenu>
                 "default",
                 button ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .openConfiguration(this.getNpcUUID(), ConfigurationType.DEFAULT_POSITION)));
+                        .openConfiguration(
+                            this.getEasyNPCUUID(), ConfigurationType.DEFAULT_POSITION)));
   }
 
   @Override
-  protected void renderScreenBg(GuiGraphics guiGraphics) {
+  public void renderDefaultScreenBg(GuiGraphics guiGraphics, int leftPos, int topPos) {
     Graphics.blit(guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos, 0, 0, 210, 40);
     Graphics.blit(
         guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos + 203, topPos, 132, 0, 120, 40);

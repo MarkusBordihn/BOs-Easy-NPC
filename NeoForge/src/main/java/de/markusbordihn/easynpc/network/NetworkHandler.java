@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.network;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.message.NetworkHandlerInterface;
-import de.markusbordihn.easynpc.network.message.NetworkHandlerManager;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.function.Function;
 import net.minecraft.network.FriendlyByteBuf;
@@ -84,11 +83,21 @@ public class NetworkHandler implements NetworkHandlerInterface {
   }
 
   @Override
+  public void sendToAllPlayers(final NetworkMessageRecord networkMessageRecord) {
+    try {
+      PacketDistributor.sendToAllPlayers(networkMessageRecord);
+    } catch (Exception e) {
+      log.error("Failed to send {} to all players: {}", networkMessageRecord, e);
+    }
+  }
+
+  @Override
   public <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
       final CustomPacketPayload.Type<M> type,
       final StreamCodec<RegistryFriendlyByteBuf, M> codec,
       final Class<M> networkMessageRecord,
       final Function<FriendlyByteBuf, M> creator) {
+    log.debug("Registering client network message handler for {}", type);
     try {
       INSTANCE.playToClient(
           type,
@@ -105,6 +114,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
       final StreamCodec<RegistryFriendlyByteBuf, M> codec,
       Class<M> networkMessage,
       Function<FriendlyByteBuf, M> creator) {
+    log.debug("Registering server network message handler for {}", type);
     try {
       INSTANCE.playToServer(
           type,

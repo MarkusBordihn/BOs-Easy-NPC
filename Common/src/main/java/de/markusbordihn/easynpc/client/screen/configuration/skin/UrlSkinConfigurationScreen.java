@@ -32,7 +32,7 @@ import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
-import de.markusbordihn.easynpc.network.message.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import de.markusbordihn.easynpc.validator.ImageValidator;
@@ -130,7 +130,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
             button -> {
               String skinURL = RemoteTextureManager.getTextureSkinURL(textureModelKey);
               NetworkMessageHandlerManager.getServerHandler()
-                  .setSkin(this.getNpcUUID(), "", skinURL, textureUUID, skinType, "");
+                  .setSkin(this.getEasyNPCUUID(), "", skinURL, textureUUID, skinType, "");
             });
 
     // Disable button for active skin.
@@ -187,7 +187,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
       TextureManager.clearLastErrorMessage();
       this.errorMessage = "";
       NetworkMessageHandlerManager.getServerHandler()
-          .setRemoteSkin(this.getNpcUUID(), textureSkinLocationValue);
+          .setRemoteSkin(this.getEasyNPCUUID(), textureSkinLocationValue);
 
       this.addTextureSettingsButton.active = false;
       this.formerTextureSkinLocation = textureSkinLocationValue;
