@@ -210,6 +210,8 @@ public class NetworkHandlerManager {
         SaveDialogButtonMessage.PAYLOAD_TYPE, SaveDialogButtonMessage.STREAM_CODEC);
     networkHandler.registerServerPayloadType(
         SaveDialogMessage.PAYLOAD_TYPE, SaveDialogMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        SaveDialogSetMessage.PAYLOAD_TYPE, SaveDialogSetMessage.STREAM_CODEC);
   }
 
   public static void registerNetworkHandler() {
