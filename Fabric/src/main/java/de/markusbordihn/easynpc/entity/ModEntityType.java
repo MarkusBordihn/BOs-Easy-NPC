@@ -20,6 +20,9 @@
 package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.compat.CompatConstants;
+import de.markusbordihn.easynpc.compat.epicfight.entity.EpicFightEntityTypes;
+import de.markusbordihn.easynpc.compat.epicfight.entity.EpicFightZombie;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Allay;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken;
@@ -36,6 +39,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Wolf;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie;
 import de.markusbordihn.easynpc.entity.easynpc.npc.ZombieVillager;
+import de.markusbordihn.easynpc.entity.easynpc.raw.ZombieRaw;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.world.entity.EntityType;
@@ -137,7 +141,20 @@ public class ModEntityType {
           Registry.ENTITY_TYPE,
           Constants.MOD_ID + ":" + ZombieVillager.ID,
           ModEntityTypes.ZOMBIE_VILLAGER);
+  // Raw entities (for modding only)
+  public static final EntityType<ZombieRaw> ZOMBIE_RAW =
+      Registry.register(
+          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + ZombieRaw.ID, ModEntityTypes.ZOMBIE_RAW);
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  // Optional: Epic Fight entities
+  public static EntityType<EpicFightZombie> EPIC_FIGHT_ZOMBIE;
+
+  static {
+    if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
+      EPIC_FIGHT_ZOMBIE =
+          Registry.register(Registry.ENTITY_TYPE, EpicFightZombie.ID, EpicFightEntityTypes.ZOMBIE);
+    }
+  }
 
   private ModEntityType() {}
 
@@ -169,5 +186,15 @@ public class ModEntityType {
     FabricDefaultAttributeRegistry.register(HORSE, Horse.createAttributes());
     FabricDefaultAttributeRegistry.register(SKELETON_HORSE, Horse.createAttributes());
     FabricDefaultAttributeRegistry.register(ZOMBIE_HORSE, Horse.createAttributes());
+
+    // Raw entities (for modding only)
+    FabricDefaultAttributeRegistry.register(
+        ZOMBIE_RAW, net.minecraft.world.entity.monster.Zombie.createAttributes());
+
+    // Optional: Epic Fight entities
+    if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
+      FabricDefaultAttributeRegistry.register(
+          EPIC_FIGHT_ZOMBIE, net.minecraft.world.entity.monster.Zombie.createAttributes());
+    }
   }
 }

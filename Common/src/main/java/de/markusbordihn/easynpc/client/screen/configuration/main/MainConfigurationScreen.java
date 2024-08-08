@@ -32,7 +32,6 @@ import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.render.RenderDataSet;
-import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
@@ -53,8 +52,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.DyeColor;
 
-public class MainConfigurationContainerScreen<T extends ConfigurationMenu>
-    extends ConfigurationScreen<T> {
+public class MainConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
 
   public static final int BUTTON_HEIGHT = 18;
   public static final int BUTTON_WIDTH = 92;
@@ -73,7 +71,6 @@ public class MainConfigurationContainerScreen<T extends ConfigurationMenu>
     menuButtons.put("objective", ConfigurationType.BASIC_OBJECTIVE);
   }
 
-  private final Map<ConfigurationType, Boolean> menuButtonVisibility = new LinkedHashMap<>();
   private Button copyUUIDButton;
   private String formerName = "";
   private int formerTextColor = 0xFFFFFF;
@@ -81,9 +78,8 @@ public class MainConfigurationContainerScreen<T extends ConfigurationMenu>
   private ColorButton nameColorButton;
   private Button saveNameButton;
   private int textColor = 0xFFFFFF;
-  private boolean isCustomModel = false;
 
-  public MainConfigurationContainerScreen(T menu, Inventory inventory, Component component) {
+  public MainConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
     this.showCloseButton = true;
   }
@@ -98,11 +94,6 @@ public class MainConfigurationContainerScreen<T extends ConfigurationMenu>
     // Hide home button
     this.homeButton.visible = false;
 
-    // Define, if custom model is used.
-    this.isCustomModel =
-        this.getRenderDataSet() != null
-            && this.getRenderDataSet().getRenderType() != RenderType.DEFAULT;
-
     // Define buttons and boxes
     this.defineNameAndColorBox();
     this.defineImportExportButtons();
@@ -111,12 +102,6 @@ public class MainConfigurationContainerScreen<T extends ConfigurationMenu>
     this.defineDeleteButton();
     this.defineEditSkinButton();
     this.defineChangeModelButton();
-
-    // Disable specific buttons for custom models
-    if (this.isCustomModel) {
-      menuButtonVisibility.put(ConfigurationType.SCALING, false);
-      menuButtonVisibility.put(ConfigurationType.POSE, false);
-    }
     this.defineMenuButtons();
   }
 
@@ -265,7 +250,11 @@ public class MainConfigurationContainerScreen<T extends ConfigurationMenu>
 
   private void defineNameAndColorBox() {
     // Name Edit Box and Save Button
-    this.formerName = getEasyNPCEntity().getName().getString();
+    Component nameComponent = getEasyNPCEntity().getName();
+    this.formerName =
+        nameComponent instanceof TranslatableComponent translatableComponent
+            ? translatableComponent.getKey()
+            : nameComponent.getString();
     this.nameBox = new TextField(this.font, this.contentLeftPos, this.contentTopPos, 70);
     this.nameBox.setMaxLength(32);
     this.nameBox.setValue(this.formerName);
@@ -361,7 +350,8 @@ public class MainConfigurationContainerScreen<T extends ConfigurationMenu>
                           .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.DEFAULT_SKIN);
                   }
                 }));
-    editSkinButton.active = !this.isCustomModel;
+    editSkinButton.active =
+        this.getConfigurationData().supportsConfigurationType(ConfigurationType.SKIN);
   }
 
   protected void defineChangeModelButton() {
@@ -390,7 +380,7 @@ public class MainConfigurationContainerScreen<T extends ConfigurationMenu>
                       break;
                   }
                 }));
-    changeModelButton.active = true;
+    changeModelButton.active = this.getConfigurationData().supportsChangeModelConfiguration();
   }
 
   protected void defineMenuButtons() {
@@ -411,7 +401,7 @@ public class MainConfigurationContainerScreen<T extends ConfigurationMenu>
                   onPress ->
                       NetworkMessageHandlerManager.getServerHandler()
                           .openConfiguration(this.getEasyNPCUUID(), configurationType)));
-      button.active = menuButtonVisibility.getOrDefault(configurationType, true);
+      button.active = this.getConfigurationData().supportsConfigurationType(configurationType);
       buttonIndex++;
     }
   }

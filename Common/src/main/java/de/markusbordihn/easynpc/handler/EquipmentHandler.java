@@ -36,6 +36,8 @@ public class EquipmentHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
+  private EquipmentHandler() {}
+
   public static void setHandSlotItem(
       EasyNPC<?> easyNPC, InteractionHand interactionHand, ItemStack itemStack) {
     setEquipmentSlotItem(

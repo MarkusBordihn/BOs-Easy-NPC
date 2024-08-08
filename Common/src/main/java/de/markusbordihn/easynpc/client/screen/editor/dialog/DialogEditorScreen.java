@@ -37,6 +37,7 @@ import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
+import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
@@ -49,7 +50,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 
-public class DialogEditorContainerScreen<T extends EditorMenu> extends EditorScreen<T> {
+public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
 
   private static final int MAX_NUMBER_OF_BUTTONS = 6;
   protected Button homeButton;
@@ -62,14 +63,18 @@ public class DialogEditorContainerScreen<T extends EditorMenu> extends EditorScr
   protected TextField dialogLabelTextField;
   protected Checkbox dialogLabelCheckbox;
   protected Button dialogNameToLabelButton;
+  protected Button makeDefaultDialogButton;
   protected TextField dialogNameTextField;
-  protected Checkbox dialogTranslateCheckbox;
   private String dialogLabelValue = "";
   private String dialogNameValue = "";
-  private boolean dialogTranslateValue = false;
 
-  public DialogEditorContainerScreen(T menu, Inventory inventory, Component component) {
+  public DialogEditorScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
+  }
+
+  private void refreshScreen() {
+    NetworkMessageHandlerManager.getServerHandler()
+        .openDialogEditor(this.getEasyNPCUUID(), this.getDialogUUID());
   }
 
   private void openPreviousScreen() {
@@ -129,27 +134,38 @@ public class DialogEditorContainerScreen<T extends EditorMenu> extends EditorScr
           this.font,
           "dialog.text",
           leftPos + 10,
-          this.dialogTextButton.y - 14,
+          this.dialogTextButton.y - 13,
           Constants.FONT_COLOR_BLACK);
-    }
 
-    if (this.dialogTranslateCheckbox != null) {
       Text.drawConfigString(
           poseStack,
           this.font,
           "dialog.buttons",
           leftPos + 10,
-          this.dialogTranslateCheckbox.y + 22,
+          this.dialogTextButton.y + 27,
           Constants.FONT_COLOR_BLACK);
     }
+  }
+
+  private void makeDefaultDialog() {
+    if (this.getDialogUUID().equals(this.getDialogDataSet().getDefaultDialogId())) {
+      return;
+    }
+
+    // Adjust existing dialog data set.
+    DialogDataSet dialogDataSet = this.getDialogDataSet();
+    dialogDataSet.setDefaultDialog(this.getDialogUUID());
+
+    // Save dialog data set.
+    NetworkMessageHandlerManager.getServerHandler()
+        .saveDialogSet(this.getEasyNPCUUID(), dialogDataSet);
   }
 
   private void saveDialogData() {
     // Check if something has changed, otherwise we don't need to save the dialog data.
     boolean hasChanged =
         !this.dialogNameTextField.getValue().equals(this.dialogNameValue)
-            || !this.dialogLabelTextField.getValue().equals(this.dialogLabelValue)
-            || this.dialogTranslateCheckbox.selected() != this.dialogTranslateValue;
+            || !this.dialogLabelTextField.getValue().equals(this.dialogLabelValue);
     if (!hasChanged) {
       return;
     }
@@ -158,7 +174,6 @@ public class DialogEditorContainerScreen<T extends EditorMenu> extends EditorScr
     DialogDataEntry dialogDataEntry = this.getDialogData();
     dialogDataEntry.setName(this.dialogNameTextField.getValue());
     dialogDataEntry.setLabel(this.dialogLabelTextField.getValue());
-    dialogDataEntry.setTranslate(this.dialogTranslateCheckbox.selected());
 
     // Save dialog data
     NetworkMessageHandlerManager.getServerHandler()
@@ -254,6 +269,25 @@ public class DialogEditorContainerScreen<T extends EditorMenu> extends EditorScr
                   }
                 }));
 
+    // Make default Button
+    this.makeDefaultDialogButton =
+        this.addRenderableWidget(
+            new SpriteButton(
+                this.dialogNameToLabelButton.x + this.dialogNameToLabelButton.getWidth() + 1,
+                this.dialogNameToLabelButton.y,
+                30,
+                18,
+                2,
+                2,
+                92,
+                128,
+                25,
+                12,
+                onPress -> {
+                  this.makeDefaultDialog();
+                  this.refreshScreen();
+                }));
+
     // Dialog Label
     this.dialogLabelValue = dialogDataEntry.getLabel();
     this.dialogLabelTextField = new TextField(this.font, this.leftPos + 100, this.topPos + 50, 100);
@@ -288,14 +322,6 @@ public class DialogEditorContainerScreen<T extends EditorMenu> extends EditorScr
                       .openDialogTextEditor(this.getEasyNPCUUID(), this.getDialogUUID());
                 }));
 
-    // Dialog Translate
-    this.dialogTranslateValue = dialogDataEntry.getTranslate();
-    this.dialogTranslateCheckbox =
-        new Checkbox(
-            this.leftPos + 15, this.topPos + 110, "dialog.translate", this.dialogTranslateValue);
-    this.addRenderableWidget(this.dialogTranslateCheckbox);
-    this.dialogTranslateCheckbox.visible = false;
-
     // Dialog Buttons (max. 6 in two rows)
     this.defineDialogButtons(dialogDataEntry);
   }
@@ -324,12 +350,12 @@ public class DialogEditorContainerScreen<T extends EditorMenu> extends EditorScr
               buttonLeftPos,
               buttonTopPos,
               buttonWidth,
-              dialogButtonEntry.getName(buttonMaxTextLength),
+              dialogButtonEntry.getButtonName(buttonMaxTextLength).getString(),
               onPress -> {
-                log.info("Edit dialog button {}", dialogButtonEntry.getId());
+                log.info("Edit dialog button {}", dialogButtonEntry.id());
                 NetworkMessageHandlerManager.getServerHandler()
                     .openDialogButtonEditor(
-                        this.getEasyNPCUUID(), this.getDialogUUID(), dialogButtonEntry.getId());
+                        this.getEasyNPCUUID(), this.getDialogUUID(), dialogButtonEntry.id());
               });
       this.addRenderableWidget(dialogActionButton);
       buttonLeftPos += buttonWidth + buttonSpace;
@@ -362,12 +388,16 @@ public class DialogEditorContainerScreen<T extends EditorMenu> extends EditorScr
     if (this.saveButton != null) {
       this.saveButton.active =
           !this.dialogNameTextField.getValue().equals(this.dialogNameValue)
-              || !this.dialogLabelTextField.getValue().equals(this.dialogLabelValue)
-              || this.dialogTranslateCheckbox.selected() != this.dialogTranslateValue;
+              || !this.dialogLabelTextField.getValue().equals(this.dialogLabelValue);
     }
 
     if (this.dialogLabelCheckbox != null && this.dialogNameToLabelButton != null) {
       this.dialogNameToLabelButton.active = !this.dialogLabelCheckbox.selected();
+    }
+
+    if (this.makeDefaultDialogButton != null && this.getDialogDataSet() != null) {
+      this.makeDefaultDialogButton.active =
+          !this.getDialogUUID().equals(this.getDialogDataSet().getDefaultDialogId());
     }
   }
 
@@ -382,6 +412,14 @@ public class DialogEditorContainerScreen<T extends EditorMenu> extends EditorScr
       this.renderTooltip(
           poseStack,
           new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "name_to_label.tooltip"),
+          x,
+          y);
+    }
+
+    if (this.makeDefaultDialogButton != null && this.makeDefaultDialogButton.isMouseOver(x, y)) {
+      this.renderTooltip(
+          poseStack,
+          new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + "make_default.tooltip"),
           x,
           y);
     }

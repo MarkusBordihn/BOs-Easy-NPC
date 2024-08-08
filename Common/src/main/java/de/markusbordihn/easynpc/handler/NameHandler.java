@@ -17,26 +17,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.screen;
+package de.markusbordihn.easynpc.handler;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.utils.TextUtils;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ScreenManager {
+public class NameHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private static final String LOG_PREFIX = "[Screen Manager]";
 
-  private static boolean jeiLoaded = false;
+  private NameHandler() {}
 
-  public static void register() {
-    try {
-      Class.forName("mezz.jei.api.IModPlugin");
-      jeiLoaded = true;
-    } catch (ClassNotFoundException e) {
-      jeiLoaded = false;
+  public static boolean setCustomName(EasyNPC<?> easyNPC, String name) {
+    return setCustomName(easyNPC, name, -1);
+  }
+
+  public static boolean setCustomName(EasyNPC<?> easyNPC, String name, int color) {
+    if (easyNPC == null || name == null || name.isEmpty()) {
+      log.error("[{}] Error setting custom name ", easyNPC);
+      return false;
     }
-    log.info("{} JEI loaded: {}.", LOG_PREFIX, jeiLoaded);
+
+    Entity entity = easyNPC.getEntity();
+    log.debug("[{}] Change custom name to '{}' with color {}", easyNPC, name, color);
+
+    // Define custom color and style for the name, if any.
+    Style style = Style.EMPTY;
+    if (color >= 0) {
+      style = style.withColor(TextColor.fromRgb(color));
+    }
+
+    if (TextUtils.isTranslationKey(name)) {
+      entity.setCustomName(new TranslatableComponent(name).setStyle(style));
+    } else {
+      entity.setCustomName(new TextComponent(name).setStyle(style));
+    }
+    return true;
   }
 }

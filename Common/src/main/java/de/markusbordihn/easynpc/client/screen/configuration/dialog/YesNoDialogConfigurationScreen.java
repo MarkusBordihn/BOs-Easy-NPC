@@ -34,7 +34,6 @@ import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
-import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.client.gui.components.Button;
@@ -102,19 +101,17 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
     this.addRenderableWidget(this.mainDialogBox);
 
     // Question Dialog Buttons
-    Component yesButtonText =
-        new TextComponent(
-            TextUtils.limitString(
-                yesButtonData == null ? "Yes Button" : yesButtonData.getName(), 18));
     this.yesDialogButton =
         this.addRenderableWidget(
             new TextButton(
                 this.contentLeftPos,
                 this.topPos + 85,
                 145,
-                yesButtonText,
+                yesButtonData == null
+                    ? new TextComponent("Yes Button")
+                    : yesButtonData.getButtonName(20),
                 onPress -> {
-                  UUID yesButtonId = yesButtonData == null ? null : yesButtonData.getId();
+                  UUID yesButtonId = yesButtonData == null ? null : yesButtonData.id();
                   if (questionDialogData != null) {
                     if (yesButtonId != null) {
                       NetworkMessageHandlerManager.getServerHandler()
@@ -127,18 +124,17 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
                   }
                 }));
 
-    Component noButtonText =
-        new TextComponent(
-            TextUtils.limitString(noButtonData == null ? "No Button" : noButtonData.getName(), 18));
     this.noDialogButton =
         this.addRenderableWidget(
             new TextButton(
                 this.contentLeftPos + 155,
                 this.topPos + 85,
                 145,
-                noButtonText,
+                noButtonData == null
+                    ? new TextComponent("No Button")
+                    : noButtonData.getButtonName(20),
                 onPress -> {
-                  UUID noButtonId = noButtonData == null ? null : noButtonData.getId();
+                  UUID noButtonId = noButtonData == null ? null : noButtonData.id();
                   if (questionDialogData != null) {
                     if (noButtonId != null) {
                       NetworkMessageHandlerManager.getServerHandler()

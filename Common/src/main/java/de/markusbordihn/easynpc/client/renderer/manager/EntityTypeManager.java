@@ -63,6 +63,7 @@ public class EntityTypeManager {
           // Exclude our own entity types and other unsupported entity types.
           String entityTypeLocation = Registry.ENTITY_TYPE.getKey(entityType).toString();
           if (entityTypeLocation.startsWith(Constants.MOD_ID)
+              || entityTypeLocation.startsWith("mythicmounts:")
               || entityTypeLocation.endsWith("_arrow")
               || entityTypeLocation.endsWith("_projectile")
               || entityTypeLocation.endsWith("_thrown")
@@ -141,8 +142,8 @@ public class EntityTypeManager {
 
   public static List<EntityType<? extends Entity>> getUnknownAndSupportedEntityTypes() {
     ArrayList<EntityType<? extends Entity>> arrayList = new ArrayList<>();
-    arrayList.addAll(unknownEntityTypes);
     arrayList.addAll(supportedEntityTypes);
+    arrayList.addAll(unknownEntityTypes);
     return arrayList;
   }
 

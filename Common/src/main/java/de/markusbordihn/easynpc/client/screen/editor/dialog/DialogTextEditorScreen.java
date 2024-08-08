@@ -23,7 +23,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.EditorScreen;
 import de.markusbordihn.easynpc.client.screen.components.CancelButton;
-import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.DialogButton;
 import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
@@ -40,7 +39,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public class DialogTextEditorContainerScreen<T extends EditorMenu> extends EditorScreen<T> {
+public class DialogTextEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
 
   private static final int MAX_NUMBER_OF_DIALOG_TEXTS = 6;
   private final Set<TextField> dialogTextFields = new HashSet<>();
@@ -49,9 +48,8 @@ public class DialogTextEditorContainerScreen<T extends EditorMenu> extends Edito
   protected Button dialogTextButton;
   protected Button saveButton;
   protected Button cancelButton;
-  protected Checkbox translateCheckbox;
 
-  public DialogTextEditorContainerScreen(T menu, Inventory inventory, Component component) {
+  public DialogTextEditorScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 
@@ -61,7 +59,7 @@ public class DialogTextEditorContainerScreen<T extends EditorMenu> extends Edito
     for (TextField textfield : dialogTextFields) {
       String text = textfield.getValue();
       if (!text.isEmpty()) {
-        validDialogTexts.add(new DialogTextData(text, translateCheckbox.selected()));
+        validDialogTexts.add(new DialogTextData(text));
       }
     }
 
@@ -118,7 +116,6 @@ public class DialogTextEditorContainerScreen<T extends EditorMenu> extends Edito
     int dialogTextLeftPos = this.leftPos + 20;
     int dialogTextTopPos = this.topPos + 50;
     int dialogTextWidth = 290;
-    boolean dialogTextTranslatable = false;
 
     // Get stored dialog texts
     Set<DialogTextData> dialogTexts = this.getDialogData(this.getDialogUUID()).getDialogTexts();
@@ -133,12 +130,9 @@ public class DialogTextEditorContainerScreen<T extends EditorMenu> extends Edito
                   dialogTextLeftPos,
                   dialogTextTopPos + dialogTextIndex * 20,
                   dialogTextWidth,
-                  dialogText.getText(),
+                  dialogText.text(),
                   512));
       this.dialogTextFields.add(textfield);
-      if (dialogText.getTranslate()) {
-        dialogTextTranslatable = true;
-      }
       dialogTextIndex++;
     }
 
@@ -155,12 +149,6 @@ public class DialogTextEditorContainerScreen<T extends EditorMenu> extends Edito
                   512));
       this.dialogTextFields.add(textfield);
     }
-
-    // Dialog Translate
-    this.translateCheckbox =
-        new Checkbox(
-            this.leftPos + 20, this.bottomPos - 70, "dialog.translate", dialogTextTranslatable);
-    this.addRenderableWidget(this.translateCheckbox);
 
     // Save Button
     this.saveButton =

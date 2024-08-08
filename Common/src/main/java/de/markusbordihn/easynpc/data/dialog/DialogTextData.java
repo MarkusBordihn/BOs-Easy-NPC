@@ -19,81 +19,58 @@
 
 package de.markusbordihn.easynpc.data.dialog;
 
+import de.markusbordihn.easynpc.utils.TextUtils;
+import de.markusbordihn.easynpc.utils.UUIDUtils;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 
-public class DialogTextData {
+public record DialogTextData(UUID id, String text, boolean isTranslationKey) {
 
   public static final String DATA_TEXT_TAG = "Text";
-  public static final String DATA_TRANSLATE_TAG = "Translate";
-
-  private UUID id;
-  private String text;
-  private boolean translate;
 
   public DialogTextData(CompoundTag compoundTag) {
-    this.load(compoundTag);
+    this(
+        UUIDUtils.textToUUID(compoundTag.getString(DATA_TEXT_TAG)),
+        compoundTag.getString(DATA_TEXT_TAG),
+        TextUtils.isTranslationKey(compoundTag.getString(DATA_TEXT_TAG)));
   }
 
   public DialogTextData(String text) {
-    this(text, false);
+    this(UUIDUtils.textToUUID(text), text, TextUtils.isTranslationKey(text));
   }
 
-  public DialogTextData(String text, boolean translate) {
-    this.id = UUID.randomUUID();
-    this.text = text != null ? text.trim() : "";
-    this.translate = translate;
-  }
-
-  public UUID getId() {
-    return this.id;
-  }
-
-  public String getText() {
-    return this.text;
-  }
-
-  public void setText(String text) {
-    this.text = text;
+  public static DialogTextData create(CompoundTag compoundTag) {
+    return new DialogTextData(compoundTag);
   }
 
   public String getText(int maxLength) {
     return this.text.length() > maxLength ? this.text.substring(0, maxLength - 1) + '…' : this.text;
   }
 
-  public String getDialogText() {
-    return this.translate
-        ? new TranslatableComponent(this.text).getString()
-        : new TextComponent(this.text).getString();
+  public Component getDialogText() {
+    return this.isTranslationKey
+        ? new TranslatableComponent(this.text)
+        : new TextComponent(this.text);
   }
 
-  public String getDialogText(LivingEntity entity, Player player) {
-    return DialogUtils.parseDialogText(getDialogText(), entity, player);
-  }
-
-  public boolean getTranslate() {
-    return this.translate;
-  }
-
-  public void setTranslate(boolean translate) {
-    this.translate = translate;
-  }
-
-  public void load(CompoundTag compoundTag) {
-    this.text = compoundTag.getString(DATA_TEXT_TAG);
-    this.translate =
-        compoundTag.contains(DATA_TRANSLATE_TAG) && compoundTag.getBoolean(DATA_TRANSLATE_TAG);
-  }
-
-  public CompoundTag save(CompoundTag compoundTag) {
+  public CompoundTag write(CompoundTag compoundTag) {
     compoundTag.putString(DATA_TEXT_TAG, this.text.trim());
-    if (this.translate) {
-      compoundTag.putBoolean(DATA_TRANSLATE_TAG, true);
-    }
     return compoundTag;
+  }
+
+  @Override
+  public String toString() {
+    return "DialogTextData{"
+        + "id="
+        + id
+        + ", text='"
+        + text
+        + '\''
+        + ", isTranslationKey="
+        + isTranslationKey
+        + '}';
   }
 }

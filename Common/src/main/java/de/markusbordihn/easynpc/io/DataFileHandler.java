@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
@@ -136,5 +137,12 @@ public class DataFileHandler {
     } catch (Exception e) {
       log.error("Failed to load resource {}!", resourceLocation, e);
     }
+  }
+
+  public static String getFileNameFromResourceLocation(ResourceLocation resourceLocation) {
+    if (resourceLocation == null) {
+      return null;
+    }
+    return Paths.get(resourceLocation.getPath()).getFileName().toString();
   }
 }

@@ -42,25 +42,29 @@ public class ModTabs {
               stack.add(ModItems.ALLEY_NPC_SPAWN_EGG.getDefaultInstance());
               stack.add(ModItems.CAT_NPC_SPAWN_EGG.getDefaultInstance());
               stack.add(ModItems.CHICKEN_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.DROWNED_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.EVOKER_NPC_SPAWN_EGG.getDefaultInstance());
               stack.add(ModItems.FAIRY_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.HORSE_NPC_SPAWN_EGG.getDefaultInstance());
               stack.add(ModItems.HUMANOID_NPC_SPAWN_EGG.getDefaultInstance());
               stack.add(ModItems.HUMANOID_SLIM_NPC_SPAWN_EGG.getDefaultInstance());
-              stack.add(ModItems.IRON_GOLEM_NPC_SPAWN_EGG.getDefaultInstance());
-              stack.add(ModItems.SKELETON_NPC_SPAWN_EGG.getDefaultInstance());
-              stack.add(ModItems.VILLAGER_NPC_SPAWN_EGG.getDefaultInstance());
-              stack.add(ModItems.DROWNED_NPC_SPAWN_EGG.getDefaultInstance());
               stack.add(ModItems.HUSK_NPC_SPAWN_EGG.getDefaultInstance());
-              stack.add(ModItems.WITHER_SKELETON_NPC_SPAWN_EGG.getDefaultInstance());
-              stack.add(ModItems.STRAY_NPC_SPAWN_EGG.getDefaultInstance());
-              stack.add(ModItems.ZOMBIE_NPC_SPAWN_EGG.getDefaultInstance());
-              stack.add(ModItems.ZOMBIE_VILLAGER_NPC_SPAWN_EGG.getDefaultInstance());
-              stack.add(ModItems.PIG_NPC_SPAWN_EGG.getDefaultInstance());
-              stack.add(ModItems.EVOKER_NPC_SPAWN_EGG.getDefaultInstance());
               stack.add(ModItems.ILLUSIONER_NPC_SPAWN_EGG.getDefaultInstance());
-              stack.add(ModItems.PILLAGER_NPC_SPAWN_EGG.getDefaultInstance());
-              stack.add(ModItems.VINDICATOR_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.IRON_GOLEM_NPC_SPAWN_EGG.getDefaultInstance());
               stack.add(ModItems.ORC_NPC_SPAWN_EGG.getDefaultInstance());
               stack.add(ModItems.ORC_WARRIOR_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.PIG_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.PILLAGER_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.SKELETON_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.SKELETON_HORSE_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.STRAY_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.VILLAGER_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.VINDICATOR_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.WITHER_SKELETON_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.WOLF_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.ZOMBIE_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.ZOMBIE_HORSE_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.ZOMBIE_VILLAGER_NPC_SPAWN_EGG.getDefaultInstance());
             })
         .build();
 
@@ -68,11 +72,11 @@ public class ModTabs {
         .icon(ModItems.EASY_NPC_WAND::getDefaultInstance)
         .appendItems(
             stack -> {
+              stack.add(ModItems.EASY_NPC_PRESET_EMPTY_ITEM.getDefaultInstance());
+              stack.add(ModItems.EASY_NPC_PRESET_ITEM.getDefaultInstance());
+              stack.add(ModItems.EASY_NPC_SPAWNER.getDefaultInstance());
               stack.add(ModItems.EASY_NPC_WAND.getDefaultInstance());
               stack.add(ModItems.MOVE_EASY_NPC.getDefaultInstance());
-              stack.add(ModItems.EASY_NPC_PRESET_ITEM.getDefaultInstance());
-              stack.add(ModItems.EASY_NPC_PRESET_EMPTY_ITEM.getDefaultInstance());
-              stack.add(ModItems.EASY_NPC_SPAWNER.getDefaultInstance());
             })
         .build();
   }

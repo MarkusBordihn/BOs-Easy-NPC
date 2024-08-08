@@ -26,8 +26,6 @@ import de.markusbordihn.easynpc.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.EasyNPCMenu;
-import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
-import de.markusbordihn.easynpc.network.message.ServerNetworkMessageHandlerInterface;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -44,7 +42,6 @@ public class ContainerScreen<T extends EasyNPCMenu> extends AbstractContainerScr
   protected static double formerMouseX = -1;
   protected static double formerMouseY = -1;
   protected final Minecraft minecraftInstance;
-  protected final ServerNetworkMessageHandlerInterface networkMessageHandler;
   protected final T menu;
   protected float xMouse;
   protected float yMouse;
@@ -63,7 +60,6 @@ public class ContainerScreen<T extends EasyNPCMenu> extends AbstractContainerScr
 
     // Get Minecraft instance and network message handler
     this.minecraftInstance = Minecraft.getInstance();
-    this.networkMessageHandler = NetworkMessageHandlerManager.getServerHandler();
   }
 
   protected static void resetFormerMousePosition() {

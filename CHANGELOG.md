@@ -8,6 +8,33 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.5.0 (beta only for testing)
+
+- Fixed #279 by automatic converting upper-case resource location to lower-case.
+- Fixed #278 by adding additional checks for custom models and renderer.
+- Fixed #275 by adding missing Fabric specific code.
+- Fixed #273 by automatic detecting translation keys for dialog texts, names and buttons.
+- Fixed #272 by keep fixed order of actions and allow to move actions up and down.
+- Fixed #268 by checking each single Fabric network message for missing ids.
+- Fixed #262 and #240 by correctly handling attack objectives for NPCs.
+- Fixed duplicated objectives for NPCs.
+- Fixed late initialization of server-side data by moving it close to the entity creation.
+- Fixed issue with removed FakePlayer and dimension change.
+- Fixed Action Data Editor and miss matching data / entries.
+- Added additional Action Editor button to allow to move actions up and down.
+- Added additional Dialog Editor button to define the default dialog.
+- Added Objective Handler as preparation for upcoming objective commands.
+- Added Raw Zombie Entity `/summon easy_npc:zombie_raw` for better modding support.
+- Added experimental [Epic Fight Mod][epic_fight] Raw Zombies
+  Entity `/summon easy_npc:epic_fight_zombie_raw` which completely uses the
+  [Epic Fight Mod][epic_fight] rendering, animations and models.
+- Added support for multiple skin templates files.
+- Added example translation files for demonstration.
+- Added example translation NPC for demonstration of the translation support.
+- Improved custom model entity support and added caching for better performance.
+- Improved thread-safety for dialog and action data.
+- Removed Spawn Data, Screen Manager and other unused data for better performance.
+
 ### 5.4.1 (beta only for testing)
 
 - Fixed #209 by adding additional checks and error messages for the screen data.
@@ -496,6 +523,8 @@ it could be that some of them are not compatible with older versions.
 [history]: https://github.com/MarkusBordihn/BOs-Easy-NPC/commits/
 
 [armourers_workshop]: https://www.curseforge.com/minecraft/mc-mods/armourers-workshop
+
+[epic_fight_mod]: https://www.curseforge.com/minecraft/mc-mods/epic-fight-mod
 
 [project_mmo]: https://www.curseforge.com/minecraft/mc-mods/project-mmo
 

@@ -26,7 +26,9 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.DeleteButton;
 import de.markusbordihn.easynpc.client.screen.components.EditButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
+import de.markusbordihn.easynpc.client.screen.components.UpDownButton;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
+import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import net.minecraft.client.Minecraft;
@@ -38,22 +40,28 @@ import net.minecraft.network.chat.TextComponent;
 public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataListEntry> {
 
   public static final int ID_LEFT_POS = 0;
-  public static final int TYPE_LEFT_POS = 20;
-  public static final int VALUE_LEFT_POS = 100;
-  public static final int OPTIONS_LEFT_POS = 235;
+  public static final int TYPE_LEFT_POS = 22;
+  public static final int VALUE_LEFT_POS = 90;
+  public static final int OPTIONS_LEFT_POS = 230;
   private final Font font;
   private final int leftPos;
   private final int topPos;
+  private final int entryHeight = 21;
   private final ActionDataEntry actionDataEntry;
   private final ActionDataType actionDataType;
+  private final int actionDateEntriesSize;
   private final EditButton editButton;
   private final DeleteButton deleteButton;
+  private final UpDownButton upAndDownButton;
 
   public ActionDataListEntry(
       Minecraft minecraft,
       ActionDataEntry actionDataEntry,
+      ActionDataSet actionDataSet,
       int leftPos,
       int topPos,
+      OnUp onUp,
+      OnDown onDown,
       OnEdit onEdit,
       OnRemove onRemove) {
     super();
@@ -66,12 +74,29 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
     // Set action data entry
     this.actionDataEntry = actionDataEntry;
     this.actionDataType = actionDataEntry != null ? actionDataEntry.getType() : ActionDataType.NONE;
+    this.actionDateEntriesSize = actionDataSet != null ? actionDataSet.getEntries().size() : 1;
 
     // Adding general buttons
+    this.upAndDownButton =
+        new UpDownButton(
+            this.leftPos + OPTIONS_LEFT_POS + 4,
+            this.topPos,
+            18,
+            18,
+            onPress -> {
+              if (onUp != null) {
+                onUp.changeOrder(actionDataEntry);
+              }
+            },
+            onPress -> {
+              if (onDown != null) {
+                onDown.changeOrder(actionDataEntry);
+              }
+            });
     this.editButton =
         new EditButton(
-            this.leftPos + OPTIONS_LEFT_POS + 20,
-            this.topPos - 1,
+            this.upAndDownButton.x + this.upAndDownButton.getWidth() + 2,
+            this.topPos,
             18,
             18,
             onPress -> {
@@ -82,7 +107,7 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
     this.deleteButton =
         new DeleteButton(
             this.editButton.x + this.editButton.getWidth() + 2,
-            this.topPos - 1,
+            this.topPos,
             onPress -> {
               if (onRemove != null) {
                 onRemove.remove(actionDataEntry);
@@ -98,6 +123,7 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
   @Override
   public boolean mouseClicked(double mouseX, double mouseY, int button) {
     super.mouseClicked(mouseX, mouseY, button);
+    this.upAndDownButton.mouseClicked(mouseX, mouseY, button);
     this.editButton.mouseClicked(mouseX, mouseY, button);
     this.deleteButton.mouseClicked(mouseX, mouseY, button);
     return button == 0;
@@ -117,7 +143,13 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
       float partialTicks) {
 
     // Draw separator line
-    fill(poseStack, this.leftPos, top + 17, this.leftPos + 301, top + 18, 0xffaaaaaa);
+    fill(
+        poseStack,
+        this.leftPos,
+        top + entryHeight + 2,
+        this.leftPos + 309,
+        top + entryHeight + 3,
+        0xffaaaaaa);
 
     int fieldsLeft = this.leftPos + 5;
 
@@ -159,11 +191,17 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
           Constants.FONT_COLOR_BLACK);
     }
 
+    // Up and down buttons
+    this.upAndDownButton.render(poseStack, mouseX, mouseY, partialTicks);
+    this.upAndDownButton.y = top;
+    this.upAndDownButton.enableUpButton(entryId > 0);
+    this.upAndDownButton.enableDownButton(entryId < this.actionDateEntriesSize - 1);
+
     // Edit and delete buttons
     this.editButton.render(poseStack, mouseX, mouseY, partialTicks);
-    this.editButton.y = top - 1;
+    this.editButton.y = top;
     this.deleteButton.render(poseStack, mouseX, mouseY, partialTicks);
-    this.deleteButton.y = top - 1;
+    this.deleteButton.y = top;
 
     // Render separator lines
     this.renderSeparatorLines(poseStack, top);
@@ -178,21 +216,21 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
         separatorLeft + ActionDataListEntry.TYPE_LEFT_POS - 3,
         separatorTop,
         separatorLeft + ActionDataListEntry.TYPE_LEFT_POS - 2,
-        separatorTop + 18,
+        separatorTop + entryHeight,
         0xff666666);
     fill(
         poseStack,
         separatorLeft + ActionDataListEntry.VALUE_LEFT_POS - 3,
         separatorTop,
         separatorLeft + ActionDataListEntry.VALUE_LEFT_POS - 2,
-        separatorTop + 18,
+        separatorTop + entryHeight,
         0xff666666);
     fill(
         poseStack,
         separatorLeft + ActionDataListEntry.OPTIONS_LEFT_POS - 3,
         separatorTop,
         separatorLeft + ActionDataListEntry.OPTIONS_LEFT_POS - 2,
-        separatorTop + 18,
+        separatorTop + entryHeight,
         0xff666666);
   }
 
@@ -202,5 +240,13 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
 
   public interface OnEdit {
     void edit(ActionDataEntry actionDataEntry);
+  }
+
+  public interface OnUp {
+    void changeOrder(ActionDataEntry actionDataEntry);
+  }
+
+  public interface OnDown {
+    void changeOrder(ActionDataEntry actionDataEntry);
   }
 }

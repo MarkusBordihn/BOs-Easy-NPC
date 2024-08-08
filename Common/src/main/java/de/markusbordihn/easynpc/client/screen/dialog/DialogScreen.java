@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
+import de.markusbordihn.easynpc.data.dialog.DialogMetaData;
 import de.markusbordihn.easynpc.data.dialog.DialogScreenLayout;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
@@ -45,7 +46,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 
-public class DialogContainerScreen<T extends DialogMenu> extends Screen<T> {
+public class DialogScreen<T extends DialogMenu> extends Screen<T> {
 
   private static final int BUTTON_WIDTH = 126;
   private static final int MIDDLE_BUTTON_WIDTH = 200;
@@ -54,6 +55,8 @@ public class DialogContainerScreen<T extends DialogMenu> extends Screen<T> {
   private static final int MAX_NUMBER_OF_DIALOG_LINES = 10;
   private static DialogScreenLayout dialogScreenLayout = DialogScreenLayout.UNKNOWN;
   protected final ArrayList<Button> dialogButtons = new ArrayList<>();
+  protected final Component dialogText;
+  protected final DialogMetaData dialogMetaData;
   protected Button dialogForwardButton = null;
   protected Button dialogBackwardButton = null;
   protected String dialog;
@@ -62,12 +65,17 @@ public class DialogContainerScreen<T extends DialogMenu> extends Screen<T> {
   protected int dialogPageIndex = 0;
   private List<FormattedCharSequence> cachedDialogComponents = Collections.emptyList();
 
-  public DialogContainerScreen(T menu, Inventory inventory, Component component) {
+  public DialogScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
+    this.dialogText = this.getDialogText();
+    this.dialogMetaData =
+        new DialogMetaData(
+            this.getEasyNPC().getLivingEntity(),
+            minecraftInstance != null ? minecraftInstance.player : null);
   }
 
   private static void setDialogScreenLayout(DialogScreenLayout dialogScreenLayout) {
-    DialogContainerScreen.dialogScreenLayout = dialogScreenLayout;
+    DialogScreen.dialogScreenLayout = dialogScreenLayout;
   }
 
   protected void renderDialog(PoseStack poseStack) {
@@ -113,9 +121,7 @@ public class DialogContainerScreen<T extends DialogMenu> extends Screen<T> {
       return;
     }
     Minecraft minecraft = this.minecraft;
-    String dialogText =
-        dialogData.getDialogText(
-            this.getEasyNPC().getLivingEntity(), minecraft != null ? minecraft.player : null);
+    String dialogText = dialogData.getDialogText(this.dialogMetaData);
     if (dialogText == null || dialogText.isBlank()) {
       return;
     }
@@ -164,7 +170,7 @@ public class DialogContainerScreen<T extends DialogMenu> extends Screen<T> {
 
               // Custom action on button click.
               if (dialogButtonEntry.hasActionData()) {
-                UUID buttonId = dialogButtonEntry.getId();
+                UUID buttonId = dialogButtonEntry.id();
                 NetworkMessageHandlerManager.getServerHandler()
                     .triggerDialogButtonAction(
                         this.getEasyNPCUUID(), this.getDialogUUID(), buttonId);
@@ -174,8 +180,7 @@ public class DialogContainerScreen<T extends DialogMenu> extends Screen<T> {
             });
 
     // Set dialog button visibility.
-    dialogButton.visible =
-        dialogButtonEntry.getName() != null && !dialogButtonEntry.getName().isBlank();
+    dialogButton.visible = dialogButtonEntry.name() != null && !dialogButtonEntry.name().isBlank();
 
     this.dialogButtons.add(dialogButton);
   }
