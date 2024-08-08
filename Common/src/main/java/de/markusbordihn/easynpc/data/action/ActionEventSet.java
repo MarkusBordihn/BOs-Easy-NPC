@@ -59,7 +59,7 @@ public class ActionEventSet {
     if (actionEventType != ActionEventType.NONE && this.actionsMap.containsKey(actionEventType)) {
       return this.actionsMap.get(actionEventType);
     }
-    return ActionDataSet.EMPTY;
+    return new ActionDataSet();
   }
 
   public boolean hasActionEvent(ActionEventType actionEventType) {

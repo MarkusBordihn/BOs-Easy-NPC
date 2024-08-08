@@ -26,6 +26,8 @@ import java.util.function.Function;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
@@ -96,18 +98,19 @@ public class NetworkHandler implements NetworkHandlerInterface {
       final ResourceLocation messageID,
       final Class<M> networkMessage,
       final Function<FriendlyByteBuf, M> creator) {
+    int registrationID = id++;
+    log.debug(
+        "Registering client network message handler for {} with ID {}", messageID, registrationID);
     INSTANCE.registerMessage(
-        id++,
+        registrationID,
         networkMessage,
         M::write,
         creator,
         (message, contextSupplier) -> {
           NetworkEvent.Context context = contextSupplier.get();
           context.enqueueWork(
-              () -> {
-                message.handleClient();
-                context.setPacketHandled(true);
-              });
+              () -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> message::handleClient));
+          context.setPacketHandled(true);
         },
         Optional.of(NetworkDirection.PLAY_TO_CLIENT));
   }
@@ -117,18 +120,18 @@ public class NetworkHandler implements NetworkHandlerInterface {
       final ResourceLocation messageID,
       final Class<M> networkMessage,
       final Function<FriendlyByteBuf, M> creator) {
+    int registrationID = id++;
+    log.debug(
+        "Registering server network message handler for {} with ID {}", messageID, registrationID);
     INSTANCE.registerMessage(
-        id++,
+        registrationID,
         networkMessage,
         M::write,
         creator,
         (message, contextSupplier) -> {
           NetworkEvent.Context context = contextSupplier.get();
-          context.enqueueWork(
-              () -> {
-                message.handleServer(context.getSender());
-                context.setPacketHandled(true);
-              });
+          context.enqueueWork(() -> message.handleServer(context.getSender()));
+          context.setPacketHandled(true);
         },
         Optional.of(NetworkDirection.PLAY_TO_SERVER));
   }

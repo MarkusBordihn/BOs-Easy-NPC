@@ -48,7 +48,7 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public class DialogButtonEditorContainerScreen<T extends EditorMenu> extends EditorScreen<T> {
+public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
 
   protected Button homeButton;
   protected Button dialogButton;
@@ -63,7 +63,7 @@ public class DialogButtonEditorContainerScreen<T extends EditorMenu> extends Edi
   private String buttonLabelValue = "";
   private String buttonNameValue = "";
 
-  public DialogButtonEditorContainerScreen(T menu, Inventory inventory, Component component) {
+  public DialogButtonEditorScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 
@@ -86,7 +86,7 @@ public class DialogButtonEditorContainerScreen<T extends EditorMenu> extends Edi
             Component.translatable(Constants.TEXT_PREFIX + "removeDialogButton.deleteQuestion"),
             Component.translatable(
                 Constants.TEXT_PREFIX + "removeDialogButton.deleteWarning",
-                this.getDialogButtonData().getName()),
+                this.getDialogButtonData().name()),
             Component.translatable(Constants.TEXT_PREFIX + "removeDialogButton.deleteButton"),
             CommonComponents.GUI_CANCEL));
   }
@@ -140,12 +140,12 @@ public class DialogButtonEditorContainerScreen<T extends EditorMenu> extends Edi
                 this.dialogButton.x + this.dialogButton.getWidth(),
                 this.topPos + 7,
                 140,
-                this.getDialogButtonData().getName(21),
+                this.getDialogButtonData().getButtonName(21).getString(),
                 onPress -> {}));
     this.dialogButtonButton.active = false;
 
     // Button Name
-    this.buttonNameValue = this.getDialogButtonData().getName();
+    this.buttonNameValue = this.getDialogButtonData().name();
     this.buttonNameBox = new TextField(this.font, this.leftPos + 100, this.topPos + 30, 150);
     this.buttonNameBox.setMaxLength(64);
     this.buttonNameBox.setValue(this.buttonNameValue);
@@ -173,7 +173,7 @@ public class DialogButtonEditorContainerScreen<T extends EditorMenu> extends Edi
                 }));
 
     // Button Label
-    this.buttonLabelValue = this.getDialogButtonData().getLabel();
+    this.buttonLabelValue = this.getDialogButtonData().label();
     this.buttonLabelBox = new TextField(this.font, this.leftPos + 100, this.topPos + 50, 100);
     this.buttonLabelBox.setMaxLength(DialogButtonEntry.MAX_BUTTON_LABEL_LENGTH);
     this.buttonLabelBox.setValue(this.buttonLabelValue);
@@ -236,8 +236,10 @@ public class DialogButtonEditorContainerScreen<T extends EditorMenu> extends Edi
     }
 
     // Basic dialog button data
-    dialogButtonEntry.setName(this.buttonNameBox.getValue());
-    dialogButtonEntry.setLabel(this.buttonLabelBox.getValue());
+    DialogButtonEntry newDialogButtonEntry =
+        dialogButtonEntry
+            .withName(this.buttonNameBox.getValue())
+            .withLabel(this.buttonLabelBox.getValue());
 
     // Save dialog button action data.
     NetworkMessageHandlerManager.getServerHandler()
@@ -245,7 +247,7 @@ public class DialogButtonEditorContainerScreen<T extends EditorMenu> extends Edi
             this.getEasyNPCUUID(),
             this.getDialogUUID(),
             this.getDialogButtonUUID(),
-            dialogButtonEntry);
+            newDialogButtonEntry);
   }
 
   @Override
@@ -281,7 +283,7 @@ public class DialogButtonEditorContainerScreen<T extends EditorMenu> extends Edi
 
   protected Button getActionDataButton(int left, int top) {
     int buttonWidth = 300;
-    ActionDataSet actionDataSet = this.getDialogButtonData().getActionDataSet();
+    ActionDataSet actionDataSet = this.getDialogButtonData().actionDataSet();
     if (actionDataSet == null || actionDataSet.isEmpty()) {
       Component buttonLabel =
           Component.translatable(
@@ -298,7 +300,7 @@ public class DialogButtonEditorContainerScreen<T extends EditorMenu> extends Edi
                           EditorType.DIALOG_BUTTON,
                           this.getDialogUUID(),
                           this.getDialogButtonUUID(),
-                          ActionDataEntry.EMPTY))
+                          new ActionDataEntry()))
           .setRenderCenter(false);
     } else {
       Component buttonLabel =

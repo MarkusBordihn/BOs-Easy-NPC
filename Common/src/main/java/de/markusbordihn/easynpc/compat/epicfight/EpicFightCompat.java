@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Markus Bordihn
+ * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,17 +17,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.configuration.main;
+package de.markusbordihn.easynpc.compat.epicfight;
 
-import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenuWrapper;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-
-public class MainConfigurationContainerScreenWrapper
-    extends MainConfigurationContainerScreen<MainConfigurationMenuWrapper> {
-
-  public MainConfigurationContainerScreenWrapper(
-      MainConfigurationMenuWrapper menu, Inventory inventory, Component component) {
-    super(menu, inventory, component);
-  }
-}
+public class EpicFightCompat {}

@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.item.configuration;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,10 +50,12 @@ public class MoveEasyNPCItem extends Item {
   public InteractionResult interactLivingEntity(
       ItemStack itemStack, Player player, LivingEntity livingEntity, InteractionHand hand) {
     if (!player.level.isClientSide
-        && livingEntity instanceof EasyNPCBaseEntity<?> easyNPCBaseEntity
+        && livingEntity instanceof EasyNPC<?> easyNPC
         && player instanceof ServerPlayer serverPlayer
-        && (serverPlayer.isCreative() || easyNPCBaseEntity.isOwner(serverPlayer))) {
-      targetedLivingEntityMap.put(player, easyNPCBaseEntity);
+        && (serverPlayer.isCreative()
+            || (easyNPC.getEasyNPCOwnerData() == null
+                && easyNPC.getEasyNPCOwnerData().isOwner(serverPlayer)))) {
+      targetedLivingEntityMap.put(player, livingEntity);
       return InteractionResult.SUCCESS;
     }
     return InteractionResult.PASS;

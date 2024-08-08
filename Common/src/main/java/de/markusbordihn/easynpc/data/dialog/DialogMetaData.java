@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Markus Bordihn
+ * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,17 +17,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.editor.dialog;
+package de.markusbordihn.easynpc.data.dialog;
 
-import de.markusbordihn.easynpc.menu.editor.DialogEditorMenuWrapper;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 
-public class DialogEditorContainerScreenWrapper
-    extends DialogEditorContainerScreen<DialogEditorMenuWrapper> {
+public record DialogMetaData(LivingEntity livingEntity, Player player) {
 
-  public DialogEditorContainerScreenWrapper(
-      DialogEditorMenuWrapper menu, Inventory inventory, Component component) {
-    super(menu, inventory, component);
+  @Override
+  public String toString() {
+    return "DialogMetaData [livingEntity=" + livingEntity + ", player=" + player + "]";
   }
 }

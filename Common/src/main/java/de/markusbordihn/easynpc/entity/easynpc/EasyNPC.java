@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.entity.easynpc;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
@@ -38,9 +37,9 @@ import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ServerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SoundData;
-import de.markusbordihn.easynpc.entity.easynpc.data.SpawnData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SpawnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TickerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
@@ -157,8 +156,8 @@ public interface EasyNPC<E extends PathfinderMob> extends Npc {
     return this instanceof ScaleData<E> scaleData ? scaleData : null;
   }
 
-  default SpawnData<E> getEasyNPCSpawnData() {
-    return this instanceof SpawnData<E> spawnData ? spawnData : null;
+  default ServerData<E> getEasyNPCServerData() {
+    return this instanceof ServerData<E> serverData ? serverData : null;
   }
 
   default SpawnerData<E> getEasyNPCSpawnerData() {
@@ -329,10 +328,4 @@ public interface EasyNPC<E extends PathfinderMob> extends Npc {
   <T> void setSynchedEntityData(SynchedDataIndex synchedDataIndex, T data);
 
   <T> T getSynchedEntityData(SynchedDataIndex synchedDataIndex);
-
-  <T> void setServerEntityData(ServerDataAccessor<T> entityDataAccessor, T entityData);
-
-  <T> T getServerEntityData(ServerDataAccessor<T> entityDataAccessor);
-
-  <T> void defineServerEntityData(ServerDataAccessor<T> entityDataAccessor, T entityData);
 }

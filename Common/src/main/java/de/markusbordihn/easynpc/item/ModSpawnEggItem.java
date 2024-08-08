@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.item;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.SpawnData;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import java.util.Objects;
 import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
@@ -113,11 +113,14 @@ public class ModSpawnEggItem extends SpawnEggItem {
             !Objects.equals(blockPos, blockPos1) && direction == Direction.UP);
 
     if (entity != null) {
-      if (entity instanceof EasyNPC<?> easyNPC) {
-        log.info("Spawned Easy NPC Entity {} by player {} ...", easyNPC, player);
-        SpawnData<?> spawnData = easyNPC.getEasyNPCSpawnData();
-        spawnData.onInitialSpawn((ServerLevel) level, player, itemStack);
+      // Set owner data for the entity if it is an EasyNPC.
+      if (entity instanceof EasyNPC<?> easyNPC && player != null) {
+        OwnerData<?> ownerData = easyNPC.getEasyNPCOwnerData();
+        if (ownerData != null) {
+          ownerData.setOwnerUUID(player.getUUID());
+        }
       }
+
       itemStack.shrink(1);
       level.gameEvent(context.getPlayer(), GameEvent.ENTITY_PLACE, blockPos);
     }

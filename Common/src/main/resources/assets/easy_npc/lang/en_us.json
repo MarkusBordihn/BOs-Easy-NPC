@@ -191,6 +191,7 @@
   "text.easy_npc.config.look_objective.title": "Look Objectives",
   "text.easy_npc.config.look_random_around": "Look Random Around",
   "text.easy_npc.config.main.title": "Configuration for %s",
+  "text.easy_npc.config.make_default.tooltip": "Define as the default dialog.",
   "text.easy_npc.config.max_health": "Max Health",
   "text.easy_npc.config.melee_attack": "Melee Attack",
   "text.easy_npc.config.move_back_to_home": "Move back to Home",

@@ -20,137 +20,108 @@
 package de.markusbordihn.easynpc.data.dialog;
 
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
+import de.markusbordihn.easynpc.utils.TextUtils;
+import de.markusbordihn.easynpc.utils.UUIDUtils;
 import java.util.Objects;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 
-public class DialogButtonEntry {
+public record DialogButtonEntry(
+    UUID id,
+    String name,
+    String label,
+    DialogButtonType type,
+    ActionDataSet actionDataSet,
+    boolean isTranslationKey) {
 
   public static final String DATA_ACTIONS_TAG = "Actions";
   public static final String DATA_BUTTON_NAME_TAG = "Name";
   public static final String DATA_LABEL_TAG = "Label";
-  public static final String DATA_TRANSLATE_TAG = "Translate";
   public static final String DATA_TYPE_TAG = "Type";
   public static final int MAX_BUTTON_LABEL_LENGTH = 32;
-  private ActionDataSet actionDataSet;
-  private UUID id;
-  private String label = "";
-  private String name;
-  private boolean translate;
-  private DialogButtonType type;
 
   public DialogButtonEntry(CompoundTag compoundTag) {
-    this.load(compoundTag);
+    this(
+        compoundTag.getString(DATA_BUTTON_NAME_TAG),
+        compoundTag.getString(DATA_LABEL_TAG),
+        DialogButtonType.get(compoundTag.getString(DATA_TYPE_TAG)),
+        new ActionDataSet(compoundTag, DATA_ACTIONS_TAG));
   }
 
   public DialogButtonEntry(String name, String label, ActionDataSet actionDataSet) {
-    this(name, label, DialogButtonType.DEFAULT, actionDataSet, false);
+    this(name, label, DialogButtonType.DEFAULT, actionDataSet);
   }
 
   public DialogButtonEntry(String name, DialogButtonType type) {
-    this(name, null, type, new ActionDataSet(), false);
+    this(name, null, type, new ActionDataSet());
   }
 
   public DialogButtonEntry(
-      String name,
-      String label,
-      DialogButtonType type,
-      ActionDataSet actionDataSet,
-      boolean translate) {
-    this.name = name;
-    this.label = DialogUtils.generateButtonLabel(label != null && !label.isEmpty() ? label : name);
-    this.id = UUID.nameUUIDFromBytes(this.label.getBytes());
-    this.type = type;
-    this.actionDataSet = actionDataSet != null ? actionDataSet : new ActionDataSet();
-    this.translate = translate;
+      String name, String label, DialogButtonType type, ActionDataSet actionDataSet) {
+    this(
+        UUIDUtils.textToUUID(
+            label != null && !label.isEmpty() ? label : DialogUtils.generateButtonLabel(name)),
+        name,
+        label != null && !label.isEmpty() ? label : DialogUtils.generateButtonLabel(name),
+        type,
+        actionDataSet != null ? actionDataSet : new ActionDataSet(),
+        TextUtils.isTranslationKey(name));
   }
 
-  public UUID getId() {
-    return this.id;
-  }
-
-  public String getLabel() {
-    return this.label;
-  }
-
-  public void setLabel(String label) {
-    this.label =
-        DialogUtils.generateButtonLabel(label != null && !label.isEmpty() ? label : this.name);
-    this.id = UUID.nameUUIDFromBytes(this.label.getBytes());
-  }
-
-  public String getName() {
-    return this.name;
-  }
-
-  public void setName(String name) {
-    this.name = name != null ? name : "";
-  }
-
-  public String getName(int maxLength) {
+  public String name(int maxLength) {
     return this.name.length() > maxLength ? this.name.substring(0, maxLength - 1) + '…' : this.name;
   }
 
   public Component getButtonName(int maxLength) {
     Component buttonName =
-        this.translate ? Component.translatable(this.name) : Component.literal(this.name);
+        this.isTranslationKey ? Component.translatable(this.name) : Component.literal(this.name);
     if (buttonName.getString().length() > maxLength) {
       buttonName = Component.literal(buttonName.getString().substring(0, maxLength - 1) + '…');
     }
     return buttonName;
   }
 
-  public DialogButtonType getType() {
-    return this.type;
-  }
-
   public boolean hasActionData() {
     return actionDataSet != null && actionDataSet.hasActionData();
   }
 
-  public ActionDataSet getActionDataSet() {
-    return this.actionDataSet;
+  public DialogButtonEntry withName(String name) {
+    return new DialogButtonEntry(
+        this.id, name, this.label, this.type, this.actionDataSet, TextUtils.isTranslationKey(name));
   }
 
-  public void setActionDataSet(ActionDataSet actionDataSet) {
-    this.actionDataSet = actionDataSet == null ? new ActionDataSet() : actionDataSet;
+  public DialogButtonEntry withLabel(String label) {
+    return new DialogButtonEntry(
+        UUIDUtils.textToUUID(label != null && !label.isEmpty() ? label : name),
+        this.name,
+        label,
+        this.type,
+        this.actionDataSet,
+        this.isTranslationKey);
   }
 
-  public boolean getTranslate() {
-    return this.translate;
+  public DialogButtonEntry withActionDataSet(ActionDataSet actionDataSet) {
+    return new DialogButtonEntry(
+        this.id,
+        this.name,
+        this.label,
+        this.type,
+        actionDataSet != null ? actionDataSet : new ActionDataSet(),
+        this.isTranslationKey);
   }
 
-  public void load(CompoundTag compoundTag) {
-
-    this.name = compoundTag.getString(DATA_BUTTON_NAME_TAG);
-    this.type = DialogButtonType.get(compoundTag.getString(DATA_TYPE_TAG));
-    this.translate =
-        compoundTag.contains(DATA_TRANSLATE_TAG) && compoundTag.getBoolean(DATA_TRANSLATE_TAG);
-
-    // Handle label and id creation
-    if (compoundTag.contains(DATA_LABEL_TAG)) {
-      this.setLabel(compoundTag.getString(DATA_LABEL_TAG));
-    } else {
-      this.setLabel(this.name);
-    }
-
-    // Load action data
-    this.actionDataSet = new ActionDataSet(compoundTag, DATA_ACTIONS_TAG);
+  public DialogButtonEntry create(CompoundTag compoundTag) {
+    return new DialogButtonEntry(compoundTag);
   }
 
-  public CompoundTag save(CompoundTag compoundTag) {
+  public CompoundTag write(CompoundTag compoundTag) {
     compoundTag.putString(DATA_BUTTON_NAME_TAG, this.name.trim());
     compoundTag.putString(DATA_TYPE_TAG, this.type.name());
 
     // Only save label if it is different from auto-generated label.
-    if (!Objects.equals(DialogUtils.generateButtonLabel(name), this.label)) {
+    if (this.label != null && !Objects.equals(DialogUtils.generateButtonLabel(name), this.label)) {
       compoundTag.putString(DATA_LABEL_TAG, this.label);
-    }
-
-    // Only save translate if it is true.
-    if (this.translate) {
-      compoundTag.putBoolean(DATA_TRANSLATE_TAG, true);
     }
 
     // Save action data
@@ -160,7 +131,7 @@ public class DialogButtonEntry {
   }
 
   public CompoundTag createTag() {
-    return this.save(new CompoundTag());
+    return this.write(new CompoundTag());
   }
 
   @Override
@@ -173,8 +144,8 @@ public class DialogButtonEntry {
         + this.label
         + ", type="
         + this.type
-        + ", translate="
-        + this.translate
+        + ", isTranslationKey="
+        + this.isTranslationKey
         + ", actionDataSet="
         + this.actionDataSet
         + "]";

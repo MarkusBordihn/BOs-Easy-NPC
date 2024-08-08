@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.action;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -28,7 +29,6 @@ import net.minecraft.nbt.ListTag;
 
 public final class ActionDataSet {
 
-  public static final ActionDataSet EMPTY = new ActionDataSet();
   public static final String ACTION_DATA_SET_TAG = "ActionDataSet";
   private final Set<ActionDataEntry> actionDataEntries = new LinkedHashSet<>();
 
@@ -61,6 +61,67 @@ public final class ActionDataSet {
         this.actionDataEntries.remove(actionDataEntry);
       }
     }
+  }
+
+  public void put(UUID actionDataEntryId, ActionDataEntry actionDataEntry) {
+    if (actionDataEntryId == null || actionDataEntry == null) {
+      return;
+    }
+
+    // Store indexed version of action data set to keep order.
+    ArrayList<ActionDataEntry> indexedActionDataSet = new ArrayList<>(this.actionDataEntries);
+    int index = -1;
+
+    // Find index of action data entry.
+    for (int i = 0; i < indexedActionDataSet.size(); i++) {
+      if (indexedActionDataSet.get(i).getId().equals(actionDataEntryId)) {
+        index = i;
+        break;
+      }
+    }
+
+    // Replace action data entry.
+    if (index >= 0) {
+      indexedActionDataSet.set(index, actionDataEntry);
+    } else {
+      indexedActionDataSet.add(actionDataEntry);
+    }
+
+    // Rebuild action data set.
+    this.actionDataEntries.clear();
+    this.actionDataEntries.addAll(indexedActionDataSet);
+  }
+
+  public void moveUp(ActionDataEntry actionDataEntry) {
+    if (actionDataEntry == null) {
+      return;
+    }
+    int position = this.getPosition(actionDataEntry);
+    if (position <= 0) {
+      return;
+    }
+    ArrayList<ActionDataEntry> indexedActionDataSet = new ArrayList<>(this.actionDataEntries);
+    ActionDataEntry previousActionDataEntry = indexedActionDataSet.get(position - 1);
+    indexedActionDataSet.set(position - 1, actionDataEntry);
+    indexedActionDataSet.set(position, previousActionDataEntry);
+    this.actionDataEntries.clear();
+    this.actionDataEntries.addAll(indexedActionDataSet);
+  }
+
+  public void moveDown(ActionDataEntry actionDataEntry) {
+    if (actionDataEntry == null) {
+      return;
+    }
+    int position = this.getPosition(actionDataEntry);
+    if (position < 0 || position >= this.actionDataEntries.size() - 1) {
+      return;
+    }
+    ArrayList<ActionDataEntry> indexedActionDataSet = new ArrayList<>(this.actionDataEntries);
+    ActionDataEntry nextActionDataEntry = indexedActionDataSet.get(position + 1);
+    indexedActionDataSet.set(position + 1, actionDataEntry);
+    indexedActionDataSet.set(position, nextActionDataEntry);
+    this.actionDataEntries.clear();
+    this.actionDataEntries.addAll(indexedActionDataSet);
   }
 
   public boolean isEmpty() {
@@ -134,7 +195,7 @@ public final class ActionDataSet {
 
   public ActionDataEntry getEntryOrDefault(UUID actionDataEntryId) {
     ActionDataEntry actionDataEntry = this.getEntry(actionDataEntryId);
-    return actionDataEntry != null ? actionDataEntry : ActionDataEntry.EMPTY;
+    return actionDataEntry != null ? actionDataEntry : new ActionDataEntry();
   }
 
   public ActionDataSet load(CompoundTag compoundTag, String listName) {
@@ -142,7 +203,7 @@ public final class ActionDataSet {
         || listName == null
         || listName.isEmpty()
         || !compoundTag.contains(listName)) {
-      return ActionDataSet.EMPTY;
+      return new ActionDataSet();
     }
     ListTag actionDataList = compoundTag.getList(listName, 10);
     return this.load(actionDataList);
@@ -150,7 +211,7 @@ public final class ActionDataSet {
 
   public ActionDataSet load(ListTag actionDataList) {
     if (actionDataList == null || actionDataList.isEmpty()) {
-      return ActionDataSet.EMPTY;
+      return new ActionDataSet();
     }
     this.actionDataEntries.clear();
     for (int i = 0; i < actionDataList.size(); i++) {
