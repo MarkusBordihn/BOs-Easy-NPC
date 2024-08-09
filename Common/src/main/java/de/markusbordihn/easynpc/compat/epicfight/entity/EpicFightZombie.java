@@ -17,33 +17,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.easynpc.data;
+package de.markusbordihn.easynpc.compat.epicfight.entity;
 
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import de.markusbordihn.easynpc.compat.CompatConstants;
+import de.markusbordihn.easynpc.entity.easynpc.raw.ZombieRaw;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.level.Level;
 
-public interface SpawnData<T extends PathfinderMob> extends EasyNPC<T> {
+public class EpicFightZombie extends ZombieRaw {
 
-  MobCategory CATEGORY = MobCategory.MISC;
+  public static final String ID = CompatConstants.MOD_EPIC_FIGHT_PREFIX + ZombieRaw.ID;
 
-  default void onInitialSpawn(ServerLevel level, Player player, ItemStack itemStack) {
-    // Set automatic owner for EasyNPCs spawned by player.
-    if (player != null) {
-      log.debug("Set owner {} for {} ...", player, this);
-      OwnerData<?> ownerData = this.getEasyNPCOwnerData();
-      if (ownerData != null) {
-        ownerData.setOwnerUUID(player.getUUID());
-      }
-    }
-
-    // Add standard objective for EasyNPCs spawned by player.
-    ObjectiveData<?> objectiveData = this.getEasyNPCObjectiveData();
-    if (objectiveData != null) {
-      objectiveData.registerStandardObjectives();
-    }
+  public EpicFightZombie(EntityType<? extends Zombie> entityType, Level level) {
+    super(entityType, level);
   }
 }

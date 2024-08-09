@@ -179,23 +179,29 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
     super.render(guiGraphics, x, y, partialTicks);
 
     // Rotation Text
-    Text.drawString(
-        guiGraphics,
-        this.font,
-        "Rotation X",
-        this.rootRotationXSliderButton.getX() + 5,
-        this.rootRotationXSliderButton.getY() + 25);
-    Text.drawString(
-        guiGraphics,
-        this.font,
-        "Rotation Y",
-        this.rootRotationYSliderButton.getX() + 5,
-        this.rootRotationYSliderButton.getY() + 25);
-    Text.drawString(
-        guiGraphics,
-        this.font,
-        "Rotation Z",
-        this.rootRotationZSliderButton.getX() + 5,
-        this.rootRotationZSliderButton.getY() + 25);
+    if (rootRotationXSliderButton != null) {
+      Text.drawString(
+          guiGraphics,
+          this.font,
+          "Rotation X",
+          this.rootRotationXSliderButton.getX() + 5,
+          this.rootRotationXSliderButton.getY() + 25);
+    }
+    if (rootRotationYSliderButton != null) {
+      Text.drawString(
+          guiGraphics,
+          this.font,
+          "Rotation Y",
+          this.rootRotationYSliderButton.getX() + 5,
+          this.rootRotationYSliderButton.getY() + 25);
+    }
+    if (rootRotationZSliderButton != null) {
+      Text.drawString(
+          guiGraphics,
+          this.font,
+          "Rotation Z",
+          this.rootRotationZSliderButton.getX() + 5,
+          this.rootRotationZSliderButton.getY() + 25);
+    }
   }
 }

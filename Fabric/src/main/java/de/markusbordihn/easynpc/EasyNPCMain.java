@@ -22,6 +22,8 @@ package de.markusbordihn.easynpc;
 import de.markusbordihn.easynpc.block.ModBlocks;
 import de.markusbordihn.easynpc.commands.ModArgumentTypes;
 import de.markusbordihn.easynpc.commands.manager.CommandManager;
+import de.markusbordihn.easynpc.compat.CompatHandler;
+import de.markusbordihn.easynpc.compat.CompatManager;
 import de.markusbordihn.easynpc.config.Config;
 import de.markusbordihn.easynpc.debug.DebugManager;
 import de.markusbordihn.easynpc.entity.LivingEntityEventHandler;
@@ -62,6 +64,9 @@ public class EasyNPCMain implements ModInitializer {
 
     log.info("{} Configuration ...", Constants.LOG_REGISTER_PREFIX);
     Config.register();
+
+    log.info("{} Compatibility Handler ...", Constants.LOG_REGISTER_PREFIX);
+    CompatManager.registerCompatHandler(new CompatHandler());
 
     log.info("{} Entity Types ...", Constants.LOG_REGISTER_PREFIX);
     ModEntityType.registerEntitiesAttributes();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Markus Bordihn
+ * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,15 +17,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.dialog;
+package de.markusbordihn.easynpc.compat;
 
-import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
+import de.markusbordihn.easynpc.Constants;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class DialogContainerScreenWrapper extends DialogContainerScreen<DialogMenu> {
+public class CompatManager {
 
-  public DialogContainerScreenWrapper(DialogMenu menu, Inventory inventory, Component component) {
-    super(menu, inventory, component);
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  private static CompatHandlerInterface compatHandlerInterface;
+
+  private CompatManager() {}
+
+  public static void registerCompatHandler(CompatHandlerInterface compatHandlerInterface) {
+    log.info("{} Compat Handler ...", Constants.LOG_REGISTER_PREFIX);
+    CompatManager.compatHandlerInterface = compatHandlerInterface;
+    compatHandlerInterface.register();
+  }
+
+  public static boolean isModLoaded(String modId) {
+    if (compatHandlerInterface != null) {
+      return compatHandlerInterface.isModLoaded(modId);
+    }
+    return false;
+  }
+
+  public static CompatHandlerInterface getHandler() {
+    return compatHandlerInterface;
   }
 }

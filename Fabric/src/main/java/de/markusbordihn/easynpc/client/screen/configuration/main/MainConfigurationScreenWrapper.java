@@ -17,17 +17,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.editor.dialog;
+package de.markusbordihn.easynpc.client.screen.configuration.main;
 
-import de.markusbordihn.easynpc.menu.editor.DialogTextEditorMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenuWrapper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public class DialogTextEditorContainerScreenWrapper
-    extends DialogTextEditorContainerScreen<DialogTextEditorMenuWrapper> {
+public class MainConfigurationScreenWrapper
+    extends MainConfigurationScreen<MainConfigurationMenuWrapper> {
 
-  public DialogTextEditorContainerScreenWrapper(
-      DialogTextEditorMenuWrapper menu, Inventory inventory, Component component) {
+  public MainConfigurationScreenWrapper(
+      MainConfigurationMenuWrapper menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 }

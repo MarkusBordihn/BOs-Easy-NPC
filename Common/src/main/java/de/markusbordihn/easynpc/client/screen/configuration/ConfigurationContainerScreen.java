@@ -62,8 +62,8 @@ public class ConfigurationContainerScreen<T extends EasyNPCMenu> extends Contain
                 10,
                 "<",
                 onPress ->
-                    this.networkMessageHandler.openConfiguration(
-                        this.getEasyNPCUUID(), ConfigurationType.MAIN)));
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.MAIN)));
   }
 
   @Override
