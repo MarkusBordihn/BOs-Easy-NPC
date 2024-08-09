@@ -117,7 +117,7 @@ public record ExecuteDialogButtonActionMessage(UUID uuid, UUID dialogId, UUID di
     }
 
     // Validate dialog button actions.
-    ActionDataSet actionDataSet = dialogButtonEntry.getActionDataSet();
+    ActionDataSet actionDataSet = dialogButtonEntry.actionDataSet();
     if (actionDataSet == null || actionDataSet.isEmpty()) {
       log.error(
           "Empty dialog button action {} request for {} and dialog {} from {}",

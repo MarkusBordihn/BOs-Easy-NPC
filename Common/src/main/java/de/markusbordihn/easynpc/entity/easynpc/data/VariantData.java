@@ -41,8 +41,7 @@ public interface VariantData<T extends PathfinderMob> extends EasyNPC<T> {
     log.info("- Registering Synched Variant Data for {}.", entityClass.getSimpleName());
     map.put(
         SynchedDataIndex.VARIANT,
-        SynchedEntityData.defineId(
-            EasyNPC.getSynchedEntityDataClass(), EntityDataSerializers.STRING));
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.STRING));
   }
 
   default Enum<?> getDefaultVariant() {

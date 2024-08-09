@@ -78,7 +78,6 @@ public class ModMenuTypes {
 
   public static final DeferredRegister<MenuType<?>> MENU_TYPES =
       DeferredRegister.create(BuiltInRegistries.MENU, Constants.MOD_ID);
-
   public static final DeferredHolder<MenuType<?>, MenuType<SpawnerMenuWrapper>> SPAWNER_MENU =
       MENU_TYPES.register(
           ModMenuType.SPAWNER.getName(), () -> IMenuTypeExtension.create(SpawnerMenuWrapper::new));
@@ -294,7 +293,6 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               ConfigurationType.SCALING.getName(),
               () -> IMenuTypeExtension.create(ScalingConfigurationMenuWrapper::new));
-
   public static final DeferredHolder<MenuType<?>, MenuType<UrlSkinConfigurationMenuWrapper>>
       URL_SKIN_CONFIGURATION_MENU =
           MENU_TYPES.register(

@@ -40,6 +40,14 @@ public class DialogUtils {
 
   protected DialogUtils() {}
 
+  public static String parseDialogText(Component component, DialogMetaData dialogMetaData) {
+    if (dialogMetaData == null) {
+      return component.getString();
+    }
+    return parseDialogText(
+        component.getString(), dialogMetaData.livingEntity(), dialogMetaData.player());
+  }
+
   public static String parseDialogText(String text, LivingEntity entity, Player player) {
 
     // Handle dialog macros, if any.
@@ -62,6 +70,10 @@ public class DialogUtils {
     text = TextFormattingCodes.parseTextFormattingCodes(text);
 
     return text;
+  }
+
+  public static boolean hasDialogMacros(Component component) {
+    return component != null && hasDialogMacros(component.getString());
   }
 
   public static boolean hasDialogMacros(String text) {
@@ -91,6 +103,10 @@ public class DialogUtils {
     return label.length() > maxLength ? label.substring(0, maxLength) : label;
   }
 
+  public static int getNumbersOfDialogLines(Component component, Font font) {
+    return getNumbersOfDialogLines(component, MAX_DIALOG_LINE_LENGTH, font);
+  }
+
   public static int getNumbersOfDialogLines(String text, Font font) {
     return getNumbersOfDialogLines(text, MAX_DIALOG_LINE_LENGTH, font);
   }
@@ -100,12 +116,16 @@ public class DialogUtils {
       return 0;
     }
     Component textComponent = Component.literal(text);
-    return font.split(textComponent, maxLineLength).size();
+    return getNumbersOfDialogLines(Component.literal(text), maxLineLength, font);
+  }
+
+  public static int getNumbersOfDialogLines(Component component, int maxLineLength, Font font) {
+    return font.split(component, maxLineLength).size();
   }
 
   public static DialogDataSet getBasicDialog(String dialog) {
     DialogDataSet dialogDataSet = new DialogDataSet(DialogType.BASIC);
-    DialogDataEntry dialogData = new DialogDataEntry("Basic Dialog", dialog, false);
+    DialogDataEntry dialogData = new DialogDataEntry("Basic Dialog", dialog);
     dialogDataSet.addDialog(dialogData);
     return dialogDataSet;
   }
@@ -137,9 +157,9 @@ public class DialogUtils {
     // Build dialog data set.
     DialogDataSet dialogDataSet = new DialogDataSet(DialogType.YES_NO);
     dialogDataSet.addDefaultDialog(
-        new DialogDataEntry("question", "Question Dialog", dialogText, false, buttons));
-    dialogDataSet.addDialog(new DialogDataEntry("yes_answer", "Yes Dialog", yesDialogText, false));
-    dialogDataSet.addDialog(new DialogDataEntry("no_answer", "No Dialog", noDialogText, false));
+        new DialogDataEntry("question", "Question Dialog", dialogText, buttons));
+    dialogDataSet.addDialog(new DialogDataEntry("yes_answer", "Yes Dialog", yesDialogText));
+    dialogDataSet.addDialog(new DialogDataEntry("no_answer", "No Dialog", noDialogText));
     return dialogDataSet;
   }
 
@@ -155,24 +175,25 @@ public class DialogUtils {
     }
 
     // Check if we could use a compact layout or if we need to use a full layout.
-    String dialogText = dialogData.getDialogText();
+    Component dialogText = dialogData.getDialogText();
     boolean hasDialogMacros = hasDialogMacros(dialogText);
 
     // Check if we need to parse line breaks.
     if (TextFormattingCodes.hasTextLinebreakCodes(dialogText)) {
       dialogText = TextFormattingCodes.parseTextLineBreaks(dialogText);
-    } else if (hasDialogMacros) {
-      dialogText = dialogText + "PLACEHOLDER_FOR_POSSIBLE_MACROS";
     }
 
     // Calculate the number of lines.
     int numberOfLines = getNumbersOfDialogLines(dialogText, font);
+    if (hasDialogMacros) {
+      numberOfLines += 20;
+    }
 
     // Get the max length of the button names to check if we could use a compact layout.
     int maxButtonNameLength = 0;
     if (numberOfButtons > 0) {
       for (DialogButtonEntry buttonData : dialogData.getDialogButtons()) {
-        int buttonNameLength = buttonData.getName().length();
+        int buttonNameLength = buttonData.name().length();
         if (buttonNameLength > maxButtonNameLength) {
           maxButtonNameLength = buttonNameLength;
         }

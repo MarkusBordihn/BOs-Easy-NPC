@@ -113,7 +113,7 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
                           this.getEasyNPCUUID(),
                           actionEventType,
                           configurationType,
-                          ActionDataEntry.EMPTY))
+                          new ActionDataEntry()))
           .setRenderCenter(false);
     } else {
       Component buttonLabel =

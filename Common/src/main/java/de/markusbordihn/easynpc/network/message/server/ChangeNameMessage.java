@@ -21,13 +21,11 @@ package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.handler.NameHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
@@ -70,18 +68,8 @@ public record ChangeNameMessage(UUID uuid, String name, int color) implements Ne
       return;
     }
 
-    // Validate name.
-    if (this.name == null || this.name.isEmpty()) {
-      log.error("Invalid name {} for {} from {}", this.name, easyNPC, serverPlayer);
-      return;
-    }
-
-    // Perform action.
-    if (this.color >= 0) {
-      Style style = Style.EMPTY.withColor(TextColor.fromRgb(this.color));
-      easyNPC.getEntity().setCustomName(Component.literal(this.name).setStyle(style));
-    } else {
-      easyNPC.getEntity().setCustomName(Component.literal(this.name));
+    if (!NameHandler.setCustomName(easyNPC, this.name, this.color)) {
+      log.error("Unable to set custom name {} for {} from {}", this.name, easyNPC, serverPlayer);
     }
   }
 }
