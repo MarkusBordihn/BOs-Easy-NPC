@@ -93,7 +93,7 @@ public class LookObjectiveConfigurationScreen<T extends ConfigurationMenu>
                   objectiveDataEntry.setTargetOwnerUUID(ownerData.getOwnerUUID());
                   if (checkbox.selected()) {
                     NetworkMessageHandlerManager.getServerHandler()
-                        .addObjective(this.getEasyNPCUUID(), objectiveDataEntry);
+                        .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                   } else {
                     NetworkMessageHandlerManager.getServerHandler()
                         .removeObjective(this.getEasyNPCUUID(), objectiveDataEntry);
@@ -159,7 +159,7 @@ public class LookObjectiveConfigurationScreen<T extends ConfigurationMenu>
                         .removeObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                   } else if (!lookAtEntityUUID.getValue().isEmpty()) {
                     NetworkMessageHandlerManager.getServerHandler()
-                        .addObjective(this.getEasyNPCUUID(), objectiveDataEntry);
+                        .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                   }
                 }));
     this.lookAtEntityCheckbox.active = false;
@@ -200,7 +200,7 @@ public class LookObjectiveConfigurationScreen<T extends ConfigurationMenu>
                           ? UUID.fromString(lookAtEntityUUID.getValue())
                           : null);
                   NetworkMessageHandlerManager.getServerHandler()
-                      .addObjective(this.getEasyNPCUUID(), objectiveDataEntry);
+                      .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
                 }));
     this.lookAtEntityUUIDSaveButton.active = false;
   }

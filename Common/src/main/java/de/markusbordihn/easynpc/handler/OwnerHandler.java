@@ -37,7 +37,7 @@ public class OwnerHandler {
 
   public static boolean setOwner(EasyNPC<?> easyNPC, LivingEntity owner) {
     if (easyNPC == null || owner == null) {
-      log.error("[{}] Error setting owner ", easyNPC);
+      log.error("[{}] Error setting owner!", easyNPC);
       return false;
     }
 
@@ -48,7 +48,7 @@ public class OwnerHandler {
     }
 
     if (ownerData.getOwner() != null && ownerData.isOwnedBy(owner)) {
-      log.debug("[{}] Owner is already set to {}", easyNPC, owner);
+      log.debug("[{}] Owner is already set to {}!", easyNPC, owner);
       return true;
     }
 

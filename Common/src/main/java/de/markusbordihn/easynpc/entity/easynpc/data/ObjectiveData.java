@@ -118,15 +118,16 @@ public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default void clearObjectiveDataSet() {
-    setServerEntityData(CUSTOM_DATA_OBJECTIVE_DATA_SET, new ObjectiveDataSet());
+    getEasyNPCServerData()
+        .setServerEntityData(CUSTOM_DATA_OBJECTIVE_DATA_SET, new ObjectiveDataSet());
   }
 
   default ObjectiveDataSet getObjectiveDataSet() {
-    return getServerEntityData(CUSTOM_DATA_OBJECTIVE_DATA_SET);
+    return getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_OBJECTIVE_DATA_SET);
   }
 
   default void setObjectiveDataSet(ObjectiveDataSet objectiveDataSet) {
-    setServerEntityData(CUSTOM_DATA_OBJECTIVE_DATA_SET, objectiveDataSet);
+    getEasyNPCServerData().setServerEntityData(CUSTOM_DATA_OBJECTIVE_DATA_SET, objectiveDataSet);
   }
 
   default boolean hasObjective(String objectiveId) {
@@ -435,9 +436,10 @@ public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default void defineCustomObjectiveData() {
-    defineServerEntityData(CUSTOM_DATA_OBJECTIVE_DATA_SET, new ObjectiveDataSet());
-    defineServerEntityData(CUSTOM_DATA_TARGETED_PLAYER_SET, new HashSet<>());
-    defineServerEntityData(CUSTOM_DATA_TARGETED_ENTITY_SET, new HashSet<>());
+    getEasyNPCServerData()
+        .defineServerEntityData(CUSTOM_DATA_OBJECTIVE_DATA_SET, new ObjectiveDataSet());
+    getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_TARGETED_PLAYER_SET, new HashSet<>());
+    getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_TARGETED_ENTITY_SET, new HashSet<>());
   }
 
   default void addAdditionalObjectiveData(CompoundTag compoundTag) {

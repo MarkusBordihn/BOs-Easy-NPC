@@ -31,7 +31,7 @@ import de.markusbordihn.easynpc.client.screen.configuration.dialog.BasicDialogCo
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.NoneDialogConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.dialog.YesNoDialogConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.equipment.EquipmentConfigurationContainerScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.configuration.main.MainConfigurationContainerScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.configuration.main.MainConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.model.CustomModelConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.model.DefaultModelConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.objective.AttackObjectiveConfigurationScreenWrapper;
@@ -59,12 +59,12 @@ import de.markusbordihn.easynpc.client.screen.configuration.trading.AdvancedTrad
 import de.markusbordihn.easynpc.client.screen.configuration.trading.BasicTradingConfigurationContainerScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.trading.CustomTradingConfigurationContainerScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.trading.NoneTradingConfigurationContainerScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.dialog.DialogContainerScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.dialog.DialogScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.editor.action.ActionDataEditorContainerScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.editor.action.ActionDataEntryEditorContainerScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.editor.dialog.DialogButtonEditorContainerScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.editor.dialog.DialogEditorContainerScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.editor.dialog.DialogTextEditorContainerScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.editor.dialog.DialogButtonEditorScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.editor.dialog.DialogEditorScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.editor.dialog.DialogTextEditorScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.spawner.SpawnerScreenWrapper;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -145,11 +145,10 @@ public class ClientScreens {
     MenuScreens.register(
         ModMenuTypes.DIALOG_ACTION_CONFIGURATION_MENU, DialogActionConfigurationScreenWrapper::new);
     MenuScreens.register(
-        ModMenuTypes.DIALOG_BUTTON_EDITOR_MENU, DialogButtonEditorContainerScreenWrapper::new);
-    MenuScreens.register(ModMenuTypes.DIALOG_EDITOR_MENU, DialogEditorContainerScreenWrapper::new);
-    MenuScreens.register(ModMenuTypes.DIALOG_MENU, DialogContainerScreenWrapper::new);
-    MenuScreens.register(
-        ModMenuTypes.DIALOG_TEXT_EDITOR_MENU, DialogTextEditorContainerScreenWrapper::new);
+        ModMenuTypes.DIALOG_BUTTON_EDITOR_MENU, DialogButtonEditorScreenWrapper::new);
+    MenuScreens.register(ModMenuTypes.DIALOG_EDITOR_MENU, DialogEditorScreenWrapper::new);
+    MenuScreens.register(ModMenuTypes.DIALOG_MENU, DialogScreenWrapper::new);
+    MenuScreens.register(ModMenuTypes.DIALOG_TEXT_EDITOR_MENU, DialogTextEditorScreenWrapper::new);
     MenuScreens.register(
         ModMenuTypes.DISPLAY_ATTRIBUTE_CONFIGURATION_MENU,
         DisplayAttributeConfigurationScreenWrapper::new);
@@ -168,8 +167,7 @@ public class ClientScreens {
     MenuScreens.register(
         ModMenuTypes.LOOK_OBJECTIVE_CONFIGURATION_MENU,
         LookObjectiveConfigurationScreenWrapper::new);
-    MenuScreens.register(
-        ModMenuTypes.MAIN_CONFIGURATION_MENU, MainConfigurationContainerScreenWrapper::new);
+    MenuScreens.register(ModMenuTypes.MAIN_CONFIGURATION_MENU, MainConfigurationScreenWrapper::new);
     MenuScreens.register(
         ModMenuTypes.NONE_DIALOG_CONFIGURATION_MENU, NoneDialogConfigurationScreenWrapper::new);
     MenuScreens.register(

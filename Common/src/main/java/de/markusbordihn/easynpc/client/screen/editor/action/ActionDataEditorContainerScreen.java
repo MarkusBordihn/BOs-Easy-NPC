@@ -64,7 +64,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
     if (this.actionEventType != null && this.actionEventType != ActionEventType.NONE) {
       return this.getAdditionalScreenData().getActionEventSet().getActionEvents(actionEventType);
     } else if (this.editorType != null && this.editorType == EditorType.DIALOG_BUTTON) {
-      return this.getDialogButtonData().getActionDataSet();
+      return this.getDialogButtonData().actionDataSet();
     } else {
       log.error("No valid action data set found!");
       return null;
@@ -99,7 +99,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
                   this.homeButton.getX() + this.homeButton.getWidth(),
                   this.topPos + 3,
                   140,
-                  this.getDialogButtonData().getName(21),
+                  this.getDialogButtonData().getButtonName(21).getString(),
                   onPress ->
                       NetworkMessageHandlerManager.getServerHandler()
                           .openDialogButtonEditor(
@@ -151,7 +151,9 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
             this.leftPos + 5,
             this.topPos + 40,
             this.topPos + 200,
-            19,
+            21,
+            this::handleMoveUpOrderActionDataEntry,
+            this::handleMoveDownOrderActionDataEntry,
             this::handleEditActionDataEntry,
             this::handleDeleteActionDataEntry);
     this.addWidget(this.actionDataList);
@@ -187,7 +189,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
               this.getEasyNPCUUID(),
               this.actionEventType,
               this.configurationType,
-              ActionDataEntry.EMPTY);
+              new ActionDataEntry());
     } else if (this.editorType != null && this.editorType == EditorType.DIALOG_BUTTON) {
       NetworkMessageHandlerManager.getServerHandler()
           .openActionDataEntryEditor(
@@ -195,7 +197,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
               this.editorType,
               this.getDialogUUID(),
               this.getDialogButtonUUID(),
-              ActionDataEntry.EMPTY);
+              new ActionDataEntry());
     } else {
       log.error("No valid new action data entry found!");
     }
@@ -218,13 +220,12 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
                       .actionEventChange(
                           this.getEasyNPCUUID(), this.actionEventType, this.actionDataSet);
                 } else if (this.editorType != null && this.editorType == EditorType.DIALOG_BUTTON) {
-                  this.getDialogButtonData().setActionDataSet(this.actionDataSet);
                   NetworkMessageHandlerManager.getServerHandler()
                       .saveDialogButton(
                           this.getEasyNPCUUID(),
                           this.getDialogUUID(),
                           this.getDialogButtonUUID(),
-                          this.getDialogButtonData());
+                          this.getDialogButtonData().withActionDataSet(this.actionDataSet));
                 } else {
                   log.error(
                       "Unable to delete Action Data Set {} for {}!",
@@ -245,7 +246,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
   }
 
   private void handleEditActionDataEntry(ActionDataEntry actionDataEntry) {
-    log.info("Edit Action Data Entry {}: {}", actionDataEntry.getId(), actionDataEntry);
+    log.info("Editing Action Data Entry {}: {}", actionDataEntry.getId(), actionDataEntry);
     if (this.actionEventType != null && this.actionEventType != ActionEventType.NONE) {
       NetworkMessageHandlerManager.getServerHandler()
           .openActionDataEntryEditor(
@@ -261,6 +262,52 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
     } else {
       log.error("Unable to edit action data entry {}!", actionDataEntry);
     }
+  }
+
+  private void handleMoveUpOrderActionDataEntry(ActionDataEntry actionDataEntry) {
+    log.info("Moving up Action Data Entry {}: {}", actionDataEntry.getId(), actionDataEntry);
+    if (this.actionEventType != null && this.actionEventType != ActionEventType.NONE) {
+      this.actionDataSet.moveUp(actionDataEntry);
+      NetworkMessageHandlerManager.getServerHandler()
+          .actionEventChange(this.getEasyNPCUUID(), this.actionEventType, this.actionDataSet);
+    } else if (this.editorType != null && this.editorType == EditorType.DIALOG_BUTTON) {
+      this.actionDataSet.moveUp(actionDataEntry);
+      NetworkMessageHandlerManager.getServerHandler()
+          .saveDialogButton(
+              this.getEasyNPCUUID(),
+              this.getDialogUUID(),
+              this.getDialogButtonUUID(),
+              this.getDialogButtonData().withActionDataSet(this.actionDataSet));
+    } else {
+      log.error(
+          "Unable to move up Action Data Set {} for {}!",
+          this.actionDataSet,
+          this.getEasyNPCUUID());
+    }
+    this.navigateToActionDataEditor();
+  }
+
+  private void handleMoveDownOrderActionDataEntry(ActionDataEntry actionDataEntry) {
+    log.info("Moving down Action Data Entry {}: {}", actionDataEntry.getId(), actionDataEntry);
+    if (this.actionEventType != null && this.actionEventType != ActionEventType.NONE) {
+      this.actionDataSet.moveDown(actionDataEntry);
+      NetworkMessageHandlerManager.getServerHandler()
+          .actionEventChange(this.getEasyNPCUUID(), this.actionEventType, this.actionDataSet);
+    } else if (this.editorType != null && this.editorType == EditorType.DIALOG_BUTTON) {
+      this.actionDataSet.moveDown(actionDataEntry);
+      NetworkMessageHandlerManager.getServerHandler()
+          .saveDialogButton(
+              this.getEasyNPCUUID(),
+              this.getDialogUUID(),
+              this.getDialogButtonUUID(),
+              this.getDialogButtonData().withActionDataSet(this.actionDataSet));
+    } else {
+      log.error(
+          "Unable to move down Action Data Set {} for {}!",
+          this.actionDataSet,
+          this.getEasyNPCUUID());
+    }
+    this.navigateToActionDataEditor();
   }
 
   @Override
@@ -321,7 +368,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
     Text.drawString(
         guiGraphics,
         this.font,
-        "-",
+        "Action",
         headerLeft + ActionDataListEntry.OPTIONS_LEFT_POS,
         headerTop,
         Constants.FONT_COLOR_BLACK);

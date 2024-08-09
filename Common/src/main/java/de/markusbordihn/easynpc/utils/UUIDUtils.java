@@ -19,9 +19,16 @@
 
 package de.markusbordihn.easynpc.utils;
 
+import de.markusbordihn.easynpc.Constants;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class UUIDUtils {
+
+  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private UUIDUtils() {}
 
@@ -48,5 +55,28 @@ public class UUIDUtils {
     }
 
     return new UUID(mostSignificantBits, leastSignificantBits);
+  }
+
+  public static UUID textToUUID(String text) {
+    if (text != null && !text.isEmpty()) {
+      try {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hashBytes = digest.digest(text.getBytes());
+        long mostSigBits = 0;
+        long leastSigBits = 0;
+
+        for (int i = 0; i < 8; i++) {
+          mostSigBits = (mostSigBits << 8) | (hashBytes[i] & 0xff);
+        }
+        for (int i = 8; i < 16; i++) {
+          leastSigBits = (leastSigBits << 8) | (hashBytes[i] & 0xff);
+        }
+
+        return new UUID(mostSigBits, leastSigBits);
+      } catch (NoSuchAlgorithmException e) {
+        log.error("Unable to create UUID from text: {}", text, e);
+      }
+    }
+    return UUID.randomUUID();
   }
 }

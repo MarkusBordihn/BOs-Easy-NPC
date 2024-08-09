@@ -85,7 +85,7 @@ public class WorldPresetDataFiles {
         List<ResourceLocation> filePaths =
             filesStream
                 .filter(path -> path.toString().endsWith(Constants.NPC_NBT_SUFFIX))
-                .filter(path -> Pattern.matches("[a-z0-9/._-]+", path.getFileName().toString()))
+                .filter(path -> Pattern.matches("[a-zA-Z0-9/._-]+", path.getFileName().toString()))
                 .map(
                     path -> {
                       ResourceLocation resourceLocation =
@@ -96,7 +96,8 @@ public class WorldPresetDataFiles {
                                   + presetDataFolder
                                       .relativize(path)
                                       .toString()
-                                      .replace("\\", "/"));
+                                      .replace("\\", "/")
+                                      .toLowerCase());
                       presetResourceLocationMap.put(resourceLocation, path);
                       return resourceLocation;
                     })
