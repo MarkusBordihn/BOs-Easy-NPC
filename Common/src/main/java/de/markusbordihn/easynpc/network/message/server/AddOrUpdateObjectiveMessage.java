@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.network.message.server;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
+import de.markusbordihn.easynpc.handler.ObjectiveHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -32,18 +32,21 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public record AddObjectiveMessage(UUID uuid, ObjectiveDataEntry objectiveDataEntry)
+public record AddOrUpdateObjectiveMessage(UUID uuid, ObjectiveDataEntry objectiveDataEntry)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "add_objective");
-  public static final CustomPacketPayload.Type<AddObjectiveMessage> PAYLOAD_TYPE =
+  public static final CustomPacketPayload.Type<AddOrUpdateObjectiveMessage> PAYLOAD_TYPE =
       new Type<>(MESSAGE_ID);
-  public static final StreamCodec<RegistryFriendlyByteBuf, AddObjectiveMessage> STREAM_CODEC =
-      StreamCodec.of((buffer, message) -> message.write(buffer), AddObjectiveMessage::create);
+  public static final StreamCodec<RegistryFriendlyByteBuf, AddOrUpdateObjectiveMessage>
+      STREAM_CODEC =
+          StreamCodec.of(
+              (buffer, message) -> message.write(buffer), AddOrUpdateObjectiveMessage::create);
 
-  public static AddObjectiveMessage create(final FriendlyByteBuf buffer) {
-    return new AddObjectiveMessage(buffer.readUUID(), new ObjectiveDataEntry(buffer.readNbt()));
+  public static AddOrUpdateObjectiveMessage create(final FriendlyByteBuf buffer) {
+    return new AddOrUpdateObjectiveMessage(
+        buffer.readUUID(), new ObjectiveDataEntry(buffer.readNbt()));
   }
 
   @Override
@@ -65,17 +68,14 @@ public record AddObjectiveMessage(UUID uuid, ObjectiveDataEntry objectiveDataEnt
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
     EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    ObjectiveData<?> objectiveData = easyNPC != null ? easyNPC.getEasyNPCObjectiveData() : null;
 
-    if (easyNPC == null || this.objectiveDataEntry == null || objectiveData == null) {
-      log.error("Failed to add/update objective for {}: Invalid data", this.uuid);
+    if (easyNPC == null || this.objectiveDataEntry == null) {
+      log.error("Invalid data to add/update objective for {}: ", this);
       return;
     }
 
-    if (objectiveData.addOrUpdateCustomObjective(objectiveDataEntry)) {
-      log.debug("Objective updated for {}: {}", easyNPC, objectiveDataEntry);
-      log.debug("Goals: {}", objectiveData.getEntityGoalSelector().getAvailableGoals());
-      log.debug("Targets: {}", objectiveData.getEntityTargetSelector().getAvailableGoals());
+    if (!ObjectiveHandler.addOrUpdateCustomObjective(easyNPC, this.objectiveDataEntry)) {
+      log.error("Failed to add/update objective {} for {}", objectiveDataEntry, easyNPC);
     }
   }
 }

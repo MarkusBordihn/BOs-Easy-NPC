@@ -32,10 +32,12 @@ import de.markusbordihn.easynpc.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import java.util.UUID;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -72,6 +74,10 @@ public interface ScreenInterface {
     return skinData != null ? skinData.getSkinModel() : null;
   }
 
+  default Component getDialogText() {
+    return this.hasDialogData() ? this.getDialogData().getDialogText() : null;
+  }
+
   default UUID getDialogUUID() {
     return this.getScreenData().dialogId();
   }
@@ -94,6 +100,10 @@ public interface ScreenInterface {
 
   default BaseAttributes getBaseAttributes() {
     return this.getAdditionalScreenData().getBaseAttributes();
+  }
+
+  default ConfigurationData<?> getConfigurationData() {
+    return this.getEasyNPC().getEasyNPCConfigurationData();
   }
 
   default DialogDataSet getDialogDataSet() {

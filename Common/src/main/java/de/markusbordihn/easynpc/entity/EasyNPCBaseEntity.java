@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.synched.SynchedEntityData;
@@ -84,9 +83,9 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
     EasyNPCBase.registerEasyNPCSyncedData(entityDataAccessorMap, EasyNPCBaseEntity.class);
   }
 
-  private final ServerEntityData serverEntityData = new ServerEntityData(this);
   private final EnumMap<TickerType, Integer> tickerMap = new EnumMap<>(TickerType.class);
   protected MerchantOffers offers;
+  private ServerEntityData serverEntityData;
   private int attackAnimationTick;
   private int npcDataVersion = -1;
   private UUID persistentAngerTarget;
@@ -105,10 +104,11 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
 
   @Override
   public FakePlayer getFakePlayer(ServerLevel level, BlockPos blockPos) {
-    if (this.fakePlayer == null) {
+    if (FakePlayer.isInvalidFakePlayer(this.fakePlayer)) {
       this.fakePlayer = new FakePlayer(level, blockPos);
+      return this.fakePlayer;
     }
-    return this.fakePlayer.setBlockPos(blockPos);
+    return this.fakePlayer.updatePosition(level, blockPos);
   }
 
   @Override
@@ -269,18 +269,8 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
       DifficultyInstance difficulty,
       MobSpawnType mobSpawnType,
       SpawnGroupData spawnGroupData) {
-    spawnGroupData =
-        super.finalizeSpawn(serverLevelAccessor, difficulty, mobSpawnType, spawnGroupData);
-    log.debug(
-        "FinalizeSpawn for {} with spawnGroupData {} at {}",
-        this,
-        spawnGroupData,
-        this.blockPosition());
-    this.setHomePosition(this.blockPosition());
-    if (!this.hasObjectives()) {
-      this.registerStandardObjectives();
-    }
-    return spawnGroupData;
+    return finalizeEasyNPCSpawn(
+        super.finalizeSpawn(serverLevelAccessor, difficulty, mobSpawnType, spawnGroupData));
   }
 
   @Override
@@ -375,18 +365,16 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
   }
 
   @Override
-  public <T> void setServerEntityData(ServerDataAccessor<T> entityDataAccessor, T entityData) {
-    this.serverEntityData.set(entityDataAccessor, entityData);
+  public void defineServerEntityData() {
+    this.serverEntityData = new ServerEntityData(this);
   }
 
   @Override
-  public <T> T getServerEntityData(ServerDataAccessor<T> entityDataAccessor) {
-    return this.serverEntityData.get(entityDataAccessor);
-  }
-
-  @Override
-  public <T> void defineServerEntityData(ServerDataAccessor<T> entityDataAccessor, T entityData) {
-    this.serverEntityData.define(entityDataAccessor, entityData);
+  public ServerEntityData getServerEntityData() {
+    if (this.serverEntityData == null) {
+      this.defineServerEntityData();
+    }
+    return this.serverEntityData;
   }
 
   @Override
@@ -514,6 +502,7 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
       net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
     super.defineSynchedData(builder);
     this.defineEasyNPCBaseSyncedData(builder);
+    this.defineEasyNPCBaseServerSideData();
   }
 
   @Override

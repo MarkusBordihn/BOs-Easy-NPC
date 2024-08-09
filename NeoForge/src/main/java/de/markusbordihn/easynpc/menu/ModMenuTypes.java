@@ -294,7 +294,6 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               ConfigurationType.SCALING.getName(),
               () -> IMenuTypeExtension.create(ScalingConfigurationMenuWrapper::new));
-
   public static final DeferredHolder<MenuType<?>, MenuType<UrlSkinConfigurationMenuWrapper>>
       URL_SKIN_CONFIGURATION_MENU =
           MENU_TYPES.register(

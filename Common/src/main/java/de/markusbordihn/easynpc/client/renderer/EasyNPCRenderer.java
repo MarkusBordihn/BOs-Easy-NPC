@@ -83,20 +83,40 @@ public interface EasyNPCRenderer<E extends PathfinderMob, M extends EntityModel<
         (LivingEntityRenderer<E, M>)
             RendererManager.getLivingEntityRenderer(renderEntityType, customEntity);
     if (livingEntityRenderer != null) {
-      RendererManager.copyCustomLivingEntityData(entity, customEntity);
-      livingEntityRenderer.render(
-          (E) customEntity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-      return true;
+      try {
+        RendererManager.copyCustomLivingEntityData(entity, customEntity);
+        livingEntityRenderer.render(
+            (E) customEntity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+        return true;
+      } catch (Exception exception) {
+        log.error(
+            "Failed to render custom living entity {} ({}): {}",
+            customEntity,
+            renderEntityType,
+            exception);
+        EntityTypeManager.addUnsupportedEntityType(renderEntityType);
+        return false;
+      }
     }
 
     // Alternative render custom entity over entity render, if supported.
     EntityRenderer<E> entityRenderer =
         (EntityRenderer<E>) RendererManager.getEntityRenderer(renderEntityType, customEntity);
     if (entityRenderer != null) {
-      RendererManager.copyCustomLivingEntityData(entity, customEntity);
-      entityRenderer.render(
-          (E) customEntity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-      return true;
+      try {
+        RendererManager.copyCustomLivingEntityData(entity, customEntity);
+        entityRenderer.render(
+            (E) customEntity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+        return true;
+      } catch (Exception exception) {
+        log.error(
+            "Failed to render custom entity {} ({}): {}",
+            customEntity,
+            renderEntityType,
+            exception);
+        EntityTypeManager.addUnsupportedEntityType(renderEntityType);
+        return false;
+      }
     }
 
     // Give up rendering, if no custom renderer is available.

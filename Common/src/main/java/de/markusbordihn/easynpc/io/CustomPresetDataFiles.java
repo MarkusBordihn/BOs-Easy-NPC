@@ -125,7 +125,8 @@ public class CustomPresetDataFiles {
                                   + presetDataFolder
                                       .relativize(path)
                                       .toString()
-                                      .replace("\\", "/"));
+                                      .replace("\\", "/")
+                                      .toLowerCase());
                       presetResourceLocationMap.put(resourceLocation, path);
                       return resourceLocation;
                     })

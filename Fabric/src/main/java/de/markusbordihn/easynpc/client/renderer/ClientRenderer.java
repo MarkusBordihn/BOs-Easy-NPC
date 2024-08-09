@@ -38,8 +38,10 @@ import de.markusbordihn.easynpc.client.renderer.entity.standard.WolfModelRendere
 import de.markusbordihn.easynpc.client.renderer.entity.standard.ZombieModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.ZombieVillagerModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.layers.CustomHumanoidArmorLayer;
+import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.minecraft.client.renderer.entity.ZombieRenderer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -103,5 +105,13 @@ public class ClientRenderer {
     EntityRendererRegistry.register(ModEntityType.HORSE, HorseModelRenderer::new);
     EntityRendererRegistry.register(ModEntityType.SKELETON_HORSE, HorseModelRenderer::new);
     EntityRendererRegistry.register(ModEntityType.ZOMBIE_HORSE, HorseModelRenderer::new);
+
+    // Raw entities (for modding only)
+    EntityRendererRegistry.register(ModEntityType.ZOMBIE_RAW, ZombieRenderer::new);
+
+    // Optional: Epic Fight entities
+    if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
+      EntityRendererRegistry.register(ModEntityType.EPIC_FIGHT_ZOMBIE, ZombieRenderer::new);
+    }
   }
 }

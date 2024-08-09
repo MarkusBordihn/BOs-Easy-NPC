@@ -35,6 +35,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Wolf;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie;
 import de.markusbordihn.easynpc.entity.easynpc.npc.ZombieVillager;
+import de.markusbordihn.easynpc.entity.easynpc.raw.ZombieRaw;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 
@@ -202,6 +203,13 @@ public class ModEntityTypes {
           .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(ZombieVillager.ID);
+
+  // Raw entities (for modding only)
+  public static final EntityType<ZombieRaw> ZOMBIE_RAW =
+      EntityType.Builder.of(ZombieRaw::new, CATEGORY)
+          .sized(HUMANOID_SIZE_WIDTH, HUMANOID_SIZE_HEIGHT)
+          .clientTrackingRange(CLIENT_TRACKING_RANGE)
+          .build(ZombieRaw.ID);
 
   private ModEntityTypes() {}
 }

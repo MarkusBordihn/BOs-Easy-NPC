@@ -28,7 +28,6 @@ import de.markusbordihn.easynpc.io.DataFileHandler;
 import de.markusbordihn.easynpc.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
-import de.markusbordihn.easynpc.screen.ScreenManager;
 import de.markusbordihn.easynpc.tabs.ModTabs;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -69,9 +68,6 @@ public class EasyNPCClient implements ClientModInitializer {
 
           log.info("{} Entity Type Manager ...", Constants.LOG_REGISTER_PREFIX);
           EntityTypeManager.register();
-
-          log.info("{} Screen Manager ...", Constants.LOG_REGISTER_PREFIX);
-          ScreenManager.register();
         });
   }
 }

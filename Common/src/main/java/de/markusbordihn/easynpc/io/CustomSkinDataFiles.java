@@ -26,8 +26,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.stream.Stream;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,6 +38,7 @@ public class CustomSkinDataFiles {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String DATA_FOLDER_NAME = "skin";
+  protected static final String TEMPLATE_PREFIX = "_template.png";
 
   private CustomSkinDataFiles() {}
 
@@ -56,19 +60,30 @@ public class CustomSkinDataFiles {
 
       // Copy example skin model template files, if any.
       String skinModelName = skinModel.getName();
-      ResourceLocation resourceLocation =
-          ResourceLocation.fromNamespaceAndPath(
-              Constants.MOD_ID,
-              "textures/entity/" + skinModelName + "/" + skinModelName + "_template.png");
-      File skinModelTemplateFile =
-          skinModelFolder.resolve(skinModelName + "_template.png").toFile();
-      if (skinModelTemplateFile.exists()) {
-        log.warn(
-            "Skin model template file {} already exists, skipping copy!", skinModelTemplateFile);
-      } else {
-        log.info(
-            "Copy skin model template file {} to {} ...", resourceLocation, skinModelTemplateFile);
-        DataFileHandler.copyResourceFile(resourceLocation, skinModelTemplateFile);
+
+      // Get all files which end with _template.png from the resource location.
+      Map<ResourceLocation, Resource> resourceLocations =
+          Minecraft.getInstance()
+              .getResourceManager()
+              .listResources(
+                  "textures/entity/" + skinModelName,
+                  fileName -> fileName.toString().endsWith(TEMPLATE_PREFIX));
+
+      for (ResourceLocation resourceLocation : resourceLocations.keySet()) {
+        File skinModelTemplateFile =
+            skinModelFolder
+                .resolve(DataFileHandler.getFileNameFromResourceLocation(resourceLocation))
+                .toFile();
+        if (skinModelTemplateFile.exists()) {
+          log.warn(
+              "Skin model template file {} already exists, skipping copy!", skinModelTemplateFile);
+        } else {
+          log.info(
+              "Copy skin model template file {} to {} ...",
+              resourceLocation,
+              skinModelTemplateFile);
+          DataFileHandler.copyResourceFile(resourceLocation, skinModelTemplateFile);
+        }
       }
     }
 

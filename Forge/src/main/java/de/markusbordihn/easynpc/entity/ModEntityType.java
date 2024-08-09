@@ -20,6 +20,9 @@
 package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.compat.CompatConstants;
+import de.markusbordihn.easynpc.compat.epicfight.entity.EpicFightEntityTypes;
+import de.markusbordihn.easynpc.compat.epicfight.entity.EpicFightZombie;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Allay;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken;
@@ -36,6 +39,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Wolf;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie;
 import de.markusbordihn.easynpc.entity.easynpc.npc.ZombieVillager;
+import de.markusbordihn.easynpc.entity.easynpc.raw.ZombieRaw;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -106,6 +110,20 @@ public class ModEntityType {
   public static final RegistryObject<EntityType<ZombieVillager>> ZOMBIE_VILLAGER =
       ENTITY_TYPES.register(ZombieVillager.ID, () -> ModEntityTypes.ZOMBIE_VILLAGER);
 
+  // Raw entities (for modding only)
+  public static final RegistryObject<EntityType<ZombieRaw>> ZOMBIE_RAW =
+      ENTITY_TYPES.register(ZombieRaw.ID, () -> ModEntityTypes.ZOMBIE_RAW);
+
+  // Optional: Epic Fight entities
+  public static RegistryObject<EntityType<EpicFightZombie>> EPIC_FIGHT_ZOMBIE;
+
+  static {
+    if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
+      EPIC_FIGHT_ZOMBIE =
+          ENTITY_TYPES.register(EpicFightZombie.ID, () -> EpicFightEntityTypes.ZOMBIE);
+    }
+  }
+
   private ModEntityType() {}
 
   @SubscribeEvent
@@ -138,5 +156,16 @@ public class ModEntityType {
     event.put(HORSE.get(), Horse.createAttributes().build());
     event.put(SKELETON_HORSE.get(), Horse.createAttributes().build());
     event.put(ZOMBIE_HORSE.get(), Horse.createAttributes().build());
+
+    // Raw entities (for modding only)
+    event.put(
+        ZOMBIE_RAW.get(), net.minecraft.world.entity.monster.Zombie.createAttributes().build());
+
+    // Optional: Epic Fight entities
+    if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
+      event.put(
+          EPIC_FIGHT_ZOMBIE.get(),
+          net.minecraft.world.entity.monster.Zombie.createAttributes().build());
+    }
   }
 }

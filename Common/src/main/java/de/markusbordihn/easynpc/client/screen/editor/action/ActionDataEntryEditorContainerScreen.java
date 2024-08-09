@@ -88,7 +88,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
     this.actionDataEntryId = this.getActionDataEntryUUID();
     this.actionDataEntry = this.getActionDataEntry();
     this.actionDataType =
-        this.actionDataEntry != ActionDataEntry.EMPTY
+        this.actionDataEntry.getType() != ActionDataType.NONE
             ? this.actionDataEntry.getType()
             : ActionDataType.COMMAND;
   }
@@ -97,7 +97,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
     if (this.actionEventType != null && this.actionEventType != ActionEventType.NONE) {
       return this.getAdditionalScreenData().getActionEventSet().getActionEvents(actionEventType);
     } else if (this.editorType != null && this.editorType == EditorType.DIALOG_BUTTON) {
-      return this.getDialogButtonData().getActionDataSet();
+      return this.getDialogButtonData().actionDataSet();
     }
     log.error("No valid action data set found for {}!", this.getEasyNPCUUID());
     return new ActionDataSet();
@@ -105,19 +105,16 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
 
   private ActionDataEntry getActionDataEntry() {
     if (this.actionDataSet != null
-        && this.actionDataSet != ActionDataSet.EMPTY
         && this.actionDataEntryId != null
         && this.actionDataSet.contains(this.actionDataEntryId)) {
       return this.actionDataSet.getEntryOrDefault(this.actionDataEntryId);
-    } else if (this.actionDataSet != null
-        && this.actionDataSet != ActionDataSet.EMPTY
-        && this.actionDataEntryId != null) {
+    } else if (this.actionDataSet != null && this.actionDataEntryId != null) {
       log.error(
           "No valid action data entry found for {} in {}!",
           this.actionDataEntryId,
           this.actionDataSet);
     }
-    return ActionDataEntry.EMPTY;
+    return new ActionDataEntry();
   }
 
   private void navigateToActionDataEditor() {
@@ -141,26 +138,22 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
       return;
     }
 
-    // Remove existing and prepare new action data entry
-    if (this.actionDataEntryId != null) {
-      this.actionDataSet.remove(this.actionDataEntryId);
-    }
+    // Store action data entry and update action data set.
     ActionDataEntry newActionDataEntry =
-        actionEntryWidget != null ? actionEntryWidget.getActionDataEntry() : ActionDataEntry.EMPTY;
-    this.actionDataSet.add(newActionDataEntry);
+        actionEntryWidget != null ? actionEntryWidget.getActionDataEntry() : new ActionDataEntry();
+    this.actionDataSet.put(this.actionDataEntryId, newActionDataEntry);
 
     // Save action data set
     if (this.actionEventType != null && this.actionEventType != ActionEventType.NONE) {
       NetworkMessageHandlerManager.getServerHandler()
           .actionEventChange(this.getEasyNPCUUID(), actionEventType, this.actionDataSet);
     } else if (this.editorType != null && this.editorType == EditorType.DIALOG_BUTTON) {
-      this.getDialogButtonData().setActionDataSet(this.actionDataSet);
       NetworkMessageHandlerManager.getServerHandler()
           .saveDialogButton(
               this.getEasyNPCUUID(),
               this.getDialogUUID(),
               this.getDialogButtonUUID(),
-              this.getDialogButtonData());
+              this.getDialogButtonData().withActionDataSet(this.actionDataSet));
     } else {
       log.error(
           "Unable to save Action Data Set {} for {}!", this.actionDataSet, this.getEasyNPCUUID());
@@ -184,13 +177,12 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
                       .actionEventChange(
                           this.getEasyNPCUUID(), this.actionEventType, this.actionDataSet);
                 } else if (this.editorType != null && this.editorType == EditorType.DIALOG_BUTTON) {
-                  this.getDialogButtonData().setActionDataSet(this.actionDataSet);
                   NetworkMessageHandlerManager.getServerHandler()
                       .saveDialogButton(
                           this.getEasyNPCUUID(),
                           this.getDialogUUID(),
                           this.getDialogButtonUUID(),
-                          this.getDialogButtonData());
+                          this.getDialogButtonData().withActionDataSet(this.actionDataSet));
                 } else {
                   log.error(
                       "Unable to delete Action Data Set {} for {}!",
@@ -383,7 +375,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
       this.deleteButton.active =
           this.actionDataSet != null
               && this.actionDataEntry != null
-              && this.actionDataEntry != ActionDataEntry.EMPTY
+              && this.actionDataEntry.isValidAndNotEmpty()
               && this.actionDataEntryId != null
               && this.actionDataEntryId != Constants.EMPTY_UUID;
     }

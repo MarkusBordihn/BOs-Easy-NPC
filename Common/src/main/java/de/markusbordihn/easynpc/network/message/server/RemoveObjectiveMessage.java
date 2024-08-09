@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.network.message.server;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
+import de.markusbordihn.easynpc.handler.ObjectiveHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -65,35 +65,13 @@ public record RemoveObjectiveMessage(UUID uuid, ObjectiveDataEntry objectiveData
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
     EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
+    if (easyNPC == null || this.objectiveDataEntry == null) {
+      log.error("Invalid data to remove objective for {}: ", this);
       return;
     }
 
-    // Validate objective data
-    if (this.objectiveDataEntry == null) {
-      log.error("Unable to add objective data for {} because it is null!", easyNPC);
-      return;
-    }
-
-    // Verify objective data
-    ObjectiveData<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
-    if (objectiveData == null) {
-      log.error("Invalid objective data for {} from {}", easyNPC, serverPlayer);
-      return;
-    }
-
-    // Perform action.
-    if (objectiveData.removeCustomObjective(this.objectiveDataEntry)) {
-      log.debug(
-          "Removed objective {} for {} from {}", this.objectiveDataEntry, easyNPC, serverPlayer);
-      log.debug(
-          "Available goals for {}: {}",
-          easyNPC,
-          objectiveData.getEntityGoalSelector().getAvailableGoals());
-      log.debug(
-          "Available targets for {}: {}",
-          easyNPC,
-          objectiveData.getEntityTargetSelector().getAvailableGoals());
+    if (!ObjectiveHandler.removeCustomObjective(easyNPC, this.objectiveDataEntry)) {
+      log.error("Failed to remove objective {} for {}", objectiveDataEntry, easyNPC);
     }
   }
 }

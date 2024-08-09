@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.minecraft.Util;
+import net.minecraft.network.chat.Component;
 
 public class TextFormattingCodes {
 
@@ -102,8 +103,24 @@ public class TextFormattingCodes {
     return text;
   }
 
+  public static boolean hasTextLinebreakCodes(Component component) {
+    return component != null && hasTextLinebreakCodes(component.getString());
+  }
+
   public static boolean hasTextLinebreakCodes(String text) {
     return text != null && !text.isEmpty() && textLinebreakCodes.stream().anyMatch(text::contains);
+  }
+
+  public static Component parseTextFormattingCodes(Component component) {
+    return component != null
+        ? Component.literal(parseTextFormattingCodes(component.getString()))
+        : component;
+  }
+
+  public static Component parseTextLineBreaks(Component component) {
+    return component != null
+        ? Component.literal(parseTextLineBreaks(component.getString()))
+        : component;
   }
 
   public static String parseTextLineBreaks(String text) {

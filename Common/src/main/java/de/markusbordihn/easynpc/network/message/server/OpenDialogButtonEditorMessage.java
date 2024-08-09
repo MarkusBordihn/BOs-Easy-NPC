@@ -121,7 +121,7 @@ public record OpenDialogButtonEditorMessage(UUID uuid, UUID dialogId, UUID dialo
           easyNPC,
           serverPlayer);
       dialogDataEntry.setDialogButton(newDialogButton);
-      newDialogButtonId = newDialogButton.getId();
+      newDialogButtonId = newDialogButton.id();
     } else if (dialogButtonId != null && !dialogData.hasDialogButton(dialogId, dialogButtonId)) {
       log.error(
           "Invalid dialog button id {} for {} from {}", dialogButtonId, easyNPC, serverPlayer);

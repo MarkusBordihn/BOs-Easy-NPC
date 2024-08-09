@@ -40,15 +40,15 @@ public interface SpawnerData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default UUID getSpawnerUUID() {
-    return this.getServerEntityData(CUSTOM_DATA_SPAWNER_UUID);
+    return getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_SPAWNER_UUID);
   }
 
   default void setSpawnerUUID(UUID uuid) {
-    this.setServerEntityData(CUSTOM_DATA_SPAWNER_UUID, uuid);
+    getEasyNPCServerData().setServerEntityData(CUSTOM_DATA_SPAWNER_UUID, uuid);
   }
 
   default void defineCustomSpawnerData() {
-    defineServerEntityData(CUSTOM_DATA_SPAWNER_UUID, null);
+    getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_SPAWNER_UUID, null);
   }
 
   default void addAdditionalSpawnerData(CompoundTag compoundTag) {

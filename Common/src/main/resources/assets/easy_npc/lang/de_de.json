@@ -191,6 +191,7 @@
   "text.easy_npc.config.look_objective.title": "Schau Ziele",
   "text.easy_npc.config.look_random_around": "Schau zufällig herum",
   "text.easy_npc.config.main.title": "Konfiguration für %s",
+  "text.easy_npc.config.make_default.tooltip": "Als Standarddialog definieren",
   "text.easy_npc.config.max_health": "Max. Gesundheit",
   "text.easy_npc.config.melee_attack": "Nahkampf",
   "text.easy_npc.config.move_back_to_home": "Zurück nach Hause",

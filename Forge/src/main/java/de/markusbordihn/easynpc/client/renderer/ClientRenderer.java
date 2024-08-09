@@ -38,7 +38,9 @@ import de.markusbordihn.easynpc.client.renderer.entity.standard.VillagerModelRen
 import de.markusbordihn.easynpc.client.renderer.entity.standard.WolfModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.ZombieModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.ZombieVillagerModelRenderer;
+import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.entity.ModEntityType;
+import net.minecraft.client.renderer.entity.ZombieRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -109,5 +111,13 @@ public class ClientRenderer {
     event.registerEntityRenderer(ModEntityType.HORSE.get(), HorseModelRenderer::new);
     event.registerEntityRenderer(ModEntityType.SKELETON_HORSE.get(), HorseModelRenderer::new);
     event.registerEntityRenderer(ModEntityType.ZOMBIE_HORSE.get(), HorseModelRenderer::new);
+
+    // Raw entities (for modding only)
+    event.registerEntityRenderer(ModEntityType.ZOMBIE_RAW.get(), ZombieRenderer::new);
+
+    // Optional: Epic Fight entities
+    if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
+      event.registerEntityRenderer(ModEntityType.EPIC_FIGHT_ZOMBIE.get(), ZombieRenderer::new);
+    }
   }
 }

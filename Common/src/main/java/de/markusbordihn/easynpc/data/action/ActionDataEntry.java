@@ -42,7 +42,6 @@ public final class ActionDataEntry {
   public static final int DEFAULT_PERMISSION_LEVEL = 2;
   public static final int MAX_PERMISSION_LEVEL = 2;
   public static final int MIN_PERMISSION_LEVEL = 0;
-  public static final ActionDataEntry EMPTY = new ActionDataEntry(ActionDataType.NONE);
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String DEFAULT_COMMAND = "";
   private ActionDataType actionDataType = ActionDataType.NONE;
@@ -52,6 +51,10 @@ public final class ActionDataEntry {
   private boolean enableDebug = false;
   private boolean executeAsUser = false;
   private int permissionLevel = DEFAULT_PERMISSION_LEVEL;
+
+  public ActionDataEntry() {
+    this(ActionDataType.COMMAND);
+  }
 
   public ActionDataEntry(CompoundTag compoundTag) {
     this.load(compoundTag);

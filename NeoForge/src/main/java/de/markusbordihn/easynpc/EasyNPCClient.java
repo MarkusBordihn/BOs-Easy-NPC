@@ -26,7 +26,6 @@ import de.markusbordihn.easynpc.client.screen.ClientScreens;
 import de.markusbordihn.easynpc.io.DataFileHandler;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
-import de.markusbordihn.easynpc.screen.ScreenManager;
 import de.markusbordihn.easynpc.tabs.ModTabs;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -53,9 +52,6 @@ public class EasyNPCClient {
 
           log.info("{} Register Entity Type Manager ...", Constants.LOG_REGISTER_PREFIX);
           event.enqueueWork(EntityTypeManager::register);
-
-          log.info("{} Screen Manager ...", Constants.LOG_REGISTER_PREFIX);
-          ScreenManager.register();
         });
     NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
     ModTabs.CREATIVE_TABS.register(modEventBus);

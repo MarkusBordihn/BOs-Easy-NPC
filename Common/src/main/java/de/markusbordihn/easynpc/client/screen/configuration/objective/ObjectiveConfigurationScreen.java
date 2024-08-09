@@ -64,7 +64,7 @@ public class ObjectiveConfigurationScreen<T extends ConfigurationMenu>
           objectiveDataEntry.setSpeedModifier(speedModifier);
           if (checkbox.selected()) {
             NetworkMessageHandlerManager.getServerHandler()
-                .addObjective(this.getEasyNPCUUID(), objectiveDataEntry);
+                .addOrUpdateObjective(this.getEasyNPCUUID(), objectiveDataEntry);
           } else {
             NetworkMessageHandlerManager.getServerHandler()
                 .removeObjective(this.getEasyNPCUUID(), objectiveDataEntry);
