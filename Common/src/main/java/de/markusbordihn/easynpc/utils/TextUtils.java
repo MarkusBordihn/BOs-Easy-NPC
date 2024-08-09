@@ -19,12 +19,20 @@
 
 package de.markusbordihn.easynpc.utils;
 
+import java.util.regex.Pattern;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 public class TextUtils {
 
+  private static final String TRANSLATION_KEY_REGEXP = "^[\\w-]+(?:\\.[\\w-]+)*\\.[\\w-]+$";
+  private static final Pattern TRANSLATION_KEY_PATTERN = Pattern.compile(TRANSLATION_KEY_REGEXP);
+
   private TextUtils() {}
+
+  public static boolean isTranslationKey(String text) {
+    return text != null && !text.isEmpty() && TRANSLATION_KEY_PATTERN.matcher(text).matches();
+  }
 
   public static Component normalizeName(String name) {
     return Component.literal(normalizeString(name));

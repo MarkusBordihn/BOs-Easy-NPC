@@ -22,11 +22,19 @@ public class FakePlayer extends ServerPlayer {
         level,
         new GameProfile(UUID.randomUUID(), "FakePlayer"),
         ClientInformation.createDefault());
-    this.setBlockPos(blockPos);
+    this.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
   }
 
-  public FakePlayer setBlockPos(BlockPos blockPos) {
-    this.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+  public static boolean isInvalidFakePlayer(FakePlayer fakePlayer) {
+    return !(fakePlayer instanceof FakePlayer) || !fakePlayer.isAlive();
+  }
+
+  public FakePlayer updatePosition(ServerLevel level, BlockPos blockPos) {
+    if (this.level() != level) {
+      this.setLevel(level);
+    } else if (this.blockPosition().distSqr(blockPos) > 1.0D) {
+      this.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+    }
     return this;
   }
 

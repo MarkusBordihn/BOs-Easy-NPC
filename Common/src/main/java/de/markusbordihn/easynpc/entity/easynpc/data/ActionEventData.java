@@ -66,11 +66,11 @@ public interface ActionEventData<E extends PathfinderMob> extends EasyNPC<E> {
   }
 
   default ActionEventSet getActionEventSet() {
-    return getServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET);
+    return getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET);
   }
 
   default void setActionEventSet(ActionEventSet actions) {
-    setServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET, actions);
+    getEasyNPCServerData().setServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET, actions);
   }
 
   default boolean hasActionEvent(ActionEventType actionEventType) {
@@ -92,22 +92,24 @@ public interface ActionEventData<E extends PathfinderMob> extends EasyNPC<E> {
   }
 
   default void clearActionEventSet() {
-    setServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET, new ActionEventSet());
+    getEasyNPCServerData().setServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET, new ActionEventSet());
   }
 
   default int getActionPermissionLevel() {
-    return getServerEntityData(CUSTOM_DATA_ACTION_PERMISSION_LEVEL);
+    return getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_ACTION_PERMISSION_LEVEL);
   }
 
   default void setActionPermissionLevel(int actionPermissionLevel) {
-    setServerEntityData(CUSTOM_DATA_ACTION_PERMISSION_LEVEL, actionPermissionLevel);
+    getEasyNPCServerData()
+        .setServerEntityData(CUSTOM_DATA_ACTION_PERMISSION_LEVEL, actionPermissionLevel);
   }
 
   default void defineSynchedActionData() {}
 
   default void defineCustomActionData() {
-    defineServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET, new ActionEventSet());
-    defineServerEntityData(CUSTOM_DATA_ACTION_PERMISSION_LEVEL, 0);
+    getEasyNPCServerData()
+        .defineServerEntityData(CUSTOM_DATA_ACTION_EVENT_SET, new ActionEventSet());
+    getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_ACTION_PERMISSION_LEVEL, 0);
   }
 
   default void addAdditionalActionData(CompoundTag compoundTag) {

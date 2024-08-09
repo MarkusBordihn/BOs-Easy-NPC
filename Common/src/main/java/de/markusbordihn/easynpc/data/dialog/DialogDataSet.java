@@ -165,22 +165,9 @@ public class DialogDataSet {
     return this.dialogByIdMap.containsKey(id);
   }
 
-  public boolean hasDialogButton(String dialogLabel, UUID dialogButtonId) {
-    return this.dialogByLabelMap.containsKey(dialogLabel)
-        && this.dialogByLabelMap.get(dialogLabel).hasDialogButton(dialogButtonId);
-  }
-
   public boolean hasDialogButton(UUID dialogId, UUID dialogButtonId) {
     return this.dialogByIdMap.containsKey(dialogId)
         && this.dialogByIdMap.get(dialogId).hasDialogButton(dialogButtonId);
-  }
-
-  public DialogButtonEntry getDialogButton(String dialogLabel, UUID dialogButtonId) {
-    DialogDataEntry dialogData = this.dialogByLabelMap.getOrDefault(dialogLabel, null);
-    if (dialogData != null) {
-      return dialogData.getDialogButton(dialogButtonId);
-    }
-    return null;
   }
 
   public DialogButtonEntry getDialogButton(UUID dialogId, UUID dialogButtonId) {

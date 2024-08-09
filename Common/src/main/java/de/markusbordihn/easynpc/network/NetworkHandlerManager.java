@@ -24,7 +24,7 @@ import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.network.message.client.ExportClientPresetMessage;
 import de.markusbordihn.easynpc.network.message.client.OpenMenuCallbackMessage;
 import de.markusbordihn.easynpc.network.message.client.SyncDataMessage;
-import de.markusbordihn.easynpc.network.message.server.AddObjectiveMessage;
+import de.markusbordihn.easynpc.network.message.server.AddOrUpdateObjectiveMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeActionEventMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeAdvancedTradingMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeBasicTradingMessage;
@@ -140,7 +140,9 @@ public class NetworkHandlerManager {
     log.info("Registering server network handler ...");
 
     networkHandler.registerServerNetworkMessageHandler(
-        AddObjectiveMessage.MESSAGE_ID, AddObjectiveMessage.class, AddObjectiveMessage::create);
+        AddOrUpdateObjectiveMessage.MESSAGE_ID,
+        AddOrUpdateObjectiveMessage.class,
+        AddOrUpdateObjectiveMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ChangeActionEventMessage.MESSAGE_ID,

@@ -19,8 +19,10 @@
 
 package de.markusbordihn.easynpc.client.screen.editor.action;
 
+import de.markusbordihn.easynpc.client.screen.editor.action.ActionDataListEntry.OnDown;
 import de.markusbordihn.easynpc.client.screen.editor.action.ActionDataListEntry.OnEdit;
 import de.markusbordihn.easynpc.client.screen.editor.action.ActionDataListEntry.OnRemove;
+import de.markusbordihn.easynpc.client.screen.editor.action.ActionDataListEntry.OnUp;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import net.minecraft.client.Minecraft;
@@ -37,6 +39,8 @@ class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
       int top,
       int bottom,
       int entryHeight,
+      OnUp onUp,
+      OnDown onDown,
       OnEdit onEdit,
       OnRemove onRemove) {
     super(minecraft, width, height, top, bottom, entryHeight);
@@ -44,10 +48,20 @@ class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
     this.setRenderBackground(false);
 
     // Add entries
+    int topPos = top + 4;
     if (actionDataSet != null) {
       for (ActionDataEntry actionDataEntry : actionDataSet.getEntries()) {
         this.addEntry(
-            new ActionDataListEntry(minecraft, actionDataEntry, left, top, onEdit, onRemove));
+            new ActionDataListEntry(
+                minecraft,
+                actionDataEntry,
+                actionDataSet,
+                left,
+                topPos,
+                onUp,
+                onDown,
+                onEdit,
+                onRemove));
       }
     }
   }

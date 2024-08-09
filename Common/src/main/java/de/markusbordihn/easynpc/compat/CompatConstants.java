@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Markus Bordihn
+ * Copyright 2023 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,17 +17,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.editor.dialog;
+package de.markusbordihn.easynpc.compat;
 
-import de.markusbordihn.easynpc.menu.editor.DialogTextEditorMenuWrapper;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
+public class CompatConstants {
 
-public class DialogTextEditorContainerScreenWrapper
-    extends DialogTextEditorContainerScreen<DialogTextEditorMenuWrapper> {
+  public static final String MOD_EPIC_FIGHT_ID = "epicfight";
+  public static final String MOD_EPIC_FIGHT_NAME = "Epic Fight";
+  public static final String MOD_EPIC_FIGHT_PREFIX = "epic_fight_";
+  public static boolean MOD_EPIC_FIGHT_LOADED = false;
 
-  public DialogTextEditorContainerScreenWrapper(
-      DialogTextEditorMenuWrapper menu, Inventory inventory, Component component) {
-    super(menu, inventory, component);
-  }
+  private CompatConstants() {}
 }
