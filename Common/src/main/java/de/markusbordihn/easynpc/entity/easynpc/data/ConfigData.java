@@ -47,6 +47,8 @@ public interface ConfigData<T extends PathfinderMob> extends EasyNPC<T> {
       } else if (npcDataVersion < Constants.NPC_DATA_VERSION) {
         log.warn("Outdated Easy NPC Data with version {} for {}!", npcDataVersion, this);
         log.warn("Will try to convert data automatically to new format.");
+      } else {
+        log.info("Easy NPC Data {} for {}.", npcDataVersion, this);
       }
       this.setNPCDataVersion(npcDataVersion);
     } else {

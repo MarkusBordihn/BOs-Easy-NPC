@@ -42,7 +42,7 @@ import de.markusbordihn.easynpc.data.spawner.SpawnerSettingType;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.data.trading.TradingValueType;
 import de.markusbordihn.easynpc.network.NetworkHandlerManager;
-import de.markusbordihn.easynpc.network.message.server.AddObjectiveMessage;
+import de.markusbordihn.easynpc.network.message.server.AddOrUpdateObjectiveMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeActionEventMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeAdvancedTradingMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeBasicTradingMessage;
@@ -110,9 +110,9 @@ public interface ServerNetworkMessageHandlerInterface {
     }
   }
 
-  default void addObjective(UUID uuid, ObjectiveDataEntry objectiveDataEntry) {
+  default void addOrUpdateObjective(UUID uuid, ObjectiveDataEntry objectiveDataEntry) {
     if (uuid != null && objectiveDataEntry != null) {
-      NetworkHandlerManager.sendToServer(new AddObjectiveMessage(uuid, objectiveDataEntry));
+      NetworkHandlerManager.sendToServer(new AddOrUpdateObjectiveMessage(uuid, objectiveDataEntry));
     }
   }
 

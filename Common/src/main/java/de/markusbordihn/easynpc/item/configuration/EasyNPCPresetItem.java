@@ -165,14 +165,21 @@ public class EasyNPCPresetItem extends Item {
     entity.load(entityPreset);
 
     // Set spawner UUID, if available.
-    if (hasSpawnerUUID(itemStack) && entity instanceof EasyNPC<?> easyNPC) {
+    UUID spawnerUUID = getSpawnerUUID(itemStack);
+    if (spawnerUUID != null && entity instanceof EasyNPC<?> easyNPC) {
       easyNPC.getEasyNPCSpawnerData().setSpawnerUUID(getSpawnerUUID(itemStack));
     }
 
     // Move entity to and spawn entity.
     entity.moveTo(blockPos.getX() + 0.5f, blockPos.getY(), blockPos.getZ() + 0.5f);
     if (level.addFreshEntity(entity)) {
-      log.debug("Spawned {} at {} with {} in {}", entityType, blockPos, entityPreset, level);
+      log.debug(
+          "Spawned {} at {} from spawner {} with {} in {}",
+          entityType,
+          blockPos,
+          spawnerUUID,
+          entityPreset,
+          level);
       return true;
     }
     return false;

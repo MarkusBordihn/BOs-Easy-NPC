@@ -77,11 +77,11 @@ public interface DialogData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default DialogDataSet getDialogDataSet() {
-    return getServerEntityData(CUSTOM_DATA_DIALOG_DATA_SET);
+    return getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_DIALOG_DATA_SET);
   }
 
   default void setDialogDataSet(DialogDataSet dialogDataSet) {
-    setServerEntityData(CUSTOM_DATA_DIALOG_DATA_SET, dialogDataSet);
+    getEasyNPCServerData().setServerEntityData(CUSTOM_DATA_DIALOG_DATA_SET, dialogDataSet);
   }
 
   default void clearDialogDataSet() {
@@ -141,7 +141,7 @@ public interface DialogData<T extends PathfinderMob> extends EasyNPC<T> {
   default void defineSynchedDialogData() {}
 
   default void defineCustomDialogData() {
-    defineServerEntityData(CUSTOM_DATA_DIALOG_DATA_SET, new DialogDataSet());
+    getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_DIALOG_DATA_SET, new DialogDataSet());
   }
 
   default void addAdditionalDialogData(CompoundTag compoundTag) {

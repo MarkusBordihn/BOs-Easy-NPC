@@ -17,26 +17,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.screen;
+package de.markusbordihn.easynpc.compat;
 
-import de.markusbordihn.easynpc.Constants;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.minecraftforge.fml.ModList;
 
-public class ScreenManager {
+public class CompatHandler implements CompatHandlerInterface {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private static final String LOG_PREFIX = "[Screen Manager]";
-
-  private static boolean jeiLoaded = false;
-
-  public static void register() {
-    try {
-      Class.forName("mezz.jei.api.IModPlugin");
-      jeiLoaded = true;
-    } catch (ClassNotFoundException e) {
-      jeiLoaded = false;
-    }
-    log.info("{} JEI loaded: {}.", LOG_PREFIX, jeiLoaded);
+  @Override
+  public boolean isModLoaded(String modId) {
+    return ModList.get().isLoaded(modId);
   }
+
+  @Override
+  public void registerEpicFight() {}
 }

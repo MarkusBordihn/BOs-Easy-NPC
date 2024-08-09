@@ -153,8 +153,6 @@ public class Screen<T extends EasyNPCMenu> extends net.minecraft.client.gui.scre
     this.xMouse = x;
     this.yMouse = y;
     RenderSystem.disableDepthTest();
-    this.renderBg(guiGraphics, partialTicks, x, y);
-    this.renderLabels(guiGraphics, x, y);
     super.render(guiGraphics, x, y, partialTicks);
     RenderSystem.enableDepthTest();
   }
@@ -165,6 +163,7 @@ public class Screen<T extends EasyNPCMenu> extends net.minecraft.client.gui.scre
       super.renderBackground(guiGraphics, x, y, partialTicks);
     }
     this.renderBg(guiGraphics, partialTicks, x, y);
+    this.renderLabels(guiGraphics, x, y);
   }
 
   protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {

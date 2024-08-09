@@ -27,6 +27,8 @@ import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.client.screen.ClientScreens;
 import de.markusbordihn.easynpc.commands.ModArgumentTypes;
+import de.markusbordihn.easynpc.compat.CompatHandler;
+import de.markusbordihn.easynpc.compat.CompatManager;
 import de.markusbordihn.easynpc.config.Config;
 import de.markusbordihn.easynpc.debug.DebugManager;
 import de.markusbordihn.easynpc.entity.ModEntityType;
@@ -40,7 +42,6 @@ import de.markusbordihn.easynpc.network.NetworkHandler;
 import de.markusbordihn.easynpc.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
-import de.markusbordihn.easynpc.screen.ScreenManager;
 import de.markusbordihn.easynpc.tabs.ModTabs;
 import java.util.Optional;
 import net.neoforged.api.distmarker.Dist;
@@ -77,6 +78,9 @@ public class EasyNPC {
 
     log.info("{} Configuration ...", Constants.LOG_REGISTER_PREFIX);
     Config.register();
+
+    log.info("{} Compatibility Handler ...", Constants.LOG_REGISTER_PREFIX);
+    CompatManager.registerCompatHandler(new CompatHandler());
 
     log.info("{} Command Argument Types ...", Constants.LOG_REGISTER_PREFIX);
     ModArgumentTypes.COMMAND_ARGUMENT_TYPES.register(modEventBus);
@@ -120,9 +124,6 @@ public class EasyNPC {
 
                     log.info("{} Register Entity Type Manager ...", Constants.LOG_REGISTER_PREFIX);
                     event.enqueueWork(EntityTypeManager::register);
-
-                    log.info("{} Screen Manager ...", Constants.LOG_REGISTER_PREFIX);
-                    ScreenManager.register();
                   });
               NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
               ModTabs.CREATIVE_TABS.register(modEventBus);

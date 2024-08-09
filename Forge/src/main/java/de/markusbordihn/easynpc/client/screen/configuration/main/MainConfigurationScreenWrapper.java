@@ -23,10 +23,10 @@ import de.markusbordihn.easynpc.menu.configuration.main.MainConfigurationMenuWra
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public class MainConfigurationContainerScreenWrapper
-    extends MainConfigurationContainerScreen<MainConfigurationMenuWrapper> {
+public class MainConfigurationScreenWrapper
+    extends MainConfigurationScreen<MainConfigurationMenuWrapper> {
 
-  public MainConfigurationContainerScreenWrapper(
+  public MainConfigurationScreenWrapper(
       MainConfigurationMenuWrapper menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }

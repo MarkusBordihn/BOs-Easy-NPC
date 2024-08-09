@@ -17,33 +17,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.easynpc.data;
+package de.markusbordihn.easynpc.compat;
 
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import de.markusbordihn.easynpc.Constants;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public interface SpawnData<T extends PathfinderMob> extends EasyNPC<T> {
+public class CompatManager {
 
-  MobCategory CATEGORY = MobCategory.MISC;
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  default void onInitialSpawn(ServerLevel level, Player player, ItemStack itemStack) {
-    // Set automatic owner for EasyNPCs spawned by player.
-    if (player != null) {
-      log.debug("Set owner {} for {} ...", player, this);
-      OwnerData<?> ownerData = this.getEasyNPCOwnerData();
-      if (ownerData != null) {
-        ownerData.setOwnerUUID(player.getUUID());
-      }
+  private static CompatHandlerInterface compatHandlerInterface;
+
+  private CompatManager() {}
+
+  public static void registerCompatHandler(CompatHandlerInterface compatHandlerInterface) {
+    log.info("{} Compat Handler ...", Constants.LOG_REGISTER_PREFIX);
+    CompatManager.compatHandlerInterface = compatHandlerInterface;
+    compatHandlerInterface.register();
+  }
+
+  public static boolean isModLoaded(String modId) {
+    if (compatHandlerInterface != null) {
+      return compatHandlerInterface.isModLoaded(modId);
     }
+    return false;
+  }
 
-    // Add standard objective for EasyNPCs spawned by player.
-    ObjectiveData<?> objectiveData = this.getEasyNPCObjectiveData();
-    if (objectiveData != null) {
-      objectiveData.registerStandardObjectives();
-    }
+  public static CompatHandlerInterface getHandler() {
+    return compatHandlerInterface;
   }
 }
