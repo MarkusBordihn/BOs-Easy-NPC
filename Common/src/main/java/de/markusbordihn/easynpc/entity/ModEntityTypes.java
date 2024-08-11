@@ -30,6 +30,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.IronGolem;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Piglin;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Wolf;
@@ -77,6 +78,24 @@ public class ModEntityTypes {
           .sized(0.9F, 0.9F)
           .clientTrackingRange(CLIENT_TRACKING_RANGE)
           .build(Pig.ID);
+  public static final EntityType<Piglin> PIGLIN =
+      EntityType.Builder.<Piglin>of(Piglin::new, CATEGORY)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(CLIENT_TRACKING_RANGE)
+          .build(Piglin.ID);
+  public static final EntityType<Piglin> PIGLIN_BRUTE =
+      EntityType.Builder.<Piglin>of(
+              (entityType, level) -> new Piglin(entityType, level, Piglin.Variant.BRUTE), CATEGORY)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(CLIENT_TRACKING_RANGE)
+          .build(Piglin.ID_BRUTE);
+  public static final EntityType<Piglin> PIGLIN_ZOMBIFIED =
+      EntityType.Builder.<Piglin>of(
+              (entityType, level) -> new Piglin(entityType, level, Piglin.Variant.ZOMBIFIED),
+              CATEGORY)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(CLIENT_TRACKING_RANGE)
+          .build(Piglin.ID_ZOMBIFIED);
   public static final EntityType<Horse> SKELETON_HORSE =
       EntityType.Builder.<Horse>of(
               (entityType, level) -> new Horse(entityType, level, Horse.Variant.SKELETON), CATEGORY)

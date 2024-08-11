@@ -27,8 +27,8 @@ import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import java.util.Map;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.core.Rotations;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
 
@@ -37,8 +37,8 @@ public interface EasyNPCModel<E extends Entity> {
   CustomRotation EMPTY_ROTATION = new CustomRotation(0, 0, 0);
 
   private static boolean equalPositionAndRotation(
-      ModelPart modelPart, CustomPosition position, Rotations rotations) {
-    return equalPosition(modelPart, position) && equalRotation(modelPart, rotations);
+      ModelPart modelPart, CustomPosition position, CustomRotation rotation) {
+    return equalPosition(modelPart, position) && equalRotation(modelPart, rotation);
   }
 
   private static boolean equalPosition(ModelPart modelPart, CustomPosition position) {
@@ -48,11 +48,11 @@ public interface EasyNPCModel<E extends Entity> {
         && Math.abs(modelPart.z - position.z()) < 0.01;
   }
 
-  private static boolean equalRotation(ModelPart modelPart, Rotations rotations) {
+  private static boolean equalRotation(ModelPart modelPart, CustomRotation rotation) {
     return modelPart != null
-        && Math.abs(modelPart.xRot - rotations.getX()) < 0.01
-        && Math.abs(modelPart.yRot - rotations.getY()) < 0.01
-        && Math.abs(modelPart.zRot - rotations.getZ()) < 0.01;
+        && Math.abs(modelPart.xRot - rotation.x()) < 0.01
+        && Math.abs(modelPart.yRot - rotation.y()) < 0.01
+        && Math.abs(modelPart.zRot - rotation.z()) < 0.01;
   }
 
   default void resetModelPart(ModelPartType modelPartType, ModelPart modelPart) {
@@ -60,10 +60,10 @@ public interface EasyNPCModel<E extends Entity> {
     modelPart.x = defaultPosition.x();
     modelPart.y = defaultPosition.y();
     modelPart.z = defaultPosition.z();
-    Rotations defaultRotation = getDefaultModelPartRotation(modelPartType);
-    modelPart.xRot = defaultRotation.getX();
-    modelPart.yRot = defaultRotation.getY();
-    modelPart.zRot = defaultRotation.getZ();
+    CustomRotation defaultRotation = getDefaultModelPartRotation(modelPartType);
+    modelPart.xRot = defaultRotation.x();
+    modelPart.yRot = defaultRotation.y();
+    modelPart.zRot = defaultRotation.z();
   }
 
   default boolean isHumanoidModel() {
@@ -72,7 +72,7 @@ public interface EasyNPCModel<E extends Entity> {
 
   default boolean hasDefaultModelPart(ModelPartType modelPartType, ModelPart modelPart) {
     CustomPosition defaultPosition = getDefaultModelPartPosition(modelPartType);
-    Rotations defaultRotation = getDefaultModelPartRotation(modelPartType);
+    CustomRotation defaultRotation = getDefaultModelPartRotation(modelPartType);
     return equalPositionAndRotation(modelPart, defaultPosition, defaultRotation);
   }
 
@@ -86,24 +86,44 @@ public interface EasyNPCModel<E extends Entity> {
     setDefaultModelPartPosition(
         modelPartType, new CustomPosition(modelPart.x, modelPart.y, modelPart.z));
     setDefaultModelPartRotation(
-        modelPartType, new Rotations(modelPart.xRot, modelPart.yRot, modelPart.zRot));
+        modelPartType, new CustomRotation(modelPart.xRot, modelPart.yRot, modelPart.zRot));
     setDefaultModelPart(modelPartType, modelPart);
     return modelPart;
   }
 
   void resetModelParts();
 
-  void setDefaultModelPartPosition(ModelPartType modelPartType, CustomPosition customPosition);
+  Map<ModelPartType, CustomPosition> getModelPartPositionMap();
 
-  CustomPosition getDefaultModelPartPosition(ModelPartType modelPartType);
+  Map<ModelPartType, CustomRotation> getModelPartRotationMap();
 
-  void setDefaultModelPartRotation(ModelPartType modelPartType, Rotations rotations);
+  Map<ModelPartType, ModelPart> getModelPartMap();
 
-  Rotations getDefaultModelPartRotation(ModelPartType modelPartType);
+  default void setDefaultModelPartPosition(
+      final ModelPartType modelPartType, final CustomPosition customPosition) {
+    this.getModelPartPositionMap().put(modelPartType, customPosition);
+  }
 
-  void setDefaultModelPart(ModelPartType modelPartType, ModelPart modelPart);
+  default void setDefaultModelPartRotation(
+      final ModelPartType modelPartType, final CustomRotation rotation) {
+    this.getModelPartRotationMap().put(modelPartType, rotation);
+  }
 
-  ModelPart getDefaultModelPart(ModelPartType modelPartType);
+  default void setDefaultModelPart(final ModelPartType modelPartType, final ModelPart modelPart) {
+    this.getModelPartMap().put(modelPartType, modelPart);
+  }
+
+  default CustomPosition getDefaultModelPartPosition(final ModelPartType modelPartType) {
+    return this.getModelPartPositionMap().getOrDefault(modelPartType, EMPTY_POSITION);
+  }
+
+  default CustomRotation getDefaultModelPartRotation(final ModelPartType modelPartType) {
+    return this.getModelPartRotationMap().getOrDefault(modelPartType, EMPTY_ROTATION);
+  }
+
+  default ModelPart getDefaultModelPart(final ModelPartType modelPartType) {
+    return this.getModelPartMap().getOrDefault(modelPartType, null);
+  }
 
   default void setupCustomModelPose(
       E entity,

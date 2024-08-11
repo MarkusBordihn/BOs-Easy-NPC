@@ -8,6 +8,19 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.5.1
+
+Note: Because of the changes and fixes of the trading data, some trading data will be reset.
+Edit the trades again, and they will be saved in the new format.
+
+- Fixed #229 by adding Piglin, Piglin Brute and Zombified Piglin NPCs.
+- Fixed #221 by using own trading data set and storing last reset time per NPC.
+- Fixed #210 by making sure default values are set for all actions.
+- Fixed duplicated synched entity data for Raw Zombie entity.
+- Optimized screen background rendering for better performance and compatibility.
+- Optimized data handling by converting some to records.
+- Optimized custom model declaration and handling.
+
 ### 5.5.0 (beta only for testing)
 
 - Fixed #279 by automatic converting upper-case resource location to lower-case.

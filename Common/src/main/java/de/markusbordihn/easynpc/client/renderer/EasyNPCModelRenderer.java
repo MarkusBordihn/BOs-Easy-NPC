@@ -23,6 +23,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseModelEntity;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
@@ -37,7 +38,6 @@ import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Rotations;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.LightLayer;
@@ -100,12 +100,12 @@ public interface EasyNPCModelRenderer<E extends EasyNPCBaseModelEntity<E>, M ext
   }
 
   static void renderEntityNameTag(EasyNPC<?> easyNPC, PoseStack poseStack) {
-    Rotations rootRotation = easyNPC.getEasyNPCModelData().getModelRootRotation();
+    CustomRotation rootRotation = easyNPC.getEasyNPCModelData().getModelRootRotation();
     if (rootRotation != null) {
       poseStack.translate(0, -1, 0);
-      poseStack.mulPose(Axis.XP.rotation(-rootRotation.getX()));
-      poseStack.mulPose(Axis.YP.rotation(-rootRotation.getY()));
-      poseStack.mulPose(Axis.ZP.rotation(-rootRotation.getZ()));
+      poseStack.mulPose(Axis.XP.rotation(-rootRotation.x()));
+      poseStack.mulPose(Axis.YP.rotation(-rootRotation.y()));
+      poseStack.mulPose(Axis.ZP.rotation(-rootRotation.z()));
       poseStack.translate(0, 1, 0);
     }
   }
@@ -139,12 +139,12 @@ public interface EasyNPCModelRenderer<E extends EasyNPCBaseModelEntity<E>, M ext
       int packedLight) {}
 
   default <N extends EasyNPC<E>> void rotateEntity(N easyNPC, PoseStack poseStack) {
-    Rotations rootRotation = easyNPC.getEasyNPCModelData().getModelRootRotation();
+    CustomRotation rootRotation = easyNPC.getEasyNPCModelData().getModelRootRotation();
     if (rootRotation != null) {
       poseStack.translate(0, 1, 0);
-      poseStack.mulPose(Axis.XP.rotation(rootRotation.getX()));
-      poseStack.mulPose(Axis.YP.rotation(rootRotation.getY()));
-      poseStack.mulPose(Axis.ZP.rotation(rootRotation.getZ()));
+      poseStack.mulPose(Axis.XP.rotation(rootRotation.x()));
+      poseStack.mulPose(Axis.YP.rotation(rootRotation.y()));
+      poseStack.mulPose(Axis.ZP.rotation(rootRotation.z()));
       poseStack.translate(0, -1, 0);
     }
   }

@@ -37,6 +37,7 @@ public class MenuManager {
 
   private static final Map<UUID, MenuProvider> menuProviderMap = new ConcurrentHashMap<>();
   private static final Map<UUID, ServerPlayer> serverPlayerMap = new ConcurrentHashMap<>();
+  private static final Map<UUID, UUID> menuNpcMap = new ConcurrentHashMap<>();
 
   private static MenuHandlerInterface menuHandlerInterface;
 
@@ -55,6 +56,7 @@ public class MenuManager {
     UUID menuId = UUID.randomUUID();
     menuProviderMap.put(menuId, menuProvider);
     serverPlayerMap.put(menuId, serverPlayer);
+    menuNpcMap.put(menuId, uuid);
     NetworkMessageHandlerManager.getClientHandler().openMenu(uuid, menuId, serverPlayer, data);
   }
 
@@ -74,8 +76,20 @@ public class MenuManager {
       return;
     }
 
+    // Validate NPC UUID
+    UUID npcUUID = menuNpcMap.get(menuId);
+    if (npcUUID == null) {
+      log.error("Invalid NPC UUID for menu {}", menuId);
+      return;
+    }
+
     // Open the menu for the player
-    log.info("Opening menu {} for {} with {}", menuId, serverPlayer, menuProvider);
+    log.info(
+        "Opening menu {} for npc {} and player {} with {}",
+        menuId,
+        npcUUID,
+        serverPlayer,
+        menuProvider);
     OptionalInt dialogId = serverPlayer.openMenu(menuProvider);
     if (dialogId.isPresent()) {
       log.debug(

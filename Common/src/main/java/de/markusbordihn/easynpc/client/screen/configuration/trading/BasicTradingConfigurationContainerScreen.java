@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.client.screen.components.Graphics;
 import de.markusbordihn.easynpc.client.screen.components.PositiveNumberField;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
+import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingSettings;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
@@ -77,12 +78,13 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
 
     // Trading Data
     TradingData<?> tradingData = this.getEasyNPC().getEasyNPCTradingData();
+    TradingDataSet tradingDataSet = tradingData.getTradingDataSet();
 
     // Reset Every Min Edit Box
     this.resetsEveryMinEditBox =
         new TextField(this.font, this.contentLeftPos + 166, this.contentTopPos + 142, 32);
     this.resetsEveryMinEditBox.setMaxLength(3);
-    this.resetsEveryMinEditBox.setValue(tradingData.getTradingResetsEveryMin() + "");
+    this.resetsEveryMinEditBox.setValue(tradingDataSet.getResetsEveryMin() + "");
     this.resetsEveryMinEditBox.setResponder(this::onResetsEveryMinEditBoxChanged);
     this.resetsEveryMinEditBox.setFilter(ValueUtils::isPositiveNumericValueOrZero);
     this.addRenderableWidget(this.resetsEveryMinEditBox);
@@ -91,7 +93,7 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
     this.maxUsesEditBox =
         new PositiveNumberField(this.font, this.contentLeftPos + 166, this.contentTopPos + 165, 32);
     this.maxUsesEditBox.setMaxLength(4);
-    this.maxUsesEditBox.setValue(tradingData.getBasicTradingMaxUses() + "");
+    this.maxUsesEditBox.setValue(tradingDataSet.getMaxUses() + "");
     this.maxUsesEditBox.setResponder(this::onMaxUsesEditBoxChanged);
     this.maxUsesEditBox.setFilter(ValueUtils::isPositiveNumericValueOrZero);
     this.addRenderableWidget(this.maxUsesEditBox);
@@ -100,7 +102,7 @@ public class BasicTradingConfigurationContainerScreen<T extends ConfigurationMen
     this.rewardExpEditBox =
         new TextField(this.font, this.contentLeftPos + 166, this.contentTopPos + 188, 32);
     this.rewardExpEditBox.setMaxLength(3);
-    this.rewardExpEditBox.setValue(tradingData.getBasicTradingRewardExp() + "");
+    this.rewardExpEditBox.setValue(tradingDataSet.getRewardedXP() + "");
     this.rewardExpEditBox.setResponder(this::onRewardExpEditBoxChanged);
     this.rewardExpEditBox.setFilter(ValueUtils::isPositiveNumericValueOrZero);
     this.addRenderableWidget(this.rewardExpEditBox);
