@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.client.model.ModelHelper;
 import de.markusbordihn.easynpc.client.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
+import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import java.util.EnumMap;
@@ -31,7 +32,6 @@ import java.util.Map;
 import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.model.OcelotModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.core.Rotations;
 import net.minecraft.world.entity.Entity;
 
 public class StandardCatModel<T extends Entity> extends OcelotModel<T>
@@ -39,7 +39,7 @@ public class StandardCatModel<T extends Entity> extends OcelotModel<T>
 
   protected final Map<ModelPartType, CustomPosition> modelPartPositionMap =
       new EnumMap<>(ModelPartType.class);
-  protected final Map<ModelPartType, Rotations> modelPartRotationMap =
+  protected final Map<ModelPartType, CustomRotation> modelPartRotationMap =
       new EnumMap<>(ModelPartType.class);
   protected final Map<ModelPartType, ModelPart> modelPartMap = new EnumMap<>(ModelPartType.class);
 
@@ -69,6 +69,21 @@ public class StandardCatModel<T extends Entity> extends OcelotModel<T>
     this.resetModelPart(ModelPartType.LEFT_FRONT_LEG, this.leftFrontLeg);
     this.resetModelPart(ModelPartType.TAIL1, this.tail1);
     this.resetModelPart(ModelPartType.TAIL2, this.tail2);
+  }
+
+  @Override
+  public Map<ModelPartType, CustomPosition> getModelPartPositionMap() {
+    return this.modelPartPositionMap;
+  }
+
+  @Override
+  public Map<ModelPartType, CustomRotation> getModelPartRotationMap() {
+    return this.modelPartRotationMap;
+  }
+
+  @Override
+  public Map<ModelPartType, ModelPart> getModelPartMap() {
+    return this.modelPartMap;
   }
 
   @Override
@@ -144,8 +159,8 @@ public class StandardCatModel<T extends Entity> extends OcelotModel<T>
   }
 
   @Override
-  public void setDefaultModelPartRotation(ModelPartType modelPartType, Rotations rotations) {
-    this.modelPartRotationMap.put(modelPartType, rotations);
+  public void setDefaultModelPartRotation(ModelPartType modelPartType, CustomRotation rotation) {
+    this.modelPartRotationMap.put(modelPartType, rotation);
   }
 
   @Override
@@ -159,7 +174,7 @@ public class StandardCatModel<T extends Entity> extends OcelotModel<T>
   }
 
   @Override
-  public Rotations getDefaultModelPartRotation(ModelPartType modelPartType) {
+  public CustomRotation getDefaultModelPartRotation(ModelPartType modelPartType) {
     return this.modelPartRotationMap.getOrDefault(modelPartType, EMPTY_ROTATION);
   }
 

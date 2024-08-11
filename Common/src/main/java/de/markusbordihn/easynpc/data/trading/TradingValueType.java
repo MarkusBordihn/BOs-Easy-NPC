@@ -20,9 +20,10 @@
 package de.markusbordihn.easynpc.data.trading;
 
 public enum TradingValueType {
-  RESETS_EVERY_MIN,
+  DEMAND,
+  LAST_TRADING_RESET,
   MAX_USES,
-  REWARD_EXP,
   PRICE_MULTIPLIER,
-  DEMAND
+  RESET_TRADING_EVERY_MIN,
+  REWARD_EXP,
 }

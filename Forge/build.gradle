@@ -23,6 +23,8 @@ minecraft {
       workingDirectory project.file('run/client')
       property 'forge.logging.markers', 'REGISTRIES'
       property 'forge.logging.console.level', 'debug'
+      property 'forge.enabledGameTestNamespaces', "${project.mod_id}"
+
       mods {
         easy_npc {
           source sourceSets.main
@@ -44,9 +46,29 @@ minecraft {
       workingDirectory project.file('run/server')
       property 'forge.logging.markers', 'REGISTRIES'
       property 'forge.logging.console.level', 'debug'
+      property 'forge.enabledGameTestNamespaces', "${project.mod_id}"
 
       mods {
         easy_npc {
+          source sourceSets.main
+        }
+      }
+
+      // Mixin Support
+      property 'mixin.env.remapRefMap', 'true'
+      property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+    }
+
+    gameTestServer {
+      jvmArgs "-XX:+AllowEnhancedClassRedefinition"
+      workingDirectory project.file('run')
+
+      property 'forge.logging.markers', 'REGISTRIES'
+      property 'forge.logging.console.level', 'debug'
+      property 'forge.enabledGameTestNamespaces', "${project.mod_id}"
+
+      mods {
+        examplemod {
           source sourceSets.main
         }
       }
@@ -60,6 +82,7 @@ minecraft {
       workingDirectory project.file('run/data')
       property 'forge.logging.markers', 'REGISTRIES'
       property 'forge.logging.console.level', 'debug'
+      property 'forge.enabledGameTestNamespaces', "${project.mod_id}"
 
       args '--mod', "${project.mod_id}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
       mods {

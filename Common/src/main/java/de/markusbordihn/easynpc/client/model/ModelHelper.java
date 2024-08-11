@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.client.model;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
+import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.Rotations;
 
@@ -65,7 +66,7 @@ public class ModelHelper {
   }
 
   public static void setPositionRotationVisibility(
-      ModelPart modelPart, CustomPosition position, Rotations rotations, boolean visible) {
+      ModelPart modelPart, CustomPosition position, CustomRotation rotations, boolean visible) {
     if (visible) {
       if (position != null) {
         modelPart.x += position.x();
@@ -73,9 +74,9 @@ public class ModelHelper {
         modelPart.z += position.z();
       }
       if (rotations != null) {
-        modelPart.xRot += rotations.getX();
-        modelPart.yRot += rotations.getY();
-        modelPart.zRot += rotations.getZ();
+        modelPart.xRot += rotations.x();
+        modelPart.yRot += rotations.y();
+        modelPart.zRot += rotations.z();
       }
     }
     modelPart.visible = visible;
@@ -96,16 +97,14 @@ public class ModelHelper {
   public static void setHeadPositionRotationVisibility(
       ModelPart modelPart,
       CustomPosition position,
-      Rotations rotations,
+      CustomRotation rotation,
       boolean visible,
       float netHeadYaw,
       float headPitch) {
-    setPositionRotationVisibility(modelPart, position, rotations, visible);
+    setPositionRotationVisibility(modelPart, position, rotation, visible);
     if (visible
-        && (rotations == null
-            || (rotations.getX() == 0.0f
-                && rotations.getY() == 0.0f
-                && rotations.getZ() == 0.0f))) {
+        && (rotation == null
+            || (rotation.x() == 0.0f && rotation.y() == 0.0f && rotation.z() == 0.0f))) {
       modelPart.yRot = netHeadYaw * Constants.PI_180DEG;
       modelPart.xRot = headPitch * Constants.PI_180DEG;
     }

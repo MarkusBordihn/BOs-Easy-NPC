@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingSettings;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
@@ -120,12 +121,13 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
 
     // Trading Data
     TradingData<?> tradingData = this.getEasyNPC().getEasyNPCTradingData();
+    TradingDataSet tradingDataSet = tradingData.getTradingDataSet();
 
     // Reset Every Min Edit Box
     this.resetsEveryMinEditBox =
         new TextField(this.font, this.contentLeftPos + 250, this.contentTopPos + 172, 32);
     this.resetsEveryMinEditBox.setMaxLength(3);
-    this.resetsEveryMinEditBox.setValue(tradingData.getTradingResetsEveryMin() + "");
+    this.resetsEveryMinEditBox.setValue(tradingDataSet.getResetsEveryMin() + "");
     this.resetsEveryMinEditBox.setResponder(this::onResetsEveryMinEditBoxChanged);
     this.resetsEveryMinEditBox.setFilter(ValueUtils::isNumericValue);
     this.addRenderableWidget(this.resetsEveryMinEditBox);

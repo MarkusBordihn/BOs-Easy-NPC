@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.IronGolem;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Piglin;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Wolf;
@@ -104,6 +105,12 @@ public class ModItems {
       registerSpawnEgg(Orc.ID_WARRIOR, ModEntityType.ORC_WARRIOR);
   public static final RegistryObject<Item> PIG_NPC_SPAWN_EGG =
       registerSpawnEgg(Pig.ID, ModEntityType.PIG);
+  public static final RegistryObject<Item> PIGLIN_NPC_SPAWN_EGG =
+      registerSpawnEgg(Piglin.ID, ModEntityType.PIGLIN);
+  public static final RegistryObject<Item> PIGLIN_BRUTE_NPC_SPAWN_EGG =
+      registerSpawnEgg(Piglin.ID_BRUTE, ModEntityType.PIGLIN_BRUTE);
+  public static final RegistryObject<Item> PIGLIN_ZOMBIFIED_NPC_SPAWN_EGG =
+      registerSpawnEgg(Piglin.ID_ZOMBIFIED, ModEntityType.PIGLIN_ZOMBIFIED);
   public static final RegistryObject<Item> PILLAGER_NPC_SPAWN_EGG =
       registerSpawnEgg(Illager.ID_PILLAGER, ModEntityType.PILLAGER);
   public static final RegistryObject<Item> SKELETON_HORSE_NPC_SPAWN_EGG =

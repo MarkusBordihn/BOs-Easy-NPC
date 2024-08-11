@@ -22,16 +22,7 @@ package de.markusbordihn.easynpc.data.position;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
 
-public class CustomPosition {
-  protected final float x;
-  protected final float y;
-  protected final float z;
-
-  public CustomPosition(float x, float y, float z) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
-  }
+public record CustomPosition(float x, float y, float z) {
 
   public CustomPosition(ListTag listTag) {
     this(listTag.getFloat(0), listTag.getFloat(1), listTag.getFloat(2));
@@ -43,18 +34,6 @@ public class CustomPosition {
     listTag.add(FloatTag.valueOf(this.y));
     listTag.add(FloatTag.valueOf(this.z));
     return listTag;
-  }
-
-  public float x() {
-    return this.x;
-  }
-
-  public float y() {
-    return this.y;
-  }
-
-  public float z() {
-    return this.z;
   }
 
   public boolean hasChanged() {

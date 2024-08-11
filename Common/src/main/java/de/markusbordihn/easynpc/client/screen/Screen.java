@@ -152,14 +152,18 @@ public class Screen<T extends EasyNPCMenu> extends net.minecraft.client.gui.scre
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     this.xMouse = x;
     this.yMouse = y;
+    RenderSystem.disableDepthTest();
+    this.renderBackground(guiGraphics, x, y, partialTicks);
+    super.render(guiGraphics, x, y, partialTicks);
+    RenderSystem.enableDepthTest();
+  }
+
+  public void renderBackground(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     if (this.renderBackground) {
       super.renderBackground(guiGraphics);
     }
-    RenderSystem.disableDepthTest();
     this.renderBg(guiGraphics, partialTicks, x, y);
     this.renderLabels(guiGraphics, x, y);
-    super.render(guiGraphics, x, y, partialTicks);
-    RenderSystem.enableDepthTest();
   }
 
   protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {

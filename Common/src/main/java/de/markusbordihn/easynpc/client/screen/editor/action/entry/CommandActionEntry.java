@@ -32,7 +32,7 @@ public class CommandActionEntry extends ActionEntryWidget {
         this.screen.addActionEntryWidget(
             new TextField(this.font, editorLeft, editorTop + 20, 275, 16));
     this.actionValueTextField.setMaxLength(512);
-    this.actionValueTextField.setValue(hasActionData ? this.actionDataEntry.getCommand() : "");
+    this.actionValueTextField.setValue(hasActionData ? this.actionDataEntry.command() : "");
 
     // Execute as User
     this.executeAsUserCheckbox =
@@ -41,7 +41,7 @@ public class CommandActionEntry extends ActionEntryWidget {
                 editorLeft,
                 editorTop + 40,
                 "execute_as_player",
-                hasActionData && this.actionDataEntry.shouldExecuteAsUser()));
+                hasActionData && this.actionDataEntry.executeAsUser()));
 
     // Debug
     this.debugCheckbox =
@@ -50,7 +50,7 @@ public class CommandActionEntry extends ActionEntryWidget {
                 editorLeft + 200,
                 editorTop + 40,
                 "debug",
-                hasActionData && this.actionDataEntry.isDebugEnabled()));
+                hasActionData && this.actionDataEntry.enableDebug()));
   }
 
   @Override
@@ -76,10 +76,10 @@ public class CommandActionEntry extends ActionEntryWidget {
   @Override
   public boolean hasChanged() {
     return (this.actionValueTextField != null
-            && !this.actionValueTextField.getValue().equals(this.actionDataEntry.getCommand()))
+            && !this.actionValueTextField.getValue().equals(this.actionDataEntry.command()))
         || (this.executeAsUserCheckbox != null
-            && this.executeAsUserCheckbox.selected() != this.actionDataEntry.shouldExecuteAsUser())
+            && this.executeAsUserCheckbox.selected() != this.actionDataEntry.executeAsUser())
         || (this.debugCheckbox != null
-            && this.debugCheckbox.selected() != this.actionDataEntry.isDebugEnabled());
+            && this.debugCheckbox.selected() != this.actionDataEntry.enableDebug());
   }
 }
