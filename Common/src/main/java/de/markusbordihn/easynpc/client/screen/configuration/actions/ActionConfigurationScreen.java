@@ -23,7 +23,6 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.AddButton;
 import de.markusbordihn.easynpc.client.screen.components.EditButton;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
-import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
@@ -32,7 +31,6 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
@@ -45,13 +43,6 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
 
   public ActionConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
-  }
-
-  public EditBox actionEditBox(int left, int top, ActionDataEntry actionDataEntry) {
-    EditBox editBox = new TextField(this.font, left, top, 275, 16);
-    editBox.setMaxLength(255);
-    editBox.setValue(actionDataEntry != null ? actionDataEntry.getCommand() : "");
-    return editBox;
   }
 
   @Override

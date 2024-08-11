@@ -89,8 +89,8 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
     this.actionDataEntryId = this.getActionDataEntryUUID();
     this.actionDataEntry = this.getActionDataEntry();
     this.actionDataType =
-        this.actionDataEntry.getType() != ActionDataType.NONE
-            ? this.actionDataEntry.getType()
+        this.actionDataEntry.actionDataType() != ActionDataType.NONE
+            ? this.actionDataEntry.actionDataType()
             : ActionDataType.COMMAND;
   }
 
@@ -199,7 +199,7 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
                 Constants.TEXT_PREFIX + "removeActionDataEntry.deleteQuestion"),
             new TranslatableComponent(
                 Constants.TEXT_PREFIX + "removeActionDataEntry.deleteWarning",
-                this.actionDataEntry.getType()),
+                this.actionDataEntry.actionDataType()),
             new TranslatableComponent(Constants.TEXT_PREFIX + "removeActionDataEntry.deleteButton"),
             CommonComponents.GUI_CANCEL));
   }
@@ -368,8 +368,8 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
 
     if (this.saveButton != null) {
       this.saveButton.active =
-          (this.actionDataType != this.actionDataEntry.getType()
-                  && this.actionDataEntry.getType() != ActionDataType.NONE)
+          (this.actionDataType != this.actionDataEntry.actionDataType()
+                  && this.actionDataEntry.actionDataType() != ActionDataType.NONE)
               || (this.actionEntryWidget != null && this.actionEntryWidget.hasChanged());
     }
 

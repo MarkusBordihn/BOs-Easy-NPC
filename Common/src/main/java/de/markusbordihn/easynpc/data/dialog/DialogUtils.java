@@ -29,7 +29,6 @@ import java.util.UUID;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
@@ -45,12 +44,6 @@ public class DialogUtils {
   public static String parseDialogText(Component component, DialogMetaData dialogMetaData) {
     if (dialogMetaData == null) {
       return component.getString();
-    }
-    if (component instanceof TranslatableComponent translatableComponent) {
-      return parseDialogText(
-          translatableComponent.getString(),
-          dialogMetaData.livingEntity(),
-          dialogMetaData.player());
     }
     return parseDialogText(
         component.getString(), dialogMetaData.livingEntity(), dialogMetaData.player());

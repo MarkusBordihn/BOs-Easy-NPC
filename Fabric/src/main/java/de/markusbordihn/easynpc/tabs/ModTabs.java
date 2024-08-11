@@ -54,6 +54,9 @@ public class ModTabs {
               stack.add(ModItems.ORC_NPC_SPAWN_EGG.getDefaultInstance());
               stack.add(ModItems.ORC_WARRIOR_NPC_SPAWN_EGG.getDefaultInstance());
               stack.add(ModItems.PIG_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.PIGLIN_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.PIGLIN_BRUTE_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.PIGLIN_ZOMBIFIED_NPC_SPAWN_EGG.getDefaultInstance());
               stack.add(ModItems.PILLAGER_NPC_SPAWN_EGG.getDefaultInstance());
               stack.add(ModItems.SKELETON_NPC_SPAWN_EGG.getDefaultInstance());
               stack.add(ModItems.SKELETON_HORSE_NPC_SPAWN_EGG.getDefaultInstance());

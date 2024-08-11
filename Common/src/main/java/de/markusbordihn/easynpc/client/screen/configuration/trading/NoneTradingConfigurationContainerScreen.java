@@ -23,6 +23,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.Text;
+import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
@@ -59,7 +60,8 @@ public class NoneTradingConfigurationContainerScreen<T extends ConfigurationMenu
 
     // Cache former dialog Type
     TradingData<?> tradingData = this.getEasyNPC().getEasyNPCTradingData();
-    setFormerTradingType(tradingData.getTradingType());
+    TradingDataSet tradingDataSet = tradingData.getTradingDataSet();
+    setFormerTradingType(tradingDataSet.getType());
 
     // None Trading Checkbox
     this.noneTradingCheckbox =
@@ -68,7 +70,7 @@ public class NoneTradingConfigurationContainerScreen<T extends ConfigurationMenu
                 this.contentLeftPos + 100,
                 this.topPos + 170,
                 "disable_trading_checkbox",
-                tradingData.getTradingType() == TradingType.NONE,
+                tradingDataSet.isType(TradingType.NONE),
                 checkbox -> {
                   if (checkbox.selected()) {
                     NetworkMessageHandlerManager.getServerHandler()

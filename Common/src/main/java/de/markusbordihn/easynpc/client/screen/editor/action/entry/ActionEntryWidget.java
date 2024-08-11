@@ -25,7 +25,7 @@ public class ActionEntryWidget {
   }
 
   protected boolean hasActionData(ActionDataType actionDataType) {
-    return this.actionDataEntry != null && this.actionDataEntry.getType() == actionDataType;
+    return this.actionDataEntry != null && this.actionDataEntry.actionDataType() == actionDataType;
   }
 
   public void init(int editorLeft, int editorTop) {}

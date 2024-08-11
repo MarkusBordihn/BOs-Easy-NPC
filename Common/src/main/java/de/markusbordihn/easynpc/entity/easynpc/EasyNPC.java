@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.entity.easynpc;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
-import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
@@ -75,12 +74,6 @@ public interface EasyNPC<E extends PathfinderMob> extends Npc {
   Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   Random randomNumber = new Random();
-
-  Class<? extends Entity> synchedEntityDataClass = EasyNPCBaseEntity.class;
-
-  static Class<? extends Entity> getSynchedEntityDataClass() {
-    return synchedEntityDataClass;
-  }
 
   int getNPCDataVersion();
 

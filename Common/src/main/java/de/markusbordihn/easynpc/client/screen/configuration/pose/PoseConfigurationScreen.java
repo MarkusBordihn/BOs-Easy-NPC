@@ -30,7 +30,6 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Inventory;
@@ -71,7 +70,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
     }
 
     // Model Part Rotation
-    Rotations modelPartRotation = this.modelData.getModelPartRotation(modelPart);
+    CustomRotation modelPartRotation = this.modelData.getModelPartRotation(modelPart);
     SliderButton sliderButtonX =
         this.addRenderableWidget(
             new SliderButton(
@@ -79,10 +78,10 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 top,
                 sliderWidth,
                 label + "RotationX",
-                (float) Math.toDegrees(modelPartRotation.getX()),
+                (float) Math.toDegrees(modelPartRotation.x()),
                 SliderButton.Type.DEGREE,
                 slider -> {
-                  Rotations currentModelPartRotation =
+                  CustomRotation currentModelPartRotation =
                       this.modelData.getModelPartRotation(modelPart);
                   NetworkMessageHandlerManager.getServerHandler()
                       .rotationChange(
@@ -90,8 +89,8 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                           modelPart,
                           new CustomRotation(
                               (float) Math.toRadians(slider.getTargetValue()),
-                              currentModelPartRotation.getY(),
-                              currentModelPartRotation.getZ()));
+                              currentModelPartRotation.y(),
+                              currentModelPartRotation.z()));
                 }));
     SliderButton sliderButtonY =
         this.addRenderableWidget(
@@ -100,19 +99,19 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 top,
                 sliderWidth,
                 label + "RotationY",
-                (float) Math.toDegrees(modelPartRotation.getY()),
+                (float) Math.toDegrees(modelPartRotation.y()),
                 SliderButton.Type.DEGREE,
                 slider -> {
-                  Rotations currentModelPartRotation =
+                  CustomRotation currentModelPartRotation =
                       this.modelData.getModelPartRotation(modelPart);
                   NetworkMessageHandlerManager.getServerHandler()
                       .rotationChange(
                           this.getEasyNPCUUID(),
                           modelPart,
                           new CustomRotation(
-                              currentModelPartRotation.getX(),
+                              currentModelPartRotation.x(),
                               (float) Math.toRadians(slider.getTargetValue()),
-                              currentModelPartRotation.getZ()));
+                              currentModelPartRotation.z()));
                 }));
     SliderButton sliderButtonZ =
         this.addRenderableWidget(
@@ -121,18 +120,18 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 top,
                 sliderWidth,
                 label + "RotationZ",
-                (float) Math.toDegrees(modelPartRotation.getZ()),
+                (float) Math.toDegrees(modelPartRotation.z()),
                 SliderButton.Type.DEGREE,
                 slider -> {
-                  Rotations currentModelPartRotation =
+                  CustomRotation currentModelPartRotation =
                       this.modelData.getModelPartRotation(modelPart);
                   NetworkMessageHandlerManager.getServerHandler()
                       .rotationChange(
                           this.getEasyNPCUUID(),
                           modelPart,
                           new CustomRotation(
-                              currentModelPartRotation.getX(),
-                              currentModelPartRotation.getY(),
+                              currentModelPartRotation.x(),
+                              currentModelPartRotation.y(),
                               (float) Math.toRadians(slider.getTargetValue())));
                 }));
 
