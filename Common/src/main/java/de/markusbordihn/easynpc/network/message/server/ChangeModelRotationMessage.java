@@ -32,7 +32,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Pose;
 
-public record ChangeModelRotationMessage(UUID uuid, ModelPart modelPart, CustomRotation rotations)
+public record ChangeModelRotationMessage(UUID uuid, ModelPart modelPart, CustomRotation rotation)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
@@ -49,9 +49,9 @@ public record ChangeModelRotationMessage(UUID uuid, ModelPart modelPart, CustomR
   public void write(final FriendlyByteBuf buffer) {
     buffer.writeUUID(this.uuid);
     buffer.writeEnum(this.modelPart);
-    buffer.writeFloat(this.rotations.getX());
-    buffer.writeFloat(this.rotations.getY());
-    buffer.writeFloat(this.rotations.getZ());
+    buffer.writeFloat(this.rotation.x());
+    buffer.writeFloat(this.rotation.y());
+    buffer.writeFloat(this.rotation.z());
   }
 
   @Override
@@ -73,7 +73,7 @@ public record ChangeModelRotationMessage(UUID uuid, ModelPart modelPart, CustomR
     }
 
     // Validate Rotations.
-    if (this.rotations == null) {
+    if (this.rotation == null) {
       log.error("Invalid rotation for {} from {}", easyNPC, serverPlayer);
       return;
     }
@@ -89,9 +89,9 @@ public record ChangeModelRotationMessage(UUID uuid, ModelPart modelPart, CustomR
     log.debug(
         "Change {} rotation to {}° {}° {}° for {} from {}",
         this.modelPart,
-        this.rotations.getX(),
-        this.rotations.getY(),
-        this.rotations.getZ(),
+        this.rotation.x(),
+        this.rotation.y(),
+        this.rotation.z(),
         easyNPC,
         serverPlayer);
 
@@ -102,7 +102,7 @@ public record ChangeModelRotationMessage(UUID uuid, ModelPart modelPart, CustomR
     }
 
     // Apply rotation based on the model part.
-    modelData.setModelPartRotation(this.modelPart, this.rotations);
+    modelData.setModelPartRotation(this.modelPart, this.rotation);
 
     // Verify if custom model pose is really needed.
     if (!modelData.hasChangedModel()) {

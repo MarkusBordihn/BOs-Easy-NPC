@@ -30,6 +30,7 @@ public enum SkinModel {
   IRON_GOLEM,
   ORC,
   PIG,
+  PIGLIN,
   WOLF,
   SKELETON(true),
   VILLAGER(true),

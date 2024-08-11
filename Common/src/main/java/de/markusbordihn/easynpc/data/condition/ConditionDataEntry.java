@@ -21,44 +21,23 @@ package de.markusbordihn.easynpc.data.condition;
 
 import net.minecraft.nbt.CompoundTag;
 
-public class ConditionDataEntry {
+public record ConditionDataEntry(ConditionType conditionType) {
 
-  public static final ConditionDataEntry EMPTY = new ConditionDataEntry(ConditionType.NONE);
+  public static final ConditionDataEntry EMPTY =
+      new ConditionDataEntry(de.markusbordihn.easynpc.data.condition.ConditionType.NONE);
   public static final String DATA_TYPE_TAG = "Type";
 
-  private ConditionType type = ConditionType.NONE;
-
   public ConditionDataEntry(CompoundTag compoundTag) {
-    this.load(compoundTag);
+    this(ConditionType.get(compoundTag.getString(DATA_TYPE_TAG)));
   }
 
-  public ConditionDataEntry(ConditionType type) {
-    this.type = type;
-  }
-
-  public ConditionType getType() {
-    return this.type;
-  }
-
-  public void setType(ConditionType type) {
-    this.type = type;
-  }
-
-  public void load(CompoundTag compoundTag) {
-    if (compoundTag == null) {
-      return;
-    }
-
-    this.type = ConditionType.get(compoundTag.getString(DATA_TYPE_TAG));
-  }
-
-  public CompoundTag save(CompoundTag compoundTag) {
-    compoundTag.putString(DATA_TYPE_TAG, this.getType().name());
+  public CompoundTag create(CompoundTag compoundTag) {
+    compoundTag.putString(DATA_TYPE_TAG, this.conditionType.name());
 
     return compoundTag;
   }
 
   public CompoundTag createTag() {
-    return this.save(new CompoundTag());
+    return this.create(new CompoundTag());
   }
 }
