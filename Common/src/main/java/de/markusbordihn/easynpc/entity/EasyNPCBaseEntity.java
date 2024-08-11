@@ -24,7 +24,6 @@ import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.synched.SynchedEntityData;
 import de.markusbordihn.easynpc.data.ticker.TickerType;
-import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
@@ -50,18 +49,14 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.animal.FlyingAnimal;
-import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ProjectileWeaponItem;
-import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -83,7 +78,7 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
   }
 
   private final EnumMap<TickerType, Integer> tickerMap = new EnumMap<>(TickerType.class);
-  protected MerchantOffers offers;
+  protected MerchantOffers merchantTradingOffers;
   private ServerEntityData serverEntityData;
   private int attackAnimationTick;
   private int npcDataVersion = -1;
@@ -170,34 +165,6 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
   }
 
   @Override
-  public void notifyTrade(MerchantOffer merchantOffer) {
-    merchantOffer.increaseUses();
-    this.ambientSoundTime = -this.getAmbientSoundInterval();
-    this.rewardTradeXp(merchantOffer);
-    if (this.tradingPlayer instanceof ServerPlayer serverPlayer) {
-      log.debug("Trade {} with {} for {}", merchantOffer, serverPlayer, this);
-    }
-  }
-
-  @Override
-  public void notifyTradeUpdated(ItemStack itemStack) {
-    if (!this.isClientSide() && this.ambientSoundTime > -this.getAmbientSoundInterval() + 20) {
-      this.ambientSoundTime = -this.getAmbientSoundInterval();
-      this.playDefaultTradeUpdatedSound(!itemStack.isEmpty());
-    }
-  }
-
-  protected void rewardTradeXp(MerchantOffer merchantOffer) {
-    if (merchantOffer.shouldRewardExp() && merchantOffer.getXp() > 0) {
-      int tradeExperience = 3 + this.random.nextInt(merchantOffer.getXp());
-      this.level()
-          .addFreshEntity(
-              new ExperienceOrb(
-                  this.level(), this.getX(), this.getY() + 0.5D, this.getZ(), tradeExperience));
-    }
-  }
-
-  @Override
   public Component getName() {
     Component component = this.getCustomName();
     return component != null ? TextUtils.removeAction(component) : this.getTypeName();
@@ -227,14 +194,6 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
   }
 
   @Override
-  public MerchantOffers getOffers() {
-    if (this.offers == null) {
-      this.updateTradesData();
-    }
-    return this.offers;
-  }
-
-  @Override
   public int getNPCDataVersion() {
     return this.npcDataVersion;
   }
@@ -245,21 +204,13 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
   }
 
   @Override
-  public void updateTradesData() {
-    MerchantOffers merchantOffers = null;
-    if (this.getTradingType() == TradingType.BASIC
-        || this.getTradingType() == TradingType.ADVANCED) {
-      // Create a copy of the offers to avoid side effects.
-      merchantOffers = this.getTradingOffers().copy();
-    }
-    if (merchantOffers != null && !merchantOffers.isEmpty()) {
-      // Filter out offers which are missing item a, item b or result item.
-      merchantOffers.removeIf(
-          merchantOffer ->
-              (merchantOffer.getBaseCostA().isEmpty() && merchantOffer.getCostB().isEmpty())
-                  || merchantOffer.getResult().isEmpty());
-      this.offers = merchantOffers;
-    }
+  public MerchantOffers getMerchantTradingOffers() {
+    return this.merchantTradingOffers;
+  }
+
+  @Override
+  public void setMerchantTradingOffers(MerchantOffers merchantOffers) {
+    this.merchantTradingOffers = merchantOffers;
   }
 
   @Override
@@ -383,10 +334,7 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
         && (serverPlayer.isCreative() || isOwner(serverPlayer))) {
       return true;
     }
-    return !this.isLeashed()
-        && getAttributeDataLoaded()
-        && getAttributeCanBeLeashed()
-        && !(this instanceof Enemy);
+    return !this.isLeashed() && getAttributeDataLoaded() && getAttributeCanBeLeashed();
   }
 
   @Override

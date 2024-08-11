@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.standard;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.model.standard.StandardPlayerModel;
+import de.markusbordihn.easynpc.client.model.base.BasePlayerModel;
 import de.markusbordihn.easynpc.client.renderer.EasyNPCModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.base.BaseLivingEntityModelRenderer;
 import de.markusbordihn.easynpc.entity.easynpc.npc.HumanoidSlim;
@@ -42,8 +42,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Pose;
 
 public class HumanoidSlimModelRenderer
-    extends BaseLivingEntityModelRenderer<
-        HumanoidSlim, Variant, StandardPlayerModel<HumanoidSlim>> {
+    extends BaseLivingEntityModelRenderer<HumanoidSlim, Variant, BasePlayerModel<HumanoidSlim>> {
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
@@ -65,12 +64,12 @@ public class HumanoidSlimModelRenderer
           });
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.ALEX);
 
-  public <L extends RenderLayer<HumanoidSlim, StandardPlayerModel<HumanoidSlim>>>
+  public <L extends RenderLayer<HumanoidSlim, BasePlayerModel<HumanoidSlim>>>
       HumanoidSlimModelRenderer(
           EntityRendererProvider.Context context, Class<L> humanoidArmorLayerClass) {
     super(
         context,
-        new StandardPlayerModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM), true),
+        new BasePlayerModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM), true),
         0.5F,
         DEFAULT_TEXTURE,
         TEXTURE_BY_VARIANT);
@@ -95,7 +94,7 @@ public class HumanoidSlimModelRenderer
   @Override
   public void renderDefaultPose(
       HumanoidSlim entity,
-      StandardPlayerModel<HumanoidSlim> model,
+      BasePlayerModel<HumanoidSlim> model,
       Pose pose,
       float entityYaw,
       float partialTicks,

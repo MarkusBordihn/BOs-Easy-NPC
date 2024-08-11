@@ -112,13 +112,13 @@ public record ChangeAdvancedTradingMessage(
 
     // Perform action.
     switch (this.tradingValueType) {
-      case RESETS_EVERY_MIN:
+      case RESET_TRADING_EVERY_MIN:
         log.debug(
             "Set trading resets every min to {} for {} from {}",
             this.tradingValue,
             easyNPC,
             serverPlayer);
-        tradingData.setTradingResetsEveryMin((int) this.tradingValue);
+        tradingData.getTradingDataSet().setResetsEveryMin((int) this.tradingValue);
         break;
       case MAX_USES:
         log.debug(

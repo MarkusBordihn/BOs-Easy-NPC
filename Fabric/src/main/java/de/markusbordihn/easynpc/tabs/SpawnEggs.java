@@ -45,6 +45,9 @@ public class SpawnEggs implements DisplayItemsGenerator {
     output.accept(ModItems.ORC_NPC_SPAWN_EGG.getDefaultInstance());
     output.accept(ModItems.ORC_WARRIOR_NPC_SPAWN_EGG.getDefaultInstance());
     output.accept(ModItems.PIG_NPC_SPAWN_EGG.getDefaultInstance());
+    output.accept(ModItems.PIGLIN_BRUTE_NPC_SPAWN_EGG.getDefaultInstance());
+    output.accept(ModItems.PIGLIN_NPC_SPAWN_EGG.getDefaultInstance());
+    output.accept(ModItems.PIGLIN_ZOMBIFIED_NPC_SPAWN_EGG.getDefaultInstance());
     output.accept(ModItems.PILLAGER_NPC_SPAWN_EGG.getDefaultInstance());
     output.accept(ModItems.SKELETON_HORSE_NPC_SPAWN_EGG.getDefaultInstance());
     output.accept(ModItems.SKELETON_NPC_SPAWN_EGG.asItem().getDefaultInstance());

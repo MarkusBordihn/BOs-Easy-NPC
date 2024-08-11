@@ -56,7 +56,7 @@ public class ConfigurationTypeHelper {
       };
     } else if (configurationType == ConfigurationType.TRADING) {
       TradingData<?> tradingData = easyNPC.getEasyNPCTradingData();
-      return switch (tradingData.getTradingType()) {
+      return switch (tradingData.getTradingDataSet().getType()) {
         case ADVANCED -> ConfigurationType.ADVANCED_TRADING;
         case BASIC -> ConfigurationType.BASIC_TRADING;
         case CUSTOM -> ConfigurationType.CUSTOM_TRADING;

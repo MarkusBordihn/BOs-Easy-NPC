@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.data.skin.SkinUUID;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.spawner.SpawnerUUID;
+import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import java.util.HashSet;
 import java.util.UUID;
@@ -77,6 +78,8 @@ public class EntityDataSerializersManager {
       EntityDataSerializer.forValueType(TargetedEntitySet.STREAM_CODEC);
   public static final EntityDataSerializer<HashSet<String>> TARGETED_PLAYER_HASH_SET =
       EntityDataSerializer.forValueType(TargetedPlayerSet.STREAM_CODEC);
+  public static final EntityDataSerializer<TradingDataSet> TRADING_DATA_SET =
+      EntityDataSerializer.forValueType(TradingDataSet.STREAM_CODEC);
   public static final EntityDataSerializer<TradingType> TRADING_TYPE =
       EntityDataSerializer.forValueType(TradingType.STREAM_CODEC);
 
@@ -102,6 +105,7 @@ public class EntityDataSerializersManager {
     EntityDataSerializers.registerSerializer(SPAWNER_UUID);
     EntityDataSerializers.registerSerializer(TARGETED_ENTITY_HASH_SET);
     EntityDataSerializers.registerSerializer(TARGETED_PLAYER_HASH_SET);
+    EntityDataSerializers.registerSerializer(TRADING_DATA_SET);
     EntityDataSerializers.registerSerializer(TRADING_TYPE);
   }
 }

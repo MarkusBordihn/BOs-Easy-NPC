@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.IronGolem;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Piglin;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Wolf;
@@ -85,6 +86,12 @@ public class ModEntityType {
       ENTITY_TYPES.register(Orc.ID_WARRIOR, () -> ModEntityTypes.ORC_WARRIOR);
   public static final RegistryObject<EntityType<Pig>> PIG =
       ENTITY_TYPES.register(Pig.ID, () -> ModEntityTypes.PIG);
+  public static final RegistryObject<EntityType<Piglin>> PIGLIN =
+      ENTITY_TYPES.register(Piglin.ID, () -> ModEntityTypes.PIGLIN);
+  public static final RegistryObject<EntityType<Piglin>> PIGLIN_BRUTE =
+      ENTITY_TYPES.register(Piglin.ID_BRUTE, () -> ModEntityTypes.PIGLIN_BRUTE);
+  public static final RegistryObject<EntityType<Piglin>> PIGLIN_ZOMBIFIED =
+      ENTITY_TYPES.register(Piglin.ID_ZOMBIFIED, () -> ModEntityTypes.PIGLIN_ZOMBIFIED);
   public static final RegistryObject<EntityType<Illager>> PILLAGER =
       ENTITY_TYPES.register(Illager.ID_PILLAGER, () -> ModEntityTypes.PILLAGER);
   public static final RegistryObject<EntityType<Skeleton>> SKELETON =
@@ -141,6 +148,9 @@ public class ModEntityType {
     event.put(ORC.get(), Orc.createAttributes().build());
     event.put(ORC_WARRIOR.get(), Orc.createAttributes().build());
     event.put(PIG.get(), Pig.createAttributes().build());
+    event.put(PIGLIN.get(), Piglin.createAttributes().build());
+    event.put(PIGLIN_BRUTE.get(), Piglin.createAttributes().build());
+    event.put(PIGLIN_ZOMBIFIED.get(), Piglin.createAttributes().build());
     event.put(PILLAGER.get(), Illager.createAttributes().build());
     event.put(SKELETON.get(), Skeleton.createAttributes().build());
     event.put(SKELETON_HORSE.get(), Horse.createAttributes().build());

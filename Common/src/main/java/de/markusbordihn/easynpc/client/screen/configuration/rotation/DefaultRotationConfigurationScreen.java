@@ -30,7 +30,6 @@ import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -63,10 +62,10 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
 
     // Root Rotations
     ModelData<?> modelData = this.getEasyNPC().getEasyNPCModelData();
-    Rotations rootRotations = modelData.getModelRootRotation();
-    this.rootRotationX = rootRotations.getX();
-    this.rootRotationY = rootRotations.getY();
-    this.rootRotationZ = rootRotations.getZ();
+    CustomRotation rootRotation = modelData.getModelRootRotation();
+    this.rootRotationX = rootRotation.x();
+    this.rootRotationY = rootRotation.y();
+    this.rootRotationZ = rootRotation.z();
 
     // Root Rotation X
     this.rootRotationXSliderButton =
@@ -76,7 +75,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                 this.contentTopPos,
                 60,
                 "rootRotationX",
-                (float) Math.toDegrees(rootRotations.getX()),
+                (float) Math.toDegrees(rootRotation.x()),
                 SliderButton.Type.DEGREE,
                 slider -> {
                   this.rootRotationX = (float) Math.toRadians(slider.getTargetValue());
@@ -107,7 +106,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                 this.contentTopPos,
                 60,
                 "rootRotationY",
-                (float) Math.toDegrees(rootRotations.getY()),
+                (float) Math.toDegrees(rootRotation.y()),
                 SliderButton.Type.DEGREE,
                 slider -> {
                   this.rootRotationY = (float) Math.toRadians(slider.getTargetValue());
@@ -138,7 +137,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                 this.contentTopPos,
                 60,
                 "rootRotationZ",
-                (float) Math.toDegrees(rootRotations.getZ()),
+                (float) Math.toDegrees(rootRotation.z()),
                 SliderButton.Type.DEGREE,
                 slider -> {
                   this.rootRotationZ = (float) Math.toRadians(slider.getTargetValue());

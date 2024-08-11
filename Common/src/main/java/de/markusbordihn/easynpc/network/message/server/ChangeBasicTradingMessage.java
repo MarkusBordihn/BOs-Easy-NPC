@@ -97,22 +97,22 @@ public record ChangeBasicTradingMessage(
 
     // Perform action.
     switch (this.tradingValueType) {
-      case RESETS_EVERY_MIN:
+      case RESET_TRADING_EVERY_MIN:
         log.debug(
             "Set trading resets every min to {} for {} from {}",
             this.tradingValue,
             easyNPC,
             serverPlayer);
-        tradingData.setTradingResetsEveryMin(this.tradingValue);
+        tradingData.getTradingDataSet().setResetsEveryMin(this.tradingValue);
         break;
       case MAX_USES:
         log.debug("Set max uses to {} for {} from {}", this.tradingValue, easyNPC, serverPlayer);
-        tradingData.setBasicTradingMaxUses(this.tradingValue);
+        tradingData.getTradingDataSet().setMaxUses(this.tradingValue);
         tradingData.updateBasicTradingOffers();
         break;
       case REWARD_EXP:
         log.debug("Set reward exp to {} for {} from {}", this.tradingValue, easyNPC, serverPlayer);
-        tradingData.setBasicTradingRewardExp(this.tradingValue);
+        tradingData.getTradingDataSet().setRewardedXP(this.tradingValue);
         tradingData.updateBasicTradingOffers();
         break;
       default:

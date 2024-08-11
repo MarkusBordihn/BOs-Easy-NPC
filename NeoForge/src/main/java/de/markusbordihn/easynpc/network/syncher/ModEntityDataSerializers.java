@@ -31,6 +31,7 @@ import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
+import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import java.util.HashSet;
 import java.util.UUID;
@@ -102,6 +103,10 @@ public class ModEntityDataSerializers {
       TRADING_TYPE =
           ENTITY_DATA_SERIALIZERS.register(
               "trading_type", () -> EntityDataSerializersManager.TRADING_TYPE);
+  public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<TradingDataSet>>
+      TRADING_DATA_SET =
+          ENTITY_DATA_SERIALIZERS.register(
+              "trading_data_set", () -> EntityDataSerializersManager.TRADING_DATA_SET);
   public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<HashSet<UUID>>>
       TARGETED_ENTITY_HASH_SET =
           ENTITY_DATA_SERIALIZERS.register(
