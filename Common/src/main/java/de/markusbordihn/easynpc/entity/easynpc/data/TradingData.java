@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
+import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingSettings;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -38,6 +39,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -47,13 +50,11 @@ import net.minecraft.world.item.trading.MerchantOffers;
 
 public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Merchant {
 
-  String DATA_TRADING_BASIC_MAX_USES_TAG = "BasicMaxUses";
-  String DATA_TRADING_BASIC_REWARDED_XP_TAG = "BasicRewardedXP";
   String DATA_TRADING_INVENTORY_TAG = "Inventory";
   String DATA_TRADING_OFFERS_TAG = "Offers";
   String DATA_TRADING_RECIPES_TAG = "Recipes";
-  String DATA_TRADING_RESETS_EVERY_MIN_TAG = "ResetsEveryMin";
-  String DATA_TRADING_TYPE_TAG = "TradingType";
+  String DATA_TRADING_DATA_TAG = "TradingData";
+
   EntityDataSerializer<MerchantOffers> MERCHANT_OFFERS =
       new EntityDataSerializer<>() {
         public void write(FriendlyByteBuf buffer, MerchantOffers value) {
@@ -69,17 +70,17 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
           return value;
         }
       };
-  EntityDataSerializer<TradingType> TRADING_TYPE =
+  EntityDataSerializer<TradingDataSet> TRADING_DATA_SET =
       new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, TradingType value) {
-          buffer.writeEnum(value);
+        public void write(FriendlyByteBuf buffer, TradingDataSet value) {
+          buffer.writeNbt(value.createTag());
         }
 
-        public TradingType read(FriendlyByteBuf buffer) {
-          return buffer.readEnum(TradingType.class);
+        public TradingDataSet read(FriendlyByteBuf buffer) {
+          return new TradingDataSet(buffer.readNbt());
         }
 
-        public TradingType copy(TradingType value) {
+        public TradingDataSet copy(TradingDataSet value) {
           return value;
         }
       };
@@ -88,44 +89,57 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
     log.info("- Registering Synched Trading Data for {}.", entityClass.getSimpleName());
     map.put(
+        SynchedDataIndex.TRADING_DATA_SET,
+        SynchedEntityData.defineId(entityClass, TRADING_DATA_SET));
+    map.put(
         SynchedDataIndex.TRADING_INVENTORY,
         SynchedEntityData.defineId(entityClass, EntityDataSerializers.COMPOUND_TAG));
     map.put(
         SynchedDataIndex.TRADING_MERCHANT_OFFERS,
         SynchedEntityData.defineId(entityClass, MERCHANT_OFFERS));
-    map.put(SynchedDataIndex.TRADING_TYPE, SynchedEntityData.defineId(entityClass, TRADING_TYPE));
-    map.put(
-        SynchedDataIndex.TRADING_RESETS_EVERY_MIN,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.INT));
-    map.put(
-        SynchedDataIndex.TRADING_BASIC_MAX_USES,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.INT));
-    map.put(
-        SynchedDataIndex.TRADING_BASIC_REWARDED_XP,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.INT));
   }
 
   static void registerTradingDataSerializer() {
+    EntityDataSerializers.registerSerializer(TRADING_DATA_SET);
     EntityDataSerializers.registerSerializer(MERCHANT_OFFERS);
-    EntityDataSerializers.registerSerializer(TRADING_TYPE);
   }
-
-  void updateTradesData();
 
   Player getTradingPlayer();
 
   void setTradingPlayer(Player player);
 
-  MerchantOffers getOffers();
+  MerchantOffers getMerchantTradingOffers();
+
+  void setMerchantTradingOffers(MerchantOffers merchantOffers);
+
+  default MerchantOffers getOffers() {
+    if (this.getMerchantTradingOffers() == null) {
+      this.updateMerchantTradingOffers();
+    }
+    return this.getMerchantTradingOffers();
+  }
+
+  default void updateMerchantTradingOffers() {
+    MerchantOffers merchantOffers = null;
+    TradingDataSet tradingDataSet = this.getTradingDataSet();
+    if (tradingDataSet.isType(TradingType.BASIC) || tradingDataSet.isType(TradingType.ADVANCED)) {
+      // Create a copy of the offers to avoid side effects.
+      merchantOffers = new MerchantOffers(this.getTradingOffers().createTag());
+    }
+    if (merchantOffers != null && !merchantOffers.isEmpty()) {
+      // Filter out offers which are missing item a, item b or result item.
+      merchantOffers.removeIf(
+          merchantOffer ->
+              (merchantOffer.getBaseCostA().isEmpty() && merchantOffer.getCostB().isEmpty())
+                  || merchantOffer.getResult().isEmpty());
+      this.setMerchantTradingOffers(merchantOffers);
+    }
+  }
 
   @Override
   default void overrideOffers(MerchantOffers merchantOffers) {
     /* Method is not used */
   }
-
-  void notifyTrade(MerchantOffer merchantOffer);
-
-  void notifyTradeUpdated(ItemStack itemStack);
 
   @Override
   default int getVillagerXp() {
@@ -188,7 +202,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
 
     // Set trading offers if we have any
     if (!merchantOffers.isEmpty()) {
-      this.setTradingType(TradingType.ADVANCED);
+      getTradingDataSet().setType(TradingType.ADVANCED);
       this.setTradingOffers(merchantOffers);
     }
   }
@@ -209,21 +223,21 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
               itemA,
               itemB,
               itemResult,
-              this.getBasicTradingMaxUses(),
-              this.getBasicTradingRewardExp(),
+              getTradingDataSet().getMaxUses(),
+              getTradingDataSet().getRewardedXP(),
               1.0F);
       merchantOffers.add(merchantOffer);
     }
 
     // Set trading offers if we have any
     if (!merchantOffers.isEmpty()) {
-      this.setTradingType(TradingType.BASIC);
+      getTradingDataSet().setType(TradingType.BASIC);
       this.setTradingOffers(merchantOffers);
     }
   }
 
   default void updateBasicTradingOffers() {
-    if (this.getTradingType() != TradingType.BASIC) {
+    if (getTradingDataSet().isType(TradingType.BASIC)) {
       return;
     }
 
@@ -240,8 +254,8 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
               merchantOffer.getBaseCostA(),
               merchantOffer.getCostB(),
               merchantOffer.getResult(),
-              this.getBasicTradingMaxUses(),
-              this.getBasicTradingRewardExp(),
+              getTradingDataSet().getMaxUses(),
+              getTradingDataSet().getRewardedXP(),
               merchantOffer.getPriceMultiplier());
       newMerchantOffers.add(newMerchantOffer);
     }
@@ -256,6 +270,8 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
       return;
     }
 
+    log.debug("Reset trading offers {} for {}", merchantOffers, this);
+
     // Reset trading offers
     for (MerchantOffer merchantOffer : merchantOffers) {
       merchantOffer.resetUses();
@@ -263,6 +279,9 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
 
     // Update trading offers
     this.setTradingOffers(merchantOffers);
+
+    // Update last reset time
+    this.getTradingDataSet().setLastReset(System.currentTimeMillis());
   }
 
   default MerchantOffers getTradingOffers() {
@@ -273,7 +292,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     // Force update and client sync because of weak change detection.
     setSynchedEntityData(SynchedDataIndex.TRADING_MERCHANT_OFFERS, new MerchantOffers());
     setSynchedEntityData(SynchedDataIndex.TRADING_MERCHANT_OFFERS, merchantOffers);
-    this.updateTradesData();
+    this.updateMerchantTradingOffers();
   }
 
   default CompoundTag getTradingInventory() {
@@ -284,19 +303,44 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     setSynchedEntityData(SynchedDataIndex.TRADING_INVENTORY, tradingInventory);
   }
 
-  default TradingType getTradingType() {
-    return getSynchedEntityData(SynchedDataIndex.TRADING_TYPE);
+  default void notifyTrade(MerchantOffer merchantOffer) {
+    merchantOffer.increaseUses();
+    this.getMob().ambientSoundTime = -this.getMob().getAmbientSoundInterval();
+    this.rewardTradeXp(merchantOffer);
+    if (getTradingPlayer() instanceof ServerPlayer serverPlayer) {
+      log.debug("Trade {} with {} for {}", merchantOffer, serverPlayer, this);
+    }
   }
 
-  default void setTradingType(TradingType tradingType) {
-    setSynchedEntityData(SynchedDataIndex.TRADING_TYPE, tradingType);
+  default void notifyTradeUpdated(ItemStack itemStack) {
+    if (!this.isClientSide()
+        && this.getMob().ambientSoundTime > -this.getMob().getAmbientSoundInterval() + 20) {
+      this.getMob().ambientSoundTime = -this.getMob().getAmbientSoundInterval();
+      SoundData<E> soundData = getEasyNPCSoundData();
+      soundData.playDefaultTradeUpdatedSound(!itemStack.isEmpty());
+    }
+  }
+
+  default void rewardTradeXp(MerchantOffer merchantOffer) {
+    if (merchantOffer.shouldRewardExp() && merchantOffer.getXp() > 0) {
+      LivingEntity livingEntity = this.getLivingEntity();
+      int tradeExperience = 3 + livingEntity.getRandom().nextInt(merchantOffer.getXp());
+      livingEntity.level.addFreshEntity(
+          new ExperienceOrb(
+              livingEntity.level,
+              livingEntity.getX(),
+              livingEntity.getY() + 0.5D,
+              livingEntity.getZ(),
+              tradeExperience));
+    }
   }
 
   default boolean hasTrading() {
-    return ((getTradingType() == TradingType.BASIC || getTradingType() == TradingType.ADVANCED)
+    TradingType tradingType = getTradingDataSet().getType();
+    return ((tradingType == TradingType.BASIC || tradingType == TradingType.ADVANCED)
             && getTradingOffers() != null
             && !getTradingOffers().isEmpty())
-        || getTradingType() == TradingType.CUSTOM;
+        || tradingType == TradingType.CUSTOM;
   }
 
   default void stopTrading() {
@@ -406,122 +450,105 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     this.setTradingOffers(merchantOffers);
   }
 
-  default int getBasicTradingMaxUses() {
-    return getSynchedEntityData(SynchedDataIndex.TRADING_BASIC_MAX_USES);
+  default TradingDataSet getTradingDataSet() {
+    return getSynchedEntityData(SynchedDataIndex.TRADING_DATA_SET);
   }
 
-  default void setBasicTradingMaxUses(int maxUses) {
-    setSynchedEntityData(SynchedDataIndex.TRADING_BASIC_MAX_USES, maxUses);
-  }
-
-  default int getBasicTradingRewardExp() {
-    return getSynchedEntityData(SynchedDataIndex.TRADING_BASIC_REWARDED_XP);
-  }
-
-  default void setBasicTradingRewardExp(int rewardExp) {
-    setSynchedEntityData(SynchedDataIndex.TRADING_BASIC_REWARDED_XP, rewardExp);
-  }
-
-  default int getTradingResetsEveryMin() {
-    return getSynchedEntityData(SynchedDataIndex.TRADING_RESETS_EVERY_MIN);
-  }
-
-  default void setTradingResetsEveryMin(int resetsEveryMin) {
-    setSynchedEntityData(SynchedDataIndex.TRADING_RESETS_EVERY_MIN, resetsEveryMin);
+  default void setTradingDataSet(TradingDataSet tradingDataSet) {
+    setSynchedEntityData(SynchedDataIndex.TRADING_DATA_SET, tradingDataSet);
   }
 
   default InteractionResult openTradingScreen(ServerPlayer serverPlayer) {
-    if (!this.isClientSide()) {
-      Merchant merchant = this.getMerchant();
-      if (merchant == null) {
-        log.error(
-            "No merchant found for {} with {} from {}",
-            this,
-            this.getTradingOffers(),
-            serverPlayer);
-        return InteractionResult.PASS;
-      }
-      if (merchant.getTradingPlayer() != null && merchant.getTradingPlayer() != serverPlayer) {
-        log.warn(
-            "Unable to open trading screen for {} with {} from {}, {} is still trading.",
-            this,
-            merchant.getOffers(),
-            serverPlayer,
-            merchant.getTradingPlayer());
-        serverPlayer.sendSystemMessage(
-            Component.translatable(
-                Constants.TEXT_PREFIX + "trading.busy", merchant.getTradingPlayer()));
-        return InteractionResult.PASS;
-      }
-      log.debug(
-          "Open trading screen for {} with {} from {}", this, merchant.getOffers(), serverPlayer);
-      merchant.setTradingPlayer(serverPlayer);
-      merchant.openTradingScreen(
-          serverPlayer,
-          this.getEntity().getCustomName() != null
-              ? this.getEntity().getCustomName()
-              : Component.translatable(Constants.TEXT_PREFIX + "trading"),
-          Entity.BASE_TICKS_REQUIRED_TO_FREEZE);
+    if (this.isClientSide()) {
+      return InteractionResult.SUCCESS;
     }
-    return InteractionResult.sidedSuccess(this.isClientSide());
+
+    // Make sure we have a merchant and the player is not already trading.
+    Merchant merchant = this.getMerchant();
+    if (merchant == null) {
+      log.error(
+          "No merchant found for {} with {} from {}", this, this.getTradingOffers(), serverPlayer);
+      return InteractionResult.PASS;
+    }
+    if (merchant.getTradingPlayer() != null && merchant.getTradingPlayer() != serverPlayer) {
+      log.warn(
+          "Unable to open trading screen for {} with {} from {}, {} is still trading.",
+          this,
+          merchant.getOffers(),
+          serverPlayer,
+          merchant.getTradingPlayer());
+      serverPlayer.sendSystemMessage(
+          Component.translatable(
+              Constants.TEXT_PREFIX + "trading.busy", merchant.getTradingPlayer()));
+      return InteractionResult.PASS;
+    }
+
+    // Check if trades should be reset.
+    if (this.getTradingDataSet().getResetsEveryMin() > 0) {
+      long currentTime = System.currentTimeMillis();
+      long resetTimeInMillis = this.getTradingDataSet().getResetsEveryMin() * 60L * 1000L;
+      if (currentTime - this.getTradingDataSet().getLastReset() > resetTimeInMillis) {
+        this.resetTradingOffers();
+      }
+    }
+
+    // Open trading screen for the player.
+    log.debug(
+        "Open trading screen for {} with {} from {}", this, merchant.getOffers(), serverPlayer);
+    merchant.setTradingPlayer(serverPlayer);
+    merchant.openTradingScreen(
+        serverPlayer,
+        this.getEntity().getCustomName() != null
+            ? this.getEntity().getCustomName()
+            : Component.translatable(Constants.TEXT_PREFIX + "trading"),
+        Entity.BASE_TICKS_REQUIRED_TO_FREEZE);
+
+    return InteractionResult.CONSUME;
   }
 
   default void defineSynchedTradingData() {
+    defineSynchedEntityData(SynchedDataIndex.TRADING_DATA_SET, new TradingDataSet());
     defineSynchedEntityData(SynchedDataIndex.TRADING_INVENTORY, new CompoundTag());
     defineSynchedEntityData(SynchedDataIndex.TRADING_MERCHANT_OFFERS, new MerchantOffers());
-    defineSynchedEntityData(SynchedDataIndex.TRADING_TYPE, TradingType.NONE);
-    defineSynchedEntityData(SynchedDataIndex.TRADING_RESETS_EVERY_MIN, 0);
-    defineSynchedEntityData(SynchedDataIndex.TRADING_BASIC_MAX_USES, 64);
-    defineSynchedEntityData(SynchedDataIndex.TRADING_BASIC_REWARDED_XP, 1);
   }
 
   default void addAdditionalTradingData(CompoundTag compoundTag) {
-    CompoundTag tradingTag = new CompoundTag();
+    // Save custom trading data set
+    CompoundTag tradingDataTag = new CompoundTag();
+    TradingDataSet tradingDataSet = this.getTradingDataSet();
+    if (tradingDataSet != null) {
+      tradingDataSet.save(tradingDataTag);
+    }
+    compoundTag.put(DATA_TRADING_DATA_TAG, tradingDataTag);
 
-    tradingTag.put(DATA_TRADING_INVENTORY_TAG, getTradingInventory());
-    tradingTag.put(DATA_TRADING_RECIPES_TAG, getTradingOffers().createTag());
-    tradingTag.putString(DATA_TRADING_TYPE_TAG, getTradingType().name());
-    tradingTag.putInt(DATA_TRADING_RESETS_EVERY_MIN_TAG, getTradingResetsEveryMin());
-    tradingTag.putInt(DATA_TRADING_BASIC_MAX_USES_TAG, getBasicTradingMaxUses());
-    tradingTag.putInt(DATA_TRADING_BASIC_REWARDED_XP_TAG, getBasicTradingRewardExp());
-
-    compoundTag.put(DATA_TRADING_OFFERS_TAG, tradingTag);
+    // Store vanilla trading data
+    CompoundTag tradingOffersTag = new CompoundTag();
+    tradingOffersTag.put(DATA_TRADING_INVENTORY_TAG, getTradingInventory());
+    tradingOffersTag.put(DATA_TRADING_RECIPES_TAG, getTradingOffers().createTag());
+    compoundTag.put(DATA_TRADING_OFFERS_TAG, tradingOffersTag);
   }
 
   default void readAdditionalTradingData(CompoundTag compoundTag) {
-    if (!compoundTag.contains(DATA_TRADING_OFFERS_TAG)) {
-      return;
-    }
-    CompoundTag tradingTag = compoundTag.getCompound(DATA_TRADING_OFFERS_TAG);
 
-    String tradingType = tradingTag.getString(DATA_TRADING_TYPE_TAG);
-    if (!tradingType.isEmpty()) {
-      this.setTradingType(TradingType.get(tradingType));
+    // Load custom trading data set
+    CompoundTag tradingDataTag = compoundTag.getCompound(DATA_TRADING_DATA_TAG);
+    if (tradingDataTag.contains(TradingDataSet.DATA_TRADING_DATA_SET_TAG)) {
+      TradingDataSet tradingDataSet = new TradingDataSet(tradingDataTag);
+      this.setTradingDataSet(tradingDataSet);
     }
 
-    if (tradingTag.contains(DATA_TRADING_RESETS_EVERY_MIN_TAG)) {
-      this.setTradingResetsEveryMin(tradingTag.getInt(DATA_TRADING_RESETS_EVERY_MIN_TAG));
-    }
-
-    if (tradingTag.contains(DATA_TRADING_BASIC_MAX_USES_TAG)) {
-      this.setBasicTradingMaxUses(tradingTag.getInt(DATA_TRADING_BASIC_MAX_USES_TAG));
-    }
-
-    if (tradingTag.contains(DATA_TRADING_BASIC_REWARDED_XP_TAG)) {
-      this.setBasicTradingRewardExp(tradingTag.getInt(DATA_TRADING_BASIC_REWARDED_XP_TAG));
-    }
-
-    if (tradingTag.contains(DATA_TRADING_RECIPES_TAG)) {
+    // Load vanilla trading data
+    CompoundTag tradingOffersTag = compoundTag.getCompound(DATA_TRADING_OFFERS_TAG);
+    if (tradingOffersTag.contains(DATA_TRADING_RECIPES_TAG)) {
       MerchantOffers merchantOffers =
-          new MerchantOffers(tradingTag.getCompound(DATA_TRADING_RECIPES_TAG));
+          new MerchantOffers(tradingOffersTag.getCompound(DATA_TRADING_RECIPES_TAG));
       if (!merchantOffers.isEmpty()) {
         this.setTradingOffers(merchantOffers);
       }
       return;
     }
-
-    if (tradingTag.contains(DATA_TRADING_INVENTORY_TAG)) {
-      setTradingInventory(tradingTag.getCompound(DATA_TRADING_INVENTORY_TAG));
+    if (tradingOffersTag.contains(DATA_TRADING_INVENTORY_TAG)) {
+      setTradingInventory(tradingOffersTag.getCompound(DATA_TRADING_INVENTORY_TAG));
     }
   }
 }

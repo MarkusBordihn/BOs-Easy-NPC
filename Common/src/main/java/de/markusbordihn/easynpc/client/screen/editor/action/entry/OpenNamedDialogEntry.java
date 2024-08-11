@@ -41,7 +41,7 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
         this.screen.addActionEntryWidget(
             new TextField(this.font, editorLeft, editorTop + 20, 275, 16));
     this.dialogNameTextField.setMaxLength(512);
-    this.dialogNameTextField.setValue(hasActionData ? this.actionDataEntry.getCommand() : "");
+    this.dialogNameTextField.setValue(hasActionData ? this.actionDataEntry.command() : "");
     this.dialogNameTextField.setResponder(this::validateDialogName);
   }
 
@@ -75,7 +75,7 @@ public class OpenNamedDialogEntry extends ActionEntryWidget {
   @Override
   public boolean hasChanged() {
     return this.dialogNameTextField != null
-        && !this.dialogNameTextField.getValue().equals(this.actionDataEntry.getCommand())
+        && !this.dialogNameTextField.getValue().equals(this.actionDataEntry.command())
         && !this.showInvalidDialogName;
   }
 }

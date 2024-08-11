@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.IronGolem;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Piglin;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Wolf;
@@ -96,6 +97,19 @@ public class ModEntityType {
           ModEntityTypes.ORC_WARRIOR);
   public static final EntityType<Pig> PIG =
       Registry.register(Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Pig.ID, ModEntityTypes.PIG);
+  public static final EntityType<Piglin> PIGLIN =
+      Registry.register(
+          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + Piglin.ID, ModEntityTypes.PIGLIN);
+  public static final EntityType<Piglin> PIGLIN_BRUTE =
+      Registry.register(
+          Registry.ENTITY_TYPE,
+          Constants.MOD_ID + ":" + Piglin.ID_BRUTE,
+          ModEntityTypes.PIGLIN_BRUTE);
+  public static final EntityType<Piglin> PIGLIN_ZOMBIFIED =
+      Registry.register(
+          Registry.ENTITY_TYPE,
+          Constants.MOD_ID + ":" + Piglin.ID_ZOMBIFIED,
+          ModEntityTypes.PIGLIN_ZOMBIFIED);
   public static final EntityType<Illager> PILLAGER =
       Registry.register(
           Registry.ENTITY_TYPE,
@@ -177,6 +191,9 @@ public class ModEntityType {
     FabricDefaultAttributeRegistry.register(ORC, Orc.createAttributes());
     FabricDefaultAttributeRegistry.register(ORC_WARRIOR, Orc.createAttributes());
     FabricDefaultAttributeRegistry.register(PIG, Pig.createAttributes());
+    FabricDefaultAttributeRegistry.register(PIGLIN, Piglin.createAttributes());
+    FabricDefaultAttributeRegistry.register(PIGLIN_BRUTE, Piglin.createAttributes());
+    FabricDefaultAttributeRegistry.register(PIGLIN_ZOMBIFIED, Piglin.createAttributes());
     FabricDefaultAttributeRegistry.register(PILLAGER, Illager.createAttributes());
     FabricDefaultAttributeRegistry.register(SKELETON, Skeleton.createAttributes());
     FabricDefaultAttributeRegistry.register(SKELETON_HORSE, Horse.createAttributes());

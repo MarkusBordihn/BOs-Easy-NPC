@@ -72,7 +72,8 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
 
     // Set action data entry
     this.actionDataEntry = actionDataEntry;
-    this.actionDataType = actionDataEntry != null ? actionDataEntry.getType() : ActionDataType.NONE;
+    this.actionDataType =
+        actionDataEntry != null ? actionDataEntry.actionDataType() : ActionDataType.NONE;
     this.actionDateEntriesSize = actionDataSet != null ? actionDataSet.getEntries().size() : 1;
 
     // Adding general buttons
@@ -116,7 +117,7 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
 
   @Override
   public Component getNarration() {
-    return Component.literal(this.actionDataType.name() + ":" + this.actionDataEntry.getCommand());
+    return Component.literal(this.actionDataType.name() + ":" + this.actionDataEntry.command());
   }
 
   @Override
@@ -176,7 +177,7 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
       Text.drawString(
           poseStack,
           this.font,
-          TextUtils.limitString(this.actionDataEntry.getCommand(), 22),
+          TextUtils.limitString(this.actionDataEntry.command(), 22),
           fieldsLeft + VALUE_LEFT_POS + 2,
           top + 5,
           Constants.FONT_COLOR_BLACK);
@@ -184,7 +185,7 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
       Text.drawString(
           poseStack,
           this.font,
-          TextUtils.limitString(this.actionDataEntry.getBlockPos().toString(), 22),
+          TextUtils.limitString(this.actionDataEntry.blockPos().toString(), 22),
           fieldsLeft + VALUE_LEFT_POS + 2,
           top + 5,
           Constants.FONT_COLOR_BLACK);

@@ -132,7 +132,7 @@ public interface ServerNetworkMessageHandlerInterface {
     if (uuid != null && resetsEveryMin >= 0) {
       NetworkHandlerManager.sendToServer(
           new ChangeAdvancedTradingMessage(
-              uuid, 9999, TradingValueType.RESETS_EVERY_MIN, resetsEveryMin));
+              uuid, 9999, TradingValueType.RESET_TRADING_EVERY_MIN, resetsEveryMin));
     }
   }
 
@@ -202,7 +202,8 @@ public interface ServerNetworkMessageHandlerInterface {
   default void setBasicTradingResetsEveryMin(UUID uuid, int resetsEveryMin) {
     if (uuid != null && resetsEveryMin >= 0) {
       NetworkHandlerManager.sendToServer(
-          new ChangeBasicTradingMessage(uuid, TradingValueType.RESETS_EVERY_MIN, resetsEveryMin));
+          new ChangeBasicTradingMessage(
+              uuid, TradingValueType.RESET_TRADING_EVERY_MIN, resetsEveryMin));
     }
   }
 

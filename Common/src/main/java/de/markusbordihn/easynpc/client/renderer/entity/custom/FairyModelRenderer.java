@@ -24,6 +24,7 @@ import com.mojang.math.Vector3f;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.FairyModel;
 import de.markusbordihn.easynpc.client.renderer.entity.base.BaseHumanoidMobModelRenderer;
+import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy.Variant;
@@ -34,7 +35,6 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.core.Rotations;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Pose;
 
@@ -69,12 +69,12 @@ public class FairyModelRenderer
 
   @Override
   public <N extends EasyNPC<Fairy>> void rotateEntity(N easyNPC, PoseStack poseStack) {
-    Rotations rootRotation = easyNPC.getEasyNPCModelData().getModelRootRotation();
+    CustomRotation rootRotation = easyNPC.getEasyNPCModelData().getModelRootRotation();
     if (rootRotation != null) {
       poseStack.translate(0, 0.5, 0);
-      poseStack.mulPose(Vector3f.XP.rotation(rootRotation.getX()));
-      poseStack.mulPose(Vector3f.YP.rotation(rootRotation.getY()));
-      poseStack.mulPose(Vector3f.ZP.rotation(rootRotation.getZ()));
+      poseStack.mulPose(Vector3f.XP.rotation(rootRotation.x()));
+      poseStack.mulPose(Vector3f.YP.rotation(rootRotation.y()));
+      poseStack.mulPose(Vector3f.ZP.rotation(rootRotation.z()));
       poseStack.translate(0, -0.5, 0);
     }
   }

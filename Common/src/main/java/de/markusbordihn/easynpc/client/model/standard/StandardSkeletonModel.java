@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.client.model.animation.HumanoidArmPoseAnimation;
 import de.markusbordihn.easynpc.data.model.ModelArmPose;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
+import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
@@ -35,7 +36,6 @@ import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.client.model.SkeletonModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.core.Rotations;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 
@@ -44,7 +44,7 @@ public class StandardSkeletonModel<T extends Mob & RangedAttackMob> extends Skel
 
   protected final Map<ModelPartType, CustomPosition> modelPartPositionMap =
       new EnumMap<>(ModelPartType.class);
-  protected final Map<ModelPartType, Rotations> modelPartRotationMap =
+  protected final Map<ModelPartType, CustomRotation> modelPartRotationMap =
       new EnumMap<>(ModelPartType.class);
   protected final Map<ModelPartType, ModelPart> modelPartMap = new EnumMap<>(ModelPartType.class);
 
@@ -205,33 +205,17 @@ public class StandardSkeletonModel<T extends Mob & RangedAttackMob> extends Skel
   }
 
   @Override
-  public void setDefaultModelPartPosition(
-      ModelPartType modelPartType, CustomPosition customPosition) {
-    this.modelPartPositionMap.put(modelPartType, customPosition);
+  public Map<ModelPartType, CustomPosition> getModelPartPositionMap() {
+    return this.modelPartPositionMap;
   }
 
   @Override
-  public void setDefaultModelPartRotation(ModelPartType modelPartType, Rotations rotations) {
-    this.modelPartRotationMap.put(modelPartType, rotations);
+  public Map<ModelPartType, CustomRotation> getModelPartRotationMap() {
+    return this.modelPartRotationMap;
   }
 
   @Override
-  public void setDefaultModelPart(ModelPartType modelPartType, ModelPart modelPart) {
-    this.modelPartMap.put(modelPartType, modelPart);
-  }
-
-  @Override
-  public CustomPosition getDefaultModelPartPosition(ModelPartType modelPartType) {
-    return this.modelPartPositionMap.getOrDefault(modelPartType, EMPTY_POSITION);
-  }
-
-  @Override
-  public Rotations getDefaultModelPartRotation(ModelPartType modelPartType) {
-    return this.modelPartRotationMap.getOrDefault(modelPartType, EMPTY_ROTATION);
-  }
-
-  @Override
-  public ModelPart getDefaultModelPart(ModelPartType modelPartType) {
-    return this.modelPartMap.getOrDefault(modelPartType, null);
+  public Map<ModelPartType, ModelPart> getModelPartMap() {
+    return this.modelPartMap;
   }
 }

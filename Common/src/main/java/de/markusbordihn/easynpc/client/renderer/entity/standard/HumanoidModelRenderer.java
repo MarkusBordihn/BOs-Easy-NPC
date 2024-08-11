@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.standard;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.model.standard.StandardPlayerModel;
+import de.markusbordihn.easynpc.client.model.base.BasePlayerModel;
 import de.markusbordihn.easynpc.client.renderer.EasyNPCModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.base.BaseLivingEntityModelRenderer;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
@@ -42,7 +42,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Pose;
 
 public class HumanoidModelRenderer
-    extends BaseLivingEntityModelRenderer<Humanoid, Variant, StandardPlayerModel<Humanoid>> {
+    extends BaseLivingEntityModelRenderer<Humanoid, Variant, BasePlayerModel<Humanoid>> {
 
   protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
       Util.make(
@@ -65,11 +65,11 @@ public class HumanoidModelRenderer
           });
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.STEVE);
 
-  public <L extends RenderLayer<Humanoid, StandardPlayerModel<Humanoid>>> HumanoidModelRenderer(
+  public <L extends RenderLayer<Humanoid, BasePlayerModel<Humanoid>>> HumanoidModelRenderer(
       EntityRendererProvider.Context context, Class<L> humanoidArmorLayerClass) {
     super(
         context,
-        new StandardPlayerModel<>(context.bakeLayer(ModelLayers.PLAYER), false),
+        new BasePlayerModel<>(context.bakeLayer(ModelLayers.PLAYER), false),
         0.5F,
         DEFAULT_TEXTURE,
         TEXTURE_BY_VARIANT);
@@ -94,7 +94,7 @@ public class HumanoidModelRenderer
   @Override
   public void renderDefaultPose(
       Humanoid entity,
-      StandardPlayerModel<Humanoid> model,
+      BasePlayerModel<Humanoid> model,
       Pose pose,
       float entityYaw,
       float partialTicks,
