@@ -33,6 +33,7 @@ import de.markusbordihn.easynpc.client.renderer.entity.standard.HumanoidSlimMode
 import de.markusbordihn.easynpc.client.renderer.entity.standard.IllagerModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.IronGolemModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.PigModelRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.standard.PiglinModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.SkeletonModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.VillagerModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.WolfModelRenderer;
@@ -98,6 +99,15 @@ public class ClientRenderer {
         ModEntityType.ZOMBIE_VILLAGER.get(),
         context -> new ZombieVillagerModelRenderer(context, CustomHumanoidArmorLayer.class));
     event.registerEntityRenderer(ModEntityType.PIG.get(), PigModelRenderer::new);
+    event.registerEntityRenderer(
+        ModEntityType.PIGLIN.get(),
+        context -> new PiglinModelRenderer(context, CustomHumanoidArmorLayer.class));
+    event.registerEntityRenderer(
+        ModEntityType.PIGLIN_BRUTE.get(),
+        context -> new PiglinModelRenderer(context, CustomHumanoidArmorLayer.class));
+    event.registerEntityRenderer(
+        ModEntityType.PIGLIN_ZOMBIFIED.get(),
+        context -> new PiglinModelRenderer(context, CustomHumanoidArmorLayer.class));
     event.registerEntityRenderer(ModEntityType.EVOKER.get(), IllagerModelRenderer::new);
     event.registerEntityRenderer(ModEntityType.ILLUSIONER.get(), IllagerModelRenderer::new);
     event.registerEntityRenderer(ModEntityType.PILLAGER.get(), IllagerModelRenderer::new);

@@ -19,12 +19,12 @@
 
 package de.markusbordihn.easynpc.data.rotation;
 
-import net.minecraft.core.Rotations;
+import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
-public class CustomRotation extends Rotations {
+public record CustomRotation(float x, float y, float z) {
 
   public static final StreamCodec<RegistryFriendlyByteBuf, CustomRotation> STREAM_CODEC =
       new StreamCodec<>() {
@@ -45,24 +45,16 @@ public class CustomRotation extends Rotations {
         }
       };
 
-  public CustomRotation(float x, float y, float z) {
-    super(x, y, z);
-  }
-
   public CustomRotation(ListTag listTag) {
     this(listTag.getFloat(0), listTag.getFloat(1), listTag.getFloat(2));
   }
 
-  public float x() {
-    return this.x;
-  }
-
-  public float y() {
-    return this.y;
-  }
-
-  public float z() {
-    return this.z;
+  public ListTag save() {
+    ListTag listTag = new ListTag();
+    listTag.add(FloatTag.valueOf(this.x));
+    listTag.add(FloatTag.valueOf(this.y));
+    listTag.add(FloatTag.valueOf(this.z));
+    return listTag;
   }
 
   public boolean hasChanged() {
@@ -71,5 +63,13 @@ public class CustomRotation extends Rotations {
 
   public boolean hasChanged(float x, float y, float z) {
     return this.x != x || this.y != y || this.z != z;
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    return object instanceof CustomRotation customRotation
+        && this.x == customRotation.x
+        && this.y == customRotation.y
+        && this.z == customRotation.z;
   }
 }

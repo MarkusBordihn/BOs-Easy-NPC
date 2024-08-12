@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.IronGolem;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Piglin;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Wolf;
@@ -94,6 +95,13 @@ public class ModItems {
       new ModSpawnEggItem(ModEntityType.ORC_WARRIOR, new Item.Properties().rarity(Rarity.EPIC));
   public static final Item PIG_NPC_SPAWN_EGG =
       new ModSpawnEggItem(ModEntityType.PIG, new Item.Properties().rarity(Rarity.EPIC));
+  public static final Item PIGLIN_NPC_SPAWN_EGG =
+      new ModSpawnEggItem(ModEntityType.PIGLIN, new Item.Properties().rarity(Rarity.EPIC));
+  public static final Item PIGLIN_BRUTE_NPC_SPAWN_EGG =
+      new ModSpawnEggItem(ModEntityType.PIGLIN_BRUTE, new Item.Properties().rarity(Rarity.EPIC));
+  public static final Item PIGLIN_ZOMBIFIED_NPC_SPAWN_EGG =
+      new ModSpawnEggItem(
+          ModEntityType.PIGLIN_ZOMBIFIED, new Item.Properties().rarity(Rarity.EPIC));
   public static final Item PILLAGER_NPC_SPAWN_EGG =
       new ModSpawnEggItem(ModEntityType.PILLAGER, new Item.Properties().rarity(Rarity.EPIC));
   public static final Item SKELETON_HORSE_NPC_SPAWN_EGG =
@@ -154,6 +162,9 @@ public class ModItems {
     registerSpawnEgg(Orc.ID, ORC_NPC_SPAWN_EGG);
     registerSpawnEgg(Orc.ID_WARRIOR, ORC_WARRIOR_NPC_SPAWN_EGG);
     registerSpawnEgg(Pig.ID, PIG_NPC_SPAWN_EGG);
+    registerSpawnEgg(Piglin.ID, PIGLIN_NPC_SPAWN_EGG);
+    registerSpawnEgg(Piglin.ID_BRUTE, PIGLIN_BRUTE_NPC_SPAWN_EGG);
+    registerSpawnEgg(Piglin.ID_ZOMBIFIED, PIGLIN_ZOMBIFIED_NPC_SPAWN_EGG);
     registerSpawnEgg(Skeleton.ID, SKELETON_NPC_SPAWN_EGG);
     registerSpawnEgg(Skeleton.ID_STRAY, STRAY_NPC_SPAWN_EGG);
     registerSpawnEgg(Skeleton.ID_WITHER_SKELETON, WITHER_SKELETON_NPC_SPAWN_EGG);

@@ -27,8 +27,6 @@ import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.action.ActionGroup;
 import de.markusbordihn.easynpc.data.action.ActionManager;
-import de.markusbordihn.easynpc.data.ticker.TickerType;
-import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
@@ -140,15 +138,6 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
     TickerData<E> tickerData = this.getEasyNPCTickerData();
     if (tradingData == null || tickerData == null) {
       return;
-    }
-
-    if ((tradingData.getTradingType() == TradingType.BASIC
-            || tradingData.getTradingType() == TradingType.ADVANCED)
-        && tradingData.getTradingResetsEveryMin() > 0
-        && tickerData.checkAndIncreaseTicker(
-            TickerType.TRADING_RESET, tradingData.getTradingResetsEveryMin())) {
-      tradingData.resetTradingOffers();
-      tickerData.resetTicker(TickerType.TRADING_RESET);
     }
 
     this.getProfiler().pop();
@@ -300,7 +289,7 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
     // Filter close dialog action and execute all other actions first.
     ActionDataEntry closeDialogActionDataEntry = null;
     for (ActionDataEntry actionDataEntry : actionDataSet.getEntries()) {
-      if (actionDataEntry.getType() == ActionDataType.CLOSE_DIALOG) {
+      if (actionDataEntry.actionDataType() == ActionDataType.CLOSE_DIALOG) {
         if (closeDialogActionDataEntry == null) {
           closeDialogActionDataEntry = actionDataEntry;
         } else {
@@ -328,11 +317,11 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
     if (!validateActionData(actionDataEntry, serverPlayer)) {
       return;
     }
-    switch (actionDataEntry.getType()) {
+    switch (actionDataEntry.actionDataType()) {
       case NONE:
         break;
       case COMMAND:
-        if (actionDataEntry.shouldExecuteAsUser()) {
+        if (actionDataEntry.executeAsUser()) {
           this.executePlayerCommand(actionDataEntry, serverPlayer);
         } else {
           this.executeEntityCommand(actionDataEntry, serverPlayer);
@@ -342,7 +331,7 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
         serverPlayer.closeContainer();
         break;
       case INTERACT_BLOCK:
-        BlockPos blockPos = actionDataEntry.getBlockPos();
+        BlockPos blockPos = actionDataEntry.blockPos();
         if (blockPos != null && !blockPos.equals(BlockPos.ZERO)) {
           this.interactWithBlock(blockPos);
         } else {
@@ -362,7 +351,9 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
         break;
       default:
         log.warn(
-            "Unknown action type {} for action {}", actionDataEntry.getType(), actionDataEntry);
+            "Unknown action type {} for action {}",
+            actionDataEntry.actionDataType(),
+            actionDataEntry);
         break;
     }
   }
@@ -371,7 +362,7 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
     if (!validateActionData(actionDataEntry, serverPlayer)) {
       return;
     }
-    String dialogLabel = actionDataEntry.getCommand();
+    String dialogLabel = actionDataEntry.command();
     DialogData<?> dialogData = this.getEasyNPCDialogData();
     if (dialogLabel != null
         && !dialogLabel.isEmpty()
@@ -394,7 +385,7 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
       log.error("No action event data found for action {}", actionDataEntry);
       return;
     }
-    int userPermissionLevel = actionDataEntry.getPermissionLevel();
+    int userPermissionLevel = actionDataEntry.permissionLevel();
     if (userPermissionLevel > actionEventData.getActionPermissionLevel()) {
       log.warn(
           "User permission level {} is lower than action permission level {} for action {}",
@@ -410,12 +401,12 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
         actionDataEntry,
         serverPlayer,
         userPermissionLevel,
-        actionDataEntry.getPermissionLevel());
+        actionDataEntry.permissionLevel());
     executePlayerCommand(
         actionDataEntry.getAction(this.getLivingEntity(), serverPlayer),
         serverPlayer,
         userPermissionLevel,
-        actionDataEntry.isDebugEnabled());
+        actionDataEntry.enableDebug());
   }
 
   default void executeEntityCommand(ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
@@ -445,6 +436,6 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
         actionDataEntry.getAction(this.getLivingEntity(), serverPlayer),
         this.getEntity(),
         ownerPermissionLevel,
-        actionDataEntry.isDebugEnabled());
+        actionDataEntry.enableDebug());
   }
 }

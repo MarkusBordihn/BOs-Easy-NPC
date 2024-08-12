@@ -24,7 +24,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
-public class CustomPosition {
+public record CustomPosition(float x, float y, float z) {
   public static final StreamCodec<RegistryFriendlyByteBuf, CustomPosition> STREAM_CODEC =
       new StreamCodec<>() {
         @Override
@@ -43,15 +43,6 @@ public class CustomPosition {
           registryFriendlyByteBuf.writeFloat(position.z);
         }
       };
-  protected final float x;
-  protected final float y;
-  protected final float z;
-
-  public CustomPosition(float x, float y, float z) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
-  }
 
   public CustomPosition(ListTag listTag) {
     this(listTag.getFloat(0), listTag.getFloat(1), listTag.getFloat(2));
@@ -63,18 +54,6 @@ public class CustomPosition {
     listTag.add(FloatTag.valueOf(this.y));
     listTag.add(FloatTag.valueOf(this.z));
     return listTag;
-  }
-
-  public float x() {
-    return this.x;
-  }
-
-  public float y() {
-    return this.y;
-  }
-
-  public float z() {
-    return this.z;
   }
 
   public boolean hasChanged() {

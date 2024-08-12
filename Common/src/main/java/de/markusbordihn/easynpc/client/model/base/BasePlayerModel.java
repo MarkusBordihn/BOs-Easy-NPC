@@ -1,23 +1,4 @@
-/*
- * Copyright 2023 Markus Bordihn
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
- * associated documentation files (the "Software"), to deal in the Software without restriction,
- * including without limitation the rights to use, copy, modify, merge, publish, distribute,
- * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or
- * substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
- * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
-package de.markusbordihn.easynpc.client.model.standard;
+package de.markusbordihn.easynpc.client.model.base;
 
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.client.model.ModelHelper;
@@ -29,6 +10,7 @@ import de.markusbordihn.easynpc.client.model.animation.HumanoidLegAnimation;
 import de.markusbordihn.easynpc.data.model.ModelArmPose;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
+import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
@@ -36,11 +18,10 @@ import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.core.Rotations;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 
-public class StandardPlayerModel<T extends LivingEntity> extends PlayerModel<T>
+public class BasePlayerModel<T extends LivingEntity> extends PlayerModel<T>
     implements EasyNPCModel<T>,
         HumanoidArmAnimation,
         HumanoidArmPoseAnimation,
@@ -49,11 +30,15 @@ public class StandardPlayerModel<T extends LivingEntity> extends PlayerModel<T>
 
   protected final Map<ModelPartType, CustomPosition> modelPartPositionMap =
       new EnumMap<>(ModelPartType.class);
-  protected final Map<ModelPartType, Rotations> modelPartRotationMap =
+  protected final Map<ModelPartType, CustomRotation> modelPartRotationMap =
       new EnumMap<>(ModelPartType.class);
   protected final Map<ModelPartType, ModelPart> modelPartMap = new EnumMap<>(ModelPartType.class);
 
-  public StandardPlayerModel(ModelPart modelPart, boolean slim) {
+  public BasePlayerModel(ModelPart modelPart) {
+    this(modelPart, false);
+  }
+
+  public BasePlayerModel(ModelPart modelPart, boolean slim) {
     super(modelPart, slim);
     defineModelPart(ModelPartType.HEAD, modelPart, "head");
     defineModelPart(ModelPartType.HAT, modelPart, "hat");
@@ -213,33 +198,17 @@ public class StandardPlayerModel<T extends LivingEntity> extends PlayerModel<T>
   }
 
   @Override
-  public void setDefaultModelPartPosition(
-      ModelPartType modelPartType, CustomPosition customPosition) {
-    this.modelPartPositionMap.put(modelPartType, customPosition);
+  public Map<ModelPartType, CustomPosition> getModelPartPositionMap() {
+    return this.modelPartPositionMap;
   }
 
   @Override
-  public void setDefaultModelPartRotation(ModelPartType modelPartType, Rotations rotations) {
-    this.modelPartRotationMap.put(modelPartType, rotations);
+  public Map<ModelPartType, CustomRotation> getModelPartRotationMap() {
+    return this.modelPartRotationMap;
   }
 
   @Override
-  public void setDefaultModelPart(ModelPartType modelPartType, ModelPart modelPart) {
-    this.modelPartMap.put(modelPartType, modelPart);
-  }
-
-  @Override
-  public CustomPosition getDefaultModelPartPosition(ModelPartType modelPartType) {
-    return this.modelPartPositionMap.getOrDefault(modelPartType, EMPTY_POSITION);
-  }
-
-  @Override
-  public Rotations getDefaultModelPartRotation(ModelPartType modelPartType) {
-    return this.modelPartRotationMap.getOrDefault(modelPartType, EMPTY_ROTATION);
-  }
-
-  @Override
-  public ModelPart getDefaultModelPart(ModelPartType modelPartType) {
-    return this.modelPartMap.getOrDefault(modelPartType, null);
+  public Map<ModelPartType, ModelPart> getModelPartMap() {
+    return this.modelPartMap;
   }
 }

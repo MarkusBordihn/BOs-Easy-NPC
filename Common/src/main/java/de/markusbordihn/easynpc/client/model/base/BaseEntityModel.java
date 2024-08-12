@@ -24,18 +24,18 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.client.model.ModelPartType;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
+import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.core.Rotations;
 import net.minecraft.world.entity.Entity;
 
 public class BaseEntityModel<E extends Entity> extends EntityModel<E> implements EasyNPCModel<E> {
 
   protected final Map<ModelPartType, CustomPosition> modelPartPositionMap =
       new EnumMap<>(ModelPartType.class);
-  protected final Map<ModelPartType, Rotations> modelPartRotationMap =
+  protected final Map<ModelPartType, CustomRotation> modelPartRotationMap =
       new EnumMap<>(ModelPartType.class);
   protected final Map<ModelPartType, ModelPart> modelPartMap = new EnumMap<>(ModelPartType.class);
 
@@ -56,34 +56,18 @@ public class BaseEntityModel<E extends Entity> extends EntityModel<E> implements
   public void resetModelParts() {}
 
   @Override
-  public void setDefaultModelPartPosition(
-      ModelPartType modelPartType, CustomPosition customPosition) {
-    this.modelPartPositionMap.put(modelPartType, customPosition);
+  public Map<ModelPartType, CustomPosition> getModelPartPositionMap() {
+    return this.modelPartPositionMap;
   }
 
   @Override
-  public void setDefaultModelPartRotation(ModelPartType modelPartType, Rotations rotations) {
-    this.modelPartRotationMap.put(modelPartType, rotations);
+  public Map<ModelPartType, CustomRotation> getModelPartRotationMap() {
+    return this.modelPartRotationMap;
   }
 
   @Override
-  public void setDefaultModelPart(ModelPartType modelPartType, ModelPart modelPart) {
-    this.modelPartMap.put(modelPartType, modelPart);
-  }
-
-  @Override
-  public CustomPosition getDefaultModelPartPosition(ModelPartType modelPartType) {
-    return this.modelPartPositionMap.getOrDefault(modelPartType, EMPTY_POSITION);
-  }
-
-  @Override
-  public Rotations getDefaultModelPartRotation(ModelPartType modelPartType) {
-    return this.modelPartRotationMap.getOrDefault(modelPartType, EMPTY_ROTATION);
-  }
-
-  @Override
-  public ModelPart getDefaultModelPart(ModelPartType modelPartType) {
-    return this.modelPartMap.getOrDefault(modelPartType, null);
+  public Map<ModelPartType, ModelPart> getModelPartMap() {
+    return this.modelPartMap;
   }
 
   @Override

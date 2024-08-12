@@ -22,6 +22,8 @@ minecraft {
       workingDirectory project.file('run/client')
       property 'forge.logging.markers', 'REGISTRIES'
       property 'forge.logging.console.level', 'debug'
+      property 'forge.enabledGameTestNamespaces', "${project.mod_id}"
+
       mods {
         easy_npc {
           source sourceSets.main
@@ -43,6 +45,7 @@ minecraft {
       workingDirectory project.file('run/server')
       property 'forge.logging.markers', 'REGISTRIES'
       property 'forge.logging.console.level', 'debug'
+      property 'forge.enabledGameTestNamespaces', "${project.mod_id}"
 
       mods {
         easy_npc {
@@ -56,13 +59,14 @@ minecraft {
     }
 
     gameTestServer {
-      property 'forge.enabledGameTestNamespaces', mod_id
+      property 'forge.enabledGameTestNamespaces', "${project.mod_id}"
     }
 
     data {
       workingDirectory project.file('run/data')
       property 'forge.logging.markers', 'REGISTRIES'
       property 'forge.logging.console.level', 'debug'
+      property 'forge.enabledGameTestNamespaces', "${project.mod_id}"
 
       args '--mod', "${project.mod_id}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
       mods {

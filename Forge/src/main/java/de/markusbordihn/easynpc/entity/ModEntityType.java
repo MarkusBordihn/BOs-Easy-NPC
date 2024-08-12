@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.IronGolem;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
+import de.markusbordihn.easynpc.entity.easynpc.npc.Piglin;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Wolf;
@@ -87,6 +88,12 @@ public class ModEntityType {
       ENTITY_TYPES.register(Orc.ID_WARRIOR, () -> ModEntityTypes.ORC_WARRIOR);
   public static final RegistryObject<EntityType<Pig>> PIG =
       ENTITY_TYPES.register(Pig.ID, () -> ModEntityTypes.PIG);
+  public static final RegistryObject<EntityType<Piglin>> PIGLIN =
+      ENTITY_TYPES.register(Piglin.ID, () -> ModEntityTypes.PIGLIN);
+  public static final RegistryObject<EntityType<Piglin>> PIGLIN_BRUTE =
+      ENTITY_TYPES.register(Piglin.ID_BRUTE, () -> ModEntityTypes.PIGLIN_BRUTE);
+  public static final RegistryObject<EntityType<Piglin>> PIGLIN_ZOMBIFIED =
+      ENTITY_TYPES.register(Piglin.ID_ZOMBIFIED, () -> ModEntityTypes.PIGLIN_ZOMBIFIED);
   public static final RegistryObject<EntityType<Illager>> PILLAGER =
       ENTITY_TYPES.register(Illager.ID_PILLAGER, () -> ModEntityTypes.PILLAGER);
   public static final RegistryObject<EntityType<Skeleton>> SKELETON =
@@ -134,28 +141,31 @@ public class ModEntityType {
     event.put(CAT.get(), Cat.createAttributes().build());
     event.put(CHICKEN.get(), Chicken.createAttributes().build());
     event.put(DROWNED.get(), Zombie.createAttributes().build());
+    event.put(EVOKER.get(), Illager.createAttributes().build());
     event.put(FAIRY.get(), Fairy.createAttributes().build());
+    event.put(HORSE.get(), Horse.createAttributes().build());
     event.put(HUMANOID.get(), Humanoid.createAttributes().build());
     event.put(HUMANOID_SLIM.get(), HumanoidSlim.createAttributes().build());
     event.put(HUSK.get(), Zombie.createAttributes().build());
-    event.put(IRON_GOLEM.get(), IronGolem.createAttributes().build());
-    event.put(WITHER_SKELETON.get(), Skeleton.createAttributes().build());
-    event.put(STRAY.get(), Skeleton.createAttributes().build());
-    event.put(SKELETON.get(), Skeleton.createAttributes().build());
-    event.put(VILLAGER.get(), Villager.createAttributes().build());
-    event.put(ZOMBIE.get(), Zombie.createAttributes().build());
-    event.put(ZOMBIE_VILLAGER.get(), ZombieVillager.createAttributes().build());
-    event.put(PIG.get(), Pig.createAttributes().build());
-    event.put(EVOKER.get(), Illager.createAttributes().build());
     event.put(ILLUSIONER.get(), Illager.createAttributes().build());
-    event.put(PILLAGER.get(), Illager.createAttributes().build());
-    event.put(VINDICATOR.get(), Illager.createAttributes().build());
+    event.put(IRON_GOLEM.get(), IronGolem.createAttributes().build());
     event.put(ORC.get(), Orc.createAttributes().build());
     event.put(ORC_WARRIOR.get(), Orc.createAttributes().build());
-    event.put(WOLF.get(), Wolf.createAttributes().build());
-    event.put(HORSE.get(), Horse.createAttributes().build());
+    event.put(PIG.get(), Pig.createAttributes().build());
+    event.put(PIGLIN.get(), Piglin.createAttributes().build());
+    event.put(PIGLIN_BRUTE.get(), Piglin.createAttributes().build());
+    event.put(PIGLIN_ZOMBIFIED.get(), Piglin.createAttributes().build());
+    event.put(PILLAGER.get(), Illager.createAttributes().build());
+    event.put(SKELETON.get(), Skeleton.createAttributes().build());
     event.put(SKELETON_HORSE.get(), Horse.createAttributes().build());
+    event.put(STRAY.get(), Skeleton.createAttributes().build());
+    event.put(VILLAGER.get(), Villager.createAttributes().build());
+    event.put(VINDICATOR.get(), Illager.createAttributes().build());
+    event.put(WITHER_SKELETON.get(), Skeleton.createAttributes().build());
+    event.put(WOLF.get(), Wolf.createAttributes().build());
+    event.put(ZOMBIE.get(), Zombie.createAttributes().build());
     event.put(ZOMBIE_HORSE.get(), Horse.createAttributes().build());
+    event.put(ZOMBIE_VILLAGER.get(), ZombieVillager.createAttributes().build());
 
     // Raw entities (for modding only)
     event.put(
