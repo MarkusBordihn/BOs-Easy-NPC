@@ -120,20 +120,20 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
   }
 
   default void updateMerchantTradingOffers() {
-    MerchantOffers merchantOffers = null;
+    MerchantOffers merchantOffers = new MerchantOffers();
     TradingDataSet tradingDataSet = this.getTradingDataSet();
     if (tradingDataSet.isType(TradingType.BASIC) || tradingDataSet.isType(TradingType.ADVANCED)) {
       // Create a copy of the offers to avoid side effects.
       merchantOffers = new MerchantOffers(this.getTradingOffers().createTag());
     }
-    if (merchantOffers != null && !merchantOffers.isEmpty()) {
+    if (!merchantOffers.isEmpty()) {
       // Filter out offers which are missing item a, item b or result item.
       merchantOffers.removeIf(
           merchantOffer ->
               (merchantOffer.getBaseCostA().isEmpty() && merchantOffer.getCostB().isEmpty())
                   || merchantOffer.getResult().isEmpty());
-      this.setMerchantTradingOffers(merchantOffers);
     }
+    this.setMerchantTradingOffers(merchantOffers);
   }
 
   @Override
@@ -465,18 +465,28 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
       return InteractionResult.SUCCESS;
     }
 
-    // Make sure we have a merchant and the player is not already trading.
+    // Make sure we have a valid merchant.
     Merchant merchant = this.getMerchant();
     if (merchant == null) {
       log.error(
           "No merchant found for {} with {} from {}", this, this.getTradingOffers(), serverPlayer);
       return InteractionResult.PASS;
     }
+
+    // Verify that we have trading offers.
+    MerchantOffers merchantOffers = merchant.getOffers();
+    if (merchantOffers.isEmpty()) {
+      log.error(
+          "No trading offers found for {} with {} from {}", this, merchantOffers, serverPlayer);
+      return InteractionResult.PASS;
+    }
+
+    // Check if player is already trading.
     if (merchant.getTradingPlayer() != null && merchant.getTradingPlayer() != serverPlayer) {
       log.warn(
           "Unable to open trading screen for {} with {} from {}, {} is still trading.",
           this,
-          merchant.getOffers(),
+          merchantOffers,
           serverPlayer,
           merchant.getTradingPlayer());
       serverPlayer.sendSystemMessage(
@@ -495,8 +505,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     }
 
     // Open trading screen for the player.
-    log.debug(
-        "Open trading screen for {} with {} from {}", this, merchant.getOffers(), serverPlayer);
+    log.debug("Open trading screen for {} with {} from {}", this, merchantOffers, serverPlayer);
     merchant.setTradingPlayer(serverPlayer);
     merchant.openTradingScreen(
         serverPlayer,
