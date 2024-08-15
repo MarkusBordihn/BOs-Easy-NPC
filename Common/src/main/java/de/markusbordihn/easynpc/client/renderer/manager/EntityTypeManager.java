@@ -160,6 +160,22 @@ public class EntityTypeManager {
     return scaleFactor;
   }
 
+  public static void updateUnknownEntityType(Level level) {
+    // Process unknown entity but only one of a time to avoid performance issues.
+    if (unknownEntityTypes.isEmpty()) {
+      return;
+    }
+
+    EntityType<? extends Entity> entityType = unknownEntityTypes.iterator().next();
+    if (entityType != null) {
+      checkEntityType(entityType, level);
+    }
+  }
+
+  public static boolean checkEntityType(EntityType<?> entityType, Level level) {
+    return getPathfinderMob(entityType, level) != null;
+  }
+
   public static PathfinderMob getPathfinderMob(EntityType<?> entityType, Level level) {
     if (entityType == null) {
       return null;

@@ -199,6 +199,13 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
     this.renderSkinSelectionBackground(poseStack);
   }
 
+  @Override
+  protected void updateTick() {
+    super.updateTick();
+
+    EntityTypeManager.updateUnknownEntityType(this.minecraftInstance.level);
+  }
+
   private void renderCustomModels(PoseStack poseStack) {
     if (this.getEasyNPC() == null) {
       return;
@@ -228,6 +235,7 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
       this.lastNumOfSkins = this.numOfEntities;
     }
 
+    // Render custom entity models for the current page.
     for (int index = skinStartIndex;
         index < this.numOfEntities && index < skinStartIndex + MAX_SKINS_PER_PAGE;
         index++) {

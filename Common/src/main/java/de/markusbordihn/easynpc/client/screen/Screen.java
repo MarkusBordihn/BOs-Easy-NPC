@@ -42,6 +42,7 @@ public class Screen<T extends EasyNPCMenu> extends net.minecraft.client.gui.scre
     implements MenuAccess<T>, ScreenInterface {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final int UPDATE_TICKS = 16;
   protected static double formerMouseX = -1;
   protected static double formerMouseY = -1;
   protected final Minecraft minecraftInstance;
@@ -60,6 +61,7 @@ public class Screen<T extends EasyNPCMenu> extends net.minecraft.client.gui.scre
   protected int titleLabelY;
   protected int leftPos;
   protected int topPos;
+  private int updateTicker = 0;
 
   protected Screen(T menu, Inventory inventory, Component component) {
     super(component);
@@ -191,7 +193,9 @@ public class Screen<T extends EasyNPCMenu> extends net.minecraft.client.gui.scre
   @Override
   public final void tick() {
     super.tick();
-    if (this.minecraft.player.isAlive() && !this.minecraft.player.isRemoved()) {
+    if (this.minecraft.player.isAlive()
+        && !this.minecraft.player.isRemoved()
+        && updateTicker++ % UPDATE_TICKS == 0) {
       this.updateTick();
     }
   }

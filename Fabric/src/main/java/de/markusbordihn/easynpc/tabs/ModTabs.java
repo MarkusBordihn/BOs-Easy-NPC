@@ -39,7 +39,7 @@ public class ModTabs {
         .icon(ModItems.FAIRY_NPC_SPAWN_EGG::getDefaultInstance)
         .appendItems(
             stack -> {
-              stack.add(ModItems.ALLEY_NPC_SPAWN_EGG.getDefaultInstance());
+              stack.add(ModItems.ALLAY_NPC_SPAWN_EGG.getDefaultInstance());
               stack.add(ModItems.CAT_NPC_SPAWN_EGG.getDefaultInstance());
               stack.add(ModItems.CHICKEN_NPC_SPAWN_EGG.getDefaultInstance());
               stack.add(ModItems.DROWNED_NPC_SPAWN_EGG.getDefaultInstance());
