@@ -456,24 +456,34 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
       return InteractionResult.SUCCESS;
     }
 
-    // Make sure we have a merchant and the player is not already trading.
+    // Make sure we have a valid merchant.
     Merchant merchant = this.getMerchant();
     if (merchant == null) {
       log.error(
           "No merchant found for {} with {} from {}", this, this.getTradingOffers(), serverPlayer);
-      return InteractionResult.PASS;
+      return InteractionResult.FAIL;
     }
+
+    // Verify that we have trading offers.
+    MerchantOffers merchantOffers = merchant.getOffers();
+    if (merchantOffers.isEmpty()) {
+      log.error(
+          "No trading offers found for {} with {} from {}", this, merchantOffers, serverPlayer);
+      return InteractionResult.FAIL;
+    }
+
+    // Check if player is already trading.
     if (merchant.getTradingPlayer() != null && merchant.getTradingPlayer() != serverPlayer) {
       log.warn(
           "Unable to open trading screen for {} with {} from {}, {} is still trading.",
           this,
-          merchant.getOffers(),
+          merchantOffers,
           serverPlayer,
           merchant.getTradingPlayer());
       serverPlayer.sendSystemMessage(
           Component.translatable(
               Constants.TEXT_PREFIX + "trading.busy", merchant.getTradingPlayer()));
-      return InteractionResult.PASS;
+      return InteractionResult.FAIL;
     }
 
     // Check if trades should be reset.
@@ -486,8 +496,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     }
 
     // Open trading screen for the player.
-    log.debug(
-        "Open trading screen for {} with {} from {}", this, merchant.getOffers(), serverPlayer);
+    log.debug("Open trading screen for {} with {} from {}", this, merchantOffers, serverPlayer);
     merchant.setTradingPlayer(serverPlayer);
     merchant.openTradingScreen(
         serverPlayer,
@@ -504,7 +513,6 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     defineSynchedEntityData(builder, SynchedDataIndex.TRADING_INVENTORY, new CompoundTag());
     defineSynchedEntityData(
         builder, SynchedDataIndex.TRADING_MERCHANT_OFFERS, new MerchantOffers());
-    ;
   }
 
   default void addAdditionalTradingData(CompoundTag compoundTag, HolderLookup.Provider provider) {
