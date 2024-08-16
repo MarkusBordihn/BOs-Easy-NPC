@@ -1,4 +1,4 @@
-name: Build with Gradle
+name: Run game tests on Forge
 
 on: [ push, pull_request ]
 
@@ -27,5 +27,5 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Run GameTests (Forge)
+        run: ./gradlew :Forge:runGameTestServer

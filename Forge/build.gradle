@@ -13,9 +13,8 @@ archivesBaseName = "${mod_id}-forge-${minecraft_version}"
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
   mappings channel: 'official', version: "${project.minecraft_version}"
-  // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 
-  // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+  copyIdeResources = true
 
   // Default run configurations.
   runs {
@@ -60,15 +59,13 @@ minecraft {
     }
 
     gameTestServer {
-      jvmArgs "-XX:+AllowEnhancedClassRedefinition"
-      workingDirectory project.file('run')
-
+      workingDirectory project.file('run/gametest')
       property 'forge.logging.markers', 'REGISTRIES'
       property 'forge.logging.console.level', 'debug'
       property 'forge.enabledGameTestNamespaces', "${project.mod_id}"
 
       mods {
-        examplemod {
+        easy_npc {
           source sourceSets.main
         }
       }
