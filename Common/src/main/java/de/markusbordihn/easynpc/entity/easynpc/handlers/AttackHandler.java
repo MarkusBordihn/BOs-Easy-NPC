@@ -126,7 +126,8 @@ public class AttackHandler {
 
   public static void performGunAttack(
       LivingEntity livingEntity, LivingEntity livingEntityTarget, float damage) {
-    AbstractArrow abstractArrow = getBullet(livingEntity, damage);
+    ItemStack itemStackWeapon = livingEntity.getItemInHand(getGunHoldingHand(livingEntity));
+    AbstractArrow abstractArrow = getBullet(livingEntity, itemStackWeapon, damage);
     if (isGunWeapon(livingEntity.getMainHandItem())) {
       double targetX = livingEntityTarget.getX() - livingEntity.getX();
       double targetY = livingEntityTarget.getY() - abstractArrow.getY();
@@ -148,9 +149,10 @@ public class AttackHandler {
 
   public static void performBowAttack(
       LivingEntity livingEntity, LivingEntity livingEntityTarget, float damage) {
-    ItemStack itemStack =
-        livingEntity.getProjectile(livingEntity.getItemInHand(getBowHoldingHand(livingEntity)));
-    AbstractArrow abstractArrow = getArrow(livingEntity, itemStack, damage);
+    ItemStack itemStackWeapon = livingEntity.getItemInHand(getBowHoldingHand(livingEntity));
+    ItemStack itemStackProjectile = livingEntity.getProjectile(itemStackWeapon);
+    AbstractArrow abstractArrow =
+        getArrow(livingEntity, itemStackWeapon, itemStackProjectile, damage);
     if (isBowWeapon(livingEntity.getMainHandItem())) {
       double targetX = livingEntityTarget.getX() - livingEntity.getX();
       double targetY = livingEntityTarget.getY(0.3333333333333333D) - abstractArrow.getY();
@@ -171,14 +173,18 @@ public class AttackHandler {
   }
 
   public static AbstractArrow getArrow(
-      LivingEntity livingEntity, ItemStack itemStack, float damage) {
-    return ProjectileUtil.getMobArrow(livingEntity, itemStack, damage, null);
+      LivingEntity livingEntity,
+      ItemStack itemStackWeapon,
+      ItemStack itemStackProjectile,
+      float damage) {
+    return ProjectileUtil.getMobArrow(livingEntity, itemStackProjectile, damage, itemStackWeapon);
   }
 
-  public static AbstractArrow getBullet(LivingEntity livingEntity, float damage) {
+  public static AbstractArrow getBullet(
+      LivingEntity livingEntity, ItemStack itemStackWeapon, float damage) {
     Item item =
         BuiltInRegistries.ITEM.get(
             ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "bullet"));
-    return ProjectileUtil.getMobArrow(livingEntity, new ItemStack(item), damage, null);
+    return ProjectileUtil.getMobArrow(livingEntity, new ItemStack(item), damage, itemStackWeapon);
   }
 }

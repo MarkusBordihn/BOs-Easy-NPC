@@ -8,6 +8,10 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.5.2
+
+- Fixed #292 by making sure correct weapon item is used.
+
 ### 5.5.1
 
 Note: Because of the changes and fixes of the trading data, some trading data will be reset.
