@@ -30,7 +30,7 @@ public class SpawnEggs implements DisplayItemsGenerator {
 
   @Override
   public void accept(ItemDisplayParameters itemDisplayParameters, Output output) {
-    output.accept(ModItems.ALLEY_NPC_SPAWN_EGG.asItem().getDefaultInstance());
+    output.accept(ModItems.ALLAY_NPC_SPAWN_EGG.asItem().getDefaultInstance());
     output.accept(ModItems.CAT_NPC_SPAWN_EGG.asItem().getDefaultInstance());
     output.accept(ModItems.CHICKEN_NPC_SPAWN_EGG.asItem().getDefaultInstance());
     output.accept(ModItems.DROWNED_NPC_SPAWN_EGG.asItem().getDefaultInstance());
