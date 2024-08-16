@@ -42,6 +42,11 @@ loom {
       ideConfigGenerated(true)
       runDir("run")
     }
+    gameTest {
+      server()
+      name "Game Test"
+      vmArg "-Dfabric-api.gametest"
+    }
   }
 }
 

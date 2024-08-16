@@ -60,7 +60,6 @@ minecraft {
     }
 
     gameTestServer {
-      jvmArgs "-XX:+AllowEnhancedClassRedefinition"
       workingDirectory project.file('run')
 
       property 'forge.logging.markers', 'REGISTRIES'

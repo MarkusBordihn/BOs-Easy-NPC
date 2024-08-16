@@ -8,6 +8,17 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.5.4
+
+- Updated Chinese translations. Thanks to @Sunny-Again.
+
+### 5.5.3
+
+- Improved trading data handling and fixed some issues with the trading data.
+- Lower update tick frequency for better performance.
+- Added automated game-tests for better quality assurance and faster bug detection.
+- Added background entity verification checks for custom models.
+
 ### 5.5.1
 
 Note: Because of the changes and fixes of the trading data, some trading data will be reset.

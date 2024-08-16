@@ -170,6 +170,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
 
     // Update trading offers with container items.
     MerchantOffers merchantOffers = new MerchantOffers();
+    int merchantOfferIndex = 0;
     for (int tradingOffer = 0;
         tradingOffer < TradingSettings.ADVANCED_TRADING_OFFERS;
         tradingOffer++) {
@@ -185,7 +186,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
               : null;
       if (existingMerchantOffer != null) {
         merchantOffers.add(
-            tradingOffer,
+            merchantOfferIndex++,
             new MerchantOffer(
                 itemA,
                 itemB,
@@ -196,7 +197,8 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
                 existingMerchantOffer.getPriceMultiplier(),
                 existingMerchantOffer.getDemand()));
       } else {
-        merchantOffers.add(tradingOffer, new MerchantOffer(itemA, itemB, itemResult, 64, 1, 1.0F));
+        merchantOffers.add(
+            merchantOfferIndex++, new MerchantOffer(itemA, itemB, itemResult, 64, 1, 1.0F));
       }
     }
 
@@ -470,7 +472,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     if (merchant == null) {
       log.error(
           "No merchant found for {} with {} from {}", this, this.getTradingOffers(), serverPlayer);
-      return InteractionResult.PASS;
+      return InteractionResult.FAIL;
     }
 
     // Verify that we have trading offers.
@@ -478,7 +480,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     if (merchantOffers.isEmpty()) {
       log.error(
           "No trading offers found for {} with {} from {}", this, merchantOffers, serverPlayer);
-      return InteractionResult.PASS;
+      return InteractionResult.FAIL;
     }
 
     // Check if player is already trading.
@@ -492,7 +494,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
       serverPlayer.sendSystemMessage(
           Component.translatable(
               Constants.TEXT_PREFIX + "trading.busy", merchant.getTradingPlayer()));
-      return InteractionResult.PASS;
+      return InteractionResult.FAIL;
     }
 
     // Check if trades should be reset.

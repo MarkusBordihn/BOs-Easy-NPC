@@ -1,3 +1,9 @@
+tasks.register('runAllGameTests') {
+  group = 'verification'
+  description = 'Runs both Fabric and Forge game tests.'
+  dependsOn ':Fabric:runGameTest', ':Forge:runGameTestServer'
+}
+
 subprojects {
 
   apply plugin: 'java'
