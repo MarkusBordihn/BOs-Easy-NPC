@@ -1,4 +1,4 @@
-name: Run game tests
+name: Run game tests on Forge
 
 on: [ push, pull_request ]
 
@@ -23,9 +23,6 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-
-      - name: Run GameTests (Fabric)
-        run: ./gradlew :Fabric:runGameTest
 
       - name: Run GameTests (Forge)
         run: ./gradlew :Forge:runGameTestServer
