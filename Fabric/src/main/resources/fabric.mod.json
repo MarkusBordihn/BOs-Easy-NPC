@@ -20,6 +20,9 @@
     ],
     "client": [
       "de.markusbordihn.easynpc.EasyNPCClient"
+    ],
+    "fabric-gametest": [
+      "de.markusbordihn.easynpc.gametest.ModSpawnEggItemTest"
     ]
   },
   "mixins": [],

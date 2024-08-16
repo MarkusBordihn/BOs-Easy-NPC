@@ -12,8 +12,11 @@
 [![Open Issues](https://img.shields.io/github/issues/MarkusBordihn/BOs-Easy-NPC?style=flat&logo=Github&color=red)](https://github.com/MarkusBordihn/BOs-Easy-NPC/issues?q=is%3Aopen+%21label%3Aenhancement)
 [![Closed Issues](https://img.shields.io/github/issues-closed/MarkusBordihn/BOs-Easy-NPC?style=flat&logo=Github)](https://github.com/MarkusBordihn/BOs-Easy-NPC/issues?q=is%3Aclosed)
 
+[![Java CI with Gradle](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/gradle.yml/badge.svg?branch=1.19.2)](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/gradle.yml)
+[![Run game tests on Fabric](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/game-test-fabric.yml/badge.svg?branch=1.19.2)](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/game-test-fabric.yml)
+[![Run game tests on Forge](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/game-test-forge.yml/badge.svg?branch=1.19.2)](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/game-test-forge.yml)
+
 [![Wiki](https://img.shields.io/badge/dynamic/json?label=Wiki&labelColor=black&color=grey&query=title&url=https://api.modrinth.com/v2/project/CgGEe1h3&style=flat&logo=github)][wiki]
-[![Support me on Patreon](https://img.shields.io/badge/Support_me_on_Patreon-!?labelColor=black&style=flat&logo=patreon)][patreon]
 [![Support me on Ko-fi](https://img.shields.io/badge/Support_me_on_Ko--fi-!?labelColor=black&style=flat&logo=ko-fi)][ko-fi]
 
 Easy NPCs allows a simplified setup for custom NPCs with dialogs for mapmaker and other mods.
@@ -90,8 +93,6 @@ The [MIT LICENSE](LICENSE.md) applies only to the code in this repository.
 Images, models and other assets are explicitly excluded.
 
 [ko-fi]: https://ko-fi.com/Kaworru
-
-[patreon]: https://www.patreon.com/Kaworru
 
 [wiki]: https://github.com/MarkusBordihn/BOs-Easy-NPC/wiki
 
