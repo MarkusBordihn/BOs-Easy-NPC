@@ -1,14 +1,18 @@
 name: Add comment to "needs more info" issues
+
 on:
   issues:
     types:
       - labeled
+
 jobs:
   add-comment:
     if: github.event.label.name == 'needs more info'
     runs-on: ubuntu-latest
+
     permissions:
       issues: write
+
     steps:
       - name: Add comment
         run: gh issue comment "$NUMBER" --body "$BODY"
