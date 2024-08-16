@@ -8,6 +8,10 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.5.4
+
+- Updated Chinese translations. Thanks to @Sunny-Again.
+
 ### 5.5.3
 
 - Improved trading data handling and fixed some issues with the trading data.

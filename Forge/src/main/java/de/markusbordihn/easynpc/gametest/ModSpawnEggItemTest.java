@@ -70,8 +70,7 @@ public class ModSpawnEggItemTest {
           Map.entry(
               ModItems.ZOMBIE_VILLAGER_NPC_SPAWN_EGG.get(), ModEntityType.ZOMBIE_VILLAGER.get()));
 
-  public ModSpawnEggItemTest() {
-  }
+  public ModSpawnEggItemTest() {}
 
   @GameTest
   public static void useSpawnEggItem(GameTestHelper helper) {

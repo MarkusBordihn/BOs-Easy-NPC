@@ -23,8 +23,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - language: java-kotlin
-          build-mode: none
+          - language: java-kotlin
+            build-mode: none
 
     steps:
       - name: Checkout repository
