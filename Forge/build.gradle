@@ -13,9 +13,13 @@ archivesBaseName = "${mod_id}-forge-${minecraft_version}"
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
   mappings channel: 'official', version: "${project.minecraft_version}"
+
+  copyIdeResources = true
+
   if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
   }
+
   // Default run configurations.
   runs {
     client {
@@ -59,7 +63,20 @@ minecraft {
     }
 
     gameTestServer {
+      workingDirectory project.file('run/gametest')
+      property 'forge.logging.markers', 'REGISTRIES'
+      property 'forge.logging.console.level', 'debug'
       property 'forge.enabledGameTestNamespaces', "${project.mod_id}"
+
+      mods {
+        easy_npc {
+          source sourceSets.main
+        }
+      }
+
+      // Mixin Support
+      property 'mixin.env.remapRefMap', 'true'
+      property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
     }
 
     data {
