@@ -19,50 +19,18 @@
 
 package de.markusbordihn.easynpc.client.model;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.core.Rotations;
 
 public class ModelHelper {
 
   protected ModelHelper() {}
 
-  public static void resetRotation(ModelPart modelPart) {
-    modelPart.xRot = 0.0F;
-    modelPart.yRot = 0.0F;
-    modelPart.zRot = 0.0F;
-  }
-
-  public static void setRotation(ModelPart modelPart, float x, float y, float z) {
-    modelPart.xRot = x;
-    modelPart.yRot = y;
-    modelPart.zRot = z;
-  }
-
-  public static void setRotation(ModelPart modelPart, Rotations rotations) {
-    modelPart.xRot = rotations.getX();
-    modelPart.yRot = rotations.getY();
-    modelPart.zRot = rotations.getZ();
-  }
-
-  public static void resetPosition(ModelPart modelPart) {
-    modelPart.x = 0.0F;
-    modelPart.y = 0.0F;
-    modelPart.z = 0.0F;
-  }
-
   public static void setPosition(ModelPart modelPart, float x, float y, float z) {
     modelPart.x = x;
     modelPart.y = y;
     modelPart.z = z;
-  }
-
-  public static void setPosition(ModelPart modelPart, CustomPosition position) {
-    modelPart.x = position.x();
-    modelPart.y = position.y();
-    modelPart.z = position.z();
   }
 
   public static void setPositionRotationVisibility(
@@ -91,22 +59,6 @@ public class ModelHelper {
       return true;
     } catch (Exception e) {
       return false;
-    }
-  }
-
-  public static void setHeadPositionRotationVisibility(
-      ModelPart modelPart,
-      CustomPosition position,
-      CustomRotation rotation,
-      boolean visible,
-      float netHeadYaw,
-      float headPitch) {
-    setPositionRotationVisibility(modelPart, position, rotation, visible);
-    if (visible
-        && (rotation == null
-            || (rotation.x() == 0.0f && rotation.y() == 0.0f && rotation.z() == 0.0f))) {
-      modelPart.yRot = netHeadYaw * Constants.PI_180DEG;
-      modelPart.xRot = headPitch * Constants.PI_180DEG;
     }
   }
 }

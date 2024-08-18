@@ -33,8 +33,6 @@ public record ScreenData(
     int pageIndex,
     CompoundTag additionalData) {
 
-  public static final ScreenData EMPTY =
-      new ScreenData(null, null, null, null, 0, new CompoundTag());
   public static final String SCREEN_DATA_ACTION_DATA_ENTRY_ID_TAG = "ActionDataEntryId";
   public static final String SCREEN_DATA_ADDITIONAL_DATA_TAG = "AdditionalData";
   public static final String SCREEN_DATA_DIALOG_BUTTON_ID_TAG = "DialogButtonId";

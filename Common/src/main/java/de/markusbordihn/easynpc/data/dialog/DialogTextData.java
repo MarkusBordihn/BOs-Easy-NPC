@@ -42,10 +42,6 @@ public record DialogTextData(UUID id, String text, boolean isTranslationKey) {
     this(UUIDUtils.textToUUID(text), text, TextUtils.isTranslationKey(text));
   }
 
-  public static DialogTextData create(CompoundTag compoundTag) {
-    return new DialogTextData(compoundTag);
-  }
-
   public String getText(int maxLength) {
     return this.text.length() > maxLength ? this.text.substring(0, maxLength - 1) + '…' : this.text;
   }

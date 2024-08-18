@@ -56,11 +56,6 @@ public class Text {
   }
 
   public static int drawStringShadow(
-      PoseStack poseStack, Font font, Component component, int x, int y) {
-    return drawStringShadow(poseStack, font, component, x, y, Constants.FONT_COLOR_DEFAULT);
-  }
-
-  public static int drawStringShadow(
       PoseStack poseStack, Font font, Component component, int x, int y, int color) {
     return font.drawShadow(poseStack, component, x, y, color);
   }
@@ -117,28 +112,11 @@ public class Text {
   }
 
   public static int drawConfigStringShadow(
-      PoseStack poseStack, Font font, String translationKey, int x, int y) {
-    return drawConfigStringShadow(
-        poseStack, font, translationKey, x, y, Constants.FONT_COLOR_DEFAULT);
-  }
-
-  public static int drawConfigStringShadow(
       PoseStack poseStack, Font font, String translationKey, int x, int y, int color) {
     return drawStringShadow(
         poseStack,
         font,
         new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + translationKey),
-        x,
-        y,
-        color);
-  }
-
-  public static int drawConfigStringWithData(
-      PoseStack poseStack, Font font, String translationKey, Object data, int x, int y, int color) {
-    return drawString(
-        poseStack,
-        font,
-        new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + translationKey, data),
         x,
         y,
         color);

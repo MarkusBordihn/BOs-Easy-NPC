@@ -22,6 +22,7 @@
       "de.markusbordihn.easynpc.EasyNPCClient"
     ],
     "fabric-gametest": [
+      "de.markusbordihn.easynpc.gametest.SmokeTest",
       "de.markusbordihn.easynpc.gametest.ModSpawnEggItemTest"
     ]
   },

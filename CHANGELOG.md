@@ -8,6 +8,17 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.5.5
+
+- Fixed #297 by using min und max values directly from Ranged Attributes.
+- Fixed #296 by making sure itemStack data are correctly stored and loaded.
+- Fixed #293 and #129 by adding additional visibility options and new preset command.
+- Added additional visibility options for NPCs like visible at day/night, visible to owner, ...
+- Added `/easy_npc preset import_with_owner <type> <preset> <owner> <x> <y> <z>` command.
+- Added basic Team support for NPCs.
+- Improved rendering of NPC entities within the configuration screen and dialogs.
+- Prepared code for release version 5.6.0.
+
 ### 5.5.4
 
 - Updated Chinese translations. Thanks to @Sunny-Again.

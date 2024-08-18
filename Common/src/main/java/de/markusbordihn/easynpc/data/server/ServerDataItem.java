@@ -30,10 +30,6 @@ public final class ServerDataItem<T> {
     this.value = value;
   }
 
-  public ServerDataAccessor<T> getAccessor() {
-    return this.entityDataAccessor;
-  }
-
   public T getValue() {
     return this.value;
   }

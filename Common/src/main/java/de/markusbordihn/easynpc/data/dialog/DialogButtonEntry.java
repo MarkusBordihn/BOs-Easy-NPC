@@ -71,10 +71,6 @@ public record DialogButtonEntry(
         TextUtils.isTranslationKey(name));
   }
 
-  public String name(int maxLength) {
-    return this.name.length() > maxLength ? this.name.substring(0, maxLength - 1) + '…' : this.name;
-  }
-
   public Component getButtonName(int maxLength) {
     Component buttonName =
         this.isTranslationKey ? new TranslatableComponent(this.name) : new TextComponent(this.name);
@@ -111,10 +107,6 @@ public record DialogButtonEntry(
         this.type,
         actionDataSet != null ? actionDataSet : new ActionDataSet(),
         this.isTranslationKey);
-  }
-
-  public DialogButtonEntry create(CompoundTag compoundTag) {
-    return new DialogButtonEntry(compoundTag);
   }
 
   public CompoundTag write(CompoundTag compoundTag) {

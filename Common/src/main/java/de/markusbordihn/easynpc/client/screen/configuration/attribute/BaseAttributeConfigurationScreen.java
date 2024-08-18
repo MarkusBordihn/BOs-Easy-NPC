@@ -29,11 +29,14 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.minecraft.world.entity.player.Inventory;
 
 public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
     extends AttributeConfigurationScreen<T> {
+
   SliderButton maxHealthSlider;
   SliderButton followRangeSlider;
   SliderButton knockbackResistanceSlider;
@@ -49,22 +52,42 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
     super(menu, inventory, component);
   }
 
-  protected SliderButton createAttributeSlider(
+  private SliderButton createAttributeSlider(
       int left,
       int top,
       int width,
       int height,
-      String name,
+      Attribute attribute,
       double value,
-      double minValue,
-      double maxValue,
+      double defaultMinValue,
+      double defaultMaxValue,
       double defaultValue,
       double stepSize,
       SliderButton.OnChange onChange) {
+
+    // Get attribute values directly from attribute with default value as fallback.
+    double minValue =
+        attribute instanceof RangedAttribute rangedAttribute
+            ? rangedAttribute.getMinValue()
+            : defaultMinValue;
+    double maxValue =
+        attribute instanceof RangedAttribute rangedAttribute
+            ? rangedAttribute.getMaxValue()
+            : defaultMaxValue;
+
+    // Create slider button with additional buttons for step size and reset.
     SliderButton sliderButton =
         this.addRenderableWidget(
             new SliderButton(
-                left + 12, top, width - 36, height, name, value, minValue, maxValue, onChange));
+                left + 12,
+                top,
+                width - 36,
+                height,
+                attribute.getDescriptionId(),
+                value,
+                minValue,
+                maxValue,
+                onChange));
     this.addRenderableWidget(
         new TextButton(
             sliderButton.x - 12,
@@ -130,7 +153,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             sliderYPos,
             sliderWidth,
             sliderHeight,
-            "max_health",
+            Attributes.MAX_HEALTH,
             livingEntity.getAttributeBaseValue(Attributes.MAX_HEALTH),
             1.0D,
             1024.0D,
@@ -151,7 +174,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             sliderYPos,
             sliderWidth,
             sliderHeight,
-            "follow_range",
+            Attributes.FOLLOW_RANGE,
             this.getBaseAttributes().getFollowRange(),
             0.0D,
             2048.0D,
@@ -172,7 +195,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             sliderYPos,
             sliderWidth,
             sliderHeight,
-            "knockback_resistance",
+            Attributes.KNOCKBACK_RESISTANCE,
             this.getBaseAttributes().getKnockbackResistance(),
             0.0D,
             1.0D,
@@ -194,7 +217,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
               sliderYPos,
               sliderWidth,
               sliderHeight,
-              "movement_speed",
+              Attributes.MOVEMENT_SPEED,
               livingEntity.getAttributeBaseValue(Attributes.MOVEMENT_SPEED),
               0.0D,
               2.0D,
@@ -217,7 +240,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
               sliderYPos,
               sliderWidth,
               sliderHeight,
-              "flying_speed",
+              Attributes.FLYING_SPEED,
               livingEntity.getAttributeBaseValue(Attributes.FLYING_SPEED),
               0.0D,
               2.0D,
@@ -239,7 +262,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             sliderYPos,
             sliderWidth,
             sliderHeight,
-            "attack_damage",
+            Attributes.ATTACK_DAMAGE,
             this.getBaseAttributes().getAttackDamage(),
             0.0D,
             2048.0D,
@@ -260,7 +283,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             sliderYPos,
             sliderWidth,
             sliderHeight,
-            "attack_knockback",
+            Attributes.ATTACK_KNOCKBACK,
             this.getBaseAttributes().getAttackKnockback(),
             0.0D,
             5.0D,
@@ -282,7 +305,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
               sliderYPos,
               sliderWidth,
               sliderHeight,
-              "attack_speed",
+              Attributes.ATTACK_SPEED,
               livingEntity.getAttributeBaseValue(Attributes.ATTACK_SPEED),
               0.0D,
               1024.0D,
@@ -304,7 +327,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             sliderYPos,
             sliderWidth,
             sliderHeight,
-            "armor",
+            Attributes.ARMOR,
             livingEntity.getAttributeBaseValue(Attributes.ARMOR),
             0.0D,
             30.0D,
@@ -323,7 +346,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             sliderYPos,
             sliderWidth,
             sliderHeight,
-            "armor_toughness",
+            Attributes.ARMOR_TOUGHNESS,
             livingEntity.getAttributeBaseValue(Attributes.ARMOR_TOUGHNESS),
             0.0D,
             20.0D,

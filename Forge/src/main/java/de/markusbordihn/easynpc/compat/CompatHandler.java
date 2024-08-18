@@ -27,7 +27,4 @@ public class CompatHandler implements CompatHandlerInterface {
   public boolean isModLoaded(String modId) {
     return ModList.get().isLoaded(modId);
   }
-
-  @Override
-  public void registerEpicFight() {}
 }

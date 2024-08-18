@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
+import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.model.ModelScaleAxis;
@@ -46,6 +47,7 @@ import de.markusbordihn.easynpc.network.message.server.AddOrUpdateObjectiveMessa
 import de.markusbordihn.easynpc.network.message.server.ChangeActionEventMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeAdvancedTradingMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeBasicTradingMessage;
+import de.markusbordihn.easynpc.network.message.server.ChangeDisplayAttributeMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeEntityAttributeMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeEntityBaseAttributeMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeModelEquipmentVisibilityMessage;
@@ -169,19 +171,27 @@ public interface ServerNetworkMessageHandlerInterface {
     }
   }
 
+  default void changeDisplayAttribute(
+      UUID uuid, DisplayAttributeType displayAttributeType, Boolean booleanValue) {
+    if (uuid != null && displayAttributeType != null && booleanValue != null) {
+      NetworkHandlerManager.sendToServer(
+          new ChangeDisplayAttributeMessage(uuid, displayAttributeType, booleanValue));
+    }
+  }
+
+  default void changeDisplayAttribute(
+      UUID uuid, DisplayAttributeType displayAttributeType, Integer integerValue) {
+    if (uuid != null && displayAttributeType != null && integerValue != null) {
+      NetworkHandlerManager.sendToServer(
+          new ChangeDisplayAttributeMessage(uuid, displayAttributeType, integerValue));
+    }
+  }
+
   default void entityAttributeChange(
       UUID uuid, EntityAttribute entityAttribute, Boolean booleanValue) {
     if (uuid != null && entityAttribute != null && booleanValue != null) {
       NetworkHandlerManager.sendToServer(
           new ChangeEntityAttributeMessage(uuid, entityAttribute, booleanValue));
-    }
-  }
-
-  default void entityAttributeChange(
-      UUID uuid, EntityAttribute entityAttribute, Integer integerValue) {
-    if (uuid != null && entityAttribute != null && integerValue != null) {
-      NetworkHandlerManager.sendToServer(
-          new ChangeEntityAttributeMessage(uuid, entityAttribute, integerValue));
     }
   }
 
@@ -425,10 +435,6 @@ public interface ServerNetworkMessageHandlerInterface {
 
   default void importCustomPreset(UUID uuid, ResourceLocation resourceLocation) {
     importPreset(uuid, PresetType.CUSTOM, resourceLocation);
-  }
-
-  default void importDataPreset(UUID uuid, ResourceLocation resourceLocation) {
-    importPreset(uuid, PresetType.DATA, resourceLocation);
   }
 
   default void importDefaultPreset(UUID uuid, ResourceLocation resourceLocation) {

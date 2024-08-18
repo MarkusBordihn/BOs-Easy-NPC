@@ -4,7 +4,6 @@ about: Suggest an idea for this project 🚀
 title: '[Feature Request] Your title here'
 labels: 'enhancement'
 assignees: ''
-
 ---
 
 💡 Check the [Wiki](https://github.com/MarkusBordihn/BOs-Easy-NPC/wiki) and

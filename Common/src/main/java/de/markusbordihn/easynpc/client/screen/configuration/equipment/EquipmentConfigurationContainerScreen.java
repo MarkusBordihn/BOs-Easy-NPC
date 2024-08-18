@@ -99,7 +99,7 @@ public class EquipmentConfigurationContainerScreen<T extends ConfigurationMenu>
     super.render(poseStack, x, y, partialTicks);
 
     // Avatar
-    ScreenHelper.renderScaledEntityAvatar(
+    ScreenHelper.renderEntity(
         this.contentLeftPos + 138,
         this.contentTopPos + 102,
         35,

@@ -95,28 +95,6 @@ public class SliderButton extends AbstractSliderButton {
       int width,
       int height,
       String name,
-      float initValue,
-      Type type,
-      SliderButton.OnChange onChange) {
-    this(
-        x,
-        y,
-        width,
-        height,
-        new TextComponent(name),
-        initValue,
-        getMinValue(type),
-        getMaxValue(type),
-        onChange,
-        type);
-  }
-
-  public SliderButton(
-      int x,
-      int y,
-      int width,
-      int height,
-      String name,
       double initValue,
       double minValue,
       double maxValue,
@@ -204,10 +182,6 @@ public class SliderButton extends AbstractSliderButton {
 
   public void reset() {
     this.setDefaultValue(0);
-  }
-
-  public void resetToDefault() {
-    this.setDefaultValue(this.initValue);
   }
 
   public float getTargetValue() {

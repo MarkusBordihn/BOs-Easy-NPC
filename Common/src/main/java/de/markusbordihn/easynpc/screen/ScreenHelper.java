@@ -48,6 +48,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.scores.PlayerTeam;
+import net.minecraft.world.scores.Team;
 
 public class ScreenHelper {
 
@@ -80,12 +82,21 @@ public class ScreenHelper {
     float entityYHeadRot = livingEntity.yHeadRot;
     float entityYHeadRotO = livingEntity.yHeadRotO;
     float entityYRot = livingEntity.getYRot();
+    boolean entityInvisible = livingEntity.isInvisible();
+    Team entityTeam = livingEntity.getTeam();
 
     // Adjust entity information for rendering
+    livingEntity.setInvisible(false);
     livingEntity.yBodyRot = 180.0F + f * 20.0F;
     livingEntity.setYRot(180.0F + f * 40.0F);
     livingEntity.setXRot(-f1 * 20.0F);
     livingEntity.yHeadRot = livingEntity.getYRot();
+    if (entityTeam instanceof PlayerTeam playerTeam) {
+      livingEntity
+          .level
+          .getScoreboard()
+          .removePlayerFromTeam(livingEntity.getScoreboardName(), playerTeam);
+    }
 
     // Hide gui elements or remove custom name
     boolean minecraftHideGui = false;
@@ -112,11 +123,18 @@ public class ScreenHelper {
     entityRenderDispatcher.setRenderShadow(true);
 
     // Restore entity information
+    livingEntity.setInvisible(entityInvisible);
     livingEntity.yBodyRot = entityYBodyRot;
     livingEntity.setYRot(entityYRot);
     livingEntity.setXRot(entityXRot);
     livingEntity.yHeadRot = entityYHeadRot;
     livingEntity.yHeadRotO = entityYHeadRotO;
+    if (entityTeam instanceof PlayerTeam playerTeam) {
+      livingEntity
+          .level
+          .getScoreboard()
+          .addPlayerToTeam(livingEntity.getScoreboardName(), playerTeam);
+    }
 
     // Restore gui elements or custom name
     if (minecraft != null) {
@@ -132,17 +150,20 @@ public class ScreenHelper {
   }
 
   public static void renderScaledEntityAvatar(
-      int x, int y, float yRot, float xRot, EasyNPC<?> easyNPC) {
-    GuiData<?> guiData = easyNPC.getEasyNPCGuiData();
+      int x, int y, int scale, float yRot, float xRot, EasyNPC<?> easyNPC) {
     ScaleData<?> scaleData = easyNPC.getEasyNPCScaleData();
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     if (scaleData != null && modelData != null) {
-      renderScaledEntityAvatar(
-          x, y, guiData.getEntityGuiScaling(), yRot, xRot, easyNPC, scaleData, modelData);
+      renderScaledEntityAvatar(x, y, scale, yRot, xRot, easyNPC, scaleData, modelData);
     } else {
-      renderScaledEntityAvatar(
-          x, y, guiData.getEntityGuiScaling(), yRot, xRot, easyNPC.getLivingEntity());
+      renderEntity(x, y, scale, yRot, xRot, easyNPC.getLivingEntity());
     }
+  }
+
+  public static void renderScaledEntityAvatar(
+      int x, int y, float yRot, float xRot, EasyNPC<?> easyNPC) {
+    GuiData<?> guiData = easyNPC.getEasyNPCGuiData();
+    renderScaledEntityAvatar(x, y, guiData.getEntityGuiScaling(), yRot, xRot, easyNPC);
   }
 
   public static void renderScaledEntityAvatar(
@@ -178,22 +199,6 @@ public class ScreenHelper {
     scaleData.setScaleZ(entityScaleZ);
     modelData.setModelRootRotation(entityModelRootRotation);
     easyNPC.getEntity().setInvisible(entityInvisible);
-  }
-
-  public static void renderScaledEntityAvatar(
-      int x, int y, int scale, float yRot, float xRot, LivingEntity livingEntity) {
-
-    // Backup entity information
-    boolean entityInvisible = livingEntity.isInvisible();
-
-    // Adjust entity information for rendering
-    livingEntity.setInvisible(false);
-
-    // Render Entity
-    renderEntity(x, y, scale, yRot, xRot, livingEntity);
-
-    // Restore entity information
-    livingEntity.setInvisible(entityInvisible);
   }
 
   public static void renderCustomPoseEntityAvatar(
@@ -241,8 +246,7 @@ public class ScreenHelper {
 
   public static void renderEntityDialog(int x, int y, float yRot, float xRot, EasyNPC<?> easyNPC) {
     DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
-    renderScaledEntityAvatar(
-        x, y, dialogData.getEntityDialogScaling(), yRot, xRot, easyNPC.getLivingEntity());
+    renderEntity(x, y, dialogData.getEntityDialogScaling(), yRot, xRot, easyNPC.getLivingEntity());
   }
 
   public static void renderEntityCustomModel(
@@ -334,7 +338,7 @@ public class ScreenHelper {
     professionData.setProfession(profession);
 
     // Render Entity
-    renderScaledEntityAvatar(
+    renderEntity(
         x + guiData.getEntityGuiLeft(),
         y + guiData.getEntityGuiTop(),
         skinData.getEntitySkinScaling(),

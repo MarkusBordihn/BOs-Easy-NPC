@@ -141,50 +141,6 @@ public class CustomPresetDataFiles {
     return Stream.empty();
   }
 
-  public static boolean hasPresetFiles(SkinModel skinModel) {
-    Path presetDataFolder = getPresetDataFolder(skinModel);
-    try {
-      try (Stream<Path> filesStream = Files.walk(presetDataFolder)) {
-        return filesStream.anyMatch(path -> path.toString().endsWith(Constants.NPC_NBT_SUFFIX));
-      }
-    } catch (IOException exception) {
-      log.error("Could not read custom preset data folder {}!", presetDataFolder, exception);
-    }
-    return false;
-  }
-
-  public static boolean hasPresetFiles() {
-    Path presetDataFolder = getPresetDataFolder();
-    try {
-      try (Stream<Path> filesStream = Files.walk(presetDataFolder)) {
-        return filesStream.anyMatch(path -> path.toString().endsWith(Constants.NPC_NBT_SUFFIX));
-      }
-    } catch (IOException exception) {
-      log.error("Could not read preset data folder {}!", presetDataFolder, exception);
-    }
-    return false;
-  }
-
-  public static Stream<Path> getPresetFilePathLocations() {
-    Path presetDataFolder = getPresetDataFolder();
-    try {
-      try (Stream<Path> filesStream = Files.walk(presetDataFolder)) {
-        // Get all files with the suffix .npc.nbt and return the relative path.
-        List<Path> filePaths =
-            filesStream
-                .filter(path -> path.toString().endsWith(Constants.NPC_NBT_SUFFIX))
-                .filter(path -> Pattern.matches("[a-zA-Z0-9/._-]+", path.getFileName().toString()))
-                .toList();
-        return filePaths.stream();
-      }
-    } catch (IOException exception) {
-      log.error("Could not read preset data folder {}!", presetDataFolder, exception);
-    }
-
-    // Return a default or alternative stream in case of an exception
-    return Stream.empty();
-  }
-
   public static Path getPresetsResourceLocationPath(ResourceLocation resourceLocation) {
     return presetResourceLocationMap.get(resourceLocation);
   }

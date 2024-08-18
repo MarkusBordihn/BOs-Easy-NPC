@@ -36,10 +36,6 @@ public class NameHandler {
 
   private NameHandler() {}
 
-  public static boolean setCustomName(EasyNPC<?> easyNPC, String name) {
-    return setCustomName(easyNPC, name, -1);
-  }
-
   public static boolean setCustomName(EasyNPC<?> easyNPC, String name, int color) {
     if (easyNPC == null || name == null || name.isEmpty()) {
       log.error("[{}] Error setting custom name ", easyNPC);

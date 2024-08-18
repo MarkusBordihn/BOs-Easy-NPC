@@ -116,11 +116,6 @@ public class EasyNPCPresetItem extends Item {
     return null;
   }
 
-  public static boolean hasSpawnerUUID(ItemStack itemStack) {
-    CompoundTag compoundTag = itemStack.getOrCreateTag();
-    return compoundTag.contains(SPAWNER_UUID_TAG) && compoundTag.getUUID(SPAWNER_UUID_TAG) != null;
-  }
-
   public static void setSpawnerUUID(ItemStack itemStack, UUID uuid) {
     CompoundTag compoundTag = itemStack.getOrCreateTag();
     if (uuid != null) {

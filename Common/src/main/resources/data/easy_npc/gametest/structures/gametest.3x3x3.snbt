@@ -1,0 +1,120 @@
+{
+	size: [3,3,3],
+	entities: [],
+	blocks: [
+		{
+			pos: [0,0,0],
+			state: 0
+		},
+		{
+			pos: [0,0,1],
+			state: 0
+		},
+		{
+			pos: [0,0,2],
+			state: 0
+		},
+		{
+			pos: [1,0,0],
+			state: 0
+		},
+		{
+			pos: [1,0,1],
+			state: 0
+		},
+		{
+			pos: [1,0,2],
+			state: 0
+		},
+		{
+			pos: [2,0,0],
+			state: 0
+		},
+		{
+			pos: [2,0,1],
+			state: 0
+		},
+		{
+			pos: [2,0,2],
+			state: 0
+		},
+		{
+			pos: [0,1,0],
+			state: 0
+		},
+		{
+			pos: [0,1,1],
+			state: 0
+		},
+		{
+			pos: [0,1,2],
+			state: 0
+		},
+		{
+			pos: [1,1,0],
+			state: 0
+		},
+		{
+			pos: [1,1,1],
+			state: 0
+		},
+		{
+			pos: [1,1,2],
+			state: 0
+		},
+		{
+			pos: [2,1,0],
+			state: 0
+		},
+		{
+			pos: [2,1,1],
+			state: 0
+		},
+		{
+			pos: [2,1,2],
+			state: 0
+		},
+		{
+			pos: [0,2,0],
+			state: 0
+		},
+		{
+			pos: [0,2,1],
+			state: 0
+		},
+		{
+			pos: [0,2,2],
+			state: 0
+		},
+		{
+			pos: [1,2,0],
+			state: 0
+		},
+		{
+			pos: [1,2,1],
+			state: 0
+		},
+		{
+			pos: [1,2,2],
+			state: 0
+		},
+		{
+			pos: [2,2,0],
+			state: 0
+		},
+		{
+			pos: [2,2,1],
+			state: 0
+		},
+		{
+			pos: [2,2,2],
+			state: 0
+		},
+	],
+	palette: [
+		{
+			Name: "minecraft:air"
+		},
+	],
+	DataVersion: 2975
+}

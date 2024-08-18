@@ -32,12 +32,12 @@ public enum ActionEventType {
   ON_INTERACTION,
   ON_OPEN_DIALOG;
 
-  public static ActionEventType get(String actionType) {
-    if (actionType == null || actionType.isEmpty()) {
+  public static ActionEventType get(String actionEventType) {
+    if (actionEventType == null || actionEventType.isEmpty()) {
       return ActionEventType.NONE;
     }
     try {
-      return ActionEventType.valueOf(actionType);
+      return ActionEventType.valueOf(actionEventType);
     } catch (IllegalArgumentException e) {
       return ActionEventType.NONE;
     }
