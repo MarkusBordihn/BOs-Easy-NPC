@@ -24,9 +24,11 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.EasyNPCModelRenderer;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseModelEntity;
 import java.util.Map;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ArmedModel;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
@@ -85,16 +87,16 @@ public class BaseHumanoidMobModelRenderer<
 
   @Override
   public ResourceLocation getTextureByVariant(Enum<?> variant) {
-    return textures == null
-        ? Constants.BLANK_ENTITY_TEXTURE
-        : textures.getOrDefault(variant, defaultTexture);
+    return textures != null
+        ? textures.getOrDefault(variant, defaultTexture)
+        : Constants.BLANK_ENTITY_TEXTURE;
   }
 
   @Override
   public ResourceLocation getTextureOverlayByVariant(Enum<?> variant) {
-    return texturesOverlay == null
-        ? Constants.BLANK_ENTITY_TEXTURE
-        : texturesOverlay.getOrDefault(variant, Constants.BLANK_ENTITY_TEXTURE);
+    return texturesOverlay != null
+        ? texturesOverlay.getOrDefault(variant, Constants.BLANK_ENTITY_TEXTURE)
+        : Constants.BLANK_ENTITY_TEXTURE;
   }
 
   @Override
@@ -135,5 +137,13 @@ public class BaseHumanoidMobModelRenderer<
     if (!this.renderEntity(entity, entityYaw, partialTicks, poseStack, buffer, packedLight)) {
       super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
     }
+  }
+
+  @Override
+  public boolean shouldRender(E entity, Frustum frustum, double x, double y, double z) {
+    if (!entity.isInvisible() && !entity.isInvisibleTo(Minecraft.getInstance().player)) {
+      return super.shouldRender(entity, frustum, x, y, z);
+    }
+    return false;
   }
 }

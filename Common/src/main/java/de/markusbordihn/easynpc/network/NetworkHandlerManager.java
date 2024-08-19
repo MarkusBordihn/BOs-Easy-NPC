@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.network.message.server.AddOrUpdateObjectiveMessa
 import de.markusbordihn.easynpc.network.message.server.ChangeActionEventMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeAdvancedTradingMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeBasicTradingMessage;
+import de.markusbordihn.easynpc.network.message.server.ChangeDisplayAttributeMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeEntityAttributeMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeEntityBaseAttributeMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeModelEquipmentVisibilityMessage;
@@ -155,6 +156,11 @@ public class NetworkHandlerManager {
         ChangeBasicTradingMessage.MESSAGE_ID,
         ChangeBasicTradingMessage.class,
         ChangeBasicTradingMessage::create);
+
+    networkHandler.registerServerNetworkMessageHandler(
+        ChangeDisplayAttributeMessage.MESSAGE_ID,
+        ChangeDisplayAttributeMessage.class,
+        ChangeDisplayAttributeMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ChangeEntityAttributeMessage.MESSAGE_ID,

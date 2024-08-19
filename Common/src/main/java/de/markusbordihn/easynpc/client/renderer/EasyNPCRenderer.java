@@ -27,7 +27,6 @@ import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
 import de.markusbordihn.easynpc.data.render.RenderType;
-import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
@@ -151,14 +150,6 @@ public interface EasyNPCRenderer<E extends PathfinderMob, M extends EntityModel<
       case SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> getRemoteTexture(skinData);
       default -> getTextureByVariant(easyNPC.getEasyNPCVariantData().getVariant());
     };
-  }
-
-  default <N extends EasyNPC<E>> ResourceLocation getEntityOverlayTexture(N easyNPC) {
-    if (easyNPC.getEasyNPCSkinData().getSkinType() == SkinType.DEFAULT) {
-      return getTextureOverlayByVariant(easyNPC.getEasyNPCVariantData().getVariant());
-    } else {
-      return Constants.BLANK_ENTITY_TEXTURE;
-    }
   }
 
   default <N extends EasyNPC<E>> ResourceLocation getEntityPlayerTexture(N easyNPC) {

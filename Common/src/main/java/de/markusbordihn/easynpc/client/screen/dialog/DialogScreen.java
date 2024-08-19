@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -126,7 +125,6 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
     if (dialogData == null) {
       return;
     }
-    Minecraft minecraft = this.minecraft;
     String dialogText = dialogData.getDialogText(this.dialogMetaData);
     if (dialogText == null || dialogText.isBlank()) {
       return;

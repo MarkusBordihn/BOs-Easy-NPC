@@ -31,6 +31,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class EquipmentCommand extends Command {
@@ -81,13 +82,15 @@ public class EquipmentCommand extends Command {
     }
 
     // Set item for equipment slot
-    if (!EquipmentHandler.setEquipmentSlotItem(easyNPC, equipmentSlot, item)) {
+    ItemStack itemStack = new ItemStack(item);
+    if (!EquipmentHandler.setEquipmentSlotItem(easyNPC, equipmentSlot, itemStack)) {
       return sendFailureMessage(
-          context, easyNPC + " failed to set item " + item + " for slot " + equipmentSlot);
+          context,
+          easyNPC + " failed to set item stack " + itemStack + " for slot " + equipmentSlot);
     }
 
     return sendSuccessMessage(
-        context, easyNPC + " set item " + item + " for slot " + equipmentSlot);
+        context, easyNPC + " set item stack" + itemStack + " for slot " + equipmentSlot);
   }
 
   private static int removeItemSlot(

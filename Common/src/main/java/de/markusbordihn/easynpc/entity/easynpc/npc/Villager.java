@@ -101,11 +101,6 @@ public class Villager extends EasyNPCBaseModelEntity<Villager> {
   }
 
   @Override
-  public boolean hasProfession() {
-    return true;
-  }
-
-  @Override
   public Enum<?>[] getVariants() {
     return Variant.values();
   }

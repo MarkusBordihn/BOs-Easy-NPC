@@ -104,14 +104,17 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     EntityDataSerializers.registerSerializer(MERCHANT_OFFERS);
   }
 
+  @Override
   Player getTradingPlayer();
 
+  @Override
   void setTradingPlayer(Player player);
 
   MerchantOffers getMerchantTradingOffers();
 
   void setMerchantTradingOffers(MerchantOffers merchantOffers);
 
+  @Override
   default MerchantOffers getOffers() {
     if (this.getMerchantTradingOffers() == null) {
       this.updateMerchantTradingOffers();
@@ -120,20 +123,20 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
   }
 
   default void updateMerchantTradingOffers() {
-    MerchantOffers merchantOffers = null;
+    MerchantOffers merchantOffers = new MerchantOffers();
     TradingDataSet tradingDataSet = this.getTradingDataSet();
     if (tradingDataSet.isType(TradingType.BASIC) || tradingDataSet.isType(TradingType.ADVANCED)) {
       // Create a copy of the offers to avoid side effects.
       merchantOffers = new MerchantOffers(this.getTradingOffers().createTag());
     }
-    if (merchantOffers != null && !merchantOffers.isEmpty()) {
+    if (!merchantOffers.isEmpty()) {
       // Filter out offers which are missing item a, item b or result item.
       merchantOffers.removeIf(
           merchantOffer ->
               (merchantOffer.getBaseCostA().isEmpty() && merchantOffer.getCostB().isEmpty())
                   || merchantOffer.getResult().isEmpty());
-      this.setMerchantTradingOffers(merchantOffers);
     }
+    this.setMerchantTradingOffers(merchantOffers);
   }
 
   @Override
@@ -305,6 +308,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     setSynchedEntityData(SynchedDataIndex.TRADING_INVENTORY, tradingInventory);
   }
 
+  @Override
   default void notifyTrade(MerchantOffer merchantOffer) {
     merchantOffer.increaseUses();
     this.getMob().ambientSoundTime = -this.getMob().getAmbientSoundInterval();
@@ -314,6 +318,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     }
   }
 
+  @Override
   default void notifyTradeUpdated(ItemStack itemStack) {
     if (!this.isClientSide()
         && this.getMob().ambientSoundTime > -this.getMob().getAmbientSoundInterval() + 20) {
@@ -507,8 +512,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     }
 
     // Open trading screen for the player.
-    log.debug(
-        "Open trading screen for {} with {} from {}", this, merchantOffers, serverPlayer);
+    log.debug("Open trading screen for {} with {} from {}", this, merchantOffers, serverPlayer);
     merchant.setTradingPlayer(serverPlayer);
     merchant.openTradingScreen(
         serverPlayer,

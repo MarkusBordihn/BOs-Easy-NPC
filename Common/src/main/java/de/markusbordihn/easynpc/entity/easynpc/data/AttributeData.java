@@ -41,7 +41,6 @@ public interface AttributeData<E extends PathfinderMob> extends EasyNPC<E> {
   String EASY_NPC_DATA_ATTRIBUTE_FREEFALL_TAG = "Freefall";
   String EASY_NPC_DATA_ATTRIBUTE_IS_ATTACKABLE_TAG = "IsAttackable";
   String EASY_NPC_DATA_ATTRIBUTE_IS_PUSHABLE_TAG = "IsPushable";
-  String EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL_TAG = "LightLevel";
   String EASY_NPC_DATA_ATTRIBUTE_PUSH_ENTITIES_TAG = "PushEntities";
   String EASY_NPC_DATA_ATTRIBUTE_TAG = "EntityAttribute";
 
@@ -81,9 +80,6 @@ public interface AttributeData<E extends PathfinderMob> extends EasyNPC<E> {
     map.put(
         SynchedDataIndex.ATTRIBUTE_PUSH_ENTITIES,
         SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
-    map.put(
-        SynchedDataIndex.ATTRIBUTE_LIGHT_LEVEL,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.INT));
   }
 
   default void setBaseAttribute(Attribute attribute, double value) {
@@ -188,14 +184,6 @@ public interface AttributeData<E extends PathfinderMob> extends EasyNPC<E> {
     setSynchedEntityData(SynchedDataIndex.ATTRIBUTE_PUSH_ENTITIES, pushEntities);
   }
 
-  default int getAttributeLightLevel() {
-    return getSynchedEntityData(SynchedDataIndex.ATTRIBUTE_LIGHT_LEVEL);
-  }
-
-  default void setAttributeLightLevel(int lightLevel) {
-    setSynchedEntityData(SynchedDataIndex.ATTRIBUTE_LIGHT_LEVEL, lightLevel);
-  }
-
   default boolean getAttributeSilent() {
     return getEntity().isSilent();
   }
@@ -220,7 +208,6 @@ public interface AttributeData<E extends PathfinderMob> extends EasyNPC<E> {
     defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_IS_ATTACKABLE, false);
     defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_IS_PUSHABLE, false);
     defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_PUSH_ENTITIES, false);
-    defineSynchedEntityData(SynchedDataIndex.ATTRIBUTE_LIGHT_LEVEL, 7);
   }
 
   default void addAdditionalAttributeData(CompoundTag compoundTag) {
@@ -236,7 +223,6 @@ public interface AttributeData<E extends PathfinderMob> extends EasyNPC<E> {
     attributeTag.putBoolean(EASY_NPC_DATA_ATTRIBUTE_IS_ATTACKABLE_TAG, getAttributeIsAttackable());
     attributeTag.putBoolean(EASY_NPC_DATA_ATTRIBUTE_IS_PUSHABLE_TAG, getAttributeIsPushable());
     attributeTag.putBoolean(EASY_NPC_DATA_ATTRIBUTE_PUSH_ENTITIES_TAG, getAttributePushEntities());
-    attributeTag.putInt(EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL_TAG, getAttributeLightLevel());
     compoundTag.put(EASY_NPC_DATA_ATTRIBUTE_TAG, attributeTag);
   }
 
@@ -256,7 +242,6 @@ public interface AttributeData<E extends PathfinderMob> extends EasyNPC<E> {
     setAttributeIsAttackable(attributeTag.getBoolean(EASY_NPC_DATA_ATTRIBUTE_IS_ATTACKABLE_TAG));
     setAttributeIsPushable(attributeTag.getBoolean(EASY_NPC_DATA_ATTRIBUTE_IS_PUSHABLE_TAG));
     setAttributePushEntities(attributeTag.getBoolean(EASY_NPC_DATA_ATTRIBUTE_PUSH_ENTITIES_TAG));
-    setAttributeLightLevel(attributeTag.getInt(EASY_NPC_DATA_ATTRIBUTE_LIGHT_LEVEL_TAG));
 
     setAttributeDataLoaded(true);
   }

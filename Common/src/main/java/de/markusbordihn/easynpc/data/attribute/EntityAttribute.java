@@ -30,7 +30,6 @@ public enum EntityAttribute {
   CAN_PASS_DOOR,
   CAN_USE_NETHER_PORTAL,
   PUSH_ENTITIES,
-  LIGHT_LEVEL,
   SILENT;
 
   public String getAttributeName() {

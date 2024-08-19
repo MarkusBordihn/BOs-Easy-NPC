@@ -160,7 +160,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
         this.errorMessage = "invalid_remote_image";
         return;
       }
-      URL textureSkinLocation = null;
+      URL textureSkinLocation;
       try {
         textureSkinLocation = new URL(textureSkinLocationValue);
       } catch (Exception e) {

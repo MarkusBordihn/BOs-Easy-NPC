@@ -77,11 +77,6 @@ public class ZombieVillager extends EasyNPCBaseModelEntity<ZombieVillager> {
   }
 
   @Override
-  public boolean hasProfession() {
-    return true;
-  }
-
-  @Override
   public Enum<?>[] getVariants() {
     return Variant.values();
   }

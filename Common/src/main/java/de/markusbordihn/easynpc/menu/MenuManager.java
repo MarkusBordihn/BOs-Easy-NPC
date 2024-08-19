@@ -53,11 +53,16 @@ public class MenuManager {
 
   public static void openMenu(
       UUID uuid, MenuProvider menuProvider, ServerPlayer serverPlayer, CompoundTag data) {
+    UUID menuId = registerMenu(uuid, menuProvider, serverPlayer);
+    NetworkMessageHandlerManager.getClientHandler().openMenu(uuid, menuId, serverPlayer, data);
+  }
+
+  public static UUID registerMenu(UUID uuid, MenuProvider menuProvider, ServerPlayer serverPlayer) {
     UUID menuId = UUID.randomUUID();
     menuProviderMap.put(menuId, menuProvider);
     serverPlayerMap.put(menuId, serverPlayer);
     menuNpcMap.put(menuId, uuid);
-    NetworkMessageHandlerManager.getClientHandler().openMenu(uuid, menuId, serverPlayer, data);
+    return menuId;
   }
 
   public static void openMenu(final UUID menuId, final ServerPlayer serverPlayer) {

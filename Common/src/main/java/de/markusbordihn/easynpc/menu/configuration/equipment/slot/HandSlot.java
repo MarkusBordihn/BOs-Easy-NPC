@@ -53,10 +53,6 @@ public class HandSlot extends Slot {
     this.equipmentSlot = SLOT_IDS[slotIndex];
   }
 
-  public EquipmentSlot getEquipmentSlot() {
-    return this.equipmentSlot;
-  }
-
   @Override
   public void set(ItemStack itemStack) {
     super.set(itemStack);
