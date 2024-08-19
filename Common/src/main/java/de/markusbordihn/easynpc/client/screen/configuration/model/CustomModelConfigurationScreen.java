@@ -53,7 +53,6 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
   private Button skinNextPageButton = null;
   private Button skinPreviousButton = null;
   private Button skinPreviousPageButton = null;
-  private EditBox modelSearchField = null;
   private int lastNumOfSkins = 0;
   private int numOfEntities = 0;
   private int skinStartIndex = 0;
@@ -78,11 +77,11 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
     defineSkinNavigationButtons(this.contentTopPos + 189, this.contentLeftPos, this.rightPos - 29);
 
     // Model Search Field
-    this.modelSearchField =
+    EditBox modelSearchField =
         this.addRenderableWidget(
             new SearchField(
                 this.font, this.contentLeftPos + 100, this.contentTopPos + 190, 100, 14));
-    this.modelSearchField.setResponder(this::onSearchFieldChanged);
+    modelSearchField.setResponder(this::onSearchFieldChanged);
   }
 
   @Override

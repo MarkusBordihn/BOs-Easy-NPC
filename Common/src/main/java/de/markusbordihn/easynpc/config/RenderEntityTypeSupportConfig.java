@@ -291,16 +291,12 @@ Render Entity Type Support Configuration
 
   public static void addUnsupportedEntityType(String entityType) {
     unsupportedEntityTypes.add(entityType);
-    if (supportedEntityTypes.contains(entityType)) {
-      supportedEntityTypes.remove(entityType);
-    }
+    supportedEntityTypes.remove(entityType);
   }
 
   public static void addSupportedEntityType(String entityType) {
     supportedEntityTypes.add(entityType);
-    if (unsupportedEntityTypes.contains(entityType)) {
-      unsupportedEntityTypes.remove(entityType);
-    }
+    unsupportedEntityTypes.remove(entityType);
   }
 
   public static boolean isSupportedEntityType(String entityType) {
@@ -309,13 +305,5 @@ Render Entity Type Support Configuration
 
   public static boolean isUnsupportedEntityType(String entityType) {
     return unsupportedEntityTypes.contains(entityType);
-  }
-
-  public Set<String> getSupportedEntityTypes() {
-    return supportedEntityTypes;
-  }
-
-  public Set<String> getUnsupportedEntityTypes() {
-    return unsupportedEntityTypes;
   }
 }

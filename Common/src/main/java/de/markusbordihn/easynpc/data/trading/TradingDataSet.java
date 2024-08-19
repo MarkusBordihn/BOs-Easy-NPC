@@ -31,7 +31,7 @@ public class TradingDataSet {
   public static final String DATA_TYPE_TAG = "Type";
 
   private TradingType tradingType = TradingType.NONE;
-  private int maxUses = 0;
+  private int maxUses = 64;
   private int rewardedXP = 0;
   private int resetsEveryMin = 0;
   private long lastReset = 0;

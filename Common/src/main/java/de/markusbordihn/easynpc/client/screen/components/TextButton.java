@@ -54,10 +54,6 @@ public class TextButton extends CustomButton {
         onPress);
   }
 
-  public TextButton(int left, int top, int width, int height, Component label) {
-    this(left, top, width, height, label, (OnPress) -> {});
-  }
-
   public TextButton(int left, int top, int width, int height, String label, OnPress onPress) {
     this(
         left,

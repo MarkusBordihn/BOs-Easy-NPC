@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.data.synched;
 import de.markusbordihn.easynpc.Constants;
 import java.util.Map;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,14 +43,6 @@ public final class SynchedEntityData {
         entity,
         entityClass,
         this.entityDataAccessorMap);
-  }
-
-  public <T> EntityDataAccessor<T> register(
-      SynchedDataIndex synchedDataIndex, EntityDataSerializer<T> serializer) {
-    EntityDataAccessor<T> entityDataAccessor =
-        net.minecraft.network.syncher.SynchedEntityData.defineId(this.entityClass, serializer);
-    this.entityDataAccessorMap.put(synchedDataIndex, entityDataAccessor);
-    return entityDataAccessor;
   }
 
   public <T> void define(SynchedDataIndex synchedDataIndex, T defaultData) {

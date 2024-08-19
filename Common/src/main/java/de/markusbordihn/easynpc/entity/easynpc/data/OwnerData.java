@@ -81,6 +81,14 @@ public interface OwnerData<T extends PathfinderMob> extends EasyNPC<T>, OwnableE
     }
   }
 
+  default void setOwner(LivingEntity owner) {
+    if (owner != null) {
+      this.setOwnerUUID(owner.getUUID());
+    } else {
+      this.setOwnerUUID(null);
+    }
+  }
+
   default String getOwnerName() {
     LivingEntity owner = this.getOwner();
     return owner == null ? "" : owner.getName().getString();

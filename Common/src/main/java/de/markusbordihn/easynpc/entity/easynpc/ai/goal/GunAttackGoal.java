@@ -48,10 +48,6 @@ public class GunAttackGoal<T extends EasyNPC<?>> extends Goal {
     this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
   }
 
-  public void setMinAttackInterval(int livingEntity) {
-    this.attackIntervalMin = livingEntity;
-  }
-
   public boolean canUse() {
     return this.pathfinderMob.getTarget() != null
         && AttackHandler.isHoldingGunWeapon(this.pathfinderMob);

@@ -29,6 +29,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.item.Item;
 
+@SuppressWarnings("unused")
 public class ModSpawnEggItemTest {
 
   public static final Map<Item, EntityType<? extends PathfinderMob>> spawnEggMap =
@@ -65,8 +66,8 @@ public class ModSpawnEggItemTest {
 
   public ModSpawnEggItemTest() {}
 
-  @GameTest
-  public static void useSpawnEggItem(GameTestHelper helper) {
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public static void useSpawnEggItems(GameTestHelper helper) {
     for (Entry<Item, EntityType<? extends PathfinderMob>> item : spawnEggMap.entrySet()) {
       ModSpawnEggItemTestHelper.useSpawnEggItem(helper, item.getKey(), item.getValue());
     }
