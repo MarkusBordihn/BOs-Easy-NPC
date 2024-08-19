@@ -25,15 +25,11 @@ import de.markusbordihn.easynpc.client.model.ModelHelper;
 import de.markusbordihn.easynpc.client.model.ModelPartType;
 import de.markusbordihn.easynpc.client.model.base.BaseEntityModel;
 import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.data.position.CustomPosition;
-import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
@@ -41,12 +37,6 @@ import net.minecraft.world.entity.Entity;
 
 public class StandardHorseModel<T extends Entity> extends BaseEntityModel<T>
     implements HeadedModel {
-
-  protected final Map<ModelPartType, CustomPosition> modelPartPositionMap =
-      new EnumMap<>(ModelPartType.class);
-  protected final Map<ModelPartType, CustomRotation> modelPartRotationMap =
-      new EnumMap<>(ModelPartType.class);
-  protected final Map<ModelPartType, ModelPart> modelPartMap = new EnumMap<>(ModelPartType.class);
 
   protected final ModelPart head;
   protected final ModelPart body;

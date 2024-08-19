@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.entity.easynpc.raw;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.synched.SynchedEntityData;
 import de.markusbordihn.easynpc.data.ticker.TickerType;
@@ -29,6 +30,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.InteractionHandler;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.EnumMap;
@@ -189,6 +191,16 @@ public class ZombieRaw extends Zombie implements EasyNPCBase<Zombie> {
   @Override
   public InteractionResult mobInteract(Player player, InteractionHand hand) {
     return InteractionHandler.handleMobInteraction(this, player, hand);
+  }
+
+  @Override
+  public boolean isInvisible() {
+    return VisibilityHandler.handleIsInvisible(this, super.isInvisible());
+  }
+
+  @Override
+  public boolean isInvisibleTo(Player player) {
+    return VisibilityHandler.handleIsInvisibleToPlayer(this, player, super.isInvisibleTo(player));
   }
 
   @Override
@@ -458,13 +470,28 @@ public class ZombieRaw extends Zombie implements EasyNPCBase<Zombie> {
   }
 
   @Override
-  public boolean supportsSkinConfiguration() {
+  public boolean supportsChangeModelConfiguration() {
     return false;
   }
 
   @Override
-  public boolean supportsChangeModelConfiguration() {
-    return false;
+  public SkinModel getSkinModel() {
+    return SkinModel.ZOMBIE;
+  }
+
+  @Override
+  public Enum<?>[] getVariants() {
+    return Variant.values();
+  }
+
+  @Override
+  public Enum<?> getDefaultVariant() {
+    return Variant.ZOMBIE;
+  }
+
+  @Override
+  public Enum<?> getVariant(String name) {
+    return Variant.valueOf(name);
   }
 
   @Override
@@ -502,5 +529,11 @@ public class ZombieRaw extends Zombie implements EasyNPCBase<Zombie> {
   @Override
   public int hashCode() {
     return java.util.Objects.hash(this.getUUID());
+  }
+
+  public enum Variant {
+    DROWNED,
+    HUSK,
+    ZOMBIE
   }
 }

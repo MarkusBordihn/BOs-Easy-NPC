@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.client.screen.components;
 
 import de.markusbordihn.easynpc.Constants;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class SaveButton extends SpriteButton {
@@ -76,23 +75,6 @@ public class SaveButton extends SpriteButton {
         width,
         DEFAULT_HEIGHT,
         label,
-        SPRITE,
-        SPRITE_X,
-        SPRITE_Y,
-        SPRITE_OFFSET_X,
-        SPRITE_OFFSET_Y,
-        SPRITE_WIDTH,
-        SPRITE_HEIGHT,
-        onPress);
-  }
-
-  public SaveButton(int left, int top, int width, Component component, OnPress onPress) {
-    super(
-        left,
-        top,
-        width,
-        DEFAULT_HEIGHT,
-        component,
         SPRITE,
         SPRITE_X,
         SPRITE_Y,

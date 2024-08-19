@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
@@ -39,6 +40,7 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.phys.Vec3;
@@ -52,7 +54,11 @@ public class PresetHandler {
   private PresetHandler() {}
 
   public static boolean importPreset(
-      ServerLevel serverLevel, CompoundTag compoundTag, Vec3 position, UUID uuid) {
+      ServerLevel serverLevel,
+      CompoundTag compoundTag,
+      Vec3 position,
+      UUID uuid,
+      ServerPlayer serverPlayer) {
 
     // Overwrite spawn position, if provided.
     if (position != null) {
@@ -83,6 +89,12 @@ public class PresetHandler {
           compoundTag,
           compoundUUID);
       return false;
+    }
+
+    // Set owner, if owner is provided.
+    OwnerData<?> ownerData = easyNPC.getEasyNPCOwnerData();
+    if (serverPlayer != null && ownerData != null) {
+      ownerData.setOwner(serverPlayer);
     }
 
     // Set home position, if spawn position was provided.
@@ -173,7 +185,11 @@ public class PresetHandler {
   }
 
   public static boolean importCustomPreset(
-      ServerLevel serverLevel, ResourceLocation presetLocation, Vec3 position, UUID uuid) {
+      ServerLevel serverLevel,
+      ResourceLocation presetLocation,
+      Vec3 position,
+      UUID uuid,
+      ServerPlayer serverPlayer) {
     if (serverLevel == null || presetLocation == null) {
       log.error("[{}] Error importing custom preset ", serverLevel);
       return false;
@@ -190,7 +206,7 @@ public class PresetHandler {
 
     try {
       CompoundTag compoundTag = NbtIo.readCompressed(presetFile.toFile());
-      return importPreset(serverLevel, compoundTag, position, uuid);
+      return importPreset(serverLevel, compoundTag, position, uuid, serverPlayer);
     } catch (IOException exception) {
       log.error("[{}] Error reading custom preset file {}", serverLevel, presetFile, exception);
       return false;
@@ -209,7 +225,11 @@ public class PresetHandler {
   }
 
   public static boolean importDataPreset(
-      ServerLevel serverLevel, ResourceLocation presetLocation, Vec3 position, UUID uuid) {
+      ServerLevel serverLevel,
+      ResourceLocation presetLocation,
+      Vec3 position,
+      UUID uuid,
+      ServerPlayer serverPlayer) {
     if (serverLevel == null || presetLocation == null) {
       log.error("[{}] Error importing data preset ", serverLevel);
       return false;
@@ -227,7 +247,7 @@ public class PresetHandler {
     try {
       CompoundTag compoundTag =
           NbtIo.readCompressed(minecraftServer.getResourceManager().open(presetLocation));
-      return importPreset(serverLevel, compoundTag, position, uuid);
+      return importPreset(serverLevel, compoundTag, position, uuid, serverPlayer);
     } catch (IOException exception) {
       log.error("[{}] Error reading data preset file {}", serverLevel, presetLocation, exception);
       return false;
@@ -235,7 +255,11 @@ public class PresetHandler {
   }
 
   public static boolean importDefaultPreset(
-      ServerLevel serverLevel, ResourceLocation presetLocation, Vec3 position, UUID uuid) {
+      ServerLevel serverLevel,
+      ResourceLocation presetLocation,
+      Vec3 position,
+      UUID uuid,
+      ServerPlayer serverPlayer) {
     if (serverLevel == null || presetLocation == null) {
       log.error("[{}] Error importing default preset ", serverLevel);
       return false;
@@ -253,7 +277,7 @@ public class PresetHandler {
     try {
       CompoundTag compoundTag =
           NbtIo.readCompressed(minecraftServer.getResourceManager().open(presetLocation));
-      return importPreset(serverLevel, compoundTag, position, uuid);
+      return importPreset(serverLevel, compoundTag, position, uuid, serverPlayer);
     } catch (IOException exception) {
       log.error(
           "[{}] Error reading default preset file {}", serverLevel, presetLocation, exception);
@@ -266,7 +290,8 @@ public class PresetHandler {
       CompoundTag compoundTag,
       ResourceLocation presetLocation,
       Vec3 position,
-      UUID uuid) {
+      UUID uuid,
+      ServerPlayer serverPlayer) {
     if (serverLevel == null || presetLocation == null) {
       log.error("[{}] Error importing local preset {}", serverLevel, presetLocation);
       return false;
@@ -280,7 +305,7 @@ public class PresetHandler {
       return false;
     }
 
-    if (importPreset(serverLevel, compoundTag, position, uuid)) {
+    if (importPreset(serverLevel, compoundTag, position, uuid, serverPlayer)) {
       return true;
     }
 
@@ -289,7 +314,11 @@ public class PresetHandler {
   }
 
   public static boolean importWorldPreset(
-      ServerLevel serverLevel, ResourceLocation presetLocation, Vec3 position, UUID uuid) {
+      ServerLevel serverLevel,
+      ResourceLocation presetLocation,
+      Vec3 position,
+      UUID uuid,
+      ServerPlayer serverPlayer) {
     if (serverLevel == null || presetLocation == null) {
       log.error("[{}] Error importing world preset ", serverLevel);
       return false;
@@ -306,7 +335,7 @@ public class PresetHandler {
 
     try {
       CompoundTag compoundTag = NbtIo.readCompressed(presetFile.toFile());
-      return importPreset(serverLevel, compoundTag, position, uuid);
+      return importPreset(serverLevel, compoundTag, position, uuid, serverPlayer);
     } catch (IOException exception) {
       log.error("[{}] Error reading world preset file {}", serverLevel, presetFile, exception);
       return false;

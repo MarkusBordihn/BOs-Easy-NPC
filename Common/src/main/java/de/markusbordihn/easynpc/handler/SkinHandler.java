@@ -163,7 +163,6 @@ public class SkinHandler {
     return skinURL != null
         && !skinURL.isEmpty()
         && (skinURL.startsWith("https://www.minecraftskins.com/")
-            || skinURL.startsWith("http://novask.in/")
             || skinURL.startsWith("https://minecraft.novaskin.me/")
             || skinURL.startsWith("https://mcskins.top/")
             || skinURL.startsWith("https://skinmc.net/") && UrlValidator.isValidUrl(skinURL));

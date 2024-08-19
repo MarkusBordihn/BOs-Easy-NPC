@@ -87,10 +87,6 @@ public class SpinButton<T> extends CustomButton {
     }
   }
 
-  public void reset() {
-    this.currentValue = this.defaultValue;
-  }
-
   public void set(T value) {
     this.currentValue = value;
     if (this.onChange != null) {

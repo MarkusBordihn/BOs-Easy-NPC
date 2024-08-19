@@ -74,15 +74,6 @@ public interface ProfessionData<T extends PathfinderMob> extends EasyNPC<T> {
     setSynchedEntityData(SynchedDataIndex.PROFESSION, profession);
   }
 
-  default void setProfession(String name) {
-    Profession profession = getProfession(name);
-    if (profession != null) {
-      setProfession(profession);
-    } else {
-      EasyNPC.log.error("Unknown profession {} for {}", name, this);
-    }
-  }
-
   default Profession getProfession(String name) {
     return Profession.valueOf(name);
   }
@@ -93,10 +84,6 @@ public interface ProfessionData<T extends PathfinderMob> extends EasyNPC<T> {
 
   default Profession[] getProfessions() {
     return Profession.values();
-  }
-
-  default boolean hasProfession() {
-    return false;
   }
 
   default Component getProfessionName() {

@@ -42,22 +42,6 @@ public class SpawnerMenu extends AbstractContainerMenu {
   private final Container container;
   private final ContainerData data;
 
-  public SpawnerMenu(int containerId, Inventory playerInventory) {
-    this(
-        containerId,
-        playerInventory,
-        new SimpleContainer(containerSize),
-        new SimpleContainerData(BaseEasyNPCSpawnerBlockEntity.DATA_SIZE));
-  }
-
-  public SpawnerMenu(
-      final int containerId,
-      final Inventory playerInventory,
-      final Container container,
-      final ContainerData containerData) {
-    this(null, containerId, playerInventory, container, containerData);
-  }
-
   public SpawnerMenu(MenuType<?> menuType, final int containerId, final Inventory playerInventory) {
     this(
         menuType,

@@ -44,8 +44,4 @@ public class ReloadButton extends SpriteButton {
         SPRITE_HEIGHT,
         onPress);
   }
-
-  public ReloadButton(int left, int top, int width, String label, OnPress onPress) {
-    this(left, top, width, DEFAULT_HEIGHT, label, onPress);
-  }
 }

@@ -26,10 +26,6 @@ public final class ServerDataAccessor<T> {
   private final ServerDataIndex serverDataIndex;
   private final EntityDataSerializer<T> entityDataSerializer;
 
-  public ServerDataAccessor(int index, EntityDataSerializer<T> entityDataSerializer) {
-    this(ServerDataIndex.getIndex(index), entityDataSerializer);
-  }
-
   public ServerDataAccessor(
       ServerDataIndex serverDataIndex, EntityDataSerializer<T> entityDataSerializer) {
     this.serverDataIndex = serverDataIndex;
@@ -38,10 +34,6 @@ public final class ServerDataAccessor<T> {
 
   public ServerDataIndex getIndex() {
     return this.serverDataIndex;
-  }
-
-  public EntityDataSerializer<T> getSerializer() {
-    return this.entityDataSerializer;
   }
 
   public boolean equals(Object object) {

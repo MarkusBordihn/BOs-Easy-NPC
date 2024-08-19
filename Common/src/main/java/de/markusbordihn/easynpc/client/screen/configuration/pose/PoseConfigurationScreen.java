@@ -45,11 +45,6 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
     this.modelData = this.getEasyNPC().getEasyNPCModelData();
   }
 
-  protected SliderButton createRotationSlider(
-      int left, int top, ModelPart modelPart, String label) {
-    return createRotationSlider(left, top, modelPart, label, false);
-  }
-
   protected SliderButton createRotationSliderCompact(
       int left, int top, ModelPart modelPart, String label) {
     return createRotationSlider(left, top, modelPart, label, true);
@@ -171,11 +166,6 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
               }));
     }
     return sliderButtonX;
-  }
-
-  protected SliderButton createPositionSlider(
-      int left, int top, ModelPart modelPart, String label) {
-    return createPositionSlider(left, top, modelPart, label, false);
   }
 
   protected SliderButton createPositionSliderCompact(

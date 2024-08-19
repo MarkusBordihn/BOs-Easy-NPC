@@ -105,10 +105,6 @@ public interface NavigationData<T extends PathfinderMob> extends EasyNPC<T> {
     return canFly() && !this.getEntity().isOnGround();
   }
 
-  default boolean causeFallDamage() {
-    return false;
-  }
-
   default void addAdditionalNavigationData(CompoundTag compoundTag) {
     CompoundTag navigationTag = new CompoundTag();
     if (this.hasHomePosition()) {

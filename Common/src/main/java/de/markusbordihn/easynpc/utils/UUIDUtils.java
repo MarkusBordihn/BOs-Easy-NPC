@@ -32,31 +32,6 @@ public class UUIDUtils {
 
   private UUIDUtils() {}
 
-  public static short[] encodeUUIDToShort(UUID uuid) {
-    long mostSignificantBits = uuid.getMostSignificantBits();
-    long leastSignificantBits = uuid.getLeastSignificantBits();
-
-    short[] encodedShorts = new short[8];
-    for (int i = 0; i < 4; i++) {
-      encodedShorts[i] = (short) (mostSignificantBits >>> (i * 16));
-      encodedShorts[i + 4] = (short) (leastSignificantBits >>> (i * 16));
-    }
-
-    return encodedShorts;
-  }
-
-  public static UUID decodeShortToUUID(short[] encodedShorts) {
-    long mostSignificantBits = 0;
-    long leastSignificantBits = 0;
-
-    for (int i = 0; i < 4; i++) {
-      mostSignificantBits |= ((long) encodedShorts[i] & 0xFFFF) << (i * 16);
-      leastSignificantBits |= ((long) encodedShorts[i + 4] & 0xFFFF) << (i * 16);
-    }
-
-    return new UUID(mostSignificantBits, leastSignificantBits);
-  }
-
   public static UUID textToUUID(String text) {
     if (text != null && !text.isEmpty()) {
       try {

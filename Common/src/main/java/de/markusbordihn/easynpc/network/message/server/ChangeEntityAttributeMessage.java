@@ -106,10 +106,7 @@ public record ChangeEntityAttributeMessage(
     }
 
     boolean successfullyChanged = false;
-    if (entityAttribute == EntityAttribute.LIGHT_LEVEL) {
-      successfullyChanged =
-          AttributeHandler.setEntityAttribute(easyNPC, entityAttribute, integerValue);
-    } else if (booleanValue != null) {
+    if (booleanValue != null) {
       successfullyChanged =
           AttributeHandler.setEntityAttribute(easyNPC, entityAttribute, booleanValue);
     }

@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.client.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseModelEntity;
@@ -104,7 +105,10 @@ public interface EasyNPCModelRenderer<E extends EasyNPCBaseModelEntity<E>, M ext
   }
 
   static int getEntityLightLevel(EasyNPC<?> easyNPC, BlockPos blockPos) {
-    int entityLightLevel = easyNPC.getEasyNPCAttributeData().getAttributeLightLevel();
+    int entityLightLevel =
+        easyNPC
+            .getEasyNPCDisplayAttributeData()
+            .getDisplayIntAttribute(DisplayAttributeType.LIGHT_LEVEL);
     if (entityLightLevel > 0) {
       return entityLightLevel;
     }

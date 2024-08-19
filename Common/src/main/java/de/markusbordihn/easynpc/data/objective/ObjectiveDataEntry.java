@@ -96,10 +96,6 @@ public final class ObjectiveDataEntry {
     return this.objectiveType;
   }
 
-  public void setType(ObjectiveType objectiveType) {
-    this.objectiveType = objectiveType;
-  }
-
   public int getPriority() {
     return this.priority;
   }
@@ -120,88 +116,40 @@ public final class ObjectiveDataEntry {
     return this.startDistance;
   }
 
-  public void setStartDistance(float startDistance) {
-    this.startDistance = startDistance;
-  }
-
   public float getStopDistance() {
     return this.stopDistance;
-  }
-
-  public void setStopDistance(float stopDistance) {
-    this.stopDistance = stopDistance;
   }
 
   public float getProbability() {
     return this.probability;
   }
 
-  public void setProbability(float probability) {
-    this.probability = probability;
-  }
-
-  public boolean isOnlyAtNight() {
-    return this.onlyAtNight;
-  }
-
   public int getDistanceToPoi() {
     return this.distanceToPoi;
-  }
-
-  public void setDistanceToPoi(int distanceToPoi) {
-    this.distanceToPoi = distanceToPoi;
   }
 
   public BooleanSupplier getCanDealWithDoors() {
     return this.canDealWithDoors;
   }
 
-  public void setCanDealWithDoors(BooleanSupplier canDealWithDoors) {
-    this.canDealWithDoors = canDealWithDoors;
-  }
-
   public boolean getOnlyAtNight() {
     return this.onlyAtNight;
-  }
-
-  public void setOnlyAtNight(boolean onlyAtNight) {
-    this.onlyAtNight = onlyAtNight;
   }
 
   public int getInterval() {
     return this.interval;
   }
 
-  public void setInterval(int interval) {
-    this.interval = interval;
-  }
-
   public boolean isMustSeeTarget() {
     return this.mustSeeTarget;
-  }
-
-  public void setMustSeeTarget(boolean mustSeeTarget) {
-    this.mustSeeTarget = mustSeeTarget;
   }
 
   public boolean isMustReachTarget() {
     return this.mustReachTarget;
   }
 
-  public void setMustReachTarget(boolean mustReachTarget) {
-    this.mustReachTarget = mustReachTarget;
-  }
-
   public String getId() {
     return this.id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public void setId(ObjectiveType objectiveType) {
-    this.id = objectiveType.name();
   }
 
   public boolean isRegistered() {
@@ -224,24 +172,12 @@ public final class ObjectiveDataEntry {
     return this.lookDistance;
   }
 
-  public void setLookDistance(float lookDistance) {
-    this.lookDistance = lookDistance;
-  }
-
   public float getAttackRadius() {
     return this.attackRadius;
   }
 
-  public void setAttackRadius(float attackRadius) {
-    this.attackRadius = attackRadius;
-  }
-
   public int getAttackInterval() {
     return this.attackInterval;
-  }
-
-  public void setAttackInterval(int attackInterval) {
-    this.attackInterval = attackInterval;
   }
 
   public ServerPlayer getTargetPlayer() {
@@ -347,14 +283,6 @@ public final class ObjectiveDataEntry {
       this.target = ObjectiveUtils.createObjectiveTarget(this, easyNPC);
     }
     return this.target;
-  }
-
-  public boolean isTargetedPlayer(String playerName) {
-    return this.hasPlayerTarget() && this.targetPlayerName.equals(playerName);
-  }
-
-  public boolean isTargetedEntity(UUID entityUUID) {
-    return this.hasEntityTarget() && this.targetEntityUUID.equals(entityUUID);
   }
 
   public void load(CompoundTag compoundTag) {
