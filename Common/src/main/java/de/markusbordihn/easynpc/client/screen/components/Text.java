@@ -55,11 +55,6 @@ public class Text {
   }
 
   public static int drawStringShadow(
-      GuiGraphics guiGraphics, Font font, Component component, int x, int y) {
-    return drawStringShadow(guiGraphics, font, component, x, y, Constants.FONT_COLOR_DEFAULT);
-  }
-
-  public static int drawStringShadow(
       GuiGraphics guiGraphics, Font font, Component component, int x, int y, int color) {
     return guiGraphics.drawString(font, component, x, y, color, true);
   }
@@ -120,34 +115,11 @@ public class Text {
   }
 
   public static int drawConfigStringShadow(
-      GuiGraphics guiGraphics, Font font, String translationKey, int x, int y) {
-    return drawConfigStringShadow(
-        guiGraphics, font, translationKey, x, y, Constants.FONT_COLOR_DEFAULT);
-  }
-
-  public static int drawConfigStringShadow(
       GuiGraphics guiGraphics, Font font, String translationKey, int x, int y, int color) {
     return drawStringShadow(
         guiGraphics,
         font,
         Component.translatable(Constants.TEXT_CONFIG_PREFIX + translationKey),
-        x,
-        y,
-        color);
-  }
-
-  public static int drawConfigStringWithData(
-      GuiGraphics guiGraphics,
-      Font font,
-      String translationKey,
-      Object data,
-      int x,
-      int y,
-      int color) {
-    return drawString(
-        guiGraphics,
-        font,
-        Component.translatable(Constants.TEXT_CONFIG_PREFIX + translationKey, data),
         x,
         y,
         color);

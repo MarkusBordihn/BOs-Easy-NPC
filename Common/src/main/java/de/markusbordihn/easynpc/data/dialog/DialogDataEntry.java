@@ -104,11 +104,6 @@ public final class DialogDataEntry {
     return this.dialogTexts.iterator().next().text();
   }
 
-  public void setText(String text) {
-    this.dialogTexts.clear();
-    this.dialogTexts.add(new DialogTextData(text));
-  }
-
   public Component getDialogText() {
     if (this.dialogTexts == null || this.dialogTexts.isEmpty()) {
       return Constants.EMPTY_TEXT_COMPONENT;

@@ -29,7 +29,4 @@ public class CompatHandler implements CompatHandlerInterface {
   public boolean isModLoaded(String modId) {
     return fabricLoader.isModLoaded(modId);
   }
-
-  @Override
-  public void registerEpicFight() {}
 }

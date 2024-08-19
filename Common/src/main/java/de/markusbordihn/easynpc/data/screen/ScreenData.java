@@ -33,8 +33,6 @@ public record ScreenData(
     int pageIndex,
     CompoundTag additionalData) {
 
-  public static final ScreenData EMPTY =
-      new ScreenData(null, null, null, null, 0, new CompoundTag());
   public static final String SCREEN_DATA_ACTION_DATA_ENTRY_ID_TAG = "ActionDataEntryId";
   public static final String SCREEN_DATA_ADDITIONAL_DATA_TAG = "AdditionalData";
   public static final String SCREEN_DATA_DIALOG_BUTTON_ID_TAG = "DialogButtonId";
@@ -43,6 +41,10 @@ public record ScreenData(
   public static final String SCREEN_DATA_TAG = "ScreenData";
   public static final String SCREEN_DATA_UUID_TAG = "UUID";
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  public ScreenData(UUID uuid, UUID dialogId) {
+    this(uuid, dialogId, null, null, 0, new CompoundTag());
+  }
 
   public static boolean hasScreenData(CompoundTag compoundTag) {
     return compoundTag != null && compoundTag.contains(SCREEN_DATA_TAG);

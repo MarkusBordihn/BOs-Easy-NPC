@@ -42,7 +42,7 @@ public class Screen<T extends EasyNPCMenu> extends net.minecraft.client.gui.scre
     implements MenuAccess<T>, ScreenInterface {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-  private static final int UPDATE_TICKS = 16;
+  private static final int UPDATE_TICKS = 8;
   protected static double formerMouseX = -1;
   protected static double formerMouseY = -1;
   protected final Minecraft minecraftInstance;

@@ -32,7 +32,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.UUID;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.players.GameProfileCache;
 import org.apache.commons.io.IOUtils;
@@ -49,10 +48,6 @@ public class PlayersUtils {
   private static UUID lastUserUUIDForUserTexture;
 
   protected PlayersUtils() {}
-
-  public static Optional<GameProfile> getGameProfile(MinecraftServer server, Component component) {
-    return getGameProfile(server, component.getString());
-  }
 
   public static Optional<GameProfile> getGameProfile(MinecraftServer server, String username) {
     if (server == null || username == null || username.isEmpty()) {

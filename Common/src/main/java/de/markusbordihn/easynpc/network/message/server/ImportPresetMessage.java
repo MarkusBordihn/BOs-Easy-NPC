@@ -85,35 +85,40 @@ public record ImportPresetMessage(
             this.compoundTag,
             this.resourceLocation,
             easyNPC.getEntity().position(),
-            this.uuid);
+            this.uuid,
+            null);
         break;
       case CUSTOM:
         PresetHandler.importCustomPreset(
             serverPlayer.serverLevel(),
             this.resourceLocation,
             easyNPC.getEntity().position(),
-            this.uuid);
+            this.uuid,
+            null);
         break;
       case DATA:
         PresetHandler.importDataPreset(
             serverPlayer.serverLevel(),
             this.resourceLocation,
             easyNPC.getEntity().position(),
-            this.uuid);
+            this.uuid,
+            null);
         break;
       case DEFAULT:
         PresetHandler.importDefaultPreset(
             serverPlayer.serverLevel(),
             this.resourceLocation,
             easyNPC.getEntity().position(),
-            this.uuid);
+            this.uuid,
+            null);
         break;
       case WORLD:
         PresetHandler.importWorldPreset(
             serverPlayer.serverLevel(),
             this.resourceLocation,
             easyNPC.getEntity().position(),
-            this.uuid);
+            this.uuid,
+            null);
         break;
       default:
         log.error("Invalid preset type {} from {}", this.presetType, serverPlayer);

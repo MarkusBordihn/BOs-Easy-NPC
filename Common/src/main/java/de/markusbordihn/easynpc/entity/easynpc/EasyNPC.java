@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
+import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeData;
 import de.markusbordihn.easynpc.entity.easynpc.data.GuiData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
@@ -108,6 +109,12 @@ public interface EasyNPC<E extends PathfinderMob> extends Npc {
 
   default DialogData<E> getEasyNPCDialogData() {
     return this instanceof DialogData<E> dialogData ? dialogData : null;
+  }
+
+  default DisplayAttributeData<E> getEasyNPCDisplayAttributeData() {
+    return this instanceof DisplayAttributeData<E> displayAttributeData
+        ? displayAttributeData
+        : null;
   }
 
   default GuiData<E> getEasyNPCGuiData() {

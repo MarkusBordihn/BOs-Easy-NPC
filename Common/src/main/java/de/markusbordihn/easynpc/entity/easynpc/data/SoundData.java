@@ -99,7 +99,7 @@ public interface SoundData<E extends PathfinderMob> extends EasyNPC<E> {
   default void playDefaultAmbientSound() {
     OwnerData<E> ownerData = this.getEasyNPCOwnerData();
     if (ownerData != null && ownerData.hasOwner()) {
-      if (hasDefaultSound(SoundType.AMBIENT_TAMED) && this.randomNumber.nextInt(4) == 0) {
+      if (hasDefaultSound(SoundType.AMBIENT_TAMED) && EasyNPC.randomNumber.nextInt(4) == 0) {
         this.playDefaultSound(SoundType.AMBIENT_TAMED);
         return;
       } else if (hasDefaultSound(SoundType.AMBIENT)) {

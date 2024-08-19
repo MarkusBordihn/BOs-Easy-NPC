@@ -59,11 +59,6 @@ public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
   String DATA_HAS_TRAVEL_TARGET_TAG = "HasTravelTarget";
   String DATA_OBJECTIVE_DATA_TAG = "ObjectiveData";
 
-  default void clearObjectiveDataSet() {
-    getEasyNPCServerData()
-        .setServerEntityData(CUSTOM_DATA_OBJECTIVE_DATA_SET, new ObjectiveDataSet());
-  }
-
   default ObjectiveDataSet getObjectiveDataSet() {
     return getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_OBJECTIVE_DATA_SET);
   }
@@ -93,22 +88,11 @@ public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
     return getObjectiveDataSet() != null ? getObjectiveDataSet().getObjective(objectiveType) : null;
   }
 
-  default ObjectiveDataEntry getObjective(String objectiveId) {
-    return getObjectiveDataSet() != null ? getObjectiveDataSet().getObjective(objectiveId) : null;
-  }
-
   default void removeObjective(ObjectiveType objectiveType) {
     if (objectiveType == null) {
       return;
     }
     getObjectiveDataSet().removeObjective(objectiveType);
-  }
-
-  default void removeObjective(ObjectiveDataEntry objectiveDataEntry) {
-    if (objectiveDataEntry == null) {
-      return;
-    }
-    getObjectiveDataSet().removeObjective(objectiveDataEntry);
   }
 
   default void addObjective(ObjectiveDataEntry objectiveDataEntry) {
@@ -132,10 +116,6 @@ public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
 
   default boolean hasOwnerTargetObjectives() {
     return getObjectiveDataSet() != null && getObjectiveDataSet().hasOwnerTarget();
-  }
-
-  default boolean hasValidTargetObjectives() {
-    return getObjectiveDataSet() != null && getObjectiveDataSet().hasValidTarget(this);
   }
 
   default void onEasyNPCJoinUpdateObjective(EasyNPC<?> easyNPC) {

@@ -30,8 +30,6 @@ public interface CompatHandlerInterface {
 
   boolean isModLoaded(String modId);
 
-  void registerEpicFight();
-
   default void register() {
     CompatConstants.MOD_EPIC_FIGHT_LOADED = isModLoaded(CompatConstants.MOD_EPIC_FIGHT_ID);
     logFoundMod(

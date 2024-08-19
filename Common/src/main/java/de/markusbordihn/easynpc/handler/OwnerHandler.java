@@ -71,4 +71,21 @@ public class OwnerHandler {
 
     return true;
   }
+
+  public static boolean removeOwner(EasyNPC<?> easyNPC) {
+    OwnerData<?> ownerData = easyNPC.getEasyNPCOwnerData();
+    if (ownerData == null) {
+      log.error("[{}] No owner data available for setting owner!", easyNPC);
+      return false;
+    }
+
+    if (ownerData.getOwnerUUID() == null) {
+      log.debug("[{}] Owner is already removed!", easyNPC);
+      return true;
+    }
+
+    log.debug("[{}] Removing owner ...", easyNPC);
+    ownerData.setOwner(null);
+    return true;
+  }
 }

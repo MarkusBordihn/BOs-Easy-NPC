@@ -32,6 +32,7 @@ import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.commands.arguments.UuidArgument;
 import net.minecraft.commands.arguments.coordinates.Coordinates;
@@ -49,6 +50,7 @@ public class PresetCommand extends Command {
   private static final String EXPORT_ARG = "export";
   private static final String IMPORT_ARG = "import";
   private static final String IMPORT_NEW_ARG = "import_new";
+  private static final String IMPORT_WITH_OWNER_ARG = "import_with_owner";
   private static final String LOCAL_ARG = "local";
   private static final String LOCATION_ARG = "location";
   private static final String PRESET_ARG = "preset";
@@ -143,6 +145,7 @@ public class PresetCommand extends Command {
                                             context.getSource(),
                                             ResourceLocationArgument.getId(context, PRESET_ARG),
                                             null,
+                                            null,
                                             null))
                                 .then(
                                     Commands.argument(LOCATION_ARG, Vec3Argument.vec3())
@@ -156,6 +159,7 @@ public class PresetCommand extends Command {
                                                   ResourceLocationArgument.getId(
                                                       context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
+                                                  null,
                                                   null);
                                             })
                                         .then(
@@ -173,7 +177,8 @@ public class PresetCommand extends Command {
                                                               context, PRESET_ARG),
                                                           coordinates.getPosition(
                                                               context.getSource()),
-                                                          uuid);
+                                                          uuid,
+                                                          null);
                                                     })))))
                 .then(
                     Commands.literal(DATA_ARG)
@@ -185,6 +190,7 @@ public class PresetCommand extends Command {
                                         importDefaultPreset(
                                             context.getSource(),
                                             ResourceLocationArgument.getId(context, PRESET_ARG),
+                                            null,
                                             null,
                                             null))
                                 .then(
@@ -199,6 +205,7 @@ public class PresetCommand extends Command {
                                                   ResourceLocationArgument.getId(
                                                       context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
+                                                  null,
                                                   null);
                                             })
                                         .then(
@@ -216,7 +223,8 @@ public class PresetCommand extends Command {
                                                               context, PRESET_ARG),
                                                           coordinates.getPosition(
                                                               context.getSource()),
-                                                          uuid);
+                                                          uuid,
+                                                          null);
                                                     })))))
                 .then(
                     Commands.literal(DEFAULT_ARG)
@@ -228,6 +236,7 @@ public class PresetCommand extends Command {
                                         importDefaultPreset(
                                             context.getSource(),
                                             ResourceLocationArgument.getId(context, PRESET_ARG),
+                                            null,
                                             null,
                                             null))
                                 .then(
@@ -242,6 +251,7 @@ public class PresetCommand extends Command {
                                                   ResourceLocationArgument.getId(
                                                       context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
+                                                  null,
                                                   null);
                                             })
                                         .then(
@@ -259,7 +269,8 @@ public class PresetCommand extends Command {
                                                               context, PRESET_ARG),
                                                           coordinates.getPosition(
                                                               context.getSource()),
-                                                          uuid);
+                                                          uuid,
+                                                          null);
                                                     })))))
                 .then(
                     Commands.literal(WORLD_ARG)
@@ -271,6 +282,7 @@ public class PresetCommand extends Command {
                                         importWorldPreset(
                                             context.getSource(),
                                             ResourceLocationArgument.getId(context, PRESET_ARG),
+                                            null,
                                             null,
                                             null))
                                 .then(
@@ -285,6 +297,7 @@ public class PresetCommand extends Command {
                                                   ResourceLocationArgument.getId(
                                                       context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
+                                                  null,
                                                   null);
                                             })
                                         .then(
@@ -302,7 +315,8 @@ public class PresetCommand extends Command {
                                                               context, PRESET_ARG),
                                                           coordinates.getPosition(
                                                               context.getSource()),
-                                                          uuid);
+                                                          uuid,
+                                                          null);
                                                     }))))))
         .then(
             Commands.literal(IMPORT_NEW_ARG)
@@ -317,7 +331,8 @@ public class PresetCommand extends Command {
                                             context.getSource(),
                                             ResourceLocationArgument.getId(context, PRESET_ARG),
                                             null,
-                                            UUID.randomUUID()))
+                                            UUID.randomUUID(),
+                                            null))
                                 .then(
                                     Commands.argument(LOCATION_ARG, Vec3Argument.vec3())
                                         .executes(
@@ -330,7 +345,8 @@ public class PresetCommand extends Command {
                                                   ResourceLocationArgument.getId(
                                                       context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
-                                                  UUID.randomUUID());
+                                                  UUID.randomUUID(),
+                                                  null);
                                             }))))
                 .then(
                     Commands.literal(DATA_ARG)
@@ -343,7 +359,8 @@ public class PresetCommand extends Command {
                                             context.getSource(),
                                             ResourceLocationArgument.getId(context, PRESET_ARG),
                                             null,
-                                            UUID.randomUUID()))
+                                            UUID.randomUUID(),
+                                            null))
                                 .then(
                                     Commands.argument(LOCATION_ARG, Vec3Argument.vec3())
                                         .executes(
@@ -356,7 +373,8 @@ public class PresetCommand extends Command {
                                                   ResourceLocationArgument.getId(
                                                       context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
-                                                  UUID.randomUUID());
+                                                  UUID.randomUUID(),
+                                                  null);
                                             }))))
                 .then(
                     Commands.literal(DEFAULT_ARG)
@@ -369,7 +387,8 @@ public class PresetCommand extends Command {
                                             context.getSource(),
                                             ResourceLocationArgument.getId(context, PRESET_ARG),
                                             null,
-                                            UUID.randomUUID()))
+                                            UUID.randomUUID(),
+                                            null))
                                 .then(
                                     Commands.argument(LOCATION_ARG, Vec3Argument.vec3())
                                         .executes(
@@ -382,7 +401,8 @@ public class PresetCommand extends Command {
                                                   ResourceLocationArgument.getId(
                                                       context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
-                                                  UUID.randomUUID());
+                                                  UUID.randomUUID(),
+                                                  null);
                                             }))))
                 .then(
                     Commands.literal(WORLD_ARG)
@@ -395,7 +415,8 @@ public class PresetCommand extends Command {
                                             context.getSource(),
                                             ResourceLocationArgument.getId(context, PRESET_ARG),
                                             null,
-                                            UUID.randomUUID()))
+                                            UUID.randomUUID(),
+                                            null))
                                 .then(
                                     Commands.argument(LOCATION_ARG, Vec3Argument.vec3())
                                         .executes(
@@ -408,17 +429,121 @@ public class PresetCommand extends Command {
                                                   ResourceLocationArgument.getId(
                                                       context, PRESET_ARG),
                                                   coordinates.getPosition(context.getSource()),
-                                                  UUID.randomUUID());
-                                            })))));
+                                                  UUID.randomUUID(),
+                                                  null);
+                                            })))))
+        .then(
+            Commands.literal(IMPORT_WITH_OWNER_ARG)
+                .then(
+                    Commands.literal(CUSTOM_ARG)
+                        .then(
+                            Commands.argument(PRESET_ARG, ResourceLocationArgument.id())
+                                .suggests(PresetSuggestions::suggestCustom)
+                                .then(
+                                    Commands.argument("player", EntityArgument.player())
+                                        .then(
+                                            Commands.argument(LOCATION_ARG, Vec3Argument.vec3())
+                                                .executes(
+                                                    context -> {
+                                                      Coordinates coordinates =
+                                                          Vec3Argument.getCoordinates(
+                                                              context, LOCATION_ARG);
+                                                      return importCustomPreset(
+                                                          context.getSource(),
+                                                          ResourceLocationArgument.getId(
+                                                              context, PRESET_ARG),
+                                                          coordinates.getPosition(
+                                                              context.getSource()),
+                                                          UUID.randomUUID(),
+                                                          EntityArgument.getPlayer(
+                                                              context, "player"));
+                                                    })))))
+                .then(
+                    Commands.literal(DATA_ARG)
+                        .then(
+                            Commands.argument(PRESET_ARG, ResourceLocationArgument.id())
+                                .suggests(PresetSuggestions::suggestData)
+                                .then(
+                                    Commands.argument("player", EntityArgument.player())
+                                        .then(
+                                            Commands.argument(LOCATION_ARG, Vec3Argument.vec3())
+                                                .executes(
+                                                    context -> {
+                                                      Coordinates coordinates =
+                                                          Vec3Argument.getCoordinates(
+                                                              context, LOCATION_ARG);
+                                                      return importDataPreset(
+                                                          context.getSource(),
+                                                          ResourceLocationArgument.getId(
+                                                              context, PRESET_ARG),
+                                                          coordinates.getPosition(
+                                                              context.getSource()),
+                                                          UUID.randomUUID(),
+                                                          EntityArgument.getPlayer(
+                                                              context, "player"));
+                                                    })))))
+                .then(
+                    Commands.literal(DEFAULT_ARG)
+                        .then(
+                            Commands.argument(PRESET_ARG, ResourceLocationArgument.id())
+                                .suggests(PresetSuggestions::suggestDefault)
+                                .then(
+                                    Commands.argument("player", EntityArgument.player())
+                                        .then(
+                                            Commands.argument(LOCATION_ARG, Vec3Argument.vec3())
+                                                .executes(
+                                                    context -> {
+                                                      Coordinates coordinates =
+                                                          Vec3Argument.getCoordinates(
+                                                              context, LOCATION_ARG);
+                                                      return importDefaultPreset(
+                                                          context.getSource(),
+                                                          ResourceLocationArgument.getId(
+                                                              context, PRESET_ARG),
+                                                          coordinates.getPosition(
+                                                              context.getSource()),
+                                                          UUID.randomUUID(),
+                                                          EntityArgument.getPlayer(
+                                                              context, "player"));
+                                                    })))))
+                .then(
+                    Commands.literal(WORLD_ARG)
+                        .then(
+                            Commands.argument(PRESET_ARG, ResourceLocationArgument.id())
+                                .suggests(PresetSuggestions::suggestWorld)
+                                .then(
+                                    Commands.argument("player", EntityArgument.player())
+                                        .then(
+                                            Commands.argument(LOCATION_ARG, Vec3Argument.vec3())
+                                                .executes(
+                                                    context -> {
+                                                      Coordinates coordinates =
+                                                          Vec3Argument.getCoordinates(
+                                                              context, LOCATION_ARG);
+                                                      return importWorldPreset(
+                                                          context.getSource(),
+                                                          ResourceLocationArgument.getId(
+                                                              context, PRESET_ARG),
+                                                          coordinates.getPosition(
+                                                              context.getSource()),
+                                                          UUID.randomUUID(),
+                                                          EntityArgument.getPlayer(
+                                                              context, "player"));
+                                                    }))))));
   }
 
   private static int importCustomPreset(
-      CommandSourceStack context, ResourceLocation preset, Vec3 position, UUID uuid) {
+      CommandSourceStack context,
+      ResourceLocation preset,
+      Vec3 position,
+      UUID uuid,
+      ServerPlayer serverPlayer) {
     if (preset == null) {
       return Command.FAILURE;
     }
 
-    if (!PresetHandler.importCustomPreset(context.getLevel(), preset, position, uuid)) {
+    if (!PresetHandler.importCustomPreset(
+        context.getLevel(), preset, position, uuid, serverPlayer)) {
       return sendFailureMessage(context, importedPresetFailedMessage(CUSTOM_ARG, preset));
     }
 
@@ -426,12 +551,16 @@ public class PresetCommand extends Command {
   }
 
   private static int importDataPreset(
-      CommandSourceStack context, ResourceLocation preset, Vec3 position, UUID uuid) {
+      CommandSourceStack context,
+      ResourceLocation preset,
+      Vec3 position,
+      UUID uuid,
+      ServerPlayer serverPlayer) {
     if (preset == null) {
       return Command.FAILURE;
     }
 
-    if (!PresetHandler.importDataPreset(context.getLevel(), preset, position, uuid)) {
+    if (!PresetHandler.importDataPreset(context.getLevel(), preset, position, uuid, serverPlayer)) {
       return sendFailureMessage(context, importedPresetFailedMessage(DATA_ARG, preset));
     }
 
@@ -439,12 +568,17 @@ public class PresetCommand extends Command {
   }
 
   private static int importDefaultPreset(
-      CommandSourceStack context, ResourceLocation preset, Vec3 position, UUID uuid) {
+      CommandSourceStack context,
+      ResourceLocation preset,
+      Vec3 position,
+      UUID uuid,
+      ServerPlayer serverPlayer) {
     if (preset == null) {
       return Command.FAILURE;
     }
 
-    if (!PresetHandler.importDefaultPreset(context.getLevel(), preset, position, uuid)) {
+    if (!PresetHandler.importDefaultPreset(
+        context.getLevel(), preset, position, uuid, serverPlayer)) {
       return sendFailureMessage(context, importedPresetFailedMessage(DEFAULT_ARG, preset));
     }
 
@@ -457,12 +591,17 @@ public class PresetCommand extends Command {
   }
 
   private static int importWorldPreset(
-      CommandSourceStack context, ResourceLocation preset, Vec3 position, UUID uuid) {
+      CommandSourceStack context,
+      ResourceLocation preset,
+      Vec3 position,
+      UUID uuid,
+      ServerPlayer serverPlayer) {
     if (preset == null) {
       return Command.FAILURE;
     }
 
-    if (!PresetHandler.importWorldPreset(context.getLevel(), preset, position, uuid)) {
+    if (!PresetHandler.importWorldPreset(
+        context.getLevel(), preset, position, uuid, serverPlayer)) {
       return sendFailureMessage(context, importedPresetFailedMessage(WORLD_ARG, preset));
     }
 
