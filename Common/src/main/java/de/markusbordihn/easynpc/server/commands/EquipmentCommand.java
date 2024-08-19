@@ -75,10 +75,7 @@ public class EquipmentCommand extends Command {
   }
 
   private static int setItemSlot(
-      CommandSourceStack context,
-      EasyNPC<?> easyNPC,
-      EquipmentSlot equipmentSlot,
-      Item item) {
+      CommandSourceStack context, EasyNPC<?> easyNPC, EquipmentSlot equipmentSlot, Item item) {
     if (easyNPC == null || equipmentSlot == null || item == null) {
       return 0;
     }

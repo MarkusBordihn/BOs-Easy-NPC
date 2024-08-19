@@ -4,6 +4,10 @@
     {
       "id": "cgm:pistol",
       "required": false
+    },
+    {
+      "id": "tacz:modern_kinetic_gun",
+      "required": false
     }
   ]
 }

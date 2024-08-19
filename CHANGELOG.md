@@ -8,6 +8,12 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.5.6
+
+- Fixed default max uses from 0 to 64 for trading items.
+- Fixed #282 by consider custom weapon models for hand items and rendering.
+- Added experimental texture support for Raw Zombies.
+
 ### 5.5.5
 
 - Fixed #297 by using min und max values directly from Ranged Attributes.

@@ -177,28 +177,33 @@ public class ScreenHelper {
       ModelData<?> modelData) {
 
     // Backup entity information
-    float entityScaleX = scaleData.getScaleX();
-    float entityScaleY = scaleData.getScaleY();
-    float entityScaleZ = scaleData.getScaleZ();
-    CustomRotation entityModelRootRotation = modelData.getModelRootRotation();
-    boolean entityInvisible = easyNPC.getEntity().isInvisible();
+    float entityScaleX = scaleData != null ? scaleData.getScaleX() : 0.4F;
+    float entityScaleY = scaleData != null ? scaleData.getScaleY() : 0.4F;
+    float entityScaleZ = scaleData != null ? scaleData.getScaleZ() : 0.4F;
+    CustomRotation entityModelRootRotation = modelData != null ? modelData.getModelRootRotation() : null;
 
     // Adjust entity information for rendering
-    scaleData.setScaleX(scaleData.getDefaultScaleX());
-    scaleData.setScaleY(scaleData.getDefaultScaleY());
-    scaleData.setScaleZ(scaleData.getDefaultScaleZ());
-    modelData.setModelRootRotation(new CustomRotation(0.0F, 0.0F, 0.0F));
-    easyNPC.getEntity().setInvisible(false);
+    if (scaleData != null) {
+      scaleData.setScaleX(scaleData.getDefaultScaleX());
+      scaleData.setScaleY(scaleData.getDefaultScaleY());
+      scaleData.setScaleZ(scaleData.getDefaultScaleZ());
+    }
+    if (modelData != null) {
+      modelData.setModelRootRotation(new CustomRotation(0.0F, 0.0F, 0.0F));
+    }
 
     // Render Entity
     renderEntity(x, y, scale, yRot, xRot, easyNPC.getLivingEntity());
 
     // Restore entity information
-    scaleData.setScaleX(entityScaleX);
-    scaleData.setScaleY(entityScaleY);
-    scaleData.setScaleZ(entityScaleZ);
-    modelData.setModelRootRotation(entityModelRootRotation);
-    easyNPC.getEntity().setInvisible(entityInvisible);
+    if (scaleData != null) {
+      scaleData.setScaleX(entityScaleX);
+      scaleData.setScaleY(entityScaleY);
+      scaleData.setScaleZ(entityScaleZ);
+    }
+    if (modelData != null && entityModelRootRotation != null) {
+      modelData.setModelRootRotation(entityModelRootRotation);
+    }
   }
 
   public static void renderCustomPoseEntityAvatar(
