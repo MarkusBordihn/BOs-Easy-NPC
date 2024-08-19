@@ -25,10 +25,8 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -123,27 +121,6 @@ public class AttributeHandler {
     return false;
   }
 
-  public static boolean setEntityAttribute(
-      EasyNPC<?> easyNPC, EntityAttribute entityAttribute, Integer value) {
-    if (easyNPC == null || entityAttribute == null) {
-      return false;
-    }
-    AttributeData<?> attributeData = easyNPC.getEasyNPCAttributeData();
-    if (attributeData != null) {
-      switch (entityAttribute) {
-        case LIGHT_LEVEL:
-          log.debug("Change lightLevel={} for {}", value, easyNPC);
-          attributeData.setAttributeLightLevel(value);
-          break;
-        default:
-          log.error("Unimplemented entity attribute {} for {}", entityAttribute, easyNPC);
-          return false;
-      }
-      return true;
-    }
-    return false;
-  }
-
   public static boolean setBaseAttribute(
       EasyNPC<?> easyNPC, ResourceLocation attribute, Double value) {
     if (easyNPC == null || attribute == null || value == null) {
@@ -195,12 +172,5 @@ public class AttributeHandler {
       return true;
     }
     return false;
-  }
-
-  public static Attribute getAttribute(ResourceLocation resourceLocation) {
-    if (resourceLocation == null) {
-      return null;
-    }
-    return BuiltInRegistries.ATTRIBUTE.getOptional(resourceLocation).orElse(null);
   }
 }

@@ -240,7 +240,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
             Component.translatable(Constants.TEXT_PREFIX + "removeActionDataEntry.deleteQuestion"),
             Component.translatable(
                 Constants.TEXT_PREFIX + "removeActionDataEntry.deleteWarning",
-                actionDataEntry.actionDataType()),
+                actionDataEntry.actionDataType().toString()),
             Component.translatable(Constants.TEXT_PREFIX + "removeActionDataEntry.deleteButton"),
             CommonComponents.GUI_CANCEL));
   }

@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.network.syncher;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
+import de.markusbordihn.easynpc.data.display.DisplayAttributeSet;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
@@ -54,6 +55,11 @@ public class ModEntityDataSerializers {
       DIALOG_DATA_SET =
           ENTITY_DATA_SERIALIZERS.register(
               "dialog_data_set", () -> EntityDataSerializersManager.DIALOG_DATA_SET);
+  public static final DeferredHolder<
+          EntityDataSerializer<?>, EntityDataSerializer<DisplayAttributeSet>>
+      DISPLAY_ATTRIBUTE_SET =
+          ENTITY_DATA_SERIALIZERS.register(
+              "display_attribute_set", () -> EntityDataSerializersManager.DISPLAY_ATTRIBUTE_SET);
   public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<MerchantOffers>>
       MERCHANT_OFFERS =
           ENTITY_DATA_SERIALIZERS.register(

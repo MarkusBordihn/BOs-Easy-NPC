@@ -63,7 +63,7 @@ minecraft {
     }
 
     gameTestServer {
-      workingDirectory project.file('run/gametest')
+      workingDirectory project.file('run/gametestserver')
       property 'forge.logging.markers', 'REGISTRIES'
       property 'forge.logging.console.level', 'debug'
       property 'forge.enabledGameTestNamespaces', "${project.mod_id}"
@@ -105,36 +105,39 @@ dependencies {
   compileOnly project(":Common")
 
   // Integration test dependencies
-  if (test_integration_mod && project.armourers_workshop_mod) {
+  if (project.hasProperty("armourers_workshop_mod") && project.armourers_workshop_mod) {
     runtimeOnly fg.deobf("curse.maven:armourers-workshop-229523:${project.armourers_workshop_mod}")
   }
-  if (test_integration_mod && project.epic_fight_mod && !project.better_combat_mod) {
+  if (project.hasProperty("epic_fight_mod") && project.epic_fight_mod && !project.better_combat_mod) {
     runtimeOnly fg.deobf("curse.maven:epic_fight-405076:${project.epic_fight_mod}")
   }
-  if (test_integration_mod && project.create_mod) {
+  if (project.hasProperty("create_mod") && project.create_mod) {
     runtimeOnly fg.deobf("curse.maven:create-328085:${project.create_mod}")
   }
-  if (test_integration_mod && project.mrcrayfishs_gun_mod && project.framework_mod) {
+  if (project.hasProperty("mrcrayfishs_gun_mod") && project.mrcrayfishs_gun_mod && project.framework_mod) {
     runtimeOnly fg.deobf("curse.maven:mrcrayfishs-gun-289479:${project.mrcrayfishs_gun_mod}")
     runtimeOnly fg.deobf("curse.maven:framework-549225:${project.framework_mod}")
   }
-  if (test_integration_mod && project.project_mmo_mod) {
+  if (project.hasProperty("project_mmo_mod") && project.project_mmo_mod) {
     runtimeOnly fg.deobf("curse.maven:project-mmo-353935:${project.project_mmo_mod}")
   }
-  if (test_integration_mod && project.better_combat_mod && project.cloth_config_mod && project.player_animator_mod) {
+  if (project.hasProperty("better_combat_mod") && project.better_combat_mod && project.cloth_config_mod && project.player_animator_mod) {
     runtimeOnly fg.deobf("curse.maven:better-combat-639842:${project.better_combat_mod}")
   }
-  if (test_integration_mod && project.cloth_config_mod) {
+  if (project.hasProperty("cloth_config_mod") && project.cloth_config_mod) {
     runtimeOnly fg.deobf("curse.maven:cloth-config-348521:${project.cloth_config_mod}")
   }
-  if (test_integration_mod && project.player_animator_mod) {
+  if (project.hasProperty("player_animator_mod") && project.player_animator_mod) {
     runtimeOnly fg.deobf("curse.maven:player-animator-658587:${project.player_animator_mod}")
   }
-  if (test_integration_mod && project.spartan_weaponry_mod) {
+  if (project.hasProperty("spartan_weaponry_mod") && project.spartan_weaponry_mod) {
     runtimeOnly fg.deobf("curse.maven:spartan-weaponry-278141:${project.spartan_weaponry_mod}")
   }
-  if (test_integration_mod && project.immersive_melodies_mod) {
+  if (project.hasProperty("immersive_melodies_mod") && project.immersive_melodies_mod) {
     runtimeOnly fg.deobf("curse.maven:immersive-melodies-904471:${project.immersive_melodies_mod}")
+  }
+  if (project.hasProperty("timeless_and_classics_zero_mod") && project.timeless_and_classics_zero_mod) {
+    runtimeOnly fg.deobf("curse.maven:timeless-and-classics-zero-1028108:${project.timeless_and_classics_zero_mod}")
   }
 
   // Additional helpful Mods for development (runtime dependency)

@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.InteractionHandler;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.EnumMap;
@@ -193,6 +194,16 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
   @Override
   public InteractionResult mobInteract(Player player, InteractionHand hand) {
     return InteractionHandler.handleMobInteraction(this, player, hand);
+  }
+
+  @Override
+  public boolean isInvisible() {
+    return VisibilityHandler.handleIsInvisible(this, super.isInvisible());
+  }
+
+  @Override
+  public boolean isInvisibleTo(Player player) {
+    return VisibilityHandler.handleIsInvisibleToPlayer(this, player, super.isInvisibleTo(player));
   }
 
   @Override

@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
+import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeData;
 import de.markusbordihn.easynpc.entity.easynpc.data.GuiData;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
@@ -62,6 +63,7 @@ public interface EasyNPCBase<E extends PathfinderMob>
         BaseTickHandler<E>,
         ConfigurationData<E>,
         DialogData<E>,
+        DisplayAttributeData<E>,
         GuiData<E>,
         NavigationData<E>,
         ConfigData<E>,
@@ -82,6 +84,7 @@ public interface EasyNPCBase<E extends PathfinderMob>
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
     AttackData.registerSyncedAttackData(map, entityClass);
     AttributeData.registerSyncedAttributeData(map, entityClass);
+    DisplayAttributeData.registerSyncedDisplayAttributeData(map, entityClass);
     NavigationData.registerSyncedNavigationData(map, entityClass);
     OwnerData.registerSyncedOwnerData(map, entityClass);
     ProfessionData.registerSyncedProfessionData(map, entityClass);
@@ -151,6 +154,10 @@ public interface EasyNPCBase<E extends PathfinderMob>
     DialogData<E> dialogData = getEasyNPCDialogData();
     if (dialogData != null) {
       dialogData.defineSynchedDialogData(builder);
+    }
+    DisplayAttributeData<E> displayAttributeData = getEasyNPCDisplayAttributeData();
+    if (displayAttributeData != null) {
+      displayAttributeData.defineSynchedDisplayAttributeData(builder);
     }
     NavigationData<E> navigationData = getEasyNPCNavigationData();
     if (navigationData != null) {
@@ -238,6 +245,10 @@ public interface EasyNPCBase<E extends PathfinderMob>
     if (dialogData != null) {
       dialogData.addAdditionalDialogData(compoundTag);
     }
+    DisplayAttributeData<E> displayAttributeData = getEasyNPCDisplayAttributeData();
+    if (displayAttributeData != null) {
+      displayAttributeData.addAdditionalDisplayAttributeData(compoundTag);
+    }
     NavigationData<E> navigationData = getEasyNPCNavigationData();
     if (navigationData != null) {
       navigationData.addAdditionalNavigationData(compoundTag);
@@ -310,6 +321,10 @@ public interface EasyNPCBase<E extends PathfinderMob>
     DialogData<E> dialogData = getEasyNPCDialogData();
     if (dialogData != null) {
       dialogData.readAdditionalDialogData(compoundTag);
+    }
+    DisplayAttributeData<E> displayAttributeData = getEasyNPCDisplayAttributeData();
+    if (displayAttributeData != null) {
+      displayAttributeData.readAdditionalDisplayAttributeData(compoundTag);
     }
     NavigationData<E> navigationData = getEasyNPCNavigationData();
     if (navigationData != null) {

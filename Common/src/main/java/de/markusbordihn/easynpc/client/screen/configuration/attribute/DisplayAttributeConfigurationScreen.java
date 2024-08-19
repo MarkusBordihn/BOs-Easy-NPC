@@ -19,13 +19,18 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.attribute;
 
+import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
-import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
-import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
+import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
+import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.screen.ScreenHelper;
+import de.markusbordihn.easynpc.utils.ValueUtils;
+import java.util.Arrays;
+import java.util.HashSet;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -34,6 +39,18 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
     extends AttributeConfigurationScreen<T> {
+
+  private static final HashSet<DisplayAttributeType> VISIBILITY_ATTRIBUTES =
+      new HashSet<>(
+          Arrays.asList(
+              DisplayAttributeType.VISIBLE_AT_DAY,
+              DisplayAttributeType.VISIBLE_AT_NIGHT,
+              DisplayAttributeType.VISIBLE_IN_CREATIVE,
+              DisplayAttributeType.VISIBLE_IN_SPECTATOR,
+              DisplayAttributeType.VISIBLE_IN_STANDARD,
+              DisplayAttributeType.VISIBLE_TO_OWNER,
+              DisplayAttributeType.VISIBLE_TO_TEAM));
+  private final HashSet<Checkbox> visibilityCheckboxSet = new HashSet<>();
 
   private EditBox lightLevelBox;
   private Button lightLevelSaveButton;
@@ -53,7 +70,8 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
     int firstButtonRow = this.leftPos + 10;
 
     // Attribute data
-    AttributeData<?> attributeData = this.getEasyNPC().getEasyNPCAttributeData();
+    DisplayAttributeData<?> displayAttributeData =
+        this.getEasyNPC().getEasyNPCDisplayAttributeData();
 
     // Light Level
     this.lightLevelBox =
@@ -63,12 +81,17 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
                 firstButtonRow + 100,
                 this.buttonTopPos + 25,
                 20,
-                attributeData.getAttributeLightLevel(),
+                displayAttributeData.getDisplayIntAttribute(DisplayAttributeType.LIGHT_LEVEL),
                 2));
     this.lightLevelBox.setResponder(
         value -> {
           if (this.lightLevelSaveButton != null) {
-            this.lightLevelSaveButton.active = value != null && !value.isEmpty();
+            this.lightLevelSaveButton.active =
+                ValueUtils.isNumericValue(value, 0, 15)
+                    && ValueUtils.getIntValue(value)
+                        != this.getEasyNPC()
+                            .getEasyNPCDisplayAttributeData()
+                            .getDisplayIntAttribute(DisplayAttributeType.LIGHT_LEVEL);
           }
         });
     this.lightLevelSaveButton =
@@ -80,10 +103,45 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
                   int lightLevel = Integer.parseInt(this.lightLevelBox.getValue());
                   if (lightLevel >= 0 && lightLevel <= 15) {
                     NetworkMessageHandlerManager.getServerHandler()
-                        .entityAttributeChange(
-                            this.getEasyNPCUUID(), EntityAttribute.LIGHT_LEVEL, lightLevel);
+                        .changeDisplayAttribute(
+                            this.getEasyNPCUUID(), DisplayAttributeType.LIGHT_LEVEL, lightLevel);
                   }
                 }));
+    this.lightLevelSaveButton.active = false;
+
+    // Main is visible attribute
+    Checkbox isVisibleCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                firstButtonRow,
+                this.buttonTopPos + 45,
+                DisplayAttributeType.VISIBLE.getAttributeName(),
+                displayAttributeData.getDisplayBooleanAttribute(DisplayAttributeType.VISIBLE),
+                checkbox -> {
+                  this.visibilityCheckboxSet.forEach(
+                      visibilityCheckbox -> visibilityCheckbox.active = checkbox.selected());
+                  NetworkMessageHandlerManager.getServerHandler()
+                      .changeDisplayAttribute(
+                          this.getEasyNPCUUID(), DisplayAttributeType.VISIBLE, checkbox.selected());
+                }));
+
+    // Add other visibility attributes
+    int checkboxTopPos = this.buttonTopPos + 65;
+    for (DisplayAttributeType displayAttributeType : VISIBILITY_ATTRIBUTES) {
+      Checkbox visibilityCheckbox =
+          new Checkbox(
+              firstButtonRow,
+              checkboxTopPos,
+              displayAttributeType.getAttributeName(),
+              displayAttributeData.getDisplayBooleanAttribute(displayAttributeType),
+              checkbox ->
+                  NetworkMessageHandlerManager.getServerHandler()
+                      .changeDisplayAttribute(
+                          this.getEasyNPCUUID(), displayAttributeType, checkbox.selected()));
+      visibilityCheckbox.active = isVisibleCheckbox.selected();
+      this.visibilityCheckboxSet.add(this.addRenderableWidget(visibilityCheckbox));
+      checkboxTopPos += 20;
+    }
   }
 
   @Override
@@ -97,6 +155,18 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
           "light_level",
           this.lightLevelBox.getX() - 100,
           this.lightLevelBox.getY() + 4);
+    }
+
+    // Avatar
+    if (getEasyNPC() != null) {
+      ScreenHelper.renderScaledEntityAvatar(
+          guiGraphics,
+          this.leftPos + 260,
+          this.contentTopPos + 180,
+          30,
+          this.leftPos + 50 - this.xMouse,
+          this.contentTopPos + 70 - this.yMouse,
+          getEasyNPC());
     }
   }
 }

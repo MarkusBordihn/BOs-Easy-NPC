@@ -148,11 +148,11 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
 
     // Entity Owner, if available.
     OwnerData<?> ownerData = getEasyNPC().getEasyNPCOwnerData();
-    if (ownerData != null && ownerData.hasOwner()) {
+    if (ownerData != null) {
       Text.drawString(
           guiGraphics,
           this.font,
-          "Owner: " + ownerData.getOwnerName(),
+          "Owner: " + (ownerData.hasOwner() ? ownerData.getOwnerName() : "-"),
           Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
           Math.round((this.contentTopPos + 35) / scaleEntityTypeText));
     }
@@ -168,6 +168,15 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
           Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
           Math.round((this.contentTopPos + 43) / scaleEntityTypeText));
     }
+
+    // Team
+    Text.drawString(
+        guiGraphics,
+        this.font,
+        "Team: "
+            + (getEasyNPCEntity().getTeam() != null ? getEasyNPCEntity().getTeam().getName() : "-"),
+        Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
+        Math.round((this.contentTopPos + 51) / scaleEntityTypeText));
 
     // Current position
     BlockPos blockPos = getEasyNPCEntity().getOnPos();

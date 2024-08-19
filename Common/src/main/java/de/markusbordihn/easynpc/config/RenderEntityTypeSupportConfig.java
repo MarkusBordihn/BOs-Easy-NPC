@@ -306,12 +306,4 @@ Render Entity Type Support Configuration
   public static boolean isUnsupportedEntityType(String entityType) {
     return unsupportedEntityTypes.contains(entityType);
   }
-
-  public Set<String> getSupportedEntityTypes() {
-    return supportedEntityTypes;
-  }
-
-  public Set<String> getUnsupportedEntityTypes() {
-    return unsupportedEntityTypes;
-  }
 }

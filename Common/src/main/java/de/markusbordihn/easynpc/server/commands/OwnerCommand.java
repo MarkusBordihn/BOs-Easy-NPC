@@ -58,7 +58,16 @@ public class OwnerCommand extends Command {
                             context ->
                                 getOwner(
                                     context.getSource(),
-                                    EasyNPCArgument.getEntity(context, "target")))));
+                                    EasyNPCArgument.getEntity(context, "target")))))
+        .then(
+            Commands.literal("remove")
+                .then(
+                    Commands.argument("target", EasyNPCArgument.npc())
+                        .executes(
+                            context ->
+                                removeOwner(
+                                    context.getSource(),
+                                    EasyNPCArgument.getEntityWithAccess(context, "target")))));
   }
 
   private static int setOwner(
@@ -88,5 +97,18 @@ public class OwnerCommand extends Command {
 
     return sendSuccessMessage(
         context, EASY_NPC_PREFIX + easyNPC.getUUID() + " is owned by " + ownerData.getOwner());
+  }
+
+  private static int removeOwner(CommandSourceStack context, EasyNPC<?> easyNPC) {
+    if (easyNPC == null) {
+      return 0;
+    }
+
+    // Remove owner data for EasyNPC entity.
+    if (!OwnerHandler.removeOwner(easyNPC)) {
+      return sendFailureMessage(context, "Failed to remove owner for " + easyNPC);
+    }
+
+    return sendSuccessMessage(context, "Owner of " + easyNPC + " was removed.");
   }
 }

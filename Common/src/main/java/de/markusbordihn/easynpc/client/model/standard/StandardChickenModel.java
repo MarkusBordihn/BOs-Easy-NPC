@@ -172,10 +172,6 @@ public class StandardChickenModel<T extends Entity> extends ChickenModel<T>
     return humanoidArm == HumanoidArm.LEFT ? this.leftWing : this.rightWing;
   }
 
-  public ModelPart getHead() {
-    return this.head;
-  }
-
   public void translateToHand(HumanoidArm humanoidArm, PoseStack poseStack) {
     this.getArm(humanoidArm).translateAndRotate(poseStack);
     poseStack.translate(0.0, -0.2, 0.1);

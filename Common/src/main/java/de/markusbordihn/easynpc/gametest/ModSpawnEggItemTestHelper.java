@@ -61,6 +61,6 @@ public class ModSpawnEggItemTestHelper {
                 false));
     modSpawnEggItem.useOn(useOnContext);
 
-    helper.assertEntityPresent(entityType, new BlockPos(1, 3, 1));
+    helper.assertEntityPresent(entityType, new BlockPos(1, 2, 1));
   }
 }

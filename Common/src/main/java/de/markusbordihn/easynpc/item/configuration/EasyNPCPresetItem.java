@@ -123,12 +123,6 @@ public class EasyNPCPresetItem extends Item {
     return null;
   }
 
-  public static boolean hasSpawnerUUID(ItemStack itemStack) {
-    CustomData customData = itemStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
-    return customData.contains(SPAWNER_UUID_TAG)
-        && customData.getUnsafe().getUUID(SPAWNER_UUID_TAG) != null;
-  }
-
   public static void setSpawnerUUID(ItemStack itemStack, UUID uuid) {
     CustomData customData = itemStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
     CompoundTag compoundTag = customData.getUnsafe();
