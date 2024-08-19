@@ -507,8 +507,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     }
 
     // Open trading screen for the player.
-    log.debug(
-        "Open trading screen for {} with {} from {}", this, merchantOffers, serverPlayer);
+    log.debug("Open trading screen for {} with {} from {}", this, merchantOffers, serverPlayer);
     merchant.setTradingPlayer(serverPlayer);
     merchant.openTradingScreen(
         serverPlayer,

@@ -29,10 +29,6 @@ public interface TickerData<T extends PathfinderMob> extends EasyNPC<T> {
 
   void setTicker(TickerType tickerType, int value);
 
-  default void increaseTicker(TickerType tickerType) {
-    increaseTicker(tickerType, 1);
-  }
-
   default boolean checkAndIncreaseTicker(TickerType tickerType, int value) {
     int tickerValue = getTicker(tickerType);
     if (tickerValue >= value) {

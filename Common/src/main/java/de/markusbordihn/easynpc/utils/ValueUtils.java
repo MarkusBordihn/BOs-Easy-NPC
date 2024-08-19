@@ -26,6 +26,7 @@ import org.apache.logging.log4j.Logger;
 public class ValueUtils {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final String POSITIVE_NUMBER_MATCH_PATTERN = "^\\d+$";
 
   private ValueUtils() {}
 
@@ -35,22 +36,23 @@ public class ValueUtils {
             || (text.matches("^\\d+(\\.?\\d*)?$") && Float.parseFloat(text) >= 0.0F));
   }
 
-  public static boolean isPositiveNumericValue(String text) {
+  public static boolean isNumericValue(String text, int min, int max) {
     return text != null
-        && (text.isEmpty() || (text.matches("^\\d+$") && Integer.parseInt(text) > 0));
+        && !text.isEmpty()
+        && text.matches(POSITIVE_NUMBER_MATCH_PATTERN)
+        && Integer.parseInt(text) >= min
+        && Integer.parseInt(text) <= max;
   }
 
   public static boolean isPositiveNumericValueOrZero(String text) {
     return text != null
-        && (text.isEmpty() || (text.matches("^\\d+$") && Integer.parseInt(text) >= 0));
+        && !text.isEmpty()
+        && text.matches(POSITIVE_NUMBER_MATCH_PATTERN)
+        && Integer.parseInt(text) >= 0;
   }
 
   public static boolean isNumericValue(String text) {
     return text != null && (text.isEmpty() || (text.matches("^-?\\d+$")));
-  }
-
-  public static boolean isBlockPosValue(String text) {
-    return text != null && (text.isEmpty() || (text.matches("^~?-?\\d+$")));
   }
 
   public static Double getDoubleValue(String value) {
@@ -61,6 +63,17 @@ public class ValueUtils {
         log.error("Failed to parse double value: {}", value);
       }
     }
-    return null;
+    return 0.0;
+  }
+
+  public static Integer getIntValue(String value) {
+    if (value != null && !value.isEmpty()) {
+      try {
+        return Integer.parseInt(value);
+      } catch (NumberFormatException e) {
+        log.error("Failed to parse integer value: {}", value);
+      }
+    }
+    return 0;
   }
 }

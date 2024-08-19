@@ -46,15 +46,6 @@ public class SoundDataSet {
     this.addSound(type, soundEvent.getLocation());
   }
 
-  public void addSound(
-      SoundType type,
-      ResourceLocation resourceLocation,
-      float volume,
-      float pitch,
-      boolean enabled) {
-    soundDataEntryMap.put(type, new SoundDataEntry(type, resourceLocation, volume, pitch, enabled));
-  }
-
   public void addSound(SoundType type, ResourceLocation resourceLocation) {
     soundDataEntryMap.put(type, new SoundDataEntry(type, resourceLocation));
   }

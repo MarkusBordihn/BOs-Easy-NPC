@@ -20,12 +20,21 @@
 package de.markusbordihn.easynpc.menu.dialog;
 
 import de.markusbordihn.easynpc.menu.EasyNPCMenu;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 public class DialogMenu extends EasyNPCMenu {
 
   public DialogMenu(MenuType<?> menuType, int containerId, Inventory playerInventory) {
-    super(menuType, containerId, playerInventory);
+    super(menuType, containerId, playerInventory, new CompoundTag());
+  }
+
+  public DialogMenu(
+      final MenuType<?> menuType,
+      final int containerId,
+      final Inventory playerInventory,
+      final CompoundTag data) {
+    super(menuType, containerId, playerInventory, data);
   }
 }

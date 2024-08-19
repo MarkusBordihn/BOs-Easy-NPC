@@ -45,33 +45,33 @@ public class EquipmentHandler {
         interactionHand == InteractionHand.MAIN_HAND
             ? EquipmentSlot.MAINHAND
             : EquipmentSlot.OFFHAND,
-        itemStack.getItem());
+        itemStack);
   }
 
   public static void setArmorSlotItem(
       EasyNPC<?> easyNPC, EquipmentSlot equipmentSlot, ItemStack itemStack) {
-    setEquipmentSlotItem(easyNPC, equipmentSlot, itemStack.getItem());
+    setEquipmentSlotItem(easyNPC, equipmentSlot, itemStack);
   }
 
   public static boolean setEquipmentSlotItem(
-      EasyNPC<?> easyNPC, EquipmentSlot equipmentSlot, Item item) {
-    if (easyNPC == null || equipmentSlot == null || item == null) {
+      EasyNPC<?> easyNPC, EquipmentSlot equipmentSlot, ItemStack itemStack) {
+    if (easyNPC == null || equipmentSlot == null || itemStack == null) {
       log.error("[{}] Error setting owner ", easyNPC);
       return false;
     }
 
     LivingEntity livingEntity = easyNPC.getLivingEntity();
-    log.debug("[{}] Setting equipment slot {} to {}", easyNPC, equipmentSlot, item);
+    log.debug("[{}] Setting equipment slot {} to {}", easyNPC, equipmentSlot, itemStack);
 
     switch (equipmentSlot) {
       case MAINHAND:
-        livingEntity.setItemInHand(InteractionHand.MAIN_HAND, item.getDefaultInstance());
+        livingEntity.setItemInHand(InteractionHand.MAIN_HAND, itemStack);
         break;
       case OFFHAND:
-        livingEntity.setItemInHand(InteractionHand.OFF_HAND, item.getDefaultInstance());
+        livingEntity.setItemInHand(InteractionHand.OFF_HAND, itemStack);
         break;
       case HEAD, CHEST, LEGS, FEET:
-        livingEntity.setItemSlot(equipmentSlot, item.getDefaultInstance());
+        livingEntity.setItemSlot(equipmentSlot, itemStack);
         break;
       default:
         log.error("[{}] Equipment slot {} is not supported!", easyNPC, equipmentSlot);
@@ -80,6 +80,7 @@ public class EquipmentHandler {
 
     // Handle smart Animations based on the used item.
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+    Item item = itemStack.getItem();
     if (modelData != null
         && modelData.supportsSmartAnimations()
         && modelData.getModelSupportsSmartAnimations()) {

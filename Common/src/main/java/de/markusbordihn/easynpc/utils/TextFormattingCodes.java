@@ -111,12 +111,6 @@ public class TextFormattingCodes {
     return text != null && !text.isEmpty() && textLinebreakCodes.stream().anyMatch(text::contains);
   }
 
-  public static Component parseTextFormattingCodes(Component component) {
-    return component != null
-        ? Component.literal(parseTextFormattingCodes(component.getString()))
-        : component;
-  }
-
   public static Component parseTextLineBreaks(Component component) {
     return component != null
         ? Component.literal(parseTextLineBreaks(component.getString()))

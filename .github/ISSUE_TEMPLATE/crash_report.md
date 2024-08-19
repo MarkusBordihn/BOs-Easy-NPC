@@ -4,7 +4,6 @@ about: Report crashes to help us diagnose and resolve issues 🛠️
 title: '[Crash Report] Your title here'
 labels: 'crash'
 assignees: ''
-
 ---
 
 💡 Check the
@@ -34,10 +33,15 @@ A clear and concise description of what happened when the crash occurred.
 A clear and concise description of what you expected to happen before the crash occurred.
 
 **Logs** 📝
-Please provide the following logs:
+To speed up the diagnosis, please provide the following files if possible:
 
-- `debug.log`
-- `crash.log`
+- `logs/debug.log`
+- `logs/latest.log`
+- `crash-reports/crash-...txt`
+
+These logs contain essential details that will help me identify the problem and offer more accurate
+assistance.
+You can upload the logs to https://gist.github.com/ or https://mclo.gs/ and share the link here.
 
 **Additional context** 📋
 Add any other context or information about the crash here.

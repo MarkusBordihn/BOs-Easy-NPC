@@ -31,19 +31,6 @@ Easy NPCs allows a simplified setup for custom NPCs with dialogs for mapmaker an
 - No additional dependencies.
 - API support / integration for other mods (WIP).
 
-## 🧪 Fabric Beta Version
-
-The current Fabric Beta version presents some limitations and is not yet feature-complete.
-These include:
-
-- Absence of a configuration UI
-- Non-functionality of the Easy NPC Wand
-- Limited support for other mods
-
-Despite these constraints, the Fabric Beta version remains fully functional. Users can create and
-configure NPCs with dialogs via the Forge version, and subsequently export them for utilization in
-the Fabric version.
-
 ## 📦 Mod Integration
 
 ### [Armourer's Workshop][armourers_workshop]
