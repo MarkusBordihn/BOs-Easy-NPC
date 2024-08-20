@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.menu.dialog;
 import de.markusbordihn.easynpc.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.menu.editor.EditorMenu;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -34,18 +33,19 @@ import net.minecraft.world.inventory.MenuType;
 
 public class DialogMenuHandler {
 
+  private DialogMenuHandler() {}
+
   public static MenuProvider getMenuProvider(
       final EasyNPC<?> easyNPC,
       final MenuType<? extends DialogMenu> menuType,
       ScreenData screenData) {
     final Component displayName = easyNPC.getEntity().getName();
 
-    // Default editor menu
     return new MenuProvider() {
       @Override
       public AbstractContainerMenu createMenu(
           int containerId, Inventory playerInventory, Player player) {
-        return new EditorMenu(menuType, containerId, playerInventory, screenData.encode());
+        return new DialogMenu(menuType, containerId, playerInventory, screenData.encode());
       }
 
       @Override

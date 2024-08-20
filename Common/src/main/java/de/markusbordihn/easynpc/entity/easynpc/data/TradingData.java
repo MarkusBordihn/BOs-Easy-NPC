@@ -104,8 +104,10 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     EntityDataSerializers.registerSerializer(MERCHANT_OFFERS);
   }
 
+  @Override
   Player getTradingPlayer();
 
+  @Override
   void setTradingPlayer(Player player);
 
   MerchantOffers getMerchantTradingOffers();
@@ -174,9 +176,14 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     for (int tradingOffer = 0;
         tradingOffer < TradingSettings.ADVANCED_TRADING_OFFERS;
         tradingOffer++) {
+
+      // Check if we have a valid trading offer.
       ItemStack itemA = container.getItem(tradingOffer * 3);
       ItemStack itemB = container.getItem(tradingOffer * 3 + 1);
       ItemStack itemResult = container.getItem(tradingOffer * 3 + 2);
+      if (!isValidTradingOffer(itemA, itemB, itemResult)) {
+        continue;
+      }
 
       // Check if we have existing trading offers and use them as base for the new trading offers.
       MerchantOffers existingMerchantOffers = this.getTradingOffers();
@@ -216,9 +223,14 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     for (int tradingOffer = 0;
         tradingOffer < TradingSettings.BASIC_TRADING_OFFERS;
         tradingOffer++) {
+
+      // Check if we have a valid trading offer.
       ItemStack itemA = container.getItem(tradingOffer * 3);
       ItemStack itemB = container.getItem(tradingOffer * 3 + 1);
       ItemStack itemResult = container.getItem(tradingOffer * 3 + 2);
+      if (!isValidTradingOffer(itemA, itemB, itemResult)) {
+        continue;
+      }
 
       MerchantOffer merchantOffer =
           new MerchantOffer(
@@ -251,6 +263,10 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     // Update trading offers
     MerchantOffers newMerchantOffers = new MerchantOffers();
     for (MerchantOffer merchantOffer : merchantOffers) {
+      if (!isValidTradingOffer(
+          merchantOffer.getBaseCostA(), merchantOffer.getCostB(), merchantOffer.getResult())) {
+        continue;
+      }
       MerchantOffer newMerchantOffer =
           new MerchantOffer(
               merchantOffer.getBaseCostA(),
@@ -337,7 +353,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     }
   }
 
-  default boolean hasTrading() {
+  default boolean hasTradingData() {
     TradingType tradingType = getTradingDataSet().getType();
     return ((tradingType == TradingType.BASIC || tradingType == TradingType.ADVANCED)
             && getTradingOffers() != null
@@ -458,6 +474,14 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
 
   default void setTradingDataSet(TradingDataSet tradingDataSet) {
     setSynchedEntityData(SynchedDataIndex.TRADING_DATA_SET, tradingDataSet);
+  }
+
+  default boolean isValidTradingOffer(ItemStack itemA, ItemStack itemB, ItemStack itemResult) {
+    if (itemResult == null || (itemA == null && itemB == null)) {
+      return false;
+    }
+    return ((itemA != null && !itemA.isEmpty()) || (itemB != null && !itemB.isEmpty()))
+        && !itemResult.isEmpty();
   }
 
   default InteractionResult openTradingScreen(ServerPlayer serverPlayer) {

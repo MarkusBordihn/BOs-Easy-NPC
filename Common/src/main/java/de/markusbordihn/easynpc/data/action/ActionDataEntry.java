@@ -164,10 +164,9 @@ public record ActionDataEntry(
 
   public boolean isValidAndNotEmpty() {
     return this.actionDataType != ActionDataType.NONE
-        && (this.hasCommandAndNotEmpty()
-            || this.hasBlockPos()
-            || this.actionDataType == ActionDataType.CLOSE_DIALOG
-            || this.actionDataType == ActionDataType.OPEN_TRADING_SCREEN);
+        && (!this.actionDataType.requiresArgument()
+            || this.hasCommandAndNotEmpty()
+            || this.hasBlockPos());
   }
 
   public ActionDataEntry create(CompoundTag compoundTag) {

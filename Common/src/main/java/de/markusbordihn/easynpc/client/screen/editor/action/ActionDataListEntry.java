@@ -40,7 +40,7 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
 
   public static final int ID_LEFT_POS = 0;
   public static final int TYPE_LEFT_POS = 22;
-  public static final int VALUE_LEFT_POS = 90;
+  public static final int VALUE_LEFT_POS = 130;
   public static final int OPTIONS_LEFT_POS = 230;
   private final Font font;
   private final int leftPos;

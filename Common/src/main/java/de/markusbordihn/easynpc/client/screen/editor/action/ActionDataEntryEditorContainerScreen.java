@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.client.screen.editor.action.entry.ActionEntryWid
 import de.markusbordihn.easynpc.client.screen.editor.action.entry.CloseDialogEntry;
 import de.markusbordihn.easynpc.client.screen.editor.action.entry.CommandActionEntry;
 import de.markusbordihn.easynpc.client.screen.editor.action.entry.InteractBlockEntry;
+import de.markusbordihn.easynpc.client.screen.editor.action.entry.OpenDefaultDialogEntry;
 import de.markusbordihn.easynpc.client.screen.editor.action.entry.OpenNamedDialogEntry;
 import de.markusbordihn.easynpc.client.screen.editor.action.entry.OpenTradingScreenEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
@@ -310,6 +311,10 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
       case INTERACT_BLOCK:
         this.actionEntryWidget =
             new InteractBlockEntry(this.actionDataEntry, this.actionDataSet, this);
+        break;
+      case OPEN_DEFAULT_DIALOG:
+        this.actionEntryWidget =
+            new OpenDefaultDialogEntry(this.actionDataEntry, this.actionDataSet, this);
         break;
       case OPEN_NAMED_DIALOG:
         this.actionEntryWidget =
