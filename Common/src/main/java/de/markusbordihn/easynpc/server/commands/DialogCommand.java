@@ -113,8 +113,7 @@ public class DialogCommand extends Command {
     // Verify dialog data
     if (easyNPC.getEasyNPCDialogData() == null
         || !easyNPC.getEasyNPCDialogData().hasDialog(dialogUUID)) {
-      return sendFailureMessage(
-          context, "Found no Dialog data for EasyNPC with UUID " + easyNPC.getUUID() + " !");
+      return sendFailureMessageNoDialogData(context, easyNPC);
     }
 
     DialogDataSet dialogDataSet = easyNPC.getEasyNPCDialogData().getDialogDataSet();
@@ -134,12 +133,11 @@ public class DialogCommand extends Command {
 
     // Verify dialog data
     if (easyNPC.getEasyNPCDialogData() == null || !easyNPC.getEasyNPCDialogData().hasDialog()) {
-      return sendFailureMessage(
-          context, "Found no Dialog data for EasyNPC with UUID " + easyNPC.getUUID() + " !");
+      return sendFailureMessageNoDialogData(context, easyNPC);
     }
 
     // Open dialog
-    easyNPC.getEasyNPCDialogData().openDialog(serverPlayer);
+    easyNPC.getEasyNPCDialogData().openDefaultDialog(serverPlayer);
     return sendSuccessMessage(
         context, "► Open dialog for " + easyNPC + " with " + serverPlayer, ChatFormatting.GREEN);
   }
@@ -187,8 +185,7 @@ public class DialogCommand extends Command {
 
     // Verify dialog data
     if (easyNPC.getEasyNPCDialogData() == null || !easyNPC.getEasyNPCDialogData().hasDialog()) {
-      return sendFailureMessage(
-          context, "Found no Dialog data for EasyNPC with UUID " + easyNPC.getUUID() + " !");
+      return sendFailureMessageNoDialogData(context, easyNPC);
     }
 
     // Verify dialog label, if any

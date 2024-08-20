@@ -261,16 +261,49 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
       return;
     }
 
-    // Filter close dialog action and execute all other actions first.
+    // In this case we pre-check the action data set to execute them in the correct order
+    // and avoid multiple screen actions or other unwanted behavior.
+    // - Filter close dialog action and execute them at the end of the action list.
+    // - Filter screen actions and execute only the first one.
     ActionDataEntry closeDialogActionDataEntry = null;
+    boolean hasScreenAction = false;
     for (ActionDataEntry actionDataEntry : actionDataSet.getEntries()) {
-      if (actionDataEntry.actionDataType() == ActionDataType.CLOSE_DIALOG) {
+      ActionDataType actionType = actionDataEntry.actionDataType();
+      if (actionType == ActionDataType.CLOSE_DIALOG) {
         if (closeDialogActionDataEntry == null) {
           closeDialogActionDataEntry = actionDataEntry;
         } else {
-          log.error("Multiple close dialog actions found in action data set {}!", actionDataSet);
+          log.warn("Multiple close dialog actions found in action data set {}!", actionDataSet);
         }
       } else {
+        // Validate screen actions and execute only the first one.
+        if (actionType == ActionDataType.OPEN_DEFAULT_DIALOG
+            || actionType == ActionDataType.OPEN_NAMED_DIALOG
+            || actionType == ActionDataType.OPEN_TRADING_SCREEN) {
+
+          // Skip additional screen actions if one was already executed.
+          if (hasScreenAction) {
+            log.debug(
+                "Ignoring {}. Multiple screen actions found in action data set {}! Only the first valid will be executed. ",
+                actionType,
+                actionDataSet);
+            continue;
+          }
+
+          // Validate specific screen actions and their data.
+          if ((actionType == ActionDataType.OPEN_DEFAULT_DIALOG
+                  && !this.getEasyNPCDialogData().hasDialog())
+              || (actionType == ActionDataType.OPEN_NAMED_DIALOG
+                  && !this.getEasyNPCDialogData().hasDialog(actionDataEntry.command()))
+              || (actionType == ActionDataType.OPEN_TRADING_SCREEN
+                  && !this.getEasyNPCTradingData().hasTradingData())) {
+            log.debug("Ignoring {} action because no data is available.", actionType);
+            continue;
+          }
+
+          hasScreenAction = true;
+        }
+
         this.executeAction(actionDataEntry, serverPlayer);
       }
     }
@@ -313,6 +346,9 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
           log.error("No block position found for action {}", actionDataEntry);
         }
         break;
+      case OPEN_DEFAULT_DIALOG:
+        this.openDefaultDialog(actionDataEntry, serverPlayer);
+        break;
       case OPEN_NAMED_DIALOG:
         this.openNamedDialog(actionDataEntry, serverPlayer);
         break;
@@ -333,6 +369,19 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
     }
   }
 
+  default void openDefaultDialog(ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
+    if (!validateActionData(actionDataEntry, serverPlayer)) {
+      return;
+    }
+    DialogData<?> dialogData = this.getEasyNPCDialogData();
+    if (dialogData != null) {
+      dialogData.openDefaultDialog(serverPlayer);
+    } else {
+      log.error("No dialog data found for action {}", actionDataEntry);
+      serverPlayer.closeContainer();
+    }
+  }
+
   default void openNamedDialog(ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
     if (!validateActionData(actionDataEntry, serverPlayer)) {
       return;
@@ -344,7 +393,7 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
         && dialogData != null
         && dialogData.hasDialog(dialogLabel)) {
       UUID dialogId = dialogData.getDialogId(dialogLabel);
-      dialogData.openDialogMenu(serverPlayer, this, dialogId, 0);
+      dialogData.openDialog(serverPlayer, dialogId);
     } else {
       log.error("Unknown dialog label {} for action {}", dialogLabel, actionDataEntry);
       serverPlayer.closeContainer();

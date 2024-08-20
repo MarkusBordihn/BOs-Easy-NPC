@@ -180,7 +180,8 @@ public class ScreenHelper {
     float entityScaleX = scaleData != null ? scaleData.getScaleX() : 0.4F;
     float entityScaleY = scaleData != null ? scaleData.getScaleY() : 0.4F;
     float entityScaleZ = scaleData != null ? scaleData.getScaleZ() : 0.4F;
-    CustomRotation entityModelRootRotation = modelData != null ? modelData.getModelRootRotation() : null;
+    CustomRotation entityModelRootRotation =
+        modelData != null ? modelData.getModelRootRotation() : null;
 
     // Adjust entity information for rendering
     if (scaleData != null) {

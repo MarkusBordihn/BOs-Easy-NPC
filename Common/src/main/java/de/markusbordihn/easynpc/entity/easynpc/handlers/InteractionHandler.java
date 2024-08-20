@@ -23,10 +23,8 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
-import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
-import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -105,19 +103,6 @@ public class InteractionHandler {
     ActionEventData<?> actionEventData = easyNPC.getEasyNPCActionEventData();
     if (actionEventData != null) {
       actionEventData.handleActionInteractionEvent(serverPlayer);
-    }
-
-    // Open dialog menu, if we have a simple dialog.
-    DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
-    if (dialogData != null && dialogData.hasDialog()) {
-      dialogData.openDialog(serverPlayer);
-      return InteractionResult.CONSUME;
-    }
-
-    // Open trading screen, if we have a trading inventory.
-    TradingData<?> tradingData = easyNPC.getEasyNPCTradingData();
-    if (tradingData != null && tradingData.hasTrading()) {
-      return tradingData.openTradingScreen(serverPlayer);
     }
 
     return InteractionResult.PASS;
