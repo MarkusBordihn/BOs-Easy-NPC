@@ -24,7 +24,7 @@ public interface BaseTickHandler<E extends PathfinderMob> extends EasyNPC<E> {
       // Check if we have a trading inventory and update it.
       if (tickerData.checkAndIncreaseTicker(TickerType.TRADING_BASE_TICK, TRADING_BASE_TICK)) {
         TradingData<E> tradingData = this.getEasyNPCTradingData();
-        if (tradingData.hasTrading()) {
+        if (tradingData.hasTradingData()) {
           actionHandler.checkTradingActions();
         }
         tickerData.resetTicker(TickerType.TRADING_BASE_TICK);

@@ -34,6 +34,8 @@ import net.minecraft.world.inventory.MenuType;
 
 public class EditorMenuHandler {
 
+  private EditorMenuHandler() {}
+
   public static MenuProvider getMenuProvider(
       final EditorType editorType,
       final EasyNPC<?> easyNPC,
@@ -41,7 +43,6 @@ public class EditorMenuHandler {
       ScreenData screenData) {
     final Component displayName = editorType.getEditorTitle(easyNPC);
 
-    // Default editor menu
     return new MenuProvider() {
       @Override
       public AbstractContainerMenu createMenu(
@@ -52,6 +53,18 @@ public class EditorMenuHandler {
       @Override
       public Component getDisplayName() {
         return displayName;
+      }
+
+      @Override
+      public String toString() {
+        return "EditorMenuHandler{"
+            + "editorType="
+            + editorType
+            + ", easyNPC="
+            + easyNPC
+            + ", screenData="
+            + screenData
+            + '}';
       }
     };
   }

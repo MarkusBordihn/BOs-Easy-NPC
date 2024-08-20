@@ -23,7 +23,9 @@
     ],
     "fabric-gametest": [
       "de.markusbordihn.easynpc.gametest.SmokeTest",
-      "de.markusbordihn.easynpc.gametest.DialogTest",
+      "de.markusbordihn.easynpc.gametest.ConfigurationScreenTest",
+      "de.markusbordihn.easynpc.gametest.DialogScreenTest",
+      "de.markusbordihn.easynpc.gametest.EditorScreenTest",
       "de.markusbordihn.easynpc.gametest.ModSpawnEggItemTest"
     ]
   },

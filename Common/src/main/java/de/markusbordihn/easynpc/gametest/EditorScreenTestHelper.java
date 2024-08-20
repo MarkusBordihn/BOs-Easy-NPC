@@ -19,27 +19,49 @@
 
 package de.markusbordihn.easynpc.gametest;
 
-import de.markusbordihn.easynpc.data.screen.ScreenData;
+import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
+import de.markusbordihn.easynpc.data.dialog.DialogUtils;
+import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.menu.MenuManager;
-import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
-import de.markusbordihn.easynpc.menu.dialog.DialogMenuHandler;
+import de.markusbordihn.easynpc.menu.editor.EditorMenu;
+import de.markusbordihn.easynpc.menu.editor.EditorMenuHandler;
 import java.util.UUID;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.inventory.MenuType;
 
-public class DialogTestHelper {
+public class EditorScreenTestHelper {
 
-  public static UUID mockOpenDialog(
-      ServerPlayer serverPlayer, EasyNPC<?> easyNPC, MenuType<? extends DialogMenu> menuType) {
+  public static UUID mockOpenEditorScreen(
+      ServerPlayer serverPlayer,
+      EditorType editorType,
+      EasyNPC<?> easyNPC,
+      MenuType<? extends EditorMenu> menuType) {
+
+    // Check if the dialog data is null and create a basic dialog if needed.
+    DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
+    if (dialogData != null) {
+      DialogDataSet dialogDataSet = DialogUtils.getBasicDialog("Test Dialog");
+      dialogData.setDialogDataSet(dialogDataSet);
+    }
+
+    // Define the menu provider and open the menu.
     MenuProvider menuProvider =
-        DialogMenuHandler.getMenuProvider(
+        EditorMenuHandler.getMenuProvider(
+            editorType,
             easyNPC,
             menuType,
-            new ScreenData(
-                easyNPC.getUUID(),
-                easyNPC.getEasyNPCDialogData().getDialogDataSet().getDefaultDialogId()));
+            EditorMenuHandler.getScreenData(
+                editorType,
+                easyNPC,
+                dialogData.getDialogDataSet().getDefaultDialogId(),
+                null,
+                null,
+                0,
+                new CompoundTag()));
     UUID menuId = MenuManager.registerMenu(easyNPC.getUUID(), menuProvider, serverPlayer);
     MenuManager.openMenu(menuId, serverPlayer);
     return menuId;

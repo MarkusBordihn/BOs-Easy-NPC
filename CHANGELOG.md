@@ -8,6 +8,16 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.5.7
+
+- Fixed #300 by allowing action from NPCs with the same owner data.
+- Fixed #75, #216, #300 by allowing disabling of the trading screen and default dialog.
+- Added new open default dialog Action Type.
+- Added default `Open Trading Screen` and `Open Default Dialog` actions to the Interaction Action.
+- Changed permission system to allow game masters (>= 2) and higher to use all actions without being
+  the owner and/or in creative mode.
+- Improved Action Overview screen for better usability.
+
 ### 5.5.6
 
 - Fixed default max uses from 0 to 64 for trading items.
