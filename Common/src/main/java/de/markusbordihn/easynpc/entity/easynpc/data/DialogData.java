@@ -71,11 +71,6 @@ public interface DialogData<T extends PathfinderMob> extends EasyNPC<T> {
     return 50;
   }
 
-  default void openDialogMenu(
-      ServerPlayer serverPlayer, EasyNPC<?> easyNPC, UUID dialogId, int pageIndex) {
-    MenuManager.getMenuHandler().openDialogMenu(serverPlayer, easyNPC, dialogId, pageIndex);
-  }
-
   default DialogDataSet getDialogDataSet() {
     return getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_DIALOG_DATA_SET);
   }
@@ -120,12 +115,15 @@ public interface DialogData<T extends PathfinderMob> extends EasyNPC<T> {
     return getDialogDataSet().hasDialogButton(dialogId, dialogButtonId);
   }
 
-  default void openDialog(ServerPlayer serverPlayer) {
-    openDialog(serverPlayer, getDialogDataSet().getDefaultDialogId());
-  }
-
   default void openDialog(ServerPlayer serverPlayer, UUID dialogId) {
     MenuManager.getMenuHandler().openDialogMenu(serverPlayer, this, dialogId, 0);
+  }
+
+  default void openDefaultDialog(ServerPlayer serverPlayer) {
+    UUID uuid = getDialogDataSet().getDefaultDialogId();
+    if (uuid != null) {
+      this.openDialog(serverPlayer, uuid);
+    }
   }
 
   default DialogButtonEntry getDialogButton(UUID dialogId, UUID dialogButtonId) {

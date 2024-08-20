@@ -37,7 +37,7 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @SuppressWarnings("unused")
 @PrefixGameTestTemplate(value = false)
 @GameTestHolder(Constants.MOD_ID)
-public class DialogTest {
+public class DialogScreenTest {
 
   @GameTest(template = "gametest.3x3x3")
   public void testOpenDialog(GameTestHelper helper) {
@@ -51,7 +51,8 @@ public class DialogTest {
     easyNPC.getEasyNPCDialogData().setDialogDataSet(new DialogDataSet());
     GameTestHelpers.assertNotNull(helper, "DialogData is null!", easyNPC.getEasyNPCDialogData());
     UUID dialogId =
-        DialogTestHelper.mockOpenDialog(serverPlayer, easyNPC, ModMenuTypes.DIALOG_MENU.get());
+        DialogScreenTestHelper.mockOpenDialog(
+            serverPlayer, easyNPC, ModMenuTypes.DIALOG_MENU.get());
     GameTestHelpers.assertNotNull(helper, "DialogId is null!", dialogId);
 
     // Check if dialog is open.
@@ -74,7 +75,8 @@ public class DialogTest {
     easyNPC.getEasyNPCDialogData().setDialogDataSet(dialogDataSet);
     GameTestHelpers.assertNotNull(helper, "DialogData is null!", easyNPC.getEasyNPCDialogData());
     UUID dialogId =
-        DialogTestHelper.mockOpenDialog(serverPlayer, easyNPC, ModMenuTypes.DIALOG_MENU.get());
+        DialogScreenTestHelper.mockOpenDialog(
+            serverPlayer, easyNPC, ModMenuTypes.DIALOG_MENU.get());
     GameTestHelpers.assertNotNull(helper, "DialogId is null!", dialogId);
 
     // Check if dialog is open.
@@ -103,7 +105,8 @@ public class DialogTest {
     easyNPC.getEasyNPCDialogData().setDialogDataSet(dialogDataSet);
     GameTestHelpers.assertNotNull(helper, "DialogData is null!", easyNPC.getEasyNPCDialogData());
     UUID dialogId =
-        DialogTestHelper.mockOpenDialog(serverPlayer, easyNPC, ModMenuTypes.DIALOG_MENU.get());
+        DialogScreenTestHelper.mockOpenDialog(
+            serverPlayer, easyNPC, ModMenuTypes.DIALOG_MENU.get());
     GameTestHelpers.assertNotNull(helper, "DialogId is null!", dialogId);
 
     // Check if dialog is open.

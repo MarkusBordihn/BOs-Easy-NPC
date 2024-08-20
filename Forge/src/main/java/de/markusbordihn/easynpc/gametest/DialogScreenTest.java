@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.gametest;
 
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.entity.ModEntityType;
@@ -30,9 +31,11 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.gametest.GameTestHolder;
 
 @SuppressWarnings("unused")
-public class DialogTest {
+@GameTestHolder(Constants.MOD_ID)
+public class DialogScreenTest {
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testOpenDialog(GameTestHelper helper) {
@@ -40,13 +43,14 @@ public class DialogTest {
     // Get a mock player and spawn a humanoid NPC.
     ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));
     EasyNPC<?> easyNPC =
-        GameTestHelpers.mockEasyNPC(helper, ModEntityType.HUMANOID, new Vec3(2, 2, 2));
+        GameTestHelpers.mockEasyNPC(helper, ModEntityType.HUMANOID.get(), new Vec3(2, 2, 2));
 
     // Prepare and open Dialog
     easyNPC.getEasyNPCDialogData().setDialogDataSet(new DialogDataSet());
     GameTestHelpers.assertNotNull(helper, "DialogData is null!", easyNPC.getEasyNPCDialogData());
     UUID dialogId =
-        DialogTestHelper.mockOpenDialog(serverPlayer, easyNPC, ModMenuTypes.DIALOG_MENU);
+        DialogScreenTestHelper.mockOpenDialog(
+            serverPlayer, easyNPC, ModMenuTypes.DIALOG_MENU.get());
     GameTestHelpers.assertNotNull(helper, "DialogId is null!", dialogId);
 
     // Check if dialog is open.
@@ -62,14 +66,15 @@ public class DialogTest {
     // Get a mock player and spawn a humanoid NPC.
     ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));
     EasyNPC<?> easyNPC =
-        GameTestHelpers.mockEasyNPC(helper, ModEntityType.HUMANOID, new Vec3(2, 2, 2));
+        GameTestHelpers.mockEasyNPC(helper, ModEntityType.HUMANOID.get(), new Vec3(2, 2, 2));
 
     // Prepare and open Dialog
     DialogDataSet dialogDataSet = DialogUtils.getBasicDialog("Hello, I'm a test NPC!");
     easyNPC.getEasyNPCDialogData().setDialogDataSet(dialogDataSet);
     GameTestHelpers.assertNotNull(helper, "DialogData is null!", easyNPC.getEasyNPCDialogData());
     UUID dialogId =
-        DialogTestHelper.mockOpenDialog(serverPlayer, easyNPC, ModMenuTypes.DIALOG_MENU);
+        DialogScreenTestHelper.mockOpenDialog(
+            serverPlayer, easyNPC, ModMenuTypes.DIALOG_MENU.get());
     GameTestHelpers.assertNotNull(helper, "DialogId is null!", dialogId);
 
     // Check if dialog is open.
@@ -85,7 +90,7 @@ public class DialogTest {
     // Get a mock player and spawn a humanoid NPC.
     ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));
     EasyNPC<?> easyNPC =
-        GameTestHelpers.mockEasyNPC(helper, ModEntityType.HUMANOID, new Vec3(2, 2, 2));
+        GameTestHelpers.mockEasyNPC(helper, ModEntityType.HUMANOID.get(), new Vec3(2, 2, 2));
 
     // Prepare and open Dialog
     DialogDataSet dialogDataSet =
@@ -98,7 +103,8 @@ public class DialogTest {
     easyNPC.getEasyNPCDialogData().setDialogDataSet(dialogDataSet);
     GameTestHelpers.assertNotNull(helper, "DialogData is null!", easyNPC.getEasyNPCDialogData());
     UUID dialogId =
-        DialogTestHelper.mockOpenDialog(serverPlayer, easyNPC, ModMenuTypes.DIALOG_MENU);
+        DialogScreenTestHelper.mockOpenDialog(
+            serverPlayer, easyNPC, ModMenuTypes.DIALOG_MENU.get());
     GameTestHelpers.assertNotNull(helper, "DialogId is null!", dialogId);
 
     // Check if dialog is open.
