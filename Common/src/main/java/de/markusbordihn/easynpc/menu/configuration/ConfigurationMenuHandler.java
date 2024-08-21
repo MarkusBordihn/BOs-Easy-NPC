@@ -66,6 +66,11 @@ public class ConfigurationMenuHandler {
         public Component getDisplayName() {
           return displayName;
         }
+
+        @Override
+        public String toString() {
+          return "EquipmentConfigurationMenu[" + displayName + "]";
+        }
       };
     } else if (configurationType == ConfigurationType.ADVANCED_TRADING) {
       return new MenuProvider() {
@@ -79,6 +84,11 @@ public class ConfigurationMenuHandler {
         @Override
         public Component getDisplayName() {
           return displayName;
+        }
+
+        @Override
+        public String toString() {
+          return "AdvancedTradingConfigurationMenu[" + displayName + "]";
         }
       };
     } else if (configurationType == ConfigurationType.BASIC_TRADING) {
@@ -94,6 +104,11 @@ public class ConfigurationMenuHandler {
         public Component getDisplayName() {
           return displayName;
         }
+
+        @Override
+        public String toString() {
+          return "BasicTradingConfigurationMenu[" + displayName + "]";
+        }
       };
     }
 
@@ -108,6 +123,11 @@ public class ConfigurationMenuHandler {
       @Override
       public Component getDisplayName() {
         return displayName;
+      }
+
+      @Override
+      public String toString() {
+        return "ConfigurationMenu." + configurationType + "[" + displayName + "]";
       }
     };
   }

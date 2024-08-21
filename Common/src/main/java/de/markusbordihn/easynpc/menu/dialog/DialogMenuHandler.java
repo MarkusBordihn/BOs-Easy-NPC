@@ -33,13 +33,14 @@ import net.minecraft.world.inventory.MenuType;
 
 public class DialogMenuHandler {
 
+  private DialogMenuHandler() {}
+
   public static MenuProvider getMenuProvider(
       final EasyNPC<?> easyNPC,
       final MenuType<? extends DialogMenu> menuType,
       ScreenData screenData) {
     final Component displayName = easyNPC.getEntity().getName();
 
-    // Default editor menu
     return new MenuProvider() {
       @Override
       public AbstractContainerMenu createMenu(
@@ -50,6 +51,11 @@ public class DialogMenuHandler {
       @Override
       public Component getDisplayName() {
         return displayName;
+      }
+
+      @Override
+      public String toString() {
+        return "DialogMenuHandler{" + "displayName=" + displayName + '}';
       }
     };
   }

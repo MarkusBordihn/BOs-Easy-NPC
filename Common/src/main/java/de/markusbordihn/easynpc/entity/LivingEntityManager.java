@@ -55,9 +55,9 @@ public class LivingEntityManager {
     log.debug("{} [Add] EASY NPC entity {}: {}", LOG_PREFIX, easyNPC, uuid);
     npcEntityMap.put(uuid, easyNPC);
 
-    // Request data sync from the client side for known easyNPC.
+    // Handle client side .
     if (easyNPC.isClientSide()) {
-      NetworkMessageHandlerManager.getServerHandler().requestDataSync(uuid);
+      NetworkMessageHandlerManager.getServerHandler().requestDataSync(easyNPC.getUUID());
       return;
     }
 

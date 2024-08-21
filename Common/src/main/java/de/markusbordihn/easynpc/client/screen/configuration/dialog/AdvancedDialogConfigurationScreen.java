@@ -189,6 +189,12 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
       }
     }
 
+    @Override
+    protected void renderSelection(
+        GuiGraphics guiGraphics, int unused1, int unused2, int unused3, int unused4, int unused5) {
+      // Nothing to render
+    }
+
     class Entry
         extends ObjectSelectionList.Entry<AdvancedDialogConfigurationScreen<?>.DialogList.Entry> {
 

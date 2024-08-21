@@ -82,4 +82,11 @@ public class ModSpawnEggItemTest {
     }
     helper.succeed();
   }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void useHumanoidSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.HUMANOID_NPC_SPAWN_EGG.get(), ModEntityType.HUMANOID.get());
+    helper.succeed();
+  }
 }

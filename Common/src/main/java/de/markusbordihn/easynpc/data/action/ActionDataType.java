@@ -22,10 +22,21 @@ package de.markusbordihn.easynpc.data.action;
 public enum ActionDataType {
   NONE,
   COMMAND,
-  CLOSE_DIALOG,
+  CLOSE_DIALOG(false),
   INTERACT_BLOCK,
-  OPEN_TRADING_SCREEN,
+  OPEN_TRADING_SCREEN(false),
+  OPEN_DEFAULT_DIALOG(false),
   OPEN_NAMED_DIALOG;
+
+  private final boolean requiresArgument;
+
+  ActionDataType() {
+    this.requiresArgument = true;
+  }
+
+  ActionDataType(boolean requiresArgument) {
+    this.requiresArgument = requiresArgument;
+  }
 
   public static ActionDataType get(String actionType) {
     if (actionType == null || actionType.isEmpty()) {
@@ -36,6 +47,10 @@ public enum ActionDataType {
     } catch (IllegalArgumentException e) {
       return ActionDataType.NONE;
     }
+  }
+
+  public boolean requiresArgument() {
+    return this.requiresArgument;
   }
 
   public String getId() {

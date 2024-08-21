@@ -232,16 +232,8 @@ public class DialogDataSet {
   }
 
   public UUID getDefaultDialogId() {
-    String currentDefaultDialogLabel = this.getDefaultDialogLabel();
-    if (currentDefaultDialogLabel == null) {
-      return null;
-    }
-    DialogDataEntry dialogData =
-        this.dialogByLabelMap.getOrDefault(currentDefaultDialogLabel, null);
-    if (dialogData != null) {
-      return dialogData.getId();
-    }
-    return null;
+    var dialogData = this.dialogByLabelMap.getOrDefault(this.getDefaultDialogLabel(), null);
+    return dialogData != null ? dialogData.getId() : null;
   }
 
   public DialogType getType() {

@@ -88,6 +88,7 @@ import de.markusbordihn.easynpc.network.message.server.SaveDialogSetMessage;
 import de.markusbordihn.easynpc.validator.UrlValidator;
 import java.util.Optional;
 import java.util.UUID;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -561,7 +562,9 @@ public interface ServerNetworkMessageHandlerInterface {
   }
 
   default void requestDataSync(UUID uuid) {
-    if (uuid != null) {
+    if (uuid != null
+        && Minecraft.getInstance().player != null
+        && !Minecraft.getInstance().player.getName().getString().equals("test-mock-player")) {
       NetworkHandlerManager.sendToServer(new RequestDataSyncMessage(uuid));
     }
   }

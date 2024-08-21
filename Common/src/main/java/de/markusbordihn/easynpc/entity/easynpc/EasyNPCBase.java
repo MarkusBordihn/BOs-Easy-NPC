@@ -138,6 +138,12 @@ public interface EasyNPCBase<E extends PathfinderMob>
       objectiveData.registerStandardObjectives();
     }
 
+    // Add default action interaction events
+    ActionEventData<E> actionEventData = getEasyNPCActionEventData();
+    if (actionEventData != null) {
+      actionEventData.registerDefaultActionInteractionEvents();
+    }
+
     return spawnGroupData;
   }
 
