@@ -67,6 +67,12 @@ class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
   }
 
   @Override
+  protected void renderSelection(
+      GuiGraphics guiGraphics, int unused1, int unused2, int unused3, int unused4, int unused5) {
+    // Do not render selection.
+  }
+
+  @Override
   protected void renderListSeparators(GuiGraphics guiGraphics) {
     // Do not render list separators.
   }

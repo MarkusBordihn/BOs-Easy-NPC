@@ -93,6 +93,17 @@ public class UpDownButton extends AbstractWidget {
     return this.downButton != null && this.downButton.mouseClicked(mouseX, mouseY, button);
   }
 
+  @Override
+  public void setY(int y) {
+    super.setY(y);
+    if (this.upButton != null) {
+      this.upButton.setY(y);
+    }
+    if (this.downButton != null) {
+      this.downButton.setY(y + this.height / 2);
+    }
+  }
+
   public void enableUpButton(boolean enable) {
     this.upButton.active = enable;
     this.upButton.visible = enable;

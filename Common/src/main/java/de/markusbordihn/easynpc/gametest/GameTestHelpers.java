@@ -90,6 +90,15 @@ public class GameTestHelpers {
     return null;
   }
 
+  public static void assertEquals(
+      GameTestHelper helper, String message, Object expected, Object actual) {
+    if (expected.equals(actual)) {
+      helper.succeed();
+    } else {
+      helper.fail(message);
+    }
+  }
+
   public static void assertTrue(GameTestHelper helper, String message, boolean condition) {
     if (condition) {
       helper.succeed();

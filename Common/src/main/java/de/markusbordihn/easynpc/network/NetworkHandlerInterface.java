@@ -33,6 +33,12 @@ public interface NetworkHandlerInterface {
 
   Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
+  <M extends NetworkMessageRecord> void registerClientPayloadType(
+      final CustomPacketPayload.Type<M> type, final StreamCodec<RegistryFriendlyByteBuf, M> codec);
+
+  <M extends NetworkMessageRecord> void registerServerPayloadType(
+      final CustomPacketPayload.Type<M> type, final StreamCodec<RegistryFriendlyByteBuf, M> codec);
+
   <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
       final CustomPacketPayload.Type<M> type,
       final StreamCodec<RegistryFriendlyByteBuf, M> codec,

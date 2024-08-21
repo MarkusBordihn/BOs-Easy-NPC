@@ -67,6 +67,13 @@ public class ModSpawnEggItemTest {
   public ModSpawnEggItemTest() {}
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
+  public static void useHumanoidSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.HUMANOID_NPC_SPAWN_EGG, ModEntityType.HUMANOID);
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
   public static void useSpawnEggItems(GameTestHelper helper) {
     for (Entry<Item, EntityType<? extends PathfinderMob>> item : spawnEggMap.entrySet()) {
       ModSpawnEggItemTestHelper.useSpawnEggItem(helper, item.getKey(), item.getValue());

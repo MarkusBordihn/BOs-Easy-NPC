@@ -27,6 +27,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -95,6 +96,18 @@ public class NetworkHandler implements NetworkHandlerInterface {
     } catch (Exception e) {
       log.error("Failed to send {} to all players: {}", networkMessageRecord, e);
     }
+  }
+
+  @Override
+  public <M extends NetworkMessageRecord> void registerClientPayloadType(Type<M> type,
+      StreamCodec<RegistryFriendlyByteBuf, M> codec) {
+    // Not needed for Forge.
+  }
+
+  @Override
+  public <M extends NetworkMessageRecord> void registerServerPayloadType(Type<M> type,
+      StreamCodec<RegistryFriendlyByteBuf, M> codec) {
+    // Not needed for Forge.
   }
 
   @Override

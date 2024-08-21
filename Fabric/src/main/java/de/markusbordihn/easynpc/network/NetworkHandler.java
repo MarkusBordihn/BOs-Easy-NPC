@@ -30,6 +30,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type;
 import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,6 +40,11 @@ public class NetworkHandler implements NetworkHandlerInterface {
 
   public NetworkHandler() {
     log.info("{} NetworkHandler ...", Constants.LOG_REGISTER_PREFIX);
+  }
+
+  public static void registerPayloadTypes() {
+    NetworkHandlerManager.registerClientPayloadTypes();
+    NetworkHandlerManager.registerServerPayloadTypes();
   }
 
   public static void registerClientNetworkHandler() {
@@ -75,14 +81,27 @@ public class NetworkHandler implements NetworkHandlerInterface {
   }
 
   @Override
+  public <M extends NetworkMessageRecord> void registerClientPayloadType(
+      Type<M> type, StreamCodec<RegistryFriendlyByteBuf, M> codec) {
+    log.info("Registering client payload type {} with {}", type, codec);
+    PayloadTypeRegistry.playS2C().register(type, codec);
+  }
+
+  @Override
+  public <M extends NetworkMessageRecord> void registerServerPayloadType(
+      Type<M> type, StreamCodec<RegistryFriendlyByteBuf, M> codec) {
+    log.info("Registering server payload type {} with {}", type, codec);
+    PayloadTypeRegistry.playC2S().register(type, codec);
+  }
+
+  @Override
   public <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
       final CustomPacketPayload.Type<M> type,
       final StreamCodec<RegistryFriendlyByteBuf, M> codec,
       final Class<M> networkMessageRecord,
       final Function<FriendlyByteBuf, M> creator) {
+    log.info("Registering client message handler {} for {}", networkMessageRecord, type);
     try {
-      log.info("Registering client payload type {} with {}", type, codec);
-      PayloadTypeRegistry.playS2C().register(type, codec);
       ClientPlayNetworking.registerGlobalReceiver(
           type, (payload, context) -> payload.handleClient());
     } catch (Exception e) {
@@ -96,9 +115,8 @@ public class NetworkHandler implements NetworkHandlerInterface {
       final StreamCodec<RegistryFriendlyByteBuf, M> codec,
       final Class<M> networkMessageRecord,
       final Function<FriendlyByteBuf, M> creator) {
+    log.info("Registering server message handler {} for {}", networkMessageRecord, type);
     try {
-      log.info("Registering server payload type {} with {}", type, codec);
-      PayloadTypeRegistry.playC2S().register(type, codec);
       ServerPlayNetworking.registerGlobalReceiver(
           type, (payload, context) -> payload.handleServer(context.player()));
     } catch (Exception e) {

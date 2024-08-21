@@ -82,7 +82,7 @@ public final class Constants {
   public static final float MATH_27DEG_TO_RAD = 0.47123894F;
   public static final float MATH_27DEG_TO_RAD_INVERTED = -0.47123894F;
   // Data Specific definitions
-  public static final int NPC_DATA_VERSION = 2;
+  public static final int NPC_DATA_VERSION = 3;
   // Static paths
   public static Path GAME_DIR = Paths.get("").toAbsolutePath();
   public static Path CONFIG_DIR = GAME_DIR.resolve("config");

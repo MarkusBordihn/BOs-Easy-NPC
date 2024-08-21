@@ -155,6 +155,15 @@ public class MenuHandler implements MenuHandlerInterface {
     } else return serverPlayer.hasPermissions(permissionLevel);
   }
 
+  public static Map<ConfigurationType, MenuType<? extends ConfigurationMenu>>
+      configurationMenuMap() {
+    return configurationMenuMap;
+  }
+
+  public static Map<EditorType, MenuType<? extends EditorMenu>> editorMenuMap() {
+    return editorMenuMap;
+  }
+
   @Override
   public MenuType<? extends DialogMenu> getDialogMenuType() {
     return ModMenuTypes.DIALOG_MENU.get();

@@ -111,6 +111,116 @@ public class NetworkHandlerManager {
     }
   }
 
+  public static void registerPayloadTypes() {
+    registerClientPayloadTypes();
+    registerServerPayloadTypes();
+  }
+
+  public static void registerClientPayloadTypes() {
+    networkHandler.registerClientPayloadType(
+        ExportClientPresetMessage.PAYLOAD_TYPE, ExportClientPresetMessage.STREAM_CODEC);
+    networkHandler.registerClientPayloadType(
+        OpenMenuCallbackMessage.PAYLOAD_TYPE, OpenMenuCallbackMessage.STREAM_CODEC);
+    networkHandler.registerClientPayloadType(
+        SyncDataMessage.PAYLOAD_TYPE, SyncDataMessage.STREAM_CODEC);
+  }
+
+  public static void registerServerPayloadTypes() {
+    networkHandler.registerServerPayloadType(
+        AddOrUpdateObjectiveMessage.PAYLOAD_TYPE, AddOrUpdateObjectiveMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ChangeActionEventMessage.PAYLOAD_TYPE, ChangeActionEventMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ChangeAdvancedTradingMessage.PAYLOAD_TYPE, ChangeAdvancedTradingMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ChangeBasicTradingMessage.PAYLOAD_TYPE, ChangeBasicTradingMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ChangeEntityAttributeMessage.PAYLOAD_TYPE, ChangeEntityAttributeMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ChangeEntityBaseAttributeMessage.PAYLOAD_TYPE,
+        ChangeEntityBaseAttributeMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ChangeModelEquipmentVisibilityMessage.PAYLOAD_TYPE,
+        ChangeModelEquipmentVisibilityMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ChangeModelLockRotationMessage.PAYLOAD_TYPE, ChangeModelLockRotationMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ChangeModelPoseMessage.PAYLOAD_TYPE, ChangeModelPoseMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ChangeModelPositionMessage.PAYLOAD_TYPE, ChangeModelPositionMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ChangeModelRotationMessage.PAYLOAD_TYPE, ChangeModelRotationMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ChangeModelVisibilityMessage.PAYLOAD_TYPE, ChangeModelVisibilityMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ChangeNameMessage.PAYLOAD_TYPE, ChangeNameMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ChangePoseMessage.PAYLOAD_TYPE, ChangePoseMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ChangePositionMessage.PAYLOAD_TYPE, ChangePositionMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ChangeProfessionMessage.PAYLOAD_TYPE, ChangeProfessionMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ChangeRendererMessage.PAYLOAD_TYPE, ChangeRendererMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ChangeScaleMessage.PAYLOAD_TYPE, ChangeScaleMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ChangeSkinMessage.PAYLOAD_TYPE, ChangeSkinMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ChangeSpawnerSettingMessage.PAYLOAD_TYPE, ChangeSpawnerSettingMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ChangeTradingTypeMessage.PAYLOAD_TYPE, ChangeTradingTypeMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ExecuteActionEventMessage.PAYLOAD_TYPE, ExecuteActionEventMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ExecuteDialogButtonActionMessage.PAYLOAD_TYPE,
+        ExecuteDialogButtonActionMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ExportPresetMessage.PAYLOAD_TYPE, ExportPresetMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ExportWorldPresetMessage.PAYLOAD_TYPE, ExportWorldPresetMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ImportPresetMessage.PAYLOAD_TYPE, ImportPresetMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        OpenActionDataEditorMessage.PAYLOAD_TYPE, OpenActionDataEditorMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        OpenActionDataEntryEditorMessage.PAYLOAD_TYPE,
+        OpenActionDataEntryEditorMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        OpenConfigurationMessage.PAYLOAD_TYPE, OpenConfigurationMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        OpenDialogButtonEditorMessage.PAYLOAD_TYPE, OpenDialogButtonEditorMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        OpenDialogEditorMessage.PAYLOAD_TYPE, OpenDialogEditorMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        OpenDialogTextEditorMessage.PAYLOAD_TYPE, OpenDialogTextEditorMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        OpenMenuMessage.PAYLOAD_TYPE, OpenMenuMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        RemoveDialogButtonMessage.PAYLOAD_TYPE, RemoveDialogButtonMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        RemoveDialogMessage.PAYLOAD_TYPE, RemoveDialogMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        RemoveNPCMessage.PAYLOAD_TYPE, RemoveNPCMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        RemoveObjectiveMessage.PAYLOAD_TYPE, RemoveObjectiveMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        RequestDataSyncMessage.PAYLOAD_TYPE, RequestDataSyncMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        RespawnNPCMessage.PAYLOAD_TYPE, RespawnNPCMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        SaveDialogButtonMessage.PAYLOAD_TYPE, SaveDialogButtonMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        SaveDialogMessage.PAYLOAD_TYPE, SaveDialogMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        SaveDialogSetMessage.PAYLOAD_TYPE, SaveDialogSetMessage.STREAM_CODEC);
+  }
+
+  public static void registerNetworkHandler() {
+    registerClientNetworkHandler();
+    registerServerNetworkHandler();
+  }
+
   public static void registerClientNetworkHandler() {
 
     NetworkHandlerInterface networkHandler = getHandler();

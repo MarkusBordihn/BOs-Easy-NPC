@@ -90,6 +90,18 @@ public class NetworkHandler implements NetworkHandlerInterface {
       log.error("Failed to send {} to all players: {}", networkMessageRecord, e);
     }
   }
+  
+  @Override
+  public <M extends NetworkMessageRecord> void registerClientPayloadType(
+      CustomPacketPayload.Type<M> type, StreamCodec<RegistryFriendlyByteBuf, M> codec) {
+    // Not needed for NeoForge.
+  }
+
+  @Override
+  public <M extends NetworkMessageRecord> void registerServerPayloadType(
+      CustomPacketPayload.Type<M> type, StreamCodec<RegistryFriendlyByteBuf, M> codec) {
+    // Not needed for NeoForge.
+  }
 
   @Override
   public <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
