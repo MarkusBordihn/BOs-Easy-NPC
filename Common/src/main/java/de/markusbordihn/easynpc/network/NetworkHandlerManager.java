@@ -134,6 +134,8 @@ public class NetworkHandlerManager {
     networkHandler.registerServerPayloadType(
         ChangeBasicTradingMessage.PAYLOAD_TYPE, ChangeBasicTradingMessage.STREAM_CODEC);
     networkHandler.registerServerPayloadType(
+        ChangeDisplayAttributeMessage.PAYLOAD_TYPE, ChangeDisplayAttributeMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
         ChangeEntityAttributeMessage.PAYLOAD_TYPE, ChangeEntityAttributeMessage.STREAM_CODEC);
     networkHandler.registerServerPayloadType(
         ChangeEntityBaseAttributeMessage.PAYLOAD_TYPE,

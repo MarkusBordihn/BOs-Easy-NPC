@@ -116,8 +116,17 @@ public class DialogArgument implements ArgumentType<Pair<UUID, String>> {
   @Override
   public <S> CompletableFuture<Suggestions> listSuggestions(
       CommandContext<S> context, SuggestionsBuilder suggestionsBuilder) {
-    // Get the UUID of the entity selector.
-    EntitySelector entitySelector = context.getArgument("target", EntitySelector.class);
+
+    // Get the entity target selector.
+    EntitySelector entitySelector;
+    try {
+      entitySelector = context.getArgument("target", EntitySelector.class);
+    } catch (IllegalArgumentException e) {
+      log.error("Failed to get entity target selector from context {}: {}", context, e);
+      return SharedSuggestionProvider.suggest(new HashSet<>(), suggestionsBuilder);
+    }
+
+    // Get the entity UUID from the entity target selector.
     UUID entityUUID = null;
     try {
       Field entityUUIDField = entitySelector.getClass().getDeclaredField("entityUUID");

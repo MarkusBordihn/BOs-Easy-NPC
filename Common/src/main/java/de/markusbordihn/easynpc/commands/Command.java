@@ -94,4 +94,8 @@ public class Command {
       CommandSourceStack context, EasyNPC<?> easyNPC) {
     return sendFailureMessageNoData(context, easyNPC, "sound data set");
   }
+
+  public static int sendFailureMessageNoDialogData(CommandSourceStack context, EasyNPC<?> easyNPC) {
+    return sendFailureMessageNoData(context, easyNPC, "dialog data");
+  }
 }
