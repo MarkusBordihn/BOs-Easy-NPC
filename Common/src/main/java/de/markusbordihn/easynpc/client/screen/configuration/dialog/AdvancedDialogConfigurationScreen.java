@@ -185,6 +185,12 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
     }
 
     @Override
+    protected void renderSelection(
+        GuiGraphics guiGraphics, int unused1, int unused2, int unused3, int unused4, int unused5) {
+      // Nothing to render
+    }
+
+    @Override
     public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
       if (this.getItemCount() > 0) {
         super.render(guiGraphics, x, y, partialTicks);
