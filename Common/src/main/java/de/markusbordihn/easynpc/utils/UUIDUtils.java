@@ -23,12 +23,16 @@ import de.markusbordihn.easynpc.Constants;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class UUIDUtils {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final Pattern UUID_PATTERN =
+      Pattern.compile(
+          "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
 
   private UUIDUtils() {}
 
@@ -53,5 +57,24 @@ public class UUIDUtils {
       }
     }
     return UUID.randomUUID();
+  }
+
+  public static UUID parseUUID(String text) {
+    // Check for null or wrong length
+    if (text == null || text.length() != 36) {
+      return null;
+    }
+
+    // Check for correct UUID pattern
+    if (!UUID_PATTERN.matcher(text).matches()) {
+      return null;
+    }
+
+    // Try to parse UUID
+    try {
+      return UUID.fromString(text);
+    } catch (IllegalArgumentException e) {
+      return null;
+    }
   }
 }

@@ -30,7 +30,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,6 +46,7 @@ public class RemoteTextureManager {
   private static final HashMap<TextureModelKey, SkinType> textureSkinTypeCache = new HashMap<>();
   private static final HashMap<TextureModelKey, String> textureSkinURLCache = new HashMap<>();
   private static final HashSet<UUID> textureReloadProtection = new HashSet<>();
+  private static final String LOG_PREFIX = "[Remote Texture Manager] ";
 
   private RemoteTextureManager() {}
 
@@ -128,11 +134,24 @@ public class RemoteTextureManager {
       return resourceLocation;
     }
 
+    // Log error if texture could not be loaded.
     log.error(
-        "Unable to load remote texture {} ({}) from {}!",
+        "{} Unable to load remote texture {} ({}) from {}!",
+        LOG_PREFIX,
         textureModelKey,
         skinURL,
         textureDataFolder);
+
+    // Send error message to the user.
+    Player player = Minecraft.getInstance().player;
+    if (player != null) {
+      player.sendMessage(
+          new TextComponent(
+                  LOG_PREFIX + "Unable to load remote " + skinURL + " texture " + textureModelKey)
+              .withStyle(ChatFormatting.RED),
+          Util.NIL_UUID);
+    }
+
     return null;
   }
 

@@ -29,7 +29,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,6 +44,7 @@ public class CustomTextureManager {
   protected static final int RELOAD_PROTECTION = 10000;
   private static final HashMap<TextureModelKey, ResourceLocation> textureCache = new HashMap<>();
   private static final HashSet<UUID> textureReloadProtection = new HashSet<>();
+  private static final String LOG_PREFIX = "[Custom Texture Manager] ";
   private static int reloadProtectionCounter = 0;
 
   private CustomTextureManager() {}
@@ -106,9 +112,32 @@ public class CustomTextureManager {
         TextureManager.searchCachedTexture(textureModelKey, textureDataFolder);
     if (localTextureCache != null) {
       textureCache.put(textureModelKey, localTextureCache);
+      return localTextureCache;
     }
 
-    return localTextureCache;
+    // Log error if texture could not be loaded.
+    log.error(
+        "{} Unable to load custom texture {} {} from {}",
+        LOG_PREFIX,
+        skinModel,
+        skinUUID,
+        textureDataFolder);
+
+    // Send error message to the user.
+    Player player = Minecraft.getInstance().player;
+    if (player != null) {
+      player.sendMessage(
+          new TextComponent(
+                  LOG_PREFIX
+                      + "Unable to load custom texture "
+                      + textureModelKey
+                      + " from: "
+                      + textureDataFolder)
+              .withStyle(ChatFormatting.RED),
+          Util.NIL_UUID);
+    }
+
+    return null;
   }
 
   public static void registerTexture(SkinModel skinModel, File textureFile) {

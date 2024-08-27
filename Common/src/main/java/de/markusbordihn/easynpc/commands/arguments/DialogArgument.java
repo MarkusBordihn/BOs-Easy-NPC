@@ -31,7 +31,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataManager;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
-import java.lang.reflect.Field;
+import de.markusbordihn.easynpc.utils.ReflectionUtils;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -70,12 +70,12 @@ public class DialogArgument implements ArgumentType<Pair<UUID, String>> {
   }
 
   public static Pair<UUID, String> getUuidOrLabel(
-      CommandContext<CommandSourceStack> commandContext, String dialog) {
+      final CommandContext<CommandSourceStack> commandContext, final String dialog) {
     return commandContext.getArgument(dialog, Pair.class);
   }
 
   @Override
-  public Pair<UUID, String> parse(StringReader stringReader) throws CommandSyntaxException {
+  public Pair<UUID, String> parse(final StringReader stringReader) throws CommandSyntaxException {
     String input = stringReader.getRemaining();
     Matcher uuidMatcher = ALLOWED_CHARACTERS_UUID.matcher(input);
     Matcher idMatcher = ALLOWED_CHARACTERS_ID.matcher(input);
@@ -115,7 +115,7 @@ public class DialogArgument implements ArgumentType<Pair<UUID, String>> {
 
   @Override
   public <S> CompletableFuture<Suggestions> listSuggestions(
-      CommandContext<S> context, SuggestionsBuilder suggestionsBuilder) {
+      final CommandContext<S> context, final SuggestionsBuilder suggestionsBuilder) {
 
     // Get the entity target selector.
     EntitySelector entitySelector;
@@ -127,13 +127,14 @@ public class DialogArgument implements ArgumentType<Pair<UUID, String>> {
     }
 
     // Get the entity UUID from the entity target selector.
-    UUID entityUUID = null;
-    try {
-      Field entityUUIDField = entitySelector.getClass().getDeclaredField("entityUUID");
-      entityUUIDField.setAccessible(true);
-      entityUUID = (UUID) entityUUIDField.get(entitySelector);
-    } catch (NoSuchFieldException | IllegalAccessException e) {
-      log.error("Failed to get entity UUID from entity selector {}: {}", entitySelector, e);
+    UUID entityUUID =
+        ReflectionUtils.getUUIDValueField(
+            entitySelector, new String[] {"entityUUID", "entity", "field_10821", "f_121121_"});
+    if (entityUUID == null) {
+      log.error(
+          "Failed to get entity UUID from entity selector {} and context {}",
+          entitySelector,
+          context);
     }
 
     // Limit suggestions to the entity UUID, if available.

@@ -27,7 +27,6 @@ import org.apache.logging.log4j.Logger;
 public record DisplayAttributeEntry(
     DisplayAttributeType displayAttributeType, boolean booleanValue, int intValue) {
 
-  public static final String DATA_TAG = "DisplayAttributeEntry";
   public static final String DATA_TYPE_TAG = "Type";
   public static final String DATA_BOOLEAN_VALUE_TAG = "Boolean";
   public static final String DATA_INT_VALUE_TAG = "Int";

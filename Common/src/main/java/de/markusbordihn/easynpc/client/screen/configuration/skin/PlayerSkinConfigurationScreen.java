@@ -35,6 +35,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
+import de.markusbordihn.easynpc.utils.PlayersUtils;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import de.markusbordihn.easynpc.validator.NameValidator;
 import java.util.ArrayList;
@@ -135,7 +136,7 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
     skinButton.active = !skinUUID.equals(textureUUID);
 
     // Render skin entity with variant and profession.
-    ScreenHelper.renderEntityPlayerSkin(
+    ScreenHelper.renderEntityCustomSkin(
         x + 4, y, x - this.xMouse, y - 40 - this.yMouse, this.getEasyNPC(), textureUUID, skinType);
 
     skinButtons.add(skinButton);
@@ -158,12 +159,19 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
         return;
       }
 
+      // Validate player UUID
+      UUID playerUUID = PlayersUtils.getUserUUID(textureSkinLocationValue);
+      if (playerUUID == null) {
+        this.errorMessage = "invalid_player_uuid";
+        return;
+      }
+
       // Send texture skin location to server.
-      log.debug("Setting player texture to {}", textureSkinLocationValue);
+      log.debug("Setting player texture to {} with UUID {}", textureSkinLocationValue, playerUUID);
       TextureManager.clearLastErrorMessage();
       this.errorMessage = "";
       NetworkMessageHandlerManager.getServerHandler()
-          .setPlayerSkin(this.getEasyNPCUUID(), textureSkinLocationValue, Constants.BLANK_UUID);
+          .setPlayerSkin(this.getEasyNPCUUID(), textureSkinLocationValue, playerUUID);
 
       this.addTextureSettingsButton.active = false;
       this.formerTextureSkinLocation = textureSkinLocationValue;

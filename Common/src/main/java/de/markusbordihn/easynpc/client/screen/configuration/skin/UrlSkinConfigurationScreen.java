@@ -139,7 +139,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
     skinButton.active = !skinUUID.equals(textureUUID);
 
     // Render skin entity with variant and profession.
-    ScreenHelper.renderEntityPlayerSkin(
+    ScreenHelper.renderEntityCustomSkin(
         x + 4, y, x - this.xMouse, y - 40 - this.yMouse, this.getEasyNPC(), textureUUID, skinType);
 
     skinButtons.add(skinButton);

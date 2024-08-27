@@ -23,6 +23,8 @@
     ],
     "fabric-gametest": [
       "de.markusbordihn.easynpc.gametest.SmokeTest",
+      "de.markusbordihn.easynpc.gametest.EntityTypeTest",
+      "de.markusbordihn.easynpc.gametest.MenuManagerTest",
       "de.markusbordihn.easynpc.gametest.ModSpawnEggItemTest"
     ]
   },

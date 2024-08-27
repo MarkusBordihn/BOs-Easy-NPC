@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
@@ -39,55 +40,36 @@ public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
 
   String EASY_NPC_DATA_SKIN_DATA_TAG = "SkinData";
   String EASY_NPC_DATA_SKIN_NAME_TAG = "SkinName";
-  String EASY_NPC_DATA_SKIN_TAG = "Skin";
   String EASY_NPC_DATA_SKIN_TYPE_TAG = "SkinType";
   String EASY_NPC_DATA_SKIN_URL_TAG = "SkinURL";
   String EASY_NPC_DATA_SKIN_UUID_TAG = "SkinUUID";
-  EntityDataSerializer<SkinType> SKIN_TYPE =
+
+  EntityDataSerializer<SkinDataEntry> SKIN_DATA_ENTRY =
       new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, SkinType skinType) {
-          buffer.writeEnum(skinType);
+        @Override
+        public void write(FriendlyByteBuf buffer, SkinDataEntry value) {
+          buffer.writeNbt(value.createTag());
         }
 
-        public SkinType read(FriendlyByteBuf buffer) {
-          return buffer.readEnum(SkinType.class);
+        @Override
+        public SkinDataEntry read(FriendlyByteBuf buffer) {
+          return new SkinDataEntry(buffer.readNbt());
         }
 
-        public SkinType copy(SkinType skinType) {
-          return skinType;
-        }
-      };
-  EntityDataSerializer<UUID> SKIN_UUID =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, UUID skinUUID) {
-          buffer.writeUUID(skinUUID);
-        }
-
-        public UUID read(FriendlyByteBuf buffer) {
-          return buffer.readUUID();
-        }
-
-        public UUID copy(UUID skinUUID) {
-          return skinUUID;
+        @Override
+        public SkinDataEntry copy(SkinDataEntry value) {
+          return value;
         }
       };
 
   static void registerSyncedSkinData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
     log.info("- Registering Synched Skin Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.SKIN_NAME,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.STRING));
-    map.put(
-        SynchedDataIndex.SKIN_URL,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.STRING));
-    map.put(SynchedDataIndex.SKIN_UUID, SynchedEntityData.defineId(entityClass, SKIN_UUID));
-    map.put(SynchedDataIndex.SKIN_TYPE, SynchedEntityData.defineId(entityClass, SKIN_TYPE));
+    map.put(SynchedDataIndex.SKIN_DATA, SynchedEntityData.defineId(entityClass, SKIN_DATA_ENTRY));
   }
 
   static void registerSkinDataSerializer() {
-    EntityDataSerializers.registerSerializer(SKIN_TYPE);
-    EntityDataSerializers.registerSerializer(SKIN_UUID);
+    EntityDataSerializers.registerSerializer(SKIN_DATA_ENTRY);
   }
 
   default int getEntitySkinScaling() {
@@ -95,35 +77,19 @@ public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default String getSkinName() {
-    return getSynchedEntityData(SynchedDataIndex.SKIN_NAME);
-  }
-
-  default void setSkinName(String skin) {
-    setSynchedEntityData(SynchedDataIndex.SKIN_NAME, skin != null ? skin : "");
+    return getSkinDataEntry().name();
   }
 
   default String getSkinURL() {
-    return getSynchedEntityData(SynchedDataIndex.SKIN_URL);
-  }
-
-  default void setSkinURL(String skinURL) {
-    setSynchedEntityData(SynchedDataIndex.SKIN_URL, skinURL != null ? skinURL : "");
+    return getSkinDataEntry().url();
   }
 
   default UUID getSkinUUID() {
-    return getSynchedEntityData(SynchedDataIndex.SKIN_UUID);
-  }
-
-  default void setSkinUUID(UUID uuid) {
-    setSynchedEntityData(SynchedDataIndex.SKIN_UUID, uuid != null ? uuid : Constants.BLANK_UUID);
+    return getSkinDataEntry().uuid();
   }
 
   default SkinType getSkinType() {
-    return getSynchedEntityData(SynchedDataIndex.SKIN_TYPE);
-  }
-
-  default void setSkinType(SkinType skinType) {
-    setSynchedEntityData(SynchedDataIndex.SKIN_TYPE, skinType);
+    return getSkinDataEntry().type();
   }
 
   default SkinType getSkinType(String name) {
@@ -134,30 +100,21 @@ public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
     return SkinModel.HUMANOID;
   }
 
+  default SkinDataEntry getSkinDataEntry() {
+    return getSynchedEntityData(SynchedDataIndex.SKIN_DATA);
+  }
+
+  default void setSkinDataEntry(SkinDataEntry skinDataEntry) {
+    setSynchedEntityData(SynchedDataIndex.SKIN_DATA, skinDataEntry);
+  }
+
   default void defineSynchedSkinData() {
-    defineSynchedEntityData(SynchedDataIndex.SKIN_NAME, "");
-    defineSynchedEntityData(SynchedDataIndex.SKIN_URL, "");
-    defineSynchedEntityData(SynchedDataIndex.SKIN_UUID, Constants.BLANK_UUID);
-    defineSynchedEntityData(SynchedDataIndex.SKIN_TYPE, SkinType.DEFAULT);
+    defineSynchedEntityData(SynchedDataIndex.SKIN_DATA, new SkinDataEntry());
   }
 
   default void addAdditionalSkinData(CompoundTag compoundTag) {
     CompoundTag skinTag = new CompoundTag();
-
-    if (this.getSkinName() != null) {
-      skinTag.putString(EASY_NPC_DATA_SKIN_TAG, this.getSkinName());
-    }
-    if (this.getSkinURL() != null) {
-      skinTag.putString(EASY_NPC_DATA_SKIN_URL_TAG, this.getSkinURL());
-    }
-    UUID skinUUID = this.getSkinUUID();
-    if (skinUUID != null && !skinUUID.equals(Constants.BLANK_UUID)) {
-      skinTag.putUUID(EASY_NPC_DATA_SKIN_UUID_TAG, skinUUID);
-    }
-    if (this.getSkinType() != null) {
-      skinTag.putString(EASY_NPC_DATA_SKIN_TYPE_TAG, this.getSkinType().name());
-    }
-
+    getSkinDataEntry().write(skinTag);
     compoundTag.put(EASY_NPC_DATA_SKIN_DATA_TAG, skinTag);
   }
 
@@ -165,32 +122,28 @@ public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
 
     // Early exit if no skin data is available.
     if (!compoundTag.contains(EASY_NPC_DATA_SKIN_DATA_TAG)) {
+      log.warn("No skin data available for {}.", this);
       return;
     }
 
-    // Read skin data
+    // Convert latency skin data to new format
     CompoundTag skinTag = compoundTag.getCompound(EASY_NPC_DATA_SKIN_DATA_TAG);
     if (skinTag.contains(EASY_NPC_DATA_SKIN_TYPE_TAG)) {
-      String skinType = skinTag.getString(EASY_NPC_DATA_SKIN_TYPE_TAG);
-      if (!skinType.isEmpty()) {
-        this.setSkinType(this.getSkinType(skinType));
-      }
+      log.info("Converting old skin data {} to new format ...", skinTag);
+      SkinDataEntry skinDataEntry =
+          new SkinDataEntry(
+              skinTag.getString(EASY_NPC_DATA_SKIN_NAME_TAG),
+              skinTag.getString(EASY_NPC_DATA_SKIN_URL_TAG),
+              skinTag.contains(EASY_NPC_DATA_SKIN_UUID_TAG)
+                  ? skinTag.getUUID(EASY_NPC_DATA_SKIN_UUID_TAG)
+                  : Constants.BLANK_UUID,
+              SkinType.get(skinTag.getString(EASY_NPC_DATA_SKIN_TYPE_TAG)));
+      this.setSkinDataEntry(skinDataEntry);
+      return;
     }
-    if (skinTag.contains(EASY_NPC_DATA_SKIN_NAME_TAG)) {
-      String skinName = skinTag.getString(EASY_NPC_DATA_SKIN_NAME_TAG);
-      if (!skinName.isEmpty()) {
-        this.setSkinName(skinName);
-      }
-    }
-    if (skinTag.contains(EASY_NPC_DATA_SKIN_URL_TAG)) {
-      String url = skinTag.getString(EASY_NPC_DATA_SKIN_URL_TAG);
-      if (!url.isEmpty()) {
-        this.setSkinURL(url);
-      }
-    }
-    if (skinTag.contains(EASY_NPC_DATA_SKIN_UUID_TAG)) {
-      UUID skinUUID = skinTag.getUUID(EASY_NPC_DATA_SKIN_UUID_TAG);
-      this.setSkinUUID(skinUUID);
-    }
+
+    // Load skin data from new format
+    SkinDataEntry skinDataEntry = new SkinDataEntry(skinTag);
+    this.setSkinDataEntry(skinDataEntry);
   }
 }

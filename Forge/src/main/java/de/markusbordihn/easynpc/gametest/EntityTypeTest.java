@@ -17,27 +17,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.dialog;
+package de.markusbordihn.easynpc.gametest;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.ModEntityTypes;
+import net.minecraft.core.Registry;
+import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.entity.EntityType;
+import net.minecraftforge.gametest.GameTestHolder;
+import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
-public class DialogDataManager {
+@SuppressWarnings("unused")
+@PrefixGameTestTemplate(value = false)
+@GameTestHolder(Constants.MOD_ID)
+public class EntityTypeTest {
 
-  private static final Map<UUID, DialogDataSet> dialogDataSets = new HashMap<>();
-
-  private DialogDataManager() {}
-
-  public static boolean hasDialogDataSet(UUID uuid) {
-    return dialogDataSets.containsKey(uuid);
-  }
-
-  public static DialogDataSet getDialogDataSet(UUID uuid) {
-    return dialogDataSets.get(uuid);
-  }
-
-  public static void addDialogDataSet(UUID uuid, DialogDataSet dialogDataSet) {
-    dialogDataSets.put(uuid, dialogDataSet);
+  @GameTest(template = "gametest.1x1x1")
+  public void testForMissingEntityTypes(GameTestHelper helper) {
+    for (EntityType<?> entityType : ModEntityTypes.getRegisteredEntityTypes()) {
+      GameTestHelpers.assertNotNull(
+          helper,
+          "Entity type " + entityType + " is not registered!",
+          Registry.ENTITY_TYPE.getKey(entityType));
+    }
+    helper.succeed();
   }
 }
