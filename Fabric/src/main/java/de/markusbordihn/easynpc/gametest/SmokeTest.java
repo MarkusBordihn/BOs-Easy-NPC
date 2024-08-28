@@ -27,7 +27,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 @SuppressWarnings("unused")
 public class SmokeTest {
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(template = "easy_npc:gametest.1x1x1")
   public void testModRegistered(GameTestHelper helper) {
     GameTestHelpers.assertTrue(
         helper,

@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.manager;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.compat.CompatConstants;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
@@ -149,10 +150,32 @@ public class RendererManager {
     return entityRenderer;
   }
 
-  public static void copyCustomEntityData(PathfinderMob sourceEntity, Entity targetEntity) {
-    if (sourceEntity == null || targetEntity == null || sourceEntity == targetEntity) {
+  public static void copyModSpecificData(
+      PathfinderMob sourceEntity, Entity targetEntity, String entityTypeName) {
+    if (sourceEntity == null
+        || targetEntity == null
+        || entityTypeName == null
+        || sourceEntity == targetEntity) {
       return;
     }
+
+    if (CompatConstants.MOD_COBBLEMON_LOADED && entityTypeName.equals("cobblemon:pokemon")) {
+      // TODO: Add custom entity data copy for Cobblemon.
+    }
+  }
+
+  public static void copyCustomEntityData(
+      PathfinderMob sourceEntity, Entity targetEntity, String entityTypeName) {
+    if (sourceEntity == null
+        || targetEntity == null
+        || entityTypeName == null
+        || sourceEntity == targetEntity) {
+      return;
+    }
+
+    // Copy mod specific data, if any.
+    copyModSpecificData(sourceEntity, targetEntity, entityTypeName);
+
     // Synchronize entity tick count.
     targetEntity.tickCount = sourceEntity.tickCount;
 
@@ -187,12 +210,15 @@ public class RendererManager {
   }
 
   public static void copyCustomLivingEntityData(
-      PathfinderMob sourceEntity, LivingEntity targetEntity) {
-    if (sourceEntity == null || targetEntity == null || sourceEntity == targetEntity) {
+      PathfinderMob sourceEntity, LivingEntity targetEntity, String entityTypeName) {
+    if (sourceEntity == null
+        || targetEntity == null
+        || entityTypeName == null
+        || sourceEntity == targetEntity) {
       return;
     }
     // Adjust basic entity data.
-    copyCustomEntityData(sourceEntity, targetEntity);
+    copyCustomEntityData(sourceEntity, targetEntity, entityTypeName);
 
     // Adjust entity position and speed.
     targetEntity.yHeadRotO = sourceEntity.yHeadRotO;

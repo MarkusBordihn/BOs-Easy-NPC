@@ -138,6 +138,20 @@ dependencies {
   if (project.hasProperty("timeless_and_classics_zero_mod") && project.timeless_and_classics_zero_mod) {
     runtimeOnly fg.deobf("curse.maven:timeless-and-classics-zero-1028108:${project.timeless_and_classics_zero_mod}")
   }
+  if (project.hasProperty("architectury_api_mod") && project.architectury_api_mod) {
+    compileOnly fg.deobf("curse.maven:architectury-api-419699:${project.architectury_api_mod}")
+    runtimeOnly fg.deobf("curse.maven:architectury-api-419699:${project.architectury_api_mod}")
+  }
+  if (project.hasProperty("kotlin_for_forge_mod") && project.kotlin_for_forge_mod) {
+    compileOnly fg.deobf("curse.maven:kotlin-for-forge-351264:${project.kotlin_for_forge_mod}")
+    runtimeOnly fg.deobf("curse.maven:kotlin-for-forge-351264:${project.kotlin_for_forge_mod}")
+  }
+  if (project.hasProperty("cobblemon_mod") && project.cobblemon_mod &&
+      project.hasProperty("architectury_api_mod") && project.architectury_api_mod &&
+      project.hasProperty("kotlin_for_forge_mod") && project.kotlin_for_forge_mod) {
+    compileOnly fg.deobf("curse.maven:cobblemon-687131:${project.cobblemon_mod}")
+    runtimeOnly fg.deobf("curse.maven:cobblemon-687131:${project.cobblemon_mod}")
+  }
 
   // Additional helpful Mods for development (runtime dependency)
   runtimeOnly fg.deobf("curse.maven:xaeros_minimap-263420:${project.xaeros_minimap_mod}")

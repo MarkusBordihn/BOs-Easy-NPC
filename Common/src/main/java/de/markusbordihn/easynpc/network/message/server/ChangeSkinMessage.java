@@ -84,12 +84,10 @@ public record ChangeSkinMessage(
           case CUSTOM -> SkinHandler.setCustomSkin(easyNPC, this.skinUUID);
           case DEFAULT -> SkinHandler.setDefaultSkin(easyNPC, this.skinVariant);
           case PLAYER_SKIN -> {
-            UUID userUUID =
-                this.skinUUID != null && !Constants.BLANK_UUID.equals(this.skinUUID)
-                    ? this.skinUUID
-                    : PlayersUtils.getUserUUID(serverPlayer.getServer(), this.skinName);
-            if (userUUID != null && !this.skinName.equals(userUUID.toString())) {
-              log.debug("Converted user {} to UUID {} ...", this.skinName, userUUID);
+            UUID userUUID = this.skinUUID;
+            if (userUUID == null || Constants.BLANK_UUID.equals(this.skinUUID)) {
+              log.debug("Try to convert user {} to UUID ...", this.skinName);
+              userUUID = PlayersUtils.getUserUUID(serverPlayer.getServer(), this.skinName);
             }
             yield SkinHandler.setPlayerSkin(easyNPC, this.skinName, userUUID);
           }

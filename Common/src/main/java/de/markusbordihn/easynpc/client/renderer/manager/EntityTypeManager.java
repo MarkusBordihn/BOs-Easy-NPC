@@ -48,6 +48,8 @@ public class EntityTypeManager {
       new ConcurrentHashMap<>();
   private static final Map<EntityType<? extends Entity>, Float> scaleFactorMap =
       new ConcurrentHashMap<>();
+  private static final Map<EntityType<? extends Entity>, String> entityTypeNameMap =
+      new ConcurrentHashMap<>();
 
   private EntityTypeManager() {}
 
@@ -81,6 +83,7 @@ public class EntityTypeManager {
               || entityTypeLocation.contains(":spell_")) {
             return;
           }
+          entityTypeNameMap.put(entityType, entityTypeLocation);
 
           // Check if configuration covers the entity type to avoid expensive testing.
           if (RenderEntityTypeSupportConfig.isSupportedEntityType(entityTypeLocation)) {
@@ -231,5 +234,9 @@ public class EntityTypeManager {
 
   public static float getScaleFactor(EntityType<? extends Entity> entityType) {
     return scaleFactorMap.getOrDefault(entityType, 1.0f);
+  }
+
+  public static String getEntityTypeName(EntityType<? extends Entity> entityType) {
+    return entityTypeNameMap.getOrDefault(entityType, "Unknown");
   }
 }
