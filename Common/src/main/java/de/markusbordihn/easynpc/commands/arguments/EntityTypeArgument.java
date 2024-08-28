@@ -52,12 +52,12 @@ public class EntityTypeArgument implements ArgumentType<EntityType<? extends Ent
   }
 
   public static EntityType<? extends Entity> getEntityType(
-      CommandContext<CommandSourceStack> commandContext, String entityName) {
+      final CommandContext<CommandSourceStack> commandContext, final String entityName) {
     return commandContext.getArgument(entityName, EntityType.class);
   }
 
   @Override
-  public EntityType<? extends Entity> parse(StringReader stringReader)
+  public EntityType<? extends Entity> parse(final StringReader stringReader)
       throws CommandSyntaxException {
     String entityName = stringReader.getRemaining();
     EntityType<? extends Entity> entityType = EntityType.byString(entityName).orElse(null);
@@ -70,7 +70,7 @@ public class EntityTypeArgument implements ArgumentType<EntityType<? extends Ent
 
   @Override
   public <S> CompletableFuture<Suggestions> listSuggestions(
-      CommandContext<S> context, SuggestionsBuilder suggestionsBuilder) {
+      final CommandContext<S> context, final SuggestionsBuilder suggestionsBuilder) {
     Set<String> knownEntityTypes =
         EntityTypeManager.getSupportedEntityTypes().stream()
             .map(entityType -> BuiltInRegistries.ENTITY_TYPE.getKey(entityType).toString())

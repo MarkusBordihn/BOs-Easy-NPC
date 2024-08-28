@@ -290,7 +290,7 @@ public class ScreenHelper {
     renderDataSet.setRenderEntityType(renderEntityType);
   }
 
-  public static void renderEntityPlayerSkin(
+  public static void renderEntityCustomSkin(
       int x, int y, float yRot, float xRot, EasyNPC<?> easyNPC, UUID userUUID, SkinType skinType) {
     SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
     GuiData<?> guiData = easyNPC.getEasyNPCGuiData();
@@ -300,8 +300,7 @@ public class ScreenHelper {
     UUID entitySkinUUID = skinData.getSkinUUID();
 
     // Adjust entity information for rendering
-    skinData.setSkinType(skinType);
-    skinData.setSkinUUID(userUUID);
+    skinData.setSkinDataEntry(skinData.getSkinDataEntry().withType(skinType).withUUID(userUUID));
 
     // Render Entity
     renderScaledEntityAvatar(
@@ -315,8 +314,8 @@ public class ScreenHelper {
         easyNPC.getEasyNPCModelData());
 
     // Restore entity information
-    skinData.setSkinType(entitySkinType);
-    skinData.setSkinUUID(entitySkinUUID);
+    skinData.setSkinDataEntry(
+        skinData.getSkinDataEntry().withType(entitySkinType).withUUID(entitySkinUUID));
   }
 
   public static void renderEntityDefaultSkin(
@@ -338,7 +337,8 @@ public class ScreenHelper {
     Profession entityProfession = professionData.getProfession();
 
     // Adjust entity information for rendering
-    skinData.setSkinType(SkinType.DEFAULT);
+    skinData.setSkinDataEntry(
+        skinData.getSkinDataEntry().withType(SkinType.DEFAULT).withName("default"));
     variantData.setVariant(variant);
     professionData.setProfession(profession);
 
@@ -352,7 +352,7 @@ public class ScreenHelper {
         easyNPC.getLivingEntity());
 
     // Restore entity information
-    skinData.setSkinType(entitySkinType);
+    skinData.setSkinDataEntry(skinData.getSkinDataEntry().withType(entitySkinType));
     variantData.setVariant(entityVariant);
     professionData.setProfession(entityProfession);
   }

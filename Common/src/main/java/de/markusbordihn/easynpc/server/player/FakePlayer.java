@@ -15,16 +15,17 @@ import net.minecraft.stats.Stat;
 
 public class FakePlayer extends ServerPlayer {
 
-  public FakePlayer(ServerLevel level, BlockPos blockPos) {
+  public FakePlayer(final ServerLevel level, final BlockPos blockPos) {
     super(level.getServer(), level, new GameProfile(UUID.randomUUID(), "FakePlayer"));
+    this.getAdvancements().stopListening();
     this.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
   }
 
-  public static boolean isInvalidFakePlayer(FakePlayer fakePlayer) {
+  public static boolean isInvalidFakePlayer(final FakePlayer fakePlayer) {
     return !(fakePlayer instanceof FakePlayer) || !fakePlayer.isAlive();
   }
 
-  public FakePlayer updatePosition(ServerLevel level, BlockPos blockPos) {
+  public FakePlayer updatePosition(final ServerLevel level, final BlockPos blockPos) {
     if (this.level() != level) {
       this.setLevel(level);
     } else if (this.blockPosition().distSqr(blockPos) > 1.0D) {
@@ -34,14 +35,22 @@ public class FakePlayer extends ServerPlayer {
   }
 
   @Override
-  public void displayClientMessage(Component chatComponent, boolean actionBar) {}
+  public void displayClientMessage(final Component chatComponent, final boolean actionBar) {
+    // Suppress chat messages
+  }
 
   @Override
-  public void awardStat(Stat stat, int increment) {}
+  public void awardStat(final Stat stat, final int increment) {
+    // Suppress stat award
+  }
 
   @Override
-  public void tick() {}
+  public void tick() {
+    // Suppress fake player tick
+  }
 
   @Override
-  public void doTick() {}
+  public void doTick() {
+    // Suppress fake player tick
+  }
 }

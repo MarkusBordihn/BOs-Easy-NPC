@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.entity;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
-import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -55,9 +54,8 @@ public class LivingEntityManager {
     log.debug("{} [Add] EASY NPC entity {}: {}", LOG_PREFIX, easyNPC, uuid);
     npcEntityMap.put(uuid, easyNPC);
 
-    // Request data sync from the client side for known easyNPC.
+    // Client side could stop here.
     if (easyNPC.isClientSide()) {
-      NetworkMessageHandlerManager.getServerHandler().requestDataSync(uuid);
       return;
     }
 

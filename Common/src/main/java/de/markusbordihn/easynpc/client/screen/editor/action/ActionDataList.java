@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.client.screen.editor.action.ActionDataListEntry.
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 
 class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
@@ -66,5 +67,11 @@ class ActionDataList extends ObjectSelectionList<ActionDataListEntry> {
         topPos += entryHeight;
       }
     }
+  }
+
+  @Override
+  protected void renderSelection(
+      GuiGraphics guiGraphics, int unused1, int unused2, int unused3, int unused4, int unused5) {
+    // Nothing to render
   }
 }
