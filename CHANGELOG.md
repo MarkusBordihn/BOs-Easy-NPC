@@ -8,6 +8,21 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.5.8
+
+- Fixed #308 by adding additional checks for the skin file names.
+- Fixed #307 by improving player skin based cache handling.
+- Fixed #303 by allowing to hide the custom names for NPCs and using empty names.
+- Added additional game tests.
+- Added custom skin data for preparation of upcoming server-side skin support.
+- Added client-side skin chat error messages for easier debugging.
+- Added basic Cobblemon compat for further testing for #304.
+- Improved dialog command with auto-suggestions for dialog names.
+- Improved player skin rendering by adding UUID validation and better cache handling.
+- Improved fake player by disabling advancement tracking.
+- Removed unneeded data sync for better performance.
+- Removed duplicated skin registration messages.
+
 ### 5.5.7
 
 - Fixed #300 by allowing action from NPCs with the same owner data.

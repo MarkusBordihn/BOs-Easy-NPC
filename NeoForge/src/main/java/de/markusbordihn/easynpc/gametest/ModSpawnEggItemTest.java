@@ -22,13 +22,8 @@ package de.markusbordihn.easynpc.gametest;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.item.ModItems;
-import java.util.Map;
-import java.util.Map.Entry;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -37,49 +32,208 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @GameTestHolder(Constants.MOD_ID)
 public class ModSpawnEggItemTest {
 
-  public static final Map<Item, EntityType<? extends PathfinderMob>> spawnEggMap =
-      Map.ofEntries(
-          Map.entry(ModItems.ALLAY_NPC_SPAWN_EGG.get(), ModEntityType.ALLAY.get()),
-          Map.entry(ModItems.CAT_NPC_SPAWN_EGG.get(), ModEntityType.CAT.get()),
-          Map.entry(ModItems.CHICKEN_NPC_SPAWN_EGG.get(), ModEntityType.CHICKEN.get()),
-          Map.entry(ModItems.DROWNED_NPC_SPAWN_EGG.get(), ModEntityType.DROWNED.get()),
-          Map.entry(ModItems.EVOKER_NPC_SPAWN_EGG.get(), ModEntityType.EVOKER.get()),
-          Map.entry(ModItems.FAIRY_NPC_SPAWN_EGG.get(), ModEntityType.FAIRY.get()),
-          Map.entry(ModItems.HORSE_NPC_SPAWN_EGG.get(), ModEntityType.HORSE.get()),
-          Map.entry(ModItems.HUMANOID_NPC_SPAWN_EGG.get(), ModEntityType.HUMANOID.get()),
-          Map.entry(ModItems.HUMANOID_SLIM_NPC_SPAWN_EGG.get(), ModEntityType.HUMANOID_SLIM.get()),
-          Map.entry(ModItems.HUSK_NPC_SPAWN_EGG.get(), ModEntityType.HUSK.get()),
-          Map.entry(ModItems.ILLUSIONER_NPC_SPAWN_EGG.get(), ModEntityType.ILLUSIONER.get()),
-          Map.entry(ModItems.IRON_GOLEM_NPC_SPAWN_EGG.get(), ModEntityType.IRON_GOLEM.get()),
-          Map.entry(ModItems.ORC_NPC_SPAWN_EGG.get(), ModEntityType.ORC.get()),
-          Map.entry(ModItems.ORC_WARRIOR_NPC_SPAWN_EGG.get(), ModEntityType.ORC_WARRIOR.get()),
-          Map.entry(ModItems.PIG_NPC_SPAWN_EGG.get(), ModEntityType.PIG.get()),
-          Map.entry(ModItems.PIGLIN_BRUTE_NPC_SPAWN_EGG.get(), ModEntityType.PIGLIN_BRUTE.get()),
-          Map.entry(ModItems.PIGLIN_NPC_SPAWN_EGG.get(), ModEntityType.PIGLIN.get()),
-          Map.entry(
-              ModItems.PIGLIN_ZOMBIFIED_NPC_SPAWN_EGG.get(), ModEntityType.PIGLIN_ZOMBIFIED.get()),
-          Map.entry(ModItems.PILLAGER_NPC_SPAWN_EGG.get(), ModEntityType.PILLAGER.get()),
-          Map.entry(
-              ModItems.SKELETON_HORSE_NPC_SPAWN_EGG.get(), ModEntityType.SKELETON_HORSE.get()),
-          Map.entry(ModItems.SKELETON_NPC_SPAWN_EGG.get(), ModEntityType.SKELETON.get()),
-          Map.entry(ModItems.STRAY_NPC_SPAWN_EGG.get(), ModEntityType.STRAY.get()),
-          Map.entry(ModItems.VILLAGER_NPC_SPAWN_EGG.get(), ModEntityType.VILLAGER.get()),
-          Map.entry(ModItems.VINDICATOR_NPC_SPAWN_EGG.get(), ModEntityType.VINDICATOR.get()),
-          Map.entry(
-              ModItems.WITHER_SKELETON_NPC_SPAWN_EGG.get(), ModEntityType.WITHER_SKELETON.get()),
-          Map.entry(ModItems.WOLF_NPC_SPAWN_EGG.get(), ModEntityType.WOLF.get()),
-          Map.entry(ModItems.ZOMBIE_HORSE_NPC_SPAWN_EGG.get(), ModEntityType.ZOMBIE_HORSE.get()),
-          Map.entry(ModItems.ZOMBIE_NPC_SPAWN_EGG.get(), ModEntityType.ZOMBIE.get()),
-          Map.entry(
-              ModItems.ZOMBIE_VILLAGER_NPC_SPAWN_EGG.get(), ModEntityType.ZOMBIE_VILLAGER.get()));
-
-  public ModSpawnEggItemTest() {}
+  @GameTest(template = "gametest.3x3x3")
+  public static void useAllayNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.ALLAY_NPC_SPAWN_EGG.get(), ModEntityType.ALLAY.get());
+    helper.succeed();
+  }
 
   @GameTest(template = "gametest.3x3x3")
-  public static void useSpawnEggItem(GameTestHelper helper) {
-    for (Entry<Item, EntityType<? extends PathfinderMob>> item : spawnEggMap.entrySet()) {
-      ModSpawnEggItemTestHelper.useSpawnEggItem(helper, item.getKey(), item.getValue());
-    }
+  public static void useCatNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.CAT_NPC_SPAWN_EGG.get(), ModEntityType.CAT.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void useChickenNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.CHICKEN_NPC_SPAWN_EGG.get(), ModEntityType.CHICKEN.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void useDrownedNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.DROWNED_NPC_SPAWN_EGG.get(), ModEntityType.DROWNED.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void useEvokerNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.EVOKER_NPC_SPAWN_EGG.get(), ModEntityType.EVOKER.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void useFairyNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.FAIRY_NPC_SPAWN_EGG.get(), ModEntityType.FAIRY.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void useHorseNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.HORSE_NPC_SPAWN_EGG.get(), ModEntityType.HORSE.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void useHumanoidNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.HUMANOID_NPC_SPAWN_EGG.get(), ModEntityType.HUMANOID.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void useHumanoidSlimNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.HUMANOID_SLIM_NPC_SPAWN_EGG.get(), ModEntityType.HUMANOID_SLIM.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void useHuskNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.HUSK_NPC_SPAWN_EGG.get(), ModEntityType.HUSK.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void useIllusionerNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.ILLUSIONER_NPC_SPAWN_EGG.get(), ModEntityType.ILLUSIONER.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void useIronGolemNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.IRON_GOLEM_NPC_SPAWN_EGG.get(), ModEntityType.IRON_GOLEM.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void useOrcNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.ORC_NPC_SPAWN_EGG.get(), ModEntityType.ORC.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void useOrcWarriorNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.ORC_WARRIOR_NPC_SPAWN_EGG.get(), ModEntityType.ORC_WARRIOR.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void usePigNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.PIG_NPC_SPAWN_EGG.get(), ModEntityType.PIG.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void usePiglinNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.PIGLIN_NPC_SPAWN_EGG.get(), ModEntityType.PIGLIN.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void usePiglinBruteNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.PIGLIN_BRUTE_NPC_SPAWN_EGG.get(), ModEntityType.PIGLIN_BRUTE.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void usePiglinZombifiedNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper,
+        ModItems.PIGLIN_ZOMBIFIED_NPC_SPAWN_EGG.get(),
+        ModEntityType.PIGLIN_ZOMBIFIED.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void usePillagerNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.PILLAGER_NPC_SPAWN_EGG.get(), ModEntityType.PILLAGER.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void useSkeletonHorseNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.SKELETON_HORSE_NPC_SPAWN_EGG.get(), ModEntityType.SKELETON_HORSE.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void useSkeletonNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.SKELETON_NPC_SPAWN_EGG.get(), ModEntityType.SKELETON.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void useStrayNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.STRAY_NPC_SPAWN_EGG.get(), ModEntityType.STRAY.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void useVillagerNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.VILLAGER_NPC_SPAWN_EGG.get(), ModEntityType.VILLAGER.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void useVindicatorNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.VINDICATOR_NPC_SPAWN_EGG.get(), ModEntityType.VINDICATOR.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void useWitherSkeletonNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.WITHER_SKELETON_NPC_SPAWN_EGG.get(), ModEntityType.WITHER_SKELETON.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void useWolfNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.WOLF_NPC_SPAWN_EGG.get(), ModEntityType.WOLF.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void useZombieHorseNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.ZOMBIE_HORSE_NPC_SPAWN_EGG.get(), ModEntityType.ZOMBIE_HORSE.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void useZombieNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.ZOMBIE_NPC_SPAWN_EGG.get(), ModEntityType.ZOMBIE.get());
+    helper.succeed();
+  }
+
+  @GameTest(template = "gametest.3x3x3")
+  public static void useZombieVillagerNPCSpawnEggItem(GameTestHelper helper) {
+    ModSpawnEggItemTestHelper.useSpawnEggItem(
+        helper, ModItems.ZOMBIE_VILLAGER_NPC_SPAWN_EGG.get(), ModEntityType.ZOMBIE_VILLAGER.get());
     helper.succeed();
   }
 }

@@ -26,18 +26,24 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.access.AccessManager;
 import de.markusbordihn.easynpc.commands.selector.EasyNPCSelectorParser;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.utils.UUIDUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EasyNPCArgument implements ArgumentType<EntitySelector> {
 
@@ -46,6 +52,7 @@ public class EasyNPCArgument implements ArgumentType<EntitySelector> {
   private static final Collection<String> EXAMPLES =
       Arrays.asList(
           "EasyNPC", "0123", "@e", "@e[type=foo]", "dd12be42-52a9-4a91-a8a1-11c01849e498");
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public EasyNPCArgument() {}
 
@@ -54,7 +61,8 @@ public class EasyNPCArgument implements ArgumentType<EntitySelector> {
   }
 
   public static EasyNPC<?> getEntityWithAccess(
-      CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
+      final CommandContext<CommandSourceStack> context, final String name)
+      throws CommandSyntaxException {
 
     // Get the entity and check if it has access.
     EasyNPC<?> easyNPC = getEntitiesWithAccess(context, name).stream().findFirst().orElse(null);
@@ -66,7 +74,8 @@ public class EasyNPCArgument implements ArgumentType<EntitySelector> {
   }
 
   public static Collection<? extends EasyNPC<?>> getEntitiesWithAccess(
-      CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
+      final CommandContext<CommandSourceStack> context, final String name)
+      throws CommandSyntaxException {
 
     // Get all entities and filter out the ones without access.
     Collection<? extends EasyNPC<?>> easyNPCs = getEntities(context, name);
@@ -85,7 +94,8 @@ public class EasyNPCArgument implements ArgumentType<EntitySelector> {
     return easyNPCs;
   }
 
-  public static EasyNPC<?> getEntity(CommandContext<CommandSourceStack> context, String name)
+  public static EasyNPC<?> getEntity(
+      final CommandContext<CommandSourceStack> context, final String name)
       throws CommandSyntaxException {
     EasyNPC<?> easyNPC = getEntities(context, name).stream().findFirst().orElse(null);
 
@@ -96,7 +106,8 @@ public class EasyNPCArgument implements ArgumentType<EntitySelector> {
   }
 
   public static Collection<? extends EasyNPC<?>> getEntities(
-      CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
+      final CommandContext<CommandSourceStack> context, final String name)
+      throws CommandSyntaxException {
     Collection<? extends EasyNPC<?>> entities = getOptionalEntities(context, name);
     if (entities.isEmpty()) {
       throw NO_ENTITIES_FOUND.create();
@@ -106,7 +117,8 @@ public class EasyNPCArgument implements ArgumentType<EntitySelector> {
   }
 
   public static Collection<? extends EasyNPC<?>> getOptionalEntities(
-      CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
+      final CommandContext<CommandSourceStack> context, final String name)
+      throws CommandSyntaxException {
     Collection<? extends Entity> entities =
         context.getArgument(name, EntitySelector.class).findEntities(context.getSource());
     Collection<EasyNPC<?>> easyNPCs = new ArrayList<>();
@@ -119,14 +131,25 @@ public class EasyNPCArgument implements ArgumentType<EntitySelector> {
   }
 
   @Override
-  public EntitySelector parse(StringReader stringReader) throws CommandSyntaxException {
+  public EntitySelector parse(final StringReader stringReader) throws CommandSyntaxException {
     EasyNPCSelectorParser entitySelectorParser = new EasyNPCSelectorParser(stringReader);
+
+    // Extract UUID from string, validate it and request data sync.
+    String input = stringReader.getRemaining();
+    if (input != null && !input.startsWith("@") && input.length() == 36) {
+      UUID uuid = UUIDUtils.parseUUID(input);
+      if (uuid != null) {
+        log.debug("Found valid UUID {} and will request data sync...", uuid);
+        NetworkMessageHandlerManager.getServerHandler().requestDataSync(uuid);
+      }
+    }
+
     return entitySelectorParser.parse();
   }
 
   @Override
   public <S> CompletableFuture<Suggestions> listSuggestions(
-      CommandContext<S> context, SuggestionsBuilder suggestionsBuilder) {
+      final CommandContext<S> context, final SuggestionsBuilder suggestionsBuilder) {
     if (!(context.getSource() instanceof SharedSuggestionProvider sharedSuggestionProvider)) {
       return Suggestions.empty();
     }

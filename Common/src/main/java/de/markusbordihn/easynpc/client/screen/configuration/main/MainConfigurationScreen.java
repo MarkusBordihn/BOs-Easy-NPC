@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
+import de.markusbordihn.easynpc.client.screen.components.VisibilityToggleButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.render.RenderDataSet;
@@ -38,7 +39,6 @@ import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -56,28 +56,28 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
 
   public static final int BUTTON_HEIGHT = 18;
   public static final int BUTTON_WIDTH = 92;
-  private static final Map<String, ConfigurationType> menuButtons = new LinkedHashMap<>();
-
-  static {
-    menuButtons.put("dialog", ConfigurationType.DIALOG);
-    menuButtons.put("actions", ConfigurationType.BASIC_ACTION);
-    menuButtons.put("equipment", ConfigurationType.EQUIPMENT);
-    menuButtons.put("scaling", ConfigurationType.SCALING);
-    menuButtons.put("pose", ConfigurationType.POSE);
-    menuButtons.put("position", ConfigurationType.DEFAULT_POSITION);
-    menuButtons.put("rotation", ConfigurationType.DEFAULT_ROTATION);
-    menuButtons.put("trading", ConfigurationType.TRADING);
-    menuButtons.put("attributes", ConfigurationType.ABILITIES_ATTRIBUTE);
-    menuButtons.put("objective", ConfigurationType.BASIC_OBJECTIVE);
-  }
+  private static final Map<String, ConfigurationType> menuButtons =
+      Map.of(
+          "dialog", ConfigurationType.DIALOG,
+          "actions", ConfigurationType.BASIC_ACTION,
+          "equipment", ConfigurationType.EQUIPMENT,
+          "scaling", ConfigurationType.SCALING,
+          "pose", ConfigurationType.POSE,
+          "position", ConfigurationType.DEFAULT_POSITION,
+          "rotation", ConfigurationType.DEFAULT_ROTATION,
+          "trading", ConfigurationType.TRADING,
+          "attributes", ConfigurationType.ABILITIES_ATTRIBUTE,
+          "objective", ConfigurationType.BASIC_OBJECTIVE);
 
   private Button copyUUIDButton;
   private String formerName = "";
   private int formerTextColor = 0xFFFFFF;
+  private boolean formerNameVisibility = true;
   private EditBox nameBox;
   private ColorButton nameColorButton;
+  private VisibilityToggleButton nameVisibilityButton;
   private Button saveNameButton;
-  private int textColor = 0xFFFFFF;
+  private int avatarTopPos;
 
   public MainConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -90,6 +90,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
 
     // Core Positions
     this.contentTopPos = this.topPos + 15;
+    this.avatarTopPos = this.contentTopPos + 1;
 
     // Hide home button
     this.homeButton.visible = false;
@@ -116,7 +117,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     // Avatar
     ScreenHelper.renderScaledEntityAvatar(
         this.leftPos + 60,
-        this.contentTopPos + 160,
+        this.avatarTopPos + 140,
         this.leftPos + 50 - this.xMouse,
         this.contentTopPos + 70 - this.yMouse,
         getEasyNPC());
@@ -140,7 +141,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         this.font,
         getEasyNPCEntity().getType().getDescription(),
         Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
-        Math.round((this.contentTopPos + 24) / scaleEntityTypeText));
+        Math.round((this.avatarTopPos + 4) / scaleEntityTypeText));
 
     // Make sure that entity text is always on top
     guiGraphics.pose().translate(0, 0, 100);
@@ -153,7 +154,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
           this.font,
           "Owner: " + (ownerData.hasOwner() ? ownerData.getOwnerName() : "-"),
           Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
-          Math.round((this.contentTopPos + 35) / scaleEntityTypeText));
+          Math.round((this.avatarTopPos + 15) / scaleEntityTypeText));
     }
 
     // Home position
@@ -165,7 +166,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
           this.font,
           "Home: " + blockPos.getX() + ", " + blockPos.getY() + ", " + blockPos.getZ(),
           Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
-          Math.round((this.contentTopPos + 43) / scaleEntityTypeText));
+          Math.round((this.avatarTopPos + 23) / scaleEntityTypeText));
     }
 
     // Team
@@ -175,7 +176,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         "Team: "
             + (getEasyNPCEntity().getTeam() != null ? getEasyNPCEntity().getTeam().getName() : "-"),
         Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
-        Math.round((this.contentTopPos + 51) / scaleEntityTypeText));
+        Math.round((this.avatarTopPos + 31) / scaleEntityTypeText));
 
     // Current position
     BlockPos blockPos = getEasyNPCEntity().getOnPos();
@@ -184,7 +185,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         this.font,
         "Pos: " + blockPos.getX() + ", " + blockPos.getY() + ", " + blockPos.getZ(),
         Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
-        Math.round((this.contentTopPos + 163) / scaleEntityTypeText));
+        Math.round((this.avatarTopPos + 147) / scaleEntityTypeText));
     guiGraphics.pose().popPose();
   }
 
@@ -192,19 +193,33 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
   protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
     super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
 
-    int avatarTopPos = this.contentTopPos + 20;
-
     // Entity Type
     guiGraphics.fill(
-        this.contentLeftPos, avatarTopPos, this.leftPos + 117, avatarTopPos + 135, 0xff000000);
+        this.contentLeftPos,
+        this.avatarTopPos,
+        this.leftPos + 117,
+        this.avatarTopPos + 135,
+        0xff000000);
     guiGraphics.fill(
-        this.leftPos + 8, avatarTopPos + 1, this.leftPos + 116, avatarTopPos + 134, 0xffffffff);
+        this.leftPos + 8,
+        this.avatarTopPos + 1,
+        this.leftPos + 116,
+        this.avatarTopPos + 134,
+        0xffffffff);
 
     // Entity
     guiGraphics.fill(
-        this.contentLeftPos, avatarTopPos + 12, this.leftPos + 117, avatarTopPos + 160, 0xff000000);
+        this.contentLeftPos,
+        this.avatarTopPos + 12,
+        this.leftPos + 117,
+        this.avatarTopPos + 155,
+        0xff000000);
     guiGraphics.fill(
-        this.leftPos + 8, avatarTopPos + 13, this.leftPos + 116, avatarTopPos + 160, 0xffaaaaaa);
+        this.leftPos + 8,
+        this.avatarTopPos + 13,
+        this.leftPos + 116,
+        this.avatarTopPos + 155,
+        0xffaaaaaa);
   }
 
   private void defineImportExportButtons() {
@@ -212,9 +227,9 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     Button importButton =
         this.addRenderableWidget(
             new TextButton(
-                this.leftPos + 134,
-                this.contentTopPos,
-                80,
+                this.leftPos + 122,
+                this.contentTopPos + 35,
+                92,
                 "import",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
@@ -228,7 +243,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
             new TextButton(
                 importButton.getX() + importButton.getWidth() + 5,
                 importButton.getY(),
-                80,
+                92,
                 "export",
                 onPress ->
                     NetworkMessageHandlerManager.getServerHandler()
@@ -238,22 +253,25 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
   }
 
   private void defineNameAndColorBox() {
-    // Name Edit Box and Save Button
+    // Name Edit Box
     Component nameComponent = getEasyNPCEntity().getName();
     this.formerName =
         nameComponent.getContents() instanceof TranslatableContents translatableContents
             ? translatableContents.getKey()
             : nameComponent.getString();
-    this.nameBox = new TextField(this.font, this.contentLeftPos, this.contentTopPos, 70);
+    this.nameBox = new TextField(this.font, this.contentLeftPos + 115, this.contentTopPos + 2, 128);
     this.nameBox.setMaxLength(32);
     this.nameBox.setValue(this.formerName);
     this.nameBox.setResponder(consumer -> this.validateName());
     this.addRenderableWidget(this.nameBox);
 
+    // Name Color Button
     this.nameColorButton =
         this.addRenderableWidget(
             new ColorButton(
-                this.leftPos + 78, this.nameBox.getY() - 1, onPress -> this.validateName()));
+                this.nameBox.getX() + this.nameBox.getWidth() + 1,
+                this.nameBox.getY() - 1,
+                onPress -> this.validateName()));
     if (getEasyNPCEntity().hasCustomName()
         && getEasyNPCEntity().getCustomName().getStyle() != null
         && getEasyNPCEntity().getCustomName().getStyle().getColor() != null) {
@@ -267,9 +285,24 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
       }
     }
 
+    // Name Visibility Button
+    this.nameVisibilityButton =
+        this.addRenderableWidget(
+            new VisibilityToggleButton(
+                this.nameColorButton.getX() + this.nameColorButton.getWidth() + 2,
+                this.nameColorButton.getY(),
+                onPress -> this.validateName()));
+    this.nameVisibilityButton.active =
+        getEasyNPCEntity().hasCustomName() && getEasyNPCEntity().isCustomNameVisible();
+    this.formerNameVisibility = getEasyNPCEntity().isCustomNameVisible();
+
+    // Save Name Button
     this.saveNameButton =
         this.addRenderableWidget(
-            new SaveButton(this.leftPos + 97, this.nameBox.getY() - 1, onPress -> this.saveName()));
+            new SaveButton(
+                this.nameVisibilityButton.getX() + this.nameVisibilityButton.getWidth() + 2,
+                this.nameVisibilityButton.getY(),
+                onPress -> this.saveName()));
     this.saveNameButton.active = false;
   }
 
@@ -312,7 +345,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         this.addRenderableWidget(
             new TextButton(
                 this.contentLeftPos,
-                this.topPos + 186,
+                this.avatarTopPos + 155,
                 110,
                 14,
                 "edit_skin",
@@ -353,7 +386,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         this.addRenderableWidget(
             new TextButton(
                 this.contentLeftPos,
-                this.topPos + 199,
+                this.avatarTopPos + 168,
                 110,
                 14,
                 "change_model",
@@ -374,7 +407,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
   }
 
   protected void defineMenuButtons() {
-    int buttonTopPos = this.topPos + 58;
+    int buttonTopPos = this.topPos + 75;
     int buttonLeftPos = this.contentLeftPos + 115;
     int buttonIndex = 0;
 
@@ -445,22 +478,34 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
   private void validateName() {
     String nameValue = this.nameBox.getValue();
     int textColorValue = this.nameColorButton.getColorValue();
+    boolean nameVisibility = this.nameVisibilityButton.active;
     this.saveNameButton.active =
-        !this.formerName.equals(nameValue) || this.formerTextColor != textColorValue;
+        !this.formerName.equals(nameValue)
+            || this.formerTextColor != textColorValue
+            || this.formerNameVisibility != nameVisibility;
   }
 
   private void saveName() {
-    String value = this.nameBox.getValue();
-    if (!value.isBlank()) {
-      if (this.nameColorButton != null) {
-        textColor = this.nameColorButton.getColorValue();
-      }
-      log.debug("Saving name {} with color {} for {}", value, textColor, getEasyNPC());
-      NetworkMessageHandlerManager.getServerHandler()
-          .changeName(getEasyNPC().getUUID(), value, textColor);
-      this.formerName = value;
-      this.formerTextColor = textColor;
-      this.saveNameButton.active = false;
+    String name = this.nameBox.getValue();
+    int textColor = 0xFFFFFF;
+    if (this.nameColorButton != null) {
+      textColor = this.nameColorButton.getColorValue();
     }
+    boolean nameVisibility = true;
+    if (this.nameVisibilityButton != null) {
+      nameVisibility = this.nameVisibilityButton.active;
+    }
+    log.debug(
+        "Saving name {} with color {} and visibility {} for {}",
+        name,
+        textColor,
+        nameVisibility,
+        getEasyNPC());
+    NetworkMessageHandlerManager.getServerHandler()
+        .changeName(getEasyNPC().getUUID(), name, textColor, nameVisibility);
+    this.formerName = name;
+    this.formerTextColor = textColor;
+    this.formerNameVisibility = nameVisibility;
+    this.saveNameButton.active = false;
   }
 }
