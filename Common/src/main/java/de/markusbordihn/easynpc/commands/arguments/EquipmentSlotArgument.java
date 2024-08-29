@@ -62,12 +62,12 @@ public class EquipmentSlotArgument implements ArgumentType<EquipmentSlot> {
   }
 
   public static EquipmentSlot getEquipmentSlot(
-      CommandContext<CommandSourceStack> commandContext, String slotName) {
+      final CommandContext<CommandSourceStack> commandContext, final String slotName) {
     return commandContext.getArgument(slotName, EquipmentSlot.class);
   }
 
   @Override
-  public EquipmentSlot parse(StringReader stringReader) throws CommandSyntaxException {
+  public EquipmentSlot parse(final StringReader stringReader) throws CommandSyntaxException {
     String key = stringReader.readUnquotedString();
     if (!SLOTS.containsKey(key)) {
       throw ERROR_UNKNOWN_SLOT.create(key);
@@ -78,7 +78,7 @@ public class EquipmentSlotArgument implements ArgumentType<EquipmentSlot> {
 
   @Override
   public <S> CompletableFuture<Suggestions> listSuggestions(
-      CommandContext<S> commandContext, SuggestionsBuilder suggestionsBuilder) {
+      final CommandContext<S> commandContext, final SuggestionsBuilder suggestionsBuilder) {
     return SharedSuggestionProvider.suggest(SLOTS.keySet(), suggestionsBuilder);
   }
 

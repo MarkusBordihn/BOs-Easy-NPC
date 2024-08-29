@@ -77,13 +77,16 @@ public interface EasyNPCRenderer<E extends PathfinderMob, M extends EntityModel<
       return false;
     }
 
+    // Get entity type name.
+    String entityTypeName = EntityTypeManager.getEntityTypeName(renderEntityType);
+
     // Render custom entity over living render, if supported.
     LivingEntityRenderer<E, M> livingEntityRenderer =
         (LivingEntityRenderer<E, M>)
             RendererManager.getLivingEntityRenderer(renderEntityType, customEntity);
     if (livingEntityRenderer != null) {
       try {
-        RendererManager.copyCustomLivingEntityData(entity, customEntity);
+        RendererManager.copyCustomLivingEntityData(entity, customEntity, entityTypeName);
         livingEntityRenderer.render(
             (E) customEntity, entityYaw, partialTicks, poseStack, buffer, packedLight);
         return true;
@@ -103,7 +106,7 @@ public interface EasyNPCRenderer<E extends PathfinderMob, M extends EntityModel<
         (EntityRenderer<E>) RendererManager.getEntityRenderer(renderEntityType, customEntity);
     if (entityRenderer != null) {
       try {
-        RendererManager.copyCustomLivingEntityData(entity, customEntity);
+        RendererManager.copyCustomLivingEntityData(entity, customEntity, entityTypeName);
         entityRenderer.render(
             (E) customEntity, entityYaw, partialTicks, poseStack, buffer, packedLight);
         return true;

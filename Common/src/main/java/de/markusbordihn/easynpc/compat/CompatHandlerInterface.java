@@ -36,6 +36,11 @@ public interface CompatHandlerInterface {
         CompatConstants.MOD_EPIC_FIGHT_NAME,
         CompatConstants.MOD_EPIC_FIGHT_ID,
         CompatConstants.MOD_EPIC_FIGHT_LOADED);
+    CompatConstants.MOD_COBBLEMON_LOADED = isModLoaded(CompatConstants.MOD_COBBLEMON_ID);
+    logFoundMod(
+        CompatConstants.MOD_COBBLEMON_NAME,
+        CompatConstants.MOD_COBBLEMON_ID,
+        CompatConstants.MOD_COBBLEMON_LOADED);
   }
 
   default void logFoundMod(String modName, String modId, boolean modLoaded) {

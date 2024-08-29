@@ -20,21 +20,45 @@
 package de.markusbordihn.easynpc.gametest;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.data.editor.EditorType;
+import de.markusbordihn.easynpc.menu.MenuHandlerInterface;
+import de.markusbordihn.easynpc.menu.MenuManager;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.gametest.GameTestHolder;
 
 @SuppressWarnings("unused")
 @GameTestHolder(Constants.MOD_ID)
-public class SmokeTest {
+public class MenuManagerTest {
 
   @GameTest(template = "easy_npc:gametest.1x1x1")
-  public void testModRegistered(GameTestHelper helper) {
-    GameTestHelpers.assertTrue(
-        helper,
-        "Mod " + Constants.MOD_ID + " is not available!",
-        ModList.get().isLoaded(Constants.MOD_ID));
+  public void testMissingConfigurationType(GameTestHelper helper) {
+    MenuHandlerInterface menuHandlerInterface = MenuManager.getMenuHandler();
+    for (ConfigurationType configurationType : ConfigurationType.values()) {
+      if (configurationType == ConfigurationType.NONE || configurationType.isAlias()) {
+        continue;
+      }
+      GameTestHelpers.assertNotNull(
+          helper,
+          "Menu type for configuration type " + configurationType + " is missing!",
+          menuHandlerInterface.getMenuTypeByConfigurationType(configurationType));
+    }
+    helper.succeed();
+  }
+
+  @GameTest(template = "easy_npc:gametest.1x1x1")
+  public void testMissingEditorType(GameTestHelper helper) {
+    MenuHandlerInterface menuHandlerInterface = MenuManager.getMenuHandler();
+    for (EditorType editorTypeType : EditorType.values()) {
+      if (editorTypeType == EditorType.NONE) {
+        continue;
+      }
+      GameTestHelpers.assertNotNull(
+          helper,
+          "Menu type for editor type " + editorTypeType + " is missing!",
+          menuHandlerInterface.getMenuTypeByEditorType(editorTypeType));
+    }
     helper.succeed();
   }
 }

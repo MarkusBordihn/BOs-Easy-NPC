@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.handler;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
@@ -40,10 +41,12 @@ public class SkinHandler {
       log.error("[{}] Error setting none skin", "None");
       return false;
     }
-    log.debug("[{}] Setting none skin", easyNPC);
+
     SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
     if (skinData != null) {
-      skinData.setSkinType(SkinType.NONE);
+      log.debug("[{}] Setting none skin", easyNPC);
+      SkinDataEntry skinDataEntry = skinData.getSkinDataEntry().withType(SkinType.NONE);
+      skinData.setSkinDataEntry(skinDataEntry);
       return true;
     }
     return false;
@@ -59,10 +62,8 @@ public class SkinHandler {
     if (skinData != null && skinData.getSkinType() != SkinType.DEFAULT) {
       log.debug(
           "[{}] Set skin type from {} to {}", easyNPC, skinData.getSkinType(), SkinType.DEFAULT);
-      skinData.setSkinType(SkinType.DEFAULT);
-      skinData.setSkinName("");
-      skinData.setSkinURL("");
-      skinData.setSkinUUID(Constants.BLANK_UUID);
+      SkinDataEntry skinDataEntry = skinData.getSkinDataEntry().withType(SkinType.DEFAULT);
+      skinData.setSkinDataEntry(skinDataEntry);
     }
 
     VariantData<?> variantData = skinData.getEasyNPCVariantData();
@@ -83,10 +84,9 @@ public class SkinHandler {
     SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
     if (skinData != null) {
       log.debug("[{}] Set custom skin to UUID {}", easyNPC, skinUUID);
-      skinData.setSkinType(SkinType.CUSTOM);
-      skinData.setSkinName("");
-      skinData.setSkinURL("");
-      skinData.setSkinUUID(skinUUID);
+      SkinDataEntry skinDataEntry =
+          skinData.getSkinDataEntry().withType(SkinType.CUSTOM).withUUID(skinUUID);
+      skinData.setSkinDataEntry(skinDataEntry);
       return true;
     }
     return false;
@@ -104,10 +104,13 @@ public class SkinHandler {
     SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
     if (skinData != null) {
       log.debug("[{}] Setting player skin to {} with UUID {}", easyNPC, playerName, playerUUID);
-      skinData.setSkinType(SkinType.PLAYER_SKIN);
-      skinData.setSkinName(playerName);
-      skinData.setSkinURL("");
-      skinData.setSkinUUID(playerUUID);
+      SkinDataEntry skinDataEntry =
+          skinData
+              .getSkinDataEntry()
+              .withType(SkinType.PLAYER_SKIN)
+              .withName(playerName)
+              .withUUID(playerUUID);
+      skinData.setSkinDataEntry(skinDataEntry);
       return true;
     }
     return false;
@@ -129,10 +132,13 @@ public class SkinHandler {
     SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
     if (skinData != null) {
       log.debug("[{}] Set secure remote skin to URL {}", easyNPC, skinURL);
-      skinData.setSkinType(SkinType.SECURE_REMOTE_URL);
-      skinData.setSkinName("");
-      skinData.setSkinURL(skinURL);
-      skinData.setSkinUUID(UUID.nameUUIDFromBytes(skinURL.getBytes()));
+      SkinDataEntry skinDataEntry =
+          skinData
+              .getSkinDataEntry()
+              .withType(SkinType.SECURE_REMOTE_URL)
+              .withURL(skinURL)
+              .withUUID(UUID.nameUUIDFromBytes(skinURL.getBytes()));
+      skinData.setSkinDataEntry(skinDataEntry);
       return true;
     }
     return false;
@@ -150,10 +156,13 @@ public class SkinHandler {
     SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
     if (skinData != null) {
       log.debug("[{}] Set insecure remote skin to URL {}", easyNPC, skinURL);
-      skinData.setSkinType(SkinType.INSECURE_REMOTE_URL);
-      skinData.setSkinName("");
-      skinData.setSkinURL(skinURL);
-      skinData.setSkinUUID(UUID.nameUUIDFromBytes(skinURL.getBytes()));
+      SkinDataEntry skinDataEntry =
+          skinData
+              .getSkinDataEntry()
+              .withType(SkinType.INSECURE_REMOTE_URL)
+              .withURL(skinURL)
+              .withUUID(UUID.nameUUIDFromBytes(skinURL.getBytes()));
+      skinData.setSkinDataEntry(skinDataEntry);
       return true;
     }
     return false;

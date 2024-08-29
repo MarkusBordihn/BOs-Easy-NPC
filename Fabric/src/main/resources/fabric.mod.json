@@ -26,6 +26,8 @@
       "de.markusbordihn.easynpc.gametest.ConfigurationScreenTest",
       "de.markusbordihn.easynpc.gametest.DialogScreenTest",
       "de.markusbordihn.easynpc.gametest.EditorScreenTest",
+      "de.markusbordihn.easynpc.gametest.EntityTypeTest",
+      "de.markusbordihn.easynpc.gametest.MenuManagerTest",
       "de.markusbordihn.easynpc.gametest.ModSpawnEggItemTest"
     ]
   },
