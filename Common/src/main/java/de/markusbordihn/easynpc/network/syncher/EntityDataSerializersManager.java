@@ -31,6 +31,7 @@ import de.markusbordihn.easynpc.data.profession.Profession;
 import de.markusbordihn.easynpc.data.render.RenderDataSet;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
+import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.data.skin.SkinUUID;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
@@ -69,6 +70,8 @@ public class EntityDataSerializersManager {
       EntityDataSerializer.forValueType(CustomRotation.STREAM_CODEC);
   public static final EntityDataSerializer<CustomScale> SCALE =
       EntityDataSerializer.forValueType(CustomScale.STREAM_CODEC);
+  public static final EntityDataSerializer<SkinDataEntry> SKIN_DATA_ENTRY =
+      EntityDataSerializer.forValueType(SkinDataEntry.STREAM_CODEC);
   public static final EntityDataSerializer<SkinType> SKIN_TYPE =
       EntityDataSerializer.forValueType(SkinType.STREAM_CODEC);
   public static final EntityDataSerializer<UUID> SKIN_UUID =
@@ -103,6 +106,7 @@ public class EntityDataSerializersManager {
     EntityDataSerializers.registerSerializer(RENDER_DATA_SET);
     EntityDataSerializers.registerSerializer(ROTATION);
     EntityDataSerializers.registerSerializer(SCALE);
+    EntityDataSerializers.registerSerializer(SKIN_DATA_ENTRY);
     EntityDataSerializers.registerSerializer(SKIN_TYPE);
     EntityDataSerializers.registerSerializer(SKIN_UUID);
     EntityDataSerializers.registerSerializer(SOUND_DATA_SET);

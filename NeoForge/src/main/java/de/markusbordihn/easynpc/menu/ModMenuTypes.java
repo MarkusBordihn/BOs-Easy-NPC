@@ -78,11 +78,11 @@ public class ModMenuTypes {
 
   public static final DeferredRegister<MenuType<?>> MENU_TYPES =
       DeferredRegister.create(BuiltInRegistries.MENU, Constants.MOD_ID);
-  private ModMenuTypes() {}  public static final DeferredHolder<MenuType<?>, MenuType<SpawnerMenuWrapper>> SPAWNER_MENU =
+  public static final DeferredHolder<MenuType<?>, MenuType<SpawnerMenuWrapper>> SPAWNER_MENU =
       MENU_TYPES.register(
           ModMenuType.SPAWNER.getName(), () -> IMenuTypeExtension.create(SpawnerMenuWrapper::new));
 
-
+  private ModMenuTypes() {}
 
   public static final DeferredHolder<
           MenuType<?>, MenuType<AbilitiesAttributeConfigurationMenuWrapper>>

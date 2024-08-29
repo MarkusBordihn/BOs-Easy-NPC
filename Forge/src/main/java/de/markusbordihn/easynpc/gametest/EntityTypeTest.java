@@ -17,6 +17,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.compat.epicfight;
+package de.markusbordihn.easynpc.gametest;
 
-public class EpicFightCompat {}
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.ModEntityTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.entity.EntityType;
+import net.minecraftforge.gametest.GameTestHolder;
+
+@SuppressWarnings("unused")
+@GameTestHolder(Constants.MOD_ID)
+public class EntityTypeTest {
+
+  @GameTest(template = "easy_npc:gametest.1x1x1")
+  public void testForMissingEntityTypes(GameTestHelper helper) {
+    for (EntityType<?> entityType : ModEntityTypes.getRegisteredEntityTypes()) {
+      GameTestHelpers.assertNotNull(
+          helper,
+          "Entity type " + entityType + " is not registered!",
+          BuiltInRegistries.ENTITY_TYPE.getKey(entityType));
+    }
+    helper.succeed();
+  }
+}

@@ -391,9 +391,9 @@ public interface ServerNetworkMessageHandlerInterface {
     }
   }
 
-  default void changeName(UUID uuid, String name, int color) {
-    if (uuid != null && name != null && !name.isEmpty()) {
-      NetworkHandlerManager.sendToServer(new ChangeNameMessage(uuid, name, color));
+  default void changeName(UUID uuid, String name, int color, boolean visible) {
+    if (uuid != null && name != null) {
+      NetworkHandlerManager.sendToServer(new ChangeNameMessage(uuid, name, color, visible));
     }
   }
 

@@ -31,7 +31,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public record ChangeNameMessage(UUID uuid, String name, int color) implements NetworkMessageRecord {
+public record ChangeNameMessage(UUID uuid, String name, int color, boolean visible) implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "change_name");
@@ -41,7 +41,8 @@ public record ChangeNameMessage(UUID uuid, String name, int color) implements Ne
       StreamCodec.of((buffer, message) -> message.write(buffer), ChangeNameMessage::create);
 
   public static ChangeNameMessage create(final FriendlyByteBuf buffer) {
-    return new ChangeNameMessage(buffer.readUUID(), buffer.readUtf(), buffer.readInt());
+    return new ChangeNameMessage(
+        buffer.readUUID(), buffer.readUtf(), buffer.readInt(), buffer.readBoolean());
   }
 
   @Override
@@ -49,6 +50,7 @@ public record ChangeNameMessage(UUID uuid, String name, int color) implements Ne
     buffer.writeUUID(this.uuid);
     buffer.writeUtf(this.name);
     buffer.writeInt(this.color);
+    buffer.writeBoolean(this.visible);
   }
 
   @Override
@@ -68,7 +70,7 @@ public record ChangeNameMessage(UUID uuid, String name, int color) implements Ne
       return;
     }
 
-    if (!NameHandler.setCustomName(easyNPC, this.name, this.color)) {
+    if (!NameHandler.setCustomName(easyNPC, this.name, this.color, this.visible)) {
       log.error("Unable to set custom name {} for {} from {}", this.name, easyNPC, serverPlayer);
     }
   }

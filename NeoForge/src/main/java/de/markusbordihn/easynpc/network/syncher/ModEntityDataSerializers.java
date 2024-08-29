@@ -30,6 +30,7 @@ import de.markusbordihn.easynpc.data.profession.Profession;
 import de.markusbordihn.easynpc.data.render.RenderDataSet;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
+import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
@@ -89,6 +90,10 @@ public class ModEntityDataSerializers {
           ENTITY_DATA_SERIALIZERS.register("rotation", () -> EntityDataSerializersManager.ROTATION);
   public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<CustomScale>>
       SCALE = ENTITY_DATA_SERIALIZERS.register("scale", () -> EntityDataSerializersManager.SCALE);
+  public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<SkinDataEntry>>
+      SKIN_DATA_ENTRY =
+          ENTITY_DATA_SERIALIZERS.register(
+              "skin_data_entry", () -> EntityDataSerializersManager.SKIN_DATA_ENTRY);
   public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<SkinType>>
       SKIN_TYPE =
           ENTITY_DATA_SERIALIZERS.register(

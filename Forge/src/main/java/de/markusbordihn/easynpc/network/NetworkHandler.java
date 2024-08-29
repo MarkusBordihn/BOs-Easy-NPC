@@ -39,7 +39,7 @@ import net.minecraftforge.network.SimpleChannel;
 
 public class NetworkHandler implements NetworkHandlerInterface {
 
-  private static final int PROTOCOL_VERSION = 21;
+  private static final int PROTOCOL_VERSION = 22;
   public static final SimpleChannel INSTANCE =
       ChannelBuilder.named(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "network"))
           .networkProtocolVersion(PROTOCOL_VERSION)
