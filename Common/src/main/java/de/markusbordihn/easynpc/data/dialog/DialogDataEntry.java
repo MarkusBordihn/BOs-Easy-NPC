@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.data.dialog;
 
-import de.markusbordihn.easynpc.Constants;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -106,7 +105,7 @@ public final class DialogDataEntry {
 
   public Component getDialogText() {
     if (this.dialogTexts == null || this.dialogTexts.isEmpty()) {
-      return Constants.EMPTY_TEXT_COMPONENT;
+      return Component.empty();
     }
 
     // Return first dialog text or random dialog text.
@@ -118,7 +117,7 @@ public final class DialogDataEntry {
                 .findFirst()
                 .orElse(null);
 
-    return dialogTextData != null ? dialogTextData.getDialogText() : Constants.EMPTY_TEXT_COMPONENT;
+    return dialogTextData != null ? dialogTextData.getDialogText() : Component.empty();
   }
 
   public String getText(int maxLength) {

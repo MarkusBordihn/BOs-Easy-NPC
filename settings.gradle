@@ -6,12 +6,12 @@ pluginManagement {
       url = 'https://maven.fabricmc.net/'
     }
     maven {
-      name = 'NeoForge'
-      url = 'https://maven.neoforged.net/releases/'
-    }
-    maven {
       name = 'Forge'
       url = 'https://maven.minecraftforge.net/'
+    }
+    maven {
+      name = 'NeoForge'
+      url = 'https://maven.neoforged.net/releases/'
     }
     maven {
       name = 'Sponge Snapshots'

@@ -14,6 +14,7 @@ println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getPro
 minecraft {
   mappings channel: 'official', version: "${project.minecraft_version}"
 
+  reobf = false
   copyIdeResources = true
 
   if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
@@ -139,6 +140,20 @@ dependencies {
   if (project.hasProperty("timeless_and_classics_zero_mod") && project.timeless_and_classics_zero_mod) {
     runtimeOnly fg.deobf("curse.maven:timeless-and-classics-zero-1028108:${project.timeless_and_classics_zero_mod}")
   }
+  if (project.hasProperty("architectury_api_mod") && project.architectury_api_mod) {
+    compileOnly fg.deobf("curse.maven:architectury-api-419699:${project.architectury_api_mod}")
+    runtimeOnly fg.deobf("curse.maven:architectury-api-419699:${project.architectury_api_mod}")
+  }
+  if (project.hasProperty("kotlin_for_forge_mod") && project.kotlin_for_forge_mod) {
+    compileOnly fg.deobf("curse.maven:kotlin-for-forge-351264:${project.kotlin_for_forge_mod}")
+    runtimeOnly fg.deobf("curse.maven:kotlin-for-forge-351264:${project.kotlin_for_forge_mod}")
+  }
+  if (project.hasProperty("cobblemon_mod") && project.cobblemon_mod &&
+      project.hasProperty("architectury_api_mod") && project.architectury_api_mod &&
+      project.hasProperty("kotlin_for_forge_mod") && project.kotlin_for_forge_mod) {
+    compileOnly fg.deobf("curse.maven:cobblemon-687131:${project.cobblemon_mod}")
+    runtimeOnly fg.deobf("curse.maven:cobblemon-687131:${project.cobblemon_mod}")
+  }
 
   // Additional helpful Mods for development (runtime dependency)
   // runtimeOnly "curse.maven:xaeros_minimap-263420:${project.xaeros_minimap_mod}"
@@ -171,12 +186,6 @@ jar {
     ])
   }
 }
-
-// Example configuration to allow publishing using the maven-publish task
-// This is the preferred method to reobfuscate your jar file
-jar.finalizedBy('reobfJar')
-// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
-//publish.dependsOn('reobfJar')
 
 publishing {
   publications {

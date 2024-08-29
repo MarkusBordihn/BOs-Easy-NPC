@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public final class Constants {
@@ -61,7 +60,6 @@ public final class Constants {
   public static final String CONTAINER_PREFIX = TEXT_PREFIX + "container.";
   public static final UUID EMPTY_UUID = new UUID(0L, 0L);
   public static final String ENTITY_PREFIX = "entity." + MOD_ID + ".";
-  public static final Component EMPTY_TEXT_COMPONENT = Component.literal("");
   // Colors
   public static final int FONT_COLOR_BLACK = 0;
   public static final int FONT_COLOR_DARK_GREEN = 43520;

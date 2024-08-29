@@ -24,7 +24,11 @@ public class CompatConstants {
   public static final String MOD_EPIC_FIGHT_ID = "epicfight";
   public static final String MOD_EPIC_FIGHT_NAME = "Epic Fight";
   public static final String MOD_EPIC_FIGHT_PREFIX = "epic_fight_";
+  public static final String MOD_COBBLEMON_ID = "cobblemon";
+  public static final String MOD_COBBLEMON_NAME = "Cobblemon";
+  public static final String MOD_COBBLEMON_PREFIX = "cobblemon_";
   public static boolean MOD_EPIC_FIGHT_LOADED = false;
+  public static boolean MOD_COBBLEMON_LOADED = false;
 
   private CompatConstants() {}
 }

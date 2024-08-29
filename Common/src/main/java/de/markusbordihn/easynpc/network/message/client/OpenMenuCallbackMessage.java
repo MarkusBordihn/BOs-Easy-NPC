@@ -83,6 +83,8 @@ public record OpenMenuCallbackMessage(UUID uuid, UUID menuId, CompoundTag data)
     // Check if additional screen data is available and re-use some of the data.
     if (ClientMenuManager.hasAdditionalScreenData()) {
       AdditionalScreenData additionalScreenData = ClientMenuManager.getAdditionalScreenData();
+
+      // Store dialog data set if available.
       if (additionalScreenData.hasDialogDataSet()) {
         DialogDataManager.addDialogDataSet(this.uuid, additionalScreenData.getDialogDataSet());
       }

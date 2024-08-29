@@ -40,7 +40,7 @@ import net.minecraftforge.network.SimpleChannel;
 
 public class NetworkHandler implements NetworkHandlerInterface {
 
-  private static final int PROTOCOL_VERSION = 21;
+  private static final int PROTOCOL_VERSION = 22;
   public static final SimpleChannel INSTANCE =
       ChannelBuilder.named(new ResourceLocation(Constants.MOD_ID, "network"))
           .networkProtocolVersion(PROTOCOL_VERSION)
@@ -99,14 +99,14 @@ public class NetworkHandler implements NetworkHandlerInterface {
   }
 
   @Override
-  public <M extends NetworkMessageRecord> void registerClientPayloadType(Type<M> type,
-      StreamCodec<RegistryFriendlyByteBuf, M> codec) {
+  public <M extends NetworkMessageRecord> void registerClientPayloadType(
+      Type<M> type, StreamCodec<RegistryFriendlyByteBuf, M> codec) {
     // Not needed for Forge.
   }
 
   @Override
-  public <M extends NetworkMessageRecord> void registerServerPayloadType(Type<M> type,
-      StreamCodec<RegistryFriendlyByteBuf, M> codec) {
+  public <M extends NetworkMessageRecord> void registerServerPayloadType(
+      Type<M> type, StreamCodec<RegistryFriendlyByteBuf, M> codec) {
     // Not needed for Forge.
   }
 
