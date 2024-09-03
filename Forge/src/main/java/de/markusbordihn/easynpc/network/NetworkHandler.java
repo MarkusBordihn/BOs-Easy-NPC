@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.Optional;
 import java.util.function.Function;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -67,11 +68,21 @@ public class NetworkHandler implements NetworkHandlerInterface {
 
   @Override
   public void sendToServer(final NetworkMessageRecord networkMessageRecord) {
-    try {
-      INSTANCE.sendToServer(networkMessageRecord);
-    } catch (Exception e) {
-      log.error("Failed to send {} to server: {}", networkMessageRecord, e);
-    }
+    DistExecutor.unsafeRunWhenOn(
+        Dist.CLIENT,
+        () ->
+            () -> {
+              if (Minecraft.getInstance().getConnection() == null) {
+                log.error(
+                    "Failed to send {} to server: No connection available", networkMessageRecord);
+                return;
+              }
+              try {
+                INSTANCE.sendToServer(networkMessageRecord);
+              } catch (Exception e) {
+                log.error("Failed to send {} to server:", networkMessageRecord, e);
+              }
+            });
   }
 
   @Override
@@ -80,16 +91,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
     try {
       INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), networkMessageRecord);
     } catch (Exception e) {
-      log.error("Failed to send {} to player {}: {}", networkMessageRecord, serverPlayer, e);
-    }
-  }
-
-  @Override
-  public void sendToAllPlayers(final NetworkMessageRecord networkMessageRecord) {
-    try {
-      INSTANCE.send(PacketDistributor.ALL.noArg(), networkMessageRecord);
-    } catch (Exception e) {
-      log.error("Failed to send {} to all players: {}", networkMessageRecord, e);
+      log.error("Failed to send {} to player {}:", networkMessageRecord, serverPlayer, e);
     }
   }
 

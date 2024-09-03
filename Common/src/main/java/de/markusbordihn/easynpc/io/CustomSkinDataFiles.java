@@ -108,7 +108,7 @@ public class CustomSkinDataFiles {
                   skinPath -> CustomTextureManager.registerTexture(skinModel, skinPath.toFile()));
         } catch (IOException e) {
           log.error(
-              "Error reading custom skin files from {} for {}:{}", skinModelFolder, skinModel, e);
+              "Error reading custom skin files from {} for {}:", skinModelFolder, skinModel, e);
         }
       }
     }
@@ -137,8 +137,7 @@ public class CustomSkinDataFiles {
       log.info("Created new skin data folder {} at {}!", skinModelName, skinDataFolderPath);
       return Files.createDirectories(skinDataFolderPath);
     } catch (IOException e) {
-      log.error(
-          "Error creating skin data folder {} at {}:{}", skinModelName, skinDataFolderPath, e);
+      log.error("Error creating skin data folder {} at {}:", skinModelName, skinDataFolderPath, e);
     }
     return null;
   }

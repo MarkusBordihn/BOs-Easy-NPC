@@ -135,7 +135,7 @@ public class DataFileHandler {
         }
       }
     } catch (Exception e) {
-      log.error("Failed to load resource {}!", resourceLocation, e);
+      log.error("Failed to load resource {}:", resourceLocation, e);
     }
   }
 

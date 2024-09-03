@@ -393,7 +393,7 @@ public class PresetHandler {
       NbtIo.writeCompressed(compoundTag, file);
       return true;
     } catch (IOException exception) {
-      log.error("Failed to export preset file {} with {} !", file, compoundTag, exception);
+      log.error("Failed to export preset file {} with {}:", file, compoundTag, exception);
       return false;
     }
   }

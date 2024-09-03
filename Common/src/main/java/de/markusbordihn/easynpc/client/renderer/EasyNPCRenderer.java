@@ -88,7 +88,7 @@ public interface EasyNPCRenderer<E extends PathfinderMob, M extends EntityModel<
         return true;
       } catch (Exception exception) {
         log.error(
-            "Failed to render custom living entity {} ({}): {}",
+            "Failed to render custom living entity {} ({}):",
             customEntity,
             renderEntityType,
             exception);
@@ -108,10 +108,7 @@ public interface EasyNPCRenderer<E extends PathfinderMob, M extends EntityModel<
         return true;
       } catch (Exception exception) {
         log.error(
-            "Failed to render custom entity {} ({}): {}",
-            customEntity,
-            renderEntityType,
-            exception);
+            "Failed to render custom entity {} ({}):", customEntity, renderEntityType, exception);
         EntityTypeManager.addUnsupportedEntityType(renderEntityType);
         return false;
       }

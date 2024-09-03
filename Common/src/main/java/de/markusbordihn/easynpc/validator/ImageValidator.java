@@ -45,7 +45,7 @@ public class ImageValidator {
     try {
       image = ImageIO.read(remoteUrl);
     } catch (IllegalArgumentException | IOException exception) {
-      log.error("Unable to get any valid image from URL {}!", remoteUrl);
+      log.error("Unable to get any valid image from URL {}:", remoteUrl, exception);
       return false;
     }
 

@@ -161,8 +161,21 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
   }
 
   private void navigateToActionDataEditor() {
-    NetworkMessageHandlerManager.getServerHandler()
-        .openActionDataEditor(this.getEasyNPCUUID(), actionEventType, configurationType);
+    if (configurationType != null && configurationType != ConfigurationType.NONE) {
+      NetworkMessageHandlerManager.getServerHandler()
+          .openActionDataEditor(this.getEasyNPCUUID(), actionEventType, configurationType);
+    } else if (editorType != null
+        && editorType == EditorType.DIALOG_BUTTON
+        && this.getDialogUUID() != null
+        && this.getDialogButtonUUID() != null) {
+      NetworkMessageHandlerManager.getServerHandler()
+          .openActionDataEditor(
+              this.getEasyNPCUUID(), editorType, this.getDialogUUID(), this.getDialogButtonUUID());
+    } else {
+      log.error("No valid navigation found!");
+      NetworkMessageHandlerManager.getServerHandler()
+          .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.MAIN);
+    }
   }
 
   private void handleBackNavigation() {
