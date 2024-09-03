@@ -40,6 +40,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -56,18 +57,20 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
 
   public static final int BUTTON_HEIGHT = 18;
   public static final int BUTTON_WIDTH = 92;
-  private static final Map<String, ConfigurationType> menuButtons =
-      Map.of(
-          "dialog", ConfigurationType.DIALOG,
-          "actions", ConfigurationType.BASIC_ACTION,
-          "equipment", ConfigurationType.EQUIPMENT,
-          "scaling", ConfigurationType.SCALING,
-          "pose", ConfigurationType.POSE,
-          "position", ConfigurationType.DEFAULT_POSITION,
-          "rotation", ConfigurationType.DEFAULT_ROTATION,
-          "trading", ConfigurationType.TRADING,
-          "attributes", ConfigurationType.ABILITIES_ATTRIBUTE,
-          "objective", ConfigurationType.BASIC_OBJECTIVE);
+  private static final Map<String, ConfigurationType> menuButtons = new LinkedHashMap<>();
+
+  static {
+    menuButtons.put("actions", ConfigurationType.BASIC_ACTION);
+    menuButtons.put("attributes", ConfigurationType.ABILITIES_ATTRIBUTE);
+    menuButtons.put("dialog", ConfigurationType.DIALOG);
+    menuButtons.put("equipment", ConfigurationType.EQUIPMENT);
+    menuButtons.put("objective", ConfigurationType.BASIC_OBJECTIVE);
+    menuButtons.put("pose", ConfigurationType.POSE);
+    menuButtons.put("position", ConfigurationType.DEFAULT_POSITION);
+    menuButtons.put("rotation", ConfigurationType.DEFAULT_ROTATION);
+    menuButtons.put("scaling", ConfigurationType.SCALING);
+    menuButtons.put("trading", ConfigurationType.TRADING);
+  }
 
   private Button copyUUIDButton;
   private String formerName = "";

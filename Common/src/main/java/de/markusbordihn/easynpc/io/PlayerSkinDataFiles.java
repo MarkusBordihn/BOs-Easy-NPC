@@ -83,9 +83,10 @@ public class PlayerSkinDataFiles {
       return Files.createDirectories(skinDataFolderPath);
     } catch (IOException e) {
       log.error(
-          "Could not create player skin data folder {} at {}!",
+          "Could not create player skin data folder {} at {}:",
           skinModelName,
-          playerSkinDataFolder.resolve(skinModelName));
+          playerSkinDataFolder.resolve(skinModelName),
+          e);
     }
     return null;
   }
