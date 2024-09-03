@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -47,20 +48,26 @@ public class NetworkHandler implements NetworkHandlerInterface {
 
   @Override
   public void sendToServer(final NetworkMessageRecord networkMessageRecord) {
-    ClientPlayNetworking.send(networkMessageRecord.id(), networkMessageRecord.payload());
+    if (Minecraft.getInstance().getConnection() == null) {
+      log.warn("Failed to send {} to server: No connection available", networkMessageRecord);
+      return;
+    }
+    try {
+      ClientPlayNetworking.send(networkMessageRecord.id(), networkMessageRecord.payload());
+    } catch (Exception e) {
+      log.error("Failed to send {} to server:", networkMessageRecord, e);
+    }
   }
 
   @Override
   public void sendToPlayer(
       final NetworkMessageRecord networkMessageRecord, final ServerPlayer serverPlayer) {
-    ServerPlayNetworking.send(
-        serverPlayer, networkMessageRecord.id(), networkMessageRecord.payload());
-  }
-
-  @Override
-  public void sendToAllPlayers(final NetworkMessageRecord networkMessageRecord) {
-    // PlayerLookup.all(EnvironmentManager.getServer()).forEach(
-    //    player -> sendToPlayer(networkMessageRecord, player));
+    try {
+      ServerPlayNetworking.send(
+          serverPlayer, networkMessageRecord.id(), networkMessageRecord.payload());
+    } catch (Exception e) {
+      log.error("Failed to send {} to player {}:", networkMessageRecord, serverPlayer, e);
+    }
   }
 
   @Override
@@ -76,7 +83,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
             networkMessage.handleClient();
           });
     } catch (Exception e) {
-      log.error("Failed to register network message handler {}:", networkMessageRecord, e);
+      log.error("Failed to register client network message handler {}:", networkMessageRecord, e);
     }
   }
 
@@ -93,7 +100,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
             networkMessage.handleServer(serverPlayer);
           });
     } catch (Exception e) {
-      log.error("Failed to register network message handler {}:", messageID, e);
+      log.error("Failed to register server network message handler {}:", messageID, e);
     }
   }
 }

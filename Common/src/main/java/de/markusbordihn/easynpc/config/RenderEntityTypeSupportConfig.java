@@ -140,7 +140,7 @@ Render Entity Type Support Configuration
               "moretotems:summoned_zombie",
               "orcz:decaystrikecustom",
               "orcz:wither_strikeringcustom",
-              "simple_mobs.ground_spike",
+              "simple_mobs:ground_spike",
               "simple_mobs:dragon_smoke",
               "simple_mobs:elemental_chain",
               "simple_mobs:lightning_spear",

@@ -50,7 +50,7 @@ public class ImportLocalPresetConfigurationScreen<T extends ConfigurationMenu>
           .importLocalPreset(
               getEasyNPCUUID(), NbtIo.readCompressed(presetFilePath.toFile()), resourceLocation);
     } catch (Exception e) {
-      log.error("Failed to import local preset file {}: {}", resourceLocation, e);
+      log.error("Failed to import local preset file {}:", resourceLocation, e);
     }
   }
 

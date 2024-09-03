@@ -170,7 +170,7 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
       Text.drawString(
           guiGraphics,
           this.font,
-          TextUtils.limitString(this.actionDataEntry.command(), 22),
+          TextUtils.limitString(this.actionDataEntry.command(), 16),
           fieldsLeft + VALUE_LEFT_POS + 2,
           top + 5,
           Constants.FONT_COLOR_BLACK);
@@ -178,7 +178,7 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
       Text.drawString(
           guiGraphics,
           this.font,
-          TextUtils.limitString(this.actionDataEntry.blockPos().toString(), 22),
+          TextUtils.limitString(this.actionDataEntry.blockPos().toString(), 16),
           fieldsLeft + VALUE_LEFT_POS + 2,
           top + 5,
           Constants.FONT_COLOR_BLACK);
