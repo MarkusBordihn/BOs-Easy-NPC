@@ -43,7 +43,7 @@ public class DefaultPresetDataFiles {
           .keySet()
           .stream();
     } catch (Exception e) {
-      log.error("Could not get default preset resource locations!", e);
+      log.error("Could not get default preset resource locations:", e);
     }
     return Stream.empty();
   }

@@ -122,7 +122,7 @@ public class DialogArgument implements ArgumentType<Pair<UUID, String>> {
     try {
       entitySelector = context.getArgument("target", EntitySelector.class);
     } catch (IllegalArgumentException e) {
-      log.error("Failed to get entity target selector from context {}: {}", context, e);
+      log.error("Failed to get entity target selector from context {}:", context, e);
       return SharedSuggestionProvider.suggest(new HashSet<>(), suggestionsBuilder);
     }
 

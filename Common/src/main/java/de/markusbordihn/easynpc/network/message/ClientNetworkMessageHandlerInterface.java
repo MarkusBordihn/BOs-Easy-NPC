@@ -68,18 +68,6 @@ public interface ClientNetworkMessageHandlerInterface {
     }
   }
 
-  default void syncData(EasyNPC<?> easyNPC) {
-    if (easyNPC != null) {
-      log.debug("Sync {} data to all players.", easyNPC);
-      NetworkHandlerManager.sendToAllPlayers(
-          new SyncDataMessage(
-              easyNPC.getUUID(),
-              easyNPC.getEasyNPCDialogData() != null
-                  ? easyNPC.getEasyNPCDialogData().getDialogDataSet()
-                  : null));
-    }
-  }
-
   default void syncData(EasyNPC<?> easyNPC, ServerPlayer serverPlayer) {
     if (easyNPC != null && serverPlayer != null) {
       log.debug("Sync {} data to player {}", easyNPC, serverPlayer);

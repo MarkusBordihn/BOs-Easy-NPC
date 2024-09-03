@@ -105,7 +105,7 @@ public class WorldPresetDataFiles {
         return filePaths.stream();
       }
     } catch (IOException exception) {
-      log.error("Could not read world preset data folder {}!", presetDataFolder, exception);
+      log.error("Could not read world preset data folder {}:", presetDataFolder, exception);
     }
 
     // Return a default or alternative stream in case of an exception
