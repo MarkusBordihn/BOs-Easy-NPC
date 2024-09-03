@@ -71,7 +71,7 @@ public class TextureManager {
       image = ImageIO.read(file);
     } catch (IllegalArgumentException | IOException exception) {
       log.error(
-          "{} Unable to load Texture file {} for {} because of:{}",
+          "{} Unable to load Texture file {} for {} because of:",
           LOG_PREFIX,
           file,
           textureModelKey,

@@ -123,8 +123,7 @@ public class ServerEntityData {
           (ServerDataItem<T>) this.customEntityDataMap.get(entityDataAccessor.getIndex());
       return serverDataItem;
     } catch (Exception exception) {
-      log.error(
-          "{} Failed to get data item for {} with {}", LOG_PREFIX, entityDataAccessor, exception);
+      log.error("{} Failed to get data item for {}:", LOG_PREFIX, entityDataAccessor, exception);
     }
     return null;
   }

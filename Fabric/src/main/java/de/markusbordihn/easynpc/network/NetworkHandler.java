@@ -26,6 +26,7 @@ import java.util.function.Function;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -57,6 +58,10 @@ public class NetworkHandler implements NetworkHandlerInterface {
 
   @Override
   public void sendToServer(final NetworkMessageRecord networkMessageRecord) {
+    if (Minecraft.getInstance().getConnection() == null) {
+      log.warn("Failed to send {} to server: No connection available", networkMessageRecord);
+      return;
+    }
     try {
       ClientPlayNetworking.send(networkMessageRecord);
     } catch (Exception e) {
@@ -72,12 +77,6 @@ public class NetworkHandler implements NetworkHandlerInterface {
     } catch (Exception e) {
       log.error("Failed to send {} to player {}:", networkMessageRecord, serverPlayer, e);
     }
-  }
-
-  @Override
-  public void sendToAllPlayers(final NetworkMessageRecord networkMessageRecord) {
-    // PlayerLookup.all(EnvironmentManager.getServer()).forEach(
-    //    player -> sendToPlayer(networkMessageRecord, player));
   }
 
   @Override
@@ -105,7 +104,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
       ClientPlayNetworking.registerGlobalReceiver(
           type, (payload, context) -> payload.handleClient());
     } catch (Exception e) {
-      log.error("Failed to register network message handler {}:", networkMessageRecord, e);
+      log.error("Failed to register client network message handler {}:", networkMessageRecord, e);
     }
   }
 
@@ -120,7 +119,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
       ServerPlayNetworking.registerGlobalReceiver(
           type, (payload, context) -> payload.handleServer(context.player()));
     } catch (Exception e) {
-      log.error("Failed to register network message handler {}:", networkMessageRecord, e);
+      log.error("Failed to register sever network message handler {}:", networkMessageRecord, e);
     }
   }
 }

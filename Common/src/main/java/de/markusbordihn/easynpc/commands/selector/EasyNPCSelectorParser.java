@@ -74,7 +74,7 @@ public class EasyNPCSelectorParser extends EntitySelectorParser {
                 }
               });
     } catch (InterruptedException | ExecutionException e) {
-      log.error("Failed to get suggestions: {}", e.getMessage());
+      log.error("Failed to get suggestions:", e);
     }
 
     // Add known UUIDs to suggestions

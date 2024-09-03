@@ -104,13 +104,6 @@ public class NetworkHandlerManager {
     }
   }
 
-  public static void sendToAllPlayers(NetworkMessageRecord networkMessageRecord) {
-    NetworkHandlerInterface networkHandler = getHandler();
-    if (networkHandler != null) {
-      networkHandler.sendToAllPlayers(networkMessageRecord);
-    }
-  }
-
   public static void registerPayloadTypes() {
     registerClientPayloadTypes();
     registerServerPayloadTypes();

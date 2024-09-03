@@ -30,7 +30,7 @@ minecraft {
       property 'forge.enabledGameTestNamespaces', "${project.mod_id}"
 
       mods {
-        easy_npc {
+        "${project.mod_id}" {
           source sourceSets.main
         }
       }
@@ -53,7 +53,7 @@ minecraft {
       property 'forge.enabledGameTestNamespaces', "${project.mod_id}"
 
       mods {
-        easy_npc {
+        "${project.mod_id}" {
           source sourceSets.main
         }
       }
@@ -70,7 +70,7 @@ minecraft {
       property 'forge.enabledGameTestNamespaces', "${project.mod_id}"
 
       mods {
-        easy_npc {
+        "${project.mod_id}" {
           source sourceSets.main
         }
       }
@@ -88,7 +88,7 @@ minecraft {
 
       args '--mod', "${project.mod_id}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
       mods {
-        easy_npc {
+        "${project.mod_id}" {
           source sourceSets.main
         }
       }
