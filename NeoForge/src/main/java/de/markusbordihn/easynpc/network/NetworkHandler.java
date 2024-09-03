@@ -66,16 +66,6 @@ public class NetworkHandler implements NetworkHandlerInterface {
 
   @Override
   public <M extends NetworkMessageRecord> void sendToServer(M networkMessageRecord) {
-    try {
-      INSTANCE.send(PacketDistributor.SERVER.noArg(), networkMessageRecord);
-    } catch (Exception e) {
-      log.error("Failed to send {} to server:", networkMessageRecord, e);
-    }
-  }
-
-  @Override
-  public <M extends NetworkMessageRecord> void sendToPlayer(
-      M networkMessageRecord, ServerPlayer serverPlayer) {
     DistExecutor.unsafeRunWhenOn(
         Dist.CLIENT,
         () ->
@@ -86,16 +76,25 @@ public class NetworkHandler implements NetworkHandlerInterface {
                 return;
               }
               try {
-                INSTANCE.send(
-                    PacketDistributor.PLAYER.with(() -> serverPlayer), networkMessageRecord);
+                INSTANCE.send(PacketDistributor.SERVER.noArg(), networkMessageRecord);
               } catch (Exception e) {
-                log.error(
-                    "Failed to send {} to player {}:",
-                    networkMessageRecord,
-                    serverPlayer.getName().getString(),
-                    e);
+                log.error("Failed to send {} to server:", networkMessageRecord, e);
               }
             });
+  }
+
+  @Override
+  public <M extends NetworkMessageRecord> void sendToPlayer(
+      M networkMessageRecord, ServerPlayer serverPlayer) {
+    try {
+      INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), networkMessageRecord);
+    } catch (Exception e) {
+      log.error(
+          "Failed to send {} to player {}:",
+          networkMessageRecord,
+          serverPlayer.getName().getString(),
+          e);
+    }
   }
 
   @Override
