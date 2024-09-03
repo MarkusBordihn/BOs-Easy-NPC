@@ -22,9 +22,12 @@ package de.markusbordihn.easynpc.network;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.function.Function;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.DistExecutor;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
 import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
@@ -57,11 +60,21 @@ public class NetworkHandler implements NetworkHandlerInterface {
 
   @Override
   public <M extends NetworkMessageRecord> void sendToServer(M networkMessageRecord) {
-    try {
-      PacketDistributor.SERVER.noArg().send(networkMessageRecord);
-    } catch (Exception e) {
-      log.error("Failed to send {} to server, got error: {}", networkMessageRecord, e);
-    }
+    DistExecutor.unsafeRunWhenOn(
+        Dist.CLIENT,
+        () ->
+            () -> {
+              if (Minecraft.getInstance().getConnection() == null) {
+                log.error(
+                    "Failed to send {} to server: No connection available", networkMessageRecord);
+                return;
+              }
+              try {
+                PacketDistributor.SERVER.noArg().send(networkMessageRecord);
+              } catch (Exception e) {
+                log.error("Failed to send {} to server:", networkMessageRecord, e);
+              }
+            });
   }
 
   @Override
@@ -71,19 +84,10 @@ public class NetworkHandler implements NetworkHandlerInterface {
       PacketDistributor.PLAYER.with(serverPlayer).send(networkMessageRecord);
     } catch (Exception e) {
       log.error(
-          "Failed to send {} to player {}: {}",
+          "Failed to send {} to player {}:",
           networkMessageRecord,
           serverPlayer.getName().getString(),
           e);
-    }
-  }
-
-  @Override
-  public void sendToAllPlayers(final NetworkMessageRecord networkMessageRecord) {
-    try {
-      PacketDistributor.ALL.noArg().send(networkMessageRecord);
-    } catch (Exception e) {
-      log.error("Failed to send {} to all players: {}", networkMessageRecord, e);
     }
   }
 

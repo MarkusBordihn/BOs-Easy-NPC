@@ -104,7 +104,7 @@ public record ExportWorldPresetMessage(UUID uuid, String name) implements Networ
       NbtIo.writeCompressed(compoundTag, presetFile.toPath());
     } catch (final IOException exception) {
       log.error(
-          "Failed to export EasyNPC {} with {} and skin {} to {}",
+          "Failed to export EasyNPC {} with {} and skin {} to {}:",
           name,
           easyNPC,
           skinModel,

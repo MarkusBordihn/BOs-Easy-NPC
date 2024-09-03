@@ -106,7 +106,7 @@ public record ExportClientPresetMessage(
       NbtIo.writeCompressed(data, presetFile.toPath());
     } catch (final IOException exception) {
       log.error(
-          "Failed to export EasyNPC {} with UUID {} and skin {} to {}",
+          "Failed to export EasyNPC {} with UUID {} and skin {} to {}:",
           name,
           uuid,
           skinModel,
