@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.network;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.function.Function;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -58,10 +59,14 @@ public class NetworkHandler implements NetworkHandlerInterface {
 
   @Override
   public <M extends NetworkMessageRecord> void sendToServer(M networkMessageRecord) {
+    if (Minecraft.getInstance().getConnection() == null) {
+      log.error("Failed to send {} to server: No connection available", networkMessageRecord);
+      return;
+    }
     try {
       PacketDistributor.sendToServer(networkMessageRecord);
     } catch (Exception e) {
-      log.error("Failed to send {} to server: {}", networkMessageRecord, e);
+      log.error("Failed to send {} to server:", networkMessageRecord, e);
     }
   }
 
@@ -72,19 +77,10 @@ public class NetworkHandler implements NetworkHandlerInterface {
       PacketDistributor.sendToPlayer(serverPlayer, networkMessageRecord);
     } catch (Exception e) {
       log.error(
-          "Failed to send {} to player {}: {}",
+          "Failed to send {} to player {}:",
           networkMessageRecord,
           serverPlayer.getName().getString(),
           e);
-    }
-  }
-
-  @Override
-  public void sendToAllPlayers(final NetworkMessageRecord networkMessageRecord) {
-    try {
-      PacketDistributor.sendToAllPlayers(networkMessageRecord);
-    } catch (Exception e) {
-      log.error("Failed to send {} to all players: {}", networkMessageRecord, e);
     }
   }
 

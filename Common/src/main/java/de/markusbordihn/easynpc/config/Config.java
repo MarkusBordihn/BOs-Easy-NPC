@@ -75,7 +75,7 @@ public class Config {
     try (var reader = Files.newBufferedReader(configFile.toPath())) {
       properties.load(reader);
     } catch (Exception e) {
-      log.error("{} Failed to read configuration file {}: {}", LOG_PREFIX, configFile, e);
+      log.error("{} Failed to read configuration file {}:", LOG_PREFIX, configFile, e);
     }
     return properties;
   }
@@ -104,7 +104,7 @@ public class Config {
     try {
       resultPath = Files.createDirectories(configPath);
     } catch (Exception e) {
-      log.error("{} Failed to create configuration folder {}: {}", LOG_PREFIX, configPath, e);
+      log.error("{} Failed to create configuration folder {}:", LOG_PREFIX, configPath, e);
     }
     return resultPath;
   }
@@ -141,7 +141,7 @@ public class Config {
       try {
         return Integer.parseInt(properties.getProperty(key).trim());
       } catch (Exception e) {
-        log.error("{} Failed to parse Integer value for key {}: {}", LOG_PREFIX, key, e);
+        log.error("{} Failed to parse Integer value for key {}:", LOG_PREFIX, key, e);
       }
     }
     properties.setProperty(key, Integer.toString(defaultValue));
@@ -154,7 +154,7 @@ public class Config {
       try {
         return Boolean.parseBoolean(properties.getProperty(key).trim());
       } catch (Exception e) {
-        log.error("{} Failed to parse Boolean value for key {}: {}", LOG_PREFIX, key, e);
+        log.error("{} Failed to parse Boolean value for key {}:", LOG_PREFIX, key, e);
       }
     }
     properties.setProperty(key, Boolean.toString(defaultValue));
@@ -168,7 +168,7 @@ public class Config {
         String value = properties.getProperty(key).trim();
         return value.isEmpty() ? Set.of() : Set.of(value.split(","));
       } catch (Exception e) {
-        log.error("{} Failed to parse Set[String] for key {}: {}", LOG_PREFIX, key, e);
+        log.error("{} Failed to parse Set[String] for key {}:", LOG_PREFIX, key, e);
       }
     }
     properties.setProperty(key, String.join(",", defaultValue));

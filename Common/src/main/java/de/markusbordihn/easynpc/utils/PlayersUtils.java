@@ -117,7 +117,7 @@ public class PlayersUtils {
       userUUIDCache.put(username, userUUID);
       return userUUID;
     } catch (IOException e) {
-      log.error("Unable to get UUID from user {}: {}", username, e);
+      log.error("Unable to get UUID from user {}:", username, e);
       userUUIDCache.put(username, null);
       return null;
     }
@@ -141,7 +141,7 @@ public class PlayersUtils {
       }
       return getUserTextureFromSessionResponse(data);
     } catch (IOException ioException) {
-      log.error("Unable to get user texture with {}, because of: {}", sessionURL, ioException);
+      log.error("Unable to get user texture with {}:", sessionURL, ioException);
       return null;
     }
   }

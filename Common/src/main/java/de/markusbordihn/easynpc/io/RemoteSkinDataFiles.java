@@ -81,9 +81,10 @@ public class RemoteSkinDataFiles {
       return Files.createDirectories(skinDataFolderPath);
     } catch (IOException e) {
       log.error(
-          "Could not create remote skin data folder {} at {}!",
+          "Could not create remote skin data folder {} at {}:",
           skinModelName,
-          remoteSkinDataFolder.resolve(skinModelName));
+          remoteSkinDataFolder.resolve(skinModelName),
+          e);
     }
     return null;
   }

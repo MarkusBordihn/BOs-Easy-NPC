@@ -56,6 +56,4 @@ public interface NetworkHandlerInterface {
 
   <M extends NetworkMessageRecord> void sendToPlayer(
       M networkMessageRecord, ServerPlayer serverPlayer);
-
-  <M extends NetworkMessageRecord> void sendToAllPlayers(M networkMessageRecord);
 }

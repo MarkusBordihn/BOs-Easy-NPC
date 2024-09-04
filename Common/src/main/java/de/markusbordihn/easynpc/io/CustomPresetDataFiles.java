@@ -75,7 +75,7 @@ public class CustomPresetDataFiles {
       log.info("Creating preset data folder {} at {} ...", skinModelName, presetDataFolderPath);
       return Files.createDirectories(presetDataFolderPath);
     } catch (IOException exception) {
-      log.error("Could not create preset data folder {}!", skinDataFolder, exception);
+      log.error("Could not create preset data folder {}:", skinDataFolder, exception);
     }
     return null;
   }
@@ -134,7 +134,7 @@ public class CustomPresetDataFiles {
         return filePaths.stream();
       }
     } catch (IOException exception) {
-      log.error("Could not read custom preset data folder {}!", presetDataFolder, exception);
+      log.error("Could not read custom preset data folder {}:", presetDataFolder, exception);
     }
 
     // Return a default or alternative stream in case of an exception

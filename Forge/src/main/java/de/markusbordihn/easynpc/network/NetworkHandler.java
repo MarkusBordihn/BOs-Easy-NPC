@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.network;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.function.Function;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -62,11 +63,21 @@ public class NetworkHandler implements NetworkHandlerInterface {
 
   @Override
   public <M extends NetworkMessageRecord> void sendToServer(M networkMessageRecord) {
-    try {
-      INSTANCE.send(networkMessageRecord, PacketDistributor.SERVER.noArg());
-    } catch (Exception e) {
-      log.error("Failed to send {} to server: {}", networkMessageRecord, e);
-    }
+    DistExecutor.unsafeRunWhenOn(
+        Dist.CLIENT,
+        () ->
+            () -> {
+              if (Minecraft.getInstance().getConnection() == null) {
+                log.error(
+                    "Failed to send {} to server: No connection available", networkMessageRecord);
+                return;
+              }
+              try {
+                INSTANCE.send(networkMessageRecord, PacketDistributor.SERVER.noArg());
+              } catch (Exception e) {
+                log.error("Failed to send {} to server:", networkMessageRecord, e);
+              }
+            });
   }
 
   @Override
@@ -76,19 +87,10 @@ public class NetworkHandler implements NetworkHandlerInterface {
       INSTANCE.send(networkMessageRecord, PacketDistributor.PLAYER.with(serverPlayer));
     } catch (Exception e) {
       log.error(
-          "Failed to send {} to player {}: {}",
+          "Failed to send {} to player {}:",
           networkMessageRecord,
           serverPlayer.getName().getString(),
           e);
-    }
-  }
-
-  @Override
-  public void sendToAllPlayers(final NetworkMessageRecord networkMessageRecord) {
-    try {
-      INSTANCE.send(networkMessageRecord, PacketDistributor.ALL.noArg());
-    } catch (Exception e) {
-      log.error("Failed to send {} to all players: {}", networkMessageRecord, e);
     }
   }
 

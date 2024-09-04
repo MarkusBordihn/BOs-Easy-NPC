@@ -8,6 +8,15 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.5.9
+
+- Reworked the whole wiki and documentation to match the 6.x release version.
+- Fixed #317 by adding additional checks for edge cases after crashed clients.
+- Fixed random order of main configuration buttons.
+- Fixed overlapping text of Action Data List editor screen.
+- Fixed typing issue with Render Entity Type Support Configuration.
+- Fixed missing update for up and down buttons for Action Data List editor screen within a dialog.
+
 ### 5.5.8
 
 - Fixed #312 by making sure

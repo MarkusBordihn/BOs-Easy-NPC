@@ -31,7 +31,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public record ChangeNameMessage(UUID uuid, String name, int color, boolean visible) implements NetworkMessageRecord {
+public record ChangeNameMessage(UUID uuid, String name, int color, boolean visible)
+    implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
       ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "change_name");
