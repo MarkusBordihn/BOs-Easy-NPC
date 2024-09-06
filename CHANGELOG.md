@@ -8,6 +8,11 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.6.0 (Release Version)
+
+Note: Because of some fundamental changes and improvements, it could be that some of the data are
+not compatible with older versions. Please backup your world / NPCs before updating!
+
 ### 5.5.9
 
 - Reworked the whole wiki and documentation to match the 6.x release version.
