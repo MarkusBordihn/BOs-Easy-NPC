@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.tabs;
 
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.item.ModItems;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -26,13 +27,13 @@ import net.minecraft.world.item.ItemStack;
 public class ModTabs {
 
   public static final CreativeModeTab TAB_CONFIG_ITEMS =
-      new CreativeModeTab("easy_npc.config_items") {
+      new CreativeModeTab(Constants.MOD_PREFIX + "config_items") {
         public ItemStack makeIcon() {
           return ModItems.EASY_NPC_WAND.get().getDefaultInstance();
         }
       };
   public static final CreativeModeTab TAB_SPAWN_EGGS =
-      new CreativeModeTab("easy_npc.spawn_eggs") {
+      new CreativeModeTab(Constants.MOD_PREFIX + "spawn_eggs") {
         public ItemStack makeIcon() {
           return ModItems.FAIRY_NPC_SPAWN_EGG.get().getDefaultInstance();
         }
