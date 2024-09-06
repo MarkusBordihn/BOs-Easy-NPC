@@ -1,4 +1,4 @@
-# 🗣 Easy NPC (1.21)
+# 🗣 Easy NPC (1.21.1)
 
 ![Easy NPC Versions](http://cf.way2muchnoise.eu/versions/Minecraft_559312_all.svg)
 
@@ -12,10 +12,10 @@
 [![Open Issues](https://img.shields.io/github/issues/MarkusBordihn/BOs-Easy-NPC?style=flat&logo=Github&color=red)](https://github.com/MarkusBordihn/BOs-Easy-NPC/issues?q=is%3Aopen+%21label%3Aenhancement)
 [![Closed Issues](https://img.shields.io/github/issues-closed/MarkusBordihn/BOs-Easy-NPC?style=flat&logo=Github)](https://github.com/MarkusBordihn/BOs-Easy-NPC/issues?q=is%3Aclosed)
 
-[![Java CI with Gradle](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/gradle.yml/badge.svg?branch=1.20.1)](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/gradle.yml)
-[![Run game tests on Fabric](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/game-test-fabric.yml/badge.svg?branch=1.20.2)](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/game-test-fabric.yml)
-[![Run game tests on Forge](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/game-test-forge.yml/badge.svg?branch=1.20.2)](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/game-test-forge.yml)
-[![Run game tests on NeoForge](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/game-test-neoforge.yml/badge.svg?branch=1.20.2)](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/game-test-neoforge.yml)
+[![Java CI with Gradle](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/gradle.yml/badge.svg?branch=1.21.1)](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/gradle.yml)
+[![Run game tests on Fabric](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/game-test-fabric.yml/badge.svg?branch=1.21.1)](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/game-test-fabric.yml)
+[![Run game tests on Forge](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/game-test-forge.yml/badge.svg?branch=1.21.1)](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/game-test-forge.yml)
+[![Run game tests on NeoForge](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/game-test-neoforge.yml/badge.svg?branch=1.21.1)](https://github.com/MarkusBordihn/BOs-Easy-NPC/actions/workflows/game-test-neoforge.yml)
 
 [![Wiki](https://img.shields.io/badge/dynamic/json?label=Wiki&labelColor=black&color=grey&query=title&url=https://api.modrinth.com/v2/project/CgGEe1h3&style=flat&logo=github)][wiki]
 [![Support me on Ko-fi](https://img.shields.io/badge/Support_me_on_Ko--fi-!?labelColor=black&style=flat&logo=ko-fi)][ko-fi]

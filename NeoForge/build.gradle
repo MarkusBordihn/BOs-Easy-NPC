@@ -26,7 +26,7 @@ runs {
 
   client2 {
     configure('client')
-    workingDirectory project.file('run/client2')
+    workingDirectory project.file('runs/client2')
     programArguments.addAll '--username', 'guest_player'
   }
 

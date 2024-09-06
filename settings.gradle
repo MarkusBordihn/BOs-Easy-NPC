@@ -20,5 +20,5 @@ pluginManagement {
   }
 }
 
-rootProject.name = 'Easy NPC 1.21'
+rootProject.name = 'Easy NPC 1.21.1'
 include("Common", "Fabric", "Forge", "NeoForge")

@@ -60,8 +60,8 @@ public class EasyNPC {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  public EasyNPC() {
-    final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+  public EasyNPC(FMLJavaModLoadingContext context) {
+    IEventBus modEventBus = context.getModEventBus();
 
     log.info("Initializing {} (Forge) ...", Constants.MOD_NAME);
 

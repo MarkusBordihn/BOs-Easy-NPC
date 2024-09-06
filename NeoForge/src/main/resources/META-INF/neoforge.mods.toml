@@ -1,5 +1,5 @@
-modLoader = "javafml" #mandatory
-loaderVersion = "[2,)"
+modLoader = "javafml"
+loaderVersion = "[4,)"
 license = "MIT"
 issueTrackerURL = "https://github.com/MarkusBordihn/BOs-Easy-NPC/issues"
 
@@ -16,13 +16,13 @@ description = '''Create easily NPCs for your world or for your mods.'''
 [[dependencies.easy_npc]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21,)"
+versionRange = "[21.1.0,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.easy_npc]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21,1.22)"
+versionRange = "[1.21.1,1.22)"
 ordering = "NONE"
 side = "BOTH"
