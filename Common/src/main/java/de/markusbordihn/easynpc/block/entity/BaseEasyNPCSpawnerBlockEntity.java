@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.block.BaseEasyNPCSpawnerBlock;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetItem;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Random;
@@ -34,7 +35,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -345,7 +345,7 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
 
   @Override
   protected Component getDefaultName() {
-    return new TranslatableComponent(Constants.CONTAINER_PREFIX + NAME);
+    return TextComponent.getTranslatedTextRaw(Constants.CONTAINER_PREFIX + NAME);
   }
 
   @Override

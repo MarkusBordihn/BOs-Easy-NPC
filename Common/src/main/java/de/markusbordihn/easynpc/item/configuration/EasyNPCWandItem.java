@@ -23,10 +23,10 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
 import de.markusbordihn.easynpc.menu.MenuManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -142,6 +142,6 @@ public class EasyNPCWandItem extends Item {
   public void appendHoverText(
       ItemStack itemStack, Level level, List<Component> tooltipList, TooltipFlag tooltipFlag) {
     // Display description.
-    tooltipList.add(new TranslatableComponent(Constants.TEXT_ITEM_PREFIX + ID));
+    tooltipList.add(TextComponent.getTranslatedTextRaw(Constants.TEXT_ITEM_PREFIX + ID));
   }
 }

@@ -22,13 +22,13 @@ package de.markusbordihn.easynpc.data.dialog;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextFormattingCodes;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
@@ -116,7 +116,7 @@ public class DialogUtils {
     if (text == null || text.isEmpty()) {
       return 0;
     }
-    return getNumbersOfDialogLines(new TextComponent(text), maxLineLength, font);
+    return getNumbersOfDialogLines(TextComponent.getText(text), maxLineLength, font);
   }
 
   public static int getNumbersOfDialogLines(Component component, int maxLineLength, Font font) {

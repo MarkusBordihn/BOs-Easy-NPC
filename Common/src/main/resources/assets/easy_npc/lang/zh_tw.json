@@ -329,5 +329,5 @@
   "text.easy_npc.respawnNPC.confirmWarning": "NPC「%s」將會作為新的 NPC 重生，但設定、位置和 UUID 都相同！",
   "text.easy_npc.respawnNPC.respawnButton": "重生 NPC",
   "text.easy_npc.trading": "交易",
-  "text.easy_npc.trading.busy": "NPC 目前正忙於與 %s 進行另一筆交易。\n請等到交易完成。"
+  "text.easy_npc.trading.busy": "%1$s 目前正忙於與 %2$s 進行另一筆交易。\n請等到交易完成。"
 }

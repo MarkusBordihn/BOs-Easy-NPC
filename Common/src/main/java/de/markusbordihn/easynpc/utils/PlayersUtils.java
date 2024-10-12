@@ -49,8 +49,8 @@ public class PlayersUtils {
       "https://sessionserver.mojang.com/session/minecraft/profile/%s";
   private static final String API_PROFILE_URL =
       "https://api.mojang.com/users/profiles/minecraft/%s";
+  private static final Map<String, UUID> userUUIDCache = new HashMap<>();
   private static UUID lastUserUUIDForUserTexture;
-  private static Map<String, UUID> userUUIDCache = new HashMap<>();
 
   protected PlayersUtils() {}
 

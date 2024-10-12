@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.client.screen.configuration.main;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.ColorButton;
 import de.markusbordihn.easynpc.client.screen.components.CopyButton;
 import de.markusbordihn.easynpc.client.screen.components.DeleteButton;
@@ -39,6 +38,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -452,11 +452,10 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                 minecraft.setScreen(this);
               }
             },
-            new TranslatableComponent(Constants.TEXT_PREFIX + "respawnNPC.confirmQuestion"),
-            new TranslatableComponent(
-                Constants.TEXT_PREFIX + "respawnNPC.confirmWarning",
-                getEasyNPCEntity().getDisplayName().getString()),
-            new TranslatableComponent(Constants.TEXT_PREFIX + "respawnNPC.respawnButton"),
+            TextComponent.getTranslatedText("respawnNPC.confirmQuestion"),
+            TextComponent.getTranslatedText(
+                "respawnNPC.confirmWarning", getEasyNPCEntity().getDisplayName()),
+            TextComponent.getTranslatedText("respawnNPC.respawnButton"),
             CommonComponents.GUI_CANCEL));
   }
 
@@ -475,11 +474,10 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                 minecraft.setScreen(this);
               }
             },
-            new TranslatableComponent(Constants.TEXT_PREFIX + "removeNPC.deleteQuestion"),
-            new TranslatableComponent(
-                Constants.TEXT_PREFIX + "removeNPC.deleteWarning",
-                getEasyNPCEntity().getDisplayName().getString()),
-            new TranslatableComponent(Constants.TEXT_PREFIX + "removeNPC.deleteButton"),
+            TextComponent.getTranslatedText("removeNPC.deleteQuestion"),
+            TextComponent.getTranslatedText(
+                "removeNPC.deleteWarning", getEasyNPCEntity().getDisplayName()),
+            TextComponent.getTranslatedText("removeNPC.deleteButton"),
             CommonComponents.GUI_CANCEL));
   }
 

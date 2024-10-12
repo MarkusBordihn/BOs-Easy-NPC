@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.item.configuration;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
@@ -28,7 +29,6 @@ import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -226,15 +226,15 @@ public class EasyNPCPresetItem extends Item {
     if (hasPreset(itemStack)) {
       EntityType<?> entityType = getEntityType(itemStack);
       if (entityType != null) {
-        tooltipList.add(new TranslatableComponent(Constants.TEXT_ITEM_PREFIX + NAME));
+        tooltipList.add(TextComponent.getTranslatedTextRaw(Constants.TEXT_ITEM_PREFIX + NAME));
         String customName = getCustomName(itemStack);
         if (customName != null) {
           tooltipList.add(
-              new TranslatableComponent(
+              TextComponent.getTranslatedTextRaw(
                   Constants.TEXT_ITEM_PREFIX + NAME + ".custom_name", customName));
         }
         tooltipList.add(
-            new TranslatableComponent(
+            TextComponent.getTranslatedTextRaw(
                 Constants.TEXT_ITEM_PREFIX + NAME + ".entity_type", entityType.getDescription()));
       }
     }

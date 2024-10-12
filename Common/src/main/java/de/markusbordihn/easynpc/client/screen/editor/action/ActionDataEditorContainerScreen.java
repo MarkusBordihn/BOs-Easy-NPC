@@ -34,11 +34,11 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ActionDataEditorContainerScreen<T extends EditorMenu> extends EditorScreen<T> {
@@ -251,12 +251,10 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
                 this.minecraft.setScreen(this);
               }
             },
-            new TranslatableComponent(
-                Constants.TEXT_PREFIX + "removeActionDataEntry.deleteQuestion"),
-            new TranslatableComponent(
-                Constants.TEXT_PREFIX + "removeActionDataEntry.deleteWarning",
-                actionDataEntry.actionDataType()),
-            new TranslatableComponent(Constants.TEXT_PREFIX + "removeActionDataEntry.deleteButton"),
+            TextComponent.getTranslatedText("removeActionDataEntry.deleteQuestion"),
+            TextComponent.getTranslatedText(
+                "removeActionDataEntry.deleteWarning", actionDataEntry.actionDataType().name()),
+            TextComponent.getTranslatedText("removeActionDataEntry.deleteButton"),
             CommonComponents.GUI_CANCEL));
   }
 

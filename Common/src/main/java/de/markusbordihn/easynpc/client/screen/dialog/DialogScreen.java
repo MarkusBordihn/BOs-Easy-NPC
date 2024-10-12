@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogScreenLayout;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +42,6 @@ import java.util.List;
 import java.util.UUID;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -59,7 +59,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
   protected Button dialogForwardButton = null;
   protected Button dialogBackwardButton = null;
   protected String dialog;
-  protected TextComponent dialogComponent;
+  protected Component dialogComponent;
   protected int numberOfDialogLines = 1;
   protected int dialogPageIndex = 0;
   private List<FormattedCharSequence> cachedDialogComponents = Collections.emptyList();
@@ -125,7 +125,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
     }
 
     // Create dialog text component.
-    this.dialogComponent = new TextComponent(dialogText);
+    this.dialogComponent = TextComponent.getText(dialogText);
 
     // Split dialog text to lines.
     this.cachedDialogComponents =

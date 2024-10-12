@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.actions;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.AddButton;
 import de.markusbordihn.easynpc.client.screen.components.EditButton;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
@@ -30,9 +29,9 @@ import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ActionConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
@@ -90,10 +89,9 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
     ActionDataSet actionDataSet = this.getActionEventSet().getActionEvents(actionEventType);
     if (actionDataSet == null || actionDataSet.isEmpty()) {
       Component buttonLabel =
-          new TranslatableComponent(
-              Constants.TEXT_CONFIG_PREFIX + "add_action",
-              new TranslatableComponent(
-                  Constants.TEXT_CONFIG_PREFIX + actionEventType.name().toLowerCase()));
+          TextComponent.getTranslatedConfigText(
+              "add_action",
+              TextComponent.getTranslatedConfigText(actionEventType.name().toLowerCase()));
       return new AddButton(
               left,
               top,
@@ -109,10 +107,9 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
           .setRenderCenter(false);
     } else {
       Component buttonLabel =
-          new TranslatableComponent(
-              Constants.TEXT_CONFIG_PREFIX + "edit_action",
-              new TranslatableComponent(
-                  Constants.TEXT_CONFIG_PREFIX + actionEventType.name().toLowerCase()));
+          TextComponent.getTranslatedConfigText(
+              "edit_action",
+              TextComponent.getTranslatedConfigText(actionEventType.name().toLowerCase()));
       return new EditButton(
               left,
               top,

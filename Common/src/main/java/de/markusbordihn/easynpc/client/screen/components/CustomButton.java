@@ -22,11 +22,11 @@ package de.markusbordihn.easynpc.client.screen.components;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
 
 public class CustomButton extends Button {
@@ -41,7 +41,13 @@ public class CustomButton extends Button {
 
   public CustomButton(
       int left, int top, int width, int height, Component component, OnPress onPress) {
-    super(left, top, width, height, component != null ? component : new TextComponent(""), onPress);
+    super(
+        left,
+        top,
+        width,
+        height,
+        component != null ? component : TextComponent.getBlankText(),
+        onPress);
   }
 
   public boolean isHovered() {

@@ -22,12 +22,12 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.profession.Profession;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -89,7 +89,9 @@ public interface ProfessionData<T extends PathfinderMob> extends EasyNPC<T> {
 
   default Component getProfessionName() {
     Enum<?> profession = getProfession();
-    return profession != null ? TextUtils.normalizeName(profession.name()) : new TextComponent("");
+    return profession != null
+        ? TextUtils.normalizeName(profession.name())
+        : TextComponent.getBlankText();
   }
 
   default void defineSynchedProfessionData() {

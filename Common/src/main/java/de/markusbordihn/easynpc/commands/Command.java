@@ -21,10 +21,10 @@ package de.markusbordihn.easynpc.commands;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,7 +42,7 @@ public class Command {
   }
 
   public static int sendFailureMessage(CommandSourceStack context, String message) {
-    context.sendFailure(new TextComponent(message));
+    context.sendFailure(TextComponent.getText(message));
     return FAILURE;
   }
 
@@ -52,13 +52,13 @@ public class Command {
   }
 
   public static int sendSuccessMessage(CommandSourceStack context, String message) {
-    context.sendSuccess(new TextComponent(message), true);
+    context.sendSuccess(TextComponent.getText(message), true);
     return SINGLE_SUCCESS;
   }
 
   public static int sendSuccessMessage(
       CommandSourceStack context, String message, ChatFormatting formatting) {
-    context.sendSuccess(new TextComponent(message).withStyle(formatting), true);
+    context.sendSuccess(TextComponent.getText(message).withStyle(formatting), true);
     return SINGLE_SUCCESS;
   }
 

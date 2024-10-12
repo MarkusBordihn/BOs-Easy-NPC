@@ -22,13 +22,13 @@ package de.markusbordihn.easynpc.item;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Objects;
 import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -67,14 +67,14 @@ public class ModSpawnEggItem extends SpawnEggItem {
   public Component getName(ItemStack itemStack) {
     String descriptionId = this.getDescriptionId(itemStack);
     if (descriptionId.contains(SUFFIX)) {
-      return new TranslatableComponent(
+      return TextComponent.getTranslatedTextRaw(
           Constants.ITEM_PREFIX + "spawn_egg",
-          new TranslatableComponent(
+          TextComponent.getTranslatedTextRaw(
               this.getDescriptionId(itemStack)
                   .replace(Constants.ITEM_PREFIX, Constants.ENTITY_PREFIX)
                   .replace(SUFFIX, "")));
     }
-    return new TranslatableComponent(this.getDescriptionId(itemStack));
+    return TextComponent.getTranslatedTextRaw(this.getDescriptionId(itemStack));
   }
 
   @Override

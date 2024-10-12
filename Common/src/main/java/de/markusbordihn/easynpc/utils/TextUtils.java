@@ -19,10 +19,10 @@
 
 package de.markusbordihn.easynpc.utils;
 
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.regex.Pattern;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 
 public class TextUtils {
 
@@ -36,7 +36,7 @@ public class TextUtils {
   }
 
   public static Component normalizeName(String name) {
-    return new TextComponent(normalizeString(name));
+    return TextComponent.getText(normalizeString(name));
   }
 
   public static String normalizeString(String string) {

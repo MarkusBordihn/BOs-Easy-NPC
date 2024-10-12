@@ -22,11 +22,10 @@ package de.markusbordihn.easynpc.client.screen.components;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
@@ -90,7 +89,7 @@ public class SpriteButton extends CustomButton {
         top,
         width,
         height,
-        new TextComponent(""),
+        TextComponent.getBlankText(),
         sprite,
         spriteX,
         spriteY,
@@ -118,7 +117,7 @@ public class SpriteButton extends CustomButton {
         top,
         width,
         height,
-        new TextComponent(""),
+        TextComponent.getBlankText(),
         DEFAULT_SPRITE,
         spriteX,
         spriteY,
@@ -174,9 +173,7 @@ public class SpriteButton extends CustomButton {
         top,
         width,
         height,
-        label != null && !label.isBlank() && Character.isLowerCase(label.codePointAt(0))
-            ? new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + label)
-            : new TextComponent(label != null ? label : ""),
+        TextComponent.getTextComponent(label),
         DEFAULT_SPRITE,
         spriteX,
         spriteY,
@@ -206,9 +203,7 @@ public class SpriteButton extends CustomButton {
         top,
         width,
         height,
-        label != null && !label.isBlank() && Character.isLowerCase(label.codePointAt(0))
-            ? new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + label)
-            : new TextComponent(label != null ? label : ""),
+        TextComponent.getTextComponent(label),
         sprite,
         spriteX,
         spriteY,

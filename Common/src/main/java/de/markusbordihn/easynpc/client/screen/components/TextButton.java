@@ -19,10 +19,8 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 
 public class TextButton extends CustomButton {
 
@@ -32,40 +30,20 @@ public class TextButton extends CustomButton {
     this(left, top, width, height, "", null);
   }
 
-  public TextButton(int left, int top, int width, String label, Object data, OnPress onPress) {
-    this(
-        left,
-        top,
-        width,
-        DEFAULT_HEIGHT,
-        label != null && !label.isBlank() && Character.isLowerCase(label.codePointAt(0))
-            ? new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + label, data)
-            : new TextComponent(label != null ? label : ""),
-        onPress);
+  public TextButton(int left, int top, int width, String label, Component data, OnPress onPress) {
+    this(left, top, width, DEFAULT_HEIGHT, TextComponent.getTextComponent(label, data), onPress);
+  }
+
+  public TextButton(int left, int top, int width, String label, String data, OnPress onPress) {
+    this(left, top, width, DEFAULT_HEIGHT, TextComponent.getTextComponent(label, data), onPress);
   }
 
   public TextButton(int left, int top, int width, String label, OnPress onPress) {
-    this(
-        left,
-        top,
-        width,
-        DEFAULT_HEIGHT,
-        label != null && !label.isBlank() && Character.isLowerCase(label.codePointAt(0))
-            ? new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + label)
-            : new TextComponent(label != null ? label : ""),
-        onPress);
+    this(left, top, width, DEFAULT_HEIGHT, TextComponent.getTextComponent(label), onPress);
   }
 
   public TextButton(int left, int top, int width, int height, String label, OnPress onPress) {
-    this(
-        left,
-        top,
-        width,
-        height,
-        label != null && !label.isBlank() && Character.isLowerCase(label.codePointAt(0))
-            ? new TranslatableComponent(Constants.TEXT_CONFIG_PREFIX + label)
-            : new TextComponent(label != null ? label : ""),
-        onPress);
+    this(left, top, width, height, TextComponent.getTextComponent(label), onPress);
   }
 
   public TextButton(int left, int top, int width, Component label, OnPress onPress) {

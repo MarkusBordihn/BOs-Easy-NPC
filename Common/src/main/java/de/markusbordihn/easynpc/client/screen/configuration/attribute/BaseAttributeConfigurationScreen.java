@@ -25,9 +25,9 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -94,7 +94,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             top,
             12,
             height,
-            new TextComponent("-"),
+            TextComponent.getText("-"),
             button -> {
               if (sliderButton.getTargetDoubleValue() - stepSize >= minValue) {
                 sliderButton.setDefaultValue(sliderButton.getTargetDoubleValue() - stepSize);
@@ -108,7 +108,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
                 top,
                 12,
                 height,
-                new TextComponent("+"),
+                TextComponent.getText("+"),
                 button -> {
                   if (sliderButton.getTargetDoubleValue() + stepSize <= maxValue) {
                     sliderButton.setDefaultValue(sliderButton.getTargetDoubleValue() + stepSize);
@@ -121,7 +121,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             top,
             12,
             height,
-            new TextComponent("↺"),
+            TextComponent.getText("↺"),
             button -> {
               sliderButton.setDefaultValue(defaultValue);
               onChange.onChange(sliderButton);

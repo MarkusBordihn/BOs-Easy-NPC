@@ -21,8 +21,8 @@ package de.markusbordihn.easynpc.data.editor;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public enum EditorType {
@@ -54,6 +54,7 @@ public enum EditorType {
 
   public Component getEditorTitle(final EasyNPC<?> easyNPC) {
     String translationKey = Constants.TEXT_CONFIG_PREFIX + this.name().toLowerCase() + ".title";
-    return new TranslatableComponent(translationKey, easyNPC.getEntity().getName().getString(20));
+    return TextComponent.getTranslatedTextRaw(
+        translationKey, easyNPC.getEntity().getName().getString(20));
   }
 }

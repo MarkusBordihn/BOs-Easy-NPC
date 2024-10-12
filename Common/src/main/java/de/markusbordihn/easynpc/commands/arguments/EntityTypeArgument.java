@@ -27,6 +27,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
@@ -35,7 +36,6 @@ import java.util.stream.Collectors;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.Registry;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
@@ -43,7 +43,7 @@ public class EntityTypeArgument implements ArgumentType<EntityType<? extends Ent
   private static final Collection<String> EXAMPLES =
       Arrays.asList("minecraft:pig", "minecraft:cow");
   private static final SimpleCommandExceptionType ERROR_UNKNOWN_ENTITY =
-      new SimpleCommandExceptionType(new TranslatableComponent("argument.entity.unknown"));
+      new SimpleCommandExceptionType(TextComponent.getTranslatedTextRaw("argument.entity.unknown"));
 
   public EntityTypeArgument() {}
 

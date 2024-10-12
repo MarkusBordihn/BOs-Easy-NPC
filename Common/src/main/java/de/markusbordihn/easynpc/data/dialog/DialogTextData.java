@@ -19,13 +19,12 @@
 
 package de.markusbordihn.easynpc.data.dialog;
 
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import de.markusbordihn.easynpc.utils.UUIDUtils;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 
 public record DialogTextData(UUID id, String text, boolean isTranslationKey) {
 
@@ -47,9 +46,7 @@ public record DialogTextData(UUID id, String text, boolean isTranslationKey) {
   }
 
   public Component getDialogText() {
-    return this.isTranslationKey
-        ? new TranslatableComponent(this.text)
-        : new TextComponent(this.text);
+    return TextComponent.getTextComponentRaw(this.text, isTranslationKey);
   }
 
   public CompoundTag write(CompoundTag compoundTag) {

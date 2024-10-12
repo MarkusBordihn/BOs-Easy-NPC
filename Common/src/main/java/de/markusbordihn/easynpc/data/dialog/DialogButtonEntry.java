@@ -20,14 +20,13 @@
 package de.markusbordihn.easynpc.data.dialog;
 
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import de.markusbordihn.easynpc.utils.UUIDUtils;
 import java.util.Objects;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 
 public record DialogButtonEntry(
     UUID id,
@@ -72,10 +71,9 @@ public record DialogButtonEntry(
   }
 
   public Component getButtonName(int maxLength) {
-    Component buttonName =
-        this.isTranslationKey ? new TranslatableComponent(this.name) : new TextComponent(this.name);
+    Component buttonName = TextComponent.getTextComponentRaw(this.name, isTranslationKey);
     if (buttonName.getString().length() > maxLength) {
-      buttonName = new TextComponent(buttonName.getString().substring(0, maxLength - 1) + '…');
+      buttonName = TextComponent.getText(buttonName.getString().substring(0, maxLength - 1) + '…');
     }
     return buttonName;
   }

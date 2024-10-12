@@ -138,6 +138,10 @@ dependencies {
   if (project.hasProperty("timeless_and_classics_zero_mod") && project.timeless_and_classics_zero_mod) {
     runtimeOnly fg.deobf("curse.maven:timeless-and-classics-zero-1028108:${project.timeless_and_classics_zero_mod}")
   }
+  if (project.hasProperty("sophisticated_backpacks_mod") && project.sophisticated_backpacks_mod && project.hasProperty("sophisticated_core_mod") && project.sophisticated_core_mod) {
+    runtimeOnly fg.deobf("curse.maven:sophisticated-core-618298:${project.sophisticated_core_mod}")
+    runtimeOnly fg.deobf("curse.maven:sophisticated-backpacks-422301:${project.sophisticated_backpacks_mod}")
+  }
 
   // Additional helpful Mods for development (runtime dependency)
   runtimeOnly fg.deobf("curse.maven:xaeros_minimap-263420:${project.xaeros_minimap_mod}")

@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.utils;
 
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 
 public class TextFormattingCodes {
 
@@ -114,8 +114,8 @@ public class TextFormattingCodes {
 
   public static Component parseTextLineBreaks(Component component) {
     return component != null
-        ? new TextComponent(parseTextLineBreaks(component.getString()))
-        : component;
+        ? TextComponent.getText(parseTextLineBreaks(component.getString()))
+        : null;
   }
 
   public static String parseTextLineBreaks(String text) {

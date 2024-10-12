@@ -22,11 +22,11 @@ package de.markusbordihn.easynpc.client.screen.components;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 public class SliderButton extends AbstractSliderButton {
 
   public static final int DEFAULT_HEIGHT = 16;
-  protected static final Component EMPTY_TEXT = new TextComponent("");
+  protected static final Component EMPTY_TEXT = TextComponent.getBlankText();
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected final SliderButton.OnChange onChange;
   protected final float maxValue;
@@ -60,7 +60,7 @@ public class SliderButton extends AbstractSliderButton {
         y,
         width,
         DEFAULT_HEIGHT,
-        new TextComponent(name),
+        new net.minecraft.network.chat.TextComponent(name),
         initValue,
         getMinValue(type),
         getMaxValue(type),
@@ -104,7 +104,7 @@ public class SliderButton extends AbstractSliderButton {
         y,
         width,
         height,
-        new TextComponent(name),
+        new net.minecraft.network.chat.TextComponent(name),
         (float) initValue,
         (float) minValue,
         (float) maxValue,
@@ -218,11 +218,11 @@ public class SliderButton extends AbstractSliderButton {
   protected void updateMessage() {
     switch (this.type) {
       case DEGREE:
-        this.setMessage(new TextComponent(this.targetValue + "°"));
+        this.setMessage(TextComponent.getText(this.targetValue + "°"));
         break;
       case DOUBLE, SCALE, POSITION:
       default:
-        this.setMessage(new TextComponent(this.targetValue + ""));
+        this.setMessage(TextComponent.getText(this.targetValue + ""));
     }
   }
 

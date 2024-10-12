@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import de.markusbordihn.easynpc.validator.ImageValidator;
@@ -45,7 +46,6 @@ import java.util.UUID;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 
 public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
@@ -304,7 +304,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
       Text.drawErrorMessage(
           poseStack,
           this.font,
-          new TranslatableComponent(Constants.TEXT_PREFIX + this.errorMessage),
+          TextComponent.getTranslatedText(this.errorMessage),
           this.leftPos + 10,
           this.contentTopPos + 71,
           this.imageWidth - 14);

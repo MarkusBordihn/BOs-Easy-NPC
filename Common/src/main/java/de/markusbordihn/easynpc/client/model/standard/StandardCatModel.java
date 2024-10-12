@@ -41,6 +41,8 @@ public class StandardCatModel<T extends Entity> extends OcelotModel<T>
       new EnumMap<>(ModelPartType.class);
   protected final Map<ModelPartType, CustomRotation> modelPartRotationMap =
       new EnumMap<>(ModelPartType.class);
+  protected final Map<ModelPartType, Boolean> modelPartVisibilityMap =
+      new EnumMap<>(ModelPartType.class);
   protected final Map<ModelPartType, ModelPart> modelPartMap = new EnumMap<>(ModelPartType.class);
 
   public StandardCatModel(ModelPart modelPart) {
@@ -176,6 +178,11 @@ public class StandardCatModel<T extends Entity> extends OcelotModel<T>
   @Override
   public CustomRotation getDefaultModelPartRotation(ModelPartType modelPartType) {
     return this.modelPartRotationMap.getOrDefault(modelPartType, EMPTY_ROTATION);
+  }
+
+  @Override
+  public Map<ModelPartType, Boolean> getModelPartVisibilityMap() {
+    return this.modelPartVisibilityMap;
   }
 
   @Override

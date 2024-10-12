@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.io.PlayerSkinDataFiles;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.PlayersUtils;
 import java.io.File;
 import java.nio.file.Path;
@@ -34,7 +35,6 @@ import java.util.UUID;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import org.apache.logging.log4j.LogManager;
@@ -141,7 +141,7 @@ public class PlayerTextureManager {
     Player player = Minecraft.getInstance().player;
     if (player != null) {
       player.sendMessage(
-          new TextComponent(
+          TextComponent.getText(
                   LOG_PREFIX
                       + "Unable to load player "
                       + playerUUID
