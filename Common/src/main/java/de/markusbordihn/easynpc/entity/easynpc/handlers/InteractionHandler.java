@@ -25,8 +25,8 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -77,10 +77,10 @@ public class InteractionHandler {
             return InteractionResult.PASS;
           } else {
             serverPlayer.sendSystemMessage(
-                Component.translatable(
-                    Constants.TEXT_PREFIX + "armourers_workshop.no_support",
+                TextComponent.getTranslatedText(
+                    "armourers_workshop.no_support",
                     skinData.getSkinModel().name(),
-                    easyNPC));
+                    easyNPC.toString()));
           }
         } else {
           log.debug(

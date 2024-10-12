@@ -18,7 +18,9 @@ public class OpenDefaultDialogEntry extends ActionEntryWidget {
   }
 
   @Override
-  public void init(int editorLeft, int editorTop) {}
+  public void init(int editorLeft, int editorTop) {
+    /* Unused */
+  }
 
   @Override
   public void render(GuiGraphics guiGraphics, int editorLeft, int editorTop) {

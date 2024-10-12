@@ -19,13 +19,14 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 
 public class TextField extends EditBox {
 
-  private static final Component EMPTY_TEXT_COMPONENT = Component.literal("");
+  private static final Component EMPTY_TEXT_COMPONENT = TextComponent.getBlankText();
   private static final int DEFAULT_HEIGHT = 16;
   private static final int DEFAULT_MAX_LENGTH = 64;
 

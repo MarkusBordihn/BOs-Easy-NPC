@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.screen.components;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -86,7 +87,7 @@ public class SpriteButton extends CustomButton {
         top,
         width,
         height,
-        Component.literal(""),
+        TextComponent.getBlankText(),
         sprite,
         spriteX,
         spriteY,
@@ -114,7 +115,7 @@ public class SpriteButton extends CustomButton {
         top,
         width,
         height,
-        Component.literal(""),
+        TextComponent.getBlankText(),
         DEFAULT_SPRITE,
         spriteX,
         spriteY,
@@ -170,9 +171,7 @@ public class SpriteButton extends CustomButton {
         top,
         width,
         height,
-        label != null && !label.isBlank() && Character.isLowerCase(label.codePointAt(0))
-            ? Component.translatable(Constants.TEXT_CONFIG_PREFIX + label)
-            : Component.literal(label != null ? label : ""),
+        TextComponent.getTextComponent(label),
         DEFAULT_SPRITE,
         spriteX,
         spriteY,
@@ -202,9 +201,7 @@ public class SpriteButton extends CustomButton {
         top,
         width,
         height,
-        label != null && !label.isBlank() && Character.isLowerCase(label.codePointAt(0))
-            ? Component.translatable(Constants.TEXT_CONFIG_PREFIX + label)
-            : Component.literal(label != null ? label : ""),
+        TextComponent.getTextComponent(label),
         sprite,
         spriteX,
         spriteY,

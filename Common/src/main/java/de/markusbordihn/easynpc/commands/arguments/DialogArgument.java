@@ -31,6 +31,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataManager;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.ReflectionUtils;
 import java.util.Collection;
 import java.util.HashMap;
@@ -44,14 +45,13 @@ import java.util.regex.Pattern;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.selector.EntitySelector;
-import net.minecraft.network.chat.Component;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class DialogArgument implements ArgumentType<Pair<UUID, String>> {
 
   public static final SimpleCommandExceptionType ERROR_INVALID_UUID =
-      new SimpleCommandExceptionType(Component.translatable("argument.uuid.invalid"));
+      new SimpleCommandExceptionType(TextComponent.getTranslatedTextRaw("argument.uuid.invalid"));
   private static final Collection<String> EXAMPLES =
       List.of("dd12be42-52a9-4a91-a8a1-11c01849e498");
   private static final Pattern ALLOWED_CHARACTERS_UUID =

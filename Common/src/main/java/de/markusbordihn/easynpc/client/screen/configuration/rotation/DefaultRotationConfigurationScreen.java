@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -92,7 +93,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                 this.rootRotationXSliderButton.getX() + this.rootRotationXSliderButton.getWidth(),
                 this.contentTopPos,
                 10,
-                Component.literal("↺"),
+                TextComponent.getText("↺"),
                 button -> {
                   this.rootRotationX = 0f;
                   this.rootRotationXSliderButton.reset();
@@ -123,7 +124,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                 this.rootRotationYSliderButton.getX() + this.rootRotationYSliderButton.getWidth(),
                 this.contentTopPos,
                 10,
-                Component.literal("↺"),
+                TextComponent.getText("↺"),
                 button -> {
                   this.rootRotationY = 0f;
                   this.rootRotationYSliderButton.reset();
@@ -154,7 +155,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                 this.rootRotationZSliderButton.getX() + this.rootRotationZSliderButton.getWidth(),
                 this.contentTopPos,
                 10,
-                Component.literal("↺"),
+                TextComponent.getText("↺"),
                 button -> {
                   this.rootRotationZ = 0f;
                   this.rootRotationZSliderButton.reset();

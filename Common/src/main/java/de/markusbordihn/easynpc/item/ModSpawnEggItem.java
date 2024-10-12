@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.item;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Objects;
 import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
@@ -66,14 +67,14 @@ public class ModSpawnEggItem extends SpawnEggItem {
   public Component getName(ItemStack itemStack) {
     String descriptionId = this.getDescriptionId(itemStack);
     if (descriptionId.contains(SUFFIX)) {
-      return Component.translatable(
+      return TextComponent.getTranslatedTextRaw(
           Constants.ITEM_PREFIX + "spawn_egg",
-          Component.translatable(
+          TextComponent.getTranslatedTextRaw(
               this.getDescriptionId(itemStack)
                   .replace(Constants.ITEM_PREFIX, Constants.ENTITY_PREFIX)
                   .replace(SUFFIX, "")));
     }
-    return Component.translatable(this.getDescriptionId(itemStack));
+    return TextComponent.getTranslatedTextRaw(this.getDescriptionId(itemStack));
   }
 
   @Override

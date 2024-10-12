@@ -51,6 +51,8 @@ public class BaseHierarchicalArmHeadModel<E extends Mob> extends HierarchicalMod
       new EnumMap<>(ModelPartType.class);
   protected final Map<ModelPartType, CustomRotation> modelPartRotationMap =
       new EnumMap<>(ModelPartType.class);
+  protected final Map<ModelPartType, Boolean> modelPartVisibilityMap =
+      new EnumMap<>(ModelPartType.class);
   protected final Map<ModelPartType, ModelPart> modelPartMap = new EnumMap<>(ModelPartType.class);
 
   protected final ModelPart root;
@@ -235,6 +237,11 @@ public class BaseHierarchicalArmHeadModel<E extends Mob> extends HierarchicalMod
   @Override
   public Map<ModelPartType, CustomRotation> getModelPartRotationMap() {
     return this.modelPartRotationMap;
+  }
+
+  @Override
+  public Map<ModelPartType, Boolean> getModelPartVisibilityMap() {
+    return this.modelPartVisibilityMap;
   }
 
   @Override

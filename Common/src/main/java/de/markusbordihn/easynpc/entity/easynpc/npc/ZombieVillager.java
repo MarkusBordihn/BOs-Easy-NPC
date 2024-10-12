@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseModelEntity;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -68,7 +69,7 @@ public class ZombieVillager extends EasyNPCBaseModelEntity<ZombieVillager> {
     }
     Component professionName = getProfessionName();
     Component variantName = getVariantName();
-    return Component.literal(variantName.getString() + " (" + professionName.getString() + ")");
+    return TextComponent.getText(variantName.getString() + " (" + professionName.getString() + ")");
   }
 
   @Override

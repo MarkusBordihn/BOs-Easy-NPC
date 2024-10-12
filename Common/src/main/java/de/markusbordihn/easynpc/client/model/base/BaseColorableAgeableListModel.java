@@ -41,6 +41,8 @@ public class BaseColorableAgeableListModel<E extends Entity> extends ColorableAg
       new EnumMap<>(ModelPartType.class);
   protected final Map<ModelPartType, CustomRotation> modelPartRotationMap =
       new EnumMap<>(ModelPartType.class);
+  protected final Map<ModelPartType, Boolean> modelPartVisibilityMap =
+      new EnumMap<>(ModelPartType.class);
   protected final Map<ModelPartType, ModelPart> modelPartMap = new EnumMap<>(ModelPartType.class);
   protected final ModelPart tail;
   protected final ModelPart head;
@@ -163,6 +165,11 @@ public class BaseColorableAgeableListModel<E extends Entity> extends ColorableAg
   @Override
   public Map<ModelPartType, CustomRotation> getModelPartRotationMap() {
     return this.modelPartRotationMap;
+  }
+
+  @Override
+  public Map<ModelPartType, Boolean> getModelPartVisibilityMap() {
+    return this.modelPartVisibilityMap;
   }
 
   @Override

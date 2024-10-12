@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.client.screen.components;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -45,7 +46,7 @@ public class CustomButton extends Button {
         top,
         width,
         height,
-        component != null ? component : Component.literal(""),
+        component != null ? component : TextComponent.getBlankText(),
         onPress,
         Button.DEFAULT_NARRATION);
   }

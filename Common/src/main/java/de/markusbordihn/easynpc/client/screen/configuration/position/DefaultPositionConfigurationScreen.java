@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.ValueUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -83,14 +84,10 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
     this.positionXBox.setValue(String.valueOf(this.positionX));
     this.positionXBox.setResponder(
         consumer -> {
-          Double newPositionX = ValueUtils.getDoubleValue(this.positionXBox.getValue());
-          if (newPositionX != null) {
-            this.positionX = newPositionX;
-            NetworkMessageHandlerManager.getServerHandler()
-                .positionChange(
-                    this.getEasyNPCUUID(),
-                    new Vec3(this.positionX, this.positionY, this.positionZ));
-          }
+          this.positionX = ValueUtils.getDoubleValue(this.positionXBox.getValue());
+          NetworkMessageHandlerManager.getServerHandler()
+              .positionChange(
+                  this.getEasyNPCUUID(), new Vec3(this.positionX, this.positionY, this.positionZ));
         });
     this.positionXMinusButton =
         this.addRenderableWidget(
@@ -123,14 +120,10 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
     this.positionYBox.setValue(String.valueOf(this.positionY));
     this.positionYBox.setResponder(
         consumer -> {
-          Double newPositionY = ValueUtils.getDoubleValue(this.positionYBox.getValue());
-          if (newPositionY != null) {
-            this.positionY = newPositionY;
-            NetworkMessageHandlerManager.getServerHandler()
-                .positionChange(
-                    this.getEasyNPCUUID(),
-                    new Vec3(this.positionX, this.positionY, this.positionZ));
-          }
+          this.positionY = ValueUtils.getDoubleValue(this.positionYBox.getValue());
+          NetworkMessageHandlerManager.getServerHandler()
+              .positionChange(
+                  this.getEasyNPCUUID(), new Vec3(this.positionX, this.positionY, this.positionZ));
         });
     this.positionYMinusButton =
         this.addRenderableWidget(
@@ -138,7 +131,7 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
                 this.positionYBox.getX() - 15,
                 this.positionYBox.getY(),
                 15,
-                Component.literal("-"),
+                TextComponent.getText("-"),
                 button -> {
                   this.positionY -= POSITION_STEPS;
                   this.positionYBox.setValue(String.valueOf(this.positionY));
@@ -149,7 +142,7 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
                 this.positionYBox.getX() + this.positionYBox.getWidth() + 1,
                 this.positionYBox.getY(),
                 15,
-                Component.literal("+"),
+                TextComponent.getText("+"),
                 button -> {
                   this.positionY += POSITION_STEPS;
                   this.positionYBox.setValue(String.valueOf(this.positionY));
@@ -163,14 +156,10 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
     this.positionZBox.setValue(String.valueOf(this.positionZ));
     this.positionZBox.setResponder(
         consumer -> {
-          Double newPositionZ = ValueUtils.getDoubleValue(this.positionZBox.getValue());
-          if (newPositionZ != null) {
-            this.positionZ = newPositionZ;
-            NetworkMessageHandlerManager.getServerHandler()
-                .positionChange(
-                    this.getEasyNPCUUID(),
-                    new Vec3(this.positionX, this.positionY, this.positionZ));
-          }
+          this.positionZ = ValueUtils.getDoubleValue(this.positionZBox.getValue());
+          NetworkMessageHandlerManager.getServerHandler()
+              .positionChange(
+                  this.getEasyNPCUUID(), new Vec3(this.positionX, this.positionY, this.positionZ));
         });
     this.positionZMinusButton =
         this.addRenderableWidget(
@@ -178,7 +167,7 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
                 this.positionZBox.getX() - 15,
                 this.positionZBox.getY(),
                 15,
-                Component.literal("-"),
+                TextComponent.getText("-"),
                 button -> {
                   this.positionZ -= POSITION_STEPS;
                   this.positionZBox.setValue(String.valueOf(this.positionZ));
@@ -189,7 +178,7 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
                 this.positionZBox.getX() + this.positionZBox.getWidth() + 1,
                 this.positionZBox.getY(),
                 15,
-                Component.literal("+"),
+                TextComponent.getText("+"),
                 button -> {
                   this.positionZ += POSITION_STEPS;
                   this.positionZBox.setValue(String.valueOf(this.positionZ));
