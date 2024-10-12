@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.client.screen.components;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractSliderButton;
@@ -34,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 public class SliderButton extends AbstractSliderButton {
 
   public static final int DEFAULT_HEIGHT = 16;
-  protected static final Component EMPTY_TEXT = Component.literal("");
+  protected static final Component EMPTY_TEXT = TextComponent.getBlankText();
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected final SliderButton.OnChange onChange;
   protected final float maxValue;
@@ -59,7 +60,7 @@ public class SliderButton extends AbstractSliderButton {
         y,
         width,
         DEFAULT_HEIGHT,
-        Component.literal(name),
+        TextComponent.getText(name),
         initValue,
         getMinValue(type),
         getMaxValue(type),
@@ -103,7 +104,7 @@ public class SliderButton extends AbstractSliderButton {
         y,
         width,
         height,
-        Component.literal(name),
+        TextComponent.getText(name),
         (float) initValue,
         (float) minValue,
         (float) maxValue,
@@ -217,11 +218,11 @@ public class SliderButton extends AbstractSliderButton {
   protected void updateMessage() {
     switch (this.type) {
       case DEGREE:
-        this.setMessage(Component.literal(this.targetValue + "°"));
+        this.setMessage(TextComponent.getText(this.targetValue + "°"));
         break;
       case DOUBLE, SCALE, POSITION:
       default:
-        this.setMessage(Component.literal(this.targetValue + ""));
+        this.setMessage(TextComponent.getText(this.targetValue + ""));
     }
   }
 

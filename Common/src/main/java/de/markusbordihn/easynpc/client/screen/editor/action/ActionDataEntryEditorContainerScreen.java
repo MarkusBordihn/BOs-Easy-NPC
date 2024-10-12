@@ -45,6 +45,7 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.UUID;
@@ -195,11 +196,11 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
                 this.minecraft.setScreen(this);
               }
             },
-            Component.translatable(Constants.TEXT_PREFIX + "removeActionDataEntry.deleteQuestion"),
-            Component.translatable(
-                Constants.TEXT_PREFIX + "removeActionDataEntry.deleteWarning",
-                this.actionDataEntry.actionDataType()),
-            Component.translatable(Constants.TEXT_PREFIX + "removeActionDataEntry.deleteButton"),
+            TextComponent.getTranslatedText("removeActionDataEntry.deleteQuestion"),
+            TextComponent.getTranslatedText(
+                "removeActionDataEntry.deleteWarning",
+                this.actionDataEntry.actionDataType().name()),
+            TextComponent.getTranslatedText("removeActionDataEntry.deleteButton"),
             CommonComponents.GUI_CANCEL));
   }
 

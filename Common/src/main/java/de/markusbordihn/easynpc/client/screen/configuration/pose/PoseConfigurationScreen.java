@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -140,7 +141,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
               resetButtonLeftPosition,
               top,
               10,
-              Component.literal("↺"),
+              TextComponent.getText("↺"),
               button -> {
                 sliderButtonX.reset();
                 sliderButtonY.reset();
@@ -264,7 +265,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
               resetButtonLeftPosition,
               top,
               10,
-              Component.literal("↺"),
+              TextComponent.getText("↺"),
               button -> {
                 sliderButtonX.reset();
                 sliderButtonY.reset();

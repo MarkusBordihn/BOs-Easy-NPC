@@ -19,16 +19,15 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingSettings;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -37,7 +36,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.Container;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
@@ -122,9 +120,11 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
   }
 
   default void updateMerchantTradingOffers() {
-    MerchantOffers merchantOffers = new MerchantOffers();
     TradingDataSet tradingDataSet = this.getTradingDataSet();
-    if (tradingDataSet.isType(TradingType.BASIC) || tradingDataSet.isType(TradingType.ADVANCED)) {
+    MerchantOffers merchantOffers = new MerchantOffers();
+    if (tradingDataSet.isType(TradingType.BASIC)
+        || tradingDataSet.isType(TradingType.ADVANCED)
+        || tradingDataSet.isType(TradingType.CUSTOM)) {
       // Create a copy of the offers to avoid side effects.
       merchantOffers = new MerchantOffers(this.getTradingOffers().createTag());
     }
@@ -476,6 +476,12 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     setSynchedEntityData(SynchedDataIndex.TRADING_DATA_SET, tradingDataSet);
   }
 
+  default void updateTradingDataSet() {
+    TradingDataSet currentTradingDataSet = getTradingDataSet();
+    setTradingDataSet(new TradingDataSet());
+    setTradingDataSet(currentTradingDataSet);
+  }
+
   default boolean isValidTradingOffer(ItemStack itemA, ItemStack itemB, ItemStack itemResult) {
     if (itemResult == null || (itemA == null && itemB == null)) {
       return false;
@@ -484,9 +490,9 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
         && !itemResult.isEmpty();
   }
 
-  default InteractionResult openTradingScreen(ServerPlayer serverPlayer) {
+  default void openTradingScreen(ServerPlayer serverPlayer) {
     if (this.isClientSide()) {
-      return InteractionResult.SUCCESS;
+      return;
     }
 
     // Make sure we have a valid merchant.
@@ -494,7 +500,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     if (merchant == null) {
       log.error(
           "No merchant found for {} with {} from {}", this, this.getTradingOffers(), serverPlayer);
-      return InteractionResult.FAIL;
+      return;
     }
 
     // Verify that we have trading offers.
@@ -502,7 +508,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     if (merchantOffers.isEmpty()) {
       log.error(
           "No trading offers found for {} with {} from {}", this, merchantOffers, serverPlayer);
-      return InteractionResult.FAIL;
+      return;
     }
 
     // Check if player is already trading.
@@ -513,10 +519,11 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
           merchantOffers,
           serverPlayer,
           merchant.getTradingPlayer());
+      serverPlayer.closeContainer();
       serverPlayer.sendSystemMessage(
-          Component.translatable(
-              Constants.TEXT_PREFIX + "trading.busy", merchant.getTradingPlayer()));
-      return InteractionResult.FAIL;
+          TextComponent.getTranslatedText(
+              "trading.busy", this.getLivingEntity(), merchant.getTradingPlayer()));
+      return;
     }
 
     // Check if trades should be reset.
@@ -535,10 +542,8 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
         serverPlayer,
         this.getEntity().getCustomName() != null
             ? this.getEntity().getCustomName()
-            : Component.translatable(Constants.TEXT_PREFIX + "trading"),
+            : TextComponent.getTranslatedText("trading"),
         Entity.BASE_TICKS_REQUIRED_TO_FREEZE);
-
-    return InteractionResult.CONSUME;
   }
 
   default void defineSynchedTradingData() {
@@ -578,6 +583,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
       MerchantOffers merchantOffers =
           new MerchantOffers(tradingOffersTag.getCompound(DATA_TRADING_RECIPES_TAG));
       if (!merchantOffers.isEmpty()) {
+        log.info("Loading trading offers {} for {}", merchantOffers, this);
         this.setTradingOffers(merchantOffers);
       }
       return;

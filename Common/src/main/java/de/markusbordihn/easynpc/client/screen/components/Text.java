@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.client.screen.components;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.List;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
@@ -31,21 +32,16 @@ public class Text {
   private Text() {}
 
   public static void drawString(PoseStack poseStack, Font font, String text, int x, int y) {
-    drawString(poseStack, font, Component.literal(text), x, y);
-  }
-
-  public static void drawString(
-      PoseStack poseStack, Font font, String text, int x, int y, int color) {
-    drawString(poseStack, font, Component.literal(text), x, y, color);
+    drawString(poseStack, font, text, x, y, Constants.FONT_COLOR_DEFAULT);
   }
 
   public static void drawString(PoseStack poseStack, Font font, Component component, int x, int y) {
     drawString(poseStack, font, component, x, y, Constants.FONT_COLOR_DEFAULT);
   }
 
-  public static int drawString(
+  public static void drawString(
       PoseStack poseStack, Font font, Component component, int x, int y, int color) {
-    return font.draw(poseStack, component, x, y, color);
+    font.draw(poseStack, component, x, y, color);
   }
 
   public static void drawStringShadow(
@@ -53,9 +49,9 @@ public class Text {
     font.drawShadow(poseStack, text, x, y, color, false);
   }
 
-  public static int drawStringShadow(
+  public static void drawStringShadow(
       PoseStack poseStack, Font font, Component component, int x, int y, int color) {
-    return font.drawShadow(poseStack, component, x, y, color);
+    font.drawShadow(poseStack, component, x, y, color);
   }
 
   public static void drawString(
@@ -65,7 +61,10 @@ public class Text {
 
   public static void drawErrorMessage(
       PoseStack poseStack, Font font, String text, int x, int y, int width) {
-    drawErrorMessage(poseStack, font, Component.literal(text != null ? text : ""), x, y, width);
+    if (text == null) {
+      return;
+    }
+    drawErrorMessage(poseStack, font, text, x, y, width);
   }
 
   public static void drawErrorMessage(
@@ -93,6 +92,11 @@ public class Text {
     font.draw(poseStack, formattedCharSequence, x, y, color);
   }
 
+  public static void drawString(
+      PoseStack poseStack, Font font, String text, int x, int y, int color) {
+    font.draw(poseStack, text, x, y, color);
+  }
+
   public static void drawConfigString(
       PoseStack poseStack, Font font, String translationKey, int x, int y) {
     drawConfigString(poseStack, font, translationKey, x, y, Constants.FONT_COLOR_DEFAULT);
@@ -100,34 +104,18 @@ public class Text {
 
   public static void drawConfigString(
       PoseStack poseStack, Font font, String translationKey, int x, int y, int color) {
-    drawString(
-        poseStack,
-        font,
-        Component.translatable(Constants.TEXT_CONFIG_PREFIX + translationKey),
-        x,
-        y,
-        color);
+    drawString(poseStack, font, TextComponent.getTranslatedConfigText(translationKey), x, y, color);
   }
 
-  public static int drawConfigStringShadow(
+  public static void drawConfigStringShadow(
       PoseStack poseStack, Font font, String translationKey, int x, int y, int color) {
-    return drawStringShadow(
-        poseStack,
-        font,
-        Component.translatable(Constants.TEXT_CONFIG_PREFIX + translationKey),
-        x,
-        y,
-        color);
+    drawStringShadow(
+        poseStack, font, TextComponent.getTranslatedConfigText(translationKey), x, y, color);
   }
 
   public static void drawConfigStringShadowWithData(
-      PoseStack poseStack, Font font, String translationKey, Object data, int x, int y, int color) {
+      PoseStack poseStack, Font font, String translationKey, String data, int x, int y, int color) {
     drawStringShadow(
-        poseStack,
-        font,
-        Component.translatable(Constants.TEXT_CONFIG_PREFIX + translationKey, data),
-        x,
-        y,
-        color);
+        poseStack, font, TextComponent.getTranslatedConfigText(translationKey, data), x, y, color);
   }
 }

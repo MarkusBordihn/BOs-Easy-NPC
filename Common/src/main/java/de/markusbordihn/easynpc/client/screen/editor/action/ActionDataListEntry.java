@@ -30,6 +30,7 @@ import de.markusbordihn.easynpc.client.screen.components.UpDownButton;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -117,7 +118,7 @@ public class ActionDataListEntry extends ObjectSelectionList.Entry<ActionDataLis
 
   @Override
   public Component getNarration() {
-    return Component.literal(this.actionDataType.name() + ":" + this.actionDataEntry.command());
+    return TextComponent.getText(this.actionDataType.name() + ":" + this.actionDataEntry.command());
   }
 
   @Override

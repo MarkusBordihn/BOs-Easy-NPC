@@ -41,6 +41,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Set;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -98,11 +99,10 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
                 minecraft.setScreen(this);
               }
             },
-            Component.translatable(Constants.TEXT_PREFIX + "removeDialog.deleteQuestion"),
-            Component.translatable(
-                Constants.TEXT_PREFIX + "removeDialog.deleteWarning",
-                this.getDialogData().getName()),
-            Component.translatable(Constants.TEXT_PREFIX + "removeDialog.deleteButton"),
+            TextComponent.getTranslatedText("removeDialog.deleteQuestion"),
+            TextComponent.getTranslatedText(
+                "removeDialog.deleteWarning", this.getDialogData().getName()),
+            TextComponent.getTranslatedText("removeDialog.deleteButton"),
             CommonComponents.GUI_CANCEL));
   }
 
@@ -409,18 +409,12 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
     // Render Tooltips
     if (this.dialogNameToLabelButton != null && this.dialogNameToLabelButton.isMouseOver(x, y)) {
       this.renderTooltip(
-          poseStack,
-          Component.translatable(Constants.TEXT_CONFIG_PREFIX + "name_to_label.tooltip"),
-          x,
-          y);
+          poseStack, TextComponent.getTranslatedConfigText("name_to_label.tooltip"), x, y);
     }
 
     if (this.makeDefaultDialogButton != null && this.makeDefaultDialogButton.isMouseOver(x, y)) {
       this.renderTooltip(
-          poseStack,
-          Component.translatable(Constants.TEXT_CONFIG_PREFIX + "make_default.tooltip"),
-          x,
-          y);
+          poseStack, TextComponent.getTranslatedConfigText("make_default.tooltip"), x, y);
     }
   }
 }

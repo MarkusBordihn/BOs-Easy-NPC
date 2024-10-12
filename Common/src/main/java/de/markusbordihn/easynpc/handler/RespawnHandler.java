@@ -21,56 +21,47 @@ package de.markusbordihn.easynpc.handler;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.network.components.TextComponent;
-import de.markusbordihn.easynpc.utils.TextUtils;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class NameHandler {
+public class RespawnHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private NameHandler() {}
+  private RespawnHandler() {}
 
-  public static boolean setCustomName(EasyNPC<?> easyNPC, String name, int color, boolean visible) {
-    if (easyNPC == null || name == null) {
-      log.error("[{}] Error setting custom name {}", easyNPC, name);
+  public static boolean respawnNPC(EasyNPC<?> easyNPC, ServerLevel serverLevel) {
+    if (easyNPC == null || serverLevel == null) {
+      log.error("[{}] Error respawning NPC.", easyNPC);
       return false;
     }
 
-    Entity entity = easyNPC.getEntity();
+    // Save entity and entity type
+    CompoundTag compoundTag = easyNPC.getEntity().saveWithoutId(new CompoundTag());
+    EntityType<?> entityType = easyNPC.getEntity().getType();
 
-    // Remove the custom name if the name is empty.
-    if (name.isEmpty()) {
-      log.debug("[{}] Remove custom name", easyNPC);
-      entity.setCustomName(null);
-      entity.setCustomNameVisible(false);
-      return true;
+    // Create new entity with compoundTag
+    Entity entity = entityType.create(serverLevel);
+    if (entity == null) {
+      log.error(
+          "[{}] Unable to create new entity with type {} with {}",
+          easyNPC,
+          entityType,
+          serverLevel);
+      return false;
     }
+    entity.load(compoundTag);
 
-    log.debug(
-        "[{}] Change custom name to '{}' with color {} and visible {}",
-        easyNPC,
-        name,
-        color,
-        visible);
+    // Remove old entity
+    easyNPC.getEntity().discard();
 
-    // Define custom color and style for the name, if any.
-    Style style = Style.EMPTY;
-    if (color >= 0) {
-      style = style.withColor(TextColor.fromRgb(color));
-    }
-
-    // Set the custom name for the entity with translation key support.
-    entity.setCustomName(
-        TextComponent.getTextComponentRaw(name, TextUtils.isTranslationKey(name)).setStyle(style));
-
-    // Set the visibility of the custom name.
-    entity.setCustomNameVisible(visible);
-
+    // Respawn new entity
+    log.info("[{}] Respawn Easy NPC with {} into {}", easyNPC, entityType, serverLevel);
+    serverLevel.addFreshEntity(entity);
     return true;
   }
 }

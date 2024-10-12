@@ -20,13 +20,13 @@
 package de.markusbordihn.easynpc.client.screen.configuration;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.Screen;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.EasyNPCMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.client.gui.components.Button;
@@ -65,7 +65,7 @@ public class ConfigurationScreen<T extends EasyNPCMenu> extends Screen<T> {
   }
 
   protected void setDescriptionText(String textId) {
-    setDescriptionText(Component.translatable(Constants.TEXT_CONFIG_PREFIX + textId));
+    setDescriptionText(TextComponent.getTranslatedConfigText(textId));
   }
 
   protected void setDescriptionText(Component component) {

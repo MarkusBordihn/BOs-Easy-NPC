@@ -31,6 +31,7 @@ import de.markusbordihn.easynpc.access.AccessManager;
 import de.markusbordihn.easynpc.commands.selector.EasyNPCSelectorParser;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.UUIDUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +41,6 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.selector.EntitySelector;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -48,7 +48,8 @@ import org.apache.logging.log4j.Logger;
 public class EasyNPCArgument implements ArgumentType<EntitySelector> {
 
   public static final SimpleCommandExceptionType NO_ENTITIES_FOUND =
-      new SimpleCommandExceptionType(Component.translatable("argument.entity.notfound.entity"));
+      new SimpleCommandExceptionType(
+          TextComponent.getTranslatedTextRaw("argument.entity.notfound.entity"));
   private static final Collection<String> EXAMPLES =
       Arrays.asList(
           "EasyNPC", "0123", "@e", "@e[type=foo]", "dd12be42-52a9-4a91-a8a1-11c01849e498");
@@ -138,7 +139,7 @@ public class EasyNPCArgument implements ArgumentType<EntitySelector> {
     String input = stringReader.getRemaining();
     if (input != null && !input.startsWith("@") && input.length() == 36) {
       UUID uuid = UUIDUtils.parseUUID(input);
-      if (uuid != null) {
+      if (uuid != null && NetworkMessageHandlerManager.getServerHandler() != null) {
         log.debug("Found valid UUID {} and will request data sync...", uuid);
         NetworkMessageHandlerManager.getServerHandler().requestDataSync(uuid);
       }

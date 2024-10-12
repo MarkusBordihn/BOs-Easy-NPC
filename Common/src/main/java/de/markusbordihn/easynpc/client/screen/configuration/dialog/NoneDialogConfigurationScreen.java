@@ -20,13 +20,13 @@
 package de.markusbordihn.easynpc.client.screen.configuration.dialog;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.network.chat.Component;
@@ -54,8 +54,7 @@ public class NoneDialogConfigurationScreen<T extends ConfigurationMenu>
     // Pre-format text
     this.textComponents =
         this.font.split(
-            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "disable_dialog_text"),
-            this.imageWidth - 20);
+            TextComponent.getTranslatedConfigText("disable_dialog_text"), this.imageWidth - 20);
     this.numberOfTextLines = this.textComponents.size();
 
     // Former dialog type

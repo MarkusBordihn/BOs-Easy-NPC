@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.item.configuration;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
@@ -225,15 +226,15 @@ public class EasyNPCPresetItem extends Item {
     if (hasPreset(itemStack)) {
       EntityType<?> entityType = getEntityType(itemStack);
       if (entityType != null) {
-        tooltipList.add(Component.translatable(Constants.TEXT_ITEM_PREFIX + NAME));
+        tooltipList.add(TextComponent.getTranslatedTextRaw(Constants.TEXT_ITEM_PREFIX + NAME));
         String customName = getCustomName(itemStack);
         if (customName != null) {
           tooltipList.add(
-              Component.translatable(
+              TextComponent.getTranslatedTextRaw(
                   Constants.TEXT_ITEM_PREFIX + NAME + ".custom_name", customName));
         }
         tooltipList.add(
-            Component.translatable(
+            TextComponent.getTranslatedTextRaw(
                 Constants.TEXT_ITEM_PREFIX + NAME + ".entity_type", entityType.getDescription()));
       }
     }

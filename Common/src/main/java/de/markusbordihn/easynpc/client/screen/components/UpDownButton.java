@@ -21,10 +21,10 @@ package de.markusbordihn.easynpc.client.screen.components;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.network.chat.Component;
 
 public class UpDownButton extends AbstractWidget {
 
@@ -34,7 +34,7 @@ public class UpDownButton extends AbstractWidget {
   private final Button downButton;
 
   public UpDownButton(int left, int top, int width, int height, OnUp onUp, OnDown onDown) {
-    super(left, top, width, height, Component.literal(""));
+    super(left, top, width, height, TextComponent.getBlankText());
     this.onUp = onUp;
     this.onDown = onDown;
 

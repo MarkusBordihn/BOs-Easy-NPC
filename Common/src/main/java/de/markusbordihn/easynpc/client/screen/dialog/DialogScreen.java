@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogScreenLayout;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -124,7 +125,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
     }
 
     // Create dialog text component.
-    this.dialogComponent = Component.literal(dialogText);
+    this.dialogComponent = TextComponent.getText(dialogText);
 
     // Split dialog text to lines.
     this.cachedDialogComponents =

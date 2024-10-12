@@ -20,10 +20,10 @@
 package de.markusbordihn.easynpc.client.screen.components;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.Component;
 
 public class SpinButton<T> extends CustomButton {
 
@@ -103,7 +103,7 @@ public class SpinButton<T> extends CustomButton {
     this.previousButton.renderButton(poseStack, left, top, partialTicks);
     this.nextButton.renderButton(poseStack, left, top, partialTicks);
     this.textButton.renderButton(poseStack, left, top, partialTicks);
-    this.textButton.setMessage(Component.literal(this.currentValue.toString()));
+    this.textButton.setMessage(TextComponent.getText(this.currentValue.toString()));
   }
 
   @Override

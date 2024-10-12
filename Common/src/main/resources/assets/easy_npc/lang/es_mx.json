@@ -282,5 +282,5 @@
   "text.easy_npc.respawnNPC.confirmWarning": "¡El NPC '%s' reaparecerá como un nuevo NPC, pero con la misma configuración, posición y UUID!",
   "text.easy_npc.respawnNPC.respawnButton": "Reaparecer NPC",
   "text.easy_npc.trading": "Comercio",
-  "text.easy_npc.trading.busy": "El NPC está ocupado actualmente con otro comercio con %s.\n Por favor espera hasta que el comercio termine."
+  "text.easy_npc.trading.busy": "%1$s está ocupado actualmente con otro comercio con %2$s.\n Por favor espera hasta que el comercio termine."
 }

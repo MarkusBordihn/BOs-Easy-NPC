@@ -27,6 +27,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -34,7 +35,6 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 
 public class EquipmentSlotArgument implements ArgumentType<EquipmentSlot> {
@@ -42,7 +42,7 @@ public class EquipmentSlotArgument implements ArgumentType<EquipmentSlot> {
       Arrays.asList("weapon.mainhand", "weapon.offhand");
   private static final DynamicCommandExceptionType ERROR_UNKNOWN_SLOT =
       new DynamicCommandExceptionType(
-          slot -> Component.translatable("slot.unknown", new Object[] {slot}));
+          slot -> TextComponent.getTranslatedTextRaw("slot.unknown", slot.toString()));
   private static final Map<String, EquipmentSlot> SLOTS =
       Util.make(
           Maps.newHashMap(),

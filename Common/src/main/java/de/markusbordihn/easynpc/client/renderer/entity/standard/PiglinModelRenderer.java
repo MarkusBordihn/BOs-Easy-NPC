@@ -12,6 +12,7 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.client.renderer.entity.layers.ElytraLayer;
+import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
 
@@ -52,5 +53,6 @@ public class PiglinModelRenderer
     this.addLayer(
         new CustomHeadLayer<>(this, context.getModelSet(), context.getItemInHandRenderer()));
     this.addLayer(new ElytraLayer<>(this, context.getModelSet()));
+    this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
   }
 }

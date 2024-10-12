@@ -56,14 +56,15 @@ public interface EasyNPCModel<E extends Entity> {
   }
 
   default void resetModelPart(ModelPartType modelPartType, ModelPart modelPart) {
-    CustomPosition defaultPosition = getDefaultModelPartPosition(modelPartType);
-    modelPart.x = defaultPosition.x();
-    modelPart.y = defaultPosition.y();
-    modelPart.z = defaultPosition.z();
-    CustomRotation defaultRotation = getDefaultModelPartRotation(modelPartType);
-    modelPart.xRot = defaultRotation.x();
-    modelPart.yRot = defaultRotation.y();
-    modelPart.zRot = defaultRotation.z();
+    if (getDefaultModelPartVisibility(modelPartType)) {
+      CustomPosition defaultPosition = getDefaultModelPartPosition(modelPartType);
+      modelPart.setPos(defaultPosition.x(), defaultPosition.y(), defaultPosition.z());
+      CustomRotation defaultRotation = getDefaultModelPartRotation(modelPartType);
+      modelPart.setRotation(defaultRotation.x(), defaultRotation.y(), defaultRotation.z());
+      modelPart.visible = true;
+    } else {
+      modelPart.visible = false;
+    }
   }
 
   default boolean isHumanoidModel() {
@@ -97,6 +98,8 @@ public interface EasyNPCModel<E extends Entity> {
 
   Map<ModelPartType, CustomRotation> getModelPartRotationMap();
 
+  Map<ModelPartType, Boolean> getModelPartVisibilityMap();
+
   Map<ModelPartType, ModelPart> getModelPartMap();
 
   default void setDefaultModelPartPosition(
@@ -109,6 +112,11 @@ public interface EasyNPCModel<E extends Entity> {
     this.getModelPartRotationMap().put(modelPartType, rotation);
   }
 
+  default void setDefaultModelPartVisibility(
+      final ModelPartType modelPartType, final boolean isVisible) {
+    this.getModelPartVisibilityMap().put(modelPartType, isVisible);
+  }
+
   default void setDefaultModelPart(final ModelPartType modelPartType, final ModelPart modelPart) {
     this.getModelPartMap().put(modelPartType, modelPart);
   }
@@ -119,6 +127,10 @@ public interface EasyNPCModel<E extends Entity> {
 
   default CustomRotation getDefaultModelPartRotation(final ModelPartType modelPartType) {
     return this.getModelPartRotationMap().getOrDefault(modelPartType, EMPTY_ROTATION);
+  }
+
+  default boolean getDefaultModelPartVisibility(final ModelPartType modelPartType) {
+    return this.getModelPartVisibilityMap().getOrDefault(modelPartType, true);
   }
 
   default ModelPart getDefaultModelPart(final ModelPartType modelPartType) {
@@ -607,6 +619,7 @@ public interface EasyNPCModel<E extends Entity> {
           netHeadYaw,
           headPitch);
     } else if (isDefaultModelPose) {
+      this.resetModelParts();
       hasAdjustedDefaultModelPose =
           this.handleDefaultModelPose(
               entity, modelData, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);

@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.client.gui.components.Button;
@@ -107,7 +108,7 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
                 this.topPos + 85,
                 145,
                 yesButtonData == null
-                    ? Component.literal("Yes Button")
+                    ? TextComponent.getText("Yes Button")
                     : yesButtonData.getButtonName(20),
                 onPress -> {
                   UUID yesButtonId = yesButtonData == null ? null : yesButtonData.id();
@@ -130,7 +131,7 @@ public class YesNoDialogConfigurationScreen<T extends ConfigurationMenu>
                 this.topPos + 85,
                 145,
                 noButtonData == null
-                    ? Component.literal("No Button")
+                    ? TextComponent.getText("No Button")
                     : noButtonData.getButtonName(20),
                 onPress -> {
                   UUID noButtonId = noButtonData == null ? null : noButtonData.id();
