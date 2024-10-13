@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.item.configuration;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +79,6 @@ public class MoveEasyNPCItem extends Item {
       TooltipContext tooltipContext,
       List<Component> tooltipList,
       TooltipFlag tooltipFlag) {
-    tooltipList.add(Component.translatable(Constants.TEXT_ITEM_PREFIX + ID));
+    tooltipList.add(TextComponent.getTranslatedTextRaw(Constants.TEXT_ITEM_PREFIX + ID));
   }
 }

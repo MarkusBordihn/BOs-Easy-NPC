@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.block.BaseEasyNPCSpawnerBlock;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetItem;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Random;
@@ -344,7 +345,7 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
 
   @Override
   protected Component getDefaultName() {
-    return Component.translatable(Constants.CONTAINER_PREFIX + NAME);
+    return TextComponent.getTranslatedTextRaw(Constants.CONTAINER_PREFIX + NAME);
   }
 
   @Override

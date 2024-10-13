@@ -51,6 +51,8 @@ public class BaseHumanoidModel<E extends LivingEntity> extends HumanoidModel<E>
       new EnumMap<>(ModelPartType.class);
   protected final Map<ModelPartType, CustomRotation> modelPartRotationMap =
       new EnumMap<>(ModelPartType.class);
+  protected final Map<ModelPartType, Boolean> modelPartVisibilityMap =
+      new EnumMap<>(ModelPartType.class);
   protected final Map<ModelPartType, ModelPart> modelPartMap = new EnumMap<>(ModelPartType.class);
 
   public BaseHumanoidModel(ModelPart modelPart) {
@@ -217,6 +219,11 @@ public class BaseHumanoidModel<E extends LivingEntity> extends HumanoidModel<E>
   @Override
   public Map<ModelPartType, CustomRotation> getModelPartRotationMap() {
     return this.modelPartRotationMap;
+  }
+
+  @Override
+  public Map<ModelPartType, Boolean> getModelPartVisibilityMap() {
+    return this.modelPartVisibilityMap;
   }
 
   @Override

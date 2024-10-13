@@ -21,15 +21,8 @@ package de.markusbordihn.easynpc.data.attribute;
 
 import de.markusbordihn.easynpc.utils.TextUtils;
 
-public enum BaseAttributeType {
-  ATTACK_DAMAGE,
-  ATTACK_KNOCKBACK,
-  FOLLOW_RANGE,
-  KNOCKBACK_RESISTANCE;
-
-  public String getAttributeName() {
-    return this.name().toLowerCase();
-  }
+public enum CustomAttributeType {
+  HEALTH_REGENERATION;
 
   public String getTagName() {
     return TextUtils.convertToCamelCase(this.name());

@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -88,15 +89,14 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
                 minecraft.setScreen(this);
               }
             },
-            Component.translatable(
-                Constants.TEXT_CONFIG_PREFIX + "preset.importQuestion",
+            TextComponent.getTranslatedConfigText(
+                "preset.importQuestion",
                 resourceLocation
                     .getPath()
                     .substring(resourceLocation.getPath().lastIndexOf("/") + 1)),
-            Component.translatable(
-                Constants.TEXT_CONFIG_PREFIX + "preset.importWarning",
-                getEasyNPCEntity().getDisplayName().getString()),
-            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "preset.importButton"),
+            TextComponent.getTranslatedConfigText(
+                "preset.importWarning", getEasyNPCEntity().getDisplayName().getString()),
+            TextComponent.getTranslatedConfigText("preset.importButton"),
             CommonComponents.GUI_CANCEL));
   }
 
@@ -363,7 +363,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
 
       @Override
       public Component getNarration() {
-        return Component.literal(this.resourceLocation.getPath());
+        return TextComponent.getText(this.resourceLocation.getPath());
       }
     }
   }

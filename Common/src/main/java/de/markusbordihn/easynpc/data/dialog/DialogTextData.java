@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.dialog;
 
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import de.markusbordihn.easynpc.utils.UUIDUtils;
 import java.util.UUID;
@@ -45,7 +46,7 @@ public record DialogTextData(UUID id, String text, boolean isTranslationKey) {
   }
 
   public Component getDialogText() {
-    return this.isTranslationKey ? Component.translatable(this.text) : Component.literal(this.text);
+    return TextComponent.getTextComponentRaw(this.text, isTranslationKey);
   }
 
   public CompoundTag write(CompoundTag compoundTag) {

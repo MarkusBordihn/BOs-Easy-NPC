@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.data.dialog;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionDataType;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextFormattingCodes;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -115,8 +116,7 @@ public class DialogUtils {
     if (text == null || text.isEmpty()) {
       return 0;
     }
-    Component textComponent = Component.literal(text);
-    return getNumbersOfDialogLines(Component.literal(text), maxLineLength, font);
+    return getNumbersOfDialogLines(TextComponent.getText(text), maxLineLength, font);
   }
 
   public static int getNumbersOfDialogLines(Component component, int maxLineLength, Font font) {

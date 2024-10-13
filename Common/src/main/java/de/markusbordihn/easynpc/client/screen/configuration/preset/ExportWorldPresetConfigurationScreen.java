@@ -19,13 +19,13 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.preset;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
@@ -74,8 +74,8 @@ public class ExportWorldPresetConfigurationScreen<T extends ConfigurationMenu>
     // Pre-format text
     this.textComponents =
         this.font.split(
-            Component.translatable(
-                Constants.TEXT_CONFIG_PREFIX + "export_preset_world_text",
+            TextComponent.getTranslatedConfigText(
+                "export_preset_world_text",
                 customPresetFile.getParentFile().getPath(),
                 customPresetFile.getName()),
             this.imageWidth - 25);

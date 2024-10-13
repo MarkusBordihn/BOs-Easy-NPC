@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.client.screen.components;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -41,32 +42,26 @@ public class Checkbox extends AbstractButton {
   private boolean selected;
 
   public Checkbox(int left, int top, String label, boolean selected, Checkbox.OnChange onChange) {
-    this(
-        left,
-        top,
-        label != null && !label.isBlank() && Character.isLowerCase(label.codePointAt(0))
-            ? Component.translatable(Constants.TEXT_CONFIG_PREFIX + label)
-            : Component.literal(label != null ? label : ""),
-        selected,
-        true,
-        onChange);
+    this(left, top, TextComponent.getTextComponent(label), selected, true, onChange);
   }
 
   public Checkbox(
-      int left, int top, String label, Object data, boolean selected, Checkbox.OnChange onChange) {
-    this(
-        left,
-        top,
-        label != null && !label.isBlank() && Character.isLowerCase(label.codePointAt(0))
-            ? Component.translatable(Constants.TEXT_CONFIG_PREFIX + label, data)
-            : Component.literal(label != null ? label : ""),
-        selected,
-        true,
-        onChange);
+      int left,
+      int top,
+      String label,
+      Component data,
+      boolean selected,
+      Checkbox.OnChange onChange) {
+    this(left, top, TextComponent.getTextComponent(label, data), selected, true, onChange);
+  }
+
+  public Checkbox(
+      int left, int top, String label, String data, boolean selected, Checkbox.OnChange onChange) {
+    this(left, top, TextComponent.getTextComponent(label, data), selected, true, onChange);
   }
 
   public Checkbox(int left, int top, String label, boolean selected) {
-    this(left, top, Component.translatable(Constants.TEXT_CONFIG_PREFIX + label), selected, true);
+    this(left, top, TextComponent.getTranslatedConfigText(label), selected, true);
   }
 
   public Checkbox(int left, int top, Component component, boolean selected, boolean showLabel) {
@@ -104,10 +99,12 @@ public class Checkbox extends AbstractButton {
     if (this.active) {
       if (this.isFocused()) {
         narrationElementOutput.add(
-            NarratedElementType.USAGE, Component.translatable("narration.checkbox.usage.focused"));
+            NarratedElementType.USAGE,
+            TextComponent.getTranslatedTextRaw("narration.checkbox.usage.focused"));
       } else {
         narrationElementOutput.add(
-            NarratedElementType.USAGE, Component.translatable("narration.checkbox.usage.hovered"));
+            NarratedElementType.USAGE,
+            TextComponent.getTranslatedTextRaw("narration.checkbox.usage.hovered"));
       }
     }
   }

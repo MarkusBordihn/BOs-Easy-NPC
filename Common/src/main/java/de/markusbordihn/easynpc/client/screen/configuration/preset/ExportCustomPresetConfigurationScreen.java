@@ -19,13 +19,13 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.preset;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
@@ -62,8 +62,8 @@ public class ExportCustomPresetConfigurationScreen<T extends ConfigurationMenu>
     // Re-render filename for info text.
     this.textComponents =
         this.font.split(
-            Component.translatable(
-                Constants.TEXT_CONFIG_PREFIX + "export_preset_text",
+            TextComponent.getTranslatedConfigText(
+                "export_preset_text",
                 customPresetFile.getParentFile().getPath(),
                 customPresetFileName),
             this.imageWidth - 25);
@@ -91,8 +91,8 @@ public class ExportCustomPresetConfigurationScreen<T extends ConfigurationMenu>
     // Pre-format text
     this.textComponents =
         this.font.split(
-            Component.translatable(
-                Constants.TEXT_CONFIG_PREFIX + "export_preset_text",
+            TextComponent.getTranslatedConfigText(
+                "export_preset_text",
                 customPresetFile.getParentFile().getPath(),
                 customPresetFile.getName()),
             this.imageWidth - 25);

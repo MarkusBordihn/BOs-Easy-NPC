@@ -78,8 +78,11 @@ public class ModMenuTypes {
 
   public static final DeferredRegister<MenuType<?>> MENU_TYPES =
       DeferredRegister.create(ForgeRegistries.MENU_TYPES, Constants.MOD_ID);
+  private ModMenuTypes() {}  public static final RegistryObject<MenuType<SpawnerMenuWrapper>> SPAWNER_MENU =
+      MENU_TYPES.register(
+          ModMenuType.SPAWNER.getName(), () -> IForgeMenuType.create(SpawnerMenuWrapper::new));
 
-  private ModMenuTypes() {}
+
 
   public static final RegistryObject<MenuType<AbilitiesAttributeConfigurationMenuWrapper>>
       ABILITIES_ATTRIBUTE_CONFIGURATION_MENU =
@@ -282,9 +285,7 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               ConfigurationType.SCALING.getName(),
               () -> IForgeMenuType.create(ScalingConfigurationMenuWrapper::new));
-  public static final RegistryObject<MenuType<SpawnerMenuWrapper>> SPAWNER_MENU =
-      MENU_TYPES.register(
-          ModMenuType.SPAWNER.getName(), () -> IForgeMenuType.create(SpawnerMenuWrapper::new));
+
   public static final RegistryObject<MenuType<UrlSkinConfigurationMenuWrapper>>
       URL_SKIN_CONFIGURATION_MENU =
           MENU_TYPES.register(

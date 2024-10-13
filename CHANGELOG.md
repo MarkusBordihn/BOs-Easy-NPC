@@ -8,6 +8,17 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.7.0
+
+- Fixed #354 by adding missing hand item renderer for piglin models.
+- Fixed #353 by adding additional checks for body part rendering.
+- Fixed #351 by improving dialog and trade server-side checks.
+- Fixed #350 by adding additional safety checks for text and translated text.
+- Fixed #346 by making sure Trading data are correctly synced even with small changes.
+- Fixed #340 by adding respawn command for single or several NPCs.
+- Added custom attributes for NPCs to allow more complex behavior.
+- Added smaller code optimizations and cleanup.
+
 ### 5.6.0 (Release Version)
 
 Note: Because of some fundamental changes and improvements, it could be that some of the data are

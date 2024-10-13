@@ -33,6 +33,7 @@ import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import de.markusbordihn.easynpc.utils.PlayersUtils;
 import de.markusbordihn.easynpc.utils.TextUtils;
@@ -303,7 +304,7 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
       Text.drawErrorMessage(
           guiGraphics,
           this.font,
-          Component.translatable(Constants.TEXT_PREFIX + this.errorMessage),
+          TextComponent.getTranslatedText(this.errorMessage),
           this.leftPos + 10,
           this.contentTopPos + 71,
           this.imageWidth - 14);

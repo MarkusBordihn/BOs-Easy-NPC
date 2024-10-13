@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.screen.editor.dialog;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.EditorScreen;
 import de.markusbordihn.easynpc.client.screen.components.AddButton;
 import de.markusbordihn.easynpc.client.screen.components.CancelButton;
@@ -41,6 +40,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.ConfirmScreen;
@@ -83,11 +83,10 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
                 this.minecraft.setScreen(this);
               }
             },
-            Component.translatable(Constants.TEXT_PREFIX + "removeDialogButton.deleteQuestion"),
-            Component.translatable(
-                Constants.TEXT_PREFIX + "removeDialogButton.deleteWarning",
-                this.getDialogButtonData().name()),
-            Component.translatable(Constants.TEXT_PREFIX + "removeDialogButton.deleteButton"),
+            TextComponent.getTranslatedText("removeDialogButton.deleteQuestion"),
+            TextComponent.getTranslatedText(
+                "removeDialogButton.deleteWarning", this.getDialogButtonData().name()),
+            TextComponent.getTranslatedText("removeDialogButton.deleteButton"),
             CommonComponents.GUI_CANCEL));
   }
 
@@ -273,10 +272,7 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
     // Render Tooltips
     if (this.buttonNameToLabelButton != null && this.buttonNameToLabelButton.isMouseOver(x, y)) {
       guiGraphics.renderTooltip(
-          this.font,
-          Component.translatable(Constants.TEXT_CONFIG_PREFIX + "name_to_label.tooltip"),
-          x,
-          y);
+          this.font, TextComponent.getTranslatedConfigText("name_to_label.tooltip"), x, y);
     }
   }
 
@@ -284,9 +280,7 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
     int buttonWidth = 300;
     ActionDataSet actionDataSet = this.getDialogButtonData().actionDataSet();
     if (actionDataSet == null || actionDataSet.isEmpty()) {
-      Component buttonLabel =
-          Component.translatable(
-              Constants.TEXT_CONFIG_PREFIX + "add_action", Component.literal("button"));
+      Component buttonLabel = TextComponent.getTextComponent("add_action", "button");
       return new AddButton(
               left,
               top,
@@ -302,9 +296,7 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
                           new ActionDataEntry()))
           .setRenderCenter(false);
     } else {
-      Component buttonLabel =
-          Component.translatable(
-              Constants.TEXT_CONFIG_PREFIX + "edit_action", Component.literal("button"));
+      Component buttonLabel = TextComponent.getTextComponent("edit_action", "button");
       return new EditButton(
               left,
               top,

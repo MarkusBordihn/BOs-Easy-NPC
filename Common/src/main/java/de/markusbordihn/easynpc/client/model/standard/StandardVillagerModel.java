@@ -41,6 +41,8 @@ public class StandardVillagerModel<T extends Entity> extends VillagerModel<T>
       new EnumMap<>(ModelPartType.class);
   protected final Map<ModelPartType, CustomRotation> modelPartRotationMap =
       new EnumMap<>(ModelPartType.class);
+  protected final Map<ModelPartType, Boolean> modelPartVisibilityMap =
+      new EnumMap<>(ModelPartType.class);
   protected final Map<ModelPartType, ModelPart> modelPartMap = new EnumMap<>(ModelPartType.class);
   private final ModelPart arms;
   private final ModelPart body;
@@ -174,6 +176,11 @@ public class StandardVillagerModel<T extends Entity> extends VillagerModel<T>
   @Override
   public Map<ModelPartType, CustomRotation> getModelPartRotationMap() {
     return this.modelPartRotationMap;
+  }
+
+  @Override
+  public Map<ModelPartType, Boolean> getModelPartVisibilityMap() {
+    return this.modelPartVisibilityMap;
   }
 
   @Override

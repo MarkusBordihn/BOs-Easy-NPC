@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.trading;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
@@ -27,6 +26,7 @@ import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
@@ -87,8 +87,7 @@ public class NoneTradingConfigurationContainerScreen<T extends ConfigurationMenu
     // Pre-format text
     this.textComponents =
         this.font.split(
-            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "disable_trading_text"),
-            this.imageWidth - 20);
+            TextComponent.getTranslatedConfigText("disable_trading_text"), this.imageWidth - 20);
     this.numberOfTextLines = this.textComponents.size();
   }
 

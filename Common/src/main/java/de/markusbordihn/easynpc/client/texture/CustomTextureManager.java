@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.io.CustomSkinDataFiles;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -31,7 +32,6 @@ import java.util.Set;
 import java.util.UUID;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import org.apache.logging.log4j.LogManager;
@@ -126,7 +126,7 @@ public class CustomTextureManager {
     Player player = Minecraft.getInstance().player;
     if (player != null) {
       player.sendSystemMessage(
-          Component.literal(
+          TextComponent.getText(
                   LOG_PREFIX
                       + "Unable to load custom texture "
                       + textureModelKey

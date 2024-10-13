@@ -340,5 +340,5 @@
   "text.easy_npc.respawnNPC.confirmWarning": "Der NPC '%s' wird als neuer NPC neu gespawnt, aber mit den gleichen Einstellungen, Position und UUID!",
   "text.easy_npc.respawnNPC.respawnButton": "NPC re-spawnen",
   "text.easy_npc.trading": "Handel",
-  "text.easy_npc.trading.busy": "Der NPC ist gerade mit einem anderen Handel mit %s beschäftigt.\n Bitte warte, bis der Handel beendet ist."
+  "text.easy_npc.trading.busy": "%1$s ist gerade mit einem anderen Handel mit %2$s beschäftigt.\n Bitte warte, bis der Handel beendet ist."
 }

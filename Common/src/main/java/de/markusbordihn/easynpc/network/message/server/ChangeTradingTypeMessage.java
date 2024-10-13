@@ -85,5 +85,6 @@ public record ChangeTradingTypeMessage(UUID uuid, TradingType tradingType)
     // Perform action.
     log.debug("Change trading type: {} for {} from {}", this.tradingType, easyNPC, serverPlayer);
     tradingData.getTradingDataSet().setType(this.tradingType);
+    tradingData.updateTradingDataSet();
   }
 }

@@ -27,14 +27,12 @@ public class BaseAttributes {
 
   public static final String ATTACK_DAMAGE_TAG = BaseAttributeType.ATTACK_DAMAGE.getTagName();
   public static final String ATTACK_KNOCKBACK_TAG = BaseAttributeType.ATTACK_KNOCKBACK.getTagName();
-  // Base Attributes Tags
   public static final String BASE_ATTRIBUTES_TAG = "BaseAttributes";
   public static final String FOLLOW_RANGE_TAG = BaseAttributeType.FOLLOW_RANGE.getTagName();
   public static final String KNOCKBACK_RESISTANCE_TAG =
       BaseAttributeType.KNOCKBACK_RESISTANCE.getTagName();
   private double attackDamage = 2.0F;
   private double attackKnockback = 0.0F;
-  // Base Attributes
   private double followRange = 32.0F;
   private double knockbackResistance = 0.0F;
 
@@ -44,7 +42,7 @@ public class BaseAttributes {
     this.load(compoundTag);
   }
 
-  public BaseAttributes(LivingEntity livingEntity) {
+  public BaseAttributes(final LivingEntity livingEntity) {
     if (livingEntity == null) {
       return;
     }

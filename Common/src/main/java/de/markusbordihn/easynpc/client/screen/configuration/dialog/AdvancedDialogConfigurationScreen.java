@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.client.screen.components.TextEditButton;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -248,7 +249,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
 
       @Override
       public Component getNarration() {
-        return Component.translatable(dialogData.getName());
+        return TextComponent.getTextComponent(dialogData.getName());
       }
 
       @Override
@@ -283,8 +284,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
         if (this.editButton.isHovered()) {
           guiGraphics.renderTooltip(
               AdvancedDialogConfigurationScreen.this.font,
-              Component.translatable(
-                  Constants.TEXT_CONFIG_PREFIX + "dialog.edit_dialog", dialogData.getName()),
+              TextComponent.getTranslatedConfigText("dialog.edit_dialog", dialogData.getName()),
               mouseX,
               mouseY);
         }
@@ -296,8 +296,8 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
         if (this.copyLabelButton.isHovered()) {
           guiGraphics.renderTooltip(
               AdvancedDialogConfigurationScreen.this.font,
-              Component.translatable(
-                  Constants.TEXT_CONFIG_PREFIX + "dialog.copy_dialog_label", dialogData.getLabel()),
+              TextComponent.getTranslatedConfigText(
+                  "dialog.copy_dialog_label", dialogData.getLabel()),
               mouseX,
               mouseY);
         }
@@ -309,8 +309,8 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
         if (this.textEditButton.isHovered()) {
           guiGraphics.renderTooltip(
               AdvancedDialogConfigurationScreen.this.font,
-              Component.translatable(
-                  Constants.TEXT_CONFIG_PREFIX + "dialog.edit_dialog_text", dialogData.getText()),
+              TextComponent.getTranslatedConfigText(
+                  "dialog.edit_dialog_text", dialogData.getText()),
               mouseX,
               mouseY);
         }

@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.dialog;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.CancelButton;
 import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
@@ -29,6 +28,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogType;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
@@ -66,8 +66,7 @@ public class BasicDialogConfigurationScreen<T extends ConfigurationMenu>
     // Pre-format text
     this.textComponents =
         this.font.split(
-            Component.translatable(Constants.TEXT_CONFIG_PREFIX + "dialog_placeholder"),
-            this.imageWidth - 20);
+            TextComponent.getTranslatedConfigText("dialog_placeholder"), this.imageWidth - 20);
     this.numberOfTextLines = this.textComponents.size();
 
     // Dialog

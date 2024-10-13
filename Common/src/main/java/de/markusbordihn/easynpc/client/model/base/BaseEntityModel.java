@@ -37,6 +37,8 @@ public class BaseEntityModel<E extends Entity> extends EntityModel<E> implements
       new EnumMap<>(ModelPartType.class);
   protected final Map<ModelPartType, CustomRotation> modelPartRotationMap =
       new EnumMap<>(ModelPartType.class);
+  protected final Map<ModelPartType, Boolean> modelPartVisibilityMap =
+      new EnumMap<>(ModelPartType.class);
   protected final Map<ModelPartType, ModelPart> modelPartMap = new EnumMap<>(ModelPartType.class);
 
   public BaseEntityModel() {}
@@ -63,6 +65,11 @@ public class BaseEntityModel<E extends Entity> extends EntityModel<E> implements
   @Override
   public Map<ModelPartType, CustomRotation> getModelPartRotationMap() {
     return this.modelPartRotationMap;
+  }
+
+  @Override
+  public Map<ModelPartType, Boolean> getModelPartVisibilityMap() {
+    return this.modelPartVisibilityMap;
   }
 
   @Override

@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
 import de.markusbordihn.easynpc.menu.MenuManager;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -144,6 +145,6 @@ public class EasyNPCWandItem extends Item {
       List<Component> tooltipList,
       TooltipFlag tooltipFlag) {
     // Display description.
-    tooltipList.add(Component.translatable(Constants.TEXT_ITEM_PREFIX + ID));
+    tooltipList.add(TextComponent.getTranslatedTextRaw(Constants.TEXT_ITEM_PREFIX + ID));
   }
 }

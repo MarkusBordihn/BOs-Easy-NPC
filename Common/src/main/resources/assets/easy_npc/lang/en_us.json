@@ -341,5 +341,5 @@
   "text.easy_npc.respawnNPC.confirmWarning": "The NPC '%s' will be respawned as new NPC, but the same settings, position and UUID!",
   "text.easy_npc.respawnNPC.respawnButton": "Respawn NPC",
   "text.easy_npc.trading": "Trading",
-  "text.easy_npc.trading.busy": "The NPC is currently busy with another trade with %s.\n Please wait until the trade is finished."
+  "text.easy_npc.trading.busy": "%1$s is currently busy with another trade with %2$s.\n Please wait until the trade is finished."
 }
