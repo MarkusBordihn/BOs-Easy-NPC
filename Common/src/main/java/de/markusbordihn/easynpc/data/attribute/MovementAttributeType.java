@@ -19,8 +19,17 @@
 
 package de.markusbordihn.easynpc.data.attribute;
 
-public enum EntityAttribute {
-  SILENT;
+import de.markusbordihn.easynpc.utils.TextUtils;
+
+public enum MovementAttributeType implements EntityAttributeTypeInterface {
+  CAN_CLOSE_DOOR,
+  CAN_OPEN_DOOR,
+  CAN_PASS_DOOR,
+  CAN_USE_NETHER_PORTAL;
+
+  public String getTagName() {
+    return TextUtils.convertToPascalCase(this.name());
+  }
 
   public String getAttributeName() {
     return this.name().toLowerCase();

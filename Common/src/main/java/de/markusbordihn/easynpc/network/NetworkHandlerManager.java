@@ -28,15 +28,19 @@ import de.markusbordihn.easynpc.network.message.server.AddOrUpdateObjectiveMessa
 import de.markusbordihn.easynpc.network.message.server.ChangeActionEventMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeAdvancedTradingMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeBasicTradingMessage;
+import de.markusbordihn.easynpc.network.message.server.ChangeCombatAttributeMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeDisplayAttributeMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeEntityAttributeMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeEntityBaseAttributeMessage;
+import de.markusbordihn.easynpc.network.message.server.ChangeEnvironmentalAttributeMessage;
+import de.markusbordihn.easynpc.network.message.server.ChangeInteractionAttributeMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeModelEquipmentVisibilityMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeModelLockRotationMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeModelPoseMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeModelPositionMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeModelRotationMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeModelVisibilityMessage;
+import de.markusbordihn.easynpc.network.message.server.ChangeMovementAttributeMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeNameMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangePoseMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangePositionMessage;
@@ -154,6 +158,11 @@ public class NetworkHandlerManager {
         ChangeBasicTradingMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
+        ChangeCombatAttributeMessage.MESSAGE_ID,
+        ChangeCombatAttributeMessage.class,
+        ChangeCombatAttributeMessage::create);
+
+    networkHandler.registerServerNetworkMessageHandler(
         ChangeDisplayAttributeMessage.MESSAGE_ID,
         ChangeDisplayAttributeMessage.class,
         ChangeDisplayAttributeMessage::create);
@@ -167,6 +176,16 @@ public class NetworkHandlerManager {
         ChangeEntityBaseAttributeMessage.MESSAGE_ID,
         ChangeEntityBaseAttributeMessage.class,
         ChangeEntityBaseAttributeMessage::create);
+
+    networkHandler.registerServerNetworkMessageHandler(
+        ChangeEnvironmentalAttributeMessage.MESSAGE_ID,
+        ChangeEnvironmentalAttributeMessage.class,
+        ChangeEnvironmentalAttributeMessage::create);
+
+    networkHandler.registerServerNetworkMessageHandler(
+        ChangeInteractionAttributeMessage.MESSAGE_ID,
+        ChangeInteractionAttributeMessage.class,
+        ChangeInteractionAttributeMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ChangeModelEquipmentVisibilityMessage.MESSAGE_ID,
@@ -197,6 +216,11 @@ public class NetworkHandlerManager {
         ChangeModelVisibilityMessage.MESSAGE_ID,
         ChangeModelVisibilityMessage.class,
         ChangeModelVisibilityMessage::create);
+
+    networkHandler.registerServerNetworkMessageHandler(
+        ChangeMovementAttributeMessage.MESSAGE_ID,
+        ChangeMovementAttributeMessage.class,
+        ChangeMovementAttributeMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ChangeNameMessage.MESSAGE_ID, ChangeNameMessage.class, ChangeNameMessage::create);

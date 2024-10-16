@@ -59,6 +59,10 @@ public class StandardIllagerModel<T extends Mob> extends BaseHierarchicalArmHead
     if (!(entity instanceof EasyNPC<?> easyNPC)) {
       return;
     }
+
+    // Setup default animation.
+    this.setupAnimation(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+
     // Handle crossed arms variants
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     VariantData<?> variantData = easyNPC.getEasyNPCVariantData();
@@ -68,8 +72,6 @@ public class StandardIllagerModel<T extends Mob> extends BaseHierarchicalArmHead
     this.arms.visible = isCrossedArms;
     this.leftArm.visible = !isCrossedArms;
     this.rightArm.visible = !isCrossedArms;
-
-    this.setupAnimation(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
   }
 
   @Override

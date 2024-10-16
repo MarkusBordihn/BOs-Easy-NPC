@@ -20,7 +20,16 @@
 package de.markusbordihn.easynpc.handler;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.attribute.CombatAttributeType;
+import de.markusbordihn.easynpc.data.attribute.CombatAttributes;
 import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
+import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
+import de.markusbordihn.easynpc.data.attribute.EnvironmentalAttributeType;
+import de.markusbordihn.easynpc.data.attribute.EnvironmentalAttributes;
+import de.markusbordihn.easynpc.data.attribute.InteractionAttributeType;
+import de.markusbordihn.easynpc.data.attribute.InteractionAttributes;
+import de.markusbordihn.easynpc.data.attribute.MovementAttributeType;
+import de.markusbordihn.easynpc.data.attribute.MovementAttributes;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
@@ -37,6 +46,163 @@ public class AttributeHandler {
 
   private AttributeHandler() {}
 
+  public static boolean setCombatAttribute(
+      EasyNPC<?> easyNPC, CombatAttributeType attributeType, boolean value) {
+    if (easyNPC == null || attributeType == null) {
+      return false;
+    }
+    AttributeData<?> attributeData = easyNPC.getEasyNPCAttributeData();
+    if (attributeData == null || attributeData.getEntityAttributes() == null) {
+      return false;
+    }
+    EntityAttributes entityAttributes = attributeData.getEntityAttributes();
+    CombatAttributes attributes = entityAttributes.getCombatAttributes();
+    log.debug("Changing combat attribute {}={} for {}", attributeType, value, easyNPC);
+    switch (attributeType) {
+      case IS_ATTACKABLE -> {
+        entityAttributes.setCombatAttributes(attributes.withIsAttackable(value));
+        if (easyNPC.getEntity() != null) {
+          easyNPC.getEntity().setInvulnerable(!value);
+        }
+      }
+      default -> {
+        log.error("Unimplemented combat attribute {} for {}", attributeType, easyNPC);
+        return false;
+      }
+    }
+    attributeData.refreshEntityAttributes();
+    return true;
+  }
+
+  public static boolean setCombatAttribute(
+      EasyNPC<?> easyNPC, CombatAttributeType attributeType, double value) {
+    if (easyNPC == null || attributeType == null) {
+      return false;
+    }
+    AttributeData<?> attributeData = easyNPC.getEasyNPCAttributeData();
+    if (attributeData == null || attributeData.getEntityAttributes() == null) {
+      return false;
+    }
+    EntityAttributes entityAttributes = attributeData.getEntityAttributes();
+    CombatAttributes attributes = entityAttributes.getCombatAttributes();
+    log.debug("Changing combat attribute {}={} for {}", attributeType, value, easyNPC);
+    switch (attributeType) {
+      case HEALTH_REGENERATION -> {
+        entityAttributes.setCombatAttributes(attributes.withHealthRegeneration(value));
+      }
+      default -> {
+        log.error("Unimplemented combat attribute {} for {}", attributeType, easyNPC);
+        return false;
+      }
+    }
+    attributeData.refreshEntityAttributes();
+    return true;
+  }
+
+  public static boolean setEnvironmentalAttribute(
+      EasyNPC<?> easyNPC, EnvironmentalAttributeType attributeType, boolean value) {
+    if (easyNPC == null || attributeType == null) {
+      return false;
+    }
+    AttributeData<?> attributeData = easyNPC.getEasyNPCAttributeData();
+    if (attributeData == null || attributeData.getEntityAttributes() == null) {
+      return false;
+    }
+    EntityAttributes entityAttributes = attributeData.getEntityAttributes();
+    EnvironmentalAttributes attributes = entityAttributes.getEnvironmentalAttributes();
+    ObjectiveData<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
+    NavigationData<?> navigationData = easyNPC.getEasyNPCNavigationData();
+    log.debug("Changing environmental attribute {}={} for {}", attributeType, value, easyNPC);
+    switch (attributeType) {
+      case CAN_BREATHE_UNDERWATER ->
+          entityAttributes.setEnvironmentalAttributes(attributes.withCanBreathUnderwater(value));
+      case CAN_FLOAT -> {
+        entityAttributes.setEnvironmentalAttributes(attributes.withCanFloat(value));
+        if (objectiveData != null) {
+          objectiveData.registerAttributeBasedObjectives();
+        }
+        if (navigationData != null) {
+          navigationData.refreshGroundNavigation();
+        }
+      }
+      case FREEFALL -> entityAttributes.setEnvironmentalAttributes(attributes.withFreefall(value));
+      default -> {
+        log.error("Unimplemented environmental attribute {} for {}", attributeType, easyNPC);
+        return false;
+      }
+    }
+    attributeData.refreshEntityAttributes();
+    return true;
+  }
+
+  public static boolean setInteractionAttribute(
+      EasyNPC<?> easyNPC, InteractionAttributeType attributeType, boolean value) {
+    if (easyNPC == null || attributeType == null) {
+      return false;
+    }
+    AttributeData<?> attributeData = easyNPC.getEasyNPCAttributeData();
+    if (attributeData == null || attributeData.getEntityAttributes() == null) {
+      return false;
+    }
+    EntityAttributes entityAttributes = attributeData.getEntityAttributes();
+    InteractionAttributes attributes = entityAttributes.getInteractionAttributes();
+    log.debug("Changing interaction attribute {}={} for {}", attributeType, value, easyNPC);
+    switch (attributeType) {
+      case CAN_BE_LEASHED ->
+          entityAttributes.setInteractionAttributes(attributes.withCanBeLeashed(value));
+      case IS_PUSHABLE ->
+          entityAttributes.setInteractionAttributes(attributes.withIsPushable(value));
+      case PUSH_ENTITIES ->
+          entityAttributes.setInteractionAttributes(attributes.withPushEntities(value));
+      default -> {
+        log.error("Unimplemented interaction attribute {} for {}", attributeType, easyNPC);
+        return false;
+      }
+    }
+    attributeData.refreshEntityAttributes();
+    return true;
+  }
+
+  public static boolean setMovementAttribute(
+      EasyNPC<?> easyNPC, MovementAttributeType attributeType, boolean value) {
+    if (easyNPC == null || attributeType == null) {
+      return false;
+    }
+    AttributeData<?> attributeData = easyNPC.getEasyNPCAttributeData();
+    if (attributeData == null || attributeData.getEntityAttributes() == null) {
+      return false;
+    }
+    EntityAttributes entityAttributes = attributeData.getEntityAttributes();
+    MovementAttributes attributes = entityAttributes.getMovementAttributes();
+    ObjectiveData<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
+    NavigationData<?> navigationData = easyNPC.getEasyNPCNavigationData();
+    log.debug("Changing moving attribute {}={} for {}", attributeType, value, easyNPC);
+    switch (attributeType) {
+      case CAN_CLOSE_DOOR ->
+          entityAttributes.setMovementAttributes(attributes.withCanCloseDoor(value));
+      case CAN_OPEN_DOOR ->
+          entityAttributes.setMovementAttributes(attributes.withCanOpenDoor(value));
+      case CAN_PASS_DOOR ->
+          entityAttributes.setMovementAttributes(attributes.withCanPassDoor(value));
+      case CAN_USE_NETHER_PORTAL ->
+          entityAttributes.setMovementAttributes(attributes.withCanUseNetherPortal(value));
+      default -> {
+        log.error("Unimplemented moving attribute {} for {}", attributeType, easyNPC);
+        return false;
+      }
+    }
+
+    // Refresh objectives and navigation data if available.
+    attributeData.refreshEntityAttributes();
+    if (objectiveData != null) {
+      objectiveData.registerAttributeBasedObjectives();
+    }
+    if (navigationData != null) {
+      navigationData.refreshGroundNavigation();
+    }
+    return true;
+  }
+
   public static boolean setEntityAttribute(
       EasyNPC<?> easyNPC, EntityAttribute entityAttribute, boolean value) {
     if (easyNPC == null || entityAttribute == null) {
@@ -47,67 +213,6 @@ public class AttributeHandler {
       ObjectiveData<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
       NavigationData<?> navigationData = easyNPC.getEasyNPCNavigationData();
       switch (entityAttribute) {
-        case FREEFALL:
-          log.debug("Change freefall={} for {}", value, easyNPC);
-          attributeData.setAttributeFreefall(value);
-          break;
-        case CAN_BE_LEASHED:
-          log.debug("Change canBeLeashed={} for {}", value, easyNPC);
-          attributeData.setAttributeCanBeLeashed(value);
-          break;
-        case CAN_FLOAT:
-          log.debug("Change canFloat={} for {}", value, easyNPC);
-          attributeData.setAttributeCanFloat(value);
-          if (objectiveData != null) {
-            objectiveData.registerAttributeBasedObjectives();
-          }
-          if (navigationData != null) {
-            navigationData.refreshGroundNavigation();
-          }
-          break;
-        case CAN_OPEN_DOOR:
-          log.debug("Change canOpenDoor={} for {}", value, easyNPC);
-          attributeData.setAttributeCanOpenDoor(value);
-          if (navigationData != null) {
-            navigationData.refreshGroundNavigation();
-          }
-          if (objectiveData != null) {
-            objectiveData.registerAttributeBasedObjectives();
-          }
-          break;
-        case CAN_CLOSE_DOOR:
-          log.debug("Change canCloseDoor={} for {}", value, easyNPC);
-          attributeData.setAttributeCanCloseDoor(value);
-          if (objectiveData != null) {
-            objectiveData.registerAttributeBasedObjectives();
-          }
-          break;
-        case CAN_PASS_DOOR:
-          log.debug("Change canPassDoor={} for {}", value, easyNPC);
-          attributeData.setAttributeCanPassDoor(value);
-          if (navigationData != null) {
-            navigationData.refreshGroundNavigation();
-          }
-          break;
-        case CAN_USE_NETHER_PORTAL:
-          log.debug("Change canUseNetherPortal={} for {}", value, easyNPC);
-          attributeData.setAttributeCanUseNetherPortal(value);
-          break;
-        case IS_ATTACKABLE:
-          log.debug("Change isAttackable={} for {}", value, easyNPC);
-          attributeData.setAttributeIsAttackable(value);
-          if (easyNPC.getLivingEntity() != null) {
-            easyNPC.getLivingEntity().setInvulnerable(!value);
-          }
-          break;
-        case IS_PUSHABLE:
-          log.debug("Change isPushable={} for {}", value, easyNPC);
-          attributeData.setAttributeIsPushable(value);
-          break;
-        case PUSH_ENTITIES:
-          log.debug("Change pushEntities={} for {}", value, easyNPC);
-          attributeData.setAttributePushEntities(value);
-          break;
         case SILENT:
           log.debug("Change silent={} for {}", value, easyNPC);
           attributeData.setAttributeSilent(value);

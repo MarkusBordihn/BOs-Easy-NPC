@@ -23,7 +23,11 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionDataEntry;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
+import de.markusbordihn.easynpc.data.attribute.CombatAttributeType;
 import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
+import de.markusbordihn.easynpc.data.attribute.EnvironmentalAttributeType;
+import de.markusbordihn.easynpc.data.attribute.InteractionAttributeType;
+import de.markusbordihn.easynpc.data.attribute.MovementAttributeType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
@@ -47,14 +51,18 @@ import de.markusbordihn.easynpc.network.message.server.AddOrUpdateObjectiveMessa
 import de.markusbordihn.easynpc.network.message.server.ChangeActionEventMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeAdvancedTradingMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeBasicTradingMessage;
+import de.markusbordihn.easynpc.network.message.server.ChangeCombatAttributeMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeDisplayAttributeMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeEntityAttributeMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeEntityBaseAttributeMessage;
+import de.markusbordihn.easynpc.network.message.server.ChangeEnvironmentalAttributeMessage;
+import de.markusbordihn.easynpc.network.message.server.ChangeInteractionAttributeMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeModelEquipmentVisibilityMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeModelLockRotationMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeModelPositionMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeModelRotationMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeModelVisibilityMessage;
+import de.markusbordihn.easynpc.network.message.server.ChangeMovementAttributeMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeNameMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangePoseMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangePositionMessage;
@@ -192,6 +200,46 @@ public interface ServerNetworkMessageHandlerInterface {
     if (uuid != null && entityAttribute != null && booleanValue != null) {
       NetworkHandlerManager.sendToServer(
           new ChangeEntityAttributeMessage(uuid, entityAttribute, booleanValue));
+    }
+  }
+
+  default void combatAttributeChange(
+      UUID uuid, CombatAttributeType attributeType, Boolean booleanValue) {
+    if (uuid != null && attributeType != null && booleanValue != null) {
+      NetworkHandlerManager.sendToServer(
+          new ChangeCombatAttributeMessage(uuid, attributeType, booleanValue));
+    }
+  }
+
+  default void combatAttributeChange(
+      UUID uuid, CombatAttributeType attributeType, Double doubleValue) {
+    if (uuid != null && attributeType != null && doubleValue != null) {
+      NetworkHandlerManager.sendToServer(
+          new ChangeCombatAttributeMessage(uuid, attributeType, doubleValue));
+    }
+  }
+
+  default void environmentalAttributeChange(
+      UUID uuid, EnvironmentalAttributeType attributeType, Boolean booleanValue) {
+    if (uuid != null && attributeType != null && booleanValue != null) {
+      NetworkHandlerManager.sendToServer(
+          new ChangeEnvironmentalAttributeMessage(uuid, attributeType, booleanValue));
+    }
+  }
+
+  default void interactionAttributeChange(
+      UUID uuid, InteractionAttributeType attributeType, Boolean booleanValue) {
+    if (uuid != null && attributeType != null && booleanValue != null) {
+      NetworkHandlerManager.sendToServer(
+          new ChangeInteractionAttributeMessage(uuid, attributeType, booleanValue));
+    }
+  }
+
+  default void movementAttributeChange(
+      UUID uuid, MovementAttributeType attributeType, Boolean booleanValue) {
+    if (uuid != null && attributeType != null && booleanValue != null) {
+      NetworkHandlerManager.sendToServer(
+          new ChangeMovementAttributeMessage(uuid, attributeType, booleanValue));
     }
   }
 

@@ -20,13 +20,11 @@
 package de.markusbordihn.easynpc.client.screen.configuration.attribute;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.markusbordihn.easynpc.client.screen.components.SliderButton;
+import de.markusbordihn.easynpc.client.screen.components.RangeSliderButton;
+import de.markusbordihn.easynpc.client.screen.components.SliderButton.OnChange;
 import de.markusbordihn.easynpc.client.screen.components.Text;
-import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
-import de.markusbordihn.easynpc.network.components.TextComponent;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -37,22 +35,22 @@ import net.minecraft.world.entity.player.Inventory;
 public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
     extends AttributeConfigurationScreen<T> {
 
-  SliderButton maxHealthSlider;
-  SliderButton followRangeSlider;
-  SliderButton knockbackResistanceSlider;
-  SliderButton movementSpeedSlider;
-  SliderButton flyingSpeedSlider;
-  SliderButton attackDamageSlider;
-  SliderButton attackKnockbackSlider;
-  SliderButton attackSpeedSlider;
-  SliderButton armorSlider;
-  SliderButton armorToughnessSlider;
+  RangeSliderButton armorSlider;
+  RangeSliderButton armorToughnessSlider;
+  RangeSliderButton attackDamageSlider;
+  RangeSliderButton attackKnockbackSlider;
+  RangeSliderButton attackSpeedSlider;
+  RangeSliderButton flyingSpeedSlider;
+  RangeSliderButton followRangeSlider;
+  RangeSliderButton knockbackResistanceSlider;
+  RangeSliderButton maxHealthSlider;
+  RangeSliderButton movementSpeedSlider;
 
   public BaseAttributeConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 
-  private SliderButton createAttributeSlider(
+  private RangeSliderButton createAttributeSlider(
       int left,
       int top,
       int width,
@@ -63,8 +61,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
       double defaultMaxValue,
       double defaultValue,
       double stepSize,
-      SliderButton.OnChange onChange) {
-
+      OnChange onChange) {
     // Get attribute values directly from attribute with default value as fallback.
     double minValue =
         attribute instanceof RangedAttribute rangedAttribute
@@ -74,59 +71,19 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
         attribute instanceof RangedAttribute rangedAttribute
             ? rangedAttribute.getMaxValue()
             : defaultMaxValue;
-
-    // Create slider button with additional buttons for step size and reset.
-    SliderButton sliderButton =
-        this.addRenderableWidget(
-            new SliderButton(
-                left + 12,
-                top,
-                width - 36,
-                height,
-                attribute.getDescriptionId(),
-                value,
-                minValue,
-                maxValue,
-                onChange));
-    this.addRenderableWidget(
-        new TextButton(
-            sliderButton.x - 12,
+    return this.addRenderableWidget(
+        new RangeSliderButton(
+            left,
             top,
-            12,
+            width,
             height,
-            TextComponent.getText("-"),
-            button -> {
-              if (sliderButton.getTargetDoubleValue() - stepSize >= minValue) {
-                sliderButton.setDefaultValue(sliderButton.getTargetDoubleValue() - stepSize);
-                onChange.onChange(sliderButton);
-              }
-            }));
-    Button plusButton =
-        this.addRenderableWidget(
-            new TextButton(
-                sliderButton.x + sliderButton.getWidth(),
-                top,
-                12,
-                height,
-                TextComponent.getText("+"),
-                button -> {
-                  if (sliderButton.getTargetDoubleValue() + stepSize <= maxValue) {
-                    sliderButton.setDefaultValue(sliderButton.getTargetDoubleValue() + stepSize);
-                    onChange.onChange(sliderButton);
-                  }
-                }));
-    this.addRenderableWidget(
-        new TextButton(
-            plusButton.x + plusButton.getWidth(),
-            top,
-            12,
-            height,
-            TextComponent.getText("↺"),
-            button -> {
-              sliderButton.setDefaultValue(defaultValue);
-              onChange.onChange(sliderButton);
-            }));
-    return sliderButton;
+            attribute.getDescriptionId(),
+            value,
+            minValue,
+            maxValue,
+            stepSize,
+            defaultValue,
+            onChange));
   }
 
   @Override
@@ -364,7 +321,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
   public void render(PoseStack poseStack, int x, int y, float partialTicks) {
     super.render(poseStack, x, y, partialTicks);
 
-    int sliderXOffset = -145;
+    int sliderXOffset = -135;
     int sliderYOffset = 3;
 
     if (this.maxHealthSlider != null) {

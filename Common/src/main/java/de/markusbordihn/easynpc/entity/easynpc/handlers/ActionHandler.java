@@ -131,6 +131,7 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
   default void checkDistanceActions() {
     this.getProfiler().push("npcCheckDistanceActions");
 
+    // Validate action data and mob entity.
     Mob mob = this.getMob();
     ActionEventData<E> actionEventData = this.getEasyNPCActionEventData();
     if (actionEventData == null || mob == null || mob.isDeadOrDying()) {

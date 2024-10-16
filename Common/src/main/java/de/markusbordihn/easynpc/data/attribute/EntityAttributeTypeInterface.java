@@ -19,10 +19,9 @@
 
 package de.markusbordihn.easynpc.data.attribute;
 
-public enum EntityAttribute {
-  SILENT;
+public interface EntityAttributeTypeInterface {
 
-  public String getAttributeName() {
-    return this.name().toLowerCase();
-  }
+  String getTagName();
+
+  String getAttributeName();
 }

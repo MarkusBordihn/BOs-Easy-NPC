@@ -22,9 +22,9 @@ package de.markusbordihn.easynpc.data.attribute;
 import de.markusbordihn.easynpc.utils.TextUtils;
 
 public enum CustomAttributeType {
-  HEALTH_REGENERATION;
+  CUSTOM;
 
   public String getTagName() {
-    return TextUtils.convertToCamelCase(this.name());
+    return TextUtils.convertToPascalCase(this.name());
   }
 }

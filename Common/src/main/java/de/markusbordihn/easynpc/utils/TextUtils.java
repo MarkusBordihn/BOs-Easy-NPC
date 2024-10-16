@@ -71,6 +71,13 @@ public class TextUtils {
     return mutableComponent;
   }
 
+  public static String convertToPascalCase(String text) {
+    if (text == null || text.isEmpty()) {
+      return text;
+    }
+    return text.substring(0, 1).toUpperCase() + convertToCamelCase(text.substring(1));
+  }
+
   public static String convertToCamelCase(String text) {
     if (text == null || text.isEmpty()) {
       return text;

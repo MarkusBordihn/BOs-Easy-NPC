@@ -170,6 +170,7 @@
   "text.easy_npc.config.follow_range": "Follow Range",
   "text.easy_npc.config.free_fall": "Free fall",
   "text.easy_npc.config.gun_attack": "Gun Attack",
+  "text.easy_npc.config.health_regeneration": "Health Regeneration",
   "text.easy_npc.config.import": "▽ Import",
   "text.easy_npc.config.import_custom_preset": "Import Custom Preset",
   "text.easy_npc.config.import_default_preset": "Import Default Preset",
