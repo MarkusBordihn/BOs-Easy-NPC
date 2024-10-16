@@ -49,6 +49,7 @@ public class SliderButton extends AbstractSliderButton {
   private float initValue;
   private float roundFactor = 100.0f;
   private float targetValue;
+  private float formerTargetValue;
 
   public SliderButton(
       int x,
@@ -143,7 +144,7 @@ public class SliderButton extends AbstractSliderButton {
     this.updateMessage();
   }
 
-  private static float getMinValue(Type type) {
+  static float getMinValue(Type type) {
     return switch (type) {
       case DEGREE -> -180.0f;
       case DOUBLE -> 0.0f;
@@ -153,7 +154,7 @@ public class SliderButton extends AbstractSliderButton {
     };
   }
 
-  private static float getMaxValue(Type type) {
+  static float getMaxValue(Type type) {
     return switch (type) {
       case DEGREE -> 180.0f;
       case DOUBLE -> 1024f;
@@ -163,7 +164,7 @@ public class SliderButton extends AbstractSliderButton {
     };
   }
 
-  private static float getStepSize(Type type) {
+  static float getStepSize(Type type) {
     return switch (type) {
       case DEGREE -> 0.5f;
       case DOUBLE -> 1.0f;
@@ -217,6 +218,10 @@ public class SliderButton extends AbstractSliderButton {
     return this.stepSize / this.valueFraction;
   }
 
+  public boolean isVisible() {
+    return this.visible;
+  }
+
   @Override
   protected void updateMessage() {
     switch (this.type) {
@@ -232,7 +237,10 @@ public class SliderButton extends AbstractSliderButton {
   @Override
   protected void applyValue() {
     this.updateTargetValue();
-    this.onChange.onChange(this);
+    if (this.targetValue != this.formerTargetValue) {
+      this.onChange.onChange(this);
+      this.formerTargetValue = this.targetValue;
+    }
   }
 
   protected void renderBg(@NotNull GuiGraphics guiGraphics) {

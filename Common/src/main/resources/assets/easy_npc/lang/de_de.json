@@ -169,6 +169,7 @@
   "text.easy_npc.config.follow_range": "Folge Reichweite",
   "text.easy_npc.config.free_fall": "Freier Fall",
   "text.easy_npc.config.gun_attack": "Schusswaffen Angriff",
+  "text.easy_npc.config.health_regeneration": "Gesundheitsregeneration",
   "text.easy_npc.config.import": "▽ Importieren",
   "text.easy_npc.config.import_custom_preset": "Importiere benutzerdefinierte Vorlage",
   "text.easy_npc.config.import_default_preset": "Importiere Standard Vorlage",

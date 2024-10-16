@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.scaling;
 
+import de.markusbordihn.easynpc.client.screen.components.RangeSliderButton;
 import de.markusbordihn.easynpc.client.screen.components.SliderButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
@@ -41,9 +42,9 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
   protected Button defaultScaleXButton;
   protected Button defaultScaleYButton;
   protected Button defaultScaleZButton;
-  protected SliderButton scaleXSliderButton;
-  protected SliderButton scaleYSliderButton;
-  protected SliderButton scaleZSliderButton;
+  protected RangeSliderButton scaleXSliderButton;
+  protected RangeSliderButton scaleYSliderButton;
+  protected RangeSliderButton scaleZSliderButton;
   private int dimensionUpdateTicker = 0;
 
   public ScalingConfigurationScreen(T menu, Inventory inventory, Component component) {
@@ -67,46 +68,36 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
     int scalePositionTop = this.contentTopPos + 20;
     int scalePositionSpace = 60;
     int scaleWidth = 140;
+    int scaleHeight = 20;
 
-    // Scale Slider for X
     ScaleData<?> scaleData = this.getEasyNPC().getEasyNPCScaleData();
     this.scaleXSliderButton =
         this.addRenderableWidget(
-            new SliderButton(
+            new RangeSliderButton(
                 scalePositionLeft,
                 scalePositionTop,
                 scaleWidth,
-                20,
+                scaleHeight,
                 scaleData.getScaleX(),
+                scaleData.getDefaultScaleX(),
                 SliderButton.Type.SCALE,
-                button -> {
-                  float scale = button.getTargetValue();
+                slider -> {
+                  float scale = slider.getTargetValue();
                   if (scaleData.getScaleX() != scale) {
                     NetworkMessageHandlerManager.getServerHandler()
                         .scaleChange(
-                            this.getEasyNPCUUID(), ModelScaleAxis.X, button.getTargetValue());
+                            this.getEasyNPCUUID(), ModelScaleAxis.X, slider.getTargetValue());
                   }
-                  this.defaultScaleXButton.active = scale != scaleData.getDefaultScaleX();
                 }));
-    this.defaultScaleXButton =
-        this.addRenderableWidget(
-            new TextButton(
-                scalePositionLeft,
-                scalePositionTop + this.scaleXSliderButton.getHeight(),
-                scaleWidth,
-                "reset",
-                button -> this.scaleXSliderButton.setDefaultValue(scaleData.getDefaultScaleX())));
-    this.defaultScaleXButton.active = !scaleData.getScaleX().equals(scaleData.getDefaultScaleX());
-
-    // Scale Slider for Y
     this.scaleYSliderButton =
         this.addRenderableWidget(
-            new SliderButton(
+            new RangeSliderButton(
                 scalePositionLeft,
                 scalePositionTop + scalePositionSpace,
                 scaleWidth,
-                20,
+                scaleHeight,
                 scaleData.getScaleY(),
+                scaleData.getDefaultScaleY(),
                 SliderButton.Type.SCALE,
                 button -> {
                   float scale = button.getTargetValue();
@@ -115,27 +106,16 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
                         .scaleChange(
                             this.getEasyNPCUUID(), ModelScaleAxis.Y, button.getTargetValue());
                   }
-                  this.defaultScaleYButton.active = scale != scaleData.getDefaultScaleY();
                 }));
-    this.defaultScaleYButton =
-        this.addRenderableWidget(
-            new TextButton(
-                scalePositionLeft,
-                scalePositionTop + this.scaleYSliderButton.getHeight() + scalePositionSpace,
-                scaleWidth,
-                "reset",
-                button -> this.scaleYSliderButton.setDefaultValue(scaleData.getDefaultScaleY())));
-    this.defaultScaleYButton.active = !scaleData.getScaleY().equals(scaleData.getDefaultScaleY());
-
-    // Scale Slider for Z
     this.scaleZSliderButton =
         this.addRenderableWidget(
-            new SliderButton(
+            new RangeSliderButton(
                 scalePositionLeft,
                 scalePositionTop + scalePositionSpace * 2,
                 scaleWidth,
-                20,
+                scaleHeight,
                 scaleData.getScaleZ(),
+                scaleData.getDefaultScaleZ(),
                 SliderButton.Type.SCALE,
                 button -> {
                   float scale = button.getTargetValue();
@@ -144,17 +124,7 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
                         .scaleChange(
                             this.getEasyNPCUUID(), ModelScaleAxis.Z, button.getTargetValue());
                   }
-                  this.defaultScaleZButton.active = scale != scaleData.getDefaultScaleZ();
                 }));
-    this.defaultScaleZButton =
-        this.addRenderableWidget(
-            new TextButton(
-                scalePositionLeft,
-                scalePositionTop + this.scaleZSliderButton.getHeight() + scalePositionSpace * 2,
-                scaleWidth,
-                "reset",
-                button -> this.scaleZSliderButton.setDefaultValue(scaleData.getDefaultScaleZ())));
-    this.defaultScaleZButton.active = !scaleData.getScaleZ().equals(scaleData.getDefaultScaleZ());
   }
 
   @Override

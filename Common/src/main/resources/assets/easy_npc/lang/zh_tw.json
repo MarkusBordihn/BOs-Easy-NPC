@@ -161,6 +161,7 @@
   "text.easy_npc.config.follow_range": "跟隨範圍",
   "text.easy_npc.config.free_fall": "自由落體",
   "text.easy_npc.config.gun_attack": "槍攻擊",
+  "text.easy_npc.config.health_regeneration": "生命回復",
   "text.easy_npc.config.import": "▽ 匯入",
   "text.easy_npc.config.import_custom_preset": "匯入自訂預設",
   "text.easy_npc.config.import_default_preset": "匯入預設預設",

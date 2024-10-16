@@ -66,7 +66,7 @@ public class VisibilityHandler {
     // Check specific visibility attributes
     boolean isVisible = true;
     LivingEntity livingEntity = easyNPC.getLivingEntity();
-    long dayTime = player.level().getDayTime();
+    long dayTime = player.level().getDayTime() % 24000;
 
     // NPC is visible at day
     if (displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_AT_DAY)

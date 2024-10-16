@@ -23,8 +23,8 @@ import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
-import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
-import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
+import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
+import de.markusbordihn.easynpc.data.attribute.EnvironmentalAttributeType;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.components.TextComponent;
@@ -185,18 +185,21 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
                 }));
 
     // Freefall Checkbox
-    AttributeData<?> attributeData = this.getEasyNPC().getEasyNPCAttributeData();
+    EntityAttributes attributeData =
+        this.getEasyNPC().getEasyNPCAttributeData().getEntityAttributes();
     this.positionFreefallCheckbox =
         this.addRenderableWidget(
             new Checkbox(
                 this.contentLeftPos + 200,
                 positionTopPos + 20,
                 "free_fall",
-                attributeData.getAttributeFreefall(),
+                attributeData.getEnvironmentalAttributes().freefall(),
                 checkbox ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .entityAttributeChange(
-                            this.getEasyNPCUUID(), EntityAttribute.FREEFALL, checkbox.selected())));
+                        .environmentalAttributeChange(
+                            this.getEasyNPCUUID(),
+                            EnvironmentalAttributeType.FREEFALL,
+                            checkbox.selected())));
   }
 
   @Override

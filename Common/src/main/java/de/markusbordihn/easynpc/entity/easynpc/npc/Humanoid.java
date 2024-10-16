@@ -23,9 +23,11 @@ import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseModelEntity;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
@@ -84,6 +86,15 @@ public class Humanoid extends EasyNPCBaseModelEntity<Humanoid> {
     soundDataSet.addSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
     soundDataSet.addSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
+  }
+
+  @Override
+  public float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
+    return switch (pose) {
+      case SWIMMING, FALL_FLYING, SPIN_ATTACK -> 0.4F;
+      case CROUCHING -> 1.27F;
+      default -> 1.62F;
+    };
   }
 
   public enum Variant {

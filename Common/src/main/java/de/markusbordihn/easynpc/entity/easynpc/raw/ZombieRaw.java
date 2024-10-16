@@ -343,29 +343,34 @@ public class ZombieRaw extends Zombie implements EasyNPCBase<Zombie> {
         && (serverPlayer.isCreative() || isOwner(serverPlayer))) {
       return true;
     }
-    return !this.isLeashed() && getAttributeDataLoaded() && getAttributeCanBeLeashed();
+    return !this.isLeashed() && getEntityAttributes().getInteractionAttributes().canBeLeashed();
+  }
+
+  @Override
+  public boolean canBreatheUnderwater() {
+    return getEntityAttributes().getEnvironmentalAttributes().canBreatheUnderwater();
   }
 
   @Override
   public boolean isAttackable() {
-    return getAttributeDataLoaded() && getAttributeIsAttackable();
+    return getEntityAttributes().getCombatAttributes().isAttackable();
   }
 
   @Override
   public boolean isPushable() {
-    return getAttributeDataLoaded() && getAttributeIsPushable();
+    return getEntityAttributes().getInteractionAttributes().isPushable();
   }
 
   @Override
   protected void pushEntities() {
-    if (getAttributeDataLoaded() && getAttributePushEntities()) {
+    if (getEntityAttributes().getInteractionAttributes().pushEntities()) {
       super.pushEntities();
     }
   }
 
   @Override
   public boolean isInvulnerable() {
-    return getAttributeDataLoaded() ? !getAttributeIsAttackable() : super.isInvulnerable();
+    return !getEntityAttributes().getCombatAttributes().isAttackable();
   }
 
   @Override
@@ -400,7 +405,7 @@ public class ZombieRaw extends Zombie implements EasyNPCBase<Zombie> {
 
   @Override
   protected void handleNetherPortal() {
-    if (getAttributeDataLoaded() && getAttributeCanUseNetherPortal()) {
+    if (getEntityAttributes().getMovementAttributes().canUseNetherPortal()) {
       super.handleNetherPortal();
     }
   }

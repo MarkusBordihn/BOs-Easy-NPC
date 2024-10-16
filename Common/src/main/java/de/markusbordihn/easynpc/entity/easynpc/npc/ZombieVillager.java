@@ -41,6 +41,9 @@ public class ZombieVillager extends EasyNPCBaseModelEntity<ZombieVillager> {
 
   public ZombieVillager(EntityType<? extends PathfinderMob> entityType, Level level) {
     super(entityType, level, Variant.DEFAULT);
+    this.getEntityAttributes()
+        .setEnvironmentalAttributes(
+            this.getEntityAttributes().getEnvironmentalAttributes().withCanBreathUnderwater(true));
   }
 
   public static AttributeSupplier.Builder createAttributes() {
