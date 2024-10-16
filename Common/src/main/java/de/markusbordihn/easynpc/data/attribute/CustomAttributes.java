@@ -24,10 +24,6 @@ import net.minecraft.nbt.CompoundTag;
 public class CustomAttributes {
 
   public static final String CUSTOM_ATTRIBUTES_TAG = "CustomAttributes";
-  public static final String HEALTH_REGENERATION_TAG =
-      CustomAttributeType.HEALTH_REGENERATION.getTagName();
-
-  private double healthRegeneration = 0.0D;
 
   public CustomAttributes() {}
 
@@ -40,14 +36,10 @@ public class CustomAttributes {
       return;
     }
     CompoundTag customAttributesTag = compoundTag.getCompound(CUSTOM_ATTRIBUTES_TAG);
-    if (customAttributesTag.contains(HEALTH_REGENERATION_TAG)) {
-      this.healthRegeneration = customAttributesTag.getDouble(HEALTH_REGENERATION_TAG);
-    }
   }
 
   public CompoundTag save(CompoundTag compoundTag) {
     CompoundTag customAttributesTag = new CompoundTag();
-    customAttributesTag.putDouble(HEALTH_REGENERATION_TAG, this.healthRegeneration);
 
     compoundTag.put(CUSTOM_ATTRIBUTES_TAG, customAttributesTag);
     return compoundTag;
@@ -55,9 +47,5 @@ public class CustomAttributes {
 
   public CompoundTag createTag() {
     return this.save(new CompoundTag());
-  }
-
-  public double getHealthRegeneration() {
-    return this.healthRegeneration;
   }
 }

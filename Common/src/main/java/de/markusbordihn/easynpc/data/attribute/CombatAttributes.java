@@ -19,10 +19,35 @@
 
 package de.markusbordihn.easynpc.data.attribute;
 
-public enum EntityAttribute {
-  SILENT;
+import net.minecraft.nbt.CompoundTag;
 
-  public String getAttributeName() {
-    return this.name().toLowerCase();
+public record CombatAttributes(boolean isAttackable, double healthRegeneration)
+    implements EntityAttributesInterface {
+
+  public static final String IS_ATTACKABLE_TAG = CombatAttributeType.IS_ATTACKABLE.getTagName();
+  public static final String HEALTH_REGENERATION_TAG =
+      CombatAttributeType.HEALTH_REGENERATION.getTagName();
+
+  public CombatAttributes() {
+    this(false, 0.0);
+  }
+
+  public static CombatAttributes decode(CompoundTag compoundTag) {
+    return new CombatAttributes(
+        compoundTag.getBoolean(IS_ATTACKABLE_TAG), compoundTag.getDouble(HEALTH_REGENERATION_TAG));
+  }
+
+  public CombatAttributes withHealthRegeneration(double healthRegeneration) {
+    return new CombatAttributes(isAttackable, healthRegeneration);
+  }
+
+  public CombatAttributes withIsAttackable(boolean isAttackable) {
+    return new CombatAttributes(isAttackable, healthRegeneration);
+  }
+
+  public CompoundTag encode(CompoundTag compoundTag) {
+    compoundTag.putBoolean(IS_ATTACKABLE_TAG, isAttackable());
+    compoundTag.putDouble(HEALTH_REGENERATION_TAG, healthRegeneration());
+    return compoundTag;
   }
 }

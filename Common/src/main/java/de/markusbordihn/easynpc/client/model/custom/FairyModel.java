@@ -45,8 +45,8 @@ public class FairyModel<T extends LivingEntity> extends BaseHumanoidModel<T> {
 
   public FairyModel(ModelPart modelPart) {
     super(modelPart);
-    this.leftLeg.visible = false;
-    this.hat.visible = false;
+    setDefaultModelPartVisibility(ModelPartType.LEFT_LEG, false);
+    setDefaultModelPartVisibility(ModelPartType.HAT, false);
     this.leftWing = defineModelPart(ModelPartType.LEFT_WING, modelPart, "left_wing");
     this.rightWing = defineModelPart(ModelPartType.RIGHT_WING, modelPart, "right_wing");
   }

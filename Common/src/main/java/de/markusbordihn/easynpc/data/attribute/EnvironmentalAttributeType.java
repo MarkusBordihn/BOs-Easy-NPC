@@ -19,8 +19,16 @@
 
 package de.markusbordihn.easynpc.data.attribute;
 
-public enum EntityAttribute {
-  SILENT;
+import de.markusbordihn.easynpc.utils.TextUtils;
+
+public enum EnvironmentalAttributeType implements EntityAttributeTypeInterface {
+  CAN_BREATHE_UNDERWATER,
+  CAN_FLOAT,
+  FREEFALL;
+
+  public String getTagName() {
+    return TextUtils.convertToPascalCase(this.name());
+  }
 
   public String getAttributeName() {
     return this.name().toLowerCase();

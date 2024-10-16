@@ -53,4 +53,8 @@ public class TextButton extends CustomButton {
   public TextButton(int left, int top, int width, int height, Component label, OnPress onPress) {
     super(left, top, width, height, label, onPress);
   }
+
+  public boolean isVisible() {
+    return this.visible;
+  }
 }

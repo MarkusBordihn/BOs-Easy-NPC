@@ -88,6 +88,7 @@ public interface EasyNPCModel<E extends Entity> {
         modelPartType, new CustomPosition(modelPart.x, modelPart.y, modelPart.z));
     setDefaultModelPartRotation(
         modelPartType, new CustomRotation(modelPart.xRot, modelPart.yRot, modelPart.zRot));
+    setDefaultModelPartVisibility(modelPartType, modelPart.visible);
     setDefaultModelPart(modelPartType, modelPart);
     return modelPart;
   }

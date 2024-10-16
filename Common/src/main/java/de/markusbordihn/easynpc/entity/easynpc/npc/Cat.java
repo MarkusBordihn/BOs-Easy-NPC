@@ -24,9 +24,11 @@ import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseModelEntity;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
@@ -119,6 +121,11 @@ public class Cat extends EasyNPCBaseModelEntity<Cat> {
     soundDataSet.addSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
     soundDataSet.addSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
+  }
+
+  @Override
+  protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
+    return dimensions.height * 0.5F;
   }
 
   public enum Variant {
