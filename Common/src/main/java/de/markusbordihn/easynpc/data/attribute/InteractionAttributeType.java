@@ -19,8 +19,16 @@
 
 package de.markusbordihn.easynpc.data.attribute;
 
-public enum EntityAttribute {
-  SILENT;
+import de.markusbordihn.easynpc.utils.TextUtils;
+
+public enum InteractionAttributeType implements EntityAttributeTypeInterface {
+  CAN_BE_LEASHED,
+  IS_PUSHABLE,
+  PUSH_ENTITIES;
+
+  public String getTagName() {
+    return TextUtils.convertToPascalCase(this.name());
+  }
 
   public String getAttributeName() {
     return this.name().toLowerCase();

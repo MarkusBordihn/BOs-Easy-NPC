@@ -35,15 +35,23 @@ public class TextField extends EditBox {
   }
 
   public TextField(Font font, int x, int y, int width, String value) {
-    this(font, x, y, width, value, DEFAULT_MAX_LENGTH);
+    this(font, x, y, width, DEFAULT_HEIGHT, value, DEFAULT_MAX_LENGTH);
   }
 
   public TextField(Font font, int x, int y, int width, int value, int maxLength) {
-    this(font, x, y, width, String.valueOf(value), maxLength);
+    this(font, x, y, width, DEFAULT_HEIGHT, String.valueOf(value), maxLength);
   }
 
-  public TextField(Font font, int x, int y, int width, String value, int maxLength) {
-    this(font, x, y, width, DEFAULT_HEIGHT, EMPTY_TEXT_COMPONENT);
+  public TextField(Font font, int x, int y, int width, String text, int maxLength) {
+    this(font, x, y, width, DEFAULT_HEIGHT, text, maxLength);
+  }
+
+  public TextField(Font font, int x, int y, int width, int height, double value) {
+    this(font, x, y, width, height, String.valueOf(value), DEFAULT_MAX_LENGTH);
+  }
+
+  public TextField(Font font, int x, int y, int width, int height, String value, int maxLength) {
+    this(font, x, y, width, height, EMPTY_TEXT_COMPONENT);
     this.setMaxLength(maxLength);
     this.setValue(value);
   }

@@ -96,7 +96,10 @@ public interface EasyNPCModelRenderer<E extends EasyNPCBaseModelEntity<E>, M ext
       poseStack.scale(
           scaleData.getScaleX() * 0.5f, scaleData.getScaleY() * 0.5f, scaleData.getScaleZ() * 0.5f);
     } else {
-      poseStack.scale(scaleData.getScaleX(), scaleData.getScaleY(), scaleData.getScaleZ());
+      poseStack.scale(
+          scaleData.getScaleX() * 0.9375F,
+          scaleData.getScaleY() * 0.9375F,
+          scaleData.getScaleZ() * 0.9375F);
     }
   }
 

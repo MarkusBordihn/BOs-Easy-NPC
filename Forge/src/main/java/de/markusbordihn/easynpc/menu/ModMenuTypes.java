@@ -78,11 +78,12 @@ public class ModMenuTypes {
 
   public static final DeferredRegister<MenuType<?>> MENU_TYPES =
       DeferredRegister.create(ForgeRegistries.MENU_TYPES, Constants.MOD_ID);
-  private ModMenuTypes() {}  public static final RegistryObject<MenuType<SpawnerMenuWrapper>> SPAWNER_MENU =
+
+  private ModMenuTypes() {}
+
+  public static final RegistryObject<MenuType<SpawnerMenuWrapper>> SPAWNER_MENU =
       MENU_TYPES.register(
           ModMenuType.SPAWNER.getName(), () -> IForgeMenuType.create(SpawnerMenuWrapper::new));
-
-
 
   public static final RegistryObject<MenuType<AbilitiesAttributeConfigurationMenuWrapper>>
       ABILITIES_ATTRIBUTE_CONFIGURATION_MENU =

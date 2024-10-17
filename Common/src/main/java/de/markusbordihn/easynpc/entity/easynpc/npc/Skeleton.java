@@ -44,6 +44,9 @@ public class Skeleton extends EasyNPCBaseModelEntity<Skeleton> {
 
   public Skeleton(EntityType<? extends PathfinderMob> entityType, Level level, Enum<?> variant) {
     super(entityType, level, variant);
+    this.getEntityAttributes()
+        .setEnvironmentalAttributes(
+            this.getEntityAttributes().getEnvironmentalAttributes().withCanBreathUnderwater(true));
   }
 
   public static AttributeSupplier.Builder createAttributes() {

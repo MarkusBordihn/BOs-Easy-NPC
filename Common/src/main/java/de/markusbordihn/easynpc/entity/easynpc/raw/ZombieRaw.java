@@ -339,29 +339,29 @@ public class ZombieRaw extends Zombie implements EasyNPCBase<Zombie> {
 
   @Override
   public boolean canBeLeashed() {
-    return !this.isLeashed() && getAttributeDataLoaded() && getAttributeCanBeLeashed();
+    return super.canBeLeashed() && getEntityAttributes().getInteractionAttributes().canBeLeashed();
   }
 
   @Override
   public boolean isAttackable() {
-    return getAttributeDataLoaded() && getAttributeIsAttackable();
+    return getEntityAttributes().getCombatAttributes().isAttackable();
   }
 
   @Override
   public boolean isPushable() {
-    return getAttributeDataLoaded() && getAttributeIsPushable();
+    return getEntityAttributes().getInteractionAttributes().isPushable();
   }
 
   @Override
   protected void pushEntities() {
-    if (getAttributeDataLoaded() && getAttributePushEntities()) {
+    if (getEntityAttributes().getInteractionAttributes().pushEntities()) {
       super.pushEntities();
     }
   }
 
   @Override
   public boolean isInvulnerable() {
-    return getAttributeDataLoaded() ? !getAttributeIsAttackable() : super.isInvulnerable();
+    return !getEntityAttributes().getCombatAttributes().isAttackable();
   }
 
   @Override
@@ -396,7 +396,7 @@ public class ZombieRaw extends Zombie implements EasyNPCBase<Zombie> {
 
   @Override
   protected void handlePortal() {
-    if (getAttributeDataLoaded() && getAttributeCanUseNetherPortal()) {
+    if (getEntityAttributes().getMovementAttributes().canUseNetherPortal()) {
       super.handlePortal();
     }
   }

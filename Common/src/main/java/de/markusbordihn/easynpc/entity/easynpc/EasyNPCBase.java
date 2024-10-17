@@ -43,6 +43,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.TickerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.AttributeHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.BaseTickHandler;
 import java.util.EnumMap;
 import net.minecraft.core.HolderLookup;
@@ -57,18 +58,19 @@ import net.minecraft.world.entity.SpawnGroupData;
 public interface EasyNPCBase<E extends PathfinderMob>
     extends Saddleable,
         EasyNPC<E>,
-        ActionHandler<E>,
         ActionEventData<E>,
+        ActionHandler<E>,
         AttackData<E>,
         AttributeData<E>,
+        AttributeHandler<E>,
         BaseTickHandler<E>,
+        ConfigData<E>,
         ConfigurationData<E>,
         CustomAttributeData<E>,
         DialogData<E>,
         DisplayAttributeData<E>,
         GuiData<E>,
         NavigationData<E>,
-        ConfigData<E>,
         ObjectiveData<E>,
         OwnerData<E>,
         PresetData<E>,
@@ -103,10 +105,6 @@ public interface EasyNPCBase<E extends PathfinderMob>
     VariantData<E> variantData = getEasyNPCVariantData();
     if (variantData != null) {
       variantData.setVariant(variant);
-    }
-    AttributeData<E> attributeData = getEasyNPCAttributeData();
-    if (attributeData != null) {
-      attributeData.registerDefaultAttributeData(variant);
     }
     SoundData<E> soundData = getEasyNPCSoundData();
     if (soundData != null) {

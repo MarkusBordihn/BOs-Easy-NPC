@@ -8,6 +8,24 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.7.1
+
+- Fixed #362 by considering day/night for all days not only for the first day.
+- Fixed #361 by adjusting wrong visibility for arms, hat and other model parts.
+- Fixed #359 by making sure scaling and hitbox matching standard player models.
+- Fixed #357 by replacing the slider with a dual-slider for better usability.
+- Fixed #356 by resetting micro movements for NPCs.
+- Fixed #331 by adding `Health Regeneration` attribute.
+- Fixed #328 by setting `canBreatheUnderwater` to `true` for relevant NPCs and added 'Can Breathe
+  Underwater' attribute
+- Fixed slider sending multiple packets for the same value.
+- Added dual-slider for better usability.
+- Added combat attributes.
+- Added environmental attributes.
+- Added interaction attributes.
+- Added movement attributes.
+- Reduced the numbers of synched entity data by 10%.
+
 ### 5.7.0
 
 - Fixed #354 by adding missing hand item renderer for piglin models.

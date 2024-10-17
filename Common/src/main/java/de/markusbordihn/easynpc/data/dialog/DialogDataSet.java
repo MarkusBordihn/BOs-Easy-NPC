@@ -47,6 +47,7 @@ public class DialogDataSet {
           registryFriendlyByteBuf.writeNbt(dialogDataSet.createTag());
         }
       };
+
   public static final String DATA_DIALOG_DATA_SET_TAG = "DialogDataSet";
   public static final String DATA_DIALOG_DEFAULT_TAG = "Default";
   public static final String DATA_TYPE_TAG = "Type";

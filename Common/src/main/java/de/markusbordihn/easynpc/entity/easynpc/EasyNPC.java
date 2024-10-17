@@ -46,6 +46,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.TickerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.AttributeHandler;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
 import java.util.Random;
 import java.util.UUID;
@@ -189,6 +190,10 @@ public interface EasyNPC<E extends PathfinderMob> extends Npc {
 
   default ActionHandler<E> getEasyNPCActionHandler() {
     return this instanceof ActionHandler<E> actionHandler ? actionHandler : null;
+  }
+
+  default AttributeHandler<E> getEasyNPCAttributeHandler() {
+    return this instanceof AttributeHandler<E> attributeHandler ? attributeHandler : null;
   }
 
   default PathfinderMob getPathfinderMob() {

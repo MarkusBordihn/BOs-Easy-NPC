@@ -27,13 +27,29 @@ public class ValueUtils {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String POSITIVE_NUMBER_MATCH_PATTERN = "^\\d+$";
+  private static final String FLOAT_NUMBER_MATCH_PATTERN = "^\\d+(\\.?\\d*)?$";
+  private static final String DOUBLE_NUMBER_MATCH_PATTERN = "^\\d+(\\.?\\d*)?$";
 
   private ValueUtils() {}
 
   public static boolean isFloatValue(String text) {
     return text != null
         && (text.isEmpty()
-            || (text.matches("^\\d+(\\.?\\d*)?$") && Float.parseFloat(text) >= 0.0F));
+            || (text.matches(FLOAT_NUMBER_MATCH_PATTERN) && Float.parseFloat(text) >= 0.0F));
+  }
+
+  public static boolean isDoubleValue(String text) {
+    return text != null
+        && (text.isEmpty()
+            || (text.matches(DOUBLE_NUMBER_MATCH_PATTERN) && Double.parseDouble(text) >= 0.0D));
+  }
+
+  public static boolean isDoubleValue(String text, double min, double max) {
+    return text != null
+        && !text.isEmpty()
+        && text.matches(DOUBLE_NUMBER_MATCH_PATTERN)
+        && Double.parseDouble(text) >= min
+        && Double.parseDouble(text) <= max;
   }
 
   public static boolean isNumericValue(String text, int min, int max) {

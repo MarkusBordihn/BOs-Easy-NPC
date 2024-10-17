@@ -1,6 +1,7 @@
 package de.markusbordihn.easynpc.data.ticker;
 
 public enum TickerType {
+  ATTRIBUTE_BASE_TICK,
   BASE_TICK,
   CUSTOM_OBJECTIVE_DELAYED_REGISTRATION,
   TRADING_ACTION,

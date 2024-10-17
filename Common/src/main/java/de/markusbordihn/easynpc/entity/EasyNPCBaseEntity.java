@@ -342,29 +342,29 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
 
   @Override
   public boolean canBeLeashed() {
-    return !this.isLeashed() && getAttributeDataLoaded() && getAttributeCanBeLeashed();
+    return super.canBeLeashed() && getEntityAttributes().getInteractionAttributes().canBeLeashed();
   }
 
   @Override
   public boolean isAttackable() {
-    return getAttributeDataLoaded() && getAttributeIsAttackable();
+    return getEntityAttributes().getCombatAttributes().isAttackable();
   }
 
   @Override
   public boolean isPushable() {
-    return getAttributeDataLoaded() && getAttributeIsPushable();
+    return getEntityAttributes().getInteractionAttributes().isPushable();
   }
 
   @Override
   protected void pushEntities() {
-    if (getAttributeDataLoaded() && getAttributePushEntities()) {
+    if (getEntityAttributes().getInteractionAttributes().pushEntities()) {
       super.pushEntities();
     }
   }
 
   @Override
   public boolean isInvulnerable() {
-    return getAttributeDataLoaded() ? !getAttributeIsAttackable() : super.isInvulnerable();
+    return !getEntityAttributes().getCombatAttributes().isAttackable();
   }
 
   @Override
@@ -399,7 +399,7 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
 
   @Override
   protected void handlePortal() {
-    if (getAttributeDataLoaded() && getAttributeCanUseNetherPortal()) {
+    if (getEntityAttributes().getMovementAttributes().canUseNetherPortal()) {
       super.handlePortal();
     }
   }

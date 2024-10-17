@@ -19,10 +19,16 @@
 
 package de.markusbordihn.easynpc.data.attribute;
 
-public enum EntityAttribute {
-  SILENT;
+import de.markusbordihn.easynpc.utils.TextUtils;
 
-  public String getAttributeName() {
-    return this.name().toLowerCase();
+public enum EntityAttributeType {
+  COMBAT,
+  CUSTOM,
+  INTERACTION,
+  MOVEMENT,
+  ENVIRONMENTAL;
+
+  public String getTagName() {
+    return TextUtils.convertToPascalCase(this.name());
   }
 }

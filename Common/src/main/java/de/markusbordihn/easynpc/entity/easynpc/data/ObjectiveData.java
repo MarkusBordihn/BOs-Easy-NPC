@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
+import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
@@ -198,12 +199,12 @@ public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
     if (this.isClientSide()) {
       return;
     }
-    log.info("Register attribute based objectives for {}", this);
+    log.debug("Register attribute based objectives for {}", this);
 
     // Handle floating goals.
     ObjectiveDataEntry floatObjective = new ObjectiveDataEntry(ObjectiveType.FLOAT, 0);
-    AttributeData<?> attributeData = this.getEasyNPCAttributeData();
-    if (attributeData.getAttributeCanFloat()) {
+    EntityAttributes attributeData = this.getEasyNPCAttributeData().getEntityAttributes();
+    if (attributeData.getEnvironmentalAttributes().canFloat()) {
       if (!this.hasObjective(floatObjective)) {
         this.addOrUpdateCustomObjective(floatObjective);
       }
@@ -213,7 +214,7 @@ public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
 
     // Handle close door interaction goals.
     ObjectiveDataEntry closeDoorObjective = new ObjectiveDataEntry(ObjectiveType.CLOSE_DOOR, 8);
-    if (attributeData.getAttributeCanCloseDoor()) {
+    if (attributeData.getMovementAttributes().canCloseDoor()) {
       if (!this.hasObjective(closeDoorObjective)) {
         this.addOrUpdateCustomObjective(closeDoorObjective);
       }
@@ -223,7 +224,7 @@ public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
 
     // Handle open door interaction goals.
     ObjectiveDataEntry openDoorObjective = new ObjectiveDataEntry(ObjectiveType.OPEN_DOOR, 8);
-    if (attributeData.getAttributeCanOpenDoor()) {
+    if (attributeData.getMovementAttributes().canOpenDoor()) {
       if (!this.hasObjective(closeDoorObjective)) {
         this.addOrUpdateCustomObjective(openDoorObjective);
       }

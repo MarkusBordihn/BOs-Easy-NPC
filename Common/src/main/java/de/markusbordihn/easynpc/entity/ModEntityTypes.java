@@ -148,7 +148,7 @@ public class ModEntityTypes {
 
   private static <T extends Entity> EntityType<T> registerEntityType(
       EntityFactory<T> entityFactory, String id) {
-    return registerEntityType(entityFactory, id, 0.6F, 1.95F);
+    return registerEntityType(entityFactory, id, 0.6F, 1.8F);
   }
 
   private static <T extends Entity> EntityType<T> registerEntityType(

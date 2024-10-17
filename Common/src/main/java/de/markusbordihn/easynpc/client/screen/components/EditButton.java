@@ -51,6 +51,24 @@ public class EditButton extends SpriteButton {
         onPress);
   }
 
+  public EditButton(
+      int left, int top, int width, int height, Component component, OnPress onPress) {
+    super(
+        left,
+        top,
+        width,
+        height,
+        component,
+        SPRITE,
+        SPRITE_X,
+        SPRITE_Y,
+        SPRITE_OFFSET_X,
+        SPRITE_OFFSET_Y,
+        SPRITE_WIDTH,
+        SPRITE_HEIGHT,
+        onPress);
+  }
+
   public EditButton(int left, int top, int width, Component component, OnPress onPress) {
     super(
         left,

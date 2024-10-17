@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.client.model.custom;
 
+import de.markusbordihn.easynpc.client.model.ModelPartType;
 import de.markusbordihn.easynpc.client.model.base.BaseHumanoidModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -34,7 +35,7 @@ public class OrcModel<T extends LivingEntity> extends BaseHumanoidModel<T> {
 
   public OrcModel(ModelPart modelPart) {
     super(modelPart);
-    this.hat.visible = false;
+    setDefaultModelPartVisibility(ModelPartType.HAT, false);
   }
 
   public static LayerDefinition createBodyLayer() {

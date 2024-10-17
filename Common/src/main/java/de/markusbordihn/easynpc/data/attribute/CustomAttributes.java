@@ -26,8 +26,6 @@ import net.minecraft.network.codec.StreamCodec;
 public class CustomAttributes {
 
   public static final String CUSTOM_ATTRIBUTES_TAG = "CustomAttributes";
-  public static final String HEALTH_REGENERATION_TAG =
-      CustomAttributeType.HEALTH_REGENERATION.getTagName();
   public static final StreamCodec<RegistryFriendlyByteBuf, CustomAttributes> STREAM_CODEC =
       new StreamCodec<>() {
         @Override
@@ -42,8 +40,6 @@ public class CustomAttributes {
         }
       };
 
-  private double healthRegeneration = 0.0D;
-
   public CustomAttributes() {}
 
   public CustomAttributes(final CompoundTag compoundTag) {
@@ -55,14 +51,10 @@ public class CustomAttributes {
       return;
     }
     CompoundTag customAttributesTag = compoundTag.getCompound(CUSTOM_ATTRIBUTES_TAG);
-    if (customAttributesTag.contains(HEALTH_REGENERATION_TAG)) {
-      this.healthRegeneration = customAttributesTag.getDouble(HEALTH_REGENERATION_TAG);
-    }
   }
 
   public CompoundTag save(CompoundTag compoundTag) {
     CompoundTag customAttributesTag = new CompoundTag();
-    customAttributesTag.putDouble(HEALTH_REGENERATION_TAG, this.healthRegeneration);
 
     compoundTag.put(CUSTOM_ATTRIBUTES_TAG, customAttributesTag);
     return compoundTag;
@@ -70,9 +62,5 @@ public class CustomAttributes {
 
   public CompoundTag createTag() {
     return this.save(new CompoundTag());
-  }
-
-  public double getHealthRegeneration() {
-    return this.healthRegeneration;
   }
 }

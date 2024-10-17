@@ -28,15 +28,19 @@ import de.markusbordihn.easynpc.network.message.server.AddOrUpdateObjectiveMessa
 import de.markusbordihn.easynpc.network.message.server.ChangeActionEventMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeAdvancedTradingMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeBasicTradingMessage;
+import de.markusbordihn.easynpc.network.message.server.ChangeCombatAttributeMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeDisplayAttributeMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeEntityAttributeMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeEntityBaseAttributeMessage;
+import de.markusbordihn.easynpc.network.message.server.ChangeEnvironmentalAttributeMessage;
+import de.markusbordihn.easynpc.network.message.server.ChangeInteractionAttributeMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeModelEquipmentVisibilityMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeModelLockRotationMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeModelPoseMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeModelPositionMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeModelRotationMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeModelVisibilityMessage;
+import de.markusbordihn.easynpc.network.message.server.ChangeMovementAttributeMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangeNameMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangePoseMessage;
 import de.markusbordihn.easynpc.network.message.server.ChangePositionMessage;
@@ -127,12 +131,20 @@ public class NetworkHandlerManager {
     networkHandler.registerServerPayloadType(
         ChangeBasicTradingMessage.PAYLOAD_TYPE, ChangeBasicTradingMessage.STREAM_CODEC);
     networkHandler.registerServerPayloadType(
+        ChangeCombatAttributeMessage.PAYLOAD_TYPE, ChangeCombatAttributeMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
         ChangeDisplayAttributeMessage.PAYLOAD_TYPE, ChangeDisplayAttributeMessage.STREAM_CODEC);
     networkHandler.registerServerPayloadType(
         ChangeEntityAttributeMessage.PAYLOAD_TYPE, ChangeEntityAttributeMessage.STREAM_CODEC);
     networkHandler.registerServerPayloadType(
         ChangeEntityBaseAttributeMessage.PAYLOAD_TYPE,
         ChangeEntityBaseAttributeMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ChangeEnvironmentalAttributeMessage.PAYLOAD_TYPE,
+        ChangeEnvironmentalAttributeMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ChangeInteractionAttributeMessage.PAYLOAD_TYPE,
+        ChangeInteractionAttributeMessage.STREAM_CODEC);
     networkHandler.registerServerPayloadType(
         ChangeModelEquipmentVisibilityMessage.PAYLOAD_TYPE,
         ChangeModelEquipmentVisibilityMessage.STREAM_CODEC);
@@ -146,6 +158,8 @@ public class NetworkHandlerManager {
         ChangeModelRotationMessage.PAYLOAD_TYPE, ChangeModelRotationMessage.STREAM_CODEC);
     networkHandler.registerServerPayloadType(
         ChangeModelVisibilityMessage.PAYLOAD_TYPE, ChangeModelVisibilityMessage.STREAM_CODEC);
+    networkHandler.registerServerPayloadType(
+        ChangeMovementAttributeMessage.PAYLOAD_TYPE, ChangeMovementAttributeMessage.STREAM_CODEC);
     networkHandler.registerServerPayloadType(
         ChangeNameMessage.PAYLOAD_TYPE, ChangeNameMessage.STREAM_CODEC);
     networkHandler.registerServerPayloadType(
@@ -277,6 +291,12 @@ public class NetworkHandlerManager {
         ChangeBasicTradingMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
+        ChangeCombatAttributeMessage.PAYLOAD_TYPE,
+        ChangeCombatAttributeMessage.STREAM_CODEC,
+        ChangeCombatAttributeMessage.class,
+        ChangeCombatAttributeMessage::create);
+
+    networkHandler.registerServerNetworkMessageHandler(
         ChangeDisplayAttributeMessage.PAYLOAD_TYPE,
         ChangeDisplayAttributeMessage.STREAM_CODEC,
         ChangeDisplayAttributeMessage.class,
@@ -293,6 +313,18 @@ public class NetworkHandlerManager {
         ChangeEntityBaseAttributeMessage.STREAM_CODEC,
         ChangeEntityBaseAttributeMessage.class,
         ChangeEntityBaseAttributeMessage::create);
+
+    networkHandler.registerServerNetworkMessageHandler(
+        ChangeEnvironmentalAttributeMessage.PAYLOAD_TYPE,
+        ChangeEnvironmentalAttributeMessage.STREAM_CODEC,
+        ChangeEnvironmentalAttributeMessage.class,
+        ChangeEnvironmentalAttributeMessage::create);
+
+    networkHandler.registerServerNetworkMessageHandler(
+        ChangeInteractionAttributeMessage.PAYLOAD_TYPE,
+        ChangeInteractionAttributeMessage.STREAM_CODEC,
+        ChangeInteractionAttributeMessage.class,
+        ChangeInteractionAttributeMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ChangeModelEquipmentVisibilityMessage.PAYLOAD_TYPE,
@@ -329,6 +361,12 @@ public class NetworkHandlerManager {
         ChangeModelVisibilityMessage.STREAM_CODEC,
         ChangeModelVisibilityMessage.class,
         ChangeModelVisibilityMessage::create);
+
+    networkHandler.registerServerNetworkMessageHandler(
+        ChangeMovementAttributeMessage.PAYLOAD_TYPE,
+        ChangeMovementAttributeMessage.STREAM_CODEC,
+        ChangeMovementAttributeMessage.class,
+        ChangeMovementAttributeMessage::create);
 
     networkHandler.registerServerNetworkMessageHandler(
         ChangeNameMessage.PAYLOAD_TYPE,

@@ -20,15 +20,25 @@
 package de.markusbordihn.easynpc.client.screen.configuration.attribute;
 
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
+import de.markusbordihn.easynpc.client.screen.components.RangeSliderButton;
+import de.markusbordihn.easynpc.client.screen.components.Text;
+import de.markusbordihn.easynpc.data.attribute.CombatAttributeType;
 import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
+import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
+import de.markusbordihn.easynpc.data.attribute.EnvironmentalAttributeType;
+import de.markusbordihn.easynpc.data.attribute.InteractionAttributeType;
+import de.markusbordihn.easynpc.data.attribute.MovementAttributeType;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
     extends AttributeConfigurationScreen<T> {
+
+  RangeSliderButton healthRegenerationSlider;
 
   public AbilitiesAttributeConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -48,119 +58,124 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
 
     // Attribute data
     AttributeData<?> attributeData = this.getEasyNPC().getEasyNPCAttributeData();
+    EntityAttributes entityAttributes = attributeData.getEntityAttributes();
 
     // Checkboxes
     this.addRenderableWidget(
         new Checkbox(
             firstButtonRow,
             this.buttonTopPos + 25,
-            EntityAttribute.CAN_FLOAT.getAttributeName(),
-            attributeData.getAttributeCanFloat(),
+            EnvironmentalAttributeType.CAN_FLOAT.getAttributeName(),
+            entityAttributes.getEnvironmentalAttributes().canFloat(),
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
-                    .entityAttributeChange(
-                        this.getEasyNPCUUID(), EntityAttribute.CAN_FLOAT, checkbox.selected())));
+                    .environmentalAttributeChange(
+                        this.getEasyNPCUUID(),
+                        EnvironmentalAttributeType.CAN_FLOAT,
+                        checkbox.selected())));
 
     this.addRenderableWidget(
         new Checkbox(
             secondButtonRow,
             this.buttonTopPos + 25,
-            EntityAttribute.CAN_BE_LEASHED.getAttributeName(),
-            attributeData.getAttributeCanBeLeashed(),
+            InteractionAttributeType.CAN_BE_LEASHED.getAttributeName(),
+            entityAttributes.getInteractionAttributes().canBeLeashed(),
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
-                    .entityAttributeChange(
+                    .interactionAttributeChange(
                         this.getEasyNPCUUID(),
-                        EntityAttribute.CAN_BE_LEASHED,
+                        InteractionAttributeType.CAN_BE_LEASHED,
                         checkbox.selected())));
 
     this.addRenderableWidget(
         new Checkbox(
             firstButtonRow,
             this.buttonTopPos + 45,
-            EntityAttribute.CAN_OPEN_DOOR.getAttributeName(),
-            attributeData.getAttributeCanOpenDoor(),
+            MovementAttributeType.CAN_OPEN_DOOR.getAttributeName(),
+            entityAttributes.getMovementAttributes().canOpenDoor(),
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
-                    .entityAttributeChange(
+                    .movementAttributeChange(
                         this.getEasyNPCUUID(),
-                        EntityAttribute.CAN_OPEN_DOOR,
+                        MovementAttributeType.CAN_OPEN_DOOR,
                         checkbox.selected())));
 
     this.addRenderableWidget(
         new Checkbox(
             secondButtonRow,
             this.buttonTopPos + 45,
-            EntityAttribute.CAN_CLOSE_DOOR.getAttributeName(),
-            attributeData.getAttributeCanCloseDoor(),
+            MovementAttributeType.CAN_CLOSE_DOOR.getAttributeName(),
+            entityAttributes.getMovementAttributes().canCloseDoor(),
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
-                    .entityAttributeChange(
+                    .movementAttributeChange(
                         this.getEasyNPCUUID(),
-                        EntityAttribute.CAN_CLOSE_DOOR,
+                        MovementAttributeType.CAN_CLOSE_DOOR,
                         checkbox.selected())));
 
     this.addRenderableWidget(
         new Checkbox(
             thirdButtonRow,
             this.buttonTopPos + 45,
-            EntityAttribute.CAN_PASS_DOOR.getAttributeName(),
-            attributeData.getAttributeCanPassDoor(),
+            MovementAttributeType.CAN_PASS_DOOR.getAttributeName(),
+            entityAttributes.getMovementAttributes().canPassDoor(),
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
-                    .entityAttributeChange(
+                    .movementAttributeChange(
                         this.getEasyNPCUUID(),
-                        EntityAttribute.CAN_PASS_DOOR,
+                        MovementAttributeType.CAN_PASS_DOOR,
                         checkbox.selected())));
 
     this.addRenderableWidget(
         new Checkbox(
             firstButtonRow,
             this.buttonTopPos + 65,
-            EntityAttribute.IS_ATTACKABLE.getAttributeName(),
-            attributeData.getAttributeIsAttackable(),
+            CombatAttributeType.IS_ATTACKABLE.getAttributeName(),
+            entityAttributes.getCombatAttributes().isAttackable(),
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
-                    .entityAttributeChange(
+                    .combatAttributeChange(
                         this.getEasyNPCUUID(),
-                        EntityAttribute.IS_ATTACKABLE,
+                        CombatAttributeType.IS_ATTACKABLE,
                         checkbox.selected())));
 
     this.addRenderableWidget(
         new Checkbox(
             firstButtonRow,
             this.buttonTopPos + 85,
-            EntityAttribute.IS_PUSHABLE.getAttributeName(),
-            attributeData.getAttributeIsPushable(),
+            InteractionAttributeType.IS_PUSHABLE.getAttributeName(),
+            entityAttributes.getInteractionAttributes().isPushable(),
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
-                    .entityAttributeChange(
-                        this.getEasyNPCUUID(), EntityAttribute.IS_PUSHABLE, checkbox.selected())));
+                    .interactionAttributeChange(
+                        this.getEasyNPCUUID(),
+                        InteractionAttributeType.IS_PUSHABLE,
+                        checkbox.selected())));
 
     this.addRenderableWidget(
         new Checkbox(
             secondButtonRow,
             this.buttonTopPos + 85,
-            EntityAttribute.PUSH_ENTITIES.getAttributeName(),
-            attributeData.getAttributePushEntities(),
+            InteractionAttributeType.PUSH_ENTITIES.getAttributeName(),
+            entityAttributes.getInteractionAttributes().pushEntities(),
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
-                    .entityAttributeChange(
+                    .interactionAttributeChange(
                         this.getEasyNPCUUID(),
-                        EntityAttribute.PUSH_ENTITIES,
+                        InteractionAttributeType.PUSH_ENTITIES,
                         checkbox.selected())));
 
     this.addRenderableWidget(
         new Checkbox(
             firstButtonRow,
             this.buttonTopPos + 105,
-            EntityAttribute.CAN_USE_NETHER_PORTAL.getAttributeName(),
-            attributeData.getAttributeCanUseNetherPortal(),
+            MovementAttributeType.CAN_USE_NETHER_PORTAL.getAttributeName(),
+            entityAttributes.getMovementAttributes().canUseNetherPortal(),
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
-                    .entityAttributeChange(
+                    .movementAttributeChange(
                         this.getEasyNPCUUID(),
-                        EntityAttribute.CAN_USE_NETHER_PORTAL,
+                        MovementAttributeType.CAN_USE_NETHER_PORTAL,
                         checkbox.selected())));
 
     this.addRenderableWidget(
@@ -173,5 +188,40 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
                 NetworkMessageHandlerManager.getServerHandler()
                     .entityAttributeChange(
                         this.getEasyNPCUUID(), EntityAttribute.SILENT, checkbox.selected())));
+
+    this.healthRegenerationSlider =
+        this.addRenderableWidget(
+            new RangeSliderButton(
+                firstButtonRow + 130,
+                this.buttonTopPos + 150,
+                CombatAttributeType.HEALTH_REGENERATION.getAttributeName(),
+                entityAttributes.getCombatAttributes().healthRegeneration(),
+                0.0D,
+                32.0D,
+                0.0D,
+                0.1D,
+                slider ->
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .combatAttributeChange(
+                            this.getEasyNPCUUID(),
+                            CombatAttributeType.HEALTH_REGENERATION,
+                            slider.getTargetDoubleValue())));
+  }
+
+  @Override
+  public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+    super.render(guiGraphics, x, y, partialTicks);
+
+    int sliderXOffset = -135;
+    int sliderYOffset = 3;
+
+    if (this.healthRegenerationSlider != null) {
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          "health_regeneration",
+          this.healthRegenerationSlider.getX() + sliderXOffset,
+          this.healthRegenerationSlider.getY() + sliderYOffset);
+    }
   }
 }

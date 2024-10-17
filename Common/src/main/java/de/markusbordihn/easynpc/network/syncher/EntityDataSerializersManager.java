@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.network.syncher;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.attribute.CustomAttributes;
+import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeSet;
 import de.markusbordihn.easynpc.data.model.ModelPose;
@@ -57,6 +58,8 @@ public class EntityDataSerializersManager {
       EntityDataSerializer.forValueType(DialogDataSet.STREAM_CODEC);
   public static final EntityDataSerializer<DisplayAttributeSet> DISPLAY_ATTRIBUTE_SET =
       EntityDataSerializer.forValueType(DisplayAttributeSet.STREAM_CODEC);
+  public static final EntityDataSerializer<EntityAttributes> ENTITY_ATTRIBUTES =
+      EntityDataSerializer.forValueType(EntityAttributes.STREAM_CODEC);
   public static final EntityDataSerializer<MerchantOffers> MERCHANT_OFFERS =
       EntityDataSerializer.forValueType(MerchantOffers.STREAM_CODEC);
   public static final EntityDataSerializer<ModelPose> MODEL_POSE =
@@ -102,6 +105,7 @@ public class EntityDataSerializersManager {
     EntityDataSerializers.registerSerializer(CUSTOM_ATTRIBUTES);
     EntityDataSerializers.registerSerializer(DIALOG_DATA_SET);
     EntityDataSerializers.registerSerializer(DISPLAY_ATTRIBUTE_SET);
+    EntityDataSerializers.registerSerializer(ENTITY_ATTRIBUTES);
     EntityDataSerializers.registerSerializer(MERCHANT_OFFERS);
     EntityDataSerializers.registerSerializer(MODEL_POSE);
     EntityDataSerializers.registerSerializer(OBJECTIVE_DATA_SET);

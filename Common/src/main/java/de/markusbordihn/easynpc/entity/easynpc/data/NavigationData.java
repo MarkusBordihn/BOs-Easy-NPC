@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
+import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -71,17 +72,22 @@ public interface NavigationData<T extends PathfinderMob> extends EasyNPC<T> {
 
   default void refreshGroundNavigation() {
     GroundPathNavigation groundPathNavigation = this.getGroundPathNavigation();
-    if (groundPathNavigation != null) {
-      AttributeData<?> attributeData = this.getEasyNPCAttributeData();
-      if (attributeData != null && attributeData.getAttributeDataLoaded()) {
-        groundPathNavigation.setCanOpenDoors(attributeData.getAttributeCanOpenDoor());
-        groundPathNavigation.setCanPassDoors(attributeData.getAttributeCanPassDoor());
-        groundPathNavigation.setCanFloat(attributeData.getAttributeCanFloat());
-      } else {
-        groundPathNavigation.setCanOpenDoors(true);
-        groundPathNavigation.setCanPassDoors(true);
-        groundPathNavigation.setCanFloat(true);
-      }
+    if (groundPathNavigation == null) {
+      return;
+    }
+
+    EntityAttributes attributeData =
+        this.getEasyNPCAttributeData() != null
+            ? this.getEasyNPCAttributeData().getEntityAttributes()
+            : null;
+    if (attributeData != null && attributeData.hasMovementAttributes()) {
+      groundPathNavigation.setCanOpenDoors(attributeData.getMovementAttributes().canOpenDoor());
+      groundPathNavigation.setCanPassDoors(attributeData.getMovementAttributes().canPassDoor());
+      groundPathNavigation.setCanFloat(attributeData.getEnvironmentalAttributes().canFloat());
+    } else {
+      groundPathNavigation.setCanOpenDoors(true);
+      groundPathNavigation.setCanPassDoors(true);
+      groundPathNavigation.setCanFloat(true);
     }
   }
 
@@ -144,10 +150,15 @@ public interface NavigationData<T extends PathfinderMob> extends EasyNPC<T> {
       ObjectiveData<?> objectiveData = this.getEasyNPCObjectiveData();
       AttributeData<?> attributeData = this.getEasyNPCAttributeData();
       if (!objectiveData.hasTravelTargetObjectives()
-          && attributeData.getAttributeDataLoaded()
-          && attributeData.getAttributeFreefall()
+          && attributeData.getEntityAttributes().getEnvironmentalAttributes().freefall()
           && !mob.onGround()) {
         mob.setPos(mob.getX(), Math.floor(mob.getY() - 0.1d), mob.getZ());
+      }
+
+      // Check position and adjust animation relevant data for micro movements.
+      if (this.isClientSide() && mob.getDeltaMovement().lengthSqr() < 0.001) {
+        // mob.animationSpeed = 0;
+        // mob.animationPosition = 0;
       }
 
       tickerData.resetTicker(TickerType.TRAVEL_EVENT);
