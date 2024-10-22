@@ -37,9 +37,6 @@ public class ModArgumentTypes {
   private ModArgumentTypes() {}
 
   public static void register() {
-
-    log.info("{} Argument Types ...", Constants.LOG_REGISTER_PREFIX);
-
     ArgumentTypes.register(
         new ResourceLocation(Constants.MOD_ID, "dialog").toString(),
         DialogArgument.class,

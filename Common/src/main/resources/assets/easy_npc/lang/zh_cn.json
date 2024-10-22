@@ -86,6 +86,7 @@
   "text.easy_npc.config.bow_attack": "使用弓",
   "text.easy_npc.config.button.name": "名称",
   "text.easy_npc.config.can_be_leashed": "能被拴住",
+  "text.easy_npc.config.can_breathe_underwater": "水下呼吸",
   "text.easy_npc.config.can_close_door": "能关门",
   "text.easy_npc.config.can_float": "能飘浮",
   "text.easy_npc.config.can_open_door": "能开门",

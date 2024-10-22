@@ -31,7 +31,6 @@ public class EasyNPCBaseModelEntity<E extends PathfinderMob> extends EasyNPCBase
     implements EasyNPCBaseModel<E> {
 
   static {
-    EasyNPCBaseModel.registerEasyNPCDataSerializers();
     EasyNPCBaseModel.registerEasyNPCSyncedData(entityDataAccessorMap, EasyNPCBaseModelEntity.class);
   }
 

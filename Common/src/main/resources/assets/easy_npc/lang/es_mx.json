@@ -69,6 +69,7 @@
   "text.easy_npc.config.bow_attack": "Ataque con Arco",
   "text.easy_npc.config.button.name": "Nombre",
   "text.easy_npc.config.can_be_leashed": "Puede ser Atado",
+  "text.easy_npc.config.can_breathe_underwater": "Respiración bajo el agua",
   "text.easy_npc.config.can_close_door": "Cerrar puerta",
   "text.easy_npc.config.can_float": "Flotar",
   "text.easy_npc.config.can_open_door": "Abrir puerta",

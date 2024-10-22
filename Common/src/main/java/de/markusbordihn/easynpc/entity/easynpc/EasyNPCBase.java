@@ -82,22 +82,6 @@ public interface EasyNPCBase<E extends PathfinderMob>
         TradingData<E>,
         VariantData<E> {
 
-  static void registerEasyNPCDataSerializers() {
-    log.info("Register data serializers ...");
-    ActionEventData.registerActionEventDataSerializer();
-    AttributeData.registerAttributeDataSerializer();
-    CustomAttributeData.registerCustomAttributeDataSerializers();
-    DialogData.registerDialogDataSerializer();
-    DisplayAttributeData.registerDisplayAttributeDataSerializer();
-    ObjectiveData.registerObjectiveDataSerializer();
-    ProfessionData.registerProfessionDataSerializer();
-    RenderData.registerRenderDataSerializer();
-    SoundData.registerSoundDataSerializer();
-    SkinData.registerSkinDataSerializer();
-    SpawnerData.registerSpawnerDataSerializer();
-    TradingData.registerTradingDataSerializer();
-  }
-
   static void registerEasyNPCSyncedData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
     AttackData.registerSyncedAttackData(map, entityClass);

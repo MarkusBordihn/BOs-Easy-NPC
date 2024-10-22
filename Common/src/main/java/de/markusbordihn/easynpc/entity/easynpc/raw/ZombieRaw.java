@@ -77,7 +77,6 @@ public class ZombieRaw extends Zombie implements EasyNPCBase<Zombie> {
   private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
 
   static {
-    EasyNPCBase.registerEasyNPCDataSerializers();
     EasyNPCBase.registerEasyNPCSyncedData(entityDataAccessorMap, ZombieRaw.class);
   }
 

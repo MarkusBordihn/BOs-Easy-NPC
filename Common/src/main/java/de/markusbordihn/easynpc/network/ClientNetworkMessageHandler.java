@@ -24,6 +24,6 @@ import de.markusbordihn.easynpc.network.message.ClientNetworkMessageHandlerInter
 public class ClientNetworkMessageHandler implements ClientNetworkMessageHandlerInterface {
 
   public ClientNetworkMessageHandler() {
-    // Register server network handler for Server -> Client messages.
+    log.info("Registering server network handler for Server -> Client messages.");
   }
 }

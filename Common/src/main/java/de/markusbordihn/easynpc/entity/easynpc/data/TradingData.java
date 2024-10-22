@@ -25,11 +25,10 @@ import de.markusbordihn.easynpc.data.trading.TradingSettings;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
@@ -53,53 +52,18 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
   String DATA_TRADING_RECIPES_TAG = "Recipes";
   String DATA_TRADING_DATA_TAG = "TradingData";
 
-  EntityDataSerializer<MerchantOffers> MERCHANT_OFFERS =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, MerchantOffers value) {
-          buffer.writeNbt(value.createTag());
-        }
-
-        public MerchantOffers read(FriendlyByteBuf buffer) {
-          CompoundTag compoundTag = buffer.readNbt();
-          return compoundTag != null ? new MerchantOffers(compoundTag) : new MerchantOffers();
-        }
-
-        public MerchantOffers copy(MerchantOffers value) {
-          return value;
-        }
-      };
-  EntityDataSerializer<TradingDataSet> TRADING_DATA_SET =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, TradingDataSet value) {
-          buffer.writeNbt(value.createTag());
-        }
-
-        public TradingDataSet read(FriendlyByteBuf buffer) {
-          return new TradingDataSet(buffer.readNbt());
-        }
-
-        public TradingDataSet copy(TradingDataSet value) {
-          return value;
-        }
-      };
-
   static void registerSyncedTradingData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
     log.info("- Registering Synched Trading Data for {}.", entityClass.getSimpleName());
     map.put(
         SynchedDataIndex.TRADING_DATA_SET,
-        SynchedEntityData.defineId(entityClass, TRADING_DATA_SET));
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.TRADING_DATA_SET));
     map.put(
         SynchedDataIndex.TRADING_INVENTORY,
         SynchedEntityData.defineId(entityClass, EntityDataSerializers.COMPOUND_TAG));
     map.put(
         SynchedDataIndex.TRADING_MERCHANT_OFFERS,
-        SynchedEntityData.defineId(entityClass, MERCHANT_OFFERS));
-  }
-
-  static void registerTradingDataSerializer() {
-    EntityDataSerializers.registerSerializer(TRADING_DATA_SET);
-    EntityDataSerializers.registerSerializer(MERCHANT_OFFERS);
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.MERCHANT_OFFERS));
   }
 
   @Override

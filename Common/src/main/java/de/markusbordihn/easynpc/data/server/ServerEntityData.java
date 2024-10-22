@@ -46,21 +46,24 @@ public class ServerEntityData {
    * Auto-generated id, should be mostly used for testing purpose.
    * For production use, please define a custom index instead!
    */
-  public static <T> ServerDataAccessor<T> defineId(EntityDataSerializer<T> entityDataSerializers) {
+  public static <T> ServerDataAccessor<T> defineId(EntityDataSerializer<T> entityDataSerializer) {
     // Check if we have a free custom data accessor id.
     if (customDataAccessorId >= ServerDataIndex.MAX_FREE_INDEX) {
       log.error(
           "{} No more custom data accessor available for {} with id {}"
               + "The maximum for auto-generated ids is {}",
           LOG_PREFIX,
-          entityDataSerializers,
+          entityDataSerializer,
           customDataAccessorId,
           ServerDataIndex.MAX_FREE_INDEX);
       return null;
     }
-    log.warn("{} Please define a custom index instead of using the auto-generated.", LOG_PREFIX);
+    log.warn(
+        "{} Please define a custom index for {} instead of using the auto-generated.",
+        LOG_PREFIX,
+        entityDataSerializer);
 
-    return defineId(ServerDataIndex.getIndex(++customDataAccessorId), entityDataSerializers);
+    return defineId(ServerDataIndex.getIndex(++customDataAccessorId), entityDataSerializer);
   }
 
   public static <T> ServerDataAccessor<T> defineId(

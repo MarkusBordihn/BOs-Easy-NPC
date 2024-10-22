@@ -85,7 +85,7 @@ public class StandardIllagerModel<T extends Mob> extends BaseHierarchicalArmHead
       float limbSwing,
       float limbSwingAmount) {
     return HumanoidLegAnimation.animateHumanoidModelLegs(
-        rightLegPart, leftLegPart, limbSwing, limbSwingAmount);
+        rightLegPart, leftLegPart, ageInTicks, limbSwing, limbSwingAmount);
   }
 
   @Override

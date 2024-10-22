@@ -78,8 +78,6 @@ public class ClientScreens {
   private ClientScreens() {}
 
   public static void registerScreens() {
-    log.info("{} Client Screens ...", Constants.LOG_REGISTER_PREFIX);
-
     MenuScreens.register(
         ModMenuTypes.ABILITIES_ATTRIBUTE_CONFIGURATION_MENU,
         AbilitiesAttributeConfigurationScreenWrapper::new);

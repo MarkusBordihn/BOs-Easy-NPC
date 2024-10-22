@@ -19,17 +19,24 @@
 
 package de.markusbordihn.easynpc.commands;
 
+import de.markusbordihn.easynpc.Constants;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @EventBusSubscriber
 public class ModArgumentTypes {
+
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ModArgumentTypes() {}
 
   @SubscribeEvent
   public static void registerArgumentTypes(final FMLCommonSetupEvent event) {
+    log.info("{} Argument Types ...", Constants.LOG_REGISTER_PREFIX);
+
     event.enqueueWork(de.markusbordihn.easynpc.commands.synchronization.ModArgumentTypes::register);
   }
 }

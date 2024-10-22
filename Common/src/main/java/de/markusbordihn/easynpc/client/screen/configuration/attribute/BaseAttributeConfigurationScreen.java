@@ -81,8 +81,8 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             value,
             minValue,
             maxValue,
-            stepSize,
             defaultValue,
+            stepSize,
             onChange));
   }
 

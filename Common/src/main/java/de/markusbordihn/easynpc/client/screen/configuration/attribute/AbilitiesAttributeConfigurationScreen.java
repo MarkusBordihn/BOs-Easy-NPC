@@ -78,13 +78,13 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
         new Checkbox(
             secondButtonRow,
             this.buttonTopPos + 25,
-            InteractionAttributeType.CAN_BE_LEASHED.getAttributeName(),
-            entityAttributes.getInteractionAttributes().canBeLeashed(),
+            EnvironmentalAttributeType.CAN_BREATHE_UNDERWATER.getAttributeName(),
+            entityAttributes.getEnvironmentalAttributes().canBreatheUnderwater(),
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
-                    .interactionAttributeChange(
+                    .environmentalAttributeChange(
                         this.getEasyNPCUUID(),
-                        InteractionAttributeType.CAN_BE_LEASHED,
+                        EnvironmentalAttributeType.CAN_BREATHE_UNDERWATER,
                         checkbox.selected())));
 
     this.addRenderableWidget(
@@ -163,6 +163,19 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
                     .interactionAttributeChange(
                         this.getEasyNPCUUID(),
                         InteractionAttributeType.PUSH_ENTITIES,
+                        checkbox.selected())));
+
+    this.addRenderableWidget(
+        new Checkbox(
+            thirdButtonRow,
+            this.buttonTopPos + 85,
+            InteractionAttributeType.CAN_BE_LEASHED.getAttributeName(),
+            entityAttributes.getInteractionAttributes().canBeLeashed(),
+            checkbox ->
+                NetworkMessageHandlerManager.getServerHandler()
+                    .interactionAttributeChange(
+                        this.getEasyNPCUUID(),
+                        InteractionAttributeType.CAN_BE_LEASHED,
                         checkbox.selected())));
 
     this.addRenderableWidget(
