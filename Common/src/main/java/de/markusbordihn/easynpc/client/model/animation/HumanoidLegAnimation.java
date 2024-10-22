@@ -25,25 +25,35 @@ import net.minecraft.util.Mth;
 public interface HumanoidLegAnimation {
 
   static void animateHumanoidModelLeftLegSwing(
-      ModelPart rightLegPart, float limbSwing, float limbSwingAmount) {
+      ModelPart rightLegPart, float ageInTicks, float limbSwing, float limbSwingAmount) {
     rightLegPart.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+    if (limbSwingAmount <= 0.001F) {
+      rightLegPart.xRot = Mth.sin(ageInTicks * 0.04F) * 0.015F;
+    }
   }
 
   static void animateHumanoidModelRightLegSwing(
-      ModelPart leftLegPart, float limbSwing, float limbSwingAmount) {
+      ModelPart leftLegPart, float ageInTicks, float limbSwing, float limbSwingAmount) {
     leftLegPart.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
+    if (limbSwingAmount <= 0.001F) {
+      leftLegPart.xRot = Mth.sin((float) (ageInTicks * 0.04F + Math.PI)) * 0.015F;
+    }
   }
 
   static boolean animateHumanoidModelLegs(
-      ModelPart rightLegPart, ModelPart leftLegPart, float limbSwing, float limbSwingAmount) {
+      ModelPart rightLegPart,
+      ModelPart leftLegPart,
+      float ageInTicks,
+      float limbSwing,
+      float limbSwingAmount) {
     if (rightLegPart == null && leftLegPart == null) {
       return false;
     }
     if (rightLegPart != null) {
-      animateHumanoidModelRightLegSwing(rightLegPart, limbSwing, limbSwingAmount);
+      animateHumanoidModelRightLegSwing(rightLegPart, ageInTicks, limbSwing, limbSwingAmount);
     }
     if (leftLegPart != null) {
-      animateHumanoidModelLeftLegSwing(leftLegPart, limbSwing, limbSwingAmount);
+      animateHumanoidModelLeftLegSwing(leftLegPart, ageInTicks, limbSwing, limbSwingAmount);
     }
     return true;
   }

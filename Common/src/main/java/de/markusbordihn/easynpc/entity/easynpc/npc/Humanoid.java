@@ -111,5 +111,6 @@ public class Humanoid extends EasyNPCBaseModelEntity<Humanoid> {
     PROFESSOR_01,
     SECURITY_01,
     KNIGHT_01,
+    KNIGHT_02,
   }
 }

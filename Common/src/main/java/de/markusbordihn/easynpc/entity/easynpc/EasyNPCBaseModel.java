@@ -31,11 +31,6 @@ import net.minecraft.world.entity.PathfinderMob;
 public interface EasyNPCBaseModel<E extends PathfinderMob>
     extends EasyNPCBase<E>, ModelData<E>, ScaleData<E> {
 
-  static void registerEasyNPCDataSerializers() {
-    log.info("Register model data serializers for ...");
-    ModelData.registerModelDataSerializer();
-  }
-
   static void registerEasyNPCSyncedData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
     ModelData.registerSyncedModelData(map, entityClass);

@@ -25,7 +25,8 @@ import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.client.screen.ClientScreens;
 import de.markusbordihn.easynpc.entity.LivingEntityEventHandler;
 import de.markusbordihn.easynpc.io.DataFileHandler;
-import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.network.NetworkHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import de.markusbordihn.easynpc.tabs.ModTabs;
@@ -55,7 +56,7 @@ public class EasyNPCClient implements ClientModInitializer {
     ModTabs.handleCreativeModeTabRegister();
 
     log.info("{} Client Network Handler ...", Constants.LOG_REGISTER_PREFIX);
-    NetworkHandler.registerClientNetworkHandler();
+    NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.CLIENT);
     NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
 
     log.info("{} Client Screens ...", Constants.LOG_REGISTER_PREFIX);

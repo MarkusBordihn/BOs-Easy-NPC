@@ -26,11 +26,10 @@ import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
@@ -49,48 +48,34 @@ public interface ModelData<T extends PathfinderMob>
   String EASY_NPC_DATA_MODEL_POSE_TAG = "Pose";
   String EASY_NPC_DATA_MODEL_SCALE_TAG = "Scale";
   String EASY_NPC_DATA_MODEL_SMART_ANIMATIONS_TAG = "SmartAnimations";
-  EntityDataSerializer<ModelPose> MODEL_POSE =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, ModelPose modelPose) {
-          buffer.writeEnum(modelPose);
-        }
-
-        public ModelPose read(FriendlyByteBuf buffer) {
-          return buffer.readEnum(ModelPose.class);
-        }
-
-        public ModelPose copy(ModelPose value) {
-          return value;
-        }
-      };
-  EntityDataSerializer<CustomScale> SCALE =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, CustomScale scale) {
-          buffer.writeFloat(scale.x());
-          buffer.writeFloat(scale.y());
-          buffer.writeFloat(scale.z());
-        }
-
-        public CustomScale read(FriendlyByteBuf buffer) {
-          return new CustomScale(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
-        }
-
-        public CustomScale copy(CustomScale scale) {
-          return scale;
-        }
-      };
 
   static void registerSyncedModelData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
     log.info("- Registering Synched Model Data for {}.", entityClass.getSimpleName());
-    map.put(SynchedDataIndex.MODEL_POSE, SynchedEntityData.defineId(entityClass, MODEL_POSE));
-    map.put(SynchedDataIndex.MODEL_HEAD_SCALE, SynchedEntityData.defineId(entityClass, SCALE));
-    map.put(SynchedDataIndex.MODEL_BODY_SCALE, SynchedEntityData.defineId(entityClass, SCALE));
-    map.put(SynchedDataIndex.MODEL_ARMS_SCALE, SynchedEntityData.defineId(entityClass, SCALE));
-    map.put(SynchedDataIndex.MODEL_LEFT_ARM_SCALE, SynchedEntityData.defineId(entityClass, SCALE));
-    map.put(SynchedDataIndex.MODEL_RIGHT_ARM_SCALE, SynchedEntityData.defineId(entityClass, SCALE));
-    map.put(SynchedDataIndex.MODEL_LEFT_LEG_SCALE, SynchedEntityData.defineId(entityClass, SCALE));
-    map.put(SynchedDataIndex.MODEL_RIGHT_LEG_SCALE, SynchedEntityData.defineId(entityClass, SCALE));
+    map.put(
+        SynchedDataIndex.MODEL_POSE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.MODEL_POSE));
+    map.put(
+        SynchedDataIndex.MODEL_HEAD_SCALE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.SCALE));
+    map.put(
+        SynchedDataIndex.MODEL_BODY_SCALE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.SCALE));
+    map.put(
+        SynchedDataIndex.MODEL_ARMS_SCALE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.SCALE));
+    map.put(
+        SynchedDataIndex.MODEL_LEFT_ARM_SCALE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.SCALE));
+    map.put(
+        SynchedDataIndex.MODEL_RIGHT_ARM_SCALE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.SCALE));
+    map.put(
+        SynchedDataIndex.MODEL_LEFT_LEG_SCALE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.SCALE));
+    map.put(
+        SynchedDataIndex.MODEL_RIGHT_LEG_SCALE,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.SCALE));
     map.put(
         SynchedDataIndex.ITEM_SMART_ANIMATIONS,
         SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
@@ -101,13 +86,6 @@ public interface ModelData<T extends PathfinderMob>
     ModelPositionData.registerSyncedModelPositionData(map, entityClass);
     ModelRotationData.registerSyncedModelRotationData(map, entityClass);
     ModelVisibilityData.registerSyncedModelVisibilityData(map, entityClass);
-  }
-
-  static void registerModelDataSerializer() {
-    ModelPositionData.registerModelPositionDataSerializer();
-    ModelRotationData.registerModelRotationDataSerializer();
-    EntityDataSerializers.registerSerializer(MODEL_POSE);
-    EntityDataSerializers.registerSerializer(SCALE);
   }
 
   default Pose getDefaultPose() {

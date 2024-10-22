@@ -70,6 +70,9 @@ public class HumanoidModelRenderer
             map.put(
                 Variant.KNIGHT_01,
                 new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/knight_01.png"));
+            map.put(
+                Variant.KNIGHT_02,
+                new ResourceLocation(Constants.MOD_ID, "textures/entity/humanoid/knight_02.png"));
           });
   protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.STEVE);
 

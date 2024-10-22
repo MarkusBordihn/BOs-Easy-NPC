@@ -35,7 +35,9 @@ import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.network.ClientNetworkMessageHandler;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 import de.markusbordihn.easynpc.network.NetworkHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import de.markusbordihn.easynpc.server.ServerEvents;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -64,6 +66,9 @@ public class EasyNPCMain implements ModInitializer {
 
     log.info("{} Configuration ...", Constants.LOG_REGISTER_PREFIX);
     Config.register();
+
+    log.info("{} Entity Data Serializers ...", Constants.LOG_REGISTER_PREFIX);
+    EntityDataSerializersManager.register();
 
     log.info("{} Compatibility Handler ...", Constants.LOG_REGISTER_PREFIX);
     CompatManager.registerCompatHandler(new CompatHandler());
@@ -97,8 +102,8 @@ public class EasyNPCMain implements ModInitializer {
 
     log.info("{} Server Network Handler ...", Constants.LOG_REGISTER_PREFIX);
     NetworkHandlerManager.registerHandler(new NetworkHandler());
+    NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.SERVER);
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
-    NetworkHandler.registerServerNetworkHandler();
 
     log.info("{} Argument Types ...", Constants.LOG_REGISTER_PREFIX);
     ModArgumentTypes.register();

@@ -24,13 +24,11 @@ import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializer;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
@@ -42,30 +40,13 @@ import net.minecraft.world.level.block.state.BlockState;
 public interface SoundData<E extends PathfinderMob> extends EasyNPC<E> {
 
   String EASY_NPC_DATA_SOUND_DATA_TAG = "SoundData";
-  EntityDataSerializer<SoundDataSet> SOUND_DATA_SET =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, SoundDataSet value) {
-          buffer.writeNbt(value.createTag());
-        }
-
-        public SoundDataSet read(FriendlyByteBuf buffer) {
-          return new SoundDataSet(buffer.readNbt());
-        }
-
-        public SoundDataSet copy(SoundDataSet value) {
-          return value;
-        }
-      };
 
   static void registerSyncedSoundData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
     log.info("- Registering Synched Sound Data for {}.", entityClass.getSimpleName());
     map.put(
-        SynchedDataIndex.SOUND_DATA_SET, SynchedEntityData.defineId(entityClass, SOUND_DATA_SET));
-  }
-
-  static void registerSoundDataSerializer() {
-    EntityDataSerializers.registerSerializer(SOUND_DATA_SET);
+        SynchedDataIndex.SOUND_DATA_SET,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.SOUND_DATA_SET));
   }
 
   default SoundDataSet getSoundDataSet() {

@@ -181,6 +181,17 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
         Math.round((this.avatarTopPos + 31) / scaleEntityTypeText));
 
+    // Entity Health
+    Text.drawString(
+        guiGraphics,
+        this.font,
+        "HP: "
+            + getEasyNPCLivingEntity().getHealth()
+            + "/"
+            + getEasyNPCLivingEntity().getMaxHealth(),
+        Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
+        Math.round((this.avatarTopPos + 39) / scaleEntityTypeText));
+
     // Current position
     BlockPos blockPos = getEasyNPCEntity().getOnPos();
     Text.drawString(
@@ -189,6 +200,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         "Pos: " + blockPos.getX() + ", " + blockPos.getY() + ", " + blockPos.getZ(),
         Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
         Math.round((this.avatarTopPos + 147) / scaleEntityTypeText));
+
     guiGraphics.pose().popPose();
   }
 
