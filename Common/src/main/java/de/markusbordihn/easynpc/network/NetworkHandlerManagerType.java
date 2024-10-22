@@ -19,11 +19,8 @@
 
 package de.markusbordihn.easynpc.network;
 
-import de.markusbordihn.easynpc.network.message.ClientNetworkMessageHandlerInterface;
-
-public class ClientNetworkMessageHandler implements ClientNetworkMessageHandlerInterface {
-
-  public ClientNetworkMessageHandler() {
-    // Register server network handler for Server -> Client messages.
-  }
+public enum NetworkHandlerManagerType {
+  CLIENT,
+  SERVER,
+  BOTH;
 }

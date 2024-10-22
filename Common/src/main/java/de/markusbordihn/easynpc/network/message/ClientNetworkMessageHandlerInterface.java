@@ -50,7 +50,7 @@ public interface ClientNetworkMessageHandlerInterface {
         "Exporting preset for {} to {}",
         easyNPC.getEntity().getName().getString(),
         serverPlayer.getName().getString());
-    NetworkHandlerManager.sendToPlayer(
+    NetworkHandlerManager.sendMessageToPlayer(
         new ExportClientPresetMessage(
             uuid,
             easyNPC.getEntity().getName().getString(),
@@ -63,7 +63,7 @@ public interface ClientNetworkMessageHandlerInterface {
   default void openMenu(UUID uuid, UUID menuId, ServerPlayer serverPlayer, CompoundTag data) {
     if (uuid != null && menuId != null && serverPlayer != null) {
       log.debug("Open menu {} for npc {} and player {} with: {}", menuId, uuid, serverPlayer, data);
-      NetworkHandlerManager.sendToPlayer(
+      NetworkHandlerManager.sendMessageToPlayer(
           new OpenMenuCallbackMessage(uuid, menuId, data), serverPlayer);
     }
   }
@@ -71,7 +71,7 @@ public interface ClientNetworkMessageHandlerInterface {
   default void syncData(EasyNPC<?> easyNPC, ServerPlayer serverPlayer) {
     if (easyNPC != null && serverPlayer != null) {
       log.debug("Sync {} data to player {}", easyNPC, serverPlayer);
-      NetworkHandlerManager.sendToPlayer(
+      NetworkHandlerManager.sendMessageToPlayer(
           new SyncDataMessage(
               easyNPC.getUUID(),
               easyNPC.getEasyNPCDialogData() != null

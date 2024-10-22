@@ -43,7 +43,7 @@ public interface ActionEventData<E extends PathfinderMob> extends EasyNPC<E> {
       ServerEntityData.defineId(
           ServerDataIndex.ACTION_EVENT_SET, EntityDataSerializersManager.ACTION_EVENT_SET);
   ServerDataAccessor<Integer> CUSTOM_DATA_ACTION_PERMISSION_LEVEL =
-      ServerEntityData.defineId(EntityDataSerializers.INT);
+      ServerEntityData.defineId(ServerDataIndex.ACTION_PERMISSION_LEVEL, EntityDataSerializers.INT);
 
   String DATA_ACTION_DATA_TAG = "ActionData";
   String DATA_ACTION_PERMISSION_LEVEL_TAG = "ActionPermissionLevel";

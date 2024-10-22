@@ -56,9 +56,9 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
   @Override
   public boolean canUse() {
     if (this.pathfinderMob.isVehicle()
-        || reachedHome()
         || this.pathfinderMob.getRandom().nextInt(reducedTickDelay(this.interval)) != 0
-        || (this.pathfinderMob.isAggressive() && this.pathfinderMob.getTarget() != null)) {
+        || (this.pathfinderMob.isAggressive() && this.pathfinderMob.getTarget() != null)
+        || reachedHome()) {
       return false;
     }
 
@@ -76,8 +76,8 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
 
   @Override
   public boolean canContinueToUse() {
-    return !reachedHome()
-        && !this.pathfinderMob.getNavigation().isDone()
+    return !this.pathfinderMob.getNavigation().isDone()
+        && !this.pathfinderMob.isVehicle()
         && this.pathfinderMob.getTarget() == null;
   }
 
@@ -109,8 +109,12 @@ public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
   private boolean reachedHome() {
     if (this.navigationData == null) {
       return true;
-    } else if (!this.navigationData.hasHomePosition()) {
+    }
+    if (!this.navigationData.hasHomePosition()) {
       return this.navigationData.getGroundPathNavigation().isDone();
+    }
+    if (this.pathfinderMob.blockPosition().equals(this.navigationData.getHomePosition())) {
+      return true;
     }
 
     BlockPos blockPos = this.pathfinderMob.blockPosition();

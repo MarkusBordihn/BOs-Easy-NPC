@@ -155,12 +155,6 @@ public interface NavigationData<T extends PathfinderMob> extends EasyNPC<T> {
         mob.setPos(mob.getX(), Math.floor(mob.getY() - 0.1d), mob.getZ());
       }
 
-      // Check position and adjust animation relevant data for micro movements.
-      if (this.isClientSide() && mob.getDeltaMovement().lengthSqr() < 0.001) {
-        // mob.animationSpeed = 0;
-        // mob.animationPosition = 0;
-      }
-
       tickerData.resetTicker(TickerType.TRAVEL_EVENT);
     }
   }

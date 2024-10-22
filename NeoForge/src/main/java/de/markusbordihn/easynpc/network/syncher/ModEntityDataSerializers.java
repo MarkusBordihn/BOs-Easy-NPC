@@ -122,14 +122,6 @@ public class ModEntityDataSerializers {
       SPAWNER_UUID =
           ENTITY_DATA_SERIALIZERS.register(
               "spawner_uuid", () -> EntityDataSerializersManager.SPAWNER_UUID);
-  public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<TradingType>>
-      TRADING_TYPE =
-          ENTITY_DATA_SERIALIZERS.register(
-              "trading_type", () -> EntityDataSerializersManager.TRADING_TYPE);
-  public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<TradingDataSet>>
-      TRADING_DATA_SET =
-          ENTITY_DATA_SERIALIZERS.register(
-              "trading_data_set", () -> EntityDataSerializersManager.TRADING_DATA_SET);
   public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<HashSet<UUID>>>
       TARGETED_ENTITY_HASH_SET =
           ENTITY_DATA_SERIALIZERS.register(
@@ -140,6 +132,14 @@ public class ModEntityDataSerializers {
           ENTITY_DATA_SERIALIZERS.register(
               "targeted_player_hash_set",
               () -> EntityDataSerializersManager.TARGETED_PLAYER_HASH_SET);
+  public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<TradingDataSet>>
+      TRADING_DATA_SET =
+          ENTITY_DATA_SERIALIZERS.register(
+              "trading_data_set", () -> EntityDataSerializersManager.TRADING_DATA_SET);
+  public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<TradingType>>
+      TRADING_TYPE =
+          ENTITY_DATA_SERIALIZERS.register(
+              "trading_type", () -> EntityDataSerializersManager.TRADING_TYPE);
 
   private ModEntityDataSerializers() {}
 }

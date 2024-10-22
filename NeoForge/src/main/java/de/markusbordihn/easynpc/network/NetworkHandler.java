@@ -21,8 +21,9 @@ package de.markusbordihn.easynpc.network;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Function;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -35,8 +36,15 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class NetworkHandler implements NetworkHandlerInterface {
 
-  private static final int PROTOCOL_VERSION = 21;
-  public static PayloadRegistrar INSTANCE;
+  private static PayloadRegistrar payloadRegistrar;
+  private final Map<Type<?>, Class<? extends NetworkMessageRecord>> clientMessages =
+      new LinkedHashMap<>();
+  private final Map<CustomPacketPayload.Type<?>, Class<? extends NetworkMessageRecord>>
+      serverMessages = new LinkedHashMap<>();
+  private final Map<CustomPacketPayload.Type<?>, Class<? extends NetworkMessageRecord>>
+      registeredClientMessages = new LinkedHashMap<>();
+  private final Map<CustomPacketPayload.Type<?>, Class<? extends NetworkMessageRecord>>
+      registeredServerMessages = new LinkedHashMap<>();
 
   public NetworkHandler() {
     log.info("{} NetworkHandler ...", Constants.LOG_REGISTER_PREFIX);
@@ -44,7 +52,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
 
   public static void registerNetworkHandler(
       final RegisterPayloadHandlersEvent payloadHandlersEvent) {
-    INSTANCE =
+    payloadRegistrar =
         payloadHandlersEvent
             .registrar(Constants.MOD_ID)
             .versioned(String.valueOf(PROTOCOL_VERSION))
@@ -52,65 +60,32 @@ public class NetworkHandler implements NetworkHandlerInterface {
     log.info(
         "{} Network Handler for {} with version {} ...",
         Constants.LOG_REGISTER_PREFIX,
-        INSTANCE,
+        payloadRegistrar,
         PROTOCOL_VERSION);
-    NetworkHandlerManager.registerNetworkHandler();
   }
 
   @Override
   public <M extends NetworkMessageRecord> void sendToServer(M networkMessageRecord) {
-    if (Minecraft.getInstance().getConnection() == null) {
-      log.error("Failed to send {} to server: No connection available", networkMessageRecord);
-      return;
-    }
-    try {
-      PacketDistributor.sendToServer(networkMessageRecord);
-    } catch (Exception e) {
-      log.error("Failed to send {} to server:", networkMessageRecord, e);
-    }
+    PacketDistributor.sendToServer(networkMessageRecord);
   }
 
   @Override
   public <M extends NetworkMessageRecord> void sendToPlayer(
       M networkMessageRecord, ServerPlayer serverPlayer) {
-    try {
-      PacketDistributor.sendToPlayer(serverPlayer, networkMessageRecord);
-    } catch (Exception e) {
-      log.error(
-          "Failed to send {} to player {}:",
-          networkMessageRecord,
-          serverPlayer.getName().getString(),
-          e);
-    }
-  }
-
-  @Override
-  public <M extends NetworkMessageRecord> void registerClientPayloadType(
-      Type<M> type, StreamCodec<RegistryFriendlyByteBuf, M> codec) {
-    // Not needed for NeoForge.
-  }
-
-  @Override
-  public <M extends NetworkMessageRecord> void registerServerPayloadType(
-      Type<M> type, StreamCodec<RegistryFriendlyByteBuf, M> codec) {
-    // Not needed for NeoForge.
+    PacketDistributor.sendToPlayer(serverPlayer, networkMessageRecord);
   }
 
   @Override
   public <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
       final CustomPacketPayload.Type<M> type,
       final StreamCodec<RegistryFriendlyByteBuf, M> codec,
-      final Class<M> networkMessageRecord,
+      final Class<M> networkMessage,
       final Function<FriendlyByteBuf, M> creator) {
-    log.debug("Registering client network message handler for {}", type);
-    try {
-      INSTANCE.playToClient(
-          type,
-          codec,
-          (customPacketPayload, playPayloadContext) -> customPacketPayload.handleClient());
-    } catch (Exception e) {
-      log.error("Failed to register network message handler {}:", networkMessageRecord, e);
-    }
+    logRegisterClientNetworkMessageHandler(type, networkMessage);
+    payloadRegistrar.playToClient(
+        type,
+        codec,
+        (customPacketPayload, playPayloadContext) -> customPacketPayload.handleClient());
   }
 
   @Override
@@ -119,20 +94,63 @@ public class NetworkHandler implements NetworkHandlerInterface {
       final StreamCodec<RegistryFriendlyByteBuf, M> codec,
       Class<M> networkMessage,
       Function<FriendlyByteBuf, M> creator) {
-    log.debug("Registering server network message handler for {}", type);
-    try {
-      INSTANCE.playToServer(
-          type,
-          codec,
-          (customPacketPayload, playPayloadContext) -> {
-            if (playPayloadContext.player() instanceof ServerPlayer serverPlayer) {
-              customPacketPayload.handleServer(serverPlayer);
-            } else {
-              log.error("Unable to get valid player for network message {}", customPacketPayload);
-            }
-          });
-    } catch (Exception e) {
-      log.error("Failed to register network message handler {}:", networkMessage, e);
-    }
+    logRegisterServerNetworkMessageHandler(type, networkMessage);
+    payloadRegistrar.playToServer(
+        type,
+        codec,
+        (customPacketPayload, playPayloadContext) -> {
+          if (playPayloadContext.player() instanceof ServerPlayer serverPlayer) {
+            customPacketPayload.handleServer(serverPlayer);
+          } else {
+            log.error("Unable to get valid player for network message {}", customPacketPayload);
+          }
+        });
+  }
+
+  @Override
+  public <M extends NetworkMessageRecord> void addClientMessage(
+      final CustomPacketPayload.Type<M> messageID, final Class<M> networkMessage) {
+    clientMessages.put(messageID, networkMessage);
+  }
+
+  @Override
+  public <M extends NetworkMessageRecord> void addServerMessage(
+      final CustomPacketPayload.Type<M> messageID, final Class<M> networkMessage) {
+    serverMessages.put(messageID, networkMessage);
+  }
+
+  @Override
+  public Map<Type<?>, Class<? extends NetworkMessageRecord>> getClientMessages() {
+    return clientMessages;
+  }
+
+  @Override
+  public Map<CustomPacketPayload.Type<?>, Class<? extends NetworkMessageRecord>>
+      getServerMessages() {
+    return serverMessages;
+  }
+
+  @Override
+  public <M extends NetworkMessageRecord> void addRegisteredClientMessage(
+      final CustomPacketPayload.Type<M> messageID, final Class<M> networkMessage) {
+    registeredClientMessages.put(messageID, networkMessage);
+  }
+
+  @Override
+  public <M extends NetworkMessageRecord> void addRegisteredServerMessage(
+      final CustomPacketPayload.Type<M> messageID, final Class<M> networkMessage) {
+    registeredServerMessages.put(messageID, networkMessage);
+  }
+
+  @Override
+  public Map<CustomPacketPayload.Type<?>, Class<? extends NetworkMessageRecord>>
+      getRegisteredClientMessages() {
+    return registeredClientMessages;
+  }
+
+  @Override
+  public Map<CustomPacketPayload.Type<?>, Class<? extends NetworkMessageRecord>>
+      getRegisteredServerMessages() {
+    return registeredServerMessages;
   }
 }

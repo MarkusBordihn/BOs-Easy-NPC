@@ -35,6 +35,7 @@ import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.network.ClientNetworkMessageHandler;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 import de.markusbordihn.easynpc.network.NetworkHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import de.markusbordihn.easynpc.server.ServerEvents;
@@ -101,10 +102,7 @@ public class EasyNPCMain implements ModInitializer {
 
     log.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
     NetworkHandlerManager.registerHandler(new NetworkHandler());
-    NetworkHandlerManager.registerPayloadTypes();
-    NetworkHandlerManager.registerServerNetworkHandler();
-
-    log.info("{} Server Network Handler ...", Constants.LOG_REGISTER_PREFIX);
+    NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.SERVER);
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
 
     log.info("{} Argument Types ...", Constants.LOG_REGISTER_PREFIX);

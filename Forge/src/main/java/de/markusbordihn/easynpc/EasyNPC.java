@@ -40,6 +40,7 @@ import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.network.ClientNetworkMessageHandler;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 import de.markusbordihn.easynpc.network.NetworkHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
@@ -50,6 +51,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
@@ -80,6 +82,9 @@ public class EasyNPC {
     log.info("{} Configuration ...", Constants.LOG_REGISTER_PREFIX);
     Config.register();
 
+    log.info("{} Entity Data Serializers ...", Constants.LOG_REGISTER_PREFIX);
+    EntityDataSerializersManager.register();
+
     log.info("{} Compatibility Handler ...", Constants.LOG_REGISTER_PREFIX);
     CompatManager.registerCompatHandler(new CompatHandler());
 
@@ -109,9 +114,14 @@ public class EasyNPC {
     modEventBus.addListener(MenuHandler::registerMenuHandler);
 
     log.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
-    NetworkHandlerManager.registerHandler(new NetworkHandler());
+    modEventBus.addListener(
+        (final FMLCommonSetupEvent event) ->
+            event.enqueueWork(
+                () -> {
+                  NetworkHandlerManager.registerHandler(new NetworkHandler());
+                  NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
+                }));
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
-    modEventBus.addListener(NetworkHandler::registerNetworkHandler);
 
     DistExecutor.unsafeRunWhenOn(
         Dist.CLIENT,

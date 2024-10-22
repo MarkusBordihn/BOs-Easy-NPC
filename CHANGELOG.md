@@ -8,6 +8,15 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.7.2
+
+- Fixed #364 by adding additional checks and logging for entity data serialization and networking.
+- Fixed #347 by adding additional network message related checks for Fabric/Quilt.
+- Improved idle animation for arms and legs.
+- Improved 'Move Back To Home' objective performance.
+- Added 'Can Breathe Underwater' checkbox to the NPC configuration screen.
+- Added new Knight 02 NPC skin.
+
 ### 5.7.1
 
 - Fixed #362 by considering day/night for all days not only for the first day.

@@ -49,6 +49,7 @@ public enum ServerDataIndex {
 
   // Custom Data Index (>= 20)
   ACTION_EVENT_SET,
+  ACTION_PERMISSION_LEVEL,
   DIALOG_DATA_SET,
   OBJECTIVE_DATA_SET,
   OBJECTIVE_PLAYER_SET,

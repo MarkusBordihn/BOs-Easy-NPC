@@ -32,6 +32,7 @@ import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.EnumMap;
+import java.util.Objects;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -487,11 +488,11 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
     if (!(object instanceof EasyNPCBaseEntity<?> easyNPCBaseEntity)) {
       return false;
     }
-    return java.util.Objects.equals(this.getUUID(), easyNPCBaseEntity.getUUID());
+    return Objects.equals(this.getUUID(), easyNPCBaseEntity.getUUID());
   }
 
   @Override
   public int hashCode() {
-    return java.util.Objects.hash(this.getUUID());
+    return Objects.hash(this.getUUID());
   }
 }

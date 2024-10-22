@@ -87,6 +87,7 @@
   "text.easy_npc.config.bow_attack": "Bow Attack",
   "text.easy_npc.config.button.name": "Name",
   "text.easy_npc.config.can_be_leashed": "Can be Leashed",
+  "text.easy_npc.config.can_breathe_underwater": "Underwater Breathing",
   "text.easy_npc.config.can_close_door": "Close door",
   "text.easy_npc.config.can_float": "Float",
   "text.easy_npc.config.can_open_door": "Open door",

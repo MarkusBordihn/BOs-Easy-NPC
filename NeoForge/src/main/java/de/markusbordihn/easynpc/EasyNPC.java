@@ -35,6 +35,7 @@ import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.network.ClientNetworkMessageHandler;
 import de.markusbordihn.easynpc.network.NetworkHandler;
 import de.markusbordihn.easynpc.network.NetworkHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.syncher.ModEntityDataSerializers;
 import java.util.Optional;
@@ -42,6 +43,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -97,8 +99,12 @@ public class EasyNPC {
     modEventBus.addListener(MenuHandler::registerMenuHandler);
 
     log.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
-    NetworkHandlerManager.registerHandler(new NetworkHandler());
+    modEventBus.addListener(
+        (final RegisterPayloadHandlersEvent event) -> {
+          NetworkHandlerManager.registerHandler(new NetworkHandler());
+          NetworkHandler.registerNetworkHandler(event);
+          NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
+        });
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
-    modEventBus.addListener(NetworkHandler::registerNetworkHandler);
   }
 }

@@ -144,7 +144,7 @@ public class StandardVillagerModel<T extends Entity> extends VillagerModel<T>
       float limbSwing,
       float limbSwingAmount) {
     return HumanoidLegAnimation.animateHumanoidModelLegs(
-        rightLegPart, leftLegPart, limbSwing, limbSwingAmount);
+        rightLegPart, leftLegPart, ageInTicks, limbSwing, limbSwingAmount);
   }
 
   @Override

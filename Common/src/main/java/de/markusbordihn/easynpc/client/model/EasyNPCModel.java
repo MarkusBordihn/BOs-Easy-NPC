@@ -323,7 +323,7 @@ public interface EasyNPCModel<E extends Entity> {
       return false;
     }
     return HumanoidLegAnimation.animateHumanoidModelLegs(
-        rightLegPart, leftLegPart, limbSwing, limbSwingAmount);
+        rightLegPart, leftLegPart, ageInTicks, limbSwing, limbSwingAmount);
   }
 
   default boolean animateModelFrontLegs(

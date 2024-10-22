@@ -29,7 +29,7 @@ public interface HumanoidArmAnimation {
       ModelPart leftArmPart, float ageInTicks, float limbSwing, float limbSwingAmount) {
     leftArmPart.xRot =
         Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F;
-    if (limbSwing <= 0.0F && limbSwingAmount <= 0.0F) {
+    if (limbSwingAmount <= 0.001F) {
       AnimationUtils.bobModelPart(leftArmPart, ageInTicks, -1.0F);
     }
   }
@@ -37,7 +37,7 @@ public interface HumanoidArmAnimation {
   static void animateHumanoidModelRightArmSwing(
       ModelPart rightArmPart, float ageInTicks, float limbSwing, float limbSwingAmount) {
     rightArmPart.xRot = Mth.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
-    if (limbSwing <= 0.0F && limbSwingAmount <= 0.0F) {
+    if (limbSwingAmount <= 0.001F) {
       AnimationUtils.bobModelPart(rightArmPart, ageInTicks, 1.0F);
     }
   }

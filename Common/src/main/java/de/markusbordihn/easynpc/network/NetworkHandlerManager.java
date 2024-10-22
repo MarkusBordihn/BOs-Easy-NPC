@@ -80,6 +80,8 @@ public class NetworkHandlerManager {
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private static NetworkHandlerInterface networkHandler;
+  private static NetworkHandlerManagerType networkHandlerManagerType =
+      NetworkHandlerManagerType.BOTH;
 
   private NetworkHandlerManager() {}
 
@@ -92,136 +94,36 @@ public class NetworkHandlerManager {
     return networkHandler;
   }
 
-  public static void sendToServer(NetworkMessageRecord networkMessageRecord) {
+  public static void registerNetworkMessages(NetworkHandlerManagerType networkHandlerType) {
+    log.info("Registering network messages for {} side ...", networkHandlerType);
+    networkHandlerManagerType = networkHandlerType;
+    registerClientNetworkHandler();
+    registerServerNetworkHandler();
+  }
+
+  public static boolean isClientNetworkHandler() {
+    return networkHandlerManagerType == NetworkHandlerManagerType.CLIENT
+        || networkHandlerManagerType == NetworkHandlerManagerType.BOTH;
+  }
+
+  public static boolean isServerNetworkHandler() {
+    return networkHandlerManagerType == NetworkHandlerManagerType.SERVER
+        || networkHandlerManagerType == NetworkHandlerManagerType.BOTH;
+  }
+
+  public static void sendMessageToServer(NetworkMessageRecord networkMessageRecord) {
     NetworkHandlerInterface networkHandler = getHandler();
     if (networkHandler != null) {
-      networkHandler.sendToServer(networkMessageRecord);
+      networkHandler.sendMessageToServer(networkMessageRecord);
     }
   }
 
-  public static void sendToPlayer(
+  public static void sendMessageToPlayer(
       NetworkMessageRecord networkMessageRecord, ServerPlayer serverPlayer) {
     NetworkHandlerInterface networkHandler = getHandler();
     if (networkHandler != null) {
-      networkHandler.sendToPlayer(networkMessageRecord, serverPlayer);
+      networkHandler.sendMessageToPlayer(networkMessageRecord, serverPlayer);
     }
-  }
-
-  public static void registerPayloadTypes() {
-    registerClientPayloadTypes();
-    registerServerPayloadTypes();
-  }
-
-  public static void registerClientPayloadTypes() {
-    networkHandler.registerClientPayloadType(
-        ExportClientPresetMessage.PAYLOAD_TYPE, ExportClientPresetMessage.STREAM_CODEC);
-    networkHandler.registerClientPayloadType(
-        OpenMenuCallbackMessage.PAYLOAD_TYPE, OpenMenuCallbackMessage.STREAM_CODEC);
-    networkHandler.registerClientPayloadType(
-        SyncDataMessage.PAYLOAD_TYPE, SyncDataMessage.STREAM_CODEC);
-  }
-
-  public static void registerServerPayloadTypes() {
-    networkHandler.registerServerPayloadType(
-        AddOrUpdateObjectiveMessage.PAYLOAD_TYPE, AddOrUpdateObjectiveMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangeActionEventMessage.PAYLOAD_TYPE, ChangeActionEventMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangeAdvancedTradingMessage.PAYLOAD_TYPE, ChangeAdvancedTradingMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangeBasicTradingMessage.PAYLOAD_TYPE, ChangeBasicTradingMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangeCombatAttributeMessage.PAYLOAD_TYPE, ChangeCombatAttributeMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangeDisplayAttributeMessage.PAYLOAD_TYPE, ChangeDisplayAttributeMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangeEntityAttributeMessage.PAYLOAD_TYPE, ChangeEntityAttributeMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangeEntityBaseAttributeMessage.PAYLOAD_TYPE,
-        ChangeEntityBaseAttributeMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangeEnvironmentalAttributeMessage.PAYLOAD_TYPE,
-        ChangeEnvironmentalAttributeMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangeInteractionAttributeMessage.PAYLOAD_TYPE,
-        ChangeInteractionAttributeMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangeModelEquipmentVisibilityMessage.PAYLOAD_TYPE,
-        ChangeModelEquipmentVisibilityMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangeModelLockRotationMessage.PAYLOAD_TYPE, ChangeModelLockRotationMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangeModelPoseMessage.PAYLOAD_TYPE, ChangeModelPoseMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangeModelPositionMessage.PAYLOAD_TYPE, ChangeModelPositionMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangeModelRotationMessage.PAYLOAD_TYPE, ChangeModelRotationMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangeModelVisibilityMessage.PAYLOAD_TYPE, ChangeModelVisibilityMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangeMovementAttributeMessage.PAYLOAD_TYPE, ChangeMovementAttributeMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangeNameMessage.PAYLOAD_TYPE, ChangeNameMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangePoseMessage.PAYLOAD_TYPE, ChangePoseMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangePositionMessage.PAYLOAD_TYPE, ChangePositionMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangeProfessionMessage.PAYLOAD_TYPE, ChangeProfessionMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangeRendererMessage.PAYLOAD_TYPE, ChangeRendererMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangeScaleMessage.PAYLOAD_TYPE, ChangeScaleMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangeSkinMessage.PAYLOAD_TYPE, ChangeSkinMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangeSpawnerSettingMessage.PAYLOAD_TYPE, ChangeSpawnerSettingMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ChangeTradingTypeMessage.PAYLOAD_TYPE, ChangeTradingTypeMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ExecuteActionEventMessage.PAYLOAD_TYPE, ExecuteActionEventMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ExecuteDialogButtonActionMessage.PAYLOAD_TYPE,
-        ExecuteDialogButtonActionMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ExportPresetMessage.PAYLOAD_TYPE, ExportPresetMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ExportWorldPresetMessage.PAYLOAD_TYPE, ExportWorldPresetMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        ImportPresetMessage.PAYLOAD_TYPE, ImportPresetMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        OpenActionDataEditorMessage.PAYLOAD_TYPE, OpenActionDataEditorMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        OpenActionDataEntryEditorMessage.PAYLOAD_TYPE,
-        OpenActionDataEntryEditorMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        OpenConfigurationMessage.PAYLOAD_TYPE, OpenConfigurationMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        OpenDialogButtonEditorMessage.PAYLOAD_TYPE, OpenDialogButtonEditorMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        OpenDialogEditorMessage.PAYLOAD_TYPE, OpenDialogEditorMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        OpenDialogTextEditorMessage.PAYLOAD_TYPE, OpenDialogTextEditorMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        OpenMenuMessage.PAYLOAD_TYPE, OpenMenuMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        RemoveDialogButtonMessage.PAYLOAD_TYPE, RemoveDialogButtonMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        RemoveDialogMessage.PAYLOAD_TYPE, RemoveDialogMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        RemoveNPCMessage.PAYLOAD_TYPE, RemoveNPCMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        RemoveObjectiveMessage.PAYLOAD_TYPE, RemoveObjectiveMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        RequestDataSyncMessage.PAYLOAD_TYPE, RequestDataSyncMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        RespawnNPCMessage.PAYLOAD_TYPE, RespawnNPCMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        SaveDialogButtonMessage.PAYLOAD_TYPE, SaveDialogButtonMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        SaveDialogMessage.PAYLOAD_TYPE, SaveDialogMessage.STREAM_CODEC);
-    networkHandler.registerServerPayloadType(
-        SaveDialogSetMessage.PAYLOAD_TYPE, SaveDialogSetMessage.STREAM_CODEC);
   }
 
   public static void registerNetworkHandler() {
@@ -238,19 +140,19 @@ public class NetworkHandlerManager {
     }
     log.info("Registering client network handler ...");
 
-    networkHandler.registerClientNetworkMessageHandler(
+    networkHandler.registerClientNetworkMessage(
         ExportClientPresetMessage.PAYLOAD_TYPE,
         ExportClientPresetMessage.STREAM_CODEC,
         ExportClientPresetMessage.class,
         ExportClientPresetMessage::create);
 
-    networkHandler.registerClientNetworkMessageHandler(
+    networkHandler.registerClientNetworkMessage(
         OpenMenuCallbackMessage.PAYLOAD_TYPE,
         OpenMenuCallbackMessage.STREAM_CODEC,
         OpenMenuCallbackMessage.class,
         OpenMenuCallbackMessage::create);
 
-    networkHandler.registerClientNetworkMessageHandler(
+    networkHandler.registerClientNetworkMessage(
         SyncDataMessage.PAYLOAD_TYPE,
         SyncDataMessage.STREAM_CODEC,
         SyncDataMessage.class,
@@ -266,283 +168,283 @@ public class NetworkHandlerManager {
     }
     log.info("Registering server network handler ...");
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         AddOrUpdateObjectiveMessage.PAYLOAD_TYPE,
         AddOrUpdateObjectiveMessage.STREAM_CODEC,
         AddOrUpdateObjectiveMessage.class,
         AddOrUpdateObjectiveMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangeActionEventMessage.PAYLOAD_TYPE,
         ChangeActionEventMessage.STREAM_CODEC,
         ChangeActionEventMessage.class,
         ChangeActionEventMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangeAdvancedTradingMessage.PAYLOAD_TYPE,
         ChangeAdvancedTradingMessage.STREAM_CODEC,
         ChangeAdvancedTradingMessage.class,
         ChangeAdvancedTradingMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangeBasicTradingMessage.PAYLOAD_TYPE,
         ChangeBasicTradingMessage.STREAM_CODEC,
         ChangeBasicTradingMessage.class,
         ChangeBasicTradingMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangeCombatAttributeMessage.PAYLOAD_TYPE,
         ChangeCombatAttributeMessage.STREAM_CODEC,
         ChangeCombatAttributeMessage.class,
         ChangeCombatAttributeMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangeDisplayAttributeMessage.PAYLOAD_TYPE,
         ChangeDisplayAttributeMessage.STREAM_CODEC,
         ChangeDisplayAttributeMessage.class,
         ChangeDisplayAttributeMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangeEntityAttributeMessage.PAYLOAD_TYPE,
         ChangeEntityAttributeMessage.STREAM_CODEC,
         ChangeEntityAttributeMessage.class,
         ChangeEntityAttributeMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangeEntityBaseAttributeMessage.PAYLOAD_TYPE,
         ChangeEntityBaseAttributeMessage.STREAM_CODEC,
         ChangeEntityBaseAttributeMessage.class,
         ChangeEntityBaseAttributeMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangeEnvironmentalAttributeMessage.PAYLOAD_TYPE,
         ChangeEnvironmentalAttributeMessage.STREAM_CODEC,
         ChangeEnvironmentalAttributeMessage.class,
         ChangeEnvironmentalAttributeMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangeInteractionAttributeMessage.PAYLOAD_TYPE,
         ChangeInteractionAttributeMessage.STREAM_CODEC,
         ChangeInteractionAttributeMessage.class,
         ChangeInteractionAttributeMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangeModelEquipmentVisibilityMessage.PAYLOAD_TYPE,
         ChangeModelEquipmentVisibilityMessage.STREAM_CODEC,
         ChangeModelEquipmentVisibilityMessage.class,
         ChangeModelEquipmentVisibilityMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangeModelLockRotationMessage.PAYLOAD_TYPE,
         ChangeModelLockRotationMessage.STREAM_CODEC,
         ChangeModelLockRotationMessage.class,
         ChangeModelLockRotationMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangeModelPoseMessage.PAYLOAD_TYPE,
         ChangeModelPoseMessage.STREAM_CODEC,
         ChangeModelPoseMessage.class,
         ChangeModelPoseMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangeModelPositionMessage.PAYLOAD_TYPE,
         ChangeModelPositionMessage.STREAM_CODEC,
         ChangeModelPositionMessage.class,
         ChangeModelPositionMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangeModelRotationMessage.PAYLOAD_TYPE,
         ChangeModelRotationMessage.STREAM_CODEC,
         ChangeModelRotationMessage.class,
         ChangeModelRotationMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangeModelVisibilityMessage.PAYLOAD_TYPE,
         ChangeModelVisibilityMessage.STREAM_CODEC,
         ChangeModelVisibilityMessage.class,
         ChangeModelVisibilityMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangeMovementAttributeMessage.PAYLOAD_TYPE,
         ChangeMovementAttributeMessage.STREAM_CODEC,
         ChangeMovementAttributeMessage.class,
         ChangeMovementAttributeMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangeNameMessage.PAYLOAD_TYPE,
         ChangeNameMessage.STREAM_CODEC,
         ChangeNameMessage.class,
         ChangeNameMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangePoseMessage.PAYLOAD_TYPE,
         ChangePoseMessage.STREAM_CODEC,
         ChangePoseMessage.class,
         ChangePoseMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangePositionMessage.PAYLOAD_TYPE,
         ChangePositionMessage.STREAM_CODEC,
         ChangePositionMessage.class,
         ChangePositionMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangeProfessionMessage.PAYLOAD_TYPE,
         ChangeProfessionMessage.STREAM_CODEC,
         ChangeProfessionMessage.class,
         ChangeProfessionMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangeRendererMessage.PAYLOAD_TYPE,
         ChangeRendererMessage.STREAM_CODEC,
         ChangeRendererMessage.class,
         ChangeRendererMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangeScaleMessage.PAYLOAD_TYPE,
         ChangeScaleMessage.STREAM_CODEC,
         ChangeScaleMessage.class,
         ChangeScaleMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangeSkinMessage.PAYLOAD_TYPE,
         ChangeSkinMessage.STREAM_CODEC,
         ChangeSkinMessage.class,
         ChangeSkinMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangeSpawnerSettingMessage.PAYLOAD_TYPE,
         ChangeSpawnerSettingMessage.STREAM_CODEC,
         ChangeSpawnerSettingMessage.class,
         ChangeSpawnerSettingMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ChangeTradingTypeMessage.PAYLOAD_TYPE,
         ChangeTradingTypeMessage.STREAM_CODEC,
         ChangeTradingTypeMessage.class,
         ChangeTradingTypeMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ExecuteActionEventMessage.PAYLOAD_TYPE,
         ExecuteActionEventMessage.STREAM_CODEC,
         ExecuteActionEventMessage.class,
         ExecuteActionEventMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ExecuteDialogButtonActionMessage.PAYLOAD_TYPE,
         ExecuteDialogButtonActionMessage.STREAM_CODEC,
         ExecuteDialogButtonActionMessage.class,
         ExecuteDialogButtonActionMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ExportPresetMessage.PAYLOAD_TYPE,
         ExportPresetMessage.STREAM_CODEC,
         ExportPresetMessage.class,
         ExportPresetMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ExportWorldPresetMessage.PAYLOAD_TYPE,
         ExportWorldPresetMessage.STREAM_CODEC,
         ExportWorldPresetMessage.class,
         ExportWorldPresetMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         ImportPresetMessage.PAYLOAD_TYPE,
         ImportPresetMessage.STREAM_CODEC,
         ImportPresetMessage.class,
         ImportPresetMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         OpenActionDataEditorMessage.PAYLOAD_TYPE,
         OpenActionDataEditorMessage.STREAM_CODEC,
         OpenActionDataEditorMessage.class,
         OpenActionDataEditorMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         OpenActionDataEntryEditorMessage.PAYLOAD_TYPE,
         OpenActionDataEntryEditorMessage.STREAM_CODEC,
         OpenActionDataEntryEditorMessage.class,
         OpenActionDataEntryEditorMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         OpenConfigurationMessage.PAYLOAD_TYPE,
         OpenConfigurationMessage.STREAM_CODEC,
         OpenConfigurationMessage.class,
         OpenConfigurationMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         OpenDialogButtonEditorMessage.PAYLOAD_TYPE,
         OpenDialogButtonEditorMessage.STREAM_CODEC,
         OpenDialogButtonEditorMessage.class,
         OpenDialogButtonEditorMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         OpenDialogEditorMessage.PAYLOAD_TYPE,
         OpenDialogEditorMessage.STREAM_CODEC,
         OpenDialogEditorMessage.class,
         OpenDialogEditorMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         OpenMenuMessage.PAYLOAD_TYPE,
         OpenMenuMessage.STREAM_CODEC,
         OpenMenuMessage.class,
         OpenMenuMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         OpenDialogTextEditorMessage.PAYLOAD_TYPE,
         OpenDialogTextEditorMessage.STREAM_CODEC,
         OpenDialogTextEditorMessage.class,
         OpenDialogTextEditorMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         RemoveDialogButtonMessage.PAYLOAD_TYPE,
         RemoveDialogButtonMessage.STREAM_CODEC,
         RemoveDialogButtonMessage.class,
         RemoveDialogButtonMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         RemoveDialogMessage.PAYLOAD_TYPE,
         RemoveDialogMessage.STREAM_CODEC,
         RemoveDialogMessage.class,
         RemoveDialogMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         RemoveNPCMessage.PAYLOAD_TYPE,
         RemoveNPCMessage.STREAM_CODEC,
         RemoveNPCMessage.class,
         RemoveNPCMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         RemoveObjectiveMessage.PAYLOAD_TYPE,
         RemoveObjectiveMessage.STREAM_CODEC,
         RemoveObjectiveMessage.class,
         RemoveObjectiveMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         RequestDataSyncMessage.PAYLOAD_TYPE,
         RequestDataSyncMessage.STREAM_CODEC,
         RequestDataSyncMessage.class,
         RequestDataSyncMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         RespawnNPCMessage.PAYLOAD_TYPE,
         RespawnNPCMessage.STREAM_CODEC,
         RespawnNPCMessage.class,
         RespawnNPCMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         SaveDialogButtonMessage.PAYLOAD_TYPE,
         SaveDialogButtonMessage.STREAM_CODEC,
         SaveDialogButtonMessage.class,
         SaveDialogButtonMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         SaveDialogMessage.PAYLOAD_TYPE,
         SaveDialogMessage.STREAM_CODEC,
         SaveDialogMessage.class,
         SaveDialogMessage::create);
 
-    networkHandler.registerServerNetworkMessageHandler(
+    networkHandler.registerServerNetworkMessage(
         SaveDialogSetMessage.PAYLOAD_TYPE,
         SaveDialogSetMessage.STREAM_CODEC,
         SaveDialogSetMessage.class,

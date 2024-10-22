@@ -116,32 +116,33 @@ public interface ServerNetworkMessageHandlerInterface {
   default void actionEventChange(
       UUID uuid, ActionEventType actionEventType, ActionDataSet actionDataSet) {
     if (uuid != null && actionEventType != null && actionDataSet != null) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeActionEventMessage(uuid, actionEventType, actionDataSet));
     }
   }
 
   default void addOrUpdateObjective(UUID uuid, ObjectiveDataEntry objectiveDataEntry) {
     if (uuid != null && objectiveDataEntry != null) {
-      NetworkHandlerManager.sendToServer(new AddOrUpdateObjectiveMessage(uuid, objectiveDataEntry));
+      NetworkHandlerManager.sendMessageToServer(
+          new AddOrUpdateObjectiveMessage(uuid, objectiveDataEntry));
     }
   }
 
   default void changeProfession(UUID uuid, Profession profession) {
     if (uuid != null && profession != null) {
-      NetworkHandlerManager.sendToServer(new ChangeProfessionMessage(uuid, profession));
+      NetworkHandlerManager.sendMessageToServer(new ChangeProfessionMessage(uuid, profession));
     }
   }
 
   default void changeTradingType(UUID uuid, TradingType tradingType) {
     if (uuid != null && tradingType != null) {
-      NetworkHandlerManager.sendToServer(new ChangeTradingTypeMessage(uuid, tradingType));
+      NetworkHandlerManager.sendMessageToServer(new ChangeTradingTypeMessage(uuid, tradingType));
     }
   }
 
   default void setAdvancedTradingResetsEveryMin(UUID uuid, int resetsEveryMin) {
     if (uuid != null && resetsEveryMin >= 0) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeAdvancedTradingMessage(
               uuid, 9999, TradingValueType.RESET_TRADING_EVERY_MIN, resetsEveryMin));
     }
@@ -149,7 +150,7 @@ public interface ServerNetworkMessageHandlerInterface {
 
   default void setAdvancedTradingMaxUses(UUID uuid, int tradingOfferIndex, int maxUses) {
     if (uuid != null && maxUses > 0) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeAdvancedTradingMessage(
               uuid, tradingOfferIndex, TradingValueType.MAX_USES, maxUses));
     }
@@ -157,7 +158,7 @@ public interface ServerNetworkMessageHandlerInterface {
 
   default void setAdvancedTradingRewardExp(UUID uuid, int tradingOfferIndex, int xp) {
     if (uuid != null && xp >= 0) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeAdvancedTradingMessage(
               uuid, tradingOfferIndex, TradingValueType.REWARD_EXP, xp));
     }
@@ -166,7 +167,7 @@ public interface ServerNetworkMessageHandlerInterface {
   default void setAdvancedTradingPriceMultiplier(
       UUID uuid, int tradingOfferIndex, float priceMultiplier) {
     if (uuid != null && priceMultiplier >= 0.0) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeAdvancedTradingMessage(
               uuid, tradingOfferIndex, TradingValueType.PRICE_MULTIPLIER, priceMultiplier));
     }
@@ -174,7 +175,7 @@ public interface ServerNetworkMessageHandlerInterface {
 
   default void setAdvancedTradingDemand(UUID uuid, int tradingOfferIndex, int demand) {
     if (uuid != null && demand >= 0) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeAdvancedTradingMessage(
               uuid, tradingOfferIndex, TradingValueType.DEMAND, demand));
     }
@@ -183,7 +184,7 @@ public interface ServerNetworkMessageHandlerInterface {
   default void changeDisplayAttribute(
       UUID uuid, DisplayAttributeType displayAttributeType, Boolean booleanValue) {
     if (uuid != null && displayAttributeType != null && booleanValue != null) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeDisplayAttributeMessage(uuid, displayAttributeType, booleanValue));
     }
   }
@@ -191,7 +192,7 @@ public interface ServerNetworkMessageHandlerInterface {
   default void changeDisplayAttribute(
       UUID uuid, DisplayAttributeType displayAttributeType, Integer integerValue) {
     if (uuid != null && displayAttributeType != null && integerValue != null) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeDisplayAttributeMessage(uuid, displayAttributeType, integerValue));
     }
   }
@@ -199,7 +200,7 @@ public interface ServerNetworkMessageHandlerInterface {
   default void entityAttributeChange(
       UUID uuid, EntityAttribute entityAttribute, Boolean booleanValue) {
     if (uuid != null && entityAttribute != null && booleanValue != null) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeEntityAttributeMessage(uuid, entityAttribute, booleanValue));
     }
   }
@@ -207,7 +208,7 @@ public interface ServerNetworkMessageHandlerInterface {
   default void combatAttributeChange(
       UUID uuid, CombatAttributeType attributeType, Boolean booleanValue) {
     if (uuid != null && attributeType != null && booleanValue != null) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeCombatAttributeMessage(uuid, attributeType, booleanValue));
     }
   }
@@ -215,7 +216,7 @@ public interface ServerNetworkMessageHandlerInterface {
   default void combatAttributeChange(
       UUID uuid, CombatAttributeType attributeType, Double doubleValue) {
     if (uuid != null && attributeType != null && doubleValue != null) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeCombatAttributeMessage(uuid, attributeType, doubleValue));
     }
   }
@@ -223,7 +224,7 @@ public interface ServerNetworkMessageHandlerInterface {
   default void environmentalAttributeChange(
       UUID uuid, EnvironmentalAttributeType attributeType, Boolean booleanValue) {
     if (uuid != null && attributeType != null && booleanValue != null) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeEnvironmentalAttributeMessage(uuid, attributeType, booleanValue));
     }
   }
@@ -231,7 +232,7 @@ public interface ServerNetworkMessageHandlerInterface {
   default void interactionAttributeChange(
       UUID uuid, InteractionAttributeType attributeType, Boolean booleanValue) {
     if (uuid != null && attributeType != null && booleanValue != null) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeInteractionAttributeMessage(uuid, attributeType, booleanValue));
     }
   }
@@ -239,28 +240,28 @@ public interface ServerNetworkMessageHandlerInterface {
   default void movementAttributeChange(
       UUID uuid, MovementAttributeType attributeType, Boolean booleanValue) {
     if (uuid != null && attributeType != null && booleanValue != null) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeMovementAttributeMessage(uuid, attributeType, booleanValue));
     }
   }
 
   default void setBasicTradingMaxUses(UUID uuid, int maxUses) {
     if (uuid != null && maxUses > 0) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeBasicTradingMessage(uuid, TradingValueType.MAX_USES, maxUses));
     }
   }
 
   default void setBasicTradingRewardExp(UUID uuid, int rewardExp) {
     if (uuid != null && rewardExp >= 0) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeBasicTradingMessage(uuid, TradingValueType.REWARD_EXP, rewardExp));
     }
   }
 
   default void setBasicTradingResetsEveryMin(UUID uuid, int resetsEveryMin) {
     if (uuid != null && resetsEveryMin >= 0) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeBasicTradingMessage(
               uuid, TradingValueType.RESET_TRADING_EVERY_MIN, resetsEveryMin));
     }
@@ -269,7 +270,7 @@ public interface ServerNetworkMessageHandlerInterface {
   default void openActionDataEditor(
       UUID uuid, ActionEventType actionEventType, ConfigurationType configurationType) {
     if (uuid != null && actionEventType != null && actionEventType != ActionEventType.NONE) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new OpenActionDataEditorMessage(
               uuid,
               Constants.EMPTY_UUID,
@@ -283,7 +284,7 @@ public interface ServerNetworkMessageHandlerInterface {
   default void openActionDataEditor(
       UUID uuid, EditorType editorType, UUID dialogId, UUID dialogButtonId) {
     if (uuid != null && editorType != null && dialogId != null && dialogButtonId != null) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new OpenActionDataEditorMessage(
               uuid,
               dialogId,
@@ -305,7 +306,7 @@ public interface ServerNetworkMessageHandlerInterface {
         && dialogId != null
         && dialogButtonId != null
         && actionDataEntry != null) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new OpenActionDataEntryEditorMessage(
               uuid,
               dialogId,
@@ -323,7 +324,7 @@ public interface ServerNetworkMessageHandlerInterface {
       ConfigurationType configurationType,
       ActionDataEntry actionDataEntry) {
     if (uuid != null && actionEventType != null && actionDataEntry != null) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new OpenActionDataEntryEditorMessage(
               uuid,
               Constants.EMPTY_UUID,
@@ -337,72 +338,72 @@ public interface ServerNetworkMessageHandlerInterface {
 
   default void openDialogEditor(UUID uuid, UUID dialogId) {
     if (uuid != null && dialogId != null) {
-      NetworkHandlerManager.sendToServer(new OpenDialogEditorMessage(uuid, dialogId));
+      NetworkHandlerManager.sendMessageToServer(new OpenDialogEditorMessage(uuid, dialogId));
     }
   }
 
   default void openDialogTextEditor(UUID uuid, UUID dialogId) {
     if (uuid != null && dialogId != null) {
-      NetworkHandlerManager.sendToServer(new OpenDialogTextEditorMessage(uuid, dialogId));
+      NetworkHandlerManager.sendMessageToServer(new OpenDialogTextEditorMessage(uuid, dialogId));
     }
   }
 
   default void openDialogButtonEditor(UUID uuid, UUID dialogId, UUID dialogButtonId) {
     if (uuid != null && dialogId != null && dialogButtonId != null) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new OpenDialogButtonEditorMessage(uuid, dialogId, dialogButtonId));
     }
   }
 
   default void openMenu(UUID uuid, UUID menuId) {
     if (uuid != null && menuId != null) {
-      NetworkHandlerManager.sendToServer(new OpenMenuMessage(uuid, menuId));
+      NetworkHandlerManager.sendMessageToServer(new OpenMenuMessage(uuid, menuId));
     }
   }
 
   default void saveDialogButton(
       UUID uuid, UUID dialogId, UUID dialogButtonId, DialogButtonEntry dialogButtonEntry) {
     if (uuid != null && dialogId != null && dialogButtonId != null && dialogButtonEntry != null) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new SaveDialogButtonMessage(uuid, dialogId, dialogButtonId, dialogButtonEntry));
     }
   }
 
   default void removeDialog(UUID uuid, UUID dialogId) {
     if (uuid != null && dialogId != null) {
-      NetworkHandlerManager.sendToServer(new RemoveDialogMessage(uuid, dialogId));
+      NetworkHandlerManager.sendMessageToServer(new RemoveDialogMessage(uuid, dialogId));
     }
   }
 
   default void removeDialogButton(UUID uuid, UUID dialogId, UUID dialogButtonId) {
     if (uuid != null && dialogId != null && dialogButtonId != null) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new RemoveDialogButtonMessage(uuid, dialogId, dialogButtonId));
     }
   }
 
   default void saveDialogSet(UUID uuid, DialogDataSet dialogDataSet) {
     if (uuid != null && dialogDataSet != null) {
-      NetworkHandlerManager.sendToServer(new SaveDialogSetMessage(uuid, dialogDataSet));
+      NetworkHandlerManager.sendMessageToServer(new SaveDialogSetMessage(uuid, dialogDataSet));
     }
   }
 
   default void saveDialog(UUID uuid, UUID dialogId, DialogDataEntry dialogData) {
     if (uuid != null && dialogId != null && dialogData != null) {
-      NetworkHandlerManager.sendToServer(new SaveDialogMessage(uuid, dialogId, dialogData));
+      NetworkHandlerManager.sendMessageToServer(new SaveDialogMessage(uuid, dialogId, dialogData));
     }
   }
 
   default void openConfiguration(UUID uuid, ConfigurationType configurationType, int pageIndex) {
     if (uuid != null && configurationType != null && pageIndex >= 0) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new OpenConfigurationMessage(uuid, configurationType, pageIndex));
     }
   }
 
   default void importPreset(UUID uuid, PresetType presetType, ResourceLocation resourceLocation) {
     if (uuid != null && presetType != null && resourceLocation != null) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ImportPresetMessage(uuid, presetType, null, resourceLocation));
     }
   }
@@ -413,7 +414,7 @@ public interface ServerNetworkMessageHandlerInterface {
       CompoundTag compoundTag,
       ResourceLocation resourceLocation) {
     if (uuid != null && presetType != null && compoundTag != null && !compoundTag.isEmpty()) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ImportPresetMessage(uuid, presetType, compoundTag, resourceLocation));
     }
   }
@@ -421,51 +422,52 @@ public interface ServerNetworkMessageHandlerInterface {
   default void changeSpawnerSettings(
       BlockPos blockPos, SpawnerSettingType spawnerSettingType, int value) {
     if (blockPos != null && spawnerSettingType != null) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeSpawnerSettingMessage(blockPos, spawnerSettingType, value));
     }
   }
 
   default void triggerActionEvent(UUID uuid, ActionEventType actionEventType) {
     if (uuid != null && actionEventType != null && actionEventType != ActionEventType.NONE) {
-      NetworkHandlerManager.sendToServer(new ExecuteActionEventMessage(uuid, actionEventType));
+      NetworkHandlerManager.sendMessageToServer(
+          new ExecuteActionEventMessage(uuid, actionEventType));
     }
   }
 
   default void triggerDialogButtonAction(UUID uuid, UUID dialogId, UUID dialogButtonId) {
     if (uuid != null && dialogId != null && dialogButtonId != null) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ExecuteDialogButtonActionMessage(uuid, dialogId, dialogButtonId));
     }
   }
 
   default void changeName(UUID uuid, String name, int color, boolean visible) {
     if (uuid != null && name != null) {
-      NetworkHandlerManager.sendToServer(new ChangeNameMessage(uuid, name, color, visible));
+      NetworkHandlerManager.sendMessageToServer(new ChangeNameMessage(uuid, name, color, visible));
     }
   }
 
   default void removeNPC(UUID uuid) {
     if (uuid != null) {
-      NetworkHandlerManager.sendToServer(new RemoveNPCMessage(uuid));
+      NetworkHandlerManager.sendMessageToServer(new RemoveNPCMessage(uuid));
     }
   }
 
   default void respawnNPC(UUID uuid) {
     if (uuid != null) {
-      NetworkHandlerManager.sendToServer(new RespawnNPCMessage(uuid));
+      NetworkHandlerManager.sendMessageToServer(new RespawnNPCMessage(uuid));
     }
   }
 
   default void exportPreset(UUID uuid, String name) {
     if (uuid != null && name != null && !name.isEmpty()) {
-      NetworkHandlerManager.sendToServer(new ExportPresetMessage(uuid, name));
+      NetworkHandlerManager.sendMessageToServer(new ExportPresetMessage(uuid, name));
     }
   }
 
   default void exportWorldPreset(UUID uuid, String name) {
     if (uuid != null && name != null && !name.isEmpty()) {
-      NetworkHandlerManager.sendToServer(new ExportWorldPresetMessage(uuid, name));
+      NetworkHandlerManager.sendMessageToServer(new ExportWorldPresetMessage(uuid, name));
     }
   }
 
@@ -477,7 +479,7 @@ public interface ServerNetworkMessageHandlerInterface {
       final SkinType skinType,
       final String skinVariant) {
     if (uuid != null && skinUUID != null && skinType != null) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeSkinMessage(uuid, skinName, skinURL, skinUUID, skinType, skinVariant));
     }
   }
@@ -525,13 +527,13 @@ public interface ServerNetworkMessageHandlerInterface {
 
   default void poseChange(UUID uuid, Pose pose) {
     if (uuid != null && pose != null) {
-      NetworkHandlerManager.sendToServer(new ChangePoseMessage(uuid, pose));
+      NetworkHandlerManager.sendMessageToServer(new ChangePoseMessage(uuid, pose));
     }
   }
 
   default void positionChange(UUID uuid, Vec3 pos) {
     if (uuid != null && pos != null) {
-      NetworkHandlerManager.sendToServer(new ChangePositionMessage(uuid, pos));
+      NetworkHandlerManager.sendMessageToServer(new ChangePositionMessage(uuid, pos));
     }
   }
 
@@ -541,7 +543,7 @@ public interface ServerNetworkMessageHandlerInterface {
         && value != null
         && BuiltInRegistries.ATTRIBUTE.getKey(attribute) != null) {
       Double roundedValue = Math.round(value * 100.0) / 100.0;
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeEntityBaseAttributeMessage(
               uuid, BuiltInRegistries.ATTRIBUTE.getKey(attribute), roundedValue));
     }
@@ -549,39 +551,43 @@ public interface ServerNetworkMessageHandlerInterface {
 
   default void modelLockRotationChange(UUID uuid, boolean lockRotation) {
     if (uuid != null) {
-      NetworkHandlerManager.sendToServer(new ChangeModelLockRotationMessage(uuid, lockRotation));
+      NetworkHandlerManager.sendMessageToServer(
+          new ChangeModelLockRotationMessage(uuid, lockRotation));
     }
   }
 
   default void modelPositionChange(UUID uuid, ModelPart modelPart, CustomPosition position) {
     if (uuid != null && modelPart != null && position != null) {
-      NetworkHandlerManager.sendToServer(new ChangeModelPositionMessage(uuid, modelPart, position));
+      NetworkHandlerManager.sendMessageToServer(
+          new ChangeModelPositionMessage(uuid, modelPart, position));
     }
   }
 
   default void modelVisibilityChange(UUID uuid, EquipmentSlot equipmentSlot, boolean visible) {
     if (uuid != null && equipmentSlot != null) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeModelEquipmentVisibilityMessage(uuid, equipmentSlot, visible));
     }
   }
 
   default void modelVisibilityChange(UUID uuid, ModelPart modelPart, boolean visible) {
     if (uuid != null && modelPart != null) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeModelVisibilityMessage(uuid, modelPart, visible));
     }
   }
 
   default void rotationChange(UUID uuid, ModelPart modelPart, CustomRotation rotation) {
     if (uuid != null && modelPart != null && rotation != null) {
-      NetworkHandlerManager.sendToServer(new ChangeModelRotationMessage(uuid, modelPart, rotation));
+      NetworkHandlerManager.sendMessageToServer(
+          new ChangeModelRotationMessage(uuid, modelPart, rotation));
     }
   }
 
   default void scaleChange(UUID uuid, ModelScaleAxis modelScaleAxis, float scale) {
     if (uuid != null && modelScaleAxis != null) {
-      NetworkHandlerManager.sendToServer(new ChangeScaleMessage(uuid, modelScaleAxis, scale));
+      NetworkHandlerManager.sendMessageToServer(
+          new ChangeScaleMessage(uuid, modelScaleAxis, scale));
     }
   }
 
@@ -605,7 +611,8 @@ public interface ServerNetworkMessageHandlerInterface {
 
   default void removeObjective(UUID uuid, ObjectiveDataEntry objectiveDataEntry) {
     if (uuid != null && objectiveDataEntry != null) {
-      NetworkHandlerManager.sendToServer(new RemoveObjectiveMessage(uuid, objectiveDataEntry));
+      NetworkHandlerManager.sendMessageToServer(
+          new RemoveObjectiveMessage(uuid, objectiveDataEntry));
     }
   }
 
@@ -613,20 +620,20 @@ public interface ServerNetworkMessageHandlerInterface {
     if (uuid != null
         && Minecraft.getInstance().player != null
         && !Minecraft.getInstance().player.getName().getString().equals("test-mock-player")) {
-      NetworkHandlerManager.sendToServer(new RequestDataSyncMessage(uuid));
+      NetworkHandlerManager.sendMessageToServer(new RequestDataSyncMessage(uuid));
     }
   }
 
   default void setRenderType(UUID uuid, RenderType renderType) {
     if (uuid != null && renderType != null) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeRendererMessage(uuid, renderType, Optional.empty()));
     }
   }
 
   default void setRenderEntityType(UUID uuid, EntityType<?> entityType) {
     if (uuid != null && entityType != null) {
-      NetworkHandlerManager.sendToServer(
+      NetworkHandlerManager.sendMessageToServer(
           new ChangeRendererMessage(uuid, RenderType.CUSTOM, Optional.of(entityType)));
     }
   }
