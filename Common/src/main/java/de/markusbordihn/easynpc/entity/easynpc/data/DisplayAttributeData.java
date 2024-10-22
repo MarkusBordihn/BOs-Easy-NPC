@@ -23,46 +23,23 @@ import de.markusbordihn.easynpc.data.display.DisplayAttributeSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializer;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 
 public interface DisplayAttributeData<E extends PathfinderMob> extends EasyNPC<E> {
 
-  EntityDataSerializer<DisplayAttributeSet> DISPLAY_ATTRIBUTE_SET =
-      new EntityDataSerializer<>() {
-        @Override
-        public void write(FriendlyByteBuf buffer, DisplayAttributeSet value) {
-          buffer.writeNbt(value.createTag());
-        }
-
-        @Override
-        public DisplayAttributeSet read(FriendlyByteBuf buffer) {
-          return new DisplayAttributeSet(buffer.readNbt());
-        }
-
-        @Override
-        public DisplayAttributeSet copy(DisplayAttributeSet value) {
-          return value;
-        }
-      };
-
-  static void registerDisplayAttributeDataSerializer() {
-    EntityDataSerializers.registerSerializer(DISPLAY_ATTRIBUTE_SET);
-  }
-
   static void registerSyncedDisplayAttributeData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
     log.info("- Registering Synched Display Attribute Data for {}.", entityClass.getSimpleName());
     map.put(
         SynchedDataIndex.DISPLAY_ATTRIBUTE_SET,
-        SynchedEntityData.defineId(entityClass, DISPLAY_ATTRIBUTE_SET));
+        SynchedEntityData.defineId(
+            entityClass, EntityDataSerializersManager.DISPLAY_ATTRIBUTE_SET));
   }
 
   default DisplayAttributeSet getDisplayAttributeSet() {

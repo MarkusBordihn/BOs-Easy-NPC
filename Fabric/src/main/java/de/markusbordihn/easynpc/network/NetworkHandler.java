@@ -21,53 +21,40 @@ package de.markusbordihn.easynpc.network;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class NetworkHandler implements NetworkHandlerInterface {
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  private final Map<ResourceLocation, Class<? extends NetworkMessageRecord>> clientMessages =
+      new LinkedHashMap<>();
+  private final Map<ResourceLocation, Class<? extends NetworkMessageRecord>> serverMessages =
+      new LinkedHashMap<>();
+  private final Map<ResourceLocation, Class<? extends NetworkMessageRecord>>
+      registeredClientMessages = new LinkedHashMap<>();
+  private final Map<ResourceLocation, Class<? extends NetworkMessageRecord>>
+      registeredServerMessages = new LinkedHashMap<>();
 
   public NetworkHandler() {
-    log.info("{} NetworkHandler ...", Constants.LOG_REGISTER_PREFIX);
-  }
-
-  public static void registerClientNetworkHandler() {
-    NetworkHandlerManager.registerClientNetworkHandler();
-  }
-
-  public static void registerServerNetworkHandler() {
-    NetworkHandlerManager.registerServerNetworkHandler();
+    log.info("{} NetworkHandler with version {}", Constants.LOG_REGISTER_PREFIX, PROTOCOL_VERSION);
   }
 
   @Override
   public void sendToServer(final NetworkMessageRecord networkMessageRecord) {
-    if (Minecraft.getInstance().getConnection() == null) {
-      log.warn("Failed to send {} to server: No connection available", networkMessageRecord);
-      return;
-    }
-    try {
-      ClientPlayNetworking.send(networkMessageRecord.id(), networkMessageRecord.payload());
-    } catch (Exception e) {
-      log.error("Failed to send {} to server:", networkMessageRecord, e);
-    }
+    ClientPlayNetworking.send(networkMessageRecord.id(), networkMessageRecord.payload());
   }
 
   @Override
   public void sendToPlayer(
       final NetworkMessageRecord networkMessageRecord, final ServerPlayer serverPlayer) {
-    try {
-      ServerPlayNetworking.send(
-          serverPlayer, networkMessageRecord.id(), networkMessageRecord.payload());
-    } catch (Exception e) {
-      log.error("Failed to send {} to player {}:", networkMessageRecord, serverPlayer, e);
-    }
+    ServerPlayNetworking.send(
+        serverPlayer, networkMessageRecord.id(), networkMessageRecord.payload());
   }
 
   @Override
@@ -75,15 +62,15 @@ public class NetworkHandler implements NetworkHandlerInterface {
       final ResourceLocation messageID,
       final Class<M> networkMessageRecord,
       final Function<FriendlyByteBuf, M> creator) {
-    try {
-      ClientPlayNetworking.registerGlobalReceiver(
-          messageID,
-          (client, channelHandler, buffer, responseSender) -> {
-            M networkMessage = creator.apply(buffer);
-            networkMessage.handleClient();
-          });
-    } catch (Exception e) {
-      log.error("Failed to register client network message handler {}:", networkMessageRecord, e);
+    if (!ClientPlayNetworking.registerGlobalReceiver(
+        messageID,
+        (client, channelHandler, buffer, responseSender) -> {
+          M networkMessage = creator.apply(buffer);
+          client.execute(networkMessage::handleClient);
+        })) {
+      log.error("Failed to register client network message handler for {}", messageID);
+    } else {
+      logRegisterClientNetworkMessageHandler(messageID, networkMessageRecord);
     }
   }
 
@@ -92,15 +79,61 @@ public class NetworkHandler implements NetworkHandlerInterface {
       final ResourceLocation messageID,
       final Class<M> networkMessageRecord,
       final Function<FriendlyByteBuf, M> creator) {
-    try {
-      ServerPlayNetworking.registerGlobalReceiver(
-          messageID,
-          (server, serverPlayer, channelHandler, buffer, responseSender) -> {
-            M networkMessage = creator.apply(buffer);
-            networkMessage.handleServer(serverPlayer);
-          });
-    } catch (Exception e) {
-      log.error("Failed to register server network message handler {}:", messageID, e);
+    if (!ServerPlayNetworking.registerGlobalReceiver(
+        messageID,
+        (server, serverPlayer, channelHandler, buffer, responseSender) -> {
+          M networkMessage = creator.apply(buffer);
+          server.execute(() -> networkMessage.handleServer(serverPlayer));
+        })) {
+      log.error("Failed to register server network message handler for {}", messageID);
+    } else {
+      logRegisterServerNetworkMessageHandler(messageID, networkMessageRecord);
     }
+  }
+
+  @Override
+  public <M extends NetworkMessageRecord> void addClientMessage(
+      final ResourceLocation messageID, final Class<M> networkMessage) {
+    clientMessages.put(messageID, networkMessage);
+  }
+
+  @Override
+  public <M extends NetworkMessageRecord> void addServerMessage(
+      final ResourceLocation messageID, final Class<M> networkMessage) {
+    serverMessages.put(messageID, networkMessage);
+  }
+
+  @Override
+  public Map<ResourceLocation, Class<? extends NetworkMessageRecord>> getClientMessages() {
+    return clientMessages;
+  }
+
+  @Override
+  public Map<ResourceLocation, Class<? extends NetworkMessageRecord>> getServerMessages() {
+    return serverMessages;
+  }
+
+  @Override
+  public <M extends NetworkMessageRecord> void addRegisteredClientMessage(
+      final ResourceLocation messageID, final Class<M> networkMessage) {
+    registeredClientMessages.put(messageID, networkMessage);
+  }
+
+  @Override
+  public <M extends NetworkMessageRecord> void addRegisteredServerMessage(
+      final ResourceLocation messageID, final Class<M> networkMessage) {
+    registeredServerMessages.put(messageID, networkMessage);
+  }
+
+  @Override
+  public Map<ResourceLocation, Class<? extends NetworkMessageRecord>>
+      getRegisteredClientMessages() {
+    return registeredClientMessages;
+  }
+
+  @Override
+  public Map<ResourceLocation, Class<? extends NetworkMessageRecord>>
+      getRegisteredServerMessages() {
+    return registeredServerMessages;
   }
 }

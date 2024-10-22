@@ -27,37 +27,18 @@ import de.markusbordihn.easynpc.data.server.ServerDataIndex;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.MenuManager;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.syncher.EntityDataSerializer;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.PathfinderMob;
 
 public interface DialogData<T extends PathfinderMob> extends EasyNPC<T> {
 
-  EntityDataSerializer<DialogDataSet> DIALOG_DATA_SET =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, DialogDataSet value) {
-          buffer.writeNbt(value.createTag());
-        }
-
-        public DialogDataSet read(FriendlyByteBuf buffer) {
-          return new DialogDataSet(buffer.readNbt());
-        }
-
-        public DialogDataSet copy(DialogDataSet value) {
-          return value;
-        }
-      };
   ServerDataAccessor<DialogDataSet> CUSTOM_DATA_DIALOG_DATA_SET =
-      ServerEntityData.defineId(ServerDataIndex.DIALOG_DATA_SET, DIALOG_DATA_SET);
+      ServerEntityData.defineId(
+          ServerDataIndex.DIALOG_DATA_SET, EntityDataSerializersManager.DIALOG_DATA_SET);
   String DATA_DIALOG_DATA_TAG = "DialogData";
-
-  static void registerDialogDataSerializer() {
-    EntityDataSerializers.registerSerializer(DIALOG_DATA_SET);
-  }
 
   default int getEntityDialogTop() {
     return 0;

@@ -23,11 +23,10 @@ import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
@@ -38,22 +37,6 @@ public interface ModelRotationData<T extends PathfinderMob> extends EasyNPC<T> {
   CustomRotation DEFAULT_MODEL_PART_ROTATION = new CustomRotation(0, 0, 0);
   String EASY_NPC_DATA_MODEL_LOCK_TAG = "Lock";
   String EASY_NPC_DATA_MODEL_ROTATION_TAG = "Rotation";
-  EntityDataSerializer<CustomRotation> ROTATION =
-      new EntityDataSerializer<>() {
-        public void write(FriendlyByteBuf buffer, CustomRotation rotation) {
-          buffer.writeFloat(rotation.x());
-          buffer.writeFloat(rotation.y());
-          buffer.writeFloat(rotation.z());
-        }
-
-        public CustomRotation read(FriendlyByteBuf buffer) {
-          return new CustomRotation(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
-        }
-
-        public CustomRotation copy(CustomRotation rotation) {
-          return rotation;
-        }
-      };
 
   static void registerSyncedModelRotationData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
@@ -62,29 +45,29 @@ public interface ModelRotationData<T extends PathfinderMob> extends EasyNPC<T> {
         SynchedDataIndex.MODEL_LOCK_ROTATION,
         SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
     map.put(
-        SynchedDataIndex.MODEL_HEAD_ROTATION, SynchedEntityData.defineId(entityClass, ROTATION));
+        SynchedDataIndex.MODEL_HEAD_ROTATION,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.ROTATION));
     map.put(
-        SynchedDataIndex.MODEL_BODY_ROTATION, SynchedEntityData.defineId(entityClass, ROTATION));
+        SynchedDataIndex.MODEL_BODY_ROTATION,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.ROTATION));
     map.put(
-        SynchedDataIndex.MODEL_ARMS_ROTATION, SynchedEntityData.defineId(entityClass, ROTATION));
+        SynchedDataIndex.MODEL_ARMS_ROTATION,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.ROTATION));
     map.put(
         SynchedDataIndex.MODEL_LEFT_ARM_ROTATION,
-        SynchedEntityData.defineId(entityClass, ROTATION));
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.ROTATION));
     map.put(
         SynchedDataIndex.MODEL_RIGHT_ARM_ROTATION,
-        SynchedEntityData.defineId(entityClass, ROTATION));
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.ROTATION));
     map.put(
         SynchedDataIndex.MODEL_LEFT_LEG_ROTATION,
-        SynchedEntityData.defineId(entityClass, ROTATION));
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.ROTATION));
     map.put(
         SynchedDataIndex.MODEL_RIGHT_LEG_ROTATION,
-        SynchedEntityData.defineId(entityClass, ROTATION));
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.ROTATION));
     map.put(
-        SynchedDataIndex.MODEL_ROOT_ROTATION, SynchedEntityData.defineId(entityClass, ROTATION));
-  }
-
-  static void registerModelRotationDataSerializer() {
-    EntityDataSerializers.registerSerializer(ROTATION);
+        SynchedDataIndex.MODEL_ROOT_ROTATION,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.ROTATION));
   }
 
   boolean hasHeadModelPart();

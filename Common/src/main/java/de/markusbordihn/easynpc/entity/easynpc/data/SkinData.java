@@ -25,13 +25,11 @@ import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializer;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -44,32 +42,12 @@ public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
   String EASY_NPC_DATA_SKIN_URL_TAG = "SkinURL";
   String EASY_NPC_DATA_SKIN_UUID_TAG = "SkinUUID";
 
-  EntityDataSerializer<SkinDataEntry> SKIN_DATA_ENTRY =
-      new EntityDataSerializer<>() {
-        @Override
-        public void write(FriendlyByteBuf buffer, SkinDataEntry value) {
-          buffer.writeNbt(value.createTag());
-        }
-
-        @Override
-        public SkinDataEntry read(FriendlyByteBuf buffer) {
-          return new SkinDataEntry(buffer.readNbt());
-        }
-
-        @Override
-        public SkinDataEntry copy(SkinDataEntry value) {
-          return value;
-        }
-      };
-
   static void registerSyncedSkinData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
     log.info("- Registering Synched Skin Data for {}.", entityClass.getSimpleName());
-    map.put(SynchedDataIndex.SKIN_DATA, SynchedEntityData.defineId(entityClass, SKIN_DATA_ENTRY));
-  }
-
-  static void registerSkinDataSerializer() {
-    EntityDataSerializers.registerSerializer(SKIN_DATA_ENTRY);
+    map.put(
+        SynchedDataIndex.SKIN_DATA,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.SKIN_DATA_ENTRY));
   }
 
   default int getEntitySkinScaling() {

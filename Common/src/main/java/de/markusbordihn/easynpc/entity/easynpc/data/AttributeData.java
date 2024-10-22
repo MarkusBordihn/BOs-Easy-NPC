@@ -22,12 +22,10 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializer;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -35,34 +33,12 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 
 public interface AttributeData<E extends PathfinderMob> extends EasyNPC<E> {
 
-  EntityDataSerializer<EntityAttributes> ENTITY_ATTRIBUTES_SERIALIZER =
-      new EntityDataSerializer<>() {
-        @Override
-        public void write(FriendlyByteBuf buffer, EntityAttributes value) {
-          buffer.writeNbt(value.createTag());
-        }
-
-        @Override
-        public EntityAttributes read(FriendlyByteBuf buffer) {
-          return new EntityAttributes(buffer.readNbt());
-        }
-
-        @Override
-        public EntityAttributes copy(EntityAttributes value) {
-          return value;
-        }
-      };
-
-  static void registerAttributeDataSerializer() {
-    EntityDataSerializers.registerSerializer(ENTITY_ATTRIBUTES_SERIALIZER);
-  }
-
   static void registerSyncedAttributeData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
     log.info("- Registering Synched Attribute Data for {}.", entityClass.getSimpleName());
     map.put(
         SynchedDataIndex.ENTITY_ATTRIBUTES,
-        SynchedEntityData.defineId(entityClass, ENTITY_ATTRIBUTES_SERIALIZER));
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.ENTITY_ATTRIBUTES));
   }
 
   default void setBaseAttribute(Attribute attribute, double value) {
