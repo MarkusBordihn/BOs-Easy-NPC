@@ -77,7 +77,11 @@ public interface NetworkHandlerInterface {
   Map<CustomPacketPayload.Type<?>, Class<? extends NetworkMessageRecord>>
       getRegisteredServerMessages();
 
-  default <M extends NetworkMessageRecord> void registerPayloadType(
+  default <M extends NetworkMessageRecord> void registerClientPayloadType(
+      final CustomPacketPayload.Type<M> type,
+      final StreamCodec<RegistryFriendlyByteBuf, M> codec) {}
+
+  default <M extends NetworkMessageRecord> void registerServerPayloadType(
       final CustomPacketPayload.Type<M> type,
       final StreamCodec<RegistryFriendlyByteBuf, M> codec) {}
 
@@ -187,6 +191,9 @@ public interface NetworkHandlerInterface {
       final StreamCodec<RegistryFriendlyByteBuf, M> codec,
       final Class<M> networkMessage,
       final Function<FriendlyByteBuf, M> creator) {
+    if (!hasServerMessage(type)) {
+      registerServerPayloadType(type, codec);
+    }
     if (NetworkHandlerManager.isServerNetworkHandler()) {
       if (hasRegisteredServerMessage(type)) {
         log.error(
@@ -217,9 +224,6 @@ public interface NetworkHandlerInterface {
         return;
       }
     }
-    if (!hasServerMessage(type)) {
-      registerPayloadType(type, codec);
-    }
     addServerMessage(type, networkMessage);
   }
 
@@ -228,6 +232,9 @@ public interface NetworkHandlerInterface {
       final StreamCodec<RegistryFriendlyByteBuf, M> codec,
       final Class<M> networkMessage,
       final Function<FriendlyByteBuf, M> creator) {
+    if (!hasClientMessage(type)) {
+      registerClientPayloadType(type, codec);
+    }
     if (NetworkHandlerManager.isClientNetworkHandler()) {
       if (hasRegisteredClientMessage(type)) {
         log.error(
@@ -257,9 +264,6 @@ public interface NetworkHandlerInterface {
             e);
         return;
       }
-    }
-    if (!hasClientMessage(type)) {
-      registerPayloadType(type, codec);
     }
     addClientMessage(type, networkMessage);
   }
