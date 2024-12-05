@@ -58,10 +58,8 @@ public class CustomSkinDataFiles {
         continue;
       }
 
-      // Copy example skin model template files, if any.
-      String skinModelName = skinModel.getName();
-
       // Get all files which end with _template.png from the resource location.
+      String skinModelName = skinModel.getName();
       Map<ResourceLocation, Resource> resourceLocations =
           Minecraft.getInstance()
               .getResourceManager()
@@ -69,6 +67,7 @@ public class CustomSkinDataFiles {
                   "textures/entity/" + skinModelName,
                   fileName -> fileName.toString().endsWith(TEMPLATE_PREFIX));
 
+      // Copy all template files to the custom skin model folder.
       for (ResourceLocation resourceLocation : resourceLocations.keySet()) {
         File skinModelTemplateFile =
             skinModelFolder

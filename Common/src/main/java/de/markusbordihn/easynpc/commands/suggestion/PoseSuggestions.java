@@ -17,49 +17,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.model;
+package de.markusbordihn.easynpc.commands.suggestion;
 
-public enum ModelPart {
-  ARMS("Arms"),
-  BODY("Body"),
-  HEAD("Head"),
-  LEFT_ARM("LeftArm"),
-  LEFT_LEG("LeftLeg"),
-  RIGHT_ARM("RightArm"),
-  RIGHT_LEG("RightLeg"),
-  ROOT("Root"),
-  BOOTS("Boots"),
-  CHESTPLATE("Chestplate"),
-  HELMET("Helmet"),
-  LEGGINGS("Leggings"),
-  UNKNOWN("Unknown");
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import de.markusbordihn.easynpc.client.pose.PoseManager;
+import java.util.concurrent.CompletableFuture;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
 
-  public final String tagName;
+public class PoseSuggestions {
 
-  ModelPart(String tagName) {
-    this.tagName = tagName;
-  }
+  private PoseSuggestions() {}
 
-  public static ModelPart get(String modelPart) {
-    if (modelPart == null || modelPart.isEmpty()) {
-      return ModelPart.UNKNOWN;
-    }
-    try {
-      return ModelPart.valueOf(modelPart);
-    } catch (IllegalArgumentException e) {
-      // Alternative search for model part tag name.
-      for (ModelPart modelPartEnum : ModelPart.values()) {
-        if (modelPartEnum.tagName.equalsIgnoreCase(modelPart)) {
-          return modelPartEnum;
-        }
-      }
-
-      // Return unknown model part if no match was found.
-      return ModelPart.UNKNOWN;
-    }
-  }
-
-  public String getTagName() {
-    return this.tagName;
+  public static CompletableFuture<Suggestions> suggest(
+      CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {
+    return SharedSuggestionProvider.suggestResource(PoseManager.getPoseDataKeys(), build);
   }
 }

@@ -51,4 +51,11 @@ subprojects {
   }
 
   tasks.register("prepareKotlinBuildScriptModel") {}
+
+  idea {
+    module {
+      downloadSources = true
+      downloadJavadoc = true
+    }
+  }
 }

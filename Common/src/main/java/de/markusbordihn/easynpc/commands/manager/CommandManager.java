@@ -30,6 +30,7 @@ import de.markusbordihn.easynpc.server.commands.InteractCommand;
 import de.markusbordihn.easynpc.server.commands.NavigationCommand;
 import de.markusbordihn.easynpc.server.commands.ObjectiveCommand;
 import de.markusbordihn.easynpc.server.commands.OwnerCommand;
+import de.markusbordihn.easynpc.server.commands.PoseCommand;
 import de.markusbordihn.easynpc.server.commands.PresetCommand;
 import de.markusbordihn.easynpc.server.commands.RenderCommand;
 import de.markusbordihn.easynpc.server.commands.RespawnCommand;
@@ -66,6 +67,7 @@ public class CommandManager {
             .then(NavigationCommand.register())
             .then(ObjectiveCommand.register())
             .then(OwnerCommand.register())
+            .then(PoseCommand.register())
             .then(PresetCommand.register())
             .then(RenderCommand.register())
             .then(RespawnCommand.register())

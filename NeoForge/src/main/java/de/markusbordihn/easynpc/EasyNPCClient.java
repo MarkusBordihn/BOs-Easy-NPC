@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc;
 
+import de.markusbordihn.easynpc.client.ClientEvents;
 import de.markusbordihn.easynpc.client.model.ModModelLayer;
 import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
@@ -47,11 +48,7 @@ public class EasyNPCClient {
     modEventBus.addListener(ClientScreens::registerScreens);
     modEventBus.addListener(
         (final FMLClientSetupEvent event) -> {
-          log.info("{} Register Data Files ...", Constants.LOG_REGISTER_PREFIX);
-          event.enqueueWork(DataFileHandler::registerDataFiles);
-
-          log.info("{} Register Entity Type Manager ...", Constants.LOG_REGISTER_PREFIX);
-          event.enqueueWork(EntityTypeManager::register);
+          event.enqueueWork(ClientEvents::handleClientStarting);
         });
     NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
     ModTabs.CREATIVE_TABS.register(modEventBus);

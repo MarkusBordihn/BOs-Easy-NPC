@@ -17,35 +17,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc;
+package de.markusbordihn.easynpc.client;
 
-import de.markusbordihn.easynpc.client.ClientEvents;
-import de.markusbordihn.easynpc.client.model.ModModelLayer;
-import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
-import de.markusbordihn.easynpc.client.screen.ClientScreens;
-import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
-import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
-import de.markusbordihn.easynpc.tabs.ModTabs;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
+import de.markusbordihn.easynpc.io.DataFileHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class EasyNPCClient {
+public class ClientEvents {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  public EasyNPCClient(IEventBus modEventBus) {
-    log.info("Initializing {} (Forge-Client) ...", Constants.MOD_NAME);
+  private ClientEvents() {}
 
-    modEventBus.addListener(ModModelLayer::registerEntityLayerDefinitions);
-    modEventBus.addListener(ClientRenderer::registerEntityRenderers);
-    modEventBus.addListener(ClientScreens::registerScreens);
-    modEventBus.addListener(
-        (final FMLClientSetupEvent event) -> {
-          event.enqueueWork(ClientEvents::handleClientStarting);
-        });
-    NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
-    ModTabs.CREATIVE_TABS.register(modEventBus);
+  public static void handleClientStarting() {
+    log.info("{} Client starting Events ...", Constants.LOG_REGISTER_PREFIX);
+
+    // Prepare custom data directory for client.
+    DataFileHandler.registerClientDataFiles();
+
+    // Register entity type manager for server.
+    EntityTypeManager.register();
   }
 }

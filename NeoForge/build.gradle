@@ -49,6 +49,9 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 dependencies {
   implementation "net.neoforged:neoforge:${project.neoforge_version}"
   compileOnly project(":Common")
+
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
+  testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
 }
 
 // NeoGradle compiles the game, but we don't want to add our common code to the game's code
