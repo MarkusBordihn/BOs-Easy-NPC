@@ -113,7 +113,7 @@ public class RendererManager {
     if (entityRenderer
         instanceof
         LivingEntityRenderer<? extends LivingEntity, ? extends EntityModel<? extends Entity>>
-                livingEntityRenderer) {
+            livingEntityRenderer) {
       log.debug(
           "{} Registering living entity renderer {} for {}",
           LOG_PREFIX,

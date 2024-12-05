@@ -30,6 +30,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.Resource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,10 +42,21 @@ public class DataFileHandler {
 
   private DataFileHandler() {}
 
-  public static void registerDataFiles() {
-    log.info("{} general data folders ...", Constants.LOG_REGISTER_PREFIX);
+  public static void registerCommonDataFiles() {
+    log.info("{} Common data folders ...", Constants.LOG_REGISTER_PREFIX);
     getCacheFolder();
     getCustomDataFolder();
+  }
+
+  public static void registerServerDataFiles(MinecraftServer minecraftServer) {
+    log.info("{} Server data folders ...", Constants.LOG_REGISTER_PREFIX);
+
+    log.info("{} pose data folders ...", Constants.LOG_REGISTER_PREFIX);
+    CustomPoseDataFiles.registerCustomPoseData(minecraftServer);
+  }
+
+  public static void registerClientDataFiles() {
+    log.info("{} Client data folders ...", Constants.LOG_REGISTER_PREFIX);
 
     log.info("{} skin data folders ...", Constants.LOG_REGISTER_PREFIX);
     CustomSkinDataFiles.registerCustomSkinData();
@@ -119,6 +131,29 @@ public class DataFileHandler {
     return null;
   }
 
+  public static void copyResourceFile(
+      MinecraftServer minecraftServer, ResourceLocation resourceLocation, File targetFile) {
+    if (resourceLocation == null || targetFile == null) {
+      return;
+    }
+    try {
+      Optional<Resource> resources =
+          minecraftServer.getResourceManager().getResource(resourceLocation);
+      if (resources.isPresent()) {
+        try (InputStream inputStream = resources.get().open();
+            OutputStream outputStream = new FileOutputStream(targetFile)) {
+          byte[] buffer = new byte[1024];
+          int length;
+          while ((length = inputStream.read(buffer)) > 0) {
+            outputStream.write(buffer, 0, length);
+          }
+        }
+      }
+    } catch (Exception e) {
+      log.error("Failed to load resource {}:", resourceLocation, e);
+    }
+  }
+
   public static void copyResourceFile(ResourceLocation resourceLocation, File targetFile) {
     if (resourceLocation == null || targetFile == null) {
       return;
@@ -127,13 +162,12 @@ public class DataFileHandler {
       Optional<Resource> resources =
           Minecraft.getInstance().getResourceManager().getResource(resourceLocation);
       if (resources.isPresent()) {
-        try (InputStream inputStream = resources.get().open()) {
-          try (OutputStream outputStream = new FileOutputStream(targetFile)) {
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = inputStream.read(buffer)) > 0) {
-              outputStream.write(buffer, 0, length);
-            }
+        try (InputStream inputStream = resources.get().open();
+            OutputStream outputStream = new FileOutputStream(targetFile)) {
+          byte[] buffer = new byte[1024];
+          int length;
+          while ((length = inputStream.read(buffer)) > 0) {
+            outputStream.write(buffer, 0, length);
           }
         }
       }

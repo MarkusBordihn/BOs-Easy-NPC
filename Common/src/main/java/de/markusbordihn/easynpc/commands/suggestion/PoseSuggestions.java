@@ -17,35 +17,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.position;
+package de.markusbordihn.easynpc.commands.suggestion;
 
-import java.util.List;
-import net.minecraft.nbt.FloatTag;
-import net.minecraft.nbt.ListTag;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import de.markusbordihn.easynpc.client.pose.PoseManager;
+import java.util.concurrent.CompletableFuture;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
 
-public record CustomPosition(float x, float y, float z) {
+public class PoseSuggestions {
 
-  public CustomPosition(ListTag listTag) {
-    this(listTag.getFloat(0), listTag.getFloat(1), listTag.getFloat(2));
-  }
+  private PoseSuggestions() {}
 
-  public CustomPosition(List<Float> list) {
-    this(list.get(0), list.get(1), list.get(2));
-  }
-
-  public ListTag save() {
-    ListTag listTag = new ListTag();
-    listTag.add(FloatTag.valueOf(this.x));
-    listTag.add(FloatTag.valueOf(this.y));
-    listTag.add(FloatTag.valueOf(this.z));
-    return listTag;
-  }
-
-  public boolean hasChanged() {
-    return hasChanged(0, 0, 0);
-  }
-
-  public boolean hasChanged(float x, float y, float z) {
-    return this.x != x || this.y != y || this.z != z;
+  public static CompletableFuture<Suggestions> suggest(
+      CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {
+    return SharedSuggestionProvider.suggestResource(PoseManager.getPoseDataKeys(), build);
   }
 }

@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc;
 
 import de.markusbordihn.easynpc.client.model.ModModelLayer;
 import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
-import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.client.screen.ClientScreens;
 import de.markusbordihn.easynpc.entity.LivingEntityEventHandler;
 import de.markusbordihn.easynpc.io.DataFileHandler;
@@ -64,11 +63,7 @@ public class EasyNPCClient implements ClientModInitializer {
 
     ClientLifecycleEvents.CLIENT_STARTED.register(
         client -> {
-          log.info("{} Data Files ...", Constants.LOG_REGISTER_PREFIX);
-          DataFileHandler.registerDataFiles();
-
-          log.info("{} Entity Type Manager ...", Constants.LOG_REGISTER_PREFIX);
-          EntityTypeManager.register();
+          DataFileHandler.registerClientDataFiles();
         });
   }
 }

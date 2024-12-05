@@ -47,6 +47,14 @@ public enum ModelPart {
     try {
       return ModelPart.valueOf(modelPart);
     } catch (IllegalArgumentException e) {
+      // Alternative search for model part tag name.
+      for (ModelPart modelPartEnum : ModelPart.values()) {
+        if (modelPartEnum.tagName.equalsIgnoreCase(modelPart)) {
+          return modelPartEnum;
+        }
+      }
+
+      // Return unknown model part if no match was found.
       return ModelPart.UNKNOWN;
     }
   }

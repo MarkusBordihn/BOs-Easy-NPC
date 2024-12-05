@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.config.Config;
 import de.markusbordihn.easynpc.debug.DebugManager;
 import de.markusbordihn.easynpc.entity.LivingEntityEventHandler;
 import de.markusbordihn.easynpc.entity.ModEntityType;
+import de.markusbordihn.easynpc.io.DataFileHandler;
 import de.markusbordihn.easynpc.item.ModItems;
 import de.markusbordihn.easynpc.menu.MenuHandler;
 import de.markusbordihn.easynpc.menu.MenuManager;
@@ -67,6 +68,9 @@ public class EasyNPCMain implements ModInitializer {
 
     log.info("{} Configuration ...", Constants.LOG_REGISTER_PREFIX);
     Config.register(FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER);
+
+    log.info("{} Common Data Files ...", Constants.LOG_REGISTER_PREFIX);
+    DataFileHandler.registerCommonDataFiles();
 
     log.info("{} Entity Data Serializers ...", Constants.LOG_REGISTER_PREFIX);
     EntityDataSerializersManager.register();
