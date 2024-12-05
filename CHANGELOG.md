@@ -8,6 +8,16 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.8.0
+
+- Added experimental pose file support for #379 and #388. 🕺
+- Added Russian translation (ru_ru). Special thanks to @j-tap.
+- Fixed Texture Manager issue to fully support texture files with upper-case letters.
+- Fixed leaked resources for better performance.
+
+Note: Because of the fix of the Texture Manager, it could be that some of the existing texture files
+with upper-case letters are reset to the default skin.
+
 ### 5.7.6
 
 - Fixed IDE auto-formatting error which added wrong import statements.

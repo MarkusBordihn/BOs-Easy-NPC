@@ -82,13 +82,13 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
     int dialogTopPosition = topPos + 20;
     switch (dialogScreenLayout) {
       case COMPACT_TEXT_ONLY,
-          COMPACT_TEXT_WITH_ONE_BUTTON,
-          COMPACT_TEXT_WITH_TWO_BUTTONS,
-          COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS,
-          COMPACT_TEXT_WITH_THREE_BUTTONS,
-          COMPACT_TEXT_WITH_FOUR_BUTTONS,
-          COMPACT_TEXT_WITH_FIVE_BUTTONS,
-          COMPACT_TEXT_WITH_SIX_BUTTONS:
+      COMPACT_TEXT_WITH_ONE_BUTTON,
+      COMPACT_TEXT_WITH_TWO_BUTTONS,
+      COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS,
+      COMPACT_TEXT_WITH_THREE_BUTTONS,
+      COMPACT_TEXT_WITH_FOUR_BUTTONS,
+      COMPACT_TEXT_WITH_FIVE_BUTTONS,
+      COMPACT_TEXT_WITH_SIX_BUTTONS:
         Graphics.blit(
             poseStack, Constants.TEXTURE_DIALOG, leftPos + 70, dialogTopPosition, 0, 120, 205, 78);
         break;
@@ -142,10 +142,10 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
     int dialogButtonMaxTextLength =
         switch (dialogScreenLayout) {
           case COMPACT_TEXT_WITH_ONE_BUTTON,
-                  TEXT_WITH_ONE_BUTTON,
-                  TEXT_WITH_TWO_BUTTONS,
-                  COMPACT_TEXT_WITH_THREE_BUTTONS,
-                  TEXT_WITH_THREE_BUTTONS ->
+              TEXT_WITH_ONE_BUTTON,
+              TEXT_WITH_TWO_BUTTONS,
+              COMPACT_TEXT_WITH_THREE_BUTTONS,
+              TEXT_WITH_THREE_BUTTONS ->
               41;
           case COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS -> 32;
           default -> 22;
@@ -480,9 +480,9 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
       case UNKNOWN:
         break;
       case COMPACT_TEXT_ONLY,
-          COMPACT_TEXT_WITH_ONE_BUTTON,
-          COMPACT_TEXT_WITH_TWO_BUTTONS,
-          COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS:
+      COMPACT_TEXT_WITH_ONE_BUTTON,
+      COMPACT_TEXT_WITH_TWO_BUTTONS,
+      COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS:
         // Compact background
         Graphics.blit(
             poseStack, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos, 0, 0, 200, 170);

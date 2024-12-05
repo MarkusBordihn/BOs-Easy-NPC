@@ -45,6 +45,7 @@ import org.apache.logging.log4j.Logger;
 public class TextureManager {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
   private static final String TEXTURE_PREFIX = Constants.MOD_ID + "_client_texture_";
   private static final String LOG_PREFIX = "[Texture Manager]";
   private static final Map<TextureModelKey, String> errorMessageMap = new HashMap<>();
@@ -218,7 +219,7 @@ public class TextureManager {
   }
 
   public static String getResourceName(String name, String type) {
-    return (TEXTURE_PREFIX + type + "_" + name.replaceAll("[^a-z0-9_.-]", "")).toLowerCase();
+    return (TEXTURE_PREFIX + type + "_" + name.replaceAll("[^a-zA-Z0-9_.-]", "")).toLowerCase();
   }
 
   public static String getFileName(UUID uuid) {
@@ -226,7 +227,7 @@ public class TextureManager {
   }
 
   public static String getFileName(String name) {
-    return name.replaceAll("[^a-z0-9_.-]", "") + ".png";
+    return name.replaceAll("[^a-zA-Z0-9_.-]", "") + ".png";
   }
 
   public static ResourceLocation getCachedTexture(

@@ -20,10 +20,15 @@
 package de.markusbordihn.easynpc.server;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.io.DataFileHandler;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ServerEvents {
+
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ServerEvents() {}
 
@@ -31,6 +36,13 @@ public class ServerEvents {
     if (minecraftServer == null) {
       return;
     }
+
+    log.info("{} Server is starting Events ...", Constants.LOG_REGISTER_PREFIX);
+
+    // Set world directory for server.
     Constants.WORLD_DIR = minecraftServer.getWorldPath(LevelResource.ROOT);
+
+    // Prepare custom data directory for server.
+    DataFileHandler.registerServerDataFiles(minecraftServer);
   }
 }

@@ -52,6 +52,7 @@ public class EntityTypeManager {
   private EntityTypeManager() {}
 
   public static void register() {
+    log.info("{} Register Entity Type Manager ...", Constants.LOG_REGISTER_PREFIX);
 
     // Add known supported entity types and exclude unsupported entity types.
     Registry.ENTITY_TYPE.forEach(

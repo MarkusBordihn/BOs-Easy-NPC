@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.rotation;
 
+import java.util.List;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
 
@@ -26,6 +27,10 @@ public record CustomRotation(float x, float y, float z) {
 
   public CustomRotation(ListTag listTag) {
     this(listTag.getFloat(0), listTag.getFloat(1), listTag.getFloat(2));
+  }
+
+  public CustomRotation(List<Float> list) {
+    this(list.get(0), list.get(1), list.get(2));
   }
 
   public ListTag save() {
