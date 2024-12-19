@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
@@ -126,7 +127,7 @@ public class CustomPresetDataFiles {
                                       .relativize(path)
                                       .toString()
                                       .replace("\\", "/")
-                                      .toLowerCase());
+                                      .toLowerCase(Locale.ROOT));
                       presetResourceLocationMap.put(resourceLocation, path);
                       return resourceLocation;
                     })

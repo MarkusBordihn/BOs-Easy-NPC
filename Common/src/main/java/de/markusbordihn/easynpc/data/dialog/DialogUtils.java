@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.data.action.ActionDataType;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextFormattingCodes;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.client.gui.Font;
@@ -96,9 +97,9 @@ public class DialogUtils {
       // Generate random label name
       return type
           + "_"
-          + UUID.randomUUID().toString().substring(0, 8).replace("-", "").toLowerCase();
+          + UUID.randomUUID().toString().substring(0, 8).replace("-", "").toLowerCase(Locale.ROOT);
     }
-    String label = name.trim().toLowerCase();
+    String label = name.trim().toLowerCase(Locale.ROOT);
     label = label.replace(" ", "_");
     label = label.replaceAll("[^a-z0-9_]", "");
     return label.length() > maxLength ? label.substring(0, maxLength) : label;
