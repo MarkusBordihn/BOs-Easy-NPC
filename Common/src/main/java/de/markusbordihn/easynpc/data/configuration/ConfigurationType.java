@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.data.configuration;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import java.util.Locale;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -95,15 +96,17 @@ public enum ConfigurationType {
   }
 
   public ResourceLocation getId() {
-    return new ResourceLocation(Constants.MOD_ID, this.name().toLowerCase() + "_configuration");
+    return new ResourceLocation(
+        Constants.MOD_ID, this.name().toLowerCase(Locale.ROOT) + "_configuration");
   }
 
   public String getName() {
-    return this.name().toLowerCase() + "_configuration";
+    return this.name().toLowerCase(Locale.ROOT) + "_configuration";
   }
 
   public Component getConfigurationTitle(final EasyNPC<?> easyNPC) {
-    String translationKey = Constants.TEXT_CONFIG_PREFIX + this.name().toLowerCase() + ".title";
+    String translationKey =
+        Constants.TEXT_CONFIG_PREFIX + this.name().toLowerCase(Locale.ROOT) + ".title";
     return TextComponent.getTranslatedTextRaw(
         translationKey, easyNPC.getEntity().getName().getString(16));
   }

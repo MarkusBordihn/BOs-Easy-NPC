@@ -8,6 +8,11 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.8.1
+
+- Fixed language sensitive `toLowerCase` and `toUpperCase` conversions, thanks to @McModknower.
+- Fixed Config File Handler to handling ", " as separator.
+
 ### 5.8.0
 
 - Added experimental pose file support for #379 and #388. 🕺

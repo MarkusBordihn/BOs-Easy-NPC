@@ -188,7 +188,7 @@ public class Config {
     if (properties.containsKey(key)) {
       try {
         String value = properties.getProperty(key).trim();
-        return value.isEmpty() ? Set.of() : Set.of(value.split(","));
+        return value.isEmpty() ? Set.of() : Set.of(value.split(",\\s*"));
       } catch (Exception e) {
         log.error("{} Failed to parse Set[String] for key {}:", LOG_PREFIX, key, e);
       }

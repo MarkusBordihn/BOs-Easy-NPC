@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.data.action;
 
+import java.util.Locale;
+
 public enum ActionDataType {
   NONE,
   COMMAND,
@@ -54,6 +56,6 @@ public enum ActionDataType {
   }
 
   public String getId() {
-    return "actionDataType." + this.name().toLowerCase();
+    return "actionDataType." + this.name().toLowerCase(Locale.ROOT);
   }
 }

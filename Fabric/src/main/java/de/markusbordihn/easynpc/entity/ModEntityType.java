@@ -164,7 +164,9 @@ public class ModEntityType {
           Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + PiglinRaw.ID, ModEntityTypes.PIGLIN_RAW);
   public static final EntityType<SkeletonRaw> SKELETON_RAW =
       Registry.register(
-          Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + SkeletonRaw.ID, ModEntityTypes.SKELETON_RAW);
+          Registry.ENTITY_TYPE,
+          Constants.MOD_ID + ":" + SkeletonRaw.ID,
+          ModEntityTypes.SKELETON_RAW);
   public static final EntityType<ZombieRaw> ZOMBIE_RAW =
       Registry.register(
           Registry.ENTITY_TYPE, Constants.MOD_ID + ":" + ZombieRaw.ID, ModEntityTypes.ZOMBIE_RAW);

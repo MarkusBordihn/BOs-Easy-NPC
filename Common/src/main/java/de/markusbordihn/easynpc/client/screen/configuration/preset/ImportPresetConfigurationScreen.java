@@ -31,6 +31,7 @@ import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.List;
+import java.util.Locale;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
@@ -109,7 +110,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
     this.getSkinModel();
     return resourceLocation
         .getPath()
-        .replace("preset/" + getSkinModel().toString().toLowerCase() + "/", "")
+        .replace("preset/" + getSkinModel().toString().toLowerCase(Locale.ROOT) + "/", "")
         .replace(Constants.NPC_NBT_SUFFIX, "");
   }
 

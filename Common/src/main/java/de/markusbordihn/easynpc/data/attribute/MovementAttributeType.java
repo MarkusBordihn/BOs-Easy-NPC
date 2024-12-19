@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.data.attribute;
 
 import de.markusbordihn.easynpc.utils.TextUtils;
+import java.util.Locale;
 
 public enum MovementAttributeType implements EntityAttributeTypeInterface {
   CAN_CLOSE_DOOR,
@@ -32,6 +33,6 @@ public enum MovementAttributeType implements EntityAttributeTypeInterface {
   }
 
   public String getAttributeName() {
-    return this.name().toLowerCase();
+    return this.name().toLowerCase(Locale.ROOT);
   }
 }
