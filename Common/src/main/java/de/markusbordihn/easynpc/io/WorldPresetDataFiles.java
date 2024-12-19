@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -55,7 +56,7 @@ public class WorldPresetDataFiles {
     Path presetDataFolder = getPresetDataFolder();
     String skinModelName = skinModel.name();
     if (!skinModelName.isEmpty()) {
-      Path path = presetDataFolder.resolve(skinModelName.toLowerCase());
+      Path path = presetDataFolder.resolve(skinModelName.toLowerCase(Locale.ROOT));
       if (!path.toFile().exists() && !path.toFile().mkdirs()) {
         log.error("Could not create preset model folder {}!", path);
       }
@@ -97,7 +98,7 @@ public class WorldPresetDataFiles {
                                       .relativize(path)
                                       .toString()
                                       .replace("\\", "/")
-                                      .toLowerCase());
+                                      .toLowerCase(Locale.ROOT));
                       presetResourceLocationMap.put(resourceLocation, path);
                       return resourceLocation;
                     })

@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.screen.ScreenHelper;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.core.Registry;
@@ -223,8 +224,8 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
               !Registry.ENTITY_TYPE
                   .getKey(entityType)
                   .toString()
-                  .toLowerCase()
-                  .contains(this.searchFilter.toLowerCase()));
+                  .toLowerCase(Locale.ROOT)
+                  .contains(this.searchFilter.toLowerCase(Locale.ROOT)));
     }
     this.numOfEntities = entityKeys.size();
 

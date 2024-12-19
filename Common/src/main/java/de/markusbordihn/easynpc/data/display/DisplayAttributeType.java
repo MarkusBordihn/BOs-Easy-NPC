@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.data.display;
 
+import java.util.Locale;
+
 public enum DisplayAttributeType {
   NONE,
   VISIBLE,
@@ -43,6 +45,6 @@ public enum DisplayAttributeType {
   }
 
   public String getAttributeName() {
-    return this.name().toLowerCase();
+    return this.name().toLowerCase(Locale.ROOT);
   }
 }

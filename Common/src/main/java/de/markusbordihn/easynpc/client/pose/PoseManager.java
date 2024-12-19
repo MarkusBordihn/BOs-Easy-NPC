@@ -32,6 +32,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import net.minecraft.resources.ResourceLocation;
@@ -73,9 +74,9 @@ public class PoseManager {
     try {
       String resourcePath =
           TEXTURE_PREFIX
-              + skinModel.name().toLowerCase()
+              + skinModel.name().toLowerCase(Locale.ROOT)
               + "/"
-              + animation.getName().replaceAll("[^a-zA-Z0-9_.-]", "").toLowerCase();
+              + animation.getName().replaceAll("[^a-zA-Z0-9_.-]", "").toLowerCase(Locale.ROOT);
       return new ResourceLocation(Constants.MOD_ID, resourcePath);
     } catch (Exception exception) {
       log.error(

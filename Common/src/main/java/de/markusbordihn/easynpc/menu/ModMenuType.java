@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.menu;
 
 import de.markusbordihn.easynpc.Constants;
+import java.util.Locale;
 import net.minecraft.resources.ResourceLocation;
 
 public enum ModMenuType {
@@ -28,10 +29,10 @@ public enum ModMenuType {
   ;
 
   public ResourceLocation getId() {
-    return new ResourceLocation(Constants.MOD_ID, this.name().toLowerCase());
+    return new ResourceLocation(Constants.MOD_ID, this.name().toLowerCase(Locale.ROOT));
   }
 
   public String getName() {
-    return this.name().toLowerCase();
+    return this.name().toLowerCase(Locale.ROOT);
   }
 }

@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.objective;
 
+import java.util.Locale;
 import java.util.Optional;
 
 public enum ObjectiveType {
@@ -108,7 +109,7 @@ public enum ObjectiveType {
   }
 
   public String getObjectiveName() {
-    return this.name().toLowerCase();
+    return this.name().toLowerCase(Locale.ROOT);
   }
 
   public String getFriendlyName() {

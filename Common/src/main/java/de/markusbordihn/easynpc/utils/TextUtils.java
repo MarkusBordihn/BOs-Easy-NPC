@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.utils;
 
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import java.util.Locale;
 import java.util.regex.Pattern;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -40,9 +41,9 @@ public class TextUtils {
   }
 
   public static String normalizeString(String string) {
-    String normalizedString = string.toLowerCase().replace("_", " ").replace("-", " ");
+    String normalizedString = string.toLowerCase(Locale.ROOT).replace("_", " ").replace("-", " ");
     normalizedString =
-        normalizedString.substring(0, 1).toUpperCase() + normalizedString.substring(1);
+        normalizedString.substring(0, 1).toUpperCase(Locale.ROOT) + normalizedString.substring(1);
     return normalizedString;
   }
 
@@ -75,7 +76,7 @@ public class TextUtils {
     if (text == null || text.isEmpty()) {
       return text;
     }
-    return text.substring(0, 1).toUpperCase() + convertToCamelCase(text.substring(1));
+    return text.substring(0, 1).toUpperCase(Locale.ROOT) + convertToCamelCase(text.substring(1));
   }
 
   public static String convertToCamelCase(String text) {

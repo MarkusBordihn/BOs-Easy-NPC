@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.data.skin;
 
+import java.util.Locale;
+
 public enum SkinModel {
   ALLAY,
   CAT,
@@ -63,6 +65,9 @@ public enum SkinModel {
   }
 
   public String getName() {
-    return this.name().toLowerCase().replaceAll("[^a-zA-Z0-9/._-]", "").replace("..", "");
+    return this.name()
+        .toLowerCase(Locale.ROOT)
+        .replaceAll("[^a-zA-Z0-9/._-]", "")
+        .replace("..", "");
   }
 }

@@ -39,7 +39,7 @@ task generateRawNPCs {
           .replace("npc_raw_template", npcClass.id)
           .replace("NPCRawTemplate", npcClass.className)
           .replace("Zombie", npcClass.baseClass)
-          .replace("ZOMBIE", npcClass.baseClass.toUpperCase())
+          .replace("ZOMBIE", npcClass.baseClass.toUpperCase(Locale.ROOT))
           .replace("Variant.DEFAULT_VARIANT", "Variant." + npcClass.variant)
           .replace("DEFAULT_VARIANT", npcClass.variants)
 

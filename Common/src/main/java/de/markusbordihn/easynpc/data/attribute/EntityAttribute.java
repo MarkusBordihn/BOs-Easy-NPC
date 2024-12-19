@@ -19,10 +19,12 @@
 
 package de.markusbordihn.easynpc.data.attribute;
 
+import java.util.Locale;
+
 public enum EntityAttribute {
   SILENT;
 
   public String getAttributeName() {
-    return this.name().toLowerCase();
+    return this.name().toLowerCase(Locale.ROOT);
   }
 }

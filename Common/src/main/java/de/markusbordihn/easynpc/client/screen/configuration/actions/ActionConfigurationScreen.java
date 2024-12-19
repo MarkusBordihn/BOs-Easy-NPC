@@ -30,6 +30,7 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import java.util.Locale;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -91,7 +92,8 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
       Component buttonLabel =
           TextComponent.getTranslatedConfigText(
               "add_action",
-              TextComponent.getTranslatedConfigText(actionEventType.name().toLowerCase()));
+              TextComponent.getTranslatedConfigText(
+                  actionEventType.name().toLowerCase(Locale.ROOT)));
       return new AddButton(
               left,
               top,
@@ -109,7 +111,8 @@ public class ActionConfigurationScreen<T extends ConfigurationMenu> extends Conf
       Component buttonLabel =
           TextComponent.getTranslatedConfigText(
               "edit_action",
-              TextComponent.getTranslatedConfigText(actionEventType.name().toLowerCase()));
+              TextComponent.getTranslatedConfigText(
+                  actionEventType.name().toLowerCase(Locale.ROOT)));
       return new EditButton(
               left,
               top,

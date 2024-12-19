@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.data.attribute;
 
 import de.markusbordihn.easynpc.utils.TextUtils;
+import java.util.Locale;
 
 public enum EnvironmentalAttributeType implements EntityAttributeTypeInterface {
   CAN_BREATHE_UNDERWATER,
@@ -31,6 +32,6 @@ public enum EnvironmentalAttributeType implements EntityAttributeTypeInterface {
   }
 
   public String getAttributeName() {
-    return this.name().toLowerCase();
+    return this.name().toLowerCase(Locale.ROOT);
   }
 }

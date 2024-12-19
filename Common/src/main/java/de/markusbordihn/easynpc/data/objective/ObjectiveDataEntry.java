@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.data.objective;
 
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
 import net.minecraft.nbt.CompoundTag;
@@ -357,7 +358,7 @@ public final class ObjectiveDataEntry {
     if (this.id != null
         && !this.id.isEmpty()
         && !this.id.equals(this.objectiveType.name())
-        && !this.id.toUpperCase().equals(this.objectiveType.name())) {
+        && !this.id.toUpperCase(Locale.ROOT).equals(this.objectiveType.name())) {
       compoundTag.putString(DATA_ID_TAG, this.id);
     }
 

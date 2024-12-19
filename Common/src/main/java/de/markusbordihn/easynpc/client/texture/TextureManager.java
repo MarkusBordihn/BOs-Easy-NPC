@@ -33,6 +33,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import javax.imageio.ImageIO;
@@ -219,7 +220,8 @@ public class TextureManager {
   }
 
   public static String getResourceName(String name, String type) {
-    return (TEXTURE_PREFIX + type + "_" + name.replaceAll("[^a-zA-Z0-9_.-]", "")).toLowerCase();
+    return (TEXTURE_PREFIX + type + "_" + name.replaceAll("[^a-zA-Z0-9_.-]", ""))
+        .toLowerCase(Locale.ROOT);
   }
 
   public static String getFileName(UUID uuid) {
