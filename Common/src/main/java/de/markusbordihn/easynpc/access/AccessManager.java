@@ -97,7 +97,7 @@ public class AccessManager {
             uuid);
         return false;
       } catch (CommandSyntaxException entityException) {
-        log.warn(
+        log.debug(
             "[Access skipped] EasyNPC with UUID {} was not executed by a player or entity!", uuid);
         return true;
       }
