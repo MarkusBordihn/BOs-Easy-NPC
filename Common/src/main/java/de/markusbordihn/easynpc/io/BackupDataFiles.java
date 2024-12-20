@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2024 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,42 +17,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.server;
+package de.markusbordihn.easynpc.io;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.backup.BackupManager;
-import de.markusbordihn.easynpc.io.DataFileHandler;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.level.storage.LevelResource;
+import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ServerEvents {
+public class BackupDataFiles {
 
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private ServerEvents() {}
-
-  public static void handleServerStarting(MinecraftServer minecraftServer) {
-    if (minecraftServer == null) {
+  public static void registerBackupData() {
+    // Prepare backup data folder
+    Path backupFolder = DataFileHandler.getBackupFolder();
+    if (backupFolder == null) {
       return;
     }
 
-    log.info("{} Server is starting Events ...", Constants.LOG_REGISTER_PREFIX);
-
-    // Set world directory for server.
-    Constants.WORLD_DIR = minecraftServer.getWorldPath(LevelResource.ROOT);
-
-    // Prepare custom data directory for server.
-    DataFileHandler.registerServerDataFiles(minecraftServer);
+    // Prepare backup data folder for today
+    Path backupDataFolder = getBackupDataFolder();
+    if (backupDataFolder == null) {
+      return;
+    }
   }
 
-  public static void handleServerTick(MinecraftServer minecraftServer) {
-    if (minecraftServer == null) {
-      return;
-    }
+  public static Path getBackupDataFolder() {
+    String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+    return DataFileHandler.getOrCreateBackupFolder(currentDate);
+  }
 
-    // Perform backup each hour.
-    BackupManager.performBackup();
+  public static Path getBackupFile(UUID uuid, Date date) {
+    String dateString = new SimpleDateFormat("yyyy-MM-dd").format(date);
+    String backupFileName = String.format("%s_%s.backup.npc.nbt", dateString, uuid);
+    Path backupDataFolder =
+        DataFileHandler.getOrCreateBackupFolder(new SimpleDateFormat("yyyy-MM-dd").format(date));
+    return backupDataFolder != null ? backupDataFolder.resolve(backupFileName) : null;
   }
 }

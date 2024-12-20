@@ -19,9 +19,12 @@
 
 package de.markusbordihn.easynpc.server;
 
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 @EventBusSubscriber
 public class ServerEventHandler {
@@ -31,5 +34,12 @@ public class ServerEventHandler {
   @SubscribeEvent
   public static void handleServerAboutToStartEvent(ServerStartingEvent event) {
     ServerEvents.handleServerStarting(event.getServer());
+  }
+
+  @SubscribeEvent
+  public static void onServerTick(ServerTickEvent.ServerTickEvent event) {
+    if (event.phase == TickEvent.Phase.END) {
+      ServerEvents.handleServerTick(ServerLifecycleHooks.getCurrentServer());
+    }
   }
 }
