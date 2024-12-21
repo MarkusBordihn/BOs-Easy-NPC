@@ -8,6 +8,12 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
+### 5.9.0
+
+- Fixed #398 by moving log messages to debug level.
+- Fixed #394 by implementing automatic server-side backups for NPCs, ensuring data integrity and
+  preventing full data loss in critical situations.
+
 ### 5.8.1
 
 - Fixed language sensitive `toLowerCase` and `toUpperCase` conversions, thanks to @McModknower.

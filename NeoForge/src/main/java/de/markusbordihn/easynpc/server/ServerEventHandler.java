@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.server;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 @EventBusSubscriber
 public class ServerEventHandler {
@@ -31,5 +32,10 @@ public class ServerEventHandler {
   @SubscribeEvent
   public static void handleServerAboutToStartEvent(ServerStartingEvent event) {
     ServerEvents.handleServerStarting(event.getServer());
+  }
+
+  @SubscribeEvent
+  public static void onServerTick(ServerTickEvent.Post event) {
+    ServerEvents.handleServerTick(event.getServer());
   }
 }

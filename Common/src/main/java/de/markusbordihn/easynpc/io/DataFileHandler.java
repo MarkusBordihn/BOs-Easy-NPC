@@ -38,6 +38,7 @@ import org.apache.logging.log4j.Logger;
 public class DataFileHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  protected static final String BACKUP_FOLDER_NAME = "backup";
   protected static final String CACHE_FOLDER_NAME = "cache";
 
   private DataFileHandler() {}
@@ -51,20 +52,37 @@ public class DataFileHandler {
   public static void registerServerDataFiles(MinecraftServer minecraftServer) {
     log.info("{} Server data folders ...", Constants.LOG_REGISTER_PREFIX);
 
-    log.info("{} pose data folders ...", Constants.LOG_REGISTER_PREFIX);
+    log.info("{} Pose data folders ...", Constants.LOG_REGISTER_PREFIX);
     CustomPoseDataFiles.registerCustomPoseData(minecraftServer);
+
+    log.info("{} Backup data folders ...", Constants.LOG_REGISTER_PREFIX);
+    BackupDataFiles.registerBackupData();
   }
 
   public static void registerClientDataFiles() {
     log.info("{} Client data folders ...", Constants.LOG_REGISTER_PREFIX);
 
-    log.info("{} skin data folders ...", Constants.LOG_REGISTER_PREFIX);
+    log.info("{} Skin data folders ...", Constants.LOG_REGISTER_PREFIX);
     CustomSkinDataFiles.registerCustomSkinData();
     PlayerSkinDataFiles.registerPlayerSkinData();
     RemoteSkinDataFiles.registerRemoteSkinData();
 
-    log.info("{} preset data folders ...", Constants.LOG_REGISTER_PREFIX);
+    log.info("{} Preset data folders ...", Constants.LOG_REGISTER_PREFIX);
     CustomPresetDataFiles.registerCustomPresetData();
+  }
+
+  public static Path getBackupFolder() {
+    Path backupFolder = Constants.GAME_DIR.resolve(Constants.MOD_ID).resolve(BACKUP_FOLDER_NAME);
+    try {
+      if (Files.exists(backupFolder) && Files.isDirectory(backupFolder)) {
+        return backupFolder;
+      }
+      log.info("Creating backup folder at {} ...", backupFolder);
+      return Files.createDirectories(backupFolder);
+    } catch (Exception exception) {
+      log.error("There was an error, creating the backup folder:", exception);
+    }
+    return null;
   }
 
   public static Path getCacheFolder() {
@@ -91,6 +109,24 @@ public class DataFileHandler {
       return Files.createDirectories(customDataFolder);
     } catch (Exception exception) {
       log.error("There was an error, creating the custom data folder:", exception);
+    }
+    return null;
+  }
+
+  public static Path getOrCreateBackupFolder(String dataLabel) {
+    Path backupFolder = getBackupFolder();
+    if (backupFolder == null) {
+      return null;
+    }
+    Path backupFolderPath = backupFolder.resolve(dataLabel);
+    try {
+      if (Files.exists(backupFolderPath) && Files.isDirectory(backupFolderPath)) {
+        return backupFolderPath;
+      }
+      log.info("Creating backup folder {} at {} ...", dataLabel, backupFolder);
+      return Files.createDirectories(backupFolderPath);
+    } catch (Exception exception) {
+      log.error("There was an error, creating the backup folder {}:", dataLabel, exception);
     }
     return null;
   }

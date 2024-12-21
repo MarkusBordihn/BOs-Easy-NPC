@@ -211,6 +211,10 @@ public class LivingEntityManager {
     return result;
   }
 
+  public static ConcurrentHashMap<UUID, EasyNPC<?>> getNpcEntityMap() {
+    return npcEntityMap;
+  }
+
   public static boolean hasAccess(UUID uuid, ServerPlayer serverPlayer) {
     if (uuid == null || serverPlayer == null) {
       return false;
