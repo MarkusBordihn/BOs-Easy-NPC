@@ -28,4 +28,4 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run GameTests (Forge)
-        run: ./gradlew :Forge:runGameTestServer
+        run: ./gradlew :core:Forge:runGameTestServer

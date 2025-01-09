@@ -1,0 +1,36 @@
+subprojects {
+
+  apply plugin: 'java'
+
+  java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+  java.withSourcesJar()
+  java.withJavadocJar()
+
+  repositories {
+    mavenCentral()
+    maven {
+      url "https://www.cursemaven.com"
+      content {
+        includeGroup "curse.maven"
+      }
+    }
+  }
+
+  tasks.register('wrapper', Wrapper) {
+    gradleVersion = '8.10'
+  }
+
+  tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+  }
+
+  tasks.withType(GenerateModuleMetadata).configureEach {
+    enabled = false
+  }
+
+  tasks.withType(Javadoc).configureEach {
+    enabled = false
+  }
+
+  tasks.register("prepareKotlinBuildScriptModel") {}
+}

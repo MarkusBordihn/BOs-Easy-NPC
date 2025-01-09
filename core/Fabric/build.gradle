@@ -8,15 +8,28 @@ plugins {
 
 archivesBaseName = "${mod_id}-fabric-${minecraft_version}"
 
+def coreProject = rootProject.findProject(":core") ?: rootProject
+def commonProject = rootProject.findProject(":core:Common") ?: project(":Common")
+
 dependencies {
   minecraft "com.mojang:minecraft:${minecraft_version}"
   mappings loom.officialMojangMappings()
   modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
   modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-  implementation project(":Common")
 
-  // Recommended Mods
-  modImplementation "curse.maven:tooltipfix-411557:4087782"
+  // Include Common code
+  implementation commonProject
+
+  // Additional helpful Mods for development (runtime dependency)
+  if (project.hasProperty('fabric_jei_mod') && project.fabric_jei_mod) {
+    modRuntimeOnly("curse.maven:jei-238222:${project.fabric_jei_mod}")
+  }
+  if (project.hasProperty('fabric_spark_mod') && project.fabric_spark_mod) {
+    modRuntimeOnly("curse.maven:spark-361579:${project.fabric_spark_mod}")
+  }
+  if (project.hasProperty('fabric_xaeros_minimap_mod') && project.fabric_xaeros_minimap_mod) {
+    modRuntimeOnly("curse.maven:xaeros_minimap-263420:${project.fabric_xaeros_minimap_mod}")
+  }
 }
 
 loom {
@@ -51,7 +64,7 @@ loom {
 }
 
 processResources {
-  from project(":Common").sourceSets.main.resources
+  from commonProject.sourceSets.main.resources
   inputs.property "version", project.version
 
   filesMatching("fabric.mod.json") {
@@ -60,7 +73,7 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-  source(project(":Common").sourceSets.main.allSource)
+  source(commonProject.sourceSets.main.allSource)
 }
 
 publishing {
@@ -74,40 +87,44 @@ publishing {
   }
 }
 
-curseforge {
-  apiKey = "${credentials.forKey('curseforge_api_token')}"
-  project {
-    id = "${project.curseforge_project_id}"
-    changelog = rootProject.file("CHANGELOG.md")
-    changelogType = 'markdown'
-    releaseType = "${project.curseforge_release_type}"
-    addGameVersion("${project.minecraft_version}")
-    addGameVersion("Fabric")
-    addGameVersion("Quilt")
-    mainArtifact(remapJar) {
-      relations {
-        requiredDependency 'fabric-api'
-        optionalDependency 'tooltipfix'
+// CurseForge Publishing
+if (project.hasProperty('curseforge_project_id') && project.curseforge_project_id) {
+  curseforge {
+    apiKey = "${credentials.forKey('curseforge_api_token')}"
+    project {
+      id = "${project.curseforge_project_id}"
+      changelog = coreProject.file("CHANGELOG.md")
+      changelogType = 'markdown'
+      releaseType = "${project.curseforge_release_type}"
+      addGameVersion("${project.minecraft_version}")
+      addGameVersion("Fabric")
+      addGameVersion("Quilt")
+      mainArtifact(remapJar) {
+        relations {
+          requiredDependency 'fabric-api'
+        }
       }
     }
-  }
-  options {
-    forgeGradleIntegration = false
+    options {
+      forgeGradleIntegration = false
+    }
   }
 }
 
-modrinth {
-  token = "${credentials.forKey('modrinth_api_token')}"
-  projectId = "${project.modrinth_project_id}"
-  versionNumber = "${version}"
-  versionType = "${project.modrinth_release_type}"
-  versionName = "${project.mod_name} ${project.version}"
-  changelog = rootProject.file("CHANGELOG.md").text
-  uploadFile = remapJar
-  gameVersions = ["${minecraft_version}"]
-  loaders = ["fabric", "quilt"]
-  dependencies {
-    required.project "fabric-api"
-    optional.project "tooltipfix"
+// Modrinth Publishing
+if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
+  modrinth {
+    token = "${credentials.forKey('modrinth_api_token')}"
+    projectId = "${project.modrinth_project_id}"
+    versionNumber = "${version}"
+    versionType = "${project.modrinth_release_type}"
+    versionName = "${project.mod_name} ${project.version}"
+    changelog = coreProject.file("CHANGELOG.md").text
+    uploadFile = remapJar
+    gameVersions = ["${minecraft_version}"]
+    loaders = ["fabric", "quilt"]
+    dependencies {
+      required.project "fabric-api"
+    }
   }
 }

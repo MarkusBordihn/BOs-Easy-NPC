@@ -1,16 +1,15 @@
 tasks.register('runAllGameTests') {
   group = 'verification'
   description = 'Runs both Fabric and Forge game tests.'
-  dependsOn ':Fabric:runGameTest', ':Forge:runGameTestServer'
+  if (rootProject.findProject(":core")) {
+    dependsOn ':core:Fabric:runGameTest', ':core:Forge:runGameTestServer'
+  } else {
+    dependsOn ':Fabric:runGameTest', ':Forge:runGameTestServer'
+  }
 }
 
 subprojects {
-
   apply plugin: 'java'
-
-  java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-  java.withSourcesJar()
-  java.withJavadocJar()
 
   repositories {
     mavenCentral()
@@ -22,21 +21,4 @@ subprojects {
     }
   }
 
-  tasks.register('wrapper', Wrapper) {
-    gradleVersion = '8.9'
-  }
-
-  tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-  }
-
-  tasks.withType(GenerateModuleMetadata).configureEach {
-    enabled = false
-  }
-
-  tasks.withType(Javadoc).configureEach {
-    enabled = false
-  }
-
-  tasks.register("prepareKotlinBuildScriptModel") {}
 }
