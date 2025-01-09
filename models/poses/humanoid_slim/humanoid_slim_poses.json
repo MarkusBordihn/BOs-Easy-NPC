@@ -1,0 +1,149 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "Crouching": {
+      "loop": "hold_on_last_frame",
+      "bones": {
+        "Head": {
+          "rotation": [-7.5, 0, 0],
+          "position": [0, -4.2, 0]
+        },
+        "Body": {
+          "rotation": [20, 0, 0],
+          "position": [0, -3.2, 0]
+        },
+        "RightArm": {
+          "rotation": [40, 0, 0],
+          "position": [0, -3.2, 1]
+        },
+        "LeftArm": {
+          "rotation": [40, 0, 0],
+          "position": [0, -3.2, 1]
+        },
+        "RightLeg": {
+          "rotation": [-25, 0, 0],
+          "position": [0, 0, 4]
+        },
+        "LeftLeg": {
+          "rotation": [-10, 0, 0],
+          "position": [0, 0, 3]
+        }
+      }
+    },
+    "Standing": {
+      "loop": "hold_on_last_frame",
+      "bones": {
+        "Head": {
+          "rotation": [0, 0, 0],
+          "position": [0, 0, 0]
+        },
+        "Body": {
+          "rotation": [0, 0, 0],
+          "position": [0, 0, 0]
+        },
+        "RightArm": {
+          "rotation": [0, 0, 0],
+          "position": [0, 0, 0]
+        },
+        "LeftArm": {
+          "rotation": [0, 0, 0],
+          "position": [0, 0, 0]
+        },
+        "RightLeg": {
+          "rotation": [0, 0, 0],
+          "position": [0, 0, 0]
+        },
+        "LeftLeg": {
+          "rotation": [0, 0, 0],
+          "position": [0, 0, 0]
+        }
+      }
+    },
+    "Sitting": {
+      "loop": "hold_on_last_frame",
+      "bones": {
+        "Head": {
+          "rotation": [0, 0, -2.5],
+          "position": [0, -10.5, 0]
+        },
+        "Body": {
+          "position": [0, -10.5, 0]
+        },
+        "RightArm": {
+          "rotation": [-35, 0, 0],
+          "position": [0, -10.5, 0]
+        },
+        "LeftArm": {
+          "rotation": [-35, 0, 0],
+          "position": [0, -10.5, 0]
+        },
+        "RightLeg": {
+          "rotation": [-90, 15, 0],
+          "position": [0, -10, 0]
+        },
+        "LeftLeg": {
+          "rotation": [-90, -10.5, 0],
+          "position": [0, -10, 0]
+        }
+      }
+    },
+    "Chilling": {
+      "loop": "hold_on_last_frame",
+      "bones": {
+        "Head": {
+          "rotation": [-2.5, 0, 2.5],
+          "position": [0, -12.5, 2]
+        },
+        "Body": {
+          "rotation": [-20, 0, 0],
+          "position": [0, -12.25, 3]
+        },
+        "RightArm": {
+          "rotation": [17.5, 0, 0],
+          "position": [0, -12.5, 2]
+        },
+        "LeftArm": {
+          "rotation": [20, 0, 0],
+          "position": [0, -12.5, 2]
+        },
+        "RightLeg": {
+          "rotation": [-90, 15, -5],
+          "position": [0, -10, 0]
+        },
+        "LeftLeg": {
+          "rotation": [-90, -10.5, 5],
+          "position": [0, -10, 0.75]
+        }
+      }
+    },
+    "Rest": {
+      "loop": "hold_on_last_frame",
+      "bones": {
+        "Head": {
+          "rotation": [5, 0, 5],
+          "position": [0, -12, 0]
+        },
+        "Body": {
+          "rotation": [0, 0, 2.5],
+          "position": [0, -12, 0]
+        },
+        "RightArm": {
+          "rotation": [-75, -30, 0],
+          "position": [-1, -11, 0]
+        },
+        "LeftArm": {
+          "rotation": [-52.5, -5, 0],
+          "position": [0, -12, 0]
+        },
+        "RightLeg": {
+          "rotation": [-32.5, -20, 0],
+          "position": [-3, -2, -2]
+        },
+        "LeftLeg": {
+          "rotation": [-90, 40, 0],
+          "position": [6.75, -10, 0]
+        }
+      }
+    }
+  }
+}
