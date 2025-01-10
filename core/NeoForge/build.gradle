@@ -10,9 +10,11 @@ base {
   archivesName = "${mod_id}-neoforge-${minecraft_version}"
 }
 
-if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
-  minecraft.accessTransformers.file file('src/main/resources/META-INF/accesstransformer.cfg')
-}
+def coreProject = rootProject.findProject(":core") ?: rootProject
+def commonProject = rootProject.findProject(":core:Common") ?: project(":Common")
+
+minecraft.accessTransformers.file file('src/main/resources/META-INF/accesstransformer.cfg')
+
 runs {
   configureEach {
     systemProperty 'forge.logging.markers', 'REGISTRIES'
@@ -48,29 +50,36 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
   implementation "net.neoforged:neoforge:${project.neoforge_version}"
-  compileOnly project(":Common")
 
+  // Include Common code
+  compileOnly commonProject
+
+  // Test dependencies
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
   testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
+
+  // Additional helpful Mods for development (runtime dependency)
+  if (project.hasProperty('forge_jei_mod') && project.forge_jei_mod) {
+    runtimeOnly "curse.maven:jei-238222:${project.forge_jei_mod}"
+  }
+  if (project.hasProperty('forge_xaeros_minimap_mod') && project.forge_xaeros_minimap_mod) {
+    runtimeOnly "curse.maven:xaeros_minimap-263420:${project.forge_xaeros_minimap_mod}"
+  }
 }
 
 // NeoGradle compiles the game, but we don't want to add our common code to the game's code
 Spec<Task> notNeoTask = { Task it -> !it.name.startsWith("neo") } as Spec<Task>
 
 tasks.withType(JavaCompile).matching(notNeoTask).configureEach {
-  source(project(":Common").sourceSets.main.allSource)
+  source(commonProject.sourceSets.main.allSource)
 }
 
 tasks.withType(Javadoc).matching(notNeoTask).configureEach {
-  source(project(":Common").sourceSets.main.allJava)
-}
-
-tasks.named("sourcesJar", Jar) {
-  from(project(":Common").sourceSets.main.allSource)
+  source(commonProject.sourceSets.main.allJava)
 }
 
 tasks.withType(ProcessResources).matching(notNeoTask).configureEach {
-  from project(":Common").sourceSets.main.resources
+  from commonProject.sourceSets.main.resources
 }
 
 publishing {
@@ -87,34 +96,47 @@ publishing {
   }
 }
 
-curseforge {
-  apiKey = "${credentials.forKey('curseforge_api_token')}"
-  project {
-    id = "${project.curseforge_project_id}"
-    changelog = rootProject.file("CHANGELOG.md")
-    changelogType = 'markdown'
-    releaseType = "${project.curseforge_release_type}"
-    addGameVersion("${project.minecraft_version}")
-    addGameVersion("NeoForge")
-    mainArtifact(jar) {
-      relations {
-        optionalDependency 'armourers-workshop'
+idea {
+  module {
+    downloadSources = true
+    downloadJavadoc = true
+  }
+}
+
+// CurseForge Publishing
+if (project.hasProperty('curseforge_project_id') && project.curseforge_project_id) {
+  curseforge {
+    apiKey = "${credentials.forKey('curseforge_api_token')}"
+    project {
+      id = "${project.curseforge_project_id}"
+      changelog = coreProject.file("CHANGELOG.md")
+      changelogType = 'markdown'
+      releaseType = "${project.curseforge_release_type}"
+      addGameVersion("${project.minecraft_version}")
+      addGameVersion("NeoForge")
+      mainArtifact(jar) {
+        relations {
+          optionalDependency 'armourers-workshop'
+        }
       }
     }
   }
 }
 
-modrinth {
-  token = "${credentials.forKey('modrinth_api_token')}"
-  projectId = "${project.modrinth_project_id}"
-  versionNumber = "${project.version}"
-  versionType = "${project.modrinth_release_type}"
-  versionName = "${project.mod_name} ${project.version}"
-  changelog = rootProject.file("CHANGELOG.md").text
-  uploadFile = jar
-  gameVersions = ["${project.minecraft_version}"]
-  loaders = ["neoforge"]
-  dependencies {
-    optional.project "armourers-workshop"
+// Modrinth Publishing
+if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
+  modrinth {
+    token = "${credentials.forKey('modrinth_api_token')}"
+    projectId = "${project.modrinth_project_id}"
+    versionNumber = "${project.version}"
+    versionType = "${project.modrinth_release_type}"
+    versionName = "${project.mod_name} ${project.version}"
+    changelog = coreProject.file("CHANGELOG.md").text
+    uploadFile = jar
+    gameVersions = ["${project.minecraft_version}"]
+    loaders = ["neoforge"]
+    dependencies {
+      optional.project "armourers-workshop"
+    }
   }
 }

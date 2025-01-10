@@ -28,4 +28,4 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run GameTests (NeoForge)
-        run: ./gradlew :NeoForge:runGameTestServer
+        run: ./gradlew :core:NeoForge:runGameTestServer

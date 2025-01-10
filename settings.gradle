@@ -21,3 +21,15 @@ pluginManagement {
 }
 
 rootProject.name = 'Easy NPC 1.21.1'
+
+file('core').listFiles()?.each { dir ->
+  if (dir.isDirectory() && file("${dir.path}/build.gradle").exists()) {
+    include "core:${dir.name}"
+  }
+}
+
+file('config').listFiles()?.each { dir ->
+  if (dir.isDirectory() && file("${dir.path}/build.gradle").exists()) {
+    include "config:${dir.name}"
+  }
+}

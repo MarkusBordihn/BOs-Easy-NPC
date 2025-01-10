@@ -43,3 +43,4 @@ generated
 *.log
 *.patch.txt
 *.stackdump
+*.hprof

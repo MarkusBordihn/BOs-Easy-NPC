@@ -10,16 +10,16 @@ apply plugin: 'net.minecraftforge.gradle'
 
 archivesBaseName = "${mod_id}-forge-${minecraft_version}"
 
-println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+def coreProject = rootProject.findProject(":core") ?: rootProject
+def commonProject = rootProject.findProject(":core:Common") ?: project(":Common")
+
 minecraft {
   mappings channel: 'official', version: "${project.minecraft_version}"
 
   reobf = false
   copyIdeResources = true
 
-  if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-  }
+  accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
   // Default run configurations.
   runs {
@@ -103,86 +103,39 @@ dependencies {
   minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
 
   // Include Common code
-  compileOnly project(":Common")
-
-  // Integration test dependencies
-  if (project.hasProperty("armourers_workshop_mod") && project.armourers_workshop_mod) {
-    runtimeOnly fg.deobf("curse.maven:armourers-workshop-229523:${project.armourers_workshop_mod}")
-  }
-  if (project.hasProperty("epic_fight_mod") && project.epic_fight_mod && !project.better_combat_mod) {
-    runtimeOnly fg.deobf("curse.maven:epic_fight-405076:${project.epic_fight_mod}")
-  }
-  if (project.hasProperty("create_mod") && project.create_mod) {
-    runtimeOnly fg.deobf("curse.maven:create-328085:${project.create_mod}")
-  }
-  if (project.hasProperty("mrcrayfishs_gun_mod") && project.mrcrayfishs_gun_mod && project.framework_mod) {
-    runtimeOnly fg.deobf("curse.maven:mrcrayfishs-gun-289479:${project.mrcrayfishs_gun_mod}")
-    runtimeOnly fg.deobf("curse.maven:framework-549225:${project.framework_mod}")
-  }
-  if (project.hasProperty("project_mmo_mod") && project.project_mmo_mod) {
-    runtimeOnly fg.deobf("curse.maven:project-mmo-353935:${project.project_mmo_mod}")
-  }
-  if (project.hasProperty("better_combat_mod") && project.better_combat_mod && project.cloth_config_mod && project.player_animator_mod) {
-    runtimeOnly fg.deobf("curse.maven:better-combat-639842:${project.better_combat_mod}")
-  }
-  if (project.hasProperty("cloth_config_mod") && project.cloth_config_mod) {
-    runtimeOnly fg.deobf("curse.maven:cloth-config-348521:${project.cloth_config_mod}")
-  }
-  if (project.hasProperty("player_animator_mod") && project.player_animator_mod) {
-    runtimeOnly fg.deobf("curse.maven:player-animator-658587:${project.player_animator_mod}")
-  }
-  if (project.hasProperty("spartan_weaponry_mod") && project.spartan_weaponry_mod) {
-    runtimeOnly fg.deobf("curse.maven:spartan-weaponry-278141:${project.spartan_weaponry_mod}")
-  }
-  if (project.hasProperty("immersive_melodies_mod") && project.immersive_melodies_mod) {
-    runtimeOnly fg.deobf("curse.maven:immersive-melodies-904471:${project.immersive_melodies_mod}")
-  }
-  if (project.hasProperty("timeless_and_classics_zero_mod") && project.timeless_and_classics_zero_mod) {
-    runtimeOnly fg.deobf("curse.maven:timeless-and-classics-zero-1028108:${project.timeless_and_classics_zero_mod}")
-  }
-  if (project.hasProperty("architectury_api_mod") && project.architectury_api_mod) {
-    compileOnly fg.deobf("curse.maven:architectury-api-419699:${project.architectury_api_mod}")
-    runtimeOnly fg.deobf("curse.maven:architectury-api-419699:${project.architectury_api_mod}")
-  }
-  if (project.hasProperty("kotlin_for_forge_mod") && project.kotlin_for_forge_mod) {
-    compileOnly fg.deobf("curse.maven:kotlin-for-forge-351264:${project.kotlin_for_forge_mod}")
-    runtimeOnly fg.deobf("curse.maven:kotlin-for-forge-351264:${project.kotlin_for_forge_mod}")
-  }
-  if (project.hasProperty("cobblemon_mod") && project.cobblemon_mod &&
-      project.hasProperty("architectury_api_mod") && project.architectury_api_mod &&
-      project.hasProperty("kotlin_for_forge_mod") && project.kotlin_for_forge_mod) {
-    compileOnly fg.deobf("curse.maven:cobblemon-687131:${project.cobblemon_mod}")
-    runtimeOnly fg.deobf("curse.maven:cobblemon-687131:${project.cobblemon_mod}")
-  }
+  compileOnly commonProject
 
   // Additional helpful Mods for development (runtime dependency)
-  // runtimeOnly "curse.maven:xaeros_minimap-263420:${project.xaeros_minimap_mod}"
-  // runtimeOnly "curse.maven:spark-361579:${project.spark_mod}"
-  // runtimeOnly "curse.maven:jei-238222:${project.jei_mod}"
+  if (project.hasProperty('forge_jei_mod') && project.forge_jei_mod) {
+    runtimeOnly fg.deobf("curse.maven:jei-238222:${project.forge_jei_mod}")
+  }
+  if (project.hasProperty('forge_xaeros_minimap_mod') && project.forge_xaeros_minimap_mod) {
+    runtimeOnly fg.deobf("curse.maven:xaeros_minimap-263420:${project.forge_xaeros_minimap_mod}")
+  }
 
   // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transitive dependencies request 6.0+
   implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 }
 
 tasks.withType(JavaCompile).configureEach {
-  source(project(":Common").sourceSets.main.allSource)
+  source(commonProject.sourceSets.main.allSource)
 }
 
 processResources {
-  from project(":Common").sourceSets.main.resources
+  from commonProject.sourceSets.main.resources
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
 jar {
   manifest {
     attributes([
-        "Specification-Title"     : "${project.mod_name}",
-        "Specification-Vendor"    : "${project.vendor_name}",
-        "Specification-Version"   : "1", // We are version 1 of ourselves
-        "Implementation-Title"    : project.name,
-        "Implementation-Version"  : "${project.version}",
-        "Implementation-Vendor"   : "${project.mod_id}",
-        "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            "Specification-Title"     : "${project.mod_name}",
+            "Specification-Vendor"    : "${project.vendor_name}",
+            "Specification-Version"   : "1", // We are version 1 of ourselves
+            "Implementation-Title"    : project.name,
+            "Implementation-Version"  : "${project.version}",
+            "Implementation-Vendor"   : "${project.mod_id}",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
     ])
   }
 }
@@ -195,33 +148,42 @@ publishing {
   }
 }
 
-curseforge {
-  apiKey = "${credentials.forKey('curseforge_api_token')}"
-  project {
-    id = "${project.curseforge_project_id}"
-    changelog = rootProject.file("CHANGELOG.md")
-    changelogType = 'markdown'
-    releaseType = "${project.curseforge_release_type}"
-    addGameVersion("${project.minecraft_version}")
-    addGameVersion("Forge")
-    mainArtifact(jar)
+idea {
+  module {
+    downloadSources = true
+    downloadJavadoc = true
   }
 }
 
-modrinth {
-  token = "${credentials.forKey('modrinth_api_token')}"
-  projectId = "${project.modrinth_project_id}"
-  versionNumber = "${project.version}"
-  versionType = "${project.modrinth_release_type}"
-  versionName = "${project.mod_name} ${project.version}"
-  changelog = rootProject.file("CHANGELOG.md").text
-  uploadFile = jar
-  gameVersions = ["${project.minecraft_version}"]
-  loaders = ["forge"]
+// CurseForge Publishing
+if (project.hasProperty('curseforge_project_id') && project.curseforge_project_id) {
+  curseforge {
+    apiKey = "${credentials.forKey('curseforge_api_token')}"
+    project {
+      id = "${project.curseforge_project_id}"
+      changelog = coreProject.file("CHANGELOG.md")
+      changelogType = 'markdown'
+      releaseType = "${project.curseforge_release_type}"
+      addGameVersion("${project.minecraft_version}")
+      addGameVersion("Forge")
+      mainArtifact(jar)
+    }
+  }
 }
 
-tasks.withType(JavaCompile).configureEach {
-  options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+// Modrinth Publishing
+if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
+  modrinth {
+    token = "${credentials.forKey('modrinth_api_token')}"
+    projectId = "${project.modrinth_project_id}"
+    versionNumber = "${project.version}"
+    versionType = "${project.modrinth_release_type}"
+    versionName = "${project.mod_name} ${project.version}"
+    changelog = coreProject.file("CHANGELOG.md").text
+    uploadFile = jar
+    gameVersions = ["${project.minecraft_version}"]
+    loaders = ["forge"]
+  }
 }
 
 // Merge the resources and classes into the same directory.
