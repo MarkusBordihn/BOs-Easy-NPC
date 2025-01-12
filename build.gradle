@@ -8,6 +8,7 @@ subprojects {
 
   repositories {
     mavenCentral()
+    mavenLocal()
     maven {
       url "https://www.cursemaven.com"
       content {
@@ -17,7 +18,8 @@ subprojects {
   }
 
   tasks.register('wrapper', Wrapper) {
-    gradleVersion = '8.10'
+    gradleVersion = '8.11'
+    distributionType = Wrapper.DistributionType.BIN
   }
 
   tasks.withType(JavaCompile).configureEach {
@@ -33,4 +35,17 @@ subprojects {
   }
 
   tasks.register("prepareKotlinBuildScriptModel") {}
+}
+
+tasks.register('publishToMavenLocal') {
+  group = 'publishing'
+  description = 'Publishing artefacts to Maven local.'
+  dependsOn ':core:Fabric:publishToMavenLocal', ':core:Forge:publishToMavenLocal'
+  dependsOn ':config-ui:Fabric:publishToMavenLocal', ':config-ui:Forge:publishToMavenLocal'
+}
+
+tasks.register('build') {
+  group = 'build'
+  description = 'Builds all subprojects.'
+  dependsOn gradle.includedBuild('core').task(':buildCore')
 }

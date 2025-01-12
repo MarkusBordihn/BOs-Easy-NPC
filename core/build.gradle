@@ -1,25 +1,13 @@
-def coreProject = rootProject.findProject(":core") ?: rootProject
+apply from: file('../build.gradle')
 
 tasks.register('runAllGameTests') {
   group = 'verification'
   description = 'Runs both Fabric and Forge game tests.'
-  if (rootProject.findProject(":core")) {
-    dependsOn ':core:Fabric:runGameTest', ':core:Forge:runGameTestServer'
-  } else {
-    dependsOn ':Fabric:runGameTest', ':Forge:runGameTestServer'
-  }
+  dependsOn ':Fabric:runGameTest', ':Forge:runGameTestServer'
 }
 
-subprojects {
-  apply plugin: 'java'
-
-  repositories {
-    mavenCentral()
-    maven {
-      url "https://www.cursemaven.com"
-      content {
-        includeGroup "curse.maven"
-      }
-    }
-  }
+tasks.register('buildCore') {
+  group = 'build'
+  description = 'Builds the core mod.'
+  dependsOn ':Fabric:build', ':Forge:build'
 }

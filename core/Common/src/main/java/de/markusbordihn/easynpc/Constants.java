@@ -28,13 +28,13 @@ import net.minecraft.resources.ResourceLocation;
 
 public final class Constants {
 
-  public static final ResourceLocation BLANK_ENTITY_TEXTURE =
-      new ResourceLocation(Constants.MOD_ID, "textures/entity/blank.png");
   // Mod definitions for adding additional support and compatibility
   public static final String MOD_ARMOURERS_WORKSHOP_ID = "armourers_workshop";
   public static final String MOD_ARMOURERS_WORKSHOP_NAME = "Armourer's Workshop";
   public static final String MOD_COMMAND = "easy_npc";
   public static final String MOD_ID = "easy_npc";
+  public static final ResourceLocation BLANK_ENTITY_TEXTURE =
+      new ResourceLocation(Constants.MOD_ID, "textures/entity/blank.png");
   public static final String MOD_NAME = "Easy NPC";
   public static final String MOD_URL = "https://www.curseforge.com/minecraft/mc-mods/easy-npc";
   // Prefixes

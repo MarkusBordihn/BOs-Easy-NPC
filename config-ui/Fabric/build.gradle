@@ -1,0 +1,135 @@
+plugins {
+  id 'fabric-loom'
+  id 'maven-publish'
+  id 'com.matthewprenger.cursegradle' version '1.4.0'
+  id 'nu.studer.credentials' version '3.0'
+  id "com.modrinth.minotaur" version "2.+"
+}
+
+archivesBaseName = "${project.mod_id}-fabric-${project.minecraft_version}"
+
+dependencies {
+  minecraft "com.mojang:minecraft:${project.minecraft_version}"
+  mappings loom.officialMojangMappings()
+  modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
+  modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+  // Include Common code
+  implementation project(":Common")
+
+  // Include core
+  implementation "de.markusbordihn.easynpc:easy_npc-fabric-1.18.2:6.0.0"
+  testRuntimeOnly "de.markusbordihn.easynpc:easy_npc-fabric-1.18.2:6.0.0"
+
+  // Additional helpful Mods for development (runtime dependency)
+  if (project.hasProperty('fabric_jei_mod') && project.fabric_jei_mod) {
+    modRuntimeOnly("curse.maven:jei-238222:${project.fabric_jei_mod}")
+  }
+  if (project.hasProperty('fabric_spark_mod') && project.fabric_spark_mod) {
+    modRuntimeOnly("curse.maven:spark-361579:${project.fabric_spark_mod}")
+  }
+  if (project.hasProperty('fabric_xaeros_minimap_mod') && project.fabric_xaeros_minimap_mod) {
+    modRuntimeOnly("curse.maven:xaeros_minimap-263420:${project.fabric_xaeros_minimap_mod}")
+  }
+}
+
+loom {
+  accessWidenerPath = file("src/main/resources/easynpcconfig.accesswidener")
+  runs {
+    client {
+      client()
+      setConfigName("Fabric Client")
+      property("fabric.logging.markers", "REGISTRIES")
+      property("fabric.log.level", "debug")
+      property("mixin.debug.verbose", "false")
+      property("mixin.debug.export", "false")
+      ideConfigGenerated(true)
+      runDir("run")
+    }
+    server {
+      server()
+      setConfigName("Fabric Server")
+      property("fabric.logging.markers", "REGISTRIES")
+      property("fabric.log.level", "debug")
+      property("mixin.debug.verbose", "false")
+      property("mixin.debug.export", "false")
+      ideConfigGenerated(true)
+      runDir("run")
+    }
+    gameTest {
+      server()
+      name "Game Test"
+      vmArg "-Dfabric-api.gametest"
+    }
+  }
+}
+
+processResources {
+  from project(":Common").sourceSets.main.resources
+  inputs.property "version", project.version
+
+  filesMatching("fabric.mod.json") {
+    expand "version": project.version
+  }
+}
+
+tasks.withType(JavaCompile).configureEach {
+  source(project(":Common").sourceSets.main.allSource)
+}
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      groupId project.group
+      artifactId project.archivesBaseName
+      version project.version
+      from components.java
+    }
+  }
+}
+
+tasks.named('build') {
+  finalizedBy 'publishToMavenLocal'
+}
+
+// CurseForge Publishing
+if (project.hasProperty('curseforge_project_id') && project.curseforge_project_id) {
+  curseforge {
+    apiKey = "${credentials.forKey('curseforge_api_token')}"
+    project {
+      id = "${project.curseforge_project_id}"
+      changelog = rootProject.file("CHANGELOG.md")
+      changelogType = 'markdown'
+      releaseType = "${project.curseforge_release_type}"
+      addGameVersion("${project.minecraft_version}")
+      addGameVersion("Fabric")
+      addGameVersion("Quilt")
+      mainArtifact(remapJar) {
+        relations {
+          requiredDependency 'fabric-api'
+        }
+      }
+    }
+    options {
+      forgeGradleIntegration = false
+    }
+  }
+}
+
+// Modrinth Publishing
+if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
+  modrinth {
+    token = "${credentials.forKey('modrinth_api_token')}"
+    projectId = "${project.modrinth_project_id}"
+    versionNumber = "${version}"
+    versionType = "${project.modrinth_release_type}"
+    versionName = "${project.mod_name} ${project.version}"
+    changelog = rootProject.file("CHANGELOG.md").text
+    uploadFile = remapJar
+    gameVersions = ["${project.minecraft_version}"]
+    loaders = ["fabric", "quilt"]
+    dependencies {
+      required.project "fabric-api"
+    }
+  }
+}

@@ -22,14 +22,25 @@ pluginManagement {
 
 rootProject.name = 'Easy NPC 1.18.2'
 
-file('core').listFiles()?.each { dir ->
-  if (dir.isDirectory() && file("${dir.path}/build.gradle").exists()) {
-    include "core:${dir.name}"
+gradle.beforeProject { project ->
+  if (project.name == 'bundle') {
+    project.tasks.named('build') {
+      dependsOn gradle.includedBuild('core').task(':build')
+      dependsOn gradle.includedBuild('core').task(':publishToMavenLocal')
+      dependsOn gradle.includedBuild('config-ui').task(':build')
+      dependsOn gradle.includedBuild('config-ui').task(':publishToMavenLocal')
+    }
   }
 }
 
-file('config').listFiles()?.each { dir ->
-  if (dir.isDirectory() && file("${dir.path}/build.gradle").exists()) {
-    include "config:${dir.name}"
-  }
+includeBuild('core') {
+  name = 'core'
+}
+
+includeBuild('config-ui') {
+  name = 'config-ui'
+}
+
+includeBuild('bundle') {
+  name = 'bundle'
 }

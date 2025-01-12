@@ -17,8 +17,20 @@ out
 # Gradle
 build
 run
+runs
 .gradle
 *local.properties
+
+# Gradle Wrapper
+bundle/*/gradle
+bundle/*/gradlew
+bundle/*/gradlew.bat
+core/*/gradle
+core/*/gradlew
+core/*/gradlew.bat
+config-ui/*/gradle
+config-ui/*/gradlew
+config-ui/*/gradlew.bat
 
 # NodeJs
 node_modules
