@@ -21,6 +21,10 @@ package de.markusbordihn.easynpc.network;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+import de.markusbordihn.easynpc.network.message.client.OpenMenuCallbackMessage;
+import de.markusbordihn.easynpc.network.message.server.ExecuteActionEventMessage;
+import de.markusbordihn.easynpc.network.message.server.ExecuteDialogButtonActionMessage;
+import de.markusbordihn.easynpc.network.message.server.OpenMenuMessage;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -64,6 +68,15 @@ public class NetworkHandler implements NetworkHandlerInterface {
 
   @Override
   public void sendToServer(final NetworkMessageRecord networkMessageRecord) {
+    if (!(networkMessageRecord instanceof OpenMenuMessage)
+        && !(networkMessageRecord instanceof ExecuteActionEventMessage)
+        && !(networkMessageRecord instanceof ExecuteDialogButtonActionMessage)) {
+      log.info(
+          "{} Skip sending network message {} to server",
+          Constants.LOG_REGISTER_PREFIX,
+          networkMessageRecord);
+      return;
+    }
     DistExecutor.unsafeRunWhenOn(
         Dist.CLIENT, () -> () -> INSTANCE.sendToServer(networkMessageRecord));
   }
@@ -71,6 +84,14 @@ public class NetworkHandler implements NetworkHandlerInterface {
   @Override
   public void sendToPlayer(
       final NetworkMessageRecord networkMessageRecord, final ServerPlayer serverPlayer) {
+    if (!(networkMessageRecord instanceof OpenMenuCallbackMessage)) {
+      log.info(
+          "{} Skip sending network message {} to player {}",
+          Constants.LOG_REGISTER_PREFIX,
+          networkMessageRecord,
+          serverPlayer);
+      return;
+    }
     INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), networkMessageRecord);
   }
 
@@ -79,6 +100,16 @@ public class NetworkHandler implements NetworkHandlerInterface {
       final ResourceLocation messageID,
       final Class<M> networkMessage,
       final Function<FriendlyByteBuf, M> creator) {
+
+    // Only register the OpenMenuCallbackMessage
+    if (messageID != OpenMenuCallbackMessage.MESSAGE_ID) {
+      log.info(
+          "{} Skip registration of client network message handler for {}",
+          Constants.LOG_REGISTER_PREFIX,
+          messageID);
+      return;
+    }
+
     int registrationID = id++;
     logRegisterClientNetworkMessageHandler(messageID, networkMessage, registrationID);
     INSTANCE.registerMessage(
@@ -100,6 +131,17 @@ public class NetworkHandler implements NetworkHandlerInterface {
       final ResourceLocation messageID,
       final Class<M> networkMessage,
       final Function<FriendlyByteBuf, M> creator) {
+
+    if (messageID != ExecuteActionEventMessage.MESSAGE_ID
+        && messageID != ExecuteDialogButtonActionMessage.MESSAGE_ID
+        && messageID != OpenMenuMessage.MESSAGE_ID) {
+      log.info(
+          "{} Skip registration of server network message handler for {}",
+          Constants.LOG_REGISTER_PREFIX,
+          messageID);
+      return;
+    }
+
     int registrationID = id++;
     logRegisterServerNetworkMessageHandler(messageID, networkMessage, registrationID);
     INSTANCE.registerMessage(
