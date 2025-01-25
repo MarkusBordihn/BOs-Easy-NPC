@@ -105,7 +105,6 @@ public class EasyNPC {
 
     log.info("{} Menu Handler ...", Constants.LOG_REGISTER_PREFIX);
     MenuManager.registerMenuHandler(new MenuHandler());
-    modEventBus.addListener(MenuHandler::registerMenuHandler);
 
     log.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
     modEventBus.addListener(

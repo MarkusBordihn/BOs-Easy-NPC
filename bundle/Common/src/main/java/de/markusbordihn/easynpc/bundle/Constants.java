@@ -23,6 +23,7 @@ public final class Constants {
 
   public static final String MOD_ID = "easy_npc_bundle";
   public static final String MOD_NAME = "Easy NPC: Bundle";
+  public static final String MOD_PREFIX_ID = MOD_ID + ":";
   public static final String LOG_ICON = "🗣";
   public static final String LOG_NAME = "Easy NPC Bundle";
   public static final String LOG_REGISTER_PREFIX = LOG_ICON + " Register Easy NPC Bundle";

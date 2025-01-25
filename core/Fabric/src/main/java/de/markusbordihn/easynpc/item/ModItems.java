@@ -43,7 +43,6 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.ZombieVillager;
 import de.markusbordihn.easynpc.item.attack.BulletItem;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetEmptyItem;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetItem;
-import de.markusbordihn.easynpc.item.configuration.EasyNPCWandItem;
 import de.markusbordihn.easynpc.item.configuration.MoveEasyNPCItem;
 import net.minecraft.core.Registry;
 import net.minecraft.world.item.BlockItem;
@@ -68,7 +67,6 @@ public class ModItems {
   public static final Item EASY_NPC_PRESET_ITEM = new EasyNPCPresetItem(new Item.Properties());
   public static final Item EASY_NPC_SPAWNER =
       new BlockItem(ModBlocks.EASY_NPC_SPAWNER, new Item.Properties());
-  public static final Item EASY_NPC_WAND = new EasyNPCWandItem(new Item.Properties());
   public static final Item EVOKER_NPC_SPAWN_EGG =
       new ModSpawnEggItem(ModEntityType.EVOKER, new Item.Properties().rarity(Rarity.EPIC));
   public static final Item FAIRY_NPC_SPAWN_EGG =
@@ -129,7 +127,6 @@ public class ModItems {
   public static void registerModItems() {
 
     log.info("{} Configuration Items ...", Constants.LOG_REGISTER_PREFIX);
-    registerItem(EasyNPCWandItem.ID, EASY_NPC_WAND);
     registerItem(MoveEasyNPCItem.ID, MOVE_EASY_NPC);
     registerItem(EasyNPCPresetItem.NAME, EASY_NPC_PRESET_ITEM);
     registerItem(EasyNPCPresetEmptyItem.NAME, EASY_NPC_PRESET_EMPTY_ITEM);

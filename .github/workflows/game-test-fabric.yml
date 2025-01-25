@@ -28,4 +28,10 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run Core GameTests (Fabric)
-        run: ./gradlew :core:Fabric:runGameTest
+        run: ./gradlew -p core Fabric:runGameTest
+
+      - name: Run Config UI GameTests (Fabric)
+        run: ./gradlew -p config-ui Fabric:runGameTest
+
+      - name: Run Bundle GameTests (Fabric)
+        run: ./gradlew -p bundle Fabric:runGameTest

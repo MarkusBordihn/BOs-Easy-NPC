@@ -22,11 +22,21 @@ package de.markusbordihn.easynpc.configui;
 import cpw.mods.modlauncher.Launcher;
 import cpw.mods.modlauncher.api.IEnvironment;
 import de.markusbordihn.easynpc.configui.debug.DebugManager;
+import de.markusbordihn.easynpc.configui.item.ModItems;
+import de.markusbordihn.easynpc.configui.menu.MenuHandler;
+import de.markusbordihn.easynpc.configui.menu.MenuManager;
+import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
+import de.markusbordihn.easynpc.configui.network.ClientNetworkMessageHandler;
+import de.markusbordihn.easynpc.configui.network.NetworkHandler;
+import de.markusbordihn.easynpc.configui.network.NetworkHandlerManager;
+import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import java.util.Optional;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
@@ -53,6 +63,26 @@ public class ConfigUIMain {
     log.info("{} Constants ...", Constants.LOG_REGISTER_PREFIX);
     Constants.GAME_DIR = FMLPaths.GAMEDIR.get();
     Constants.CONFIG_DIR = FMLPaths.CONFIGDIR.get();
+
+    log.info("{} Items ...", Constants.LOG_REGISTER_PREFIX);
+    ModItems.ITEMS.register(modEventBus);
+
+    log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
+    ModMenuTypes.MENU_TYPES.register(modEventBus);
+
+    log.info("{} Menu Handler ...", Constants.LOG_REGISTER_PREFIX);
+    MenuManager.registerMenuHandler(new MenuHandler());
+    modEventBus.addListener(MenuHandler::registerMenuHandler);
+
+    log.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
+    modEventBus.addListener(
+        (final FMLCommonSetupEvent event) ->
+            event.enqueueWork(
+                () -> {
+                  NetworkHandlerManager.registerHandler(new NetworkHandler());
+                  NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
+                }));
+    NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
 
     // Initialize the client mod initializer
     DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> new ConfigUIClient(modEventBus));

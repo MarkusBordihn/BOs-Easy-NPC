@@ -19,8 +19,13 @@
 
 package de.markusbordihn.easynpc.configui;
 
+import de.markusbordihn.easynpc.configui.client.screen.ClientScreens;
+import de.markusbordihn.easynpc.configui.network.NetworkHandlerManager;
+import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.configui.network.ServerNetworkMessageHandler;
+import de.markusbordihn.easynpc.configui.tabs.ModTabs;
+import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,9 +37,15 @@ public class ConfigUIClient implements ClientModInitializer {
   public void onInitializeClient() {
     log.info("Initializing {} (Fabric-Client) ...", Constants.MOD_NAME);
 
-    ClientLifecycleEvents.CLIENT_STARTED.register(
-        client -> {
-          // DataFileHandler.registerClientDataFiles();
-        });
+    log.info("{} Tabs ...", de.markusbordihn.easynpc.Constants.LOG_REGISTER_PREFIX);
+    ModTabs.registerModTabs();
+
+    log.info(
+        "{} Client Network Handler ...", de.markusbordihn.easynpc.Constants.LOG_REGISTER_PREFIX);
+    NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.CLIENT);
+    NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
+
+    log.info("{} Client Screens ...", de.markusbordihn.easynpc.Constants.LOG_REGISTER_PREFIX);
+    ClientScreens.registerScreens();
   }
 }

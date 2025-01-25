@@ -19,6 +19,9 @@
 
 package de.markusbordihn.easynpc.configui;
 
+import de.markusbordihn.easynpc.configui.client.screen.ClientScreens;
+import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.configui.network.ServerNetworkMessageHandler;
 import net.minecraftforge.eventbus.api.IEventBus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,5 +32,8 @@ public class ConfigUIClient {
 
   public ConfigUIClient(IEventBus modEventBus) {
     log.info("Initializing {} (Forge-Client) ...", Constants.MOD_NAME);
+
+    modEventBus.addListener(ClientScreens::registerScreens);
+    NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
   }
 }

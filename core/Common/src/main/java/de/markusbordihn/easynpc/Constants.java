@@ -39,6 +39,7 @@ public final class Constants {
   public static final String MOD_URL = "https://www.curseforge.com/minecraft/mc-mods/easy-npc";
   // Prefixes
   public static final String MOD_PREFIX = MOD_ID + ".";
+  public static final String MOD_PREFIX_ID = MOD_ID + ":";
   public static final String MINECRAFT_PREFIX = "minecraft";
   public static final String MINECRAFT_RESOURCE_PREFIX = MINECRAFT_PREFIX + ":";
   public static final String ENTITY_MINECRAFT_PREFIX = "entity." + MINECRAFT_PREFIX + ".";
@@ -55,12 +56,12 @@ public final class Constants {
       new ResourceLocation(MINECRAFT_PREFIX, "textures/gui/container/inventory.png");
   public static final ResourceLocation TEXTURE_SPAWNER =
       new ResourceLocation(Constants.MOD_ID, "textures/gui/spawner.png");
-  public static final String TEXT_PREFIX = "text.easy_npc.";
+  public static final String TEXT_PREFIX = "text." + MOD_ID + ".";
   public static final String TEXT_CONFIG_PREFIX = TEXT_PREFIX + "config.";
   public static final String TEXT_ITEM_PREFIX = TEXT_PREFIX + "item.";
+  public static final String CONTAINER_PREFIX = TEXT_PREFIX + "container.";
   // Textures
   public static final UUID BLANK_UUID = new UUID(0L, 0L);
-  public static final String CONTAINER_PREFIX = TEXT_PREFIX + "container.";
   public static final UUID EMPTY_UUID = new UUID(0L, 0L);
   public static final String ENTITY_PREFIX = "entity." + MOD_ID + ".";
   public static final Component EMPTY_TEXT_COMPONENT = TextComponent.getBlankText();
@@ -78,8 +79,8 @@ public final class Constants {
   public static final String ITEM_PREFIX = "item." + MOD_ID + ".";
   public static final String LOG_ICON = "🗣";
   // General Mod definitions
-  public static final String LOG_NAME = "Easy NPC";
-  public static final String LOG_REGISTER_PREFIX = LOG_ICON + " Register Easy NPC";
+  public static final String LOG_NAME = "Easy NPC: Core";
+  public static final String LOG_REGISTER_PREFIX = LOG_ICON + " Register " + LOG_NAME;
   // Animation Math
   public static final float MATH_27DEG_TO_RAD = 0.47123894F;
   public static final float MATH_27DEG_TO_RAD_INVERTED = -0.47123894F;

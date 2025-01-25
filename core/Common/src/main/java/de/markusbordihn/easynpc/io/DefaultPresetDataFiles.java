@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.io;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.preset.PresetFileType;
 import java.util.stream.Stream;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -37,9 +38,7 @@ public class DefaultPresetDataFiles {
     try {
       return minecraftServer
           .getResourceManager()
-          .listResources(
-              "default_preset",
-              resourceLocation -> resourceLocation.endsWith(Constants.NPC_NBT_SUFFIX))
+          .listResources("default_preset", PresetFileType::isSupported)
           .stream();
     } catch (Exception e) {
       log.error("Could not get default preset resource locations:", e);

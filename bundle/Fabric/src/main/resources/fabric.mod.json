@@ -26,7 +26,9 @@
     "fabricloader": ">=0.15",
     "fabric": "*",
     "minecraft": "1.18.2",
-    "java": ">=17"
+    "java": ">=17",
+    "easy_npc": ">=6.0.0 <7.0.0",
+    "easy_npc_config_ui": ">=6.0.0 <7.0.0"
   },
   "suggests": {
     "tooltipfix": "*"

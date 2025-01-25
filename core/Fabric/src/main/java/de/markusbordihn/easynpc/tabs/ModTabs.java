@@ -72,13 +72,12 @@ public class ModTabs {
         .build();
 
     FabricItemGroupBuilder.create(new ResourceLocation(Constants.MOD_ID, "config_items"))
-        .icon(ModItems.EASY_NPC_WAND::getDefaultInstance)
+        .icon(ModItems.MOVE_EASY_NPC::getDefaultInstance)
         .appendItems(
             stack -> {
               stack.add(ModItems.EASY_NPC_PRESET_EMPTY_ITEM.getDefaultInstance());
               stack.add(ModItems.EASY_NPC_PRESET_ITEM.getDefaultInstance());
               stack.add(ModItems.EASY_NPC_SPAWNER.getDefaultInstance());
-              stack.add(ModItems.EASY_NPC_WAND.getDefaultInstance());
               stack.add(ModItems.MOVE_EASY_NPC.getDefaultInstance());
             })
         .build();

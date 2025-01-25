@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.gametest;
 
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.ModEntityTypes;
 import net.minecraft.core.Registry;
 import net.minecraft.gametest.framework.GameTest;
@@ -28,7 +29,7 @@ import net.minecraft.world.entity.EntityType;
 @SuppressWarnings("unused")
 public class EntityTypeTest {
 
-  @GameTest(template = "easy_npc:gametest.1x1x1")
+  @GameTest(template = Constants.MOD_PREFIX_ID + "gametest.1x1x1")
   public void testForMissingEntityTypes(GameTestHelper helper) {
     for (EntityType<?> entityType : ModEntityTypes.getRegisteredEntityTypes()) {
       GameTestHelpers.assertNotNull(

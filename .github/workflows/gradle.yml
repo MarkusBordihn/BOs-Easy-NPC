@@ -27,5 +27,11 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Gradle Build Test Core
+        run: ./gradlew -p core build
+
+      - name: Gradle Build Test Config UI
+        run: ./gradlew -p config-ui build
+
+      - name: Gradle Build Test Bundle
+        run: ./gradlew -p bundle build

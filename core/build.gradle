@@ -1,13 +1,43 @@
-apply from: file('../build.gradle')
+subprojects {
+
+  apply plugin: 'java'
+
+  java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+  java.withSourcesJar()
+  java.withJavadocJar()
+
+  repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+      url "https://www.cursemaven.com"
+      content {
+        includeGroup "curse.maven"
+      }
+    }
+  }
+
+  tasks.register('wrapper', Wrapper) {
+    gradleVersion = '8.11'
+  }
+
+  tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+  }
+
+  tasks.withType(GenerateModuleMetadata).configureEach {
+    enabled = false
+  }
+
+  tasks.withType(Javadoc).configureEach {
+    enabled = false
+  }
+
+  tasks.register("prepareKotlinBuildScriptModel") {}
+}
 
 tasks.register('runAllGameTests') {
   group = 'verification'
   description = 'Runs both Fabric and Forge game tests.'
   dependsOn ':Fabric:runGameTest', ':Forge:runGameTestServer'
-}
-
-tasks.register('buildCore') {
-  group = 'build'
-  description = 'Builds the core mod.'
-  dependsOn ':Fabric:build', ':Forge:build'
 }

@@ -20,7 +20,19 @@
 package de.markusbordihn.easynpc.configui;
 
 import de.markusbordihn.easynpc.configui.debug.DebugManager;
+import de.markusbordihn.easynpc.configui.item.ModItems;
+import de.markusbordihn.easynpc.configui.menu.MenuHandler;
+import de.markusbordihn.easynpc.configui.menu.MenuManager;
+import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
+import de.markusbordihn.easynpc.configui.network.ClientNetworkMessageHandler;
+import de.markusbordihn.easynpc.configui.network.NetworkHandler;
+import de.markusbordihn.easynpc.configui.network.NetworkHandlerManager;
+import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
+import de.markusbordihn.easynpc.server.ServerEvents;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,5 +54,24 @@ public class ConfigUIMain implements ModInitializer {
     log.info("{} Constants ...", Constants.LOG_REGISTER_PREFIX);
     Constants.GAME_DIR = FabricLoader.getInstance().getGameDir();
     Constants.CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
+
+    log.info("{} Items ...", de.markusbordihn.easynpc.Constants.LOG_REGISTER_PREFIX);
+    ModItems.registerModItems();
+
+    log.info("{} Server Events ...", de.markusbordihn.easynpc.Constants.LOG_REGISTER_PREFIX);
+    ServerLifecycleEvents.SERVER_STARTING.register(ServerEvents::handleServerStarting);
+    ServerTickEvents.END_SERVER_TICK.register(ServerEvents::handleServerTick);
+
+    log.info("{} Menu Handler ...", de.markusbordihn.easynpc.Constants.LOG_REGISTER_PREFIX);
+    MenuManager.registerMenuHandler(new MenuHandler());
+
+    log.info("{} Menu Types ...", de.markusbordihn.easynpc.Constants.LOG_REGISTER_PREFIX);
+    ModMenuTypes.register();
+
+    log.info(
+        "{} Server Network Handler ...", de.markusbordihn.easynpc.Constants.LOG_REGISTER_PREFIX);
+    NetworkHandlerManager.registerHandler(new NetworkHandler());
+    NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.SERVER);
+    NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
   }
 }

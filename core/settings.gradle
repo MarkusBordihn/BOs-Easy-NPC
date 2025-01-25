@@ -25,4 +25,5 @@ pluginManagement {
 }
 
 rootProject.name = 'core'
-include("Common", "Fabric", "Forge", "NeoForge")
+
+include("Common", "Fabric", "Forge")

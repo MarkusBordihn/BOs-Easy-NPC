@@ -26,3 +26,17 @@ mandatory = true
 versionRange = "[1.18.2,1.19)"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies.easy_npc_bundle]]
+modId = "easy_npc"
+mandatory = true
+versionRange = "[6.0.0,7.0.0)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.easy_npc_bundle]]
+modId = "easy_npc_config_ui"
+mandatory = true
+versionRange = "[6.0.0,7.0.0)"
+ordering = "NONE"
+side = "BOTH"

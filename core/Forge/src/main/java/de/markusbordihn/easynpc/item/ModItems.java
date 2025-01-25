@@ -43,7 +43,6 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.ZombieVillager;
 import de.markusbordihn.easynpc.item.attack.BulletItem;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetEmptyItem;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetItem;
-import de.markusbordihn.easynpc.item.configuration.EasyNPCWandItem;
 import de.markusbordihn.easynpc.item.configuration.MoveEasyNPCItem;
 import de.markusbordihn.easynpc.tabs.ModTabs;
 import java.util.function.Supplier;
@@ -87,10 +86,6 @@ public class ModItems {
               new BlockItem(
                   ModBlocks.EASY_NPC_SPAWNER.get(),
                   new Item.Properties().tab(ModTabs.TAB_CONFIG_ITEMS)));
-  public static final RegistryObject<Item> EASY_NPC_WAND =
-      ITEMS.register(
-          EasyNPCWandItem.ID,
-          () -> new EasyNPCWandItem(new Item.Properties().tab(ModTabs.TAB_CONFIG_ITEMS)));
   public static final RegistryObject<Item> EVOKER_NPC_SPAWN_EGG =
       registerSpawnEgg(Illager.ID_EVOKER, ModEntityType.EVOKER);
   public static final RegistryObject<Item> FAIRY_NPC_SPAWN_EGG =

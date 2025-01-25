@@ -73,6 +73,23 @@ minecraft {
       property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
     }
 
+    gameTestServer {
+      workingDirectory project.file('run/gametestserver')
+      property 'forge.logging.markers', 'REGISTRIES'
+      property 'forge.logging.console.level', 'debug'
+      property 'forge.enabledGameTestNamespaces', "${project.mod_id}"
+
+      mods {
+        "${project.mod_id}" {
+          source sourceSets.main
+        }
+      }
+
+      // Mixin Support
+      property 'mixin.env.remapRefMap', 'true'
+      property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+    }
+
     data {
       workingDirectory project.file('run/data')
       property 'forge.logging.markers', 'REGISTRIES'
@@ -103,9 +120,11 @@ dependencies {
 
   // Include core as jar-in-jar
   jarJar(group: 'de.markusbordihn.easynpc', name: "easy_npc-forge-${project.minecraft_version}", version: '[6.0,7.0)')
+  runtimeOnly fg.deobf("de.markusbordihn.easynpc:easy_npc-forge-${project.minecraft_version}:${project.version}")
 
   // Include config-ui as jar-in-jar
   jarJar(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-forge-${project.minecraft_version}", version: '[6.0,7.0)')
+  runtimeOnly fg.deobf("de.markusbordihn.easynpc.configui:easy_npc_config_ui-forge-${project.minecraft_version}:${project.version}")
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -132,6 +151,10 @@ jar {
 
 jar.finalizedBy('reobfJar')
 
+build {
+  dependsOn 'jarJar'
+}
+
 publishing {
   publications {
     mavenJava(MavenPublication) {
@@ -151,7 +174,7 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
       releaseType = "${project.curseforge_release_type}"
       addGameVersion("${project.minecraft_version}")
       addGameVersion("Forge")
-      mainArtifact(jar)
+      mainArtifact(tasks.jarJar)
     }
   }
 }
@@ -165,7 +188,7 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     versionType = "${project.modrinth_release_type}"
     versionName = "${project.mod_name} ${project.version}"
     changelog = rootProject.file("CHANGELOG.md").text
-    uploadFile = jar
+    uploadFile = tasks.jarJar
     gameVersions = ["${project.minecraft_version}"]
     loaders = ["forge"]
   }

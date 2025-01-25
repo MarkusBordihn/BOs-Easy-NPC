@@ -138,7 +138,7 @@ public class EasyNPCArgument implements ArgumentType<EntitySelector> {
       UUID uuid = UUIDUtils.parseUUID(input);
       if (uuid != null && NetworkMessageHandlerManager.getServerHandler() != null) {
         log.debug("Found valid UUID {} and will request data sync...", uuid);
-        NetworkMessageHandlerManager.getServerHandler().requestDataSync(uuid);
+        // NetworkMessageHandlerManager.getServerHandler().requestDataSync(uuid);
       }
     }
 

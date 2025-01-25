@@ -1,51 +1,13 @@
+apply plugin: 'java'
+
 subprojects {
-
-  apply plugin: 'java'
-
-  java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-  java.withSourcesJar()
-  java.withJavadocJar()
-
-  repositories {
-    mavenCentral()
-    mavenLocal()
-    maven {
-      url "https://www.cursemaven.com"
-      content {
-        includeGroup "curse.maven"
-      }
-    }
-  }
 
   tasks.register('wrapper', Wrapper) {
     gradleVersion = '8.11'
-    distributionType = Wrapper.DistributionType.BIN
   }
 
   tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
   }
 
-  tasks.withType(GenerateModuleMetadata).configureEach {
-    enabled = false
-  }
-
-  tasks.withType(Javadoc).configureEach {
-    enabled = false
-  }
-
-  tasks.register("prepareKotlinBuildScriptModel") {}
-}
-
-tasks.register('publishToMavenLocal') {
-  group = 'publishing'
-  description = 'Publishing artefacts to Maven local.'
-  dependsOn ':core:Fabric:publishToMavenLocal', ':core:Forge:publishToMavenLocal'
-  dependsOn ':config-ui:Fabric:publishToMavenLocal', ':config-ui:Forge:publishToMavenLocal'
-}
-
-tasks.register('build') {
-  group = 'build'
-  description = 'Builds all subprojects.'
-  dependsOn gradle.includedBuild('core').task(':buildCore')
 }

@@ -1,8 +1,9 @@
 plugins {
+  id 'maven-publish'
   id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
 }
 
-archivesBaseName = "${project.mod_name}-common-${project.minecraft_version}"
+archivesBaseName = "${project.mod_id}-common-${project.minecraft_version}"
 
 minecraft {
   version(minecraft_version)
@@ -18,14 +19,30 @@ minecraft {
 
 dependencies {
   compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.7'
+
+  // Include Core Common code
+  compileOnly group: 'de.markusbordihn.easynpc', name: "easy_npc-common-${project.minecraft_version}", version: "${project.version}"
 }
 
 processResources {
-
   def buildProps = project.properties.clone()
 
   filesMatching(['pack.mcmeta']) {
     expand buildProps
   }
+}
 
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      groupId project.group
+      artifactId project.archivesBaseName
+      version project.version
+      from components.java
+    }
+  }
+}
+
+tasks.named('build') {
+  finalizedBy 'publishToMavenLocal'
 }
