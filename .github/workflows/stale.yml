@@ -12,10 +12,10 @@ jobs:
     steps:
       - uses: actions/stale@v9
         with:
-          any-of-labels: 'needs-more-info,question,crash,bug'
-          stale-issue-message: 'This issue is stale because it has been open 7 days with no activity. Remove stale label or comment or this will be closed in 3 days.'
+          any-of-labels: 'needs-more-info,question'
+          stale-issue-message: 'This issue is stale because it has been open 14 days with no activity. Remove stale label or comment or this will be closed in 7 days.'
           stale-pr-message: 'This PR is stale because it has been open 45 days with no activity. Remove stale label or comment or this will be closed in 10 days.'
-          close-issue-message: 'This issue was closed because it has been stalled for 5 days with no activity.'
-          days-before-stale: 7
-          days-before-close: 3
+          close-issue-message: 'This issue was closed because it has been stalled for 7 days with no activity.'
+          days-before-stale: 14
+          days-before-close: 7
           days-before-pr-close: -1
