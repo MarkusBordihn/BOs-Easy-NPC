@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.network.message.client;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.dialog.DialogDataManager;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -51,12 +52,12 @@ public record SyncDataMessage(UUID uuid, DialogDataSet dialogDataSet)
   @Override
   public void handleClient() {
     if (this.uuid == null || this.uuid.toString().isEmpty()) {
-      log.error("Invalid UUID {} for {}", this.uuid, this);
+      Logger.INSTANCE.error("Invalid UUID {} for {}", this.uuid, this);
       return;
     }
 
     if (this.dialogDataSet != null) {
-      log.debug("Syncing dialog data for {} with {}", this.uuid, this.dialogDataSet);
+      Logger.INSTANCE.debug("Syncing dialog data for {} with {}", this.uuid, this.dialogDataSet);
       DialogDataManager.addDialogDataSet(this.uuid, this.dialogDataSet);
     }
   }

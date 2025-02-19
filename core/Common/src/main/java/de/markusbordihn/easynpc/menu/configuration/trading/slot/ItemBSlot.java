@@ -19,17 +19,13 @@
 
 package de.markusbordihn.easynpc.menu.configuration.trading.slot;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.configuration.trading.TradingConfigurationMenu;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ItemBSlot extends Slot {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   final TradingConfigurationMenu menu;
 

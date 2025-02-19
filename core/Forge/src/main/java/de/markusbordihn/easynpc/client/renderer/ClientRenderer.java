@@ -43,23 +43,21 @@ import de.markusbordihn.easynpc.client.renderer.entity.standard.WolfModelRendere
 import de.markusbordihn.easynpc.client.renderer.entity.standard.ZombieModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.ZombieVillagerModelRenderer;
 import de.markusbordihn.easynpc.compat.CompatConstants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientRenderer {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
   private ClientRenderer() {}
 
   public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-    log.info("{} Entity Renders ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Entity Renders ...", Constants.LOG_REGISTER_PREFIX);
 
     event.registerEntityRenderer(
         ModEntityType.ALLAY.get(),

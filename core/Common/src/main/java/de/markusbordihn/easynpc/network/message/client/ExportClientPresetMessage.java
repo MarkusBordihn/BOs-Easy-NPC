@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.network.message.client;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.io.File;
@@ -64,48 +65,48 @@ public record ExportClientPresetMessage(
   @Override
   public void handleClient() {
     if (this.uuid == null || this.uuid.toString().isEmpty()) {
-      log.error("Invalid UUID {} for {}", this.uuid, this);
+      Logger.INSTANCE.error("Invalid UUID {} for {}", this.uuid, this);
       return;
     }
 
     // Validate name.
     if (this.name == null || this.name.isEmpty()) {
-      log.error("Invalid name {} for {}", this.name, this);
+      Logger.INSTANCE.error("Invalid name {} for {}", this.name, this);
       return;
     }
 
     // Validate skin model.
     if (this.skinModel == null) {
-      log.error("Invalid skin model for {}", this);
+      Logger.INSTANCE.error("Invalid skin model for {}", this);
       return;
     }
 
     // Validate data.
     if (this.data == null) {
-      log.error("Invalid data for {}", this);
+      Logger.INSTANCE.error("Invalid data for {}", this);
       return;
     }
 
     // Validate name.
     if (this.fileName == null || this.fileName.isEmpty()) {
-      log.warn("Export preset file name is empty for {}", uuid);
+      Logger.INSTANCE.warn("Export preset file name is empty for {}", uuid);
       return;
     }
 
     // Perform action.
     File presetFile = CustomPresetDataFiles.getPresetFile(this.skinModel, this.fileName);
     if (presetFile == null) {
-      log.error("Failed to get preset file for {}", this);
+      Logger.INSTANCE.error("Failed to get preset file for {}", this);
       return;
     }
 
     // Export preset file.
-    log.info(
+    Logger.INSTANCE.info(
         "Exporting EasyNPC {} with UUID {} and skin {} to {}", name, uuid, skinModel, presetFile);
     try {
       NbtIo.writeCompressed(data, presetFile);
     } catch (final IOException exception) {
-      log.error(
+      Logger.INSTANCE.error(
           "Failed to export EasyNPC {} with UUID {} and skin {} to {}:",
           name,
           uuid,

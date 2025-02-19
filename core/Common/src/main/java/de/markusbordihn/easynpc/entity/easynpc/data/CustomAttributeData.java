@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.attribute.CustomAttributes;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
@@ -34,7 +35,7 @@ public interface CustomAttributeData<E extends PathfinderMob> extends EasyNPC<E>
 
   static void registerSyncedCustomAttributeData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("- Registering Synched Custom Attribute Data for {}.", entityClass.getSimpleName());
+    Logger.INSTANCE.info("- Registering Synched Custom Attribute Data for {}.", entityClass.getSimpleName());
     map.put(
         SynchedDataIndex.CUSTOM_ATTRIBUTES,
         SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.CUSTOM_ATTRIBUTES));

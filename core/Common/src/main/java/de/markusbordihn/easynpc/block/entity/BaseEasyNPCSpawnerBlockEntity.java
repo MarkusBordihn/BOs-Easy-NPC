@@ -21,14 +21,10 @@ package de.markusbordihn.easynpc.block.entity;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.block.BaseEasyNPCSpawnerBlock;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetItem;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
@@ -47,8 +43,8 @@ import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.*;
 
 public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
 
@@ -72,7 +68,6 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
   public static final int SPAWN_RANGE_DATA = 3;
   public static final String SPAWN_RANGE_TAG = "SpawnRange";
   public static final String UUID_TAG = "UUID";
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected final Random random = new Random();
   protected final NonNullList<ItemStack> items = NonNullList.withSize(8, ItemStack.EMPTY);
   private int delay = 10;
@@ -169,7 +164,7 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
     if (!blockEntity.checkDespawnConditions()) {
       return;
     }
-    log.debug("Despawn tick for {}", blockEntity);
+    Logger.INSTANCE.debug("Despawn tick for {}", blockEntity);
 
     // Get all valid EasyNPCs in despawn range.
     Set<EasyNPC<?>> validEasyNPCs =
@@ -180,7 +175,7 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
         blockEntity.getEasyNPCsInRange(blockEntity.worldPosition, blockEntity.despawnRange + 256);
     for (EasyNPC<?> easyNPC : nearbyEasyNPCs) {
       if (!validEasyNPCs.contains(easyNPC)) {
-        log.debug(
+        Logger.INSTANCE.debug(
             "Despawn {} from spawner at {} outside of range {}",
             easyNPC,
             blockPos,
@@ -198,7 +193,7 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
     if (!blockEntity.checkSpawnConditions()) {
       return;
     }
-    log.debug("Spawn tick for {}", blockEntity);
+    Logger.INSTANCE.debug("Spawn tick for {}", blockEntity);
 
     // Check which side of the spawner is free to adjust the spawn block position, if needed.
     // We check the north, south, east and west side of the spawner and if all sides are blocked
@@ -229,7 +224,7 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
           if (numbersPerSpawnInterval <= 0) {
             break;
           }
-          log.info(
+          Logger.INSTANCE.info(
               "Spawned {} ({} / {}) at {} with in {}",
               presetItemStack,
               numbersPerSpawnInterval,
@@ -237,7 +232,7 @@ public class BaseEasyNPCSpawnerBlockEntity extends BaseContainerBlockEntity {
               spawnBlockPos,
               level);
         } else {
-          log.info("Spawned {} at {} with in {}", presetItemStack, spawnBlockPos, level);
+          Logger.INSTANCE.info("Spawned {} at {} with in {}", presetItemStack, spawnBlockPos, level);
         }
       }
     }

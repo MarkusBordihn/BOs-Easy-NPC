@@ -23,20 +23,17 @@ import de.markusbordihn.easynpc.client.ClientEvents;
 import de.markusbordihn.easynpc.client.model.ModModelLayer;
 import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
 import de.markusbordihn.easynpc.client.screen.ClientScreens;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import de.markusbordihn.easynpc.tabs.ModTabs;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class EasyNPCClient {
 
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
   public EasyNPCClient(IEventBus modEventBus) {
-    log.info("Initializing {} (Forge-Client) ...", Constants.MOD_NAME);
+    Logger.INSTANCE.info("Initializing {} (Forge-Client) ...", Constants.MOD_NAME);
 
     modEventBus.addListener(ModModelLayer::registerEntityLayerDefinitions);
     modEventBus.addListener(ClientRenderer::registerEntityRenderers);

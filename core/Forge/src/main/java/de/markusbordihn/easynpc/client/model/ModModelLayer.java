@@ -23,25 +23,24 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.FairyModel;
 import de.markusbordihn.easynpc.client.model.custom.OrcModel;
 import de.markusbordihn.easynpc.client.model.standard.StandardAllayModel;
+import de.markusbordihn.easynpc.debug.Logger;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @OnlyIn(Dist.CLIENT)
 public class ModModelLayer {
 
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+    private ModModelLayer() {
+    }
 
-  private ModModelLayer() {}
+    public static void registerEntityLayerDefinitions(
+            EntityRenderersEvent.RegisterLayerDefinitions event) {
+        Logger.INSTANCE.info("{} Entity Layer Definitions ...", Constants.LOG_REGISTER_PREFIX);
 
-  public static void registerEntityLayerDefinitions(
-      EntityRenderersEvent.RegisterLayerDefinitions event) {
-    log.info("{} Entity Layer Definitions ...", Constants.LOG_REGISTER_PREFIX);
-
-    event.registerLayerDefinition(ModModelLayers.ALLAY, StandardAllayModel::createBodyLayer);
-    event.registerLayerDefinition(ModModelLayers.FAIRY, FairyModel::createBodyLayer);
-    event.registerLayerDefinition(ModModelLayers.ORC, OrcModel::createBodyLayer);
-  }
+        event.registerLayerDefinition(ModModelLayers.ALLAY, StandardAllayModel::createBodyLayer);
+        event.registerLayerDefinition(ModModelLayers.FAIRY, FairyModel::createBodyLayer);
+        event.registerLayerDefinition(ModModelLayers.ORC, OrcModel::createBodyLayer);
+    }
 }

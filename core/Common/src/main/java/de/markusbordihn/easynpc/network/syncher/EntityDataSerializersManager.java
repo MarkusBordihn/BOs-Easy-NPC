@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.network.syncher;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.attribute.CustomAttributes;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
@@ -35,21 +34,20 @@ import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
+import de.markusbordihn.easynpc.debug.Logger;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.world.item.trading.MerchantOffers;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class EntityDataSerializersManager {
 
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final Map<String, EntityDataSerializer<?>> ENTITY_DATA_SERIALIZERS =
       new LinkedHashMap<>();
   public static final EntityDataSerializer<ActionEventSet> ACTION_EVENT_SET =
@@ -438,7 +436,7 @@ public class EntityDataSerializersManager {
   public static <T> EntityDataSerializer<T> defineSerializer(
       final String className, final EntityDataSerializer<T> serializer) {
     if (ENTITY_DATA_SERIALIZERS.containsKey(className)) {
-      log.error(
+        Logger.INSTANCE.error(
           "Entity data serializer {} already defined with {}!",
           className,
           ENTITY_DATA_SERIALIZERS.get(className));
@@ -452,15 +450,15 @@ public class EntityDataSerializersManager {
     for (Map.Entry<String, EntityDataSerializer<?>> entry : ENTITY_DATA_SERIALIZERS.entrySet()) {
       EntityDataSerializer<?> serializer = entry.getValue();
       if (serializer == null) {
-        log.error("Failed to register entity data serializer {}", entry.getKey());
+        Logger.INSTANCE.error("Failed to register entity data serializer {}", entry.getKey());
         continue;
       }
       EntityDataSerializers.registerSerializer(serializer);
       int id = EntityDataSerializers.getSerializedId(serializer);
       if (id >= 0) {
-        log.info("Registered entity data serializer {} with id {}", entry.getKey(), id);
+        Logger.INSTANCE.info("Registered entity data serializer {} with id {}", entry.getKey(), id);
       } else {
-        log.error(
+        Logger.INSTANCE.error(
             "Failed to register entity data serializer {} with {}", entry.getKey(), serializer);
       }
     }

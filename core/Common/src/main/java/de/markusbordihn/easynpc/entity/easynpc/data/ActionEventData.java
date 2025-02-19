@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
 import de.markusbordihn.easynpc.data.server.ServerDataIndex;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
@@ -139,7 +140,7 @@ public interface ActionEventData<E extends PathfinderMob> extends EasyNPC<E> {
   }
 
   default void registerDefaultActionInteractionEvents() {
-    log.info("Register default action interaction events for {} ...", this);
+    Logger.INSTANCE.info("Register default action interaction events for {} ...", this);
 
     // Get existing action event set or create a new one
     ActionEventSet actionEventSet =

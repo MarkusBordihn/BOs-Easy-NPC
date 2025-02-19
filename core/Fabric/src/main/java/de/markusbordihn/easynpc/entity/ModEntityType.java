@@ -23,23 +23,8 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.compat.epicfight.entity.EpicFightEntityTypes;
 import de.markusbordihn.easynpc.compat.epicfight.entity.EpicFightZombie;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Allay;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Horse;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
-import de.markusbordihn.easynpc.entity.easynpc.npc.HumanoidSlim;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
-import de.markusbordihn.easynpc.entity.easynpc.npc.IronGolem;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Piglin;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Wolf;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie;
-import de.markusbordihn.easynpc.entity.easynpc.npc.ZombieVillager;
+import de.markusbordihn.easynpc.debug.Logger;
+import de.markusbordihn.easynpc.entity.easynpc.npc.*;
 import de.markusbordihn.easynpc.entity.easynpc.raw.PiglinRaw;
 import de.markusbordihn.easynpc.entity.easynpc.raw.SkeletonRaw;
 import de.markusbordihn.easynpc.entity.easynpc.raw.ZombieRaw;
@@ -47,8 +32,6 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ModEntityType {
 
@@ -195,7 +178,6 @@ public class ModEntityType {
           BuiltInRegistries.ENTITY_TYPE,
           Constants.MOD_ID + ":" + ZombieRaw.ID,
           ModEntityTypes.ZOMBIE_RAW);
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   // Optional: Epic Fight entities
   public static EntityType<EpicFightZombie> EPIC_FIGHT_ZOMBIE;
 
@@ -210,7 +192,7 @@ public class ModEntityType {
   private ModEntityType() {}
 
   public static void registerEntitiesAttributes() {
-    log.info("{} Registering Entities Attributes ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Registering Entities Attributes ...", Constants.LOG_REGISTER_PREFIX);
     FabricDefaultAttributeRegistry.register(ALLAY, Allay.createAttributes());
     FabricDefaultAttributeRegistry.register(CAT, Cat.createAttributes());
     FabricDefaultAttributeRegistry.register(CHICKEN, Chicken.createAttributes());

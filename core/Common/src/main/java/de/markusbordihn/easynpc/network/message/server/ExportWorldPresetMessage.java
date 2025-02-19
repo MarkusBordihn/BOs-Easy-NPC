@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
@@ -64,21 +65,21 @@ public record ExportWorldPresetMessage(UUID uuid, String name) implements Networ
 
     // Validate name.
     if (this.name == null || this.name.isEmpty()) {
-      log.warn("Export preset name is empty for {}", easyNPC);
+      Logger.INSTANCE.warn("Export preset name is empty for {}", easyNPC);
       return;
     }
 
     // Validate skin data.
     SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
     if (skinData == null) {
-      log.warn("Export preset skin data is empty for {}", easyNPC);
+      Logger.INSTANCE.warn("Export preset skin data is empty for {}", easyNPC);
       return;
     }
 
     // Validate Skin Model
     SkinModel skinModel = skinData.getSkinModel();
     if (skinModel == null) {
-      log.warn("Export preset skin model is empty for {}", easyNPC);
+      Logger.INSTANCE.warn("Export preset skin model is empty for {}", easyNPC);
       return;
     }
 
@@ -86,24 +87,24 @@ public record ExportWorldPresetMessage(UUID uuid, String name) implements Networ
     PresetData<?> presetData = easyNPC.getEasyNPCPresetData();
     CompoundTag compoundTag = presetData.exportPresetData();
     if (compoundTag == null || compoundTag.isEmpty()) {
-      log.warn("Export preset data is empty for {}", easyNPC);
+      Logger.INSTANCE.warn("Export preset data is empty for {}", easyNPC);
       return;
     }
 
     // Validate preset file.
     File presetFile = WorldPresetDataFiles.getPresetFile(skinModel, name);
     if (presetFile == null) {
-      log.error("Failed to get preset file for {} with name {}", skinModel, name);
+      Logger.INSTANCE.error("Failed to get preset file for {} with name {}", skinModel, name);
       return;
     }
 
     // Perform action.
-    log.info(
+    Logger.INSTANCE.info(
         "Exporting EasyNPC {} with {} and skin {} to {}", name, easyNPC, skinModel, presetFile);
     try {
       NbtIo.writeCompressed(compoundTag, presetFile);
     } catch (final IOException exception) {
-      log.error(
+      Logger.INSTANCE.error(
           "Failed to export EasyNPC {} with {} and skin {} to {}:",
           name,
           easyNPC,

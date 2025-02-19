@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.RespawnHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -55,7 +56,7 @@ public record RespawnNPCMessage(UUID uuid) implements NetworkMessageRecord {
     }
 
     if (!RespawnHandler.respawnNPC(easyNPC, serverPlayer.serverLevel())) {
-      log.error("Unable to respawn Easy NPC {} for {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Unable to respawn Easy NPC {} for {}", easyNPC, serverPlayer);
     }
   }
 }

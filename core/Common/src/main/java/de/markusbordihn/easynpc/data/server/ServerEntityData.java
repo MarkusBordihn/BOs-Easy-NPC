@@ -19,17 +19,15 @@
 
 package de.markusbordihn.easynpc.data.server;
 
-import de.markusbordihn.easynpc.Constants;
-import java.util.EnumMap;
-import java.util.EnumSet;
+import de.markusbordihn.easynpc.debug.Logger;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.world.entity.Entity;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.EnumMap;
+import java.util.EnumSet;
 
 public class ServerEntityData {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String LOG_PREFIX = "[Custom Entity Data]";
   private static final EnumSet<ServerDataIndex> usedCustomDataAccessorIdSet =
       EnumSet.noneOf(ServerDataIndex.class);
@@ -49,7 +47,7 @@ public class ServerEntityData {
   public static <T> ServerDataAccessor<T> defineId(EntityDataSerializer<T> entityDataSerializer) {
     // Check if we have a free custom data accessor id.
     if (customDataAccessorId >= ServerDataIndex.MAX_FREE_INDEX) {
-      log.error(
+      Logger.INSTANCE.error(
           "{} No more custom data accessor available for {} with id {}"
               + "The maximum for auto-generated ids is {}",
           LOG_PREFIX,
@@ -58,7 +56,7 @@ public class ServerEntityData {
           ServerDataIndex.MAX_FREE_INDEX);
       return null;
     }
-    log.warn(
+    Logger.INSTANCE.warn(
         "{} Please define a custom index for {} instead of using the auto-generated.",
         LOG_PREFIX,
         entityDataSerializer);
@@ -71,7 +69,7 @@ public class ServerEntityData {
 
     // Make sure that we have a valid custom data accessor id, and it is not already in use.
     if (usedCustomDataAccessorIdSet.contains(serverDataIndex)) {
-      log.error(
+      Logger.INSTANCE.error(
           "{} Can't define custom data accessor {} with id {}, because it is already in use!",
           LOG_PREFIX,
           entityDataSerializers,
@@ -81,7 +79,7 @@ public class ServerEntityData {
 
     ServerDataAccessor<T> serverDataAccessor =
         new ServerDataAccessor<>(serverDataIndex, entityDataSerializers);
-    log.debug(
+    Logger.INSTANCE.debug(
         "{} Create custom data accessor {} with id {}",
         LOG_PREFIX,
         serverDataAccessor,
@@ -93,7 +91,7 @@ public class ServerEntityData {
   public <T> void define(ServerDataAccessor<T> serverDataAccessor, T customData) {
     if (!this.isClientSide) {
       ServerDataItem<T> dataItem = new ServerDataItem<>(serverDataAccessor, customData);
-      log.debug("{} Define custom data item {} with {}", LOG_PREFIX, dataItem, serverDataAccessor);
+      Logger.INSTANCE.debug("{} Define custom data item {} with {}", LOG_PREFIX, dataItem, serverDataAccessor);
       this.customEntityDataMap.put(serverDataAccessor.getIndex(), dataItem);
     }
   }
@@ -101,7 +99,7 @@ public class ServerEntityData {
   public <T> void set(ServerDataAccessor<T> entityDataAccessor, T customData) {
     ServerDataItem<T> serverDataItem = this.getDataItem(entityDataAccessor);
     if (serverDataItem != null) {
-      log.debug(
+      Logger.INSTANCE.debug(
           "{} Set custom data {} for {} with id {}",
           LOG_PREFIX,
           serverDataItem,
@@ -126,7 +124,7 @@ public class ServerEntityData {
           (ServerDataItem<T>) this.customEntityDataMap.get(entityDataAccessor.getIndex());
       return serverDataItem;
     } catch (Exception exception) {
-      log.error("{} Failed to get data item for {}:", LOG_PREFIX, entityDataAccessor, exception);
+      Logger.INSTANCE.error("{} Failed to get data item for {}:", LOG_PREFIX, entityDataAccessor, exception);
     }
     return null;
   }

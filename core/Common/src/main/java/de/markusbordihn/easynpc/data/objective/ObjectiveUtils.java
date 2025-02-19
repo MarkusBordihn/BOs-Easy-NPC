@@ -19,36 +19,16 @@
 
 package de.markusbordihn.easynpc.data.objective;
 
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.ai.goal.BowAttackGoal;
-import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CrossbowAttackGoal;
-import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomLookAtPlayerGoal;
-import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomMeleeAttackGoal;
-import de.markusbordihn.easynpc.entity.easynpc.ai.goal.FollowLivingEntityGoal;
-import de.markusbordihn.easynpc.entity.easynpc.ai.goal.GunAttackGoal;
-import de.markusbordihn.easynpc.entity.easynpc.ai.goal.MoveBackToHomeGoal;
-import de.markusbordihn.easynpc.entity.easynpc.ai.goal.RandomStrollAroundGoal;
-import de.markusbordihn.easynpc.entity.easynpc.ai.goal.RandomStrollAroundHomeGoal;
-import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ResetLookAtPlayerGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.ZombieAttackGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.goal.FleeSunGoal;
-import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.GolemRandomStrollInVillageGoal;
-import net.minecraft.world.entity.ai.goal.MoveBackToVillageGoal;
-import net.minecraft.world.entity.ai.goal.MoveThroughVillageGoal;
-import net.minecraft.world.entity.ai.goal.OpenDoorGoal;
-import net.minecraft.world.entity.ai.goal.PanicGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
-import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.monster.Creeper;
@@ -56,12 +36,9 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ObjectiveUtils {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ObjectiveUtils() {}
 
@@ -81,7 +58,7 @@ public class ObjectiveUtils {
               objectiveDataEntry.getStopDistance(),
               objectiveDataEntry.getStartDistance());
         } else {
-          log.debug(
+          Logger.INSTANCE.debug(
               "Unable to find valid player {} for {}!",
               objectiveDataEntry.getTargetPlayer(),
               objectiveDataEntry);
@@ -96,7 +73,7 @@ public class ObjectiveUtils {
               objectiveDataEntry.getStopDistance(),
               objectiveDataEntry.getStartDistance());
         } else {
-          log.debug(
+          Logger.INSTANCE.debug(
               "Unable to find valid owner {} for {} with {}!",
               targetOwner,
               easyNPC.getEntity(),
@@ -113,7 +90,7 @@ public class ObjectiveUtils {
               objectiveDataEntry.getStopDistance(),
               objectiveDataEntry.getStartDistance());
         } else {
-          log.debug(
+          Logger.INSTANCE.debug(
               "Unable to find living entity {} for {}!",
               objectiveDataEntry.getTargetEntityUUID(),
               objectiveDataEntry);

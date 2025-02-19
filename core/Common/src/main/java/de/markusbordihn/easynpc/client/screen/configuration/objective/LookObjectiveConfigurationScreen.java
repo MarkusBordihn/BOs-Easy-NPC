@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
@@ -140,7 +141,7 @@ public class LookObjectiveConfigurationScreen<T extends ConfigurationMenu>
                       try {
                         entityUUID = UUID.fromString(lookAtEntityUUID.getValue());
                       } catch (IllegalArgumentException e) {
-                        log.error(
+                          Logger.INSTANCE.error(
                             "Unable to parse UUID {} for {}",
                             lookAtEntityUUID.getValue(),
                             this.getEasyNPCUUID());

@@ -22,106 +22,109 @@ package de.markusbordihn.easynpc.network.message.server;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+
 import java.util.UUID;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public record ExecuteDialogButtonActionMessage(UUID uuid, UUID dialogId, UUID dialogButtonId)
-    implements NetworkMessageRecord {
+        implements NetworkMessageRecord {
 
-  public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "dialog_button_action");
+    public static final ResourceLocation MESSAGE_ID =
+            new ResourceLocation(Constants.MOD_ID, "dialog_button_action");
 
-  public static ExecuteDialogButtonActionMessage create(final FriendlyByteBuf buffer) {
-    return new ExecuteDialogButtonActionMessage(
-        buffer.readUUID(), buffer.readUUID(), buffer.readUUID());
-  }
-
-  @Override
-  public void write(final FriendlyByteBuf buffer) {
-    buffer.writeUUID(this.uuid);
-    buffer.writeUUID(this.dialogId);
-    buffer.writeUUID(this.dialogButtonId);
-  }
-
-  @Override
-  public ResourceLocation id() {
-    return MESSAGE_ID;
-  }
-
-  @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPC(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
+    public static ExecuteDialogButtonActionMessage create(final FriendlyByteBuf buffer) {
+        return new ExecuteDialogButtonActionMessage(
+                buffer.readUUID(), buffer.readUUID(), buffer.readUUID());
     }
 
-    // Validate dialog id.
-    if (this.dialogId == null) {
-      log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
-      return;
+    @Override
+    public void write(final FriendlyByteBuf buffer) {
+        buffer.writeUUID(this.uuid);
+        buffer.writeUUID(this.dialogId);
+        buffer.writeUUID(this.dialogButtonId);
     }
 
-    // Validate dialog button id.
-    if (this.dialogButtonId == null) {
-      log.error("Invalid dialog button id for {} from {}", easyNPC, serverPlayer);
-      return;
+    @Override
+    public ResourceLocation id() {
+        return MESSAGE_ID;
     }
 
-    // Validate dialog data.
-    DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
-    if (dialogData == null) {
-      log.error("Dialog data for {} is not available for {}", easyNPC, serverPlayer);
-      return;
-    }
+    @Override
+    public void handleServer(final ServerPlayer serverPlayer) {
+        EasyNPC<?> easyNPC = getEasyNPC(this.uuid, serverPlayer);
+        if (easyNPC == null) {
+            return;
+        }
 
-    // Validate dialog button actions.
-    if (!dialogData.hasDialogButton(this.dialogId, this.dialogButtonId)) {
-      log.error(
-          "Unknown dialog button action {} request for dialog {} for {} from {}",
-          this.dialogButtonId,
-          this.dialogId,
-          easyNPC,
-          serverPlayer);
-      return;
-    }
+        // Validate dialog id.
+        if (this.dialogId == null) {
+            Logger.INSTANCE.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
+            return;
+        }
 
-    // Validate dialog button data.
-    DialogButtonEntry dialogButtonEntry = dialogData.getDialogButton(dialogId, dialogButtonId);
-    if (dialogButtonEntry == null) {
-      log.error(
-          "Unable to get valid dialog button data for {} and dialog {} from {}",
-          easyNPC,
-          this.dialogId,
-          serverPlayer);
-      return;
-    }
+        // Validate dialog button id.
+        if (this.dialogButtonId == null) {
+            Logger.INSTANCE.error("Invalid dialog button id for {} from {}", easyNPC, serverPlayer);
+            return;
+        }
 
-    // Validate dialog button actions.
-    ActionDataSet actionDataSet = dialogButtonEntry.actionDataSet();
-    if (actionDataSet == null || actionDataSet.isEmpty()) {
-      log.error(
-          "Empty dialog button action {} request for {} and dialog {} from {}",
-          this.dialogButtonId,
-          easyNPC,
-          this.dialogId,
-          serverPlayer);
-      return;
-    }
+        // Validate dialog data.
+        DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
+        if (dialogData == null) {
+            Logger.INSTANCE.error("Dialog data for {} is not available for {}", easyNPC, serverPlayer);
+            return;
+        }
 
-    // Validate action handler.
-    ActionHandler<?> actionHandler = easyNPC.getEasyNPCActionHandler();
-    if (actionHandler == null) {
-      log.error("Unable to get valid action handler for {} from {}", easyNPC, serverPlayer);
-      return;
-    }
+        // Validate dialog button actions.
+        if (!dialogData.hasDialogButton(this.dialogId, this.dialogButtonId)) {
+            Logger.INSTANCE.error(
+                    "Unknown dialog button action {} request for dialog {} for {} from {}",
+                    this.dialogButtonId,
+                    this.dialogId,
+                    easyNPC,
+                    serverPlayer);
+            return;
+        }
 
-    // Perform action.
-    actionHandler.executeActions(actionDataSet, serverPlayer);
-  }
+        // Validate dialog button data.
+        DialogButtonEntry dialogButtonEntry = dialogData.getDialogButton(dialogId, dialogButtonId);
+        if (dialogButtonEntry == null) {
+            Logger.INSTANCE.error(
+                    "Unable to get valid dialog button data for {} and dialog {} from {}",
+                    easyNPC,
+                    this.dialogId,
+                    serverPlayer);
+            return;
+        }
+
+        // Validate dialog button actions.
+        ActionDataSet actionDataSet = dialogButtonEntry.actionDataSet();
+        if (actionDataSet == null || actionDataSet.isEmpty()) {
+            Logger.INSTANCE.error(
+                    "Empty dialog button action {} request for {} and dialog {} from {}",
+                    this.dialogButtonId,
+                    easyNPC,
+                    this.dialogId,
+                    serverPlayer);
+            return;
+        }
+
+        // Validate action handler.
+        ActionHandler<?> actionHandler = easyNPC.getEasyNPCActionHandler();
+        if (actionHandler == null) {
+            Logger.INSTANCE.error("Unable to get valid action handler for {} from {}", easyNPC, serverPlayer);
+            return;
+        }
+
+        // Perform action.
+        actionHandler.executeActions(actionDataSet, serverPlayer);
+    }
 }

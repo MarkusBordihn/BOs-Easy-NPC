@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
@@ -35,7 +36,7 @@ public interface DisplayAttributeData<E extends PathfinderMob> extends EasyNPC<E
 
   static void registerSyncedDisplayAttributeData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("- Registering Synched Display Attribute Data for {}.", entityClass.getSimpleName());
+    Logger.INSTANCE.info("- Registering Synched Display Attribute Data for {}.", entityClass.getSimpleName());
     map.put(
         SynchedDataIndex.DISPLAY_ATTRIBUTE_SET,
         SynchedEntityData.defineId(

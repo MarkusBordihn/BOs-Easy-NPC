@@ -22,22 +22,21 @@ package de.markusbordihn.easynpc.io;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.debug.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class RemoteSkinDataFiles {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String DATA_FOLDER_NAME = "remote_skin";
 
   private RemoteSkinDataFiles() {}
 
   public static void registerRemoteSkinData() {
-    log.info("{} remote skin data ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} remote skin data ...", Constants.LOG_REGISTER_PREFIX);
 
     // Prepare skin data folder
     Path skinDataFolder = getRemoteSkinDataFolder();
@@ -77,10 +76,10 @@ public class RemoteSkinDataFiles {
       if (Files.exists(skinDataFolderPath) && Files.isDirectory(skinDataFolderPath)) {
         return skinDataFolderPath;
       }
-      log.info("Created new remote skin data folder {} at {}!", skinModelName, skinDataFolderPath);
+      Logger.INSTANCE.info("Created new remote skin data folder {} at {}!", skinModelName, skinDataFolderPath);
       return Files.createDirectories(skinDataFolderPath);
     } catch (IOException e) {
-      log.error(
+      Logger.INSTANCE.error(
           "Could not create remote skin data folder {} at {}:",
           skinModelName,
           remoteSkinDataFolder.resolve(skinModelName),

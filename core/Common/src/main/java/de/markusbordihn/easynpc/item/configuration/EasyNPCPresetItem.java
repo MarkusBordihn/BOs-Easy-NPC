@@ -20,10 +20,9 @@
 package de.markusbordihn.easynpc.item.configuration;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import java.util.List;
-import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
@@ -41,8 +40,9 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.List;
+import java.util.UUID;
 
 public class EasyNPCPresetItem extends Item {
 
@@ -50,7 +50,6 @@ public class EasyNPCPresetItem extends Item {
   public static final String NAME = "easy_npc_preset";
   public static final String PRESET_TAG = "Preset";
   public static final String SPAWNER_UUID_TAG = "SpawnerUUID";
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String FALL_DISTANCE_TAG = "FallDistance";
   private static final String FIRE_TAG = "Fire";
   private static final String MOTION_TAG = "Motion";
@@ -143,14 +142,14 @@ public class EasyNPCPresetItem extends Item {
     CompoundTag entityPreset = getPreset(itemStack);
     EntityType<?> entityType = getEntityType(itemStack);
     if (entityType == null) {
-      log.error("No valid entity type found in {}!", itemStack);
+      Logger.INSTANCE.error("No valid entity type found in {}!", itemStack);
       return false;
     }
 
     // Create and validate entity.
     Entity entity = entityType.create(level);
     if (entity == null) {
-      log.error("Unable to create entity for {} in {}", entityType, level);
+      Logger.INSTANCE.error("Unable to create entity for {} in {}", entityType, level);
       return false;
     }
 
@@ -169,7 +168,7 @@ public class EasyNPCPresetItem extends Item {
     // Move entity to and spawn entity.
     entity.moveTo(blockPos.getX() + 0.5f, blockPos.getY(), blockPos.getZ() + 0.5f);
     if (level.addFreshEntity(entity)) {
-      log.debug(
+      Logger.INSTANCE.debug(
           "Spawned {} at {} from spawner {} with {} in {}",
           entityType,
           blockPos,
@@ -193,7 +192,7 @@ public class EasyNPCPresetItem extends Item {
     // Verify item stack, preset and entity type.
     ItemStack itemStack = context.getItemInHand();
     if (itemStack.isEmpty() || !hasPreset(itemStack) || !hasEntityType(itemStack)) {
-      log.warn("No valid preset found in {}!", itemStack);
+      Logger.INSTANCE.warn("No valid preset found in {}!", itemStack);
       return InteractionResult.FAIL;
     }
 

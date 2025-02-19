@@ -29,15 +29,13 @@ import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 public class SliderButton extends AbstractSliderButton {
 
   public static final int DEFAULT_HEIGHT = 16;
   protected static final Component EMPTY_TEXT = TextComponent.getBlankText();
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
   private static final ResourceLocation SLIDER_LOCATION =
       new ResourceLocation("minecraft", "textures/gui/slider.png");
   protected final SliderButton.OnChange onChange;

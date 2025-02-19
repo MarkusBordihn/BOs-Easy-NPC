@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.handler;
 
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
@@ -28,10 +28,6 @@ import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
@@ -44,12 +40,14 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.phys.Vec3;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.UUID;
 
 public class PresetHandler {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private PresetHandler() {}
 
@@ -83,7 +81,7 @@ public class PresetHandler {
     UUID compoundUUID = compoundTag.getUUID(Entity.UUID_TAG);
     EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(compoundUUID, serverLevel);
     if (easyNPC == null) {
-      log.error(
+      Logger.INSTANCE.error(
           "[{}] Error importing preset {}, no entity found for {}",
           serverLevel,
           compoundTag,
@@ -101,7 +99,7 @@ public class PresetHandler {
     if (position != null) {
       NavigationData<?> navigationData = easyNPC.getEasyNPCNavigationData();
       if (navigationData == null) {
-        log.warn(
+        Logger.INSTANCE.warn(
             "[{}] Warning: Importing preset, no navigation data available for {}",
             serverLevel,
             easyNPC);
@@ -111,19 +109,19 @@ public class PresetHandler {
       }
     }
 
-    log.debug("[{}] Imported preset data {} for {}", serverLevel, compoundUUID, easyNPC);
+    Logger.INSTANCE.debug("[{}] Imported preset data {} for {}", serverLevel, compoundUUID, easyNPC);
     return true;
   }
 
   public static boolean importPreset(ServerLevel serverLevel, CompoundTag compoundTag) {
     if (serverLevel == null || compoundTag == null) {
-      log.error("[{}] Error importing preset ", serverLevel);
+      Logger.INSTANCE.error("[{}] Error importing preset ", serverLevel);
       return false;
     }
 
     // Validate preset data
     if (compoundTag.isEmpty()) {
-      log.error("[{}] Empty preset data for import", serverLevel);
+      Logger.INSTANCE.error("[{}] Empty preset data for import", serverLevel);
       return false;
     }
 
@@ -133,7 +131,7 @@ public class PresetHandler {
             ? EntityType.byString(compoundTag.getString(Entity.ID_TAG)).orElse(null)
             : null;
     if (entityType == null) {
-      log.error("[{}] Error importing preset, invalid entity type", serverLevel);
+      Logger.INSTANCE.error("[{}] Error importing preset, invalid entity type", serverLevel);
       return false;
     }
 
@@ -148,7 +146,7 @@ public class PresetHandler {
           && !compoundTag.getString(Entity.ID_TAG).isEmpty()
           && compoundTag.getString(Entity.ID_TAG).equals(existingEasyNPC.getEntityTypeId())
           && existingEasyNPC.getEasyNPCPresetData() != null) {
-        log.debug("[{}] Update preset data for existing entity {}!", serverLevel, existingEasyNPC);
+        Logger.INSTANCE.debug("[{}] Update preset data for existing entity {}!", serverLevel, existingEasyNPC);
         existingEasyNPC.getEasyNPCPresetData().importPresetData(compoundTag);
         return true;
       } else {
@@ -159,7 +157,7 @@ public class PresetHandler {
     // Create new entity or re-use existing entity.
     Entity entity = entityType.create(serverLevel);
     if (!(entity instanceof EasyNPC<?> easyNPCEntity)) {
-      log.error(
+      Logger.INSTANCE.error(
           "[{}] Error importing preset, invalid entity with type {}", serverLevel, entityType);
       return false;
     }
@@ -167,7 +165,7 @@ public class PresetHandler {
     // Import preset data
     PresetData<?> presetData = easyNPCEntity.getEasyNPCPresetData();
     if (presetData == null) {
-      log.error(
+      Logger.INSTANCE.error(
           "[{}] Error importing preset, no preset data available for {}",
           serverLevel,
           easyNPCEntity);
@@ -177,11 +175,11 @@ public class PresetHandler {
 
     // Spawn EasyNPC entity
     if (!serverLevel.addFreshEntity(easyNPCEntity.getEntity())) {
-      log.error("[{}] Error spawning entity", easyNPCEntity);
+      Logger.INSTANCE.error("[{}] Error spawning entity", easyNPCEntity);
       return false;
     }
 
-    log.debug("[{}] Imported preset data {} for {}", serverLevel, compoundTag, easyNPCEntity);
+    Logger.INSTANCE.debug("[{}] Imported preset data {} for {}", serverLevel, compoundTag, easyNPCEntity);
     return true;
   }
 
@@ -192,13 +190,13 @@ public class PresetHandler {
       UUID uuid,
       ServerPlayer serverPlayer) {
     if (serverLevel == null || presetLocation == null) {
-      log.error("[{}] Error importing custom preset ", serverLevel);
+      Logger.INSTANCE.error("[{}] Error importing custom preset ", serverLevel);
       return false;
     }
 
     Path presetFile = CustomPresetDataFiles.getPresetsResourceLocationPath(presetLocation);
     if (presetFile == null || !presetFile.toFile().exists()) {
-      log.error(
+      Logger.INSTANCE.error(
           "[{}] Error importing custom preset, no preset file found at {}",
           serverLevel,
           presetLocation);
@@ -209,7 +207,7 @@ public class PresetHandler {
       CompoundTag compoundTag = NbtIo.readCompressed(presetFile.toFile());
       return importPreset(serverLevel, compoundTag, position, uuid, serverPlayer);
     } catch (IOException exception) {
-      log.error("[{}] Error reading custom preset file {}", serverLevel, presetFile, exception);
+      Logger.INSTANCE.error("[{}] Error reading custom preset file {}", serverLevel, presetFile, exception);
       return false;
     }
   }
@@ -217,7 +215,7 @@ public class PresetHandler {
   public static boolean exportCustomPreset(EasyNPC<?> easyNPC, String name) {
     SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
     if (skinData == null) {
-      log.warn("[{}] Error no skin data available!", easyNPC);
+      Logger.INSTANCE.warn("[{}] Error no skin data available!", easyNPC);
       return false;
     }
 
@@ -232,13 +230,13 @@ public class PresetHandler {
       UUID uuid,
       ServerPlayer serverPlayer) {
     if (serverLevel == null || presetLocation == null) {
-      log.error("[{}] Error importing data preset ", serverLevel);
+      Logger.INSTANCE.error("[{}] Error importing data preset ", serverLevel);
       return false;
     }
 
     MinecraftServer minecraftServer = serverLevel.getServer();
     if (minecraftServer.getResourceManager().getResource(presetLocation).isEmpty()) {
-      log.error(
+      Logger.INSTANCE.error(
           "[{}] Error importing data preset, no preset file found at {}",
           serverLevel,
           presetLocation);
@@ -250,7 +248,7 @@ public class PresetHandler {
           NbtIo.readCompressed(minecraftServer.getResourceManager().open(presetLocation));
       return importPreset(serverLevel, compoundTag, position, uuid, serverPlayer);
     } catch (IOException exception) {
-      log.error("[{}] Error reading data preset file {}", serverLevel, presetLocation, exception);
+      Logger.INSTANCE.error("[{}] Error reading data preset file {}", serverLevel, presetLocation, exception);
       return false;
     }
   }
@@ -262,13 +260,13 @@ public class PresetHandler {
       UUID uuid,
       ServerPlayer serverPlayer) {
     if (serverLevel == null || presetLocation == null) {
-      log.error("[{}] Error importing default preset ", serverLevel);
+      Logger.INSTANCE.error("[{}] Error importing default preset ", serverLevel);
       return false;
     }
 
     MinecraftServer minecraftServer = serverLevel.getServer();
     if (minecraftServer.getResourceManager().getResource(presetLocation).isEmpty()) {
-      log.error(
+      Logger.INSTANCE.error(
           "[{}] Error importing data preset, no preset file found at {}",
           serverLevel,
           presetLocation);
@@ -280,7 +278,7 @@ public class PresetHandler {
           NbtIo.readCompressed(minecraftServer.getResourceManager().open(presetLocation));
       return importPreset(serverLevel, compoundTag, position, uuid, serverPlayer);
     } catch (IOException exception) {
-      log.error(
+      Logger.INSTANCE.error(
           "[{}] Error reading default preset file {}", serverLevel, presetLocation, exception);
       return false;
     }
@@ -294,12 +292,12 @@ public class PresetHandler {
       UUID uuid,
       ServerPlayer serverPlayer) {
     if (serverLevel == null || presetLocation == null) {
-      log.error("[{}] Error importing local preset {}", serverLevel, presetLocation);
+      Logger.INSTANCE.error("[{}] Error importing local preset {}", serverLevel, presetLocation);
       return false;
     }
 
     if (compoundTag == null || compoundTag.isEmpty()) {
-      log.error(
+      Logger.INSTANCE.error(
           "[{}] Error importing local preset {}, no preset data found!",
           serverLevel,
           presetLocation);
@@ -310,7 +308,7 @@ public class PresetHandler {
       return true;
     }
 
-    log.error("[{}] Error reading data preset file {}", serverLevel, presetLocation);
+    Logger.INSTANCE.error("[{}] Error reading data preset file {}", serverLevel, presetLocation);
     return false;
   }
 
@@ -321,13 +319,13 @@ public class PresetHandler {
       UUID uuid,
       ServerPlayer serverPlayer) {
     if (serverLevel == null || presetLocation == null) {
-      log.error("[{}] Error importing world preset ", serverLevel);
+      Logger.INSTANCE.error("[{}] Error importing world preset ", serverLevel);
       return false;
     }
 
     Path presetFile = WorldPresetDataFiles.getPresetsResourceLocationPath(presetLocation);
     if (presetFile == null || !presetFile.toFile().exists()) {
-      log.error(
+      Logger.INSTANCE.error(
           "[{}] Error importing world preset, no preset file found at {}",
           serverLevel,
           presetLocation);
@@ -338,7 +336,7 @@ public class PresetHandler {
       CompoundTag compoundTag = NbtIo.readCompressed(presetFile.toFile());
       return importPreset(serverLevel, compoundTag, position, uuid, serverPlayer);
     } catch (IOException exception) {
-      log.error("[{}] Error reading world preset file {}", serverLevel, presetFile, exception);
+      Logger.INSTANCE.error("[{}] Error reading world preset file {}", serverLevel, presetFile, exception);
       return false;
     }
   }
@@ -346,7 +344,7 @@ public class PresetHandler {
   public static boolean exportWorldPreset(EasyNPC<?> easyNPC, String name) {
     SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
     if (skinData == null) {
-      log.warn("[{}] Error no skin data available!", easyNPC);
+      Logger.INSTANCE.warn("[{}] Error no skin data available!", easyNPC);
       return false;
     }
 
@@ -356,19 +354,19 @@ public class PresetHandler {
 
   public static boolean exportPreset(EasyNPC<?> easyNPC, File file) {
     if (easyNPC == null || file == null) {
-      log.error("[{}] Error exporting preset {} !", easyNPC, file);
+      Logger.INSTANCE.error("[{}] Error exporting preset {} !", easyNPC, file);
       return false;
     }
 
     PresetData<?> presetData = easyNPC.getEasyNPCPresetData();
     if (presetData == null) {
-      log.error("[{}] Error no preset data available!", easyNPC);
+      Logger.INSTANCE.error("[{}] Error no preset data available!", easyNPC);
       return false;
     }
 
     CompoundTag compoundTag = presetData.exportPresetData();
     if (compoundTag == null || compoundTag.isEmpty()) {
-      log.error("[{}] Error exporting custom preset {}!", easyNPC, file);
+      Logger.INSTANCE.error("[{}] Error exporting custom preset {}!", easyNPC, file);
       return false;
     }
 
@@ -377,12 +375,12 @@ public class PresetHandler {
 
   public static boolean exportPreset(File file, CompoundTag compoundTag) {
     if (file == null || compoundTag == null) {
-      log.error("Error exporting preset file {} with {} !", file, compoundTag);
+      Logger.INSTANCE.error("Error exporting preset file {} with {} !", file, compoundTag);
       return false;
     }
 
     if (compoundTag.isEmpty()) {
-      log.error("Empty preset data for export to {} !", file);
+      Logger.INSTANCE.error("Empty preset data for export to {} !", file);
       return false;
     }
 
@@ -390,7 +388,7 @@ public class PresetHandler {
       NbtIo.writeCompressed(compoundTag, file);
       return true;
     } catch (IOException exception) {
-      log.error("Failed to export preset file {} with {}:", file, compoundTag, exception);
+      Logger.INSTANCE.error("Failed to export preset file {} with {}:", file, compoundTag, exception);
       return false;
     }
   }

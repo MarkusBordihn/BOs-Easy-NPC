@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.data.action;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.condition.ConditionDataSet;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
@@ -28,7 +29,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public record ActionDataEntry(
     ActionDataType actionDataType,
@@ -49,7 +49,7 @@ public record ActionDataEntry(
   public static final int DEFAULT_PERMISSION_LEVEL = 2;
   public static final int MAX_PERMISSION_LEVEL = 2;
   public static final int MIN_PERMISSION_LEVEL = 0;
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
   private static final String DEFAULT_COMMAND = "";
 
   public ActionDataEntry() {
@@ -116,13 +116,13 @@ public record ActionDataEntry(
 
   private static int checkPermissionLevel(int permissionLevel) {
     if (permissionLevel > MAX_PERMISSION_LEVEL) {
-      log.warn(
+      Logger.INSTANCE.warn(
           "Permission level {} is too high, will be set to a safe max. level {}",
           permissionLevel,
           MAX_PERMISSION_LEVEL);
       return MAX_PERMISSION_LEVEL;
     } else if (permissionLevel < MIN_PERMISSION_LEVEL) {
-      log.warn(
+      Logger.INSTANCE.warn(
           "Permission level {} is too low, will be set to min. level {}",
           permissionLevel,
           MIN_PERMISSION_LEVEL);

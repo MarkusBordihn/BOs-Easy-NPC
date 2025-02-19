@@ -21,10 +21,10 @@ package de.markusbordihn.easynpc.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseModelEntity;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
@@ -42,13 +42,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.LightLayer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public interface EasyNPCModelRenderer<E extends EasyNPCBaseModelEntity<E>, M extends EntityModel<E>>
     extends EasyNPCRenderer<E, M> {
-
-  Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   static <
           T extends LivingEntity,
@@ -75,7 +71,7 @@ public interface EasyNPCModelRenderer<E extends EasyNPCBaseModelEntity<E>, M ext
                 new HumanoidModel<>(context.bakeLayer(outerArmor)),
                 context.getModelManager());
       } catch (Exception e) {
-        log.error(
+        Logger.INSTANCE.error(
             "Failed to create custom armor layer for {} will use default armor layer instead.",
             mobRenderer,
             e);

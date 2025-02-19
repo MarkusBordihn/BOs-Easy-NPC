@@ -20,11 +20,14 @@
 package de.markusbordihn.easynpc.network;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,129 +41,129 @@ import net.minecraftforge.network.simple.SimpleChannel;
 
 public class NetworkHandler implements NetworkHandlerInterface {
 
-  public static final SimpleChannel INSTANCE =
-      NetworkRegistry.newSimpleChannel(
-          new ResourceLocation(Constants.MOD_ID, "network"),
-          () -> String.valueOf(PROTOCOL_VERSION),
-          String.valueOf(PROTOCOL_VERSION)::equals,
-          String.valueOf(PROTOCOL_VERSION)::equals);
-  private static int id = 0;
-  private final Map<ResourceLocation, Class<? extends NetworkMessageRecord>> clientMessages =
-      new LinkedHashMap<>();
-  private final Map<ResourceLocation, Class<? extends NetworkMessageRecord>> serverMessages =
-      new LinkedHashMap<>();
-  private final Map<ResourceLocation, Class<? extends NetworkMessageRecord>>
-      registeredClientMessages = new LinkedHashMap<>();
-  private final Map<ResourceLocation, Class<? extends NetworkMessageRecord>>
-      registeredServerMessages = new LinkedHashMap<>();
+    public static final SimpleChannel INSTANCE =
+            NetworkRegistry.newSimpleChannel(
+                    new ResourceLocation(Constants.MOD_ID, "network"),
+                    () -> String.valueOf(PROTOCOL_VERSION),
+                    String.valueOf(PROTOCOL_VERSION)::equals,
+                    String.valueOf(PROTOCOL_VERSION)::equals);
+    private static int id = 0;
+    private final Map<ResourceLocation, Class<? extends NetworkMessageRecord>> clientMessages =
+            new LinkedHashMap<>();
+    private final Map<ResourceLocation, Class<? extends NetworkMessageRecord>> serverMessages =
+            new LinkedHashMap<>();
+    private final Map<ResourceLocation, Class<? extends NetworkMessageRecord>>
+            registeredClientMessages = new LinkedHashMap<>();
+    private final Map<ResourceLocation, Class<? extends NetworkMessageRecord>>
+            registeredServerMessages = new LinkedHashMap<>();
 
-  public NetworkHandler() {
-    log.info(
-        "{} Network Handler for {} with version {}",
-        Constants.LOG_REGISTER_PREFIX,
-        INSTANCE,
-        PROTOCOL_VERSION);
-  }
+    public NetworkHandler() {
+        Logger.INSTANCE.info(
+                "{} Network Handler for {} with version {}",
+                Constants.LOG_REGISTER_PREFIX,
+                INSTANCE,
+                PROTOCOL_VERSION);
+    }
 
-  @Override
-  public void sendToServer(final NetworkMessageRecord networkMessageRecord) {
-    DistExecutor.unsafeRunWhenOn(
-        Dist.CLIENT, () -> () -> INSTANCE.sendToServer(networkMessageRecord));
-  }
+    @Override
+    public void sendToServer(final NetworkMessageRecord networkMessageRecord) {
+        DistExecutor.unsafeRunWhenOn(
+                Dist.CLIENT, () -> () -> INSTANCE.sendToServer(networkMessageRecord));
+    }
 
-  @Override
-  public void sendToPlayer(
-      final NetworkMessageRecord networkMessageRecord, final ServerPlayer serverPlayer) {
-    INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), networkMessageRecord);
-  }
+    @Override
+    public void sendToPlayer(
+            final NetworkMessageRecord networkMessageRecord, final ServerPlayer serverPlayer) {
+        INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), networkMessageRecord);
+    }
 
-  @Override
-  public <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
-      final ResourceLocation messageID,
-      final Class<M> networkMessage,
-      final Function<FriendlyByteBuf, M> creator) {
-    int registrationID = id++;
-    logRegisterClientNetworkMessageHandler(messageID, networkMessage, registrationID);
-    INSTANCE.registerMessage(
-        registrationID,
-        networkMessage,
-        M::write,
-        creator,
-        (message, contextSupplier) -> {
-          NetworkEvent.Context context = contextSupplier.get();
-          context.enqueueWork(
-              () -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> message::handleClient));
-          context.setPacketHandled(true);
-        },
-        Optional.of(NetworkDirection.PLAY_TO_CLIENT));
-  }
+    @Override
+    public <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
+            final ResourceLocation messageID,
+            final Class<M> networkMessage,
+            final Function<FriendlyByteBuf, M> creator) {
+        int registrationID = id++;
+        logRegisterClientNetworkMessageHandler(messageID, networkMessage, registrationID);
+        INSTANCE.registerMessage(
+                registrationID,
+                networkMessage,
+                M::write,
+                creator,
+                (message, contextSupplier) -> {
+                    NetworkEvent.Context context = contextSupplier.get();
+                    context.enqueueWork(
+                            () -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> message::handleClient));
+                    context.setPacketHandled(true);
+                },
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+    }
 
-  @Override
-  public <M extends NetworkMessageRecord> void registerServerNetworkMessageHandler(
-      final ResourceLocation messageID,
-      final Class<M> networkMessage,
-      final Function<FriendlyByteBuf, M> creator) {
-    int registrationID = id++;
-    logRegisterServerNetworkMessageHandler(messageID, networkMessage, registrationID);
-    INSTANCE.registerMessage(
-        registrationID,
-        networkMessage,
-        M::write,
-        creator,
-        (message, contextSupplier) -> {
-          NetworkEvent.Context context = contextSupplier.get();
-          context.enqueueWork(
-              () -> {
-                message.handleServer(context.getSender());
-                context.setPacketHandled(true);
-              });
-        },
-        Optional.of(NetworkDirection.PLAY_TO_SERVER));
-  }
+    @Override
+    public <M extends NetworkMessageRecord> void registerServerNetworkMessageHandler(
+            final ResourceLocation messageID,
+            final Class<M> networkMessage,
+            final Function<FriendlyByteBuf, M> creator) {
+        int registrationID = id++;
+        logRegisterServerNetworkMessageHandler(messageID, networkMessage, registrationID);
+        INSTANCE.registerMessage(
+                registrationID,
+                networkMessage,
+                M::write,
+                creator,
+                (message, contextSupplier) -> {
+                    NetworkEvent.Context context = contextSupplier.get();
+                    context.enqueueWork(
+                            () -> {
+                                message.handleServer(context.getSender());
+                                context.setPacketHandled(true);
+                            });
+                },
+                Optional.of(NetworkDirection.PLAY_TO_SERVER));
+    }
 
-  @Override
-  public <M extends NetworkMessageRecord> void addClientMessage(
-      final ResourceLocation messageID, final Class<M> networkMessage) {
-    clientMessages.put(messageID, networkMessage);
-  }
+    @Override
+    public <M extends NetworkMessageRecord> void addClientMessage(
+            final ResourceLocation messageID, final Class<M> networkMessage) {
+        clientMessages.put(messageID, networkMessage);
+    }
 
-  @Override
-  public <M extends NetworkMessageRecord> void addServerMessage(
-      final ResourceLocation messageID, final Class<M> networkMessage) {
-    serverMessages.put(messageID, networkMessage);
-  }
+    @Override
+    public <M extends NetworkMessageRecord> void addServerMessage(
+            final ResourceLocation messageID, final Class<M> networkMessage) {
+        serverMessages.put(messageID, networkMessage);
+    }
 
-  @Override
-  public Map<ResourceLocation, Class<? extends NetworkMessageRecord>> getClientMessages() {
-    return clientMessages;
-  }
+    @Override
+    public Map<ResourceLocation, Class<? extends NetworkMessageRecord>> getClientMessages() {
+        return clientMessages;
+    }
 
-  @Override
-  public Map<ResourceLocation, Class<? extends NetworkMessageRecord>> getServerMessages() {
-    return serverMessages;
-  }
+    @Override
+    public Map<ResourceLocation, Class<? extends NetworkMessageRecord>> getServerMessages() {
+        return serverMessages;
+    }
 
-  @Override
-  public <M extends NetworkMessageRecord> void addRegisteredClientMessage(
-      final ResourceLocation messageID, final Class<M> networkMessage) {
-    registeredClientMessages.put(messageID, networkMessage);
-  }
+    @Override
+    public <M extends NetworkMessageRecord> void addRegisteredClientMessage(
+            final ResourceLocation messageID, final Class<M> networkMessage) {
+        registeredClientMessages.put(messageID, networkMessage);
+    }
 
-  @Override
-  public <M extends NetworkMessageRecord> void addRegisteredServerMessage(
-      final ResourceLocation messageID, final Class<M> networkMessage) {
-    registeredServerMessages.put(messageID, networkMessage);
-  }
+    @Override
+    public <M extends NetworkMessageRecord> void addRegisteredServerMessage(
+            final ResourceLocation messageID, final Class<M> networkMessage) {
+        registeredServerMessages.put(messageID, networkMessage);
+    }
 
-  @Override
-  public Map<ResourceLocation, Class<? extends NetworkMessageRecord>>
-      getRegisteredClientMessages() {
-    return registeredClientMessages;
-  }
+    @Override
+    public Map<ResourceLocation, Class<? extends NetworkMessageRecord>>
+    getRegisteredClientMessages() {
+        return registeredClientMessages;
+    }
 
-  @Override
-  public Map<ResourceLocation, Class<? extends NetworkMessageRecord>>
-      getRegisteredServerMessages() {
-    return registeredServerMessages;
-  }
+    @Override
+    public Map<ResourceLocation, Class<? extends NetworkMessageRecord>>
+    getRegisteredServerMessages() {
+        return registeredServerMessages;
+    }
 }

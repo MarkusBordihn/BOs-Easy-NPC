@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import de.markusbordihn.easynpc.debug.Logger;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -35,11 +37,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class EntityTypeManager {
 
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String LOG_PREFIX = "[Entity Type Manager]";
 
   private static final Set<EntityType<? extends Entity>> unknownEntityTypes = new HashSet<>();
@@ -55,7 +55,7 @@ public class EntityTypeManager {
   private EntityTypeManager() {}
 
   public static void register() {
-    log.info("{} Register Entity Type Manager ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Register Entity Type Manager ...", Constants.LOG_REGISTER_PREFIX);
 
     // Add known supported entity types and exclude unsupported entity types.
     BuiltInRegistries.ENTITY_TYPE.forEach(
@@ -97,7 +97,7 @@ public class EntityTypeManager {
           }
         });
 
-    log.info(
+    Logger.INSTANCE.info(
         LOG_PREFIX + " Found {} supported, {} unsupported and {} unknown entity types.",
         supportedEntityTypes.size(),
         unsupportedEntityTypes.size(),
@@ -197,12 +197,12 @@ public class EntityTypeManager {
             levelField.setAccessible(true);
             levelField.set(pathfinderMob, level);
           } catch (Exception e) {
-            log.error("{} Failed to update level for PathfinderMob {}", LOG_PREFIX, pathfinderMob);
+            Logger.INSTANCE.error("{} Failed to update level for PathfinderMob {}", LOG_PREFIX, pathfinderMob);
           }
         }
         return pathfinderMob;
       } else {
-        log.debug("{} PathfinderMob {} is removed, re-creating it.", LOG_PREFIX, pathfinderMob);
+        Logger.INSTANCE.debug("{} PathfinderMob {} is removed, re-creating it.", LOG_PREFIX, pathfinderMob);
         pathfinderMobMap.remove(entityType);
       }
     }
@@ -211,7 +211,7 @@ public class EntityTypeManager {
     if (!isUnsupportedEntityType(entityType)) {
       Entity entity = entityType.create(level);
       if (entity instanceof PathfinderMob newPathfinderMob) {
-        log.debug(
+        Logger.INSTANCE.debug(
             "{} Registering PathfinderMob {} for {}", LOG_PREFIX, newPathfinderMob, entityType);
 
         // For better performance we disable AI, sound and physics for the fake entity.
@@ -228,7 +228,7 @@ public class EntityTypeManager {
         }
         return newPathfinderMob;
       } else {
-        log.error(
+        Logger.INSTANCE.error(
             "{} Invalid Entity type {} is not extending PathfinderMob!", LOG_PREFIX, entityType);
         if (entity != null) {
           entity.discard();

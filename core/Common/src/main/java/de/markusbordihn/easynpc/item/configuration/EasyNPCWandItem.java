@@ -24,7 +24,6 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
 import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -39,13 +38,12 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.List;
 
 public class EasyNPCWandItem extends Item {
 
   public static final String ID = "easy_npc_wand";
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final int GLOWING_DURATION = 4 * 20;
 
   public EasyNPCWandItem(Properties properties) {

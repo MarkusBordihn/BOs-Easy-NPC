@@ -19,21 +19,17 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.handlers;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeData;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
-import java.util.Objects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.scores.Team;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.Objects;
 
 public class VisibilityHandler {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private VisibilityHandler() {}
 

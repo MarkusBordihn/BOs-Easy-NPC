@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
@@ -31,11 +32,8 @@ import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public interface ClientNetworkMessageHandlerInterface {
-
-  Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   default void exportClientPreset(
       final UUID uuid, final String name, final ServerPlayer serverPlayer) {
@@ -46,7 +44,7 @@ public interface ClientNetworkMessageHandlerInterface {
     EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     PresetData<?> presetData = easyNPC.getEasyNPCPresetData();
     CompoundTag compoundTag = presetData.exportPresetData();
-    log.info(
+    Logger.INSTANCE.info(
         "Exporting preset for {} to {}",
         easyNPC.getEntity().getName().getString(),
         serverPlayer.getName().getString());
@@ -62,7 +60,7 @@ public interface ClientNetworkMessageHandlerInterface {
 
   default void openMenu(UUID uuid, UUID menuId, ServerPlayer serverPlayer, CompoundTag data) {
     if (uuid != null && menuId != null && serverPlayer != null) {
-      log.debug("Open menu {} for npc {} and player {} with: {}", menuId, uuid, serverPlayer, data);
+      Logger.INSTANCE.debug("Open menu {} for npc {} and player {} with: {}", menuId, uuid, serverPlayer, data);
       NetworkHandlerManager.sendMessageToPlayer(
           new OpenMenuCallbackMessage(uuid, menuId, data), serverPlayer);
     }
@@ -70,7 +68,7 @@ public interface ClientNetworkMessageHandlerInterface {
 
   default void syncData(EasyNPC<?> easyNPC, ServerPlayer serverPlayer) {
     if (easyNPC != null && serverPlayer != null) {
-      log.debug("Sync {} data to player {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.debug("Sync {} data to player {}", easyNPC, serverPlayer);
       NetworkHandlerManager.sendMessageToPlayer(
           new SyncDataMessage(
               easyNPC.getUUID(),

@@ -21,9 +21,12 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.render.RenderDataSet;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
+
 import java.util.EnumMap;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -32,54 +35,54 @@ import net.minecraft.world.entity.PathfinderMob;
 
 public interface RenderData<E extends PathfinderMob> extends EasyNPC<E> {
 
-  String DATA_RENDER_DATA_TAG = "RenderData";
+    String DATA_RENDER_DATA_TAG = "RenderData";
 
-  static void registerSyncedRenderData(
-      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("- Registering Synched Render Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.RENDER_DATA,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.RENDER_DATA_SET));
-  }
-
-  default void defineSynchedRenderData() {
-    defineSynchedEntityData(SynchedDataIndex.RENDER_DATA, new RenderDataSet());
-  }
-
-  default RenderDataSet getRenderDataSet() {
-    return this.getSynchedEntityData(SynchedDataIndex.RENDER_DATA);
-  }
-
-  default void setRenderData(RenderDataSet renderData) {
-    this.setSynchedEntityData(SynchedDataIndex.RENDER_DATA, renderData);
-  }
-
-  default void updateRenderData() {
-    RenderDataSet renderDataSet = this.getRenderDataSet();
-    this.setRenderData(new RenderDataSet());
-    this.setRenderData(renderDataSet);
-  }
-
-  default void addAdditionalRenderData(CompoundTag compoundTag) {
-    CompoundTag renderTag = new CompoundTag();
-
-    RenderDataSet renderData = this.getRenderDataSet();
-    if (renderData != null) {
-      renderData.save(renderTag);
+    static void registerSyncedRenderData(
+        EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
+        Logger.INSTANCE.info("- Registering Synched Render Data for {}.", entityClass.getSimpleName());
+        map.put(
+                SynchedDataIndex.RENDER_DATA,
+                SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.RENDER_DATA_SET));
     }
 
-    compoundTag.put(DATA_RENDER_DATA_TAG, renderTag);
-  }
-
-  default void readAdditionalRenderData(CompoundTag compoundTag) {
-
-    // Early exit if no dialog data is available.
-    if (!compoundTag.contains(DATA_RENDER_DATA_TAG)) {
-      return;
+    default void defineSynchedRenderData() {
+        defineSynchedEntityData(SynchedDataIndex.RENDER_DATA, new RenderDataSet());
     }
 
-    // Read dialog data
-    RenderDataSet renderData = new RenderDataSet(compoundTag.getCompound(DATA_RENDER_DATA_TAG));
-    this.setRenderData(renderData);
-  }
+    default RenderDataSet getRenderDataSet() {
+        return this.getSynchedEntityData(SynchedDataIndex.RENDER_DATA);
+    }
+
+    default void setRenderData(RenderDataSet renderData) {
+        this.setSynchedEntityData(SynchedDataIndex.RENDER_DATA, renderData);
+    }
+
+    default void updateRenderData() {
+        RenderDataSet renderDataSet = this.getRenderDataSet();
+        this.setRenderData(new RenderDataSet());
+        this.setRenderData(renderDataSet);
+    }
+
+    default void addAdditionalRenderData(CompoundTag compoundTag) {
+        CompoundTag renderTag = new CompoundTag();
+
+        RenderDataSet renderData = this.getRenderDataSet();
+        if (renderData != null) {
+            renderData.save(renderTag);
+        }
+
+        compoundTag.put(DATA_RENDER_DATA_TAG, renderTag);
+    }
+
+    default void readAdditionalRenderData(CompoundTag compoundTag) {
+
+        // Early exit if no dialog data is available.
+        if (!compoundTag.contains(DATA_RENDER_DATA_TAG)) {
+            return;
+        }
+
+        // Read dialog data
+        RenderDataSet renderData = new RenderDataSet(compoundTag.getCompound(DATA_RENDER_DATA_TAG));
+        this.setRenderData(renderData);
+    }
 }

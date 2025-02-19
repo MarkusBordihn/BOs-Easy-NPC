@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.network.message.server;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -64,7 +65,7 @@ public record ChangeActionEventMessage(
         || this.actionEventType == null
         || this.actionEventType == ActionEventType.NONE
         || this.actionDataSet == null) {
-      log.error("Failed to change action event for {}: Invalid data", easyNPC);
+      Logger.INSTANCE.error("Failed to change action event for {}: Invalid data", easyNPC);
       return;
     }
 
@@ -74,18 +75,18 @@ public record ChangeActionEventMessage(
     ActionEventData<?> actionEventData = easyNPC.getEasyNPCActionEventData();
     if (minecraftServer != null) {
       permissionLevel = minecraftServer.getProfilePermissions(serverPlayer.getGameProfile());
-      log.debug(
+      Logger.INSTANCE.debug(
           "Set action owner permission level {} for {} from {}",
           permissionLevel,
           easyNPC,
           serverPlayer);
       actionEventData.setActionPermissionLevel(permissionLevel);
     } else {
-      log.warn("Unable to verify permission level from {} for {}", this, serverPlayer);
+      Logger.INSTANCE.warn("Unable to verify permission level from {} for {}", this, serverPlayer);
     }
 
     // Perform action.
-    log.debug(
+    Logger.INSTANCE.debug(
         "Set action event {} with {} for {} from {} with owner permission level {}.",
         actionEventType,
         actionDataSet,

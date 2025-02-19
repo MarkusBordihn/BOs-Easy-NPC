@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -57,20 +58,20 @@ public record RemoveDialogMessage(UUID uuid, UUID dialogId) implements NetworkMe
 
     // Validate dialog ID
     if (this.dialogId == null) {
-      log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog data
     DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
-      log.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog
     if (!dialogData.hasDialog(this.dialogId)) {
-      log.error(
+      Logger.INSTANCE.error(
           "Unknown delete dialog request for dialog {} for {} from {}",
           this.dialogId,
           easyNPC,
@@ -80,9 +81,9 @@ public record RemoveDialogMessage(UUID uuid, UUID dialogId) implements NetworkMe
 
     // Perform action.
     if (dialogData.removeDialog(this.dialogId)) {
-      log.info("Removed dialog {} for {} from {}", this.dialogId, easyNPC, serverPlayer);
+      Logger.INSTANCE.info("Removed dialog {} for {} from {}", this.dialogId, easyNPC, serverPlayer);
     } else {
-      log.warn("Unable to remove dialog {} for {} from {}", this.dialogId, easyNPC, serverPlayer);
+      Logger.INSTANCE.warn("Unable to remove dialog {} for {} from {}", this.dialogId, easyNPC, serverPlayer);
     }
   }
 }

@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.ObjectiveHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -54,12 +55,12 @@ public record RemoveObjectiveMessage(UUID uuid, ObjectiveDataEntry objectiveData
   public void handleServer(final ServerPlayer serverPlayer) {
     EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null || this.objectiveDataEntry == null) {
-      log.error("Invalid data to remove objective for {}: ", this);
+      Logger.INSTANCE.error("Invalid data to remove objective for {}: ", this);
       return;
     }
 
     if (!ObjectiveHandler.removeCustomObjective(easyNPC, this.objectiveDataEntry)) {
-      log.error("Failed to remove objective {} for {}", objectiveDataEntry, easyNPC);
+      Logger.INSTANCE.error("Failed to remove objective {} for {}", objectiveDataEntry, easyNPC);
     }
   }
 }

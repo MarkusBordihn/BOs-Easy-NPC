@@ -20,23 +20,20 @@
 package de.markusbordihn.easynpc.tabs;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.item.ModItems;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ModTabs {
-
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ModTabs() {}
 
   public static void handleCreativeModeTabRegister() {
 
-    log.info("{} creative mod tabs ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} creative mod tabs ...", Constants.LOG_REGISTER_PREFIX);
 
     Registry.register(
         BuiltInRegistries.CREATIVE_MODE_TAB,

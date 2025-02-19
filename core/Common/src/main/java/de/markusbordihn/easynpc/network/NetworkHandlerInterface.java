@@ -19,20 +19,17 @@
 
 package de.markusbordihn.easynpc.network;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
-import java.util.Map;
-import java.util.function.Function;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.Map;
+import java.util.function.Function;
 
 public interface NetworkHandlerInterface {
 
-  Logger log = LogManager.getLogger(Constants.LOG_NAME);
   String LOG_PREFIX = "[NetworkHandler]";
   int PROTOCOL_VERSION = 23;
 
@@ -74,7 +71,7 @@ public interface NetworkHandlerInterface {
   default boolean sendMessageToPlayer(
       final NetworkMessageRecord networkMessageRecord, final ServerPlayer serverPlayer) {
     if (!hasClientMessage(networkMessageRecord.id())) {
-      log.error(
+      de.markusbordihn.easynpc.debug.Logger.INSTANCE.error(
           "{} Message {} is not registered as client message",
           LOG_PREFIX,
           networkMessageRecord.id());
@@ -83,7 +80,7 @@ public interface NetworkHandlerInterface {
     try {
       sendToPlayer(networkMessageRecord, serverPlayer);
     } catch (Exception e) {
-      log.error(
+      de.markusbordihn.easynpc.debug.Logger.INSTANCE.error(
           "{} Failed to send message {} to player {}",
           LOG_PREFIX,
           networkMessageRecord.id(),
@@ -96,14 +93,14 @@ public interface NetworkHandlerInterface {
 
   default boolean sendMessageToServer(final NetworkMessageRecord networkMessageRecord) {
     if (!hasServerMessage(networkMessageRecord.id())) {
-      log.error(
+      de.markusbordihn.easynpc.debug.Logger.INSTANCE.error(
           "{} Message {} is not registered as server message",
           LOG_PREFIX,
           networkMessageRecord.id());
       return false;
     }
     if (Minecraft.getInstance().getConnection() == null) {
-      log.error(
+      de.markusbordihn.easynpc.debug.Logger.INSTANCE.error(
           "{} Failed to send message {} to server: No connection available",
           LOG_PREFIX,
           networkMessageRecord.id());
@@ -112,7 +109,7 @@ public interface NetworkHandlerInterface {
     try {
       sendToServer(networkMessageRecord);
     } catch (Exception e) {
-      log.error("{} Failed to send message {} to server", LOG_PREFIX, networkMessageRecord.id(), e);
+      de.markusbordihn.easynpc.debug.Logger.INSTANCE.error("{} Failed to send message {} to server", LOG_PREFIX, networkMessageRecord.id(), e);
       return false;
     }
     return true;
@@ -178,7 +175,7 @@ public interface NetworkHandlerInterface {
       final Function<FriendlyByteBuf, M> creator) {
     if (NetworkHandlerManager.isServerNetworkHandler()) {
       if (hasRegisteredServerMessage(messageID)) {
-        log.error(
+        de.markusbordihn.easynpc.debug.Logger.INSTANCE.error(
             "{} Server network message id {} already registered with {}",
             LOG_PREFIX,
             messageID,
@@ -186,7 +183,7 @@ public interface NetworkHandlerInterface {
         return;
       }
       if (hasRegisteredServerMessage(networkMessage)) {
-        log.error(
+        de.markusbordihn.easynpc.debug.Logger.INSTANCE.error(
             "{} Server network message {} already registered with id {}",
             LOG_PREFIX,
             networkMessage,
@@ -197,7 +194,7 @@ public interface NetworkHandlerInterface {
         registerServerNetworkMessageHandler(messageID, networkMessage, creator);
         addRegisteredServerMessage(messageID, networkMessage);
       } catch (Exception e) {
-        log.error(
+        de.markusbordihn.easynpc.debug.Logger.INSTANCE.error(
             "{} Failed to register server network message id {} with {}",
             LOG_PREFIX,
             messageID,
@@ -215,7 +212,7 @@ public interface NetworkHandlerInterface {
       final Function<FriendlyByteBuf, M> creator) {
     if (NetworkHandlerManager.isClientNetworkHandler()) {
       if (hasRegisteredClientMessage(messageID)) {
-        log.error(
+        de.markusbordihn.easynpc.debug.Logger.INSTANCE.error(
             "{} Client network message id {} already registered with {}",
             LOG_PREFIX,
             messageID,
@@ -223,7 +220,7 @@ public interface NetworkHandlerInterface {
         return;
       }
       if (hasRegisteredClientMessage(networkMessage)) {
-        log.error(
+        de.markusbordihn.easynpc.debug.Logger.INSTANCE.error(
             "{} Client network message {} already registered with id {}",
             LOG_PREFIX,
             networkMessage,
@@ -234,7 +231,7 @@ public interface NetworkHandlerInterface {
         registerClientNetworkMessageHandler(messageID, networkMessage, creator);
         addRegisteredClientMessage(messageID, networkMessage);
       } catch (Exception e) {
-        log.error(
+        de.markusbordihn.easynpc.debug.Logger.INSTANCE.error(
             "{} Failed to register client network message id {} with {}",
             LOG_PREFIX,
             messageID,
@@ -248,7 +245,7 @@ public interface NetworkHandlerInterface {
 
   default void logRegisterClientNetworkMessageHandler(
       final ResourceLocation messageID, final Class<?> networkMessage) {
-    log.info(
+    de.markusbordihn.easynpc.debug.Logger.INSTANCE.info(
         "{} Registering client network message {} with {}",
         LOG_PREFIX,
         networkMessage.getSimpleName(),
@@ -257,7 +254,7 @@ public interface NetworkHandlerInterface {
 
   default void logRegisterClientNetworkMessageHandler(
       final ResourceLocation messageID, final Class<?> networkMessage, final int registrationID) {
-    log.info(
+    de.markusbordihn.easynpc.debug.Logger.INSTANCE.info(
         "{} Registering client network message {} with {} ({})",
         LOG_PREFIX,
         networkMessage.getSimpleName(),
@@ -267,7 +264,7 @@ public interface NetworkHandlerInterface {
 
   default void logRegisterServerNetworkMessageHandler(
       final ResourceLocation messageID, final Class<?> networkMessage) {
-    log.info(
+    de.markusbordihn.easynpc.debug.Logger.INSTANCE.info(
         "{} Registering server network message {} with {}",
         LOG_PREFIX,
         networkMessage.getSimpleName(),
@@ -276,7 +273,7 @@ public interface NetworkHandlerInterface {
 
   default void logRegisterServerNetworkMessageHandler(
       final ResourceLocation messageID, final Class<?> networkMessage, final int registrationID) {
-    log.info(
+    de.markusbordihn.easynpc.debug.Logger.INSTANCE.info(
         "{} Registering server network message {} with {} ({})",
         LOG_PREFIX,
         networkMessage.getSimpleName(),

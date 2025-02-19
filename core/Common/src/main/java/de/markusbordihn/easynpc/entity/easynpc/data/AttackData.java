@@ -20,9 +20,12 @@
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
+
 import java.util.EnumMap;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -37,44 +40,46 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 
 public interface AttackData<E extends PathfinderMob>
-    extends EasyNPC<E>, NeutralMob, RangedAttackMob, CrossbowAttackMob {
+        extends EasyNPC<E>, NeutralMob, RangedAttackMob, CrossbowAttackMob {
 
-  static void registerSyncedAttackData(
-      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("- Registering Synched Attack Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
-  }
+    static void registerSyncedAttackData(
+        EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
+        Logger.INSTANCE.info("- Registering Synched Attack Data for {}.", entityClass.getSimpleName());
+        map.put(
+                SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW,
+                SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+    }
 
-  int getAttackAnimationTick();
+    int getAttackAnimationTick();
 
-  default boolean isChargingCrossbow() {
-    return getSynchedEntityData(SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW);
-  }
+    default boolean isChargingCrossbow() {
+        return getSynchedEntityData(SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW);
+    }
 
-  @Override
-  default void setChargingCrossbow(boolean isCharging) {
-    setSynchedEntityData(SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW, isCharging);
-  }
+    @Override
+    default void setChargingCrossbow(boolean isCharging) {
+        setSynchedEntityData(SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW, isCharging);
+    }
 
-  @Override
-  default void shootCrossbowProjectile(
-      LivingEntity livingEntity, ItemStack itemStack, Projectile projectile, float rangeFactor) {
-    this.shootCrossbowProjectile(
-        this.getLivingEntity(), livingEntity, projectile, rangeFactor, 1.6F);
-  }
+    @Override
+    default void shootCrossbowProjectile(
+            LivingEntity livingEntity, ItemStack itemStack, Projectile projectile, float rangeFactor) {
+        this.shootCrossbowProjectile(
+                this.getLivingEntity(), livingEntity, projectile, rangeFactor, 1.6F);
+    }
 
-  @Override
-  default void performRangedAttack(LivingEntity livingEntity, float damage) {
-    AttackHandler.performDefaultRangedAttack(this.getLivingEntity(), livingEntity, damage);
-  }
+    @Override
+    default void performRangedAttack(LivingEntity livingEntity, float damage) {
+        AttackHandler.performDefaultRangedAttack(this.getLivingEntity(), livingEntity, damage);
+    }
 
-  default void defineSynchedAttackData() {
-    defineSynchedEntityData(SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW, false);
-  }
+    default void defineSynchedAttackData() {
+        defineSynchedEntityData(SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW, false);
+    }
 
-  default void addAdditionalAttackData(CompoundTag compoundTag) {}
+    default void addAdditionalAttackData(CompoundTag compoundTag) {
+    }
 
-  default void readAdditionalAttackData(CompoundTag compoundTag) {}
+    default void readAdditionalAttackData(CompoundTag compoundTag) {
+    }
 }

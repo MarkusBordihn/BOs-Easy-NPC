@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.network.message.server;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.block.entity.BaseEasyNPCSpawnerBlockEntity;
 import de.markusbordihn.easynpc.data.spawner.SpawnerSettingType;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -73,7 +74,7 @@ public record ChangeSpawnerSettingMessage(
 
     // Verify if block entity is a NPC spawner block entity.
     if (!(blockEntity instanceof BaseEasyNPCSpawnerBlockEntity spawnerBlockEntity)) {
-      log.error(
+      Logger.INSTANCE.error(
           "Found {}({}) instead of NPC spawner block entity at {}",
           blockEntity,
           serverLevel.getBlockState(this.blockPos),
@@ -85,7 +86,7 @@ public record ChangeSpawnerSettingMessage(
     if (!serverPlayer.isCreative()
         && spawnerBlockEntity.getOwner() != null
         && !spawnerBlockEntity.getOwner().equals(serverPlayer.getUUID())) {
-      log.warn(
+      Logger.INSTANCE.warn(
           "Player {} has no permission to change the settings of spawner at {}",
           serverPlayer.getName().getString(),
           this.blockPos);
@@ -95,33 +96,33 @@ public record ChangeSpawnerSettingMessage(
     // Update the spawner settings
     switch (this.settingType) {
       case SPAWN_RANGE:
-        log.debug("Set spawner {} spawn range to {}", spawnerBlockEntity, this.settingValue);
+        Logger.INSTANCE.debug("Set spawner {} spawn range to {}", spawnerBlockEntity, this.settingValue);
         spawnerBlockEntity.setSpawnRange(this.settingValue);
         break;
       case DESPAWN_RANGE:
-        log.debug("Set spawner {} despawn range to {}", spawnerBlockEntity, this.settingValue);
+        Logger.INSTANCE.debug("Set spawner {} despawn range to {}", spawnerBlockEntity, this.settingValue);
         spawnerBlockEntity.setDespawnRange(this.settingValue);
         break;
       case REQUIRED_PLAYER_RANGE:
-        log.debug(
+        Logger.INSTANCE.debug(
             "Set spawner {} required player range to {}", spawnerBlockEntity, this.settingValue);
         spawnerBlockEntity.setRequiredPlayerRange(this.settingValue);
         break;
       case DELAY:
-        log.debug("Set spawner {} delay to {}", spawnerBlockEntity, this.settingValue);
+        Logger.INSTANCE.debug("Set spawner {} delay to {}", spawnerBlockEntity, this.settingValue);
         spawnerBlockEntity.setDelay(this.settingValue);
         break;
       case MAX_NEARBY_ENTITIES:
-        log.debug(
+        Logger.INSTANCE.debug(
             "Set spawner {} max nearby entities to {}", spawnerBlockEntity, this.settingValue);
         spawnerBlockEntity.setMaxNearbyEntities(this.settingValue);
         break;
       case SPAWN_COUNT:
-        log.debug("Set spawner {} spawn count to {}", spawnerBlockEntity, this.settingValue);
+        Logger.INSTANCE.debug("Set spawner {} spawn count to {}", spawnerBlockEntity, this.settingValue);
         spawnerBlockEntity.setSpawnCount(this.settingValue);
         break;
       default:
-        log.error("Unknown spawner setting type {} for {}", this.settingType, spawnerBlockEntity);
+        Logger.INSTANCE.error("Unknown spawner setting type {} for {}", this.settingType, spawnerBlockEntity);
     }
   }
 }

@@ -21,80 +21,83 @@ package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+
 import java.util.UUID;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public record SaveDialogMessage(UUID uuid, UUID dialogId, DialogDataEntry dialogDataEntry)
-    implements NetworkMessageRecord {
+        implements NetworkMessageRecord {
 
-  public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "save_dialog");
+    public static final ResourceLocation MESSAGE_ID =
+            new ResourceLocation(Constants.MOD_ID, "save_dialog");
 
-  public static SaveDialogMessage create(final FriendlyByteBuf buffer) {
-    return new SaveDialogMessage(
-        buffer.readUUID(), buffer.readUUID(), new DialogDataEntry(buffer.readNbt()));
-  }
-
-  @Override
-  public void write(final FriendlyByteBuf buffer) {
-    buffer.writeUUID(this.uuid);
-    buffer.writeUUID(this.dialogId);
-    buffer.writeNbt(this.dialogDataEntry.createTag());
-  }
-
-  @Override
-  public ResourceLocation id() {
-    return MESSAGE_ID;
-  }
-
-  @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
+    public static SaveDialogMessage create(final FriendlyByteBuf buffer) {
+        return new SaveDialogMessage(
+                buffer.readUUID(), buffer.readUUID(), new DialogDataEntry(buffer.readNbt()));
     }
 
-    // Validate dialog ID
-    if (this.dialogId == null) {
-      log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
-      return;
+    @Override
+    public void write(final FriendlyByteBuf buffer) {
+        buffer.writeUUID(this.uuid);
+        buffer.writeUUID(this.dialogId);
+        buffer.writeNbt(this.dialogDataEntry.createTag());
     }
 
-    // Validate dialog data entry.
-    if (this.dialogDataEntry == null) {
-      log.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
-      return;
+    @Override
+    public ResourceLocation id() {
+        return MESSAGE_ID;
     }
 
-    // Validate dialog data.
-    DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
-    if (dialogData == null) {
-      log.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
-      return;
-    }
+    @Override
+    public void handleServer(final ServerPlayer serverPlayer) {
+        EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+        if (easyNPC == null) {
+            return;
+        }
 
-    // Validate dialog
-    if (!dialogData.hasDialog(this.dialogId)) {
-      log.error(
-          "Unknown dialog button editor request for dialog {} for {} from {}",
-          this.dialogId,
-          easyNPC,
-          serverPlayer);
-      return;
-    }
+        // Validate dialog ID
+        if (this.dialogId == null) {
+            Logger.INSTANCE.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
+            return;
+        }
 
-    // Perform action.
-    log.debug(
-        "Saving dialog data {} for dialog {} for {} from {}",
-        this.dialogDataEntry,
-        this.dialogId,
-        easyNPC,
-        serverPlayer);
-    dialogData.setDialog(this.dialogId, this.dialogDataEntry);
-  }
+        // Validate dialog data entry.
+        if (this.dialogDataEntry == null) {
+            Logger.INSTANCE.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
+            return;
+        }
+
+        // Validate dialog data.
+        DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
+        if (dialogData == null) {
+            Logger.INSTANCE.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
+            return;
+        }
+
+        // Validate dialog
+        if (!dialogData.hasDialog(this.dialogId)) {
+            Logger.INSTANCE.error(
+                    "Unknown dialog button editor request for dialog {} for {} from {}",
+                    this.dialogId,
+                    easyNPC,
+                    serverPlayer);
+            return;
+        }
+
+        // Perform action.
+        Logger.INSTANCE.debug(
+                "Saving dialog data {} for dialog {} for {} from {}",
+                this.dialogDataEntry,
+                this.dialogId,
+                easyNPC,
+                serverPlayer);
+        dialogData.setDialog(this.dialogId, this.dialogDataEntry);
+    }
 }

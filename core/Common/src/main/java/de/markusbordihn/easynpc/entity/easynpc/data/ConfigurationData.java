@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.render.RenderType;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.MenuManager;
 import net.minecraft.server.level.ServerPlayer;
@@ -33,7 +34,7 @@ public interface ConfigurationData<T extends PathfinderMob> extends EasyNPC<T> {
       MenuManager.getMenuHandler()
           .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, this, 0);
     } else {
-      log.error("Configuration is not supported for {} ...", this);
+      Logger.INSTANCE.error("Configuration is not supported for {} ...", this);
     }
   }
 

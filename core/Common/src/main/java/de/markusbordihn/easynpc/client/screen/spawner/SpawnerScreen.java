@@ -27,7 +27,6 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.spawner.SpawnerSettingType;
 import de.markusbordihn.easynpc.menu.spawner.SpawnerMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
-import java.util.Locale;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -35,12 +34,11 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.Locale;
 
 public class SpawnerScreen<T extends SpawnerMenu> extends AbstractContainerScreen<T> {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String SPAWNER_PREFIX = "spawner.";
   private final SpawnerMenu spawnerMenu;
   private EditBox delayEdit;

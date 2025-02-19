@@ -19,17 +19,15 @@
 
 package de.markusbordihn.easynpc.data.display;
 
-import de.markusbordihn.easynpc.Constants;
-import java.util.HashSet;
+import de.markusbordihn.easynpc.debug.Logger;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.HashSet;
 
 public class DisplayAttributeSet {
 
   public static final String DATA_DISPLAY_ATTRIBUTE_SET_TAG = "DisplayAttributeSet";
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private final HashSet<DisplayAttributeEntry> displayAttributeEntrySet = new HashSet<>();
 
   public DisplayAttributeSet() {
@@ -112,10 +110,10 @@ public class DisplayAttributeSet {
             if (displayAttributeEntry.displayAttributeType() != DisplayAttributeType.NONE) {
               displayAttributeEntrySet.add(displayAttributeEntry);
             } else {
-              log.warn("Skip invalid display attribute entry {}", displayAttributeEntry);
+              Logger.INSTANCE.warn("Skip invalid display attribute entry {}", displayAttributeEntry);
             }
           } else {
-            log.error("Failed to load display attribute entry from {}", entry);
+            Logger.INSTANCE.error("Failed to load display attribute entry from {}", entry);
           }
         });
   }

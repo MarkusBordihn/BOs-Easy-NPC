@@ -19,21 +19,18 @@
 
 package de.markusbordihn.easynpc.network.message;
 
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import io.netty.buffer.Unpooled;
-import java.util.Random;
-import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.Random;
+import java.util.UUID;
 
 public interface NetworkMessageRecord {
-
-  Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   UUID EMPTY_UUID = new UUID(0L, 0L);
 
@@ -42,26 +39,26 @@ public interface NetworkMessageRecord {
   static boolean checkAccess(final UUID uuid, final ServerPlayer serverPlayer) {
     // Validate UUID.
     if (uuid == null || uuid.equals(EMPTY_UUID)) {
-      log.error("Unable to get valid entity UUID {} for {}", uuid, serverPlayer);
+      Logger.INSTANCE.error("Unable to get valid entity UUID {} for {}", uuid, serverPlayer);
       return false;
     }
 
     // Validate player.
     if (serverPlayer == null) {
-      log.error("Unable to get valid player for entity with UUID {}", uuid);
+      Logger.INSTANCE.error("Unable to get valid player for entity with UUID {}", uuid);
       return false;
     }
 
     // Validate entity.
     EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     if (easyNPC == null) {
-      log.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
+      Logger.INSTANCE.error("Unable to get valid entity with UUID {} for {}", uuid, serverPlayer);
       return false;
     }
 
     // Validate access.
     if (!LivingEntityManager.hasAccess(uuid, serverPlayer)) {
-      log.error("User {} has no access to Easy NPC with uuid {}.", serverPlayer, uuid);
+      Logger.INSTANCE.error("User {} has no access to Easy NPC with uuid {}.", serverPlayer, uuid);
       return false;
     }
 
@@ -79,23 +76,23 @@ public interface NetworkMessageRecord {
   }
 
   default void handleClient() {
-    log.error("Network message client handler not implemented for {}", this);
+    Logger.INSTANCE.error("Network message client handler not implemented for {}", this);
   }
 
   default void handleServer(ServerPlayer serverPlayer) {
-    log.error("Network message server handler not implemented for {}", this);
+    Logger.INSTANCE.error("Network message server handler not implemented for {}", this);
   }
 
   default EasyNPC<?> getEasyNPC(final UUID uuid, final ServerPlayer serverPlayer) {
     // Validate UUID.
     if (uuid == null || uuid.equals(EMPTY_UUID)) {
-      log.error("Invalid Easy NPC UUID {} from {}", uuid, serverPlayer);
+      Logger.INSTANCE.error("Invalid Easy NPC UUID {} from {}", uuid, serverPlayer);
       return null;
     }
 
     // Validate player.
     if (serverPlayer == null) {
-      log.error("Invalid server player for Easy NPC with UUID {}", uuid);
+      Logger.INSTANCE.error("Invalid server player for Easy NPC with UUID {}", uuid);
       return null;
     }
     return LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);

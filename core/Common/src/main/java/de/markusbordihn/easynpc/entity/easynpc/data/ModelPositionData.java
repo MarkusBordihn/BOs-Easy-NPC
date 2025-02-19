@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
@@ -38,7 +39,7 @@ public interface ModelPositionData<T extends PathfinderMob> extends EasyNPC<T> {
 
   static void registerSyncedModelPositionData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("- Registering Synched Model Position Data for {}.", entityClass.getSimpleName());
+    Logger.INSTANCE.info("- Registering Synched Model Position Data for {}.", entityClass.getSimpleName());
     map.put(
         SynchedDataIndex.MODEL_HEAD_POSITION,
         SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.POSITION));
@@ -101,7 +102,7 @@ public interface ModelPositionData<T extends PathfinderMob> extends EasyNPC<T> {
       case RIGHT_ARM -> setModelRightArmPosition(position);
       case LEFT_LEG -> setModelLeftLegPosition(position);
       case RIGHT_LEG -> setModelRightLegPosition(position);
-      default -> log.error("Invalid position model part {} for {}", modelPart, this);
+      default -> Logger.INSTANCE.error("Invalid position model part {} for {}", modelPart, this);
     }
   }
 

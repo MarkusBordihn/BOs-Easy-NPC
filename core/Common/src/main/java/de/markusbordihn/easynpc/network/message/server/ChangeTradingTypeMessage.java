@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.trading.TradingType;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -59,19 +60,19 @@ public record ChangeTradingTypeMessage(UUID uuid, TradingType tradingType)
 
     // Validate trading type
     if (this.tradingType == null) {
-      log.error("Invalid trading type for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid trading type for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate trading data.
     TradingData<?> tradingData = easyNPC.getEasyNPCTradingData();
     if (tradingData == null) {
-      log.error("Invalid trading data for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid trading data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    log.debug("Change trading type: {} for {} from {}", this.tradingType, easyNPC, serverPlayer);
+    Logger.INSTANCE.debug("Change trading type: {} for {} from {}", this.tradingType, easyNPC, serverPlayer);
     tradingData.getTradingDataSet().setType(this.tradingType);
     tradingData.updateTradingDataSet();
   }

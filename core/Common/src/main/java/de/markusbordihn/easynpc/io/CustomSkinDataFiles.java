@@ -28,22 +28,22 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.stream.Stream;
+
+import de.markusbordihn.easynpc.debug.Logger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class CustomSkinDataFiles {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String DATA_FOLDER_NAME = "skin";
   protected static final String TEMPLATE_PREFIX = "_template.png";
 
   private CustomSkinDataFiles() {}
 
   public static void registerCustomSkinData() {
-    log.info("{} custom skin data ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} custom skin data ...", Constants.LOG_REGISTER_PREFIX);
 
     // Prepare skin data folder
     Path skinDataFolder = getCustomSkinDataFolder();
@@ -74,10 +74,10 @@ public class CustomSkinDataFiles {
                 .resolve(DataFileHandler.getFileNameFromResourceLocation(resourceLocation))
                 .toFile();
         if (skinModelTemplateFile.exists()) {
-          log.warn(
+          Logger.INSTANCE.warn(
               "Skin model template file {} already exists, skipping copy!", skinModelTemplateFile);
         } else {
-          log.info(
+          Logger.INSTANCE.info(
               "Copy skin model template file {} to {} ...",
               resourceLocation,
               skinModelTemplateFile);
@@ -94,7 +94,7 @@ public class CustomSkinDataFiles {
     if (skinDataFolder == null) {
       return;
     }
-    log.info("{} custom skins from {} ...", Constants.LOG_REGISTER_PREFIX, skinDataFolder);
+    Logger.INSTANCE.info("{} custom skins from {} ...", Constants.LOG_REGISTER_PREFIX, skinDataFolder);
     for (SkinModel skinModel : SkinModel.values()) {
       Path skinModelFolder = getCustomSkinDataFolder(skinModel);
       if (skinModelFolder != null
@@ -107,7 +107,7 @@ public class CustomSkinDataFiles {
               .forEach(
                   skinPath -> CustomTextureManager.registerTexture(skinModel, skinPath.toFile()));
         } catch (IOException e) {
-          log.error(
+          Logger.INSTANCE.error(
               "Error reading custom skin files from {} for {}:", skinModelFolder, skinModel, e);
         }
       }
@@ -134,10 +134,10 @@ public class CustomSkinDataFiles {
       if (Files.exists(skinDataFolderPath) && Files.isDirectory(skinDataFolderPath)) {
         return skinDataFolderPath;
       }
-      log.info("Created new skin data folder {} at {}!", skinModelName, skinDataFolderPath);
+      Logger.INSTANCE.info("Created new skin data folder {} at {}!", skinModelName, skinDataFolderPath);
       return Files.createDirectories(skinDataFolderPath);
     } catch (IOException e) {
-      log.error("Error creating skin data folder {} at {}:", skinModelName, skinDataFolderPath, e);
+      Logger.INSTANCE.error("Error creating skin data folder {} at {}:", skinModelName, skinDataFolderPath, e);
     }
     return null;
   }

@@ -19,25 +19,23 @@
 
 package de.markusbordihn.easynpc.entity;
 
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Stream;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 public class LivingEntityManager {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String LOG_PREFIX = "[Living Entity Manager]";
 
   private static final ConcurrentHashMap<String, ServerPlayer> playerNameMap =
@@ -51,7 +49,7 @@ public class LivingEntityManager {
 
   public static void addEasyNPC(EasyNPC<?> easyNPC) {
     UUID uuid = easyNPC.getUUID();
-    log.debug("{} [Add] EASY NPC entity {}: {}", LOG_PREFIX, easyNPC, uuid);
+    Logger.INSTANCE.debug("{} [Add] EASY NPC entity {}: {}", LOG_PREFIX, easyNPC, uuid);
     npcEntityMap.put(uuid, easyNPC);
 
     // Client side could stop here.
@@ -68,7 +66,7 @@ public class LivingEntityManager {
   }
 
   public static void removeEasyNPC(EasyNPC<?> easyNPC) {
-    log.debug("{} [Remove] EASY NPC entity {}: {}", LOG_PREFIX, easyNPC, easyNPC.getUUID());
+    Logger.INSTANCE.debug("{} [Remove] EASY NPC entity {}: {}", LOG_PREFIX, easyNPC, easyNPC.getUUID());
     npcEntityMap.remove(easyNPC.getUUID());
 
     // Client side could stop here.
@@ -85,8 +83,8 @@ public class LivingEntityManager {
   }
 
   public static void addLivingEntity(LivingEntity livingEntity) {
-    if (log.isTraceEnabled()) {
-      log.trace("{} [Add] Living entity {}: {}", LOG_PREFIX, livingEntity, livingEntity.getUUID());
+    if (Logger.INSTANCE.isTraceEnabled()) {
+      Logger.INSTANCE.trace("{} [Add] Living entity {}: {}", LOG_PREFIX, livingEntity, livingEntity.getUUID());
     }
 
     // Inform all server-side easy NPC entities about the new living entity.
@@ -96,8 +94,8 @@ public class LivingEntityManager {
   }
 
   public static void removeLivingEntity(LivingEntity livingEntity) {
-    if (log.isTraceEnabled()) {
-      log.trace(
+    if (Logger.INSTANCE.isTraceEnabled()) {
+      Logger.INSTANCE.trace(
           "{} [Remove] Living entity {}: {}", LOG_PREFIX, livingEntity, livingEntity.getUUID());
     }
 
@@ -108,7 +106,7 @@ public class LivingEntityManager {
   }
 
   public static void addServerPlayer(ServerPlayer serverPlayer) {
-    log.debug("{} [Add] Server player {}: {}", LOG_PREFIX, serverPlayer, serverPlayer.getUUID());
+    Logger.INSTANCE.debug("{} [Add] Server player {}: {}", LOG_PREFIX, serverPlayer, serverPlayer.getUUID());
     playerMap.put(serverPlayer.getUUID(), serverPlayer);
     playerNameMap.put(serverPlayer.getName().getString(), serverPlayer);
 
@@ -119,7 +117,7 @@ public class LivingEntityManager {
   }
 
   public static void removeServerPlayer(ServerPlayer serverPlayer) {
-    log.debug("{} [Remove] Server player {}: {}", LOG_PREFIX, serverPlayer, serverPlayer.getUUID());
+    Logger.INSTANCE.debug("{} [Remove] Server player {}: {}", LOG_PREFIX, serverPlayer, serverPlayer.getUUID());
     playerMap.remove(serverPlayer.getUUID());
     playerNameMap.remove(serverPlayer.getName().getString());
 
@@ -243,7 +241,7 @@ public class LivingEntityManager {
       easyNPC.getMob().discard();
       npcEntityMap.remove(uuid);
     } else {
-      log.warn("{} [Discard] Unable to discard EASY NPC entity {}: {}", LOG_PREFIX, easyNPC, uuid);
+      Logger.INSTANCE.warn("{} [Discard] Unable to discard EASY NPC entity {}: {}", LOG_PREFIX, easyNPC, uuid);
     }
   }
 }

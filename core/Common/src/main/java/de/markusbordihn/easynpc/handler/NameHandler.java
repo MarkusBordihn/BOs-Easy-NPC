@@ -19,25 +19,22 @@
 
 package de.markusbordihn.easynpc.handler;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.entity.Entity;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class NameHandler {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private NameHandler() {}
 
   public static boolean setCustomName(EasyNPC<?> easyNPC, String name, int color, boolean visible) {
     if (easyNPC == null || name == null) {
-      log.error("[{}] Error setting custom name {}", easyNPC, name);
+      de.markusbordihn.easynpc.debug.Logger.INSTANCE.error("[{}] Error setting custom name {}", easyNPC, name);
       return false;
     }
 
@@ -45,13 +42,13 @@ public class NameHandler {
 
     // Remove the custom name if the name is empty.
     if (name.isEmpty()) {
-      log.debug("[{}] Remove custom name", easyNPC);
+      de.markusbordihn.easynpc.debug.Logger.INSTANCE.debug("[{}] Remove custom name", easyNPC);
       entity.setCustomName(null);
       entity.setCustomNameVisible(false);
       return true;
     }
 
-    log.debug(
+    de.markusbordihn.easynpc.debug.Logger.INSTANCE.debug(
         "[{}] Change custom name to '{}' with color {} and visible {}",
         easyNPC,
         name,

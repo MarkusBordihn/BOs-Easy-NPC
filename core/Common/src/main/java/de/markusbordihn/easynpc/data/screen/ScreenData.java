@@ -19,11 +19,10 @@
 
 package de.markusbordihn.easynpc.data.screen;
 
-import de.markusbordihn.easynpc.Constants;
-import java.util.UUID;
+import de.markusbordihn.easynpc.debug.Logger;
 import net.minecraft.nbt.CompoundTag;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.UUID;
 
 public record ScreenData(
     UUID uuid,
@@ -40,7 +39,6 @@ public record ScreenData(
   public static final String SCREEN_DATA_PAGE_INDEX_TAG = "PageIndex";
   public static final String SCREEN_DATA_TAG = "ScreenData";
   public static final String SCREEN_DATA_UUID_TAG = "UUID";
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public ScreenData(UUID uuid, UUID dialogId) {
     this(uuid, dialogId, null, null, 0, new CompoundTag());
@@ -52,7 +50,7 @@ public record ScreenData(
 
   public static ScreenData decode(CompoundTag compoundTag) {
     if (!hasScreenData(compoundTag)) {
-      log.error("Unable to decode screen data from compound tag: {}", compoundTag);
+      Logger.INSTANCE.error("Unable to decode screen data from compound tag: {}", compoundTag);
       return null;
     }
     CompoundTag screenDataTag = compoundTag.getCompound(SCREEN_DATA_TAG);

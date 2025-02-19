@@ -19,9 +19,8 @@
 
 package de.markusbordihn.easynpc.block;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.block.entity.BaseEasyNPCSpawnerBlockEntity;
-import java.util.UUID;
+import de.markusbordihn.easynpc.debug.Logger;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -34,13 +33,12 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.UUID;
 
 public class BaseEasyNPCSpawnerBlock extends BaseEntityBlock {
 
   public static final String NAME = "easy_npc_spawner";
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public BaseEasyNPCSpawnerBlock(Properties properties) {
     super(properties);
@@ -69,7 +67,7 @@ public class BaseEasyNPCSpawnerBlock extends BaseEntityBlock {
         && livingEntity != null) {
       blockEntityInstance.setSpawnerUUID(UUID.randomUUID());
       blockEntityInstance.setOwner(livingEntity);
-      log.debug(
+      Logger.INSTANCE.debug(
           "Registered new NPC spawner with UUID {} for owner {} at {}",
           blockEntityInstance.getSpawnerUUID(),
           blockEntityInstance.getOwner(),

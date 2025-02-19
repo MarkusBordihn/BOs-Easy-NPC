@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.preset;
 
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
@@ -50,7 +51,7 @@ public class ImportLocalPresetConfigurationScreen<T extends ConfigurationMenu>
           .importLocalPreset(
               getEasyNPCUUID(), NbtIo.readCompressed(presetFilePath.toFile()), resourceLocation);
     } catch (Exception e) {
-      log.error("Failed to import local preset file {}:", resourceLocation, e);
+      Logger.INSTANCE.error("Failed to import local preset file {}:", resourceLocation, e);
     }
   }
 

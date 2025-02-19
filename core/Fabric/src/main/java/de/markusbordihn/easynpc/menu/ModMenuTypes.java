@@ -44,43 +44,26 @@ import de.markusbordihn.easynpc.menu.configuration.pose.AdvancedPoseConfiguratio
 import de.markusbordihn.easynpc.menu.configuration.pose.CustomPoseConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.configuration.pose.DefaultPoseConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.configuration.position.DefaultPositionConfigurationMenuWrapper;
-import de.markusbordihn.easynpc.menu.configuration.preset.ExportCustomPresetConfigurationMenuWrapper;
-import de.markusbordihn.easynpc.menu.configuration.preset.ExportWorldPresetConfigurationMenuWrapper;
-import de.markusbordihn.easynpc.menu.configuration.preset.ImportCustomPresetConfigurationMenuWrapper;
-import de.markusbordihn.easynpc.menu.configuration.preset.ImportDefaultPresetConfigurationMenuWrapper;
-import de.markusbordihn.easynpc.menu.configuration.preset.ImportLocalPresetConfigurationMenuWrapper;
-import de.markusbordihn.easynpc.menu.configuration.preset.ImportWorldPresetConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.preset.*;
 import de.markusbordihn.easynpc.menu.configuration.rotation.DefaultRotationConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.configuration.scaling.ScalingConfigurationMenuWrapper;
-import de.markusbordihn.easynpc.menu.configuration.skin.CustomSkinConfigurationMenuWrapper;
-import de.markusbordihn.easynpc.menu.configuration.skin.DefaultSkinConfigurationMenuWrapper;
-import de.markusbordihn.easynpc.menu.configuration.skin.NoneSkinConfigurationMenuWrapper;
-import de.markusbordihn.easynpc.menu.configuration.skin.PlayerSkinConfigurationMenuWrapper;
-import de.markusbordihn.easynpc.menu.configuration.skin.UrlSkinConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.menu.configuration.skin.*;
 import de.markusbordihn.easynpc.menu.configuration.trading.AdvancedTradingConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.configuration.trading.BasicTradingConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.configuration.trading.CustomTradingConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.configuration.trading.NoneTradingConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.menu.dialog.DialogMenuWrapper;
-import de.markusbordihn.easynpc.menu.editor.ActionDataEditorMenuWrapper;
-import de.markusbordihn.easynpc.menu.editor.ActionDataEntryEditorMenuWrapper;
-import de.markusbordihn.easynpc.menu.editor.DialogButtonEditorMenuWrapper;
-import de.markusbordihn.easynpc.menu.editor.DialogEditorMenuWrapper;
-import de.markusbordihn.easynpc.menu.editor.DialogTextEditorMenuWrapper;
+import de.markusbordihn.easynpc.menu.editor.*;
 import de.markusbordihn.easynpc.menu.spawner.SpawnerMenuWrapper;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.world.inventory.MenuType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ModMenuTypes {
-
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ModMenuTypes() {}
 
   public static void register() {
-    log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
+    de.markusbordihn.easynpc.debug.Logger.INSTANCE.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
   }
 
   public static final MenuType<AbilitiesAttributeConfigurationMenuWrapper>

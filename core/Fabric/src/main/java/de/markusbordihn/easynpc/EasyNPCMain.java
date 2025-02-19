@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.compat.CompatHandler;
 import de.markusbordihn.easynpc.compat.CompatManager;
 import de.markusbordihn.easynpc.config.Config;
 import de.markusbordihn.easynpc.debug.DebugManager;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.LivingEntityEventHandler;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.io.DataFileHandler;
@@ -33,11 +34,7 @@ import de.markusbordihn.easynpc.item.ModItems;
 import de.markusbordihn.easynpc.menu.MenuHandler;
 import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
-import de.markusbordihn.easynpc.network.ClientNetworkMessageHandler;
-import de.markusbordihn.easynpc.network.NetworkHandler;
-import de.markusbordihn.easynpc.network.NetworkHandlerManager;
-import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
-import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.*;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import de.markusbordihn.easynpc.server.ServerEvents;
 import net.fabricmc.api.EnvType;
@@ -46,73 +43,69 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class EasyNPCMain implements ModInitializer {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
   @Override
   public void onInitialize() {
-    log.info("Initializing {} (Fabric) ...", Constants.MOD_NAME);
+    Logger.INSTANCE.info("Initializing {} (Fabric) ...", Constants.MOD_NAME);
 
-    log.info("{} Debug Manager ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Debug Manager ...", Constants.LOG_REGISTER_PREFIX);
     if (System.getProperty("fabric.development") != null) {
       DebugManager.setDevelopmentEnvironment(true);
     }
     DebugManager.checkForDebugLogging(Constants.LOG_NAME);
 
-    log.info("{} Constants ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Constants ...", Constants.LOG_REGISTER_PREFIX);
     Constants.GAME_DIR = FabricLoader.getInstance().getGameDir();
     Constants.CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
 
-    log.info("{} Configuration ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Configuration ...", Constants.LOG_REGISTER_PREFIX);
     Config.register(FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER);
 
-    log.info("{} Common Data Files ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Common Data Files ...", Constants.LOG_REGISTER_PREFIX);
     DataFileHandler.registerCommonDataFiles();
 
-    log.info("{} Entity Data Serializers ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Entity Data Serializers ...", Constants.LOG_REGISTER_PREFIX);
     EntityDataSerializersManager.register();
 
-    log.info("{} Compatibility Handler ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Compatibility Handler ...", Constants.LOG_REGISTER_PREFIX);
     CompatManager.registerCompatHandler(new CompatHandler());
 
-    log.info("{} Entity Types ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Entity Types ...", Constants.LOG_REGISTER_PREFIX);
     ModEntityType.registerEntitiesAttributes();
 
-    log.info("{} Blocks ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Blocks ...", Constants.LOG_REGISTER_PREFIX);
     ModBlocks.registerModBlocks();
 
-    log.info("{} Blocks Entities ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Blocks Entities ...", Constants.LOG_REGISTER_PREFIX);
     ModBlocks.registerModBlockEntities();
 
-    log.info("{} Items ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Items ...", Constants.LOG_REGISTER_PREFIX);
     ModItems.registerModItems();
 
-    log.info("{} Command register event ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Command register event ...", Constants.LOG_REGISTER_PREFIX);
     CommandRegistrationCallback.EVENT.register(
         (dispatcher, commandBuildContext, commandSelection) ->
             CommandManager.registerCommands(dispatcher, commandBuildContext));
 
-    log.info("{} Server Events ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Server Events ...", Constants.LOG_REGISTER_PREFIX);
     ServerLifecycleEvents.SERVER_STARTING.register(ServerEvents::handleServerStarting);
     ServerTickEvents.END_SERVER_TICK.register(ServerEvents::handleServerTick);
     LivingEntityEventHandler.registerServerEntityEvents();
 
-    log.info("{} Menu Handler ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Menu Handler ...", Constants.LOG_REGISTER_PREFIX);
     MenuManager.registerMenuHandler(new MenuHandler());
 
-    log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
     ModMenuTypes.register();
 
-    log.info("{} Server Network Handler ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Server Network Handler ...", Constants.LOG_REGISTER_PREFIX);
     NetworkHandlerManager.registerHandler(new NetworkHandler());
     NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.SERVER);
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
 
-    log.info("{} Argument Types ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Argument Types ...", Constants.LOG_REGISTER_PREFIX);
     ModArgumentTypes.register();
   }
 }

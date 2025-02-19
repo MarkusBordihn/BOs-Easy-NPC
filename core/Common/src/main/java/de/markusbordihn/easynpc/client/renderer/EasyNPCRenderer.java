@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
 import de.markusbordihn.easynpc.data.render.RenderType;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
@@ -38,12 +39,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public interface EasyNPCRenderer<E extends PathfinderMob, M extends EntityModel<E>> {
-
-  Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   default boolean renderEntity(
       PathfinderMob entity,
@@ -91,7 +88,7 @@ public interface EasyNPCRenderer<E extends PathfinderMob, M extends EntityModel<
             (E) customEntity, entityYaw, partialTicks, poseStack, buffer, packedLight);
         return true;
       } catch (Exception exception) {
-        log.error(
+        Logger.INSTANCE.error(
             "Failed to render custom living entity {} ({}):",
             customEntity,
             renderEntityType,
@@ -111,7 +108,7 @@ public interface EasyNPCRenderer<E extends PathfinderMob, M extends EntityModel<
             (E) customEntity, entityYaw, partialTicks, poseStack, buffer, packedLight);
         return true;
       } catch (Exception exception) {
-        log.error(
+        Logger.INSTANCE.error(
             "Failed to render custom entity {} ({}):", customEntity, renderEntityType, exception);
         EntityTypeManager.addUnsupportedEntityType(renderEntityType);
         return false;

@@ -20,10 +20,10 @@
 package de.markusbordihn.easynpc.item.configuration;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -39,13 +39,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.List;
 
 public class EasyNPCPresetEmptyItem extends Item {
 
   public static final String NAME = "easy_npc_preset_empty";
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public EasyNPCPresetEmptyItem(Properties properties) {
     super(properties);
@@ -72,14 +71,14 @@ public class EasyNPCPresetEmptyItem extends Item {
               .getOptional(new ResourceLocation(Constants.MOD_ID, EasyNPCPresetItem.NAME))
               .orElse(null);
       if (item == null) {
-        log.error("Can't find item for storing preset {}", EasyNPCPresetItem.NAME);
+        Logger.INSTANCE.error("Can't find item for storing preset {}", EasyNPCPresetItem.NAME);
         return InteractionResult.FAIL;
       }
 
       // Get preset data from entity
       PresetData<?> presetData = easyNPC.getEasyNPCPresetData();
       if (presetData == null) {
-        log.error("Can't export preset data from {}", easyNPC);
+        Logger.INSTANCE.error("Can't export preset data from {}", easyNPC);
         return InteractionResult.FAIL;
       }
 
@@ -93,7 +92,7 @@ public class EasyNPCPresetEmptyItem extends Item {
       // Store entity type and preset data in the item stack.
       ItemStack presetItemStack = new ItemStack(item);
       EasyNPCPresetItem.savePreset(presetItemStack, entityTypeRegistryName, compoundTag);
-      log.info("Captured NPC preset from {} with {} to {}", easyNPC, compoundTag, presetItemStack);
+      Logger.INSTANCE.info("Captured NPC preset from {} with {} to {}", easyNPC, compoundTag, presetItemStack);
 
       // Place the new preset item in the player inventory or drop it.
       if (!player.getInventory().add(presetItemStack)) {

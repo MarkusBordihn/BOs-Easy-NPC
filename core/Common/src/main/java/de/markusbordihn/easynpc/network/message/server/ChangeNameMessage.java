@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.NameHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -60,7 +61,7 @@ public record ChangeNameMessage(UUID uuid, String name, int color, boolean visib
     }
 
     if (!NameHandler.setCustomName(easyNPC, this.name, this.color, this.visible)) {
-      log.error("Unable to set custom name {} for {} from {}", this.name, easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Unable to set custom name {} for {} from {}", this.name, easyNPC, serverPlayer);
     }
   }
 }

@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.network.message.server;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
@@ -61,7 +62,7 @@ public record ExecuteActionEventMessage(UUID uuid, ActionEventType actionEventTy
 
     // Validate action type.
     if (this.actionEventType == null || this.actionEventType == ActionEventType.NONE) {
-      log.error(
+      Logger.INSTANCE.error(
           "Invalid action event type {} for {} from {}",
           this.actionEventType,
           easyNPC,
@@ -72,7 +73,7 @@ public record ExecuteActionEventMessage(UUID uuid, ActionEventType actionEventTy
     // Validate action event data.
     ActionEventData<?> actionEventData = easyNPC.getEasyNPCActionEventData();
     if (actionEventData == null) {
-      log.error("Unable to get valid action event data for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Unable to get valid action event data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
@@ -80,7 +81,7 @@ public record ExecuteActionEventMessage(UUID uuid, ActionEventType actionEventTy
     ActionDataSet actionDataSet =
         actionEventData.getActionEventSet().getActionEvents(this.actionEventType);
     if (actionDataSet == null || actionDataSet.isEmpty()) {
-      log.error(
+      Logger.INSTANCE.error(
           "Empty trigger action event {} request for {} from {}",
           this.actionEventType,
           easyNPC,
@@ -91,7 +92,7 @@ public record ExecuteActionEventMessage(UUID uuid, ActionEventType actionEventTy
     // Validate action handler.
     ActionHandler<?> actionHandler = easyNPC.getEasyNPCActionHandler();
     if (actionHandler == null) {
-      log.error("Unable to get valid action handler for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Unable to get valid action handler for {} from {}", easyNPC, serverPlayer);
       return;
     }
 

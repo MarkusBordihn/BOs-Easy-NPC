@@ -20,6 +20,8 @@
 package de.markusbordihn.easynpc.config;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
+
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;
@@ -274,7 +276,7 @@ Render Entity Type Support Configuration
         continue;
       }
       if (entityType == null || !entityType.contains(":")) {
-        log.error("Remove invalid entity type {} from {}.", entityType, CONFIG_FILE_NAME);
+        Logger.INSTANCE.error("Remove invalid entity type {} from {}.", entityType, CONFIG_FILE_NAME);
         properties.remove(entityType);
         continue;
       }

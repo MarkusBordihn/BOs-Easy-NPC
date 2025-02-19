@@ -25,7 +25,10 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.debug.DebugManager;
+
 import java.util.Set;
+
+import de.markusbordihn.easynpc.debug.Logger;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -34,75 +37,76 @@ import net.minecraft.world.entity.EntityType;
 
 public class DebugCommand extends Command {
 
-  private DebugCommand() {}
-
-  public static ArgumentBuilder<CommandSourceStack, ?> register() {
-    return Commands.literal("debug")
-        .requires(cs -> cs.hasPermission(Commands.LEVEL_GAMEMASTERS))
-        .then(
-            Commands.literal("log")
-                .then(
-                    Commands.argument("enable", BoolArgumentType.bool())
-                        .executes(
-                            context ->
-                                setDebug(
-                                    context.getSource(),
-                                    BoolArgumentType.getBool(context, "enable")))))
-        .then(
-            Commands.literal("info")
-                .then(
-                    Commands.literal("entity_types")
-                        .executes(context -> getEntityTypes(context.getSource()))));
-  }
-
-  public static int setDebug(CommandSourceStack context, boolean enable) {
-    if (enable) {
-      sendSuccessMessage(
-          context,
-          "► Enable debug for "
-              + Constants.MOD_NAME
-              + ", please check debug.log for the full output.",
-          ChatFormatting.GREEN);
-      sendSuccessMessage(
-          context,
-          "> Use '/" + Constants.MOD_COMMAND + " debug false' to disable the debug!",
-          ChatFormatting.WHITE);
-    } else {
-      sendSuccessMessage(
-          context, "■ Disable debug for " + Constants.MOD_NAME + "!", ChatFormatting.RED);
-      sendSuccessMessage(
-          context,
-          "> Please check the latest.log and/or debug.log for the full output.",
-          ChatFormatting.WHITE);
+    private DebugCommand() {
     }
-    DebugManager.enableDebugLevel(enable);
-    return Command.SINGLE_SUCCESS;
-  }
 
-  public static int getEntityTypes(CommandSourceStack context) {
-    Set<EntityType<? extends Entity>> supportedEntityTypes =
-        EntityTypeManager.getSupportedEntityTypes();
-    Set<EntityType<? extends Entity>> unsupportedEntityTypes =
-        EntityTypeManager.getUnsupportedEntityTypes();
-    Set<EntityType<? extends Entity>> unknownEntityTypes =
-        EntityTypeManager.getUnknownEntityTypes();
-    sendSuccessMessage(
-        context,
-        "► Found "
-            + supportedEntityTypes.size()
-            + " supported, "
-            + unsupportedEntityTypes.size()
-            + " unsupported and "
-            + unknownEntityTypes.size()
-            + " unknown entity types.",
-        ChatFormatting.GREEN);
-    sendSuccessMessage(
-        context,
-        "> Please check the latest.log and/or debug.log for the full output.",
-        ChatFormatting.WHITE);
-    log.info("Supported entity types: {}", supportedEntityTypes);
-    log.info("Unsupported entity types: {}", unsupportedEntityTypes);
-    log.info("Unknown entity types: {}", unknownEntityTypes);
-    return Command.SINGLE_SUCCESS;
-  }
+    public static ArgumentBuilder<CommandSourceStack, ?> register() {
+        return Commands.literal("debug")
+                .requires(cs -> cs.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .then(
+                        Commands.literal("log")
+                                .then(
+                                        Commands.argument("enable", BoolArgumentType.bool())
+                                                .executes(
+                                                        context ->
+                                                                setDebug(
+                                                                        context.getSource(),
+                                                                        BoolArgumentType.getBool(context, "enable")))))
+                .then(
+                        Commands.literal("info")
+                                .then(
+                                        Commands.literal("entity_types")
+                                                .executes(context -> getEntityTypes(context.getSource()))));
+    }
+
+    public static int setDebug(CommandSourceStack context, boolean enable) {
+        if (enable) {
+            sendSuccessMessage(
+                    context,
+                    "► Enable debug for "
+                            + Constants.MOD_NAME
+                            + ", please check debug.log for the full output.",
+                    ChatFormatting.GREEN);
+            sendSuccessMessage(
+                    context,
+                    "> Use '/" + Constants.MOD_COMMAND + " debug false' to disable the debug!",
+                    ChatFormatting.WHITE);
+        } else {
+            sendSuccessMessage(
+                    context, "■ Disable debug for " + Constants.MOD_NAME + "!", ChatFormatting.RED);
+            sendSuccessMessage(
+                    context,
+                    "> Please check the latest.log and/or debug.log for the full output.",
+                    ChatFormatting.WHITE);
+        }
+        DebugManager.enableDebugLevel(enable);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    public static int getEntityTypes(CommandSourceStack context) {
+        Set<EntityType<? extends Entity>> supportedEntityTypes =
+                EntityTypeManager.getSupportedEntityTypes();
+        Set<EntityType<? extends Entity>> unsupportedEntityTypes =
+                EntityTypeManager.getUnsupportedEntityTypes();
+        Set<EntityType<? extends Entity>> unknownEntityTypes =
+                EntityTypeManager.getUnknownEntityTypes();
+        sendSuccessMessage(
+                context,
+                "► Found "
+                        + supportedEntityTypes.size()
+                        + " supported, "
+                        + unsupportedEntityTypes.size()
+                        + " unsupported and "
+                        + unknownEntityTypes.size()
+                        + " unknown entity types.",
+                ChatFormatting.GREEN);
+        sendSuccessMessage(
+                context,
+                "> Please check the latest.log and/or debug.log for the full output.",
+                ChatFormatting.WHITE);
+        Logger.INSTANCE.info("Supported entity types: {}", supportedEntityTypes);
+        Logger.INSTANCE.info("Unsupported entity types: {}", unsupportedEntityTypes);
+        Logger.INSTANCE.info("Unknown entity types: {}", unknownEntityTypes);
+        return Command.SINGLE_SUCCESS;
+    }
 }

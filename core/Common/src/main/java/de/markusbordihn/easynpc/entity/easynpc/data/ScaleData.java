@@ -22,10 +22,13 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.data.model.ModelScaleAxis;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
+
 import java.util.EnumMap;
 import java.util.Objects;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -35,110 +38,110 @@ import net.minecraft.world.entity.PathfinderMob;
 
 public interface ScaleData<T extends PathfinderMob> extends EasyNPC<T> {
 
-  float DEFAULT_SCALE_X = 1.0f;
-  float DEFAULT_SCALE_Y = 1.0f;
-  float DEFAULT_SCALE_Z = 1.0f;
-  String EASY_NPC_DATA_SCALE_DATA_TAG = "ScaleData";
+    float DEFAULT_SCALE_X = 1.0f;
+    float DEFAULT_SCALE_Y = 1.0f;
+    float DEFAULT_SCALE_Z = 1.0f;
+    String EASY_NPC_DATA_SCALE_DATA_TAG = "ScaleData";
 
-  static void registerSyncedScaleData(
-      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("- Registering Synched Scale Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.SCALE_X,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.FLOAT));
-    map.put(
-        SynchedDataIndex.SCALE_Y,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.FLOAT));
-    map.put(
-        SynchedDataIndex.SCALE_Z,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.FLOAT));
-  }
-
-  default Float getDefaultScaleX() {
-    return DEFAULT_SCALE_X;
-  }
-
-  default Float getDefaultScaleY() {
-    return DEFAULT_SCALE_Y;
-  }
-
-  default Float getDefaultScaleZ() {
-    return DEFAULT_SCALE_Z;
-  }
-
-  default void setModelScaleAxis(ModelScaleAxis scaleAxis, Float scaleValue) {
-    switch (scaleAxis) {
-      case X -> setScaleX(scaleValue);
-      case Y -> setScaleY(scaleValue);
-      case Z -> setScaleZ(scaleValue);
-      default -> log.error("Invalid scale axis {} for {}", scaleAxis, this);
+    static void registerSyncedScaleData(
+            EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
+        Logger.INSTANCE.info("- Registering Synched Scale Data for {}.", entityClass.getSimpleName());
+        map.put(
+                SynchedDataIndex.SCALE_X,
+                SynchedEntityData.defineId(entityClass, EntityDataSerializers.FLOAT));
+        map.put(
+                SynchedDataIndex.SCALE_Y,
+                SynchedEntityData.defineId(entityClass, EntityDataSerializers.FLOAT));
+        map.put(
+                SynchedDataIndex.SCALE_Z,
+                SynchedEntityData.defineId(entityClass, EntityDataSerializers.FLOAT));
     }
-  }
 
-  default Float getScaleX() {
-    return getSynchedEntityData(SynchedDataIndex.SCALE_X);
-  }
-
-  default void setScaleX(Float scale) {
-    if (!Objects.equals(getScaleX(), scale)) {
-      setSynchedEntityData(SynchedDataIndex.SCALE_X, scale);
-      getEntity().refreshDimensions();
+    default Float getDefaultScaleX() {
+        return DEFAULT_SCALE_X;
     }
-  }
 
-  default Float getScaleY() {
-    return getSynchedEntityData(SynchedDataIndex.SCALE_Y);
-  }
+    default Float getDefaultScaleY() {
+        return DEFAULT_SCALE_Y;
+    }
 
-  default void setScaleY(Float scale) {
-    if (!Objects.equals(getScaleY(), scale)) {
-      setSynchedEntityData(SynchedDataIndex.SCALE_Y, scale);
-      getEntity().refreshDimensions();
+    default Float getDefaultScaleZ() {
+        return DEFAULT_SCALE_Z;
     }
-  }
 
-  default Float getScaleZ() {
-    return getSynchedEntityData(SynchedDataIndex.SCALE_Z);
-  }
+    default void setModelScaleAxis(ModelScaleAxis scaleAxis, Float scaleValue) {
+        switch (scaleAxis) {
+            case X -> setScaleX(scaleValue);
+            case Y -> setScaleY(scaleValue);
+            case Z -> setScaleZ(scaleValue);
+            default -> Logger.INSTANCE.error("Invalid scale axis {} for {}", scaleAxis, this);
+        }
+    }
 
-  default void setScaleZ(Float scale) {
-    if (!Objects.equals(getScaleZ(), scale)) {
-      setSynchedEntityData(SynchedDataIndex.SCALE_Z, scale);
-      getEntity().refreshDimensions();
+    default Float getScaleX() {
+        return getSynchedEntityData(SynchedDataIndex.SCALE_X);
     }
-  }
 
-  default void defineSynchedScaleData() {
-    defineSynchedEntityData(SynchedDataIndex.SCALE_X, this.getDefaultScaleX());
-    defineSynchedEntityData(SynchedDataIndex.SCALE_Y, this.getDefaultScaleY());
-    defineSynchedEntityData(SynchedDataIndex.SCALE_Z, this.getDefaultScaleZ());
-  }
+    default void setScaleX(Float scale) {
+        if (!Objects.equals(getScaleX(), scale)) {
+            setSynchedEntityData(SynchedDataIndex.SCALE_X, scale);
+            getEntity().refreshDimensions();
+        }
+    }
 
-  default void addAdditionalScaleData(CompoundTag compoundTag) {
-    if (Objects.equals(this.getScaleX(), this.getDefaultScaleX())
-        && Objects.equals(this.getScaleY(), this.getDefaultScaleY())
-        && Objects.equals(this.getScaleZ(), this.getDefaultScaleZ())) {
-      return;
+    default Float getScaleY() {
+        return getSynchedEntityData(SynchedDataIndex.SCALE_Y);
     }
-    compoundTag.put(
-        EASY_NPC_DATA_SCALE_DATA_TAG,
-        CompoundTagUtils.writeScale(this.getScaleX(), this.getScaleY(), this.getScaleZ()));
-  }
 
-  default void readAdditionalScaleData(CompoundTag compoundTag) {
-    if (!compoundTag.contains(EASY_NPC_DATA_SCALE_DATA_TAG)) {
-      return;
+    default void setScaleY(Float scale) {
+        if (!Objects.equals(getScaleY(), scale)) {
+            setSynchedEntityData(SynchedDataIndex.SCALE_Y, scale);
+            getEntity().refreshDimensions();
+        }
     }
-    CustomScale customScale =
-        CompoundTagUtils.readCustomScale(compoundTag.getCompound(EASY_NPC_DATA_SCALE_DATA_TAG));
-    if (customScale.x() > 0.0f) {
-      this.setScaleX(customScale.x());
+
+    default Float getScaleZ() {
+        return getSynchedEntityData(SynchedDataIndex.SCALE_Z);
     }
-    if (customScale.y() > 0.0f) {
-      this.setScaleY(customScale.y());
+
+    default void setScaleZ(Float scale) {
+        if (!Objects.equals(getScaleZ(), scale)) {
+            setSynchedEntityData(SynchedDataIndex.SCALE_Z, scale);
+            getEntity().refreshDimensions();
+        }
     }
-    if (customScale.z() > 0.0f) {
-      this.setScaleZ(customScale.z());
+
+    default void defineSynchedScaleData() {
+        defineSynchedEntityData(SynchedDataIndex.SCALE_X, this.getDefaultScaleX());
+        defineSynchedEntityData(SynchedDataIndex.SCALE_Y, this.getDefaultScaleY());
+        defineSynchedEntityData(SynchedDataIndex.SCALE_Z, this.getDefaultScaleZ());
     }
-  }
+
+    default void addAdditionalScaleData(CompoundTag compoundTag) {
+        if (Objects.equals(this.getScaleX(), this.getDefaultScaleX())
+                && Objects.equals(this.getScaleY(), this.getDefaultScaleY())
+                && Objects.equals(this.getScaleZ(), this.getDefaultScaleZ())) {
+            return;
+        }
+        compoundTag.put(
+                EASY_NPC_DATA_SCALE_DATA_TAG,
+                CompoundTagUtils.writeScale(this.getScaleX(), this.getScaleY(), this.getScaleZ()));
+    }
+
+    default void readAdditionalScaleData(CompoundTag compoundTag) {
+        if (!compoundTag.contains(EASY_NPC_DATA_SCALE_DATA_TAG)) {
+            return;
+        }
+        CustomScale customScale =
+                CompoundTagUtils.readCustomScale(compoundTag.getCompound(EASY_NPC_DATA_SCALE_DATA_TAG));
+        if (customScale.x() > 0.0f) {
+            this.setScaleX(customScale.x());
+        }
+        if (customScale.y() > 0.0f) {
+            this.setScaleY(customScale.y());
+        }
+        if (customScale.z() > 0.0f) {
+            this.setScaleZ(customScale.z());
+        }
+    }
 }

@@ -19,10 +19,7 @@
 
 package de.markusbordihn.easynpc.data.display;
 
-import de.markusbordihn.easynpc.Constants;
 import net.minecraft.nbt.CompoundTag;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public record DisplayAttributeEntry(
     DisplayAttributeType displayAttributeType, boolean booleanValue, int intValue) {
@@ -30,7 +27,6 @@ public record DisplayAttributeEntry(
   public static final String DATA_TYPE_TAG = "Type";
   public static final String DATA_BOOLEAN_VALUE_TAG = "Boolean";
   public static final String DATA_INT_VALUE_TAG = "Int";
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public DisplayAttributeEntry(CompoundTag compoundTag) {
     this(

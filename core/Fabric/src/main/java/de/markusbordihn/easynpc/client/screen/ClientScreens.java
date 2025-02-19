@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.screen;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.configuration.actions.BasicActionConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.actions.DialogActionConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.actions.DistanceActionConfigurationScreenWrapper;
@@ -42,19 +41,10 @@ import de.markusbordihn.easynpc.client.screen.configuration.pose.AdvancedPoseCon
 import de.markusbordihn.easynpc.client.screen.configuration.pose.CustomPoseConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.pose.DefaultPoseConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.position.DefaultPositionConfigurationScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.configuration.preset.ExportCustomPresetConfigurationScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.configuration.preset.ExportWorldPresetConfigurationScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.configuration.preset.ImportCustomPresetConfigurationScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.configuration.preset.ImportDefaultPresetConfigurationScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.configuration.preset.ImportLocalPresetConfigurationScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.configuration.preset.ImportWorldPresetConfigurationScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.configuration.preset.*;
 import de.markusbordihn.easynpc.client.screen.configuration.rotation.DefaultRotationConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.scaling.ScalingConfigurationScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.configuration.skin.CustomSkinConfigurationScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.configuration.skin.DefaultSkinConfigurationScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.configuration.skin.NoneSkinConfigurationScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.configuration.skin.PlayerSkinConfigurationScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.configuration.skin.UrlSkinConfigurationScreenWrapper;
+import de.markusbordihn.easynpc.client.screen.configuration.skin.*;
 import de.markusbordihn.easynpc.client.screen.configuration.trading.AdvancedTradingConfigurationContainerScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.trading.BasicTradingConfigurationContainerScreenWrapper;
 import de.markusbordihn.easynpc.client.screen.configuration.trading.CustomTradingConfigurationContainerScreenWrapper;
@@ -68,12 +58,8 @@ import de.markusbordihn.easynpc.client.screen.editor.dialog.DialogTextEditorScre
 import de.markusbordihn.easynpc.client.screen.spawner.SpawnerScreenWrapper;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import net.minecraft.client.gui.screens.MenuScreens;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ClientScreens {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ClientScreens() {}
 

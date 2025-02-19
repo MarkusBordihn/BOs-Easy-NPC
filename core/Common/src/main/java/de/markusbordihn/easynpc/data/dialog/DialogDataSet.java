@@ -25,17 +25,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import de.markusbordihn.easynpc.debug.Logger;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class DialogDataSet {
 
   public static final String DATA_DIALOG_DATA_SET_TAG = "DialogDataSet";
   public static final String DATA_DIALOG_DEFAULT_TAG = "Default";
   public static final String DATA_TYPE_TAG = "Type";
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private final HashMap<String, DialogDataEntry> dialogByLabelMap = new HashMap<>();
   private final HashMap<UUID, DialogDataEntry> dialogByIdMap = new HashMap<>();
   private String defaultDialogLabel = "default";
@@ -59,7 +59,7 @@ public class DialogDataSet {
 
   public void setDialog(UUID dialogId, DialogDataEntry dialogData) {
     if (dialogData == null) {
-      log.error("Dialog data is null, please check your dialog data!");
+      Logger.INSTANCE.error("Dialog data is null, please check your dialog data!");
       return;
     }
     if (this.hasDialog(dialogId)) {
@@ -71,19 +71,19 @@ public class DialogDataSet {
   public boolean addDialog(DialogDataEntry dialogData) {
     // Pre-check dialog data, before adding it to the dialog set.
     if (dialogData == null) {
-      log.error("Dialog data is null, please check your dialog data!");
+      Logger.INSTANCE.error("Dialog data is null, please check your dialog data!");
       return false;
     }
     if (dialogData.getId() == null) {
-      log.error("Dialog id is null, please check your dialog data!");
+      Logger.INSTANCE.error("Dialog id is null, please check your dialog data!");
       return false;
     }
     if (dialogData.getLabel() == null) {
-      log.error("Dialog label is null, please check your dialog data!");
+      Logger.INSTANCE.error("Dialog label is null, please check your dialog data!");
       return false;
     }
     if (dialogData.getText() == null || dialogData.getText().isEmpty()) {
-      log.error("Dialog text is null or empty, please check your dialog data!");
+      Logger.INSTANCE.error("Dialog text is null or empty, please check your dialog data!");
       return false;
     }
 
@@ -93,7 +93,7 @@ public class DialogDataSet {
     // Warn about duplicated dialog ids
     DialogDataEntry existingDialogData = this.dialogByIdMap.getOrDefault(dialogId, null);
     if (existingDialogData != null && !existingDialogData.equals(dialogData)) {
-      log.warn(
+      Logger.INSTANCE.warn(
           "Duplicated dialog with id {} found, will overwrite existing dialog {} with {}!",
           dialogId,
           dialogData,
@@ -267,7 +267,7 @@ public class DialogDataSet {
           && this.dialogByLabelMap.containsKey(defaultDialogLabelData)) {
         this.defaultDialogLabel = defaultDialogLabelData;
       } else {
-        log.warn(
+        Logger.INSTANCE.warn(
             "Invalid default dialog index `{}` found, will use {} instead!",
             defaultDialogLabelData,
             this.getDefaultDialogLabel());

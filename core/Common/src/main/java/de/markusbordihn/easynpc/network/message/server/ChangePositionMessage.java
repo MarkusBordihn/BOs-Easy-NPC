@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
@@ -60,12 +61,12 @@ public record ChangePositionMessage(UUID uuid, Vec3 pos) implements NetworkMessa
 
     // Validate position.
     if (this.pos == null) {
-      log.error("Invalid pos for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid pos for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    log.debug("Change pos {} for {} from {}", this.pos, easyNPC, serverPlayer);
+    Logger.INSTANCE.debug("Change pos {} for {} from {}", this.pos, easyNPC, serverPlayer);
     easyNPC.getEntity().setPos(this.pos);
   }
 }

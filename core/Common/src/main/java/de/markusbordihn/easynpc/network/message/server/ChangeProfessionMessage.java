@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.profession.Profession;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -59,19 +60,19 @@ public record ChangeProfessionMessage(UUID uuid, Profession profession)
 
     // Validate name.
     if (this.profession == null) {
-      log.error("Invalid profession for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid profession for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate Profession data.
     ProfessionData<?> professionData = easyNPC.getEasyNPCProfessionData();
     if (professionData == null) {
-      log.error("Invalid profession data for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid profession data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    log.debug("Change profession {} for {} from {}", this.profession, easyNPC, serverPlayer);
+    Logger.INSTANCE.debug("Change profession {} for {} from {}", this.profession, easyNPC, serverPlayer);
     professionData.setProfession(this.profession);
   }
 }

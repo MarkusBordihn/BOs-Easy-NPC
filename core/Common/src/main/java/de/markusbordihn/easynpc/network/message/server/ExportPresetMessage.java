@@ -20,54 +20,57 @@
 package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+
 import java.util.UUID;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public record ExportPresetMessage(UUID uuid, String name) implements NetworkMessageRecord {
 
-  public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "export_preset");
+    public static final ResourceLocation MESSAGE_ID =
+            new ResourceLocation(Constants.MOD_ID, "export_preset");
 
-  public static ExportPresetMessage create(final FriendlyByteBuf buffer) {
-    return new ExportPresetMessage(buffer.readUUID(), buffer.readUtf());
-  }
-
-  @Override
-  public void write(final FriendlyByteBuf buffer) {
-    buffer.writeUUID(this.uuid);
-    buffer.writeUtf(this.name);
-  }
-
-  @Override
-  public ResourceLocation id() {
-    return MESSAGE_ID;
-  }
-
-  @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
+    public static ExportPresetMessage create(final FriendlyByteBuf buffer) {
+        return new ExportPresetMessage(buffer.readUUID(), buffer.readUtf());
     }
 
-    // Validate name.
-    if (this.name == null || this.name.isEmpty()) {
-      log.warn("Export preset name is empty for {}", easyNPC);
-      return;
+    @Override
+    public void write(final FriendlyByteBuf buffer) {
+        buffer.writeUUID(this.uuid);
+        buffer.writeUtf(this.name);
     }
 
-    // Perform action.
-    NetworkMessageHandlerManager.getClientHandler()
-        .exportClientPreset(
-            this.uuid,
-            !this.name.endsWith(Constants.NPC_NBT_SUFFIX)
-                ? this.name + Constants.NPC_NBT_SUFFIX
-                : this.name,
-            serverPlayer);
-  }
+    @Override
+    public ResourceLocation id() {
+        return MESSAGE_ID;
+    }
+
+    @Override
+    public void handleServer(final ServerPlayer serverPlayer) {
+        EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+        if (easyNPC == null) {
+            return;
+        }
+
+        // Validate name.
+        if (this.name == null || this.name.isEmpty()) {
+            Logger.INSTANCE.warn("Export preset name is empty for {}", easyNPC);
+            return;
+        }
+
+        // Perform action.
+        NetworkMessageHandlerManager.getClientHandler()
+                .exportClientPreset(
+                        this.uuid,
+                        !this.name.endsWith(Constants.NPC_NBT_SUFFIX)
+                                ? this.name + Constants.NPC_NBT_SUFFIX
+                                : this.name,
+                        serverPlayer);
+    }
 }

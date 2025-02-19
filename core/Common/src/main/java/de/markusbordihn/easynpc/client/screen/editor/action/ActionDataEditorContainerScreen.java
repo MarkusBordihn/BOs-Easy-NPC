@@ -31,6 +31,7 @@ import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.editor.EditorType;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.components.TextComponent;
@@ -67,7 +68,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
     } else if (this.editorType != null && this.editorType == EditorType.DIALOG_BUTTON) {
       return this.getDialogButtonData().actionDataSet();
     } else {
-      log.error("No valid action data set found!");
+      Logger.INSTANCE.error("No valid action data set found!");
       return null;
     }
   }
@@ -172,7 +173,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
           .openActionDataEditor(
               this.getEasyNPCUUID(), editorType, this.getDialogUUID(), this.getDialogButtonUUID());
     } else {
-      log.error("No valid navigation found!");
+      Logger.INSTANCE.error("No valid navigation found!");
       NetworkMessageHandlerManager.getServerHandler()
           .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.MAIN);
     }
@@ -190,7 +191,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
           .openDialogButtonEditor(
               this.getEasyNPCUUID(), this.getDialogUUID(), this.getDialogButtonUUID());
     } else {
-      log.error("No valid back navigation found!");
+      Logger.INSTANCE.error("No valid back navigation found!");
       NetworkMessageHandlerManager.getServerHandler()
           .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.MAIN);
     }
@@ -213,7 +214,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
               this.getDialogButtonUUID(),
               new ActionDataEntry());
     } else {
-      log.error("No valid new action data entry found!");
+      Logger.INSTANCE.error("No valid new action data entry found!");
     }
   }
 
@@ -241,7 +242,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
                           this.getDialogButtonUUID(),
                           this.getDialogButtonData().withActionDataSet(this.actionDataSet));
                 } else {
-                  log.error(
+                  Logger.INSTANCE.error(
                       "Unable to delete Action Data Set {} for {}!",
                       this.actionDataSet,
                       this.getEasyNPCUUID());
@@ -259,7 +260,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
   }
 
   private void handleEditActionDataEntry(ActionDataEntry actionDataEntry) {
-    log.info("Editing Action Data Entry {}: {}", actionDataEntry.getId(), actionDataEntry);
+    Logger.INSTANCE.info("Editing Action Data Entry {}: {}", actionDataEntry.getId(), actionDataEntry);
     if (this.actionEventType != null && this.actionEventType != ActionEventType.NONE) {
       NetworkMessageHandlerManager.getServerHandler()
           .openActionDataEntryEditor(
@@ -273,12 +274,12 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
               this.getDialogButtonUUID(),
               actionDataEntry);
     } else {
-      log.error("Unable to edit action data entry {}!", actionDataEntry);
+      Logger.INSTANCE.error("Unable to edit action data entry {}!", actionDataEntry);
     }
   }
 
   private void handleMoveUpOrderActionDataEntry(ActionDataEntry actionDataEntry) {
-    log.info("Moving up Action Data Entry {}: {}", actionDataEntry.getId(), actionDataEntry);
+    Logger.INSTANCE.info("Moving up Action Data Entry {}: {}", actionDataEntry.getId(), actionDataEntry);
     if (this.actionEventType != null && this.actionEventType != ActionEventType.NONE) {
       this.actionDataSet.moveUp(actionDataEntry);
       NetworkMessageHandlerManager.getServerHandler()
@@ -292,7 +293,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
               this.getDialogButtonUUID(),
               this.getDialogButtonData().withActionDataSet(this.actionDataSet));
     } else {
-      log.error(
+      Logger.INSTANCE.error(
           "Unable to move up Action Data Set {} for {}!",
           this.actionDataSet,
           this.getEasyNPCUUID());
@@ -301,7 +302,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
   }
 
   private void handleMoveDownOrderActionDataEntry(ActionDataEntry actionDataEntry) {
-    log.info("Moving down Action Data Entry {}: {}", actionDataEntry.getId(), actionDataEntry);
+    Logger.INSTANCE.info("Moving down Action Data Entry {}: {}", actionDataEntry.getId(), actionDataEntry);
     if (this.actionEventType != null && this.actionEventType != ActionEventType.NONE) {
       this.actionDataSet.moveDown(actionDataEntry);
       NetworkMessageHandlerManager.getServerHandler()
@@ -315,7 +316,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
               this.getDialogButtonUUID(),
               this.getDialogButtonData().withActionDataSet(this.actionDataSet));
     } else {
-      log.error(
+      Logger.INSTANCE.error(
           "Unable to move down Action Data Set {} for {}!",
           this.actionDataSet,
           this.getEasyNPCUUID());

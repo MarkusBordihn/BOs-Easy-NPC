@@ -21,58 +21,61 @@ package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+
 import java.util.UUID;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public record OpenConfigurationMessage(
-    UUID uuid, ConfigurationType configurationType, int pageIndex) implements NetworkMessageRecord {
+        UUID uuid, ConfigurationType configurationType, int pageIndex) implements NetworkMessageRecord {
 
-  public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "open_configuration_screen");
+    public static final ResourceLocation MESSAGE_ID =
+            new ResourceLocation(Constants.MOD_ID, "open_configuration_screen");
 
-  public static OpenConfigurationMessage create(final FriendlyByteBuf buffer) {
-    return new OpenConfigurationMessage(
-        buffer.readUUID(), buffer.readEnum(ConfigurationType.class), buffer.readInt());
-  }
-
-  @Override
-  public void write(final FriendlyByteBuf buffer) {
-    buffer.writeUUID(this.uuid);
-    buffer.writeEnum(this.configurationType);
-    buffer.writeInt(this.pageIndex);
-  }
-
-  @Override
-  public ResourceLocation id() {
-    return MESSAGE_ID;
-  }
-
-  @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
+    public static OpenConfigurationMessage create(final FriendlyByteBuf buffer) {
+        return new OpenConfigurationMessage(
+                buffer.readUUID(), buffer.readEnum(ConfigurationType.class), buffer.readInt());
     }
 
-    // Validate dialog name.
-    if (this.configurationType == null) {
-      log.error("Invalid configuration type for {} from {}", easyNPC, serverPlayer);
-      return;
+    @Override
+    public void write(final FriendlyByteBuf buffer) {
+        buffer.writeUUID(this.uuid);
+        buffer.writeEnum(this.configurationType);
+        buffer.writeInt(this.pageIndex);
     }
 
-    // Validate page index.
-    if (this.pageIndex < 0) {
-      log.error("Invalid page index {} for {} from {}", pageIndex, easyNPC, serverPlayer);
-      return;
+    @Override
+    public ResourceLocation id() {
+        return MESSAGE_ID;
     }
 
-    // Open configuration screen
-    MenuManager.getMenuHandler()
-        .openConfigurationMenu(configurationType, serverPlayer, easyNPC, pageIndex);
-  }
+    @Override
+    public void handleServer(final ServerPlayer serverPlayer) {
+        EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+        if (easyNPC == null) {
+            return;
+        }
+
+        // Validate dialog name.
+        if (this.configurationType == null) {
+            Logger.INSTANCE.error("Invalid configuration type for {} from {}", easyNPC, serverPlayer);
+            return;
+        }
+
+        // Validate page index.
+        if (this.pageIndex < 0) {
+            Logger.INSTANCE.error("Invalid page index {} for {} from {}", pageIndex, easyNPC, serverPlayer);
+            return;
+        }
+
+        // Open configuration screen
+        MenuManager.getMenuHandler()
+                .openConfigurationMenu(configurationType, serverPlayer, easyNPC, pageIndex);
+    }
 }

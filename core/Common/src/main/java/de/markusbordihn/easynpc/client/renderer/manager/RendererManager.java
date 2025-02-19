@@ -19,10 +19,8 @@
 
 package de.markusbordihn.easynpc.client.renderer.manager;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.compat.CompatConstants;
-import java.util.HashMap;
-import java.util.Map;
+import de.markusbordihn.easynpc.debug.Logger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -33,12 +31,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RendererManager {
 
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String LOG_PREFIX = "[Renderer Manager]";
 
   private static final Map<EntityType<? extends Entity>, EntityRenderer<? extends Entity>>
@@ -114,7 +112,7 @@ public class RendererManager {
         instanceof
         LivingEntityRenderer<? extends LivingEntity, ? extends EntityModel<? extends Entity>>
             livingEntityRenderer) {
-      log.debug(
+      Logger.INSTANCE.debug(
           "{} Registering living entity renderer {} for {}",
           LOG_PREFIX,
           livingEntityRenderer,
@@ -122,7 +120,7 @@ public class RendererManager {
       livingEntityRendererMap.put(entityType, livingEntityRenderer);
       return livingEntityRenderer;
     } else if (!entityRendererMap.containsKey(entityType)) {
-      log.debug("{} Registering entity renderer {} for {}", LOG_PREFIX, entityRenderer, entityType);
+      Logger.INSTANCE.debug("{} Registering entity renderer {} for {}", LOG_PREFIX, entityRenderer, entityType);
       entityRendererMap.put(entityType, entityRenderer);
     }
     return null;
@@ -145,7 +143,7 @@ public class RendererManager {
     EntityRenderer<? extends Entity> entityRenderer =
         entityRenderDispatcher.getRenderer(pathfinderMob);
 
-    log.debug("{} Registering entity renderer {} for {}", LOG_PREFIX, entityRenderer, entityType);
+    Logger.INSTANCE.debug("{} Registering entity renderer {} for {}", LOG_PREFIX, entityRenderer, entityType);
     entityRendererMap.put(entityType, entityRenderer);
     return entityRenderer;
   }

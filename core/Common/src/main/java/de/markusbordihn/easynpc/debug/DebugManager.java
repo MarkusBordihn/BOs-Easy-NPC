@@ -29,7 +29,6 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 
 public final class DebugManager {
 
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String LOG_PREFIX = "[Debug Manager]";
   private static boolean isDevelopmentEnvironment = false;
 
@@ -45,13 +44,13 @@ public final class DebugManager {
     LoggerConfig loggerConfig = config.getLoggerConfig(loggerName);
     LoggerConfig specificConfig = loggerConfig;
     if (!loggerConfig.getName().equals(loggerName)) {
-      log.info(
+      de.markusbordihn.easynpc.debug.Logger.INSTANCE.info(
           "{} Add new logger config for {} with level {} ...", LOG_PREFIX, loggerName, logLevel);
       specificConfig = new LoggerConfig(loggerName, logLevel, true);
       specificConfig.setParent(loggerConfig);
       config.addLogger(loggerName, specificConfig);
     } else {
-      log.info(
+      de.markusbordihn.easynpc.debug.Logger.INSTANCE.info(
           "{} Changing log level for {} from {} to {}",
           LOG_PREFIX,
           loggerName,
@@ -67,11 +66,10 @@ public final class DebugManager {
   }
 
   public static void enableDebugLevel(String loggerName, boolean enable) {
-    Logger logger = LogManager.getLogger(loggerName);
     if (enable) {
-      DebugManager.setLogLevel(logger, Level.DEBUG);
+      DebugManager.setLogLevel(de.markusbordihn.easynpc.debug.Logger.LOGGER, Level.DEBUG);
     } else {
-      DebugManager.setLogLevel(logger, Level.INFO);
+      DebugManager.setLogLevel(de.markusbordihn.easynpc.debug.Logger.LOGGER, Level.INFO);
     }
   }
 

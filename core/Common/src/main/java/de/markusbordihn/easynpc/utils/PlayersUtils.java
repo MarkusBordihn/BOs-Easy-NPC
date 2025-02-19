@@ -19,31 +19,21 @@
 
 package de.markusbordihn.easynpc.utils;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.mojang.authlib.GameProfile;
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.validator.NameValidator;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.players.GameProfileCache;
 import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 public class PlayersUtils {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String TEXTURES_STRING = "textures";
   private static final String SESSION_PROFILE_URL =
       "https://sessionserver.mojang.com/session/minecraft/profile/%s";
@@ -87,7 +77,7 @@ public class PlayersUtils {
 
   public static UUID getUserUUID(String username) {
     if (username == null || username.isEmpty() || !NameValidator.isValidPlayerName(username)) {
-      log.error("Unable to get user UUID with invalid username: {}", username);
+      Logger.INSTANCE.error("Unable to get user UUID with invalid username: {}", username);
       return null;
     }
 
@@ -105,7 +95,7 @@ public class PlayersUtils {
 
       // Verify UUID string
       if (uuidString == null || uuidString.isEmpty()) {
-        log.error("Unable to get user UUID with invalid response: {}", json);
+        Logger.INSTANCE.error("Unable to get user UUID with invalid response: {}", json);
         return null;
       }
 
@@ -113,11 +103,11 @@ public class PlayersUtils {
       String formattedUUID =
           uuidString.replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5");
       UUID userUUID = UUID.fromString(formattedUUID);
-      log.debug("Found user {} with UUID {} ...", username, userUUID);
+      Logger.INSTANCE.debug("Found user {} with UUID {} ...", username, userUUID);
       userUUIDCache.put(username, userUUID);
       return userUUID;
     } catch (IOException e) {
-      log.error("Unable to get UUID from user {}:", username, e);
+      Logger.INSTANCE.error("Unable to get UUID from user {}:", username, e);
       userUUIDCache.put(username, null);
       return null;
     }
@@ -126,7 +116,7 @@ public class PlayersUtils {
   public static String getUserTexture(UUID userUUID) {
     // Simple reload protected to avoid spawning to the session server.
     if (lastUserUUIDForUserTexture != null && lastUserUUIDForUserTexture.equals(userUUID)) {
-      log.error("Ignore duplicated user texture request for {}!", userUUID);
+      Logger.INSTANCE.error("Ignore duplicated user texture request for {}!", userUUID);
       return null;
     }
     lastUserUUIDForUserTexture = userUUID;
@@ -136,12 +126,12 @@ public class PlayersUtils {
     try {
       String data = IOUtils.toString(new URL(sessionURL), StandardCharsets.UTF_8);
       if (data == null || data.isEmpty()) {
-        log.error("Unable to get user texture with {}", sessionURL);
+        Logger.INSTANCE.error("Unable to get user texture with {}", sessionURL);
         return null;
       }
       return getUserTextureFromSessionResponse(data);
     } catch (IOException ioException) {
-      log.error("Unable to get user texture with {}:", sessionURL, ioException);
+      Logger.INSTANCE.error("Unable to get user texture with {}:", sessionURL, ioException);
       return null;
     }
   }
@@ -149,12 +139,12 @@ public class PlayersUtils {
   public static String getUserTextureFromSessionResponse(String data) {
     JsonObject jsonObject = getJsonObject(data);
     if (jsonObject == null || !jsonObject.has("properties")) {
-      log.error("Unable to get valid JSON data from session response: {}", data);
+      Logger.INSTANCE.error("Unable to get valid JSON data from session response: {}", data);
       return "";
     }
 
     JsonArray properties = jsonObject.getAsJsonArray("properties");
-    log.debug("getUserTextureFromSessionRequest: {}", properties);
+    Logger.INSTANCE.debug("getUserTextureFromSessionRequest: {}", properties);
     for (JsonElement property : properties) {
       JsonObject propertyObject = property.getAsJsonObject();
       if (propertyObject.has("name")
@@ -164,7 +154,7 @@ public class PlayersUtils {
             new String(Base64.getDecoder().decode(propertyObject.get("value").getAsString()));
         String userTexture = getUserTextureFromTextureData(textureData);
         String userTextureModel = getUserTextureModelFromTextureData(textureData);
-        log.debug(
+        Logger.INSTANCE.debug(
             "Found user texture {} with model {} ...",
             userTexture,
             userTextureModel == null || userTextureModel.isEmpty() ? "default" : userTextureModel);
@@ -172,13 +162,13 @@ public class PlayersUtils {
       }
     }
 
-    log.error("Unable to get user texture from session response: {}", data);
+    Logger.INSTANCE.error("Unable to get user texture from session response: {}", data);
     return "";
   }
 
   public static String getUserTextureFromTextureData(String data) {
     JsonObject jsonObject = getJsonObject(data);
-    log.debug("getUserTextureFromTextureData: {}", jsonObject);
+    Logger.INSTANCE.debug("getUserTextureFromTextureData: {}", jsonObject);
     if (jsonObject != null && jsonObject.has(TEXTURES_STRING)) {
       JsonObject textureObject = jsonObject.getAsJsonObject(TEXTURES_STRING);
       if (textureObject.has("SKIN")) {
@@ -188,13 +178,13 @@ public class PlayersUtils {
         }
       }
     }
-    log.error("Unable to get user texture from texture data: {}", data);
+    Logger.INSTANCE.error("Unable to get user texture from texture data: {}", data);
     return "";
   }
 
   public static String getUserTextureModelFromTextureData(String data) {
     JsonObject jsonObject = getJsonObject(data);
-    log.debug("getUserTextureModelFromTextureData: {}", jsonObject);
+    Logger.INSTANCE.debug("getUserTextureModelFromTextureData: {}", jsonObject);
     if (jsonObject != null && jsonObject.has(TEXTURES_STRING)) {
       JsonObject textureObject = jsonObject.getAsJsonObject(TEXTURES_STRING);
       if (textureObject.has("SKIN")) {
@@ -207,7 +197,7 @@ public class PlayersUtils {
         }
       }
     }
-    log.debug("Unable to get user texture model from texture data: {}", data);
+    Logger.INSTANCE.debug("Unable to get user texture model from texture data: {}", data);
     return "";
   }
 
@@ -221,7 +211,7 @@ public class PlayersUtils {
         return jsonElement.getAsJsonObject();
       }
     } catch (JsonParseException jsonParseException) {
-      log.error("ERROR: Unable to parse json data: {}", data);
+      Logger.INSTANCE.error("ERROR: Unable to parse json data: {}", data);
     }
     return null;
   }

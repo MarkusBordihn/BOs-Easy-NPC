@@ -19,14 +19,9 @@
 
 package de.markusbordihn.easynpc.compat;
 
-import de.markusbordihn.easynpc.Constants;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public interface CompatHandlerInterface {
 
   String COMPAT_LOG_PREFIX = "[Compat Manager]";
-  Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   boolean isModLoaded(String modId);
 
@@ -44,6 +39,6 @@ public interface CompatHandlerInterface {
   }
 
   default void logFoundMod(String modName, String modId, boolean modLoaded) {
-    log.info("{} {} mod with id '{}' loaded: {}", COMPAT_LOG_PREFIX, modName, modId, modLoaded);
+    de.markusbordihn.easynpc.debug.Logger.INSTANCE.info("{} {} mod with id '{}' loaded: {}", COMPAT_LOG_PREFIX, modName, modId, modLoaded);
   }
 }

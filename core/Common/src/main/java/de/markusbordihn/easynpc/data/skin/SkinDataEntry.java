@@ -15,7 +15,6 @@ public record SkinDataEntry(
   static final String DATA_UUID_TAG = "UUID";
   static final String DATA_CONTENT_TAG = "Content";
   static final String DATA_TIMESTAMP_TAG = "Timestamp";
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public SkinDataEntry() {
     this("", "", Constants.BLANK_UUID, SkinType.DEFAULT, "", System.currentTimeMillis());

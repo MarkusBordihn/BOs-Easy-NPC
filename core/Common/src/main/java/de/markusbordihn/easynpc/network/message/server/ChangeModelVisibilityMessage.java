@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.network.message.server;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -63,19 +64,19 @@ public record ChangeModelVisibilityMessage(UUID uuid, ModelPart modelPart, boole
 
     // Validate ModelPart.
     if (this.modelPart == null) {
-      log.error("Invalid modelPart for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid modelPart for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate Model data.
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
-      log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    log.debug(
+    Logger.INSTANCE.debug(
         "Change {} visibility to {} for {} from {}",
         this.modelPart,
         this.visible,
@@ -93,7 +94,7 @@ public record ChangeModelVisibilityMessage(UUID uuid, ModelPart modelPart, boole
 
     // Verify if custom model pose is really needed.
     if (!modelData.hasChangedModel()) {
-      log.debug("Reset custom model pose for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.debug("Reset custom model pose for {} from {}", easyNPC, serverPlayer);
       modelData.setModelPose(ModelPose.DEFAULT);
     }
   }

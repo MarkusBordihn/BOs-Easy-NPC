@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.network;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
       registeredServerMessages = new LinkedHashMap<>();
 
   public NetworkHandler() {
-    log.info("{} NetworkHandler with version {}", Constants.LOG_REGISTER_PREFIX, PROTOCOL_VERSION);
+    Logger.INSTANCE.info("{} NetworkHandler with version {}", Constants.LOG_REGISTER_PREFIX, PROTOCOL_VERSION);
   }
 
   @Override
@@ -68,7 +69,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
           M networkMessage = creator.apply(buffer);
           client.execute(networkMessage::handleClient);
         })) {
-      log.error("Failed to register client network message handler for {}", messageID);
+      Logger.INSTANCE.error("Failed to register client network message handler for {}", messageID);
     } else {
       logRegisterClientNetworkMessageHandler(messageID, networkMessageRecord);
     }
@@ -85,7 +86,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
           M networkMessage = creator.apply(buffer);
           server.execute(() -> networkMessage.handleServer(serverPlayer));
         })) {
-      log.error("Failed to register server network message handler for {}", messageID);
+      Logger.INSTANCE.error("Failed to register server network message handler for {}", messageID);
     } else {
       logRegisterServerNetworkMessageHandler(messageID, networkMessageRecord);
     }

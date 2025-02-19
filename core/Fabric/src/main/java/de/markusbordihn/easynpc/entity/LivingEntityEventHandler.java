@@ -30,43 +30,43 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class LivingEntityEventHandler {
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private LivingEntityEventHandler() {}
+    private LivingEntityEventHandler() {
+    }
 
-  public static void registerServerEntityEvents() {
-    log.info("{} Registering Server Entity Events ...", Constants.LOG_REGISTER_PREFIX);
+    public static void registerServerEntityEvents() {
+        de.markusbordihn.easynpc.debug.Logger.INSTANCE.info("{} Registering Server Entity Events ...", Constants.LOG_REGISTER_PREFIX);
 
-    ServerEntityEvents.ENTITY_LOAD.register(
-        (Entity entity, ServerLevel level) -> {
-          if (entity instanceof LivingEntity livingEntity) {
-            LivingEntityEvents.handleLivingEntityJoinEvent(livingEntity);
-          }
-        });
+        ServerEntityEvents.ENTITY_LOAD.register(
+                (Entity entity, ServerLevel level) -> {
+                    if (entity instanceof LivingEntity livingEntity) {
+                        LivingEntityEvents.handleLivingEntityJoinEvent(livingEntity);
+                    }
+                });
 
-    ServerEntityEvents.ENTITY_UNLOAD.register(
-        (Entity entity, ServerLevel level) -> {
-          if (entity instanceof LivingEntity livingEntity) {
-            LivingEntityEvents.handleLivingEntityLeaveEvent(livingEntity);
-          }
-        });
-  }
+        ServerEntityEvents.ENTITY_UNLOAD.register(
+                (Entity entity, ServerLevel level) -> {
+                    if (entity instanceof LivingEntity livingEntity) {
+                        LivingEntityEvents.handleLivingEntityLeaveEvent(livingEntity);
+                    }
+                });
+    }
 
-  public static void registerClientEntityEvents() {
-    log.info("{} Registering Client Entity Events ...", Constants.LOG_REGISTER_PREFIX);
+    public static void registerClientEntityEvents() {
+        de.markusbordihn.easynpc.debug.Logger.INSTANCE.info("{} Registering Client Entity Events ...", Constants.LOG_REGISTER_PREFIX);
 
-    ClientEntityEvents.ENTITY_LOAD.register(
-        (Entity entity, ClientLevel level) -> {
-          if (entity instanceof LivingEntity livingEntity) {
-            LivingEntityEvents.handleLivingEntityJoinEvent(livingEntity);
-          }
-        });
+        ClientEntityEvents.ENTITY_LOAD.register(
+                (Entity entity, ClientLevel level) -> {
+                    if (entity instanceof LivingEntity livingEntity) {
+                        LivingEntityEvents.handleLivingEntityJoinEvent(livingEntity);
+                    }
+                });
 
-    ClientEntityEvents.ENTITY_UNLOAD.register(
-        (Entity entity, ClientLevel level) -> {
-          if (entity instanceof LivingEntity livingEntity) {
-            LivingEntityEvents.handleLivingEntityLeaveEvent(livingEntity);
-          }
-        });
-  }
+        ClientEntityEvents.ENTITY_UNLOAD.register(
+                (Entity entity, ClientLevel level) -> {
+                    if (entity instanceof LivingEntity livingEntity) {
+                        LivingEntityEvents.handleLivingEntityLeaveEvent(livingEntity);
+                    }
+                });
+    }
 }

@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingSettings;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.trading.AdvancedTradingConfigurationMenu;
@@ -150,7 +151,7 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
       boolean hasValidOffer =
           (!merchantOffer.getBaseCostA().isEmpty() || !merchantOffer.getCostB().isEmpty())
               && !merchantOffer.getResult().isEmpty();
-      log.info("Trading Offer {} : {}", tradingOfferIndex, merchantOffer.createTag());
+      Logger.INSTANCE.info("Trading Offer {} : {}", tradingOfferIndex, merchantOffer.createTag());
 
       // Max Uses Edit Box
       EditBox maxUsesEditBox =

@@ -29,8 +29,6 @@ import org.apache.logging.log4j.Logger;
 
 public class ItemASlot extends Slot {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
   final TradingConfigurationMenu menu;
 
   public ItemASlot(TradingConfigurationMenu menu, Container container, int index, int x, int y) {

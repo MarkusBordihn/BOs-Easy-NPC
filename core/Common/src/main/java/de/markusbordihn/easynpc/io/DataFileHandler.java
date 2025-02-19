@@ -20,6 +20,12 @@
 package de.markusbordihn.easynpc.io;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.packs.resources.Resource;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -28,46 +34,39 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
-import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.packs.resources.Resource;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class DataFileHandler {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String BACKUP_FOLDER_NAME = "backup";
   protected static final String CACHE_FOLDER_NAME = "cache";
 
   private DataFileHandler() {}
 
   public static void registerCommonDataFiles() {
-    log.info("{} Common data folders ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Common data folders ...", Constants.LOG_REGISTER_PREFIX);
     getCacheFolder();
     getCustomDataFolder();
   }
 
   public static void registerServerDataFiles(MinecraftServer minecraftServer) {
-    log.info("{} Server data folders ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Server data folders ...", Constants.LOG_REGISTER_PREFIX);
 
-    log.info("{} Pose data folders ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Pose data folders ...", Constants.LOG_REGISTER_PREFIX);
     CustomPoseDataFiles.registerCustomPoseData(minecraftServer);
 
-    log.info("{} Backup data folders ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Backup data folders ...", Constants.LOG_REGISTER_PREFIX);
     BackupDataFiles.registerBackupData();
   }
 
   public static void registerClientDataFiles() {
-    log.info("{} Client data folders ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Client data folders ...", Constants.LOG_REGISTER_PREFIX);
 
-    log.info("{} Skin data folders ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Skin data folders ...", Constants.LOG_REGISTER_PREFIX);
     CustomSkinDataFiles.registerCustomSkinData();
     PlayerSkinDataFiles.registerPlayerSkinData();
     RemoteSkinDataFiles.registerRemoteSkinData();
 
-    log.info("{} Preset data folders ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Preset data folders ...", Constants.LOG_REGISTER_PREFIX);
     CustomPresetDataFiles.registerCustomPresetData();
   }
 
@@ -77,10 +76,10 @@ public class DataFileHandler {
       if (Files.exists(backupFolder) && Files.isDirectory(backupFolder)) {
         return backupFolder;
       }
-      log.info("Creating backup folder at {} ...", backupFolder);
+      Logger.INSTANCE.info("Creating backup folder at {} ...", backupFolder);
       return Files.createDirectories(backupFolder);
     } catch (Exception exception) {
-      log.error("There was an error, creating the backup folder:", exception);
+      Logger.INSTANCE.error("There was an error, creating the backup folder:", exception);
     }
     return null;
   }
@@ -91,10 +90,10 @@ public class DataFileHandler {
       if (Files.exists(cacheFolder) && Files.isDirectory(cacheFolder)) {
         return cacheFolder;
       }
-      log.info("Creating cache folder at {} ...", cacheFolder);
+      Logger.INSTANCE.info("Creating cache folder at {} ...", cacheFolder);
       return Files.createDirectories(cacheFolder);
     } catch (Exception exception) {
-      log.error("There was an error, creating the cache folder:", exception);
+      Logger.INSTANCE.error("There was an error, creating the cache folder:", exception);
     }
     return null;
   }
@@ -105,10 +104,10 @@ public class DataFileHandler {
       if (Files.exists(customDataFolder) && Files.isDirectory(customDataFolder)) {
         return customDataFolder;
       }
-      log.info("Creating custom data folder at {} ...", customDataFolder);
+      Logger.INSTANCE.info("Creating custom data folder at {} ...", customDataFolder);
       return Files.createDirectories(customDataFolder);
     } catch (Exception exception) {
-      log.error("There was an error, creating the custom data folder:", exception);
+      Logger.INSTANCE.error("There was an error, creating the custom data folder:", exception);
     }
     return null;
   }
@@ -123,10 +122,10 @@ public class DataFileHandler {
       if (Files.exists(backupFolderPath) && Files.isDirectory(backupFolderPath)) {
         return backupFolderPath;
       }
-      log.info("Creating backup folder {} at {} ...", dataLabel, backupFolder);
+      Logger.INSTANCE.info("Creating backup folder {} at {} ...", dataLabel, backupFolder);
       return Files.createDirectories(backupFolderPath);
     } catch (Exception exception) {
-      log.error("There was an error, creating the backup folder {}:", dataLabel, exception);
+      Logger.INSTANCE.error("There was an error, creating the backup folder {}:", dataLabel, exception);
     }
     return null;
   }
@@ -141,10 +140,10 @@ public class DataFileHandler {
       if (Files.exists(cacheFolderPath) && Files.isDirectory(cacheFolderPath)) {
         return cacheFolderPath;
       }
-      log.info("Creating cache folder {} at {} ...", dataLabel, cacheFolder);
+      Logger.INSTANCE.info("Creating cache folder {} at {} ...", dataLabel, cacheFolder);
       return Files.createDirectories(cacheFolderPath);
     } catch (Exception exception) {
-      log.error("There was an error, creating the cache folder {}:", dataLabel, exception);
+      Logger.INSTANCE.error("There was an error, creating the cache folder {}:", dataLabel, exception);
     }
     return null;
   }
@@ -159,10 +158,10 @@ public class DataFileHandler {
       if (Files.exists(customDataFolderPath) && Files.isDirectory(customDataFolderPath)) {
         return customDataFolderPath;
       }
-      log.info("Creating custom data folder {} at {} ...", dataLabel, customDataFolder);
+      Logger.INSTANCE.info("Creating custom data folder {} at {} ...", dataLabel, customDataFolder);
       return Files.createDirectories(customDataFolderPath);
     } catch (Exception exception) {
-      log.error("There was an error, creating the custom data folder {}:", dataLabel, exception);
+      Logger.INSTANCE.error("There was an error, creating the custom data folder {}:", dataLabel, exception);
     }
     return null;
   }
@@ -186,7 +185,7 @@ public class DataFileHandler {
         }
       }
     } catch (Exception e) {
-      log.error("Failed to load resource {}:", resourceLocation, e);
+      Logger.INSTANCE.error("Failed to load resource {}:", resourceLocation, e);
     }
   }
 
@@ -208,7 +207,7 @@ public class DataFileHandler {
         }
       }
     } catch (Exception e) {
-      log.error("Failed to load resource {}:", resourceLocation, e);
+      Logger.INSTANCE.error("Failed to load resource {}:", resourceLocation, e);
     }
   }
 

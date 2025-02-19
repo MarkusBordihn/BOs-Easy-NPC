@@ -20,19 +20,15 @@
 package de.markusbordihn.easynpc.compat;
 
 import de.markusbordihn.easynpc.Constants;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class CompatManager {
-
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private static CompatHandlerInterface compatHandlerInterface;
 
   private CompatManager() {}
 
   public static void registerCompatHandler(CompatHandlerInterface compatHandlerInterface) {
-    log.info("{} Compat Handler ...", Constants.LOG_REGISTER_PREFIX);
+    de.markusbordihn.easynpc.debug.Logger.INSTANCE.info("{} Compat Handler ...", Constants.LOG_REGISTER_PREFIX);
     CompatManager.compatHandlerInterface = compatHandlerInterface;
     compatHandlerInterface.register();
   }

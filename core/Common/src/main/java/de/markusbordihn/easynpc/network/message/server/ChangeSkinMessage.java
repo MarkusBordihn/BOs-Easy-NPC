@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.SkinHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -74,7 +75,7 @@ public record ChangeSkinMessage(
         || this.skinName == null
         || this.skinType == null
         || easyNPC.getEasyNPCSkinData() == null) {
-      log.error("Skin validation failed for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Skin validation failed for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
@@ -86,7 +87,7 @@ public record ChangeSkinMessage(
           case PLAYER_SKIN -> {
             UUID userUUID = this.skinUUID;
             if (userUUID == null || Constants.BLANK_UUID.equals(this.skinUUID)) {
-              log.debug("Try to convert user {} to UUID ...", this.skinName);
+              Logger.INSTANCE.debug("Try to convert user {} to UUID ...", this.skinName);
               userUUID = PlayersUtils.getUserUUID(serverPlayer.getServer(), this.skinName);
             }
             yield SkinHandler.setPlayerSkin(easyNPC, this.skinName, userUUID);
@@ -94,7 +95,7 @@ public record ChangeSkinMessage(
           case SECURE_REMOTE_URL, INSECURE_REMOTE_URL ->
               SkinHandler.setRemoteSkin(easyNPC, this.skinURL);
           default -> {
-            log.error(
+            Logger.INSTANCE.error(
                 "Failed processing skin:{} uuid:{} url:{} type:{} for {} from {}",
                 this.skinName,
                 this.skinUUID,
@@ -107,7 +108,7 @@ public record ChangeSkinMessage(
         };
 
     if (!successfullyChanged) {
-      log.error(
+      Logger.INSTANCE.error(
           "Failed changing skin:{} uuid:{} url:{} type:{} for {} from {}",
           this.skinName,
           this.skinUUID,

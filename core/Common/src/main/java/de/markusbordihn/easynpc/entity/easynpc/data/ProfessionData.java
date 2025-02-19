@@ -21,11 +21,14 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.profession.Profession;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import de.markusbordihn.easynpc.utils.TextUtils;
+
 import java.util.EnumMap;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -35,63 +38,63 @@ import net.minecraft.world.entity.PathfinderMob;
 
 public interface ProfessionData<T extends PathfinderMob> extends EasyNPC<T> {
 
-  String DATA_PROFESSION_TAG = "Profession";
+    String DATA_PROFESSION_TAG = "Profession";
 
-  static void registerSyncedProfessionData(
-      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("- Registering Synched Profession Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.PROFESSION,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.PROFESSION));
-  }
-
-  default Profession getDefaultProfession() {
-    return Profession.NONE;
-  }
-
-  default Profession getProfession() {
-    return getSynchedEntityData(SynchedDataIndex.PROFESSION);
-  }
-
-  default void setProfession(Profession profession) {
-    setSynchedEntityData(SynchedDataIndex.PROFESSION, profession);
-  }
-
-  default Profession getProfession(String name) {
-    return Profession.valueOf(name);
-  }
-
-  default boolean hasProfessions() {
-    return false;
-  }
-
-  default Profession[] getProfessions() {
-    return Profession.values();
-  }
-
-  default Component getProfessionName() {
-    Enum<?> profession = getProfession();
-    return profession != null
-        ? TextUtils.normalizeName(profession.name())
-        : TextComponent.getBlankText();
-  }
-
-  default void defineSynchedProfessionData() {
-    defineSynchedEntityData(SynchedDataIndex.PROFESSION, getDefaultProfession());
-  }
-
-  default void addAdditionalProfessionData(CompoundTag compoundTag) {
-    if (this.getProfession() != null) {
-      compoundTag.putString(DATA_PROFESSION_TAG, this.getProfession().name());
+    static void registerSyncedProfessionData(
+            EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
+        Logger.INSTANCE.info("- Registering Synched Profession Data for {}.", entityClass.getSimpleName());
+        map.put(
+                SynchedDataIndex.PROFESSION,
+                SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.PROFESSION));
     }
-  }
 
-  default void readAdditionalProfessionData(CompoundTag compoundTag) {
-    if (compoundTag.contains(DATA_PROFESSION_TAG)) {
-      String profession = compoundTag.getString(DATA_PROFESSION_TAG);
-      if (!profession.isEmpty()) {
-        this.setProfession(this.getProfession(profession));
-      }
+    default Profession getDefaultProfession() {
+        return Profession.NONE;
     }
-  }
+
+    default Profession getProfession() {
+        return getSynchedEntityData(SynchedDataIndex.PROFESSION);
+    }
+
+    default void setProfession(Profession profession) {
+        setSynchedEntityData(SynchedDataIndex.PROFESSION, profession);
+    }
+
+    default Profession getProfession(String name) {
+        return Profession.valueOf(name);
+    }
+
+    default boolean hasProfessions() {
+        return false;
+    }
+
+    default Profession[] getProfessions() {
+        return Profession.values();
+    }
+
+    default Component getProfessionName() {
+        Enum<?> profession = getProfession();
+        return profession != null
+                ? TextUtils.normalizeName(profession.name())
+                : TextComponent.getBlankText();
+    }
+
+    default void defineSynchedProfessionData() {
+        defineSynchedEntityData(SynchedDataIndex.PROFESSION, getDefaultProfession());
+    }
+
+    default void addAdditionalProfessionData(CompoundTag compoundTag) {
+        if (this.getProfession() != null) {
+            compoundTag.putString(DATA_PROFESSION_TAG, this.getProfession().name());
+        }
+    }
+
+    default void readAdditionalProfessionData(CompoundTag compoundTag) {
+        if (compoundTag.contains(DATA_PROFESSION_TAG)) {
+            String profession = compoundTag.getString(DATA_PROFESSION_TAG);
+            if (!profession.isEmpty()) {
+                this.setProfession(this.getProfession(profession));
+            }
+        }
+    }
 }

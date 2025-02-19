@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.PathfinderMob;
@@ -38,22 +39,22 @@ public interface ConfigData<T extends PathfinderMob> extends EasyNPC<T> {
     if (compoundTag.contains(DATA_EASY_NPC_DATA_VERSION_TAG)) {
       int npcDataVersion = compoundTag.getInt(DATA_EASY_NPC_DATA_VERSION_TAG);
       if (npcDataVersion > Constants.NPC_DATA_VERSION) {
-        log.warn(
+        Logger.INSTANCE.warn(
             "Incompatible Easy NPC Data with version {} > {} for {}!",
             npcDataVersion,
             Constants.NPC_DATA_VERSION,
             this);
-        log.warn("Will try to load data, but expect issues!");
+        Logger.INSTANCE.warn("Will try to load data, but expect issues!");
       } else if (npcDataVersion < Constants.NPC_DATA_VERSION) {
-        log.warn("Outdated Easy NPC Data with version {} for {}!", npcDataVersion, this);
-        log.warn("Will try to convert data automatically to new format.");
+        Logger.INSTANCE.warn("Outdated Easy NPC Data with version {} for {}!", npcDataVersion, this);
+        Logger.INSTANCE.warn("Will try to convert data automatically to new format.");
       } else {
-        log.info("Easy NPC Data version {} for {}.", npcDataVersion, this);
+        Logger.INSTANCE.info("Easy NPC Data version {} for {}.", npcDataVersion, this);
       }
       this.setNPCDataVersion(npcDataVersion);
     } else {
-      log.warn("Legacy Easy NPC Data for {}!", this);
-      log.warn("It could be possible that the data is not compatible with the current version.");
+      Logger.INSTANCE.warn("Legacy Easy NPC Data for {}!", this);
+      Logger.INSTANCE.warn("It could be possible that the data is not compatible with the current version.");
       this.setNPCDataVersion(-1);
     }
   }

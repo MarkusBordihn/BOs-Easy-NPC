@@ -19,11 +19,12 @@
 
 package de.markusbordihn.easynpc.network;
 
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.network.message.ClientNetworkMessageHandlerInterface;
 
 public class ClientNetworkMessageHandler implements ClientNetworkMessageHandlerInterface {
 
   public ClientNetworkMessageHandler() {
-    log.info("Registering server network handler for Server -> Client messages.");
+    Logger.INSTANCE.info("Registering server network handler for Server -> Client messages.");
   }
 }

@@ -19,17 +19,15 @@
 
 package de.markusbordihn.easynpc.utils;
 
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 import java.util.regex.Pattern;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class UUIDUtils {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final Pattern UUID_PATTERN =
       Pattern.compile(
           "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
@@ -53,7 +51,7 @@ public class UUIDUtils {
 
         return new UUID(mostSigBits, leastSigBits);
       } catch (NoSuchAlgorithmException e) {
-        log.error("Unable to create UUID from text: {}", text, e);
+        Logger.INSTANCE.error("Unable to create UUID from text: {}", text, e);
       }
     }
     return UUID.randomUUID();

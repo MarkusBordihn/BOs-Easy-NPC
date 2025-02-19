@@ -21,95 +21,98 @@ package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.preset.PresetType;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.PresetHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
+
 import java.util.UUID;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public record ImportPresetMessage(
-    UUID uuid, PresetType presetType, CompoundTag compoundTag, ResourceLocation resourceLocation)
-    implements NetworkMessageRecord {
+        UUID uuid, PresetType presetType, CompoundTag compoundTag, ResourceLocation resourceLocation)
+        implements NetworkMessageRecord {
 
-  public static final ResourceLocation MESSAGE_ID =
-      new ResourceLocation(Constants.MOD_ID, "import_preset");
+    public static final ResourceLocation MESSAGE_ID =
+            new ResourceLocation(Constants.MOD_ID, "import_preset");
 
-  public static ImportPresetMessage create(final FriendlyByteBuf buffer) {
-    return new ImportPresetMessage(
-        buffer.readUUID(),
-        buffer.readEnum(PresetType.class),
-        buffer.readNbt(),
-        buffer.readResourceLocation());
-  }
-
-  @Override
-  public void write(final FriendlyByteBuf buffer) {
-    buffer.writeUUID(this.uuid);
-    buffer.writeEnum(this.presetType);
-    buffer.writeNbt(this.compoundTag);
-    buffer.writeResourceLocation(this.resourceLocation);
-  }
-
-  @Override
-  public ResourceLocation id() {
-    return MESSAGE_ID;
-  }
-
-  @Override
-  public void handleServer(final ServerPlayer serverPlayer) {
-    EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null) {
-      return;
+    public static ImportPresetMessage create(final FriendlyByteBuf buffer) {
+        return new ImportPresetMessage(
+                buffer.readUUID(),
+                buffer.readEnum(PresetType.class),
+                buffer.readNbt(),
+                buffer.readResourceLocation());
     }
 
-    // Validate preset type and data
-    switch (this.presetType) {
-      case LOCAL:
-        PresetHandler.importLocalPreset(
-            serverPlayer.serverLevel(),
-            this.compoundTag,
-            this.resourceLocation,
-            easyNPC.getEntity().position(),
-            this.uuid,
-            null);
-        break;
-      case CUSTOM:
-        PresetHandler.importCustomPreset(
-            serverPlayer.serverLevel(),
-            this.resourceLocation,
-            easyNPC.getEntity().position(),
-            this.uuid,
-            null);
-        break;
-      case DATA:
-        PresetHandler.importDataPreset(
-            serverPlayer.serverLevel(),
-            this.resourceLocation,
-            easyNPC.getEntity().position(),
-            this.uuid,
-            null);
-        break;
-      case DEFAULT:
-        PresetHandler.importDefaultPreset(
-            serverPlayer.serverLevel(),
-            this.resourceLocation,
-            easyNPC.getEntity().position(),
-            this.uuid,
-            null);
-        break;
-      case WORLD:
-        PresetHandler.importWorldPreset(
-            serverPlayer.serverLevel(),
-            this.resourceLocation,
-            easyNPC.getEntity().position(),
-            this.uuid,
-            null);
-        break;
-      default:
-        log.error("Invalid preset type {} from {}", this.presetType, serverPlayer);
+    @Override
+    public void write(final FriendlyByteBuf buffer) {
+        buffer.writeUUID(this.uuid);
+        buffer.writeEnum(this.presetType);
+        buffer.writeNbt(this.compoundTag);
+        buffer.writeResourceLocation(this.resourceLocation);
     }
-  }
+
+    @Override
+    public ResourceLocation id() {
+        return MESSAGE_ID;
+    }
+
+    @Override
+    public void handleServer(final ServerPlayer serverPlayer) {
+        EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
+        if (easyNPC == null) {
+            return;
+        }
+
+        // Validate preset type and data
+        switch (this.presetType) {
+            case LOCAL:
+                PresetHandler.importLocalPreset(
+                        serverPlayer.serverLevel(),
+                        this.compoundTag,
+                        this.resourceLocation,
+                        easyNPC.getEntity().position(),
+                        this.uuid,
+                        null);
+                break;
+            case CUSTOM:
+                PresetHandler.importCustomPreset(
+                        serverPlayer.serverLevel(),
+                        this.resourceLocation,
+                        easyNPC.getEntity().position(),
+                        this.uuid,
+                        null);
+                break;
+            case DATA:
+                PresetHandler.importDataPreset(
+                        serverPlayer.serverLevel(),
+                        this.resourceLocation,
+                        easyNPC.getEntity().position(),
+                        this.uuid,
+                        null);
+                break;
+            case DEFAULT:
+                PresetHandler.importDefaultPreset(
+                        serverPlayer.serverLevel(),
+                        this.resourceLocation,
+                        easyNPC.getEntity().position(),
+                        this.uuid,
+                        null);
+                break;
+            case WORLD:
+                PresetHandler.importWorldPreset(
+                        serverPlayer.serverLevel(),
+                        this.resourceLocation,
+                        easyNPC.getEntity().position(),
+                        this.uuid,
+                        null);
+                break;
+            default:
+                Logger.INSTANCE.error("Invalid preset type {} from {}", this.presetType, serverPlayer);
+        }
+    }
 }

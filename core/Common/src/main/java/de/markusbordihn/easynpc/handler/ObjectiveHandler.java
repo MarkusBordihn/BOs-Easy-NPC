@@ -19,21 +19,18 @@
 
 package de.markusbordihn.easynpc.handler;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.WrappedGoal;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ObjectiveHandler {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ObjectiveHandler() {}
 
@@ -41,24 +38,24 @@ public class ObjectiveHandler {
       EasyNPC<?> easyNPC, ObjectiveDataEntry objectiveDataEntry) {
 
     if (easyNPC == null || objectiveDataEntry == null) {
-      log.error("[{}] Error adding or updating custom objective!", easyNPC);
+      Logger.INSTANCE.error("[{}] Error adding or updating custom objective!", easyNPC);
       return false;
     }
 
     ObjectiveData<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
     if (objectiveData == null) {
-      log.error("[{}] No objective data available!", easyNPC);
+      Logger.INSTANCE.error("[{}] No objective data available!", easyNPC);
       return false;
     }
 
     // Add or update custom objective.
     if (!objectiveData.addOrUpdateCustomObjective(objectiveDataEntry)) {
-      log.error("[{}] Error adding or updating custom objective!", easyNPC);
+      Logger.INSTANCE.error("[{}] Error adding or updating custom objective!", easyNPC);
       return false;
     }
 
     // Show details, if debug is enabled.
-    if (log.isDebugEnabled()) {
+    if (Logger.INSTANCE.isDebugEnabled()) {
       logObjectiveGoals(objectiveData.getEntityGoalSelector().getAvailableGoals());
       logObjectiveTargets(objectiveData.getEntityTargetSelector().getAvailableGoals());
     }
@@ -70,24 +67,24 @@ public class ObjectiveHandler {
       EasyNPC<?> easyNPC, ObjectiveDataEntry objectiveDataEntry) {
 
     if (easyNPC == null || objectiveDataEntry == null) {
-      log.error("[{}] Error removing custom objective!", easyNPC);
+      Logger.INSTANCE.error("[{}] Error removing custom objective!", easyNPC);
       return false;
     }
 
     ObjectiveData<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
     if (objectiveData == null) {
-      log.error("[{}] No objective data available!", easyNPC);
+      Logger.INSTANCE.error("[{}] No objective data available!", easyNPC);
       return false;
     }
 
     // Remove custom objective.
     if (!objectiveData.removeCustomObjective(objectiveDataEntry)) {
-      log.error("[{}] Error removing custom objective!", easyNPC);
+      Logger.INSTANCE.error("[{}] Error removing custom objective!", easyNPC);
       return false;
     }
 
     // Show details, if debug is enabled.
-    if (log.isDebugEnabled()) {
+    if (Logger.INSTANCE.isDebugEnabled()) {
       logObjectiveGoals(objectiveData.getEntityGoalSelector().getAvailableGoals());
       logObjectiveTargets(objectiveData.getEntityTargetSelector().getAvailableGoals());
     }
@@ -98,14 +95,14 @@ public class ObjectiveHandler {
   public static void logObjectiveGoals(Set<WrappedGoal> goals) {
     List<Goal> unwrappedGoals = getUnwrappedGoals(goals);
     if (goals != null && !goals.isEmpty() && !unwrappedGoals.isEmpty()) {
-      log.debug("Goals: {}", unwrappedGoals);
+      Logger.INSTANCE.debug("Goals: {}", unwrappedGoals);
     }
   }
 
   public static void logObjectiveTargets(Set<WrappedGoal> goals) {
     List<Goal> unwrappedGoals = getUnwrappedGoals(goals);
     if (goals != null && !goals.isEmpty() && !unwrappedGoals.isEmpty()) {
-      log.debug("Targets: {}", unwrappedGoals);
+      Logger.INSTANCE.debug("Targets: {}", unwrappedGoals);
     }
   }
 

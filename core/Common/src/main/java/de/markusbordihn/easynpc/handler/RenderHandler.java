@@ -19,34 +19,30 @@
 
 package de.markusbordihn.easynpc.handler;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.render.RenderType;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class RenderHandler {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private RenderHandler() {}
 
   public static boolean setRenderType(EasyNPC<?> easyNPC, RenderType renderType) {
     if (easyNPC == null || renderType == null) {
-      log.error("[{}] Error setting render type to {}", easyNPC, renderType);
+      Logger.INSTANCE.error("[{}] Error setting render type to {}", easyNPC, renderType);
       return false;
     }
 
     RenderData<?> renderData = easyNPC.getEasyNPCRenderData();
     if (renderData == null) {
-      log.error("[{}] No render data available for setting render type {}!", easyNPC, renderType);
+      Logger.INSTANCE.error("[{}] No render data available for setting render type {}!", easyNPC, renderType);
       return false;
     }
 
-    log.debug("[{}] Setting render type to {}", easyNPC, renderType);
+    Logger.INSTANCE.debug("[{}] Setting render type to {}", easyNPC, renderType);
     renderData.getRenderDataSet().setRenderType(renderType);
     renderData.updateRenderData();
     return true;
@@ -55,17 +51,17 @@ public class RenderHandler {
   public static boolean setRenderEntity(
       EasyNPC<?> easyNPC, EntityType<? extends Entity> entityType) {
     if (easyNPC == null || entityType == null) {
-      log.error("[{}] Error setting render entity to {}", easyNPC, entityType);
+      Logger.INSTANCE.error("[{}] Error setting render entity to {}", easyNPC, entityType);
       return false;
     }
 
     RenderData<?> renderData = easyNPC.getEasyNPCRenderData();
     if (renderData == null || renderData.getRenderDataSet() == null) {
-      log.error("[{}] No render data available for setting render entity {}!", easyNPC, entityType);
+      Logger.INSTANCE.error("[{}] No render data available for setting render entity {}!", easyNPC, entityType);
       return false;
     }
 
-    log.debug("[{}] Setting render entity to {}", easyNPC, entityType);
+    Logger.INSTANCE.debug("[{}] Setting render entity to {}", easyNPC, entityType);
     renderData.getRenderDataSet().setRenderEntityType(entityType);
     renderData.updateRenderData();
     return true;

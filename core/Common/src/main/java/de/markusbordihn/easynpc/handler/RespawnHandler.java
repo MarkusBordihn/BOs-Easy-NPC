@@ -19,24 +19,20 @@
 
 package de.markusbordihn.easynpc.handler;
 
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class RespawnHandler {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private RespawnHandler() {}
 
   public static boolean respawnNPC(EasyNPC<?> easyNPC, ServerLevel serverLevel) {
     if (easyNPC == null || serverLevel == null) {
-      log.error("[{}] Error respawning NPC.", easyNPC);
+      Logger.INSTANCE.error("[{}] Error respawning NPC.", easyNPC);
       return false;
     }
 
@@ -47,7 +43,7 @@ public class RespawnHandler {
     // Create new entity with compoundTag
     Entity entity = entityType.create(serverLevel);
     if (entity == null) {
-      log.error(
+      Logger.INSTANCE.error(
           "[{}] Unable to create new entity with type {} with {}",
           easyNPC,
           entityType,
@@ -60,7 +56,7 @@ public class RespawnHandler {
     easyNPC.getEntity().discard();
 
     // Respawn new entity
-    log.info("[{}] Respawn Easy NPC with {} into {}", easyNPC, entityType, serverLevel);
+    Logger.INSTANCE.info("[{}] Respawn Easy NPC with {} into {}", easyNPC, entityType, serverLevel);
     serverLevel.addFreshEntity(entity);
     return true;
   }

@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.network.message.client;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.dialog.DialogDataManager;
 import de.markusbordihn.easynpc.data.screen.AdditionalScreenData;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.menu.ClientMenuManager;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -60,7 +61,7 @@ public record OpenMenuCallbackMessage(UUID uuid, UUID menuId, CompoundTag data)
 
     // Validate menu data
     if (uuid == null || menuId == null || data == null) {
-      log.error(
+      Logger.INSTANCE.error(
           "Invalid menu data received for {} with menuId {} and data: {}", uuid, menuId, data);
       return;
     }

@@ -20,19 +20,17 @@
 package de.markusbordihn.easynpc.data.animation;
 
 import com.google.gson.Gson;
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class AnimationDataReader {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private static final String LOG_PREFIX = "[Animation Data Reader]";
   private static final String SUPPORTED_FORMAT_VERSION = "1.8.0";
@@ -48,7 +46,7 @@ public class AnimationDataReader {
 
     // Warn if format version is not supported
     if (!SUPPORTED_FORMAT_VERSION.equals(animationData.getFormatVersion())) {
-      log.warn(
+      Logger.INSTANCE.warn(
           "{} Unsupported format version {} in file {}, will try to load it anyway.",
           LOG_PREFIX,
           animationData.getFormatVersion(),

@@ -50,7 +50,6 @@ public class ModTabs {
                   .displayItems(new SpawnEggs())
                   .title(Component.translatable("itemGroup.easy_npc.spawn_eggs"))
                   .build());
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   protected ModTabs() {}
 }

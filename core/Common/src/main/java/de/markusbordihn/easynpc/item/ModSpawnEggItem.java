@@ -23,8 +23,6 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import java.util.Objects;
-import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -43,13 +41,13 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.Objects;
+import java.util.function.Supplier;
 
 public class ModSpawnEggItem extends SpawnEggItem {
 
   public static final String SUFFIX = "_spawn_egg";
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private final Supplier<? extends EntityType<? extends Mob>> typeSupplier;
 
   public ModSpawnEggItem(

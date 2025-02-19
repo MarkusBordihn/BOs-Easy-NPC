@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
@@ -44,7 +45,7 @@ public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
 
   static void registerSyncedSkinData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("- Registering Synched Skin Data for {}.", entityClass.getSimpleName());
+    Logger.INSTANCE.info("- Registering Synched Skin Data for {}.", entityClass.getSimpleName());
     map.put(
         SynchedDataIndex.SKIN_DATA,
         SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.SKIN_DATA_ENTRY));
@@ -100,14 +101,14 @@ public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
 
     // Early exit if no skin data is available.
     if (!compoundTag.contains(EASY_NPC_DATA_SKIN_DATA_TAG)) {
-      log.warn("No skin data available for {}.", this);
+      Logger.INSTANCE.warn("No skin data available for {}.", this);
       return;
     }
 
     // Convert latency skin data to new format
     CompoundTag skinTag = compoundTag.getCompound(EASY_NPC_DATA_SKIN_DATA_TAG);
     if (skinTag.contains(EASY_NPC_DATA_SKIN_TYPE_TAG)) {
-      log.info("Converting old skin data {} to new format ...", skinTag);
+      Logger.INSTANCE.info("Converting old skin data {} to new format ...", skinTag);
       SkinDataEntry skinDataEntry =
           new SkinDataEntry(
               skinTag.getString(EASY_NPC_DATA_SKIN_NAME_TAG),

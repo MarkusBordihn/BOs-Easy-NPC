@@ -20,64 +20,15 @@
 package de.markusbordihn.easynpc.network;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.network.message.client.ExportClientPresetMessage;
 import de.markusbordihn.easynpc.network.message.client.OpenMenuCallbackMessage;
 import de.markusbordihn.easynpc.network.message.client.SyncDataMessage;
-import de.markusbordihn.easynpc.network.message.server.AddOrUpdateObjectiveMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangeActionEventMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangeAdvancedTradingMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangeBasicTradingMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangeCombatAttributeMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangeDisplayAttributeMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangeEntityAttributeMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangeEntityBaseAttributeMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangeEnvironmentalAttributeMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangeInteractionAttributeMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangeModelEquipmentVisibilityMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangeModelLockRotationMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangeModelPoseMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangeModelPositionMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangeModelRotationMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangeModelVisibilityMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangeMovementAttributeMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangeNameMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangePoseMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangePositionMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangeProfessionMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangeRendererMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangeScaleMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangeSkinMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangeSpawnerSettingMessage;
-import de.markusbordihn.easynpc.network.message.server.ChangeTradingTypeMessage;
-import de.markusbordihn.easynpc.network.message.server.ExecuteActionEventMessage;
-import de.markusbordihn.easynpc.network.message.server.ExecuteDialogButtonActionMessage;
-import de.markusbordihn.easynpc.network.message.server.ExportPresetMessage;
-import de.markusbordihn.easynpc.network.message.server.ExportWorldPresetMessage;
-import de.markusbordihn.easynpc.network.message.server.ImportPresetMessage;
-import de.markusbordihn.easynpc.network.message.server.OpenActionDataEditorMessage;
-import de.markusbordihn.easynpc.network.message.server.OpenActionDataEntryEditorMessage;
-import de.markusbordihn.easynpc.network.message.server.OpenConfigurationMessage;
-import de.markusbordihn.easynpc.network.message.server.OpenDialogButtonEditorMessage;
-import de.markusbordihn.easynpc.network.message.server.OpenDialogEditorMessage;
-import de.markusbordihn.easynpc.network.message.server.OpenDialogTextEditorMessage;
-import de.markusbordihn.easynpc.network.message.server.OpenMenuMessage;
-import de.markusbordihn.easynpc.network.message.server.RemoveDialogButtonMessage;
-import de.markusbordihn.easynpc.network.message.server.RemoveDialogMessage;
-import de.markusbordihn.easynpc.network.message.server.RemoveNPCMessage;
-import de.markusbordihn.easynpc.network.message.server.RemoveObjectiveMessage;
-import de.markusbordihn.easynpc.network.message.server.RequestDataSyncMessage;
-import de.markusbordihn.easynpc.network.message.server.RespawnNPCMessage;
-import de.markusbordihn.easynpc.network.message.server.SaveDialogButtonMessage;
-import de.markusbordihn.easynpc.network.message.server.SaveDialogMessage;
-import de.markusbordihn.easynpc.network.message.server.SaveDialogSetMessage;
+import de.markusbordihn.easynpc.network.message.server.*;
 import net.minecraft.server.level.ServerPlayer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class NetworkHandlerManager {
-
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private static NetworkHandlerInterface networkHandler;
   private static NetworkHandlerManagerType networkHandlerManagerType =
@@ -86,7 +37,7 @@ public class NetworkHandlerManager {
   private NetworkHandlerManager() {}
 
   public static void registerHandler(final NetworkHandlerInterface networkHandler) {
-    log.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
     NetworkHandlerManager.networkHandler = networkHandler;
   }
 
@@ -95,7 +46,7 @@ public class NetworkHandlerManager {
   }
 
   public static void registerNetworkMessages(NetworkHandlerManagerType networkHandlerType) {
-    log.info("Registering network messages for {} side ...", networkHandlerType);
+    Logger.INSTANCE.info("Registering network messages for {} side ...", networkHandlerType);
     networkHandlerManagerType = networkHandlerType;
     registerClientNetworkHandler();
     registerServerNetworkHandler();
@@ -129,7 +80,7 @@ public class NetworkHandlerManager {
   public static void registerClientNetworkHandler() {
     NetworkHandlerInterface networkHandler = getHandler();
     if (networkHandler == null) {
-      log.error("Failed to register client network handler!");
+      Logger.INSTANCE.error("Failed to register client network handler!");
       return;
     }
 
@@ -148,7 +99,7 @@ public class NetworkHandlerManager {
   public static void registerServerNetworkHandler() {
     NetworkHandlerInterface networkHandler = getHandler();
     if (networkHandler == null) {
-      log.error("Failed to register server network handler!");
+      Logger.INSTANCE.error("Failed to register server network handler!");
       return;
     }
 

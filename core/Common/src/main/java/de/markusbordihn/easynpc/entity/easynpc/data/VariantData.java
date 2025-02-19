@@ -20,10 +20,13 @@
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.utils.TextUtils;
+
 import java.util.EnumMap;
 import java.util.stream.Stream;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -34,91 +37,91 @@ import net.minecraft.world.entity.PathfinderMob;
 
 public interface VariantData<T extends PathfinderMob> extends EasyNPC<T> {
 
-  String EASY_NPC_DATA_VARIANT_TAG = "Variant";
+    String EASY_NPC_DATA_VARIANT_TAG = "Variant";
 
-  static void registerSyncedVariantData(
-      EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("- Registering Synched Variant Data for {}.", entityClass.getSimpleName());
-    map.put(
-        SynchedDataIndex.VARIANT,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.STRING));
-  }
-
-  default Enum<?> getDefaultVariant() {
-    return Variant.STEVE;
-  }
-
-  default Enum<?> getVariant() {
-    return getVariant(getSynchedEntityData(SynchedDataIndex.VARIANT));
-  }
-
-  default void setVariant(Enum<?> variant) {
-    setSynchedEntityData(SynchedDataIndex.VARIANT, variant != null ? variant.name() : "");
-  }
-
-  default void setVariant(String name) {
-    Enum<?> variant = getVariant(name);
-    if (variant != null) {
-      setVariant(variant);
-    } else {
-      log.error("Unknown variant {} for {}", name, this);
+    static void registerSyncedVariantData(
+            EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
+        Logger.INSTANCE.info("- Registering Synched Variant Data for {}.", entityClass.getSimpleName());
+        map.put(
+                SynchedDataIndex.VARIANT,
+                SynchedEntityData.defineId(entityClass, EntityDataSerializers.STRING));
     }
-  }
 
-  default Enum<?> getVariant(String name) {
-    return Variant.valueOf(name);
-  }
-
-  default Enum<?>[] getVariants() {
-    return Variant.values();
-  }
-
-  default Stream<String> getVariantNames() {
-    return Stream.of(getVariants()).map(Enum::name);
-  }
-
-  default Component getVariantName() {
-    Enum<?> variant = getVariant();
-    return variant != null ? TextUtils.normalizeName(variant.name()) : getEasyNPCTypeName();
-  }
-
-  default boolean hasVariantCrossedArms() {
-    return this.hasVariantCrossedArms(getVariant());
-  }
-
-  default boolean hasVariantCrossedArms(Enum<?> variant) {
-    return variant != null && variant.name().endsWith("_CROSSED_ARMS");
-  }
-
-  default boolean hasVariantSaddled() {
-    return this.hasVariantSaddled(getVariant());
-  }
-
-  default boolean hasVariantSaddled(Enum<?> variant) {
-    return variant != null && variant.name().endsWith("_SADDLED");
-  }
-
-  default void defineSynchedVariantData() {
-    defineSynchedEntityData(SynchedDataIndex.VARIANT, getDefaultVariant().name());
-  }
-
-  default void addAdditionalVariantData(CompoundTag compoundTag) {
-    if (this.getVariant() != null) {
-      compoundTag.putString(EASY_NPC_DATA_VARIANT_TAG, this.getVariant().name());
+    default Enum<?> getDefaultVariant() {
+        return Variant.STEVE;
     }
-  }
 
-  default void readAdditionalVariantData(CompoundTag compoundTag) {
-    if (compoundTag.contains(EASY_NPC_DATA_VARIANT_TAG)) {
-      String variant = compoundTag.getString(EASY_NPC_DATA_VARIANT_TAG);
-      if (!variant.isEmpty()) {
-        this.setVariant(this.getVariant(variant));
-      }
+    default Enum<?> getVariant() {
+        return getVariant(getSynchedEntityData(SynchedDataIndex.VARIANT));
     }
-  }
 
-  enum Variant {
-    STEVE,
-    ALEX
-  }
+    default void setVariant(Enum<?> variant) {
+        setSynchedEntityData(SynchedDataIndex.VARIANT, variant != null ? variant.name() : "");
+    }
+
+    default void setVariant(String name) {
+        Enum<?> variant = getVariant(name);
+        if (variant != null) {
+            setVariant(variant);
+        } else {
+            Logger.INSTANCE.error("Unknown variant {} for {}", name, this);
+        }
+    }
+
+    default Enum<?> getVariant(String name) {
+        return Variant.valueOf(name);
+    }
+
+    default Enum<?>[] getVariants() {
+        return Variant.values();
+    }
+
+    default Stream<String> getVariantNames() {
+        return Stream.of(getVariants()).map(Enum::name);
+    }
+
+    default Component getVariantName() {
+        Enum<?> variant = getVariant();
+        return variant != null ? TextUtils.normalizeName(variant.name()) : getEasyNPCTypeName();
+    }
+
+    default boolean hasVariantCrossedArms() {
+        return this.hasVariantCrossedArms(getVariant());
+    }
+
+    default boolean hasVariantCrossedArms(Enum<?> variant) {
+        return variant != null && variant.name().endsWith("_CROSSED_ARMS");
+    }
+
+    default boolean hasVariantSaddled() {
+        return this.hasVariantSaddled(getVariant());
+    }
+
+    default boolean hasVariantSaddled(Enum<?> variant) {
+        return variant != null && variant.name().endsWith("_SADDLED");
+    }
+
+    default void defineSynchedVariantData() {
+        defineSynchedEntityData(SynchedDataIndex.VARIANT, getDefaultVariant().name());
+    }
+
+    default void addAdditionalVariantData(CompoundTag compoundTag) {
+        if (this.getVariant() != null) {
+            compoundTag.putString(EASY_NPC_DATA_VARIANT_TAG, this.getVariant().name());
+        }
+    }
+
+    default void readAdditionalVariantData(CompoundTag compoundTag) {
+        if (compoundTag.contains(EASY_NPC_DATA_VARIANT_TAG)) {
+            String variant = compoundTag.getString(EASY_NPC_DATA_VARIANT_TAG);
+            if (!variant.isEmpty()) {
+                this.setVariant(this.getVariant(variant));
+            }
+        }
+    }
+
+    enum Variant {
+        STEVE,
+        ALEX
+    }
 }

@@ -20,15 +20,13 @@
 package de.markusbordihn.easynpc.io;
 
 import de.markusbordihn.easynpc.Constants;
-import java.util.stream.Stream;
+import de.markusbordihn.easynpc.debug.Logger;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.stream.Stream;
 
 public class DefaultPresetDataFiles {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private DefaultPresetDataFiles() {}
 
@@ -43,7 +41,7 @@ public class DefaultPresetDataFiles {
           .keySet()
           .stream();
     } catch (Exception e) {
-      log.error("Could not get default preset resource locations:", e);
+      Logger.INSTANCE.error("Could not get default preset resource locations:", e);
     }
     return Stream.empty();
   }

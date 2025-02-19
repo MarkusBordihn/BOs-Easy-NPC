@@ -19,22 +19,19 @@
 
 package de.markusbordihn.easynpc.data.objective;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ObjectiveDataSet {
 
   // Objective Data Tags
   public static final String DATA_OBJECTIVE_DATA_SET_TAG = "ObjectiveDataSet";
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private final HashMap<String, ObjectiveDataEntry> objectives = new HashMap<>();
   private final HashSet<String> targetedPlayerSet = new HashSet<>();
   private final HashSet<UUID> targetedEntitySet = new HashSet<>();

@@ -20,6 +20,8 @@
 package de.markusbordihn.easynpc.config;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
@@ -27,11 +29,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.Set;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class Config {
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String LOG_PREFIX = "[Config]";
   private static boolean isLoaded = false;
 
@@ -51,34 +50,35 @@ public class Config {
   }
 
   public static void registerCommonConfig() {
-    log.info("{} Registering common configuration ...", LOG_PREFIX);
+    Logger.INSTANCE.info("{} Registering common configuration ...", LOG_PREFIX);
     RenderEntityTypeSupportConfig.registerConfig();
+    GlobalConfig.registerConfig();
   }
 
   public static void registerClientConfig() {
-    log.info("{} Registering client configuration ...", LOG_PREFIX);
+    Logger.INSTANCE.info("{} Registering client configuration ...", LOG_PREFIX);
   }
 
   public static void registerServerConfig() {
-    log.info("{} Registering server configuration ...", LOG_PREFIX);
+    Logger.INSTANCE.info("{} Registering server configuration ...", LOG_PREFIX);
   }
 
   public static void prepareConfiguration() {
     // Validate game folder path.
     if (Constants.CONFIG_DIR != null) {
       configPath = Constants.CONFIG_DIR.resolve(Constants.MOD_ID);
-      log.info("{} Updated configuration path to {}", LOG_PREFIX, configPath);
+      Logger.INSTANCE.info("{} Updated configuration path to {}", LOG_PREFIX, configPath);
     }
 
     // Validate configuration folder
     if (!configPath.toFile().exists()) {
-      log.info("{} Creating configuration folder {}", LOG_PREFIX, getConfigDirectory());
+      Logger.INSTANCE.info("{} Creating configuration folder {}", LOG_PREFIX, getConfigDirectory());
     }
 
     // Simple reload protection
     if (isLoaded) {
-      log.error("{} Configuration is already loaded", LOG_PREFIX);
-      log.warn("Check if configuration is loaded multiple times!");
+      Logger.INSTANCE.error("{} Configuration is already loaded", LOG_PREFIX);
+      Logger.INSTANCE.warn("Check if configuration is loaded multiple times!");
       return;
     }
     isLoaded = true;
@@ -97,18 +97,18 @@ public class Config {
     try (var reader = Files.newBufferedReader(configFile.toPath())) {
       properties.load(reader);
     } catch (Exception e) {
-      log.error("{} Failed to read configuration file {}:", LOG_PREFIX, configFile, e);
+      Logger.INSTANCE.error("{} Failed to read configuration file {}:", LOG_PREFIX, configFile, e);
     }
     return properties;
   }
 
   public static void createConfigFile(final File configFile, final String header) {
     Properties properties = new Properties();
-    log.info("{} Creating configuration file {}", LOG_PREFIX, configFile);
+    Logger.INSTANCE.info("{} Creating configuration file {}", LOG_PREFIX, configFile);
     try (FileWriter writer = new FileWriter(configFile)) {
       properties.store(writer, header.trim());
     } catch (Exception e) {
-      log.error(
+      Logger.INSTANCE.error(
           "{} Failed to create configuration file {} for {}", LOG_PREFIX, configFile, properties);
     }
   }
@@ -126,7 +126,7 @@ public class Config {
     try {
       resultPath = Files.createDirectories(configPath);
     } catch (Exception e) {
-      log.error("{} Failed to create configuration folder {}:", LOG_PREFIX, configPath, e);
+      Logger.INSTANCE.error("{} Failed to create configuration folder {}:", LOG_PREFIX, configPath, e);
     }
     return resultPath;
   }
@@ -137,7 +137,7 @@ public class Config {
       Properties properties,
       Properties unmodifiedProperties) {
     if (!properties.equals(unmodifiedProperties)) {
-      log.info(
+      Logger.INSTANCE.info(
           "{} Updating configuration file {} {}: {}",
           LOG_PREFIX,
           configFile,
@@ -146,14 +146,14 @@ public class Config {
       try (FileWriter writer = new FileWriter(configFile)) {
         properties.store(writer, configFileHeader.trim());
       } catch (Exception e) {
-        log.error(
+        Logger.INSTANCE.error(
             "{} Failed to update configuration file {} with {}",
             LOG_PREFIX,
             configFile,
             properties);
       }
     } else {
-      log.info("{} {} is up to date: {}", LOG_PREFIX, configFileHeader, properties);
+      Logger.INSTANCE.info("{} {} is up to date: {}", LOG_PREFIX, configFileHeader, properties);
     }
   }
 
@@ -163,7 +163,7 @@ public class Config {
       try {
         return Integer.parseInt(properties.getProperty(key).trim());
       } catch (Exception e) {
-        log.error("{} Failed to parse Integer value for key {}:", LOG_PREFIX, key, e);
+        Logger.INSTANCE.error("{} Failed to parse Integer value for key {}:", LOG_PREFIX, key, e);
       }
     }
     properties.setProperty(key, Integer.toString(defaultValue));
@@ -176,7 +176,7 @@ public class Config {
       try {
         return Boolean.parseBoolean(properties.getProperty(key).trim());
       } catch (Exception e) {
-        log.error("{} Failed to parse Boolean value for key {}:", LOG_PREFIX, key, e);
+        Logger.INSTANCE.error("{} Failed to parse Boolean value for key {}:", LOG_PREFIX, key, e);
       }
     }
     properties.setProperty(key, Boolean.toString(defaultValue));
@@ -190,7 +190,7 @@ public class Config {
         String value = properties.getProperty(key).trim();
         return value.isEmpty() ? Set.of() : Set.of(value.split(",\\s*"));
       } catch (Exception e) {
-        log.error("{} Failed to parse Set[String] for key {}:", LOG_PREFIX, key, e);
+        Logger.INSTANCE.error("{} Failed to parse Set[String] for key {}:", LOG_PREFIX, key, e);
       }
     }
     properties.setProperty(key, String.join(",", defaultValue));

@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.compat.CompatHandler;
 import de.markusbordihn.easynpc.compat.CompatManager;
 import de.markusbordihn.easynpc.config.Config;
 import de.markusbordihn.easynpc.debug.DebugManager;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.io.DataFileHandler;
 import de.markusbordihn.easynpc.item.ModItems;
@@ -49,19 +50,16 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @Mod(Constants.MOD_ID)
 public class EasyNPC {
 
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
   public EasyNPC() {
     final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-    log.info("Initializing {} (Forge) ...", Constants.MOD_NAME);
+    Logger.INSTANCE.info("Initializing {} (Forge) ...", Constants.MOD_NAME);
 
-    log.info("{} Debug Manager ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Debug Manager ...", Constants.LOG_REGISTER_PREFIX);
     Optional<String> version =
         Launcher.INSTANCE.environment().getProperty(IEnvironment.Keys.VERSION.get());
     if (version.isPresent() && "MOD_DEV".equals(version.get())) {
@@ -69,45 +67,45 @@ public class EasyNPC {
     }
     DebugManager.checkForDebugLogging(Constants.LOG_NAME);
 
-    log.info("{} Constants ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Constants ...", Constants.LOG_REGISTER_PREFIX);
     Constants.GAME_DIR = FMLPaths.GAMEDIR.get();
     Constants.CONFIG_DIR = FMLPaths.CONFIGDIR.get();
 
-    log.info("{} Configuration ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Configuration ...", Constants.LOG_REGISTER_PREFIX);
     Config.register(FMLEnvironment.dist == Dist.DEDICATED_SERVER);
 
-    log.info("{} Common Data Files ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Common Data Files ...", Constants.LOG_REGISTER_PREFIX);
     DataFileHandler.registerCommonDataFiles();
 
-    log.info("{} Entity Data Serializers ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Entity Data Serializers ...", Constants.LOG_REGISTER_PREFIX);
     EntityDataSerializersManager.register();
 
-    log.info("{} Compatibility Handler ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Compatibility Handler ...", Constants.LOG_REGISTER_PREFIX);
     CompatManager.registerCompatHandler(new CompatHandler());
 
-    log.info("{} Command Argument Types ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Command Argument Types ...", Constants.LOG_REGISTER_PREFIX);
     ModArgumentTypes.COMMAND_ARGUMENT_TYPES.register(modEventBus);
 
-    log.info("{} Entity Types ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Entity Types ...", Constants.LOG_REGISTER_PREFIX);
     ModEntityType.ENTITY_TYPES.register(modEventBus);
 
-    log.info("{} Blocks ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Blocks ...", Constants.LOG_REGISTER_PREFIX);
     ModBlocks.BLOCKS.register(modEventBus);
 
-    log.info("{} Blocks Entity Types ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Blocks Entity Types ...", Constants.LOG_REGISTER_PREFIX);
     ModBlocks.BLOCK_ENTITY_TYPES.register(modEventBus);
 
-    log.info("{} Items ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Items ...", Constants.LOG_REGISTER_PREFIX);
     ModItems.ITEMS.register(modEventBus);
 
-    log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
     ModMenuTypes.MENU_TYPES.register(modEventBus);
 
-    log.info("{} Menu Handler ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Menu Handler ...", Constants.LOG_REGISTER_PREFIX);
     MenuManager.registerMenuHandler(new MenuHandler());
     modEventBus.addListener(MenuHandler::registerMenuHandler);
 
-    log.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
     modEventBus.addListener(
         (final FMLCommonSetupEvent event) ->
             event.enqueueWork(

@@ -26,37 +26,20 @@ import de.markusbordihn.easynpc.client.renderer.entity.custom.OrcModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.PiglinRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.SkeletonRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.ZombieRawRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.standard.AllayModelRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.standard.CatModelRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.standard.ChickenModelRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.standard.HorseModelRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.standard.HumanoidModelRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.standard.HumanoidSlimModelRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.standard.IllagerModelRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.standard.IronGolemModelRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.standard.PigModelRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.standard.PiglinModelRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.standard.SkeletonModelRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.standard.VillagerModelRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.standard.WolfModelRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.standard.ZombieModelRenderer;
-import de.markusbordihn.easynpc.client.renderer.entity.standard.ZombieVillagerModelRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.standard.*;
 import de.markusbordihn.easynpc.client.renderer.layers.CustomHumanoidArmorLayer;
 import de.markusbordihn.easynpc.compat.CompatConstants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.model.geom.ModelLayers;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ClientRenderer {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ClientRenderer() {}
 
   public static void registerEntityRenderers() {
-    log.info("{} Entity Renders ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Entity Renders ...", Constants.LOG_REGISTER_PREFIX);
 
     EntityRendererRegistry.register(
         ModEntityType.ALLAY, context -> new AllayModelRenderer(context, ModModelLayers.ALLAY));

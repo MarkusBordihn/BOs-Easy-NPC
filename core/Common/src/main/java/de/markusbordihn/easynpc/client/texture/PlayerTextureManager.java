@@ -22,26 +22,25 @@ package de.markusbordihn.easynpc.client.texture;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.io.PlayerSkinDataFiles;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.PlayersUtils;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class PlayerTextureManager {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final HashMap<TextureModelKey, ResourceLocation> textureCache = new HashMap<>();
   private static final HashMap<TextureModelKey, SkinType> textureSkinTypeCache = new HashMap<>();
   private static final HashSet<UUID> textureReloadProtection = new HashSet<>();
@@ -129,7 +128,7 @@ public class PlayerTextureManager {
     }
 
     // Log error if texture could not be loaded.
-    log.error(
+    Logger.INSTANCE.error(
         "{} Unable to load player {} texture {} from {}!",
         LOG_PREFIX,
         playerUUID,

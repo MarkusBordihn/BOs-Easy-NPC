@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
@@ -54,7 +55,7 @@ public record RemoveNPCMessage(UUID uuid) implements NetworkMessageRecord {
     }
 
     // Perform action.
-    log.info("Removing Easy NPC {} requested by {}", easyNPC, serverPlayer);
+    Logger.INSTANCE.info("Removing Easy NPC {} requested by {}", easyNPC, serverPlayer);
     easyNPC.getEntity().discard();
   }
 }

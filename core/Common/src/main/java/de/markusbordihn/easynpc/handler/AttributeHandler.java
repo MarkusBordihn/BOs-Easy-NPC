@@ -19,17 +19,8 @@
 
 package de.markusbordihn.easynpc.handler;
 
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.attribute.CombatAttributeType;
-import de.markusbordihn.easynpc.data.attribute.CombatAttributes;
-import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
-import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
-import de.markusbordihn.easynpc.data.attribute.EnvironmentalAttributeType;
-import de.markusbordihn.easynpc.data.attribute.EnvironmentalAttributes;
-import de.markusbordihn.easynpc.data.attribute.InteractionAttributeType;
-import de.markusbordihn.easynpc.data.attribute.InteractionAttributes;
-import de.markusbordihn.easynpc.data.attribute.MovementAttributeType;
-import de.markusbordihn.easynpc.data.attribute.MovementAttributes;
+import de.markusbordihn.easynpc.data.attribute.*;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
@@ -37,12 +28,9 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class AttributeHandler {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private AttributeHandler() {}
 
@@ -57,7 +45,7 @@ public class AttributeHandler {
     }
     EntityAttributes entityAttributes = attributeData.getEntityAttributes();
     CombatAttributes attributes = entityAttributes.getCombatAttributes();
-    log.debug("Changing combat attribute {}={} for {}", attributeType, value, easyNPC);
+    Logger.INSTANCE.debug("Changing combat attribute {}={} for {}", attributeType, value, easyNPC);
     switch (attributeType) {
       case IS_ATTACKABLE -> {
         entityAttributes.setCombatAttributes(attributes.withIsAttackable(value));
@@ -66,7 +54,7 @@ public class AttributeHandler {
         }
       }
       default -> {
-        log.error("Unimplemented combat attribute {} for {}", attributeType, easyNPC);
+        Logger.INSTANCE.error("Unimplemented combat attribute {} for {}", attributeType, easyNPC);
         return false;
       }
     }
@@ -85,13 +73,13 @@ public class AttributeHandler {
     }
     EntityAttributes entityAttributes = attributeData.getEntityAttributes();
     CombatAttributes attributes = entityAttributes.getCombatAttributes();
-    log.debug("Changing combat attribute {}={} for {}", attributeType, value, easyNPC);
+    Logger.INSTANCE.debug("Changing combat attribute {}={} for {}", attributeType, value, easyNPC);
     switch (attributeType) {
       case HEALTH_REGENERATION -> {
         entityAttributes.setCombatAttributes(attributes.withHealthRegeneration(value));
       }
       default -> {
-        log.error("Unimplemented combat attribute {} for {}", attributeType, easyNPC);
+        Logger.INSTANCE.error("Unimplemented combat attribute {} for {}", attributeType, easyNPC);
         return false;
       }
     }
@@ -112,7 +100,7 @@ public class AttributeHandler {
     EnvironmentalAttributes attributes = entityAttributes.getEnvironmentalAttributes();
     ObjectiveData<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
     NavigationData<?> navigationData = easyNPC.getEasyNPCNavigationData();
-    log.debug("Changing environmental attribute {}={} for {}", attributeType, value, easyNPC);
+    Logger.INSTANCE.debug("Changing environmental attribute {}={} for {}", attributeType, value, easyNPC);
     switch (attributeType) {
       case CAN_BREATHE_UNDERWATER ->
           entityAttributes.setEnvironmentalAttributes(attributes.withCanBreathUnderwater(value));
@@ -127,7 +115,7 @@ public class AttributeHandler {
       }
       case FREEFALL -> entityAttributes.setEnvironmentalAttributes(attributes.withFreefall(value));
       default -> {
-        log.error("Unimplemented environmental attribute {} for {}", attributeType, easyNPC);
+        Logger.INSTANCE.error("Unimplemented environmental attribute {} for {}", attributeType, easyNPC);
         return false;
       }
     }
@@ -146,7 +134,7 @@ public class AttributeHandler {
     }
     EntityAttributes entityAttributes = attributeData.getEntityAttributes();
     InteractionAttributes attributes = entityAttributes.getInteractionAttributes();
-    log.debug("Changing interaction attribute {}={} for {}", attributeType, value, easyNPC);
+    Logger.INSTANCE.debug("Changing interaction attribute {}={} for {}", attributeType, value, easyNPC);
     switch (attributeType) {
       case CAN_BE_LEASHED ->
           entityAttributes.setInteractionAttributes(attributes.withCanBeLeashed(value));
@@ -155,7 +143,7 @@ public class AttributeHandler {
       case PUSH_ENTITIES ->
           entityAttributes.setInteractionAttributes(attributes.withPushEntities(value));
       default -> {
-        log.error("Unimplemented interaction attribute {} for {}", attributeType, easyNPC);
+        Logger.INSTANCE.error("Unimplemented interaction attribute {} for {}", attributeType, easyNPC);
         return false;
       }
     }
@@ -176,7 +164,7 @@ public class AttributeHandler {
     MovementAttributes attributes = entityAttributes.getMovementAttributes();
     ObjectiveData<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
     NavigationData<?> navigationData = easyNPC.getEasyNPCNavigationData();
-    log.debug("Changing moving attribute {}={} for {}", attributeType, value, easyNPC);
+    Logger.INSTANCE.debug("Changing moving attribute {}={} for {}", attributeType, value, easyNPC);
     switch (attributeType) {
       case CAN_CLOSE_DOOR ->
           entityAttributes.setMovementAttributes(attributes.withCanCloseDoor(value));
@@ -187,7 +175,7 @@ public class AttributeHandler {
       case CAN_USE_NETHER_PORTAL ->
           entityAttributes.setMovementAttributes(attributes.withCanUseNetherPortal(value));
       default -> {
-        log.error("Unimplemented moving attribute {} for {}", attributeType, easyNPC);
+        Logger.INSTANCE.error("Unimplemented moving attribute {} for {}", attributeType, easyNPC);
         return false;
       }
     }
@@ -214,11 +202,11 @@ public class AttributeHandler {
       NavigationData<?> navigationData = easyNPC.getEasyNPCNavigationData();
       switch (entityAttribute) {
         case SILENT:
-          log.debug("Change silent={} for {}", value, easyNPC);
+          Logger.INSTANCE.debug("Change silent={} for {}", value, easyNPC);
           attributeData.setAttributeSilent(value);
           break;
         default:
-          log.error("Unimplemented entity attribute {} for {}", entityAttribute, easyNPC);
+          Logger.INSTANCE.error("Unimplemented entity attribute {} for {}", entityAttribute, easyNPC);
           return false;
       }
       return true;

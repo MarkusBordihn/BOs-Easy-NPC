@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -59,19 +60,19 @@ public record ChangePoseMessage(UUID uuid, Pose pose) implements NetworkMessageR
 
     // Validate name.
     if (this.pose == null) {
-      log.error("Invalid pose for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid pose for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate model data.
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
-      log.error("Missing model data for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Missing model data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    log.debug("Change pose {} for {} from {}", this.pose, easyNPC, serverPlayer);
+    Logger.INSTANCE.debug("Change pose {} for {} from {}", this.pose, easyNPC, serverPlayer);
     modelData.setModelPose(ModelPose.DEFAULT);
     easyNPC.getEntity().setPose(this.pose);
   }

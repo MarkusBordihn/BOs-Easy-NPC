@@ -20,14 +20,11 @@
 package de.markusbordihn.easynpc.network;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.network.message.ClientNetworkMessageHandlerInterface;
 import de.markusbordihn.easynpc.network.message.ServerNetworkMessageHandlerInterface;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class NetworkMessageHandlerManager {
-
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private static ClientNetworkMessageHandlerInterface clientNetworkMessageHandlerInterface;
   private static ServerNetworkMessageHandlerInterface serverNetworkMessageHandlerInterface;
@@ -36,13 +33,13 @@ public class NetworkMessageHandlerManager {
 
   public static void registerServerHandler(
       final ServerNetworkMessageHandlerInterface networkMessageHandler) {
-    log.info("{} Server Network Message Handler ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Server Network Message Handler ...", Constants.LOG_REGISTER_PREFIX);
     serverNetworkMessageHandlerInterface = networkMessageHandler;
   }
 
   public static void registerClientHandler(
       final ClientNetworkMessageHandlerInterface networkMessageHandler) {
-    log.info("{} Client Network Message Handler ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} Client Network Message Handler ...", Constants.LOG_REGISTER_PREFIX);
     clientNetworkMessageHandlerInterface = networkMessageHandler;
   }
 

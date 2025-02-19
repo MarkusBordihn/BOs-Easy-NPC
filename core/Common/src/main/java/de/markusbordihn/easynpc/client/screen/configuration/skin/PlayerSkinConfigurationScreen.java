@@ -30,6 +30,7 @@ import de.markusbordihn.easynpc.client.texture.TextureManager;
 import de.markusbordihn.easynpc.client.texture.TextureModelKey;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
@@ -167,7 +168,7 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
       }
 
       // Send texture skin location to server.
-      log.debug("Setting player texture to {} with UUID {}", textureSkinLocationValue, playerUUID);
+      Logger.INSTANCE.debug("Setting player texture to {} with UUID {}", textureSkinLocationValue, playerUUID);
       TextureManager.clearLastErrorMessage();
       this.errorMessage = "";
       NetworkMessageHandlerManager.getServerHandler()

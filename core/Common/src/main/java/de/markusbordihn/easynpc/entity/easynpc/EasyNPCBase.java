@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc;
 
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
@@ -99,7 +100,7 @@ public interface EasyNPCBase<E extends PathfinderMob>
   }
 
   default void registerEasyNPCDefaultHandler(Enum<?> variant) {
-    log.info("Register default handler for {} with variant {} ...", this, variant);
+    Logger.INSTANCE.info("Register default handler for {} with variant {} ...", this, variant);
     VariantData<E> variantData = getEasyNPCVariantData();
     if (variantData != null) {
       variantData.setVariant(variant);
@@ -111,7 +112,7 @@ public interface EasyNPCBase<E extends PathfinderMob>
   }
 
   default SpawnGroupData finalizeEasyNPCSpawn(SpawnGroupData spawnGroupData) {
-    log.info("Finalize spawn for {} ...", this);
+    Logger.INSTANCE.info("Finalize spawn for {} ...", this);
 
     // Set default navigation data.
     NavigationData<?> navigationData = getEasyNPCNavigationData();
@@ -135,7 +136,7 @@ public interface EasyNPCBase<E extends PathfinderMob>
   }
 
   default void defineEasyNPCBaseSyncedData() {
-    log.debug("Define synced data for {}", this);
+    Logger.INSTANCE.debug("Define synced data for {}", this);
 
     // First define variant data to ensure that all other data can be linked to the variant.
     VariantData<E> variantData = getEasyNPCVariantData();
@@ -204,15 +205,15 @@ public interface EasyNPCBase<E extends PathfinderMob>
     }
     ServerData<E> serverData = getEasyNPCServerData();
     if (serverData == null) {
-      log.error("No server data available for {}", this);
+      Logger.INSTANCE.error("No server data available for {}", this);
       return;
     }
     if (!serverData.hasServerEntityData()) {
-      log.info("Register server-side data for {} ...", this);
+      Logger.INSTANCE.info("Register server-side data for {} ...", this);
       serverData.defineServerEntityData();
     }
 
-    log.info("Define custom server-side data for {} ...", this);
+    Logger.INSTANCE.info("Define custom server-side data for {} ...", this);
     ActionEventData<E> actionEventData = getEasyNPCActionEventData();
     if (actionEventData != null) {
       actionEventData.defineCustomActionData();
@@ -232,7 +233,7 @@ public interface EasyNPCBase<E extends PathfinderMob>
   }
 
   default void addEasyNPCBaseAdditionalSaveData(CompoundTag compoundTag) {
-    log.debug("Add additional save data for {}", this);
+    Logger.INSTANCE.debug("Add additional save data for {}", this);
     ActionEventData<E> actionEventData = getEasyNPCActionEventData();
     if (actionEventData != null) {
       actionEventData.addAdditionalActionData(compoundTag);
@@ -304,7 +305,7 @@ public interface EasyNPCBase<E extends PathfinderMob>
   }
 
   default void readEasyNPCBaseAdditionalSaveData(CompoundTag compoundTag) {
-    log.debug("Read additional save data for {} ...", this);
+    Logger.INSTANCE.debug("Read additional save data for {} ...", this);
 
     // First read important data to ensure that all other data can be linked to the variant.
     ConfigData<E> configData = getEasyNPCConfigData();

@@ -38,6 +38,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.components.TextComponent;
@@ -351,7 +352,7 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
               buttonWidth,
               dialogButtonEntry.getButtonName(buttonMaxTextLength).getString(),
               onPress -> {
-                log.info("Edit dialog button {}", dialogButtonEntry.id());
+                Logger.INSTANCE.info("Edit dialog button {}", dialogButtonEntry.id());
                 NetworkMessageHandlerManager.getServerHandler()
                     .openDialogButtonEditor(
                         this.getEasyNPCUUID(), this.getDialogUUID(), dialogButtonEntry.id());

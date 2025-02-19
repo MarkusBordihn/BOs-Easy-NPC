@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.attribute.EnvironmentalAttributeType;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -77,7 +78,7 @@ public record ChangeEnvironmentalAttributeMessage(
 
     // Validate value.
     if (booleanValue == null && doubleValue == null && integerValue == null) {
-      log.error("Invalid value for {} for {} from {}", attributeType, easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid value for {} for {} from {}", attributeType, easyNPC, serverPlayer);
       return;
     }
 

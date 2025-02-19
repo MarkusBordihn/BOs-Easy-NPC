@@ -22,8 +22,14 @@ package de.markusbordihn.easynpc.client.texture;
 import com.mojang.blaze3d.platform.NativeImage;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.validator.ImageValidator;
 import de.markusbordihn.easynpc.validator.UrlValidator;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.resources.ResourceLocation;
+
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,16 +42,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
-import javax.imageio.ImageIO;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.resources.ResourceLocation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class TextureManager {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private static final String TEXTURE_PREFIX = Constants.MOD_ID + "_client_texture_";
   private static final String LOG_PREFIX = "[Texture Manager]";
@@ -57,13 +56,13 @@ public class TextureManager {
   public static ResourceLocation addCustomTexture(TextureModelKey textureModelKey, File file) {
     // Verify texture model key.
     if (textureModelKey == null) {
-      log.error("{} Texture model key for {} is invalid!", LOG_PREFIX, file);
+      Logger.INSTANCE.error("{} Texture model key for {} is invalid!", LOG_PREFIX, file);
       return null;
     }
 
     // Verify file to make sure it's not a directory, not null, exists and readable.
     if (file == null || !file.exists() || !file.canRead() || file.isDirectory()) {
-      log.error("{} Texture file {} is invalid!", LOG_PREFIX, file);
+      Logger.INSTANCE.error("{} Texture file {} is invalid!", LOG_PREFIX, file);
       return null;
     }
 
@@ -72,7 +71,7 @@ public class TextureManager {
     try {
       image = ImageIO.read(file);
     } catch (IllegalArgumentException | IOException exception) {
-      log.error(
+      Logger.INSTANCE.error(
           "{} Unable to load Texture file {} for {} because of:",
           LOG_PREFIX,
           file,
@@ -83,7 +82,7 @@ public class TextureManager {
 
     // Verify the image data to make sure we got a valid image!
     if (!ImageValidator.isValidImage(image)) {
-      log.error(
+      Logger.INSTANCE.error(
           "{} Unable to get any valid texture from file {} for {}!",
           LOG_PREFIX,
           file,
@@ -108,7 +107,7 @@ public class TextureManager {
             ? getNativePlayerImage(file)
             : getNativeImage(file);
     if (nativeImage == null) {
-      log.error(
+      Logger.INSTANCE.error(
           "{} Unable to create native image for file {} for {}.",
           LOG_PREFIX,
           file,
@@ -121,7 +120,7 @@ public class TextureManager {
     try {
       dynamicTexture = new DynamicTexture(nativeImage);
     } catch (Exception exception) {
-      log.error(
+      Logger.INSTANCE.error(
           "{} Unable to create dynamic texture for file {} for {}:",
           LOG_PREFIX,
           file,
@@ -133,7 +132,7 @@ public class TextureManager {
     // Register dynamic texture under resource location.
     String resourceName = getResourceName(textureModelKey);
     ResourceLocation resourceLocation = textureManager.register(resourceName, dynamicTexture);
-    log.info(
+    Logger.INSTANCE.info(
         "{} Registered file {} with image {} for texture {} with {}.",
         LOG_PREFIX,
         file,
@@ -154,7 +153,7 @@ public class TextureManager {
     // Check for cached textured.
     ResourceLocation cachedTexture = getCachedTexture(textureModelKey, targetDirectory);
     if (cachedTexture != null) {
-      log.info(
+      Logger.INSTANCE.info(
           "{} Found downloaded file in cache, will re-used {} for {}",
           LOG_PREFIX,
           cachedTexture,
@@ -169,7 +168,7 @@ public class TextureManager {
       if (connection.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM
           || connection.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP) {
         String redirectUrl = connection.getHeaderField("Location");
-        log.info("{} Following redirect from {} > {}", LOG_PREFIX, remoteUrl, redirectUrl);
+        Logger.INSTANCE.info("{} Following redirect from {} > {}", LOG_PREFIX, remoteUrl, redirectUrl);
         remoteUrl = redirectUrl;
       } else if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
         urlLoadErrorMessage(textureModelKey, remoteUrl, connection.getResponseMessage());
@@ -204,7 +203,7 @@ public class TextureManager {
       processingErrorMessage(textureModelKey, remoteUrl, exception.getMessage());
       return null;
     }
-    log.info(
+    Logger.INSTANCE.info(
         "{} Downloaded texture from {} and stored it as {} for {}",
         LOG_PREFIX,
         remoteUrl,
@@ -237,7 +236,7 @@ public class TextureManager {
     String fileName = String.format("%s.png", textureModelKey.getUUID());
     File file = targetDirectory.resolve(fileName).toFile();
     if (file.exists()) {
-      log.info(
+      Logger.INSTANCE.info(
           "{} Found texture file in cache, will re-used file {} for {}",
           LOG_PREFIX,
           file,
@@ -264,14 +263,14 @@ public class TextureManager {
         if (textureUUID.equals(uuid)) {
           ResourceLocation textureResourceLocation = registerTexture(textureModelKey, file);
           if (textureResourceLocation != null) {
-            log.info(
+            Logger.INSTANCE.info(
                 "{} Registered cached texture file {} for {} with {}",
                 LOG_PREFIX,
                 file,
                 textureModelKey,
                 textureResourceLocation);
           } else {
-            log.error(
+            Logger.INSTANCE.error(
                 "{} Unable to register cached texture file {} for {}",
                 LOG_PREFIX,
                 file,
@@ -281,7 +280,7 @@ public class TextureManager {
         }
       }
     }
-    log.warn(
+    Logger.INSTANCE.warn(
         "{} Unable to find any cached texture file for {} in {}",
         LOG_PREFIX,
         textureModelKey,
@@ -304,13 +303,13 @@ public class TextureManager {
       nativeImage = NativeImage.read(inputStream);
       inputStream.close();
     } catch (Exception exception) {
-      log.error(
+      Logger.INSTANCE.error(
           "{} Unable to get native image for file {} because of:", LOG_PREFIX, file, exception);
       return null;
     }
 
     if (legacySupport && nativeImage.getWidth() == 64 && nativeImage.getHeight() == 32) {
-      log.info("{} Processing legacy image {} from 64x32 to 64x64 ...", LOG_PREFIX, nativeImage);
+      Logger.INSTANCE.info("{} Processing legacy image {} from 64x32 to 64x64 ...", LOG_PREFIX, nativeImage);
       nativeImage = getNativeImageFromLegacyImage(nativeImage);
     }
 
@@ -341,7 +340,7 @@ public class TextureManager {
     String filename = textureFile.getName();
     UUID uuid = getUUIDFromFilename(filename);
     if (uuid == null) {
-      log.error(
+      Logger.INSTANCE.error(
           "{} Unable to get UUID for {} and texture file {}!", LOG_PREFIX, skinModel, filename);
       return null;
     }
@@ -353,7 +352,7 @@ public class TextureManager {
       return null;
     }
     if (!fileName.endsWith(".png")) {
-      log.error("{} Unable to get UUID from invalid file name {}!", LOG_PREFIX, fileName);
+      Logger.INSTANCE.error("{} Unable to get UUID from invalid file name {}!", LOG_PREFIX, fileName);
       return null;
     }
     try {
@@ -366,14 +365,14 @@ public class TextureManager {
   private static void processingErrorMessage(
       TextureModelKey textureModelKey, String remoteUrl, String reason) {
     String errorMessage = String.format("Unable to process texture from %s: %s", remoteUrl, reason);
-    log.error("{} {}", LOG_PREFIX, errorMessage);
+    Logger.INSTANCE.error("{} {}", LOG_PREFIX, errorMessage);
     addErrorMessage(textureModelKey, errorMessage);
   }
 
   private static void urlLoadErrorMessage(
       TextureModelKey textureModelKey, String remoteUrl, String reason) {
     String errorMessage = String.format("Unable to load texture from %s: %s", remoteUrl, reason);
-    log.error("{} {}", LOG_PREFIX, errorMessage);
+    Logger.INSTANCE.error("{} {}", LOG_PREFIX, errorMessage);
     addErrorMessage(textureModelKey, errorMessage);
   }
 

@@ -20,13 +20,13 @@
 package de.markusbordihn.easynpc.data.sound;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class SoundDataEntry {
 
@@ -38,7 +38,6 @@ public class SoundDataEntry {
   public static final boolean DEFAULT_ENABLED = true;
   public static final float DEFAULT_PITCH = 1.0F;
   public static final float DEFAULT_VOLUME = 0.75F;
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private boolean enabled = DEFAULT_ENABLED;
   private float pitch = DEFAULT_PITCH;
   private SoundEvent soundEvent;
@@ -94,7 +93,7 @@ public class SoundDataEntry {
               .getOptional(location)
               .orElseGet(() -> SoundEvent.createVariableRangeEvent(location));
     } else {
-      log.error("Unable to load sound event for type {} and {}", this.type.name(), compoundTag);
+      Logger.INSTANCE.error("Unable to load sound event for type {} and {}", this.type.name(), compoundTag);
       this.soundEvent = SoundEvents.GENERIC_EXPLODE;
     }
     if (compoundTag.contains(DATA_SOUND_VOLUME_TAG)) {

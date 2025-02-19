@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.client.screen.components.SkinSelectionButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.profession.Profession;
 import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
@@ -154,7 +155,7 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
     this.numOfVariants = variantData.getVariants().length;
     this.numOfSkins =
         numOfProfessions > 0 ? this.numOfVariants * this.numOfProfessions : this.numOfVariants;
-    log.debug(
+    Logger.INSTANCE.debug(
         "Found about {} skins with {} variants and {} professions.",
         this.numOfSkins,
         this.numOfVariants,

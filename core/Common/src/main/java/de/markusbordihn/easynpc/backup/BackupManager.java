@@ -19,21 +19,19 @@
 
 package de.markusbordihn.easynpc.backup;
 
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.handler.PresetHandler;
 import de.markusbordihn.easynpc.io.BackupDataFiles;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class BackupManager {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String LOG_PREFIX = "[Backup Manager]";
 
   private static final ConcurrentHashMap<UUID, Long> lastNPCBackupTime = new ConcurrentHashMap<>();
@@ -71,7 +69,7 @@ public class BackupManager {
               if (lastNPCBackupTime.containsKey(uuid)) {
                 long lastBackup = lastNPCBackupTime.get(uuid);
                 if (System.currentTimeMillis() - lastBackup < BACKUP_INTERVAL) {
-                  log.debug(
+                    Logger.INSTANCE.debug(
                       "{} [Skipping] Backup for {} already done in the last hour.",
                       LOG_PREFIX,
                       easyNPC);
@@ -82,17 +80,17 @@ public class BackupManager {
               // Get backup file path.
               Path backupFilePath = BackupDataFiles.getBackupFile(uuid, currentDate);
               if (backupFilePath == null) {
-                log.warn("{} [Error] Backup file path for {} is null.", LOG_PREFIX, easyNPC);
+                  Logger.INSTANCE.warn("{} [Error] Backup file path for {} is null.", LOG_PREFIX, easyNPC);
                 return;
               }
 
               // Create preset files for the NPC.
               File backupFile = backupFilePath.toFile();
               if (backupFile.exists()) {
-                log.debug(
+                  Logger.INSTANCE.debug(
                     "{} [Overwrite] Backup file {} for {} ...", LOG_PREFIX, backupFile, easyNPC);
               } else {
-                log.debug("{} [Create] Backup file {} for {} ...", LOG_PREFIX, backupFile, easyNPC);
+                  Logger.INSTANCE.debug("{} [Create] Backup file {} for {} ...", LOG_PREFIX, backupFile, easyNPC);
               }
               PresetHandler.exportPreset(easyNPC, backupFile);
             });

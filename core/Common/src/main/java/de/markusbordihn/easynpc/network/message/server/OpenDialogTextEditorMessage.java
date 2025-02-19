@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.editor.EditorType;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.menu.MenuManager;
@@ -60,30 +61,30 @@ public record OpenDialogTextEditorMessage(UUID uuid, UUID dialogId)
 
     // Validate dialog id.
     if (this.dialogId == null) {
-      log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog data.
     DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
-      log.error("Unable to get valid dialog data for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Unable to get valid dialog data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog id.
     if (!dialogData.hasDialog(this.dialogId)) {
-      log.error(
+      Logger.INSTANCE.error(
           "Unknown dialog button editor request for dialog {} for {} from {}",
           this.dialogId,
           easyNPC,
           serverPlayer);
-      log.debug("Available dialogs for {} are {}", easyNPC, dialogData.getDialogDataSet());
+      Logger.INSTANCE.debug("Available dialogs for {} are {}", easyNPC, dialogData.getDialogDataSet());
       return;
     }
 
     // Perform action.
-    log.info(
+    Logger.INSTANCE.info(
         "Open dialog editor with for dialog {} for {} from {}", dialogId, easyNPC, serverPlayer);
     MenuManager.getMenuHandler()
         .openEditorMenu(EditorType.DIALOG_TEXT, serverPlayer, easyNPC, this.dialogId, 0);

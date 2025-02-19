@@ -19,17 +19,12 @@
 
 package de.markusbordihn.easynpc.validator;
 
-import de.markusbordihn.easynpc.Constants;
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
-import javax.imageio.ImageIO;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ImageValidator {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ImageValidator() {}
 
@@ -37,7 +32,7 @@ public class ImageValidator {
 
     // Check if remote url image is a webp image
     if (remoteUrl.toString().endsWith(".webp")) {
-      log.error("WebP images are not supported, please use PNG images!");
+      de.markusbordihn.easynpc.debug.Logger.INSTANCE.error("WebP images are not supported, please use PNG images!");
     }
 
     // Load image from remote URL
@@ -45,13 +40,13 @@ public class ImageValidator {
     try {
       image = ImageIO.read(remoteUrl);
     } catch (IllegalArgumentException | IOException exception) {
-      log.error("Unable to get any valid image from URL {}:", remoteUrl, exception);
+      de.markusbordihn.easynpc.debug.Logger.INSTANCE.error("Unable to get any valid image from URL {}:", remoteUrl, exception);
       return false;
     }
 
     // Verify the image data to make sure we got a valid image!
     if (image == null) {
-      log.error("Unable to get any valid image from URL {}!", remoteUrl);
+      de.markusbordihn.easynpc.debug.Logger.INSTANCE.error("Unable to get any valid image from URL {}!", remoteUrl);
 
       // Load url and first line of file and check if it includes "WEBP" to detect webp images
 
@@ -64,7 +59,7 @@ public class ImageValidator {
   public static boolean isValidImage(BufferedImage image) {
     // Verify the image data to make sure we got a valid image!
     if (image == null) {
-      log.error("Found no valid image data in buffer!");
+      de.markusbordihn.easynpc.debug.Logger.INSTANCE.error("Found no valid image data in buffer!");
       return false;
     }
 
@@ -73,7 +68,7 @@ public class ImageValidator {
         || image.getHeight() < 32
         || image.getWidth() % 32 != 0
         || image.getHeight() % 32 != 0) {
-      log.error(
+      de.markusbordihn.easynpc.debug.Logger.INSTANCE.error(
           "Unable to get any valid texture from image {}, got {}x{}!",
           image,
           image.getWidth(),

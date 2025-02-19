@@ -19,19 +19,12 @@
 
 package de.markusbordihn.easynpc.client.screen.configuration.main;
 
-import de.markusbordihn.easynpc.client.screen.components.ColorButton;
-import de.markusbordihn.easynpc.client.screen.components.CopyButton;
-import de.markusbordihn.easynpc.client.screen.components.DeleteButton;
-import de.markusbordihn.easynpc.client.screen.components.ReloadButton;
-import de.markusbordihn.easynpc.client.screen.components.SaveButton;
-import de.markusbordihn.easynpc.client.screen.components.Text;
-import de.markusbordihn.easynpc.client.screen.components.TextButton;
-import de.markusbordihn.easynpc.client.screen.components.TextField;
-import de.markusbordihn.easynpc.client.screen.components.VisibilityToggleButton;
+import de.markusbordihn.easynpc.client.screen.components.*;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.render.RenderDataSet;
 import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
@@ -39,8 +32,6 @@ import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -52,6 +43,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.DyeColor;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class MainConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
 
@@ -508,7 +502,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     if (this.nameVisibilityButton != null) {
       nameVisibility = this.nameVisibilityButton.active;
     }
-    log.debug(
+    Logger.INSTANCE.debug(
         "Saving name {} with color {} and visibility {} for {}",
         name,
         textColor,

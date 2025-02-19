@@ -40,8 +40,6 @@ import org.apache.logging.log4j.Logger;
 
 public class InteractionHandler {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
   private InteractionHandler() {}
 
   public static InteractionResult handleMobInteraction(
@@ -74,7 +72,7 @@ public class InteractionHandler {
         if (isOwnerOrCreative) {
           SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
           if (skinData.getSkinModel().hasArmourersWorkshopSupport()) {
-            log.debug("Ignore event for Armourer's Workshop Item for {} ...", easyNPC);
+            de.markusbordihn.easynpc.debug.Logger.INSTANCE.debug("Ignore event for Armourer's Workshop Item for {} ...", easyNPC);
             return InteractionResult.PASS;
           } else {
             serverPlayer.sendSystemMessage(
@@ -84,7 +82,7 @@ public class InteractionHandler {
                     easyNPC.toString()));
           }
         } else {
-          log.debug(
+          de.markusbordihn.easynpc.debug.Logger.INSTANCE.debug(
               "{} has no permissions to use Armourer's Workshop Item for {} ...",
               serverPlayer,
               easyNPC);

@@ -20,21 +20,19 @@
 package de.markusbordihn.easynpc.access;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
-import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.UUID;
 
 public class AccessManager {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private AccessManager() {}
 
@@ -48,10 +46,10 @@ public class AccessManager {
       ServerPlayer serverPlayer = context.getPlayerOrException();
       boolean hasAccess = hasAccess(serverPlayer, uuid);
       if (hasAccess) {
-        log.debug(
+        Logger.INSTANCE.debug(
             "[Access allowed] Player {} has access to EasyNPC with UUID {}!", serverPlayer, uuid);
       } else {
-        log.error(
+        Logger.INSTANCE.error(
             "[Access denied] Player {} tried to access EasyNPC with UUID {}!", serverPlayer, uuid);
       }
       return hasAccess;
@@ -61,7 +59,7 @@ public class AccessManager {
         Entity entity = context.getEntityOrException();
         EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, context.getLevel());
         if (easyNPC != null && easyNPC.getEntity() == entity) {
-          log.debug("[Access allowed] EasyNPC {} and entity {} are the same!", easyNPC, entity);
+          Logger.INSTANCE.debug("[Access allowed] EasyNPC {} and entity {} are the same!", easyNPC, entity);
           return true;
         }
 
@@ -77,12 +75,12 @@ public class AccessManager {
                   || (ownerData.getOwner() != null
                       && ownerData.getOwner().equals(ownerDataEntity.getOwner()));
           if (ownerDataAccess) {
-            log.debug(
+            Logger.INSTANCE.debug(
                 "[Access allowed] EasyNPC {} and entity {} has same owner data!",
                 easyNPC,
                 easyNPCEntity);
           } else {
-            log.error(
+            Logger.INSTANCE.error(
                 "[Access denied] EasyNPC {} and entity {} has different owner data!",
                 easyNPC,
                 easyNPCEntity);
@@ -90,14 +88,14 @@ public class AccessManager {
           return ownerDataAccess;
         }
 
-        log.error(
+        Logger.INSTANCE.error(
             "[Access denied] Entity {} tried to access EasyNPC {} with UUID {}!",
             entity,
             easyNPC,
             uuid);
         return false;
       } catch (CommandSyntaxException entityException) {
-        log.debug(
+        Logger.INSTANCE.debug(
             "[Access skipped] EasyNPC with UUID {} was not executed by a player or entity!", uuid);
         return true;
       }
@@ -116,7 +114,7 @@ public class AccessManager {
     // Get EasyNPC entity by UUID.
     EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     if (easyNPC == null) {
-      log.error("[{}:{}] Unable to get valid entity!", uuid, serverPlayer);
+      Logger.INSTANCE.error("[{}:{}] Unable to get valid entity!", serverPlayer, uuid);
       return null;
     }
 
@@ -126,7 +124,7 @@ public class AccessManager {
         && serverPlayer.getServer() != null
         && serverPlayer.getServer().getProfilePermissions(serverPlayer.getGameProfile())
             < Commands.LEVEL_GAMEMASTERS) {
-      log.error("[{}:{}] Player has no permission to access {}!", uuid, serverPlayer, easyNPC);
+      Logger.INSTANCE.error("[{}:{}] Player has no permission to access {}!", serverPlayer, easyNPC, uuid);
       return null;
     }
 

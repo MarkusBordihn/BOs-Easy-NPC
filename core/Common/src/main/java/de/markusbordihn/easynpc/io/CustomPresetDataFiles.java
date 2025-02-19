@@ -21,6 +21,9 @@ package de.markusbordihn.easynpc.io;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.debug.Logger;
+import net.minecraft.resources.ResourceLocation;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,13 +34,9 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-import net.minecraft.resources.ResourceLocation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class CustomPresetDataFiles {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String DATA_FOLDER_NAME = "preset";
   private static final ConcurrentHashMap<ResourceLocation, Path> presetResourceLocationMap =
       new ConcurrentHashMap<>();
@@ -45,7 +44,7 @@ public class CustomPresetDataFiles {
   private CustomPresetDataFiles() {}
 
   public static void registerCustomPresetData() {
-    log.info("{} custom preset data ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} custom preset data ...", Constants.LOG_REGISTER_PREFIX);
 
     // Prepare preset data folder
     Path presetDataFolder = getPresetDataFolder();
@@ -73,10 +72,10 @@ public class CustomPresetDataFiles {
       if (Files.exists(presetDataFolderPath) && Files.isDirectory(presetDataFolderPath)) {
         return presetDataFolderPath;
       }
-      log.info("Creating preset data folder {} at {} ...", skinModelName, presetDataFolderPath);
+      Logger.INSTANCE.info("Creating preset data folder {} at {} ...", skinModelName, presetDataFolderPath);
       return Files.createDirectories(presetDataFolderPath);
     } catch (IOException exception) {
-      log.error("Could not create preset data folder {}:", skinDataFolder, exception);
+      Logger.INSTANCE.error("Could not create preset data folder {}:", skinDataFolder, exception);
     }
     return null;
   }
@@ -135,7 +134,7 @@ public class CustomPresetDataFiles {
         return filePaths.stream();
       }
     } catch (IOException exception) {
-      log.error("Could not read custom preset data folder {}:", presetDataFolder, exception);
+      Logger.INSTANCE.error("Could not read custom preset data folder {}:", presetDataFolder, exception);
     }
 
     // Return a default or alternative stream in case of an exception

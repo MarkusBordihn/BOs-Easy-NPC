@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.menu.configuration.equipment;
 
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.handler.EquipmentHandler;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
@@ -158,7 +159,7 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
     if (this.level.isClientSide) {
       return;
     }
-    log.debug("Load hand {}", this.getEasyNPC().getLivingEntity().getHandSlots());
+    Logger.INSTANCE.debug("Load hand {}", this.getEasyNPC().getLivingEntity().getHandSlots());
     this.handContainer.setItem(
         0, this.getEasyNPC().getLivingEntity().getItemInHand(InteractionHand.MAIN_HAND));
     this.handContainer.setItem(
@@ -177,7 +178,7 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
     if (this.level.isClientSide) {
       return;
     }
-    log.debug("Load armor {}", this.getEasyNPC().getLivingEntity().getArmorSlots());
+    Logger.INSTANCE.debug("Load armor {}", this.getEasyNPC().getLivingEntity().getArmorSlots());
     this.armorContainer.setItem(
         0, this.getEasyNPC().getLivingEntity().getItemBySlot(EquipmentSlot.FEET));
     this.armorContainer.setItem(

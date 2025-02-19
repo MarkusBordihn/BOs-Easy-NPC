@@ -20,28 +20,25 @@
 package de.markusbordihn.easynpc.client.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.CloseButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.EasyNPCMenu;
-import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.UUID;
 
 public class Screen<T extends EasyNPCMenu> extends net.minecraft.client.gui.screens.Screen
     implements MenuAccess<T>, ScreenInterface {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final int UPDATE_TICKS = 8;
   protected static double formerMouseX = -1;
   protected static double formerMouseY = -1;

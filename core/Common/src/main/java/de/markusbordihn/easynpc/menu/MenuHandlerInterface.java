@@ -19,13 +19,13 @@
 
 package de.markusbordihn.easynpc.menu;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationTypeHelper;
 import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenuHandler;
@@ -33,17 +33,15 @@ import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
 import de.markusbordihn.easynpc.menu.dialog.DialogMenuHandler;
 import de.markusbordihn.easynpc.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.menu.editor.EditorMenuHandler;
-import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.inventory.MenuType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.UUID;
 
 public interface MenuHandlerInterface {
 
-  Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   default void openConfigurationMenu(
       final ConfigurationType configurationType,
@@ -59,7 +57,7 @@ public interface MenuHandlerInterface {
     final MenuType<? extends ConfigurationMenu> menuType =
         getMenuTypeByConfigurationType(configurationTypeAlias);
     if (menuType == null) {
-      log.error(
+      Logger.INSTANCE.error(
           "Unknown configuration {} for {} from {}", configurationTypeAlias, easyNPC, serverPlayer);
       return;
     }
@@ -144,7 +142,7 @@ public interface MenuHandlerInterface {
     // Get menu type for configuration type.
     final MenuType<? extends EditorMenu> menuType = getMenuTypeByEditorType(editorType);
     if (menuType == null) {
-      log.error("Unknown editor {} for {} from {}", editorType, easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Unknown editor {} for {} from {}", editorType, easyNPC, serverPlayer);
       return;
     }
 
@@ -175,7 +173,7 @@ public interface MenuHandlerInterface {
     // Get menu type for configuration type.
     final MenuType<? extends DialogMenu> menuType = getDialogMenuType();
     if (menuType == null) {
-      log.error("Unknown dialog {} for {} from {}", menuType, easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Unknown dialog {} for {} from {}", menuType, easyNPC, serverPlayer);
       return;
     }
 

@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeEntry;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeData;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -81,27 +82,27 @@ public record ChangeDisplayAttributeMessage(
 
     // Validate name.
     if (this.displayAttributeType == null) {
-      log.error("Invalid entity attribute for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid entity attribute for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate value.
     if (this.booleanValue == null && this.integerValue == null) {
-      log.error("Invalid value for {} for {} from {}", displayAttributeType, easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid value for {} for {} from {}", displayAttributeType, easyNPC, serverPlayer);
       return;
     }
 
     // Validate display attribute data.
     DisplayAttributeData<?> displayAttributeData = easyNPC.getEasyNPCDisplayAttributeData();
     if (displayAttributeData == null) {
-      log.error("Unable to get display attribute data for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Unable to get display attribute data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate display attribute set.
     DisplayAttributeSet displayAttributeSet = displayAttributeData.getDisplayAttributeSet();
     if (displayAttributeSet == null) {
-      log.error("Unable to get display attribute set for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Unable to get display attribute set for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
@@ -109,7 +110,7 @@ public record ChangeDisplayAttributeMessage(
     DisplayAttributeEntry displayAttributeEntry =
         new DisplayAttributeEntry(
             this.displayAttributeType, Boolean.TRUE.equals(this.booleanValue), this.integerValue);
-    log.debug(
+    Logger.INSTANCE.debug(
         "Change display attribute {} for {} to {}",
         this.displayAttributeType,
         easyNPC,

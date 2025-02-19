@@ -19,13 +19,10 @@
 
 package de.markusbordihn.easynpc.utils;
 
-import de.markusbordihn.easynpc.Constants;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.markusbordihn.easynpc.debug.Logger;
 
 public class ValueUtils {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String POSITION_NUMBER_MATCH_PATTERN = "^-?\\d+(\\.?\\d*)?$";
   private static final String DEGREE_NUMBER_MATCH_PATTERN = "^-?\\d+(\\.?\\d*)?$";
   private static final String POSITIVE_NUMBER_MATCH_PATTERN = "^\\d+$";
@@ -104,7 +101,7 @@ public class ValueUtils {
       try {
         return Double.parseDouble(value);
       } catch (NumberFormatException e) {
-        log.error("Failed to parse double value: {}", value);
+        Logger.INSTANCE.error("Failed to parse double value: {}", value);
       }
     }
     return 0.0;
@@ -115,7 +112,7 @@ public class ValueUtils {
       try {
         return Integer.parseInt(value);
       } catch (NumberFormatException e) {
-        log.error("Failed to parse integer value: {}", value);
+        Logger.INSTANCE.error("Failed to parse integer value: {}", value);
       }
     }
     return 0;

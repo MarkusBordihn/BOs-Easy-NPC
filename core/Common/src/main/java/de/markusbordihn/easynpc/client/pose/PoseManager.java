@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import java.util.HashMap;
@@ -38,11 +39,9 @@ import java.util.Set;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Pose;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class PoseManager {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String TEXTURE_PREFIX = "pose/";
   private static final String LOG_PREFIX = "[Pose Manager]";
 
@@ -52,14 +51,14 @@ public class PoseManager {
 
   public static void registerPoseData(SkinModel skinModel, AnimationData animationData) {
     if (skinModel == null || animationData == null) {
-      log.error("{} Pose data {} is invalid!", LOG_PREFIX, skinModel);
+      Logger.INSTANCE.error("{} Pose data {} is invalid!", LOG_PREFIX, skinModel);
       return;
     }
 
     // Register valid pose data
     for (Animation animation : animationData.getAnimations().values()) {
       if (animation.getBones() == null || animation.getBones().isEmpty()) {
-        log.warn(
+        Logger.INSTANCE.warn(
             "{} pose data {} with name {} has no bones!",
             LOG_PREFIX,
             skinModel,
@@ -79,7 +78,7 @@ public class PoseManager {
               + animation.getName().replaceAll("[^a-zA-Z0-9_.-]", "").toLowerCase(Locale.ROOT);
       return new ResourceLocation(Constants.MOD_ID, resourcePath);
     } catch (Exception exception) {
-      log.error(
+      Logger.INSTANCE.error(
           "{} Could not create resource location for {} with {}",
           LOG_PREFIX,
           skinModel,
@@ -102,15 +101,15 @@ public class PoseManager {
 
   private static void registerPoseData(ResourceLocation resourceLocation, Animation animation) {
     if (resourceLocation == null || animation == null) {
-      log.error("{} Pose data {} is invalid!", LOG_PREFIX, resourceLocation);
+      Logger.INSTANCE.error("{} Pose data {} is invalid!", LOG_PREFIX, resourceLocation);
       return;
     }
 
     if (poseDataMap.containsKey(resourceLocation)) {
-      log.warn("{} Pose data {} already registered!", LOG_PREFIX, resourceLocation);
+      Logger.INSTANCE.warn("{} Pose data {} already registered!", LOG_PREFIX, resourceLocation);
     }
 
-    log.info("{} Registering pose data {} with {}", LOG_PREFIX, resourceLocation, animation);
+    Logger.INSTANCE.info("{} Registering pose data {} with {}", LOG_PREFIX, resourceLocation, animation);
     poseDataMap.put(resourceLocation, animation);
   }
 
@@ -122,7 +121,7 @@ public class PoseManager {
     // Validate Model data.
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
-      log.error("{} Model data is missing for Easy NPC {}!", LOG_PREFIX, easyNPC.getUUID());
+      Logger.INSTANCE.error("{} Model data is missing for Easy NPC {}!", LOG_PREFIX, easyNPC.getUUID());
       return;
     }
 
@@ -138,14 +137,14 @@ public class PoseManager {
 
     // Validate Animation data.
     if (animation.getBones() == null || animation.getBones().isEmpty()) {
-      log.error("{} Animation data is missing for {}!", LOG_PREFIX, animation.getName());
+      Logger.INSTANCE.error("{} Animation data is missing for {}!", LOG_PREFIX, animation.getName());
       return false;
     }
 
     // Validate Model data.
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
-      log.error("{} Model data is missing for Easy NPC {}!", LOG_PREFIX, easyNPC.getUUID());
+      Logger.INSTANCE.error("{} Model data is missing for Easy NPC {}!", LOG_PREFIX, easyNPC.getUUID());
       return false;
     }
 
@@ -158,7 +157,7 @@ public class PoseManager {
       Bone bone = animation.getBones().get(boneName);
       ModelPart modelPart = ModelPart.get(boneName);
       if (modelPart == ModelPart.UNKNOWN) {
-        log.error("{} Bone {} is not supported!", LOG_PREFIX, boneName);
+        Logger.INSTANCE.error("{} Bone {} is not supported!", LOG_PREFIX, boneName);
         continue;
       }
 
@@ -180,7 +179,7 @@ public class PoseManager {
       modelData.setModelPartPosition(modelPart, customPosition);
       modelData.setModelPartRotation(modelPart, customRotation);
 
-      log.debug("{} Set {} to {} / {}", LOG_PREFIX, modelPart, customPosition, customRotation);
+      Logger.INSTANCE.debug("{} Set {} to {} / {}", LOG_PREFIX, modelPart, customPosition, customRotation);
     }
 
     return true;

@@ -21,26 +21,21 @@ package de.markusbordihn.easynpc.client.texture;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.io.CustomSkinDataFiles;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import java.io.File;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
-import java.util.UUID;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.util.*;
 
 public class CustomTextureManager {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final int RELOAD_PROTECTION = 10000;
   private static final HashMap<TextureModelKey, ResourceLocation> textureCache = new HashMap<>();
   private static final HashSet<UUID> textureReloadProtection = new HashSet<>();
@@ -119,7 +114,7 @@ public class CustomTextureManager {
     }
 
     // Log error if texture could not be loaded.
-    log.error(
+    Logger.INSTANCE.error(
         "{} Unable to load custom texture {} {} from {}",
         LOG_PREFIX,
         skinModel,

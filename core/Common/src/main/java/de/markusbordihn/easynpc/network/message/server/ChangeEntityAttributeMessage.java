@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.attribute.EntityAttribute;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -95,13 +96,13 @@ public record ChangeEntityAttributeMessage(
 
     // Validate name.
     if (entityAttribute == null) {
-      log.error("Invalid entity attribute for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid entity attribute for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate value.
     if (booleanValue == null && floatValue == null && integerValue == null && stringValue == null) {
-      log.error("Invalid value for {} for {} from {}", entityAttribute, easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid value for {} for {} from {}", entityAttribute, easyNPC, serverPlayer);
       return;
     }
 
@@ -111,7 +112,7 @@ public record ChangeEntityAttributeMessage(
           AttributeHandler.setEntityAttribute(easyNPC, entityAttribute, booleanValue);
     }
     if (!successfullyChanged) {
-      log.error(
+      Logger.INSTANCE.error(
           "Unable to change entity attribute {} for {} from {}",
           entityAttribute,
           easyNPC,

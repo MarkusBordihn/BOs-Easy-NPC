@@ -30,6 +30,7 @@ import de.markusbordihn.easynpc.client.texture.TextureManager;
 import de.markusbordihn.easynpc.client.texture.TextureModelKey;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
@@ -170,13 +171,13 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
 
       // Validate image before sending it to the server.
       if (!ImageValidator.isValidImage(textureSkinLocation)) {
-        log.error("Unable to set remote user texture to {}", textureSkinLocationValue);
+        Logger.INSTANCE.error("Unable to set remote user texture to {}", textureSkinLocationValue);
         this.errorMessage = "invalid_remote_image";
         return;
       }
 
       // Send texture skin location to server.
-      log.debug("Setting remote user texture to {}", textureSkinLocationValue);
+      Logger.INSTANCE.debug("Setting remote user texture to {}", textureSkinLocationValue);
       TextureManager.clearLastErrorMessage();
       this.errorMessage = "";
       NetworkMessageHandlerManager.getServerHandler()

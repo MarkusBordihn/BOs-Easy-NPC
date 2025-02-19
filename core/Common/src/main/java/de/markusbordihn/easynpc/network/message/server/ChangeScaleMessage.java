@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.model.ModelScaleAxis;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -61,13 +62,13 @@ public record ChangeScaleMessage(UUID uuid, ModelScaleAxis scaleAxis, Float scal
 
     // Validate scale axis.
     if (this.scaleAxis == null) {
-      log.error("Invalid scale axis request for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid scale axis request for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate scale.
     if (this.scaleValue == null || this.scaleValue < 0.1f || this.scaleValue > 10.0f) {
-      log.error(
+      Logger.INSTANCE.error(
           "Invalid scale {} request for UUID {} from {}", this.scaleValue, easyNPC, serverPlayer);
       return;
     }
@@ -75,7 +76,7 @@ public record ChangeScaleMessage(UUID uuid, ModelScaleAxis scaleAxis, Float scal
     // Validate scale data.
     ScaleData<?> scaleData = easyNPC.getEasyNPCScaleData();
     if (scaleData == null) {
-      log.error("Invalid scale data for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid scale data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 

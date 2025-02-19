@@ -27,26 +27,19 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.datafixers.util.Pair;
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataManager;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.ReflectionUtils;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.selector.EntitySelector;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DialogArgument implements ArgumentType<Pair<UUID, String>> {
 
@@ -58,7 +51,6 @@ public class DialogArgument implements ArgumentType<Pair<UUID, String>> {
       Pattern.compile(
           "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$");
   private static final Pattern ALLOWED_CHARACTERS_ID = Pattern.compile("^(\\w+)");
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private Map<String, DialogDataEntry> dialogDataEntriesCache = new HashMap<>();
 
   public DialogArgument() {
@@ -88,7 +80,7 @@ public class DialogArgument implements ArgumentType<Pair<UUID, String>> {
         stringReader.setCursor(stringReader.getCursor() + uuidString.length());
         return new Pair<>(uuid, "");
       } catch (IllegalArgumentException exception) {
-        log.error("Found invalid dialog uuid {}", uuidString);
+        de.markusbordihn.easynpc.debug.Logger.INSTANCE.error("Found invalid dialog uuid {}", uuidString);
       }
     }
 
@@ -99,7 +91,7 @@ public class DialogArgument implements ArgumentType<Pair<UUID, String>> {
           && !dialogDataEntriesCache.isEmpty()
           && dialogDataEntriesCache.containsKey(idString)) {
         DialogDataEntry dialogDataEntry = dialogDataEntriesCache.get(idString);
-        log.debug("Found dialog id {}: {}", idString, dialogDataEntry);
+        de.markusbordihn.easynpc.debug.Logger.INSTANCE.debug("Found dialog id {}: {}", idString, dialogDataEntry);
         UUID uuid = dialogDataEntry.getId();
         stringReader.setCursor(stringReader.getCursor() + uuid.toString().length());
         return new Pair<>(uuid, idString);
@@ -122,7 +114,7 @@ public class DialogArgument implements ArgumentType<Pair<UUID, String>> {
     try {
       entitySelector = context.getArgument("target", EntitySelector.class);
     } catch (IllegalArgumentException e) {
-      log.error("Failed to get entity target selector from context {}:", context, e);
+      de.markusbordihn.easynpc.debug.Logger.INSTANCE.error("Failed to get entity target selector from context {}:", context, e);
       return SharedSuggestionProvider.suggest(new HashSet<>(), suggestionsBuilder);
     }
 
@@ -131,7 +123,7 @@ public class DialogArgument implements ArgumentType<Pair<UUID, String>> {
         ReflectionUtils.getUUIDValueField(
             entitySelector, new String[] {"entityUUID", "entity", "field_10821", "f_121121_"});
     if (entityUUID == null) {
-      log.error(
+      de.markusbordihn.easynpc.debug.Logger.INSTANCE.error(
           "Failed to get entity UUID from entity selector {} and context {}",
           entitySelector,
           context);

@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.components.TextComponent;
@@ -102,7 +103,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
   }
 
   public void loadPreset(ResourceLocation resourceLocation) {
-    log.error("Not implemented! Received resource location {}", resourceLocation);
+    Logger.INSTANCE.error("Not implemented! Received resource location {}", resourceLocation);
   }
 
   public String getPresetFileName(ResourceLocation resourceLocation) {
@@ -353,7 +354,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
 
       private void select() {
         ImportPresetConfigurationScreen.ImportFileSelectionList.this.setSelected(this);
-        Screen.log.debug("Selected file {}.", this.resourceLocation);
+        Logger.INSTANCE.debug("Selected file {}.", this.resourceLocation);
 
         // Set selected preset.
         ImportPresetConfigurationScreen.updateSelectedPreset(this.resourceLocation);

@@ -24,28 +24,27 @@ import de.markusbordihn.easynpc.client.pose.PoseManager;
 import de.markusbordihn.easynpc.data.animation.AnimationData;
 import de.markusbordihn.easynpc.data.animation.AnimationDataReader;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.debug.Logger;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.packs.resources.Resource;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.stream.Stream;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.packs.resources.Resource;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class CustomPoseDataFiles {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String DATA_FOLDER_NAME = "pose";
   protected static final String TEMPLATE_PREFIX = "_poses.json";
 
   private CustomPoseDataFiles() {}
 
   public static void registerCustomPoseData(MinecraftServer minecraftServer) {
-    log.info("{} custom pose data ...", Constants.LOG_REGISTER_PREFIX);
+    Logger.INSTANCE.info("{} custom pose data ...", Constants.LOG_REGISTER_PREFIX);
 
     // Prepare pose data folder
     Path poseDataFolder = getCustomPoseDataFolder();
@@ -76,9 +75,9 @@ public class CustomPoseDataFiles {
                 .resolve(DataFileHandler.getFileNameFromResourceLocation(resourceLocation))
                 .toFile();
         if (skinModelPoseFile.exists()) {
-          log.warn("Skin model pose file {} already exists, skipping copy!", skinModelPoseFile);
+          Logger.INSTANCE.warn("Skin model pose file {} already exists, skipping copy!", skinModelPoseFile);
         } else {
-          log.info("Copy skin model pose file {} to {} ...", resourceLocation, skinModelPoseFile);
+          Logger.INSTANCE.info("Copy skin model pose file {} to {} ...", resourceLocation, skinModelPoseFile);
           DataFileHandler.copyResourceFile(minecraftServer, resourceLocation, skinModelPoseFile);
         }
       }
@@ -93,7 +92,7 @@ public class CustomPoseDataFiles {
       return;
     }
 
-    log.info("{} custom poses from {} ...", Constants.LOG_REGISTER_PREFIX, poseDataFolder);
+    Logger.INSTANCE.info("{} custom poses from {} ...", Constants.LOG_REGISTER_PREFIX, poseDataFolder);
     for (SkinModel skinModel : SkinModel.values()) {
       Path poseModelFolder = getCustomPoseDataFolder(skinModel);
       if (poseModelFolder != null
@@ -105,7 +104,7 @@ public class CustomPoseDataFiles {
                   path -> Files.isRegularFile(path) && path.toString().endsWith(TEMPLATE_PREFIX))
               .forEach(
                   path -> {
-                    log.info("Found custom pose file {} ...", path);
+                    Logger.INSTANCE.info("Found custom pose file {} ...", path);
                     try {
                       AnimationData animationData = AnimationDataReader.parseAnimationFile(path);
                       PoseManager.registerPoseData(skinModel, animationData);
@@ -114,7 +113,7 @@ public class CustomPoseDataFiles {
                     }
                   });
         } catch (IOException e) {
-          log.error("Error reading custom pose files from {}:", poseModelFolder, e);
+          Logger.INSTANCE.error("Error reading custom pose files from {}:", poseModelFolder, e);
         }
       }
     }
@@ -135,10 +134,10 @@ public class CustomPoseDataFiles {
       if (Files.exists(poseDataFolderPath) && Files.isDirectory(poseDataFolderPath)) {
         return poseDataFolderPath;
       }
-      log.info("Created new pose data folder {} at {}!", skinModelName, poseDataFolderPath);
+      Logger.INSTANCE.info("Created new pose data folder {} at {}!", skinModelName, poseDataFolderPath);
       return Files.createDirectories(poseDataFolderPath);
     } catch (IOException e) {
-      log.error("Error creating pose data folder {} at {}:", skinModelName, poseDataFolderPath, e);
+      Logger.INSTANCE.error("Error creating pose data folder {} at {}:", skinModelName, poseDataFolderPath, e);
     }
     return null;
   }

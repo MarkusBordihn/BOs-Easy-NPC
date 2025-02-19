@@ -29,7 +29,6 @@ import org.apache.logging.log4j.Logger;
 
 public class RenderDataSet {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private static final String DATA_RENDER_TYPE_TAG = "Type";
   private static final String DATA_RENDER_ENTITY_TYPE_TAG = "EntityType";

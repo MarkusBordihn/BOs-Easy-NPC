@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -59,12 +60,12 @@ public record ChangeModelLockRotationMessage(UUID uuid, boolean lockRotation)
     // Validate Model data.
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
-      log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    log.debug(
+    Logger.INSTANCE.debug(
         "Reset and lock rotation {} for {} from {}", this.lockRotation, easyNPC, serverPlayer);
     modelData.setModelLockRotation(this.lockRotation);
   }

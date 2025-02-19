@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -60,20 +61,20 @@ public record ChangeEntityBaseAttributeMessage(UUID uuid, ResourceLocation attri
 
     // Validate attribute.
     if (attribute == null) {
-      log.error("Invalid base attribute for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid base attribute for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate value.
     if (value == null) {
-      log.error(
+      Logger.INSTANCE.error(
           "Invalid value for base attribute {} for {} from {}", attribute, easyNPC, serverPlayer);
       return;
     }
 
     // Set base attribute.
     if (!AttributeHandler.setBaseAttribute(easyNPC, attribute, value)) {
-      log.error("Unable to set base attribute {} for {} from {}", attribute, easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Unable to set base attribute {} for {} from {}", attribute, easyNPC, serverPlayer);
     }
   }
 }

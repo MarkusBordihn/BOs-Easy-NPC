@@ -21,14 +21,14 @@ package de.markusbordihn.easynpc.data.synched;
 
 import de.markusbordihn.easynpc.Constants;
 import java.util.Map;
+
+import de.markusbordihn.easynpc.debug.Logger;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public final class SynchedEntityData {
 
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private final Entity entity;
   private final Class<? extends Entity> entityClass;
   private final Map<SynchedDataIndex, EntityDataAccessor<?>> entityDataAccessorMap;
@@ -38,7 +38,7 @@ public final class SynchedEntityData {
     this.entity = entity;
     this.entityClass = entity.getClass();
     this.entityDataAccessorMap = entityDataAccessorMap;
-    log.debug(
+    Logger.INSTANCE.debug(
         "Initialized SynchedEntityData for {} ({}) with {}",
         entity,
         entityClass,

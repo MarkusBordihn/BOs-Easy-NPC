@@ -21,37 +21,19 @@ package de.markusbordihn.easynpc.commands.manager;
 
 import com.mojang.brigadier.CommandDispatcher;
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.server.commands.ConfigureCommand;
-import de.markusbordihn.easynpc.server.commands.DebugCommand;
-import de.markusbordihn.easynpc.server.commands.DeleteCommand;
-import de.markusbordihn.easynpc.server.commands.DialogCommand;
-import de.markusbordihn.easynpc.server.commands.EquipmentCommand;
-import de.markusbordihn.easynpc.server.commands.InteractCommand;
-import de.markusbordihn.easynpc.server.commands.NavigationCommand;
-import de.markusbordihn.easynpc.server.commands.ObjectiveCommand;
-import de.markusbordihn.easynpc.server.commands.OwnerCommand;
-import de.markusbordihn.easynpc.server.commands.PoseCommand;
-import de.markusbordihn.easynpc.server.commands.PresetCommand;
-import de.markusbordihn.easynpc.server.commands.RenderCommand;
-import de.markusbordihn.easynpc.server.commands.RespawnCommand;
-import de.markusbordihn.easynpc.server.commands.SkinCommand;
-import de.markusbordihn.easynpc.server.commands.SoundCommand;
-import de.markusbordihn.easynpc.server.commands.TradingCommand;
+import de.markusbordihn.easynpc.debug.Logger;
+import de.markusbordihn.easynpc.server.commands.*;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class CommandManager {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private CommandManager() {}
 
   public static void registerCommands(
       CommandDispatcher<CommandSourceStack> commandDispatcher, CommandBuildContext context) {
-    log.info(
+    Logger.INSTANCE.info(
         "{} /{} commands for {} ...",
         Constants.LOG_REGISTER_PREFIX,
         Constants.MOD_COMMAND,

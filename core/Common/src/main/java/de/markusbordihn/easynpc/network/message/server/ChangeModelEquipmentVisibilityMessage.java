@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -61,19 +62,19 @@ public record ChangeModelEquipmentVisibilityMessage(
 
     // Validate ModelPart.
     if (this.equipmentSlot == null) {
-      log.error("Invalid equipmentSlot for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid equipmentSlot for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate Model data.
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
-      log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    log.debug(
+    Logger.INSTANCE.debug(
         "Change {} visibility to {} for {} from {}",
         this.equipmentSlot,
         this.visible,
@@ -93,7 +94,7 @@ public record ChangeModelEquipmentVisibilityMessage(
         modelData.setModelBootsVisible(this.visible);
         break;
       default:
-        log.error("Invalid equipmentSlot {} for {} from {}", equipmentSlot, easyNPC, serverPlayer);
+        Logger.INSTANCE.error("Invalid equipmentSlot {} for {} from {}", equipmentSlot, easyNPC, serverPlayer);
         break;
     }
   }

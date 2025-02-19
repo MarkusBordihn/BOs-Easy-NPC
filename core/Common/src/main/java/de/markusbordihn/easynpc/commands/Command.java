@@ -19,14 +19,11 @@
 
 package de.markusbordihn.easynpc.commands;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class Command {
 
@@ -34,7 +31,6 @@ public class Command {
   public static final int SINGLE_SUCCESS = 1;
   public static final String NPC_TARGET_ARGUMENT = "npc_target";
   public static final String NPC_TARGETS_ARGUMENT = "npc_targets";
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   protected Command() {}
 

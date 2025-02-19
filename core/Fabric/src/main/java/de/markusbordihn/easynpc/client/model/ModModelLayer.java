@@ -24,17 +24,13 @@ import de.markusbordihn.easynpc.client.model.custom.FairyModel;
 import de.markusbordihn.easynpc.client.model.custom.OrcModel;
 import de.markusbordihn.easynpc.client.model.standard.StandardAllayModel;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ModModelLayer {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ModModelLayer() {}
 
   public static void registerEntityLayerDefinitions() {
-    log.info("{} Entity Layer Definitions ...", Constants.LOG_REGISTER_PREFIX);
+    de.markusbordihn.easynpc.debug.Logger.INSTANCE.info("{} Entity Layer Definitions ...", Constants.LOG_REGISTER_PREFIX);
 
     EntityModelLayerRegistry.registerModelLayer(
         ModModelLayers.ALLAY, StandardAllayModel::createBodyLayer);

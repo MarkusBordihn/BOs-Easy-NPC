@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.network.message.server;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -59,27 +60,27 @@ public record RemoveDialogButtonMessage(UUID uuid, UUID dialogId, UUID dialogBut
 
     // Validate dialog ID
     if (this.dialogId == null) {
-      log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog button ID
     if (this.dialogButtonId == null) {
-      log.error("Invalid dialog button id for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid dialog button id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog data
     DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
-      log.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog button
     if (!dialogData.hasDialog(this.dialogId)
         || !dialogData.hasDialogButton(this.dialogId, this.dialogButtonId)) {
-      log.error(
+      Logger.INSTANCE.error(
           "Unknown delete dialog request for dialog button {} for dialog {} for {} from {}",
           this.dialogButtonId,
           this.dialogId,
@@ -90,14 +91,14 @@ public record RemoveDialogButtonMessage(UUID uuid, UUID dialogId, UUID dialogBut
 
     // Perform action.
     if (dialogData.removeDialogButton(this.dialogId, this.dialogButtonId)) {
-      log.info(
+      Logger.INSTANCE.info(
           "Removed dialog button {} from dialog {} for {} from {}",
           this.dialogButtonId,
           this.dialogId,
           easyNPC,
           serverPlayer);
     } else {
-      log.warn(
+      Logger.INSTANCE.warn(
           "Unable to remove dialog button {} from dialog {} for {} from {}",
           this.dialogButtonId,
           this.dialogId,

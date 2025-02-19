@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.network.message.server;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.attribute.CombatAttributeType;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributeValueType;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -91,7 +92,7 @@ public record ChangeCombatAttributeMessage(
               easyNPC, attributeType, Boolean.TRUE.equals(booleanValue));
       case DOUBLE -> AttributeHandler.setCombatAttribute(easyNPC, attributeType, doubleValue);
       default ->
-          log.error(
+              Logger.INSTANCE.error(
               "Invalid value type for {} for {} from {}", attributeType, easyNPC, serverPlayer);
     }
   }

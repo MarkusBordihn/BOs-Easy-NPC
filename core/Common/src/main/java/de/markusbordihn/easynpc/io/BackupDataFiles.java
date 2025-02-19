@@ -19,17 +19,12 @@
 
 package de.markusbordihn.easynpc.io;
 
-import de.markusbordihn.easynpc.Constants;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class BackupDataFiles {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public static void registerBackupData() {
     // Prepare backup data folder

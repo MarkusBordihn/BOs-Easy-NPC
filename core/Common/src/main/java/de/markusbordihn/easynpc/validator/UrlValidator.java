@@ -19,16 +19,13 @@
 
 package de.markusbordihn.easynpc.validator;
 
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
+
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class UrlValidator {
-
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private static final String[] FORBIDDEN_EXTENSIONS = {
     ".exe",
@@ -107,7 +104,7 @@ public class UrlValidator {
         || url.isEmpty()
         || (!url.startsWith("http://") && !url.startsWith("https://"))) {
       if (url != null && !url.isEmpty()) {
-        log.error("Invalid URL: {}", url);
+        Logger.INSTANCE.error("Invalid URL: {}", url);
       }
       return false;
     }
@@ -115,7 +112,7 @@ public class UrlValidator {
     // Check for forbidden extensions, to prevent downloading of malicious files.
     for (String extension : FORBIDDEN_EXTENSIONS) {
       if (url.endsWith(extension)) {
-        log.error("Forbidden extension found in URL: {}", url);
+        Logger.INSTANCE.error("Forbidden extension found in URL: {}", url);
         return false;
       }
     }
@@ -124,7 +121,7 @@ public class UrlValidator {
     try {
       new URL(url).toURI();
     } catch (MalformedURLException | URISyntaxException e) {
-      log.error("Invalid URL format: {}", url);
+      Logger.INSTANCE.error("Invalid URL format: {}", url);
       return false;
     }
     return true;

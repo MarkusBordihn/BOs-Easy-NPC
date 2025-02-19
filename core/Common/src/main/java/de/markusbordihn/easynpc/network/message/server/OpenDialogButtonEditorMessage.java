@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogButtonType;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.editor.EditorType;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.menu.MenuManager;
@@ -66,28 +67,28 @@ public record OpenDialogButtonEditorMessage(UUID uuid, UUID dialogId, UUID dialo
 
     // Validate dialog id.
     if (this.dialogId == null) {
-      log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog data.
     DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
-      log.error("Unable to get valid dialog data for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Unable to get valid dialog data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog data set.
     DialogDataSet dialogDataSet = dialogData.getDialogDataSet();
     if (dialogDataSet == null) {
-      log.error("Unable to get valid dialog data set for {} from {}", easyNPC, serverPlayer);
+      Logger.INSTANCE.error("Unable to get valid dialog data set for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog data.
     DialogDataEntry dialogDataEntry = dialogDataSet.getDialog(this.dialogId);
     if (dialogDataEntry == null) {
-      log.error(
+      Logger.INSTANCE.error(
           "Unable to get valid dialog data for dialog {} for {} from {}",
           easyNPC,
           this.dialogId,
@@ -100,7 +101,7 @@ public record OpenDialogButtonEditorMessage(UUID uuid, UUID dialogId, UUID dialo
     if (this.dialogButtonId != null && this.dialogButtonId.equals(EMPTY_UUID)) {
       DialogButtonEntry newDialogButton =
           new DialogButtonEntry("Button " + RANDOM.nextInt(1000), DialogButtonType.DEFAULT);
-      log.info(
+      Logger.INSTANCE.info(
           "Created new dialog button {} for dialog {} for {} from {}",
           newDialogButton,
           this.dialogId,
@@ -109,13 +110,13 @@ public record OpenDialogButtonEditorMessage(UUID uuid, UUID dialogId, UUID dialo
       dialogDataEntry.setDialogButton(newDialogButton);
       newDialogButtonId = newDialogButton.id();
     } else if (dialogButtonId != null && !dialogData.hasDialogButton(dialogId, dialogButtonId)) {
-      log.error(
+      Logger.INSTANCE.error(
           "Invalid dialog button id {} for {} from {}", dialogButtonId, easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    log.debug(
+    Logger.INSTANCE.debug(
         "Open dialog button editor for dialog {} and button {} for {} from {}",
         this.dialogId,
         newDialogButtonId,

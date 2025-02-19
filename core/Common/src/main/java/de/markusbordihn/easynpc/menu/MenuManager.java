@@ -19,21 +19,18 @@
 
 package de.markusbordihn.easynpc.menu;
 
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.MenuProvider;
+
 import java.util.Map;
 import java.util.OptionalInt;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.MenuProvider;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class MenuManager {
-
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private static final Map<UUID, MenuProvider> menuProviderMap = new ConcurrentHashMap<>();
   private static final Map<UUID, ServerPlayer> serverPlayerMap = new ConcurrentHashMap<>();
@@ -69,7 +66,7 @@ public class MenuManager {
     // Verify if the menu is still available for the player.
     ServerPlayer menuServerPlayer = serverPlayerMap.get(menuId);
     if (menuServerPlayer == null || !menuServerPlayer.equals(serverPlayer)) {
-      log.error(
+      Logger.INSTANCE.error(
           "Invalid server player ({} != {}) for menu {}", serverPlayer, menuServerPlayer, menuId);
       return;
     }
@@ -77,19 +74,19 @@ public class MenuManager {
     // Validate the menu provider
     MenuProvider menuProvider = menuProviderMap.get(menuId);
     if (menuProvider == null) {
-      log.error("Invalid menu provider for menu {}", menuId);
+      Logger.INSTANCE.error("Invalid menu provider for menu {}", menuId);
       return;
     }
 
     // Validate NPC UUID
     UUID npcUUID = menuNpcMap.get(menuId);
     if (npcUUID == null) {
-      log.error("Invalid NPC UUID for menu {}", menuId);
+      Logger.INSTANCE.error("Invalid NPC UUID for menu {}", menuId);
       return;
     }
 
     // Open the menu for the player
-    log.info(
+    Logger.INSTANCE.info(
         "Opening menu {} for npc {} and player {} with {}",
         menuId,
         npcUUID,
@@ -97,7 +94,7 @@ public class MenuManager {
         menuProvider);
     OptionalInt dialogId = serverPlayer.openMenu(menuProvider);
     if (dialogId.isPresent()) {
-      log.debug(
+      Logger.INSTANCE.debug(
           "Opened menu {} ({}) and {} for {}",
           menuId,
           dialogId.getAsInt(),
@@ -106,7 +103,7 @@ public class MenuManager {
       menuProviderMap.remove(menuId);
       serverPlayerMap.remove(menuId);
     } else {
-      log.error("Got invalid dialog ID for menu {}", menuId);
+      Logger.INSTANCE.error("Got invalid dialog ID for menu {}", menuId);
     }
   }
 }

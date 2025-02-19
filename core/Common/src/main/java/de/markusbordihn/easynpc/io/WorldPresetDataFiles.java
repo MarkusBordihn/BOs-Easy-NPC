@@ -21,6 +21,9 @@ package de.markusbordihn.easynpc.io;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.debug.Logger;
+import net.minecraft.resources.ResourceLocation;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,13 +33,9 @@ import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-import net.minecraft.resources.ResourceLocation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class WorldPresetDataFiles {
 
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String DATA_FOLDER_NAME = "preset";
   private static final ConcurrentHashMap<ResourceLocation, Path> presetResourceLocationMap =
       new ConcurrentHashMap<>();
@@ -47,7 +46,7 @@ public class WorldPresetDataFiles {
     File worldDataFolder = new File(Constants.WORLD_DIR.toFile(), Constants.MOD_ID);
     Path path = worldDataFolder.toPath().resolve(DATA_FOLDER_NAME);
     if (!path.toFile().exists() && !path.toFile().mkdirs()) {
-      log.error("Could not create preset data folder {}!", path);
+      Logger.INSTANCE.error("Could not create preset data folder {}!", path);
     }
     return path;
   }
@@ -58,7 +57,7 @@ public class WorldPresetDataFiles {
     if (!skinModelName.isEmpty()) {
       Path path = presetDataFolder.resolve(skinModelName.toLowerCase(Locale.ROOT));
       if (!path.toFile().exists() && !path.toFile().mkdirs()) {
-        log.error("Could not create preset model folder {}!", path);
+        Logger.INSTANCE.error("Could not create preset model folder {}!", path);
       }
       return path;
     }
@@ -106,7 +105,7 @@ public class WorldPresetDataFiles {
         return filePaths.stream();
       }
     } catch (IOException exception) {
-      log.error("Could not read world preset data folder {}:", presetDataFolder, exception);
+      Logger.INSTANCE.error("Could not read world preset data folder {}:", presetDataFolder, exception);
     }
 
     // Return a default or alternative stream in case of an exception

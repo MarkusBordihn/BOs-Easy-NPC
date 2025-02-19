@@ -23,23 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.block.EasyNPCSpawnerBlock;
 import de.markusbordihn.easynpc.block.ModBlocks;
 import de.markusbordihn.easynpc.entity.ModEntityType;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Allay;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Horse;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
-import de.markusbordihn.easynpc.entity.easynpc.npc.HumanoidSlim;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
-import de.markusbordihn.easynpc.entity.easynpc.npc.IronGolem;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Piglin;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Wolf;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie;
-import de.markusbordihn.easynpc.entity.easynpc.npc.ZombieVillager;
+import de.markusbordihn.easynpc.entity.easynpc.npc.*;
 import de.markusbordihn.easynpc.item.attack.BulletItem;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetEmptyItem;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetItem;
@@ -50,8 +34,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ModItems {
 
@@ -123,25 +105,23 @@ public class ModItems {
   public static final Item ZOMBIE_VILLAGER_NPC_SPAWN_EGG =
       new ModSpawnEggItem(ModEntityType.ZOMBIE_VILLAGER, new Item.Properties().rarity(Rarity.EPIC));
 
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
   private ModItems() {}
 
   public static void registerModItems() {
 
-    log.info("{} Configuration Items ...", Constants.LOG_REGISTER_PREFIX);
+    de.markusbordihn.easynpc.debug.Logger.INSTANCE.info("{} Configuration Items ...", Constants.LOG_REGISTER_PREFIX);
     registerItem(EasyNPCWandItem.ID, EASY_NPC_WAND);
     registerItem(MoveEasyNPCItem.ID, MOVE_EASY_NPC);
     registerItem(EasyNPCPresetItem.NAME, EASY_NPC_PRESET_ITEM);
     registerItem(EasyNPCPresetEmptyItem.NAME, EASY_NPC_PRESET_EMPTY_ITEM);
 
-    log.info("{} Block Items ...", Constants.LOG_REGISTER_PREFIX);
+    de.markusbordihn.easynpc.debug.Logger.INSTANCE.info("{} Block Items ...", Constants.LOG_REGISTER_PREFIX);
     registerItem(EasyNPCSpawnerBlock.NAME, EASY_NPC_SPAWNER);
 
-    log.info("{} Weapon Items ...", Constants.LOG_REGISTER_PREFIX);
+    de.markusbordihn.easynpc.debug.Logger.INSTANCE.info("{} Weapon Items ...", Constants.LOG_REGISTER_PREFIX);
     registerItem(BulletItem.ID, BULLET_ITEM);
 
-    log.info("{} Spawn Egg Items ...", Constants.LOG_REGISTER_PREFIX);
+    de.markusbordihn.easynpc.debug.Logger.INSTANCE.info("{} Spawn Egg Items ...", Constants.LOG_REGISTER_PREFIX);
     registerSpawnEgg(Allay.ID, ALLAY_NPC_SPAWN_EGG);
     registerSpawnEgg(Cat.ID, CAT_NPC_SPAWN_EGG);
     registerSpawnEgg(Chicken.ID, CHICKEN_NPC_SPAWN_EGG);

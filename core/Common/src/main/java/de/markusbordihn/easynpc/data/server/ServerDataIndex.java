@@ -19,9 +19,7 @@
 
 package de.markusbordihn.easynpc.data.server;
 
-import de.markusbordihn.easynpc.Constants;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.markusbordihn.easynpc.debug.Logger;
 
 public enum ServerDataIndex {
 
@@ -58,11 +56,10 @@ public enum ServerDataIndex {
   UNKNOWN; // @formatter:on
 
   public static final int MAX_FREE_INDEX = 20;
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public static ServerDataIndex getIndex(int index) {
     if (index < 0 || index > MAX_FREE_INDEX) {
-      log.warn("Invalid data index {} is out of range (0-{})!", index, MAX_FREE_INDEX);
+      Logger.INSTANCE.warn("Invalid data index {} is out of range (0-{})!", index, MAX_FREE_INDEX);
       return null;
     }
     return ServerDataIndex.values()[index];
