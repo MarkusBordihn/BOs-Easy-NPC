@@ -53,6 +53,7 @@ public class Config {
   public static void registerCommonConfig() {
     log.info("{} Registering common configuration ...", LOG_PREFIX);
     RenderEntityTypeSupportConfig.registerConfig();
+    SpawnerTypeConfig.registerConfig();
   }
 
   public static void registerClientConfig() {
@@ -167,6 +168,19 @@ public class Config {
       }
     }
     properties.setProperty(key, Integer.toString(defaultValue));
+    return defaultValue;
+  }
+
+  protected static short parseConfigValue(
+      final Properties properties, final String key, final short defaultValue) {
+    if (properties.containsKey(key)) {
+      try {
+        return Short.parseShort(properties.getProperty(key).trim());
+      } catch (Exception e) {
+        log.error("{} Failed to parse Short value for key {}:", LOG_PREFIX, key, e);
+      }
+    }
+    properties.setProperty(key, Short.toString(defaultValue));
     return defaultValue;
   }
 

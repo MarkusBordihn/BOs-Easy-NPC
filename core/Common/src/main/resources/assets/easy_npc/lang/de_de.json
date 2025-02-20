@@ -1,5 +1,8 @@
 {
-  "block.easy_npc.easy_npc_spawner": "EasyNPC Spawner",
+  "block.easy_npc.boss_spawner": "EasyNPC Boss Spawner",
+  "block.easy_npc.default_spawner": "EasyNPC Standard Spawner",
+  "block.easy_npc.group_spawner": "EasyNPC Gruppen Spawner",
+  "block.easy_npc.single_spawner": "EasyNPC Einzel Spawner",
   "entity.easy_npc.allay": "Allay",
   "entity.easy_npc.cat": "Katze",
   "entity.easy_npc.chicken": "Huhn",
@@ -281,13 +284,6 @@
   "text.easy_npc.config.silent": "Stumm",
   "text.easy_npc.config.skin": "Skin",
   "text.easy_npc.config.skin_reloading": "Skins werden neu geladen, bitte warten ...",
-  "text.easy_npc.config.spawner.delay": "Verzögerung",
-  "text.easy_npc.config.spawner.despawn_range": "Despawn Reichweite",
-  "text.easy_npc.config.spawner.max_nearby_entities": "Max Entitäten in der Nähe",
-  "text.easy_npc.config.spawner.preset_item": "NPC Vorlage",
-  "text.easy_npc.config.spawner.required_player_range": "Erforderlicher Spieler Bereich",
-  "text.easy_npc.config.spawner.spawn_count": "Spawn Anzahl",
-  "text.easy_npc.config.spawner.spawn_range": "Spawn Reichweite",
   "text.easy_npc.config.trading": "Handel",
   "text.easy_npc.config.trading.max_uses_per_trade": "Max. Verwendungen",
   "text.easy_npc.config.trading.minutes_for_trade_reset": "Min. für Reset",
@@ -341,5 +337,9 @@
   "text.easy_npc.respawnNPC.confirmWarning": "Der NPC '%s' wird als neuer NPC neu gespawnt, aber mit den gleichen Einstellungen, Position und UUID!",
   "text.easy_npc.respawnNPC.respawnButton": "NPC re-spawnen",
   "text.easy_npc.trading": "Handel",
-  "text.easy_npc.trading.busy": "%1$s ist gerade mit einem anderen Handel mit %2$s beschäftigt.\n Bitte warte, bis der Handel beendet ist."
+  "text.easy_npc.trading.busy": "%1$s ist gerade mit einem anderen Handel mit %2$s beschäftigt.\n Bitte warte, bis der Handel beendet ist.",
+  "tooltip.easy_npc.spawner.boss_spawner": "Der Boss Spawner ist ein Spawner, der es Ihnen ermöglicht, einen Boss-NPC zu spawnen.",
+  "tooltip.easy_npc.spawner.default_spawner": "Der Standard Spawner ist ein Spawner, der es Ihnen ermöglicht, einen Standard-NPC zu spawnen.",
+  "tooltip.easy_npc.spawner.group_spawner": "Der Gruppen Spawner ist ein Spawner, der es Ihnen ermöglicht, eine Gruppe von NPCs zu spawnen.",
+  "tooltip.easy_npc.spawner.single_spawner": "Der Einzel Spawner ist ein Spawner, der es Ihnen ermöglicht, einen einzelnen NPC zu spawnen."
 }

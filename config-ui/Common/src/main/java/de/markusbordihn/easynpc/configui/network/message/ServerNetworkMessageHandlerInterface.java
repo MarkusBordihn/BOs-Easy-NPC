@@ -59,7 +59,6 @@ import de.markusbordihn.easynpc.configui.network.message.server.RemoveDialogButt
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveDialogMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveNPCMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveObjectiveMessage;
-import de.markusbordihn.easynpc.configui.network.message.server.RequestDataSyncMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RespawnNPCMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.SaveDialogButtonMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.SaveDialogMessage;
@@ -585,12 +584,6 @@ public interface ServerNetworkMessageHandlerInterface {
     if (uuid != null && objectiveDataEntry != null) {
       NetworkHandlerManager.sendMessageToServer(
           new RemoveObjectiveMessage(uuid, objectiveDataEntry));
-    }
-  }
-
-  default void requestDataSync(UUID uuid) {
-    if (uuid != null) {
-      NetworkHandlerManager.sendMessageToServer(new RequestDataSyncMessage(uuid));
     }
   }
 

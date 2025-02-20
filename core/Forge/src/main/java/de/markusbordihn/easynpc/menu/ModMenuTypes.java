@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.menu;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.dialog.DialogMenuWrapper;
-import de.markusbordihn.easynpc.menu.spawner.SpawnerMenuWrapper;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -38,7 +37,4 @@ public class ModMenuTypes {
   public static final RegistryObject<MenuType<DialogMenuWrapper>> DIALOG_MENU =
       MENU_TYPES.register(
           ModMenuType.DIALOG.getName(), () -> IForgeMenuType.create(DialogMenuWrapper::new));
-  public static final RegistryObject<MenuType<SpawnerMenuWrapper>> SPAWNER_MENU =
-      MENU_TYPES.register(
-          ModMenuType.SPAWNER.getName(), () -> IForgeMenuType.create(SpawnerMenuWrapper::new));
 }

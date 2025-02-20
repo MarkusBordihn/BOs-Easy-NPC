@@ -369,7 +369,7 @@ public class PresetHandler {
       return false;
     }
 
-    CompoundTag compoundTag = presetData.exportPresetData();
+    CompoundTag compoundTag = presetData.serializePresetData();
     if (compoundTag == null || compoundTag.isEmpty()) {
       log.error("[{}] Error exporting custom preset {}!", easyNPC, file);
       return false;

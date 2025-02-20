@@ -24,9 +24,7 @@ import java.util.Locale;
 import net.minecraft.resources.ResourceLocation;
 
 public enum ModMenuType {
-  DIALOG,
-  SPAWNER,
-  ;
+  DIALOG;
 
   public ResourceLocation getId() {
     return new ResourceLocation(Constants.MOD_ID, this.name().toLowerCase(Locale.ROOT));

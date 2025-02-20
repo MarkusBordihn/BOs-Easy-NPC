@@ -22,9 +22,11 @@ package de.markusbordihn.easynpc.network;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import de.markusbordihn.easynpc.network.message.client.OpenMenuCallbackMessage;
+import de.markusbordihn.easynpc.network.message.client.SyncDataMessage;
 import de.markusbordihn.easynpc.network.message.server.ExecuteActionEventMessage;
 import de.markusbordihn.easynpc.network.message.server.ExecuteDialogButtonActionMessage;
 import de.markusbordihn.easynpc.network.message.server.OpenMenuMessage;
+import de.markusbordihn.easynpc.network.message.server.RequestDataSyncMessage;
 import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -91,6 +93,9 @@ public class NetworkHandlerManager {
         OpenMenuCallbackMessage.MESSAGE_ID,
         OpenMenuCallbackMessage.class,
         OpenMenuCallbackMessage::create);
+
+    networkHandler.registerClientNetworkMessage(
+        SyncDataMessage.MESSAGE_ID, SyncDataMessage.class, SyncDataMessage::create);
   }
 
   public static void registerServerNetworkHandler() {
@@ -112,5 +117,10 @@ public class NetworkHandlerManager {
 
     networkHandler.registerServerNetworkMessage(
         OpenMenuMessage.MESSAGE_ID, OpenMenuMessage.class, OpenMenuMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
+        RequestDataSyncMessage.MESSAGE_ID,
+        RequestDataSyncMessage.class,
+        RequestDataSyncMessage::create);
   }
 }

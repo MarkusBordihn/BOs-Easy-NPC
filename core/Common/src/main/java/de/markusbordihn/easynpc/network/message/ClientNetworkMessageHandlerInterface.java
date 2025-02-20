@@ -20,8 +20,10 @@
 package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.network.message.client.OpenMenuCallbackMessage;
+import de.markusbordihn.easynpc.network.message.client.SyncDataMessage;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,6 +39,19 @@ public interface ClientNetworkMessageHandlerInterface {
       log.debug("Open menu {} for npc {} and player {} with: {}", menuId, uuid, serverPlayer, data);
       NetworkHandlerManager.sendMessageToPlayer(
           new OpenMenuCallbackMessage(uuid, menuId, data), serverPlayer);
+    }
+  }
+
+  default void syncData(EasyNPC<?> easyNPC, ServerPlayer serverPlayer) {
+    if (easyNPC != null && serverPlayer != null) {
+      log.debug("Sync {} data to player {}", easyNPC, serverPlayer);
+      NetworkHandlerManager.sendMessageToPlayer(
+          new SyncDataMessage(
+              easyNPC.getUUID(),
+              easyNPC.getEasyNPCDialogData() != null
+                  ? easyNPC.getEasyNPCDialogData().getDialogDataSet()
+                  : null),
+          serverPlayer);
     }
   }
 }

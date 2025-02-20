@@ -81,16 +81,19 @@ This can be useful if you run into issues with the build system or the dependenc
 To run the tests for the mod, you can use the following commands:
 
 Core Game Test:
+
 ```shell
 ./gradlew -p core runAllGameTests
 ```
 
 Config UI Game Test:
+
 ```shell
 ./gradlew -p config-ui runAllGameTests
 ```
 
 Bundle Game Test:
+
 ```shell
 ./gradlew -p bundle runAllGameTests
 ```

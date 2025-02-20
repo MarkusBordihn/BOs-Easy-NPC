@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.menu;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.menu.dialog.DialogMenuWrapper;
-import de.markusbordihn.easynpc.menu.spawner.SpawnerMenuWrapper;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.world.inventory.MenuType;
 import org.apache.logging.log4j.LogManager;
@@ -29,15 +28,14 @@ import org.apache.logging.log4j.Logger;
 
 public class ModMenuTypes {
 
-  public static final MenuType<SpawnerMenuWrapper> SPAWNER_MENU =
-      ScreenHandlerRegistry.registerSimple(ModMenuType.SPAWNER.getId(), SpawnerMenuWrapper::new);
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ModMenuTypes() {}
 
   public static void register() {
     log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
-  }  public static final MenuType<DialogMenuWrapper> DIALOG_MENU =
-      ScreenHandlerRegistry.registerSimple(ModMenuType.DIALOG.getId(), DialogMenuWrapper::new);
+  }
 
+  public static final MenuType<DialogMenuWrapper> DIALOG_MENU =
+      ScreenHandlerRegistry.registerSimple(ModMenuType.DIALOG.getId(), DialogMenuWrapper::new);
 }

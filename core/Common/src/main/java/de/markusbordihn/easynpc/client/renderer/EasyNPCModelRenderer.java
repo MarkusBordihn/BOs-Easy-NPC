@@ -25,7 +25,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
-import de.markusbordihn.easynpc.entity.EasyNPCBaseModelEntity;
+import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import net.minecraft.client.model.EntityModel;
@@ -44,7 +44,7 @@ import net.minecraft.world.level.LightLayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public interface EasyNPCModelRenderer<E extends EasyNPCBaseModelEntity<E>, M extends EntityModel<E>>
+public interface EasyNPCModelRenderer<E extends EasyNPCBaseEntity<E>, M extends EntityModel<E>>
     extends EasyNPCRenderer<E, M> {
 
   Logger log = LogManager.getLogger(Constants.LOG_NAME);

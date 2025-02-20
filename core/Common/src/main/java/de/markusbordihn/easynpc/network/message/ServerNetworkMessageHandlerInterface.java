@@ -21,28 +21,18 @@ package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
-import de.markusbordihn.easynpc.data.spawner.SpawnerSettingType;
 import de.markusbordihn.easynpc.network.NetworkHandlerManager;
-import de.markusbordihn.easynpc.network.message.server.ChangeSpawnerSettingMessage;
 import de.markusbordihn.easynpc.network.message.server.ExecuteActionEventMessage;
 import de.markusbordihn.easynpc.network.message.server.ExecuteDialogButtonActionMessage;
 import de.markusbordihn.easynpc.network.message.server.OpenMenuMessage;
+import de.markusbordihn.easynpc.network.message.server.RequestDataSyncMessage;
 import java.util.UUID;
-import net.minecraft.core.BlockPos;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public interface ServerNetworkMessageHandlerInterface {
 
   Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  default void changeSpawnerSettings(
-      BlockPos blockPos, SpawnerSettingType spawnerSettingType, int value) {
-    if (blockPos != null && spawnerSettingType != null) {
-      NetworkHandlerManager.sendMessageToServer(
-          new ChangeSpawnerSettingMessage(blockPos, spawnerSettingType, value));
-    }
-  }
 
   default void executeActionEvent(UUID uuid, ActionEventType actionEventType) {
     if (uuid != null && actionEventType != null && actionEventType != ActionEventType.NONE) {
@@ -61,6 +51,12 @@ public interface ServerNetworkMessageHandlerInterface {
   default void openMenu(UUID uuid, UUID menuId) {
     if (uuid != null && menuId != null) {
       NetworkHandlerManager.sendMessageToServer(new OpenMenuMessage(uuid, menuId));
+    }
+  }
+
+  default void requestDataSync(UUID uuid) {
+    if (uuid != null) {
+      NetworkHandlerManager.sendMessageToServer(new RequestDataSyncMessage(uuid));
     }
   }
 }

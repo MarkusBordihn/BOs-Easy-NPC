@@ -20,8 +20,8 @@
 package de.markusbordihn.easynpc.item;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.block.BaseEasyNPCSpawnerBlock;
 import de.markusbordihn.easynpc.block.ModBlocks;
+import de.markusbordihn.easynpc.data.spawner.SpawnerType;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Allay;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
@@ -48,7 +48,6 @@ import de.markusbordihn.easynpc.tabs.ModTabs;
 import java.util.function.Supplier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
@@ -79,13 +78,40 @@ public class ModItems {
           () -> new EasyNPCPresetEmptyItem(new Item.Properties().tab(ModTabs.TAB_CONFIG_ITEMS)));
   public static final RegistryObject<Item> EASY_NPC_PRESET_ITEM =
       ITEMS.register(EasyNPCPresetItem.NAME, () -> new EasyNPCPresetItem(new Item.Properties()));
-  public static final RegistryObject<Item> EASY_NPC_SPAWNER =
+
+  public static final RegistryObject<Item> EASY_NPC_SPAWNER_BOSS =
       ITEMS.register(
-          BaseEasyNPCSpawnerBlock.NAME,
+          SpawnerType.BOSS_SPAWNER.getId(),
           () ->
-              new BlockItem(
-                  ModBlocks.EASY_NPC_SPAWNER.get(),
-                  new Item.Properties().tab(ModTabs.TAB_CONFIG_ITEMS)));
+              new EasyNPCSpawnerBlockItem(
+                  ModBlocks.EASY_NPC_SPAWNER_BOSS.get(),
+                  new Item.Properties().tab(ModTabs.TAB_CONFIG_ITEMS),
+                  SpawnerType.BOSS_SPAWNER));
+  public static final RegistryObject<Item> EASY_NPC_SPAWNER_DEFAULT =
+      ITEMS.register(
+          SpawnerType.DEFAULT_SPAWNER.getId(),
+          () ->
+              new EasyNPCSpawnerBlockItem(
+                  ModBlocks.EASY_NPC_SPAWNER_DEFAULT.get(),
+                  new Item.Properties().tab(ModTabs.TAB_CONFIG_ITEMS),
+                  SpawnerType.DEFAULT_SPAWNER));
+  public static final RegistryObject<Item> EASY_NPC_SPAWNER_GROUP =
+      ITEMS.register(
+          SpawnerType.GROUP_SPAWNER.getId(),
+          () ->
+              new EasyNPCSpawnerBlockItem(
+                  ModBlocks.EASY_NPC_SPAWNER_GROUP.get(),
+                  new Item.Properties().tab(ModTabs.TAB_CONFIG_ITEMS),
+                  SpawnerType.GROUP_SPAWNER));
+  public static final RegistryObject<Item> EASY_NPC_SPAWNER_SINGLE =
+      ITEMS.register(
+          SpawnerType.SINGLE_SPAWNER.getId(),
+          () ->
+              new EasyNPCSpawnerBlockItem(
+                  ModBlocks.EASY_NPC_SPAWNER_SINGLE.get(),
+                  new Item.Properties().tab(ModTabs.TAB_CONFIG_ITEMS),
+                  SpawnerType.SINGLE_SPAWNER));
+
   public static final RegistryObject<Item> EVOKER_NPC_SPAWN_EGG =
       registerSpawnEgg(Illager.ID_EVOKER, ModEntityType.EVOKER);
   public static final RegistryObject<Item> FAIRY_NPC_SPAWN_EGG =

@@ -84,7 +84,7 @@ public record ExportWorldPresetMessage(UUID uuid, String name) implements Networ
 
     // Validate data.
     PresetData<?> presetData = easyNPC.getEasyNPCPresetData();
-    CompoundTag compoundTag = presetData.exportPresetData();
+    CompoundTag compoundTag = presetData.serializePresetData();
     if (compoundTag == null || compoundTag.isEmpty()) {
       NetworkMessageRecord.log.warn("Export preset data is empty for {}", easyNPC);
       return;

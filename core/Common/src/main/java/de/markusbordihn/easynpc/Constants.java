@@ -28,24 +28,25 @@ import net.minecraft.resources.ResourceLocation;
 
 public final class Constants {
 
-  // Mod definitions for adding additional support and compatibility
-  public static final String MOD_ARMOURERS_WORKSHOP_ID = "armourers_workshop";
-  public static final String MOD_ARMOURERS_WORKSHOP_NAME = "Armourer's Workshop";
-  public static final String MOD_COMMAND = "easy_npc";
+  public static final Component EMPTY_TEXT_COMPONENT = TextComponent.getBlankText();
+  public static final float HALF_OF_PI = (float) Math.PI / 2F;
+  public static final float MATH_27DEG_TO_RAD = 0.47123894F;
+  public static final float MATH_27DEG_TO_RAD_INVERTED = -0.47123894F;
+  public static final float PI_180DEG = (float) Math.PI / 180F;
+  public static final int FONT_COLOR_BLACK = 0;
+  public static final int FONT_COLOR_DARK_GREEN = 43520;
+  public static final int FONT_COLOR_DEFAULT = 4210752;
+  public static final int FONT_COLOR_GRAY = 11184810;
+  public static final int FONT_COLOR_GREEN = 5635925;
+  public static final int FONT_COLOR_LIGHT_GRAY = 10526880;
+  public static final int FONT_COLOR_RED = 16733525;
+  public static final int FONT_COLOR_WHITE = 16777215;
+  public static final int FONT_COLOR_YELLOW = 16777045;
+  public static final int NPC_DATA_VERSION = 3;
   public static final String MOD_ID = "easy_npc";
+  public static final String MINECRAFT_PREFIX = "minecraft";
   public static final ResourceLocation BLANK_ENTITY_TEXTURE =
       new ResourceLocation(Constants.MOD_ID, "textures/entity/blank.png");
-  public static final String MOD_NAME = "Easy NPC";
-  public static final String MOD_URL = "https://www.curseforge.com/minecraft/mc-mods/easy-npc";
-  // Prefixes
-  public static final String MOD_PREFIX = MOD_ID + ".";
-  public static final String MOD_PREFIX_ID = MOD_ID + ":";
-  public static final String MINECRAFT_PREFIX = "minecraft";
-  public static final String MINECRAFT_RESOURCE_PREFIX = MINECRAFT_PREFIX + ":";
-  public static final String ENTITY_MINECRAFT_PREFIX = "entity." + MINECRAFT_PREFIX + ".";
-  // Suffices
-  public static final String NPC_NBT_SUFFIX = ".npc.nbt";
-  public static final float PI_180DEG = (float) Math.PI / 180F;
   public static final ResourceLocation TEXTURE_CONFIGURATION =
       new ResourceLocation(Constants.MOD_ID, "textures/gui/configuration.png");
   public static final ResourceLocation TEXTURE_DEMO_BACKGROUND =
@@ -57,36 +58,28 @@ public final class Constants {
   public static final ResourceLocation TEXTURE_SPAWNER =
       new ResourceLocation(Constants.MOD_ID, "textures/gui/spawner.png");
   public static final String TEXT_PREFIX = "text." + MOD_ID + ".";
+  public static final String CONTAINER_PREFIX = TEXT_PREFIX + "container.";
   public static final String TEXT_CONFIG_PREFIX = TEXT_PREFIX + "config.";
   public static final String TEXT_ITEM_PREFIX = TEXT_PREFIX + "item.";
-  public static final String CONTAINER_PREFIX = TEXT_PREFIX + "container.";
-  // Textures
-  public static final UUID BLANK_UUID = new UUID(0L, 0L);
-  public static final UUID EMPTY_UUID = new UUID(0L, 0L);
+  public static final String ENTITY_MINECRAFT_PREFIX = "entity." + MINECRAFT_PREFIX + ".";
   public static final String ENTITY_PREFIX = "entity." + MOD_ID + ".";
-  public static final Component EMPTY_TEXT_COMPONENT = TextComponent.getBlankText();
-  // Colors
-  public static final int FONT_COLOR_BLACK = 0;
-  public static final int FONT_COLOR_DARK_GREEN = 43520;
-  public static final int FONT_COLOR_DEFAULT = 4210752;
-  public static final int FONT_COLOR_GRAY = 11184810;
-  public static final int FONT_COLOR_GREEN = 5635925;
-  public static final int FONT_COLOR_LIGHT_GRAY = 10526880;
-  public static final int FONT_COLOR_RED = 16733525;
-  public static final int FONT_COLOR_WHITE = 16777215;
-  public static final int FONT_COLOR_YELLOW = 16777045;
-  public static final float HALF_OF_PI = (float) Math.PI / 2F;
   public static final String ITEM_PREFIX = "item." + MOD_ID + ".";
   public static final String LOG_ICON = "🗣";
-  // General Mod definitions
   public static final String LOG_NAME = "Easy NPC: Core";
   public static final String LOG_REGISTER_PREFIX = LOG_ICON + " Register " + LOG_NAME;
-  // Animation Math
-  public static final float MATH_27DEG_TO_RAD = 0.47123894F;
-  public static final float MATH_27DEG_TO_RAD_INVERTED = -0.47123894F;
-  // Data Specific definitions
-  public static final int NPC_DATA_VERSION = 3;
-  // Static paths
+  public static final String MINECRAFT_RESOURCE_PREFIX = MINECRAFT_PREFIX + ":";
+  public static final String MOD_EASY_NPC_CONFIG_UI_ID = "easy_npc_config_ui";
+  public static final String MOD_ARMOURERS_WORKSHOP_ID = "armourers_workshop";
+  public static final String MOD_ARMOURERS_WORKSHOP_NAME = "Armourer's Workshop";
+  public static final String MOD_COMMAND = "easy_npc";
+  public static final String MOD_NAME = "Easy NPC";
+  public static final String MOD_PREFIX = MOD_ID + ".";
+  public static final String MOD_PREFIX_ID = MOD_ID + ":";
+  public static final String MOD_URL = "https://www.curseforge.com/minecraft/mc-mods/easy-npc";
+  public static final String NPC_NBT_SUFFIX = ".npc.nbt";
+  public static final String TOOLTIP_PREFIX = "tooltip." + MOD_ID + ".";
+  public static final UUID BLANK_UUID = new UUID(0L, 0L);
+  public static final UUID EMPTY_UUID = new UUID(0L, 0L);
   public static Path GAME_DIR = Paths.get("").toAbsolutePath();
   public static Path CONFIG_DIR = GAME_DIR.resolve("config");
   public static Path WORLD_DIR = GAME_DIR.resolve("world");

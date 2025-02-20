@@ -77,7 +77,10 @@ public class ModTabs {
             stack -> {
               stack.add(ModItems.EASY_NPC_PRESET_EMPTY_ITEM.getDefaultInstance());
               stack.add(ModItems.EASY_NPC_PRESET_ITEM.getDefaultInstance());
-              stack.add(ModItems.EASY_NPC_SPAWNER.getDefaultInstance());
+              stack.add(ModItems.EASY_NPC_SPAWNER_BOSS.getDefaultInstance());
+              stack.add(ModItems.EASY_NPC_SPAWNER_DEFAULT.getDefaultInstance());
+              stack.add(ModItems.EASY_NPC_SPAWNER_GROUP.getDefaultInstance());
+              stack.add(ModItems.EASY_NPC_SPAWNER_SINGLE.getDefaultInstance());
               stack.add(ModItems.MOVE_EASY_NPC.getDefaultInstance());
             })
         .build();

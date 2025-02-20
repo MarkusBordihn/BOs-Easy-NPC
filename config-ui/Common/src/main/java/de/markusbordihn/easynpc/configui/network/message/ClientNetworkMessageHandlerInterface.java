@@ -23,7 +23,6 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.configui.network.message.client.ExportClientPresetMessage;
 import de.markusbordihn.easynpc.configui.network.message.client.OpenMenuCallbackMessage;
-import de.markusbordihn.easynpc.configui.network.message.client.SyncDataMessage;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
@@ -54,7 +53,7 @@ public interface ClientNetworkMessageHandlerInterface {
 
     EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
     PresetData<?> presetData = easyNPC.getEasyNPCPresetData();
-    CompoundTag compoundTag = presetData.exportPresetData();
+    CompoundTag compoundTag = presetData.serializePresetData();
     log.info(
         "Exporting preset for {} to {}",
         easyNPC.getEntity().getName().getString(),
@@ -67,18 +66,5 @@ public interface ClientNetworkMessageHandlerInterface {
             name,
             compoundTag),
         serverPlayer);
-  }
-
-  default void syncData(EasyNPC<?> easyNPC, ServerPlayer serverPlayer) {
-    if (easyNPC != null && serverPlayer != null) {
-      log.debug("Sync {} data to player {}", easyNPC, serverPlayer);
-      NetworkHandlerManager.sendMessageToPlayer(
-          new SyncDataMessage(
-              easyNPC.getUUID(),
-              easyNPC.getEasyNPCDialogData() != null
-                  ? easyNPC.getEasyNPCDialogData().getDialogDataSet()
-                  : null),
-          serverPlayer);
-    }
   }
 }

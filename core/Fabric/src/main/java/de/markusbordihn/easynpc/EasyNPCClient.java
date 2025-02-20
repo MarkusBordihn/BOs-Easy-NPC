@@ -58,6 +58,11 @@ public class EasyNPCClient implements ClientModInitializer {
     NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.CLIENT);
     NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
 
+    log.info("{} Renderer ...", Constants.LOG_REGISTER_PREFIX);
+    ClientRenderer.registerBlockEntityRenderers();
+    ClientRenderer.registerEntityRenderers();
+    ClientRenderer.registerRenderLayers();
+
     log.info("{} Client Screens ...", Constants.LOG_REGISTER_PREFIX);
     ClientScreens.registerScreens();
 

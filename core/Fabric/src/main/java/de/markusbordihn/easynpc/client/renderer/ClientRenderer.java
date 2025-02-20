@@ -20,7 +20,9 @@
 package de.markusbordihn.easynpc.client.renderer;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.block.ModBlocks;
 import de.markusbordihn.easynpc.client.model.ModModelLayers;
+import de.markusbordihn.easynpc.client.renderer.blockentity.BaseEasyNPCSpawnerBlockEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.custom.FairyModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.custom.OrcModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.PiglinRawRenderer;
@@ -44,8 +46,11 @@ import de.markusbordihn.easynpc.client.renderer.entity.standard.ZombieVillagerMo
 import de.markusbordihn.easynpc.client.renderer.layers.CustomHumanoidArmorLayer;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.entity.ModEntityType;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.RenderType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -54,6 +59,26 @@ public class ClientRenderer {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ClientRenderer() {}
+
+  public static void registerBlockEntityRenderers() {
+    log.info("{} Block Entity Renderers ...", Constants.LOG_REGISTER_PREFIX);
+
+    BlockEntityRendererRegistry.register(
+        ModBlocks.EASY_NPC_SPAWNER_ENTITY, BaseEasyNPCSpawnerBlockEntityRenderer::new);
+  }
+
+  public static void registerRenderLayers() {
+    log.info("{} Render Layers ...", Constants.LOG_REGISTER_PREFIX);
+
+    BlockRenderLayerMap.INSTANCE.putBlock(
+        ModBlocks.EASY_NPC_SPAWNER_BOSS, RenderType.cutoutMipped());
+    BlockRenderLayerMap.INSTANCE.putBlock(
+        ModBlocks.EASY_NPC_SPAWNER_DEFAULT, RenderType.cutoutMipped());
+    BlockRenderLayerMap.INSTANCE.putBlock(
+        ModBlocks.EASY_NPC_SPAWNER_GROUP, RenderType.cutoutMipped());
+    BlockRenderLayerMap.INSTANCE.putBlock(
+        ModBlocks.EASY_NPC_SPAWNER_SINGLE, RenderType.cutoutMipped());
+  }
 
   public static void registerEntityRenderers() {
     log.info("{} Entity Renders ...", Constants.LOG_REGISTER_PREFIX);

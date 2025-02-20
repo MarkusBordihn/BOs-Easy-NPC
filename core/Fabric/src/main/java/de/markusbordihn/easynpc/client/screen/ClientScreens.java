@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.client.screen;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.dialog.DialogScreenWrapper;
-import de.markusbordihn.easynpc.client.screen.spawner.SpawnerScreenWrapper;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import net.minecraft.client.gui.screens.MenuScreens;
 import org.apache.logging.log4j.LogManager;
@@ -35,6 +34,5 @@ public class ClientScreens {
 
   public static void registerScreens() {
     MenuScreens.register(ModMenuTypes.DIALOG_MENU, DialogScreenWrapper::new);
-    MenuScreens.register(ModMenuTypes.SPAWNER_MENU, SpawnerScreenWrapper::new);
   }
 }
