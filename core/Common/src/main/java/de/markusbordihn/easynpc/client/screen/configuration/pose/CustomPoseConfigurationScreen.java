@@ -225,20 +225,5 @@ public class CustomPoseConfigurationScreen<T extends ConfigurationMenu>
   @Override
   protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
     super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
-
-    // Entity background
-    int backgroundTopPos = this.contentTopPos + 30;
-    guiGraphics.fill(
-        this.contentLeftPos + 109,
-        backgroundTopPos,
-        this.contentLeftPos + 206,
-        this.contentTopPos + 178,
-        0xff000000);
-    guiGraphics.fill(
-        this.contentLeftPos + 110,
-        backgroundTopPos + 1,
-        this.contentLeftPos + 205,
-        this.contentTopPos + 177,
-        0xffaaaaaa);
   }
 }

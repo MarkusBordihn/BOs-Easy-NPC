@@ -26,27 +26,22 @@ import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
-import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
-import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
-import de.markusbordihn.easynpc.data.dialog.DialogMetaData;
-import de.markusbordihn.easynpc.data.dialog.DialogScreenLayout;
-import de.markusbordihn.easynpc.data.dialog.DialogUtils;
+import de.markusbordihn.easynpc.data.dialog.*;
 import de.markusbordihn.easynpc.debug.Logger;
 import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 public class DialogScreen<T extends DialogMenu> extends Screen<T> {
 
@@ -489,38 +484,6 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-        switch (dialogScreenLayout) {
-            case UNKNOWN:
-                break;
-            case COMPACT_TEXT_ONLY,
-                 COMPACT_TEXT_WITH_ONE_BUTTON,
-                 COMPACT_TEXT_WITH_TWO_BUTTONS,
-                 COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS:
-                // Compact background
-                Graphics.blit(
-                        guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos, 0, 0, 200, 170);
-                Graphics.blit(
-                        guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos + 200, topPos, 165, 0, 85, 170);
-                break;
-            default:
-                // Full background
-                Graphics.blit(
-                        guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos, 0, 0, 210, 140);
-                Graphics.blit(
-                        guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos + 200, topPos, 165, 0, 85, 140);
-
-                Graphics.blit(
-                        guiGraphics, Constants.TEXTURE_DEMO_BACKGROUND, leftPos, topPos + 70, 0, 30, 210, 140);
-                Graphics.blit(
-                        guiGraphics,
-                        Constants.TEXTURE_DEMO_BACKGROUND,
-                        leftPos + 200,
-                        topPos + 70,
-                        165,
-                        30,
-                        85,
-                        140);
-        }
     }
 
     @Override

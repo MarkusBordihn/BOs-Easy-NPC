@@ -187,12 +187,6 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
         this.contentLeftPos + 159,
         this.contentTopPos + 207,
         0xff000000);
-    guiGraphics.fill(
-        this.contentLeftPos + 1,
-        this.contentTopPos + 1,
-        this.contentLeftPos + 158,
-        this.contentTopPos + 206,
-        0xffaaaaaa);
 
     // Scale lines
     int scaleLinesColor = 0xaa555555;

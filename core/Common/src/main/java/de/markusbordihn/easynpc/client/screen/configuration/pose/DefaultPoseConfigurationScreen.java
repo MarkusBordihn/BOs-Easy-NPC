@@ -198,33 +198,5 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
   @Override
   protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
     super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
-
-    // Entity
-    guiGraphics.fill(
-        this.contentLeftPos,
-        this.contentTopPos,
-        this.contentLeftPos + 169,
-        this.contentTopPos + 207,
-        0xff000000);
-    guiGraphics.fill(
-        this.contentLeftPos + 1,
-        this.contentTopPos + 1,
-        this.contentLeftPos + 168,
-        this.contentTopPos + 206,
-        0xffaaaaaa);
-
-    // Base
-    guiGraphics.fill(
-        this.contentLeftPos + 1,
-        this.contentTopPos + 145,
-        this.contentLeftPos + 168,
-        this.contentTopPos + 206,
-        0xaa888888);
-    guiGraphics.fill(
-        this.contentLeftPos + 1,
-        this.contentTopPos + 145,
-        this.contentLeftPos + 168,
-        this.contentTopPos + 150,
-        0xaa888888);
   }
 }

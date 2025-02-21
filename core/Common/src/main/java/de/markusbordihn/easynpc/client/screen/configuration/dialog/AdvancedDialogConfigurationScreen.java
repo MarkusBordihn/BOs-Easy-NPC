@@ -75,14 +75,6 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
 
-    // Gray background for dialog list
-    guiGraphics.fill(
-        this.leftPos + 5,
-        this.contentTopPos + 20,
-        this.leftPos + 324,
-        this.contentTopPos + 210,
-        0xffeeeeee);
-
     // Draw vertical separator line for entries
     guiGraphics.fill(
         this.leftPos + 109,
@@ -101,22 +93,6 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
     if (this.dialogList != null) {
       this.dialogList.render(guiGraphics, x, y, partialTicks);
     }
-
-    // Header background
-    guiGraphics.fill(
-        this.leftPos + 5,
-        this.contentTopPos,
-        this.leftPos + 324,
-        this.contentTopPos + 18,
-        0xffaaaaaa);
-
-    // Footer background
-    guiGraphics.fill(
-        this.leftPos + 5,
-        this.contentTopPos + 191,
-        this.leftPos + 324,
-        this.contentTopPos + 211,
-        0xffc6c6c6);
 
     // Dialog Data Set header
     int headerLeft = this.leftPos + 10;

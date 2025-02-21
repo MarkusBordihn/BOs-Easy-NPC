@@ -175,20 +175,4 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
     // Skins
     this.renderSkins(guiGraphics);
   }
-
-  @Override
-  protected void renderSkinSelectionBackground(GuiGraphics guiGraphics) {
-    guiGraphics.fill(
-        this.contentLeftPos,
-        this.contentTopPos + 20,
-        this.contentLeftPos + 302,
-        this.contentTopPos + 190,
-        0xff000000);
-    guiGraphics.fill(
-        this.contentLeftPos + 1,
-        this.contentTopPos + 21,
-        this.contentLeftPos + 301,
-        this.contentTopPos + 189,
-        0xffaaaaaa);
-  }
 }

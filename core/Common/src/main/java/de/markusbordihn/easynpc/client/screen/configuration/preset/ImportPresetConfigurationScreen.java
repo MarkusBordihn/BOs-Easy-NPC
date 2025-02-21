@@ -213,7 +213,7 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
         fileListTop - 1,
         fileListWidth + 1,
         fileListHeight + 1,
-        0xff000000);
+        0x272726);
     guiGraphics.fill(this.contentLeftPos, fileListTop, fileListWidth, fileListHeight, 0xffaaaaaa);
   }
 

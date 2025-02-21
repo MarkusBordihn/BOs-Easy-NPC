@@ -208,13 +208,13 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         this.avatarTopPos,
         this.leftPos + 117,
         this.avatarTopPos + 135,
-        0xff000000);
+        0x272726);
     guiGraphics.fill(
         this.leftPos + 8,
         this.avatarTopPos + 1,
         this.leftPos + 116,
         this.avatarTopPos + 134,
-        0xffffffff);
+        0x272726);
 
     // Entity
     guiGraphics.fill(
@@ -222,13 +222,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         this.avatarTopPos + 12,
         this.leftPos + 117,
         this.avatarTopPos + 155,
-        0xff000000);
-    guiGraphics.fill(
-        this.leftPos + 8,
-        this.avatarTopPos + 13,
-        this.leftPos + 116,
-        this.avatarTopPos + 155,
-        0xffaaaaaa);
+        0x272726);
   }
 
   private void defineImportExportButtons() {

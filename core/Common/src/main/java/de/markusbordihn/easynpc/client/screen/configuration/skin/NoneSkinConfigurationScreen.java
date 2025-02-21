@@ -92,11 +92,6 @@ public class NoneSkinConfigurationScreen<T extends ConfigurationMenu>
   }
 
   @Override
-  protected void renderSkinSelectionBackground(GuiGraphics guiGraphics) {
-    // Do nothing
-  }
-
-  @Override
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
 

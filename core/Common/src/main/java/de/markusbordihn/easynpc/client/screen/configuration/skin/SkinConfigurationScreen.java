@@ -75,21 +75,6 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
     }
   }
 
-  protected void renderSkinSelectionBackground(GuiGraphics guiGraphics) {
-    guiGraphics.fill(
-        this.contentLeftPos,
-        this.contentTopPos + 104,
-        this.contentLeftPos + 302,
-        this.contentTopPos + 190,
-        0xff000000);
-    guiGraphics.fill(
-        this.contentLeftPos + 1,
-        this.contentTopPos + 105,
-        this.contentLeftPos + 301,
-        this.contentTopPos + 189,
-        0xffaaaaaa);
-  }
-
   @Override
   public void init() {
     super.init();
@@ -188,7 +173,6 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
   @Override
   protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
     super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
-    this.renderSkinSelectionBackground(guiGraphics);
   }
 
   @Override
