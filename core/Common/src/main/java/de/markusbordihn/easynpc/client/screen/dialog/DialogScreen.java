@@ -21,10 +21,7 @@ package de.markusbordihn.easynpc.client.screen.dialog;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.Screen;
-import de.markusbordihn.easynpc.client.screen.components.Graphics;
-import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
-import de.markusbordihn.easynpc.client.screen.components.Text;
-import de.markusbordihn.easynpc.client.screen.components.TextButton;
+import de.markusbordihn.easynpc.client.screen.components.*;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.dialog.*;
 import de.markusbordihn.easynpc.debug.Logger;
@@ -39,7 +36,6 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,7 +56,6 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
     protected Component dialogComponent;
     protected int numberOfDialogLines = 1;
     protected int dialogPageIndex = 0;
-    private List<FormattedCharSequence> cachedDialogComponents = Collections.emptyList();
 
     public DialogScreen(T menu, Inventory inventory, Component component) {
         super(menu, inventory, component, 280, 200);
@@ -76,7 +71,6 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
     }
 
     protected void renderDialog(GuiGraphics guiGraphics) {
-        // Draw dialog background bobble.
         int dialogTopPosition = topPos + 20;
         switch (dialogScreenLayout) {
             case COMPACT_TEXT_ONLY,
@@ -95,30 +89,37 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
                         0,
                         120,
                         205,
-                        78);
+                        98);
                 break;
             default:
                 Graphics.blit(
                         guiGraphics, Constants.TEXTURE_DIALOG, leftPos + 70, dialogTopPosition, 0, 0, 205, 118);
         }
 
-        // Distribute text for the across the lines and the give dialogPageIndex.
-        if (!this.cachedDialogComponents.isEmpty()) {
-            for (int line = this.dialogPageIndex * MAX_NUMBER_OF_DIALOG_LINES;
-                 line < this.numberOfDialogLines
-                         && line < MAX_NUMBER_OF_DIALOG_LINES * (this.dialogPageIndex + 1);
-                 ++line) {
-                int textTopPosition =
-                        dialogTopPosition
-                                + 6
-                                + (line - (this.dialogPageIndex * MAX_NUMBER_OF_DIALOG_LINES))
-                                * (font.lineHeight + 2);
-                FormattedCharSequence formattedCharSequence = this.cachedDialogComponents.get(line);
-                Text.drawString(
-                        guiGraphics, this.font, formattedCharSequence, leftPos + 87, textTopPosition, 0);
-            }
-        }
+        final String dialogText = dialogComponent.getString();
+
+        // Configure AlignedTextComponent
+        final AlignedTextComponent alignedTextComponent = new AlignedTextComponent();
+        alignedTextComponent.setText(dialogText, MAX_NUMBER_OF_PIXEL_PER_LINE);
+        alignedTextComponent.setAlignment(AlignedTextComponent.Alignment.JUSTIFIED);
+        alignedTextComponent.setSmartJustification(true, 3, 0.6f);
+        alignedTextComponent.setMaxSpacePerGap(8);
+        alignedTextComponent.setBackgroundVisible(false);
+
+        // Choose your strategy: WRAP (move word) or CROP (split word).
+        alignedTextComponent.setOverflowStrategy(AlignedTextComponent.OverflowStrategy.WRAP);
+
+        // Render with paging, for example:
+        alignedTextComponent.renderPage(
+                guiGraphics,
+                leftPos + 87,
+                dialogTopPosition + 6,
+                dialogPageIndex,
+                MAX_NUMBER_OF_DIALOG_LINES,
+                0x272726
+        );
     }
+
 
     private void setDialogText(DialogDataEntry dialogData) {
         if (dialogData == null) {
@@ -133,9 +134,8 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
         this.dialogComponent = TextComponent.getText(dialogText);
 
         // Split dialog text to lines.
-        this.cachedDialogComponents =
-                this.font.split(this.dialogComponent, MAX_NUMBER_OF_PIXEL_PER_LINE);
-        this.numberOfDialogLines = Math.min(128 / font.lineHeight, this.cachedDialogComponents.size());
+        final List<FormattedCharSequence> cachedDialogComponents = this.font.split(this.dialogComponent, MAX_NUMBER_OF_PIXEL_PER_LINE);
+        this.numberOfDialogLines = Math.min(128 / font.lineHeight, cachedDialogComponents.size());
     }
 
     private void addDialogButton(DialogButtonEntry dialogButtonEntry) {
