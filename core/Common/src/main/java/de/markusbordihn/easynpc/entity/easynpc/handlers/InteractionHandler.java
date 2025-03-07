@@ -65,7 +65,6 @@ public class InteractionHandler {
                   new ResourceLocation(Constants.MOD_EASY_NPC_CONFIG_UI_ID, "easy_npc_wand"))
               .orElse(null);
       if (handItem.equals(easyNPCWand)) {
-        configurationData.openMainConfigurationMenu(serverPlayer);
         return InteractionResult.PASS;
       }
 

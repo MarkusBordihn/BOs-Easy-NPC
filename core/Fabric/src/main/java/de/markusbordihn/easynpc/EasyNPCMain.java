@@ -100,11 +100,11 @@ public class EasyNPCMain implements ModInitializer {
     ServerTickEvents.END_SERVER_TICK.register(ServerEvents::handleServerTick);
     LivingEntityEventHandler.registerServerEntityEvents();
 
-    log.info("{} Menu Handler ...", Constants.LOG_REGISTER_PREFIX);
-    MenuManager.registerMenuHandler(new MenuHandler());
-
     log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
     ModMenuTypes.register();
+
+    log.info("{} Menu Handler ...", Constants.LOG_REGISTER_PREFIX);
+    MenuManager.registerMenuHandler(new MenuHandler());
 
     log.info("{} Server Network Handler ...", Constants.LOG_REGISTER_PREFIX);
     NetworkHandlerManager.registerHandler(new NetworkHandler());

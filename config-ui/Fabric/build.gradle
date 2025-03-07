@@ -64,6 +64,10 @@ loom {
   }
 }
 
+tasks.withType(JavaCompile).configureEach {
+  source(project(":Common").sourceSets.main.allSource)
+}
+
 processResources {
   from project(":Common").sourceSets.main.resources
   inputs.property "version", project.version
@@ -71,10 +75,6 @@ processResources {
   filesMatching("fabric.mod.json") {
     expand "version": project.version
   }
-}
-
-tasks.withType(JavaCompile).configureEach {
-  source(project(":Common").sourceSets.main.allSource)
 }
 
 publishing {

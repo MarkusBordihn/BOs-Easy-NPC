@@ -52,11 +52,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(Constants.MOD_ID)
-public class EasyNPC {
+public class EasyNPCMain {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  public EasyNPC() {
+  public EasyNPCMain() {
     final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
     log.info("Initializing {} (Forge) ...", Constants.MOD_NAME);

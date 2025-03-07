@@ -8,9 +8,20 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
-### 6.0.0
+### 6.0.0 (Experimental) ✨
 
-- Released first beta version for more detailed live testing.
+📝 Note:
+Easy NPC is now split into two separate mods:
+
+* **Easy NPC: Core** A lightweight mod for developing NPCs with minimal dependencies.
+* **Easy NPC: Configuration UI** A standalone mod providing the configuration interface for NPCs.
+
+🎯 Why the change?
+
+* Developers and Modpacks can now include just the Core mod for a leaner setup.
+* A bundle with both mods is still available for convenience!
+
+⚙️ Enjoy more flexibility and customization! 💡
 
 [history]: https://github.com/MarkusBordihn/BOs-Easy-NPC/commits/
 

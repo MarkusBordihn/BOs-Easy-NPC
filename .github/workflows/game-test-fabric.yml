@@ -38,6 +38,3 @@ jobs:
 
       - name: Build Config UI and Publish to Maven Local
         run: ./gradlew -p config-ui build publishToMavenLocal
-
-      - name: Run Bundle GameTests (Fabric)
-        run: ./gradlew -p bundle Fabric:runGameTest

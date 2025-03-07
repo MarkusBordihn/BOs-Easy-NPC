@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui;
 
+import de.markusbordihn.easynpc.commands.manager.CommandManager;
 import de.markusbordihn.easynpc.configui.debug.DebugManager;
 import de.markusbordihn.easynpc.configui.item.ModItems;
 import de.markusbordihn.easynpc.configui.menu.MenuHandler;
@@ -31,6 +32,7 @@ import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import de.markusbordihn.easynpc.server.ServerEvents;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -58,15 +60,20 @@ public class ConfigUIMain implements ModInitializer {
     log.info("{} Items ...", de.markusbordihn.easynpc.Constants.LOG_REGISTER_PREFIX);
     ModItems.registerModItems();
 
+    log.info(
+        "{} Command register event ...", de.markusbordihn.easynpc.Constants.LOG_REGISTER_PREFIX);
+    CommandRegistrationCallback.EVENT.register(
+        (dispatcher, dedicated) -> CommandManager.registerCommands(dispatcher));
+
     log.info("{} Server Events ...", de.markusbordihn.easynpc.Constants.LOG_REGISTER_PREFIX);
     ServerLifecycleEvents.SERVER_STARTING.register(ServerEvents::handleServerStarting);
     ServerTickEvents.END_SERVER_TICK.register(ServerEvents::handleServerTick);
 
-    log.info("{} Menu Handler ...", de.markusbordihn.easynpc.Constants.LOG_REGISTER_PREFIX);
-    MenuManager.registerMenuHandler(new MenuHandler());
-
     log.info("{} Menu Types ...", de.markusbordihn.easynpc.Constants.LOG_REGISTER_PREFIX);
     ModMenuTypes.register();
+
+    log.info("{} Menu Handler ...", de.markusbordihn.easynpc.Constants.LOG_REGISTER_PREFIX);
+    MenuManager.registerMenuHandler(new MenuHandler());
 
     log.info(
         "{} Server Network Handler ...", de.markusbordihn.easynpc.Constants.LOG_REGISTER_PREFIX);

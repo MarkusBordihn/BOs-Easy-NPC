@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.menu;
 
+import de.markusbordihn.easynpc.access.AccessManager;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenuHandler;
@@ -48,6 +49,11 @@ public interface MenuHandlerInterface {
       final ServerPlayer serverPlayer,
       final EasyNPC<?> easyNPC,
       final int pageIndex) {
+
+    // Check for access rights.
+    if (!AccessManager.hasAccess(serverPlayer, easyNPC)) {
+      return;
+    }
 
     // Handle configuration type alias.
     final ConfigurationType configurationTypeAlias =
@@ -86,6 +92,12 @@ public interface MenuHandlerInterface {
       final ConfigurationType configurationType,
       final EditorType formerEditorType,
       final int pageIndex) {
+    // Check for access rights.
+    if (!AccessManager.hasAccess(serverPlayer, easyNPC)) {
+      return;
+    }
+
+    // Additional data for specific configuration menu.
     CompoundTag additionalSyncData = new CompoundTag();
     AdditionalScreenData.addActionEventType(additionalSyncData, actionEventType);
     AdditionalScreenData.addConfigurationType(additionalSyncData, configurationType);
@@ -138,6 +150,11 @@ public interface MenuHandlerInterface {
       final UUID actionDataEntryId,
       final int pageIndex,
       CompoundTag additionalSyncData) {
+
+    // Check for access rights.
+    if (!AccessManager.hasAccess(serverPlayer, easyNPC)) {
+      return;
+    }
 
     // Get menu type for configuration type.
     final MenuType<? extends EditorMenu> menuType = getMenuTypeByEditorType(editorType);

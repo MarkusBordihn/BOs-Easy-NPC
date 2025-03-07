@@ -32,6 +32,3 @@ jobs:
 
       - name: Gradle Build Test Config UI
         run: ./gradlew -p config-ui build
-
-      - name: Gradle Build Test Bundle
-        run: ./gradlew -p bundle build

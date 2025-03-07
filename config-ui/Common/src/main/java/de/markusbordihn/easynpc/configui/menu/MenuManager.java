@@ -52,12 +52,12 @@ public class MenuManager {
   }
 
   public static void openMenu(
-      UUID uuid, MenuProvider menuProvider, ServerPlayer serverPlayer, CompoundTag data) {
+      UUID npcUUID, MenuProvider menuProvider, ServerPlayer serverPlayer, CompoundTag data) {
     UUID menuId = UUID.randomUUID();
     menuProviderMap.put(menuId, menuProvider);
     serverPlayerMap.put(menuId, serverPlayer);
-    menuNpcMap.put(menuId, uuid);
-    NetworkMessageHandlerManager.getClientHandler().openMenu(uuid, menuId, serverPlayer, data);
+    menuNpcMap.put(menuId, npcUUID);
+    NetworkMessageHandlerManager.getClientHandler().openMenu(npcUUID, menuId, serverPlayer, data);
   }
 
   public static void openMenu(final UUID menuId, final ServerPlayer serverPlayer) {
@@ -84,7 +84,7 @@ public class MenuManager {
     }
 
     // Open the menu for the player
-    log.info(
+    log.debug(
         "Opening menu {} for npc {} and player {} with {}",
         menuId,
         npcUUID,
@@ -93,7 +93,7 @@ public class MenuManager {
     OptionalInt dialogId = serverPlayer.openMenu(menuProvider);
     if (dialogId.isPresent()) {
       log.debug(
-          "Opened menu {} ({}) and {} for {}",
+          "Clean menu {} ({}) data with {} for {}",
           menuId,
           dialogId.getAsInt(),
           menuProvider,

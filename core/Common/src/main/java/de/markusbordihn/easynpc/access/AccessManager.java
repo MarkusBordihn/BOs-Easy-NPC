@@ -104,6 +104,10 @@ public class AccessManager {
     }
   }
 
+  public static boolean hasAccess(ServerPlayer serverPlayer, EasyNPC<?> easyNPC) {
+    return getEasyNPCEntityByUUID(easyNPC.getUUID(), serverPlayer) != null;
+  }
+
   public static boolean hasAccess(ServerPlayer serverPlayer, UUID uuid) {
     return getEasyNPCEntityByUUID(uuid, serverPlayer) != null;
   }

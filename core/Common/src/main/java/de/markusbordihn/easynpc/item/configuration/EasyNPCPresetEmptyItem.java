@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.item.configuration;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.access.AccessManager;
 import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntity;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
@@ -32,6 +33,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
@@ -70,9 +72,10 @@ public class EasyNPCPresetEmptyItem extends Item {
     }
     Level level = livingEntity.getLevel();
 
-    if (livingEntity instanceof EasyNPC<?> easyNPC) {
-      if (level.isClientSide) {
-        return InteractionResult.SUCCESS;
+    if (livingEntity instanceof EasyNPC<?> easyNPC && player instanceof ServerPlayer serverPlayer) {
+      // Check if player has access to the EasyNPC entity.
+      if (!AccessManager.hasAccess(serverPlayer, easyNPC)) {
+        return InteractionResult.FAIL;
       }
 
       // Place the new preset item in the player inventory or drop it.

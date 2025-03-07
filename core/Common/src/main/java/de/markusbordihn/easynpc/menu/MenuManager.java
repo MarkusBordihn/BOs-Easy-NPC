@@ -84,7 +84,7 @@ public class MenuManager {
     }
 
     // Open the menu for the player
-    log.info(
+    log.debug(
         "Opening menu {} for npc {} and player {} with {}",
         menuId,
         npcUUID,
@@ -93,7 +93,7 @@ public class MenuManager {
     OptionalInt dialogId = serverPlayer.openMenu(menuProvider);
     if (dialogId.isPresent()) {
       log.debug(
-          "Opened menu {} ({}) and {} for {}",
+          "Clean menu {} ({}) data with {} for {}",
           menuId,
           dialogId.getAsInt(),
           menuProvider,

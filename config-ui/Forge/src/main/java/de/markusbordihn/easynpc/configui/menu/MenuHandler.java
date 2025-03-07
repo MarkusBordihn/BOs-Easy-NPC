@@ -138,22 +138,6 @@ public class MenuHandler implements MenuHandlerInterface {
     editorMenuMap.put(EditorType.DIALOG_TEXT, ModMenuTypes.DIALOG_TEXT_EDITOR_MENU.get());
   }
 
-  private static boolean hasPermissions(
-      ServerPlayer serverPlayer,
-      EasyNPC<?> easyNPC,
-      Boolean enabled,
-      Boolean allowInCreative,
-      int permissionLevel) {
-    OwnerData<?> ownerData = easyNPC.getEasyNPCOwnerData();
-    if (Boolean.FALSE.equals(enabled) || serverPlayer == null) {
-      return false;
-    } else if (Boolean.TRUE.equals(allowInCreative) && serverPlayer.isCreative()) {
-      return true;
-    } else if (!ownerData.hasOwner() || !ownerData.isOwner(serverPlayer)) {
-      return false;
-    } else return serverPlayer.hasPermissions(permissionLevel);
-  }
-
   @Override
   public MenuType<? extends ConfigurationMenu> getMenuTypeByConfigurationType(
       ConfigurationType configurationType) {
