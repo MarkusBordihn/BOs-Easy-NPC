@@ -64,7 +64,7 @@ public record ChangeActionEventMessage(
         || this.actionEventType == null
         || this.actionEventType == ActionEventType.NONE
         || this.actionDataSet == null) {
-      NetworkMessageRecord.log.error("Failed to change action event for {}: Invalid data", easyNPC);
+      log.error("Failed to change action event for {}: Invalid data", easyNPC);
       return;
     }
 
@@ -74,19 +74,18 @@ public record ChangeActionEventMessage(
     ActionEventData<?> actionEventData = easyNPC.getEasyNPCActionEventData();
     if (minecraftServer != null) {
       permissionLevel = minecraftServer.getProfilePermissions(serverPlayer.getGameProfile());
-      NetworkMessageRecord.log.debug(
+      log.debug(
           "Set action owner permission level {} for {} from {}",
           permissionLevel,
           easyNPC,
           serverPlayer);
       actionEventData.setActionPermissionLevel(permissionLevel);
     } else {
-      NetworkMessageRecord.log.warn(
-          "Unable to verify permission level from {} for {}", this, serverPlayer);
+      log.warn("Unable to verify permission level from {} for {}", this, serverPlayer);
     }
 
     // Perform action.
-    NetworkMessageRecord.log.debug(
+    log.debug(
         "Set action event {} with {} for {} from {} with owner permission level {}.",
         actionEventType,
         actionDataSet,

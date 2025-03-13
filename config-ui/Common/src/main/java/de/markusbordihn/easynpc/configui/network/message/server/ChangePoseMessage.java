@@ -59,20 +59,19 @@ public record ChangePoseMessage(UUID uuid, Pose pose) implements NetworkMessageR
 
     // Validate name.
     if (this.pose == null) {
-      NetworkMessageRecord.log.error("Invalid pose for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid pose for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate model data.
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
-      NetworkMessageRecord.log.error("Missing model data for {} from {}", easyNPC, serverPlayer);
+      log.error("Missing model data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    NetworkMessageRecord.log.debug(
-        "Change pose {} for {} from {}", this.pose, easyNPC, serverPlayer);
+    log.debug("Change pose {} for {} from {}", this.pose, easyNPC, serverPlayer);
     modelData.setModelPose(ModelPose.DEFAULT);
     easyNPC.getEntity().setPose(this.pose);
   }

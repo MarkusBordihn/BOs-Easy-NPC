@@ -38,7 +38,7 @@ public class CompoundTagUtils {
   public static final String X_TAG = "X";
   public static final String Y_TAG = "Y";
   public static final String Z_TAG = "Z";
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private CompoundTagUtils() {}
 

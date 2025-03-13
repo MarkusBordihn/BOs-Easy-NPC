@@ -272,7 +272,6 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
   }
 
   private void defineNameAndColorBox() {
-
     // Name Edit Box
     Component nameComponent = getEasyNPCEntity().getName();
     this.formerName =

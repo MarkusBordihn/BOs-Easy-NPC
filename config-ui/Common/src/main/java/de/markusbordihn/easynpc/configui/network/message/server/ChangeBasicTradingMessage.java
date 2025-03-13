@@ -62,14 +62,13 @@ public record ChangeBasicTradingMessage(
 
     // Validate trading value type
     if (this.tradingValueType == null) {
-      NetworkMessageRecord.log.error(
-          "Trading value type is unknown for {} from {}", easyNPC, serverPlayer);
+      log.error("Trading value type is unknown for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate trading value
     if (this.tradingValue < 0) {
-      NetworkMessageRecord.log.error(
+      log.error(
           "Trading value {} for {} is out of range (>= 0) for {}",
           this.tradingValue,
           this.tradingValueType,
@@ -80,15 +79,14 @@ public record ChangeBasicTradingMessage(
     // Validate trading data
     TradingData<?> tradingData = easyNPC.getEasyNPCTradingData();
     if (tradingData == null) {
-      NetworkMessageRecord.log.error(
-          "Trading data for {} is not available for {}", easyNPC, serverPlayer);
+      log.error("Trading data for {} is not available for {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
     switch (this.tradingValueType) {
       case RESET_TRADING_EVERY_MIN:
-        NetworkMessageRecord.log.debug(
+        log.debug(
             "Set trading resets every min to {} for {} from {}",
             this.tradingValue,
             easyNPC,
@@ -96,20 +94,17 @@ public record ChangeBasicTradingMessage(
         tradingData.getTradingDataSet().setResetsEveryMin(this.tradingValue);
         break;
       case MAX_USES:
-        NetworkMessageRecord.log.debug(
-            "Set max uses to {} for {} from {}", this.tradingValue, easyNPC, serverPlayer);
+        log.debug("Set max uses to {} for {} from {}", this.tradingValue, easyNPC, serverPlayer);
         tradingData.getTradingDataSet().setMaxUses(this.tradingValue);
         tradingData.updateBasicTradingOffers();
         break;
       case REWARD_EXP:
-        NetworkMessageRecord.log.debug(
-            "Set reward exp to {} for {} from {}", this.tradingValue, easyNPC, serverPlayer);
+        log.debug("Set reward exp to {} for {} from {}", this.tradingValue, easyNPC, serverPlayer);
         tradingData.getTradingDataSet().setRewardedXP(this.tradingValue);
         tradingData.updateBasicTradingOffers();
         break;
       default:
-        NetworkMessageRecord.log.error(
-            "Trading value type {} is unknown for {}", this.tradingValueType, serverPlayer);
+        log.error("Trading value type {} is unknown for {}", this.tradingValueType, serverPlayer);
     }
   }
 }

@@ -61,15 +61,13 @@ public record OpenConfigurationMessage(
 
     // Validate dialog name.
     if (this.configurationType == null) {
-      NetworkMessageRecord.log.error(
-          "Invalid configuration type for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid configuration type for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate page index.
     if (this.pageIndex < 0) {
-      NetworkMessageRecord.log.error(
-          "Invalid page index {} for {} from {}", pageIndex, easyNPC, serverPlayer);
+      log.error("Invalid page index {} for {} from {}", pageIndex, easyNPC, serverPlayer);
       return;
     }
 

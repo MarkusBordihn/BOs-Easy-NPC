@@ -60,8 +60,7 @@ public record ChangeNameMessage(UUID uuid, String name, int color, boolean visib
     }
 
     if (!NameHandler.setCustomName(easyNPC, this.name, this.color, this.visible)) {
-      NetworkMessageRecord.log.error(
-          "Unable to set custom name {} for {} from {}", this.name, easyNPC, serverPlayer);
+      log.error("Unable to set custom name {} for {} from {}", this.name, easyNPC, serverPlayer);
     }
   }
 }

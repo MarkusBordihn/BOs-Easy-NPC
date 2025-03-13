@@ -59,12 +59,12 @@ public record ChangeModelLockRotationMessage(UUID uuid, boolean lockRotation)
     // Validate Model data.
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
-      NetworkMessageRecord.log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    NetworkMessageRecord.log.debug(
+    log.debug(
         "Reset and lock rotation {} for {} from {}", this.lockRotation, easyNPC, serverPlayer);
     modelData.setModelLockRotation(this.lockRotation);
   }

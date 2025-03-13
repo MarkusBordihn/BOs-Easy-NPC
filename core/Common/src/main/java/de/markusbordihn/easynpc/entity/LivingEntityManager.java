@@ -44,12 +44,9 @@ public class LivingEntityManager {
 
   private static final ConcurrentHashMap<String, ServerPlayer> playerNameMap =
       new ConcurrentHashMap<>();
-
   private static final ConcurrentHashMap<UUID, EasyNPC<?>> npcEntityMap = new ConcurrentHashMap<>();
-
   private static final ConcurrentHashMap<UUID, Set<EasyNPC<?>>> presetMap =
       new ConcurrentHashMap<>();
-
   private static final ConcurrentHashMap<UUID, ServerPlayer> playerMap = new ConcurrentHashMap<>();
 
   private LivingEntityManager() {}

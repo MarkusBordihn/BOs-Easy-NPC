@@ -60,20 +60,19 @@ public record ChangeModelPoseMessage(UUID uuid, ModelPose modelPose)
 
     // Validate name.
     if (this.modelPose == null) {
-      NetworkMessageRecord.log.error("Invalid model pose for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid model pose for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate Model data.
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
-      NetworkMessageRecord.log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    NetworkMessageRecord.log.debug(
-        "Change modelPose {} for {} from {}", this.modelPose, easyNPC, serverPlayer);
+    log.debug("Change modelPose {} for {} from {}", this.modelPose, easyNPC, serverPlayer);
     modelData.setModelPose(this.modelPose);
     easyNPC.getEntity().setPose(Pose.STANDING);
   }

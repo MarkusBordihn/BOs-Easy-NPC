@@ -54,7 +54,8 @@ import org.apache.logging.log4j.Logger;
 public class EasyNPCPresetEmptyItem extends Item {
 
   public static final String NAME = "easy_npc_preset_empty";
-  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String SPAWN_DATA_TAG = "SpawnData";
   private static final String ID_TAG = "id";
 

@@ -95,15 +95,13 @@ public record ChangeEntityAttributeMessage(
 
     // Validate name.
     if (entityAttribute == null) {
-      NetworkMessageRecord.log.error(
-          "Invalid entity attribute for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid entity attribute for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate value.
     if (booleanValue == null && floatValue == null && integerValue == null && stringValue == null) {
-      NetworkMessageRecord.log.error(
-          "Invalid value for {} for {} from {}", entityAttribute, easyNPC, serverPlayer);
+      log.error("Invalid value for {} for {} from {}", entityAttribute, easyNPC, serverPlayer);
       return;
     }
 
@@ -113,7 +111,7 @@ public record ChangeEntityAttributeMessage(
           AttributeHandler.setEntityAttribute(easyNPC, entityAttribute, booleanValue);
     }
     if (!successfullyChanged) {
-      NetworkMessageRecord.log.error(
+      log.error(
           "Unable to change entity attribute {} for {} from {}",
           entityAttribute,
           easyNPC,

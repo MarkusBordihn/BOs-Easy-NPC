@@ -59,22 +59,19 @@ public record SaveDialogSetMessage(UUID uuid, DialogDataSet dialogDataSet)
 
     // Verify dialog data set.
     if (this.dialogDataSet == null) {
-      NetworkMessageRecord.log.error(
-          "Unable to get dialog data set with message {} from {}", easyNPC, serverPlayer);
+      log.error("Unable to get dialog data set with message {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate Dialog data.
     DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
-      NetworkMessageRecord.log.error(
-          "Unable to get valid entity with UUID {} for {}", easyNPC, serverPlayer);
+      log.error("Unable to get valid entity with UUID {} for {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    NetworkMessageRecord.log.debug(
-        "Saving dialog {} for {} from {}", this.dialogDataSet, easyNPC, serverPlayer);
+    log.debug("Saving dialog {} for {} from {}", this.dialogDataSet, easyNPC, serverPlayer);
     dialogData.setDialogDataSet(this.dialogDataSet);
   }
 }

@@ -60,12 +60,12 @@ public record ChangePositionMessage(UUID uuid, Vec3 pos) implements NetworkMessa
 
     // Validate position.
     if (this.pos == null) {
-      NetworkMessageRecord.log.error("Invalid pos for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid pos for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    NetworkMessageRecord.log.debug("Change pos {} for {} from {}", this.pos, easyNPC, serverPlayer);
+    log.debug("Change pos {} for {} from {}", this.pos, easyNPC, serverPlayer);
     easyNPC.getEntity().setPos(this.pos);
   }
 }

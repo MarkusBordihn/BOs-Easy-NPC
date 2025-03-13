@@ -21,13 +21,6 @@ The project is split into multiple modules:
     - `Forge`: The Forge specific code.
     - `Fabric`: The Fabric specific code.
 
-In the end the 'core' and 'config-ui' modules are combined into a single mod for each mod loader.
-
-- `bundle`: The combined mod for core and config-ui.
-    - `Common`: The common code shared between the different mod loaders.
-    - `Forge`: The Forge specific code.
-    - `Fabric`: The Fabric specific code.
-
 They are split into different modules to make it easier to maintain the code and to make it easier
 to add new features or fix bugs.
 
@@ -37,11 +30,9 @@ Each of the modules are self-contained and can be built separately.
 
 The `core` module has no direct dependencies to other mods or modules.
 The `config-ui` module directly depends on the `core` module for the shared code.
-The `bundle` module directly depends on the `core` and `config-ui` modules for the shared code.
 
 Most of these dependencies are managed by the build system over local Maven repositories.
-This means you need to build the `core` module first before you can build the `config-ui` and
-`bundle` modules.
+This means you need to build the `core` module first before you can build the `config-ui` modules.
 
 Normally this is done automatically by the build system, but if you run into issues, you can build
 the modules manually.
@@ -54,7 +45,7 @@ To build the mod and their artifacts, you can use the following command in each 
 ./gradlew build
 ```
 
-Note: You need to run this command in each of the modules like `core`, `config-ui` and `bundle`.
+Note: You need to run this command in each of the modules like `core` and `config-ui`.
 Most IDEs like IntelliJ IDEA allows you to link Gradle projects, so you can easily access them.
 
 This will take some time, because it will download all dependencies and build the mod for all
@@ -90,12 +81,6 @@ Config UI Game Test:
 
 ```shell
 ./gradlew -p config-ui runAllGameTests
-```
-
-Bundle Game Test:
-
-```shell
-./gradlew -p bundle runAllGameTests
 ```
 
 Note: These commands will start the game with the test environment and run the tests.

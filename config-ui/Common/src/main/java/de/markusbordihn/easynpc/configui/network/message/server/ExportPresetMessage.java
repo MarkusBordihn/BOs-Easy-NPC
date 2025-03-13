@@ -58,7 +58,7 @@ public record ExportPresetMessage(UUID uuid, String name) implements NetworkMess
 
     // Validate name.
     if (this.name == null || this.name.isEmpty()) {
-      NetworkMessageRecord.log.warn("Export preset name is empty for {}", easyNPC);
+      log.warn("Export preset name is empty for {}", easyNPC);
       return;
     }
 

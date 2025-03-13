@@ -63,19 +63,19 @@ public record ChangeModelVisibilityMessage(UUID uuid, ModelPart modelPart, boole
 
     // Validate ModelPart.
     if (this.modelPart == null) {
-      NetworkMessageRecord.log.error("Invalid modelPart for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid modelPart for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate Model data.
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
-      NetworkMessageRecord.log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    NetworkMessageRecord.log.debug(
+    log.debug(
         "Change {} visibility to {} for {} from {}",
         this.modelPart,
         this.visible,
@@ -93,8 +93,7 @@ public record ChangeModelVisibilityMessage(UUID uuid, ModelPart modelPart, boole
 
     // Verify if custom model pose is really needed.
     if (!modelData.hasChangedModel()) {
-      NetworkMessageRecord.log.debug(
-          "Reset custom model pose for {} from {}", easyNPC, serverPlayer);
+      log.debug("Reset custom model pose for {} from {}", easyNPC, serverPlayer);
       modelData.setModelPose(ModelPose.DEFAULT);
     }
   }

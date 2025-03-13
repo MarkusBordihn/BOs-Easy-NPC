@@ -23,11 +23,8 @@ import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.editor.EditorType;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import java.util.EnumMap;
 import java.util.Map;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 

@@ -64,21 +64,21 @@ public record ExportWorldPresetMessage(UUID uuid, String name) implements Networ
 
     // Validate name.
     if (this.name == null || this.name.isEmpty()) {
-      NetworkMessageRecord.log.warn("Export preset name is empty for {}", easyNPC);
+      log.warn("Export preset name is empty for {}", easyNPC);
       return;
     }
 
     // Validate skin data.
     SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
     if (skinData == null) {
-      NetworkMessageRecord.log.warn("Export preset skin data is empty for {}", easyNPC);
+      log.warn("Export preset skin data is empty for {}", easyNPC);
       return;
     }
 
     // Validate Skin Model
     SkinModel skinModel = skinData.getSkinModel();
     if (skinModel == null) {
-      NetworkMessageRecord.log.warn("Export preset skin model is empty for {}", easyNPC);
+      log.warn("Export preset skin model is empty for {}", easyNPC);
       return;
     }
 
@@ -86,25 +86,24 @@ public record ExportWorldPresetMessage(UUID uuid, String name) implements Networ
     PresetData<?> presetData = easyNPC.getEasyNPCPresetData();
     CompoundTag compoundTag = presetData.serializePresetData();
     if (compoundTag == null || compoundTag.isEmpty()) {
-      NetworkMessageRecord.log.warn("Export preset data is empty for {}", easyNPC);
+      log.warn("Export preset data is empty for {}", easyNPC);
       return;
     }
 
     // Validate preset file.
     File presetFile = WorldPresetDataFiles.getPresetFile(skinModel, name);
     if (presetFile == null) {
-      NetworkMessageRecord.log.error(
-          "Failed to get preset file for {} with name {}", skinModel, name);
+      log.error("Failed to get preset file for {} with name {}", skinModel, name);
       return;
     }
 
     // Perform action.
-    NetworkMessageRecord.log.info(
+    log.info(
         "Exporting EasyNPC {} with {} and skin {} to {}", name, easyNPC, skinModel, presetFile);
     try {
       NbtIo.writeCompressed(compoundTag, presetFile);
     } catch (final IOException exception) {
-      NetworkMessageRecord.log.error(
+      log.error(
           "Failed to export EasyNPC {} with {} and skin {} to {}:",
           name,
           easyNPC,

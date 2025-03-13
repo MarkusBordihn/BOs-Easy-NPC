@@ -54,7 +54,7 @@ public record RemoveNPCMessage(UUID uuid) implements NetworkMessageRecord {
     }
 
     // Perform action.
-    NetworkMessageRecord.log.info("Removing Easy NPC {} requested by {}", easyNPC, serverPlayer);
+    log.info("Removing Easy NPC {} requested by {}", easyNPC, serverPlayer);
     easyNPC.getEntity().discard();
   }
 }

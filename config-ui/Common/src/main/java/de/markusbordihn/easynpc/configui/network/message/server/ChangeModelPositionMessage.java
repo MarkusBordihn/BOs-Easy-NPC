@@ -68,25 +68,25 @@ public record ChangeModelPositionMessage(UUID uuid, ModelPart modelPart, CustomP
 
     // Validate ModelPart.
     if (this.modelPart == null) {
-      NetworkMessageRecord.log.error("Invalid modelPart for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid modelPart for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate Positions.
     if (this.position == null) {
-      NetworkMessageRecord.log.error("Invalid position for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid position for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate Model data.
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
-      NetworkMessageRecord.log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    NetworkMessageRecord.log.debug(
+    log.debug(
         "Change {} position to {}° for {} from {}",
         modelPart,
         this.position,
@@ -104,8 +104,7 @@ public record ChangeModelPositionMessage(UUID uuid, ModelPart modelPart, CustomP
 
     // Verify if custom model pose is really needed.
     if (!modelData.hasChangedModel()) {
-      NetworkMessageRecord.log.debug(
-          "Reset custom model pose for {} from {}", easyNPC, serverPlayer);
+      log.debug("Reset custom model pose for {} from {}", easyNPC, serverPlayer);
       modelData.setModelPose(ModelPose.DEFAULT);
     }
   }

@@ -68,25 +68,25 @@ public record ChangeModelRotationMessage(UUID uuid, ModelPart modelPart, CustomR
 
     // Validate ModelPart.
     if (this.modelPart == null) {
-      NetworkMessageRecord.log.error("Invalid modelPart for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid modelPart for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate Rotations.
     if (this.rotation == null) {
-      NetworkMessageRecord.log.error("Invalid rotation for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid rotation for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate Model data.
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
-      NetworkMessageRecord.log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    NetworkMessageRecord.log.debug(
+    log.debug(
         "Change {} rotation to {}° {}° {}° for {} from {}",
         this.modelPart,
         this.rotation.x(),
@@ -106,8 +106,7 @@ public record ChangeModelRotationMessage(UUID uuid, ModelPart modelPart, CustomR
 
     // Verify if custom model pose is really needed.
     if (!modelData.hasChangedModel()) {
-      NetworkMessageRecord.log.debug(
-          "Reset custom model pose for {} from {}", easyNPC, serverPlayer);
+      log.debug("Reset custom model pose for {} from {}", easyNPC, serverPlayer);
       modelData.setModelPose(ModelPose.DEFAULT);
       easyNPC.getEntity().setPose(Pose.STANDING);
     }

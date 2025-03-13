@@ -91,7 +91,6 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
   }
 
   protected void renderEditLabels(PoseStack poseStack) {
-
     if (this.buttonNameBox != null) {
       Text.drawConfigString(
           poseStack, this.font, "button.name", leftPos + 12, this.buttonNameBox.y + 4);

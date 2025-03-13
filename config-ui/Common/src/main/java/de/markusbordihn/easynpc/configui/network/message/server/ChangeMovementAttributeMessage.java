@@ -77,8 +77,7 @@ public record ChangeMovementAttributeMessage(
 
     // Validate value.
     if (booleanValue == null && doubleValue == null && integerValue == null) {
-      NetworkMessageRecord.log.error(
-          "Invalid value for {} for {} from {}", attributeType, easyNPC, serverPlayer);
+      log.error("Invalid value for {} for {} from {}", attributeType, easyNPC, serverPlayer);
       return;
     }
 

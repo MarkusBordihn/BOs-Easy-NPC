@@ -61,26 +61,26 @@ public record SaveDialogMessage(UUID uuid, UUID dialogId, DialogDataEntry dialog
 
     // Validate dialog ID
     if (this.dialogId == null) {
-      NetworkMessageRecord.log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog data entry.
     if (this.dialogDataEntry == null) {
-      NetworkMessageRecord.log.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog data.
     DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
-      NetworkMessageRecord.log.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog
     if (!dialogData.hasDialog(this.dialogId)) {
-      NetworkMessageRecord.log.error(
+      log.error(
           "Unknown dialog button editor request for dialog {} for {} from {}",
           this.dialogId,
           easyNPC,
@@ -89,7 +89,7 @@ public record SaveDialogMessage(UUID uuid, UUID dialogId, DialogDataEntry dialog
     }
 
     // Perform action.
-    NetworkMessageRecord.log.debug(
+    log.debug(
         "Saving dialog data {} for dialog {} for {} from {}",
         this.dialogDataEntry,
         this.dialogId,

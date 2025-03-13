@@ -60,22 +60,20 @@ public record ChangeEntityBaseAttributeMessage(UUID uuid, ResourceLocation attri
 
     // Validate attribute.
     if (attribute == null) {
-      NetworkMessageRecord.log.error(
-          "Invalid base attribute for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid base attribute for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate value.
     if (value == null) {
-      NetworkMessageRecord.log.error(
+      log.error(
           "Invalid value for base attribute {} for {} from {}", attribute, easyNPC, serverPlayer);
       return;
     }
 
     // Set base attribute.
     if (!AttributeHandler.setBaseAttribute(easyNPC, attribute, value)) {
-      NetworkMessageRecord.log.error(
-          "Unable to set base attribute {} for {} from {}", attribute, easyNPC, serverPlayer);
+      log.error("Unable to set base attribute {} for {} from {}", attribute, easyNPC, serverPlayer);
     }
   }
 }

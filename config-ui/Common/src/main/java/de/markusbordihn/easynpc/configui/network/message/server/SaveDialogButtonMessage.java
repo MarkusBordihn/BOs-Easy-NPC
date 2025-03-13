@@ -68,34 +68,33 @@ public record SaveDialogButtonMessage(
 
     // Validate dialog id.
     if (this.dialogId == null) {
-      NetworkMessageRecord.log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog button data.
     if (this.dialogButtonEntry == null) {
-      NetworkMessageRecord.log.error(
-          "Invalid dialog button data for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid dialog button data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog data.
     DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
-      NetworkMessageRecord.log.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate action event data.
     ActionEventData<?> actionEventData = easyNPC.getEasyNPCActionEventData();
     if (actionEventData == null) {
-      NetworkMessageRecord.log.error("Invalid action data for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid action data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog for dialog button.
     if (!dialogData.hasDialog(this.dialogId)) {
-      NetworkMessageRecord.log.error(
+      log.error(
           "Unknown dialog button editor request for dialog {} for {} from {}",
           this.dialogId,
           easyNPC,
@@ -106,7 +105,7 @@ public record SaveDialogButtonMessage(
     // Validate dialog button id.
     if (this.dialogButtonId != null
         && !dialogData.hasDialogButton(this.dialogId, this.dialogButtonId)) {
-      NetworkMessageRecord.log.error(
+      log.error(
           "Invalid dialog button {} for {} from {}", this.dialogButtonId, easyNPC, serverPlayer);
       return;
     }
@@ -118,7 +117,7 @@ public record SaveDialogButtonMessage(
       if (minecraftServer != null) {
         int permissionLevel = minecraftServer.getProfilePermissions(serverPlayer.getGameProfile());
         if (permissionLevel > currentPermissionLevel) {
-          NetworkMessageRecord.log.debug(
+          log.debug(
               "Update owner permission level from {} to {} for {} from {}",
               currentPermissionLevel,
               permissionLevel,
@@ -131,7 +130,7 @@ public record SaveDialogButtonMessage(
 
     // Perform action.
     if (this.dialogButtonId == null) {
-      NetworkMessageRecord.log.info(
+      log.info(
           "Add new dialog button {} for dialog {} for {} from {}",
           dialogButtonEntry,
           dialogId,
@@ -142,7 +141,7 @@ public record SaveDialogButtonMessage(
           .getDialog(this.dialogId)
           .setDialogButton(this.dialogButtonEntry);
     } else {
-      NetworkMessageRecord.log.info(
+      log.info(
           "Edit existing dialog button {} for dialog {} for {} from {}",
           dialogButtonEntry,
           dialogId,

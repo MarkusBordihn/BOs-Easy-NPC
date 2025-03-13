@@ -66,30 +66,28 @@ public record OpenDialogButtonEditorMessage(UUID uuid, UUID dialogId, UUID dialo
 
     // Validate dialog id.
     if (this.dialogId == null) {
-      NetworkMessageRecord.log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog data.
     DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
-      NetworkMessageRecord.log.error(
-          "Unable to get valid dialog data for {} from {}", easyNPC, serverPlayer);
+      log.error("Unable to get valid dialog data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog data set.
     DialogDataSet dialogDataSet = dialogData.getDialogDataSet();
     if (dialogDataSet == null) {
-      NetworkMessageRecord.log.error(
-          "Unable to get valid dialog data set for {} from {}", easyNPC, serverPlayer);
+      log.error("Unable to get valid dialog data set for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog data.
     DialogDataEntry dialogDataEntry = dialogDataSet.getDialog(this.dialogId);
     if (dialogDataEntry == null) {
-      NetworkMessageRecord.log.error(
+      log.error(
           "Unable to get valid dialog data for dialog {} for {} from {}",
           easyNPC,
           this.dialogId,
@@ -99,12 +97,10 @@ public record OpenDialogButtonEditorMessage(UUID uuid, UUID dialogId, UUID dialo
 
     // Validate dialog button id and create new button if needed.
     UUID newDialogButtonId = this.dialogButtonId;
-    if (this.dialogButtonId != null
-        && this.dialogButtonId.equals(NetworkMessageRecord.EMPTY_UUID)) {
+    if (this.dialogButtonId != null && this.dialogButtonId.equals(EMPTY_UUID)) {
       DialogButtonEntry newDialogButton =
-          new DialogButtonEntry(
-              "Button " + NetworkMessageRecord.RANDOM.nextInt(1000), DialogButtonType.DEFAULT);
-      NetworkMessageRecord.log.info(
+          new DialogButtonEntry("Button " + RANDOM.nextInt(1000), DialogButtonType.DEFAULT);
+      log.info(
           "Created new dialog button {} for dialog {} for {} from {}",
           newDialogButton,
           this.dialogId,
@@ -113,13 +109,13 @@ public record OpenDialogButtonEditorMessage(UUID uuid, UUID dialogId, UUID dialo
       dialogDataEntry.setDialogButton(newDialogButton);
       newDialogButtonId = newDialogButton.id();
     } else if (dialogButtonId != null && !dialogData.hasDialogButton(dialogId, dialogButtonId)) {
-      NetworkMessageRecord.log.error(
+      log.error(
           "Invalid dialog button id {} for {} from {}", dialogButtonId, easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    NetworkMessageRecord.log.debug(
+    log.debug(
         "Open dialog button editor for dialog {} and button {} for {} from {}",
         this.dialogId,
         newDialogButtonId,

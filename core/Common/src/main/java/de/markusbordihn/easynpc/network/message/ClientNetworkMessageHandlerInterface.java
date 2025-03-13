@@ -36,7 +36,12 @@ public interface ClientNetworkMessageHandlerInterface {
 
   default void openMenu(UUID uuid, UUID menuId, ServerPlayer serverPlayer, CompoundTag data) {
     if (uuid != null && menuId != null && serverPlayer != null) {
-      log.debug("Send menu callback {} for npc {} and player {} with: {}", menuId, uuid, serverPlayer, data);
+      log.debug(
+          "Send menu callback {} for npc {} and player {} with: {}",
+          menuId,
+          uuid,
+          serverPlayer,
+          data);
       NetworkHandlerManager.sendMessageToPlayer(
           new OpenMenuCallbackMessage(uuid, menuId, data), serverPlayer);
     }

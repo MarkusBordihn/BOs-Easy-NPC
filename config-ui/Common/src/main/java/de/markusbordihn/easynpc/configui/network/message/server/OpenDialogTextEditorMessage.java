@@ -60,32 +60,30 @@ public record OpenDialogTextEditorMessage(UUID uuid, UUID dialogId)
 
     // Validate dialog id.
     if (this.dialogId == null) {
-      NetworkMessageRecord.log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog data.
     DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
-      NetworkMessageRecord.log.error(
-          "Unable to get valid dialog data for {} from {}", easyNPC, serverPlayer);
+      log.error("Unable to get valid dialog data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog id.
     if (!dialogData.hasDialog(this.dialogId)) {
-      NetworkMessageRecord.log.error(
+      log.error(
           "Unknown dialog button editor request for dialog {} for {} from {}",
           this.dialogId,
           easyNPC,
           serverPlayer);
-      NetworkMessageRecord.log.debug(
-          "Available dialogs for {} are {}", easyNPC, dialogData.getDialogDataSet());
+      log.debug("Available dialogs for {} are {}", easyNPC, dialogData.getDialogDataSet());
       return;
     }
 
     // Perform action.
-    NetworkMessageRecord.log.info(
+    log.info(
         "Open dialog editor with for dialog {} for {} from {}", dialogId, easyNPC, serverPlayer);
     MenuManager.getMenuHandler()
         .openEditorMenu(EditorType.DIALOG_TEXT, serverPlayer, easyNPC, this.dialogId, 0);

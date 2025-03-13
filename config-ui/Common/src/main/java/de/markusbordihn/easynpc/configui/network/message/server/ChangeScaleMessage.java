@@ -61,14 +61,13 @@ public record ChangeScaleMessage(UUID uuid, ModelScaleAxis scaleAxis, Float scal
 
     // Validate scale axis.
     if (this.scaleAxis == null) {
-      NetworkMessageRecord.log.error(
-          "Invalid scale axis request for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid scale axis request for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate scale.
     if (this.scaleValue == null || this.scaleValue < 0.1f || this.scaleValue > 10.0f) {
-      NetworkMessageRecord.log.error(
+      log.error(
           "Invalid scale {} request for UUID {} from {}", this.scaleValue, easyNPC, serverPlayer);
       return;
     }
@@ -76,7 +75,7 @@ public record ChangeScaleMessage(UUID uuid, ModelScaleAxis scaleAxis, Float scal
     // Validate scale data.
     ScaleData<?> scaleData = easyNPC.getEasyNPCScaleData();
     if (scaleData == null) {
-      NetworkMessageRecord.log.error("Invalid scale data for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid scale data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 

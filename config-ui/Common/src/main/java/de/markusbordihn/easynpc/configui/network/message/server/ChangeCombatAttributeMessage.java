@@ -91,7 +91,7 @@ public record ChangeCombatAttributeMessage(
               easyNPC, attributeType, Boolean.TRUE.equals(booleanValue));
       case DOUBLE -> AttributeHandler.setCombatAttribute(easyNPC, attributeType, doubleValue);
       default ->
-          NetworkMessageRecord.log.error(
+          log.error(
               "Invalid value type for {} for {} from {}", attributeType, easyNPC, serverPlayer);
     }
   }

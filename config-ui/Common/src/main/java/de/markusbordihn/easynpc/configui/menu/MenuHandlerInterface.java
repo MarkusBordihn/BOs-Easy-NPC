@@ -92,6 +92,7 @@ public interface MenuHandlerInterface {
       final ConfigurationType configurationType,
       final EditorType formerEditorType,
       final int pageIndex) {
+
     // Check for access rights.
     if (!AccessManager.hasAccess(serverPlayer, easyNPC)) {
       return;

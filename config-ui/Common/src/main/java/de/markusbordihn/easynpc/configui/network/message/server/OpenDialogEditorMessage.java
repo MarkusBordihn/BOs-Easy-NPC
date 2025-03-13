@@ -60,43 +60,38 @@ public record OpenDialogEditorMessage(UUID uuid, UUID dialogId) implements Netwo
 
     // Validate dialog id.
     if (this.dialogId == null) {
-      NetworkMessageRecord.log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog data.
     DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
-      NetworkMessageRecord.log.error(
-          "Unable to get valid dialog data for {} from {}", easyNPC, serverPlayer);
+      log.error("Unable to get valid dialog data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog id and create new dialog if needed.
     UUID newDialogId = this.dialogId;
-    if (this.dialogId.equals(NetworkMessageRecord.EMPTY_UUID)) {
+    if (this.dialogId.equals(EMPTY_UUID)) {
       String dialogName =
-          dialogData.getDialogDataSet().hasDialog()
-              ? "Dialog " + NetworkMessageRecord.RANDOM.nextInt(1000)
-              : "Default";
+          dialogData.getDialogDataSet().hasDialog() ? "Dialog " + RANDOM.nextInt(1000) : "Default";
       DialogDataEntry newDialogData = new DialogDataEntry(dialogName);
-      NetworkMessageRecord.log.info(
-          "Create new dialog {} for {} from {}", newDialogData, easyNPC, serverPlayer);
+      log.info("Create new dialog {} for {} from {}", newDialogData, easyNPC, serverPlayer);
       dialogData.getDialogDataSet().addDialog(newDialogData);
       newDialogId = newDialogData.getId();
     } else if (!dialogData.hasDialog(this.dialogId)) {
-      NetworkMessageRecord.log.error(
+      log.error(
           "Unknown dialog button editor request for dialog {} for {} from {}",
           this.dialogId,
           easyNPC,
           serverPlayer);
-      NetworkMessageRecord.log.debug(
-          "Available dialogs for {} are {}", easyNPC, dialogData.getDialogDataSet());
+      log.debug("Available dialogs for {} are {}", easyNPC, dialogData.getDialogDataSet());
       return;
     }
 
     // Perform action.
-    NetworkMessageRecord.log.info(
+    log.info(
         "Open dialog editor with for dialog {} for {} from {}", newDialogId, easyNPC, serverPlayer);
     MenuManager.getMenuHandler()
         .openEditorMenu(EditorType.DIALOG, serverPlayer, easyNPC, newDialogId, 0);

@@ -57,20 +57,20 @@ public record RemoveDialogMessage(UUID uuid, UUID dialogId) implements NetworkMe
 
     // Validate dialog ID
     if (this.dialogId == null) {
-      NetworkMessageRecord.log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog data
     DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
-      NetworkMessageRecord.log.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog
     if (!dialogData.hasDialog(this.dialogId)) {
-      NetworkMessageRecord.log.error(
+      log.error(
           "Unknown delete dialog request for dialog {} for {} from {}",
           this.dialogId,
           easyNPC,
@@ -80,11 +80,9 @@ public record RemoveDialogMessage(UUID uuid, UUID dialogId) implements NetworkMe
 
     // Perform action.
     if (dialogData.removeDialog(this.dialogId)) {
-      NetworkMessageRecord.log.info(
-          "Removed dialog {} for {} from {}", this.dialogId, easyNPC, serverPlayer);
+      log.info("Removed dialog {} for {} from {}", this.dialogId, easyNPC, serverPlayer);
     } else {
-      NetworkMessageRecord.log.warn(
-          "Unable to remove dialog {} for {} from {}", this.dialogId, easyNPC, serverPlayer);
+      log.warn("Unable to remove dialog {} for {} from {}", this.dialogId, easyNPC, serverPlayer);
     }
   }
 }

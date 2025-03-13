@@ -30,11 +30,8 @@ import de.markusbordihn.easynpc.configui.network.NetworkHandler;
 import de.markusbordihn.easynpc.configui.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
-import de.markusbordihn.easynpc.server.ServerEvents;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,10 +61,6 @@ public class ConfigUIMain implements ModInitializer {
         "{} Command register event ...", de.markusbordihn.easynpc.Constants.LOG_REGISTER_PREFIX);
     CommandRegistrationCallback.EVENT.register(
         (dispatcher, dedicated) -> CommandManager.registerCommands(dispatcher));
-
-    log.info("{} Server Events ...", de.markusbordihn.easynpc.Constants.LOG_REGISTER_PREFIX);
-    ServerLifecycleEvents.SERVER_STARTING.register(ServerEvents::handleServerStarting);
-    ServerTickEvents.END_SERVER_TICK.register(ServerEvents::handleServerTick);
 
     log.info("{} Menu Types ...", de.markusbordihn.easynpc.Constants.LOG_REGISTER_PREFIX);
     ModMenuTypes.register();

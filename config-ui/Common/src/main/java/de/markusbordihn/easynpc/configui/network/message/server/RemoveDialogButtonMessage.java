@@ -59,28 +59,27 @@ public record RemoveDialogButtonMessage(UUID uuid, UUID dialogId, UUID dialogBut
 
     // Validate dialog ID
     if (this.dialogId == null) {
-      NetworkMessageRecord.log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid dialog id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog button ID
     if (this.dialogButtonId == null) {
-      NetworkMessageRecord.log.error(
-          "Invalid dialog button id for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid dialog button id for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog data
     DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
-      NetworkMessageRecord.log.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate dialog button
     if (!dialogData.hasDialog(this.dialogId)
         || !dialogData.hasDialogButton(this.dialogId, this.dialogButtonId)) {
-      NetworkMessageRecord.log.error(
+      log.error(
           "Unknown delete dialog request for dialog button {} for dialog {} for {} from {}",
           this.dialogButtonId,
           this.dialogId,
@@ -91,14 +90,14 @@ public record RemoveDialogButtonMessage(UUID uuid, UUID dialogId, UUID dialogBut
 
     // Perform action.
     if (dialogData.removeDialogButton(this.dialogId, this.dialogButtonId)) {
-      NetworkMessageRecord.log.info(
+      log.info(
           "Removed dialog button {} from dialog {} for {} from {}",
           this.dialogButtonId,
           this.dialogId,
           easyNPC,
           serverPlayer);
     } else {
-      NetworkMessageRecord.log.warn(
+      log.warn(
           "Unable to remove dialog button {} from dialog {} for {} from {}",
           this.dialogButtonId,
           this.dialogId,

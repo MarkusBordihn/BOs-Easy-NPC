@@ -109,8 +109,7 @@ public record ImportPresetMessage(
             null);
         break;
       default:
-        NetworkMessageRecord.log.error(
-            "Invalid preset type {} from {}", this.presetType, serverPlayer);
+        log.error("Invalid preset type {} from {}", this.presetType, serverPlayer);
     }
   }
 }

@@ -66,7 +66,7 @@ public record ChangeAdvancedTradingMessage(
 
     // Validate trading offer index
     if (this.tradingOfferIndex < 0) {
-      NetworkMessageRecord.log.error(
+      log.error(
           "Trading offer index {} is out of range (>= 0) for {}",
           this.tradingOfferIndex,
           serverPlayer);
@@ -75,14 +75,13 @@ public record ChangeAdvancedTradingMessage(
 
     // Validate trading value type
     if (this.tradingValueType == null) {
-      NetworkMessageRecord.log.error(
-          "Trading value type is unknown for {} from {}", easyNPC, serverPlayer);
+      log.error("Trading value type is unknown for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate trading value
     if (this.tradingValue < 0.0) {
-      NetworkMessageRecord.log.error(
+      log.error(
           "Trading value {} for {} is out of range (>= 0) for {}",
           tradingValue,
           tradingValueType,
@@ -93,15 +92,14 @@ public record ChangeAdvancedTradingMessage(
     // Validate trading data
     TradingData<?> tradingData = easyNPC.getEasyNPCTradingData();
     if (tradingData == null) {
-      NetworkMessageRecord.log.error(
-          "Trading data for {} is not available for {}", easyNPC, serverPlayer);
+      log.error("Trading data for {} is not available for {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
     switch (this.tradingValueType) {
       case RESET_TRADING_EVERY_MIN:
-        NetworkMessageRecord.log.debug(
+        log.debug(
             "Set trading resets every min to {} for {} from {}",
             this.tradingValue,
             easyNPC,
@@ -109,7 +107,7 @@ public record ChangeAdvancedTradingMessage(
         tradingData.getTradingDataSet().setResetsEveryMin((int) this.tradingValue);
         break;
       case MAX_USES:
-        NetworkMessageRecord.log.debug(
+        log.debug(
             "Set advanced trading max uses {}# for {} to {} by {}",
             this.tradingOfferIndex,
             easyNPC,
@@ -118,7 +116,7 @@ public record ChangeAdvancedTradingMessage(
         tradingData.setAdvancedTradingMaxUses(this.tradingOfferIndex, (int) this.tradingValue);
         break;
       case REWARD_EXP:
-        NetworkMessageRecord.log.debug(
+        log.debug(
             "Set advanced trading xp {}# for {} to {} by {}",
             this.tradingOfferIndex,
             easyNPC,
@@ -127,7 +125,7 @@ public record ChangeAdvancedTradingMessage(
         tradingData.setAdvancedTradingXp(this.tradingOfferIndex, (int) this.tradingValue);
         break;
       case PRICE_MULTIPLIER:
-        NetworkMessageRecord.log.debug(
+        log.debug(
             "Set advanced trading price multiplier {}# for {} to {} by {}",
             this.tradingOfferIndex,
             easyNPC,
@@ -136,7 +134,7 @@ public record ChangeAdvancedTradingMessage(
         tradingData.setAdvancedTradingPriceMultiplier(this.tradingOfferIndex, this.tradingValue);
         break;
       case DEMAND:
-        NetworkMessageRecord.log.debug(
+        log.debug(
             "Set advanced trading demand {}# for {} to {} by {}",
             this.tradingOfferIndex,
             easyNPC,
@@ -145,7 +143,7 @@ public record ChangeAdvancedTradingMessage(
         tradingData.setAdvancedTradingDemand(this.tradingOfferIndex, (int) this.tradingValue);
         break;
       default:
-        NetworkMessageRecord.log.error(
+        log.error(
             "Trading value type {} with value {}# for {} is unknown for {}",
             this.tradingValueType,
             this.tradingValue,

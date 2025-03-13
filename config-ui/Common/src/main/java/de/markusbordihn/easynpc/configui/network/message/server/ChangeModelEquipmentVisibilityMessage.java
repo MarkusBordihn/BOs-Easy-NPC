@@ -61,19 +61,19 @@ public record ChangeModelEquipmentVisibilityMessage(
 
     // Validate ModelPart.
     if (this.equipmentSlot == null) {
-      NetworkMessageRecord.log.error("Invalid equipmentSlot for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid equipmentSlot for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate Model data.
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
-      NetworkMessageRecord.log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    NetworkMessageRecord.log.debug(
+    log.debug(
         "Change {} visibility to {} for {} from {}",
         this.equipmentSlot,
         this.visible,
@@ -93,8 +93,7 @@ public record ChangeModelEquipmentVisibilityMessage(
         modelData.setModelBootsVisible(this.visible);
         break;
       default:
-        NetworkMessageRecord.log.error(
-            "Invalid equipmentSlot {} for {} from {}", equipmentSlot, easyNPC, serverPlayer);
+        log.error("Invalid equipmentSlot {} for {} from {}", equipmentSlot, easyNPC, serverPlayer);
         break;
     }
   }

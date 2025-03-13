@@ -54,13 +54,12 @@ public record RemoveObjectiveMessage(UUID uuid, ObjectiveDataEntry objectiveData
   public void handleServer(final ServerPlayer serverPlayer) {
     EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
     if (easyNPC == null || this.objectiveDataEntry == null) {
-      NetworkMessageRecord.log.error("Invalid data to remove objective for {}: ", this);
+      log.error("Invalid data to remove objective for {}: ", this);
       return;
     }
 
     if (!ObjectiveHandler.removeCustomObjective(easyNPC, this.objectiveDataEntry)) {
-      NetworkMessageRecord.log.error(
-          "Failed to remove objective {} for {}", objectiveDataEntry, easyNPC);
+      log.error("Failed to remove objective {} for {}", objectiveDataEntry, easyNPC);
     }
   }
 }

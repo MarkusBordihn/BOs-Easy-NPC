@@ -74,8 +74,7 @@ public record ChangeSkinMessage(
         || this.skinName == null
         || this.skinType == null
         || easyNPC.getEasyNPCSkinData() == null) {
-      NetworkMessageRecord.log.error(
-          "Skin validation failed for {} from {}", easyNPC, serverPlayer);
+      log.error("Skin validation failed for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
@@ -87,7 +86,7 @@ public record ChangeSkinMessage(
           case PLAYER_SKIN -> {
             UUID userUUID = this.skinUUID;
             if (userUUID == null || Constants.EMPTY_UUID.equals(this.skinUUID)) {
-              NetworkMessageRecord.log.debug("Try to convert user {} to UUID ...", this.skinName);
+              log.debug("Try to convert user {} to UUID ...", this.skinName);
               userUUID = PlayersUtils.getUserUUID(serverPlayer.getServer(), this.skinName);
             }
             yield SkinHandler.setPlayerSkin(easyNPC, this.skinName, userUUID);
@@ -95,7 +94,7 @@ public record ChangeSkinMessage(
           case SECURE_REMOTE_URL, INSECURE_REMOTE_URL ->
               SkinHandler.setRemoteSkin(easyNPC, this.skinURL);
           default -> {
-            NetworkMessageRecord.log.error(
+            log.error(
                 "Failed processing skin:{} uuid:{} url:{} type:{} for {} from {}",
                 this.skinName,
                 this.skinUUID,
@@ -108,7 +107,7 @@ public record ChangeSkinMessage(
         };
 
     if (!successfullyChanged) {
-      NetworkMessageRecord.log.error(
+      log.error(
           "Failed changing skin:{} uuid:{} url:{} type:{} for {} from {}",
           this.skinName,
           this.skinUUID,

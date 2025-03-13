@@ -81,31 +81,27 @@ public record ChangeDisplayAttributeMessage(
 
     // Validate name.
     if (this.displayAttributeType == null) {
-      NetworkMessageRecord.log.error(
-          "Invalid entity attribute for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid entity attribute for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate value.
     if (this.booleanValue == null && this.integerValue == null) {
-      NetworkMessageRecord.log.error(
-          "Invalid value for {} for {} from {}", displayAttributeType, easyNPC, serverPlayer);
+      log.error("Invalid value for {} for {} from {}", displayAttributeType, easyNPC, serverPlayer);
       return;
     }
 
     // Validate display attribute data.
     DisplayAttributeData<?> displayAttributeData = easyNPC.getEasyNPCDisplayAttributeData();
     if (displayAttributeData == null) {
-      NetworkMessageRecord.log.error(
-          "Unable to get display attribute data for {} from {}", easyNPC, serverPlayer);
+      log.error("Unable to get display attribute data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate display attribute set.
     DisplayAttributeSet displayAttributeSet = displayAttributeData.getDisplayAttributeSet();
     if (displayAttributeSet == null) {
-      NetworkMessageRecord.log.error(
-          "Unable to get display attribute set for {} from {}", easyNPC, serverPlayer);
+      log.error("Unable to get display attribute set for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
@@ -113,7 +109,7 @@ public record ChangeDisplayAttributeMessage(
     DisplayAttributeEntry displayAttributeEntry =
         new DisplayAttributeEntry(
             this.displayAttributeType, Boolean.TRUE.equals(this.booleanValue), this.integerValue);
-    NetworkMessageRecord.log.debug(
+    log.debug(
         "Change display attribute {} for {} to {}",
         this.displayAttributeType,
         easyNPC,

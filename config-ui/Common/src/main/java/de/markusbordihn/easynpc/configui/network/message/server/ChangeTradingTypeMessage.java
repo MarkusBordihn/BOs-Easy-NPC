@@ -59,20 +59,19 @@ public record ChangeTradingTypeMessage(UUID uuid, TradingType tradingType)
 
     // Validate trading type
     if (this.tradingType == null) {
-      NetworkMessageRecord.log.error("Invalid trading type for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid trading type for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate trading data.
     TradingData<?> tradingData = easyNPC.getEasyNPCTradingData();
     if (tradingData == null) {
-      NetworkMessageRecord.log.error("Invalid trading data for {} from {}", easyNPC, serverPlayer);
+      log.error("Invalid trading data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    NetworkMessageRecord.log.debug(
-        "Change trading type: {} for {} from {}", this.tradingType, easyNPC, serverPlayer);
+    log.debug("Change trading type: {} for {} from {}", this.tradingType, easyNPC, serverPlayer);
     tradingData.getTradingDataSet().setType(this.tradingType);
     tradingData.updateTradingDataSet();
   }
