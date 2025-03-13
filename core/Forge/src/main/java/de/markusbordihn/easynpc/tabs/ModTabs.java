@@ -29,7 +29,7 @@ public class ModTabs {
   public static final CreativeModeTab TAB_CONFIG_ITEMS =
       new CreativeModeTab(Constants.MOD_PREFIX + "config_items") {
         public ItemStack makeIcon() {
-          return ModItems.EASY_NPC_WAND.get().getDefaultInstance();
+          return ModItems.MOVE_EASY_NPC.get().getDefaultInstance();
         }
       };
   public static final CreativeModeTab TAB_SPAWN_EGGS =

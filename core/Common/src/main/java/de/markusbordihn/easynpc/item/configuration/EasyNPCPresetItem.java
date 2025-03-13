@@ -20,10 +20,13 @@
 package de.markusbordihn.easynpc.item.configuration;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntity;
+import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
@@ -38,7 +41,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.SpawnData;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import org.apache.logging.log4j.LogManager;
@@ -62,6 +69,14 @@ public class EasyNPCPresetItem extends Item {
     super(properties);
   }
 
+  public static UUID getPresetUUID(ItemStack itemStack) {
+    CompoundTag compoundTag = getPreset(itemStack);
+    if (compoundTag.contains(PresetData.PRESET_UUID_TAG)) {
+      return compoundTag.getUUID(PresetData.PRESET_UUID_TAG);
+    }
+    return null;
+  }
+
   public static boolean hasPreset(ItemStack itemStack) {
     CompoundTag compoundTag = itemStack.getOrCreateTag();
     return compoundTag.contains(PRESET_TAG) && !compoundTag.getCompound(PRESET_TAG).isEmpty();
@@ -76,19 +91,18 @@ public class EasyNPCPresetItem extends Item {
       ItemStack itemStack, ResourceLocation entityType, CompoundTag presetData) {
     CompoundTag compoundTag = itemStack.getOrCreateTag();
     compoundTag.putString(ENTITY_TYPE_TAG, entityType.toString());
+
+    // Clean up preset data
+    if (presetData.contains(FIRE_TAG)) {
+      presetData.remove(FIRE_TAG);
+    }
+    if (presetData.contains(FALL_DISTANCE_TAG)) {
+      presetData.remove(FALL_DISTANCE_TAG);
+    }
+    if (presetData.contains(ON_GROUND_TAG)) {
+      presetData.remove(ON_GROUND_TAG);
+    }
     compoundTag.put(PRESET_TAG, presetData);
-    if (compoundTag.contains(FIRE_TAG)) {
-      compoundTag.remove(FIRE_TAG);
-    }
-    if (compoundTag.contains(FALL_DISTANCE_TAG)) {
-      compoundTag.remove(FALL_DISTANCE_TAG);
-    }
-    if (compoundTag.contains(MOTION_TAG)) {
-      compoundTag.remove(MOTION_TAG);
-    }
-    if (compoundTag.contains(ON_GROUND_TAG)) {
-      compoundTag.remove(ON_GROUND_TAG);
-    }
   }
 
   public static String getCustomName(ItemStack itemStack) {
@@ -112,23 +126,6 @@ public class EasyNPCPresetItem extends Item {
     CompoundTag compoundTag = itemStack.getOrCreateTag();
     if (compoundTag.contains(ENTITY_TYPE_TAG)) {
       return EntityType.byString(compoundTag.getString(ENTITY_TYPE_TAG)).orElse(null);
-    }
-    return null;
-  }
-
-  public static void setSpawnerUUID(ItemStack itemStack, UUID uuid) {
-    CompoundTag compoundTag = itemStack.getOrCreateTag();
-    if (uuid != null) {
-      compoundTag.putUUID(SPAWNER_UUID_TAG, uuid);
-    } else {
-      compoundTag.remove(SPAWNER_UUID_TAG);
-    }
-  }
-
-  public static UUID getSpawnerUUID(ItemStack itemStack) {
-    CompoundTag compoundTag = itemStack.getOrCreateTag();
-    if (compoundTag.contains(SPAWNER_UUID_TAG)) {
-      return compoundTag.getUUID(SPAWNER_UUID_TAG);
     }
     return null;
   }
@@ -160,20 +157,15 @@ public class EasyNPCPresetItem extends Item {
     }
     entity.load(entityPreset);
 
-    // Set spawner UUID, if available.
-    UUID spawnerUUID = getSpawnerUUID(itemStack);
-    if (spawnerUUID != null && entity instanceof EasyNPC<?> easyNPC) {
-      easyNPC.getEasyNPCSpawnerData().setSpawnerUUID(getSpawnerUUID(itemStack));
-    }
-
     // Move entity to and spawn entity.
     entity.moveTo(blockPos.getX() + 0.5f, blockPos.getY(), blockPos.getZ() + 0.5f);
     if (level.addFreshEntity(entity)) {
+      UUID presetUUID = getPresetUUID(itemStack);
       log.debug(
-          "Spawned {} at {} from spawner {} with {} in {}",
+          "Spawned {} at {} with preset UUID {} and {} in {}",
           entityType,
           blockPos,
-          spawnerUUID,
+          presetUUID,
           entityPreset,
           level);
       return true;
@@ -182,8 +174,8 @@ public class EasyNPCPresetItem extends Item {
   }
 
   @Override
-  public InteractionResult useOn(UseOnContext context) {
-    Level level = context.getLevel();
+  public InteractionResult useOn(UseOnContext useOnContext) {
+    Level level = useOnContext.getLevel();
 
     // Ignore client side
     if (level.isClientSide) {
@@ -191,19 +183,48 @@ public class EasyNPCPresetItem extends Item {
     }
 
     // Verify item stack, preset and entity type.
-    ItemStack itemStack = context.getItemInHand();
+    ItemStack itemStack = useOnContext.getItemInHand();
     if (itemStack.isEmpty() || !hasPreset(itemStack) || !hasEntityType(itemStack)) {
       log.warn("No valid preset found in {}!", itemStack);
       return InteractionResult.FAIL;
     }
 
+    // Check for Spawner Block
+    BlockPos blockPos = useOnContext.getClickedPos();
+    BlockEntity blockEntity = level.getBlockEntity(blockPos);
+    if (blockEntity instanceof SpawnerBlockEntity spawnerBlockEntity) {
+      BaseSpawner baseSpawner = spawnerBlockEntity.getSpawner();
+      SpawnData spawnData = new SpawnData(getPreset(itemStack), Optional.empty());
+      log.debug("Set spawn data {} for spawner {} at {}", spawnData, spawnerBlockEntity, blockPos);
+      baseSpawner.setNextSpawnData(level, blockPos, spawnData);
+      itemStack.shrink(1);
+      return InteractionResult.CONSUME;
+    }
+
+    // Check for NPC Spawner Block
+    if (blockEntity instanceof EasyNPCSpawnerBlockEntity easyNPCSpawnerBlockEntity) {
+      BaseSpawner baseSpawner = easyNPCSpawnerBlockEntity.getSpawner();
+      SpawnData spawnData = new SpawnData(getPreset(itemStack), Optional.empty());
+      log.debug(
+          "Set spawn data {} for base NPC spawner {} at {}",
+          spawnData,
+          easyNPCSpawnerBlockEntity,
+          blockPos);
+      baseSpawner.setNextSpawnData(level, blockPos, spawnData);
+      itemStack.shrink(1);
+      return InteractionResult.CONSUME;
+    }
+
     // Find next free position in x and z direction and spawn entity
     Iterable<MutableBlockPos> possibleSpawnPositions =
-        BlockPos.spiralAround(context.getClickedPos(), 4, Direction.NORTH, Direction.EAST);
-    for (MutableBlockPos blockPos : possibleSpawnPositions) {
-      AABB aabb = new AABB(blockPos).inflate(0.1);
+        BlockPos.spiralAround(useOnContext.getClickedPos(), 4, Direction.NORTH, Direction.EAST);
+    for (MutableBlockPos possibleSpawnPosition : possibleSpawnPositions) {
+      AABB aabb = new AABB(possibleSpawnPosition).inflate(0.1);
       BlockPos targetBlockPos =
-          new BlockPos(blockPos.getX() + 0.5f, blockPos.getY() + 1f, blockPos.getZ() + 0.5f);
+          new BlockPos(
+              possibleSpawnPosition.getX() + 0.5f,
+              possibleSpawnPosition.getY() + 1f,
+              possibleSpawnPosition.getZ() + 0.5f);
       if (level.getBlockState(targetBlockPos.above()).isAir()
           && level.getEntitiesOfClass(Entity.class, aabb).isEmpty()
           && spawnAtPosition(targetBlockPos, itemStack, level)) {
@@ -224,18 +245,33 @@ public class EasyNPCPresetItem extends Item {
   public void appendHoverText(
       ItemStack itemStack, Level level, List<Component> tooltipList, TooltipFlag tooltipFlag) {
     if (hasPreset(itemStack)) {
+
+      // Add preset UUID to tooltip
+      UUID presetUUID = getPresetUUID(itemStack);
+      if (presetUUID != null) {
+        tooltipList.add(
+            TextComponent.getText(presetUUID.toString()).withStyle(ChatFormatting.GRAY));
+      }
+
+      // Add item hint
+      tooltipList.add(
+          TextComponent.getTranslatedTextRaw(Constants.TEXT_ITEM_PREFIX + NAME)
+              .withStyle(ChatFormatting.GREEN));
+
+      // Add custom name and entity type to tooltip
       EntityType<?> entityType = getEntityType(itemStack);
       if (entityType != null) {
-        tooltipList.add(TextComponent.getTranslatedTextRaw(Constants.TEXT_ITEM_PREFIX + NAME));
         String customName = getCustomName(itemStack);
         if (customName != null) {
           tooltipList.add(
               TextComponent.getTranslatedTextRaw(
-                  Constants.TEXT_ITEM_PREFIX + NAME + ".custom_name", customName));
+                      Constants.TEXT_ITEM_PREFIX + NAME + ".custom_name", customName)
+                  .withStyle(ChatFormatting.GRAY));
         }
         tooltipList.add(
             TextComponent.getTranslatedTextRaw(
-                Constants.TEXT_ITEM_PREFIX + NAME + ".entity_type", entityType.getDescription()));
+                    Constants.TEXT_ITEM_PREFIX + NAME + ".entity_type", entityType.getDescription())
+                .withStyle(ChatFormatting.GRAY));
       }
     }
   }

@@ -40,7 +40,7 @@ public class DebugCommand extends Command {
     return Commands.literal("debug")
         .requires(cs -> cs.hasPermission(Commands.LEVEL_GAMEMASTERS))
         .then(
-            Commands.literal("log")
+            Commands.literal("core")
                 .then(
                     Commands.argument("enable", BoolArgumentType.bool())
                         .executes(

@@ -20,11 +20,8 @@
 package de.markusbordihn.easynpc.network.message;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
 import de.markusbordihn.easynpc.network.NetworkHandlerManager;
-import de.markusbordihn.easynpc.network.message.client.ExportClientPresetMessage;
 import de.markusbordihn.easynpc.network.message.client.OpenMenuCallbackMessage;
 import de.markusbordihn.easynpc.network.message.client.SyncDataMessage;
 import java.util.UUID;
@@ -36,29 +33,6 @@ import org.apache.logging.log4j.Logger;
 public interface ClientNetworkMessageHandlerInterface {
 
   Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  default void exportClientPreset(
-      final UUID uuid, final String name, final ServerPlayer serverPlayer) {
-    if (name == null || name.isEmpty() || !NetworkMessageRecord.checkAccess(uuid, serverPlayer)) {
-      return;
-    }
-
-    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    PresetData<?> presetData = easyNPC.getEasyNPCPresetData();
-    CompoundTag compoundTag = presetData.exportPresetData();
-    log.info(
-        "Exporting preset for {} to {}",
-        easyNPC.getEntity().getName().getString(),
-        serverPlayer.getName().getString());
-    NetworkHandlerManager.sendMessageToPlayer(
-        new ExportClientPresetMessage(
-            uuid,
-            easyNPC.getEntity().getName().getString(),
-            easyNPC.getEasyNPCSkinData().getSkinModel(),
-            name,
-            compoundTag),
-        serverPlayer);
-  }
 
   default void openMenu(UUID uuid, UUID menuId, ServerPlayer serverPlayer, CompoundTag data) {
     if (uuid != null && menuId != null && serverPlayer != null) {

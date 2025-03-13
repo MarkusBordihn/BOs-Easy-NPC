@@ -29,16 +29,17 @@ import de.markusbordihn.easynpc.entity.easynpc.data.CustomAttributeData;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeData;
 import de.markusbordihn.easynpc.entity.easynpc.data.GuiData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ServerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SoundData;
-import de.markusbordihn.easynpc.entity.easynpc.data.SpawnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TickerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
@@ -68,16 +69,17 @@ public interface EasyNPCBase<E extends PathfinderMob>
         DialogData<E>,
         DisplayAttributeData<E>,
         GuiData<E>,
+        ModelData<E>,
         NavigationData<E>,
         ObjectiveData<E>,
         OwnerData<E>,
         PresetData<E>,
         ProfessionData<E>,
         RenderData<E>,
+        ScaleData<E>,
         ServerData<E>,
         SkinData<E>,
         SoundData<E>,
-        SpawnerData<E>,
         TickerData<E>,
         TradingData<E>,
         VariantData<E> {
@@ -225,10 +227,6 @@ public interface EasyNPCBase<E extends PathfinderMob>
     if (objectiveData != null) {
       objectiveData.defineCustomObjectiveData();
     }
-    SpawnerData<E> spawnerData = getEasyNPCSpawnerData();
-    if (spawnerData != null) {
-      spawnerData.defineCustomSpawnerData();
-    }
   }
 
   default void addEasyNPCBaseAdditionalSaveData(CompoundTag compoundTag) {
@@ -288,10 +286,6 @@ public interface EasyNPCBase<E extends PathfinderMob>
     SoundData<E> soundData = getEasyNPCSoundData();
     if (soundData != null) {
       soundData.addAdditionalSoundData(compoundTag);
-    }
-    SpawnerData<E> spawnerData = getEasyNPCSpawnerData();
-    if (spawnerData != null) {
-      spawnerData.addAdditionalSpawnerData(compoundTag);
     }
     TradingData<E> tradingData = getEasyNPCTradingData();
     if (tradingData != null) {
@@ -364,10 +358,6 @@ public interface EasyNPCBase<E extends PathfinderMob>
     SoundData<E> soundData = getEasyNPCSoundData();
     if (soundData != null) {
       soundData.readAdditionalSoundData(compoundTag);
-    }
-    SpawnerData<E> spawnerData = getEasyNPCSpawnerData();
-    if (spawnerData != null) {
-      spawnerData.readAdditionalSpawnerData(compoundTag);
     }
     TradingData<E> tradingData = getEasyNPCTradingData();
     if (tradingData != null) {

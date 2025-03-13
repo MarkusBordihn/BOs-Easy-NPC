@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.base;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.EasyNPCModelRenderer;
-import de.markusbordihn.easynpc.entity.EasyNPCBaseModelEntity;
+import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ArmedModel;
@@ -37,7 +37,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class BaseHumanoidMobModelRenderer<
-        E extends EasyNPCBaseModelEntity<E>, V, M extends EntityModel<E> & ArmedModel>
+        E extends EasyNPCBaseEntity<E>, V, M extends EntityModel<E> & ArmedModel>
     extends MobRenderer<E, M> implements EasyNPCModelRenderer<E, M> {
 
   protected final Map<V, ResourceLocation> textures;

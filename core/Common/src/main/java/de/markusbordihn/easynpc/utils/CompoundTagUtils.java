@@ -19,13 +19,18 @@
 
 package de.markusbordihn.easynpc.utils;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import java.util.HashSet;
 import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CompoundTagUtils {
 
@@ -33,6 +38,7 @@ public class CompoundTagUtils {
   public static final String X_TAG = "X";
   public static final String Y_TAG = "Y";
   public static final String Z_TAG = "Z";
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private CompoundTagUtils() {}
 
@@ -102,5 +108,14 @@ public class CompoundTagUtils {
                   });
         });
     return resourceLocations;
+  }
+
+  public static CompoundTag parseSNBT(String snbt) {
+    try {
+      return TagParser.parseTag(snbt);
+    } catch (CommandSyntaxException e) {
+      log.error("Failed to parse SNBT: {}", snbt, e);
+    }
+    return new CompoundTag();
   }
 }
