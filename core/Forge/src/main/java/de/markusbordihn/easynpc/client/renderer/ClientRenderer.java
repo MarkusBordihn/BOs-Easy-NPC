@@ -20,7 +20,9 @@
 package de.markusbordihn.easynpc.client.renderer;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.block.ModBlocks;
 import de.markusbordihn.easynpc.client.model.ModModelLayers;
+import de.markusbordihn.easynpc.client.renderer.blockentity.BaseEasyNPCSpawnerBlockEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.custom.FairyModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.custom.OrcModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.CustomHumanoidArmorLayer;
@@ -45,9 +47,12 @@ import de.markusbordihn.easynpc.client.renderer.entity.standard.ZombieVillagerMo
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -57,6 +62,29 @@ public class ClientRenderer {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ClientRenderer() {}
+
+  public static void registerBlockEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+    log.info("{} Block Entity Renderers ...", Constants.LOG_REGISTER_PREFIX);
+
+    event.registerBlockEntityRenderer(
+        ModBlocks.EASY_NPC_SPAWNER_ENTITY.get(), BaseEasyNPCSpawnerBlockEntityRenderer::new);
+  }
+
+  public static void registerRenderLayers(final FMLClientSetupEvent event) {
+    log.info("{} Render Layers ...", Constants.LOG_REGISTER_PREFIX);
+
+    event.enqueueWork(
+        () -> {
+          ItemBlockRenderTypes.setRenderLayer(
+              ModBlocks.EASY_NPC_SPAWNER_BOSS.get(), RenderType.cutoutMipped());
+          ItemBlockRenderTypes.setRenderLayer(
+              ModBlocks.EASY_NPC_SPAWNER_DEFAULT.get(), RenderType.cutoutMipped());
+          ItemBlockRenderTypes.setRenderLayer(
+              ModBlocks.EASY_NPC_SPAWNER_GROUP.get(), RenderType.cutoutMipped());
+          ItemBlockRenderTypes.setRenderLayer(
+              ModBlocks.EASY_NPC_SPAWNER_SINGLE.get(), RenderType.cutoutMipped());
+        });
+  }
 
   public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
     log.info("{} Entity Renders ...", Constants.LOG_REGISTER_PREFIX);

@@ -197,6 +197,7 @@ public class EasyNPCPresetItem extends Item {
       SpawnData spawnData = new SpawnData(getPreset(itemStack), Optional.empty());
       log.debug("Set spawn data {} for spawner {} at {}", spawnData, spawnerBlockEntity, blockPos);
       baseSpawner.setNextSpawnData(level, blockPos, spawnData);
+      spawnerBlockEntity.setChanged();
       itemStack.shrink(1);
       return InteractionResult.CONSUME;
     }
@@ -211,6 +212,7 @@ public class EasyNPCPresetItem extends Item {
           easyNPCSpawnerBlockEntity,
           blockPos);
       baseSpawner.setNextSpawnData(level, blockPos, spawnData);
+      easyNPCSpawnerBlockEntity.setChanged();
       itemStack.shrink(1);
       return InteractionResult.CONSUME;
     }

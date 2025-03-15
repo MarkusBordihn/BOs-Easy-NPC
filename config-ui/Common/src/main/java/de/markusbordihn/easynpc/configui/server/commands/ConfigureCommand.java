@@ -17,12 +17,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.server.commands;
+package de.markusbordihn.easynpc.configui.server.commands;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
+import de.markusbordihn.easynpc.configui.menu.MenuManager;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
 import net.minecraft.commands.CommandSourceStack;
@@ -55,7 +57,8 @@ public class ConfigureCommand extends Command {
       return sendFailureMessage(context, "This EasyNPC does not support configuration!");
     }
 
-    configurationData.openMainConfigurationMenu(serverPlayer);
+    MenuManager.getMenuHandler()
+        .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPC, 0);
     return Command.SINGLE_SUCCESS;
   }
 }

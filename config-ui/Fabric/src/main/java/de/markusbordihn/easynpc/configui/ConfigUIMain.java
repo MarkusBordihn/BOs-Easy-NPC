@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.configui;
 
-import de.markusbordihn.easynpc.commands.manager.CommandManager;
+import de.markusbordihn.easynpc.configui.commands.manager.CommandManager;
 import de.markusbordihn.easynpc.configui.debug.DebugManager;
 import de.markusbordihn.easynpc.configui.item.ModItems;
 import de.markusbordihn.easynpc.configui.menu.MenuHandler;
@@ -62,7 +62,7 @@ public class ConfigUIMain implements ModInitializer {
         "{} Command register event ...", de.markusbordihn.easynpc.Constants.LOG_REGISTER_PREFIX);
     CommandRegistrationCallback.EVENT.register(
         (dispatcher, commandBuildContext, commandSelection) ->
-            CommandManager.registerCommands(dispatcher, commandBuildContext));
+            CommandManager.registerCommands(dispatcher));
 
     log.info("{} Menu Types ...", de.markusbordihn.easynpc.Constants.LOG_REGISTER_PREFIX);
     ModMenuTypes.register();
