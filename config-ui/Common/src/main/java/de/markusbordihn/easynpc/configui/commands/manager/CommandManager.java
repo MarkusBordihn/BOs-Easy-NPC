@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.configui.commands.manager;
 
 import com.mojang.brigadier.CommandDispatcher;
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.server.commands.ConfigureCommand;
 import de.markusbordihn.easynpc.configui.server.commands.DebugCommand;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -41,6 +42,7 @@ public class CommandManager {
         Constants.MOD_NAME);
     commandDispatcher.register(
         Commands.literal(de.markusbordihn.easynpc.Constants.MOD_COMMAND)
+            .then(ConfigureCommand.register())
             .then(DebugCommand.register()));
   }
 }

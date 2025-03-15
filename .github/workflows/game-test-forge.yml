@@ -35,6 +35,3 @@ jobs:
 
       - name: Run Config UI GameTests (Forge)
         run: ./gradlew -p config-ui Forge:runGameTestServer
-
-      - name: Build Config UI and Publish to Maven Local
-        run: ./gradlew -p config-ui build publishToMavenLocal

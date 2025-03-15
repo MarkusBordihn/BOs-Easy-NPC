@@ -23,7 +23,6 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.network.components.TextComponent;
@@ -49,7 +48,6 @@ public class InteractionHandler {
     if (!(player instanceof ServerPlayer serverPlayer) || hand != InteractionHand.MAIN_HAND) {
       return InteractionResult.PASS;
     }
-    ConfigurationData<?> configurationData = easyNPC.getEasyNPCConfigurationData();
     OwnerData<?> ownerData = easyNPC.getEasyNPCOwnerData();
     boolean isOwnerOrCreative = serverPlayer.isCreative() || ownerData.isOwner(serverPlayer);
 
@@ -92,12 +90,6 @@ public class InteractionHandler {
           return InteractionResult.CONSUME;
         }
       }
-    }
-
-    // Open configuration menu for owner and creative mode if the player is crouching.
-    if (player.isCreative() && player.isCrouching()) {
-      configurationData.openMainConfigurationMenu(serverPlayer);
-      return InteractionResult.PASS;
     }
 
     // Handle action event data.
