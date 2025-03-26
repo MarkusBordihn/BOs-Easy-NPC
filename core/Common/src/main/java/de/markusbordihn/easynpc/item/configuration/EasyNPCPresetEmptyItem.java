@@ -84,7 +84,7 @@ public class EasyNPCPresetEmptyItem extends Item {
       }
 
       // Store preset data in compound tag.
-      CompoundTag compoundTag = presetData.exportPresetData();
+      CompoundTag compoundTag = presetData.serializePresetData();
 
       // Store entity type in preset to easier recreate the entity.
       EntityType<?> entityType = livingEntity.getType();

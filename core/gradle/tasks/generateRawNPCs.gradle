@@ -3,30 +3,30 @@ task generateRawNPCs {
   def rawNPCFolder = file("$projectDir/../Common/src/main/java/de/markusbordihn/easynpc/entity/easynpc/raw")
   def templateFile = file("$rawNPCFolder/NPCRawTemplate.java")
   def npcClasses = [
-      [
-          id       : "skeleton_raw",
-          class    : "net.minecraft.world.entity.monster.Skeleton",
-          className: "SkeletonRaw",
-          baseClass: "Skeleton",
-          variant  : "SKELETON",
-          variants : "SKELETON, STRAY, WITHER_SKELETON"
-      ],
-      [
-          id       : "piglin_raw",
-          class    : "net.minecraft.world.entity.monster.piglin.Piglin",
-          className: "PiglinRaw",
-          baseClass: "Piglin",
-          variant  : "PIGLIN",
-          variants : "PIGLIN, PIGLIN_BRUTE, ZOMBIFIED_PIGLIN"
-      ],
-      [
-          id       : "zombie_raw",
-          class    : "net.minecraft.world.entity.monster.Zombie",
-          className: "ZombieRaw",
-          baseClass: "Zombie",
-          variant  : "ZOMBIE",
-          variants : "DROWNED, HUSK, ZOMBIE"
-      ]
+          [
+                  id       : "skeleton_raw",
+                  class    : "net.minecraft.world.entity.monster.Skeleton",
+                  className: "SkeletonRaw",
+                  baseClass: "Skeleton",
+                  variant  : "SKELETON",
+                  variants : "SKELETON, STRAY, WITHER_SKELETON"
+          ],
+          [
+                  id       : "piglin_raw",
+                  class    : "net.minecraft.world.entity.monster.piglin.Piglin",
+                  className: "PiglinRaw",
+                  baseClass: "Piglin",
+                  variant  : "PIGLIN",
+                  variants : "PIGLIN, PIGLIN_BRUTE, ZOMBIFIED_PIGLIN"
+          ],
+          [
+                  id       : "zombie_raw",
+                  class    : "net.minecraft.world.entity.monster.Zombie",
+                  className: "ZombieRaw",
+                  baseClass: "Zombie",
+                  variant  : "ZOMBIE",
+                  variants : "DROWNED, HUSK, ZOMBIE"
+          ]
   ]
 
   doLast {
@@ -35,13 +35,13 @@ task generateRawNPCs {
     npcClasses.each { npcClass ->
       def outputFile = new File(outputDir, npcClass.className + ".java")
       def content = templateFile.text
-          .replace("import net.minecraft.world.entity.monster.Zombie;", "import " + npcClass.class + ";")
-          .replace("npc_raw_template", npcClass.id)
-          .replace("NPCRawTemplate", npcClass.className)
-          .replace("Zombie", npcClass.baseClass)
-          .replace("ZOMBIE", npcClass.baseClass.toUpperCase(Locale.ROOT))
-          .replace("Variant.DEFAULT_VARIANT", "Variant." + npcClass.variant)
-          .replace("DEFAULT_VARIANT", npcClass.variants)
+              .replace("import net.minecraft.world.entity.monster.Zombie;", "import " + npcClass.class + ";")
+              .replace("npc_raw_template", npcClass.id)
+              .replace("NPCRawTemplate", npcClass.className)
+              .replace("Zombie", npcClass.baseClass)
+              .replace("ZOMBIE", npcClass.baseClass.toUpperCase(Locale.ROOT))
+              .replace("Variant.DEFAULT_VARIANT", "Variant." + npcClass.variant)
+              .replace("DEFAULT_VARIANT", npcClass.variants)
 
       outputFile.write(content)
       println "Generated: $outputFile"

@@ -40,7 +40,7 @@ public class DebugCommand extends Command {
     return Commands.literal("debug")
         .requires(cs -> cs.hasPermission(Commands.LEVEL_GAMEMASTERS))
         .then(
-            Commands.literal("log")
+            Commands.literal("core")
                 .then(
                     Commands.argument("enable", BoolArgumentType.bool())
                         .executes(
@@ -65,7 +65,7 @@ public class DebugCommand extends Command {
           ChatFormatting.GREEN);
       sendSuccessMessage(
           context,
-          "> Use '/" + Constants.MOD_COMMAND + " debug false' to disable the debug!",
+          "> Use '/" + Constants.MOD_COMMAND + " debug core false' to disable the debug!",
           ChatFormatting.WHITE);
     } else {
       sendSuccessMessage(

@@ -8,10 +8,7 @@ plugins {
 
 apply plugin: 'net.minecraftforge.gradle'
 
-archivesBaseName = "${mod_id}-forge-${minecraft_version}"
-
-def coreProject = rootProject.findProject(":core") ?: rootProject
-def commonProject = rootProject.findProject(":core:Common") ?: project(":Common")
+archivesBaseName = "${project.mod_id}-forge-${project.minecraft_version}"
 
 minecraft {
   mappings channel: 'official', version: "${project.minecraft_version}"
@@ -97,7 +94,7 @@ dependencies {
   minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
 
   // Include Common code
-  implementation commonProject
+  implementation project(":Common")
 
   // Additional helpful Mods for development (runtime dependency)
   if (project.hasProperty('forge_jei_mod') && project.forge_jei_mod) {
@@ -112,20 +109,19 @@ dependencies {
 }
 
 tasks.withType(JavaCompile).configureEach {
-  source(commonProject.sourceSets.main.allSource)
+  source(project(":Common").sourceSets.main.allSource)
 }
 
 processResources {
-  from commonProject.sourceSets.main.resources
+  from project(":Common").sourceSets.main.resources
 }
 
-// Example for how to get properties into the manifest for reading by the runtime..
 jar {
   manifest {
     attributes([
             "Specification-Title"     : "${project.mod_name}",
             "Specification-Vendor"    : "${project.vendor_name}",
-            "Specification-Version"   : "1", // We are version 1 of ourselves
+            "Specification-Version"   : "1",
             "Implementation-Title"    : project.name,
             "Implementation-Version"  : "${project.version}",
             "Implementation-Vendor"   : "${project.mod_id}",
@@ -138,10 +134,17 @@ jar.finalizedBy('reobfJar')
 
 publishing {
   publications {
-    mavenJava(MavenPublication) {
+    mavenJava(org.gradle.api.publish.maven.MavenPublication) {
+      groupId project.group
+      artifactId project.archivesBaseName
+      version project.version
       artifact jar
     }
   }
+}
+
+tasks.named('build') {
+  finalizedBy 'publishToMavenLocal'
 }
 
 // CurseForge Publishing
@@ -150,19 +153,13 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
     apiKey = "${credentials.forKey('curseforge_api_token')}"
     project {
       id = "${project.curseforge_project_id}"
-      changelog = coreProject.file("CHANGELOG.md")
+      changelog = rootProject.file("CHANGELOG.md")
       changelogType = 'markdown'
       releaseType = "${project.curseforge_release_type}"
       addGameVersion("${project.minecraft_version}")
       addGameVersion("Forge")
       addGameVersion("NeoForge")
-      mainArtifact(jar) {
-        relations {
-          optionalDependency 'easy-npc-epic-fight'
-          optionalDependency 'armourers-workshop'
-          optionalDependency 'simple-quests-forge'
-        }
-      }
+      mainArtifact(jar)
     }
   }
 }
@@ -175,14 +172,9 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     versionNumber = "${project.version}"
     versionType = "${project.modrinth_release_type}"
     versionName = "${project.mod_name} ${project.version}"
-    changelog = coreProject.file("CHANGELOG.md").text
+    changelog = rootProject.file("CHANGELOG.md").text
     uploadFile = jar
     gameVersions = ["${project.minecraft_version}"]
     loaders = ["forge", "neoforge"]
-    dependencies {
-      optional.project "easy-npc-epic-fight"
-      optional.project "armourers-workshop"
-      optional.project "simple-quests"
-    }
   }
 }

@@ -20,8 +20,9 @@
 package de.markusbordihn.easynpc.block;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.block.entity.BaseEasyNPCSpawnerBlockEntity;
 import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntity;
+import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntityWrapper;
+import de.markusbordihn.easynpc.data.spawner.SpawnerType;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -34,25 +35,56 @@ import net.minecraft.world.level.material.MapColor;
 
 public class ModBlocks {
 
-  public static final Block EASY_NPC_SPAWNER =
-      new EasyNPCSpawnerBlock(
+  public static final Block EASY_NPC_SPAWNER_BOSS =
+      new EasyNPCSpawnerBlockWrapper(
           Properties.of()
               .mapColor(MapColor.STONE)
               .requiresCorrectToolForDrops()
               .strength(5.0F)
               .sound(SoundType.METAL)
-              .noOcclusion());
+              .noOcclusion(),
+          SpawnerType.BOSS_SPAWNER);
+  public static final Block EASY_NPC_SPAWNER_DEFAULT =
+      new EasyNPCSpawnerBlockWrapper(
+          Properties.of()
+              .mapColor(MapColor.STONE)
+              .requiresCorrectToolForDrops()
+              .strength(5.0F)
+              .sound(SoundType.METAL)
+              .noOcclusion(),
+          SpawnerType.DEFAULT_SPAWNER);
+  public static final Block EASY_NPC_SPAWNER_GROUP =
+      new EasyNPCSpawnerBlockWrapper(
+          Properties.of()
+              .mapColor(MapColor.STONE)
+              .requiresCorrectToolForDrops()
+              .strength(5.0F)
+              .sound(SoundType.METAL)
+              .noOcclusion(),
+          SpawnerType.GROUP_SPAWNER);
+  public static final Block EASY_NPC_SPAWNER_SINGLE =
+      new EasyNPCSpawnerBlockWrapper(
+          Properties.of()
+              .mapColor(MapColor.STONE)
+              .requiresCorrectToolForDrops()
+              .strength(5.0F)
+              .sound(SoundType.METAL)
+              .noOcclusion(),
+          SpawnerType.SINGLE_SPAWNER);
 
   private ModBlocks() {}
 
   public static void registerModBlocks() {
-    registerBlock(BaseEasyNPCSpawnerBlock.NAME, EASY_NPC_SPAWNER);
+    registerBlock(SpawnerType.BOSS_SPAWNER.getId(), EASY_NPC_SPAWNER_BOSS);
+    registerBlock(SpawnerType.DEFAULT_SPAWNER.getId(), EASY_NPC_SPAWNER_DEFAULT);
+    registerBlock(SpawnerType.GROUP_SPAWNER.getId(), EASY_NPC_SPAWNER_GROUP);
+    registerBlock(SpawnerType.SINGLE_SPAWNER.getId(), EASY_NPC_SPAWNER_SINGLE);
   }
 
   public static void registerModBlockEntities() {
     Registry.register(
         BuiltInRegistries.BLOCK_ENTITY_TYPE,
-        new ResourceLocation(Constants.MOD_ID, BaseEasyNPCSpawnerBlockEntity.NAME),
+        new ResourceLocation(Constants.MOD_ID, EasyNPCSpawnerBlockEntity.NAME),
         EASY_NPC_SPAWNER_ENTITY);
   }
 
@@ -60,6 +92,12 @@ public class ModBlocks {
     Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(Constants.MOD_ID, id), block);
   }
 
-  public static final BlockEntityType<EasyNPCSpawnerBlockEntity> EASY_NPC_SPAWNER_ENTITY =
-      FabricBlockEntityTypeBuilder.create(EasyNPCSpawnerBlockEntity::new, EASY_NPC_SPAWNER).build();
+  public static final BlockEntityType<EasyNPCSpawnerBlockEntityWrapper> EASY_NPC_SPAWNER_ENTITY =
+      FabricBlockEntityTypeBuilder.create(
+              EasyNPCSpawnerBlockEntityWrapper::new,
+              EASY_NPC_SPAWNER_BOSS,
+              EASY_NPC_SPAWNER_DEFAULT,
+              EASY_NPC_SPAWNER_GROUP,
+              EASY_NPC_SPAWNER_SINGLE)
+          .build();
 }

@@ -42,7 +42,6 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ServerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SoundData;
-import de.markusbordihn.easynpc.entity.easynpc.data.SpawnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TickerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
@@ -166,10 +165,6 @@ public interface EasyNPC<E extends PathfinderMob> extends Npc {
 
   default ServerData<E> getEasyNPCServerData() {
     return this instanceof ServerData<E> serverData ? serverData : null;
-  }
-
-  default SpawnerData<E> getEasyNPCSpawnerData() {
-    return this instanceof SpawnerData<E> spawnerData ? spawnerData : null;
   }
 
   default TickerData<E> getEasyNPCTickerData() {

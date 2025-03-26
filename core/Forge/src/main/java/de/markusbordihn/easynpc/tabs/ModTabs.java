@@ -37,7 +37,7 @@ public class ModTabs {
           "config_items",
           () ->
               CreativeModeTab.builder()
-                  .icon(() -> ModItems.EASY_NPC_WAND.get().getDefaultInstance())
+                  .icon(() -> ModItems.MOVE_EASY_NPC.get().getDefaultInstance())
                   .displayItems(new ConfigItems())
                   .title(Component.translatable("itemGroup.easy_npc.config_items"))
                   .build());

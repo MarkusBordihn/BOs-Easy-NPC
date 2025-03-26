@@ -20,8 +20,8 @@
 package de.markusbordihn.easynpc.item;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.block.EasyNPCSpawnerBlock;
 import de.markusbordihn.easynpc.block.ModBlocks;
+import de.markusbordihn.easynpc.data.spawner.SpawnerType;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Allay;
 import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
@@ -43,11 +43,9 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.ZombieVillager;
 import de.markusbordihn.easynpc.item.attack.BulletItem;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetEmptyItem;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetItem;
-import de.markusbordihn.easynpc.item.configuration.EasyNPCWandItem;
 import de.markusbordihn.easynpc.item.configuration.MoveEasyNPCItem;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import org.apache.logging.log4j.LogManager;
@@ -67,9 +65,18 @@ public class ModItems {
   public static final Item EASY_NPC_PRESET_EMPTY_ITEM =
       new EasyNPCPresetEmptyItem(new Item.Properties());
   public static final Item EASY_NPC_PRESET_ITEM = new EasyNPCPresetItem(new Item.Properties());
-  public static final Item EASY_NPC_SPAWNER =
-      new BlockItem(ModBlocks.EASY_NPC_SPAWNER, new Item.Properties());
-  public static final Item EASY_NPC_WAND = new EasyNPCWandItem(new Item.Properties());
+  public static final Item EASY_NPC_SPAWNER_BOSS =
+      new EasyNPCSpawnerBlockItem(
+          ModBlocks.EASY_NPC_SPAWNER_BOSS, new Item.Properties(), SpawnerType.BOSS_SPAWNER);
+  public static final Item EASY_NPC_SPAWNER_DEFAULT =
+      new EasyNPCSpawnerBlockItem(
+          ModBlocks.EASY_NPC_SPAWNER_DEFAULT, new Item.Properties(), SpawnerType.DEFAULT_SPAWNER);
+  public static final Item EASY_NPC_SPAWNER_GROUP =
+      new EasyNPCSpawnerBlockItem(
+          ModBlocks.EASY_NPC_SPAWNER_GROUP, new Item.Properties(), SpawnerType.GROUP_SPAWNER);
+  public static final Item EASY_NPC_SPAWNER_SINGLE =
+      new EasyNPCSpawnerBlockItem(
+          ModBlocks.EASY_NPC_SPAWNER_SINGLE, new Item.Properties(), SpawnerType.SINGLE_SPAWNER);
   public static final Item EVOKER_NPC_SPAWN_EGG =
       new ModSpawnEggItem(ModEntityType.EVOKER, new Item.Properties().rarity(Rarity.EPIC));
   public static final Item FAIRY_NPC_SPAWN_EGG =
@@ -130,13 +137,15 @@ public class ModItems {
   public static void registerModItems() {
 
     log.info("{} Configuration Items ...", Constants.LOG_REGISTER_PREFIX);
-    registerItem(EasyNPCWandItem.ID, EASY_NPC_WAND);
     registerItem(MoveEasyNPCItem.ID, MOVE_EASY_NPC);
     registerItem(EasyNPCPresetItem.NAME, EASY_NPC_PRESET_ITEM);
     registerItem(EasyNPCPresetEmptyItem.NAME, EASY_NPC_PRESET_EMPTY_ITEM);
 
     log.info("{} Block Items ...", Constants.LOG_REGISTER_PREFIX);
-    registerItem(EasyNPCSpawnerBlock.NAME, EASY_NPC_SPAWNER);
+    registerItem(SpawnerType.BOSS_SPAWNER.getId(), EASY_NPC_SPAWNER_BOSS);
+    registerItem(SpawnerType.DEFAULT_SPAWNER.getId(), EASY_NPC_SPAWNER_DEFAULT);
+    registerItem(SpawnerType.GROUP_SPAWNER.getId(), EASY_NPC_SPAWNER_GROUP);
+    registerItem(SpawnerType.SINGLE_SPAWNER.getId(), EASY_NPC_SPAWNER_SINGLE);
 
     log.info("{} Weapon Items ...", Constants.LOG_REGISTER_PREFIX);
     registerItem(BulletItem.ID, BULLET_ITEM);
