@@ -227,7 +227,7 @@ public class EasyNPCPresetItem extends Item {
       BlockPos targetBlockPos =
           new BlockPos(
               possibleSpawnPosition.getX(),
-              possibleSpawnPosition.getY() + 1,
+              possibleSpawnPosition.getY(),
               possibleSpawnPosition.getZ());
       if (level.getBlockState(targetBlockPos.above()).isAir()
           && level.getEntitiesOfClass(Entity.class, aabb).isEmpty()

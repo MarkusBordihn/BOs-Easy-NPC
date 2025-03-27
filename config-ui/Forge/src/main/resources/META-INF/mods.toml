@@ -1,0 +1,35 @@
+modLoader = "javafml"
+loaderVersion = "[47,)"
+license = "MIT"
+issueTrackerURL = "https://github.com/MarkusBordihn/BOs-Easy-NPC/issues"
+
+[[mods]]
+modId = "easy_npc_config_ui"
+version = "${file.jarVersion}"
+displayName = "Easy NPC: Config UI"
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/easy-npc"
+logoFile = "logo.png"
+credits = ""
+authors = "Markus Bordihn"
+description = '''Create easily NPCs for your world or for your mods.'''
+
+[[dependencies.easy_npc_config_ui]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.easy_npc_config_ui]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1,1.21)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.easy_npc_config_ui]]
+modId = "armourers_workshop"
+mandatory = false
+versionRange = "[2.0.1,)"
+ordering = "NONE"
+side = "BOTH"
