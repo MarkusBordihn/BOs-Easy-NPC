@@ -20,7 +20,9 @@
 package de.markusbordihn.easynpc.client.renderer;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.block.ModBlocks;
 import de.markusbordihn.easynpc.client.model.ModModelLayers;
+import de.markusbordihn.easynpc.client.renderer.blockentity.BaseEasyNPCSpawnerBlockEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.custom.FairyModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.custom.OrcModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.PiglinRawRenderer;
@@ -44,6 +46,7 @@ import de.markusbordihn.easynpc.client.renderer.entity.standard.ZombieVillagerMo
 import de.markusbordihn.easynpc.client.renderer.layers.CustomHumanoidArmorLayer;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.entity.ModEntityType;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.model.geom.ModelLayers;
 import org.apache.logging.log4j.LogManager;
@@ -54,6 +57,13 @@ public class ClientRenderer {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ClientRenderer() {}
+
+  public static void registerBlockEntityRenderers() {
+    log.info("{} Block Entity Renderers ...", Constants.LOG_REGISTER_PREFIX);
+
+    BlockEntityRendererRegistry.register(
+      ModBlocks.EASY_NPC_SPAWNER_ENTITY, BaseEasyNPCSpawnerBlockEntityRenderer::new);
+  }
 
   public static void registerEntityRenderers() {
     log.info("{} Entity Renders ...", Constants.LOG_REGISTER_PREFIX);

@@ -42,7 +42,8 @@ public class EasyNPCClient implements ClientModInitializer {
   public void onInitializeClient() {
     log.info("Initializing {} (Fabric-Client) ...", Constants.MOD_NAME);
 
-    log.info("{} Entity Renders ...", Constants.LOG_REGISTER_PREFIX);
+    log.info("{} Renderer ...", Constants.LOG_REGISTER_PREFIX);
+    ClientRenderer.registerBlockEntityRenderers();
     ClientRenderer.registerEntityRenderers();
 
     log.info("{} Entity Layer Definitions ...", Constants.LOG_REGISTER_PREFIX);

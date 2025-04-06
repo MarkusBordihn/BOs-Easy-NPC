@@ -20,7 +20,9 @@
 package de.markusbordihn.easynpc.client.renderer;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.block.ModBlocks;
 import de.markusbordihn.easynpc.client.model.ModModelLayers;
+import de.markusbordihn.easynpc.client.renderer.blockentity.BaseEasyNPCSpawnerBlockEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.custom.FairyModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.custom.OrcModelRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.layers.CustomHumanoidArmorLayer;
@@ -57,6 +59,13 @@ public class ClientRenderer {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ClientRenderer() {}
+
+  public static void registerBlockEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+    log.info("{} Block Entity Renderers ...", Constants.LOG_REGISTER_PREFIX);
+
+    event.registerBlockEntityRenderer(
+      ModBlocks.EASY_NPC_SPAWNER_ENTITY.get(), BaseEasyNPCSpawnerBlockEntityRenderer::new);
+  }
 
   public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
     log.info("{} Entity Renders ...", Constants.LOG_REGISTER_PREFIX);

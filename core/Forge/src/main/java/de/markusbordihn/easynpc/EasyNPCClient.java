@@ -39,6 +39,7 @@ public class EasyNPCClient {
     log.info("Initializing {} (Forge-Client) ...", Constants.MOD_NAME);
 
     modEventBus.addListener(ModModelLayer::registerEntityLayerDefinitions);
+    modEventBus.addListener(ClientRenderer::registerBlockEntityRenderers);
     modEventBus.addListener(ClientRenderer::registerEntityRenderers);
     modEventBus.addListener(ClientScreens::registerScreens);
     modEventBus.addListener(
