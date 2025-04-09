@@ -42,6 +42,7 @@ public class EasyNPCClient {
   public EasyNPCClient(IEventBus modEventBus, ModContainer modContainer) {
     log.info("{} Client events ...", Constants.LOG_REGISTER_PREFIX);
     modEventBus.addListener(ModModelLayer::registerEntityLayerDefinitions);
+    modEventBus.addListener(ClientRenderer::registerBlockEntityRenderers);
     modEventBus.addListener(ClientRenderer::registerEntityRenderers);
     modEventBus.addListener(ClientScreens::registerScreens);
     modEventBus.addListener(

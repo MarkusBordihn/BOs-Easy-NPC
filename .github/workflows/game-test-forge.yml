@@ -27,5 +27,11 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Run GameTests (Forge)
-        run: ./gradlew :core:Forge:runGameTestServer
+      - name: Run Core GameTests (Forge)
+        run: ./gradlew -p core Forge:runGameTestServer
+
+      - name: Build Core and Publish to Maven Local
+        run: ./gradlew -p core build publishToMavenLocal
+
+      - name: Run Config UI GameTests (Forge)
+        run: ./gradlew -p config-ui Forge:runGameTestServer

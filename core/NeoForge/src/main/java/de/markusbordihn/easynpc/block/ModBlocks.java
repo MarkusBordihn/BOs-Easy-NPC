@@ -20,8 +20,9 @@
 package de.markusbordihn.easynpc.block;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.block.entity.BaseEasyNPCSpawnerBlockEntity;
 import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntity;
+import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntityWrapper;
+import de.markusbordihn.easynpc.data.spawner.SpawnerType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -38,25 +39,69 @@ public class ModBlocks {
       DeferredRegister.createBlocks(Constants.MOD_ID);
   public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES =
       DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, Constants.MOD_ID);
-  public static final DeferredBlock<Block> EASY_NPC_SPAWNER =
+
+  public static final DeferredBlock<Block> EASY_NPC_SPAWNER_BOSS =
       BLOCKS.register(
-          BaseEasyNPCSpawnerBlock.NAME,
+          SpawnerType.BOSS_SPAWNER.getId(),
           () ->
-              new EasyNPCSpawnerBlock(
+              new EasyNPCSpawnerBlockWrapper(
                   Properties.of()
                       .mapColor(MapColor.STONE)
                       .requiresCorrectToolForDrops()
                       .strength(5.0F)
                       .sound(SoundType.METAL)
-                      .noOcclusion()));
+                      .noOcclusion(),
+                  SpawnerType.BOSS_SPAWNER));
+  public static final DeferredBlock<Block> EASY_NPC_SPAWNER_DEFAULT =
+      BLOCKS.register(
+          SpawnerType.DEFAULT_SPAWNER.getId(),
+          () ->
+              new EasyNPCSpawnerBlockWrapper(
+                  Properties.of()
+                      .mapColor(MapColor.STONE)
+                      .requiresCorrectToolForDrops()
+                      .strength(5.0F)
+                      .sound(SoundType.METAL)
+                      .noOcclusion(),
+                  SpawnerType.DEFAULT_SPAWNER));
+  public static final DeferredBlock<Block> EASY_NPC_SPAWNER_GROUP =
+      BLOCKS.register(
+          SpawnerType.GROUP_SPAWNER.getId(),
+          () ->
+              new EasyNPCSpawnerBlockWrapper(
+                  Properties.of()
+                      .mapColor(MapColor.STONE)
+                      .requiresCorrectToolForDrops()
+                      .strength(5.0F)
+                      .sound(SoundType.METAL)
+                      .noOcclusion(),
+                  SpawnerType.GROUP_SPAWNER));
+  public static final DeferredBlock<Block> EASY_NPC_SPAWNER_SINGLE =
+      BLOCKS.register(
+          SpawnerType.SINGLE_SPAWNER.getId(),
+          () ->
+              new EasyNPCSpawnerBlockWrapper(
+                  Properties.of()
+                      .mapColor(MapColor.STONE)
+                      .requiresCorrectToolForDrops()
+                      .strength(5.0F)
+                      .sound(SoundType.METAL)
+                      .noOcclusion(),
+                  SpawnerType.SINGLE_SPAWNER));
 
   private ModBlocks() {}
 
-  public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EasyNPCSpawnerBlockEntity>>
+  public static final DeferredHolder<
+          BlockEntityType<?>, BlockEntityType<EasyNPCSpawnerBlockEntityWrapper>>
       EASY_NPC_SPAWNER_ENTITY =
           BLOCK_ENTITY_TYPES.register(
-              BaseEasyNPCSpawnerBlockEntity.NAME,
+              EasyNPCSpawnerBlockEntity.NAME,
               () ->
-                  BlockEntityType.Builder.of(EasyNPCSpawnerBlockEntity::new, EASY_NPC_SPAWNER.get())
+                  BlockEntityType.Builder.of(
+                          EasyNPCSpawnerBlockEntityWrapper::new,
+                          EASY_NPC_SPAWNER_DEFAULT.get(),
+                          EASY_NPC_SPAWNER_BOSS.get(),
+                          EASY_NPC_SPAWNER_GROUP.get(),
+                          EASY_NPC_SPAWNER_SINGLE.get())
                       .build(null));
 }

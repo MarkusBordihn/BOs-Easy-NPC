@@ -447,15 +447,15 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
   }
 
   @Override
+  public boolean isSaddled() {
+    return false;
+  }
+
+  @Override
   public void equipSaddle(ItemStack itemStack, SoundSource soundSource) {
     if (soundSource != null) {
       this.level().playSound(null, this, SoundEvents.PIG_SADDLE, soundSource, 0.5F, 1.0F);
     }
-  }
-
-  @Override
-  public boolean isSaddled() {
-    return false;
   }
 
   @Override

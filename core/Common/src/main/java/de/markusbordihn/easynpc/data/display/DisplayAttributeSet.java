@@ -30,6 +30,7 @@ import org.apache.logging.log4j.Logger;
 
 public class DisplayAttributeSet {
 
+  public static final String DATA_DISPLAY_ATTRIBUTE_SET_TAG = "DisplayAttributeSet";
   public static final StreamCodec<RegistryFriendlyByteBuf, DisplayAttributeSet> STREAM_CODEC =
       new StreamCodec<>() {
         @Override
@@ -43,7 +44,6 @@ public class DisplayAttributeSet {
           registryFriendlyByteBuf.writeNbt(objectiveDataSet.createTag());
         }
       };
-  public static final String DATA_DISPLAY_ATTRIBUTE_SET_TAG = "DisplayAttributeSet";
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private final HashSet<DisplayAttributeEntry> displayAttributeEntrySet = new HashSet<>();
 

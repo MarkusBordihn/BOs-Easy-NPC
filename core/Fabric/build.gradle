@@ -6,19 +6,16 @@ plugins {
   id "com.modrinth.minotaur" version "2.+"
 }
 
-archivesBaseName = "${mod_id}-fabric-${minecraft_version}"
-
-def coreProject = rootProject.findProject(":core") ?: rootProject
-def commonProject = rootProject.findProject(":core:Common") ?: project(":Common")
+archivesBaseName = "${project.mod_id}-fabric-${project.minecraft_version}"
 
 dependencies {
-  minecraft "com.mojang:minecraft:${minecraft_version}"
+  minecraft "com.mojang:minecraft:${project.minecraft_version}"
   mappings loom.officialMojangMappings()
-  modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-  modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+  modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
+  modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
   // Include Common code
-  implementation commonProject
+  implementation project(":Common")
 
   // Additional helpful Mods for development (runtime dependency)
   if (project.hasProperty('fabric_jei_mod') && project.fabric_jei_mod) {
@@ -61,7 +58,7 @@ loom {
 }
 
 processResources {
-  from commonProject.sourceSets.main.resources
+  from project(":Common").sourceSets.main.resources
   inputs.property "version", project.version
 
   filesMatching("fabric.mod.json") {
@@ -70,7 +67,7 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-  source(commonProject.sourceSets.main.allSource)
+  source(project(":Common").sourceSets.main.allSource)
 }
 
 publishing {
@@ -84,13 +81,17 @@ publishing {
   }
 }
 
+tasks.named('build') {
+  finalizedBy 'publishToMavenLocal'
+}
+
 // CurseForge Publishing
 if (project.hasProperty('curseforge_project_id') && project.curseforge_project_id) {
   curseforge {
     apiKey = "${credentials.forKey('curseforge_api_token')}"
     project {
       id = "${project.curseforge_project_id}"
-      changelog = coreProject.file("CHANGELOG.md")
+      changelog = rootProject.file("CHANGELOG.md")
       changelogType = 'markdown'
       releaseType = "${project.curseforge_release_type}"
       addGameVersion("${project.minecraft_version}")
@@ -117,7 +118,7 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     versionNumber = "${version}"
     versionType = "${project.modrinth_release_type}"
     versionName = "${project.mod_name} ${project.version}"
-    changelog = coreProject.file("CHANGELOG.md").text
+    changelog = rootProject.file("CHANGELOG.md").text
     uploadFile = remapJar
     gameVersions = ["${minecraft_version}"]
     loaders = ["fabric", "quilt"]

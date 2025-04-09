@@ -1,7 +1,9 @@
 {
-  "block.easy_npc.easy_npc_spawner": "EasyNPC Spawner",
+  "block.easy_npc.boss_spawner": "EasyNPC Boss Spawner",
+  "block.easy_npc.default_spawner": "EasyNPC Default Spawner",
+  "block.easy_npc.group_spawner": "EasyNPC Group Spawner",
+  "block.easy_npc.single_spawner": "EasyNPC Single Spawner",
   "entity.easy_npc.allay": "Allay",
-  "entity.easy_npc.bogged": "Bogged",
   "entity.easy_npc.cat": "Cat",
   "entity.easy_npc.chicken": "Chicken",
   "entity.easy_npc.drowned": "Drowned",
@@ -283,13 +285,6 @@
   "text.easy_npc.config.silent": "Silent",
   "text.easy_npc.config.skin": "Skin",
   "text.easy_npc.config.skin_reloading": "Reloading skins, please wait ...",
-  "text.easy_npc.config.spawner.delay": "Delay",
-  "text.easy_npc.config.spawner.despawn_range": "Despawn Range",
-  "text.easy_npc.config.spawner.max_nearby_entities": "Max Nearby Entities",
-  "text.easy_npc.config.spawner.preset_item": "NPC Preset",
-  "text.easy_npc.config.spawner.required_player_range": "Required Player Range",
-  "text.easy_npc.config.spawner.spawn_count": "Spawn Count",
-  "text.easy_npc.config.spawner.spawn_range": "Spawn Range",
   "text.easy_npc.config.trading": "Trading",
   "text.easy_npc.config.trading.max_uses_per_trade": "Max Uses",
   "text.easy_npc.config.trading.minutes_for_trade_reset": "Min. for Reset",
@@ -343,5 +338,9 @@
   "text.easy_npc.respawnNPC.confirmWarning": "The NPC '%s' will be respawned as new NPC, but the same settings, position and UUID!",
   "text.easy_npc.respawnNPC.respawnButton": "Respawn NPC",
   "text.easy_npc.trading": "Trading",
-  "text.easy_npc.trading.busy": "%1$s is currently busy with another trade with %2$s.\n Please wait until the trade is finished."
+  "text.easy_npc.trading.busy": "%1$s is currently busy with another trade with %2$s.\n Please wait until the trade is finished.",
+  "tooltip.easy_npc.spawner.boss_spawner": "The Boss Spawner is a special spawner that allows you to spawn a boss NPC.",
+  "tooltip.easy_npc.spawner.default_spawner": "The Default Spawner is a spawner that allows you to spawn a default NPC.",
+  "tooltip.easy_npc.spawner.group_spawner": "The Group Spawner is a spawner that allows you to spawn a group of NPCs.",
+  "tooltip.easy_npc.spawner.single_spawner": "The Single Spawner is a spawner that allows you to spawn a single NPC."
 }

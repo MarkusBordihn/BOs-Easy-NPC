@@ -25,6 +25,12 @@ import net.minecraft.network.codec.StreamCodec;
 
 public class TradingDataSet {
 
+  public static final String DATA_TRADING_DATA_SET_TAG = "TradingDataSet";
+  public static final String DATA_TRADING_MAX_USES_TAG = "MaxUses";
+  public static final String DATA_TRADING_REWARDED_XP_TAG = "RewardedXP";
+  public static final String DATA_TRADING_RESETS_EVERY_MIN_TAG = "ResetsEveryMin";
+  public static final String DATA_TRADING_LAST_RESET_TAG = "LastReset";
+  public static final String DATA_TYPE_TAG = "Type";
   public static final StreamCodec<RegistryFriendlyByteBuf, TradingDataSet> STREAM_CODEC =
       new StreamCodec<>() {
         @Override
@@ -38,13 +44,6 @@ public class TradingDataSet {
           registryFriendlyByteBuf.writeNbt(tradingDataSet.createTag());
         }
       };
-  public static final String DATA_TRADING_DATA_SET_TAG = "TradingDataSet";
-  public static final String DATA_TRADING_MAX_USES_TAG = "MaxUses";
-  public static final String DATA_TRADING_REWARDED_XP_TAG = "RewardedXP";
-  public static final String DATA_TRADING_RESETS_EVERY_MIN_TAG = "ResetsEveryMin";
-  public static final String DATA_TRADING_LAST_RESET_TAG = "LastReset";
-  public static final String DATA_TYPE_TAG = "Type";
-
   private TradingType tradingType = TradingType.NONE;
   private int maxUses = 64;
   private int rewardedXP = 0;

@@ -20,7 +20,12 @@
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
+import de.markusbordihn.easynpc.data.server.ServerDataIndex;
+import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
+import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -28,15 +33,10 @@ import net.minecraft.world.entity.Pose;
 
 public interface PresetData<T extends PathfinderMob> extends EasyNPC<T> {
 
-  default CompoundTag exportPresetData() {
-    CompoundTag compoundTag = this.serializePresetData();
-
-    // Remove spawner UUID to avoid side effects.
-    if (compoundTag.contains(SpawnerData.DATA_SPAWNER_UUID_TAG)) {
-      compoundTag.remove(SpawnerData.DATA_SPAWNER_UUID_TAG);
-    }
-    return compoundTag;
-  }
+  ServerDataAccessor<UUID> CUSTOM_DATA_PRESET_UUID =
+      ServerEntityData.defineId(ServerDataIndex.PRESET_UUID, EntityDataSerializersManager.UUID);
+  String PRESET_UUID_TAG = "PresetUUID";
+  String MOTION_TAG = "Motion";
 
   default void importPresetData(CompoundTag compoundTag) {
 
@@ -96,11 +96,6 @@ public interface PresetData<T extends PathfinderMob> extends EasyNPC<T> {
       log.debug("Importing full preset {} for {}", compoundTag, this);
     }
 
-    // Remove motion tag to avoid side effects.
-    if (compoundTag.contains("Motion")) {
-      compoundTag.remove("Motion");
-    }
-
     // Import preset data to entity.
     this.getEntity().load(compoundTag);
   }
@@ -110,10 +105,54 @@ public interface PresetData<T extends PathfinderMob> extends EasyNPC<T> {
     if (this.getEntity() == null) {
       return compoundTag;
     }
+
+    // Add Entity type id to the preset data.
     String entityTypeId = this.getEntityTypeId();
     if (entityTypeId != null) {
       compoundTag.putString(Entity.ID_TAG, entityTypeId);
     }
-    return this.getEntity().saveWithoutId(compoundTag);
+
+    // Add Preset UUID for unique identification
+    if (!compoundTag.contains(PRESET_UUID_TAG)) {
+      compoundTag.putUUID(PRESET_UUID_TAG, UUID.randomUUID());
+    }
+
+    // Entity saved data
+    CompoundTag entityData = this.getEntity().saveWithoutId(compoundTag);
+
+    // Clean specific entity data to avoid side effects
+    if (entityData.contains(MOTION_TAG)) {
+      entityData.remove(MOTION_TAG);
+    }
+
+    return entityData;
+  }
+
+  default boolean hasPresetUUID() {
+    return this.getPresetUUID() != null;
+  }
+
+  default UUID getPresetUUID() {
+    return getEasyNPCServerData().getServerEntityData(CUSTOM_DATA_PRESET_UUID);
+  }
+
+  default void setPresetUUID(UUID uuid) {
+    getEasyNPCServerData().setServerEntityData(CUSTOM_DATA_PRESET_UUID, uuid);
+  }
+
+  default void defineCustomPresetData() {
+    getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_PRESET_UUID, null);
+  }
+
+  default void addAdditionalPresetData(CompoundTag compoundTag) {
+    if (this.isServerSide() && this.getPresetUUID() != null) {
+      compoundTag.putUUID(PRESET_UUID_TAG, this.getPresetUUID());
+    }
+  }
+
+  default void readAdditionalPresetData(CompoundTag compoundTag) {
+    if (compoundTag.hasUUID(PRESET_UUID_TAG)) {
+      this.setPresetUUID(compoundTag.getUUID(PRESET_UUID_TAG));
+    }
   }
 }

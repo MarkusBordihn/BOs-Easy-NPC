@@ -1,0 +1,137 @@
+plugins {
+  id 'maven-publish'
+  id 'net.neoforged.gradle.userdev' version '7.0.145'
+  id 'com.matthewprenger.cursegradle' version '1.4.0'
+  id 'nu.studer.credentials' version '3.0'
+  id "com.modrinth.minotaur" version "2.+"
+}
+
+base {
+  archivesName = "${project.mod_id}-neoforge-${project.minecraft_version}"
+}
+
+minecraft.accessTransformers.file file('src/main/resources/META-INF/accesstransformer.cfg')
+
+runs {
+  configureEach {
+    systemProperty 'forge.logging.markers', 'REGISTRIES'
+    systemProperty 'forge.logging.console.level', 'debug'
+    modSource project.sourceSets.main
+  }
+
+  client {
+    systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+  }
+
+  client2 {
+    configure('client')
+    workingDirectory project.file('runs/client2')
+    programArguments.addAll '--username', 'guest_player'
+  }
+
+  server {
+    systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+    programArgument '--nogui'
+  }
+
+  gameTestServer {
+    systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+  }
+
+  data {
+    programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+  }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+dependencies {
+  implementation "net.neoforged:neoforge:${project.neoforge_version}"
+
+  // Include Common code
+  implementation project(":Common")
+
+  // Include Core Common code
+  implementation "de.markusbordihn.easynpc:easy_npc-common-${project.minecraft_version}:${project.version}"
+  runtimeOnly "de.markusbordihn.easynpc:easy_npc-neoforge-${project.minecraft_version}:${project.version}"
+
+  // Test dependencies
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
+  testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
+
+  // Additional helpful Mods for development (runtime dependency)
+  if (project.hasProperty('neoforge_jei_mod') && project.neoforge_jei_mod) {
+    runtimeOnly "curse.maven:jei-238222:${project.neoforge_jei_mod}"
+  }
+  if (project.hasProperty('neoforge_xaeros_minimap_mod') && project.neoforge_xaeros_minimap_mod) {
+    runtimeOnly "curse.maven:xaeros_minimap-263420:${project.neoforge_xaeros_minimap_mod}"
+  }
+}
+
+// NeoGradle compiles the game, but we don't want to add our common code to the game's code
+Spec<Task> notNeoTask = { Task it -> !it.name.startsWith("neo") } as Spec<Task>
+
+tasks.withType(JavaCompile).matching(notNeoTask).configureEach {
+  source(project(":Common").sourceSets.main.allSource)
+}
+
+tasks.withType(Javadoc).matching(notNeoTask).configureEach {
+  source(project(":Common").sourceSets.main.allJava)
+}
+
+tasks.withType(ProcessResources).matching(notNeoTask).configureEach {
+  from project(":Common").sourceSets.main.resources
+}
+
+idea {
+  module {
+    downloadSources = true
+    downloadJavadoc = true
+  }
+}
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      groupId project.group
+      artifactId project.archivesBaseName
+      version project.version
+      artifact jar
+    }
+  }
+}
+
+tasks.named('build') {
+  finalizedBy 'publishToMavenLocal'
+}
+
+// CurseForge Publishing
+if (project.hasProperty('curseforge_project_id') && project.curseforge_project_id) {
+  curseforge {
+    apiKey = "${credentials.forKey('curseforge_api_token')}"
+    project {
+      id = "${project.curseforge_project_id}"
+      changelog = rootProject.file("CHANGELOG.md")
+      changelogType = 'markdown'
+      releaseType = "${project.curseforge_release_type}"
+      addGameVersion("${project.minecraft_version}")
+      addGameVersion("NeoForge")
+      mainArtifact(jar)
+    }
+  }
+}
+
+// Modrinth Publishing
+if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
+  modrinth {
+    token = "${credentials.forKey('modrinth_api_token')}"
+    projectId = "${project.modrinth_project_id}"
+    versionNumber = "${project.version}"
+    versionType = "${project.modrinth_release_type}"
+    versionName = "${project.mod_name} ${project.version}"
+    changelog = rootProject.file("CHANGELOG.md").text
+    uploadFile = jar
+    gameVersions = ["${project.minecraft_version}"]
+    loaders = ["neoforge"]
+  }
+}

@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.commands.manager;
 
 import com.mojang.brigadier.CommandDispatcher;
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.server.commands.ConfigureCommand;
 import de.markusbordihn.easynpc.server.commands.DebugCommand;
 import de.markusbordihn.easynpc.server.commands.DeleteCommand;
 import de.markusbordihn.easynpc.server.commands.DialogCommand;
@@ -36,6 +35,7 @@ import de.markusbordihn.easynpc.server.commands.RenderCommand;
 import de.markusbordihn.easynpc.server.commands.RespawnCommand;
 import de.markusbordihn.easynpc.server.commands.SkinCommand;
 import de.markusbordihn.easynpc.server.commands.SoundCommand;
+import de.markusbordihn.easynpc.server.commands.SpawnerCommand;
 import de.markusbordihn.easynpc.server.commands.TradingCommand;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -58,7 +58,6 @@ public class CommandManager {
         Constants.MOD_NAME);
     commandDispatcher.register(
         Commands.literal(Constants.MOD_COMMAND)
-            .then(ConfigureCommand.register())
             .then(DebugCommand.register())
             .then(DeleteCommand.register())
             .then(DialogCommand.register())
@@ -73,6 +72,7 @@ public class CommandManager {
             .then(RespawnCommand.register())
             .then(SkinCommand.register())
             .then(SoundCommand.register())
+            .then(SpawnerCommand.register())
             .then(TradingCommand.register()));
   }
 }

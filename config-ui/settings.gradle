@@ -1,0 +1,29 @@
+pluginManagement {
+  repositories {
+    gradlePluginPortal()
+    maven {
+      name = 'Fabric'
+      url = 'https://maven.fabricmc.net/'
+    }
+    maven {
+      name = 'NeoForge'
+      url = 'https://maven.neoforged.net/releases/'
+    }
+    maven {
+      name = 'Forge'
+      url = 'https://maven.minecraftforge.net/'
+    }
+    maven {
+      name = 'Sponge Snapshots'
+      url = 'https://repo.spongepowered.org/repository/maven-public/'
+    }
+  }
+
+  plugins {
+    id 'fabric-loom' version "${fabric_loom}"
+  }
+}
+
+rootProject.name = 'config-ui'
+
+include("Common", "Fabric", "Forge", "NeoForge")

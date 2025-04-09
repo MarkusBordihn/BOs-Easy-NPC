@@ -34,6 +34,9 @@ import org.apache.logging.log4j.Logger;
 
 public class DialogDataSet {
 
+  public static final String DATA_DIALOG_DATA_SET_TAG = "DialogDataSet";
+  public static final String DATA_DIALOG_DEFAULT_TAG = "Default";
+  public static final String DATA_TYPE_TAG = "Type";
   public static final StreamCodec<RegistryFriendlyByteBuf, DialogDataSet> STREAM_CODEC =
       new StreamCodec<>() {
         @Override
@@ -47,10 +50,6 @@ public class DialogDataSet {
           registryFriendlyByteBuf.writeNbt(dialogDataSet.createTag());
         }
       };
-
-  public static final String DATA_DIALOG_DATA_SET_TAG = "DialogDataSet";
-  public static final String DATA_DIALOG_DEFAULT_TAG = "Default";
-  public static final String DATA_TYPE_TAG = "Type";
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private final HashMap<String, DialogDataEntry> dialogByLabelMap = new HashMap<>();
   private final HashMap<UUID, DialogDataEntry> dialogByIdMap = new HashMap<>();

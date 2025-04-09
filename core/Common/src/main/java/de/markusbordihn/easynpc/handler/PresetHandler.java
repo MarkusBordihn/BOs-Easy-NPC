@@ -207,8 +207,7 @@ public class PresetHandler {
     }
 
     try {
-      CompoundTag compoundTag =
-          NbtIo.readCompressed(presetFile.toFile().toPath(), NbtAccounter.unlimitedHeap());
+      CompoundTag compoundTag = NbtIo.readCompressed(presetFile, NbtAccounter.unlimitedHeap());
       return importPreset(serverLevel, compoundTag, position, uuid, serverPlayer);
     } catch (IOException exception) {
       log.error("[{}] Error reading custom preset file {}", serverLevel, presetFile, exception);
@@ -341,8 +340,7 @@ public class PresetHandler {
     }
 
     try {
-      CompoundTag compoundTag =
-          NbtIo.readCompressed(presetFile.toFile().toPath(), NbtAccounter.unlimitedHeap());
+      CompoundTag compoundTag = NbtIo.readCompressed(presetFile, NbtAccounter.unlimitedHeap());
       return importPreset(serverLevel, compoundTag, position, uuid, serverPlayer);
     } catch (IOException exception) {
       log.error("[{}] Error reading world preset file {}", serverLevel, presetFile, exception);
@@ -373,7 +371,7 @@ public class PresetHandler {
       return false;
     }
 
-    CompoundTag compoundTag = presetData.exportPresetData();
+    CompoundTag compoundTag = presetData.serializePresetData();
     if (compoundTag == null || compoundTag.isEmpty()) {
       log.error("[{}] Error exporting custom preset {}!", easyNPC, file);
       return false;

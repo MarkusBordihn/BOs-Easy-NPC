@@ -7,11 +7,8 @@ plugins {
 }
 
 base {
-  archivesName = "${mod_id}-neoforge-${minecraft_version}"
+  archivesName = "${project.mod_id}-neoforge-${project.minecraft_version}"
 }
-
-def coreProject = rootProject.findProject(":core") ?: rootProject
-def commonProject = rootProject.findProject(":core:Common") ?: project(":Common")
 
 minecraft.accessTransformers.file file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -52,18 +49,18 @@ dependencies {
   implementation "net.neoforged:neoforge:${project.neoforge_version}"
 
   // Include Common code
-  compileOnly commonProject
+  compileOnly project(":Common")
 
   // Test dependencies
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
   testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
 
   // Additional helpful Mods for development (runtime dependency)
-  if (project.hasProperty('forge_jei_mod') && project.forge_jei_mod) {
-    runtimeOnly "curse.maven:jei-238222:${project.forge_jei_mod}"
+  if (project.hasProperty('neoforge_jei_mod') && project.neoforge_jei_mod) {
+    runtimeOnly "curse.maven:jei-238222:${project.neoforge_jei_mod}"
   }
-  if (project.hasProperty('forge_xaeros_minimap_mod') && project.forge_xaeros_minimap_mod) {
-    runtimeOnly "curse.maven:xaeros_minimap-263420:${project.forge_xaeros_minimap_mod}"
+  if (project.hasProperty('neoforge_xaeros_minimap_mod') && project.neoforge_xaeros_minimap_mod) {
+    runtimeOnly "curse.maven:xaeros_minimap-263420:${project.neoforge_xaeros_minimap_mod}"
   }
 }
 
@@ -71,36 +68,30 @@ dependencies {
 Spec<Task> notNeoTask = { Task it -> !it.name.startsWith("neo") } as Spec<Task>
 
 tasks.withType(JavaCompile).matching(notNeoTask).configureEach {
-  source(commonProject.sourceSets.main.allSource)
+  source(project(":Common").sourceSets.main.allSource)
 }
 
 tasks.withType(Javadoc).matching(notNeoTask).configureEach {
-  source(commonProject.sourceSets.main.allJava)
+  source(project(":Common").sourceSets.main.allJava)
 }
 
 tasks.withType(ProcessResources).matching(notNeoTask).configureEach {
-  from commonProject.sourceSets.main.resources
+  from project(":Common").sourceSets.main.resources
 }
 
 publishing {
   publications {
     mavenJava(MavenPublication) {
-      artifactId base.archivesName.get()
-      from components.java
-    }
-  }
-  repositories {
-    maven {
-      url "file://" + System.getenv("local_maven")
+      groupId project.group
+      artifactId project.archivesBaseName
+      version project.version
+      artifact jar
     }
   }
 }
 
-idea {
-  module {
-    downloadSources = true
-    downloadJavadoc = true
-  }
+tasks.named('build') {
+  finalizedBy 'publishToMavenLocal'
 }
 
 // CurseForge Publishing
@@ -109,7 +100,7 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
     apiKey = "${credentials.forKey('curseforge_api_token')}"
     project {
       id = "${project.curseforge_project_id}"
-      changelog = coreProject.file("CHANGELOG.md")
+      changelog = rootProject.file("CHANGELOG.md")
       changelogType = 'markdown'
       releaseType = "${project.curseforge_release_type}"
       addGameVersion("${project.minecraft_version}")
@@ -131,7 +122,7 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     versionNumber = "${project.version}"
     versionType = "${project.modrinth_release_type}"
     versionName = "${project.mod_name} ${project.version}"
-    changelog = coreProject.file("CHANGELOG.md").text
+    changelog = rootProject.file("CHANGELOG.md").text
     uploadFile = jar
     gameVersions = ["${project.minecraft_version}"]
     loaders = ["neoforge"]

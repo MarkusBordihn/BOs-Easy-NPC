@@ -42,7 +42,7 @@ public class ModTabs {
         BuiltInRegistries.CREATIVE_MODE_TAB,
         Constants.MOD_ID + ":config_items",
         FabricItemGroup.builder()
-            .icon(() -> ModItems.EASY_NPC_WAND.asItem().getDefaultInstance())
+            .icon(() -> ModItems.MOVE_EASY_NPC.asItem().getDefaultInstance())
             .title(Component.translatable("itemGroup.easy_npc.config_items"))
             .displayItems(new ConfigItems())
             .build());

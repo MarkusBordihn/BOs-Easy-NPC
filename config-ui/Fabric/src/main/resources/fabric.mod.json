@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "easy_npc_config_ui",
+  "version": "${version}",
+  "name": "Easy NPC: Config UI",
+  "description": "Create easily NPCs for your world or for your mods.",
+  "authors": [
+    "Markus Bordihn"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/easy-npc",
+    "issues": "https://github.com/MarkusBordihn/BOs-Easy-NPC/issues"
+  },
+  "license": "MIT",
+  "icon": "logo.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "de.markusbordihn.easynpc.configui.ConfigUIMain"
+    ],
+    "client": [
+      "de.markusbordihn.easynpc.configui.ConfigUIClient"
+    ],
+    "fabric-gametest": [
+      "de.markusbordihn.easynpc.configui.gametest.SmokeTest",
+      "de.markusbordihn.easynpc.configui.gametest.ConfigurationScreenTest",
+      "de.markusbordihn.easynpc.configui.gametest.EditorScreenTest",
+      "de.markusbordihn.easynpc.configui.gametest.MenuManagerTest"
+    ]
+  },
+  "mixins": [],
+  "accessWidener": "easynpcconfig.accesswidener",
+  "depends": {
+    "fabricloader": ">=0.16.4",
+    "fabric": "*",
+    "minecraft": "1.21.1",
+    "java": ">=21"
+  },
+  "suggests": {
+    "tooltipfix": "*"
+  }
+}
