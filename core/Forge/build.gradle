@@ -137,13 +137,6 @@ jar {
   }
 }
 
-idea {
-  module {
-    downloadSources = true
-    downloadJavadoc = true
-  }
-}
-
 publishing {
   publications {
     mavenJava(MavenPublication) {

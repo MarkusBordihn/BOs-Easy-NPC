@@ -27,7 +27,6 @@ import java.util.function.Function;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -39,11 +38,11 @@ public class NetworkHandler implements NetworkHandlerInterface {
   private static PayloadRegistrar payloadRegistrar;
   private final Map<Type<?>, Class<? extends NetworkMessageRecord>> clientMessages =
       new LinkedHashMap<>();
-  private final Map<CustomPacketPayload.Type<?>, Class<? extends NetworkMessageRecord>>
+  private final Map<Type<?>, Class<? extends NetworkMessageRecord>>
       serverMessages = new LinkedHashMap<>();
-  private final Map<CustomPacketPayload.Type<?>, Class<? extends NetworkMessageRecord>>
+  private final Map<Type<?>, Class<? extends NetworkMessageRecord>>
       registeredClientMessages = new LinkedHashMap<>();
-  private final Map<CustomPacketPayload.Type<?>, Class<? extends NetworkMessageRecord>>
+  private final Map<Type<?>, Class<? extends NetworkMessageRecord>>
       registeredServerMessages = new LinkedHashMap<>();
 
   public NetworkHandler() {
@@ -77,7 +76,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
 
   @Override
   public <M extends NetworkMessageRecord> void registerClientNetworkMessageHandler(
-      final CustomPacketPayload.Type<M> type,
+      final Type<M> type,
       final StreamCodec<RegistryFriendlyByteBuf, M> codec,
       final Class<M> networkMessage,
       final Function<FriendlyByteBuf, M> creator) {
@@ -90,7 +89,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
 
   @Override
   public <M extends NetworkMessageRecord> void registerServerNetworkMessageHandler(
-      final CustomPacketPayload.Type<M> type,
+      final Type<M> type,
       final StreamCodec<RegistryFriendlyByteBuf, M> codec,
       Class<M> networkMessage,
       Function<FriendlyByteBuf, M> creator) {
@@ -109,13 +108,13 @@ public class NetworkHandler implements NetworkHandlerInterface {
 
   @Override
   public <M extends NetworkMessageRecord> void addClientMessage(
-      final CustomPacketPayload.Type<M> messageID, final Class<M> networkMessage) {
+      final Type<M> messageID, final Class<M> networkMessage) {
     clientMessages.put(messageID, networkMessage);
   }
 
   @Override
   public <M extends NetworkMessageRecord> void addServerMessage(
-      final CustomPacketPayload.Type<M> messageID, final Class<M> networkMessage) {
+      final Type<M> messageID, final Class<M> networkMessage) {
     serverMessages.put(messageID, networkMessage);
   }
 
@@ -125,31 +124,31 @@ public class NetworkHandler implements NetworkHandlerInterface {
   }
 
   @Override
-  public Map<CustomPacketPayload.Type<?>, Class<? extends NetworkMessageRecord>>
+  public Map<Type<?>, Class<? extends NetworkMessageRecord>>
       getServerMessages() {
     return serverMessages;
   }
 
   @Override
   public <M extends NetworkMessageRecord> void addRegisteredClientMessage(
-      final CustomPacketPayload.Type<M> messageID, final Class<M> networkMessage) {
+      final Type<M> messageID, final Class<M> networkMessage) {
     registeredClientMessages.put(messageID, networkMessage);
   }
 
   @Override
   public <M extends NetworkMessageRecord> void addRegisteredServerMessage(
-      final CustomPacketPayload.Type<M> messageID, final Class<M> networkMessage) {
+      final Type<M> messageID, final Class<M> networkMessage) {
     registeredServerMessages.put(messageID, networkMessage);
   }
 
   @Override
-  public Map<CustomPacketPayload.Type<?>, Class<? extends NetworkMessageRecord>>
+  public Map<Type<?>, Class<? extends NetworkMessageRecord>>
       getRegisteredClientMessages() {
     return registeredClientMessages;
   }
 
   @Override
-  public Map<CustomPacketPayload.Type<?>, Class<? extends NetworkMessageRecord>>
+  public Map<Type<?>, Class<? extends NetworkMessageRecord>>
       getRegisteredServerMessages() {
     return registeredServerMessages;
   }

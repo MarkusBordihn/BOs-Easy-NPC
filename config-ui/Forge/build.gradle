@@ -98,10 +98,10 @@ dependencies {
   minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
 
   // Include Common code
-  implementation project(":Common")
+  compileOnly project(":Common")
 
   // Include Core Common code
-  implementation "de.markusbordihn.easynpc:easy_npc-common-${project.minecraft_version}:${project.version}"
+  compileOnly fg.deobf("de.markusbordihn.easynpc:easy_npc-common-${project.minecraft_version}:${project.version}")
   runtimeOnly fg.deobf("de.markusbordihn.easynpc:easy_npc-forge-${project.minecraft_version}:${project.version}")
 
   // Additional helpful Mods for development (runtime dependency)

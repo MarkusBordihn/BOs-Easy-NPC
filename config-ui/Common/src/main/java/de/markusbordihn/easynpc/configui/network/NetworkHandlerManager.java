@@ -124,11 +124,6 @@ public class NetworkHandlerManager {
     }
   }
 
-  public static void registerNetworkHandler() {
-    registerClientNetworkHandler();
-    registerServerNetworkHandler();
-  }
-
   public static void registerClientNetworkHandler() {
 
     NetworkHandlerInterface networkHandler = getHandler();
