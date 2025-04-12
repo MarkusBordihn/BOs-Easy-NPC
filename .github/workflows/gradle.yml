@@ -27,8 +27,8 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Gradle Build Test Core
-        run: ./gradlew -p core build
+      - name: Gradle Build Test Core and Publish to Maven Local
+        run: ./gradlew -p core build publishToMavenLocal
 
       - name: Gradle Build Test Config UI
         run: ./gradlew -p config-ui build
