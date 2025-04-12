@@ -35,8 +35,8 @@ import java.util.Optional;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -72,12 +72,11 @@ public class ConfigUIMain {
 
     log.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
     modEventBus.addListener(
-        (final FMLCommonSetupEvent event) ->
-            event.enqueueWork(
-                () -> {
-                  NetworkHandlerManager.registerHandler(new NetworkHandler());
-                  NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
-                }));
+        (final RegisterPayloadHandlersEvent event) -> {
+          NetworkHandlerManager.registerHandler(new NetworkHandler());
+          NetworkHandler.registerNetworkHandler(event);
+          NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
+        });
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
   }
 }

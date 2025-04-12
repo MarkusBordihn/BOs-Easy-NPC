@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.configui.network.message;
 
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.configui.network.message.server.AddOrUpdateObjectiveMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeActionEventMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeAdvancedTradingMessage;
@@ -87,7 +88,6 @@ import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.data.trading.TradingValueType;
-import de.markusbordihn.easynpc.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.validator.UrlValidator;
 import java.util.Optional;
 import java.util.UUID;

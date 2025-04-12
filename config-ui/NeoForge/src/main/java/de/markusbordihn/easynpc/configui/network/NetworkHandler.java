@@ -38,12 +38,12 @@ public class NetworkHandler implements NetworkHandlerInterface {
   private static PayloadRegistrar payloadRegistrar;
   private final Map<Type<?>, Class<? extends NetworkMessageRecord>> clientMessages =
       new LinkedHashMap<>();
-  private final Map<Type<?>, Class<? extends NetworkMessageRecord>>
-      serverMessages = new LinkedHashMap<>();
-  private final Map<Type<?>, Class<? extends NetworkMessageRecord>>
-      registeredClientMessages = new LinkedHashMap<>();
-  private final Map<Type<?>, Class<? extends NetworkMessageRecord>>
-      registeredServerMessages = new LinkedHashMap<>();
+  private final Map<Type<?>, Class<? extends NetworkMessageRecord>> serverMessages =
+      new LinkedHashMap<>();
+  private final Map<Type<?>, Class<? extends NetworkMessageRecord>> registeredClientMessages =
+      new LinkedHashMap<>();
+  private final Map<Type<?>, Class<? extends NetworkMessageRecord>> registeredServerMessages =
+      new LinkedHashMap<>();
 
   public NetworkHandler() {
     log.info("{} NetworkHandler ...", Constants.LOG_REGISTER_PREFIX);
@@ -124,8 +124,7 @@ public class NetworkHandler implements NetworkHandlerInterface {
   }
 
   @Override
-  public Map<Type<?>, Class<? extends NetworkMessageRecord>>
-      getServerMessages() {
+  public Map<Type<?>, Class<? extends NetworkMessageRecord>> getServerMessages() {
     return serverMessages;
   }
 
@@ -142,14 +141,12 @@ public class NetworkHandler implements NetworkHandlerInterface {
   }
 
   @Override
-  public Map<Type<?>, Class<? extends NetworkMessageRecord>>
-      getRegisteredClientMessages() {
+  public Map<Type<?>, Class<? extends NetworkMessageRecord>> getRegisteredClientMessages() {
     return registeredClientMessages;
   }
 
   @Override
-  public Map<Type<?>, Class<? extends NetworkMessageRecord>>
-      getRegisteredServerMessages() {
+  public Map<Type<?>, Class<? extends NetworkMessageRecord>> getRegisteredServerMessages() {
     return registeredServerMessages;
   }
 }

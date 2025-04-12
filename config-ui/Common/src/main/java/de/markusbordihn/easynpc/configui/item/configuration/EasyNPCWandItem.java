@@ -28,10 +28,12 @@ import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -72,6 +74,21 @@ public class EasyNPCWandItem extends Item {
         }
       }
     }
+  }
+
+  @Override
+  public InteractionResult interactLivingEntity(
+      ItemStack itemStack,
+      Player player,
+      LivingEntity livingEntity,
+      InteractionHand interactionHand) {
+    if (player instanceof ServerPlayer serverPlayer
+        && livingEntity instanceof EasyNPCBaseEntity<?> easyNPCEntity) {
+      MenuManager.getMenuHandler()
+          .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPCEntity, 0);
+      return InteractionResult.SUCCESS;
+    }
+    return InteractionResult.PASS;
   }
 
   @Override

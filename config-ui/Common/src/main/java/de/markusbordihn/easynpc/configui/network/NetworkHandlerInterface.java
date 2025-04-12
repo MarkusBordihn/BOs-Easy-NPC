@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.configui.network;
 
 import de.markusbordihn.easynpc.configui.Constants;
-import de.markusbordihn.easynpc.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.Map;
 import java.util.function.Function;
