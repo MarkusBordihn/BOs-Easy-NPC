@@ -30,7 +30,7 @@ public class RenderEntityTypeSupportConfig extends Config {
 
   public static final String CONFIG_FILE_NAME = "render_entity_type_support.cfg";
   public static final String CONFIG_FILE_HEADER =
-      """
+"""
 Render Entity Type Support Configuration
 
  Please note that this configuration file only includes confirmed entity types.

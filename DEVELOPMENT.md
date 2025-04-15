@@ -53,7 +53,7 @@ supported mod loaders.
 After the build is finished, the IDE should recognize the correct structure and you can start
 developing.
 
-If you receive an error like `Could not find de.markusbordihn.easynpc:easy_npc-forge-1.18.2:6.x.y.`,
+If you receive an error like `Could not find de.markusbordihn.easynpc:easy_npc-forge-1.18.2:x.y.z.`,
 make sure to build the `core` module first.
 
 ## Cleaning

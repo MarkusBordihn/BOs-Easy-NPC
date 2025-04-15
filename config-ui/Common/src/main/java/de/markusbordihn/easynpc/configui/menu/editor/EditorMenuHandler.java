@@ -23,6 +23,8 @@ import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.components.TextComponent;
+import java.util.Locale;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -41,7 +43,7 @@ public class EditorMenuHandler {
       final EasyNPC<?> easyNPC,
       final MenuType<? extends EditorMenu> menuType,
       ScreenData screenData) {
-    final Component displayName = editorType.getEditorTitle(easyNPC);
+    final Component displayName = getEditorTitle(editorType, easyNPC);
 
     return new MenuProvider() {
       @Override
@@ -83,5 +85,11 @@ public class EditorMenuHandler {
     }
     return new ScreenData(
         npcUUID, dialogId, dialogButtonId, actionDataEntryId, pageIndex, additionalSyncData);
+  }
+
+  private static Component getEditorTitle(final EditorType editorType, final EasyNPC<?> easyNPC) {
+    return TextComponent.getTranslatedConfigText(
+        editorType.name().toLowerCase(Locale.ROOT) + ".title",
+        easyNPC.getEntity().getName().getString(20));
   }
 }

@@ -29,7 +29,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -127,7 +126,7 @@ public class EasyNPCSpawnerBlockEntity extends BlockEntity {
     return this.spawner.onEventTriggered(this.level, id) || super.triggerEvent(id, value);
   }
 
-  public BaseSpawner getSpawner() {
+  public BaseEasyNPCSpawner getSpawner() {
     return this.spawner;
   }
 
