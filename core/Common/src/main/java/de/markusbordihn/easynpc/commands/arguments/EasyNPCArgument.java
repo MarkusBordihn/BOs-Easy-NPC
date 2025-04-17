@@ -82,7 +82,8 @@ public class EasyNPCArgument implements ArgumentType<EntitySelector> {
     Collection<? extends EasyNPC<?>> easyNPCs = getEntities(context, name);
     easyNPCs =
         easyNPCs.stream()
-            .filter(easyNPC -> AccessManager.hasAccess(context.getSource(), easyNPC.getUUID()))
+            .filter(
+                easyNPC -> AccessManager.hasAccess(context.getSource(), easyNPC.getEntityUUID()))
             .toList();
 
     if (easyNPCs.isEmpty()) {

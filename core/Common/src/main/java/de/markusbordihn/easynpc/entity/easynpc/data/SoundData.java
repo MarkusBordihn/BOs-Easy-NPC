@@ -126,7 +126,7 @@ public interface SoundData<E extends PathfinderMob> extends EasyNPC<E> {
   }
 
   default void playDefaultSound(SoundType soundType) {
-    Level level = this.getLevel();
+    Level level = this.getEntityLevel();
     Entity entity = this.getEntity();
     if (soundType == null
         || level == null

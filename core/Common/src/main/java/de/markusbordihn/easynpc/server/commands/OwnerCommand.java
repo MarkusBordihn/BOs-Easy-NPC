@@ -98,7 +98,8 @@ public class OwnerCommand extends Command {
     }
 
     return sendSuccessMessage(
-        context, EASY_NPC_PREFIX + easyNPC.getUUID() + " is owned by " + ownerData.getOwner());
+        context,
+        EASY_NPC_PREFIX + easyNPC.getEntityUUID() + " is owned by " + ownerData.getOwner());
   }
 
   private static int removeOwner(CommandSourceStack context, EasyNPC<?> easyNPC) {

@@ -638,7 +638,7 @@ public class PresetCommand extends Command {
             + " for "
             + easyNPC
             + " with UUID "
-            + easyNPC.getUUID()
+            + easyNPC.getEntityUUID()
             + "!");
   }
 
@@ -659,7 +659,7 @@ public class PresetCommand extends Command {
             + " for "
             + easyNPC
             + " with UUID "
-            + easyNPC.getUUID()
+            + easyNPC.getEntityUUID()
             + "!");
   }
 
@@ -678,7 +678,7 @@ public class PresetCommand extends Command {
 
     String presetFileName =
         CustomPresetDataFiles.getPresetFileName(
-            name != null && !name.isEmpty() ? name : easyNPC.getUUID().toString());
+            name != null && !name.isEmpty() ? name : easyNPC.getEntityUUID().toString());
     // TODO: Re-implement export local preset
     // NetworkMessageHandlerManager.getClientHandler()
     //    .exportClientPreset(easyNPC.getUUID(), presetFileName, serverPlayer);

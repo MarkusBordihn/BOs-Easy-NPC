@@ -145,7 +145,7 @@ public interface PresetData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default void addAdditionalPresetData(CompoundTag compoundTag) {
-    if (this.isServerSide() && this.getPresetUUID() != null) {
+    if (this.isServerSideInstance() && this.getPresetUUID() != null) {
       compoundTag.putUUID(PRESET_UUID_TAG, this.getPresetUUID());
     }
   }

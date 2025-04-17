@@ -29,6 +29,7 @@ import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -61,7 +62,7 @@ public class EditorMenuHandler {
 
   public static ScreenData getScreenData(
       final EditorType editorType,
-      final EasyNPC<?> easyNPC,
+      final EasyNPC<? extends LivingEntity> easyNPC,
       final UUID dialogId,
       final UUID dialogButtonId,
       final UUID actionDataEntryId,
@@ -69,7 +70,7 @@ public class EditorMenuHandler {
       CompoundTag additionalSyncData) {
 
     // Get basic data for configuration menu.
-    final UUID npcUUID = easyNPC.getUUID();
+    final UUID npcUUID = easyNPC.getEntityUUID();
 
     // Additional data for specific configuration menu.
     switch (editorType) {

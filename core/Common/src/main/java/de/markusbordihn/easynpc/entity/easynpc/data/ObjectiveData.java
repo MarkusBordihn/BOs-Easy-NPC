@@ -136,7 +136,7 @@ public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
     // Check if we need to re-register NPC based objectives.
     if (this.hasEntityTargetObjectives()
         && !this.getObjectiveDataSet().hasValidTarget(this)
-        && getObjectiveDataSet().isTargetedEntity(easyNPC.getUUID())) {
+        && getObjectiveDataSet().isTargetedEntity(easyNPC.getEntityUUID())) {
       this.refreshCustomObjectives();
     }
   }
@@ -145,7 +145,7 @@ public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
     // Check if we need to re-register NPC based objectives.
     if (this.hasEntityTargetObjectives()
         && this.getObjectiveDataSet().hasValidTarget(this)
-        && getObjectiveDataSet().isTargetedEntity(this.getUUID())) {
+        && getObjectiveDataSet().isTargetedEntity(this.getEntityUUID())) {
       this.refreshCustomObjectives();
     }
   }
@@ -195,7 +195,7 @@ public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default void refreshCustomObjectives() {
-    if (this.isClientSide()) {
+    if (this.isClientSideInstance()) {
       return;
     }
     for (ObjectiveDataEntry objectiveDataEntry : getObjectiveDataSet().getObjectives()) {
@@ -209,7 +209,7 @@ public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default void registerAttributeBasedObjectives() {
-    if (this.isClientSide()) {
+    if (this.isClientSideInstance()) {
       return;
     }
     log.debug("Register attribute based objectives for {}", this);
@@ -247,7 +247,7 @@ public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default void registerCustomObjectives() {
-    if (this.isClientSide()) {
+    if (this.isClientSideInstance()) {
       return;
     }
     Set<ObjectiveDataEntry> objectives = this.getObjectiveDataSet().getObjectives();
@@ -385,7 +385,7 @@ public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
   default void addAdditionalObjectiveData(CompoundTag compoundTag) {
     CompoundTag objectiveTag = new CompoundTag();
 
-    if (this.isServerSide()) {
+    if (this.isServerSideInstance()) {
       ObjectiveDataSet objectiveDataSet = this.getObjectiveDataSet();
       if (objectiveDataSet != null) {
         objectiveDataSet.save(objectiveTag);

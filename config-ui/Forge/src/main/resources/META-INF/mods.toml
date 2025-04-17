@@ -31,5 +31,5 @@ side = "BOTH"
 modId = "easy_npc"
 mandatory = true
 versionRange = "[6.0.0,7.0.0)"
-ordering = "NONE"
+ordering = "AFTER"
 side = "BOTH"

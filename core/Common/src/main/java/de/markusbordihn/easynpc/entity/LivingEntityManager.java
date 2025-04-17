@@ -52,7 +52,7 @@ public class LivingEntityManager {
   private LivingEntityManager() {}
 
   public static void addEasyNPC(EasyNPC<?> easyNPC) {
-    UUID uuid = easyNPC.getUUID();
+    UUID uuid = easyNPC.getEntityUUID();
     log.debug("{} [Add] EASY NPC entity {}: {}", LOG_PREFIX, easyNPC, uuid);
     npcEntityMap.put(uuid, easyNPC);
 
@@ -67,21 +67,21 @@ public class LivingEntityManager {
     }
 
     // Client side could stop here.
-    if (easyNPC.isClientSide()) {
+    if (easyNPC.isClientSideInstance()) {
       return;
     }
 
     // Inform all server-side easy NPC entities about the new easyNPC.
     for (EasyNPC<?> easyNPCChild : npcEntityMap.values()) {
       if (easyNPCChild != easyNPC) {
-        easyNPCChild.handleEasyNPCJoin(easyNPC);
+        easyNPCChild.handleEasyNPCJoinEvent(easyNPC);
       }
     }
   }
 
   public static void removeEasyNPC(EasyNPC<?> easyNPC) {
-    log.debug("{} [Remove] EASY NPC entity {}: {}", LOG_PREFIX, easyNPC, easyNPC.getUUID());
-    npcEntityMap.remove(easyNPC.getUUID());
+    log.debug("{} [Remove] EASY NPC entity {}: {}", LOG_PREFIX, easyNPC, easyNPC.getEntityUUID());
+    npcEntityMap.remove(easyNPC.getEntityUUID());
 
     // Remove Easy NPC from preset map if available.
     PresetData<?> presetData = easyNPC.getEasyNPCPresetData();
@@ -95,14 +95,14 @@ public class LivingEntityManager {
     }
 
     // Client side could stop here.
-    if (easyNPC.isClientSide()) {
+    if (easyNPC.isClientSideInstance()) {
       return;
     }
 
     // Inform all server-side easy NPC entities about the removed easyNPC.
     for (EasyNPC<?> easyNPCChild : npcEntityMap.values()) {
       if (easyNPCChild != easyNPC) {
-        easyNPCChild.handleEasyNPCLeave(easyNPC);
+        easyNPCChild.handleEasyNPCLeaveEvent(easyNPC);
       }
     }
   }
@@ -114,7 +114,7 @@ public class LivingEntityManager {
 
     // Inform all server-side easy NPC entities about the new living entity.
     for (EasyNPC<?> easyNPC : npcEntityMap.values()) {
-      easyNPC.handleLivingEntityJoin(livingEntity);
+      easyNPC.handleLivingEntityJoinEvent(livingEntity);
     }
   }
 
@@ -126,7 +126,7 @@ public class LivingEntityManager {
 
     // Inform all server-side easy NPC entities about the leaved living entity.
     for (EasyNPC<?> easyNPC : npcEntityMap.values()) {
-      easyNPC.handleLivingEntityLeave(livingEntity);
+      easyNPC.handleLivingEntityLeaveEvent(livingEntity);
     }
   }
 
@@ -137,7 +137,7 @@ public class LivingEntityManager {
 
     // Inform all server-side easy NPC entities about the new player.
     for (EasyNPC<?> easyNPC : npcEntityMap.values()) {
-      easyNPC.handlePlayerJoin(serverPlayer);
+      easyNPC.handlePlayerJoinEvent(serverPlayer);
     }
   }
 
@@ -148,7 +148,7 @@ public class LivingEntityManager {
 
     // Inform all server-side easy NPC entities about the leaved player.
     for (EasyNPC<?> easyNPC : npcEntityMap.values()) {
-      easyNPC.handlePlayerLeave(serverPlayer);
+      easyNPC.handlePlayerLeaveEvent(serverPlayer);
     }
   }
 

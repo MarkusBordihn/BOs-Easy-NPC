@@ -101,7 +101,7 @@ public class DialogCommand extends Command {
           "Found no Dialog with label "
               + dialogLabel
               + " for EasyNPC with UUID "
-              + easyNPC.getUUID()
+              + easyNPC.getEntityUUID()
               + "!");
     }
     return setDefaultDialog(
@@ -169,7 +169,7 @@ public class DialogCommand extends Command {
           "Found no Dialog with label "
               + dialogLabel
               + " for EasyNPC with UUID "
-              + easyNPC.getUUID()
+              + easyNPC.getEntityUUID()
               + "!");
     }
     return openDialog(
@@ -196,7 +196,7 @@ public class DialogCommand extends Command {
           "Found no Dialog with UUID "
               + dialogUUID
               + " for EasyNPC with UUID "
-              + easyNPC.getUUID()
+              + easyNPC.getEntityUUID()
               + "!");
     }
 

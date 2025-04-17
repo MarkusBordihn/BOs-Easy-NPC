@@ -52,7 +52,7 @@ public interface ClientNetworkMessageHandlerInterface {
       log.debug("Sync {} data to player {}", easyNPC, serverPlayer);
       NetworkHandlerManager.sendMessageToPlayer(
           new SyncDataMessage(
-              easyNPC.getUUID(),
+              easyNPC.getEntityUUID(),
               easyNPC.getEasyNPCDialogData() != null
                   ? easyNPC.getEasyNPCDialogData().getDialogDataSet()
                   : null),

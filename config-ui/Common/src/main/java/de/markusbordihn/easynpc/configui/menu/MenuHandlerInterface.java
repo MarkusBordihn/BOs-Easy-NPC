@@ -77,7 +77,7 @@ public interface MenuHandlerInterface {
     final MenuProvider menuProvider =
         ConfigurationMenuHandler.getMenuProvider(
             configurationTypeAlias, easyNPC, menuType, screenData);
-    final UUID npcUUID = easyNPC.getUUID();
+    final UUID npcUUID = easyNPC.getEntityUUID();
     MenuManager.openMenu(npcUUID, menuProvider, serverPlayer, screenData.encode());
   }
 
@@ -178,7 +178,7 @@ public interface MenuHandlerInterface {
     // Get menu provider for configuration type and open configuration menu.
     final MenuProvider menuProvider =
         EditorMenuHandler.getMenuProvider(editorType, easyNPC, menuType, screenData);
-    final UUID npcUUID = easyNPC.getUUID();
+    final UUID npcUUID = easyNPC.getEntityUUID();
     MenuManager.openMenu(npcUUID, menuProvider, serverPlayer, screenData.encode());
   }
 

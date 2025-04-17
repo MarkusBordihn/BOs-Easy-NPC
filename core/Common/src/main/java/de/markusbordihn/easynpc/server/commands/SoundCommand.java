@@ -91,7 +91,7 @@ public class SoundCommand extends Command {
         "Sound type "
             + soundType
             + " for EasyNPC "
-            + easyNPC.getUUID()
+            + easyNPC.getEntityUUID()
             + " was set to "
             + sound
             + " !");

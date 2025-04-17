@@ -138,7 +138,7 @@ public interface NavigationData<T extends PathfinderMob> extends EasyNPC<T> {
 
       // Define if NPC is on ground or not.
       Mob mob = this.getMob();
-      Level level = this.getLevel();
+      Level level = this.getEntityLevel();
       BlockState blockState = level.getBlockState(mob.getOnPos());
       mob.setOnGround(
           !blockState.is(Blocks.AIR)

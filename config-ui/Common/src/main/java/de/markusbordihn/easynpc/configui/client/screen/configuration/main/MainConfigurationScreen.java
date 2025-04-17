@@ -518,7 +518,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         nameVisibility,
         getEasyNPC());
     NetworkMessageHandlerManager.getServerHandler()
-        .changeName(getEasyNPC().getUUID(), name, textColor, nameVisibility);
+        .changeName(getEasyNPC().getEntityUUID(), name, textColor, nameVisibility);
     this.formerName = name;
     this.formerTextColor = textColor;
     this.formerNameVisibility = nameVisibility;

@@ -116,7 +116,7 @@ public class NavigationCommand extends Command {
         "Set home position for EasyNPC "
             + easyNPC
             + " with UUID "
-            + easyNPC.getUUID()
+            + easyNPC.getEntityUUID()
             + " to "
             + blockPos);
   }
@@ -139,7 +139,7 @@ public class NavigationCommand extends Command {
         "Set position for EasyNPC "
             + easyNPC
             + " with UUID "
-            + easyNPC.getUUID()
+            + easyNPC.getEntityUUID()
             + " to "
             + position);
   }
