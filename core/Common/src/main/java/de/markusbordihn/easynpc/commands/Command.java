@@ -68,7 +68,7 @@ public class Command {
       CommandSourceStack context, EasyNPC<?> easyNPC, String dataName) {
     return sendFailureMessage(
         context,
-        "No " + dataName + " available for " + easyNPC + " with UUID " + easyNPC.getUUID());
+        "No " + dataName + " available for " + easyNPC + " with UUID " + easyNPC.getEntityUUID());
   }
 
   public static int sendFailureMessageNoNavigationData(

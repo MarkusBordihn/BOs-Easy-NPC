@@ -205,7 +205,7 @@ public final class ObjectiveDataEntry {
   }
 
   public LivingEntity getTargetEntity(EasyNPC<?> easyNPC) {
-    return this.getTargetEntity(easyNPC.getServerLevel());
+    return this.getTargetEntity(easyNPC.getEntityServerLevel());
   }
 
   public LivingEntity getTargetEntity(ServerLevel serverLevel) {
@@ -216,7 +216,7 @@ public final class ObjectiveDataEntry {
   }
 
   public Entity getTargetOwner(EasyNPC<?> easyNPC) {
-    return this.getTargetOwner(easyNPC.getServerLevel());
+    return this.getTargetOwner(easyNPC.getEntityServerLevel());
   }
 
   public Entity getTargetOwner(ServerLevel serverLevel) {
@@ -245,7 +245,7 @@ public final class ObjectiveDataEntry {
   }
 
   public boolean hasValidTarget(EasyNPC<?> easyNPC) {
-    ServerLevel serverLevel = easyNPC.getServerLevel();
+    ServerLevel serverLevel = easyNPC.getEntityServerLevel();
     return serverLevel != null && this.hasValidTarget(serverLevel);
   }
 

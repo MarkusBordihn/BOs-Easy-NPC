@@ -27,7 +27,7 @@ public class SpawnerTypeConfig extends Config {
 
   public static final String CONFIG_FILE_NAME = "spawner_type.cfg";
   public static final String CONFIG_FILE_HEADER =
-      """
+"""
 Spawner Type Configuration
 
 

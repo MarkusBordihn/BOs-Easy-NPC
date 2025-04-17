@@ -29,7 +29,9 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.io.DefaultPresetDataFiles;
 import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
+import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -50,7 +52,7 @@ public class ConfigurationMenuHandler {
       final EasyNPC<?> easyNPC,
       final MenuType<? extends ConfigurationMenu> menuType,
       final ScreenData screenData) {
-    final Component displayName = configurationType.getConfigurationTitle(easyNPC);
+    final Component displayName = getConfigurationTitle(configurationType, easyNPC);
 
     // Special configuration menu for equipment
     if (configurationType == ConfigurationType.EQUIPMENT) {
@@ -119,7 +121,7 @@ public class ConfigurationMenuHandler {
       final int pageIndex) {
 
     // Get basic data for configuration menu.
-    final UUID npcUUID = easyNPC.getUUID();
+    final UUID npcUUID = easyNPC.getEntityUUID();
 
     // Additional data for specific configuration menu.
     final CompoundTag additionalSyncData = new CompoundTag();
@@ -155,5 +157,12 @@ public class ConfigurationMenuHandler {
       }
     }
     return new ScreenData(npcUUID, null, null, null, pageIndex, additionalSyncData);
+  }
+
+  private static Component getConfigurationTitle(
+      final ConfigurationType configurationType, final EasyNPC<?> easyNPC) {
+    return TextComponent.getTranslatedConfigText(
+        configurationType.name().toLowerCase(Locale.ROOT) + ".title",
+        easyNPC.getEntity().getName().getString(16));
   }
 }

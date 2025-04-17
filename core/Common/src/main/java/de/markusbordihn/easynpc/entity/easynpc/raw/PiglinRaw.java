@@ -144,7 +144,7 @@ public class PiglinRaw extends Piglin implements EasyNPCBase<Piglin> {
   public void aiStep() {
     super.aiStep();
 
-    if (this.isClientSide()) {
+    if (this.isClientSideInstance()) {
       this.updateSwingTime();
       if (this.attackAnimationTick > 0) {
         --this.attackAnimationTick;
@@ -194,6 +194,11 @@ public class PiglinRaw extends Piglin implements EasyNPCBase<Piglin> {
   }
 
   @Override
+  public boolean isClientSide() {
+    return this.isClientSideInstance();
+  }
+
+  @Override
   public boolean isInvisible() {
     return VisibilityHandler.handleIsInvisible(this, super.isInvisible());
   }
@@ -236,32 +241,32 @@ public class PiglinRaw extends Piglin implements EasyNPCBase<Piglin> {
   }
 
   @Override
-  public void handleEasyNPCJoin(EasyNPC<?> easyNPC) {
+  public void handleEasyNPCJoinEvent(EasyNPC<?> easyNPC) {
     this.onEasyNPCJoinUpdateObjective(easyNPC);
   }
 
   @Override
-  public void handleEasyNPCLeave(EasyNPC<?> easyNPC) {
+  public void handleEasyNPCLeaveEvent(EasyNPC<?> easyNPC) {
     this.onEasyNPCLeaveUpdateObjective(easyNPC);
   }
 
   @Override
-  public void handlePlayerJoin(ServerPlayer serverPlayer) {
+  public void handlePlayerJoinEvent(ServerPlayer serverPlayer) {
     this.onPlayerJoinUpdateObjective(serverPlayer);
   }
 
   @Override
-  public void handlePlayerLeave(ServerPlayer serverPlayer) {
+  public void handlePlayerLeaveEvent(ServerPlayer serverPlayer) {
     this.onPlayerLeaveUpdateObjective(serverPlayer);
   }
 
   @Override
-  public void handleLivingEntityJoin(LivingEntity livingEntity) {
+  public void handleLivingEntityJoinEvent(LivingEntity livingEntity) {
     this.onLivingEntityJoinUpdateObjective(livingEntity);
   }
 
   @Override
-  public void handleLivingEntityLeave(LivingEntity livingEntity) {
+  public void handleLivingEntityLeaveEvent(LivingEntity livingEntity) {
     this.onLivingEntityLeaveUpdateObjective(livingEntity);
   }
 
@@ -420,7 +425,7 @@ public class PiglinRaw extends Piglin implements EasyNPCBase<Piglin> {
     super.baseTick();
 
     // Early exit for client side and dead entities.
-    if (this.isClientSide() || !this.isAlive()) {
+    if (this.isClientSideInstance() || !this.isAlive()) {
       return;
     }
 
@@ -532,7 +537,7 @@ public class PiglinRaw extends Piglin implements EasyNPCBase<Piglin> {
     if (!(object instanceof EasyNPCBase<?> easyNPCBase)) {
       return false;
     }
-    return java.util.Objects.equals(this.getUUID(), easyNPCBase.getUUID());
+    return java.util.Objects.equals(this.getUUID(), easyNPCBase.getEntityUUID());
   }
 
   @Override

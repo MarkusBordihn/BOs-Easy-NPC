@@ -22,7 +22,9 @@ package de.markusbordihn.easynpc.item.configuration;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntity;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
+import de.markusbordihn.easynpc.level.BaseEasyNPCSpawner;
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import de.markusbordihn.easynpc.utils.SpawnerUtils;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -196,7 +198,9 @@ public class EasyNPCPresetItem extends Item {
       BaseSpawner baseSpawner = spawnerBlockEntity.getSpawner();
       SpawnData spawnData = new SpawnData(getPreset(itemStack), Optional.empty());
       log.debug("Set spawn data {} for spawner {} at {}", spawnData, spawnerBlockEntity, blockPos);
-      baseSpawner.setNextSpawnData(level, blockPos, spawnData);
+      if (!SpawnerUtils.setNextSpawnData(baseSpawner, level, blockPos, spawnData)) {
+        return InteractionResult.FAIL;
+      }
       spawnerBlockEntity.setChanged();
       itemStack.shrink(1);
       return InteractionResult.CONSUME;
@@ -204,14 +208,14 @@ public class EasyNPCPresetItem extends Item {
 
     // Check for NPC Spawner Block
     if (blockEntity instanceof EasyNPCSpawnerBlockEntity easyNPCSpawnerBlockEntity) {
-      BaseSpawner baseSpawner = easyNPCSpawnerBlockEntity.getSpawner();
+      BaseEasyNPCSpawner baseEasyNPCSpawner = easyNPCSpawnerBlockEntity.getSpawner();
       SpawnData spawnData = new SpawnData(getPreset(itemStack), Optional.empty());
       log.debug(
           "Set spawn data {} for base NPC spawner {} at {}",
           spawnData,
           easyNPCSpawnerBlockEntity,
           blockPos);
-      baseSpawner.setNextSpawnData(level, blockPos, spawnData);
+      baseEasyNPCSpawner.setNextSpawnData(level, blockPos, spawnData);
       easyNPCSpawnerBlockEntity.setChanged();
       itemStack.shrink(1);
       return InteractionResult.CONSUME;

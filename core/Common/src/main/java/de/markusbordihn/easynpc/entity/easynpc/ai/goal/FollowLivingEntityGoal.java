@@ -60,7 +60,7 @@ public class FollowLivingEntityGoal extends Goal {
     this.startDistance = startDistance;
     this.canFly = navigationData.canFly();
     this.pathNavigation = this.pathfinderMob.getNavigation();
-    this.level = easyNPC.getServerLevel();
+    this.level = easyNPC.getEntityServerLevel();
     this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
   }
 

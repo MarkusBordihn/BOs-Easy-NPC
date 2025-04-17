@@ -408,13 +408,11 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
 
     // Render Tooltips
     if (this.dialogNameToLabelButton != null && this.dialogNameToLabelButton.isMouseOver(x, y)) {
-      this.renderTooltip(
-          poseStack, TextComponent.getTranslatedConfigText("name_to_label.tooltip"), x, y);
+      this.renderTooltip(poseStack, TextComponent.getTranslatedText("name_to_label.tooltip"), x, y);
     }
 
     if (this.makeDefaultDialogButton != null && this.makeDefaultDialogButton.isMouseOver(x, y)) {
-      this.renderTooltip(
-          poseStack, TextComponent.getTranslatedConfigText("make_default.tooltip"), x, y);
+      this.renderTooltip(poseStack, TextComponent.getTranslatedText("make_default.tooltip"), x, y);
     }
   }
 }

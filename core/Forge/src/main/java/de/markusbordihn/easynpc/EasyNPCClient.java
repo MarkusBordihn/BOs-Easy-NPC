@@ -19,14 +19,12 @@
 
 package de.markusbordihn.easynpc;
 
-import de.markusbordihn.easynpc.client.ClientEvents;
 import de.markusbordihn.easynpc.client.model.ModModelLayer;
 import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
 import de.markusbordihn.easynpc.client.screen.ClientScreens;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,10 +40,7 @@ public class EasyNPCClient {
     modEventBus.addListener(ClientRenderer::registerRenderLayers);
     modEventBus.addListener(ClientRenderer::registerEntityRenderers);
     modEventBus.addListener(ClientScreens::registerScreens);
-    modEventBus.addListener(
-        (final FMLClientSetupEvent event) -> {
-          event.enqueueWork(ClientEvents::handleClientStarting);
-        });
+
     NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
   }
 }

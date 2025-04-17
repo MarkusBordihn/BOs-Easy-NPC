@@ -392,8 +392,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                           .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.DEFAULT_SKIN);
                   }
                 }));
-    editSkinButton.active =
-        this.getConfigurationData().supportsConfigurationType(ConfigurationType.SKIN);
+    editSkinButton.active = this.supportsConfigurationType(ConfigurationType.SKIN);
   }
 
   protected void defineChangeModelButton() {
@@ -443,7 +442,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                   onPress ->
                       NetworkMessageHandlerManager.getServerHandler()
                           .openConfiguration(this.getEasyNPCUUID(), configurationType)));
-      button.active = this.getConfigurationData().supportsConfigurationType(configurationType);
+      button.active = this.supportsConfigurationType(configurationType);
       buttonIndex++;
     }
   }
@@ -519,7 +518,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         nameVisibility,
         getEasyNPC());
     NetworkMessageHandlerManager.getServerHandler()
-        .changeName(getEasyNPC().getUUID(), name, textColor, nameVisibility);
+        .changeName(getEasyNPC().getEntityUUID(), name, textColor, nameVisibility);
     this.formerName = name;
     this.formerTextColor = textColor;
     this.formerNameVisibility = nameVisibility;
