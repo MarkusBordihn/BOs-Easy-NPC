@@ -33,7 +33,7 @@ public class ResetLookAtPlayerGoal<T extends EasyNPC<?>> extends Goal {
   public ResetLookAtPlayerGoal(T easyNPC) {
     super();
     this.modelData = easyNPC.getEasyNPCModelData();
-    this.lookControl = easyNPC.getLookControl();
+    this.lookControl = easyNPC.getEntityLookControl();
   }
 
   @Override

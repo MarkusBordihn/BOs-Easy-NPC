@@ -124,7 +124,7 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
 
   default List<? extends Player> getPlayersInRange(Double range) {
     Entity entity = this.getEntity();
-    return this.getLevel().players().stream()
+    return this.getEntityLevel().players().stream()
         .filter(EntitySelector.NO_SPECTATORS)
         .filter(targetPlayers -> entity.closerThan(targetPlayers, range))
         .toList();
@@ -239,21 +239,21 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
 
   default void interactWithBlock(BlockPos blockPos) {
     LivingEntity livingEntity = this.getLivingEntity();
-    if (livingEntity != null && !this.isClientSide()) {
+    if (livingEntity != null && !this.isClientSideInstance()) {
       this.lookAtBlock(blockPos);
       livingEntity.swing(InteractionHand.MAIN_HAND);
-      this.getServerLevel()
+      this.getEntityServerLevel()
           .getBlockState(blockPos)
           .use(
-              this.getServerLevel(),
-              this.getFakePlayer(this.getServerLevel(), blockPos),
+              this.getEntityServerLevel(),
+              this.getFakePlayer(this.getEntityServerLevel(), blockPos),
               InteractionHand.MAIN_HAND,
               new BlockHitResult(Vec3.atCenterOf(blockPos), Direction.DOWN, blockPos, false));
       livingEntity
           .getMainHandItem()
           .use(
-              this.getServerLevel(),
-              this.getFakePlayer(this.getServerLevel(), blockPos),
+              this.getEntityServerLevel(),
+              this.getFakePlayer(this.getEntityServerLevel(), blockPos),
               InteractionHand.MAIN_HAND);
     }
   }

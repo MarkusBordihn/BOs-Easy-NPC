@@ -49,7 +49,7 @@ public class DeleteCommand extends Command {
 
     int deletedEntities = 0;
     for (EasyNPC<?> easyNPC : easyNPCs) {
-      UUID uuid = easyNPC.getUUID();
+      UUID uuid = easyNPC.getEntityUUID();
       if (AccessManager.hasAccess(context, uuid)) {
         easyNPC.getEntity().discard();
         deletedEntities++;

@@ -40,9 +40,9 @@ public class DialogScreenTestHelper {
             easyNPC,
             menuType,
             new ScreenData(
-                easyNPC.getUUID(),
+                easyNPC.getEntityUUID(),
                 easyNPC.getEasyNPCDialogData().getDialogDataSet().getDefaultDialogId()));
-    UUID menuId = MenuManager.registerMenu(easyNPC.getUUID(), menuProvider, serverPlayer);
+    UUID menuId = MenuManager.registerMenu(easyNPC.getEntityUUID(), menuProvider, serverPlayer);
     MenuManager.openMenu(menuId, serverPlayer);
     return menuId;
   }

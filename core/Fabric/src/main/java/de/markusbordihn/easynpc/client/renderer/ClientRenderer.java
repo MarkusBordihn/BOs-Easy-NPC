@@ -62,7 +62,7 @@ public class ClientRenderer {
     log.info("{} Block Entity Renderers ...", Constants.LOG_REGISTER_PREFIX);
 
     BlockEntityRendererRegistry.register(
-      ModBlocks.EASY_NPC_SPAWNER_ENTITY, BaseEasyNPCSpawnerBlockEntityRenderer::new);
+        ModBlocks.EASY_NPC_SPAWNER_ENTITY, BaseEasyNPCSpawnerBlockEntityRenderer::new);
   }
 
   public static void registerEntityRenderers() {

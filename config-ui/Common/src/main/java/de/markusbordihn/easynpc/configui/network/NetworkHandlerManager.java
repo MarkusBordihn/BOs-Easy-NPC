@@ -134,15 +134,18 @@ public class NetworkHandlerManager {
       log.error("Failed to register client network handler!");
       return;
     }
+    log.info("Registering client network handlers ...");
 
     networkHandler.registerClientNetworkMessage(
         ExportClientPresetMessage.MESSAGE_ID,
         ExportClientPresetMessage.class,
         ExportClientPresetMessage::create);
+
     networkHandler.registerClientNetworkMessage(
         OpenMenuCallbackMessage.MESSAGE_ID,
         OpenMenuCallbackMessage.class,
         OpenMenuCallbackMessage::create);
+
     networkHandler.registerClientNetworkMessage(
         SyncDataMessage.MESSAGE_ID, SyncDataMessage.class, SyncDataMessage::create);
   }
@@ -153,6 +156,7 @@ public class NetworkHandlerManager {
       log.error("Failed to register server network handler!");
       return;
     }
+    log.info("Registering server network handler ...");
 
     networkHandler.registerServerNetworkMessage(
         AddOrUpdateObjectiveMessage.MESSAGE_ID,

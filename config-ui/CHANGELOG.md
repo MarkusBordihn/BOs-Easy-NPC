@@ -1,4 +1,4 @@
-# Changelog for Easy NPC: Config UI (1.18.2)
+# Changelog for Easy NPC: Config UI (1.20.1)
 
 ## Note
 
@@ -19,7 +19,7 @@ Easy NPC is now split into two separate mods:
 🎯 Why the change?
 
 * Developers and Modpacks can now include just the Core mod for a leaner setup.
-* A bundle with both mods is still available for convenience!
+* Faster loading times and less memory usage and faster development cycles.
 
 ⚙️ Enjoy more flexibility and customization! 💡
 

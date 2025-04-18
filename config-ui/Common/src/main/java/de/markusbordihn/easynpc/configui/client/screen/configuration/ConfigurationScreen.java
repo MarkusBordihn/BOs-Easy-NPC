@@ -24,6 +24,10 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.data.render.RenderType;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
+import de.markusbordihn.easynpc.entity.easynpc.data.RenderData;
 import de.markusbordihn.easynpc.menu.EasyNPCMenu;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Collections;
@@ -123,5 +127,36 @@ public class ConfigurationScreen<T extends EasyNPCMenu> extends Screen<T> {
       return true;
     }
     return super.keyPressed(keyCode, unused1, unused2);
+  }
+
+  protected boolean supportsConfigurationType(ConfigurationType configurationType) {
+    EasyNPC<?> easyNPC = this.getEasyNPC();
+    if (easyNPC == null) {
+      return false;
+    }
+    RenderData<?> renderData = easyNPC.getEasyNPCRenderData();
+    boolean isCustomModel =
+        renderData != null
+            && renderData.getRenderDataSet() != null
+            && renderData.getRenderDataSet().getRenderType() != RenderType.DEFAULT;
+    ConfigurationData<?> configurationData = easyNPC.getEasyNPCConfigurationData();
+
+    return switch (configurationType) {
+      case MAIN -> configurationData.supportsConfiguration();
+      case DEFAULT_MODEL, CUSTOM_MODEL -> configurationData.supportsChangeModelConfiguration();
+      case POSE -> !isCustomModel && configurationData.supportsPoseConfiguration();
+      case DEFAULT_POSE -> configurationData.supportsDefaultPoseConfiguration();
+      case ADVANCED_POSE -> configurationData.supportsAdvancedPoseConfiguration();
+      case CUSTOM_POSE -> configurationData.supportsCustomPoseConfiguration();
+      case SCALING -> !isCustomModel && configurationData.supportsScalingConfiguration();
+      case SKIN -> !isCustomModel && configurationData.supportsSkinConfiguration();
+      case DEFAULT_ROTATION -> configurationData.supportsDefaultRotationConfiguration();
+      case NONE_SKIN -> configurationData.supportsNoneSkinConfiguration();
+      case DEFAULT_SKIN -> configurationData.supportsDefaultSkinConfiguration();
+      case URL_SKIN -> configurationData.supportsUrlSkinConfiguration();
+      case PLAYER_SKIN -> configurationData.supportsPlayerSkinConfiguration();
+      case CUSTOM_SKIN -> configurationData.supportsCustomSkinConfiguration();
+      default -> true;
+    };
   }
 }

@@ -120,7 +120,7 @@ public interface DialogData<T extends PathfinderMob> extends EasyNPC<T> {
   default void addAdditionalDialogData(CompoundTag compoundTag) {
     CompoundTag dialogDataTag = new CompoundTag();
 
-    if (this.isServerSide()) {
+    if (this.isServerSideInstance()) {
       DialogDataSet dialogDataSet = this.getDialogDataSet();
       if (dialogDataSet != null) {
         dialogDataSet.save(dialogDataTag);

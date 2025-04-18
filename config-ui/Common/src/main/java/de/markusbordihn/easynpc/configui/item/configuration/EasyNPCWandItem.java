@@ -158,7 +158,6 @@ public class EasyNPCWandItem extends Item {
   @Override
   public void appendHoverText(
       ItemStack itemStack, Level level, List<Component> tooltipList, TooltipFlag tooltipFlag) {
-    // Display description.
     tooltipList.add(TextComponent.getTranslatedTextRaw(Constants.TEXT_ITEM_PREFIX + ID));
   }
 }

@@ -28,8 +28,8 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.easy_npc_config_ui]]
-modId = "armourers_workshop"
-mandatory = false
-versionRange = "[2.0.1,)"
-ordering = "NONE"
+modId = "easy_npc"
+mandatory = true
+versionRange = "[6.0.0,7.0.0)"
+ordering = "AFTER"
 side = "BOTH"

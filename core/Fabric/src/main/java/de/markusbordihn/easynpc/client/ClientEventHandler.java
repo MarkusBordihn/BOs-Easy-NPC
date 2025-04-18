@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2025 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -19,19 +19,18 @@
 
 package de.markusbordihn.easynpc.client;
 
-import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
-import de.markusbordihn.easynpc.io.DataFileHandler;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.Minecraft;
 
-public class ClientEvents {
+public class ClientEventHandler {
 
-  private ClientEvents() {}
+  private ClientEventHandler() {}
 
-  public static void handleClientStartedEvent(Minecraft client) {
-    // Prepare custom data directory for client.
-    DataFileHandler.registerClientDataFiles();
+  public static void registerClientEvents() {
+    ClientLifecycleEvents.CLIENT_STARTED.register(ClientEventHandler::registerClientStarted);
+  }
 
-    // Register entity type manager for server.
-    EntityTypeManager.register();
+  public static void registerClientStarted(Minecraft client) {
+    ClientEvents.handleClientStartedEvent(client);
   }
 }

@@ -64,7 +64,7 @@ public class DialogMenuHandler {
       final EasyNPC<?> easyNPC, final UUID dialogId, final int pageIndex) {
 
     // Get basic data for configuration menu.
-    final UUID npcUUID = easyNPC.getUUID();
+    final UUID npcUUID = easyNPC.getEntityUUID();
 
     // Additional data for specific configuration menu.
     final CompoundTag additionalSyncData = new CompoundTag();

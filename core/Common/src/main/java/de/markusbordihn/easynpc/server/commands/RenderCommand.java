@@ -108,6 +108,7 @@ public class RenderCommand extends Command {
     }
 
     return sendSuccessMessage(
-        context, "Set render entity " + entityType + " for EasyNPC with UUID " + easyNPC.getUUID());
+        context,
+        "Set render entity " + entityType + " for EasyNPC with UUID " + easyNPC.getEntityUUID());
   }
 }

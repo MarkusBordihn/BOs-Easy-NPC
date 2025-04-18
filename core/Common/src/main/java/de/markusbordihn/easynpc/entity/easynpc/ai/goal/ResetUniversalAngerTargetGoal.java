@@ -40,7 +40,7 @@ public class ResetUniversalAngerTargetGoal<T extends EasyNPC<?>> extends Goal {
 
   public ResetUniversalAngerTargetGoal(T easyNPC, boolean alertOthersOfSameType) {
     this.mob = easyNPC.getMob();
-    this.level = easyNPC.getLevel();
+    this.level = easyNPC.getEntityLevel();
     this.alertOthersOfSameType = alertOthersOfSameType;
   }
 

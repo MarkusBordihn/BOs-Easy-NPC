@@ -128,8 +128,8 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
   }
 
   @Override
-  default boolean isClientSide() {
-    return this.getLevel() != null && this.getLevel().isClientSide();
+  default boolean isClientSideInstance() {
+    return this.getEntityLevel() != null && this.getEntityLevel().isClientSide();
   }
 
   default void setAdvancedTradingOffers(Container container) {
@@ -295,7 +295,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
   }
 
   default void notifyTradeUpdated(ItemStack itemStack) {
-    if (!this.isClientSide()
+    if (!this.isClientSideInstance()
         && this.getMob().ambientSoundTime > -this.getMob().getAmbientSoundInterval() + 20) {
       this.getMob().ambientSoundTime = -this.getMob().getAmbientSoundInterval();
       SoundData<E> soundData = getEasyNPCSoundData();
@@ -457,7 +457,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
   }
 
   default void openTradingScreen(ServerPlayer serverPlayer) {
-    if (this.isClientSide()) {
+    if (this.isClientSideInstance()) {
       return;
     }
 

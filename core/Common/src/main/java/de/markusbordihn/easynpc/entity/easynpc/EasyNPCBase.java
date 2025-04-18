@@ -211,7 +211,7 @@ public interface EasyNPCBase<E extends PathfinderMob>
   }
 
   default void defineEasyNPCBaseServerSideData() {
-    if (!this.isServerSide()) {
+    if (!this.isServerSideInstance()) {
       return;
     }
     ServerData<E> serverData = getEasyNPCServerData();

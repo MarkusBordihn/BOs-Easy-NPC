@@ -23,10 +23,13 @@ import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.components.TextComponent;
+import java.util.Locale;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -41,7 +44,7 @@ public class EditorMenuHandler {
       final EasyNPC<?> easyNPC,
       final MenuType<? extends EditorMenu> menuType,
       ScreenData screenData) {
-    final Component displayName = editorType.getEditorTitle(easyNPC);
+    final Component displayName = getEditorTitle(editorType, easyNPC);
 
     return new MenuProvider() {
       @Override
@@ -71,7 +74,7 @@ public class EditorMenuHandler {
 
   public static ScreenData getScreenData(
       final EditorType editorType,
-      final EasyNPC<?> easyNPC,
+      final EasyNPC<? extends LivingEntity> easyNPC,
       final UUID dialogId,
       final UUID dialogButtonId,
       final UUID actionDataEntryId,
@@ -79,7 +82,7 @@ public class EditorMenuHandler {
       CompoundTag additionalSyncData) {
 
     // Get basic data for configuration menu.
-    final UUID npcUUID = easyNPC.getUUID();
+    final UUID npcUUID = easyNPC.getEntityUUID();
 
     // Additional data for specific configuration menu.
     switch (editorType) {
@@ -95,5 +98,11 @@ public class EditorMenuHandler {
     }
     return new ScreenData(
         npcUUID, dialogId, dialogButtonId, actionDataEntryId, pageIndex, additionalSyncData);
+  }
+
+  private static Component getEditorTitle(final EditorType editorType, final EasyNPC<?> easyNPC) {
+    return TextComponent.getTranslatedConfigText(
+        editorType.name().toLowerCase(Locale.ROOT) + ".title",
+        easyNPC.getEntity().getName().getString(20));
   }
 }
