@@ -213,20 +213,20 @@ public interface EasyNPCBase<E extends PathfinderMob>
   }
 
   default void defineEasyNPCBaseServerSideData() {
-    if (!this.isServerSide()) {
+    if (!this.isServerSideInstance()) {
       return;
     }
     ServerData<E> serverData = getEasyNPCServerData();
     if (serverData == null) {
-      log.error("No server data available for {}", this.getUUID());
+      log.error("No server data available for {}", this.getEntityUUID());
       return;
     }
     if (!serverData.hasServerEntityData()) {
-      log.info("Register server-side data for {} ...", this.getUUID());
+      log.info("Register server-side data for {} ...", this.getEntityUUID());
       serverData.defineServerEntityData();
     }
 
-    log.info("Define custom server-side data for {} ...", this.getUUID());
+    log.info("Define custom server-side data for {} ...", this.getEntityUUID());
     ActionEventData<E> actionEventData = getEasyNPCActionEventData();
     if (actionEventData != null) {
       actionEventData.defineCustomActionData();

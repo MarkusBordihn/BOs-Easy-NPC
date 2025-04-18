@@ -101,8 +101,7 @@ dependencies {
   compileOnly project(":Common")
 
   // Include Core Common code
-  compileOnly fg.deobf("de.markusbordihn.easynpc:easy_npc-common-${project.minecraft_version}:${project.version}")
-  runtimeOnly fg.deobf("de.markusbordihn.easynpc:easy_npc-forge-${project.minecraft_version}:${project.version}")
+  implementation fg.deobf("de.markusbordihn.easynpc:easy_npc-forge-${project.minecraft_version}:${project.version}")
 
   // Additional helpful Mods for development (runtime dependency)
   if (project.hasProperty('forge_jei_mod') && project.forge_jei_mod) {

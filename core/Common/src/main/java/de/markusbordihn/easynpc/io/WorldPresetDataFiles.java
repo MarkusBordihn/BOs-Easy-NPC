@@ -74,8 +74,7 @@ public class WorldPresetDataFiles {
   }
 
   public static String getPresetFileName(String fileName) {
-    String result = fileName.replaceAll("[^a-zA-Z0-9/._-]", "").replace("..", "").replace("/", "_");
-    return result.endsWith(Constants.NPC_NBT_SUFFIX) ? result : result + Constants.NPC_NBT_SUFFIX;
+    return CustomPresetDataFiles.getPresetFileName(fileName);
   }
 
   public static Stream<ResourceLocation> getPresetResourceLocations() {

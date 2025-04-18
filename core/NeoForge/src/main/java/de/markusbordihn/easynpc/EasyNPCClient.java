@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc;
 
-import de.markusbordihn.easynpc.client.ClientEvents;
 import de.markusbordihn.easynpc.client.model.ModModelLayer;
 import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
 import de.markusbordihn.easynpc.client.screen.ClientScreens;
@@ -30,7 +29,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,10 +43,7 @@ public class EasyNPCClient {
     modEventBus.addListener(ClientRenderer::registerBlockEntityRenderers);
     modEventBus.addListener(ClientRenderer::registerEntityRenderers);
     modEventBus.addListener(ClientScreens::registerScreens);
-    modEventBus.addListener(
-        (final FMLClientSetupEvent event) -> {
-          event.enqueueWork(ClientEvents::handleClientStarting);
-        });
+
     NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
     ModTabs.CREATIVE_TABS.register(modEventBus);
   }

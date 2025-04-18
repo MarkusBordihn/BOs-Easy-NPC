@@ -20,46 +20,19 @@
 package de.markusbordihn.easynpc.entity.easynpc;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
-import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
-import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
-import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ConfigData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
-import de.markusbordihn.easynpc.entity.easynpc.data.CustomAttributeData;
-import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
-import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeData;
-import de.markusbordihn.easynpc.entity.easynpc.data.GuiData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
-import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
-import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
-import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
-import de.markusbordihn.easynpc.entity.easynpc.data.RenderData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ServerData;
-import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
-import de.markusbordihn.easynpc.entity.easynpc.data.SoundData;
-import de.markusbordihn.easynpc.entity.easynpc.data.TickerData;
-import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
-import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
-import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
-import de.markusbordihn.easynpc.entity.easynpc.handlers.AttributeHandler;
+import de.markusbordihn.easynpc.entity.easynpc.event.EasyNPCEventHandler;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
 import java.util.Random;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -68,14 +41,13 @@ import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.npc.Npc;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.trading.Merchant;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.DimensionTransition;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public interface EasyNPC<E extends PathfinderMob> extends Npc {
+public interface EasyNPC<E extends PathfinderMob> extends EasyNPCDataAccessors<E>, Npc {
 
   Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
@@ -87,268 +59,189 @@ public interface EasyNPC<E extends PathfinderMob> extends Npc {
 
   FakePlayer getFakePlayer(ServerLevel level, BlockPos blockPos);
 
-  default LookControl getLookControl() {
-    return this instanceof Mob mob ? mob.getLookControl() : null;
-  }
-
-  default ActionEventData<E> getEasyNPCActionEventData() {
-    return this instanceof ActionEventData<E> actionEventData ? actionEventData : null;
-  }
-
-  default AttackData<E> getEasyNPCAttackData() {
-    return this instanceof AttackData<E> attackData ? attackData : null;
-  }
-
-  default AttributeData<E> getEasyNPCAttributeData() {
-    return this instanceof AttributeData<E> attributeData ? attributeData : null;
-  }
-
-  default ConfigData<E> getEasyNPCConfigData() {
-    return this instanceof ConfigData<E> configData ? configData : null;
-  }
-
-  default ConfigurationData<E> getEasyNPCConfigurationData() {
-    return this instanceof ConfigurationData<E> configurationData ? configurationData : null;
-  }
-
-  default CustomAttributeData<E> getEasyNPCCustomAttributeData() {
-    return this instanceof CustomAttributeData<E> customAttributeData ? customAttributeData : null;
-  }
-
-  default DialogData<E> getEasyNPCDialogData() {
-    return this instanceof DialogData<E> dialogData ? dialogData : null;
-  }
-
-  default DisplayAttributeData<E> getEasyNPCDisplayAttributeData() {
-    return this instanceof DisplayAttributeData<E> displayAttributeData
-        ? displayAttributeData
-        : null;
-  }
-
-  default GuiData<E> getEasyNPCGuiData() {
-    return this instanceof GuiData<E> guiData ? guiData : null;
-  }
-
-  default SkinData<E> getEasyNPCSkinData() {
-    return this instanceof SkinData<E> skinData ? skinData : null;
-  }
-
-  default ModelData<E> getEasyNPCModelData() {
-    return this instanceof ModelData<E> modelData ? modelData : null;
-  }
-
-  default NavigationData<E> getEasyNPCNavigationData() {
-    return this instanceof NavigationData<E> navigationData ? navigationData : null;
-  }
-
-  default ObjectiveData<E> getEasyNPCObjectiveData() {
-    return this instanceof ObjectiveData<E> objectiveData ? objectiveData : null;
-  }
-
-  default OwnerData<E> getEasyNPCOwnerData() {
-    return this instanceof OwnerData<E> ownerData ? ownerData : null;
-  }
-
-  default PresetData<E> getEasyNPCPresetData() {
-    return this instanceof PresetData<E> presetData ? presetData : null;
-  }
-
-  default ProfessionData<E> getEasyNPCProfessionData() {
-    return this instanceof ProfessionData<E> professionData ? professionData : null;
-  }
-
-  default RenderData<E> getEasyNPCRenderData() {
-    return this instanceof RenderData<E> renderData ? renderData : null;
-  }
-
-  default ScaleData<E> getEasyNPCScaleData() {
-    return this instanceof ScaleData<E> scaleData ? scaleData : null;
-  }
-
-  default ServerData<E> getEasyNPCServerData() {
-    return this instanceof ServerData<E> serverData ? serverData : null;
-  }
-
-  default TickerData<E> getEasyNPCTickerData() {
-    return this instanceof TickerData<E> tickerData ? tickerData : null;
-  }
-
-  default TradingData<E> getEasyNPCTradingData() {
-    return this instanceof TradingData<E> tradingData ? tradingData : null;
-  }
-
-  default SoundData<E> getEasyNPCSoundData() {
-    return this instanceof SoundData<E> soundData ? soundData : null;
-  }
-
-  default VariantData<E> getEasyNPCVariantData() {
-    return this instanceof VariantData<E> variantData ? variantData : null;
-  }
-
-  default ActionHandler<E> getEasyNPCActionHandler() {
-    return this instanceof ActionHandler<E> actionHandler ? actionHandler : null;
-  }
-
-  default AttributeHandler<E> getEasyNPCAttributeHandler() {
-    return this instanceof AttributeHandler<E> attributeHandler ? attributeHandler : null;
+  default LookControl getEntityLookControl() {
+    return EasyNPCEntityAccess.getLookControl(this);
   }
 
   default PathfinderMob getPathfinderMob() {
-    return this instanceof PathfinderMob pathfinderMob ? pathfinderMob : null;
+    return EasyNPCEntityAccess.getPathfinderMob(this);
   }
 
-  default Level getLevel() {
-    return this instanceof Mob mob ? mob.level() : null;
+  default Level getEntityLevel() {
+    return EasyNPCEntityAccess.getLevel(this);
   }
 
-  default ServerLevel getServerLevel() {
-    return this instanceof Mob mob && mob.level() instanceof ServerLevel serverLevel
-        ? serverLevel
-        : null;
+  default ServerLevel getEntityServerLevel() {
+    return EasyNPCEntityAccess.getServerLevel(this);
   }
 
-  default boolean isClientSide() {
-    return this.getLevel() != null && this.getLevel().isClientSide();
+  default boolean isClientSideInstance() {
+    return EasyNPCEntityAccess.isClientSide(this);
   }
 
-  default boolean isServerSide() {
-    return !isClientSide();
+  default boolean isServerSideInstance() {
+    return EasyNPCEntityAccess.isServerSide(this);
   }
 
   default LivingEntity getLivingEntity() {
-    return this instanceof LivingEntity livingEntity ? livingEntity : null;
+    return EasyNPCEntityAccess.getLivingEntity(this);
   }
 
   default Merchant getMerchant() {
-    return this instanceof Merchant merchant ? merchant : null;
+    return EasyNPCEntityAccess.getMerchant(this);
   }
 
   default RangedAttackMob getRangedAttackMob() {
-    return this instanceof RangedAttackMob rangedAttackMob ? rangedAttackMob : null;
+    return EasyNPCEntityAccess.getRangedAttackMob(this);
   }
 
   default ProfilerFiller getProfiler() {
-    return this instanceof Mob mob ? mob.level().getProfiler() : null;
+    return EasyNPCEntityAccess.getProfiler(this);
   }
 
   default Entity getEntity() {
-    return this instanceof Entity entity ? entity : null;
+    return EasyNPCEntityAccess.getEntity(this);
   }
 
   default Mob getMob() {
-    return this instanceof Mob mob ? mob : null;
+    return EasyNPCEntityAccess.getMob(this);
   }
 
-  default UUID getUUID() {
-    return this instanceof Entity entity ? entity.getUUID() : null;
+  default UUID getEntityUUID() {
+    return EasyNPCEntityAccess.getEntityUUID(this);
   }
 
-  GoalSelector getEntityGoalSelector();
-
-  GoalSelector getEntityTargetSelector();
-
-  default CrossbowAttackMob getCrossbowAttackMob() {
-    return this instanceof CrossbowAttackMob crossbowAttackMob ? crossbowAttackMob : null;
-  }
-
-  default Component getEasyNPCTypeName() {
-    return getEntity().getType().getDescription();
+  default Component getEntityTypeName() {
+    return EasyNPCEntityAccess.getEntityTypeName(this);
   }
 
   default String getEntityTypeId() {
-    if (this.getEntity() == null) {
-      return null;
-    }
-    EntityType<?> entitytype = this.getEntity().getType();
-    ResourceLocation resourcelocation = EntityType.getKey(entitytype);
-    return entitytype.canSerialize() ? resourcelocation.toString() : null;
+    return EasyNPCEntityAccess.getEntityTypeId(this);
   }
 
-  default void handlePlayerJoin(ServerPlayer serverPlayer) {
-    ObjectiveData<E> objectiveData = getEasyNPCObjectiveData();
-    if (objectiveData != null) {
-      objectiveData.onPlayerJoinUpdateObjective(serverPlayer);
-    }
+  default CrossbowAttackMob getCrossbowAttackMob() {
+    return EasyNPCEntityAccess.getCrossbowAttackMob(this);
   }
 
-  default void handlePlayerLeave(ServerPlayer serverPlayer) {
-    ObjectiveData<E> objectiveData = getEasyNPCObjectiveData();
-    if (objectiveData != null) {
-      objectiveData.onPlayerLeaveUpdateObjective(serverPlayer);
-    }
+  /**
+   * Handle the event when a player joins.
+   *
+   * @param serverPlayer The server player that is joining.
+   */
+  default void handlePlayerJoinEvent(ServerPlayer serverPlayer) {
+    EasyNPCEventHandler.handlePlayerJoinEvent(this, serverPlayer);
   }
 
-  default void handleLivingEntityJoin(LivingEntity livingEntity) {
-    ObjectiveData<E> objectiveData = getEasyNPCObjectiveData();
-    if (objectiveData != null) {
-      objectiveData.onLivingEntityJoinUpdateObjective(livingEntity);
-    }
+  /**
+   * Handle the event when a player leaves.
+   *
+   * @param serverPlayer The server player that is leaving.
+   */
+  default void handlePlayerLeaveEvent(ServerPlayer serverPlayer) {
+    EasyNPCEventHandler.handlePlayerLeaveEvent(this, serverPlayer);
   }
 
-  default void handleLivingEntityLeave(LivingEntity livingEntity) {
-    ObjectiveData<E> objectiveData = getEasyNPCObjectiveData();
-    if (objectiveData != null) {
-      objectiveData.onLivingEntityLeaveUpdateObjective(livingEntity);
-    }
+  /**
+   * Handle the event when a living entity joins.
+   *
+   * @param livingEntity The living entity that is joining.
+   */
+  default void handleLivingEntityJoinEvent(LivingEntity livingEntity) {
+    EasyNPCEventHandler.handleLivingEntityJoinEvent(this, livingEntity);
   }
 
-  default void handleEasyNPCJoin(EasyNPC<?> entity) {
-    ObjectiveData<E> objectiveData = getEasyNPCObjectiveData();
-    if (objectiveData != null && entity != null) {
-      objectiveData.onEasyNPCJoinUpdateObjective(entity);
-    }
+  /**
+   * Handle the event when a living entity leaves.
+   *
+   * @param livingEntity The living entity that is leaving.
+   */
+  default void handleLivingEntityLeaveEvent(LivingEntity livingEntity) {
+    EasyNPCEventHandler.handleLivingEntityLeaveEvent(this, livingEntity);
   }
 
-  default void handleEasyNPCLeave(EasyNPC<?> entity) {
-    ObjectiveData<E> objectiveData = getEasyNPCObjectiveData();
-    if (objectiveData != null && entity != null) {
-      objectiveData.onEasyNPCLeaveUpdateObjective(entity);
-    }
+  /**
+   * Handle the event when the EasyNPC is joining.
+   *
+   * @param entity The EasyNPC entity that is joining.
+   */
+  default void handleEasyNPCJoinEvent(EasyNPC<?> entity) {
+    EasyNPCEventHandler.handleEasyNPCJoinEvent(this, entity);
   }
 
+  /**
+   * Handle the event when the EasyNPC is leaving.
+   *
+   * @param entity The EasyNPC that is leaving.
+   */
+  default void handleEasyNPCLeaveEvent(EasyNPC<?> entity) {
+    EasyNPCEventHandler.handleEasyNPCLeaveEvent(this, entity);
+  }
+
+  /**
+   * Handle the event when the EasyNPC is dying.
+   *
+   * @param damageSource The source of the damage.
+   */
   default void handleDieEvent(DamageSource damageSource) {
-    TradingData<E> tradingData = getEasyNPCTradingData();
-    if (tradingData != null) {
-      tradingData.stopTrading();
-    }
-
-    ActionEventData<E> actionEventData = getEasyNPCActionEventData();
-    if (actionEventData != null) {
-      actionEventData.handleActionEvent(
-          ActionEventType.ON_DEATH, getServerPlayerFromDamageSource(damageSource));
-    }
+    EasyNPCEventHandler.handleDieEvent(this, damageSource);
   }
 
+  /**
+   * Handle the event when the EasyNPC is changing dimension.
+   *
+   * @param dimensionTransition The dimension transition event.
+   */
   default void handleChangeDimensionEvent(DimensionTransition dimensionTransition) {
-    TradingData<E> tradingData = getEasyNPCTradingData();
-    if (tradingData != null) {
-      tradingData.stopTrading();
-    }
+    EasyNPCEventHandler.handleChangeDimensionEvent(this, dimensionTransition);
   }
 
+  /**
+   * Handle the event when the EasyNPC is hurt.
+   *
+   * @param damageSource The source of the damage.
+   * @param damage The amount of damage taken.
+   */
   default void handleHurtEvent(DamageSource damageSource, float damage) {
-    ActionEventData<E> actionEventData = getEasyNPCActionEventData();
-    if (actionEventData != null) {
-      actionEventData.handleActionEvent(
-          ActionEventType.ON_HURT, getServerPlayerFromDamageSource(damageSource));
-    }
+    EasyNPCEventHandler.handleHurtEvent(this, damageSource, damage);
   }
 
-  default ServerPlayer getServerPlayerFromDamageSource(DamageSource damageSource) {
-    if (damageSource.getEntity() instanceof ServerPlayer serverPlayer) {
-      return serverPlayer;
-    }
-    if (damageSource.getDirectEntity() instanceof Projectile projectile
-        && projectile.getOwner() instanceof ServerPlayer serverPlayerOfProjectile) {
-      return serverPlayerOfProjectile;
-    }
-    return null;
-  }
-
+  /**
+   * Define the synched entity data for the EasyNPC.
+   *
+   * @param builder The synched entity data builder.
+   * @param synchedDataIndex The index of the synched data.
+   * @param defaultData The default data to set.
+   */
   <T> void defineSynchedEntityData(
       SynchedEntityData.Builder builder, SynchedDataIndex synchedDataIndex, T defaultData);
 
+  /**
+   * Set the synched entity data for the EasyNPC.
+   *
+   * @param synchedDataIndex The index of the synched data.
+   * @param data The data to set.
+   */
   <T> void setSynchedEntityData(SynchedDataIndex synchedDataIndex, T data);
 
+  /**
+   * Get the synched entity data for the EasyNPC.
+   *
+   * @param synchedDataIndex The index of the synched data.
+   * @return The data at the specified index.
+   */
   <T> T getSynchedEntityData(SynchedDataIndex synchedDataIndex);
+
+  /**
+   * Get the entity goal selector for the EasyNPC.
+   *
+   * @return The entity goal selector.
+   */
+  GoalSelector getEntityGoalSelector();
+
+  /**
+   * Get the entity target selector for the EasyNPC.
+   *
+   * @return The entity target selector.
+   */
+  GoalSelector getEntityTargetSelector();
 }

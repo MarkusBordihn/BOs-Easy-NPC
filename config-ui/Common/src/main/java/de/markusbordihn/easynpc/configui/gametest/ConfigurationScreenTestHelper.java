@@ -51,7 +51,7 @@ public class ConfigurationScreenTestHelper {
             easyNPC,
             menuType,
             ConfigurationMenuHandler.getScreenData(configurationType, easyNPC, serverPlayer, 0));
-    UUID menuId = MenuManager.registerMenu(easyNPC.getUUID(), menuProvider, serverPlayer);
+    UUID menuId = MenuManager.registerMenu(easyNPC.getEntityUUID(), menuProvider, serverPlayer);
     MenuManager.openMenu(menuId, serverPlayer);
     return menuId;
   }

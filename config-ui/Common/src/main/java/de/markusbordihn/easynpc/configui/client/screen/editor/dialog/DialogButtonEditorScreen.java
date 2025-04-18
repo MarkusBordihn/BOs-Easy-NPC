@@ -272,7 +272,7 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
     // Render Tooltips
     if (this.buttonNameToLabelButton != null && this.buttonNameToLabelButton.isMouseOver(x, y)) {
       guiGraphics.renderTooltip(
-          this.font, TextComponent.getTranslatedConfigText("name_to_label.tooltip"), x, y);
+          this.font, TextComponent.getTranslatedText("name_to_label.tooltip"), x, y);
     }
   }
 

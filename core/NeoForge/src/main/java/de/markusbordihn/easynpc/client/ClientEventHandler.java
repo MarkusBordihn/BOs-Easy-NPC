@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2025 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -19,19 +19,17 @@
 
 package de.markusbordihn.easynpc.client;
 
-import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
-import de.markusbordihn.easynpc.io.DataFileHandler;
 import net.minecraft.client.Minecraft;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 
-public class ClientEvents {
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+public class ClientEventHandler {
 
-  private ClientEvents() {}
-
-  public static void handleClientStartedEvent(Minecraft client) {
-    // Prepare custom data directory for client.
-    DataFileHandler.registerClientDataFiles();
-
-    // Register entity type manager for server.
-    EntityTypeManager.register();
+  @SubscribeEvent
+  public static void onClientSetup(FMLClientSetupEvent event) {
+    event.enqueueWork(() -> ClientEvents.handleClientStartedEvent(Minecraft.getInstance()));
   }
 }

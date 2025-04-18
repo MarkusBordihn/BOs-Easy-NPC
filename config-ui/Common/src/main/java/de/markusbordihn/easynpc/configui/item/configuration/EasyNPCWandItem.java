@@ -161,7 +161,6 @@ public class EasyNPCWandItem extends Item {
       TooltipContext tooltipContext,
       List<Component> tooltipList,
       TooltipFlag tooltipFlag) {
-    // Display description.
     tooltipList.add(TextComponent.getTranslatedTextRaw(Constants.TEXT_ITEM_PREFIX + ID));
   }
 }

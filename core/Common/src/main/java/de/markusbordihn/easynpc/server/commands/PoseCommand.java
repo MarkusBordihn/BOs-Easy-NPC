@@ -66,7 +66,8 @@ public class PoseCommand extends Command {
 
   private static int resetPose(CommandSourceStack context, EasyNPC<?> easyNPC) {
     PoseManager.resetModelPose(easyNPC);
-    return sendSuccessMessage(context, "Resetting pose for Easy NPC " + easyNPC.getUUID() + " !");
+    return sendSuccessMessage(
+        context, "Resetting pose for Easy NPC " + easyNPC.getEntityUUID() + " !");
   }
 
   private static int setPose(
@@ -80,11 +81,15 @@ public class PoseCommand extends Command {
     if (PoseManager.setModelPose(easyNPC, animation)) {
       return sendSuccessMessage(
           context,
-          "Setting pose " + resourceLocation + " for Easy NPC " + easyNPC.getUUID() + " !");
+          "Setting pose " + resourceLocation + " for Easy NPC " + easyNPC.getEntityUUID() + " !");
     } else {
       return sendFailureMessage(
           context,
-          "Failed to set pose " + resourceLocation + " for Easy NPC " + easyNPC.getUUID() + " !");
+          "Failed to set pose "
+              + resourceLocation
+              + " for Easy NPC "
+              + easyNPC.getEntityUUID()
+              + " !");
     }
   }
 }

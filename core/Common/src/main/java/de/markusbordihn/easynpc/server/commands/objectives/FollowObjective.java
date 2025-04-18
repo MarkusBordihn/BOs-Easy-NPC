@@ -204,7 +204,7 @@ public class FollowObjective extends Command {
     }
 
     // Avoid adding the same entity as target
-    if (entity.getUUID().equals(easyNPC.getUUID())) {
+    if (entity.getUUID().equals(easyNPC.getEntityUUID())) {
       return sendFailureMessage(context, "Error adding follow entity objective for itself!");
     }
 

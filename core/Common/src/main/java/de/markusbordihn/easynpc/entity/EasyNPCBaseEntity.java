@@ -148,7 +148,7 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
   public void aiStep() {
     super.aiStep();
 
-    if (this.isClientSide()) {
+    if (this.isClientSideInstance()) {
       this.updateSwingTime();
       if (this.attackAnimationTick > 0) {
         --this.attackAnimationTick;
@@ -166,6 +166,11 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
   @Override
   public void setTradingPlayer(Player player) {
     this.tradingPlayer = player;
+  }
+
+  @Override
+  public boolean isClientSide() {
+    return this.isClientSideInstance();
   }
 
   @Override
@@ -238,32 +243,32 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
   }
 
   @Override
-  public void handleEasyNPCJoin(EasyNPC<?> easyNPC) {
+  public void handleEasyNPCJoinEvent(EasyNPC<?> easyNPC) {
     this.onEasyNPCJoinUpdateObjective(easyNPC);
   }
 
   @Override
-  public void handleEasyNPCLeave(EasyNPC<?> easyNPC) {
+  public void handleEasyNPCLeaveEvent(EasyNPC<?> easyNPC) {
     this.onEasyNPCLeaveUpdateObjective(easyNPC);
   }
 
   @Override
-  public void handlePlayerJoin(ServerPlayer serverPlayer) {
+  public void handlePlayerJoinEvent(ServerPlayer serverPlayer) {
     this.onPlayerJoinUpdateObjective(serverPlayer);
   }
 
   @Override
-  public void handlePlayerLeave(ServerPlayer serverPlayer) {
+  public void handlePlayerLeaveEvent(ServerPlayer serverPlayer) {
     this.onPlayerLeaveUpdateObjective(serverPlayer);
   }
 
   @Override
-  public void handleLivingEntityJoin(LivingEntity livingEntity) {
+  public void handleLivingEntityJoinEvent(LivingEntity livingEntity) {
     this.onLivingEntityJoinUpdateObjective(livingEntity);
   }
 
   @Override
-  public void handleLivingEntityLeave(LivingEntity livingEntity) {
+  public void handleLivingEntityLeaveEvent(LivingEntity livingEntity) {
     this.onLivingEntityLeaveUpdateObjective(livingEntity);
   }
 
@@ -415,7 +420,7 @@ public class EasyNPCBaseEntity<E extends PathfinderMob> extends PathfinderMob
     super.baseTick();
 
     // Early exit for client side and dead entities.
-    if (this.isClientSide() || !this.isAlive()) {
+    if (this.isClientSideInstance() || !this.isAlive()) {
       return;
     }
 

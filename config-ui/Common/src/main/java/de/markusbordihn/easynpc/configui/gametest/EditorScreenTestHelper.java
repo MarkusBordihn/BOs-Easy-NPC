@@ -69,7 +69,7 @@ public class EditorScreenTestHelper {
                 null,
                 0,
                 new CompoundTag()));
-    UUID menuId = MenuManager.registerMenu(easyNPC.getUUID(), menuProvider, serverPlayer);
+    UUID menuId = MenuManager.registerMenu(easyNPC.getEntityUUID(), menuProvider, serverPlayer);
     MenuManager.openMenu(menuId, serverPlayer);
     return menuId;
   }

@@ -101,7 +101,7 @@ public interface ActionEventData<E extends PathfinderMob> extends EasyNPC<E> {
   default void addAdditionalActionData(CompoundTag compoundTag) {
     CompoundTag actionDataTag = new CompoundTag();
 
-    if (this.isServerSide()) {
+    if (this.isServerSideInstance()) {
       ActionEventSet actionEventSet = this.getActionEventSet();
       if (actionEventSet != null) {
         actionEventSet.save(actionDataTag);

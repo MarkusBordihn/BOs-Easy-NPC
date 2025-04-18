@@ -79,7 +79,7 @@ public interface VariantData<T extends PathfinderMob> extends EasyNPC<T> {
 
   default Component getVariantName() {
     Enum<?> variant = getVariant();
-    return variant != null ? TextUtils.normalizeName(variant.name()) : getEasyNPCTypeName();
+    return variant != null ? TextUtils.normalizeName(variant.name()) : getEntityTypeName();
   }
 
   default boolean hasVariantCrossedArms() {
