@@ -99,10 +99,10 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
                 minecraft.setScreen(this);
               }
             },
-            TextComponent.getTranslatedText("removeDialog.deleteQuestion"),
-            TextComponent.getTranslatedText(
+            TextComponent.getTranslatedConfigText("removeDialog.deleteQuestion"),
+            TextComponent.getTranslatedConfigText(
                 "removeDialog.deleteWarning", this.getDialogData().getName()),
-            TextComponent.getTranslatedText("removeDialog.deleteButton"),
+            TextComponent.getTranslatedConfigText("removeDialog.deleteButton"),
             CommonComponents.GUI_CANCEL));
   }
 
@@ -409,12 +409,12 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
     // Render Tooltips
     if (this.dialogNameToLabelButton != null && this.dialogNameToLabelButton.isMouseOver(x, y)) {
       guiGraphics.renderTooltip(
-          this.font, TextComponent.getTranslatedText("name_to_label.tooltip"), x, y);
+          this.font, TextComponent.getTranslatedConfigText("name_to_label.tooltip"), x, y);
     }
 
     if (this.makeDefaultDialogButton != null && this.makeDefaultDialogButton.isMouseOver(x, y)) {
       guiGraphics.renderTooltip(
-          this.font, TextComponent.getTranslatedText("make_default.tooltip"), x, y);
+          this.font, TextComponent.getTranslatedConfigText("make_default.tooltip"), x, y);
     }
   }
 }

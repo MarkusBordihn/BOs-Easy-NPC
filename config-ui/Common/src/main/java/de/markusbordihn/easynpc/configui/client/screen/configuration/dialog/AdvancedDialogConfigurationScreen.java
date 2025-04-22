@@ -278,7 +278,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
         if (this.editButton.isHovered()) {
           guiGraphics.renderTooltip(
               AdvancedDialogConfigurationScreen.this.font,
-              TextComponent.getTranslatedText("dialog.edit_dialog", dialogData.getName()),
+              TextComponent.getTranslatedConfigText("dialog.edit_dialog", dialogData.getName()),
               mouseX,
               mouseY);
         }
@@ -290,7 +290,8 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
         if (this.copyLabelButton.isHovered()) {
           guiGraphics.renderTooltip(
               AdvancedDialogConfigurationScreen.this.font,
-              TextComponent.getTranslatedText("dialog.copy_dialog_label", dialogData.getLabel()),
+              TextComponent.getTranslatedConfigText(
+                  "dialog.copy_dialog_label", dialogData.getLabel()),
               mouseX,
               mouseY);
         }
@@ -302,7 +303,8 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
         if (this.textEditButton.isHovered()) {
           guiGraphics.renderTooltip(
               AdvancedDialogConfigurationScreen.this.font,
-              TextComponent.getTranslatedText("dialog.edit_dialog_text", dialogData.getText()),
+              TextComponent.getTranslatedConfigText(
+                  "dialog.edit_dialog_text", dialogData.getText()),
               mouseX,
               mouseY);
         }
