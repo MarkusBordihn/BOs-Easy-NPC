@@ -90,14 +90,14 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
                 minecraft.setScreen(this);
               }
             },
-            TextComponent.getTranslatedText(
+            TextComponent.getTranslatedConfigText(
                 "preset.importQuestion",
                 resourceLocation
                     .getPath()
                     .substring(resourceLocation.getPath().lastIndexOf("/") + 1)),
-            TextComponent.getTranslatedText(
+            TextComponent.getTranslatedConfigText(
                 "preset.importWarning", getEasyNPCEntity().getDisplayName().getString()),
-            TextComponent.getTranslatedText("preset.importButton"),
+            TextComponent.getTranslatedConfigText("preset.importButton"),
             CommonComponents.GUI_CANCEL));
   }
 

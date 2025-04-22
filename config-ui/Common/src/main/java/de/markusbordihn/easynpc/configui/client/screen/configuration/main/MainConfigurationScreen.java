@@ -459,10 +459,10 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                 minecraft.setScreen(this);
               }
             },
-            TextComponent.getTranslatedText("respawnNPC.confirmQuestion"),
-            TextComponent.getTranslatedText(
+            TextComponent.getTranslatedConfigText("respawnNPC.confirmQuestion"),
+            TextComponent.getTranslatedConfigText(
                 "respawnNPC.confirmWarning", getEasyNPCEntity().getDisplayName()),
-            TextComponent.getTranslatedText("respawnNPC.respawnButton"),
+            TextComponent.getTranslatedConfigText("respawnNPC.respawnButton"),
             CommonComponents.GUI_CANCEL));
   }
 
@@ -481,10 +481,10 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                 minecraft.setScreen(this);
               }
             },
-            TextComponent.getTranslatedText("removeNPC.deleteQuestion"),
-            TextComponent.getTranslatedText(
+            TextComponent.getTranslatedConfigText("removeNPC.deleteQuestion"),
+            TextComponent.getTranslatedConfigText(
                 "removeNPC.deleteWarning", getEasyNPCEntity().getDisplayName()),
-            TextComponent.getTranslatedText("removeNPC.deleteButton"),
+            TextComponent.getTranslatedConfigText("removeNPC.deleteButton"),
             CommonComponents.GUI_CANCEL));
   }
 
