@@ -196,11 +196,11 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
                 this.minecraft.setScreen(this);
               }
             },
-            TextComponent.getTranslatedText("removeActionDataEntry.deleteQuestion"),
-            TextComponent.getTranslatedText(
+            TextComponent.getTranslatedConfigText("removeActionDataEntry.deleteQuestion"),
+            TextComponent.getTranslatedConfigText(
                 "removeActionDataEntry.deleteWarning",
                 this.actionDataEntry.actionDataType().name()),
-            TextComponent.getTranslatedText("removeActionDataEntry.deleteButton"),
+            TextComponent.getTranslatedConfigText("removeActionDataEntry.deleteButton"),
             CommonComponents.GUI_CANCEL));
   }
 
