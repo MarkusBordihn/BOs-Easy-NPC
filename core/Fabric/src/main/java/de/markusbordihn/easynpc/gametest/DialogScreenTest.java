@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.gametest;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.entity.ModEntityType;
+import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
@@ -40,7 +41,8 @@ public class DialogScreenTest {
     // Get a mock player and spawn a humanoid NPC.
     ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));
     EasyNPC<?> easyNPC =
-        GameTestHelpers.mockEasyNPC(helper, ModEntityType.HUMANOID, new Vec3(2, 2, 2));
+        GameTestHelpers.mockEasyNPC(
+            helper, ModEntityType.NPC_TYPE.get(ModNPCEntityType.HUMANOID), new Vec3(2, 2, 2));
 
     // Prepare and open Dialog
     easyNPC.getEasyNPCDialogData().setDialogDataSet(new DialogDataSet());
@@ -62,7 +64,8 @@ public class DialogScreenTest {
     // Get a mock player and spawn a humanoid NPC.
     ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));
     EasyNPC<?> easyNPC =
-        GameTestHelpers.mockEasyNPC(helper, ModEntityType.HUMANOID, new Vec3(2, 2, 2));
+        GameTestHelpers.mockEasyNPC(
+            helper, ModEntityType.NPC_TYPE.get(ModNPCEntityType.HUMANOID), new Vec3(2, 2, 2));
 
     // Prepare and open Dialog
     DialogDataSet dialogDataSet = DialogUtils.getBasicDialog("Hello, I'm a test NPC!");
@@ -85,7 +88,8 @@ public class DialogScreenTest {
     // Get a mock player and spawn a humanoid NPC.
     ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));
     EasyNPC<?> easyNPC =
-        GameTestHelpers.mockEasyNPC(helper, ModEntityType.HUMANOID, new Vec3(2, 2, 2));
+        GameTestHelpers.mockEasyNPC(
+            helper, ModEntityType.NPC_TYPE.get(ModNPCEntityType.HUMANOID), new Vec3(2, 2, 2));
 
     // Prepare and open Dialog
     DialogDataSet dialogDataSet =

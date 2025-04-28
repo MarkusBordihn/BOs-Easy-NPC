@@ -79,7 +79,14 @@ public class ModBlocks {
     registerBlock(SpawnerType.DEFAULT_SPAWNER.getId(), EASY_NPC_SPAWNER_DEFAULT);
     registerBlock(SpawnerType.GROUP_SPAWNER.getId(), EASY_NPC_SPAWNER_GROUP);
     registerBlock(SpawnerType.SINGLE_SPAWNER.getId(), EASY_NPC_SPAWNER_SINGLE);
-  }
+  }  public static final BlockEntityType<EasyNPCSpawnerBlockEntityWrapper> EASY_NPC_SPAWNER_ENTITY =
+      FabricBlockEntityTypeBuilder.create(
+              EasyNPCSpawnerBlockEntityWrapper::new,
+              EASY_NPC_SPAWNER_BOSS,
+              EASY_NPC_SPAWNER_DEFAULT,
+              EASY_NPC_SPAWNER_GROUP,
+              EASY_NPC_SPAWNER_SINGLE)
+          .build();
 
   public static void registerModBlockEntities() {
     Registry.register(
@@ -92,12 +99,5 @@ public class ModBlocks {
     Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(Constants.MOD_ID, id), block);
   }
 
-  public static final BlockEntityType<EasyNPCSpawnerBlockEntityWrapper> EASY_NPC_SPAWNER_ENTITY =
-      FabricBlockEntityTypeBuilder.create(
-              EasyNPCSpawnerBlockEntityWrapper::new,
-              EASY_NPC_SPAWNER_BOSS,
-              EASY_NPC_SPAWNER_DEFAULT,
-              EASY_NPC_SPAWNER_GROUP,
-              EASY_NPC_SPAWNER_SINGLE)
-          .build();
+
 }

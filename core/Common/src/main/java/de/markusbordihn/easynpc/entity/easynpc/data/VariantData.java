@@ -23,7 +23,9 @@ import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.EnumMap;
+import java.util.Locale;
 import java.util.stream.Stream;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -31,93 +33,120 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.VillagerType;
 
 public interface VariantData<T extends PathfinderMob> extends EasyNPC<T> {
 
-  String EASY_NPC_DATA_VARIANT_TAG = "Variant";
+  String EASY_NPC_DATA_VARIANT_TYPE_TAG = "VariantType";
 
   static void registerSyncedVariantData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("- Registering Synched Variant Data for {}.", entityClass.getSimpleName());
+    log.info("- Registering Synched Variant Type Data for {}.", entityClass.getSimpleName());
     map.put(
-        SynchedDataIndex.VARIANT,
+        SynchedDataIndex.VARIANT_TYPE,
         SynchedEntityData.defineId(entityClass, EntityDataSerializers.STRING));
   }
 
-  default Enum<?> getDefaultVariant() {
-    return Variant.STEVE;
+  default Enum<?> getDefaultVariantType() {
+    return VariantType.STEVE;
   }
 
-  default Enum<?> getVariant() {
-    return getVariant(getSynchedEntityData(SynchedDataIndex.VARIANT));
+  default Enum<?> getVariantType() {
+    return getVariantType(getSynchedEntityData(SynchedDataIndex.VARIANT_TYPE));
   }
 
-  default void setVariant(Enum<?> variant) {
-    setSynchedEntityData(SynchedDataIndex.VARIANT, variant != null ? variant.name() : "");
+  default void setVariantType(Enum<?> variant) {
+    setSynchedEntityData(SynchedDataIndex.VARIANT_TYPE, variant != null ? variant.name() : "");
+    handleVariantTypeChange(variant);
   }
 
-  default void setVariant(String name) {
-    Enum<?> variant = getVariant(name);
-    if (variant != null) {
-      setVariant(variant);
+  default void setVariantType(String name) {
+    Enum<?> variantType = getVariantType(name);
+    if (variantType != null) {
+      setVariantType(variantType);
     } else {
       log.error("Unknown variant {} for {}", name, this);
     }
   }
 
-  default Enum<?> getVariant(String name) {
-    return Variant.valueOf(name);
+  default void handleVariantTypeChange(Enum<?> variant) {
+    // Handle variant change if needed.
   }
 
-  default Enum<?>[] getVariants() {
-    return Variant.values();
+  default Enum<?> getVariantType(String name) {
+    return VariantType.valueOf(name);
   }
 
-  default Stream<String> getVariantNames() {
-    return Stream.of(getVariants()).map(Enum::name);
+  default Enum<?>[] getVariantTypes() {
+    return VariantType.values();
   }
 
-  default Component getVariantName() {
-    Enum<?> variant = getVariant();
+  default Stream<String> getVariantTypeNames() {
+    return Stream.of(getVariantTypes()).map(Enum::name);
+  }
+
+  default Component getVariantTypeName() {
+    Enum<?> variant = getVariantType();
     return variant != null ? TextUtils.normalizeName(variant.name()) : getEntityTypeName();
   }
 
-  default boolean hasVariantCrossedArms() {
-    return this.hasVariantCrossedArms(getVariant());
+  default boolean hasVariantTypeCrossedArms() {
+    return this.hasVariantTypeCrossedArms(getVariantType());
   }
 
-  default boolean hasVariantCrossedArms(Enum<?> variant) {
+  default boolean hasVariantTypeCrossedArms(Enum<?> variant) {
     return variant != null && variant.name().endsWith("_CROSSED_ARMS");
   }
 
-  default boolean hasVariantSaddled() {
-    return this.hasVariantSaddled(getVariant());
+  default boolean hasVariantTypeSaddled() {
+    return this.hasVariantTypeSaddled(getVariantType());
   }
 
-  default boolean hasVariantSaddled(Enum<?> variant) {
+  default boolean hasVariantTypeSaddled(Enum<?> variant) {
     return variant != null && variant.name().endsWith("_SADDLED");
   }
 
+  default VillagerProfession getVillagerProfession(Enum<?> variantType) {
+    String name = variantType.name().toLowerCase(Locale.ROOT);
+    for (VillagerProfession profession : BuiltInRegistries.VILLAGER_PROFESSION) {
+      if (name.endsWith(profession.name().toLowerCase(Locale.ROOT))) {
+        return profession;
+      }
+    }
+    return null;
+  }
+
+  default VillagerType getVillagerType(Enum<?> variantType) {
+    String name = variantType.name().toLowerCase(Locale.ROOT);
+    for (VillagerType villagerType : BuiltInRegistries.VILLAGER_TYPE) {
+      if (name.startsWith(villagerType.toString().toLowerCase(Locale.ROOT))) {
+        return villagerType;
+      }
+    }
+    return null;
+  }
+
   default void defineSynchedVariantData() {
-    defineSynchedEntityData(SynchedDataIndex.VARIANT, getDefaultVariant().name());
+    defineSynchedEntityData(SynchedDataIndex.VARIANT_TYPE, getDefaultVariantType().name());
   }
 
   default void addAdditionalVariantData(CompoundTag compoundTag) {
-    if (this.getVariant() != null) {
-      compoundTag.putString(EASY_NPC_DATA_VARIANT_TAG, this.getVariant().name());
+    if (this.getVariantType() != null) {
+      compoundTag.putString(EASY_NPC_DATA_VARIANT_TYPE_TAG, this.getVariantType().name());
     }
   }
 
   default void readAdditionalVariantData(CompoundTag compoundTag) {
-    if (compoundTag.contains(EASY_NPC_DATA_VARIANT_TAG)) {
-      String variant = compoundTag.getString(EASY_NPC_DATA_VARIANT_TAG);
-      if (!variant.isEmpty()) {
-        this.setVariant(this.getVariant(variant));
+    if (compoundTag.contains(EASY_NPC_DATA_VARIANT_TYPE_TAG)) {
+      String variantType = compoundTag.getString(EASY_NPC_DATA_VARIANT_TYPE_TAG);
+      if (!variantType.isEmpty()) {
+        this.setVariantType(this.getVariantType(variantType));
       }
     }
   }
 
-  enum Variant {
+  enum VariantType {
     STEVE,
     ALEX
   }

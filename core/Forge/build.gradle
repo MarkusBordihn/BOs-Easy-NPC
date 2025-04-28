@@ -1,6 +1,7 @@
 plugins {
   id 'maven-publish'
   id 'net.minecraftforge.gradle' version '6.+'
+  id 'org.spongepowered.mixin' version '0.7.+'
   id 'com.matthewprenger.cursegradle' version '1.4.0'
   id 'nu.studer.credentials' version '3.0'
   id "com.modrinth.minotaur" version "2.+"
@@ -13,6 +14,7 @@ archivesBaseName = "${project.mod_id}-forge-${project.minecraft_version}"
 minecraft {
   mappings channel: 'official', version: "${project.minecraft_version}"
 
+  // Default run configurations.
   runs {
     client {
       workingDirectory project.file('run/client')
@@ -93,19 +95,25 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 dependencies {
   minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
 
+  // Mixin dependencies
+  annotationProcessor "org.spongepowered:mixin:0.8.7:processor"
+
   // Include Common code
-  implementation project(":Common")
+  compileOnly project(":Common")
 
   // Additional helpful Mods for development (runtime dependency)
   if (project.hasProperty('forge_jei_mod') && project.forge_jei_mod) {
     runtimeOnly fg.deobf("curse.maven:jei-238222:${project.forge_jei_mod}")
   }
-  if (project.hasProperty('forge_spark_mod') && project.forge_spark_mod) {
-    runtimeOnly fg.deobf("curse.maven:spark-361579:${project.forge_spark_mod}")
-  }
   if (project.hasProperty('forge_xaeros_minimap_mod') && project.forge_xaeros_minimap_mod) {
     runtimeOnly fg.deobf("curse.maven:xaeros_minimap-263420:${project.forge_xaeros_minimap_mod}")
   }
+}
+
+mixin {
+  // MixinGradle Settings
+  add sourceSets.main, 'mixins.easy_npc.refmap.json'
+  config 'mixins.easy_npc.json'
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -116,16 +124,17 @@ processResources {
   from project(":Common").sourceSets.main.resources
 }
 
+// Example for how to get properties into the manifest for reading by the runtime..
 jar {
   manifest {
     attributes([
-            "Specification-Title"     : "${project.mod_name}",
-            "Specification-Vendor"    : "${project.vendor_name}",
-            "Specification-Version"   : "1",
-            "Implementation-Title"    : project.name,
-            "Implementation-Version"  : "${project.version}",
-            "Implementation-Vendor"   : "${project.mod_id}",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        "Specification-Title"     : "${project.mod_name}",
+        "Specification-Vendor"    : "${project.vendor_name}",
+        "Specification-Version"   : "1", // We are version 1 of ourselves
+        "Implementation-Title"    : project.name,
+        "Implementation-Version"  : "${project.version}",
+        "Implementation-Vendor"   : "${project.mod_id}",
+        "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
     ])
   }
 }
@@ -134,7 +143,7 @@ jar.finalizedBy('reobfJar')
 
 publishing {
   publications {
-    mavenJava(org.gradle.api.publish.maven.MavenPublication) {
+    mavenJava(MavenPublication) {
       groupId project.group
       artifactId project.archivesBaseName
       version project.version
@@ -158,7 +167,6 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
       releaseType = "${project.curseforge_release_type}"
       addGameVersion("${project.minecraft_version}")
       addGameVersion("Forge")
-      addGameVersion("NeoForge")
       mainArtifact(jar)
     }
   }
@@ -175,6 +183,6 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     changelog = rootProject.file("CHANGELOG.md").text
     uploadFile = jar
     gameVersions = ["${project.minecraft_version}"]
-    loaders = ["forge", "neoforge"]
+    loaders = ["forge"]
   }
 }

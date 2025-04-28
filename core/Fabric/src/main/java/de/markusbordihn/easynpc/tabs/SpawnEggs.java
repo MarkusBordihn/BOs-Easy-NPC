@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.item.ModItems;
 import net.minecraft.world.item.CreativeModeTab.DisplayItemsGenerator;
 import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
 import net.minecraft.world.item.CreativeModeTab.Output;
+import net.minecraft.world.item.Item;
 
 public class SpawnEggs implements DisplayItemsGenerator {
 
@@ -30,34 +31,14 @@ public class SpawnEggs implements DisplayItemsGenerator {
 
   @Override
   public void accept(ItemDisplayParameters itemDisplayParameters, Output output) {
-    output.accept(ModItems.ALLAY_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    output.accept(ModItems.CAT_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    output.accept(ModItems.CHICKEN_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    output.accept(ModItems.DROWNED_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    output.accept(ModItems.EVOKER_NPC_SPAWN_EGG.getDefaultInstance());
-    output.accept(ModItems.FAIRY_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    output.accept(ModItems.HORSE_NPC_SPAWN_EGG.getDefaultInstance());
-    output.accept(ModItems.HUMANOID_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    output.accept(ModItems.HUMANOID_SLIM_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    output.accept(ModItems.HUSK_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    output.accept(ModItems.ILLUSIONER_NPC_SPAWN_EGG.getDefaultInstance());
-    output.accept(ModItems.IRON_GOLEM_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    output.accept(ModItems.ORC_NPC_SPAWN_EGG.getDefaultInstance());
-    output.accept(ModItems.ORC_WARRIOR_NPC_SPAWN_EGG.getDefaultInstance());
-    output.accept(ModItems.PIG_NPC_SPAWN_EGG.getDefaultInstance());
-    output.accept(ModItems.PIGLIN_BRUTE_NPC_SPAWN_EGG.getDefaultInstance());
-    output.accept(ModItems.PIGLIN_NPC_SPAWN_EGG.getDefaultInstance());
-    output.accept(ModItems.PIGLIN_ZOMBIFIED_NPC_SPAWN_EGG.getDefaultInstance());
-    output.accept(ModItems.PILLAGER_NPC_SPAWN_EGG.getDefaultInstance());
-    output.accept(ModItems.SKELETON_HORSE_NPC_SPAWN_EGG.getDefaultInstance());
-    output.accept(ModItems.SKELETON_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    output.accept(ModItems.STRAY_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    output.accept(ModItems.VILLAGER_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    output.accept(ModItems.VINDICATOR_NPC_SPAWN_EGG.getDefaultInstance());
-    output.accept(ModItems.WITHER_SKELETON_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    output.accept(ModItems.WOLF_NPC_SPAWN_EGG.getDefaultInstance());
-    output.accept(ModItems.ZOMBIE_HORSE_NPC_SPAWN_EGG.getDefaultInstance());
-    output.accept(ModItems.ZOMBIE_NPC_SPAWN_EGG.asItem().getDefaultInstance());
-    output.accept(ModItems.ZOMBIE_VILLAGER_NPC_SPAWN_EGG.asItem().getDefaultInstance());
+    // NPC Spawn Eggs
+    for (Item spawnEgg : ModItems.NPC_SPAWN_EGGS.values()) {
+      output.accept(spawnEgg);
+    }
+
+    // Custom NPC Spawn Eggs
+    for (Item spawnEgg : ModItems.CUSTOM_NPC_SPAWN_EGGS.values()) {
+      output.accept(spawnEgg);
+    }
   }
 }

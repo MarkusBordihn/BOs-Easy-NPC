@@ -144,10 +144,11 @@ public class RemoteTextureManager {
     // Send error message to the user.
     Player player = Minecraft.getInstance().player;
     if (player != null) {
-      player.sendSystemMessage(
+      player.displayClientMessage(
           TextComponent.getText(
                   LOG_PREFIX + "Unable to load remote " + skinURL + " texture " + textureModelKey)
-              .withStyle(ChatFormatting.RED));
+              .withStyle(ChatFormatting.RED),
+          false);
     }
 
     return null;

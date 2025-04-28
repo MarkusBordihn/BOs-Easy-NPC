@@ -89,7 +89,7 @@ public class EasyNPCPresetEmptyItem extends Item {
       }
     }
 
-    return InteractionResult.sidedSuccess(level.isClientSide);
+    return level.isClientSide ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
   }
 
   private ItemStack createPresetItemStack(EasyNPC<?> easyNPC) {

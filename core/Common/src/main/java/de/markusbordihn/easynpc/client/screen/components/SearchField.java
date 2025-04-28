@@ -63,6 +63,8 @@ public class SearchField extends TextField {
         SPRITE_OFFSET_X,
         isFocused() ? SPRITE_OFFSET_Y : SPRITE_OFFSET_Y + SPRITE_HEIGHT,
         SPRITE_WIDTH,
-        SPRITE_HEIGHT);
+        SPRITE_HEIGHT,
+        256,
+        256);
   }
 }

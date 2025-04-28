@@ -26,7 +26,6 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
@@ -48,7 +47,7 @@ public class GameTestHelpers {
   }
 
   public static EasyNPC<?> mockEasyNPC(
-      GameTestHelper helper, EntityType<? extends PathfinderMob> entityType, Vec3 position) {
+      GameTestHelper helper, EntityType<?> entityType, Vec3 position) {
     EasyNPC<?> easyNPC = GameTestHelpers.spawnNPCEntityType(helper, entityType);
     GameTestHelpers.assertNotNull(helper, "EasyNPC is null!", easyNPC);
     easyNPC.getEntity().setPos(helper.absoluteVec(position));
@@ -58,8 +57,7 @@ public class GameTestHelpers {
     return easyNPC;
   }
 
-  public static EasyNPC<?> spawnNPCEntityType(
-      GameTestHelper helper, EntityType<? extends PathfinderMob> entityType) {
+  public static EasyNPC<?> spawnNPCEntityType(GameTestHelper helper, EntityType<?> entityType) {
     Entity entity = spawnEntityType(helper, entityType);
     if (entity instanceof EasyNPC<?> easyNPC) {
       return easyNPC;
@@ -69,7 +67,7 @@ public class GameTestHelpers {
   }
 
   public static <T extends Entity> T spawnEntityType(
-      GameTestHelper helper, EntityType<? extends PathfinderMob> entityType) {
+      GameTestHelper helper, EntityType<?> entityType) {
     if (entityType == null) {
       helper.fail("EntityType is null!");
       return null;
