@@ -34,6 +34,7 @@ import org.apache.logging.log4j.Logger;
 
 public class ObjectiveDataSet {
 
+  public static final String DATA_OBJECTIVE_DATA_SET_TAG = "ObjectiveDataSet";
   public static final StreamCodec<RegistryFriendlyByteBuf, ObjectiveDataSet> STREAM_CODEC =
       new StreamCodec<>() {
         @Override
@@ -47,7 +48,6 @@ public class ObjectiveDataSet {
           registryFriendlyByteBuf.writeNbt(objectiveDataSet.createTag());
         }
       };
-  public static final String DATA_OBJECTIVE_DATA_SET_TAG = "ObjectiveDataSet";
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private final HashMap<String, ObjectiveDataEntry> objectives = new HashMap<>();
   private final HashSet<String> targetedPlayerSet = new HashSet<>();

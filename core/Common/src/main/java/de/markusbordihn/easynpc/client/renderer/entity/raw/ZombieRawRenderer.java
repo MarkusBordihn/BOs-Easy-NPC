@@ -20,47 +20,50 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
-import de.markusbordihn.easynpc.entity.easynpc.raw.ZombieRaw.Variant;
+import de.markusbordihn.easynpc.entity.easynpc.npc.raw.ZombieRaw.VariantType;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ZombieRenderer;
+import net.minecraft.client.renderer.entity.state.ZombieRenderState;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.monster.Zombie;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class ZombieRawRenderer extends ZombieRenderer {
+public class ZombieRawRenderer extends ZombieRenderer implements EasyNPCEntityRenderer {
 
-  protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
+  protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
       Util.make(
-          new EnumMap<>(Variant.class),
+          new EnumMap<>(VariantType.class),
           map -> {
             map.put(
-                Variant.DROWNED,
-                ResourceLocation.withDefaultNamespace("textures/entity/zombie/drowned.png"));
-            map.put(
-                Variant.HUSK,
+                VariantType.HUSK,
                 ResourceLocation.withDefaultNamespace("textures/entity/zombie/husk.png"));
             map.put(
-                Variant.ZOMBIE,
+                VariantType.ZOMBIE,
                 ResourceLocation.withDefaultNamespace("textures/entity/zombie/zombie.png"));
           });
-  protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.ZOMBIE);
+  protected static final ResourceLocation DEFAULT_TEXTURE =
+      TEXTURE_BY_VARIANT_TYPE.get(VariantType.ZOMBIE);
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public ZombieRawRenderer(EntityRendererProvider.Context context) {
     super(context);
   }
 
   @Override
-  public ResourceLocation getTextureLocation(Zombie zombie) {
-    if (zombie instanceof EasyNPC<?> easyNPC) {
-      return this.getEntityTexture(easyNPC);
+  public ResourceLocation getTextureLocation(ZombieRenderState renderState) {
+    EasyNPC<?> easyNPC = getEasyNPC(renderState);
+    if (easyNPC != null) {
+      return getEntityTexture(easyNPC);
     }
-    return super.getTextureLocation(zombie);
+    return DEFAULT_TEXTURE;
   }
 
   public ResourceLocation getDefaultTexture() {
@@ -75,9 +78,9 @@ public class ZombieRawRenderer extends ZombieRenderer {
     return RemoteTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
   }
 
-  public ResourceLocation getTextureByVariant(Enum<?> variant) {
-    return TEXTURE_BY_VARIANT != null
-        ? TEXTURE_BY_VARIANT.getOrDefault(variant, DEFAULT_TEXTURE)
+  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
+    return TEXTURE_BY_VARIANT_TYPE != null
+        ? TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE)
         : Constants.BLANK_ENTITY_TEXTURE;
   }
 
@@ -87,7 +90,7 @@ public class ZombieRawRenderer extends ZombieRenderer {
       case NONE -> Constants.BLANK_ENTITY_TEXTURE;
       case CUSTOM -> getCustomTexture(skinData);
       case SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> getRemoteTexture(skinData);
-      default -> getTextureByVariant(easyNPC.getEasyNPCVariantData().getVariant());
+      default -> getTextureByVariant(easyNPC.getEasyNPCVariantData().getVariantType());
     };
   }
 }

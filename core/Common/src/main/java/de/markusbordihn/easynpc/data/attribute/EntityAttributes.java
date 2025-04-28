@@ -27,6 +27,7 @@ import net.minecraft.network.codec.StreamCodec;
 
 public class EntityAttributes {
 
+  public static final String ENTITY_ATTRIBUTE_TAG = "EntityAttribute";
   public static final StreamCodec<RegistryFriendlyByteBuf, EntityAttributes> STREAM_CODEC =
       new StreamCodec<>() {
         @Override
@@ -40,9 +41,6 @@ public class EntityAttributes {
           registryFriendlyByteBuf.writeNbt(value.createTag());
         }
       };
-
-  public static final String ENTITY_ATTRIBUTE_TAG = "EntityAttribute";
-
   private final Map<EntityAttributeType, EntityAttributesInterface> attributeMap =
       new EnumMap<>(EntityAttributeType.class);
 

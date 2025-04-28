@@ -31,9 +31,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.ItemStack;
@@ -51,29 +51,28 @@ public class ModSpawnEggItem extends SpawnEggItem {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private final Supplier<? extends EntityType<? extends Mob>> typeSupplier;
 
+  public ModSpawnEggItem(EntityType<? extends Mob> entityType, Properties properties) {
+    this(() -> entityType, properties);
+  }
+
   public ModSpawnEggItem(
       Supplier<? extends EntityType<? extends Mob>> entityType, Properties properties) {
     super(null, Constants.FONT_COLOR_RED, Constants.FONT_COLOR_YELLOW, properties);
     this.typeSupplier = entityType;
   }
 
-  public ModSpawnEggItem(EntityType<? extends Mob> entityType, Properties properties) {
-    super(null, Constants.FONT_COLOR_RED, Constants.FONT_COLOR_YELLOW, properties);
-    this.typeSupplier = () -> entityType;
-  }
-
   @Override
   public Component getName(ItemStack itemStack) {
-    String descriptionId = this.getDescriptionId(itemStack);
+    String descriptionId = this.getDescriptionId();
     if (descriptionId.contains(SUFFIX)) {
       return TextComponent.getTranslatedTextRaw(
           Constants.ITEM_PREFIX + "spawn_egg",
           TextComponent.getTranslatedTextRaw(
-              this.getDescriptionId(itemStack)
+              this.getDescriptionId()
                   .replace(Constants.ITEM_PREFIX, Constants.ENTITY_PREFIX)
                   .replace(SUFFIX, "")));
     }
-    return TextComponent.getTranslatedTextRaw(this.getDescriptionId(itemStack));
+    return TextComponent.getTranslatedTextRaw(this.getDescriptionId());
   }
 
   @Override
@@ -113,7 +112,7 @@ public class ModSpawnEggItem extends SpawnEggItem {
             itemStack,
             context.getPlayer(),
             blockPos1,
-            MobSpawnType.SPAWN_EGG,
+            EntitySpawnReason.SPAWN_ITEM_USE,
             true,
             !Objects.equals(blockPos, blockPos1) && direction == Direction.UP);
 

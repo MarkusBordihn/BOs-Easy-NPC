@@ -118,10 +118,6 @@ public class ModEntityDataSerializers {
       SOUND_DATA_SET =
           ENTITY_DATA_SERIALIZERS.register(
               "sound_data_set", () -> EntityDataSerializersManager.SOUND_DATA_SET);
-  public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<UUID>>
-      SPAWNER_UUID =
-          ENTITY_DATA_SERIALIZERS.register(
-              "spawner_uuid", () -> EntityDataSerializersManager.SPAWNER_UUID);
   public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<HashSet<UUID>>>
       TARGETED_ENTITY_HASH_SET =
           ENTITY_DATA_SERIALIZERS.register(
@@ -140,6 +136,8 @@ public class ModEntityDataSerializers {
       TRADING_TYPE =
           ENTITY_DATA_SERIALIZERS.register(
               "trading_type", () -> EntityDataSerializersManager.TRADING_TYPE);
+  public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<UUID>> UUID =
+      ENTITY_DATA_SERIALIZERS.register("uuid", () -> EntityDataSerializersManager.UUID);
 
   private ModEntityDataSerializers() {}
 }

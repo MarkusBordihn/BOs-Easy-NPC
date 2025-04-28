@@ -25,9 +25,6 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ModModelLayers {
 
-  public static final ModelLayerLocation ALLAY =
-      new ModelLayerLocation(
-          ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "allay"), "main");
   public static final ModelLayerLocation FAIRY =
       new ModelLayerLocation(
           ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "fairy"), "main");

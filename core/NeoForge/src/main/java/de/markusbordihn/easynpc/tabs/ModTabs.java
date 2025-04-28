@@ -19,6 +19,7 @@
 package de.markusbordihn.easynpc.tabs;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.ModCustomEntityType;
 import de.markusbordihn.easynpc.item.ModItems;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -36,7 +37,7 @@ public class ModTabs {
           "config_items",
           () ->
               CreativeModeTab.builder()
-                  .icon(() -> ModItems.EASY_NPC_WAND.get().getDefaultInstance())
+                  .icon(() -> ModItems.MOVE_EASY_NPC.get().getDefaultInstance())
                   .displayItems(new ConfigItems())
                   .title(Component.translatable("itemGroup.easy_npc.config_items"))
                   .build());
@@ -45,7 +46,12 @@ public class ModTabs {
           "spawn_eggs",
           () ->
               CreativeModeTab.builder()
-                  .icon(() -> ModItems.FAIRY_NPC_SPAWN_EGG.get().getDefaultInstance())
+                  .icon(
+                      () ->
+                          ModItems.CUSTOM_NPC_SPAWN_EGGS
+                              .get(ModCustomEntityType.FAIRY)
+                              .get()
+                              .getDefaultInstance())
                   .displayItems(new SpawnEggs())
                   .title(Component.translatable("itemGroup.easy_npc.spawn_eggs"))
                   .build());

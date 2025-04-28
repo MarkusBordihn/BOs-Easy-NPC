@@ -77,7 +77,7 @@ public class GameTestHelpers {
       return null;
     }
     Player player = helper.makeMockPlayer(GameType.DEFAULT_MODE);
-    T entity = (T) entityType.create(player.level(), EntitySpawnReason.TRIGGERED);
+    T entity = (T) entityType.create(player.level(), EntitySpawnReason.COMMAND);
     if (entity == null) {
       helper.fail("Entity for " + entityType + " is null!");
       return null;

@@ -90,6 +90,10 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
 
   void setMerchantTradingOffers(MerchantOffers merchantOffers);
 
+  void rewardTradeXp(MerchantOffer merchantOffer);
+
+  void stopTrading();
+
   default MerchantOffers getOffers() {
     if (this.getMerchantTradingOffers() == null) {
       this.updateMerchantTradingOffers();
@@ -142,8 +146,8 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
   }
 
   @Override
-  default boolean isClientSide() {
-    return this.getLevel() != null && this.getLevel().isClientSide();
+  default boolean isClientSideInstance() {
+    return this.getEntityLevel() != null && this.getEntityLevel().isClientSide();
   }
 
   default void setAdvancedTradingOffers(Container container) {
@@ -311,7 +315,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
 
   @Override
   default void notifyTradeUpdated(ItemStack itemStack) {
-    if (!this.isClientSide()
+    if (!this.isClientSideInstance()
         && this.getMob().ambientSoundTime > -this.getMob().getAmbientSoundInterval() + 20) {
       this.getMob().ambientSoundTime = -this.getMob().getAmbientSoundInterval();
       SoundData<E> soundData = getEasyNPCSoundData();
@@ -319,7 +323,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     }
   }
 
-  default void rewardTradeXp(MerchantOffer merchantOffer) {
+  default void rewardMerchantTradeXp(MerchantOffer merchantOffer) {
     if (merchantOffer.shouldRewardExp() && merchantOffer.getXp() > 0) {
       LivingEntity livingEntity = this.getLivingEntity();
       int tradeExperience = 3 + livingEntity.getRandom().nextInt(merchantOffer.getXp());
@@ -343,7 +347,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
         || tradingType == TradingType.CUSTOM;
   }
 
-  default void stopTrading() {
+  default void stopMerchantTrading() {
     Merchant merchant = this.getMerchant();
     if (merchant != null) {
       merchant.setTradingPlayer(null);
@@ -473,7 +477,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
   }
 
   default void openTradingScreen(ServerPlayer serverPlayer) {
-    if (this.isClientSide()) {
+    if (this.isClientSideInstance()) {
       return;
     }
 

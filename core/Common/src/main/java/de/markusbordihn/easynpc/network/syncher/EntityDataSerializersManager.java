@@ -37,13 +37,13 @@ import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.data.skin.SkinUUID;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
-import de.markusbordihn.easynpc.data.spawner.SpawnerUUID;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.world.item.trading.MerchantOffers;
@@ -121,10 +121,6 @@ public class EntityDataSerializersManager {
       defineSerializer(
           SoundDataSet.class.getSimpleName(),
           EntityDataSerializer.forValueType(SoundDataSet.STREAM_CODEC));
-  public static final EntityDataSerializer<UUID> SPAWNER_UUID =
-      defineSerializer(
-          SpawnerUUID.class.getSimpleName(),
-          EntityDataSerializer.forValueType(SpawnerUUID.STREAM_CODEC));
   public static final EntityDataSerializer<HashSet<UUID>> TARGETED_ENTITY_HASH_SET =
       defineSerializer(
           TargetedEntitySet.class.getSimpleName(),
@@ -141,6 +137,9 @@ public class EntityDataSerializersManager {
       defineSerializer(
           TradingType.class.getSimpleName(),
           EntityDataSerializer.forValueType(TradingType.STREAM_CODEC));
+  public static final EntityDataSerializer<UUID> UUID =
+      defineSerializer(
+          UUID.class.getSimpleName(), EntityDataSerializer.forValueType(UUIDUtil.STREAM_CODEC));
 
   private EntityDataSerializersManager() {}
 

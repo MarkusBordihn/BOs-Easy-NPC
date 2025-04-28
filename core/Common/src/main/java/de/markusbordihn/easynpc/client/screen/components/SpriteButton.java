@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -278,12 +279,15 @@ public class SpriteButton extends CustomButton {
 
     // Button Sprite
     guiGraphics.blit(
+        RenderType::guiTextured,
         this.sprite,
         this.getX() + this.spriteX,
         this.getY() + this.spriteY,
         spriteOffsetX,
         isActive() ? this.spriteOffsetY : spriteOffsetY + spriteHeight,
         spriteWidth,
-        spriteHeight);
+        spriteHeight,
+        256,
+        256);
   }
 }

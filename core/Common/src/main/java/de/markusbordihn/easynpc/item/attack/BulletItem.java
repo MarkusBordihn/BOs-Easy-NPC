@@ -19,6 +19,10 @@
 
 package de.markusbordihn.easynpc.item.attack;
 
+import de.markusbordihn.easynpc.Constants;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ArrowItem;
 
 public class BulletItem extends ArrowItem {
@@ -26,6 +30,9 @@ public class BulletItem extends ArrowItem {
   public static final String ID = "bullet";
 
   public BulletItem(Properties properties) {
-    super(properties);
+    super(
+        properties.setId(
+            ResourceKey.create(
+                Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, ID))));
   }
 }

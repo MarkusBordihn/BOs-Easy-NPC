@@ -119,16 +119,11 @@ public class ScreenHelper {
     quaternionfX.conjugate();
     entityRenderDispatcher.overrideCameraOrientation(quaternionfX);
     entityRenderDispatcher.setRenderShadow(false);
-    entityRenderDispatcher.render(
-        livingEntity,
-        0.0D,
-        0.0D,
-        0.0D,
-        0.0F,
-        1.0F,
-        guiGraphics.pose(),
-        guiGraphics.bufferSource(),
-        15728880);
+    guiGraphics.drawSpecial(
+        (bufferSource) -> {
+          entityRenderDispatcher.render(
+              livingEntity, 0.0D, 0.0D, 0.0D, 1.0F, guiGraphics.pose(), bufferSource, 15728880);
+        });
     guiGraphics.flush();
     entityRenderDispatcher.setRenderShadow(true);
     guiGraphics.pose().popPose();
@@ -402,13 +397,13 @@ public class ScreenHelper {
 
     // Backup entity information
     SkinType entitySkinType = skinData.getSkinType();
-    Enum<?> entityVariant = variantData.getVariant();
+    Enum<?> entityVariant = variantData.getVariantType();
     Profession entityProfession = professionData.getProfession();
 
     // Adjust entity information for rendering
     skinData.setSkinDataEntry(
         skinData.getSkinDataEntry().withType(SkinType.DEFAULT).withName("default"));
-    variantData.setVariant(variant);
+    variantData.setVariantType(variant);
     professionData.setProfession(profession);
 
     // Render Entity
@@ -423,7 +418,7 @@ public class ScreenHelper {
 
     // Restore entity information
     skinData.setSkinDataEntry(skinData.getSkinDataEntry().withType(entitySkinType));
-    variantData.setVariant(entityVariant);
+    variantData.setVariantType(entityVariant);
     professionData.setProfession(entityProfession);
   }
 }

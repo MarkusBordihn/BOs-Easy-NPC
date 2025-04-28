@@ -26,7 +26,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -44,7 +47,10 @@ public class MoveEasyNPCItem extends Item {
   private final Map<Player, LivingEntity> targetedLivingEntityMap = new HashMap<>();
 
   public MoveEasyNPCItem(Item.Properties properties) {
-    super(properties);
+    super(
+        properties.setId(
+            ResourceKey.create(
+                Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, ID))));
   }
 
   @Override

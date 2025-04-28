@@ -1,0 +1,309 @@
+/*
+ * Copyright 2023 Markus Bordihn
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+package de.markusbordihn.easynpc.entity;
+
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.easynpc.npc.raw.SkeletonRaw.VariantType;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.AllayNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.CatNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.ChickenNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.DrownedNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.EvokerNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.HorseNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.HumanoidNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.HumanoidSlimNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.IllusionerNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.IronGolemNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.PigNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.PiglinNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.PillagerNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.SkeletonNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.VillagerNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.VindicatorNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.WolfNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.ZombieNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.ZombieVillagerNPC;
+import java.util.function.Supplier;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.level.Level;
+
+public enum ModNPCEntityType {
+  ALLAY(
+      AllayNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<AllayNPC> type, Level level) -> new AllayNPC(type, level),
+              MobCategory.MISC)
+          .sized(0.5F, 0.5F)
+          .clientTrackingRange(12),
+      AllayNPC::createAttributes),
+  CAT(
+      CatNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<CatNPC> type, Level level) -> new CatNPC(type, level), MobCategory.MISC)
+          .sized(0.6F, 0.7F)
+          .clientTrackingRange(12),
+      CatNPC::createAttributes),
+  CHICKEN(
+      ChickenNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<ChickenNPC> type, Level level) -> new ChickenNPC(type, level),
+              MobCategory.MISC)
+          .sized(0.4F, 0.7F)
+          .clientTrackingRange(12),
+      ChickenNPC::createAttributes),
+  DROWNED(
+      DrownedNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<DrownedNPC> type, Level level) -> new DrownedNPC(type, level),
+              MobCategory.MONSTER)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(12),
+      DrownedNPC::createAttributes),
+  EVOKER(
+      EvokerNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<EvokerNPC> type, Level level) -> new EvokerNPC(type, level),
+              MobCategory.MONSTER)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(12),
+      EvokerNPC::createAttributes),
+  HORSE(
+      HorseNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<HorseNPC> type, Level level) -> new HorseNPC(type, level),
+              MobCategory.MISC)
+          .sized(1.4F, 1.6F)
+          .clientTrackingRange(12),
+      HorseNPC::createAttributes),
+  HORSE_SKELETON(
+      HorseNPC.ID_SKELETON,
+      EntityType.Builder.of(
+              (EntityType<HorseNPC> type, Level level) ->
+                  new HorseNPC(type, level, HorseNPC.VariantType.SKELETON),
+              MobCategory.MONSTER)
+          .sized(1.4F, 1.6F)
+          .clientTrackingRange(12),
+      HorseNPC::createAttributes),
+  HORSE_ZOMBIE(
+      HorseNPC.ID_ZOMBIE,
+      EntityType.Builder.of(
+              (EntityType<HorseNPC> type, Level level) ->
+                  new HorseNPC(type, level, HorseNPC.VariantType.ZOMBIE),
+              MobCategory.MONSTER)
+          .sized(1.4F, 1.6F)
+          .clientTrackingRange(12),
+      HorseNPC::createAttributes),
+  HUMANOID(
+      HumanoidNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<HumanoidNPC> type, Level level) -> new HumanoidNPC(type, level),
+              MobCategory.MISC)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(12),
+      HumanoidNPC::createAttributes),
+  HUMANOID_SLIM(
+      HumanoidSlimNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<HumanoidSlimNPC> type, Level level) -> new HumanoidSlimNPC(type, level),
+              MobCategory.MISC)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(12),
+      HumanoidSlimNPC::createAttributes),
+  ILLUSIONER(
+      IllusionerNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<IllusionerNPC> type, Level level) -> new IllusionerNPC(type, level),
+              MobCategory.MISC)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(12),
+      IllusionerNPC::createAttributes),
+  IRON_GOLEM(
+      IronGolemNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<IronGolemNPC> type, Level level) -> new IronGolemNPC(type, level),
+              MobCategory.MISC)
+          .sized(1.4F, 2.7F)
+          .clientTrackingRange(12),
+      IronGolemNPC::createAttributes),
+  PIGLIN(
+      PiglinNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<PiglinNPC> type, Level level) -> new PiglinNPC(type, level),
+              MobCategory.MONSTER)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(12),
+      PiglinNPC::createAttributes),
+  PIGLIN_BRUTE(
+      PiglinNPC.ID_BRUTE,
+      EntityType.Builder.of(
+              (EntityType<PiglinNPC> type, Level level) ->
+                  new PiglinNPC(type, level, PiglinNPC.VariantType.PIGLIN_BRUTE),
+              MobCategory.MONSTER)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(12),
+      PiglinNPC::createAttributes),
+  PIGLIN_ZOMBIFIED(
+      PiglinNPC.ID_ZOMBIFIED,
+      EntityType.Builder.of(
+              (EntityType<PiglinNPC> type, Level level) ->
+                  new PiglinNPC(type, level, PiglinNPC.VariantType.ZOMBIFIED_PIGLIN),
+              MobCategory.MONSTER)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(12),
+      PiglinNPC::createAttributes),
+  PIG(
+      PigNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<PigNPC> type, Level level) -> new PigNPC(type, level), MobCategory.MISC)
+          .sized(0.9F, 0.9F)
+          .clientTrackingRange(12),
+      PigNPC::createAttributes),
+  PILLAGER(
+      PillagerNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<PillagerNPC> type, Level level) -> new PillagerNPC(type, level),
+              MobCategory.MONSTER)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(12),
+      PillagerNPC::createAttributes),
+  SKELETON(
+      SkeletonNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<SkeletonNPC> type, Level level) -> new SkeletonNPC(type, level),
+              MobCategory.MONSTER)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(12),
+      SkeletonNPC::createAttributes),
+  SKELETON_BOGGED(
+      SkeletonNPC.ID_BOGGED,
+      EntityType.Builder.of(
+              (EntityType<SkeletonNPC> type, Level level) ->
+                  new SkeletonNPC(type, level, VariantType.BOGGED),
+              MobCategory.MONSTER)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(12),
+      SkeletonNPC::createAttributes),
+  SKELETON_STRAY(
+      SkeletonNPC.ID_STRAY,
+      EntityType.Builder.of(
+              (EntityType<SkeletonNPC> type, Level level) ->
+                  new SkeletonNPC(type, level, VariantType.STRAY),
+              MobCategory.MONSTER)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(12),
+      SkeletonNPC::createAttributes),
+  SKELETON_WITHER(
+      SkeletonNPC.ID_WITHER_SKELETON,
+      EntityType.Builder.of(
+              (EntityType<SkeletonNPC> type, Level level) ->
+                  new SkeletonNPC(type, level, VariantType.WITHER_SKELETON),
+              MobCategory.MONSTER)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(12),
+      SkeletonNPC::createAttributes),
+  VILLAGER(
+      VillagerNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<VillagerNPC> type, Level level) -> new VillagerNPC(type, level),
+              MobCategory.MISC)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(12),
+      VillagerNPC::createAttributes),
+  VINDICATOR(
+      VindicatorNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<VindicatorNPC> type, Level level) -> new VindicatorNPC(type, level),
+              MobCategory.MONSTER)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(12),
+      VindicatorNPC::createAttributes),
+  WOLF(
+      WolfNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<WolfNPC> type, Level level) -> new WolfNPC(type, level), MobCategory.MISC)
+          .sized(0.6F, 0.85F)
+          .clientTrackingRange(12),
+      WolfNPC::createAttributes),
+  ZOMBIE(
+      ZombieNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<ZombieNPC> type, Level level) -> new ZombieNPC(type, level),
+              MobCategory.MONSTER)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(12),
+      ZombieNPC::createAttributes),
+  ZOMBIE_HUSK(
+      ZombieNPC.ID_HUSK,
+      EntityType.Builder.of(
+              (EntityType<ZombieNPC> type, Level level) ->
+                  new ZombieNPC(type, level, ZombieNPC.VariantType.HUSK),
+              MobCategory.MONSTER)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(12),
+      ZombieNPC::createAttributes),
+  ZOMBIE_VILLAGER(
+      ZombieVillagerNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<ZombieVillagerNPC> type, Level level) ->
+                  new ZombieVillagerNPC(type, level),
+              MobCategory.MONSTER)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(12),
+      ZombieVillagerNPC::createAttributes);
+
+  private final String id;
+  private final EntityType.Builder<? extends Entity> builder;
+  private final Supplier<AttributeSupplier.Builder> attributes;
+  private final ResourceKey<EntityType<?>> resourceKey;
+
+  ModNPCEntityType(
+      String id,
+      EntityType.Builder<? extends Entity> builder,
+      Supplier<AttributeSupplier.Builder> attributes) {
+    this.id = id;
+    this.builder = builder;
+    this.attributes = attributes;
+    this.resourceKey =
+        ResourceKey.create(
+            Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id));
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public EntityType.Builder<? extends Entity> getBuilder() {
+    return builder;
+  }
+
+  public ResourceKey<EntityType<?>> getResourceKey() {
+    return resourceKey;
+  }
+
+  public AttributeSupplier.Builder getAttributes() {
+    return attributes.get();
+  }
+}

@@ -19,8 +19,6 @@
 
 package de.markusbordihn.easynpc.client.model.custom;
 
-import de.markusbordihn.easynpc.client.model.ModelPartType;
-import de.markusbordihn.easynpc.client.model.base.BaseHumanoidModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -29,13 +27,13 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 
-public class OrcModel<T extends LivingEntity> extends BaseHumanoidModel<T> {
+public class OrcModel<S extends HumanoidRenderState> extends HumanoidModel<S> {
 
   public OrcModel(ModelPart modelPart) {
     super(modelPart);
-    setDefaultModelPartVisibility(ModelPartType.HAT, false);
+    this.hat.visible = false;
   }
 
   public static LayerDefinition createBodyLayer() {

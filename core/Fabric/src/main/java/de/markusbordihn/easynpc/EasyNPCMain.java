@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.commands.ModArgumentTypes;
 import de.markusbordihn.easynpc.commands.manager.CommandManager;
 import de.markusbordihn.easynpc.compat.CompatHandler;
 import de.markusbordihn.easynpc.compat.CompatManager;
+import de.markusbordihn.easynpc.component.DataComponents;
 import de.markusbordihn.easynpc.config.Config;
 import de.markusbordihn.easynpc.debug.DebugManager;
 import de.markusbordihn.easynpc.entity.LivingEntityEventHandler;
@@ -106,6 +107,9 @@ public class EasyNPCMain implements ModInitializer {
 
     log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
     ModMenuTypes.register();
+
+    log.info("{} Mod Data Components ...", Constants.LOG_REGISTER_PREFIX);
+    DataComponents.registerDataComponents();
 
     log.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
     NetworkHandlerManager.registerHandler(new NetworkHandler());

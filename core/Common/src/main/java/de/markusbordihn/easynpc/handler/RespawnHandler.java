@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,7 +46,7 @@ public class RespawnHandler {
     EntityType<?> entityType = easyNPC.getEntity().getType();
 
     // Create new entity with compoundTag
-    Entity entity = entityType.create(serverLevel);
+    Entity entity = entityType.create(serverLevel, EntitySpawnReason.TRIGGERED);
     if (entity == null) {
       log.error(
           "[{}] Unable to create new entity with type {} with {}",

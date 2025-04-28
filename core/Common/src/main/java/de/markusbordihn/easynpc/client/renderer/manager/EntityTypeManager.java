@@ -31,6 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.Level;
@@ -209,7 +210,7 @@ public class EntityTypeManager {
 
     // Check if entity type is supported and created entity is a PathfinderMob.
     if (!isUnsupportedEntityType(entityType)) {
-      Entity entity = entityType.create(level);
+      Entity entity = entityType.create(level, EntitySpawnReason.MOB_SUMMONED);
       if (entity instanceof PathfinderMob newPathfinderMob) {
         log.debug(
             "{} Registering PathfinderMob {} for {}", LOG_PREFIX, newPathfinderMob, entityType);

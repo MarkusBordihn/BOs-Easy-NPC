@@ -1,0 +1,55 @@
+/*
+ * Copyright 2023 Markus Bordihn
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+package de.markusbordihn.easynpc.client.renderer;
+
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.block.ModBlocks;
+import de.markusbordihn.easynpc.client.renderer.blockentity.BaseEasyNPCSpawnerBlockEntityRenderer;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
+import net.minecraft.client.renderer.RenderType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public class BlockEntityRenderer {
+
+  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  private BlockEntityRenderer() {}
+
+  public static void register() {
+    log.info("{} Block Entity Renderers ...", Constants.LOG_REGISTER_PREFIX);
+
+    BlockEntityRendererRegistry.register(
+        ModBlocks.EASY_NPC_SPAWNER_ENTITY, BaseEasyNPCSpawnerBlockEntityRenderer::new);
+  }
+
+  public static void registerRenderLayers() {
+    log.info("{} Render Layers ...", Constants.LOG_REGISTER_PREFIX);
+    BlockRenderLayerMap.INSTANCE.putBlock(
+        ModBlocks.EASY_NPC_SPAWNER_BOSS, RenderType.cutoutMipped());
+    BlockRenderLayerMap.INSTANCE.putBlock(
+        ModBlocks.EASY_NPC_SPAWNER_DEFAULT, RenderType.cutoutMipped());
+    BlockRenderLayerMap.INSTANCE.putBlock(
+        ModBlocks.EASY_NPC_SPAWNER_GROUP, RenderType.cutoutMipped());
+    BlockRenderLayerMap.INSTANCE.putBlock(
+        ModBlocks.EASY_NPC_SPAWNER_SINGLE, RenderType.cutoutMipped());
+  }
+}

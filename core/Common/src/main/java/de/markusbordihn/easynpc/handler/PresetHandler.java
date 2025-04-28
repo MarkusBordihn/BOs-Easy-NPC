@@ -43,6 +43,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
@@ -158,7 +159,7 @@ public class PresetHandler {
     }
 
     // Create new entity or re-use existing entity.
-    Entity entity = entityType.create(serverLevel);
+    Entity entity = entityType.create(serverLevel, EntitySpawnReason.SPAWN_ITEM_USE);
     if (!(entity instanceof EasyNPC<?> easyNPCEntity)) {
       log.error(
           "[{}] Error importing preset, invalid entity with type {}", serverLevel, entityType);
@@ -207,8 +208,7 @@ public class PresetHandler {
     }
 
     try {
-      CompoundTag compoundTag =
-          NbtIo.readCompressed(presetFile.toFile().toPath(), NbtAccounter.unlimitedHeap());
+      CompoundTag compoundTag = NbtIo.readCompressed(presetFile, NbtAccounter.unlimitedHeap());
       return importPreset(serverLevel, compoundTag, position, uuid, serverPlayer);
     } catch (IOException exception) {
       log.error("[{}] Error reading custom preset file {}", serverLevel, presetFile, exception);
@@ -341,8 +341,7 @@ public class PresetHandler {
     }
 
     try {
-      CompoundTag compoundTag =
-          NbtIo.readCompressed(presetFile.toFile().toPath(), NbtAccounter.unlimitedHeap());
+      CompoundTag compoundTag = NbtIo.readCompressed(presetFile, NbtAccounter.unlimitedHeap());
       return importPreset(serverLevel, compoundTag, position, uuid, serverPlayer);
     } catch (IOException exception) {
       log.error("[{}] Error reading world preset file {}", serverLevel, presetFile, exception);
@@ -373,7 +372,7 @@ public class PresetHandler {
       return false;
     }
 
-    CompoundTag compoundTag = presetData.exportPresetData();
+    CompoundTag compoundTag = presetData.serializePresetData();
     if (compoundTag == null || compoundTag.isEmpty()) {
       log.error("[{}] Error exporting custom preset {}!", easyNPC, file);
       return false;

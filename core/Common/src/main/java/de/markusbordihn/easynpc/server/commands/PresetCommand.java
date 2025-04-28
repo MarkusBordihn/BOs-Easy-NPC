@@ -28,7 +28,6 @@ import de.markusbordihn.easynpc.commands.suggestion.PresetSuggestions;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.PresetHandler;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
-import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -639,7 +638,7 @@ public class PresetCommand extends Command {
             + " for "
             + easyNPC
             + " with UUID "
-            + easyNPC.getUUID()
+            + easyNPC.getEntityUUID()
             + "!");
   }
 
@@ -660,7 +659,7 @@ public class PresetCommand extends Command {
             + " for "
             + easyNPC
             + " with UUID "
-            + easyNPC.getUUID()
+            + easyNPC.getEntityUUID()
             + "!");
   }
 
@@ -679,9 +678,10 @@ public class PresetCommand extends Command {
 
     String presetFileName =
         CustomPresetDataFiles.getPresetFileName(
-            name != null && !name.isEmpty() ? name : easyNPC.getUUID().toString());
-    NetworkMessageHandlerManager.getClientHandler()
-        .exportClientPreset(easyNPC.getUUID(), presetFileName, serverPlayer);
+            name != null && !name.isEmpty() ? name : easyNPC.getEntityUUID().toString());
+    // TODO: Re-implement export local preset
+    // NetworkMessageHandlerManager.getClientHandler()
+    //    .exportClientPreset(easyNPC.getUUID(), presetFileName, serverPlayer);
     return sendSuccessMessage(
         context,
         "Exporting EasyNPC "

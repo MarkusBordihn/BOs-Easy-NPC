@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "easy_npc_config_ui:item/easy_npc_wand"
+  }
+}

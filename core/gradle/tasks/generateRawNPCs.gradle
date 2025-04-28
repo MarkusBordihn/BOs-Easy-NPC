@@ -1,50 +1,220 @@
 task generateRawNPCs {
   group = "build"
-  def rawNPCFolder = file("$projectDir/../Common/src/main/java/de/markusbordihn/easynpc/entity/easynpc/raw")
+  def rawNPCFolder = file("$projectDir/../Common/src/main/java/de/markusbordihn/easynpc/entity/easynpc/npc/raw")
   def templateFile = file("$rawNPCFolder/NPCRawTemplate.java")
   def npcClasses = [
-      [
-          id       : "skeleton_raw",
-          class    : "net.minecraft.world.entity.monster.Skeleton",
-          className: "SkeletonRaw",
-          baseClass: "Skeleton",
-          variant  : "SKELETON",
-          variants : "SKELETON, STRAY, WITHER_SKELETON"
-      ],
-      [
-          id       : "piglin_raw",
-          class    : "net.minecraft.world.entity.monster.piglin.Piglin",
-          className: "PiglinRaw",
-          baseClass: "Piglin",
-          variant  : "PIGLIN",
-          variants : "PIGLIN, PIGLIN_BRUTE, ZOMBIFIED_PIGLIN"
-      ],
-      [
-          id       : "zombie_raw",
-          class    : "net.minecraft.world.entity.monster.Zombie",
-          className: "ZombieRaw",
-          baseClass: "Zombie",
-          variant  : "ZOMBIE",
-          variants : "DROWNED, HUSK, ZOMBIE"
-      ]
+          [
+                  id       : "allay_raw",
+                  class    : "net.minecraft.world.entity.animal.allay.Allay",
+                  className: "AllayRaw",
+                  baseClass: "Allay",
+                  variant  : "DEFAULT",
+                  variants : "DEFAULT, LAVA, GRASSLAND, WATER"
+          ],
+          [
+                  id       : "cat_raw",
+                  class    : "net.minecraft.world.entity.animal.Cat",
+                  className: "CatRaw",
+                  baseClass: "Cat",
+                  variant  : "BLACK",
+                  variants : "ALL_BLACK, BLACK, BRITISH_SHORTHAIR, CALICO, JELLIE, OCELOT, PERSIAN, RAGDOLL, RED, SIAMESE, TABBY, WHITE"
+          ],
+          [
+                  id       : "creeper_raw",
+                  class    : "net.minecraft.world.entity.monster.Creeper",
+                  className: "CreeperRaw",
+                  baseClass: "Creeper",
+                  variant  : "DEFAULT",
+                  variants : "DEFAULT, CHARGED"
+          ],
+          [
+                  id       : "chicken_raw",
+                  class    : "net.minecraft.world.entity.animal.Chicken",
+                  className: "ChickenRaw",
+                  baseClass: "Chicken",
+                  variant  : "WHITE",
+                  variants : "WHITE"
+          ],
+          [
+                  id       : "drowned_raw",
+                  class    : "net.minecraft.world.entity.monster.Drowned",
+                  className: "DrownedRaw",
+                  baseClass: "Drowned",
+                  variant  : "DEFAULT",
+                  variants : "DEFAULT"
+          ],
+          [
+                  id       : "ender_man_raw",
+                  class    : "net.minecraft.world.entity.monster.EnderMan",
+                  className: "EnderManRaw",
+                  baseClass: "EnderMan",
+                  variant  : "DEFAULT",
+                  variants : "DEFAULT"
+          ],
+          [
+                  id       : "evoker_raw",
+                  class    : "net.minecraft.world.entity.monster.Evoker",
+                  className: "EvokerRaw",
+                  baseClass: "Evoker",
+                  variant  : "EVOKER",
+                  variants : "EVOKER, EVOKER_CROSSED_ARMS"
+          ],
+          [
+                  id       : "horse_raw",
+                  class    : "net.minecraft.world.entity.animal.horse.Horse",
+                  className: "HorseRaw",
+                  baseClass: "Horse",
+                  variant  : "WHITE",
+                  variants : "WHITE, WHITE_SADDLED, CREAMY, CREAMY_SADDLED, CHESTNUT, CHESTNUT_SADDLED, BROWN, BROWN_SADDLED, BLACK, BLACK_SADDLED, GRAY, GRAY_SADDLED, DARKBROWN, DARKBROWN_SADDLED, SKELETON, SKELETON_SADDLED, ZOMBIE, ZOMBIE_SADDLED, DONKEY, DONKEY_SADDLED, MULE, MULE_SADDLED"
+          ],
+          [
+                  id       : "iron_golem_raw",
+                  class    : "net.minecraft.world.entity.animal.IronGolem",
+                  className: "IronGolemRaw",
+                  baseClass: "IronGolem",
+                  variant  : "IRON_GOLEM",
+                  variants : "IRON_GOLEM, IRON_GOLEM_CRACKINESS_HIGH, IRON_GOLEM_CRACKINESS_MEDIUM, IRON_GOLEM_CRACKINESS_LOW"
+          ],
+          [
+                  id       : "illusioner_raw",
+                  class    : "net.minecraft.world.entity.monster.Illusioner",
+                  className: "IllusionerRaw",
+                  baseClass: "Illusioner",
+                  variant  : "ILLUSIONER",
+                  variants : "ILLUSIONER, ILLUSIONER_CROSSED_ARMS"
+          ],
+          [
+                  id       : "pathfinder_mob_raw",
+                  class    : "net.minecraft.world.entity.PathfinderMob",
+                  className: "PathfinderMobRaw",
+                  baseClass: "PathfinderMob",
+                  skinModel: "HUMANOID",
+                  variant  : "DEFAULT",
+                  variants : "DEFAULT"
+          ],
+          [
+                  id       : "pillager_raw",
+                  class    : "net.minecraft.world.entity.monster.Pillager",
+                  className: "PillagerRaw",
+                  baseClass: "Pillager",
+                  variant  : "PILLAGER",
+                  variants : "PILLAGER"
+          ],
+          [
+                  id       : "pig_raw",
+                  class    : "net.minecraft.world.entity.animal.Pig",
+                  className: "PigRaw",
+                  baseClass: "Pig",
+                  variant  : "DEFAULT",
+                  variants : "DEFAULT, SPOTTED"
+          ],
+          [
+                  id       : "piglin_raw",
+                  class    : "net.minecraft.world.entity.monster.piglin.Piglin",
+                  className: "PiglinRaw",
+                  baseClass: "Piglin",
+                  variant  : "PIGLIN",
+                  variants : "PIGLIN, PIGLIN_BRUTE, ZOMBIFIED_PIGLIN"
+          ],
+          [
+                  id       : "skeleton_raw",
+                  class    : "net.minecraft.world.entity.monster.Skeleton",
+                  className: "SkeletonRaw",
+                  baseClass: "Skeleton",
+                  variant  : "SKELETON",
+                  variants : "BOGGED, SKELETON, STRAY, WITHER_SKELETON"
+          ],
+          [
+                  id       : "vex_raw",
+                  class    : "net.minecraft.world.entity.monster.Vex",
+                  className: "VexRaw",
+                  baseClass: "Vex",
+                  variant  : "DEFAULT",
+                  variants : "DEFAULT"
+          ],
+          [
+                  id       : "villager_raw",
+                  class    : "net.minecraft.world.entity.npc.Villager",
+                  className: "VillagerRaw",
+                  baseClass: "Villager",
+                  variant  : "DEFAULT",
+                  variants : "DEFAULT, DESERT_ARMORER, DESERT_BUTCHER, DESERT_CARTOGRAPHER, DESERT_CLERIC, DESERT_FARMER, DESERT_FISHERMAN, DESERT_FLETCHER, DESERT_LEATHERWORKER, DESERT_LIBRARIAN, DESERT_MASON, DESERT_NITWIT, DESERT_SHEPHERD, DESERT_TOOLSMITH, DESERT_WEAPONSMITH, JUNGLE_ARMORER, JUNGLE_BUTCHER, JUNGLE_CARTOGRAPHER, JUNGLE_CLERIC, JUNGLE_FARMER, JUNGLE_FISHERMAN, JUNGLE_FLETCHER, JUNGLE_LEATHERWORKER, JUNGLE_LIBRARIAN, JUNGLE_MASON, JUNGLE_NITWIT, JUNGLE_SHEPHERD, JUNGLE_TOOLSMITH, JUNGLE_WEAPONSMITH, PLAINS_ARMORER, PLAINS_BUTCHER, PLAINS_CARTOGRAPHER, PLAINS_CLERIC, PLAINS_FARMER, PLAINS_FISHERMAN, PLAINS_FLETCHER, PLAINS_LEATHERWORKER, PLAINS_LIBRARIAN, PLAINS_MASON, PLAINS_NITWIT, PLAINS_SHEPHERD, PLAINS_TOOLSMITH, PLAINS_WEAPONSMITH, SAVANNA_ARMORER, SAVANNA_BUTCHER, SAVANNA_CARTOGRAPHER, SAVANNA_CLERIC, SAVANNA_FARMER, SAVANNA_FISHERMAN, SAVANNA_FLETCHER, SAVANNA_LEATHERWORKER, SAVANNA_LIBRARIAN, SAVANNA_MASON, SAVANNA_NITWIT, SAVANNA_SHEPHERD, SAVANNA_TOOLSMITH, SAVANNA_WEAPONSMITH, SNOW_ARMORER, SNOW_BUTCHER, SNOW_CARTOGRAPHER, SNOW_CLERIC, SNOW_FARMER, SNOW_FISHERMAN, SNOW_FLETCHER, SNOW_LEATHERWORKER, SNOW_LIBRARIAN, SNOW_MASON, SNOW_NITWIT, SNOW_SHEPHERD, SNOW_TOOLSMITH, SNOW_WEAPONSMITH, SWAMP_ARMORER, SWAMP_BUTCHER, SWAMP_CARTOGRAPHER, SWAMP_CLERIC, SWAMP_FARMER, SWAMP_FISHERMAN, SWAMP_FLETCHER, SWAMP_LEATHERWORKER, SWAMP_LIBRARIAN, SWAMP_MASON, SWAMP_NITWIT, SWAMP_SHEPHERD, SWAMP_TOOLSMITH, SWAMP_WEAPONSMITH, TAIGA_ARMORER, TAIGA_BUTCHER, TAIGA_CARTOGRAPHER, TAIGA_CLERIC, TAIGA_FARMER, TAIGA_FISHERMAN, TAIGA_FLETCHER, TAIGA_LEATHERWORKER, TAIGA_LIBRARIAN, TAIGA_MASON, TAIGA_NITWIT, TAIGA_SHEPHERD, TAIGA_TOOLSMITH, TAIGA_WEAPONSMITH"
+          ],
+          [
+                  id       : "vindicator_raw",
+                  class    : "net.minecraft.world.entity.monster.Vindicator",
+                  className: "VindicatorRaw",
+                  baseClass: "Vindicator",
+                  variant  : "VINDICATOR",
+                  variants : "VINDICATOR, VINDICATOR_CROSSED_ARMS"
+          ],
+          [
+                  id       : "wolf_raw",
+                  class    : "net.minecraft.world.entity.animal.Wolf",
+                  className: "WolfRaw",
+                  baseClass: "Wolf",
+                  variant  : "DEFAULT",
+                  variants : "DEFAULT, TAMED, ANGRY"
+          ],
+          [
+                  id       : "witch_raw",
+                  class    : "net.minecraft.world.entity.monster.Witch",
+                  className: "WitchRaw",
+                  baseClass: "Witch",
+                  variant  : "DEFAULT",
+                  variants : "DEFAULT"
+          ],
+          [
+                  id       : "zombie_raw",
+                  class    : "net.minecraft.world.entity.monster.Zombie",
+                  className: "ZombieRaw",
+                  baseClass: "Zombie",
+                  variant  : "ZOMBIE",
+                  variants : "HUSK, ZOMBIE"
+          ],
+          [
+                  id       : "zombie_villager_raw",
+                  class    : "net.minecraft.world.entity.monster.ZombieVillager",
+                  className: "ZombieVillagerRaw",
+                  baseClass: "ZombieVillager",
+                  variant  : "DEFAULT",
+                  variants : "DEFAULT, DESERT_ARMORER, DESERT_BUTCHER, DESERT_CARTOGRAPHER, DESERT_CLERIC, DESERT_FARMER, DESERT_FISHERMAN, DESERT_FLETCHER, DESERT_LEATHERWORKER, DESERT_LIBRARIAN, DESERT_MASON, DESERT_NITWIT, DESERT_SHEPHERD, DESERT_TOOLSMITH, DESERT_WEAPONSMITH, JUNGLE_ARMORER, JUNGLE_BUTCHER, JUNGLE_CARTOGRAPHER, JUNGLE_CLERIC, JUNGLE_FARMER, JUNGLE_FISHERMAN, JUNGLE_FLETCHER, JUNGLE_LEATHERWORKER, JUNGLE_LIBRARIAN, JUNGLE_MASON, JUNGLE_NITWIT, JUNGLE_SHEPHERD, JUNGLE_TOOLSMITH, JUNGLE_WEAPONSMITH, PLAINS_ARMORER, PLAINS_BUTCHER, PLAINS_CARTOGRAPHER, PLAINS_CLERIC, PLAINS_FARMER, PLAINS_FISHERMAN, PLAINS_FLETCHER, PLAINS_LEATHERWORKER, PLAINS_LIBRARIAN, PLAINS_MASON, PLAINS_NITWIT, PLAINS_SHEPHERD, PLAINS_TOOLSMITH, PLAINS_WEAPONSMITH, SAVANNA_ARMORER, SAVANNA_BUTCHER, SAVANNA_CARTOGRAPHER, SAVANNA_CLERIC, SAVANNA_FARMER, SAVANNA_FISHERMAN, SAVANNA_FLETCHER, SAVANNA_LEATHERWORKER, SAVANNA_LIBRARIAN, SAVANNA_MASON, SAVANNA_NITWIT, SAVANNA_SHEPHERD, SAVANNA_TOOLSMITH, SAVANNA_WEAPONSMITH, SNOW_ARMORER, SNOW_BUTCHER, SNOW_CARTOGRAPHER, SNOW_CLERIC, SNOW_FARMER, SNOW_FISHERMAN, SNOW_FLETCHER, SNOW_LEATHERWORKER, SNOW_LIBRARIAN, SNOW_MASON, SNOW_NITWIT, SNOW_SHEPHERD, SNOW_TOOLSMITH, SNOW_WEAPONSMITH, SWAMP_ARMORER, SWAMP_BUTCHER, SWAMP_CARTOGRAPHER, SWAMP_CLERIC, SWAMP_FARMER, SWAMP_FISHERMAN, SWAMP_FLETCHER, SWAMP_LEATHERWORKER, SWAMP_LIBRARIAN, SWAMP_MASON, SWAMP_NITWIT, SWAMP_SHEPHERD, SWAMP_TOOLSMITH, SWAMP_WEAPONSMITH, TAIGA_ARMORER, TAIGA_BUTCHER, TAIGA_CARTOGRAPHER, TAIGA_CLERIC, TAIGA_FARMER, TAIGA_FISHERMAN, TAIGA_FLETCHER, TAIGA_LEATHERWORKER, TAIGA_LIBRARIAN, TAIGA_MASON, TAIGA_NITWIT, TAIGA_SHEPHERD, TAIGA_TOOLSMITH, TAIGA_WEAPONSMITH"
+          ],
   ]
+
+  def loadMethods = { String className ->
+    def file = new File(rawNPCFolder, "${className}.methods")
+    return file.exists() ? file.text : ""
+  }
+
+  def loadImports = { String className ->
+    def file = new File(rawNPCFolder, "${className}.imports")
+    return file.exists() ? file.text : ""
+  }
+
+  def toUpperSnakeCase = { String input ->
+    return input.replaceAll(/([a-z])([A-Z])/, '$1_$2').toUpperCase(Locale.ROOT)
+  }
 
   doLast {
     def outputDir = rawNPCFolder
 
+    println "✨ Processing ${npcClasses.size()} NPC classes from ${templateFile} to ${outputDir} ..."
     npcClasses.each { npcClass ->
       def outputFile = new File(outputDir, npcClass.className + ".java")
       def content = templateFile.text
-          .replace("import net.minecraft.world.entity.monster.Zombie;", "import " + npcClass.class + ";")
-          .replace("npc_raw_template", npcClass.id)
-          .replace("NPCRawTemplate", npcClass.className)
-          .replace("Zombie", npcClass.baseClass)
-          .replace("ZOMBIE", npcClass.baseClass.toUpperCase(Locale.ROOT))
-          .replace("Variant.DEFAULT_VARIANT", "Variant." + npcClass.variant)
-          .replace("DEFAULT_VARIANT", npcClass.variants)
+              .replace("import net.minecraft.world.entity.monster.Zombie;", "import " + npcClass.class + ";")
+              .replace("npc_raw_template", npcClass.id)
+              .replace("NPCRawTemplate", npcClass.className)
+              .replaceAll("\\bZombie\\b", npcClass.baseClass)
+              .replace("SkinModel.ZOMBIE", "SkinModel." + (npcClass.skinModel ?: toUpperSnakeCase(npcClass.baseClass)))
+              .replace("VariantType.DEFAULT_VARIANT", "VariantType." + npcClass.variant)
+              .replace("DEFAULT_VARIANT", npcClass.variants)
+              .replace("// TEMPLATE_INSERT:IMPORTS", loadImports(npcClass.className))
+              .replace("// TEMPLATE_INSERT:METHODS", loadMethods(npcClass.className))
 
       outputFile.write(content)
-      println "Generated: $outputFile"
+      println "✅ [${npcClass.className}] Generated ${outputFile}"
     }
   }
 }

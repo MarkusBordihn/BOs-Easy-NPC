@@ -223,7 +223,7 @@ public class ObjectiveUtils {
               objectiveDataEntry.getInterval(),
               objectiveDataEntry.isMustSeeTarget(),
               objectiveDataEntry.isMustReachTarget(),
-              entity ->
+              (entity, serverLevel) ->
                   easyNPC.getEasyNPCOwnerData() != null
                       && entity != easyNPC.getEasyNPCOwnerData().getOwner());
       case ATTACK_MONSTER ->
@@ -236,7 +236,7 @@ public class ObjectiveUtils {
               objectiveDataEntry.getInterval(),
               objectiveDataEntry.isMustSeeTarget(),
               objectiveDataEntry.isMustReachTarget(),
-              entity -> entity instanceof Enemy && !(entity instanceof Creeper));
+              (entity, serverLevel) -> entity instanceof Enemy && !(entity instanceof Creeper));
       case ATTACK_MOB ->
           new NearestAttackableTargetGoal<>(
               pathfinderMob,
@@ -244,7 +244,7 @@ public class ObjectiveUtils {
               objectiveDataEntry.getInterval(),
               objectiveDataEntry.isMustSeeTarget(),
               objectiveDataEntry.isMustReachTarget(),
-              Enemy.class::isInstance);
+              (entity, serverLevel) -> entity instanceof Enemy);
       case ATTACK_VILLAGER ->
           new NearestAttackableTargetGoal<>(
               pathfinderMob, AbstractVillager.class, objectiveDataEntry.isMustSeeTarget());

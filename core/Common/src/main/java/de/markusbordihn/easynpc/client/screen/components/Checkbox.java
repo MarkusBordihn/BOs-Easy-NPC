@@ -29,6 +29,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -61,7 +62,7 @@ public class Checkbox extends AbstractButton {
   }
 
   public Checkbox(int left, int top, String label, boolean selected) {
-    this(left, top, TextComponent.getTranslatedConfigText(label), selected, true);
+    this(left, top, TextComponent.getTranslatedText(label), selected, true);
   }
 
   public Checkbox(int left, int top, Component component, boolean selected, boolean showLabel) {
@@ -123,6 +124,7 @@ public class Checkbox extends AbstractButton {
         GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
     guiGraphics.blit(
+        RenderType::guiTextured,
         TEXTURE,
         this.getX(),
         this.getY(),

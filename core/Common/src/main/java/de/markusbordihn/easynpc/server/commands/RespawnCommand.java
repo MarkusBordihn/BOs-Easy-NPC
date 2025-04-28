@@ -51,7 +51,7 @@ public class RespawnCommand extends Command {
 
     int respawnedEntities = 0;
     for (EasyNPC<?> easyNPC : easyNPCs) {
-      UUID uuid = easyNPC.getUUID();
+      UUID uuid = easyNPC.getEntityUUID();
       if (AccessManager.hasAccess(context, uuid)) {
         if (RespawnHandler.respawnNPC(easyNPC, context.getLevel())) {
           respawnedEntities++;

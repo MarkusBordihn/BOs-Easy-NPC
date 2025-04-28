@@ -28,6 +28,8 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -41,18 +43,24 @@ public class RendererManager {
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String LOG_PREFIX = "[Renderer Manager]";
 
-  private static final Map<EntityType<? extends Entity>, EntityRenderer<? extends Entity>>
+  private static final Map<
+          EntityType<? extends Entity>,
+          EntityRenderer<? extends Entity, ? extends EntityRenderState>>
       entityRendererMap = new HashMap<>();
   private static final Map<
           EntityType<? extends Entity>,
           LivingEntityRenderer<
-              ? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>>>
+              ? extends LivingEntity,
+              ? extends LivingEntityRenderState,
+              ? extends EntityModel<? extends EntityRenderState>>>
       livingEntityRendererMap = new HashMap<>();
 
   private RendererManager() {}
 
   public static LivingEntityRenderer<
-          ? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>>
+          ? extends LivingEntity,
+          ? extends LivingEntityRenderState,
+          ? extends EntityModel<? extends EntityRenderState>>
       getLivingEntityRenderer(
           EntityType<? extends Entity> entityType, PathfinderMob pathfinderMob) {
     if (entityType == null || pathfinderMob == null) {
@@ -60,7 +68,10 @@ public class RendererManager {
     }
 
     // Check if entity renderer is already available.
-    LivingEntityRenderer<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>>
+    LivingEntityRenderer<
+            ? extends LivingEntity,
+            ? extends LivingEntityRenderState,
+            ? extends EntityModel<? extends EntityRenderState>>
         livingEntityRenderer = livingEntityRendererMap.get(entityType);
     if (livingEntityRenderer != null) {
       return livingEntityRenderer;
@@ -72,14 +83,15 @@ public class RendererManager {
     return livingEntityRendererMap.get(entityType);
   }
 
-  public static EntityRenderer<? extends Entity> getEntityRenderer(
+  public static EntityRenderer<? extends Entity, ? extends EntityRenderState> getEntityRenderer(
       EntityType<?> entityType, PathfinderMob pathfinderMob) {
     if (entityType == null || pathfinderMob == null) {
       return null;
     }
 
     // Check if entity renderer is already available.
-    EntityRenderer<? extends Entity> entityRenderer = entityRendererMap.get(entityType);
+    EntityRenderer<? extends Entity, ? extends EntityRenderState> entityRenderer =
+        entityRendererMap.get(entityType);
     if (entityRenderer != null) {
       return entityRenderer;
     }
@@ -90,10 +102,8 @@ public class RendererManager {
     return entityRendererMap.get(entityType);
   }
 
-  public static LivingEntityRenderer<
-          ? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>>
-      registerLivingEntityRenderer(
-          EntityType<? extends Entity> entityType, PathfinderMob pathfinderMob) {
+  public static LivingEntityRenderer<?, ?, ?> registerLivingEntityRenderer(
+      EntityType<? extends Entity> entityType, PathfinderMob pathfinderMob) {
     if (entityType == null || pathfinderMob == null) {
       return null;
     }
@@ -106,20 +116,23 @@ public class RendererManager {
     // Verify that EntityRenderDispatcher is available.
     EntityRenderDispatcher entityRenderDispatcher =
         Minecraft.getInstance().getEntityRenderDispatcher();
-    EntityRenderer<? extends Entity> entityRenderer =
+    EntityRenderer<? extends Entity, ? extends EntityRenderState> entityRenderer =
         entityRenderDispatcher.getRenderer(pathfinderMob);
 
     // Verify if entity renderer is available.
-    if (entityRenderer
-        instanceof
-        LivingEntityRenderer<? extends LivingEntity, ? extends EntityModel<? extends Entity>>
-            livingEntityRenderer) {
+    if (entityRenderer instanceof LivingEntityRenderer<?, ?, ?> livingEntityRenderer) {
       log.debug(
           "{} Registering living entity renderer {} for {}",
           LOG_PREFIX,
           livingEntityRenderer,
           entityType);
-      livingEntityRendererMap.put(entityType, livingEntityRenderer);
+      livingEntityRendererMap.put(
+          (EntityType<? extends Entity>) entityType,
+          (LivingEntityRenderer<
+                  ? extends LivingEntity,
+                  ? extends LivingEntityRenderState,
+                  ? extends EntityModel<? extends EntityRenderState>>)
+              livingEntityRenderer);
       return livingEntityRenderer;
     } else if (!entityRendererMap.containsKey(entityType)) {
       log.debug("{} Registering entity renderer {} for {}", LOG_PREFIX, entityRenderer, entityType);
@@ -128,8 +141,8 @@ public class RendererManager {
     return null;
   }
 
-  public static EntityRenderer<? extends Entity> registerEntityRenderer(
-      EntityType<? extends Entity> entityType, PathfinderMob pathfinderMob) {
+  public static EntityRenderer<? extends Entity, ? extends EntityRenderState>
+      registerEntityRenderer(EntityType<? extends Entity> entityType, PathfinderMob pathfinderMob) {
     if (entityType == null || pathfinderMob == null) {
       return null;
     }
@@ -142,7 +155,7 @@ public class RendererManager {
     // Verify that EntityRenderDispatcher is available.
     EntityRenderDispatcher entityRenderDispatcher =
         Minecraft.getInstance().getEntityRenderDispatcher();
-    EntityRenderer<? extends Entity> entityRenderer =
+    EntityRenderer<? extends Entity, ? extends EntityRenderState> entityRenderer =
         entityRenderDispatcher.getRenderer(pathfinderMob);
 
     log.debug("{} Registering entity renderer {} for {}", LOG_PREFIX, entityRenderer, entityType);

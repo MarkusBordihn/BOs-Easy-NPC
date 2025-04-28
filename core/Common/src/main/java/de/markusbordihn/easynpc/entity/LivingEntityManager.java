@@ -22,8 +22,10 @@ package de.markusbordihn.easynpc.entity;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
+import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
@@ -42,44 +44,65 @@ public class LivingEntityManager {
 
   private static final ConcurrentHashMap<String, ServerPlayer> playerNameMap =
       new ConcurrentHashMap<>();
-
   private static final ConcurrentHashMap<UUID, EasyNPC<?>> npcEntityMap = new ConcurrentHashMap<>();
-
+  private static final ConcurrentHashMap<UUID, Set<EasyNPC<?>>> presetMap =
+      new ConcurrentHashMap<>();
   private static final ConcurrentHashMap<UUID, ServerPlayer> playerMap = new ConcurrentHashMap<>();
 
   private LivingEntityManager() {}
 
   public static void addEasyNPC(EasyNPC<?> easyNPC) {
-    UUID uuid = easyNPC.getUUID();
+    UUID uuid = easyNPC.getEntityUUID();
     log.debug("{} [Add] EASY NPC entity {}: {}", LOG_PREFIX, easyNPC, uuid);
     npcEntityMap.put(uuid, easyNPC);
 
+    // Add Easy NPC to preset map if available.
+    PresetData<?> presetData = easyNPC.getEasyNPCPresetData();
+    if (presetData != null && presetData.hasPresetUUID()) {
+      UUID presetUUID = presetData.getPresetUUID();
+      Set<EasyNPC<?>> easyNPCSet =
+          presetMap.getOrDefault(presetUUID, ConcurrentHashMap.newKeySet());
+      easyNPCSet.add(easyNPC);
+      presetMap.put(presetUUID, easyNPCSet);
+    }
+
     // Client side could stop here.
-    if (easyNPC.isClientSide()) {
+    if (easyNPC.isClientSideInstance()) {
       return;
     }
 
     // Inform all server-side easy NPC entities about the new easyNPC.
     for (EasyNPC<?> easyNPCChild : npcEntityMap.values()) {
       if (easyNPCChild != easyNPC) {
-        easyNPCChild.handleEasyNPCJoin(easyNPC);
+        easyNPCChild.handleEasyNPCJoinEvent(easyNPC);
       }
     }
   }
 
   public static void removeEasyNPC(EasyNPC<?> easyNPC) {
-    log.debug("{} [Remove] EASY NPC entity {}: {}", LOG_PREFIX, easyNPC, easyNPC.getUUID());
-    npcEntityMap.remove(easyNPC.getUUID());
+    log.debug("{} [Remove] EASY NPC entity {}: {}", LOG_PREFIX, easyNPC, easyNPC.getEntityUUID());
+    npcEntityMap.remove(easyNPC.getEntityUUID());
+
+    // Remove Easy NPC from preset map if available.
+    PresetData<?> presetData = easyNPC.getEasyNPCPresetData();
+    if (presetData != null && presetData.hasPresetUUID()) {
+      UUID presetUUID = presetData.getPresetUUID();
+      Set<EasyNPC<?>> easyNPCSet =
+          presetMap.getOrDefault(presetUUID, ConcurrentHashMap.newKeySet());
+      if (easyNPCSet.remove(easyNPC)) {
+        presetMap.put(presetUUID, easyNPCSet);
+      }
+    }
 
     // Client side could stop here.
-    if (easyNPC.isClientSide()) {
+    if (easyNPC.isClientSideInstance()) {
       return;
     }
 
     // Inform all server-side easy NPC entities about the removed easyNPC.
     for (EasyNPC<?> easyNPCChild : npcEntityMap.values()) {
       if (easyNPCChild != easyNPC) {
-        easyNPCChild.handleEasyNPCLeave(easyNPC);
+        easyNPCChild.handleEasyNPCLeaveEvent(easyNPC);
       }
     }
   }
@@ -91,7 +114,7 @@ public class LivingEntityManager {
 
     // Inform all server-side easy NPC entities about the new living entity.
     for (EasyNPC<?> easyNPC : npcEntityMap.values()) {
-      easyNPC.handleLivingEntityJoin(livingEntity);
+      easyNPC.handleLivingEntityJoinEvent(livingEntity);
     }
   }
 
@@ -103,7 +126,7 @@ public class LivingEntityManager {
 
     // Inform all server-side easy NPC entities about the leaved living entity.
     for (EasyNPC<?> easyNPC : npcEntityMap.values()) {
-      easyNPC.handleLivingEntityLeave(livingEntity);
+      easyNPC.handleLivingEntityLeaveEvent(livingEntity);
     }
   }
 
@@ -114,7 +137,7 @@ public class LivingEntityManager {
 
     // Inform all server-side easy NPC entities about the new player.
     for (EasyNPC<?> easyNPC : npcEntityMap.values()) {
-      easyNPC.handlePlayerJoin(serverPlayer);
+      easyNPC.handlePlayerJoinEvent(serverPlayer);
     }
   }
 
@@ -125,7 +148,7 @@ public class LivingEntityManager {
 
     // Inform all server-side easy NPC entities about the leaved player.
     for (EasyNPC<?> easyNPC : npcEntityMap.values()) {
-      easyNPC.handlePlayerLeave(serverPlayer);
+      easyNPC.handlePlayerLeaveEvent(serverPlayer);
     }
   }
 
@@ -209,6 +232,10 @@ public class LivingEntityManager {
       }
     }
     return result;
+  }
+
+  public static int getEntityCountByPresetUUID(UUID presetUUID) {
+    return presetMap.getOrDefault(presetUUID, ConcurrentHashMap.newKeySet()).size();
   }
 
   public static ConcurrentHashMap<UUID, EasyNPC<?>> getNpcEntityMap() {

@@ -20,15 +20,13 @@
 package de.markusbordihn.easynpc;
 
 import de.markusbordihn.easynpc.client.model.ModModelLayer;
-import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
-import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
+import de.markusbordihn.easynpc.client.renderer.BlockEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.EntityRenderer;
 import de.markusbordihn.easynpc.client.screen.ClientScreens;
-import de.markusbordihn.easynpc.io.DataFileHandler;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import de.markusbordihn.easynpc.tabs.ModTabs;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,16 +38,10 @@ public class EasyNPCClient {
     log.info("Initializing {} (Forge-Client) ...", Constants.MOD_NAME);
 
     modEventBus.addListener(ModModelLayer::registerEntityLayerDefinitions);
-    modEventBus.addListener(ClientRenderer::registerEntityRenderers);
+    modEventBus.addListener(BlockEntityRenderer::register);
+    modEventBus.addListener(EntityRenderer::register);
     modEventBus.addListener(ClientScreens::registerScreens);
-    modEventBus.addListener(
-        (final FMLClientSetupEvent event) -> {
-          log.info("{} Register Data Files ...", Constants.LOG_REGISTER_PREFIX);
-          event.enqueueWork(DataFileHandler::registerDataFiles);
 
-          log.info("{} Register Entity Type Manager ...", Constants.LOG_REGISTER_PREFIX);
-          event.enqueueWork(EntityTypeManager::register);
-        });
     NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
     ModTabs.CREATIVE_TABS.register(modEventBus);
   }

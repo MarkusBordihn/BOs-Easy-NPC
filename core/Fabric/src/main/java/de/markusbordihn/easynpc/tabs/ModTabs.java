@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.tabs;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.entity.ModCustomEntityType;
 import de.markusbordihn.easynpc.item.ModItems;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.core.Registry;
@@ -42,7 +43,7 @@ public class ModTabs {
         BuiltInRegistries.CREATIVE_MODE_TAB,
         Constants.MOD_ID + ":config_items",
         FabricItemGroup.builder()
-            .icon(() -> ModItems.EASY_NPC_WAND.asItem().getDefaultInstance())
+            .icon(() -> ModItems.MOVE_EASY_NPC.asItem().getDefaultInstance())
             .title(Component.translatable("itemGroup.easy_npc.config_items"))
             .displayItems(new ConfigItems())
             .build());
@@ -51,7 +52,12 @@ public class ModTabs {
         BuiltInRegistries.CREATIVE_MODE_TAB,
         Constants.MOD_ID + ":spawn_eggs",
         FabricItemGroup.builder()
-            .icon(() -> ModItems.FAIRY_NPC_SPAWN_EGG.asItem().getDefaultInstance())
+            .icon(
+                () ->
+                    ModItems.CUSTOM_NPC_SPAWN_EGGS
+                        .get(ModCustomEntityType.FAIRY)
+                        .asItem()
+                        .getDefaultInstance())
             .title(Component.translatable("itemGroup.easy_npc.spawn_eggs"))
             .displayItems(new SpawnEggs())
             .build());

@@ -69,7 +69,7 @@ public interface OwnerData<T extends PathfinderMob> extends EasyNPC<T>, OwnableE
 
   @Override
   default LivingEntity getOwner() {
-    Level level = getLevel();
+    Level level = getEntityLevel();
     if (level == null) {
       return null;
     }

@@ -19,21 +19,15 @@
 
 package de.markusbordihn.easynpc.client;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.io.DataFileHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.minecraft.client.Minecraft;
 
 public class ClientEvents {
 
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
   private ClientEvents() {}
 
-  public static void handleClientStarting() {
-    log.info("{} Client starting Events ...", Constants.LOG_REGISTER_PREFIX);
-
+  public static void handleClientStartedEvent(Minecraft client) {
     // Prepare custom data directory for client.
     DataFileHandler.registerClientDataFiles();
 

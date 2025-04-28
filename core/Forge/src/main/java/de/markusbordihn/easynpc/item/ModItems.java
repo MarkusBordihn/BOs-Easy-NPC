@@ -20,128 +20,143 @@
 package de.markusbordihn.easynpc.item;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.block.BaseEasyNPCSpawnerBlock;
 import de.markusbordihn.easynpc.block.ModBlocks;
+import de.markusbordihn.easynpc.data.spawner.SpawnerType;
+import de.markusbordihn.easynpc.entity.ModCustomEntityType;
 import de.markusbordihn.easynpc.entity.ModEntityType;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Allay;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Horse;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
-import de.markusbordihn.easynpc.entity.easynpc.npc.HumanoidSlim;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
-import de.markusbordihn.easynpc.entity.easynpc.npc.IronGolem;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Piglin;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Wolf;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie;
-import de.markusbordihn.easynpc.entity.easynpc.npc.ZombieVillager;
+import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import de.markusbordihn.easynpc.item.attack.BulletItem;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetEmptyItem;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetItem;
-import de.markusbordihn.easynpc.item.configuration.EasyNPCWandItem;
 import de.markusbordihn.easynpc.item.configuration.MoveEasyNPCItem;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.function.Supplier;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ModItems {
 
   public static final DeferredRegister<Item> ITEMS =
       DeferredRegister.create(ForgeRegistries.ITEMS, Constants.MOD_ID);
-
-  public static final RegistryObject<Item> ALLAY_NPC_SPAWN_EGG =
-      registerSpawnEgg(Allay.ID, ModEntityType.ALLAY);
+  public static final Map<ModNPCEntityType, RegistryObject<Item>> NPC_SPAWN_EGGS =
+      new EnumMap<>(ModNPCEntityType.class);
+  public static final Map<ModCustomEntityType, RegistryObject<Item>> CUSTOM_NPC_SPAWN_EGGS =
+      new EnumMap<>(ModCustomEntityType.class);
   public static final RegistryObject<Item> BULLET_ITEM =
       ITEMS.register(BulletItem.ID, () -> new BulletItem(new Item.Properties()));
-  public static final RegistryObject<Item> BOGGED_NPC_SPAWN_EGG =
-      registerSpawnEgg(Skeleton.ID_BOGGED, ModEntityType.BOGGED);
-  public static final RegistryObject<Item> CAT_NPC_SPAWN_EGG =
-      registerSpawnEgg(Cat.ID, ModEntityType.CAT);
-  public static final RegistryObject<Item> CHICKEN_NPC_SPAWN_EGG =
-      registerSpawnEgg(Chicken.ID, ModEntityType.CHICKEN);
-  public static final RegistryObject<Item> DROWNED_NPC_SPAWN_EGG =
-      registerSpawnEgg(Zombie.ID_DROWNED, ModEntityType.DROWNED);
   public static final RegistryObject<Item> EASY_NPC_PRESET_EMPTY_ITEM =
       ITEMS.register(
           EasyNPCPresetEmptyItem.NAME, () -> new EasyNPCPresetEmptyItem(new Item.Properties()));
   public static final RegistryObject<Item> EASY_NPC_PRESET_ITEM =
       ITEMS.register(EasyNPCPresetItem.NAME, () -> new EasyNPCPresetItem(new Item.Properties()));
-  public static final RegistryObject<Item> EASY_NPC_SPAWNER =
+  public static final RegistryObject<Item> EASY_NPC_SPAWNER_BOSS =
       ITEMS.register(
-          BaseEasyNPCSpawnerBlock.NAME,
-          () -> new BlockItem(ModBlocks.EASY_NPC_SPAWNER.get(), new Item.Properties()));
-  public static final RegistryObject<Item> EASY_NPC_WAND =
-      ITEMS.register(EasyNPCWandItem.ID, () -> new EasyNPCWandItem(new Item.Properties()));
-  public static final RegistryObject<Item> EVOKER_NPC_SPAWN_EGG =
-      registerSpawnEgg(Illager.ID_EVOKER, ModEntityType.EVOKER);
-  public static final RegistryObject<Item> FAIRY_NPC_SPAWN_EGG =
-      registerSpawnEgg(Fairy.ID, ModEntityType.FAIRY);
-  public static final RegistryObject<Item> HORSE_NPC_SPAWN_EGG =
-      registerSpawnEgg(Horse.ID, ModEntityType.HORSE);
-  public static final RegistryObject<Item> HUMANOID_NPC_SPAWN_EGG =
-      registerSpawnEgg(Humanoid.ID, ModEntityType.HUMANOID);
-  public static final RegistryObject<Item> HUMANOID_SLIM_NPC_SPAWN_EGG =
-      registerSpawnEgg(HumanoidSlim.ID, ModEntityType.HUMANOID_SLIM);
-  public static final RegistryObject<Item> HUSK_NPC_SPAWN_EGG =
-      registerSpawnEgg(Zombie.ID_HUSK, ModEntityType.HUSK);
-  public static final RegistryObject<Item> ILLUSIONER_NPC_SPAWN_EGG =
-      registerSpawnEgg(Illager.ID_ILLUSIONER, ModEntityType.ILLUSIONER);
-  public static final RegistryObject<Item> IRON_GOLEM_NPC_SPAWN_EGG =
-      registerSpawnEgg(IronGolem.ID, ModEntityType.IRON_GOLEM);
+          SpawnerType.BOSS_SPAWNER.getId(),
+          () ->
+              new EasyNPCSpawnerBlockItem(
+                  ModBlocks.EASY_NPC_SPAWNER_BOSS.get(),
+                  new Item.Properties()
+                      .setId(
+                          ResourceKey.create(
+                              Registries.ITEM,
+                              ResourceLocation.fromNamespaceAndPath(
+                                  Constants.MOD_ID, SpawnerType.BOSS_SPAWNER.getId()))),
+                  SpawnerType.BOSS_SPAWNER));
+  public static final RegistryObject<Item> EASY_NPC_SPAWNER_DEFAULT =
+      ITEMS.register(
+          SpawnerType.DEFAULT_SPAWNER.getId(),
+          () ->
+              new EasyNPCSpawnerBlockItem(
+                  ModBlocks.EASY_NPC_SPAWNER_DEFAULT.get(),
+                  new Item.Properties()
+                      .setId(
+                          ResourceKey.create(
+                              Registries.ITEM,
+                              ResourceLocation.fromNamespaceAndPath(
+                                  Constants.MOD_ID, SpawnerType.DEFAULT_SPAWNER.getId()))),
+                  SpawnerType.DEFAULT_SPAWNER));
+  public static final RegistryObject<Item> EASY_NPC_SPAWNER_GROUP =
+      ITEMS.register(
+          SpawnerType.GROUP_SPAWNER.getId(),
+          () ->
+              new EasyNPCSpawnerBlockItem(
+                  ModBlocks.EASY_NPC_SPAWNER_GROUP.get(),
+                  new Item.Properties()
+                      .setId(
+                          ResourceKey.create(
+                              Registries.ITEM,
+                              ResourceLocation.fromNamespaceAndPath(
+                                  Constants.MOD_ID, SpawnerType.GROUP_SPAWNER.getId()))),
+                  SpawnerType.GROUP_SPAWNER));
+  public static final RegistryObject<Item> EASY_NPC_SPAWNER_SINGLE =
+      ITEMS.register(
+          SpawnerType.SINGLE_SPAWNER.getId(),
+          () ->
+              new EasyNPCSpawnerBlockItem(
+                  ModBlocks.EASY_NPC_SPAWNER_SINGLE.get(),
+                  new Item.Properties()
+                      .setId(
+                          ResourceKey.create(
+                              Registries.ITEM,
+                              ResourceLocation.fromNamespaceAndPath(
+                                  Constants.MOD_ID, SpawnerType.SINGLE_SPAWNER.getId()))),
+                  SpawnerType.SINGLE_SPAWNER));
   public static final RegistryObject<Item> MOVE_EASY_NPC =
       ITEMS.register(MoveEasyNPCItem.ID, () -> new MoveEasyNPCItem(new Item.Properties()));
-  public static final RegistryObject<Item> ORC_NPC_SPAWN_EGG =
-      registerSpawnEgg(Orc.ID, ModEntityType.ORC);
-  public static final RegistryObject<Item> ORC_WARRIOR_NPC_SPAWN_EGG =
-      registerSpawnEgg(Orc.ID_WARRIOR, ModEntityType.ORC_WARRIOR);
-  public static final RegistryObject<Item> PIG_NPC_SPAWN_EGG =
-      registerSpawnEgg(Pig.ID, ModEntityType.PIG);
-  public static final RegistryObject<Item> PIGLIN_NPC_SPAWN_EGG =
-      registerSpawnEgg(Piglin.ID, ModEntityType.PIGLIN);
-  public static final RegistryObject<Item> PIGLIN_BRUTE_NPC_SPAWN_EGG =
-      registerSpawnEgg(Piglin.ID_BRUTE, ModEntityType.PIGLIN_BRUTE);
-  public static final RegistryObject<Item> PIGLIN_ZOMBIFIED_NPC_SPAWN_EGG =
-      registerSpawnEgg(Piglin.ID_ZOMBIFIED, ModEntityType.PIGLIN_ZOMBIFIED);
-  public static final RegistryObject<Item> PILLAGER_NPC_SPAWN_EGG =
-      registerSpawnEgg(Illager.ID_PILLAGER, ModEntityType.PILLAGER);
-  public static final RegistryObject<Item> SKELETON_HORSE_NPC_SPAWN_EGG =
-      registerSpawnEgg(Horse.ID_SKELETON, ModEntityType.SKELETON_HORSE);
-  public static final RegistryObject<Item> SKELETON_NPC_SPAWN_EGG =
-      registerSpawnEgg(Skeleton.ID, ModEntityType.SKELETON);
-  public static final RegistryObject<Item> STRAY_NPC_SPAWN_EGG =
-      registerSpawnEgg(Skeleton.ID_STRAY, ModEntityType.STRAY);
-  public static final RegistryObject<Item> VILLAGER_NPC_SPAWN_EGG =
-      registerSpawnEgg(Villager.ID, ModEntityType.VILLAGER);
-  public static final RegistryObject<Item> VINDICATOR_NPC_SPAWN_EGG =
-      registerSpawnEgg(Illager.ID_VINDICATOR, ModEntityType.VINDICATOR);
-  public static final RegistryObject<Item> WITHER_SKELETON_NPC_SPAWN_EGG =
-      registerSpawnEgg(Skeleton.ID_WITHER_SKELETON, ModEntityType.WITHER_SKELETON);
-  public static final RegistryObject<Item> WOLF_NPC_SPAWN_EGG =
-      registerSpawnEgg(Wolf.ID, ModEntityType.WOLF);
-  public static final RegistryObject<Item> ZOMBIE_HORSE_NPC_SPAWN_EGG =
-      registerSpawnEgg(Horse.ID_ZOMBIE, ModEntityType.ZOMBIE_HORSE);
-  public static final RegistryObject<Item> ZOMBIE_NPC_SPAWN_EGG =
-      registerSpawnEgg(Zombie.ID, ModEntityType.ZOMBIE);
-  public static final RegistryObject<Item> ZOMBIE_VILLAGER_NPC_SPAWN_EGG =
-      registerSpawnEgg(ZombieVillager.ID, ModEntityType.ZOMBIE_VILLAGER);
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  static {
+    // Register spawn eggs for all NPC entity types.
+    for (ModNPCEntityType entityType : ModNPCEntityType.values()) {
+      RegistryObject<EntityType<?>> entityTypeObject = ModEntityType.NPC_TYPE.get(entityType);
+      if (entityTypeObject == null) {
+        log.error("Unable to register NPC spawn egg with id {}.", entityType.getId());
+        continue;
+      }
+      log.info(
+          "Registering NPC spawn egg for {} with id {}.", entityTypeObject, entityType.getId());
+      NPC_SPAWN_EGGS.put(entityType, registerSpawnEgg(entityType.getId(), entityTypeObject));
+    }
+
+    // Register spawn eggs for all custom entity types.
+    for (ModCustomEntityType entityType : ModCustomEntityType.values()) {
+      RegistryObject<EntityType<?>> entityTypeObject = ModEntityType.CUSTOM_TYPE.get(entityType);
+      if (entityTypeObject == null) {
+        log.error("Unable to register custom spawn egg with id {}.", entityType.getId());
+        continue;
+      }
+      log.info(
+          "Registering custom spawn egg for {} with id {}.", entityTypeObject, entityType.getId());
+      CUSTOM_NPC_SPAWN_EGGS.put(entityType, registerSpawnEgg(entityType.getId(), entityTypeObject));
+    }
+  }
 
   private ModItems() {}
 
   private static RegistryObject<Item> registerSpawnEgg(
-      String id, Supplier<? extends EntityType<? extends Mob>> entityTypeSupplier) {
+      String id, Supplier<? extends EntityType<?>> entityTypeSupplier) {
+    String spawnEggId = id + ModSpawnEggItem.SUFFIX;
     return ITEMS.register(
-        id + ModSpawnEggItem.SUFFIX,
-        () -> new ModSpawnEggItem(entityTypeSupplier, new Item.Properties().rarity(Rarity.EPIC)));
+        spawnEggId,
+        () ->
+            new ModSpawnEggItem(
+                (Supplier<? extends EntityType<? extends Mob>>) entityTypeSupplier,
+                new Item.Properties()
+                    .setId(
+                        ResourceKey.create(
+                            Registries.ITEM,
+                            ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, spawnEggId)))
+                    .rarity(Rarity.EPIC)));
   }
 }

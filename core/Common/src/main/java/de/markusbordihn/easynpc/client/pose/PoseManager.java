@@ -122,7 +122,7 @@ public class PoseManager {
     // Validate Model data.
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
-      log.error("{} Model data is missing for Easy NPC {}!", LOG_PREFIX, easyNPC.getUUID());
+      log.error("{} Model data is missing for Easy NPC {}!", LOG_PREFIX, easyNPC.getEntityUUID());
       return;
     }
 
@@ -145,7 +145,7 @@ public class PoseManager {
     // Validate Model data.
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
-      log.error("{} Model data is missing for Easy NPC {}!", LOG_PREFIX, easyNPC.getUUID());
+      log.error("{} Model data is missing for Easy NPC {}!", LOG_PREFIX, easyNPC.getEntityUUID());
       return false;
     }
 

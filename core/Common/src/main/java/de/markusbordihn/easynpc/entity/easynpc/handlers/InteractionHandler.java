@@ -64,7 +64,6 @@ public class InteractionHandler {
               .getOptional(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "easy_npc_wand"))
               .orElse(null);
       if (handItem.equals(easyNPCWand)) {
-        configurationData.openMainConfigurationMenu(serverPlayer);
         return InteractionResult.PASS;
       }
 
@@ -91,12 +90,6 @@ public class InteractionHandler {
           return InteractionResult.CONSUME;
         }
       }
-    }
-
-    // Open configuration menu for owner and creative mode if the player is crouching.
-    if (player.isCreative() && player.isCrouching()) {
-      configurationData.openMainConfigurationMenu(serverPlayer);
-      return InteractionResult.PASS;
     }
 
     // Handle action event data.

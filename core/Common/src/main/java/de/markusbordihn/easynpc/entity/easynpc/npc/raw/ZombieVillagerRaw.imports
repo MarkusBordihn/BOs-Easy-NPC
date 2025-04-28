@@ -1,0 +1,3 @@
+import net.minecraft.world.entity.npc.VillagerData;
+import net.minecraft.world.entity.npc.VillagerType;
+import net.minecraft.world.entity.npc.VillagerProfession;

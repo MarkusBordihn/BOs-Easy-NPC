@@ -29,16 +29,17 @@ import de.markusbordihn.easynpc.entity.easynpc.data.CustomAttributeData;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeData;
 import de.markusbordihn.easynpc.entity.easynpc.data.GuiData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ServerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SoundData;
-import de.markusbordihn.easynpc.entity.easynpc.data.SpawnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TickerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
@@ -70,16 +71,17 @@ public interface EasyNPCBase<E extends PathfinderMob>
         DialogData<E>,
         DisplayAttributeData<E>,
         GuiData<E>,
+        ModelData<E>,
         NavigationData<E>,
         ObjectiveData<E>,
         OwnerData<E>,
         PresetData<E>,
         ProfessionData<E>,
         RenderData<E>,
+        ScaleData<E>,
         ServerData<E>,
         SkinData<E>,
         SoundData<E>,
-        SpawnerData<E>,
         TickerData<E>,
         TradingData<E>,
         VariantData<E> {
@@ -90,21 +92,31 @@ public interface EasyNPCBase<E extends PathfinderMob>
     AttributeData.registerSyncedAttributeData(map, entityClass);
     CustomAttributeData.registerSyncedCustomAttributeData(map, entityClass);
     DisplayAttributeData.registerSyncedDisplayAttributeData(map, entityClass);
+    ModelData.registerSyncedModelData(map, entityClass);
     NavigationData.registerSyncedNavigationData(map, entityClass);
     OwnerData.registerSyncedOwnerData(map, entityClass);
     ProfessionData.registerSyncedProfessionData(map, entityClass);
     RenderData.registerSyncedRenderData(map, entityClass);
+    ScaleData.registerSyncedScaleData(map, entityClass);
     SkinData.registerSyncedSkinData(map, entityClass);
     SoundData.registerSyncedSoundData(map, entityClass);
     TradingData.registerSyncedTradingData(map, entityClass);
     VariantData.registerSyncedVariantData(map, entityClass);
   }
 
+  default void registerEasyNPCDefaultVariant(Enum<?> variant) {
+    log.info("Register default variant for {} ...", this);
+    VariantData<E> variantData = getEasyNPCVariantData();
+    if (variantData != null) {
+      variantData.setVariantType(variant);
+    }
+  }
+
   default void registerEasyNPCDefaultHandler(Enum<?> variant) {
     log.info("Register default handler for {} with variant {} ...", this, variant);
     VariantData<E> variantData = getEasyNPCVariantData();
     if (variantData != null) {
-      variantData.setVariant(variant);
+      variantData.setVariantType(variant);
     }
     SoundData<E> soundData = getEasyNPCSoundData();
     if (soundData != null) {
@@ -170,6 +182,10 @@ public interface EasyNPCBase<E extends PathfinderMob>
     if (displayAttributeData != null) {
       displayAttributeData.defineSynchedDisplayAttributeData(builder);
     }
+    ModelData<E> modelData = getEasyNPCModelData();
+    if (modelData != null) {
+      modelData.defineSynchedModelData(builder);
+    }
     NavigationData<E> navigationData = getEasyNPCNavigationData();
     if (navigationData != null) {
       navigationData.defineSynchedNavigationData(builder);
@@ -186,6 +202,10 @@ public interface EasyNPCBase<E extends PathfinderMob>
     if (renderData != null) {
       renderData.defineSynchedRenderData(builder);
     }
+    ScaleData<E> scaleData = getEasyNPCScaleData();
+    if (scaleData != null) {
+      scaleData.defineSynchedScaleData(builder);
+    }
     SkinData<E> skinData = getEasyNPCSkinData();
     if (skinData != null) {
       skinData.defineSynchedSkinData(builder);
@@ -201,20 +221,20 @@ public interface EasyNPCBase<E extends PathfinderMob>
   }
 
   default void defineEasyNPCBaseServerSideData() {
-    if (!this.isServerSide()) {
+    if (!this.isServerSideInstance()) {
       return;
     }
     ServerData<E> serverData = getEasyNPCServerData();
     if (serverData == null) {
-      log.error("No server data available for {}", this);
+      log.error("No server data available for {}", this.getEntityUUID());
       return;
     }
     if (!serverData.hasServerEntityData()) {
-      log.info("Register server-side data for {} ...", this);
+      log.info("Register server-side data for {} ...", this.getEntityUUID());
       serverData.defineServerEntityData();
     }
 
-    log.info("Define custom server-side data for {} ...", this);
+    log.info("Define custom server-side data for {} ...", this.getEntityUUID());
     ActionEventData<E> actionEventData = getEasyNPCActionEventData();
     if (actionEventData != null) {
       actionEventData.defineCustomActionData();
@@ -227,15 +247,15 @@ public interface EasyNPCBase<E extends PathfinderMob>
     if (objectiveData != null) {
       objectiveData.defineCustomObjectiveData();
     }
-    SpawnerData<E> spawnerData = getEasyNPCSpawnerData();
-    if (spawnerData != null) {
-      spawnerData.defineCustomSpawnerData();
+    PresetData<E> presetData = getEasyNPCPresetData();
+    if (presetData != null) {
+      presetData.defineCustomPresetData();
     }
   }
 
   default void addEasyNPCBaseAdditionalSaveData(
       CompoundTag compoundTag, HolderLookup.Provider provider) {
-    log.debug("Add additional save data for {}", this);
+    log.debug("Add additional save data for {} with {}", this, provider);
     ActionEventData<E> actionEventData = getEasyNPCActionEventData();
     if (actionEventData != null) {
       actionEventData.addAdditionalActionData(compoundTag);
@@ -264,6 +284,10 @@ public interface EasyNPCBase<E extends PathfinderMob>
     if (displayAttributeData != null) {
       displayAttributeData.addAdditionalDisplayAttributeData(compoundTag);
     }
+    ModelData<E> modelData = getEasyNPCModelData();
+    if (modelData != null) {
+      modelData.addAdditionalModelData(compoundTag);
+    }
     NavigationData<E> navigationData = getEasyNPCNavigationData();
     if (navigationData != null) {
       navigationData.addAdditionalNavigationData(compoundTag);
@@ -276,6 +300,10 @@ public interface EasyNPCBase<E extends PathfinderMob>
     if (ownerData != null) {
       ownerData.addAdditionalOwnerData(compoundTag);
     }
+    PresetData<E> presetData = getEasyNPCPresetData();
+    if (presetData != null) {
+      presetData.addAdditionalPresetData(compoundTag);
+    }
     ProfessionData<E> professionData = getEasyNPCProfessionData();
     if (professionData != null) {
       professionData.addAdditionalProfessionData(compoundTag);
@@ -284,6 +312,10 @@ public interface EasyNPCBase<E extends PathfinderMob>
     if (renderData != null) {
       renderData.addAdditionalRenderData(compoundTag);
     }
+    ScaleData<E> scaleData = getEasyNPCScaleData();
+    if (scaleData != null) {
+      scaleData.addAdditionalScaleData(compoundTag);
+    }
     SkinData<E> skinData = getEasyNPCSkinData();
     if (skinData != null) {
       skinData.addAdditionalSkinData(compoundTag);
@@ -291,10 +323,6 @@ public interface EasyNPCBase<E extends PathfinderMob>
     SoundData<E> soundData = getEasyNPCSoundData();
     if (soundData != null) {
       soundData.addAdditionalSoundData(compoundTag);
-    }
-    SpawnerData<E> spawnerData = getEasyNPCSpawnerData();
-    if (spawnerData != null) {
-      spawnerData.addAdditionalSpawnerData(compoundTag);
     }
     TradingData<E> tradingData = getEasyNPCTradingData();
     if (tradingData != null) {
@@ -308,7 +336,7 @@ public interface EasyNPCBase<E extends PathfinderMob>
 
   default void readEasyNPCBaseAdditionalSaveData(
       CompoundTag compoundTag, HolderLookup.Provider provider) {
-    log.debug("Read additional save data for {} ...", this);
+    log.debug("Read additional save data for {} with {}", this, provider);
 
     // First read important data to ensure that all other data can be linked to the variant.
     ConfigData<E> configData = getEasyNPCConfigData();
@@ -345,6 +373,10 @@ public interface EasyNPCBase<E extends PathfinderMob>
     if (displayAttributeData != null) {
       displayAttributeData.readAdditionalDisplayAttributeData(compoundTag);
     }
+    ModelData<E> modelData = getEasyNPCModelData();
+    if (modelData != null) {
+      modelData.readAdditionalModelData(compoundTag);
+    }
     NavigationData<E> navigationData = getEasyNPCNavigationData();
     if (navigationData != null) {
       navigationData.readAdditionalNavigationData(compoundTag);
@@ -352,6 +384,10 @@ public interface EasyNPCBase<E extends PathfinderMob>
     OwnerData<E> ownerData = getEasyNPCOwnerData();
     if (ownerData != null) {
       ownerData.readAdditionalOwnerData(compoundTag);
+    }
+    PresetData<E> presetData = getEasyNPCPresetData();
+    if (presetData != null) {
+      presetData.readAdditionalPresetData(compoundTag);
     }
     ProfessionData<E> professionData = getEasyNPCProfessionData();
     if (professionData != null) {
@@ -361,6 +397,10 @@ public interface EasyNPCBase<E extends PathfinderMob>
     if (renderData != null) {
       renderData.readAdditionalRenderData(compoundTag);
     }
+    ScaleData<E> scaleData = getEasyNPCScaleData();
+    if (scaleData != null) {
+      scaleData.readAdditionalScaleData(compoundTag);
+    }
     SkinData<E> skinData = getEasyNPCSkinData();
     if (skinData != null) {
       skinData.readAdditionalSkinData(compoundTag);
@@ -368,10 +408,6 @@ public interface EasyNPCBase<E extends PathfinderMob>
     SoundData<E> soundData = getEasyNPCSoundData();
     if (soundData != null) {
       soundData.readAdditionalSoundData(compoundTag);
-    }
-    SpawnerData<E> spawnerData = getEasyNPCSpawnerData();
-    if (spawnerData != null) {
-      spawnerData.readAdditionalSpawnerData(compoundTag);
     }
     TradingData<E> tradingData = getEasyNPCTradingData();
     if (tradingData != null) {

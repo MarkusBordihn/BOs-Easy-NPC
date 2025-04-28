@@ -1,0 +1,18 @@
+  @Override
+  public void handleVariantTypeChange(Enum<?> variant) {
+    VillagerData villagerData = this.getVillagerData();
+
+    // Update profession if available
+    VillagerProfession profession = getVillagerProfession(variant);
+    if (profession != null) {
+      villagerData = villagerData.setProfession(profession);
+    }
+
+    // Update type if available
+    VillagerType type = getVillagerType(variant);
+    if (type != null) {
+      villagerData = villagerData.setType(type);
+    }
+
+    this.setVillagerData(villagerData);
+  }
