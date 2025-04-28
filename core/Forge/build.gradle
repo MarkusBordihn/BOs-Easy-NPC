@@ -1,6 +1,7 @@
 plugins {
   id 'maven-publish'
   id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
+  id 'org.spongepowered.mixin' version '0.7.+'
   id 'com.matthewprenger.cursegradle' version '1.4.0'
   id 'nu.studer.credentials' version '3.0'
   id "com.modrinth.minotaur" version "2.+"
@@ -99,6 +100,9 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 dependencies {
   minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
 
+  // Mixin dependencies
+  annotationProcessor "org.spongepowered:mixin:0.8.7:processor"
+
   // Include Common code
   compileOnly project(":Common")
 
@@ -112,6 +116,12 @@ dependencies {
 
   // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transitive dependencies request 6.0+
   implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
+}
+
+mixin {
+  // MixinGradle Settings
+  add sourceSets.main, 'mixins.easy_npc.refmap.json'
+  config 'mixins.easy_npc.json'
 }
 
 tasks.withType(JavaCompile).configureEach {

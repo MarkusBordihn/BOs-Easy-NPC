@@ -69,7 +69,7 @@ public class SkinHandler {
     VariantData<?> variantData = skinData.getEasyNPCVariantData();
     if (variantData != null) {
       log.debug("[{}] Set default skin to {}", easyNPC, variant);
-      variantData.setVariant(variant);
+      variantData.setVariantType(variant);
       return true;
     }
     return false;

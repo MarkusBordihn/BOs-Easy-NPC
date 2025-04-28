@@ -21,7 +21,8 @@ package de.markusbordihn.easynpc;
 
 import de.markusbordihn.easynpc.client.ClientEventHandler;
 import de.markusbordihn.easynpc.client.model.ModModelLayer;
-import de.markusbordihn.easynpc.client.renderer.ClientRenderer;
+import de.markusbordihn.easynpc.client.renderer.BlockEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.EntityRenderer;
 import de.markusbordihn.easynpc.client.screen.ClientScreens;
 import de.markusbordihn.easynpc.entity.LivingEntityEventHandler;
 import de.markusbordihn.easynpc.network.NetworkHandlerManager;
@@ -42,9 +43,9 @@ public class EasyNPCClient implements ClientModInitializer {
     log.info("Initializing {} (Fabric-Client) ...", Constants.MOD_NAME);
 
     log.info("{} Renderer ...", Constants.LOG_REGISTER_PREFIX);
-    ClientRenderer.registerBlockEntityRenderers();
-    ClientRenderer.registerEntityRenderers();
-    ClientRenderer.registerRenderLayers();
+    BlockEntityRenderer.register();
+    BlockEntityRenderer.registerRenderLayers();
+    EntityRenderer.register();
 
     log.info("{} Entity Layer Definitions ...", Constants.LOG_REGISTER_PREFIX);
     ModModelLayer.registerEntityLayerDefinitions();

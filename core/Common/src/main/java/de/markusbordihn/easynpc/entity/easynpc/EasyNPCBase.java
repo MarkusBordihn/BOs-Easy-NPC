@@ -104,11 +104,19 @@ public interface EasyNPCBase<E extends PathfinderMob>
     VariantData.registerSyncedVariantData(map, entityClass);
   }
 
+  default void registerEasyNPCDefaultVariant(Enum<?> variant) {
+    log.info("Register default variant for {} ...", this);
+    VariantData<E> variantData = getEasyNPCVariantData();
+    if (variantData != null) {
+      variantData.setVariantType(variant);
+    }
+  }
+
   default void registerEasyNPCDefaultHandler(Enum<?> variant) {
     log.info("Register default handler for {} with variant {} ...", this, variant);
     VariantData<E> variantData = getEasyNPCVariantData();
     if (variantData != null) {
-      variantData.setVariant(variant);
+      variantData.setVariantType(variant);
     }
     SoundData<E> soundData = getEasyNPCSoundData();
     if (soundData != null) {

@@ -20,11 +20,12 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
-import de.markusbordihn.easynpc.entity.easynpc.raw.SkeletonRaw.Variant;
+import de.markusbordihn.easynpc.entity.easynpc.npc.raw.SkeletonRaw.VariantType;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
@@ -33,36 +34,39 @@ import net.minecraft.client.renderer.entity.SkeletonRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
 
-public class SkeletonRawRenderer extends SkeletonRenderer {
+public class SkeletonRawRenderer extends SkeletonRenderer implements EasyNPCEntityRenderer {
 
-  protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
+  protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
       Util.make(
-          new EnumMap<>(Variant.class),
+          new EnumMap<>(VariantType.class),
           map -> {
             map.put(
-                Variant.SKELETON,
+                VariantType.BOGGED,
+                ResourceLocation.withDefaultNamespace("textures/entity/skeleton/bogged.png"));
+            map.put(
+                VariantType.SKELETON,
                 ResourceLocation.withDefaultNamespace("textures/entity/skeleton/skeleton.png"));
             map.put(
-                Variant.STRAY,
+                VariantType.STRAY,
                 ResourceLocation.withDefaultNamespace("textures/entity/skeleton/stray.png"));
             map.put(
-                Variant.WITHER_SKELETON,
+                VariantType.WITHER_SKELETON,
                 ResourceLocation.withDefaultNamespace(
                     "textures/entity/skeleton/wither_skeleton.png"));
           });
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT.get(Variant.SKELETON);
+      TEXTURE_BY_VARIANT_TYPE.get(VariantType.SKELETON);
 
   public SkeletonRawRenderer(EntityRendererProvider.Context context) {
     super(context);
   }
 
   @Override
-  public ResourceLocation getTextureLocation(AbstractSkeleton skeleton) {
-    if (skeleton instanceof EasyNPC<?> easyNPC) {
-      return this.getEntityTexture(easyNPC);
+  public ResourceLocation getTextureLocation(AbstractSkeleton entity) {
+    if (entity instanceof EasyNPC<?> easyNPC) {
+      return getEntityTexture(easyNPC);
     }
-    return super.getTextureLocation(skeleton);
+    return DEFAULT_TEXTURE;
   }
 
   public ResourceLocation getDefaultTexture() {
@@ -77,9 +81,9 @@ public class SkeletonRawRenderer extends SkeletonRenderer {
     return RemoteTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
   }
 
-  public ResourceLocation getTextureByVariant(Enum<?> variant) {
-    return TEXTURE_BY_VARIANT != null
-        ? TEXTURE_BY_VARIANT.getOrDefault(variant, DEFAULT_TEXTURE)
+  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
+    return TEXTURE_BY_VARIANT_TYPE != null
+        ? TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE)
         : Constants.BLANK_ENTITY_TEXTURE;
   }
 
@@ -89,7 +93,7 @@ public class SkeletonRawRenderer extends SkeletonRenderer {
       case NONE -> Constants.BLANK_ENTITY_TEXTURE;
       case CUSTOM -> getCustomTexture(skinData);
       case SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> getRemoteTexture(skinData);
-      default -> getTextureByVariant(easyNPC.getEasyNPCVariantData().getVariant());
+      default -> getTextureByVariant(easyNPC.getEasyNPCVariantData().getVariantType());
     };
   }
 }

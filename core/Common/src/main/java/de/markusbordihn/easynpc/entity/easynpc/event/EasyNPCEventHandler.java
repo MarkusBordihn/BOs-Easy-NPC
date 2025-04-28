@@ -85,7 +85,7 @@ public final class EasyNPCEventHandler {
       EasyNPC<E> easyNPC, DamageSource damageSource) {
     TradingData<E> tradingData = easyNPC.getEasyNPCTradingData();
     if (tradingData != null) {
-      tradingData.stopTrading();
+      tradingData.stopMerchantTrading();
     }
 
     ActionEventData<E> actionEventData = easyNPC.getEasyNPCActionEventData();
@@ -99,7 +99,7 @@ public final class EasyNPCEventHandler {
       EasyNPC<E> easyNPC, DimensionTransition dimensionTransition) {
     TradingData<E> tradingData = easyNPC.getEasyNPCTradingData();
     if (tradingData != null) {
-      tradingData.stopTrading();
+      tradingData.stopMerchantTrading();
     }
   }
 

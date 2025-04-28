@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.client.screen.components;
 import de.markusbordihn.easynpc.Constants;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
 public class SearchField extends TextField {
@@ -67,6 +68,8 @@ public class SearchField extends TextField {
         SPRITE_OFFSET_X,
         isFocused() ? SPRITE_OFFSET_Y : SPRITE_OFFSET_Y + SPRITE_HEIGHT,
         SPRITE_WIDTH,
-        SPRITE_HEIGHT);
+        SPRITE_HEIGHT,
+        256,
+        256);
   }
 }

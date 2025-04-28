@@ -21,35 +21,20 @@ package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.compat.CompatConstants;
-import de.markusbordihn.easynpc.compat.epicfight.entity.EpicFightEntityTypes;
 import de.markusbordihn.easynpc.compat.epicfight.entity.EpicFightZombie;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Allay;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Horse;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
-import de.markusbordihn.easynpc.entity.easynpc.npc.HumanoidSlim;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
-import de.markusbordihn.easynpc.entity.easynpc.npc.IronGolem;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Piglin;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Wolf;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie;
-import de.markusbordihn.easynpc.entity.easynpc.npc.ZombieVillager;
-import de.markusbordihn.easynpc.entity.easynpc.raw.PiglinRaw;
-import de.markusbordihn.easynpc.entity.easynpc.raw.SkeletonRaw;
-import de.markusbordihn.easynpc.entity.easynpc.raw.ZombieRaw;
+import java.util.EnumMap;
+import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class ModEntityType {
@@ -57,126 +42,113 @@ public class ModEntityType {
   public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
       DeferredRegister.create(BuiltInRegistries.ENTITY_TYPE, Constants.MOD_ID);
 
-  public static final DeferredHolder<EntityType<?>, EntityType<Allay>> ALLAY =
-      ENTITY_TYPES.register(Allay.ID, () -> ModEntityTypes.ALLAY);
-  public static final DeferredHolder<EntityType<?>, EntityType<Skeleton>> BOGGED =
-      ENTITY_TYPES.register(Skeleton.ID_BOGGED, () -> ModEntityTypes.BOGGED);
-  public static final DeferredHolder<EntityType<?>, EntityType<Cat>> CAT =
-      ENTITY_TYPES.register(Cat.ID, () -> ModEntityTypes.CAT);
-  public static final DeferredHolder<EntityType<?>, EntityType<Chicken>> CHICKEN =
-      ENTITY_TYPES.register(Chicken.ID, () -> ModEntityTypes.CHICKEN);
-  public static final DeferredHolder<EntityType<?>, EntityType<Zombie>> DROWNED =
-      ENTITY_TYPES.register(Zombie.ID_DROWNED, () -> ModEntityTypes.DROWNED);
-  public static final DeferredHolder<EntityType<?>, EntityType<Illager>> EVOKER =
-      ENTITY_TYPES.register(Illager.ID_EVOKER, () -> ModEntityTypes.EVOKER);
-  public static final DeferredHolder<EntityType<?>, EntityType<Fairy>> FAIRY =
-      ENTITY_TYPES.register(Fairy.ID, () -> ModEntityTypes.FAIRY);
-  public static final DeferredHolder<EntityType<?>, EntityType<Horse>> HORSE =
-      ENTITY_TYPES.register(Horse.ID, () -> ModEntityTypes.HORSE);
-  public static final DeferredHolder<EntityType<?>, EntityType<Humanoid>> HUMANOID =
-      ENTITY_TYPES.register(Humanoid.ID, () -> ModEntityTypes.HUMANOID);
-  public static final DeferredHolder<EntityType<?>, EntityType<HumanoidSlim>> HUMANOID_SLIM =
-      ENTITY_TYPES.register(HumanoidSlim.ID, () -> ModEntityTypes.HUMANOID_SLIM);
-  public static final DeferredHolder<EntityType<?>, EntityType<Zombie>> HUSK =
-      ENTITY_TYPES.register(Zombie.ID_HUSK, () -> ModEntityTypes.HUSK);
-  public static final DeferredHolder<EntityType<?>, EntityType<Illager>> ILLUSIONER =
-      ENTITY_TYPES.register(Illager.ID_ILLUSIONER, () -> ModEntityTypes.ILLUSIONER);
-  public static final DeferredHolder<EntityType<?>, EntityType<IronGolem>> IRON_GOLEM =
-      ENTITY_TYPES.register(IronGolem.ID, () -> ModEntityTypes.IRON_GOLEM);
-  public static final DeferredHolder<EntityType<?>, EntityType<Orc>> ORC =
-      ENTITY_TYPES.register(Orc.ID, () -> ModEntityTypes.ORC);
-  public static final DeferredHolder<EntityType<?>, EntityType<Orc>> ORC_WARRIOR =
-      ENTITY_TYPES.register(Orc.ID_WARRIOR, () -> ModEntityTypes.ORC_WARRIOR);
-  public static final DeferredHolder<EntityType<?>, EntityType<Pig>> PIG =
-      ENTITY_TYPES.register(Pig.ID, () -> ModEntityTypes.PIG);
-  public static final DeferredHolder<EntityType<?>, EntityType<Piglin>> PIGLIN =
-      ENTITY_TYPES.register(Piglin.ID, () -> ModEntityTypes.PIGLIN);
-  public static final DeferredHolder<EntityType<?>, EntityType<Piglin>> PIGLIN_BRUTE =
-      ENTITY_TYPES.register(Piglin.ID_BRUTE, () -> ModEntityTypes.PIGLIN_BRUTE);
-  public static final DeferredHolder<EntityType<?>, EntityType<Piglin>> PIGLIN_ZOMBIFIED =
-      ENTITY_TYPES.register(Piglin.ID_ZOMBIFIED, () -> ModEntityTypes.PIGLIN_ZOMBIFIED);
-  public static final DeferredHolder<EntityType<?>, EntityType<Illager>> PILLAGER =
-      ENTITY_TYPES.register(Illager.ID_PILLAGER, () -> ModEntityTypes.PILLAGER);
-  public static final DeferredHolder<EntityType<?>, EntityType<Skeleton>> SKELETON =
-      ENTITY_TYPES.register(Skeleton.ID, () -> ModEntityTypes.SKELETON);
-  public static final DeferredHolder<EntityType<?>, EntityType<Horse>> SKELETON_HORSE =
-      ENTITY_TYPES.register(Horse.ID_SKELETON, () -> ModEntityTypes.SKELETON_HORSE);
-  public static final DeferredHolder<EntityType<?>, EntityType<Skeleton>> STRAY =
-      ENTITY_TYPES.register(Skeleton.ID_STRAY, () -> ModEntityTypes.STRAY);
-  public static final DeferredHolder<EntityType<?>, EntityType<Villager>> VILLAGER =
-      ENTITY_TYPES.register(Villager.ID, () -> ModEntityTypes.VILLAGER);
-  public static final DeferredHolder<EntityType<?>, EntityType<Illager>> VINDICATOR =
-      ENTITY_TYPES.register(Illager.ID_VINDICATOR, () -> ModEntityTypes.VINDICATOR);
-  public static final DeferredHolder<EntityType<?>, EntityType<Skeleton>> WITHER_SKELETON =
-      ENTITY_TYPES.register(Skeleton.ID_WITHER_SKELETON, () -> ModEntityTypes.WITHER_SKELETON);
-  public static final DeferredHolder<EntityType<?>, EntityType<Wolf>> WOLF =
-      ENTITY_TYPES.register(Wolf.ID, () -> ModEntityTypes.WOLF);
-  public static final DeferredHolder<EntityType<?>, EntityType<Zombie>> ZOMBIE =
-      ENTITY_TYPES.register(Zombie.ID, () -> ModEntityTypes.ZOMBIE);
-  public static final DeferredHolder<EntityType<?>, EntityType<Horse>> ZOMBIE_HORSE =
-      ENTITY_TYPES.register(Horse.ID_ZOMBIE, () -> ModEntityTypes.ZOMBIE_HORSE);
-  public static final DeferredHolder<EntityType<?>, EntityType<ZombieVillager>> ZOMBIE_VILLAGER =
-      ENTITY_TYPES.register(ZombieVillager.ID, () -> ModEntityTypes.ZOMBIE_VILLAGER);
-
-  // Raw entities (for modding only)
-  public static final DeferredHolder<EntityType<?>, EntityType<PiglinRaw>> PIGLIN_RAW =
-      ENTITY_TYPES.register(PiglinRaw.ID, () -> ModEntityTypes.PIGLIN_RAW);
-  public static final DeferredHolder<EntityType<?>, EntityType<SkeletonRaw>> SKELETON_RAW =
-      ENTITY_TYPES.register(SkeletonRaw.ID, () -> ModEntityTypes.SKELETON_RAW);
-  public static final DeferredHolder<EntityType<?>, EntityType<ZombieRaw>> ZOMBIE_RAW =
-      ENTITY_TYPES.register(ZombieRaw.ID, () -> ModEntityTypes.ZOMBIE_RAW);
-
+  public static final Map<ModRawEntityType, DeferredHolder<EntityType<?>, EntityType<?>>> RAW_TYPE =
+      new EnumMap<>(ModRawEntityType.class);
+  public static final Map<ModNPCEntityType, DeferredHolder<EntityType<?>, EntityType<?>>> NPC_TYPE =
+      new EnumMap<>(ModNPCEntityType.class);
+  public static final Map<ModCustomEntityType, DeferredHolder<EntityType<?>, EntityType<?>>>
+      CUSTOM_TYPE = new EnumMap<>(ModCustomEntityType.class);
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   // Optional: Epic Fight entities
   public static DeferredHolder<EntityType<?>, EntityType<EpicFightZombie>> EPIC_FIGHT_ZOMBIE;
 
   static {
+    // Raw entities (for modding only)
+    for (ModRawEntityType type : ModRawEntityType.values()) {
+      log.info("Registering raw entity type {}", type.getResourceKey());
+      RAW_TYPE.put(
+          type,
+          ENTITY_TYPES.register(
+              type.getId(), () -> type.getBuilder().build(type.getResourceKey().toString())));
+    }
+
+    // Pre-defined NPCs
+    for (ModNPCEntityType type : ModNPCEntityType.values()) {
+      log.info("Registering NPC entity type {}", type.getResourceKey());
+      NPC_TYPE.put(
+          type,
+          ENTITY_TYPES.register(
+              type.getId(), () -> type.getBuilder().build(type.getResourceKey().toString())));
+    }
+
+    // Custom NPCs
+    for (ModCustomEntityType type : ModCustomEntityType.values()) {
+      log.info("Registering custom entity type {}", type.getResourceKey());
+      CUSTOM_TYPE.put(
+          type,
+          ENTITY_TYPES.register(
+              type.getId(), () -> type.getBuilder().build(type.getResourceKey().toString())));
+    }
+  }
+
+  static {
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
-      EPIC_FIGHT_ZOMBIE =
-          ENTITY_TYPES.register(EpicFightZombie.ID, () -> EpicFightEntityTypes.ZOMBIE);
+      // EPIC_FIGHT_ZOMBIE =
+      //    ENTITY_TYPES.register(EpicFightZombie.ID, () -> EpicFightEntityTypes.ZOMBIE);
     }
   }
 
   private ModEntityType() {}
 
+  public static <T extends Entity> EntityType<T> getEntityType(ModRawEntityType type) {
+    if (!RAW_TYPE.containsKey(type)) {
+      throw new IllegalArgumentException(
+          "Invalid raw entity type '" + type + "'! Supported types are " + RAW_TYPE.keySet());
+    }
+    return (EntityType<T>) RAW_TYPE.get(type).get();
+  }
+
+  public static <T extends Entity> EntityType<T> getEntityType(ModNPCEntityType type) {
+    if (!NPC_TYPE.containsKey(type)) {
+      throw new IllegalArgumentException(
+          "Invalid NPC entity type '" + type + "'! Supported types are " + NPC_TYPE.keySet());
+    }
+    return (EntityType<T>) NPC_TYPE.get(type).get();
+  }
+
+  public static <T extends Entity> EntityType<T> getEntityType(ModCustomEntityType type) {
+    if (!CUSTOM_TYPE.containsKey(type)) {
+      throw new IllegalArgumentException(
+          "Invalid NPC entity type '" + type + "'! Supported types are " + CUSTOM_TYPE.keySet());
+    }
+    return (EntityType<T>) CUSTOM_TYPE.get(type).get();
+  }
+
   @SubscribeEvent
   public static void entityAttributeCreation(EntityAttributeCreationEvent event) {
 
-    event.put(ALLAY.get(), Allay.createAttributes().build());
-    event.put(BOGGED.get(), Skeleton.createAttributes().build());
-    event.put(CAT.get(), Cat.createAttributes().build());
-    event.put(CHICKEN.get(), Chicken.createAttributes().build());
-    event.put(DROWNED.get(), Zombie.createAttributes().build());
-    event.put(EVOKER.get(), Illager.createAttributes().build());
-    event.put(FAIRY.get(), Fairy.createAttributes().build());
-    event.put(HORSE.get(), Horse.createAttributes().build());
-    event.put(HUMANOID.get(), Humanoid.createAttributes().build());
-    event.put(HUMANOID_SLIM.get(), HumanoidSlim.createAttributes().build());
-    event.put(HUSK.get(), Zombie.createAttributes().build());
-    event.put(ILLUSIONER.get(), Illager.createAttributes().build());
-    event.put(IRON_GOLEM.get(), IronGolem.createAttributes().build());
-    event.put(ORC.get(), Orc.createAttributes().build());
-    event.put(ORC_WARRIOR.get(), Orc.createAttributes().build());
-    event.put(PIG.get(), Pig.createAttributes().build());
-    event.put(PIGLIN.get(), Piglin.createAttributes().build());
-    event.put(PIGLIN_BRUTE.get(), Piglin.createAttributes().build());
-    event.put(PIGLIN_ZOMBIFIED.get(), Piglin.createAttributes().build());
-    event.put(PILLAGER.get(), Illager.createAttributes().build());
-    event.put(SKELETON.get(), Skeleton.createAttributes().build());
-    event.put(SKELETON_HORSE.get(), Horse.createAttributes().build());
-    event.put(STRAY.get(), Skeleton.createAttributes().build());
-    event.put(VILLAGER.get(), Villager.createAttributes().build());
-    event.put(VINDICATOR.get(), Illager.createAttributes().build());
-    event.put(WITHER_SKELETON.get(), Skeleton.createAttributes().build());
-    event.put(WOLF.get(), Wolf.createAttributes().build());
-    event.put(ZOMBIE.get(), Zombie.createAttributes().build());
-    event.put(ZOMBIE_HORSE.get(), Horse.createAttributes().build());
-    event.put(ZOMBIE_VILLAGER.get(), ZombieVillager.createAttributes().build());
-
     // Raw entities (for modding only)
-    event.put(PIGLIN_RAW.get(), PiglinRaw.createAttributes().build());
-    event.put(SKELETON_RAW.get(), SkeletonRaw.createAttributes().build());
-    event.put(
-        ZOMBIE_RAW.get(), net.minecraft.world.entity.monster.Zombie.createAttributes().build());
+    for (ModRawEntityType type : ModRawEntityType.values()) {
+      if (type.getAttributes() != null) {
+        event.put(
+            (EntityType<? extends LivingEntity>) RAW_TYPE.get(type).get(),
+            type.getAttributes().build());
+      } else {
+        log.warn("Raw entity type {} does not have attributes defined!", type.getResourceKey());
+      }
+    }
+
+    // Pre-defined NPCs
+    for (ModNPCEntityType type : ModNPCEntityType.values()) {
+      if (type.getAttributes() != null) {
+        event.put(
+            (EntityType<? extends LivingEntity>) NPC_TYPE.get(type).get(),
+            type.getAttributes().build());
+      } else {
+        log.warn("NPC entity type {} does not have attributes defined!", type.getResourceKey());
+      }
+    }
+
+    // Custom NPCs
+    for (ModCustomEntityType type : ModCustomEntityType.values()) {
+      if (type.getAttributes() != null) {
+        event.put(
+            (EntityType<? extends LivingEntity>) CUSTOM_TYPE.get(type).get(),
+            type.getAttributes().build());
+      } else {
+        log.warn("Custom entity type {} does not have attributes defined!", type.getResourceKey());
+      }
+    }
 
     // Optional: Epic Fight entities
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {

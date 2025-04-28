@@ -22,30 +22,19 @@ package de.markusbordihn.easynpc.item;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.block.ModBlocks;
 import de.markusbordihn.easynpc.data.spawner.SpawnerType;
+import de.markusbordihn.easynpc.entity.ModCustomEntityType;
 import de.markusbordihn.easynpc.entity.ModEntityType;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Allay;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Cat;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Chicken;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Fairy;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Horse;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Humanoid;
-import de.markusbordihn.easynpc.entity.easynpc.npc.HumanoidSlim;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Illager;
-import de.markusbordihn.easynpc.entity.easynpc.npc.IronGolem;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Orc;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Pig;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Piglin;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Skeleton;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Villager;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Wolf;
-import de.markusbordihn.easynpc.entity.easynpc.npc.Zombie;
-import de.markusbordihn.easynpc.entity.easynpc.npc.ZombieVillager;
+import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import de.markusbordihn.easynpc.item.attack.BulletItem;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetEmptyItem;
 import de.markusbordihn.easynpc.item.configuration.EasyNPCPresetItem;
 import de.markusbordihn.easynpc.item.configuration.MoveEasyNPCItem;
+import java.util.EnumMap;
+import java.util.Map;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import org.apache.logging.log4j.LogManager;
@@ -53,17 +42,11 @@ import org.apache.logging.log4j.Logger;
 
 public class ModItems {
 
-  public static final Item ALLAY_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.ALLAY, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item BULLET_ITEM = new Item(new Item.Properties());
-  public static final Item BOGGED_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.BOGGED, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item CAT_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.CAT, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item CHICKEN_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.CHICKEN, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item DROWNED_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.DROWNED, new Item.Properties().rarity(Rarity.EPIC));
+  public static final Map<ModNPCEntityType, Item> NPC_SPAWN_EGGS =
+      new EnumMap<>(ModNPCEntityType.class);
+  public static final Map<ModCustomEntityType, Item> CUSTOM_NPC_SPAWN_EGGS =
+      new EnumMap<>(ModCustomEntityType.class);
+  public static final Item BULLET_ITEM = new BulletItem(new Item.Properties());
   public static final Item EASY_NPC_PRESET_EMPTY_ITEM =
       new EasyNPCPresetEmptyItem(new Item.Properties());
   public static final Item EASY_NPC_PRESET_ITEM = new EasyNPCPresetItem(new Item.Properties());
@@ -79,59 +62,7 @@ public class ModItems {
   public static final Item EASY_NPC_SPAWNER_SINGLE =
       new EasyNPCSpawnerBlockItem(
           ModBlocks.EASY_NPC_SPAWNER_SINGLE, new Item.Properties(), SpawnerType.SINGLE_SPAWNER);
-  public static final Item EVOKER_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.EVOKER, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item FAIRY_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.FAIRY, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item HORSE_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.HORSE, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item HUMANOID_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.HUMANOID, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item HUMANOID_SLIM_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.HUMANOID_SLIM, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item HUSK_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.HUSK, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item ILLUSIONER_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.ILLUSIONER, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item IRON_GOLEM_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.IRON_GOLEM, new Item.Properties().rarity(Rarity.EPIC));
   public static final Item MOVE_EASY_NPC = new MoveEasyNPCItem(new Item.Properties());
-  public static final Item ORC_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.ORC, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item ORC_WARRIOR_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.ORC_WARRIOR, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item PIG_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.PIG, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item PIGLIN_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.PIGLIN, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item PIGLIN_BRUTE_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.PIGLIN_BRUTE, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item PIGLIN_ZOMBIFIED_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(
-          ModEntityType.PIGLIN_ZOMBIFIED, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item PILLAGER_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.PILLAGER, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item SKELETON_HORSE_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.SKELETON_HORSE, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item SKELETON_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.SKELETON, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item STRAY_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.STRAY, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item VILLAGER_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.VILLAGER, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item VINDICATOR_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.VINDICATOR, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item WITHER_SKELETON_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.WITHER_SKELETON, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item WOLF_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.WOLF, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item ZOMBIE_HORSE_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.ZOMBIE_HORSE, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item ZOMBIE_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.ZOMBIE, new Item.Properties().rarity(Rarity.EPIC));
-  public static final Item ZOMBIE_VILLAGER_NPC_SPAWN_EGG =
-      new ModSpawnEggItem(ModEntityType.ZOMBIE_VILLAGER, new Item.Properties().rarity(Rarity.EPIC));
-
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private ModItems() {}
@@ -153,43 +84,41 @@ public class ModItems {
     registerItem(BulletItem.ID, BULLET_ITEM);
 
     log.info("{} Spawn Egg Items ...", Constants.LOG_REGISTER_PREFIX);
-    registerSpawnEgg(Allay.ID, ALLAY_NPC_SPAWN_EGG);
-    registerSpawnEgg(Skeleton.ID_BOGGED, BOGGED_NPC_SPAWN_EGG);
-    registerSpawnEgg(Cat.ID, CAT_NPC_SPAWN_EGG);
-    registerSpawnEgg(Chicken.ID, CHICKEN_NPC_SPAWN_EGG);
-    registerSpawnEgg(Fairy.ID, FAIRY_NPC_SPAWN_EGG);
-    registerSpawnEgg(Horse.ID, HORSE_NPC_SPAWN_EGG);
-    registerSpawnEgg(Horse.ID_SKELETON, SKELETON_HORSE_NPC_SPAWN_EGG);
-    registerSpawnEgg(Horse.ID_ZOMBIE, ZOMBIE_HORSE_NPC_SPAWN_EGG);
-    registerSpawnEgg(Humanoid.ID, HUMANOID_NPC_SPAWN_EGG);
-    registerSpawnEgg(HumanoidSlim.ID, HUMANOID_SLIM_NPC_SPAWN_EGG);
-    registerSpawnEgg(Illager.ID_EVOKER, EVOKER_NPC_SPAWN_EGG);
-    registerSpawnEgg(Illager.ID_ILLUSIONER, ILLUSIONER_NPC_SPAWN_EGG);
-    registerSpawnEgg(Illager.ID_PILLAGER, PILLAGER_NPC_SPAWN_EGG);
-    registerSpawnEgg(Illager.ID_VINDICATOR, VINDICATOR_NPC_SPAWN_EGG);
-    registerSpawnEgg(IronGolem.ID, IRON_GOLEM_NPC_SPAWN_EGG);
-    registerSpawnEgg(Orc.ID, ORC_NPC_SPAWN_EGG);
-    registerSpawnEgg(Orc.ID_WARRIOR, ORC_WARRIOR_NPC_SPAWN_EGG);
-    registerSpawnEgg(Pig.ID, PIG_NPC_SPAWN_EGG);
-    registerSpawnEgg(Piglin.ID, PIGLIN_NPC_SPAWN_EGG);
-    registerSpawnEgg(Piglin.ID_BRUTE, PIGLIN_BRUTE_NPC_SPAWN_EGG);
-    registerSpawnEgg(Piglin.ID_ZOMBIFIED, PIGLIN_ZOMBIFIED_NPC_SPAWN_EGG);
-    registerSpawnEgg(Skeleton.ID, SKELETON_NPC_SPAWN_EGG);
-    registerSpawnEgg(Skeleton.ID_STRAY, STRAY_NPC_SPAWN_EGG);
-    registerSpawnEgg(Skeleton.ID_WITHER_SKELETON, WITHER_SKELETON_NPC_SPAWN_EGG);
-    registerSpawnEgg(Villager.ID, VILLAGER_NPC_SPAWN_EGG);
-    registerSpawnEgg(Wolf.ID, WOLF_NPC_SPAWN_EGG);
-    registerSpawnEgg(Zombie.ID, ZOMBIE_NPC_SPAWN_EGG);
-    registerSpawnEgg(Zombie.ID_DROWNED, DROWNED_NPC_SPAWN_EGG);
-    registerSpawnEgg(Zombie.ID_HUSK, HUSK_NPC_SPAWN_EGG);
-    registerSpawnEgg(ZombieVillager.ID, ZOMBIE_VILLAGER_NPC_SPAWN_EGG);
+
+    // Register spawn eggs for all NPC entity types.
+    for (ModNPCEntityType entityType : ModNPCEntityType.values()) {
+      EntityType<?> entityTypeObject = ModEntityType.NPC_TYPE.get(entityType);
+      if (entityTypeObject == null) {
+        log.error("Unable to register NPC spawn egg with id {}.", entityType.getId());
+        continue;
+      }
+      log.info(
+          "Registering NPC spawn egg for {} with id {}.", entityTypeObject, entityType.getId());
+      NPC_SPAWN_EGGS.put(entityType, registerSpawnEgg(entityType.getId(), entityTypeObject));
+    }
+
+    // Register spawn eggs for all custom entity types.
+    for (ModCustomEntityType entityType : ModCustomEntityType.values()) {
+      EntityType<?> entityTypeObject = ModEntityType.CUSTOM_TYPE.get(entityType);
+      if (entityTypeObject == null) {
+        log.error("Unable to register custom spawn egg with id {}.", entityType.getId());
+        continue;
+      }
+      log.info(
+          "Registering custom spawn egg for {} with id {}.", entityTypeObject, entityType.getId());
+      CUSTOM_NPC_SPAWN_EGGS.put(entityType, registerSpawnEgg(entityType.getId(), entityTypeObject));
+    }
   }
 
-  private static void registerItem(String id, Item item) {
-    Registry.register(BuiltInRegistries.ITEM, Constants.MOD_ID + ":" + id, item);
+  private static Item registerItem(String id, Item item) {
+    return Registry.register(BuiltInRegistries.ITEM, Constants.MOD_ID + ":" + id, item);
   }
 
-  private static void registerSpawnEgg(String id, Item item) {
-    registerItem(id + ModSpawnEggItem.SUFFIX, item);
+  private static Item registerSpawnEgg(String id, EntityType<?> entityType) {
+    String spawnEggId = id + ModSpawnEggItem.SUFFIX;
+    return registerItem(
+        spawnEggId,
+        new ModSpawnEggItem(
+            (EntityType<? extends Mob>) entityType, new Item.Properties().rarity(Rarity.EPIC)));
   }
 }

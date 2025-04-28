@@ -90,6 +90,10 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
 
   void setMerchantTradingOffers(MerchantOffers merchantOffers);
 
+  void rewardTradeXp(MerchantOffer merchantOffer);
+
+  void stopTrading();
+
   default MerchantOffers getOffers() {
     if (this.getMerchantTradingOffers() == null) {
       this.updateMerchantTradingOffers();
@@ -319,7 +323,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     }
   }
 
-  default void rewardTradeXp(MerchantOffer merchantOffer) {
+  default void rewardMerchantTradeXp(MerchantOffer merchantOffer) {
     if (merchantOffer.shouldRewardExp() && merchantOffer.getXp() > 0) {
       LivingEntity livingEntity = this.getLivingEntity();
       int tradeExperience = 3 + livingEntity.getRandom().nextInt(merchantOffer.getXp());
@@ -343,7 +347,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
         || tradingType == TradingType.CUSTOM;
   }
 
-  default void stopTrading() {
+  default void stopMerchantTrading() {
     Merchant merchant = this.getMerchant();
     if (merchant != null) {
       merchant.setTradingPlayer(null);

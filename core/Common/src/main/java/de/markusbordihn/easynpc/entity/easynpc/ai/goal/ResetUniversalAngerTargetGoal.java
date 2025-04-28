@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.List;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -35,18 +36,20 @@ public class ResetUniversalAngerTargetGoal<T extends EasyNPC<?>> extends Goal {
 
   private final Mob mob;
   private final Level level;
+  private final ServerLevel serverLevel;
   private final boolean alertOthersOfSameType;
   private int lastHurtByPlayerTimestamp;
 
   public ResetUniversalAngerTargetGoal(T easyNPC, boolean alertOthersOfSameType) {
     this.mob = easyNPC.getMob();
     this.level = easyNPC.getEntityLevel();
+    this.serverLevel = easyNPC.getEntityServerLevel();
     this.alertOthersOfSameType = alertOthersOfSameType;
   }
 
   @Override
   public boolean canUse() {
-    return this.level.getGameRules().getBoolean(GameRules.RULE_UNIVERSAL_ANGER)
+    return this.serverLevel.getGameRules().getBoolean(GameRules.RULE_UNIVERSAL_ANGER)
         && this.wasHurtByPlayer();
   }
 

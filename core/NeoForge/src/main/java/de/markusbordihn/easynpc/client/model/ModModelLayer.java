@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.client.model;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.FairyModel;
 import de.markusbordihn.easynpc.client.model.custom.OrcModel;
-import de.markusbordihn.easynpc.client.model.standard.StandardAllayModel;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
@@ -40,7 +39,6 @@ public class ModModelLayer {
       EntityRenderersEvent.RegisterLayerDefinitions event) {
     log.info("{} Entity Layer Definitions ...", Constants.LOG_REGISTER_PREFIX);
 
-    event.registerLayerDefinition(ModModelLayers.ALLAY, StandardAllayModel::createBodyLayer);
     event.registerLayerDefinition(ModModelLayers.FAIRY, FairyModel::createBodyLayer);
     event.registerLayerDefinition(ModModelLayers.ORC, OrcModel::createBodyLayer);
   }

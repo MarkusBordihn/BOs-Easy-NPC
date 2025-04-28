@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.compat.epicfight.entity;
 
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 
 public class EpicFightEntityTypes {
@@ -36,11 +35,11 @@ public class EpicFightEntityTypes {
   //        .sized(0.6F, 1.95F)
   //        .clientTrackingRange(CLIENT_TRACKING_RANGE)
   //        .build(EpicFightSkeleton.ID);
-  public static final EntityType<EpicFightZombie> ZOMBIE =
-      EntityType.Builder.of(EpicFightZombie::new, CATEGORY)
-          .sized(0.6F, 1.95F)
-          .clientTrackingRange(CLIENT_TRACKING_RANGE)
-          .build(EpicFightZombie.ID);
+  // public static final EntityType<EpicFightZombie> ZOMBIE =
+  //    EntityType.Builder.of(EpicFightZombie::new, CATEGORY)
+  //        .sized(0.6F, 1.95F)
+  //        .clientTrackingRange(CLIENT_TRACKING_RANGE)
+  //        .build(EpicFightZombie.ID);
 
   private EpicFightEntityTypes() {}
 }

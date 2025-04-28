@@ -284,6 +284,8 @@ public class SpriteButton extends CustomButton {
         spriteOffsetX,
         isActive() ? this.spriteOffsetY : spriteOffsetY + spriteHeight,
         spriteWidth,
-        spriteHeight);
+        spriteHeight,
+        256,
+        256);
   }
 }

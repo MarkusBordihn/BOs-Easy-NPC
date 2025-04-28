@@ -20,59 +20,57 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
-import de.markusbordihn.easynpc.entity.easynpc.raw.PiglinRaw.Variant;
+import de.markusbordihn.easynpc.entity.easynpc.npc.raw.PiglinRaw.VariantType;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
-import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.PiglinRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Mob;
 
-public class PiglinRawRenderer extends PiglinRenderer {
+public class PiglinRawRenderer extends PiglinRenderer implements EasyNPCEntityRenderer {
 
-  protected static final Map<Variant, ResourceLocation> TEXTURE_BY_VARIANT =
+  protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
       Util.make(
-          new EnumMap<>(Variant.class),
+          new EnumMap<>(VariantType.class),
           map -> {
             map.put(
-                Variant.PIGLIN,
+                VariantType.PIGLIN,
                 ResourceLocation.withDefaultNamespace("textures/entity/piglin/piglin.png"));
             map.put(
-                Variant.PIGLIN_BRUTE,
+                VariantType.PIGLIN_BRUTE,
                 ResourceLocation.withDefaultNamespace("textures/entity/piglin/piglin_brute.png"));
             map.put(
-                Variant.ZOMBIFIED_PIGLIN,
+                VariantType.ZOMBIFIED_PIGLIN,
                 ResourceLocation.withDefaultNamespace(
                     "textures/entity/piglin/zombified_piglin.png"));
           });
-  protected static final ResourceLocation DEFAULT_TEXTURE = TEXTURE_BY_VARIANT.get(Variant.PIGLIN);
 
-  public PiglinRawRenderer(
-      EntityRendererProvider.Context context,
-      ModelLayerLocation variantModelLocation,
-      ModelLayerLocation innerArmorModelLocation,
-      ModelLayerLocation outerArmorModelLocation,
-      boolean isZombified) {
+  protected static final ResourceLocation DEFAULT_TEXTURE =
+      TEXTURE_BY_VARIANT_TYPE.get(VariantType.PIGLIN);
+
+  public PiglinRawRenderer(EntityRendererProvider.Context context) {
     super(
         context,
-        variantModelLocation,
-        innerArmorModelLocation,
-        outerArmorModelLocation,
-        isZombified);
+        ModelLayers.PIGLIN,
+        ModelLayers.PIGLIN_INNER_ARMOR,
+        ModelLayers.PIGLIN_OUTER_ARMOR,
+        false); // zombifiedPiglin
   }
 
   @Override
-  public ResourceLocation getTextureLocation(Mob skeleton) {
-    if (skeleton instanceof EasyNPC<?> easyNPC) {
-      return this.getEntityTexture(easyNPC);
+  public ResourceLocation getTextureLocation(Mob entity) {
+    if (entity instanceof EasyNPC<?> easyNPC) {
+      return getEntityTexture(easyNPC);
     }
-    return super.getTextureLocation(skeleton);
+    return TEXTURE_BY_VARIANT_TYPE.get(VariantType.PIGLIN);
   }
 
   public ResourceLocation getDefaultTexture() {
@@ -87,9 +85,9 @@ public class PiglinRawRenderer extends PiglinRenderer {
     return RemoteTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
   }
 
-  public ResourceLocation getTextureByVariant(Enum<?> variant) {
-    return TEXTURE_BY_VARIANT != null
-        ? TEXTURE_BY_VARIANT.getOrDefault(variant, DEFAULT_TEXTURE)
+  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
+    return TEXTURE_BY_VARIANT_TYPE != null
+        ? TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE)
         : Constants.BLANK_ENTITY_TEXTURE;
   }
 
@@ -99,7 +97,7 @@ public class PiglinRawRenderer extends PiglinRenderer {
       case NONE -> Constants.BLANK_ENTITY_TEXTURE;
       case CUSTOM -> getCustomTexture(skinData);
       case SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> getRemoteTexture(skinData);
-      default -> getTextureByVariant(easyNPC.getEasyNPCVariantData().getVariant());
+      default -> getTextureByVariant(easyNPC.getEasyNPCVariantData().getVariantType());
     };
   }
 }
