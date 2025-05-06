@@ -24,6 +24,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
 import de.markusbordihn.easynpc.handler.SkinHandler;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -45,7 +46,20 @@ public class SkinCommand extends Command {
                         .then(
                             Commands.argument(NPC_TARGET_ARGUMENT, EasyNPCArgument.npc())
                                 .then(
-                                    Commands.argument("variant", StringArgumentType.string())
+                                    Commands.argument("variant", StringArgumentType.word())
+                                        .suggests(
+                                            (context, builder) -> {
+                                              EasyNPC<?> easyNPC =
+                                                  EasyNPCArgument.getEntityWithAccess(
+                                                      context, NPC_TARGET_ARGUMENT);
+                                              if (easyNPC instanceof EasyNPCBase<?> easyNPCBase) {
+                                                Enum<?>[] variants = easyNPCBase.getVariantTypes();
+                                                for (Enum<?> variant : variants) {
+                                                  builder.suggest(variant.name());
+                                                }
+                                              }
+                                              return builder.buildFuture();
+                                            })
                                         .executes(
                                             context ->
                                                 setDefaultSkinVariant(

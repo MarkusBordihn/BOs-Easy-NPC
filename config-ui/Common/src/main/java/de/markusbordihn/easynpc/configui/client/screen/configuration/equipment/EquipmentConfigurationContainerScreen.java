@@ -46,7 +46,7 @@ public class EquipmentConfigurationContainerScreen<T extends ConfigurationMenu>
 
   private void createVisibleEquipmentSlotCheckbox(int left, int top, EquipmentSlot equipmentSlot) {
     ModelData<?> modelData = this.getEasyNPC().getEasyNPCModelData();
-    boolean modelEquipmentVisibility = modelData.isModelEquipmentVisible(equipmentSlot);
+    boolean modelEquipmentVisibility = modelData.getModelPartVisibility(equipmentSlot);
     this.addRenderableWidget(
         new Checkbox(
             left,

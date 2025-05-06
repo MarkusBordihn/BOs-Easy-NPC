@@ -22,18 +22,20 @@ package de.markusbordihn.easynpc.configui.item.configuration;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.menu.MenuManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.entity.EasyNPCBaseEntity;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.List;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -51,7 +53,17 @@ public class EasyNPCWandItem extends Item {
   private static final int GLOWING_DURATION = 4 * 20;
 
   public EasyNPCWandItem(Properties properties) {
-    super(properties);
+    super(
+        properties.setId(
+            ResourceKey.create(
+                Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, ID))));
+  }
+
+  private void highlightEasyNPC(EasyNPCBase<?> easyNPC) {
+    if (easyNPC != null) {
+      // easyNPC.addEffect(
+      //    new MobEffectInstance(MobEffects.GLOWING, GLOWING_DURATION, 0, false, false, true));
+    }
   }
 
   @Override
@@ -59,18 +71,11 @@ public class EasyNPCWandItem extends Item {
       ItemStack itemStack, Level level, Entity entity, int slot, boolean selected) {
     // Highlight all nearby EasyNPC entities
     if (selected && entity instanceof Player player) {
-      for (EasyNPCBaseEntity<?> easyNPCEntity :
+      for (PathfinderMob pathfinderMob :
           level.getEntitiesOfClass(
-              EasyNPCBaseEntity.class, player.getBoundingBox().inflate(0.5), Entity::isAlive)) {
-        if (easyNPCEntity.hasEffect(MobEffects.GLOWING)) {
-          MobEffectInstance mobEffect = easyNPCEntity.getEffect(MobEffects.GLOWING);
-          if (mobEffect != null && mobEffect.getDuration() < 5) {
-            easyNPCEntity.addEffect(
-                new MobEffectInstance(MobEffects.GLOWING, GLOWING_DURATION, 1, false, false));
-          }
-        } else {
-          easyNPCEntity.addEffect(
-              new MobEffectInstance(MobEffects.GLOWING, GLOWING_DURATION, 1, false, false));
+              PathfinderMob.class, player.getBoundingBox().inflate(0.5), Entity::isAlive)) {
+        if (pathfinderMob instanceof EasyNPCBase<?> easyNPC) {
+          highlightEasyNPC(easyNPC);
         }
       }
     }
@@ -83,7 +88,7 @@ public class EasyNPCWandItem extends Item {
       LivingEntity livingEntity,
       InteractionHand interactionHand) {
     if (player instanceof ServerPlayer serverPlayer
-        && livingEntity instanceof EasyNPCBaseEntity<?> easyNPCEntity) {
+        && livingEntity instanceof EasyNPCBase<?> easyNPCEntity) {
       MenuManager.getMenuHandler()
           .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPCEntity, 0);
       return InteractionResult.SUCCESS;
@@ -107,12 +112,11 @@ public class EasyNPCWandItem extends Item {
               blockPos.getX() + 0.25d,
               blockPos.getY() + 2d,
               blockPos.getZ() + 0.25d);
-      for (EasyNPCBaseEntity<?> easyNPCEntity :
-          level.getEntitiesOfClass(
-              EasyNPCBaseEntity.class, aabbAbove.inflate(0.5), Entity::isAlive)) {
-        if (easyNPCEntity != null) {
+      for (PathfinderMob pathfinderMob :
+          level.getEntitiesOfClass(PathfinderMob.class, aabbAbove.inflate(0.5), Entity::isAlive)) {
+        if (pathfinderMob instanceof EasyNPCBase<?> easyNPC) {
           MenuManager.getMenuHandler()
-              .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPCEntity, 0);
+              .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPC, 0);
           return InteractionResult.SUCCESS;
         }
       }
@@ -126,23 +130,21 @@ public class EasyNPCWandItem extends Item {
               blockPos.getX() + 1d,
               blockPos.getY() + 1d,
               blockPos.getZ() + 1d);
-      for (EasyNPCBaseEntity<?> easyNPCEntity :
-          level.getEntitiesOfClass(
-              EasyNPCBaseEntity.class, aabbAround.inflate(0.5), Entity::isAlive)) {
-        if (easyNPCEntity != null) {
+      for (PathfinderMob pathfinderMob :
+          level.getEntitiesOfClass(PathfinderMob.class, aabbAround.inflate(0.5), Entity::isAlive)) {
+        if (pathfinderMob instanceof EasyNPCBase<?> easyNPC) {
           MenuManager.getMenuHandler()
-              .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPCEntity, 0);
+              .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPC, 0);
           return InteractionResult.SUCCESS;
         }
       }
 
       // 3. Expand the search area by 2.5x to find all nearby EasyNPC entities.
-      for (EasyNPCBaseEntity<?> easyNPCEntity :
-          level.getEntitiesOfClass(
-              EasyNPCBaseEntity.class, aabbAround.inflate(2.5), Entity::isAlive)) {
-        if (easyNPCEntity != null) {
+      for (PathfinderMob pathfinderMob :
+          level.getEntitiesOfClass(PathfinderMob.class, aabbAround.inflate(2.5), Entity::isAlive)) {
+        if (pathfinderMob instanceof EasyNPCBase<?> easyNPC) {
           MenuManager.getMenuHandler()
-              .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPCEntity, 0);
+              .openConfigurationMenu(ConfigurationType.MAIN, serverPlayer, easyNPC, 0);
           return InteractionResult.SUCCESS;
         }
       }

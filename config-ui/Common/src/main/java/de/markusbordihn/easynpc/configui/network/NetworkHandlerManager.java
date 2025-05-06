@@ -38,6 +38,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelLockR
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelPoseMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelPositionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelRotationMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelScaleMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelVisibilityMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeMovementAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeNameMessage;
@@ -45,7 +46,6 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangePoseMessag
 import de.markusbordihn.easynpc.configui.network.message.server.ChangePositionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeProfessionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeRendererMessage;
-import de.markusbordihn.easynpc.configui.network.message.server.ChangeScaleMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeSkinMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeTradingTypeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportPresetMessage;
@@ -252,6 +252,12 @@ public class NetworkHandlerManager {
         ChangeModelRotationMessage::create);
 
     networkHandler.registerServerNetworkMessage(
+        ChangeModelScaleMessage.PAYLOAD_TYPE,
+        ChangeModelScaleMessage.STREAM_CODEC,
+        ChangeModelScaleMessage.class,
+        ChangeModelScaleMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
         ChangeModelVisibilityMessage.PAYLOAD_TYPE,
         ChangeModelVisibilityMessage.STREAM_CODEC,
         ChangeModelVisibilityMessage.class,
@@ -292,12 +298,6 @@ public class NetworkHandlerManager {
         ChangeRendererMessage.STREAM_CODEC,
         ChangeRendererMessage.class,
         ChangeRendererMessage::create);
-
-    networkHandler.registerServerNetworkMessage(
-        ChangeScaleMessage.PAYLOAD_TYPE,
-        ChangeScaleMessage.STREAM_CODEC,
-        ChangeScaleMessage.class,
-        ChangeScaleMessage::create);
 
     networkHandler.registerServerNetworkMessage(
         ChangeSkinMessage.PAYLOAD_TYPE,

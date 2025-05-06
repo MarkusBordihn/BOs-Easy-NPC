@@ -19,13 +19,15 @@
 
 package de.markusbordihn.easynpc.data.rotation;
 
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import java.util.List;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
-public record CustomRotation(float x, float y, float z) {
+public record CustomRotation(float x, float y, float z, boolean locked) {
 
   public static final StreamCodec<RegistryFriendlyByteBuf, CustomRotation> STREAM_CODEC =
       new StreamCodec<>() {
@@ -34,7 +36,8 @@ public record CustomRotation(float x, float y, float z) {
           return new CustomRotation(
               registryFriendlyByteBuf.readFloat(),
               registryFriendlyByteBuf.readFloat(),
-              registryFriendlyByteBuf.readFloat());
+              registryFriendlyByteBuf.readFloat(),
+              false);
         }
 
         @Override
@@ -43,15 +46,29 @@ public record CustomRotation(float x, float y, float z) {
           registryFriendlyByteBuf.writeFloat(rotation.x);
           registryFriendlyByteBuf.writeFloat(rotation.y);
           registryFriendlyByteBuf.writeFloat(rotation.z);
+          registryFriendlyByteBuf.writeBoolean(rotation.locked);
         }
       };
 
+  public CustomRotation(float x, float y, float z) {
+    this(x, y, z, false);
+  }
+
+  public CustomRotation(ModelPartType modelPartType, CompoundTag compoundTag) {
+    this(compoundTag.getList(modelPartType.getTagName(), 5));
+  }
+
   public CustomRotation(ListTag listTag) {
-    this(listTag.getFloat(0), listTag.getFloat(1), listTag.getFloat(2));
+    this(
+        listTag.getFloat(0), listTag.getFloat(1), listTag.getFloat(2), listTag.getFloat(3) == 1.0F);
   }
 
   public CustomRotation(List<Float> list) {
-    this(list.get(0), list.get(1), list.get(2));
+    this(list.get(0), list.get(1), list.get(2), list.get(3) == 1.0F);
+  }
+
+  public CustomRotation withLocked(boolean locked) {
+    return new CustomRotation(this.x, this.y, this.z, locked);
   }
 
   public ListTag save() {
@@ -59,6 +76,7 @@ public record CustomRotation(float x, float y, float z) {
     listTag.add(FloatTag.valueOf(this.x));
     listTag.add(FloatTag.valueOf(this.y));
     listTag.add(FloatTag.valueOf(this.z));
+    listTag.add(FloatTag.valueOf(this.locked ? 1.0F : 0.0F));
     return listTag;
   }
 
@@ -67,14 +85,19 @@ public record CustomRotation(float x, float y, float z) {
   }
 
   public boolean hasChanged(float x, float y, float z) {
-    return this.x != x || this.y != y || this.z != z;
+    return hasChanged(x, y, z, false);
+  }
+
+  public boolean hasChanged(float x, float y, float z, boolean locked) {
+    return this.x != x || this.y != y || this.z != z || this.locked != locked;
   }
 
   @Override
   public boolean equals(Object object) {
-    return object instanceof CustomRotation customRotation
-        && this.x == customRotation.x
-        && this.y == customRotation.y
-        && this.z == customRotation.z;
+    return object instanceof CustomRotation(float x1, float y1, float z1, boolean locked1)
+        && this.x == x1
+        && this.y == y1
+        && this.z == z1
+        && this.locked == locked1;
   }
 }

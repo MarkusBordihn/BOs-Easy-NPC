@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.configui.network.message.server;
 
 import de.markusbordihn.easynpc.configui.Constants;
-import de.markusbordihn.easynpc.data.model.ModelPart;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -35,7 +35,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Pose;
 
-public record ChangeModelPositionMessage(UUID uuid, ModelPart modelPart, CustomPosition position)
+public record ChangeModelPositionMessage(
+    UUID uuid, ModelPartType modelPartType, CustomPosition position)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
@@ -49,14 +50,14 @@ public record ChangeModelPositionMessage(UUID uuid, ModelPart modelPart, CustomP
   public static ChangeModelPositionMessage create(final FriendlyByteBuf buffer) {
     return new ChangeModelPositionMessage(
         buffer.readUUID(),
-        buffer.readEnum(ModelPart.class),
+        buffer.readEnum(ModelPartType.class),
         new CustomPosition(buffer.readFloat(), buffer.readFloat(), buffer.readFloat()));
   }
 
   @Override
   public void write(final FriendlyByteBuf buffer) {
     buffer.writeUUID(this.uuid);
-    buffer.writeEnum(this.modelPart);
+    buffer.writeEnum(this.modelPartType);
     buffer.writeFloat(this.position.x());
     buffer.writeFloat(this.position.y());
     buffer.writeFloat(this.position.z());
@@ -80,8 +81,8 @@ public record ChangeModelPositionMessage(UUID uuid, ModelPart modelPart, CustomP
     }
 
     // Validate ModelPart.
-    if (this.modelPart == null) {
-      log.error("Invalid modelPart for {} from {}", easyNPC, serverPlayer);
+    if (this.modelPartType == null) {
+      log.error("Invalid modelPartType for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
@@ -101,19 +102,19 @@ public record ChangeModelPositionMessage(UUID uuid, ModelPart modelPart, CustomP
     // Perform action.
     log.debug(
         "Change {} position to {}° for {} from {}",
-        modelPart,
+        modelPartType,
         this.position,
         easyNPC,
         serverPlayer);
 
     // Set common properties for all cases except ROOT.
-    if (this.modelPart != ModelPart.ROOT) {
+    if (this.modelPartType != ModelPartType.ROOT) {
       easyNPC.getEntity().setPose(Pose.STANDING);
       modelData.setModelPose(ModelPose.CUSTOM);
     }
 
     // Apply position change based on the model part.
-    modelData.setModelPartPosition(this.modelPart, this.position);
+    modelData.setModelPartPosition(this.modelPartType, this.position);
 
     // Verify if custom model pose is really needed.
     if (!modelData.hasChangedModel()) {

@@ -19,13 +19,16 @@
 
 package de.markusbordihn.easynpc.data.position;
 
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import java.util.List;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
 public record CustomPosition(float x, float y, float z) {
+
   public static final StreamCodec<RegistryFriendlyByteBuf, CustomPosition> STREAM_CODEC =
       new StreamCodec<>() {
         @Override
@@ -44,6 +47,10 @@ public record CustomPosition(float x, float y, float z) {
           registryFriendlyByteBuf.writeFloat(position.z);
         }
       };
+
+  public CustomPosition(ModelPartType modelPartType, CompoundTag compoundTag) {
+    this(compoundTag.getList(modelPartType.getTagName(), 5));
+  }
 
   public CustomPosition(ListTag listTag) {
     this(listTag.getFloat(0), listTag.getFloat(1), listTag.getFloat(2));

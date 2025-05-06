@@ -33,7 +33,7 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.Level;
 
-public enum ModCustomEntityType {
+public enum ModCustomEntityType implements ModEntityTypeProvider {
   DOPPLER(
       Doppler.ID,
       EntityType.Builder.of(
@@ -80,14 +80,17 @@ public enum ModCustomEntityType {
             Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id));
   }
 
+  @Override
   public String getId() {
     return id;
   }
 
+  @Override
   public EntityType.Builder<? extends Entity> getBuilder() {
     return builder;
   }
 
+  @Override
   public ResourceKey<EntityType<?>> getResourceKey() {
     return resourceKey;
   }

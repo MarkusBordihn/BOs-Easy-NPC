@@ -22,7 +22,8 @@ package de.markusbordihn.easynpc.configui.gametest;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.data.editor.EditorType;
-import de.markusbordihn.easynpc.entity.ModEntityTypes;
+import de.markusbordihn.easynpc.entity.ModEntityType;
+import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraftforge.gametest.GameTestHolder;
@@ -35,7 +36,7 @@ public class EditorScreenTest {
   public void testActionDataEditorScreen(GameTestHelper helper) {
     EditorScreenTestHelper.testEditorScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         EditorType.ACTION_DATA,
         ModMenuTypes.ACTION_DATA_EDITOR_MENU.get());
   }
@@ -44,7 +45,7 @@ public class EditorScreenTest {
   public void testActionDataEntryEditorScreen(GameTestHelper helper) {
     EditorScreenTestHelper.testEditorScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         EditorType.ACTION_DATA_ENTRY,
         ModMenuTypes.ACTION_DATA_ENTRY_EDITOR_MENU.get());
   }
@@ -52,14 +53,17 @@ public class EditorScreenTest {
   @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testDialogEditorScreen(GameTestHelper helper) {
     EditorScreenTestHelper.testEditorScreen(
-        helper, ModEntityTypes.HUMANOID, EditorType.DIALOG, ModMenuTypes.DIALOG_EDITOR_MENU.get());
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        EditorType.DIALOG,
+        ModMenuTypes.DIALOG_EDITOR_MENU.get());
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
   public void testDialogButtonEditorScreen(GameTestHelper helper) {
     EditorScreenTestHelper.testEditorScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         EditorType.DIALOG_BUTTON,
         ModMenuTypes.DIALOG_BUTTON_EDITOR_MENU.get());
   }
@@ -68,7 +72,7 @@ public class EditorScreenTest {
   public void testDialogTextEditorScreen(GameTestHelper helper) {
     EditorScreenTestHelper.testEditorScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         EditorType.DIALOG_TEXT,
         ModMenuTypes.DIALOG_TEXT_EDITOR_MENU.get());
   }

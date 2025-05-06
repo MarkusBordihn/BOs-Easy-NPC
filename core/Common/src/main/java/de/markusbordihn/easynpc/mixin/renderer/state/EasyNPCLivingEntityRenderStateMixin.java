@@ -1,4 +1,4 @@
-package de.markusbordihn.easynpc.mixin;
+package de.markusbordihn.easynpc.mixin.renderer.state;
 
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import java.util.UUID;

@@ -52,7 +52,7 @@ dependencies {
   implementation project(":Common")
 
   // Include Core Common code
-  implementation "de.markusbordihn.easynpc:easy_npc-common-${project.minecraft_version}:${project.version}"
+  implementation "de.markusbordihn.easynpc:easy_npc-neoforge-${project.minecraft_version}:${project.version}"
   runtimeOnly "de.markusbordihn.easynpc:easy_npc-neoforge-${project.minecraft_version}:${project.version}"
 
   // Test dependencies

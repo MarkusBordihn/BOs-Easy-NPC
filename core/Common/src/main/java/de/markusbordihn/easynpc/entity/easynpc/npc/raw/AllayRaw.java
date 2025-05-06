@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity.easynpc.npc.raw;
 import static java.util.Objects.hash;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
@@ -40,6 +41,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.SynchedEntityData.Builder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -336,9 +338,7 @@ public class AllayRaw extends Allay implements EasyNPCBase<Allay> {
 
   @Override
   public <T> void defineSynchedEntityData(
-      net.minecraft.network.syncher.SynchedEntityData.Builder builder,
-      SynchedDataIndex synchedDataIndex,
-      T defaultData) {
+      Builder builder, SynchedDataIndex synchedDataIndex, T defaultData) {
     if (this.synchedEntityData == null) {
       this.synchedEntityData = new SynchedEntityData(this, entityDataAccessorMap);
     }
@@ -483,22 +483,17 @@ public class AllayRaw extends Allay implements EasyNPCBase<Allay> {
 
   @Override
   public boolean supportsPoseConfiguration() {
-    return false;
+    return true;
   }
 
   @Override
   public boolean supportsScalingConfiguration() {
-    return false;
+    return true;
   }
 
   @Override
   public boolean supportsDefaultRotationConfiguration() {
-    return false;
-  }
-
-  @Override
-  public boolean supportsChangeModelConfiguration() {
-    return false;
+    return true;
   }
 
   @Override
@@ -514,6 +509,11 @@ public class AllayRaw extends Allay implements EasyNPCBase<Allay> {
   @Override
   public Enum<?> getDefaultVariantType() {
     return VariantType.DEFAULT;
+  }
+
+  @Override
+  public ModelType getModelType() {
+    return ModelType.ALLAY;
   }
 
   @Override

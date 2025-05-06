@@ -20,9 +20,11 @@
 package de.markusbordihn.easynpc.configui.network.message.server;
 
 import de.markusbordihn.easynpc.configui.Constants;
-import de.markusbordihn.easynpc.data.model.ModelScaleAxis;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
+import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -31,26 +33,31 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Pose;
 
-public record ChangeScaleMessage(UUID uuid, ModelScaleAxis scaleAxis, Float scaleValue)
+public record ChangeModelScaleMessage(UUID uuid, ModelPartType modelPartType, CustomScale scale)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
-      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "change_scale");
-  public static final Type<ChangeScaleMessage> PAYLOAD_TYPE = new Type<>(MESSAGE_ID);
-  public static final StreamCodec<RegistryFriendlyByteBuf, ChangeScaleMessage> STREAM_CODEC =
-      StreamCodec.of((buffer, message) -> message.write(buffer), ChangeScaleMessage::create);
+      ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "change_model_scale");
+  public static final Type<ChangeModelScaleMessage> PAYLOAD_TYPE = new Type<>(MESSAGE_ID);
+  public static final StreamCodec<RegistryFriendlyByteBuf, ChangeModelScaleMessage> STREAM_CODEC =
+      StreamCodec.of((buffer, message) -> message.write(buffer), ChangeModelScaleMessage::create);
 
-  public static ChangeScaleMessage create(final FriendlyByteBuf buffer) {
-    return new ChangeScaleMessage(
-        buffer.readUUID(), buffer.readEnum(ModelScaleAxis.class), buffer.readFloat());
+  public static ChangeModelScaleMessage create(final FriendlyByteBuf buffer) {
+    return new ChangeModelScaleMessage(
+        buffer.readUUID(),
+        buffer.readEnum(ModelPartType.class),
+        new CustomScale(buffer.readFloat(), buffer.readFloat(), buffer.readFloat()));
   }
 
   @Override
   public void write(final FriendlyByteBuf buffer) {
     buffer.writeUUID(this.uuid);
-    buffer.writeEnum(this.scaleAxis);
-    buffer.writeFloat(this.scaleValue);
+    buffer.writeEnum(this.modelPartType);
+    buffer.writeFloat(this.scale.x());
+    buffer.writeFloat(this.scale.y());
+    buffer.writeFloat(this.scale.z());
   }
 
   @Override
@@ -70,27 +77,42 @@ public record ChangeScaleMessage(UUID uuid, ModelScaleAxis scaleAxis, Float scal
       return;
     }
 
-    // Validate scale axis.
-    if (this.scaleAxis == null) {
-      log.error("Invalid scale axis request for {} from {}", easyNPC, serverPlayer);
+    // Validate ModelPart.
+    if (this.modelPartType == null) {
+      log.error("Invalid modelPartType for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate scale.
-    if (this.scaleValue == null || this.scaleValue < 0.1f || this.scaleValue > 10.0f) {
-      log.error(
-          "Invalid scale {} request for UUID {} from {}", this.scaleValue, easyNPC, serverPlayer);
+    // Validate Positions.
+    if (this.scale == null) {
+      log.error("Invalid scale for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    // Validate scale data.
-    ScaleData<?> scaleData = easyNPC.getEasyNPCScaleData();
-    if (scaleData == null) {
-      log.error("Invalid scale data for {} from {}", easyNPC, serverPlayer);
+    // Validate Model data.
+    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+    if (modelData == null) {
+      log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Perform action.
-    scaleData.setModelScaleAxis(this.scaleAxis, this.scaleValue);
+    log.debug(
+        "Change {} scale to {}° for {} from {}", modelPartType, this.scale, easyNPC, serverPlayer);
+
+    // Set common properties for all cases except ROOT.
+    if (this.modelPartType != ModelPartType.ROOT) {
+      easyNPC.getEntity().setPose(Pose.STANDING);
+      modelData.setModelPose(ModelPose.CUSTOM);
+    }
+
+    // Apply scale change based on the model part.
+    modelData.setModelPartScale(this.modelPartType, this.scale);
+
+    // Verify if custom model pose is really needed.
+    if (!modelData.hasChangedModel()) {
+      log.debug("Reset custom model pose for {} from {}", easyNPC, serverPlayer);
+      modelData.setModelPose(ModelPose.DEFAULT);
+    }
   }
 }

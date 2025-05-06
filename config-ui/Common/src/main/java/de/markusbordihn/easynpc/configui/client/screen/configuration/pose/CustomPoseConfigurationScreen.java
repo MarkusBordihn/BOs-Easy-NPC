@@ -24,9 +24,10 @@ import de.markusbordihn.easynpc.client.screen.components.RangeSliderButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
-import de.markusbordihn.easynpc.data.model.ModelPart;
-import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
+import java.util.EnumMap;
+import java.util.Set;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -34,30 +35,25 @@ import net.minecraft.world.entity.player.Inventory;
 public class CustomPoseConfigurationScreen<T extends ConfigurationMenu>
     extends PoseConfigurationScreen<T> {
 
-  protected RangeSliderButton headSliderButton;
-  protected RangeSliderButton bodySliderButton;
-  protected RangeSliderButton armsSliderButton;
-  protected RangeSliderButton leftArmSliderButton;
-  protected RangeSliderButton rightArmSliderButton;
-  protected RangeSliderButton leftLegSliderButton;
-  protected RangeSliderButton rightLegSliderButton;
+  private final EnumMap<ModelPartType, RangeSliderButton> sliders =
+      new EnumMap<>(ModelPartType.class);
 
   public CustomPoseConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 
   private RangeSliderButton createVisibilityRotationPositionSlider(
-      int left, int top, ModelPart modelPart, String label) {
+      int left, int top, ModelPartType modelPartType, String label) {
     // Model Part Rotation
-    RangeSliderButton sliderRotationButtonX = createRotationSlider(left, top, modelPart, label);
+    RangeSliderButton sliderRotationButtonX = createRotationSlider(left, top, modelPartType, label);
 
     // Model Part Position
     RangeSliderButton sliderPositionButtonX =
         createPositionSliderCompact(
-            left, top + sliderRotationButtonX.getHeight(), modelPart, label);
+            left, top + sliderRotationButtonX.getHeight(), modelPartType, label);
 
     // Model Part Visibility
-    boolean modelPartVisibility = this.modelData.isModelPartVisible(modelPart);
+    boolean modelPartVisibility = this.modelData.getModelPartVisibility(modelPartType);
     this.addRenderableWidget(
         new Checkbox(
             sliderRotationButtonX.getX() + 3,
@@ -66,7 +62,8 @@ public class CustomPoseConfigurationScreen<T extends ConfigurationMenu>
             modelPartVisibility,
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
-                    .modelVisibilityChange(this.getEasyNPCUUID(), modelPart, checkbox.selected())));
+                    .modelVisibilityChange(
+                        this.getEasyNPCUUID(), modelPartType, checkbox.selected())));
 
     return sliderRotationButtonX;
   }
@@ -84,70 +81,22 @@ public class CustomPoseConfigurationScreen<T extends ConfigurationMenu>
     int sliderLeftSpace = 200;
     int sliderTopSpace = 60;
 
-    // Variant data
-    VariantData<?> variantData = this.getEasyNPC().getEasyNPCVariantData();
-    boolean hasCrossedArms = variantData.hasVariantCrossedArms();
-
-    // Head parts
-    if (this.modelData.hasHeadModelPart()) {
-      this.headSliderButton =
+    // Model parts
+    Set<ModelPartType> modelPartTypes = this.modelData.getModelType().getPrimaryModelParts();
+    int partsOnRow = 0;
+    for (ModelPartType modelPartType : modelPartTypes) {
+      RangeSliderButton slider =
           createVisibilityRotationPositionSlider(
-              sliderLeftPos, sliderTopPos, ModelPart.HEAD, "head");
-    }
+              sliderLeftPos, sliderTopPos, modelPartType, modelPartType.name().toLowerCase());
+      sliders.put(modelPartType, slider);
 
-    // Body parts
-    if (this.modelData.hasBodyModelPart()) {
       sliderLeftPos += sliderLeftSpace;
-      this.bodySliderButton =
-          createVisibilityRotationPositionSlider(
-              sliderLeftPos, sliderTopPos, ModelPart.BODY, "body");
-    }
-
-    sliderTopPos += sliderTopSpace;
-
-    // Arms parts
-    if (hasCrossedArms
-        || (!this.modelData.hasLeftArmModelPart()
-            && !this.modelData.hasRightArmModelPart()
-            && this.modelData.hasArmsModelPart())) {
-      sliderLeftPos = this.contentLeftPos - 3;
-      this.armsSliderButton =
-          createVisibilityRotationPositionSlider(
-              sliderLeftPos, sliderTopPos, ModelPart.ARMS, "arms");
-    }
-
-    // Right arm parts
-    if (!hasCrossedArms && this.modelData.hasRightArmModelPart()) {
-      sliderLeftPos = this.contentLeftPos - 3;
-      this.rightArmSliderButton =
-          createVisibilityRotationPositionSlider(
-              sliderLeftPos, sliderTopPos, ModelPart.RIGHT_ARM, "right_arm");
-    }
-
-    // Left arm parts
-    if (!hasCrossedArms && this.modelData.hasLeftArmModelPart()) {
-      sliderLeftPos += sliderLeftSpace;
-      this.leftArmSliderButton =
-          createVisibilityRotationPositionSlider(
-              sliderLeftPos, sliderTopPos, ModelPart.LEFT_ARM, "left_arm");
-    }
-
-    sliderTopPos += sliderTopSpace;
-
-    // Right leg parts
-    if (this.modelData.hasRightLegModelPart()) {
-      sliderLeftPos = this.contentLeftPos - 3;
-      this.rightLegSliderButton =
-          createVisibilityRotationPositionSlider(
-              sliderLeftPos, sliderTopPos, ModelPart.RIGHT_LEG, "right_leg");
-    }
-
-    // Left leg parts
-    if (this.modelData.hasLeftLegModelPart()) {
-      sliderLeftPos += sliderLeftSpace;
-      this.leftLegSliderButton =
-          createVisibilityRotationPositionSlider(
-              sliderLeftPos, sliderTopPos, ModelPart.LEFT_LEG, "left_leg");
+      partsOnRow++;
+      if (partsOnRow >= 2) {
+        partsOnRow = 0;
+        sliderLeftPos = this.contentLeftPos - 3;
+        sliderTopPos += sliderTopSpace;
+      }
     }
   }
 
@@ -165,61 +114,17 @@ public class CustomPoseConfigurationScreen<T extends ConfigurationMenu>
         this.contentTopPos + 100 - this.yMouse,
         this.getEasyNPC());
 
-    // Body parts texts
-    if (this.modelData.hasHeadModelPart() && this.headSliderButton != null) {
-      Text.drawConfigString(
-          guiGraphics,
-          this.font,
-          "pose.head",
-          this.headSliderButton.getX() + 20,
-          this.headSliderButton.getY() - 12);
-    }
-    if (this.modelData.hasBodyModelPart() && this.bodySliderButton != null) {
-      Text.drawConfigString(
-          guiGraphics,
-          this.font,
-          "pose.body",
-          this.bodySliderButton.getX() + 20,
-          this.bodySliderButton.getY() - 12);
-    }
-    if (this.modelData.hasLeftArmModelPart() && this.leftArmSliderButton != null) {
-      Text.drawConfigString(
-          guiGraphics,
-          this.font,
-          "pose.left_arm",
-          this.leftArmSliderButton.getX() + 20,
-          this.leftArmSliderButton.getY() - 12);
-    } else if (this.modelData.hasArmsModelPart() && this.armsSliderButton != null) {
-      Text.drawConfigString(
-          guiGraphics,
-          this.font,
-          "pose.arms",
-          this.armsSliderButton.getX() + 20,
-          this.armsSliderButton.getY() - 12);
-    }
-    if (this.modelData.hasRightArmModelPart() && rightArmSliderButton != null) {
-      Text.drawConfigString(
-          guiGraphics,
-          this.font,
-          "pose.right_arm",
-          this.rightArmSliderButton.getX() + 20,
-          this.rightArmSliderButton.getY() - 12);
-    }
-    if (this.modelData.hasLeftLegModelPart() && this.leftLegSliderButton != null) {
-      Text.drawConfigString(
-          guiGraphics,
-          this.font,
-          "pose.left_leg",
-          this.leftLegSliderButton.getX() + 20,
-          this.leftLegSliderButton.getY() - 12);
-    }
-    if (this.modelData.hasRightLegModelPart() && this.rightLegSliderButton != null) {
-      Text.drawConfigString(
-          guiGraphics,
-          this.font,
-          "pose.right_leg",
-          this.rightLegSliderButton.getX() + 20,
-          this.rightLegSliderButton.getY() - 12);
+    // Model Part texts
+    for (ModelPartType modelPartType : sliders.keySet()) {
+      RangeSliderButton slider = sliders.get(modelPartType);
+      if (slider != null) {
+        Text.drawConfigString(
+            guiGraphics,
+            this.font,
+            "pose." + modelPartType.name().toLowerCase(),
+            slider.getX() + 20,
+            slider.getY() - 12);
+      }
     }
   }
 

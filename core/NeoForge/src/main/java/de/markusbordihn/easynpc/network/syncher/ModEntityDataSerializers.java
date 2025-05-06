@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.data.attribute.CustomAttributes;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeSet;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
@@ -38,6 +39,7 @@ import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.UUID;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.world.item.trading.MerchantOffers;
@@ -97,9 +99,6 @@ public class ModEntityDataSerializers {
       RENDER_DATA_SET =
           ENTITY_DATA_SERIALIZERS.register(
               "render_data_set", () -> EntityDataSerializersManager.RENDER_DATA_SET);
-  public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<CustomRotation>>
-      ROTATION =
-          ENTITY_DATA_SERIALIZERS.register("rotation", () -> EntityDataSerializersManager.ROTATION);
   public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<CustomScale>>
       SCALE = ENTITY_DATA_SERIALIZERS.register("scale", () -> EntityDataSerializersManager.SCALE);
   public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<SkinDataEntry>>
@@ -138,6 +137,26 @@ public class ModEntityDataSerializers {
               "trading_type", () -> EntityDataSerializersManager.TRADING_TYPE);
   public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<UUID>> UUID =
       ENTITY_DATA_SERIALIZERS.register("uuid", () -> EntityDataSerializersManager.UUID);
+  public static final DeferredHolder<
+          EntityDataSerializer<?>, EntityDataSerializer<Map<ModelPartType, Boolean>>>
+      MODEL_PART_VISIBILITY =
+          ENTITY_DATA_SERIALIZERS.register(
+              "model_part_visibility", () -> EntityDataSerializersManager.MODEL_PART_VISIBILITY);
+  public static final DeferredHolder<
+          EntityDataSerializer<?>, EntityDataSerializer<Map<ModelPartType, CustomRotation>>>
+      MODEL_PART_ROTATION =
+          ENTITY_DATA_SERIALIZERS.register(
+              "model_part_rotation", () -> EntityDataSerializersManager.MODEL_PART_ROTATION);
+  public static final DeferredHolder<
+          EntityDataSerializer<?>, EntityDataSerializer<Map<ModelPartType, CustomPosition>>>
+      MODEL_PART_POSITION =
+          ENTITY_DATA_SERIALIZERS.register(
+              "model_part_position", () -> EntityDataSerializersManager.MODEL_PART_POSITION);
+  public static final DeferredHolder<
+          EntityDataSerializer<?>, EntityDataSerializer<Map<ModelPartType, CustomScale>>>
+      MODEL_PART_SCALE =
+          ENTITY_DATA_SERIALIZERS.register(
+              "model_part_scale", () -> EntityDataSerializersManager.MODEL_PART_SCALE);
 
   private ModEntityDataSerializers() {}
 }

@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity;
 
-import de.markusbordihn.easynpc.client.renderer.EasyNPCLivingEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;

@@ -127,7 +127,7 @@ public class RendererManager {
           livingEntityRenderer,
           entityType);
       livingEntityRendererMap.put(
-          (EntityType<? extends Entity>) entityType,
+          entityType,
           (LivingEntityRenderer<
                   ? extends LivingEntity,
                   ? extends LivingEntityRenderState,

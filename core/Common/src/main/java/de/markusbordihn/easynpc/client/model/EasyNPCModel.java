@@ -19,22 +19,36 @@
 
 package de.markusbordihn.easynpc.client.model;
 
+import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.VillagerModel;
-import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
-import net.minecraft.client.renderer.entity.state.VillagerRenderState;
+import java.util.UUID;
 
 public class EasyNPCModel {
 
-  public static boolean setupAnimation(
-      EasyNPC<?> easyNPC,
-      EasyNPCModelManager modelManager,
-      VillagerModel model,
-      VillagerRenderState renderState) {
-    if (easyNPC == null || model == null) {
+  /**
+   * Setup Animation for Model.
+   *
+   * @param extension the EasyNPC render state extension
+   * @param modelManager the model manager
+   */
+  public static boolean setupAnimationStart(
+      EasyNPCRenderStateExtension extension, EasyNPCModelManager modelManager) {
+    if (extension == null || modelManager == null) {
+      return false;
+    }
+
+    // Get UUID
+    UUID uuid = extension.getEasyNpcUUID();
+    if (uuid == null) {
+      return false;
+    }
+
+    // Get EasyNPC
+    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid);
+    if (easyNPC == null) {
       return false;
     }
 
@@ -44,101 +58,29 @@ public class EasyNPCModel {
       return false;
     }
 
-    // Get Model Pose
-    ModelPose modelPose = modelData.getModelPose();
-    if (modelPose == null || modelPose == ModelPose.DEFAULT) {
-      return false;
-    }
-
-    // Reset Model
-    modelManager.resetModelParts();
-
-    // Handle Model Position, Rotation and Visibility
-    ModelHelper.setPositionRotationVisibility(
-        modelManager.getModelPart(ModelPartType.HEAD),
-        modelData.getModelHeadPosition(),
-        modelData.getModelHeadRotation(),
-        modelData.isModelHeadVisible());
-    ModelHelper.setPositionRotationVisibility(
-        modelManager.getModelPart(ModelPartType.BODY),
-        modelData.getModelBodyPosition(),
-        modelData.getModelBodyRotation(),
-        modelData.isModelBodyVisible());
-    ModelHelper.setPositionRotationVisibility(
-        modelManager.getModelPart(ModelPartType.ARMS),
-        modelData.getModelArmsPosition(),
-        modelData.getModelArmsRotation(),
-        modelData.isModelArmsVisible());
-    ModelHelper.setPositionRotationVisibility(
-        modelManager.getModelPart(ModelPartType.LEFT_LEG),
-        modelData.getModelLeftLegPosition(),
-        modelData.getModelLeftLegRotation(),
-        modelData.isModelLeftLegVisible());
-    ModelHelper.setPositionRotationVisibility(
-        modelManager.getModelPart(ModelPartType.RIGHT_LEG),
-        modelData.getModelRightLegPosition(),
-        modelData.getModelRightLegRotation(),
-        modelData.isModelRightLegVisible());
-
-    return true;
+    return setupAnimation(easyNPC, modelData, modelManager);
   }
 
+  /**
+   * Setup Animation for Model.
+   *
+   * @param easyNPC the EasyNPC entity
+   * @param modelManager the model manager
+   * @return true if model was adjusted, false otherwise
+   */
   public static boolean setupAnimation(
-      EasyNPC<?> easyNPC,
-      EasyNPCModelManager modelManager,
-      HumanoidModel<?> model,
-      HumanoidRenderState renderState) {
-    if (easyNPC == null || model == null) {
+      EasyNPC<?> easyNPC, ModelData<?> modelData, EasyNPCModelManager modelManager) {
+    if (easyNPC == null || modelData == null || modelManager == null) {
       return false;
     }
 
-    // Get Model Data
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
-    if (modelData == null) {
+    // Early return if no custom model pose is used.
+    if (modelData.getModelPose() == ModelPose.DEFAULT) {
       return false;
     }
 
-    // Get Model Pose
-    ModelPose modelPose = modelData.getModelPose();
-    if (modelPose == null || modelPose == ModelPose.DEFAULT) {
-      return false;
-    }
-
-    // Reset Model
+    // Handle Model Pose
     modelManager.resetModelParts();
-
-    // Handle Model Position, Rotation and Visibility
-    ModelHelper.setPositionRotationVisibility(
-        modelManager.getModelPart(ModelPartType.HEAD),
-        modelData.getModelHeadPosition(),
-        modelData.getModelHeadRotation(),
-        modelData.isModelHeadVisible());
-    ModelHelper.setPositionRotationVisibility(
-        modelManager.getModelPart(ModelPartType.BODY),
-        modelData.getModelBodyPosition(),
-        modelData.getModelBodyRotation(),
-        modelData.isModelBodyVisible());
-    ModelHelper.setPositionRotationVisibility(
-        modelManager.getModelPart(ModelPartType.LEFT_ARM),
-        modelData.getModelLeftArmPosition(),
-        modelData.getModelLeftArmRotation(),
-        modelData.isModelLeftArmVisible());
-    ModelHelper.setPositionRotationVisibility(
-        modelManager.getModelPart(ModelPartType.RIGHT_ARM),
-        modelData.getModelRightArmPosition(),
-        modelData.getModelRightArmRotation(),
-        modelData.isModelRightArmVisible());
-    ModelHelper.setPositionRotationVisibility(
-        modelManager.getModelPart(ModelPartType.LEFT_LEG),
-        modelData.getModelLeftLegPosition(),
-        modelData.getModelLeftLegRotation(),
-        modelData.isModelLeftLegVisible());
-    ModelHelper.setPositionRotationVisibility(
-        modelManager.getModelPart(ModelPartType.RIGHT_LEG),
-        modelData.getModelRightLegPosition(),
-        modelData.getModelRightLegRotation(),
-        modelData.isModelRightLegVisible());
-
-    return true;
+    return modelManager.setupModelParts(modelData);
   }
 }

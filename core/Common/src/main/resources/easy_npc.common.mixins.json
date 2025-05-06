@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "de.markusbordihn.easynpc.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "model.EasyNPCHumanoidModelMixin",
+    "model.EasyNPCVillagerModelMixin",
+    "model.EasyNPCWolfModelMixin",
+    "renderer.EasyNPCLivingEntityRendererMixin",
+    "renderer.state.EasyNPCLivingEntityRenderStateMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,12 +1,9 @@
-package de.markusbordihn.easynpc.mixin;
+package de.markusbordihn.easynpc.mixin.model;
 
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManager;
-import de.markusbordihn.easynpc.client.model.ModelPartType;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
-import de.markusbordihn.easynpc.entity.LivingEntityManager;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import java.util.UUID;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import net.minecraft.client.model.VillagerModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.VillagerRenderState;
@@ -30,13 +27,14 @@ public class EasyNPCVillagerModelMixin<T extends VillagerRenderState> {
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))
   private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
-    this.modelManager = new EasyNPCModelManager(modelPart);
-    this.modelManager.defineModelPart(ModelPartType.HAT, this.hat);
-    this.modelManager.defineModelPart(ModelPartType.HEAD, this.head);
-    this.modelManager.defineModelPart(ModelPartType.BODY, modelPart.getChild("body"));
-    this.modelManager.defineModelPart(ModelPartType.ARMS, modelPart.getChild("arms"));
-    this.modelManager.defineModelPart(ModelPartType.RIGHT_LEG, this.rightLeg);
-    this.modelManager.defineModelPart(ModelPartType.LEFT_LEG, this.leftLeg);
+    this.modelManager =
+        new EasyNPCModelManager(modelPart)
+            .defineModelPart(ModelPartType.HAT, this.hat)
+            .defineModelPart(ModelPartType.HEAD, this.head)
+            .defineModelPart(ModelPartType.BODY, "body")
+            .defineModelPart(ModelPartType.ARMS, "arms")
+            .defineModelPart(ModelPartType.RIGHT_LEG, this.rightLeg)
+            .defineModelPart(ModelPartType.LEFT_LEG, this.leftLeg);
   }
 
   @Inject(
@@ -44,22 +42,8 @@ public class EasyNPCVillagerModelMixin<T extends VillagerRenderState> {
       at = @At("HEAD"),
       cancellable = true)
   private void setupNpcAnim(T renderState, CallbackInfo callbackInfo) {
-    if (!(renderState instanceof EasyNPCRenderStateExtension extension)) {
-      return;
-    }
-
-    UUID uuid = extension.getEasyNpcUUID();
-    if (uuid == null) {
-      return;
-    }
-
-    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid);
-    if (easyNPC == null) {
-      return;
-    }
-    VillagerModel model = (VillagerModel) (Object) this;
-
-    if (EasyNPCModel.setupAnimation(easyNPC, this.modelManager, model, renderState)) {
+    if (renderState instanceof EasyNPCRenderStateExtension extension
+        && EasyNPCModel.setupAnimationStart(extension, this.modelManager)) {
       callbackInfo.cancel();
     }
   }

@@ -40,9 +40,7 @@ public class BackupDataFiles {
 
     // Prepare backup data folder for today
     Path backupDataFolder = getBackupDataFolder();
-    if (backupDataFolder == null) {
-      return;
-    }
+    if (backupDataFolder == null) {}
   }
 
   public static Path getBackupDataFolder() {

@@ -1,7 +1,7 @@
-package de.markusbordihn.easynpc.mixin;
+package de.markusbordihn.easynpc.mixin.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.markusbordihn.easynpc.client.renderer.EasyNPCLivingEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCLivingEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -49,8 +49,15 @@ public class EasyNPCLivingEntityRendererMixin {
       int packedLight,
       CallbackInfo ci) {
     if (renderState instanceof EasyNPCRenderStateExtension renderStateExtension) {
-      EasyNPCLivingEntityRenderer.handleRenderStart(
+      EasyNPCLivingEntityRenderer.handleRenderEnd(
           renderState, poseStack, bufferSource, packedLight);
+    }
+  }
+
+  @Inject(method = "scale", at = @At("HEAD"))
+  private void onScale(LivingEntityRenderState renderState, PoseStack poseStack, CallbackInfo ci) {
+    if (renderState instanceof EasyNPCRenderStateExtension renderStateExtension) {
+      EasyNPCLivingEntityRenderer.handleScale(renderState, poseStack);
     }
   }
 }

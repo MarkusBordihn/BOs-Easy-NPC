@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.data.attribute.CustomAttributes;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeSet;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.objective.TargetedEntitySet;
@@ -39,6 +40,10 @@ import de.markusbordihn.easynpc.data.skin.SkinUUID;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingType;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelPositionData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelRotationData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelScaleData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelVisibilityData;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -99,10 +104,6 @@ public class EntityDataSerializersManager {
       defineSerializer(
           RenderDataSet.class.getSimpleName(),
           EntityDataSerializer.forValueType(RenderDataSet.STREAM_CODEC));
-  public static final EntityDataSerializer<CustomRotation> ROTATION =
-      defineSerializer(
-          CustomRotation.class.getSimpleName(),
-          EntityDataSerializer.forValueType(CustomRotation.STREAM_CODEC));
   public static final EntityDataSerializer<CustomScale> SCALE =
       defineSerializer(
           CustomScale.class.getSimpleName(),
@@ -140,6 +141,23 @@ public class EntityDataSerializersManager {
   public static final EntityDataSerializer<UUID> UUID =
       defineSerializer(
           UUID.class.getSimpleName(), EntityDataSerializer.forValueType(UUIDUtil.STREAM_CODEC));
+  public static final EntityDataSerializer<Map<ModelPartType, Boolean>> MODEL_PART_VISIBILITY =
+      defineSerializer(
+          ModelVisibilityData.class.getSimpleName(),
+          EntityDataSerializer.forValueType(
+              ModelVisibilityData.MODEL_PART_VISIBILITY_STREAM_CODEC));
+  public static final EntityDataSerializer<Map<ModelPartType, CustomRotation>> MODEL_PART_ROTATION =
+      defineSerializer(
+          ModelRotationData.class.getSimpleName(),
+          EntityDataSerializer.forValueType(ModelRotationData.MODEL_PART_ROTATION_STREAM_CODEC));
+  public static final EntityDataSerializer<Map<ModelPartType, CustomPosition>> MODEL_PART_POSITION =
+      defineSerializer(
+          ModelPositionData.class.getSimpleName(),
+          EntityDataSerializer.forValueType(ModelPositionData.MODEL_PART_POSITION_STREAM_CODEC));
+  public static final EntityDataSerializer<Map<ModelPartType, CustomScale>> MODEL_PART_SCALE =
+      defineSerializer(
+          ModelScaleData.class.getSimpleName(),
+          EntityDataSerializer.forValueType(ModelScaleData.MODEL_PART_SCALE_STREAM_CODEC));
 
   private EntityDataSerializersManager() {}
 

@@ -61,11 +61,6 @@ public class ChickenNPC extends ChickenRaw {
   }
 
   @Override
-  public boolean canUseArmor() {
-    return false;
-  }
-
-  @Override
   public int getEntityGuiScaling() {
     return 60;
   }
@@ -83,11 +78,6 @@ public class ChickenNPC extends ChickenRaw {
   @Override
   public int getEntityDialogScaling() {
     return 70;
-  }
-
-  @Override
-  public boolean supportsSmartAnimations() {
-    return false;
   }
 
   @Override

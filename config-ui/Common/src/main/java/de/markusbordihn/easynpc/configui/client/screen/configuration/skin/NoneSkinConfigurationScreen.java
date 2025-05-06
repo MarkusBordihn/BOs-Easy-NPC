@@ -58,7 +58,7 @@ public class NoneSkinConfigurationScreen<T extends ConfigurationMenu>
     String formerSkinName = skinData.getSkinName();
     String formerSkinURL = skinData.getSkinURL();
     UUID formerSkinUUID = skinData.getSkinUUID();
-    Enum<?> formerVariant = variantData.getVariant();
+    Enum<?> formerVariant = variantData.getVariantType();
 
     // None Dialog Checkbox
     this.noneSkinCheckbox =
@@ -85,7 +85,8 @@ public class NoneSkinConfigurationScreen<T extends ConfigurationMenu>
                       case NONE:
                       default:
                         NetworkMessageHandlerManager.getServerHandler()
-                            .setDefaultSkin(this.getEasyNPCUUID(), variantData.getDefaultVariant());
+                            .setDefaultSkin(
+                                this.getEasyNPCUUID(), variantData.getDefaultVariantType());
                     }
                   }
                 }));

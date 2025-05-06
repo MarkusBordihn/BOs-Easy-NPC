@@ -30,7 +30,7 @@ public interface ConfigurationData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default boolean supportsChangeModelConfiguration() {
-    return true;
+    return false;
   }
 
   default boolean supportsPoseConfiguration() {

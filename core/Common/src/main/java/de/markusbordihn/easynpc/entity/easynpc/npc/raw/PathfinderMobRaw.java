@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity.easynpc.npc.raw;
 import static java.util.Objects.hash;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
@@ -484,22 +485,17 @@ public class PathfinderMobRaw extends PathfinderMob implements EasyNPCBase<Pathf
 
   @Override
   public boolean supportsPoseConfiguration() {
-    return false;
+    return true;
   }
 
   @Override
   public boolean supportsScalingConfiguration() {
-    return false;
+    return true;
   }
 
   @Override
   public boolean supportsDefaultRotationConfiguration() {
-    return false;
-  }
-
-  @Override
-  public boolean supportsChangeModelConfiguration() {
-    return false;
+    return true;
   }
 
   @Override
@@ -515,6 +511,11 @@ public class PathfinderMobRaw extends PathfinderMob implements EasyNPCBase<Pathf
   @Override
   public Enum<?> getDefaultVariantType() {
     return VariantType.DEFAULT;
+  }
+
+  @Override
+  public ModelType getModelType() {
+    return ModelType.HUMANOID;
   }
 
   @Override

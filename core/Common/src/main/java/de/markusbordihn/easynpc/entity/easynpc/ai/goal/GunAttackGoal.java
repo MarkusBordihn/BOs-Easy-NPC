@@ -32,7 +32,7 @@ public class GunAttackGoal<T extends EasyNPC<?>> extends Goal {
   private final RangedAttackMob rangedAttackMob;
   private final double speedModifier;
   private final float attackRadiusSqr;
-  private int attackIntervalMin;
+  private final int attackIntervalMin;
   private int attackTime = -1;
   private int seeTime;
   private boolean strafingBackwards;

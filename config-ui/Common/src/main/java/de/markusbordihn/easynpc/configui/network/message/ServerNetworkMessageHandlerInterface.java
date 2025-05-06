@@ -35,6 +35,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelEquip
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelLockRotationMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelPositionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelRotationMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelScaleMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelVisibilityMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeMovementAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeNameMessage;
@@ -42,7 +43,6 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangePoseMessag
 import de.markusbordihn.easynpc.configui.network.message.server.ChangePositionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeProfessionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeRendererMessage;
-import de.markusbordihn.easynpc.configui.network.message.server.ChangeScaleMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeSkinMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeTradingTypeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportPresetMessage;
@@ -77,14 +77,14 @@ import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.editor.EditorType;
-import de.markusbordihn.easynpc.data.model.ModelPart;
-import de.markusbordihn.easynpc.data.model.ModelScaleAxis;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.preset.PresetType;
 import de.markusbordihn.easynpc.data.profession.Profession;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
+import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.data.trading.TradingValueType;
@@ -527,10 +527,18 @@ public interface ServerNetworkMessageHandlerInterface {
     }
   }
 
-  default void modelPositionChange(UUID uuid, ModelPart modelPart, CustomPosition position) {
-    if (uuid != null && modelPart != null && position != null) {
+  default void modelPositionChange(
+      UUID uuid, ModelPartType modelPartType, CustomPosition position) {
+    if (uuid != null && modelPartType != null && position != null) {
       NetworkHandlerManager.sendMessageToServer(
-          new ChangeModelPositionMessage(uuid, modelPart, position));
+          new ChangeModelPositionMessage(uuid, modelPartType, position));
+    }
+  }
+
+  default void modelScaleChange(UUID uuid, ModelPartType modelPartType, CustomScale scale) {
+    if (uuid != null && modelPartType != null && scale != null) {
+      NetworkHandlerManager.sendMessageToServer(
+          new ChangeModelScaleMessage(uuid, modelPartType, scale));
     }
   }
 
@@ -541,24 +549,17 @@ public interface ServerNetworkMessageHandlerInterface {
     }
   }
 
-  default void modelVisibilityChange(UUID uuid, ModelPart modelPart, boolean visible) {
-    if (uuid != null && modelPart != null) {
+  default void modelVisibilityChange(UUID uuid, ModelPartType modelPartType, boolean visible) {
+    if (uuid != null && modelPartType != null) {
       NetworkHandlerManager.sendMessageToServer(
-          new ChangeModelVisibilityMessage(uuid, modelPart, visible));
+          new ChangeModelVisibilityMessage(uuid, modelPartType, visible));
     }
   }
 
-  default void rotationChange(UUID uuid, ModelPart modelPart, CustomRotation rotation) {
-    if (uuid != null && modelPart != null && rotation != null) {
+  default void rotationChange(UUID uuid, ModelPartType modelPartType, CustomRotation rotation) {
+    if (uuid != null && modelPartType != null && rotation != null) {
       NetworkHandlerManager.sendMessageToServer(
-          new ChangeModelRotationMessage(uuid, modelPart, rotation));
-    }
-  }
-
-  default void scaleChange(UUID uuid, ModelScaleAxis modelScaleAxis, float scale) {
-    if (uuid != null && modelScaleAxis != null) {
-      NetworkHandlerManager.sendMessageToServer(
-          new ChangeScaleMessage(uuid, modelScaleAxis, scale));
+          new ChangeModelRotationMessage(uuid, modelPartType, rotation));
     }
   }
 

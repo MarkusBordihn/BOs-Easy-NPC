@@ -60,11 +60,6 @@ public class CatNPC extends CatRaw {
   }
 
   @Override
-  public boolean canUseArmor() {
-    return false;
-  }
-
-  @Override
   public boolean canUseOffHand() {
     return false;
   }
@@ -87,11 +82,6 @@ public class CatNPC extends CatRaw {
   @Override
   public int getEntityDialogScaling() {
     return 65;
-  }
-
-  @Override
-  public boolean supportsSmartAnimations() {
-    return false;
   }
 
   @Override

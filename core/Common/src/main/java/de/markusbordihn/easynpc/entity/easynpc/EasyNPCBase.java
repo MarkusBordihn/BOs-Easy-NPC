@@ -36,7 +36,6 @@ import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ServerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SoundData;
@@ -78,7 +77,6 @@ public interface EasyNPCBase<E extends PathfinderMob>
         PresetData<E>,
         ProfessionData<E>,
         RenderData<E>,
-        ScaleData<E>,
         ServerData<E>,
         SkinData<E>,
         SoundData<E>,
@@ -97,7 +95,6 @@ public interface EasyNPCBase<E extends PathfinderMob>
     OwnerData.registerSyncedOwnerData(map, entityClass);
     ProfessionData.registerSyncedProfessionData(map, entityClass);
     RenderData.registerSyncedRenderData(map, entityClass);
-    ScaleData.registerSyncedScaleData(map, entityClass);
     SkinData.registerSyncedSkinData(map, entityClass);
     SoundData.registerSyncedSoundData(map, entityClass);
     TradingData.registerSyncedTradingData(map, entityClass);
@@ -201,10 +198,6 @@ public interface EasyNPCBase<E extends PathfinderMob>
     RenderData<E> renderData = getEasyNPCRenderData();
     if (renderData != null) {
       renderData.defineSynchedRenderData(builder);
-    }
-    ScaleData<E> scaleData = getEasyNPCScaleData();
-    if (scaleData != null) {
-      scaleData.defineSynchedScaleData(builder);
     }
     SkinData<E> skinData = getEasyNPCSkinData();
     if (skinData != null) {
@@ -312,10 +305,6 @@ public interface EasyNPCBase<E extends PathfinderMob>
     if (renderData != null) {
       renderData.addAdditionalRenderData(compoundTag);
     }
-    ScaleData<E> scaleData = getEasyNPCScaleData();
-    if (scaleData != null) {
-      scaleData.addAdditionalScaleData(compoundTag);
-    }
     SkinData<E> skinData = getEasyNPCSkinData();
     if (skinData != null) {
       skinData.addAdditionalSkinData(compoundTag);
@@ -396,10 +385,6 @@ public interface EasyNPCBase<E extends PathfinderMob>
     RenderData<E> renderData = getEasyNPCRenderData();
     if (renderData != null) {
       renderData.readAdditionalRenderData(compoundTag);
-    }
-    ScaleData<E> scaleData = getEasyNPCScaleData();
-    if (scaleData != null) {
-      scaleData.readAdditionalScaleData(compoundTag);
     }
     SkinData<E> skinData = getEasyNPCSkinData();
     if (skinData != null) {

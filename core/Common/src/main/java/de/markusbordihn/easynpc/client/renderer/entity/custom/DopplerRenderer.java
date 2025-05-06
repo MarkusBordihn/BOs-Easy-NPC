@@ -218,8 +218,7 @@ public class DopplerRenderer
       MultiBufferSource buffer,
       int packedLight) {
     EasyNPC<?> easyNPC = getEasyNPC(renderState);
-    if (easyNPC != null
-        && renderEntity(easyNPC, this.getModel(), renderState, poseStack, buffer, packedLight)) {
+    if (renderEntity(easyNPC, this.getModel(), renderState, poseStack, buffer, packedLight)) {
       return;
     }
 

@@ -94,22 +94,6 @@ public record ChangeModelEquipmentVisibilityMessage(
         this.visible,
         easyNPC,
         serverPlayer);
-    switch (this.equipmentSlot) {
-      case HEAD:
-        modelData.setModelHelmetVisible(this.visible);
-        break;
-      case CHEST:
-        modelData.setModelChestplateVisible(this.visible);
-        break;
-      case LEGS:
-        modelData.setModelLeggingsVisible(this.visible);
-        break;
-      case FEET:
-        modelData.setModelBootsVisible(this.visible);
-        break;
-      default:
-        log.error("Invalid equipmentSlot {} for {} from {}", equipmentSlot, easyNPC, serverPlayer);
-        break;
-    }
+    modelData.setModelPartVisibility(this.equipmentSlot, this.visible);
   }
 }

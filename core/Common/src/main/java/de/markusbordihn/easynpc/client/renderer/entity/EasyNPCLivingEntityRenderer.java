@@ -1,10 +1,12 @@
-package de.markusbordihn.easynpc.client.renderer;
+package de.markusbordihn.easynpc.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
+import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import java.util.UUID;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -15,9 +17,7 @@ public class EasyNPCLivingEntityRenderer {
       LivingEntityRenderState renderState,
       PoseStack poseStack,
       MultiBufferSource bufferSource,
-      int packedLight) {
-    scaleEasyNPC(renderState, poseStack);
-  }
+      int packedLight) {}
 
   public static void handleRenderEnd(
       LivingEntityRenderState renderState,
@@ -25,22 +25,27 @@ public class EasyNPCLivingEntityRenderer {
       MultiBufferSource bufferSource,
       int packedLight) {}
 
-  public static void scaleEasyNPC(LivingEntityRenderState renderState, PoseStack poseStack) {
+  public static void handleScale(LivingEntityRenderState renderState, PoseStack poseStack) {
     EasyNPC<?> easyNPC = getEasyNPC(renderState);
     if (easyNPC == null) {
       return;
     }
 
-    ScaleData<?> scaleData = easyNPC.getEasyNPCScaleData();
-    if (scaleData == null) {
+    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+    if (modelData == null) {
       return;
     }
 
-    float defaultScaleX = scaleData.getDefaultScaleX();
-    float defaultScaleY = scaleData.getDefaultScaleY();
-    float defaultScaleZ = scaleData.getDefaultScaleZ();
-    if (defaultScaleX != 1.0f || defaultScaleY != 1.0f || defaultScaleZ != 1.0f) {
-      poseStack.scale(defaultScaleX, defaultScaleY, defaultScaleZ);
+    // Apply default scale to the model.
+    CustomScale defaultScale = modelData.getDefaultModelScale();
+    if (defaultScale != null && defaultScale.hasChanged()) {
+      poseStack.scale(defaultScale.x(), defaultScale.y(), defaultScale.z());
+    }
+
+    // Apply custom scale to the model.
+    CustomScale customScale = modelData.getModelPartScale(ModelPartType.ROOT);
+    if (customScale != null && customScale.hasChanged()) {
+      poseStack.scale(customScale.x(), customScale.y(), customScale.z());
     }
   }
 
