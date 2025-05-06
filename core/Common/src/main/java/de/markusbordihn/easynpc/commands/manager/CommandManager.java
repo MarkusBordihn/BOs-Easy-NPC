@@ -31,11 +31,16 @@ import de.markusbordihn.easynpc.server.commands.NavigationCommand;
 import de.markusbordihn.easynpc.server.commands.ObjectiveCommand;
 import de.markusbordihn.easynpc.server.commands.OwnerCommand;
 import de.markusbordihn.easynpc.server.commands.PoseCommand;
+import de.markusbordihn.easynpc.server.commands.PositionCommand;
 import de.markusbordihn.easynpc.server.commands.PresetCommand;
 import de.markusbordihn.easynpc.server.commands.RenderCommand;
 import de.markusbordihn.easynpc.server.commands.RespawnCommand;
+import de.markusbordihn.easynpc.server.commands.RotateCommand;
+import de.markusbordihn.easynpc.server.commands.ScaleCommand;
 import de.markusbordihn.easynpc.server.commands.SkinCommand;
 import de.markusbordihn.easynpc.server.commands.SoundCommand;
+import de.markusbordihn.easynpc.server.commands.SpawnerCommand;
+import de.markusbordihn.easynpc.server.commands.TestCommand;
 import de.markusbordihn.easynpc.server.commands.TradingCommand;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -68,11 +73,16 @@ public class CommandManager {
             .then(ObjectiveCommand.register())
             .then(OwnerCommand.register())
             .then(PoseCommand.register())
+            .then(PositionCommand.register())
             .then(PresetCommand.register())
             .then(RenderCommand.register())
             .then(RespawnCommand.register())
+            .then(RotateCommand.register())
+            .then(ScaleCommand.register())
             .then(SkinCommand.register())
             .then(SoundCommand.register())
+            .then(SpawnerCommand.register())
+            .then(TestCommand.register())
             .then(TradingCommand.register()));
   }
 }

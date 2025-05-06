@@ -19,13 +19,14 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
-import de.markusbordihn.easynpc.data.model.ModelPart;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
+import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -35,249 +36,98 @@ public interface ModelVisibilityData<T extends PathfinderMob> extends EasyNPC<T>
 
   String EASY_NPC_DATA_MODEL_VISIBLE_TAG = "Visible";
 
-  static void registerSyncedModelVisibilityData(
+  static void registerSynchedModelVisibilityData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("- Registering Synched Model Visibility Data for {}.", entityClass.getSimpleName());
+    log.info("Registering Synched Model Visibility Data for {}.", entityClass.getSimpleName());
     map.put(
-        SynchedDataIndex.MODEL_HEAD_VISIBLE,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
-    map.put(
-        SynchedDataIndex.MODEL_BODY_VISIBLE,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
-    map.put(
-        SynchedDataIndex.MODEL_ARMS_VISIBLE,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
-    map.put(
-        SynchedDataIndex.MODEL_LEFT_ARM_VISIBLE,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
-    map.put(
-        SynchedDataIndex.MODEL_RIGHT_ARM_VISIBLE,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
-    map.put(
-        SynchedDataIndex.MODEL_LEFT_LEG_VISIBLE,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
-    map.put(
-        SynchedDataIndex.MODEL_RIGHT_LEG_VISIBLE,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
-    map.put(
-        SynchedDataIndex.MODEL_HELMET_VISIBLE,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
-    map.put(
-        SynchedDataIndex.MODEL_CHESTPLATE_VISIBLE,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
-    map.put(
-        SynchedDataIndex.MODEL_LEGGINGS_VISIBLE,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
-    map.put(
-        SynchedDataIndex.MODEL_BOOTS_VISIBLE,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
+        SynchedDataIndex.MODEL_VISIBILITY,
+        SynchedEntityData.defineId(
+            entityClass, EntityDataSerializersManager.MODEL_PART_VISIBILITY));
   }
 
-  boolean hasHeadModelPart();
-
-  boolean hasBodyModelPart();
-
-  boolean hasArmsModelPart();
-
-  boolean hasLeftArmModelPart();
-
-  boolean hasRightArmModelPart();
-
-  boolean hasLeftLegModelPart();
-
-  boolean hasRightLegModelPart();
-
-  boolean canUseArmor();
-
-  default boolean isModelPartVisible(ModelPart modelPart) {
-    return switch (modelPart) {
-      case HEAD -> isModelHeadVisible();
-      case BODY -> isModelBodyVisible();
-      case ARMS -> isModelArmsVisible();
-      case LEFT_ARM -> isModelLeftArmVisible();
-      case RIGHT_ARM -> isModelRightArmVisible();
-      case LEFT_LEG -> isModelLeftLegVisible();
-      case RIGHT_LEG -> isModelRightLegVisible();
-      default -> false;
-    };
-  }
-
-  default boolean isModelEquipmentVisible(EquipmentSlot equipmentSlot) {
-    if (equipmentSlot == null || !this.canUseArmor()) {
-      return false;
+  default EnumMap<ModelPartType, Boolean> getModelPartVisibility() {
+    EnumMap<ModelPartType, Boolean> modelPartMap =
+        getSynchedEntityData(SynchedDataIndex.MODEL_VISIBILITY);
+    if (modelPartMap == null) {
+      modelPartMap = new EnumMap<>(ModelPartType.class);
+      setModelPartVisibility(modelPartMap);
     }
-    return switch (equipmentSlot) {
-      case HEAD -> isModelHelmetVisible();
-      case CHEST -> isModelChestplateVisible();
-      case LEGS -> isModelLeggingsVisible();
-      case FEET -> isModelBootsVisible();
-      default -> false;
-    };
+    return modelPartMap;
   }
 
-  default void setModelPartVisible(ModelPart modelPart, boolean visible) {
-    if (modelPart == ModelPart.ROOT) {
-      return;
+  default void setModelPartVisibility(EnumMap<ModelPartType, Boolean> modelPartMap) {
+    if (modelPartMap != null) {
+      setSynchedEntityData(SynchedDataIndex.MODEL_VISIBILITY, modelPartMap);
     }
-    switch (modelPart) {
-      case HEAD -> setModelHeadVisible(visible);
-      case BODY -> setModelBodyVisible(visible);
-      case ARMS -> setModelArmsVisible(visible);
-      case LEFT_ARM -> setModelLeftArmVisible(visible);
-      case RIGHT_ARM -> setModelRightArmVisible(visible);
-      case LEFT_LEG -> setModelLeftLegVisible(visible);
-      case RIGHT_LEG -> setModelRightLegVisible(visible);
-      default -> log.error("Invalid visible model part {} for {}", modelPart, this);
+  }
+
+  default boolean getModelPartVisibility(EquipmentSlot equipmentSlot) {
+    switch (equipmentSlot) {
+      case HEAD:
+        return getModelPartVisibility(ModelPartType.HELMET);
+      case CHEST:
+        return getModelPartVisibility(ModelPartType.CHESTPLATE);
+      case LEGS:
+        return getModelPartVisibility(ModelPartType.LEGGINGS);
+      case FEET:
+        return getModelPartVisibility(ModelPartType.BOOTS);
+      default:
+        return false;
+    }
+  }
+
+  default boolean getModelPartVisibility(ModelPartType modelPartType) {
+    EnumMap<ModelPartType, Boolean> modelPartMap = getModelPartVisibility();
+    return modelPartMap.getOrDefault(modelPartType, true);
+  }
+
+  default void setModelPartVisibility(EquipmentSlot equipmentSlot, boolean visible) {
+    switch (equipmentSlot) {
+      case HEAD:
+        setModelPartVisibility(ModelPartType.HELMET, visible);
+        break;
+      case CHEST:
+        setModelPartVisibility(ModelPartType.CHESTPLATE, visible);
+        break;
+      case LEGS:
+        setModelPartVisibility(ModelPartType.LEGGINGS, visible);
+        break;
+      case FEET:
+        setModelPartVisibility(ModelPartType.BOOTS, visible);
+        break;
+      default:
+        break;
+    }
+  }
+
+  default void setModelPartVisibility(ModelPartType modelPartType, boolean visible) {
+    EnumMap<ModelPartType, Boolean> modelPartMap = getModelPartVisibility();
+    if (modelPartType != null) {
+      modelPartMap.put(modelPartType, visible);
+      setSynchedEntityData(SynchedDataIndex.MODEL_VISIBILITY, new EnumMap<>(ModelPartType.class));
+      setSynchedEntityData(SynchedDataIndex.MODEL_VISIBILITY, modelPartMap);
     }
   }
 
   default boolean hasChangedModelVisibility() {
-    return (hasHeadModelPart() && !isModelHeadVisible())
-        || (hasBodyModelPart() && !isModelBodyVisible())
-        || (hasArmsModelPart() && !isModelArmsVisible())
-        || (hasLeftArmModelPart() && !isModelLeftArmVisible())
-        || (hasRightArmModelPart() && !isModelRightArmVisible())
-        || (hasLeftLegModelPart() && !isModelLeftLegVisible())
-        || (hasRightLegModelPart() && !isModelRightLegVisible());
-  }
-
-  default boolean isModelHeadVisible() {
-    return getSynchedEntityData(SynchedDataIndex.MODEL_HEAD_VISIBLE);
-  }
-
-  default void setModelHeadVisible(boolean modelHeadVisible) {
-    setSynchedEntityData(SynchedDataIndex.MODEL_HEAD_VISIBLE, modelHeadVisible);
-  }
-
-  default boolean isModelBodyVisible() {
-    return getSynchedEntityData(SynchedDataIndex.MODEL_BODY_VISIBLE);
-  }
-
-  default void setModelBodyVisible(boolean modelBodyVisible) {
-    setSynchedEntityData(SynchedDataIndex.MODEL_BODY_VISIBLE, modelBodyVisible);
-  }
-
-  default boolean isModelArmsVisible() {
-    return getSynchedEntityData(SynchedDataIndex.MODEL_ARMS_VISIBLE);
-  }
-
-  default void setModelArmsVisible(boolean modelArmsVisible) {
-    setSynchedEntityData(SynchedDataIndex.MODEL_ARMS_VISIBLE, modelArmsVisible);
-  }
-
-  default boolean isModelLeftArmVisible() {
-    return getSynchedEntityData(SynchedDataIndex.MODEL_LEFT_ARM_VISIBLE);
-  }
-
-  default void setModelLeftArmVisible(boolean modelLeftArmVisible) {
-    setSynchedEntityData(SynchedDataIndex.MODEL_LEFT_ARM_VISIBLE, modelLeftArmVisible);
-  }
-
-  default boolean isModelRightArmVisible() {
-    return getSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_ARM_VISIBLE);
-  }
-
-  default void setModelRightArmVisible(boolean modelRightArmVisible) {
-    setSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_ARM_VISIBLE, modelRightArmVisible);
-  }
-
-  default boolean isModelLeftLegVisible() {
-    return getSynchedEntityData(SynchedDataIndex.MODEL_LEFT_LEG_VISIBLE);
-  }
-
-  default void setModelLeftLegVisible(boolean modelLeftLegVisible) {
-    setSynchedEntityData(SynchedDataIndex.MODEL_LEFT_LEG_VISIBLE, modelLeftLegVisible);
-  }
-
-  default boolean isModelRightLegVisible() {
-    return getSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_LEG_VISIBLE);
-  }
-
-  default void setModelRightLegVisible(boolean modelRightLegVisible) {
-    setSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_LEG_VISIBLE, modelRightLegVisible);
-  }
-
-  default boolean isModelHelmetVisible() {
-    return getSynchedEntityData(SynchedDataIndex.MODEL_HELMET_VISIBLE);
-  }
-
-  default void setModelHelmetVisible(boolean modelHelmetVisible) {
-    setSynchedEntityData(SynchedDataIndex.MODEL_HELMET_VISIBLE, modelHelmetVisible);
-  }
-
-  default boolean isModelChestplateVisible() {
-    return getSynchedEntityData(SynchedDataIndex.MODEL_CHESTPLATE_VISIBLE);
-  }
-
-  default void setModelChestplateVisible(boolean modelChestplateVisible) {
-    setSynchedEntityData(SynchedDataIndex.MODEL_CHESTPLATE_VISIBLE, modelChestplateVisible);
-  }
-
-  default boolean isModelLeggingsVisible() {
-    return getSynchedEntityData(SynchedDataIndex.MODEL_LEGGINGS_VISIBLE);
-  }
-
-  default void setModelLeggingsVisible(boolean modelLeggingsVisible) {
-    setSynchedEntityData(SynchedDataIndex.MODEL_LEGGINGS_VISIBLE, modelLeggingsVisible);
-  }
-
-  default boolean isModelBootsVisible() {
-    return getSynchedEntityData(SynchedDataIndex.MODEL_BOOTS_VISIBLE);
-  }
-
-  default void setModelBootsVisible(boolean modelBootsVisible) {
-    setSynchedEntityData(SynchedDataIndex.MODEL_BOOTS_VISIBLE, modelBootsVisible);
+    EnumMap<ModelPartType, Boolean> modelPartMap = getModelPartVisibility();
+    for (Map.Entry<ModelPartType, Boolean> entry : modelPartMap.entrySet()) {
+      if (entry.getValue() != null) {
+        return true;
+      }
+    }
+    return false;
   }
 
   default void defineSynchedModelVisibilityData() {
-    defineSynchedEntityData(SynchedDataIndex.MODEL_HEAD_VISIBLE, this.hasHeadModelPart());
-    defineSynchedEntityData(SynchedDataIndex.MODEL_BODY_VISIBLE, this.hasBodyModelPart());
-    defineSynchedEntityData(SynchedDataIndex.MODEL_ARMS_VISIBLE, this.hasArmsModelPart());
-    defineSynchedEntityData(SynchedDataIndex.MODEL_LEFT_ARM_VISIBLE, this.hasLeftArmModelPart());
-    defineSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_ARM_VISIBLE, this.hasRightArmModelPart());
-    defineSynchedEntityData(SynchedDataIndex.MODEL_LEFT_LEG_VISIBLE, this.hasLeftLegModelPart());
-    defineSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_LEG_VISIBLE, this.hasRightLegModelPart());
-
-    defineSynchedEntityData(SynchedDataIndex.MODEL_HELMET_VISIBLE, this.canUseArmor());
-    defineSynchedEntityData(SynchedDataIndex.MODEL_CHESTPLATE_VISIBLE, this.canUseArmor());
-    defineSynchedEntityData(SynchedDataIndex.MODEL_LEGGINGS_VISIBLE, this.canUseArmor());
-    defineSynchedEntityData(SynchedDataIndex.MODEL_BOOTS_VISIBLE, this.canUseArmor());
+    defineSynchedEntityData(SynchedDataIndex.MODEL_VISIBILITY, new EnumMap<>(ModelPartType.class));
   }
 
   default void addAdditionalModelVisibilityData(CompoundTag compoundTag) {
     CompoundTag visibilityTag = new CompoundTag();
-    if (this.isModelHeadVisible() != this.hasHeadModelPart()) {
-      visibilityTag.putBoolean(ModelPart.HEAD.getTagName(), this.isModelHeadVisible());
-    }
-    if (this.isModelBodyVisible() != this.hasBodyModelPart()) {
-      visibilityTag.putBoolean(ModelPart.BODY.getTagName(), this.isModelBodyVisible());
-    }
-    if (this.isModelArmsVisible() != this.hasArmsModelPart()) {
-      visibilityTag.putBoolean(ModelPart.ARMS.getTagName(), this.isModelArmsVisible());
-    }
-    if (this.isModelLeftArmVisible() != this.hasLeftArmModelPart()) {
-      visibilityTag.putBoolean(ModelPart.LEFT_ARM.getTagName(), this.isModelLeftArmVisible());
-    }
-    if (this.isModelRightArmVisible() != this.hasRightArmModelPart()) {
-      visibilityTag.putBoolean(ModelPart.RIGHT_ARM.getTagName(), this.isModelRightArmVisible());
-    }
-    if (this.isModelLeftLegVisible() != this.hasLeftLegModelPart()) {
-      visibilityTag.putBoolean(ModelPart.LEFT_LEG.getTagName(), this.isModelLeftLegVisible());
-    }
-    if (this.isModelRightLegVisible() != this.hasRightLegModelPart()) {
-      visibilityTag.putBoolean(ModelPart.RIGHT_LEG.getTagName(), this.isModelRightLegVisible());
-    }
-    if (this.isModelHelmetVisible() != this.canUseArmor()) {
-      visibilityTag.putBoolean(ModelPart.HELMET.getTagName(), this.isModelHelmetVisible());
-    }
-    if (this.isModelChestplateVisible() != this.canUseArmor()) {
-      visibilityTag.putBoolean(ModelPart.CHESTPLATE.getTagName(), this.isModelChestplateVisible());
-    }
-    if (this.isModelLeggingsVisible() != this.canUseArmor()) {
-      visibilityTag.putBoolean(ModelPart.LEGGINGS.getTagName(), this.isModelLeggingsVisible());
-    }
-    if (this.isModelBootsVisible() != this.canUseArmor()) {
-      visibilityTag.putBoolean(ModelPart.BOOTS.getTagName(), this.isModelBootsVisible());
+    EnumMap<ModelPartType, Boolean> modelPartMap = getModelPartVisibility();
+    for (Map.Entry<ModelPartType, Boolean> entry : modelPartMap.entrySet()) {
+      visibilityTag.putBoolean(entry.getKey().getTagName(), entry.getValue());
     }
     compoundTag.put(EASY_NPC_DATA_MODEL_VISIBLE_TAG, visibilityTag);
   }
@@ -287,38 +137,15 @@ public interface ModelVisibilityData<T extends PathfinderMob> extends EasyNPC<T>
       return;
     }
     CompoundTag visibilityTag = compoundTag.getCompound(EASY_NPC_DATA_MODEL_VISIBLE_TAG);
-    if (visibilityTag.contains(ModelPart.HEAD.getTagName())) {
-      setModelHeadVisible(visibilityTag.getBoolean(ModelPart.HEAD.getTagName()));
+    EnumMap<ModelPartType, Boolean> modelPartMap = new EnumMap<>(ModelPartType.class);
+    for (String key : visibilityTag.getAllKeys()) {
+      ModelPartType modelPartType = ModelPartType.get(key);
+      if (modelPartType != null) {
+        modelPartMap.put(modelPartType, visibilityTag.getBoolean(key));
+      }
     }
-    if (visibilityTag.contains(ModelPart.BODY.getTagName())) {
-      setModelBodyVisible(visibilityTag.getBoolean(ModelPart.BODY.getTagName()));
-    }
-    if (visibilityTag.contains(ModelPart.ARMS.getTagName())) {
-      setModelArmsVisible(visibilityTag.getBoolean(ModelPart.ARMS.getTagName()));
-    }
-    if (visibilityTag.contains(ModelPart.LEFT_ARM.getTagName())) {
-      setModelLeftArmVisible(visibilityTag.getBoolean(ModelPart.LEFT_ARM.getTagName()));
-    }
-    if (visibilityTag.contains(ModelPart.RIGHT_ARM.getTagName())) {
-      setModelRightArmVisible(visibilityTag.getBoolean(ModelPart.RIGHT_ARM.getTagName()));
-    }
-    if (visibilityTag.contains(ModelPart.LEFT_LEG.getTagName())) {
-      setModelLeftLegVisible(visibilityTag.getBoolean(ModelPart.LEFT_LEG.getTagName()));
-    }
-    if (visibilityTag.contains(ModelPart.RIGHT_LEG.getTagName())) {
-      setModelRightLegVisible(visibilityTag.getBoolean(ModelPart.RIGHT_LEG.getTagName()));
-    }
-    if (visibilityTag.contains(ModelPart.HELMET.getTagName())) {
-      setModelHelmetVisible(visibilityTag.getBoolean(ModelPart.HELMET.getTagName()));
-    }
-    if (visibilityTag.contains(ModelPart.CHESTPLATE.getTagName())) {
-      setModelChestplateVisible(visibilityTag.getBoolean(ModelPart.CHESTPLATE.getTagName()));
-    }
-    if (visibilityTag.contains(ModelPart.LEGGINGS.getTagName())) {
-      setModelLeggingsVisible(visibilityTag.getBoolean(ModelPart.LEGGINGS.getTagName()));
-    }
-    if (visibilityTag.contains(ModelPart.BOOTS.getTagName())) {
-      setModelBootsVisible(visibilityTag.getBoolean(ModelPart.BOOTS.getTagName()));
+    if (!modelPartMap.isEmpty()) {
+      setModelPartVisibility(modelPartMap);
     }
   }
 }

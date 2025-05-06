@@ -60,11 +60,6 @@ public class IronGolemNPC extends IronGolemRaw {
   }
 
   @Override
-  public boolean canUseArmor() {
-    return false;
-  }
-
-  @Override
   public int getEntityGuiScaling() {
     return 40;
   }

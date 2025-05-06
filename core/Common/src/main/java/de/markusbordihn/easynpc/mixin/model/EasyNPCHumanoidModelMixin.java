@@ -1,8 +1,8 @@
-package de.markusbordihn.easynpc.mixin;
+package de.markusbordihn.easynpc.mixin.model;
 
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManager;
-import de.markusbordihn.easynpc.client.model.ModelPartType;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.function.Function;
 import net.minecraft.client.model.HumanoidModel;
@@ -38,14 +38,15 @@ public class EasyNPCHumanoidModelMixin<T extends LivingEntity> {
       ModelPart modelPart,
       Function<ResourceLocation, RenderType> renderType,
       CallbackInfo callbackInfo) {
-    this.modelManager = new EasyNPCModelManager(modelPart, renderType);
-    this.modelManager.defineModelPart(ModelPartType.HAT, this.hat);
-    this.modelManager.defineModelPart(ModelPartType.HEAD, this.head);
-    this.modelManager.defineModelPart(ModelPartType.BODY, this.body);
-    this.modelManager.defineModelPart(ModelPartType.RIGHT_ARM, this.rightArm);
-    this.modelManager.defineModelPart(ModelPartType.LEFT_ARM, this.leftArm);
-    this.modelManager.defineModelPart(ModelPartType.RIGHT_LEG, this.rightLeg);
-    this.modelManager.defineModelPart(ModelPartType.LEFT_LEG, this.leftLeg);
+    this.modelManager =
+        new EasyNPCModelManager(modelPart, renderType)
+            .defineModelPart(ModelPartType.HAT, this.hat)
+            .defineModelPart(ModelPartType.HEAD, this.head)
+            .defineModelPart(ModelPartType.BODY, this.body)
+            .defineModelPart(ModelPartType.RIGHT_ARM, this.rightArm)
+            .defineModelPart(ModelPartType.LEFT_ARM, this.leftArm)
+            .defineModelPart(ModelPartType.RIGHT_LEG, this.rightLeg)
+            .defineModelPart(ModelPartType.LEFT_LEG, this.leftLeg);
   }
 
   @Inject(
@@ -65,7 +66,7 @@ public class EasyNPCHumanoidModelMixin<T extends LivingEntity> {
     }
 
     HumanoidModel<T> model = (HumanoidModel<T>) (Object) this;
-    if (EasyNPCModel.setupAnimation(easyNPC, this.modelManager, model)) {
+    if (EasyNPCModel.setupAnimationStart(easyNPC, this.modelManager)) {
       callbackInfo.cancel();
     }
   }

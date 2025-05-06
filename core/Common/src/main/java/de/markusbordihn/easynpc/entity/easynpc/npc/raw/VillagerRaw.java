@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity.easynpc.npc.raw;
 import static java.util.Objects.hash;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
@@ -499,22 +500,17 @@ public class VillagerRaw extends Villager implements EasyNPCBase<Villager> {
 
   @Override
   public boolean supportsPoseConfiguration() {
-    return false;
+    return true;
   }
 
   @Override
   public boolean supportsScalingConfiguration() {
-    return false;
+    return true;
   }
 
   @Override
   public boolean supportsDefaultRotationConfiguration() {
-    return false;
-  }
-
-  @Override
-  public boolean supportsChangeModelConfiguration() {
-    return false;
+    return true;
   }
 
   @Override
@@ -530,6 +526,11 @@ public class VillagerRaw extends Villager implements EasyNPCBase<Villager> {
   @Override
   public Enum<?> getDefaultVariantType() {
     return VariantType.DEFAULT;
+  }
+
+  @Override
+  public ModelType getModelType() {
+    return ModelType.VILLAGER;
   }
 
   @Override

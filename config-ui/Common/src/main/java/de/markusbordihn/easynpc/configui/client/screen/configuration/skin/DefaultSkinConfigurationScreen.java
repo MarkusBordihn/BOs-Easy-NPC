@@ -64,7 +64,7 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
           this.numOfProfessions > 0
               ? professionData.getProfessions()[i - (variantIndex * this.numOfProfessions)]
               : null;
-      Enum<?> variant = variantData.getVariants()[variantIndex];
+      Enum<?> variant = variantData.getVariantTypes()[variantIndex];
       int left =
           this.leftPos
               + (skinPosition > 4 ? -(SKIN_PREVIEW_WIDTH * 4) - 28 : 32)
@@ -104,7 +104,7 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
     }
   }
 
-  private void renderSkinEntity(int x, int y, Enum<?> variant, Profession profession) {
+  private void renderSkinEntity(int x, int y, Enum<?> variantType, Profession profession) {
 
     // Create dynamically button for each skin variant and profession.
     Button skinButton =
@@ -117,7 +117,7 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
                     .changeProfession(this.getEasyNPCUUID(), profession);
               }
               NetworkMessageHandlerManager.getServerHandler()
-                  .setDefaultSkin(this.getEasyNPCUUID(), variant);
+                  .setDefaultSkin(this.getEasyNPCUUID(), variantType);
             });
 
     // Disable button for active skin.
@@ -126,12 +126,19 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
     ProfessionData<?> professionData = this.getEasyNPC().getEasyNPCProfessionData();
     skinButton.active =
         !(skinData.getSkinType() == SkinType.DEFAULT
-            && variantData.getVariant().equals(variant)
+            && variantData.getVariantType().equals(variantType)
             && (profession == null || professionData.getProfession().equals(profession)));
 
     // Render skin entity with variant and profession.
     ScreenHelper.renderEntityDefaultSkin(
-        x + 4, y, x - this.xMouse, y - 40 - this.yMouse, this.getEasyNPC(), variant, profession);
+        guiGraphics,
+        x + 4,
+        y,
+        x - this.xMouse,
+        y - 40 - this.yMouse,
+        this.getEasyNPC(),
+        variantType,
+        profession);
 
     skinButtons.add(skinButton);
   }
@@ -151,7 +158,7 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
     ProfessionData<?> professionData = this.getEasyNPC().getEasyNPCProfessionData();
     this.numOfProfessions =
         professionData.hasProfessions() ? professionData.getProfessions().length : 0;
-    this.numOfVariants = variantData.getVariants().length;
+    this.numOfVariants = variantData.getVariantTypes().length;
     this.numOfSkins =
         numOfProfessions > 0 ? this.numOfVariants * this.numOfProfessions : this.numOfVariants;
     log.debug(

@@ -20,9 +20,8 @@
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.model.ModelArmPose;
-import de.markusbordihn.easynpc.data.model.ModelPart;
 import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.data.scale.CustomScale;
+import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
@@ -30,7 +29,6 @@ import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -40,52 +38,26 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemStack;
 
 public interface ModelData<T extends PathfinderMob>
-    extends EasyNPC<T>, ModelPositionData<T>, ModelRotationData<T>, ModelVisibilityData<T> {
+    extends EasyNPC<T>,
+        ModelPositionData<T>,
+        ModelRotationData<T>,
+        ModelScaleData<T>,
+        ModelVisibilityData<T> {
 
-  CustomScale DEFAULT_MODEL_PART_SCALE = new CustomScale(1, 1, 1);
   String EASY_NPC_DATA_MODEL_DATA_TAG = "ModelData";
   String EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG = "DefaultPose";
   String EASY_NPC_DATA_MODEL_POSE_TAG = "Pose";
-  String EASY_NPC_DATA_MODEL_SCALE_TAG = "Scale";
-  String EASY_NPC_DATA_MODEL_SMART_ANIMATIONS_TAG = "SmartAnimations";
 
   static void registerSyncedModelData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("- Registering Synched Model Data for {}.", entityClass.getSimpleName());
+    log.info("Registering Synched Model Data for {}.", entityClass.getSimpleName());
     map.put(
         SynchedDataIndex.MODEL_POSE,
         SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.MODEL_POSE));
-    map.put(
-        SynchedDataIndex.MODEL_HEAD_SCALE,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.SCALE));
-    map.put(
-        SynchedDataIndex.MODEL_BODY_SCALE,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.SCALE));
-    map.put(
-        SynchedDataIndex.MODEL_ARMS_SCALE,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.SCALE));
-    map.put(
-        SynchedDataIndex.MODEL_LEFT_ARM_SCALE,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.SCALE));
-    map.put(
-        SynchedDataIndex.MODEL_RIGHT_ARM_SCALE,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.SCALE));
-    map.put(
-        SynchedDataIndex.MODEL_LEFT_LEG_SCALE,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.SCALE));
-    map.put(
-        SynchedDataIndex.MODEL_RIGHT_LEG_SCALE,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.SCALE));
-    map.put(
-        SynchedDataIndex.ITEM_SMART_ANIMATIONS,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
-    map.put(
-        SynchedDataIndex.MODEL_SMART_ANIMATIONS,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
-
     ModelPositionData.registerSyncedModelPositionData(map, entityClass);
-    ModelRotationData.registerSyncedModelRotationData(map, entityClass);
-    ModelVisibilityData.registerSyncedModelVisibilityData(map, entityClass);
+    ModelRotationData.registerSynchedModelRotationData(map, entityClass);
+    ModelScaleData.registerSynchedModelScaleData(map, entityClass);
+    ModelVisibilityData.registerSynchedModelVisibilityData(map, entityClass);
   }
 
   default Pose getDefaultPose() {
@@ -104,101 +76,8 @@ public interface ModelData<T extends PathfinderMob>
     setSynchedEntityData(SynchedDataIndex.MODEL_POSE, modelPose);
   }
 
-  default CustomScale getModelPartScale(ModelPart modelPart) {
-    return switch (modelPart) {
-      case HEAD -> getModelHeadScale();
-      case BODY -> getModelBodyScale();
-      case ARMS -> getModelArmsScale();
-      case LEFT_ARM -> getModelLeftArmScale();
-      case RIGHT_ARM -> getModelRightArmScale();
-      case LEFT_LEG -> getModelLeftLegScale();
-      case RIGHT_LEG -> getModelRightLegScale();
-      default -> DEFAULT_MODEL_PART_SCALE;
-    };
-  }
-
-  default CustomScale getModelHeadScale() {
-    return getSynchedEntityData(SynchedDataIndex.MODEL_HEAD_SCALE);
-  }
-
-  default void setModelHeadScale(CustomScale modelHeadScale) {
-    setSynchedEntityData(SynchedDataIndex.MODEL_HEAD_SCALE, modelHeadScale);
-  }
-
-  default CustomScale getModelBodyScale() {
-    return getSynchedEntityData(SynchedDataIndex.MODEL_BODY_SCALE);
-  }
-
-  default void setModelBodyScale(CustomScale modelBodyScale) {
-    setSynchedEntityData(SynchedDataIndex.MODEL_BODY_SCALE, modelBodyScale);
-  }
-
-  default CustomScale getModelArmsScale() {
-    return getSynchedEntityData(SynchedDataIndex.MODEL_ARMS_SCALE);
-  }
-
-  default void setModelArmsScale(CustomScale modelArmsScale) {
-    setSynchedEntityData(SynchedDataIndex.MODEL_ARMS_SCALE, modelArmsScale);
-  }
-
-  default CustomScale getModelLeftArmScale() {
-    return getSynchedEntityData(SynchedDataIndex.MODEL_LEFT_ARM_SCALE);
-  }
-
-  default void setModelLeftArmScale(CustomScale modelLeftArmScale) {
-    setSynchedEntityData(SynchedDataIndex.MODEL_LEFT_ARM_SCALE, modelLeftArmScale);
-  }
-
-  default CustomScale getModelRightArmScale() {
-    return getSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_ARM_SCALE);
-  }
-
-  default void setModelRightArmScale(CustomScale modelRightArmScale) {
-    setSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_ARM_SCALE, modelRightArmScale);
-  }
-
-  default CustomScale getModelLeftLegScale() {
-    return getSynchedEntityData(SynchedDataIndex.MODEL_LEFT_LEG_SCALE);
-  }
-
-  default void setModelLeftLegScale(CustomScale modelLeftLegScale) {
-    setSynchedEntityData(SynchedDataIndex.MODEL_LEFT_LEG_SCALE, modelLeftLegScale);
-  }
-
-  default CustomScale getModelRightLegScale() {
-    return getSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_LEG_SCALE);
-  }
-
-  default void setModelRightLegScale(CustomScale modelRightLegScale) {
-    setSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_LEG_SCALE, modelRightLegScale);
-  }
-
-  default boolean useSmartAnimations() {
-    return supportsSmartAnimations()
-        && getModelSupportsSmartAnimations()
-        && getItemSupportsSmartAnimations();
-  }
-
-  default boolean getModelSupportsSmartAnimations() {
-    return getSynchedEntityData(SynchedDataIndex.MODEL_SMART_ANIMATIONS) != null
-        && getSynchedEntityData(SynchedDataIndex.MODEL_SMART_ANIMATIONS).equals(true);
-  }
-
-  default void setModelSupportsSmartAnimations(boolean useSmartAnimations) {
-    setSynchedEntityData(SynchedDataIndex.MODEL_SMART_ANIMATIONS, useSmartAnimations);
-  }
-
-  default boolean getItemSupportsSmartAnimations() {
-    return getSynchedEntityData(SynchedDataIndex.ITEM_SMART_ANIMATIONS) != null
-        && getSynchedEntityData(SynchedDataIndex.ITEM_SMART_ANIMATIONS).equals(true);
-  }
-
-  default void setItemSupportsSmartAnimations(boolean useItemSmartAnimations) {
-    setSynchedEntityData(SynchedDataIndex.ITEM_SMART_ANIMATIONS, useItemSmartAnimations);
-  }
-
-  default boolean supportsSmartAnimations() {
-    return true;
+  default ModelType getModelType() {
+    return ModelType.HUMANOID;
   }
 
   default ModelArmPose getModelArmPose() {
@@ -237,44 +116,8 @@ public interface ModelData<T extends PathfinderMob>
     return isAggressive ? ModelArmPose.ATTACKING : ModelArmPose.NEUTRAL;
   }
 
-  @Override
-  default boolean hasHeadModelPart() {
-    return true;
-  }
-
-  @Override
-  default boolean hasBodyModelPart() {
-    return true;
-  }
-
-  @Override
-  default boolean hasArmsModelPart() {
-    return false;
-  }
-
-  @Override
-  default boolean hasLeftArmModelPart() {
-    return true;
-  }
-
-  @Override
-  default boolean hasRightArmModelPart() {
-    return true;
-  }
-
-  @Override
-  default boolean hasLeftLegModelPart() {
-    return true;
-  }
-
-  @Override
-  default boolean hasRightLegModelPart() {
-    return true;
-  }
-
-  @Override
   default boolean canUseArmor() {
-    return true;
+    return false;
   }
 
   default boolean canUseMainHand() {
@@ -292,21 +135,9 @@ public interface ModelData<T extends PathfinderMob>
         || hasChangedModelVisibility();
   }
 
-  default boolean hasChangedModelScale() {
-    return (hasHeadModelPart() && getModelHeadScale().hasChanged())
-        || (hasBodyModelPart() && getModelBodyScale().hasChanged())
-        || (hasArmsModelPart() && getModelArmsScale().hasChanged())
-        || (hasLeftArmModelPart() && getModelLeftArmScale().hasChanged())
-        || (hasRightArmModelPart() && getModelRightArmScale().hasChanged())
-        || (hasLeftLegModelPart() && getModelLeftLegScale().hasChanged())
-        || (hasRightLegModelPart() && getModelRightLegScale().hasChanged());
-  }
-
   default void defineSynchedModelData() {
     // General
     defineSynchedEntityData(SynchedDataIndex.MODEL_POSE, ModelPose.DEFAULT);
-    defineSynchedEntityData(SynchedDataIndex.MODEL_SMART_ANIMATIONS, true);
-    defineSynchedEntityData(SynchedDataIndex.ITEM_SMART_ANIMATIONS, true);
 
     // Model Position Data
     defineSynchedModelPositionData();
@@ -315,13 +146,7 @@ public interface ModelData<T extends PathfinderMob>
     defineSynchedModelRotationData();
 
     // Scale
-    defineSynchedEntityData(SynchedDataIndex.MODEL_HEAD_SCALE, new CustomScale(1, 1, 1));
-    defineSynchedEntityData(SynchedDataIndex.MODEL_BODY_SCALE, new CustomScale(1, 1, 1));
-    defineSynchedEntityData(SynchedDataIndex.MODEL_ARMS_SCALE, new CustomScale(1, 1, 1));
-    defineSynchedEntityData(SynchedDataIndex.MODEL_LEFT_ARM_SCALE, new CustomScale(1, 1, 1));
-    defineSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_ARM_SCALE, new CustomScale(1, 1, 1));
-    defineSynchedEntityData(SynchedDataIndex.MODEL_LEFT_LEG_SCALE, new CustomScale(1, 1, 1));
-    defineSynchedEntityData(SynchedDataIndex.MODEL_RIGHT_LEG_SCALE, new CustomScale(1, 1, 1));
+    defineSynchedModelScaleData();
 
     // Visibility
     defineSynchedModelVisibilityData();
@@ -347,11 +172,11 @@ public interface ModelData<T extends PathfinderMob>
     // Model Rotation
     this.addAdditionalModelRotationData(modelDataTag);
 
+    // Model Scale
+    this.addAdditionalModelScaleData(modelDataTag);
+
     // Model Visibility
     this.addAdditionalModelVisibilityData(modelDataTag);
-
-    // Smart Animations
-    modelDataTag.putBoolean(EASY_NPC_DATA_MODEL_SMART_ANIMATIONS_TAG, this.useSmartAnimations());
 
     compoundTag.put(EASY_NPC_DATA_MODEL_DATA_TAG, modelDataTag);
   }
@@ -389,13 +214,10 @@ public interface ModelData<T extends PathfinderMob>
     // Model Rotation
     this.readAdditionalModelRotationData(modelDataTag);
 
+    // Model Scale
+    this.readAdditionalModelScaleData(modelDataTag);
+
     // Model Visibility
     this.readAdditionalModelVisibilityData(modelDataTag);
-
-    // Smart Animations
-    if (modelDataTag.contains(EASY_NPC_DATA_MODEL_SMART_ANIMATIONS_TAG)) {
-      this.setModelSupportsSmartAnimations(
-          modelDataTag.getBoolean(EASY_NPC_DATA_MODEL_SMART_ANIMATIONS_TAG));
-    }
   }
 }

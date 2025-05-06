@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity.easynpc.npc.raw;
 import static java.util.Objects.hash;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
@@ -498,22 +499,17 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
 
   @Override
   public boolean supportsPoseConfiguration() {
-    return false;
+    return true;
   }
 
   @Override
   public boolean supportsScalingConfiguration() {
-    return false;
+    return true;
   }
 
   @Override
   public boolean supportsDefaultRotationConfiguration() {
-    return false;
-  }
-
-  @Override
-  public boolean supportsChangeModelConfiguration() {
-    return false;
+    return true;
   }
 
   @Override
@@ -529,6 +525,11 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   @Override
   public Enum<?> getDefaultVariantType() {
     return VariantType.DEFAULT_VARIANT;
+  }
+
+  @Override
+  public ModelType getModelType() {
+    return ModelType.ZOMBIE;
   }
 
   @Override

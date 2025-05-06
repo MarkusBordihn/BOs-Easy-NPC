@@ -19,60 +19,58 @@
 
 package de.markusbordihn.easynpc.configui.gametest;
 
-import de.markusbordihn.easynpc.configui.menu.MenuHandler;
-import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
+import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.data.editor.EditorType;
-import de.markusbordihn.easynpc.entity.ModEntityTypes;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.gametest.GameTestHelpers;
-import java.util.Map;
-import java.util.UUID;
+import de.markusbordihn.easynpc.entity.ModEntityType;
+import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.phys.Vec3;
 
+@SuppressWarnings("unused")
 public class EditorScreenTest {
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
-  public void testAllEditorScreen(GameTestHelper helper) {
+  public void testActionDataEditorScreen(GameTestHelper helper) {
+    EditorScreenTestHelper.testEditorScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        EditorType.ACTION_DATA,
+        ModMenuTypes.ACTION_DATA_EDITOR_MENU);
+  }
 
-    // Get a mock player and spawn a humanoid NPC.
-    ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));
-    EasyNPC<?> easyNPC =
-        GameTestHelpers.mockEasyNPC(helper, ModEntityTypes.HUMANOID, new Vec3(2, 2, 2));
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testActionDataEntryEditorScreen(GameTestHelper helper) {
+    EditorScreenTestHelper.testEditorScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        EditorType.ACTION_DATA_ENTRY,
+        ModMenuTypes.ACTION_DATA_ENTRY_EDITOR_MENU);
+  }
 
-    // Test all known configuration screens
-    for (Map.Entry<EditorType, MenuType<? extends EditorMenu>> entry :
-        MenuHandler.editorMenuMap().entrySet()) {
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testDialogEditorScreen(GameTestHelper helper) {
+    EditorScreenTestHelper.testEditorScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        EditorType.DIALOG,
+        ModMenuTypes.DIALOG_EDITOR_MENU);
+  }
 
-      // Close previous dialog
-      if (serverPlayer.hasContainerOpen()) {
-        serverPlayer.closeContainer();
-      }
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testDialogButtonEditorScreen(GameTestHelper helper) {
+    EditorScreenTestHelper.testEditorScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        EditorType.DIALOG_BUTTON,
+        ModMenuTypes.DIALOG_BUTTON_EDITOR_MENU);
+  }
 
-      // Prepare and open Dialog
-      UUID dialogId =
-          EditorScreenTestHelper.mockOpenEditorScreen(
-              serverPlayer, entry.getKey(), easyNPC, entry.getValue());
-      GameTestHelpers.assertNotNull(helper, "DialogId is null!", dialogId);
-
-      // Check if dialog is open.
-      GameTestHelpers.assertTrue(
-          helper,
-          "Dialog " + entry.getValue() + " is not open!",
-          serverPlayer.containerMenu instanceof EditorMenu);
-      GameTestHelpers.assertEquals(
-          helper,
-          "Wrong Editor type! Expected: "
-              + entry.getValue()
-              + " but got: "
-              + serverPlayer.containerMenu.getType(),
-          entry.getValue(),
-          serverPlayer.containerMenu.getType());
-
-      helper.succeed();
-    }
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testDialogTextEditorScreen(GameTestHelper helper) {
+    EditorScreenTestHelper.testEditorScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        EditorType.DIALOG_TEXT,
+        ModMenuTypes.DIALOG_TEXT_EDITOR_MENU);
   }
 }

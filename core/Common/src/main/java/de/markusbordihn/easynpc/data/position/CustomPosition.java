@@ -19,11 +19,18 @@
 
 package de.markusbordihn.easynpc.data.position;
 
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import java.util.List;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.FriendlyByteBuf;
 
 public record CustomPosition(float x, float y, float z) {
+
+  public CustomPosition(ModelPartType modelPartType, CompoundTag compoundTag) {
+    this(compoundTag.getList(modelPartType.getTagName(), 5));
+  }
 
   public CustomPosition(ListTag listTag) {
     this(listTag.getFloat(0), listTag.getFloat(1), listTag.getFloat(2));
@@ -33,12 +40,22 @@ public record CustomPosition(float x, float y, float z) {
     this(list.get(0), list.get(1), list.get(2));
   }
 
+  public static CustomPosition decode(FriendlyByteBuf buffer) {
+    return new CustomPosition(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+  }
+
   public ListTag save() {
     ListTag listTag = new ListTag();
     listTag.add(FloatTag.valueOf(this.x));
     listTag.add(FloatTag.valueOf(this.y));
     listTag.add(FloatTag.valueOf(this.z));
     return listTag;
+  }
+
+  public void encode(FriendlyByteBuf buffer) {
+    buffer.writeFloat(this.x);
+    buffer.writeFloat(this.y);
+    buffer.writeFloat(this.z);
   }
 
   public boolean hasChanged() {

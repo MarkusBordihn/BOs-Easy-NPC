@@ -1,8 +1,8 @@
-package de.markusbordihn.easynpc.mixin;
+package de.markusbordihn.easynpc.mixin.model;
 
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManager;
-import de.markusbordihn.easynpc.client.model.ModelPartType;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.model.VillagerModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -27,13 +27,14 @@ public class EasyNPCVillagerModelMixin<T extends Entity> {
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))
   private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
-    this.modelManager = new EasyNPCModelManager(modelPart);
-    this.modelManager.defineModelPart(ModelPartType.HAT, this.hat);
-    this.modelManager.defineModelPart(ModelPartType.HEAD, this.head);
-    this.modelManager.defineModelPart(ModelPartType.BODY, modelPart.getChild("body"));
-    this.modelManager.defineModelPart(ModelPartType.ARMS, modelPart.getChild("arms"));
-    this.modelManager.defineModelPart(ModelPartType.RIGHT_LEG, this.rightLeg);
-    this.modelManager.defineModelPart(ModelPartType.LEFT_LEG, this.leftLeg);
+    this.modelManager =
+        new EasyNPCModelManager(modelPart)
+            .defineModelPart(ModelPartType.HAT, this.hat)
+            .defineModelPart(ModelPartType.HEAD, this.head)
+            .defineModelPart(ModelPartType.BODY, "body")
+            .defineModelPart(ModelPartType.ARMS, "arms")
+            .defineModelPart(ModelPartType.RIGHT_LEG, this.rightLeg)
+            .defineModelPart(ModelPartType.LEFT_LEG, this.leftLeg);
   }
 
   @Inject(
@@ -48,12 +49,8 @@ public class EasyNPCVillagerModelMixin<T extends Entity> {
       float netHeadYaw,
       float headPitch,
       CallbackInfo callbackInfo) {
-    if (!(entity instanceof EasyNPC<?> easyNPC)) {
-      return;
-    }
-
-    VillagerModel<T> model = (VillagerModel<T>) (Object) this;
-    if (EasyNPCModel.setupAnimation(easyNPC, this.modelManager, model)) {
+    if (entity instanceof EasyNPC<?> easyNPC
+        && EasyNPCModel.setupAnimationStart(easyNPC, this.modelManager)) {
       callbackInfo.cancel();
     }
   }

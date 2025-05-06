@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.configui.network.message.server;
 
 import de.markusbordihn.easynpc.configui.Constants;
-import de.markusbordihn.easynpc.data.model.ModelPart;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -32,7 +32,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Pose;
 
-public record ChangeModelRotationMessage(UUID uuid, ModelPart modelPart, CustomRotation rotation)
+public record ChangeModelRotationMessage(
+    UUID uuid, ModelPartType modelPartType, CustomRotation rotation)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
@@ -41,17 +42,19 @@ public record ChangeModelRotationMessage(UUID uuid, ModelPart modelPart, CustomR
   public static ChangeModelRotationMessage create(final FriendlyByteBuf buffer) {
     return new ChangeModelRotationMessage(
         buffer.readUUID(),
-        buffer.readEnum(ModelPart.class),
-        new CustomRotation(buffer.readFloat(), buffer.readFloat(), buffer.readFloat()));
+        buffer.readEnum(ModelPartType.class),
+        new CustomRotation(
+            buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readBoolean()));
   }
 
   @Override
   public void write(final FriendlyByteBuf buffer) {
     buffer.writeUUID(this.uuid);
-    buffer.writeEnum(this.modelPart);
+    buffer.writeEnum(this.modelPartType);
     buffer.writeFloat(this.rotation.x());
     buffer.writeFloat(this.rotation.y());
     buffer.writeFloat(this.rotation.z());
+    buffer.writeBoolean(this.rotation.locked());
   }
 
   @Override
@@ -67,8 +70,8 @@ public record ChangeModelRotationMessage(UUID uuid, ModelPart modelPart, CustomR
     }
 
     // Validate ModelPart.
-    if (this.modelPart == null) {
-      log.error("Invalid modelPart for {} from {}", easyNPC, serverPlayer);
+    if (this.modelPartType == null) {
+      log.error("Invalid modelPartType for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
@@ -88,7 +91,7 @@ public record ChangeModelRotationMessage(UUID uuid, ModelPart modelPart, CustomR
     // Perform action.
     log.debug(
         "Change {} rotation to {}° {}° {}° for {} from {}",
-        this.modelPart,
+        this.modelPartType,
         this.rotation.x(),
         this.rotation.y(),
         this.rotation.z(),
@@ -96,16 +99,17 @@ public record ChangeModelRotationMessage(UUID uuid, ModelPart modelPart, CustomR
         serverPlayer);
 
     // Set common properties for all cases except ROOT.
-    if (this.modelPart != ModelPart.ROOT) {
+    if (this.modelPartType != ModelPartType.ROOT) {
       easyNPC.getEntity().setPose(Pose.STANDING);
       modelData.setModelPose(ModelPose.CUSTOM);
     }
 
     // Apply rotation based on the model part.
-    modelData.setModelPartRotation(this.modelPart, this.rotation);
+    modelData.setModelPartRotation(this.modelPartType, this.rotation);
 
     // Verify if custom model pose is really needed.
-    if (!modelData.hasChangedModel()) {
+    if (!modelData.hasChangedModel()
+        || (this.modelPartType == ModelPartType.ROOT && this.rotation.hasChanged())) {
       log.debug("Reset custom model pose for {} from {}", easyNPC, serverPlayer);
       modelData.setModelPose(ModelPose.DEFAULT);
       easyNPC.getEntity().setPose(Pose.STANDING);

@@ -36,7 +36,7 @@ public record ChangeSkinMessage(
     String skinURL,
     UUID skinUUID,
     SkinType skinType,
-    String skinVariant)
+    String skinVariantType)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
@@ -59,7 +59,7 @@ public record ChangeSkinMessage(
     buffer.writeUtf(this.skinURL);
     buffer.writeUUID(this.skinUUID);
     buffer.writeEnum(this.skinType);
-    buffer.writeUtf(this.skinVariant);
+    buffer.writeUtf(this.skinVariantType);
   }
 
   @Override
@@ -82,7 +82,7 @@ public record ChangeSkinMessage(
         switch (this.skinType) {
           case NONE -> SkinHandler.setNoneSkin(easyNPC);
           case CUSTOM -> SkinHandler.setCustomSkin(easyNPC, this.skinUUID);
-          case DEFAULT -> SkinHandler.setDefaultSkin(easyNPC, this.skinVariant);
+          case DEFAULT -> SkinHandler.setDefaultSkin(easyNPC, this.skinVariantType);
           case PLAYER_SKIN -> {
             UUID userUUID = this.skinUUID;
             if (userUUID == null || Constants.EMPTY_UUID.equals(this.skinUUID)) {

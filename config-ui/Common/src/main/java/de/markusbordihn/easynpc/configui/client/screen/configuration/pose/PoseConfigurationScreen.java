@@ -26,7 +26,7 @@ import de.markusbordihn.easynpc.configui.client.screen.configuration.Configurati
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.data.model.ModelPart;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
@@ -48,7 +48,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
   }
 
   protected RangeSliderButton createRotationSlider(
-      int left, int top, ModelPart modelPart, String label) {
+      int left, int top, ModelPartType modelPart, String label) {
     int sliderWidth = 34;
     int sliderHeight = 16;
     int sliderLeftPosition = left + 10;
@@ -166,18 +166,18 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
   }
 
   protected RangeSliderButton createPositionSliderCompact(
-      int left, int top, ModelPart modelPart, String label) {
-    return createPositionSlider(left, top, modelPart, label, true);
+      int left, int top, ModelPartType modelPartType, String label) {
+    return createPositionSlider(left, top, modelPartType, label, true);
   }
 
   protected RangeSliderButton createPositionSlider(
-      int left, int top, ModelPart modelPart, String label, boolean compact) {
+      int left, int top, ModelPartType modelPartType, String label, boolean compact) {
     int sliderWidth = 34;
     int sliderHeight = 16;
     int sliderLeftPosition = left + 10;
 
     // Model Part Position.
-    CustomPosition modelPartPosition = this.modelData.getModelPartPosition(modelPart);
+    CustomPosition modelPartPosition = this.modelData.getModelPartPosition(modelPartType);
     RangeSliderButton sliderButtonX =
         this.addRenderableWidget(
             new RangeSliderButton(
@@ -191,11 +191,11 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 false,
                 slider -> {
                   CustomPosition currentModelPartPosition =
-                      this.modelData.getModelPartPosition(modelPart);
+                      this.modelData.getModelPartPosition(modelPartType);
                   NetworkMessageHandlerManager.getServerHandler()
                       .modelPositionChange(
                           this.getEasyNPCUUID(),
-                          modelPart,
+                          modelPartType,
                           new CustomPosition(
                               slider.getTargetValue(),
                               currentModelPartPosition.y(),
@@ -214,11 +214,11 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 false,
                 slider -> {
                   CustomPosition currentModelPartPosition =
-                      this.modelData.getModelPartPosition(modelPart);
+                      this.modelData.getModelPartPosition(modelPartType);
                   NetworkMessageHandlerManager.getServerHandler()
                       .modelPositionChange(
                           this.getEasyNPCUUID(),
-                          modelPart,
+                          modelPartType,
                           new CustomPosition(
                               currentModelPartPosition.x(),
                               slider.getTargetValue(),
@@ -237,11 +237,11 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                 false,
                 slider -> {
                   CustomPosition currentModelPartPosition =
-                      this.modelData.getModelPartPosition(modelPart);
+                      this.modelData.getModelPartPosition(modelPartType);
                   NetworkMessageHandlerManager.getServerHandler()
                       .modelPositionChange(
                           this.getEasyNPCUUID(),
-                          modelPart,
+                          modelPartType,
                           new CustomPosition(
                               currentModelPartPosition.x(),
                               currentModelPartPosition.y(),
@@ -283,7 +283,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
               sliderButtonZ.reset();
               NetworkMessageHandlerManager.getServerHandler()
                   .modelPositionChange(
-                      this.getEasyNPCUUID(), modelPart, new CustomPosition(0f, 0f, 0f));
+                      this.getEasyNPCUUID(), modelPartType, new CustomPosition(0f, 0f, 0f));
             }));
 
     return sliderButtonX;

@@ -188,7 +188,6 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
         this.contentLeftPos + 80 - this.xMouse,
         this.contentTopPos + 85 - this.yMouse,
         this.getEasyNPC(),
-        this.getEasyNPC().getEasyNPCScaleData(),
         this.getEasyNPC().getEasyNPCModelData());
 
     // Restore entity information

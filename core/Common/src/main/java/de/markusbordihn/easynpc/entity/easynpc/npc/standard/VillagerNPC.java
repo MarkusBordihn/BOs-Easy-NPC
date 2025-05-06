@@ -83,26 +83,6 @@ public class VillagerNPC extends VillagerRaw {
   }
 
   @Override
-  public boolean hasArmsModelPart() {
-    return true;
-  }
-
-  @Override
-  public boolean hasLeftArmModelPart() {
-    return false;
-  }
-
-  @Override
-  public boolean hasRightArmModelPart() {
-    return false;
-  }
-
-  @Override
-  public boolean canUseArmor() {
-    return false;
-  }
-
-  @Override
   public boolean canUseOffHand() {
     return false;
   }

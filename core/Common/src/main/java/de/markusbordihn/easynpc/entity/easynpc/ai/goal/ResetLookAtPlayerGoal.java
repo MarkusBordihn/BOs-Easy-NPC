@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import net.minecraft.world.entity.ai.control.LookControl;
@@ -48,18 +49,20 @@ public class ResetLookAtPlayerGoal<T extends EasyNPC<?>> extends Goal {
 
   @Override
   public boolean canUse() {
-    return this.modelData == null || !this.modelData.getModelLockRotation();
+    return this.modelData == null
+        || !this.modelData.getModelPartRotation(ModelPartType.ROOT).locked();
   }
 
   @Override
   public boolean canContinueToUse() {
-    return (this.modelData == null || !this.modelData.getModelLockRotation())
+    return (this.modelData == null
+            || !this.modelData.getModelPartRotation(ModelPartType.ROOT).locked())
         && this.resetLookTime > 0;
   }
 
   @Override
   public void tick() {
-    if ((this.modelData == null || this.modelData.getModelLockRotation())
+    if ((this.modelData == null || this.modelData.getModelPartRotation(ModelPartType.ROOT).locked())
         && this.resetLookTime > 0) {
       if (this.lookControl != null) {
         this.lookControl.setLookAt(0, 0, 0);

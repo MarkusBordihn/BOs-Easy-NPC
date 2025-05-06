@@ -17,6 +17,10 @@ minecraft {
   }
 }
 
+dependencies {
+  compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.7'
+}
+
 apply from: "$projectDir/../gradle/tasks/generateRawNPCs.gradle"
 
 processResources {

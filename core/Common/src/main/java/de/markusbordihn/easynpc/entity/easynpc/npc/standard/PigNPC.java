@@ -60,11 +60,6 @@ public class PigNPC extends PigRaw {
   }
 
   @Override
-  public boolean canUseArmor() {
-    return false;
-  }
-
-  @Override
   public boolean canUseOffHand() {
     return false;
   }
@@ -82,11 +77,6 @@ public class PigNPC extends PigRaw {
   @Override
   public int getEntityDialogTop() {
     return -37;
-  }
-
-  @Override
-  public boolean supportsSmartAnimations() {
-    return false;
   }
 
   @Override

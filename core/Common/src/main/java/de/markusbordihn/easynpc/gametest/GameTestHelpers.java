@@ -78,13 +78,12 @@ public class GameTestHelpers {
       helper.fail("Entity for " + entityType + " is null!");
       return null;
     }
-    if (player.level().addFreshEntity(entity)) {
-      // helper.assertEntityPresent(entity.getType());
-      return entity;
+    if (!player.level().addFreshEntity(entity)) {
+      helper.fail("Failed to spawn entity " + entityType + "!");
+      return null;
     }
 
-    helper.fail("Failed to spawn entity " + entityType + "!");
-    return null;
+    return entity;
   }
 
   public static void assertEquals(

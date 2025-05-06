@@ -19,82 +19,363 @@
 
 package de.markusbordihn.easynpc.configui.gametest;
 
-import de.markusbordihn.easynpc.configui.menu.MenuHandler;
 import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
-import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.entity.ModEntityTypes;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.gametest.GameTestHelpers;
-import java.util.Map;
-import java.util.UUID;
+import de.markusbordihn.easynpc.entity.ModEntityType;
+import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.phys.Vec3;
 
+@SuppressWarnings("unused")
 public class ConfigurationScreenTest {
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
-  public void testOpenMainConfigurationScreen(GameTestHelper helper) {
-
-    // Get a mock player and spawn a humanoid NPC.
-    ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));
-    EasyNPC<?> easyNPC =
-        GameTestHelpers.mockEasyNPC(helper, ModEntityTypes.HUMANOID, new Vec3(2, 2, 2));
-
-    // Prepare and open Dialog
-    UUID dialogId =
-        ConfigurationScreenTestHelper.mockOpenConfigurationScreen(
-            serverPlayer, ConfigurationType.MAIN, easyNPC, ModMenuTypes.MAIN_CONFIGURATION_MENU);
-    GameTestHelpers.assertNotNull(helper, "DialogId is null!", dialogId);
-
-    // Check if dialog is open.
-    GameTestHelpers.assertTrue(
-        helper, "Dialog is not open!", serverPlayer.containerMenu instanceof ConfigurationMenu);
-
-    helper.succeed();
+  public void testOpenAbilitiesAttributeConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.ABILITIES_ATTRIBUTE,
+        ModMenuTypes.ABILITIES_ATTRIBUTE_CONFIGURATION_MENU);
   }
 
   @GameTest(template = "easy_npc:gametest.3x3x3")
-  public void testAllConfigurationScreen(GameTestHelper helper) {
+  public void testOpenAdvancedDialogConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.ADVANCED_DIALOG,
+        ModMenuTypes.ADVANCED_DIALOG_CONFIGURATION_MENU);
+  }
 
-    // Get a mock player and spawn a humanoid NPC.
-    ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));
-    EasyNPC<?> easyNPC =
-        GameTestHelpers.mockEasyNPC(helper, ModEntityTypes.HUMANOID, new Vec3(2, 2, 2));
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenAdvancedPoseConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.ADVANCED_POSE,
+        ModMenuTypes.ADVANCED_POSE_CONFIGURATION_MENU);
+  }
 
-    // Test all known configuration screens
-    for (Map.Entry<ConfigurationType, MenuType<? extends ConfigurationMenu>> entry :
-        MenuHandler.configurationMenuMap().entrySet()) {
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenAdvancedTradingConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.ADVANCED_TRADING,
+        ModMenuTypes.ADVANCED_TRADING_CONFIGURATION_MENU);
+  }
 
-      // Close previous dialog
-      if (serverPlayer.hasContainerOpen()) {
-        serverPlayer.closeContainer();
-      }
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenAttackObjectiveConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.ATTACK_OBJECTIVE,
+        ModMenuTypes.ATTACK_OBJECTIVE_CONFIGURATION_MENU);
+  }
 
-      // Prepare and open Dialog
-      UUID dialogId =
-          ConfigurationScreenTestHelper.mockOpenConfigurationScreen(
-              serverPlayer, entry.getKey(), easyNPC, entry.getValue());
-      GameTestHelpers.assertNotNull(helper, "DialogId is null!", dialogId);
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenBaseAttributeConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.BASE_ATTRIBUTE,
+        ModMenuTypes.BASE_ATTRIBUTE_CONFIGURATION_MENU);
+  }
 
-      // Check if dialog is open.
-      GameTestHelpers.assertTrue(
-          helper,
-          "Dialog " + entry.getValue() + " is not open!",
-          serverPlayer.containerMenu instanceof ConfigurationMenu);
-      GameTestHelpers.assertEquals(
-          helper,
-          "Wrong Dialog type! Expected: "
-              + entry.getValue()
-              + " but got: "
-              + serverPlayer.containerMenu.getType(),
-          entry.getValue(),
-          serverPlayer.containerMenu.getType());
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenBasicActionConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.BASIC_ACTION,
+        ModMenuTypes.BASIC_ACTION_CONFIGURATION_MENU);
+  }
 
-      helper.succeed();
-    }
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenBasicDialogConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.BASIC_DIALOG,
+        ModMenuTypes.BASIC_DIALOG_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenBasicObjectiveConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.BASIC_OBJECTIVE,
+        ModMenuTypes.BASIC_OBJECTIVE_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenBasicTradingConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.BASIC_TRADING,
+        ModMenuTypes.BASIC_TRADING_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenCustomPoseConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.CUSTOM_POSE,
+        ModMenuTypes.CUSTOM_POSE_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenCustomPresetExportConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.CUSTOM_PRESET_EXPORT,
+        ModMenuTypes.CUSTOM_EXPORT_PRESET_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenCustomPresetImportConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.CUSTOM_PRESET_IMPORT,
+        ModMenuTypes.CUSTOM_IMPORT_PRESET_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenCustomSkinConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.CUSTOM_SKIN,
+        ModMenuTypes.CUSTOM_SKIN_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenCustomTradingConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.CUSTOM_TRADING,
+        ModMenuTypes.CUSTOM_TRADING_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenCustomModelConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.CUSTOM_MODEL,
+        ModMenuTypes.CUSTOM_MODEL_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenDefaultModelConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.DEFAULT_MODEL,
+        ModMenuTypes.DEFAULT_MODEL_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenDefaultPoseConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.DEFAULT_POSE,
+        ModMenuTypes.DEFAULT_POSE_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenDefaultPositionConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.DEFAULT_POSITION,
+        ModMenuTypes.DEFAULT_POSITION_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenDefaultPresetImportConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.DEFAULT_PRESET_IMPORT,
+        ModMenuTypes.DEFAULT_IMPORT_PRESET_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenDefaultRotationConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.DEFAULT_ROTATION,
+        ModMenuTypes.DEFAULT_ROTATION_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenDefaultSkinConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.DEFAULT_SKIN,
+        ModMenuTypes.DEFAULT_SKIN_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenDialogActionConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.DIALOG_ACTION,
+        ModMenuTypes.DIALOG_ACTION_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenDisplayAttributeConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.DISPLAY_ATTRIBUTE,
+        ModMenuTypes.DISPLAY_ATTRIBUTE_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenDistanceActionConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.DISTANCE_ACTION,
+        ModMenuTypes.DISTANCE_ACTION_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenEquipmentConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.EQUIPMENT,
+        ModMenuTypes.EQUIPMENT_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenFollowObjectiveConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.FOLLOW_OBJECTIVE,
+        ModMenuTypes.FOLLOW_OBJECTIVE_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenLocalPresetImportConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.LOCAL_PRESET_IMPORT,
+        ModMenuTypes.LOCAL_IMPORT_PRESET_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenLookObjectiveConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.LOOK_OBJECTIVE,
+        ModMenuTypes.LOOK_OBJECTIVE_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenMainConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.MAIN,
+        ModMenuTypes.MAIN_CONFIGURATION_MENU);
+  }
+
+  public void testOpenNoneDialogConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.NONE_DIALOG,
+        ModMenuTypes.NONE_DIALOG_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenNoneSkinConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.NONE_SKIN,
+        ModMenuTypes.NONE_SKIN_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenNoneTradingConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.NONE_TRADING,
+        ModMenuTypes.NONE_TRADING_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenPlayerSkinConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.PLAYER_SKIN,
+        ModMenuTypes.PLAYER_SKIN_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenScalingConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.SCALING,
+        ModMenuTypes.SCALING_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenUrlSkinConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.URL_SKIN,
+        ModMenuTypes.URL_SKIN_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenWorldPresetExportConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.WORLD_PRESET_EXPORT,
+        ModMenuTypes.WORLD_EXPORT_PRESET_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenWorldPresetImportConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.WORLD_PRESET_IMPORT,
+        ModMenuTypes.WORLD_IMPORT_PRESET_CONFIGURATION_MENU);
+  }
+
+  @GameTest(template = "easy_npc:gametest.3x3x3")
+  public void testOpenYesNoDialogConfigurationScreen(GameTestHelper helper) {
+    ConfigurationScreenTestHelper.testConfigurationScreen(
+        helper,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
+        ConfigurationType.YES_NO_DIALOG,
+        ModMenuTypes.YES_NO_DIALOG_CONFIGURATION_MENU);
   }
 }

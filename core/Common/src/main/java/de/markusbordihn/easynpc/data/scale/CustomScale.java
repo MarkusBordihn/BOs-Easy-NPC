@@ -19,22 +19,33 @@
 
 package de.markusbordihn.easynpc.data.scale;
 
+import de.markusbordihn.easynpc.data.model.ModelPartType;
+import java.util.List;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.FriendlyByteBuf;
 
-public class CustomScale {
-  protected final float x;
-  protected final float y;
-  protected final float z;
+public record CustomScale(float x, float y, float z) {
 
-  public CustomScale(float x, float y, float z) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
+  public CustomScale(ModelPartType modelPartType, CompoundTag compoundTag) {
+    this(compoundTag.getList(modelPartType.getTagName(), 5));
   }
 
   public CustomScale(ListTag listTag) {
     this(listTag.getFloat(0), listTag.getFloat(1), listTag.getFloat(2));
+  }
+
+  public CustomScale(List<Float> list) {
+    this(list.get(0), list.get(1), list.get(2));
+  }
+
+  public CustomScale(float scale) {
+    this(scale, scale, scale);
+  }
+
+  public static CustomScale decode(FriendlyByteBuf buffer) {
+    return new CustomScale(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
   }
 
   public ListTag save() {
@@ -45,23 +56,17 @@ public class CustomScale {
     return listTag;
   }
 
-  public float x() {
-    return this.x;
-  }
-
-  public float y() {
-    return this.y;
-  }
-
-  public float z() {
-    return this.z;
-  }
-
   public boolean hasChanged() {
     return hasChanged(1, 1, 1);
   }
 
   public boolean hasChanged(float x, float y, float z) {
     return this.x != x || this.y != y || this.z != z;
+  }
+
+  public void encode(FriendlyByteBuf buffer) {
+    buffer.writeFloat(this.x);
+    buffer.writeFloat(this.y);
+    buffer.writeFloat(this.z);
   }
 }

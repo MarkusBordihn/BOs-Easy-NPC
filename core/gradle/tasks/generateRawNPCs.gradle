@@ -8,6 +8,7 @@ task generateRawNPCs {
           class    : "net.minecraft.world.entity.animal.allay.Allay",
           className: "AllayRaw",
           baseClass: "Allay",
+          modelType: "ALLAY",
           variant  : "DEFAULT",
           variants : "DEFAULT, LAVA, GRASSLAND, WATER"
       ],
@@ -16,6 +17,7 @@ task generateRawNPCs {
           class    : "net.minecraft.world.entity.animal.Cat",
           className: "CatRaw",
           baseClass: "Cat",
+          modelType: "FELINE",
           variant  : "BLACK",
           variants : "ALL_BLACK, BLACK, BRITISH_SHORTHAIR, CALICO, JELLIE, OCELOT, PERSIAN, RAGDOLL, RED, SIAMESE, TABBY, WHITE"
       ],
@@ -24,6 +26,7 @@ task generateRawNPCs {
           class    : "net.minecraft.world.entity.monster.Creeper",
           className: "CreeperRaw",
           baseClass: "Creeper",
+          modelType: "CREEPER",
           variant  : "DEFAULT",
           variants : "DEFAULT, CHARGED"
       ],
@@ -32,6 +35,7 @@ task generateRawNPCs {
           class    : "net.minecraft.world.entity.animal.Chicken",
           className: "ChickenRaw",
           baseClass: "Chicken",
+          modelType: "AVIAN",
           variant  : "WHITE",
           variants : "WHITE"
       ],
@@ -40,6 +44,7 @@ task generateRawNPCs {
           class    : "net.minecraft.world.entity.monster.Drowned",
           className: "DrownedRaw",
           baseClass: "Drowned",
+          modelType: "ZOMBIE",
           variant  : "DEFAULT",
           variants : "DEFAULT"
       ],
@@ -48,6 +53,7 @@ task generateRawNPCs {
           class    : "net.minecraft.world.entity.monster.EnderMan",
           className: "EnderManRaw",
           baseClass: "EnderMan",
+          modelType: "HUMANOID",
           variant  : "DEFAULT",
           variants : "DEFAULT"
       ],
@@ -56,6 +62,7 @@ task generateRawNPCs {
           class    : "net.minecraft.world.entity.monster.Evoker",
           className: "EvokerRaw",
           baseClass: "Evoker",
+          modelType: "ILLAGER",
           variant  : "EVOKER",
           variants : "EVOKER, EVOKER_CROSSED_ARMS"
       ],
@@ -64,6 +71,7 @@ task generateRawNPCs {
           class    : "net.minecraft.world.entity.animal.horse.Horse",
           className: "HorseRaw",
           baseClass: "Horse",
+          modelType: "EQUINE",
           variant  : "WHITE",
           variants : "WHITE, WHITE_SADDLED, CREAMY, CREAMY_SADDLED, CHESTNUT, CHESTNUT_SADDLED, BROWN, BROWN_SADDLED, BLACK, BLACK_SADDLED, GRAY, GRAY_SADDLED, DARKBROWN, DARKBROWN_SADDLED, SKELETON, SKELETON_SADDLED, ZOMBIE, ZOMBIE_SADDLED, DONKEY, DONKEY_SADDLED, MULE, MULE_SADDLED"
       ],
@@ -72,6 +80,7 @@ task generateRawNPCs {
           class    : "net.minecraft.world.entity.animal.IronGolem",
           className: "IronGolemRaw",
           baseClass: "IronGolem",
+          modelType: "GOLEM",
           variant  : "IRON_GOLEM",
           variants : "IRON_GOLEM, IRON_GOLEM_CRACKINESS_HIGH, IRON_GOLEM_CRACKINESS_MEDIUM, IRON_GOLEM_CRACKINESS_LOW"
       ],
@@ -80,6 +89,7 @@ task generateRawNPCs {
           class    : "net.minecraft.world.entity.monster.Illusioner",
           className: "IllusionerRaw",
           baseClass: "Illusioner",
+          modelType: "ILLAGER",
           variant  : "ILLUSIONER",
           variants : "ILLUSIONER, ILLUSIONER_CROSSED_ARMS"
       ],
@@ -89,6 +99,7 @@ task generateRawNPCs {
           className: "PathfinderMobRaw",
           baseClass: "PathfinderMob",
           skinModel: "HUMANOID",
+          modelType: "HUMANOID",
           variant  : "DEFAULT",
           variants : "DEFAULT"
       ],
@@ -97,6 +108,7 @@ task generateRawNPCs {
           class    : "net.minecraft.world.entity.monster.Pillager",
           className: "PillagerRaw",
           baseClass: "Pillager",
+          modelType: "ILLAGER",
           variant  : "PILLAGER",
           variants : "PILLAGER"
       ],
@@ -105,6 +117,7 @@ task generateRawNPCs {
           class    : "net.minecraft.world.entity.animal.Pig",
           className: "PigRaw",
           baseClass: "Pig",
+          modelType: "QUADRUPED",
           variant  : "DEFAULT",
           variants : "DEFAULT, SPOTTED"
       ],
@@ -113,6 +126,7 @@ task generateRawNPCs {
           class    : "net.minecraft.world.entity.monster.piglin.Piglin",
           className: "PiglinRaw",
           baseClass: "Piglin",
+          modelType: "HUMANOID",
           variant  : "PIGLIN",
           variants : "PIGLIN, PIGLIN_BRUTE, ZOMBIFIED_PIGLIN"
       ],
@@ -121,14 +135,16 @@ task generateRawNPCs {
           class    : "net.minecraft.world.entity.monster.Skeleton",
           className: "SkeletonRaw",
           baseClass: "Skeleton",
+          modelType: "HUMANOID",
           variant  : "SKELETON",
-          variants : "SKELETON, STRAY, WITHER_SKELETON"
+          variants : "BOGGED, SKELETON, STRAY, WITHER_SKELETON"
       ],
       [
           id       : "vex_raw",
           class    : "net.minecraft.world.entity.monster.Vex",
           className: "VexRaw",
           baseClass: "Vex",
+          modelType: "PIXIE",
           variant  : "DEFAULT",
           variants : "DEFAULT"
       ],
@@ -137,6 +153,7 @@ task generateRawNPCs {
           class    : "net.minecraft.world.entity.npc.Villager",
           className: "VillagerRaw",
           baseClass: "Villager",
+          modelType: "VILLAGER",
           variant  : "DEFAULT",
           variants : "DEFAULT, DESERT_ARMORER, DESERT_BUTCHER, DESERT_CARTOGRAPHER, DESERT_CLERIC, DESERT_FARMER, DESERT_FISHERMAN, DESERT_FLETCHER, DESERT_LEATHERWORKER, DESERT_LIBRARIAN, DESERT_MASON, DESERT_NITWIT, DESERT_SHEPHERD, DESERT_TOOLSMITH, DESERT_WEAPONSMITH, JUNGLE_ARMORER, JUNGLE_BUTCHER, JUNGLE_CARTOGRAPHER, JUNGLE_CLERIC, JUNGLE_FARMER, JUNGLE_FISHERMAN, JUNGLE_FLETCHER, JUNGLE_LEATHERWORKER, JUNGLE_LIBRARIAN, JUNGLE_MASON, JUNGLE_NITWIT, JUNGLE_SHEPHERD, JUNGLE_TOOLSMITH, JUNGLE_WEAPONSMITH, PLAINS_ARMORER, PLAINS_BUTCHER, PLAINS_CARTOGRAPHER, PLAINS_CLERIC, PLAINS_FARMER, PLAINS_FISHERMAN, PLAINS_FLETCHER, PLAINS_LEATHERWORKER, PLAINS_LIBRARIAN, PLAINS_MASON, PLAINS_NITWIT, PLAINS_SHEPHERD, PLAINS_TOOLSMITH, PLAINS_WEAPONSMITH, SAVANNA_ARMORER, SAVANNA_BUTCHER, SAVANNA_CARTOGRAPHER, SAVANNA_CLERIC, SAVANNA_FARMER, SAVANNA_FISHERMAN, SAVANNA_FLETCHER, SAVANNA_LEATHERWORKER, SAVANNA_LIBRARIAN, SAVANNA_MASON, SAVANNA_NITWIT, SAVANNA_SHEPHERD, SAVANNA_TOOLSMITH, SAVANNA_WEAPONSMITH, SNOW_ARMORER, SNOW_BUTCHER, SNOW_CARTOGRAPHER, SNOW_CLERIC, SNOW_FARMER, SNOW_FISHERMAN, SNOW_FLETCHER, SNOW_LEATHERWORKER, SNOW_LIBRARIAN, SNOW_MASON, SNOW_NITWIT, SNOW_SHEPHERD, SNOW_TOOLSMITH, SNOW_WEAPONSMITH, SWAMP_ARMORER, SWAMP_BUTCHER, SWAMP_CARTOGRAPHER, SWAMP_CLERIC, SWAMP_FARMER, SWAMP_FISHERMAN, SWAMP_FLETCHER, SWAMP_LEATHERWORKER, SWAMP_LIBRARIAN, SWAMP_MASON, SWAMP_NITWIT, SWAMP_SHEPHERD, SWAMP_TOOLSMITH, SWAMP_WEAPONSMITH, TAIGA_ARMORER, TAIGA_BUTCHER, TAIGA_CARTOGRAPHER, TAIGA_CLERIC, TAIGA_FARMER, TAIGA_FISHERMAN, TAIGA_FLETCHER, TAIGA_LEATHERWORKER, TAIGA_LIBRARIAN, TAIGA_MASON, TAIGA_NITWIT, TAIGA_SHEPHERD, TAIGA_TOOLSMITH, TAIGA_WEAPONSMITH"
       ],
@@ -145,6 +162,7 @@ task generateRawNPCs {
           class    : "net.minecraft.world.entity.monster.Vindicator",
           className: "VindicatorRaw",
           baseClass: "Vindicator",
+          modelType: "ILLAGER",
           variant  : "VINDICATOR",
           variants : "VINDICATOR, VINDICATOR_CROSSED_ARMS"
       ],
@@ -153,6 +171,7 @@ task generateRawNPCs {
           class    : "net.minecraft.world.entity.animal.Wolf",
           className: "WolfRaw",
           baseClass: "Wolf",
+          modelType: "QUADRUPED",
           variant  : "DEFAULT",
           variants : "DEFAULT, TAMED, ANGRY"
       ],
@@ -161,6 +180,7 @@ task generateRawNPCs {
           class    : "net.minecraft.world.entity.monster.Witch",
           className: "WitchRaw",
           baseClass: "Witch",
+          modelType: "VILLAGER",
           variant  : "DEFAULT",
           variants : "DEFAULT"
       ],
@@ -169,6 +189,7 @@ task generateRawNPCs {
           class    : "net.minecraft.world.entity.monster.Zombie",
           className: "ZombieRaw",
           baseClass: "Zombie",
+          modelType: "ZOMBIE",
           variant  : "ZOMBIE",
           variants : "HUSK, ZOMBIE"
       ],
@@ -177,6 +198,7 @@ task generateRawNPCs {
           class    : "net.minecraft.world.entity.monster.ZombieVillager",
           className: "ZombieVillagerRaw",
           baseClass: "ZombieVillager",
+          modelType: "ZOMBIE",
           variant  : "DEFAULT",
           variants : "DEFAULT, DESERT_ARMORER, DESERT_BUTCHER, DESERT_CARTOGRAPHER, DESERT_CLERIC, DESERT_FARMER, DESERT_FISHERMAN, DESERT_FLETCHER, DESERT_LEATHERWORKER, DESERT_LIBRARIAN, DESERT_MASON, DESERT_NITWIT, DESERT_SHEPHERD, DESERT_TOOLSMITH, DESERT_WEAPONSMITH, JUNGLE_ARMORER, JUNGLE_BUTCHER, JUNGLE_CARTOGRAPHER, JUNGLE_CLERIC, JUNGLE_FARMER, JUNGLE_FISHERMAN, JUNGLE_FLETCHER, JUNGLE_LEATHERWORKER, JUNGLE_LIBRARIAN, JUNGLE_MASON, JUNGLE_NITWIT, JUNGLE_SHEPHERD, JUNGLE_TOOLSMITH, JUNGLE_WEAPONSMITH, PLAINS_ARMORER, PLAINS_BUTCHER, PLAINS_CARTOGRAPHER, PLAINS_CLERIC, PLAINS_FARMER, PLAINS_FISHERMAN, PLAINS_FLETCHER, PLAINS_LEATHERWORKER, PLAINS_LIBRARIAN, PLAINS_MASON, PLAINS_NITWIT, PLAINS_SHEPHERD, PLAINS_TOOLSMITH, PLAINS_WEAPONSMITH, SAVANNA_ARMORER, SAVANNA_BUTCHER, SAVANNA_CARTOGRAPHER, SAVANNA_CLERIC, SAVANNA_FARMER, SAVANNA_FISHERMAN, SAVANNA_FLETCHER, SAVANNA_LEATHERWORKER, SAVANNA_LIBRARIAN, SAVANNA_MASON, SAVANNA_NITWIT, SAVANNA_SHEPHERD, SAVANNA_TOOLSMITH, SAVANNA_WEAPONSMITH, SNOW_ARMORER, SNOW_BUTCHER, SNOW_CARTOGRAPHER, SNOW_CLERIC, SNOW_FARMER, SNOW_FISHERMAN, SNOW_FLETCHER, SNOW_LEATHERWORKER, SNOW_LIBRARIAN, SNOW_MASON, SNOW_NITWIT, SNOW_SHEPHERD, SNOW_TOOLSMITH, SNOW_WEAPONSMITH, SWAMP_ARMORER, SWAMP_BUTCHER, SWAMP_CARTOGRAPHER, SWAMP_CLERIC, SWAMP_FARMER, SWAMP_FISHERMAN, SWAMP_FLETCHER, SWAMP_LEATHERWORKER, SWAMP_LIBRARIAN, SWAMP_MASON, SWAMP_NITWIT, SWAMP_SHEPHERD, SWAMP_TOOLSMITH, SWAMP_WEAPONSMITH, TAIGA_ARMORER, TAIGA_BUTCHER, TAIGA_CARTOGRAPHER, TAIGA_CLERIC, TAIGA_FARMER, TAIGA_FISHERMAN, TAIGA_FLETCHER, TAIGA_LEATHERWORKER, TAIGA_LIBRARIAN, TAIGA_MASON, TAIGA_NITWIT, TAIGA_SHEPHERD, TAIGA_TOOLSMITH, TAIGA_WEAPONSMITH"
       ],
@@ -208,6 +230,7 @@ task generateRawNPCs {
           .replace("NPCRawTemplate", npcClass.className)
           .replaceAll("\\bZombie\\b", npcClass.baseClass)
           .replace("SkinModel.ZOMBIE", "SkinModel." + (npcClass.skinModel ?: toUpperSnakeCase(npcClass.baseClass)))
+          .replace("ModelType.ZOMBIE", "ModelType." + (npcClass.modelType ?: toUpperSnakeCase(npcClass.baseClass)))
           .replace("VariantType.DEFAULT_VARIANT", "VariantType." + npcClass.variant)
           .replace("DEFAULT_VARIANT", npcClass.variants)
           .replace("// TEMPLATE_INSERT:IMPORTS", loadImports(npcClass.className))

@@ -111,9 +111,10 @@ dependencies {
 }
 
 mixin {
-  // MixinGradle Settings
-  add sourceSets.main, 'mixins.easy_npc.refmap.json'
-  config 'mixins.easy_npc.json'
+  config 'easy_npc.common.mixins.json'
+
+  debug.verbose = true
+  debug.export = true
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -134,7 +135,8 @@ jar {
         "Implementation-Title"    : project.name,
         "Implementation-Version"  : "${project.version}",
         "Implementation-Vendor"   : "${project.mod_id}",
-        "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+        "MixinConfigs"            : "easy_npc.common.mixins.json",
     ])
   }
 }
@@ -154,6 +156,10 @@ publishing {
 
 tasks.named('build') {
   finalizedBy 'publishToMavenLocal'
+}
+
+test {
+  exclude '**/mixin/**'
 }
 
 // CurseForge Publishing

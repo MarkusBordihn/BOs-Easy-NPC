@@ -33,3 +33,6 @@ mandatory = false
 versionRange = "[2.0.1,)"
 ordering = "NONE"
 side = "BOTH"
+
+[[mixins]]
+config = "easy_npc.common.mixins.json"

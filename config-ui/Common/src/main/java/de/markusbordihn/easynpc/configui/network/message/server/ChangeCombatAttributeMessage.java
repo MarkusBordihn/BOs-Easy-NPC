@@ -86,9 +86,7 @@ public record ChangeCombatAttributeMessage(
 
     // Update attribute value.
     switch (valueType) {
-      case BOOLEAN ->
-          AttributeHandler.setCombatAttribute(
-              easyNPC, attributeType, Boolean.TRUE.equals(booleanValue));
+      case BOOLEAN -> AttributeHandler.setCombatAttribute(easyNPC, attributeType, booleanValue);
       case DOUBLE -> AttributeHandler.setCombatAttribute(easyNPC, attributeType, doubleValue);
       default ->
           log.error(

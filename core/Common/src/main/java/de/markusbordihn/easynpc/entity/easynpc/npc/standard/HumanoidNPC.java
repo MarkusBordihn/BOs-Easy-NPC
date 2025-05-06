@@ -81,6 +81,11 @@ public class HumanoidNPC extends PathfinderMobRaw {
   }
 
   @Override
+  public boolean canUseArmor() {
+    return true;
+  }
+
+  @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
     soundDataSet.addSound(SoundType.DEATH, SoundEvents.PLAYER_DEATH);
     soundDataSet.addSound(SoundType.HURT, SoundEvents.PLAYER_HURT);

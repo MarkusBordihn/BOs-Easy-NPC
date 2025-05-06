@@ -1,22 +1,21 @@
-/*
- * Copyright 2024 Markus Bordihn
+/**
+ * Copyright 2023 Markus Bordihn
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
- * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * <p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+ * and associated documentation files (the "Software"), to deal in the Software without restriction,
  * including without limitation the rights to use, copy, modify, merge, publish, distribute,
  * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all copies or
+ * <p>The above copyright notice and this permission notice shall be included in all copies or
  * substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
- * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+ * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
 package de.markusbordihn.easynpc.network.syncher;
 
 import de.markusbordihn.easynpc.Constants;
@@ -25,6 +24,7 @@ import de.markusbordihn.easynpc.data.attribute.CustomAttributes;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeSet;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
@@ -205,27 +205,6 @@ public class EntityDataSerializersManager {
               return value;
             }
           });
-  public static final EntityDataSerializer<CustomPosition> POSITION =
-      defineSerializer(
-          CustomPosition.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, CustomPosition position) {
-              buffer.writeFloat(position.x());
-              buffer.writeFloat(position.y());
-              buffer.writeFloat(position.z());
-            }
-
-            @Override
-            public CustomPosition read(FriendlyByteBuf buffer) {
-              return new CustomPosition(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
-            }
-
-            @Override
-            public CustomPosition copy(CustomPosition position) {
-              return position;
-            }
-          });
   public static final EntityDataSerializer<Profession> PROFESSION =
       defineSerializer(
           Profession.class.getSimpleName(),
@@ -264,46 +243,118 @@ public class EntityDataSerializersManager {
               return value;
             }
           });
-  public static final EntityDataSerializer<CustomRotation> ROTATION =
+  public static final EntityDataSerializer<Map<ModelPartType, CustomRotation>> MODEL_PART_ROTATION =
       defineSerializer(
-          CustomRotation.class.getSimpleName(),
+          Map.class.getSimpleName() + ":" + ModelPartType.class.getSimpleName() + ":CustomRotation",
           new EntityDataSerializer<>() {
             @Override
-            public void write(FriendlyByteBuf buffer, CustomRotation rotation) {
-              buffer.writeFloat(rotation.x());
-              buffer.writeFloat(rotation.y());
-              buffer.writeFloat(rotation.z());
+            public void write(FriendlyByteBuf buffer, Map<ModelPartType, CustomRotation> value) {
+              buffer.writeVarInt(value.size());
+              for (Map.Entry<ModelPartType, CustomRotation> entry : value.entrySet()) {
+                buffer.writeEnum(entry.getKey());
+                entry.getValue().encode(buffer);
+              }
             }
 
             @Override
-            public CustomRotation read(FriendlyByteBuf buffer) {
-              return new CustomRotation(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+            public Map<ModelPartType, CustomRotation> read(FriendlyByteBuf buffer) {
+              int size = buffer.readVarInt();
+              Map<ModelPartType, CustomRotation> value = new LinkedHashMap<>(size);
+              for (int i = 0; i < size; i++) {
+                value.put(buffer.readEnum(ModelPartType.class), CustomRotation.decode(buffer));
+              }
+              return value;
             }
 
             @Override
-            public CustomRotation copy(CustomRotation rotation) {
-              return rotation;
+            public Map<ModelPartType, CustomRotation> copy(
+                Map<ModelPartType, CustomRotation> value) {
+              return new LinkedHashMap<>(value);
             }
           });
-  public static final EntityDataSerializer<CustomScale> SCALE =
+  public static final EntityDataSerializer<Map<ModelPartType, CustomPosition>> MODEL_PART_POSITION =
       defineSerializer(
-          CustomScale.class.getSimpleName(),
+          Map.class.getSimpleName() + ":" + ModelPartType.class.getSimpleName() + ":CustomPosition",
           new EntityDataSerializer<>() {
             @Override
-            public void write(FriendlyByteBuf buffer, CustomScale scale) {
-              buffer.writeFloat(scale.x());
-              buffer.writeFloat(scale.y());
-              buffer.writeFloat(scale.z());
+            public void write(FriendlyByteBuf buffer, Map<ModelPartType, CustomPosition> value) {
+              buffer.writeVarInt(value.size());
+              for (Map.Entry<ModelPartType, CustomPosition> entry : value.entrySet()) {
+                buffer.writeEnum(entry.getKey());
+                entry.getValue().encode(buffer);
+              }
             }
 
             @Override
-            public CustomScale read(FriendlyByteBuf buffer) {
-              return new CustomScale(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+            public Map<ModelPartType, CustomPosition> read(FriendlyByteBuf buffer) {
+              int size = buffer.readVarInt();
+              Map<ModelPartType, CustomPosition> value = new LinkedHashMap<>(size);
+              for (int i = 0; i < size; i++) {
+                value.put(buffer.readEnum(ModelPartType.class), CustomPosition.decode(buffer));
+              }
+              return value;
             }
 
             @Override
-            public CustomScale copy(CustomScale scale) {
-              return scale;
+            public Map<ModelPartType, CustomPosition> copy(
+                Map<ModelPartType, CustomPosition> value) {
+              return new LinkedHashMap<>(value);
+            }
+          });
+  public static final EntityDataSerializer<Map<ModelPartType, CustomScale>> MODEL_PART_SCALE =
+      defineSerializer(
+          Map.class.getSimpleName() + ":" + ModelPartType.class.getSimpleName() + ":CustomScale",
+          new EntityDataSerializer<>() {
+            @Override
+            public void write(FriendlyByteBuf buffer, Map<ModelPartType, CustomScale> value) {
+              buffer.writeVarInt(value.size());
+              for (Map.Entry<ModelPartType, CustomScale> entry : value.entrySet()) {
+                buffer.writeEnum(entry.getKey());
+                entry.getValue().encode(buffer);
+              }
+            }
+
+            @Override
+            public Map<ModelPartType, CustomScale> read(FriendlyByteBuf buffer) {
+              int size = buffer.readVarInt();
+              Map<ModelPartType, CustomScale> value = new LinkedHashMap<>(size);
+              for (int i = 0; i < size; i++) {
+                value.put(buffer.readEnum(ModelPartType.class), CustomScale.decode(buffer));
+              }
+              return value;
+            }
+
+            @Override
+            public Map<ModelPartType, CustomScale> copy(Map<ModelPartType, CustomScale> value) {
+              return new LinkedHashMap<>(value);
+            }
+          });
+  public static final EntityDataSerializer<Map<ModelPartType, Boolean>> MODEL_PART_VISIBILITY =
+      defineSerializer(
+          Map.class.getSimpleName() + ":" + ModelPartType.class.getSimpleName() + ":Boolean",
+          new EntityDataSerializer<>() {
+            @Override
+            public void write(FriendlyByteBuf buffer, Map<ModelPartType, Boolean> value) {
+              buffer.writeVarInt(value.size());
+              for (Map.Entry<ModelPartType, Boolean> entry : value.entrySet()) {
+                buffer.writeEnum(entry.getKey());
+                buffer.writeBoolean(entry.getValue());
+              }
+            }
+
+            @Override
+            public Map<ModelPartType, Boolean> read(FriendlyByteBuf buffer) {
+              int size = buffer.readVarInt();
+              Map<ModelPartType, Boolean> value = new LinkedHashMap<>(size);
+              for (int i = 0; i < size; i++) {
+                value.put(buffer.readEnum(ModelPartType.class), buffer.readBoolean());
+              }
+              return value;
+            }
+
+            @Override
+            public Map<ModelPartType, Boolean> copy(Map<ModelPartType, Boolean> value) {
+              return new LinkedHashMap<>(value);
             }
           });
   public static final EntityDataSerializer<SkinDataEntry> SKIN_DATA_ENTRY =

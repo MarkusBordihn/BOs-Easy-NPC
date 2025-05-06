@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.client.screen.components;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
 public class Graphics {

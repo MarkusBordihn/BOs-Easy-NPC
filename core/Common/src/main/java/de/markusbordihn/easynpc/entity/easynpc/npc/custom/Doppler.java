@@ -53,7 +53,12 @@ public class Doppler extends PathfinderMobRaw {
   }
 
   @Override
-  public boolean hasArmsModelPart() {
+  public boolean supportsChangeModelConfiguration() {
+    return true;
+  }
+
+  @Override
+  public boolean canUseArmor() {
     return true;
   }
 

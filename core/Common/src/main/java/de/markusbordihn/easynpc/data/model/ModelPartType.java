@@ -19,43 +19,75 @@
 
 package de.markusbordihn.easynpc.data.model;
 
-public enum ModelPart {
-  ARMS("Arms"),
-  BODY("Body"),
-  HEAD("Head"),
-  LEFT_ARM("LeftArm"),
-  LEFT_LEG("LeftLeg"),
-  RIGHT_ARM("RightArm"),
-  RIGHT_LEG("RightLeg"),
+import java.util.Locale;
+
+public enum ModelPartType {
+  // Root part (used as base for animations or transformations)
   ROOT("Root"),
-  BOOTS("Boots"),
-  CHESTPLATE("Chestplate"),
+
+  // Head parts
+  HEAD("Head"),
+  HAT("Hat"),
   HELMET("Helmet"),
+
+  // Body parts
+  BODY("Body"),
+  CHESTPLATE("Chestplate"),
+
+  // Arm parts
+  RIGHT_ARM("RightArm"),
+  LEFT_ARM("LeftArm"),
+  ARMS("Arms"), // combined arms (e.g. crossed arms)
+
+  // Wings
+  RIGHT_WING("RightWing"),
+  LEFT_WING("LeftWing"),
+
+  // Leg parts
+  RIGHT_LEG("RightLeg"),
+  LEFT_LEG("LeftLeg"),
   LEGGINGS("Leggings"),
+  BOOTS("Boots"),
+
+  // Quadruped front legs
+  RIGHT_FRONT_LEG("RightFrontLeg"),
+  LEFT_FRONT_LEG("LeftFrontLeg"),
+
+  // Quadruped hind legs
+  RIGHT_HIND_LEG("RightHindLeg"),
+  LEFT_HIND_LEG("LeftHindLeg"),
+
+  // Tail parts
+  TAIL("Tail"),
+  TAIL1("Tail1"),
+  TAIL2("Tail2"),
+
+  // Fallback / unknown part
   UNKNOWN("Unknown");
+  ;
 
   public final String tagName;
 
-  ModelPart(String tagName) {
+  ModelPartType(String tagName) {
     this.tagName = tagName;
   }
 
-  public static ModelPart get(String modelPart) {
+  public static ModelPartType get(String modelPart) {
     if (modelPart == null || modelPart.isEmpty()) {
-      return ModelPart.UNKNOWN;
+      return ModelPartType.UNKNOWN;
     }
     try {
-      return ModelPart.valueOf(modelPart);
+      return ModelPartType.valueOf(modelPart.toUpperCase(Locale.ROOT));
     } catch (IllegalArgumentException e) {
       // Alternative search for model part tag name.
-      for (ModelPart modelPartEnum : ModelPart.values()) {
-        if (modelPartEnum.tagName.equalsIgnoreCase(modelPart)) {
-          return modelPartEnum;
+      for (ModelPartType modelPartTypeEnum : ModelPartType.values()) {
+        if (modelPartTypeEnum.tagName.equalsIgnoreCase(modelPart)) {
+          return modelPartTypeEnum;
         }
       }
 
       // Return unknown model part if no match was found.
-      return ModelPart.UNKNOWN;
+      return ModelPartType.UNKNOWN;
     }
   }
 

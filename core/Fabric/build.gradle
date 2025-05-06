@@ -85,7 +85,12 @@ publishing {
 }
 
 tasks.named('build') {
+  dependsOn 'remapJar'
   finalizedBy 'publishToMavenLocal'
+}
+
+test {
+  exclude '**/mixin/**'
 }
 
 // CurseForge Publishing

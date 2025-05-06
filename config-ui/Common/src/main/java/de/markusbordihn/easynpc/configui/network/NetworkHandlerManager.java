@@ -37,6 +37,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelLockR
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelPoseMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelPositionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelRotationMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelScaleMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelVisibilityMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeMovementAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeNameMessage;
@@ -44,7 +45,6 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangePoseMessag
 import de.markusbordihn.easynpc.configui.network.message.server.ChangePositionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeProfessionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeRendererMessage;
-import de.markusbordihn.easynpc.configui.network.message.server.ChangeScaleMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeSkinMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeTradingTypeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ExportPresetMessage;
@@ -129,12 +129,13 @@ public class NetworkHandlerManager {
   }
 
   public static void registerClientNetworkHandler() {
+
     NetworkHandlerInterface networkHandler = getHandler();
     if (networkHandler == null) {
       log.error("Failed to register client network handler!");
       return;
     }
-    log.info("Registering client network handlers ...");
+    log.info("Registering client network handler ...");
 
     networkHandler.registerClientNetworkMessage(
         ExportClientPresetMessage.MESSAGE_ID,
@@ -151,6 +152,7 @@ public class NetworkHandlerManager {
   }
 
   public static void registerServerNetworkHandler() {
+
     NetworkHandlerInterface networkHandler = getHandler();
     if (networkHandler == null) {
       log.error("Failed to register server network handler!");
@@ -234,6 +236,11 @@ public class NetworkHandlerManager {
         ChangeModelRotationMessage::create);
 
     networkHandler.registerServerNetworkMessage(
+        ChangeModelScaleMessage.MESSAGE_ID,
+        ChangeModelScaleMessage.class,
+        ChangeModelScaleMessage::create);
+
+    networkHandler.registerServerNetworkMessage(
         ChangeModelVisibilityMessage.MESSAGE_ID,
         ChangeModelVisibilityMessage.class,
         ChangeModelVisibilityMessage::create);
@@ -263,9 +270,6 @@ public class NetworkHandlerManager {
         ChangeRendererMessage.MESSAGE_ID,
         ChangeRendererMessage.class,
         ChangeRendererMessage::create);
-
-    networkHandler.registerServerNetworkMessage(
-        ChangeScaleMessage.MESSAGE_ID, ChangeScaleMessage.class, ChangeScaleMessage::create);
 
     networkHandler.registerServerNetworkMessage(
         ChangeSkinMessage.MESSAGE_ID, ChangeSkinMessage.class, ChangeSkinMessage::create);

@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.custom;
 
+import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
@@ -39,9 +40,7 @@ public class Fairy extends PathfinderMobRaw {
 
   public static final String ID = "fairy";
 
-  private static final float DEFAULT_SCALE_X = 0.4f;
-  private static final float DEFAULT_SCALE_Y = 0.4f;
-  private static final float DEFAULT_SCALE_Z = 0.4f;
+  private static final CustomScale DEFAULT_SCALE = new CustomScale(0.4f);
 
   public Fairy(EntityType<? extends PathfinderMob> entityType, Level level) {
     this(entityType, level, Variant.GREEN);
@@ -72,28 +71,13 @@ public class Fairy extends PathfinderMobRaw {
   }
 
   @Override
-  public Float getDefaultScaleX() {
-    return Fairy.DEFAULT_SCALE_X;
-  }
-
-  @Override
-  public Float getDefaultScaleY() {
-    return Fairy.DEFAULT_SCALE_Y;
-  }
-
-  @Override
-  public Float getDefaultScaleZ() {
-    return Fairy.DEFAULT_SCALE_Z;
+  public CustomScale getDefaultModelScale() {
+    return DEFAULT_SCALE;
   }
 
   @Override
   public SkinModel getSkinModel() {
     return SkinModel.FAIRY;
-  }
-
-  @Override
-  public boolean hasLeftLegModelPart() {
-    return false;
   }
 
   @Override

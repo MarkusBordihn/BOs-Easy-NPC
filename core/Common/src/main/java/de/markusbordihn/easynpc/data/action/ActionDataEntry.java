@@ -225,16 +225,20 @@ public record ActionDataEntry(
 
   @Override
   public boolean equals(Object object) {
-    if (object instanceof ActionDataEntry actionDataEntry) {
-      return this.actionDataType == actionDataEntry.actionDataType
-          && this.command.equals(actionDataEntry.command)
-          && this.blockPos.equals(actionDataEntry.blockPos)
-          && this.permissionLevel == actionDataEntry.permissionLevel
-          && this.executeAsUser == actionDataEntry.executeAsUser
-          && this.enableDebug == actionDataEntry.enableDebug
-          && this.conditionDataSet.equals(actionDataEntry.conditionDataSet);
+    if (this == object) {
+      return true;
     }
-    return false;
+    if (object == null || getClass() != object.getClass()) {
+      return false;
+    }
+    ActionDataEntry other = (ActionDataEntry) object;
+    return this.actionDataType == other.actionDataType
+        && this.command.equals(other.command)
+        && this.blockPos.equals(other.blockPos)
+        && this.permissionLevel == other.permissionLevel
+        && this.executeAsUser == other.executeAsUser
+        && this.enableDebug == other.enableDebug
+        && this.conditionDataSet.equals(other.conditionDataSet);
   }
 
   @Override

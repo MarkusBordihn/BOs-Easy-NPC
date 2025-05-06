@@ -60,16 +60,6 @@ public class AllayNPC extends AllayRaw {
   }
 
   @Override
-  public boolean hasLeftLegModelPart() {
-    return false;
-  }
-
-  @Override
-  public boolean hasRightLegModelPart() {
-    return false;
-  }
-
-  @Override
   public int getEntityGuiScaling() {
     return 65;
   }

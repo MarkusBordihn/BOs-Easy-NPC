@@ -20,6 +20,8 @@
 package de.markusbordihn.easynpc.configui.network.message.server;
 
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
+import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -66,6 +68,7 @@ public record ChangeModelLockRotationMessage(UUID uuid, boolean lockRotation)
     // Perform action.
     log.debug(
         "Reset and lock rotation {} for {} from {}", this.lockRotation, easyNPC, serverPlayer);
-    modelData.setModelLockRotation(this.lockRotation);
+    CustomRotation rotation = modelData.getModelPartRotation(ModelPartType.ROOT);
+    modelData.setModelPartRotation(ModelPartType.ROOT, rotation.withLocked(this.lockRotation));
   }
 }

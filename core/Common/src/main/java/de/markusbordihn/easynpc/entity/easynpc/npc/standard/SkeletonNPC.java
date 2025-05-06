@@ -64,6 +64,11 @@ public class SkeletonNPC extends SkeletonRaw {
   }
 
   @Override
+  public boolean canUseArmor() {
+    return true;
+  }
+
+  @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
     VariantType soundVariant = VariantType.valueOf(variantName);
     switch (soundVariant) {

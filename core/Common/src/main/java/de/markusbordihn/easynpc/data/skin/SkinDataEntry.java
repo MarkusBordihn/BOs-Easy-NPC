@@ -75,15 +75,19 @@ public record SkinDataEntry(
 
   @Override
   public boolean equals(Object object) {
-    if (object instanceof SkinDataEntry skinDataEntry) {
-      return this.name.equals(skinDataEntry.name)
-          && this.type.equals(skinDataEntry.type)
-          && this.url.equals(skinDataEntry.url)
-          && this.uuid.equals(skinDataEntry.uuid)
-          && this.content.equals(skinDataEntry.content)
-          && this.timestamp == skinDataEntry.timestamp;
+    if (this == object) {
+      return true;
     }
-    return false;
+    if (object == null || getClass() != object.getClass()) {
+      return false;
+    }
+    SkinDataEntry other = (SkinDataEntry) object;
+    return this.name.equals(other.name)
+        && this.type.equals(other.type)
+        && this.url.equals(other.url)
+        && this.uuid.equals(other.uuid)
+        && this.content.equals(other.content)
+        && this.timestamp == other.timestamp;
   }
 
   @Override

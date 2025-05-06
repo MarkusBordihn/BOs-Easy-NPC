@@ -35,7 +35,6 @@ import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ServerData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SoundData;
@@ -116,10 +115,6 @@ public interface EasyNPCDataAccessors<E extends PathfinderMob> {
 
   default RenderData<E> getEasyNPCRenderData() {
     return this instanceof RenderData<E> renderData ? renderData : null;
-  }
-
-  default ScaleData<E> getEasyNPCScaleData() {
-    return this instanceof ScaleData<E> scaleData ? scaleData : null;
   }
 
   default ServerData<E> getEasyNPCServerData() {

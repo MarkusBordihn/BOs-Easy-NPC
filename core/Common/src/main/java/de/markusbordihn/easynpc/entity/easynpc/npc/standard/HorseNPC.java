@@ -61,11 +61,6 @@ public class HorseNPC extends HorseRaw {
   }
 
   @Override
-  public boolean canUseArmor() {
-    return false;
-  }
-
-  @Override
   public boolean canUseOffHand() {
     return false;
   }
