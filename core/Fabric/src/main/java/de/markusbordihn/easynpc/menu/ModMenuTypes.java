@@ -30,16 +30,17 @@ import org.apache.logging.log4j.Logger;
 
 public class ModMenuTypes {
 
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);  public static final MenuType<DialogMenuWrapper> DIALOG_MENU =
-      Registry.register(
-          BuiltInRegistries.MENU,
-          ModMenuType.DIALOG.getId(),
-          new MenuType<>(DialogMenuWrapper::new, FeatureFlagSet.of()));
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
   private ModMenuTypes() {}
 
   public static void register() {
     log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
   }
 
-
+  public static final MenuType<DialogMenuWrapper> DIALOG_MENU =
+      Registry.register(
+          BuiltInRegistries.MENU,
+          ModMenuType.DIALOG.getId(),
+          new MenuType<>(DialogMenuWrapper::new, FeatureFlagSet.of()));
 }

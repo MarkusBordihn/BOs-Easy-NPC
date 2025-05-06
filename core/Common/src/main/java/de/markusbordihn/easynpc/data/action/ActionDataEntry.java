@@ -225,14 +225,23 @@ public record ActionDataEntry(
 
   @Override
   public boolean equals(Object object) {
-    if (object instanceof ActionDataEntry actionDataEntry) {
-      return this.actionDataType == actionDataEntry.actionDataType
-          && this.command.equals(actionDataEntry.command)
-          && this.blockPos.equals(actionDataEntry.blockPos)
-          && this.permissionLevel == actionDataEntry.permissionLevel
-          && this.executeAsUser == actionDataEntry.executeAsUser
-          && this.enableDebug == actionDataEntry.enableDebug
-          && this.conditionDataSet.equals(actionDataEntry.conditionDataSet);
+    if (object
+        instanceof
+        ActionDataEntry(
+            ActionDataType dataType,
+            ConditionDataSet dataSet,
+            String command1,
+            BlockPos pos,
+            boolean asUser,
+            boolean debug,
+            int level)) {
+      return this.actionDataType == dataType
+          && this.command.equals(command1)
+          && this.blockPos.equals(pos)
+          && this.permissionLevel == level
+          && this.executeAsUser == asUser
+          && this.enableDebug == debug
+          && this.conditionDataSet.equals(dataSet);
     }
     return false;
   }

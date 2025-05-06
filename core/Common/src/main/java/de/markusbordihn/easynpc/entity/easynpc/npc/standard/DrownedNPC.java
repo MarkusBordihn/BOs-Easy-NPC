@@ -63,6 +63,11 @@ public class DrownedNPC extends DrownedRaw {
   }
 
   @Override
+  public boolean canUseArmor() {
+    return true;
+  }
+
+  @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
     soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.DROWNED_AMBIENT);
     soundDataSet.addSound(SoundType.HURT, SoundEvents.DROWNED_HURT);

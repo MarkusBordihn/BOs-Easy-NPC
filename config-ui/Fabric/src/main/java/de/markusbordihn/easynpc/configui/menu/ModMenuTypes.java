@@ -75,17 +75,27 @@ import org.apache.logging.log4j.Logger;
 
 public class ModMenuTypes {
 
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  private ModMenuTypes() {}
+
+  public static void register() {
+    log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
+  }
+
   public static final MenuType<AbilitiesAttributeConfigurationMenuWrapper>
       ABILITIES_ATTRIBUTE_CONFIGURATION_MENU =
           Registry.register(
               BuiltInRegistries.MENU,
               ConfigurationType.ABILITIES_ATTRIBUTE.getId(),
               new MenuType<>(AbilitiesAttributeConfigurationMenuWrapper::new, FeatureFlagSet.of()));
+
   public static final MenuType<ActionDataEditorMenuWrapper> ACTION_DATA_EDITOR_MENU =
       Registry.register(
           BuiltInRegistries.MENU,
           EditorType.ACTION_DATA.getId(),
           new MenuType<>(ActionDataEditorMenuWrapper::new, FeatureFlagSet.of()));
+
   public static final MenuType<ActionDataEntryEditorMenuWrapper> ACTION_DATA_ENTRY_EDITOR_MENU =
       Registry.register(
           BuiltInRegistries.MENU,
@@ -326,11 +336,4 @@ public class ModMenuTypes {
               BuiltInRegistries.MENU,
               ConfigurationType.YES_NO_DIALOG.getId(),
               new MenuType<>(YesNoDialogConfigurationMenuWrapper::new, FeatureFlagSet.of()));
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  private ModMenuTypes() {}
-
-  public static void register() {
-    log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
-  }
 }

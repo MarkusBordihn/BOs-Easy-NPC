@@ -60,16 +60,6 @@ public class VindicatorNPC extends VindicatorRaw {
   }
 
   @Override
-  public boolean canUseArmor() {
-    return false;
-  }
-
-  @Override
-  public boolean hasArmsModelPart() {
-    return true;
-  }
-
-  @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
     soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.VINDICATOR_AMBIENT);
     soundDataSet.addSound(SoundType.DEATH, SoundEvents.VINDICATOR_DEATH);

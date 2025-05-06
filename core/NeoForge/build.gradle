@@ -94,6 +94,10 @@ tasks.named('build') {
   finalizedBy 'publishToMavenLocal'
 }
 
+test {
+  exclude '**/mixin/**'
+}
+
 // CurseForge Publishing
 if (project.hasProperty('curseforge_project_id') && project.curseforge_project_id) {
   curseforge {

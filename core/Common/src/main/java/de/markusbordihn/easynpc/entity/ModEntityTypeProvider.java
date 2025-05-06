@@ -17,31 +17,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.model;
+package de.markusbordihn.easynpc.entity;
 
-public enum ModelPartType {
-  ARMS,
-  BEAK,
-  BODY,
-  HAT,
-  HEAD,
-  HEAD_PARTS,
-  LEFT_ARM,
-  LEFT_EAR,
-  LEFT_FRONT_LEG,
-  LEFT_HIND_LEG,
-  LEFT_LEG,
-  LEFT_WING,
-  RED_THING,
-  RIGHT_ARM,
-  RIGHT_EAR,
-  RIGHT_FRONT_LEG,
-  RIGHT_HIND_LEG,
-  RIGHT_LEG,
-  RIGHT_WING,
-  ROOT,
-  TAIL,
-  TAIL1,
-  TAIL2,
-  UPPER_BODY
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+
+public interface ModEntityTypeProvider {
+
+  String getId();
+
+  EntityType.Builder<? extends Entity> getBuilder();
+
+  ResourceKey<EntityType<?>> getResourceKey();
 }

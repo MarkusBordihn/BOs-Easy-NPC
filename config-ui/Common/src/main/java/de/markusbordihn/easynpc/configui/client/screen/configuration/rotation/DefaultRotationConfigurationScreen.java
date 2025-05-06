@@ -21,11 +21,12 @@ package de.markusbordihn.easynpc.configui.client.screen.configuration.rotation;
 
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.SliderButton;
+import de.markusbordihn.easynpc.client.screen.components.SliderButton.Type;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
-import de.markusbordihn.easynpc.data.model.ModelPart;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.network.components.TextComponent;
@@ -63,7 +64,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
 
     // Root Rotations
     ModelData<?> modelData = this.getEasyNPC().getEasyNPCModelData();
-    CustomRotation rootRotation = modelData.getModelRootRotation();
+    CustomRotation rootRotation = modelData.getModelPartRotation(ModelPartType.ROOT);
     this.rootRotationX = rootRotation.x();
     this.rootRotationY = rootRotation.y();
     this.rootRotationZ = rootRotation.z();
@@ -77,13 +78,13 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                 60,
                 "rootRotationX",
                 (float) Math.toDegrees(rootRotation.x()),
-                SliderButton.Type.DEGREE,
+                Type.DEGREE,
                 slider -> {
                   this.rootRotationX = (float) Math.toRadians(slider.getTargetValue());
                   NetworkMessageHandlerManager.getServerHandler()
                       .rotationChange(
                           this.getEasyNPCUUID(),
-                          ModelPart.ROOT,
+                          ModelPartType.ROOT,
                           new CustomRotation(
                               this.rootRotationX, this.rootRotationY, this.rootRotationZ));
                 }));
@@ -108,13 +109,13 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                 60,
                 "rootRotationY",
                 (float) Math.toDegrees(rootRotation.y()),
-                SliderButton.Type.DEGREE,
+                Type.DEGREE,
                 slider -> {
                   this.rootRotationY = (float) Math.toRadians(slider.getTargetValue());
                   NetworkMessageHandlerManager.getServerHandler()
                       .rotationChange(
                           this.getEasyNPCUUID(),
-                          ModelPart.ROOT,
+                          ModelPartType.ROOT,
                           new CustomRotation(
                               this.rootRotationX, this.rootRotationY, this.rootRotationZ));
                 }));
@@ -139,13 +140,13 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                 60,
                 "rootRotationZ",
                 (float) Math.toDegrees(rootRotation.z()),
-                SliderButton.Type.DEGREE,
+                Type.DEGREE,
                 slider -> {
                   this.rootRotationZ = (float) Math.toRadians(slider.getTargetValue());
                   NetworkMessageHandlerManager.getServerHandler()
                       .rotationChange(
                           this.getEasyNPCUUID(),
-                          ModelPart.ROOT,
+                          ModelPartType.ROOT,
                           new CustomRotation(
                               this.rootRotationX, this.rootRotationY, this.rootRotationZ));
                 }));
@@ -168,7 +169,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                 this.rootRotationZResetButton.getX() + this.rootRotationZResetButton.getWidth() + 5,
                 this.contentTopPos + 2,
                 "lock_rotation",
-                modelData.getModelLockRotation(),
+                modelData.getModelPartRotation(ModelPartType.ROOT).locked(),
                 checkbox ->
                     NetworkMessageHandlerManager.getServerHandler()
                         .modelLockRotationChange(this.getEasyNPCUUID(), checkbox.selected())));

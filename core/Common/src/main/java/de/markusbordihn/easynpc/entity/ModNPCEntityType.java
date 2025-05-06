@@ -50,7 +50,7 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.Level;
 
-public enum ModNPCEntityType {
+public enum ModNPCEntityType implements ModEntityTypeProvider {
   ALLAY(
       AllayNPC.ID,
       EntityType.Builder.of(
@@ -291,14 +291,17 @@ public enum ModNPCEntityType {
             Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id));
   }
 
+  @Override
   public String getId() {
     return id;
   }
 
+  @Override
   public EntityType.Builder<? extends Entity> getBuilder() {
     return builder;
   }
 
+  @Override
   public ResourceKey<EntityType<?>> getResourceKey() {
     return resourceKey;
   }

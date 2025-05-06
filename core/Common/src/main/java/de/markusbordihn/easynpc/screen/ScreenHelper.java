@@ -20,11 +20,13 @@
 package de.markusbordihn.easynpc.screen;
 
 import com.mojang.blaze3d.platform.Lighting;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.profession.Profession;
 import de.markusbordihn.easynpc.data.render.RenderDataSet;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
+import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
@@ -32,7 +34,6 @@ import de.markusbordihn.easynpc.entity.easynpc.data.GuiData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
 import java.util.UUID;
@@ -166,10 +167,9 @@ public class ScreenHelper {
       float yRot,
       float xRot,
       EasyNPC<?> easyNPC) {
-    ScaleData<?> scaleData = easyNPC.getEasyNPCScaleData();
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
-    if (scaleData != null && modelData != null) {
-      renderScaledEntityAvatar(guiGraphics, x, y, scale, yRot, xRot, easyNPC, scaleData, modelData);
+    if (modelData != null) {
+      renderScaledEntityAvatar(guiGraphics, x, y, scale, yRot, xRot, easyNPC, modelData);
     } else {
       renderEntity(guiGraphics, x, y, scale, yRot, xRot, easyNPC.getLivingEntity());
     }
@@ -189,37 +189,31 @@ public class ScreenHelper {
       float yRot,
       float xRot,
       EasyNPC<?> easyNPC,
-      ScaleData<?> scaleData,
       ModelData<?> modelData) {
 
     // Backup entity information
-    float entityScaleX = scaleData != null ? scaleData.getScaleX() : 0.4F;
-    float entityScaleY = scaleData != null ? scaleData.getScaleY() : 0.4F;
-    float entityScaleZ = scaleData != null ? scaleData.getScaleZ() : 0.4F;
     CustomRotation entityModelRootRotation =
-        modelData != null ? modelData.getModelRootRotation() : null;
+        modelData != null ? modelData.getModelPartRotation(ModelPartType.ROOT) : null;
+    CustomScale entityModelRootScale =
+        modelData != null ? modelData.getModelPartScale(ModelPartType.ROOT) : null;
 
     // Adjust entity information for rendering
-    if (scaleData != null) {
-      scaleData.setScaleX(scaleData.getDefaultScaleX());
-      scaleData.setScaleY(scaleData.getDefaultScaleY());
-      scaleData.setScaleZ(scaleData.getDefaultScaleZ());
-    }
     if (modelData != null) {
-      modelData.setModelRootRotation(new CustomRotation(0.0F, 0.0F, 0.0F));
+      modelData.setModelPartRotation(ModelPartType.ROOT, new CustomRotation(0.0F, 0.0F, 0.0F));
+      modelData.setModelPartScale(ModelPartType.ROOT, new CustomScale(1.0F, 1.0F, 1.0F));
     }
 
     // Render Entity
     renderEntity(guiGraphics, x, y, scale, yRot, xRot, easyNPC.getLivingEntity());
 
     // Restore entity information
-    if (scaleData != null) {
-      scaleData.setScaleX(entityScaleX);
-      scaleData.setScaleY(entityScaleY);
-      scaleData.setScaleZ(entityScaleZ);
-    }
-    if (modelData != null && entityModelRootRotation != null) {
-      modelData.setModelRootRotation(entityModelRootRotation);
+    if (modelData != null) {
+      if (entityModelRootRotation != null) {
+        modelData.setModelPartRotation(ModelPartType.ROOT, entityModelRootRotation);
+      }
+      if (entityModelRootScale != null) {
+        modelData.setModelPartScale(ModelPartType.ROOT, entityModelRootScale);
+      }
     }
   }
 
@@ -243,8 +237,7 @@ public class ScreenHelper {
     entity.setPose(Pose.STANDING);
 
     // Render Entity
-    renderScaledEntityAvatar(
-        guiGraphics, x, y, scale, yRot, xRot, easyNPC, easyNPC.getEasyNPCScaleData(), modelData);
+    renderScaledEntityAvatar(guiGraphics, x, y, scale, yRot, xRot, easyNPC, modelData);
 
     // Restore entity information
     modelData.setModelPose(entityModelPose);
@@ -263,18 +256,18 @@ public class ScreenHelper {
     Entity entity = easyNPC.getEntity();
 
     // Backup entity information
-    CustomRotation entityModelRootRotation = modelData.getModelRootRotation();
+    CustomRotation entityModelRootRotation = modelData.getModelPartRotation(ModelPartType.ROOT);
     boolean entityInvisible = entity.isInvisible();
 
     // Adjust entity information for rendering
-    modelData.setModelRootRotation(new CustomRotation(0.0F, 0.0F, 0.0F));
+    modelData.setModelPartRotation(ModelPartType.ROOT, new CustomRotation(0.0F, 0.0F, 0.0F));
     entity.setInvisible(false);
 
     // Render Entity
     renderEntity(guiGraphics, x, y, scale, yRot, xRot, easyNPC.getLivingEntity());
 
     // Restore entity information
-    modelData.setModelRootRotation(entityModelRootRotation);
+    modelData.setModelPartRotation(ModelPartType.ROOT, entityModelRootRotation);
     entity.setInvisible(entityInvisible);
   }
 
@@ -283,17 +276,10 @@ public class ScreenHelper {
     ModelData<?> modelData = easyNPC.getEasyNPCModelData();
 
     // Backup entity information
-    CustomRotation entityModelRootRotation = modelData.getModelRootRotation();
-    ScaleData<?> scaleData = easyNPC.getEasyNPCScaleData();
-    Float scaleX = scaleData.getScaleX();
-    Float scaleY = scaleData.getScaleY();
-    Float scaleZ = scaleData.getScaleZ();
+    CustomRotation entityModelRootRotation = modelData.getModelPartRotation(ModelPartType.ROOT);
 
     // Adjust entity information for rendering
-    modelData.setModelRootRotation(new CustomRotation(0.0F, 0.0F, 0.0F));
-    scaleData.setScaleX(1F);
-    scaleData.setScaleY(1F);
-    scaleData.setScaleZ(1F);
+    modelData.setModelPartRotation(ModelPartType.ROOT, new CustomRotation(0.0F, 0.0F, 0.0F));
 
     // Render Entity
     DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
@@ -307,10 +293,7 @@ public class ScreenHelper {
         easyNPC.getLivingEntity());
 
     // Restore entity information
-    modelData.setModelRootRotation(entityModelRootRotation);
-    scaleData.setScaleX(scaleX);
-    scaleData.setScaleY(scaleY);
-    scaleData.setScaleZ(scaleZ);
+    modelData.setModelPartRotation(ModelPartType.ROOT, entityModelRootRotation);
   }
 
   public static void renderEntityCustomModel(
@@ -343,7 +326,6 @@ public class ScreenHelper {
         yRot,
         xRot,
         easyNPC,
-        easyNPC.getEasyNPCScaleData(),
         easyNPC.getEasyNPCModelData());
 
     // Restore renderer information
@@ -379,7 +361,6 @@ public class ScreenHelper {
         yRot,
         xRot,
         easyNPC,
-        easyNPC.getEasyNPCScaleData(),
         easyNPC.getEasyNPCModelData());
 
     // Restore entity information

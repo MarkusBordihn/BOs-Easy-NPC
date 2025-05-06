@@ -18,7 +18,7 @@ dependencies {
   implementation project(":Common")
 
   // Include Core Common code
-  modImplementation("de.markusbordihn.easynpc:easy_npc-common-${project.minecraft_version}:${project.version}")
+  modImplementation("de.markusbordihn.easynpc:easy_npc-fabric-${project.minecraft_version}:${project.version}")
   modRuntimeOnly("de.markusbordihn.easynpc:easy_npc-fabric-${project.minecraft_version}:${project.version}")
 
   // Additional helpful Mods for development (runtime dependency)
@@ -88,7 +88,6 @@ publishing {
 tasks.named('build') {
   finalizedBy 'publishToMavenLocal'
 }
-
 
 // CurseForge Publishing
 if (project.hasProperty('curseforge_project_id') && project.curseforge_project_id) {

@@ -22,5 +22,5 @@ package de.markusbordihn.easynpc.network;
 public enum NetworkHandlerManagerType {
   CLIENT,
   SERVER,
-  BOTH;
+  BOTH
 }

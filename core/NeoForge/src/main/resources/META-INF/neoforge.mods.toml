@@ -26,3 +26,6 @@ type = "required"
 versionRange = "[1.21.1,1.22)"
 ordering = "NONE"
 side = "BOTH"
+
+[[mixins]]
+config = "easy_npc.common.mixins.json"

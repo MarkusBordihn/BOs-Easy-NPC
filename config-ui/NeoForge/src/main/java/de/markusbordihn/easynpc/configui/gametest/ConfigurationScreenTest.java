@@ -22,7 +22,8 @@ package de.markusbordihn.easynpc.configui.gametest;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.entity.ModEntityTypes;
+import de.markusbordihn.easynpc.entity.ModEntityType;
+import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -37,7 +38,7 @@ public class ConfigurationScreenTest {
   public void testOpenAbilitiesAttributeConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.ABILITIES_ATTRIBUTE,
         ModMenuTypes.ABILITIES_ATTRIBUTE_CONFIGURATION_MENU.get());
   }
@@ -46,7 +47,7 @@ public class ConfigurationScreenTest {
   public void testOpenAdvancedDialogConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.ADVANCED_DIALOG,
         ModMenuTypes.ADVANCED_DIALOG_CONFIGURATION_MENU.get());
   }
@@ -55,7 +56,7 @@ public class ConfigurationScreenTest {
   public void testOpenAdvancedPoseConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.ADVANCED_POSE,
         ModMenuTypes.ADVANCED_POSE_CONFIGURATION_MENU.get());
   }
@@ -64,7 +65,7 @@ public class ConfigurationScreenTest {
   public void testOpenAdvancedTradingConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.ADVANCED_TRADING,
         ModMenuTypes.ADVANCED_TRADING_CONFIGURATION_MENU.get());
   }
@@ -73,7 +74,7 @@ public class ConfigurationScreenTest {
   public void testOpenAttackObjectiveConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.ATTACK_OBJECTIVE,
         ModMenuTypes.ATTACK_OBJECTIVE_CONFIGURATION_MENU.get());
   }
@@ -82,7 +83,7 @@ public class ConfigurationScreenTest {
   public void testOpenBaseAttributeConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.BASE_ATTRIBUTE,
         ModMenuTypes.BASE_ATTRIBUTE_CONFIGURATION_MENU.get());
   }
@@ -91,7 +92,7 @@ public class ConfigurationScreenTest {
   public void testOpenBasicActionConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.BASIC_ACTION,
         ModMenuTypes.BASIC_ACTION_CONFIGURATION_MENU.get());
   }
@@ -100,7 +101,7 @@ public class ConfigurationScreenTest {
   public void testOpenBasicDialogConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.BASIC_DIALOG,
         ModMenuTypes.BASIC_DIALOG_CONFIGURATION_MENU.get());
   }
@@ -109,7 +110,7 @@ public class ConfigurationScreenTest {
   public void testOpenBasicObjectiveConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.BASIC_OBJECTIVE,
         ModMenuTypes.BASIC_OBJECTIVE_CONFIGURATION_MENU.get());
   }
@@ -118,7 +119,7 @@ public class ConfigurationScreenTest {
   public void testOpenBasicTradingConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.BASIC_TRADING,
         ModMenuTypes.BASIC_TRADING_CONFIGURATION_MENU.get());
   }
@@ -127,7 +128,7 @@ public class ConfigurationScreenTest {
   public void testOpenCustomPoseConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.CUSTOM_POSE,
         ModMenuTypes.CUSTOM_POSE_CONFIGURATION_MENU.get());
   }
@@ -136,7 +137,7 @@ public class ConfigurationScreenTest {
   public void testOpenCustomPresetExportConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.CUSTOM_PRESET_EXPORT,
         ModMenuTypes.CUSTOM_EXPORT_PRESET_CONFIGURATION_MENU.get());
   }
@@ -145,7 +146,7 @@ public class ConfigurationScreenTest {
   public void testOpenCustomPresetImportConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.CUSTOM_PRESET_IMPORT,
         ModMenuTypes.CUSTOM_IMPORT_PRESET_CONFIGURATION_MENU.get());
   }
@@ -154,7 +155,7 @@ public class ConfigurationScreenTest {
   public void testOpenCustomSkinConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.CUSTOM_SKIN,
         ModMenuTypes.CUSTOM_SKIN_CONFIGURATION_MENU.get());
   }
@@ -163,7 +164,7 @@ public class ConfigurationScreenTest {
   public void testOpenCustomTradingConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.CUSTOM_TRADING,
         ModMenuTypes.CUSTOM_TRADING_CONFIGURATION_MENU.get());
   }
@@ -172,7 +173,7 @@ public class ConfigurationScreenTest {
   public void testOpenCustomModelConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.CUSTOM_MODEL,
         ModMenuTypes.CUSTOM_MODEL_CONFIGURATION_MENU.get());
   }
@@ -181,7 +182,7 @@ public class ConfigurationScreenTest {
   public void testOpenDefaultModelConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.DEFAULT_MODEL,
         ModMenuTypes.DEFAULT_MODEL_CONFIGURATION_MENU.get());
   }
@@ -190,7 +191,7 @@ public class ConfigurationScreenTest {
   public void testOpenDefaultPoseConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.DEFAULT_POSE,
         ModMenuTypes.DEFAULT_POSE_CONFIGURATION_MENU.get());
   }
@@ -199,7 +200,7 @@ public class ConfigurationScreenTest {
   public void testOpenDefaultPositionConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.DEFAULT_POSITION,
         ModMenuTypes.DEFAULT_POSITION_CONFIGURATION_MENU.get());
   }
@@ -208,7 +209,7 @@ public class ConfigurationScreenTest {
   public void testOpenDefaultPresetImportConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.DEFAULT_PRESET_IMPORT,
         ModMenuTypes.DEFAULT_IMPORT_PRESET_CONFIGURATION_MENU.get());
   }
@@ -217,7 +218,7 @@ public class ConfigurationScreenTest {
   public void testOpenDefaultRotationConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.DEFAULT_ROTATION,
         ModMenuTypes.DEFAULT_ROTATION_CONFIGURATION_MENU.get());
   }
@@ -226,7 +227,7 @@ public class ConfigurationScreenTest {
   public void testOpenDefaultSkinConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.DEFAULT_SKIN,
         ModMenuTypes.DEFAULT_SKIN_CONFIGURATION_MENU.get());
   }
@@ -235,7 +236,7 @@ public class ConfigurationScreenTest {
   public void testOpenDialogActionConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.DIALOG_ACTION,
         ModMenuTypes.DIALOG_ACTION_CONFIGURATION_MENU.get());
   }
@@ -244,7 +245,7 @@ public class ConfigurationScreenTest {
   public void testOpenDisplayAttributeConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.DISPLAY_ATTRIBUTE,
         ModMenuTypes.DISPLAY_ATTRIBUTE_CONFIGURATION_MENU.get());
   }
@@ -253,7 +254,7 @@ public class ConfigurationScreenTest {
   public void testOpenDistanceActionConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.DISTANCE_ACTION,
         ModMenuTypes.DISTANCE_ACTION_CONFIGURATION_MENU.get());
   }
@@ -262,7 +263,7 @@ public class ConfigurationScreenTest {
   public void testOpenEquipmentConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.EQUIPMENT,
         ModMenuTypes.EQUIPMENT_CONFIGURATION_MENU.get());
   }
@@ -271,7 +272,7 @@ public class ConfigurationScreenTest {
   public void testOpenFollowObjectiveConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.FOLLOW_OBJECTIVE,
         ModMenuTypes.FOLLOW_OBJECTIVE_CONFIGURATION_MENU.get());
   }
@@ -280,7 +281,7 @@ public class ConfigurationScreenTest {
   public void testOpenLocalPresetImportConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.LOCAL_PRESET_IMPORT,
         ModMenuTypes.LOCAL_IMPORT_PRESET_CONFIGURATION_MENU.get());
   }
@@ -289,7 +290,7 @@ public class ConfigurationScreenTest {
   public void testOpenLookObjectiveConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.LOOK_OBJECTIVE,
         ModMenuTypes.LOOK_OBJECTIVE_CONFIGURATION_MENU.get());
   }
@@ -298,7 +299,7 @@ public class ConfigurationScreenTest {
   public void testOpenMainConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.MAIN,
         ModMenuTypes.MAIN_CONFIGURATION_MENU.get());
   }
@@ -306,7 +307,7 @@ public class ConfigurationScreenTest {
   public void testOpenNoneDialogConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.NONE_DIALOG,
         ModMenuTypes.NONE_DIALOG_CONFIGURATION_MENU.get());
   }
@@ -315,7 +316,7 @@ public class ConfigurationScreenTest {
   public void testOpenNoneSkinConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.NONE_SKIN,
         ModMenuTypes.NONE_SKIN_CONFIGURATION_MENU.get());
   }
@@ -324,7 +325,7 @@ public class ConfigurationScreenTest {
   public void testOpenNoneTradingConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.NONE_TRADING,
         ModMenuTypes.NONE_TRADING_CONFIGURATION_MENU.get());
   }
@@ -333,7 +334,7 @@ public class ConfigurationScreenTest {
   public void testOpenPlayerSkinConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.PLAYER_SKIN,
         ModMenuTypes.PLAYER_SKIN_CONFIGURATION_MENU.get());
   }
@@ -342,7 +343,7 @@ public class ConfigurationScreenTest {
   public void testOpenScalingConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.SCALING,
         ModMenuTypes.SCALING_CONFIGURATION_MENU.get());
   }
@@ -351,7 +352,7 @@ public class ConfigurationScreenTest {
   public void testOpenUrlSkinConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.URL_SKIN,
         ModMenuTypes.URL_SKIN_CONFIGURATION_MENU.get());
   }
@@ -360,7 +361,7 @@ public class ConfigurationScreenTest {
   public void testOpenWorldPresetExportConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.WORLD_PRESET_EXPORT,
         ModMenuTypes.WORLD_EXPORT_PRESET_CONFIGURATION_MENU.get());
   }
@@ -369,7 +370,7 @@ public class ConfigurationScreenTest {
   public void testOpenWorldPresetImportConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.WORLD_PRESET_IMPORT,
         ModMenuTypes.WORLD_IMPORT_PRESET_CONFIGURATION_MENU.get());
   }
@@ -378,7 +379,7 @@ public class ConfigurationScreenTest {
   public void testOpenYesNoDialogConfigurationScreen(GameTestHelper helper) {
     ConfigurationScreenTestHelper.testConfigurationScreen(
         helper,
-        ModEntityTypes.HUMANOID,
+        ModEntityType.getEntityType(ModNPCEntityType.HUMANOID),
         ConfigurationType.YES_NO_DIALOG,
         ModMenuTypes.YES_NO_DIALOG_CONFIGURATION_MENU.get());
   }

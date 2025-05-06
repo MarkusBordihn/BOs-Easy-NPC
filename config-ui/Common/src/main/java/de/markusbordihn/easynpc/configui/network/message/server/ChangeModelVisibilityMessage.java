@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.configui.network.message.server;
 
 import de.markusbordihn.easynpc.configui.Constants;
-import de.markusbordihn.easynpc.data.model.ModelPart;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
@@ -34,7 +34,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Pose;
 
-public record ChangeModelVisibilityMessage(UUID uuid, ModelPart modelPart, boolean visible)
+public record ChangeModelVisibilityMessage(UUID uuid, ModelPartType modelPartType, boolean visible)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
@@ -47,13 +47,13 @@ public record ChangeModelVisibilityMessage(UUID uuid, ModelPart modelPart, boole
 
   public static ChangeModelVisibilityMessage create(final FriendlyByteBuf buffer) {
     return new ChangeModelVisibilityMessage(
-        buffer.readUUID(), buffer.readEnum(ModelPart.class), buffer.readBoolean());
+        buffer.readUUID(), buffer.readEnum(ModelPartType.class), buffer.readBoolean());
   }
 
   @Override
   public void write(final FriendlyByteBuf buffer) {
     buffer.writeUUID(this.uuid);
-    buffer.writeEnum(this.modelPart);
+    buffer.writeEnum(this.modelPartType);
     buffer.writeBoolean(this.visible);
   }
 
@@ -75,8 +75,8 @@ public record ChangeModelVisibilityMessage(UUID uuid, ModelPart modelPart, boole
     }
 
     // Validate ModelPart.
-    if (this.modelPart == null) {
-      log.error("Invalid modelPart for {} from {}", easyNPC, serverPlayer);
+    if (this.modelPartType == null) {
+      log.error("Invalid modelPartType for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
@@ -90,19 +90,19 @@ public record ChangeModelVisibilityMessage(UUID uuid, ModelPart modelPart, boole
     // Perform action.
     log.debug(
         "Change {} visibility to {} for {} from {}",
-        this.modelPart,
+        this.modelPartType,
         this.visible,
         easyNPC,
         serverPlayer);
 
     // Set common properties for all cases except ROOT.
-    if (this.modelPart != ModelPart.ROOT) {
+    if (this.modelPartType != ModelPartType.ROOT) {
       easyNPC.getEntity().setPose(Pose.STANDING);
       modelData.setModelPose(ModelPose.CUSTOM);
     }
 
     // Apply visibility change based on the model part.
-    modelData.setModelPartVisible(this.modelPart, this.visible);
+    modelData.setModelPartVisibility(this.modelPartType, this.visible);
 
     // Verify if custom model pose is really needed.
     if (!modelData.hasChangedModel()) {

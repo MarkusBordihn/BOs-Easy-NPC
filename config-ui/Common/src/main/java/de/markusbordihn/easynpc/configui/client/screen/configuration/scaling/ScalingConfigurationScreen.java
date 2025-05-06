@@ -26,8 +26,9 @@ import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
-import de.markusbordihn.easynpc.data.model.ModelScaleAxis;
-import de.markusbordihn.easynpc.entity.easynpc.data.ScaleData;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
+import de.markusbordihn.easynpc.data.scale.CustomScale;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -39,9 +40,6 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
 
   private static final int DIMENSION_UPDATE_TICK = 20;
   protected Button defaultScaleButton;
-  protected Button defaultScaleXButton;
-  protected Button defaultScaleYButton;
-  protected Button defaultScaleZButton;
   protected RangeSliderButton scaleXSliderButton;
   protected RangeSliderButton scaleYSliderButton;
   protected RangeSliderButton scaleZSliderButton;
@@ -67,64 +65,56 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
     int scalePositionLeft = this.contentLeftPos + 165;
     int scalePositionTop = this.contentTopPos + 20;
     int scalePositionSpace = 60;
-    int scaleWidth = 140;
-    int scaleHeight = 20;
 
-    ScaleData<?> scaleData = this.getEasyNPC().getEasyNPCScaleData();
+    // Model Data
+    ModelData<?> modelData = this.getEasyNPC().getEasyNPCModelData();
+    CustomScale rootScale = modelData.getModelPartScale(ModelPartType.ROOT);
+
+    // Scale Slider Buttons
     this.scaleXSliderButton =
         this.addRenderableWidget(
-            new RangeSliderButton(
+            createScaleSlider(
                 scalePositionLeft,
                 scalePositionTop,
-                scaleWidth,
-                scaleHeight,
-                scaleData.getScaleX(),
-                scaleData.getDefaultScaleX(),
-                SliderButton.Type.SCALE,
-                slider -> {
-                  float scale = slider.getTargetValue();
-                  if (scaleData.getScaleX() != scale) {
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .scaleChange(
-                            this.getEasyNPCUUID(), ModelScaleAxis.X, slider.getTargetValue());
-                  }
-                }));
+                rootScale.x(),
+                slider -> this.updateModelScale()));
+
     this.scaleYSliderButton =
         this.addRenderableWidget(
-            new RangeSliderButton(
+            createScaleSlider(
                 scalePositionLeft,
                 scalePositionTop + scalePositionSpace,
-                scaleWidth,
-                scaleHeight,
-                scaleData.getScaleY(),
-                scaleData.getDefaultScaleY(),
-                SliderButton.Type.SCALE,
-                button -> {
-                  float scale = button.getTargetValue();
-                  if (scaleData.getScaleY() != scale) {
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .scaleChange(
-                            this.getEasyNPCUUID(), ModelScaleAxis.Y, button.getTargetValue());
-                  }
-                }));
+                rootScale.y(),
+                slider -> this.updateModelScale()));
+
     this.scaleZSliderButton =
         this.addRenderableWidget(
-            new RangeSliderButton(
+            createScaleSlider(
                 scalePositionLeft,
                 scalePositionTop + scalePositionSpace * 2,
-                scaleWidth,
-                scaleHeight,
-                scaleData.getScaleZ(),
-                scaleData.getDefaultScaleZ(),
-                SliderButton.Type.SCALE,
-                button -> {
-                  float scale = button.getTargetValue();
-                  if (scaleData.getScaleZ() != scale) {
-                    NetworkMessageHandlerManager.getServerHandler()
-                        .scaleChange(
-                            this.getEasyNPCUUID(), ModelScaleAxis.Z, button.getTargetValue());
-                  }
-                }));
+                rootScale.z(),
+                slider -> this.updateModelScale()));
+  }
+
+  private RangeSliderButton createScaleSlider(
+      int x, int y, float currentValue, java.util.function.Consumer<SliderButton> onChange) {
+    return new RangeSliderButton(
+        x, y, 140, 20, currentValue, 1.0F, SliderButton.Type.SCALE, onChange::accept);
+  }
+
+  private void drawScaleLabel(GuiGraphics guiGraphics, String key, RangeSliderButton slider) {
+    Text.drawConfigString(guiGraphics, this.font, key, slider.getX(), slider.getY() - 10);
+  }
+
+  private void updateModelScale() {
+    NetworkMessageHandlerManager.getServerHandler()
+        .modelScaleChange(
+            this.getEasyNPCUUID(),
+            ModelPartType.ROOT,
+            new CustomScale(
+                this.scaleXSliderButton.getTargetValue(),
+                this.scaleYSliderButton.getTargetValue(),
+                this.scaleZSliderButton.getTargetValue()));
   }
 
   @Override
@@ -152,29 +142,10 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
         this.contentTopPos + 120 - this.yMouse,
         this.getEasyNPC());
 
-    // Label for Scale X
-    Text.drawConfigString(
-        guiGraphics,
-        this.font,
-        "scale_x",
-        this.scaleXSliderButton.getX(),
-        this.scaleXSliderButton.getY() - 10);
-
-    // Label for Scale Y
-    Text.drawConfigString(
-        guiGraphics,
-        this.font,
-        "scale_y",
-        this.scaleYSliderButton.getX(),
-        this.scaleYSliderButton.getY() - 10);
-
-    // Label for Scale Z
-    Text.drawConfigString(
-        guiGraphics,
-        this.font,
-        "scale_z",
-        this.scaleZSliderButton.getX(),
-        this.scaleZSliderButton.getY() - 10);
+    // Label for Scale Sliders
+    drawScaleLabel(guiGraphics, "scale_x", scaleXSliderButton);
+    drawScaleLabel(guiGraphics, "scale_y", scaleYSliderButton);
+    drawScaleLabel(guiGraphics, "scale_z", scaleZSliderButton);
   }
 
   @Override
