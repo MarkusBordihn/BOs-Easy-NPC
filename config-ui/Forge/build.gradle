@@ -94,18 +94,16 @@ dependencies {
   minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
 
   // Include Common code
-  implementation project(":Common")
+  compileOnly project(":Common")
 
   // Include Core Common code
+  testCompileOnly "de.markusbordihn.easynpc:easy_npc-common-${project.minecraft_version}:${project.version}"
   compileOnly fg.deobf("de.markusbordihn.easynpc:easy_npc-forge-${project.minecraft_version}:${project.version}")
   runtimeOnly fg.deobf("de.markusbordihn.easynpc:easy_npc-forge-${project.minecraft_version}:${project.version}")
 
   // Additional helpful Mods for development (runtime dependency)
   if (project.hasProperty('forge_jei_mod') && project.forge_jei_mod) {
     runtimeOnly fg.deobf("curse.maven:jei-238222:${project.forge_jei_mod}")
-  }
-  if (project.hasProperty('forge_spark_mod') && project.forge_spark_mod) {
-    runtimeOnly fg.deobf("curse.maven:spark-361579:${project.forge_spark_mod}")
   }
   if (project.hasProperty('forge_xaeros_minimap_mod') && project.forge_xaeros_minimap_mod) {
     runtimeOnly fg.deobf("curse.maven:xaeros_minimap-263420:${project.forge_xaeros_minimap_mod}")
@@ -120,12 +118,13 @@ processResources {
   from project(":Common").sourceSets.main.resources
 }
 
+// Example for how to get properties into the manifest for reading by the runtime..
 jar {
   manifest {
     attributes([
         "Specification-Title"     : "${project.mod_name}",
         "Specification-Vendor"    : "${project.vendor_name}",
-        "Specification-Version"   : "1",
+        "Specification-Version"   : "1", // We are version 1 of ourselves
         "Implementation-Title"    : project.name,
         "Implementation-Version"  : "${project.version}",
         "Implementation-Vendor"   : "${project.mod_id}",
@@ -162,7 +161,6 @@ if (project.hasProperty('curseforge_project_id') && project.curseforge_project_i
       releaseType = "${project.curseforge_release_type}"
       addGameVersion("${project.minecraft_version}")
       addGameVersion("Forge")
-      addGameVersion("NeoForge")
       mainArtifact(jar)
     }
   }
@@ -179,6 +177,6 @@ if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
     changelog = rootProject.file("CHANGELOG.md").text
     uploadFile = jar
     gameVersions = ["${project.minecraft_version}"]
-    loaders = ["forge", "neoforge"]
+    loaders = ["forge"]
   }
 }

@@ -131,14 +131,4 @@ public class PlayerRenderer<T extends PathfinderMob> extends LivingEntityRendere
         ? TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE)
         : Constants.BLANK_ENTITY_TEXTURE;
   }
-
-  public <N extends EasyNPC<?>> ResourceLocation getEntityTexture(N easyNPC) {
-    SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
-    return switch (skinData.getSkinType()) {
-      case NONE -> Constants.BLANK_ENTITY_TEXTURE;
-      case CUSTOM -> getCustomTexture(skinData);
-      case SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> getRemoteTexture(skinData);
-      default -> getTextureByVariant(easyNPC.getEasyNPCVariantData().getVariantType());
-    };
-  }
 }

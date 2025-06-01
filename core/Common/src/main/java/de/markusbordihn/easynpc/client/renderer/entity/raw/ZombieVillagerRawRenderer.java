@@ -22,11 +22,22 @@ package de.markusbordihn.easynpc.client.renderer.entity.raw;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ZombieVillagerRenderer;
+import net.minecraft.resources.ResourceLocation;
 
 public class ZombieVillagerRawRenderer extends ZombieVillagerRenderer
     implements EasyNPCEntityRenderer {
 
   public ZombieVillagerRawRenderer(EntityRendererProvider.Context context) {
     super(context);
+  }
+
+  @Override
+  public ResourceLocation getTextureByVariant(Enum<?> variant) {
+    return null;
+  }
+
+  @Override
+  public ResourceLocation getDefaultTexture() {
+    return null;
   }
 }

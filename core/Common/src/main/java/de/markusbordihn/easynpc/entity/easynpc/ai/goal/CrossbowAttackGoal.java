@@ -30,6 +30,8 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 
 public class CrossbowAttackGoal<T extends EasyNPC<?>> extends Goal {
   public static final UniformInt PATHFINDING_DELAY_RANGE = TimeUtil.rangeOfSeconds(1, 2);
@@ -38,7 +40,7 @@ public class CrossbowAttackGoal<T extends EasyNPC<?>> extends Goal {
   private final PathfinderMob pathfinderMob;
   private final CrossbowAttackMob crossbowAttackMob;
   private int attackDelay;
-  private CrossbowState crossbowState = CrossbowState.UNCHARGED;
+  private CrossbowState crossbowState;
   private int seeTime;
   private int updatePathDelay;
 
@@ -47,6 +49,7 @@ public class CrossbowAttackGoal<T extends EasyNPC<?>> extends Goal {
     this.crossbowAttackMob = easyNPC.getCrossbowAttackMob();
     this.speedModifier = speedModifier;
     this.attackRadiusSqr = attackRange * attackRange;
+    this.crossbowState = CrossbowState.UNCHARGED;
     this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
   }
 
@@ -76,7 +79,8 @@ public class CrossbowAttackGoal<T extends EasyNPC<?>> extends Goal {
     if (this.pathfinderMob.isUsingItem()) {
       this.pathfinderMob.stopUsingItem();
       this.crossbowAttackMob.setChargingCrossbow(false);
-      CrossbowItem.setCharged(this.pathfinderMob.getUseItem(), false);
+      ItemStack useItem = this.pathfinderMob.getUseItem();
+      clearChargedProjectiles(useItem);
     }
   }
 
@@ -94,69 +98,81 @@ public class CrossbowAttackGoal<T extends EasyNPC<?>> extends Goal {
   @Override
   public void tick() {
     LivingEntity livingentity = this.pathfinderMob.getTarget();
-    if (livingentity != null) {
-      boolean hasLineOfSight = this.pathfinderMob.getSensing().hasLineOfSight(livingentity);
-      boolean hasSeen = this.seeTime > 0;
-      if (hasLineOfSight != hasSeen) {
-        this.seeTime = 0;
+    if (livingentity == null) {
+      return;
+    }
+
+    boolean hasLineOfSight = this.pathfinderMob.getSensing().hasLineOfSight(livingentity);
+    boolean hasSeen = this.seeTime > 0;
+    if (hasLineOfSight != hasSeen) {
+      this.seeTime = 0;
+    }
+
+    if (hasLineOfSight) {
+      this.seeTime++;
+    } else {
+      this.seeTime--;
+    }
+
+    double distanceToTarget = this.pathfinderMob.distanceToSqr(livingentity);
+    boolean shouldNavigateToTarget =
+        (distanceToTarget > this.attackRadiusSqr || this.seeTime < 5) && this.attackDelay == 0;
+    if (shouldNavigateToTarget) {
+      this.updatePathDelay--;
+      if (this.updatePathDelay <= 0) {
+        this.pathfinderMob
+            .getNavigation()
+            .moveTo(livingentity, this.canRun() ? this.speedModifier : this.speedModifier * 0.5D);
+        this.updatePathDelay = PATHFINDING_DELAY_RANGE.sample(this.pathfinderMob.getRandom());
       }
+    } else {
+      this.updatePathDelay = 0;
+      this.pathfinderMob.getNavigation().stop();
+    }
 
-      if (hasLineOfSight) {
-        ++this.seeTime;
-      } else {
-        --this.seeTime;
+    this.pathfinderMob.getLookControl().setLookAt(livingentity, 30.0F, 30.0F);
+    if (this.crossbowState == CrossbowState.UNCHARGED) {
+      if (!shouldNavigateToTarget) {
+        this.pathfinderMob.startUsingItem(AttackHandler.getCrossbowHoldingHand(this.pathfinderMob));
+        this.crossbowState = CrossbowState.CHARGING;
+        this.crossbowAttackMob.setChargingCrossbow(true);
       }
-
-      double distanceToTarget = this.pathfinderMob.distanceToSqr(livingentity);
-      boolean flag2 =
-          (distanceToTarget > this.attackRadiusSqr || this.seeTime < 5) && this.attackDelay == 0;
-      if (flag2) {
-        --this.updatePathDelay;
-        if (this.updatePathDelay <= 0) {
-          this.pathfinderMob
-              .getNavigation()
-              .moveTo(livingentity, this.canRun() ? this.speedModifier : this.speedModifier * 0.5D);
-          this.updatePathDelay = PATHFINDING_DELAY_RANGE.sample(this.pathfinderMob.getRandom());
-        }
-      } else {
-        this.updatePathDelay = 0;
-        this.pathfinderMob.getNavigation().stop();
-      }
-
-      this.pathfinderMob.getLookControl().setLookAt(livingentity, 30.0F, 30.0F);
-      if (this.crossbowState == CrossbowState.UNCHARGED) {
-        if (!flag2) {
-          this.pathfinderMob.startUsingItem(
-              AttackHandler.getCrossbowHoldingHand(this.pathfinderMob));
-          this.crossbowState = CrossbowState.CHARGING;
-          this.crossbowAttackMob.setChargingCrossbow(true);
-        }
-      } else if (this.crossbowState == CrossbowState.CHARGING) {
-        if (!this.pathfinderMob.isUsingItem()) {
-          this.crossbowState = CrossbowState.UNCHARGED;
-        }
-
-        int i = this.pathfinderMob.getTicksUsingItem();
-        ItemStack itemstack = this.pathfinderMob.getUseItem();
-        if (i >= CrossbowItem.getChargeDuration(itemstack)) {
-          this.pathfinderMob.releaseUsingItem();
-          this.crossbowState = CrossbowState.CHARGED;
-          this.attackDelay = 20 + this.pathfinderMob.getRandom().nextInt(20);
-          this.crossbowAttackMob.setChargingCrossbow(false);
-        }
-      } else if (this.crossbowState == CrossbowState.CHARGED) {
-        --this.attackDelay;
-        if (this.attackDelay == 0) {
-          this.crossbowState = CrossbowState.READY_TO_ATTACK;
-        }
-      } else if (this.crossbowState == CrossbowState.READY_TO_ATTACK && hasLineOfSight) {
-        this.crossbowAttackMob.performRangedAttack(livingentity, 1.0F);
-        ItemStack itemStack1 =
-            this.pathfinderMob.getItemInHand(
-                AttackHandler.getCrossbowHoldingHand(this.pathfinderMob));
-        CrossbowItem.setCharged(itemStack1, false);
+    } else if (this.crossbowState == CrossbowState.CHARGING) {
+      if (!this.pathfinderMob.isUsingItem()) {
         this.crossbowState = CrossbowState.UNCHARGED;
       }
+
+      int chargingTicks = this.pathfinderMob.getTicksUsingItem();
+      ItemStack crossbowItem = this.pathfinderMob.getUseItem();
+      if (chargingTicks >= CrossbowItem.getChargeDuration(crossbowItem)) {
+        this.pathfinderMob.releaseUsingItem();
+        this.crossbowState = CrossbowState.CHARGED;
+        this.attackDelay = 20 + this.pathfinderMob.getRandom().nextInt(20);
+        this.crossbowAttackMob.setChargingCrossbow(false);
+      }
+    } else if (this.crossbowState == CrossbowState.CHARGED) {
+      this.attackDelay--;
+      if (this.attackDelay == 0) {
+        this.crossbowState = CrossbowState.READY_TO_ATTACK;
+      }
+    } else if (this.crossbowState == CrossbowState.READY_TO_ATTACK && hasLineOfSight) {
+      this.crossbowAttackMob.performRangedAttack(livingentity, 1.0F);
+      ItemStack crossbowInHand =
+          this.pathfinderMob.getItemInHand(
+              AttackHandler.getCrossbowHoldingHand(this.pathfinderMob));
+      clearChargedProjectiles(crossbowInHand);
+      this.crossbowState = CrossbowState.UNCHARGED;
+    }
+  }
+
+  private void clearChargedProjectiles(ItemStack crossbowItem) {
+    if (crossbowItem.isEmpty() || !(crossbowItem.getItem() instanceof CrossbowItem)) {
+      return;
+    }
+
+    CompoundTag itemTag = crossbowItem.getOrCreateTag();
+    if (itemTag.contains("ChargedProjectiles", 9)) {
+      itemTag.put("ChargedProjectiles", new ListTag());
     }
   }
 

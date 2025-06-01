@@ -22,10 +22,21 @@ package de.markusbordihn.easynpc.client.renderer.entity.raw;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import net.minecraft.client.renderer.entity.ChickenRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 
 public class ChickenRawRenderer extends ChickenRenderer implements EasyNPCEntityRenderer {
 
   public ChickenRawRenderer(EntityRendererProvider.Context context) {
     super(context);
+  }
+
+  @Override
+  public ResourceLocation getTextureByVariant(Enum<?> variant) {
+    return null;
+  }
+
+  @Override
+  public ResourceLocation getDefaultTexture() {
+    return null;
   }
 }

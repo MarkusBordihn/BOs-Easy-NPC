@@ -30,6 +30,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 
 public interface ModelRotationData<T extends PathfinderMob> extends EasyNPC<T> {
@@ -75,10 +76,34 @@ public interface ModelRotationData<T extends PathfinderMob> extends EasyNPC<T> {
     }
   }
 
+  default void setModelRotation(float y) {
+    CustomRotation rotation = getModelPartRotation(ModelPartType.ROOT);
+    setModelRotation(rotation.x(), y, rotation.z());
+  }
+
+  default void setModelRotation(float x, float y, float z) {
+    Entity entity = this.getEntity();
+    if (entity != null) {
+      entity.setYRot(y);
+      entity.setYBodyRot(y);
+      entity.setYHeadRot(y);
+      entity.yRotO = y;
+    }
+
+    LivingEntity livingEntity = this.getLivingEntity();
+    if (livingEntity != null) {
+      livingEntity.yBodyRotO = y;
+      livingEntity.yHeadRotO = y;
+    }
+
+    setModelPartRotation(ModelPartType.ROOT, new CustomRotation(x, y, z).withLocked(y != 0));
+  }
+
   default boolean hasChangedModelRotation() {
     EnumMap<ModelPartType, CustomRotation> modelPartMap = getModelPartRotation();
-    for (Map.Entry<ModelPartType, CustomRotation> entry : modelPartMap.entrySet()) {
-      if (entry.getValue().hasChanged()) {
+    for (CustomRotation rotation : modelPartMap.values()) {
+      if (rotation.hasChanged()
+          && !(rotation == modelPartMap.get(ModelPartType.ROOT) && rotation.hasChangedYaw())) {
         return true;
       }
     }

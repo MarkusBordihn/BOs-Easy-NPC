@@ -19,9 +19,12 @@
 
 package de.markusbordihn.easynpc.client.model;
 
+import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import java.util.UUID;
 
 public class EasyNPCModel {
 
@@ -39,6 +42,13 @@ public class EasyNPCModel {
     return setupAnimation(easyNPC, modelData, modelManager);
   }
 
+  /**
+   * Setup Animation for Model.
+   *
+   * @param easyNPC the EasyNPC entity
+   * @param modelManager the model manager
+   * @return true if model was adjusted, false otherwise
+   */
   public static boolean setupAnimation(
       EasyNPC<?> easyNPC, final ModelData<?> modelData, EasyNPCModelManager modelManager) {
     if (easyNPC == null || modelData == null || modelManager == null) {

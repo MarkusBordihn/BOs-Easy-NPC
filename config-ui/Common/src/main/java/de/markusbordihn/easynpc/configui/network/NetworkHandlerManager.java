@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.configui.network;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.network.message.client.ExportClientPresetMessage;
 import de.markusbordihn.easynpc.configui.network.message.client.OpenMenuCallbackMessage;
+import de.markusbordihn.easynpc.configui.network.message.client.SyncDataMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.AddOrUpdateObjectiveMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeActionEventMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeAdvancedTradingMessage;
@@ -33,7 +34,6 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeEntityBase
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeEnvironmentalAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeInteractionAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelEquipmentVisibilityMessage;
-import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelLockRotationMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelPoseMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelPositionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelRotationMessage;
@@ -61,6 +61,7 @@ import de.markusbordihn.easynpc.configui.network.message.server.RemoveDialogButt
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveDialogMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveNPCMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveObjectiveMessage;
+import de.markusbordihn.easynpc.configui.network.message.server.RequestDataSyncMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RespawnNPCMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.SaveDialogButtonMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.SaveDialogMessage;
@@ -118,14 +119,9 @@ public class NetworkHandlerManager {
   public static void sendMessageToPlayer(
       NetworkMessageRecord networkMessageRecord, ServerPlayer serverPlayer) {
     NetworkHandlerInterface networkHandler = getHandler();
-    if (networkHandler == null) {
-      log.error(
-          "Missing Network Handler! Failed to send message {} to server player {}!",
-          networkMessageRecord,
-          serverPlayer);
-      return;
+    if (networkHandler != null) {
+      networkHandler.sendMessageToPlayer(networkMessageRecord, serverPlayer);
     }
-    networkHandler.sendMessageToPlayer(networkMessageRecord, serverPlayer);
   }
 
   public static void registerClientNetworkHandler() {
@@ -214,11 +210,6 @@ public class NetworkHandlerManager {
         ChangeModelEquipmentVisibilityMessage.MESSAGE_ID,
         ChangeModelEquipmentVisibilityMessage.class,
         ChangeModelEquipmentVisibilityMessage::create);
-
-    networkHandler.registerServerNetworkMessage(
-        ChangeModelLockRotationMessage.MESSAGE_ID,
-        ChangeModelLockRotationMessage.class,
-        ChangeModelLockRotationMessage::create);
 
     networkHandler.registerServerNetworkMessage(
         ChangeModelPoseMessage.MESSAGE_ID,

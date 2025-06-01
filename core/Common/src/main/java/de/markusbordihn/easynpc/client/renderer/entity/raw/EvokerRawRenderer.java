@@ -22,10 +22,21 @@ package de.markusbordihn.easynpc.client.renderer.entity.raw;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EvokerRenderer;
+import net.minecraft.resources.ResourceLocation;
 
 public class EvokerRawRenderer extends EvokerRenderer implements EasyNPCEntityRenderer {
 
   public EvokerRawRenderer(EntityRendererProvider.Context context) {
     super(context);
+  }
+
+  @Override
+  public ResourceLocation getTextureByVariant(Enum<?> variant) {
+    return null;
+  }
+
+  @Override
+  public ResourceLocation getDefaultTexture() {
+    return null;
   }
 }
