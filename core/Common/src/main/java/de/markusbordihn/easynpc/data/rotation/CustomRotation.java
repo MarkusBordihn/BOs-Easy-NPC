@@ -84,6 +84,10 @@ public record CustomRotation(float x, float y, float z, boolean locked) {
     return hasChanged(0, 0, 0);
   }
 
+  public boolean hasChangedYaw() {
+    return this.x == 0 && this.y != 0 && this.z == 0 && this.locked;
+  }
+
   public boolean hasChanged(float x, float y, float z) {
     return hasChanged(x, y, z, false);
   }

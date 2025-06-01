@@ -19,6 +19,49 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity;
 
-public interface EasyNPCEntityRenderer {
+import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
+import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
+import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import net.minecraft.resources.ResourceLocation;
 
+public interface EasyNPCEntityRenderer {
+  ResourceLocation getTextureByVariant(final Enum<?> variant);
+
+  ResourceLocation getDefaultTexture();
+
+  default ResourceLocation getCustomTexture(final SkinData<?> entity) {
+    return CustomTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
+  }
+
+  default ResourceLocation getPlayerTexture(final SkinData<?> entity) {
+    return PlayerTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
+  }
+
+  default ResourceLocation getRemoteTexture(final SkinData<?> entity) {
+    return RemoteTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
+  }
+
+  default ResourceLocation getEntityTexture(final EasyNPC<?> easyNPC) {
+    SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
+    return switch (skinData.getSkinType()) {
+      case NONE -> Constants.BLANK_ENTITY_TEXTURE;
+      case CUSTOM -> getCustomTexture(skinData);
+      case SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> getRemoteTexture(skinData);
+      default -> getTextureByVariant(easyNPC.getEasyNPCVariantData().getVariantType());
+    };
+  }
+
+  default ResourceLocation getEntityPlayerTexture(final EasyNPC<?> easyNPC) {
+    SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
+    return switch (skinData.getSkinType()) {
+      case NONE -> Constants.BLANK_ENTITY_TEXTURE;
+      case CUSTOM -> getCustomTexture(skinData);
+      case PLAYER_SKIN -> getPlayerTexture(skinData);
+      case SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> getRemoteTexture(skinData);
+      default -> getTextureByVariant(easyNPC.getEasyNPCVariantData().getVariantType());
+    };
+  }
 }

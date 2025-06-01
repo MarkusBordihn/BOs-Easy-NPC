@@ -15,7 +15,7 @@ dependencies {
   modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
   // Include Common code
-  implementation project(":Common")
+  compileOnly project(":Common")
 
   // Additional helpful Mods for development (runtime dependency)
   if (project.hasProperty('fabric_jei_mod') && project.fabric_jei_mod) {

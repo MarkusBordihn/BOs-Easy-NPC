@@ -102,30 +102,30 @@ public record ChangeModelRotationMessage(
     }
 
     // Perform action.
-    log.debug(
-        "Change {} rotation to {}° {}° {}° for {} from {}",
-        this.modelPartType,
-        this.rotation.x(),
-        this.rotation.y(),
-        this.rotation.z(),
-        easyNPC,
-        serverPlayer);
+    if (this.modelPartType == ModelPartType.ROOT) {
+      modelData.setModelRotation(this.rotation.x(), this.rotation.y(), this.rotation.z());
+    } else {
+      log.debug(
+          "Change {} rotation to {}° {}° {}° for {} from {}",
+          this.modelPartType,
+          this.rotation.x(),
+          this.rotation.y(),
+          this.rotation.z(),
+          easyNPC,
+          serverPlayer);
 
-    // Set common properties for all cases except ROOT.
-    if (this.modelPartType != ModelPartType.ROOT) {
+      // Use custom model pose for model part rotation.
+      modelData.setModelPartRotation(this.modelPartType, this.rotation);
       easyNPC.getEntity().setPose(Pose.STANDING);
       modelData.setModelPose(ModelPose.CUSTOM);
-    }
 
-    // Apply rotation based on the model part.
-    modelData.setModelPartRotation(this.modelPartType, this.rotation);
-
-    // Verify if custom model pose is really needed.
-    if (!modelData.hasChangedModel()
-        || (this.modelPartType == ModelPartType.ROOT && this.rotation.hasChanged())) {
-      log.debug("Reset custom model pose for {} from {}", easyNPC, serverPlayer);
-      modelData.setModelPose(ModelPose.DEFAULT);
-      easyNPC.getEntity().setPose(Pose.STANDING);
+      // Verify if custom model pose is really needed.
+      if (!modelData.hasChangedModel()
+          || (this.modelPartType == ModelPartType.ROOT && this.rotation.hasChanged())) {
+        log.debug("Reset custom model pose for {} from {}", easyNPC, serverPlayer);
+        modelData.setModelPose(ModelPose.DEFAULT);
+        easyNPC.getEntity().setPose(Pose.STANDING);
+      }
     }
   }
 }

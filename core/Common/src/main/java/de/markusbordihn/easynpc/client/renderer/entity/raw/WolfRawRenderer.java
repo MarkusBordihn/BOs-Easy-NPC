@@ -30,10 +30,12 @@ public class WolfRawRenderer extends WolfRenderer implements EasyNPCEntityRender
     super(context);
   }
 
+  @Override
   public ResourceLocation getTextureByVariant(Enum<?> variant) {
     return null;
   }
 
+  @Override
   public ResourceLocation getDefaultTexture() {
     return null;
   }
