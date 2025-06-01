@@ -20,6 +20,8 @@
 package de.markusbordihn.easynpc.client.model.custom;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.model.raw.HumanoidRawModel;
+import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -30,6 +32,7 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.HumanoidArm;
 
 public class FairyModel<S extends HumanoidRenderState> extends HumanoidModel<S> {
 
@@ -37,7 +40,7 @@ public class FairyModel<S extends HumanoidRenderState> extends HumanoidModel<S> 
   private final ModelPart leftWing;
   private final ModelPart rightWing;
 
-  public FairyModel(ModelPart modelPart) {
+  public FairyModel(final ModelPart modelPart) {
     super(modelPart);
     this.leftLeg.visible = false;
     this.hat.visible = false;
@@ -121,7 +124,8 @@ public class FairyModel<S extends HumanoidRenderState> extends HumanoidModel<S> 
     return LayerDefinition.create(meshDefinition, 128, 128);
   }
 
-  public void setupAnim(S renderState) {
+  @Override
+  public void setupAnim(final S renderState) {
     super.setupAnim(renderState);
     this.rightWing.yRot =
         Constants.MATH_27DEG_TO_RAD
@@ -131,5 +135,13 @@ public class FairyModel<S extends HumanoidRenderState> extends HumanoidModel<S> 
     this.leftWing.xRot = Constants.MATH_27DEG_TO_RAD;
     this.rightWing.xRot = Constants.MATH_27DEG_TO_RAD;
     this.rightWing.zRot = Constants.MATH_27DEG_TO_RAD;
+  }
+
+  @Override
+  protected HumanoidModel.ArmPose getArmPose(final S renderState, final HumanoidArm humanoidArm) {
+    if (renderState instanceof EasyNPCRenderStateExtension extension) {
+      return HumanoidRawModel.getArmPose(extension, renderState, humanoidArm);
+    }
+    return super.getArmPose(renderState, humanoidArm);
   }
 }

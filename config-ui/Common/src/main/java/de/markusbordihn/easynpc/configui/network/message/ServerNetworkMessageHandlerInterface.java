@@ -32,7 +32,6 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeEntityBase
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeEnvironmentalAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeInteractionAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelEquipmentVisibilityMessage;
-import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelLockRotationMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelPositionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelRotationMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelScaleMessage;
@@ -520,18 +519,19 @@ public interface ServerNetworkMessageHandlerInterface {
     }
   }
 
-  default void modelLockRotationChange(UUID uuid, boolean lockRotation) {
-    if (uuid != null) {
-      NetworkHandlerManager.sendMessageToServer(
-          new ChangeModelLockRotationMessage(uuid, lockRotation));
-    }
-  }
-
   default void modelPositionChange(
       UUID uuid, ModelPartType modelPartType, CustomPosition position) {
     if (uuid != null && modelPartType != null && position != null) {
       NetworkHandlerManager.sendMessageToServer(
           new ChangeModelPositionMessage(uuid, modelPartType, position));
+    }
+  }
+
+  default void modelRotationChange(
+      UUID uuid, ModelPartType modelPartType, CustomRotation rotation) {
+    if (uuid != null && modelPartType != null && rotation != null) {
+      NetworkHandlerManager.sendMessageToServer(
+          new ChangeModelRotationMessage(uuid, modelPartType, rotation));
     }
   }
 
@@ -553,13 +553,6 @@ public interface ServerNetworkMessageHandlerInterface {
     if (uuid != null && modelPartType != null) {
       NetworkHandlerManager.sendMessageToServer(
           new ChangeModelVisibilityMessage(uuid, modelPartType, visible));
-    }
-  }
-
-  default void rotationChange(UUID uuid, ModelPartType modelPartType, CustomRotation rotation) {
-    if (uuid != null && modelPartType != null && rotation != null) {
-      NetworkHandlerManager.sendMessageToServer(
-          new ChangeModelRotationMessage(uuid, modelPartType, rotation));
     }
   }
 

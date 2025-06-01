@@ -16,8 +16,6 @@ import java.util.Locale;
 import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 
 public class RotateCommand extends Command {
 
@@ -105,30 +103,10 @@ public class RotateCommand extends Command {
     for (EasyNPC<?> easyNPC : easyNPCs) {
       UUID uuid = easyNPC.getEntityUUID();
       if (AccessManager.hasAccess(context, uuid)) {
-        // Set the rotation for the Entity if it exists.
-        Entity entity = easyNPC.getEntity();
-        if (entity != null) {
-          entity.setYRot(yaw);
-          entity.setYBodyRot(yaw);
-          entity.setYHeadRot(yaw);
-          entity.yRotO = yaw;
-        }
-
-        // Set the rotation for the LivingEntity if it exists.
-        LivingEntity livingEntity = easyNPC.getLivingEntity();
-        if (livingEntity != null) {
-          livingEntity.yBodyRotO = yaw;
-          livingEntity.yHeadRotO = yaw;
-        }
-
-        // Lock automatic rotation if yaw is greater than 0.
         ModelData<?> modelData = easyNPC.getEasyNPCModelData();
         if (modelData != null) {
-          modelData.setModelPartRotation(
-              ModelPartType.ROOT,
-              modelData.getModelPartRotation(ModelPartType.ROOT).withLocked(yaw > 0));
+          modelData.setModelRotation(yaw);
         }
-
         rotated++;
       } else {
         sendFailureMessage(context, "You are not allowed to rotate the Easy NPC " + uuid + " !");

@@ -8,7 +8,7 @@ For the full changelog, please go to the [GitHub History][history] instead.
 Note: Please always back up your world / NPCs before updating to a new version!
 Check the [upgrade guide][upgrade_guide] for more information.
 
-### 6.0.0 (Experimental) ✨
+### 6.0.x (Experimental) ✨
 
 📝 Note:
 Easy NPC is now split into two separate mods:

@@ -34,7 +34,6 @@ import de.markusbordihn.easynpc.configui.network.message.server.ChangeEntityBase
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeEnvironmentalAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeInteractionAttributeMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelEquipmentVisibilityMessage;
-import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelLockRotationMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelPoseMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelPositionMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeModelRotationMessage;
@@ -226,12 +225,6 @@ public class NetworkHandlerManager {
         ChangeModelEquipmentVisibilityMessage.STREAM_CODEC,
         ChangeModelEquipmentVisibilityMessage.class,
         ChangeModelEquipmentVisibilityMessage::create);
-
-    networkHandler.registerServerNetworkMessage(
-        ChangeModelLockRotationMessage.PAYLOAD_TYPE,
-        ChangeModelLockRotationMessage.STREAM_CODEC,
-        ChangeModelLockRotationMessage.class,
-        ChangeModelLockRotationMessage::create);
 
     networkHandler.registerServerNetworkMessage(
         ChangeModelPoseMessage.PAYLOAD_TYPE,

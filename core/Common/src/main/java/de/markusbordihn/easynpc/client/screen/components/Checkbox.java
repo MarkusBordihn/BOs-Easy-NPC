@@ -95,6 +95,10 @@ public class Checkbox extends AbstractButton {
     return this.selected;
   }
 
+  public void setSelected(boolean selected) {
+    this.selected = selected;
+  }
+
   public void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
     narrationElementOutput.add(NarratedElementType.TITLE, this.createNarrationMessage());
     if (this.active) {

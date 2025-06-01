@@ -35,19 +35,13 @@ public class EasyNPCModel {
    * @param modelManager the model manager
    */
   public static boolean setupAnimationStart(
-      EasyNPCRenderStateExtension extension, EasyNPCModelManager modelManager) {
+      final EasyNPCRenderStateExtension extension, final EasyNPCModelManager modelManager) {
     if (extension == null || modelManager == null) {
       return false;
     }
 
-    // Get UUID
-    UUID uuid = extension.getEasyNpcUUID();
-    if (uuid == null) {
-      return false;
-    }
-
     // Get EasyNPC
-    EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid);
+    EasyNPC<?> easyNPC = getEasyNPC(extension);
     if (easyNPC == null) {
       return false;
     }
@@ -69,7 +63,9 @@ public class EasyNPCModel {
    * @return true if model was adjusted, false otherwise
    */
   public static boolean setupAnimation(
-      EasyNPC<?> easyNPC, ModelData<?> modelData, EasyNPCModelManager modelManager) {
+      final EasyNPC<?> easyNPC,
+      final ModelData<?> modelData,
+      final EasyNPCModelManager modelManager) {
     if (easyNPC == null || modelData == null || modelManager == null) {
       return false;
     }
@@ -82,5 +78,24 @@ public class EasyNPCModel {
     // Handle Model Pose
     modelManager.resetModelParts();
     return modelManager.setupModelParts(modelData);
+  }
+
+  /**
+   * Get EasyNPC from EasyNPCRenderStateExtension.
+   *
+   * @param extension the EasyNPC render state extension
+   * @return EasyNPC or null if not found
+   */
+  public static EasyNPC<?> getEasyNPC(final EasyNPCRenderStateExtension extension) {
+    if (extension == null) {
+      return null;
+    }
+
+    UUID uuid = extension.getEasyNpcUUID();
+    if (uuid == null) {
+      return null;
+    }
+
+    return LivingEntityManager.getEasyNPCEntityByUUID(uuid);
   }
 }

@@ -49,17 +49,18 @@ public class EasyNPCModelManager {
       new EnumMap<>(ModelPartType.class);
   private final Map<ModelPartType, ModelPart> modelPartMap = new EnumMap<>(ModelPartType.class);
 
-  public EasyNPCModelManager(ModelPart rootModelPart) {
+  public EasyNPCModelManager(final ModelPart rootModelPart) {
     this(rootModelPart, RenderType::entityCutoutNoCull);
   }
 
   public EasyNPCModelManager(
-      ModelPart rootModelPart, Function<ResourceLocation, RenderType> renderType) {
+      final ModelPart rootModelPart, final Function<ResourceLocation, RenderType> renderType) {
     this.rootModelPart = rootModelPart;
     this.renderType = renderType;
   }
 
-  public EasyNPCModelManager defineModelPart(ModelPartType modelPartType, String modelPartName) {
+  public EasyNPCModelManager defineModelPart(
+      final ModelPartType modelPartType, final String modelPartName) {
     if (this.rootModelPart != null && this.rootModelPart.hasChild(modelPartName)) {
       return defineModelPart(modelPartType, this.rootModelPart.getChild(modelPartName));
     } else {
@@ -72,7 +73,8 @@ public class EasyNPCModelManager {
     return this;
   }
 
-  public EasyNPCModelManager defineModelPart(ModelPartType modelPartType, ModelPart modelPart) {
+  public EasyNPCModelManager defineModelPart(
+      final ModelPartType modelPartType, final ModelPart modelPart) {
     setDefaultModelPartPosition(
         modelPartType, new CustomPosition(modelPart.x, modelPart.y, modelPart.z));
     setDefaultModelPartRotation(
@@ -105,7 +107,7 @@ public class EasyNPCModelManager {
     return modelPartMap.get(modelPartType);
   }
 
-  public boolean setupModelParts(ModelData<?> modelData) {
+  public boolean setupModelParts(final ModelData<?> modelData) {
     if (modelData == null || modelData.getModelPose() == ModelPose.DEFAULT) {
       return false;
     }

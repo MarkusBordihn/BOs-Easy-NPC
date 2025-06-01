@@ -70,7 +70,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                   CustomRotation currentModelPartRotation =
                       this.modelData.getModelPartRotation(modelPart);
                   NetworkMessageHandlerManager.getServerHandler()
-                      .rotationChange(
+                      .modelRotationChange(
                           this.getEasyNPCUUID(),
                           modelPart,
                           new CustomRotation(
@@ -93,7 +93,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                   CustomRotation currentModelPartRotation =
                       this.modelData.getModelPartRotation(modelPart);
                   NetworkMessageHandlerManager.getServerHandler()
-                      .rotationChange(
+                      .modelRotationChange(
                           this.getEasyNPCUUID(),
                           modelPart,
                           new CustomRotation(
@@ -116,7 +116,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                   CustomRotation currentModelPartRotation =
                       this.modelData.getModelPartRotation(modelPart);
                   NetworkMessageHandlerManager.getServerHandler()
-                      .rotationChange(
+                      .modelRotationChange(
                           this.getEasyNPCUUID(),
                           modelPart,
                           new CustomRotation(
@@ -159,7 +159,8 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
               sliderButtonY.reset();
               sliderButtonZ.reset();
               NetworkMessageHandlerManager.getServerHandler()
-                  .rotationChange(this.getEasyNPCUUID(), modelPart, new CustomRotation(0f, 0f, 0f));
+                  .modelRotationChange(
+                      this.getEasyNPCUUID(), modelPart, new CustomRotation(0f, 0f, 0f));
             }));
 
     return sliderButtonX;

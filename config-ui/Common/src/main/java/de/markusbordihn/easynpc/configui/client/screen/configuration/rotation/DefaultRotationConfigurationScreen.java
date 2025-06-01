@@ -82,7 +82,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                 slider -> {
                   this.rootRotationX = (float) Math.toRadians(slider.getTargetValue());
                   NetworkMessageHandlerManager.getServerHandler()
-                      .rotationChange(
+                      .modelRotationChange(
                           this.getEasyNPCUUID(),
                           ModelPartType.ROOT,
                           new CustomRotation(
@@ -100,7 +100,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                   this.rootRotationXSliderButton.reset();
                 }));
 
-    // Root Rotation Y
+    // Root Rotation Y (Yaw)
     this.rootRotationYSliderButton =
         this.addRenderableWidget(
             new SliderButton(
@@ -108,12 +108,12 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                 this.contentTopPos,
                 60,
                 "rootRotationY",
-                (float) Math.toDegrees(rootRotation.y()),
+                rootRotation.y(),
                 Type.DEGREE,
                 slider -> {
-                  this.rootRotationY = (float) Math.toRadians(slider.getTargetValue());
+                  this.rootRotationY = slider.getTargetValue();
                   NetworkMessageHandlerManager.getServerHandler()
-                      .rotationChange(
+                      .modelRotationChange(
                           this.getEasyNPCUUID(),
                           ModelPartType.ROOT,
                           new CustomRotation(
@@ -144,7 +144,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                 slider -> {
                   this.rootRotationZ = (float) Math.toRadians(slider.getTargetValue());
                   NetworkMessageHandlerManager.getServerHandler()
-                      .rotationChange(
+                      .modelRotationChange(
                           this.getEasyNPCUUID(),
                           ModelPartType.ROOT,
                           new CustomRotation(
@@ -172,7 +172,23 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
                 modelData.getModelPartRotation(ModelPartType.ROOT).locked(),
                 checkbox ->
                     NetworkMessageHandlerManager.getServerHandler()
-                        .modelLockRotationChange(this.getEasyNPCUUID(), checkbox.selected())));
+                        .modelRotationChange(
+                            this.getEasyNPCUUID(),
+                            ModelPartType.ROOT,
+                            modelData
+                                .getModelPartRotation(ModelPartType.ROOT)
+                                .withLocked(checkbox.selected()))));
+  }
+
+  @Override
+  public void updateTick() {
+    super.updateTick();
+
+    ModelData<?> modelData = this.getEasyNPC().getEasyNPCModelData();
+    if (modelData != null) {
+      CustomRotation rootRotation = modelData.getModelPartRotation(ModelPartType.ROOT);
+      this.rootRotationCheckbox.setSelected(rootRotation.locked());
+    }
   }
 
   @Override

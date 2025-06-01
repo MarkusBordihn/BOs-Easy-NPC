@@ -19,6 +19,8 @@
 
 package de.markusbordihn.easynpc.client.model.custom;
 
+import de.markusbordihn.easynpc.client.model.raw.HumanoidRawModel;
+import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -28,6 +30,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.world.entity.HumanoidArm;
 
 public class OrcModel<S extends HumanoidRenderState> extends HumanoidModel<S> {
 
@@ -119,5 +122,13 @@ public class OrcModel<S extends HumanoidRenderState> extends HumanoidModel<S> {
         PartPose.offset(2.1F, 12.0F, 0.0F));
 
     return LayerDefinition.create(meshDefinition, 128, 128);
+  }
+
+  @Override
+  protected HumanoidModel.ArmPose getArmPose(S renderState, HumanoidArm humanoidArm) {
+    if (renderState instanceof EasyNPCRenderStateExtension extension) {
+      return HumanoidRawModel.getArmPose(extension, renderState, humanoidArm);
+    }
+    return super.getArmPose(renderState, humanoidArm);
   }
 }

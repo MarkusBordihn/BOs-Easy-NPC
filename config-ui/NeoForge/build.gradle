@@ -49,7 +49,7 @@ dependencies {
   implementation "net.neoforged:neoforge:${project.neoforge_version}"
 
   // Include Common code
-  implementation project(":Common")
+  compileOnly project(":Common")
 
   // Include Core Common code
   implementation "de.markusbordihn.easynpc:easy_npc-neoforge-${project.minecraft_version}:${project.version}"
