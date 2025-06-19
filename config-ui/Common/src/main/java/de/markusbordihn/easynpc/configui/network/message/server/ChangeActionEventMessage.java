@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -71,7 +71,7 @@ public record ChangeActionEventMessage(
     // Get Permission level for corresponding action.
     int permissionLevel = 0;
     MinecraftServer minecraftServer = serverPlayer.getServer();
-    ActionEventData<?> actionEventData = easyNPC.getEasyNPCActionEventData();
+    ActionEventDataCapable<?> actionEventData = easyNPC.getEasyNPCActionEventData();
     if (minecraftServer != null) {
       permissionLevel = minecraftServer.getProfilePermissions(serverPlayer.getGameProfile());
       log.debug(

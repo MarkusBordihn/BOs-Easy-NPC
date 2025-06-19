@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.configui.menu.configuration.equipment;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.menu.configuration.equipment.slot.ArmorSlot;
 import de.markusbordihn.easynpc.configui.menu.configuration.equipment.slot.HandSlot;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.handler.EquipmentHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
@@ -85,7 +85,7 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
     this.loadHand();
 
     // Player Companion Amor Slots (left / slot: 3 - 0)
-    ModelData<?> modelData = this.getEasyNPC().getEasyNPCModelData();
+    ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
     if (modelData == null || modelData.canUseArmor()) {
       this.loadArmor();
       int playerCompanionEquipmentLeftStartPositionY = 44;

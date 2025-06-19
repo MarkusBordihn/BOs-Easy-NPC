@@ -30,7 +30,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
-import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.io.CustomSkinDataFiles;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import de.markusbordihn.easynpc.utils.TextUtils;
@@ -68,7 +68,7 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
     int skinPosition = 0;
     skinButtons = new ArrayList<>();
 
-    SkinData<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
+    SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
     SkinModel skinModel = skinData.getSkinModel();
     Set<UUID> textures = CustomTextureManager.getCustomTextureCacheKeys(skinModel, searchFilter);
     this.numOfSkins = textures.size();
@@ -120,7 +120,7 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
                     .setCustomSkin(this.getEasyNPCUUID(), textureUUID));
 
     // Disable button for active skin.
-    SkinData<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
+    SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
     UUID skinUUID = skinData.getSkinUUID();
     skinButton.active = !(skinUUID.equals(textureUUID));
 
@@ -148,7 +148,7 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
     setDescriptionText("custom_skin.text");
 
     // Entity specific information.
-    SkinData<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
+    SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
     SkinModel skinModel = skinData.getSkinModel();
     this.numOfSkins = CustomTextureManager.getCustomTextureCacheKeys(skinModel).size();
 

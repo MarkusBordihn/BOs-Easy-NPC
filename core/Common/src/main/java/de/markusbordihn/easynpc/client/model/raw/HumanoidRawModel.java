@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.client.model.raw;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
+import de.markusbordihn.easynpc.entity.easynpc.data.AttackDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
 import net.minecraft.client.model.HumanoidModel.ArmPose;
 import net.minecraft.world.InteractionHand;
@@ -50,7 +50,7 @@ public class HumanoidRawModel {
     }
 
     // Crossbow arm pose
-    AttackData<?> attackData = easyNPC.getEasyNPCAttackData();
+    AttackDataCapable<?> attackData = easyNPC.getEasyNPCAttackData();
     if (AttackHandler.isCrossbowWeapon(itemStack) && attackData != null) {
       if (attackData.isChargingCrossbow()) {
         return ArmPose.CROSSBOW_CHARGE;

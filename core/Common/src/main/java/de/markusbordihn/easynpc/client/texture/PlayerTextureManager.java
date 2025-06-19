@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.client.texture;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
-import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.io.PlayerSkinDataFiles;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.PlayersUtils;
@@ -68,7 +68,7 @@ public class PlayerTextureManager {
   }
 
   public static ResourceLocation getOrCreateTextureWithDefault(
-      SkinData<?> skinData, ResourceLocation defaultResourceLocation) {
+      SkinDataCapable<?> skinData, ResourceLocation defaultResourceLocation) {
     // Check if we have a skin UUID otherwise we assume that the texture is unknown.
     UUID skinUUID = skinData.getSkinUUID();
     if (skinUUID.equals(Constants.BLANK_UUID)) {
@@ -92,7 +92,7 @@ public class PlayerTextureManager {
   }
 
   private static ResourceLocation createTexture(
-      TextureModelKey textureModelKey, SkinData<?> skinData, UUID playerUUID) {
+      TextureModelKey textureModelKey, SkinDataCapable<?> skinData, UUID playerUUID) {
 
     // Reload protection to avoid multiple texture requests in the same session.
     if (!textureReloadProtection.add(playerUUID)) {

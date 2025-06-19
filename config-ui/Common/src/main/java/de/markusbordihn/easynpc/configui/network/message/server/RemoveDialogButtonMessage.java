@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.configui.network.message.server;
 
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
+import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -70,7 +70,7 @@ public record RemoveDialogButtonMessage(UUID uuid, UUID dialogId, UUID dialogBut
     }
 
     // Validate dialog data
-    DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
+    DialogDataCapable<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
       log.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
       return;

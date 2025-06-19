@@ -73,27 +73,27 @@ public class SkeletonNPC extends SkeletonRaw {
     VariantType soundVariant = VariantType.valueOf(variantName);
     switch (soundVariant) {
       case STRAY:
-        soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.STRAY_AMBIENT);
-        soundDataSet.addSound(SoundType.DEATH, SoundEvents.STRAY_DEATH);
-        soundDataSet.addSound(SoundType.HURT, SoundEvents.STRAY_HURT);
-        soundDataSet.addSound(SoundType.STEP, SoundEvents.STRAY_STEP);
+        soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.STRAY_AMBIENT);
+        soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.STRAY_DEATH);
+        soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.STRAY_HURT);
+        soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.STRAY_STEP);
         break;
       case WITHER_SKELETON:
-        soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.WITHER_SKELETON_AMBIENT);
-        soundDataSet.addSound(SoundType.DEATH, SoundEvents.WITHER_SKELETON_DEATH);
-        soundDataSet.addSound(SoundType.HURT, SoundEvents.WITHER_SKELETON_HURT);
-        soundDataSet.addSound(SoundType.STEP, SoundEvents.WITHER_SKELETON_STEP);
+        soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.WITHER_SKELETON_AMBIENT);
+        soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.WITHER_SKELETON_DEATH);
+        soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.WITHER_SKELETON_HURT);
+        soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.WITHER_SKELETON_STEP);
         break;
       case SKELETON:
       default:
-        soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.SKELETON_AMBIENT);
-        soundDataSet.addSound(SoundType.DEATH, SoundEvents.SKELETON_DEATH);
-        soundDataSet.addSound(SoundType.HURT, SoundEvents.SKELETON_HURT);
-        soundDataSet.addSound(SoundType.STEP, SoundEvents.SKELETON_STEP);
+        soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.SKELETON_AMBIENT);
+        soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.SKELETON_DEATH);
+        soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.SKELETON_HURT);
+        soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.SKELETON_STEP);
     }
-    soundDataSet.addSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
-    soundDataSet.addSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
-    soundDataSet.addSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
+    soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
+    soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
+    soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
   }
 

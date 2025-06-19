@@ -86,15 +86,15 @@ public class CatNPC extends CatRaw {
 
   @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.CAT_AMBIENT);
-    soundDataSet.addSound(SoundType.AMBIENT_TAMED, SoundEvents.CAT_PURREOW);
-    soundDataSet.addSound(SoundType.AMBIENT_STRAY, SoundEvents.CAT_STRAY_AMBIENT);
-    soundDataSet.addSound(SoundType.DEATH, SoundEvents.CAT_DEATH);
-    soundDataSet.addSound(SoundType.HURT, SoundEvents.CAT_HURT);
-    soundDataSet.addSound(SoundType.EAT, SoundEvents.CAT_EAT);
-    soundDataSet.addSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
-    soundDataSet.addSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
-    soundDataSet.addSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
+    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.CAT_AMBIENT);
+    soundDataSet.addDefaultSound(SoundType.AMBIENT_TAMED, SoundEvents.CAT_PURREOW);
+    soundDataSet.addDefaultSound(SoundType.AMBIENT_STRAY, SoundEvents.CAT_STRAY_AMBIENT);
+    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.CAT_DEATH);
+    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.CAT_HURT);
+    soundDataSet.addDefaultSound(SoundType.EAT, SoundEvents.CAT_EAT);
+    soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
+    soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
+    soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
   }
 

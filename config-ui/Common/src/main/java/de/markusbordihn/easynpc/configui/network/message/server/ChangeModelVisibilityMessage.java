@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -68,7 +68,7 @@ public record ChangeModelVisibilityMessage(UUID uuid, ModelPartType modelPartTyp
     }
 
     // Validate Model data.
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+    ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
       log.error("Invalid model data for {} from {}", easyNPC, serverPlayer);
       return;

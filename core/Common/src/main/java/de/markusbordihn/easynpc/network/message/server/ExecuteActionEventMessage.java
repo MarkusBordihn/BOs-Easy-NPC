@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionDataSet;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
@@ -70,7 +70,7 @@ public record ExecuteActionEventMessage(UUID uuid, ActionEventType actionEventTy
     }
 
     // Validate action event data.
-    ActionEventData<?> actionEventData = easyNPC.getEasyNPCActionEventData();
+    ActionEventDataCapable<?> actionEventData = easyNPC.getEasyNPCActionEventData();
     if (actionEventData == null) {
       log.error("Unable to get valid action event data for {} from {}", easyNPC, serverPlayer);
       return;

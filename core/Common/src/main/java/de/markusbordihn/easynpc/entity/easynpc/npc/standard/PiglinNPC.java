@@ -73,26 +73,26 @@ public class PiglinNPC extends PiglinRaw {
     VariantType soundVariant = VariantType.valueOf(variantName);
     switch (soundVariant) {
       case PIGLIN_BRUTE:
-        soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.PIGLIN_BRUTE_AMBIENT);
-        soundDataSet.addSound(SoundType.HURT, SoundEvents.PIGLIN_BRUTE_HURT);
-        soundDataSet.addSound(SoundType.DEATH, SoundEvents.PIGLIN_BRUTE_DEATH);
-        soundDataSet.addSound(SoundType.STEP, SoundEvents.PIGLIN_BRUTE_STEP);
+        soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.PIGLIN_BRUTE_AMBIENT);
+        soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.PIGLIN_BRUTE_HURT);
+        soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.PIGLIN_BRUTE_DEATH);
+        soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.PIGLIN_BRUTE_STEP);
         break;
       case ZOMBIFIED_PIGLIN:
-        soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.ZOMBIFIED_PIGLIN_AMBIENT);
-        soundDataSet.addSound(SoundType.HURT, SoundEvents.ZOMBIFIED_PIGLIN_HURT);
-        soundDataSet.addSound(SoundType.DEATH, SoundEvents.ZOMBIFIED_PIGLIN_DEATH);
-        soundDataSet.addSound(SoundType.STEP, SoundEvents.PIGLIN_STEP);
+        soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.ZOMBIFIED_PIGLIN_AMBIENT);
+        soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.ZOMBIFIED_PIGLIN_HURT);
+        soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.ZOMBIFIED_PIGLIN_DEATH);
+        soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.PIGLIN_STEP);
         break;
       default:
-        soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.PIGLIN_AMBIENT);
-        soundDataSet.addSound(SoundType.HURT, SoundEvents.PIGLIN_HURT);
-        soundDataSet.addSound(SoundType.DEATH, SoundEvents.PIGLIN_DEATH);
-        soundDataSet.addSound(SoundType.STEP, SoundEvents.PIGLIN_STEP);
+        soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.PIGLIN_AMBIENT);
+        soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.PIGLIN_HURT);
+        soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.PIGLIN_DEATH);
+        soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.PIGLIN_STEP);
     }
-    soundDataSet.addSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
-    soundDataSet.addSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
-    soundDataSet.addSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
+    soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
+    soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
+    soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
   }
 

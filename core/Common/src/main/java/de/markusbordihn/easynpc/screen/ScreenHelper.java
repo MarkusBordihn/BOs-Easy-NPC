@@ -31,13 +31,13 @@ import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
-import de.markusbordihn.easynpc.entity.easynpc.data.GuiData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
-import de.markusbordihn.easynpc.entity.easynpc.data.RenderData;
-import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
-import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
+import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.GuiDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
 import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -160,7 +160,7 @@ public class ScreenHelper {
 
   public static void renderScaledEntityAvatar(
       int x, int y, int scale, float yRot, float xRot, EasyNPC<?> easyNPC) {
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+    ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData != null) {
       renderScaledEntityAvatar(x, y, scale, yRot, xRot, easyNPC, modelData);
     } else {
@@ -170,12 +170,12 @@ public class ScreenHelper {
 
   public static void renderScaledEntityAvatar(
       int x, int y, float yRot, float xRot, EasyNPC<?> easyNPC) {
-    GuiData<?> guiData = easyNPC.getEasyNPCGuiData();
+    GuiDataCapable<?> guiData = easyNPC.getEasyNPCGuiData();
     renderScaledEntityAvatar(x, y, guiData.getEntityGuiScaling(), yRot, xRot, easyNPC);
   }
 
   public static void renderScaledEntityAvatar(
-      int x, int y, int scale, float yRot, float xRot, EasyNPC<?> easyNPC, ModelData<?> modelData) {
+      int x, int y, int scale, float yRot, float xRot, EasyNPC<?> easyNPC, ModelDataCapable<?> modelData) {
 
     // Backup entity information
     CustomRotation entityModelRootRotation =
@@ -205,7 +205,7 @@ public class ScreenHelper {
 
   public static void renderCustomPoseEntityAvatar(
       int x, int y, int scale, float yRot, float xRot, EasyNPC<?> easyNPC) {
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+    ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     Entity entity = easyNPC.getEntity();
 
     // Backup entity information
@@ -226,7 +226,7 @@ public class ScreenHelper {
 
   public static void renderEntityAvatarForScaling(
       int x, int y, int scale, float yRot, float xRot, EasyNPC<?> easyNPC) {
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+    ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     Entity entity = easyNPC.getEntity();
 
     // Backup entity information
@@ -246,7 +246,7 @@ public class ScreenHelper {
   }
 
   public static void renderEntityDialog(int x, int y, float yRot, float xRot, EasyNPC<?> easyNPC) {
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+    ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
 
     // Backup entity information
     CustomRotation entityModelRootRotation = modelData.getModelPartRotation(ModelPartType.ROOT);
@@ -255,7 +255,7 @@ public class ScreenHelper {
     modelData.setModelPartRotation(ModelPartType.ROOT, new CustomRotation(0.0F, 0.0F, 0.0F));
 
     // Render Entity
-    DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
+    DialogDataCapable<?> dialogData = easyNPC.getEasyNPCDialogData();
     renderEntity(x, y, dialogData.getEntityDialogScaling(), yRot, xRot, easyNPC.getLivingEntity());
 
     // Restore entity information
@@ -270,8 +270,8 @@ public class ScreenHelper {
       float xRot,
       EasyNPC<?> easyNPC,
       EntityType<? extends Entity> entityType) {
-    GuiData<?> guiData = easyNPC.getEasyNPCGuiData();
-    RenderData<?> renderData = easyNPC.getEasyNPCRenderData();
+    GuiDataCapable<?> guiData = easyNPC.getEasyNPCGuiData();
+    RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
     RenderDataSet renderDataSet = renderData.getRenderDataSet();
 
     // Backup renderer information
@@ -299,8 +299,8 @@ public class ScreenHelper {
 
   public static void renderEntityCustomSkin(
       int x, int y, float yRot, float xRot, EasyNPC<?> easyNPC, UUID userUUID, SkinType skinType) {
-    SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
-    GuiData<?> guiData = easyNPC.getEasyNPCGuiData();
+    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
+    GuiDataCapable<?> guiData = easyNPC.getEasyNPCGuiData();
 
     // Backup entity information
     SkinType entitySkinType = skinData.getSkinType();
@@ -332,10 +332,10 @@ public class ScreenHelper {
       EasyNPC<?> easyNPC,
       Enum<?> variant,
       Profession profession) {
-    SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
-    VariantData<?> variantData = easyNPC.getEasyNPCVariantData();
-    ProfessionData<?> professionData = easyNPC.getEasyNPCProfessionData();
-    GuiData<?> guiData = easyNPC.getEasyNPCGuiData();
+    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
+    VariantDataCapable<?> variantData = easyNPC.getEasyNPCVariantData();
+    ProfessionDataCapable<?> professionData = easyNPC.getEasyNPCProfessionData();
+    GuiDataCapable<?> guiData = easyNPC.getEasyNPCGuiData();
 
     // Backup entity information
     SkinType entitySkinType = skinData.getSkinType();

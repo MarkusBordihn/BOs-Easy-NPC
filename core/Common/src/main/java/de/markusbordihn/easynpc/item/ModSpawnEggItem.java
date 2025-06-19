@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.item;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -120,7 +120,7 @@ public class ModSpawnEggItem extends SpawnEggItem {
     if (entity != null) {
       // Set owner data for the entity if it is an EasyNPC.
       if (entity instanceof EasyNPC<?> easyNPC && player != null) {
-        OwnerData<?> ownerData = easyNPC.getEasyNPCOwnerData();
+        OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
         if (ownerData != null) {
           ownerData.setOwnerUUID(player.getUUID());
         }

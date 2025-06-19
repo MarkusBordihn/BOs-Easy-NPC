@@ -26,7 +26,7 @@ import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
-import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeData;
+import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import de.markusbordihn.easynpc.utils.ValueUtils;
 import java.util.Arrays;
@@ -70,7 +70,7 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
     int firstButtonRow = this.leftPos + 10;
 
     // Attribute data
-    DisplayAttributeData<?> displayAttributeData =
+    DisplayAttributeDataCapable<?> displayAttributeData =
         this.getEasyNPC().getEasyNPCDisplayAttributeData();
 
     // Light Level

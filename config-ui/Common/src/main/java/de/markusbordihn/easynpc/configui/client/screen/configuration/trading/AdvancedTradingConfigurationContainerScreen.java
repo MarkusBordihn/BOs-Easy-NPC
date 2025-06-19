@@ -31,7 +31,7 @@ import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingSettings;
-import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
+import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import de.markusbordihn.easynpc.utils.ValueUtils;
 import java.util.HashMap;
 import java.util.Objects;
@@ -120,7 +120,7 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
     this.advancedTradesButton.active = false;
 
     // Trading Data
-    TradingData<?> tradingData = this.getEasyNPC().getEasyNPCTradingData();
+    TradingDataCapable<?> tradingData = this.getEasyNPC().getEasyNPCTradingData();
     TradingDataSet tradingDataSet = tradingData.getTradingDataSet();
 
     // Reset Every Min Edit Box
@@ -291,7 +291,7 @@ public class AdvancedTradingConfigurationContainerScreen<T extends Configuration
   }
 
   private boolean isValidOffer(int tradingOfferIndex) {
-    TradingData<?> tradingData = this.getEasyNPC().getEasyNPCTradingData();
+    TradingDataCapable<?> tradingData = this.getEasyNPC().getEasyNPCTradingData();
     MerchantOffers merchantOffers = tradingData.getTradingOffers();
     MerchantOffer merchantOffer =
         merchantOffers.size() > tradingOfferIndex

@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
+import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.Vec3i;
@@ -32,7 +32,7 @@ import net.minecraft.world.phys.Vec3;
 public class MoveBackToHomeGoal<T extends EasyNPC<?>> extends Goal {
 
   private final float stopDistance;
-  private final NavigationData<?> navigationData;
+  private final NavigationDataCapable<?> navigationData;
   private final PathfinderMob pathfinderMob;
   private final double speedModifier;
   private final int interval;

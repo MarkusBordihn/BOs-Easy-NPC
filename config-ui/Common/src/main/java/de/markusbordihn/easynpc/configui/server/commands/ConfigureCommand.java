@@ -26,7 +26,7 @@ import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
 import de.markusbordihn.easynpc.configui.menu.MenuManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
@@ -52,7 +52,7 @@ public class ConfigureCommand extends Command {
     ServerPlayer serverPlayer = context.getPlayerOrException();
 
     // Verify configuration data for the EasyNPC.
-    ConfigurationData<?> configurationData = easyNPC.getEasyNPCConfigurationData();
+    ConfigurationDataCapable<?> configurationData = easyNPC.getEasyNPCConfigurationData();
     if (configurationData == null) {
       return sendFailureMessage(context, "This EasyNPC does not support configuration!");
     }

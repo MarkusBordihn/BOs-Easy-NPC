@@ -24,7 +24,7 @@ import de.markusbordihn.easynpc.configui.menu.MenuManager;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
+import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -65,7 +65,7 @@ public record OpenDialogEditorMessage(UUID uuid, UUID dialogId) implements Netwo
     }
 
     // Validate dialog data.
-    DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
+    DialogDataCapable<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
       log.error("Unable to get valid dialog data for {} from {}", easyNPC, serverPlayer);
       return;

@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import net.minecraft.client.renderer.MultiBufferSource;
 
 public class EasyNPCLivingEntityRenderer {
@@ -20,7 +20,7 @@ public class EasyNPCLivingEntityRenderer {
       return;
     }
 
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+    ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
       return;
     }

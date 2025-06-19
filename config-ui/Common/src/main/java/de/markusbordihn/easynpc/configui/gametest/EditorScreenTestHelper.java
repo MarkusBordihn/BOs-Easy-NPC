@@ -26,14 +26,21 @@ import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
+import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
+import de.markusbordihn.easynpc.gametest.GameTestHelpers;
 import java.util.UUID;
+import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.phys.Vec3;
 
 public class EditorScreenTestHelper {
+
+  private EditorScreenTestHelper() {}
 
   public static UUID mockOpenEditorScreen(
       ServerPlayer serverPlayer,
@@ -42,7 +49,7 @@ public class EditorScreenTestHelper {
       MenuType<? extends EditorMenu> menuType) {
 
     // Check if the dialog data is null and create a basic dialog if needed.
-    DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
+    DialogDataCapable<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData != null) {
       DialogDataSet dialogDataSet = DialogUtils.getBasicDialog("Test Dialog");
       dialogData.setDialogDataSet(dialogDataSet);
@@ -65,5 +72,38 @@ public class EditorScreenTestHelper {
     UUID menuId = MenuManager.registerMenu(easyNPC.getEntityUUID(), menuProvider, serverPlayer);
     MenuManager.openMenu(menuId, serverPlayer);
     return menuId;
+  }
+
+  public static void testEditorScreen(
+      GameTestHelper helper,
+      EntityType<? extends PathfinderMob> npcEntityType,
+      EditorType editorType,
+      MenuType<? extends EditorMenu> menuType) {
+    // Get a mock player and spawn a humanoid NPC.
+    ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, npcEntityType, new Vec3(2, 2, 2));
+
+    // Close previous dialog, if any.
+    if (serverPlayer.hasContainerOpen()) {
+      serverPlayer.closeContainer();
+    }
+
+    // Prepare and open Dialog
+    UUID dialogId = mockOpenEditorScreen(serverPlayer, editorType, easyNPC, menuType);
+    GameTestHelpers.assertNotNull(helper, "DialogId is null!", dialogId);
+
+    // Check if dialog is open.
+    GameTestHelpers.assertTrue(
+        helper,
+        "Editor Screen " + menuType + " is not open!",
+        serverPlayer.containerMenu instanceof EditorMenu);
+    GameTestHelpers.assertEquals(
+        helper,
+        "Wrong Editor type! Expected: "
+            + menuType
+            + " but got: "
+            + serverPlayer.containerMenu.getType(),
+        menuType,
+        serverPlayer.containerMenu.getType());
   }
 }

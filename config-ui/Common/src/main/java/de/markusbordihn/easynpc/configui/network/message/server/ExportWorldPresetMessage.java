@@ -22,8 +22,8 @@ package de.markusbordihn.easynpc.configui.network.message.server;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
-import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.io.File;
@@ -69,7 +69,7 @@ public record ExportWorldPresetMessage(UUID uuid, String name) implements Networ
     }
 
     // Validate skin data.
-    SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
+    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
     if (skinData == null) {
       log.warn("Export preset skin data is empty for {}", easyNPC);
       return;
@@ -83,7 +83,7 @@ public record ExportWorldPresetMessage(UUID uuid, String name) implements Networ
     }
 
     // Validate data.
-    PresetData<?> presetData = easyNPC.getEasyNPCPresetData();
+    PresetDataCapable<?> presetData = easyNPC.getEasyNPCPresetData();
     CompoundTag compoundTag = presetData.serializePresetData();
     if (compoundTag == null || compoundTag.isEmpty()) {
       log.warn("Export preset data is empty for {}", easyNPC);

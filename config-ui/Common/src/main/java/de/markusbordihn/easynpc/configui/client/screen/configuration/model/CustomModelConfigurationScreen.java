@@ -28,7 +28,7 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.render.RenderDataSet;
-import de.markusbordihn.easynpc.entity.easynpc.data.RenderData;
+import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.ArrayList;
@@ -284,7 +284,7 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
                     .setRenderEntityType(this.getEasyNPCUUID(), entityType));
 
     // Disable button for active skin.
-    RenderData<?> renderData = this.getEasyNPC().getEasyNPCRenderData();
+    RenderDataCapable<?> renderData = this.getEasyNPC().getEasyNPCRenderData();
     RenderDataSet renderDataSet = renderData.getRenderDataSet();
     EntityType<?> currentEntityType = renderDataSet.getRenderEntityType();
     customModelButton.active = currentEntityType == null || !(currentEntityType.equals(entityType));

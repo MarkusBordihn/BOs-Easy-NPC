@@ -23,7 +23,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -70,8 +70,8 @@ public class AccessManager {
             && easyNPC.getEasyNPCOwnerData() != null
             && entity instanceof EasyNPC<?> easyNPCEntity
             && easyNPCEntity.getEasyNPCOwnerData() != null) {
-          OwnerData<?> ownerData = easyNPC.getEasyNPCOwnerData();
-          OwnerData<?> ownerDataEntity = easyNPCEntity.getEasyNPCOwnerData();
+          OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
+          OwnerDataCapable<?> ownerDataEntity = easyNPCEntity.getEasyNPCOwnerData();
           boolean ownerDataAccess =
               (!ownerData.hasOwner() && !ownerDataEntity.hasOwner())
                   || (ownerData.getOwner() != null

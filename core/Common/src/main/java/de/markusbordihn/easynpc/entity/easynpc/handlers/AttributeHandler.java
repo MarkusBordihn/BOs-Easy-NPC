@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.entity.easynpc.handlers;
 import de.markusbordihn.easynpc.data.attribute.CombatAttributes;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
+import de.markusbordihn.easynpc.entity.easynpc.data.AttributeDataCapable;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 
@@ -33,7 +33,7 @@ public interface AttributeHandler<E extends PathfinderMob> extends EasyNPC<E> {
 
     // Validate attribute data and mob entity.
     Mob mob = this.getMob();
-    AttributeData<?> attributeData = this.getEasyNPCAttributeData();
+    AttributeDataCapable<?> attributeData = this.getEasyNPCAttributeData();
     if (attributeData == null || mob == null || mob.isDeadOrDying()) {
       return;
     }

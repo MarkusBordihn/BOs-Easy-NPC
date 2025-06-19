@@ -5,7 +5,7 @@ import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.HumanoidNPC.VariantType;
 import java.util.EnumMap;
 import java.util.Map;
@@ -118,11 +118,11 @@ public class PlayerRenderer<T extends PathfinderMob> extends LivingEntityRendere
     return DEFAULT_TEXTURE;
   }
 
-  public ResourceLocation getCustomTexture(SkinData<?> entity) {
+  public ResourceLocation getCustomTexture(SkinDataCapable<?> entity) {
     return CustomTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
   }
 
-  public ResourceLocation getRemoteTexture(SkinData<?> entity) {
+  public ResourceLocation getRemoteTexture(SkinDataCapable<?> entity) {
     return RemoteTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
   }
 

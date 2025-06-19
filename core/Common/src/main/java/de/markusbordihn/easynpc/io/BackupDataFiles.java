@@ -40,7 +40,9 @@ public class BackupDataFiles {
 
     // Prepare backup data folder for today
     Path backupDataFolder = getBackupDataFolder();
-    if (backupDataFolder == null) {}
+    if (backupDataFolder == null) {
+      log.error("Backup data folder is null, unable to register backup data!");
+    }
   }
 
   public static Path getBackupDataFolder() {

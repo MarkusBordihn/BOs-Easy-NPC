@@ -93,12 +93,12 @@ public class HumanoidSlimNPC extends PathfinderMobRaw {
 
   @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    soundDataSet.addSound(SoundType.DEATH, SoundEvents.PLAYER_DEATH);
-    soundDataSet.addSound(SoundType.HURT, SoundEvents.PLAYER_HURT);
-    soundDataSet.addSound(SoundType.EAT, SoundEvents.GENERIC_EAT);
-    soundDataSet.addSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
-    soundDataSet.addSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
-    soundDataSet.addSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
+    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.PLAYER_DEATH);
+    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.PLAYER_HURT);
+    soundDataSet.addDefaultSound(SoundType.EAT, SoundEvents.GENERIC_EAT);
+    soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
+    soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
+    soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
   }
 

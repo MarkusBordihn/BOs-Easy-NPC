@@ -25,7 +25,7 @@ import de.markusbordihn.easynpc.configui.network.message.client.ExportClientPres
 import de.markusbordihn.easynpc.configui.network.message.client.OpenMenuCallbackMessage;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
+import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
@@ -57,7 +57,7 @@ public interface ClientNetworkMessageHandlerInterface {
     }
 
     EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(uuid, serverPlayer);
-    PresetData<?> presetData = easyNPC.getEasyNPCPresetData();
+    PresetDataCapable<?> presetData = easyNPC.getEasyNPCPresetData();
     CompoundTag compoundTag = presetData.serializePresetData();
     log.info(
         "Exporting preset for {} to {}",

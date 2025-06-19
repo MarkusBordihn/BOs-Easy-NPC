@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.item.configuration;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntity;
-import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
+import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.level.BaseEasyNPCSpawner;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.SpawnerUtils;
@@ -71,8 +71,8 @@ public class EasyNPCPresetItem extends Item {
 
   public static UUID getPresetUUID(ItemStack itemStack) {
     CompoundTag compoundTag = getPreset(itemStack);
-    if (compoundTag.contains(PresetData.PRESET_UUID_TAG)) {
-      return compoundTag.getUUID(PresetData.PRESET_UUID_TAG);
+    if (compoundTag.contains(PresetDataCapable.PRESET_UUID_TAG)) {
+      return compoundTag.getUUID(PresetDataCapable.PRESET_UUID_TAG);
     }
     return null;
   }
@@ -131,8 +131,14 @@ public class EasyNPCPresetItem extends Item {
   }
 
   public static boolean spawnAtPosition(BlockPos blockPos, ItemStack itemStack, Level level) {
-    // Verify preset and entity type.
-    if (level.isClientSide || !hasPreset(itemStack) || !hasEntityType(itemStack)) {
+    // Ignore client side
+    if (level.isClientSide) {
+      return false;
+    }
+
+    // Verify that we have preset and entity type data
+    if (!hasPreset(itemStack) || !hasEntityType(itemStack)) {
+      log.error("No valid preset data found in {}!", itemStack);
       return false;
     }
 
@@ -227,7 +233,7 @@ public class EasyNPCPresetItem extends Item {
       BlockPos targetBlockPos =
           new BlockPos(
               possibleSpawnPosition.getX(),
-              possibleSpawnPosition.getY(),
+              possibleSpawnPosition.getY() + 1,
               possibleSpawnPosition.getZ());
       if (level.getBlockState(targetBlockPos.above()).isAir()
           && level.getEntitiesOfClass(Entity.class, aabb).isEmpty()

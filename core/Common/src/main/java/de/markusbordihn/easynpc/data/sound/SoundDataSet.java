@@ -30,7 +30,8 @@ public class SoundDataSet {
 
   public static final String DATA_SOUND_DATA_SET_TAG = "SoundDataSet";
 
-  private final Map<SoundType, SoundDataEntry> soundDataEntryMap = new EnumMap<>(SoundType.class);
+  private final Map<SoundType, SoundDataEntry> defaultSounds = new EnumMap<>(SoundType.class);
+  private final Map<SoundType, SoundDataEntry> overrideSounds = new EnumMap<>(SoundType.class);
 
   public SoundDataSet() {}
 
@@ -39,7 +40,7 @@ public class SoundDataSet {
   }
 
   public boolean hasSound(SoundType type) {
-    return soundDataEntryMap.containsKey(type);
+    return defaultSounds.containsKey(type) || overrideSounds.containsKey(type);
   }
 
   public void addSound(SoundType type, SoundEvent soundEvent) {
@@ -47,15 +48,30 @@ public class SoundDataSet {
   }
 
   public void addSound(SoundType type, ResourceLocation resourceLocation) {
-    soundDataEntryMap.put(type, new SoundDataEntry(type, resourceLocation));
+    if (resourceLocation == null || resourceLocation.toString().isEmpty()) {
+      return;
+    }
+    if (defaultSounds.containsKey(type)
+        && defaultSounds.get(type).getSoundEvent().getLocation().equals(resourceLocation)) {
+      overrideSounds.remove(type);
+    } else {
+      overrideSounds.put(type, new SoundDataEntry(type, resourceLocation));
+    }
+  }
+
+  public void addDefaultSound(SoundType type, SoundEvent soundEvent) {
+    if (soundEvent == null || soundEvent.getLocation().toString().isEmpty()) {
+      return;
+    }
+    defaultSounds.put(type, new SoundDataEntry(type, soundEvent.getLocation()));
   }
 
   public boolean isEmpty() {
-    return soundDataEntryMap.isEmpty();
+    return defaultSounds.isEmpty() && overrideSounds.isEmpty();
   }
 
   public SoundDataEntry getSound(SoundType type) {
-    return soundDataEntryMap.get(type);
+    return overrideSounds.containsKey(type) ? overrideSounds.get(type) : defaultSounds.get(type);
   }
 
   public void load(CompoundTag compoundTag) {
@@ -64,18 +80,26 @@ public class SoundDataSet {
     }
 
     // Load sound data entries
-    soundDataEntryMap.clear();
+    overrideSounds.clear();
     ListTag soundListTag = compoundTag.getList(DATA_SOUND_DATA_SET_TAG, 10);
     for (int i = 0; i < soundListTag.size(); i++) {
       CompoundTag soundDataTag = soundListTag.getCompound(i);
       SoundDataEntry soundDataEntry = new SoundDataEntry(soundDataTag);
-      soundDataEntryMap.put(soundDataEntry.getType(), soundDataEntry);
+      SoundType type = soundDataEntry.getType();
+      SoundEvent event = soundDataEntry.getSoundEvent();
+      if (type == null || event == null) {
+        continue;
+      }
+      if (!defaultSounds.containsKey(type)
+          || !defaultSounds.get(type).getSoundEvent().equals(event)) {
+        overrideSounds.put(type, soundDataEntry);
+      }
     }
   }
 
   public CompoundTag save(CompoundTag compoundTag) {
     ListTag soundListTag = new ListTag();
-    for (Map.Entry<SoundType, SoundDataEntry> entry : soundDataEntryMap.entrySet()) {
+    for (Map.Entry<SoundType, SoundDataEntry> entry : overrideSounds.entrySet()) {
       SoundDataEntry soundDataEntry = entry.getValue();
       soundListTag.add(soundDataEntry.createTag());
     }

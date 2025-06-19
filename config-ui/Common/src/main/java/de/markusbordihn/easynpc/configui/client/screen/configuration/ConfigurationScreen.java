@@ -26,8 +26,8 @@ import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
-import de.markusbordihn.easynpc.entity.easynpc.data.RenderData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.menu.EasyNPCMenu;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Collections;
@@ -134,12 +134,12 @@ public class ConfigurationScreen<T extends EasyNPCMenu> extends Screen<T> {
     if (easyNPC == null) {
       return false;
     }
-    RenderData<?> renderData = easyNPC.getEasyNPCRenderData();
+    RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
     boolean isCustomModel =
         renderData != null
             && renderData.getRenderDataSet() != null
             && renderData.getRenderDataSet().getRenderType() != RenderType.DEFAULT;
-    ConfigurationData<?> configurationData = easyNPC.getEasyNPCConfigurationData();
+    ConfigurationDataCapable<?> configurationData = easyNPC.getEasyNPCConfigurationData();
 
     return switch (configurationType) {
       case MAIN -> configurationData.supportsConfiguration();

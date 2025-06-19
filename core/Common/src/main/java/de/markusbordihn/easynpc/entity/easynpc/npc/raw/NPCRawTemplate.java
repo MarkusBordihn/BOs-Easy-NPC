@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.status.StatusDataType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.synched.SynchedEntityData;
 import de.markusbordihn.easynpc.data.ticker.TickerType;
@@ -36,6 +37,7 @@ import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.EnumMap;
+import java.util.Objects;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -95,6 +97,8 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   }
 
   private final EnumMap<TickerType, Integer> tickerMap = new EnumMap<>(TickerType.class);
+  private final EnumMap<StatusDataType, Boolean> statusDataFlagMap =
+      new EnumMap<>(StatusDataType.class);
   protected MerchantOffers merchantTradingOffers;
   private ServerEntityData serverEntityData;
   private int attackAnimationTick;
@@ -131,6 +135,11 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
   @Override
   public void setTicker(TickerType tickerType, int ticker) {
     this.tickerMap.put(tickerType, ticker);
+  }
+
+  @Override
+  public EnumMap<StatusDataType, Boolean> getStatusDataFlags() {
+    return this.statusDataFlagMap;
   }
 
   @Override
@@ -572,7 +581,7 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
     if (!(object instanceof EasyNPCBase<?> easyNPCBase)) {
       return false;
     }
-    return java.util.Objects.equals(this.getUUID(), easyNPCBase.getEntityUUID());
+    return Objects.equals(this.getUUID(), easyNPCBase.getEntityUUID());
   }
 
   @Override
