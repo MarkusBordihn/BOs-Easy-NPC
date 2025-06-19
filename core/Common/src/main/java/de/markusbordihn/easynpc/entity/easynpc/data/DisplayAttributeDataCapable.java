@@ -31,7 +31,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 
-public interface DisplayAttributeData<E extends PathfinderMob> extends EasyNPC<E> {
+public interface DisplayAttributeDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
 
   static void registerSyncedDisplayAttributeData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {

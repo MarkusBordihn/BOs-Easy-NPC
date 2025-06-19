@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.configui.network.message.server;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.profession.Profession;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionDataCapable;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -75,7 +75,7 @@ public record ChangeProfessionMessage(UUID uuid, Profession profession)
     }
 
     // Validate Profession data.
-    ProfessionData<?> professionData = easyNPC.getEasyNPCProfessionData();
+    ProfessionDataCapable<?> professionData = easyNPC.getEasyNPCProfessionData();
     if (professionData == null) {
       log.error("Invalid profession data for {} from {}", easyNPC, serverPlayer);
       return;

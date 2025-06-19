@@ -39,7 +39,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-public interface NavigationData<T extends PathfinderMob> extends EasyNPC<T> {
+public interface NavigationDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
   String DATA_HOME_TAG = "Home";
   String DATA_NAVIGATION_TAG = "Navigation";
@@ -131,7 +131,7 @@ public interface NavigationData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default void handleNavigationTravelEvent(Vec3 vec3) {
-    TickerData<?> tickerData = this.getEasyNPCTickerData();
+    TickerDataCapable<?> tickerData = this.getEasyNPCTickerData();
 
     // Update basic movement relevant data.
     if (tickerData.checkAndIncreaseTicker(TickerType.TRAVEL_EVENT, TRAVEL_EVENT_TICK)) {
@@ -147,8 +147,8 @@ public interface NavigationData<T extends PathfinderMob> extends EasyNPC<T> {
               && !blockState.is(Blocks.RED_CARPET));
 
       // Allow movement for NPC, if free fall is enabled and synced data are loaded.
-      ObjectiveData<?> objectiveData = this.getEasyNPCObjectiveData();
-      AttributeData<?> attributeData = this.getEasyNPCAttributeData();
+      ObjectiveDataCapable<?> objectiveData = this.getEasyNPCObjectiveData();
+      AttributeDataCapable<?> attributeData = this.getEasyNPCAttributeData();
       if (!objectiveData.hasTravelTargetObjectives()
           && attributeData.getEntityAttributes().getEnvironmentalAttributes().freefall()
           && !mob.onGround()) {

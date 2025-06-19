@@ -25,7 +25,7 @@ import de.markusbordihn.easynpc.configui.client.screen.configuration.Configurati
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
-import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
@@ -153,7 +153,7 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
     this.checkAccess();
 
     // Check if we need to hide the player skin button.
-    ConfigurationData<?> configurationData = this.getEasyNPC().getEasyNPCConfigurationData();
+    ConfigurationDataCapable<?> configurationData = this.getEasyNPC().getEasyNPCConfigurationData();
     if (!configurationData.supportsPlayerSkinConfiguration()) {
       this.urlSkinButton.setX(this.defaultSkinButton.getX() + this.defaultSkinButton.getWidth());
       this.customSkinButton.setX(this.urlSkinButton.getX() + this.urlSkinButton.getWidth());
@@ -162,7 +162,7 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
   }
 
   private void checkAccess() {
-    ConfigurationData<?> configurationData = this.getEasyNPC().getEasyNPCConfigurationData();
+    ConfigurationDataCapable<?> configurationData = this.getEasyNPC().getEasyNPCConfigurationData();
     this.customSkinButton.active =
         this.customSkinButton.active
             && configurationData.supportsSkinConfiguration()

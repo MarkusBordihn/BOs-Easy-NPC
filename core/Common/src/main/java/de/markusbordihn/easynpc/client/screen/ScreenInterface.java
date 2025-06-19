@@ -32,9 +32,9 @@ import de.markusbordihn.easynpc.data.screen.AdditionalScreenData;
 import de.markusbordihn.easynpc.data.screen.ScreenData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
-import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
-import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import java.util.UUID;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -61,7 +61,7 @@ public interface ScreenInterface {
     return getEasyNPC() != null ? getEasyNPC().getLivingEntity() : null;
   }
 
-  default OwnerData<?> getOwnerData() {
+  default OwnerDataCapable<?> getOwnerData() {
     return this.getEasyNPC().getEasyNPCOwnerData();
   }
 
@@ -70,7 +70,7 @@ public interface ScreenInterface {
       return null;
     }
     EasyNPC<?> easyNPC = getEasyNPC();
-    SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
+    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
     return skinData != null ? skinData.getSkinModel() : null;
   }
 
@@ -102,7 +102,7 @@ public interface ScreenInterface {
     return this.getAdditionalScreenData().getBaseAttributes();
   }
 
-  default ConfigurationData<?> getConfigurationData() {
+  default ConfigurationDataCapable<?> getConfigurationData() {
     return this.getEasyNPC().getEasyNPCConfigurationData();
   }
 

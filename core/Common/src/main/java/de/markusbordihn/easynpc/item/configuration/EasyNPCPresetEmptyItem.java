@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.access.AccessManager;
 import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntity;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
+import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.List;
 import java.util.Optional;
@@ -105,7 +105,7 @@ public class EasyNPCPresetEmptyItem extends Item {
 
   private ItemStack createPresetItemStack(EasyNPC<?> easyNPC) {
     // Get preset data from EasyNPC
-    PresetData<?> presetData = easyNPC.getEasyNPCPresetData();
+    PresetDataCapable<?> presetData = easyNPC.getEasyNPCPresetData();
     if (presetData == null) {
       log.error("Can't export preset data from {}", easyNPC);
       return ItemStack.EMPTY;

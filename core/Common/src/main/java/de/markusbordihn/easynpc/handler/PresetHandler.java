@@ -22,10 +22,10 @@ package de.markusbordihn.easynpc.handler;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
-import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
-import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
-import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
 import java.io.File;
@@ -94,14 +94,14 @@ public class PresetHandler {
     }
 
     // Set owner, if owner is provided.
-    OwnerData<?> ownerData = easyNPC.getEasyNPCOwnerData();
+    OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
     if (serverPlayer != null && ownerData != null) {
       ownerData.setOwner(serverPlayer);
     }
 
     // Set home position, if spawn position was provided.
     if (position != null) {
-      NavigationData<?> navigationData = easyNPC.getEasyNPCNavigationData();
+      NavigationDataCapable<?> navigationData = easyNPC.getEasyNPCNavigationData();
       if (navigationData == null) {
         log.warn(
             "[{}] Warning: Importing preset, no navigation data available for {}",
@@ -167,7 +167,7 @@ public class PresetHandler {
     }
 
     // Import preset data
-    PresetData<?> presetData = easyNPCEntity.getEasyNPCPresetData();
+    PresetDataCapable<?> presetData = easyNPCEntity.getEasyNPCPresetData();
     if (presetData == null) {
       log.error(
           "[{}] Error importing preset, no preset data available for {}",
@@ -217,7 +217,7 @@ public class PresetHandler {
   }
 
   public static boolean exportCustomPreset(EasyNPC<?> easyNPC, String name) {
-    SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
+    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
     if (skinData == null) {
       log.warn("[{}] Error no skin data available!", easyNPC);
       return false;
@@ -350,7 +350,7 @@ public class PresetHandler {
   }
 
   public static boolean exportWorldPreset(EasyNPC<?> easyNPC, String name) {
-    SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
+    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
     if (skinData == null) {
       log.warn("[{}] Error no skin data available!", easyNPC);
       return false;
@@ -366,7 +366,7 @@ public class PresetHandler {
       return false;
     }
 
-    PresetData<?> presetData = easyNPC.getEasyNPCPresetData();
+    PresetDataCapable<?> presetData = easyNPC.getEasyNPCPresetData();
     if (presetData == null) {
       log.error("[{}] Error no preset data available!", easyNPC);
       return false;

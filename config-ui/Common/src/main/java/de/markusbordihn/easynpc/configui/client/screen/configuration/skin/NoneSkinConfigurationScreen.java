@@ -23,8 +23,8 @@ import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.skin.SkinType;
-import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
-import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
 import java.util.UUID;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -50,13 +50,11 @@ public class NoneSkinConfigurationScreen<T extends ConfigurationMenu>
     setDescriptionText("disable_skin.text");
 
     // Skin data and variant
-    SkinData<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
-    VariantData<?> variantData = this.getEasyNPC().getEasyNPCVariantData();
+    SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
+    VariantDataCapable<?> variantData = this.getEasyNPC().getEasyNPCVariantData();
 
     // Former skin type and variant
     SkinType formerSkinType = skinData.getSkinType();
-    String formerSkinName = skinData.getSkinName();
-    String formerSkinURL = skinData.getSkinURL();
     UUID formerSkinUUID = skinData.getSkinUUID();
     Enum<?> formerVariant = variantData.getVariantType();
 

@@ -23,11 +23,8 @@ import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.menu.editor.EditorMenu;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.editor.EditorType;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
 import java.util.EnumMap;
 import java.util.Map;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
@@ -136,31 +133,6 @@ public class MenuHandler implements MenuHandlerInterface {
     editorMenuMap.put(EditorType.DIALOG, ModMenuTypes.DIALOG_EDITOR_MENU.get());
     editorMenuMap.put(EditorType.DIALOG_BUTTON, ModMenuTypes.DIALOG_BUTTON_EDITOR_MENU.get());
     editorMenuMap.put(EditorType.DIALOG_TEXT, ModMenuTypes.DIALOG_TEXT_EDITOR_MENU.get());
-  }
-
-  private static boolean hasPermissions(
-      ServerPlayer serverPlayer,
-      EasyNPC<?> easyNPC,
-      Boolean enabled,
-      Boolean allowInCreative,
-      int permissionLevel) {
-    OwnerData<?> ownerData = easyNPC.getEasyNPCOwnerData();
-    if (Boolean.FALSE.equals(enabled) || serverPlayer == null) {
-      return false;
-    } else if (Boolean.TRUE.equals(allowInCreative) && serverPlayer.isCreative()) {
-      return true;
-    } else if (!ownerData.hasOwner() || !ownerData.isOwner(serverPlayer)) {
-      return false;
-    } else return serverPlayer.hasPermissions(permissionLevel);
-  }
-
-  public static Map<ConfigurationType, MenuType<? extends ConfigurationMenu>>
-      configurationMenuMap() {
-    return configurationMenuMap;
-  }
-
-  public static Map<EditorType, MenuType<? extends EditorMenu>> editorMenuMap() {
-    return editorMenuMap;
   }
 
   @Override

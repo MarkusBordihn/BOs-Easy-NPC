@@ -22,8 +22,8 @@ package de.markusbordihn.easynpc.configui.network.message.server;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
-import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -90,14 +90,14 @@ public record SaveDialogButtonMessage(
     }
 
     // Validate dialog data.
-    DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
+    DialogDataCapable<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData == null) {
       log.error("Invalid dialog data for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
     // Validate action event data.
-    ActionEventData<?> actionEventData = easyNPC.getEasyNPCActionEventData();
+    ActionEventDataCapable<?> actionEventData = easyNPC.getEasyNPCActionEventData();
     if (actionEventData == null) {
       log.error("Invalid action data for {} from {}", easyNPC, serverPlayer);
       return;

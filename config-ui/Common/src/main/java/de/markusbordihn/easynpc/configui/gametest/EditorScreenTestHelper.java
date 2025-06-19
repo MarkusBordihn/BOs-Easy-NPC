@@ -26,7 +26,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
+import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.gametest.GameTestHelpers;
 import java.util.UUID;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -49,7 +49,7 @@ public class EditorScreenTestHelper {
       MenuType<? extends EditorMenu> menuType) {
 
     // Check if the dialog data is null and create a basic dialog if needed.
-    DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
+    DialogDataCapable<?> dialogData = easyNPC.getEasyNPCDialogData();
     if (dialogData != null) {
       DialogDataSet dialogDataSet = DialogUtils.getBasicDialog("Test Dialog");
       dialogData.setDialogDataSet(dialogDataSet);

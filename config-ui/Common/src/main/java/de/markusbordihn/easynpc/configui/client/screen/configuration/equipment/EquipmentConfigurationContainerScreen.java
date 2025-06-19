@@ -26,7 +26,7 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.ConfigurationContainerScreen;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -45,7 +45,7 @@ public class EquipmentConfigurationContainerScreen<T extends ConfigurationMenu>
   }
 
   private void createVisibleEquipmentSlotCheckbox(int left, int top, EquipmentSlot equipmentSlot) {
-    ModelData<?> modelData = this.getEasyNPC().getEasyNPCModelData();
+    ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
     boolean modelEquipmentVisibility = modelData.getModelPartVisibility(equipmentSlot);
     this.addRenderableWidget(
         new Checkbox(
@@ -77,7 +77,7 @@ public class EquipmentConfigurationContainerScreen<T extends ConfigurationMenu>
 
     // Equipment Slots
     int slotPositionTop = this.contentTopPos + 20;
-    ModelData<?> modelData = this.getEasyNPC().getEasyNPCModelData();
+    ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
     if (modelData.canUseArmor()) {
       int equipmentSlotLeft = this.contentLeftPos + 75;
       this.createVisibleEquipmentSlotCheckbox(
@@ -118,7 +118,7 @@ public class EquipmentConfigurationContainerScreen<T extends ConfigurationMenu>
     int slotPositionTop = this.contentTopPos + 20;
 
     // Armors Slots Left
-    ModelData<?> modelData = this.getEasyNPC().getEasyNPCModelData();
+    ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
     if (modelData == null || modelData.canUseArmor()) {
       Graphics.blit(
           guiGraphics,

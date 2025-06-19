@@ -33,7 +33,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 
-public interface ProfessionData<T extends PathfinderMob> extends EasyNPC<T> {
+public interface ProfessionDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
   String DATA_PROFESSION_TAG = "Profession";
 

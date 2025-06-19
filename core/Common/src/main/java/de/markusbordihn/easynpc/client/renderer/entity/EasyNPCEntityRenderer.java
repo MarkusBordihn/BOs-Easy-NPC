@@ -25,7 +25,7 @@ import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.ResourceLocation;
 
@@ -39,15 +39,15 @@ public interface EasyNPCEntityRenderer {
 
   ResourceLocation getDefaultTexture();
 
-  default ResourceLocation getCustomTexture(final SkinData<?> entity) {
+  default ResourceLocation getCustomTexture(final SkinDataCapable<?> entity) {
     return CustomTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
   }
 
-  default ResourceLocation getPlayerTexture(final SkinData<?> entity) {
+  default ResourceLocation getPlayerTexture(final SkinDataCapable<?> entity) {
     return PlayerTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
   }
 
-  default ResourceLocation getRemoteTexture(final SkinData<?> entity) {
+  default ResourceLocation getRemoteTexture(final SkinDataCapable<?> entity) {
     return RemoteTextureManager.getOrCreateTextureWithDefault(entity, getDefaultTexture());
   }
 
@@ -56,7 +56,7 @@ public interface EasyNPCEntityRenderer {
   }
 
   default ResourceLocation getEntityTexture(final EasyNPC<?> easyNPC) {
-    SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
+    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
     return switch (skinData.getSkinType()) {
       case NONE -> Constants.BLANK_ENTITY_TEXTURE;
       case CUSTOM -> getCustomTexture(skinData);
@@ -66,7 +66,7 @@ public interface EasyNPCEntityRenderer {
   }
 
   default ResourceLocation getEntityPlayerTexture(final EasyNPC<?> easyNPC) {
-    SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
+    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
     return switch (skinData.getSkinType()) {
       case NONE -> Constants.BLANK_ENTITY_TEXTURE;
       case CUSTOM -> getCustomTexture(skinData);

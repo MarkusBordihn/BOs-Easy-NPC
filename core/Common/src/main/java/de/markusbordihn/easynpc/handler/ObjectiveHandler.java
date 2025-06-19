@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.handler;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -45,7 +45,7 @@ public class ObjectiveHandler {
       return false;
     }
 
-    ObjectiveData<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
+    ObjectiveDataCapable<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
     if (objectiveData == null) {
       log.error("[{}] No objective data available!", easyNPC);
       return false;
@@ -74,7 +74,7 @@ public class ObjectiveHandler {
       return false;
     }
 
-    ObjectiveData<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
+    ObjectiveDataCapable<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
     if (objectiveData == null) {
       log.error("[{}] No objective data available!", easyNPC);
       return false;

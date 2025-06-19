@@ -2,8 +2,8 @@ package de.markusbordihn.easynpc.entity.easynpc.handlers;
 
 import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.TickerData;
-import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
+import de.markusbordihn.easynpc.entity.easynpc.data.TickerDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 
@@ -16,7 +16,7 @@ public interface BaseTickHandler<E extends PathfinderMob> extends EasyNPC<E> {
   default void handleBaseTick() {
     this.getProfiler().push("npcBaseTick");
 
-    TickerData<E> tickerData = this.getEasyNPCTickerData();
+    TickerDataCapable<E> tickerData = this.getEasyNPCTickerData();
     if (tickerData.checkAndIncreaseTicker(TickerType.BASE_TICK, BASE_TICK)) {
       Entity entity = this.getEntity();
 
@@ -33,7 +33,7 @@ public interface BaseTickHandler<E extends PathfinderMob> extends EasyNPC<E> {
 
       // Check if we have a trading inventory and update it.
       if (tickerData.checkAndIncreaseTicker(TickerType.TRADING_BASE_TICK, TRADING_BASE_TICK)) {
-        TradingData<E> tradingData = this.getEasyNPCTradingData();
+        TradingDataCapable<E> tradingData = this.getEasyNPCTradingData();
         if (tradingData.hasTradingData()) {
           actionHandler.checkTradingActions();
         }

@@ -24,7 +24,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
+import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.commands.CommandSourceStack;
@@ -40,7 +40,7 @@ public class VariantSuggestions {
     if (easyNPC == null) {
       return SharedSuggestionProvider.suggest(new String[0], build);
     }
-    VariantData<?> variantData = easyNPC.getEasyNPCVariantData();
+    VariantDataCapable<?> variantData = easyNPC.getEasyNPCVariantData();
     if (variantData == null) {
       return SharedSuggestionProvider.suggest(new String[0], build);
     }

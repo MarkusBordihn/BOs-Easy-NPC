@@ -8,7 +8,7 @@ import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.client.renderer.manager.RendererManager;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.RenderData;
+import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.npc.custom.Doppler.VariantType;
 import java.util.EnumMap;
 import java.util.Map;
@@ -88,7 +88,7 @@ public class DopplerRenderer
     }
 
     // Get render data.
-    RenderData<?> renderData = easyNPC.getEasyNPCRenderData();
+    RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
     if (renderData == null
         || renderData.getRenderDataSet() == null
         || renderData.getRenderDataSet().getRenderType() != RenderType.CUSTOM_ENTITY) {

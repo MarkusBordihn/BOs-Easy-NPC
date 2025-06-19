@@ -21,8 +21,8 @@ package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
-import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -57,7 +57,7 @@ public class LivingEntityManager {
     npcEntityMap.put(uuid, easyNPC);
 
     // Add Easy NPC to preset map if available.
-    PresetData<?> presetData = easyNPC.getEasyNPCPresetData();
+    PresetDataCapable<?> presetData = easyNPC.getEasyNPCPresetData();
     if (presetData != null && presetData.hasPresetUUID()) {
       UUID presetUUID = presetData.getPresetUUID();
       Set<EasyNPC<?>> easyNPCSet =
@@ -84,7 +84,7 @@ public class LivingEntityManager {
     npcEntityMap.remove(easyNPC.getEntityUUID());
 
     // Remove Easy NPC from preset map if available.
-    PresetData<?> presetData = easyNPC.getEasyNPCPresetData();
+    PresetDataCapable<?> presetData = easyNPC.getEasyNPCPresetData();
     if (presetData != null && presetData.hasPresetUUID()) {
       UUID presetUUID = presetData.getPresetUUID();
       Set<EasyNPC<?>> easyNPCSet =
@@ -227,7 +227,7 @@ public class LivingEntityManager {
     HashMap<UUID, Entity> result = new HashMap<>();
     for (var entry : npcEntityMap.entrySet()) {
       EasyNPC<?> easyNPC = entry.getValue();
-      if (easyNPC instanceof OwnerData<?> ownerData && ownerData.isOwner(ownerUUID)) {
+      if (easyNPC instanceof OwnerDataCapable<?> ownerData && ownerData.isOwner(ownerUUID)) {
         result.put(entry.getKey(), easyNPC.getEntity());
       }
     }
@@ -256,7 +256,7 @@ public class LivingEntityManager {
     }
 
     // Perform more specific checks
-    if (entity instanceof EasyNPC<?> easyNPC && easyNPC instanceof OwnerData<?> ownerData) {
+    if (entity instanceof EasyNPC<?> easyNPC && easyNPC instanceof OwnerDataCapable<?> ownerData) {
       UUID uuid = ownerData.getOwnerUUID();
       return uuid != null && uuid.equals(serverPlayer.getUUID());
     }

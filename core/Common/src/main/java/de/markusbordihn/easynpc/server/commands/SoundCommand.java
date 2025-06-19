@@ -27,7 +27,7 @@ import de.markusbordihn.easynpc.commands.suggestion.SoundTypeSuggestions;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.SoundData;
+import de.markusbordihn.easynpc.entity.easynpc.data.SoundDataCapable;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
@@ -71,7 +71,7 @@ public class SoundCommand extends Command {
     }
 
     // Verify sound data
-    SoundData<?> soundData = easyNPC.getEasyNPCSoundData();
+    SoundDataCapable<?> soundData = easyNPC.getEasyNPCSoundData();
     if (soundData == null) {
       return sendFailureMessageNoSoundData(context, easyNPC);
     }

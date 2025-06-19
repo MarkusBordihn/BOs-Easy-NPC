@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.model.ModelPartType;
-import de.markusbordihn.easynpc.data.scale.CustomScale;
+import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
@@ -34,24 +34,23 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 
-public interface ModelScaleData<T extends PathfinderMob> extends EasyNPC<T> {
+public interface ModelPositionDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
-  CustomScale DEFAULT_MODEL_PART_SCALE = new CustomScale(1, 1, 1);
-  CustomScale DEFAULT_MODEL_SCALE = new CustomScale(1, 1, 1);
-  String EASY_NPC_DATA_MODEL_SCALE_TAG = "Scale";
+  CustomPosition DEFAULT_MODEL_PART_POSITION = new CustomPosition(0, 0, 0);
+  String EASY_NPC_DATA_MODEL_POSITION_TAG = "Position";
 
-  StreamCodec<RegistryFriendlyByteBuf, Map<ModelPartType, CustomScale>>
-      MODEL_PART_SCALE_STREAM_CODEC =
+  StreamCodec<RegistryFriendlyByteBuf, Map<ModelPartType, CustomPosition>>
+      MODEL_PART_POSITION_STREAM_CODEC =
           new StreamCodec<>() {
             @Override
-            public Map<ModelPartType, CustomScale> decode(
+            public Map<ModelPartType, CustomPosition> decode(
                 RegistryFriendlyByteBuf registryFriendlyByteBuf) {
               CompoundTag compoundTag = registryFriendlyByteBuf.readNbt();
-              Map<ModelPartType, CustomScale> modelPartMap = new EnumMap<>(ModelPartType.class);
+              Map<ModelPartType, CustomPosition> modelPartMap = new EnumMap<>(ModelPartType.class);
               for (String key : compoundTag.getAllKeys()) {
                 ModelPartType modelPartType = ModelPartType.get(key);
                 if (modelPartType != null) {
-                  modelPartMap.put(modelPartType, new CustomScale(modelPartType, compoundTag));
+                  modelPartMap.put(modelPartType, new CustomPosition(modelPartType, compoundTag));
                 }
               }
               return modelPartMap;
@@ -60,56 +59,56 @@ public interface ModelScaleData<T extends PathfinderMob> extends EasyNPC<T> {
             @Override
             public void encode(
                 RegistryFriendlyByteBuf registryFriendlyByteBuf,
-                Map<ModelPartType, CustomScale> modelPartMap) {
+                Map<ModelPartType, CustomPosition> modelPartMap) {
               CompoundTag compoundTag = new CompoundTag();
-              for (Map.Entry<ModelPartType, CustomScale> entry : modelPartMap.entrySet()) {
+              for (Map.Entry<ModelPartType, CustomPosition> entry : modelPartMap.entrySet()) {
                 compoundTag.put(entry.getKey().getTagName(), entry.getValue().save());
               }
               registryFriendlyByteBuf.writeNbt(compoundTag);
             }
           };
 
-  static void registerSyncedModelScaleData(
+  static void registerSyncedModelPositionData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("Registering Synched Model Scale Data for {}.", entityClass.getSimpleName());
+    log.info("Registering Synched Model Position Data for {}.", entityClass.getSimpleName());
     map.put(
-        SynchedDataIndex.MODEL_SCALE,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.MODEL_PART_SCALE));
+        SynchedDataIndex.MODEL_POSITION,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.MODEL_PART_POSITION));
   }
 
-  default EnumMap<ModelPartType, CustomScale> getModelPartScale() {
-    EnumMap<ModelPartType, CustomScale> modelPartMap =
-        getSynchedEntityData(SynchedDataIndex.MODEL_SCALE);
+  default EnumMap<ModelPartType, CustomPosition> getModelPartPosition() {
+    EnumMap<ModelPartType, CustomPosition> modelPartMap =
+        getSynchedEntityData(SynchedDataIndex.MODEL_POSITION);
     if (modelPartMap == null) {
       modelPartMap = new EnumMap<>(ModelPartType.class);
-      setModelPartScale(modelPartMap);
+      setModelPartPosition(modelPartMap);
     }
     return modelPartMap;
   }
 
-  default void setModelPartScale(EnumMap<ModelPartType, CustomScale> modelPartMap) {
+  default void setModelPartPosition(EnumMap<ModelPartType, CustomPosition> modelPartMap) {
     if (modelPartMap != null) {
-      setSynchedEntityData(SynchedDataIndex.MODEL_SCALE, modelPartMap);
+      setSynchedEntityData(SynchedDataIndex.MODEL_POSITION, modelPartMap);
     }
   }
 
-  default CustomScale getModelPartScale(ModelPartType modelPartType) {
-    EnumMap<ModelPartType, CustomScale> modelPartMap = getModelPartScale();
-    return modelPartMap.getOrDefault(modelPartType, DEFAULT_MODEL_PART_SCALE);
+  default CustomPosition getModelPartPosition(ModelPartType modelPartType) {
+    EnumMap<ModelPartType, CustomPosition> modelPartMap = getModelPartPosition();
+    return modelPartMap.getOrDefault(modelPartType, DEFAULT_MODEL_PART_POSITION);
   }
 
-  default void setModelPartScale(ModelPartType modelPartType, CustomScale Scale) {
-    EnumMap<ModelPartType, CustomScale> modelPartMap = getModelPartScale();
+  default void setModelPartPosition(ModelPartType modelPartType, CustomPosition Position) {
+    EnumMap<ModelPartType, CustomPosition> modelPartMap = getModelPartPosition();
     if (modelPartType != null) {
-      modelPartMap.put(modelPartType, Scale);
-      setSynchedEntityData(SynchedDataIndex.MODEL_SCALE, new EnumMap<>(ModelPartType.class));
-      setSynchedEntityData(SynchedDataIndex.MODEL_SCALE, modelPartMap);
+      modelPartMap.put(modelPartType, Position);
+      setSynchedEntityData(SynchedDataIndex.MODEL_POSITION, new EnumMap<>(ModelPartType.class));
+      setSynchedEntityData(SynchedDataIndex.MODEL_POSITION, modelPartMap);
     }
   }
 
-  default boolean hasChangedModelScale() {
-    EnumMap<ModelPartType, CustomScale> modelPartMap = getModelPartScale();
-    for (Map.Entry<ModelPartType, CustomScale> entry : modelPartMap.entrySet()) {
+  default boolean hasChangedModelPosition() {
+    EnumMap<ModelPartType, CustomPosition> modelPartMap = getModelPartPosition();
+    for (Map.Entry<ModelPartType, CustomPosition> entry : modelPartMap.entrySet()) {
       if (entry.getValue().hasChanged()) {
         return true;
       }
@@ -117,38 +116,34 @@ public interface ModelScaleData<T extends PathfinderMob> extends EasyNPC<T> {
     return false;
   }
 
-  default CustomScale getDefaultModelScale() {
-    return DEFAULT_MODEL_SCALE;
-  }
-
-  default void defineSynchedModelScaleData(SynchedEntityData.Builder builder) {
+  default void defineSynchedModelPositionData(SynchedEntityData.Builder builder) {
     defineSynchedEntityData(
-        builder, SynchedDataIndex.MODEL_SCALE, new EnumMap<>(ModelPartType.class));
+        builder, SynchedDataIndex.MODEL_POSITION, new EnumMap<>(ModelPartType.class));
   }
 
-  default void addAdditionalModelScaleData(CompoundTag compoundTag) {
+  default void addAdditionalModelPositionData(CompoundTag compoundTag) {
     CompoundTag positionsTag = new CompoundTag();
-    EnumMap<ModelPartType, CustomScale> modelPartMap = getModelPartScale();
-    for (Map.Entry<ModelPartType, CustomScale> entry : modelPartMap.entrySet()) {
+    EnumMap<ModelPartType, CustomPosition> modelPartMap = getModelPartPosition();
+    for (Map.Entry<ModelPartType, CustomPosition> entry : modelPartMap.entrySet()) {
       positionsTag.put(entry.getKey().getTagName(), entry.getValue().save());
     }
-    compoundTag.put(EASY_NPC_DATA_MODEL_SCALE_TAG, positionsTag);
+    compoundTag.put(EASY_NPC_DATA_MODEL_POSITION_TAG, positionsTag);
   }
 
-  default void readAdditionalModelScaleData(CompoundTag compoundTag) {
-    if (!compoundTag.contains(EASY_NPC_DATA_MODEL_SCALE_TAG)) {
+  default void readAdditionalModelPositionData(CompoundTag compoundTag) {
+    if (!compoundTag.contains(EASY_NPC_DATA_MODEL_POSITION_TAG)) {
       return;
     }
-    CompoundTag positionTag = compoundTag.getCompound(EASY_NPC_DATA_MODEL_SCALE_TAG);
-    EnumMap<ModelPartType, CustomScale> modelPartMap = new EnumMap<>(ModelPartType.class);
+    CompoundTag positionTag = compoundTag.getCompound(EASY_NPC_DATA_MODEL_POSITION_TAG);
+    EnumMap<ModelPartType, CustomPosition> modelPartMap = new EnumMap<>(ModelPartType.class);
     for (String key : positionTag.getAllKeys()) {
       ModelPartType modelPartType = ModelPartType.get(key);
       if (modelPartType != null) {
-        modelPartMap.put(modelPartType, new CustomScale(modelPartType, positionTag));
+        modelPartMap.put(modelPartType, new CustomPosition(modelPartType, positionTag));
       }
     }
     if (!modelPartMap.isEmpty()) {
-      setModelPartScale(modelPartMap);
+      setModelPartPosition(modelPartMap);
     }
   }
 }

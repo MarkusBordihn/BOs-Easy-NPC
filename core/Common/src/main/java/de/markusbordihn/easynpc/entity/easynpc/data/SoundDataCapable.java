@@ -37,7 +37,7 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-public interface SoundData<E extends PathfinderMob> extends EasyNPC<E> {
+public interface SoundDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
 
   String EASY_NPC_DATA_SOUND_DATA_TAG = "SoundData";
 
@@ -97,7 +97,7 @@ public interface SoundData<E extends PathfinderMob> extends EasyNPC<E> {
   }
 
   default void playDefaultAmbientSound() {
-    OwnerData<E> ownerData = this.getEasyNPCOwnerData();
+    OwnerDataCapable<E> ownerData = this.getEasyNPCOwnerData();
     if (ownerData != null && ownerData.hasOwner()) {
       if (hasDefaultSound(SoundType.AMBIENT_TAMED) && EasyNPC.randomNumber.nextInt(4) == 0) {
         this.playDefaultSound(SoundType.AMBIENT_TAMED);
@@ -158,6 +158,8 @@ public interface SoundData<E extends PathfinderMob> extends EasyNPC<E> {
     SoundDataSet soundDataSet = this.getSoundDataSet();
     if (soundDataSet == null || soundDataSet.isEmpty()) {
       this.setSoundDataSet(this.getDefaultSoundDataSet(new SoundDataSet(), variant.name()));
+    } else if (soundDataSet.isEmpty()) {
+      this.setSoundDataSet(this.getDefaultSoundDataSet(soundDataSet, variant.name()));
     }
   }
 
@@ -168,7 +170,7 @@ public interface SoundData<E extends PathfinderMob> extends EasyNPC<E> {
     if (soundDataSet != null && !soundDataSet.isEmpty()) {
       soundDataSet.save(soundDataTag);
     } else {
-      VariantData<E> variantData = this.getEasyNPCVariantData();
+      VariantDataCapable<E> variantData = this.getEasyNPCVariantData();
       SoundDataSet defaultSoundDataSet =
           this.getDefaultSoundDataSet(
               new SoundDataSet(), variantData != null ? variantData.getVariantType().name() : "");

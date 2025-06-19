@@ -34,9 +34,9 @@ import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.render.RenderDataSet;
 import de.markusbordihn.easynpc.data.skin.SkinType;
-import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
-import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
-import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import java.util.LinkedHashMap;
@@ -151,7 +151,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     guiGraphics.pose().translate(0, 0, 100);
 
     // Entity Owner, if available.
-    OwnerData<?> ownerData = getEasyNPC().getEasyNPCOwnerData();
+    OwnerDataCapable<?> ownerData = getEasyNPC().getEasyNPCOwnerData();
     if (ownerData != null) {
       Text.drawString(
           guiGraphics,
@@ -162,7 +162,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     }
 
     // Home position
-    NavigationData<?> navigationData = getEasyNPC().getEasyNPCNavigationData();
+    NavigationDataCapable<?> navigationData = getEasyNPC().getEasyNPCNavigationData();
     if (navigationData != null && navigationData.hasHomePosition()) {
       BlockPos blockPos = navigationData.getHomePosition();
       Text.drawString(
@@ -353,7 +353,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
   }
 
   protected void defineEditSkinButton() {
-    SkinData<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
+    SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
     if (skinData == null) {
       return;
     }

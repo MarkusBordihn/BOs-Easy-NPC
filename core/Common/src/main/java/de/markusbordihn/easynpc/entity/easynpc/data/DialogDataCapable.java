@@ -34,7 +34,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.PathfinderMob;
 
-public interface DialogData<T extends PathfinderMob> extends EasyNPC<T> {
+public interface DialogDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
   ServerDataAccessor<DialogDataSet> CUSTOM_DATA_DIALOG_DATA_SET =
       ServerEntityData.defineId(

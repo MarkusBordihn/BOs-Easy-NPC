@@ -17,22 +17,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.easynpc.data;
+package de.markusbordihn.easynpc.data.status;
 
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import net.minecraft.world.entity.PathfinderMob;
+import java.util.Locale;
 
-public interface GuiData<E extends PathfinderMob> extends EasyNPC<E> {
+public enum StatusDataType {
+  FINALIZED;
 
-  default int getEntityGuiScaling() {
-    return 45;
+  public static StatusDataType get(String statusDataType) {
+    if (statusDataType == null || statusDataType.isEmpty()) {
+      return null;
+    }
+    try {
+      return StatusDataType.valueOf(statusDataType.toUpperCase(Locale.ROOT));
+    } catch (IllegalArgumentException e) {
+      return null;
+    }
   }
 
-  default int getEntityGuiTop() {
-    return 0;
-  }
-
-  default int getEntityGuiLeft() {
-    return 0;
+  public String getTagName() {
+    return this.name().toLowerCase(Locale.ROOT);
   }
 }

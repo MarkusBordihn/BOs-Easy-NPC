@@ -36,7 +36,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.PathfinderMob;
 
-public interface ActionEventData<E extends PathfinderMob> extends EasyNPC<E> {
+public interface ActionEventDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
 
   ServerDataAccessor<ActionEventSet> CUSTOM_DATA_ACTION_EVENT_SET =
       ServerEntityData.defineId(
@@ -131,11 +131,6 @@ public interface ActionEventData<E extends PathfinderMob> extends EasyNPC<E> {
     // Read permission level
     if (actionDataTag.contains(DATA_ACTION_PERMISSION_LEVEL_TAG)) {
       this.setActionPermissionLevel(actionDataTag.getInt(DATA_ACTION_PERMISSION_LEVEL_TAG));
-    }
-
-    // Check for latency action event data from 4.x and force adding default action events.
-    if (getNPCDataVersion() < 3) {
-      this.registerDefaultActionInteractionEvents();
     }
   }
 

@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.configui.network.message.server;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.trading.TradingValueType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
+import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -103,7 +103,7 @@ public record ChangeAdvancedTradingMessage(
     }
 
     // Validate trading data
-    TradingData<?> tradingData = easyNPC.getEasyNPCTradingData();
+    TradingDataCapable<?> tradingData = easyNPC.getEasyNPCTradingData();
     if (tradingData == null) {
       log.error("Trading data for {} is not available for {}", easyNPC, serverPlayer);
       return;

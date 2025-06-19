@@ -19,45 +19,53 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
-import de.markusbordihn.easynpc.data.attribute.CustomAttributes;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
 import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.monster.CrossbowAttackMob;
+import net.minecraft.world.entity.monster.RangedAttackMob;
 
-public interface CustomAttributeData<E extends PathfinderMob> extends EasyNPC<E> {
+public interface AttackDataCapable<E extends PathfinderMob>
+    extends EasyNPC<E>, NeutralMob, RangedAttackMob, CrossbowAttackMob {
 
-  static void registerSyncedCustomAttributeData(
+  static void registerSyncedAttackData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
-    log.info("- Registering Synched Custom Attribute Data for {}.", entityClass.getSimpleName());
+    log.info("- Registering Synched Attack Data for {}.", entityClass.getSimpleName());
     map.put(
-        SynchedDataIndex.CUSTOM_ATTRIBUTES,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.CUSTOM_ATTRIBUTES));
+        SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW,
+        SynchedEntityData.defineId(entityClass, EntityDataSerializers.BOOLEAN));
   }
 
-  default void defineSynchedCustomAttributeData(SynchedEntityData.Builder builder) {
-    defineSynchedEntityData(builder, SynchedDataIndex.CUSTOM_ATTRIBUTES, new CustomAttributes());
+  int getAttackAnimationTick();
+
+  default boolean isChargingCrossbow() {
+    return getSynchedEntityData(SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW);
   }
 
-  default CustomAttributes getCustomAttributes() {
-    return this.getSynchedEntityData(SynchedDataIndex.CUSTOM_ATTRIBUTES);
+  @Override
+  default void setChargingCrossbow(boolean isCharging) {
+    setSynchedEntityData(SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW, isCharging);
   }
 
-  default void setCustomAttributes(CustomAttributes customAttributes) {
-    this.setSynchedEntityData(SynchedDataIndex.CUSTOM_ATTRIBUTES, customAttributes);
+  @Override
+  default void performRangedAttack(LivingEntity livingEntity, float damage) {
+    AttackHandler.performDefaultRangedAttack(this.getLivingEntity(), livingEntity, damage);
   }
 
-  default void addAdditionalCustomAttributeData(CompoundTag compoundTag) {
-    CustomAttributes customAttributes = this.getCustomAttributes();
-    customAttributes.save(compoundTag);
+  default void defineSynchedAttackData(SynchedEntityData.Builder builder) {
+    defineSynchedEntityData(builder, SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW, false);
   }
 
-  default void readAdditionalCustomAttributeData(CompoundTag compoundTag) {
-    this.setCustomAttributes(new CustomAttributes(compoundTag));
-  }
+  default void addAdditionalAttackData(CompoundTag compoundTag) {}
+
+  default void readAdditionalAttackData(CompoundTag compoundTag) {}
 }

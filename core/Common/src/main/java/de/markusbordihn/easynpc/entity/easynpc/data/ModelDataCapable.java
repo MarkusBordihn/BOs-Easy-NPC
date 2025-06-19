@@ -37,12 +37,12 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemStack;
 
-public interface ModelData<T extends PathfinderMob>
+public interface ModelDataCapable<T extends PathfinderMob>
     extends EasyNPC<T>,
-        ModelPositionData<T>,
-        ModelRotationData<T>,
-        ModelScaleData<T>,
-        ModelVisibilityData<T> {
+        ModelPositionDataCapable<T>,
+        ModelRotationDataCapable<T>,
+        ModelScaleDataCapable<T>,
+        ModelVisibilityDataCapable<T> {
 
   String EASY_NPC_DATA_MODEL_DATA_TAG = "ModelData";
   String EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG = "DefaultPose";
@@ -54,10 +54,10 @@ public interface ModelData<T extends PathfinderMob>
     map.put(
         SynchedDataIndex.MODEL_POSE,
         SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.MODEL_POSE));
-    ModelPositionData.registerSyncedModelPositionData(map, entityClass);
-    ModelRotationData.registerSyncedModelRotationData(map, entityClass);
-    ModelScaleData.registerSyncedModelScaleData(map, entityClass);
-    ModelVisibilityData.registerSyncedModelVisibilityData(map, entityClass);
+    ModelPositionDataCapable.registerSyncedModelPositionData(map, entityClass);
+    ModelRotationDataCapable.registerSyncedModelRotationData(map, entityClass);
+    ModelScaleDataCapable.registerSyncedModelScaleData(map, entityClass);
+    ModelVisibilityDataCapable.registerSyncedModelVisibilityData(map, entityClass);
   }
 
   default Pose getDefaultPose() {
@@ -94,7 +94,7 @@ public interface ModelData<T extends PathfinderMob>
     }
 
     // Crossbow arm pose
-    AttackData<?> attackData = this.getEasyNPCAttackData();
+    AttackDataCapable<?> attackData = this.getEasyNPCAttackData();
     if (AttackHandler.isCrossbowWeapon(itemStack)) {
       if (attackData.isChargingCrossbow()) {
         return ModelArmPose.CROSSBOW_CHARGE;

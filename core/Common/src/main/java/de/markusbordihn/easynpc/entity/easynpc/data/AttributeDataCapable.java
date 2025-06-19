@@ -32,7 +32,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 
-public interface AttributeData<E extends PathfinderMob> extends EasyNPC<E> {
+public interface AttributeDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
 
   static void registerSyncedAttributeData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {

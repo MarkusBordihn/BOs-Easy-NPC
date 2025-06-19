@@ -41,7 +41,7 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 
-public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
+public interface ObjectiveDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
   ServerDataAccessor<ObjectiveDataSet> CUSTOM_DATA_OBJECTIVE_DATA_SET =
       ServerEntityData.defineId(
@@ -314,7 +314,7 @@ public interface ObjectiveData<T extends PathfinderMob> extends EasyNPC<T> {
   }
 
   default void handleCustomObjectiveBaseTick() {
-    TickerData<?> tickerData = this.getEasyNPCTickerData();
+    TickerDataCapable<?> tickerData = this.getEasyNPCTickerData();
     if (tickerData.checkAndIncreaseTicker(
         TickerType.CUSTOM_OBJECTIVE_DELAYED_REGISTRATION,
         CUSTOM_OBJECTIVE_DELAYED_REGISTRATION_TICK)) {

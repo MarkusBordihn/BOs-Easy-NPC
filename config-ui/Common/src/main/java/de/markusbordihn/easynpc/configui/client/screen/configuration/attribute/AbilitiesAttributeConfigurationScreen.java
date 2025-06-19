@@ -30,7 +30,7 @@ import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.attribute.EnvironmentalAttributeType;
 import de.markusbordihn.easynpc.data.attribute.InteractionAttributeType;
 import de.markusbordihn.easynpc.data.attribute.MovementAttributeType;
-import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
+import de.markusbordihn.easynpc.entity.easynpc.data.AttributeDataCapable;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -57,7 +57,7 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
     int thirdButtonRow = this.leftPos + 200;
 
     // Attribute data
-    AttributeData<?> attributeData = this.getEasyNPC().getEasyNPCAttributeData();
+    AttributeDataCapable<?> attributeData = this.getEasyNPC().getEasyNPCAttributeData();
     EntityAttributes entityAttributes = attributeData.getEntityAttributes();
 
     // Checkboxes

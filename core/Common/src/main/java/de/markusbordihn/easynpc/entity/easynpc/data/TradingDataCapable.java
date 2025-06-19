@@ -51,7 +51,7 @@ import net.minecraft.world.item.trading.Merchant;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 
-public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Merchant {
+public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>, Merchant {
 
   String DATA_OFFERS_TAG = "Offers";
   String DATA_TRADING_DATA_TAG = "TradingData";
@@ -318,7 +318,7 @@ public interface TradingData<E extends PathfinderMob> extends EasyNPC<E>, Mercha
     if (!this.isClientSideInstance()
         && this.getMob().ambientSoundTime > -this.getMob().getAmbientSoundInterval() + 20) {
       this.getMob().ambientSoundTime = -this.getMob().getAmbientSoundInterval();
-      SoundData<E> soundData = getEasyNPCSoundData();
+      SoundDataCapable<E> soundData = getEasyNPCSoundData();
       soundData.playDefaultTradeUpdatedSound(!itemStack.isEmpty());
     }
   }

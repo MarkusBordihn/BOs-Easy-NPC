@@ -24,7 +24,7 @@ import de.markusbordihn.easynpc.data.display.DisplayAttributeEntry;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeData;
+import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -105,7 +105,7 @@ public record ChangeDisplayAttributeMessage(
     }
 
     // Validate display attribute data.
-    DisplayAttributeData<?> displayAttributeData = easyNPC.getEasyNPCDisplayAttributeData();
+    DisplayAttributeDataCapable<?> displayAttributeData = easyNPC.getEasyNPCDisplayAttributeData();
     if (displayAttributeData == null) {
       log.error("Unable to get display attribute data for {} from {}", easyNPC, serverPlayer);
       return;

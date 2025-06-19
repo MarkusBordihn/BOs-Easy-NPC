@@ -21,13 +21,13 @@ package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.goal.Goal;
 
 public class ResetLookAtPlayerGoal<T extends EasyNPC<?>> extends Goal {
 
-  private final ModelData<?> modelData;
+  private final ModelDataCapable<?> modelData;
   private final LookControl lookControl;
   private int resetLookTime = 40;
 

@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateE
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import java.util.UUID;
 
 public class EasyNPCModel {
@@ -47,7 +47,7 @@ public class EasyNPCModel {
     }
 
     // Get Model Data
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+    ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
       return false;
     }
@@ -64,7 +64,7 @@ public class EasyNPCModel {
    */
   public static boolean setupAnimation(
       final EasyNPC<?> easyNPC,
-      final ModelData<?> modelData,
+      final ModelDataCapable<?> modelData,
       final EasyNPCModelManager modelManager) {
     if (easyNPC == null || modelData == null || modelManager == null) {
       return false;

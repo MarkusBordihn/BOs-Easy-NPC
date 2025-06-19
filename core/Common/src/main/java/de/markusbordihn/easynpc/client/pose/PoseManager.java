@@ -29,7 +29,7 @@ import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -120,7 +120,7 @@ public class PoseManager {
     }
 
     // Validate Model data.
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+    ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
       log.error("{} Model data is missing for Easy NPC {}!", LOG_PREFIX, easyNPC.getEntityUUID());
       return;
@@ -143,7 +143,7 @@ public class PoseManager {
     }
 
     // Validate Model data.
-    ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+    ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
       log.error("{} Model data is missing for Easy NPC {}!", LOG_PREFIX, easyNPC.getEntityUUID());
       return false;

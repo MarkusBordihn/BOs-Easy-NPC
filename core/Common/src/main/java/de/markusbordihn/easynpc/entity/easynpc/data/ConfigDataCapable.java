@@ -24,7 +24,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.PathfinderMob;
 
-public interface ConfigData<T extends PathfinderMob> extends EasyNPC<T> {
+public interface ConfigDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
   String DATA_EASY_NPC_DATA_VERSION_TAG = "EasyNPCVersion";
 

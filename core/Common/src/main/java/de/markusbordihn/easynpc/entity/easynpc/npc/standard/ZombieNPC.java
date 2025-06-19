@@ -73,22 +73,22 @@ public class ZombieNPC extends ZombieRaw {
     VariantType soundVariant = VariantType.valueOf(variantName);
     switch (soundVariant) {
       case HUSK:
-        soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.HUSK_AMBIENT);
-        soundDataSet.addSound(SoundType.HURT, SoundEvents.HUSK_HURT);
-        soundDataSet.addSound(SoundType.DEATH, SoundEvents.HUSK_DEATH);
-        soundDataSet.addSound(SoundType.STEP, SoundEvents.HUSK_STEP);
+        soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.HUSK_AMBIENT);
+        soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.HUSK_HURT);
+        soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.HUSK_DEATH);
+        soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.HUSK_STEP);
         break;
       case ZOMBIE:
       default:
-        soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.ZOMBIE_AMBIENT);
-        soundDataSet.addSound(SoundType.HURT, SoundEvents.ZOMBIE_HURT);
-        soundDataSet.addSound(SoundType.DEATH, SoundEvents.ZOMBIE_DEATH);
-        soundDataSet.addSound(SoundType.STEP, SoundEvents.ZOMBIE_STEP);
+        soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.ZOMBIE_AMBIENT);
+        soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.ZOMBIE_HURT);
+        soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.ZOMBIE_DEATH);
+        soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.ZOMBIE_STEP);
         break;
     }
-    soundDataSet.addSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
-    soundDataSet.addSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
-    soundDataSet.addSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
+    soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
+    soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
+    soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
   }
 

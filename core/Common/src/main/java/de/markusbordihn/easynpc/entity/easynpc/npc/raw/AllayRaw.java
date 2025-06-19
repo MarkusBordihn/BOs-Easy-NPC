@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.status.StatusDataType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.synched.SynchedEntityData;
 import de.markusbordihn.easynpc.data.ticker.TickerType;
@@ -41,7 +42,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.SynchedEntityData.Builder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -95,6 +95,8 @@ public class AllayRaw extends Allay implements EasyNPCBase<Allay> {
   }
 
   private final EnumMap<TickerType, Integer> tickerMap = new EnumMap<>(TickerType.class);
+  private final EnumMap<StatusDataType, Boolean> statusDataFlagMap =
+      new EnumMap<>(StatusDataType.class);
   protected MerchantOffers merchantTradingOffers;
   private ServerEntityData serverEntityData;
   private int attackAnimationTick;
@@ -131,6 +133,11 @@ public class AllayRaw extends Allay implements EasyNPCBase<Allay> {
   @Override
   public void setTicker(TickerType tickerType, int ticker) {
     this.tickerMap.put(tickerType, ticker);
+  }
+
+  @Override
+  public EnumMap<StatusDataType, Boolean> getStatusDataFlags() {
+    return this.statusDataFlagMap;
   }
 
   @Override
@@ -338,7 +345,9 @@ public class AllayRaw extends Allay implements EasyNPCBase<Allay> {
 
   @Override
   public <T> void defineSynchedEntityData(
-      Builder builder, SynchedDataIndex synchedDataIndex, T defaultData) {
+      net.minecraft.network.syncher.SynchedEntityData.Builder builder,
+      SynchedDataIndex synchedDataIndex,
+      T defaultData) {
     if (this.synchedEntityData == null) {
       this.synchedEntityData = new SynchedEntityData(this, entityDataAccessorMap);
     }
