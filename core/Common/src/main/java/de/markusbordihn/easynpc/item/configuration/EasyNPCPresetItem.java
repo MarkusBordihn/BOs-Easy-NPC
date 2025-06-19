@@ -21,7 +21,8 @@ package de.markusbordihn.easynpc.item.configuration;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntity;
-import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
+import de.markusbordihn.easynpc.data.preset.PresetData;
+import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.level.BaseEasyNPCSpawner;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.SpawnerUtils;
@@ -65,21 +66,19 @@ public class EasyNPCPresetItem extends Item {
   }
 
   public static UUID getPresetUUID(ItemStack itemStack) {
-    de.markusbordihn.easynpc.data.preset.PresetData presetData =
-        de.markusbordihn.easynpc.data.preset.PresetData.get(itemStack);
+    PresetData presetData = PresetData.get(itemStack);
     if (presetData == null || presetData.data() == null) {
       return null;
     }
     CompoundTag compoundTag = presetData.data();
-    if (compoundTag.contains(PresetData.PRESET_UUID_TAG)) {
-      return compoundTag.getUUID(PresetData.PRESET_UUID_TAG);
+    if (compoundTag.contains(PresetDataCapable.PRESET_UUID_TAG)) {
+      return compoundTag.getUUID(PresetDataCapable.PRESET_UUID_TAG);
     }
     return null;
   }
 
   public static String getCustomName(ItemStack itemStack) {
-    de.markusbordihn.easynpc.data.preset.PresetData presetData =
-        de.markusbordihn.easynpc.data.preset.PresetData.get(itemStack);
+    PresetData presetData = PresetData.get(itemStack);
     if (presetData == null || presetData.data() == null) {
       return null;
     }
@@ -100,8 +99,7 @@ public class EasyNPCPresetItem extends Item {
     }
 
     // Verify preset data
-    de.markusbordihn.easynpc.data.preset.PresetData presetData =
-        de.markusbordihn.easynpc.data.preset.PresetData.get(itemStack);
+    PresetData presetData = PresetData.get(itemStack);
     if (presetData == null || !presetData.hasEntityType() || !presetData.hasData()) {
       log.error("No valid preset data found in {}!", itemStack);
       return false;
@@ -150,8 +148,7 @@ public class EasyNPCPresetItem extends Item {
     // Verify item stack, preset and entity type.
     ItemStack itemStack = useOnContext.getItemInHand();
     // Verify preset data
-    de.markusbordihn.easynpc.data.preset.PresetData presetData =
-        de.markusbordihn.easynpc.data.preset.PresetData.get(itemStack);
+    PresetData presetData = PresetData.get(itemStack);
     if (presetData == null || !presetData.hasEntityType() || !presetData.hasData()) {
       log.warn("No valid preset found in {}!", itemStack);
       return InteractionResult.FAIL;
@@ -219,8 +216,7 @@ public class EasyNPCPresetItem extends Item {
       TooltipContext tooltipContext,
       List<Component> tooltip,
       TooltipFlag flag) {
-    de.markusbordihn.easynpc.data.preset.PresetData presetData =
-        de.markusbordihn.easynpc.data.preset.PresetData.get(itemStack);
+    PresetData presetData = PresetData.get(itemStack);
     if (presetData == null) {
       return;
     }

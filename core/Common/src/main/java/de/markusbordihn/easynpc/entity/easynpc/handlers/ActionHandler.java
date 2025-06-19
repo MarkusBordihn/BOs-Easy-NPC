@@ -28,10 +28,10 @@ import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.data.action.ActionGroup;
 import de.markusbordihn.easynpc.data.action.ActionManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
-import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
-import de.markusbordihn.easynpc.entity.easynpc.data.TickerData;
-import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.TickerDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
@@ -133,8 +133,8 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
   default void checkTradingActions() {
     this.getProfiler().push("npcCheckTradingActions");
 
-    TradingData<E> tradingData = this.getEasyNPCTradingData();
-    TickerData<E> tickerData = this.getEasyNPCTickerData();
+    TradingDataCapable<E> tradingData = this.getEasyNPCTradingData();
+    TickerDataCapable<E> tickerData = this.getEasyNPCTickerData();
     if (tradingData == null || tickerData == null) {
       return;
     }
@@ -147,7 +147,7 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
 
     // Validate action data and mob entity.
     Mob mob = this.getMob();
-    ActionEventData<E> actionEventData = this.getEasyNPCActionEventData();
+    ActionEventDataCapable<E> actionEventData = this.getEasyNPCActionEventData();
     if (actionEventData == null || mob == null || mob.isDeadOrDying()) {
       return;
     }
@@ -369,7 +369,7 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
         this.openNamedDialog(actionDataEntry, serverPlayer);
         break;
       case OPEN_TRADING_SCREEN:
-        TradingData<E> tradingData = this.getEasyNPCTradingData();
+        TradingDataCapable<E> tradingData = this.getEasyNPCTradingData();
         if (tradingData != null) {
           tradingData.openTradingScreen(serverPlayer);
         } else {
@@ -389,7 +389,7 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
     if (!validateActionData(actionDataEntry, serverPlayer)) {
       return;
     }
-    DialogData<?> dialogData = this.getEasyNPCDialogData();
+    DialogDataCapable<?> dialogData = this.getEasyNPCDialogData();
     if (dialogData != null) {
       dialogData.openDefaultDialog(serverPlayer);
     } else {
@@ -403,7 +403,7 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
       return;
     }
     String dialogLabel = actionDataEntry.command();
-    DialogData<?> dialogData = this.getEasyNPCDialogData();
+    DialogDataCapable<?> dialogData = this.getEasyNPCDialogData();
     if (dialogLabel != null
         && !dialogLabel.isEmpty()
         && dialogData != null
@@ -420,7 +420,7 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
     if (!validateActionData(actionDataEntry, serverPlayer)) {
       return;
     }
-    ActionEventData<E> actionEventData = this.getEasyNPCActionEventData();
+    ActionEventDataCapable<E> actionEventData = this.getEasyNPCActionEventData();
     if (actionEventData == null) {
       log.error("No action event data found for action {}", actionDataEntry);
       return;
@@ -453,7 +453,7 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
     if (!validateActionData(actionDataEntry, serverPlayer)) {
       return;
     }
-    ActionEventData<E> actionEventData = this.getEasyNPCActionEventData();
+    ActionEventDataCapable<E> actionEventData = this.getEasyNPCActionEventData();
     if (actionEventData == null) {
       log.error("No action event data found for action {}", actionDataEntry);
       return;

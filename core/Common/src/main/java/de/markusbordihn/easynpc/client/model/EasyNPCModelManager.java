@@ -25,7 +25,7 @@ import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -107,7 +107,7 @@ public class EasyNPCModelManager {
     return modelPartMap.get(modelPartType);
   }
 
-  public boolean setupModelParts(final ModelData<?> modelData) {
+  public boolean setupModelParts(final ModelDataCapable<?> modelData) {
     if (modelData == null || modelData.getModelPose() == ModelPose.DEFAULT) {
       return false;
     }

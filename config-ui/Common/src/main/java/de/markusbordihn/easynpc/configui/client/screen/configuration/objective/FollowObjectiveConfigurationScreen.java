@@ -26,7 +26,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
-import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import java.util.UUID;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -60,7 +60,7 @@ public class FollowObjectiveConfigurationScreen<T extends ConfigurationMenu>
     int objectiveEntriesSecondColumn = this.contentLeftPos + 145;
 
     // Follow Owner
-    OwnerData<?> ownerData = this.getOwnerData();
+    OwnerDataCapable<?> ownerData = this.getOwnerData();
     this.followOwnerCheckbox =
         this.addRenderableWidget(
             new Checkbox(

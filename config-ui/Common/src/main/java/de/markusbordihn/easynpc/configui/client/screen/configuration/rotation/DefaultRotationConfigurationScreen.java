@@ -28,7 +28,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -63,7 +63,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
     this.defaultRotationButton.active = false;
 
     // Root Rotations
-    ModelData<?> modelData = this.getEasyNPC().getEasyNPCModelData();
+    ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
     CustomRotation rootRotation = modelData.getModelPartRotation(ModelPartType.ROOT);
     this.rootRotationX = rootRotation.x();
     this.rootRotationY = rootRotation.y();
@@ -184,7 +184,7 @@ public class DefaultRotationConfigurationScreen<T extends ConfigurationMenu>
   public void updateTick() {
     super.updateTick();
 
-    ModelData<?> modelData = this.getEasyNPC().getEasyNPCModelData();
+    ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
     if (modelData != null) {
       CustomRotation rootRotation = modelData.getModelPartRotation(ModelPartType.ROOT);
       this.rootRotationCheckbox.setSelected(rootRotation.locked());

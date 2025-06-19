@@ -19,122 +19,129 @@
 
 package de.markusbordihn.easynpc.entity.easynpc;
 
-import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
-import de.markusbordihn.easynpc.entity.easynpc.data.AttackData;
-import de.markusbordihn.easynpc.entity.easynpc.data.AttributeData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ConfigData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
-import de.markusbordihn.easynpc.entity.easynpc.data.CustomAttributeData;
-import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
-import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeData;
-import de.markusbordihn.easynpc.entity.easynpc.data.GuiData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
-import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
-import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
-import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
-import de.markusbordihn.easynpc.entity.easynpc.data.RenderData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ServerData;
-import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
-import de.markusbordihn.easynpc.entity.easynpc.data.SoundData;
-import de.markusbordihn.easynpc.entity.easynpc.data.TickerData;
-import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
-import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.AttackDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.AttributeDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.ConfigDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.CustomAttributeDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.GuiDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.ServerDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.SoundDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.StatusDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.TickerDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttributeHandler;
 import net.minecraft.world.entity.PathfinderMob;
 
 public interface EasyNPCDataAccessors<E extends PathfinderMob> {
 
-  default ActionEventData<E> getEasyNPCActionEventData() {
-    return this instanceof ActionEventData<E> actionEventData ? actionEventData : null;
+  default ActionEventDataCapable<E> getEasyNPCActionEventData() {
+    return this instanceof ActionEventDataCapable<E> actionEventData ? actionEventData : null;
   }
 
-  default AttackData<E> getEasyNPCAttackData() {
-    return this instanceof AttackData<E> attackData ? attackData : null;
+  default AttackDataCapable<E> getEasyNPCAttackData() {
+    return this instanceof AttackDataCapable<E> attackData ? attackData : null;
   }
 
-  default AttributeData<E> getEasyNPCAttributeData() {
-    return this instanceof AttributeData<E> attributeData ? attributeData : null;
+  default AttributeDataCapable<E> getEasyNPCAttributeData() {
+    return this instanceof AttributeDataCapable<E> attributeData ? attributeData : null;
   }
 
-  default ConfigData<E> getEasyNPCConfigData() {
-    return this instanceof ConfigData<E> configData ? configData : null;
+  default ConfigDataCapable<E> getEasyNPCConfigData() {
+    return this instanceof ConfigDataCapable<E> configData ? configData : null;
   }
 
-  default ConfigurationData<E> getEasyNPCConfigurationData() {
-    return this instanceof ConfigurationData<E> configurationData ? configurationData : null;
+  default ConfigurationDataCapable<E> getEasyNPCConfigurationData() {
+    return this instanceof ConfigurationDataCapable<E> configurationData ? configurationData : null;
   }
 
-  default CustomAttributeData<E> getEasyNPCCustomAttributeData() {
-    return this instanceof CustomAttributeData<E> customAttributeData ? customAttributeData : null;
+  default CustomAttributeDataCapable<E> getEasyNPCCustomAttributeData() {
+    return this instanceof CustomAttributeDataCapable<E> customAttributeData
+        ? customAttributeData
+        : null;
   }
 
-  default DialogData<E> getEasyNPCDialogData() {
-    return this instanceof DialogData<E> dialogData ? dialogData : null;
+  default DialogDataCapable<E> getEasyNPCDialogData() {
+    return this instanceof DialogDataCapable<E> dialogData ? dialogData : null;
   }
 
-  default DisplayAttributeData<E> getEasyNPCDisplayAttributeData() {
-    return this instanceof DisplayAttributeData<E> displayAttributeData
+  default DisplayAttributeDataCapable<E> getEasyNPCDisplayAttributeData() {
+    return this instanceof DisplayAttributeDataCapable<E> displayAttributeData
         ? displayAttributeData
         : null;
   }
 
-  default GuiData<E> getEasyNPCGuiData() {
-    return this instanceof GuiData<E> guiData ? guiData : null;
+  default GuiDataCapable<E> getEasyNPCGuiData() {
+    return this instanceof GuiDataCapable<E> guiData ? guiData : null;
   }
 
-  default SkinData<E> getEasyNPCSkinData() {
-    return this instanceof SkinData<E> skinData ? skinData : null;
+  default SkinDataCapable<E> getEasyNPCSkinData() {
+    return this instanceof SkinDataCapable<E> skinData ? skinData : null;
   }
 
-  default ModelData<E> getEasyNPCModelData() {
-    return this instanceof ModelData<E> modelData ? modelData : null;
+  default ModelDataCapable<E> getEasyNPCModelData() {
+    return this instanceof ModelDataCapable<E> modelData ? modelData : null;
   }
 
-  default NavigationData<E> getEasyNPCNavigationData() {
-    return this instanceof NavigationData<E> navigationData ? navigationData : null;
+  default NavigationDataCapable<E> getEasyNPCNavigationData() {
+    return this instanceof NavigationDataCapable<E> navigationData ? navigationData : null;
   }
 
-  default ObjectiveData<E> getEasyNPCObjectiveData() {
-    return this instanceof ObjectiveData<E> objectiveData ? objectiveData : null;
+  default ObjectiveDataCapable<E> getEasyNPCObjectiveData() {
+    return this instanceof ObjectiveDataCapable<E> objectiveData ? objectiveData : null;
   }
 
-  default OwnerData<E> getEasyNPCOwnerData() {
-    return this instanceof OwnerData<E> ownerData ? ownerData : null;
+  default OwnerDataCapable<E> getEasyNPCOwnerData() {
+    return this instanceof OwnerDataCapable<E> ownerData ? ownerData : null;
   }
 
-  default PresetData<E> getEasyNPCPresetData() {
-    return this instanceof PresetData<E> presetData ? presetData : null;
+  default PresetDataCapable<E> getEasyNPCPresetData() {
+    return this instanceof PresetDataCapable<E> presetData ? presetData : null;
   }
 
-  default ProfessionData<E> getEasyNPCProfessionData() {
-    return this instanceof ProfessionData<E> professionData ? professionData : null;
+  default ProfessionDataCapable<E> getEasyNPCProfessionData() {
+    return this instanceof ProfessionDataCapable<E> professionData ? professionData : null;
   }
 
-  default RenderData<E> getEasyNPCRenderData() {
-    return this instanceof RenderData<E> renderData ? renderData : null;
+  default RenderDataCapable<E> getEasyNPCRenderData() {
+    return this instanceof RenderDataCapable<E> renderData ? renderData : null;
   }
 
-  default ServerData<E> getEasyNPCServerData() {
-    return this instanceof ServerData<E> serverData ? serverData : null;
+  default ServerDataCapable<E> getEasyNPCServerData() {
+    return this instanceof ServerDataCapable<E> serverData ? serverData : null;
   }
 
-  default TickerData<E> getEasyNPCTickerData() {
-    return this instanceof TickerData<E> tickerData ? tickerData : null;
+  default StatusDataCapable<E> getEasyNPCStatusData() {
+    return this instanceof StatusDataCapable<E> statusData ? statusData : null;
   }
 
-  default TradingData<E> getEasyNPCTradingData() {
-    return this instanceof TradingData<E> tradingData ? tradingData : null;
+  default TickerDataCapable<E> getEasyNPCTickerData() {
+    return this instanceof TickerDataCapable<E> tickerData ? tickerData : null;
   }
 
-  default SoundData<E> getEasyNPCSoundData() {
-    return this instanceof SoundData<E> soundData ? soundData : null;
+  default TradingDataCapable<E> getEasyNPCTradingData() {
+    return this instanceof TradingDataCapable<E> tradingData ? tradingData : null;
   }
 
-  default VariantData<E> getEasyNPCVariantData() {
-    return this instanceof VariantData<E> variantData ? variantData : null;
+  default SoundDataCapable<E> getEasyNPCSoundData() {
+    return this instanceof SoundDataCapable<E> soundData ? soundData : null;
+  }
+
+  default VariantDataCapable<E> getEasyNPCVariantData() {
+    return this instanceof VariantDataCapable<E> variantData ? variantData : null;
   }
 
   default ActionHandler<E> getEasyNPCActionHandler() {

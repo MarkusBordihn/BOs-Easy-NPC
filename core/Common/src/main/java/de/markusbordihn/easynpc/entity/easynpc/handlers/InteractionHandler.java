@@ -22,10 +22,10 @@ package de.markusbordihn.easynpc.entity.easynpc.handlers;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionEventType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationData;
-import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
-import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -49,8 +49,8 @@ public class InteractionHandler {
     if (!(player instanceof ServerPlayer serverPlayer) || hand != InteractionHand.MAIN_HAND) {
       return InteractionResult.PASS;
     }
-    ConfigurationData<?> configurationData = easyNPC.getEasyNPCConfigurationData();
-    OwnerData<?> ownerData = easyNPC.getEasyNPCOwnerData();
+    ConfigurationDataCapable<?> configurationData = easyNPC.getEasyNPCConfigurationData();
+    OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
     boolean isOwnerOrCreative = serverPlayer.isCreative() || ownerData.isOwner(serverPlayer);
 
     // Item based actions.
@@ -71,7 +71,7 @@ public class InteractionHandler {
       if (Constants.MOD_ARMOURERS_WORKSHOP_ID.equals(
           BuiltInRegistries.ITEM.getKey(handItem).getNamespace())) {
         if (isOwnerOrCreative) {
-          SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
+          SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
           if (skinData.getSkinModel().hasArmourersWorkshopSupport()) {
             log.debug("Ignore event for Armourer's Workshop Item for {} ...", easyNPC);
             return InteractionResult.PASS;
@@ -93,7 +93,7 @@ public class InteractionHandler {
     }
 
     // Handle action event data.
-    ActionEventData<?> actionEventData = easyNPC.getEasyNPCActionEventData();
+    ActionEventDataCapable<?> actionEventData = easyNPC.getEasyNPCActionEventData();
     if (actionEventData != null) {
       actionEventData.handleActionEvent(ActionEventType.ON_INTERACTION, serverPlayer);
     }

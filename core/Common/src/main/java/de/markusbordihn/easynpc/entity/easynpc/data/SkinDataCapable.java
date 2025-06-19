@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
@@ -34,13 +33,9 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 
-public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
+public interface SkinDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
   String EASY_NPC_DATA_SKIN_DATA_TAG = "SkinData";
-  String EASY_NPC_DATA_SKIN_NAME_TAG = "SkinName";
-  String EASY_NPC_DATA_SKIN_TYPE_TAG = "SkinType";
-  String EASY_NPC_DATA_SKIN_URL_TAG = "SkinURL";
-  String EASY_NPC_DATA_SKIN_UUID_TAG = "SkinUUID";
 
   static void registerSyncedSkinData(
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
@@ -54,10 +49,6 @@ public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
     return 30;
   }
 
-  default String getSkinName() {
-    return getSkinDataEntry().name();
-  }
-
   default String getSkinURL() {
     return getSkinDataEntry().url();
   }
@@ -68,10 +59,6 @@ public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
 
   default SkinType getSkinType() {
     return getSkinDataEntry().type();
-  }
-
-  default SkinType getSkinType(String name) {
-    return SkinType.get(name);
   }
 
   default SkinModel getSkinModel() {
@@ -104,23 +91,8 @@ public interface SkinData<T extends PathfinderMob> extends EasyNPC<T> {
       return;
     }
 
-    // Convert latency skin data to new format
-    CompoundTag skinTag = compoundTag.getCompound(EASY_NPC_DATA_SKIN_DATA_TAG);
-    if (skinTag.contains(EASY_NPC_DATA_SKIN_TYPE_TAG)) {
-      log.info("Converting old skin data {} to new format ...", skinTag);
-      SkinDataEntry skinDataEntry =
-          new SkinDataEntry(
-              skinTag.getString(EASY_NPC_DATA_SKIN_NAME_TAG),
-              skinTag.getString(EASY_NPC_DATA_SKIN_URL_TAG),
-              skinTag.contains(EASY_NPC_DATA_SKIN_UUID_TAG)
-                  ? skinTag.getUUID(EASY_NPC_DATA_SKIN_UUID_TAG)
-                  : Constants.BLANK_UUID,
-              SkinType.get(skinTag.getString(EASY_NPC_DATA_SKIN_TYPE_TAG)));
-      this.setSkinDataEntry(skinDataEntry);
-      return;
-    }
-
     // Load skin data from new format
+    CompoundTag skinTag = compoundTag.getCompound(EASY_NPC_DATA_SKIN_DATA_TAG);
     SkinDataEntry skinDataEntry = new SkinDataEntry(skinTag);
     this.setSkinDataEntry(skinDataEntry);
   }

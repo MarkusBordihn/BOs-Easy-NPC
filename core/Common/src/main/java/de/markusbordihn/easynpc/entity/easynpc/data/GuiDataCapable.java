@@ -22,62 +22,17 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.world.entity.PathfinderMob;
 
-@SuppressWarnings("unused")
-public interface ConfigurationData<T extends PathfinderMob> extends EasyNPC<T> {
+public interface GuiDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
 
-  default boolean supportsConfiguration() {
-    return true;
+  default int getEntityGuiScaling() {
+    return 45;
   }
 
-  default boolean supportsChangeModelConfiguration() {
-    return false;
+  default int getEntityGuiTop() {
+    return 0;
   }
 
-  default boolean supportsPoseConfiguration() {
-    return true;
-  }
-
-  default boolean supportsDefaultPoseConfiguration() {
-    return true;
-  }
-
-  default boolean supportsAdvancedPoseConfiguration() {
-    return true;
-  }
-
-  default boolean supportsCustomPoseConfiguration() {
-    return true;
-  }
-
-  default boolean supportsScalingConfiguration() {
-    return true;
-  }
-
-  default boolean supportsDefaultRotationConfiguration() {
-    return true;
-  }
-
-  default boolean supportsSkinConfiguration() {
-    return true;
-  }
-
-  default boolean supportsNoneSkinConfiguration() {
-    return true;
-  }
-
-  default boolean supportsDefaultSkinConfiguration() {
-    return true;
-  }
-
-  default boolean supportsUrlSkinConfiguration() {
-    return true;
-  }
-
-  default boolean supportsPlayerSkinConfiguration() {
-    return false;
-  }
-
-  default boolean supportsCustomSkinConfiguration() {
-    return true;
+  default int getEntityGuiLeft() {
+    return 0;
   }
 }

@@ -138,15 +138,6 @@ public class MenuHandler implements MenuHandlerInterface {
     editorMenuMap.put(EditorType.DIALOG_TEXT, ModMenuTypes.DIALOG_TEXT_EDITOR_MENU.get());
   }
 
-  public static Map<ConfigurationType, MenuType<? extends ConfigurationMenu>>
-      configurationMenuMap() {
-    return configurationMenuMap;
-  }
-
-  public static Map<EditorType, MenuType<? extends EditorMenu>> editorMenuMap() {
-    return editorMenuMap;
-  }
-
   @Override
   public MenuType<? extends ConfigurationMenu> getMenuTypeByConfigurationType(
       ConfigurationType configurationType) {

@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
+import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
@@ -31,7 +31,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class RandomStrollAroundHomeGoal<T extends EasyNPC<?>> extends RandomStrollGoal {
 
-  private final NavigationData<?> navigationData;
+  private final NavigationDataCapable<?> navigationData;
   private final Entity entity;
 
   public RandomStrollAroundHomeGoal(T easyNPCEntity, double speedModifier) {

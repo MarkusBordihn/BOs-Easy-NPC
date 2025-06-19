@@ -24,7 +24,7 @@ import de.markusbordihn.easynpc.data.spawner.SpawnerData;
 import de.markusbordihn.easynpc.data.spawner.SpawnerType;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.PresetData;
+import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
@@ -365,8 +365,8 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
           this.easyNPCUUID = entityData.getUUID("UUID");
         }
 
-        if (entityData.contains(PresetData.PRESET_UUID_TAG)) {
-          this.easyNPCPresetUUID = entityData.getUUID(PresetData.PRESET_UUID_TAG);
+        if (entityData.contains(PresetDataCapable.PRESET_UUID_TAG)) {
+          this.easyNPCPresetUUID = entityData.getUUID(PresetDataCapable.PRESET_UUID_TAG);
         }
       }
     }

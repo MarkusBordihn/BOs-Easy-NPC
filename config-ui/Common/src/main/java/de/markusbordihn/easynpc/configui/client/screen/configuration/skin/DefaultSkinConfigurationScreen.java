@@ -26,9 +26,9 @@ import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.profession.Profession;
 import de.markusbordihn.easynpc.data.skin.SkinType;
-import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionData;
-import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
-import de.markusbordihn.easynpc.entity.easynpc.data.VariantData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.ArrayList;
@@ -56,8 +56,8 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
 
     int skinPosition = 0;
     skinButtons = new ArrayList<>();
-    ProfessionData<?> professionData = this.getEasyNPC().getEasyNPCProfessionData();
-    VariantData<?> variantData = this.getEasyNPC().getEasyNPCVariantData();
+    ProfessionDataCapable<?> professionData = this.getEasyNPC().getEasyNPCProfessionData();
+    VariantDataCapable<?> variantData = this.getEasyNPC().getEasyNPCVariantData();
     for (int i = skinStartIndex; i < this.numOfSkins && i < skinStartIndex + maxSkinsPerPage; i++) {
       int variantIndex = this.numOfProfessions > 0 ? i / this.numOfProfessions : i;
       Profession profession =
@@ -122,9 +122,9 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
             });
 
     // Disable button for active skin.
-    SkinData<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
-    VariantData<?> variantData = this.getEasyNPC().getEasyNPCVariantData();
-    ProfessionData<?> professionData = this.getEasyNPC().getEasyNPCProfessionData();
+    SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
+    VariantDataCapable<?> variantData = this.getEasyNPC().getEasyNPCVariantData();
+    ProfessionDataCapable<?> professionData = this.getEasyNPC().getEasyNPCProfessionData();
     skinButton.active =
         !(skinData.getSkinType() == SkinType.DEFAULT
             && variantData.getVariantType().equals(variantType)
@@ -155,8 +155,8 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
     setDescriptionText("default_skin.text");
 
     // Entity specific information.
-    VariantData<?> variantData = this.getEasyNPC().getEasyNPCVariantData();
-    ProfessionData<?> professionData = this.getEasyNPC().getEasyNPCProfessionData();
+    VariantDataCapable<?> variantData = this.getEasyNPC().getEasyNPCVariantData();
+    ProfessionDataCapable<?> professionData = this.getEasyNPC().getEasyNPCProfessionData();
     this.numOfProfessions =
         professionData.hasProfessions() ? professionData.getProfessions().length : 0;
     this.numOfVariants = variantData.getVariantTypes().length;

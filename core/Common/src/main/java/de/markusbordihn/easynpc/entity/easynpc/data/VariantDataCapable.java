@@ -36,7 +36,7 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerType;
 
-public interface VariantData<T extends PathfinderMob> extends EasyNPC<T> {
+public interface VariantDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
   String EASY_NPC_DATA_VARIANT_TYPE_TAG = "VariantType";
 

@@ -25,7 +25,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingType;
-import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
+import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.Collections;
 import java.util.List;
@@ -58,7 +58,7 @@ public class NoneTradingConfigurationContainerScreen<T extends ConfigurationMenu
     this.noneTradesButton.active = false;
 
     // Cache former dialog Type
-    TradingData<?> tradingData = this.getEasyNPC().getEasyNPCTradingData();
+    TradingDataCapable<?> tradingData = this.getEasyNPC().getEasyNPCTradingData();
     TradingDataSet tradingDataSet = tradingData.getTradingDataSet();
     setFormerTradingType(tradingDataSet.getType());
 

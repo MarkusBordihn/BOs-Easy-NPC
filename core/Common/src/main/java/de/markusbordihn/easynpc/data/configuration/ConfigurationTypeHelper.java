@@ -20,10 +20,10 @@
 package de.markusbordihn.easynpc.data.configuration;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.DialogData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
-import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
-import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
+import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 
 public class ConfigurationTypeHelper {
 
@@ -36,7 +36,7 @@ public class ConfigurationTypeHelper {
     }
 
     if (configurationType == ConfigurationType.DIALOG) {
-      DialogData<?> dialogData = easyNPC.getEasyNPCDialogData();
+      DialogDataCapable<?> dialogData = easyNPC.getEasyNPCDialogData();
       if (dialogData != null && dialogData.getDialogDataSet() != null) {
         return switch (dialogData.getDialogDataSet().getType()) {
           case NONE -> ConfigurationType.NONE_DIALOG;
@@ -46,7 +46,7 @@ public class ConfigurationTypeHelper {
         };
       }
     } else if (configurationType == ConfigurationType.SKIN) {
-      SkinData<?> skinData = easyNPC.getEasyNPCSkinData();
+      SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
       return switch (skinData.getSkinType()) {
         case NONE -> ConfigurationType.NONE_SKIN;
         case PLAYER_SKIN -> ConfigurationType.PLAYER_SKIN;
@@ -55,7 +55,7 @@ public class ConfigurationTypeHelper {
         default -> ConfigurationType.DEFAULT_SKIN;
       };
     } else if (configurationType == ConfigurationType.TRADING) {
-      TradingData<?> tradingData = easyNPC.getEasyNPCTradingData();
+      TradingDataCapable<?> tradingData = easyNPC.getEasyNPCTradingData();
       return switch (tradingData.getTradingDataSet().getType()) {
         case ADVANCED -> ConfigurationType.ADVANCED_TRADING;
         case BASIC -> ConfigurationType.BASIC_TRADING;
@@ -63,7 +63,7 @@ public class ConfigurationTypeHelper {
         default -> ConfigurationType.NONE_TRADING;
       };
     } else if (configurationType == ConfigurationType.POSE) {
-      ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+      ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
       // @TODO Add "Advanced" model pose type
       return switch (modelData.getModelPose()) {
         case CUSTOM ->

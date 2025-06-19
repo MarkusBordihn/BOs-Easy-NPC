@@ -29,7 +29,7 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -37,7 +37,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class PoseConfigurationScreen<T extends ConfigurationMenu> extends ConfigurationScreen<T> {
 
-  protected final ModelData<?> modelData;
+  protected final ModelDataCapable<?> modelData;
   protected Button defaultPoseButton;
   protected Button advancedPoseButton;
   protected Button customPoseButton;

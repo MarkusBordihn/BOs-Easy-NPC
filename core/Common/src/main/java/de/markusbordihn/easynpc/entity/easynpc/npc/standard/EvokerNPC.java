@@ -61,14 +61,14 @@ public class EvokerNPC extends EvokerRaw {
 
   @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.EVOKER_AMBIENT);
-    soundDataSet.addSound(SoundType.DEATH, SoundEvents.EVOKER_DEATH);
-    soundDataSet.addSound(SoundType.HURT, SoundEvents.EVOKER_HURT);
-    soundDataSet.addSound(SoundType.CAST_SPELL, SoundEvents.EVOKER_CAST_SPELL);
-    soundDataSet.addSound(SoundType.CELEBRATE, SoundEvents.EVOKER_CELEBRATE);
-    soundDataSet.addSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
-    soundDataSet.addSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
-    soundDataSet.addSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
+    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.EVOKER_AMBIENT);
+    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.EVOKER_DEATH);
+    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.EVOKER_HURT);
+    soundDataSet.addDefaultSound(SoundType.CAST_SPELL, SoundEvents.EVOKER_CAST_SPELL);
+    soundDataSet.addDefaultSound(SoundType.CELEBRATE, SoundEvents.EVOKER_CELEBRATE);
+    soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
+    soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
+    soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
   }
 

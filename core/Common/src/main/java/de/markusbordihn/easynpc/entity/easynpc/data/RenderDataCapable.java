@@ -30,7 +30,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 
-public interface RenderData<E extends PathfinderMob> extends EasyNPC<E> {
+public interface RenderDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
 
   String DATA_RENDER_DATA_TAG = "RenderData";
 

@@ -10,7 +10,7 @@ import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.UUID;
@@ -48,7 +48,7 @@ public class RotateCommand extends Command {
                                   EasyNPCArgument.getEntityWithAccess(
                                       context, NPC_TARGETS_ARGUMENT);
                               if (easyNPC != null) {
-                                ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+                                ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
                                 for (ModelPartType partType :
                                     modelData.getModelType().getModelParts()) {
                                   builder.suggest(partType.name().toLowerCase(Locale.ROOT));
@@ -103,7 +103,7 @@ public class RotateCommand extends Command {
     for (EasyNPC<?> easyNPC : easyNPCs) {
       UUID uuid = easyNPC.getEntityUUID();
       if (AccessManager.hasAccess(context, uuid)) {
-        ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+        ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
         if (modelData != null) {
           modelData.setModelRotation(yaw);
         }
@@ -126,7 +126,7 @@ public class RotateCommand extends Command {
     for (EasyNPC<?> easyNPC : easyNPCs) {
       UUID uuid = easyNPC.getEntityUUID();
       if (AccessManager.hasAccess(context, uuid)) {
-        ModelData<?> modelData = easyNPC.getEasyNPCModelData();
+        ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
         if (!modelData.getModelType().getModelParts().contains(modelPartType)) {
           sendFailureMessage(
               context, "Model part " + modelPartType + " not supported by NPC " + uuid + ".");

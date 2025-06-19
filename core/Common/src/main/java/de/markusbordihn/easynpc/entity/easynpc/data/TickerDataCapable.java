@@ -19,30 +19,30 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
-import de.markusbordihn.easynpc.data.server.ServerDataAccessor;
-import de.markusbordihn.easynpc.data.server.ServerEntityData;
+import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.world.entity.PathfinderMob;
 
-public interface ServerData<E extends PathfinderMob> extends EasyNPC<E> {
+public interface TickerDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
-  default <T> void setServerEntityData(ServerDataAccessor<T> entityDataAccessor, T entityData) {
-    getServerEntityData().set(entityDataAccessor, entityData);
+  int getTicker(TickerType tickerType);
+
+  void setTicker(TickerType tickerType, int value);
+
+  default boolean checkAndIncreaseTicker(TickerType tickerType, int value) {
+    int tickerValue = getTicker(tickerType);
+    if (tickerValue >= value) {
+      return true;
+    }
+    increaseTicker(tickerType, tickerValue + 1);
+    return false;
   }
 
-  default <T> T getServerEntityData(ServerDataAccessor<T> entityDataAccessor) {
-    return getServerEntityData().get(entityDataAccessor);
+  default void resetTicker(TickerType tickerType) {
+    setTicker(tickerType, 0);
   }
 
-  default <T> void defineServerEntityData(ServerDataAccessor<T> entityDataAccessor, T entityData) {
-    getServerEntityData().define(entityDataAccessor, entityData);
+  default void increaseTicker(TickerType tickerType, int value) {
+    setTicker(tickerType, getTicker(tickerType) + value);
   }
-
-  default boolean hasServerEntityData() {
-    return getServerEntityData() != null;
-  }
-
-  void defineServerEntityData();
-
-  ServerEntityData getServerEntityData();
 }

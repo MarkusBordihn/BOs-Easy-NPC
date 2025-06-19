@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.client.texture;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
-import de.markusbordihn.easynpc.entity.easynpc.data.SkinData;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.io.RemoteSkinDataFiles;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.io.File;
@@ -73,7 +73,7 @@ public class RemoteTextureManager {
   }
 
   public static ResourceLocation getOrCreateTextureWithDefault(
-      SkinData<?> skinData, ResourceLocation defaultResourceLocation) {
+      SkinDataCapable<?> skinData, ResourceLocation defaultResourceLocation) {
     // Check if we have a skin UUID otherwise we assume that the texture is unknown.
     UUID skinUUID = skinData.getSkinUUID();
     if (skinUUID.equals(Constants.BLANK_UUID)) {
@@ -97,7 +97,7 @@ public class RemoteTextureManager {
   }
 
   private static ResourceLocation createTexture(
-      TextureModelKey textureModelKey, SkinData<?> skinData, String skinURL) {
+      TextureModelKey textureModelKey, SkinDataCapable<?> skinData, String skinURL) {
 
     // Reload protection to avoid multiple texture requests in the same session.
     UUID skinUUID = textureModelKey.getUUID();

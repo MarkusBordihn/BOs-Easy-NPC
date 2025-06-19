@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.status.StatusDataType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.synched.SynchedEntityData;
 import de.markusbordihn.easynpc.data.ticker.TickerType;
@@ -96,6 +97,8 @@ public class IllusionerRaw extends Illusioner implements EasyNPCBase<Illusioner>
   }
 
   private final EnumMap<TickerType, Integer> tickerMap = new EnumMap<>(TickerType.class);
+  private final EnumMap<StatusDataType, Boolean> statusDataFlagMap =
+      new EnumMap<>(StatusDataType.class);
   protected MerchantOffers merchantTradingOffers;
   private ServerEntityData serverEntityData;
   private int attackAnimationTick;
@@ -132,6 +135,11 @@ public class IllusionerRaw extends Illusioner implements EasyNPCBase<Illusioner>
   @Override
   public void setTicker(TickerType tickerType, int ticker) {
     this.tickerMap.put(tickerType, ticker);
+  }
+
+  @Override
+  public EnumMap<StatusDataType, Boolean> getStatusDataFlags() {
+    return this.statusDataFlagMap;
   }
 
   @Override

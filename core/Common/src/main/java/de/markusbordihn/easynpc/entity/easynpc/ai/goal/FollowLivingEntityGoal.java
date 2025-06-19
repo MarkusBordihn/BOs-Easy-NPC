@@ -20,7 +20,7 @@
 package de.markusbordihn.easynpc.entity.easynpc.ai.goal;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.NavigationData;
+import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import java.util.EnumSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
@@ -53,7 +53,7 @@ public class FollowLivingEntityGoal extends Goal {
       float stopDistance,
       float startDistance) {
     this.pathfinderMob = easyNPC.getPathfinderMob();
-    NavigationData<?> navigationData = easyNPC.getEasyNPCNavigationData();
+    NavigationDataCapable<?> navigationData = easyNPC.getEasyNPCNavigationData();
     this.livingEntity = livingEntity;
     this.speedModifier = speedModifier;
     this.stopDistance = stopDistance;

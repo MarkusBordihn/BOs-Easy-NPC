@@ -26,8 +26,8 @@ import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
 import de.markusbordihn.easynpc.data.objective.ObjectiveGroup;
 import de.markusbordihn.easynpc.data.objective.ObjectiveType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
-import de.markusbordihn.easynpc.entity.easynpc.data.OwnerData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -112,7 +112,7 @@ public class FollowObjective extends Command {
 
   public static int removeFollowObjective(
       CommandSourceStack context, EasyNPC<?> easyNPC, ObjectiveType objectiveType) {
-    ObjectiveData<?> objectiveData = getFollowObjectiveData(context, easyNPC);
+    ObjectiveDataCapable<?> objectiveData = getFollowObjectiveData(context, easyNPC);
     if (objectiveData == null || objectiveType == null) {
       return Command.FAILURE;
     }
@@ -127,7 +127,7 @@ public class FollowObjective extends Command {
   }
 
   public static int list(CommandSourceStack context, EasyNPC<?> easyNPC) {
-    ObjectiveData<?> objectiveData = getFollowObjectiveData(context, easyNPC);
+    ObjectiveDataCapable<?> objectiveData = getFollowObjectiveData(context, easyNPC);
     if (objectiveData == null) {
       return Command.FAILURE;
     }
@@ -157,13 +157,13 @@ public class FollowObjective extends Command {
   }
 
   public static int setFollowOwner(CommandSourceStack context, EasyNPC<?> easyNPC) {
-    ObjectiveData<?> objectiveData = getObjectiveData(context, easyNPC);
+    ObjectiveDataCapable<?> objectiveData = getObjectiveData(context, easyNPC);
     if (objectiveData == null) {
       return Command.FAILURE;
     }
 
     // Get owner data
-    OwnerData<?> ownerData = easyNPC.getEasyNPCOwnerData();
+    OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
     if (ownerData == null || !ownerData.hasOwner() || ownerData.getOwnerUUID() == null) {
       return sendFailureMessageNoOwnerData(context, easyNPC);
     }
@@ -180,7 +180,7 @@ public class FollowObjective extends Command {
 
   public static int setFollowPlayer(
       CommandSourceStack context, EasyNPC<?> easyNPC, ServerPlayer serverPlayer) {
-    ObjectiveData<?> objectiveData = getObjectiveData(context, easyNPC);
+    ObjectiveDataCapable<?> objectiveData = getObjectiveData(context, easyNPC);
     if (objectiveData == null || serverPlayer == null) {
       return Command.FAILURE;
     }
@@ -198,7 +198,7 @@ public class FollowObjective extends Command {
   }
 
   public static int setFollowEntity(CommandSourceStack context, EasyNPC<?> easyNPC, Entity entity) {
-    ObjectiveData<?> objectiveData = getObjectiveData(context, easyNPC);
+    ObjectiveDataCapable<?> objectiveData = getObjectiveData(context, easyNPC);
     if (objectiveData == null || entity == null) {
       return Command.FAILURE;
     }
@@ -221,8 +221,9 @@ public class FollowObjective extends Command {
         "Follow entity " + entity.getName().getString() + " objective added for " + easyNPC);
   }
 
-  private static ObjectiveData<?> getObjectiveData(CommandSourceStack context, EasyNPC<?> easyNPC) {
-    ObjectiveData<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
+  private static ObjectiveDataCapable<?> getObjectiveData(
+      CommandSourceStack context, EasyNPC<?> easyNPC) {
+    ObjectiveDataCapable<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
     if (objectiveData == null || !objectiveData.hasObjectives()) {
       sendFailureMessageNoObjectiveData(context, easyNPC);
       return null;
@@ -230,9 +231,9 @@ public class FollowObjective extends Command {
     return objectiveData;
   }
 
-  private static ObjectiveData<?> getFollowObjectiveData(
+  private static ObjectiveDataCapable<?> getFollowObjectiveData(
       CommandSourceStack context, EasyNPC<?> easyNPC) {
-    ObjectiveData<?> objectiveData = getObjectiveData(context, easyNPC);
+    ObjectiveDataCapable<?> objectiveData = getObjectiveData(context, easyNPC);
     if (objectiveData == null) {
       return null;
     }

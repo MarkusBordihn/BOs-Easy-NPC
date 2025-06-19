@@ -35,7 +35,7 @@ import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.Level;
 
-public interface OwnerData<T extends PathfinderMob> extends EasyNPC<T>, OwnableEntity {
+public interface OwnerDataCapable<T extends PathfinderMob> extends EasyNPC<T>, OwnableEntity {
 
   String DATA_OWNER_TAG = "Owner";
 

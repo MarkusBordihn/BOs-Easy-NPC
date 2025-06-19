@@ -23,7 +23,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.TradingData;
+import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -80,7 +80,7 @@ public class TradingCommand extends Command {
     }
 
     // Check for trading data
-    TradingData<?> tradingData = easyNPC.getEasyNPCTradingData();
+    TradingDataCapable<?> tradingData = easyNPC.getEasyNPCTradingData();
     if (tradingData == null) {
       return sendFailureMessageNoTradingData(context, easyNPC);
     }
@@ -104,7 +104,7 @@ public class TradingCommand extends Command {
     }
 
     // Verify trading data.
-    TradingData<?> tradingData = easyNPC.getEasyNPCTradingData();
+    TradingDataCapable<?> tradingData = easyNPC.getEasyNPCTradingData();
     if (tradingData == null) {
       return sendFailureMessageNoTradingData(context, easyNPC);
     }

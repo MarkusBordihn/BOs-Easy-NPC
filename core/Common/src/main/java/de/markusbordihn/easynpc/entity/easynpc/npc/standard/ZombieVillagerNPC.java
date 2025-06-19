@@ -83,13 +83,13 @@ public class ZombieVillagerNPC extends ZombieVillagerRaw {
 
   @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.ZOMBIE_VILLAGER_AMBIENT);
-    soundDataSet.addSound(SoundType.HURT, SoundEvents.ZOMBIE_VILLAGER_HURT);
-    soundDataSet.addSound(SoundType.DEATH, SoundEvents.ZOMBIE_VILLAGER_DEATH);
-    soundDataSet.addSound(SoundType.STEP, SoundEvents.ZOMBIE_VILLAGER_STEP);
-    soundDataSet.addSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
-    soundDataSet.addSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
-    soundDataSet.addSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
+    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.ZOMBIE_VILLAGER_AMBIENT);
+    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.ZOMBIE_VILLAGER_HURT);
+    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.ZOMBIE_VILLAGER_DEATH);
+    soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.ZOMBIE_VILLAGER_STEP);
+    soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
+    soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
+    soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
   }
 

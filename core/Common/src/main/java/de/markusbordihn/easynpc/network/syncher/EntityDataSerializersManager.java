@@ -40,10 +40,10 @@ import de.markusbordihn.easynpc.data.skin.SkinUUID;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingType;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelPositionData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelRotationData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelScaleData;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelVisibilityData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelPositionDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelRotationDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelScaleDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelVisibilityDataCapable;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -143,21 +143,23 @@ public class EntityDataSerializersManager {
           UUID.class.getSimpleName(), EntityDataSerializer.forValueType(UUIDUtil.STREAM_CODEC));
   public static final EntityDataSerializer<Map<ModelPartType, Boolean>> MODEL_PART_VISIBILITY =
       defineSerializer(
-          ModelVisibilityData.class.getSimpleName(),
+          ModelVisibilityDataCapable.class.getSimpleName(),
           EntityDataSerializer.forValueType(
-              ModelVisibilityData.MODEL_PART_VISIBILITY_STREAM_CODEC));
+              ModelVisibilityDataCapable.MODEL_PART_VISIBILITY_STREAM_CODEC));
   public static final EntityDataSerializer<Map<ModelPartType, CustomRotation>> MODEL_PART_ROTATION =
       defineSerializer(
-          ModelRotationData.class.getSimpleName(),
-          EntityDataSerializer.forValueType(ModelRotationData.MODEL_PART_ROTATION_STREAM_CODEC));
+          ModelRotationDataCapable.class.getSimpleName(),
+          EntityDataSerializer.forValueType(
+              ModelRotationDataCapable.MODEL_PART_ROTATION_STREAM_CODEC));
   public static final EntityDataSerializer<Map<ModelPartType, CustomPosition>> MODEL_PART_POSITION =
       defineSerializer(
-          ModelPositionData.class.getSimpleName(),
-          EntityDataSerializer.forValueType(ModelPositionData.MODEL_PART_POSITION_STREAM_CODEC));
+          ModelPositionDataCapable.class.getSimpleName(),
+          EntityDataSerializer.forValueType(
+              ModelPositionDataCapable.MODEL_PART_POSITION_STREAM_CODEC));
   public static final EntityDataSerializer<Map<ModelPartType, CustomScale>> MODEL_PART_SCALE =
       defineSerializer(
-          ModelScaleData.class.getSimpleName(),
-          EntityDataSerializer.forValueType(ModelScaleData.MODEL_PART_SCALE_STREAM_CODEC));
+          ModelScaleDataCapable.class.getSimpleName(),
+          EntityDataSerializer.forValueType(ModelScaleDataCapable.MODEL_PART_SCALE_STREAM_CODEC));
 
   private EntityDataSerializersManager() {}
 

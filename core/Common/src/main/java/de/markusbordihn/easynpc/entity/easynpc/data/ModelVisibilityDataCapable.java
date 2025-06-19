@@ -34,7 +34,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.PathfinderMob;
 
-public interface ModelVisibilityData<T extends PathfinderMob> extends EasyNPC<T> {
+public interface ModelVisibilityDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
   String EASY_NPC_DATA_MODEL_VISIBLE_TAG = "Visible";
 

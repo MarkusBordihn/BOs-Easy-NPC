@@ -79,7 +79,16 @@ public class DialogCommand extends Command {
                                                         context, NPC_TARGET_ARGUMENT),
                                                     EntityArgument.getPlayer(context, "player"),
                                                     DialogArgument.getUuidOrLabel(
-                                                        context, "dialog")))))));
+                                                        context, "dialog")))))))
+        .then(
+            Commands.literal("close")
+                .then(
+                    Commands.argument("player", EntityArgument.player())
+                        .executes(
+                            context ->
+                                closeDialog(
+                                    context.getSource(),
+                                    EntityArgument.getPlayer(context, "player")))));
   }
 
   public static int setDefaultDialog(
@@ -206,5 +215,13 @@ public class DialogCommand extends Command {
         context,
         "► Open dialog for " + easyNPC + " with " + serverPlayer + " and dialog " + dialogUUID,
         ChatFormatting.GREEN);
+  }
+
+  public static int closeDialog(CommandSourceStack context, ServerPlayer serverPlayer) {
+    // Close dialog screen (client side)
+    serverPlayer.closeContainer();
+
+    return sendSuccessMessage(
+        context, "► Closed dialog screen for player " + serverPlayer, ChatFormatting.YELLOW);
   }
 }

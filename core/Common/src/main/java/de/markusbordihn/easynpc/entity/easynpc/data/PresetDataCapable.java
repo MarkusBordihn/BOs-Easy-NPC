@@ -25,18 +25,33 @@ import de.markusbordihn.easynpc.data.server.ServerDataIndex;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
+import java.util.List;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Pose;
 
-public interface PresetData<T extends PathfinderMob> extends EasyNPC<T> {
+public interface PresetDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
   ServerDataAccessor<UUID> CUSTOM_DATA_PRESET_UUID =
       ServerEntityData.defineId(ServerDataIndex.PRESET_UUID, EntityDataSerializersManager.UUID);
   String PRESET_UUID_TAG = "PresetUUID";
-  String MOTION_TAG = "Motion";
+
+  static final List<String> ENTITY_DATA_VOLATILE_FIELDS =
+      List.of(
+          "AbsorptionAmount",
+          "Air",
+          "AngerTime",
+          "DeathTime",
+          "FallDistance",
+          "FallFlying",
+          "Fire",
+          "forge:spawn_type",
+          "HurtByTimestamp",
+          "HurtTime",
+          "Motion",
+          "PortalCooldown");
 
   default void importPresetData(CompoundTag compoundTag) {
 
@@ -65,28 +80,28 @@ public interface PresetData<T extends PathfinderMob> extends EasyNPC<T> {
       CompoundTag existingCompoundTag = this.serializePresetData();
 
       // Remove existing dialog data.
-      if (existingCompoundTag.contains(DialogData.DATA_DIALOG_DATA_TAG)) {
-        existingCompoundTag.remove(DialogData.DATA_DIALOG_DATA_TAG);
+      if (existingCompoundTag.contains(DialogDataCapable.DATA_DIALOG_DATA_TAG)) {
+        existingCompoundTag.remove(DialogDataCapable.DATA_DIALOG_DATA_TAG);
       }
 
       // Remove existing model data.
-      if (existingCompoundTag.contains(ModelData.EASY_NPC_DATA_MODEL_DATA_TAG)) {
-        existingCompoundTag.remove(ModelData.EASY_NPC_DATA_MODEL_DATA_TAG);
+      if (existingCompoundTag.contains(ModelDataCapable.EASY_NPC_DATA_MODEL_DATA_TAG)) {
+        existingCompoundTag.remove(ModelDataCapable.EASY_NPC_DATA_MODEL_DATA_TAG);
       }
 
       // Remove existing skin data.
-      if (existingCompoundTag.contains(SkinData.EASY_NPC_DATA_SKIN_DATA_TAG)) {
-        existingCompoundTag.remove(SkinData.EASY_NPC_DATA_SKIN_DATA_TAG);
+      if (existingCompoundTag.contains(SkinDataCapable.EASY_NPC_DATA_SKIN_DATA_TAG)) {
+        existingCompoundTag.remove(SkinDataCapable.EASY_NPC_DATA_SKIN_DATA_TAG);
       }
 
       // Remove existing render data.
-      if (existingCompoundTag.contains(RenderData.DATA_RENDER_DATA_TAG)) {
-        existingCompoundTag.remove(RenderData.DATA_RENDER_DATA_TAG);
+      if (existingCompoundTag.contains(RenderDataCapable.DATA_RENDER_DATA_TAG)) {
+        existingCompoundTag.remove(RenderDataCapable.DATA_RENDER_DATA_TAG);
       }
 
       // Remove existing action data.
-      if (existingCompoundTag.contains(ActionEventData.DATA_ACTION_DATA_TAG)) {
-        existingCompoundTag.remove(ActionEventData.DATA_ACTION_DATA_TAG);
+      if (existingCompoundTag.contains(ActionEventDataCapable.DATA_ACTION_DATA_TAG)) {
+        existingCompoundTag.remove(ActionEventDataCapable.DATA_ACTION_DATA_TAG);
       }
 
       log.debug(
@@ -120,9 +135,9 @@ public interface PresetData<T extends PathfinderMob> extends EasyNPC<T> {
     // Entity saved data
     CompoundTag entityData = this.getEntity().saveWithoutId(compoundTag);
 
-    // Clean specific entity data to avoid side effects
-    if (entityData.contains(MOTION_TAG)) {
-      entityData.remove(MOTION_TAG);
+    // Clean up and optimize entity data for smaller memory footprint
+    for (String entityDataFieldName : ENTITY_DATA_VOLATILE_FIELDS) {
+      entityData.remove(entityDataFieldName);
     }
 
     return entityData;

@@ -4,7 +4,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
@@ -47,7 +47,7 @@ public class AttackObjective extends Command {
   }
 
   public static int list(CommandSourceStack context, EasyNPC<?> easyNPC) {
-    ObjectiveData<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
+    ObjectiveDataCapable<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
     if (objectiveData == null || !objectiveData.hasObjectives()) {
       return sendFailureMessageNoObjectiveData(context, easyNPC);
     }

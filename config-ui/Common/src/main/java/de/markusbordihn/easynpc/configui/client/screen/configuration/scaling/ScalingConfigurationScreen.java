@@ -28,7 +28,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelData;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.screen.ScreenHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -67,7 +67,7 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
     int scalePositionSpace = 60;
 
     // Model Data
-    ModelData<?> modelData = this.getEasyNPC().getEasyNPCModelData();
+    ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
     CustomScale rootScale = modelData.getModelPartScale(ModelPartType.ROOT);
 
     // Scale Slider Buttons

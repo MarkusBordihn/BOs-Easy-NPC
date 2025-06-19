@@ -61,13 +61,13 @@ public class VindicatorNPC extends VindicatorRaw {
 
   @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    soundDataSet.addSound(SoundType.AMBIENT, SoundEvents.VINDICATOR_AMBIENT);
-    soundDataSet.addSound(SoundType.DEATH, SoundEvents.VINDICATOR_DEATH);
-    soundDataSet.addSound(SoundType.HURT, SoundEvents.VINDICATOR_HURT);
-    soundDataSet.addSound(SoundType.CELEBRATE, SoundEvents.VINDICATOR_CELEBRATE);
-    soundDataSet.addSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
-    soundDataSet.addSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
-    soundDataSet.addSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
+    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.VINDICATOR_AMBIENT);
+    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.VINDICATOR_DEATH);
+    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.VINDICATOR_HURT);
+    soundDataSet.addDefaultSound(SoundType.CELEBRATE, SoundEvents.VINDICATOR_CELEBRATE);
+    soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
+    soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
+    soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
   }
 
