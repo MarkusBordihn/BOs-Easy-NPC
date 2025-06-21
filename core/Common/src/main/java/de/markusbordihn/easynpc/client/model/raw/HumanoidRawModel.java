@@ -48,8 +48,8 @@ public class HumanoidRawModel {
     }
 
     // Get Item in Main Hand
-    boolean isAggressive = easyNPC instanceof Mob mob && mob.isAggressive();
     ItemStack itemStack = renderState.getMainHandItem();
+    boolean isAggressive = easyNPC instanceof Mob mob && mob.isAggressive();
 
     // Bow arm pose
     if (isAggressive && AttackHandler.isBowWeapon(itemStack)) {
