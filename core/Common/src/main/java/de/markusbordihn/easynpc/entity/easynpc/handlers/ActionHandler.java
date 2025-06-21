@@ -32,7 +32,10 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ActionEventDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TickerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -53,6 +56,46 @@ import net.minecraft.world.phys.Vec3;
 
 public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
 
+  Set<String> BLOCKED_UNSAFE_NPC_COMMANDS =
+    new HashSet<>(
+      List.of(
+        "ban-ip",
+        "ban",
+        "banlist",
+        "debug",
+        "deop",
+        "difficulty",
+        "forceload",
+        "gamerule",
+        "kick",
+        "op",
+        "pardon",
+        "reload",
+        "save-all",
+        "save-off",
+        "save-on",
+        "setidletimeout",
+        "setworldspawn",
+        "stop",
+        "whitelist"));
+
+  private static boolean isBlockedUnsafeNPCCommand(String command) {
+    if (command == null || command.isBlank()) {
+      return false;
+    }
+    String cmd = command.trim();
+    if (cmd.startsWith("/")) {
+      cmd = cmd.substring(1);
+    }
+    String[] runParts = cmd.split("\\s+run\\s+");
+    String relevant = runParts[runParts.length - 1].trim();
+    if (relevant.startsWith("/")) {
+      relevant = relevant.substring(1);
+    }
+    String mainCmd = relevant.split(" ")[0].toLowerCase(Locale.ROOT);
+    return BLOCKED_UNSAFE_NPC_COMMANDS.contains(mainCmd);
+  }
+
   private static boolean validateActionData(
       ActionDataEntry actionDataEntry, ServerPlayer serverPlayer) {
     return actionDataEntry != null
@@ -66,6 +109,14 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
     MinecraftServer minecraftServer = entity.getServer();
     if (minecraftServer == null) {
       log.error("No Minecraft server found for entity {}", entity);
+      return;
+    }
+    if (isBlockedUnsafeNPCCommand(command)) {
+      log.warn(
+        "Blocked unsafe entity command {} for {} with permission level {}!",
+        command,
+        entity,
+        permissionLevel);
       return;
     }
     if (command.startsWith("/")) {
@@ -96,6 +147,14 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
     MinecraftServer minecraftServer = serverPlayer.getServer();
     if (minecraftServer == null) {
       log.error("No Minecraft server found for player {}", serverPlayer);
+      return;
+    }
+    if (isBlockedUnsafeNPCCommand(command)) {
+      log.warn(
+        "Blocked unsafe player command {} for {} with permission level {}!",
+        command,
+        serverPlayer,
+        permissionLevel);
       return;
     }
     if (command.startsWith("/")) {
