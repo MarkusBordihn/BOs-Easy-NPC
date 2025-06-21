@@ -129,27 +129,27 @@ public class EasyNPCModelManager {
       // Handle custom position.
       CustomPosition customPosition = modelData.getModelPartPosition(partType);
       if (customPosition != null && customPosition.hasChanged()) {
-        modelPart.x = customPosition.x();
-        modelPart.y = customPosition.y();
-        modelPart.z = customPosition.z();
+        modelPart.x += customPosition.x();
+        modelPart.y += customPosition.y();
+        modelPart.z += customPosition.z();
         hasChangedModelPart = true;
       }
 
       // Handle custom rotation.
       CustomRotation customRotation = modelData.getModelPartRotation(partType);
       if (customRotation != null && customRotation.hasChanged()) {
-        modelPart.xRot = customRotation.x();
-        modelPart.yRot = customRotation.y();
-        modelPart.zRot = customRotation.z();
+        modelPart.xRot += customRotation.x();
+        modelPart.yRot += customRotation.y();
+        modelPart.zRot += customRotation.z();
         hasChangedModelPart = true;
       }
 
       // Handle custom scale.
       CustomScale customScale = modelData.getModelPartScale(partType);
       if (customScale != null && customScale.hasChanged()) {
-        modelPart.xScale = customScale.x();
-        modelPart.yScale = customScale.y();
-        modelPart.zScale = customScale.z();
+        modelPart.xScale += customScale.x();
+        modelPart.yScale += customScale.y();
+        modelPart.zScale += customScale.z();
         hasChangedModelPart = true;
       }
     }
