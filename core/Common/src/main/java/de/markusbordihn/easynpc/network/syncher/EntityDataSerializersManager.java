@@ -35,6 +35,7 @@ import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -259,7 +260,7 @@ public class EntityDataSerializersManager {
             @Override
             public Map<ModelPartType, CustomRotation> read(FriendlyByteBuf buffer) {
               int size = buffer.readVarInt();
-              Map<ModelPartType, CustomRotation> value = new LinkedHashMap<>(size);
+              Map<ModelPartType, CustomRotation> value = new EnumMap<>(ModelPartType.class);
               for (int i = 0; i < size; i++) {
                 value.put(buffer.readEnum(ModelPartType.class), CustomRotation.decode(buffer));
               }
@@ -269,7 +270,7 @@ public class EntityDataSerializersManager {
             @Override
             public Map<ModelPartType, CustomRotation> copy(
                 Map<ModelPartType, CustomRotation> value) {
-              return new LinkedHashMap<>(value);
+              return new EnumMap<>(value);
             }
           });
   public static final EntityDataSerializer<Map<ModelPartType, CustomPosition>> MODEL_PART_POSITION =
@@ -288,7 +289,7 @@ public class EntityDataSerializersManager {
             @Override
             public Map<ModelPartType, CustomPosition> read(FriendlyByteBuf buffer) {
               int size = buffer.readVarInt();
-              Map<ModelPartType, CustomPosition> value = new LinkedHashMap<>(size);
+              Map<ModelPartType, CustomPosition> value = new EnumMap<>(ModelPartType.class);
               for (int i = 0; i < size; i++) {
                 value.put(buffer.readEnum(ModelPartType.class), CustomPosition.decode(buffer));
               }
@@ -298,7 +299,7 @@ public class EntityDataSerializersManager {
             @Override
             public Map<ModelPartType, CustomPosition> copy(
                 Map<ModelPartType, CustomPosition> value) {
-              return new LinkedHashMap<>(value);
+              return new EnumMap<>(value);
             }
           });
   public static final EntityDataSerializer<Map<ModelPartType, CustomScale>> MODEL_PART_SCALE =
@@ -317,7 +318,7 @@ public class EntityDataSerializersManager {
             @Override
             public Map<ModelPartType, CustomScale> read(FriendlyByteBuf buffer) {
               int size = buffer.readVarInt();
-              Map<ModelPartType, CustomScale> value = new LinkedHashMap<>(size);
+              Map<ModelPartType, CustomScale> value = new EnumMap<>(ModelPartType.class);
               for (int i = 0; i < size; i++) {
                 value.put(buffer.readEnum(ModelPartType.class), CustomScale.decode(buffer));
               }
@@ -326,7 +327,7 @@ public class EntityDataSerializersManager {
 
             @Override
             public Map<ModelPartType, CustomScale> copy(Map<ModelPartType, CustomScale> value) {
-              return new LinkedHashMap<>(value);
+              return new EnumMap<>(value);
             }
           });
   public static final EntityDataSerializer<Map<ModelPartType, Boolean>> MODEL_PART_VISIBILITY =
@@ -345,7 +346,7 @@ public class EntityDataSerializersManager {
             @Override
             public Map<ModelPartType, Boolean> read(FriendlyByteBuf buffer) {
               int size = buffer.readVarInt();
-              Map<ModelPartType, Boolean> value = new LinkedHashMap<>(size);
+              Map<ModelPartType, Boolean> value = new EnumMap<>(ModelPartType.class);
               for (int i = 0; i < size; i++) {
                 value.put(buffer.readEnum(ModelPartType.class), buffer.readBoolean());
               }
@@ -354,7 +355,7 @@ public class EntityDataSerializersManager {
 
             @Override
             public Map<ModelPartType, Boolean> copy(Map<ModelPartType, Boolean> value) {
-              return new LinkedHashMap<>(value);
+              return new EnumMap<>(value);
             }
           });
   public static final EntityDataSerializer<SkinDataEntry> SKIN_DATA_ENTRY =

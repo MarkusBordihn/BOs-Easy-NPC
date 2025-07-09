@@ -62,18 +62,13 @@ public interface ModelVisibilityDataCapable<T extends PathfinderMob> extends Eas
   }
 
   default boolean getModelPartVisibility(EquipmentSlot equipmentSlot) {
-    switch (equipmentSlot) {
-      case HEAD:
-        return getModelPartVisibility(ModelPartType.HELMET);
-      case CHEST:
-        return getModelPartVisibility(ModelPartType.CHESTPLATE);
-      case LEGS:
-        return getModelPartVisibility(ModelPartType.LEGGINGS);
-      case FEET:
-        return getModelPartVisibility(ModelPartType.BOOTS);
-      default:
-        return false;
-    }
+    return switch (equipmentSlot) {
+      case HEAD -> getModelPartVisibility(ModelPartType.HELMET);
+      case CHEST -> getModelPartVisibility(ModelPartType.CHESTPLATE);
+      case LEGS -> getModelPartVisibility(ModelPartType.LEGGINGS);
+      case FEET -> getModelPartVisibility(ModelPartType.BOOTS);
+      default -> false;
+    };
   }
 
   default boolean getModelPartVisibility(ModelPartType modelPartType) {

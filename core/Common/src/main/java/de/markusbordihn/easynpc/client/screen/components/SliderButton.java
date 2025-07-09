@@ -31,7 +31,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
 public class SliderButton extends AbstractSliderButton {
 
@@ -270,7 +269,7 @@ public class SliderButton extends AbstractSliderButton {
     }
   }
 
-  protected void renderBg(@NotNull GuiGraphics guiGraphics) {
+  protected void renderBg(GuiGraphics guiGraphics) {
     int i = this.isHoveredOrFocused() ? 60 : 40;
 
     // Slider: Top Part

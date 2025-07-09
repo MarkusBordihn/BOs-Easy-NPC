@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.configui.network;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.network.message.client.ExportClientPresetMessage;
 import de.markusbordihn.easynpc.configui.network.message.client.OpenMenuCallbackMessage;
-import de.markusbordihn.easynpc.configui.network.message.client.SyncDataMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.AddOrUpdateObjectiveMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeActionEventMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.ChangeAdvancedTradingMessage;
@@ -67,7 +66,6 @@ import de.markusbordihn.easynpc.configui.network.message.server.SaveDialogMessag
 import de.markusbordihn.easynpc.configui.network.message.server.SaveDialogSetMessage;
 import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
-import de.markusbordihn.easynpc.network.message.client.SyncDataMessage;
 import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -141,9 +139,6 @@ public class NetworkHandlerManager {
         OpenMenuCallbackMessage.MESSAGE_ID,
         OpenMenuCallbackMessage.class,
         OpenMenuCallbackMessage::create);
-
-    networkHandler.registerClientNetworkMessage(
-        SyncDataMessage.MESSAGE_ID, SyncDataMessage.class, SyncDataMessage::create);
   }
 
   public static void registerServerNetworkHandler() {

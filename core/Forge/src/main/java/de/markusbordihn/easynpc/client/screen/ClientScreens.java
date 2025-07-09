@@ -37,8 +37,6 @@ public class ClientScreens {
     log.info("{} Client Screens ...", Constants.LOG_REGISTER_PREFIX);
 
     event.enqueueWork(
-        () -> {
-          MenuScreens.register(ModMenuTypes.DIALOG_MENU.get(), DialogScreenWrapper::new);
-        });
+        () -> MenuScreens.register(ModMenuTypes.DIALOG_MENU.get(), DialogScreenWrapper::new));
   }
 }

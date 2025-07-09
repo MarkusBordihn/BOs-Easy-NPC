@@ -24,10 +24,15 @@ import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenuHandler;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.gametest.GameTestHelpers;
 import java.util.UUID;
+import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.phys.Vec3;
 
 public class ConfigurationScreenTestHelper {
 
@@ -47,5 +52,38 @@ public class ConfigurationScreenTestHelper {
     UUID menuId = MenuManager.registerMenu(easyNPC.getEntityUUID(), menuProvider, serverPlayer);
     MenuManager.openMenu(menuId, serverPlayer);
     return menuId;
+  }
+
+  public static void testConfigurationScreen(
+      GameTestHelper helper,
+      EntityType<? extends PathfinderMob> npcEntityType,
+      ConfigurationType configurationType,
+      MenuType<? extends ConfigurationMenu> menuType) {
+    // Get a mock player and spawn a humanoid NPC.
+    ServerPlayer serverPlayer = GameTestHelpers.mockServerPlayer(helper, new Vec3(1, 2, 1));
+    EasyNPC<?> easyNPC = GameTestHelpers.mockEasyNPC(helper, npcEntityType, new Vec3(2, 2, 2));
+
+    // Close previous dialog, if any.
+    if (serverPlayer.hasContainerOpen()) {
+      serverPlayer.closeContainer();
+    }
+
+    // Prepare and open Dialog
+    UUID dialogId = mockOpenConfigurationScreen(serverPlayer, configurationType, easyNPC, menuType);
+    GameTestHelpers.assertNotNull(helper, "DialogId is null!", dialogId);
+
+    // Check if dialog is open.
+    GameTestHelpers.assertTrue(
+        helper,
+        "Configuration Screen " + menuType + " is not open!",
+        serverPlayer.containerMenu instanceof ConfigurationMenu);
+    GameTestHelpers.assertEquals(
+        helper,
+        "Wrong Configuration type! Expected: "
+            + menuType
+            + " but got: "
+            + serverPlayer.containerMenu.getType(),
+        menuType,
+        serverPlayer.containerMenu.getType());
   }
 }

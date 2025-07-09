@@ -118,11 +118,21 @@ public class PlayerTextureManager {
     // Get skin texture location based on the player UUID.
     String playerSkinUrl = PlayersUtils.getUserTexture(playerUUID);
 
+    // Check if we got a valid skin URL
+    if (playerSkinUrl == null || playerSkinUrl.isEmpty()) {
+      log.error("{} Unable to get player skin URL for UUID: {}", LOG_PREFIX, playerUUID);
+      return null;
+    }
+
+    log.debug("{} Got player skin URL for {}: {}", LOG_PREFIX, playerUUID, playerSkinUrl);
+
     // Validate the skin URL and perform some basic sanity checks and
     // process the remote texture.
+    log.debug("{} Starting remote texture download for {}: {}", LOG_PREFIX, playerUUID, playerSkinUrl);
     ResourceLocation resourceLocation =
         TextureManager.addRemoteTexture(textureModelKey, playerSkinUrl, textureDataFolder);
     if (resourceLocation != null) {
+      log.info("{} Successfully loaded player texture for {}: {}", LOG_PREFIX, playerUUID, resourceLocation);
       textureCache.put(textureModelKey, resourceLocation);
       textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
       return resourceLocation;

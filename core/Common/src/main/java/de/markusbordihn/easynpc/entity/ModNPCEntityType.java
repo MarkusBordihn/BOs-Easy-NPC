@@ -97,7 +97,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
               MobCategory.MISC)
           .sized(1.4F, 1.6F)
           .clientTrackingRange(12),
-      HorseNPC::createAttributes),
+      HorseNPC::createBaseHorseAttributes),
   HORSE_SKELETON(
       HorseNPC.ID_SKELETON,
       EntityType.Builder.of(
@@ -106,7 +106,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
               MobCategory.MONSTER)
           .sized(1.4F, 1.6F)
           .clientTrackingRange(12),
-      HorseNPC::createAttributes),
+      HorseNPC::createBaseHorseAttributes),
   HORSE_ZOMBIE(
       HorseNPC.ID_ZOMBIE,
       EntityType.Builder.of(
@@ -115,7 +115,7 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
               MobCategory.MONSTER)
           .sized(1.4F, 1.6F)
           .clientTrackingRange(12),
-      HorseNPC::createAttributes),
+      HorseNPC::createBaseHorseAttributes),
   HUMANOID(
       HumanoidNPC.ID,
       EntityType.Builder.of(

@@ -131,7 +131,6 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
 
     // Render skin entity with variant and profession.
     ScreenHelper.renderEntityDefaultSkin(
-        guiGraphics,
         x + 4,
         y,
         x - this.xMouse,
