@@ -267,12 +267,12 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
 
   @Override
   public SpawnGroupData finalizeSpawn(
-    ServerLevelAccessor serverLevelAccessor,
-    DifficultyInstance difficulty,
-    MobSpawnType mobSpawnType,
-    SpawnGroupData spawnGroupData) {
+      ServerLevelAccessor serverLevelAccessor,
+      DifficultyInstance difficulty,
+      MobSpawnType mobSpawnType,
+      SpawnGroupData spawnGroupData) {
     return finalizeEasyNPCSpawn(
-      super.finalizeSpawn(serverLevelAccessor, difficulty, mobSpawnType, spawnGroupData));
+        super.finalizeSpawn(serverLevelAccessor, difficulty, mobSpawnType, spawnGroupData));
   }
 
   @Override

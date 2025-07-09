@@ -298,7 +298,7 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
           continue;
         }
         mob.finalizeSpawn(
-          level, level.getCurrentDifficultyAt(mob.blockPosition()), MobSpawnType.SPAWNER, null);
+            level, level.getCurrentDifficultyAt(mob.blockPosition()), MobSpawnType.SPAWNER, null);
       }
       if (!level.tryAddFreshEntityWithPassengers(entity)) {
         this.delay(level, pos);

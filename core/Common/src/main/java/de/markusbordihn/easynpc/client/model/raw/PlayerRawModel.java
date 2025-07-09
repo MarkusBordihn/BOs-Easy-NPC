@@ -19,14 +19,11 @@
 
 package de.markusbordihn.easynpc.client.model.raw;
 
-import de.markusbordihn.easynpc.client.model.EasyNPCModel;
-import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttackDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
 import net.minecraft.client.model.HumanoidModel.ArmPose;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
@@ -34,7 +31,7 @@ import net.minecraft.world.item.ItemStack;
 public class PlayerRawModel {
 
   public static ArmPose getArmPose(
-    LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
+      LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
     if (entityLiving == null || hand == null || itemStack.isEmpty()) {
       return ArmPose.EMPTY;
     }

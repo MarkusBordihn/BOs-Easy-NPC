@@ -5,10 +5,9 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "model.EasyNPCHumanoidModelMixin",
-    "model.EasyNPCPlayerModelMixin",
     "model.EasyNPCVillagerModelMixin",
     "model.EasyNPCWolfModelMixin",
-    "renderer.EasyNPCLivingEntityRendererMixin",
+    "renderer.EasyNPCLivingEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
