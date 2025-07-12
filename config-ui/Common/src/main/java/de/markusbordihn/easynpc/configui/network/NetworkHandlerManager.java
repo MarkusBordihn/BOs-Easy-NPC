@@ -61,7 +61,6 @@ import de.markusbordihn.easynpc.configui.network.message.server.RemoveDialogButt
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveDialogMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveNPCMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RemoveObjectiveMessage;
-import de.markusbordihn.easynpc.configui.network.message.server.RequestDataSyncMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.RespawnNPCMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.SaveDialogButtonMessage;
 import de.markusbordihn.easynpc.configui.network.message.server.SaveDialogMessage;

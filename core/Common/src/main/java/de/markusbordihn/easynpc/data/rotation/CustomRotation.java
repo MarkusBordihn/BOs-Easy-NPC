@@ -96,8 +96,8 @@ public record CustomRotation(float x, float y, float z, boolean locked) {
     }
     CustomRotation other = (CustomRotation) object;
     return Float.compare(this.x, other.x) == 0
-      && Float.compare(this.y, other.y) == 0
-      && Float.compare(this.z, other.z) == 0
-      && this.locked == other.locked;
+        && Float.compare(this.y, other.y) == 0
+        && Float.compare(this.z, other.z) == 0
+        && this.locked == other.locked;
   }
 }

@@ -57,27 +57,27 @@ import net.minecraft.world.phys.Vec3;
 public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
 
   Set<String> BLOCKED_UNSAFE_NPC_COMMANDS =
-    new HashSet<>(
-      List.of(
-        "ban-ip",
-        "ban",
-        "banlist",
-        "debug",
-        "deop",
-        "difficulty",
-        "forceload",
-        "gamerule",
-        "kick",
-        "op",
-        "pardon",
-        "reload",
-        "save-all",
-        "save-off",
-        "save-on",
-        "setidletimeout",
-        "setworldspawn",
-        "stop",
-        "whitelist"));
+      new HashSet<>(
+          List.of(
+              "ban-ip",
+              "ban",
+              "banlist",
+              "debug",
+              "deop",
+              "difficulty",
+              "forceload",
+              "gamerule",
+              "kick",
+              "op",
+              "pardon",
+              "reload",
+              "save-all",
+              "save-off",
+              "save-on",
+              "setidletimeout",
+              "setworldspawn",
+              "stop",
+              "whitelist"));
 
   private static boolean isBlockedUnsafeNPCCommand(String command) {
     if (command == null || command.isBlank()) {
@@ -113,10 +113,10 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
     }
     if (isBlockedUnsafeNPCCommand(command)) {
       log.warn(
-        "Blocked unsafe entity command {} for {} with permission level {}!",
-        command,
-        entity,
-        permissionLevel);
+          "Blocked unsafe entity command {} for {} with permission level {}!",
+          command,
+          entity,
+          permissionLevel);
       return;
     }
     if (command.startsWith("/")) {
@@ -151,10 +151,10 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
     }
     if (isBlockedUnsafeNPCCommand(command)) {
       log.warn(
-        "Blocked unsafe player command {} for {} with permission level {}!",
-        command,
-        serverPlayer,
-        permissionLevel);
+          "Blocked unsafe player command {} for {} with permission level {}!",
+          command,
+          serverPlayer,
+          permissionLevel);
       return;
     }
     if (command.startsWith("/")) {

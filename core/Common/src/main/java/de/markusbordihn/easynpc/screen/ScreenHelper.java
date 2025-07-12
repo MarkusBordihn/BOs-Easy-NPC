@@ -175,7 +175,13 @@ public class ScreenHelper {
   }
 
   public static void renderScaledEntityAvatar(
-      int x, int y, int scale, float yRot, float xRot, EasyNPC<?> easyNPC, ModelDataCapable<?> modelData) {
+      int x,
+      int y,
+      int scale,
+      float yRot,
+      float xRot,
+      EasyNPC<?> easyNPC,
+      ModelDataCapable<?> modelData) {
 
     // Backup entity information
     CustomRotation entityModelRootRotation =
