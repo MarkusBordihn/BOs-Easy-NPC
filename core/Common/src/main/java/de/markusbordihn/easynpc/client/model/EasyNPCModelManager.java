@@ -45,6 +45,8 @@ public class EasyNPCModelManager {
       new EnumMap<>(ModelPartType.class);
   private final Map<ModelPartType, CustomRotation> defaultModelPartRotationMap =
       new EnumMap<>(ModelPartType.class);
+  private final Map<ModelPartType, CustomScale> defaultModelPartScaleMap =
+      new EnumMap<>(ModelPartType.class);
   private final Map<ModelPartType, Boolean> defaultModelPartVisibilityMap =
       new EnumMap<>(ModelPartType.class);
   private final Map<ModelPartType, ModelPart> modelPartMap = new EnumMap<>(ModelPartType.class);
@@ -79,6 +81,8 @@ public class EasyNPCModelManager {
         modelPartType, new CustomPosition(modelPart.x, modelPart.y, modelPart.z));
     setDefaultModelPartRotation(
         modelPartType, new CustomRotation(modelPart.xRot, modelPart.yRot, modelPart.zRot));
+    setDefaultModelPartScale(
+        modelPartType, new CustomScale(modelPart.xScale, modelPart.yScale, modelPart.zScale));
     setDefaultModelPartVisibility(modelPartType, modelPart.visible);
     setDefaultModelPart(modelPartType, modelPart);
     return this;
@@ -92,6 +96,11 @@ public class EasyNPCModelManager {
   public void setDefaultModelPartRotation(
       final ModelPartType modelPartType, final CustomRotation rotation) {
     defaultModelPartRotationMap.put(modelPartType, rotation);
+  }
+
+  public void setDefaultModelPartScale(
+      final ModelPartType modelPartType, final CustomScale customScale) {
+    defaultModelPartScaleMap.put(modelPartType, customScale);
   }
 
   public void setDefaultModelPartVisibility(
@@ -147,9 +156,16 @@ public class EasyNPCModelManager {
       // Handle custom scale.
       CustomScale customScale = modelData.getModelPartScale(partType);
       if (customScale != null && customScale.hasChanged()) {
-        modelPart.xScale += customScale.x();
-        modelPart.yScale += customScale.y();
-        modelPart.zScale += customScale.z();
+        CustomScale defaultScale = defaultModelPartScaleMap.get(partType);
+        if (defaultScale != null) {
+          modelPart.xScale = defaultScale.x() * customScale.x();
+          modelPart.yScale = defaultScale.y() * customScale.y();
+          modelPart.zScale = defaultScale.z() * customScale.z();
+        } else {
+          modelPart.xScale = customScale.x();
+          modelPart.yScale = customScale.y();
+          modelPart.zScale = customScale.z();
+        }
         hasChangedModelPart = true;
       }
     }
@@ -162,6 +178,7 @@ public class EasyNPCModelManager {
       ModelPart modelPartToRest = entry.getValue();
       CustomPosition customPosition = defaultModelPartPositionMap.get(modelPartType);
       CustomRotation customRotation = defaultModelPartRotationMap.get(modelPartType);
+      CustomScale customScale = defaultModelPartScaleMap.get(modelPartType);
       Boolean isVisible = defaultModelPartVisibilityMap.get(modelPartType);
 
       if (customPosition != null) {
@@ -169,6 +186,11 @@ public class EasyNPCModelManager {
       }
       if (customRotation != null) {
         modelPartToRest.setRotation(customRotation.x(), customRotation.y(), customRotation.z());
+      }
+      if (customScale != null) {
+        modelPartToRest.xScale = customScale.x();
+        modelPartToRest.yScale = customScale.y();
+        modelPartToRest.zScale = customScale.z();
       }
       if (isVisible != null) {
         modelPartToRest.visible = isVisible;
