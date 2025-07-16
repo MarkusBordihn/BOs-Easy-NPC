@@ -38,7 +38,7 @@ public interface PresetDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
       ServerEntityData.defineId(ServerDataIndex.PRESET_UUID, EntityDataSerializersManager.UUID);
   String PRESET_UUID_TAG = "PresetUUID";
 
-  static final List<String> ENTITY_DATA_VOLATILE_FIELDS =
+  List<String> ENTITY_DATA_VOLATILE_FIELDS =
       List.of(
           "AbsorptionAmount",
           "Air",

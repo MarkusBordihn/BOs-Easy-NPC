@@ -36,11 +36,10 @@ public class DrownedRawRenderer extends DrownedRenderer implements EasyNPCEntity
   protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
       Util.make(
           new EnumMap<>(VariantType.class),
-          map -> {
-            map.put(
-                VariantType.DEFAULT,
-                ResourceLocation.withDefaultNamespace("textures/entity/zombie/drowned.png"));
-          });
+          map ->
+              map.put(
+                  VariantType.DEFAULT,
+                  ResourceLocation.withDefaultNamespace("textures/entity/zombie/drowned.png")));
   protected static final ResourceLocation DEFAULT_TEXTURE =
       TEXTURE_BY_VARIANT_TYPE.get(VariantType.DEFAULT);
 
