@@ -64,7 +64,7 @@ public class VillagerNPC extends VillagerRaw {
           SensorType.GOLEM_DETECTED);
 
   public VillagerNPC(EntityType<? extends Villager> entityType, Level level) {
-    this(entityType, level, VariantType.DEFAULT);
+    this(entityType, level, VariantType.DEFAULT_NITWIT);
   }
 
   public VillagerNPC(EntityType<? extends Villager> entityType, Level level, Enum<?> variantType) {

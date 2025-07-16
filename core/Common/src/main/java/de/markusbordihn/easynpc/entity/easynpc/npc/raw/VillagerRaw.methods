@@ -16,3 +16,18 @@
 
     this.setVillagerData(villagerData);
   }
+
+  @Override
+  public MerchantOffers getOffers() {
+    // Use the TradingDataCapable default implementation for better control
+    if (this.getMerchantTradingOffers() == null) {
+      this.updateMerchantTradingOffers();
+    }
+    return this.getMerchantTradingOffers();
+  }
+
+  @Override
+  protected void updateTrades() {
+    // Use TradingDataCapable functionality instead of vanilla villager trading
+    this.updateMerchantTradingOffers();
+  }

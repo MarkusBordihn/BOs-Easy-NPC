@@ -41,12 +41,11 @@ public class DopplerRenderer
   protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
       Util.make(
           new EnumMap<>(VariantType.class),
-          map -> {
-            map.put(
-                VariantType.DEFAULT,
-                ResourceLocation.fromNamespaceAndPath(
-                    Constants.MOD_ID, "textures/entity/doppler/doppler.png"));
-          });
+          map ->
+              map.put(
+                  VariantType.DEFAULT,
+                  ResourceLocation.fromNamespaceAndPath(
+                      Constants.MOD_ID, "textures/entity/doppler/doppler.png")));
   protected static final ResourceLocation DEFAULT_TEXTURE =
       TEXTURE_BY_VARIANT_TYPE.get(VariantType.DEFAULT);
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
