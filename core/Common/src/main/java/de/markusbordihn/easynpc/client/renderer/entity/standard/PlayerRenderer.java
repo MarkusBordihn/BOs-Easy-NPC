@@ -104,7 +104,7 @@ public class PlayerRenderer<T extends PathfinderMob> extends LivingEntityRendere
   @Override
   public ResourceLocation getTextureLocation(T entity) {
     if (entity instanceof EasyNPC<?> easyNPC) {
-      return getEntityTexture(easyNPC);
+      return getEntityPlayerTexture(easyNPC);
     }
     return DEFAULT_TEXTURE;
   }

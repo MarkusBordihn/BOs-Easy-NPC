@@ -19,7 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.item;
 
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.item.configuration.EasyNPCWandItem;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;

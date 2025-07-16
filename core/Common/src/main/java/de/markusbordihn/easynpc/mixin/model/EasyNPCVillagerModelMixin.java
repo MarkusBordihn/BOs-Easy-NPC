@@ -23,11 +23,11 @@ public class EasyNPCVillagerModelMixin<T extends Entity> {
   @Shadow @Final private ModelPart rightLeg;
   @Shadow @Final private ModelPart leftLeg;
 
-  @Unique private EasyNPCModelManager modelManager;
+  @Unique private EasyNPCModelManager easyNPC$modelManager;
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))
   private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
-    this.modelManager =
+    this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
             .defineModelPart(ModelPartType.HAT, this.hat)
             .defineModelPart(ModelPartType.HEAD, this.head)
@@ -50,7 +50,7 @@ public class EasyNPCVillagerModelMixin<T extends Entity> {
       float headPitch,
       CallbackInfo callbackInfo) {
     if (entity instanceof EasyNPC<?> easyNPC
-        && EasyNPCModel.setupAnimationStart(easyNPC, this.modelManager)) {
+        && EasyNPCModel.setupAnimationStart(easyNPC, this.easyNPC$modelManager)) {
       callbackInfo.cancel();
     }
   }
