@@ -128,11 +128,16 @@ public class PlayerTextureManager {
 
     // Validate the skin URL and perform some basic sanity checks and
     // process the remote texture.
-    log.debug("{} Starting remote texture download for {}: {}", LOG_PREFIX, playerUUID, playerSkinUrl);
+    log.debug(
+        "{} Starting remote texture download for {}: {}", LOG_PREFIX, playerUUID, playerSkinUrl);
     ResourceLocation resourceLocation =
         TextureManager.addRemoteTexture(textureModelKey, playerSkinUrl, textureDataFolder);
     if (resourceLocation != null) {
-      log.info("{} Successfully loaded player texture for {}: {}", LOG_PREFIX, playerUUID, resourceLocation);
+      log.info(
+          "{} Successfully loaded player texture for {}: {}",
+          LOG_PREFIX,
+          playerUUID,
+          resourceLocation);
       textureCache.put(textureModelKey, resourceLocation);
       textureSkinTypeCache.put(textureModelKey, skinData.getSkinType());
       return resourceLocation;

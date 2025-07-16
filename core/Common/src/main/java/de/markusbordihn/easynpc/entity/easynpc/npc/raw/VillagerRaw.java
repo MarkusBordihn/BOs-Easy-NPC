@@ -534,7 +534,7 @@ public class VillagerRaw extends Villager implements EasyNPCBase<Villager> {
 
   @Override
   public Enum<?> getDefaultVariantType() {
-    return VariantType.DEFAULT;
+    return VariantType.DEFAULT_NITWIT;
   }
 
   @Override
@@ -592,6 +592,21 @@ public class VillagerRaw extends Villager implements EasyNPCBase<Villager> {
   }
 
   @Override
+  public MerchantOffers getOffers() {
+    // Use the TradingDataCapable default implementation for better control
+    if (this.getMerchantTradingOffers() == null) {
+      this.updateMerchantTradingOffers();
+    }
+    return this.getMerchantTradingOffers();
+  }
+
+  @Override
+  protected void updateTrades() {
+    // Use TradingDataCapable functionality instead of vanilla villager trading
+    this.updateMerchantTradingOffers();
+  }
+
+  @Override
   public boolean equals(Object object) {
     if (this == object) {
       return true;
@@ -608,7 +623,20 @@ public class VillagerRaw extends Villager implements EasyNPCBase<Villager> {
   }
 
   public enum VariantType {
-    DEFAULT,
+    DEFAULT_ARMORER,
+    DEFAULT_BUTCHER,
+    DEFAULT_CARTOGRAPHER,
+    DEFAULT_CLERIC,
+    DEFAULT_FARMER,
+    DEFAULT_FISHERMAN,
+    DEFAULT_FLETCHER,
+    DEFAULT_LEATHERWORKER,
+    DEFAULT_LIBRARIAN,
+    DEFAULT_MASON,
+    DEFAULT_NITWIT,
+    DEFAULT_SHEPHERD,
+    DEFAULT_TOOLSMITH,
+    DEFAULT_WEAPONSMITH,
     DESERT_ARMORER,
     DESERT_BUTCHER,
     DESERT_CARTOGRAPHER,

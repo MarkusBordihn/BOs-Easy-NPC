@@ -64,7 +64,6 @@ public enum ModelPartType {
 
   // Fallback / unknown part
   UNKNOWN("Unknown");
-  ;
 
   public final String tagName;
 

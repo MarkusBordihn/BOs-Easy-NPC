@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Inventory;
 
 public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
@@ -56,14 +57,14 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
 
     int skinPosition = 0;
     skinButtons = new ArrayList<>();
-    ProfessionDataCapable<?> professionData = this.getEasyNPC().getEasyNPCProfessionData();
     VariantDataCapable<?> variantData = this.getEasyNPC().getEasyNPCVariantData();
+
     for (int i = skinStartIndex; i < this.numOfSkins && i < skinStartIndex + maxSkinsPerPage; i++) {
-      int variantIndex = this.numOfProfessions > 0 ? i / this.numOfProfessions : i;
-      Profession profession =
-          this.numOfProfessions > 0
-              ? professionData.getProfessions()[i - (variantIndex * this.numOfProfessions)]
-              : null;
+      int variantIndex = i;
+      if (variantIndex >= variantData.getVariantTypes().length) {
+        variantIndex = variantIndex % variantData.getVariantTypes().length;
+      }
+
       Enum<?> variant = variantData.getVariantTypes()[variantIndex];
       int left =
           this.leftPos
@@ -71,8 +72,8 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
               + (skinPosition * (SKIN_PREVIEW_WIDTH));
       int top = this.contentTopPos + 102 + (skinPosition > 4 ? 84 : 0);
 
-      // Render skin with additional variant and professions.
-      this.renderSkinEntity(left, top, variant, profession);
+      // Render skin entity with variant.
+      this.renderSkinEntity(left, top, variant, null);
 
       // Render skin name
       int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
@@ -80,24 +81,41 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
       guiGraphics.pose().pushPose();
       guiGraphics.pose().translate(0, 0, 100);
       guiGraphics.pose().scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING, SKIN_NAME_SCALING);
-      String variantName = TextUtils.normalizeString(variant.name(), 14);
-      Text.drawString(
-          guiGraphics,
-          this.font,
-          variantName,
-          leftNamePos,
-          topNamePos,
-          Constants.FONT_COLOR_DARK_GREEN);
-      if (profession != null) {
-        String professionName = TextUtils.normalizeString(profession.name(), 13);
+
+      // Determine skin variant name and split into type and profession if applicable.
+      String variantName = variant.name();
+      if (this.getEasyNPCEntity() instanceof Villager
+          && variantName.contains("_")
+          && !variantName.equals("DEFAULT")) {
+        String[] parts = variantName.split("_", 2);
+
+        // Show type as title
         Text.drawString(
             guiGraphics,
             this.font,
-            professionName,
+            TextUtils.normalizeString(parts[0], 14),
+            leftNamePos,
+            topNamePos,
+            Constants.FONT_COLOR_DARK_GREEN);
+
+        // Show profession as subtitle
+        Text.drawString(
+            guiGraphics,
+            this.font,
+            TextUtils.normalizeString(parts[1], 13),
             leftNamePos,
             topNamePos + 10,
             Constants.FONT_COLOR_BLACK);
+      } else {
+        Text.drawString(
+            guiGraphics,
+            this.font,
+            TextUtils.normalizeString(variantName, 14),
+            leftNamePos,
+            topNamePos,
+            Constants.FONT_COLOR_DARK_GREEN);
       }
+
       guiGraphics.pose().popPose();
 
       skinPosition++;
@@ -158,13 +176,9 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
     this.numOfProfessions =
         professionData.hasProfessions() ? professionData.getProfessions().length : 0;
     this.numOfVariants = variantData.getVariantTypes().length;
-    this.numOfSkins =
-        numOfProfessions > 0 ? this.numOfVariants * this.numOfProfessions : this.numOfVariants;
-    log.debug(
-        "Found about {} skins with {} variants and {} professions.",
-        this.numOfSkins,
-        this.numOfVariants,
-        this.numOfProfessions);
+    this.numOfSkins = this.numOfVariants;
+
+    log.debug("Found {} predefined variant combinations.", this.numOfSkins);
 
     // Skin Navigation Buttons
     defineSkinNavigationButtons();
