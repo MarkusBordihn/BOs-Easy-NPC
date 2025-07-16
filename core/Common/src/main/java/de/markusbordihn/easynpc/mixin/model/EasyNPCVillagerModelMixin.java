@@ -23,11 +23,11 @@ public class EasyNPCVillagerModelMixin<T extends VillagerRenderState> {
   @Shadow @Final private ModelPart rightLeg;
   @Shadow @Final private ModelPart leftLeg;
 
-  @Unique private EasyNPCModelManager modelManager;
+  @Unique private EasyNPCModelManager easyNPC$modelManager;
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))
   private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
-    this.modelManager =
+    this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
             .defineModelPart(ModelPartType.HAT, this.hat)
             .defineModelPart(ModelPartType.HEAD, this.head)
@@ -43,7 +43,7 @@ public class EasyNPCVillagerModelMixin<T extends VillagerRenderState> {
       cancellable = true)
   private void setupNpcAnim(T renderState, CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension extension
-        && EasyNPCModel.setupAnimationStart(extension, this.modelManager)) {
+        && EasyNPCModel.setupAnimationStart(extension, this.easyNPC$modelManager)) {
       callbackInfo.cancel();
     }
   }

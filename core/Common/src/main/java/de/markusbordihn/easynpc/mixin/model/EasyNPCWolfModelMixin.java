@@ -26,11 +26,11 @@ public class EasyNPCWolfModelMixin<T extends WolfRenderState> {
   @Shadow @Final private ModelPart leftHindLeg;
   @Shadow @Final private ModelPart tail;
 
-  @Unique private EasyNPCModelManager modelManager;
+  @Unique private EasyNPCModelManager easyNPC$modelManager;
 
   @Inject(method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;)V", at = @At("TAIL"))
   private void easyNpcModel(ModelPart modelPart, CallbackInfo callbackInfo) {
-    this.modelManager =
+    this.easyNPC$modelManager =
         new EasyNPCModelManager(modelPart)
             .defineModelPart(ModelPartType.HEAD, this.head)
             .defineModelPart(ModelPartType.BODY, this.body)
@@ -46,7 +46,7 @@ public class EasyNPCWolfModelMixin<T extends WolfRenderState> {
       cancellable = true)
   private void setupNpcAnim(T renderState, CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension extension
-        && EasyNPCModel.setupAnimationStart(extension, this.modelManager)) {
+        && EasyNPCModel.setupAnimationStart(extension, this.easyNPC$modelManager)) {
       callbackInfo.cancel();
     }
   }
