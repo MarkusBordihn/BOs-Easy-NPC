@@ -155,7 +155,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
       Text.drawString(
           guiGraphics,
           this.font,
-          "Owner: " + (ownerData.hasOwner() ? ownerData.getOwnerName() : "-"),
+          "Owner: " + (ownerData.hasNPCOwner() ? ownerData.getNPCOwnerName() : "-"),
           Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
           Math.round((this.avatarTopPos + 15) / scaleEntityTypeText));
     }

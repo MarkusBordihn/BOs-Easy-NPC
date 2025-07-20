@@ -94,7 +94,7 @@ public class PresetHandler {
     // Set owner, if owner is provided.
     OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
     if (serverPlayer != null && ownerData != null) {
-      ownerData.setOwner(serverPlayer);
+      ownerData.setNPCOwner(serverPlayer);
     }
 
     // Set home position, if spawn position was provided.

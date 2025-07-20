@@ -15,7 +15,7 @@ dependencies {
   modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
   // Include Common code
-  compileOnly project(":Common")
+  implementation project(":Common")
 
   // Additional helpful Mods for development (runtime dependency)
   if (project.hasProperty('fabric_jei_mod') && project.fabric_jei_mod) {
@@ -31,6 +31,11 @@ dependencies {
 
 loom {
   accessWidenerPath = file("src/main/resources/easynpc.accesswidener")
+
+  mixin {
+    defaultRefmapName = "easy_npc.refmap.json"
+  }
+
   runs {
     client {
       client()
@@ -80,6 +85,7 @@ publishing {
       artifactId project.archivesBaseName
       version project.version
       from components.java
+      artifact jar
     }
   }
 }

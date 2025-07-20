@@ -47,24 +47,45 @@ public interface OwnerDataCapable<T extends PathfinderMob> extends EasyNPC<T>, O
         SynchedEntityData.defineId(entityClass, EntityDataSerializers.OPTIONAL_UUID));
   }
 
+  default void setNPCOwnerUUID(UUID uuid) {
+    setSynchedEntityData(SynchedDataIndex.OWNER_UUID, Optional.ofNullable(uuid));
+  }
+
+  default boolean hasNPCOwner() {
+    return this.getOwnerUUID() != null;
+  }
+
+  default boolean isNPCOwnedBy(LivingEntity livingEntity) {
+    return livingEntity != null
+        && this.hasNPCOwner()
+        && livingEntity.getUUID().equals(this.getOwnerUUID());
+  }
+
+  default void setNPCOwner(LivingEntity owner) {
+    if (owner != null) {
+      this.setNPCOwnerUUID(owner.getUUID());
+    } else {
+      this.setNPCOwnerUUID(null);
+    }
+  }
+
+  default String getNPCOwnerName() {
+    LivingEntity owner = this.getOwner();
+    return owner == null ? "" : owner.getName().getString();
+  }
+
+  default boolean isNPCOwner(ServerPlayer serverPlayer) {
+    return serverPlayer != null && isNPCOwner(serverPlayer.getUUID());
+  }
+
+  default boolean isNPCOwner(UUID uuid) {
+    return uuid != null && this.hasNPCOwner() && uuid.equals(this.getOwnerUUID());
+  }
+
   @Override
   default UUID getOwnerUUID() {
     Optional<UUID> ownerUUID = getSynchedEntityData(SynchedDataIndex.OWNER_UUID);
     return ownerUUID.orElse(null);
-  }
-
-  default void setOwnerUUID(UUID uuid) {
-    setSynchedEntityData(SynchedDataIndex.OWNER_UUID, Optional.ofNullable(uuid));
-  }
-
-  default boolean hasOwner() {
-    return this.getOwnerUUID() != null;
-  }
-
-  default boolean isOwnedBy(LivingEntity livingEntity) {
-    return livingEntity != null
-        && this.hasOwner()
-        && livingEntity.getUUID().equals(this.getOwnerUUID());
   }
 
   @Override
@@ -81,27 +102,6 @@ public interface OwnerDataCapable<T extends PathfinderMob> extends EasyNPC<T>, O
     }
   }
 
-  default void setOwner(LivingEntity owner) {
-    if (owner != null) {
-      this.setOwnerUUID(owner.getUUID());
-    } else {
-      this.setOwnerUUID(null);
-    }
-  }
-
-  default String getOwnerName() {
-    LivingEntity owner = this.getOwner();
-    return owner == null ? "" : owner.getName().getString();
-  }
-
-  default boolean isOwner(ServerPlayer serverPlayer) {
-    return serverPlayer != null && isOwner(serverPlayer.getUUID());
-  }
-
-  default boolean isOwner(UUID uuid) {
-    return uuid != null && this.hasOwner() && uuid.equals(this.getOwnerUUID());
-  }
-
   default void defineSynchedOwnerData() {
     defineSynchedEntityData(SynchedDataIndex.OWNER_UUID, Optional.empty());
   }
@@ -115,7 +115,7 @@ public interface OwnerDataCapable<T extends PathfinderMob> extends EasyNPC<T>, O
   default void readAdditionalOwnerData(CompoundTag compoundTag) {
     if (compoundTag.hasUUID(DATA_OWNER_TAG)) {
       UUID uuid = compoundTag.getUUID(DATA_OWNER_TAG);
-      this.setOwnerUUID(uuid);
+      this.setNPCOwnerUUID(uuid);
     }
   }
 }

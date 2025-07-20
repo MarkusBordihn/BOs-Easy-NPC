@@ -14,7 +14,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LivingEntityRenderer.class)
 public class EasyNPCLivingEntityRendererMixin {
 
-  @Inject(method = "render", at = @At("HEAD"))
+  @Inject(
+      method =
+          "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
+      at = @At("HEAD"))
   private void onRenderStart(
       LivingEntity entity,
       float entityYaw,
@@ -45,7 +48,10 @@ public class EasyNPCLivingEntityRendererMixin {
     }
   }
 
-  @Inject(method = "scale", at = @At("HEAD"))
+  @Inject(
+      method =
+          "scale(Lnet/minecraft/world/entity/LivingEntity;Lcom/mojang/blaze3d/vertex/PoseStack;F)V",
+      at = @At("HEAD"))
   private void onScale(LivingEntity entity, PoseStack poseStack, float scale, CallbackInfo ci) {
     if (entity instanceof EasyNPC<?> easyNPC) {
       EasyNPCLivingEntityRenderer.handleScale(easyNPC, poseStack);

@@ -65,9 +65,15 @@ dependencies {
   modRuntimeOnly group: 'de.markusbordihn.easynpc', name: 'easy_npc-fabric-1.20.1', version: "${project.version}"
   modRuntimeOnly group: 'de.markusbordihn.easynpc.configui', name: 'easy_npc_config_ui-fabric-1.20.1', version: "${project.version}"
 
-  // Include dependencies in final JAR using Fabric's include feature
-  include group: 'de.markusbordihn.easynpc', name: 'easy_npc-fabric-1.20.1', version: "${project.version}"
-  include group: 'de.markusbordihn.easynpc.configui', name: 'easy_npc_config_ui-fabric-1.20.1', version: "${project.version}"
+  // Include dependencies in final JAR with proper metadata preservation
+  include(group: 'de.markusbordihn.easynpc', name: 'easy_npc-fabric-1.20.1', version: "${project.version}") {
+    exclude group: 'net.fabricmc.fabric-api'
+    exclude group: 'net.fabricmc'
+  }
+  include(group: 'de.markusbordihn.easynpc.configui', name: 'easy_npc_config_ui-fabric-1.20.1', version: "${project.version}") {
+    exclude group: 'net.fabricmc.fabric-api'
+    exclude group: 'net.fabricmc'
+  }
 }
 
 // The standard remapJar task will automatically include the 'include' dependencies

@@ -164,7 +164,7 @@ public class FollowObjective extends Command {
 
     // Get owner data
     OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
-    if (ownerData == null || !ownerData.hasOwner() || ownerData.getOwnerUUID() == null) {
+    if (ownerData == null || !ownerData.hasNPCOwner() || ownerData.getOwnerUUID() == null) {
       return sendFailureMessageNoOwnerData(context, easyNPC);
     }
 

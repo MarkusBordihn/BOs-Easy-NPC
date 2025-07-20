@@ -51,7 +51,7 @@ public class InteractionHandler {
     }
     ConfigurationDataCapable<?> configurationData = easyNPC.getEasyNPCConfigurationData();
     OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
-    boolean isOwnerOrCreative = serverPlayer.isCreative() || ownerData.isOwner(serverPlayer);
+    boolean isOwnerOrCreative = serverPlayer.isCreative() || ownerData.isNPCOwner(serverPlayer);
 
     // Item based actions.
     ItemStack handItemStack = player.getItemInHand(hand);

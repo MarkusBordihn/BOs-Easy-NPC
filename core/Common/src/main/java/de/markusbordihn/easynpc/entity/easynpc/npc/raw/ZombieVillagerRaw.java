@@ -384,7 +384,7 @@ public class ZombieVillagerRaw extends ZombieVillager implements EasyNPCBase<Zom
   public boolean canBeLeashed(Player player) {
     if (!this.isLeashed()
         && player instanceof ServerPlayer serverPlayer
-        && (serverPlayer.isCreative() || isOwner(serverPlayer))) {
+        && (serverPlayer.isCreative() || isNPCOwner(serverPlayer))) {
       return true;
     }
     return !this.isLeashed() && getEntityAttributes().getInteractionAttributes().canBeLeashed();

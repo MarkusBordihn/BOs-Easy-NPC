@@ -380,7 +380,7 @@ public class HorseRaw extends Horse implements EasyNPCBase<Horse> {
   public boolean canBeLeashed(Player player) {
     if (!this.isLeashed()
         && player instanceof ServerPlayer serverPlayer
-        && (serverPlayer.isCreative() || isOwner(serverPlayer))) {
+        && (serverPlayer.isCreative() || isNPCOwner(serverPlayer))) {
       return true;
     }
     return !this.isLeashed() && getEntityAttributes().getInteractionAttributes().canBeLeashed();

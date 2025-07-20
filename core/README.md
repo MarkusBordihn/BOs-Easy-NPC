@@ -27,7 +27,8 @@ Easy NPC is integrated.
 
 > ⚠️ Most players should use the **bundled version**, which includes a user-friendly config UI.  
 > 👉 Available
-> at: [https://www.curseforge.com/minecraft/mc-mods/easy-npc](https://www.curseforge.com/minecraft/mc-mods/easy-npc)
+>
+at: [https://www.curseforge.com/minecraft/mc-mods/easy-npc](https://www.curseforge.com/minecraft/mc-mods/easy-npc)
 
 ## ✅ Can Be Used Standalone
 
