@@ -19,18 +19,19 @@
 
 package de.markusbordihn.easynpc.bundle;
 
-import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.ModInitializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class EasyNPCBundleClient implements ClientModInitializer {
+public class EasyNPCBundleMod implements ModInitializer {
 
-  public static final String MOD_NAME = "Easy NPC (Bundle) Client";
-  public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
+  public static final String MOD_ID = "easy_npc_bundle";
+  public static final String MOD_NAME = "Easy NPC (Bundle)";
+  public static final Logger log = LogManager.getLogger(MOD_NAME);
 
   @Override
-  public void onInitializeClient() {
-    LOGGER.info("Loading {} ...", MOD_NAME);
-    LOGGER.info("Client-side bundle initialization complete");
+  public void onInitialize() {
+    log.info("Loading {} ...", MOD_NAME);
+    log.info("This bundle includes Easy NPC Core and Easy NPC Config UI");
   }
 }

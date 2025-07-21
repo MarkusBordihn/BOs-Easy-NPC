@@ -75,15 +75,15 @@ dependencies {
   minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
 
   // Regular dependencies for development mode (runClient/runServer)
-  runtimeOnly fg.deobf(group: 'de.markusbordihn.easynpc', name: 'easy_npc-forge-1.20.1', version: "${project.version}")
-  runtimeOnly fg.deobf(group: 'de.markusbordihn.easynpc.configui', name: 'easy_npc_config_ui-forge-1.20.1', version: "${project.version}")
+  runtimeOnly fg.deobf(group: 'de.markusbordihn.easynpc', name: "easy_npc-forge-${project.minecraft_version}", version: "${project.version}")
+  runtimeOnly fg.deobf(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-forge-${project.minecraft_version}", version: "${project.version}")
 
   // JarJar dependencies for final JAR distribution
-  jarJar(group: 'de.markusbordihn.easynpc', name: 'easy_npc-forge-1.20.1', version: "[${project.version},)") {
+  jarJar(group: 'de.markusbordihn.easynpc', name: "easy_npc-forge-${project.minecraft_version}", version: "[${project.version},)") {
     jarJar.pin(it, "${project.version}")
   }
 
-  jarJar(group: 'de.markusbordihn.easynpc.configui', name: 'easy_npc_config_ui-forge-1.20.1', version: "[${project.version},)") {
+  jarJar(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-forge-${project.minecraft_version}", version: "[${project.version},)") {
     jarJar.pin(it, "${project.version}")
   }
 }

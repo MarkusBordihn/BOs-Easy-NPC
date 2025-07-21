@@ -113,7 +113,6 @@ dependencies {
 mixin {
   config 'easy_npc.forge.mixins.json'
 
-  // Ensure proper refmap generation for Forge
   add sourceSets.main, "easy_npc.refmap.json"
   debug.verbose = true
   debug.export = true
@@ -126,7 +125,6 @@ tasks.withType(JavaCompile).configureEach {
 processResources {
   from project(":Common").sourceSets.main.resources
 }
-
 
 tasks.named('jar', Jar).configure {
   manifest {

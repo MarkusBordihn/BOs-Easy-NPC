@@ -16,10 +16,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "de.markusbordihn.easynpc.bundle.EasyNPCBundle"
-    ],
-    "client": [
-      "de.markusbordihn.easynpc.bundle.EasyNPCBundleClient"
+      "de.markusbordihn.easynpc.bundle.EasyNPCBundleMod"
     ]
   },
   "depends": {

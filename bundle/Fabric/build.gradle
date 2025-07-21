@@ -62,15 +62,15 @@ dependencies {
   modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
   // Bundle dependencies - use compileOnly to avoid transitive dependency issues
-  modRuntimeOnly group: 'de.markusbordihn.easynpc', name: 'easy_npc-fabric-1.20.1', version: "${project.version}"
-  modRuntimeOnly group: 'de.markusbordihn.easynpc.configui', name: 'easy_npc_config_ui-fabric-1.20.1', version: "${project.version}"
+  modRuntimeOnly group: 'de.markusbordihn.easynpc', name: "easy_npc-fabric-${project.minecraft_version}", version: "${project.version}"
+  modRuntimeOnly group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-fabric-${project.minecraft_version}", version: "${project.version}"
 
   // Include dependencies in final JAR with proper metadata preservation
-  include(group: 'de.markusbordihn.easynpc', name: 'easy_npc-fabric-1.20.1', version: "${project.version}") {
+  include(group: 'de.markusbordihn.easynpc', name: "easy_npc-fabric-${project.minecraft_version}", version: "${project.version}") {
     exclude group: 'net.fabricmc.fabric-api'
     exclude group: 'net.fabricmc'
   }
-  include(group: 'de.markusbordihn.easynpc.configui', name: 'easy_npc_config_ui-fabric-1.20.1', version: "${project.version}") {
+  include(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-fabric-${project.minecraft_version}", version: "${project.version}") {
     exclude group: 'net.fabricmc.fabric-api'
     exclude group: 'net.fabricmc'
   }
