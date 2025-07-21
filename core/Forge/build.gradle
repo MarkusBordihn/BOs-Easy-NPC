@@ -19,7 +19,6 @@ minecraft {
 
   accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
-  // Default run configurations.
   runs {
     client {
       workingDirectory project.file('run/client')
@@ -104,7 +103,7 @@ dependencies {
   annotationProcessor "org.spongepowered:mixin:0.8.7:processor"
 
   // Include Common code
-  compileOnly project(":Common")
+  implementation project(":Common")
 
   // Additional helpful Mods for development (runtime dependency)
   if (project.hasProperty('forge_jei_mod') && project.forge_jei_mod) {
@@ -121,6 +120,7 @@ dependencies {
 mixin {
   config 'easy_npc.common.mixins.json'
 
+  add sourceSets.main, "easy_npc.refmap.json"
   debug.verbose = true
   debug.export = true
 }
@@ -144,7 +144,7 @@ jar {
         "Implementation-Version"  : "${project.version}",
         "Implementation-Vendor"   : "${project.mod_id}",
         "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-        "MixinConfigs"            : "easy_npc.common.mixins.json",
+        "MixinConfigs"            : "easy_npc.forge.mixins.json",
     ])
   }
 }

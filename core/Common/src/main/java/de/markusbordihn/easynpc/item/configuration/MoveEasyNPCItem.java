@@ -61,7 +61,7 @@ public class MoveEasyNPCItem extends Item {
         && player instanceof ServerPlayer serverPlayer
         && (serverPlayer.isCreative()
             || (easyNPC.getEasyNPCOwnerData() == null
-                && easyNPC.getEasyNPCOwnerData().isOwner(serverPlayer)))) {
+                && easyNPC.getEasyNPCOwnerData().isNPCOwner(serverPlayer)))) {
       targetedLivingEntityMap.put(player, livingEntity);
       return InteractionResult.SUCCESS;
     }

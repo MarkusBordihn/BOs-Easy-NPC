@@ -73,7 +73,7 @@ public class AccessManager {
           OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
           OwnerDataCapable<?> ownerDataEntity = easyNPCEntity.getEasyNPCOwnerData();
           boolean ownerDataAccess =
-              (!ownerData.hasOwner() && !ownerDataEntity.hasOwner())
+              (!ownerData.hasNPCOwner() && !ownerDataEntity.hasNPCOwner())
                   || (ownerData.getOwner() != null
                       && ownerData.getOwner().equals(ownerDataEntity.getOwner()));
           if (ownerDataAccess) {
@@ -126,7 +126,7 @@ public class AccessManager {
 
     // Check if player has permission to access the entity.
     if (!serverPlayer.isCreative()
-        && !easyNPC.getEasyNPCOwnerData().isOwner(serverPlayer)
+        && !easyNPC.getEasyNPCOwnerData().isNPCOwner(serverPlayer)
         && serverPlayer.getServer() != null
         && serverPlayer.getServer().getProfilePermissions(serverPlayer.getGameProfile())
             < Commands.LEVEL_GAMEMASTERS) {

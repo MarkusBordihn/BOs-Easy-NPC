@@ -15,7 +15,7 @@ dependencies {
   modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
   // Include Common code
-  compileOnly project(":Common")
+  implementation project(":Common")
 
   // Include Core Common code
   modImplementation("de.markusbordihn.easynpc:easy_npc-fabric-${project.minecraft_version}:${project.version}")

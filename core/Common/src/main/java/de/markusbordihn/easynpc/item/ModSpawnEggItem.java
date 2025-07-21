@@ -121,7 +121,7 @@ public class ModSpawnEggItem extends SpawnEggItem {
       if (entity instanceof EasyNPC<?> easyNPC && player != null) {
         OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
         if (ownerData != null) {
-          ownerData.setOwnerUUID(player.getUUID());
+          ownerData.setNPCOwnerUUID(player.getUUID());
         }
       }
 

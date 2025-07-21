@@ -1,0 +1,142 @@
+plugins {
+  id 'maven-publish'
+  id 'fabric-loom' version '1.9-SNAPSHOT'
+  id 'com.matthewprenger.cursegradle' version '1.4.0'
+  id 'nu.studer.credentials' version '3.0'
+  id "com.modrinth.minotaur" version "2.+"
+}
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+  maven {
+    name = 'Fabric'
+    url = 'https://maven.fabricmc.net/'
+  }
+  maven {
+    name = 'Sponge / Mixin'
+    url = 'https://repo.spongepowered.org/repository/maven-public/'
+  }
+  maven {
+    name = 'CurseForge'
+    url = 'https://cursemaven.com'
+    content {
+      includeGroup "curse.maven"
+    }
+  }
+}
+
+archivesBaseName = "${project.mod_id}-fabric-${project.minecraft_version}"
+
+sourceSets {
+  main {
+    resources {
+      srcDirs += [
+          '../Common/src/main/resources'
+      ]
+    }
+  }
+}
+
+loom {
+  runs {
+    client {
+      client()
+      setConfigName("Fabric Client")
+      ideConfigGenerated(true)
+      runDir("run/client")
+    }
+    server {
+      server()
+      setConfigName("Fabric Server")
+      ideConfigGenerated(true)
+      runDir("run/server")
+    }
+  }
+}
+
+dependencies {
+  minecraft "com.mojang:minecraft:${project.minecraft_version}"
+  mappings loom.officialMojangMappings()
+  modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
+  modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+  // Bundle dependencies - use compileOnly to avoid transitive dependency issues
+  modRuntimeOnly group: 'de.markusbordihn.easynpc', name: "easy_npc-fabric-${project.minecraft_version}", version: "${project.version}"
+  modRuntimeOnly group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-fabric-${project.minecraft_version}", version: "${project.version}"
+
+  // Include dependencies in final JAR with proper metadata preservation
+  include(group: 'de.markusbordihn.easynpc', name: "easy_npc-fabric-${project.minecraft_version}", version: "${project.version}") {
+    exclude group: 'net.fabricmc.fabric-api'
+    exclude group: 'net.fabricmc'
+  }
+  include(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-fabric-${project.minecraft_version}", version: "${project.version}") {
+    exclude group: 'net.fabricmc.fabric-api'
+    exclude group: 'net.fabricmc'
+  }
+}
+
+// The standard remapJar task will automatically include the 'include' dependencies
+tasks.named('remapJar') {
+  archiveClassifier = 'all'
+  archiveFileName = "${project.mod_id}-${project.version}-fabric-${project.minecraft_version}.jar"
+
+  from('../Common/src/main/resources') {
+    include 'pack.mcmeta'
+    include 'logo.png'
+  }
+}
+
+// Keep the slim jar as well
+jar {
+  archiveClassifier = 'slim'
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+  from('../Common/src/main/resources') {
+    include 'pack.mcmeta'
+    include 'logo.png'
+  }
+
+  manifest {
+    attributes([
+        "Specification-Title"     : "${project.mod_name}",
+        "Specification-Vendor"    : "${project.mod_author}",
+        "Specification-Version"   : "${project.version}",
+        "Implementation-Title"    : "${project.mod_name}",
+        "Implementation-Version"  : "${project.version}",
+        "Implementation-Vendor"   : "${project.mod_author}",
+        "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+    ])
+  }
+}
+
+// CurseForge Publishing
+if (project.hasProperty('curseforge_project_id') && project.curseforge_project_id) {
+  curseforge {
+    apiKey = "${credentials.forKey('curseforge_api_token')}"
+    project {
+      id = "${project.curseforge_project_id}"
+      changelog = rootProject.file('../core/CHANGELOG.md')
+      changelogType = 'markdown'
+      releaseType = "${project.curseforge_release_type}"
+      addGameVersion("${project.minecraft_version}")
+      addGameVersion("Fabric")
+      mainArtifact(remapJar)
+    }
+  }
+}
+
+// Modrinth Publishing
+if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
+  modrinth {
+    token = "${credentials.forKey('modrinth_api_token')}"
+    projectId = "${project.modrinth_project_id}"
+    versionNumber = "${project.version}"
+    versionType = "${project.modrinth_release_type}"
+    versionName = "${project.mod_name} ${project.version}"
+    changelog = rootProject.file('../core/CHANGELOG.md').text
+    uploadFile = remapJar
+    gameVersions = ["${project.minecraft_version}"]
+    loaders = ["fabric"]
+  }
+}

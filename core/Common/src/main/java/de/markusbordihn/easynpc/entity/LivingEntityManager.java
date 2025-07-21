@@ -227,7 +227,7 @@ public class LivingEntityManager {
     HashMap<UUID, Entity> result = new HashMap<>();
     for (var entry : npcEntityMap.entrySet()) {
       EasyNPC<?> easyNPC = entry.getValue();
-      if (easyNPC instanceof OwnerDataCapable<?> ownerData && ownerData.isOwner(ownerUUID)) {
+      if (easyNPC instanceof OwnerDataCapable<?> ownerData && ownerData.isNPCOwner(ownerUUID)) {
         result.put(entry.getKey(), easyNPC.getEntity());
       }
     }

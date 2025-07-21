@@ -47,13 +47,13 @@ public class OwnerHandler {
       return false;
     }
 
-    if (ownerData.getOwner() != null && ownerData.isOwnedBy(owner)) {
+    if (ownerData.getOwner() != null && ownerData.isNPCOwnedBy(owner)) {
       log.debug("[{}] Owner is already set to {}!", easyNPC, owner);
       return true;
     }
 
     log.debug("[{}] Setting owner to {}", easyNPC, owner);
-    ownerData.setOwnerUUID(owner.getUUID());
+    ownerData.setNPCOwnerUUID(owner.getUUID());
 
     // Update objective data if follow owner objective is active.
     ObjectiveDataCapable<?> objectiveData = easyNPC.getEasyNPCObjectiveData();
@@ -85,7 +85,7 @@ public class OwnerHandler {
     }
 
     log.debug("[{}] Removing owner ...", easyNPC);
-    ownerData.setOwner(null);
+    ownerData.setNPCOwner(null);
     return true;
   }
 }

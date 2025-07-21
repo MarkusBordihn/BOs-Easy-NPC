@@ -1,0 +1,158 @@
+plugins {
+  id 'maven-publish'
+  id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+  id 'com.matthewprenger.cursegradle' version '1.4.0'
+  id 'nu.studer.credentials' version '3.0'
+  id "com.modrinth.minotaur" version "2.+"
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+
+jarJar.enable()
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+  maven {
+    name = 'MinecraftForge'
+    url = 'https://maven.minecraftforge.net/'
+  }
+  maven {
+    name = 'Sponge / Mixin'
+    url = 'https://repo.spongepowered.org/repository/maven-public/'
+  }
+}
+
+archivesBaseName = "${project.mod_id}-forge-${project.minecraft_version}"
+
+sourceSets {
+  main {
+    resources {
+      srcDirs += [
+          '../Common/src/main/resources'
+      ]
+    }
+  }
+}
+
+minecraft {
+  mappings channel: 'official', version: "${project.minecraft_version}"
+
+  reobf = false
+  copyIdeResources = true
+
+  runs {
+    client {
+      workingDirectory project.file('run/client')
+      property 'forge.logging.markers', 'REGISTRIES'
+      property 'forge.logging.console.level', 'debug'
+      property 'forge.enabledGameTestNamespaces', "${project.mod_id}"
+
+      mods {
+        "${project.mod_id}" {
+          source sourceSets.main
+        }
+      }
+
+      // Mixin Support
+      property 'mixin.env.remapRefMap', 'true'
+      property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+    }
+
+    server {
+      workingDirectory project.file('run/server')
+      property 'forge.logging.markers', 'REGISTRIES'
+      property 'forge.logging.console.level', 'debug'
+      property 'forge.enabledGameTestNamespaces', "${project.mod_id}"
+
+      mods {
+        "${project.mod_id}" {
+          source sourceSets.main
+        }
+      }
+    }
+  }
+}
+
+dependencies {
+  minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
+
+  // Regular dependencies for development mode (runClient/runServer)
+  runtimeOnly fg.deobf(group: 'de.markusbordihn.easynpc', name: "easy_npc-forge-${project.minecraft_version}", version: "${project.version}")
+  runtimeOnly fg.deobf(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-forge-${project.minecraft_version}", version: "${project.version}")
+
+  // JarJar dependencies for final JAR distribution
+  jarJar(group: 'de.markusbordihn.easynpc', name: "easy_npc-forge-${project.minecraft_version}", version: "[${project.version},)") {
+    jarJar.pin(it, "${project.version}")
+  }
+
+  jarJar(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-forge-${project.minecraft_version}", version: "[${project.version},)") {
+    jarJar.pin(it, "${project.version}")
+  }
+}
+
+jar {
+  archiveClassifier = 'slim'
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+  from('../Common/src/main/resources') {
+    include 'pack.mcmeta'
+    include 'logo.png'
+  }
+
+  manifest {
+    attributes([
+        "Specification-Title"     : "${project.mod_name}",
+        "Specification-Vendor"    : "${project.mod_author}",
+        "Specification-Version"   : "${project.version}",
+        "Implementation-Title"    : "${project.mod_name}",
+        "Implementation-Version"  : "${project.version}",
+        "Implementation-Vendor"   : "${project.mod_author}",
+        "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+    ])
+  }
+}
+
+tasks.named('jarJar') {
+  archiveClassifier = 'all'
+  archiveFileName = "${project.mod_id}-${project.version}-forge-${project.minecraft_version}.jar"
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+  from('../Common/src/main/resources') {
+    include 'pack.mcmeta'
+    include 'logo.png'
+  }
+}
+
+build.dependsOn tasks.named('jarJar')
+
+// CurseForge Publishing
+if (project.hasProperty('curseforge_project_id') && project.curseforge_project_id) {
+  curseforge {
+    apiKey = "${credentials.forKey('curseforge_api_token')}"
+    project {
+      id = "${project.curseforge_project_id}"
+      changelog = rootProject.file('../core/CHANGELOG.md')
+      changelogType = 'markdown'
+      releaseType = "${project.curseforge_release_type}"
+      addGameVersion("${project.minecraft_version}")
+      addGameVersion("Forge")
+      mainArtifact(tasks.jarJar)
+    }
+  }
+}
+
+// Modrinth Publishing
+if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
+  modrinth {
+    token = "${credentials.forKey('modrinth_api_token')}"
+    projectId = "${project.modrinth_project_id}"
+    versionNumber = "${project.version}"
+    versionType = "${project.modrinth_release_type}"
+    versionName = "${project.mod_name} ${project.version}"
+    changelog = rootProject.file('../core/CHANGELOG.md').text
+    uploadFile = tasks.jarJar
+    gameVersions = ["${project.minecraft_version}"]
+    loaders = ["forge"]
+  }
+}

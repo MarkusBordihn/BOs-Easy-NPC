@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "easy_npc_bundle",
+  "version": "${version}",
+  "name": "Easy NPC (Bundle)",
+  "description": "Bundle version of Easy NPC mod with configuration UI included",
+  "authors": [
+    "Markus Bordihn"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/easy-npc",
+    "issues": "https://github.com/MarkusBordihn/BOs-Easy-NPC/issues"
+  },
+  "license": "MIT",
+  "icon": "logo.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "de.markusbordihn.easynpc.bundle.EasyNPCBundleMod"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "fabric-api": "*",
+    "minecraft": "~1.21.3",
+    "java": ">=17"
+  }
+}

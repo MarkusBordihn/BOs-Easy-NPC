@@ -1,4 +1,4 @@
-# Changelog for Easy NPC: Config UI (1.20.1)
+# Changelog for Easy NPC: Config UI (1.20.3)
 
 ## Note
 

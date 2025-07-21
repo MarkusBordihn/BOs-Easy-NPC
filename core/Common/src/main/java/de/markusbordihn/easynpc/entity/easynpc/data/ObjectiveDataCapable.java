@@ -160,7 +160,8 @@ public interface ObjectiveDataCapable<T extends PathfinderMob> extends EasyNPC<T
   }
 
   private boolean isObjectiveOwner(ServerPlayer serverPlayer) {
-    return this.getEasyNPCOwnerData() != null && this.getEasyNPCOwnerData().isOwner(serverPlayer);
+    return this.getEasyNPCOwnerData() != null
+        && this.getEasyNPCOwnerData().isNPCOwner(serverPlayer);
   }
 
   private boolean isObjectiveTargetedPlayer(ServerPlayer serverPlayer) {
