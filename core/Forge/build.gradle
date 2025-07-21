@@ -19,7 +19,6 @@ minecraft {
 
   accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
-  // Default run configurations.
   runs {
     client {
       workingDirectory project.file('run/client')
@@ -104,7 +103,7 @@ dependencies {
   annotationProcessor "org.spongepowered:mixin:0.8.7:processor"
 
   // Include Common code
-  compileOnly project(":Common")
+  implementation project(":Common")
 
   // Additional helpful Mods for development (runtime dependency)
   if (project.hasProperty('forge_jei_mod') && project.forge_jei_mod) {
@@ -119,8 +118,9 @@ dependencies {
 }
 
 mixin {
-  config 'easy_npc.common.mixins.json'
+  config 'easy_npc.forge.mixins.json'
 
+  add sourceSets.main, "easy_npc.refmap.json"
   debug.verbose = true
   debug.export = true
 }
@@ -133,18 +133,17 @@ processResources {
   from project(":Common").sourceSets.main.resources
 }
 
-// Example for how to get properties into the manifest for reading by the runtime..
-jar {
+tasks.named('jar', Jar).configure {
   manifest {
     attributes([
         "Specification-Title"     : "${project.mod_name}",
         "Specification-Vendor"    : "${project.vendor_name}",
-        "Specification-Version"   : "1", // We are version 1 of ourselves
+        "Specification-Version"   : "1",
         "Implementation-Title"    : project.name,
         "Implementation-Version"  : "${project.version}",
         "Implementation-Vendor"   : "${project.mod_id}",
         "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-        "MixinConfigs"            : "easy_npc.common.mixins.json",
+        "MixinConfigs"            : "easy_npc.forge.mixins.json",
     ])
   }
 }

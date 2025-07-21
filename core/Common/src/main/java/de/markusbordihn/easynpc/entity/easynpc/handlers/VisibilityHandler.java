@@ -112,7 +112,7 @@ public class VisibilityHandler {
     if (displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_TO_OWNER)
         && displayAttributeData.getDisplayBooleanAttribute(DisplayAttributeType.VISIBLE_TO_OWNER)
         && ownerData != null
-        && ownerData.hasOwner()
+        && ownerData.hasNPCOwner()
         && Objects.equals(ownerData.getOwnerUUID(), player.getUUID())) {
       isVisible = true;
     }

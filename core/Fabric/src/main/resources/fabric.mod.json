@@ -28,7 +28,7 @@
     ]
   },
   "mixins": [
-    "easy_npc.common.mixins.json"
+    "easy_npc.fabric.mixins.json"
   ],
   "accessWidener": "easynpc.accesswidener",
   "depends": {

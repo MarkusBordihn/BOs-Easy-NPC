@@ -85,7 +85,7 @@ public class LookObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 objectiveEntriesFirstColumn,
                 objectiveEntriesTop,
                 ObjectiveType.LOOK_AT_OWNER.getObjectiveName(),
-                ownerData.getOwnerName(),
+                ownerData.getNPCOwnerName(),
                 objectiveDataSet.hasObjective(ObjectiveType.LOOK_AT_OWNER),
                 checkbox -> {
                   ObjectiveDataEntry objectiveDataEntry =

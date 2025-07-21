@@ -1,0 +1,150 @@
+plugins {
+  id 'maven-publish'
+  id 'net.neoforged.gradle.userdev' version '7.0.190'
+  id 'com.matthewprenger.cursegradle' version '1.4.0'
+  id 'nu.studer.credentials' version '3.0'
+  id "com.modrinth.minotaur" version "2.+"
+}
+
+base {
+  archivesName = "${project.mod_id}-neoforge-${project.minecraft_version}"
+}
+
+jarJar.enable()
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+  maven {
+    name = 'NeoForge'
+    url = 'https://maven.neoforged.net/releases/'
+  }
+  maven {
+    name = 'Sponge / Mixin'
+    url = 'https://repo.spongepowered.org/repository/maven-public/'
+  }
+}
+
+sourceSets {
+  main {
+    resources {
+      srcDirs += [
+          '../Common/src/main/resources'
+      ]
+    }
+  }
+}
+
+runs {
+  configureEach {
+    systemProperty 'forge.logging.markers', 'REGISTRIES'
+    systemProperty 'forge.logging.console.level', 'debug'
+    modSource project.sourceSets.main
+  }
+
+  client {
+    systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+  }
+
+  client2 {
+    runType('client')
+    workingDirectory project.file('runs/client2')
+    arguments.addAll '--username', 'guest_player'
+  }
+
+  server {
+    systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+    programArgument '--nogui'
+  }
+
+  gameTestServer {
+    systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+  }
+
+  data {
+    arguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+  }
+}
+
+dependencies {
+  implementation "net.neoforged:neoforge:${project.neoforge_version}"
+
+  // Regular dependencies for development mode (runClient/runServer)
+  runtimeOnly(group: 'de.markusbordihn.easynpc', name: "easy_npc-neoforge-${project.minecraft_version}", version: "${project.version}")
+  runtimeOnly(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-neoforge-${project.minecraft_version}", version: "${project.version}")
+
+  // JarJar dependencies for final JAR distribution
+  jarJar(group: 'de.markusbordihn.easynpc', name: "easy_npc-neoforge-${project.minecraft_version}", version: "[${project.version},)") {
+    jarJar.pin(it, "${project.version}")
+  }
+
+  jarJar(group: 'de.markusbordihn.easynpc.configui', name: "easy_npc_config_ui-neoforge-${project.minecraft_version}", version: "[${project.version},)") {
+    jarJar.pin(it, "${project.version}")
+  }
+}
+
+jar {
+  archiveClassifier = 'slim'
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+  from('../Common/src/main/resources') {
+    include 'pack.mcmeta'
+    include 'logo.png'
+  }
+
+  manifest {
+    attributes([
+        "Specification-Title"     : "${project.mod_name}",
+        "Specification-Vendor"    : "${project.mod_author}",
+        "Specification-Version"   : "${project.version}",
+        "Implementation-Title"    : "${project.mod_name}",
+        "Implementation-Version"  : "${project.version}",
+        "Implementation-Vendor"   : "${project.mod_author}",
+        "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+    ])
+  }
+}
+
+tasks.named('jarJar') {
+  archiveClassifier = 'all'
+  archiveFileName = "${project.mod_id}-${project.version}-neoforge-${project.minecraft_version}.jar"
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+  from('../Common/src/main/resources') {
+    include 'pack.mcmeta'
+    include 'logo.png'
+  }
+}
+
+build.dependsOn tasks.named('jarJar')
+
+// CurseForge Publishing
+if (project.hasProperty('curseforge_project_id') && project.curseforge_project_id) {
+  curseforge {
+    apiKey = "${credentials.forKey('curseforge_api_token')}"
+    project {
+      id = "${project.curseforge_project_id}"
+      changelog = rootProject.file('../core/CHANGELOG.md')
+      changelogType = 'markdown'
+      releaseType = "${project.curseforge_release_type}"
+      addGameVersion("${project.minecraft_version}")
+      addGameVersion("NeoForge")
+      mainArtifact(tasks.jarJar)
+    }
+  }
+}
+
+// Modrinth Publishing
+if (project.hasProperty('modrinth_project_id') && project.modrinth_project_id) {
+  modrinth {
+    token = "${credentials.forKey('modrinth_api_token')}"
+    projectId = "${project.modrinth_project_id}"
+    versionNumber = "${project.version}"
+    versionType = "${project.modrinth_release_type}"
+    versionName = "${project.mod_name} ${project.version}"
+    changelog = rootProject.file('../core/CHANGELOG.md').text
+    uploadFile = tasks.jarJar
+    gameVersions = ["${project.minecraft_version}"]
+    loaders = ["neoforge"]
+  }
+}

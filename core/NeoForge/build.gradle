@@ -1,6 +1,6 @@
 plugins {
   id 'maven-publish'
-  id 'net.neoforged.gradle.userdev' version '7.0.145'
+  id 'net.neoforged.gradle.userdev' version '7.0.190'
   id 'com.matthewprenger.cursegradle' version '1.4.0'
   id 'nu.studer.credentials' version '3.0'
   id "com.modrinth.minotaur" version "2.+"
@@ -24,9 +24,9 @@ runs {
   }
 
   client2 {
-    configure('client')
+    runType('client')
     workingDirectory project.file('runs/client2')
-    programArguments.addAll '--username', 'guest_player'
+    arguments.addAll '--username', 'guest_player'
   }
 
   server {
@@ -39,7 +39,7 @@ runs {
   }
 
   data {
-    programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+    arguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
   }
 }
 
@@ -49,7 +49,7 @@ dependencies {
   implementation "net.neoforged:neoforge:${project.neoforge_version}"
 
   // Include Common code
-  compileOnly project(":Common")
+  implementation project(":Common")
 
   // Test dependencies
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
