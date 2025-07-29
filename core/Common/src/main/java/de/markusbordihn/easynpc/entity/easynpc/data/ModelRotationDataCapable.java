@@ -89,22 +89,21 @@ public interface ModelRotationDataCapable<T extends PathfinderMob> extends EasyN
 
   default void setModelPartRotation(EnumMap<ModelPartType, CustomRotation> modelPartMap) {
     if (modelPartMap != null) {
-      setSynchedEntityData(SynchedDataIndex.MODEL_ROTATION, modelPartMap);
+      setSynchedEntityData(SynchedDataIndex.MODEL_ROTATION, modelPartMap, true);
     }
-  }
-
-  default CustomRotation getModelPartRotation(ModelPartType modelPartType) {
-    EnumMap<ModelPartType, CustomRotation> modelPartMap = getModelPartRotation();
-    return modelPartMap.getOrDefault(modelPartType, DEFAULT_MODEL_PART_ROTATION);
   }
 
   default void setModelPartRotation(ModelPartType modelPartType, CustomRotation rotation) {
     EnumMap<ModelPartType, CustomRotation> modelPartMap = getModelPartRotation();
     if (modelPartType != null) {
       modelPartMap.put(modelPartType, rotation);
-      setSynchedEntityData(SynchedDataIndex.MODEL_ROTATION, new EnumMap<>(ModelPartType.class));
-      setSynchedEntityData(SynchedDataIndex.MODEL_ROTATION, modelPartMap);
+      this.setModelPartRotation(new EnumMap<>(modelPartMap));
     }
+  }
+
+  default CustomRotation getModelPartRotation(ModelPartType modelPartType) {
+    EnumMap<ModelPartType, CustomRotation> modelPartMap = getModelPartRotation();
+    return modelPartMap.getOrDefault(modelPartType, DEFAULT_MODEL_PART_ROTATION);
   }
 
   default void setModelRotation(float y) {
@@ -167,8 +166,6 @@ public interface ModelRotationDataCapable<T extends PathfinderMob> extends EasyN
         modelPartMap.put(modelPartType, new CustomRotation(modelPartType, rotationsTag));
       }
     }
-    if (!modelPartMap.isEmpty()) {
-      setModelPartRotation(modelPartMap);
-    }
+    setModelPartRotation(modelPartMap);
   }
 }

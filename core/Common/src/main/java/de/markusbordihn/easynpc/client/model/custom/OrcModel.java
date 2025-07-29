@@ -125,6 +125,12 @@ public class OrcModel<S extends HumanoidRenderState> extends HumanoidModel<S> {
   }
 
   @Override
+  public void setupAnim(S renderState) {
+    super.setupAnim(renderState);
+    this.hat.visible = false;
+  }
+
+  @Override
   protected HumanoidModel.ArmPose getArmPose(S renderState, HumanoidArm humanoidArm) {
     if (renderState instanceof EasyNPCRenderStateExtension extension) {
       return HumanoidRawModel.getArmPose(extension, renderState, humanoidArm);

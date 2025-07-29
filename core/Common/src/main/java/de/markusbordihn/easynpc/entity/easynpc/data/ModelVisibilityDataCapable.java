@@ -88,7 +88,15 @@ public interface ModelVisibilityDataCapable<T extends PathfinderMob> extends Eas
 
   default void setModelPartVisibility(EnumMap<ModelPartType, Boolean> modelPartMap) {
     if (modelPartMap != null) {
-      setSynchedEntityData(SynchedDataIndex.MODEL_VISIBILITY, modelPartMap);
+      setSynchedEntityData(SynchedDataIndex.MODEL_VISIBILITY, modelPartMap, true);
+    }
+  }
+
+  default void setModelPartVisibility(ModelPartType modelPartType, boolean visible) {
+    EnumMap<ModelPartType, Boolean> modelPartMap = getModelPartVisibility();
+    if (modelPartType != null) {
+      modelPartMap.put(modelPartType, visible);
+      this.setModelPartVisibility(new EnumMap<>(modelPartMap));
     }
   }
 
@@ -131,15 +139,6 @@ public interface ModelVisibilityDataCapable<T extends PathfinderMob> extends Eas
     }
   }
 
-  default void setModelPartVisibility(ModelPartType modelPartType, boolean visible) {
-    EnumMap<ModelPartType, Boolean> modelPartMap = getModelPartVisibility();
-    if (modelPartType != null) {
-      modelPartMap.put(modelPartType, visible);
-      setSynchedEntityData(SynchedDataIndex.MODEL_VISIBILITY, new EnumMap<>(ModelPartType.class));
-      setSynchedEntityData(SynchedDataIndex.MODEL_VISIBILITY, modelPartMap);
-    }
-  }
-
   default boolean hasChangedModelVisibility() {
     EnumMap<ModelPartType, Boolean> modelPartMap = getModelPartVisibility();
     for (Map.Entry<ModelPartType, Boolean> entry : modelPartMap.entrySet()) {
@@ -176,8 +175,6 @@ public interface ModelVisibilityDataCapable<T extends PathfinderMob> extends Eas
         modelPartMap.put(modelPartType, visibilityTag.getBoolean(key));
       }
     }
-    if (!modelPartMap.isEmpty()) {
-      setModelPartVisibility(modelPartMap);
-    }
+    setModelPartVisibility(modelPartMap);
   }
 }

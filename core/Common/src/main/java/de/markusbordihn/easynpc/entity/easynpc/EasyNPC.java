@@ -221,7 +221,17 @@ public interface EasyNPC<E extends PathfinderMob> extends EasyNPCDataAccessors<E
    * @param synchedDataIndex The index of the synched data.
    * @param data The data to set.
    */
-  <T> void setSynchedEntityData(SynchedDataIndex synchedDataIndex, T data);
+  default <T> void setSynchedEntityData(SynchedDataIndex synchedDataIndex, T data) {
+    setSynchedEntityData(synchedDataIndex, data, false);
+  }
+
+  /**
+   * Set the synched entity data for the EasyNPC.
+   *
+   * @param synchedDataIndex The index of the synched data.
+   * @param data The data to set.
+   */
+  <T> void setSynchedEntityData(SynchedDataIndex synchedDataIndex, T data, boolean forceUpdate);
 
   /**
    * Get the synched entity data for the EasyNPC.
