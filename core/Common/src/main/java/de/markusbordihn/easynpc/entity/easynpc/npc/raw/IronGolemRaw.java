@@ -354,8 +354,9 @@ public class IronGolemRaw extends IronGolem implements EasyNPCBase<IronGolem> {
   }
 
   @Override
-  public <T> void setSynchedEntityData(SynchedDataIndex synchedDataIndex, T data) {
-    this.synchedEntityData.set(synchedDataIndex, data);
+  public <T> void setSynchedEntityData(
+      SynchedDataIndex synchedDataIndex, T data, boolean forceUpdate) {
+    this.synchedEntityData.set(synchedDataIndex, data, forceUpdate);
   }
 
   @Override

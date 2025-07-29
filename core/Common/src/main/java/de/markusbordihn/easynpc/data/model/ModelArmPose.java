@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.data.model;
 
 public enum ModelArmPose {
-  // @formatter:off
   ATTACKING,
   ATTACKING_WITH_MELEE_WEAPON,
   BOW_AND_ARROW,
@@ -35,8 +34,6 @@ public enum ModelArmPose {
   NEUTRAL,
   SPELLCASTING,
   SPYGLASS;
-
-  // @formatter:on
 
   public static ModelArmPose get(String armPose) {
     if (armPose == null || armPose.isEmpty()) {

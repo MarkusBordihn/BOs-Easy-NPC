@@ -39,13 +39,6 @@ public class EasyNPCModel {
     return setupAnimation(easyNPC, modelData, modelManager);
   }
 
-  /**
-   * Setup Animation for Model.
-   *
-   * @param easyNPC the EasyNPC entity
-   * @param modelManager the model manager
-   * @return true if model was adjusted, false otherwise
-   */
   public static boolean setupAnimation(
       final EasyNPC<?> easyNPC,
       final ModelDataCapable<?> modelData,

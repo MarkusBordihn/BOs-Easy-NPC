@@ -20,11 +20,8 @@
 package de.markusbordihn.easynpc.data.model;
 
 public enum ModelPose {
-  // @formatter:off
   DEFAULT,
   CUSTOM;
-
-  // @formatter:on
 
   public static ModelPose get(String modelPose) {
     if (modelPose == null || modelPose.isEmpty()) {

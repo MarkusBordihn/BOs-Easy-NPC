@@ -120,4 +120,16 @@ public class OrcModel<T extends LivingEntity> extends HumanoidModel<T> {
 
     return LayerDefinition.create(meshDefinition, 128, 128);
   }
+
+  @Override
+  public void setupAnim(
+      T livingEntity,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch) {
+    super.setupAnim(livingEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+    this.hat.visible = false;
+  }
 }

@@ -27,9 +27,6 @@ public class LivingEntityEvents {
 
   protected LivingEntityEvents() {}
 
-  /*
-   * @param livingEntity
-   */
   public static void handleLivingEntityJoinEvent(LivingEntity livingEntity) {
     if (livingEntity == null) {
       return;
@@ -44,9 +41,6 @@ public class LivingEntityEvents {
     }
   }
 
-  /*
-   * @param livingEntity
-   */
   public static void handleLivingEntityLeaveEvent(LivingEntity livingEntity) {
     if (livingEntity == null) {
       return;

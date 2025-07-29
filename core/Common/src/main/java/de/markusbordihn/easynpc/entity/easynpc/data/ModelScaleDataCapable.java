@@ -58,22 +58,21 @@ public interface ModelScaleDataCapable<T extends PathfinderMob> extends EasyNPC<
 
   default void setModelPartScale(EnumMap<ModelPartType, CustomScale> modelPartMap) {
     if (modelPartMap != null) {
-      setSynchedEntityData(SynchedDataIndex.MODEL_SCALE, modelPartMap);
+      setSynchedEntityData(SynchedDataIndex.MODEL_SCALE, modelPartMap, true);
     }
-  }
-
-  default CustomScale getModelPartScale(ModelPartType modelPartType) {
-    EnumMap<ModelPartType, CustomScale> modelPartMap = getModelPartScale();
-    return modelPartMap.getOrDefault(modelPartType, DEFAULT_MODEL_PART_SCALE);
   }
 
   default void setModelPartScale(ModelPartType modelPartType, CustomScale Scale) {
     EnumMap<ModelPartType, CustomScale> modelPartMap = getModelPartScale();
     if (modelPartType != null) {
       modelPartMap.put(modelPartType, Scale);
-      setSynchedEntityData(SynchedDataIndex.MODEL_SCALE, new EnumMap<>(ModelPartType.class));
-      setSynchedEntityData(SynchedDataIndex.MODEL_SCALE, modelPartMap);
+      this.setModelPartScale(new EnumMap<>(modelPartMap));
     }
+  }
+
+  default CustomScale getModelPartScale(ModelPartType modelPartType) {
+    EnumMap<ModelPartType, CustomScale> modelPartMap = getModelPartScale();
+    return modelPartMap.getOrDefault(modelPartType, DEFAULT_MODEL_PART_SCALE);
   }
 
   default boolean hasChangedModelScale() {
@@ -115,8 +114,6 @@ public interface ModelScaleDataCapable<T extends PathfinderMob> extends EasyNPC<
         modelPartMap.put(modelPartType, new CustomScale(modelPartType, positionTag));
       }
     }
-    if (!modelPartMap.isEmpty()) {
-      setModelPartScale(modelPartMap);
-    }
+    setModelPartScale(modelPartMap);
   }
 }

@@ -354,8 +354,9 @@ public class IllusionerRaw extends Illusioner implements EasyNPCBase<Illusioner>
   }
 
   @Override
-  public <T> void setSynchedEntityData(SynchedDataIndex synchedDataIndex, T data) {
-    this.synchedEntityData.set(synchedDataIndex, data);
+  public <T> void setSynchedEntityData(
+      SynchedDataIndex synchedDataIndex, T data, boolean forceUpdate) {
+    this.synchedEntityData.set(synchedDataIndex, data, forceUpdate);
   }
 
   @Override

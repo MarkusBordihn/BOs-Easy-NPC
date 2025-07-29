@@ -246,7 +246,7 @@ public class EntityDataSerializersManager {
           });
   public static final EntityDataSerializer<Map<ModelPartType, CustomRotation>> MODEL_PART_ROTATION =
       defineSerializer(
-          Map.class.getSimpleName() + ":" + ModelPartType.class.getSimpleName() + ":CustomRotation",
+          ModelPartType.class.getSimpleName() + ":CustomRotation",
           new EntityDataSerializer<>() {
             @Override
             public void write(FriendlyByteBuf buffer, Map<ModelPartType, CustomRotation> value) {
@@ -275,7 +275,7 @@ public class EntityDataSerializersManager {
           });
   public static final EntityDataSerializer<Map<ModelPartType, CustomPosition>> MODEL_PART_POSITION =
       defineSerializer(
-          Map.class.getSimpleName() + ":" + ModelPartType.class.getSimpleName() + ":CustomPosition",
+          ModelPartType.class.getSimpleName() + ":CustomPosition",
           new EntityDataSerializer<>() {
             @Override
             public void write(FriendlyByteBuf buffer, Map<ModelPartType, CustomPosition> value) {
@@ -304,7 +304,7 @@ public class EntityDataSerializersManager {
           });
   public static final EntityDataSerializer<Map<ModelPartType, CustomScale>> MODEL_PART_SCALE =
       defineSerializer(
-          Map.class.getSimpleName() + ":" + ModelPartType.class.getSimpleName() + ":CustomScale",
+          ModelPartType.class.getSimpleName() + ":CustomScale",
           new EntityDataSerializer<>() {
             @Override
             public void write(FriendlyByteBuf buffer, Map<ModelPartType, CustomScale> value) {
@@ -332,7 +332,7 @@ public class EntityDataSerializersManager {
           });
   public static final EntityDataSerializer<Map<ModelPartType, Boolean>> MODEL_PART_VISIBILITY =
       defineSerializer(
-          Map.class.getSimpleName() + ":" + ModelPartType.class.getSimpleName() + ":Boolean",
+          ModelPartType.class.getSimpleName() + ":Visibility",
           new EntityDataSerializer<>() {
             @Override
             public void write(FriendlyByteBuf buffer, Map<ModelPartType, Boolean> value) {
