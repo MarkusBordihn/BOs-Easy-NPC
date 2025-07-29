@@ -88,22 +88,21 @@ public interface ModelPositionDataCapable<T extends PathfinderMob> extends EasyN
 
   default void setModelPartPosition(EnumMap<ModelPartType, CustomPosition> modelPartMap) {
     if (modelPartMap != null) {
-      setSynchedEntityData(SynchedDataIndex.MODEL_POSITION, modelPartMap);
+      setSynchedEntityData(SynchedDataIndex.MODEL_POSITION, modelPartMap, true);
     }
-  }
-
-  default CustomPosition getModelPartPosition(ModelPartType modelPartType) {
-    EnumMap<ModelPartType, CustomPosition> modelPartMap = getModelPartPosition();
-    return modelPartMap.getOrDefault(modelPartType, DEFAULT_MODEL_PART_POSITION);
   }
 
   default void setModelPartPosition(ModelPartType modelPartType, CustomPosition Position) {
     EnumMap<ModelPartType, CustomPosition> modelPartMap = getModelPartPosition();
     if (modelPartType != null) {
       modelPartMap.put(modelPartType, Position);
-      setSynchedEntityData(SynchedDataIndex.MODEL_POSITION, new EnumMap<>(ModelPartType.class));
-      setSynchedEntityData(SynchedDataIndex.MODEL_POSITION, modelPartMap);
+      this.setModelPartPosition(new EnumMap<>(modelPartMap));
     }
+  }
+
+  default CustomPosition getModelPartPosition(ModelPartType modelPartType) {
+    EnumMap<ModelPartType, CustomPosition> modelPartMap = getModelPartPosition();
+    return modelPartMap.getOrDefault(modelPartType, DEFAULT_MODEL_PART_POSITION);
   }
 
   default boolean hasChangedModelPosition() {
@@ -142,8 +141,6 @@ public interface ModelPositionDataCapable<T extends PathfinderMob> extends EasyN
         modelPartMap.put(modelPartType, new CustomPosition(modelPartType, positionTag));
       }
     }
-    if (!modelPartMap.isEmpty()) {
-      setModelPartPosition(modelPartMap);
-    }
+    setModelPartPosition(modelPartMap);
   }
 }

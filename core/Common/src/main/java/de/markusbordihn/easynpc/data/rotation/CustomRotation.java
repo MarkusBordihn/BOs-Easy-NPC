@@ -95,13 +95,4 @@ public record CustomRotation(float x, float y, float z, boolean locked) {
   public boolean hasChanged(float x, float y, float z, boolean locked) {
     return this.x != x || this.y != y || this.z != z || this.locked != locked;
   }
-
-  @Override
-  public boolean equals(Object object) {
-    return object instanceof CustomRotation(float x1, float y1, float z1, boolean locked1)
-        && this.x == x1
-        && this.y == y1
-        && this.z == z1
-        && this.locked == locked1;
-  }
 }

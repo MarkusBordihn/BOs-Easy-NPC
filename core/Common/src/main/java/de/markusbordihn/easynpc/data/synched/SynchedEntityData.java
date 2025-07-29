@@ -61,8 +61,12 @@ public final class SynchedEntityData {
   }
 
   public <T> void set(SynchedDataIndex synchedDataIndex, T data) {
+    this.set(synchedDataIndex, data, false);
+  }
+
+  public <T> void set(SynchedDataIndex synchedDataIndex, T data, boolean forceUpdate) {
     EntityDataAccessor<T> entityDataAccessor =
         (EntityDataAccessor<T>) this.entityDataAccessorMap.get(synchedDataIndex);
-    this.entity.getEntityData().set(entityDataAccessor, data);
+    this.entity.getEntityData().set(entityDataAccessor, data, forceUpdate);
   }
 }

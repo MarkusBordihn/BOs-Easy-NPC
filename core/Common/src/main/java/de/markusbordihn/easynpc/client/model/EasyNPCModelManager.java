@@ -127,11 +127,12 @@ public class EasyNPCModelManager {
       ModelPart modelPart = entry.getValue();
 
       // Check if model part is available.
-      Boolean isVisible = modelData.getModelPartVisibility(partType);
-      if (Boolean.FALSE.equals(isVisible)) {
+      Boolean visibility = modelData.getModelPartVisibility(partType);
+      if (Boolean.FALSE.equals(visibility)) {
         modelPart.visible = false;
         continue;
-      } else if (Boolean.TRUE.equals(isVisible)) {
+      } else if (Boolean.TRUE.equals(visibility)
+          && Boolean.TRUE.equals(defaultModelPartVisibilityMap.get(partType))) {
         modelPart.visible = true;
       }
 
@@ -168,8 +169,27 @@ public class EasyNPCModelManager {
         }
         hasChangedModelPart = true;
       }
+
+      // Sync model parts
+      this.syncModelParts(modelData);
     }
     return hasChangedModelPart;
+  }
+
+  public void syncModelParts(final ModelDataCapable<?> modelData) {
+    if (modelData == null || modelData.getModelPose() == ModelPose.DEFAULT) {
+      return;
+    }
+
+    // Check if model has visible hat model part and sync it with head model part.
+    ModelPart hatModelPart = modelPartMap.get(ModelPartType.HAT);
+    ModelPart headModelPart = modelPartMap.get(ModelPartType.HEAD);
+    if (hatModelPart != null
+        && headModelPart != null
+        && Boolean.TRUE.equals(defaultModelPartVisibilityMap.get(ModelPartType.HAT))) {
+      hatModelPart.copyFrom(headModelPart);
+      hatModelPart.visible = headModelPart.visible;
+    }
   }
 
   public void resetModelParts() {
