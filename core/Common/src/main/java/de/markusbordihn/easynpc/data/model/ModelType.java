@@ -40,6 +40,32 @@ public enum ModelType {
           ModelPartType.LEFT_WING,
           ModelPartType.RIGHT_LEG,
           ModelPartType.LEFT_LEG)),
+  CANINE(
+      EnumSet.of(
+          ModelPartType.HEAD,
+          ModelPartType.BODY,
+          ModelPartType.RIGHT_FRONT_LEG,
+          ModelPartType.LEFT_FRONT_LEG,
+          ModelPartType.RIGHT_HIND_LEG,
+          ModelPartType.LEFT_HIND_LEG,
+          ModelPartType.TAIL)),
+  CREEPER(
+      EnumSet.of(
+          ModelPartType.HEAD,
+          ModelPartType.BODY,
+          ModelPartType.RIGHT_FRONT_LEG,
+          ModelPartType.LEFT_FRONT_LEG,
+          ModelPartType.RIGHT_HIND_LEG,
+          ModelPartType.LEFT_HIND_LEG)),
+  EQUINE(
+      EnumSet.of(
+          ModelPartType.HEAD,
+          ModelPartType.BODY,
+          ModelPartType.RIGHT_FRONT_LEG,
+          ModelPartType.LEFT_FRONT_LEG,
+          ModelPartType.RIGHT_HIND_LEG,
+          ModelPartType.LEFT_HIND_LEG,
+          ModelPartType.TAIL)),
   FELINE(
       EnumSet.of(
           ModelPartType.HEAD,
@@ -50,14 +76,6 @@ public enum ModelType {
           ModelPartType.LEFT_HIND_LEG,
           ModelPartType.TAIL1,
           ModelPartType.TAIL2)),
-  CREEPER(
-      EnumSet.of(
-          ModelPartType.HEAD,
-          ModelPartType.BODY,
-          ModelPartType.RIGHT_FRONT_LEG,
-          ModelPartType.LEFT_FRONT_LEG,
-          ModelPartType.RIGHT_HIND_LEG,
-          ModelPartType.LEFT_HIND_LEG)),
   GOLEM(
       EnumSet.of(
           ModelPartType.HEAD,
@@ -74,15 +92,6 @@ public enum ModelType {
           ModelPartType.LEFT_ARM,
           ModelPartType.RIGHT_LEG,
           ModelPartType.LEFT_LEG)),
-  EQUINE(
-      EnumSet.of(
-          ModelPartType.HEAD,
-          ModelPartType.BODY,
-          ModelPartType.RIGHT_FRONT_LEG,
-          ModelPartType.LEFT_FRONT_LEG,
-          ModelPartType.RIGHT_HIND_LEG,
-          ModelPartType.LEFT_HIND_LEG,
-          ModelPartType.TAIL)),
   ILLAGER(
       EnumSet.of(
           ModelPartType.HEAD,

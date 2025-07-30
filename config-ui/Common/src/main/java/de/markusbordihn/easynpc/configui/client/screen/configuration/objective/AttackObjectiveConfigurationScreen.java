@@ -42,6 +42,8 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
   protected Checkbox attackMobCheckbox;
   protected Checkbox attackMobWithoutCreeperCheckbox;
   protected Checkbox attackVillagerCheckbox;
+  protected Checkbox ownerHurtByTargetCheckbox;
+  protected Checkbox hurtByTargetCheckbox;
 
   public AttackObjectiveConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
@@ -139,6 +141,23 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
                 objectiveEntriesSecondColumn,
                 objectiveEntriesTop,
                 ObjectiveType.ATTACK_MOB_WITHOUT_CREEPER));
+
+    // Protection/Defense section
+    objectiveEntriesTop += SPACE_BETWEEN_ENTRIES + 10;
+
+    // Owner Hurt By Target (Protect Owner)
+    this.ownerHurtByTargetCheckbox =
+        this.addRenderableWidget(
+            this.getObjectiveCheckbox(
+                objectiveEntriesFirstColumn,
+                objectiveEntriesTop,
+                ObjectiveType.OWNER_HURT_BY_TARGET));
+
+    // Hurt By Target (Defend Self)
+    this.hurtByTargetCheckbox =
+        this.addRenderableWidget(
+            this.getObjectiveCheckbox(
+                objectiveEntriesSecondColumn, objectiveEntriesTop, ObjectiveType.HURT_BY_TARGET));
   }
 
   @Override
@@ -159,6 +178,19 @@ public class AttackObjectiveConfigurationScreen<T extends ConfigurationMenu>
           this.contentLeftPos + 5, y, this.contentLeftPos + 300, y + 1, 0x60808080, 0x60808080);
       Text.drawConfigString(
           guiGraphics, this.font, "attack_targets", this.contentLeftPos + 115, y - 8, 0xFF808080);
+    }
+
+    if (this.ownerHurtByTargetCheckbox != null) {
+      int y = this.ownerHurtByTargetCheckbox.getY() - 3;
+      guiGraphics.fillGradient(
+          this.contentLeftPos + 5, y, this.contentLeftPos + 300, y + 1, 0x60808080, 0x60808080);
+      Text.drawConfigString(
+          guiGraphics,
+          this.font,
+          "protection_targets",
+          this.contentLeftPos + 115,
+          y - 8,
+          0xFF808080);
     }
   }
 }

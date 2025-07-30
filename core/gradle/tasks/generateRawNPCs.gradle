@@ -67,6 +67,15 @@ task generateRawNPCs {
           variants : "EVOKER, EVOKER_CROSSED_ARMS"
       ],
       [
+          id       : "fox_raw",
+          class    : "net.minecraft.world.entity.animal.Fox",
+          className: "FoxRaw",
+          baseClass: "Fox",
+          modelType: "CANINE",
+          variant  : "RED",
+          variants : "RED, SNOW"
+      ],
+      [
           id       : "horse_raw",
           class    : "net.minecraft.world.entity.animal.horse.Horse",
           className: "HorseRaw",

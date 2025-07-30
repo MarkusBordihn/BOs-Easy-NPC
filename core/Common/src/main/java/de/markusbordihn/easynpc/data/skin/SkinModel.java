@@ -27,6 +27,7 @@ public enum SkinModel {
   CHICKEN,
   CREEPER,
   FAIRY,
+  FOX,
   DROWNED,
   EVOKER,
   ENDER_MAN,

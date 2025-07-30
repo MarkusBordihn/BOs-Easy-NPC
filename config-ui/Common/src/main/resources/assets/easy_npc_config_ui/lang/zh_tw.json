@@ -308,5 +308,8 @@
   "text.easy_npc.item.easy_npc_preset.entity_type": "實體類型：%s",
   "text.easy_npc.item.easy_npc_wand": "EasyNPC 魔杖是一個用於 EasyNPC 的設定工具，允許你更輕鬆地選擇和設定 NPC，而無需直接對準牠們。",
   "text.easy_npc.item.move_easy_npc": "使用滑鼠右鍵選擇 EasyNPC，然後使用滑鼠左鍵將其移動到目標位置。",
-  "text.easy_npc.not_implemented": "尚未實作！"
+  "text.easy_npc.not_implemented": "尚未實作！",
+  "text.easy_npc.config.protection_targets": "保護目標",
+  "text.easy_npc.config.hurt_by_target": "自我防禦",
+  "text.easy_npc.config.owner_hurt_by_target": "保護所有者"
 }

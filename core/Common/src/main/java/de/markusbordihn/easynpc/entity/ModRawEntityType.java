@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.raw.CreeperRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.DrownedRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.EnderManRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.EvokerRaw;
+import de.markusbordihn.easynpc.entity.easynpc.npc.raw.FoxRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.HorseRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.IllusionerRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.IronGolemRaw;
@@ -91,6 +92,13 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
           .sized(0.6F, 1.9F)
           .clientTrackingRange(12),
       DrownedRaw::createAttributes),
+  FOX(
+      FoxRaw.ID,
+      EntityType.Builder.of(
+              (EntityType<FoxRaw> type, Level level) -> new FoxRaw(type, level), MobCategory.MISC)
+          .sized(0.6F, 0.7F)
+          .clientTrackingRange(12),
+      FoxRaw::createAttributes),
   HORSE(
       HorseRaw.ID,
       EntityType.Builder.of(

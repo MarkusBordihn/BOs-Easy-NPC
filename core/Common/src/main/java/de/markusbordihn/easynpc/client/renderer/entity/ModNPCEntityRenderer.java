@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.client.renderer.entity.raw.CatRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.ChickenRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.DrownedRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.EvokerRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.FoxRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.HorseRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.IllusionerRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.IronGolemRawRenderer;
@@ -51,6 +52,7 @@ public enum ModNPCEntityRenderer {
   CHICKEN(ModNPCEntityType.CHICKEN, () -> ChickenRawRenderer::new),
   DROWNED(ModNPCEntityType.DROWNED, () -> DrownedRawRenderer::new),
   EVOKER(ModNPCEntityType.EVOKER, () -> EvokerRawRenderer::new),
+  FOX(ModNPCEntityType.FOX, () -> FoxRawRenderer::new),
   HORSE(ModNPCEntityType.HORSE, () -> HorseRawRenderer::new),
   HORSE_SKELETON(ModNPCEntityType.HORSE_SKELETON, () -> HorseRawRenderer::new),
   HORSE_ZOMBIE(ModNPCEntityType.HORSE_ZOMBIE, () -> HorseRawRenderer::new),

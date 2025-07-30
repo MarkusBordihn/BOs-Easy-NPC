@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.entity.easynpc.ai.goal.BowAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CrossbowAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomLookAtPlayerGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomMeleeAttackGoal;
+import de.markusbordihn.easynpc.entity.easynpc.ai.goal.CustomOwnerHurtByTargetGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.FollowLivingEntityGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.GunAttackGoal;
 import de.markusbordihn.easynpc.entity.easynpc.ai.goal.MoveBackToHomeGoal;
@@ -49,6 +50,7 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
 import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.monster.Creeper;
@@ -248,6 +250,12 @@ public class ObjectiveUtils {
       case ATTACK_VILLAGER ->
           new NearestAttackableTargetGoal<>(
               pathfinderMob, AbstractVillager.class, objectiveDataEntry.isMustSeeTarget());
+      case OWNER_HURT_BY_TARGET -> new CustomOwnerHurtByTargetGoal<>(easyNPC);
+      case HURT_BY_TARGET -> {
+        var hurtByTargetGoal = new HurtByTargetGoal(pathfinderMob);
+        hurtByTargetGoal.setAlertOthers();
+        yield hurtByTargetGoal;
+      }
       default -> null;
     };
   }

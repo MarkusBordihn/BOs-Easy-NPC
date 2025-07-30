@@ -308,5 +308,8 @@
   "text.easy_npc.item.easy_npc_preset.entity_type": "Entity Type: %s",
   "text.easy_npc.item.easy_npc_wand": "The EasyNPC wand is a configuration tool for Easy NPCs that allows for easier selection and configuration of NPCs without having to directly target them.",
   "text.easy_npc.item.move_easy_npc": "Select the EasyNPC with the right mouse button and move it with the left mouse button to the targeted position.",
-  "text.easy_npc.not_implemented": "Not implemented yet!"
+  "text.easy_npc.not_implemented": "Not implemented yet!",
+  "text.easy_npc.config.protection_targets": "Protection Targets",
+  "text.easy_npc.config.hurt_by_target": "Defend Self",
+  "text.easy_npc.config.owner_hurt_by_target": "Protect Owner"
 }
