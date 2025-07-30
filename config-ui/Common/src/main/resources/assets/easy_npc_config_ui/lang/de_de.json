@@ -308,5 +308,8 @@
   "text.easy_npc.item.easy_npc_preset.entity_type": "Entitätstyp: %s",
   "text.easy_npc.item.easy_npc_wand": "Der Easy NPC-Zauberstab ist ein Konfigurationswerkzeug für EasyNPCs, das eine einfachere Auswahl und Konfiguration von NPCs ermöglicht, ohne dass sie direkt ausgewählt werden müssen.",
   "text.easy_npc.item.move_easy_npc": "Wählen den EasyNPC mit der rechten Maustaste aus und bewegen Ihn mit der linken Maustaste an die gewünschte Position.",
-  "text.easy_npc.not_implemented": "Noch nicht implementiert!"
+  "text.easy_npc.not_implemented": "Noch nicht implementiert!",
+  "text.easy_npc.config.protection_targets": "Schutzziele",
+  "text.easy_npc.config.hurt_by_target": "Selbstverteidigung",
+  "text.easy_npc.config.owner_hurt_by_target": "Besitzer beschützen"
 }

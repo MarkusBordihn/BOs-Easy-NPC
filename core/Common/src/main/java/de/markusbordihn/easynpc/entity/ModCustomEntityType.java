@@ -58,7 +58,8 @@ public enum ModCustomEntityType implements ModEntityTypeProvider {
   ORC_WARRIOR(
       Orc.ID_WARRIOR,
       EntityType.Builder.of(
-              (EntityType<Orc> type, Level level) -> new Orc(type, level), MobCategory.MISC)
+              (EntityType<Orc> type, Level level) -> new Orc(type, level, Orc.Variant.WARRIOR),
+              MobCategory.MISC)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       Orc::createAttributes);

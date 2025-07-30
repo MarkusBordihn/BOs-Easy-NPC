@@ -156,7 +156,7 @@ publishing {
 
 tasks.named('build') {
   dependsOn 'reobfJar'
-  finalizedBy 'publishToMavenLocal'
+  finalizedBy tasks.named('publishToMavenLocal')
 }
 
 test {

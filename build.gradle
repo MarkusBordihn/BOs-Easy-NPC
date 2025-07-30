@@ -1,4 +1,5 @@
 apply plugin: 'java'
+import org.gradle.tooling.GradleConnector
 
 subprojects {
 
@@ -10,4 +11,83 @@ subprojects {
     options.encoding = 'UTF-8'
   }
 
+}
+
+// Override default build task to build all modules
+tasks.named('build') {
+  description = 'Builds all modules (core, config-ui, bundle)'
+
+  doLast {
+    // Define module directories
+    def modules = ['core', 'config-ui', 'bundle']
+
+    // Build each module
+    modules.each { moduleName ->
+      def moduleDir = file("${rootDir}/${moduleName}")
+
+      println "Building module: ${moduleName}"
+      def connection = GradleConnector.newConnector()
+          .forProjectDirectory(moduleDir)
+          .connect()
+
+      try {
+        def buildLauncher = connection.newBuild()
+        buildLauncher.forTasks('build')
+        buildLauncher.setStandardOutput(System.out)
+        buildLauncher.setStandardError(System.err)
+        buildLauncher.run()
+        println "Successfully built module: ${moduleName}"
+      } finally {
+        connection.close()
+      }
+    }
+
+    println "All modules successfully built."
+  }
+}
+
+// Create a publish task to build and publish all modules sequentially
+tasks.register('publish') {
+  description = 'Builds and publishes all modules sequentially (core, config-ui, bundle)'
+  group = "publishing"
+
+  // Make sure build runs first
+  dependsOn 'build'
+
+  doLast {
+    // Define module directories in the order they should be published
+    def modules = ['core', 'config-ui', 'bundle']
+
+    // Publishing tasks to run for each module
+    def publishingTasks = ['modrinth', 'curseforge']
+
+    // Process each module sequentially
+    modules.each { moduleName ->
+      def moduleDir = file("${rootDir}/${moduleName}")
+
+      // Run each publishing task sequentially for the current module
+      publishingTasks.each { publishTask ->
+        println "Publishing module: ${moduleName} with task: ${publishTask}"
+        def connection = GradleConnector.newConnector()
+            .forProjectDirectory(moduleDir)
+            .connect()
+
+        try {
+          def publishLauncher = connection.newBuild()
+          publishLauncher.forTasks(publishTask)
+          publishLauncher.setStandardOutput(System.out)
+          publishLauncher.setStandardError(System.err)
+          publishLauncher.run()
+          println "Successfully published module: ${moduleName} with task: ${publishTask}"
+        } catch (Exception e) {
+          println "Warning: Failed to execute ${publishTask} for module: ${moduleName}"
+          println "Error message: ${e.message}"
+        } finally {
+          connection.close()
+        }
+      }
+    }
+
+    println "All modules successfully published."
+  }
 }

@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.standard.CatNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.ChickenNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.DrownedNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.EvokerNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.FoxNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.HorseNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.HumanoidNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.HumanoidSlimNPC;
@@ -90,6 +91,13 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       EvokerNPC::createAttributes),
+  FOX(
+      FoxNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<FoxNPC> type, Level level) -> new FoxNPC(type, level), MobCategory.MISC)
+          .sized(0.6F, 0.7F)
+          .clientTrackingRange(12),
+      FoxNPC::createAttributes),
   HORSE(
       HorseNPC.ID,
       EntityType.Builder.of(

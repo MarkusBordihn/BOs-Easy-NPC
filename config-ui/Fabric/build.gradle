@@ -89,7 +89,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 tasks.named('build') {
-  finalizedBy 'publishToMavenLocal'
+  finalizedBy tasks.named('publishToMavenLocal')
 }
 
 // CurseForge Publishing
