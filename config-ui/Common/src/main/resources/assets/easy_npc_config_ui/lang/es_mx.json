@@ -308,5 +308,8 @@
   "text.easy_npc.item.easy_npc_preset.entity_type": "Tipo de Entidad: %s",
   "text.easy_npc.item.easy_npc_wand": "La varita EasyNPC es una herramienta de configuración para Easy NPCs que permite una selección y configuración más fácil de los NPCs sin tener que apuntar directamente a ellos.",
   "text.easy_npc.item.move_easy_npc": "Selecciona el EasyNPC con el botón izquierdo del ratón y muévelo con el botón derecho del ratón a la posición objetivo.",
-  "text.easy_npc.not_implemented": "¡Aún no implementado!"
+  "text.easy_npc.not_implemented": "¡Aún no implementado!",
+  "text.easy_npc.config.protection_targets": "Objetivos de Protección",
+  "text.easy_npc.config.hurt_by_target": "Defensa Propia",
+  "text.easy_npc.config.owner_hurt_by_target": "Proteger al Dueño"
 }

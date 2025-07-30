@@ -308,5 +308,8 @@
   "text.easy_npc.item.easy_npc_preset.entity_type": "Тип сущности: %s",
   "text.easy_npc.item.easy_npc_wand": "Посох EasyNPC — это инструмент настройки, который позволяет легче выбирать и настраивать NPC без необходимости их прямого выбора.",
   "text.easy_npc.item.move_easy_npc": "Выберите EasyNPC правой кнопкой мыши и переместите его левой кнопкой мыши в нужное место.",
-  "text.easy_npc.not_implemented": "Ещё не реализовано!"
+  "text.easy_npc.not_implemented": "Ещё не реализовано!",
+  "text.easy_npc.config.protection_targets": "Цели защиты",
+  "text.easy_npc.config.hurt_by_target": "Самозащита",
+  "text.easy_npc.config.owner_hurt_by_target": "Защита владельца"
 }

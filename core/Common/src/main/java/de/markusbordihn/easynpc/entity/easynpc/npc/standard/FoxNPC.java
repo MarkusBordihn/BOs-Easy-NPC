@@ -19,69 +19,42 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
-import com.google.common.collect.ImmutableList;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.VillagerRaw;
-import de.markusbordihn.easynpc.network.components.TextComponent;
-import de.markusbordihn.easynpc.utils.TextUtils;
-import net.minecraft.network.chat.Component;
+import de.markusbordihn.easynpc.entity.easynpc.npc.raw.FoxRaw;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.sensing.Sensor;
-import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.animal.FlyingAnimal;
-import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.animal.Fox;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class VillagerNPC extends VillagerRaw {
+public class FoxNPC extends FoxRaw {
 
-  public static final String ID = "villager";
+  public static final String ID = "fox";
 
-  protected static final ImmutableList<MemoryModuleType<?>> MEMORY_TYPES =
-      ImmutableList.of(
-          MemoryModuleType.HOME,
-          MemoryModuleType.JOB_SITE,
-          MemoryModuleType.MEETING_POINT,
-          MemoryModuleType.LAST_SLEPT,
-          MemoryModuleType.HEARD_BELL_TIME);
-
-  private static final ImmutableList<SensorType<? extends Sensor<? super Villager>>> SENSOR_TYPES =
-      ImmutableList.of(
-          SensorType.NEAREST_LIVING_ENTITIES,
-          SensorType.NEAREST_PLAYERS,
-          SensorType.NEAREST_ITEMS,
-          SensorType.NEAREST_BED,
-          SensorType.HURT_BY,
-          SensorType.VILLAGER_HOSTILES,
-          SensorType.VILLAGER_BABIES,
-          SensorType.SECONDARY_POIS,
-          SensorType.GOLEM_DETECTED);
-
-  public VillagerNPC(EntityType<? extends Villager> entityType, Level level) {
-    this(entityType, level, VariantType.DEFAULT_NITWIT);
+  public FoxNPC(EntityType<? extends Fox> entityType, Level level) {
+    this(entityType, level, VariantType.RED);
   }
 
-  public VillagerNPC(EntityType<? extends Villager> entityType, Level level, Enum<?> variantType) {
+  public FoxNPC(EntityType<? extends Fox> entityType, Level level, Enum<?> variantType) {
     super(entityType, level, variantType);
     this.setInvulnerable(true);
+    this.refreshGroundNavigation();
   }
 
   public static AttributeSupplier.Builder createAttributes() {
     return Mob.createMobAttributes()
-        .add(Attributes.MAX_HEALTH, 20.0D)
+        .add(Attributes.MAX_HEALTH, 16.0D)
         .add(Attributes.FOLLOW_RANGE, 32.0D)
         .add(Attributes.KNOCKBACK_RESISTANCE, 0.0D)
-        .add(Attributes.MOVEMENT_SPEED, 0.6F)
-        .add(Attributes.ATTACK_DAMAGE, 0.5D)
+        .add(Attributes.MOVEMENT_SPEED, 0.4D)
+        .add(Attributes.ATTACK_DAMAGE, 2.0D)
         .add(Attributes.ATTACK_KNOCKBACK, 0.0D)
-        .add(Attributes.ATTACK_SPEED, 0.0D)
+        .add(Attributes.ATTACK_SPEED, 1.0D)
         .add(Attributes.ARMOR, 0.0D)
         .add(Attributes.ARMOR_TOUGHNESS, 0.0D);
   }
@@ -92,31 +65,13 @@ public class VillagerNPC extends VillagerRaw {
   }
 
   @Override
-  public Component getName() {
-    Component component = this.getCustomName();
-    if (component != null) {
-      return TextUtils.removeAction(component);
-    }
-    Component professionName = getProfessionName();
-    Component variantName = getVariantTypeName();
-    return TextComponent.getText(variantName.getString() + " (" + professionName.getString() + ")");
-  }
-
-  @Override
-  public boolean wantsToSpawnGolem(long gameTime) {
-    return false;
-  }
-
-  @Override
-  public boolean hasProfessions() {
-    return true;
-  }
-
-  @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.VILLAGER_AMBIENT);
-    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.VILLAGER_DEATH);
-    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.VILLAGER_HURT);
+    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.FOX_AMBIENT);
+    soundDataSet.addDefaultSound(SoundType.AMBIENT_TAMED, SoundEvents.FOX_SCREECH);
+    soundDataSet.addDefaultSound(SoundType.AMBIENT_STRAY, SoundEvents.FOX_AMBIENT);
+    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.FOX_DEATH);
+    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.FOX_HURT);
+    soundDataSet.addDefaultSound(SoundType.EAT, SoundEvents.FOX_EAT);
     soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
     soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
     soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
@@ -126,11 +81,6 @@ public class VillagerNPC extends VillagerRaw {
   @Override
   protected void registerGoals() {
     // No default goals for NPCs.
-  }
-
-  @Override
-  protected Brain.Provider<Villager> brainProvider() {
-    return Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
   }
 
   @Override

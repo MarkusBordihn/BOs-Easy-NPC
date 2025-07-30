@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.client.renderer.entity.raw.CreeperRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.DrownedRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.EnderManRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.EvokerRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.FoxRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.HorseRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.IllusionerRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.IronGolemRawRenderer;
@@ -54,6 +55,7 @@ public enum ModRawEntityRenderer {
   CHICKEN(ModRawEntityType.CHICKEN, () -> ChickenRawRenderer::new),
   CREEPER(ModRawEntityType.CREEPER, () -> CreeperRawRenderer::new),
   DROWNED(ModRawEntityType.DROWNED, () -> DrownedRawRenderer::new),
+  FOX(ModRawEntityType.FOX, () -> FoxRawRenderer::new),
   HORSE(ModRawEntityType.HORSE, () -> HorseRawRenderer::new),
   ILLUSIONER(ModRawEntityType.ILLUSIONER, () -> IllusionerRawRenderer::new),
   IRON_GOLEM(ModRawEntityType.IRON_GOLEM, () -> IronGolemRawRenderer::new),

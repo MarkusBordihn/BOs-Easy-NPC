@@ -28,5 +28,5 @@ publishing {
 }
 
 tasks.named('build') {
-  finalizedBy 'publishToMavenLocal'
+  finalizedBy tasks.named('publishToMavenLocal')
 }

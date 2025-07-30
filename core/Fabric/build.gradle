@@ -89,7 +89,7 @@ publishing {
 
 tasks.named('build') {
   dependsOn 'remapJar'
-  finalizedBy 'publishToMavenLocal'
+  finalizedBy tasks.named('publishToMavenLocal')
 }
 
 test {

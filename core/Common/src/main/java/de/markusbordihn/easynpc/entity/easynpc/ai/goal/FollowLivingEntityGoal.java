@@ -35,6 +35,8 @@ import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 
 public class FollowLivingEntityGoal extends Goal {
 
+  private static final int COMBAT_COOLDOWN_DURATION = 3 * 20;
+
   private final PathfinderMob pathfinderMob;
   private final LivingEntity livingEntity;
   private final double speedModifier;
@@ -45,6 +47,7 @@ public class FollowLivingEntityGoal extends Goal {
   private final LevelReader level;
   private float oldWaterCost;
   private int timeToRecalcPath;
+  private int combatCooldownTicks = 0;
 
   public FollowLivingEntityGoal(
       EasyNPC<?> easyNPC,
@@ -66,24 +69,44 @@ public class FollowLivingEntityGoal extends Goal {
 
   @Override
   public boolean canUse() {
-    return this.pathfinderMob != null
-        && this.pathfinderMob.isAlive()
+    // Pause following behavior when NPC is fighting or on combat cooldown
+    if (this.pathfinderMob.getTarget() != null) {
+      this.combatCooldownTicks = COMBAT_COOLDOWN_DURATION;
+      return false;
+    }
+
+    if (this.combatCooldownTicks > 0) {
+      this.combatCooldownTicks--;
+      return false;
+    }
+
+    // Only follow if entity and target are valid and within appropriate distance range
+    return this.pathfinderMob.isAlive()
         && this.livingEntity != null
         && this.livingEntity.isAlive()
         && this.pathfinderMob.distanceToSqr(this.livingEntity)
-            > (this.stopDistance * this.stopDistance)
+            > this.stopDistance * this.stopDistance
         && this.pathfinderMob.distanceToSqr(this.livingEntity)
-            < (this.startDistance * this.startDistance);
+            < this.startDistance * this.startDistance;
   }
 
   @Override
   public boolean canContinueToUse() {
-    if (this.pathNavigation.isDone()) {
+    // Stop following if NPC has a combat target or is on cooldown
+    if (this.pathfinderMob.getTarget() != null) {
+      this.combatCooldownTicks = COMBAT_COOLDOWN_DURATION;
       return false;
-    } else {
-      return this.pathfinderMob.distanceToSqr(this.livingEntity)
-          > this.stopDistance * this.stopDistance;
     }
+
+    if (this.combatCooldownTicks > 0) {
+      this.combatCooldownTicks--;
+      return false;
+    }
+
+    // Continue following if navigation is active and target is not too close
+    return !this.pathNavigation.isDone()
+        && this.pathfinderMob.distanceToSqr(this.livingEntity)
+            > this.stopDistance * this.stopDistance;
   }
 
   @Override
