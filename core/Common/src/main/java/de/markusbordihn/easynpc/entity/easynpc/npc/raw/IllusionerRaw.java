@@ -586,6 +586,11 @@ public class IllusionerRaw extends Illusioner implements EasyNPCBase<Illusioner>
     return hash(this.getUUID());
   }
 
+  @Override
+  public boolean isCustomNameVisible() {
+    return VisibilityHandler.handleIsCustomNameVisible(this, super.isCustomNameVisible());
+  }
+
   public enum VariantType {
     ILLUSIONER,
     ILLUSIONER_CROSSED_ARMS

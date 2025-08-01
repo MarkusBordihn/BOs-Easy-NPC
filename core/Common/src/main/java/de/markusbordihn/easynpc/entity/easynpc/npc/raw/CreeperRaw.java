@@ -586,6 +586,11 @@ public class CreeperRaw extends Creeper implements EasyNPCBase<Creeper> {
     return hash(this.getUUID());
   }
 
+  @Override
+  public boolean isCustomNameVisible() {
+    return VisibilityHandler.handleIsCustomNameVisible(this, super.isCustomNameVisible());
+  }
+
   public enum VariantType {
     DEFAULT,
     CHARGED

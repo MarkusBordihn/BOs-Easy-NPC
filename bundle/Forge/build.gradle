@@ -23,7 +23,9 @@ repositories {
   }
 }
 
-archivesBaseName = "${project.mod_id}-forge-${project.minecraft_version}"
+base {
+  archivesName = "${project.mod_id}-forge-${project.minecraft_version}"
+}
 
 sourceSets {
   main {

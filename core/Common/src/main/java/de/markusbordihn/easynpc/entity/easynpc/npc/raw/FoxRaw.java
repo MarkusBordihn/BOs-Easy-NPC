@@ -586,6 +586,11 @@ public class FoxRaw extends Fox implements EasyNPCBase<Fox> {
     return hash(this.getUUID());
   }
 
+  @Override
+  public boolean isCustomNameVisible() {
+    return VisibilityHandler.handleIsCustomNameVisible(this, super.isCustomNameVisible());
+  }
+
   public enum VariantType {
     RED,
     SNOW

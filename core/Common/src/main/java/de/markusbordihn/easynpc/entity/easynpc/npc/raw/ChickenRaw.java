@@ -586,6 +586,11 @@ public class ChickenRaw extends Chicken implements EasyNPCBase<Chicken> {
     return hash(this.getUUID());
   }
 
+  @Override
+  public boolean isCustomNameVisible() {
+    return VisibilityHandler.handleIsCustomNameVisible(this, super.isCustomNameVisible());
+  }
+
   public enum VariantType {
     WHITE
   }

@@ -40,16 +40,23 @@ import net.minecraft.world.entity.player.Inventory;
 public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
     extends AttributeConfigurationScreen<T> {
 
-  private static final HashSet<DisplayAttributeType> VISIBILITY_ATTRIBUTES =
+  private static final HashSet<DisplayAttributeType> TIME_VISIBILITY_ATTRIBUTES =
       new HashSet<>(
           Arrays.asList(
-              DisplayAttributeType.VISIBLE_AT_DAY,
-              DisplayAttributeType.VISIBLE_AT_NIGHT,
+              DisplayAttributeType.VISIBLE_AT_DAY, DisplayAttributeType.VISIBLE_AT_NIGHT));
+
+  private static final HashSet<DisplayAttributeType> GAMEMODE_VISIBILITY_ATTRIBUTES =
+      new HashSet<>(
+          Arrays.asList(
               DisplayAttributeType.VISIBLE_IN_CREATIVE,
               DisplayAttributeType.VISIBLE_IN_SPECTATOR,
-              DisplayAttributeType.VISIBLE_IN_STANDARD,
-              DisplayAttributeType.VISIBLE_TO_OWNER,
-              DisplayAttributeType.VISIBLE_TO_TEAM));
+              DisplayAttributeType.VISIBLE_IN_STANDARD));
+
+  private static final HashSet<DisplayAttributeType> SPECIAL_VISIBILITY_ATTRIBUTES =
+      new HashSet<>(
+          Arrays.asList(
+              DisplayAttributeType.VISIBLE_TO_OWNER, DisplayAttributeType.VISIBLE_TO_TEAM));
+
   private final HashSet<Checkbox> visibilityCheckboxSet = new HashSet<>();
 
   private EditBox lightLevelBox;
@@ -68,6 +75,7 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
 
     // Button rows
     int firstButtonRow = this.leftPos + 10;
+    int secondButtonRow = this.leftPos + 160;
 
     // Attribute data
     DisplayAttributeDataCapable<?> displayAttributeData =
@@ -125,9 +133,50 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
                           this.getEasyNPCUUID(), DisplayAttributeType.VISIBLE, checkbox.selected());
                 }));
 
-    // Add other visibility attributes
+    // Add time-based visibility attributes with header
     int checkboxTopPos = this.buttonTopPos + 65;
-    for (DisplayAttributeType displayAttributeType : VISIBILITY_ATTRIBUTES) {
+    int gamemodeCheckboxTopPos = checkboxTopPos;
+    checkboxTopPos += 15;
+    gamemodeCheckboxTopPos += 15;
+
+    for (DisplayAttributeType displayAttributeType : TIME_VISIBILITY_ATTRIBUTES) {
+      Checkbox visibilityCheckbox =
+          new Checkbox(
+              firstButtonRow,
+              checkboxTopPos,
+              displayAttributeType.getAttributeName(),
+              displayAttributeData.getDisplayBooleanAttribute(displayAttributeType),
+              checkbox ->
+                  NetworkMessageHandlerManager.getServerHandler()
+                      .changeDisplayAttribute(
+                          this.getEasyNPCUUID(), displayAttributeType, checkbox.selected()));
+      visibilityCheckbox.active = isVisibleCheckbox.selected();
+      this.visibilityCheckboxSet.add(this.addRenderableWidget(visibilityCheckbox));
+      checkboxTopPos += 20;
+    }
+
+    // Add game mode visibility attributes with header
+    for (DisplayAttributeType displayAttributeType : GAMEMODE_VISIBILITY_ATTRIBUTES) {
+      Checkbox visibilityCheckbox =
+          new Checkbox(
+              secondButtonRow,
+              gamemodeCheckboxTopPos,
+              displayAttributeType.getAttributeName(),
+              displayAttributeData.getDisplayBooleanAttribute(displayAttributeType),
+              checkbox ->
+                  NetworkMessageHandlerManager.getServerHandler()
+                      .changeDisplayAttribute(
+                          this.getEasyNPCUUID(), displayAttributeType, checkbox.selected()));
+      visibilityCheckbox.active = isVisibleCheckbox.selected();
+      this.visibilityCheckboxSet.add(this.addRenderableWidget(visibilityCheckbox));
+      gamemodeCheckboxTopPos += 20;
+    }
+
+    // Add special visibility attributes with header
+    int specialSectionY = Math.max(checkboxTopPos, gamemodeCheckboxTopPos) + 5;
+    checkboxTopPos = specialSectionY + 15;
+
+    for (DisplayAttributeType displayAttributeType : SPECIAL_VISIBILITY_ATTRIBUTES) {
       Checkbox visibilityCheckbox =
           new Checkbox(
               firstButtonRow,
@@ -148,6 +197,9 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
 
+    int firstButtonRow = this.leftPos + 10;
+    int secondButtonRow = this.leftPos + 160;
+
     if (this.lightLevelBox != null) {
       Text.drawConfigString(
           guiGraphics,
@@ -156,6 +208,32 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
           this.lightLevelBox.getX() - 100,
           this.lightLevelBox.getY() + 4);
     }
+
+    // Calculate section positions
+    int timeSectionY = this.buttonTopPos + 65;
+    int specialSectionY = this.buttonTopPos + 150;
+
+    // Time visibility section header
+    Text.drawConfigString(
+        guiGraphics, this.font, "time_visibility_settings", firstButtonRow, timeSectionY, 0x555555);
+
+    // Game mode visibility section header (jetzt in zweiter Spalte)
+    Text.drawConfigString(
+        guiGraphics,
+        this.font,
+        "gamemode_visibility_settings",
+        secondButtonRow,
+        timeSectionY,
+        0x555555);
+
+    // Special visibility section header
+    Text.drawConfigString(
+        guiGraphics,
+        this.font,
+        "special_visibility_settings",
+        firstButtonRow,
+        specialSectionY,
+        0x555555);
 
     // Avatar
     if (getEasyNPC() != null) {

@@ -587,6 +587,11 @@ public class PathfinderMobRaw extends PathfinderMob implements EasyNPCBase<Pathf
     return hash(this.getUUID());
   }
 
+  @Override
+  public boolean isCustomNameVisible() {
+    return VisibilityHandler.handleIsCustomNameVisible(this, super.isCustomNameVisible());
+  }
+
   public enum VariantType {
     DEFAULT
   }

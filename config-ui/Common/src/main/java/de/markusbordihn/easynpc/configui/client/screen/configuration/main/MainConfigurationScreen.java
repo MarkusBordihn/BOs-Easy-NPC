@@ -505,14 +505,8 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     }
     boolean nameVisibility = true;
     if (this.nameVisibilityButton != null) {
-      nameVisibility = this.nameVisibilityButton.active;
+      nameVisibility = !name.isEmpty() && this.nameVisibilityButton.active;
     }
-    log.debug(
-        "Saving name {} with color {} and visibility {} for {}",
-        name,
-        textColor,
-        nameVisibility,
-        getEasyNPC());
     NetworkMessageHandlerManager.getServerHandler()
         .changeName(getEasyNPC().getEntityUUID(), name, textColor, nameVisibility);
     this.formerName = name;

@@ -79,6 +79,10 @@ tasks.register('publish') {
           publishLauncher.setStandardError(System.err)
           publishLauncher.run()
           println "Successfully published module: ${moduleName} with task: ${publishTask}"
+
+          // Add delay of 5 seconds after each publishing task
+          println "Waiting 5 seconds before proceeding to the next task..."
+          sleep(5000)
         } catch (Exception e) {
           println "Warning: Failed to execute ${publishTask} for module: ${moduleName}"
           println "Error message: ${e.message}"

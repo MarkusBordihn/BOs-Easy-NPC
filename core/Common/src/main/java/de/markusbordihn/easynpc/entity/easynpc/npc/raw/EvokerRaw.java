@@ -586,6 +586,11 @@ public class EvokerRaw extends Evoker implements EasyNPCBase<Evoker> {
     return hash(this.getUUID());
   }
 
+  @Override
+  public boolean isCustomNameVisible() {
+    return VisibilityHandler.handleIsCustomNameVisible(this, super.isCustomNameVisible());
+  }
+
   public enum VariantType {
     EVOKER,
     EVOKER_CROSSED_ARMS

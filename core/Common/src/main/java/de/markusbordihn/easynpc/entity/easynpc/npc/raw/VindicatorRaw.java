@@ -586,6 +586,11 @@ public class VindicatorRaw extends Vindicator implements EasyNPCBase<Vindicator>
     return hash(this.getUUID());
   }
 
+  @Override
+  public boolean isCustomNameVisible() {
+    return VisibilityHandler.handleIsCustomNameVisible(this, super.isCustomNameVisible());
+  }
+
   public enum VariantType {
     VINDICATOR,
     VINDICATOR_CROSSED_ARMS

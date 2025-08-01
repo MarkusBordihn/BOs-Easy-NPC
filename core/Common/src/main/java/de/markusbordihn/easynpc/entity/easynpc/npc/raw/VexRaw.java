@@ -586,6 +586,11 @@ public class VexRaw extends Vex implements EasyNPCBase<Vex> {
     return hash(this.getUUID());
   }
 
+  @Override
+  public boolean isCustomNameVisible() {
+    return VisibilityHandler.handleIsCustomNameVisible(this, super.isCustomNameVisible());
+  }
+
   public enum VariantType {
     DEFAULT
   }
