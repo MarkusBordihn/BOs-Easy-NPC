@@ -9,6 +9,7 @@
     "model.EasyNPCPlayerModelMixin",
     "model.EasyNPCVillagerModelMixin",
     "model.EasyNPCWolfModelMixin",
+    "renderer.EasyNPCEntityRendererMixin",
     "renderer.EasyNPCLivingEntityRendererMixin",
     "renderer.state.EasyNPCLivingEntityRenderStateMixin"
   ],

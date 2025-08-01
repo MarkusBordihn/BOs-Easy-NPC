@@ -596,6 +596,11 @@ public class ZombieVillagerRaw extends ZombieVillager implements EasyNPCBase<Zom
     return hash(this.getUUID());
   }
 
+  @Override
+  public boolean isCustomNameVisible() {
+    return VisibilityHandler.handleIsCustomNameVisible(this, super.isCustomNameVisible());
+  }
+
   public enum VariantType {
     DEFAULT,
     DESERT_ARMORER,

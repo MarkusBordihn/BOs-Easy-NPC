@@ -28,8 +28,8 @@ import java.util.Map;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.FoxRenderer;
+import net.minecraft.client.renderer.entity.state.FoxRenderState;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.animal.Fox;
 
 public class FoxRawRenderer extends FoxRenderer implements EasyNPCEntityRenderer {
 
@@ -52,8 +52,9 @@ public class FoxRawRenderer extends FoxRenderer implements EasyNPCEntityRenderer
   }
 
   @Override
-  public ResourceLocation getTextureLocation(Fox entity) {
-    if (entity instanceof EasyNPC<?> easyNPC) {
+  public ResourceLocation getTextureLocation(FoxRenderState renderState) {
+    EasyNPC<?> easyNPC = getEasyNPC(renderState);
+    if (easyNPC != null) {
       return getEntityTexture(easyNPC);
     }
     return DEFAULT_TEXTURE;

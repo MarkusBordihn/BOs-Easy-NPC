@@ -54,9 +54,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.animal.Fox;
@@ -68,7 +68,7 @@ import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -151,10 +151,10 @@ public class FoxRaw extends Fox implements EasyNPCBase<Fox> {
   }
 
   @Override
-  public boolean doHurtTarget(Entity entity) {
+  public boolean doHurtTarget(ServerLevel serverLevel, Entity entity) {
     this.attackAnimationTick = 10;
     this.level().broadcastEntityEvent(this, (byte) 4);
-    return super.doHurtTarget(entity);
+    return super.doHurtTarget(serverLevel, entity);
   }
 
   @Override
@@ -186,9 +186,9 @@ public class FoxRaw extends Fox implements EasyNPCBase<Fox> {
   }
 
   @Override
-  public boolean hurt(DamageSource damageSource, float damage) {
+  public boolean hurtServer(ServerLevel serverLevel, DamageSource damageSource, float damage) {
     this.handleHurtEvent(damageSource, damage);
-    return super.hurt(damageSource, damage);
+    return super.hurtServer(serverLevel, damageSource, damage);
   }
 
   @Override
@@ -198,9 +198,9 @@ public class FoxRaw extends Fox implements EasyNPCBase<Fox> {
   }
 
   @Override
-  public Entity changeDimension(DimensionTransition dimensionTransition) {
-    this.handleChangeDimensionEvent(dimensionTransition);
-    return super.changeDimension(dimensionTransition);
+  public Entity teleport(TeleportTransition teleportTransition) {
+    this.handleChangeDimensionEvent(teleportTransition);
+    return super.teleport(teleportTransition);
   }
 
   @Override
@@ -267,10 +267,10 @@ public class FoxRaw extends Fox implements EasyNPCBase<Fox> {
   public SpawnGroupData finalizeSpawn(
       ServerLevelAccessor serverLevelAccessor,
       DifficultyInstance difficulty,
-      MobSpawnType mobSpawnType,
+      EntitySpawnReason entitySpawnReason,
       SpawnGroupData spawnGroupData) {
     return finalizeEasyNPCSpawn(
-        super.finalizeSpawn(serverLevelAccessor, difficulty, mobSpawnType, spawnGroupData));
+        super.finalizeSpawn(serverLevelAccessor, difficulty, entitySpawnReason, spawnGroupData));
   }
 
   @Override
@@ -406,8 +406,8 @@ public class FoxRaw extends Fox implements EasyNPCBase<Fox> {
   }
 
   @Override
-  public boolean isInvulnerableTo(DamageSource damageSource) {
-    return isInvulnerable() || super.isInvulnerableTo(damageSource);
+  public boolean isInvulnerableTo(ServerLevel serverLevel, DamageSource damageSource) {
+    return isInvulnerable() || super.isInvulnerableTo(serverLevel, damageSource);
   }
 
   @Override
@@ -571,6 +571,11 @@ public class FoxRaw extends Fox implements EasyNPCBase<Fox> {
   @Override
   public int hashCode() {
     return hash(this.getUUID());
+  }
+
+  @Override
+  public boolean isCustomNameVisible() {
+    return VisibilityHandler.handleIsCustomNameVisible(this, super.isCustomNameVisible());
   }
 
   public enum VariantType {

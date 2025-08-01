@@ -610,6 +610,11 @@ public class VillagerRaw extends Villager implements EasyNPCBase<Villager> {
     return hash(this.getUUID());
   }
 
+  @Override
+  public boolean isCustomNameVisible() {
+    return VisibilityHandler.handleIsCustomNameVisible(this, super.isCustomNameVisible());
+  }
+
   public enum VariantType {
     DEFAULT_ARMORER,
     DEFAULT_BUTCHER,

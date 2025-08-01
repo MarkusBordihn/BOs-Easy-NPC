@@ -8,7 +8,9 @@ plugins {
 
 apply plugin: 'net.minecraftforge.gradle'
 
-archivesBaseName = "${project.mod_id}-forge-${project.minecraft_version}"
+base {
+  archivesName = "${project.mod_id}-forge-${project.minecraft_version}"
+}
 
 minecraft {
   mappings channel: 'official', version: "${project.minecraft_version}"
@@ -16,7 +18,6 @@ minecraft {
   reobf = false
   copyIdeResources = true
 
-  // Default run configurations.
   runs {
     client {
       workingDirectory project.file('run/client')
@@ -98,12 +99,12 @@ dependencies {
   minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
 
   // Include Common code
-  implementation project(":Common")
+  compileOnly project(":Common")
 
   // Include Core Common code
   testCompileOnly "de.markusbordihn.easynpc:easy_npc-common-${project.minecraft_version}:${project.version}"
-  compileOnly fg.deobf("de.markusbordihn.easynpc:easy_npc-forge-${project.minecraft_version}:${project.version}")
-  runtimeOnly fg.deobf("de.markusbordihn.easynpc:easy_npc-forge-${project.minecraft_version}:${project.version}")
+  compileOnly "de.markusbordihn.easynpc:easy_npc-forge-${project.minecraft_version}:${project.version}"
+  runtimeOnly "de.markusbordihn.easynpc:easy_npc-forge-${project.minecraft_version}:${project.version}"
 
   // Additional helpful Mods for development (runtime dependency)
   if (project.hasProperty('forge_jei_mod') && project.forge_jei_mod) {
@@ -125,17 +126,16 @@ processResources {
   from project(":Common").sourceSets.main.resources
 }
 
-// Example for how to get properties into the manifest for reading by the runtime..
-jar {
+tasks.named('jar', Jar).configure {
   manifest {
     attributes([
         "Specification-Title"     : "${project.mod_name}",
         "Specification-Vendor"    : "${project.vendor_name}",
-        "Specification-Version"   : "1", // We are version 1 of ourselves
+        "Specification-Version"   : "1",
         "Implementation-Title"    : project.name,
         "Implementation-Version"  : "${project.version}",
         "Implementation-Vendor"   : "${project.mod_id}",
-        "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
     ])
   }
 }

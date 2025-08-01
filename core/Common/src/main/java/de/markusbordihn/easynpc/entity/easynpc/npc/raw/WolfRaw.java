@@ -573,6 +573,11 @@ public class WolfRaw extends Wolf implements EasyNPCBase<Wolf> {
     return hash(this.getUUID());
   }
 
+  @Override
+  public boolean isCustomNameVisible() {
+    return VisibilityHandler.handleIsCustomNameVisible(this, super.isCustomNameVisible());
+  }
+
   public enum VariantType {
     DEFAULT,
     TAMED,

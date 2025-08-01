@@ -573,6 +573,11 @@ public class CatRaw extends Cat implements EasyNPCBase<Cat> {
     return hash(this.getUUID());
   }
 
+  @Override
+  public boolean isCustomNameVisible() {
+    return VisibilityHandler.handleIsCustomNameVisible(this, super.isCustomNameVisible());
+  }
+
   public enum VariantType {
     ALL_BLACK,
     BLACK,
