@@ -573,6 +573,11 @@ public class PiglinRaw extends Piglin implements EasyNPCBase<Piglin> {
     return hash(this.getUUID());
   }
 
+  @Override
+  public boolean isCustomNameVisible() {
+    return VisibilityHandler.handleIsCustomNameVisible(this, super.isCustomNameVisible());
+  }
+
   public enum VariantType {
     PIGLIN,
     PIGLIN_BRUTE,

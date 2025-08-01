@@ -8,6 +8,7 @@
     "model.EasyNPCHumanoidModelMixin",
     "model.EasyNPCVillagerModelMixin",
     "model.EasyNPCWolfModelMixin",
+    "renderer.EasyNPCEntityRendererMixin",
     "renderer.EasyNPCLivingEntityRendererMixin"
   ],
   "server": [

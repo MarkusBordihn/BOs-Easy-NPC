@@ -573,6 +573,11 @@ public class IronGolemRaw extends IronGolem implements EasyNPCBase<IronGolem> {
     return hash(this.getUUID());
   }
 
+  @Override
+  public boolean isCustomNameVisible() {
+    return VisibilityHandler.handleIsCustomNameVisible(this, super.isCustomNameVisible());
+  }
+
   public enum VariantType {
     IRON_GOLEM,
     IRON_GOLEM_CRACKINESS_HIGH,

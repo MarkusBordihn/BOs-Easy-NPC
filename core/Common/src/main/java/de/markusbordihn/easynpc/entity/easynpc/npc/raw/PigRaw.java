@@ -573,6 +573,11 @@ public class PigRaw extends Pig implements EasyNPCBase<Pig> {
     return hash(this.getUUID());
   }
 
+  @Override
+  public boolean isCustomNameVisible() {
+    return VisibilityHandler.handleIsCustomNameVisible(this, super.isCustomNameVisible());
+  }
+
   public enum VariantType {
     DEFAULT,
     SPOTTED

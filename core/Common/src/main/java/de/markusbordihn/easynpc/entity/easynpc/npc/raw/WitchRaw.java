@@ -573,6 +573,11 @@ public class WitchRaw extends Witch implements EasyNPCBase<Witch> {
     return hash(this.getUUID());
   }
 
+  @Override
+  public boolean isCustomNameVisible() {
+    return VisibilityHandler.handleIsCustomNameVisible(this, super.isCustomNameVisible());
+  }
+
   public enum VariantType {
     DEFAULT
   }

@@ -54,7 +54,6 @@ subprojects {
   }
 
   tasks.register("prepareKotlinBuildScriptModel") {}
-
 }
 
 tasks.register('runAllGameTests') {

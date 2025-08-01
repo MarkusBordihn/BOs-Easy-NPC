@@ -9,7 +9,9 @@ plugins {
 
 apply plugin: 'net.minecraftforge.gradle'
 
-archivesBaseName = "${project.mod_id}-forge-${project.minecraft_version}"
+base {
+  archivesName = "${project.mod_id}-forge-${project.minecraft_version}"
+}
 
 minecraft {
   mappings channel: 'official', version: "${project.minecraft_version}"
@@ -103,14 +105,14 @@ dependencies {
   annotationProcessor "org.spongepowered:mixin:0.8.7:processor"
 
   // Include Common code
-  implementation project(":Common")
+  compileOnly project(":Common")
 
   // Additional helpful Mods for development (runtime dependency)
   if (project.hasProperty('forge_jei_mod') && project.forge_jei_mod) {
-    runtimeOnly fg.deobf("curse.maven:jei-238222:${project.forge_jei_mod}")
+    runtimeOnly "curse.maven:jei-238222:${project.forge_jei_mod}"
   }
   if (project.hasProperty('forge_xaeros_minimap_mod') && project.forge_xaeros_minimap_mod) {
-    runtimeOnly fg.deobf("curse.maven:xaeros_minimap-263420:${project.forge_xaeros_minimap_mod}")
+    runtimeOnly "curse.maven:xaeros_minimap-263420:${project.forge_xaeros_minimap_mod}"
   }
 
   // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transitive dependencies request 6.0+
@@ -134,6 +136,11 @@ processResources {
 }
 
 tasks.named('jar', Jar).configure {
+
+  from(project(":Common").sourceSets.main.output)
+
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
   manifest {
     attributes([
         "Specification-Title"     : "${project.mod_name}",

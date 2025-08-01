@@ -25,7 +25,6 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import java.util.Objects;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.scores.Team;
 import org.apache.logging.log4j.LogManager;
@@ -57,76 +56,127 @@ public class VisibilityHandler {
       return isInvisibleToPlayers;
     }
 
-    // Check if NPC is visible at all
+    // Step 1: Check if NPC is visible at all (master switch)
     if (displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE)
         && !displayAttributeData.getDisplayBooleanAttribute(DisplayAttributeType.VISIBLE)) {
-      return true;
+      return true; // NPC is completely invisible
     }
 
-    // Check specific visibility attributes
-    boolean isVisible = true;
-    LivingEntity livingEntity = easyNPC.getLivingEntity();
-    long dayTime = player.level().getDayTime() % 24000;
+    // Step 2: Check special permissions that override other settings
 
-    // NPC is visible at day
-    if (displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_AT_DAY)
-        && !displayAttributeData.getDisplayBooleanAttribute(DisplayAttributeType.VISIBLE_AT_DAY)
-        && (dayTime >= 1000 && dayTime <= 13000)) {
-      isVisible = false;
-    }
-
-    // NPC is visible at night
-    if (displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_AT_NIGHT)
-        && !displayAttributeData.getDisplayBooleanAttribute(DisplayAttributeType.VISIBLE_AT_NIGHT)
-        && (dayTime < 1000 || dayTime > 13000)) {
-      isVisible = false;
-    }
-
-    // Visible in creative mode
-    if (displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_IN_CREATIVE)
-        && !displayAttributeData.getDisplayBooleanAttribute(
-            DisplayAttributeType.VISIBLE_IN_CREATIVE)
-        && player.isCreative()) {
-      isVisible = false;
-    }
-
-    // Visible in spectator mode
-    if (displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_IN_SPECTATOR)
-        && !displayAttributeData.getDisplayBooleanAttribute(
-            DisplayAttributeType.VISIBLE_IN_SPECTATOR)
-        && player.isSpectator()) {
-      isVisible = false;
-    }
-
-    // Visible in standard mode
-    if (displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_IN_STANDARD)
-        && !displayAttributeData.getDisplayBooleanAttribute(
-            DisplayAttributeType.VISIBLE_IN_STANDARD)
-        && !player.isCreative()
-        && !player.isSpectator()) {
-      isVisible = false;
-    }
-
-    // Check if NPC is visible to owner (overrides other visibility settings)
+    // Check if player is NPC owner and owner visibility is enabled
     OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
-    if (displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_TO_OWNER)
-        && displayAttributeData.getDisplayBooleanAttribute(DisplayAttributeType.VISIBLE_TO_OWNER)
-        && ownerData != null
-        && ownerData.hasNPCOwner()
-        && Objects.equals(ownerData.getOwnerUUID(), player.getUUID())) {
-      isVisible = true;
+    boolean isOwner =
+        ownerData != null
+            && ownerData.hasNPCOwner()
+            && Objects.equals(ownerData.getOwnerUUID(), player.getUUID());
+    boolean visibleToOwnerEnabled =
+        displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_TO_OWNER)
+            && displayAttributeData.getDisplayBooleanAttribute(
+                DisplayAttributeType.VISIBLE_TO_OWNER);
+
+    if (isOwner && visibleToOwnerEnabled) {
+      return false; // NPC is visible to owner
     }
 
-    // Check if NPC is visible to team (overrides other visibility settings)
+    // Check if player is in same team and team visibility is enabled
     Team playerTeam = player.getTeam();
-    Team livingEntityTeam = livingEntity.getTeam();
-    if (displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_TO_TEAM)
-        && displayAttributeData.getDisplayBooleanAttribute(DisplayAttributeType.VISIBLE_TO_TEAM)
-        && livingEntityTeam != null
-        && livingEntityTeam.equals(playerTeam)) {
-      isVisible = livingEntityTeam.canSeeFriendlyInvisibles();
+    Team npcTeam = easyNPC.getLivingEntity().getTeam();
+    boolean visibleToTeamEnabled =
+        displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_TO_TEAM)
+            && displayAttributeData.getDisplayBooleanAttribute(
+                DisplayAttributeType.VISIBLE_TO_TEAM);
+
+    if (npcTeam != null
+        && playerTeam != null
+        && npcTeam.equals(playerTeam)
+        && visibleToTeamEnabled
+        && npcTeam.canSeeFriendlyInvisibles()) {
+      return false; // NPC is visible to team members
     }
 
-    return !isVisible;
+    // Step 3: Check game mode visibility settings
+    boolean isCreativeMode = player.isCreative();
+    boolean isSpectatorMode = player.isSpectator();
+    boolean isStandardMode = !isCreativeMode && !isSpectatorMode;
+
+    // Check if game mode visibility is explicitly set
+    boolean gameModeVisibilitySet = false;
+    boolean visibleInCurrentGameMode = false;
+
+    if (isCreativeMode
+        && displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_IN_CREATIVE)) {
+      gameModeVisibilitySet = true;
+      visibleInCurrentGameMode =
+          displayAttributeData.getDisplayBooleanAttribute(DisplayAttributeType.VISIBLE_IN_CREATIVE);
+    } else if (isSpectatorMode
+        && displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_IN_SPECTATOR)) {
+      gameModeVisibilitySet = true;
+      visibleInCurrentGameMode =
+          displayAttributeData.getDisplayBooleanAttribute(
+              DisplayAttributeType.VISIBLE_IN_SPECTATOR);
+    } else if (isStandardMode
+        && displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_IN_STANDARD)) {
+      gameModeVisibilitySet = true;
+      visibleInCurrentGameMode =
+          displayAttributeData.getDisplayBooleanAttribute(DisplayAttributeType.VISIBLE_IN_STANDARD);
+    }
+
+    // If game mode visibility is set and NPC should be visible in this game mode
+    if (gameModeVisibilitySet && visibleInCurrentGameMode) {
+      return false; // NPC is visible in this game mode
+    }
+
+    // Step 4: Check time-based visibility settings
+    long dayTime = player.level().getDayTime() % 24000;
+    boolean isDayTime = (dayTime >= 1000 && dayTime <= 13000);
+    boolean isNightTime = !isDayTime;
+
+    boolean visibleAtDaySet =
+        displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_AT_DAY);
+    boolean visibleAtNightSet =
+        displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_AT_NIGHT);
+
+    // If time visibility is explicitly set for current time
+    if ((isDayTime && visibleAtDaySet) || (isNightTime && visibleAtNightSet)) {
+      boolean visibleAtCurrentTime =
+          isDayTime
+              ? displayAttributeData.getDisplayBooleanAttribute(DisplayAttributeType.VISIBLE_AT_DAY)
+              : displayAttributeData.getDisplayBooleanAttribute(
+                  DisplayAttributeType.VISIBLE_AT_NIGHT);
+
+      if (visibleAtCurrentTime) {
+        return false; // NPC is visible at current time
+      }
+
+      // If game mode visibility isn't set, use time visibility
+      if (!gameModeVisibilitySet) {
+        return true; // NPC is invisible at current time
+      }
+    }
+
+    // Step 5: Handle combinations of settings
+
+    // If game mode visibility is set but not enabled for current game mode
+    if (gameModeVisibilitySet && !visibleInCurrentGameMode) {
+      return true; // NPC is invisible in current game mode
+    }
+
+    // If we reach here and time visibility is set for the opposite time
+    if ((isDayTime && !visibleAtDaySet && visibleAtNightSet)
+        || (isNightTime && !visibleAtNightSet && visibleAtDaySet)) {
+      return true; // NPC is invisible at current time
+    }
+
+    // Default to visible if no specific visibility rules matched
+    return false;
+  }
+
+  public static boolean handleIsCustomNameVisible(EasyNPC<?> easyNPC, boolean isCustomNameVisible) {
+    if (!easyNPC.getEntity().hasCustomName()) {
+      return false;
+    }
+
+    return isCustomNameVisible;
   }
 }

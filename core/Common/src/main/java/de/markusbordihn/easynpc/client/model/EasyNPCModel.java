@@ -19,13 +19,22 @@
 
 package de.markusbordihn.easynpc.client.model;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
+import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LightLayer;
 
 public class EasyNPCModel {
 
-  public static boolean setupAnimationStart(EasyNPC<?> easyNPC, EasyNPCModelManager modelManager) {
+  public static boolean setupAnimationStart(
+      final EasyNPC<?> easyNPC, final EasyNPCModelManager modelManager) {
     if (easyNPC == null || modelManager == null) {
       return false;
     }
@@ -55,5 +64,36 @@ public class EasyNPCModel {
     // Handle Model Pose
     modelManager.resetModelParts();
     return modelManager.setupModelParts(modelData);
+  }
+
+  public static int getEntityLightLevel(
+      final EasyNPC<?> easyNPC,
+      final DisplayAttributeDataCapable<?> displayAttributeData,
+      final BlockPos blockPos) {
+    if (easyNPC == null || displayAttributeData == null || blockPos == null) {
+      return 0;
+    }
+    int entityLightLevel =
+        displayAttributeData.getDisplayIntAttribute(DisplayAttributeType.LIGHT_LEVEL);
+    if (entityLightLevel > 0) {
+      return entityLightLevel;
+    }
+
+    return easyNPC.getLivingEntity().level().getBrightness(LightLayer.BLOCK, blockPos);
+  }
+
+  public static void renderEntityNameTag(
+      final EasyNPC<?> easyNPC, final ModelDataCapable<?> modelData, final PoseStack poseStack) {
+    if (easyNPC == null || modelData == null) {
+      return;
+    }
+    CustomRotation rootRotation = modelData.getModelPartRotation(ModelPartType.ROOT);
+    if (rootRotation != null) {
+      poseStack.translate(0, 1, 0);
+      poseStack.mulPose(Axis.XP.rotationDegrees(-rootRotation.x()));
+      poseStack.mulPose(Axis.YP.rotationDegrees(-rootRotation.y()));
+      poseStack.mulPose(Axis.ZP.rotationDegrees(-rootRotation.z()));
+      poseStack.translate(0, -1, 0);
+    }
   }
 }

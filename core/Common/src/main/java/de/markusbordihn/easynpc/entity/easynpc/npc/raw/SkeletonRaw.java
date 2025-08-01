@@ -573,6 +573,11 @@ public class SkeletonRaw extends Skeleton implements EasyNPCBase<Skeleton> {
     return hash(this.getUUID());
   }
 
+  @Override
+  public boolean isCustomNameVisible() {
+    return VisibilityHandler.handleIsCustomNameVisible(this, super.isCustomNameVisible());
+  }
+
   public enum VariantType {
     BOGGED,
     SKELETON,
