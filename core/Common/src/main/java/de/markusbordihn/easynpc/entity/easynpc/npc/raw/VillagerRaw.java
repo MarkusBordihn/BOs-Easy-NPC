@@ -388,7 +388,7 @@ public class VillagerRaw extends Villager implements EasyNPCBase<Villager> {
 
   @Override
   public boolean isAttackable() {
-    return getEntityAttributes().getCombatAttributes().isAttackable();
+    return getEntityAttributes().getCombatAttributes().isAttackableByPlayers();
   }
 
   @Override
@@ -405,12 +405,13 @@ public class VillagerRaw extends Villager implements EasyNPCBase<Villager> {
 
   @Override
   public boolean isInvulnerable() {
-    return !getEntityAttributes().getCombatAttributes().isAttackable();
+    return getEntityAttributes().getCombatAttributes().isInvulnerable();
   }
 
   @Override
   public boolean isInvulnerableTo(ServerLevel serverLevel, DamageSource damageSource) {
-    return isInvulnerable() || super.isInvulnerableTo(serverLevel, damageSource);
+    return AttackHandler.handleIsInvulnerableTo(
+        this, damageSource, super.isInvulnerableTo(serverLevel, damageSource));
   }
 
   @Override

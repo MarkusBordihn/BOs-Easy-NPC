@@ -23,7 +23,9 @@ import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.Locale;
 
 public enum CombatAttributeType implements EntityAttributeTypeInterface {
-  IS_ATTACKABLE,
+  IS_ATTACKABLE_BY_PLAYERS,
+  IS_ATTACKABLE_BY_MONSTERS,
+  IS_INVULNERABLE,
   HEALTH_REGENERATION;
 
   public String getTagName() {

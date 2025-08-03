@@ -19,12 +19,13 @@
 
 package de.markusbordihn.easynpc.configui.menu;
 
-import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.menu.configuration.action.BasicActionConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.action.DialogActionConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.action.DistanceActionConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.AbilitiesAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.BaseAttributeConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.attribute.CombatAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.DisplayAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.AdvancedDialogConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.BasicDialogConfigurationMenuWrapper;
@@ -160,6 +161,12 @@ public class ModMenuTypes {
           BuiltInRegistries.MENU,
           ConfigurationType.CUSTOM_POSE.getId(),
           new MenuType<>(CustomPoseConfigurationMenuWrapper::new, FeatureFlagSet.of()));
+  public static final MenuType<CombatAttributeConfigurationMenuWrapper>
+      COMBAT_ATTRIBUTE_CONFIGURATION_MENU =
+          Registry.register(
+              BuiltInRegistries.MENU,
+              ConfigurationType.COMBAT_ATTRIBUTE.getId(),
+              new MenuType<>(CombatAttributeConfigurationMenuWrapper::new, FeatureFlagSet.of()));
   public static final MenuType<ExportCustomPresetConfigurationMenuWrapper>
       CUSTOM_EXPORT_PRESET_CONFIGURATION_MENU =
           Registry.register(

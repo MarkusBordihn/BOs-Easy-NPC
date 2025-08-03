@@ -44,7 +44,7 @@ public interface MenuHandlerInterface {
     // Get menu type for configuration type.
     final MenuType<? extends DialogMenu> menuType = getDialogMenuType();
     if (menuType == null) {
-      log.error("Unknown dialog {} for {} from {}", menuType, easyNPC, serverPlayer);
+      log.error("Unknown dialog for {} from {}", easyNPC, serverPlayer);
       return;
     }
 

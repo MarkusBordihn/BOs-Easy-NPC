@@ -105,11 +105,10 @@ public class EasyNPCModel {
   }
 
   public static void renderEntityNameTag(
-      final EasyNPCRenderStateExtension extension,
-      final PoseStack poseStack) {
+      final EasyNPCRenderStateExtension extension, final PoseStack poseStack) {
 
     if (extension == null) {
-      return ;
+      return;
     }
 
     // Get EasyNPC

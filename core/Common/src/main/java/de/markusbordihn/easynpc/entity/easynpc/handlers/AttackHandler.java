@@ -20,6 +20,8 @@
 package de.markusbordihn.easynpc.entity.easynpc.handlers;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.attribute.CombatAttributes;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
 import de.markusbordihn.easynpc.item.ModItemTags;
 import java.util.Optional;
 import net.minecraft.core.Holder.Reference;
@@ -28,8 +30,11 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.AxeItem;
@@ -195,5 +200,23 @@ public class AttackHandler {
             () ->
                 ProjectileUtil.getMobArrow(
                     livingEntity, new ItemStack(Items.ARROW), damage, itemStackWeapon));
+  }
+
+  public static boolean handleIsInvulnerableTo(
+      EasyNPCBase<?> easyNPC, DamageSource damageSource, boolean defaultValue) {
+    // If the NPC is invulnerable, return true.
+    if (easyNPC.getEntityAttributes().getCombatAttributes().isInvulnerable()) {
+      return true;
+    }
+
+    // Check if the damage source is from a player or monster and if the NPC is attackable by them.
+    CombatAttributes combatAttributes = easyNPC.getEntityAttributes().getCombatAttributes();
+    if (damageSource.getEntity() instanceof Player) {
+      return !combatAttributes.isAttackableByPlayers();
+    } else if (damageSource.getEntity() instanceof Monster) {
+      return !combatAttributes.isAttackableByMonsters();
+    }
+
+    return defaultValue;
   }
 }

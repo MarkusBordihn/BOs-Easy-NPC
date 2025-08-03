@@ -24,7 +24,6 @@ import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
-import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.culling.Frustum;
@@ -69,12 +68,12 @@ public class EasyNPCEntityRendererMixin<T extends Entity, S extends EntityRender
 
   @Inject(method = "renderNameTag", at = @At("HEAD"))
   private void onRenderNameTag(
-    S renderState,
-    Component component,
-    PoseStack poseStack,
-    MultiBufferSource multiBufferSource,
-    int i,
-    CallbackInfo ci) {
+      S renderState,
+      Component component,
+      PoseStack poseStack,
+      MultiBufferSource multiBufferSource,
+      int i,
+      CallbackInfo ci) {
     if (renderState instanceof EasyNPCRenderStateExtension renderStateExtension) {
       EasyNPCModel.renderEntityNameTag(renderStateExtension, poseStack);
     }

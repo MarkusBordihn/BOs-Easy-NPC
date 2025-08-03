@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.DrownedRaw.VariantType;
@@ -30,8 +29,6 @@ import net.minecraft.client.renderer.entity.DrownedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.ZombieRenderState;
 import net.minecraft.resources.ResourceLocation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class DrownedRawRenderer extends DrownedRenderer implements EasyNPCEntityRenderer {
 
@@ -44,7 +41,6 @@ public class DrownedRawRenderer extends DrownedRenderer implements EasyNPCEntity
                   ResourceLocation.withDefaultNamespace("textures/entity/zombie/drowned.png")));
   protected static final ResourceLocation DEFAULT_TEXTURE =
       TEXTURE_BY_VARIANT_TYPE.get(VariantType.DEFAULT);
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public DrownedRawRenderer(EntityRendererProvider.Context context) {
     super(context);
@@ -66,8 +62,6 @@ public class DrownedRawRenderer extends DrownedRenderer implements EasyNPCEntity
 
   @Override
   public ResourceLocation getTextureByVariant(Enum<?> variantType) {
-    return TEXTURE_BY_VARIANT_TYPE != null
-        ? TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE)
-        : Constants.BLANK_ENTITY_TEXTURE;
+    return TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE);
   }
 }

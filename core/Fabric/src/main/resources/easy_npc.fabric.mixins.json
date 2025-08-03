@@ -4,7 +4,6 @@
   "package": "de.markusbordihn.easynpc.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "entity.EasyNPCFoxMixin",
     "model.EasyNPCHumanoidModelMixin",
     "model.EasyNPCPlayerModelMixin",
     "model.EasyNPCVillagerModelMixin",
@@ -13,8 +12,10 @@
     "renderer.EasyNPCLivingEntityRendererMixin",
     "renderer.state.EasyNPCLivingEntityRenderStateMixin"
   ],
-  "server": [
-    "entity.EasyNPCFoxMixin"
+  "mixins": [
+    "entity.EasyNPCFoxMixin",
+    "target.LivingEntityTargetingMixin",
+    "target.MobTargetingMixin"
   ],
   "injectors": {
     "defaultRequire": 1

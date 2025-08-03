@@ -63,6 +63,8 @@ public class MenuHandler implements MenuHandlerInterface {
     configurationMenuMap.put(
         ConfigurationType.BASIC_TRADING, ModMenuTypes.BASIC_TRADING_CONFIGURATION_MENU.get());
     configurationMenuMap.put(
+        ConfigurationType.COMBAT_ATTRIBUTE, ModMenuTypes.COMBAT_ATTRIBUTE_CONFIGURATION_MENU.get());
+    configurationMenuMap.put(
         ConfigurationType.CUSTOM_POSE, ModMenuTypes.CUSTOM_POSE_CONFIGURATION_MENU.get());
     configurationMenuMap.put(
         ConfigurationType.CUSTOM_PRESET_EXPORT,
@@ -76,9 +78,6 @@ public class MenuHandler implements MenuHandlerInterface {
         ConfigurationType.CUSTOM_SKIN, ModMenuTypes.CUSTOM_SKIN_CONFIGURATION_MENU.get());
     configurationMenuMap.put(
         ConfigurationType.CUSTOM_TRADING, ModMenuTypes.CUSTOM_TRADING_CONFIGURATION_MENU.get());
-    configurationMenuMap.put(
-        ConfigurationType.CUSTOM_PRESET_IMPORT,
-        ModMenuTypes.CUSTOM_IMPORT_PRESET_CONFIGURATION_MENU.get());
     configurationMenuMap.put(
         ConfigurationType.DEFAULT_MODEL, ModMenuTypes.DEFAULT_MODEL_CONFIGURATION_MENU.get());
     configurationMenuMap.put(

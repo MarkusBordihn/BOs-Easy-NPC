@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.action.DialogActionC
 import de.markusbordihn.easynpc.configui.menu.configuration.action.DistanceActionConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.AbilitiesAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.BaseAttributeConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.attribute.CombatAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.DisplayAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.AdvancedDialogConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.BasicDialogConfigurationMenuWrapper;
@@ -139,6 +140,11 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               ConfigurationType.BASIC_TRADING.getName(),
               () -> IForgeMenuType.create(BasicTradingConfigurationMenuWrapper::new));
+  public static final RegistryObject<MenuType<CombatAttributeConfigurationMenuWrapper>>
+      COMBAT_ATTRIBUTE_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.COMBAT_ATTRIBUTE.getName(),
+              () -> IForgeMenuType.create(CombatAttributeConfigurationMenuWrapper::new));
   public static final RegistryObject<MenuType<CustomPoseConfigurationMenuWrapper>>
       CUSTOM_POSE_CONFIGURATION_MENU =
           MENU_TYPES.register(

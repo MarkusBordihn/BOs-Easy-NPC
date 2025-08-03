@@ -4,7 +4,7 @@ import org.gradle.tooling.GradleConnector
 subprojects {
 
   tasks.register('wrapper', Wrapper) {
-    gradleVersion = '8.13'
+    gradleVersion = '8.14.3'
   }
 
   tasks.withType(JavaCompile).configureEach {
@@ -46,13 +46,86 @@ tasks.named('build') {
   }
 }
 
+// Override clean build task to build all modules
+tasks.named('clean') {
+  description = 'Cleans all modules (core, config-ui, bundle)'
+
+  dependsOn 'cleanGradleDirs'
+
+  doLast {
+    // Define module directories
+    def modules = ['core', 'config-ui', 'bundle']
+
+    // Build each module
+    modules.each { moduleName ->
+      def moduleDir = file("${rootDir}/${moduleName}")
+
+      println "Building module: ${moduleName}"
+      def connection = GradleConnector.newConnector()
+          .forProjectDirectory(moduleDir)
+          .connect()
+
+      try {
+        def buildLauncher = connection.newBuild()
+        buildLauncher.forTasks('clean')
+        buildLauncher.setStandardOutput(System.out)
+        buildLauncher.setStandardError(System.err)
+        buildLauncher.run()
+        println "Successfully clean module: ${moduleName}"
+      } finally {
+        connection.close()
+      }
+    }
+
+    println "All modules successfully clean."
+  }
+}
+
+// Clean and build all modules
+tasks.named('cleanBuild') {
+  description = 'Cleans and builds all modules (core, config-ui, bundle)'
+  group = "build"
+
+  // Make sure clean runs first
+  dependsOn 'clean'
+
+  // Then build all modules
+  dependsOn 'build'
+
+  tasks.build.mustRunAfter tasks.clean
+
+  doLast {
+    println "All modules successfully cleaned and built."
+  }
+}
+
+// Remove all .gradle directories in project and subproject folders
+tasks.register('cleanGradleDirs') {
+  description = 'Deletes all .gradle directories in project and subproject folders'
+  group = "build"
+
+  doLast {
+    def dirsToClean = []
+    rootDir.eachFileRecurse { file ->
+      if (file.isDirectory() && file.name == '.gradle') {
+        dirsToClean << file
+      }
+    }
+    dirsToClean.each { dir ->
+      println "Deleting: ${dir}"
+      dir.deleteDir()
+    }
+    println ".gradle directories deleted: ${dirsToClean.size()}"
+  }
+}
+
 // Create a publish task to build and publish all modules sequentially
 tasks.register('publish') {
   description = 'Builds and publishes all modules sequentially (core, config-ui, bundle)'
   group = "publishing"
 
   // Make sure build runs first
-  dependsOn 'build'
+  dependsOn 'cleanBuild'
 
   doLast {
     // Define module directories in the order they should be published

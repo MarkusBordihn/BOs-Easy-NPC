@@ -5,7 +5,6 @@
   "compatibilityLevel": "JAVA_21",
   "refmap": "easy_npc.refmap.json",
   "client": [
-    "entity.EasyNPCFoxMixin",
     "model.EasyNPCHumanoidModelMixin",
     "model.EasyNPCPlayerModelMixin",
     "model.EasyNPCVillagerModelMixin",
@@ -14,8 +13,10 @@
     "renderer.EasyNPCLivingEntityRendererMixin",
     "renderer.state.EasyNPCLivingEntityRenderStateMixin"
   ],
-  "server": [
-    "entity.EasyNPCFoxMixin"
+  "mixins": [
+    "entity.EasyNPCFoxMixin",
+    "target.LivingEntityTargetingMixin",
+    "target.MobTargetingMixin"
   ],
   "injectors": {
     "defaultRequire": 1
