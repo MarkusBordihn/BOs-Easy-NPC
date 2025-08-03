@@ -159,9 +159,7 @@ public class DopplerRenderer<E extends PathfinderMob, M extends PlayerModel<E>>
 
   @Override
   public ResourceLocation getTextureByVariant(Enum<?> variantType) {
-    return TEXTURE_BY_VARIANT_TYPE != null
-        ? TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE)
-        : Constants.BLANK_ENTITY_TEXTURE;
+    return TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE);
   }
 
   @Override

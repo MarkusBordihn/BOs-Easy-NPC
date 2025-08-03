@@ -1,8 +1,3 @@
-plugins {
-  id 'idea'
-  id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.8"
-}
-
 subprojects {
 
   apply plugin: 'java'
@@ -51,6 +46,13 @@ subprojects {
 
   tasks.withType(Javadoc).configureEach {
     enabled = false
+  }
+
+  configurations.configureEach {
+    resolutionStrategy {
+      cacheChangingModulesFor 0, 'days'
+      cacheDynamicVersionsFor 0, 'days'
+    }
   }
 
   tasks.register("prepareKotlinBuildScriptModel") {}

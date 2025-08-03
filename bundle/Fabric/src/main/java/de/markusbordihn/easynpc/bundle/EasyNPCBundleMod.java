@@ -25,7 +25,6 @@ import org.apache.logging.log4j.Logger;
 
 public class EasyNPCBundleMod implements ModInitializer {
 
-  public static final String MOD_ID = "easy_npc_bundle";
   public static final String MOD_NAME = "Easy NPC (Bundle)";
   public static final Logger log = LogManager.getLogger(MOD_NAME);
 

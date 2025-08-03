@@ -221,7 +221,7 @@ public class ActionDataEditorContainerScreen<T extends EditorMenu> extends Edito
     if (this.minecraft == null
         || this.actionDataSet == null
         || actionDataEntry == null
-        || actionDataEntry.getId() == Constants.EMPTY_UUID) {
+        || actionDataEntry.getId().equals(Constants.EMPTY_UUID)) {
       return;
     }
     this.minecraft.setScreen(

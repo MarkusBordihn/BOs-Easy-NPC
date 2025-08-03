@@ -252,7 +252,7 @@ public class ObjectiveUtils {
               pathfinderMob, AbstractVillager.class, objectiveDataEntry.isMustSeeTarget());
       case OWNER_HURT_BY_TARGET -> new CustomOwnerHurtByTargetGoal<>(easyNPC);
       case HURT_BY_TARGET -> {
-        var hurtByTargetGoal = new HurtByTargetGoal(pathfinderMob);
+        HurtByTargetGoal hurtByTargetGoal = new HurtByTargetGoal(pathfinderMob);
         hurtByTargetGoal.setAlertOthers();
         yield hurtByTargetGoal;
       }

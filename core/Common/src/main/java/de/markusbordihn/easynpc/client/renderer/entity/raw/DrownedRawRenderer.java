@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
-import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.DrownedRaw.VariantType;
@@ -62,8 +61,6 @@ public class DrownedRawRenderer extends DrownedRenderer implements EasyNPCEntity
 
   @Override
   public ResourceLocation getTextureByVariant(Enum<?> variantType) {
-    return TEXTURE_BY_VARIANT_TYPE != null
-        ? TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE)
-        : Constants.BLANK_ENTITY_TEXTURE;
+    return TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE);
   }
 }

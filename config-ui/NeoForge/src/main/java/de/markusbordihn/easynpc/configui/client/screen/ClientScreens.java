@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.configui.client.screen.configuration.actions.Dia
 import de.markusbordihn.easynpc.configui.client.screen.configuration.actions.DistanceActionConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.attribute.AbilitiesAttributeConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.attribute.BaseAttributeConfigurationScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.configuration.attribute.CombatAttributeConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.attribute.DisplayAttributeConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.dialog.AdvancedDialogConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.dialog.BasicDialogConfigurationScreenWrapper;
@@ -110,6 +111,9 @@ public class ClientScreens {
     event.register(
         ModMenuTypes.BASIC_TRADING_CONFIGURATION_MENU.get(),
         BasicTradingConfigurationScreenWrapper::new);
+    event.register(
+        ModMenuTypes.COMBAT_ATTRIBUTE_CONFIGURATION_MENU.get(),
+        CombatAttributeConfigurationScreenWrapper::new);
     event.register(
         ModMenuTypes.CUSTOM_EXPORT_PRESET_CONFIGURATION_MENU.get(),
         ExportCustomPresetConfigurationScreenWrapper::new);

@@ -43,6 +43,7 @@ public class PiglinNPC extends PiglinRaw {
 
   protected static final ImmutableList<MemoryModuleType<?>> MEMORY_TYPES =
       ImmutableList.of(
+          MemoryModuleType.ANGRY_AT,
           MemoryModuleType.ATTACK_TARGET,
           MemoryModuleType.CELEBRATE_LOCATION,
           MemoryModuleType.DANCING);

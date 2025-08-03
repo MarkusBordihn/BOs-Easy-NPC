@@ -33,6 +33,7 @@ public class AttributeConfigurationScreen<T extends ConfigurationMenu>
 
   protected Button abilitiesAttributeButton = null;
   protected Button baseAttributeButton = null;
+  protected Button combatAttributeButton = null;
   protected Button displayAttributeButton = null;
 
   public AttributeConfigurationScreen(T menu, Inventory inventory, Component component) {
@@ -68,10 +69,22 @@ public class AttributeConfigurationScreen<T extends ConfigurationMenu>
                         .openConfiguration(
                             this.getEasyNPCUUID(), ConfigurationType.BASE_ATTRIBUTE)));
 
-    this.displayAttributeButton =
+    this.combatAttributeButton =
         this.addRenderableWidget(
             new TextButton(
                 this.baseAttributeButton.getX() + this.baseAttributeButton.getWidth(),
+                this.buttonTopPos,
+                70,
+                "combat",
+                onPress ->
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .openConfiguration(
+                            this.getEasyNPCUUID(), ConfigurationType.COMBAT_ATTRIBUTE)));
+
+    this.displayAttributeButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.combatAttributeButton.getX() + this.combatAttributeButton.getWidth(),
                 this.buttonTopPos,
                 70,
                 "display",

@@ -29,7 +29,7 @@ public class AttackObjective extends Command {
                           objectiveType.name().startsWith("ATTACK_")
                               || objectiveType == ObjectiveType.HURT_BY_TARGET
                               || objectiveType == ObjectiveType.OWNER_HURT_BY_TARGET)
-                  .map(objectiveType -> getFriendlyTargetName(objectiveType))
+                  .map(AttackObjective::getFriendlyTargetName)
                   .collect(Collectors.toList()),
               builder);
 

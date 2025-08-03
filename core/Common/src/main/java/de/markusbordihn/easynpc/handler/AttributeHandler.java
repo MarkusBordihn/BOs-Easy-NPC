@@ -59,12 +59,12 @@ public class AttributeHandler {
     CombatAttributes attributes = entityAttributes.getCombatAttributes();
     log.debug("Changing combat attribute {}={} for {}", attributeType, value, easyNPC);
     switch (attributeType) {
-      case IS_ATTACKABLE -> {
-        entityAttributes.setCombatAttributes(attributes.withIsAttackable(value));
-        if (easyNPC.getEntity() != null) {
-          easyNPC.getEntity().setInvulnerable(!value);
-        }
-      }
+      case IS_INVULNERABLE ->
+          entityAttributes.setCombatAttributes(attributes.withIsInvulnerable(value));
+      case IS_ATTACKABLE_BY_PLAYERS ->
+          entityAttributes.setCombatAttributes(attributes.withIsAttackableByPlayers(value));
+      case IS_ATTACKABLE_BY_MONSTERS ->
+          entityAttributes.setCombatAttributes(attributes.withIsAttackableByMonsters(value));
       default -> {
         log.error("Unimplemented combat attribute {} for {}", attributeType, easyNPC);
         return false;
@@ -87,9 +87,8 @@ public class AttributeHandler {
     CombatAttributes attributes = entityAttributes.getCombatAttributes();
     log.debug("Changing combat attribute {}={} for {}", attributeType, value, easyNPC);
     switch (attributeType) {
-      case HEALTH_REGENERATION -> {
-        entityAttributes.setCombatAttributes(attributes.withHealthRegeneration(value));
-      }
+      case HEALTH_REGENERATION ->
+          entityAttributes.setCombatAttributes(attributes.withHealthRegeneration(value));
       default -> {
         log.error("Unimplemented combat attribute {} for {}", attributeType, easyNPC);
         return false;

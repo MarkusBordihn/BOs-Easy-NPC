@@ -62,7 +62,8 @@ public class ZombieVillagerNPC extends ZombieVillagerRaw {
         .add(Attributes.ATTACK_KNOCKBACK, 0.0D)
         .add(Attributes.ATTACK_SPEED, 0.0D)
         .add(Attributes.ARMOR, 0.0D)
-        .add(Attributes.ARMOR_TOUGHNESS, 0.0D);
+        .add(Attributes.ARMOR_TOUGHNESS, 0.0D)
+        .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
   }
 
   @Override
