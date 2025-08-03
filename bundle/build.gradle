@@ -1,0 +1,28 @@
+subprojects {
+
+  apply plugin: 'java'
+
+  java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+  java.withSourcesJar()
+  java.withJavadocJar()
+
+  repositories {
+    mavenCentral()
+    mavenLocal()
+  }
+
+  tasks.register('wrapper', Wrapper) {
+    gradleVersion = '8.13'
+  }
+
+  tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+  }
+
+  configurations.configureEach {
+    resolutionStrategy {
+      cacheChangingModulesFor 0, 'days'
+      cacheDynamicVersionsFor 0, 'days'
+    }
+  }
+}

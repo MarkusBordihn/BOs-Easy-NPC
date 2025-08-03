@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.action.DialogActionC
 import de.markusbordihn.easynpc.configui.menu.configuration.action.DistanceActionConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.AbilitiesAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.BaseAttributeConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.attribute.CombatAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.attribute.DisplayAttributeConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.AdvancedDialogConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.dialog.BasicDialogConfigurationMenuWrapper;
@@ -135,6 +136,11 @@ public class ModMenuTypes {
   public static final MenuType<CustomPoseConfigurationMenuWrapper> CUSTOM_POSE_CONFIGURATION_MENU =
       ScreenHandlerRegistry.registerSimple(
           ConfigurationType.CUSTOM_POSE.getId(), CustomPoseConfigurationMenuWrapper::new);
+  public static final MenuType<CombatAttributeConfigurationMenuWrapper>
+      COMBAT_ATTRIBUTE_CONFIGURATION_MENU =
+          ScreenHandlerRegistry.registerSimple(
+              ConfigurationType.COMBAT_ATTRIBUTE.getId(),
+              CombatAttributeConfigurationMenuWrapper::new);
   public static final MenuType<ExportCustomPresetConfigurationMenuWrapper>
       CUSTOM_EXPORT_PRESET_CONFIGURATION_MENU =
           ScreenHandlerRegistry.registerSimple(

@@ -21,32 +21,57 @@ package de.markusbordihn.easynpc.data.attribute;
 
 import net.minecraft.nbt.CompoundTag;
 
-public record CombatAttributes(boolean isAttackable, double healthRegeneration)
+public record CombatAttributes(
+    boolean isAttackableByPlayers,
+    boolean isAttackableByMonsters,
+    boolean isInvulnerable,
+    double healthRegeneration)
     implements EntityAttributesInterface {
 
-  public static final String IS_ATTACKABLE_TAG = CombatAttributeType.IS_ATTACKABLE.getTagName();
+  public static final String IS_ATTACKABLE_BY_PLAYERS_TAG =
+      CombatAttributeType.IS_ATTACKABLE_BY_PLAYERS.getTagName();
+  public static final String IS_ATTACKABLE_BY_MONSTERS_TAG =
+      CombatAttributeType.IS_ATTACKABLE_BY_MONSTERS.getTagName();
+  public static final String IS_INVULNERABLE_TAG = CombatAttributeType.IS_INVULNERABLE.getTagName();
   public static final String HEALTH_REGENERATION_TAG =
       CombatAttributeType.HEALTH_REGENERATION.getTagName();
 
   public CombatAttributes() {
-    this(false, 0.0);
+    this(false, false, true, 0.0);
   }
 
   public static CombatAttributes decode(CompoundTag compoundTag) {
     return new CombatAttributes(
-        compoundTag.getBoolean(IS_ATTACKABLE_TAG), compoundTag.getDouble(HEALTH_REGENERATION_TAG));
+        compoundTag.getBoolean(IS_ATTACKABLE_BY_PLAYERS_TAG),
+        compoundTag.getBoolean(IS_ATTACKABLE_BY_MONSTERS_TAG),
+        compoundTag.getBoolean(IS_INVULNERABLE_TAG),
+        compoundTag.getDouble(HEALTH_REGENERATION_TAG));
   }
 
   public CombatAttributes withHealthRegeneration(double healthRegeneration) {
-    return new CombatAttributes(isAttackable, healthRegeneration);
+    return new CombatAttributes(
+        isAttackableByPlayers, isAttackableByMonsters, isInvulnerable, healthRegeneration);
   }
 
-  public CombatAttributes withIsAttackable(boolean isAttackable) {
-    return new CombatAttributes(isAttackable, healthRegeneration);
+  public CombatAttributes withIsAttackableByPlayers(boolean isAttackableByPlayers) {
+    return new CombatAttributes(
+        isAttackableByPlayers, isAttackableByMonsters, isInvulnerable, healthRegeneration);
+  }
+
+  public CombatAttributes withIsAttackableByMonsters(boolean isAttackableByMonsters) {
+    return new CombatAttributes(
+        isAttackableByPlayers, isAttackableByMonsters, isInvulnerable, healthRegeneration);
+  }
+
+  public CombatAttributes withIsInvulnerable(boolean isInvulnerable) {
+    return new CombatAttributes(
+        isAttackableByPlayers, isAttackableByMonsters, isInvulnerable, healthRegeneration);
   }
 
   public CompoundTag encode(CompoundTag compoundTag) {
-    compoundTag.putBoolean(IS_ATTACKABLE_TAG, isAttackable());
+    compoundTag.putBoolean(IS_ATTACKABLE_BY_PLAYERS_TAG, isAttackableByPlayers());
+    compoundTag.putBoolean(IS_ATTACKABLE_BY_MONSTERS_TAG, isAttackableByMonsters());
+    compoundTag.putBoolean(IS_INVULNERABLE_TAG, isInvulnerable());
     compoundTag.putDouble(HEALTH_REGENERATION_TAG, healthRegeneration());
     return compoundTag;
   }

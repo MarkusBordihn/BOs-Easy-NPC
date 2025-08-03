@@ -130,19 +130,6 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
         new Checkbox(
             firstButtonRow,
             this.buttonTopPos + 65,
-            CombatAttributeType.IS_ATTACKABLE.getAttributeName(),
-            entityAttributes.getCombatAttributes().isAttackable(),
-            checkbox ->
-                NetworkMessageHandlerManager.getServerHandler()
-                    .combatAttributeChange(
-                        this.getEasyNPCUUID(),
-                        CombatAttributeType.IS_ATTACKABLE,
-                        checkbox.selected())));
-
-    this.addRenderableWidget(
-        new Checkbox(
-            firstButtonRow,
-            this.buttonTopPos + 85,
             InteractionAttributeType.IS_PUSHABLE.getAttributeName(),
             entityAttributes.getInteractionAttributes().isPushable(),
             checkbox ->
@@ -155,7 +142,7 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
     this.addRenderableWidget(
         new Checkbox(
             secondButtonRow,
-            this.buttonTopPos + 85,
+            this.buttonTopPos + 65,
             InteractionAttributeType.PUSH_ENTITIES.getAttributeName(),
             entityAttributes.getInteractionAttributes().pushEntities(),
             checkbox ->
@@ -168,7 +155,7 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
     this.addRenderableWidget(
         new Checkbox(
             thirdButtonRow,
-            this.buttonTopPos + 85,
+            this.buttonTopPos + 65,
             InteractionAttributeType.CAN_BE_LEASHED.getAttributeName(),
             entityAttributes.getInteractionAttributes().canBeLeashed(),
             checkbox ->
@@ -181,7 +168,7 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
     this.addRenderableWidget(
         new Checkbox(
             firstButtonRow,
-            this.buttonTopPos + 105,
+            this.buttonTopPos + 85,
             MovementAttributeType.CAN_USE_NETHER_PORTAL.getAttributeName(),
             entityAttributes.getMovementAttributes().canUseNetherPortal(),
             checkbox ->
@@ -194,7 +181,7 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
     this.addRenderableWidget(
         new Checkbox(
             firstButtonRow,
-            this.buttonTopPos + 125,
+            this.buttonTopPos + 105,
             EntityAttribute.SILENT.getAttributeName(),
             attributeData.getAttributeSilent(),
             checkbox ->
@@ -205,8 +192,8 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
     this.healthRegenerationSlider =
         this.addRenderableWidget(
             new RangeSliderButton(
-                firstButtonRow + 130,
-                this.buttonTopPos + 150,
+                firstButtonRow + 135,
+                this.buttonTopPos + 210,
                 CombatAttributeType.HEALTH_REGENERATION.getAttributeName(),
                 entityAttributes.getCombatAttributes().healthRegeneration(),
                 0.0D,
@@ -225,7 +212,7 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
 
-    int sliderXOffset = -135;
+    int sliderXOffset = -125;
     int sliderYOffset = 3;
 
     if (this.healthRegenerationSlider != null) {

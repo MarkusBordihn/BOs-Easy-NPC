@@ -46,11 +46,13 @@ public class VillagerNPC extends VillagerRaw {
 
   protected static final ImmutableList<MemoryModuleType<?>> MEMORY_TYPES =
       ImmutableList.of(
+          MemoryModuleType.ANGRY_AT,
+          MemoryModuleType.ATTACK_TARGET,
+          MemoryModuleType.HEARD_BELL_TIME,
           MemoryModuleType.HOME,
           MemoryModuleType.JOB_SITE,
-          MemoryModuleType.MEETING_POINT,
           MemoryModuleType.LAST_SLEPT,
-          MemoryModuleType.HEARD_BELL_TIME);
+          MemoryModuleType.MEETING_POINT);
 
   private static final ImmutableList<SensorType<? extends Sensor<? super Villager>>> SENSOR_TYPES =
       ImmutableList.of(

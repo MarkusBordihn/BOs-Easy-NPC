@@ -35,13 +35,6 @@ processResources {
 
 }
 
-repositories {
-  maven {
-    name = 'Sponge Snapshots'
-    url = 'https://repo.spongepowered.org/repository/maven-public/'
-  }
-}
-
 publishing {
   publications {
     mavenJava(MavenPublication) {

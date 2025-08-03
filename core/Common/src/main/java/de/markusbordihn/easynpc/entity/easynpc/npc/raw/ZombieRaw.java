@@ -394,7 +394,7 @@ public class ZombieRaw extends Zombie implements EasyNPCBase<Zombie> {
 
   @Override
   public boolean isAttackable() {
-    return getEntityAttributes().getCombatAttributes().isAttackable();
+    return getEntityAttributes().getCombatAttributes().isAttackableByPlayers();
   }
 
   @Override
@@ -411,12 +411,13 @@ public class ZombieRaw extends Zombie implements EasyNPCBase<Zombie> {
 
   @Override
   public boolean isInvulnerable() {
-    return !getEntityAttributes().getCombatAttributes().isAttackable();
+    return getEntityAttributes().getCombatAttributes().isInvulnerable();
   }
 
   @Override
   public boolean isInvulnerableTo(DamageSource damageSource) {
-    return isInvulnerable() || super.isInvulnerableTo(damageSource);
+    return AttackHandler.handleIsInvulnerableTo(
+        this, damageSource, super.isInvulnerableTo(damageSource));
   }
 
   @Override
