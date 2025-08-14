@@ -44,6 +44,7 @@ public final class Constants {
   public static final int FONT_COLOR_YELLOW = 16777045;
   public static final int NPC_DATA_VERSION = 3;
   public static final String MOD_ID = "easy_npc";
+  public static final String MOD_ID_CUSTOM = MOD_ID + "_custom";
   public static final String MINECRAFT_PREFIX = "minecraft";
   public static final ResourceLocation BLANK_ENTITY_TEXTURE =
       new ResourceLocation(Constants.MOD_ID, "textures/entity/blank.png");

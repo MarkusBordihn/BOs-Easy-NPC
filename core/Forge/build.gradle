@@ -110,6 +110,9 @@ dependencies {
   if (project.hasProperty('forge_xaeros_minimap_mod') && project.forge_xaeros_minimap_mod) {
     runtimeOnly fg.deobf("curse.maven:xaeros_minimap-263420:${project.forge_xaeros_minimap_mod}")
   }
+
+  // Test dependencies
+  runtimeOnly fg.deobf("curse.maven:epic-fight-mod-405076:6854306")
 }
 
 mixin {

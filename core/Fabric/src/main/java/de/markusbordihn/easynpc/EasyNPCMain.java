@@ -80,7 +80,7 @@ public class EasyNPCMain implements ModInitializer {
     CompatManager.registerCompatHandler(new CompatHandler());
 
     log.info("{} Entity Types ...", Constants.LOG_REGISTER_PREFIX);
-    ModEntityType.registerEntitiesAttributes();
+    ModEntityType.registerEntityAttributes();
 
     log.info("{} Blocks ...", Constants.LOG_REGISTER_PREFIX);
     ModBlocks.registerModBlocks();

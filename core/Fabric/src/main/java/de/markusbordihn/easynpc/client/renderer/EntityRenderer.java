@@ -25,7 +25,14 @@ import de.markusbordihn.easynpc.client.renderer.entity.ModNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.ModRawEntityRenderer;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.entity.ModEntityType;
+import de.markusbordihn.easynpc.entity.UserDefinedEntityRegistry;
+import de.markusbordihn.easynpc.entity.UserDefinedEntityType;
+import java.util.function.Function;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -59,10 +66,79 @@ public class EntityRenderer {
           context -> renderer.getRenderer().apply(context));
     }
 
+    // Register user-defined entity renderer
+    for (UserDefinedEntityType type : UserDefinedEntityRegistry.getAvailableEntityTypes()) {
+      EntityType<?> entityType = UserDefinedEntityRegistry.getRegisteredEntityType(type);
+      if (entityType != null) {
+        registerEntityRendererWithTypecast(
+            entityType, context -> createRendererForBaseType(context, type.getBaseEntityType()));
+      }
+    }
+
     // Optional: Epic Fight entities
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
       // EntityRendererRegistry.register(
       //   ModEntityType.EPIC_FIGHT_ZOMBIE, ZombieRawRenderer::new);
     }
+  }
+
+  /** Creates an appropriate renderer for a user-defined entity based on its base entity type. */
+  private static net.minecraft.client.renderer.entity.EntityRenderer<? extends LivingEntity>
+      createRendererForBaseType(
+          EntityRendererProvider.Context context, EntityType<?> baseEntityType) {
+
+    // Try to find matching renderer from existing mod renderers
+    for (ModRawEntityRenderer renderer : ModRawEntityRenderer.values()) {
+      if (ModEntityType.getEntityType(renderer.getEntityType()) == baseEntityType) {
+        return (net.minecraft.client.renderer.entity.EntityRenderer<? extends LivingEntity>)
+            renderer.getRenderer().apply(context);
+      }
+    }
+
+    for (ModNPCEntityRenderer renderer : ModNPCEntityRenderer.values()) {
+      if (ModEntityType.getEntityType(renderer.getEntityType()) == baseEntityType) {
+        return (net.minecraft.client.renderer.entity.EntityRenderer<? extends LivingEntity>)
+            renderer.getRenderer().apply(context);
+      }
+    }
+
+    for (ModCustomEntityRenderer renderer : ModCustomEntityRenderer.values()) {
+      if (ModEntityType.getEntityType(renderer.getEntityType()) == baseEntityType) {
+        return (net.minecraft.client.renderer.entity.EntityRenderer<? extends LivingEntity>)
+            renderer.getRenderer().apply(context);
+      }
+    }
+
+    // Try to find vanilla renderer factory
+    Function<
+            EntityRendererProvider.Context,
+            net.minecraft.client.renderer.entity.EntityRenderer<? extends LivingEntity>>
+        rendererFactory = EntityRendererUtils.getVanillaRendererFactory(baseEntityType);
+
+    if (rendererFactory != null) {
+      return rendererFactory.apply(context);
+    }
+
+    // Ultimate fallback - use a basic humanoid renderer
+    return EntityRendererUtils.createFallbackRenderer(context, baseEntityType);
+  }
+
+  /** Helper method to safely register entity renderers with proper type casting for Fabric. */
+  @SuppressWarnings({"unchecked"})
+  private static <T extends Entity> void registerEntityRendererWithTypecast(
+      EntityType<?> entityType,
+      Function<
+              EntityRendererProvider.Context,
+              net.minecraft.client.renderer.entity.EntityRenderer<? extends LivingEntity>>
+          rendererFactory) {
+
+    EntityRendererProvider<T> provider =
+        context -> {
+          net.minecraft.client.renderer.entity.EntityRenderer<? extends LivingEntity> renderer =
+              rendererFactory.apply(context);
+          return (net.minecraft.client.renderer.entity.EntityRenderer<T>) renderer;
+        };
+
+    EntityRendererRegistry.register((EntityType<T>) entityType, provider);
   }
 }
