@@ -33,7 +33,6 @@ import net.minecraft.client.renderer.entity.layers.HorseArmorLayer;
 import net.minecraft.client.renderer.entity.layers.HorseMarkingLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.animal.horse.Horse;
-import net.minecraft.world.entity.animal.horse.Variant;
 
 public class HorseRawRenderer extends AbstractHorseRenderer<Horse, HorseModel<Horse>>
     implements EasyNPCEntityRenderer {
@@ -111,10 +110,10 @@ public class HorseRawRenderer extends AbstractHorseRenderer<Horse, HorseModel<Ho
           });
 
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(Variant.WHITE);
+      TEXTURE_BY_VARIANT_TYPE.get(VariantType.WHITE);
 
   public HorseRawRenderer(EntityRendererProvider.Context context) {
-    super(context, new HorseModel(context.bakeLayer(ModelLayers.HORSE)), 1.1F);
+    super(context, new HorseModel<>(context.bakeLayer(ModelLayers.HORSE)), 1.1F);
     this.addLayer(new HorseMarkingLayer(this));
     this.addLayer(new HorseArmorLayer(this, context.getModelSet()));
   }

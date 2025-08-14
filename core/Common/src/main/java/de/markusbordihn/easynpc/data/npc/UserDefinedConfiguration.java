@@ -17,36 +17,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc;
+package de.markusbordihn.easynpc.data.npc;
 
-import de.markusbordihn.easynpc.client.model.ModModelLayer;
-import de.markusbordihn.easynpc.client.renderer.BlockEntityRenderer;
-import de.markusbordihn.easynpc.client.renderer.EntityRenderer;
-import de.markusbordihn.easynpc.client.screen.ClientScreens;
-import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
-import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
-import de.markusbordihn.easynpc.tabs.ModTabs;
-import net.minecraftforge.eventbus.api.IEventBus;
+import de.markusbordihn.easynpc.Constants;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class EasyNPCClient {
+public record UserDefinedConfiguration(
+    String id,
+    String name,
+    EntityType<?> baseEntityType,
+    float width,
+    float height,
+    String description) {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final float DEFAULT_WIDTH = 0.6F;
+  private static final float DEFAULT_HEIGHT = 1.95F;
 
-  public EasyNPCClient(IEventBus modEventBus) {
-    log.info("Initializing {} (Forge-Client) ...", Constants.MOD_NAME);
+  public UserDefinedConfiguration(
+      String id, String name, EntityType<?> baseEntityType, String description) {
+    this(id, name, baseEntityType, DEFAULT_WIDTH, DEFAULT_HEIGHT, description);
+  }
 
-    // Register event listeners for client-side rendering and UI
-    modEventBus.addListener(ModModelLayer::registerEntityLayerDefinitions);
-    modEventBus.addListener(BlockEntityRenderer::register);
-    modEventBus.addListener(EntityRenderer::register);
-    modEventBus.addListener(ClientScreens::registerScreens);
+  public String getBaseEntityTypeId() {
+    ResourceLocation resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(baseEntityType);
+    return resourceLocation.toString();
+  }
 
-    // Set up networking
-    NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
-
-    // Register creative tabs
-    ModTabs.CREATIVE_TABS.register(modEventBus);
+  public boolean isValid() {
+    return id != null
+        && !id.trim().isEmpty()
+        && name != null
+        && !name.trim().isEmpty()
+        && baseEntityType != null
+        && width > 0
+        && height > 0;
   }
 }
