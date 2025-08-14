@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.compat.epicfight.entity.EpicFightZombie;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
@@ -30,6 +31,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,6 +43,7 @@ public class ModEntityType {
       new EnumMap<>(ModNPCEntityType.class);
   public static final Map<ModCustomEntityType, EntityType<?>> CUSTOM_TYPE =
       new EnumMap<>(ModCustomEntityType.class);
+  public static final Map<UserDefinedEntityType, EntityType<?>> USER_DEFINED_TYPE = new HashMap<>();
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   // Optional: Epic Fight entities
@@ -79,6 +82,19 @@ public class ModEntityType {
               Constants.MOD_PREFIX_ID + type.getId(),
               type.getBuilder().build(type.getResourceKey())));
     }
+
+    // User-defined NPCs from configuration file
+    for (UserDefinedEntityType type : UserDefinedEntityRegistry.getAvailableEntityTypes()) {
+      log.info("Registering user-defined entity type {}", type.getResourceKey());
+      EntityType<?> entityType =
+          Registry.register(
+              BuiltInRegistries.ENTITY_TYPE,
+              Constants.MOD_PREFIX_ID + type.getId(),
+              type.getBuilder().build(type.getResourceKey()));
+
+      USER_DEFINED_TYPE.put(type, entityType);
+      UserDefinedEntityRegistry.registerEntityType(type, entityType);
+    }
   }
 
   static {
@@ -115,9 +131,7 @@ public class ModEntityType {
     return (EntityType<T>) CUSTOM_TYPE.get(type);
   }
 
-  public static void registerEntitiesAttributes() {
-    log.info("{} Registering Entities Attributes ...", Constants.LOG_REGISTER_PREFIX);
-
+  public static void registerEntityAttributes() {
     // Raw entities (for modding only)
     for (ModRawEntityType type : ModRawEntityType.values()) {
       if (type.getAttributes() != null) {
@@ -149,10 +163,131 @@ public class ModEntityType {
       }
     }
 
+    // User-defined NPCs from configuration file
+    for (UserDefinedEntityType type : UserDefinedEntityRegistry.getAvailableEntityTypes()) {
+      EntityType<?> baseEntityType = type.getBaseEntityType();
+
+      // Determine which attributes to use based on the base entity type
+      if (USER_DEFINED_TYPE.containsKey(type)) {
+        // Find base entity attributes based on the base type
+        try {
+          boolean attributesFound = false;
+
+          // Try to find matching raw entity type
+          for (ModRawEntityType rawType : ModRawEntityType.values()) {
+            if (RAW_TYPE.get(rawType) == baseEntityType) {
+              if (rawType.getAttributes() != null) {
+                FabricDefaultAttributeRegistry.register(
+                    (EntityType<? extends LivingEntity>) USER_DEFINED_TYPE.get(type),
+                    rawType.getAttributes().build());
+                attributesFound = true;
+                log.debug(
+                    "Used raw entity type {} attributes for user-defined entity {}",
+                    rawType.getId(),
+                    type.getId());
+                break;
+              }
+            }
+          }
+
+          // Try to find matching NPC entity type
+          if (!attributesFound) {
+            for (ModNPCEntityType npcType : ModNPCEntityType.values()) {
+              if (NPC_TYPE.get(npcType) == baseEntityType) {
+                if (npcType.getAttributes() != null) {
+                  FabricDefaultAttributeRegistry.register(
+                      (EntityType<? extends LivingEntity>) USER_DEFINED_TYPE.get(type),
+                      npcType.getAttributes().build());
+                  attributesFound = true;
+                  log.debug(
+                      "Used NPC entity type {} attributes for user-defined entity {}",
+                      npcType.getId(),
+                      type.getId());
+                  break;
+                }
+              }
+            }
+          }
+
+          // Try to find matching custom entity type
+          if (!attributesFound) {
+            for (ModCustomEntityType customType : ModCustomEntityType.values()) {
+              if (CUSTOM_TYPE.get(customType) == baseEntityType) {
+                if (customType.getAttributes() != null) {
+                  FabricDefaultAttributeRegistry.register(
+                      (EntityType<? extends LivingEntity>) USER_DEFINED_TYPE.get(type),
+                      customType.getAttributes().build());
+                  attributesFound = true;
+                  log.debug(
+                      "Used custom entity type {} attributes for user-defined entity {}",
+                      customType.getId(),
+                      type.getId());
+                  break;
+                }
+              }
+            }
+          }
+
+          // Fallback: Use vanilla entity attributes if available
+          if (!attributesFound) {
+            AttributeSupplier.Builder vanillaAttributes =
+                VanillaEntityAttributeHelper.getVanillaAttributesForEntityType(baseEntityType);
+            if (vanillaAttributes != null) {
+              FabricDefaultAttributeRegistry.register(
+                  (EntityType<? extends LivingEntity>) USER_DEFINED_TYPE.get(type),
+                  vanillaAttributes.build());
+              attributesFound = true;
+              log.info(
+                  "Used vanilla attributes for user-defined entity {} with base type {}",
+                  type.getId(),
+                  baseEntityType);
+            }
+          }
+
+          if (!attributesFound) {
+            log.error(
+                "No attributes found for user-defined entity {} with base type {} - this will cause crashes!",
+                type.getId(),
+                baseEntityType);
+
+            // Emergency fallback: Use generic living entity attributes
+            FabricDefaultAttributeRegistry.register(
+                (EntityType<? extends LivingEntity>) USER_DEFINED_TYPE.get(type),
+                net.minecraft.world.entity.LivingEntity.createLivingAttributes().build());
+            log.warn(
+                "Using emergency fallback attributes for user-defined entity {}", type.getId());
+          }
+
+        } catch (Exception e) {
+          log.error(
+              "Failed to set attributes for user-defined entity {}: {}",
+              type.getId(),
+              e.getMessage(),
+              e);
+
+          // Emergency fallback in case of any error
+          try {
+            FabricDefaultAttributeRegistry.register(
+                (EntityType<? extends LivingEntity>) USER_DEFINED_TYPE.get(type),
+                net.minecraft.world.entity.LivingEntity.createLivingAttributes().build());
+            log.warn(
+                "Applied emergency fallback attributes for user-defined entity {} due to error",
+                type.getId());
+          } catch (Exception fallbackError) {
+            log.error(
+                "Even emergency fallback failed for user-defined entity {}: {}",
+                type.getId(),
+                fallbackError.getMessage());
+          }
+        }
+      }
+    }
+
     // Optional: Epic Fight entities
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
-      FabricDefaultAttributeRegistry.register(
-          EPIC_FIGHT_ZOMBIE, net.minecraft.world.entity.monster.Zombie.createAttributes());
+      // FabricDefaultAttributeRegistry.register(
+      //    EPIC_FIGHT_ZOMBIE,
+      //    net.minecraft.world.entity.monster.Zombie.createAttributes().build());
     }
   }
 }

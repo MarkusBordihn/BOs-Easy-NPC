@@ -119,6 +119,41 @@ tasks.register('cleanGradleDirs') {
   }
 }
 
+// Clean cache and build all modules with refreshed dependencies
+tasks.register('cleanCache') {
+  description = 'Cleans cache and builds all modules with refreshed dependencies (core, config-ui, bundle)'
+  group = "build"
+
+  doLast {
+    // Define module directories
+    def modules = ['core', 'config-ui', 'bundle']
+
+    // Process each module
+    modules.each { moduleName ->
+      def moduleDir = file("${rootDir}/${moduleName}")
+
+      println "Cleaning cache and building module: ${moduleName}"
+      def connection = GradleConnector.newConnector()
+          .forProjectDirectory(moduleDir)
+          .connect()
+
+      try {
+        def buildLauncher = connection.newBuild()
+        buildLauncher.forTasks('clean', 'build')
+        buildLauncher.withArguments('--refresh-dependencies')
+        buildLauncher.setStandardOutput(System.out)
+        buildLauncher.setStandardError(System.err)
+        buildLauncher.run()
+        println "Successfully cleaned cache and built module: ${moduleName}"
+      } finally {
+        connection.close()
+      }
+    }
+
+    println "All modules successfully cleaned cache and built with refreshed dependencies."
+  }
+}
+
 // Create a publish task to build and publish all modules sequentially
 tasks.register('publish') {
   description = 'Builds and publishes all modules sequentially (core, config-ui, bundle)'

@@ -48,23 +48,32 @@ public class VillagerNPC extends VillagerRaw {
       ImmutableList.of(
           MemoryModuleType.ANGRY_AT,
           MemoryModuleType.ATTACK_TARGET,
+          MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
           MemoryModuleType.HEARD_BELL_TIME,
           MemoryModuleType.HOME,
+          MemoryModuleType.HURT_BY_ENTITY,
+          MemoryModuleType.HURT_BY,
           MemoryModuleType.JOB_SITE,
-          MemoryModuleType.LAST_SLEPT,
-          MemoryModuleType.MEETING_POINT);
+          MemoryModuleType.LOOK_TARGET,
+          MemoryModuleType.MEETING_POINT,
+          MemoryModuleType.NEAREST_PLAYERS,
+          MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES,
+          MemoryModuleType.NEAREST_VISIBLE_PLAYER,
+          MemoryModuleType.PATH,
+          MemoryModuleType.POTENTIAL_JOB_SITE,
+          MemoryModuleType.WALK_TARGET);
 
   private static final ImmutableList<SensorType<? extends Sensor<? super Villager>>> SENSOR_TYPES =
       ImmutableList.of(
+          SensorType.GOLEM_DETECTED,
+          SensorType.HURT_BY,
+          SensorType.NEAREST_BED,
+          SensorType.NEAREST_ITEMS,
           SensorType.NEAREST_LIVING_ENTITIES,
           SensorType.NEAREST_PLAYERS,
-          SensorType.NEAREST_ITEMS,
-          SensorType.NEAREST_BED,
-          SensorType.HURT_BY,
-          SensorType.VILLAGER_HOSTILES,
-          SensorType.VILLAGER_BABIES,
           SensorType.SECONDARY_POIS,
-          SensorType.GOLEM_DETECTED);
+          SensorType.VILLAGER_BABIES,
+          SensorType.VILLAGER_HOSTILES);
 
   public VillagerNPC(EntityType<? extends Villager> entityType, Level level) {
     this(entityType, level, VariantType.DEFAULT_NITWIT);
