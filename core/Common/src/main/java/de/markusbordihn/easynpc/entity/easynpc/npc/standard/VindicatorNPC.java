@@ -32,7 +32,7 @@ import net.minecraft.world.entity.monster.Vindicator;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class VindicatorNPC extends VindicatorRaw {
+public class VindicatorNPC extends VindicatorRaw implements StandardEasyNPC<VindicatorRaw> {
 
   public static final String ID = "vindicator";
 

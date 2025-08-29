@@ -35,7 +35,8 @@ import net.minecraft.world.entity.monster.ZombieVillager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class ZombieVillagerNPC extends ZombieVillagerRaw {
+public class ZombieVillagerNPC extends ZombieVillagerRaw
+    implements StandardEasyNPC<ZombieVillagerRaw> {
 
   public static final String ID = "zombie_villager";
 

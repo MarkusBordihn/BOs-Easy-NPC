@@ -20,23 +20,54 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.raw.EvokerRaw.VariantType;
+import java.util.EnumMap;
+import java.util.Map;
+import net.minecraft.Util;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EvokerRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.monster.SpellcasterIllager;
 
-public class EvokerRawRenderer extends EvokerRenderer implements EasyNPCEntityRenderer {
+public class EvokerRawRenderer<T extends SpellcasterIllager> extends EvokerRenderer<T>
+    implements EasyNPCEntityRenderer {
+
+  protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
+      Util.make(
+          new EnumMap<>(VariantType.class),
+          map -> {
+            map.put(
+                VariantType.EVOKER,
+                new ResourceLocation(
+                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/evoker/evoker.png"));
+            map.put(
+                VariantType.EVOKER_CROSSED_ARMS,
+                new ResourceLocation(
+                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/evoker/evoker.png"));
+          });
+  protected static final ResourceLocation DEFAULT_TEXTURE =
+      TEXTURE_BY_VARIANT_TYPE.get(VariantType.EVOKER);
 
   public EvokerRawRenderer(EntityRendererProvider.Context context) {
     super(context);
   }
 
   @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variant) {
-    return null;
+  public ResourceLocation getTextureLocation(T entity) {
+    if (entity instanceof EasyNPC<?> easyNPC) {
+      return getEntityTexture(easyNPC);
+    }
+    return DEFAULT_TEXTURE;
   }
 
   @Override
   public ResourceLocation getDefaultTexture() {
-    return null;
+    return DEFAULT_TEXTURE;
+  }
+
+  @Override
+  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
+    return TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE);
   }
 }

@@ -32,7 +32,7 @@ import net.minecraft.world.entity.monster.Drowned;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class DrownedNPC extends DrownedRaw {
+public class DrownedNPC extends DrownedRaw implements StandardEasyNPC<DrownedRaw> {
 
   public static final String ID = "drowned";
 

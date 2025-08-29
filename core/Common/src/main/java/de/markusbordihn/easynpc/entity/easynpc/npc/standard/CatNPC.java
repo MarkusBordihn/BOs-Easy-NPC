@@ -32,7 +32,7 @@ import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class CatNPC extends CatRaw {
+public class CatNPC extends CatRaw implements StandardEasyNPC<CatRaw> {
 
   public static final String ID = "cat";
 

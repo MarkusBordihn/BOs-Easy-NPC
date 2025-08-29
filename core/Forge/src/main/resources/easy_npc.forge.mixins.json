@@ -11,7 +11,11 @@
     "renderer.EasyNPCLivingEntityRendererMixin"
   ],
   "mixins": [
+    "entity.CreeperMixin",
     "entity.EasyNPCFoxMixin",
+    "entity.EndermanMixin",
+    "entity.RaiderMixin",
+    "entity.WitchMixin",
     "target.LivingEntityTargetingMixin",
     "target.MobTargetingMixin"
   ],

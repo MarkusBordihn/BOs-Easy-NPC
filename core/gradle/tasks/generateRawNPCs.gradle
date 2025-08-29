@@ -155,7 +155,7 @@ task generateRawNPCs {
           baseClass: "Vex",
           modelType: "PIXIE",
           variant  : "DEFAULT",
-          variants : "DEFAULT"
+          variants : "DEFAULT, CHARGED"
       ],
       [
           id       : "villager_raw",

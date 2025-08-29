@@ -40,7 +40,7 @@ import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class VillagerNPC extends VillagerRaw {
+public class VillagerNPC extends VillagerRaw implements StandardEasyNPC<VillagerRaw> {
 
   public static final String ID = "villager";
 

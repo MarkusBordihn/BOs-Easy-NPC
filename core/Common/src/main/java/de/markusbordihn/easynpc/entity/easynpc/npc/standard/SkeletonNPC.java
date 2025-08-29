@@ -32,7 +32,7 @@ import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class SkeletonNPC extends SkeletonRaw {
+public class SkeletonNPC extends SkeletonRaw implements StandardEasyNPC<SkeletonRaw> {
 
   public static final String ID = "skeleton";
   public static final String ID_STRAY = "skeleton_stray";

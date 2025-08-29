@@ -20,24 +20,50 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.raw.ZombieVillagerRaw.VariantType;
+import java.util.EnumMap;
+import java.util.Map;
+import net.minecraft.Util;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ZombieVillagerRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.monster.ZombieVillager;
 
 public class ZombieVillagerRawRenderer extends ZombieVillagerRenderer
     implements EasyNPCEntityRenderer {
+
+  protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
+      Util.make(
+          new EnumMap<>(VariantType.class),
+          map ->
+              map.put(
+                  VariantType.DEFAULT,
+                  new ResourceLocation(
+                      ResourceLocation.DEFAULT_NAMESPACE,
+                      "textures/entity/zombie_villager/zombie_villager.png")));
+  protected static final ResourceLocation DEFAULT_TEXTURE =
+      TEXTURE_BY_VARIANT_TYPE.get(VariantType.DEFAULT);
 
   public ZombieVillagerRawRenderer(EntityRendererProvider.Context context) {
     super(context);
   }
 
   @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variant) {
-    return null;
+  public ResourceLocation getTextureLocation(ZombieVillager entity) {
+    if (entity instanceof EasyNPC<?> easyNPC) {
+      return getEntityTexture(easyNPC);
+    }
+    return DEFAULT_TEXTURE;
   }
 
   @Override
   public ResourceLocation getDefaultTexture() {
-    return null;
+    return DEFAULT_TEXTURE;
+  }
+
+  @Override
+  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
+    return TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE);
   }
 }
