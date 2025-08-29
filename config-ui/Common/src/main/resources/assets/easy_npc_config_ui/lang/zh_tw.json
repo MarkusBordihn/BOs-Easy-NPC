@@ -58,6 +58,7 @@
   "text.easy_npc.config.can_use_nether_portal": "使用地獄傳送門",
   "text.easy_npc.config.cancel": "取消",
   "text.easy_npc.config.change_model": "更改模型",
+  "text.easy_npc.config.change_model.tooltip.only_doppler": "模型變更僅適用於Doppler NPC",
   "text.easy_npc.config.clear": "清除",
   "text.easy_npc.config.combat": "戰鬥",
   "text.easy_npc.config.combat_attribute.title": "戰鬥屬性",

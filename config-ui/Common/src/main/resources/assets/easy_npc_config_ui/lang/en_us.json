@@ -58,6 +58,7 @@
   "text.easy_npc.config.can_use_nether_portal": "Use Nether Portal",
   "text.easy_npc.config.cancel": "Cancel",
   "text.easy_npc.config.change_model": "Change Model",
+  "text.easy_npc.config.change_model.tooltip.only_doppler": "Model changes are only available for Doppler NPCs",
   "text.easy_npc.config.clear": "Clear",
   "text.easy_npc.config.combat": "Combat",
   "text.easy_npc.config.combat_attribute.title": "Combat Attributes",

@@ -35,7 +35,7 @@ import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class PiglinNPC extends PiglinRaw {
+public class PiglinNPC extends PiglinRaw implements StandardEasyNPC<PiglinRaw> {
 
   public static final String ID = "piglin";
   public static final String ID_BRUTE = "piglin_brute";

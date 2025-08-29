@@ -32,7 +32,7 @@ import net.minecraft.world.entity.animal.Fox;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class FoxNPC extends FoxRaw {
+public class FoxNPC extends FoxRaw implements StandardEasyNPC<FoxRaw> {
 
   public static final String ID = "fox";
 

@@ -33,7 +33,7 @@ import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class HorseNPC extends HorseRaw {
+public class HorseNPC extends HorseRaw implements StandardEasyNPC<HorseRaw> {
 
   public static final String ID = "horse";
   public static final String ID_SKELETON = "horse_skeleton";

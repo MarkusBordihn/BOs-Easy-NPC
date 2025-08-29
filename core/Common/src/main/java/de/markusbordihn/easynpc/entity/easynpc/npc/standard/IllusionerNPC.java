@@ -32,7 +32,7 @@ import net.minecraft.world.entity.monster.Illusioner;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class IllusionerNPC extends IllusionerRaw {
+public class IllusionerNPC extends IllusionerRaw implements StandardEasyNPC<IllusionerRaw> {
 
   public static final String ID = "illusioner";
 

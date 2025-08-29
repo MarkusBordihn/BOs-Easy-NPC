@@ -32,7 +32,7 @@ import net.minecraft.world.entity.monster.Evoker;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class EvokerNPC extends EvokerRaw {
+public class EvokerNPC extends EvokerRaw implements StandardEasyNPC<EvokerRaw> {
 
   public static final String ID = "evoker";
 

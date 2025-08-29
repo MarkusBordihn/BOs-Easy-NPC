@@ -580,6 +580,7 @@ public class VexRaw extends Vex implements EasyNPCBase<Vex> {
   }
 
   public enum VariantType {
-    DEFAULT
+    DEFAULT,
+    CHARGED
   }
 }
