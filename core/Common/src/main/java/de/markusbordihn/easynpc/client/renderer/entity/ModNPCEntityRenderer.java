@@ -22,7 +22,9 @@ package de.markusbordihn.easynpc.client.renderer.entity;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.AllayRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.CatRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.ChickenRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.CreeperRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.DrownedRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.EnderManRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.EvokerRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.FoxRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.HorseRawRenderer;
@@ -32,8 +34,10 @@ import de.markusbordihn.easynpc.client.renderer.entity.raw.PigRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.PiglinRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.PillagerRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.SkeletonRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.VexRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.VillagerRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.VindicatorRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.WitchRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.WolfRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.ZombieRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.ZombieVillagerRawRenderer;
@@ -51,7 +55,9 @@ public enum ModNPCEntityRenderer {
   ALLAY(ModNPCEntityType.ALLAY, () -> AllayRawRenderer::new),
   CAT(ModNPCEntityType.CAT, () -> CatRawRenderer::new),
   CHICKEN(ModNPCEntityType.CHICKEN, () -> ChickenRawRenderer::new),
+  CREEPER(ModNPCEntityType.CREEPER, () -> CreeperRawRenderer::new),
   DROWNED(ModNPCEntityType.DROWNED, () -> DrownedRawRenderer::new),
+  ENDERMAN(ModNPCEntityType.ENDERMAN, () -> EnderManRawRenderer::new),
   EVOKER(ModNPCEntityType.EVOKER, () -> EvokerRawRenderer::new),
   FOX(ModNPCEntityType.FOX, () -> FoxRawRenderer::new),
   HORSE(ModNPCEntityType.HORSE, () -> HorseRawRenderer::new),
@@ -71,7 +77,9 @@ public enum ModNPCEntityRenderer {
   SKELETON_STRAY(ModNPCEntityType.SKELETON_STRAY, () -> SkeletonRawRenderer::new),
   SKELETON_WITHER(ModNPCEntityType.SKELETON_WITHER, () -> SkeletonRawRenderer::new),
   VILLAGER(ModNPCEntityType.VILLAGER, () -> VillagerRawRenderer::new),
+  VEX(ModNPCEntityType.VEX, () -> VexRawRenderer::new),
   VINDICATOR(ModNPCEntityType.VINDICATOR, () -> VindicatorRawRenderer::new),
+  WITCH(ModNPCEntityType.WITCH, () -> WitchRawRenderer::new),
   WOLF(ModNPCEntityType.WOLF, () -> WolfRawRenderer::new),
   ZOMBIE(ModNPCEntityType.ZOMBIE, () -> ZombieRawRenderer::new),
   ZOMBIE_HUSK(ModNPCEntityType.ZOMBIE_HUSK, () -> ZombieRawRenderer::new),

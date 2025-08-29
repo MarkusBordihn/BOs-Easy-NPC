@@ -32,7 +32,7 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class ZombieNPC extends ZombieRaw {
+public class ZombieNPC extends ZombieRaw implements StandardEasyNPC<ZombieRaw> {
 
   public static final String ID = "zombie";
   public static final String ID_HUSK = "husk";

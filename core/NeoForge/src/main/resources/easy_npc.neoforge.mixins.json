@@ -15,6 +15,10 @@
   ],
   "mixins": [
     "entity.EasyNPCFoxMixin",
+    "entity.CreeperMixin",
+    "entity.EndermanMixin",
+    "entity.RaiderMixin",
+    "entity.WitchMixin",
     "target.LivingEntityTargetingMixin",
     "target.MobTargetingMixin"
   ],

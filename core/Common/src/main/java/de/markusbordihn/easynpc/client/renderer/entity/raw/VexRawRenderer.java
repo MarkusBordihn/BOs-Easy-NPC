@@ -20,23 +20,55 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.raw.VexRaw.VariantType;
+import java.util.EnumMap;
+import java.util.Map;
+import net.minecraft.Util;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.VexRenderer;
+import net.minecraft.client.renderer.entity.state.VexRenderState;
 import net.minecraft.resources.ResourceLocation;
 
 public class VexRawRenderer extends VexRenderer implements EasyNPCEntityRenderer {
+
+  protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
+      Util.make(
+          new EnumMap<>(VariantType.class),
+          map -> {
+            map.put(
+                VariantType.DEFAULT,
+                ResourceLocation.fromNamespaceAndPath(
+                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/illager/vex.png"));
+            map.put(
+                VariantType.CHARGED,
+                ResourceLocation.fromNamespaceAndPath(
+                    ResourceLocation.DEFAULT_NAMESPACE,
+                    "textures/entity/illager/vex_charging.png"));
+          });
+  protected static final ResourceLocation DEFAULT_TEXTURE =
+      TEXTURE_BY_VARIANT_TYPE.get(VariantType.DEFAULT);
 
   public VexRawRenderer(EntityRendererProvider.Context context) {
     super(context);
   }
 
   @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variant) {
-    return null;
+  public ResourceLocation getTextureLocation(VexRenderState renderState) {
+    EasyNPC<?> easyNPC = getEasyNPC(renderState);
+    if (easyNPC != null) {
+      return getEntityTexture(easyNPC);
+    }
+    return DEFAULT_TEXTURE;
   }
 
   @Override
   public ResourceLocation getDefaultTexture() {
-    return null;
+    return DEFAULT_TEXTURE;
+  }
+
+  @Override
+  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
+    return TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE);
   }
 }

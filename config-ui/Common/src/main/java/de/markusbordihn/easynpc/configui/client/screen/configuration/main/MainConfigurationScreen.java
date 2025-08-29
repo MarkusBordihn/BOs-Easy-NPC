@@ -397,6 +397,9 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     if (renderDataSet == null) {
       return;
     }
+
+    boolean supportsChangeModel = this.getConfigurationData().supportsChangeModelConfiguration();
+
     Button changeModelButton =
         this.addRenderableWidget(
             new TextButton(
@@ -406,6 +409,9 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                 14,
                 "change_model",
                 onPress -> {
+                  if (!supportsChangeModel) {
+                    return; // Safety check, should not happen if button is disabled
+                  }
                   switch (renderDataSet.getRenderType()) {
                     case CUSTOM_ENTITY:
                       NetworkMessageHandlerManager.getServerHandler()
@@ -418,7 +424,14 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                       break;
                   }
                 }));
-    changeModelButton.active = this.getConfigurationData().supportsChangeModelConfiguration();
+    changeModelButton.active = supportsChangeModel;
+
+    // Add tooltip for disabled button
+    if (!supportsChangeModel) {
+      changeModelButton.setTooltip(
+          net.minecraft.client.gui.components.Tooltip.create(
+              TextComponent.getTranslatedConfigText("change_model.tooltip.only_doppler")));
+    }
   }
 
   protected void defineMenuButtons() {

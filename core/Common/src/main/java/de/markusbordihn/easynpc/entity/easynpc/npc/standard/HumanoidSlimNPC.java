@@ -31,7 +31,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
-public class HumanoidSlimNPC extends PathfinderMobRaw {
+public class HumanoidSlimNPC extends PathfinderMobRaw implements StandardEasyNPC<PathfinderMobRaw> {
 
   public static final String ID = "humanoid_slim";
 

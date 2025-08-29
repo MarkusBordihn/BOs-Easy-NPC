@@ -32,7 +32,7 @@ import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class PigNPC extends PigRaw {
+public class PigNPC extends PigRaw implements StandardEasyNPC<PigRaw> {
 
   public static final String ID = "pig";
 

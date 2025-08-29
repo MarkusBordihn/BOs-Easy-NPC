@@ -20,23 +20,49 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.raw.PillagerRaw.VariantType;
+import java.util.EnumMap;
+import java.util.Map;
+import net.minecraft.Util;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.PillagerRenderer;
+import net.minecraft.client.renderer.entity.state.IllagerRenderState;
 import net.minecraft.resources.ResourceLocation;
 
 public class PillagerRawRenderer extends PillagerRenderer implements EasyNPCEntityRenderer {
+
+  protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
+      Util.make(
+          new EnumMap<>(VariantType.class),
+          map ->
+              map.put(
+                  VariantType.PILLAGER,
+                  ResourceLocation.fromNamespaceAndPath(
+                      ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/illager/pillager.png")));
+  protected static final ResourceLocation DEFAULT_TEXTURE =
+      TEXTURE_BY_VARIANT_TYPE.get(VariantType.PILLAGER);
 
   public PillagerRawRenderer(EntityRendererProvider.Context context) {
     super(context);
   }
 
   @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variant) {
-    return null;
+  public ResourceLocation getTextureLocation(IllagerRenderState renderState) {
+    EasyNPC<?> easyNPC = getEasyNPC(renderState);
+    if (easyNPC != null) {
+      return getEntityTexture(easyNPC);
+    }
+    return DEFAULT_TEXTURE;
   }
 
   @Override
   public ResourceLocation getDefaultTexture() {
-    return null;
+    return DEFAULT_TEXTURE;
+  }
+
+  @Override
+  public ResourceLocation getTextureByVariant(Enum<?> variantType) {
+    return TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE);
   }
 }

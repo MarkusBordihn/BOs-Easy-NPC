@@ -24,7 +24,9 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.raw.SkeletonRaw.VariantType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.AllayNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.CatNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.ChickenNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.CreeperNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.DrownedNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.EnderManNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.EvokerNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.FoxNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.HorseNPC;
@@ -36,8 +38,10 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.standard.PigNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.PiglinNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.PillagerNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.SkeletonNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.VexNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.VillagerNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.VindicatorNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.WitchNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.WolfNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.ZombieNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.ZombieVillagerNPC;
@@ -75,6 +79,14 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .sized(0.4F, 0.7F)
           .clientTrackingRange(12),
       ChickenNPC::createAttributes),
+  CREEPER(
+      CreeperNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<CreeperNPC> type, Level level) -> new CreeperNPC(type, level),
+              MobCategory.MONSTER)
+          .sized(0.6F, 1.7F)
+          .clientTrackingRange(12),
+      CreeperNPC::createAttributes),
   DROWNED(
       DrownedNPC.ID,
       EntityType.Builder.of(
@@ -83,6 +95,14 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       DrownedNPC::createAttributes),
+  ENDERMAN(
+      EnderManNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<EnderManNPC> type, Level level) -> new EnderManNPC(type, level),
+              MobCategory.MONSTER)
+          .sized(0.6F, 2.9F)
+          .clientTrackingRange(12),
+      EnderManNPC::createAttributes),
   EVOKER(
       EvokerNPC.ID,
       EntityType.Builder.of(
@@ -240,6 +260,14 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       VillagerNPC::createAttributes),
+  VEX(
+      VexNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<VexNPC> type, Level level) -> new VexNPC(type, level),
+              MobCategory.MONSTER)
+          .sized(0.4F, 0.8F)
+          .clientTrackingRange(12),
+      VexNPC::createAttributes),
   VINDICATOR(
       VindicatorNPC.ID,
       EntityType.Builder.of(
@@ -248,6 +276,14 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       VindicatorNPC::createAttributes),
+  WITCH(
+      WitchNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<WitchNPC> type, Level level) -> new WitchNPC(type, level),
+              MobCategory.MONSTER)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(12),
+      WitchNPC::createAttributes),
   WOLF(
       WolfNPC.ID,
       EntityType.Builder.of(

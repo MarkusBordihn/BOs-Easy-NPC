@@ -58,6 +58,7 @@
   "text.easy_npc.config.can_use_nether_portal": "Использует портал в Незер",
   "text.easy_npc.config.cancel": "Отмена",
   "text.easy_npc.config.change_model": "Сменить модель",
+  "text.easy_npc.config.change_model.tooltip.only_doppler": "Изменение модели доступно только для Doppler NPC",
   "text.easy_npc.config.clear": "Очистить",
   "text.easy_npc.config.combat": "Бой",
   "text.easy_npc.config.combat_attribute.title": "Боевые атрибуты",

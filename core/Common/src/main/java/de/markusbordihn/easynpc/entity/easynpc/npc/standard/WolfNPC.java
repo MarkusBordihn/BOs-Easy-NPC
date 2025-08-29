@@ -32,7 +32,7 @@ import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class WolfNPC extends WolfRaw {
+public class WolfNPC extends WolfRaw implements StandardEasyNPC<WolfRaw> {
 
   public static final String ID = "wolf";
 
