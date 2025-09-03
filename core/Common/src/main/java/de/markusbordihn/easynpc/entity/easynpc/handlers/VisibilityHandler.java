@@ -21,10 +21,12 @@ package de.markusbordihn.easynpc.entity.easynpc.handlers;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
+import de.markusbordihn.easynpc.data.display.NameVisibilityType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import java.util.Objects;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.scores.Team;
 import org.apache.logging.log4j.LogManager;
@@ -37,6 +39,12 @@ public class VisibilityHandler {
   private VisibilityHandler() {}
 
   public static boolean handleIsInvisible(EasyNPC<?> easyNPC, boolean isInvisible) {
+
+    // NPC with glow effect should always be visible
+    if (easyNPC.getLivingEntity().hasEffect(MobEffects.GLOWING)) {
+      return false;
+    }
+
     // Use display attribute data to check if NPC is invisible.
     DisplayAttributeDataCapable<?> displayAttributeData = easyNPC.getEasyNPCDisplayAttributeData();
     if (displayAttributeData != null
@@ -44,11 +52,17 @@ public class VisibilityHandler {
         && !displayAttributeData.getDisplayBooleanAttribute(DisplayAttributeType.VISIBLE)) {
       return true;
     }
+
     return isInvisible;
   }
 
   public static boolean handleIsInvisibleToPlayer(
       EasyNPC<?> easyNPC, Player player, boolean isInvisibleToPlayers) {
+
+    // NPC with glow effect should always be visible - this overrides ALL other settings
+    if (easyNPC.getLivingEntity().hasEffect(MobEffects.GLOWING)) {
+      return false;
+    }
 
     // Use display attribute data to check if NPC is invisible to player.
     DisplayAttributeDataCapable<?> displayAttributeData = easyNPC.getEasyNPCDisplayAttributeData();
@@ -56,15 +70,13 @@ public class VisibilityHandler {
       return isInvisibleToPlayers;
     }
 
-    // Step 1: Check if NPC is visible at all (master switch)
+    // Check if NPC is visible at all (master switch)
     if (displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE)
         && !displayAttributeData.getDisplayBooleanAttribute(DisplayAttributeType.VISIBLE)) {
       return true; // NPC is completely invisible
     }
 
-    // Step 2: Check special permissions that override other settings
-
-    // Check if player is NPC owner and owner visibility is enabled
+    // Check special permissions that override other settings
     OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
     boolean isOwner =
         ownerData != null
@@ -75,8 +87,9 @@ public class VisibilityHandler {
             && displayAttributeData.getDisplayBooleanAttribute(
                 DisplayAttributeType.VISIBLE_TO_OWNER);
 
+    // NPC is visible to owner
     if (isOwner && visibleToOwnerEnabled) {
-      return false; // NPC is visible to owner
+      return false;
     }
 
     // Check if player is in same team and team visibility is enabled
@@ -86,7 +99,6 @@ public class VisibilityHandler {
         displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_TO_TEAM)
             && displayAttributeData.getDisplayBooleanAttribute(
                 DisplayAttributeType.VISIBLE_TO_TEAM);
-
     if (npcTeam != null
         && playerTeam != null
         && npcTeam.equals(playerTeam)
@@ -95,7 +107,7 @@ public class VisibilityHandler {
       return false; // NPC is visible to team members
     }
 
-    // Step 3: Check game mode visibility settings
+    // Check game mode visibility settings
     boolean isCreativeMode = player.isCreative();
     boolean isSpectatorMode = player.isSpectator();
     boolean isStandardMode = !isCreativeMode && !isSpectatorMode;
@@ -103,7 +115,6 @@ public class VisibilityHandler {
     // Check if game mode visibility is explicitly set
     boolean gameModeVisibilitySet = false;
     boolean visibleInCurrentGameMode = false;
-
     if (isCreativeMode
         && displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_IN_CREATIVE)) {
       gameModeVisibilitySet = true;
@@ -127,7 +138,7 @@ public class VisibilityHandler {
       return false; // NPC is visible in this game mode
     }
 
-    // Step 4: Check time-based visibility settings
+    // Check time-based visibility settings
     long dayTime = player.level().getDayTime() % 24000;
     boolean isDayTime = (dayTime >= 1000 && dayTime <= 13000);
     boolean isNightTime = !isDayTime;
@@ -155,8 +166,6 @@ public class VisibilityHandler {
       }
     }
 
-    // Step 5: Handle combinations of settings
-
     // If game mode visibility is set but not enabled for current game mode
     if (gameModeVisibilitySet && !visibleInCurrentGameMode) {
       return true; // NPC is invisible in current game mode
@@ -168,13 +177,77 @@ public class VisibilityHandler {
       return true; // NPC is invisible at current time
     }
 
-    // Default to visible if no specific visibility rules matched
     return false;
   }
 
   public static boolean handleIsCustomNameVisible(EasyNPC<?> easyNPC, boolean isCustomNameVisible) {
     if (!easyNPC.getEntity().hasCustomName()) {
       return false;
+    }
+
+    DisplayAttributeDataCapable<?> displayAttributeData = easyNPC.getEasyNPCDisplayAttributeData();
+    if (displayAttributeData == null) {
+      return isCustomNameVisible;
+    }
+
+    if (displayAttributeData.hasDisplayAttribute(DisplayAttributeType.NAME_VISIBILITY)) {
+      String nameVisibilityString =
+          displayAttributeData.getDisplayStringAttribute(DisplayAttributeType.NAME_VISIBILITY);
+      try {
+        NameVisibilityType nameVisibilityType = NameVisibilityType.valueOf(nameVisibilityString);
+        switch (nameVisibilityType) {
+          case NEVER:
+            return false;
+          case ALWAYS:
+            return true;
+          case NEAR:
+            return isCustomNameVisible;
+          default:
+            return isCustomNameVisible;
+        }
+      } catch (IllegalArgumentException e) {
+        log.warn("[{}] Invalid name visibility type: {}", easyNPC, nameVisibilityString);
+        return isCustomNameVisible;
+      }
+    }
+
+    return isCustomNameVisible;
+  }
+
+  public static boolean handleIsCustomNameVisibleToPlayer(
+      EasyNPC<?> easyNPC,
+      net.minecraft.world.entity.player.Player player,
+      boolean isCustomNameVisible) {
+    if (!easyNPC.getEntity().hasCustomName()) {
+      return false;
+    }
+
+    DisplayAttributeDataCapable<?> displayAttributeData = easyNPC.getEasyNPCDisplayAttributeData();
+    if (displayAttributeData == null) {
+      return isCustomNameVisible;
+    }
+
+    if (displayAttributeData.hasDisplayAttribute(DisplayAttributeType.NAME_VISIBILITY)) {
+      String nameVisibilityString =
+          displayAttributeData.getDisplayStringAttribute(DisplayAttributeType.NAME_VISIBILITY);
+      try {
+        NameVisibilityType nameVisibilityType = NameVisibilityType.valueOf(nameVisibilityString);
+        switch (nameVisibilityType) {
+          case NEVER:
+            return false;
+          case ALWAYS:
+            return true;
+          case NEAR:
+            double distanceSquared = easyNPC.getEntity().distanceToSqr(player);
+            double nameVisibilityRange = 8.0d;
+            return distanceSquared <= nameVisibilityRange * nameVisibilityRange;
+          default:
+            return isCustomNameVisible;
+        }
+      } catch (IllegalArgumentException e) {
+        log.warn("[{}] Invalid name visibility type: {}", easyNPC, nameVisibilityString);
+        return isCustomNameVisible;
+      }
     }
 
     return isCustomNameVisible;

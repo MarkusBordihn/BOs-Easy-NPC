@@ -23,7 +23,8 @@ import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.attribute.CustomAttributes;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
-import de.markusbordihn.easynpc.data.display.DisplayAttributeSet;
+import de.markusbordihn.easynpc.data.display.DisplayAttributeEntry;
+import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
@@ -40,10 +41,12 @@ import de.markusbordihn.easynpc.data.skin.SkinUUID;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingType;
+import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelPositionDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelRotationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelScaleDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelVisibilityDataCapable;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -72,10 +75,11 @@ public class EntityDataSerializersManager {
       defineSerializer(
           DialogDataSet.class.getSimpleName(),
           EntityDataSerializer.forValueType(DialogDataSet.STREAM_CODEC));
-  public static final EntityDataSerializer<DisplayAttributeSet> DISPLAY_ATTRIBUTE_SET =
-      defineSerializer(
-          DisplayAttributeSet.class.getSimpleName(),
-          EntityDataSerializer.forValueType(DisplayAttributeSet.STREAM_CODEC));
+  public static final EntityDataSerializer<EnumMap<DisplayAttributeType, DisplayAttributeEntry>>
+      DISPLAY_ATTRIBUTE =
+          defineSerializer(
+              DisplayAttributeDataCapable.class.getSimpleName(),
+              EntityDataSerializer.forValueType(DisplayAttributeDataCapable.STREAM_CODEC));
   public static final EntityDataSerializer<EntityAttributes> ENTITY_ATTRIBUTES =
       defineSerializer(
           EntityAttributes.class.getSimpleName(),

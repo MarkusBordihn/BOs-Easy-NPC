@@ -17,54 +17,68 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.display;
+package de.markusbordihn.easynpc.data.type;
 
-import de.markusbordihn.easynpc.data.type.ValueType;
 import java.util.Locale;
 
-public enum DisplayAttributeType {
-  NONE(ValueType.STRING),
-  VISIBLE(ValueType.BOOLEAN),
-  VISIBLE_AT_DAY(ValueType.BOOLEAN),
-  VISIBLE_AT_NIGHT(ValueType.BOOLEAN),
-  VISIBLE_IN_CREATIVE(ValueType.BOOLEAN),
-  VISIBLE_IN_SPECTATOR(ValueType.BOOLEAN),
-  VISIBLE_IN_STANDARD(ValueType.BOOLEAN),
-  VISIBLE_TO_OWNER(ValueType.BOOLEAN),
-  VISIBLE_TO_TEAM(ValueType.BOOLEAN),
-  LIGHT_LEVEL(ValueType.INTEGER),
-  NAME_VISIBILITY(ValueType.STRING);
+public enum ValueType {
+  BOOLEAN,
+  DOUBLE,
+  INTEGER,
+  STRING;
 
-  private final ValueType valueType;
-
-  DisplayAttributeType(ValueType valueType) {
-    this.valueType = valueType;
-  }
-
-  public static DisplayAttributeType get(String displayAttributeType) {
-    if (displayAttributeType == null || displayAttributeType.isEmpty()) {
-      return DisplayAttributeType.NONE;
+  public static ValueType get(String valueType) {
+    if (valueType == null || valueType.isEmpty()) {
+      return ValueType.STRING;
     }
     try {
-      return DisplayAttributeType.valueOf(displayAttributeType);
+      return ValueType.valueOf(valueType.toUpperCase(Locale.ROOT));
     } catch (IllegalArgumentException e) {
-      return DisplayAttributeType.NONE;
+      return ValueType.STRING;
     }
   }
 
-  public String getAttributeName() {
+  public String getTypeName() {
     return this.name().toLowerCase(Locale.ROOT);
   }
 
-  public ValueType getValueType() {
-    return this.valueType;
-  }
-
   public boolean isValidValue(String value) {
-    return this.valueType.isValidValue(value);
+    if (value == null) {
+      return false;
+    }
+
+    return switch (this) {
+      case BOOLEAN -> "true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value);
+      case INTEGER -> {
+        try {
+          Integer.parseInt(value);
+          yield true;
+        } catch (NumberFormatException e) {
+          yield false;
+        }
+      }
+      case DOUBLE -> {
+        try {
+          Double.parseDouble(value);
+          yield true;
+        } catch (NumberFormatException e) {
+          yield false;
+        }
+      }
+      case STRING -> true;
+    };
   }
 
   public Object parseValue(String value) {
-    return this.valueType.parseValue(value);
+    if (!isValidValue(value)) {
+      throw new IllegalArgumentException("Invalid value '" + value + "' for type " + this);
+    }
+
+    return switch (this) {
+      case BOOLEAN -> Boolean.parseBoolean(value);
+      case INTEGER -> Integer.parseInt(value);
+      case DOUBLE -> Double.parseDouble(value);
+      case STRING -> value;
+    };
   }
 }

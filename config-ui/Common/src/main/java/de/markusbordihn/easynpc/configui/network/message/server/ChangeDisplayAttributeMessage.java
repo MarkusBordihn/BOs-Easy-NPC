@@ -20,11 +20,10 @@
 package de.markusbordihn.easynpc.configui.network.message.server;
 
 import de.markusbordihn.easynpc.configui.Constants;
-import de.markusbordihn.easynpc.data.display.DisplayAttributeEntry;
-import de.markusbordihn.easynpc.data.display.DisplayAttributeSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
+import de.markusbordihn.easynpc.data.type.ValueType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
+import de.markusbordihn.easynpc.handler.AttributeHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -36,9 +35,11 @@ import net.minecraft.server.level.ServerPlayer;
 
 public record ChangeDisplayAttributeMessage(
     UUID uuid,
-    DisplayAttributeType displayAttributeType,
-    Boolean booleanValue,
-    Integer integerValue)
+    DisplayAttributeType attributeType,
+    ValueType valueType,
+    boolean booleanValue,
+    int integerValue,
+    String stringValue)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
@@ -50,29 +51,33 @@ public record ChangeDisplayAttributeMessage(
               (buffer, message) -> message.write(buffer), ChangeDisplayAttributeMessage::create);
 
   public ChangeDisplayAttributeMessage(
-      final UUID uuid, final DisplayAttributeType displayAttributeType, final Boolean value) {
-    this(uuid, displayAttributeType, value, 0);
+      final UUID uuid, final DisplayAttributeType attributeType, final Boolean value) {
+    this(uuid, attributeType, ValueType.BOOLEAN, value, 0, "");
   }
 
   public ChangeDisplayAttributeMessage(
-      final UUID uuid, final DisplayAttributeType displayAttributeType, final Integer value) {
-    this(uuid, displayAttributeType, false, value);
+      final UUID uuid, final DisplayAttributeType attributeType, final Integer value) {
+    this(uuid, attributeType, ValueType.INTEGER, false, value, "");
   }
 
   public static ChangeDisplayAttributeMessage create(final FriendlyByteBuf buffer) {
     return new ChangeDisplayAttributeMessage(
         buffer.readUUID(),
         buffer.readEnum(DisplayAttributeType.class),
+        buffer.readEnum(ValueType.class),
         buffer.readBoolean(),
-        buffer.readInt());
+        buffer.readInt(),
+        buffer.readUtf());
   }
 
   @Override
   public void write(final FriendlyByteBuf buffer) {
     buffer.writeUUID(this.uuid);
-    buffer.writeEnum(this.displayAttributeType);
+    buffer.writeEnum(this.attributeType);
+    buffer.writeEnum(this.valueType);
     buffer.writeBoolean(this.booleanValue);
     buffer.writeInt(this.integerValue);
+    buffer.writeUtf(this.stringValue);
   }
 
   @Override
@@ -92,47 +97,20 @@ public record ChangeDisplayAttributeMessage(
       return;
     }
 
-    // Validate name.
-    if (this.displayAttributeType == null) {
-      log.error("Invalid entity attribute for {} from {}", easyNPC, serverPlayer);
-      return;
-    }
-
-    // Validate value.
-    if (this.booleanValue == null && this.integerValue == null) {
-      log.error("Invalid value for {} for {} from {}", displayAttributeType, easyNPC, serverPlayer);
-      return;
-    }
-
-    // Validate display attribute data.
-    DisplayAttributeDataCapable<?> displayAttributeData = easyNPC.getEasyNPCDisplayAttributeData();
-    if (displayAttributeData == null) {
-      log.error("Unable to get display attribute data for {} from {}", easyNPC, serverPlayer);
-      return;
-    }
-
-    // Validate display attribute set.
-    DisplayAttributeSet displayAttributeSet = displayAttributeData.getDisplayAttributeSet();
-    if (displayAttributeSet == null) {
-      log.error("Unable to get display attribute set for {} from {}", easyNPC, serverPlayer);
-      return;
-    }
-
-    // Update display attribute set.
-    DisplayAttributeEntry displayAttributeEntry =
-        new DisplayAttributeEntry(
-            this.displayAttributeType, Boolean.TRUE.equals(this.booleanValue), this.integerValue);
-    log.debug(
-        "Change display attribute {} for {} to {}",
-        this.displayAttributeType,
-        easyNPC,
-        displayAttributeEntry);
-    displayAttributeSet.addOrReplaceDisplayAttribute(displayAttributeEntry);
-    displayAttributeData.updateDisplayAttributeSet();
-
-    // Force update of visibility, if visibility attribute has been changed.
-    if (this.displayAttributeType == DisplayAttributeType.VISIBLE) {
-      easyNPC.getEntity().setInvisible(Boolean.FALSE.equals(this.booleanValue));
+    // Update attribute value.
+    switch (valueType) {
+      case BOOLEAN ->
+          AttributeHandler.setDisplayAttribute(easyNPC, this.attributeType, this.booleanValue);
+      case INTEGER ->
+          AttributeHandler.setDisplayAttribute(easyNPC, this.attributeType, this.integerValue);
+      case STRING ->
+          AttributeHandler.setDisplayAttribute(easyNPC, this.attributeType, this.stringValue);
+      default ->
+          log.error(
+              "Invalid display value type {} for {} from {}",
+              this.valueType,
+              easyNPC,
+              serverPlayer);
     }
   }
 }

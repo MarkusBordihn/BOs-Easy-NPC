@@ -43,7 +43,8 @@ public class PigRawRenderer extends PigRenderer implements EasyNPCEntityRenderer
                     ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/pig/pig.png"));
             map.put(
                 VariantType.SPOTTED,
-                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/entity/pig/pig_spotted.png"));
+                ResourceLocation.fromNamespaceAndPath(
+                    Constants.MOD_ID, "textures/entity/pig/pig_spotted.png"));
           });
   protected static final ResourceLocation DEFAULT_TEXTURE =
       TEXTURE_BY_VARIANT_TYPE.get(VariantType.DEFAULT);

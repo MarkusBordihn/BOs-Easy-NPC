@@ -23,7 +23,12 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
+import de.markusbordihn.easynpc.commands.suggestion.ColorSuggestions;
+import de.markusbordihn.easynpc.commands.suggestion.NameVisibilitySuggestions;
+import de.markusbordihn.easynpc.data.display.NameVisibilityType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.handler.NameHandler;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -47,7 +52,62 @@ public class NameCommand extends Command {
                                             context.getSource(),
                                             EasyNPCArgument.getEntityWithAccess(
                                                 context, NPC_TARGET_ARGUMENT),
-                                            StringArgumentType.getString(context, "name"))))))
+                                            StringArgumentType.getString(context, "name")))
+                                .then(
+                                    Commands.argument("color", StringArgumentType.word())
+                                        .suggests(ColorSuggestions.INSTANCE)
+                                        .executes(
+                                            context ->
+                                                setNameWithColor(
+                                                    context.getSource(),
+                                                    EasyNPCArgument.getEntityWithAccess(
+                                                        context, NPC_TARGET_ARGUMENT),
+                                                    StringArgumentType.getString(context, "name"),
+                                                    StringArgumentType.getString(context, "color")))
+                                        .then(
+                                            Commands.argument(
+                                                    "visibility", StringArgumentType.word())
+                                                .suggests(NameVisibilitySuggestions.INSTANCE)
+                                                .executes(
+                                                    context ->
+                                                        setNameWithColorAndVisibility(
+                                                            context.getSource(),
+                                                            EasyNPCArgument.getEntityWithAccess(
+                                                                context, NPC_TARGET_ARGUMENT),
+                                                            StringArgumentType.getString(
+                                                                context, "name"),
+                                                            StringArgumentType.getString(
+                                                                context, "color"),
+                                                            StringArgumentType.getString(
+                                                                context, "visibility"))))))))
+        .then(
+            Commands.literal("color")
+                .then(
+                    Commands.argument(NPC_TARGET_ARGUMENT, EasyNPCArgument.npc())
+                        .then(
+                            Commands.argument("color", StringArgumentType.word())
+                                .suggests(ColorSuggestions.INSTANCE)
+                                .executes(
+                                    context ->
+                                        setNameColor(
+                                            context.getSource(),
+                                            EasyNPCArgument.getEntityWithAccess(
+                                                context, NPC_TARGET_ARGUMENT),
+                                            StringArgumentType.getString(context, "color"))))))
+        .then(
+            Commands.literal("visibility")
+                .then(
+                    Commands.argument(NPC_TARGET_ARGUMENT, EasyNPCArgument.npc())
+                        .then(
+                            Commands.argument("visibility", StringArgumentType.word())
+                                .suggests(NameVisibilitySuggestions.INSTANCE)
+                                .executes(
+                                    context ->
+                                        setNameVisibility(
+                                            context.getSource(),
+                                            EasyNPCArgument.getEntityWithAccess(
+                                                context, NPC_TARGET_ARGUMENT),
+                                            StringArgumentType.getString(context, "visibility"))))))
         .then(
             Commands.literal("clear")
                 .then(
@@ -64,8 +124,124 @@ public class NameCommand extends Command {
       return 0;
     }
 
-    easyNPC.getEntity().setCustomName(Component.literal(name));
-    return sendSuccessMessage(context, "Set name of " + easyNPC + " to " + name);
+    if (NameHandler.setCustomName(easyNPC, name, -1, NameVisibilityType.ALWAYS)) {
+      return sendSuccessMessage(context, "Set name of " + easyNPC + " to " + name);
+    }
+    return 0;
+  }
+
+  private static int setNameWithColor(
+      CommandSourceStack context, EasyNPC<?> easyNPC, String name, String colorName) {
+    if (easyNPC == null || name == null || colorName == null) {
+      return 0;
+    }
+
+    ChatFormatting chatFormatting = parseChatFormatting(colorName);
+    if (chatFormatting == null) {
+      return sendFailureMessage(context, "Invalid color: " + colorName);
+    }
+
+    int color = chatFormatting.getColor() != null ? chatFormatting.getColor() : -1;
+    if (NameHandler.setCustomName(easyNPC, name, color, NameVisibilityType.ALWAYS)) {
+      return sendSuccessMessage(
+          context,
+          "Set name of "
+              + easyNPC
+              + " to "
+              + name
+              + " with color "
+              + chatFormatting.name().toLowerCase());
+    }
+    return 0;
+  }
+
+  private static int setNameWithColorAndVisibility(
+      CommandSourceStack context,
+      EasyNPC<?> easyNPC,
+      String name,
+      String colorName,
+      String visibilityName) {
+    if (easyNPC == null || name == null || colorName == null || visibilityName == null) {
+      return 0;
+    }
+
+    ChatFormatting chatFormatting = parseChatFormatting(colorName);
+    if (chatFormatting == null) {
+      return sendFailureMessage(context, "Invalid color: " + colorName);
+    }
+
+    NameVisibilityType visibility = parseNameVisibilityType(visibilityName);
+    if (visibility == null) {
+      return sendFailureMessage(context, "Invalid visibility: " + visibilityName);
+    }
+
+    int color = chatFormatting.getColor() != null ? chatFormatting.getColor() : -1;
+    if (NameHandler.setCustomName(easyNPC, name, color, visibility)) {
+      return sendSuccessMessage(
+          context,
+          "Set name of "
+              + easyNPC
+              + " to "
+              + name
+              + " with color "
+              + chatFormatting.name().toLowerCase()
+              + " and visibility "
+              + visibility.name().toLowerCase());
+    }
+    return 0;
+  }
+
+  private static int setNameColor(
+      CommandSourceStack context, EasyNPC<?> easyNPC, String colorName) {
+    if (easyNPC == null || colorName == null) {
+      return 0;
+    }
+
+    Component currentName = easyNPC.getEntity().getCustomName();
+    if (currentName == null) {
+      return sendFailureMessage(context, "NPC has no custom name set. Use 'name set' first.");
+    }
+
+    ChatFormatting chatFormatting = parseChatFormatting(colorName);
+    if (chatFormatting == null) {
+      return sendFailureMessage(context, "Invalid color: " + colorName);
+    }
+
+    String nameText = currentName.getString();
+    boolean isVisible = easyNPC.getEntity().isCustomNameVisible();
+    NameVisibilityType visibility =
+        isVisible ? NameVisibilityType.ALWAYS : NameVisibilityType.NEVER;
+
+    int color = chatFormatting.getColor() != null ? chatFormatting.getColor() : -1;
+    if (NameHandler.setCustomName(easyNPC, nameText, color, visibility)) {
+      return sendSuccessMessage(
+          context, "Set color of " + easyNPC + " name to " + chatFormatting.name().toLowerCase());
+    }
+    return 0;
+  }
+
+  private static int setNameVisibility(
+      CommandSourceStack context, EasyNPC<?> easyNPC, String visibilityName) {
+    if (easyNPC == null || visibilityName == null) {
+      return 0;
+    }
+
+    Component currentName = easyNPC.getEntity().getCustomName();
+    if (currentName == null) {
+      return sendFailureMessage(context, "NPC has no custom name set. Use 'name set' first.");
+    }
+
+    NameVisibilityType visibility = parseNameVisibilityType(visibilityName);
+    if (visibility == null) {
+      return sendFailureMessage(context, "Invalid visibility: " + visibilityName);
+    }
+
+    String nameText = currentName.getString();
+    if (NameHandler.setCustomName(easyNPC, nameText, -1, visibility)) {
+      return sendSuccessMessage(
+          context, "Set visibility of " + easyNPC + " name to " + visibility.name().toLowerCase());
+    }
+    return 0;
   }
 
   private static int clearName(CommandSourceStack context, EasyNPC<?> easyNPC) {
@@ -73,7 +249,25 @@ public class NameCommand extends Command {
       return 0;
     }
 
-    easyNPC.getEntity().setCustomName(null);
-    return sendSuccessMessage(context, "Cleared name of " + easyNPC);
+    if (NameHandler.setCustomName(easyNPC, "", -1, NameVisibilityType.NEVER)) {
+      return sendSuccessMessage(context, "Cleared name of " + easyNPC);
+    }
+    return 0;
+  }
+
+  private static ChatFormatting parseChatFormatting(String colorName) {
+    try {
+      return ChatFormatting.valueOf(colorName.toUpperCase());
+    } catch (IllegalArgumentException e) {
+      return null;
+    }
+  }
+
+  private static NameVisibilityType parseNameVisibilityType(String visibilityName) {
+    try {
+      return NameVisibilityType.valueOf(visibilityName.toUpperCase());
+    } catch (IllegalArgumentException e) {
+      return null;
+    }
   }
 }
