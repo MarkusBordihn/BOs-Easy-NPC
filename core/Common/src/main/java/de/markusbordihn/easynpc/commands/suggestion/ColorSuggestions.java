@@ -17,11 +17,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.attribute;
+package de.markusbordihn.easynpc.commands.suggestion;
 
-public enum EntityAttributeValueType {
-  BOOLEAN,
-  DOUBLE,
-  INTEGER,
-  STRING
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
+
+public class ColorSuggestions implements SuggestionProvider<CommandSourceStack> {
+
+  public static final ColorSuggestions INSTANCE = new ColorSuggestions();
+
+  private ColorSuggestions() {}
+
+  @Override
+  public CompletableFuture<Suggestions> getSuggestions(
+      CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
+    return SharedSuggestionProvider.suggest(
+        Stream.of(ChatFormatting.values())
+            .filter(ChatFormatting::isColor)
+            .map(formatting -> formatting.name().toLowerCase()),
+        builder);
+  }
 }

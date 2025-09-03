@@ -33,6 +33,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -51,6 +53,7 @@ public class EasyNPCWandItem extends Item {
   public static final String ID = "easy_npc_wand";
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final int GLOWING_DURATION = 4 * 20;
+  private static final double HIGHLIGHT_RADIUS = 32.0d;
 
   public EasyNPCWandItem(Properties properties) {
     super(
@@ -60,23 +63,28 @@ public class EasyNPCWandItem extends Item {
   }
 
   private void highlightEasyNPC(EasyNPCBase<?> easyNPC) {
-    if (easyNPC != null) {
-      // easyNPC.addEffect(
-      //    new MobEffectInstance(MobEffects.GLOWING, GLOWING_DURATION, 0, false, false, true));
+    if (easyNPC instanceof PathfinderMob pathfinderMob) {
+      pathfinderMob.addEffect(
+          new MobEffectInstance(MobEffects.GLOWING, GLOWING_DURATION, 0, false, false, true));
     }
   }
 
   @Override
   public void inventoryTick(
       ItemStack itemStack, Level level, Entity entity, int slot, boolean selected) {
-    // Highlight all nearby EasyNPC entities
-    if (selected && entity instanceof Player player) {
+    // Only perform highlighting every 30 ticks (1.5 seconds) to reduce server load
+    if (selected
+        && entity instanceof Player player
+        && !level.isClientSide
+        && level.getGameTime() % 30 == 0) {
+      AABB searchArea = player.getBoundingBox().inflate(HIGHLIGHT_RADIUS);
+      // Find all EasyNPC entities in the search area
       for (PathfinderMob pathfinderMob :
           level.getEntitiesOfClass(
-              PathfinderMob.class, player.getBoundingBox().inflate(0.5), Entity::isAlive)) {
-        if (pathfinderMob instanceof EasyNPCBase<?> easyNPC) {
-          highlightEasyNPC(easyNPC);
-        }
+              PathfinderMob.class,
+              searchArea,
+              mob -> mob.isAlive() && mob instanceof EasyNPCBase<?>)) {
+        highlightEasyNPC((EasyNPCBase<?>) pathfinderMob);
       }
     }
   }
@@ -103,7 +111,7 @@ public class EasyNPCWandItem extends Item {
     if (player instanceof ServerPlayer serverPlayer) {
       BlockPos blockPos = userContext.getClickedPos();
 
-      // 1. Search all nearby EasyNPC entities above and below the block position.
+      // Search for nearby EasyNPC entities above and below the block position
       AABB aabbAbove =
           new AABB(
               blockPos.getX() - 0.25d,
@@ -121,7 +129,7 @@ public class EasyNPCWandItem extends Item {
         }
       }
 
-      // 2. Search all nearby EasyNPC entities around the block position.
+      // Search for nearby EasyNPC entities around the block position
       AABB aabbAround =
           new AABB(
               blockPos.getX() - 0.5d,
@@ -139,7 +147,7 @@ public class EasyNPCWandItem extends Item {
         }
       }
 
-      // 3. Expand the search area by 2.5x to find all nearby EasyNPC entities.
+      // Expand the search area to find all nearby EasyNPC entities
       for (PathfinderMob pathfinderMob :
           level.getEntitiesOfClass(PathfinderMob.class, aabbAround.inflate(2.5), Entity::isAlive)) {
         if (pathfinderMob instanceof EasyNPCBase<?> easyNPC) {

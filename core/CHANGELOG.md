@@ -10,6 +10,11 @@ Check the [upgrade guide][upgrade_guide] for more information.
 
 ### 6.0.x (Experimental) ✨
 
+This is still an experimental release, please backup your worlds and NPCs before using it.
+
+⚠️ It's very likely that there will be breaking changes with NPCs and their configurations from
+between versions! ⚠️
+
 📝 Note:
 Easy NPC is now split into two separate mods:
 

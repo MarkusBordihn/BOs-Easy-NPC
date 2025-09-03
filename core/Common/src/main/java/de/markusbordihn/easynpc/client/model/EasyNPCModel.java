@@ -30,8 +30,12 @@ import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
 import java.util.UUID;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.LightLayer;
 
 public class EasyNPCModel {
@@ -104,23 +108,32 @@ public class EasyNPCModel {
     return easyNPC.getLivingEntity().level().getBrightness(LightLayer.BLOCK, blockPos);
   }
 
-  public static void renderEntityNameTag(
+  public static boolean renderEntityNameTag(
       final EasyNPCRenderStateExtension extension, final PoseStack poseStack) {
 
     if (extension == null) {
-      return;
+      return true;
     }
 
     // Get EasyNPC
     EasyNPC<?> easyNPC = getEasyNPC(extension);
     if (easyNPC == null) {
-      return;
+      return true;
+    }
+
+    // Check if name tag should be rendered at all.
+    LocalPlayer player = Minecraft.getInstance().player;
+    Entity entity = easyNPC.getEntity();
+    if (player != null
+        && !VisibilityHandler.handleIsCustomNameVisibleToPlayer(
+            easyNPC, player, entity.isCustomNameVisible())) {
+      return false;
     }
 
     // Get Model Data
     ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
     if (modelData == null) {
-      return;
+      return true;
     }
 
     CustomRotation rootRotation = modelData.getModelPartRotation(ModelPartType.ROOT);
@@ -131,5 +144,6 @@ public class EasyNPCModel {
       poseStack.mulPose(Axis.ZP.rotationDegrees(-rootRotation.z()));
       poseStack.translate(0, -1, 0);
     }
+    return true;
   }
 }

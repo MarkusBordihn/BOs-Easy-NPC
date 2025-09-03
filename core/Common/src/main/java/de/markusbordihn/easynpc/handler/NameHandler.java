@@ -20,7 +20,10 @@
 package de.markusbordihn.easynpc.handler;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
+import de.markusbordihn.easynpc.data.display.NameVisibilityType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import net.minecraft.network.chat.Style;
@@ -36,12 +39,24 @@ public class NameHandler {
   private NameHandler() {}
 
   public static boolean setCustomName(EasyNPC<?> easyNPC, String name, int color, boolean visible) {
+    return setCustomName(
+        easyNPC, name, color, visible ? NameVisibilityType.ALWAYS : NameVisibilityType.NEVER);
+  }
+
+  public static boolean setCustomName(
+      EasyNPC<?> easyNPC, String name, int color, NameVisibilityType nameVisibilityType) {
     if (easyNPC == null || name == null) {
       log.error("[{}] Error setting custom name {}", easyNPC, name);
       return false;
     }
-
     Entity entity = easyNPC.getEntity();
+
+    log.debug(
+        "[{}] Change custom name to '{}' with color {} and visibility {}",
+        easyNPC,
+        name,
+        color,
+        nameVisibilityType);
 
     // Remove the custom name if the name is empty.
     if (name.isEmpty()) {
@@ -50,13 +65,6 @@ public class NameHandler {
       entity.setCustomNameVisible(false);
       return true;
     }
-
-    log.debug(
-        "[{}] Change custom name to '{}' with color {} and visible {}",
-        easyNPC,
-        name,
-        color,
-        visible);
 
     // Define custom color and style for the name, if any.
     Style style = Style.EMPTY;
@@ -68,8 +76,15 @@ public class NameHandler {
     entity.setCustomName(
         TextComponent.getTextComponentRaw(name, TextUtils.isTranslationKey(name)).setStyle(style));
 
-    // Set the visibility of the custom name.
-    entity.setCustomNameVisible(visible);
+    // Set the visibility of the custom name based on NameVisibilityType.
+    entity.setCustomNameVisible(nameVisibilityType != NameVisibilityType.NEVER);
+
+    // Set display attribute for name visibility if available.
+    DisplayAttributeDataCapable<?> displayAttributeData = easyNPC.getEasyNPCDisplayAttributeData();
+    if (displayAttributeData != null) {
+      displayAttributeData.setDisplayAttribute(
+          DisplayAttributeType.NAME_VISIBILITY, nameVisibilityType);
+    }
 
     return true;
   }
