@@ -30,8 +30,11 @@ import de.markusbordihn.easynpc.data.attribute.InteractionAttributeType;
 import de.markusbordihn.easynpc.data.attribute.InteractionAttributes;
 import de.markusbordihn.easynpc.data.attribute.MovementAttributeType;
 import de.markusbordihn.easynpc.data.attribute.MovementAttributes;
+import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
+import de.markusbordihn.easynpc.data.type.ValueType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import net.minecraft.resources.ResourceLocation;
@@ -45,6 +48,16 @@ public class AttributeHandler {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private AttributeHandler() {}
+
+  public static boolean setCombatAttribute(
+      EasyNPC<?> easyNPC, CombatAttributeType attributeType, ValueType valueType, Object value) {
+    if (valueType == ValueType.BOOLEAN && value instanceof Boolean booleanValue) {
+      return setCombatAttribute(easyNPC, attributeType, booleanValue);
+    } else if (valueType == ValueType.DOUBLE && value instanceof Double doubleValue) {
+      return setCombatAttribute(easyNPC, attributeType, doubleValue);
+    }
+    return false;
+  }
 
   public static boolean setCombatAttribute(
       EasyNPC<?> easyNPC, CombatAttributeType attributeType, boolean value) {
@@ -95,6 +108,21 @@ public class AttributeHandler {
       }
     }
     attributeData.refreshEntityAttributes();
+    return true;
+  }
+
+  public static <T> boolean setDisplayAttribute(
+      EasyNPC<?> easyNPC, DisplayAttributeType attributeType, T value) {
+    if (easyNPC == null || attributeType == null) {
+      return false;
+    }
+    DisplayAttributeDataCapable<?> attributeData = easyNPC.getEasyNPCDisplayAttributeData();
+    if (attributeData == null) {
+      return false;
+    }
+    log.debug("Changing display attribute {}={} for {}", attributeType, value, easyNPC);
+    ValueType valueType = attributeType.getValueType();
+    attributeData.setDisplayAttribute(attributeType, valueType, value);
     return true;
   }
 

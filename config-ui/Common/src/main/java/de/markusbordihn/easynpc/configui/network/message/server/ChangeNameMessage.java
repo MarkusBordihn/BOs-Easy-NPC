@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.configui.network.message.server;
 
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.data.display.NameVisibilityType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.NameHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -28,7 +29,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public record ChangeNameMessage(UUID uuid, String name, int color, boolean visible)
+public record ChangeNameMessage(
+    UUID uuid, String name, int color, NameVisibilityType nameVisibilityType)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
@@ -36,7 +38,10 @@ public record ChangeNameMessage(UUID uuid, String name, int color, boolean visib
 
   public static ChangeNameMessage create(final FriendlyByteBuf buffer) {
     return new ChangeNameMessage(
-        buffer.readUUID(), buffer.readUtf(), buffer.readInt(), buffer.readBoolean());
+        buffer.readUUID(),
+        buffer.readUtf(),
+        buffer.readInt(),
+        buffer.readEnum(NameVisibilityType.class));
   }
 
   @Override
@@ -44,7 +49,7 @@ public record ChangeNameMessage(UUID uuid, String name, int color, boolean visib
     buffer.writeUUID(this.uuid);
     buffer.writeUtf(this.name);
     buffer.writeInt(this.color);
-    buffer.writeBoolean(this.visible);
+    buffer.writeEnum(this.nameVisibilityType);
   }
 
   @Override
@@ -59,7 +64,7 @@ public record ChangeNameMessage(UUID uuid, String name, int color, boolean visib
       return;
     }
 
-    if (!NameHandler.setCustomName(easyNPC, this.name, this.color, this.visible)) {
+    if (!NameHandler.setCustomName(easyNPC, this.name, this.color, this.nameVisibilityType)) {
       log.error("Unable to set custom name {} for {} from {}", this.name, easyNPC, serverPlayer);
     }
   }

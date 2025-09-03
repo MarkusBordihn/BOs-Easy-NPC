@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.configui.network.message.server;
 
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.attribute.CombatAttributeType;
-import de.markusbordihn.easynpc.data.attribute.EntityAttributeValueType;
+import de.markusbordihn.easynpc.data.type.ValueType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
@@ -33,7 +33,7 @@ import net.minecraft.server.level.ServerPlayer;
 public record ChangeCombatAttributeMessage(
     UUID uuid,
     CombatAttributeType attributeType,
-    EntityAttributeValueType valueType,
+    ValueType valueType,
     boolean booleanValue,
     double doubleValue,
     int integerValue)
@@ -44,19 +44,19 @@ public record ChangeCombatAttributeMessage(
 
   public ChangeCombatAttributeMessage(
       final UUID uuid, final CombatAttributeType attributeType, final Boolean value) {
-    this(uuid, attributeType, EntityAttributeValueType.BOOLEAN, value, 0.0d, 0);
+    this(uuid, attributeType, ValueType.BOOLEAN, value, 0.0d, 0);
   }
 
   public ChangeCombatAttributeMessage(
       final UUID uuid, final CombatAttributeType attributeType, final Double value) {
-    this(uuid, attributeType, EntityAttributeValueType.DOUBLE, false, value, 0);
+    this(uuid, attributeType, ValueType.DOUBLE, false, value, 0);
   }
 
   public static ChangeCombatAttributeMessage create(final FriendlyByteBuf buffer) {
     return new ChangeCombatAttributeMessage(
         buffer.readUUID(),
         buffer.readEnum(CombatAttributeType.class),
-        buffer.readEnum(EntityAttributeValueType.class),
+        buffer.readEnum(ValueType.class),
         buffer.readBoolean(),
         buffer.readDouble(),
         buffer.readInt());
@@ -90,7 +90,10 @@ public record ChangeCombatAttributeMessage(
       case DOUBLE -> AttributeHandler.setCombatAttribute(easyNPC, attributeType, doubleValue);
       default ->
           log.error(
-              "Invalid value type for {} for {} from {}", attributeType, easyNPC, serverPlayer);
+              "Invalid combat value type for {} for {} from {}",
+              attributeType,
+              easyNPC,
+              serverPlayer);
     }
   }
 }

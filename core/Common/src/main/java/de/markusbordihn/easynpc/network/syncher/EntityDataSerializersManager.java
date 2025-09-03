@@ -23,7 +23,8 @@ import de.markusbordihn.easynpc.data.action.ActionEventSet;
 import de.markusbordihn.easynpc.data.attribute.CustomAttributes;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
-import de.markusbordihn.easynpc.data.display.DisplayAttributeSet;
+import de.markusbordihn.easynpc.data.display.DisplayAttributeEntry;
+import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataSet;
@@ -110,25 +111,46 @@ public class EntityDataSerializersManager {
               return value;
             }
           });
-  public static final EntityDataSerializer<DisplayAttributeSet> DISPLAY_ATTRIBUTE_SET =
-      defineSerializer(
-          DisplayAttributeSet.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, DisplayAttributeSet value) {
-              buffer.writeNbt(value.createTag());
-            }
+  public static final EntityDataSerializer<EnumMap<DisplayAttributeType, DisplayAttributeEntry>>
+      DISPLAY_ATTRIBUTE =
+          defineSerializer(
+              DisplayAttributeType.class.getSimpleName() + ":DisplayAttribute",
+              new EntityDataSerializer<>() {
+                @Override
+                public void write(
+                    FriendlyByteBuf buffer,
+                    EnumMap<DisplayAttributeType, DisplayAttributeEntry> value) {
+                  buffer.writeVarInt(value.size());
+                  for (Map.Entry<DisplayAttributeType, DisplayAttributeEntry> entry :
+                      value.entrySet()) {
+                    buffer.writeEnum(entry.getKey());
+                    buffer.writeNbt(entry.getValue().createTag());
+                  }
+                }
 
-            @Override
-            public DisplayAttributeSet read(FriendlyByteBuf buffer) {
-              return new DisplayAttributeSet(buffer.readNbt());
-            }
+                @Override
+                public EnumMap<DisplayAttributeType, DisplayAttributeEntry> read(
+                    FriendlyByteBuf buffer) {
+                  int size = buffer.readVarInt();
+                  EnumMap<DisplayAttributeType, DisplayAttributeEntry> value =
+                      new EnumMap<>(DisplayAttributeType.class);
+                  for (int i = 0; i < size; i++) {
+                    DisplayAttributeType type = buffer.readEnum(DisplayAttributeType.class);
+                    CompoundTag nbt = buffer.readNbt();
+                    if (nbt != null) {
+                      DisplayAttributeEntry entry = new DisplayAttributeEntry(nbt);
+                      value.put(type, entry);
+                    }
+                  }
+                  return value;
+                }
 
-            @Override
-            public DisplayAttributeSet copy(DisplayAttributeSet value) {
-              return value;
-            }
-          });
+                @Override
+                public EnumMap<DisplayAttributeType, DisplayAttributeEntry> copy(
+                    EnumMap<DisplayAttributeType, DisplayAttributeEntry> value) {
+                  return new EnumMap<>(value);
+                }
+              });
   public static final EntityDataSerializer<EntityAttributes> ENTITY_ATTRIBUTES =
       defineSerializer(
           EntityAttributes.class.getSimpleName(),

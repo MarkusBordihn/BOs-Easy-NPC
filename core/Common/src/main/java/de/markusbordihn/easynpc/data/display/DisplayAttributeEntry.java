@@ -24,30 +24,48 @@ import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public record DisplayAttributeEntry(
-    DisplayAttributeType displayAttributeType, boolean booleanValue, int intValue) {
+public record DisplayAttributeEntry(boolean booleanValue, int intValue, String stringValue) {
 
-  public static final String DATA_TYPE_TAG = "Type";
-  public static final String DATA_BOOLEAN_VALUE_TAG = "Boolean";
+  public static final String DATA_BOOLEAN_VALUE_TAG = "Bool";
   public static final String DATA_INT_VALUE_TAG = "Int";
+  public static final String DATA_STRING_VALUE_TAG = "Text";
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  public DisplayAttributeEntry(CompoundTag compoundTag) {
-    this(
-        DisplayAttributeType.get(compoundTag.getString(DATA_TYPE_TAG)),
-        compoundTag.getBoolean(DATA_BOOLEAN_VALUE_TAG),
-        compoundTag.contains(DATA_INT_VALUE_TAG) ? compoundTag.getInt(DATA_INT_VALUE_TAG) : 0);
+  public DisplayAttributeEntry(final boolean booleanValue) {
+    this(booleanValue, 0, "");
   }
 
-  public DisplayAttributeEntry create(CompoundTag compoundTag) {
+  public DisplayAttributeEntry(final int intValue) {
+    this(false, intValue, "");
+  }
+
+  public DisplayAttributeEntry(final String stringValue) {
+    this(false, 0, stringValue);
+  }
+
+  public DisplayAttributeEntry(final CompoundTag compoundTag) {
+    this(
+        compoundTag.contains(DATA_BOOLEAN_VALUE_TAG)
+            && compoundTag.getBoolean(DATA_BOOLEAN_VALUE_TAG),
+        compoundTag.contains(DATA_INT_VALUE_TAG) ? compoundTag.getInt(DATA_INT_VALUE_TAG) : 0,
+        compoundTag.contains(DATA_STRING_VALUE_TAG)
+            ? compoundTag.getString(DATA_STRING_VALUE_TAG)
+            : "");
+  }
+
+  public DisplayAttributeEntry create(final CompoundTag compoundTag) {
     return new DisplayAttributeEntry(compoundTag);
   }
 
-  public CompoundTag write(CompoundTag compoundTag) {
-    compoundTag.putString(DATA_TYPE_TAG, displayAttributeType.name());
-    compoundTag.putBoolean(DATA_BOOLEAN_VALUE_TAG, booleanValue);
+  public CompoundTag write(final CompoundTag compoundTag) {
+    if (booleanValue) {
+      compoundTag.putBoolean(DATA_BOOLEAN_VALUE_TAG, true);
+    }
     if (intValue != 0) {
       compoundTag.putInt(DATA_INT_VALUE_TAG, intValue);
+    }
+    if (stringValue != null && !stringValue.isEmpty()) {
+      compoundTag.putString(DATA_STRING_VALUE_TAG, stringValue);
     }
     return compoundTag;
   }
@@ -59,12 +77,12 @@ public record DisplayAttributeEntry(
   @Override
   public String toString() {
     return "DisplayAttributeEntry{"
-        + "displayAttributeType="
-        + displayAttributeType
-        + ", boolean="
+        + "boolean="
         + booleanValue
         + ", int="
         + intValue
+        + ", string="
+        + stringValue
         + '}';
   }
 }

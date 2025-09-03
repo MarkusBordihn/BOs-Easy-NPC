@@ -27,13 +27,16 @@ import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
-import de.markusbordihn.easynpc.client.screen.components.VisibilityToggleButton;
+import de.markusbordihn.easynpc.configui.client.screen.components.NameVisibilityToggleButton;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
+import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
+import de.markusbordihn.easynpc.data.display.NameVisibilityType;
 import de.markusbordihn.easynpc.data.render.RenderDataSet;
 import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
@@ -75,10 +78,10 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
   private Button copyUUIDButton;
   private String formerName = "";
   private int formerTextColor = 0xFFFFFF;
-  private boolean formerNameVisibility = true;
+  private NameVisibilityType formerNameVisibility = NameVisibilityType.ALWAYS;
   private EditBox nameBox;
   private ColorButton nameColorButton;
-  private VisibilityToggleButton nameVisibilityButton;
+  private NameVisibilityToggleButton nameVisibilityButton;
   private Button saveNameButton;
   private int avatarTopPos;
 
@@ -301,15 +304,21 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     }
 
     // Name Visibility Button
+    DisplayAttributeDataCapable<?> displayAttributeData =
+        getEasyNPC().getEasyNPCDisplayAttributeData();
+    NameVisibilityType currentVisibility =
+        displayAttributeData != null
+            ? displayAttributeData.getDisplayEnumAttribute(
+                DisplayAttributeType.NAME_VISIBILITY, NameVisibilityType.class)
+            : NameVisibilityType.ALWAYS;
     this.nameVisibilityButton =
         this.addRenderableWidget(
-            new VisibilityToggleButton(
+            new NameVisibilityToggleButton(
                 this.nameColorButton.getX() + this.nameColorButton.getWidth() + 2,
                 this.nameColorButton.getY(),
-                onPress -> this.validateName()));
-    this.nameVisibilityButton.active =
-        getEasyNPCEntity().hasCustomName() && getEasyNPCEntity().isCustomNameVisible();
-    this.formerNameVisibility = getEasyNPCEntity().isCustomNameVisible();
+                currentVisibility,
+                (button, newType) -> this.validateName()));
+    this.formerNameVisibility = currentVisibility;
 
     // Save Name Button
     this.saveNameButton =
@@ -503,7 +512,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
   private void validateName() {
     String nameValue = this.nameBox.getValue();
     int textColorValue = this.nameColorButton.getColorValue();
-    boolean nameVisibility = this.nameVisibilityButton.active;
+    NameVisibilityType nameVisibility = this.nameVisibilityButton.getVisibilityType();
     this.saveNameButton.active =
         !this.formerName.equals(nameValue)
             || this.formerTextColor != textColorValue
@@ -516,10 +525,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
     if (this.nameColorButton != null) {
       textColor = this.nameColorButton.getColorValue();
     }
-    boolean nameVisibility = true;
-    if (this.nameVisibilityButton != null) {
-      nameVisibility = !name.isEmpty() && this.nameVisibilityButton.active;
-    }
+    NameVisibilityType nameVisibility = this.nameVisibilityButton.getVisibilityType();
     NetworkMessageHandlerManager.getServerHandler()
         .changeName(getEasyNPC().getEntityUUID(), name, textColor, nameVisibility);
     this.formerName = name;

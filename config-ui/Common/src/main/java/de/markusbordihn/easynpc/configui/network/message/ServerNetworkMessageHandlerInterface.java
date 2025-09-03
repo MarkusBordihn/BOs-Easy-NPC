@@ -75,6 +75,7 @@ import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
+import de.markusbordihn.easynpc.data.display.NameVisibilityType;
 import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.objective.ObjectiveDataEntry;
@@ -411,9 +412,11 @@ public interface ServerNetworkMessageHandlerInterface {
     }
   }
 
-  default void changeName(UUID uuid, String name, int color, boolean visible) {
+  default void changeName(
+      UUID uuid, String name, int color, NameVisibilityType nameVisibilityType) {
     if (uuid != null && name != null) {
-      NetworkHandlerManager.sendMessageToServer(new ChangeNameMessage(uuid, name, color, visible));
+      NetworkHandlerManager.sendMessageToServer(
+          new ChangeNameMessage(uuid, name, color, nameVisibilityType));
     }
   }
 

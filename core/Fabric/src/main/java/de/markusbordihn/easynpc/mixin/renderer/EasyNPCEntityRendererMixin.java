@@ -24,6 +24,7 @@ import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
+import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.culling.Frustum;
@@ -48,10 +49,52 @@ public class EasyNPCEntityRendererMixin<T extends Entity> {
       double y,
       double z,
       CallbackInfoReturnable<Boolean> cir) {
-    if (entity instanceof EasyNPC<?>
-        && (entity.isInvisible() || entity.isInvisibleTo(Minecraft.getInstance().player))) {
-      cir.setReturnValue(false);
+    if (entity instanceof EasyNPC<?>) {
+      var player = Minecraft.getInstance().player;
+      if (player == null) return;
+
+      // Check if player is holding NPC Wand - if so, always render EasyNPCs (clientside override)
+      boolean holdingNPCWand = isPlayerHoldingNPCWand(player);
+      if (holdingNPCWand) {
+        // Check if entity is within wand range
+        double distanceSquared = entity.distanceToSqr(player);
+        double wandRange = 32.0d; // HIGHLIGHT_RADIUS from EasyNPCWandItem
+        if (distanceSquared <= wandRange * wandRange) {
+          // Force rendering for NPCs within wand range - this overrides all invisibility settings
+          cir.setReturnValue(true);
+          return;
+        }
+      }
+
+      // Check basic invisibility (normal behavior when not holding wand)
+      boolean isInvisible = entity.isInvisible() || entity.isInvisibleTo(player);
+      if (isInvisible) {
+        // Hide invisible entity
+        cir.setReturnValue(false);
+      }
     }
+  }
+
+  private boolean isPlayerHoldingNPCWand(net.minecraft.world.entity.player.Player player) {
+    // Use registry-based lookup that works across all mod loaders
+    net.minecraft.resources.ResourceLocation npcWandId =
+        new net.minecraft.resources.ResourceLocation("easy_npc", "easy_npc_wand");
+    net.minecraft.world.item.Item npcWandItem =
+        net.minecraft.core.registries.BuiltInRegistries.ITEM.get(npcWandId);
+
+    if (npcWandItem == null) {
+      return false; // Item not found in registry
+    }
+
+    // Check main hand
+    net.minecraft.world.item.ItemStack mainHandItem = player.getMainHandItem();
+    if (mainHandItem.getItem() == npcWandItem) {
+      return true;
+    }
+
+    // Check offhand
+    net.minecraft.world.item.ItemStack offHandItem = player.getOffhandItem();
+    return offHandItem.getItem() == npcWandItem;
   }
 
   @Inject(method = "getBlockLightLevel", at = @At("HEAD"), cancellable = true)
@@ -65,7 +108,7 @@ public class EasyNPCEntityRendererMixin<T extends Entity> {
     }
   }
 
-  @Inject(method = "renderNameTag", at = @At("HEAD"))
+  @Inject(method = "renderNameTag", at = @At("HEAD"), cancellable = true)
   private void onRenderNameTag(
       T entity,
       Component component,
@@ -73,9 +116,22 @@ public class EasyNPCEntityRendererMixin<T extends Entity> {
       MultiBufferSource multiBufferSource,
       int i,
       CallbackInfo ci) {
-    if (entity instanceof EasyNPC<?> easyNPC
-        && easyNPC.getEasyNPCModelData() instanceof ModelDataCapable) {
-      EasyNPCModel.renderEntityNameTag(easyNPC, easyNPC.getEasyNPCModelData(), poseStack);
+    if (entity instanceof EasyNPC<?> easyNPC) {
+      var player = Minecraft.getInstance().player;
+      if (player != null) {
+        boolean shouldShowName =
+            VisibilityHandler.handleIsCustomNameVisibleToPlayer(
+                easyNPC, player, entity.isCustomNameVisible());
+
+        if (!shouldShowName) {
+          ci.cancel();
+          return;
+        }
+      }
+
+      if (easyNPC.getEasyNPCModelData() instanceof ModelDataCapable) {
+        EasyNPCModel.renderEntityNameTag(easyNPC, easyNPC.getEasyNPCModelData(), poseStack);
+      }
     }
   }
 }
