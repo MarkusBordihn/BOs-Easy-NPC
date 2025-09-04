@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
+import de.markusbordihn.easynpc.utils.ItemUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.culling.Frustum;
@@ -54,7 +55,7 @@ public class EasyNPCEntityRendererMixin<T extends Entity> {
       if (player == null) return;
 
       // Check if player is holding NPC Wand - if so, always render EasyNPCs (clientside override)
-      boolean holdingNPCWand = isPlayerHoldingNPCWand(player);
+      boolean holdingNPCWand = ItemUtils.isPlayerHoldingEasyNPCWand(player);
       if (holdingNPCWand) {
         // Check if entity is within wand range
         double distanceSquared = entity.distanceToSqr(player);
@@ -73,28 +74,6 @@ public class EasyNPCEntityRendererMixin<T extends Entity> {
         cir.setReturnValue(false);
       }
     }
-  }
-
-  private boolean isPlayerHoldingNPCWand(net.minecraft.world.entity.player.Player player) {
-    // Use registry-based lookup that works across all mod loaders
-    net.minecraft.resources.ResourceLocation npcWandId =
-        new net.minecraft.resources.ResourceLocation("easy_npc", "easy_npc_wand");
-    net.minecraft.world.item.Item npcWandItem =
-        net.minecraft.core.registries.BuiltInRegistries.ITEM.get(npcWandId);
-
-    if (npcWandItem == null) {
-      return false; // Item not found in registry
-    }
-
-    // Check main hand
-    net.minecraft.world.item.ItemStack mainHandItem = player.getMainHandItem();
-    if (mainHandItem.getItem() == npcWandItem) {
-      return true;
-    }
-
-    // Check offhand
-    net.minecraft.world.item.ItemStack offHandItem = player.getOffhandItem();
-    return offHandItem.getItem() == npcWandItem;
   }
 
   @Inject(method = "getBlockLightLevel", at = @At("HEAD"), cancellable = true)

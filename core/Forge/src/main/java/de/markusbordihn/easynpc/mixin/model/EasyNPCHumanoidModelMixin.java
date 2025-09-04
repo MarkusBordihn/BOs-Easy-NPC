@@ -48,7 +48,7 @@ public class EasyNPCHumanoidModelMixin<T extends LivingEntity> {
   @Shadow @Final public ModelPart rightLeg;
   @Shadow @Final public ModelPart leftLeg;
 
-  @Unique private EasyNPCModelManager easyNPCModelManager;
+  @Unique private EasyNPCModelManager easynpc$modelManager;
 
   @Inject(
       method = "<init>(Lnet/minecraft/client/model/geom/ModelPart;Ljava/util/function/Function;)V",
@@ -57,7 +57,7 @@ public class EasyNPCHumanoidModelMixin<T extends LivingEntity> {
       ModelPart modelPart,
       Function<ResourceLocation, RenderType> renderType,
       CallbackInfo callbackInfo) {
-    this.easyNPCModelManager =
+    this.easynpc$modelManager =
         new EasyNPCModelManager(modelPart, renderType)
             .defineModelPart(ModelPartType.HAT, this.hat)
             .defineModelPart(ModelPartType.HEAD, this.head)
@@ -81,7 +81,7 @@ public class EasyNPCHumanoidModelMixin<T extends LivingEntity> {
       float headPitch,
       CallbackInfo callbackInfo) {
     if (livingEntity instanceof EasyNPC<?> easyNPC
-        && EasyNPCModel.setupAnimationStart(easyNPC, this.easyNPCModelManager)) {
+        && EasyNPCModel.setupAnimationStart(easyNPC, this.easynpc$modelManager)) {
       callbackInfo.cancel();
     }
   }

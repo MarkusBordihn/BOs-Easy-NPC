@@ -27,8 +27,8 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import de.markusbordihn.easynpc.utils.ItemUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -59,10 +59,7 @@ public class InteractionHandler {
       Item handItem = handItemStack.getItem();
 
       // Handle Easy NPC Wand
-      Item easyNPCWand =
-          BuiltInRegistries.ITEM
-              .getOptional(new ResourceLocation(Constants.MOD_ID, "easy_npc_wand"))
-              .orElse(null);
+      Item easyNPCWand = ItemUtils.getEasyNPCWandItem();
       if (handItem.equals(easyNPCWand)) {
         return InteractionResult.PASS;
       }

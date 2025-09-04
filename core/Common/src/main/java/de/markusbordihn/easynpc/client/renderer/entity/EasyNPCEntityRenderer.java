@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.client.texture.PlayerTextureManager;
 import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
+import java.util.function.Supplier;
 import net.minecraft.resources.ResourceLocation;
 
 public interface EasyNPCEntityRenderer {
@@ -62,6 +63,17 @@ public interface EasyNPCEntityRenderer {
       case PLAYER_SKIN -> getPlayerTexture(skinData);
       case SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> getRemoteTexture(skinData);
       default -> getTextureByVariant(easyNPC.getEasyNPCVariantData().getVariantType());
+    };
+  }
+
+  default ResourceLocation getEntityTextureWithDefaultCallback(
+      final EasyNPC<?> easyNPC, final Supplier<ResourceLocation> defaultTextureSupplier) {
+    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
+    return switch (skinData.getSkinType()) {
+      case NONE -> Constants.BLANK_ENTITY_TEXTURE;
+      case CUSTOM -> getCustomTexture(skinData);
+      case SECURE_REMOTE_URL, INSECURE_REMOTE_URL -> getRemoteTexture(skinData);
+      default -> defaultTextureSupplier.get();
     };
   }
 }
