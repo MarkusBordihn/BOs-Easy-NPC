@@ -37,7 +37,7 @@ public abstract class RaiderMixin extends PatrollingMonster {
   }
 
   @Inject(method = "aiStep", at = @At("HEAD"), cancellable = true)
-  public void standardEasyNPC$aiStep(CallbackInfo callbackInfo) {
+  public void onAiStep(CallbackInfo callbackInfo) {
 
     // If this is a StandardEasyNPC, only execute the parent aiStep and cancel original execution.
     if ((Object) this instanceof StandardEasyNPC<?>) {

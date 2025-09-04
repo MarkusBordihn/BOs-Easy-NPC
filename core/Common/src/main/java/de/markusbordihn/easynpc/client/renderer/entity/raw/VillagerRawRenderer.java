@@ -20,23 +20,39 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.VillagerRenderer;
+import net.minecraft.client.renderer.entity.state.VillagerRenderState;
 import net.minecraft.resources.ResourceLocation;
 
 public class VillagerRawRenderer extends VillagerRenderer implements EasyNPCEntityRenderer {
+
+  private static final ResourceLocation DEFAULT_TEXTURE =
+      ResourceLocation.fromNamespaceAndPath(
+          ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/villager/villager.png");
 
   public VillagerRawRenderer(EntityRendererProvider.Context context) {
     super(context);
   }
 
   @Override
-  public ResourceLocation getTextureByVariant(Enum<?> variant) {
-    return null;
+  public ResourceLocation getTextureLocation(VillagerRenderState renderState) {
+    EasyNPC<?> easyNPC = getEasyNPC(renderState);
+    if (easyNPC != null) {
+      return getEntityTextureWithDefaultCallback(
+          easyNPC, () -> super.getTextureLocation(renderState));
+    }
+    return super.getTextureLocation(renderState);
   }
 
   @Override
   public ResourceLocation getDefaultTexture() {
-    return null;
+    return DEFAULT_TEXTURE;
+  }
+
+  @Override
+  public ResourceLocation getTextureByVariant(Enum<?> variant) {
+    return DEFAULT_TEXTURE;
   }
 }

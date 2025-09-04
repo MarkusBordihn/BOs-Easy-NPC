@@ -67,7 +67,35 @@ public class SkinCommand extends Command {
                                                     EasyNPCArgument.getEntityWithAccess(
                                                         context, NPC_TARGET_ARGUMENT),
                                                     StringArgumentType.getString(
-                                                        context, "variant")))))));
+                                                        context, "variant")))))))
+        .then(
+            Commands.literal("layer")
+                .requires(
+                    commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_ALL))
+                .then(
+                    Commands.argument(NPC_TARGET_ARGUMENT, EasyNPCArgument.npc())
+                        .executes(
+                            context ->
+                                getLayerStatus(
+                                    context.getSource(),
+                                    EasyNPCArgument.getEntityWithAccess(
+                                        context, NPC_TARGET_ARGUMENT)))
+                        .then(
+                            Commands.literal("disable")
+                                .executes(
+                                    context ->
+                                        disableLayers(
+                                            context.getSource(),
+                                            EasyNPCArgument.getEntityWithAccess(
+                                                context, NPC_TARGET_ARGUMENT))))
+                        .then(
+                            Commands.literal("enable")
+                                .executes(
+                                    context ->
+                                        enableLayers(
+                                            context.getSource(),
+                                            EasyNPCArgument.getEntityWithAccess(
+                                                context, NPC_TARGET_ARGUMENT))))));
   }
 
   private static int setDefaultSkinVariant(
@@ -83,5 +111,52 @@ public class SkinCommand extends Command {
 
     return sendSuccessMessage(
         context, "Successfully set skin variant " + variant + " for EasyNPC " + easyNPC);
+  }
+
+  private static int setLayers(CommandSourceStack context, EasyNPC<?> easyNPC, boolean enabled) {
+    if (easyNPC == null) {
+      return sendFailureMessage(context, "Invalid EasyNPC target");
+    }
+
+    var skinData = easyNPC.getEasyNPCSkinData();
+    if (skinData == null) {
+      return sendFailureMessage(context, "EasyNPC has no skin data");
+    }
+
+    var currentEntry = skinData.getSkinDataEntry();
+    var updatedEntry = currentEntry.withDisableLayers(!enabled);
+    skinData.setSkinDataEntry(updatedEntry);
+
+    String action = enabled ? "enabled" : "disabled";
+    String entityName = easyNPC.getEntity().getDisplayName().getString();
+
+    return sendSuccessMessage(
+        context, "Successfully " + action + " layers for EasyNPC " + entityName);
+  }
+
+  private static int disableLayers(CommandSourceStack context, EasyNPC<?> easyNPC) {
+    return setLayers(context, easyNPC, false);
+  }
+
+  private static int enableLayers(CommandSourceStack context, EasyNPC<?> easyNPC) {
+    return setLayers(context, easyNPC, true);
+  }
+
+  private static int getLayerStatus(CommandSourceStack context, EasyNPC<?> easyNPC) {
+    if (easyNPC == null) {
+      return sendFailureMessage(context, "Invalid EasyNPC target");
+    }
+
+    var skinData = easyNPC.getEasyNPCSkinData();
+    if (skinData == null) {
+      return sendFailureMessage(context, "EasyNPC has no skin data");
+    }
+
+    boolean layersDisabled = skinData.getSkinDataEntry().disableLayers();
+    String status = layersDisabled ? "disabled" : "enabled";
+    String entityName = easyNPC.getEntity().getDisplayName().getString();
+
+    return sendSuccessMessage(
+        context, "Layers are currently " + status + " for EasyNPC " + entityName);
   }
 }

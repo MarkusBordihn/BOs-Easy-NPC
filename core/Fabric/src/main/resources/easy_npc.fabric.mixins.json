@@ -3,6 +3,7 @@
   "minVersion": "0.8",
   "package": "de.markusbordihn.easynpc.mixin",
   "compatibilityLevel": "JAVA_21",
+  "refmap": "easy_npc.refmap.json",
   "client": [
     "model.EasyNPCHumanoidModelMixin",
     "model.EasyNPCPlayerModelMixin",
@@ -10,6 +11,7 @@
     "model.EasyNPCWolfModelMixin",
     "renderer.EasyNPCEntityRendererMixin",
     "renderer.EasyNPCLivingEntityRendererMixin",
+    "renderer.VillagerProfessionLayerMixin",
     "renderer.state.EasyNPCLivingEntityRenderStateMixin"
   ],
   "mixins": [
