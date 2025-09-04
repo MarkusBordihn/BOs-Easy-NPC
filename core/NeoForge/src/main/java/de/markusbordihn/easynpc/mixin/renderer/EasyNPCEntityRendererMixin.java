@@ -25,17 +25,14 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
+import de.markusbordihn.easynpc.utils.ItemUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -58,7 +55,7 @@ public class EasyNPCEntityRendererMixin<T extends Entity> {
       if (player == null) return;
 
       // Check if player is holding NPC Wand - if so, always render EasyNPCs (clientside override)
-      boolean holdingNPCWand = isPlayerHoldingNPCWand(player);
+      boolean holdingNPCWand = ItemUtils.isPlayerHoldingEasyNPCWand(player);
       if (holdingNPCWand) {
         // Check if entity is within wand range
         double distanceSquared = entity.distanceToSqr(player);
@@ -77,26 +74,6 @@ public class EasyNPCEntityRendererMixin<T extends Entity> {
         cir.setReturnValue(false);
       }
     }
-  }
-
-  private boolean isPlayerHoldingNPCWand(net.minecraft.world.entity.player.Player player) {
-    // Use registry-based lookup that works across all mod loaders
-    ResourceLocation npcWandId = ResourceLocation.fromNamespaceAndPath("easy_npc", "easy_npc_wand");
-    Item npcWandItem = BuiltInRegistries.ITEM.get(npcWandId);
-
-    if (npcWandItem == null) {
-      return false; // Item not found in registry
-    }
-
-    // Check main hand
-    ItemStack mainHandItem = player.getMainHandItem();
-    if (mainHandItem.getItem() == npcWandItem) {
-      return true;
-    }
-
-    // Check offhand
-    ItemStack offHandItem = player.getOffhandItem();
-    return offHandItem.getItem() == npcWandItem;
   }
 
   @Inject(method = "getBlockLightLevel", at = @At("HEAD"), cancellable = true)

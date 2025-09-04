@@ -37,7 +37,7 @@ public abstract class EndermanMixin extends Monster {
   }
 
   @Inject(method = "customServerAiStep", at = @At("HEAD"), cancellable = true)
-  public void standardEasyNPC$customServerAiStep(CallbackInfo ci) {
+  public void onCustomServerAiStep(CallbackInfo ci) {
 
     // If this is a StandardEasyNPC, only execute the parent customServerAiStep and cancel original
     // execution.

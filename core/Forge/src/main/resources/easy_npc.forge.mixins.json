@@ -9,7 +9,8 @@
     "model.EasyNPCVillagerModelMixin",
     "model.EasyNPCWolfModelMixin",
     "renderer.EasyNPCEntityRendererMixin",
-    "renderer.EasyNPCLivingEntityRendererMixin"
+    "renderer.EasyNPCLivingEntityRendererMixin",
+    "renderer.VillagerProfessionLayerMixin"
   ],
   "mixins": [
     "entity.CreeperMixin",

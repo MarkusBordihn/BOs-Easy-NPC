@@ -30,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class EasyNPCFoxMixin {
 
   @Inject(method = "setTargetGoals", at = @At("HEAD"), cancellable = true)
-  private void easyNPCFoxSetTargetGoals(CallbackInfo ci) {
+  private void onSetTargetGoals(CallbackInfo ci) {
     if ((Object) this instanceof FoxNPC) {
       ci.cancel();
     }

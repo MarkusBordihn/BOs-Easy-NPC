@@ -7,12 +7,19 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
 public record SkinDataEntry(
-    String name, String url, UUID uuid, SkinType type, String content, long timestamp) {
+    String name,
+    String url,
+    UUID uuid,
+    SkinType type,
+    boolean disableLayers,
+    String content,
+    long timestamp) {
 
   static final String DATA_NAME_TAG = "Name";
   static final String DATA_TYPE_TAG = "Type";
   static final String DATA_URL_TAG = "URL";
   static final String DATA_UUID_TAG = "UUID";
+  static final String DATA_DISABLE_LAYERS_TAG = "DisableLayers";
   static final String DATA_CONTENT_TAG = "Content";
   static final String DATA_TIMESTAMP_TAG = "Timestamp";
   public static final StreamCodec<RegistryFriendlyByteBuf, SkinDataEntry> STREAM_CODEC =
@@ -30,11 +37,11 @@ public record SkinDataEntry(
       };
 
   public SkinDataEntry() {
-    this("", "", Constants.BLANK_UUID, SkinType.DEFAULT, "", System.currentTimeMillis());
+    this("", "", Constants.BLANK_UUID, SkinType.DEFAULT, false, "", System.currentTimeMillis());
   }
 
   public SkinDataEntry(final String name, final String url, final UUID uuid, final SkinType type) {
-    this(name, url, uuid, type, "", System.currentTimeMillis());
+    this(name, url, uuid, type, false, "", System.currentTimeMillis());
   }
 
   public SkinDataEntry(final CompoundTag compoundTag) {
@@ -45,6 +52,8 @@ public record SkinDataEntry(
             ? compoundTag.getUUID(DATA_UUID_TAG)
             : Constants.BLANK_UUID,
         SkinType.get(compoundTag.getString(DATA_TYPE_TAG)),
+        compoundTag.contains(DATA_DISABLE_LAYERS_TAG)
+            && compoundTag.getBoolean(DATA_DISABLE_LAYERS_TAG),
         compoundTag.contains(DATA_CONTENT_TAG) ? compoundTag.getString(DATA_CONTENT_TAG) : "",
         compoundTag.contains(DATA_TIMESTAMP_TAG)
             ? compoundTag.getLong(DATA_TIMESTAMP_TAG)
@@ -52,19 +61,28 @@ public record SkinDataEntry(
   }
 
   public SkinDataEntry withName(final String name) {
-    return new SkinDataEntry(name, this.url, this.uuid, this.type, this.content, this.timestamp);
+    return new SkinDataEntry(
+        name, this.url, this.uuid, this.type, this.disableLayers, this.content, this.timestamp);
   }
 
   public SkinDataEntry withType(final SkinType type) {
-    return new SkinDataEntry(this.name, this.url, this.uuid, type, this.content, this.timestamp);
+    return new SkinDataEntry(
+        this.name, this.url, this.uuid, type, this.disableLayers, this.content, this.timestamp);
   }
 
   public SkinDataEntry withURL(final String url) {
-    return new SkinDataEntry(this.name, url, this.uuid, this.type, this.content, this.timestamp);
+    return new SkinDataEntry(
+        this.name, url, this.uuid, this.type, this.disableLayers, this.content, this.timestamp);
   }
 
   public SkinDataEntry withUUID(final UUID uuid) {
-    return new SkinDataEntry(this.name, this.url, uuid, this.type, this.content, this.timestamp);
+    return new SkinDataEntry(
+        this.name, this.url, uuid, this.type, this.disableLayers, this.content, this.timestamp);
+  }
+
+  public SkinDataEntry withDisableLayers(final boolean disableLayers) {
+    return new SkinDataEntry(
+        this.name, this.url, this.uuid, this.type, disableLayers, this.content, this.timestamp);
   }
 
   public SkinDataEntry create(CompoundTag compoundTag) {
@@ -76,6 +94,7 @@ public record SkinDataEntry(
     compoundTag.putString(DATA_TYPE_TAG, this.type.name());
     compoundTag.putString(DATA_URL_TAG, this.url);
     compoundTag.putUUID(DATA_UUID_TAG, this.uuid);
+    compoundTag.putBoolean(DATA_DISABLE_LAYERS_TAG, this.disableLayers);
     compoundTag.putString(DATA_CONTENT_TAG, this.content);
     compoundTag.putLong(DATA_TIMESTAMP_TAG, this.timestamp);
     return compoundTag;
@@ -87,23 +106,20 @@ public record SkinDataEntry(
 
   @Override
   public boolean equals(Object object) {
-    if (object
-        instanceof
-        SkinDataEntry(
-            String name1,
-            String url1,
-            UUID uuid1,
-            SkinType type1,
-            String content1,
-            long timestamp1)) {
-      return this.name.equals(name1)
-          && this.type.equals(type1)
-          && this.url.equals(url1)
-          && this.uuid.equals(uuid1)
-          && this.content.equals(content1)
-          && this.timestamp == timestamp1;
+    if (this == object) {
+      return true;
     }
-    return false;
+    if (object == null || getClass() != object.getClass()) {
+      return false;
+    }
+    SkinDataEntry other = (SkinDataEntry) object;
+    return this.name.equals(other.name)
+        && this.type.equals(other.type)
+        && this.url.equals(other.url)
+        && this.uuid.equals(other.uuid)
+        && this.disableLayers == other.disableLayers
+        && this.content.equals(other.content)
+        && this.timestamp == other.timestamp;
   }
 
   @Override
@@ -113,6 +129,7 @@ public record SkinDataEntry(
     result = 31 * result + this.type.hashCode();
     result = 31 * result + this.url.hashCode();
     result = 31 * result + this.uuid.hashCode();
+    result = 31 * result + Boolean.hashCode(this.disableLayers);
     if (!this.content.isEmpty()) {
       result = 31 * result + this.content.hashCode();
     }
@@ -133,6 +150,8 @@ public record SkinDataEntry(
         + this.url
         + ", uuid="
         + this.uuid
+        + ", disableLayers="
+        + this.disableLayers
         + ", content="
         + this.content
         + ", timestamp="
