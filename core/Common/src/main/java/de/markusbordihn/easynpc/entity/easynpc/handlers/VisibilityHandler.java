@@ -36,9 +36,11 @@ public class VisibilityHandler {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
+  private static final double DEFAULT_NAME_VISIBILITY_RANGE = 8.0d;
+
   private VisibilityHandler() {}
 
-  public static boolean handleIsInvisible(EasyNPC<?> easyNPC, boolean isInvisible) {
+  public static boolean handleIsInvisible(final EasyNPC<?> easyNPC, final boolean isInvisible) {
 
     // NPC with glow effect should always be visible
     if (easyNPC.getLivingEntity().hasEffect(MobEffects.GLOWING)) {
@@ -57,7 +59,7 @@ public class VisibilityHandler {
   }
 
   public static boolean handleIsInvisibleToPlayer(
-      EasyNPC<?> easyNPC, Player player, boolean isInvisibleToPlayers) {
+      final EasyNPC<?> easyNPC, final Player player, final boolean isInvisibleToPlayers) {
 
     // NPC with glow effect should always be visible - this overrides ALL other settings
     if (easyNPC.getLivingEntity().hasEffect(MobEffects.GLOWING)) {
@@ -73,7 +75,7 @@ public class VisibilityHandler {
     // Check if NPC is visible at all (master switch)
     if (displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE)
         && !displayAttributeData.getDisplayBooleanAttribute(DisplayAttributeType.VISIBLE)) {
-      return true; // NPC is completely invisible
+      return true;
     }
 
     // Check special permissions that override other settings
@@ -104,7 +106,7 @@ public class VisibilityHandler {
         && npcTeam.equals(playerTeam)
         && visibleToTeamEnabled
         && npcTeam.canSeeFriendlyInvisibles()) {
-      return false; // NPC is visible to team members
+      return false;
     }
 
     // Check game mode visibility settings
@@ -135,14 +137,13 @@ public class VisibilityHandler {
 
     // If game mode visibility is set and NPC should be visible in this game mode
     if (gameModeVisibilitySet && visibleInCurrentGameMode) {
-      return false; // NPC is visible in this game mode
+      return false;
     }
 
     // Check time-based visibility settings
     long dayTime = player.level().getDayTime() % 24000;
     boolean isDayTime = (dayTime >= 1000 && dayTime <= 13000);
     boolean isNightTime = !isDayTime;
-
     boolean visibleAtDaySet =
         displayAttributeData.hasDisplayAttribute(DisplayAttributeType.VISIBLE_AT_DAY);
     boolean visibleAtNightSet =
@@ -157,99 +158,93 @@ public class VisibilityHandler {
                   DisplayAttributeType.VISIBLE_AT_NIGHT);
 
       if (visibleAtCurrentTime) {
-        return false; // NPC is visible at current time
+        return false;
       }
 
       // If game mode visibility isn't set, use time visibility
       if (!gameModeVisibilitySet) {
-        return true; // NPC is invisible at current time
+        return true;
       }
     }
 
     // If game mode visibility is set but not enabled for current game mode
     if (gameModeVisibilitySet && !visibleInCurrentGameMode) {
-      return true; // NPC is invisible in current game mode
+      return true;
     }
 
     // If we reach here and time visibility is set for the opposite time
     if ((isDayTime && !visibleAtDaySet && visibleAtNightSet)
         || (isNightTime && !visibleAtNightSet && visibleAtDaySet)) {
-      return true; // NPC is invisible at current time
+      return true;
     }
 
     return false;
   }
 
-  public static boolean handleIsCustomNameVisible(EasyNPC<?> easyNPC, boolean isCustomNameVisible) {
-    if (!easyNPC.getEntity().hasCustomName()) {
-      return false;
-    }
-
-    DisplayAttributeDataCapable<?> displayAttributeData = easyNPC.getEasyNPCDisplayAttributeData();
-    if (displayAttributeData == null) {
-      return isCustomNameVisible;
-    }
-
-    if (displayAttributeData.hasDisplayAttribute(DisplayAttributeType.NAME_VISIBILITY)) {
-      String nameVisibilityString =
-          displayAttributeData.getDisplayStringAttribute(DisplayAttributeType.NAME_VISIBILITY);
-      try {
-        NameVisibilityType nameVisibilityType = NameVisibilityType.valueOf(nameVisibilityString);
-        switch (nameVisibilityType) {
-          case NEVER:
-            return false;
-          case ALWAYS:
-            return true;
-          case NEAR:
-            return isCustomNameVisible;
-          default:
-            return isCustomNameVisible;
-        }
-      } catch (IllegalArgumentException e) {
-        log.warn("[{}] Invalid name visibility type: {}", easyNPC, nameVisibilityString);
-        return isCustomNameVisible;
-      }
-    }
-
-    return isCustomNameVisible;
+  public static boolean handleIsCustomNameVisible(
+      final EasyNPC<?> easyNPC, final boolean isCustomNameVisible) {
+    return evaluateNameVisibility(easyNPC, null, isCustomNameVisible);
   }
 
   public static boolean handleIsCustomNameVisibleToPlayer(
-      EasyNPC<?> easyNPC,
-      net.minecraft.world.entity.player.Player player,
-      boolean isCustomNameVisible) {
-    if (!easyNPC.getEntity().hasCustomName()) {
-      return false;
-    }
+      final EasyNPC<?> easyNPC, final Player player, final boolean isCustomNameVisible) {
+    return evaluateNameVisibility(easyNPC, player, isCustomNameVisible);
+  }
+
+  private static boolean evaluateNameVisibility(
+      final EasyNPC<?> easyNPC, final Player player, final boolean fallbackVisibility) {
 
     DisplayAttributeDataCapable<?> displayAttributeData = easyNPC.getEasyNPCDisplayAttributeData();
     if (displayAttributeData == null) {
-      return isCustomNameVisible;
+      return hasCustomNameFallback(easyNPC, fallbackVisibility);
     }
 
-    if (displayAttributeData.hasDisplayAttribute(DisplayAttributeType.NAME_VISIBILITY)) {
-      String nameVisibilityString =
-          displayAttributeData.getDisplayStringAttribute(DisplayAttributeType.NAME_VISIBILITY);
-      try {
-        NameVisibilityType nameVisibilityType = NameVisibilityType.valueOf(nameVisibilityString);
-        switch (nameVisibilityType) {
-          case NEVER:
-            return false;
-          case ALWAYS:
-            return true;
-          case NEAR:
-            double distanceSquared = easyNPC.getEntity().distanceToSqr(player);
-            double nameVisibilityRange = 8.0d;
-            return distanceSquared <= nameVisibilityRange * nameVisibilityRange;
-          default:
-            return isCustomNameVisible;
+    if (!displayAttributeData.hasDisplayAttribute(DisplayAttributeType.NAME_VISIBILITY)) {
+      return hasCustomNameFallback(easyNPC, fallbackVisibility);
+    }
+
+    String nameVisibilityString =
+        displayAttributeData.getDisplayStringAttribute(DisplayAttributeType.NAME_VISIBILITY);
+
+    try {
+      NameVisibilityType nameVisibilityType = NameVisibilityType.valueOf(nameVisibilityString);
+      return evaluateNameVisibilityType(easyNPC, player, nameVisibilityType, fallbackVisibility);
+    } catch (IllegalArgumentException e) {
+      log.warn("[{}] Invalid name visibility type: {}", easyNPC, nameVisibilityString);
+      return hasCustomNameFallback(easyNPC, fallbackVisibility);
+    }
+  }
+
+  private static boolean evaluateNameVisibilityType(
+      final EasyNPC<?> easyNPC,
+      final Player player,
+      final NameVisibilityType nameVisibilityType,
+      final boolean fallbackVisibility) {
+
+    switch (nameVisibilityType) {
+      case NEVER:
+        return false;
+      case ALWAYS:
+        return true;
+      case NEAR:
+        if (!easyNPC.getEntity().hasCustomName()) {
+          return false;
         }
-      } catch (IllegalArgumentException e) {
-        log.warn("[{}] Invalid name visibility type: {}", easyNPC, nameVisibilityString);
-        return isCustomNameVisible;
-      }
-    }
 
-    return isCustomNameVisible;
+        if (player != null) {
+          double distanceSquared = easyNPC.getEntity().distanceToSqr(player);
+          return distanceSquared <= DEFAULT_NAME_VISIBILITY_RANGE * DEFAULT_NAME_VISIBILITY_RANGE;
+        } else {
+          return fallbackVisibility;
+        }
+
+      default:
+        return hasCustomNameFallback(easyNPC, fallbackVisibility);
+    }
+  }
+
+  private static boolean hasCustomNameFallback(
+      final EasyNPC<?> easyNPC, final boolean fallbackVisibility) {
+    return easyNPC.getEntity().hasCustomName() && fallbackVisibility;
   }
 }
