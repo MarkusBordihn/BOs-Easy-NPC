@@ -33,11 +33,12 @@ import net.minecraft.world.entity.Entity;
 public enum ModCustomEntityRenderer {
   DOPPLER(ModCustomEntityType.DOPPLER, () -> DopplerRenderer::new),
   FAIRY(
-      ModCustomEntityType.FAIRY, () -> context -> new FairyRenderer(context, ModModelLayers.FAIRY)),
-  ORC(ModCustomEntityType.ORC, () -> context -> new OrcRenderer(context, ModModelLayers.ORC)),
+      ModCustomEntityType.FAIRY,
+      () -> context -> new FairyRenderer<>(context, ModModelLayers.FAIRY)),
+  ORC(ModCustomEntityType.ORC, () -> context -> new OrcRenderer<>(context, ModModelLayers.ORC)),
   ORC_WARRIOR(
       ModCustomEntityType.ORC_WARRIOR,
-      () -> context -> new OrcRenderer(context, ModModelLayers.ORC));
+      () -> context -> new OrcRenderer<>(context, ModModelLayers.ORC));
 
   private final ModCustomEntityType entityType;
   private final Supplier<Function<Context, EntityRenderer<? extends Entity>>> renderer;
