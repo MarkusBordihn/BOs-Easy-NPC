@@ -113,6 +113,10 @@ dependencies {
 
   // Test dependencies
   runtimeOnly fg.deobf("curse.maven:armourers-workshop-229523:6701559")
+  runtimeOnly fg.deobf("curse.maven:geckolib-388172:6920925")
+
+  // Bug Testing
+  runtimeOnly fg.deobf("curse.maven:naturalist-627986:6863943")
 }
 
 tasks.withType(JavaCompile).configureEach {

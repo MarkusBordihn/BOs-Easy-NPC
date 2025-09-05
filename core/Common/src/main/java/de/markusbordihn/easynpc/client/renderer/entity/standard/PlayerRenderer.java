@@ -90,7 +90,7 @@ public class PlayerRenderer<T extends PathfinderMob> extends LivingEntityRendere
   public PlayerRenderer(EntityRendererProvider.Context context, boolean slim) {
     super(
         context,
-        new PlayerModel(
+        new PlayerModel<>(
             context.bakeLayer(slim ? ModelLayers.PLAYER_SLIM : ModelLayers.PLAYER), slim),
         0.5F);
     this.addLayer(
@@ -127,8 +127,6 @@ public class PlayerRenderer<T extends PathfinderMob> extends LivingEntityRendere
   }
 
   public ResourceLocation getTextureByVariant(Enum variantType) {
-    return TEXTURE_BY_VARIANT_TYPE != null
-        ? TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE)
-        : Constants.BLANK_ENTITY_TEXTURE;
+    return TEXTURE_BY_VARIANT_TYPE.getOrDefault(variantType, DEFAULT_TEXTURE);
   }
 }
