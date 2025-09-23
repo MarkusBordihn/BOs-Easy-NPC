@@ -89,4 +89,18 @@ public class EasyNPCHumanoidModelMixin<T extends LivingEntity> {
       callbackInfo.cancel();
     }
   }
+
+  @Inject(method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V", at = @At("TAIL"))
+  private void setupArmPoses(
+      T livingEntity,
+      float limbSwing,
+      float limbSwingAmount,
+      float ageInTicks,
+      float netHeadYaw,
+      float headPitch,
+      CallbackInfo callbackInfo) {
+    if (livingEntity instanceof EasyNPC<?> easyNPC) {
+      EasyNPCModel.setupArmPoses(easyNPC, this.easyNPC$modelManager);
+    }
+  }
 }

@@ -1,0 +1,68 @@
+name: "🛠️ Developer issue report"
+description: "For contributors to file technical issues with minimal required fields."
+labels: [ bug ]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: "Summary"
+      description: "Short description and scope."
+      placeholder: "Concise summary of the issue."
+    validations:
+      required: true
+  - type: textarea
+    id: expected_actual
+    attributes:
+      label: "Expected vs actual"
+      placeholder: |
+        Expected: ...
+        Actual: ...
+    validations:
+      required: true
+  - type: input
+    id: mod_url
+    attributes:
+      label: "Mod URL (required) 🔗"
+      description: "Link to the mod page or repository (e.g., Modrinth/CurseForge/GitHub)."
+      placeholder: "https://modrinth.com/mod/... or https://www.curseforge.com/minecraft/mc-mods/... or https://github.com/..."
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: "Reproduction steps (optional) ▶️"
+      description: "Provide a deterministic sequence if possible. Include commands/args if relevant."
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: false
+  - type: input
+    id: logs
+    attributes:
+      label: "Logs or gist link (optional) 📎"
+      placeholder: "https://mclo.gs/... or https://gist.github.com/..."
+    validations:
+      required: false
+  - type: textarea
+    id: env
+    attributes:
+      label: "Environment (optional) 🧪"
+      placeholder: "Minecraft, mod version, loader, OS, Java, minimal mods."
+    validations:
+      required: false
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: "Screenshots / attachments (optional) 🖼️"
+      description: "Drag and drop images here or paste image links."
+    validations:
+      required: false
+  - type: textarea
+    id: extras
+    attributes:
+      label: "Additional comments (optional) 📝"
+      description: "Any links, references, or small notes."
+    validations:
+      required: false

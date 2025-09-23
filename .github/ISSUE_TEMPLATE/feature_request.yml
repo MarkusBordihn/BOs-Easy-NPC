@@ -1,0 +1,45 @@
+name: "💡 Feature request"
+description: "Suggest an idea or improvement. We appreciate feature ideas!"
+labels: [ enhancement ]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for your idea! 💚 We like feature requests and value your input.
+        Keep it short and sweet so others can easily understand and support it.
+  - type: textarea
+    id: solution
+    attributes:
+      label: "What would you like to see? 💡"
+      description: "Describe the desired behavior or UX."
+      placeholder: "The feature should..."
+    validations:
+      required: true
+  - type: textarea
+    id: usecases
+    attributes:
+      label: "Use-cases and impact 📈"
+      description: "Who benefits and how? Why does it matter?"
+      placeholder: "Players/servers benefit when..."
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: "Screenshots / mockups (optional) 🖼️"
+      description: "Drag and drop images here or paste image links."
+    validations:
+      required: false
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "Alternatives (optional) 🔄"
+    validations:
+      required: false
+  - type: textarea
+    id: extras
+    attributes:
+      label: "Additional comments (optional) 📎"
+      description: "Any links, references, or small notes."
+    validations:
+      required: false
