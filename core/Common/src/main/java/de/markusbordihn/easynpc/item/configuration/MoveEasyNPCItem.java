@@ -23,8 +23,8 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -38,6 +38,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -69,11 +70,17 @@ public class MoveEasyNPCItem extends Item {
   }
 
   @Override
-  public boolean canAttackBlock(
-      BlockState blockState, Level level, BlockPos blockPos, Player player) {
-    if (!player.level().isClientSide && targetedLivingEntityMap.containsKey(player)) {
+  public boolean canDestroyBlock(
+      ItemStack itemStack,
+      BlockState blockState,
+      Level level,
+      BlockPos blockPos,
+      LivingEntity livingEntity) {
+    if (!level.isClientSide
+        && livingEntity instanceof Player player
+        && targetedLivingEntityMap.containsKey(player)) {
       LivingEntity targetedLivingEntity = targetedLivingEntityMap.get(player);
-      targetedLivingEntity.moveTo(
+      targetedLivingEntity.snapTo(
           blockPos.getX() + 0.5, blockPos.above().getY(), blockPos.getZ() + 0.5);
     }
     return false;
@@ -83,8 +90,9 @@ public class MoveEasyNPCItem extends Item {
   public void appendHoverText(
       ItemStack itemStack,
       TooltipContext tooltipContext,
-      List<Component> tooltipList,
-      TooltipFlag tooltipFlag) {
-    tooltipList.add(TextComponent.getTranslatedTextRaw(Constants.TEXT_ITEM_PREFIX + ID));
+      TooltipDisplay tooltipDisplay,
+      Consumer<Component> consumer,
+      TooltipFlag flag) {
+    consumer.accept(TextComponent.getTranslatedTextRaw(Constants.TEXT_ITEM_PREFIX + ID));
   }
 }

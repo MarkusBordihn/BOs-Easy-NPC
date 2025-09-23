@@ -58,21 +58,23 @@ public record ActionDataEntry(
 
   public ActionDataEntry(CompoundTag compoundTag) {
     this(
-        ActionDataType.get(compoundTag.getString(DATA_TYPE_TAG)),
+        ActionDataType.get(compoundTag.getString(DATA_TYPE_TAG).orElse("")),
         compoundTag.contains(ConditionDataSet.CONDITION_DATA_SET_TAG)
-            ? new ConditionDataSet(compoundTag.getCompound(ConditionDataSet.CONDITION_DATA_SET_TAG))
+            ? new ConditionDataSet(
+                compoundTag.getCompoundOrEmpty(ConditionDataSet.CONDITION_DATA_SET_TAG))
             : new ConditionDataSet(),
         compoundTag.contains(DATA_COMMAND_TAG)
-            ? compoundTag.getString(DATA_COMMAND_TAG)
+            ? compoundTag.getString(DATA_COMMAND_TAG).orElse("")
             : DEFAULT_COMMAND,
         compoundTag.contains(DATA_BLOCK_POS_TAG)
-            ? CompoundTagUtils.readBlockPos(compoundTag.getCompound(DATA_BLOCK_POS_TAG))
+            ? CompoundTagUtils.readBlockPos(compoundTag.getCompoundOrEmpty(DATA_BLOCK_POS_TAG))
             : BlockPos.ZERO,
         compoundTag.contains(DATA_EXECUTE_AS_USER_TAG)
-            && compoundTag.getBoolean(DATA_EXECUTE_AS_USER_TAG),
-        compoundTag.contains(DATA_DEBUG_TAG) && compoundTag.getBoolean(DATA_DEBUG_TAG),
+            && compoundTag.getBoolean(DATA_EXECUTE_AS_USER_TAG).orElse(false),
+        compoundTag.contains(DATA_DEBUG_TAG)
+            && compoundTag.getBoolean(DATA_DEBUG_TAG).orElse(false),
         compoundTag.contains(DATA_PERMISSION_LEVEL_TAG)
-            ? checkPermissionLevel(compoundTag.getInt(DATA_PERMISSION_LEVEL_TAG))
+            ? checkPermissionLevel(compoundTag.getInt(DATA_PERMISSION_LEVEL_TAG).orElse(0))
             : DEFAULT_PERMISSION_LEVEL);
   }
 

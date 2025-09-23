@@ -148,11 +148,11 @@ public interface ModelDataCapable<T extends PathfinderMob>
     }
 
     // Read model data
-    CompoundTag modelDataTag = compoundTag.getCompound(EASY_NPC_DATA_MODEL_DATA_TAG);
+    CompoundTag modelDataTag = compoundTag.getCompoundOrEmpty(EASY_NPC_DATA_MODEL_DATA_TAG);
 
     // Model Pose
     if (modelDataTag.contains(EASY_NPC_DATA_MODEL_POSE_TAG)) {
-      String modelPose = modelDataTag.getString(EASY_NPC_DATA_MODEL_POSE_TAG);
+      String modelPose = modelDataTag.getString(EASY_NPC_DATA_MODEL_POSE_TAG).orElse("");
       if (!modelPose.isEmpty()) {
         this.setModelPose(ModelPose.get(modelPose));
       }
@@ -161,7 +161,7 @@ public interface ModelDataCapable<T extends PathfinderMob>
     // Default Pose
     if (this.getModelPose() == ModelPose.DEFAULT
         && modelDataTag.contains(EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG)) {
-      String defaultPose = modelDataTag.getString(EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG);
+      String defaultPose = modelDataTag.getString(EASY_NPC_DATA_MODEL_DEFAULT_POSE_TAG).orElse("");
       if (!defaultPose.isEmpty()) {
         this.setDefaultPose(Pose.valueOf(defaultPose));
       }

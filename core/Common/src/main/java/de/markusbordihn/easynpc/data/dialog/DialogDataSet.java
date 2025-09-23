@@ -262,22 +262,22 @@ public class DialogDataSet {
 
     // Load dialog type
     if (compoundTag.contains(DATA_TYPE_TAG)) {
-      this.dialogType = DialogType.valueOf(compoundTag.getString(DATA_TYPE_TAG));
+      this.dialogType = DialogType.valueOf(compoundTag.getString(DATA_TYPE_TAG).orElse(""));
     }
 
     // Load dialog data
     this.dialogByLabelMap.clear();
     this.dialogByIdMap.clear();
-    ListTag dialogListTag = compoundTag.getList(DATA_DIALOG_DATA_SET_TAG, 10);
+    ListTag dialogListTag = compoundTag.getListOrEmpty(DATA_DIALOG_DATA_SET_TAG);
     for (int i = 0; i < dialogListTag.size(); ++i) {
-      CompoundTag dialogCompoundTag = dialogListTag.getCompound(i);
+      CompoundTag dialogCompoundTag = dialogListTag.getCompoundOrEmpty(i);
       DialogDataEntry dialogData = new DialogDataEntry(dialogCompoundTag);
       this.addDialog(dialogData);
     }
 
     // Load default dialog index
     if (compoundTag.contains(DATA_DIALOG_DEFAULT_TAG)) {
-      String defaultDialogLabelData = compoundTag.getString(DATA_DIALOG_DEFAULT_TAG);
+      String defaultDialogLabelData = compoundTag.getString(DATA_DIALOG_DEFAULT_TAG).orElse("");
       if (!defaultDialogLabelData.isEmpty()
           && this.dialogByLabelMap.containsKey(defaultDialogLabelData)) {
         this.defaultDialogLabel = defaultDialogLabelData;

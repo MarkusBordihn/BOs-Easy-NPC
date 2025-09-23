@@ -36,7 +36,7 @@ public interface ConfigDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
     // Read Easy NPC Data Version to check for compatibility issues.
     if (compoundTag.contains(DATA_EASY_NPC_DATA_VERSION_TAG)) {
-      int npcDataVersion = compoundTag.getInt(DATA_EASY_NPC_DATA_VERSION_TAG);
+      int npcDataVersion = compoundTag.getInt(DATA_EASY_NPC_DATA_VERSION_TAG).orElse(0);
       if (npcDataVersion > Constants.NPC_DATA_VERSION) {
         log.warn(
             "Incompatible Easy NPC Data with version {} > {} for {}!",

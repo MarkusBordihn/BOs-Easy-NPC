@@ -76,12 +76,13 @@ public class RenderDataSet {
   public void load(CompoundTag compoundTag) {
     this.renderType =
         compoundTag.contains(DATA_RENDER_TYPE_TAG)
-            ? RenderType.get(compoundTag.getString(DATA_RENDER_TYPE_TAG))
+            ? RenderType.get(compoundTag.getString(DATA_RENDER_TYPE_TAG).orElse(""))
             : RenderType.DEFAULT;
 
     this.renderEntityType =
         compoundTag.contains(DATA_RENDER_ENTITY_TYPE_TAG)
-            ? EntityType.byString(compoundTag.getString(DATA_RENDER_ENTITY_TYPE_TAG)).orElse(null)
+            ? EntityType.byString(compoundTag.getString(DATA_RENDER_ENTITY_TYPE_TAG).orElse(""))
+                .orElse(null)
             : null;
   }
 

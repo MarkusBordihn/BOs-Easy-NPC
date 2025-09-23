@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.item.ModSpawnEggItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
@@ -41,7 +42,7 @@ public class ModSpawnEggItemTestHelper {
     if (item instanceof ModSpawnEggItem modSpawnEggItem) {
       useSpawnEggItem(helper, modSpawnEggItem, entityType);
     } else {
-      helper.fail("Item " + item + " is not a ModSpawnEggItem!");
+      helper.fail(Component.literal("Item " + item + " is not a ModSpawnEggItem!"));
     }
   }
 

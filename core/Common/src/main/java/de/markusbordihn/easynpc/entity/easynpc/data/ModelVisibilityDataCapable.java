@@ -46,10 +46,10 @@ public interface ModelVisibilityDataCapable<T extends PathfinderMob> extends Eas
                 RegistryFriendlyByteBuf registryFriendlyByteBuf) {
               CompoundTag compoundTag = registryFriendlyByteBuf.readNbt();
               Map<ModelPartType, Boolean> modelPartMap = new EnumMap<>(ModelPartType.class);
-              for (String key : compoundTag.getAllKeys()) {
+              for (String key : compoundTag.keySet()) {
                 ModelPartType modelPartType = ModelPartType.get(key);
                 if (modelPartType != null) {
-                  modelPartMap.put(modelPartType, compoundTag.getBoolean(key));
+                  modelPartMap.put(modelPartType, compoundTag.getBoolean(key).orElse(false));
                 }
               }
               return modelPartMap;
@@ -167,12 +167,12 @@ public interface ModelVisibilityDataCapable<T extends PathfinderMob> extends Eas
     if (!compoundTag.contains(EASY_NPC_DATA_MODEL_VISIBLE_TAG)) {
       return;
     }
-    CompoundTag visibilityTag = compoundTag.getCompound(EASY_NPC_DATA_MODEL_VISIBLE_TAG);
+    CompoundTag visibilityTag = compoundTag.getCompoundOrEmpty(EASY_NPC_DATA_MODEL_VISIBLE_TAG);
     EnumMap<ModelPartType, Boolean> modelPartMap = new EnumMap<>(ModelPartType.class);
-    for (String key : visibilityTag.getAllKeys()) {
+    for (String key : visibilityTag.keySet()) {
       ModelPartType modelPartType = ModelPartType.get(key);
       if (modelPartType != null) {
-        modelPartMap.put(modelPartType, visibilityTag.getBoolean(key));
+        modelPartMap.put(modelPartType, visibilityTag.getBoolean(key).orElse(false));
       }
     }
     setModelPartVisibility(modelPartMap);

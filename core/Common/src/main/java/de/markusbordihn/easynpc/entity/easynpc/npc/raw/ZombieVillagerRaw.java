@@ -39,14 +39,13 @@ import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.EnumMap;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.DifficultyInstance;
@@ -64,7 +63,6 @@ import net.minecraft.world.entity.npc.VillagerData;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
@@ -480,18 +478,6 @@ public class ZombieVillagerRaw extends ZombieVillager implements EasyNPCBase<Zom
   }
 
   @Override
-  public boolean isSaddleable() {
-    return false;
-  }
-
-  @Override
-  public void equipSaddle(ItemStack itemStack, SoundSource soundSource) {
-    if (soundSource != null) {
-      this.level().playSound(null, this, SoundEvents.PIG_SADDLE, soundSource, 0.5F, 1.0F);
-    }
-  }
-
-  @Override
   public boolean isSaddled() {
     return false;
   }
@@ -567,15 +553,15 @@ public class ZombieVillagerRaw extends ZombieVillager implements EasyNPCBase<Zom
     VillagerData villagerData = this.getVillagerData();
 
     // Update profession if available
-    VillagerProfession profession = getVillagerProfession(variant);
+    Holder<VillagerProfession> profession = getVillagerProfession(variant);
     if (profession != null) {
-      villagerData = villagerData.setProfession(profession);
+      villagerData = villagerData.withProfession(profession);
     }
 
     // Update type if available
-    VillagerType type = getVillagerType(variant);
+    Holder<VillagerType> type = getVillagerType(variant);
     if (type != null) {
-      villagerData = villagerData.setType(type);
+      villagerData = villagerData.withType(type);
     }
 
     this.setVillagerData(villagerData);

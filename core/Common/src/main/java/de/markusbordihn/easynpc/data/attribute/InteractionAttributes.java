@@ -36,9 +36,9 @@ public record InteractionAttributes(boolean isPushable, boolean canBeLeashed, bo
 
   public static InteractionAttributes decode(CompoundTag compoundTag) {
     return new InteractionAttributes(
-        compoundTag.getBoolean(IS_PUSHABLE_TAG),
-        compoundTag.getBoolean(CAN_BE_LEASHED_TAG),
-        compoundTag.getBoolean(PUSH_ENTITIES_TAG));
+        compoundTag.getBoolean(IS_PUSHABLE_TAG).orElse(false),
+        compoundTag.getBoolean(CAN_BE_LEASHED_TAG).orElse(false),
+        compoundTag.getBoolean(PUSH_ENTITIES_TAG).orElse(false));
   }
 
   public InteractionAttributes withIsPushable(boolean isPushable) {

@@ -4,6 +4,170 @@
     {
       "id": "cgm:pistol",
       "required": false
+    },
+    {
+      "id": "additionalguns:9a91",
+      "required": false
+    },
+    {
+      "id": "additionalguns:ace_of_spades",
+      "required": false
+    },
+    {
+      "id": "additionalguns:ak104",
+      "required": false
+    },
+    {
+      "id": "additionalguns:ak105",
+      "required": false
+    },
+    {
+      "id": "additionalguns:ak12",
+      "required": false
+    },
+    {
+      "id": "additionalguns:ak15",
+      "required": false
+    },
+    {
+      "id": "additionalguns:ak74m",
+      "required": false
+    },
+    {
+      "id": "additionalguns:akm",
+      "required": false
+    },
+    {
+      "id": "additionalguns:akm_custom",
+      "required": false
+    },
+    {
+      "id": "additionalguns:aks74u",
+      "required": false
+    },
+    {
+      "id": "additionalguns:awm",
+      "required": false
+    },
+    {
+      "id": "additionalguns:banshee",
+      "required": false
+    },
+    {
+      "id": "additionalguns:fn2000",
+      "required": false
+    },
+    {
+      "id": "additionalguns:g11",
+      "required": false
+    },
+    {
+      "id": "additionalguns:m1014",
+      "required": false
+    },
+    {
+      "id": "additionalguns:m16a2",
+      "required": false
+    },
+    {
+      "id": "additionalguns:m1911",
+      "required": false
+    },
+    {
+      "id": "additionalguns:m4a1s",
+      "required": false
+    },
+    {
+      "id": "additionalguns:m4a4",
+      "required": false
+    },
+    {
+      "id": "additionalguns:mac10",
+      "required": false
+    },
+    {
+      "id": "additionalguns:magnum",
+      "required": false
+    },
+    {
+      "id": "additionalguns:mammoth",
+      "required": false
+    },
+    {
+      "id": "additionalguns:mat_49",
+      "required": false
+    },
+    {
+      "id": "additionalguns:mp7a2",
+      "required": false
+    },
+    {
+      "id": "additionalguns:ots_03",
+      "required": false
+    },
+    {
+      "id": "additionalguns:p250",
+      "required": false
+    },
+    {
+      "id": "additionalguns:pp_19",
+      "required": false
+    },
+    {
+      "id": "additionalguns:ravens_claw",
+      "required": false
+    },
+    {
+      "id": "additionalguns:schwarzlose",
+      "required": false
+    },
+    {
+      "id": "additionalguns:ssg08",
+      "required": false
+    },
+    {
+      "id": "additionalguns:usp",
+      "required": false
+    },
+    {
+      "id": "additionalguns:val",
+      "required": false
+    },
+    {
+      "id": "additionalguns:vector",
+      "required": false
+    },
+    {
+      "id": "additionalguns:vintorez",
+      "required": false
+    },
+    {
+      "id": "cgm:bazooka",
+      "required": false
+    },
+    {
+      "id": "cgm:grenade_launcher",
+      "required": false
+    },
+    {
+      "id": "immersiveengineering:railgun",
+      "required": false
+    },
+    {
+      "id": "moguns:m14",
+      "required": false
+    },
+    {
+      "id": "moguns:mp5",
+      "required": false
+    },
+    {
+      "id": "oldguns:flintlock_nock_gun",
+      "required": false
+    },
+    {
+      "id": "pneumaticcraft:minigun",
+      "required": false
     }
   ]
 }

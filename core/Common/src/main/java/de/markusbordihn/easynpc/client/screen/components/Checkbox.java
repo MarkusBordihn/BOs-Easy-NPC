@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.components.TextComponent;
@@ -120,12 +119,7 @@ public class Checkbox extends AbstractButton {
   }
 
   public void renderButton(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
-    RenderSystem.enableDepthTest();
     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
-    RenderSystem.enableBlend();
-    RenderSystem.defaultBlendFunc();
-    RenderSystem.blendFunc(
-        GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
     guiGraphics.blit(
         RenderType::guiTextured,

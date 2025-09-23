@@ -28,7 +28,7 @@ public record ConditionDataEntry(ConditionType conditionType) {
   public static final String DATA_TYPE_TAG = "Type";
 
   public ConditionDataEntry(CompoundTag compoundTag) {
-    this(ConditionType.get(compoundTag.getString(DATA_TYPE_TAG)));
+    this(ConditionType.get(compoundTag.getString(DATA_TYPE_TAG).orElse("")));
   }
 
   public CompoundTag create(CompoundTag compoundTag) {

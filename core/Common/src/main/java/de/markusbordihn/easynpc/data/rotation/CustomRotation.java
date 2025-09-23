@@ -55,12 +55,15 @@ public record CustomRotation(float x, float y, float z, boolean locked) {
   }
 
   public CustomRotation(ModelPartType modelPartType, CompoundTag compoundTag) {
-    this(compoundTag.getList(modelPartType.getTagName(), 5));
+    this(compoundTag.getListOrEmpty(modelPartType.getTagName()));
   }
 
   public CustomRotation(ListTag listTag) {
     this(
-        listTag.getFloat(0), listTag.getFloat(1), listTag.getFloat(2), listTag.getFloat(3) == 1.0F);
+        listTag.getFloat(0).orElse(0.0F),
+        listTag.getFloat(1).orElse(0.0F),
+        listTag.getFloat(2).orElse(0.0F),
+        listTag.getFloat(3).orElse(0.0F) == 1.0F);
   }
 
   public CustomRotation(List<Float> list) {

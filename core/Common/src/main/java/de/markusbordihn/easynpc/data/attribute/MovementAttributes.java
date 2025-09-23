@@ -37,10 +37,10 @@ public record MovementAttributes(
 
   public static MovementAttributes decode(CompoundTag compoundTag) {
     return new MovementAttributes(
-        compoundTag.getBoolean(CAN_OPEN_DOOR_TAG),
-        compoundTag.getBoolean(CAN_CLOSE_DOOR_TAG),
-        compoundTag.getBoolean(CAN_PASS_DOOR_TAG),
-        compoundTag.getBoolean(CAN_USE_NETHER_PORTAL_TAG));
+        compoundTag.getBoolean(CAN_OPEN_DOOR_TAG).orElse(false),
+        compoundTag.getBoolean(CAN_CLOSE_DOOR_TAG).orElse(false),
+        compoundTag.getBoolean(CAN_PASS_DOOR_TAG).orElse(false),
+        compoundTag.getBoolean(CAN_USE_NETHER_PORTAL_TAG).orElse(false));
   }
 
   public MovementAttributes withCanOpenDoor(boolean canOpenDoor) {

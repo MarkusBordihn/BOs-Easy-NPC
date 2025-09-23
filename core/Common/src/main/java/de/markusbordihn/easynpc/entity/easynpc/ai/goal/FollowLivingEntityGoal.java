@@ -161,7 +161,7 @@ public class FollowLivingEntityGoal extends Goal {
     } else if (!this.canTeleportTo(new BlockPos(posX, posY, posZ))) {
       return false;
     } else {
-      this.pathfinderMob.moveTo(
+      this.pathfinderMob.snapTo(
           posX + 0.5D,
           posY,
           posZ + 0.5D,

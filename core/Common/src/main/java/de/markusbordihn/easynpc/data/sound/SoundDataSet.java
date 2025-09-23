@@ -97,9 +97,9 @@ public class SoundDataSet {
 
     // Load sound data entries
     overrideSounds.clear();
-    ListTag soundListTag = compoundTag.getList(DATA_SOUND_DATA_SET_TAG, 10);
+    ListTag soundListTag = compoundTag.getListOrEmpty(DATA_SOUND_DATA_SET_TAG);
     for (int i = 0; i < soundListTag.size(); i++) {
-      CompoundTag soundDataTag = soundListTag.getCompound(i);
+      CompoundTag soundDataTag = soundListTag.getCompoundOrEmpty(i);
       SoundDataEntry soundDataEntry = new SoundDataEntry(soundDataTag);
       SoundType type = soundDataEntry.getType();
       SoundEvent event = soundDataEntry.getSoundEvent();

@@ -87,7 +87,7 @@ public class SoundDataEntry {
   }
 
   public void load(CompoundTag compoundTag) {
-    this.type = SoundType.valueOf(compoundTag.getString(DATA_SOUND_TYPE));
+    this.type = SoundType.valueOf(compoundTag.getString(DATA_SOUND_TYPE).orElse(""));
     if (compoundTag.contains(DATA_SOUND_NAME_TAG)) {
       ResourceLocation location =
           CompoundTagUtils.readResourceLocation(compoundTag, DATA_SOUND_NAME_TAG);
@@ -100,13 +100,13 @@ public class SoundDataEntry {
       this.soundEvent = SoundEvents.GENERIC_SPLASH;
     }
     if (compoundTag.contains(DATA_SOUND_VOLUME_TAG)) {
-      this.volume = compoundTag.getFloat(DATA_SOUND_VOLUME_TAG);
+      this.volume = compoundTag.getFloat(DATA_SOUND_VOLUME_TAG).orElse(DEFAULT_VOLUME);
     }
     if (compoundTag.contains(DATA_SOUND_PITCH_TAG)) {
-      this.pitch = compoundTag.getFloat(DATA_SOUND_PITCH_TAG);
+      this.pitch = compoundTag.getFloat(DATA_SOUND_PITCH_TAG).orElse(DEFAULT_PITCH);
     }
     if (compoundTag.contains(DATA_SOUND_ENABLED_TAG)) {
-      this.enabled = compoundTag.getBoolean(DATA_SOUND_ENABLED_TAG);
+      this.enabled = compoundTag.getBoolean(DATA_SOUND_ENABLED_TAG).orElse(DEFAULT_ENABLED);
     }
   }
 

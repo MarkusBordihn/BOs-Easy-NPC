@@ -42,10 +42,10 @@ public record CombatAttributes(
 
   public static CombatAttributes decode(CompoundTag compoundTag) {
     return new CombatAttributes(
-        compoundTag.getBoolean(IS_ATTACKABLE_BY_PLAYERS_TAG),
-        compoundTag.getBoolean(IS_ATTACKABLE_BY_MONSTERS_TAG),
-        compoundTag.getBoolean(IS_INVULNERABLE_TAG),
-        compoundTag.getDouble(HEALTH_REGENERATION_TAG));
+        compoundTag.getBoolean(IS_ATTACKABLE_BY_PLAYERS_TAG).orElse(false),
+        compoundTag.getBoolean(IS_ATTACKABLE_BY_MONSTERS_TAG).orElse(false),
+        compoundTag.getBoolean(IS_INVULNERABLE_TAG).orElse(true),
+        compoundTag.getDouble(HEALTH_REGENERATION_TAG).orElse(0.0));
   }
 
   public CombatAttributes withHealthRegeneration(double healthRegeneration) {

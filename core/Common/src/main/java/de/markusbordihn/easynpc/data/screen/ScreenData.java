@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.data.screen;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
@@ -55,39 +56,41 @@ public record ScreenData(
       log.error("Unable to decode screen data from compound tag: {}", compoundTag);
       return null;
     }
-    CompoundTag screenDataTag = compoundTag.getCompound(SCREEN_DATA_TAG);
-    UUID uuid = screenDataTag.getUUID(SCREEN_DATA_UUID_TAG);
+    CompoundTag screenDataTag = compoundTag.getCompoundOrEmpty(SCREEN_DATA_TAG);
+    UUID uuid = CompoundTagUtils.readUUID(screenDataTag, SCREEN_DATA_UUID_TAG);
     UUID dialogID =
         screenDataTag.contains(SCREEN_DATA_DIALOG_ID_TAG)
-            ? screenDataTag.getUUID(SCREEN_DATA_DIALOG_ID_TAG)
+            ? CompoundTagUtils.readUUID(screenDataTag, SCREEN_DATA_DIALOG_ID_TAG)
             : null;
     UUID dialogButtonId =
         screenDataTag.contains(SCREEN_DATA_DIALOG_BUTTON_ID_TAG)
-            ? screenDataTag.getUUID(SCREEN_DATA_DIALOG_BUTTON_ID_TAG)
+            ? CompoundTagUtils.readUUID(screenDataTag, SCREEN_DATA_DIALOG_BUTTON_ID_TAG)
             : null;
     UUID actionDataEntryId =
         screenDataTag.contains(SCREEN_DATA_ACTION_DATA_ENTRY_ID_TAG)
-            ? screenDataTag.getUUID(SCREEN_DATA_ACTION_DATA_ENTRY_ID_TAG)
+            ? CompoundTagUtils.readUUID(screenDataTag, SCREEN_DATA_ACTION_DATA_ENTRY_ID_TAG)
             : null;
-    int pageIndex = screenDataTag.getInt(SCREEN_DATA_PAGE_INDEX_TAG);
+    int pageIndex = screenDataTag.getInt(SCREEN_DATA_PAGE_INDEX_TAG).orElse(0);
     CompoundTag data =
         screenDataTag.contains(SCREEN_DATA_ADDITIONAL_DATA_TAG)
-            ? screenDataTag.getCompound(SCREEN_DATA_ADDITIONAL_DATA_TAG)
+            ? screenDataTag.getCompoundOrEmpty(SCREEN_DATA_ADDITIONAL_DATA_TAG)
             : new CompoundTag();
     return new ScreenData(uuid, dialogID, dialogButtonId, actionDataEntryId, pageIndex, data);
   }
 
   public CompoundTag encode() {
     CompoundTag screenDataTag = new CompoundTag();
-    screenDataTag.putUUID(SCREEN_DATA_UUID_TAG, this.uuid);
+    CompoundTagUtils.writeUUID(screenDataTag, SCREEN_DATA_UUID_TAG, this.uuid);
     if (this.dialogId != null) {
-      screenDataTag.putUUID(SCREEN_DATA_DIALOG_ID_TAG, this.dialogId);
+      CompoundTagUtils.writeUUID(screenDataTag, SCREEN_DATA_DIALOG_ID_TAG, this.dialogId);
     }
     if (this.dialogButtonId != null) {
-      screenDataTag.putUUID(SCREEN_DATA_DIALOG_BUTTON_ID_TAG, this.dialogButtonId);
+      CompoundTagUtils.writeUUID(
+          screenDataTag, SCREEN_DATA_DIALOG_BUTTON_ID_TAG, this.dialogButtonId);
     }
     if (this.actionDataEntryId != null) {
-      screenDataTag.putUUID(SCREEN_DATA_ACTION_DATA_ENTRY_ID_TAG, this.actionDataEntryId);
+      CompoundTagUtils.writeUUID(
+          screenDataTag, SCREEN_DATA_ACTION_DATA_ENTRY_ID_TAG, this.actionDataEntryId);
     }
     screenDataTag.putInt(SCREEN_DATA_PAGE_INDEX_TAG, this.pageIndex);
     if (this.additionalData != null) {

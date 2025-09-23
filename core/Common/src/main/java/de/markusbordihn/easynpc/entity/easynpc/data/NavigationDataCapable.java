@@ -67,7 +67,7 @@ public interface NavigationDataCapable<T extends PathfinderMob> extends EasyNPC<
 
   default void setPosition(Vec3 pos) {
     this.getLivingEntity().setPos(pos);
-    this.getLivingEntity().moveTo(pos);
+    this.getLivingEntity().snapTo(pos);
   }
 
   default void refreshGroundNavigation() {
@@ -122,9 +122,10 @@ public interface NavigationDataCapable<T extends PathfinderMob> extends EasyNPC<
       return;
     }
 
-    CompoundTag navigationTag = compoundTag.getCompound(DATA_NAVIGATION_TAG);
+    CompoundTag navigationTag = compoundTag.getCompoundOrEmpty(DATA_NAVIGATION_TAG);
     if (navigationTag.contains(DATA_HOME_TAG)) {
-      this.setHomePosition(CompoundTagUtils.readBlockPos(navigationTag.getCompound(DATA_HOME_TAG)));
+      this.setHomePosition(
+          CompoundTagUtils.readBlockPos(navigationTag.getCompoundOrEmpty(DATA_HOME_TAG)));
     }
   }
 

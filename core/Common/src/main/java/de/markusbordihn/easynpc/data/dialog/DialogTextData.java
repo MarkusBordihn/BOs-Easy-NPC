@@ -32,9 +32,9 @@ public record DialogTextData(UUID id, String text, boolean isTranslationKey) {
 
   public DialogTextData(CompoundTag compoundTag) {
     this(
-        UUIDUtils.textToUUID(compoundTag.getString(DATA_TEXT_TAG)),
-        compoundTag.getString(DATA_TEXT_TAG),
-        TextUtils.isTranslationKey(compoundTag.getString(DATA_TEXT_TAG)));
+        UUIDUtils.textToUUID(compoundTag.getString(DATA_TEXT_TAG).orElse("")),
+        compoundTag.getString(DATA_TEXT_TAG).orElse(""),
+        TextUtils.isTranslationKey(compoundTag.getString(DATA_TEXT_TAG).orElse("")));
   }
 
   public DialogTextData(String text) {

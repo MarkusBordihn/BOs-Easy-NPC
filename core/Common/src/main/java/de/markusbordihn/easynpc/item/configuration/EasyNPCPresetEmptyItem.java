@@ -25,8 +25,8 @@ import de.markusbordihn.easynpc.block.entity.EasyNPCSpawnerBlockEntity;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder.Reference;
@@ -46,6 +46,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
@@ -177,13 +178,13 @@ public class EasyNPCPresetEmptyItem extends Item {
         if (compoundTag != null && compoundTag.contains(SPAWN_DATA_TAG)) {
           SpawnData spawnData =
               SpawnData.CODEC
-                  .parse(NbtOps.INSTANCE, compoundTag.getCompound(SPAWN_DATA_TAG))
+                  .parse(NbtOps.INSTANCE, compoundTag.getCompoundOrEmpty(SPAWN_DATA_TAG))
                   .resultOrPartial((string) -> log.warn("Invalid SpawnData: {}", string))
                   .orElseGet(SpawnData::new);
           CompoundTag entitySpawnData = spawnData.getEntityToSpawn();
           if (entitySpawnData.contains(ID_TAG)) {
             ResourceLocation entityRegistryName =
-                ResourceLocation.tryParse(entitySpawnData.getString(ID_TAG));
+                ResourceLocation.tryParse(entitySpawnData.getString(ID_TAG).orElse(""));
             Optional<Reference<EntityType<?>>> entityType =
                 BuiltInRegistries.ENTITY_TYPE.get(entityRegistryName);
             if (entityType.isPresent()) {
@@ -206,8 +207,12 @@ public class EasyNPCPresetEmptyItem extends Item {
   }
 
   @Override
-  public boolean canAttackBlock(
-      BlockState blockState, Level level, BlockPos blockPos, Player player) {
+  public boolean canDestroyBlock(
+      ItemStack itemStack,
+      BlockState blockState,
+      Level level,
+      BlockPos blockPos,
+      LivingEntity livingEntity) {
     return false;
   }
 
@@ -215,9 +220,10 @@ public class EasyNPCPresetEmptyItem extends Item {
   public void appendHoverText(
       ItemStack itemStack,
       TooltipContext tooltipContext,
-      List<Component> tooltip,
+      TooltipDisplay tooltipDisplay,
+      Consumer<Component> consumer,
       TooltipFlag flag) {
-    tooltip.add(
+    consumer.accept(
         TextComponent.getTranslatedTextRaw(Constants.TEXT_ITEM_PREFIX + NAME)
             .withStyle(ChatFormatting.RED));
   }

@@ -79,7 +79,8 @@ public interface RenderDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
     }
 
     // Read dialog data
-    RenderDataSet renderData = new RenderDataSet(compoundTag.getCompound(DATA_RENDER_DATA_TAG));
+    RenderDataSet renderData =
+        new RenderDataSet(compoundTag.getCompoundOrEmpty(DATA_RENDER_DATA_TAG));
     this.setRenderData(renderData);
   }
 }

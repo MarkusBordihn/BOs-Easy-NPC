@@ -88,7 +88,7 @@ public interface ProfessionDataCapable<T extends PathfinderMob> extends EasyNPC<
 
   default void readAdditionalProfessionData(CompoundTag compoundTag) {
     if (compoundTag.contains(DATA_PROFESSION_TAG)) {
-      String profession = compoundTag.getString(DATA_PROFESSION_TAG);
+      String profession = compoundTag.getString(DATA_PROFESSION_TAG).orElse("");
       if (!profession.isEmpty()) {
         this.setProfession(this.getProfession(profession));
       }

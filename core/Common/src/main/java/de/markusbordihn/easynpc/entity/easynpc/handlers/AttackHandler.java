@@ -29,6 +29,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -44,15 +45,40 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ProjectileWeaponItem;
-import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.component.ChargedProjectiles;
 
 public class AttackHandler {
 
   private AttackHandler() {}
 
-  public static boolean isMeeleeWeapon(ItemStack itemStack) {
-    return itemStack.getItem() instanceof SwordItem || itemStack.getItem() instanceof AxeItem;
+  public static boolean isMeleeWeapon(ItemStack itemStack) {
+    // Check vanilla weapon tags
+    if (itemStack.is(ItemTags.SWORDS) || itemStack.is(ItemTags.AXES)) {
+      return true;
+    }
+
+    // Check custom melee weapon tags
+    if (itemStack.is(ModItemTags.MELEE_WEAPON)) {
+      return true;
+    }
+
+    // Check for AxeItem
+    if (itemStack.getItem() instanceof AxeItem) {
+      return true;
+    }
+
+    // Check item name for common melee weapon keywords
+    Item item = itemStack.getItem();
+    String itemName = item.toString().toLowerCase();
+    return itemName.contains("sword")
+        || itemName.contains("axe")
+        || itemName.contains("blade")
+        || itemName.contains("dagger")
+        || itemName.contains("knife")
+        || itemName.contains("spear")
+        || itemName.contains("katana")
+        || itemName.contains("rapier")
+        || itemName.contains("saber");
   }
 
   public static boolean isBowWeapon(ItemStack itemStack) {
@@ -85,7 +111,7 @@ public class AttackHandler {
   }
 
   public static boolean isHoldingMeleeWeapon(LivingEntity livingEntity) {
-    return livingEntity != null && isMeeleeWeapon(livingEntity.getMainHandItem());
+    return livingEntity != null && isMeleeWeapon(livingEntity.getMainHandItem());
   }
 
   public static boolean isHoldingProjectileWeapon(LivingEntity livingEntity) {

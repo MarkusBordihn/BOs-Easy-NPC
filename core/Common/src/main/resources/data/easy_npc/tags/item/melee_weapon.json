@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "#easy_npc:melee_weapon/axe",
+    "#easy_npc:melee_weapon/sword"
+  ]
+}

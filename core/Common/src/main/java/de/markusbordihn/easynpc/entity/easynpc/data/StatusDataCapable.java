@@ -62,13 +62,13 @@ public interface StatusDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
     }
 
     // Set status flags from the status tag.
-    CompoundTag statusTag = compoundTag.getCompound(DATA_STATUS_DATA_TAG);
-    for (String key : statusTag.getAllKeys()) {
+    CompoundTag statusTag = compoundTag.getCompoundOrEmpty(DATA_STATUS_DATA_TAG);
+    for (String key : statusTag.keySet()) {
       StatusDataType statusDataType = StatusDataType.get(key);
       if (statusDataType == null) {
         continue;
       }
-      setStatusDataFlag(StatusDataType.get(key), statusTag.getBoolean(key));
+      setStatusDataFlag(StatusDataType.get(key), statusTag.getBoolean(key).orElse(false));
     }
   }
 }

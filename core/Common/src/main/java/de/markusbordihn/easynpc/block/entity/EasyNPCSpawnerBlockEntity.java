@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.block.entity;
 import de.markusbordihn.easynpc.block.EasyNPCSpawnerBlock;
 import de.markusbordihn.easynpc.data.spawner.SpawnerType;
 import de.markusbordihn.easynpc.level.BaseEasyNPCSpawner;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.Objects;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
@@ -135,19 +136,23 @@ public class EasyNPCSpawnerBlockEntity extends BlockEntity {
   public void loadAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
     super.loadAdditional(compoundTag, provider);
     this.spawnerUUID =
-        compoundTag.contains(UUID_TAG) ? compoundTag.getUUID(UUID_TAG) : UUID.randomUUID();
+        compoundTag.contains(UUID_TAG)
+            ? CompoundTagUtils.readUUID(compoundTag, UUID_TAG)
+            : UUID.randomUUID();
     this.owner =
-        compoundTag.contains(SPAWNER_OWNER_TAG) ? compoundTag.getUUID(SPAWNER_OWNER_TAG) : null;
+        compoundTag.contains(SPAWNER_OWNER_TAG)
+            ? CompoundTagUtils.readUUID(compoundTag, SPAWNER_OWNER_TAG)
+            : null;
     this.spawner.load(this.level, this.worldPosition, compoundTag);
   }
 
   @Override
   public void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
     super.saveAdditional(compoundTag, provider);
-    compoundTag.putUUID(
-        UUID_TAG, Objects.requireNonNullElseGet(this.spawnerUUID, UUID::randomUUID));
+    CompoundTagUtils.writeUUID(
+        compoundTag, UUID_TAG, Objects.requireNonNullElseGet(this.spawnerUUID, UUID::randomUUID));
     if (this.owner != null) {
-      compoundTag.putUUID(SPAWNER_OWNER_TAG, this.owner);
+      CompoundTagUtils.writeUUID(compoundTag, SPAWNER_OWNER_TAG, this.owner);
     }
     this.spawner.save(compoundTag);
   }

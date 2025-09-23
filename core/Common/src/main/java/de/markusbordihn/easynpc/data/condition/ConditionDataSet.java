@@ -48,13 +48,13 @@ public class ConditionDataSet {
     if (compoundTag == null || !compoundTag.contains(CONDITION_DATA_SET_TAG)) {
       return;
     }
-    CompoundTag conditionDataSetTag = compoundTag.getCompound(CONDITION_DATA_SET_TAG);
+    CompoundTag conditionDataSetTag = compoundTag.getCompoundOrEmpty(CONDITION_DATA_SET_TAG);
 
     // Load condition data entries
     this.conditionDataEntries.clear();
-    ListTag conditionDataEntriesTag = conditionDataSetTag.getList(CONDITION_DATA_SET_TAG, 10);
+    ListTag conditionDataEntriesTag = conditionDataSetTag.getListOrEmpty(CONDITION_DATA_SET_TAG);
     for (int i = 0; i < conditionDataEntriesTag.size(); i++) {
-      CompoundTag conditionDataEntryTag = conditionDataEntriesTag.getCompound(i);
+      CompoundTag conditionDataEntryTag = conditionDataEntriesTag.getCompoundOrEmpty(i);
       ConditionDataEntry conditionDataEntry = new ConditionDataEntry(conditionDataEntryTag);
       this.conditionDataEntries.add(conditionDataEntry);
     }

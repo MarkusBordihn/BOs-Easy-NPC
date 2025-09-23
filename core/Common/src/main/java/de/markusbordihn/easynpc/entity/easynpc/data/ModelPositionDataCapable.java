@@ -47,7 +47,7 @@ public interface ModelPositionDataCapable<T extends PathfinderMob> extends EasyN
                 RegistryFriendlyByteBuf registryFriendlyByteBuf) {
               CompoundTag compoundTag = registryFriendlyByteBuf.readNbt();
               Map<ModelPartType, CustomPosition> modelPartMap = new EnumMap<>(ModelPartType.class);
-              for (String key : compoundTag.getAllKeys()) {
+              for (String key : compoundTag.keySet()) {
                 ModelPartType modelPartType = ModelPartType.get(key);
                 if (modelPartType != null) {
                   modelPartMap.put(modelPartType, new CustomPosition(modelPartType, compoundTag));
@@ -133,9 +133,9 @@ public interface ModelPositionDataCapable<T extends PathfinderMob> extends EasyN
     if (!compoundTag.contains(EASY_NPC_DATA_MODEL_POSITION_TAG)) {
       return;
     }
-    CompoundTag positionTag = compoundTag.getCompound(EASY_NPC_DATA_MODEL_POSITION_TAG);
+    CompoundTag positionTag = compoundTag.getCompoundOrEmpty(EASY_NPC_DATA_MODEL_POSITION_TAG);
     EnumMap<ModelPartType, CustomPosition> modelPartMap = new EnumMap<>(ModelPartType.class);
-    for (String key : positionTag.getAllKeys()) {
+    for (String key : positionTag.keySet()) {
       ModelPartType modelPartType = ModelPartType.get(key);
       if (modelPartType != null) {
         modelPartMap.put(modelPartType, new CustomPosition(modelPartType, positionTag));

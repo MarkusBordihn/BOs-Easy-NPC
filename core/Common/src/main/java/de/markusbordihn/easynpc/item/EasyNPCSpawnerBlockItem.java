@@ -20,11 +20,12 @@
 package de.markusbordihn.easynpc.item;
 
 import de.markusbordihn.easynpc.data.spawner.SpawnerType;
-import java.util.List;
+import java.util.function.Consumer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.block.Block;
 
 public class EasyNPCSpawnerBlockItem extends BlockItem {
@@ -40,13 +41,14 @@ public class EasyNPCSpawnerBlockItem extends BlockItem {
   public void appendHoverText(
       ItemStack itemStack,
       TooltipContext tooltipContext,
-      List<Component> tooltip,
+      TooltipDisplay tooltipDisplay,
+      Consumer<Component> consumer,
       TooltipFlag flag) {
-    super.appendHoverText(itemStack, tooltipContext, tooltip, flag);
+    super.appendHoverText(itemStack, tooltipContext, tooltipDisplay, consumer, flag);
 
     // Add additional information to the tooltip.
     if (spawnerType != null) {
-      tooltip.add(Component.translatable(spawnerType.getDescriptionId()));
+      consumer.accept(Component.translatable(spawnerType.getDescriptionId()));
     }
   }
 }

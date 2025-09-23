@@ -139,7 +139,7 @@ public interface DialogDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
     }
 
     // Read dialog data
-    CompoundTag dialogDataTag = compoundTag.getCompound(DATA_DIALOG_DATA_TAG);
+    CompoundTag dialogDataTag = compoundTag.getCompoundOrEmpty(DATA_DIALOG_DATA_TAG);
 
     // Read dialog
     if (dialogDataTag.contains(DialogDataSet.DATA_DIALOG_DATA_SET_TAG)) {

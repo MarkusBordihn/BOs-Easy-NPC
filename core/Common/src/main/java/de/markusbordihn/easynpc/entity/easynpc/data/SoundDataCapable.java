@@ -185,7 +185,7 @@ public interface SoundDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
       return;
     }
 
-    CompoundTag soundDataTag = compoundTag.getCompound(EASY_NPC_DATA_SOUND_DATA_TAG);
+    CompoundTag soundDataTag = compoundTag.getCompoundOrEmpty(EASY_NPC_DATA_SOUND_DATA_TAG);
 
     if (soundDataTag.contains(SoundDataSet.DATA_SOUND_DATA_SET_TAG)) {
       SoundDataSet soundDataSet = new SoundDataSet(soundDataTag);

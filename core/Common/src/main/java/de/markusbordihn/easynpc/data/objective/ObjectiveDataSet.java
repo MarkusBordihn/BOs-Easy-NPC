@@ -232,9 +232,9 @@ public class ObjectiveDataSet {
     this.clear();
 
     // Load objectives
-    ListTag objectiveDataList = compoundTag.getList(DATA_OBJECTIVE_DATA_SET_TAG, 10);
+    ListTag objectiveDataList = compoundTag.getListOrEmpty(DATA_OBJECTIVE_DATA_SET_TAG);
     for (int i = 0; i < objectiveDataList.size(); i++) {
-      CompoundTag objectiveDataTag = objectiveDataList.getCompound(i);
+      CompoundTag objectiveDataTag = objectiveDataList.getCompoundOrEmpty(i);
       ObjectiveDataEntry objectiveDataEntry = new ObjectiveDataEntry(objectiveDataTag);
       this.addObjective(objectiveDataEntry);
     }

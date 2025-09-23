@@ -567,7 +567,7 @@ public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>,
   default void readAdditionalTradingData(CompoundTag compoundTag, HolderLookup.Provider provider) {
 
     // Load custom trading data set
-    CompoundTag tradingDataTag = compoundTag.getCompound(DATA_TRADING_DATA_TAG);
+    CompoundTag tradingDataTag = compoundTag.getCompoundOrEmpty(DATA_TRADING_DATA_TAG);
     if (tradingDataTag.contains(TradingDataSet.DATA_TRADING_DATA_SET_TAG)) {
       TradingDataSet tradingDataSet = new TradingDataSet(tradingDataTag);
       this.setTradingDataSet(tradingDataSet);

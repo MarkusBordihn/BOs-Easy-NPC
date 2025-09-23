@@ -23,13 +23,13 @@ import de.markusbordihn.easynpc.configui.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
-import net.minecraft.gametest.framework.GameTest;
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 
 @SuppressWarnings("unused")
 public class EditorScreenTest {
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public void testActionDataEditorScreen(GameTestHelper helper) {
     EditorScreenTestHelper.testEditorScreen(
         helper,
@@ -38,7 +38,7 @@ public class EditorScreenTest {
         ModMenuTypes.ACTION_DATA_EDITOR_MENU);
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public void testActionDataEntryEditorScreen(GameTestHelper helper) {
     EditorScreenTestHelper.testEditorScreen(
         helper,
@@ -47,7 +47,7 @@ public class EditorScreenTest {
         ModMenuTypes.ACTION_DATA_ENTRY_EDITOR_MENU);
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public void testDialogEditorScreen(GameTestHelper helper) {
     EditorScreenTestHelper.testEditorScreen(
         helper,
@@ -56,7 +56,7 @@ public class EditorScreenTest {
         ModMenuTypes.DIALOG_EDITOR_MENU);
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public void testDialogButtonEditorScreen(GameTestHelper helper) {
     EditorScreenTestHelper.testEditorScreen(
         helper,
@@ -65,7 +65,7 @@ public class EditorScreenTest {
         ModMenuTypes.DIALOG_BUTTON_EDITOR_MENU);
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public void testDialogTextEditorScreen(GameTestHelper helper) {
     EditorScreenTestHelper.testEditorScreen(
         helper,

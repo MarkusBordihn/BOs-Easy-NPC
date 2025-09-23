@@ -81,7 +81,7 @@ public class AdditionalScreenData {
     if (!hasActionEventType(compoundTag)) {
       return ActionEventType.NONE;
     }
-    return ActionEventType.get(compoundTag.getString(ACTION_EVENT_TYPE_TAG));
+    return ActionEventType.get(compoundTag.getString(ACTION_EVENT_TYPE_TAG).orElse(""));
   }
 
   public static boolean hasActionEventType(CompoundTag compoundTag) {
@@ -100,7 +100,7 @@ public class AdditionalScreenData {
     if (!hasActionEventSet(compoundTag)) {
       return new ActionEventSet();
     }
-    return new ActionEventSet(compoundTag.getCompound(ACTION_EVENT_DATA_TAG));
+    return new ActionEventSet(compoundTag.getCompoundOrEmpty(ACTION_EVENT_DATA_TAG));
   }
 
   public static boolean hasActionEventSet(CompoundTag compoundTag) {
@@ -119,7 +119,7 @@ public class AdditionalScreenData {
     if (!hasBaseAttributes(compoundTag)) {
       return new BaseAttributes();
     }
-    return new BaseAttributes(compoundTag.getCompound(BASE_ATTRIBUTES_DATA_TAG));
+    return new BaseAttributes(compoundTag.getCompoundOrEmpty(BASE_ATTRIBUTES_DATA_TAG));
   }
 
   public static boolean hasBaseAttributes(CompoundTag compoundTag) {
@@ -138,7 +138,7 @@ public class AdditionalScreenData {
     if (!hasConfigurationType(compoundTag)) {
       return ConfigurationType.NONE;
     }
-    return ConfigurationType.get(compoundTag.getString(CONFIGURATION_TYPE_TAG));
+    return ConfigurationType.get(compoundTag.getString(CONFIGURATION_TYPE_TAG).orElse(""));
   }
 
   public static boolean hasConfigurationType(CompoundTag compoundTag) {
@@ -156,7 +156,7 @@ public class AdditionalScreenData {
     if (!hasDialogDataSet(compoundTag)) {
       return new DialogDataSet();
     }
-    return new DialogDataSet(compoundTag.getCompound(DIALOG_DATA_TAG));
+    return new DialogDataSet(compoundTag.getCompoundOrEmpty(DIALOG_DATA_TAG));
   }
 
   public static boolean hasDialogDataSet(CompoundTag compoundTag) {
@@ -174,7 +174,7 @@ public class AdditionalScreenData {
     if (!hasEditorType(compoundTag)) {
       return EditorType.NONE;
     }
-    return EditorType.get(compoundTag.getString(EDITOR_TYPE_TAG));
+    return EditorType.get(compoundTag.getString(EDITOR_TYPE_TAG).orElse(""));
   }
 
   public static boolean hasEditorType(CompoundTag compoundTag) {
@@ -193,7 +193,7 @@ public class AdditionalScreenData {
     if (!hasObjectiveDataSet(compoundTag)) {
       return new ObjectiveDataSet();
     }
-    return new ObjectiveDataSet(compoundTag.getCompound(OBJECTIVE_DATA_TAG));
+    return new ObjectiveDataSet(compoundTag.getCompoundOrEmpty(OBJECTIVE_DATA_TAG));
   }
 
   public static boolean hasObjectiveDataSet(CompoundTag compoundTag) {
@@ -234,14 +234,14 @@ public class AdditionalScreenData {
 
   public CompoundTag get(String dataTag) {
     if (this.data.contains(dataTag)) {
-      return this.data.getCompound(dataTag);
+      return this.data.getCompoundOrEmpty(dataTag);
     }
     return new CompoundTag();
   }
 
   public ListTag getList(String dataTag) {
     if (this.data.contains(dataTag)) {
-      return this.data.getList(dataTag, 10);
+      return this.data.getListOrEmpty(dataTag);
     }
     return new ListTag();
   }

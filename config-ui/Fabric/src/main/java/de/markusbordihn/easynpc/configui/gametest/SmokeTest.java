@@ -21,14 +21,14 @@ package de.markusbordihn.easynpc.configui.gametest;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.gametest.GameTestHelpers;
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 
 @SuppressWarnings("unused")
 public class SmokeTest {
 
-  @GameTest(template = "easy_npc:gametest.1x1x1")
+  @GameTest(structure = "easy_npc:gametest.1x1x1")
   public void testModRegistered(GameTestHelper helper) {
     GameTestHelpers.assertTrue(
         helper,

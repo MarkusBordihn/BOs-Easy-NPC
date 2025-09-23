@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.Minecraft;
@@ -87,9 +86,6 @@ public class CustomButton extends Button {
   public void renderButton(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
     Minecraft minecraft = Minecraft.getInstance();
     Font font = minecraft.font;
-    RenderSystem.enableBlend();
-    RenderSystem.defaultBlendFunc();
-    RenderSystem.enableDepthTest();
 
     // Background
     guiGraphics.blitSprite(

@@ -28,7 +28,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.FlyingAnimal;
-import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -81,9 +81,6 @@ public class WolfNPC extends WolfRaw implements StandardEasyNPC<WolfRaw> {
 
   @Override
   public SoundDataSet getDefaultSoundDataSet(SoundDataSet soundDataSet, String variantName) {
-    soundDataSet.addDefaultSound(SoundType.AMBIENT, SoundEvents.WOLF_AMBIENT);
-    soundDataSet.addDefaultSound(SoundType.DEATH, SoundEvents.WOLF_DEATH);
-    soundDataSet.addDefaultSound(SoundType.HURT, SoundEvents.WOLF_HURT);
     soundDataSet.addDefaultSound(SoundType.STEP, SoundEvents.WOLF_STEP);
     soundDataSet.addDefaultSound(SoundType.TRADE, SoundEvents.VILLAGER_TRADE);
     soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);

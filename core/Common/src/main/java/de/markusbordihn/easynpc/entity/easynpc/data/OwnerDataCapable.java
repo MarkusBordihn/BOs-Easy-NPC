@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.EnumMap;
 import java.util.Optional;
 import java.util.UUID;
@@ -30,6 +31,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -44,11 +46,28 @@ public interface OwnerDataCapable<T extends PathfinderMob> extends EasyNPC<T>, O
     log.info("- Registering Synched Owner Data for {}.", entityClass.getSimpleName());
     map.put(
         SynchedDataIndex.OWNER_UUID,
-        SynchedEntityData.defineId(entityClass, EntityDataSerializers.OPTIONAL_UUID));
+        SynchedEntityData.defineId(
+            entityClass, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE));
   }
 
   default void setNPCOwnerUUID(UUID uuid) {
-    setSynchedEntityData(SynchedDataIndex.OWNER_UUID, Optional.ofNullable(uuid));
+    if (uuid == null) {
+      setSynchedEntityData(SynchedDataIndex.OWNER_UUID, Optional.empty());
+    } else {
+      EntityReference<LivingEntity> entityReference = new EntityReference<>(uuid);
+      setSynchedEntityData(SynchedDataIndex.OWNER_UUID, Optional.of(entityReference));
+    }
+  }
+
+  default UUID getOwnerUUID() {
+    EntityReference<LivingEntity> ownerReference = getOwnerReference();
+    return ownerReference == null ? null : ownerReference.getUUID();
+  }
+
+  default EntityReference<LivingEntity> getOwnerReference() {
+    Optional<EntityReference<LivingEntity>> ownerReference =
+        getSynchedEntityData(SynchedDataIndex.OWNER_UUID);
+    return ownerReference.orElse(null);
   }
 
   default boolean hasNPCOwner() {
@@ -83,12 +102,6 @@ public interface OwnerDataCapable<T extends PathfinderMob> extends EasyNPC<T>, O
   }
 
   @Override
-  default UUID getOwnerUUID() {
-    Optional<UUID> ownerUUID = getSynchedEntityData(SynchedDataIndex.OWNER_UUID);
-    return ownerUUID.orElse(null);
-  }
-
-  @Override
   default LivingEntity getOwner() {
     Level level = getEntityLevel();
     if (level == null) {
@@ -107,15 +120,16 @@ public interface OwnerDataCapable<T extends PathfinderMob> extends EasyNPC<T>, O
   }
 
   default void addAdditionalOwnerData(CompoundTag compoundTag) {
-    if (this.getOwnerUUID() != null) {
-      compoundTag.putUUID(DATA_OWNER_TAG, this.getOwnerUUID());
+    UUID ownerUUID = this.getOwnerUUID();
+    if (ownerUUID != null) {
+      CompoundTagUtils.writeUUID(compoundTag, DATA_OWNER_TAG, ownerUUID);
     }
   }
 
   default void readAdditionalOwnerData(CompoundTag compoundTag) {
-    if (compoundTag.hasUUID(DATA_OWNER_TAG)) {
-      UUID uuid = compoundTag.getUUID(DATA_OWNER_TAG);
-      this.setNPCOwnerUUID(uuid);
+    UUID ownerUUID = CompoundTagUtils.readUUID(compoundTag, DATA_OWNER_TAG);
+    if (ownerUUID != null) {
+      this.setNPCOwnerUUID(ownerUUID);
     }
   }
 }

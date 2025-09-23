@@ -25,10 +25,11 @@ import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.level.BaseEasyNPCSpawner;
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import de.markusbordihn.easynpc.utils.SpawnerUtils;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
@@ -42,10 +43,12 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
@@ -78,10 +81,7 @@ public class EasyNPCPresetItem extends Item {
       return null;
     }
     CompoundTag compoundTag = presetData.data();
-    if (compoundTag.contains(PresetDataCapable.PRESET_UUID_TAG)) {
-      return compoundTag.getUUID(PresetDataCapable.PRESET_UUID_TAG);
-    }
-    return null;
+    return CompoundTagUtils.readUUID(compoundTag, PresetDataCapable.PRESET_UUID_TAG);
   }
 
   public static String getCustomName(ItemStack itemStack) {
@@ -91,9 +91,9 @@ public class EasyNPCPresetItem extends Item {
     }
     CompoundTag compoundTag = presetData.data();
     if (compoundTag.contains(CUSTOM_NAME_TAG)) {
-      CompoundTag customNameTag = compoundTag.getCompound(CUSTOM_NAME_TAG);
+      CompoundTag customNameTag = compoundTag.getCompoundOrEmpty(CUSTOM_NAME_TAG);
       if (customNameTag.contains(TEXT_TAG)) {
-        return customNameTag.getString(TEXT_TAG);
+        return customNameTag.getString(TEXT_TAG).orElse("");
       }
     }
     return null;
@@ -128,7 +128,7 @@ public class EasyNPCPresetItem extends Item {
     entity.load(entityData);
 
     // Move entity to and spawn entity.
-    entity.moveTo(blockPos.getX() + 0.5f, blockPos.getY(), blockPos.getZ() + 0.5f);
+    entity.snapTo(blockPos.getX() + 0.5f, blockPos.getY(), blockPos.getZ() + 0.5f);
     if (level.addFreshEntity(entity)) {
       UUID presetUUID = getPresetUUID(itemStack);
       log.debug(
@@ -212,8 +212,12 @@ public class EasyNPCPresetItem extends Item {
   }
 
   @Override
-  public boolean canAttackBlock(
-      BlockState blockState, Level level, BlockPos blockPos, Player player) {
+  public boolean canDestroyBlock(
+      ItemStack itemStack,
+      BlockState blockState,
+      Level level,
+      BlockPos blockPos,
+      LivingEntity livingEntity) {
     return false;
   }
 
@@ -221,7 +225,8 @@ public class EasyNPCPresetItem extends Item {
   public void appendHoverText(
       ItemStack itemStack,
       TooltipContext tooltipContext,
-      List<Component> tooltip,
+      TooltipDisplay tooltipDisplay,
+      Consumer<Component> consumer,
       TooltipFlag flag) {
     PresetData presetData = PresetData.get(itemStack);
     if (presetData == null) {
@@ -231,11 +236,11 @@ public class EasyNPCPresetItem extends Item {
     // Add preset UUID to tooltip
     UUID presetUUID = getPresetUUID(itemStack);
     if (presetUUID != null) {
-      tooltip.add(TextComponent.getText(presetUUID.toString()).withStyle(ChatFormatting.GRAY));
+      consumer.accept(TextComponent.getText(presetUUID.toString()).withStyle(ChatFormatting.GRAY));
     }
 
     // Add item hint
-    tooltip.add(
+    consumer.accept(
         TextComponent.getTranslatedTextRaw(Constants.TEXT_ITEM_PREFIX + NAME)
             .withStyle(ChatFormatting.GREEN));
 
@@ -244,12 +249,12 @@ public class EasyNPCPresetItem extends Item {
     if (entityType != null) {
       String customName = getCustomName(itemStack);
       if (customName != null) {
-        tooltip.add(
+        consumer.accept(
             TextComponent.getTranslatedTextRaw(
                     Constants.TEXT_ITEM_PREFIX + NAME + ".custom_name", customName)
                 .withStyle(ChatFormatting.GRAY));
       }
-      tooltip.add(
+      consumer.accept(
           TextComponent.getTranslatedTextRaw(
                   Constants.TEXT_ITEM_PREFIX + NAME + ".entity_type", entityType.getDescription())
               .withStyle(ChatFormatting.GRAY));

@@ -205,7 +205,7 @@ public final class ActionDataSet {
         || !compoundTag.contains(listName)) {
       return new ActionDataSet();
     }
-    ListTag actionDataList = compoundTag.getList(listName, 10);
+    ListTag actionDataList = compoundTag.getListOrEmpty(listName);
     return this.load(actionDataList);
   }
 
@@ -215,7 +215,7 @@ public final class ActionDataSet {
     }
     this.actionDataEntries.clear();
     for (int i = 0; i < actionDataList.size(); i++) {
-      CompoundTag actionDataEntryTag = actionDataList.getCompound(i);
+      CompoundTag actionDataEntryTag = actionDataList.getCompoundOrEmpty(i);
       ActionDataEntry actionDataEntry = new ActionDataEntry(actionDataEntryTag);
       this.actionDataEntries.add(actionDataEntry);
     }

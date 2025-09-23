@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -66,24 +67,24 @@ public class GameTestHelpers {
     if (entity instanceof EasyNPC<?> easyNPC) {
       return easyNPC;
     }
-    helper.fail("Entity " + entityType + " is not an EasyNPC!");
+    helper.fail(Component.literal("Entity " + entityType + " is not an EasyNPC!"));
     return null;
   }
 
   public static <T extends Entity> T spawnEntityType(
       GameTestHelper helper, EntityType<? extends PathfinderMob> entityType) {
     if (entityType == null) {
-      helper.fail("EntityType is null!");
+      helper.fail(Component.literal("EntityType is null!"));
       return null;
     }
     Player player = helper.makeMockPlayer(GameType.DEFAULT_MODE);
     T entity = (T) entityType.create(player.level(), EntitySpawnReason.COMMAND);
     if (entity == null) {
-      helper.fail("Entity for " + entityType + " is null!");
+      helper.fail(Component.literal("Entity for " + entityType + " is null!"));
       return null;
     }
     if (!player.level().addFreshEntity(entity)) {
-      helper.fail("Failed to spawn entity " + entityType + "!");
+      helper.fail(Component.literal("Failed to spawn entity " + entityType + "!"));
       return null;
     }
 
@@ -95,7 +96,7 @@ public class GameTestHelpers {
     if (expected.equals(actual)) {
       helper.succeed();
     } else {
-      helper.fail(message);
+      helper.fail(Component.literal(message));
     }
   }
 
@@ -103,7 +104,7 @@ public class GameTestHelpers {
     if (condition) {
       helper.succeed();
     } else {
-      helper.fail(message);
+      helper.fail(Component.literal(message));
     }
   }
 

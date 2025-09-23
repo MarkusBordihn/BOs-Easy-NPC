@@ -49,11 +49,14 @@ public record CustomPosition(float x, float y, float z) {
       };
 
   public CustomPosition(ModelPartType modelPartType, CompoundTag compoundTag) {
-    this(compoundTag.getList(modelPartType.getTagName(), 5));
+    this(compoundTag.getListOrEmpty(modelPartType.getTagName()));
   }
 
   public CustomPosition(ListTag listTag) {
-    this(listTag.getFloat(0), listTag.getFloat(1), listTag.getFloat(2));
+    this(
+        listTag.getFloat(0).orElse(0.0f),
+        listTag.getFloat(1).orElse(0.0f),
+        listTag.getFloat(2).orElse(0.0f));
   }
 
   public CustomPosition(List<Float> list) {

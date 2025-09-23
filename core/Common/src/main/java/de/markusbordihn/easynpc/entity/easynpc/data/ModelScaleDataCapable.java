@@ -48,7 +48,7 @@ public interface ModelScaleDataCapable<T extends PathfinderMob> extends EasyNPC<
                 RegistryFriendlyByteBuf registryFriendlyByteBuf) {
               CompoundTag compoundTag = registryFriendlyByteBuf.readNbt();
               Map<ModelPartType, CustomScale> modelPartMap = new EnumMap<>(ModelPartType.class);
-              for (String key : compoundTag.getAllKeys()) {
+              for (String key : compoundTag.keySet()) {
                 ModelPartType modelPartType = ModelPartType.get(key);
                 if (modelPartType != null) {
                   modelPartMap.put(modelPartType, new CustomScale(modelPartType, compoundTag));
@@ -138,9 +138,9 @@ public interface ModelScaleDataCapable<T extends PathfinderMob> extends EasyNPC<
     if (!compoundTag.contains(EASY_NPC_DATA_MODEL_SCALE_TAG)) {
       return;
     }
-    CompoundTag positionTag = compoundTag.getCompound(EASY_NPC_DATA_MODEL_SCALE_TAG);
+    CompoundTag positionTag = compoundTag.getCompoundOrEmpty(EASY_NPC_DATA_MODEL_SCALE_TAG);
     EnumMap<ModelPartType, CustomScale> modelPartMap = new EnumMap<>(ModelPartType.class);
-    for (String key : positionTag.getAllKeys()) {
+    for (String key : positionTag.keySet()) {
       ModelPartType modelPartType = ModelPartType.get(key);
       if (modelPartType != null) {
         modelPartMap.put(modelPartType, new CustomScale(modelPartType, positionTag));

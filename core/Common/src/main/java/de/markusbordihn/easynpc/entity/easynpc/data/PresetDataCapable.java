@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.data.server.ServerDataIndex;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
@@ -129,7 +130,7 @@ public interface PresetDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
     // Add Preset UUID for unique identification
     if (!compoundTag.contains(PRESET_UUID_TAG)) {
-      compoundTag.putUUID(PRESET_UUID_TAG, UUID.randomUUID());
+      CompoundTagUtils.writeUUID(compoundTag, PRESET_UUID_TAG, UUID.randomUUID());
     }
 
     // Entity saved data
@@ -161,13 +162,14 @@ public interface PresetDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
   default void addAdditionalPresetData(CompoundTag compoundTag) {
     if (this.isServerSideInstance() && this.getPresetUUID() != null) {
-      compoundTag.putUUID(PRESET_UUID_TAG, this.getPresetUUID());
+      CompoundTagUtils.writeUUID(compoundTag, PRESET_UUID_TAG, this.getPresetUUID());
     }
   }
 
   default void readAdditionalPresetData(CompoundTag compoundTag) {
-    if (compoundTag.hasUUID(PRESET_UUID_TAG)) {
-      this.setPresetUUID(compoundTag.getUUID(PRESET_UUID_TAG));
+    UUID presetUUID = CompoundTagUtils.readUUID(compoundTag, PRESET_UUID_TAG);
+    if (presetUUID != null) {
+      this.setPresetUUID(presetUUID);
     }
   }
 }

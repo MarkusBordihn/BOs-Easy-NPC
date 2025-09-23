@@ -36,9 +36,9 @@ public record EnvironmentalAttributes(
 
   public static EnvironmentalAttributes decode(CompoundTag compoundTag) {
     return new EnvironmentalAttributes(
-        compoundTag.getBoolean(BREATHE_UNDERWATER_TAG),
-        compoundTag.getBoolean(FLOAT_TAG),
-        compoundTag.getBoolean(FREEFALL_TAG));
+        compoundTag.getBoolean(BREATHE_UNDERWATER_TAG).orElse(false),
+        compoundTag.getBoolean(FLOAT_TAG).orElse(false),
+        compoundTag.getBoolean(FREEFALL_TAG).orElse(false));
   }
 
   public EnvironmentalAttributes withCanBreathUnderwater(boolean canBreathUnderwater) {

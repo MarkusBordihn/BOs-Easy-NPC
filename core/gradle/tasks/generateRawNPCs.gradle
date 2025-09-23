@@ -184,7 +184,7 @@ task generateRawNPCs {
       ],
       [
           id       : "wolf_raw",
-          class    : "net.minecraft.world.entity.animal.Wolf",
+          class    : "net.minecraft.world.entity.animal.wolf.Wolf",
           className: "WolfRaw",
           baseClass: "Wolf",
           modelType: "QUADRUPED",

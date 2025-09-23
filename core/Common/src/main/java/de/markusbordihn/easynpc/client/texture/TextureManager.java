@@ -119,7 +119,7 @@ public class TextureManager {
     // Creative dynamic texture from native image.
     DynamicTexture dynamicTexture;
     try {
-      dynamicTexture = new DynamicTexture(nativeImage);
+      dynamicTexture = new DynamicTexture(textureModelKey::getResourceName, nativeImage);
     } catch (Exception exception) {
       log.error(
           "{} Unable to create dynamic texture for file {} for {}:",

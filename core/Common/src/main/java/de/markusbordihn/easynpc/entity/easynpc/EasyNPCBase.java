@@ -54,12 +54,10 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.Saddleable;
 import net.minecraft.world.entity.SpawnGroupData;
 
 public interface EasyNPCBase<E extends PathfinderMob>
-    extends Saddleable,
-        EasyNPC<E>,
+    extends EasyNPC<E>,
         ActionEventDataCapable<E>,
         ActionHandler<E>,
         AttackDataCapable<E>,

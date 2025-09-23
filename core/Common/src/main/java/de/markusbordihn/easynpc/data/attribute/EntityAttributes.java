@@ -58,10 +58,10 @@ public class EntityAttributes {
 
   public void load(CompoundTag compoundTag) {
     if (!compoundTag.contains(ENTITY_ATTRIBUTE_TAG)
-        || compoundTag.getCompound(ENTITY_ATTRIBUTE_TAG).isEmpty()) {
+        || compoundTag.getCompoundOrEmpty(ENTITY_ATTRIBUTE_TAG).isEmpty()) {
       return;
     }
-    CompoundTag entityAttributeTag = compoundTag.getCompound(ENTITY_ATTRIBUTE_TAG);
+    CompoundTag entityAttributeTag = compoundTag.getCompoundOrEmpty(ENTITY_ATTRIBUTE_TAG);
     this.setAttribute(EntityAttributeType.COMBAT, CombatAttributes.decode(entityAttributeTag));
     this.setAttribute(
         EntityAttributeType.ENVIRONMENTAL, EnvironmentalAttributes.decode(entityAttributeTag));

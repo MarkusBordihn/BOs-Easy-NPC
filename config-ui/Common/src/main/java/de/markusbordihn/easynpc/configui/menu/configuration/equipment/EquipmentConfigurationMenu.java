@@ -158,7 +158,10 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
     if (this.level.isClientSide) {
       return;
     }
-    log.debug("Load hand {}", this.getEasyNPC().getLivingEntity().getHandSlots());
+    log.debug(
+        "Load main hand {} and off hand {}",
+        this.getEasyNPC().getLivingEntity().getItemInHand(InteractionHand.MAIN_HAND),
+        this.getEasyNPC().getLivingEntity().getItemInHand(InteractionHand.OFF_HAND));
     this.handContainer.setItem(
         0, this.getEasyNPC().getLivingEntity().getItemInHand(InteractionHand.MAIN_HAND));
     this.handContainer.setItem(
@@ -177,7 +180,12 @@ public class EquipmentConfigurationMenu extends ConfigurationMenu {
     if (this.level.isClientSide) {
       return;
     }
-    log.debug("Load armor {}", this.getEasyNPC().getLivingEntity().getArmorSlots());
+    log.debug(
+        "Load armor feet {}, legs {}, chest {} and head {}",
+        this.getEasyNPC().getLivingEntity().getItemBySlot(EquipmentSlot.FEET),
+        this.getEasyNPC().getLivingEntity().getItemBySlot(EquipmentSlot.LEGS),
+        this.getEasyNPC().getLivingEntity().getItemBySlot(EquipmentSlot.CHEST),
+        this.getEasyNPC().getLivingEntity().getItemBySlot(EquipmentSlot.HEAD));
     this.armorContainer.setItem(
         0, this.getEasyNPC().getLivingEntity().getItemBySlot(EquipmentSlot.FEET));
     this.armorContainer.setItem(

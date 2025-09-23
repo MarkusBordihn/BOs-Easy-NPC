@@ -66,18 +66,19 @@ public class BaseAttributes {
     if (!compoundTag.contains(BASE_ATTRIBUTES_TAG)) {
       return;
     }
-    CompoundTag baseAttributesTag = compoundTag.getCompound(BASE_ATTRIBUTES_TAG);
+    CompoundTag baseAttributesTag = compoundTag.getCompoundOrEmpty(BASE_ATTRIBUTES_TAG);
     if (baseAttributesTag.contains(FOLLOW_RANGE_TAG)) {
-      this.setFollowRange(baseAttributesTag.getDouble(FOLLOW_RANGE_TAG));
+      this.setFollowRange(baseAttributesTag.getDouble(FOLLOW_RANGE_TAG).orElse(0.0));
     }
     if (baseAttributesTag.contains(KNOCKBACK_RESISTANCE_TAG)) {
-      this.setKnockbackResistance(baseAttributesTag.getDouble(KNOCKBACK_RESISTANCE_TAG));
+      this.setKnockbackResistance(
+          baseAttributesTag.getDouble(KNOCKBACK_RESISTANCE_TAG).orElse(0.0));
     }
     if (baseAttributesTag.contains(ATTACK_DAMAGE_TAG)) {
-      this.setAttackDamage(baseAttributesTag.getDouble(ATTACK_DAMAGE_TAG));
+      this.setAttackDamage(baseAttributesTag.getDouble(ATTACK_DAMAGE_TAG).orElse(0.0));
     }
     if (baseAttributesTag.contains(ATTACK_KNOCKBACK_TAG)) {
-      this.setAttackKnockback(baseAttributesTag.getDouble(ATTACK_KNOCKBACK_TAG));
+      this.setAttackKnockback(baseAttributesTag.getDouble(ATTACK_KNOCKBACK_TAG).orElse(0.0));
     }
   }
 

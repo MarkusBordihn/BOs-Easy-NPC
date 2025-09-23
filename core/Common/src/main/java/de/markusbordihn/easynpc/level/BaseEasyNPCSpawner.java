@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.data.spawner.SpawnerType;
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
@@ -227,18 +228,21 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
       }
 
       // Use the provided position or calculate a new one
-      ListTag posList = entityTag.getList("Pos", 6);
+      ListTag posList = entityTag.getListOrEmpty("Pos");
       int posSize = posList.size();
       double x =
           posSize >= 1
-              ? posList.getDouble(0)
+              ? posList.getDouble(0).orElse(0.0)
               : pos.getX()
                   + (level.random.nextDouble() - level.random.nextDouble()) * this.spawnRange
                   + 0.5;
-      double y = posSize >= 2 ? posList.getDouble(1) : pos.getY() + level.random.nextInt(3) - 1;
+      double y =
+          posSize >= 2
+              ? posList.getDouble(1).orElse(0.0)
+              : pos.getY() + level.random.nextInt(3) - 1;
       double z =
           posSize >= 3
-              ? posList.getDouble(2)
+              ? posList.getDouble(2).orElse(0.0)
               : pos.getZ()
                   + (level.random.nextDouble() - level.random.nextDouble()) * this.spawnRange
                   + 0.5;
@@ -283,7 +287,7 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
               level,
               EntitySpawnReason.SPAWNER,
               loadedEntity -> {
-                loadedEntity.moveTo(
+                loadedEntity.snapTo(
                     finalX, finalY, finalZ, loadedEntity.getYRot(), loadedEntity.getXRot());
                 return loadedEntity;
               });
@@ -291,7 +295,7 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
         this.delay(level, pos);
         return;
       }
-      entity.moveTo(
+      entity.snapTo(
           entity.getX(), entity.getY(), entity.getZ(), level.random.nextFloat() * 360.0F, 0.0F);
 
       // Finalize the spawn and add the entity to the level
@@ -359,21 +363,23 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
     this.easyNPCPresetUUID = null;
 
     if (SpawnerData.hasSpawnData(compoundTag)) {
-      CompoundTag spawnData = compoundTag.getCompound(SpawnerData.SPAWN_DATA_TAG);
+      CompoundTag spawnData = compoundTag.getCompoundOrEmpty(SpawnerData.SPAWN_DATA_TAG);
       if (spawnData.contains("entity")) {
-        CompoundTag entityData = spawnData.getCompound("entity");
+        CompoundTag entityData = spawnData.getCompoundOrEmpty("entity");
 
         if (entityData.contains("id")) {
-          this.entityResourceLocation = ResourceLocation.tryParse(entityData.getString("id"));
+          this.entityResourceLocation =
+              ResourceLocation.tryParse(entityData.getString("id").orElse(""));
           this.isEasyNPC = this.entityResourceLocation.getNamespace().equals(Constants.MOD_ID);
         }
 
         if (entityData.contains("UUID")) {
-          this.easyNPCUUID = entityData.getUUID("UUID");
+          this.easyNPCUUID = CompoundTagUtils.readUUID(entityData);
         }
 
         if (entityData.contains(PresetDataCapable.PRESET_UUID_TAG)) {
-          this.easyNPCPresetUUID = entityData.getUUID(PresetDataCapable.PRESET_UUID_TAG);
+          this.easyNPCPresetUUID =
+              CompoundTagUtils.readUUID(entityData, PresetDataCapable.PRESET_UUID_TAG);
         }
       }
     }

@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.data.objective;
 
 import de.markusbordihn.easynpc.entity.LivingEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
@@ -36,7 +37,6 @@ public final class ObjectiveDataEntry {
   public static final String DATA_ATTACK_RADIUS_TAG = "AttackRadius";
   public static final String DATA_CAN_DEAL_WITH_DOORS_TAG = "CanDealWithDoors";
   public static final String DATA_DISTANCE_TO_POI_TAG = "DistanceToPoi";
-  // Objective Data Tags
   public static final String DATA_ID_TAG = "Id";
   public static final String DATA_INTERVAL_TAG = "Interval";
   public static final String DATA_LOOK_DISTANCE_TAG = "LookDistance";
@@ -52,26 +52,43 @@ public final class ObjectiveDataEntry {
   public static final String DATA_TARGET_OWNER_UUID_TAG = "TargetOwnerUUID";
   public static final String DATA_TARGET_PLAYER_NAME_TAG = "TargetPlayerName";
   public static final String DATA_TYPE_TAG = "Type";
-  private int attackInterval = 20;
-  private float attackRadius = 8.0F;
-  private BooleanSupplier canDealWithDoors = () -> false;
-  private int distanceToPoi = 16;
+
+  public static final double DEFAULT_SPEED_MODIFIER = 0.7D;
+  public static final float DEFAULT_ATTACK_RADIUS = 8.0F;
+  public static final float DEFAULT_LOOK_DISTANCE = 15.0F;
+  public static final float DEFAULT_PROBABILITY = 1.0F;
+  public static final float DEFAULT_START_DISTANCE = 16.0F;
+  public static final float DEFAULT_STOP_DISTANCE = 2.0F;
+  public static final int DEFAULT_ATTACK_INTERVAL = 20;
+  public static final int DEFAULT_DISTANCE_TO_POI = 16;
+  public static final int DEFAULT_INTERVAL = 10;
+  public static final int DEFAULT_PRIORITY = 1;
+
+  public static final BooleanSupplier DEFAULT_CAN_DEAL_WITH_DOORS = () -> false;
+  public static final boolean DEFAULT_MUST_REACH_TARGET = true;
+  public static final boolean DEFAULT_MUST_SEE_TARGET = true;
+  public static final boolean DEFAULT_ONLY_AT_NIGHT = false;
+
+  private double speedModifier = DEFAULT_SPEED_MODIFIER;
+  private float attackRadius = DEFAULT_ATTACK_RADIUS;
+  private float lookDistance = DEFAULT_LOOK_DISTANCE;
+  private float probability = DEFAULT_PROBABILITY;
+  private float startDistance = DEFAULT_START_DISTANCE;
+  private float stopDistance = DEFAULT_STOP_DISTANCE;
+  private int attackInterval = DEFAULT_ATTACK_INTERVAL;
+  private int distanceToPoi = DEFAULT_DISTANCE_TO_POI;
+  private int interval = DEFAULT_INTERVAL;
+  private int priority = DEFAULT_PRIORITY;
+
+  private BooleanSupplier canDealWithDoors = DEFAULT_CAN_DEAL_WITH_DOORS;
+  private boolean mustReachTarget = DEFAULT_MUST_REACH_TARGET;
+  private boolean mustSeeTarget = DEFAULT_MUST_SEE_TARGET;
+  private boolean onlyAtNight = DEFAULT_ONLY_AT_NIGHT;
+
+  private ObjectiveType objectiveType = ObjectiveType.NONE;
+  private boolean isRegistered = false;
   private Goal goal = null;
   private String id = UUID.randomUUID().toString();
-  private int interval = 10;
-  // Cache
-  private boolean isRegistered = false;
-  private float lookDistance = 15.0F;
-  private boolean mustReachTarget = true;
-  // Objective Data
-  private boolean mustSeeTarget = true;
-  private ObjectiveType objectiveType = ObjectiveType.NONE;
-  private boolean onlyAtNight = false;
-  private int priority = 1;
-  private float probability = 1.0F;
-  private double speedModifier = 0.7D;
-  private float startDistance = 16.0F;
-  private float stopDistance = 2.0F;
   private Goal target = null;
   private UUID targetEntityUUID;
   private UUID targetOwnerUUID;
@@ -287,66 +304,81 @@ public final class ObjectiveDataEntry {
   }
 
   public void load(CompoundTag compoundTag) {
-    this.objectiveType = ObjectiveType.get(compoundTag.getString(DATA_TYPE_TAG));
-    this.priority = compoundTag.getInt(DATA_PRIORITY_TAG);
+    this.objectiveType = ObjectiveType.get(compoundTag.getString(DATA_TYPE_TAG).orElse(""));
+    this.priority = compoundTag.getInt(DATA_PRIORITY_TAG).orElse(DEFAULT_PRIORITY);
 
     // Restore id, if no id is set, use the objective type.
     if (compoundTag.contains(DATA_ID_TAG) && !compoundTag.getString(DATA_ID_TAG).isEmpty()) {
-      this.id = compoundTag.getString(DATA_ID_TAG);
+      this.id = compoundTag.getString(DATA_ID_TAG).orElse(this.objectiveType.name());
     } else {
       this.id = this.objectiveType.name();
     }
 
     // Targeting parameters
     if (compoundTag.contains(DATA_TARGET_ENTITY_UUID_TAG)) {
-      this.targetEntityUUID = compoundTag.getUUID(DATA_TARGET_ENTITY_UUID_TAG);
+      this.targetEntityUUID = CompoundTagUtils.readUUID(compoundTag, DATA_TARGET_ENTITY_UUID_TAG);
     }
     if (compoundTag.contains(DATA_TARGET_PLAYER_NAME_TAG)) {
-      this.targetPlayerName = compoundTag.getString(DATA_TARGET_PLAYER_NAME_TAG);
+      this.targetPlayerName = compoundTag.getString(DATA_TARGET_PLAYER_NAME_TAG).orElse("");
     }
     if (compoundTag.contains(DATA_TARGET_OWNER_UUID_TAG)) {
-      this.targetOwnerUUID = compoundTag.getUUID(DATA_TARGET_OWNER_UUID_TAG);
+      this.targetOwnerUUID = CompoundTagUtils.readUUID(compoundTag, DATA_TARGET_OWNER_UUID_TAG);
     }
 
     // Additional parameters
     if (compoundTag.contains(DATA_SPEED_MODIFIER_TAG)) {
-      this.speedModifier = compoundTag.getDouble(DATA_SPEED_MODIFIER_TAG);
+      this.speedModifier =
+          compoundTag.getDouble(DATA_SPEED_MODIFIER_TAG).orElse(DEFAULT_SPEED_MODIFIER);
     }
     if (compoundTag.contains(DATA_START_DISTANCE_TAG)) {
-      this.startDistance = compoundTag.getFloat(DATA_START_DISTANCE_TAG);
+      this.startDistance =
+          compoundTag.getFloat(DATA_START_DISTANCE_TAG).orElse(DEFAULT_START_DISTANCE);
     }
     if (compoundTag.contains(DATA_STOP_DISTANCE_TAG)) {
-      this.stopDistance = compoundTag.getFloat(DATA_STOP_DISTANCE_TAG);
-    }
-    if (compoundTag.contains(DATA_ONLY_AT_NIGHT_TAG)) {
-      this.onlyAtNight = compoundTag.getBoolean(DATA_ONLY_AT_NIGHT_TAG);
+      this.stopDistance =
+          compoundTag.getFloat(DATA_STOP_DISTANCE_TAG).orElse(DEFAULT_STOP_DISTANCE);
     }
     if (compoundTag.contains(DATA_DISTANCE_TO_POI_TAG)) {
-      this.distanceToPoi = compoundTag.getInt(DATA_DISTANCE_TO_POI_TAG);
-    }
-    if (compoundTag.contains(DATA_CAN_DEAL_WITH_DOORS_TAG)) {
-      this.canDealWithDoors = () -> compoundTag.getBoolean(DATA_CAN_DEAL_WITH_DOORS_TAG);
+      this.distanceToPoi =
+          compoundTag.getInt(DATA_DISTANCE_TO_POI_TAG).orElse(DEFAULT_DISTANCE_TO_POI);
     }
     if (compoundTag.contains(DATA_LOOK_DISTANCE_TAG)) {
-      this.lookDistance = compoundTag.getFloat(DATA_LOOK_DISTANCE_TAG);
+      this.lookDistance =
+          compoundTag.getFloat(DATA_LOOK_DISTANCE_TAG).orElse(DEFAULT_LOOK_DISTANCE);
     }
     if (compoundTag.contains(DATA_ATTACK_INTERVAL_TAG)) {
-      this.attackInterval = compoundTag.getInt(DATA_ATTACK_INTERVAL_TAG);
+      this.attackInterval =
+          compoundTag.getInt(DATA_ATTACK_INTERVAL_TAG).orElse(DEFAULT_ATTACK_INTERVAL);
     }
     if (compoundTag.contains(DATA_ATTACK_RADIUS_TAG)) {
-      this.attackRadius = compoundTag.getFloat(DATA_ATTACK_RADIUS_TAG);
+      this.attackRadius =
+          compoundTag.getFloat(DATA_ATTACK_RADIUS_TAG).orElse(DEFAULT_ATTACK_RADIUS);
     }
     if (compoundTag.contains(DATA_INTERVAL_TAG)) {
-      this.interval = compoundTag.getInt(DATA_INTERVAL_TAG);
-    }
-    if (compoundTag.contains(DATA_MUST_SEE_TARGET_TAG)) {
-      this.mustSeeTarget = compoundTag.getBoolean(DATA_MUST_SEE_TARGET_TAG);
-    }
-    if (compoundTag.contains(DATA_MUST_REACH_TARGET_TAG)) {
-      this.mustReachTarget = compoundTag.getBoolean(DATA_MUST_REACH_TARGET_TAG);
+      this.interval = compoundTag.getInt(DATA_INTERVAL_TAG).orElse(DEFAULT_INTERVAL);
     }
     if (compoundTag.contains(DATA_PROBABILITY_TAG)) {
-      this.probability = compoundTag.getFloat(DATA_PROBABILITY_TAG);
+      this.probability = compoundTag.getFloat(DATA_PROBABILITY_TAG).orElse(DEFAULT_PROBABILITY);
+    }
+
+    if (compoundTag.contains(DATA_ONLY_AT_NIGHT_TAG)) {
+      this.onlyAtNight =
+          compoundTag.getBoolean(DATA_ONLY_AT_NIGHT_TAG).orElse(DEFAULT_ONLY_AT_NIGHT);
+    }
+    if (compoundTag.contains(DATA_CAN_DEAL_WITH_DOORS_TAG)) {
+      this.canDealWithDoors =
+          () ->
+              compoundTag
+                  .getBoolean(DATA_CAN_DEAL_WITH_DOORS_TAG)
+                  .orElse(DEFAULT_CAN_DEAL_WITH_DOORS.getAsBoolean());
+    }
+    if (compoundTag.contains(DATA_MUST_SEE_TARGET_TAG)) {
+      this.mustSeeTarget =
+          compoundTag.getBoolean(DATA_MUST_SEE_TARGET_TAG).orElse(DEFAULT_MUST_SEE_TARGET);
+    }
+    if (compoundTag.contains(DATA_MUST_REACH_TARGET_TAG)) {
+      this.mustReachTarget =
+          compoundTag.getBoolean(DATA_MUST_REACH_TARGET_TAG).orElse(DEFAULT_MUST_REACH_TARGET);
     }
   }
 
@@ -364,13 +396,13 @@ public final class ObjectiveDataEntry {
 
     // Targeting parameters
     if (this.targetEntityUUID != null) {
-      compoundTag.putUUID(DATA_TARGET_ENTITY_UUID_TAG, this.targetEntityUUID);
+      CompoundTagUtils.writeUUID(compoundTag, DATA_TARGET_ENTITY_UUID_TAG, this.targetEntityUUID);
     }
     if (this.targetPlayerName != null && !this.targetPlayerName.isEmpty()) {
       compoundTag.putString(DATA_TARGET_PLAYER_NAME_TAG, this.targetPlayerName);
     }
     if (this.targetOwnerUUID != null) {
-      compoundTag.putUUID(DATA_TARGET_OWNER_UUID_TAG, this.targetOwnerUUID);
+      CompoundTagUtils.writeUUID(compoundTag, DATA_TARGET_OWNER_UUID_TAG, this.targetOwnerUUID);
     }
 
     // Additional parameters

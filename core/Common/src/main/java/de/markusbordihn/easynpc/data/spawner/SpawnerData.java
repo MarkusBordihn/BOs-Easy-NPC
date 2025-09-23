@@ -44,7 +44,7 @@ public class SpawnerData {
   }
 
   public static short getDelay(CompoundTag compoundTag) {
-    return compoundTag.getShort(DELAY_TAG);
+    return compoundTag.getShort(DELAY_TAG).orElse(SpawnerTypeConfig.DEFAULT_SPAWNER_DELAY);
   }
 
   public static void setMinSpawnDelay(CompoundTag compoundTag, short minSpawnDelay) {
@@ -52,11 +52,13 @@ public class SpawnerData {
   }
 
   public static short getMinSpawnDelay(CompoundTag compoundTag) {
-    return compoundTag.getShort(MIN_SPAWN_DELAY_TAG);
+    return compoundTag
+        .getShort(MIN_SPAWN_DELAY_TAG)
+        .orElse(SpawnerTypeConfig.DEFAULT_SPAWNER_MIN_SPAWN_DELAY);
   }
 
   public static boolean hasMinSpawnDelay(CompoundTag compoundTag) {
-    return compoundTag.contains(MIN_SPAWN_DELAY_TAG, 99);
+    return compoundTag.contains(MIN_SPAWN_DELAY_TAG);
   }
 
   public static void setMaxSpawnDelay(CompoundTag compoundTag, short maxSpawnDelay) {
@@ -64,7 +66,9 @@ public class SpawnerData {
   }
 
   public static short getMaxSpawnDelay(CompoundTag compoundTag) {
-    return compoundTag.getShort(MAX_SPAWN_DELAY_TAG);
+    return compoundTag
+        .getShort(MAX_SPAWN_DELAY_TAG)
+        .orElse(SpawnerTypeConfig.DEFAULT_SPAWNER_MAX_SPAWN_DELAY);
   }
 
   public static void setSpawnCount(CompoundTag compoundTag, short spawnCount) {
@@ -72,7 +76,9 @@ public class SpawnerData {
   }
 
   public static short getSpawnCount(CompoundTag compoundTag) {
-    return compoundTag.getShort(SPAWN_COUNT_TAG);
+    return compoundTag
+        .getShort(SPAWN_COUNT_TAG)
+        .orElse(SpawnerTypeConfig.DEFAULT_SPAWNER_SPAWN_COUNT);
   }
 
   public static void setMaxNearbyEntities(CompoundTag compoundTag, short maxNearbyEntities) {
@@ -80,11 +86,13 @@ public class SpawnerData {
   }
 
   public static short getMaxNearbyEntities(CompoundTag compoundTag) {
-    return compoundTag.getShort(MAX_NEARBY_ENTITIES_TAG);
+    return compoundTag
+        .getShort(MAX_NEARBY_ENTITIES_TAG)
+        .orElse(SpawnerTypeConfig.DEFAULT_SPAWNER_MAX_NEARBY_ENTITIES);
   }
 
   public static boolean hasMaxNearbyEntities(CompoundTag compoundTag) {
-    return compoundTag.contains(MAX_NEARBY_ENTITIES_TAG, 99);
+    return compoundTag.contains(MAX_NEARBY_ENTITIES_TAG);
   }
 
   public static void setRequiredPlayerRange(CompoundTag compoundTag, short requiredPlayerRange) {
@@ -92,7 +100,9 @@ public class SpawnerData {
   }
 
   public static short getRequiredPlayerRange(CompoundTag compoundTag) {
-    return compoundTag.getShort(REQUIRED_PLAYER_RANGE_TAG);
+    return compoundTag
+        .getShort(REQUIRED_PLAYER_RANGE_TAG)
+        .orElse(SpawnerTypeConfig.DEFAULT_SPAWNER_REQUIRED_PLAYER_RANGE);
   }
 
   public static void setSpawnRange(CompoundTag compoundTag, short spawnRange) {
@@ -100,11 +110,13 @@ public class SpawnerData {
   }
 
   public static short getSpawnRange(CompoundTag compoundTag) {
-    return compoundTag.getShort(SPAWN_RANGE_TAG);
+    return compoundTag
+        .getShort(SPAWN_RANGE_TAG)
+        .orElse(SpawnerTypeConfig.DEFAULT_SPAWNER_SPAWN_RANGE);
   }
 
   public static boolean hasSpawnRange(CompoundTag compoundTag) {
-    return compoundTag.contains(SPAWN_RANGE_TAG, 99);
+    return compoundTag.contains(SPAWN_RANGE_TAG);
   }
 
   public static SpawnData getSpawnData(CompoundTag compoundTag) {
@@ -112,7 +124,7 @@ public class SpawnerData {
       return new SpawnData();
     }
 
-    CompoundTag spawnData = compoundTag.getCompound(SPAWN_DATA_TAG);
+    CompoundTag spawnData = compoundTag.getCompoundOrEmpty(SPAWN_DATA_TAG);
     return SpawnData.CODEC
         .parse(NbtOps.INSTANCE, spawnData)
         .resultOrPartial((result) -> log.warn("Invalid SpawnData: {}", result))

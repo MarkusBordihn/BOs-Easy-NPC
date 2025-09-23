@@ -1,6 +1,7 @@
 package de.markusbordihn.easynpc.data.skin;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -46,17 +47,19 @@ public record SkinDataEntry(
 
   public SkinDataEntry(final CompoundTag compoundTag) {
     this(
-        compoundTag.contains(DATA_NAME_TAG) ? compoundTag.getString(DATA_NAME_TAG) : "",
-        compoundTag.contains(DATA_URL_TAG) ? compoundTag.getString(DATA_URL_TAG) : "",
+        compoundTag.contains(DATA_NAME_TAG) ? compoundTag.getString(DATA_NAME_TAG).orElse("") : "",
+        compoundTag.contains(DATA_URL_TAG) ? compoundTag.getString(DATA_URL_TAG).orElse("") : "",
         compoundTag.contains(DATA_UUID_TAG)
-            ? compoundTag.getUUID(DATA_UUID_TAG)
+            ? CompoundTagUtils.readUUID(compoundTag, DATA_UUID_TAG)
             : Constants.BLANK_UUID,
-        SkinType.get(compoundTag.getString(DATA_TYPE_TAG)),
+        SkinType.get(compoundTag.getString(DATA_TYPE_TAG).orElse("")),
         compoundTag.contains(DATA_DISABLE_LAYERS_TAG)
-            && compoundTag.getBoolean(DATA_DISABLE_LAYERS_TAG),
-        compoundTag.contains(DATA_CONTENT_TAG) ? compoundTag.getString(DATA_CONTENT_TAG) : "",
+            && compoundTag.getBoolean(DATA_DISABLE_LAYERS_TAG).orElse(false),
+        compoundTag.contains(DATA_CONTENT_TAG)
+            ? compoundTag.getString(DATA_CONTENT_TAG).orElse("")
+            : "",
         compoundTag.contains(DATA_TIMESTAMP_TAG)
-            ? compoundTag.getLong(DATA_TIMESTAMP_TAG)
+            ? compoundTag.getLong(DATA_TIMESTAMP_TAG).orElse(System.currentTimeMillis())
             : System.currentTimeMillis());
   }
 
@@ -93,7 +96,7 @@ public record SkinDataEntry(
     compoundTag.putString(DATA_NAME_TAG, this.name);
     compoundTag.putString(DATA_TYPE_TAG, this.type.name());
     compoundTag.putString(DATA_URL_TAG, this.url);
-    compoundTag.putUUID(DATA_UUID_TAG, this.uuid);
+    CompoundTagUtils.writeUUID(compoundTag, DATA_UUID_TAG, this.uuid);
     compoundTag.putBoolean(DATA_DISABLE_LAYERS_TAG, this.disableLayers);
     compoundTag.putString(DATA_CONTENT_TAG, this.content);
     compoundTag.putLong(DATA_TIMESTAMP_TAG, this.timestamp);

@@ -120,7 +120,7 @@ public interface ActionEventDataCapable<E extends PathfinderMob> extends EasyNPC
     }
 
     // Read action data
-    CompoundTag actionDataTag = compoundTag.getCompound(DATA_ACTION_DATA_TAG);
+    CompoundTag actionDataTag = compoundTag.getCompoundOrEmpty(DATA_ACTION_DATA_TAG);
 
     // Read actions
     if (actionDataTag.contains(ActionEventSet.DATA_ACTION_EVENT_SET_TAG)) {
@@ -130,7 +130,8 @@ public interface ActionEventDataCapable<E extends PathfinderMob> extends EasyNPC
 
     // Read permission level
     if (actionDataTag.contains(DATA_ACTION_PERMISSION_LEVEL_TAG)) {
-      this.setActionPermissionLevel(actionDataTag.getInt(DATA_ACTION_PERMISSION_LEVEL_TAG));
+      this.setActionPermissionLevel(
+          actionDataTag.getInt(DATA_ACTION_PERMISSION_LEVEL_TAG).orElse(0));
     }
   }
 

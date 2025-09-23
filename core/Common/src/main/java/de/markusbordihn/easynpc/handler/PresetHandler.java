@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.PresetDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
 import de.markusbordihn.easynpc.io.WorldPresetDataFiles;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -73,7 +74,7 @@ public class PresetHandler {
 
     // Overwrite UUID, if UUID is given.
     if (uuid != null) {
-      compoundTag.putUUID(Entity.UUID_TAG, uuid);
+      CompoundTagUtils.writeUUID(compoundTag, Entity.UUID_TAG, uuid);
     }
 
     // Import preset data
@@ -82,7 +83,7 @@ public class PresetHandler {
     }
 
     // Get EasyNPC entity
-    UUID compoundUUID = compoundTag.getUUID(Entity.UUID_TAG);
+    UUID compoundUUID = CompoundTagUtils.readUUID(compoundTag, Entity.UUID_TAG);
     EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(compoundUUID, serverLevel);
     if (easyNPC == null) {
       log.error(
@@ -132,7 +133,7 @@ public class PresetHandler {
     // Validate entity type
     EntityType<?> entityType =
         compoundTag.contains(Entity.ID_TAG)
-            ? EntityType.byString(compoundTag.getString(Entity.ID_TAG)).orElse(null)
+            ? EntityType.byString(compoundTag.getString(Entity.ID_TAG).orElse("")).orElse(null)
             : null;
     if (entityType == null) {
       log.error("[{}] Error importing preset, invalid entity type", serverLevel);
@@ -141,7 +142,9 @@ public class PresetHandler {
 
     // Get UUID from compound tag and check if entity with this UUID already exists.
     UUID existingUUID =
-        compoundTag.contains(Entity.UUID_TAG) ? compoundTag.getUUID(Entity.UUID_TAG) : null;
+        compoundTag.contains(Entity.UUID_TAG)
+            ? CompoundTagUtils.readUUID(compoundTag, Entity.UUID_TAG)
+            : null;
     if (existingUUID != null
         && LivingEntityManager.getEasyNPCEntityByUUID(existingUUID, serverLevel) != null) {
       EasyNPC<?> existingEasyNPC =

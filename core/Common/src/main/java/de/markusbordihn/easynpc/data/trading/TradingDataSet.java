@@ -105,15 +105,15 @@ public class TradingDataSet {
       return;
     }
 
-    CompoundTag tradingData = compoundTag.getCompound(DATA_TRADING_DATA_SET_TAG);
-    this.maxUses = tradingData.getInt(DATA_TRADING_MAX_USES_TAG);
-    this.rewardedXP = tradingData.getInt(DATA_TRADING_REWARDED_XP_TAG);
-    this.resetsEveryMin = tradingData.getInt(DATA_TRADING_RESETS_EVERY_MIN_TAG);
+    CompoundTag tradingData = compoundTag.getCompoundOrEmpty(DATA_TRADING_DATA_SET_TAG);
+    this.maxUses = tradingData.getInt(DATA_TRADING_MAX_USES_TAG).orElse(64);
+    this.rewardedXP = tradingData.getInt(DATA_TRADING_REWARDED_XP_TAG).orElse(0);
+    this.resetsEveryMin = tradingData.getInt(DATA_TRADING_RESETS_EVERY_MIN_TAG).orElse(0);
     this.lastReset =
         tradingData.contains(DATA_TRADING_LAST_RESET_TAG)
-            ? tradingData.getLong(DATA_TRADING_LAST_RESET_TAG)
+            ? tradingData.getLong(DATA_TRADING_LAST_RESET_TAG).orElse(System.currentTimeMillis())
             : System.currentTimeMillis();
-    this.tradingType = TradingType.valueOf(tradingData.getString(DATA_TYPE_TAG));
+    this.tradingType = TradingType.valueOf(tradingData.getString(DATA_TYPE_TAG).orElse(""));
   }
 
   public CompoundTag save(CompoundTag compoundTag) {

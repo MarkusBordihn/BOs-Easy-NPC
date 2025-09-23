@@ -50,12 +50,12 @@ public interface DisplayAttributeDataCapable<E extends PathfinderMob> extends Ea
               CompoundTag compoundTag = registryFriendlyByteBuf.readNbt();
               EnumMap<DisplayAttributeType, DisplayAttributeEntry> displayAttributeMap =
                   new EnumMap<>(DisplayAttributeType.class);
-              for (String key : compoundTag.getAllKeys()) {
+              for (String key : compoundTag.keySet()) {
                 DisplayAttributeType displayAttributeType = DisplayAttributeType.get(key);
                 if (displayAttributeType != null) {
                   displayAttributeMap.put(
                       displayAttributeType,
-                      new DisplayAttributeEntry(compoundTag.getCompound(key)));
+                      new DisplayAttributeEntry(compoundTag.getCompoundOrEmpty(key)));
                 }
               }
               return displayAttributeMap;
@@ -203,7 +203,7 @@ public interface DisplayAttributeDataCapable<E extends PathfinderMob> extends Ea
       return;
     }
 
-    ListTag displayListTag = compoundTag.getList(DATA_DISPLAY_ATTRIBUTE_SET_TAG, 10);
+    ListTag displayListTag = compoundTag.getListOrEmpty(DATA_DISPLAY_ATTRIBUTE_SET_TAG);
     EnumMap<DisplayAttributeType, DisplayAttributeEntry> displayAttributeMap =
         new EnumMap<>(DisplayAttributeType.class);
 
@@ -211,7 +211,7 @@ public interface DisplayAttributeDataCapable<E extends PathfinderMob> extends Ea
         entry -> {
           if (entry instanceof CompoundTag entryCompoundTag) {
             if (entryCompoundTag.contains("Type")) {
-              String typeString = entryCompoundTag.getString("Type");
+              String typeString = entryCompoundTag.getString("Type").orElse("");
               DisplayAttributeType displayAttributeType = DisplayAttributeType.get(typeString);
               if (displayAttributeType != DisplayAttributeType.NONE) {
                 DisplayAttributeEntry displayAttributeEntry =

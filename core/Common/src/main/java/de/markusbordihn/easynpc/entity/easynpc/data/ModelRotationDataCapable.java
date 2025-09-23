@@ -48,7 +48,7 @@ public interface ModelRotationDataCapable<T extends PathfinderMob> extends EasyN
                 RegistryFriendlyByteBuf registryFriendlyByteBuf) {
               CompoundTag compoundTag = registryFriendlyByteBuf.readNbt();
               Map<ModelPartType, CustomRotation> modelPartMap = new EnumMap<>(ModelPartType.class);
-              for (String key : compoundTag.getAllKeys()) {
+              for (String key : compoundTag.keySet()) {
                 ModelPartType modelPartType = ModelPartType.get(key);
                 if (modelPartType != null) {
                   modelPartMap.put(modelPartType, new CustomRotation(modelPartType, compoundTag));
@@ -158,9 +158,9 @@ public interface ModelRotationDataCapable<T extends PathfinderMob> extends EasyN
     if (!compoundTag.contains(EASY_NPC_DATA_MODEL_ROTATION_TAG)) {
       return;
     }
-    CompoundTag rotationsTag = compoundTag.getCompound(EASY_NPC_DATA_MODEL_ROTATION_TAG);
+    CompoundTag rotationsTag = compoundTag.getCompoundOrEmpty(EASY_NPC_DATA_MODEL_ROTATION_TAG);
     EnumMap<ModelPartType, CustomRotation> modelPartMap = new EnumMap<>(ModelPartType.class);
-    for (String key : rotationsTag.getAllKeys()) {
+    for (String key : rotationsTag.keySet()) {
       ModelPartType modelPartType = ModelPartType.get(key);
       if (modelPartType != null) {
         modelPartMap.put(modelPartType, new CustomRotation(modelPartType, rotationsTag));

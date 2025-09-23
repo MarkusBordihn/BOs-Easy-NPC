@@ -46,10 +46,12 @@ public record DisplayAttributeEntry(boolean booleanValue, int intValue, String s
   public DisplayAttributeEntry(final CompoundTag compoundTag) {
     this(
         compoundTag.contains(DATA_BOOLEAN_VALUE_TAG)
-            && compoundTag.getBoolean(DATA_BOOLEAN_VALUE_TAG),
-        compoundTag.contains(DATA_INT_VALUE_TAG) ? compoundTag.getInt(DATA_INT_VALUE_TAG) : 0,
+            && compoundTag.getBoolean(DATA_BOOLEAN_VALUE_TAG).orElse(false),
+        compoundTag.contains(DATA_INT_VALUE_TAG)
+            ? compoundTag.getInt(DATA_INT_VALUE_TAG).orElse(0)
+            : 0,
         compoundTag.contains(DATA_STRING_VALUE_TAG)
-            ? compoundTag.getString(DATA_STRING_VALUE_TAG)
+            ? compoundTag.getString(DATA_STRING_VALUE_TAG).orElse("")
             : "");
   }
 

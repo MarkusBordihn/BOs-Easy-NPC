@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.EnumMap;
 import java.util.Locale;
 import java.util.stream.Stream;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -107,21 +108,21 @@ public interface VariantDataCapable<T extends PathfinderMob> extends EasyNPC<T> 
     return variant != null && variant.name().endsWith("_SADDLED");
   }
 
-  default VillagerProfession getVillagerProfession(Enum<?> variantType) {
+  default Holder<VillagerProfession> getVillagerProfession(Enum<?> variantType) {
     String name = variantType.name().toLowerCase(Locale.ROOT);
     for (VillagerProfession profession : BuiltInRegistries.VILLAGER_PROFESSION) {
-      if (name.endsWith(profession.name().toLowerCase(Locale.ROOT))) {
-        return profession;
+      if (name.endsWith(profession.name().getString().toLowerCase(Locale.ROOT))) {
+        return BuiltInRegistries.VILLAGER_PROFESSION.wrapAsHolder(profession);
       }
     }
     return null;
   }
 
-  default VillagerType getVillagerType(Enum<?> variantType) {
+  default Holder<VillagerType> getVillagerType(Enum<?> variantType) {
     String name = variantType.name().toLowerCase(Locale.ROOT);
     for (VillagerType villagerType : BuiltInRegistries.VILLAGER_TYPE) {
       if (name.startsWith(villagerType.toString().toLowerCase(Locale.ROOT))) {
-        return villagerType;
+        return BuiltInRegistries.VILLAGER_TYPE.wrapAsHolder(villagerType);
       }
     }
     return null;
@@ -139,7 +140,7 @@ public interface VariantDataCapable<T extends PathfinderMob> extends EasyNPC<T> 
 
   default void readAdditionalVariantData(CompoundTag compoundTag) {
     if (compoundTag.contains(EASY_NPC_DATA_VARIANT_TYPE_TAG)) {
-      String variantType = compoundTag.getString(EASY_NPC_DATA_VARIANT_TYPE_TAG);
+      String variantType = compoundTag.getString(EASY_NPC_DATA_VARIANT_TYPE_TAG).orElse("");
       if (!variantType.isEmpty()) {
         this.setVariantType(this.getVariantType(variantType));
       }

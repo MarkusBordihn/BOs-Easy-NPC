@@ -212,33 +212,35 @@ public final class DialogDataEntry {
   }
 
   public void load(CompoundTag compoundTag) {
-    this.name = compoundTag.getString(DATA_DIALOG_NAME);
+    this.name = compoundTag.getString(DATA_DIALOG_NAME).orElse("");
 
     // Handle label and id creation
     this.setLabel(
-        compoundTag.contains(DATA_LABEL_TAG) ? compoundTag.getString(DATA_LABEL_TAG) : this.name);
+        compoundTag.contains(DATA_LABEL_TAG)
+            ? compoundTag.getString(DATA_LABEL_TAG).orElse("")
+            : this.name);
 
     // Load dialog texts, if available.
     if (compoundTag.contains(DATA_TEXTS_TAG)) {
       this.dialogTexts.clear();
-      ListTag dialogTextsList = compoundTag.getList(DATA_TEXTS_TAG, 10);
+      ListTag dialogTextsList = compoundTag.getListOrEmpty(DATA_TEXTS_TAG);
       if (!dialogTextsList.isEmpty()) {
         for (int i = 0; i < dialogTextsList.size(); i++) {
-          this.dialogTexts.add(new DialogTextData(dialogTextsList.getCompound(i)));
+          this.dialogTexts.add(new DialogTextData(dialogTextsList.getCompoundOrEmpty(i)));
         }
       }
     } else if (compoundTag.contains(DATA_TEXT_TAG)) {
       this.dialogTexts.clear();
-      this.dialogTexts.add(new DialogTextData(compoundTag.getString(DATA_TEXT_TAG)));
+      this.dialogTexts.add(new DialogTextData(compoundTag.getString(DATA_TEXT_TAG).orElse("")));
     }
 
     // Load buttons, if available.
     if (compoundTag.contains(DATA_BUTTONS_TAG)) {
       this.dialogButtons.clear();
-      ListTag buttonsList = compoundTag.getList(DATA_BUTTONS_TAG, 10);
+      ListTag buttonsList = compoundTag.getListOrEmpty(DATA_BUTTONS_TAG);
       if (!buttonsList.isEmpty()) {
         for (int i = 0; i < buttonsList.size(); i++) {
-          this.dialogButtons.add(new DialogButtonEntry(buttonsList.getCompound(i)));
+          this.dialogButtons.add(new DialogButtonEntry(buttonsList.getCompoundOrEmpty(i)));
         }
       }
     }

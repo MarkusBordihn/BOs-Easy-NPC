@@ -30,19 +30,22 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BaseSpawner;
+import net.minecraft.world.phys.Vec3;
 
 public class BaseEasyNPCSpawnerBlockEntityRenderer<T extends EasyNPCSpawnerBlockEntity>
     implements BlockEntityRenderer<T> {
 
   public BaseEasyNPCSpawnerBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
 
+  @Override
   public void render(
       T baseEasyNPCSpawnerBlockEntity,
       float partialTicks,
       PoseStack poseStack,
       MultiBufferSource bufferSource,
       int packedLight,
-      int packedOverlay) {
+      int packedOverlay,
+      Vec3 cameraPosition) {
     // Check if the spawner has a valid entity and ignore non-valid entities.
     BaseSpawner baseSpawner = baseEasyNPCSpawnerBlockEntity.getSpawner();
     if (!(baseSpawner instanceof BaseEasyNPCSpawner baseEasyNPCSpawner)

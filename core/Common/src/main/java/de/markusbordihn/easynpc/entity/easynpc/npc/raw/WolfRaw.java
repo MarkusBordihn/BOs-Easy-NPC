@@ -45,8 +45,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.DifficultyInstance;
@@ -59,9 +57,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
-import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
@@ -473,18 +470,6 @@ public class WolfRaw extends Wolf implements EasyNPCBase<Wolf> {
   public void travel(Vec3 vec3) {
     this.handleNavigationTravelEvent(vec3);
     super.travel(vec3);
-  }
-
-  @Override
-  public boolean isSaddleable() {
-    return false;
-  }
-
-  @Override
-  public void equipSaddle(ItemStack itemStack, SoundSource soundSource) {
-    if (soundSource != null) {
-      this.level().playSound(null, this, SoundEvents.PIG_SADDLE, soundSource, 0.5F, 1.0F);
-    }
   }
 
   @Override

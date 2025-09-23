@@ -44,9 +44,9 @@ public record DialogButtonEntry(
 
   public DialogButtonEntry(CompoundTag compoundTag) {
     this(
-        compoundTag.getString(DATA_BUTTON_NAME_TAG),
-        compoundTag.getString(DATA_LABEL_TAG),
-        DialogButtonType.get(compoundTag.getString(DATA_TYPE_TAG)),
+        compoundTag.getString(DATA_BUTTON_NAME_TAG).orElse(""),
+        compoundTag.getString(DATA_LABEL_TAG).orElse(""),
+        DialogButtonType.get(compoundTag.getString(DATA_TYPE_TAG).orElse("")),
         new ActionDataSet(compoundTag, DATA_ACTIONS_TAG));
   }
 

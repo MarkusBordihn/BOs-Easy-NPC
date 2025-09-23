@@ -25,13 +25,15 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.raw.HorseRaw.VariantType;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
+import net.minecraft.client.model.EquineSaddleModel;
 import net.minecraft.client.model.HorseModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.AbstractHorseRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.layers.HorseArmorLayer;
 import net.minecraft.client.renderer.entity.layers.HorseMarkingLayer;
+import net.minecraft.client.renderer.entity.layers.SimpleEquipmentLayer;
 import net.minecraft.client.renderer.entity.state.HorseRenderState;
+import net.minecraft.client.resources.model.EquipmentClientInfo.LayerType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.animal.horse.Horse;
 
@@ -119,7 +121,22 @@ public class HorseRawRenderer extends AbstractHorseRenderer<Horse, HorseRenderSt
         new HorseModel(context.bakeLayer(ModelLayers.HORSE)),
         new HorseModel(context.bakeLayer(ModelLayers.HORSE_BABY)));
     this.addLayer(new HorseMarkingLayer(this));
-    this.addLayer(new HorseArmorLayer(this, context.getModelSet(), context.getEquipmentRenderer()));
+    this.addLayer(
+        new SimpleEquipmentLayer<>(
+            this,
+            context.getEquipmentRenderer(),
+            LayerType.HORSE_BODY,
+            (renderState) -> renderState.bodyArmorItem,
+            new HorseModel(context.bakeLayer(ModelLayers.HORSE_ARMOR)),
+            new HorseModel(context.bakeLayer(ModelLayers.HORSE_BABY_ARMOR))));
+    this.addLayer(
+        new SimpleEquipmentLayer<>(
+            this,
+            context.getEquipmentRenderer(),
+            LayerType.HORSE_SADDLE,
+            (renderState) -> renderState.saddle,
+            new EquineSaddleModel(context.bakeLayer(ModelLayers.HORSE_SADDLE)),
+            new EquineSaddleModel(context.bakeLayer(ModelLayers.HORSE_BABY_SADDLE))));
   }
 
   public ResourceLocation getTextureLocation(HorseRenderState renderState) {

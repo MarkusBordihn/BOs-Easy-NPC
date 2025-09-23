@@ -27,6 +27,20 @@ import net.minecraft.world.item.Item;
 
 public class ModItemTags {
 
+  // Melee Weapon Tags
+  public static final TagKey<Item> MELEE_WEAPON =
+      TagKey.create(
+          BuiltInRegistries.ITEM.key(),
+          ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "melee_weapon"));
+  public static final TagKey<Item> MELEE_WEAPON_SWORD =
+      TagKey.create(
+          BuiltInRegistries.ITEM.key(),
+          ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "melee_weapon/sword"));
+  public static final TagKey<Item> MELEE_WEAPON_AXE =
+      TagKey.create(
+          BuiltInRegistries.ITEM.key(),
+          ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "melee_weapon/axe"));
+
   // Ranged Weapon Tags
   public static final TagKey<Item> RANGED_WEAPON_BOW =
       TagKey.create(

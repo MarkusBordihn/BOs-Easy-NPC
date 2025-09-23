@@ -23,9 +23,12 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 
 public class CompoundTagUtils {
@@ -34,8 +37,52 @@ public class CompoundTagUtils {
   public static final String X_TAG = "X";
   public static final String Y_TAG = "Y";
   public static final String Z_TAG = "Z";
+  public static final String UUID_TAG = "UUID";
 
   private CompoundTagUtils() {}
+
+  public static void writeUUID(CompoundTag compoundTag, UUID uuid) {
+    writeUUID(compoundTag, UUID_TAG, uuid);
+  }
+
+  public static void writeUUID(CompoundTag compoundTag, String key, UUID uuid) {
+    if (compoundTag == null || key == null || uuid == null) {
+      return;
+    }
+    long mostSignificantBits = uuid.getMostSignificantBits();
+    long leastSignificantBits = uuid.getLeastSignificantBits();
+    int[] uuidArray = new int[4];
+    uuidArray[0] = (int) (mostSignificantBits >> 32);
+    uuidArray[1] = (int) mostSignificantBits;
+    uuidArray[2] = (int) (leastSignificantBits >> 32);
+    uuidArray[3] = (int) leastSignificantBits;
+    compoundTag.put(key, new IntArrayTag(uuidArray));
+  }
+
+  public static UUID readUUID(CompoundTag compoundTag) {
+    return readUUID(compoundTag, UUID_TAG);
+  }
+
+  public static UUID readUUID(CompoundTag compoundTag, String key) {
+    if (compoundTag == null || key == null || !compoundTag.contains(key)) {
+      return null;
+    }
+    Tag tag = compoundTag.get(key);
+    if (!(tag instanceof IntArrayTag intArrayTag)) {
+      return null;
+    }
+    int[] uuidArray = intArrayTag.getAsIntArray();
+    if (uuidArray.length != 4) {
+      return null;
+    }
+    try {
+      long mostSignificantBits = ((long) uuidArray[0] << 32) | (uuidArray[1] & 0xFFFFFFFFL);
+      long leastSignificantBits = ((long) uuidArray[2] << 32) | (uuidArray[3] & 0xFFFFFFFFL);
+      return new UUID(mostSignificantBits, leastSignificantBits);
+    } catch (Exception e) {
+      return null;
+    }
+  }
 
   public static CompoundTag writeBlockPos(BlockPos blockPos) {
     CompoundTag compoundTag = new CompoundTag();
@@ -53,7 +100,9 @@ public class CompoundTagUtils {
       return BlockPos.ZERO;
     }
     return new BlockPos(
-        compoundTag.getInt(X_TAG), compoundTag.getInt(Y_TAG), compoundTag.getInt(Z_TAG));
+        compoundTag.getInt(X_TAG).orElse(0),
+        compoundTag.getInt(Y_TAG).orElse(0),
+        compoundTag.getInt(Z_TAG).orElse(0));
   }
 
   public static CompoundTag writeScale(float x, float y, float z) {
@@ -73,22 +122,24 @@ public class CompoundTagUtils {
       return null;
     }
     return new CustomScale(
-        compoundTag.getFloat(X_TAG), compoundTag.getFloat(Y_TAG), compoundTag.getFloat(Z_TAG));
+        compoundTag.getFloat(X_TAG).orElse(0.0F),
+        compoundTag.getFloat(Y_TAG).orElse(0.0F),
+        compoundTag.getFloat(Z_TAG).orElse(0.0F));
   }
 
   public static ResourceLocation readResourceLocation(CompoundTag compoundTag, String name) {
     if (compoundTag == null || !compoundTag.contains(name)) {
       return null;
     }
-    String resourceLocationString = compoundTag.getString(name);
+    String resourceLocationString = compoundTag.getString(name).orElse("");
     if (resourceLocationString.isEmpty()) {
       return null;
     }
     if (!resourceLocationString.contains(":")) {
       return ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, resourceLocationString);
     }
-    String namespace = compoundTag.getString(name).split(":")[0];
-    String path = compoundTag.getString(name).split(":")[1];
+    String namespace = compoundTag.getString(name).orElse("").split(":")[0];
+    String path = compoundTag.getString(name).orElse("").split(":")[1];
     return ResourceLocation.fromNamespaceAndPath(namespace, path);
   }
 
@@ -110,7 +161,7 @@ public class CompoundTagUtils {
         tag -> {
           CompoundTag compoundTag = (CompoundTag) tag;
           compoundTag
-              .getAllKeys()
+              .keySet()
               .forEach(
                   key -> {
                     if (key.startsWith(ID_PREFIX)) {

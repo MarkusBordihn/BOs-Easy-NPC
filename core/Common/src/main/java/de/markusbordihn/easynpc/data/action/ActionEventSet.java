@@ -111,7 +111,7 @@ public class ActionEventSet {
     this.clear();
 
     // Load actions data
-    CompoundTag actionDataSetTag = compoundTag.getCompound(DATA_ACTION_EVENT_SET_TAG);
+    CompoundTag actionDataSetTag = compoundTag.getCompoundOrEmpty(DATA_ACTION_EVENT_SET_TAG);
     for (ActionEventType actionEventType : ActionEventType.values()) {
       ActionDataSet actionDataEntryList =
           new ActionDataSet(actionDataSetTag, actionEventType.name());

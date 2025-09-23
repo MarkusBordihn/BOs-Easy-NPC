@@ -3,15 +3,15 @@
     VillagerData villagerData = this.getVillagerData();
 
     // Update profession if available
-    VillagerProfession profession = getVillagerProfession(variant);
+    Holder<VillagerProfession> profession = getVillagerProfession(variant);
     if (profession != null) {
-      villagerData = villagerData.setProfession(profession);
+      villagerData = villagerData.withProfession(profession);
     }
 
     // Update type if available
-    VillagerType type = getVillagerType(variant);
+    Holder<VillagerType> type = getVillagerType(variant);
     if (type != null) {
-      villagerData = villagerData.setType(type);
+      villagerData = villagerData.withType(type);
     }
 
     this.setVillagerData(villagerData);

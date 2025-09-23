@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.entity.ModCustomEntityType;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import de.markusbordihn.easynpc.item.ModItems;
-import net.minecraft.gametest.framework.GameTest;
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 
 @SuppressWarnings("unused")
@@ -31,7 +31,7 @@ public class ModSpawnEggItemTest {
 
   public ModSpawnEggItemTest() {}
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useAllayNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -40,7 +40,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useCatNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -49,7 +49,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useChickenNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -58,7 +58,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useDrownedNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -67,7 +67,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useEvokerNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -76,7 +76,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useFairyNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -85,7 +85,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useHorseNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -94,7 +94,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useHumanoidNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -103,7 +103,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useHumanoidSlimNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -112,7 +112,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useHuskNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -121,7 +121,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useIllusionerNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -130,7 +130,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useIronGolemNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -139,7 +139,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useOrcNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -148,7 +148,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useOrcWarriorNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -157,7 +157,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void usePigNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -166,7 +166,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void usePiglinNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -175,7 +175,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void usePiglinBruteNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -184,7 +184,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void usePiglinZombifiedNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -193,7 +193,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void usePillagerNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -202,7 +202,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useSkeletonHorseNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -211,7 +211,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useSkeletonNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -220,7 +220,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useStrayNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -229,7 +229,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useVillagerNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -238,7 +238,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useVindicatorNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -247,7 +247,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useWitherSkeletonNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -256,7 +256,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useWolfNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -265,7 +265,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useZombieHorseNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -274,7 +274,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useZombieNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
@@ -283,7 +283,7 @@ public class ModSpawnEggItemTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.3x3x3")
+  @GameTest(structure = "easy_npc:gametest.3x3x3")
   public static void useZombieVillagerNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,

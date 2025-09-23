@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.screen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.screen.components.CloseButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
@@ -162,9 +161,7 @@ public class Screen<T extends EasyNPCMenu> extends net.minecraft.client.gui.scre
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     this.xMouse = x;
     this.yMouse = y;
-    RenderSystem.disableDepthTest();
     super.render(guiGraphics, x, y, partialTicks);
-    RenderSystem.enableDepthTest();
   }
 
   @Override

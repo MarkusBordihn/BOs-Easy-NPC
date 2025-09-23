@@ -184,7 +184,7 @@ public class ModEntityType {
     for (Map.Entry<UserDefinedEntityType, RegistryObject<EntityType<?>>> entry :
         USER_DEFINED_TYPE.entrySet()) {
       UserDefinedEntityType type = entry.getKey();
-      EntityType<?> entityType = entry.getValue().get(); // Safe to call .get() now
+      EntityType<?> entityType = entry.getValue().get();
       EntityType<?> baseEntityType = type.getBaseEntityType();
 
       // Register the resolved entity type with the UserDefinedEntityRegistry

@@ -24,13 +24,13 @@ import de.markusbordihn.easynpc.configui.menu.MenuManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.gametest.GameTestHelpers;
-import net.minecraft.gametest.framework.GameTest;
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 
 @SuppressWarnings("unused")
 public class MenuManagerTest {
 
-  @GameTest(template = "easy_npc:gametest.1x1x1")
+  @GameTest(structure = "easy_npc:gametest.1x1x1")
   public void testMissingConfigurationType(GameTestHelper helper) {
     MenuHandlerInterface menuHandlerInterface = MenuManager.getMenuHandler();
     for (ConfigurationType configurationType : ConfigurationType.values()) {
@@ -45,7 +45,7 @@ public class MenuManagerTest {
     helper.succeed();
   }
 
-  @GameTest(template = "easy_npc:gametest.1x1x1")
+  @GameTest(structure = "easy_npc:gametest.1x1x1")
   public void testMissingEditorType(GameTestHelper helper) {
     MenuHandlerInterface menuHandlerInterface = MenuManager.getMenuHandler();
     for (EditorType editorTypeType : EditorType.values()) {

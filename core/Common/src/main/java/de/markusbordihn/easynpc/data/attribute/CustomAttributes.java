@@ -50,7 +50,7 @@ public class CustomAttributes {
     if (!compoundTag.contains(CUSTOM_ATTRIBUTES_TAG)) {
       return;
     }
-    CompoundTag customAttributesTag = compoundTag.getCompound(CUSTOM_ATTRIBUTES_TAG);
+    CompoundTag customAttributesTag = compoundTag.getCompoundOrEmpty(CUSTOM_ATTRIBUTES_TAG);
   }
 
   public CompoundTag save(CompoundTag compoundTag) {

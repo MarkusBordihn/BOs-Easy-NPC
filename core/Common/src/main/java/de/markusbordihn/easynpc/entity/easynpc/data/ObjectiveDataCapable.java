@@ -415,7 +415,7 @@ public interface ObjectiveDataCapable<T extends PathfinderMob> extends EasyNPC<T
     }
 
     // Read objective data set
-    CompoundTag objectiveDataTag = compoundTag.getCompound(DATA_OBJECTIVE_DATA_TAG);
+    CompoundTag objectiveDataTag = compoundTag.getCompoundOrEmpty(DATA_OBJECTIVE_DATA_TAG);
     if (objectiveDataTag.contains(ObjectiveDataSet.DATA_OBJECTIVE_DATA_SET_TAG)) {
       ObjectiveDataSet objectiveDataSet = new ObjectiveDataSet(objectiveDataTag);
       this.setObjectiveDataSet(objectiveDataSet);
