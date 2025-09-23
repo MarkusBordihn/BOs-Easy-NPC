@@ -19,31 +19,9 @@
 
 package de.markusbordihn.easynpc.mixin.model;
 
-import de.markusbordihn.easynpc.client.model.raw.PlayerRawModel;
-import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
-import net.minecraft.client.model.HumanoidModel.ArmPose;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
-import net.minecraft.world.entity.HumanoidArm;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerModel.class)
-public class EasyNPCPlayerModelMixin<T extends PlayerRenderState> {
-
-  @Inject(
-      method =
-          "getArmPose(Lnet/minecraft/client/renderer/entity/state/PlayerRenderState;Lnet/minecraft/world/entity/HumanoidArm;)Lnet/minecraft/client/model/HumanoidModel$ArmPose;",
-      at = @At("HEAD"),
-      cancellable = true)
-  private void injectCustomArmPose(
-      final T renderState,
-      final HumanoidArm humanoidArm,
-      final CallbackInfoReturnable<ArmPose> callbackInfo) {
-    if (renderState instanceof EasyNPCRenderStateExtension extension) {
-      callbackInfo.setReturnValue(PlayerRawModel.getArmPose(extension, renderState, humanoidArm));
-    }
-  }
-}
+public class EasyNPCPlayerModelMixin<T extends PlayerRenderState> {}

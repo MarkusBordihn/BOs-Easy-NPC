@@ -118,7 +118,7 @@ public class EasyNPCMenu extends AbstractContainerMenu {
 
   @Override
   public boolean stillValid(Player player) {
-    return player.isAlive();
+    return player.isAlive() && !player.isSpectator();
   }
 
   @Override

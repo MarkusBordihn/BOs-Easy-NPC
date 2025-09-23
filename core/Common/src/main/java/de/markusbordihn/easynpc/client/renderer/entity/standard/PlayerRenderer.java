@@ -97,7 +97,7 @@ public class PlayerRenderer
                 context.bakeLayer(
                     slim ? ModelLayers.PLAYER_SLIM_OUTER_ARMOR : ModelLayers.PLAYER_OUTER_ARMOR)),
             context.getEquipmentRenderer()));
-    this.addLayer(new PlayerItemInHandLayer<>(this, context.getItemRenderer()));
+    this.addLayer(new PlayerItemInHandLayer<>(this));
   }
 
   @Override

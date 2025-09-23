@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "easy_npc:item/humanoid_spawn_egg"
+  }
+}

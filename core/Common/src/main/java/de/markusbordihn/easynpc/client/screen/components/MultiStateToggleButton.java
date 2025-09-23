@@ -139,7 +139,7 @@ public class MultiStateToggleButton extends CustomButton {
     if (!this.visible) {
       return false;
     }
-    if (this.isValidClickButton(button) && this.clicked(x, y)) {
+    if (this.isValidClickButton(button) && this.isMouseOver(x, y)) {
       this.playDownSound(Minecraft.getInstance().getSoundManager());
       cycleToNextState();
       this.onClick(x, y);
@@ -203,15 +203,6 @@ public class MultiStateToggleButton extends CustomButton {
 
   public void setRenderBackground(boolean renderBackground) {
     this.renderBackground = renderBackground;
-  }
-
-  @Override
-  protected boolean clicked(double x, double y) {
-    return this.visible
-        && x >= this.getX()
-        && y >= this.getY()
-        && x < (this.getX() + this.width)
-        && y < (this.getY() + this.height);
   }
 
   @Override

@@ -132,7 +132,8 @@ public class TextureManager {
 
     // Register dynamic texture under resource location.
     String resourceName = getResourceName(textureModelKey);
-    ResourceLocation resourceLocation = textureManager.register(resourceName, dynamicTexture);
+    ResourceLocation resourceLocation = ResourceLocation.parse(resourceName);
+    textureManager.register(resourceLocation, dynamicTexture);
     log.info(
         "{} Registered file {} with image {} for texture {} with {}.",
         LOG_PREFIX,

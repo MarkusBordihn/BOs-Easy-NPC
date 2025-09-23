@@ -20,8 +20,6 @@
 package de.markusbordihn.easynpc.client.model.custom;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.model.raw.HumanoidRawModel;
-import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -32,7 +30,6 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.HumanoidArm;
 
 public class FairyModel<S extends HumanoidRenderState> extends HumanoidModel<S> {
 
@@ -127,6 +124,8 @@ public class FairyModel<S extends HumanoidRenderState> extends HumanoidModel<S> 
   @Override
   public void setupAnim(final S renderState) {
     super.setupAnim(renderState);
+
+    // Wing animations
     this.rightWing.yRot =
         Constants.MATH_27DEG_TO_RAD
             + Mth.cos(renderState.ageInTicks * 20F * Constants.PI_180DEG) * (float) Math.PI * 0.15F;
@@ -135,13 +134,5 @@ public class FairyModel<S extends HumanoidRenderState> extends HumanoidModel<S> 
     this.leftWing.xRot = Constants.MATH_27DEG_TO_RAD;
     this.rightWing.xRot = Constants.MATH_27DEG_TO_RAD;
     this.rightWing.zRot = Constants.MATH_27DEG_TO_RAD;
-  }
-
-  @Override
-  protected HumanoidModel.ArmPose getArmPose(final S renderState, final HumanoidArm humanoidArm) {
-    if (renderState instanceof EasyNPCRenderStateExtension extension) {
-      return HumanoidRawModel.getArmPose(extension, renderState, humanoidArm);
-    }
-    return super.getArmPose(renderState, humanoidArm);
   }
 }

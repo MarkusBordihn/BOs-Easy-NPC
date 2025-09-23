@@ -117,8 +117,7 @@ public class HorseRawRenderer extends AbstractHorseRenderer<Horse, HorseRenderSt
     super(
         context,
         new HorseModel(context.bakeLayer(ModelLayers.HORSE)),
-        new HorseModel(context.bakeLayer(ModelLayers.HORSE_BABY)),
-        1.1F);
+        new HorseModel(context.bakeLayer(ModelLayers.HORSE_BABY)));
     this.addLayer(new HorseMarkingLayer(this));
     this.addLayer(new HorseArmorLayer(this, context.getModelSet(), context.getEquipmentRenderer()));
   }

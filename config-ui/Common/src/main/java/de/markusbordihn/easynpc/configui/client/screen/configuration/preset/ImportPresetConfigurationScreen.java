@@ -224,7 +224,6 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
           95,
           ImportPresetConfigurationScreen.this.contentTopPos + 47,
           14);
-      this.setRenderHeader(false, 0);
       this.updatePresets();
     }
 
@@ -256,8 +255,8 @@ public class ImportPresetConfigurationScreen<T extends ConfigurationMenu>
     }
 
     @Override
-    protected int getScrollbarPosition() {
-      return super.getScrollbarPosition() + 12;
+    protected int scrollBarY() {
+      return super.scrollBarY() + 12;
     }
 
     @Override

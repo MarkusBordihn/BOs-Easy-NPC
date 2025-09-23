@@ -82,11 +82,9 @@ public interface NavigationDataCapable<T extends PathfinderMob> extends EasyNPC<
             : null;
     if (attributeData != null && attributeData.hasMovementAttributes()) {
       groundPathNavigation.setCanOpenDoors(attributeData.getMovementAttributes().canOpenDoor());
-      groundPathNavigation.setCanPassDoors(attributeData.getMovementAttributes().canPassDoor());
       groundPathNavigation.setCanFloat(attributeData.getEnvironmentalAttributes().canFloat());
     } else {
       groundPathNavigation.setCanOpenDoors(true);
-      groundPathNavigation.setCanPassDoors(true);
       groundPathNavigation.setCanFloat(true);
     }
   }

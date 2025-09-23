@@ -19,8 +19,11 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.data.model.ModelArmPose;
+import de.markusbordihn.easynpc.data.model.ModelArmPoseHelper;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
+import de.markusbordihn.easynpc.entity.easynpc.data.ArmPoseProvider;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.PathfinderMobRaw;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
@@ -30,7 +33,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
-public class HumanoidNPC extends PathfinderMobRaw implements StandardEasyNPC<PathfinderMobRaw> {
+public class HumanoidNPC extends PathfinderMobRaw
+    implements StandardEasyNPC<PathfinderMobRaw>, ArmPoseProvider {
 
   public static final String ID = "humanoid";
 
@@ -94,6 +98,11 @@ public class HumanoidNPC extends PathfinderMobRaw implements StandardEasyNPC<Pat
     soundDataSet.addDefaultSound(SoundType.TRADE_YES, SoundEvents.VILLAGER_YES);
     soundDataSet.addDefaultSound(SoundType.TRADE_NO, SoundEvents.VILLAGER_NO);
     return soundDataSet;
+  }
+
+  @Override
+  public ModelArmPose getArmPose(net.minecraft.world.entity.HumanoidArm humanoidArm) {
+    return ModelArmPoseHelper.getArmPoseForNPC(this, humanoidArm);
   }
 
   public enum VariantType {

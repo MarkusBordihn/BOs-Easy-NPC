@@ -56,22 +56,13 @@ public class SpriteToggleButton extends SpriteButton {
     if (!this.visible) {
       return false;
     }
-    if (this.isValidClickButton(button) && this.clicked(x, y)) {
+    if (this.isValidClickButton(button) && this.isMouseOver(x, y)) {
       this.playDownSound(Minecraft.getInstance().getSoundManager());
       this.active = !this.active;
       this.onClick(x, y);
       return true;
     }
     return false;
-  }
-
-  @Override
-  protected boolean clicked(double x, double y) {
-    return this.visible
-        && x >= this.getX()
-        && y >= this.getY()
-        && x < (this.getX() + this.width)
-        && y < (this.getY() + this.height);
   }
 
   @Override

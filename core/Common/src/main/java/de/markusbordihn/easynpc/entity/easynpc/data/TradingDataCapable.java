@@ -532,6 +532,11 @@ public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>,
         Entity.BASE_TICKS_REQUIRED_TO_FREEZE);
   }
 
+  default boolean stillValid(Player player) {
+    Entity entity = this.getEntity();
+    return entity.isAlive() && player.distanceToSqr(entity) <= 64.0D;
+  }
+
   default void defineSynchedTradingData(SynchedEntityData.Builder builder) {
     defineSynchedEntityData(builder, SynchedDataIndex.TRADING_DATA_SET, new TradingDataSet());
     defineSynchedEntityData(builder, SynchedDataIndex.TRADING_INVENTORY, new CompoundTag());

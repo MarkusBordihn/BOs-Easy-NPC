@@ -171,7 +171,6 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
           177,
           AdvancedDialogConfigurationScreen.this.contentTopPos + 15,
           19);
-      this.setRenderHeader(false, 0);
 
       // Add all dialog data sets, sorted by label.
       for (DialogDataEntry dialogData :

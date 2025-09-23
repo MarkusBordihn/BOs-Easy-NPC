@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.configui.menu.configuration.equipment.slot;
 
-import com.mojang.datafixers.util.Pair;
 import de.markusbordihn.easynpc.configui.menu.configuration.equipment.EquipmentConfigurationMenu;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.resources.ResourceLocation;
@@ -84,7 +83,7 @@ public class ArmorSlot extends Slot {
   }
 
   @Override
-  public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-    return Pair.of(InventoryMenu.BLOCK_ATLAS, TEXTURE_EMPTY_SLOTS[this.equipmentSlot.getIndex()]);
+  public ResourceLocation getNoItemIcon() {
+    return TEXTURE_EMPTY_SLOTS[this.equipmentSlot.getIndex()];
   }
 }

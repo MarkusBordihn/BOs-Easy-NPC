@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.configui.menu.configuration.equipment.slot;
 
-import com.mojang.datafixers.util.Pair;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.menu.configuration.equipment.EquipmentConfigurationMenu;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -86,9 +85,9 @@ public class HandSlot extends Slot {
   }
 
   @Override
-  public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
+  public ResourceLocation getNoItemIcon() {
     if (this.equipmentSlot == EquipmentSlot.OFFHAND) {
-      return Pair.of(InventoryMenu.BLOCK_ATLAS, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD);
+      return InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD;
     }
     return null;
   }

@@ -57,7 +57,7 @@ public class ModSpawnEggItem extends SpawnEggItem {
 
   public ModSpawnEggItem(
       Supplier<? extends EntityType<? extends Mob>> entityType, Properties properties) {
-    super(null, Constants.FONT_COLOR_RED, Constants.FONT_COLOR_YELLOW, properties);
+    super(null, properties);
     this.typeSupplier = entityType;
   }
 
@@ -75,10 +75,8 @@ public class ModSpawnEggItem extends SpawnEggItem {
     return TextComponent.getTranslatedTextRaw(this.getDescriptionId());
   }
 
-  @Override
   public EntityType<?> getType(ItemStack itemStack) {
-    EntityType<?> type = super.getType(itemStack);
-    return type != null ? type : this.typeSupplier.get();
+    return this.typeSupplier.get();
   }
 
   @Override
