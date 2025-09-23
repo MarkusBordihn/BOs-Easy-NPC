@@ -1,0 +1,89 @@
+name: "🐛 Bug report"
+description: "Tell us what's wrong - we'll help fix it!"
+labels: [ bug ]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! 🧩
+        No stress - just share the basics so we can reproduce and fix it quickly.
+  - type: input
+    id: mc_version
+    attributes:
+      label: "Minecraft version"
+      placeholder: "e.g. 1.20.1"
+    validations:
+      required: true
+  - type: input
+    id: mod_version
+    attributes:
+      label: "Easy NPC mod version"
+      placeholder: "e.g. 6.0.13"
+    validations:
+      required: true
+  - type: dropdown
+    id: loader
+    attributes:
+      label: "Loader"
+      options:
+        - Fabric
+        - Forge
+        - NeoForge (1.21.x+)
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: "Description 📝"
+      description: "What went wrong? What did you expect?"
+      placeholder: "Briefly describe the problem and what you expected to happen."
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: "Steps to reproduce ▶️"
+      description: "A short, minimal sequence is perfect."
+      placeholder: |
+        1. Open world ...
+        2. Click ...
+        3. Crash / issue happens ...
+    validations:
+      required: true
+  - type: input
+    id: logs
+    attributes:
+      label: "Log or crash-report link (optional) 🔗"
+      description: "Upload to https://mclo.gs/ or https://gist.github.com/ and paste the link here."
+      placeholder: "https://mclo.gs/xxxx or https://gist.github.com/xxxx"
+    validations:
+      required: false
+  - type: textarea
+    id: env
+    attributes:
+      label: "Environment (optional) 🧪"
+      description: "OS, Java version/vendor, minimal mod list if relevant."
+      placeholder: "Windows 11, Temurin 21, minimal mod set: ..."
+    validations:
+      required: false
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: "Screenshots / attachments (optional) 🖼️"
+      description: "Drag and drop images here or paste image links."
+    validations:
+      required: false
+  - type: textarea
+    id: extras
+    attributes:
+      label: "Additional comments (optional) 📝"
+      description: "Any links, references, or small notes."
+    validations:
+      required: false
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: "Before submitting ✅"
+      options:
+        - label: "I searched for existing issues and did not find a duplicate. 🔎"
+          required: true

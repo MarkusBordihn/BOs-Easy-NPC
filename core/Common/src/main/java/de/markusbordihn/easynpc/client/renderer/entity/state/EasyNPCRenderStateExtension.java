@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.renderer.entity.state;
 
-import de.markusbordihn.easynpc.data.model.ModelArmPose;
 import java.util.UUID;
 
 public interface EasyNPCRenderStateExtension {
@@ -27,12 +26,4 @@ public interface EasyNPCRenderStateExtension {
   UUID getEasyNpcUUID();
 
   void setEasyNpcUUID(UUID uuid);
-
-  ModelArmPose getEasyNpcLeftArmPose();
-
-  void setEasyNpcLeftArmPose(ModelArmPose pose);
-
-  ModelArmPose getEasyNpcRightArmPose();
-
-  void setEasyNpcRightArmPose(ModelArmPose pose);
 }

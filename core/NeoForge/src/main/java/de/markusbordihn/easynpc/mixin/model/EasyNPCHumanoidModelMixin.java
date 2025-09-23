@@ -21,9 +21,7 @@ package de.markusbordihn.easynpc.mixin.model;
 
 import de.markusbordihn.easynpc.client.model.EasyNPCModel;
 import de.markusbordihn.easynpc.client.model.EasyNPCModelManager;
-import de.markusbordihn.easynpc.client.model.raw.HumanoidRawModel;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
-import de.markusbordihn.easynpc.data.model.ModelArmPose;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import java.util.function.Function;
 import net.minecraft.client.model.HumanoidModel;
@@ -86,13 +84,7 @@ public class EasyNPCHumanoidModelMixin<T extends HumanoidRenderState> {
       at = @At("TAIL"))
   private void setupArmPoses(T renderState, CallbackInfo callbackInfo) {
     if (renderState instanceof EasyNPCRenderStateExtension extension) {
-      // Apply custom arm poses if available
-      ModelArmPose rightArmPose = extension.getEasyNpcRightArmPose();
-      ModelArmPose leftArmPose = extension.getEasyNpcLeftArmPose();
-      if (rightArmPose != null || leftArmPose != null) {
-        HumanoidRawModel.applyArmPosesToModel(
-            rightArmPose, leftArmPose, this.rightArm, this.leftArm, this.head);
-      }
+      EasyNPCModel.setupArmPoses(extension, this.easyNPC$modelManager);
     }
   }
 }

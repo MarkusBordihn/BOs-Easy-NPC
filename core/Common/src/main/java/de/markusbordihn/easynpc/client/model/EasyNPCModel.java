@@ -21,8 +21,10 @@ package de.markusbordihn.easynpc.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import de.markusbordihn.easynpc.client.model.armpose.ModelArmPoseUtils;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
+import de.markusbordihn.easynpc.data.model.ModelArmPose;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
@@ -33,8 +35,10 @@ import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
 import java.util.UUID;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.LightLayer;
 
@@ -145,5 +149,132 @@ public class EasyNPCModel {
       poseStack.translate(0, -1, 0);
     }
     return true;
+  }
+
+  public static void setupArmPoses(
+      final EasyNPCRenderStateExtension extension, final EasyNPCModelManager modelManager) {
+
+    if (extension == null) {
+      return;
+    }
+
+    // Get EasyNPC
+    EasyNPC<?> easyNPC = getEasyNPC(extension);
+    if (easyNPC == null) {
+      return;
+    }
+
+    ModelArmPose rightArmPose = ModelArmPoseUtils.getArmPoseForRightArm(easyNPC);
+    if (rightArmPose != null && rightArmPose != ModelArmPose.DEFAULT) {
+      applyArmPoseToModelPart(
+          rightArmPose,
+          modelManager.getModelPart(ModelPartType.RIGHT_ARM),
+          true,
+          modelManager.getModelPart(ModelPartType.HEAD));
+    }
+
+    ModelArmPose leftArmPose = ModelArmPoseUtils.getArmPoseForLeftArm(easyNPC);
+    if (leftArmPose != null && leftArmPose != ModelArmPose.DEFAULT) {
+      applyArmPoseToModelPart(
+          leftArmPose,
+          modelManager.getModelPart(ModelPartType.LEFT_ARM),
+          false,
+          modelManager.getModelPart(ModelPartType.HEAD));
+    }
+  }
+
+  public static void applyArmPoseToModelPart(
+      final ModelArmPose armPose,
+      final ModelPart armModelPart,
+      final boolean isRightArm,
+      final ModelPart head) {
+    if (armPose == null || armModelPart == null) {
+      return;
+    }
+
+    switch (armPose) {
+      case BOW_AND_ARROW -> {
+        if (isRightArm) {
+          armModelPart.yRot = -0.1F + (head != null ? head.yRot : 0);
+        } else {
+          armModelPart.yRot = 0.1F + (head != null ? head.yRot : 0) + 0.4F;
+        }
+        armModelPart.xRot = (float) (-Math.PI / 2) + (head != null ? head.xRot : 0);
+      }
+      case CROSSBOW_HOLD -> {
+        if (isRightArm) {
+          armModelPart.yRot = -0.3F + (head != null ? head.yRot : 0);
+          armModelPart.xRot = (float) (-Math.PI / 2) + (head != null ? head.xRot : 0) + 0.1F;
+        } else {
+          armModelPart.yRot = 0.6F + (head != null ? head.yRot : 0);
+          armModelPart.xRot = -1.5F + (head != null ? head.xRot : 0);
+        }
+      }
+      case CROSSBOW_CHARGE -> {
+        if (isRightArm) {
+          armModelPart.yRot = -0.8F;
+          armModelPart.xRot = -0.97079635F;
+        } else {
+          armModelPart.yRot = 0.85F;
+          armModelPart.xRot = (float) (-Math.PI / 2);
+        }
+      }
+      case SPYGLASS -> {
+        armModelPart.xRot = Mth.clamp(armModelPart.xRot, -1.2F, 1.2F) - 1.9198622F;
+        armModelPart.yRot = isRightArm ? 0.5235988F : -0.5235988F;
+      }
+      case ATTACKING_WITH_MELEE_WEAPON -> {
+        float swingProgress = 0.5F;
+        float rotation = Mth.sin(swingProgress * (float) Math.PI);
+        armModelPart.xRot = rotation * -1.2F;
+        armModelPart.yRot = isRightArm ? -0.3F : 0.3F;
+      }
+      case SPELLCASTING -> {
+        armModelPart.xRot = armModelPart.xRot * 0.5F - (float) Math.PI;
+        armModelPart.yRot = 0.0F;
+      }
+      case GUN_HOLD -> {
+        if (isRightArm) {
+          armModelPart.yRot = -0.2F + (head != null ? head.yRot : 0);
+          armModelPart.xRot = (float) (-Math.PI / 2) + (head != null ? head.xRot : 0);
+        } else {
+          armModelPart.yRot = 0.4F + (head != null ? head.yRot : 0);
+          armModelPart.xRot = -1.3F + (head != null ? head.xRot : 0);
+        }
+      }
+      case ATTACKING -> {
+        float attackRotation = 0.8F;
+        armModelPart.xRot = attackRotation * -0.8F;
+        armModelPart.yRot = isRightArm ? -0.2F : 0.2F;
+      }
+      case CELEBRATING -> {
+        armModelPart.xRot = -0.5F;
+        armModelPart.yRot = isRightArm ? -0.3F : 0.3F;
+        armModelPart.zRot = isRightArm ? 0.3F : -0.3F;
+      }
+      case DANCING -> {
+        float danceRotation = Mth.sin(System.currentTimeMillis() * 0.001F) * 0.3F;
+        armModelPart.xRot = danceRotation;
+        armModelPart.yRot = isRightArm ? -0.2F : 0.2F;
+        armModelPart.zRot = isRightArm ? danceRotation * 0.5F : -danceRotation * 0.5F;
+      }
+      case CROSSED -> {
+        if (isRightArm) {
+          armModelPart.xRot = -0.8F;
+          armModelPart.yRot = 0.6F;
+        } else {
+          armModelPart.xRot = -0.8F;
+          armModelPart.yRot = -0.6F;
+        }
+      }
+      case NEUTRAL -> {
+        armModelPart.xRot = 0.0F;
+        armModelPart.yRot = 0.0F;
+        armModelPart.zRot = 0.0F;
+      }
+      default -> {
+        // Keep default positioning for DEFAULT and CUSTOM poses
+      }
+    }
   }
 }
