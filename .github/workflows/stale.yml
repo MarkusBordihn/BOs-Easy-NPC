@@ -1,24 +1,72 @@
-name: 'Close stale issues and PR'
+name: 'Close stale issues and PRs'
 
 on:
   schedule:
     - cron: '30 1 * * *'
 
 jobs:
-  stale:
+  stale-general:
     runs-on: ubuntu-latest
-
     permissions:
       issues: write
       pull-requests: write
-
     steps:
-      - uses: actions/stale@v9
+      - uses: actions/stale@v10
         with:
-          any-of-labels: 'needs-more-info,question,crash,bug'
-          stale-issue-message: 'This issue is stale because it has been open 7 days with no activity. Remove stale label or comment or this will be closed in 3 days.'
-          stale-pr-message: 'This PR is stale because it has been open 45 days with no activity. Remove stale label or comment or this will be closed in 10 days.'
-          close-issue-message: 'This issue was closed because it has been stalled for 5 days with no activity.'
-          days-before-stale: 7
-          days-before-close: 3
+          # Process typical support/issues which often lack details
+          any-of-labels: 'needs-more-info,question'
+
+          # Messages (English) clarifying that more details may be required
+          stale-issue-message: |
+            This issue was marked as stale because there has been no activity for 14 days.
+            We may be missing critical details such as **reproduction steps**, **logs/crash reports**, and exact **Minecraft/loader/mod versions**.
+            Please add the missing information or leave a short comment so we can proceed. Otherwise, this issue will be closed in 7 days.
+          close-issue-message: |
+            Closing due to missing information after a reminder.
+            Feel free to re-open or create a new issue once sufficient details are available.
+
+          # PR handling (do not auto-close PRs by default)
+          stale-pr-message: |
+            This pull request has had no activity for 45 days. A brief update (status, TODOs, or whether help is needed) would be appreciated.
+            PRs are not auto-closed; any comment will remove the stale label.
+
+          # Timings
+          days-before-stale: 14
+          days-before-close: 7
+          days-before-pr-stale: 45
           days-before-pr-close: -1
+
+          # Behavior and exemptions
+          remove-stale-when-updated: true
+          exempt-issue-labels: 'pinned,in-progress,blocked,feature,enhancement,feature-request'
+          exempt-pr-labels: 'pinned,in-progress,blocked'
+
+  stale-features:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/stale@v10
+        with:
+          # Only feature requests/enhancements get processed here
+          only-labels: 'feature,enhancement,feature-request'
+
+          # Longer window for feature requests (2–3 months)
+          stale-issue-message: |
+            We appreciate your feature ideas! This request has been inactive for 90 days.
+            If it is still relevant, please confirm the need and share **use cases**, **impact**, and possible **alternatives**. Reactions (👍) also help with prioritization.
+            Without further activity, this ticket will be closed in 30 days to keep the backlog healthy.
+          close-issue-message: |
+            Closing this feature request after a prolonged period of inactivity.
+            We value your ideas—please re-open or file a new request when you have updated requirements or additional context.
+
+          # Timings for feature requests
+          days-before-stale: 90
+          days-before-close: 30
+          days-before-pr-stale: -1
+          days-before-pr-close: -1
+
+          # Behavior and exemptions
+          remove-stale-when-updated: true
+          exempt-issue-labels: 'pinned,in-progress,blocked'

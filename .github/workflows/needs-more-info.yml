@@ -33,7 +33,7 @@ jobs:
             These logs contain essential details that will help me identify the problem and offer more accurate assistance.<br>
             You can upload the logs to https://gist.github.com/ or https://mclo.gs/ and share the link here.<br>
             <br>
-            🔍 **If possible, please enable debug mode** by running `/easy_npc debug true` and share the detailed information found in the logs.<br>
+            🔍 **If possible, please enable debug mode** by running `/easy_npc debug log true` and share the detailed information found in the logs.<br>
             For more guidance, check out the [debugging guide](https://github.com/MarkusBordihn/BOs-Easy-NPC/wiki/Debugging).<br>
             <br>
             Additionally, please fill out the issue template as thoroughly as possible to help me reproduce and fix the error more efficiently.<br>

@@ -1,0 +1,20 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 Project Wiki
+    url: https://github.com/MarkusBordihn/BOs-Easy-NPC/wiki
+    about: Read the documentation before filing an issue.
+  - name: 🐞 Bug Tracker
+    url: https://github.com/MarkusBordihn/BOs-Easy-NPC/issues?q=label%3Abug
+    about: Check for existing bug reports to avoid duplicates.
+  - name: 💥 Crash Tracker
+    url: https://github.com/MarkusBordihn/BOs-Easy-NPC/issues?q=label%3Acrash
+    about: Check for existing crash reports to avoid duplicates.
+  - name: 🧩 Fabric support
+    url: https://fabricmc.net/wiki
+    about: Fabric Loader/API documentation and support.
+  - name: 🛠️ Forge support
+    url: https://docs.minecraftforge.net/
+    about: ForgeGradle/Forge documentation and community support.
+  - name: 🔧 NeoForge support (1.21.x+)
+    url: https://neoforged.net
+    about: NeoForge documentation and community support starting with MC 1.21.x.
