@@ -19,23 +19,18 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
-import de.markusbordihn.easynpc.data.model.ModelArmPose;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.item.ItemStack;
 
 public interface ModelDataCapable<T extends PathfinderMob>
     extends EasyNPC<T>,
@@ -78,42 +73,6 @@ public interface ModelDataCapable<T extends PathfinderMob>
 
   default ModelType getModelType() {
     return ModelType.HUMANOID;
-  }
-
-  default ModelArmPose getModelArmPose() {
-    return getModelArmPose(this.getLivingEntity());
-  }
-
-  default ModelArmPose getModelArmPose(LivingEntity livingEntity) {
-    boolean isAggressive = livingEntity instanceof Mob mob && mob.isAggressive();
-    ItemStack itemStack = livingEntity.getMainHandItem();
-
-    // Bow arm pose
-    if (isAggressive && AttackHandler.isBowWeapon(itemStack)) {
-      return ModelArmPose.BOW_AND_ARROW;
-    }
-
-    // Crossbow arm pose
-    AttackDataCapable<?> attackData = this.getEasyNPCAttackData();
-    if (AttackHandler.isCrossbowWeapon(itemStack)) {
-      if (attackData.isChargingCrossbow()) {
-        return ModelArmPose.CROSSBOW_CHARGE;
-      } else if (isAggressive) {
-        return ModelArmPose.CROSSBOW_HOLD;
-      }
-    }
-
-    // Gun arm pose
-    if (isAggressive && AttackHandler.isGunWeapon(itemStack)) {
-      return ModelArmPose.GUN_HOLD;
-    }
-
-    // Sword arm pose
-    if (isAggressive && AttackHandler.isMeeleeWeapon(itemStack)) {
-      return ModelArmPose.ATTACKING_WITH_MELEE_WEAPON;
-    }
-
-    return isAggressive ? ModelArmPose.ATTACKING : ModelArmPose.NEUTRAL;
   }
 
   default boolean canUseArmor() {
