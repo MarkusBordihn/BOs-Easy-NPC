@@ -17,22 +17,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.attribute;
+package de.markusbordihn.easynpc.client.screen.components;
 
-import de.markusbordihn.easynpc.utils.TextUtils;
-import java.util.Locale;
+import de.markusbordihn.easynpc.utils.ValueUtils;
+import net.minecraft.client.gui.Font;
 
-public enum EnvironmentalAttributeType implements EntityAttributeTypeInterface {
-  CAN_BREATHE_UNDERWATER,
-  CAN_FLOAT,
-  FREEFALL,
-  NO_GRAVITY;
+public class ScaleNumberField extends TextField {
 
-  public String getTagName() {
-    return TextUtils.convertToPascalCase(this.name());
-  }
-
-  public String getAttributeName() {
-    return this.name().toLowerCase(Locale.ROOT);
+  public ScaleNumberField(
+      Font font,
+      int x,
+      int y,
+      int width,
+      int height,
+      double value,
+      double minValue,
+      double maxValue) {
+    super(font, x, y, width, height, value);
+    this.setFilter(text -> ValueUtils.isScaleValueInRange(text, minValue, maxValue));
   }
 }

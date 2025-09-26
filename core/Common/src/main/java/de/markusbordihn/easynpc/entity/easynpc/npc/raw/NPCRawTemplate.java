@@ -34,14 +34,17 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.InteractionHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
+import de.markusbordihn.easynpc.handler.AttributeHandler;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.EnumMap;
+import java.util.Objects;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.SynchedEntityData.Builder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -268,6 +271,7 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
       DifficultyInstance difficulty,
       EntitySpawnReason entitySpawnReason,
       SpawnGroupData spawnGroupData) {
+    AttributeHandler.handleDefaultAttributes(this);
     return finalizeEasyNPCSpawn(
         super.finalizeSpawn(serverLevelAccessor, difficulty, entitySpawnReason, spawnGroupData));
   }
@@ -344,9 +348,7 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
 
   @Override
   public <T> void defineSynchedEntityData(
-      net.minecraft.network.syncher.SynchedEntityData.Builder builder,
-      SynchedDataIndex synchedDataIndex,
-      T defaultData) {
+      Builder builder, SynchedDataIndex synchedDataIndex, T defaultData) {
     if (this.synchedEntityData == null) {
       this.synchedEntityData = new SynchedEntityData(this, entityDataAccessorMap);
     }
@@ -555,7 +557,7 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
     if (!(object instanceof EasyNPCBase<?> easyNPCBase)) {
       return false;
     }
-    return java.util.Objects.equals(this.getUUID(), easyNPCBase.getEntityUUID());
+    return Objects.equals(this.getUUID(), easyNPCBase.getEntityUUID());
   }
 
   @Override

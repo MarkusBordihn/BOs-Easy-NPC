@@ -168,6 +168,14 @@
     {
       "id": "pneumaticcraft:minigun",
       "required": false
+    },
+    {
+      "id": "tacz:modern_kinetic_gun",
+      "required": false
+    },
+    {
+      "id": "jeg:minigun",
+      "required": false
     }
   ]
 }

@@ -274,6 +274,7 @@
   "text.easy_npc.config.scale_z": "Масштаб Z",
   "text.easy_npc.config.scaling": "Масштаб",
   "text.easy_npc.config.scaling.title": "Масштаб",
+  "text.easy_npc.config.proportional_scaling": "Пропорциональное масштабирование",
   "text.easy_npc.config.silent": "Тихий",
   "text.easy_npc.config.skin": "Скин",
   "text.easy_npc.config.skin_reloading": "Перезагрузка скинов, пожалуйста, подождите...",

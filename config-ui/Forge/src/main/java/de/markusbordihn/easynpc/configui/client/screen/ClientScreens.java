@@ -40,6 +40,7 @@ import de.markusbordihn.easynpc.configui.client.screen.configuration.objective.B
 import de.markusbordihn.easynpc.configui.client.screen.configuration.objective.FollowObjectiveConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.objective.LookObjectiveConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.pose.AdvancedPoseConfigurationScreenWrapper;
+import de.markusbordihn.easynpc.configui.client.screen.configuration.pose.BasicPoseConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.pose.CustomPoseConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.pose.DefaultPoseConfigurationScreenWrapper;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.position.DefaultPositionConfigurationScreenWrapper;
@@ -115,6 +116,9 @@ public class ClientScreens {
           MenuScreens.register(
               ModMenuTypes.BASIC_OBJECTIVE_CONFIGURATION_MENU.get(),
               BasicObjectiveConfigurationScreenWrapper::new);
+          MenuScreens.register(
+              ModMenuTypes.BASIC_POSE_CONFIGURATION_MENU.get(),
+              BasicPoseConfigurationScreenWrapper::new);
           MenuScreens.register(
               ModMenuTypes.BASIC_TRADING_CONFIGURATION_MENU.get(),
               BasicTradingConfigurationContainerScreenWrapper::new);

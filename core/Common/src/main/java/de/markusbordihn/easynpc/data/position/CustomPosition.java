@@ -29,6 +29,8 @@ import net.minecraft.network.codec.StreamCodec;
 
 public record CustomPosition(float x, float y, float z) {
 
+  public static final CustomPosition DEFAULT = new CustomPosition(0, 0, 0);
+
   public static final StreamCodec<RegistryFriendlyByteBuf, CustomPosition> STREAM_CODEC =
       new StreamCodec<>() {
         @Override

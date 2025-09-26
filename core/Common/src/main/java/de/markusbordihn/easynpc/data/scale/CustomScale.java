@@ -29,6 +29,8 @@ import net.minecraft.network.codec.StreamCodec;
 
 public record CustomScale(float x, float y, float z) {
 
+  public static final CustomScale DEFAULT = new CustomScale(1.0f, 1.0f, 1.0f);
+
   public static final StreamCodec<RegistryFriendlyByteBuf, CustomScale> STREAM_CODEC =
       new StreamCodec<>() {
         @Override

@@ -217,7 +217,18 @@ public class SliderButton extends AbstractSliderButton {
   }
 
   public void reset() {
-    this.setDefaultValue(0);
+    switch (this.type) {
+      case DEGREE, POSITION, DOUBLE:
+        this.setDefaultValue(0);
+        break;
+      case SCALE:
+        this.setDefaultValue(1);
+        break;
+      case UNKNOWN:
+      default:
+        log.warn("Unknown slider type {}. Falling back to 0 as default value.", this.type);
+        this.setDefaultValue(0);
+    }
   }
 
   public float getTargetValue() {
@@ -291,13 +302,13 @@ public class SliderButton extends AbstractSliderButton {
   }
 
   @Override
-  public boolean mouseScrolled(double x, double y, double distance, double unused) {
+  public boolean mouseScrolled(double x, double y, double scrollDeltaX, double scrollDeltaY) {
     if (this.isHoveredOrFocused()) {
-      double incrementalSteps = distance * this.getStepSize();
+      double incrementalSteps = scrollDeltaY * this.getStepSize();
       this.setTargetValue(this.value + incrementalSteps);
+      return true;
     }
-
-    return true;
+    return false;
   }
 
   @Override

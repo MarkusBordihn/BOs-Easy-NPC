@@ -274,6 +274,7 @@
   "text.easy_npc.config.scale_z": "縮放 Z",
   "text.easy_npc.config.scaling": "縮放",
   "text.easy_npc.config.scaling.title": "縮放",
+  "text.easy_npc.config.proportional_scaling": "比例縮放",
   "text.easy_npc.config.silent": "靜音",
   "text.easy_npc.config.skin": "皮膚",
   "text.easy_npc.config.skin_reloading": "正在重新載入皮膚，請稍候…",

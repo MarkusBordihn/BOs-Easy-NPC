@@ -274,6 +274,7 @@
   "text.easy_npc.config.scale_z": "Escala Z",
   "text.easy_npc.config.scaling": "Escalado",
   "text.easy_npc.config.scaling.title": "Escalado",
+  "text.easy_npc.config.proportional_scaling": "Escalado Proporcional",
   "text.easy_npc.config.silent": "Silencioso",
   "text.easy_npc.config.skin": "Skin",
   "text.easy_npc.config.skin_reloading": "Recargando Skin, por favor espera...",
