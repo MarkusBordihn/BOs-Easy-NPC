@@ -194,7 +194,6 @@ public class AbilitiesAttributeConfigurationScreen<T extends ConfigurationMenu>
             new RangeSliderButton(
                 firstButtonRow + 135,
                 this.buttonTopPos + 210,
-                CombatAttributeType.HEALTH_REGENERATION.getAttributeName(),
                 entityAttributes.getCombatAttributes().healthRegeneration(),
                 0.0D,
                 32.0D,

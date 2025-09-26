@@ -29,6 +29,8 @@ import net.minecraft.network.codec.StreamCodec;
 
 public record CustomRotation(float x, float y, float z, boolean locked) {
 
+  public static final CustomRotation DEFAULT = new CustomRotation(0, 0, 0, false);
+
   public static final StreamCodec<RegistryFriendlyByteBuf, CustomRotation> STREAM_CODEC =
       new StreamCodec<>() {
         @Override

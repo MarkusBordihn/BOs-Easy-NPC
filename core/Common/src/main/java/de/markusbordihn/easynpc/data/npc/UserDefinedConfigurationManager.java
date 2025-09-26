@@ -202,18 +202,7 @@ public class UserDefinedConfigurationManager {
       ensureConfigDirectoryExists();
 
       JsonObject rootObject = new JsonObject();
-      JsonArray configurationsArray = new JsonArray();
-
-      for (UserDefinedConfiguration config : configurations.values()) {
-        JsonObject configObject = new JsonObject();
-        configObject.addProperty("id", config.id());
-        configObject.addProperty("name", config.name());
-        configObject.addProperty("base_entity_type", config.getBaseEntityTypeId());
-        configObject.addProperty("width", config.width());
-        configObject.addProperty("height", config.height());
-        configObject.addProperty("description", config.description());
-        configurationsArray.add(configObject);
-      }
+      JsonArray configurationsArray = getConfigurationsArray();
 
       rootObject.add("user_defined_npcs", configurationsArray);
 
@@ -226,6 +215,22 @@ public class UserDefinedConfigurationManager {
     } catch (IOException e) {
       log.error("Failed to save user-defined configurations: {}", e.getMessage(), e);
     }
+  }
+
+  private static JsonArray getConfigurationsArray() {
+    JsonArray configurationsArray = new JsonArray();
+
+    for (UserDefinedConfiguration config : configurations.values()) {
+      JsonObject configObject = new JsonObject();
+      configObject.addProperty("id", config.id());
+      configObject.addProperty("name", config.name());
+      configObject.addProperty("base_entity_type", config.getBaseEntityTypeId());
+      configObject.addProperty("width", config.width());
+      configObject.addProperty("height", config.height());
+      configObject.addProperty("description", config.description());
+      configurationsArray.add(configObject);
+    }
+    return configurationsArray;
   }
 
   private static void createExampleConfiguration() {

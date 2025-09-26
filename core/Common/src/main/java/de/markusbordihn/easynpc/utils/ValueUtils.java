@@ -85,6 +85,14 @@ public class ValueUtils {
         && Double.parseDouble(text) <= 32000000;
   }
 
+  public static boolean isScaleValue(String text) {
+    return text != null
+        && !text.isEmpty()
+        && text.matches(POSITIVE_NUMBER_MATCH_PATTERN)
+        && Double.parseDouble(text) >= 0.0D
+        && Double.parseDouble(text) <= 10.0D;
+  }
+
   public static boolean isNumericValue(String text) {
     return text != null && (text.isEmpty() || (text.matches("^-?\\d+$")));
   }
@@ -97,6 +105,16 @@ public class ValueUtils {
         && Double.parseDouble(text) <= 32000000
         && Double.parseDouble(text) >= min
         && Double.parseDouble(text) <= max;
+  }
+
+  public static boolean isScaleValueInRange(String text, double min, double max) {
+    return text != null
+        && !text.isEmpty()
+        && text.matches(POSITIVE_NUMBER_MATCH_PATTERN)
+        && Integer.parseInt(text) >= 0.0D
+        && Integer.parseInt(text) <= 10.0D
+        && Integer.parseInt(text) >= min
+        && Integer.parseInt(text) <= max;
   }
 
   public static Double getDoubleValue(String value) {

@@ -274,6 +274,7 @@
   "text.easy_npc.config.scale_z": "Z轴比例",
   "text.easy_npc.config.scaling": "缩放比例",
   "text.easy_npc.config.scaling.title": "缩放比例",
+  "text.easy_npc.config.proportional_scaling": "比例缩放",
   "text.easy_npc.config.silent": "禁言",
   "text.easy_npc.config.skin": "皮肤",
   "text.easy_npc.config.skin_reloading": "重置外观中,请等待...",

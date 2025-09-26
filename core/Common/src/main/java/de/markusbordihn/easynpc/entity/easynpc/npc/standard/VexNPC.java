@@ -48,16 +48,17 @@ public class VexNPC extends VexRaw implements StandardEasyNPC<VexRaw> {
 
   public static AttributeSupplier.Builder createAttributes() {
     return Mob.createMobAttributes()
-        .add(Attributes.MAX_HEALTH, 14.0D)
-        .add(Attributes.FOLLOW_RANGE, 32.0D)
-        .add(Attributes.KNOCKBACK_RESISTANCE, 0.0D)
-        .add(Attributes.MOVEMENT_SPEED, 0.25D)
-        .add(Attributes.FLYING_SPEED, 0.6D)
+        .add(Attributes.ARMOR_TOUGHNESS, 0.0D)
+        .add(Attributes.ARMOR, 0.0D)
         .add(Attributes.ATTACK_DAMAGE, 0.0D)
         .add(Attributes.ATTACK_KNOCKBACK, 0.0D)
         .add(Attributes.ATTACK_SPEED, 0.0D)
-        .add(Attributes.ARMOR, 0.0D)
-        .add(Attributes.ARMOR_TOUGHNESS, 0.0D);
+        .add(Attributes.FLYING_SPEED, 0.6D)
+        .add(Attributes.FOLLOW_RANGE, 32.0D)
+        .add(Attributes.KNOCKBACK_RESISTANCE, 0.0D)
+        .add(Attributes.MAX_HEALTH, 14.0D)
+        .add(Attributes.MOVEMENT_SPEED, 0.25D)
+        .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
   }
 
   @Override

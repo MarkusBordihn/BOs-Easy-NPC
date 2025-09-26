@@ -32,43 +32,29 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public class CustomPoseConfigurationScreen<T extends ConfigurationMenu>
+public class BasicPoseConfigurationScreen<T extends ConfigurationMenu>
     extends PoseConfigurationScreen<T> {
 
   private final EnumMap<ModelPartType, RangeSliderButton> sliders =
       new EnumMap<>(ModelPartType.class);
 
-  public CustomPoseConfigurationScreen(T menu, Inventory inventory, Component component) {
+  public BasicPoseConfigurationScreen(T menu, Inventory inventory, Component component) {
     super(menu, inventory, component);
   }
 
-  private RangeSliderButton createVisibilityPositionScaleRotationSlider(
+  private RangeSliderButton createVisibilityRotationSlider(
       int left, int top, ModelPartType modelPartType, String label) {
-
     // Model Part Rotation
     RangeSliderButton sliderRotationButtonX = createRotationSlider(left, top, modelPartType, label);
 
-    // Model Part Scale
-    RangeSliderButton sliderScaleButtonX =
-        createScaleSliderCompact(
-            left, top + sliderRotationButtonX.getHeight(), modelPartType, label);
-
-    // Model Part Position
-    RangeSliderButton sliderPositionButtonX =
-        createPositionSliderCompact(
-            left,
-            top + sliderRotationButtonX.getHeight() + sliderScaleButtonX.getHeight(),
-            modelPartType,
-            label);
-
     // Model Part Visibility
-    boolean modelPartVisibility = this.modelData.getModelPartVisibility(modelPartType);
+    boolean modelPartTypeVisibility = this.modelData.getModelPartVisibility(modelPartType);
     this.addRenderableWidget(
         new Checkbox(
             sliderRotationButtonX.getX() + 3,
-            top - sliderPositionButtonX.getHeight(),
+            top - sliderRotationButtonX.getHeight(),
             "",
-            modelPartVisibility,
+            modelPartTypeVisibility,
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .modelVisibilityChange(
@@ -82,20 +68,21 @@ public class CustomPoseConfigurationScreen<T extends ConfigurationMenu>
     super.init();
 
     // Default button stats
-    this.customPoseButton.active = false;
+    this.basicPoseButton.active = false;
 
     // Position and size
-    int sliderTopPos = this.contentTopPos + 16;
-    int sliderLeftPos = this.contentLeftPos - 3;
+    int sliderLeftDefaultPos = this.contentLeftPos - 3;
+    int sliderTopPos = this.contentTopPos + 42;
+    int sliderLeftPos = sliderLeftDefaultPos;
     int sliderLeftSpace = 200;
-    int sliderTopSpace = 73;
+    int sliderTopSpace = 60;
 
-    // Model parts
+    // Model Parts
     Set<ModelPartType> modelPartTypes = this.modelData.getModelType().getPrimaryModelParts();
     int partsOnRow = 0;
     for (ModelPartType modelPartType : modelPartTypes) {
       RangeSliderButton slider =
-          createVisibilityPositionScaleRotationSlider(
+          createVisibilityRotationSlider(
               sliderLeftPos, sliderTopPos, modelPartType, modelPartType.name().toLowerCase());
       sliders.put(modelPartType, slider);
 
@@ -103,7 +90,7 @@ public class CustomPoseConfigurationScreen<T extends ConfigurationMenu>
       partsOnRow++;
       if (partsOnRow >= 2) {
         partsOnRow = 0;
-        sliderLeftPos = this.contentLeftPos - 3;
+        sliderLeftPos = sliderLeftDefaultPos;
         sliderTopPos += sliderTopSpace;
       }
     }
@@ -118,19 +105,19 @@ public class CustomPoseConfigurationScreen<T extends ConfigurationMenu>
         guiGraphics,
         this.contentLeftPos + 157,
         this.contentTopPos + 165,
-        45,
+        50,
         this.contentLeftPos + 150 - this.xMouse,
-        this.contentTopPos + 100 - this.yMouse,
+        this.contentTopPos + 80 - this.yMouse,
         this.getEasyNPC());
 
     // Model Part texts
-    for (ModelPartType modelPartType : sliders.keySet()) {
-      RangeSliderButton slider = sliders.get(modelPartType);
+    for (ModelPartType modelPart : sliders.keySet()) {
+      RangeSliderButton slider = sliders.get(modelPart);
       if (slider != null) {
         Text.drawConfigString(
             guiGraphics,
             this.font,
-            "pose." + modelPartType.name().toLowerCase(),
+            "pose." + modelPart.name().toLowerCase(),
             slider.getX() + 20,
             slider.getY() - 12);
       }

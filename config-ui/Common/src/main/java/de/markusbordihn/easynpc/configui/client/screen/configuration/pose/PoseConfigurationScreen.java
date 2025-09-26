@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.position.CustomPosition;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
+import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.gui.components.Button;
@@ -39,6 +40,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
 
   protected final ModelDataCapable<?> modelData;
   protected Button defaultPoseButton;
+  protected Button basicPoseButton;
   protected Button advancedPoseButton;
   protected Button customPoseButton;
 
@@ -159,8 +161,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
               sliderButtonY.reset();
               sliderButtonZ.reset();
               NetworkMessageHandlerManager.getServerHandler()
-                  .modelRotationChange(
-                      this.getEasyNPCUUID(), modelPart, new CustomRotation(0f, 0f, 0f));
+                  .modelRotationChange(this.getEasyNPCUUID(), modelPart, CustomRotation.DEFAULT);
             }));
 
     return sliderButtonX;
@@ -284,7 +285,130 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
               sliderButtonZ.reset();
               NetworkMessageHandlerManager.getServerHandler()
                   .modelPositionChange(
-                      this.getEasyNPCUUID(), modelPartType, new CustomPosition(0f, 0f, 0f));
+                      this.getEasyNPCUUID(), modelPartType, CustomPosition.DEFAULT);
+            }));
+
+    return sliderButtonX;
+  }
+
+  protected RangeSliderButton createScaleSliderCompact(
+      int left, int top, ModelPartType modelPartType, String label) {
+    return createScaleSlider(left, top, modelPartType, label, true);
+  }
+
+  protected RangeSliderButton createScaleSlider(
+      int left, int top, ModelPartType modelPartType, String label, boolean compact) {
+    int sliderWidth = 34;
+    int sliderHeight = 16;
+    int sliderLeftScale = left + 10;
+
+    // Model Part Scale.
+    CustomScale modelPartScale = this.modelData.getModelPartScale(modelPartType);
+    RangeSliderButton sliderButtonX =
+        this.addRenderableWidget(
+            new RangeSliderButton(
+                sliderLeftScale,
+                top,
+                sliderWidth,
+                sliderHeight,
+                modelPartScale.x(),
+                0,
+                SliderButton.Type.SCALE,
+                false,
+                slider -> {
+                  CustomScale currentModelPartScale =
+                      this.modelData.getModelPartScale(modelPartType);
+                  NetworkMessageHandlerManager.getServerHandler()
+                      .modelScaleChange(
+                          this.getEasyNPCUUID(),
+                          modelPartType,
+                          new CustomScale(
+                              slider.getTargetValue(),
+                              currentModelPartScale.y(),
+                              currentModelPartScale.z()));
+                }));
+    RangeSliderButton sliderButtonY =
+        this.addRenderableWidget(
+            new RangeSliderButton(
+                sliderButtonX.getX() + sliderButtonX.getWidth(),
+                top,
+                sliderWidth,
+                sliderHeight,
+                modelPartScale.y(),
+                0,
+                SliderButton.Type.SCALE,
+                false,
+                slider -> {
+                  CustomScale currentModelPartScale =
+                      this.modelData.getModelPartScale(modelPartType);
+                  NetworkMessageHandlerManager.getServerHandler()
+                      .modelScaleChange(
+                          this.getEasyNPCUUID(),
+                          modelPartType,
+                          new CustomScale(
+                              currentModelPartScale.x(),
+                              slider.getTargetValue(),
+                              currentModelPartScale.z()));
+                }));
+    RangeSliderButton sliderButtonZ =
+        this.addRenderableWidget(
+            new RangeSliderButton(
+                sliderButtonY.getX() + sliderButtonY.getWidth(),
+                top,
+                sliderWidth,
+                sliderHeight,
+                modelPartScale.z(),
+                0,
+                SliderButton.Type.SCALE,
+                false,
+                slider -> {
+                  CustomScale currentModelPartScale =
+                      this.modelData.getModelPartScale(modelPartType);
+                  NetworkMessageHandlerManager.getServerHandler()
+                      .modelScaleChange(
+                          this.getEasyNPCUUID(),
+                          modelPartType,
+                          new CustomScale(
+                              currentModelPartScale.x(),
+                              currentModelPartScale.y(),
+                              slider.getTargetValue()));
+                }));
+
+    // Slider Edit / Done Button
+    this.addRenderableWidget(
+        new TextButton(
+            left,
+            top,
+            10,
+            RangeSliderButton.EDIT_TEXT,
+            button -> {
+              if (button.getMessage() == RangeSliderButton.EDIT_TEXT) {
+                sliderButtonX.showTextField();
+                sliderButtonY.showTextField();
+                sliderButtonZ.showTextField();
+                button.setMessage(RangeSliderButton.DONE_TEXT);
+              } else {
+                sliderButtonX.showSliderButton();
+                sliderButtonY.showSliderButton();
+                sliderButtonZ.showSliderButton();
+                button.setMessage(RangeSliderButton.EDIT_TEXT);
+              }
+            }));
+
+    // Slider reset button
+    int resetButtonLeftScale = sliderButtonZ.getX() + sliderButtonZ.getWidth();
+    this.addRenderableWidget(
+        new TextButton(
+            resetButtonLeftScale,
+            top,
+            10,
+            TextComponent.getText("↺"),
+            button -> {
+              sliderButtonX.reset();
+              sliderButtonY.reset();
+              sliderButtonZ.reset();
+              NetworkMessageHandlerManager.getServerHandler()
+                  .modelScaleChange(this.getEasyNPCUUID(), modelPartType, CustomScale.DEFAULT);
             }));
 
     return sliderButtonX;
@@ -295,7 +419,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
     super.init();
 
     // Pose Types
-    int poseButtonWidth = 80;
+    int poseButtonWidth = 74;
     this.defaultPoseButton =
         this.addRenderableWidget(
             new TextButton(
@@ -307,10 +431,21 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
                     NetworkMessageHandlerManager.getServerHandler()
                         .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.DEFAULT_POSE)));
 
+    this.basicPoseButton =
+        this.addRenderableWidget(
+            new TextButton(
+                this.defaultPoseButton.getX() + this.defaultPoseButton.getWidth(),
+                this.buttonTopPos,
+                poseButtonWidth,
+                "basic",
+                button ->
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .openConfiguration(this.getEasyNPCUUID(), ConfigurationType.BASIC_POSE)));
+
     this.advancedPoseButton =
         this.addRenderableWidget(
             new TextButton(
-                this.buttonLeftPos + this.defaultPoseButton.getWidth(),
+                basicPoseButton.getX() + basicPoseButton.getWidth(),
                 this.buttonTopPos,
                 poseButtonWidth + 10,
                 "advanced",
@@ -324,7 +459,7 @@ public class PoseConfigurationScreen<T extends ConfigurationMenu> extends Config
             new TextButton(
                 advancedPoseButton.getX() + advancedPoseButton.getWidth(),
                 this.buttonTopPos,
-                poseButtonWidth + 20,
+                poseButtonWidth + 10,
                 "custom",
                 button ->
                     NetworkMessageHandlerManager.getServerHandler()
