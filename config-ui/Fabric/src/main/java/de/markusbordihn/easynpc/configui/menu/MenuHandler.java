@@ -54,6 +54,8 @@ public class MenuHandler implements MenuHandlerInterface {
     configurationMenuMap.put(
         ConfigurationType.BASIC_OBJECTIVE, ModMenuTypes.BASIC_OBJECTIVE_CONFIGURATION_MENU);
     configurationMenuMap.put(
+        ConfigurationType.BASIC_POSE, ModMenuTypes.BASIC_POSE_CONFIGURATION_MENU);
+    configurationMenuMap.put(
         ConfigurationType.BASIC_TRADING, ModMenuTypes.BASIC_TRADING_CONFIGURATION_MENU);
     configurationMenuMap.put(
         ConfigurationType.COMBAT_ATTRIBUTE, ModMenuTypes.COMBAT_ATTRIBUTE_CONFIGURATION_MENU);

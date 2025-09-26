@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.data.configuration;
 
+import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
@@ -64,14 +65,15 @@ public class ConfigurationTypeHelper {
       };
     } else if (configurationType == ConfigurationType.POSE) {
       ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
-      // @TODO Add "Advanced" model pose type
-      return switch (modelData.getModelPose()) {
-        case CUSTOM ->
-            modelData.hasChangedModelPosition()
-                ? ConfigurationType.CUSTOM_POSE
-                : ConfigurationType.ADVANCED_POSE;
-        default -> ConfigurationType.DEFAULT_POSE;
-      };
+      if (modelData.getModelPose() == ModelPose.CUSTOM) {
+        if (modelData.hasChangedModelScale()) {
+          return ConfigurationType.CUSTOM_POSE;
+        } else if (modelData.hasChangedModelRotation()) {
+          return ConfigurationType.ADVANCED_POSE;
+        }
+        return ConfigurationType.BASIC_POSE;
+      }
+      return ConfigurationType.DEFAULT_POSE;
     }
 
     return configurationType;

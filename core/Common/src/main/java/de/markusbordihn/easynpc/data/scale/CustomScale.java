@@ -28,6 +28,8 @@ import net.minecraft.network.FriendlyByteBuf;
 
 public record CustomScale(float x, float y, float z) {
 
+  public static final CustomScale DEFAULT = new CustomScale(1.0f, 1.0f, 1.0f);
+
   public CustomScale(ModelPartType modelPartType, CompoundTag compoundTag) {
     this(compoundTag.getList(modelPartType.getTagName(), 5));
   }

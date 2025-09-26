@@ -40,6 +40,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.objective.BasicObjec
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.FollowObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.LookObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.pose.AdvancedPoseConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.pose.BasicPoseConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.pose.CustomPoseConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.pose.DefaultPoseConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.position.DefaultPositionConfigurationMenuWrapper;
@@ -129,6 +130,9 @@ public class ModMenuTypes {
           ScreenHandlerRegistry.registerSimple(
               ConfigurationType.BASIC_OBJECTIVE.getId(),
               BasicObjectiveConfigurationMenuWrapper::new);
+  public static final MenuType<BasicPoseConfigurationMenuWrapper> BASIC_POSE_CONFIGURATION_MENU =
+      ScreenHandlerRegistry.registerSimple(
+          ConfigurationType.BASIC_POSE.getId(), BasicPoseConfigurationMenuWrapper::new);
   public static final MenuType<BasicTradingConfigurationMenuWrapper>
       BASIC_TRADING_CONFIGURATION_MENU =
           ScreenHandlerRegistry.registerSimple(

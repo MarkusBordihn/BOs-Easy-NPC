@@ -28,6 +28,8 @@ import net.minecraft.network.FriendlyByteBuf;
 
 public record CustomPosition(float x, float y, float z) {
 
+  public static final CustomPosition DEFAULT = new CustomPosition(0, 0, 0);
+
   public CustomPosition(ModelPartType modelPartType, CompoundTag compoundTag) {
     this(compoundTag.getList(modelPartType.getTagName(), 5));
   }

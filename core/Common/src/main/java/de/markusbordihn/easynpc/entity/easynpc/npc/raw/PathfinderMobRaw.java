@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.InteractionHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
+import de.markusbordihn.easynpc.handler.AttributeHandler;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.EnumMap;
@@ -271,6 +272,7 @@ public class PathfinderMobRaw extends PathfinderMob implements EasyNPCBase<Pathf
       MobSpawnType mobSpawnType,
       SpawnGroupData spawnGroupData,
       CompoundTag compoundTag) {
+    AttributeHandler.handleDefaultAttributes(this);
     return finalizeEasyNPCSpawn(
         super.finalizeSpawn(
             serverLevelAccessor, difficulty, mobSpawnType, spawnGroupData, compoundTag));

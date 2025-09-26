@@ -28,6 +28,8 @@ import net.minecraft.network.FriendlyByteBuf;
 
 public record CustomRotation(float x, float y, float z, boolean locked) {
 
+  public static final CustomRotation DEFAULT = new CustomRotation(0, 0, 0, false);
+
   public CustomRotation(float x, float y, float z) {
     this(x, y, z, false);
   }

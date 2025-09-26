@@ -207,7 +207,18 @@ public class SliderButton extends AbstractSliderButton {
   }
 
   public void reset() {
-    this.setDefaultValue(0);
+    switch (this.type) {
+      case DEGREE, POSITION, DOUBLE:
+        this.setDefaultValue(0);
+        break;
+      case SCALE:
+        this.setDefaultValue(1);
+        break;
+      case UNKNOWN:
+      default:
+        log.warn("Unknown slider type {}. Falling back to 0 as default value.", this.type);
+        this.setDefaultValue(0);
+    }
   }
 
   public float getTargetValue() {

@@ -73,17 +73,7 @@ public class BaseAttributeConfigurationScreen<T extends ConfigurationMenu>
             : defaultMaxValue;
     return this.addRenderableWidget(
         new RangeSliderButton(
-            left,
-            top,
-            width,
-            height,
-            attribute.getDescriptionId(),
-            value,
-            minValue,
-            maxValue,
-            defaultValue,
-            stepSize,
-            onChange));
+            left, top, width, height, value, minValue, maxValue, defaultValue, stepSize, onChange));
   }
 
   @Override

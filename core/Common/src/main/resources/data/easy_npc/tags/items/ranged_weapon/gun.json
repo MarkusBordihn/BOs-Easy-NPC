@@ -8,6 +8,10 @@
     {
       "id": "tacz:modern_kinetic_gun",
       "required": false
+    },
+    {
+      "id": "jeg:minigun",
+      "required": false
     }
   ]
 }
