@@ -40,6 +40,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.objective.BasicObjec
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.FollowObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.objective.LookObjectiveConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.pose.AdvancedPoseConfigurationMenuWrapper;
+import de.markusbordihn.easynpc.configui.menu.configuration.pose.BasicPoseConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.pose.CustomPoseConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.pose.DefaultPoseConfigurationMenuWrapper;
 import de.markusbordihn.easynpc.configui.menu.configuration.position.DefaultPositionConfigurationMenuWrapper;
@@ -136,6 +137,11 @@ public class ModMenuTypes {
           MENU_TYPES.register(
               ConfigurationType.BASIC_OBJECTIVE.getName(),
               () -> IMenuTypeExtension.create(BasicObjectiveConfigurationMenuWrapper::new));
+  public static final DeferredHolder<MenuType<?>, MenuType<BasicPoseConfigurationMenuWrapper>>
+      BASIC_POSE_CONFIGURATION_MENU =
+          MENU_TYPES.register(
+              ConfigurationType.BASIC_POSE.getName(),
+              () -> IMenuTypeExtension.create(BasicPoseConfigurationMenuWrapper::new));
   public static final DeferredHolder<MenuType<?>, MenuType<BasicTradingConfigurationMenuWrapper>>
       BASIC_TRADING_CONFIGURATION_MENU =
           MENU_TYPES.register(

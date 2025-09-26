@@ -17,22 +17,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.attribute;
+package de.markusbordihn.easynpc.configui.client.screen.configuration.pose;
 
-import de.markusbordihn.easynpc.utils.TextUtils;
-import java.util.Locale;
+import de.markusbordihn.easynpc.configui.menu.configuration.pose.BasicPoseConfigurationMenuWrapper;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
-public enum EnvironmentalAttributeType implements EntityAttributeTypeInterface {
-  CAN_BREATHE_UNDERWATER,
-  CAN_FLOAT,
-  FREEFALL,
-  NO_GRAVITY;
+public class BasicPoseConfigurationScreenWrapper
+    extends BasicPoseConfigurationScreen<BasicPoseConfigurationMenuWrapper> {
 
-  public String getTagName() {
-    return TextUtils.convertToPascalCase(this.name());
-  }
-
-  public String getAttributeName() {
-    return this.name().toLowerCase(Locale.ROOT);
+  public BasicPoseConfigurationScreenWrapper(
+      BasicPoseConfigurationMenuWrapper menu, Inventory inventory, Component component) {
+    super(menu, inventory, component);
   }
 }

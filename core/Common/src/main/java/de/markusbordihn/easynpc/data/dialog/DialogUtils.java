@@ -141,6 +141,20 @@ public class DialogUtils {
     // Define yes and no actions.
     ActionDataSet yesActionDataSet = new ActionDataSet();
     yesActionDataSet.add(new ActionDataEntry(ActionDataType.OPEN_NAMED_DIALOG, "yes_answer"));
+    Set<DialogButtonEntry> buttons =
+        getDialogButtonEntries(yesButtonText, noButtonText, yesActionDataSet);
+
+    // Build dialog data set.
+    DialogDataSet dialogDataSet = new DialogDataSet(DialogType.YES_NO);
+    dialogDataSet.addDefaultDialog(
+        new DialogDataEntry("question", "Question Dialog", dialogText, buttons));
+    dialogDataSet.addDialog(new DialogDataEntry("yes_answer", "Yes Dialog", yesDialogText));
+    dialogDataSet.addDialog(new DialogDataEntry("no_answer", "No Dialog", noDialogText));
+    return dialogDataSet;
+  }
+
+  private static Set<DialogButtonEntry> getDialogButtonEntries(
+      String yesButtonText, String noButtonText, ActionDataSet yesActionDataSet) {
     ActionDataSet noActionDataSet = new ActionDataSet();
     noActionDataSet.add(new ActionDataEntry(ActionDataType.OPEN_NAMED_DIALOG, "no_answer"));
 
@@ -154,14 +168,7 @@ public class DialogUtils {
     Set<DialogButtonEntry> buttons = new LinkedHashSet<>();
     buttons.add(yesButtonData);
     buttons.add(noButtonData);
-
-    // Build dialog data set.
-    DialogDataSet dialogDataSet = new DialogDataSet(DialogType.YES_NO);
-    dialogDataSet.addDefaultDialog(
-        new DialogDataEntry("question", "Question Dialog", dialogText, buttons));
-    dialogDataSet.addDialog(new DialogDataEntry("yes_answer", "Yes Dialog", yesDialogText));
-    dialogDataSet.addDialog(new DialogDataEntry("no_answer", "No Dialog", noDialogText));
-    return dialogDataSet;
+    return buttons;
   }
 
   public static DialogScreenLayout getDialogScreenLayout(DialogDataEntry dialogData, Font font) {

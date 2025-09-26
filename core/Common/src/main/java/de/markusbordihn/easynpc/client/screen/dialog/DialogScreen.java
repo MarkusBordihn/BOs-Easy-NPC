@@ -157,7 +157,6 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
           case COMPACT_TEXT_WITH_TWO_LARGE_BUTTONS -> 32;
           default -> 22;
         };
-    Component dialogButtonText = dialogButtonEntry.getButtonName(dialogButtonMaxTextLength);
 
     // Create dialog button.
     TextButton dialogButton =
@@ -165,7 +164,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
             this.leftPos + 70,
             this.topPos + 55,
             198,
-            dialogButtonText,
+            dialogButtonEntry.getButtonName(dialogButtonMaxTextLength),
             onPress -> {
               // Action Event on button click.
               if (this.getActionEventSet().hasActionEvent(ActionEventType.ON_BUTTON_CLICK)) {

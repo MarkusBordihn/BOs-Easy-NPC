@@ -57,7 +57,6 @@ public class RangeSliderButton extends AbstractWidget {
   public RangeSliderButton(
       int left,
       int top,
-      String label,
       double value,
       double minValue,
       double maxValue,
@@ -69,7 +68,6 @@ public class RangeSliderButton extends AbstractWidget {
         top,
         DEFAULT_WIDTH,
         DEFAULT_HEIGHT,
-        label,
         value,
         minValue,
         maxValue,
@@ -92,7 +90,6 @@ public class RangeSliderButton extends AbstractWidget {
         top,
         width,
         height,
-        sliderType.name(),
         value,
         SliderButton.getMinValue(sliderType),
         SliderButton.getMaxValue(sliderType),
@@ -116,7 +113,6 @@ public class RangeSliderButton extends AbstractWidget {
         top,
         width,
         height,
-        sliderType.name(),
         value,
         SliderButton.getMinValue(sliderType),
         SliderButton.getMaxValue(sliderType),
@@ -132,7 +128,6 @@ public class RangeSliderButton extends AbstractWidget {
       int top,
       int width,
       int height,
-      String label,
       double value,
       double minValue,
       double maxValue,
@@ -144,7 +139,6 @@ public class RangeSliderButton extends AbstractWidget {
         top,
         width,
         height,
-        label,
         value,
         minValue,
         maxValue,
@@ -160,7 +154,6 @@ public class RangeSliderButton extends AbstractWidget {
       int top,
       int width,
       int height,
-      String label,
       double value,
       double minValue,
       double maxValue,
@@ -196,6 +189,16 @@ public class RangeSliderButton extends AbstractWidget {
                   value);
           case POSITION ->
               new PositionNumberField(
+                  font,
+                  this.showButtons ? left + DECREASE_BUTTON_WIDTH : left,
+                  top,
+                  this.getDefaultSliderWidth(),
+                  height,
+                  value,
+                  minValue,
+                  maxValue);
+          case SCALE ->
+              new ScaleNumberField(
                   font,
                   this.showButtons ? left + DECREASE_BUTTON_WIDTH : left,
                   top,
@@ -343,6 +346,11 @@ public class RangeSliderButton extends AbstractWidget {
     return this.sliderButton.getTargetValue();
   }
 
+  public void setTargetValue(final float newValue) {
+    this.sliderButton.setDefaultValue(newValue);
+    this.updateTextField();
+  }
+
   @Override
   public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
     if (sliderButton.isVisible()) {
@@ -399,13 +407,13 @@ public class RangeSliderButton extends AbstractWidget {
   }
 
   @Override
-  public boolean mouseScrolled(double x, double y, double scrollAmount, double scrollDelta) {
+  public boolean mouseScrolled(double x, double y, double scrollDeltaX, double scrollDeltaY) {
     if (sliderButton.isVisible()) {
-      sliderButton.mouseScrolled(x, y, scrollAmount, scrollDelta);
+      return sliderButton.mouseScrolled(x, y, scrollDeltaX, scrollDeltaY);
     } else if (textField.isVisible()) {
-      textField.mouseScrolled(x, y, scrollAmount, scrollDelta);
+      return textField.mouseScrolled(x, y, scrollDeltaX, scrollDeltaY);
     }
-    return super.mouseScrolled(x, y, scrollAmount, scrollDelta);
+    return super.mouseScrolled(x, y, scrollDeltaX, scrollDeltaY);
   }
 
   @Override

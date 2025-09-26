@@ -28,19 +28,18 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUseAnimation;
 
 public class ModelArmPoseUtils {
 
-  public static ModelArmPose getArmPoseForLeftArm(EasyNPC<?> easyNPC) {
-    return calculateArmPose(easyNPC, false);
+  public static ModelArmPose getArmPoseForLeftArm(final EasyNPC<?> easyNPC) {
+    return getArmPose(easyNPC, false);
   }
 
-  public static ModelArmPose getArmPoseForRightArm(EasyNPC<?> easyNPC) {
-    return calculateArmPose(easyNPC, true);
+  public static ModelArmPose getArmPoseForRightArm(final EasyNPC<?> easyNPC) {
+    return getArmPose(easyNPC, true);
   }
 
-  private static ModelArmPose calculateArmPose(EasyNPC<?> easyNPC, boolean isRightArm) {
+  private static ModelArmPose getArmPose(final EasyNPC<?> easyNPC, final boolean isRightArm) {
     if (easyNPC == null) {
       return ModelArmPose.DEFAULT;
     }
@@ -58,60 +57,59 @@ public class ModelArmPoseUtils {
   }
 
   private static ModelArmPose getArmPoseWhileUsingItem(
-      LivingEntity livingEntity, boolean isRightArm, boolean isRightHanded) {
+      final LivingEntity livingEntity, final boolean isRightArm, final boolean isRightHanded) {
     ItemStack useItem = livingEntity.getUseItem();
     if (useItem.isEmpty()) {
       return ModelArmPose.DEFAULT;
     }
 
-    InteractionHand usedHand = livingEntity.getUsedItemHand();
-    boolean isUsingMainHand = usedHand == InteractionHand.MAIN_HAND;
+    // Return DEFAULT if this arm is not the one being used
+    boolean isUsingMainHand = livingEntity.getUsedItemHand() == InteractionHand.MAIN_HAND;
     boolean isUsingRightHand =
         (isRightHanded && isUsingMainHand) || (!isRightHanded && !isUsingMainHand);
-
-    // Return DEFAULT if this arm is not the one being used
     if (isRightArm != isUsingRightHand) {
       return ModelArmPose.DEFAULT;
     }
 
     // Determine pose based on item use animation
-    ItemUseAnimation itemUseAnimation = useItem.getUseAnimation();
-    switch (itemUseAnimation) {
-      case BOW:
-        return ModelArmPose.BOW_AND_ARROW;
-      case CROSSBOW:
-        return ModelArmPose.CROSSBOW_CHARGE;
-      case SPYGLASS:
-        return ModelArmPose.SPYGLASS;
-      case SPEAR:
-        return ModelArmPose.ATTACKING_WITH_MELEE_WEAPON;
-      default:
-        return ModelArmPose.DEFAULT;
+    ModelArmPose itemUseModelArmPose =
+        switch (useItem.getUseAnimation()) {
+          case BOW -> ModelArmPose.BOW_AND_ARROW;
+          case CROSSBOW -> ModelArmPose.CROSSBOW_CHARGE;
+          case SPYGLASS -> ModelArmPose.SPYGLASS;
+          case SPEAR -> ModelArmPose.ATTACKING_WITH_MELEE_WEAPON;
+          default -> ModelArmPose.DEFAULT;
+        };
+    if (itemUseModelArmPose != ModelArmPose.DEFAULT) {
+      return itemUseModelArmPose;
     }
+
+    // Determine if we should use the GUN_HOLD pose
+    if (AttackHandler.isGunWeapon(useItem)) {
+      return ModelArmPose.GUN_HOLD;
+    }
+
+    return ModelArmPose.DEFAULT;
   }
 
   private static ModelArmPose getIdleArmPose(
-      EasyNPC<?> easyNPC, LivingEntity livingEntity, boolean isRightArm, boolean isRightHanded) {
-
-    // Check if entity is aggressive
-    boolean isAggressive =
-        (easyNPC.getPathfinderMob().getTarget() != null)
-            || (livingEntity instanceof Mob mob && mob.isAggressive());
+      final EasyNPC<?> easyNPC,
+      final LivingEntity livingEntity,
+      final boolean isRightArm,
+      final boolean isRightHanded) {
 
     // Only show special poses when aggressive
-    if (!isAggressive) {
+    if (!((easyNPC.getPathfinderMob().getTarget() != null)
+        || (livingEntity instanceof Mob mob && mob.isAggressive()))) {
       return ModelArmPose.DEFAULT;
     }
 
-    // Get the item in the current arm
+    // Get the item in the current arm and determine which item is in which arm
     ItemStack mainHandItem = livingEntity.getMainHandItem();
     ItemStack offHandItem = livingEntity.getOffhandItem();
-
-    // Determine which item is in which arm based on handedness
     ItemStack itemInRightArm = isRightHanded ? mainHandItem : offHandItem;
     ItemStack itemInLeftArm = isRightHanded ? offHandItem : mainHandItem;
     ItemStack currentArmItem = isRightArm ? itemInRightArm : itemInLeftArm;
-
     if (currentArmItem.isEmpty()) {
       return ModelArmPose.DEFAULT;
     }
