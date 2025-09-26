@@ -146,13 +146,24 @@ public interface NavigationDataCapable<T extends PathfinderMob> extends EasyNPC<
               && !blockState.is(Blocks.WHITE_CARPET)
               && !blockState.is(Blocks.RED_CARPET));
 
-      // Allow movement for NPC, if free fall is enabled and synced data are loaded.
+      // Handle gravity and movement logic based on environmental attributes
       ObjectiveDataCapable<?> objectiveData = this.getEasyNPCObjectiveData();
-      AttributeDataCapable<?> attributeData = this.getEasyNPCAttributeData();
-      if (!objectiveData.hasTravelTargetObjectives()
-          && attributeData.getEntityAttributes().getEnvironmentalAttributes().freefall()
-          && !mob.onGround()) {
-        mob.setPos(mob.getX(), Math.floor(mob.getY() - 0.1d), mob.getZ());
+      if (!objectiveData.hasTravelTargetObjectives()) {
+        AttributeDataCapable<?> attributeData = this.getEasyNPCAttributeData();
+        var environmentalAttributes =
+            attributeData.getEntityAttributes().getEnvironmentalAttributes();
+        if (environmentalAttributes.freefall()
+            && !environmentalAttributes.noGravity()
+            && !mob.onGround()) {
+          Vec3 currentPos = mob.position();
+          BlockPos belowPos = mob.getOnPos().below();
+          BlockState belowBlock = level.getBlockState(belowPos);
+          if (belowBlock.isAir()) {
+            mob.setPos(currentPos.x, Math.max(currentPos.y, belowPos.getY() + 1.0), currentPos.z);
+          } else {
+            mob.setPos(mob.getX(), Math.floor(mob.getY() - 0.1d), mob.getZ());
+          }
+        }
       }
 
       tickerData.resetTicker(TickerType.TRAVEL_EVENT);

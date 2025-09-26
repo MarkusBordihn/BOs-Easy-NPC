@@ -44,6 +44,7 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
   protected EditBox positionYBox;
   protected EditBox positionZBox;
   protected Checkbox positionFreefallCheckbox;
+  protected Checkbox positionNoGravityCheckbox;
   protected double positionX = 0.0D;
   protected double positionY = 0.0D;
   protected double positionZ = 0.0D;
@@ -184,9 +185,34 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
                   this.positionZBox.setValue(String.valueOf(this.positionZ));
                 }));
 
-    // Freefall Checkbox
+    // No Gravity Checkbox
     EntityAttributes attributeData =
         this.getEasyNPC().getEasyNPCAttributeData().getEntityAttributes();
+    this.positionNoGravityCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                this.contentLeftPos + 15,
+                positionTopPos + 20,
+                "no_gravity",
+                attributeData.getEnvironmentalAttributes().noGravity(),
+                checkbox -> {
+                  NetworkMessageHandlerManager.getServerHandler()
+                      .environmentalAttributeChange(
+                          this.getEasyNPCUUID(),
+                          EnvironmentalAttributeType.NO_GRAVITY,
+                          checkbox.selected());
+
+                  if (checkbox.selected() && this.positionFreefallCheckbox.selected()) {
+                    this.positionFreefallCheckbox.setSelected(false);
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .environmentalAttributeChange(
+                            this.getEasyNPCUUID(), EnvironmentalAttributeType.FREEFALL, false);
+                  }
+
+                  this.positionFreefallCheckbox.active = !checkbox.selected();
+                }));
+
+    // Freefall Checkbox
     this.positionFreefallCheckbox =
         this.addRenderableWidget(
             new Checkbox(
@@ -200,6 +226,8 @@ public class DefaultPositionConfigurationScreen<T extends ConfigurationMenu>
                             this.getEasyNPCUUID(),
                             EnvironmentalAttributeType.FREEFALL,
                             checkbox.selected())));
+
+    this.positionFreefallCheckbox.active = !attributeData.getEnvironmentalAttributes().noGravity();
   }
 
   @Override

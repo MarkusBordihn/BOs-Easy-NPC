@@ -39,6 +39,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -153,6 +154,18 @@ public class AttributeHandler {
         }
       }
       case FREEFALL -> entityAttributes.setEnvironmentalAttributes(attributes.withFreefall(value));
+      case NO_GRAVITY -> {
+        entityAttributes.setEnvironmentalAttributes(attributes.withNoGravity(value));
+        if (easyNPC.getLivingEntity() != null) {
+          easyNPC.getLivingEntity().setNoGravity(value);
+          if (value) {
+            easyNPC
+                .getLivingEntity()
+                .setDeltaMovement(
+                    easyNPC.getLivingEntity().getDeltaMovement().multiply(1.0, 0.0, 1.0));
+          }
+        }
+      }
       default -> {
         log.error("Unimplemented environmental attribute {} for {}", attributeType, easyNPC);
         return false;
@@ -304,5 +317,16 @@ public class AttributeHandler {
       return true;
     }
     return false;
+  }
+
+  public static void handleDefaultAttributes(PathfinderMob pathfinderMob) {
+    if (pathfinderMob == null) {
+      return;
+    }
+
+    // Ensure that the default attributes are set.
+    if (pathfinderMob.getAttribute(Attributes.SPAWN_REINFORCEMENTS_CHANCE) != null) {
+      pathfinderMob.getAttribute(Attributes.SPAWN_REINFORCEMENTS_CHANCE).setBaseValue(0.0D);
+    }
   }
 }

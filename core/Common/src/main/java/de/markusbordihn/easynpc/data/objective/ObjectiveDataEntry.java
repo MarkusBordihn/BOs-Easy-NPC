@@ -36,7 +36,6 @@ public final class ObjectiveDataEntry {
   public static final String DATA_ATTACK_RADIUS_TAG = "AttackRadius";
   public static final String DATA_CAN_DEAL_WITH_DOORS_TAG = "CanDealWithDoors";
   public static final String DATA_DISTANCE_TO_POI_TAG = "DistanceToPoi";
-  // Objective Data Tags
   public static final String DATA_ID_TAG = "Id";
   public static final String DATA_INTERVAL_TAG = "Interval";
   public static final String DATA_LOOK_DISTANCE_TAG = "LookDistance";
@@ -52,26 +51,38 @@ public final class ObjectiveDataEntry {
   public static final String DATA_TARGET_OWNER_UUID_TAG = "TargetOwnerUUID";
   public static final String DATA_TARGET_PLAYER_NAME_TAG = "TargetPlayerName";
   public static final String DATA_TYPE_TAG = "Type";
-  private int attackInterval = 20;
-  private float attackRadius = 8.0F;
+
+  public static final double DEFAULT_SPEED_MODIFIER = 0.7D;
+  public static final float DEFAULT_ATTACK_RADIUS = 8.0F;
+  public static final float DEFAULT_LOOK_DISTANCE = 15.0F;
+  public static final float DEFAULT_PROBABILITY = 1.0F;
+  public static final float DEFAULT_START_DISTANCE = 16.0F;
+  public static final float DEFAULT_STOP_DISTANCE = 2.0F;
+  public static final int DEFAULT_ATTACK_INTERVAL = 20;
+  public static final int DEFAULT_DISTANCE_TO_POI = 16;
+  public static final int DEFAULT_INTERVAL = 10;
+  public static final int DEFAULT_PRIORITY = 1;
+
+  private double speedModifier = DEFAULT_SPEED_MODIFIER;
+  private float attackRadius = DEFAULT_ATTACK_RADIUS;
+  private float lookDistance = DEFAULT_LOOK_DISTANCE;
+  private float probability = DEFAULT_PROBABILITY;
+  private float startDistance = DEFAULT_START_DISTANCE;
+  private float stopDistance = DEFAULT_STOP_DISTANCE;
+  private int attackInterval = DEFAULT_ATTACK_INTERVAL;
+  private int distanceToPoi = DEFAULT_DISTANCE_TO_POI;
+  private int interval = DEFAULT_INTERVAL;
+  private int priority = DEFAULT_PRIORITY;
+
+  private ObjectiveType objectiveType = ObjectiveType.NONE;
   private BooleanSupplier canDealWithDoors = () -> false;
-  private int distanceToPoi = 16;
+  private boolean isRegistered = false;
+  private boolean mustReachTarget = true;
+  private boolean mustSeeTarget = true;
+  private boolean onlyAtNight = false;
+
   private Goal goal = null;
   private String id = UUID.randomUUID().toString();
-  private int interval = 10;
-  // Cache
-  private boolean isRegistered = false;
-  private float lookDistance = 15.0F;
-  private boolean mustReachTarget = true;
-  // Objective Data
-  private boolean mustSeeTarget = true;
-  private ObjectiveType objectiveType = ObjectiveType.NONE;
-  private boolean onlyAtNight = false;
-  private int priority = 1;
-  private float probability = 1.0F;
-  private double speedModifier = 0.7D;
-  private float startDistance = 16.0F;
-  private float stopDistance = 2.0F;
   private Goal target = null;
   private UUID targetEntityUUID;
   private UUID targetOwnerUUID;

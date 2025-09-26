@@ -42,19 +42,25 @@ public class AdvancedPoseConfigurationScreen<T extends ConfigurationMenu>
     super(menu, inventory, component);
   }
 
-  private RangeSliderButton createVisibilityRotationSlider(
+  private RangeSliderButton createVisibilityRotationPositionSlider(
       int left, int top, ModelPartType modelPartType, String label) {
+
     // Model Part Rotation
     RangeSliderButton sliderRotationButtonX = createRotationSlider(left, top, modelPartType, label);
 
+    // Model Part Position
+    RangeSliderButton sliderPositionButtonX =
+        createPositionSliderCompact(
+            left, top + sliderRotationButtonX.getHeight(), modelPartType, label);
+
     // Model Part Visibility
-    boolean modelPartTypeVisibility = this.modelData.getModelPartVisibility(modelPartType);
+    boolean modelPartVisibility = this.modelData.getModelPartVisibility(modelPartType);
     this.addRenderableWidget(
         new Checkbox(
             sliderRotationButtonX.getX() + 3,
-            top - sliderRotationButtonX.getHeight(),
+            top - sliderPositionButtonX.getHeight(),
             "",
-            modelPartTypeVisibility,
+            modelPartVisibility,
             checkbox ->
                 NetworkMessageHandlerManager.getServerHandler()
                     .modelVisibilityChange(
@@ -71,18 +77,17 @@ public class AdvancedPoseConfigurationScreen<T extends ConfigurationMenu>
     this.advancedPoseButton.active = false;
 
     // Position and size
-    int sliderLeftDefaultPos = this.contentLeftPos - 3;
-    int sliderTopPos = this.contentTopPos + 56;
-    int sliderLeftPos = sliderLeftDefaultPos;
+    int sliderTopPos = this.contentTopPos + 26;
+    int sliderLeftPos = this.contentLeftPos - 3;
     int sliderLeftSpace = 200;
     int sliderTopSpace = 60;
 
-    // Model Parts
+    // Model parts
     Set<ModelPartType> modelPartTypes = this.modelData.getModelType().getPrimaryModelParts();
     int partsOnRow = 0;
     for (ModelPartType modelPartType : modelPartTypes) {
       RangeSliderButton slider =
-          createVisibilityRotationSlider(
+          createVisibilityRotationPositionSlider(
               sliderLeftPos, sliderTopPos, modelPartType, modelPartType.name().toLowerCase());
       sliders.put(modelPartType, slider);
 
@@ -90,7 +95,7 @@ public class AdvancedPoseConfigurationScreen<T extends ConfigurationMenu>
       partsOnRow++;
       if (partsOnRow >= 2) {
         partsOnRow = 0;
-        sliderLeftPos = sliderLeftDefaultPos;
+        sliderLeftPos = this.contentLeftPos - 3;
         sliderTopPos += sliderTopSpace;
       }
     }
@@ -105,19 +110,19 @@ public class AdvancedPoseConfigurationScreen<T extends ConfigurationMenu>
         guiGraphics,
         this.contentLeftPos + 157,
         this.contentTopPos + 165,
-        50,
+        45,
         this.contentLeftPos + 150 - this.xMouse,
-        this.contentTopPos + 80 - this.yMouse,
+        this.contentTopPos + 100 - this.yMouse,
         this.getEasyNPC());
 
     // Model Part texts
-    for (ModelPartType modelPart : sliders.keySet()) {
-      RangeSliderButton slider = sliders.get(modelPart);
+    for (ModelPartType modelPartType : sliders.keySet()) {
+      RangeSliderButton slider = sliders.get(modelPartType);
       if (slider != null) {
         Text.drawConfigString(
             guiGraphics,
             this.font,
-            "pose." + modelPart.name().toLowerCase(),
+            "pose." + modelPartType.name().toLowerCase(),
             slider.getX() + 20,
             slider.getY() - 12);
       }
