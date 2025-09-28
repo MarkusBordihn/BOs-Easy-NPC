@@ -41,7 +41,6 @@ import java.util.EnumMap;
 import java.util.Objects;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData.Builder;
@@ -69,6 +68,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.portal.TeleportTransition;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -532,17 +533,17 @@ public class ZombieRaw extends Zombie implements EasyNPCBase<Zombie> {
   }
 
   @Override
-  public void addAdditionalSaveData(CompoundTag compoundTag) {
-    super.addAdditionalSaveData(compoundTag);
-    this.addPersistentAngerSaveData(compoundTag);
-    this.addEasyNPCBaseAdditionalSaveData(compoundTag, this.registryAccess());
+  public void addAdditionalSaveData(ValueOutput valueOutput) {
+    super.addAdditionalSaveData(valueOutput);
+    this.addPersistentAngerSaveData(valueOutput);
+    this.addEasyNPCBaseAdditionalSaveData(valueOutput, this.registryAccess());
   }
 
   @Override
-  public void readAdditionalSaveData(CompoundTag compoundTag) {
-    super.readAdditionalSaveData(compoundTag);
-    this.readPersistentAngerSaveData(this.level(), compoundTag);
-    this.readEasyNPCBaseAdditionalSaveData(compoundTag, this.registryAccess());
+  public void readAdditionalSaveData(ValueInput valueInput) {
+    super.readAdditionalSaveData(valueInput);
+    this.readPersistentAngerSaveData(this.level(), valueInput);
+    this.readEasyNPCBaseAdditionalSaveData(valueInput, this.registryAccess());
   }
 
   @Override

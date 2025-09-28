@@ -25,6 +25,7 @@ import de.markusbordihn.easynpc.data.ticker.TickerType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.EnumMap;
+import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -37,6 +38,8 @@ import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 public interface NavigationDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
@@ -109,20 +112,23 @@ public interface NavigationDataCapable<T extends PathfinderMob> extends EasyNPC<
     return canFly() && !this.getEntity().onGround();
   }
 
-  default void addAdditionalNavigationData(CompoundTag compoundTag) {
+  default void addAdditionalNavigationData(ValueOutput valueOutput) {
     CompoundTag navigationTag = new CompoundTag();
     if (this.hasHomePosition()) {
       navigationTag.put(DATA_HOME_TAG, CompoundTagUtils.writeBlockPos(this.getHomePosition()));
     }
-    compoundTag.put(DATA_NAVIGATION_TAG, navigationTag);
+    valueOutput.store(DATA_NAVIGATION_TAG, CompoundTag.CODEC, navigationTag);
   }
 
-  default void readAdditionalNavigationData(CompoundTag compoundTag) {
-    if (!compoundTag.contains(DATA_NAVIGATION_TAG)) {
+  default void readAdditionalNavigationData(ValueInput valueInput) {
+    // Early exit if no navigation data is available.
+    Optional<CompoundTag> compoundTagData = valueInput.read(DATA_NAVIGATION_TAG, CompoundTag.CODEC);
+    if (compoundTagData.isEmpty()) {
       return;
     }
 
-    CompoundTag navigationTag = compoundTag.getCompoundOrEmpty(DATA_NAVIGATION_TAG);
+    // Read navigation data.
+    CompoundTag navigationTag = compoundTagData.get();
     if (navigationTag.contains(DATA_HOME_TAG)) {
       this.setHomePosition(
           CompoundTagUtils.readBlockPos(navigationTag.getCompoundOrEmpty(DATA_HOME_TAG)));

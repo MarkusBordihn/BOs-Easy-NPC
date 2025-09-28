@@ -21,11 +21,10 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.EnumMap;
 import java.util.Optional;
 import java.util.UUID;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -36,6 +35,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface OwnerDataCapable<T extends PathfinderMob> extends EasyNPC<T>, OwnableEntity {
 
@@ -119,17 +120,15 @@ public interface OwnerDataCapable<T extends PathfinderMob> extends EasyNPC<T>, O
     defineSynchedEntityData(builder, SynchedDataIndex.OWNER_UUID, Optional.empty());
   }
 
-  default void addAdditionalOwnerData(CompoundTag compoundTag) {
+  default void addAdditionalOwnerData(ValueOutput valueOutput) {
     UUID ownerUUID = this.getOwnerUUID();
     if (ownerUUID != null) {
-      CompoundTagUtils.writeUUID(compoundTag, DATA_OWNER_TAG, ownerUUID);
+      valueOutput.store(DATA_OWNER_TAG, UUIDUtil.CODEC, ownerUUID);
     }
   }
 
-  default void readAdditionalOwnerData(CompoundTag compoundTag) {
-    UUID ownerUUID = CompoundTagUtils.readUUID(compoundTag, DATA_OWNER_TAG);
-    if (ownerUUID != null) {
-      this.setNPCOwnerUUID(ownerUUID);
-    }
+  default void readAdditionalOwnerData(ValueInput valueInput) {
+    Optional<UUID> ownerUUID = valueInput.read(DATA_OWNER_TAG, UUIDUtil.CODEC);
+    ownerUUID.ifPresent(this::setNPCOwnerUUID);
   }
 }

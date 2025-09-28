@@ -26,6 +26,7 @@ import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
+import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -36,6 +37,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface SoundDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
 
@@ -163,7 +166,7 @@ public interface SoundDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
     }
   }
 
-  default void addAdditionalSoundData(CompoundTag compoundTag) {
+  default void addAdditionalSoundData(ValueOutput valueOutput) {
     CompoundTag soundDataTag = new CompoundTag();
 
     SoundDataSet soundDataSet = this.getSoundDataSet();
@@ -177,15 +180,19 @@ public interface SoundDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
       defaultSoundDataSet.save(soundDataTag);
     }
 
-    compoundTag.put(EASY_NPC_DATA_SOUND_DATA_TAG, soundDataTag);
+    valueOutput.store(EASY_NPC_DATA_SOUND_DATA_TAG, CompoundTag.CODEC, soundDataTag);
   }
 
-  default void readAdditionalSoundData(CompoundTag compoundTag) {
-    if (!compoundTag.contains(EASY_NPC_DATA_SOUND_DATA_TAG)) {
+  default void readAdditionalSoundData(ValueInput valueInput) {
+    // Early exit if no action data is available
+    Optional<CompoundTag> compoundTagData =
+        valueInput.read(EASY_NPC_DATA_SOUND_DATA_TAG, CompoundTag.CODEC);
+    if (compoundTagData.isEmpty()) {
       return;
     }
 
-    CompoundTag soundDataTag = compoundTag.getCompoundOrEmpty(EASY_NPC_DATA_SOUND_DATA_TAG);
+    // Read sound data
+    CompoundTag soundDataTag = compoundTagData.get();
 
     if (soundDataTag.contains(SoundDataSet.DATA_SOUND_DATA_SET_TAG)) {
       SoundDataSet soundDataSet = new SoundDataSet(soundDataTag);

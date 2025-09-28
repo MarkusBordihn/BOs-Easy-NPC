@@ -148,7 +148,7 @@ public class TestCommand extends Command {
       CommandSourceStack source, Class<T> enumClass) throws CommandSyntaxException {
 
     ServerPlayer player = source.getPlayerOrException();
-    ServerLevel level = player.serverLevel();
+    ServerLevel level = player.level();
     BlockPos basePos = player.blockPosition().offset(0, 1, 0);
 
     int index = 0;
@@ -177,7 +177,7 @@ public class TestCommand extends Command {
       CommandSourceStack source, T type) throws CommandSyntaxException {
 
     ServerPlayer player = source.getPlayerOrException();
-    ServerLevel level = player.serverLevel();
+    ServerLevel level = player.level();
     BlockPos basePos = player.blockPosition().offset(0, 1, 0);
     EntityType<?> entityType = BuiltInRegistries.ENTITY_TYPE.getValue(type.getResourceKey());
 

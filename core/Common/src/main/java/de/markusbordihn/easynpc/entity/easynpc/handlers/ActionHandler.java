@@ -173,7 +173,7 @@ public interface ActionHandler<E extends PathfinderMob> extends EasyNPC<E> {
             .withPosition(serverPlayer.position())
             .withRotation(serverPlayer.getRotationVector())
             .withPermission(permissionLevel)
-            .withLevel(serverPlayer.serverLevel());
+            .withLevel(serverPlayer.level());
     CommandDispatcher<CommandSourceStack> commandDispatcher = commands.getDispatcher();
     ParseResults<CommandSourceStack> parseResults =
         commandDispatcher.parse(

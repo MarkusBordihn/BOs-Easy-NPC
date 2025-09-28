@@ -22,7 +22,7 @@ package de.markusbordihn.easynpc.client.screen.components;
 import de.markusbordihn.easynpc.Constants;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.ResourceLocation;
 
 public class SearchField extends TextField {
@@ -62,7 +62,7 @@ public class SearchField extends TextField {
 
     // Button Sprite
     guiGraphics.blit(
-        RenderType::guiTextured,
+        RenderPipelines.GUI_TEXTURED,
         SPRITE,
         stylePositionX + SPRITE_X,
         this.getY() + SPRITE_Y + 1,

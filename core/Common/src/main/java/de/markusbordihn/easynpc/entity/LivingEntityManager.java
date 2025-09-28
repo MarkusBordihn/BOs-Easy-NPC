@@ -169,7 +169,7 @@ public class LivingEntityManager {
   }
 
   public static EasyNPC<?> getEasyNPCEntityByUUID(UUID uuid, ServerPlayer serverPlayer) {
-    return getEasyNPCEntityByUUID(uuid, serverPlayer.serverLevel());
+    return getEasyNPCEntityByUUID(uuid, serverPlayer.level());
   }
 
   public static EasyNPC<?> getEasyNPCEntityByUUID(UUID uuid, ServerLevel serverLevel) {
@@ -246,7 +246,7 @@ public class LivingEntityManager {
     if (uuid == null || serverPlayer == null) {
       return false;
     }
-    return hasAccess(serverPlayer.serverLevel().getEntity(uuid), serverPlayer);
+    return hasAccess(serverPlayer.level().getEntity(uuid), serverPlayer);
   }
 
   public static boolean hasAccess(Entity entity, ServerPlayer serverPlayer) {

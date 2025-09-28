@@ -28,11 +28,14 @@ import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
+import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface DialogDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
@@ -118,7 +121,7 @@ public interface DialogDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
     getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_DIALOG_DATA_SET, new DialogDataSet());
   }
 
-  default void addAdditionalDialogData(CompoundTag compoundTag) {
+  default void addAdditionalDialogData(ValueOutput valueOutput) {
     CompoundTag dialogDataTag = new CompoundTag();
 
     if (this.isServerSideInstance()) {
@@ -128,18 +131,19 @@ public interface DialogDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
       }
     }
 
-    compoundTag.put(DATA_DIALOG_DATA_TAG, dialogDataTag);
+    valueOutput.store(DATA_DIALOG_DATA_TAG, CompoundTag.CODEC, dialogDataTag);
   }
 
-  default void readAdditionalDialogData(CompoundTag compoundTag) {
-
+  default void readAdditionalDialogData(ValueInput valueInput) {
     // Early exit if no dialog data is available.
-    if (!compoundTag.contains(DATA_DIALOG_DATA_TAG)) {
+    Optional<CompoundTag> compoundTagData =
+        valueInput.read(DATA_DIALOG_DATA_TAG, CompoundTag.CODEC);
+    if (compoundTagData.isEmpty()) {
       return;
     }
 
     // Read dialog data
-    CompoundTag dialogDataTag = compoundTag.getCompoundOrEmpty(DATA_DIALOG_DATA_TAG);
+    CompoundTag dialogDataTag = compoundTagData.get();
 
     // Read dialog
     if (dialogDataTag.contains(DialogDataSet.DATA_DIALOG_DATA_SET_TAG)) {

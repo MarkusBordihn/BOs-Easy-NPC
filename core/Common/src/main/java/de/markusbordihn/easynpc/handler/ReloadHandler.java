@@ -21,9 +21,11 @@ package de.markusbordihn.easynpc.handler;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,11 +50,12 @@ public class ReloadHandler {
     }
 
     // Save entity and entity type
-    CompoundTag compoundTag = easyNPC.getEntity().saveWithoutId(new CompoundTag());
+    TagValueOutput tagValueOutput = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
+    easyNPC.getEntity().saveWithoutId(tagValueOutput);
 
     // Reload entity data
     log.debug("Reloading NPC {} at position {}", easyNPC.getEntityUUID(), entity.position());
-    entity.load(compoundTag);
+    entity.load((ValueInput) tagValueOutput);
 
     // Force update visibility for all players
     entity.refreshDimensions();

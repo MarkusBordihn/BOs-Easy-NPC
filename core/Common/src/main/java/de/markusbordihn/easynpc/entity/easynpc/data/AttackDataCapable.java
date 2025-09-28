@@ -23,7 +23,6 @@ import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.AttackHandler;
 import java.util.EnumMap;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -33,6 +32,8 @@ import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
 import net.minecraft.world.entity.monster.RangedAttackMob;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface AttackDataCapable<E extends PathfinderMob>
     extends EasyNPC<E>, NeutralMob, RangedAttackMob, CrossbowAttackMob {
@@ -65,7 +66,7 @@ public interface AttackDataCapable<E extends PathfinderMob>
     defineSynchedEntityData(builder, SynchedDataIndex.ATTACK_IS_CHARGING_CROSSBOW, false);
   }
 
-  default void addAdditionalAttackData(CompoundTag compoundTag) {}
+  default void addAdditionalAttackData(ValueOutput valueOutput) {}
 
-  default void readAdditionalAttackData(CompoundTag compoundTag) {}
+  default void readAdditionalAttackData(ValueInput valueInput) {}
 }

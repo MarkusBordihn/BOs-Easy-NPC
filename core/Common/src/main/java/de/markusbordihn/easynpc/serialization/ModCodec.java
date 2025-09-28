@@ -17,49 +17,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.screen.components;
+package de.markusbordihn.easynpc.serialization;
 
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.Dynamic;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 
-public class Graphics {
+public class ModCodec {
 
-  private Graphics() {}
-
-  public static void blit(
-      GuiGraphics guiGraphics,
-      ResourceLocation texture,
-      int x,
-      int y,
-      int width,
-      int height,
-      int textureX,
-      int textureY) {
-    blit(guiGraphics, texture, x, y, width, height, textureX, textureY, 256, 256);
-  }
-
-  public static void blit(
-      GuiGraphics guiGraphics,
-      ResourceLocation texture,
-      int x,
-      int y,
-      int width,
-      int height,
-      int textureX,
-      int textureY,
-      int textureWidth,
-      int textureHeight) {
-    guiGraphics.blit(
-        RenderPipelines.GUI_TEXTURED,
-        texture,
-        x,
-        y,
-        width,
-        height,
-        textureX,
-        textureY,
-        textureWidth,
-        textureHeight);
-  }
+  public static final Codec<ListTag> LIST_TAG_CODEC =
+      Codec.PASSTHROUGH.comapFlatMap(
+          dynamic -> {
+            Dynamic<?> nbtDynamic =
+                dynamic.getOps() == NbtOps.INSTANCE ? dynamic : dynamic.convert(NbtOps.INSTANCE);
+            Object value = nbtDynamic.getValue();
+            if (value instanceof ListTag list) {
+              return DataResult.success(list.copy());
+            }
+            return DataResult.error(
+                () ->
+                    "Expected ListTag but got "
+                        + (value == null ? "null" : value.getClass().getSimpleName()));
+          },
+          listTag -> new Dynamic<>(NbtOps.INSTANCE, listTag.copy()));
 }

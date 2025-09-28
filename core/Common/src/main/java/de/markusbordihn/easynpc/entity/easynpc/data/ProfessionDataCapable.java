@@ -26,12 +26,14 @@ import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.EnumMap;
-import net.minecraft.nbt.CompoundTag;
+import java.util.Optional;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface ProfessionDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
@@ -80,18 +82,16 @@ public interface ProfessionDataCapable<T extends PathfinderMob> extends EasyNPC<
     defineSynchedEntityData(builder, SynchedDataIndex.PROFESSION, getDefaultProfession());
   }
 
-  default void addAdditionalProfessionData(CompoundTag compoundTag) {
+  default void addAdditionalProfessionData(ValueOutput valueOutput) {
     if (this.getProfession() != null) {
-      compoundTag.putString(DATA_PROFESSION_TAG, this.getProfession().name());
+      valueOutput.putString(DATA_PROFESSION_TAG, this.getProfession().name());
     }
   }
 
-  default void readAdditionalProfessionData(CompoundTag compoundTag) {
-    if (compoundTag.contains(DATA_PROFESSION_TAG)) {
-      String profession = compoundTag.getString(DATA_PROFESSION_TAG).orElse("");
-      if (!profession.isEmpty()) {
-        this.setProfession(this.getProfession(profession));
-      }
+  default void readAdditionalProfessionData(ValueInput valueInput) {
+    Optional<String> profession = valueInput.getString(DATA_PROFESSION_TAG);
+    if (profession.isPresent() && !profession.get().isEmpty()) {
+      this.setProfession(this.getProfession(profession.get()));
     }
   }
 }

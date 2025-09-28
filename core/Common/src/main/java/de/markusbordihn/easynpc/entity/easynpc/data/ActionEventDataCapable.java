@@ -30,11 +30,14 @@ import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.ActionHandler;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
+import java.util.Optional;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface ActionEventDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
 
@@ -98,7 +101,7 @@ public interface ActionEventDataCapable<E extends PathfinderMob> extends EasyNPC
     getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_ACTION_PERMISSION_LEVEL, 0);
   }
 
-  default void addAdditionalActionData(CompoundTag compoundTag) {
+  default void addAdditionalActionData(ValueOutput valueOutput) {
     CompoundTag actionDataTag = new CompoundTag();
 
     if (this.isServerSideInstance()) {
@@ -109,18 +112,19 @@ public interface ActionEventDataCapable<E extends PathfinderMob> extends EasyNPC
       actionDataTag.putInt(DATA_ACTION_PERMISSION_LEVEL_TAG, this.getActionPermissionLevel());
     }
 
-    compoundTag.put(DATA_ACTION_DATA_TAG, actionDataTag);
+    valueOutput.store(DATA_ACTION_DATA_TAG, CompoundTag.CODEC, actionDataTag);
   }
 
-  default void readAdditionalActionData(CompoundTag compoundTag) {
-
+  default void readAdditionalActionData(ValueInput valueInput) {
     // Early exit if no action data is available
-    if (!compoundTag.contains(DATA_ACTION_DATA_TAG)) {
+    Optional<CompoundTag> compoundTagData =
+        valueInput.read(DATA_ACTION_DATA_TAG, CompoundTag.CODEC);
+    if (compoundTagData.isEmpty()) {
       return;
     }
 
     // Read action data
-    CompoundTag actionDataTag = compoundTag.getCompoundOrEmpty(DATA_ACTION_DATA_TAG);
+    CompoundTag actionDataTag = compoundTagData.get();
 
     // Read actions
     if (actionDataTag.contains(ActionEventSet.DATA_ACTION_EVENT_SET_TAG)) {

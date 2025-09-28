@@ -26,7 +26,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.WidgetSprites;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -89,7 +89,7 @@ public class CustomButton extends Button {
 
     // Background
     guiGraphics.blitSprite(
-        RenderType::guiTextured,
+        RenderPipelines.GUI_TEXTURED,
         SPRITES.get(this.active, this.isHoveredOrFocused()),
         this.getX(),
         this.getY(),

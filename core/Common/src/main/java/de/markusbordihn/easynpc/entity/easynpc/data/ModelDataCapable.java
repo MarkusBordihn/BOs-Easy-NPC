@@ -25,12 +25,15 @@ import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
+import java.util.Optional;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface ModelDataCapable<T extends PathfinderMob>
     extends EasyNPC<T>,
@@ -111,7 +114,7 @@ public interface ModelDataCapable<T extends PathfinderMob>
     defineSynchedModelVisibilityData(builder);
   }
 
-  default void addAdditionalModelData(CompoundTag compoundTag) {
+  default void addAdditionalModelData(ValueOutput valueOutput) {
     CompoundTag modelDataTag = new CompoundTag();
 
     // Model Pose
@@ -137,18 +140,19 @@ public interface ModelDataCapable<T extends PathfinderMob>
     // Model Visibility
     this.addAdditionalModelVisibilityData(modelDataTag);
 
-    compoundTag.put(EASY_NPC_DATA_MODEL_DATA_TAG, modelDataTag);
+    valueOutput.store(EASY_NPC_DATA_MODEL_DATA_TAG, CompoundTag.CODEC, modelDataTag);
   }
 
-  default void readAdditionalModelData(CompoundTag compoundTag) {
-
+  default void readAdditionalModelData(ValueInput valueInput) {
     // Early exit if no model data is available
-    if (!compoundTag.contains(EASY_NPC_DATA_MODEL_DATA_TAG)) {
+    Optional<CompoundTag> compoundTagData =
+        valueInput.read(EASY_NPC_DATA_MODEL_DATA_TAG, CompoundTag.CODEC);
+    if (compoundTagData.isEmpty()) {
       return;
     }
 
     // Read model data
-    CompoundTag modelDataTag = compoundTag.getCompoundOrEmpty(EASY_NPC_DATA_MODEL_DATA_TAG);
+    CompoundTag modelDataTag = compoundTagData.get();
 
     // Model Pose
     if (modelDataTag.contains(EASY_NPC_DATA_MODEL_POSE_TAG)) {

@@ -28,7 +28,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -119,10 +119,8 @@ public class Checkbox extends AbstractButton {
   }
 
   public void renderButton(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
-    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
-
     guiGraphics.blit(
-        RenderType::guiTextured,
+        RenderPipelines.GUI_TEXTURED,
         TEXTURE,
         this.getX(),
         this.getY(),

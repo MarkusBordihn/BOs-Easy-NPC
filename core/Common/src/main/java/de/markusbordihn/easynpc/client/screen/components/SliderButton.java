@@ -26,7 +26,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSliderButton;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -322,7 +322,7 @@ public class SliderButton extends AbstractSliderButton {
 
     // Slider Background
     guiGraphics.blitSprite(
-        RenderType::guiTextured,
+        RenderPipelines.GUI_TEXTURED,
         this.getSliderSprite(),
         this.getX(),
         this.getY(),
@@ -331,7 +331,7 @@ public class SliderButton extends AbstractSliderButton {
 
     // Slider Handle
     guiGraphics.blitSprite(
-        RenderType::guiTextured,
+        RenderPipelines.GUI_TEXTURED,
         getSliderHandleSprite(),
         this.getX() + (int) (this.value * (this.width - 8)),
         this.getY(),

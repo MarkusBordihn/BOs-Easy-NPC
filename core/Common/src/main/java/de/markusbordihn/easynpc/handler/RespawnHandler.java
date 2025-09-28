@@ -21,11 +21,13 @@ package de.markusbordihn.easynpc.handler;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,7 +44,8 @@ public class RespawnHandler {
     }
 
     // Save entity and entity type
-    CompoundTag compoundTag = easyNPC.getEntity().saveWithoutId(new CompoundTag());
+    TagValueOutput tagValueOutput = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
+    easyNPC.getEntity().saveWithoutId(tagValueOutput);
     EntityType<?> entityType = easyNPC.getEntity().getType();
 
     // Create new entity with compoundTag
@@ -55,7 +58,7 @@ public class RespawnHandler {
           serverLevel);
       return false;
     }
-    entity.load(compoundTag);
+    entity.load((ValueInput) tagValueOutput);
 
     // Remove old entity
     easyNPC.getEntity().discard();

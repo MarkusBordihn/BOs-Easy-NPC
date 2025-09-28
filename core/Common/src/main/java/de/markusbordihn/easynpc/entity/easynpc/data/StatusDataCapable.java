@@ -23,8 +23,11 @@ import de.markusbordihn.easynpc.data.status.StatusDataType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Optional;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface StatusDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
@@ -40,7 +43,7 @@ public interface StatusDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
     getStatusDataFlags().put(key, value);
   }
 
-  default void addAdditionalStatusData(CompoundTag compoundTag) {
+  default void addAdditionalStatusData(ValueOutput valueOutput) {
     CompoundTag statusTag = new CompoundTag();
 
     // Set status flags, if not already set.
@@ -53,16 +56,19 @@ public interface StatusDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
       statusTag.putBoolean(entry.getKey().getTagName(), entry.getValue());
     }
 
-    compoundTag.put(DATA_STATUS_DATA_TAG, statusTag);
+    valueOutput.store(DATA_STATUS_DATA_TAG, CompoundTag.CODEC, statusTag);
   }
 
-  default void readAdditionalStatusData(CompoundTag compoundTag) {
-    if (!compoundTag.contains(DATA_STATUS_DATA_TAG)) {
+  default void readAdditionalStatusData(ValueInput valueInput) {
+    // Early exit if no action data is available
+    Optional<CompoundTag> compoundTagData =
+        valueInput.read(DATA_STATUS_DATA_TAG, CompoundTag.CODEC);
+    if (compoundTagData.isEmpty()) {
       return;
     }
 
     // Set status flags from the status tag.
-    CompoundTag statusTag = compoundTag.getCompoundOrEmpty(DATA_STATUS_DATA_TAG);
+    CompoundTag statusTag = compoundTagData.get();
     for (String key : statusTag.keySet()) {
       StatusDataType statusDataType = StatusDataType.get(key);
       if (statusDataType == null) {

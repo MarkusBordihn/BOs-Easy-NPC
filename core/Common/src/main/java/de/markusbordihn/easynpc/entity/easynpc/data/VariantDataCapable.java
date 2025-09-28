@@ -27,7 +27,6 @@ import java.util.Locale;
 import java.util.stream.Stream;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -36,6 +35,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerType;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface VariantDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
@@ -132,18 +133,16 @@ public interface VariantDataCapable<T extends PathfinderMob> extends EasyNPC<T> 
     defineSynchedEntityData(builder, SynchedDataIndex.VARIANT_TYPE, getDefaultVariantType().name());
   }
 
-  default void addAdditionalVariantData(CompoundTag compoundTag) {
+  default void addAdditionalVariantData(ValueOutput valueOutput) {
     if (this.getVariantType() != null) {
-      compoundTag.putString(EASY_NPC_DATA_VARIANT_TYPE_TAG, this.getVariantType().name());
+      valueOutput.putString(EASY_NPC_DATA_VARIANT_TYPE_TAG, this.getVariantType().name());
     }
   }
 
-  default void readAdditionalVariantData(CompoundTag compoundTag) {
-    if (compoundTag.contains(EASY_NPC_DATA_VARIANT_TYPE_TAG)) {
-      String variantType = compoundTag.getString(EASY_NPC_DATA_VARIANT_TYPE_TAG).orElse("");
-      if (!variantType.isEmpty()) {
-        this.setVariantType(this.getVariantType(variantType));
-      }
+  default void readAdditionalVariantData(ValueInput valueInput) {
+    String variantType = valueInput.getString(EASY_NPC_DATA_VARIANT_TYPE_TAG).orElse("");
+    if (!variantType.isEmpty()) {
+      this.setVariantType(this.getVariantType(variantType));
     }
   }
 

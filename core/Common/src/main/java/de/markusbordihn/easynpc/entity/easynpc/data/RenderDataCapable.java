@@ -24,11 +24,14 @@ import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
+import java.util.Optional;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface RenderDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
 
@@ -60,7 +63,7 @@ public interface RenderDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
     this.setRenderData(renderDataSet);
   }
 
-  default void addAdditionalRenderData(CompoundTag compoundTag) {
+  default void addAdditionalRenderData(ValueOutput valueOutput) {
     CompoundTag renderTag = new CompoundTag();
 
     RenderDataSet renderData = this.getRenderDataSet();
@@ -68,19 +71,19 @@ public interface RenderDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
       renderData.save(renderTag);
     }
 
-    compoundTag.put(DATA_RENDER_DATA_TAG, renderTag);
+    valueOutput.store(DATA_RENDER_DATA_TAG, CompoundTag.CODEC, renderTag);
   }
 
-  default void readAdditionalRenderData(CompoundTag compoundTag) {
-
-    // Early exit if no dialog data is available.
-    if (!compoundTag.contains(DATA_RENDER_DATA_TAG)) {
+  default void readAdditionalRenderData(ValueInput valueInput) {
+    // Early exit if no action data is available
+    Optional<CompoundTag> compoundTagData =
+        valueInput.read(DATA_RENDER_DATA_TAG, CompoundTag.CODEC);
+    if (compoundTagData.isEmpty()) {
       return;
     }
 
     // Read dialog data
-    RenderDataSet renderData =
-        new RenderDataSet(compoundTag.getCompoundOrEmpty(DATA_RENDER_DATA_TAG));
+    RenderDataSet renderData = new RenderDataSet(compoundTagData.get());
     this.setRenderData(renderData);
   }
 }

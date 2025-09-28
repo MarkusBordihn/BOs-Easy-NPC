@@ -52,6 +52,8 @@ import org.apache.logging.log4j.Logger;
 
 public class PresetHandler {
 
+  public static final String UUID_TAG = "UUID";
+  public static final String ID_TAG = "id";
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private PresetHandler() {}
@@ -74,7 +76,7 @@ public class PresetHandler {
 
     // Overwrite UUID, if UUID is given.
     if (uuid != null) {
-      CompoundTagUtils.writeUUID(compoundTag, Entity.UUID_TAG, uuid);
+      CompoundTagUtils.writeUUID(compoundTag, UUID_TAG, uuid);
     }
 
     // Import preset data
@@ -83,7 +85,7 @@ public class PresetHandler {
     }
 
     // Get EasyNPC entity
-    UUID compoundUUID = CompoundTagUtils.readUUID(compoundTag, Entity.UUID_TAG);
+    UUID compoundUUID = CompoundTagUtils.readUUID(compoundTag, UUID_TAG);
     EasyNPC<?> easyNPC = LivingEntityManager.getEasyNPCEntityByUUID(compoundUUID, serverLevel);
     if (easyNPC == null) {
       log.error(
@@ -132,8 +134,8 @@ public class PresetHandler {
 
     // Validate entity type
     EntityType<?> entityType =
-        compoundTag.contains(Entity.ID_TAG)
-            ? EntityType.byString(compoundTag.getString(Entity.ID_TAG).orElse("")).orElse(null)
+        compoundTag.contains(ID_TAG)
+            ? EntityType.byString(compoundTag.getString(ID_TAG).orElse("")).orElse(null)
             : null;
     if (entityType == null) {
       log.error("[{}] Error importing preset, invalid entity type", serverLevel);
@@ -142,16 +144,14 @@ public class PresetHandler {
 
     // Get UUID from compound tag and check if entity with this UUID already exists.
     UUID existingUUID =
-        compoundTag.contains(Entity.UUID_TAG)
-            ? CompoundTagUtils.readUUID(compoundTag, Entity.UUID_TAG)
-            : null;
+        compoundTag.contains(UUID_TAG) ? CompoundTagUtils.readUUID(compoundTag, UUID_TAG) : null;
     if (existingUUID != null
         && LivingEntityManager.getEasyNPCEntityByUUID(existingUUID, serverLevel) != null) {
       EasyNPC<?> existingEasyNPC =
           LivingEntityManager.getEasyNPCEntityByUUID(existingUUID, serverLevel);
-      if (compoundTag.contains(Entity.ID_TAG)
-          && !compoundTag.getString(Entity.ID_TAG).isEmpty()
-          && compoundTag.getString(Entity.ID_TAG).equals(existingEasyNPC.getEntityTypeId())
+      if (compoundTag.contains(ID_TAG)
+          && !compoundTag.getString(ID_TAG).isEmpty()
+          && compoundTag.getString(ID_TAG).equals(existingEasyNPC.getEntityTypeId())
           && existingEasyNPC.getEasyNPCPresetData() != null) {
         log.debug("[{}] Update preset data for existing entity {}!", serverLevel, existingEasyNPC);
         existingEasyNPC.getEasyNPCPresetData().importPresetData(compoundTag);

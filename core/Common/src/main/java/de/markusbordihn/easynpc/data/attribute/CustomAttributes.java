@@ -19,9 +19,12 @@
 
 package de.markusbordihn.easynpc.data.attribute;
 
+import java.util.Optional;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class CustomAttributes {
 
@@ -42,7 +45,22 @@ public class CustomAttributes {
 
   public CustomAttributes() {}
 
+  public CustomAttributes(final ValueInput valueInput) {
+    this.load(valueInput);
+  }
+
   public CustomAttributes(final CompoundTag compoundTag) {
+    this.load(compoundTag);
+  }
+
+  public void load(ValueInput valueInput) {
+    Optional<CompoundTag> compoundTagData =
+        valueInput.read(CUSTOM_ATTRIBUTES_TAG, CompoundTag.CODEC);
+    if (compoundTagData.isEmpty()) {
+      return;
+    }
+    CompoundTag compoundTag = new CompoundTag();
+    compoundTag.put(CUSTOM_ATTRIBUTES_TAG, compoundTagData.get());
     this.load(compoundTag);
   }
 
@@ -51,6 +69,14 @@ public class CustomAttributes {
       return;
     }
     CompoundTag customAttributesTag = compoundTag.getCompoundOrEmpty(CUSTOM_ATTRIBUTES_TAG);
+  }
+
+  public void save(ValueOutput valueOutput) {
+    CompoundTag compoundTag = save(new CompoundTag());
+    valueOutput.store(
+        CUSTOM_ATTRIBUTES_TAG,
+        CompoundTag.CODEC,
+        compoundTag.getCompoundOrEmpty(CUSTOM_ATTRIBUTES_TAG));
   }
 
   public CompoundTag save(CompoundTag compoundTag) {

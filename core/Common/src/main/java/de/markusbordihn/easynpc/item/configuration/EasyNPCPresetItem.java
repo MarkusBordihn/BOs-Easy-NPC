@@ -39,6 +39,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -56,6 +57,7 @@ import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.phys.AABB;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -67,6 +69,7 @@ public class EasyNPCPresetItem extends Item {
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String CUSTOM_NAME_TAG = "CustomName";
   private static final String TEXT_TAG = "text";
+  private static final String UUID_TAG = "UUID";
 
   public EasyNPCPresetItem(Properties properties) {
     super(
@@ -122,10 +125,11 @@ public class EasyNPCPresetItem extends Item {
 
     // Remove UUID from preset, to avoid conflicts with existing entities.
     CompoundTag entityData = presetData.data();
-    if (entityData.contains(Entity.UUID_TAG)) {
-      entityData.remove(Entity.UUID_TAG);
+    if (entityData.contains(UUID_TAG)) {
+      entityData.remove(UUID_TAG);
     }
-    entity.load(entityData);
+    entity.load(
+        TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), entityData));
 
     // Move entity to and spawn entity.
     entity.snapTo(blockPos.getX() + 0.5f, blockPos.getY(), blockPos.getZ() + 0.5f);

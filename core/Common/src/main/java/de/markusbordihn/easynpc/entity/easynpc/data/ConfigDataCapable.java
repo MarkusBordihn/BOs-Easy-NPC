@@ -21,22 +21,22 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface ConfigDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
   String DATA_EASY_NPC_DATA_VERSION_TAG = "EasyNPCVersion";
 
-  default void addAdditionalConfigData(CompoundTag compoundTag) {
-    compoundTag.putInt(DATA_EASY_NPC_DATA_VERSION_TAG, Constants.NPC_DATA_VERSION);
+  default void addAdditionalConfigData(ValueOutput valueOutput) {
+    valueOutput.putInt(DATA_EASY_NPC_DATA_VERSION_TAG, Constants.NPC_DATA_VERSION);
   }
 
-  default void readAdditionalConfigData(CompoundTag compoundTag) {
-
+  default void readAdditionalConfigData(ValueInput valueInput) {
     // Read Easy NPC Data Version to check for compatibility issues.
-    if (compoundTag.contains(DATA_EASY_NPC_DATA_VERSION_TAG)) {
-      int npcDataVersion = compoundTag.getInt(DATA_EASY_NPC_DATA_VERSION_TAG).orElse(0);
+    int npcDataVersion = valueInput.getInt(DATA_EASY_NPC_DATA_VERSION_TAG).orElse(-1);
+    if (npcDataVersion > 0) {
       if (npcDataVersion > Constants.NPC_DATA_VERSION) {
         log.warn(
             "Incompatible Easy NPC Data with version {} > {} for {}!",

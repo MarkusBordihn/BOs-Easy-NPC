@@ -27,17 +27,25 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface PresetDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
   ServerDataAccessor<UUID> CUSTOM_DATA_PRESET_UUID =
       ServerEntityData.defineId(ServerDataIndex.PRESET_UUID, EntityDataSerializersManager.UUID);
   String PRESET_UUID_TAG = "PresetUUID";
+  String UUID_TAG = "UUID";
+  String ID_TAG = "id";
 
   List<String> ENTITY_DATA_VOLATILE_FIELDS =
       List.of(
@@ -77,7 +85,7 @@ public interface PresetDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
     // If preset contains id and pos then we can import it directly, otherwise we
     // need to merge it with existing data.
-    if (!compoundTag.contains(Entity.UUID_TAG) || !compoundTag.contains("Pos")) {
+    if (!compoundTag.contains(UUID_TAG) || !compoundTag.contains("Pos")) {
       CompoundTag existingCompoundTag = this.serializePresetData();
 
       // Remove existing dialog data.
@@ -113,7 +121,10 @@ public interface PresetDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
     }
 
     // Import preset data to entity.
-    this.getEntity().load(compoundTag);
+    ValueInput valueInput =
+        TagValueInput.create(
+            ProblemReporter.DISCARDING, getEntityLevel().registryAccess(), compoundTag);
+    this.getEntity().load(valueInput);
   }
 
   default CompoundTag serializePresetData() {
@@ -125,7 +136,7 @@ public interface PresetDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
     // Add Entity type id to the preset data.
     String entityTypeId = this.getEntityTypeId();
     if (entityTypeId != null) {
-      compoundTag.putString(Entity.ID_TAG, entityTypeId);
+      compoundTag.putString(ID_TAG, entityTypeId);
     }
 
     // Add Preset UUID for unique identification
@@ -134,7 +145,11 @@ public interface PresetDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
     }
 
     // Entity saved data
-    CompoundTag entityData = this.getEntity().saveWithoutId(compoundTag);
+    TagValueOutput tagValueOutput =
+        TagValueOutput.createWithContext(
+            ProblemReporter.DISCARDING, getEntityLevel().registryAccess());
+    this.getEntity().saveWithoutId(tagValueOutput);
+    CompoundTag entityData = tagValueOutput.buildResult();
 
     // Clean up and optimize entity data for smaller memory footprint
     for (String entityDataFieldName : ENTITY_DATA_VOLATILE_FIELDS) {
@@ -160,16 +175,14 @@ public interface PresetDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
     getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_PRESET_UUID, null);
   }
 
-  default void addAdditionalPresetData(CompoundTag compoundTag) {
+  default void addAdditionalPresetData(ValueOutput valueOutput) {
     if (this.isServerSideInstance() && this.getPresetUUID() != null) {
-      CompoundTagUtils.writeUUID(compoundTag, PRESET_UUID_TAG, this.getPresetUUID());
+      valueOutput.store(PRESET_UUID_TAG, UUIDUtil.CODEC, this.getPresetUUID());
     }
   }
 
-  default void readAdditionalPresetData(CompoundTag compoundTag) {
-    UUID presetUUID = CompoundTagUtils.readUUID(compoundTag, PRESET_UUID_TAG);
-    if (presetUUID != null) {
-      this.setPresetUUID(presetUUID);
-    }
+  default void readAdditionalPresetData(ValueInput valueInput) {
+    Optional<UUID> presetUUID = valueInput.read(PRESET_UUID_TAG, UUIDUtil.CODEC);
+    presetUUID.ifPresent(this::setPresetUUID);
   }
 }

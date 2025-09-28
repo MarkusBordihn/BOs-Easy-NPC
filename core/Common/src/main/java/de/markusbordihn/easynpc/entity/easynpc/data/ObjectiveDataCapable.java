@@ -40,6 +40,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface ObjectiveDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
@@ -383,7 +385,7 @@ public interface ObjectiveDataCapable<T extends PathfinderMob> extends EasyNPC<T
     getEasyNPCServerData().defineServerEntityData(CUSTOM_DATA_TARGETED_ENTITY_SET, new HashSet<>());
   }
 
-  default void addAdditionalObjectiveData(CompoundTag compoundTag) {
+  default void addAdditionalObjectiveData(ValueOutput valueOutput) {
     CompoundTag objectiveTag = new CompoundTag();
 
     if (this.isServerSideInstance()) {
@@ -404,18 +406,19 @@ public interface ObjectiveDataCapable<T extends PathfinderMob> extends EasyNPC<T
       }
     }
 
-    compoundTag.put(DATA_OBJECTIVE_DATA_TAG, objectiveTag);
+    valueOutput.store(DATA_OBJECTIVE_DATA_TAG, CompoundTag.CODEC, objectiveTag);
   }
 
-  default void readAdditionalObjectiveData(CompoundTag compoundTag) {
-
+  default void readAdditionalObjectiveData(ValueInput valueInput) {
     // Early exit if no objective data is available.
-    if (!compoundTag.contains(DATA_OBJECTIVE_DATA_TAG)) {
+    Optional<CompoundTag> compoundTagData =
+        valueInput.read(DATA_OBJECTIVE_DATA_TAG, CompoundTag.CODEC);
+    if (compoundTagData.isEmpty()) {
       return;
     }
 
     // Read objective data set
-    CompoundTag objectiveDataTag = compoundTag.getCompoundOrEmpty(DATA_OBJECTIVE_DATA_TAG);
+    CompoundTag objectiveDataTag = compoundTagData.get();
     if (objectiveDataTag.contains(ObjectiveDataSet.DATA_OBJECTIVE_DATA_SET_TAG)) {
       ObjectiveDataSet objectiveDataSet = new ObjectiveDataSet(objectiveDataTag);
       this.setObjectiveDataSet(objectiveDataSet);

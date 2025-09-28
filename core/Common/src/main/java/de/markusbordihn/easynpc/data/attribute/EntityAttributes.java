@@ -21,9 +21,12 @@ package de.markusbordihn.easynpc.data.attribute;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Optional;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class EntityAttributes {
 
@@ -51,8 +54,24 @@ public class EntityAttributes {
     this.setAttribute(EntityAttributeType.MOVEMENT, new MovementAttributes());
   }
 
+  public EntityAttributes(ValueInput valueInput) {
+    this();
+    this.load(valueInput);
+  }
+
   public EntityAttributes(CompoundTag compoundTag) {
     this();
+    this.load(compoundTag);
+  }
+
+  public void load(ValueInput valueInput) {
+    Optional<CompoundTag> compoundTagData =
+        valueInput.read(ENTITY_ATTRIBUTE_TAG, CompoundTag.CODEC);
+    if (compoundTagData.isEmpty()) {
+      return;
+    }
+    CompoundTag compoundTag = new CompoundTag();
+    compoundTag.put(ENTITY_ATTRIBUTE_TAG, compoundTagData.get());
     this.load(compoundTag);
   }
 
@@ -129,6 +148,14 @@ public class EntityAttributes {
 
   public void setMovementAttributes(MovementAttributes movementAttributes) {
     this.setAttribute(EntityAttributeType.MOVEMENT, movementAttributes);
+  }
+
+  public void save(ValueOutput valueOutput) {
+    CompoundTag compoundTag = save(new CompoundTag());
+    valueOutput.store(
+        ENTITY_ATTRIBUTE_TAG,
+        CompoundTag.CODEC,
+        compoundTag.getCompoundOrEmpty(ENTITY_ATTRIBUTE_TAG));
   }
 
   public CompoundTag save(CompoundTag compoundTag) {

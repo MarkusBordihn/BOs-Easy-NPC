@@ -35,6 +35,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
 
 public class EasyNPCSpawnerBlockEntity extends BlockEntity {
 
@@ -133,8 +134,8 @@ public class EasyNPCSpawnerBlockEntity extends BlockEntity {
   }
 
   @Override
-  public void loadAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
-    super.loadAdditional(compoundTag, provider);
+  public void loadAdditional(ValueInput valueInput) {
+    super.loadAdditional(valueInput);
     this.spawnerUUID =
         compoundTag.contains(UUID_TAG)
             ? CompoundTagUtils.readUUID(compoundTag, UUID_TAG)

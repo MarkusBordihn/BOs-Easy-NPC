@@ -23,7 +23,7 @@ import de.markusbordihn.easynpc.Constants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -157,7 +157,7 @@ public class MultiStateToggleButton extends CustomButton {
     // Render the sprite for the current state
     ToggleState currentState = this.states[this.currentStateIndex];
     guiGraphics.blit(
-        RenderType::guiTextured,
+        RenderPipelines.GUI_TEXTURED,
         this.spriteTexture,
         this.getX() + this.spriteX,
         this.getY() + this.spriteY,

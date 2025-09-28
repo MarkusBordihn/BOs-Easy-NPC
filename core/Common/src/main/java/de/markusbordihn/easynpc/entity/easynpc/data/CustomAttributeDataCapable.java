@@ -24,11 +24,12 @@ import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface CustomAttributeDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
 
@@ -52,12 +53,14 @@ public interface CustomAttributeDataCapable<E extends PathfinderMob> extends Eas
     this.setSynchedEntityData(SynchedDataIndex.CUSTOM_ATTRIBUTES, customAttributes);
   }
 
-  default void addAdditionalCustomAttributeData(CompoundTag compoundTag) {
+  default void addAdditionalCustomAttributeData(ValueOutput valueOutput) {
     CustomAttributes customAttributes = this.getCustomAttributes();
-    customAttributes.save(compoundTag);
+    if (customAttributes != null) {
+      customAttributes.save(valueOutput);
+    }
   }
 
-  default void readAdditionalCustomAttributeData(CompoundTag compoundTag) {
-    this.setCustomAttributes(new CustomAttributes(compoundTag));
+  default void readAdditionalCustomAttributeData(ValueInput valueInput) {
+    this.setCustomAttributes(new CustomAttributes(valueInput));
   }
 }

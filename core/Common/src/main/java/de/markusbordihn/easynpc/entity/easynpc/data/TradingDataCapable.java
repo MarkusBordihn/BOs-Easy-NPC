@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
-import com.mojang.serialization.DataResult;
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
 import de.markusbordihn.easynpc.data.trading.TradingSettings;
@@ -29,10 +28,7 @@ import de.markusbordihn.easynpc.network.components.TextComponent;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
 import java.util.EnumMap;
 import java.util.Optional;
-import net.minecraft.Util;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -50,6 +46,8 @@ import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.Merchant;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>, Merchant {
 
@@ -544,44 +542,36 @@ public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>,
         builder, SynchedDataIndex.TRADING_MERCHANT_OFFERS, new MerchantOffers());
   }
 
-  default void addAdditionalTradingData(CompoundTag compoundTag, HolderLookup.Provider provider) {
+  default void addAdditionalTradingData(ValueOutput valueOutput) {
     // Save custom trading data set
     CompoundTag tradingDataTag = new CompoundTag();
     TradingDataSet tradingDataSet = this.getTradingDataSet();
     if (tradingDataSet != null) {
       tradingDataSet.save(tradingDataTag);
     }
-    compoundTag.put(DATA_TRADING_DATA_TAG, tradingDataTag);
+    valueOutput.store(DATA_TRADING_DATA_TAG, CompoundTag.CODEC, tradingDataTag);
 
     // Store vanilla trading data
     MerchantOffers merchantOffers = getTradingOffers();
     if (merchantOffers != null && !merchantOffers.isEmpty()) {
-      compoundTag.put(
-          DATA_OFFERS_TAG,
-          MerchantOffers.CODEC
-              .encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), merchantOffers)
-              .getOrThrow());
+      valueOutput.store(DATA_OFFERS_TAG, MerchantOffers.CODEC, merchantOffers);
     }
   }
 
-  default void readAdditionalTradingData(CompoundTag compoundTag, HolderLookup.Provider provider) {
-
+  default void readAdditionalTradingData(ValueInput valueInput) {
     // Load custom trading data set
-    CompoundTag tradingDataTag = compoundTag.getCompoundOrEmpty(DATA_TRADING_DATA_TAG);
-    if (tradingDataTag.contains(TradingDataSet.DATA_TRADING_DATA_SET_TAG)) {
-      TradingDataSet tradingDataSet = new TradingDataSet(tradingDataTag);
-      this.setTradingDataSet(tradingDataSet);
-    }
+    Optional<CompoundTag> tradingDataTag =
+        valueInput.read(DATA_TRADING_DATA_TAG, CompoundTag.CODEC);
+    tradingDataTag.ifPresent(
+        compoundTag -> this.setTradingDataSet(new TradingDataSet(compoundTag)));
 
     // Load vanilla trading data
-    if (!compoundTag.contains(DATA_OFFERS_TAG)) {
+    Optional<MerchantOffers> merchantOffers =
+        valueInput.read(DATA_OFFERS_TAG, MerchantOffers.CODEC);
+    if (merchantOffers.isEmpty()) {
+      log.warn("Missing trading offers for {} in {}", this, valueInput);
       return;
     }
-    DataResult<MerchantOffers> dataResult =
-        MerchantOffers.CODEC.parse(
-            provider.createSerializationContext(NbtOps.INSTANCE), compoundTag.get(DATA_OFFERS_TAG));
-    dataResult
-        .resultOrPartial(Util.prefix("Failed to load offers: ", log::warn))
-        .ifPresent(this::setTradingOffers);
+    this.setTradingOffers(merchantOffers.get());
   }
 }

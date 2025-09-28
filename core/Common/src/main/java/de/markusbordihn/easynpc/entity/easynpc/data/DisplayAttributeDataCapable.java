@@ -26,8 +26,10 @@ import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.type.ValueType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
+import de.markusbordihn.easynpc.serialization.ModCodec;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Optional;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -36,6 +38,8 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface DisplayAttributeDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
 
@@ -198,12 +202,34 @@ public interface DisplayAttributeDataCapable<E extends PathfinderMob> extends Ea
         builder, SynchedDataIndex.DISPLAY_ATTRIBUTE_SET, createDefaultDisplayAttributeMap());
   }
 
-  default void readAdditionalDisplayAttributeData(CompoundTag compoundTag) {
-    if (!compoundTag.contains(DATA_DISPLAY_ATTRIBUTE_SET_TAG)) {
+  default void addAdditionalDisplayAttributeData(ValueOutput valueOutput) {
+    EnumMap<DisplayAttributeType, DisplayAttributeEntry> displayAttributeMap =
+        getDisplayAttributeMap();
+    if (displayAttributeMap != null && !displayAttributeMap.isEmpty()) {
+      ListTag displayListTag = new ListTag();
+      displayAttributeMap.entrySet().stream()
+          .filter(mapEntry -> mapEntry.getKey() != DisplayAttributeType.NONE)
+          .forEach(
+              mapEntry -> {
+                CompoundTag entryTag = new CompoundTag();
+                entryTag.putString("Type", mapEntry.getKey().name());
+                mapEntry.getValue().write(entryTag);
+                displayListTag.add(entryTag);
+              });
+      valueOutput.store(DATA_DISPLAY_ATTRIBUTE_SET_TAG, ModCodec.LIST_TAG_CODEC, displayListTag);
+    }
+  }
+
+  default void readAdditionalDisplayAttributeData(ValueInput valueInput) {
+    // Early exit if no display attribute data is available.
+    Optional<ListTag> compoundTagData =
+        valueInput.read(DATA_DISPLAY_ATTRIBUTE_SET_TAG, ModCodec.LIST_TAG_CODEC);
+    if (compoundTagData.isEmpty()) {
       return;
     }
 
-    ListTag displayListTag = compoundTag.getListOrEmpty(DATA_DISPLAY_ATTRIBUTE_SET_TAG);
+    // Read display attribute data.
+    ListTag displayListTag = compoundTagData.get();
     EnumMap<DisplayAttributeType, DisplayAttributeEntry> displayAttributeMap =
         new EnumMap<>(DisplayAttributeType.class);
 
@@ -229,23 +255,5 @@ public interface DisplayAttributeDataCapable<E extends PathfinderMob> extends Ea
         });
 
     setDisplayAttributeMap(displayAttributeMap);
-  }
-
-  default void addAdditionalDisplayAttributeData(CompoundTag compoundTag) {
-    EnumMap<DisplayAttributeType, DisplayAttributeEntry> displayAttributeMap =
-        getDisplayAttributeMap();
-    if (displayAttributeMap != null && !displayAttributeMap.isEmpty()) {
-      ListTag displayListTag = new ListTag();
-      displayAttributeMap.entrySet().stream()
-          .filter(mapEntry -> mapEntry.getKey() != DisplayAttributeType.NONE)
-          .forEach(
-              mapEntry -> {
-                CompoundTag entryTag = new CompoundTag();
-                entryTag.putString("Type", mapEntry.getKey().name());
-                mapEntry.getValue().write(entryTag);
-                displayListTag.add(entryTag);
-              });
-      compoundTag.put(DATA_DISPLAY_ATTRIBUTE_SET_TAG, displayListTag);
-    }
   }
 }
