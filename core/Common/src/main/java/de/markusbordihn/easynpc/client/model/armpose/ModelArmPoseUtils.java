@@ -121,7 +121,7 @@ public class ModelArmPoseUtils {
       return ModelArmPose.BOW_AND_ARROW;
     } else if (AttackHandler.isGunWeapon(currentArmItem)) {
       return ModelArmPose.GUN_HOLD;
-    } else if (AttackHandler.isMeeleeWeapon(currentArmItem)) {
+    } else if (AttackHandler.isMeleeWeapon(currentArmItem)) {
       return ModelArmPose.ATTACKING_WITH_MELEE_WEAPON;
     }
 

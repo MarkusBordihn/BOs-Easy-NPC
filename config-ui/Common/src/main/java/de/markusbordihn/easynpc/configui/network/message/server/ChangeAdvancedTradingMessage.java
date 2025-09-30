@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.trading.TradingValueType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
+import de.markusbordihn.easynpc.handler.TradingOfferHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -113,7 +114,8 @@ public record ChangeAdvancedTradingMessage(
             easyNPC,
             this.tradingValue,
             serverPlayer);
-        tradingData.setAdvancedTradingMaxUses(this.tradingOfferIndex, (int) this.tradingValue);
+        TradingOfferHandler.setAdvancedTradingMaxUses(
+            tradingData, this.tradingOfferIndex, (int) this.tradingValue);
         break;
       case REWARD_EXP:
         log.debug(
@@ -122,7 +124,8 @@ public record ChangeAdvancedTradingMessage(
             easyNPC,
             this.tradingValue,
             serverPlayer);
-        tradingData.setAdvancedTradingXp(this.tradingOfferIndex, (int) this.tradingValue);
+        TradingOfferHandler.setAdvancedTradingXp(
+            tradingData, this.tradingOfferIndex, (int) this.tradingValue);
         break;
       case PRICE_MULTIPLIER:
         log.debug(
@@ -131,7 +134,8 @@ public record ChangeAdvancedTradingMessage(
             easyNPC,
             this.tradingValue,
             serverPlayer);
-        tradingData.setAdvancedTradingPriceMultiplier(this.tradingOfferIndex, this.tradingValue);
+        TradingOfferHandler.setAdvancedTradingPriceMultiplier(
+            tradingData, this.tradingOfferIndex, this.tradingValue);
         break;
       case DEMAND:
         log.debug(
@@ -140,7 +144,8 @@ public record ChangeAdvancedTradingMessage(
             easyNPC,
             this.tradingValue,
             serverPlayer);
-        tradingData.setAdvancedTradingDemand(this.tradingOfferIndex, (int) this.tradingValue);
+        TradingOfferHandler.setAdvancedTradingDemand(
+            tradingData, this.tradingOfferIndex, (int) this.tradingValue);
         break;
       default:
         log.error(

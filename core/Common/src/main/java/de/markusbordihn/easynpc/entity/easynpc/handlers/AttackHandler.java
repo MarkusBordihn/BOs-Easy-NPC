@@ -64,7 +64,7 @@ public class AttackHandler {
     weaponCompoundTag.put(CHARGED_PROJECTILES_TAG, listTag);
   }
 
-  public static boolean isMeeleeWeapon(ItemStack itemStack) {
+  public static boolean isMeleeWeapon(ItemStack itemStack) {
     return itemStack.getItem() instanceof TieredItem;
   }
 
@@ -98,7 +98,7 @@ public class AttackHandler {
   }
 
   public static boolean isHoldingMeleeWeapon(LivingEntity livingEntity) {
-    return livingEntity != null && isMeeleeWeapon(livingEntity.getMainHandItem());
+    return livingEntity != null && isMeleeWeapon(livingEntity.getMainHandItem());
   }
 
   public static boolean isHoldingProjectileWeapon(LivingEntity livingEntity) {

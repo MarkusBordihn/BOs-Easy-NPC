@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.entity.easynpc.data;
 
 import de.markusbordihn.easynpc.data.synched.SynchedDataIndex;
 import de.markusbordihn.easynpc.data.trading.TradingDataSet;
-import de.markusbordihn.easynpc.data.trading.TradingSettings;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.network.components.TextComponent;
@@ -34,7 +33,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
@@ -66,10 +64,8 @@ public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>,
         SynchedEntityData.defineId(entityClass, EntityDataSerializersManager.MERCHANT_OFFERS));
   }
 
-  @Override
   Player getTradingPlayer();
 
-  @Override
   void setTradingPlayer(Player player);
 
   MerchantOffers getMerchantTradingOffers();
@@ -80,6 +76,7 @@ public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>,
 
   void stopTrading();
 
+  @Override
   default MerchantOffers getOffers() {
     if (this.getMerchantTradingOffers() == null) {
       this.updateMerchantTradingOffers();
@@ -134,120 +131,6 @@ public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>,
   @Override
   default boolean isClientSideInstance() {
     return this.getEntityLevel() != null && this.getEntityLevel().isClientSide();
-  }
-
-  default void setAdvancedTradingOffers(Container container) {
-
-    // Update trading offers with container items.
-    MerchantOffers merchantOffers = new MerchantOffers();
-    int merchantOfferIndex = 0;
-    for (int tradingOffer = 0;
-        tradingOffer < TradingSettings.ADVANCED_TRADING_OFFERS;
-        tradingOffer++) {
-
-      // Check if we have a valid trading offer.
-      ItemStack itemA = container.getItem(tradingOffer * 3);
-      ItemStack itemB = container.getItem(tradingOffer * 3 + 1);
-      ItemStack itemResult = container.getItem(tradingOffer * 3 + 2);
-      if (!isValidTradingOffer(itemA, itemB, itemResult)) {
-        continue;
-      }
-
-      // Check if we have existing trading offers and use them as base for the new trading offers.
-      MerchantOffers existingMerchantOffers = this.getTradingOffers();
-      MerchantOffer existingMerchantOffer =
-          existingMerchantOffers != null && existingMerchantOffers.size() > tradingOffer
-              ? existingMerchantOffers.get(tradingOffer)
-              : null;
-      if (existingMerchantOffer != null) {
-        merchantOffers.add(
-            merchantOfferIndex++,
-            new MerchantOffer(
-                itemA,
-                itemB,
-                itemResult,
-                existingMerchantOffer.getUses(),
-                existingMerchantOffer.getMaxUses(),
-                existingMerchantOffer.getXp(),
-                existingMerchantOffer.getPriceMultiplier(),
-                existingMerchantOffer.getDemand()));
-      } else {
-        merchantOffers.add(
-            merchantOfferIndex++, new MerchantOffer(itemA, itemB, itemResult, 64, 1, 1.0F));
-      }
-    }
-
-    // Set trading offers if we have any
-    if (!merchantOffers.isEmpty()) {
-      getTradingDataSet().setType(TradingType.ADVANCED);
-      this.setTradingOffers(merchantOffers);
-    }
-  }
-
-  default void setBasicTradingOffers(Container container) {
-
-    // Create new trading offers based on the container and number of trading offers.
-    MerchantOffers merchantOffers = new MerchantOffers();
-    for (int tradingOffer = 0;
-        tradingOffer < TradingSettings.BASIC_TRADING_OFFERS;
-        tradingOffer++) {
-
-      // Check if we have a valid trading offer.
-      ItemStack itemA = container.getItem(tradingOffer * 3);
-      ItemStack itemB = container.getItem(tradingOffer * 3 + 1);
-      ItemStack itemResult = container.getItem(tradingOffer * 3 + 2);
-      if (!isValidTradingOffer(itemA, itemB, itemResult)) {
-        continue;
-      }
-
-      MerchantOffer merchantOffer =
-          new MerchantOffer(
-              itemA,
-              itemB,
-              itemResult,
-              getTradingDataSet().getMaxUses(),
-              getTradingDataSet().getRewardedXP(),
-              1.0F);
-      merchantOffers.add(merchantOffer);
-    }
-
-    // Set trading offers if we have any
-    if (!merchantOffers.isEmpty()) {
-      getTradingDataSet().setType(TradingType.BASIC);
-      this.setTradingOffers(merchantOffers);
-    }
-  }
-
-  default void updateBasicTradingOffers() {
-    if (getTradingDataSet().isType(TradingType.BASIC)) {
-      return;
-    }
-
-    MerchantOffers merchantOffers = this.getTradingOffers();
-    if (merchantOffers == null || merchantOffers.isEmpty()) {
-      return;
-    }
-
-    // Update trading offers
-    MerchantOffers newMerchantOffers = new MerchantOffers();
-    for (MerchantOffer merchantOffer : merchantOffers) {
-      if (!isValidTradingOffer(
-          merchantOffer.getBaseCostA(), merchantOffer.getCostB(), merchantOffer.getResult())) {
-        continue;
-      }
-      MerchantOffer newMerchantOffer =
-          new MerchantOffer(
-              merchantOffer.getBaseCostA(),
-              merchantOffer.getCostB(),
-              merchantOffer.getResult(),
-              getTradingDataSet().getMaxUses(),
-              getTradingDataSet().getRewardedXP(),
-              merchantOffer.getPriceMultiplier());
-      newMerchantOffers.add(newMerchantOffer);
-    }
-
-    // Update trading offers
-    this.setTradingOffers(newMerchantOffers);
   }
 
   default void resetTradingOffers() {
@@ -336,106 +219,6 @@ public interface TradingDataCapable<E extends PathfinderMob> extends EasyNPC<E>,
     if (merchant != null) {
       merchant.setTradingPlayer(null);
     }
-  }
-
-  default void setAdvancedTradingMaxUses(int tradingOfferIndex, int maxUses) {
-    MerchantOffers merchantOffers = getTradingOffers();
-    if (merchantOffers == null
-        || merchantOffers.isEmpty()
-        || merchantOffers.size() <= tradingOfferIndex) {
-      return;
-    }
-    MerchantOffer merchantOffer = merchantOffers.get(tradingOfferIndex);
-    if (merchantOffer == null) {
-      return;
-    }
-    merchantOffers.set(
-        tradingOfferIndex,
-        new MerchantOffer(
-            merchantOffer.getBaseCostA(),
-            merchantOffer.getCostB(),
-            merchantOffer.getResult(),
-            0,
-            maxUses,
-            merchantOffer.getXp(),
-            merchantOffer.getPriceMultiplier(),
-            merchantOffer.getDemand()));
-    this.setTradingOffers(merchantOffers);
-  }
-
-  default void setAdvancedTradingXp(int tradingOfferIndex, int xp) {
-    MerchantOffers merchantOffers = getTradingOffers();
-    if (merchantOffers == null
-        || merchantOffers.isEmpty()
-        || merchantOffers.size() <= tradingOfferIndex) {
-      return;
-    }
-    MerchantOffer merchantOffer = merchantOffers.get(tradingOfferIndex);
-    if (merchantOffer == null) {
-      return;
-    }
-    merchantOffers.set(
-        tradingOfferIndex,
-        new MerchantOffer(
-            merchantOffer.getBaseCostA(),
-            merchantOffer.getCostB(),
-            merchantOffer.getResult(),
-            merchantOffer.getUses(),
-            merchantOffer.getMaxUses(),
-            xp,
-            merchantOffer.getPriceMultiplier(),
-            merchantOffer.getDemand()));
-    this.setTradingOffers(merchantOffers);
-  }
-
-  default void setAdvancedTradingPriceMultiplier(int tradingOfferIndex, float priceMultiplier) {
-    MerchantOffers merchantOffers = getTradingOffers();
-    if (merchantOffers == null
-        || merchantOffers.isEmpty()
-        || merchantOffers.size() <= tradingOfferIndex) {
-      return;
-    }
-    MerchantOffer merchantOffer = merchantOffers.get(tradingOfferIndex);
-    if (merchantOffer == null) {
-      return;
-    }
-    merchantOffers.set(
-        tradingOfferIndex,
-        new MerchantOffer(
-            merchantOffer.getBaseCostA(),
-            merchantOffer.getCostB(),
-            merchantOffer.getResult(),
-            merchantOffer.getUses(),
-            merchantOffer.getMaxUses(),
-            merchantOffer.getXp(),
-            priceMultiplier,
-            merchantOffer.getDemand()));
-    this.setTradingOffers(merchantOffers);
-  }
-
-  default void setAdvancedTradingDemand(int tradingOfferIndex, int demand) {
-    MerchantOffers merchantOffers = getTradingOffers();
-    if (merchantOffers == null
-        || merchantOffers.isEmpty()
-        || merchantOffers.size() <= tradingOfferIndex) {
-      return;
-    }
-    MerchantOffer merchantOffer = merchantOffers.get(tradingOfferIndex);
-    if (merchantOffer == null) {
-      return;
-    }
-    merchantOffers.set(
-        tradingOfferIndex,
-        new MerchantOffer(
-            merchantOffer.getBaseCostA(),
-            merchantOffer.getCostB(),
-            merchantOffer.getResult(),
-            merchantOffer.getUses(),
-            merchantOffer.getMaxUses(),
-            merchantOffer.getXp(),
-            merchantOffer.getPriceMultiplier(),
-            demand));
-    this.setTradingOffers(merchantOffers);
   }
 
   default TradingDataSet getTradingDataSet() {
