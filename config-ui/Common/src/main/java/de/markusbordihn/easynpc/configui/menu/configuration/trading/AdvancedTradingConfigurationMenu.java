@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.menu.configuration.trading;
 
+import de.markusbordihn.easynpc.configui.handler.TradingContainerHandler;
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.slot.ItemASlot;
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.slot.ItemBSlot;
 import de.markusbordihn.easynpc.configui.menu.configuration.trading.slot.ItemResultSlot;
@@ -155,7 +156,8 @@ public class AdvancedTradingConfigurationMenu extends TradingConfigurationMenu {
     if (this.level.isClientSide) {
       return;
     }
-    this.getEasyNPC().getEasyNPCTradingData().setAdvancedTradingOffers(tradingContainer);
+    TradingContainerHandler.setAdvancedTradingOffers(
+        this.getEasyNPC().getEasyNPCTradingData(), tradingContainer);
   }
 
   public int getMaxPages() {

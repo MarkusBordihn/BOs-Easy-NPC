@@ -353,35 +353,35 @@ public class RangeSliderButton extends AbstractWidget {
 
   @Override
   public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-    if (sliderButton.isVisible()) {
+    if (sliderButton.visible) {
       sliderButton.render(guiGraphics, mouseX, mouseY, partialTicks);
-    } else if (textField.isVisible()) {
+    } else if (textField.visible) {
       textField.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
-    if (textButtonDecrease.isActive()) {
+    if (textButtonDecrease.active) {
       textButtonDecrease.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
-    if (textButtonIncrease.isActive()) {
+    if (textButtonIncrease.active) {
       textButtonIncrease.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
-    if (textButtonReset.isActive()) {
+    if (textButtonReset.active) {
       textButtonReset.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
-    if (textButtonEdit.isActive() && textButtonEdit.isVisible()) {
+    if (textButtonEdit.active && textButtonEdit.visible) {
       textButtonEdit.render(guiGraphics, mouseX, mouseY, partialTicks);
-    } else if (textButtonDone.isActive() && textButtonDone.isVisible()) {
+    } else if (textButtonDone.active && textButtonDone.visible) {
       textButtonDone.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
   }
 
   @Override
   public boolean mouseClicked(double mouseX, double mouseY, int button) {
-    if (sliderButton.isVisible() && sliderButton.mouseClicked(mouseX, mouseY, button)) {
+    if (sliderButton.visible && sliderButton.mouseClicked(mouseX, mouseY, button)) {
       return true;
     }
-    if (textField.isVisible() && textField.mouseClicked(mouseX, mouseY, button)) {
+    if (textField.visible && textField.mouseClicked(mouseX, mouseY, button)) {
       textField.setFocused(true);
       return true;
     }
@@ -390,9 +390,9 @@ public class RangeSliderButton extends AbstractWidget {
     textButtonIncrease.mouseClicked(mouseX, mouseY, button);
     textButtonReset.mouseClicked(mouseX, mouseY, button);
 
-    if (textButtonEdit.isVisible()) {
+    if (textButtonEdit.visible) {
       textButtonEdit.mouseClicked(mouseX, mouseY, button);
-    } else if (textButtonDone.isVisible()) {
+    } else if (textButtonDone.visible) {
       textButtonDone.mouseClicked(mouseX, mouseY, button);
     }
     return super.mouseClicked(mouseX, mouseY, button);
@@ -400,7 +400,7 @@ public class RangeSliderButton extends AbstractWidget {
 
   @Override
   public boolean mouseReleased(double mouseX, double mouseY, int button) {
-    if (textField.isVisible()) {
+    if (textField.visible) {
       textField.mouseReleased(mouseX, mouseY, button);
     }
     return super.mouseReleased(mouseX, mouseY, button);
@@ -408,9 +408,9 @@ public class RangeSliderButton extends AbstractWidget {
 
   @Override
   public boolean mouseScrolled(double x, double y, double scrollDeltaX, double scrollDeltaY) {
-    if (sliderButton.isVisible()) {
+    if (sliderButton.visible) {
       return sliderButton.mouseScrolled(x, y, scrollDeltaX, scrollDeltaY);
-    } else if (textField.isVisible()) {
+    } else if (textField.visible) {
       return textField.mouseScrolled(x, y, scrollDeltaX, scrollDeltaY);
     }
     return super.mouseScrolled(x, y, scrollDeltaX, scrollDeltaY);
@@ -418,16 +418,16 @@ public class RangeSliderButton extends AbstractWidget {
 
   @Override
   public void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
-    if (sliderButton.isVisible() && sliderButton.isMouseOver(mouseX, mouseY)) {
+    if (sliderButton.visible && sliderButton.isMouseOver(mouseX, mouseY)) {
       sliderButton.triggerOnDrag(mouseX, mouseY, deltaX, deltaY);
     }
   }
 
   @Override
   public boolean charTyped(char character, int keyCode) {
-    if (sliderButton.isVisible()) {
+    if (sliderButton.visible) {
       return sliderButton.charTyped(character, keyCode);
-    } else if (textField.isVisible()) {
+    } else if (textField.visible) {
       return textField.charTyped(character, keyCode);
     }
     return false;
@@ -435,9 +435,9 @@ public class RangeSliderButton extends AbstractWidget {
 
   @Override
   public boolean keyPressed(int keyCode, int unused1, int unused2) {
-    if (sliderButton.isVisible()) {
+    if (sliderButton.visible) {
       return sliderButton.keyPressed(keyCode, unused1, unused2);
-    } else if (textField.isVisible()) {
+    } else if (textField.visible) {
       return textField.keyPressed(keyCode, unused1, unused2);
     }
     return false;

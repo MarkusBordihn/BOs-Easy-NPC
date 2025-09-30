@@ -51,6 +51,12 @@ public class AttackHandler {
 
   private AttackHandler() {}
 
+  public static void addChargedProjectile(
+    ItemStack weaponItemStack, ItemStack projectileItemStack) {
+    weaponItemStack.set(
+      DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.of(projectileItemStack));
+  }
+
   public static boolean isMeleeWeapon(ItemStack itemStack) {
     // Check vanilla weapon tags
     if (itemStack.is(ItemTags.SWORDS) || itemStack.is(ItemTags.AXES)) {
@@ -121,12 +127,6 @@ public class AttackHandler {
 
   public static boolean isHoldingWeapon(LivingEntity livingEntity) {
     return isHoldingMeleeWeapon(livingEntity) || isHoldingProjectileWeapon(livingEntity);
-  }
-
-  public static void addChargedProjectile(
-      ItemStack weaponItemStack, ItemStack projectileItemStack) {
-    weaponItemStack.set(
-        DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.of(projectileItemStack));
   }
 
   public static void performDefaultRangedAttack(
