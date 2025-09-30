@@ -256,9 +256,9 @@ public class ActionDataEntryEditorContainerScreen<T extends EditorMenu> extends 
     this.actionDataTypeButton =
         this.addRenderableWidget(
             new SpinButton<>(
-                this.leftPos + 120,
+                this.leftPos + 133,
                 this.contentTop + 5,
-                150,
+                160,
                 16,
                 Arrays.stream(ActionDataType.values())
                     .filter(type -> type != ActionDataType.NONE)
