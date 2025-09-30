@@ -23,6 +23,7 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.data.trading.TradingValueType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.TradingDataCapable;
+import de.markusbordihn.easynpc.handler.TradingOfferHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
@@ -107,12 +108,12 @@ public record ChangeBasicTradingMessage(
       case MAX_USES:
         log.debug("Set max uses to {} for {} from {}", this.tradingValue, easyNPC, serverPlayer);
         tradingData.getTradingDataSet().setMaxUses(this.tradingValue);
-        tradingData.updateBasicTradingOffers();
+        TradingOfferHandler.updateBasicTradingOffers(tradingData);
         break;
       case REWARD_EXP:
         log.debug("Set reward exp to {} for {} from {}", this.tradingValue, easyNPC, serverPlayer);
         tradingData.getTradingDataSet().setRewardedXP(this.tradingValue);
-        tradingData.updateBasicTradingOffers();
+        TradingOfferHandler.updateBasicTradingOffers(tradingData);
         break;
       default:
         log.error("Trading value type {} is unknown for {}", this.tradingValueType, serverPlayer);

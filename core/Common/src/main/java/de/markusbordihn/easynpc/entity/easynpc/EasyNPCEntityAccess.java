@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc;
 
+import de.markusbordihn.easynpc.data.trading.SafeMerchantData;
 import java.util.UUID;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -67,7 +68,9 @@ public final class EasyNPCEntityAccess {
   }
 
   public static <E extends PathfinderMob> Merchant getMerchant(EasyNPC<E> easyNPC) {
-    return easyNPC instanceof Merchant merchant ? merchant : null;
+    return easyNPC instanceof Merchant
+        ? new SafeMerchantData<>(easyNPC.getEasyNPCTradingData())
+        : null;
   }
 
   public static <E extends PathfinderMob> CrossbowAttackMob getCrossbowAttackMob(

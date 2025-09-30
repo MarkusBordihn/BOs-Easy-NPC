@@ -113,7 +113,8 @@ public class EasyNPCModel {
           rightArmPose,
           modelManager.getModelPart(ModelPartType.RIGHT_ARM),
           true,
-          modelManager.getModelPart(ModelPartType.HEAD));
+          modelManager.getModelPart(ModelPartType.HEAD),
+          easyNPC);
     }
 
     ModelArmPose leftArmPose = ModelArmPoseUtils.getArmPoseForLeftArm(easyNPC);
@@ -122,7 +123,8 @@ public class EasyNPCModel {
           leftArmPose,
           modelManager.getModelPart(ModelPartType.LEFT_ARM),
           false,
-          modelManager.getModelPart(ModelPartType.HEAD));
+          modelManager.getModelPart(ModelPartType.HEAD),
+          easyNPC);
     }
   }
 
@@ -130,7 +132,8 @@ public class EasyNPCModel {
       final ModelArmPose armPose,
       final ModelPart armModelPart,
       final boolean isRightArm,
-      final ModelPart head) {
+      final ModelPart head,
+      final EasyNPC<?> easyNPC) {
     if (armPose == null || armModelPart == null) {
       return;
     }
@@ -167,10 +170,18 @@ public class EasyNPCModel {
         armModelPart.yRot = isRightArm ? 0.5235988F : -0.5235988F;
       }
       case ATTACKING_WITH_MELEE_WEAPON -> {
-        float swingProgress = 0.5F;
-        float rotation = Mth.sin(swingProgress * (float) Math.PI);
-        armModelPart.xRot = rotation * -1.2F;
+        float swingProgress = 0.0F;
+        if (easyNPC != null && easyNPC.getLivingEntity() != null) {
+          var livingEntity = easyNPC.getLivingEntity();
+          if (livingEntity.swinging) {
+            swingProgress = Mth.clamp(livingEntity.swingTime / 6.0F, 0.0F, 1.0F);
+            swingProgress = Mth.sin(swingProgress * (float) Math.PI);
+          }
+        }
+
+        armModelPart.xRot = swingProgress * -1.8F - 0.3F;
         armModelPart.yRot = isRightArm ? -0.3F : 0.3F;
+        armModelPart.zRot = swingProgress * (isRightArm ? -0.5F : 0.5F);
       }
       case SPELLCASTING -> {
         armModelPart.xRot = armModelPart.xRot * 0.5F - (float) Math.PI;
