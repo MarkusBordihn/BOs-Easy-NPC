@@ -31,7 +31,6 @@ import de.markusbordihn.easynpc.entity.easynpc.data.SoundDataCapable;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
-import net.minecraft.commands.synchronization.SuggestionProviders;
 import net.minecraft.resources.ResourceLocation;
 
 public class SoundCommand extends Command {
@@ -50,7 +49,7 @@ public class SoundCommand extends Command {
                                 .suggests(SoundTypeSuggestions::suggest)
                                 .then(
                                     Commands.argument("sound", ResourceLocationArgument.id())
-                                        .suggests(SuggestionProviders.AVAILABLE_SOUNDS)
+                                        // .suggests(SuggestionProviders.AVAILABLE_SOUNDS)
                                         .executes(
                                             context ->
                                                 setSoundType(

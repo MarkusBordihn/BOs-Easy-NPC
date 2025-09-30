@@ -17,20 +17,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.commands;
+package de.markusbordihn.easynpc;
 
-import de.markusbordihn.easynpc.commands.manager.CommandManager;
-import net.minecraftforge.event.RegisterCommandsEvent;
+import de.markusbordihn.easynpc.network.NetworkHandler;
+import de.markusbordihn.easynpc.network.NetworkHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-@EventBusSubscriber
-public class CommandsEventHandler {
-
-  protected CommandsEventHandler() {}
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+public class CommonEventHandler {
 
   @SubscribeEvent
-  public static void handleRegisterCommandsEvent(RegisterCommandsEvent event) {
-    CommandManager.registerCommands(event.getDispatcher(), event.getBuildContext());
+  public static void onCommonSetup(FMLCommonSetupEvent event) {
+    event.enqueueWork(
+        () -> {
+          NetworkHandlerManager.registerHandler(new NetworkHandler());
+          NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
+        });
   }
 }

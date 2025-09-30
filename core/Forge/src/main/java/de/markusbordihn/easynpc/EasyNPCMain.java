@@ -35,17 +35,13 @@ import de.markusbordihn.easynpc.menu.MenuHandler;
 import de.markusbordihn.easynpc.menu.MenuManager;
 import de.markusbordihn.easynpc.menu.ModMenuTypes;
 import de.markusbordihn.easynpc.network.ClientNetworkMessageHandler;
-import de.markusbordihn.easynpc.network.NetworkHandler;
-import de.markusbordihn.easynpc.network.NetworkHandlerManager;
-import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
+import de.markusbordihn.easynpc.tabs.ModTabs;
 import java.util.Optional;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -58,7 +54,7 @@ public class EasyNPCMain {
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   public EasyNPCMain(FMLJavaModLoadingContext context) {
-    IEventBus modEventBus = context.getModEventBus();
+    final BusGroup modBusGroup = context.getModBusGroup();
 
     log.info("Initializing {} (Forge) ...", Constants.MOD_NAME);
 
@@ -87,43 +83,36 @@ public class EasyNPCMain {
     CompatManager.registerCompatHandler(new CompatHandler());
 
     log.info("{} Command Argument Types ...", Constants.LOG_REGISTER_PREFIX);
-    ModArgumentTypes.COMMAND_ARGUMENT_TYPES.register(modEventBus);
+    ModArgumentTypes.COMMAND_ARGUMENT_TYPES.register(modBusGroup);
 
     log.info("{} Entity Data Serializers ...", Constants.LOG_REGISTER_PREFIX);
     EntityDataSerializersManager.register();
 
     log.info("{} Entity Types ...", Constants.LOG_REGISTER_PREFIX);
-    ModEntityType.ENTITY_TYPES.register(modEventBus);
+    ModEntityType.ENTITY_TYPES.register(modBusGroup);
 
     log.info("{} Blocks ...", Constants.LOG_REGISTER_PREFIX);
-    ModBlocks.BLOCKS.register(modEventBus);
+    ModBlocks.BLOCKS.register(modBusGroup);
 
     log.info("{} Blocks Entity Types ...", Constants.LOG_REGISTER_PREFIX);
-    ModBlocks.BLOCK_ENTITY_TYPES.register(modEventBus);
+    ModBlocks.BLOCK_ENTITY_TYPES.register(modBusGroup);
 
     log.info("{} Items ...", Constants.LOG_REGISTER_PREFIX);
-    ModItems.ITEMS.register(modEventBus);
+    ModItems.ITEMS.register(modBusGroup);
 
     log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
-    ModMenuTypes.MENU_TYPES.register(modEventBus);
+    ModMenuTypes.MENU_TYPES.register(modBusGroup);
 
     log.info("{} Menu Handler ...", Constants.LOG_REGISTER_PREFIX);
     MenuManager.registerMenuHandler(new MenuHandler());
 
     log.info("{} Mod Data Components ...", Constants.LOG_REGISTER_PREFIX);
-    ModDataComponents.DATA_COMPONENTS.register(modEventBus);
+    ModDataComponents.DATA_COMPONENTS.register(modBusGroup);
 
     log.info("{} Network Handler ...", Constants.LOG_REGISTER_PREFIX);
-    modEventBus.addListener(
-        (final FMLCommonSetupEvent event) ->
-            event.enqueueWork(
-                () -> {
-                  NetworkHandlerManager.registerHandler(new NetworkHandler());
-                  NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
-                }));
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
 
-    // Initialize the client mod initializer
-    DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> new EasyNPCClient(modEventBus));
+    log.info("{} Creative Tabs ...", Constants.LOG_REGISTER_PREFIX);
+    ModTabs.CREATIVE_TABS.register(modBusGroup);
   }
 }

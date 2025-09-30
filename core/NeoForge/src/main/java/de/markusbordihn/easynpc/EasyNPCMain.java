@@ -115,5 +115,10 @@ public class EasyNPCMain {
           NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
         });
     NetworkMessageHandlerManager.registerClientHandler(new ClientNetworkMessageHandler());
+
+    // Initialize the client mod initializer
+    if (FMLEnvironment.dist == Dist.CLIENT) {
+      new EasyNPCClient(modEventBus, modContainer);
+    }
   }
 }

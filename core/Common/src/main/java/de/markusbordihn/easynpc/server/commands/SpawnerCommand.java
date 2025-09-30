@@ -32,8 +32,12 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 
 public class SpawnerCommand extends Command {
 
@@ -79,35 +83,37 @@ public class SpawnerCommand extends Command {
     BlockEntity blockEntity = context.getLevel().getBlockEntity(blockPos);
 
     // Check if block entity is a valid spawner and get spawner data.
-    CompoundTag spawnerData;
+    TagValueOutput valueOutput = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
     if (blockEntity instanceof SpawnerBlockEntity spawnerBlockEntity) {
-      spawnerData = spawnerBlockEntity.getSpawner().save(new CompoundTag());
+      spawnerBlockEntity.getSpawner().save(valueOutput);
     } else if (blockEntity instanceof EasyNPCSpawnerBlockEntity spawnerBlockEntity) {
-      spawnerData = spawnerBlockEntity.getSpawner().save(new CompoundTag());
+      spawnerBlockEntity.getSpawner().save(valueOutput);
     } else {
       return sendFailureMessage(context, "No valid spawner found at " + blockPos);
     }
+    CompoundTag compoundTag = valueOutput.buildResult();
 
     // Get and apply adjusted spawner data
-    if (!SpawnerData.setSpawnerValue(spawnerData, parameter, (short) value)) {
+    if (!SpawnerData.setSpawnerValue(compoundTag, parameter, (short) value)) {
       return sendFailureMessage(
           context, "Invalid parameter " + parameter + " for spawner at " + blockPos);
     }
 
     // Load adjusted spawner data
+    ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, null, compoundTag);
     if (blockEntity instanceof SpawnerBlockEntity spawnerBlockEntity) {
       spawnerBlockEntity
           .getSpawner()
-          .load(context.getLevel(), spawnerBlockEntity.getBlockPos(), spawnerData);
+          .load(context.getLevel(), spawnerBlockEntity.getBlockPos(), valueInput);
       spawnerBlockEntity.setChanged();
     } else if (blockEntity instanceof EasyNPCSpawnerBlockEntity spawnerBlockEntity) {
       spawnerBlockEntity
           .getSpawner()
-          .load(context.getLevel(), spawnerBlockEntity.getBlockPos(), spawnerData);
+          .load(context.getLevel(), spawnerBlockEntity.getBlockPos(), valueInput);
       spawnerBlockEntity.setChanged();
     }
 
     return sendSuccessMessage(
-        context, "Adjusted spawner data " + spawnerData + " for spawner at " + blockPos);
+        context, "Adjusted spawner data " + compoundTag + " for spawner at " + blockPos);
   }
 }

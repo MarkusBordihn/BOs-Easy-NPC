@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.client.screen.components;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.components.TextComponent;
 import net.minecraft.client.Minecraft;

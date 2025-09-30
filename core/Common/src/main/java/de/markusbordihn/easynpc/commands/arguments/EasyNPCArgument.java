@@ -155,7 +155,10 @@ public class EasyNPCArgument implements ArgumentType<EntitySelector> {
     StringReader stringReader = new StringReader(suggestionsBuilder.getInput());
     stringReader.setCursor(suggestionsBuilder.getStart());
     EasyNPCSelectorParser easyNPCSelectorParser =
-        new EasyNPCSelectorParser(stringReader, sharedSuggestionProvider.hasPermission(2));
+        new EasyNPCSelectorParser(
+            stringReader,
+            context.getSource() instanceof CommandSourceStack commandSourceStack
+                && commandSourceStack.hasPermission(2));
     try {
       easyNPCSelectorParser.parse();
     } catch (CommandSyntaxException exception) {

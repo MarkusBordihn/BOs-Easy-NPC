@@ -24,17 +24,27 @@ import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+@EventBusSubscriber()
 public class NetworkHandler implements NetworkHandlerInterface {
+
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final String PROTOCOL_VERSION = "1";
 
   private static PayloadRegistrar payloadRegistrar;
   private final Map<Type<?>, Class<? extends NetworkMessageRecord>> clientMessages =
@@ -64,15 +74,25 @@ public class NetworkHandler implements NetworkHandlerInterface {
         PROTOCOL_VERSION);
   }
 
+  @SubscribeEvent
+  public static void registerNetworkMessageHandler(final RegisterPayloadHandlersEvent event) {
+    payloadRegistrar = event.registrar(PROTOCOL_VERSION);
+    log.info("{} Network Handler with {} ...", Constants.LOG_REGISTER_PREFIX, PROTOCOL_VERSION);
+  }
+
   @Override
   public <M extends NetworkMessageRecord> void sendToServer(M networkMessageRecord) {
-    PacketDistributor.sendToServer(networkMessageRecord);
+    if (Minecraft.getInstance().getConnection() != null) {
+      Minecraft.getInstance()
+          .getConnection()
+          .send(new ServerboundCustomPayloadPacket(networkMessageRecord));
+    }
   }
 
   @Override
   public <M extends NetworkMessageRecord> void sendToPlayer(
       M networkMessageRecord, ServerPlayer serverPlayer) {
-    PacketDistributor.sendToPlayer(serverPlayer, networkMessageRecord);
+    serverPlayer.connection.send(new ClientboundCustomPayloadPacket(networkMessageRecord));
   }
 
   @Override

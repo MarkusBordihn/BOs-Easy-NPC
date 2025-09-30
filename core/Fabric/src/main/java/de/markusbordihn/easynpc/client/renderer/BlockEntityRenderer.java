@@ -22,9 +22,9 @@ package de.markusbordihn.easynpc.client.renderer;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.block.ModBlocks;
 import de.markusbordihn.easynpc.client.renderer.blockentity.BaseEasyNPCSpawnerBlockEntityRenderer;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
-import net.minecraft.client.renderer.RenderType;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,13 +43,11 @@ public class BlockEntityRenderer {
 
   public static void registerRenderLayers() {
     log.info("{} Render Layers ...", Constants.LOG_REGISTER_PREFIX);
-    BlockRenderLayerMap.INSTANCE.putBlock(
-        ModBlocks.EASY_NPC_SPAWNER_BOSS, RenderType.cutoutMipped());
-    BlockRenderLayerMap.INSTANCE.putBlock(
-        ModBlocks.EASY_NPC_SPAWNER_DEFAULT, RenderType.cutoutMipped());
-    BlockRenderLayerMap.INSTANCE.putBlock(
-        ModBlocks.EASY_NPC_SPAWNER_GROUP, RenderType.cutoutMipped());
-    BlockRenderLayerMap.INSTANCE.putBlock(
-        ModBlocks.EASY_NPC_SPAWNER_SINGLE, RenderType.cutoutMipped());
+    BlockRenderLayerMap.putBlock(ModBlocks.EASY_NPC_SPAWNER_BOSS, ChunkSectionLayer.CUTOUT_MIPPED);
+    BlockRenderLayerMap.putBlock(
+        ModBlocks.EASY_NPC_SPAWNER_DEFAULT, ChunkSectionLayer.CUTOUT_MIPPED);
+    BlockRenderLayerMap.putBlock(ModBlocks.EASY_NPC_SPAWNER_GROUP, ChunkSectionLayer.CUTOUT_MIPPED);
+    BlockRenderLayerMap.putBlock(
+        ModBlocks.EASY_NPC_SPAWNER_SINGLE, ChunkSectionLayer.CUTOUT_MIPPED);
   }
 }

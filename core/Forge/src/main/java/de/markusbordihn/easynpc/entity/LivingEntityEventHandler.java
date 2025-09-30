@@ -22,24 +22,24 @@ package de.markusbordihn.easynpc.entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.listener.Priority;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber
 public class LivingEntityEventHandler {
   private LivingEntityEventHandler() {}
 
-  @SubscribeEvent(priority = EventPriority.HIGHEST)
+  @SubscribeEvent(priority = Priority.HIGHEST)
   public static void handleEntityJoinWorldEvent(EntityJoinLevelEvent event) {
-    if (!event.isCanceled() && event.getEntity() instanceof LivingEntity livingEntity) {
+    if (event.getEntity() instanceof LivingEntity livingEntity) {
       LivingEntityEvents.handleLivingEntityJoinEvent(livingEntity);
     }
   }
 
-  @SubscribeEvent(priority = EventPriority.HIGHEST)
+  @SubscribeEvent(priority = Priority.HIGHEST)
   public static void handleEntityLeaveWorldEvent(EntityLeaveLevelEvent event) {
-    if (!event.isCanceled() && event.getEntity() instanceof LivingEntity livingEntity) {
+    if (event.getEntity() instanceof LivingEntity livingEntity) {
       LivingEntityEvents.handleLivingEntityLeaveEvent(livingEntity);
     }
   }

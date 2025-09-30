@@ -36,6 +36,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
@@ -45,6 +46,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -72,10 +76,13 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
   public BaseEasyNPCSpawner(SpawnerType spawnerType) {
     super();
     this.spawnerType = spawnerType;
-    CompoundTag spawnerData = this.save(new CompoundTag());
-    SpawnerData.setSpawnData(spawnerType, spawnerData);
-    updateSpawnData(spawnerData);
-    this.load(null, null, spawnerData);
+    TagValueOutput valueOutput = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
+    this.save(valueOutput);
+    CompoundTag compoundTag = valueOutput.buildResult();
+    SpawnerData.setSpawnData(spawnerType, compoundTag);
+    updateSpawnData(compoundTag);
+    ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, null, compoundTag);
+    this.load(null, null, valueInput);
   }
 
   @Override
@@ -90,7 +97,10 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
       BlockState blockState = level.getBlockState(blockPos);
       level.sendBlockUpdated(blockPos, blockState, blockState, 4);
     }
-    updateSpawnData(this.save(new CompoundTag()));
+    TagValueOutput valueOutput = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
+    this.save(valueOutput);
+    CompoundTag compoundTag = valueOutput.buildResult();
+    updateSpawnData(compoundTag);
   }
 
   @Override
@@ -216,7 +226,8 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
 
     for (int i = 0; i < this.spawnCount; ++i) {
       CompoundTag entityTag = this.nextSpawnData.getEntityToSpawn();
-      Optional<EntityType<?>> entityType = EntityType.by(entityTag);
+      ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, null, entityTag);
+      Optional<EntityType<?>> entityType = EntityType.by(valueInput);
       if (entityType.isEmpty()) {
         this.delay(level, pos);
         return;
@@ -342,8 +353,13 @@ public class BaseEasyNPCSpawner extends BaseSpawner {
   }
 
   @Override
-  public void load(Level level, BlockPos blockPos, CompoundTag compoundTag) {
-    super.load(level, blockPos, compoundTag);
+  public void load(Level level, BlockPos blockPos, ValueInput valueInput) {
+    super.load(level, blockPos, valueInput);
+  }
+
+  public void loadFromCompoundTag(Level level, BlockPos blockPos, CompoundTag compoundTag) {
+    ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, null, compoundTag);
+    load(level, blockPos, valueInput);
     updateSpawnData(compoundTag);
   }
 

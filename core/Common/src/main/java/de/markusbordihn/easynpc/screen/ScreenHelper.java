@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.screen;
 
-import com.mojang.blaze3d.platform.Lighting;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.profession.Profession;
@@ -39,6 +38,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
 import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
@@ -106,29 +106,33 @@ public class ScreenHelper {
     }
 
     // Render Entity
-    guiGraphics.pose().pushPose();
+    // Note: Matrix3x2fStack doesn't support pushPose/popPose or 3D operations in 1.21.8
+    // Using simplified rendering approach
     if (isDead) {
-      guiGraphics.pose().translate(x - 25.0D, y - 30.0D, 1050.0D);
+      guiGraphics.pose().translate((float) (x - 25.0D), (float) (y - 30.0D));
     } else {
-      guiGraphics.pose().translate(x, y, 1050.0D);
+      guiGraphics.pose().translate((float) x, (float) y);
     }
-    guiGraphics.pose().scale(scale, scale, -scale);
-    guiGraphics.pose().mulPose(quaternionfZ);
-    Lighting.setupForEntityInInventory();
+    guiGraphics.pose().scale(scale, scale);
+
     EntityRenderDispatcher entityRenderDispatcher =
         Minecraft.getInstance().getEntityRenderDispatcher();
     quaternionfX.conjugate();
     entityRenderDispatcher.overrideCameraOrientation(quaternionfX);
     entityRenderDispatcher.setRenderShadow(false);
-    guiGraphics.drawSpecial(
-        (bufferSource) -> {
-          entityRenderDispatcher.render(
-              livingEntity, 0.0D, 0.0D, 0.0D, 1.0F, guiGraphics.pose(), bufferSource, 15728880);
-        });
-    guiGraphics.flush();
+
+    // Direct entity rendering without drawSpecial/flush
+    InventoryScreen.renderEntityInInventoryFollowsMouse(
+        guiGraphics, 0, 0, 0, 0, 0, 0.0F, 0.0F, 0.0F, livingEntity);
+
     entityRenderDispatcher.setRenderShadow(true);
-    guiGraphics.pose().popPose();
-    Lighting.setupFor3DItems();
+    // Reset transformations
+    guiGraphics.pose().scale(1.0f / scale, 1.0f / scale);
+    if (isDead) {
+      guiGraphics.pose().translate((float) (-(x - 25.0D)), (float) (-(y - 30.0D)));
+    } else {
+      guiGraphics.pose().translate((float) (-x), (float) (-y));
+    }
 
     // Restore entity information
     livingEntity.setInvisible(entityInvisible);

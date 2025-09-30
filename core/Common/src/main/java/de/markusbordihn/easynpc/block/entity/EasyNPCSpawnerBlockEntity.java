@@ -22,20 +22,23 @@ package de.markusbordihn.easynpc.block.entity;
 import de.markusbordihn.easynpc.block.EasyNPCSpawnerBlock;
 import de.markusbordihn.easynpc.data.spawner.SpawnerType;
 import de.markusbordihn.easynpc.level.BaseEasyNPCSpawner;
-import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.Objects;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class EasyNPCSpawnerBlockEntity extends BlockEntity {
 
@@ -109,7 +112,9 @@ public class EasyNPCSpawnerBlockEntity extends BlockEntity {
   @Override
   public void setChanged() {
     super.setChanged();
-    this.spawner.updateSpawnData(this.spawner.save(new CompoundTag()));
+    TagValueOutput valueOutput = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
+    this.spawner.save(valueOutput);
+    this.spawner.updateSpawnData(valueOutput.buildResult());
   }
 
   @Override
@@ -136,25 +141,21 @@ public class EasyNPCSpawnerBlockEntity extends BlockEntity {
   @Override
   public void loadAdditional(ValueInput valueInput) {
     super.loadAdditional(valueInput);
-    this.spawnerUUID =
-        compoundTag.contains(UUID_TAG)
-            ? CompoundTagUtils.readUUID(compoundTag, UUID_TAG)
-            : UUID.randomUUID();
-    this.owner =
-        compoundTag.contains(SPAWNER_OWNER_TAG)
-            ? CompoundTagUtils.readUUID(compoundTag, SPAWNER_OWNER_TAG)
-            : null;
-    this.spawner.load(this.level, this.worldPosition, compoundTag);
+    this.spawnerUUID = valueInput.read(UUID_TAG, UUIDUtil.CODEC).orElse(UUID.randomUUID());
+    this.owner = valueInput.read(SPAWNER_OWNER_TAG, UUIDUtil.CODEC).orElse(null);
+    this.spawner.load(this.level, this.worldPosition, valueInput);
   }
 
   @Override
-  public void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
-    super.saveAdditional(compoundTag, provider);
-    CompoundTagUtils.writeUUID(
-        compoundTag, UUID_TAG, Objects.requireNonNullElseGet(this.spawnerUUID, UUID::randomUUID));
+  public void saveAdditional(ValueOutput valueOutput) {
+    super.saveAdditional(valueOutput);
+    valueOutput.store(
+        UUID_TAG,
+        UUIDUtil.CODEC,
+        Objects.requireNonNullElseGet(this.spawnerUUID, UUID::randomUUID));
     if (this.owner != null) {
-      CompoundTagUtils.writeUUID(compoundTag, SPAWNER_OWNER_TAG, this.owner);
+      valueOutput.store(SPAWNER_OWNER_TAG, UUIDUtil.CODEC, this.owner);
     }
-    this.spawner.save(compoundTag);
+    this.spawner.save(valueOutput);
   }
 }

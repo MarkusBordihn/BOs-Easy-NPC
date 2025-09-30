@@ -19,9 +19,16 @@
 
 package de.markusbordihn.easynpc.client;
 
+import de.markusbordihn.easynpc.client.model.ModModelLayer;
+import de.markusbordihn.easynpc.client.renderer.BlockEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.EntityRenderer;
+import de.markusbordihn.easynpc.client.screen.ClientScreens;
+import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.network.ServerNetworkMessageHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -30,6 +37,27 @@ public class ClientEventHandler {
 
   @SubscribeEvent
   public static void onClientSetup(FMLClientSetupEvent event) {
-    event.enqueueWork(() -> ClientEvents.handleClientStartedEvent(Minecraft.getInstance()));
+    event.enqueueWork(
+        () -> {
+          ClientEvents.handleClientStartedEvent(Minecraft.getInstance());
+
+          // Set up networking
+          NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
+
+          // Register screens
+          ClientScreens.registerScreens(event);
+        });
+  }
+
+  @SubscribeEvent
+  public static void registerEntityLayerDefinitions(
+      EntityRenderersEvent.RegisterLayerDefinitions event) {
+    ModModelLayer.registerEntityLayerDefinitions(event);
+  }
+
+  @SubscribeEvent
+  public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+    EntityRenderer.register(event);
+    BlockEntityRenderer.register(event);
   }
 }

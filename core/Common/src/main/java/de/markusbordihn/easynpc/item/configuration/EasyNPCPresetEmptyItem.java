@@ -38,6 +38,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
@@ -53,6 +54,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -174,7 +176,10 @@ public class EasyNPCPresetEmptyItem extends Item {
       BlockEntity blockEntity = level.getBlockEntity(blockPos);
       if (blockEntity instanceof EasyNPCSpawnerBlockEntity spawnerBlockEntity) {
         BaseSpawner baseSpawner = spawnerBlockEntity.getSpawner();
-        CompoundTag compoundTag = baseSpawner.save(new CompoundTag());
+        TagValueOutput valueOutput =
+            TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
+        baseSpawner.save(valueOutput);
+        CompoundTag compoundTag = valueOutput.buildResult();
         if (compoundTag != null && compoundTag.contains(SPAWN_DATA_TAG)) {
           SpawnData spawnData =
               SpawnData.CODEC

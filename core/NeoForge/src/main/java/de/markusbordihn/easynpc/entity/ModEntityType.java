@@ -38,7 +38,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public class ModEntityType {
 
   public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =

@@ -460,8 +460,6 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
     int avatarPositionTop = 60 + this.getEasyNPC().getEasyNPCDialogData().getEntityDialogTop();
     int left = this.leftPos + 40;
     int top = this.topPos + 70 + avatarPositionTop;
-    guiGraphics.pose().pushPose();
-    guiGraphics.pose().translate(0, 0, 1000);
     ScreenHelper.renderEntityDialog(
         guiGraphics,
         left,
@@ -469,7 +467,6 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
         Math.round(left - 140 - (this.xMouse * 0.25)),
         Math.round(top - 120 - (this.yMouse * 0.5)),
         this.getEasyNPC());
-    guiGraphics.pose().popPose();
 
     // Render Dialog
     renderDialog(guiGraphics);
