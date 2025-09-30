@@ -36,6 +36,7 @@ public class BaseEasyNPCSpawnerBlockEntityRenderer<T extends EasyNPCSpawnerBlock
 
   public BaseEasyNPCSpawnerBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
 
+  @Override
   public void render(
       T baseEasyNPCSpawnerBlockEntity,
       float partialTicks,

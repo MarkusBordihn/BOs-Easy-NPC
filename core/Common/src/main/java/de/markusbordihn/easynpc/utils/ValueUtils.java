@@ -31,6 +31,7 @@ public class ValueUtils {
   private static final String POSITIVE_NUMBER_MATCH_PATTERN = "^\\d+$";
   private static final String FLOAT_NUMBER_MATCH_PATTERN = "^-?\\d+(\\.?\\d*)?$";
   private static final String DOUBLE_NUMBER_MATCH_PATTERN = "^-?\\d+(\\.?\\d*)?$";
+  private static final String SCALE_NUMBER_MATCH_PATTERN = "^\\d+(\\.?\\d{0,2})?$";
 
   private ValueUtils() {}
 
@@ -88,7 +89,7 @@ public class ValueUtils {
   public static boolean isScaleValue(String text) {
     return text != null
         && !text.isEmpty()
-        && text.matches(POSITIVE_NUMBER_MATCH_PATTERN)
+        && text.matches(SCALE_NUMBER_MATCH_PATTERN)
         && Double.parseDouble(text) >= 0.0D
         && Double.parseDouble(text) <= 10.0D;
   }
@@ -110,11 +111,11 @@ public class ValueUtils {
   public static boolean isScaleValueInRange(String text, double min, double max) {
     return text != null
         && !text.isEmpty()
-        && text.matches(POSITIVE_NUMBER_MATCH_PATTERN)
-        && Integer.parseInt(text) >= 0.0D
-        && Integer.parseInt(text) <= 10.0D
-        && Integer.parseInt(text) >= min
-        && Integer.parseInt(text) <= max;
+        && text.matches(SCALE_NUMBER_MATCH_PATTERN)
+        && Double.parseDouble(text) >= 0.0D
+        && Double.parseDouble(text) <= 10.0D
+        && Double.parseDouble(text) >= min
+        && Double.parseDouble(text) <= max;
   }
 
   public static Double getDoubleValue(String value) {

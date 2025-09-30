@@ -51,7 +51,13 @@ public class AttackHandler {
 
   private AttackHandler() {}
 
-  public static boolean isMeeleeWeapon(ItemStack itemStack) {
+  public static void addChargedProjectile(
+      ItemStack weaponItemStack, ItemStack projectileItemStack) {
+    weaponItemStack.set(
+        DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.of(projectileItemStack));
+  }
+
+  public static boolean isMeleeWeapon(ItemStack itemStack) {
     return itemStack.getItem() instanceof SwordItem || itemStack.getItem() instanceof AxeItem;
   }
 
@@ -85,7 +91,7 @@ public class AttackHandler {
   }
 
   public static boolean isHoldingMeleeWeapon(LivingEntity livingEntity) {
-    return livingEntity != null && isMeeleeWeapon(livingEntity.getMainHandItem());
+    return livingEntity != null && isMeleeWeapon(livingEntity.getMainHandItem());
   }
 
   public static boolean isHoldingProjectileWeapon(LivingEntity livingEntity) {
@@ -95,12 +101,6 @@ public class AttackHandler {
 
   public static boolean isHoldingWeapon(LivingEntity livingEntity) {
     return isHoldingMeleeWeapon(livingEntity) || isHoldingProjectileWeapon(livingEntity);
-  }
-
-  public static void addChargedProjectile(
-      ItemStack weaponItemStack, ItemStack projectileItemStack) {
-    weaponItemStack.set(
-        DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.of(projectileItemStack));
   }
 
   public static void performDefaultRangedAttack(
