@@ -25,11 +25,13 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.profession.Profession;
+import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
+import de.markusbordihn.easynpc.data.render.EntityRenderOverrides;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
-import de.markusbordihn.easynpc.screen.ScreenHelper;
+import de.markusbordihn.easynpc.screen.render.EntityScreenRenderer;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.ArrayList;
 import net.minecraft.client.gui.GuiGraphics;
@@ -148,16 +150,18 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
             && variantData.getVariantType().equals(variantType)
             && (profession == null || professionData.getProfession().equals(profession)));
 
-    // Render skin entity with variant and profession.
-    ScreenHelper.renderEntityDefaultSkin(
+    EntityScreenRenderer.renderEntity(
         guiGraphics,
-        x + 4,
-        y,
-        x - this.xMouse,
-        y - 40 - this.yMouse,
         this.getEasyNPC(),
-        variantType,
-        profession);
+        EntityRenderConfig.withOverrides(
+            x + 4,
+            y,
+            30,
+            x - this.xMouse,
+            y - 40 - this.yMouse,
+            EntityRenderOverrides.withVariant(variantType, profession)),
+        this.xMouse,
+        this.yMouse);
 
     skinButtons.add(skinButton);
   }

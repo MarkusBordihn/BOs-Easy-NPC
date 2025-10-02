@@ -63,7 +63,6 @@ public class EntityDataSerializersManager {
   public static final Map<String, EntityDataSerializer<?>> ENTITY_DATA_SERIALIZERS =
       new LinkedHashMap<>();
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
   public static final EntityDataSerializer<ActionEventSet> ACTION_EVENT_SET =
       defineSerializer(
           ActionEventSet.class.getSimpleName(),

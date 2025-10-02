@@ -52,9 +52,9 @@ public class AttackHandler {
   private AttackHandler() {}
 
   public static void addChargedProjectile(
-    ItemStack weaponItemStack, ItemStack projectileItemStack) {
+      ItemStack weaponItemStack, ItemStack projectileItemStack) {
     weaponItemStack.set(
-      DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.of(projectileItemStack));
+        DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.of(projectileItemStack));
   }
 
   public static boolean isMeleeWeapon(ItemStack itemStack) {

@@ -23,7 +23,8 @@ import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.model.ModelPose;
-import de.markusbordihn.easynpc.screen.ScreenHelper;
+import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
+import de.markusbordihn.easynpc.screen.render.EntityScreenRenderer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -181,15 +182,17 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
     this.getEasyNPCEntity().setInvisible(false);
 
     // Render Entity
-    ScreenHelper.renderScaledEntityAvatar(
+    EntityScreenRenderer.renderEntity(
         guiGraphics,
-        this.contentLeftPos + 80,
-        this.contentTopPos + 145,
-        36,
-        this.contentLeftPos + 80 - this.xMouse,
-        this.contentTopPos + 85 - this.yMouse,
         this.getEasyNPC(),
-        this.getEasyNPC().getEasyNPCModelData());
+        EntityRenderConfig.guiScaled(
+            this.contentLeftPos + 80,
+            this.contentTopPos + 155,
+            36,
+            this.contentLeftPos + 80 - this.xMouse,
+            this.contentTopPos + 85 - this.yMouse),
+        this.xMouse,
+        this.yMouse);
 
     // Restore entity information
     this.getEasyNPCEntity().setInvisible(entityInvisible);

@@ -22,7 +22,9 @@ package de.markusbordihn.easynpc.entity.easynpc.npc.raw;
 import static java.util.Objects.hash;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelType;
+import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.data.server.ServerEntityData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.status.StatusDataType;
@@ -54,10 +56,12 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.player.Player;
@@ -545,6 +549,17 @@ public class PathfinderMobRaw extends PathfinderMob implements EasyNPCBase<Pathf
     super.readAdditionalSaveData(valueInput);
     this.readPersistentAngerSaveData(this.level(), valueInput);
     this.readEasyNPCBaseAdditionalSaveData(valueInput, this.registryAccess());
+  }
+
+  @Override
+  public EntityDimensions getDefaultDimensions(Pose pose) {
+    CustomScale rootScale = getModelPartScale(ModelPartType.ROOT);
+    if (rootScale.x() != 1.0f || rootScale.y() != 1.0f) {
+      EntityDimensions baseDimensions = super.getDefaultDimensions(pose);
+      return baseDimensions.scale(rootScale.x(), rootScale.y());
+    }
+
+    return super.getDefaultDimensions(pose);
   }
 
   @Override
