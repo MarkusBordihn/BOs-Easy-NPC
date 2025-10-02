@@ -78,6 +78,18 @@ public class CustomButton extends Button {
     }
   }
 
+  @Override
+  public void onPress() {
+    if (this.onPress != null) {
+      super.onPress();
+    }
+  }
+
+  @Override
+  public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    this.renderButton(guiGraphics, mouseX, mouseY, partialTicks);
+  }
+
   public void renderButton(GuiGraphics guiGraphics, int left, int top, float partialTicks) {
     Minecraft minecraft = Minecraft.getInstance();
     Font font = minecraft.font;
@@ -93,17 +105,5 @@ public class CustomButton extends Button {
 
     // Button Text
     this.renderButtonText(guiGraphics, font, this.getMessage(), this.getX(), this.getY());
-  }
-
-  @Override
-  public void onPress() {
-    if (this.onPress != null) {
-      super.onPress();
-    }
-  }
-
-  @Override
-  public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-    this.renderButton(guiGraphics, mouseX, mouseY, partialTicks);
   }
 }

@@ -28,11 +28,13 @@ import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
+import de.markusbordihn.easynpc.data.render.EntityRenderOverrides;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.io.CustomSkinDataFiles;
-import de.markusbordihn.easynpc.screen.ScreenHelper;
+import de.markusbordihn.easynpc.screen.render.EntityScreenRenderer;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -124,16 +126,18 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
     UUID skinUUID = skinData.getSkinUUID();
     skinButton.active = !(skinUUID.equals(textureUUID));
 
-    // Render skin entity with variant and profession.
-    ScreenHelper.renderEntityCustomSkin(
+    EntityScreenRenderer.renderEntity(
         guiGraphics,
-        x + 4,
-        y,
-        x - this.xMouse,
-        y - 40 - this.yMouse,
         this.getEasyNPC(),
-        textureUUID,
-        SkinType.CUSTOM);
+        EntityRenderConfig.withOverrides(
+            x + 4,
+            y,
+            30,
+            x - this.xMouse,
+            y - 40 - this.yMouse,
+            EntityRenderOverrides.withSkin(SkinType.CUSTOM, textureUUID)),
+        this.xMouse,
+        this.yMouse);
 
     skinButtons.add(skinButton);
   }

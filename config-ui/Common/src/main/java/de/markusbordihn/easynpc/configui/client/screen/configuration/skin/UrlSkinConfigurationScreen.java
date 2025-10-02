@@ -30,11 +30,13 @@ import de.markusbordihn.easynpc.client.texture.TextureModelKey;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
+import de.markusbordihn.easynpc.data.render.EntityRenderOverrides;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import de.markusbordihn.easynpc.screen.ScreenHelper;
+import de.markusbordihn.easynpc.screen.render.EntityScreenRenderer;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import de.markusbordihn.easynpc.validator.ImageValidator;
 import de.markusbordihn.easynpc.validator.UrlValidator;
@@ -134,21 +136,22 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
                   .setSkin(this.getEasyNPCUUID(), "", skinURL, textureUUID, skinType, "");
             });
 
-    // Disable button for active skin.
     SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
     UUID skinUUID = skinData.getSkinUUID();
     skinButton.active = !skinUUID.equals(textureUUID);
 
-    // Render skin entity with variant and profession.
-    ScreenHelper.renderEntityCustomSkin(
+    EntityScreenRenderer.renderEntity(
         guiGraphics,
-        x + 4,
-        y,
-        x - this.xMouse,
-        y - 40 - this.yMouse,
         this.getEasyNPC(),
-        textureUUID,
-        skinType);
+        EntityRenderConfig.withOverrides(
+            x + 4,
+            y,
+            30,
+            x - this.xMouse,
+            y - 40 - this.yMouse,
+            EntityRenderOverrides.withSkin(skinType, textureUUID)),
+        this.xMouse,
+        this.yMouse);
 
     skinButtons.add(skinButton);
   }

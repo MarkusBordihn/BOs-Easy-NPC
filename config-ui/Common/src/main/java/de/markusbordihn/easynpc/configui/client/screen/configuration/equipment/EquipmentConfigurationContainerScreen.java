@@ -26,8 +26,9 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.ConfigurationContainerScreen;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
-import de.markusbordihn.easynpc.screen.ScreenHelper;
+import de.markusbordihn.easynpc.screen.render.EntityScreenRenderer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -98,15 +99,17 @@ public class EquipmentConfigurationContainerScreen<T extends ConfigurationMenu>
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
 
-    // Avatar
-    ScreenHelper.renderEntity(
+    EntityScreenRenderer.renderEntity(
         guiGraphics,
-        this.contentLeftPos + 138,
-        this.contentTopPos + 102,
-        35,
-        this.contentLeftPos + 138 - this.xMouse,
-        this.contentTopPos + 50 - this.yMouse,
-        this.getEasyNPCLivingEntity());
+        this.getEasyNPC(),
+        EntityRenderConfig.guiScaled(
+            this.contentLeftPos + 138,
+            this.contentTopPos + 102,
+            35,
+            this.contentLeftPos + 138 - this.xMouse,
+            this.contentTopPos + 50 - this.yMouse),
+        this.xMouse,
+        this.yMouse);
 
     this.renderTooltip(guiGraphics, x, y);
   }
