@@ -25,11 +25,13 @@ import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.profession.Profession;
+import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
+import de.markusbordihn.easynpc.data.render.EntityRenderOverrides;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
-import de.markusbordihn.easynpc.screen.ScreenHelper;
+import de.markusbordihn.easynpc.screen.render.EntityScreenRenderer;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.ArrayList;
 import net.minecraft.client.gui.GuiGraphics;
@@ -73,7 +75,7 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
       int top = this.contentTopPos + 102 + (skinPosition > 4 ? 84 : 0);
 
       // Render skin entity with variant.
-      this.renderSkinEntity(left, top, variant, null);
+      this.renderSkinEntity(guiGraphics, left, top, variant, null);
 
       // Render skin name
       int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
@@ -122,7 +124,8 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
     }
   }
 
-  private void renderSkinEntity(int x, int y, Enum<?> variantType, Profession profession) {
+  private void renderSkinEntity(
+      GuiGraphics guiGraphics, int x, int y, Enum<?> variantType, Profession profession) {
 
     // Create dynamically button for each skin variant and profession.
     Button skinButton =
@@ -147,15 +150,16 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
             && variantData.getVariantType().equals(variantType)
             && (profession == null || professionData.getProfession().equals(profession)));
 
-    // Render skin entity with variant and profession.
-    ScreenHelper.renderEntityDefaultSkin(
-        x + 4,
-        y,
-        x - this.xMouse,
-        y - 40 - this.yMouse,
+    EntityScreenRenderer.renderEntity(
+        guiGraphics,
         this.getEasyNPC(),
-        variantType,
-        profession);
+        EntityRenderConfig.withOverrides(
+            x + 4,
+            y,
+            30,
+            x - this.xMouse,
+            y - 40 - this.yMouse,
+            EntityRenderOverrides.withVariant(variantType, profession)));
 
     skinButtons.add(skinButton);
   }

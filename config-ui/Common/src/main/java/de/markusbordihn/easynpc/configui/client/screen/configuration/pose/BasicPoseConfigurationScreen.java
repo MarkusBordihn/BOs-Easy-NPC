@@ -25,7 +25,8 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
-import de.markusbordihn.easynpc.screen.ScreenHelper;
+import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
+import de.markusbordihn.easynpc.screen.render.EntityScreenRenderer;
 import java.util.EnumMap;
 import java.util.Set;
 import net.minecraft.client.gui.GuiGraphics;
@@ -101,13 +102,15 @@ public class BasicPoseConfigurationScreen<T extends ConfigurationMenu>
     super.render(guiGraphics, x, y, partialTicks);
 
     // Avatar
-    ScreenHelper.renderCustomPoseEntityAvatar(
-        this.contentLeftPos + 157,
-        this.contentTopPos + 165,
-        50,
-        this.contentLeftPos + 150 - this.xMouse,
-        this.contentTopPos + 80 - this.yMouse,
-        this.getEasyNPC());
+    EntityScreenRenderer.renderEntity(
+        guiGraphics,
+        this.getEasyNPC(),
+        EntityRenderConfig.customPose(
+            this.contentLeftPos + 157,
+            this.contentTopPos + 165,
+            50,
+            this.contentLeftPos + 150 - this.xMouse,
+            this.contentTopPos + 80 - this.yMouse));
 
     // Model Part texts
     for (ModelPartType modelPart : sliders.keySet()) {

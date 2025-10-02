@@ -26,8 +26,9 @@ import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
+import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
-import de.markusbordihn.easynpc.screen.ScreenHelper;
+import de.markusbordihn.easynpc.screen.render.EntityScreenRenderer;
 import de.markusbordihn.easynpc.utils.ValueUtils;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -235,15 +236,14 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
         specialSectionY,
         0x555555);
 
-    // Avatar
     if (getEasyNPC() != null) {
-      ScreenHelper.renderScaledEntityAvatar(
-          this.leftPos + 260,
-          this.contentTopPos + 180,
-          30,
-          this.leftPos + 50 - this.xMouse,
-          this.contentTopPos + 70 - this.yMouse,
-          getEasyNPC());
+      int scale = 30;
+      float rotationYaw = this.leftPos + 50 - this.xMouse;
+      float rotationPitch = this.contentTopPos + 70 - this.yMouse;
+      EntityRenderConfig config =
+          EntityRenderConfig.guiScaled(
+              this.leftPos + 260, this.contentTopPos + 180, scale, rotationYaw, rotationPitch);
+      EntityScreenRenderer.renderEntity(guiGraphics, getEasyNPC(), config);
     }
   }
 }

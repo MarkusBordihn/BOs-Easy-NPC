@@ -34,6 +34,7 @@ import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.display.NameVisibilityType;
+import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.data.render.RenderDataSet;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
@@ -41,7 +42,7 @@ import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import de.markusbordihn.easynpc.screen.ScreenHelper;
+import de.markusbordihn.easynpc.screen.render.EntityScreenRenderer;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
@@ -120,13 +121,14 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
       return;
     }
 
-    // Avatar
-    ScreenHelper.renderScaledEntityAvatar(
-        this.leftPos + 60,
-        this.avatarTopPos + 140,
-        this.leftPos + 50 - this.xMouse,
-        this.contentTopPos + 70 - this.yMouse,
-        getEasyNPC());
+    int scale = getEasyNPC().getEasyNPCGuiData().getEntityGuiScaling();
+    float rotationYaw = this.leftPos + 50 - this.xMouse;
+    float rotationPitch = this.contentTopPos + 70 - this.yMouse;
+
+    EntityRenderConfig config =
+        EntityRenderConfig.guiScaled(
+            this.leftPos + 60, this.avatarTopPos + 140, scale, rotationYaw, rotationPitch);
+    EntityScreenRenderer.renderEntity(guiGraphics, getEasyNPC(), config);
 
     // Scale entity texts
     float scaleEntityTypeText = 0.75f;

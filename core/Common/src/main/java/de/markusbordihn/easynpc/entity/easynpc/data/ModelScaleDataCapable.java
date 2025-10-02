@@ -67,6 +67,11 @@ public interface ModelScaleDataCapable<T extends PathfinderMob> extends EasyNPC<
     if (modelPartType != null) {
       modelPartMap.put(modelPartType, Scale);
       this.setModelPartScale(new EnumMap<>(modelPartMap));
+
+      // Refresh entity dimensions when ROOT scale changes (for hitbox scaling)
+      if (modelPartType == ModelPartType.ROOT) {
+        this.getEntity().refreshDimensions();
+      }
     }
   }
 

@@ -27,9 +27,10 @@ import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.data.render.RenderDataSet;
 import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
-import de.markusbordihn.easynpc.screen.ScreenHelper;
+import de.markusbordihn.easynpc.screen.render.EntityScreenRenderer;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -244,7 +245,7 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
 
       // Render Skins
       EntityType<? extends Entity> entityType = entityKeys.get(index);
-      this.renderCustomModelEntity(left, top, entityType);
+      this.renderCustomModelEntity(guiGraphics, left, top, entityType);
 
       // Render skin name
       int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
@@ -273,7 +274,8 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
     }
   }
 
-  private void renderCustomModelEntity(int x, int y, EntityType<? extends Entity> entityType) {
+  private void renderCustomModelEntity(
+      GuiGraphics guiGraphics, int x, int y, EntityType<? extends Entity> entityType) {
     // Create dynamically button for each skin variant.
     Button customModelButton =
         new SkinSelectionButton(
@@ -289,18 +291,17 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
     EntityType<?> currentEntityType = renderDataSet.getRenderEntityType();
     customModelButton.active = currentEntityType == null || !(currentEntityType.equals(entityType));
 
-    // Get additional information for the entity type.
-    float scaleFactor = EntityTypeManager.getScaleFactor(entityType);
-
     // Render skin entity with variant and profession.
-    ScreenHelper.renderEntityCustomModel(
-        x + 4,
-        y,
-        Math.round(30 / scaleFactor),
-        x - this.xMouse,
-        y - 40 - this.yMouse,
+    EntityScreenRenderer.renderEntity(
+        guiGraphics,
         this.getEasyNPC(),
-        entityType);
+        EntityRenderConfig.customModel(
+            x + 4,
+            y,
+            Math.round(30 / EntityTypeManager.getScaleFactor(entityType)),
+            x - this.xMouse,
+            y - 40 - this.yMouse,
+            entityType));
 
     customModelButtons.add(customModelButton);
   }
