@@ -46,10 +46,11 @@ public class SpinButton<T> extends CustomButton {
     int navigationButtonWidth = 10;
     this.previousButton =
         new TextButton(x, y, navigationButtonWidth, height, "<", this::changeToPreviousValue);
-    this.textButton = new TextButton(x + navigationButtonWidth, y, width, height);
+    this.textButton =
+        new TextButton(x + navigationButtonWidth, y, width - 2 * navigationButtonWidth, height);
     this.nextButton =
         new TextButton(
-            x + width + navigationButtonWidth,
+            x + width - navigationButtonWidth,
             y,
             navigationButtonWidth,
             height,
@@ -108,10 +109,11 @@ public class SpinButton<T> extends CustomButton {
 
   @Override
   public boolean mouseClicked(double mouseX, double mouseY, int button) {
-    if (this.previousButton.mouseClicked(mouseX, mouseY, button)) {
+    if (this.nextButton.mouseClicked(mouseX, mouseY, button)
+        || this.previousButton.mouseClicked(mouseX, mouseY, button)) {
       return true;
     }
-    return this.nextButton.mouseClicked(mouseX, mouseY, button);
+    return this.textButton.mouseClicked(mouseX, mouseY, button);
   }
 
   public interface OnChange {

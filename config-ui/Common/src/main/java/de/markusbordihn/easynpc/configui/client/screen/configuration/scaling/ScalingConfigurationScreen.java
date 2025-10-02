@@ -28,9 +28,11 @@ import de.markusbordihn.easynpc.configui.client.screen.configuration.Configurati
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
+import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
+import de.markusbordihn.easynpc.data.render.ScissorBox;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
-import de.markusbordihn.easynpc.screen.ScreenHelper;
+import de.markusbordihn.easynpc.screen.render.EntityScreenRenderer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -227,17 +229,21 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
 
-    // Avatar
-    ScreenHelper.renderEntityAvatarForScaling(
+    ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
+    CustomScale rootScale = modelData.getModelPartScale(ModelPartType.ROOT);
+    EntityScreenRenderer.renderEntity(
         guiGraphics,
-        this.contentLeftPos + 80,
-        this.contentTopPos + 192,
-        30,
-        this.contentLeftPos + 75 - this.xMouse,
-        this.contentTopPos + 120 - this.yMouse,
-        this.getEasyNPC());
+        this.getEasyNPC(),
+        EntityRenderConfig.scaling(
+                this.contentLeftPos + 80,
+                (this.contentTopPos + 275) - (int) ((rootScale.y() - 1.0f) * 29.5f),
+                30,
+                this.contentLeftPos + 75 - this.xMouse,
+                this.contentTopPos + 120 - this.yMouse)
+            .withScissorBox(ScissorBox.LARGE),
+        this.xMouse,
+        this.yMouse);
 
-    // Label for Scale Sliders
     drawScaleLabel(guiGraphics, "scale_x", scaleXSliderButton);
     drawScaleLabel(guiGraphics, "scale_y", scaleYSliderButton);
     drawScaleLabel(guiGraphics, "scale_z", scaleZSliderButton);

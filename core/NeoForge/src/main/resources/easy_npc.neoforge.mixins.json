@@ -10,6 +10,7 @@
     "model.EasyNPCWolfModelMixin",
     "renderer.EasyNPCEntityRendererMixin",
     "renderer.EasyNPCLivingEntityRendererMixin",
+    "renderer.HumanoidArmorLayerMixin",
     "renderer.VillagerProfessionLayerMixin"
   ],
   "mixins": [
