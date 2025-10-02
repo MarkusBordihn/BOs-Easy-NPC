@@ -28,11 +28,13 @@ import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.configui.Constants;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
+import de.markusbordihn.easynpc.data.render.EntityRenderOverrides;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.io.CustomSkinDataFiles;
-import de.markusbordihn.easynpc.screen.ScreenHelper;
+import de.markusbordihn.easynpc.screen.render.EntityScreenRenderer;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -87,7 +89,7 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
 
       // Render Skins
       UUID textureKey = (UUID) textureKeys[i];
-      this.renderSkinEntity(left, top, textureKey);
+      this.renderSkinEntity(guiGraphics, left, top, textureKey);
 
       // Render skin name
       int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
@@ -109,7 +111,7 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
     }
   }
 
-  private void renderSkinEntity(int x, int y, UUID textureUUID) {
+  private void renderSkinEntity(GuiGraphics guiGraphics, int x, int y, UUID textureUUID) {
     // Create dynamically button for each skin variant.
     Button skinButton =
         new SkinSelectionButton(
@@ -124,15 +126,16 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
     UUID skinUUID = skinData.getSkinUUID();
     skinButton.active = !(skinUUID.equals(textureUUID));
 
-    // Render skin entity with variant and profession.
-    ScreenHelper.renderEntityCustomSkin(
-        x + 4,
-        y,
-        x - this.xMouse,
-        y - 40 - this.yMouse,
+    EntityScreenRenderer.renderEntity(
+        guiGraphics,
         this.getEasyNPC(),
-        textureUUID,
-        SkinType.CUSTOM);
+        EntityRenderConfig.withOverrides(
+            x + 4,
+            y,
+            30,
+            x - this.xMouse,
+            y - 40 - this.yMouse,
+            EntityRenderOverrides.withSkin(SkinType.CUSTOM, textureUUID)));
 
     skinButtons.add(skinButton);
   }

@@ -1,21 +1,29 @@
 /*
- * Copyright 2023 Markus Bordihn
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
- * associated documentation files (the "Software"), to deal in the Software without restriction,
- * including without limitation the rights to use, copy, modify, merge, publish, distribute,
- * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or
- * substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
- * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+* Copyright 2023 Markus Bordihn
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+* associated documentation files (the "Software"), to deal in the Software without restriction,
+*      EntityScreenRenderer.renderEntity(
+         guiGraphics,
+         getEasyNPC(),
+         EntityRenderConfig.guiScaled(
+             this.leftPos + 260,
+             this.contentTopPos + 180,
+             50,
+             this.leftPos + 260 - this.xMouse,
+             this.contentTopPos + 100 - this.yMouse));ing without limitation the rights to use, copy, modify, merge, publish, distribute,
+* sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in all copies or
+* substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+* NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.attribute;
 
@@ -26,8 +34,9 @@ import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
+import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
-import de.markusbordihn.easynpc.screen.ScreenHelper;
+import de.markusbordihn.easynpc.screen.render.EntityScreenRenderer;
 import de.markusbordihn.easynpc.utils.ValueUtils;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -235,15 +244,14 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
         specialSectionY,
         0x555555);
 
-    // Avatar
     if (getEasyNPC() != null) {
-      ScreenHelper.renderScaledEntityAvatar(
-          this.leftPos + 260,
-          this.contentTopPos + 180,
-          30,
-          this.leftPos + 50 - this.xMouse,
-          this.contentTopPos + 70 - this.yMouse,
-          getEasyNPC());
+      int scale = 30;
+      float rotationYaw = this.leftPos + 50 - this.xMouse;
+      float rotationPitch = this.contentTopPos + 70 - this.yMouse;
+      EntityRenderConfig config =
+          EntityRenderConfig.guiScaled(
+              this.leftPos + 260, this.contentTopPos + 180, scale, rotationYaw, rotationPitch);
+      EntityScreenRenderer.renderEntity(guiGraphics, getEasyNPC(), config);
     }
   }
 }

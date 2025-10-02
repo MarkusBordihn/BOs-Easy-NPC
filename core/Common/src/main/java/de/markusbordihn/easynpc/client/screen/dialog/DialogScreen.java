@@ -31,10 +31,11 @@ import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogMetaData;
 import de.markusbordihn.easynpc.data.dialog.DialogScreenLayout;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
+import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import de.markusbordihn.easynpc.screen.ScreenHelper;
+import de.markusbordihn.easynpc.screen.render.EntityScreenRenderer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -456,18 +457,20 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
     }
     super.render(guiGraphics, x, y, partialTicks);
 
-    // Render Avatar
     int avatarPositionTop = 60 + this.getEasyNPC().getEasyNPCDialogData().getEntityDialogTop();
     int left = this.leftPos + 40;
     int top = this.topPos + 70 + avatarPositionTop;
+    int scale = this.getEasyNPC().getEasyNPCDialogData().getEntityDialogScaling();
+    float rotationYaw = Math.round(left - 140 - (this.xMouse * 0.25));
+    float rotationPitch = Math.round(top - 120 - (this.yMouse * 0.5));
+
     guiGraphics.pose().pushPose();
     guiGraphics.pose().translate(0, 0, 1000);
-    ScreenHelper.renderEntityDialog(
-        left,
-        top,
-        Math.round(left - 140 - (this.xMouse * 0.25)),
-        Math.round(top - 120 - (this.yMouse * 0.5)),
-        this.getEasyNPC());
+
+    EntityRenderConfig config =
+        EntityRenderConfig.dialog(left, top, scale, rotationYaw, rotationPitch);
+    EntityScreenRenderer.renderEntity(guiGraphics, this.getEasyNPC(), config);
+
     guiGraphics.pose().popPose();
 
     // Render Dialog
