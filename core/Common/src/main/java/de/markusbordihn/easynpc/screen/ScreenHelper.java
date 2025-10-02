@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.screen;
 
+import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.profession.Profession;
@@ -39,7 +40,6 @@ import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -47,9 +47,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Team;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 public class ScreenHelper {
+
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   protected ScreenHelper() {}
 
@@ -66,9 +71,6 @@ public class ScreenHelper {
     Minecraft minecraft = Minecraft.getInstance();
     float rotationY = (float) Math.atan((isDead ? 25F : yRot) / 40.0F);
     float rotationX = (float) Math.atan((isDead ? -25F : xRot) / 40.0F);
-    Quaternionf quaternionfZ = (new Quaternionf()).rotateZ(3.1415927F);
-    Quaternionf quaternionfX = (new Quaternionf()).rotateX(rotationX * 20.0F * 0.017453292F);
-    quaternionfZ.mul(quaternionfX);
 
     // Backup entity information
     Component entityCustomName = livingEntity.getCustomName();
@@ -105,33 +107,30 @@ public class ScreenHelper {
       livingEntity.setCustomNameVisible(false);
     }
 
-    // Render Entity
-    // Note: Matrix3x2fStack doesn't support pushPose/popPose or 3D operations in 1.21.8
-    // Using simplified rendering approach
-    if (isDead) {
-      guiGraphics.pose().translate((float) (x - 25.0D), (float) (y - 30.0D));
-    } else {
-      guiGraphics.pose().translate((float) x, (float) y);
-    }
-    guiGraphics.pose().scale(scale, scale);
+    // Render Entity using the new 1.21.6+ GUI rendering system
+    // The renderEntityInInventory method handles the 2-phase rendering automatically
+    // Custom textures should work through the RenderState system and mixins
+    try {
+      // Calculate rendering region
+      int regionSize = scale;
+      int x0 = x - regionSize;
+      int y0 = y - regionSize * 2;
+      int x1 = x + regionSize;
+      int y1 = y;
 
-    EntityRenderDispatcher entityRenderDispatcher =
-        Minecraft.getInstance().getEntityRenderDispatcher();
-    quaternionfX.conjugate();
-    entityRenderDispatcher.overrideCameraOrientation(quaternionfX);
-    entityRenderDispatcher.setRenderShadow(false);
+      // Create rotation quaternions for body and head
+      Quaternionf bodyRotation = (new Quaternionf()).rotateZ((float) Math.PI);
+      Quaternionf headRotationX = (new Quaternionf()).rotateX(rotationX * 20.0F * 0.017453292F);
+      bodyRotation.mul(headRotationX);
 
-    // Direct entity rendering without drawSpecial/flush
-    InventoryScreen.renderEntityInInventoryFollowsMouse(
-        guiGraphics, 0, 0, 0, 0, 0, 0.0F, 0.0F, 0.0F, livingEntity);
+      // Create look vector (offset for entity rendering)
+      Vector3f lookVector = new Vector3f(0.0F, livingEntity.getBbHeight() / 2.0F + 0.0625F, 0.0F);
 
-    entityRenderDispatcher.setRenderShadow(true);
-    // Reset transformations
-    guiGraphics.pose().scale(1.0f / scale, 1.0f / scale);
-    if (isDead) {
-      guiGraphics.pose().translate((float) (-(x - 25.0D)), (float) (-(y - 30.0D)));
-    } else {
-      guiGraphics.pose().translate((float) (-x), (float) (-y));
+      // Use renderEntityInInventory for standard GUI rendering
+      InventoryScreen.renderEntityInInventory(
+          guiGraphics, x0, y0, x1, y1, regionSize, lookVector, bodyRotation, null, livingEntity);
+    } catch (Exception e) {
+      log.warn("Failed to render entity {}: {}", livingEntity, e.getMessage());
     }
 
     // Restore entity information

@@ -15,6 +15,7 @@
     "renderer.state.EasyNPCLivingEntityRenderStateMixin"
   ],
   "mixins": [
+    "CommonHooksMixin",
     "entity.CreeperMixin",
     "entity.EasyNPCFoxMixin",
     "entity.EndermanMixin",

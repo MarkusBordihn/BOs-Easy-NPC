@@ -41,11 +41,14 @@ import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import java.util.Collections;
 import java.util.Set;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.ConfirmScreen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -408,12 +411,28 @@ public class DialogEditorScreen<T extends EditorMenu> extends EditorScreen<T> {
     // Render Tooltips
     if (this.dialogNameToLabelButton != null && this.dialogNameToLabelButton.isMouseOver(x, y)) {
       guiGraphics.renderTooltip(
-          this.font, TextComponent.getTranslatedConfigText("name_to_label.tooltip"), x, y);
+          this.font,
+          Collections.singletonList(
+              ClientTooltipComponent.create(
+                  TextComponent.getTranslatedConfigText("name_to_label.tooltip")
+                      .getVisualOrderText())),
+          x,
+          y,
+          DefaultTooltipPositioner.INSTANCE,
+          null);
     }
 
     if (this.makeDefaultDialogButton != null && this.makeDefaultDialogButton.isMouseOver(x, y)) {
       guiGraphics.renderTooltip(
-          this.font, TextComponent.getTranslatedConfigText("make_default.tooltip"), x, y);
+          this.font,
+          Collections.singletonList(
+              ClientTooltipComponent.create(
+                  TextComponent.getTranslatedConfigText("make_default.tooltip")
+                      .getVisualOrderText())),
+          x,
+          y,
+          DefaultTooltipPositioner.INSTANCE,
+          null);
     }
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2025 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -19,23 +19,22 @@
 
 package de.markusbordihn.easynpc.configui;
 
-import de.markusbordihn.easynpc.configui.client.screen.ClientScreens;
-import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
-import de.markusbordihn.easynpc.configui.network.ServerNetworkMessageHandler;
-import de.markusbordihn.easynpc.configui.tabs.ModTabs;
-import net.minecraftforge.eventbus.api.IEventBus;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.markusbordihn.easynpc.configui.network.NetworkHandler;
+import de.markusbordihn.easynpc.configui.network.NetworkHandlerManager;
+import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-public class ConfigUIClient {
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+public class CommonEventHandler {
 
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  public ConfigUIClient(IEventBus modEventBus) {
-    log.info("Initializing {} (Forge-Client) ...", Constants.MOD_NAME);
-
-    modEventBus.addListener(ClientScreens::registerScreens);
-    NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
-    ModTabs.CREATIVE_TABS.register(modEventBus);
+  @SubscribeEvent
+  public static void onCommonSetup(FMLCommonSetupEvent event) {
+    event.enqueueWork(
+        () -> {
+          NetworkHandlerManager.registerHandler(new NetworkHandler());
+          NetworkHandlerManager.registerNetworkMessages(NetworkHandlerManagerType.BOTH);
+        });
   }
 }

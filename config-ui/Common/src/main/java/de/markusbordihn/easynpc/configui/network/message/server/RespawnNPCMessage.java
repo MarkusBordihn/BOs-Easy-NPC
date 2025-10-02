@@ -65,7 +65,7 @@ public record RespawnNPCMessage(UUID uuid) implements NetworkMessageRecord {
       return;
     }
 
-    if (!RespawnHandler.respawnNPC(easyNPC, serverPlayer.serverLevel())) {
+    if (!RespawnHandler.respawnNPC(easyNPC, serverPlayer.level())) {
       log.error("Unable to respawn Easy NPC {} for {}", easyNPC, serverPlayer);
     }
   }

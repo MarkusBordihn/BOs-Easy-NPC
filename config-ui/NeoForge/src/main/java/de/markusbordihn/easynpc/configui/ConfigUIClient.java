@@ -22,7 +22,6 @@ package de.markusbordihn.easynpc.configui;
 import de.markusbordihn.easynpc.configui.client.screen.ClientScreens;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.configui.network.ServerNetworkMessageHandler;
-import de.markusbordihn.easynpc.configui.tabs.ModTabs;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -39,6 +38,5 @@ public class ConfigUIClient {
     log.info("{} Client events ...", Constants.LOG_REGISTER_PREFIX);
     modEventBus.addListener(ClientScreens::registerScreens);
     NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
-    ModTabs.CREATIVE_TABS.register(modEventBus);
   }
 }

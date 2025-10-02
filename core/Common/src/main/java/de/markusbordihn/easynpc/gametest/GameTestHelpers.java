@@ -42,7 +42,8 @@ public class GameTestHelpers {
   private GameTestHelpers() {}
 
   public static ServerPlayer mockServerPlayer(GameTestHelper helper, Vec3 position) {
-    ServerPlayer serverPlayer = helper.makeMockServerPlayerInLevel();
+    ServerPlayer serverPlayer =
+        (ServerPlayer) helper.makeMockPlayer(net.minecraft.world.level.GameType.CREATIVE);
     GameTestHelpers.assertNotNull(helper, "ServerPlayer is null!", serverPlayer);
     serverPlayer.setPos(helper.absoluteVec(position));
     helper.assertEntityPresent(

@@ -78,9 +78,9 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
       // Render skin name
       int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
       int leftNamePos = Math.round((left - 21f) / SKIN_NAME_SCALING);
-      guiGraphics.pose().pushPose();
-      guiGraphics.pose().translate(0, 0, 100);
-      guiGraphics.pose().scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING, SKIN_NAME_SCALING);
+      guiGraphics.pose().pushMatrix();
+      guiGraphics.pose().translate(0, 100);
+      guiGraphics.pose().scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING);
 
       // Determine skin variant name and split into type and profession if applicable.
       String variantName = variant.name();
@@ -116,7 +116,7 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
             Constants.FONT_COLOR_DARK_GREEN);
       }
 
-      guiGraphics.pose().popPose();
+      guiGraphics.pose().popMatrix();
 
       skinPosition++;
     }

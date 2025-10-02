@@ -26,7 +26,6 @@ import de.markusbordihn.easynpc.data.editor.EditorType;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.world.inventory.MenuType;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class MenuHandler implements MenuHandlerInterface {
 
@@ -39,7 +38,10 @@ public class MenuHandler implements MenuHandlerInterface {
     // Register menu handler
   }
 
-  public static void registerMenuHandler(final FMLCommonSetupEvent event) {
+  private static synchronized void initializeConfigurationMaps() {
+    if (!configurationMenuMap.isEmpty()) {
+      return;
+    }
 
     configurationMenuMap.put(
         ConfigurationType.ABILITIES_ATTRIBUTE,
@@ -130,6 +132,12 @@ public class MenuHandler implements MenuHandlerInterface {
         ModMenuTypes.WORLD_IMPORT_PRESET_CONFIGURATION_MENU.get());
     configurationMenuMap.put(
         ConfigurationType.YES_NO_DIALOG, ModMenuTypes.YES_NO_DIALOG_CONFIGURATION_MENU.get());
+  }
+
+  private static synchronized void initializeEditorMaps() {
+    if (!editorMenuMap.isEmpty()) {
+      return;
+    }
 
     editorMenuMap.put(EditorType.ACTION_DATA, ModMenuTypes.ACTION_DATA_EDITOR_MENU.get());
     editorMenuMap.put(
@@ -142,11 +150,17 @@ public class MenuHandler implements MenuHandlerInterface {
   @Override
   public MenuType<? extends ConfigurationMenu> getMenuTypeByConfigurationType(
       ConfigurationType configurationType) {
+    if (configurationMenuMap.isEmpty()) {
+      initializeConfigurationMaps();
+    }
     return configurationMenuMap.get(configurationType);
   }
 
   @Override
   public MenuType<? extends EditorMenu> getMenuTypeByEditorType(EditorType editorType) {
+    if (editorMenuMap.isEmpty()) {
+      initializeEditorMaps();
+    }
     return editorMenuMap.get(editorType);
   }
 }

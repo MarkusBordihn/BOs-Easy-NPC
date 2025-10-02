@@ -80,7 +80,7 @@ public record ImportPresetMessage(
     switch (this.presetType) {
       case LOCAL:
         PresetHandler.importLocalPreset(
-            serverPlayer.serverLevel(),
+            serverPlayer.level(),
             this.compoundTag,
             this.resourceLocation,
             easyNPC.getEntity().position(),
@@ -89,7 +89,7 @@ public record ImportPresetMessage(
         break;
       case CUSTOM:
         PresetHandler.importCustomPreset(
-            serverPlayer.serverLevel(),
+            serverPlayer.level(),
             this.resourceLocation,
             easyNPC.getEntity().position(),
             this.uuid,
@@ -97,7 +97,7 @@ public record ImportPresetMessage(
         break;
       case DATA:
         PresetHandler.importDataPreset(
-            serverPlayer.serverLevel(),
+            serverPlayer.level(),
             this.resourceLocation,
             easyNPC.getEntity().position(),
             this.uuid,
@@ -105,7 +105,7 @@ public record ImportPresetMessage(
         break;
       case DEFAULT:
         PresetHandler.importDefaultPreset(
-            serverPlayer.serverLevel(),
+            serverPlayer.level(),
             this.resourceLocation,
             easyNPC.getEntity().position(),
             this.uuid,
@@ -113,7 +113,7 @@ public record ImportPresetMessage(
         break;
       case WORLD:
         PresetHandler.importWorldPreset(
-            serverPlayer.serverLevel(),
+            serverPlayer.level(),
             this.resourceLocation,
             easyNPC.getEntity().position(),
             this.uuid,

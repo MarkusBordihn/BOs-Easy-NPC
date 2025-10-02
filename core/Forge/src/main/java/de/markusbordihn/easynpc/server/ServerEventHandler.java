@@ -19,7 +19,6 @@
 
 package de.markusbordihn.easynpc.server;
 
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
@@ -37,8 +36,6 @@ public class ServerEventHandler {
 
   @SubscribeEvent
   public static void onServerTick(ServerTickEvent.ServerTickEvent event) {
-    if (event.phase == TickEvent.Phase.END) {
-      ServerEvents.handleServerTick(event.getServer());
-    }
+    ServerEvents.handleServerTick(event.getServer());
   }
 }

@@ -24,12 +24,14 @@ import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
@@ -65,13 +67,17 @@ public class NetworkHandler implements NetworkHandlerInterface {
 
   @Override
   public <M extends NetworkMessageRecord> void sendToServer(M networkMessageRecord) {
-    PacketDistributor.sendToServer(networkMessageRecord);
+    if (Minecraft.getInstance().getConnection() != null) {
+      Minecraft.getInstance()
+          .getConnection()
+          .send(new ServerboundCustomPayloadPacket(networkMessageRecord));
+    }
   }
 
   @Override
   public <M extends NetworkMessageRecord> void sendToPlayer(
       M networkMessageRecord, ServerPlayer serverPlayer) {
-    PacketDistributor.sendToPlayer(serverPlayer, networkMessageRecord);
+    serverPlayer.connection.send(new ClientboundCustomPayloadPacket(networkMessageRecord));
   }
 
   @Override

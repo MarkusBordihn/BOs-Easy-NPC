@@ -77,6 +77,14 @@ import org.apache.logging.log4j.Logger;
 
 public class ModMenuTypes {
 
+  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  private ModMenuTypes() {}
+
+  public static void register() {
+    log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
+  }
+
   public static final MenuType<AbilitiesAttributeConfigurationMenuWrapper>
       ABILITIES_ATTRIBUTE_CONFIGURATION_MENU =
           Registry.register(
@@ -339,11 +347,4 @@ public class ModMenuTypes {
               BuiltInRegistries.MENU,
               ConfigurationType.YES_NO_DIALOG.getId(),
               new MenuType<>(YesNoDialogConfigurationMenuWrapper::new, FeatureFlagSet.of()));
-  private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  private ModMenuTypes() {}
-
-  public static void register() {
-    log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
-  }
 }

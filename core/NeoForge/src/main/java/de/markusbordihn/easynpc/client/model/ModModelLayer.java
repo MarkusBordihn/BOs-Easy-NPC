@@ -22,13 +22,10 @@ package de.markusbordihn.easynpc.client.model;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.model.custom.FairyModel;
 import de.markusbordihn.easynpc.client.model.custom.OrcModel;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@OnlyIn(Dist.CLIENT)
 public class ModModelLayer {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);

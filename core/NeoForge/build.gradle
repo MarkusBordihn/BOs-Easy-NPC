@@ -24,9 +24,9 @@ runs {
   }
 
   client2 {
-    configure('client')
+    runType 'client'
     workingDirectory project.file('runs/client2')
-    programArguments.addAll '--username', 'guest_player'
+    arguments.addAll '--username', 'guest_player'
   }
 
   server {
@@ -39,7 +39,7 @@ runs {
   }
 
   clientData {
-    programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+    arguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
   }
 }
 

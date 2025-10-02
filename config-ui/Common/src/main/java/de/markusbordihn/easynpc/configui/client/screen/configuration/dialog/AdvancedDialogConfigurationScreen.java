@@ -29,10 +29,13 @@ import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.dialog.DialogDataEntry;
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import java.util.Collections;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -283,9 +286,15 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
         if (this.editButton.isHovered()) {
           guiGraphics.renderTooltip(
               AdvancedDialogConfigurationScreen.this.font,
-              TextComponent.getTranslatedConfigText("dialog.edit_dialog", dialogData.getName()),
+              Collections.singletonList(
+                  ClientTooltipComponent.create(
+                      TextComponent.getTranslatedConfigText(
+                              "dialog.edit_dialog", dialogData.getName())
+                          .getVisualOrderText())),
               mouseX,
-              mouseY);
+              mouseY,
+              DefaultTooltipPositioner.INSTANCE,
+              null);
         }
 
         // Render copy button and tooltip
@@ -295,10 +304,15 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
         if (this.copyLabelButton.isHovered()) {
           guiGraphics.renderTooltip(
               AdvancedDialogConfigurationScreen.this.font,
-              TextComponent.getTranslatedConfigText(
-                  "dialog.copy_dialog_label", dialogData.getLabel()),
+              Collections.singletonList(
+                  ClientTooltipComponent.create(
+                      TextComponent.getTranslatedConfigText(
+                              "dialog.copy_dialog_label", dialogData.getLabel())
+                          .getVisualOrderText())),
               mouseX,
-              mouseY);
+              mouseY,
+              DefaultTooltipPositioner.INSTANCE,
+              null);
         }
 
         // Render edit text button and tooltip
@@ -308,10 +322,15 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
         if (this.textEditButton.isHovered()) {
           guiGraphics.renderTooltip(
               AdvancedDialogConfigurationScreen.this.font,
-              TextComponent.getTranslatedConfigText(
-                  "dialog.edit_dialog_text", dialogData.getText()),
+              Collections.singletonList(
+                  ClientTooltipComponent.create(
+                      TextComponent.getTranslatedConfigText(
+                              "dialog.edit_dialog_text", dialogData.getText())
+                          .getVisualOrderText())),
               mouseX,
-              mouseY);
+              mouseY,
+              DefaultTooltipPositioner.INSTANCE,
+              null);
         }
 
         // Scale dialog text down
@@ -321,8 +340,8 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
             dialogData.getLabel().equals(this.defaultDialogLabel)
                 ? Constants.FONT_COLOR_DARK_GREEN
                 : Constants.FONT_COLOR_BLACK;
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().scale(dialogDataScale, dialogDataScale, dialogDataScale);
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().scale(dialogDataScale, dialogDataScale);
         Text.drawString(
             guiGraphics,
             AdvancedDialogConfigurationScreen.this.font,
@@ -344,7 +363,7 @@ public class AdvancedDialogConfigurationScreen<T extends ConfigurationMenu>
             Math.round((leftPos + 221) / dialogDataScale),
             dialogDataTopPos,
             fontColor);
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
 
         // Draw separator line
         guiGraphics.fill(

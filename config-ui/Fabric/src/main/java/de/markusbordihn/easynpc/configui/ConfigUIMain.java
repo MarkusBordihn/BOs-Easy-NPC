@@ -31,7 +31,7 @@ import de.markusbordihn.easynpc.configui.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,7 +59,7 @@ public class ConfigUIMain implements ModInitializer {
 
     log.info("{} Command register event ...", Constants.LOG_REGISTER_PREFIX);
     CommandRegistrationCallback.EVENT.register(
-        (dispatcher, dedicated) -> CommandManager.registerCommands(dispatcher));
+        (dispatcher, registryAccess, environment) -> CommandManager.registerCommands(dispatcher));
 
     log.info("{} Menu Types ...", Constants.LOG_REGISTER_PREFIX);
     ModMenuTypes.register();

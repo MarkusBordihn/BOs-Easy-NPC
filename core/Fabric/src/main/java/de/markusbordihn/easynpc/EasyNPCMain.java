@@ -39,7 +39,7 @@ import de.markusbordihn.easynpc.network.NetworkHandler;
 import de.markusbordihn.easynpc.network.NetworkHandlerManager;
 import de.markusbordihn.easynpc.network.NetworkHandlerManagerType;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
-import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManager;
+import de.markusbordihn.easynpc.network.syncher.EntityDataSerializersManagerFabric;
 import de.markusbordihn.easynpc.server.ServerEvents;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
@@ -75,7 +75,7 @@ public class EasyNPCMain implements ModInitializer {
     DataFileHandler.registerCommonDataFiles();
 
     log.info("{} Entity Data Serializers ...", Constants.LOG_REGISTER_PREFIX);
-    EntityDataSerializersManager.register();
+    EntityDataSerializersManagerFabric.register();
 
     log.info("{} Compatibility Handler ...", Constants.LOG_REGISTER_PREFIX);
     CompatManager.registerCompatHandler(new CompatHandler());

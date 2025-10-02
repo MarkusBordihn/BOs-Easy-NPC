@@ -41,9 +41,12 @@ import de.markusbordihn.easynpc.data.dialog.DialogButtonEntry;
 import de.markusbordihn.easynpc.data.dialog.DialogUtils;
 import de.markusbordihn.easynpc.data.editor.EditorType;
 import de.markusbordihn.easynpc.network.components.TextComponent;
+import java.util.Collections;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.ConfirmScreen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -272,7 +275,15 @@ public class DialogButtonEditorScreen<T extends EditorMenu> extends EditorScreen
     // Render Tooltips
     if (this.buttonNameToLabelButton != null && this.buttonNameToLabelButton.isMouseOver(x, y)) {
       guiGraphics.renderTooltip(
-          this.font, TextComponent.getTranslatedConfigText("name_to_label.tooltip"), x, y);
+          this.font,
+          Collections.singletonList(
+              ClientTooltipComponent.create(
+                  TextComponent.getTranslatedConfigText("name_to_label.tooltip")
+                      .getVisualOrderText())),
+          x,
+          y,
+          DefaultTooltipPositioner.INSTANCE,
+          null);
     }
   }
 

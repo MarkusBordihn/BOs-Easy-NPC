@@ -42,17 +42,20 @@ public class Text {
 
   public static void drawString(
       GuiGraphics guiGraphics, Font font, Component component, int x, int y, int color) {
-    guiGraphics.drawString(font, component, x, y, color, false);
+    guiGraphics.drawString(
+        font, component, x, y, (color & 0xFF000000) == 0 ? color | 0xFF000000 : color, false);
   }
 
   public static void drawStringShadow(
       GuiGraphics guiGraphics, Font font, String text, int x, int y, int color) {
-    guiGraphics.drawString(font, text, x, y, color, true);
+    guiGraphics.drawString(
+        font, text, x, y, (color & 0xFF000000) == 0 ? color | 0xFF000000 : color, true);
   }
 
   public static void drawStringShadow(
       GuiGraphics guiGraphics, Font font, Component component, int x, int y, int color) {
-    guiGraphics.drawString(font, component, x, y, color, true);
+    guiGraphics.drawString(
+        font, component, x, y, (color & 0xFF000000) == 0 ? color | 0xFF000000 : color, true);
   }
 
   public static void drawString(
@@ -89,7 +92,8 @@ public class Text {
 
   public static void drawString(
       GuiGraphics guiGraphics, Font font, String text, int x, int y, int color) {
-    guiGraphics.drawString(font, text, x, y, color, false);
+    guiGraphics.drawString(
+        font, text, x, y, (color & 0xFF000000) == 0 ? color | 0xFF000000 : color, false);
   }
 
   public static void drawString(
@@ -99,7 +103,13 @@ public class Text {
       int x,
       int y,
       int color) {
-    guiGraphics.drawString(font, formattedCharSequence, x, y, color, false);
+    guiGraphics.drawString(
+        font,
+        formattedCharSequence,
+        x,
+        y,
+        (color & 0xFF000000) == 0 ? color | 0xFF000000 : color,
+        false);
   }
 
   public static void drawConfigString(

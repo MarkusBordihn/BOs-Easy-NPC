@@ -131,8 +131,8 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
 
     // Scale entity texts
     float scaleEntityTypeText = 0.75f;
-    guiGraphics.pose().pushPose();
-    guiGraphics.pose().scale(scaleEntityTypeText, scaleEntityTypeText, scaleEntityTypeText);
+    guiGraphics.pose().pushMatrix();
+    guiGraphics.pose().scale(scaleEntityTypeText, scaleEntityTypeText);
 
     // Entity UUID.
     Text.drawString(
@@ -151,7 +151,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         Math.round((this.avatarTopPos + 4) / scaleEntityTypeText));
 
     // Make sure that entity text is always on top
-    guiGraphics.pose().translate(0, 0, 100);
+    guiGraphics.pose().translate(0, 100);
 
     // Entity Owner, if available.
     OwnerDataCapable<?> ownerData = getEasyNPC().getEasyNPCOwnerData();
@@ -205,7 +205,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
         Math.round((this.avatarTopPos + 147) / scaleEntityTypeText));
 
-    guiGraphics.pose().popPose();
+    guiGraphics.pose().popMatrix();
   }
 
   @Override

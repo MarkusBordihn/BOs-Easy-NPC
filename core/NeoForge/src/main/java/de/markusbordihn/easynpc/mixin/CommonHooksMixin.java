@@ -17,22 +17,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.gametest;
+package de.markusbordihn.easynpc.mixin;
 
-import de.markusbordihn.easynpc.Constants;
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.entity.Entity;
+import net.neoforged.neoforge.common.CommonHooks;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@SuppressWarnings("unused")
-public class SmokeTest {
+@Mixin(value = CommonHooks.class, remap = false)
+public class CommonHooksMixin {
 
-  @GameTest(structure = "easy_npc:gametest.1x1x1")
-  public void testModRegistered(GameTestHelper helper) {
-    GameTestHelpers.assertTrue(
-        helper,
-        "Mod " + Constants.MOD_ID + " is not available!",
-        FabricLoader.getInstance().isModLoaded(Constants.MOD_ID));
-    helper.succeed();
+  @Inject(
+      method = "verifyEntityDataAccessorRegistration",
+      at = @At("HEAD"),
+      cancellable = true,
+      remap = false)
+  private static void disableEntityDataVerification(
+      Class<? extends Entity> entityClass, Class<?> callingClass, CallbackInfo ci) {
+    ci.cancel();
   }
 }

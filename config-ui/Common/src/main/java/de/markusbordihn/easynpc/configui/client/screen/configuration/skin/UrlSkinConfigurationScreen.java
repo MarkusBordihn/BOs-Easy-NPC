@@ -100,9 +100,9 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
       // Render skin name
       int topNamePos = Math.round((top - 76) / SKIN_NAME_SCALING);
       int leftNamePos = Math.round((left - 21) / SKIN_NAME_SCALING);
-      guiGraphics.pose().pushPose();
-      guiGraphics.pose().translate(0, 0, 100);
-      guiGraphics.pose().scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING, SKIN_NAME_SCALING);
+      guiGraphics.pose().pushMatrix();
+      guiGraphics.pose().translate(0, 100);
+      guiGraphics.pose().scale(SKIN_NAME_SCALING, SKIN_NAME_SCALING);
       String variantName = TextUtils.normalizeString(textureKey.toString(), 11);
       Text.drawString(
           guiGraphics,
@@ -111,7 +111,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
           leftNamePos,
           topNamePos,
           Constants.FONT_COLOR_DARK_GREEN);
-      guiGraphics.pose().popPose();
+      guiGraphics.pose().popMatrix();
 
       skinPosition++;
     }
@@ -286,7 +286,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
 
     // Render Status Symbol and text, if needed.
     if (!this.canTextureSkinLocationChange) {
-      guiGraphics.pose().translate(0, 0, 100);
+      guiGraphics.pose().translate(0, 100);
       Graphics.blit(
           guiGraphics,
           Constants.TEXTURE_CONFIGURATION,

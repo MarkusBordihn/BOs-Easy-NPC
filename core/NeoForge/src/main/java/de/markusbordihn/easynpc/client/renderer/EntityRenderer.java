@@ -31,13 +31,10 @@ import java.util.function.Function;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@OnlyIn(Dist.CLIENT)
 public class EntityRenderer {
 
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);

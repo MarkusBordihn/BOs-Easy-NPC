@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Markus Bordihn
+ * Copyright 2025 Markus Bordihn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,26 +17,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.model;
+package de.markusbordihn.easynpc.configui.client;
 
-import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.client.model.custom.FairyModel;
-import de.markusbordihn.easynpc.client.model.custom.OrcModel;
-import net.minecraftforge.client.event.EntityRenderersEvent;
+import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.client.screen.ClientScreens;
+import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.configui.network.ServerNetworkMessageHandler;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ModModelLayer {
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+public class ClientEventHandler {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private ModModelLayer() {}
+  @SubscribeEvent
+  public static void onClientSetup(FMLClientSetupEvent event) {
+    log.info("Initializing {} (Forge-Client) ...", Constants.MOD_NAME);
 
-  public static void registerEntityLayerDefinitions(
-      EntityRenderersEvent.RegisterLayerDefinitions event) {
-    log.info("{} Entity Layer Definitions ...", Constants.LOG_REGISTER_PREFIX);
+    event.enqueueWork(
+        () -> {
+          // Set up networking
+          NetworkMessageHandlerManager.registerServerHandler(new ServerNetworkMessageHandler());
 
-    event.registerLayerDefinition(ModModelLayers.FAIRY, FairyModel::createBodyLayer);
-    event.registerLayerDefinition(ModModelLayers.ORC, OrcModel::createBodyLayer);
+          // Register screens
+          ClientScreens.registerScreens(event);
+        });
   }
 }

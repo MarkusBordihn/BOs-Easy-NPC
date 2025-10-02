@@ -21,7 +21,7 @@ package de.markusbordihn.easynpc.configui.commands;
 
 import de.markusbordihn.easynpc.configui.commands.manager.CommandManager;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber
