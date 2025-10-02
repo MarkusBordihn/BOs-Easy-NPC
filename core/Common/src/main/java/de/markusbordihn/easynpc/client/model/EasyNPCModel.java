@@ -73,13 +73,15 @@ public class EasyNPCModel {
       return false;
     }
 
+    // Always reset model parts first to ensure clean state (fixes visibility issues at distance)
+    modelManager.resetModelParts();
+
     // Early return if no custom model pose is used.
     if (modelData.getModelPose() == ModelPose.DEFAULT) {
       return false;
     }
 
     // Handle Model Pose
-    modelManager.resetModelParts();
     return modelManager.setupModelParts(modelData);
   }
 

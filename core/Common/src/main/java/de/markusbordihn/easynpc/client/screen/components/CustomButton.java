@@ -80,6 +80,13 @@ public class CustomButton extends Button {
   }
 
   @Override
+  public void onPress() {
+    if (this.onPress != null) {
+      super.onPress();
+    }
+  }
+
+  @Override
   public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
     this.renderButton(guiGraphics, mouseX, mouseY, partialTicks);
   }

@@ -40,10 +40,10 @@ public class SafeMerchantData<E extends PathfinderMob> implements Merchant {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  private static final int DEFAULT_VILLAGER_XP = 0;
-  private static final int DEFAULT_VILLAGER_LEVEL = 0;
-  private static final boolean DEFAULT_SHOW_PROGRESS_BAR = true;
   private static final boolean DEFAULT_CAN_RESTOCK = false;
+  private static final boolean DEFAULT_SHOW_PROGRESS_BAR = true;
+  private static final int DEFAULT_VILLAGER_LEVEL = 0;
+  private static final int DEFAULT_VILLAGER_XP = 0;
 
   private final TradingDataCapable<E> tradingData;
 
