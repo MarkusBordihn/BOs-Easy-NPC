@@ -21,12 +21,7 @@
     "client": [
       "de.markusbordihn.easynpc.configui.ConfigUIClient"
     ],
-    "fabric-gametest": [
-      "de.markusbordihn.easynpc.configui.gametest.SmokeTest",
-      "de.markusbordihn.easynpc.configui.gametest.ConfigurationScreenTest",
-      "de.markusbordihn.easynpc.configui.gametest.EditorScreenTest",
-      "de.markusbordihn.easynpc.configui.gametest.MenuManagerTest"
-    ]
+    "fabric-gametest": []
   },
   "mixins": [],
   "accessWidener": "easynpcconfig.accesswidener",

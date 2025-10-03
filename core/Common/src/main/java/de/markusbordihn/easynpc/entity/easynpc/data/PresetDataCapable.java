@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Pose;
@@ -114,6 +115,13 @@ public interface PresetDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
     // Import preset data to entity.
     this.getEntity().load(compoundTag);
+
+    // Apply legacy CustomName if present
+    Component legacyCustomName =
+      CompoundTagUtils.parseLegacyCustomName(compoundTag, this.getEntity().registryAccess());
+    if (legacyCustomName != null) {
+      this.getEntity().setCustomName(legacyCustomName);
+    }
   }
 
   default CompoundTag serializePresetData() {

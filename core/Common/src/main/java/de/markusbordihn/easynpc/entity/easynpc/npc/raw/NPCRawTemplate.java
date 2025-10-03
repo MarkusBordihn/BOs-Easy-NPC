@@ -38,6 +38,7 @@ import de.markusbordihn.easynpc.entity.easynpc.handlers.InteractionHandler;
 import de.markusbordihn.easynpc.entity.easynpc.handlers.VisibilityHandler;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
 import de.markusbordihn.easynpc.server.player.FakePlayer;
+import de.markusbordihn.easynpc.utils.CompoundTagUtils;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.util.EnumMap;
 import java.util.Objects;
@@ -549,6 +550,13 @@ public class NPCRawTemplate extends Zombie implements EasyNPCBase<Zombie> {
     super.readAdditionalSaveData(compoundTag);
     this.readPersistentAngerSaveData(this.level(), compoundTag);
     this.readEasyNPCBaseAdditionalSaveData(compoundTag, this.registryAccess());
+
+    // Fix legacy CustomName format (MC 1.21.4 and earlier used JSON string)
+    Component legacyCustomName =
+        CompoundTagUtils.parseLegacyCustomName(compoundTag, this.registryAccess());
+    if (legacyCustomName != null) {
+      this.setCustomName(legacyCustomName);
+    }
   }
 
   @Override

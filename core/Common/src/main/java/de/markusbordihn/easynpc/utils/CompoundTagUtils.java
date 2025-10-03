@@ -19,17 +19,24 @@
 
 package de.markusbordihn.easynpc.utils;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CompoundTagUtils {
 
@@ -38,6 +45,8 @@ public class CompoundTagUtils {
   public static final String Y_TAG = "Y";
   public static final String Z_TAG = "Z";
   public static final String UUID_TAG = "UUID";
+  public static final String CUSTOM_NAME_TAG = "CustomName";
+  protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   private CompoundTagUtils() {}
 
@@ -170,5 +179,32 @@ public class CompoundTagUtils {
                   });
         });
     return resourceLocations;
+  }
+
+  public static Component parseLegacyCustomName(
+      CompoundTag compoundTag, HolderLookup.Provider registryAccess) {
+    if (compoundTag == null || !compoundTag.contains(CUSTOM_NAME_TAG)) {
+      return null;
+    }
+
+    Tag customNameTag = compoundTag.get(CUSTOM_NAME_TAG);
+    if (customNameTag instanceof StringTag) {
+      String jsonString = compoundTag.getString(CUSTOM_NAME_TAG).orElse("");
+      if (jsonString.isEmpty()) {
+        return null;
+      }
+
+      try {
+        JsonElement jsonElement = JsonParser.parseString(jsonString);
+        Component component = Component.Serializer.fromJson(jsonElement, registryAccess);
+        if (component != null) {
+          log.debug("Parsed legacy CustomName format: {}", jsonString);
+          return component;
+        }
+      } catch (Exception e) {
+        log.warn("Failed to parse legacy CustomName format: {}", jsonString, e);
+      }
+    }
+    return null;
   }
 }
