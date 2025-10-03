@@ -98,6 +98,22 @@ public class EasyNPCPresetItem extends Item {
       if (customNameTag.contains(TEXT_TAG)) {
         return customNameTag.getString(TEXT_TAG).orElse("");
       }
+
+      try {
+        String customNameString = compoundTag.getString(CUSTOM_NAME_TAG).orElse("");
+        if (!customNameString.isEmpty()) {
+          com.google.gson.JsonElement jsonElement =
+              com.google.gson.JsonParser.parseString(customNameString);
+          if (jsonElement.isJsonObject()) {
+            com.google.gson.JsonObject jsonObject = jsonElement.getAsJsonObject();
+            if (jsonObject.has(TEXT_TAG)) {
+              return jsonObject.get(TEXT_TAG).getAsString();
+            }
+          }
+        }
+      } catch (Exception e) {
+        log.debug("Could not parse CustomName as legacy JSON format", e);
+      }
     }
     return null;
   }

@@ -21,9 +21,7 @@
     "client": [
       "de.markusbordihn.easynpc.configui.ConfigUIClient"
     ],
-    "fabric-gametest": [
-      "de.markusbordihn.easynpc.configui.gametest.SmokeTest"
-    ]
+    "fabric-gametest": []
   },
   "mixins": [],
   "accessWidener": "easynpcconfig.accesswidener",
