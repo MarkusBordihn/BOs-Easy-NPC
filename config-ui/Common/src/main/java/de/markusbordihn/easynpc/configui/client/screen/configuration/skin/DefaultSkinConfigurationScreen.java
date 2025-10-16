@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.skin;
 
+import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.SkinSelectionButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.configui.Constants;
@@ -27,6 +28,7 @@ import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.profession.Profession;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.data.render.EntityRenderOverrides;
+import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
@@ -127,7 +129,6 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
   private void renderSkinEntity(
       GuiGraphics guiGraphics, int x, int y, Enum<?> variantType, Profession profession) {
 
-    // Create dynamically button for each skin variant and profession.
     Button skinButton =
         new SkinSelectionButton(
             x - 24,
@@ -138,7 +139,8 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
                     .changeProfession(this.getEasyNPCUUID(), profession);
               }
               NetworkMessageHandlerManager.getServerHandler()
-                  .setDefaultSkin(this.getEasyNPCUUID(), variantType);
+                  .setSkin(
+                      this.getEasyNPCUUID(), SkinDataEntry.createDefaultSkin(variantType.name()));
             });
 
     // Disable button for active skin.
@@ -155,7 +157,7 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
         this.getEasyNPC(),
         EntityRenderConfig.withOverrides(
             x + 4,
-            y,
+            y + 7,
             30,
             x - this.xMouse,
             y - 40 - this.yMouse,
@@ -185,6 +187,20 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
     this.numOfSkins = this.numOfVariants;
 
     log.debug("Found {} predefined variant combinations.", this.numOfSkins);
+
+    // Disable Layers Checkbox
+    SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
+    this.addRenderableWidget(
+        new Checkbox(
+            this.contentLeftPos + 55,
+            this.contentTopPos + 192,
+            "disable_skin_layers",
+            skinData.getSkinDataEntry().disableLayers(),
+            checkbox ->
+                NetworkMessageHandlerManager.getServerHandler()
+                    .setSkin(
+                        this.getEasyNPCUUID(),
+                        skinData.getSkinDataEntry().withDisableLayers(checkbox.selected()))));
 
     // Skin Navigation Buttons
     defineSkinNavigationButtons();

@@ -53,6 +53,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
   private static final int LARGE_BUTTON_WIDTH = 250;
   private static final int MAX_NUMBER_OF_PIXEL_PER_LINE = 180;
   private static final int MAX_NUMBER_OF_DIALOG_LINES = 10;
+  private static final int MAX_TOTAL_DIALOG_LINES = 100;
   private static DialogScreenLayout dialogScreenLayout = DialogScreenLayout.UNKNOWN;
   protected final ArrayList<Button> dialogButtons = new ArrayList<>();
   protected final Component dialogText;
@@ -138,7 +139,7 @@ public class DialogScreen<T extends DialogMenu> extends Screen<T> {
     // Split dialog text to lines.
     this.cachedDialogComponents =
         this.font.split(this.dialogComponent, MAX_NUMBER_OF_PIXEL_PER_LINE);
-    this.numberOfDialogLines = Math.min(128 / font.lineHeight, this.cachedDialogComponents.size());
+    this.numberOfDialogLines = Math.min(MAX_TOTAL_DIALOG_LINES, this.cachedDialogComponents.size());
   }
 
   private void addDialogButton(DialogButtonEntry dialogButtonEntry) {
