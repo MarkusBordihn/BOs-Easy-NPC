@@ -248,7 +248,7 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
       this.renderCustomModelEntity(guiGraphics, left, top, entityType);
 
       // Render skin name
-      int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
+      int topNamePos = Math.round((top - 176f) / SKIN_NAME_SCALING);
       int leftNamePos = Math.round((left - 21f) / SKIN_NAME_SCALING);
       guiGraphics.pose().pushMatrix();
       guiGraphics.pose().translate(0, 100);
@@ -297,7 +297,7 @@ public class CustomModelConfigurationScreen<T extends ConfigurationMenu>
         this.getEasyNPC(),
         EntityRenderConfig.customModel(
             x + 5,
-            y + 7,
+            y + 5,
             Math.round(30 / EntityTypeManager.getScaleFactor(entityType)),
             x - this.xMouse,
             y - 40 - this.yMouse,

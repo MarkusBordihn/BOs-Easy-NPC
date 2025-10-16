@@ -179,15 +179,14 @@ public class RendererManager {
 
   public static void copyCustomEntityData(
       PathfinderMob sourceEntity, Entity targetEntity, String entityTypeName) {
-    if (sourceEntity == null
-        || targetEntity == null
-        || entityTypeName == null
-        || sourceEntity == targetEntity) {
+    if (sourceEntity == null || targetEntity == null || sourceEntity == targetEntity) {
       return;
     }
 
     // Copy mod specific data, if any.
-    copyModSpecificData(sourceEntity, targetEntity, entityTypeName);
+    if (entityTypeName != null && entityTypeName != EntityTypeManager.UNKNOWN_ENTITY_TYPE_NAME) {
+      copyModSpecificData(sourceEntity, targetEntity, entityTypeName);
+    }
 
     // Synchronize entity tick count.
     targetEntity.tickCount = sourceEntity.tickCount;
@@ -223,13 +222,17 @@ public class RendererManager {
   }
 
   public static void copyCustomLivingEntityData(
+      PathfinderMob sourceEntity, LivingEntity targetEntity) {
+    copyCustomLivingEntityData(
+        sourceEntity, targetEntity, EntityTypeManager.getEntityTypeName(sourceEntity.getType()));
+  }
+
+  public static void copyCustomLivingEntityData(
       PathfinderMob sourceEntity, LivingEntity targetEntity, String entityTypeName) {
-    if (sourceEntity == null
-        || targetEntity == null
-        || entityTypeName == null
-        || sourceEntity == targetEntity) {
+    if (sourceEntity == null || targetEntity == null || sourceEntity == targetEntity) {
       return;
     }
+
     // Adjust basic entity data.
     copyCustomEntityData(sourceEntity, targetEntity, entityTypeName);
 

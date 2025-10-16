@@ -40,9 +40,9 @@ import org.apache.logging.log4j.Logger;
 
 public class EntityTypeManager {
 
+  public static final String UNKNOWN_ENTITY_TYPE_NAME = "Unknown";
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String LOG_PREFIX = "[Entity Type Manager]";
-
   private static final Set<EntityType<? extends Entity>> unknownEntityTypes = new HashSet<>();
   private static final Set<EntityType<? extends Entity>> supportedEntityTypes = new HashSet<>();
   private static final Set<EntityType<? extends Entity>> unsupportedEntityTypes = new HashSet<>();
@@ -246,6 +246,6 @@ public class EntityTypeManager {
   }
 
   public static String getEntityTypeName(EntityType<? extends Entity> entityType) {
-    return entityTypeNameMap.getOrDefault(entityType, "Unknown");
+    return entityTypeNameMap.getOrDefault(entityType, UNKNOWN_ENTITY_TYPE_NAME);
   }
 }

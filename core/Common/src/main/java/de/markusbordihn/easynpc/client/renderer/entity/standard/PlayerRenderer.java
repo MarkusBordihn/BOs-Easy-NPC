@@ -22,7 +22,7 @@ public class PlayerRenderer
     extends HumanoidMobRenderer<PathfinderMob, PlayerRenderState, PlayerModel>
     implements EasyNPCEntityRenderer {
 
-  protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
+  public static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
       Util.make(
           new EnumMap<>(VariantType.class),
           map -> {

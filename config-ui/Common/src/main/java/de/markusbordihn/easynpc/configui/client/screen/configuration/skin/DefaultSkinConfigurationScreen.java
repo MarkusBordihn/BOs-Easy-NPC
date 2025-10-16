@@ -80,7 +80,7 @@ public class DefaultSkinConfigurationScreen<T extends ConfigurationMenu>
       this.renderSkinEntity(guiGraphics, left, top, variant, null);
 
       // Render skin name
-      int topNamePos = Math.round((top - 76f) / SKIN_NAME_SCALING);
+      int topNamePos = Math.round((top - 176f) / SKIN_NAME_SCALING);
       int leftNamePos = Math.round((left - 21f) / SKIN_NAME_SCALING);
       guiGraphics.pose().pushMatrix();
       guiGraphics.pose().translate(0, 100);
