@@ -133,6 +133,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         this.xMouse,
         this.yMouse);
 
+    // Scale entity texts
     float scaleEntityTypeText = 0.75f;
     guiGraphics.pose().pushMatrix();
     guiGraphics.pose().scale(scaleEntityTypeText, scaleEntityTypeText);
@@ -152,9 +153,6 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         getEasyNPCEntity().getType().getDescription(),
         Math.round((this.contentLeftPos + 3) / scaleEntityTypeText),
         Math.round((this.avatarTopPos + 4) / scaleEntityTypeText));
-
-    // Make sure that entity text is always on top
-    guiGraphics.pose().translate(0, 100);
 
     // Entity Owner, if available.
     OwnerDataCapable<?> ownerData = getEasyNPC().getEasyNPCOwnerData();

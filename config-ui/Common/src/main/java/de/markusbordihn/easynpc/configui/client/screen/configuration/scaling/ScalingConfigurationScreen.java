@@ -236,8 +236,8 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
         this.getEasyNPC(),
         EntityRenderConfig.scaling(
                 this.contentLeftPos + 80,
-                (this.contentTopPos + 275) - (int) ((rootScale.y() - 1.0f) * 29.5f),
-                30,
+                (this.contentTopPos + 223) + (int) ((rootScale.y() - 1.0f)),
+                Math.round(11 * rootScale.y()),
                 this.contentLeftPos + 75 - this.xMouse,
                 this.contentTopPos + 120 - this.yMouse)
             .withScissorBox(ScissorBox.LARGE),
