@@ -24,14 +24,16 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.AttributeHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
 import java.util.UUID;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 
-public record ChangeEntityBaseAttributeMessage(UUID uuid, ResourceLocation attribute, Double value)
+public record ChangeEntityBaseAttributeMessage(UUID uuid, Attribute attribute, Double value)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
@@ -44,13 +46,15 @@ public record ChangeEntityBaseAttributeMessage(UUID uuid, ResourceLocation attri
 
   public static ChangeEntityBaseAttributeMessage create(final FriendlyByteBuf buffer) {
     return new ChangeEntityBaseAttributeMessage(
-        buffer.readUUID(), buffer.readResourceLocation(), buffer.readDouble());
+        buffer.readUUID(),
+        BuiltInRegistries.ATTRIBUTE.getValue(buffer.readResourceLocation()),
+        buffer.readDouble());
   }
 
   @Override
   public void write(final FriendlyByteBuf buffer) {
     buffer.writeUUID(this.uuid);
-    buffer.writeResourceLocation(this.attribute);
+    buffer.writeResourceLocation(BuiltInRegistries.ATTRIBUTE.getKey(this.attribute));
     buffer.writeDouble(this.value);
   }
 
