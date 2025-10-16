@@ -39,8 +39,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class HumanoidArmorLayerMixin<
     S extends HumanoidRenderState, A extends HumanoidModel<? super S>> {
 
-  @Unique
-  private S easy_npc$currentRenderState;
+  @Unique private S easy_npc$currentRenderState;
 
   @Inject(
       method =

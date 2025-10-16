@@ -85,10 +85,9 @@ import de.markusbordihn.easynpc.data.profession.Profession;
 import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
-import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.data.trading.TradingType;
 import de.markusbordihn.easynpc.data.trading.TradingValueType;
-import de.markusbordihn.easynpc.validator.UrlValidator;
 import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -444,16 +443,9 @@ public interface ServerNetworkMessageHandlerInterface {
     }
   }
 
-  default void setSkin(
-      final UUID uuid,
-      final String skinName,
-      final String skinURL,
-      final UUID skinUUID,
-      final SkinType skinType,
-      final String skinVariant) {
-    if (uuid != null && skinUUID != null && skinType != null) {
-      NetworkHandlerManager.sendMessageToServer(
-          new ChangeSkinMessage(uuid, skinName, skinURL, skinUUID, skinType, skinVariant));
+  default void setSkin(final UUID uuid, final SkinDataEntry skinDataEntry) {
+    if (uuid != null && skinDataEntry != null) {
+      NetworkHandlerManager.sendMessageToServer(new ChangeSkinMessage(uuid, skinDataEntry));
     }
   }
 
@@ -486,18 +478,6 @@ public interface ServerNetworkMessageHandlerInterface {
     openDialogButtonEditor(uuid, dialogId, new UUID(0L, 0L));
   }
 
-  default void setNoneSkin(final UUID uuid) {
-    if (uuid != null) {
-      setSkin(uuid, "", "", Constants.EMPTY_UUID, SkinType.NONE, "");
-    }
-  }
-
-  default void setDefaultSkin(UUID uuid, Enum<?> variant) {
-    if (uuid != null && variant != null) {
-      setSkin(uuid, "", "", Constants.EMPTY_UUID, SkinType.DEFAULT, variant.name());
-    }
-  }
-
   default void poseChange(UUID uuid, Pose pose) {
     if (uuid != null && pose != null) {
       NetworkHandlerManager.sendMessageToServer(new ChangePoseMessage(uuid, pose));
@@ -517,8 +497,7 @@ public interface ServerNetworkMessageHandlerInterface {
         && BuiltInRegistries.ATTRIBUTE.getKey(attribute) != null) {
       Double roundedValue = Math.round(value * 100.0) / 100.0;
       NetworkHandlerManager.sendMessageToServer(
-          new ChangeEntityBaseAttributeMessage(
-              uuid, attribute, roundedValue));
+          new ChangeEntityBaseAttributeMessage(uuid, attribute, roundedValue));
     }
   }
 
@@ -556,24 +535,6 @@ public interface ServerNetworkMessageHandlerInterface {
     if (uuid != null && modelPartType != null) {
       NetworkHandlerManager.sendMessageToServer(
           new ChangeModelVisibilityMessage(uuid, modelPartType, visible));
-    }
-  }
-
-  default void setCustomSkin(UUID uuid, UUID skinUUID) {
-    if (uuid != null && skinUUID != null) {
-      setSkin(uuid, "", "", skinUUID, SkinType.CUSTOM, "");
-    }
-  }
-
-  default void setPlayerSkin(UUID uuid, String playerName, UUID playerUUID) {
-    if (uuid != null && playerName != null && playerUUID != null) {
-      setSkin(uuid, playerName, "", playerUUID, SkinType.PLAYER_SKIN, "");
-    }
-  }
-
-  default void setRemoteSkin(UUID uuid, String skinURL) {
-    if (uuid != null && UrlValidator.isValidUrl(skinURL)) {
-      setSkin(uuid, "", skinURL, Constants.EMPTY_UUID, SkinType.INSECURE_REMOTE_URL, "");
     }
   }
 
