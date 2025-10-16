@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.configui.client.screen.configuration.skin;
 import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
+import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
@@ -69,23 +70,17 @@ public class NoneSkinConfigurationScreen<T extends ConfigurationMenu>
                 checkbox -> {
                   if (checkbox.selected()) {
                     NetworkMessageHandlerManager.getServerHandler()
-                        .setNoneSkin(this.getEasyNPCUUID());
+                        .setSkin(this.getEasyNPCUUID(), SkinDataEntry.createNoneSkin());
                   } else {
-                    switch (formerSkinType) {
-                      case DEFAULT:
-                        NetworkMessageHandlerManager.getServerHandler()
-                            .setDefaultSkin(this.getEasyNPCUUID(), formerVariant);
-                        break;
-                      case CUSTOM:
-                        NetworkMessageHandlerManager.getServerHandler()
-                            .setCustomSkin(this.getEasyNPCUUID(), formerSkinUUID);
-                        break;
-                      case NONE:
-                      default:
-                        NetworkMessageHandlerManager.getServerHandler()
-                            .setDefaultSkin(
-                                this.getEasyNPCUUID(), variantData.getDefaultVariantType());
-                    }
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .setSkin(
+                            this.getEasyNPCUUID(),
+                            formerSkinType == SkinType.DEFAULT
+                                ? SkinDataEntry.createDefaultSkin(formerVariant.name())
+                                : formerSkinType == SkinType.CUSTOM
+                                    ? SkinDataEntry.createCustomSkin(formerSkinUUID, true)
+                                    : SkinDataEntry.createDefaultSkin(
+                                        variantData.getDefaultVariantType().name()));
                   }
                 }));
   }

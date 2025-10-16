@@ -163,6 +163,13 @@ public class TextureManager {
       return cachedTexture;
     }
 
+    // Log the start of the download process
+    log.warn(
+        "{} Starting download of remote texture from {} for {}",
+        LOG_PREFIX,
+        remoteUrl,
+        textureModelKey);
+
     // Verify URL and follow redirect for 301 and 302, if needed.
     try {
       URL remoteImageURL = new URL(remoteUrl);

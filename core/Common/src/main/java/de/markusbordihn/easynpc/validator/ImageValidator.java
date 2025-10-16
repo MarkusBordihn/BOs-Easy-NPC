@@ -68,6 +68,11 @@ public class ImageValidator {
       return false;
     }
 
+    // Accept some edge case for image size like 48x32
+    if (image.getWidth() == 48 && image.getHeight() == 32) {
+      return true;
+    }
+
     // Verify the image size needs to be at least 32x32 and a multiple of 32!
     if (image.getWidth() < 32
         || image.getHeight() < 32

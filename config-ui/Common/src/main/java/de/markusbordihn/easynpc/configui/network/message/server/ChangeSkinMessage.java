@@ -20,11 +20,10 @@
 package de.markusbordihn.easynpc.configui.network.message.server;
 
 import de.markusbordihn.easynpc.configui.Constants;
-import de.markusbordihn.easynpc.data.skin.SkinType;
+import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.SkinHandler;
 import de.markusbordihn.easynpc.network.message.NetworkMessageRecord;
-import de.markusbordihn.easynpc.utils.PlayersUtils;
 import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -33,13 +32,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public record ChangeSkinMessage(
-    UUID uuid,
-    String skinName,
-    String skinURL,
-    UUID skinUUID,
-    SkinType skinType,
-    String skinVariantType)
+public record ChangeSkinMessage(UUID uuid, SkinDataEntry skinDataEntry)
     implements NetworkMessageRecord {
 
   public static final ResourceLocation MESSAGE_ID =
@@ -49,23 +42,13 @@ public record ChangeSkinMessage(
       StreamCodec.of((buffer, message) -> message.write(buffer), ChangeSkinMessage::create);
 
   public static ChangeSkinMessage create(final FriendlyByteBuf buffer) {
-    return new ChangeSkinMessage(
-        buffer.readUUID(),
-        buffer.readUtf(),
-        buffer.readUtf(),
-        buffer.readUUID(),
-        buffer.readEnum(SkinType.class),
-        buffer.readUtf());
+    return new ChangeSkinMessage(buffer.readUUID(), new SkinDataEntry(buffer.readNbt()));
   }
 
   @Override
   public void write(final FriendlyByteBuf buffer) {
     buffer.writeUUID(this.uuid);
-    buffer.writeUtf(this.skinName);
-    buffer.writeUtf(this.skinURL);
-    buffer.writeUUID(this.skinUUID);
-    buffer.writeEnum(this.skinType);
-    buffer.writeUtf(this.skinVariantType);
+    buffer.writeNbt(this.skinDataEntry.createTag());
   }
 
   @Override
@@ -81,49 +64,15 @@ public record ChangeSkinMessage(
   @Override
   public void handleServer(final ServerPlayer serverPlayer) {
     EasyNPC<?> easyNPC = getEasyNPCAndCheckAccess(this.uuid, serverPlayer);
-    if (easyNPC == null
-        || this.skinName == null
-        || this.skinType == null
-        || easyNPC.getEasyNPCSkinData() == null) {
+    if (easyNPC == null || this.skinDataEntry == null || easyNPC.getEasyNPCSkinData() == null) {
       log.error("Skin validation failed for {} from {}", easyNPC, serverPlayer);
       return;
     }
 
-    boolean successfullyChanged =
-        switch (this.skinType) {
-          case NONE -> SkinHandler.setNoneSkin(easyNPC);
-          case CUSTOM -> SkinHandler.setCustomSkin(easyNPC, this.skinUUID);
-          case DEFAULT -> SkinHandler.setDefaultSkin(easyNPC, this.skinVariantType);
-          case PLAYER_SKIN -> {
-            UUID userUUID = this.skinUUID;
-            if (userUUID == null || Constants.EMPTY_UUID.equals(this.skinUUID)) {
-              log.debug("Try to convert user {} to UUID ...", this.skinName);
-              userUUID = PlayersUtils.getUserUUID(serverPlayer.getServer(), this.skinName);
-            }
-            yield SkinHandler.setPlayerSkin(easyNPC, this.skinName, userUUID);
-          }
-          case SECURE_REMOTE_URL, INSECURE_REMOTE_URL ->
-              SkinHandler.setRemoteSkin(easyNPC, this.skinURL);
-          default -> {
-            log.error(
-                "Failed processing skin:{} uuid:{} url:{} type:{} for {} from {}",
-                this.skinName,
-                this.skinUUID,
-                this.skinURL,
-                this.skinType,
-                easyNPC,
-                serverPlayer);
-            yield false;
-          }
-        };
-
-    if (!successfullyChanged) {
+    if (!SkinHandler.setSkin(easyNPC, this.skinDataEntry)) {
       log.error(
-          "Failed changing skin:{} uuid:{} url:{} type:{} for {} from {}",
-          this.skinName,
-          this.skinUUID,
-          this.skinURL,
-          this.skinType,
+          "Failed changing skin data entry:{} for {} from {}",
+          this.skinDataEntry,
           easyNPC,
           serverPlayer);
     }

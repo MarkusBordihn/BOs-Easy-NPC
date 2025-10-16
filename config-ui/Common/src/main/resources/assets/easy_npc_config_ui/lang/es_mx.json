@@ -46,6 +46,7 @@
   "text.easy_npc.config.basic_action.title": "Acciones Básicas",
   "text.easy_npc.config.basic_dialog.title": "Diálogo básico",
   "text.easy_npc.config.basic_objective.title": "Objetivos Básicos",
+  "text.easy_npc.config.basic_pose.title": "Pose Básica",
   "text.easy_npc.config.basic_trading.title": "Comercio Básico",
   "text.easy_npc.config.bow_attack": "Ataque con Arco",
   "text.easy_npc.config.button.name": "Nombre",
