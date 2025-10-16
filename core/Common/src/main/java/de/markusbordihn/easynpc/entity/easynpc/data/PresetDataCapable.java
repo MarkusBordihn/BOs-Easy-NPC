@@ -118,7 +118,7 @@ public interface PresetDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
     // Apply legacy CustomName if present
     Component legacyCustomName =
-      CompoundTagUtils.parseLegacyCustomName(compoundTag, this.getEntity().registryAccess());
+        CompoundTagUtils.parseLegacyCustomName(compoundTag, this.getEntity().registryAccess());
     if (legacyCustomName != null) {
       this.getEntity().setCustomName(legacyCustomName);
     }

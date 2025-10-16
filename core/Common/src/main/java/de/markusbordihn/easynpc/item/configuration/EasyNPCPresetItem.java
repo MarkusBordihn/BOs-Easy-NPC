@@ -143,9 +143,10 @@ public class EasyNPCPresetItem extends Item {
     }
 
     entity.load(entityData);
-    
+
     // Apply legacy CustomName if present
-    Component legacyCustomName = CompoundTagUtils.parseLegacyCustomName(entityData, level.registryAccess());
+    Component legacyCustomName =
+        CompoundTagUtils.parseLegacyCustomName(entityData, level.registryAccess());
     if (legacyCustomName != null) {
       entity.setCustomName(legacyCustomName);
     }

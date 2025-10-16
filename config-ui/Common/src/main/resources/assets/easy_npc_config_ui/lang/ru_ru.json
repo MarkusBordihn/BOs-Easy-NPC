@@ -46,6 +46,7 @@
   "text.easy_npc.config.basic_action.title": "Базовые действия",
   "text.easy_npc.config.basic_dialog.title": "Базовые диалоги",
   "text.easy_npc.config.basic_objective.title": "Базовые цели",
+  "text.easy_npc.config.basic_pose.title": "Базовая поза",
   "text.easy_npc.config.basic_trading.title": "Базовая торговля",
   "text.easy_npc.config.bow_attack": "Атака луком",
   "text.easy_npc.config.button.name": "Название",

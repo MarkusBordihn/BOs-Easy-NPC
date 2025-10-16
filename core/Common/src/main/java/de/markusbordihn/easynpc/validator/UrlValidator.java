@@ -99,7 +99,28 @@ public class UrlValidator {
     ".tgz",
   };
 
+  private static final String[] SECURE_REMOTE_URLS = {
+    "https://www.minecraftskins.com/",
+    "https://minecraft.novaskin.me/",
+    "https://mcskins.top/",
+    "https://skinmc.net/"
+  };
+
   private UrlValidator() {}
+
+  public static boolean isSecureRemoteUrl(String url) {
+    if (!isValidUrl(url) || !url.startsWith("https://")) {
+      return false;
+    }
+
+    // Check for allowed secure remote URLs.
+    for (String secureUrl : SECURE_REMOTE_URLS) {
+      if (url.startsWith(secureUrl)) {
+        return true;
+      }
+    }
+    return true;
+  }
 
   public static boolean isValidUrl(String url) {
     // Basic URL validation.

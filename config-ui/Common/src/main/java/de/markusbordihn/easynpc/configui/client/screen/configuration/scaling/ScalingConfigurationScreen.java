@@ -229,6 +229,7 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
   public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
     super.render(guiGraphics, x, y, partialTicks);
 
+    // Avatar
     ModelDataCapable<?> modelData = this.getEasyNPC().getEasyNPCModelData();
     CustomScale rootScale = modelData.getModelPartScale(ModelPartType.ROOT);
     EntityScreenRenderer.renderEntity(
@@ -244,6 +245,7 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
         this.xMouse,
         this.yMouse);
 
+    // Label for Scale Sliders
     drawScaleLabel(guiGraphics, "scale_x", scaleXSliderButton);
     drawScaleLabel(guiGraphics, "scale_y", scaleYSliderButton);
     drawScaleLabel(guiGraphics, "scale_z", scaleZSliderButton);
