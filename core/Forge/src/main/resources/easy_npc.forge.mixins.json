@@ -19,6 +19,7 @@
     "entity.EndermanMixin",
     "entity.RaiderMixin",
     "entity.WitchMixin",
+    "menu.MerchantMenuMixin",
     "target.LivingEntityTargetingMixin",
     "target.MobTargetingMixin"
   ],

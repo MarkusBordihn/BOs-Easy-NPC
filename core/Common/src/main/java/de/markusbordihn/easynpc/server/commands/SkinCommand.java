@@ -23,8 +23,10 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import de.markusbordihn.easynpc.commands.Command;
 import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
+import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPCBase;
+import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.handler.SkinHandler;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -104,7 +106,7 @@ public class SkinCommand extends Command {
       return 0;
     }
 
-    if (!SkinHandler.setDefaultSkin(easyNPC, variant)) {
+    if (!SkinHandler.setSkin(easyNPC, SkinDataEntry.createDefaultSkin(variant))) {
       return sendFailureMessage(
           context, "Failed to set skin variant " + variant + " for EasyNPC " + easyNPC);
     }
@@ -118,14 +120,14 @@ public class SkinCommand extends Command {
       return sendFailureMessage(context, "Invalid EasyNPC target");
     }
 
-    var skinData = easyNPC.getEasyNPCSkinData();
+    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
     if (skinData == null) {
-      return sendFailureMessage(context, "EasyNPC has no skin data");
+      return sendFailureMessage(context, "Invalid EasyNPC skin data");
     }
 
-    var currentEntry = skinData.getSkinDataEntry();
-    var updatedEntry = currentEntry.withDisableLayers(!enabled);
-    skinData.setSkinDataEntry(updatedEntry);
+    if (!SkinHandler.setSkin(easyNPC, skinData.getSkinDataEntry().withDisableLayers(!enabled))) {
+      return sendFailureMessage(context, "Failed to update layers for EasyNPC");
+    }
 
     String action = enabled ? "enabled" : "disabled";
     String entityName = easyNPC.getEntity().getDisplayName().getString();

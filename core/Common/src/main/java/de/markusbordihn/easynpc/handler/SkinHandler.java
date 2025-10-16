@@ -25,8 +25,6 @@ import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
-import de.markusbordihn.easynpc.validator.UrlValidator;
-import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,144 +34,30 @@ public class SkinHandler {
 
   private SkinHandler() {}
 
-  public static boolean setNoneSkin(EasyNPC<?> easyNPC) {
-    if (easyNPC == null) {
-      log.error("[{}] Error setting none skin", "None");
+  public static boolean setSkin(EasyNPC<?> easyNPC, SkinDataEntry skinDataEntry) {
+    if (easyNPC == null || skinDataEntry == null) {
+      log.error("Unable to set skin for {} with entry {}", easyNPC, skinDataEntry);
       return false;
     }
 
     SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
-    if (skinData != null) {
-      log.debug("[{}] Setting none skin", easyNPC);
-      SkinDataEntry skinDataEntry = skinData.getSkinDataEntry().withType(SkinType.NONE);
-      skinData.setSkinDataEntry(skinDataEntry);
-      return true;
-    }
-    return false;
-  }
-
-  public static boolean setDefaultSkin(EasyNPC<?> easyNPC, String variant) {
-    if (easyNPC == null || variant == null || variant.isEmpty()) {
-      log.error("[{}] Error setting default skin to variant {}", easyNPC, variant);
+    if (skinData == null) {
+      log.error("Unable to get skin data for {}", easyNPC);
       return false;
     }
 
-    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
-    if (skinData != null && skinData.getSkinType() != SkinType.DEFAULT) {
-      log.debug(
-          "[{}] Set skin type from {} to {}", easyNPC, skinData.getSkinType(), SkinType.DEFAULT);
-      SkinDataEntry skinDataEntry = skinData.getSkinDataEntry().withType(SkinType.DEFAULT);
-      skinData.setSkinDataEntry(skinDataEntry);
+    // Set skin data entry directly to preserve all fields
+    log.debug("[{}] Setting skin to {}", easyNPC, skinDataEntry);
+    skinData.setSkinDataEntry(skinDataEntry);
+
+    // Handle variant for DEFAULT skin type
+    if (skinDataEntry.type() == SkinType.DEFAULT && !skinDataEntry.name().isEmpty()) {
+      VariantDataCapable<?> variantData = skinData.getEasyNPCVariantData();
+      if (variantData != null) {
+        variantData.setVariantType(skinDataEntry.name());
+      }
     }
 
-    VariantDataCapable<?> variantData = skinData.getEasyNPCVariantData();
-    if (variantData != null) {
-      log.debug("[{}] Set default skin to {}", easyNPC, variant);
-      variantData.setVariantType(variant);
-      return true;
-    }
-    return false;
-  }
-
-  public static boolean setCustomSkin(EasyNPC<?> easyNPC, UUID skinUUID) {
-    if (easyNPC == null || skinUUID == null || skinUUID.equals(Constants.BLANK_UUID)) {
-      log.error("[{}] Error setting custom skin to UUID {}", easyNPC, skinUUID);
-      return false;
-    }
-
-    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
-    if (skinData != null) {
-      log.debug("[{}] Set custom skin to UUID {}", easyNPC, skinUUID);
-      SkinDataEntry skinDataEntry =
-          skinData.getSkinDataEntry().withType(SkinType.CUSTOM).withUUID(skinUUID);
-      skinData.setSkinDataEntry(skinDataEntry);
-      return true;
-    }
-    return false;
-  }
-
-  public static boolean setPlayerSkin(EasyNPC<?> easyNPC, String playerName, UUID playerUUID) {
-    if (easyNPC == null
-        || ((playerName == null || playerName.isEmpty())
-            && (playerUUID == null || playerUUID.equals(Constants.BLANK_UUID)))) {
-      log.error(
-          "[{}] Error setting player skin to {} with UUID {}", easyNPC, playerName, playerUUID);
-      return false;
-    }
-
-    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
-    if (skinData != null) {
-      log.debug("[{}] Setting player skin to {} with UUID {}", easyNPC, playerName, playerUUID);
-      SkinDataEntry skinDataEntry =
-          skinData
-              .getSkinDataEntry()
-              .withType(SkinType.PLAYER_SKIN)
-              .withName(playerName)
-              .withUUID(playerUUID);
-      skinData.setSkinDataEntry(skinDataEntry);
-      return true;
-    }
-    return false;
-  }
-
-  public static boolean setRemoteSkin(EasyNPC<?> easyNPC, String skinURL) {
-    if (isSecureRemoteSkin(skinURL)) {
-      return setSecureRemoteSkin(easyNPC, skinURL);
-    }
-    return setInsecureRemoteSkin(easyNPC, skinURL);
-  }
-
-  public static boolean setSecureRemoteSkin(EasyNPC<?> easyNPC, String skinURL) {
-    if (easyNPC == null || !isSecureRemoteSkin(skinURL) || !UrlValidator.isValidUrl(skinURL)) {
-      log.error("[{}] Error setting secure remote skin to URL {}", easyNPC, skinURL);
-      return false;
-    }
-
-    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
-    if (skinData != null) {
-      log.debug("[{}] Set secure remote skin to URL {}", easyNPC, skinURL);
-      SkinDataEntry skinDataEntry =
-          skinData
-              .getSkinDataEntry()
-              .withType(SkinType.SECURE_REMOTE_URL)
-              .withURL(skinURL)
-              .withUUID(UUID.nameUUIDFromBytes(skinURL.getBytes()));
-      skinData.setSkinDataEntry(skinDataEntry);
-      return true;
-    }
-    return false;
-  }
-
-  public static boolean setInsecureRemoteSkin(EasyNPC<?> easyNPC, String skinURL) {
-    if (easyNPC == null
-        || skinURL == null
-        || skinURL.isEmpty()
-        || !UrlValidator.isValidUrl(skinURL)) {
-      log.error("[{}] Error setting insecure remote skin to URL {}", easyNPC, skinURL);
-      return false;
-    }
-
-    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
-    if (skinData != null) {
-      log.debug("[{}] Set insecure remote skin to URL {}", easyNPC, skinURL);
-      SkinDataEntry skinDataEntry =
-          skinData
-              .getSkinDataEntry()
-              .withType(SkinType.INSECURE_REMOTE_URL)
-              .withURL(skinURL)
-              .withUUID(UUID.nameUUIDFromBytes(skinURL.getBytes()));
-      skinData.setSkinDataEntry(skinDataEntry);
-      return true;
-    }
-    return false;
-  }
-
-  private static boolean isSecureRemoteSkin(String skinURL) {
-    return skinURL != null
-        && !skinURL.isEmpty()
-        && (skinURL.startsWith("https://www.minecraftskins.com/")
-            || skinURL.startsWith("https://minecraft.novaskin.me/")
-            || skinURL.startsWith("https://mcskins.top/")
-            || skinURL.startsWith("https://skinmc.net/") && UrlValidator.isValidUrl(skinURL));
+    return true;
   }
 }

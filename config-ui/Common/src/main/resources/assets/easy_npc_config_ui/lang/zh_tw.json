@@ -46,6 +46,7 @@
   "text.easy_npc.config.basic_action.title": "基本動作",
   "text.easy_npc.config.basic_dialog.title": "基本對話方塊",
   "text.easy_npc.config.basic_objective.title": "基本目標",
+  "text.easy_npc.config.basic_pose.title": "基本姿勢",
   "text.easy_npc.config.basic_trading.title": "基本交易",
   "text.easy_npc.config.bow_attack": "弓攻擊",
   "text.easy_npc.config.button.name": "名稱",
