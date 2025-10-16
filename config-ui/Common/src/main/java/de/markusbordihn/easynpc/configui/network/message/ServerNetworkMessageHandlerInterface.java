@@ -518,7 +518,7 @@ public interface ServerNetworkMessageHandlerInterface {
       Double roundedValue = Math.round(value * 100.0) / 100.0;
       NetworkHandlerManager.sendMessageToServer(
           new ChangeEntityBaseAttributeMessage(
-              uuid, BuiltInRegistries.ATTRIBUTE.getKey(attribute), roundedValue));
+              uuid, attribute, roundedValue));
     }
   }
 
