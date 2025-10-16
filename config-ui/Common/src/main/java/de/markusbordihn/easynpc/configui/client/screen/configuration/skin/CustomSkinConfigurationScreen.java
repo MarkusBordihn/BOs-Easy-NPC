@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.skin;
 
+import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.ReloadButton;
 import de.markusbordihn.easynpc.client.screen.components.SearchField;
 import de.markusbordihn.easynpc.client.screen.components.SkinSelectionButton;
@@ -30,6 +31,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.data.render.EntityRenderOverrides;
+import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
@@ -54,6 +56,7 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
   private static final int ADD_SKIN_RELOAD_DELAY = 5;
   protected Button skinFolderButton = null;
   protected Button skinReloadButton = null;
+  protected Checkbox disableLayersCheckbox = null;
   protected EditBox skinSearchField = null;
   private String searchFilter = null;
 
@@ -112,16 +115,18 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
   }
 
   private void renderSkinEntity(GuiGraphics guiGraphics, int x, int y, UUID textureUUID) {
-    // Create dynamically button for each skin variant.
     Button skinButton =
         new SkinSelectionButton(
             x - 24,
             y - 81,
             button ->
                 NetworkMessageHandlerManager.getServerHandler()
-                    .setCustomSkin(this.getEasyNPCUUID(), textureUUID));
+                    .setSkin(
+                        this.getEasyNPCUUID(),
+                        SkinDataEntry.createCustomSkin(
+                            textureUUID,
+                            disableLayersCheckbox != null && disableLayersCheckbox.selected())));
 
-    // Disable button for active skin.
     SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
     UUID skinUUID = skinData.getSkinUUID();
     skinButton.active = !(skinUUID.equals(textureUUID));
@@ -193,6 +198,20 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
             new SearchField(
                 this.font, this.contentLeftPos + 100, this.contentTopPos + 190, 100, 14));
     this.skinSearchField.setResponder(this::onSearchFieldChanged);
+
+    // Disable Layers Checkbox
+    this.disableLayersCheckbox =
+        this.addRenderableWidget(
+            new Checkbox(
+                this.contentLeftPos + 55,
+                this.contentTopPos + 85,
+                "disable_skin_layers",
+                skinData.getSkinDataEntry().disableLayers(),
+                checkbox ->
+                    NetworkMessageHandlerManager.getServerHandler()
+                        .setSkin(
+                            this.getEasyNPCUUID(),
+                            skinData.getSkinDataEntry().withDisableLayers(checkbox.selected()))));
   }
 
   @Override
@@ -212,7 +231,7 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
             this.font,
             "skin_reloading",
             this.contentLeftPos + 55,
-            this.contentTopPos + 93,
+            this.contentTopPos + 143,
             Constants.FONT_COLOR_RED);
       }
       this.skinReloadButton.active = canSkinReload;

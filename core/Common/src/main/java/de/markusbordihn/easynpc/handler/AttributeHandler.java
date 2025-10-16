@@ -312,6 +312,7 @@ public class AttributeHandler {
           attributeData.setBaseAttribute(Attributes.LUCK, value);
           break;
         default:
+          log.error("Unimplemented base attribute {} for {}", attribute, easyNPC);
           return false;
       }
       return true;

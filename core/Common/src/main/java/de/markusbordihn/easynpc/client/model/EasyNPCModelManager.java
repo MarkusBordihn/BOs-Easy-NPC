@@ -126,6 +126,11 @@ public class EasyNPCModelManager {
       ModelPartType partType = entry.getKey();
       ModelPart modelPart = entry.getValue();
 
+      // Skip HAT as it will be synced from HEAD
+      if (partType == ModelPartType.HAT) {
+        continue;
+      }
+
       // Check if model part is available.
       Boolean visibility = modelData.getModelPartVisibility(partType);
       if (Boolean.FALSE.equals(visibility)) {
@@ -169,10 +174,11 @@ public class EasyNPCModelManager {
         }
         hasChangedModelPart = true;
       }
-
-      // Sync model parts
-      this.syncModelParts(modelData);
     }
+
+    // Sync model parts
+    this.syncModelParts(modelData);
+
     return hasChangedModelPart;
   }
 
@@ -187,7 +193,6 @@ public class EasyNPCModelManager {
     if (hatModelPart != null
         && headModelPart != null
         && Boolean.TRUE.equals(defaultModelPartVisibilityMap.get(ModelPartType.HAT))) {
-      hatModelPart.copyFrom(headModelPart);
       hatModelPart.visible = headModelPart.visible;
     }
   }
@@ -196,6 +201,12 @@ public class EasyNPCModelManager {
     for (Map.Entry<ModelPartType, ModelPart> entry : modelPartMap.entrySet()) {
       ModelPartType modelPartType = entry.getKey();
       ModelPart modelPartToRest = entry.getValue();
+
+      // Skip HAT as it will be synced from HEAD
+      if (modelPartType == ModelPartType.HAT) {
+        continue;
+      }
+
       CustomPosition customPosition = defaultModelPartPositionMap.get(modelPartType);
       CustomRotation customRotation = defaultModelPartRotationMap.get(modelPartType);
       CustomScale customScale = defaultModelPartScaleMap.get(modelPartType);

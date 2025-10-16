@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.skin;
 
+import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.Graphics;
 import de.markusbordihn.easynpc.client.screen.components.SkinSelectionButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
@@ -32,6 +33,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.data.render.EntityRenderOverrides;
+import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
@@ -125,7 +127,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
     TextureModelKey textureModelKey = new TextureModelKey(textureUUID, skinModel);
     SkinType skinType = RemoteTextureManager.getTextureSkinType(textureModelKey);
 
-    // Create dynamically button for each skin variant and profession.
+    // Create dynamically button for each skin url.
     Button skinButton =
         new SkinSelectionButton(
             x - 24,
@@ -133,7 +135,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
             button -> {
               String skinURL = RemoteTextureManager.getTextureSkinURL(textureModelKey);
               NetworkMessageHandlerManager.getServerHandler()
-                  .setSkin(this.getEasyNPCUUID(), "", skinURL, textureUUID, skinType, "");
+                  .setSkin(this.getEasyNPCUUID(), SkinDataEntry.createRemoteSkin(skinURL));
             });
 
     SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
@@ -184,13 +186,11 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
         return;
       }
 
-      // Send texture skin location to server.
       log.debug("Setting remote user texture to {}", textureSkinLocationValue);
       TextureManager.clearLastErrorMessage();
       this.errorMessage = "";
       NetworkMessageHandlerManager.getServerHandler()
-          .setRemoteSkin(this.getEasyNPCUUID(), textureSkinLocationValue);
-
+          .setSkin(this.getEasyNPCUUID(), SkinDataEntry.createRemoteSkin(textureSkinLocationValue));
       this.addTextureSettingsButton.active = false;
       this.formerTextureSkinLocation = textureSkinLocationValue;
       updateNextTextureSkinLocationChange();
@@ -260,6 +260,19 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
                 onPress -> this.clearTextureSkinLocation()));
     this.clearTextureSettingsButton.active = false;
 
+    // Disable Layers Checkbox
+    this.addRenderableWidget(
+        new Checkbox(
+            this.contentLeftPos + 55,
+            this.contentTopPos + 85,
+            "disable_skin_layers",
+            skinData.getSkinDataEntry().disableLayers(),
+            checkbox ->
+                NetworkMessageHandlerManager.getServerHandler()
+                    .setSkin(
+                        this.getEasyNPCUUID(),
+                        skinData.getSkinDataEntry().withDisableLayers(checkbox.selected()))));
+
     // Skin Navigation Buttons
     defineSkinNavigationButtons();
   }
@@ -304,7 +317,8 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
             this.font,
             "processing_url_skin",
             this.leftPos + 55,
-            this.contentTopPos + 80);
+            this.contentTopPos + 73,
+            Constants.FONT_COLOR_RED);
       }
     }
 
@@ -315,7 +329,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
           this.font,
           TextComponent.getTranslatedText(this.errorMessage),
           this.leftPos + 10,
-          this.contentTopPos + 71,
+          this.contentTopPos + 73,
           this.imageWidth - 14);
     } else if (TextureManager.hasLastErrorMessage()) {
       Text.drawErrorMessage(
@@ -323,7 +337,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
           this.font,
           TextureManager.getLastErrorMessage(),
           this.leftPos + 10,
-          this.contentTopPos + 71,
+          this.contentTopPos + 73,
           this.imageWidth - 14);
     }
 

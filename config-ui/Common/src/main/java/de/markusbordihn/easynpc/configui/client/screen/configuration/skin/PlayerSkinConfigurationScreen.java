@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.configui.client.screen.configuration.skin;
 
+import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.Graphics;
 import de.markusbordihn.easynpc.client.screen.components.SkinSelectionButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
@@ -32,6 +33,7 @@ import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.data.render.EntityRenderOverrides;
+import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
@@ -124,14 +126,15 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
     TextureModelKey textureModelKey = new TextureModelKey(textureUUID, skinModel);
     SkinType skinType = PlayerTextureManager.getTextureSkinType(textureModelKey);
 
-    // Create dynamically button for each skin variant and profession.
+    // Create dynamically button for each player skin.
     Button skinButton =
         new SkinSelectionButton(
             x - 24,
             y - 81,
             button ->
                 NetworkMessageHandlerManager.getServerHandler()
-                    .setPlayerSkin(this.getEasyNPCUUID(), "", textureUUID));
+                    .setSkin(
+                        this.getEasyNPCUUID(), SkinDataEntry.createPlayerSkin("", textureUUID)));
 
     SkinDataCapable<?> skinData = this.getEasyNPC().getEasyNPCSkinData();
     UUID skinUUID = skinData.getSkinUUID();
@@ -175,12 +178,13 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
         return;
       }
 
-      // Send texture skin location to server.
       log.debug("Setting player texture to {} with UUID {}", textureSkinLocationValue, playerUUID);
       TextureManager.clearLastErrorMessage();
       this.errorMessage = "";
       NetworkMessageHandlerManager.getServerHandler()
-          .setPlayerSkin(this.getEasyNPCUUID(), textureSkinLocationValue, playerUUID);
+          .setSkin(
+              this.getEasyNPCUUID(),
+              SkinDataEntry.createPlayerSkin(textureSkinLocationValue, playerUUID));
 
       this.addTextureSettingsButton.active = false;
       this.formerTextureSkinLocation = textureSkinLocationValue;
@@ -252,6 +256,19 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
                 onPress -> this.clearTextureSkinLocation()));
     this.clearTextureSettingsButton.active = false;
 
+    // Disable Layers Checkbox
+    this.addRenderableWidget(
+        new Checkbox(
+            this.contentLeftPos + 55,
+            this.contentTopPos + 85,
+            "disable_skin_layers",
+            skinData.getSkinDataEntry().disableLayers(),
+            checkbox ->
+                NetworkMessageHandlerManager.getServerHandler()
+                    .setSkin(
+                        this.getEasyNPCUUID(),
+                        skinData.getSkinDataEntry().withDisableLayers(checkbox.selected()))));
+
     // Skin Navigation Buttons
     defineSkinNavigationButtons();
   }
@@ -296,7 +313,8 @@ public class PlayerSkinConfigurationScreen<T extends ConfigurationMenu>
             this.font,
             "processing_url_skin",
             this.leftPos + 55,
-            this.contentTopPos + 80);
+            this.contentTopPos + 73,
+            Constants.FONT_COLOR_RED);
       }
     }
 

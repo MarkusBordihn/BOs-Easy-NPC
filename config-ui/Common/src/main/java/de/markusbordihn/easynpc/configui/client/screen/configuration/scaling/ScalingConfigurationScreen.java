@@ -230,9 +230,6 @@ public class ScalingConfigurationScreen<T extends ConfigurationMenu>
     super.render(guiGraphics, x, y, partialTicks);
 
     // Avatar
-    // Use larger scissor box (3x) to allow full rendering of scaled entities
-    // The InventoryScreen scale will be multiplied by 3, ROOT model scale divided by 3 to
-    // compensate
     EntityScreenRenderer.renderEntity(
         guiGraphics,
         this.getEasyNPC(),

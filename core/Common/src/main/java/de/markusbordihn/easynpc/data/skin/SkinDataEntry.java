@@ -1,6 +1,7 @@
 package de.markusbordihn.easynpc.data.skin;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.validator.UrlValidator;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
@@ -46,6 +47,33 @@ public record SkinDataEntry(
         compoundTag.contains(DATA_TIMESTAMP_TAG)
             ? compoundTag.getLong(DATA_TIMESTAMP_TAG)
             : System.currentTimeMillis());
+  }
+
+  public static SkinDataEntry createNoneSkin() {
+    return new SkinDataEntry("", "", Constants.BLANK_UUID, SkinType.NONE);
+  }
+
+  public static SkinDataEntry createDefaultSkin(String variantName) {
+    return new SkinDataEntry(variantName, "", Constants.BLANK_UUID, SkinType.DEFAULT);
+  }
+
+  public static SkinDataEntry createCustomSkin(UUID skinUUID, boolean disableLayers) {
+    return new SkinDataEntry(
+        "", "", skinUUID, SkinType.CUSTOM, disableLayers, "", System.currentTimeMillis());
+  }
+
+  public static SkinDataEntry createPlayerSkin(String playerName, UUID playerUUID) {
+    return new SkinDataEntry(playerName, "", playerUUID, SkinType.PLAYER_SKIN);
+  }
+
+  public static SkinDataEntry createRemoteSkin(String skinURL) {
+    return new SkinDataEntry(
+        "",
+        skinURL,
+        UUID.nameUUIDFromBytes(skinURL.getBytes()),
+        UrlValidator.isSecureRemoteUrl(skinURL)
+            ? SkinType.SECURE_REMOTE_URL
+            : SkinType.INSECURE_REMOTE_URL);
   }
 
   public SkinDataEntry withName(final String name) {
