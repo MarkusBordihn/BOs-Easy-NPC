@@ -37,9 +37,11 @@ import de.markusbordihn.easynpc.entity.easynpc.data.AttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -266,56 +268,37 @@ public class AttributeHandler {
     return false;
   }
 
-  public static boolean setBaseAttribute(
-      EasyNPC<?> easyNPC, ResourceLocation attribute, Double value) {
+  public static boolean setBaseAttribute(EasyNPC<?> easyNPC, Attribute attribute, Double value) {
     if (easyNPC == null || attribute == null || value == null) {
       return false;
     }
     AttributeDataCapable<?> attributeData = easyNPC.getEasyNPCAttributeData();
     if (attributeData != null) {
-      switch (attribute.toString()) {
-        case "minecraft:generic.max_health":
-          attributeData.setBaseAttribute(Attributes.MAX_HEALTH, value);
-          LivingEntity livingEntity = easyNPC.getLivingEntity();
-          if (livingEntity != null) {
-            livingEntity.setHealth(value.floatValue());
-          }
-          break;
-        case "minecraft:generic.follow_range":
-          attributeData.setBaseAttribute(Attributes.FOLLOW_RANGE, value);
-          break;
-        case "minecraft:generic.knockback_resistance":
-          attributeData.setBaseAttribute(Attributes.KNOCKBACK_RESISTANCE, value);
-          break;
-        case "minecraft:generic.movement_speed":
-          attributeData.setBaseAttribute(Attributes.MOVEMENT_SPEED, value);
-          break;
-        case "minecraft:generic.flying_speed":
-          attributeData.setBaseAttribute(Attributes.FLYING_SPEED, value);
-          break;
-        case "minecraft:generic.attack_damage":
-          attributeData.setBaseAttribute(Attributes.ATTACK_DAMAGE, value);
-          break;
-        case "minecraft:generic.attack_knockback":
-          attributeData.setBaseAttribute(Attributes.ATTACK_KNOCKBACK, value);
-          break;
-        case "minecraft:generic.attack_speed":
-          attributeData.setBaseAttribute(Attributes.ATTACK_SPEED, value);
-          break;
-        case "minecraft:generic.armor":
-          attributeData.setBaseAttribute(Attributes.ARMOR, value);
-          break;
-        case "minecraft:generic.armor_toughness":
-          attributeData.setBaseAttribute(Attributes.ARMOR_TOUGHNESS, value);
-          break;
-        case "minecraft:generic.luck":
-          attributeData.setBaseAttribute(Attributes.LUCK, value);
-          break;
-        default:
-          return false;
+      if (attribute == Attributes.MAX_HEALTH.value()) {
+        attributeData.setBaseAttribute(Attributes.MAX_HEALTH, value);
+        LivingEntity livingEntity = easyNPC.getLivingEntity();
+        if (livingEntity != null) {
+          livingEntity.setHealth(value.floatValue());
+        }
+      } else if (attribute == Attributes.FOLLOW_RANGE.value()
+          || attribute == Attributes.KNOCKBACK_RESISTANCE.value()
+          || attribute == Attributes.MOVEMENT_SPEED.value()
+          || attribute == Attributes.FLYING_SPEED.value()
+          || attribute == Attributes.ATTACK_DAMAGE.value()
+          || attribute == Attributes.ATTACK_KNOCKBACK.value()
+          || attribute == Attributes.ATTACK_SPEED.value()
+          || attribute == Attributes.ARMOR.value()
+          || attribute == Attributes.ARMOR_TOUGHNESS.value()
+          || attribute == Attributes.LUCK.value()) {
+        Holder<Attribute> attributeHolder = BuiltInRegistries.ATTRIBUTE.wrapAsHolder(attribute);
+        attributeData.setBaseAttribute(attributeHolder, value);
+      } else {
+        log.error("Unsupported base attribute {} for {}", attribute, easyNPC);
+        return false;
       }
       return true;
     }
+    log.error("Missing attribute data for {}", easyNPC);
     return false;
   }
 
