@@ -398,6 +398,12 @@ public class HorseRaw extends Horse implements EasyNPCBase<Horse> {
   }
 
   @Override
+  public boolean canBeHitByProjectile() {
+    return getEntityAttributes().getInteractionAttributes().canBeHitByProjectile()
+        && this.isAlive();
+  }
+
+  @Override
   protected void pushEntities() {
     if (getEntityAttributes().getInteractionAttributes().pushEntities()) {
       super.pushEntities();

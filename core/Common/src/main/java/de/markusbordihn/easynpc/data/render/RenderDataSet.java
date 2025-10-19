@@ -62,6 +62,9 @@ public class RenderDataSet {
 
   public void setRenderType(RenderType renderType) {
     this.renderType = renderType;
+    if (this.renderType == RenderType.DEFAULT) {
+      this.renderEntityType = null;
+    }
   }
 
   public EntityType<? extends Entity> getRenderEntityType() {

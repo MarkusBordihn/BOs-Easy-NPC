@@ -149,6 +149,7 @@
   "text.easy_npc.config.import_world_preset": "Импорт шаблона из мира",
   "text.easy_npc.config.is_attackable_by_monsters": "Атакуем монстрами",
   "text.easy_npc.config.is_attackable_by_players": "Атакуем игроками",
+  "text.easy_npc.config.can_be_hit_by_projectile": "Поддаётся попаданию",
   "text.easy_npc.config.is_pushable": "Толкаемый",
   "text.easy_npc.config.is_invulnerable": "Неуязвимый",
   "text.easy_npc.config.knockback_resistance": "Сопротивление отбрасыванию",

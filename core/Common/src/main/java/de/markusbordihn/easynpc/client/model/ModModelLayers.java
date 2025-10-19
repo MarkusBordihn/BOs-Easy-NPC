@@ -25,6 +25,9 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ModModelLayers {
 
+  public static final ModelLayerLocation DOPPLER =
+      new ModelLayerLocation(
+          ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "doppler"), "main");
   public static final ModelLayerLocation FAIRY =
       new ModelLayerLocation(
           ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "fairy"), "main");

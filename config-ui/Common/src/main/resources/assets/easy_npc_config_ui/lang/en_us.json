@@ -152,6 +152,7 @@
   "text.easy_npc.config.is_attackable_by_monsters": "Attackable by Monsters",
   "text.easy_npc.config.is_attackable_by_players": "Attackable by Players",
   "text.easy_npc.config.is_invulnerable": "Invulnerable",
+  "text.easy_npc.config.can_be_hit_by_projectile": "Pickable",
   "text.easy_npc.config.is_pushable": "Pushable",
   "text.easy_npc.config.knockback_resistance": "Knockback Resistance",
   "text.easy_npc.config.label_id": "Label/Id",

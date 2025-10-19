@@ -149,6 +149,7 @@
   "text.easy_npc.config.import_world_preset": "导入世界预设",
   "text.easy_npc.config.is_attackable_by_monsters": "可被怪物攻击",
   "text.easy_npc.config.is_attackable_by_players": "可被玩家攻击",
+  "text.easy_npc.config.can_be_hit_by_projectile": "可被命中",
   "text.easy_npc.config.is_pushable": "可被推动",
   "text.easy_npc.config.is_invulnerable": "无敌",
   "text.easy_npc.config.knockback_resistance": "击退抗性",
