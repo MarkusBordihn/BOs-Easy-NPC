@@ -21,40 +21,53 @@ package de.markusbordihn.easynpc.data.attribute;
 
 import net.minecraft.nbt.CompoundTag;
 
-public record InteractionAttributes(boolean isPushable, boolean canBeLeashed, boolean pushEntities)
+public record InteractionAttributes(
+    boolean isPushable, boolean canBeHitByProjectile, boolean canBeLeashed, boolean pushEntities)
     implements EntityAttributesInterface {
 
   public static final String IS_PUSHABLE_TAG = InteractionAttributeType.IS_PUSHABLE.getTagName();
+  public static final String CAN_BE_HIT_BY_PROJECTILE_TAG =
+      InteractionAttributeType.CAN_BE_HIT_BY_PROJECTILE.getTagName();
   public static final String CAN_BE_LEASHED_TAG =
       InteractionAttributeType.CAN_BE_LEASHED.getTagName();
   public static final String PUSH_ENTITIES_TAG =
       InteractionAttributeType.PUSH_ENTITIES.getTagName();
 
   public InteractionAttributes() {
-    this(false, false, false);
+    this(false, false, false, false);
   }
 
   public static InteractionAttributes decode(CompoundTag compoundTag) {
     return new InteractionAttributes(
         compoundTag.getBoolean(IS_PUSHABLE_TAG).orElse(false),
+        compoundTag.getBoolean(CAN_BE_HIT_BY_PROJECTILE_TAG).orElse(false),
         compoundTag.getBoolean(CAN_BE_LEASHED_TAG).orElse(false),
         compoundTag.getBoolean(PUSH_ENTITIES_TAG).orElse(false));
   }
 
   public InteractionAttributes withIsPushable(boolean isPushable) {
-    return new InteractionAttributes(isPushable, this.canBeLeashed, this.pushEntities);
+    return new InteractionAttributes(
+        isPushable, this.canBeHitByProjectile, this.canBeLeashed, this.pushEntities);
+  }
+
+  public InteractionAttributes withIsPickable(boolean isPickable) {
+    return new InteractionAttributes(
+        this.isPushable, isPickable, this.canBeLeashed, this.pushEntities);
   }
 
   public InteractionAttributes withCanBeLeashed(boolean canBeLeashed) {
-    return new InteractionAttributes(this.isPushable, canBeLeashed, this.pushEntities);
+    return new InteractionAttributes(
+        this.isPushable, this.canBeHitByProjectile, canBeLeashed, this.pushEntities);
   }
 
   public InteractionAttributes withPushEntities(boolean pushEntities) {
-    return new InteractionAttributes(this.isPushable, this.canBeLeashed, pushEntities);
+    return new InteractionAttributes(
+        this.isPushable, this.canBeHitByProjectile, this.canBeLeashed, pushEntities);
   }
 
   public CompoundTag encode(CompoundTag compoundTag) {
     compoundTag.putBoolean(IS_PUSHABLE_TAG, this.isPushable);
+    compoundTag.putBoolean(CAN_BE_HIT_BY_PROJECTILE_TAG, this.canBeHitByProjectile);
     compoundTag.putBoolean(CAN_BE_LEASHED_TAG, this.canBeLeashed);
     compoundTag.putBoolean(PUSH_ENTITIES_TAG, this.pushEntities);
     return compoundTag;

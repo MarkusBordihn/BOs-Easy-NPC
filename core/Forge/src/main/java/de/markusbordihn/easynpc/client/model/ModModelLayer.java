@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.model;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
 import de.markusbordihn.easynpc.client.model.custom.FairyModel;
 import de.markusbordihn.easynpc.client.model.custom.OrcModel;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -36,6 +37,7 @@ public class ModModelLayer {
       EntityRenderersEvent.RegisterLayerDefinitions event) {
     log.info("{} Entity Layer Definitions ...", Constants.LOG_REGISTER_PREFIX);
 
+    event.registerLayerDefinition(ModModelLayers.DOPPLER, DopplerModel::createBodyLayer);
     event.registerLayerDefinition(ModModelLayers.FAIRY, FairyModel::createBodyLayer);
     event.registerLayerDefinition(ModModelLayers.ORC, OrcModel::createBodyLayer);
   }

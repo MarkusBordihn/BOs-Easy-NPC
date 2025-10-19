@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.screen.dialog;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.renderer.screen.EntityScreenRenderer;
 import de.markusbordihn.easynpc.client.screen.Screen;
 import de.markusbordihn.easynpc.client.screen.components.Graphics;
 import de.markusbordihn.easynpc.client.screen.components.SpriteButton;
@@ -35,7 +36,6 @@ import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.menu.dialog.DialogMenu;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import de.markusbordihn.easynpc.screen.render.EntityScreenRenderer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

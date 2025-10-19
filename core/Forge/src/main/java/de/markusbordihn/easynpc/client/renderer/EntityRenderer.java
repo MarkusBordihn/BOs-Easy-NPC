@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.renderer.entity.EntityRendererUtils;
 import de.markusbordihn.easynpc.client.renderer.entity.ModCustomEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.ModNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.ModRawEntityRenderer;

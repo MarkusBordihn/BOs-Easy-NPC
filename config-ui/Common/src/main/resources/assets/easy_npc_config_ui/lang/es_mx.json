@@ -149,6 +149,7 @@
   "text.easy_npc.config.import_world_preset": "Importar Preset Mundial",
   "text.easy_npc.config.is_attackable_by_monsters": "Atacable por Monstruos",
   "text.easy_npc.config.is_attackable_by_players": "Atacable por Jugadores",
+  "text.easy_npc.config.can_be_hit_by_projectile": "Impactable por proyectiles",
   "text.easy_npc.config.is_pushable": "Empujable",
   "text.easy_npc.config.is_invulnerable": "Invulnerable",
   "text.easy_npc.config.knockback_resistance": "Resistencia al retroceso",

@@ -151,6 +151,7 @@
   "text.easy_npc.config.import_world_preset": "Importiere Welt Vorlage",
   "text.easy_npc.config.is_attackable_by_monsters": "Angreifbar durch Monster",
   "text.easy_npc.config.is_attackable_by_players": "Angreifbar durch Spieler",
+  "text.easy_npc.config.can_be_hit_by_projectile": "Treffbar",
   "text.easy_npc.config.is_pushable": "Schiebbar",
   "text.easy_npc.config.is_invulnerable": "Unverwundbar",
   "text.easy_npc.config.knockback_resistance": "Rückstoß Widerstand",

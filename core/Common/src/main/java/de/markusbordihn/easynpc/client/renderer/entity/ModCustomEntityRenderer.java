@@ -32,7 +32,9 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.world.entity.Entity;
 
 public enum ModCustomEntityRenderer {
-  DOPPLER(ModCustomEntityType.DOPPLER, () -> DopplerRenderer::new),
+  DOPPLER(
+      ModCustomEntityType.DOPPLER,
+      () -> context -> new DopplerRenderer(context, ModModelLayers.DOPPLER)),
   FAIRY(
       ModCustomEntityType.FAIRY, () -> context -> new FairyRenderer(context, ModModelLayers.FAIRY)),
   ORC(ModCustomEntityType.ORC, () -> context -> new OrcRenderer(context, ModModelLayers.ORC)),
