@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.texture.CustomTextureManager;
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
@@ -36,7 +37,6 @@ import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.io.CustomSkinDataFiles;
-import de.markusbordihn.easynpc.screen.render.EntityScreenRenderer;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -131,7 +131,7 @@ public class CustomSkinConfigurationScreen<T extends ConfigurationMenu>
     UUID skinUUID = skinData.getSkinUUID();
     skinButton.active = !(skinUUID.equals(textureUUID));
 
-    EntityScreenRenderer.renderEntity(
+    EntityConfigScreenRenderer.renderEntity(
         guiGraphics,
         this.getEasyNPC(),
         EntityRenderConfig.withOverrides(

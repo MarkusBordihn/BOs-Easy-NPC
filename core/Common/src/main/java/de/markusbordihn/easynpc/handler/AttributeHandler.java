@@ -194,6 +194,8 @@ public class AttributeHandler {
           entityAttributes.setInteractionAttributes(attributes.withCanBeLeashed(value));
       case IS_PUSHABLE ->
           entityAttributes.setInteractionAttributes(attributes.withIsPushable(value));
+      case CAN_BE_HIT_BY_PROJECTILE ->
+          entityAttributes.setInteractionAttributes(attributes.withIsPickable(value));
       case PUSH_ENTITIES ->
           entityAttributes.setInteractionAttributes(attributes.withPushEntities(value));
       default -> {

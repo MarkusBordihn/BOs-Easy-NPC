@@ -27,6 +27,7 @@ import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
+import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
 import de.markusbordihn.easynpc.configui.client.screen.components.NameVisibilityToggleButton;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
@@ -42,7 +43,6 @@ import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import de.markusbordihn.easynpc.screen.render.EntityScreenRenderer;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
@@ -121,7 +121,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
       return;
     }
 
-    EntityScreenRenderer.renderEntity(
+    EntityConfigScreenRenderer.renderEntity(
         guiGraphics,
         getEasyNPC(),
         EntityRenderConfig.guiScaled(
@@ -133,6 +133,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         this.xMouse,
         this.yMouse);
 
+    // Scale entity texts
     float scaleEntityTypeText = 0.75f;
     guiGraphics.pose().pushPose();
     guiGraphics.pose().scale(scaleEntityTypeText, scaleEntityTypeText, scaleEntityTypeText);
