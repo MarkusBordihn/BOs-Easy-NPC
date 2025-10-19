@@ -20,11 +20,11 @@
 package de.markusbordihn.easynpc.configui.client.screen.configuration.pose;
 
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
+import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
-import de.markusbordihn.easynpc.screen.render.EntityScreenRenderer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -182,7 +182,7 @@ public class DefaultPoseConfigurationScreen<T extends ConfigurationMenu>
     this.getEasyNPCEntity().setInvisible(false);
 
     // Render Entity
-    EntityScreenRenderer.renderEntity(
+    EntityConfigScreenRenderer.renderEntity(
         guiGraphics,
         this.getEasyNPC(),
         EntityRenderConfig.guiScaled(

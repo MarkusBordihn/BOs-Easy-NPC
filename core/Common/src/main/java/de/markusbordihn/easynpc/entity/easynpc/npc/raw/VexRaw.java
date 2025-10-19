@@ -400,6 +400,12 @@ public class VexRaw extends Vex implements EasyNPCBase<Vex> {
   }
 
   @Override
+  public boolean canBeHitByProjectile() {
+    return getEntityAttributes().getInteractionAttributes().canBeHitByProjectile()
+        && this.isAlive();
+  }
+
+  @Override
   protected void pushEntities() {
     if (getEntityAttributes().getInteractionAttributes().pushEntities()) {
       super.pushEntities();
