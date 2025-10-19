@@ -409,6 +409,11 @@ public class WitchRaw extends Witch implements EasyNPCBase<Witch> {
   }
 
   @Override
+  public boolean canBeHitByProjectile() {
+    return getEntityAttributes().getInteractionAttributes().canBeHitByProjectile();
+  }
+
+  @Override
   protected void pushEntities() {
     if (getEntityAttributes().getInteractionAttributes().pushEntities()) {
       super.pushEntities();

@@ -29,6 +29,7 @@ import de.markusbordihn.easynpc.client.texture.RemoteTextureManager;
 import de.markusbordihn.easynpc.client.texture.TextureManager;
 import de.markusbordihn.easynpc.client.texture.TextureModelKey;
 import de.markusbordihn.easynpc.configui.Constants;
+import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
@@ -38,7 +39,6 @@ import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.skin.SkinType;
 import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
 import de.markusbordihn.easynpc.network.components.TextComponent;
-import de.markusbordihn.easynpc.screen.render.EntityScreenRenderer;
 import de.markusbordihn.easynpc.utils.TextUtils;
 import de.markusbordihn.easynpc.validator.ImageValidator;
 import de.markusbordihn.easynpc.validator.UrlValidator;
@@ -142,7 +142,7 @@ public class UrlSkinConfigurationScreen<T extends ConfigurationMenu>
     UUID skinUUID = skinData.getSkinUUID();
     skinButton.active = !skinUUID.equals(textureUUID);
 
-    EntityScreenRenderer.renderEntity(
+    EntityConfigScreenRenderer.renderEntity(
         guiGraphics,
         this.getEasyNPC(),
         EntityRenderConfig.withOverrides(

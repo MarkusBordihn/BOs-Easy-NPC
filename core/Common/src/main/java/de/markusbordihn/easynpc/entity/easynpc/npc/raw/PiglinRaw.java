@@ -409,6 +409,11 @@ public class PiglinRaw extends Piglin implements EasyNPCBase<Piglin> {
   }
 
   @Override
+  public boolean canBeHitByProjectile() {
+    return getEntityAttributes().getInteractionAttributes().canBeHitByProjectile();
+  }
+
+  @Override
   protected void pushEntities() {
     if (getEntityAttributes().getInteractionAttributes().pushEntities()) {
       super.pushEntities();

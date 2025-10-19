@@ -17,7 +17,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.client.renderer;
+package de.markusbordihn.easynpc.client.renderer.entity;
 
 import de.markusbordihn.easynpc.Constants;
 import java.util.Map;

@@ -17,35 +17,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.screen.render;
+package de.markusbordihn.easynpc.client.renderer.screen;
 
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.data.render.EntityRenderOverrides;
-import de.markusbordihn.easynpc.data.render.RenderDataSet;
-import de.markusbordihn.easynpc.data.render.RenderType;
 import de.markusbordihn.easynpc.data.rotation.CustomRotation;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
-import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
-import de.markusbordihn.easynpc.entity.easynpc.data.ProfessionDataCapable;
-import de.markusbordihn.easynpc.entity.easynpc.data.RenderDataCapable;
-import de.markusbordihn.easynpc.entity.easynpc.data.SkinDataCapable;
-import de.markusbordihn.easynpc.entity.easynpc.data.VariantDataCapable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 
 public class EntityScreenRenderer {
 
-  private EntityScreenRenderer() {}
+  protected EntityScreenRenderer() {}
 
   public static void renderEntity(
       GuiGraphics guiGraphics, EasyNPC<?> easyNPC, EntityRenderConfig config) {
@@ -55,8 +47,8 @@ public class EntityScreenRenderer {
 
     LivingEntity livingEntity = easyNPC.getLivingEntity();
 
-    EntityRenderState backupState = new EntityRenderState(livingEntity, easyNPC, config);
-    applyRenderModifications(easyNPC, config, backupState);
+    EntityRenderState backupState = new EntityRenderState(livingEntity, easyNPC);
+    applyRenderModifications(easyNPC, config);
 
     int renderScale = config.scale();
     if (config.scissorBox() != null) {
@@ -67,12 +59,12 @@ public class EntityScreenRenderer {
         CustomScale originalScale = modelData.getModelPartScale(ModelPartType.ROOT);
         if (originalScale != null) {
           float adjustment = 1.0f / multiplier;
-          CustomScale adjustedScale =
+          modelData.setModelPartScale(
+              ModelPartType.ROOT,
               new CustomScale(
                   originalScale.x() * adjustment,
                   originalScale.y() * adjustment,
-                  originalScale.z() * adjustment);
-          modelData.setModelPartScale(ModelPartType.ROOT, adjustedScale);
+                  originalScale.z() * adjustment));
         }
       }
     }
@@ -89,8 +81,7 @@ public class EntityScreenRenderer {
     restoreEntityState(easyNPC, backupState);
   }
 
-  private static void applyRenderModifications(
-      EasyNPC<?> easyNPC, EntityRenderConfig config, EntityRenderState backupState) {
+  protected static void applyRenderModifications(EasyNPC<?> easyNPC, EntityRenderConfig config) {
     Entity entity = easyNPC.getEntity();
     LivingEntity livingEntity = easyNPC.getLivingEntity();
     EntityRenderOverrides overrides = config.overrides();
@@ -125,43 +116,9 @@ public class EntityScreenRenderer {
     if (overrides.entityPose() != null) {
       entity.setPose(overrides.entityPose());
     }
-
-    RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
-    if (renderData != null && renderData.getRenderDataSet() != null) {
-      RenderDataSet renderDataSet = renderData.getRenderDataSet();
-      if (overrides.renderType() != null) {
-        renderDataSet.setRenderType(overrides.renderType());
-      }
-      if (overrides.renderEntityType() != null) {
-        renderDataSet.setRenderEntityType(overrides.renderEntityType());
-      }
-    }
-
-    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
-    if (skinData != null && (overrides.skinType() != null || overrides.skinUUID() != null)) {
-      SkinDataEntry currentEntry = skinData.getSkinDataEntry();
-      SkinDataEntry modifiedEntry = currentEntry;
-      if (overrides.skinType() != null) {
-        modifiedEntry = modifiedEntry.withType(overrides.skinType());
-      }
-      if (overrides.skinUUID() != null) {
-        modifiedEntry = modifiedEntry.withUUID(overrides.skinUUID());
-      }
-      skinData.setSkinDataEntry(modifiedEntry);
-    }
-
-    VariantDataCapable<?> variantData = easyNPC.getEasyNPCVariantData();
-    if (variantData != null && overrides.variant() != null) {
-      variantData.setVariantType(overrides.variant());
-    }
-
-    ProfessionDataCapable<?> professionData = easyNPC.getEasyNPCProfessionData();
-    if (professionData != null && overrides.profession() != null) {
-      professionData.setProfession(overrides.profession());
-    }
   }
 
-  private static void restoreEntityState(EasyNPC<?> easyNPC, EntityRenderState backupState) {
+  protected static void restoreEntityState(EasyNPC<?> easyNPC, EntityRenderState backupState) {
     Entity entity = easyNPC.getEntity();
     LivingEntity livingEntity = easyNPC.getLivingEntity();
 
@@ -189,36 +146,9 @@ public class EntityScreenRenderer {
     if (backupState.entityPose != null) {
       entity.setPose(backupState.entityPose);
     }
-
-    RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
-    if (renderData != null
-        && renderData.getRenderDataSet() != null
-        && backupState.renderDataSet != null) {
-      if (backupState.renderType != null) {
-        renderData.getRenderDataSet().setRenderType(backupState.renderType);
-      }
-      if (backupState.renderEntityType != null) {
-        renderData.getRenderDataSet().setRenderEntityType(backupState.renderEntityType);
-      }
-    }
-
-    SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
-    if (skinData != null && backupState.skinDataEntry != null) {
-      skinData.setSkinDataEntry(backupState.skinDataEntry);
-    }
-
-    VariantDataCapable<?> variantData = easyNPC.getEasyNPCVariantData();
-    if (variantData != null && backupState.variantType != null) {
-      variantData.setVariantType(backupState.variantType);
-    }
-
-    ProfessionDataCapable<?> professionData = easyNPC.getEasyNPCProfessionData();
-    if (professionData != null && backupState.profession != null) {
-      professionData.setProfession(backupState.profession);
-    }
   }
 
-  private static class EntityRenderState {
+  protected static class EntityRenderState {
     final Component customName;
     final boolean shouldShowName;
     final boolean minecraftHideGui;
@@ -226,17 +156,10 @@ public class EntityScreenRenderer {
     final CustomScale rootScale;
     final ModelPose modelPose;
     final Pose entityPose;
-    final RenderDataSet renderDataSet;
-    final RenderType renderType;
-    final EntityType<?> renderEntityType;
-    final SkinDataEntry skinDataEntry;
-    final Enum<?> variantType;
-    final de.markusbordihn.easynpc.data.profession.Profession profession;
 
-    EntityRenderState(LivingEntity livingEntity, EasyNPC<?> easyNPC, EntityRenderConfig config) {
+    EntityRenderState(LivingEntity livingEntity, EasyNPC<?> easyNPC) {
       this.customName = livingEntity.getCustomName();
       this.shouldShowName = livingEntity.shouldShowName();
-
       Minecraft minecraft = Minecraft.getInstance();
       this.minecraftHideGui = minecraft != null ? minecraft.options.hideGui : false;
       ModelDataCapable<?> modelData = easyNPC.getEasyNPCModelData();
@@ -249,36 +172,7 @@ public class EntityScreenRenderer {
         this.rootScale = null;
         this.modelPose = null;
       }
-
       this.entityPose = easyNPC.getEntity().getPose();
-      RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
-      if (renderData != null && renderData.getRenderDataSet() != null) {
-        this.renderDataSet = renderData.getRenderDataSet();
-        this.renderType = renderData.getRenderDataSet().getRenderType();
-        this.renderEntityType = renderData.getRenderDataSet().getRenderEntityType();
-      } else {
-        this.renderDataSet = null;
-        this.renderType = null;
-        this.renderEntityType = null;
-      }
-      SkinDataCapable<?> skinData = easyNPC.getEasyNPCSkinData();
-      if (skinData != null) {
-        this.skinDataEntry = skinData.getSkinDataEntry();
-      } else {
-        this.skinDataEntry = null;
-      }
-      VariantDataCapable<?> variantData = easyNPC.getEasyNPCVariantData();
-      if (variantData != null) {
-        this.variantType = variantData.getVariantType();
-      } else {
-        this.variantType = null;
-      }
-      ProfessionDataCapable<?> professionData = easyNPC.getEasyNPCProfessionData();
-      if (professionData != null) {
-        this.profession = professionData.getProfession();
-      } else {
-        this.profession = null;
-      }
     }
   }
 }

@@ -2,6 +2,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.custom;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
 import de.markusbordihn.easynpc.client.renderer.manager.RendererManager;
@@ -12,15 +13,12 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.custom.Doppler.VariantType;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
-import net.minecraft.client.model.HumanoidArmorModel;
-import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
-import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -28,8 +26,8 @@ import net.minecraft.world.entity.PathfinderMob;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DopplerRenderer<E extends PathfinderMob, M extends PlayerModel<E>>
-    extends LivingEntityRenderer<E, M> implements EasyNPCEntityRenderer {
+public class DopplerRenderer<E extends PathfinderMob>
+    extends HumanoidMobRenderer<E, DopplerModel<E>> implements EasyNPCEntityRenderer {
 
   protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
       Util.make(
@@ -42,28 +40,9 @@ public class DopplerRenderer<E extends PathfinderMob, M extends PlayerModel<E>>
       TEXTURE_BY_VARIANT_TYPE.get(VariantType.DEFAULT);
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  public DopplerRenderer(EntityRendererProvider.Context context) {
-    this(context, false);
-  }
-
-  public DopplerRenderer(EntityRendererProvider.Context context, boolean slim) {
-    super(
-        context,
-        (M)
-            new PlayerModel(
-                context.bakeLayer(slim ? ModelLayers.PLAYER_SLIM : ModelLayers.PLAYER), slim),
-        0.5F);
-    this.addLayer(
-        new HumanoidArmorLayer<>(
-            this,
-            new HumanoidArmorModel(
-                context.bakeLayer(
-                    slim ? ModelLayers.PLAYER_SLIM_INNER_ARMOR : ModelLayers.PLAYER_INNER_ARMOR)),
-            new HumanoidArmorModel(
-                context.bakeLayer(
-                    slim ? ModelLayers.PLAYER_SLIM_OUTER_ARMOR : ModelLayers.PLAYER_OUTER_ARMOR)),
-            context.getModelManager()));
-    this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
+  public DopplerRenderer(
+      EntityRendererProvider.Context context, ModelLayerLocation modelLayerLocation) {
+    super(context, new DopplerModel<>(context.bakeLayer(modelLayerLocation)), 0.5F);
   }
 
   private boolean renderEntity(
@@ -102,8 +81,8 @@ public class DopplerRenderer<E extends PathfinderMob, M extends PlayerModel<E>>
     String entityTypeName = EntityTypeManager.getEntityTypeName(renderEntityType);
 
     // Render custom entity over living render, if supported.
-    LivingEntityRenderer<E, M> livingEntityRenderer =
-        (LivingEntityRenderer<E, M>)
+    LivingEntityRenderer<E, DopplerModel<E>> livingEntityRenderer =
+        (LivingEntityRenderer<E, DopplerModel<E>>)
             RendererManager.getLivingEntityRenderer(renderEntityType, customEntity);
     if (livingEntityRenderer != null) {
       try {
