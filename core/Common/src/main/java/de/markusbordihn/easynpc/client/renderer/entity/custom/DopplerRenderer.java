@@ -2,6 +2,7 @@ package de.markusbordihn.easynpc.client.renderer.entity.custom;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.client.model.custom.DopplerModel;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.state.EasyNPCRenderStateExtension;
 import de.markusbordihn.easynpc.client.renderer.manager.EntityTypeManager;
@@ -14,18 +15,15 @@ import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.HumanoidArmorModel;
-import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
-import net.minecraft.client.renderer.entity.layers.PlayerItemInHandLayer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -35,7 +33,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class DopplerRenderer
-    extends LivingEntityRenderer<PathfinderMob, PlayerRenderState, PlayerModel>
+    extends HumanoidMobRenderer<
+        PathfinderMob, HumanoidRenderState, DopplerModel<HumanoidRenderState>>
     implements EasyNPCEntityRenderer {
 
   protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
@@ -50,33 +49,15 @@ public class DopplerRenderer
       TEXTURE_BY_VARIANT_TYPE.get(VariantType.DEFAULT);
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
-  public DopplerRenderer(EntityRendererProvider.Context context) {
-    this(context, false);
-  }
-
-  public DopplerRenderer(EntityRendererProvider.Context context, boolean slim) {
-    super(
-        context,
-        new PlayerModel(
-            context.bakeLayer(slim ? ModelLayers.PLAYER_SLIM : ModelLayers.PLAYER), slim),
-        0.5F);
-    this.addLayer(
-        new HumanoidArmorLayer<>(
-            this,
-            new HumanoidArmorModel(
-                context.bakeLayer(
-                    slim ? ModelLayers.PLAYER_SLIM_INNER_ARMOR : ModelLayers.PLAYER_INNER_ARMOR)),
-            new HumanoidArmorModel(
-                context.bakeLayer(
-                    slim ? ModelLayers.PLAYER_SLIM_OUTER_ARMOR : ModelLayers.PLAYER_OUTER_ARMOR)),
-            context.getEquipmentRenderer()));
-    this.addLayer(new PlayerItemInHandLayer<>(this, context.getItemRenderer()));
+  public DopplerRenderer(
+      EntityRendererProvider.Context context, ModelLayerLocation modelLayerLocation) {
+    super(context, new DopplerModel(context.bakeLayer(modelLayerLocation)), 0.5F);
   }
 
   private static boolean renderEntity(
       EasyNPC<?> entity,
       EntityModel<?> entityModel,
-      PlayerRenderState renderState,
+      HumanoidRenderState renderState,
       PoseStack poseStack,
       MultiBufferSource buffer,
       int packedLight) {
@@ -166,12 +147,12 @@ public class DopplerRenderer
   }
 
   @Override
-  public PlayerRenderState createRenderState() {
-    return new PlayerRenderState();
+  public HumanoidRenderState createRenderState() {
+    return new HumanoidRenderState();
   }
 
   @Override
-  public ResourceLocation getTextureLocation(PlayerRenderState renderState) {
+  public ResourceLocation getTextureLocation(HumanoidRenderState renderState) {
     EasyNPC<?> easyNPC = getEasyNPC(renderState);
     if (easyNPC != null) {
       return getEntityTexture(easyNPC);
@@ -191,7 +172,7 @@ public class DopplerRenderer
 
   @Override
   public void render(
-      PlayerRenderState renderState,
+      HumanoidRenderState renderState,
       PoseStack poseStack,
       MultiBufferSource buffer,
       int packedLight) {

@@ -23,12 +23,12 @@ import de.markusbordihn.easynpc.client.screen.components.Checkbox;
 import de.markusbordihn.easynpc.client.screen.components.SaveButton;
 import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
+import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
 import de.markusbordihn.easynpc.configui.network.NetworkMessageHandlerManager;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
-import de.markusbordihn.easynpc.screen.render.EntityScreenRenderer;
 import de.markusbordihn.easynpc.utils.ValueUtils;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -235,8 +235,9 @@ public class DisplayAttributeConfigurationScreen<T extends ConfigurationMenu>
         firstButtonRow,
         specialSectionY,
         0x555555);
+
     if (getEasyNPC() != null) {
-      EntityScreenRenderer.renderEntity(
+      EntityConfigScreenRenderer.renderEntity(
           guiGraphics,
           getEasyNPC(),
           EntityRenderConfig.guiScaled(
