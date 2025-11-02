@@ -307,10 +307,8 @@ public class TextureManager {
 
   public static NativeImage getNativeImage(File file, boolean legacySupport) {
     NativeImage nativeImage;
-    try {
-      InputStream inputStream = new FileInputStream(file);
+    try (InputStream inputStream = new FileInputStream(file)) {
       nativeImage = NativeImage.read(inputStream);
-      inputStream.close();
     } catch (Exception exception) {
       log.error(
           "{} Unable to get native image for file {} because of:", LOG_PREFIX, file, exception);

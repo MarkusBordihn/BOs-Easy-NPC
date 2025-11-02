@@ -31,10 +31,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.players.GameProfileCache;
 import org.apache.commons.io.IOUtils;
@@ -49,7 +49,7 @@ public class PlayersUtils {
       "https://sessionserver.mojang.com/session/minecraft/profile/%s";
   private static final String API_PROFILE_URL =
       "https://api.mojang.com/users/profiles/minecraft/%s";
-  private static final Map<String, UUID> userUUIDCache = new HashMap<>();
+  private static final Map<String, UUID> userUUIDCache = new ConcurrentHashMap<>();
   private static UUID lastUserUUIDForUserTexture;
 
   protected PlayersUtils() {}
