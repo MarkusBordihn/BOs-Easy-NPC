@@ -23,8 +23,8 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.compat.epicfight.entity.EpicFightZombie;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -51,8 +51,9 @@ public class ModEntityType {
   public static final Map<ModCustomEntityType, DeferredHolder<EntityType<?>, EntityType<?>>>
       CUSTOM_TYPE = new EnumMap<>(ModCustomEntityType.class);
   public static final Map<UserDefinedEntityType, DeferredHolder<EntityType<?>, EntityType<?>>>
-      USER_DEFINED_TYPE = new HashMap<>();
+      USER_DEFINED_TYPE = new ConcurrentHashMap<>();
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
   // Optional: Epic Fight entities
   public static DeferredHolder<EntityType<?>, EntityType<EpicFightZombie>> EPIC_FIGHT_ZOMBIE;
 
