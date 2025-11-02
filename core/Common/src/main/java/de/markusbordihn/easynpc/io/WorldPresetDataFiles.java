@@ -113,6 +113,9 @@ public class WorldPresetDataFiles {
   }
 
   public static Path getPresetsResourceLocationPath(ResourceLocation resourceLocation) {
+    if (!presetResourceLocationMap.containsKey(resourceLocation)) {
+      getPresetResourceLocations();
+    }
     return presetResourceLocationMap.get(resourceLocation);
   }
 }

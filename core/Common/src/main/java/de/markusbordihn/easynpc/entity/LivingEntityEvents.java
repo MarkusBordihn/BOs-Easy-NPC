@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.menu.MenuManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -50,6 +51,7 @@ public class LivingEntityEvents {
       LivingEntityManager.removeEasyNPC(easyNPC);
     } else if (livingEntity instanceof ServerPlayer serverPlayer) {
       LivingEntityManager.removeServerPlayer(serverPlayer);
+      MenuManager.cleanupPlayerMenus(serverPlayer);
     } else {
       LivingEntityManager.removeLivingEntity(livingEntity);
     }
