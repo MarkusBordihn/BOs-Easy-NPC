@@ -23,10 +23,9 @@ import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.npc.UserDefinedConfiguration;
 import de.markusbordihn.easynpc.data.npc.UserDefinedConfigurationManager;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.world.entity.EntityType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,8 +34,9 @@ public class UserDefinedEntityRegistry {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final Map<UserDefinedEntityType, EntityType<?>> registeredEntityTypes =
-      new HashMap<>();
-  private static final Set<UserDefinedEntityType> availableEntityTypes = new HashSet<>();
+      new ConcurrentHashMap<>();
+  private static final Set<UserDefinedEntityType> availableEntityTypes =
+      ConcurrentHashMap.newKeySet();
   private static boolean initialized = false;
 
   static {
