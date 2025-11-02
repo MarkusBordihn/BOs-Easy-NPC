@@ -21,6 +21,7 @@ package de.markusbordihn.easynpc.menu;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.network.NetworkMessageHandlerManager;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.OptionalInt;
 import java.util.UUID;
@@ -34,10 +35,12 @@ import org.apache.logging.log4j.Logger;
 public class MenuManager {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+  private static final long MENU_TIMEOUT_MS = 30000;
 
   private static final Map<UUID, MenuProvider> menuProviderMap = new ConcurrentHashMap<>();
   private static final Map<UUID, ServerPlayer> serverPlayerMap = new ConcurrentHashMap<>();
   private static final Map<UUID, UUID> menuNpcMap = new ConcurrentHashMap<>();
+  private static final Map<UUID, Long> menuTimestampMap = new ConcurrentHashMap<>();
 
   private static MenuHandlerInterface menuHandlerInterface;
 
@@ -62,6 +65,8 @@ public class MenuManager {
     menuProviderMap.put(menuId, menuProvider);
     serverPlayerMap.put(menuId, serverPlayer);
     menuNpcMap.put(menuId, uuid);
+    menuTimestampMap.put(menuId, System.currentTimeMillis());
+    cleanupExpiredMenus();
     return menuId;
   }
 
@@ -103,10 +108,51 @@ public class MenuManager {
           dialogId.getAsInt(),
           menuProvider,
           serverPlayer);
-      menuProviderMap.remove(menuId);
-      serverPlayerMap.remove(menuId);
+      removeMenu(menuId);
     } else {
       log.error("Got invalid dialog ID for menu {}", menuId);
+      removeMenu(menuId);
+    }
+  }
+
+  private static void removeMenu(UUID menuId) {
+    menuProviderMap.remove(menuId);
+    serverPlayerMap.remove(menuId);
+    menuNpcMap.remove(menuId);
+    menuTimestampMap.remove(menuId);
+  }
+
+  public static void cleanupPlayerMenus(ServerPlayer serverPlayer) {
+    if (serverPlayer == null) {
+      return;
+    }
+    Iterator<Map.Entry<UUID, ServerPlayer>> iterator = serverPlayerMap.entrySet().iterator();
+    while (iterator.hasNext()) {
+      Map.Entry<UUID, ServerPlayer> entry = iterator.next();
+      if (entry.getValue().equals(serverPlayer)) {
+        UUID menuId = entry.getKey();
+        log.debug("Cleaning up menu {} for disconnected player {}", menuId, serverPlayer);
+        menuProviderMap.remove(menuId);
+        menuNpcMap.remove(menuId);
+        menuTimestampMap.remove(menuId);
+        iterator.remove();
+      }
+    }
+  }
+
+  private static void cleanupExpiredMenus() {
+    long currentTime = System.currentTimeMillis();
+    Iterator<Map.Entry<UUID, Long>> iterator = menuTimestampMap.entrySet().iterator();
+    while (iterator.hasNext()) {
+      Map.Entry<UUID, Long> entry = iterator.next();
+      if (currentTime - entry.getValue() > MENU_TIMEOUT_MS) {
+        UUID menuId = entry.getKey();
+        log.warn("Cleaning up expired menu {} after timeout", menuId);
+        menuProviderMap.remove(menuId);
+        serverPlayerMap.remove(menuId);
+        menuNpcMap.remove(menuId);
+        iterator.remove();
+      }
     }
   }
 }
