@@ -19,6 +19,12 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import net.minecraft.world.entity.PathfinderMob;
 
-public interface StandardEasyNPC<T extends PathfinderMob> {}
+public interface StandardEasyNPC<T extends PathfinderMob> {
+
+  default ConfigurationData getConfigurationData() {
+    return ConfigurationData.STANDARD;
+  }
+}

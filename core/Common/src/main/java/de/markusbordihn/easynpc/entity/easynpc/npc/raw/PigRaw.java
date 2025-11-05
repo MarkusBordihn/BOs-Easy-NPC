@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity.easynpc.npc.raw;
 import static java.util.Objects.hash;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
@@ -491,18 +492,8 @@ public class PigRaw extends Pig implements EasyNPCBase<Pig> {
   }
 
   @Override
-  public boolean supportsPoseConfiguration() {
-    return true;
-  }
-
-  @Override
-  public boolean supportsScalingConfiguration() {
-    return true;
-  }
-
-  @Override
-  public boolean supportsDefaultRotationConfiguration() {
-    return true;
+  public ConfigurationData getConfigurationData() {
+    return ConfigurationData.RAW;
   }
 
   @Override
@@ -567,6 +558,8 @@ public class PigRaw extends Pig implements EasyNPCBase<Pig> {
     return super.getDefaultDimensions(pose);
   }
 
+  
+
   @Override
   public boolean equals(Object object) {
     if (this == object) {
@@ -589,7 +582,6 @@ public class PigRaw extends Pig implements EasyNPCBase<Pig> {
   }
 
   public enum VariantType {
-    DEFAULT,
-    SPOTTED
+    DEFAULT, SPOTTED
   }
 }

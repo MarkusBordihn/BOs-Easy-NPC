@@ -24,10 +24,8 @@ import de.markusbordihn.easynpc.entity.easynpc.data.AttackDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
-import de.markusbordihn.easynpc.entity.easynpc.data.CustomAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
-import de.markusbordihn.easynpc.entity.easynpc.data.GuiDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
@@ -68,12 +66,6 @@ public interface EasyNPCDataAccessors<E extends PathfinderMob> {
     return this instanceof ConfigurationDataCapable<E> configurationData ? configurationData : null;
   }
 
-  default CustomAttributeDataCapable<E> getEasyNPCCustomAttributeData() {
-    return this instanceof CustomAttributeDataCapable<E> customAttributeData
-        ? customAttributeData
-        : null;
-  }
-
   default DialogDataCapable<E> getEasyNPCDialogData() {
     return this instanceof DialogDataCapable<E> dialogData ? dialogData : null;
   }
@@ -82,10 +74,6 @@ public interface EasyNPCDataAccessors<E extends PathfinderMob> {
     return this instanceof DisplayAttributeDataCapable<E> displayAttributeData
         ? displayAttributeData
         : null;
-  }
-
-  default GuiDataCapable<E> getEasyNPCGuiData() {
-    return this instanceof GuiDataCapable<E> guiData ? guiData : null;
   }
 
   default SkinDataCapable<E> getEasyNPCSkinData() {

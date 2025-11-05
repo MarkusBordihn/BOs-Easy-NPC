@@ -105,11 +105,6 @@ public class Fairy extends PathfinderMobRaw {
   }
 
   @Override
-  public int getEntityGuiScaling() {
-    return 65;
-  }
-
-  @Override
   public int getEntityDialogTop() {
     return -38;
   }

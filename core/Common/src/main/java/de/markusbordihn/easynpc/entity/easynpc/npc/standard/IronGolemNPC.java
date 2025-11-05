@@ -60,11 +60,6 @@ public class IronGolemNPC extends IronGolemRaw implements StandardEasyNPC<IronGo
   }
 
   @Override
-  public int getEntityGuiScaling() {
-    return 40;
-  }
-
-  @Override
   public int getEntityDialogScaling() {
     return 38;
   }

@@ -25,10 +25,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
@@ -42,6 +41,11 @@ public class WorldPresetDataFiles {
       new ConcurrentHashMap<>();
 
   private WorldPresetDataFiles() {}
+
+  public static void registerWorldPresetData() {
+    log.info("{} world preset data ...", Constants.LOG_REGISTER_PREFIX);
+    refreshPresetResourceLocations();
+  }
 
   public static Path getPresetDataFolder() {
     File worldDataFolder = new File(Constants.WORLD_DIR.toFile(), Constants.MOD_ID);
@@ -68,54 +72,50 @@ public class WorldPresetDataFiles {
   public static File getPresetFile(SkinModel skinModel, String fileName) {
     Path presetModelFolder = getPresetDataFolder(skinModel);
     if (presetModelFolder != null && fileName != null && !fileName.isEmpty()) {
-      return presetModelFolder.resolve(getPresetFileName(fileName)).toFile();
+      return presetModelFolder.resolve(DataFileHandler.getPresetFileName(fileName)).toFile();
     }
     return null;
   }
 
-  public static String getPresetFileName(String fileName) {
-    return CustomPresetDataFiles.getPresetFileName(fileName);
+  public static Stream<ResourceLocation> getPresetResourceLocations() {
+    return presetResourceLocationMap.keySet().stream();
   }
 
-  public static Stream<ResourceLocation> getPresetResourceLocations() {
+  public static Set<ResourceLocation> getPresetResourceLocationSet() {
+    return presetResourceLocationMap.keySet();
+  }
+
+  public static void refreshPresetResourceLocations() {
     Path presetDataFolder = getPresetDataFolder();
-    try {
-      try (Stream<Path> filesStream = Files.walk(presetDataFolder)) {
-        // Get all files with the suffix .npc.nbt and return the relative path.
-        List<ResourceLocation> filePaths =
-            filesStream
-                .filter(path -> path.toString().endsWith(Constants.NPC_NBT_SUFFIX))
-                .filter(path -> Pattern.matches("[a-zA-Z0-9/._-]+", path.getFileName().toString()))
-                .map(
-                    path -> {
-                      ResourceLocation resourceLocation =
-                          ResourceLocation.fromNamespaceAndPath(
-                              Constants.MOD_ID,
-                              DATA_FOLDER_NAME
-                                  + '/'
-                                  + presetDataFolder
-                                      .relativize(path)
-                                      .toString()
-                                      .replace("\\", "/")
-                                      .toLowerCase(Locale.ROOT));
-                      presetResourceLocationMap.put(resourceLocation, path);
-                      return resourceLocation;
-                    })
-                .toList();
-        return filePaths.stream();
-      }
+    presetResourceLocationMap.clear();
+    try (Stream<Path> filesStream = Files.walk(presetDataFolder)) {
+      filesStream
+          .filter(DataFileHandler::isPresetFile)
+          .forEach(
+              path -> {
+                ResourceLocation resourceLocation =
+                    ResourceLocation.fromNamespaceAndPath(
+                        Constants.MOD_ID,
+                        DATA_FOLDER_NAME
+                            + '/'
+                            + presetDataFolder
+                                .relativize(path)
+                                .toString()
+                                .replace("\\", "/")
+                                .toLowerCase(Locale.ROOT));
+                presetResourceLocationMap.put(resourceLocation, path);
+              });
     } catch (IOException exception) {
       log.error("Could not read world preset data folder {}:", presetDataFolder, exception);
     }
-
-    // Return a default or alternative stream in case of an exception
-    return Stream.empty();
   }
 
   public static Path getPresetsResourceLocationPath(ResourceLocation resourceLocation) {
-    if (!presetResourceLocationMap.containsKey(resourceLocation)) {
-      getPresetResourceLocations();
+    Path path = presetResourceLocationMap.get(resourceLocation);
+    if (path == null) {
+      refreshPresetResourceLocations();
+      path = presetResourceLocationMap.get(resourceLocation);
     }
-    return presetResourceLocationMap.get(resourceLocation);
+    return path;
   }
 }

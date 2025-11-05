@@ -61,23 +61,8 @@ public class WitchNPC extends WitchRaw implements StandardEasyNPC<WitchRaw> {
   }
 
   @Override
-  public int getEntityGuiScaling() {
-    return 60;
-  }
-
-  @Override
-  public int getEntityGuiTop() {
-    return -15;
-  }
-
-  @Override
   public int getEntityDialogTop() {
     return -35;
-  }
-
-  @Override
-  public int getEntityGuiLeft() {
-    return 0;
   }
 
   @Override

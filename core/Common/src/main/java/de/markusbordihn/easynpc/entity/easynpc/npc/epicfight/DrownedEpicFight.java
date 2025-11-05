@@ -17,22 +17,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.entity.easynpc.data;
+package de.markusbordihn.easynpc.entity.easynpc.npc.epicfight;
 
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import net.minecraft.world.entity.PathfinderMob;
+import de.markusbordihn.easynpc.compat.CompatConstants;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
+import de.markusbordihn.easynpc.entity.easynpc.npc.raw.DrownedRaw;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.Drowned;
+import net.minecraft.world.level.Level;
 
-public interface GuiDataCapable<E extends PathfinderMob> extends EasyNPC<E> {
+public class DrownedEpicFight extends DrownedRaw {
 
-  default int getEntityGuiScaling() {
-    return 45;
+  public static final String ID = CompatConstants.MOD_EPIC_FIGHT_PREFIX + DrownedRaw.ID;
+
+  public DrownedEpicFight(EntityType<? extends Drowned> entityType, Level level) {
+    super(entityType, level);
   }
 
-  default int getEntityGuiTop() {
-    return 0;
+  public DrownedEpicFight(EntityType<? extends Drowned> entityType, Level level, Enum<?> variant) {
+    super(entityType, level, variant);
   }
 
-  default int getEntityGuiLeft() {
-    return 0;
+  @Override
+  public ConfigurationData getConfigurationData() {
+    return ConfigurationData.EPIC_FIGHT;
   }
 }

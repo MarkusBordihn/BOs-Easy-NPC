@@ -85,9 +85,6 @@ public class EasyNPCMain {
     log.info("{} Command Argument Types ...", Constants.LOG_REGISTER_PREFIX);
     ModArgumentTypes.COMMAND_ARGUMENT_TYPES.register(modBusGroup);
 
-    log.info("{} Entity Data Serializers ...", Constants.LOG_REGISTER_PREFIX);
-    EntityDataSerializersManager.register();
-
     log.info("{} Entity Types ...", Constants.LOG_REGISTER_PREFIX);
     ModEntityType.ENTITY_TYPES.register(modBusGroup);
 

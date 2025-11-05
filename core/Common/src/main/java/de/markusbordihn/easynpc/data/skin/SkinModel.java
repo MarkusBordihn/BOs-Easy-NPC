@@ -23,6 +23,7 @@ import java.util.Locale;
 
 public enum SkinModel {
   ALLAY,
+  BOGGED(true),
   CAT,
   CHICKEN,
   CREEPER,
@@ -34,22 +35,28 @@ public enum SkinModel {
   HORSE,
   HUMANOID_SLIM(true),
   HUMANOID(true),
+  HUSK(true),
   ILLAGER,
   ILLUSIONER,
   IRON_GOLEM,
   ORC,
   PIG,
   PIGLIN,
+  PIGLIN_BRUTE,
   PILLAGER,
   PLAYER,
   SKELETON(true),
+  SPIDER,
   VEX,
   VILLAGER(true),
   VINDICATOR,
   WITCH,
   WOLF,
   ZOMBIE_VILLAGER(true),
-  ZOMBIE(true);
+  ZOMBIE(true),
+  ZOMBIFIED_PIGLIN,
+  STRAY,
+  WITHER_SKELETON;
 
   private final boolean hasArmourersWorkshopSupport;
 

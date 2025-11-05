@@ -42,7 +42,6 @@ public class RendererManager {
 
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   private static final String LOG_PREFIX = "[Renderer Manager]";
-
   private static final Map<
           EntityType<? extends Entity>,
           EntityRenderer<? extends Entity, ? extends EntityRenderState>>
@@ -54,8 +53,17 @@ public class RendererManager {
               ? extends LivingEntityRenderState,
               ? extends EntityModel<? extends EntityRenderState>>>
       livingEntityRendererMap = new HashMap<>();
+  private static boolean isScreenRendering = false;
 
   private RendererManager() {}
+
+  public static boolean isScreenRendering() {
+    return isScreenRendering;
+  }
+
+  public static void setScreenRendering(boolean screenRendering) {
+    isScreenRendering = screenRendering;
+  }
 
   public static LivingEntityRenderer<
           ? extends LivingEntity,

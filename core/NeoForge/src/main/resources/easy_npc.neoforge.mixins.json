@@ -5,15 +5,11 @@
   "compatibilityLevel": "JAVA_21",
   "refmap": "easy_npc.refmap.json",
   "client": [
-    "client.gui.InventoryScreenMixin",
-    "model.EasyNPCHumanoidModelMixin",
-    "model.EasyNPCPlayerModelMixin",
-    "model.EasyNPCVillagerModelMixin",
-    "model.EasyNPCWolfModelMixin",
-    "renderer.EasyNPCEntityRendererMixin",
-    "renderer.EasyNPCLivingEntityRendererMixin",
-    "renderer.HumanoidArmorLayerMixin",
-    "renderer.VillagerProfessionLayerMixin",
+    "client.gui.InventoryScreenMixin", "model.EasyNPCHumanoidModelMixin",
+    "model.EasyNPCPlayerModelMixin", "model.EasyNPCSpiderModelMixin",
+    "model.EasyNPCVillagerModelMixin", "model.EasyNPCWolfModelMixin",
+    "renderer.EasyNPCEntityRendererMixin", "renderer.EasyNPCLivingEntityRendererMixin",
+    "renderer.HumanoidArmorLayerMixin", "renderer.VillagerProfessionLayerMixin",
     "renderer.state.EasyNPCLivingEntityRenderStateMixin"
   ],
   "mixins": [

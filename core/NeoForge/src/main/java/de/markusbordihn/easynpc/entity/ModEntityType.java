@@ -52,6 +52,8 @@ public class ModEntityType {
       CUSTOM_TYPE = new EnumMap<>(ModCustomEntityType.class);
   public static final Map<UserDefinedEntityType, DeferredHolder<EntityType<?>, EntityType<?>>>
       USER_DEFINED_TYPE = new ConcurrentHashMap<>();
+  public static final Map<EpicFightEntityType, DeferredHolder<EntityType<?>, EntityType<?>>>
+      EPIC_FIGHT_TYPE = new EnumMap<>(EpicFightEntityType.class);
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
 
   // Optional: Epic Fight entities
@@ -95,15 +97,17 @@ public class ModEntityType {
           ENTITY_TYPES.register(type.getId(), () -> type.getBuilder().build(type.getResourceKey()));
 
       USER_DEFINED_TYPE.put(type, registryObject);
-      // Note: Do not call registryObject.get() here - it will be resolved later during registry
-      // events
     }
-  }
 
-  static {
+    // Register Epic Fight entity types if the mod is loaded
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
-      // EPIC_FIGHT_ZOMBIE =
-      //    ENTITY_TYPES.register(EpicFightZombie.ID, () -> EpicFightEntityTypes.ZOMBIE);
+      for (EpicFightEntityType type : EpicFightEntityType.values()) {
+        log.info("Registering Epic Fight entity type {}", type.getResourceKey());
+        EPIC_FIGHT_TYPE.put(
+            type,
+            ENTITY_TYPES.register(
+                type.getId(), () -> type.getBuilder().build(type.getResourceKey())));
+      }
     }
   }
 
@@ -147,7 +151,6 @@ public class ModEntityType {
 
   @SubscribeEvent
   public static void entityAttributeCreation(EntityAttributeCreationEvent event) {
-    // Now we can safely access the registry objects as they are resolved during this event
 
     // Raw entities (for modding only)
     for (ModRawEntityType type : ModRawEntityType.values()) {
@@ -301,11 +304,28 @@ public class ModEntityType {
       }
     }
 
-    // Optional: Epic Fight entities
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
-      // event.put(
-      // EPIC_FIGHT_ZOMBIE.get(),
-      // net.minecraft.world.entity.monster.Zombie.createAttributes().build());
+      for (EpicFightEntityType type : EpicFightEntityType.values()) {
+        if (type.getAttributes() != null) {
+          event.put(
+              (EntityType<? extends LivingEntity>) EPIC_FIGHT_TYPE.get(type).get(),
+              type.getAttributes().build());
+        } else {
+          log.warn(
+              "Epic Fight entity type {} does not have attributes defined!", type.getResourceKey());
+        }
+      }
     }
+  }
+
+  public static <T extends Entity> EntityType<T> getEntityType(EpicFightEntityType type) {
+    if (!EPIC_FIGHT_TYPE.containsKey(type)) {
+      throw new IllegalArgumentException(
+          "Invalid Epic Fight entity type '"
+              + type
+              + "'! Supported types are "
+              + EPIC_FIGHT_TYPE.keySet());
+    }
+    return (EntityType<T>) EPIC_FIGHT_TYPE.get(type).get();
   }
 }

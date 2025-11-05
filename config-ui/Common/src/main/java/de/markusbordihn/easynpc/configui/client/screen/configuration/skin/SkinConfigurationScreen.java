@@ -154,7 +154,7 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
 
     // Check if we need to hide the player skin button.
     ConfigurationDataCapable<?> configurationData = this.getEasyNPC().getEasyNPCConfigurationData();
-    if (!configurationData.supportsPlayerSkinConfiguration()) {
+    if (!configurationData.supportsConfigurationType(ConfigurationType.PLAYER_SKIN)) {
       this.urlSkinButton.setX(this.defaultSkinButton.getX() + this.defaultSkinButton.getWidth());
       this.customSkinButton.setX(this.urlSkinButton.getX() + this.urlSkinButton.getWidth());
       this.playerSkinButton.visible = false;
@@ -164,25 +164,20 @@ public class SkinConfigurationScreen<T extends ConfigurationMenu> extends Config
   private void checkAccess() {
     ConfigurationDataCapable<?> configurationData = this.getEasyNPC().getEasyNPCConfigurationData();
     this.customSkinButton.active =
-        this.customSkinButton.active
-            && configurationData.supportsSkinConfiguration()
-            && configurationData.supportsCustomSkinConfiguration();
+        configurationData.supportsConfigurationType(ConfigurationType.SKIN)
+            && configurationData.supportsConfigurationType(ConfigurationType.CUSTOM_SKIN);
     this.defaultSkinButton.active =
-        this.defaultSkinButton.active
-            && configurationData.supportsSkinConfiguration()
-            && configurationData.supportsDefaultSkinConfiguration();
+        configurationData.supportsConfigurationType(ConfigurationType.SKIN)
+            && configurationData.supportsConfigurationType(ConfigurationType.DEFAULT_SKIN);
     this.noneSkinButton.active =
-        this.noneSkinButton.active
-            && configurationData.supportsSkinConfiguration()
-            && configurationData.supportsNoneSkinConfiguration();
+        configurationData.supportsConfigurationType(ConfigurationType.SKIN)
+            && configurationData.supportsConfigurationType(ConfigurationType.NONE_SKIN);
     this.playerSkinButton.active =
-        this.playerSkinButton.active
-            && configurationData.supportsSkinConfiguration()
-            && configurationData.supportsPlayerSkinConfiguration();
+        configurationData.supportsConfigurationType(ConfigurationType.SKIN)
+            && configurationData.supportsConfigurationType(ConfigurationType.PLAYER_SKIN);
     this.urlSkinButton.active =
-        this.urlSkinButton.active
-            && configurationData.supportsSkinConfiguration()
-            && configurationData.supportsUrlSkinConfiguration();
+        configurationData.supportsConfigurationType(ConfigurationType.SKIN)
+            && configurationData.supportsConfigurationType(ConfigurationType.URL_SKIN);
   }
 
   @Override

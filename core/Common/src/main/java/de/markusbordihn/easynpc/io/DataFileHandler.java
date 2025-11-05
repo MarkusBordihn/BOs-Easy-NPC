@@ -28,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -40,8 +41,30 @@ public class DataFileHandler {
   protected static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
   protected static final String BACKUP_FOLDER_NAME = "backup";
   protected static final String CACHE_FOLDER_NAME = "cache";
+  private static final Pattern VALID_PRESET_FILENAME_PATTERN = Pattern.compile("[a-zA-Z0-9/._-]+");
 
   private DataFileHandler() {}
+
+  public static boolean isValidPresetFilename(String filename) {
+    return VALID_PRESET_FILENAME_PATTERN.matcher(filename).matches();
+  }
+
+  public static boolean isValidPresetFilename(Path path) {
+    return isValidPresetFilename(path.getFileName().toString());
+  }
+
+  public static boolean isPresetFile(Path path) {
+    return path.toString().endsWith(Constants.NPC_NBT_SUFFIX) && isValidPresetFilename(path);
+  }
+
+  public static boolean isPresetFile(ResourceLocation resourceLocation) {
+    return resourceLocation.toString().endsWith(Constants.NPC_NBT_SUFFIX);
+  }
+
+  public static String getPresetFileName(String fileName) {
+    String result = fileName.replaceAll("[^a-zA-Z0-9/._-]", "").replace("..", "").replace("/", "_");
+    return result.endsWith(Constants.NPC_NBT_SUFFIX) ? result : result + Constants.NPC_NBT_SUFFIX;
+  }
 
   public static void registerCommonDataFiles() {
     log.info("{} Common data folders ...", Constants.LOG_REGISTER_PREFIX);
@@ -57,6 +80,10 @@ public class DataFileHandler {
 
     log.info("{} Backup data folders ...", Constants.LOG_REGISTER_PREFIX);
     BackupDataFiles.registerBackupData();
+
+    log.info("{} Preset data folders ...", Constants.LOG_REGISTER_PREFIX);
+    CustomPresetDataFiles.registerCustomPresetData();
+    WorldPresetDataFiles.registerWorldPresetData();
   }
 
   public static void registerClientDataFiles() {

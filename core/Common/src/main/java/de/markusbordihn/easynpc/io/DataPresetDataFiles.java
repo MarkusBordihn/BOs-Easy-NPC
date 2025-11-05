@@ -37,9 +37,7 @@ public class DataPresetDataFiles {
     try {
       return minecraftServer
           .getResourceManager()
-          .listResources(
-              "preset",
-              resourceLocation -> resourceLocation.toString().endsWith(Constants.NPC_NBT_SUFFIX))
+          .listResources("preset", DataFileHandler::isPresetFile)
           .keySet()
           .stream();
     } catch (Exception e) {
