@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.network.syncher;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
-import de.markusbordihn.easynpc.data.attribute.CustomAttributes;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeEntry;
@@ -58,11 +57,6 @@ public class ModEntityDataSerializers {
       ACTION_EVENT_SET =
           ENTITY_DATA_SERIALIZERS.register(
               "action_event_set", () -> EntityDataSerializersManager.ACTION_EVENT_SET);
-  public static final DeferredHolder<
-          EntityDataSerializer<?>, EntityDataSerializer<CustomAttributes>>
-      CUSTOM_ATTRIBUTES =
-          ENTITY_DATA_SERIALIZERS.register(
-              "custom_attributes", () -> EntityDataSerializersManager.CUSTOM_ATTRIBUTES);
   public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<DialogDataSet>>
       DIALOG_DATA_SET =
           ENTITY_DATA_SERIALIZERS.register(

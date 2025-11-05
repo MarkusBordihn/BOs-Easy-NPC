@@ -62,6 +62,9 @@ dependencies {
   if (project.hasProperty('neoforge_xaeros_minimap_mod') && project.neoforge_xaeros_minimap_mod) {
     runtimeOnly "curse.maven:xaeros_minimap-263420:${project.neoforge_xaeros_minimap_mod}"
   }
+
+  // Test dependencies
+  runtimeOnly "curse.maven:epic-fight-mod-405076:7185834"
 }
 
 // NeoGradle compiles the game, but we don't want to add our common code to the game's code

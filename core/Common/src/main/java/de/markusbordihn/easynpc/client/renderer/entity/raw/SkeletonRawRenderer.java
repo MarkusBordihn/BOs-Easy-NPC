@@ -37,21 +37,12 @@ public class SkeletonRawRenderer extends SkeletonRenderer implements EasyNPCEnti
           new EnumMap<>(VariantType.class),
           map -> {
             map.put(
-                VariantType.BOGGED,
-                ResourceLocation.withDefaultNamespace("textures/entity/skeleton/bogged.png"));
-            map.put(
-                VariantType.SKELETON,
-                ResourceLocation.withDefaultNamespace("textures/entity/skeleton/skeleton.png"));
-            map.put(
-                VariantType.STRAY,
-                ResourceLocation.withDefaultNamespace("textures/entity/skeleton/stray.png"));
-            map.put(
-                VariantType.WITHER_SKELETON,
-                ResourceLocation.withDefaultNamespace(
-                    "textures/entity/skeleton/wither_skeleton.png"));
+                VariantType.DEFAULT,
+                ResourceLocation.fromNamespaceAndPath(
+                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/skeleton/skeleton.png"));
           });
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(VariantType.SKELETON);
+      TEXTURE_BY_VARIANT_TYPE.get(VariantType.DEFAULT);
 
   public SkeletonRawRenderer(EntityRendererProvider.Context context) {
     super(context);

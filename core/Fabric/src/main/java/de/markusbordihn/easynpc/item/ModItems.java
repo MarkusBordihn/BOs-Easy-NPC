@@ -21,7 +21,9 @@ package de.markusbordihn.easynpc.item;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.block.ModBlocks;
+import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.spawner.SpawnerType;
+import de.markusbordihn.easynpc.entity.EpicFightEntityType;
 import de.markusbordihn.easynpc.entity.ModCustomEntityType;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
@@ -46,6 +48,8 @@ public class ModItems {
       new EnumMap<>(ModNPCEntityType.class);
   public static final Map<ModCustomEntityType, Item> CUSTOM_NPC_SPAWN_EGGS =
       new EnumMap<>(ModCustomEntityType.class);
+  public static final Map<EpicFightEntityType, Item> EPIC_FIGHT_SPAWN_EGGS =
+      new EnumMap<>(EpicFightEntityType.class);
   public static final Item BULLET_ITEM = new BulletItem(new Item.Properties());
   public static final Item EASY_NPC_PRESET_EMPTY_ITEM =
       new EasyNPCPresetEmptyItem(new Item.Properties());
@@ -108,6 +112,30 @@ public class ModItems {
           "Registering custom spawn egg for {} with id {}.", entityTypeObject, entityType.getId());
       CUSTOM_NPC_SPAWN_EGGS.put(entityType, registerSpawnEgg(entityType.getId(), entityTypeObject));
     }
+
+    if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
+      for (EpicFightEntityType entityType : EpicFightEntityType.values()) {
+        EntityType<?> entityTypeObject = ModEntityType.EPIC_FIGHT_TYPE.get(entityType);
+        if (entityTypeObject == null) {
+          log.error("Unable to register Epic Fight spawn egg with id {}.", entityType.getId());
+          continue;
+        }
+        log.info(
+            "Registering Epic Fight spawn egg for {} with id {}.",
+            entityTypeObject,
+            entityType.getId());
+        EPIC_FIGHT_SPAWN_EGGS.put(
+            entityType, registerEpicFightSpawnEgg(entityType.getId(), entityTypeObject));
+      }
+    }
+  }
+
+  private static Item registerEpicFightSpawnEgg(String id, EntityType<?> entityType) {
+    String spawnEggId = id + ModSpawnEggItem.SUFFIX;
+    return registerItem(
+        spawnEggId,
+        new ModEpicFightSpawnEggItem(
+            (EntityType<? extends Mob>) entityType, new Item.Properties().rarity(Rarity.EPIC)));
   }
 
   private static Item registerItem(String id, Item item) {

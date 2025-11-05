@@ -21,7 +21,9 @@ package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.SkeletonRaw;
+import de.markusbordihn.easynpc.entity.easynpc.npc.raw.StrayRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.VillagerRaw;
+import de.markusbordihn.easynpc.entity.easynpc.npc.raw.WitherSkeletonRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.ZombieRaw;
 import java.util.HashMap;
 import java.util.Map;
@@ -105,6 +107,13 @@ public class NPCEntityFactory {
     registerEntityConstructor(
         EntityType.SKELETON,
         (type, level) -> new SkeletonRaw((EntityType<SkeletonRaw>) type, level));
+
+    registerEntityConstructor(
+        EntityType.STRAY, (type, level) -> new StrayRaw((EntityType<StrayRaw>) type, level));
+
+    registerEntityConstructor(
+        EntityType.WITHER_SKELETON,
+        (type, level) -> new WitherSkeletonRaw((EntityType<WitherSkeletonRaw>) type, level));
   }
 
   private static String getEntityTypeId(EntityType<?> entityType) {

@@ -6,11 +6,14 @@
   "refmap": "easy_npc.refmap.json",
   "client": [
     "model.EasyNPCHumanoidModelMixin",
+    "model.EasyNPCSpiderModelMixin",
     "model.EasyNPCVillagerModelMixin",
     "model.EasyNPCWolfModelMixin",
+    "renderer.DrownedOuterLayerMixin",
     "renderer.EasyNPCEntityRendererMixin",
     "renderer.EasyNPCLivingEntityRendererMixin",
     "renderer.HumanoidArmorLayerMixin",
+    "renderer.SkeletonClothingLayerMixin",
     "renderer.VillagerProfessionLayerMixin"
   ],
   "mixins": [

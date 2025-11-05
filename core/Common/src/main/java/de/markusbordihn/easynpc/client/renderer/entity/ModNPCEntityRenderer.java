@@ -20,6 +20,7 @@
 package de.markusbordihn.easynpc.client.renderer.entity;
 
 import de.markusbordihn.easynpc.client.renderer.entity.raw.AllayRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.BoggedRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.CatRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.ChickenRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.CreeperRawRenderer;
@@ -28,19 +29,25 @@ import de.markusbordihn.easynpc.client.renderer.entity.raw.EnderManRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.EvokerRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.FoxRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.HorseRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.HuskRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.IllusionerRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.IronGolemRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.PigRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.PiglinBruteRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.PiglinRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.PillagerRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.SkeletonRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.SpiderRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.StrayRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.VexRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.VillagerRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.VindicatorRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.WitchRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.WitherSkeletonRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.WolfRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.ZombieRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.ZombieVillagerRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.ZombifiedPiglinRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.PlayerRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.standard.PlayerSlimRenderer;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
@@ -52,6 +59,7 @@ import net.minecraft.world.entity.Entity;
 
 public enum ModNPCEntityRenderer {
   ALLAY(ModNPCEntityType.ALLAY, () -> AllayRawRenderer::new),
+  BOGGED(ModNPCEntityType.BOGGED, () -> BoggedRawRenderer::new),
   CAT(ModNPCEntityType.CAT, () -> CatRawRenderer::new),
   CHICKEN(ModNPCEntityType.CHICKEN, () -> ChickenRawRenderer::new),
   CREEPER(ModNPCEntityType.CREEPER, () -> CreeperRawRenderer::new),
@@ -59,30 +67,31 @@ public enum ModNPCEntityRenderer {
   ENDERMAN(ModNPCEntityType.ENDERMAN, () -> EnderManRawRenderer::new),
   EVOKER(ModNPCEntityType.EVOKER, () -> EvokerRawRenderer::new),
   FOX(ModNPCEntityType.FOX, () -> FoxRawRenderer::new),
-  HORSE(ModNPCEntityType.HORSE, () -> HorseRawRenderer::new),
   HORSE_SKELETON(ModNPCEntityType.HORSE_SKELETON, () -> HorseRawRenderer::new),
   HORSE_ZOMBIE(ModNPCEntityType.HORSE_ZOMBIE, () -> HorseRawRenderer::new),
-  HUMANOID(ModNPCEntityType.HUMANOID, () -> PlayerRenderer::new),
+  HORSE(ModNPCEntityType.HORSE, () -> HorseRawRenderer::new),
   HUMANOID_SLIM(ModNPCEntityType.HUMANOID_SLIM, () -> PlayerSlimRenderer::new),
+  HUMANOID(ModNPCEntityType.HUMANOID, () -> PlayerRenderer::new),
   ILLUSIONER(ModNPCEntityType.ILLUSIONER, () -> IllusionerRawRenderer::new),
   IRON_GOLEM(ModNPCEntityType.IRON_GOLEM, () -> IronGolemRawRenderer::new),
-  PIGLIN(ModNPCEntityType.PIGLIN, () -> PiglinRawRenderer::new),
-  PIGLIN_BRUTE(ModNPCEntityType.PIGLIN_BRUTE, () -> PiglinRawRenderer::new),
-  PIGLIN_ZOMBIFIED(ModNPCEntityType.PIGLIN_ZOMBIFIED, () -> PiglinRawRenderer::new),
   PIG(ModNPCEntityType.PIG, () -> PigRawRenderer::new),
+  PIGLIN_BRUTE(ModNPCEntityType.PIGLIN_BRUTE, () -> PiglinBruteRawRenderer::new),
+  PIGLIN_ZOMBIFIED(ModNPCEntityType.PIGLIN_ZOMBIFIED, () -> ZombifiedPiglinRawRenderer::new),
+  PIGLIN(ModNPCEntityType.PIGLIN, () -> PiglinRawRenderer::new),
   PILLAGER(ModNPCEntityType.PILLAGER, () -> PillagerRawRenderer::new),
   SKELETON(ModNPCEntityType.SKELETON, () -> SkeletonRawRenderer::new),
-  SKELETON_BOGGED(ModNPCEntityType.SKELETON_BOGGED, () -> SkeletonRawRenderer::new),
-  SKELETON_STRAY(ModNPCEntityType.SKELETON_STRAY, () -> SkeletonRawRenderer::new),
-  SKELETON_WITHER(ModNPCEntityType.SKELETON_WITHER, () -> SkeletonRawRenderer::new),
-  VILLAGER(ModNPCEntityType.VILLAGER, () -> VillagerRawRenderer::new),
+  SPIDER_CAVE(ModNPCEntityType.SPIDER_CAVE, () -> SpiderRawRenderer::new),
+  SPIDER(ModNPCEntityType.SPIDER, () -> SpiderRawRenderer::new),
+  STRAY(ModNPCEntityType.STRAY, () -> StrayRawRenderer::new),
   VEX(ModNPCEntityType.VEX, () -> VexRawRenderer::new),
+  VILLAGER(ModNPCEntityType.VILLAGER, () -> VillagerRawRenderer::new),
   VINDICATOR(ModNPCEntityType.VINDICATOR, () -> VindicatorRawRenderer::new),
   WITCH(ModNPCEntityType.WITCH, () -> WitchRawRenderer::new),
+  WITHER_SKELETON(ModNPCEntityType.WITHER_SKELETON, () -> WitherSkeletonRawRenderer::new),
   WOLF(ModNPCEntityType.WOLF, () -> WolfRawRenderer::new),
-  ZOMBIE(ModNPCEntityType.ZOMBIE, () -> ZombieRawRenderer::new),
-  ZOMBIE_HUSK(ModNPCEntityType.ZOMBIE_HUSK, () -> ZombieRawRenderer::new),
-  ZOMBIE_VILLAGER(ModNPCEntityType.ZOMBIE_VILLAGER, () -> ZombieVillagerRawRenderer::new);
+  ZOMBIE_HUSK(ModNPCEntityType.ZOMBIE_HUSK, () -> HuskRawRenderer::new),
+  ZOMBIE_VILLAGER(ModNPCEntityType.ZOMBIE_VILLAGER, () -> ZombieVillagerRawRenderer::new),
+  ZOMBIE(ModNPCEntityType.ZOMBIE, () -> ZombieRawRenderer::new);
 
   private final ModNPCEntityType entityType;
   private final Supplier<Function<Context, EntityRenderer<? extends Entity>>> renderer;

@@ -66,16 +66,6 @@ public class CatNPC extends CatRaw implements StandardEasyNPC<CatRaw> {
   }
 
   @Override
-  public int getEntityGuiScaling() {
-    return 55;
-  }
-
-  @Override
-  public int getEntityGuiTop() {
-    return -10;
-  }
-
-  @Override
   public int getEntityDialogTop() {
     return -37;
   }

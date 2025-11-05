@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.client.renderer;
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.entity.EntityRendererUtils;
 import de.markusbordihn.easynpc.client.renderer.entity.ModCustomEntityRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.ModEpicFightEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.ModNPCEntityRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.ModRawEntityRenderer;
 import de.markusbordihn.easynpc.compat.CompatConstants;
@@ -81,10 +82,13 @@ public class EntityRenderer {
       }
     }
 
-    // Optional: Epic Fight entities
+    // Register Epic Fight mod entity renderers
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
-      // event.registerEntityRenderer(ModEntityType.EPIC_FIGHT_ZOMBIE.get(),
-      // ZombieRawRenderer::new);
+      for (ModEpicFightEntityRenderer renderer : ModEpicFightEntityRenderer.values()) {
+        event.registerEntityRenderer(
+            ModEntityType.getEntityType(renderer.getEntityType()),
+            context -> renderer.getRenderer().apply(context));
+      }
     }
   }
 
@@ -101,7 +105,6 @@ public class EntityRenderer {
     event.registerEntityRenderer((EntityType<T>) entityType, provider);
   }
 
-  /** Creates an appropriate renderer for a user-defined entity based on its base entity type. */
   private static net.minecraft.client.renderer.entity.EntityRenderer<? extends LivingEntity>
       createRendererForBaseType(
           EntityRendererProvider.Context context, EntityType<?> baseEntityType) {

@@ -64,6 +64,12 @@ public class InteractionHandler {
         return InteractionResult.PASS;
       }
 
+      // Handle Move Easy NPC Item
+      Item moveEasyNPCItem = ItemUtils.getMoveEasyNPCItem();
+      if (handItem.equals(moveEasyNPCItem)) {
+        return InteractionResult.PASS;
+      }
+
       // Handle Armourer's Workshop items like the NPC wand.
       if (Constants.MOD_ARMOURERS_WORKSHOP_ID.equals(
           BuiltInRegistries.ITEM.getKey(handItem).getNamespace())) {

@@ -62,16 +62,6 @@ public class ChickenNPC extends ChickenRaw implements StandardEasyNPC<ChickenRaw
   }
 
   @Override
-  public int getEntityGuiScaling() {
-    return 60;
-  }
-
-  @Override
-  public int getEntityGuiTop() {
-    return -5;
-  }
-
-  @Override
   public int getEntityDialogTop() {
     return -37;
   }
