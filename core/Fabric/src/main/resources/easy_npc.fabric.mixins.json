@@ -5,11 +5,14 @@
   "compatibilityLevel": "JAVA_17",
   "client": [
     "model.EasyNPCHumanoidModelMixin",
+    "model.EasyNPCSpiderModelMixin",
     "model.EasyNPCVillagerModelMixin",
     "model.EasyNPCWolfModelMixin",
+    "renderer.DrownedOuterLayerMixin",
     "renderer.EasyNPCEntityRendererMixin",
     "renderer.EasyNPCLivingEntityRendererMixin",
     "renderer.HumanoidArmorLayerMixin",
+    "renderer.StrayClothingLayerMixin",
     "renderer.VillagerProfessionLayerMixin"
   ],
   "mixins": [

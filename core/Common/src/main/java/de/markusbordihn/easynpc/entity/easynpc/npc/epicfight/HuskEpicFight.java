@@ -17,35 +17,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.markusbordihn.easynpc.data.attribute;
+package de.markusbordihn.easynpc.entity.easynpc.npc.epicfight;
 
-import net.minecraft.nbt.CompoundTag;
+import de.markusbordihn.easynpc.compat.CompatConstants;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
+import de.markusbordihn.easynpc.entity.easynpc.npc.raw.HuskRaw;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.Husk;
+import net.minecraft.world.level.Level;
 
-public class CustomAttributes {
+public class HuskEpicFight extends HuskRaw {
 
-  public static final String CUSTOM_ATTRIBUTES_TAG = "CustomAttributes";
+  public static final String ID = CompatConstants.MOD_EPIC_FIGHT_PREFIX + HuskRaw.ID;
 
-  public CustomAttributes() {}
-
-  public CustomAttributes(final CompoundTag compoundTag) {
-    this.load(compoundTag);
+  public HuskEpicFight(EntityType<? extends Husk> entityType, Level level) {
+    super(entityType, level);
   }
 
-  public void load(final CompoundTag compoundTag) {
-    if (!compoundTag.contains(CUSTOM_ATTRIBUTES_TAG)) {
-      return;
-    }
-    CompoundTag customAttributesTag = compoundTag.getCompound(CUSTOM_ATTRIBUTES_TAG);
+  public HuskEpicFight(EntityType<? extends Husk> entityType, Level level, Enum<?> variant) {
+    super(entityType, level, variant);
   }
 
-  public CompoundTag save(CompoundTag compoundTag) {
-    CompoundTag customAttributesTag = new CompoundTag();
-
-    compoundTag.put(CUSTOM_ATTRIBUTES_TAG, customAttributesTag);
-    return compoundTag;
-  }
-
-  public CompoundTag createTag() {
-    return this.save(new CompoundTag());
+  @Override
+  public ConfigurationData getConfigurationData() {
+    return ConfigurationData.EPIC_FIGHT;
   }
 }

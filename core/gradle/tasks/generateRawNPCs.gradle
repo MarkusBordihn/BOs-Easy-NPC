@@ -49,7 +49,7 @@ task generateRawNPCs {
           variants : "DEFAULT"
       ],
       [
-          id       : "ender_man_raw",
+          id       : "enderman_raw",
           class    : "net.minecraft.world.entity.monster.EnderMan",
           className: "EnderManRaw",
           baseClass: "EnderMan",
@@ -113,6 +113,26 @@ task generateRawNPCs {
           variants : "DEFAULT"
       ],
       [
+          id       : "humanoid_raw",
+          class    : "net.minecraft.world.entity.PathfinderMob",
+          className: "HumanoidRaw",
+          baseClass: "PathfinderMob",
+          skinModel: "HUMANOID",
+          modelType: "HUMANOID",
+          variant  : "STEVE",
+          variants : "STEVE, ALEX, ARI, EFE, KAI, MAKENA, NOOR, SUNNY, ZURI"
+      ],
+      [
+          id       : "humanoid_slim_raw",
+          class    : "net.minecraft.world.entity.PathfinderMob",
+          className: "HumanoidSlimRaw",
+          baseClass: "PathfinderMob",
+          skinModel: "HUMANOID_SLIM",
+          modelType: "HUMANOID",
+          variant  : "ALEX",
+          variants : "STEVE, ALEX, ARI, EFE, KAI, MAKENA, NOOR, SUNNY, ZURI"
+      ],
+      [
           id       : "pillager_raw",
           class    : "net.minecraft.world.entity.monster.Pillager",
           className: "PillagerRaw",
@@ -140,13 +160,61 @@ task generateRawNPCs {
           variants : "PIGLIN, PIGLIN_BRUTE, ZOMBIFIED_PIGLIN"
       ],
       [
+          id       : "piglin_brute_raw",
+          class    : "net.minecraft.world.entity.monster.piglin.PiglinBrute",
+          className: "PiglinBruteRaw",
+          baseClass: "PiglinBrute",
+          modelType: "HUMANOID",
+          variant  : "DEFAULT",
+          variants : "DEFAULT"
+      ],
+      [
+          id       : "zombified_piglin_raw",
+          class    : "net.minecraft.world.entity.monster.ZombifiedPiglin",
+          className: "ZombifiedPiglinRaw",
+          baseClass: "ZombifiedPiglin",
+          modelType: "HUMANOID",
+          variant  : "DEFAULT",
+          variants : "DEFAULT"
+      ],
+      [
           id       : "skeleton_raw",
           class    : "net.minecraft.world.entity.monster.Skeleton",
           className: "SkeletonRaw",
           baseClass: "Skeleton",
           modelType: "HUMANOID",
-          variant  : "SKELETON",
-          variants : "BOGGED, SKELETON, STRAY, WITHER_SKELETON"
+          variant  : "DEFAULT",
+          variants : "DEFAULT"
+      ],
+      [
+          id       : "stray_raw",
+          class    : "net.minecraft.world.entity.monster.Stray",
+          className: "StrayRaw",
+          baseClass: "Stray",
+          skinModel: "STRAY",
+          modelType: "ZOMBIE",
+          variant  : "DEFAULT",
+          variants : "DEFAULT"
+      ],
+      [
+          id       : "wither_skeleton_raw",
+          class    : "net.minecraft.world.entity.monster.WitherSkeleton",
+          className: "WitherSkeletonRaw",
+          baseClass: "WitherSkeleton",
+          skinModel: "WITHER_SKELETON",
+          modelType: "ZOMBIE",
+          variant  : "DEFAULT",
+          variants : "DEFAULT"
+      ],
+      [
+          id       : "spider_raw",
+          class    : "net.minecraft.world.entity.monster.Spider",
+          className: "SpiderRaw",
+          baseClass: "Spider",
+          skinModel: "SPIDER",
+          modelType: "SPIDER",
+          variant  : "SPIDER",
+          variants : "CAVE_SPIDER, SPIDER"
       ],
       [
           id       : "vex_raw",
@@ -208,6 +276,15 @@ task generateRawNPCs {
           modelType: "ZOMBIE",
           variant  : "ZOMBIE",
           variants : "HUSK, ZOMBIE"
+      ],
+      [
+          id       : "husk_raw",
+          class    : "net.minecraft.world.entity.monster.Husk",
+          className: "HuskRaw",
+          baseClass: "Husk",
+          modelType: "ZOMBIE",
+          variant  : "DEFAULT",
+          variants : "DEFAULT"
       ],
       [
           id       : "zombie_villager_raw",

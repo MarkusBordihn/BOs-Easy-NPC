@@ -20,7 +20,6 @@
 package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.Constants;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.SkeletonRaw.VariantType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.AllayNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.CatNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.ChickenNPC;
@@ -32,19 +31,25 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.standard.FoxNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.HorseNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.HumanoidNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.HumanoidSlimNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.HuskNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.IllusionerNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.IronGolemNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.PigNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.PiglinBruteNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.PiglinNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.PillagerNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.SkeletonNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.SpiderNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.StrayNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.VexNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.VillagerNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.VindicatorNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.WitchNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.WitherSkeletonNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.WolfNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.ZombieNPC;
 import de.markusbordihn.easynpc.entity.easynpc.npc.standard.ZombieVillagerNPC;
+import de.markusbordihn.easynpc.entity.easynpc.npc.standard.ZombifiedPiglinNPC;
 import java.util.function.Supplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -185,23 +190,22 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       PiglinNPC::createAttributes),
   PIGLIN_BRUTE(
-      PiglinNPC.ID_BRUTE,
+      PiglinBruteNPC.ID,
       EntityType.Builder.of(
-              (EntityType<PiglinNPC> type, Level level) ->
-                  new PiglinNPC(type, level, PiglinNPC.VariantType.PIGLIN_BRUTE),
+              (EntityType<PiglinBruteNPC> type, Level level) -> new PiglinBruteNPC(type, level),
               MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
-      PiglinNPC::createAttributes),
+      PiglinBruteNPC::createAttributes),
   PIGLIN_ZOMBIFIED(
-      PiglinNPC.ID_ZOMBIFIED,
+      ZombifiedPiglinNPC.ID,
       EntityType.Builder.of(
-              (EntityType<PiglinNPC> type, Level level) ->
-                  new PiglinNPC(type, level, PiglinNPC.VariantType.ZOMBIFIED_PIGLIN),
+              (EntityType<ZombifiedPiglinNPC> type, Level level) ->
+                  new ZombifiedPiglinNPC(type, level),
               MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
-      PiglinNPC::createAttributes),
+      ZombifiedPiglinNPC::createAttributes),
   PIG(
       PigNPC.ID,
       EntityType.Builder.of(
@@ -225,24 +229,40 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       SkeletonNPC::createAttributes),
-  SKELETON_STRAY(
-      SkeletonNPC.ID_STRAY,
+  STRAY(
+      StrayNPC.ID,
       EntityType.Builder.of(
-              (EntityType<SkeletonNPC> type, Level level) ->
-                  new SkeletonNPC(type, level, VariantType.STRAY),
+              (EntityType<StrayNPC> type, Level level) -> new StrayNPC(type, level),
               MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
-      SkeletonNPC::createAttributes),
-  SKELETON_WITHER(
-      SkeletonNPC.ID_WITHER_SKELETON,
+      StrayNPC::createAttributes),
+  WITHER_SKELETON(
+      WitherSkeletonNPC.ID,
       EntityType.Builder.of(
-              (EntityType<SkeletonNPC> type, Level level) ->
-                  new SkeletonNPC(type, level, VariantType.WITHER_SKELETON),
+              (EntityType<WitherSkeletonNPC> type, Level level) ->
+                  new WitherSkeletonNPC(type, level),
               MobCategory.MONSTER)
-          .sized(0.6F, 1.95F)
+          .sized(0.7F, 2.4F)
           .clientTrackingRange(12),
-      SkeletonNPC::createAttributes),
+      WitherSkeletonNPC::createAttributes),
+  SPIDER(
+      SpiderNPC.ID,
+      EntityType.Builder.of(
+              (EntityType<SpiderNPC> type, Level level) -> new SpiderNPC(type, level),
+              MobCategory.MONSTER)
+          .sized(1.4F, 0.9F)
+          .clientTrackingRange(12),
+      SpiderNPC::createAttributes),
+  SPIDER_CAVE(
+      SpiderNPC.ID_CAVE_SPIDER,
+      EntityType.Builder.of(
+              (EntityType<SpiderNPC> type, Level level) ->
+                  new SpiderNPC(type, level, SpiderNPC.VariantType.CAVE_SPIDER),
+              MobCategory.MONSTER)
+          .sized(0.7F, 0.5F)
+          .clientTrackingRange(12),
+      SpiderNPC::createAttributes),
   VILLAGER(
       VillagerNPC.ID,
       EntityType.Builder.of(
@@ -291,14 +311,13 @@ public enum ModNPCEntityType implements ModEntityTypeProvider {
           .clientTrackingRange(12),
       ZombieNPC::createAttributes),
   ZOMBIE_HUSK(
-      ZombieNPC.ID_HUSK,
+      HuskNPC.ID,
       EntityType.Builder.of(
-              (EntityType<ZombieNPC> type, Level level) ->
-                  new ZombieNPC(type, level, ZombieNPC.VariantType.HUSK),
+              (EntityType<HuskNPC> type, Level level) -> new HuskNPC(type, level),
               MobCategory.MONSTER)
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
-      ZombieNPC::createAttributes),
+      HuskNPC::createAttributes),
   ZOMBIE_VILLAGER(
       ZombieVillagerNPC.ID,
       EntityType.Builder.of(

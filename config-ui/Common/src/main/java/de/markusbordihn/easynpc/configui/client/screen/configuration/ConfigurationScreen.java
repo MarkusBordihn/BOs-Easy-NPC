@@ -134,29 +134,21 @@ public class ConfigurationScreen<T extends EasyNPCMenu> extends Screen<T> {
     if (easyNPC == null) {
       return false;
     }
+    ConfigurationDataCapable<?> configurationData = easyNPC.getEasyNPCConfigurationData();
+    if (configurationData == null) {
+      return true;
+    }
+    if (!configurationData.supportsConfigurationType(configurationType)) {
+      return false;
+    }
     RenderDataCapable<?> renderData = easyNPC.getEasyNPCRenderData();
     boolean isCustomModel =
         renderData != null
             && renderData.getRenderDataSet() != null
             && renderData.getRenderDataSet().getRenderType() != RenderType.DEFAULT;
-    ConfigurationDataCapable<?> configurationData = easyNPC.getEasyNPCConfigurationData();
-
-    return switch (configurationType) {
-      case MAIN -> configurationData.supportsConfiguration();
-      case DEFAULT_MODEL, CUSTOM_MODEL -> configurationData.supportsChangeModelConfiguration();
-      case POSE -> !isCustomModel && configurationData.supportsPoseConfiguration();
-      case DEFAULT_POSE -> configurationData.supportsDefaultPoseConfiguration();
-      case ADVANCED_POSE -> configurationData.supportsAdvancedPoseConfiguration();
-      case CUSTOM_POSE -> configurationData.supportsCustomPoseConfiguration();
-      case SCALING -> !isCustomModel && configurationData.supportsScalingConfiguration();
-      case SKIN -> !isCustomModel && configurationData.supportsSkinConfiguration();
-      case DEFAULT_ROTATION -> configurationData.supportsDefaultRotationConfiguration();
-      case NONE_SKIN -> configurationData.supportsNoneSkinConfiguration();
-      case DEFAULT_SKIN -> configurationData.supportsDefaultSkinConfiguration();
-      case URL_SKIN -> configurationData.supportsUrlSkinConfiguration();
-      case PLAYER_SKIN -> configurationData.supportsPlayerSkinConfiguration();
-      case CUSTOM_SKIN -> configurationData.supportsCustomSkinConfiguration();
-      default -> true;
-    };
+    return !isCustomModel
+        || (configurationType != ConfigurationType.POSE
+            && configurationType != ConfigurationType.SCALING
+            && configurationType != ConfigurationType.SKIN);
   }
 }

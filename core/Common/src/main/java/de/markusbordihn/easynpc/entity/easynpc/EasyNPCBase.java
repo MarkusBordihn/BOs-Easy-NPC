@@ -26,10 +26,8 @@ import de.markusbordihn.easynpc.entity.easynpc.data.AttackDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ConfigurationDataCapable;
-import de.markusbordihn.easynpc.entity.easynpc.data.CustomAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DialogDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
-import de.markusbordihn.easynpc.entity.easynpc.data.GuiDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.NavigationDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ObjectiveDataCapable;
@@ -66,10 +64,8 @@ public interface EasyNPCBase<E extends PathfinderMob>
         BaseTickHandler<E>,
         ConfigDataCapable<E>,
         ConfigurationDataCapable<E>,
-        CustomAttributeDataCapable<E>,
         DialogDataCapable<E>,
         DisplayAttributeDataCapable<E>,
-        GuiDataCapable<E>,
         ModelDataCapable<E>,
         NavigationDataCapable<E>,
         ObjectiveDataCapable<E>,
@@ -89,7 +85,6 @@ public interface EasyNPCBase<E extends PathfinderMob>
       EnumMap<SynchedDataIndex, EntityDataAccessor<?>> map, Class<? extends Entity> entityClass) {
     AttackDataCapable.registerSyncedAttackData(map, entityClass);
     AttributeDataCapable.registerSyncedAttributeData(map, entityClass);
-    CustomAttributeDataCapable.registerSyncedCustomAttributeData(map, entityClass);
     DisplayAttributeDataCapable.registerSyncedDisplayAttributeData(map, entityClass);
     ModelDataCapable.registerSyncedModelData(map, entityClass);
     NavigationDataCapable.registerSyncedNavigationData(map, entityClass);
@@ -167,10 +162,6 @@ public interface EasyNPCBase<E extends PathfinderMob>
     AttributeDataCapable<E> attributeData = getEasyNPCAttributeData();
     if (attributeData != null) {
       attributeData.defineSynchedAttributeData();
-    }
-    CustomAttributeDataCapable<E> customAttributeData = getEasyNPCCustomAttributeData();
-    if (customAttributeData != null) {
-      customAttributeData.defineSynchedCustomAttributeData();
     }
     DialogDataCapable<E> dialogData = getEasyNPCDialogData();
     if (dialogData != null) {
@@ -261,10 +252,6 @@ public interface EasyNPCBase<E extends PathfinderMob>
     if (attributeData != null) {
       attributeData.addAdditionalAttributeData(compoundTag);
     }
-    CustomAttributeDataCapable<E> customAttributeData = getEasyNPCCustomAttributeData();
-    if (customAttributeData != null) {
-      customAttributeData.addAdditionalCustomAttributeData(compoundTag);
-    }
     ConfigDataCapable<E> configData = getEasyNPCConfigData();
     if (configData != null) {
       configData.addAdditionalConfigData(compoundTag);
@@ -352,10 +339,6 @@ public interface EasyNPCBase<E extends PathfinderMob>
     AttributeDataCapable<E> attributeData = getEasyNPCAttributeData();
     if (attributeData != null) {
       attributeData.readAdditionalAttributeData(compoundTag);
-    }
-    CustomAttributeDataCapable<E> customAttributeData = getEasyNPCCustomAttributeData();
-    if (customAttributeData != null) {
-      customAttributeData.readAdditionalCustomAttributeData(compoundTag);
     }
     DialogDataCapable<E> dialogData = getEasyNPCDialogData();
     if (dialogData != null) {

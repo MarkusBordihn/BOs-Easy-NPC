@@ -31,7 +31,10 @@ public class ItemUtils {
 
   private static final ResourceLocation EASY_NPC_WAND_RESOURCE_LOCATION =
       new ResourceLocation(Constants.MOD_ID, "easy_npc_wand");
+  private static final ResourceLocation MOVE_EASY_NPC_RESOURCE_LOCATION =
+      new ResourceLocation(Constants.MOD_ID, "move_easy_npc");
   private static Item cachedEasyNpcWandItem = null;
+  private static Item cachedMoveEasyNpcItem = null;
 
   private ItemUtils() {}
 
@@ -73,5 +76,25 @@ public class ItemUtils {
       cachedEasyNpcWandItem = BuiltInRegistries.ITEM.get(EASY_NPC_WAND_RESOURCE_LOCATION);
     }
     return cachedEasyNpcWandItem;
+  }
+
+  public static Item getMoveEasyNPCItem() {
+    if (cachedMoveEasyNpcItem == null) {
+      cachedMoveEasyNpcItem = BuiltInRegistries.ITEM.get(MOVE_EASY_NPC_RESOURCE_LOCATION);
+    }
+    return cachedMoveEasyNpcItem;
+  }
+
+  public static boolean isPlayerHoldingMoveEasyNPC(Player player) {
+    if (player == null) {
+      return false;
+    }
+
+    Item moveEasyNpcItem = getMoveEasyNPCItem();
+    if (moveEasyNpcItem == null || moveEasyNpcItem == Items.AIR) {
+      return false;
+    }
+
+    return isPlayerHoldingItem(player, moveEasyNpcItem);
   }
 }

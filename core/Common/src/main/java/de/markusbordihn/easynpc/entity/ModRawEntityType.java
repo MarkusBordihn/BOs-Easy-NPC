@@ -29,19 +29,25 @@ import de.markusbordihn.easynpc.entity.easynpc.npc.raw.EnderManRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.EvokerRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.FoxRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.HorseRaw;
+import de.markusbordihn.easynpc.entity.easynpc.npc.raw.HuskRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.IllusionerRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.IronGolemRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.PigRaw;
+import de.markusbordihn.easynpc.entity.easynpc.npc.raw.PiglinBruteRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.PiglinRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.PillagerRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.SkeletonRaw;
+import de.markusbordihn.easynpc.entity.easynpc.npc.raw.SpiderRaw;
+import de.markusbordihn.easynpc.entity.easynpc.npc.raw.StrayRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.VexRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.VillagerRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.VindicatorRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.WitchRaw;
+import de.markusbordihn.easynpc.entity.easynpc.npc.raw.WitherSkeletonRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.WolfRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.ZombieRaw;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.ZombieVillagerRaw;
+import de.markusbordihn.easynpc.entity.easynpc.npc.raw.ZombifiedPiglinRaw;
 import java.util.function.Supplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -139,6 +145,23 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
           .sized(0.6F, 1.9F)
           .clientTrackingRange(12),
       PiglinRaw::createAttributes),
+  PIGLIN_BRUTE(
+      PiglinBruteRaw.ID,
+      EntityType.Builder.of(
+              (EntityType<PiglinBruteRaw> type, Level level) -> new PiglinBruteRaw(type, level),
+              MobCategory.MONSTER)
+          .sized(0.6F, 1.9F)
+          .clientTrackingRange(12),
+      PiglinBruteRaw::createAttributes),
+  ZOMBIFIED_PIGLIN(
+      ZombifiedPiglinRaw.ID,
+      EntityType.Builder.of(
+              (EntityType<ZombifiedPiglinRaw> type, Level level) ->
+                  new ZombifiedPiglinRaw(type, level),
+              MobCategory.MONSTER)
+          .sized(0.6F, 1.9F)
+          .clientTrackingRange(12),
+      ZombifiedPiglinRaw::createAttributes),
   EVOKER(
       EvokerRaw.ID,
       EntityType.Builder.of(
@@ -170,6 +193,31 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
           .sized(0.6F, 1.99F)
           .clientTrackingRange(12),
       SkeletonRaw::createAttributes),
+  STRAY(
+      StrayRaw.ID,
+      EntityType.Builder.of(
+              (EntityType<StrayRaw> type, Level level) -> new StrayRaw(type, level),
+              MobCategory.MONSTER)
+          .sized(0.6F, 1.99F)
+          .clientTrackingRange(12),
+      StrayRaw::createAttributes),
+  WITHER_SKELETON(
+      WitherSkeletonRaw.ID,
+      EntityType.Builder.of(
+              (EntityType<WitherSkeletonRaw> type, Level level) ->
+                  new WitherSkeletonRaw(type, level),
+              MobCategory.MONSTER)
+          .sized(0.7F, 2.4F)
+          .clientTrackingRange(12),
+      WitherSkeletonRaw::createAttributes),
+  SPIDER(
+      SpiderRaw.ID,
+      EntityType.Builder.of(
+              (EntityType<SpiderRaw> type, Level level) -> new SpiderRaw(type, level),
+              MobCategory.MONSTER)
+          .sized(1.4F, 0.9F)
+          .clientTrackingRange(12),
+      SpiderRaw::createAttributes),
   VEX(
       VexRaw.ID,
       EntityType.Builder.of(
@@ -216,6 +264,14 @@ public enum ModRawEntityType implements ModEntityTypeProvider {
           .sized(0.6F, 1.95F)
           .clientTrackingRange(12),
       ZombieRaw::createAttributes),
+  HUSK(
+      HuskRaw.ID,
+      EntityType.Builder.of(
+              (EntityType<HuskRaw> type, Level level) -> new HuskRaw(type, level),
+              MobCategory.MONSTER)
+          .sized(0.6F, 1.95F)
+          .clientTrackingRange(12),
+      HuskRaw::createAttributes),
   ZOMBIE_VILLAGER(
       ZombieVillagerRaw.ID,
       EntityType.Builder.of(

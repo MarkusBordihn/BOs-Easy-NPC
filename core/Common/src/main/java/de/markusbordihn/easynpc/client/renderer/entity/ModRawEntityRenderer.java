@@ -28,19 +28,25 @@ import de.markusbordihn.easynpc.client.renderer.entity.raw.EnderManRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.EvokerRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.FoxRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.HorseRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.HuskRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.IllusionerRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.IronGolemRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.PigRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.PiglinBruteRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.PiglinRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.PillagerRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.SkeletonRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.SpiderRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.StrayRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.VexRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.VillagerRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.VindicatorRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.WitchRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.WitherSkeletonRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.WolfRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.ZombieRawRenderer;
 import de.markusbordihn.easynpc.client.renderer.entity.raw.ZombieVillagerRawRenderer;
+import de.markusbordihn.easynpc.client.renderer.entity.raw.ZombifiedPiglinRawRenderer;
 import de.markusbordihn.easynpc.entity.ModRawEntityType;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -54,22 +60,28 @@ public enum ModRawEntityRenderer {
   CHICKEN(ModRawEntityType.CHICKEN, () -> ChickenRawRenderer::new),
   CREEPER(ModRawEntityType.CREEPER, () -> CreeperRawRenderer::new),
   DROWNED(ModRawEntityType.DROWNED, () -> DrownedRawRenderer::new),
+  ENDER_MAN(ModRawEntityType.ENDER_MAN, () -> EnderManRawRenderer::new),
+  EVOKER(ModRawEntityType.EVOKER, () -> EvokerRawRenderer::new),
   FOX(ModRawEntityType.FOX, () -> FoxRawRenderer::new),
   HORSE(ModRawEntityType.HORSE, () -> HorseRawRenderer::new),
+  HUSK(ModRawEntityType.HUSK, () -> HuskRawRenderer::new),
   ILLUSIONER(ModRawEntityType.ILLUSIONER, () -> IllusionerRawRenderer::new),
   IRON_GOLEM(ModRawEntityType.IRON_GOLEM, () -> IronGolemRawRenderer::new),
-  ENDER_MAN(ModRawEntityType.ENDER_MAN, () -> EnderManRawRenderer::new),
-  PIGLIN(ModRawEntityType.PIGLIN, () -> PiglinRawRenderer::new),
-  EVOKER(ModRawEntityType.EVOKER, () -> EvokerRawRenderer::new),
   PIG(ModRawEntityType.PIG, () -> PigRawRenderer::new),
+  PIGLIN_BRUTE(ModRawEntityType.PIGLIN_BRUTE, () -> PiglinBruteRawRenderer::new),
+  PIGLIN(ModRawEntityType.PIGLIN, () -> PiglinRawRenderer::new),
   PILLAGER(ModRawEntityType.PILLAGER, () -> PillagerRawRenderer::new),
   SKELETON(ModRawEntityType.SKELETON, () -> SkeletonRawRenderer::new),
+  SPIDER(ModRawEntityType.SPIDER, () -> SpiderRawRenderer::new),
+  STRAY(ModRawEntityType.STRAY, () -> StrayRawRenderer::new),
   VEX(ModRawEntityType.VEX, () -> VexRawRenderer::new),
   VILLAGER(ModRawEntityType.VILLAGER, () -> VillagerRawRenderer::new),
   VINDICATOR(ModRawEntityType.VINDICATOR, () -> VindicatorRawRenderer::new),
   WITCH(ModRawEntityType.WITCH, () -> WitchRawRenderer::new),
+  WITHER_SKELETON(ModRawEntityType.WITHER_SKELETON, () -> WitherSkeletonRawRenderer::new),
   WOLF(ModRawEntityType.WOLF, () -> WolfRawRenderer::new),
   ZOMBIE(ModRawEntityType.ZOMBIE, () -> ZombieRawRenderer::new),
+  ZOMBIFIED_PIGLIN(ModRawEntityType.ZOMBIFIED_PIGLIN, () -> ZombifiedPiglinRawRenderer::new),
   ZOMBIE_VILLAGER(ModRawEntityType.ZOMBIE_VILLAGER, () -> ZombieVillagerRawRenderer::new);
 
   private final ModRawEntityType entityType;

@@ -20,7 +20,6 @@ package de.markusbordihn.easynpc.network.syncher;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.data.action.ActionEventSet;
-import de.markusbordihn.easynpc.data.attribute.CustomAttributes;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.data.dialog.DialogDataSet;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeEntry;
@@ -70,25 +69,6 @@ public class EntityDataSerializersManager {
 
             @Override
             public ActionEventSet copy(ActionEventSet value) {
-              return value;
-            }
-          });
-  public static final EntityDataSerializer<CustomAttributes> CUSTOM_ATTRIBUTES =
-      defineSerializer(
-          CustomAttributes.class.getSimpleName(),
-          new EntityDataSerializer<>() {
-            @Override
-            public void write(FriendlyByteBuf buffer, CustomAttributes value) {
-              buffer.writeNbt(value.createTag());
-            }
-
-            @Override
-            public CustomAttributes read(FriendlyByteBuf buffer) {
-              return new CustomAttributes(buffer.readNbt());
-            }
-
-            @Override
-            public CustomAttributes copy(CustomAttributes value) {
               return value;
             }
           });

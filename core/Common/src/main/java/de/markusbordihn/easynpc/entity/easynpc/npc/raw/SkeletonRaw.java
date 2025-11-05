@@ -22,6 +22,7 @@ package de.markusbordihn.easynpc.entity.easynpc.npc.raw;
 import static java.util.Objects.hash;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelType;
 import de.markusbordihn.easynpc.data.scale.CustomScale;
@@ -410,7 +411,8 @@ public class SkeletonRaw extends Skeleton implements EasyNPCBase<Skeleton> {
 
   @Override
   public boolean canBeHitByProjectile() {
-    return getEntityAttributes().getInteractionAttributes().canBeHitByProjectile();
+    return getEntityAttributes().getInteractionAttributes().canBeHitByProjectile()
+        && this.isAlive();
   }
 
   @Override
@@ -518,18 +520,8 @@ public class SkeletonRaw extends Skeleton implements EasyNPCBase<Skeleton> {
   }
 
   @Override
-  public boolean supportsPoseConfiguration() {
-    return true;
-  }
-
-  @Override
-  public boolean supportsScalingConfiguration() {
-    return true;
-  }
-
-  @Override
-  public boolean supportsDefaultRotationConfiguration() {
-    return true;
+  public ConfigurationData getConfigurationData() {
+    return ConfigurationData.RAW;
   }
 
   @Override
@@ -544,7 +536,7 @@ public class SkeletonRaw extends Skeleton implements EasyNPCBase<Skeleton> {
 
   @Override
   public Enum<?> getDefaultVariantType() {
-    return VariantType.SKELETON;
+    return VariantType.DEFAULT;
   }
 
   @Override
@@ -615,9 +607,6 @@ public class SkeletonRaw extends Skeleton implements EasyNPCBase<Skeleton> {
   }
 
   public enum VariantType {
-    BOGGED,
-    SKELETON,
-    STRAY,
-    WITHER_SKELETON
+    DEFAULT
   }
 }

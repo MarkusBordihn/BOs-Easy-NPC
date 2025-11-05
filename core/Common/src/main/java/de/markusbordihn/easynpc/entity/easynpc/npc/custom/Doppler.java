@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.custom;
 
+import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.PathfinderMobRaw;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -53,8 +54,8 @@ public class Doppler extends PathfinderMobRaw {
   }
 
   @Override
-  public boolean supportsChangeModelConfiguration() {
-    return true;
+  public ConfigurationData getConfigurationData() {
+    return ConfigurationData.DOPPLER;
   }
 
   @Override
