@@ -20,6 +20,8 @@
 package de.markusbordihn.easynpc.tabs;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.compat.CompatConstants;
+import de.markusbordihn.easynpc.entity.EpicFightEntityType;
 import de.markusbordihn.easynpc.entity.ModCustomEntityType;
 import de.markusbordihn.easynpc.item.ModItems;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
@@ -61,5 +63,21 @@ public class ModTabs {
             .title(Component.translatable("itemGroup.easy_npc.spawn_eggs"))
             .displayItems(new SpawnEggs())
             .build());
+
+    if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
+      Registry.register(
+          BuiltInRegistries.CREATIVE_MODE_TAB,
+          Constants.MOD_ID + ":epic_fight_spawn_eggs",
+          FabricItemGroup.builder()
+              .icon(
+                  () ->
+                      ModItems.EPIC_FIGHT_SPAWN_EGGS
+                          .get(EpicFightEntityType.ZOMBIE)
+                          .asItem()
+                          .getDefaultInstance())
+              .title(Component.translatable("itemGroup.easy_npc.epic_fight_spawn_eggs"))
+              .displayItems(new EpicFightSpawnEggs())
+              .build());
+    }
   }
 }

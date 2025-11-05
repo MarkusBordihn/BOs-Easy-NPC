@@ -61,16 +61,6 @@ public class AllayNPC extends AllayRaw implements StandardEasyNPC<AllayRaw> {
   }
 
   @Override
-  public int getEntityGuiScaling() {
-    return 65;
-  }
-
-  @Override
-  public int getEntityGuiTop() {
-    return -10;
-  }
-
-  @Override
   public int getEntityDialogTop() {
     return -50;
   }

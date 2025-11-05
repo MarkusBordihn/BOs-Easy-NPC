@@ -117,6 +117,7 @@ public enum ModelType {
           ModelPartType.LEFT_FRONT_LEG,
           ModelPartType.RIGHT_HIND_LEG,
           ModelPartType.LEFT_HIND_LEG)),
+  SPIDER(EnumSet.of(ModelPartType.HEAD, ModelPartType.RIGHT_ARM, ModelPartType.LEFT_ARM)),
   VILLAGER(
       EnumSet.of(
           ModelPartType.HEAD,

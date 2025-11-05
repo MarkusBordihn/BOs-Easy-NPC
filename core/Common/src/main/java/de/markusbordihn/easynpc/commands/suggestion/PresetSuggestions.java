@@ -32,16 +32,30 @@ import net.minecraft.commands.SharedSuggestionProvider;
 
 public class PresetSuggestions {
 
+  private static final long REFRESH_COOLDOWN_MS = 5000;
+  private static long lastCustomRefreshTime = 0;
+  private static long lastWorldRefreshTime = 0;
+
   private PresetSuggestions() {}
 
   public static CompletableFuture<Suggestions> suggest(
       CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {
+    long currentTime = System.currentTimeMillis();
+    if (currentTime - lastWorldRefreshTime >= REFRESH_COOLDOWN_MS) {
+      WorldPresetDataFiles.refreshPresetResourceLocations();
+      lastWorldRefreshTime = currentTime;
+    }
     return SharedSuggestionProvider.suggestResource(
         WorldPresetDataFiles.getPresetResourceLocations(), build);
   }
 
   public static CompletableFuture<Suggestions> suggestCustom(
       CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {
+    long currentTime = System.currentTimeMillis();
+    if (currentTime - lastCustomRefreshTime >= REFRESH_COOLDOWN_MS) {
+      CustomPresetDataFiles.refreshPresetResourceLocations();
+      lastCustomRefreshTime = currentTime;
+    }
     return SharedSuggestionProvider.suggestResource(
         CustomPresetDataFiles.getPresetResourceLocations(), build);
   }
@@ -60,6 +74,11 @@ public class PresetSuggestions {
 
   public static CompletableFuture<Suggestions> suggestWorld(
       CommandContext<CommandSourceStack> context, SuggestionsBuilder build) {
+    long currentTime = System.currentTimeMillis();
+    if (currentTime - lastWorldRefreshTime >= REFRESH_COOLDOWN_MS) {
+      WorldPresetDataFiles.refreshPresetResourceLocations();
+      lastWorldRefreshTime = currentTime;
+    }
     return SharedSuggestionProvider.suggestResource(
         WorldPresetDataFiles.getPresetResourceLocations(), build);
   }

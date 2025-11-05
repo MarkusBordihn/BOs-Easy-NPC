@@ -62,23 +62,8 @@ public class VexNPC extends VexRaw implements StandardEasyNPC<VexRaw> {
   }
 
   @Override
-  public int getEntityGuiScaling() {
-    return 80;
-  }
-
-  @Override
-  public int getEntityGuiTop() {
-    return -5;
-  }
-
-  @Override
   public int getEntityDialogTop() {
     return -25;
-  }
-
-  @Override
-  public int getEntityGuiLeft() {
-    return 0;
   }
 
   @Override

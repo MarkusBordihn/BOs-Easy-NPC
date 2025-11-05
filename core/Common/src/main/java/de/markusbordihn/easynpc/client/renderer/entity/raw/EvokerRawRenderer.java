@@ -41,11 +41,11 @@ public class EvokerRawRenderer<T extends SpellcasterIllager> extends EvokerRende
             map.put(
                 VariantType.EVOKER,
                 ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/evoker/evoker.png"));
+                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/illager/evoker.png"));
             map.put(
                 VariantType.EVOKER_CROSSED_ARMS,
                 ResourceLocation.fromNamespaceAndPath(
-                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/evoker/evoker.png"));
+                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/illager/evoker.png"));
           });
   protected static final ResourceLocation DEFAULT_TEXTURE =
       TEXTURE_BY_VARIANT_TYPE.get(VariantType.EVOKER);
