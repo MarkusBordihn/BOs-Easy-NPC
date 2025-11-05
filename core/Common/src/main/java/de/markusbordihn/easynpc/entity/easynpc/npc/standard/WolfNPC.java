@@ -66,16 +66,6 @@ public class WolfNPC extends WolfRaw implements StandardEasyNPC<WolfRaw> {
   }
 
   @Override
-  public int getEntityGuiScaling() {
-    return 55;
-  }
-
-  @Override
-  public int getEntityGuiTop() {
-    return -15;
-  }
-
-  @Override
   public int getEntityDialogTop() {
     return -37;
   }

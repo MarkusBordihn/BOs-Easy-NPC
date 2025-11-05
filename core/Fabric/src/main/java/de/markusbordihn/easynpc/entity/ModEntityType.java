@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.entity;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.compat.CompatConstants;
-import de.markusbordihn.easynpc.compat.epicfight.entity.EpicFightZombie;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,10 +44,9 @@ public class ModEntityType {
       new EnumMap<>(ModCustomEntityType.class);
   public static final Map<UserDefinedEntityType, EntityType<?>> USER_DEFINED_TYPE =
       new ConcurrentHashMap<>();
+  public static final Map<EpicFightEntityType, EntityType<?>> EPIC_FIGHT_TYPE =
+      new EnumMap<>(EpicFightEntityType.class);
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
-
-  // Optional: Epic Fight entities
-  public static EntityType<EpicFightZombie> EPIC_FIGHT_ZOMBIE;
 
   static {
     // Raw entities (for modding only)
@@ -96,13 +94,18 @@ public class ModEntityType {
       USER_DEFINED_TYPE.put(type, entityType);
       UserDefinedEntityRegistry.registerEntityType(type, entityType);
     }
-  }
 
-  static {
+    // Register Epic Fight entity types if the mod is loaded
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
-      // EPIC_FIGHT_ZOMBIE =
-      //    Registry.register(
-      //        BuiltInRegistries.ENTITY_TYPE, EpicFightZombie.ID, EpicFightEntityTypes.ZOMBIE);
+      for (EpicFightEntityType type : EpicFightEntityType.values()) {
+        log.info("Registering Epic Fight entity type {}", type.getResourceKey());
+        EPIC_FIGHT_TYPE.put(
+            type,
+            Registry.register(
+                BuiltInRegistries.ENTITY_TYPE,
+                Constants.MOD_PREFIX_ID + type.getId(),
+                type.getBuilder().build(type.getResourceKey())));
+      }
     }
   }
 
@@ -133,6 +136,7 @@ public class ModEntityType {
   }
 
   public static void registerEntityAttributes() {
+
     // Raw entities (for modding only)
     for (ModRawEntityType type : ModRawEntityType.values()) {
       if (type.getAttributes() != null) {
@@ -284,11 +288,28 @@ public class ModEntityType {
       }
     }
 
-    // Optional: Epic Fight entities
     if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
-      // FabricDefaultAttributeRegistry.register(
-      //    EPIC_FIGHT_ZOMBIE,
-      //    net.minecraft.world.entity.monster.Zombie.createAttributes().build());
+      for (EpicFightEntityType type : EpicFightEntityType.values()) {
+        if (type.getAttributes() != null) {
+          FabricDefaultAttributeRegistry.register(
+              (EntityType<? extends LivingEntity>) EPIC_FIGHT_TYPE.get(type),
+              type.getAttributes().build());
+        } else {
+          log.warn(
+              "Epic Fight entity type {} does not have attributes defined!", type.getResourceKey());
+        }
+      }
     }
+  }
+
+  public static <T extends Entity> EntityType<T> getEntityType(EpicFightEntityType type) {
+    if (!EPIC_FIGHT_TYPE.containsKey(type)) {
+      throw new IllegalArgumentException(
+          "Invalid Epic Fight entity type '"
+              + type
+              + "'! Supported types are "
+              + EPIC_FIGHT_TYPE.keySet());
+    }
+    return (EntityType<T>) EPIC_FIGHT_TYPE.get(type);
   }
 }

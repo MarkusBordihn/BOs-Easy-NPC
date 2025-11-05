@@ -61,23 +61,8 @@ public class EnderManNPC extends EnderManRaw implements StandardEasyNPC<EnderMan
   }
 
   @Override
-  public int getEntityGuiScaling() {
-    return 50;
-  }
-
-  @Override
-  public int getEntityGuiTop() {
-    return -25;
-  }
-
-  @Override
   public int getEntityDialogTop() {
     return -45;
-  }
-
-  @Override
-  public int getEntityGuiLeft() {
-    return 0;
   }
 
   @Override

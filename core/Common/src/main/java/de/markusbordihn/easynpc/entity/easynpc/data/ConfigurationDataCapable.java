@@ -19,65 +19,18 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.data;
 
+import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
+import de.markusbordihn.easynpc.data.configuration.ConfigurationType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.world.entity.PathfinderMob;
 
-@SuppressWarnings("unused")
 public interface ConfigurationDataCapable<T extends PathfinderMob> extends EasyNPC<T> {
 
-  default boolean supportsConfiguration() {
-    return true;
+  default ConfigurationData getConfigurationData() {
+    return ConfigurationData.STANDARD;
   }
 
-  default boolean supportsChangeModelConfiguration() {
-    return false;
-  }
-
-  default boolean supportsPoseConfiguration() {
-    return true;
-  }
-
-  default boolean supportsDefaultPoseConfiguration() {
-    return true;
-  }
-
-  default boolean supportsAdvancedPoseConfiguration() {
-    return true;
-  }
-
-  default boolean supportsCustomPoseConfiguration() {
-    return true;
-  }
-
-  default boolean supportsScalingConfiguration() {
-    return true;
-  }
-
-  default boolean supportsDefaultRotationConfiguration() {
-    return true;
-  }
-
-  default boolean supportsSkinConfiguration() {
-    return true;
-  }
-
-  default boolean supportsNoneSkinConfiguration() {
-    return true;
-  }
-
-  default boolean supportsDefaultSkinConfiguration() {
-    return true;
-  }
-
-  default boolean supportsUrlSkinConfiguration() {
-    return true;
-  }
-
-  default boolean supportsPlayerSkinConfiguration() {
-    return false;
-  }
-
-  default boolean supportsCustomSkinConfiguration() {
-    return true;
+  default boolean supportsConfigurationType(ConfigurationType type) {
+    return getConfigurationData().isEnabled(type);
   }
 }

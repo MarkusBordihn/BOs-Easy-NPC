@@ -98,15 +98,25 @@ public class DopplerRenderer
                     LivingEntityRenderState,
                     EntityModel<? super LivingEntityRenderState>>)
                 RendererManager.getLivingEntityRenderer(renderEntityType, customEntity);
-    LivingEntityRenderState livingEntityRenderState =
-        livingEntityRenderer.createRenderState(customEntity, 0);
-    if (livingEntityRenderState instanceof EasyNPCRenderStateExtension extension) {
-      extension.setEasyNpcUUID(easyNPC.getEntityUUID());
-    }
     if (livingEntityRenderer != null) {
       try {
+        // Copy entity data FIRST, so the render state gets the correct rotation
         RendererManager.copyCustomLivingEntityData(
             entity.getPathfinderMob(), customEntity, entityTypeName);
+
+        // Sync body rotation with head rotation for proper mouse following in screens
+        if (RendererManager.isScreenRendering()) {
+          customEntity.yBodyRot = customEntity.getYHeadRot();
+          customEntity.yBodyRotO = customEntity.yHeadRotO;
+        }
+
+        // Create render state AFTER copying data
+        LivingEntityRenderState livingEntityRenderState =
+            livingEntityRenderer.createRenderState(customEntity, 0);
+        if (livingEntityRenderState instanceof EasyNPCRenderStateExtension extension) {
+          extension.setEasyNpcUUID(easyNPC.getEntityUUID());
+        }
+
         livingEntityRenderer.render(livingEntityRenderState, poseStack, buffer, packedLight);
         return true;
       } catch (Exception exception) {

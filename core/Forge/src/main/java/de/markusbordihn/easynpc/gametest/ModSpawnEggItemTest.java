@@ -225,8 +225,8 @@ public class ModSpawnEggItemTest {
   public static void useStrayNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
-        ModItems.NPC_SPAWN_EGGS.get(ModNPCEntityType.SKELETON_STRAY).get(),
-        ModEntityType.getEntityType(ModNPCEntityType.SKELETON_STRAY));
+        ModItems.NPC_SPAWN_EGGS.get(ModNPCEntityType.STRAY).get(),
+        ModEntityType.getEntityType(ModNPCEntityType.STRAY));
     helper.succeed();
   }
 
@@ -252,8 +252,8 @@ public class ModSpawnEggItemTest {
   public static void useWitherSkeletonNPCSpawnEggItem(GameTestHelper helper) {
     ModSpawnEggItemTestHelper.useSpawnEggItem(
         helper,
-        ModItems.NPC_SPAWN_EGGS.get(ModNPCEntityType.SKELETON_WITHER).get(),
-        ModEntityType.getEntityType(ModNPCEntityType.SKELETON_WITHER));
+        ModItems.NPC_SPAWN_EGGS.get(ModNPCEntityType.WITHER_SKELETON).get(),
+        ModEntityType.getEntityType(ModNPCEntityType.WITHER_SKELETON));
     helper.succeed();
   }
 
