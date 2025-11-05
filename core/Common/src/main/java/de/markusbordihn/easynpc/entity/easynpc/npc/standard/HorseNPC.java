@@ -77,11 +77,6 @@ public class HorseNPC extends HorseRaw implements StandardEasyNPC<HorseRaw> {
   }
 
   @Override
-  public int getEntityGuiTop() {
-    return -15;
-  }
-
-  @Override
   public int getEntityDialogTop() {
     return -37;
   }

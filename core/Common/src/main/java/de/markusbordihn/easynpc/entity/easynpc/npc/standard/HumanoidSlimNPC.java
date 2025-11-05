@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.data.configuration.ConfigurationData;
 import de.markusbordihn.easynpc.data.skin.SkinModel;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
@@ -83,13 +84,13 @@ public class HumanoidSlimNPC extends PathfinderMobRaw implements StandardEasyNPC
   }
 
   @Override
-  public boolean supportsPlayerSkinConfiguration() {
+  public boolean canUseArmor() {
     return true;
   }
 
   @Override
-  public boolean canUseArmor() {
-    return true;
+  public ConfigurationData getConfigurationData() {
+    return ConfigurationData.HUMANOID;
   }
 
   @Override

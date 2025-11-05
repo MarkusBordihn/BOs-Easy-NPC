@@ -19,6 +19,8 @@
 package de.markusbordihn.easynpc.tabs;
 
 import de.markusbordihn.easynpc.Constants;
+import de.markusbordihn.easynpc.compat.CompatConstants;
+import de.markusbordihn.easynpc.entity.EpicFightEntityType;
 import de.markusbordihn.easynpc.entity.ModCustomEntityType;
 import de.markusbordihn.easynpc.item.ModItems;
 import net.minecraft.core.registries.Registries;
@@ -41,7 +43,6 @@ public class ModTabs {
                   .displayItems(new ConfigItems())
                   .title(Component.translatable("itemGroup.easy_npc.config_items"))
                   .build());
-
   public static final RegistryObject<CreativeModeTab> TAB_SPAWN_EGGS =
       CREATIVE_TABS.register(
           "spawn_eggs",
@@ -56,6 +57,27 @@ public class ModTabs {
                   .displayItems(new SpawnEggs())
                   .title(Component.translatable("itemGroup.easy_npc.spawn_eggs"))
                   .build());
+
+  public static RegistryObject<CreativeModeTab> TAB_EPIC_FIGHT_SPAWN_EGGS;
+
+  static {
+    if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
+      TAB_EPIC_FIGHT_SPAWN_EGGS =
+          CREATIVE_TABS.register(
+              "epic_fight_spawn_eggs",
+              () ->
+                  CreativeModeTab.builder()
+                      .icon(
+                          () ->
+                              ModItems.EPIC_FIGHT_SPAWN_EGGS
+                                  .get(EpicFightEntityType.ZOMBIE)
+                                  .get()
+                                  .getDefaultInstance())
+                      .displayItems(new EpicFightSpawnEggs())
+                      .title(Component.translatable("itemGroup.easy_npc.epic_fight_spawn_eggs"))
+                      .build());
+    }
+  }
 
   protected ModTabs() {}
 }

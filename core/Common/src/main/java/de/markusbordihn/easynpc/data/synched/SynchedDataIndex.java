@@ -21,7 +21,6 @@ package de.markusbordihn.easynpc.data.synched;
 
 public enum SynchedDataIndex {
   ATTACK_IS_CHARGING_CROSSBOW,
-  CUSTOM_ATTRIBUTES,
   DISPLAY_ATTRIBUTE_SET,
   ENTITY_ATTRIBUTES,
   MODEL_POSE,

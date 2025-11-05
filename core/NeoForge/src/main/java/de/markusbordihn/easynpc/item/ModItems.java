@@ -21,7 +21,9 @@ package de.markusbordihn.easynpc.item;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.block.ModBlocks;
+import de.markusbordihn.easynpc.compat.CompatConstants;
 import de.markusbordihn.easynpc.data.spawner.SpawnerType;
+import de.markusbordihn.easynpc.entity.EpicFightEntityType;
 import de.markusbordihn.easynpc.entity.ModCustomEntityType;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
@@ -52,6 +54,8 @@ public class ModItems {
       new EnumMap<>(ModNPCEntityType.class);
   public static final Map<ModCustomEntityType, DeferredItem<Item>> CUSTOM_NPC_SPAWN_EGGS =
       new EnumMap<>(ModCustomEntityType.class);
+  public static final Map<EpicFightEntityType, DeferredItem<Item>> EPIC_FIGHT_SPAWN_EGGS =
+      new EnumMap<>(EpicFightEntityType.class);
   public static final DeferredItem<Item> BULLET_ITEM =
       ITEMS.register(BulletItem.ID, () -> new BulletItem(new Item.Properties()));
   public static final DeferredItem<Item> EASY_NPC_PRESET_EMPTY_ITEM =
@@ -141,9 +145,37 @@ public class ModItems {
           "Registering custom spawn egg for {} with id {}.", entityTypeObject, entityType.getId());
       CUSTOM_NPC_SPAWN_EGGS.put(entityType, registerSpawnEgg(entityType.getId(), entityTypeObject));
     }
+
+    if (CompatConstants.MOD_EPIC_FIGHT_LOADED) {
+      for (EpicFightEntityType entityType : EpicFightEntityType.values()) {
+        DeferredHolder<EntityType<?>, EntityType<?>> entityTypeObject =
+            ModEntityType.EPIC_FIGHT_TYPE.get(entityType);
+        if (entityTypeObject == null) {
+          log.error("Unable to register Epic Fight spawn egg with id {}.", entityType.getId());
+          continue;
+        }
+        log.info(
+            "Registering Epic Fight spawn egg for {} with id {}.",
+            entityTypeObject,
+            entityType.getId());
+        EPIC_FIGHT_SPAWN_EGGS.put(
+            entityType, registerEpicFightSpawnEgg(entityType.getId(), entityTypeObject));
+      }
+    }
   }
 
   private ModItems() {}
+
+  private static DeferredItem<Item> registerEpicFightSpawnEgg(
+      String id, Supplier<? extends EntityType<?>> entityTypeSupplier) {
+    String spawnEggId = id + ModSpawnEggItem.SUFFIX;
+    return ITEMS.register(
+        spawnEggId,
+        () ->
+            new ModEpicFightSpawnEggItem(
+                (Supplier<? extends EntityType<? extends Mob>>) entityTypeSupplier,
+                new Item.Properties().rarity(Rarity.EPIC)));
+  }
 
   private static DeferredItem<Item> registerSpawnEgg(
       String id, Supplier<? extends EntityType<?>> entityTypeSupplier) {

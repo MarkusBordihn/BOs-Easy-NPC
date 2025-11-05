@@ -61,23 +61,8 @@ public class CreeperNPC extends CreeperRaw implements StandardEasyNPC<CreeperRaw
   }
 
   @Override
-  public int getEntityGuiScaling() {
-    return 65;
-  }
-
-  @Override
-  public int getEntityGuiTop() {
-    return -10;
-  }
-
-  @Override
   public int getEntityDialogTop() {
     return -35;
-  }
-
-  @Override
-  public int getEntityGuiLeft() {
-    return 0;
   }
 
   @Override

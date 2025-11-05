@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.client.renderer.screen;
 
+import de.markusbordihn.easynpc.client.renderer.manager.RendererManager;
 import de.markusbordihn.easynpc.data.model.ModelPartType;
 import de.markusbordihn.easynpc.data.model.ModelPose;
 import de.markusbordihn.easynpc.data.render.EntityRenderConfig;
@@ -88,8 +89,13 @@ public class EntityScreenRenderer {
       bottom = config.y() + (int) (renderScale * 0.5f);
     }
 
-    InventoryScreen.renderEntityInInventoryFollowsMouse(
-        guiGraphics, left, top, right, bottom, renderScale, 0.0f, mouseX, mouseY, livingEntity);
+    try {
+      RendererManager.setScreenRendering(true);
+      InventoryScreen.renderEntityInInventoryFollowsMouse(
+          guiGraphics, left, top, right, bottom, renderScale, 0.0f, mouseX, mouseY, livingEntity);
+    } finally {
+      RendererManager.setScreenRendering(false);
+    }
 
     restoreEntityState(easyNPC, backupState);
   }

@@ -27,7 +27,7 @@ import de.markusbordihn.easynpc.commands.arguments.EasyNPCArgument;
 import de.markusbordihn.easynpc.commands.suggestion.PresetSuggestions;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.handler.PresetHandler;
-import de.markusbordihn.easynpc.io.CustomPresetDataFiles;
+import de.markusbordihn.easynpc.io.DataFileHandler;
 import java.util.UUID;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -677,7 +677,7 @@ public class PresetCommand extends Command {
     }
 
     String presetFileName =
-        CustomPresetDataFiles.getPresetFileName(
+        DataFileHandler.getPresetFileName(
             name != null && !name.isEmpty() ? name : easyNPC.getEntityUUID().toString());
     // TODO: Re-implement export local preset
     // NetworkMessageHandlerManager.getClientHandler()

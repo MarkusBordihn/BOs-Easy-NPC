@@ -154,14 +154,14 @@ public class ConfigurationMenuHandler {
             "DefaultPresets", CompoundTagUtils.writeResourceLocations(defaultPresets));
       }
       case CUSTOM_PRESET_IMPORT -> {
-        Set<ResourceLocation> customPresets =
-            CustomPresetDataFiles.getPresetResourceLocations().collect(Collectors.toSet());
+        CustomPresetDataFiles.refreshPresetResourceLocations();
+        Set<ResourceLocation> customPresets = CustomPresetDataFiles.getPresetResourceLocationSet();
         additionalSyncData.put(
             "CustomPresets", CompoundTagUtils.writeResourceLocations(customPresets));
       }
       case WORLD_PRESET_IMPORT -> {
-        Set<ResourceLocation> worldPresets =
-            WorldPresetDataFiles.getPresetResourceLocations().collect(Collectors.toSet());
+        WorldPresetDataFiles.refreshPresetResourceLocations();
+        Set<ResourceLocation> worldPresets = WorldPresetDataFiles.getPresetResourceLocationSet();
         additionalSyncData.put(
             "WorldPresets", CompoundTagUtils.writeResourceLocations(worldPresets));
       }

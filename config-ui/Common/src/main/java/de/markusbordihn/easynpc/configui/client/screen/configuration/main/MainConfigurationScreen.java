@@ -28,6 +28,7 @@ import de.markusbordihn.easynpc.client.screen.components.Text;
 import de.markusbordihn.easynpc.client.screen.components.TextButton;
 import de.markusbordihn.easynpc.client.screen.components.TextField;
 import de.markusbordihn.easynpc.configui.client.renderer.screen.EntityConfigScreenRenderer;
+import de.markusbordihn.easynpc.configui.client.screen.EntityGuiScaling;
 import de.markusbordihn.easynpc.configui.client.screen.components.NameVisibilityToggleButton;
 import de.markusbordihn.easynpc.configui.client.screen.configuration.ConfigurationScreen;
 import de.markusbordihn.easynpc.configui.menu.configuration.ConfigurationMenu;
@@ -127,7 +128,7 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
         EntityRenderConfig.guiScaled(
             this.leftPos + 60,
             this.avatarTopPos + 150,
-            getEasyNPC().getEasyNPCGuiData().getEntityGuiScaling(),
+            EntityGuiScaling.getScaling(getEasyNPC()),
             this.leftPos + 50 - this.xMouse,
             this.contentTopPos + 70 - this.yMouse),
         this.xMouse,
@@ -411,8 +412,6 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
       return;
     }
 
-    boolean supportsChangeModel = this.getConfigurationData().supportsChangeModelConfiguration();
-
     Button changeModelButton =
         this.addRenderableWidget(
             new TextButton(
@@ -422,9 +421,6 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                 14,
                 "change_model",
                 onPress -> {
-                  if (!supportsChangeModel) {
-                    return; // Safety check, should not happen if button is disabled
-                  }
                   switch (renderDataSet.getRenderType()) {
                     case CUSTOM_ENTITY:
                       NetworkMessageHandlerManager.getServerHandler()
@@ -437,10 +433,11 @@ public class MainConfigurationScreen<T extends ConfigurationMenu> extends Config
                       break;
                   }
                 }));
-    changeModelButton.active = supportsChangeModel;
+    changeModelButton.active =
+        this.supportsConfigurationType(ConfigurationType.DEFAULT_MODEL)
+            || this.supportsConfigurationType(ConfigurationType.CUSTOM_MODEL);
 
-    // Add tooltip for disabled button
-    if (!supportsChangeModel) {
+    if (!changeModelButton.active) {
       changeModelButton.setTooltip(
           net.minecraft.client.gui.components.Tooltip.create(
               TextComponent.getTranslatedConfigText("change_model.tooltip.only_doppler")));
