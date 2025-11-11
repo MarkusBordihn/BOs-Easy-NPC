@@ -57,7 +57,7 @@ public class NoneSkinConfigurationScreen<T extends ConfigurationMenu>
     // Former skin type and variant
     SkinType formerSkinType = skinData.getSkinType();
     UUID formerSkinUUID = skinData.getSkinUUID();
-    Enum<?> formerVariant = variantData.getVariantType();
+    Enum<?> formerVariant = variantData.getSkinVariantType();
 
     // None Dialog Checkbox
     this.noneSkinCheckbox =
@@ -80,7 +80,7 @@ public class NoneSkinConfigurationScreen<T extends ConfigurationMenu>
                                 : formerSkinType == SkinType.CUSTOM
                                     ? SkinDataEntry.createCustomSkin(formerSkinUUID, true)
                                     : SkinDataEntry.createDefaultSkin(
-                                        variantData.getDefaultVariantType().name()));
+                                        variantData.getDefaultSkinVariantType().name()));
                   }
                 }));
   }

@@ -19,6 +19,7 @@
 
 package de.markusbordihn.easynpc.entity.easynpc.npc.standard;
 
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.data.sound.SoundDataSet;
 import de.markusbordihn.easynpc.data.sound.SoundType;
 import de.markusbordihn.easynpc.entity.easynpc.npc.raw.IronGolemRaw;
@@ -37,7 +38,7 @@ public class IronGolemNPC extends IronGolemRaw implements StandardEasyNPC<IronGo
   public static final String ID = "iron_golem";
 
   public IronGolemNPC(EntityType<? extends IronGolem> entityType, Level level) {
-    this(entityType, level, VariantType.IRON_GOLEM);
+    this(entityType, level, SkinVariantType.IRON_GOLEM.IRON_GOLEM);
   }
 
   public IronGolemNPC(

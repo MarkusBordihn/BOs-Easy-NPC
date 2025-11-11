@@ -20,8 +20,8 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.WitchRaw.VariantType;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
@@ -32,16 +32,16 @@ import net.minecraft.world.entity.monster.Witch;
 
 public class WitchRawRenderer extends WitchRenderer implements EasyNPCEntityRenderer {
 
-  protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
+  protected static final Map<SkinVariantType.WITCH, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
       Util.make(
-          new EnumMap<>(VariantType.class),
+          new EnumMap<>(SkinVariantType.WITCH.class),
           map ->
               map.put(
-                  VariantType.DEFAULT,
+                  SkinVariantType.WITCH.WITCH,
                   ResourceLocation.fromNamespaceAndPath(
                       ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/witch.png")));
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(VariantType.DEFAULT);
+      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.WITCH.WITCH);
 
   public WitchRawRenderer(EntityRendererProvider.Context context) {
     super(context);

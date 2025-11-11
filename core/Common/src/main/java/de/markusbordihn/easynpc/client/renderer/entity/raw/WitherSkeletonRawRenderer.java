@@ -20,31 +20,32 @@
 package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.SkeletonRaw.VariantType;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.WitherSkeletonRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.monster.WitherSkeleton;
 
 public class WitherSkeletonRawRenderer extends WitherSkeletonRenderer
     implements EasyNPCEntityRenderer {
 
-  protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
+  protected static final Map<SkinVariantType.SKELETON, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
       Util.make(
-          new EnumMap<>(VariantType.class),
+          new EnumMap<>(SkinVariantType.SKELETON.class),
           map -> {
             map.put(
-                VariantType.DEFAULT,
+                SkinVariantType.SKELETON.WITHER_SKELETON,
                 ResourceLocation.fromNamespaceAndPath(
                     ResourceLocation.DEFAULT_NAMESPACE,
                     "textures/entity/skeleton/wither_skeleton.png"));
           });
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(VariantType.DEFAULT);
+      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.SKELETON.WITHER_SKELETON);
 
   public WitherSkeletonRawRenderer(EntityRendererProvider.Context context) {
     super(context);

@@ -45,50 +45,50 @@ public class DialogCommand extends Command {
                 .then(
                     Commands.literal("default")
                         .then(
-                            Commands.argument(NPC_TARGET_ARGUMENT, EasyNPCArgument.npc())
+                            Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                                 .then(
-                                    Commands.argument("dialog", DialogArgument.uuidOrLabel())
+                                    Commands.argument(DIALOG_ARG, DialogArgument.uuidOrLabel())
                                         .executes(
                                             context ->
                                                 setDefaultDialog(
                                                     context.getSource(),
                                                     EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARGUMENT),
+                                                        context, NPC_TARGET_ARG),
                                                     DialogArgument.getUuidOrLabel(
-                                                        context, "dialog")))))))
+                                                        context, DIALOG_ARG)))))))
         .then(
             Commands.literal("open")
                 .then(
-                    Commands.argument(NPC_TARGET_ARGUMENT, EasyNPCArgument.npc())
+                    Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .then(
-                            Commands.argument("player", EntityArgument.player())
+                            Commands.argument(PLAYER_ARG, EntityArgument.player())
                                 .executes(
                                     context ->
                                         openDialog(
                                             context.getSource(),
                                             EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARGUMENT),
-                                            EntityArgument.getPlayer(context, "player")))
+                                                context, NPC_TARGET_ARG),
+                                            EntityArgument.getPlayer(context, PLAYER_ARG)))
                                 .then(
-                                    Commands.argument("dialog", DialogArgument.uuidOrLabel())
+                                    Commands.argument(DIALOG_ARG, DialogArgument.uuidOrLabel())
                                         .executes(
                                             context ->
                                                 openDialog(
                                                     context.getSource(),
                                                     EasyNPCArgument.getEntityWithAccess(
-                                                        context, NPC_TARGET_ARGUMENT),
-                                                    EntityArgument.getPlayer(context, "player"),
+                                                        context, NPC_TARGET_ARG),
+                                                    EntityArgument.getPlayer(context, PLAYER_ARG),
                                                     DialogArgument.getUuidOrLabel(
-                                                        context, "dialog")))))))
+                                                        context, DIALOG_ARG)))))))
         .then(
             Commands.literal("close")
                 .then(
-                    Commands.argument("player", EntityArgument.player())
+                    Commands.argument(PLAYER_ARG, EntityArgument.player())
                         .executes(
                             context ->
                                 closeDialog(
                                     context.getSource(),
-                                    EntityArgument.getPlayer(context, "player")))));
+                                    EntityArgument.getPlayer(context, PLAYER_ARG)))));
   }
 
   public static int setDefaultDialog(

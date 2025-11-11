@@ -21,8 +21,10 @@ package de.markusbordihn.easynpc.client.renderer.entity.raw;
 
 import de.markusbordihn.easynpc.Constants;
 import de.markusbordihn.easynpc.client.renderer.entity.EasyNPCEntityRenderer;
+import de.markusbordihn.easynpc.client.texture.VariantTextureManager;
+import de.markusbordihn.easynpc.data.skin.SkinModel;
+import de.markusbordihn.easynpc.data.skin.SkinVariantType;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.entity.easynpc.npc.raw.ZombieRaw.VariantType;
 import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.Util;
@@ -35,20 +37,26 @@ import org.apache.logging.log4j.Logger;
 
 public class ZombieRawRenderer extends ZombieRenderer implements EasyNPCEntityRenderer {
 
-  protected static final Map<VariantType, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
+  protected static final Map<SkinVariantType.ZOMBIE, ResourceLocation> TEXTURE_BY_VARIANT_TYPE =
       Util.make(
-          new EnumMap<>(VariantType.class),
+          new EnumMap<>(SkinVariantType.ZOMBIE.class),
           map -> {
             map.put(
-                VariantType.HUSK,
-                ResourceLocation.withDefaultNamespace("textures/entity/zombie/husk.png"));
+                SkinVariantType.ZOMBIE.HUSK,
+                ResourceLocation.fromNamespaceAndPath(
+                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/zombie/husk.png"));
             map.put(
-                VariantType.ZOMBIE,
-                ResourceLocation.withDefaultNamespace("textures/entity/zombie/zombie.png"));
+                SkinVariantType.ZOMBIE.ZOMBIE,
+                ResourceLocation.fromNamespaceAndPath(
+                    ResourceLocation.DEFAULT_NAMESPACE, "textures/entity/zombie/zombie.png"));
           });
   protected static final ResourceLocation DEFAULT_TEXTURE =
-      TEXTURE_BY_VARIANT_TYPE.get(VariantType.ZOMBIE);
+      TEXTURE_BY_VARIANT_TYPE.get(SkinVariantType.ZOMBIE.ZOMBIE);
   private static final Logger log = LogManager.getLogger(Constants.LOG_NAME);
+
+  static {
+    VariantTextureManager.registerVariantTextures(SkinModel.ZOMBIE, TEXTURE_BY_VARIANT_TYPE);
+  }
 
   public ZombieRawRenderer(EntityRendererProvider.Context context) {
     super(context);

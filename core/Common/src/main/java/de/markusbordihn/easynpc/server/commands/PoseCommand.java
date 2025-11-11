@@ -41,27 +41,26 @@ public class PoseCommand extends Command {
         .then(
             Commands.literal("reset")
                 .then(
-                    Commands.argument(NPC_TARGET_ARGUMENT, EasyNPCArgument.npc())
+                    Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                         .executes(
                             context ->
                                 resetPose(
                                     context.getSource(),
-                                    EasyNPCArgument.getEntityWithAccess(
-                                        context, NPC_TARGET_ARGUMENT)))))
+                                    EasyNPCArgument.getEntityWithAccess(context, NPC_TARGET_ARG)))))
         .then(
             Commands.literal("set")
                 .then(
-                    Commands.argument("type", ResourceLocationArgument.id())
+                    Commands.argument(TYPE_ARG, ResourceLocationArgument.id())
                         .suggests(PoseSuggestions::suggest)
                         .then(
-                            Commands.argument(NPC_TARGET_ARGUMENT, EasyNPCArgument.npc())
+                            Commands.argument(NPC_TARGET_ARG, EasyNPCArgument.npc())
                                 .executes(
                                     context ->
                                         setPose(
                                             context.getSource(),
                                             EasyNPCArgument.getEntityWithAccess(
-                                                context, NPC_TARGET_ARGUMENT),
-                                            ResourceLocationArgument.getId(context, "type"))))));
+                                                context, NPC_TARGET_ARG),
+                                            ResourceLocationArgument.getId(context, TYPE_ARG))))));
   }
 
   private static int resetPose(CommandSourceStack context, EasyNPC<?> easyNPC) {
